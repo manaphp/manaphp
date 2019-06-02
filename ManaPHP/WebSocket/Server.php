@@ -23,7 +23,12 @@ class Server extends Component implements ServerInterface
     /**
      * @var int
      */
-    protected $_port = '8300';
+    protected $_port = 8300;
+
+    /**
+     * @var array
+     */
+    protected $_settings = [];
 
     /**
      * @var \Swoole\WebSocket\Server
@@ -106,8 +111,19 @@ class Server extends Component implements ServerInterface
      */
     public function start()
     {
-        Runtime::enableCoroutine();
-        define('MANAPHP_COROUTINE', true);
+        echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
+
+        $settings = isset($this->configure->servers['ws']) ? $this->configure->servers['ws'] : [];
+
+        if (isset($settings['host'])) {
+            $this->_host = $settings['host'];
+        }
+
+        if (isset($settings['port'])) {
+            $this->_port = (int)$settings['port'];
+        }
+
+        $this->_settings = $settings;
 
         $swoole = new \Swoole\WebSocket\Server($this->_host, $this->_port);
 
@@ -164,8 +180,11 @@ class Server extends Component implements ServerInterface
 
         $this->_swoole = $swoole;
 
-        $this->log('debug', 'listen on: ' . $this->_host . ':' . $this->_port);
-        $swoole->start();
+        $this->log('info',
+            sprintf('starting listen on: %s:%d with setting: %s', $this->_host, $this->_port, json_encode($this->_settings, JSON_UNESCAPED_SLASHES)));
+       $swoole->start();
+
+        echo sprintf('[%s][info]: shutdown', date('c')), PHP_EOL;
     }
 
     /**
