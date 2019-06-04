@@ -792,7 +792,26 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
      */
     protected function _exists()
     {
-        return static::query(null, $this)->where($this->_getPrimaryKeyValuePairs())->forceUseMaster()->exists();
+        $filters = [];
+        $primaryKey = $this->getPrimaryKey();
+        if (is_string($primaryKey)) {
+            if ($this->$primaryKey === null) {
+                return false;
+            } else {
+                $filters[$primaryKey] = $this->$primaryKey;
+            }
+        } else {
+            $field = $primaryKey[0];
+            if ($this->$field === null) {
+                return false;
+            }
+
+            foreach ($primaryKey as $field) {
+                $filters[$field] = $this->$field;
+            }
+        }
+
+        return static::query(null, $this)->where($filters)->forceUseMaster()->exists();
     }
 
     /**
