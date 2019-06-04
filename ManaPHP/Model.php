@@ -1188,7 +1188,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     public function __set($name, $value)
     {
         if (is_scalar($value)) {
-            $this->fireEvent('component:setUndefinedProperty', ['name' => $name, 'class' => static::class]);
+            throw new MisuseException(['`:class` Model does\'t contains `:field` field', 'field' => $name, 'class' => static::class]);
         }
 
         $this->$name = $value;
