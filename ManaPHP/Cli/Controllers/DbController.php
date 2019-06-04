@@ -106,10 +106,7 @@ class DbController extends Controller
             $str .= '    }' . PHP_EOL;
         }
 
-        /** @var \ManaPHP\DbInterface $db */
-        $db = $this->_di->getShared($service);
-        $sample = $db->fetchOne("SELECT * FROM [$table] LIMIT 1");
-        if ($sample) {
+        if (1) {
             $str .= PHP_EOL;
             $str .= '    /**' . PHP_EOL;
             $str .= '     * @return array' . PHP_EOL;
@@ -117,14 +114,43 @@ class DbController extends Controller
             $str .= '    public static function sample()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
+        }
+        /** @var \ManaPHP\DbInterface $db */
+        $db = $this->_di->getShared($service);
+        $sample = $db->fetchOne("SELECT * FROM [$table] LIMIT 1");
+        if ($sample) {
             foreach ($sample as $field => $value) {
                 if (is_string($value)) {
-                    $value = strpos($value, "'") === false ? "'" . $value . "'" : json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                    $value = "''";
+                } elseif (is_int($value)) {
+                    $value = '0';
+                } elseif (is_float($value)) {
+                    $value = '0.0';
+                } elseif (is_bool($value)) {
+                    $value = 'true';
+                } elseif ($value === null) {
+                    $value = 'null';
                 } else {
                     $value = json_encode($value);
                 }
+
                 $str .= "            '$field' => $value," . PHP_EOL;
             }
+        } else {
+            $metadata = $db->getMetadata($table);
+            $intFields = [Db::METADATA_INT_TYPE_ATTRIBUTES];
+            foreach ($metadata[Db::METADATA_ATTRIBUTES] as $field) {
+                if (in_array($field, $intFields, true)) {
+                    $value = "''";
+                } else {
+                    $value = '0';
+                }
+
+                $str .= "            '$field' => $value," . PHP_EOL;
+            }
+        }
+
+        if (1) {
             $str .= '        ];' . PHP_EOL;
             $str .= '    }' . PHP_EOL;
         }
