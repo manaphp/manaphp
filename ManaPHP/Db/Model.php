@@ -413,6 +413,6 @@ class Model extends \ManaPHP\Model implements ModelInterface
      */
     public static function whereSearch($filters)
     {
-        return static::query()->where($filters);
+        return static::query()->whereSearch($filters);
     }
 }

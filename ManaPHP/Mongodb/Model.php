@@ -651,7 +651,7 @@ class Model extends \ManaPHP\Model
      */
     public static function whereSearch($filters)
     {
-        return static::query()->where($filters);
+        return static::query()->whereSearch($filters);
     }
 
     public function __debugInfo()
