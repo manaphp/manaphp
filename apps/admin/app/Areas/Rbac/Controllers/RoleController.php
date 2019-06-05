@@ -36,22 +36,22 @@ class RoleController extends Controller
             $permissions = '';
         }
 
-        return Role::createOrNull(['permissions' => $permissions]);
+        return Role::viewOrCreate(['permissions' => $permissions]);
     }
 
     public function editAction()
     {
-        return Role::updateOrNull();
+        return Role::viewOrUpdate();
     }
 
     public function disableAction()
     {
-        return Role::updateOrNull(['enabled' => 0]);
+        return Role::viewOrUpdate(['enabled' => 0]);
     }
 
     public function enableAction()
     {
-        return Role::updateOrNull(['enabled' => 1]);
+        return Role::viewOrUpdate(['enabled' => 1]);
     }
 
     public function deleteAction()

@@ -40,21 +40,21 @@ class AdminController extends Controller
             return '不能锁定自己';
         }
 
-        return Admin::updateOrNull(['status' => Admin::STATUS_LOCKED]);
+        return Admin::viewOrUpdate(['status' => Admin::STATUS_LOCKED]);
     }
 
     public function activeAction()
     {
-        return Admin::updateOrNull(['status' => Admin::STATUS_ACTIVE]);
+        return Admin::viewOrUpdate(['status' => Admin::STATUS_ACTIVE]);
     }
 
     public function createAction()
     {
-        return Admin::createOrNull();
+        return Admin::viewOrCreate();
     }
 
     public function editAction()
     {
-        return Admin::updateOrNull();
+        return Admin::viewOrUpdate();
     }
 }

@@ -23,7 +23,7 @@ class ActionLogController extends Controller
 
     public function detailAction()
     {
-        $log = AdminActionLog::firstOrNull();
+        $log = AdminActionLog::viewOrFirst();
 
         if ($log->admin_id == $this->identity->getId() || $this->authorization->isAllowed('detail')) {
             return $log;

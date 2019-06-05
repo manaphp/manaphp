@@ -28,16 +28,16 @@ class GroupController extends Controller
 
     public function createAction()
     {
-        return Group::createOrNull();
+        return Group::viewOrCreate();
     }
 
     public function editAction()
     {
-        return Group::updateOrNull();
+        return Group::viewOrUpdate();
     }
 
     public function deleteAction()
     {
-        return Group::deleteOrNull();
+        return Group::viewOrDelete();
     }
 }

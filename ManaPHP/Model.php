@@ -357,7 +357,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
      *
      * @return static|null
      */
-    public static function firstOrNull($fields = null)
+    public static function viewOrFirst($fields = null)
     {
         static $request;
         if (!$request) {
@@ -698,7 +698,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
      *
      * @return static|null
      */
-    public static function createOrNull($data = null)
+    public static function viewOrCreate($data = null)
     {
         static $request;
         if (!$request) {
@@ -743,7 +743,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
      *
      * @return static|null
      */
-    public static function updateOrNull($data = null)
+    public static function viewOrUpdate($data = null)
     {
         static $request;
         if (!$request) {
@@ -872,7 +872,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     /**
      * @return static|null
      */
-    public static function deleteOrNull()
+    public static function viewOrDelete()
     {
         static $request;
         if (!$request) {

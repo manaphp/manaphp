@@ -140,7 +140,7 @@ interface ModelInterface
      *
      * @return static|null
      */
-    public static function firstOrNull($fields = null);
+    public static function viewOrFirst($fields = null);
 
     /**
      * Allows to query the last record that match the specified conditions
@@ -298,7 +298,7 @@ interface ModelInterface
      *
      * @return static|null
      */
-    public static function createOrNull($data = null);
+    public static function viewOrCreate($data = null);
 
     /**
      * Updates a model instance. If the instance does n't exist in the persistence it will throw an exception
@@ -313,7 +313,7 @@ interface ModelInterface
      *
      * @return static|null
      */
-    public static function updateOrNull($data = null);
+    public static function viewOrUpdate($data = null);
 
     /**
      * @param array $fieldValues
@@ -341,7 +341,7 @@ interface ModelInterface
     /**
      * @return static|null
      */
-    public static function deleteOrNull();
+    public static function viewOrDelete();
 
     /**
      * @param array $filters

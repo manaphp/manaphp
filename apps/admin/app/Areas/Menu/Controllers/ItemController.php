@@ -22,16 +22,16 @@ class ItemController extends Controller
 
     public function createAction()
     {
-        return Item::createOrNull();
+        return Item::viewOrCreate();
     }
 
     public function editAction()
     {
-        return Item::updateOrNull();
+        return Item::viewOrUpdate();
     }
 
     public function deleteAction()
     {
-        return Item::deleteOrNull();
+        return Item::viewOrDelete();
     }
 }

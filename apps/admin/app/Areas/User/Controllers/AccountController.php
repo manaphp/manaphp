@@ -20,7 +20,7 @@ class AccountController extends Controller
     {
         if ($this->request->isAjax()) {
             $this->captcha->verify();
-            return Admin::createOrNull();
+            return Admin::viewOrCreate();
         }
     }
 }
