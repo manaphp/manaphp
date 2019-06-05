@@ -373,6 +373,27 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
+     * @param array $filters
+     * @param       $options
+     * @param       $fields
+     *
+     * @return null|array
+     */
+    public static function viewOrAll($filters, $options = null, $fields = null)
+    {
+        static $request;
+        if (!$request) {
+            $request = Di::getDefault()->getShared('request');
+        }
+
+        if (!$request->isAjax()) {
+            return null;
+        }
+
+        return static::select($fields)->whereInput($filters)->options($options)->fetch(true);
+    }
+
+    /**
      * Allows to query the last record that match the specified conditions
      *
      * @param array $filters =static::sample()

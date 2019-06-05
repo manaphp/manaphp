@@ -102,6 +102,15 @@ interface ModelInterface
     public static function all($filters = [], $options = null, $fields = null);
 
     /**
+     * @param array $filters
+     * @param       $options
+     * @param       $fields
+     *
+     * @return null|array
+     */
+    public static function viewOrAll($filters, $options = null, $fields = null);
+
+    /**
      * @param string|array $fields
      * @param array        $filters
      *
