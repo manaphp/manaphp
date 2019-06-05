@@ -67,12 +67,14 @@ class DbController extends Controller
         $str = '<?php' . PHP_EOL;
         $str .= 'namespace ' . substr($modelName, 0, strrpos($modelName, '\\')) . ';' . PHP_EOL;
         $str .= PHP_EOL;
+        $str .= 'use ManaPHP\Db\Model;' . PHP_EOL;
+        $str .= PHP_EOL;
 
         $str .= '/**' . PHP_EOL;
         $str .= ' * Class ' . $modelName . PHP_EOL;
         $str .= ' */' . PHP_EOL;
 
-        $str .= 'class ' . $plainClass . ' extends \ManaPHP\Db\Model' . PHP_EOL;
+        $str .= 'class ' . $plainClass . ' extends Model' . PHP_EOL;
         $str .= '{';
         $str .= PHP_EOL;
         foreach ($fields as $field) {
