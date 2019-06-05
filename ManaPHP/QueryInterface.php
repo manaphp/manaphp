@@ -95,7 +95,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereSearch($filters);
+    public function whereInput($filters);
 
     /**
      * Appends a BETWEEN condition to the current conditions

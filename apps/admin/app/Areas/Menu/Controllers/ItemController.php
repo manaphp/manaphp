@@ -14,7 +14,7 @@ class ItemController extends Controller
     public function indexAction()
     {
         return $this->request->isAjax()
-            ? Item::whereSearch(['group_id'])
+            ? Item::whereInput(['group_id'])
                 ->orderBy(['group_id' => SORT_ASC, 'display_order' => SORT_DESC, 'item_id' => SORT_ASC])
                 ->fetch(true)
             : null;

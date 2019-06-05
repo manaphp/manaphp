@@ -452,5 +452,5 @@ interface ModelInterface
      *
      * @return \ManaPHP\QueryInterface
      */
-    public static function whereSearch($filters);
+    public static function whereInput($filters);
 }

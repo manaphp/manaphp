@@ -15,7 +15,7 @@ class GroupController extends Controller
     public function indexAction()
     {
         return $this->request->isAjax()
-            ? Group::whereSearch(['group_id'])
+            ? Group::whereInput(['group_id'])
                 ->orderBy('display_order DESC, group_id ASC')
                 ->fetch(true)
             : null;

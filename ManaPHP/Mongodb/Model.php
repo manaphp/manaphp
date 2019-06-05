@@ -649,9 +649,9 @@ class Model extends \ManaPHP\Model
      *
      * @return \ManaPHP\Mongodb\Query
      */
-    public static function whereSearch($filters)
+    public static function whereInput($filters)
     {
-        return static::query()->whereSearch($filters);
+        return static::query()->whereInput($filters);
     }
 
     public function __debugInfo()

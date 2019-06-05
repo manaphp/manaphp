@@ -248,10 +248,10 @@ class Merger extends Component implements \ManaPHP\QueryInterface, \IteratorAggr
      *
      * @return static
      */
-    public function whereSearch($filters)
+    public function whereInput($filters)
     {
         foreach ($this->queries as $query) {
-            $query->whereSearch($filters);
+            $query->whereInput($filters);
         }
 
         return $this;
