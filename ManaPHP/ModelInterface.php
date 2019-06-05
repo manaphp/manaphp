@@ -440,12 +440,12 @@ interface ModelInterface
     public static function select($fields = [], $alias = null);
 
     /**
-     * @param int|string|array       $filter
+     * @param int|string|array       $filters
      * @param int|float|string|array $value
      *
      * @return \ManaPHP\QueryInterface
      */
-    public static function where($filter, $value = null);
+    public static function where($filters, $value = null);
 
     /**
      * @param array $filters

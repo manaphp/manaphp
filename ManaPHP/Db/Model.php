@@ -390,24 +390,24 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @param int|string|array       $filter
+     * @param int|string|array       $filters =static::sample()
      * @param int|float|string|array $value
      *
      * @return \ManaPHP\Db\Query
      */
-    public static function where($filter, $value = null)
+    public static function where($filters, $value = null)
     {
-        if (is_scalar($filter)) {
+        if (is_scalar($filters)) {
             /** @var \ManaPHP\ModelInterface $model */
             $model = Di::getDefault()->getShared(static::class);
-            return static::query(null, $model)->whereEq($model->getPrimaryKey(), $filter);
+            return static::query(null, $model)->whereEq($model->getPrimaryKey(), $filters);
         } else {
-            return static::query()->where($filter, $value);
+            return static::query()->where($filters, $value);
         }
     }
 
     /**
-     * @param array $filters
+     * @param array $filters =static::sample()
      *
      * @return \ManaPHP\Db\Query
      */

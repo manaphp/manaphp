@@ -2,11 +2,11 @@
 
 namespace ManaPHP\Mongodb;
 
-use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Di;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\PreconditionException;
+use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Model\ExpressionInterface;
 use MongoDB\BSON\ObjectID;
 
@@ -628,24 +628,24 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * @param int|string|array       $filter
+     * @param int|string|array       $filters =static::sample()
      * @param int|float|string|array $value
      *
      * @return \ManaPHP\Mongodb\Query
      */
-    public static function where($filter, $value = null)
+    public static function where($filters, $value = null)
     {
-        if (is_scalar($filter)) {
+        if (is_scalar($filters)) {
             /** @var \ManaPHP\ModelInterface $model */
             $model = Di::getDefault()->getShared(static::class);
-            return static::query(null, $model)->whereEq($model->getPrimaryKey(), $filter);
+            return static::query(null, $model)->whereEq($model->getPrimaryKey(), $filters);
         } else {
-            return static::query()->where($filter, $value);
+            return static::query()->where($filters, $value);
         }
     }
 
     /**
-     * @param array $filters
+     * @param array $filters =static::sample()
      *
      * @return \ManaPHP\Mongodb\Query
      */
