@@ -688,6 +688,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
         } elseif ($opMode === self::OP_UPDATE) {
             $data['updated_time'] = date($this->getDateFormat('updated_time'));
             $data['updated_at'] = date($this->getDateFormat('updated_at'));
+            $data['updator_id'] = $this->_di->identity->getId(0);
             $data['updator_name'] = $this->_di->identity->getName('');
         }
 
