@@ -365,6 +365,20 @@ interface ModelInterface
     public function toArray();
 
     /**
+     * @param array $fields
+     *
+     * @return array
+     */
+    public function only($fields);
+
+    /**
+     * @param array $fields
+     *
+     * @return array
+     */
+    public function except($fields);
+
+    /**
      * Returns the internal snapshot data
      *
      * @return array

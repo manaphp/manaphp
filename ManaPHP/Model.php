@@ -961,6 +961,40 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
+     * @param array $fields
+     *
+     * @return array
+     */
+    public function only($fields)
+    {
+        $data = [];
+
+        foreach ($fields as $field) {
+            $data[$field] = $this->$field;
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param array $fields
+     *
+     * @return array
+     */
+    public function except($fields)
+    {
+        $data = [];
+
+        foreach ($this->getFields() as $field) {
+            if (!in_array($field, $fields, true)) {
+                $data[$field] = $this->$field;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * Returns the internal snapshot data
      *
      * @return array
