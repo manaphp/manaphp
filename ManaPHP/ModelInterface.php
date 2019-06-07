@@ -102,6 +102,17 @@ interface ModelInterface
     public static function all($filters = [], $options = null, $fields = null);
 
     /**
+     * Allows to query a set of records that match the specified conditions
+     *
+     * @param array $filters =static::sample()
+     * @param array $options
+     * @param array $fields =static::sample()
+     *
+     * @return  \ManaPHP\Paginator
+     */
+    public static function paginate($filters = [], $options = null, $fields = null);
+
+    /**
      * @param array $filters
      * @param       $options
      * @param       $fields
