@@ -42,7 +42,7 @@ class Application extends \ManaPHP\Http\Application
             $this->handleException($error);
         }
 
-        $this->send();
+        $this->httpServer->send($this->response);
 
         $this->eventsManager->fireEvent('request:destruct', $this);
         $this->eventsManager->fireEvent('request:end', $this);

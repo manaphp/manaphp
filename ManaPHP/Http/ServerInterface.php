@@ -1,10 +1,10 @@
 <?php
-namespace ManaPHP\Swoole\Http;
+namespace ManaPHP\Http;
 
 interface ServerInterface
 {
     /**
-     * @param callable|array $handler
+     * @param \ManaPHP\Http\Server\RequestHandlerInterface $handler
      *
      * @return static
      */

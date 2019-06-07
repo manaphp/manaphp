@@ -55,11 +55,6 @@ class Configure extends Component implements ConfigureInterface
     public $master_key = '';
 
     /**
-     * @var bool
-     */
-    public $compatible_globals = false;
-
-    /**
      * @var array
      */
     public $servers = [];

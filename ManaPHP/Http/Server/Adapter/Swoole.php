@@ -1,10 +1,11 @@
 <?php
-namespace ManaPHP\Swoole\Http;
+namespace ManaPHP\Http\Server\Adapter;
 
 use ManaPHP\Component;
 use ManaPHP\ContextManager;
+use ManaPHP\Http\ServerInterface;
 
-class ServerContext
+class SwooleContext
 {
     /**
      * @var \swoole_http_request
@@ -20,10 +21,10 @@ class ServerContext
 /**
  * Class Server
  * @package ManaPHP\Swoole\Http
- * @property-read \ManaPHP\Http\RequestInterface $request
- * @property \ManaPHP\Swoole\Http\ServerContext  $_context
+ * @property-read \ManaPHP\Http\RequestInterface        $request
+ * @property \ManaPHP\Http\Server\Adapter\SwooleContext $_context
  */
-class Server extends Component implements ServerInterface
+class Swoole extends Component implements ServerInterface
 {
     /**
      * @var string
@@ -36,6 +37,11 @@ class Server extends Component implements ServerInterface
     protected $_port = 9501;
 
     /**
+     * @var bool
+     */
+    protected $_compatible_globals = false;
+
+    /**
      * @var array
      */
     protected $_settings = [];
@@ -46,11 +52,16 @@ class Server extends Component implements ServerInterface
     protected $_swoole;
 
     /**
-     * @var callable|array
+     * @var \ManaPHP\Http\Server\RequestHandlerInterface
      */
     protected $_handler;
 
-    public function __construct()
+    /**
+     * Swoole constructor.
+     *
+     * @param array $options
+     */
+    public function __construct($options = [])
     {
         $script_filename = get_included_files()[0];
         $parts = explode('-', phpversion());
@@ -66,6 +77,26 @@ class Server extends Component implements ServerInterface
         ];
 
         unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
+
+        $this->alias->set('@web', '');
+        $this->alias->set('@asset', '');
+
+        if (isset($options['compatible_globals'])) {
+            $this->_compatible_globals = (bool)$options['compatible_globals'];
+            unset($options['compatible_globals']);
+        }
+
+        if (isset($options['host'])) {
+            $this->_host = $options['host'];
+        }
+
+        if (isset($options['port'])) {
+            $this->_port = (int)$options['port'];
+        }
+
+        $options['enable_coroutine'] = MANAPHP_COROUTINE ? true : false;
+
+        $this->_settings = $options;
     }
 
     /**
@@ -116,7 +147,7 @@ class Server extends Component implements ServerInterface
         $globals->_COOKIE = $request->cookie ?: [];
         $globals->_FILES = $request->files ?: [];
 
-        if ($this->configure->compatible_globals) {
+        if ($this->_compatible_globals) {
             $_GET = $globals->_GET;
             $_POST = $globals->_POST;
             $_REQUEST = $globals->_REQUEST;
@@ -132,7 +163,7 @@ class Server extends Component implements ServerInterface
     }
 
     /**
-     * @param callable|array $handler
+     * @param \ManaPHP\Http\Server\RequestHandlerInterface $handler
      *
      * @return static
      */
@@ -140,27 +171,9 @@ class Server extends Component implements ServerInterface
     {
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 
-        $settings = isset($this->configure->servers['http']) ? $this->configure->servers['http'] : [];
-
-        if (!empty($settings['enable_static_handler'])) {
-            $settings['document_root'] = $_SERVER['DOCUMENT_ROOT'];
-            if ($this->configure->debug) {
-                $this->log('warn', 'enable `enable_static_handler` setting of swoole will reduce performance!!!!');
-                sleep(3);
-            }
+        if (!empty($this->_settings['enable_static_handler'])) {
+            $this->_settings['document_root'] = $_SERVER['DOCUMENT_ROOT'];
         }
-
-        if (isset($settings['host'])) {
-            $this->_host = $settings['host'];
-        }
-
-        if (isset($settings['port'])) {
-            $this->_port = (int)$settings['port'];
-        }
-
-        $settings['enable_coroutine'] = MANAPHP_COROUTINE ? true : false;
-
-        $this->_settings = $settings;
 
         $this->_swoole = new \swoole_http_server($this->_host, $this->_port);
         $this->_swoole->set($this->_settings);
@@ -196,12 +209,8 @@ class Server extends Component implements ServerInterface
 
             $this->_prepareGlobals($request);
 
-            if (is_array($this->_handler)) {
-                $this->_handler[0]->{$this->_handler[1]}();
-            } else {
-                $method = $this->_handler;
-                $method();
-            }
+            $this->_handler->handle();
+
         } catch (\Throwable $exception) {
             $str = date('c') . ' ' . get_class($exception) . ': ' . $exception->getMessage() . PHP_EOL;
             $str .= '    at ' . $exception->getFile() . ':' . $exception->getLine() . PHP_EOL;
@@ -251,5 +260,13 @@ class Server extends Component implements ServerInterface
         }
 
         $this->eventsManager->fireEvent('response:afterSend', $this, $response);
+    }
+
+    public function __debugInfo()
+    {
+        $data = parent::__debugInfo();
+        unset($data['_swoole']);
+
+        return $data;
     }
 }
