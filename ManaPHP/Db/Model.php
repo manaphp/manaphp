@@ -411,8 +411,8 @@ class Model extends \ManaPHP\Model implements ModelInterface
      *
      * @return \ManaPHP\Db\Query
      */
-    public static function whereInput($filters)
+    public static function search($filters)
     {
-        return static::query()->whereInput($filters);
+        return static::query()->search($filters);
     }
 }

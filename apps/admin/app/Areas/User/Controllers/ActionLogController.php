@@ -15,7 +15,7 @@ class ActionLogController extends Controller
     {
         return $this->request->isAjax()
             ? AdminActionLog::select(['id', 'admin_name', 'client_ip', 'client_udid', 'method', 'path', 'url', 'created_time'])
-                ->whereInput(['admin_name', 'path', 'client_ip', 'created_time@='])
+                ->search(['admin_name', 'path', 'client_ip', 'created_time@='])
                 ->orderBy(['id' => SORT_DESC])
                 ->paginate()
             : null;
@@ -37,7 +37,7 @@ class ActionLogController extends Controller
         return $this->request->isAjax()
             ? AdminActionLog::select(['id', 'client_ip', 'method', 'path', 'url', 'created_time'])
                 ->where('admin_id', $this->identity->getId())
-                ->whereInput(['path', 'client_ip', 'created_time@='])
+                ->search(['path', 'client_ip', 'created_time@='])
                 ->orderBy(['id' => SORT_DESC])
                 ->paginate()
             : null;

@@ -97,7 +97,7 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
      *
      * @return static
      */
-    public function whereInput($filters)
+    public function search($filters)
     {
         $data = $this->request->get();
 

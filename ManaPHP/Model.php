@@ -404,7 +404,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
             return null;
         }
 
-        return static::select($fields)->whereInput($filters)->options($options)->fetch(true);
+        return static::select($fields)->search($filters)->options($options)->fetch(true);
     }
 
     /**

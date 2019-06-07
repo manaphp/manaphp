@@ -16,7 +16,7 @@ class LoginLogController extends Controller
         return $this->request->isAjax()
             ? AdminLoginLog::select(['login_id', 'admin_id', 'admin_name', 'client_udid', 'user_agent', 'client_ip', 'created_time'])
                 ->orderBy('login_id DESC')
-                ->whereInput(['admin_id', 'admin_name*=', 'client_ip', 'client_udid', 'created_time@='])
+                ->search(['admin_id', 'admin_name*=', 'client_ip', 'client_udid', 'created_time@='])
                 ->paginate()
             : null;
     }
