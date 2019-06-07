@@ -203,7 +203,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
      */
     public static function paginate($filters = [], $options = null, $fields = null)
     {
-        return static::select($fields)->where($filters)->options($options)->paginate();
+        return static::select($fields)->search($filters)->options($options)->paginate();
     }
 
     /**
