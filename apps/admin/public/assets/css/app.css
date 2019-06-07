@@ -76,7 +76,8 @@
     margin: 8px 30px;
 
 }
-.product-name span{
+
+.product-name span {
     font-size: 1.1em;
 }
 
@@ -92,6 +93,6 @@
     margin-left: 10px;
 }
 
-.search-box .el-date-editor{
+.search-box .el-date-editor {
     width: 220px;
 }

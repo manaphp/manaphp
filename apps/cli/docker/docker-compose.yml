@@ -2,7 +2,7 @@ version: "2"
 services:
   cli:
     image: manaphp/php72:1.2
-    volumes: 
+    volumes:
       - ../:/var/www/html
       - /data/volumes/${COMPOSE_PROJECT_NAME}/cli/data:/var/www/html/data
       - /data/volumes/${COMPOSE_PROJECT_NAME}/cli/tmp:/var/www/html/tmp
