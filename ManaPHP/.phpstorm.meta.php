@@ -57,6 +57,7 @@ namespace PHPSTORM_META {
             'assetBundle' instanceof \ManaPHP\Renderer\AssetBundleInterface,
             'aclbuilder' instanceof \ManaPHP\Authorization\AclBuilderInterface,
             'bosClient' instanceof \ManaPHP\Bos\ClientInterface,
+            'wsPusher' instanceof \ManaPHP\WebSocket\PusherInterface,
         ],
         \di('') => [
             'di' instanceof \ManaPHP\DiInterface,
@@ -111,6 +112,7 @@ namespace PHPSTORM_META {
             'assetBundle' instanceof \ManaPHP\Renderer\AssetBundleInterface,
             'aclbuilder' instanceof \ManaPHP\Authorization\AclBuilderInterface,
             'bosClient' instanceof \ManaPHP\Bos\ClientInterface,
+            'wsPusher' instanceof \ManaPHP\WebSocket\PusherInterface,
         ],
         \ManaPHP\DiInterface::get('') => [
             '' == '@',

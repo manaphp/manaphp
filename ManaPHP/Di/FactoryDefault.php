@@ -50,7 +50,8 @@ class FactoryDefault extends Di
             'relationsManager' => 'ManaPHP\Model\Relation\Manager',
             'mailer' => 'ManaPHP\Mailer\Adapter\Smtp',
             'aclBuilder' => 'ManaPHP\Authorization\AclBuilder',
-            'bosClient' => 'ManaPHP\Bos\Client'
+            'bosClient' => 'ManaPHP\Bos\Client',
+            'wsPusher' => 'ManaPHP\WebSocket\Pusher',
         ];
     }
 }

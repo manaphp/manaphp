@@ -59,6 +59,7 @@ use ManaPHP\Exception\UnexpectedValueException;
  * @property-read \ManaPHP\MongodbInterface                $mongodb
  * @property-read \ManaPHP\I18n\TranslatorInterface        $translator
  * @property-read \ManaPHP\Bos\ClientInterface             $bosClient
+ * @property-read \ManaPHP\WebSocket\PusherInterface       $wsPusher
  */
 class Di implements DiInterface
 {

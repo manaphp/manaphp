@@ -32,6 +32,7 @@ namespace ManaPHP;
  * @property-read \ManaPHP\Pool\ManagerInterface           $poolManager
  * @property-read \ManaPHP\ValidatorInterface              $validator
  * @property-read \ManaPHP\I18n\TranslatorInterface        $translator
+ * @property-read \ManaPHP\WebSocket\PusherInterface       $wsPusher
  * @property \object                                       $_context
  */
 class Component implements ComponentInterface, \JsonSerializable
