@@ -1,18 +1,19 @@
 <?php
-namespace ManaPHP\WebSocket;
+namespace ManaPHP\WebSocket\Server\Adapter;
 
 use ManaPHP\Component;
 use ManaPHP\ContextManager;
+use ManaPHP\WebSocket\ServerInterface;
 use Swoole\Coroutine;
 use Swoole\WebSocket\Frame;
+use Swoole\WebSocket\Server;
 
 /**
  * Class Server
  * @package ManaPHP\WebSocket
- * @property-read \ManaPHP\Http\RequestInterface          $request
- * @property-read \ManaPHP\WebSocket\ApplicationInterface $app
+ * @property-read \ManaPHP\Http\RequestInterface $request
  */
-class Server extends Component implements ServerInterface
+class Swoole extends Component implements ServerInterface
 {
     /**
      * @var string
@@ -35,6 +36,11 @@ class Server extends Component implements ServerInterface
     protected $_swoole;
 
     /**
+     * @var \ManaPHP\WebSocket\Server\RequestHandlerInterface
+     */
+    protected $_handler;
+
+    /**
      * @var array
      */
     protected $_fd2cid = [];
@@ -44,16 +50,8 @@ class Server extends Component implements ServerInterface
      *
      * @param array $options
      */
-    public function __construct($options = [])
+    public function __construct($options = null)
     {
-        if (isset($options['host'])) {
-            $this->_host = $options['host'];
-        }
-
-        if (isset($options['port'])) {
-            $this->_port = (int)$options['port'];
-        }
-
         $script_filename = get_included_files()[0];
         $parts = explode('-', phpversion());
         $_SERVER = [
@@ -68,6 +66,24 @@ class Server extends Component implements ServerInterface
         ];
 
         unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
+
+
+        if (isset($options['host'])) {
+            $this->_host = $options['host'];
+        }
+
+        if (isset($options['port'])) {
+            $this->_port = (int)$options['port'];
+        }
+
+        $this->_settings = $options;
+
+        $this->_swoole = new Server($this->_host, $this->_port);
+        $this->_swoole->set($this->_settings);
+
+        $this->_swoole->on('open', [$this, '_onOpen']);
+        $this->_swoole->on('close', [$this, '_onClose']);
+        $this->_swoole->on('message', [$this, '_onMessage']);
     }
 
     public function log($level, $message)
@@ -106,87 +122,90 @@ class Server extends Component implements ServerInterface
     }
 
     /**
-     * @return mixed|void
+     * @param \Swoole\WebSocket\Server $server
+     * @param \swoole_http_request     $req
      */
-    public function start()
+    public function _onOpen($server, $req)
     {
-        echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
-
-        $settings = isset($this->configure->servers['ws']) ? $this->configure->servers['ws'] : [];
-
-        if (isset($settings['host'])) {
-            $this->_host = $settings['host'];
-        }
-
-        if (isset($settings['port'])) {
-            $this->_port = (int)$settings['port'];
-        }
-
-        $this->_settings = $settings;
-
-        $swoole = new \Swoole\WebSocket\Server($this->_host, $this->_port);
-
-        $swoole->on('open', function ($server, $req) {
-            try {
-                $fd = $req->fd;
-                $cid = Coroutine::getCid();
-
-                $this->_prepareGlobals($req);
-                $this->app->onOpen($fd);
-            } finally {
-                $this->_fd2cid[$fd] = $cid;
-            }
-        });
-
-        $swoole->on('close', function ($server, $fd) {
-            /** @var  \Swoole\WebSocket\Server $server */
-            if (!$server->isEstablished($fd)) {
-                return;
-            }
-
+        try {
+            $fd = $req->fd;
             $cid = Coroutine::getCid();
 
+            $this->_prepareGlobals($req);
+            $this->_handler->onOpen($fd);
+        } finally {
+            $this->_fd2cid[$fd] = $cid;
+        }
+    }
+
+    /**
+     * @param \Swoole\WebSocket\Server $server
+     * @param int                      $fd
+     */
+    public function _onClose($server, $fd)
+    {
+        /** @var  \Swoole\WebSocket\Server $server */
+        if (!$server->isEstablished($fd)) {
+            return;
+        }
+
+        $cid = Coroutine::getCid();
+
+        while (!isset($this->_fd2cid[$fd])) {
+            Coroutine::sleep(0.01);
+            $this->log('info', 'open is not ready');
+        }
+
+        try {
+            $old_cid = $this->_fd2cid[$fd];
+
+            ContextManager::clones($old_cid, $cid);
+            $this->_handler->onClose($fd);
+        } finally {
+            unset($this->_fd2cid[$fd]);
+            ContextManager::reset($cid);
+            ContextManager::reset($old_cid);
+        }
+    }
+
+    /**
+     * @param \Swoole\WebSocket\Server $server
+     * @param Frame                    $frame
+     */
+    public function _onMessage($server, $frame)
+    {
+        $fd = $frame->fd;
+        $cid = Coroutine::getCid();
+
+        try {
             while (!isset($this->_fd2cid[$fd])) {
                 Coroutine::sleep(0.01);
                 $this->log('info', 'open is not ready');
             }
 
-            try {
-                $old_cid = $this->_fd2cid[$fd];
+            $old_cid = $this->_fd2cid[$fd];
 
-                ContextManager::clones($old_cid, $cid);
-                $this->app->onClose($fd);
-            } finally {
-                unset($this->_fd2cid[$fd]);
-                ContextManager::reset($cid);
-                ContextManager::reset($old_cid);
-            }
-        });
+            ContextManager::clones($old_cid, $cid);
+            $this->_handler->onMessage($fd, $frame->data);
+        } finally {
+            ContextManager::reset($cid);
+        }
+    }
 
-        $swoole->on('message', function ($server, Frame $frame) {
-            $fd = $frame->fd;
-            $cid = Coroutine::getCid();
+    /**
+     * @param \ManaPHP\WebSocket\Server\RequestHandlerInterface $handler
+     *
+     * @return void
+     */
+    public function start($handler)
+    {
+        $this->_handler = $handler;
 
-            try {
-                while (!isset($this->_fd2cid[$fd])) {
-                    Coroutine::sleep(0.01);
-                    $this->log('info', 'open is not ready');
-                }
-
-                $old_cid = $this->_fd2cid[$fd];
-
-                ContextManager::clones($old_cid, $cid);
-                $this->app->onMessage($fd, $frame->data);
-            } finally {
-                ContextManager::reset($cid);
-            }
-        });
-
-        $this->_swoole = $swoole;
+        echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 
         $this->log('info',
             sprintf('starting listen on: %s:%d with setting: %s', $this->_host, $this->_port, json_encode($this->_settings, JSON_UNESCAPED_SLASHES)));
-        $swoole->start();
+        $this->_swoole->start();
 
         echo sprintf('[%s][info]: shutdown', date('c')), PHP_EOL;
     }
@@ -221,5 +240,15 @@ class Server extends Component implements ServerInterface
     public function disconnect($fd)
     {
         return $this->_swoole->disconnect($fd, 1000, '');
+    }
+
+    /**
+     * @param int $fd
+     *
+     * @return bool
+     */
+    public function exists($fd)
+    {
+        return $this->_swoole->exist($fd);
     }
 }

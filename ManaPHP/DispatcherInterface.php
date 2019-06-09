@@ -97,10 +97,11 @@ interface DispatcherInterface
      * Dispatches a handle action taking into account the routing parameters
      *
      * @param \ManaPHP\RouterInterface|\ManaPHP\RouterContext $router
+     * @param bool                                            $auto_invoke
      *
      * @return mixed
      */
-    public function dispatch($router);
+    public function dispatch($router, $auto_invoke = true);
 
     /**
      * @return string

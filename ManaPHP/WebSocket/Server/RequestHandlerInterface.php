@@ -1,7 +1,7 @@
 <?php
-namespace ManaPHP\WebSocket;
+namespace ManaPHP\WebSocket\Server;
 
-interface ApplicationInterface
+interface RequestHandlerInterface
 {
     /**
      * @param int $fd

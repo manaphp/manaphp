@@ -9,10 +9,8 @@ return [
     'aliases' => [
         '@xxx' => '@root/xvdfd'
     ],
-    'servers' => [
-        'http' => ['worker_num' => 2, 'max_request' => 1000000, 'dispatch_mode' => 1, 'enable_static_handler' => env('APP_DEBUG', false)]
-    ],
     'components' => [
+        'wsServer' => ['worker_num' => 2],
         'db' => 'mysql://root:123456@localhost/manaphp?charset=utf8',
         'redis' => 'redis://localhost:6379/1?timeout=2&retry_interval=0&auth=&persistent=0',
         'mongodb' => 'mongodb://127.0.0.1/manaphp_unit_test',

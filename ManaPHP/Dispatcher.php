@@ -361,11 +361,12 @@ class Dispatcher extends Component implements DispatcherInterface
      * Dispatches a handle action taking into account the routing parameters
      *
      * @param \ManaPHP\RouterInterface $router
+     * @param bool                     $auto_invoke
      *
      * @return mixed
      * @throws \ManaPHP\Dispatcher\NotFoundControllerException
      */
-    public function dispatch($router)
+    public function dispatch($router, $auto_invoke = true)
     {
         $context = $this->_context;
 
@@ -420,7 +421,9 @@ class Dispatcher extends Component implements DispatcherInterface
         $controllerInstance = $this->_di->getShared($controllerClassName);
         $context->controllerInstance = $controllerInstance;
 
-        return $this->invokeAction($controllerInstance, $action, $params);
+        if ($auto_invoke) {
+            return $this->invokeAction($controllerInstance, $action, $params);
+        }
     }
 
     /**

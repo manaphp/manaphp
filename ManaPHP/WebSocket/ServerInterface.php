@@ -4,9 +4,11 @@ namespace ManaPHP\WebSocket;
 interface ServerInterface
 {
     /**
-     * @return mixed
+     * @param \ManaPHP\WebSocket\Server\RequestHandlerInterface $handler
+     *
+     * @return void
      */
-    public function start();
+    public function start($handler);
 
     /**
      * @param int    $fd
@@ -29,4 +31,11 @@ interface ServerInterface
      * @return bool
      */
     public function disconnect($fd);
+
+    /**
+     * @param int $fd
+     *
+     * @return bool
+     */
+    public function exists($fd);
 }

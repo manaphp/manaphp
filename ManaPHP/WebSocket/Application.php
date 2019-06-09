@@ -1,8 +1,8 @@
 <?php
 namespace ManaPHP\WebSocket;
 
-use ManaPHP\ContextManager;
 use ManaPHP\Http\Response;
+use ManaPHP\WebSocket\Server\RequestHandlerInterface;
 
 /**
  * Class Application
@@ -11,21 +11,10 @@ use ManaPHP\Http\Response;
  * @property-read \ManaPHP\WebSocket\ServerInterface $wsServer
  * @property-read \ManaPHP\RouterInterface           $router
  * @property-read \ManaPHP\Http\ResponseInterface    $response
- * @property-read \ManaPHP\DispatcherInterface       $dispatcher
+ * @property-read \ManaPHP\WebSocket\Dispatcher      $dispatcher
  */
-class Application extends \ManaPHP\Application implements ApplicationInterface
+class Application extends \ManaPHP\Application implements RequestHandlerInterface
 {
-    public function __construct($loader = null)
-    {
-        parent::__construct($loader);
-
-        $this->eventsManager->attachEvent('request:authenticate', [$this, 'authenticate']);
-
-        if (method_exists($this, 'authorize')) {
-            $this->eventsManager->attachEvent('request:authorize', [$this, 'authorize']);
-        }
-    }
-
     public function getDi()
     {
         if (!$this->_di) {
@@ -35,9 +24,10 @@ class Application extends \ManaPHP\Application implements ApplicationInterface
         return $this->_di;
     }
 
-    public function authenticate()
+
+    public function getProcesses()
     {
-        $this->identity->authenticate();
+        return [];
     }
 
     /**
@@ -49,17 +39,18 @@ class Application extends \ManaPHP\Application implements ApplicationInterface
             $this->eventsManager->fireEvent('request:begin', $this);
             $this->eventsManager->fireEvent('request:construct', $this);
 
-            $this->eventsManager->fireEvent('request:authenticate', $this);
-            $this->eventsManager->fireEvent('ws:open', $fd);
+            $this->router->match();
+            $this->dispatcher->dispatch($this->router, false);
 
-            $actionReturnValue = $this->router->dispatch();
-            if ($actionReturnValue === null || $actionReturnValue instanceof Response) {
+            $returnValue = $this->dispatcher->getControllerInstance()->onOpen($fd);
+            if ($returnValue === null || $returnValue instanceof Response) {
                 null;
-            } elseif (is_string($actionReturnValue)) {
-                $this->response->setJsonError($actionReturnValue);
+            } elseif (is_string($returnValue)) {
+                $this->response->setJsonError($returnValue);
             } else {
-                $this->response->setJsonContent($actionReturnValue);
+                $this->response->setJsonContent($returnValue);
             }
+            $this->eventsManager->fireEvent('ws:open', $fd);
         } catch (\Throwable $exception) {
             $this->handleException($exception);
         }
@@ -67,7 +58,7 @@ class Application extends \ManaPHP\Application implements ApplicationInterface
         $content = $this->response->getContent();
         if ($content !== null && $content !== '') {
             $this->wsServer->push($fd, $content);
-            $this->response->setContent('');
+            $this->response->setContent(null);
         }
     }
 
@@ -76,13 +67,10 @@ class Application extends \ManaPHP\Application implements ApplicationInterface
      */
     public function onClose($fd)
     {
-        try {
-            $this->eventsManager->fireEvent('ws:close', $fd);
-            $this->eventsManager->fireEvent('request:destruct', $this);
-            $this->eventsManager->fireEvent('request:end', $this);
-        } finally {
-            ContextManager::reset();
-        }
+        $this->dispatcher->getControllerInstance()->onClose($fd);
+        $this->eventsManager->fireEvent('ws:close', $fd);
+        $this->eventsManager->fireEvent('request:destruct', $this);
+        $this->eventsManager->fireEvent('request:end', $this);
     }
 
     /**
@@ -93,28 +81,25 @@ class Application extends \ManaPHP\Application implements ApplicationInterface
     {
         $this->eventsManager->fireEvent('ws:message', $this, compact('fd', 'data'));
 
-        $globals = $this->request->getGlobals();
-        if (!is_array($post = json_decode($data, true, 16))) {
-            $post['raw_body'] = $data;
-        }
-        $globals->_POST = $post;
-        $globals->_REQUEST = $post + $globals->_GET;
-
         try {
-            $actionReturnValue = $this->dispatcher->invoke();
+            $returnValue = $this->dispatcher->getControllerInstance()->onMessage($fd, $data);
 
-            if ($actionReturnValue === null || $actionReturnValue instanceof Response) {
+            if ($returnValue === null || $returnValue instanceof Response) {
                 null;
-            } elseif (is_string($actionReturnValue)) {
-                $this->response->setJsonError($actionReturnValue);
+            } elseif (is_string($returnValue)) {
+                $this->response->setJsonError($returnValue);
             } else {
-                $this->response->setJsonContent($actionReturnValue);
+                $this->response->setJsonContent($returnValue);
             }
         } catch (\Throwable $exception) {
             $this->handleException($exception);
         }
 
-        $this->wsServer->push($fd, $this->response->getContent());
+        $content = $this->response->getContent();
+        if ($content !== null && $content !== '') {
+            $this->wsServer->push($fd, $content);
+            $this->response->setContent(null);
+        }
     }
 
     public function main()
@@ -124,6 +109,6 @@ class Application extends \ManaPHP\Application implements ApplicationInterface
 
         $this->registerServices();
 
-        $this->wsServer->start();
+        $this->wsServer->start($this);
     }
 }
