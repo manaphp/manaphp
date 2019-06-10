@@ -2,6 +2,8 @@
 
 namespace ManaPHP\Rest;
 
+use Error;
+use Exception;
 use ManaPHP\Http\Response;
 
 /**
@@ -36,9 +38,9 @@ class Application extends \ManaPHP\Http\Application
             } else {
                 $this->response->setJsonContent($actionReturnValue);
             }
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->handleException($exception);
-        } catch (\Error $error) {
+        } catch (Error $error) {
             $this->handleException($error);
         }
 

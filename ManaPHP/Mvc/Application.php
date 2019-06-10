@@ -2,6 +2,8 @@
 
 namespace ManaPHP\Mvc;
 
+use Error;
+use Exception;
 use ManaPHP\Http\Response;
 use ManaPHP\View;
 
@@ -43,9 +45,9 @@ class Application extends \ManaPHP\Http\Application
             } else {
                 $this->response->setJsonContent($actionReturnValue);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->handleException($e);
-        } catch (\Error $e) {
+        } catch (Error $e) {
             $this->handleException($e);
         }
 

@@ -3,6 +3,7 @@ namespace ManaPHP\WebSocket;
 
 use ManaPHP\Http\Response;
 use ManaPHP\WebSocket\Server\HandlerInterface;
+use Throwable;
 
 /**
  * Class Application
@@ -51,7 +52,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
                 $this->response->setJsonContent($returnValue);
             }
             $this->eventsManager->fireEvent('ws:open', $fd);
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $this->handleException($exception);
         }
 
@@ -91,7 +92,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
             } else {
                 $this->response->setJsonContent($returnValue);
             }
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $this->handleException($exception);
         }
 
