@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Http;
 
-use ManaPHP\Http\Server\RequestHandlerInterface;
+use ManaPHP\Http\Server\HandlerInterface;
 
 /**
  * Class Application
@@ -16,7 +16,7 @@ use ManaPHP\Http\Server\RequestHandlerInterface;
  * @package ManaPHP\Http
  * @method void authorize()
  */
-abstract class Application extends \ManaPHP\Application implements RequestHandlerInterface
+abstract class Application extends \ManaPHP\Application implements HandlerInterface
 {
     public function __construct($loader = null)
     {

@@ -52,7 +52,7 @@ class Swoole extends Component implements ServerInterface
     protected $_swoole;
 
     /**
-     * @var \ManaPHP\Http\Server\RequestHandlerInterface
+     * @var \ManaPHP\Http\Server\HandlerInterface
      */
     protected $_handler;
 
@@ -163,7 +163,7 @@ class Swoole extends Component implements ServerInterface
     }
 
     /**
-     * @param \ManaPHP\Http\Server\RequestHandlerInterface $handler
+     * @param \ManaPHP\Http\Server\HandlerInterface $handler
      *
      * @return static
      */

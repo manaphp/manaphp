@@ -4,7 +4,7 @@ namespace ManaPHP\Http;
 interface ServerInterface
 {
     /**
-     * @param \ManaPHP\Http\Server\RequestHandlerInterface $handler
+     * @param \ManaPHP\Http\Server\HandlerInterface $handler
      *
      * @return static
      */

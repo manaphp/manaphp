@@ -2,7 +2,7 @@
 namespace ManaPHP\WebSocket;
 
 use ManaPHP\Http\Response;
-use ManaPHP\WebSocket\Server\RequestHandlerInterface;
+use ManaPHP\WebSocket\Server\HandlerInterface;
 
 /**
  * Class Application
@@ -13,7 +13,7 @@ use ManaPHP\WebSocket\Server\RequestHandlerInterface;
  * @property-read \ManaPHP\Http\ResponseInterface    $response
  * @property-read \ManaPHP\WebSocket\Dispatcher      $dispatcher
  */
-class Application extends \ManaPHP\Application implements RequestHandlerInterface
+class Application extends \ManaPHP\Application implements HandlerInterface
 {
     public function getDi()
     {

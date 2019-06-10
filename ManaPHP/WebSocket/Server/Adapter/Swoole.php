@@ -36,7 +36,7 @@ class Swoole extends Component implements ServerInterface
     protected $_swoole;
 
     /**
-     * @var \ManaPHP\WebSocket\Server\RequestHandlerInterface
+     * @var \ManaPHP\WebSocket\Server\HandlerInterface
      */
     protected $_handler;
 
@@ -193,7 +193,7 @@ class Swoole extends Component implements ServerInterface
     }
 
     /**
-     * @param \ManaPHP\WebSocket\Server\RequestHandlerInterface $handler
+     * @param \ManaPHP\WebSocket\Server\HandlerInterface $handler
      *
      * @return void
      */

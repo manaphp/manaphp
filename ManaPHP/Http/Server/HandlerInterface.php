@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Http\Server;
 
-interface RequestHandlerInterface
+interface HandlerInterface
 {
     public function handle();
 }
