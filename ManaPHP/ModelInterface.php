@@ -436,6 +436,15 @@ interface ModelInterface
     public function refresh($interval, $fields = null);
 
     /**
+     * @param string $name
+     * @param bool   $comment
+     *
+     * @return array
+     * @throws \ReflectionException
+     */
+    public static function constants($name, $comment = false);
+
+    /**
      * @param string    $field
      * @param int|float $step
      *

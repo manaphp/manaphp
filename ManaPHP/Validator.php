@@ -700,7 +700,7 @@ class Validator extends Component implements ValidatorInterface
     protected function _validate_model_const($field, $model, $parameter = null)
     {
         $value = $model->$field;
-        $constants = $model::consts($parameter ?: $field);
+        $constants = $model::constants($parameter ?: $field);
         if (isset($constants[$value])) {
             return $value;
         } else {

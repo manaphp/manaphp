@@ -1193,17 +1193,25 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
 
     /**
      * @param string $name
+     * @param bool   $comment
      *
      * @return array
      * @throws \ReflectionException
      */
-    public static function consts($name)
+    public static function constants($name, $comment = false)
     {
         $name = strtoupper($name) . '_';
         $constants = [];
-        foreach ((new \ReflectionClass(static::class))->getConstants() as $cName => $cValue) {
+
+        $rc = new \ReflectionClass(static::class);
+        $file = $comment ? file_get_contents($rc->getFileName()) : '';
+        foreach ($rc->getConstants() as $cName => $cValue) {
             if (strpos($cName, $name) === 0) {
-                $constants[$cValue] = strtolower(substr($cName, strlen($name)));
+                if ($comment && preg_match('#\s+const\s+' . $cName . '\s*=[^/]+//(<([^>\r\n]+)>|[^\s]+)#', $file, $match)) {
+                    $constants[$cValue] = trim(isset($match[2]) ? $match[2] : $match[1]);
+                } else {
+                    $constants[$cValue] = strtolower(substr($cName, strlen($name)));
+                }
             }
         }
 
