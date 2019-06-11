@@ -48,6 +48,30 @@ class DbController extends Controller
     }
 
     /**
+     * @param string $modelName
+     *
+     * @return string
+     */
+    protected function _getConstants($modelName)
+    {
+        $file = "@app/Models/$modelName.php";
+        if (!$this->filesystem->fileExists($file)) {
+            return '';
+        }
+
+        $constants = '';
+        foreach (file($this->alias->resolve($file)) as $line) {
+            if (preg_match('#^\s+const\s+[A-Z0-9_]+\s*=#', $line) === 1) {
+                $constants .= $line;
+            } elseif (trim($line) === '') {
+                $constants .= PHP_EOL;
+            }
+        }
+
+        return trim($constants);
+    }
+
+    /**
      * @param string $service
      * @param string $table
      * @param string $rootNamespace
@@ -64,6 +88,8 @@ class DbController extends Controller
         $plainClass = Text::camelize($table);
         $modelName = $rootNamespace . '\\' . $plainClass;
 
+        $constants = $this->_getConstants($plainClass);
+
         $str = '<?php' . PHP_EOL;
         $str .= 'namespace ' . substr($modelName, 0, strrpos($modelName, '\\')) . ';' . PHP_EOL;
         $str .= PHP_EOL;
@@ -76,6 +102,10 @@ class DbController extends Controller
 
         $str .= 'class ' . $plainClass . ' extends Model' . PHP_EOL;
         $str .= '{';
+        if ($constants) {
+            $str .= PHP_EOL . '    ' . $constants . PHP_EOL;
+        }
+
         $str .= PHP_EOL;
         foreach ($fields as $field) {
             $str .= '    public $' . $field . ';' . PHP_EOL;
