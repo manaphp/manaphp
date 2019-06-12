@@ -52,6 +52,7 @@ class FactoryDefault extends Di
             'aclBuilder' => 'ManaPHP\Authorization\AclBuilder',
             'bosClient' => 'ManaPHP\Bos\Client',
             'wsPusher' => 'ManaPHP\WebSocket\Pusher',
+            'identity' => 'ManaPHP\Identity\Adapter\Dummy',
         ];
     }
 }
