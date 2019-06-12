@@ -306,7 +306,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param array|string $fields
+     * @param array|string $fields=static::sample()
      * @param string       $alias
      *
      * @return \ManaPHP\QueryInterface
