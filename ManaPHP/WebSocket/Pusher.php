@@ -9,7 +9,7 @@ class Pusher extends Component implements PusherInterface
     /**
      * @var string
      */
-    protected $_prefix = 'ws:';
+    protected $_prefix = 'ws:pusher:';
 
     /**
      * @var string
@@ -33,66 +33,74 @@ class Pusher extends Component implements PusherInterface
     }
 
     /**
-     * @param string       $channel
-     * @param string|array $data
+     * @param string $channel
+     * @param string $data
      *
      * @return void
      */
     protected function _push($channel, $data)
     {
-        $this->redis->publish($this->_prefix . 'channel:' . $channel, is_string($data) ? $data : json_encode($data, JSON_UNESCAPED_UNICODE));
+        $this->redis->publish($this->_prefix . '' . $channel, $data);
     }
 
     /**
-     * @param string|int|int[]         $fd
+     * @param int|int[]                $receivers
      * @param string|\JsonSerializable $message
      * @param string                   $endpoint
      *
      * @return void
      */
-    public function pushToFd($fd, $message, $endpoint = null)
+    public function pushToId($receivers, $message, $endpoint = null)
     {
-        if (is_array($fd)) {
-            $fd = implode(',', $fd);
-        }
-
         if (!is_string($message)) {
             $message = json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
 
-        $endpoint = $endpoint ?: $this->_endpoint;
-
-        if (!$endpoint) {
+        if (!$endpoint = $endpoint ?: $this->_endpoint) {
             throw new MissingFieldException('endpoint');
         }
 
-        $this->_push($endpoint . ':fd', "$fd:$message");
+        $this->_push($endpoint . ':id', (is_array($receivers) ? implode(',', $receivers) : $receivers) . ":$message");
     }
 
     /**
-     * @param string|string[]          $user
+     * @param string|string[]          $receivers
      * @param string|\JsonSerializable $message
      * @param string                   $endpoint
      *
      * @return void
      */
-    public function pushToUser($user, $message, $endpoint = null)
+    public function pushToName($receivers, $message, $endpoint = null)
     {
-        if (is_array($user)) {
-            $user = implode(',', $user);
-        }
-
         if (!is_string($message)) {
             $message = json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
 
-        $endpoint = $endpoint ?: $this->_endpoint;
-
-        if (!$endpoint) {
+        if (!$endpoint = $endpoint ?: $this->_endpoint) {
             throw new MissingFieldException('endpoint');
         }
 
-        $this->_push($endpoint . ':user', "$user:$message");
+        $this->_push($endpoint . ':name', (is_array($receivers) ? implode(',', $receivers) : $receivers) . ":$message");
+    }
+
+    /**
+     * @param string|string[]          $receivers
+     * @param string|\JsonSerializable $message
+     * @param string                   $endpoint
+     *
+     * @return void
+     */
+    public function pushToRole($receivers, $message, $endpoint = null)
+    {
+        if (!is_string($message)) {
+            $message = json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        }
+
+        if (!$endpoint = $endpoint ?: $this->_endpoint) {
+            throw new MissingFieldException('endpoint');
+        }
+
+        $this->_push($endpoint . ':role', (is_array($receivers) ? implode(',', $receivers) : $receivers) . ":$message");
     }
 
     /**
@@ -107,9 +115,7 @@ class Pusher extends Component implements PusherInterface
             $message = json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
 
-        $endpoint = $endpoint ?: $this->_endpoint;
-
-        if (!$endpoint) {
+        if (!$endpoint = $endpoint ?: $this->_endpoint) {
             throw new MissingFieldException('endpoint');
         }
 
@@ -117,33 +123,22 @@ class Pusher extends Component implements PusherInterface
     }
 
     /**
-     * @param string|array             $room
      * @param string|\JsonSerializable $message
-     * @param array                    $excluded
      * @param string                   $endpoint
      *
      * @return void
      */
-    public function pushToRoom($room, $message, $excluded = [], $endpoint = null)
+    public function broadcast($message, $endpoint = null)
     {
-        $data = is_array($room) ? implode(',', $room) : $room;
-
-        if ($excluded) {
-            foreach ($excluded as $item) {
-                $data .= '-' . $item;
-            }
-        }
-
         if (!is_string($message)) {
             $message = json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
 
-        $endpoint = $endpoint ?: $this->_endpoint;
-
-        if (!$endpoint) {
+        if (!$endpoint = $endpoint ?: $this->_endpoint) {
             throw new MissingFieldException('endpoint');
         }
 
-        $this->_push($endpoint . ':room', "$data:$message");
+        $this->_push($endpoint . ':broadcast', "*:$message");
     }
+
 }

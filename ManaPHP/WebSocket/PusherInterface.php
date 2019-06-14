@@ -4,22 +4,31 @@ namespace ManaPHP\WebSocket;
 interface PusherInterface
 {
     /**
-     * @param int|int[]                $fd
+     * @param int|int[]                $receivers
      * @param string|\JsonSerializable $message
      * @param string                   $endpoint
      *
      * @return void
      */
-    public function pushToFd($fd, $message, $endpoint = null);
+    public function pushToId($receivers, $message, $endpoint = null);
 
     /**
-     * @param string|string[]          $user
+     * @param string|string[]          $receivers
+     * @param string|\JsonSerializable $message
+     * @param string|array             $endpoint
+     *
+     * @return void
+     */
+    public function pushToName($receivers, $message, $endpoint = null);
+
+    /**
+     * @param string|string[]          $receivers
      * @param string|\JsonSerializable $message
      * @param string                   $endpoint
      *
      * @return void
      */
-    public function pushToUser($user, $message, $endpoint = null);
+    public function pushToRole($receivers, $message, $endpoint = null);
 
     /**
      * @param string|\JsonSerializable $message
@@ -30,12 +39,10 @@ interface PusherInterface
     public function pushToAll($message, $endpoint = null);
 
     /**
-     * @param string                   $room
      * @param string|\JsonSerializable $message
-     * @param array                    $excluded
      * @param string                   $endpoint
      *
      * @return void
      */
-    public function pushToRoom($room, $message, $excluded = [], $endpoint = null);
+    public function broadcast($message, $endpoint = null);
 }
