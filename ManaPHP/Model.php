@@ -128,7 +128,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param string $field =array_keys(static::sample())[$i]
+     * @param string $field =array_keys(get_object_vars(new static))[$i]
      *
      * @return bool
      */
@@ -138,7 +138,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param string $field =array_keys(static::sample())[$i]
+     * @param string $field =array_keys(get_object_vars(new static))[$i]
      *
      * @return string
      */
@@ -181,9 +181,9 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     /**
      * Allows to query a set of records that match the specified conditions
      *
-     * @param array $filters =static::sample()
+     * @param array $filters =get_object_vars(new static)
      * @param array $options
-     * @param array $fields =static::sample()
+     * @param array $fields =get_object_vars(new static)
      *
      * @return  static[]
      */
@@ -195,9 +195,9 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     /**
      * Allows to query a set of records that match the specified conditions
      *
-     * @param array $filters =static::sample()
+     * @param array $filters =get_object_vars(new static)
      * @param array $options
-     * @param array $fields =static::sample()
+     * @param array $fields =get_object_vars(new static)
      *
      * @return  \ManaPHP\Paginator
      */
@@ -207,8 +207,8 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param string|array $fields =array_keys(static::sample())[$i]
-     * @param array        $filters =static::sample()
+     * @param string|array $fields =array_keys(get_object_vars(new static))[$i]
+     * @param array        $filters =get_object_vars(new static)
      *
      * @return array
      */
@@ -263,7 +263,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
 
     /**
      * @param int|string $id
-     * @param int|array  $fieldsOrTtl =static::sample()
+     * @param int|array  $fieldsOrTtl =get_object_vars(new static)
      *
      * @return static
      */
@@ -306,7 +306,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param array|string $fields =static::sample()
+     * @param array|string $fields =get_object_vars(new static)
      * @param string       $alias
      *
      * @return \ManaPHP\QueryInterface
@@ -319,8 +319,8 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     /**
      * Allows to query the first record that match the specified conditions
      *
-     * @param int|string|array $filters =static::sample()
-     * @param array            $fields =static::sample()
+     * @param int|string|array $filters =get_object_vars(new static)
+     * @param array            $fields =get_object_vars(new static)
      *
      * @return static|null
      */
@@ -344,8 +344,8 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param int|string|array $filters =static::sample()
-     * @param array            $fields =static::sample()
+     * @param int|string|array $filters =get_object_vars(new static)
+     * @param array            $fields =get_object_vars(new static)
      *
      * @return static
      */
@@ -367,7 +367,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param array $fields =static::sample()
+     * @param array $fields =get_object_vars(new static)
      *
      * @return static|null
      */
@@ -410,8 +410,8 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     /**
      * Allows to query the last record that match the specified conditions
      *
-     * @param array $filters =static::sample()
-     * @param array $fields =static::sample()
+     * @param array $filters =get_object_vars(new static)
+     * @param array $fields =get_object_vars(new static)
      *
      * @return static|null
      */
@@ -430,8 +430,8 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param int|string|array $filters =static::sample()
-     * @param string           $field =array_keys(static::sample())[$i]
+     * @param int|string|array $filters =get_class_vars(static::class)
+     * @param string           $field =array_keys(get_class_vars(static:class))[$i]
      * @param int              $ttl
      *
      * @return int|float|string|null
@@ -478,8 +478,8 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param int|string|array $filters =static::sample()
-     * @param string           $field =array_keys(static::sample())[$i]
+     * @param int|string|array $filters =get_object_vars(new static)
+     * @param string           $field =array_keys(get_object_vars(new static))[$i]
      * @param int              $ttl
      *
      * @return int|float|string
@@ -509,8 +509,8 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param string $field =array_keys(static::sample())[$i]
-     * @param array  $filters =static::sample()
+     * @param string $field =array_keys(get_object_vars(new static))[$i]
+     * @param array  $filters =get_object_vars(new static)
      *
      * @return array
      */
@@ -523,7 +523,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param int|string|array $filters =static::sample()
+     * @param int|string|array $filters =get_object_vars(new static)
      *
      * @return bool
      */
@@ -538,7 +538,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param array        $filters =static::sample()
+     * @param array        $filters =get_object_vars(new static)
      * @param array        $aggregation
      * @param string|array $options
      *
@@ -555,8 +555,8 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     /**
      * Allows to count how many records match the specified conditions
      *
-     * @param array  $filters =static::sample()
-     * @param string $field =array_keys(static::sample())[$i]
+     * @param array  $filters =get_object_vars(new static)
+     * @param string $field =array_keys(get_object_vars(new static))[$i]
      *
      * @return int
      */
@@ -568,8 +568,8 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     /**
      * Allows to calculate a summary on a field that match the specified conditions
      *
-     * @param string $field =array_keys(static::sample())[$i]
-     * @param array  $filters =static::sample()
+     * @param string $field =array_keys(get_object_vars(new static))[$i]
+     * @param array  $filters =get_object_vars(new static)
      *
      * @return int|float|null
      */
@@ -581,8 +581,8 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     /**
      * Allows to get the max value of a column that match the specified conditions
      *
-     * @param string $field =array_keys(static::sample())[$i]
-     * @param array  $filters =static::sample()
+     * @param string $field =array_keys(get_object_vars(new static))[$i]
+     * @param array  $filters =get_object_vars(new static)
      *
      * @return int|float|null
      */
@@ -595,8 +595,8 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
      * Allows to get the min value of a column that match the specified conditions
      *
      *
-     * @param string $field =array_keys(static::sample())[$i]
-     * @param array  $filters =static::sample()
+     * @param string $field =array_keys(get_object_vars(new static))[$i]
+     * @param array  $filters =get_object_vars(new static)
      *
      * @return int|float|null
      */
@@ -608,8 +608,8 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     /**
      * Allows to calculate the average value on a column matching the specified conditions
      *
-     * @param string $field =array_keys(static::sample())[$i]
-     * @param array  $filters =static::sample()
+     * @param string $field =array_keys(get_object_vars(new static))[$i]
+     * @param array  $filters =get_object_vars(new static)
      *
      * @return float|null
      */
@@ -622,7 +622,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
      * Assigns values to a model from an array
      *
      * @param array|\ManaPHP\Model $data
-     * @param array                $whiteList =static::sample()
+     * @param array                $whiteList =get_object_vars(new static)
      *
      * @return static
      */
@@ -657,7 +657,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param array $fields =static::sample()
+     * @param array $fields =get_object_vars(new static)
      *
      * @return void
      */
@@ -927,8 +927,8 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param array $fieldValues =static::sample()
-     * @param array $filters =static::sample()
+     * @param array $fieldValues =get_object_vars(new static)
+     * @param array $filters =get_object_vars(new static)
      *
      * @return int
      */
@@ -939,7 +939,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
 
     /**
      * @param int|string $primaryKey
-     * @param array      $fieldValues =static::sample()
+     * @param array      $fieldValues =get_object_vars(new static)
      *
      * @return int
      */

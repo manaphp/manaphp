@@ -104,9 +104,9 @@ interface ModelInterface
     /**
      * Allows to query a set of records that match the specified conditions
      *
-     * @param array $filters =static::sample()
+     * @param array $filters =get_object_vars(new static)
      * @param array $options
-     * @param array $fields =static::sample()
+     * @param array $fields =get_object_vars(new static)
      *
      * @return  \ManaPHP\Paginator
      */

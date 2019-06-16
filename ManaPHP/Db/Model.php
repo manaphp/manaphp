@@ -390,7 +390,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @param int|string|array       $filters =static::sample()
+     * @param int|string|array       $filters =get_object_vars(new static)
      * @param int|float|string|array $value
      *
      * @return \ManaPHP\Db\Query
@@ -407,7 +407,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @param array $filters =static::sample()
+     * @param array $filters =get_object_vars(new static)
      *
      * @return \ManaPHP\Db\Query
      */
