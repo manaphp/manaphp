@@ -70,7 +70,7 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * @return string
+     * @return string =array_keys(get_object_vars(new static))[$i]
      */
     public function getPrimaryKey()
     {
@@ -103,7 +103,7 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * @return array
+     * @return array =get_object_vars(new static)
      */
     public function getFields()
     {
@@ -123,7 +123,7 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * @return array
+     * @return array =get_object_vars(new static)
      */
     public function getIntFields()
     {
@@ -148,7 +148,7 @@ class Model extends \ManaPHP\Model
     /**
      * bool, int, float, string, array, objectid
      *
-     * @return array
+     * @return array =array_keys(get_object_vars(new static))
      */
     public function getFieldTypes()
     {
