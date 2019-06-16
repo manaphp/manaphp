@@ -163,7 +163,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @return array
+     * @return array =get_object_vars(new static)
      */
     public function getJsonFields()
     {
@@ -688,7 +688,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param string $field
+     * @param string $field =array_keys(get_object_vars(new static))[$i]
      * @param array  $rules
      *
      * @return void
@@ -966,7 +966,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     /**
      * Returns the instance as an array representation
      *
-     * @return array
+     * @return array =get_object_vars(new static)
      */
     public function toArray()
     {
@@ -998,7 +998,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param array $fields
+     * @param array $fields =get_object_vars(new static)
      *
      * @return array
      */
@@ -1014,7 +1014,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param array $fields
+     * @param array $fields =get_object_vars(new static)
      *
      * @return array
      */
@@ -1034,7 +1034,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     /**
      * Returns the internal snapshot data
      *
-     * @return array
+     * @return array =get_object_vars(new static)
      */
     public function getSnapshotData()
     {
@@ -1058,7 +1058,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     /**
      * Returns a list of changed values
      *
-     * @return array
+     * @return array =get_object_vars(new static)
      */
     public function getChangedFields()
     {
@@ -1085,7 +1085,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
      * Check if a specific attribute has changed
      * This only works if the model is keeping data snapshots
      *
-     * @param string|array $fields
+     * @param string|array $fields =get_object_vars(new static)
      *
      * @return bool
      */
@@ -1223,7 +1223,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param string    $field
+     * @param string    $field =array_keys(get_object_vars(new static))[$i]
      * @param int|float $step
      *
      * @return static
@@ -1240,7 +1240,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param string    $field
+     * @param string    $field =array_keys(get_object_vars(new static))[$i]
      * @param int|float $step
      *
      * @return static
