@@ -5,6 +5,7 @@ use ManaPHP\Component;
 use ManaPHP\ContextManager;
 use ManaPHP\WebSocket\ServerInterface;
 use Swoole\Coroutine;
+use Swoole\Process;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
 
@@ -199,6 +200,11 @@ class Swoole extends Component implements ServerInterface
      */
     public function start($handler)
     {
+        foreach ($handler->getProcesses() as $process => $config) {
+            $process = $this->_di->setShared($process, $config)->getShared($process);
+            $this->addProcess($process);
+        }
+
         $this->_handler = $handler;
 
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
@@ -250,5 +256,22 @@ class Swoole extends Component implements ServerInterface
     public function exists($fd)
     {
         return $this->_swoole->exist($fd);
+    }
+
+    /**
+     * @param \ManaPHP\ProcessInterface $process
+     *
+     * @return void
+     */
+    public function addProcess($process)
+    {
+        $that = $this;
+        $p = new Process(static function ($p) use ($process, $that) {
+            unset($_SERVER['DOCUMENT_ROOT']);
+            $that->logger->debug('aaaafdfd');
+            $process->run();
+        });
+
+        $this->_swoole->addProcess($p);
     }
 }

@@ -51,7 +51,8 @@ class Application extends \ManaPHP\Application implements HandlerInterface
             } else {
                 $this->response->setJsonContent($returnValue);
             }
-            $this->eventsManager->fireEvent('ws:open', $fd);
+
+            $this->eventsManager->fireEvent('ws:open', $this, $fd);
         } catch (Throwable $exception) {
             $this->handleException($exception);
         }
@@ -69,7 +70,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
     public function onClose($fd)
     {
         $this->dispatcher->getControllerInstance()->onClose($fd);
-        $this->eventsManager->fireEvent('ws:close', $fd);
+        $this->eventsManager->fireEvent('ws:close', $this, $fd);
         $this->eventsManager->fireEvent('request:destruct', $this);
         $this->eventsManager->fireEvent('request:end', $this);
     }

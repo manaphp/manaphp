@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Swoole;
+namespace ManaPHP;
 
 interface ProcessInterface
 {

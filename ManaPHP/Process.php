@@ -1,7 +1,6 @@
 <?php
-namespace ManaPHP\Swoole;
+namespace ManaPHP;
 
-use ManaPHP\Component;
 use ManaPHP\Logger\LogCategorizable;
 
 abstract class Process extends Component implements ProcessInterface, LogCategorizable
@@ -10,11 +9,6 @@ abstract class Process extends Component implements ProcessInterface, LogCategor
      * @var \Swoole\Process
      */
     protected $_process;
-
-    public function __construct()
-    {
-        $this->_process = new \Swoole\Process([$this, 'run']);
-    }
 
     public function categorizeLog()
     {

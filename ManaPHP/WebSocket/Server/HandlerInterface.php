@@ -18,4 +18,9 @@ interface HandlerInterface
      * @param string $data
      */
     public function onMessage($fd, $data);
+
+    /**
+     * @return array
+     */
+    public function getProcesses();
 }
