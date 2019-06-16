@@ -16,6 +16,13 @@ use Throwable;
  */
 class Application extends \ManaPHP\Application implements HandlerInterface
 {
+    public function __construct($loader = null)
+    {
+        parent::__construct($loader);
+
+        $this->eventsManager->attachEvent('request:authenticate', [$this, 'authenticate']);
+    }
+
     public function getDi()
     {
         if (!$this->_di) {
@@ -25,6 +32,10 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         return $this->_di;
     }
 
+    public function authenticate()
+    {
+        $this->identity->authenticate();
+    }
 
     public function getProcesses()
     {
@@ -39,6 +50,8 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         try {
             $this->eventsManager->fireEvent('request:begin', $this);
             $this->eventsManager->fireEvent('request:construct', $this);
+
+            $this->eventsManager->fireEvent('request:authenticate', $this);
 
             $this->router->match();
             $this->dispatcher->dispatch($this->router, false);
