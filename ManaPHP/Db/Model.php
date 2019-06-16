@@ -47,7 +47,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @return string|array
+     * @return string|array =array_keys(get_object_vars(new static))[$i]
      */
     public function getPrimaryKey()
     {
@@ -79,7 +79,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @return array
+     * @return array =get_object_vars(new static)
      */
     public function getFields()
     {
@@ -101,7 +101,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @return array
+     * @return array =get_object_vars(new static)
      */
     public function getIntFields()
     {

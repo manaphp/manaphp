@@ -171,7 +171,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @return array
+     * @return array =get_object_vars(new static)
      */
     public function rules()
     {
