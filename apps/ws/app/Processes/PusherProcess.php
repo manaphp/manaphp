@@ -58,7 +58,7 @@ class PusherProcess extends Process
         $this->eventsManager->attachEvent('ws:close', [$this, 'onWsClose']);
     }
 
-    public function onWsOpen($source, $fd)
+    public function onWsOpen($app, $fd)
     {
         $identity = $this->identity;
         if (!$id = $identity->getId('')) {
@@ -75,7 +75,7 @@ class PusherProcess extends Process
         }
     }
 
-    public function onWsClose($source, $fd)
+    public function onWsClose($app, $fd)
     {
         if (!$id = $this->identity->getId('')) {
             return;
