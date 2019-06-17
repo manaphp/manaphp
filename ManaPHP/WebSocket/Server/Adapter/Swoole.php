@@ -77,7 +77,7 @@ class Swoole extends Component implements ServerInterface
             $this->_port = (int)$options['port'];
         }
 
-        $this->_settings = $options;
+        $this->_settings = $options ?: [];
 
         $this->_swoole = new Server($this->_host, $this->_port);
         $this->_swoole->set($this->_settings);
@@ -268,7 +268,6 @@ class Swoole extends Component implements ServerInterface
         $that = $this;
         $p = new Process(static function ($p) use ($process, $that) {
             unset($_SERVER['DOCUMENT_ROOT']);
-            $that->logger->debug('aaaafdfd');
             $process->run();
         });
 
