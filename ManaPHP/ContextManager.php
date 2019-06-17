@@ -39,7 +39,7 @@ class ContextManager
             $cid = MANAPHP_COROUTINE ? Coroutine::getCid() : -1;
         }
 
-        self::$_contexts[$cid] = [];
+        unset(self::$_contexts[$cid]);
     }
 
     /**

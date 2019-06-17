@@ -68,7 +68,6 @@ class Swoole extends Component implements ServerInterface
 
         unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
 
-
         if (isset($options['host'])) {
             $this->_host = $options['host'];
         }
