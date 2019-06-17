@@ -119,7 +119,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @return string|null
+     * @return string|null =array_keys(get_object_vars(new static))[$i]
      */
     public function getAutoIncrementField()
     {
@@ -497,8 +497,8 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param int|string|array $filters
-     * @param string|float|int $field
+     * @param int|string|array $filters =get_object_vars(new static)
+     * @param string|float|int $field =array_keys(get_object_vars(new static))[$i]
      * @param mixed            $default
      *
      * @return float|int|string
@@ -1112,7 +1112,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
 
     /**
      * @param float $interval
-     * @param array $fields
+     * @param array $fields =get_object_vars(new static)
      *
      * @return static
      */
