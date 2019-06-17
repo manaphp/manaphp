@@ -155,7 +155,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @return array|null
+     * @return array|null =get_object_vars(new static)
      */
     public function getSafeFields()
     {
