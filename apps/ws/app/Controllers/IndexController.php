@@ -6,9 +6,10 @@ use ManaPHP\WebSocket\Controller;
 
 class IndexController extends Controller
 {
-    public function getAcl()
+    public function onOpen($fd)
     {
-        return ['*' => '*'];
+        $token = $this->request->getToken();
+        $this->identity->setClaims(jwt_decode($token, 'pusher.admin'));
     }
 
     public function indexAction()

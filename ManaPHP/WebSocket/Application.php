@@ -36,6 +36,8 @@ class Application extends \ManaPHP\Application implements HandlerInterface
     public function onOpen($fd)
     {
         try {
+            $throwable = null;
+
             $this->eventsManager->fireEvent('request:begin', $this);
             $this->eventsManager->fireEvent('request:construct', $this);
 
@@ -52,14 +54,18 @@ class Application extends \ManaPHP\Application implements HandlerInterface
             }
 
             $this->eventsManager->fireEvent('ws:open', $this, $fd);
-        } catch (Throwable $exception) {
-            $this->handleException($exception);
+        } catch (Throwable $throwable) {
+            $this->handleException($throwable);
         }
 
         $content = $this->response->getContent();
         if ($content !== null && $content !== '') {
             $this->wsServer->push($fd, $content);
             $this->response->setContent(null);
+        }
+
+        if ($throwable) {
+            $this->wsServer->disconnect($fd);
         }
     }
 
