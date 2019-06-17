@@ -223,6 +223,10 @@ if (!function_exists('jwt_decode')) {
     {
         $jwt = new ManaPHP\Identity\Adapter\Jwt();
 
+        if ($token === null || $token === '') {
+            throw new \ManaPHP\Identity\NoCredentialException('No Credentials');
+        }
+
         $claims = $jwt->decode($token, false);
         if ($scope) {
             if (!isset($claims['scope'])) {
