@@ -44,9 +44,9 @@ class Pusher extends Component implements PusherInterface
     }
 
     /**
-     * @param int|int[]                $receivers
-     * @param string|\JsonSerializable $message
-     * @param string                   $endpoint
+     * @param int|int[]    $receivers
+     * @param string|array $message
+     * @param string       $endpoint
      *
      * @return void
      */
@@ -64,9 +64,9 @@ class Pusher extends Component implements PusherInterface
     }
 
     /**
-     * @param string|string[]          $receivers
-     * @param string|\JsonSerializable $message
-     * @param string                   $endpoint
+     * @param string|string[] $receivers
+     * @param string|array    $message
+     * @param string          $endpoint
      *
      * @return void
      */
@@ -84,9 +84,9 @@ class Pusher extends Component implements PusherInterface
     }
 
     /**
-     * @param string|string[]          $receivers
-     * @param string|\JsonSerializable $message
-     * @param string                   $endpoint
+     * @param string|string[] $receivers
+     * @param string|array    $message
+     * @param string          $endpoint
      *
      * @return void
      */
@@ -104,8 +104,8 @@ class Pusher extends Component implements PusherInterface
     }
 
     /**
-     * @param string|\JsonSerializable $message
-     * @param string                   $endpoint
+     * @param string|array $message
+     * @param string       $endpoint
      *
      * @return void
      */
@@ -123,8 +123,8 @@ class Pusher extends Component implements PusherInterface
     }
 
     /**
-     * @param string|\JsonSerializable $message
-     * @param string                   $endpoint
+     * @param string|array $message
+     * @param string       $endpoint
      *
      * @return void
      */
@@ -140,5 +140,4 @@ class Pusher extends Component implements PusherInterface
 
         $this->_push($endpoint . ':broadcast', "*:$message");
     }
-
 }
