@@ -32,12 +32,8 @@ class Fpm extends Component implements ServerInterface
 
     protected function _prepareGlobals()
     {
-        if (!isset($_GET['_url']) && ($pos = strripos($_SERVER['SCRIPT_NAME'], '/public/')) !== false) {
-            $prefix = substr($_SERVER['SCRIPT_NAME'], 0, $pos);
-            if ($prefix === '' || strpos($_SERVER['REQUEST_URI'], $prefix) === 0) {
-                $url = substr($_SERVER['REQUEST_URI'], $pos);
-                $_GET['_url'] = $_REQUEST['_url'] = ($pos = strpos($url, '?')) === false ? $url : substr($url, 0, $pos);
-            }
+        if (!isset($_GET['_url']) && ($pos = strpos($_SERVER['PHP_SELF'], '/index.php/')) !== false) {
+            $_GET['_url'] = $_REQUEST['_url'] = '/index' . substr($_SERVER['PHP_SELF'], $pos + 10);
         }
 
         if (!$_POST && isset($_SERVER['REQUEST_METHOD']) && !in_array($_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
