@@ -52,7 +52,7 @@ class DbController extends Controller
      *
      * @return string
      */
-    protected function _getConstants($modelName)
+    protected function _getConstantsByFile($modelName)
     {
         $file = "@app/Models/$modelName.php";
         if (!$this->filesystem->fileExists($file)) {
@@ -74,6 +74,53 @@ class DbController extends Controller
     /**
      * @param string $service
      * @param string $table
+     *
+     * @return string
+     * @throws \ManaPHP\Exception\InvalidValueException
+     */
+    protected function _getConstantsByDb($service, $table)
+    {
+        static $cached;
+
+        if (!isset($cached[$service])) {
+            /** @var \ManaPHP\DbInterface $db */
+            $db = $this->_di->getShared($service);
+            $metadata_table = 'metadata_constant';
+            if (!in_array($metadata_table, $db->getTables(), true)) {
+                $cached[$service] = [];
+            } else {
+                $rows = $db->fetchAll("SELECT `id`, `constants` FROM $metadata_table");
+                foreach ($rows as $row) {
+                    $cached[$service][$row['id']] = $row['constants'];
+                }
+            }
+        }
+
+        if (!isset($cached[$service][$table])) {
+            return '';
+        }
+
+        $lines = [];
+        $constants = preg_split('#[\r\n]{1,2}#m', trim($cached[$service][$table]));
+        foreach ($constants as $constant) {
+            $constant = trim($constant);
+            if ($constant === '') {
+                $lines[] = '';
+                continue;
+            }
+
+            if (strpos($constant, ';') === false) {
+                $constant .= ';';
+            }
+            $lines[] = '    const ' . $constant;
+        }
+
+        return implode(PHP_EOL, $lines);
+    }
+
+    /**
+     * @param string $service
+     * @param string $table
      * @param string $rootNamespace
      * @param bool   $optimized
      *
@@ -88,7 +135,11 @@ class DbController extends Controller
         $plainClass = Text::camelize($table);
         $modelName = $rootNamespace . '\\' . $plainClass;
 
-        $constants = $this->_getConstants($plainClass);
+        if ($constants = $this->_getConstantsByDb($service, $table)) {
+            null;
+        } elseif ($constants = $this->_getConstantsByFile($plainClass)) {
+            $constants = '    ' . $constants;
+        }
 
         $str = '<?php' . PHP_EOL;
         $str .= 'namespace ' . substr($modelName, 0, strrpos($modelName, '\\')) . ';' . PHP_EOL;
@@ -103,7 +154,7 @@ class DbController extends Controller
         $str .= 'class ' . $plainClass . ' extends Model' . PHP_EOL;
         $str .= '{';
         if ($constants) {
-            $str .= PHP_EOL . '    ' . $constants . PHP_EOL;
+            $str .= PHP_EOL . $constants . PHP_EOL;
         }
 
         $str .= PHP_EOL;
