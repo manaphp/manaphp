@@ -106,17 +106,23 @@ class DateController extends Controller
     {
         $arguments = $this->arguments->getValues();
         if (count($arguments) === 1) {
-            $str = trim(strtr($arguments[0], 'Tt', '  '));
-            if (strpos($str, ' ') === false) {
-                if (strpos($str, ':') !== false) {
-                    $date = '';
-                    $time = $str;
-                } else {
-                    $date = $str;
-                    $time = '';
-                }
+            $argument = $arguments[0];
+            if ($argument[0] === 't') {
+                $date = '';
+                $time = substr($argument, 1);
             } else {
-                list($date, $time) = explode(' ', $str);
+                $str = trim(strtr($argument, 'Tt', '  '));
+                if (strpos($str, ' ') === false) {
+                    if (strpos($str, ':') !== false) {
+                        $date = '';
+                        $time = $str;
+                    } else {
+                        $date = $str;
+                        $time = '';
+                    }
+                } else {
+                    list($date, $time) = explode(' ', $str);
+                }
             }
         }
 
