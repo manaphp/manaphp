@@ -3,6 +3,7 @@
 namespace ManaPHP;
 
 use ManaPHP\Exception\AuthenticationException;
+use ManaPHP\Exception\NotImplementedException;
 
 class IdentityContext
 {
@@ -21,7 +22,7 @@ class IdentityContext
  * Class ManaPHP\Identity
  * @property \ManaPHP\IdentityContext $_context
  */
-abstract class Identity extends Component implements IdentityInterface
+class Identity extends Component implements IdentityInterface
 {
     /**
      * @return bool
@@ -201,5 +202,10 @@ abstract class Identity extends Component implements IdentityInterface
         $context = $this->_context;
 
         return isset($context->claims[$claim]);
+    }
+
+    public function authenticate($silent = true)
+    {
+        throw new NotImplementedException('authenticate');
     }
 }
