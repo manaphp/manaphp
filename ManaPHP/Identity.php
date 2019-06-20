@@ -206,6 +206,6 @@ class Identity extends Component implements IdentityInterface
 
     public function authenticate($silent = true)
     {
-        throw new NotImplementedException('authenticate');
+        throw new NotImplementedException(__METHOD__);
     }
 }
