@@ -132,7 +132,8 @@ namespace PHPSTORM_META {
     expectedArguments(\ManaPHP\Http\RequestInterface::hasServer(), 0, array_keys($_SERVER)[$i]);
 
     expectedArguments(\ManaPHP\Http\ResponseInterface::setJsonContent(), 0, ['code' => 0, 'message' => '', 'data' => []]);
-    expectedReturnValues(\ManaPHP\Mvc\Controller::getAcl(), 0, ['list' => '@index', 'detail' => '@index', 'create' => '@edit', 'delete' => '@edit', 'edit' => '@index']);
+    expectedReturnValues(\ManaPHP\Mvc\Controller::getAcl(), 0,
+        ['list' => '@index', 'detail' => '@index', 'create' => '@edit', 'delete' => '@edit', 'edit' => '@index']);
 
     registerArgumentsSet('wsPusherEndpoint', 'admin', 'user');
     expectedArguments(\ManaPHP\WebSocket\PusherInterface::pushToId(), 2, argumentsSet('wsPusherEndpoint'));

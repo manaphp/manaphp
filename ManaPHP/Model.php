@@ -75,7 +75,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
             }
         }
     }
-    
+
     /**
      * @return array
      */
