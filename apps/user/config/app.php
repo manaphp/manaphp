@@ -7,17 +7,14 @@ return [
     'master_key' => '',
     'params' => ['manaphp_brand_show' => 1],
     'aliases' => [
-        '@xxx' => '@root/xvdfd'
     ],
     'components' => [
-        'httpServer' => ['worker_num' => 2, 'max_request' => 1000000, 'dispatch_mode' => 1, 'enable_static_handler' => env('APP_DEBUG', false)],
-        'db' => 'mysql://root:123456@localhost/manaphp?charset=utf8',
-        'redis' => 'redis://192.168.0.9:6379/1?timeout=2&retry_interval=0&auth=&persistent=0',
-        'mongodb' => 'mongodb://127.0.0.1/manaphp_unit_test',
+        '!httpServer' => ['worker_num' => 2, 'max_request' => 1000000, 'dispatch_mode' => 1, 'enable_static_handler' => env('APP_DEBUG', false)],
+        'db' => env('DB_URL'),
+        'redis' => env('REDIS_URL'),
         'logger' => ['level' => 'debug'],
     ],
     'services' => [],
-    'listeners' => [],
     'plugins' => [
         'debugger'
     ]

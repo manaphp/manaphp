@@ -10,10 +10,9 @@ return [
     'params' => [],
     'aliases' => [],
     'components' => [
-        'httpServer' => ['worker_num' => 4, 'max_request' => 1000000, 'dispatch_mode' => 1],
+        '!httpServer' => ['worker_num' => 4, 'max_request' => 1000000, 'dispatch_mode' => 1],
         'db' => [env('DB_URL')],
         'redis' => [env('REDIS_URL')],
-        'mongodb' => [env('MONGODB_URL')],
         'logger' => ['level' => env('LOGGER_LEVEL', 'info')],
     ],
     'services' => [],

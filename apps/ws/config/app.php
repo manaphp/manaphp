@@ -7,11 +7,11 @@ return [
     'version' => '1.1.1',
     'timezone' => 'PRC',
     'master_key' => env('MASTER_KEY'),
-    'params' => ['manaphp_brand_show' => 1],
+    'params' => [],
     'aliases' => [
     ],
     'components' => [
-        'wsServer' => ['worker_num' => 2],
+        '!wsServer' => ['worker_num' => 2],
         'db' => [env('DB_URL')],
         'redis' => [env('REDIS_URL')],
         'logger' => ['level' => env('LOGGER_LEVEL', 'info')],
