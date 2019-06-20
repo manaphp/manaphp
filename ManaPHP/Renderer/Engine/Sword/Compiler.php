@@ -425,8 +425,6 @@ class Compiler extends Component
 
             if (preg_match('#^[\w\.\[\]"\']+$#', $matches[2]) || preg_match('#^\\$[\w]+\(#', $matches[2])) {
                 return $matches[0];
-            } elseif (preg_match('#\(\s*[a-z]#', $matches[2])) {
-                return $matches[0];
             } elseif ($this->_isSafeEchos($matches[2])) {
                 return "<?= $matches[2] ?>" . (empty($matches[3]) ? '' : $matches[3]);
             } else {
