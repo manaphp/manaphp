@@ -75,15 +75,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
             }
         }
     }
-
-    /**
-     * @return array
-     */
-    public static function sample()
-    {
-        return [];
-    }
-
+    
     /**
      * @return array
      */
@@ -430,8 +422,8 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     }
 
     /**
-     * @param int|string|array $filters =get_class_vars(static::class)
-     * @param string           $field =array_keys(get_class_vars(static:class))[$i]
+     * @param int|string|array $filters =get_object_vars(new static)
+     * @param string           $field =array_keys(get_object_vars(new static))[$i]
      * @param int              $ttl
      *
      * @return int|float|string|null
