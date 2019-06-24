@@ -8,19 +8,19 @@ use ManaPHP\Http\ServerInterface;
 class SwooleContext
 {
     /**
-     * @var \swoole_http_request
+     * @var \Swoole\Http\Request
      */
     public $request;
 
     /**
-     * @var \swoole_http_response
+     * @var \Swoole\Http\Response
      */
     public $response;
 }
 
 /**
  * Class Server
- * @package ManaPHP\Swoole\Http
+ * @package ManaPHP\Http\Server
  * @property-read \ManaPHP\Http\RequestInterface        $request
  * @property \ManaPHP\Http\Server\Adapter\SwooleContext $_context
  */
@@ -47,7 +47,7 @@ class Swoole extends Component implements ServerInterface
     protected $_settings = [];
 
     /**
-     * @var \swoole_http_server
+     * @var \Swoole\Http\Server
      */
     protected $_swoole;
 
@@ -100,7 +100,7 @@ class Swoole extends Component implements ServerInterface
     }
 
     /**
-     * @param \swoole_http_request $request
+     * @param \Swoole\Http\Request $request
      */
     public function _prepareGlobals($request)
     {
@@ -175,7 +175,7 @@ class Swoole extends Component implements ServerInterface
             $this->_settings['document_root'] = $_SERVER['DOCUMENT_ROOT'];
         }
 
-        $this->_swoole = new \swoole_http_server($this->_host, $this->_port);
+        $this->_swoole = new \Swoole\Http\Server($this->_host, $this->_port);
         $this->_swoole->set($this->_settings);
         $this->_handler = $handler;
 
@@ -191,8 +191,8 @@ class Swoole extends Component implements ServerInterface
     }
 
     /**
-     * @param \swoole_http_request  $request
-     * @param \swoole_http_response $response
+     * @param \Swoole\Http\Request  $request
+     * @param \Swoole\Http\Response $response
      */
     public function onRequest($request, $response)
     {
