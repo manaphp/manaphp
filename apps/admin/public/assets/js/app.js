@@ -65,10 +65,17 @@ Vue.mixin({
     methods: {
         ajax_get: function (url, data, success) {
             if (!success && typeof data === 'object') {
+
                 success = function (res) {
-                    Object.keys(res).forEach(function (key) {
-                        data[key] = res[key];
-                    })
+                    if (_.isArray(data)) {
+                        res.forEach(function (v) {
+                            data.push(v);
+                        })
+                    } else {
+                        Object.keys(res).forEach(function (key) {
+                            data[key] = res[key];
+                        })
+                    }
                 }
             } else if (typeof data === 'function') {
                 success = data;
@@ -205,7 +212,7 @@ Vue.component('pager', {
 
 Vue.component('date-picker', {
     props: ['value'],
-    template: '<el-date-picker v-model="value" type="daterange" start-placeholder="开始日期"\n ' +
+    template: '<el-date-picker v-model="time" type="daterange" start-placeholder="开始日期"\n ' +
         '                            end-placeholder="结束日期" value-format="yyyy-MM-dd" size="small"\n ' +
         ' :picker-options="pickerOptions" @change="change"' +
         '></el-date-picker>',
@@ -216,6 +223,7 @@ Vue.component('date-picker', {
     },
     data: function () {
         return {
+            time: this.value,
             pickerOptions: {
                 shortcuts: [
                     {
