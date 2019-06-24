@@ -81,7 +81,6 @@ class Application extends Component implements ApplicationInterface
 
         $this->loader->registerFiles('@manaphp/helpers.php');
 
-
         defined('MANAPHP_COROUTINE') or define('MANAPHP_COROUTINE', false);
     }
 
