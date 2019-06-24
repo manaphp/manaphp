@@ -526,12 +526,12 @@ if (!function_exists('transaction')) {
             $db->begin();
             $work();
             $db->commit();
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             /** @noinspection UnSafeIsSetOverArrayInspection */
             isset($db) && $db->rollback();
             error($exception);
             return $exception->getMessage();
-        } catch (\Error $error) {
+        } catch (Error $error) {
             /** @noinspection UnSafeIsSetOverArrayInspection */
             isset($db) && $db->rollback();
             error($error);
