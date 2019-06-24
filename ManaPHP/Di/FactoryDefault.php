@@ -39,7 +39,6 @@ class FactoryDefault extends Di
             'filesystem' => 'ManaPHP\Filesystem\Adapter\File',
             'random' => 'ManaPHP\Security\Random',
             'messageQueue' => 'ManaPHP\Message\Queue\Adapter\Redis',
-            'secint' => 'ManaPHP\Security\Secint',
             'swordCompiler' => 'ManaPHP\Renderer\Engine\Sword\Compiler',
             'htmlPurifier' => 'ManaPHP\Security\HtmlPurifier',
             'db' => 'ManaPHP\Db',

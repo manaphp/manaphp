@@ -13,7 +13,6 @@ use ManaPHP\Logger\LogCategorizable;
  * @property-read \ManaPHP\DispatcherInterface            $dispatcher
  * @property-read \ManaPHP\Paginator                      $paginator
  * @property-read \ManaPHP\Message\QueueInterface         $messageQueue
- * @property-read \ManaPHP\Security\SecintInterface       $secint
  * @property-read \ManaPHP\Db\Model\MetadataInterface     $modelsMetadata
  * @property-read \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
  * @property-read \ManaPHP\RouterInterface                $router

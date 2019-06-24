@@ -47,7 +47,6 @@ use ManaPHP\Exception\UnexpectedValueException;
  * @property-read \ManaPHP\FilesystemInterface             $filesystem
  * @property-read \ManaPHP\Security\RandomInterface        $random
  * @property-read \ManaPHP\Message\QueueInterface          $messageQueue
- * @property-read \ManaPHP\Security\SecintInterface        $secint
  * @property-read \ManaPHP\I18n\Translator                 $translation
  * @property-read \ManaPHP\Renderer\Engine\Sword\Compiler  $swordCompiler
  * @property-read \ManaPHP\Security\HtmlPurifierInterface  $htmlPurifier
