@@ -15,7 +15,6 @@ class Factory extends FactoryDefault
             'arguments' => 'ManaPHP\Cli\Arguments',
             'commandInvoker' => 'ManaPHP\Cli\CommandInvoker',
             'errorHandler' => 'ManaPHP\Cli\ErrorHandler',
-            'tasksManager' => 'ManaPHP\Task\Manager',
         ]);
     }
 }

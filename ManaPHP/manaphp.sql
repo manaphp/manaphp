@@ -1,11 +1,3 @@
-# \ManaPHP\Task\Metadata\Adapter\Db\Model
-CREATE TABLE `manaphp_task_metadata` (
-  `id` char(32) NOT NULL,
-  `key` char(128) NOT NULL,
-  `value` varchar(4000) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 #ManaPHP\Cache\Adapter\Db\Model
 CREATE TABLE `manaphp_cache` (
   `hash` char(32) CHARACTER SET ascii NOT NULL,

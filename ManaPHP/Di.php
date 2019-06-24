@@ -54,7 +54,6 @@ use ManaPHP\Exception\UnexpectedValueException;
  * @property-read \ManaPHP\AmqpInterface                   $rabbitmq
  * @property-read \ManaPHP\Model\Relation\Manager          $relationsManager
  * @property-read \ManaPHP\MailerInterface                 $mailer
- * @property-read \ManaPHP\Task\ManagerInterface           $tasksManager
  * @property-read \ManaPHP\Ipc\CacheInterface              $ipcCache
  * @property-read \ManaPHP\MongodbInterface                $mongodb
  * @property-read \ManaPHP\I18n\TranslatorInterface        $translator
