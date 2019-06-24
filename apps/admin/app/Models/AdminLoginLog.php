@@ -3,6 +3,9 @@ namespace App\Models;
 
 use ManaPHP\Db\Model;
 
+/**
+ * Class App\Models\AdminLoginLog
+ */
 class AdminLoginLog extends Model
 {
     public $login_id;
@@ -12,4 +15,22 @@ class AdminLoginLog extends Model
     public $client_udid;
     public $user_agent;
     public $created_time;
+
+    /**
+     * @param mixed $context
+     *
+     * @return string
+     */
+    public function getSource($context = null)
+    {
+        return 'admin_login_log';
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrimaryKey()
+    {
+        return 'login_id';
+    }
 }
