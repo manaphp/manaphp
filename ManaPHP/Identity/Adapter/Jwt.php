@@ -6,7 +6,6 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Identity;
 use ManaPHP\Identity\ExpiredCredentialException;
 use ManaPHP\Identity\BadCredentialException;
-use ManaPHP\Identity\InvalidSignatureException;
 use ManaPHP\Identity\NoCredentialException;
 use ManaPHP\Identity\NotBeforeCredentialException;
 
@@ -237,7 +236,7 @@ class Jwt extends Identity
         }
 
         if (!$success) {
-            throw new InvalidSignatureException(['signature is not corrected: :signature', 'signature' => $signature]);
+            throw new BadCredentialException(['signature is not corrected: :signature', 'signature' => $signature]);
         }
     }
 
