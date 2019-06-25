@@ -3,7 +3,7 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
-use ManaPHP\Exception\InvalidOptionException;
+use ManaPHP\Exception\NotSupportedException;
 
 class SessionContext
 {
@@ -253,7 +253,7 @@ abstract class Session extends Component implements SessionInterface, \ArrayAcce
         } elseif ($serializer === 'wddx') {
             return wddx_serialize_value($data);
         } else {
-            throw new InvalidOptionException(['`:serializer` serializer is not support', 'serializer' => $serializer]);
+            throw new NotSupportedException(['`:serializer` serializer is not support', 'serializer' => $serializer]);
         }
     }
 
@@ -304,7 +304,7 @@ abstract class Session extends Component implements SessionInterface, \ArrayAcce
         } elseif ($serializer === 'wddx') {
             return wddx_deserialize($data);
         } else {
-            throw new InvalidOptionException(['`:serializer` serializer is not support', 'serializer' => $serializer]);
+            throw new NotSupportedException(['`:serializer` serializer is not support', 'serializer' => $serializer]);
         }
     }
 
