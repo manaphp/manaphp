@@ -230,14 +230,14 @@ if (!function_exists('jwt_decode')) {
         $claims = $jwt->decode($token, false);
         if ($scope) {
             if (!isset($claims['scope'])) {
-                throw new \ManaPHP\Identity\InvalidFormatException('Jwt claims missing scope field');
+                throw new \ManaPHP\Identity\BadCredentialException('Jwt claims missing scope field');
             }
             if ($scope !== $claims['scope']) {
-                throw new \ManaPHP\Identity\InvalidFormatException(['Jwt `:1` scope is not wanted `:2`', $claims['scope'], $scope]);
+                throw new \ManaPHP\Identity\BadCredentialException(['Jwt `:1` scope is not wanted `:2`', $claims['scope'], $scope]);
             }
         } else {
             if (!$key) {
-                throw new \ManaPHP\Identity\InvalidFormatException('Jwt claims missing scope field');
+                throw new \ManaPHP\Identity\BadCredentialException('Jwt claims missing scope field');
             }
         }
         $jwt->setKey($key ?: di('crypt')->getDerivedKey('jwt:' . $scope));

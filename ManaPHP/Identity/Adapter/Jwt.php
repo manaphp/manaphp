@@ -5,7 +5,7 @@ namespace ManaPHP\Identity\Adapter;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Identity;
 use ManaPHP\Identity\ExpiredCredentialException;
-use ManaPHP\Identity\InvalidFormatException;
+use ManaPHP\Identity\BadCredentialException;
 use ManaPHP\Identity\InvalidSignatureException;
 use ManaPHP\Identity\NoCredentialException;
 use ManaPHP\Identity\NotBeforeCredentialException;
@@ -165,29 +165,29 @@ class Jwt extends Identity
     {
         $parts = explode('.', $token, 5);
         if (count($parts) !== 3) {
-            throw new InvalidFormatException(['The JWT `:token` must have one dot', 'token' => $token]);
+            throw new BadCredentialException(['The JWT `:token` must have one dot', 'token' => $token]);
         }
 
         list($header, $payload) = $parts;
         $decoded_header = json_decode($this->base64urlDecode($header), true);
         if (!$decoded_header) {
-            throw new InvalidFormatException(['The JWT header `:header` is not distinguished', 'header' => $header]);
+            throw new BadCredentialException(['The JWT header `:header` is not distinguished', 'header' => $header]);
         }
 
         if (!isset($decoded_header['alg'])) {
-            throw new InvalidFormatException(['The JWT alg field is missing: `:token`', 'token' => $token]);
+            throw new BadCredentialException(['The JWT alg field is missing: `:token`', 'token' => $token]);
         }
 
         if ($decoded_header['alg'] !== $this->_alg) {
-            throw new InvalidFormatException(['The JWT alg `:alg` is not same as configured :alg2', 'alg' => $decoded_header['alg'], 'alg2' => $this->_alg]);
+            throw new BadCredentialException(['The JWT alg `:alg` is not same as configured :alg2', 'alg' => $decoded_header['alg'], 'alg2' => $this->_alg]);
         }
 
         if (!$decoded_header['typ']) {
-            throw new InvalidFormatException(['The JWT typ field is missing: `:token`', 'token' => $token]);
+            throw new BadCredentialException(['The JWT typ field is missing: `:token`', 'token' => $token]);
         }
 
         if ($decoded_header['typ'] !== 'JWT') {
-            throw new InvalidFormatException(['The JWT typ `:typ` is not JWT', 'typ' => $decoded_header['typ']]);
+            throw new BadCredentialException(['The JWT typ `:typ` is not JWT', 'typ' => $decoded_header['typ']]);
         }
 
         if ($verify) {
@@ -196,7 +196,7 @@ class Jwt extends Identity
 
         $claims = json_decode($this->base64urlDecode($payload), true);
         if (!is_array($claims)) {
-            throw new InvalidFormatException('payload is not array.');
+            throw new BadCredentialException('payload is not array.');
         }
 
         if (isset($claims['exp']) && time() > $claims['exp']) {
@@ -221,7 +221,7 @@ class Jwt extends Identity
         }
 
         if (($pos = strrpos($token, '.')) === false) {
-            throw new InvalidFormatException(['`:token` token is not distinguished', 'token' => $token]);
+            throw new BadCredentialException(['`:token` token is not distinguished', 'token' => $token]);
         }
 
         $data = substr($token, 0, $pos);
