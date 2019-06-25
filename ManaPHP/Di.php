@@ -2,7 +2,6 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Exception\BadMethodCallException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
@@ -488,19 +487,6 @@ class Di implements DiInterface
     public function has($name)
     {
         return isset($this->_definitions[$name]);
-    }
-
-    /**
-     * Magic method to get or set components using setters/getters
-     *
-     * @param string $method
-     * @param array  $arguments
-     *
-     * @return void
-     */
-    public function __call($method, $arguments = [])
-    {
-        throw new BadMethodCallException(['Call to undefined method `:method`', 'method' => $method]);
     }
 
     /**

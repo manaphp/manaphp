@@ -2,7 +2,6 @@
 namespace ManaPHP;
 
 use ManaPHP\Db\AssignmentInterface;
-use ManaPHP\Exception\BadMethodCallException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\InvalidValueException;
@@ -414,7 +413,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
         if (is_string($primaryKey = $model->getPrimaryKey())) {
             $options['order'] = [$primaryKey => SORT_DESC];
         } else {
-            throw new BadMethodCallException('infer `:class` order condition for last failed:', ['class' => static::class]);
+            throw new NotSupportedException('infer `:class` order condition for last failed:', ['class' => static::class]);
         }
 
         $rs = static::query(null, $model)->select($fields)->where($filters)->limit(1)->fetch();
@@ -1299,7 +1298,6 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
      * @param $arguments
      *
      * @return \ManaPHP\QueryInterface
-     * @throws \ManaPHP\Exception\BadMethodCallException
      * @throws \ManaPHP\Exception\NotSupportedException
      */
     public function __call($name, $arguments)
@@ -1312,7 +1310,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
                 throw new NotSupportedException(['`:class` model does not define `:method` relation', 'class' => static::class, 'method' => $relation]);
             }
         }
-        throw new BadMethodCallException(['`:class` does not contain `:method` method', 'class' => static::class, 'method' => $name]);
+        throw new NotSupportedException(['`:class` does not contain `:method` method', 'class' => static::class, 'method' => $name]);
     }
 
     /**
