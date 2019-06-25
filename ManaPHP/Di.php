@@ -5,7 +5,6 @@ namespace ManaPHP;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Exception\UnexpectedValueException;
 
 /**
  * Class ManaPHP\Di
@@ -201,7 +200,7 @@ class Di implements DiInterface
         } elseif (is_object($definition)) {
             $definition = ['class' => $definition, 'shared' => !$definition instanceof \Closure];
         } else {
-            throw new UnexpectedValueException(['`:definition` definition is unknown', 'definition' => $name]);
+            throw new NotSupportedException(['`:definition` definition is unknown', 'definition' => $name]);
         }
 
         $this->_definitions[$name] = $definition;
@@ -244,7 +243,7 @@ class Di implements DiInterface
         } elseif (is_object($definition)) {
             $definition = ['class' => $definition];
         } else {
-            throw new UnexpectedValueException(['`:definition` definition is unknown', 'definition' => $name]);
+            throw new NotSupportedException(['`:definition` definition is unknown', 'definition' => $name]);
         }
 
         $this->_definitions[$name] = $definition;

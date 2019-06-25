@@ -153,7 +153,6 @@ class Application extends Component implements ApplicationInterface
      * @param array $plugins
      *
      * @throws \ManaPHP\Exception\RuntimeException
-     * @throws \ManaPHP\Exception\UnexpectedValueException
      */
     protected function _loadPlugins($plugins)
     {
@@ -193,7 +192,6 @@ class Application extends Component implements ApplicationInterface
      * @param array $components
      *
      * @throws \ManaPHP\Exception\RuntimeException
-     * @throws \ManaPHP\Exception\UnexpectedValueException
      */
     protected function _loadComponents($components)
     {

@@ -503,10 +503,10 @@ if (!function_exists('json')) {
             } else {
                 return $r;
             }
-        } elseif (is_array($data)) {
+        } elseif (is_array($data) || $data instanceof JsonSerializable) {
             return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         } else {
-            throw new \ManaPHP\Exception\UnexpectedValueException(['`:data`', 'data' => $data]);
+            throw new \ManaPHP\Exception\NotSupportedException(['`:data`', 'data' => $data]);
         }
     }
 }
