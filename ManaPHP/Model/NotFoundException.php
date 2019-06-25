@@ -17,4 +17,9 @@ class NotFoundException extends Exception
     {
         return 404;
     }
+
+    public function getJson()
+    {
+        return ['code' => 404, 'message' => "Record of `$this->model` Model is not exists"];
+    }
 }
