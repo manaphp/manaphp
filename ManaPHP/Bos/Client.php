@@ -2,7 +2,7 @@
 namespace ManaPHP\Bos;
 
 use ManaPHP\Component;
-use ManaPHP\Exception\AuthenticationException;
+use ManaPHP\Exception\UnauthorizedException;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Identity\Adapter\Jwt;
 
@@ -151,15 +151,15 @@ class Client extends Component implements ClientInterface
         $claims = $jwt->decode($token, false);
 
         if (!isset($claims['scope'])) {
-            throw new AuthenticationException('scope is not exists');
+            throw new UnauthorizedException('scope is not exists');
         }
 
         if ($claims['scope'] !== 'bos.object.create.response') {
-            throw new AuthenticationException(['`:scope` scope is not valid', 'scope' => $claims['scope']]);
+            throw new UnauthorizedException(['`:scope` scope is not valid', 'scope' => $claims['scope']]);
         }
 
         if (!isset($claims['bucket'])) {
-            throw new AuthenticationException('bucket is not exists');
+            throw new UnauthorizedException('bucket is not exists');
         }
 
         $bucket = $claims['bucket'];

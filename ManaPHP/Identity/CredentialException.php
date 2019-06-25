@@ -1,9 +1,9 @@
 <?php
 namespace ManaPHP\Identity;
 
-use ManaPHP\Exception\AuthenticationException;
+use ManaPHP\Exception\UnauthorizedException;
 
-class CredentialException extends AuthenticationException
+class CredentialException extends UnauthorizedException
 {
 
 }

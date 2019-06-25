@@ -263,7 +263,7 @@ if (!function_exists('jwt_get_claim')) {
         } elseif (isset($name)) {
             return $claims[$name];
         } elseif ($default === null) {
-            throw new \ManaPHP\Exception\AuthenticationException(['`claim` claim is not exists in token', 'claim' => $name]);
+            throw new \ManaPHP\Exception\UnauthorizedException(['`claim` claim is not exists in token', 'claim' => $name]);
         } else {
             return $default;
         }

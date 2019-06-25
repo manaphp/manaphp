@@ -1,9 +1,9 @@
 <?php
 namespace ManaPHP\Identity;
 
-use ManaPHP\Exception\AuthenticationException;
+use ManaPHP\Exception\UnauthorizedException;
 
-class NoCredentialException extends AuthenticationException
+class NoCredentialException extends UnauthorizedException
 {
     public function __construct($message = 'No Credentials', $code = 0, \Exception $previous = null)
     {

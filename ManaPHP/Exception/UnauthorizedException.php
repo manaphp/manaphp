@@ -3,7 +3,7 @@ namespace ManaPHP\Exception;
 
 use ManaPHP\Exception;
 
-class AuthenticationException extends Exception
+class UnauthorizedException extends Exception
 {
     public function getStatusCode()
     {

@@ -2,7 +2,7 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Exception\AuthenticationException;
+use ManaPHP\Exception\UnauthorizedException;
 use ManaPHP\Exception\NotImplementedException;
 
 class IdentityContext
@@ -45,7 +45,7 @@ class Identity extends Component implements IdentityInterface
 
         if (!$context->claims) {
             if ($default === null) {
-                throw new AuthenticationException('Not Authenticated');
+                throw new UnauthorizedException('Not Authenticated');
             } else {
                 return $default;
             }
@@ -68,7 +68,7 @@ class Identity extends Component implements IdentityInterface
 
         if (!$context->claims) {
             if ($default === null) {
-                throw new AuthenticationException('Not Authenticated');
+                throw new UnauthorizedException('Not Authenticated');
             } else {
                 return $default;
             }
