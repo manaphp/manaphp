@@ -20,6 +20,10 @@ abstract class Application extends \ManaPHP\Application implements HandlerInterf
 {
     public function __construct($loader = null)
     {
+        if (!defined('MANAPHP_COROUTINE')) {
+            define('MANAPHP_COROUTINE', PHP_SAPI === 'cli' && extension_loaded('swoole'));
+        }
+
         parent::__construct($loader);
 
         $this->eventsManager->attachEvent('request:begin', [$this, 'generateRequestId']);

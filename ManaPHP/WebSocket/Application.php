@@ -18,7 +18,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
 {
     public function __construct($loader = null)
     {
-        define('MANAPHP_COROUTINE', true);
+        defined('MANAPHP_COROUTINE') or define('MANAPHP_COROUTINE', true);
 
         parent::__construct($loader);
     }
