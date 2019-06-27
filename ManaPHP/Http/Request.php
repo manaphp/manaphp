@@ -404,42 +404,45 @@ class Request extends Component implements RequestInterface
     {
         $context = $this->_context;
 
-        $files = [];
+        $r = [];
 
         /** @var $_FILES array */
-        foreach ($context->_FILES as $key => $file) {
-            if (is_int($file['error'])) {
+        foreach ($context->_FILES as $key => $files) {
+            if (isset($files[0])) {
+                foreach ($files as $file) {
+                    if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {
+                        $file['key'] = $key;
+
+                        $r[] = new File($file);
+                    }
+                }
+            } elseif (is_int($files['error'])) {
+                $file = $files;
                 if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {
-                    $fileInfo = [
-                        'key' => $key,
-                        'name' => $file['name'],
-                        'type' => $file['type'],
-                        'tmp_name' => $file['tmp_name'],
-                        'error' => $file['error'],
-                        'size' => $file['size'],
-                    ];
-                    $files[] = new File($fileInfo);
+                    $file['key'] = $key;
+
+                    $r[] = new File($file);
                 }
             } else {
-                $countFiles = count($file['error']);
+                $countFiles = count($files['error']);
                 /** @noinspection ForeachInvariantsInspection */
                 for ($i = 0; $i < $countFiles; $i++) {
-                    if (!$onlySuccessful || $file['error'][$i] === UPLOAD_ERR_OK) {
+                    if (!$onlySuccessful || $files['error'][$i] === UPLOAD_ERR_OK) {
                         $fileInfo = [
                             'key' => $key,
-                            'name' => $file['name'][$i],
-                            'type' => $file['type'][$i],
-                            'tmp_name' => $file['tmp_name'][$i],
-                            'error' => $file['error'][$i],
-                            'size' => $file['size'][$i],
+                            'name' => $files['name'][$i],
+                            'type' => $files['type'][$i],
+                            'tmp_name' => $files['tmp_name'][$i],
+                            'error' => $files['error'][$i],
+                            'size' => $files['size'][$i],
                         ];
-                        $files[] = new File($fileInfo);
+                        $r[] = new File($fileInfo);
                     }
                 }
             }
         }
 
-        return $files;
+        return $r;
     }
 
     /**
