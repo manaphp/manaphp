@@ -75,6 +75,10 @@ class Swoole extends Component implements ServerInterface
             $this->_port = (int)$options['port'];
         }
 
+        if (isset($options['max_request']) && $options['max_request'] < 1) {
+            $options['max_request'] = 1;
+        }
+
         $this->_settings = $options ?: [];
 
         $this->_swoole = new \Swoole\WebSocket\Server($this->_host, $this->_port);
