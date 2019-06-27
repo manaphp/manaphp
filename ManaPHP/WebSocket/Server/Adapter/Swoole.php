@@ -267,8 +267,7 @@ class Swoole extends Component implements ServerInterface
      */
     public function addProcess($process)
     {
-        $that = $this;
-        $p = new Process(static function ($p) use ($process, $that) {
+        $p = new Process(static function ($p) use ($process) {
             unset($_SERVER['DOCUMENT_ROOT']);
             $process->run();
         });
