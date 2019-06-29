@@ -4,6 +4,8 @@ namespace ManaPHP\Http\Server\Adapter;
 use ManaPHP\Component;
 use ManaPHP\ContextManager;
 use ManaPHP\Http\ServerInterface;
+use ReflectionClass;
+use Throwable;
 use Workerman\Protocols\Http;
 use Workerman\Worker;
 
@@ -76,6 +78,16 @@ class Workerman extends Component implements ServerInterface
     protected $_mime_types;
 
     /**
+     * @var int
+     */
+    protected $_max_request;
+
+    /**
+     * @var int
+     */
+    protected $_request_count;
+
+    /**
      * Swoole constructor.
      *
      * @param array $options
@@ -84,13 +96,11 @@ class Workerman extends Component implements ServerInterface
     {
         $script_filename = get_included_files()[0];
         $this->_root_dir = str_replace('\\', '/', dirname($script_filename));
-        $parts = explode('-', phpversion());
         $this->_SERVER = [
             'DOCUMENT_ROOT' => dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,
             'SCRIPT_NAME' => '/' . basename($script_filename),
             'SERVER_ADDR' => $this->_host,
-            'SERVER_SOFTWARE' => 'Swoole/' . '1.w' . ' ' . php_uname('s') . '/' . (isset($parts[1]) ? $parts[1] : 'a') . ' PHP/' . $parts[0],
             'PHP_SELF' => '/' . basename($script_filename),
             'QUERY_STRING' => '',
             'REQUEST_SCHEME' => 'http',
@@ -118,6 +128,10 @@ class Workerman extends Component implements ServerInterface
             $options['max_request'] = 1;
         }
 
+        if (DIRECTORY_SEPARATOR === '/' && isset($options['max_request'])) {
+            $this->_max_request = $options['max_request'];
+        }
+
         $this->_settings = $options;
 
         if (!empty($options['enable_static_handler'])) {
@@ -125,7 +139,7 @@ class Workerman extends Component implements ServerInterface
                 $this->_dirs[] = basename($dir);
             }
 
-            $rc = new \ReflectionClass(Worker::class);
+            $rc = new ReflectionClass(Worker::class);
             foreach (file(dirname($rc->getFileName()) . '/Protocols/Http/mime.types', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
                 if (strpos($line, ';') === false) {
                     continue;
@@ -146,7 +160,6 @@ class Workerman extends Component implements ServerInterface
                 }
             }
         }
-
     }
 
     /**
@@ -213,14 +226,23 @@ class Workerman extends Component implements ServerInterface
     {
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 
-        $this->_worker = new Worker("http://{$this->_host}:{$this->_port}");
+        $this->_worker = $worker = new Worker("http://{$this->_host}:{$this->_port}");
 
         $this->_handler = $handler;
 
         $this->log('info',
             sprintf('starting listen on: %s:%d with setting: %s', $this->_host, $this->_port, json_encode($this->_settings, JSON_UNESCAPED_SLASHES)));
+        echo 'ab';
+        $worker->onMessage = [$this, 'onRequest'];
 
-        $this->_worker->onMessage = [$this, 'onRequest'];
+        if (isset($this->_settings['worker_num'])) {
+            $worker->count = (int)$this->_settings['worker_num'];
+        }
+
+        global $argv;
+        if (!isset($argv[1])) {
+            $argv[1] = 'start';
+        }
 
         Worker::runAll();
 
@@ -258,33 +280,48 @@ class Workerman extends Component implements ServerInterface
 
     /**
      * @param \Workerman\Connection\ConnectionInterface $connection
+     *
+     * @return bool
      */
-    public function onRequest($connection)
+    protected function _onRequestStaticFile($connection)
     {
         try {
             if ($_SERVER['REQUEST_URI'] === '/favicon.ico') {
                 if (is_file($file = $this->_root_dir . '/favicon.ico')) {
                     Http::header('Content-Type: image/x-icon');
                     $connection->close(file_get_contents($file));
-                    return;
                 } else {
                     Http::header('Http-Code:', true, 404);
-                    return;
+                    $connection->close('');
                 }
+
+                return true;
             }
             if ($this->_dirs && $file = $this->_getStaticFile()) {
                 $ext = pathinfo($file, PATHINFO_EXTENSION);
                 $mime_type = isset($this->_mime_types[$ext]) ? $this->_mime_types[$ext] : 'application/octet-stream';
                 Http::header('Content-Type: ' . $mime_type);
                 $connection->close(file_get_contents($file));
-                return;
+                return true;
             }
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $str = date('c') . ' ' . get_class($exception) . ': ' . $exception->getMessage() . PHP_EOL;
             $str .= '    at ' . $exception->getFile() . ':' . $exception->getLine() . PHP_EOL;
             $traces = $exception->getTraceAsString();
             $str .= preg_replace('/#\d+\s/', '    at ', $traces);
             echo $str . PHP_EOL;
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param \Workerman\Connection\ConnectionInterface $connection
+     */
+    public function onRequest($connection)
+    {
+        if ($this->_onRequestStaticFile($connection)) {
             return;
         }
 
@@ -295,8 +332,7 @@ class Workerman extends Component implements ServerInterface
             $this->_prepareGlobals();
 
             $this->_handler->handle();
-
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $str = date('c') . ' ' . get_class($exception) . ': ' . $exception->getMessage() . PHP_EOL;
             $str .= '    at ' . $exception->getFile() . ':' . $exception->getLine() . PHP_EOL;
             $traces = $exception->getTraceAsString();
@@ -304,6 +340,10 @@ class Workerman extends Component implements ServerInterface
             echo $str . PHP_EOL;
         } finally {
             ContextManager::reset();
+        }
+
+        if ($this->_max_request && ++$this->_request_count >= $this->_max_request) {
+            Worker::stopAll();
         }
     }
 
@@ -339,7 +379,7 @@ class Workerman extends Component implements ServerInterface
                 $cookie['httpOnly']);
         }
 
-        $connection->close($response->content);
+        $connection->close((string)$response->content);
         $this->eventsManager->fireEvent('response:afterSend', $this, $response);
     }
 
