@@ -5,7 +5,9 @@
   "keywords": [
     "manaphp",
     "framework",
-    "di"
+    "di",
+    "yii2",
+    "laravel"
   ],
   "homepage": "https://github.com/manaphp/framework",
   "require": {
