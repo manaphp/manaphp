@@ -21,7 +21,7 @@ abstract class Application extends \ManaPHP\Application implements HandlerInterf
     public function __construct($loader = null)
     {
         if (!defined('MANAPHP_COROUTINE')) {
-            define('MANAPHP_COROUTINE', PHP_SAPI === 'cli' && extension_loaded('swoole'));
+            define('MANAPHP_COROUTINE', PHP_SAPI === 'cli' && extension_loaded('swoole') && !class_exists('Workerman\Worker'));
         }
 
         parent::__construct($loader);
@@ -33,7 +33,12 @@ abstract class Application extends \ManaPHP\Application implements HandlerInterf
             $this->eventsManager->attachEvent('request:authorize', [$this, 'authorize']);
         }
 
-        $this->getDi()->setShared('httpServer', PHP_SAPI === 'cli' ? 'ManaPHP\Http\Server\Adapter\Swoole' : 'ManaPHP\Http\Server\Adapter\Fpm');
+        if (PHP_SAPI === 'cli') {
+            $this->getDi()->setShared('httpServer', DIRECTORY_SEPARATOR === '\\' || class_exists('Workerman\Worker')
+                ? 'ManaPHP\Http\Server\Adapter\Workerman' : 'ManaPHP\Http\Server\Adapter\Swoole');
+        } else {
+            $this->getDi()->setShared('httpServer', 'ManaPHP\Http\Server\Adapter\Fpm');
+        }
     }
 
     public function authenticate()
