@@ -514,4 +514,9 @@ class Request extends Component implements RequestInterface
 
         return null;
     }
+
+    public function jsonSerialize()
+    {
+        return $this->_context;
+    }
 }
