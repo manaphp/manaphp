@@ -22,17 +22,6 @@ class Arguments extends Component implements ArgumentsInterface
      */
     protected $_values = [];
 
-    /**
-     * Arguments constructor.
-     *
-     * @param array $arguments
-     *
-     * @throws \ManaPHP\Cli\Arguments\Exception
-     */
-    public function __construct($arguments = null)
-    {
-        $this->parse($arguments);
-    }
 
     /**
      * @param array|string $arguments
@@ -44,15 +33,6 @@ class Arguments extends Component implements ArgumentsInterface
     {
         $this->_options = [];
         $this->_values = [];
-
-        if ($arguments === null) {
-            if (isset($GLOBALS['argv'][1]) && $GLOBALS['argv'][1][0] === '/') {
-                $arguments = [$GLOBALS['argv'][1]];
-            } else {
-                /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-                $arguments = array_slice($GLOBALS['argv'], 3);
-            }
-        }
 
         if (count($arguments) === 1 && $arguments[0][0] === '/') {
             $query = parse_url($arguments[0], PHP_URL_QUERY);

@@ -13,6 +13,7 @@ use ManaPHP\Utility\Text;
  *
  * @property-read \ManaPHP\Cli\ConsoleInterface        $console
  * @property-read \ManaPHP\Cli\CommandInvokerInterface $commandInvoker
+ * @property-read \ManaPHP\Cli\ArgumentsInterface      $arguments
  */
 class Handler extends Component implements HandlerInterface
 {
@@ -118,6 +119,15 @@ class Handler extends Component implements HandlerInterface
         $this->_args = $args !== null ? $args : $GLOBALS['argv'];
 
         list(, $controllerName, $commandName) = array_pad($this->_args, 3, null);
+
+        if ($commandName === null) {
+            $this->arguments->parse([]);
+        } elseif ($commandName[0] === '-') {
+            $this->arguments->parse(array_splice($this->_args, 2));
+        } else {
+            $this->arguments->parse(array_splice($this->_args, 3));
+        }
+
         if ($commandName !== null && $commandName[0] === '-') {
             $commandName = null;
         }
