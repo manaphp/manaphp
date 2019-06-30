@@ -253,7 +253,7 @@ class Multi extends Component implements MultiInterface, \Countable
         if (!$this->filesystem->fileExists($target)) {
             $this->filesystem->dirCreate(dir($target));
 
-            $request = new Request($url, $callback ?: function ($response) {
+            $request = new Request($url, $callback ?: static function ($response) {
             });
 
             $request->options['file'] = $target;

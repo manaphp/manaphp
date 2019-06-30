@@ -6,7 +6,7 @@ return [
     'int' => 'The :field must be an integer.',
     'float' => 'The :field must be a float.',
     'date' => 'The :field is not a valid date.',
-    'range' => function ($field, $parameter) {
+    'range' => static function ($field, $parameter) {
         $tr = [':field' => $field];
         $pos = strpos($parameter, '-', 1);
         $tr[':min'] = substr($parameter, 0, $pos);
