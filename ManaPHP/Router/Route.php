@@ -79,7 +79,7 @@ class Route implements RouteInterface
             if (preg_match_all('#{([A-Z].*)}#Ui', $pattern, $matches, PREG_SET_ORDER) > 0) {
                 foreach ($matches as $match) {
                     $parts = explode(':', $match[1], 2);
-                    $to = '(?<' . $parts[0] . '>' . (isset($parts[1]) ? $parts[1] : '[\w-]+') . ')';
+                    $to = '(?<' . $parts[0] . '>' . (isset($parts[1]) ? $parts[1] : '[\w\-]+') . ')';
                     $pattern = (string)str_replace($match[0], $to, $pattern);
                 }
             }

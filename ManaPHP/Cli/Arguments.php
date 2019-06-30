@@ -89,7 +89,7 @@ class Arguments extends Component implements ArgumentsInterface
                 continue;
             }
 
-            if (preg_match('#^-((\w)|-([\w-_]+))=(.*)$#', $o, $match)) {
+            if (preg_match('#^-((\w)|-([\w\-]+))=(.*)$#', $o, $match)) {
                 $this->_options[$match[2]] = $match[4];
                 continue;
             }

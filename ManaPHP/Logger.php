@@ -387,7 +387,7 @@ class Logger extends Component implements LoggerInterface
         $log->host = gethostname();
         $log->client_ip = empty($_SERVER['DOCUMENT_ROOT']) ? '' : $this->request->getClientIp();
         $log->level = self::$_levels[$level];
-        $log->request_id = $request_id ? preg_replace('#[^a-zA-Z\d-_\.]#', 'X', $request_id) : '';
+        $log->request_id = $request_id ? preg_replace('#[^a-zA-Z\d\-_\.]#', 'X', $request_id) : '';
 
         if ($message instanceof \Exception) {
             $log->category = $category ?: 'exception';

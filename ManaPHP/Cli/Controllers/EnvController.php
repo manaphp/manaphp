@@ -20,7 +20,7 @@ class EnvController extends Controller
                 $env = substr($env, 0, -4);
             }
 
-            if (preg_match('#[\.-_](php|dist|example)$#', $env)) {
+            if (preg_match('#[\.\-_](php|dist|example)$#', $env)) {
                 continue;
             }
 

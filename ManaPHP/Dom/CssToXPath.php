@@ -116,12 +116,12 @@ class CssToXPath
         $expression = str_replace('>', '/', $expression_src);
 
         // IDs
-        $expression = preg_replace('|#([a-z][a-z0-9_-]*)|i', "[@id='$1']", $expression);
-        $expression = preg_replace('|(?<![a-z0-9_-])(\[@id=)|i', '*$1', $expression);
+        $expression = preg_replace('|#([a-z][a-z0-9_\-]*)|i', "[@id='$1']", $expression);
+        $expression = preg_replace('|(?<![a-z0-9_\-])(\[@id=)|i', '*$1', $expression);
 
         // arbitrary attribute strict equality
         $expression = preg_replace_callback(
-            '|\[@?([a-z0-9_-]*)([~\*\^\$\|\!])?=([^\[]+)\]|i',
+            '|\[@?([a-z0-9_\-]*)([~\*\^\$\|\!])?=([^\[]+)\]|i',
             static function ($matches) {
                 $attr = strtolower($matches[1]);
                 $type = $matches[2];
@@ -152,7 +152,7 @@ class CssToXPath
 
         //attribute contains specified content
         $expression = preg_replace_callback(
-            '|\[(!?)([a-z][a-z0-9_-\|&]*)\]|i',
+            '|\[(!?)([a-z][a-z0-9_\-\|&]*)\]|i',
             static function ($matches) {
                 $val = $matches[2];
                 $op = strpos($val, '|') !== false ? '|' : '&';
@@ -170,7 +170,7 @@ class CssToXPath
         // Classes
         if (false === strpos($expression, '[@')) {
             $expression = preg_replace(
-                '|\.([a-z][a-z0-9_-]*)|i',
+                '|\.([a-z][a-z0-9_\-]*)|i',
                 "[contains(concat(' ', normalize-space(@class), ' '), ' \$1 ')]",
                 $expression
             );

@@ -266,7 +266,7 @@ class Validator extends Component implements ValidatorInterface
             return $value;
         }
 
-        return preg_match('#^[+-]?\d+$#', $value) ? (int)$value : null;
+        return preg_match('#^[+\-]?\d+$#', $value) ? (int)$value : null;
     }
 
     /**
@@ -282,7 +282,7 @@ class Validator extends Component implements ValidatorInterface
         }
 
         if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false
-            && preg_match('#^[+-]?[\d\.]+$#', $value) === 1
+            && preg_match('#^[+\-]?[\d\.]+$#', $value) === 1
         ) {
             return (float)$value;
         } else {

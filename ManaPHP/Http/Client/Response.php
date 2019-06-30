@@ -104,7 +104,7 @@ class Response implements \JsonSerializable
     public function getUtf8Body()
     {
         $body = $this->body;
-        if (preg_match('#charset=([\w-]+)#i', $this->content_type, $match) === 1) {
+        if (preg_match('#charset=([\w\-]+)#i', $this->content_type, $match) === 1) {
             $charset = strtoupper($match[1]);
             if ($charset !== 'UTF-8' && $charset !== 'UTF8') {
                 $body = iconv($charset, 'UTF-8', $body);
