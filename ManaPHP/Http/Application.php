@@ -21,7 +21,7 @@ abstract class Application extends \ManaPHP\Application implements HandlerInterf
     public function __construct($loader = null)
     {
         if (!defined('MANAPHP_COROUTINE')) {
-            define('MANAPHP_COROUTINE', PHP_SAPI === 'cli' && extension_loaded('swoole') && !class_exists('Workerman\Worker'));
+            define('MANAPHP_COROUTINE', PHP_SAPI === 'cli' && class_exists('Swoole\Runtime') && !class_exists('Workerman\Worker'));
         }
 
         parent::__construct($loader);
