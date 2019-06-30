@@ -17,7 +17,7 @@ class ServeController extends Controller
      * @param string $ip
      * @param int    $port
      */
-    public function defaultCommand($ip = '127.0.0.1', $port = 1983)
+    public function defaultCommand($ip = '0.0.0.0', $port = 1983)
     {
         $router_str = <<<'STR'
 <?php
@@ -55,7 +55,7 @@ STR;
 
         $prefix = $this->router->getPrefix();
         if (DIRECTORY_SEPARATOR === '\\') {
-            shell_exec("explorer.exe http://$ip:$port" . $prefix);
+            shell_exec("explorer.exe http://127.0.0.1:$port" . $prefix);
         }
 
         shell_exec("php -S $ip:$port -t public tmp/$router");
