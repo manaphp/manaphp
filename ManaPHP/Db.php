@@ -42,6 +42,17 @@ class DbContext
      * @var int
      */
     public $affected_rows;
+
+    public function __destruct()
+    {
+        if ($this->transaction_level !== 0) {
+            throw new MisuseException('transaction is not close correctly');
+        }
+
+        if ($this->connection !== null) {
+            throw new MisuseException('connection is not released to pool');
+        }
+    }
 }
 
 /**
