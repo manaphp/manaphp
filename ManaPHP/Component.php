@@ -64,6 +64,16 @@ class Component implements ComponentInterface, \JsonSerializable
     }
 
     /**
+     * @return object
+     */
+    public function createContext()
+    {
+        $class = $this->getContextClass();
+
+        return new $class();
+    }
+
+    /**
      * Magic method __get
      *
      * @param string $name
@@ -76,8 +86,7 @@ class Component implements ComponentInterface, \JsonSerializable
             if (PHP_SAPI === 'cli') {
                 return ContextManager::get($this);
             } else {
-                $context_class = $this->getContextClass();
-                return $this->_context = new $context_class();
+                return $this->_context = $this->createContext();
             }
         }
 
@@ -184,7 +193,7 @@ class Component implements ComponentInterface, \JsonSerializable
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getContextClass()
     {

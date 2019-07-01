@@ -21,8 +21,7 @@ class ContextManager
 
         $oid = spl_object_id($object);
         if (!isset(self::$_contexts[$cid][$oid])) {
-            $context_class = $object->getContextClass();
-            return self::$_contexts[$cid][$oid] = new $context_class;
+            return self::$_contexts[$cid][$oid] = $object->createContext();
         } else {
             return self::$_contexts[$cid][$oid];
         }
