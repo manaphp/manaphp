@@ -133,7 +133,7 @@ class DebuggerPlugin extends Plugin
              */
             $context->sql_executed[$context->sql_count - 1]['elapsed'] = $data['elapsed'];
             $context->sql_executed[$context->sql_count - 1]['row_count'] = $source->affectedRows();
-        } elseif ($event === 'db:beginTransaction' || $event === 'db:rollbackTransaction' || $event === 'db:commitTransaction') {
+        } elseif ($event === 'db:begin' || $event === 'db:rollback' || $event === 'db:commit') {
             $context->sql_count++;
 
             $parts = explode(':', $event);

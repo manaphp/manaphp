@@ -568,10 +568,10 @@ class Db extends Component implements DbInterface
     {
         $context = $this->_context;
 
-        $this->logger->info('transaction begin', 'db.transaction.begin');
+        $this->logger->info('transaction begin', 'db.begin');
 
         if ($context->transaction_level === 0) {
-            $this->eventsManager->fireEvent('db:beginTransaction', $this);
+            $this->eventsManager->fireEvent('db:begin', $this);
 
             try {
                 $connection = $this->poolManager->pop($this, $this->_timeout);
@@ -615,11 +615,11 @@ class Db extends Component implements DbInterface
         $context = $this->_context;
 
         if ($context->transaction_level > 0) {
-            $this->logger->info('transaction rollback', 'db.transaction.rollback');
+            $this->logger->info('transaction rollback', 'db.rollback');
             $context->transaction_level--;
 
             if ($context->transaction_level === 0) {
-                $this->eventsManager->fireEvent('db:rollbackTransaction', $this);
+                $this->eventsManager->fireEvent('db:rollback', $this);
 
                 try {
                     if (!$context->connection->rollBack()) {
@@ -645,7 +645,7 @@ class Db extends Component implements DbInterface
     {
         $context = $this->_context;
 
-        $this->logger->info('transaction commit', 'db.transaction.commit');
+        $this->logger->info('transaction commit', 'db.commit');
 
         if ($context->transaction_level === 0) {
             throw new MisuseException('There is no active transaction');
@@ -654,7 +654,7 @@ class Db extends Component implements DbInterface
         $context->transaction_level--;
 
         if ($context->transaction_level === 0) {
-            $this->eventsManager->fireEvent('db:commitTransaction', $this);
+            $this->eventsManager->fireEvent('db:commit', $this);
 
             try {
                 if (!$context->connection->commit()) {
