@@ -76,9 +76,7 @@ class Component implements ComponentInterface, \JsonSerializable
             if (PHP_SAPI === 'cli') {
                 return ContextManager::get($this);
             } else {
-                if (!$context_class = $this->getContextClass()) {
-                    throw new Exception(['`:context` context class is not exists', 'context' => static::class . 'Context']);
-                }
+                $context_class = $this->getContextClass();
                 return $this->_context = new $context_class();
             }
         }
@@ -203,6 +201,10 @@ class Component implements ComponentInterface, \JsonSerializable
                     break;
                 }
             } while ($parent = get_parent_class($parent));
+
+            if ($context === null) {
+                throw new Exception(['`:context` context class is not exists', 'context' => get_class($this) . 'Context']);
+            }
 
             return $cached[$class] = $context;
         }

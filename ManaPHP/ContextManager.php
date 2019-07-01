@@ -21,9 +21,7 @@ class ContextManager
 
         $oid = spl_object_id($object);
         if (!isset(self::$_contexts[$cid][$oid])) {
-            if (!$context_class = $object->getContextClass()) {
-                throw new Exception(['`:context` context class is not exists', 'context' => get_class($object) . 'Context']);
-            }
+            $context_class = $object->getContextClass();
             return self::$_contexts[$cid][$oid] = new $context_class;
         } else {
             return self::$_contexts[$cid][$oid];
