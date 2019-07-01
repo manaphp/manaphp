@@ -568,28 +568,28 @@ class Db extends Component implements DbInterface
     {
         $context = $this->_context;
 
-        $this->logger->info('transaction begin', 'db.begin');
-
         if ($context->transaction_level === 0) {
+            $this->logger->info('transaction begin', 'db.begin');
             $this->eventsManager->fireEvent('db:begin', $this);
 
-            try {
-                $connection = $this->poolManager->pop($this, $this->_timeout);
+            $connection = $this->poolManager->pop($this, $this->_timeout);
 
+            try {
                 if (!$connection->beginTransaction()) {
                     throw new DbException('beginTransaction failed.');
                 }
                 $context->connection = $connection;
+                $context->transaction_level++;
             } catch (\PDOException $exception) {
                 throw new DbException('beginTransaction failed: ' . $exception->getMessage(), $exception->getCode(), $exception);
             } finally {
                 if (!$context->connection) {
-                    $this->poolManager->push($this, $context);
+                    $this->poolManager->push($this, $connection);
                 }
             }
+        } else {
+            $context->transaction_level++;
         }
-
-        $context->transaction_level++;
     }
 
     /**
@@ -615,12 +615,9 @@ class Db extends Component implements DbInterface
         $context = $this->_context;
 
         if ($context->transaction_level > 0) {
-            $this->logger->info('transaction rollback', 'db.rollback');
             $context->transaction_level--;
 
             if ($context->transaction_level === 0) {
-                $this->eventsManager->fireEvent('db:rollback', $this);
-
                 try {
                     if (!$context->connection->rollBack()) {
                         throw new DbException('rollBack failed.');
@@ -630,6 +627,9 @@ class Db extends Component implements DbInterface
                 } finally {
                     $this->poolManager->push($this, $context->connection);
                     $context->connection = null;
+
+                    $this->logger->info('transaction rollback', 'db.rollback');
+                    $this->eventsManager->fireEvent('db:rollback', $this);
                 }
             }
         }
@@ -645,8 +645,6 @@ class Db extends Component implements DbInterface
     {
         $context = $this->_context;
 
-        $this->logger->info('transaction commit', 'db.commit');
-
         if ($context->transaction_level === 0) {
             throw new MisuseException('There is no active transaction');
         }
@@ -654,8 +652,6 @@ class Db extends Component implements DbInterface
         $context->transaction_level--;
 
         if ($context->transaction_level === 0) {
-            $this->eventsManager->fireEvent('db:commit', $this);
-
             try {
                 if (!$context->connection->commit()) {
                     throw new DbException('commit failed.');
@@ -665,6 +661,9 @@ class Db extends Component implements DbInterface
             } finally {
                 $this->poolManager->push($this, $context->connection);
                 $context->connection = null;
+
+                $this->logger->info('transaction commit', 'db.commit');
+                $this->eventsManager->fireEvent('db:commit', $this);
             }
         }
     }
