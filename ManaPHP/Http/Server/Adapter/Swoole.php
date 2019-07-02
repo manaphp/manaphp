@@ -99,6 +99,10 @@ class Swoole extends Component implements ServerInterface
 
         if (isset($options['max_request']) && $options['max_request'] < 1) {
             $options['max_request'] = 1;
+
+            if (function_exists('opcache_reset')) {
+                opcache_reset();
+            }
         }
 
         $this->_settings = $options;
