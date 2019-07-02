@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP\Db;
 
+use JsonSerializable;
 use ManaPHP\Component;
 use ManaPHP\Db\Exception as DbException;
 use ManaPHP\Exception\InvalidValueException;
@@ -117,19 +118,29 @@ abstract class Connection extends Component implements ConnectionInterface
 
     /**
      * @param string $sql
+     *
+     * @return \PDOStatement
+     */
+    protected function _getPrepared($sql)
+    {
+        if (!isset($this->_prepared[$sql])) {
+            if (count($this->_prepared) > 8) {
+                array_shift($this->_prepared);
+            }
+            return $this->_prepared[$sql] = @$this->_getPdo()->prepare($sql);
+        }
+        return $this->_prepared[$sql];
+    }
+
+    /**
+     * @param string $sql
      * @param array  $bind
      *
      * @return \PDOStatement
      */
     protected function _execute($sql, $bind)
     {
-        if (!isset($this->_prepared[$sql])) {
-            if (count($this->_prepared) > 8) {
-                array_shift($this->_prepared);
-            }
-            $this->_prepared[$sql] = @$this->_getPdo()->prepare($sql);
-        }
-        $statement = $this->_prepared[$sql];
+        $statement = $this->_getPrepared($sql);
 
         foreach ($bind as $parameter => $value) {
             if (is_string($value)) {
@@ -142,7 +153,7 @@ abstract class Connection extends Component implements ConnectionInterface
                 $type = PDO::PARAM_NULL;
             } elseif (is_float($value)) {
                 $type = PDO::PARAM_STR;
-            } elseif (is_array($value) || $value instanceof \JsonSerializable) {
+            } elseif (is_array($value) || $value instanceof JsonSerializable) {
                 $type = PDO::PARAM_STR;
                 $value = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             } else {

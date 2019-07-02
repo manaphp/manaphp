@@ -948,7 +948,7 @@ class Merger extends Component implements \ManaPHP\QueryInterface, \IteratorAggr
     public function get($fields = null)
     {
         if (!$r = $this->first($fields)) {
-            throw new Model\NotFoundException('record is not exists');
+            throw new NotFoundException('record is not exists');
         }
 
         return $r;

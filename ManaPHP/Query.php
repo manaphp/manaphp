@@ -1,8 +1,10 @@
 <?php
 namespace ManaPHP;
 
+use ArrayIterator;
+use IteratorAggregate;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Model\NotFoundException;
+use ManaPHP\Query\NotFoundException;
 
 /**
  * Class Query
@@ -11,7 +13,7 @@ use ManaPHP\Model\NotFoundException;
  * @property-read \ManaPHP\Paginator                       $paginator
  * @property-read \ManaPHP\Model\Relation\ManagerInterface $relationsManager
  */
-abstract class Query extends Component implements QueryInterface, \IteratorAggregate
+abstract class Query extends Component implements QueryInterface, IteratorAggregate
 {
     /**
      * @var int
@@ -50,7 +52,7 @@ abstract class Query extends Component implements QueryInterface, \IteratorAggre
 
     public function getIterator()
     {
-        return new \ArrayIterator($this->all());
+        return new ArrayIterator($this->all());
     }
 
     public function jsonSerialize()

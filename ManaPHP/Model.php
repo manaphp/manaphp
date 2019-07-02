@@ -268,7 +268,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
 
         if (!is_int($fieldsOrTtl)) {
             if (!$rs = static::query(null, $model)->select($fieldsOrTtl)->whereEq($model->getPrimaryKey(), $id)->limit(1)->fetch()) {
-                throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => static::class, 'id' => $id]);
+                throw new NotFoundException(static::class, $id);
             } else {
                 return $rs[0];
             }
@@ -284,7 +284,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
 
         if (!$r) {
             if (!$rs = static::query(null, $model)->whereEq($model->getPrimaryKey(), $id)->limit(1)->fetch()) {
-                throw new NotFoundException(['No record for `:model` model of `:id` id', 'model' => static::class, 'id' => $id]);
+                throw new NotFoundException(static::class, $id);
             }
 
             $r = $rs[0];
@@ -343,15 +343,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     public static function firstOrFail($filters, $fields = null)
     {
         if (!$r = static::first($filters, $fields)) {
-            $exception = new NotFoundException([
-                'No record for `:model` model with `:query` query',
-                'model' => static::class,
-                'query' => json_encode($filters, JSON_UNESCAPED_SLASHES, JSON_UNESCAPED_UNICODE)
-            ]);
-            $exception->model = static::class;
-            $exception->filters = $filters;
-
-            throw $exception;
+            throw new NotFoundException(static::class, $filters);
         }
 
         return $r;
@@ -479,9 +471,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
     {
         $value = static::value($filters, $field, $ttl);
         if ($value === null) {
-            throw new NotFoundException(['valueOrFail: `:model` model with `:query` query record is not exists',
-                'model' => static::class,
-                'query' => json_encode($filters, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
+            throw new NotFoundException(static::class, $filters);
         } else {
             return $value;
         }
@@ -1118,9 +1108,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
 
         $r = static::query(null, $this)->select($fields)->where($this->_getPrimaryKeyValuePairs())->fetch(true);
         if (!$r) {
-            throw new NotFoundException(['`:1` model refresh failed: `:2` record is not exists now! ',
-                static::class,
-                json_encode($this->_getPrimaryKeyValuePairs())]);
+            throw new NotFoundException(static::class, $this->_getPrimaryKeyValuePairs());
         }
 
         $data = (array)$r[0];
