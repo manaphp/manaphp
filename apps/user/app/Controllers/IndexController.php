@@ -24,4 +24,9 @@ class IndexController extends Controller
 
         $this->flash->error(date('Y-m-d H:i:s'));
     }
+
+    public function benchmarkAction()
+    {
+
+    }
 }
