@@ -583,10 +583,11 @@ class Db extends Component implements DbInterface
             $this->logger->info('transaction begin', 'db.begin');
             $this->eventsManager->fireEvent('db:begin', $this);
 
+            /** @var \ManaPHP\Db\ConnectionInterface $connection */
             $connection = $this->poolManager->pop($this, $this->_timeout);
 
             try {
-                if (!$connection->beginTransaction()) {
+                if (!$connection->begin()) {
                     throw new DbException('beginTransaction failed.');
                 }
                 $context->connection = $connection;
@@ -630,7 +631,7 @@ class Db extends Component implements DbInterface
 
             if ($context->transaction_level === 0) {
                 try {
-                    if (!$context->connection->rollBack()) {
+                    if (!$context->connection->rollback()) {
                         throw new DbException('rollBack failed.');
                     }
                 } catch (\PDOException $exception) {
@@ -781,7 +782,7 @@ class Db extends Component implements DbInterface
             if ($context->transaction_level !== 0) {
                 $context->transaction_level = 0;
                 try {
-                    $context->connection->rollBack();
+                    $context->connection->rollback();
                 } finally {
                     $this->poolManager->push($this, $context->connection);
                 }

@@ -41,7 +41,7 @@ interface ConnectionInterface
     /**
      * @return bool
      */
-    public function beginTransaction();
+    public function begin();
 
     /**
      * @return bool
@@ -51,7 +51,7 @@ interface ConnectionInterface
     /**
      * @return bool
      */
-    public function rollBack();
+    public function rollback();
 
     /**
      * @param string $source

@@ -5,6 +5,8 @@ use ManaPHP\Component;
 use ManaPHP\Db\Exception as DbException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
+use PDO;
+use PDOException;
 
 abstract class Connection extends Component implements ConnectionInterface
 {
@@ -39,39 +41,26 @@ abstract class Connection extends Component implements ConnectionInterface
     protected $_pdo;
 
     /**
-     * Current transaction level
-     *
-     * @var int
+     * @var bool
      */
-    protected $_transaction_level = 0;
+    protected $_in_transaction = false;
 
     /**
      * @var \PDOStatement[]
      */
     protected $_prepared = [];
 
-    /**
-     * @var int
-     */
-    protected $_heartbeat = 60;
-
-    /**
-     * @var float
-     */
-    protected $_last_heartbeat;
-
     public function __construct()
     {
-        $this->_options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
-        $this->_options[\PDO::ATTR_EMULATE_PREPARES] = false;
+        $this->_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+        $this->_options[PDO::ATTR_EMULATE_PREPARES] = false;
     }
 
     public function __clone()
     {
         $this->_pdo = null;
-        $this->_transaction_level = 0;
+        $this->_in_transaction = false;
         $this->_prepared = [];
-        $this->_last_heartbeat = null;
     }
 
     /**
@@ -103,28 +92,11 @@ abstract class Connection extends Component implements ConnectionInterface
         if ($this->_pdo === null) {
             $this->logger->debug(['connect to `:dsn`', 'dsn' => $this->_dsn], 'db.connect');
             try {
-                $this->_pdo = @new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
-            } catch (\PDOException $e) {
-                throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode(), $e);
-            }
-
-            if (!isset($this->_options[\PDO::ATTR_PERSISTENT]) || !$this->_options[\PDO::ATTR_PERSISTENT]) {
-                $this->_last_heartbeat = microtime(true);
-                return $this->_pdo;
-            }
-        }
-
-        if ($this->_transaction_level === 0 && microtime(true) - $this->_last_heartbeat >= $this->_heartbeat && !$this->_ping()) {
-            $this->close();
-            $this->logger->info(['reconnect to `:dsn`', 'dsn' => $this->_dsn], 'db.reconnect');
-            try {
-                $this->_pdo = @new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
-            } catch (\PDOException $e) {
+                $this->_pdo = @new PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
+            } catch (PDOException $e) {
                 throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode(), $e);
             }
         }
-
-        $this->_last_heartbeat = microtime(true);
 
         return $this->_pdo;
     }
@@ -161,17 +133,17 @@ abstract class Connection extends Component implements ConnectionInterface
 
         foreach ($bind as $parameter => $value) {
             if (is_string($value)) {
-                $type = \PDO::PARAM_STR;
+                $type = PDO::PARAM_STR;
             } elseif (is_int($value)) {
-                $type = \PDO::PARAM_INT;
+                $type = PDO::PARAM_INT;
             } elseif (is_bool($value)) {
-                $type = \PDO::PARAM_BOOL;
+                $type = PDO::PARAM_BOOL;
             } elseif ($value === null) {
-                $type = \PDO::PARAM_NULL;
+                $type = PDO::PARAM_NULL;
             } elseif (is_float($value)) {
-                $type = \PDO::PARAM_STR;
+                $type = PDO::PARAM_STR;
             } elseif (is_array($value) || $value instanceof \JsonSerializable) {
-                $type = \PDO::PARAM_STR;
+                $type = PDO::PARAM_STR;
                 $value = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             } else {
                 throw new NotSupportedException(['The `:1` type of `:2` parameter is not support', $parameter, gettype($value)]);
@@ -214,21 +186,32 @@ abstract class Connection extends Component implements ConnectionInterface
     {
         $sql = $this->_replaceQuoteCharacters($sql);
 
-        try {
-            $r = $bind ? $this->_execute($sql, $bind)->rowCount() : @$this->_getPdo()->exec($sql);
-            if ($has_insert_id) {
-                return $this->_getPdo()->lastInsertId();
-            } else {
-                return $r;
+        if ($this->_in_transaction) {
+            try {
+                $r = $bind ? $this->_execute($sql, $bind)->rowCount() : @$this->_getPdo()->exec($sql);
+                return $has_insert_id ? $this->_getPdo()->lastInsertId() : $r;
+            } catch (PDOException $exception) {
             }
-        } catch (\PDOException $e) {
-            throw new DbException([
-                ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
-                'message' => $e->getMessage(),
-                'sql' => $sql,
-                'bind' => json_encode($bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
-            ]);
+        } else {
+            try {
+                $r = $bind ? $this->_execute($sql, $bind)->rowCount() : @$this->_getPdo()->exec($sql);
+                return $has_insert_id ? $this->_getPdo()->lastInsertId() : $r;
+            } catch (PDOException $exception) {
+                try {
+                    $this->close();
+                    $r = $bind ? $this->_execute($sql, $bind)->rowCount() : @$this->_getPdo()->exec($sql);
+                    return $has_insert_id ? $this->_getPdo()->lastInsertId() : $r;
+                } catch (PDOException $exception) {
+                }
+            }
         }
+
+        throw new DbException([
+            ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
+            'message' => $exception->getMessage(),
+            'sql' => $sql,
+            'bind' => json_encode($bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+        ]);
     }
 
     /**
@@ -239,36 +222,33 @@ abstract class Connection extends Component implements ConnectionInterface
      *
      * @return array
      */
-    public function query($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $useMaster = false)
+    public function query($sql, $bind = [], $fetchMode = PDO::FETCH_ASSOC, $useMaster = false)
     {
         $sql = $this->_replaceQuoteCharacters($sql);
 
-        try {
-            $statement = $bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql);
-        } catch (\PDOException $e) {
-            $failed = true;
-
-            if ($this->_transaction_level === 0 && !$this->_ping()) {
+        if ($this->_in_transaction) {
+            try {
+                return ($bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql))->fetchAll($fetchMode);
+            } catch (PDOException $exception) {
+            }
+        } else {
+            try {
+                return ($bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql))->fetchAll($fetchMode);
+            } catch (PDOException $exception) {
                 try {
                     $this->close();
-                    $statement = $bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql);
-                    $failed = false;
-                } catch (\PDOException $e) {
-
+                    return ($bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql))->fetchAll($fetchMode);
+                } catch (PDOException $exception) {
                 }
-            }
-
-            if ($failed) {
-                throw new DbException([
-                    ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
-                    'message' => $e->getMessage(),
-                    'sql' => $sql,
-                    'bind' => json_encode($bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
-                ], 0, $e);
             }
         }
 
-        return $statement->fetchAll($fetchMode);
+        throw new DbException([
+            ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
+            'message' => $exception->getMessage(),
+            'sql' => $sql,
+            'bind' => json_encode($bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+        ], 0, $exception);
     }
 
     public function close()
@@ -276,27 +256,36 @@ abstract class Connection extends Component implements ConnectionInterface
         if ($this->_pdo) {
             $this->_pdo = null;
             $this->_prepared = [];
-            $this->_last_heartbeat = null;
-            if ($this->_transaction_level !== 0) {
-                $this->_transaction_level = 0;
-                $this->_pdo->rollBack();
+            if ($this->_in_transaction) {
+                $this->_in_transaction = false;
                 $this->logger->warn('transaction is not close correctly', 'db.transaction.abnormal');
             }
         }
     }
 
-    public function beginTransaction()
+    public function begin()
     {
-        return $this->_getPdo()->beginTransaction();
+        try {
+            return $this->_in_transaction = $this->_getPdo()->beginTransaction();
+        } catch (PDOException $exception) {
+            try {
+                $this->close();
+                return $this->_in_transaction = $this->_getPdo()->beginTransaction();
+            } catch (PDOException $exception) {
+                throw new DbException($exception->getMessage(), $exception->getCode(), $exception);
+            }
+        }
     }
 
-    public function rollBack()
+    public function rollback()
     {
-        return $this->_getPdo()->rollBack();
+        $this->_in_transaction = false;
+        return @$this->_pdo->rollBack();
     }
 
     public function commit()
     {
-        return $this->_getPdo()->commit();
+        $this->_in_transaction = false;
+        return @$this->_pdo->commit();
     }
 }
