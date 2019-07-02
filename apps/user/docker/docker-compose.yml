@@ -1,7 +1,7 @@
 version: "2"
 services:
   user_fpm:
-    image: manaphp/php70:1.0
+    image: manaphp/php70:1.3
     volumes:
       - ../:/var/www/html
       - ./fpm/conf.d:/etc/php/conf.d
