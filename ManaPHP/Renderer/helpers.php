@@ -88,6 +88,22 @@ if (!function_exists('block')) {
     }
 }
 
+if (!function_exists('layout')) {
+
+    /**
+     * @param string|false $template
+     */
+    function layout($template = 'Default')
+    {
+        static $view;
+        if (!$view) {
+            $view = Di::getDefault()->getShared('view');
+        }
+
+        $view->setLayout($template);
+    }
+}
+
 if (!function_exists('pager')) {
     /**
      * @param \ManaPHP\Paginator|string $template
