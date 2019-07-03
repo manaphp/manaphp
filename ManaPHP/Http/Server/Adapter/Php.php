@@ -6,6 +6,7 @@ use ManaPHP\Http\Server;
 /**
  * Class Php
  * @package ManaPHP\Http\Server\Adapter
+ * @property-read \ManaPHP\RouterInterface $router
  */
 class Php extends Server
 {
@@ -20,8 +21,12 @@ class Php extends Server
 
         $public_dir = $this->alias->resolve('@public');
         if (PHP_SAPI === 'cli') {
+            if (DIRECTORY_SEPARATOR === '\\') {
+                shell_exec("explorer.exe http://127.0.0.1:$this->_port/" . $this->router->getPrefix());
+            }
+
             $index = @get_included_files()[0];
-            $cmd = "php -S $this->_host:$this->_port  -d opcache.enable_cli=on -t $public_dir  $index";
+            $cmd = "php -S $this->_host:$this->_port -t $public_dir  $index";
             echo $cmd, PHP_EOL;
             shell_exec($cmd);
             exit(0);

@@ -19,6 +19,7 @@ class WorkermanContext
  * Class Workerman
  * @package ManaPHP\Http\Server\Adapter
  *
+ * @property-read \ManaPHP\RouterInterface                      $router
  * @property-read \ManaPHP\Http\Server\Adapter\WorkermanContext $_context
  */
 class Workerman extends Server
@@ -160,6 +161,10 @@ class Workerman extends Server
         global $argv;
         if (!isset($argv[1])) {
             $argv[1] = 'start';
+        }
+
+        if (DIRECTORY_SEPARATOR === '\\') {
+            shell_exec("explorer.exe http://127.0.0.1:$this->_port/" . $this->router->getPrefix());
         }
 
         Worker::runAll();
