@@ -34,8 +34,15 @@ abstract class Application extends \ManaPHP\Application implements HandlerInterf
         }
 
         if (PHP_SAPI === 'cli') {
-            $this->getDi()->setShared('httpServer', DIRECTORY_SEPARATOR === '\\' || class_exists('Workerman\Worker')
-                ? 'ManaPHP\Http\Server\Adapter\Workerman' : 'ManaPHP\Http\Server\Adapter\Swoole');
+            if (class_exists('Workerman\Worker')) {
+                $this->getDi()->setShared('httpServer', 'ManaPHP\Http\Server\Adapter\Workerman');
+            } elseif (extension_loaded('swoole')) {
+                $this->getDi()->setShared('httpServer', 'ManaPHP\Http\Server\Adapter\Swoole');
+            } else {
+                $this->getDi()->setShared('httpServer', 'ManaPHP\Http\Server\Adapter\Php');
+            }
+        } elseif (PHP_SAPI === 'cli-server') {
+            $this->getDi()->setShared('httpServer', 'ManaPHP\Http\Server\Adapter\Php');
         } else {
             $this->getDi()->setShared('httpServer', 'ManaPHP\Http\Server\Adapter\Fpm');
         }
