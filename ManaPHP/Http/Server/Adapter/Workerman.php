@@ -1,10 +1,8 @@
 <?php
 namespace ManaPHP\Http\Server\Adapter;
 
-use ManaPHP\Component;
 use ManaPHP\ContextManager;
-use ManaPHP\Http\ServerInterface;
-use ReflectionClass;
+use ManaPHP\Http\Server;
 use Throwable;
 use Workerman\Protocols\Http;
 use Workerman\Worker;
@@ -21,27 +19,10 @@ class WorkermanContext
  * Class Workerman
  * @package ManaPHP\Http\Server\Adapter
  *
- * @property-read \ManaPHP\Http\RequestInterface                $request
- * @property-read \ManaPHP\Http\Response                        $response
  * @property-read \ManaPHP\Http\Server\Adapter\WorkermanContext $_context
  */
-class Workerman extends Component implements ServerInterface
+class Workerman extends Server
 {
-    /**
-     * @var string
-     */
-    protected $_host = '0.0.0.0';
-
-    /**
-     * @var int
-     */
-    protected $_port = 9501;
-
-    /**
-     * @var bool
-     */
-    protected $_compatible_globals = false;
-
     /**
      * @var array
      */
@@ -63,21 +44,6 @@ class Workerman extends Component implements ServerInterface
     protected $_SERVER = [];
 
     /**
-     * @var string
-     */
-    protected $_root_dir;
-
-    /**
-     * @var array
-     */
-    protected $_dirs;
-
-    /**
-     * @var array
-     */
-    protected $_mime_types;
-
-    /**
      * @var int
      */
     protected $_max_request;
@@ -94,8 +60,9 @@ class Workerman extends Component implements ServerInterface
      */
     public function __construct($options = [])
     {
+        parent::__construct($options);
+
         $script_filename = get_included_files()[0];
-        $this->_root_dir = str_replace('\\', '/', dirname($script_filename));
         $this->_SERVER = [
             'DOCUMENT_ROOT' => dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,
@@ -111,55 +78,11 @@ class Workerman extends Component implements ServerInterface
         $this->alias->set('@web', '');
         $this->alias->set('@asset', '');
 
-        if (isset($options['compatible_globals'])) {
-            $this->_compatible_globals = (bool)$options['compatible_globals'];
-            unset($options['compatible_globals']);
-        }
-
-        if (isset($options['host'])) {
-            $this->_host = $options['host'];
-        }
-
-        if (isset($options['port'])) {
-            $this->_port = (int)$options['port'];
-        }
-
-        if (isset($options['max_request']) && $options['max_request'] < 1) {
-            $options['max_request'] = 1;
-        }
-
         if (DIRECTORY_SEPARATOR === '/' && isset($options['max_request'])) {
             $this->_max_request = $options['max_request'];
         }
 
         $this->_settings = $options;
-
-        if (!empty($options['enable_static_handler'])) {
-            foreach (glob("$this->_root_dir/*", GLOB_ONLYDIR) as $dir) {
-                $this->_dirs[] = basename($dir);
-            }
-
-            $rc = new ReflectionClass(Worker::class);
-            foreach (file(dirname($rc->getFileName()) . '/Protocols/Http/mime.types', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-                if (strpos($line, ';') === false) {
-                    continue;
-                }
-
-                $line = trim($line);
-                $line = trim($line, ';');
-
-                $parts = preg_split('#\s+#', $line, -1, PREG_SPLIT_NO_EMPTY);
-                if (count($parts) < 2) {
-                    continue;
-                }
-
-                foreach ($parts as $k => $part) {
-                    if ($k !== 0) {
-                        $this->_mime_types[$part] = $parts[0];
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -212,11 +135,6 @@ class Workerman extends Component implements ServerInterface
         }
     }
 
-    public function log($level, $message)
-    {
-        echo sprintf('[%s][%s]: ', date('c'), $level), $message, PHP_EOL;
-    }
-
     /**
      * @param \ManaPHP\Http\Server\HandlerInterface $handler
      *
@@ -262,8 +180,8 @@ class Workerman extends Component implements ServerInterface
             return false;
         } else {
             $dir = substr($file, 1, $pos - 1);
-            if (in_array($dir, $this->_dirs, true)) {
-                if (!is_file($path = $this->_root_dir . $file)) {
+            if (isset($this->_root_files[$dir])) {
+                if (!is_file($path = $this->_root_files . $file)) {
                     return false;
                 }
 
@@ -287,7 +205,7 @@ class Workerman extends Component implements ServerInterface
     {
         try {
             if ($_SERVER['REQUEST_URI'] === '/favicon.ico') {
-                if (is_file($file = $this->_root_dir . '/favicon.ico')) {
+                if (is_file($file = $this->_doc_root . '/favicon.ico')) {
                     Http::header('Content-Type: image/x-icon');
                     $connection->close(file_get_contents($file));
                 } else {
@@ -297,7 +215,7 @@ class Workerman extends Component implements ServerInterface
 
                 return true;
             }
-            if ($this->_dirs && $file = $this->_getStaticFile()) {
+            if ($this->_root_files && $file = $this->_getStaticFile()) {
                 $ext = pathinfo($file, PATHINFO_EXTENSION);
                 $mime_type = isset($this->_mime_types[$ext]) ? $this->_mime_types[$ext] : 'application/octet-stream';
                 Http::header('Content-Type: ' . $mime_type);

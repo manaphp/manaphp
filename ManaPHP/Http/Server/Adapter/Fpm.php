@@ -1,35 +1,14 @@
 <?php
 namespace ManaPHP\Http\Server\Adapter;
 
-use ManaPHP\Component;
-use ManaPHP\Http\ServerInterface;
+use ManaPHP\Http\Server;
 
 /**
  * Class Fpm
  * @package ManaPHP\Http\Server\Adapter
- * @property-read \ManaPHP\Http\RequestInterface  $request
- * @property-read \ManaPHP\Http\ResponseInterface $response
  */
-class Fpm extends Component implements ServerInterface
+class Fpm extends Server
 {
-    /**
-     * @var bool
-     */
-    protected $_compatible_globals = false;
-
-    /**
-     * Fpm constructor.
-     *
-     * @param array $options
-     */
-    public function __construct($options = null)
-    {
-        if (isset($options['compatible_globals'])) {
-            $this->_compatible_globals = (bool)$options['compatible_globals'];
-            unset($options['compatible_globals']);
-        }
-    }
-
     protected function _prepareGlobals()
     {
         if (!isset($_GET['_url']) && ($pos = strpos($_SERVER['PHP_SELF'], '/index.php/')) !== false) {

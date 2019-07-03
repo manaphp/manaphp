@@ -1,9 +1,8 @@
 <?php
 namespace ManaPHP\Http\Server\Adapter;
 
-use ManaPHP\Component;
 use ManaPHP\ContextManager;
-use ManaPHP\Http\ServerInterface;
+use ManaPHP\Http\Server;
 use Swoole\Runtime;
 
 class SwooleContext
@@ -22,26 +21,10 @@ class SwooleContext
 /**
  * Class Server
  * @package ManaPHP\Http\Server
- * @property-read \ManaPHP\Http\RequestInterface        $request
  * @property \ManaPHP\Http\Server\Adapter\SwooleContext $_context
  */
-class Swoole extends Component implements ServerInterface
+class Swoole extends Server
 {
-    /**
-     * @var string
-     */
-    protected $_host = '0.0.0.0';
-
-    /**
-     * @var int
-     */
-    protected $_port = 9501;
-
-    /**
-     * @var bool
-     */
-    protected $_compatible_globals = false;
-
     /**
      * @var array
      */
@@ -64,6 +47,8 @@ class Swoole extends Component implements ServerInterface
      */
     public function __construct($options = [])
     {
+        parent::__construct($options);
+
         $script_filename = get_included_files()[0];
         $parts = explode('-', phpversion());
         $_SERVER = [
@@ -81,19 +66,6 @@ class Swoole extends Component implements ServerInterface
 
         $this->alias->set('@web', '');
         $this->alias->set('@asset', '');
-
-        if (isset($options['compatible_globals'])) {
-            $this->_compatible_globals = (bool)$options['compatible_globals'];
-            unset($options['compatible_globals']);
-        }
-
-        if (isset($options['host'])) {
-            $this->_host = $options['host'];
-        }
-
-        if (isset($options['port'])) {
-            $this->_port = (int)$options['port'];
-        }
 
         $options['enable_coroutine'] = MANAPHP_COROUTINE ? true : false;
 
@@ -164,11 +136,6 @@ class Swoole extends Component implements ServerInterface
             $_COOKIE = $globals->_COOKIE;
             $_FILES = $globals->_FILES;
         }
-    }
-
-    public function log($level, $message)
-    {
-        echo sprintf('[%s][%s]: ', date('c'), $level), $message, PHP_EOL;
     }
 
     /**

@@ -1,37 +1,14 @@
 <?php
 namespace ManaPHP\Http\Server\Adapter;
 
-use ManaPHP\Component;
-use ManaPHP\Http\ServerInterface;
+use ManaPHP\Http\Server;
 
 /**
  * Class Php
  * @package ManaPHP\Http\Server\Adapter
- * @property-read \ManaPHP\Http\RequestInterface  $request
- * @property-read \ManaPHP\Http\ResponseInterface $response
  */
-class Php extends Component implements ServerInterface
+class Php extends Server
 {
-    /**
-     * @var string
-     */
-    protected $_host = '0.0.0.0';
-
-    /**
-     * @var int
-     */
-    protected $_port = '1983';
-
-    /**
-     * @var bool
-     */
-    protected $_compatible_globals = false;
-
-    /**
-     * @var array
-     */
-    protected $_glob;
-
     /**
      * Fpm constructor.
      *
@@ -39,18 +16,7 @@ class Php extends Component implements ServerInterface
      */
     public function __construct($options = null)
     {
-        if (isset($options['host'])) {
-            $this->_host = $options['host'];
-        }
-
-        if (isset($options['port'])) {
-            $this->_port = $options['port'];
-        }
-
-        if (isset($options['compatible_globals'])) {
-            $this->_compatible_globals = (bool)$options['compatible_globals'];
-            unset($options['compatible_globals']);
-        }
+        parent::__construct($options);
 
         $public_dir = $this->alias->resolve('@public');
         if (PHP_SAPI === 'cli') {
