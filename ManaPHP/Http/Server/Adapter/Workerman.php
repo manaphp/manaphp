@@ -170,86 +170,29 @@ class Workerman extends Server
     }
 
     /**
-     * @return bool|string
-     */
-    protected function _getStaticFile()
-    {
-        $uri = $_SERVER['REQUEST_URI'];
-        $file = ($pos = strpos($uri, '?')) === false ? $uri : substr($uri, 0, $pos);
-        if (($pos = strpos($file, '/', 1)) === false) {
-            return false;
-        } else {
-            $dir = substr($file, 1, $pos - 1);
-            if (isset($this->_root_files[$dir])) {
-                if (!is_file($path = $this->_root_files . $file)) {
-                    return false;
-                }
-
-                if (DIRECTORY_SEPARATOR === '/') {
-                    return realpath($path) === $path ? $path : false;
-                } else {
-                    return str_replace('\\', '/', realpath($path)) === $path ? $path : false;
-                }
-            } else {
-                return false;
-            }
-        }
-    }
-
-    /**
      * @param \Workerman\Connection\ConnectionInterface $connection
-     *
-     * @return bool
      */
-    protected function _onRequestStaticFile($connection)
+    public function onRequest($connection)
     {
+        $this->_prepareGlobals();
+
         try {
-            if ($_SERVER['REQUEST_URI'] === '/favicon.ico') {
-                if (is_file($file = $this->_doc_root . '/favicon.ico')) {
-                    Http::header('Content-Type: image/x-icon');
+            if ($this->_doc_root && $file = $this->_isStaticFile()) {
+                $file = "$this->_doc_root/$file";
+                if ((DIRECTORY_SEPARATOR === '/' ? realpath($file) : str_replace('\\', '/', realpath($file))) === $file) {
+                    $ext = pathinfo($file, PATHINFO_EXTENSION);
+                    $mime_type = isset($this->_mime_types[$ext]) ? $this->_mime_types[$ext] : 'application/octet-stream';
+                    Http::header('Content-Type: ' . $mime_type);
                     $connection->close(file_get_contents($file));
                 } else {
                     Http::header('Http-Code:', true, 404);
                     $connection->close('');
                 }
-
-                return true;
+            } else {
+                $context = $this->_context;
+                $context->connection = $connection;
+                $this->_handler->handle();
             }
-            if ($this->_root_files && $file = $this->_getStaticFile()) {
-                $ext = pathinfo($file, PATHINFO_EXTENSION);
-                $mime_type = isset($this->_mime_types[$ext]) ? $this->_mime_types[$ext] : 'application/octet-stream';
-                Http::header('Content-Type: ' . $mime_type);
-                $connection->close(file_get_contents($file));
-                return true;
-            }
-        } catch (Throwable $exception) {
-            $str = date('c') . ' ' . get_class($exception) . ': ' . $exception->getMessage() . PHP_EOL;
-            $str .= '    at ' . $exception->getFile() . ':' . $exception->getLine() . PHP_EOL;
-            $traces = $exception->getTraceAsString();
-            $str .= preg_replace('/#\d+\s/', '    at ', $traces);
-            echo $str . PHP_EOL;
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @param \Workerman\Connection\ConnectionInterface $connection
-     */
-    public function onRequest($connection)
-    {
-        if ($this->_onRequestStaticFile($connection)) {
-            return;
-        }
-
-        try {
-            $context = $this->_context;
-            $context->connection = $connection;
-
-            $this->_prepareGlobals();
-
-            $this->_handler->handle();
         } catch (Throwable $exception) {
             $str = date('c') . ' ' . get_class($exception) . ': ' . $exception->getMessage() . PHP_EOL;
             $str .= '    at ' . $exception->getFile() . ':' . $exception->getLine() . PHP_EOL;
@@ -299,13 +242,5 @@ class Workerman extends Server
 
         $connection->close((string)$response->content);
         $this->eventsManager->fireEvent('response:afterSend', $this, $response);
-    }
-
-    public function __debugInfo()
-    {
-        $data = parent::__debugInfo();
-        unset($data['_swoole']);
-
-        return $data;
     }
 }

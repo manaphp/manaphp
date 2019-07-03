@@ -30,6 +30,8 @@ class Php extends Server
             $_SERVER['SERVER_PORT'] = $this->_port;
             $_SERVER['REQUEST_SCHEME'] = 'http';
             $_GET['_url'] = $_REQUEST['_url'] = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+            $this->_root_files = $this->_getRootFiles();
+            $this->_mime_types = $this->_getMimeTypes();
         }
     }
 
@@ -83,7 +85,19 @@ class Php extends Server
     {
         $this->_prepareGlobals();
 
-        $handler->handle();
+        if ($file = $this->_isStaticFile()) {
+            $file = "$this->_doc_root/$file";
+            if ((DIRECTORY_SEPARATOR === '/' ? realpath($file) : str_replace('\\', '/', realpath($file))) === $file) {
+                $ext = pathinfo($file, PATHINFO_EXTENSION);
+                $mime_type = isset($this->_mime_types[$ext]) ? $this->_mime_types[$ext] : 'application/octet-stream';
+                header('Content-Type: ' . $mime_type);
+                readfile($file);
+            } else {
+                header('HTTP/1.1 404 Not Found');
+            }
+        } else {
+            $handler->handle();
+        }
 
         return $this;
     }
