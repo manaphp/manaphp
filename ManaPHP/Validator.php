@@ -1,6 +1,7 @@
 <?php /** @noinspection PhpUnusedParameterInspection */
 namespace ManaPHP;
 
+use Closure;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
@@ -102,14 +103,6 @@ class Validator extends Component implements ValidatorInterface
     {
         $value = $model->$field;
 
-        if ($rules instanceof \Closure) {
-            if (($value = $rules($model, $field)) === null) {
-                throw new ValidateFailedException([$field => $this->createError('default', $field)]);
-            } else {
-                return $value;
-            }
-        }
-
         if ($value === '' || $value === null) {
             if (isset($rules['default'])) {
                 return $model->$field = $rules['default'];
@@ -120,7 +113,17 @@ class Validator extends Component implements ValidatorInterface
 
         foreach ((array)$rules as $k => $v) {
             if (is_int($k)) {
-                if (strpos($v, '-') !== false) {
+                if ($v instanceof Closure) {
+                    $r = $v($value);
+                    if ($r === null || $r === true) {
+                        null;
+                    } elseif ($r === false) {
+                        throw new ValidateFailedException([$field => $this->createError('default', $field)]);
+                    } else {
+                        $value = $v;
+                    }
+                    continue;
+                } elseif (strpos($v, '-') !== false) {
                     $validate = in_array($field, $model->getIntFields(), true) ? 'range' : 'length';
                     $parameter = $v;
                 } else {
@@ -158,14 +161,6 @@ class Validator extends Component implements ValidatorInterface
      */
     public function validateValue($field, $value, $rules)
     {
-        if ($rules instanceof \Closure) {
-            if (($value = $rules($value)) === null) {
-                throw new ValidateFailedException([$field => $this->createError('default', $field)]);
-            } else {
-                return $value;
-            }
-        }
-
         if ($value === '' || $value === null) {
             if (isset($rules['default'])) {
                 return $rules['default'];
@@ -177,7 +172,17 @@ class Validator extends Component implements ValidatorInterface
         $rules = (array)$rules;
         foreach ($rules as $k => $v) {
             if (is_int($k)) {
-                if (strpos($v, '-') !== false) {
+                if ($v instanceof Closure) {
+                    $r = $v($value);
+                    if ($r === null || $r === true) {
+                        null;
+                    } elseif ($r === false) {
+                        throw new ValidateFailedException([$field => $this->createError('default', $field)]);
+                    } else {
+                        $value = $v;
+                    }
+                    continue;
+                } elseif (strpos($v, '-') !== false) {
                     $parameter = $v;
                     if (in_array('string', $rules, true)) {
                         $validate = 'length';
