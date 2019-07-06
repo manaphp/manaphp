@@ -239,16 +239,19 @@ abstract class Connection extends Component implements ConnectionInterface
 
         if ($this->_in_transaction) {
             try {
-                return ($bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql))->fetchAll($fetchMode);
+                $statement = $bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql);
+                return $statement->fetchAll($fetchMode);
             } catch (PDOException $exception) {
             }
         } else {
             try {
-                return ($bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql))->fetchAll($fetchMode);
+                $statement = $bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql);
+                return $statement->fetchAll($fetchMode);
             } catch (PDOException $exception) {
                 try {
                     $this->close();
-                    return ($bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql))->fetchAll($fetchMode);
+                    $statement = $bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql);
+                    return $statement->fetchAll($fetchMode);
                 } catch (PDOException $exception) {
                 }
             }
