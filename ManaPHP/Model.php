@@ -652,6 +652,12 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             return;
         }
 
+        if (isset($rules[0])) {
+            throw new MisuseException(['`:model` rules must be an associative array: `:field` is invalid',
+                'model' => static::class,
+                'field' => $rules[0]]);
+        }
+
         $errors = [];
 
         foreach ($fields ?: $this->getChangedFields() as $field) {
