@@ -51,13 +51,12 @@ class Swoole extends Server
         parent::__construct($options);
 
         $script_filename = get_included_files()[0];
-        $parts = explode('-', phpversion());
         $_SERVER = [
             'DOCUMENT_ROOT' => dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,
             'SCRIPT_NAME' => '/' . basename($script_filename),
             'SERVER_ADDR' => $this->_host,
-            'SERVER_SOFTWARE' => 'Swoole/' . SWOOLE_VERSION . ' ' . php_uname('s') . '/' . $parts[1] . ' PHP/' . $parts[0],
+            'SERVER_SOFTWARE' => 'Swoole/' . SWOOLE_VERSION . ' PHP/' . PHP_VERSION,
             'PHP_SELF' => '/' . basename($script_filename),
             'QUERY_STRING' => '',
             'REQUEST_SCHEME' => 'http',
