@@ -699,15 +699,17 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     public function getAutoFilledData($opMode)
     {
         $data = [];
+
+        $current_time = time();
         if ($opMode === self::OP_CREATE) {
-            $data['updated_time'] = $data['created_time'] = date($this->getDateFormat('created_time'));
-            $data['updated_at'] = $data['created_at'] = date($this->getDateFormat('created_at'));
-            $data['created_date'] = (int)date('ymd', $data['updated_time']);
+            $data['updated_time'] = $data['created_time'] = date($this->getDateFormat('created_time'), $current_time);
+            $data['updated_at'] = $data['created_at'] = date($this->getDateFormat('created_at'), $current_time);
+            $data['created_date'] = (int)date('ymd', $current_time);
             $data['creator_id'] = $data['updator_id'] = $this->_di->identity->getId(0);
             $data['creator_name'] = $data['updator_name'] = $this->_di->identity->getName('');
         } elseif ($opMode === self::OP_UPDATE) {
-            $data['updated_time'] = date($this->getDateFormat('updated_time'));
-            $data['updated_at'] = date($this->getDateFormat('updated_at'));
+            $data['updated_time'] = date($this->getDateFormat('updated_time'), $current_time);
+            $data['updated_at'] = date($this->getDateFormat('updated_at'), $current_time);
             $data['updator_id'] = $this->_di->identity->getId(0);
             $data['updator_name'] = $this->_di->identity->getName('');
         }
