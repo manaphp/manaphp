@@ -272,7 +272,7 @@ class Compiler extends Component
             throw new CreateDirectoryFailedException(['create `:dir` directory failed: :last_error_message', 'dir' => $dir]);
         }
 
-        if (($str = file_get_contents($source)) === false) {
+        if (($str = @file_get_contents($source)) === false) {
             throw new InvalidArgumentException(['read `:file` sword source file failed: :last_error_message', 'file' => $source]);
         }
 
