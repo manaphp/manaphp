@@ -1,6 +1,14 @@
 <?php
 
 use ManaPHP\Di;
+use ManaPHP\Exception\AbortException;
+use ManaPHP\Exception\InvalidJsonException;
+use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\MisuseException;
+use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Exception\UnauthorizedException;
+use ManaPHP\Identity\BadCredentialException;
+use ManaPHP\Identity\NoCredentialException;
 
 if (PHP_VERSION_ID < 70000) {
     require_once __DIR__ . '/polyfill.php';
@@ -189,7 +197,7 @@ if (!function_exists('abort')) {
             di('response')->setStatus($code);
         }
 
-        throw new \ManaPHP\Exception\AbortException();
+        throw new AbortException();
     }
 }
 
@@ -204,7 +212,7 @@ if (!function_exists('jwt_encode')) {
     function jwt_encode($claims, $ttl, $key = null)
     {
         if (!$key && !isset($claims['scope'])) {
-            throw new \ManaPHP\Exception\MisuseException('neither key nor scope field exists');
+            throw new MisuseException('neither key nor scope field exists');
         }
         $jwt = new ManaPHP\Identity\Adapter\Jwt(['key' => $key ?: di('crypt')->getDerivedKey('jwt:' . $claims['scope'])]);
         return $jwt->encode($claims, $ttl);
@@ -224,20 +232,20 @@ if (!function_exists('jwt_decode')) {
         $jwt = new ManaPHP\Identity\Adapter\Jwt();
 
         if ($token === null || $token === '') {
-            throw new \ManaPHP\Identity\NoCredentialException('No Credentials');
+            throw new NoCredentialException('No Credentials');
         }
 
         $claims = $jwt->decode($token, false);
         if ($scope) {
             if (!isset($claims['scope'])) {
-                throw new \ManaPHP\Identity\BadCredentialException('Jwt claims missing scope field');
+                throw new BadCredentialException('Jwt claims missing scope field');
             }
             if ($scope !== $claims['scope']) {
-                throw new \ManaPHP\Identity\BadCredentialException(['Jwt `:1` scope is not wanted `:2`', $claims['scope'], $scope]);
+                throw new BadCredentialException(['Jwt `:1` scope is not wanted `:2`', $claims['scope'], $scope]);
             }
         } else {
             if (!$key) {
-                throw new \ManaPHP\Identity\BadCredentialException('Jwt claims missing scope field');
+                throw new BadCredentialException('Jwt claims missing scope field');
             }
         }
         $jwt->setKey($key ?: di('crypt')->getDerivedKey('jwt:' . $scope));
@@ -263,7 +271,7 @@ if (!function_exists('jwt_get_claim')) {
         } elseif (isset($name)) {
             return $claims[$name];
         } elseif ($default === null) {
-            throw new \ManaPHP\Exception\UnauthorizedException(['`claim` claim is not exists in token', 'claim' => $name]);
+            throw new UnauthorizedException(['`claim` claim is not exists in token', 'claim' => $name]);
         } else {
             return $default;
         }
@@ -484,7 +492,7 @@ if (!function_exists('seconds')) {
         if (($r = strtotime($str, 0)) !== false) {
             return $r;
         } else {
-            throw new \ManaPHP\Exception\InvalidValueException(['`:str` string is not a valid seconds expression', 'str' => $str]);
+            throw new InvalidValueException(['`:str` string is not a valid seconds expression', 'str' => $str]);
         }
     }
 }
@@ -499,14 +507,14 @@ if (!function_exists('json')) {
     {
         if (is_string($data)) {
             if (!is_array($r = json_decode($data, true))) {
-                throw new \ManaPHP\Exception\InvalidJsonException(['`:data` data', 'data' => $data]);
+                throw new InvalidJsonException(['`:data` data', 'data' => $data]);
             } else {
                 return $r;
             }
         } elseif (is_array($data) || $data instanceof JsonSerializable) {
             return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         } else {
-            throw new \ManaPHP\Exception\NotSupportedException(['`:data`', 'data' => $data]);
+            throw new NotSupportedException(['`:data`', 'data' => $data]);
         }
     }
 }

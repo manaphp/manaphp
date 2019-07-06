@@ -1,6 +1,9 @@
 <?php
 namespace ManaPHP\Security;
 
+use Imagick;
+use ImagickDraw;
+use ImagickPixel;
 use ManaPHP\Component;
 use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Security\Captcha\InvalidCaptchaException;
@@ -172,17 +175,17 @@ class Captcha extends Component implements CaptchaInterface
      */
     protected function _generateByImagic($code, $width, $height)
     {
-        $image = new \Imagick();
-        $draw = new \ImagickDraw();
-        $image->newImage($width, $height, new \ImagickPixel('rgb(' . $this->_bgRGB . ')'));
+        $image = new Imagick();
+        $draw = new ImagickDraw();
+        $image->newImage($width, $height, new ImagickPixel('rgb(' . $this->_bgRGB . ')'));
         $draw->setFont($this->alias->resolve($this->_fonts[mt_rand() % count($this->_fonts)]));
-        $draw->setGravity(\Imagick::GRAVITY_NORTHWEST);
+        $draw->setGravity(Imagick::GRAVITY_NORTHWEST);
 
         $referenceFontSize = min($height, $width / $this->_length);
 
         $x = mt_rand($referenceFontSize * 0.1, $referenceFontSize * 0.3);
         $length = strlen($code);
-        $fgPixel = new \ImagickPixel();
+        $fgPixel = new ImagickPixel();
         /** @noinspection ForeachInvariantsInspection */
         for ($i = 0; $i < $length; $i++) {
             $fontSize = $referenceFontSize * mt_rand(800, 1000) / 1000;

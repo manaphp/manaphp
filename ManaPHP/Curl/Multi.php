@@ -1,12 +1,13 @@
 <?php
 namespace ManaPHP\Curl;
 
+use Countable;
 use ManaPHP\Component;
 use ManaPHP\Curl\Multi\Error;
 use ManaPHP\Curl\Multi\Request;
 use ManaPHP\Curl\Multi\Response;
 
-class Multi extends Component implements MultiInterface, \Countable
+class Multi extends Component implements MultiInterface, Countable
 {
     /**
      * @var string

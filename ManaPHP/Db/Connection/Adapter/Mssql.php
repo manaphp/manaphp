@@ -6,6 +6,7 @@ use ManaPHP\Db\Connection;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\PreconditionException;
+use PDO;
 
 class Mssql extends Connection
 {
@@ -42,7 +43,7 @@ class Mssql extends Connection
             }
         }
 
-        $this->_options[\PDO::ATTR_STRINGIFY_FETCHES] = true;
+        $this->_options[PDO::ATTR_STRINGIFY_FETCHES] = true;
 
         $dsn_parts = [];
         foreach ($dsn as $k => $v) {

@@ -2,9 +2,11 @@
 
 namespace ManaPHP;
 
+use Closure;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
+use ReflectionClass;
 
 /**
  * Class ManaPHP\Di
@@ -198,7 +200,7 @@ class Di implements DiInterface
 
             $definition['shared'] = false;
         } elseif (is_object($definition)) {
-            $definition = ['class' => $definition, 'shared' => !$definition instanceof \Closure];
+            $definition = ['class' => $definition, 'shared' => !$definition instanceof Closure];
         } else {
             throw new NotSupportedException(['`:definition` definition is unknown', 'definition' => $name]);
         }
@@ -332,10 +334,10 @@ class Di implements DiInterface
             } elseif ($count === 3) {
                 $instance = new $definition($parameters[0], $parameters[1], $parameters[2]);
             } else {
-                $reflection = new \ReflectionClass($definition);
+                $reflection = new ReflectionClass($definition);
                 $instance = $reflection->newInstanceArgs($parameters);
             }
-        } elseif ($definition instanceof \Closure) {
+        } elseif ($definition instanceof Closure) {
             $instance = call_user_func_array($definition, $parameters);
         } elseif (is_object($definition)) {
             $instance = $definition;

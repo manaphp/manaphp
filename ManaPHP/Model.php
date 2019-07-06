@@ -1,6 +1,8 @@
 <?php
 namespace ManaPHP;
 
+use ArrayAccess;
+use JsonSerializable;
 use ManaPHP\Db\AssignmentInterface;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidJsonException;
@@ -15,6 +17,8 @@ use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\NotFoundException;
 use ManaPHP\Utility\Text;
 use ManaPHP\Validator\ValidateFailedException;
+use ReflectionClass;
+use Serializable;
 
 /**
  * Class ManaPHP\Model
@@ -22,7 +26,7 @@ use ManaPHP\Validator\ValidateFailedException;
  * @package ManaPHP
  * @property-read \ManaPHP\Di $_di
  */
-abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \JsonSerializable
+abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonSerializable
 {
     const OP_NONE = 0;
     const OP_CREATE = 1;
@@ -1182,7 +1186,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
         $name = strtoupper($name) . '_';
         $constants = [];
 
-        $rc = new \ReflectionClass(static::class);
+        $rc = new ReflectionClass(static::class);
         $file = $comment ? file_get_contents($rc->getFileName()) : '';
         foreach ($rc->getConstants() as $cName => $cValue) {
             if (strpos($cName, $name) === 0) {
@@ -1336,7 +1340,7 @@ abstract class Model implements ModelInterface, \Serializable, \ArrayAccess, \Js
             }
 
             if (is_numeric($value)) {
-                foreach ((new \ReflectionClass(static::class))->getConstants() as $cName => $cValue) {
+                foreach ((new ReflectionClass(static::class))->getConstants() as $cName => $cValue) {
                     /** @noinspection TypeUnsafeComparisonInspection */
                     if ($cValue == $value && stripos($cName, $field) === 0) {
                         $data['*human_const*'][$field] = $cName;

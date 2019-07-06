@@ -1,7 +1,13 @@
 <?php
 namespace ManaPHP\Dom;
 
-class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
+use ArrayAccess;
+use ArrayIterator;
+use Countable;
+use DOMText;
+use IteratorAggregate;
+
+class SelectorList implements IteratorAggregate, Countable, ArrayAccess
 {
     /**
      * @var \DOMElement[]
@@ -416,7 +422,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
         $query = $this->_document->getQuery();
         foreach ($this->_nodes as $node) {
             foreach ($query->css($css, $node) as $node2) {
-                $node2->parentNode->replaceChild(new \DOMText($node2->textContent), $node2);
+                $node2->parentNode->replaceChild(new DOMText($node2->textContent), $node2);
             }
         }
 
@@ -681,7 +687,7 @@ class SelectorList implements \IteratorAggregate, \Countable, \ArrayAccess
         foreach ($this->_nodes as $node) {
             $selectors[] = new Selector($this->_document, $node);
         }
-        return new \ArrayIterator($selectors);
+        return new ArrayIterator($selectors);
     }
 
     /**

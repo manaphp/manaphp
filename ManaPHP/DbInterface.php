@@ -2,6 +2,8 @@
 
 namespace ManaPHP;
 
+use PDO;
+
 /**
  * Interface ManaPHP\DbInterface
  *
@@ -19,7 +21,7 @@ interface DbInterface
      *
      * @return array|false
      */
-    public function fetchOne($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $useMaster = false);
+    public function fetchOne($sql, $bind = [], $fetchMode = PDO::FETCH_ASSOC, $useMaster = false);
 
     /**
      * Dumps the complete result of a query into an array
@@ -31,7 +33,7 @@ interface DbInterface
      *
      * @return array
      */
-    public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $useMaster = false);
+    public function fetchAll($sql, $bind = [], $fetchMode = PDO::FETCH_ASSOC, $useMaster = false);
 
     /**
      * @param string $table

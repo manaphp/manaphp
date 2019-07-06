@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Http;
 
+use ArrayAccess;
 use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
 
@@ -41,7 +42,7 @@ class SessionContext
  * @property-read \ManaPHP\Http\RequestInterface $request
  * @property  \ManaPHP\Http\SessionContext       $_context
  */
-abstract class Session extends Component implements SessionInterface, \ArrayAccess
+abstract class Session extends Component implements SessionInterface, ArrayAccess
 {
     /**
      * @var int

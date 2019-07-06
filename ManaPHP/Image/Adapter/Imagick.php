@@ -2,6 +2,8 @@
 
 namespace ManaPHP\Image\Adapter;
 
+use ImagickDraw;
+use ImagickPixel;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Exception\InvalidFormatException;
@@ -122,7 +124,7 @@ class Imagick extends Image
     {
         $backgroundColor = sprintf('rgba(%u,%u,%u,%f)', ($background >> 16) & 0xFF, ($background >> 8) & 0xFF,
             $background & 0xFF, $alpha);
-        $this->_image->rotateImage(new \ImagickPixel($backgroundColor), $degrees);
+        $this->_image->rotateImage(new ImagickPixel($backgroundColor), $degrees);
         $this->_image->setImagePage($this->_width, $this->_height, 0, 0);
 
         $this->_width = $this->_image->getImageWidth();
@@ -172,9 +174,9 @@ class Imagick extends Image
         $size = 12,
         $font_file = null
     ) {
-        $draw = new \ImagickDraw();
+        $draw = new ImagickDraw();
         $textColor = sprintf('rgb(%u,%u,%u)', ($color >> 16) & 0xFF, ($color >> 8) & 0xFF, $color & 0xFF);
-        $draw->setFillColor(new \ImagickPixel($textColor));
+        $draw->setFillColor(new ImagickPixel($textColor));
         if ($font_file) {
             $draw->setFont($this->alias->resolve($font_file));
         }

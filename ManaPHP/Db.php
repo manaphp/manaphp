@@ -7,6 +7,8 @@ use ManaPHP\Db\Connection;
 use ManaPHP\Db\Exception as DbException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
+use PDO;
+use PDOException;
 
 class DbContext
 {
@@ -208,7 +210,7 @@ class Db extends Component implements DbInterface
      *
      * @return array|false
      */
-    public function fetchOne($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $useMaster = false)
+    public function fetchOne($sql, $bind = [], $fetchMode = PDO::FETCH_ASSOC, $useMaster = false)
     {
         return ($rs = $this->fetchAll($sql, $bind, $fetchMode, $useMaster)) ? $rs[0] : false;
     }
@@ -223,7 +225,7 @@ class Db extends Component implements DbInterface
      *
      * @return array
      */
-    public function fetchAll($sql, $bind = [], $fetchMode = \PDO::FETCH_ASSOC, $useMaster = false)
+    public function fetchAll($sql, $bind = [], $fetchMode = PDO::FETCH_ASSOC, $useMaster = false)
     {
         $context = $this->_context;
 
@@ -592,7 +594,7 @@ class Db extends Component implements DbInterface
                 }
                 $context->connection = $connection;
                 $context->transaction_level++;
-            } catch (\PDOException $exception) {
+            } catch (PDOException $exception) {
                 throw new DbException('beginTransaction failed: ' . $exception->getMessage(), $exception->getCode(), $exception);
             } finally {
                 if (!$context->connection) {
@@ -634,7 +636,7 @@ class Db extends Component implements DbInterface
                     if (!$context->connection->rollback()) {
                         throw new DbException('rollBack failed.');
                     }
-                } catch (\PDOException $exception) {
+                } catch (PDOException $exception) {
                     throw new DbException('rollBack failed: ' . $exception->getMessage(), $exception->getCode(), $exception);
                 } finally {
                     $this->poolManager->push($this, $context->connection);
@@ -668,7 +670,7 @@ class Db extends Component implements DbInterface
                 if (!$context->connection->commit()) {
                     throw new DbException('commit failed.');
                 }
-            } catch (\PDOException $exception) {
+            } catch (PDOException $exception) {
                 throw new DbException('commit failed: ' . $exception->getMessage(), $exception->getCode(), $exception);
             } finally {
                 $this->poolManager->push($this, $context->connection);

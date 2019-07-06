@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP;
 
+use AMQPChannel;
+use AMQPConnection;
+use AMQPEnvelope;
+use AMQPExchange;
+use AMQPQueue;
 use ManaPHP\Amqp\ConnectionException;
 use ManaPHP\Amqp\Exception as AmqpException;
 use ManaPHP\Amqp\Message;
@@ -84,7 +89,7 @@ class Amqp extends Component implements AmqpInterface
         }
 
         try {
-            $this->_connection = new \AMQPConnection($credentials);
+            $this->_connection = new AMQPConnection($credentials);
 
             /** @noinspection NotOptimalIfConditionsInspection */
             if (isset($query['persistent']) && $query['persistent']) {
@@ -101,12 +106,12 @@ class Amqp extends Component implements AmqpInterface
         }
 
         try {
-            $this->_channel = new \AMQPChannel($this->_connection);
+            $this->_channel = new AMQPChannel($this->_connection);
         } catch (\Exception $e) {
             throw new ConnectionException(['create channel with `:uri` uri failed: :error', 'uri' => $this->_uri, 'error' => $e->getMessage()]);
         }
         try {
-            $this->_exchanges[''] = new \AMQPExchange($this->_channel);
+            $this->_exchanges[''] = new AMQPExchange($this->_channel);
         } catch (\Exception $e) {
             throw new AmqpException('create default exchange instance failed');
         }
@@ -155,7 +160,7 @@ class Amqp extends Component implements AmqpInterface
         }
 
         try {
-            $exchange = new \AMQPExchange($this->_channel);
+            $exchange = new AMQPExchange($this->_channel);
 
             $exchange->setName($name);
             $exchange->setType($type);
@@ -223,7 +228,7 @@ class Amqp extends Component implements AmqpInterface
         }
 
         try {
-            $queue = new \AMQPQueue($this->_channel);
+            $queue = new AMQPQueue($this->_channel);
 
             $queue->setName($name);
             $queue->setFlags($flags);
@@ -501,7 +506,7 @@ class Amqp extends Component implements AmqpInterface
         }
 
         try {
-            $this->_queues[$queue]->consume(function (\AMQPEnvelope $envelope) use ($callback, $queue) {
+            $this->_queues[$queue]->consume(function (AMQPEnvelope $envelope) use ($callback, $queue) {
                 return $callback(new Message($this, $queue, $envelope));
             }, $flags);
         } catch (\Exception $e) {

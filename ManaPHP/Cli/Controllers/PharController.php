@@ -1,7 +1,9 @@
 <?php
 namespace ManaPHP\Cli\Controllers;
 
+use FilesystemIterator;
 use ManaPHP\Cli\Controller;
+use Phar;
 
 class PharController extends Controller
 {
@@ -21,11 +23,11 @@ class PharController extends Controller
         //$di->filesystem->dirCopy('@root/Application', '@phar/Application');
         $this->filesystem->fileCopy('@root/manacli.php', '@phar/manacli.php');
 
-        $phar = new \Phar($pharFile, \FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::KEY_AS_FILENAME, basename($pharFile));
+        $phar = new Phar($pharFile, FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::KEY_AS_FILENAME, basename($pharFile));
         $phar->buildFromDirectory($this->alias->resolve('@phar'));
         $phar->setStub($phar::createDefaultStub('manacli.php'));
         $this->console->writeLn('compressing files');
-        $phar->compressFiles(\Phar::BZ2);
+        $phar->compressFiles(Phar::BZ2);
 
         $this->console->writeLn(['`:phar` created successfully', 'phar' => $this->alias->resolve($pharFile)]);
     }

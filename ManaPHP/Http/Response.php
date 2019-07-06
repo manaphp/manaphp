@@ -2,10 +2,14 @@
 
 namespace ManaPHP\Http;
 
+use DateTime;
+use DateTimeZone;
+use JsonSerializable;
 use ManaPHP\Component;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
+use XMLWriter;
 
 class ResponseContext
 {
@@ -305,7 +309,7 @@ class Response extends Component implements ResponseInterface
                 $timestamp += time();
             }
 
-            $date = new \DateTime('now', new \DateTimeZone('UTC'));
+            $date = new DateTime('now', new DateTimeZone('UTC'));
             $date->setTimestamp($timestamp);
 
             $this->setHeader('Expires', $date->format('D, d M Y H:i:s') . ' GMT');
@@ -498,7 +502,7 @@ class Response extends Component implements ResponseInterface
             if (!isset($content['code'])) {
                 $content = ['code' => 0, 'message' => '', 'data' => $content];
             }
-        } elseif ($content instanceof \JsonSerializable) {
+        } elseif ($content instanceof JsonSerializable) {
             $content = ['code' => 0, 'message' => '', 'data' => $content];
         } elseif (is_string($content)) {
             null;
@@ -532,7 +536,7 @@ class Response extends Component implements ResponseInterface
 
         $this->setContentType('text/xml');
 
-        $writer = new \XMLWriter();
+        $writer = new XMLWriter();
 
         $writer->openMemory();
         $writer->startDocument();

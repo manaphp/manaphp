@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Logger\Appender;
 
+use Exception;
 use ManaPHP\Component;
 use ManaPHP\Logger;
 use ManaPHP\Logger\AppenderInterface;
@@ -69,7 +70,7 @@ class Db extends Component implements AppenderInterface
                 'message' => $log->message,
                 'timestamp' => $log->timestamp - (int)$log->timestamp,
                 'created_time' => (int)$log->timestamp]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             null;
         }
         $this->logger->setLevel($level);

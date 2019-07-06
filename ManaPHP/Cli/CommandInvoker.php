@@ -4,6 +4,7 @@ namespace ManaPHP\Cli;
 
 use ManaPHP\Cli\CommandInvoker\NotFoundException;
 use ManaPHP\Component;
+use ReflectionMethod;
 
 /**
  * Class Invoker
@@ -50,7 +51,7 @@ class CommandInvoker extends Component implements CommandInvokerInterface
 
         $di = $this->_di;
 
-        $parameters = (new \ReflectionMethod($controller, $command . 'Command'))->getParameters();
+        $parameters = (new ReflectionMethod($controller, $command . 'Command'))->getParameters();
         $shortNames = $this->_getShortNames($parameters);
 
         foreach ($parameters as $parameter) {

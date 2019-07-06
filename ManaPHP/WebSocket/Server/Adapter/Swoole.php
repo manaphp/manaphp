@@ -7,6 +7,7 @@ use ManaPHP\WebSocket\ServerInterface;
 use Swoole\Coroutine;
 use Swoole\Process;
 use Swoole\WebSocket\Frame;
+use Swoole\WebSocket\Server;
 
 /**
  * Class Server
@@ -81,7 +82,7 @@ class Swoole extends Component implements ServerInterface
 
         $this->_settings = $options ?: [];
 
-        $this->_swoole = new \Swoole\WebSocket\Server($this->_host, $this->_port);
+        $this->_swoole = new Server($this->_host, $this->_port);
         $this->_swoole->set($this->_settings);
 
         $this->_swoole->on('open', [$this, '_onOpen']);

@@ -1,6 +1,8 @@
 <?php
 namespace ManaPHP;
 
+use JsonSerializable;
+
 /**
  * Class ManaPHP\Component
  *
@@ -34,7 +36,7 @@ namespace ManaPHP;
  * @property-read \ManaPHP\WebSocket\PusherInterface       $wsPusher
  * @property \object                                       $_context
  */
-class Component implements ComponentInterface, \JsonSerializable
+class Component implements ComponentInterface, JsonSerializable
 {
     /**
      * @var \ManaPHP\Di

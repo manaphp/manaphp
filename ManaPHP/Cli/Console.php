@@ -1,7 +1,11 @@
 <?php
 namespace ManaPHP\Cli;
 
+use JsonSerializable;
 use ManaPHP\Component;
+use ReflectionClass;
+use Serializable;
+use Throwable;
 
 /**
  * Class ManaPHP\Cli\Console
@@ -108,13 +112,13 @@ class Console extends Component implements ConsoleInterface
      */
     public function write($message, $options = 0)
     {
-        if ($message instanceof \Exception || (interface_exists('\Throwable') && $message instanceof \Throwable)) {
+        if ($message instanceof \Exception || (interface_exists('\Throwable') && $message instanceof Throwable)) {
             echo $message;
             return $this;
-        } elseif ($message instanceof \JsonSerializable) {
+        } elseif ($message instanceof JsonSerializable) {
             echo json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
             return $this;
-        } elseif ($message instanceof \Serializable) {
+        } elseif ($message instanceof Serializable) {
             echo serialize($message);
             return $this;
         } elseif (!is_array($message)) {
@@ -133,9 +137,9 @@ class Console extends Component implements ConsoleInterface
                     continue;
                 }
 
-                if ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof \Throwable)) {
+                if ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof Throwable)) {
                     $message[$k] = (string)$v;
-                } elseif (is_array($v) || $v instanceof \JsonSerializable) {
+                } elseif (is_array($v) || $v instanceof JsonSerializable) {
                     $message[$k] = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
                 }
             }
@@ -183,11 +187,11 @@ class Console extends Component implements ConsoleInterface
                     if (!$options && strpos($v, "\033[") === false) {
                         $v = $this->colorize($v, self::FC_CYAN);
                     }
-                } elseif ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof \Throwable)) {
+                } elseif ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof Throwable)) {
                     $v = (string)$v;
-                } elseif (is_array($v) || $v instanceof \JsonSerializable) {
+                } elseif (is_array($v) || $v instanceof JsonSerializable) {
                     $v = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-                } elseif ($v instanceof \Serializable) {
+                } elseif ($v instanceof Serializable) {
                     $v = serialize($v);
                 } elseif ($v === null || is_scalar($v)) {
                     $v = json_encode($v);
@@ -211,7 +215,7 @@ class Console extends Component implements ConsoleInterface
     public function sampleColorizer()
     {
         /** @noinspection PhpUnhandledExceptionInspection */
-        $rc = new \ReflectionClass($this);
+        $rc = new ReflectionClass($this);
         $bc_list = [0 => 0];
         $fc_list = [0 => 0];
 

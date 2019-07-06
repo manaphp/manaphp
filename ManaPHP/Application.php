@@ -4,6 +4,7 @@ namespace ManaPHP;
 
 use ManaPHP\Cli\Factory as CliFactory;
 use ManaPHP\Mvc\Factory as MvcFactory;
+use ReflectionClass;
 
 /**
  * Class ManaPHP\Application
@@ -35,7 +36,7 @@ class Application extends Component implements ApplicationInterface
     public function __construct($loader = null)
     {
         $class = static::class;
-        $this->_class_file_name = (new \ReflectionClass($class))->getFileName();
+        $this->_class_file_name = (new ReflectionClass($class))->getFileName();
 
         ini_set('html_errors', 'off');
         ini_set('default_socket_timeout', -1);

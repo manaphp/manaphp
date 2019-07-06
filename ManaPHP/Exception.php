@@ -26,7 +26,7 @@ class Exception extends \Exception
      * @param int          $code
      * @param \Exception   $previous
      */
-    public function __construct($message = '', $code = 0, \Exception $previous = null)
+    public function __construct($message = '', $code = 0, $previous = null)
     {
         if (is_array($message)) {
             if (substr_count($message[0], '%') + 1 >= ($count = count($message)) && isset($message[$count - 1])) {

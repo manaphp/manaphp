@@ -6,6 +6,7 @@ use ManaPHP\Db\AssignmentInterface;
 use ManaPHP\Db\Connection;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\InvalidArgumentException;
+use PDO;
 
 class Mysql extends Connection
 {
@@ -57,11 +58,11 @@ class Mysql extends Connection
             }
 
             if (!MANAPHP_COROUTINE && isset($query['persistent'])) {
-                $this->_options[\PDO::ATTR_PERSISTENT] = $query['persistent'] === '1';
+                $this->_options[PDO::ATTR_PERSISTENT] = $query['persistent'] === '1';
             }
 
             if (isset($query['timeout'])) {
-                $this->_options[\PDO::ATTR_TIMEOUT] = (int)$query['timeout'];
+                $this->_options[PDO::ATTR_TIMEOUT] = (int)$query['timeout'];
             }
 
             if (isset($query['heartbeat'])) {
@@ -81,7 +82,7 @@ class Mysql extends Connection
             }
         }
 
-        $this->_options[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES '{$this->_charset}'";
+        $this->_options[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES '{$this->_charset}'";
 
         $dsn_parts = [];
         foreach ($dsn as $k => $v) {
@@ -100,7 +101,7 @@ class Mysql extends Connection
      */
     public function getMetadata($source)
     {
-        $fields = $this->query('DESCRIBE ' . $this->_escapeIdentifier($source), [], \PDO::FETCH_NUM);
+        $fields = $this->query('DESCRIBE ' . $this->_escapeIdentifier($source), [], PDO::FETCH_NUM);
 
         $attributes = [];
         $primaryKeys = [];
@@ -177,7 +178,7 @@ class Mysql extends Connection
         }
 
         $tables = [];
-        foreach ($this->query($sql, [], \PDO::FETCH_NUM) as $row) {
+        foreach ($this->query($sql, [], PDO::FETCH_NUM) as $row) {
             $tables[] = $row[0];
         }
 
@@ -200,7 +201,7 @@ class Mysql extends Connection
             $sql = 'SELECT' . " IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = '$parts[0]' AND `TABLE_SCHEMA` = DATABASE()";
         }
 
-        $r = $this->query($sql, [], \PDO::FETCH_NUM);
+        $r = $this->query($sql, [], PDO::FETCH_NUM);
 
         return $r && $r[0] === '1';
     }

@@ -1,6 +1,8 @@
 <?php
 namespace ManaPHP\Dom;
 
+use DOMText;
+
 class Selector
 {
     /**
@@ -175,7 +177,7 @@ class Selector
          * @var \DOMNode $node
          */
         foreach ($this->_document->getQuery()->css($css, $this->_node) as $node) {
-            $node->parentNode->replaceChild(new \DOMText($node->textContent), $node);
+            $node->parentNode->replaceChild(new DOMText($node->textContent), $node);
         }
 
         return $this;

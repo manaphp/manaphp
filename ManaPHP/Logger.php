@@ -2,10 +2,14 @@
 
 namespace ManaPHP;
 
+use JsonSerializable;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Logger\Log;
 use ManaPHP\Logger\LogCategorizable;
+use Serializable;
+use Swoole\Coroutine;
+use Throwable;
 
 /**
  * Class ManaPHP\Logger
@@ -290,11 +294,11 @@ class Logger extends Component implements LoggerInterface
      */
     public function formatMessage($message)
     {
-        if ($message instanceof \Exception || (interface_exists('\Throwable') && $message instanceof \Throwable)) {
+        if ($message instanceof \Exception || (interface_exists('\Throwable') && $message instanceof Throwable)) {
             return $this->exceptionToString($message);
-        } elseif ($message instanceof \JsonSerializable) {
+        } elseif ($message instanceof JsonSerializable) {
             return json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        } elseif ($message instanceof \Serializable) {
+        } elseif ($message instanceof Serializable) {
             return serialize($message);
         } elseif (!is_array($message)) {
             return (string)$message;
@@ -310,9 +314,9 @@ class Logger extends Component implements LoggerInterface
                     continue;
                 }
 
-                if ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof \Throwable)) {
+                if ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof Throwable)) {
                     $message[$k] = $this->exceptionToString($v);
-                } elseif (is_array($v) || $v instanceof \JsonSerializable) {
+                } elseif (is_array($v) || $v instanceof JsonSerializable) {
                     $message[$k] = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
                 }
             }
@@ -338,11 +342,11 @@ class Logger extends Component implements LoggerInterface
                 continue;
             }
 
-            if ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof \Throwable)) {
+            if ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof Throwable)) {
                 $v = $this->exceptionToString($v);
-            } elseif (is_array($v) || $v instanceof \JsonSerializable) {
+            } elseif (is_array($v) || $v instanceof JsonSerializable) {
                 $v = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-            } elseif ($v instanceof \Serializable) {
+            } elseif ($v instanceof Serializable) {
                 $v = serialize($v);
             } elseif (is_string($v)) {
                 null;
@@ -396,7 +400,7 @@ class Logger extends Component implements LoggerInterface
         } else {
             if (MANAPHP_COROUTINE) {
                 /** @noinspection PhpUndefinedMethodInspection */
-                $traces = \Swoole\Coroutine::getBackTrace(0, DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
+                $traces = Coroutine::getBackTrace(0, DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
             } else {
                 $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
             }

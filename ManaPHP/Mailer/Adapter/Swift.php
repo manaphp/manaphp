@@ -3,6 +3,10 @@ namespace ManaPHP\Mailer\Adapter;
 
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Mailer;
+use Swift_Attachment;
+use Swift_Mailer;
+use Swift_Message;
+use Swift_SmtpTransport;
 
 class Swift extends Mailer
 {
@@ -111,7 +115,7 @@ class Swift extends Mailer
      */
     protected function _send($message, &$failedRecipients = null)
     {
-        $swiftTransport = new \Swift_SmtpTransport($this->_host, $this->_port, $this->_encryption);
+        $swiftTransport = new Swift_SmtpTransport($this->_host, $this->_port, $this->_encryption);
         if ($this->_username) {
             $swiftTransport->setUsername($this->_username);
         }
@@ -120,9 +124,9 @@ class Swift extends Mailer
             $swiftTransport->setPassword($this->_password);
         }
 
-        $swift = new \Swift_Mailer($swiftTransport);
+        $swift = new Swift_Mailer($swiftTransport);
 
-        $swiftMessage = new \Swift_Message();
+        $swiftMessage = new Swift_Message();
 
         if ($charset = $message->getCharset()) {
             $swiftMessage->setCharset($charset);
@@ -153,7 +157,7 @@ class Swift extends Mailer
 
         foreach ($message->getAttachments() as $attachment) {
             $swiftMessage->attach(
-                (new \Swift_Attachment($attachment['data'], $attachment['file'], $attachment['contentType']))->setId($attachment['cid']));
+                (new Swift_Attachment($attachment['data'], $attachment['file'], $attachment['contentType']))->setId($attachment['cid']));
         }
 
         return $swift->send($swiftMessage, $failedRecipients);

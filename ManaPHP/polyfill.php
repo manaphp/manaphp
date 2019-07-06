@@ -11,7 +11,7 @@ if (!function_exists('random_bytes')) {
             /** @noinspection PhpDeprecationInspection */
             return mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
         } else {
-            throw new \RuntimeException('random_bytes is not be implemented');
+            throw new RuntimeException('random_bytes is not be implemented');
         }
     }
 }
@@ -25,7 +25,7 @@ if (!function_exists('random_int')) {
     function random_int($min, $max)
     {
         if ($min > $max) {
-            throw new \InvalidArgumentException('Minimum value must be less than or equal to the maximum value');
+            throw new InvalidArgumentException('Minimum value must be less than or equal to the maximum value');
         }
 
         $min = (int)$min;
@@ -56,7 +56,7 @@ if (!function_exists('random_int')) {
         $val = 0;
         do {
             if ($attempts > 128) {
-                throw new \RuntimeException('random_int: RNG is broken - too many rejections');
+                throw new RuntimeException('random_int: RNG is broken - too many rejections');
             }
 
             $randomByteString = random_bytes($bytes);

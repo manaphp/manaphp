@@ -5,6 +5,7 @@ namespace ManaPHP\Cli\Controllers;
 use ManaPHP\Cli\Console;
 use ManaPHP\Cli\Controller;
 use ManaPHP\Utility\Text;
+use ReflectionClass;
 
 /**
  * Class ManaPHP\Cli\Controllers\HelpController
@@ -63,7 +64,7 @@ class HelpController extends Controller
         $controller = Text::underscore(basename(strtr($controllerClassName, '\\', '/'), 'Controller'));
 
         $commands = [];
-        $rc = new \ReflectionClass($controllerClassName);
+        $rc = new ReflectionClass($controllerClassName);
         foreach (get_class_methods($controllerClassName) as $method) {
             if (preg_match('#^(.*)Command$#', $method, $match) !== 1) {
                 continue;

@@ -4,6 +4,8 @@ namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
 use ManaPHP\Utility\Text;
+use ReflectionClass;
+use ReflectionMethod;
 
 class BashCompletionController extends Controller
 {
@@ -49,7 +51,7 @@ class BashCompletionController extends Controller
                 return [];
             }
 
-            foreach ((new \ReflectionClass($controllerClassName))->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+            foreach ((new ReflectionClass($controllerClassName))->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
                 if (!$method->isStatic() && $method->isPublic() && preg_match('#^(.*)Command$#', $method->getShortName(), $matches) === 1) {
                     $commands[] = Text::underscore($matches[1]);
                 }
@@ -80,7 +82,7 @@ class BashCompletionController extends Controller
         }
 
         $arguments = [];
-        foreach ((new \ReflectionMethod($controllerClassName, $command))->getParameters() as $parameter) {
+        foreach ((new ReflectionMethod($controllerClassName, $command))->getParameters() as $parameter) {
             $arguments[] = '--' . strtr($parameter->name, '_', '-');
         }
 

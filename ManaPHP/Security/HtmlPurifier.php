@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP\Security;
 
+use DOMDocument;
 use ManaPHP\Component;
 
 class HtmlPurifier extends Component implements HtmlPurifierInterface
@@ -121,7 +122,7 @@ class HtmlPurifier extends Component implements HtmlPurifierInterface
             $html = '<!doctype html><html><body>' . $html . '</body></html>';
         }
 
-        $doc = new \DOMDocument();
+        $doc = new DOMDocument();
         try {
             @$doc->loadHTML($html);
         } catch (\Exception $e) {

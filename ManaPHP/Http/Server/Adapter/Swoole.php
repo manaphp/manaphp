@@ -4,6 +4,7 @@ namespace ManaPHP\Http\Server\Adapter;
 use ManaPHP\ContextManager;
 use ManaPHP\Http\Server;
 use Swoole\Runtime;
+use Throwable;
 
 class SwooleContext
 {
@@ -191,7 +192,7 @@ class Swoole extends Server
 
             $this->_handler->handle();
 
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $str = date('c') . ' ' . get_class($exception) . ': ' . $exception->getMessage() . PHP_EOL;
             $str .= '    at ' . $exception->getFile() . ':' . $exception->getLine() . PHP_EOL;
             $traces = $exception->getTraceAsString();

@@ -3,6 +3,7 @@ namespace ManaPHP\Db\Connection\Adapter;
 
 use ManaPHP\Db;
 use ManaPHP\Db\Connection;
+use PDO;
 
 class Sqlite extends Connection
 {
@@ -27,7 +28,7 @@ class Sqlite extends Connection
      */
     public function getMetadata($source)
     {
-        $fields = $this->query('PRAGMA table_info(' . $this->_escapeIdentifier($source) . ')', null, \PDO::FETCH_ASSOC);
+        $fields = $this->query('PRAGMA table_info(' . $this->_escapeIdentifier($source) . ')', null, PDO::FETCH_ASSOC);
 
         $attributes = [];
         $primaryKeys = [];
@@ -93,7 +94,7 @@ class Sqlite extends Connection
     {
         $sql = 'SELECT' . " tbl_name FROM sqlite_master WHERE type = 'table' ORDER BY tbl_name";
         $tables = [];
-        foreach ($this->query($sql, [], \PDO::FETCH_ASSOC) as $row) {
+        foreach ($this->query($sql, [], PDO::FETCH_ASSOC) as $row) {
             $tables[] = $row['tbl_name'];
         }
 
@@ -112,7 +113,7 @@ class Sqlite extends Connection
 
         $sql = 'SELECT' . " CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM sqlite_master WHERE type='table' AND tbl_name='$parts[0]'";
 
-        $r = $this->query($sql, [], \PDO::FETCH_NUM);
+        $r = $this->query($sql, [], PDO::FETCH_NUM);
 
         return $r && $r[0] === '1';
     }

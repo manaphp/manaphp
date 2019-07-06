@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP\Dom;
 
+use DOMXPath;
 use ManaPHP\Exception\MisuseException;
 
 class Query
@@ -29,7 +30,7 @@ class Query
     {
         $this->_dom = $domDocument;
 
-        $this->_xpath = new \DOMXPath($domDocument);
+        $this->_xpath = new DOMXPath($domDocument);
 
         $this->_cssToXPath = new CssToXPath();
     }

@@ -1,7 +1,9 @@
 <?php
 namespace ManaPHP\Amqp;
 
-class Message implements \JsonSerializable
+use JsonSerializable;
+
+class Message implements JsonSerializable
 {
     /**
      * @var \ManaPHP\Amqp

@@ -3,13 +3,14 @@
 namespace ManaPHP\Model\Hierarchy\Adapter;
 
 use ManaPHP\Model\Hierarchy\Exception as HierarchyException;
+use ManaPHP\QueryInterface;
 use ManaPHP\Utility\Text;
 
 /**
  * Class ManaPHP\Hierarchy
  *
  * @package ManaPHP
- * @method static \ManaPHP\QueryInterface query()
+ * @method static QueryInterface query()
  */
 trait Path
 {

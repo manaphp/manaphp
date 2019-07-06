@@ -7,6 +7,7 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\Expression\Raw;
 use ManaPHP\Model\ExpressionInterface;
+use PDO;
 
 class Query extends \ManaPHP\Query implements QueryInterface
 {
@@ -1300,7 +1301,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             return [];
         }
 
-        $result = $this->getConnection()->fetchAll($this->_sql, $this->_bind, \PDO::FETCH_ASSOC, $this->_force_master);
+        $result = $this->getConnection()->fetchAll($this->_sql, $this->_bind, PDO::FETCH_ASSOC, $this->_force_master);
 
         $indexBy = $this->_index;
 

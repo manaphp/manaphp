@@ -5,6 +5,7 @@ use ManaPHP\Component;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Redis\Exception as RedisException;
+use Redis;
 
 class Connection extends Component
 {
@@ -131,7 +132,7 @@ class Connection extends Component
     public function getConnect()
     {
         if ($this->_redis === null) {
-            $redis = new \Redis();
+            $redis = new Redis();
 
             if ($this->_persistent) {
                 if (!@$redis->pconnect($this->_host, $this->_port, $this->_timeout, $this->_db)) {
@@ -149,7 +150,7 @@ class Connection extends Component
                 throw new RuntimeException(['select `:db` db failed', 'db' => $this->_db]);
             }
 
-            $redis->setOption(\Redis::OPT_READ_TIMEOUT, -1);
+            $redis->setOption(Redis::OPT_READ_TIMEOUT, -1);
             $this->_redis = $redis;
         }
 

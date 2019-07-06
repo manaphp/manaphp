@@ -4,6 +4,7 @@ namespace ManaPHP\Cli;
 
 use ManaPHP\Component;
 use ManaPHP\Logger\LogCategorizable;
+use ReflectionMethod;
 
 /**
  * Class ManaPHP\Cli\Controller
@@ -47,7 +48,7 @@ abstract class Controller extends Component implements LogCategorizable
                 continue;
             }
 
-            $rm = new \ReflectionMethod($this, $method);
+            $rm = new ReflectionMethod($this, $method);
             if (!$rm->isPublic()) {
                 continue;
             }

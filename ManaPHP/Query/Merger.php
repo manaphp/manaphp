@@ -1,12 +1,15 @@
 <?php
 namespace ManaPHP\Query;
 
+use ArrayIterator;
+use IteratorAggregate;
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Model;
 use ManaPHP\Query;
+use ManaPHP\QueryInterface;
 
 /**
  * Class Merger
@@ -14,7 +17,7 @@ use ManaPHP\Query;
  * @property-read \ManaPHP\Http\RequestInterface $request
  * @property-read \ManaPHP\Paginator             $paginator
  */
-class Merger extends Component implements \ManaPHP\QueryInterface, \IteratorAggregate
+class Merger extends Component implements QueryInterface, IteratorAggregate
 {
     /**
      * @var \ManaPHP\QueryInterface[]
@@ -60,7 +63,7 @@ class Merger extends Component implements \ManaPHP\QueryInterface, \IteratorAggr
 
     public function getIterator()
     {
-        return new \ArrayIterator($this->fetch(true));
+        return new ArrayIterator($this->fetch(true));
     }
 
     public function jsonSerialize()

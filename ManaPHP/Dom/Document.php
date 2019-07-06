@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP\Dom;
 
+use DOMDocument;
 use ManaPHP\Component;
 use ManaPHP\Dom\Document\Exception as DocumentException;
 
@@ -95,7 +96,7 @@ class Document extends Component
     {
         $this->_str = $str;
 
-        $this->_dom = new \DOMDocument();
+        $this->_dom = new DOMDocument();
         $this->_dom->strictErrorChecking = false;
 
         libxml_clear_errors();

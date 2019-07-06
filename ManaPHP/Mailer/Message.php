@@ -1,9 +1,10 @@
 <?php
 namespace ManaPHP\Mailer;
 
+use JsonSerializable;
 use ManaPHP\Di;
 
-class Message implements \JsonSerializable
+class Message implements JsonSerializable
 {
     const PRIORITY_HIGHEST = 1;
     const PRIORITY_HIGH = 2;

@@ -3,6 +3,9 @@ namespace ManaPHP\Model;
 
 use ManaPHP\Component;
 use ManaPHP\Db\Model as DbModel;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionProperty;
 
 /**
  * Class Linter
@@ -39,7 +42,7 @@ class Linter extends Component
     {
         $this->_className = is_string($model) ? $model : get_class($model);
         $this->_model = is_string($model) ? new $model : $model;
-        $this->_reflectionClass = new \ReflectionClass($model);
+        $this->_reflectionClass = new ReflectionClass($model);
     }
 
     /**
@@ -51,7 +54,7 @@ class Linter extends Component
         $r = [];
         $model = $this->_model;
 
-        foreach ($this->_reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+        foreach ($this->_reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             if ($method->getDeclaringClass()->getName() !== $this->_className) {
                 continue;
             }
@@ -99,7 +102,7 @@ class Linter extends Component
     public function getPropertyFields()
     {
         $fields = [];
-        foreach ($this->_reflectionClass->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+        foreach ($this->_reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
             if ($property->isStatic()) {
                 continue;
             }
@@ -118,7 +121,7 @@ class Linter extends Component
         $model = $this->_model;
 
         $properties = [];
-        foreach ($this->_reflectionClass->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+        foreach ($this->_reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
             if ($property->isStatic()) {
                 continue;
             }

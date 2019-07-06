@@ -18,7 +18,7 @@ class ValidateFailedException extends Exception
      * @param int             $code
      * @param \Exception|null $previous
      */
-    public function __construct($errors, $code = 0, \Exception $previous = null)
+    public function __construct($errors, $code = 0, $previous = null)
     {
         $this->_errors = $errors;
         $this->_json = ['code' => 'validator.errors', 'message' => json_encode($errors, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)];

@@ -6,6 +6,7 @@ use ManaPHP\Dispatcher\NotFoundActionException;
 use ManaPHP\Dispatcher\NotFoundControllerException;
 use ManaPHP\Utility\Text;
 use ManaPHP\Validator\ValidateFailedException;
+use ReflectionMethod;
 
 class DispatcherContext
 {
@@ -193,7 +194,7 @@ class Dispatcher extends Component implements DispatcherInterface
 
         $di = $this->_di;
 
-        $parameters = (new \ReflectionMethod($controller, $action . 'Action'))->getParameters();
+        $parameters = (new ReflectionMethod($controller, $action . 'Action'))->getParameters();
         foreach ($parameters as $parameter) {
             $name = $parameter->getName();
             $value = null;

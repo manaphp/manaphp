@@ -1,9 +1,10 @@
 <?php
 namespace ManaPHP\Http\Client;
 
+use JsonSerializable;
 use ManaPHP\Exception\InvalidJsonException;
 
-class Response implements \JsonSerializable
+class Response implements JsonSerializable
 {
     /**
      * @var string

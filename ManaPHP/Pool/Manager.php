@@ -2,6 +2,7 @@
 namespace ManaPHP\Pool;
 
 use ManaPHP\Component;
+use SplQueue;
 
 class Manager extends Component implements ManagerInterface
 {
@@ -57,7 +58,7 @@ class Manager extends Component implements ManagerInterface
         $owner_id = spl_object_id($owner);
 
         if (!isset($this->_pool[$owner_id][$type])) {
-            $this->_pool[$owner_id][$type] = $queue = new \SplQueue();
+            $this->_pool[$owner_id][$type] = $queue = new SplQueue();
         } else {
             $queue = $this->_pool[$owner_id][$type];
         }
@@ -93,7 +94,7 @@ class Manager extends Component implements ManagerInterface
         $owner_id = spl_object_id($owner);
 
         if (!isset($this->_pool[$owner_id][$type])) {
-            $queue = new \SplQueue();
+            $queue = new SplQueue();
             $this->_pool[$owner_id][$type] = $queue;
         } else {
             $queue = $this->_pool[$owner_id][$type];
