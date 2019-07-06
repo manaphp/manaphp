@@ -1253,8 +1253,8 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         } elseif ($this->_di->relationsManager->has($this, $name)) {
             return $this->$name = $this->_di->relationsManager->lazyLoad($this, $name)->fetch();
         } else {
-            throw new UnknownPropertyException(['`:class` does not contain `:field` field: `:fields`',
-                'class' => static::class,
+            throw new UnknownPropertyException(['`:model` does not contain `:field` field: `:fields`',
+                'model' => static::class,
                 'field' => $name,
                 'fields' => implode(',', $this->getFields())]);
         }
@@ -1269,7 +1269,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     public function __set($name, $value)
     {
         if (is_scalar($value)) {
-            throw new MisuseException(['`:class` Model does\'t contains `:field` field', 'field' => $name, 'class' => static::class]);
+            throw new MisuseException(['`:model` Model does\'t contains `:field` field', 'field' => $name, 'model' => static::class]);
         }
 
         $this->$name = $value;
