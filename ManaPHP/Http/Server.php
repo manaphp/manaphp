@@ -8,7 +8,6 @@ use ManaPHP\Component;
  * @package ManaPHP\Http
  *
  * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\Http\Response         $response
  */
 abstract class Server extends Component implements ServerInterface
 {

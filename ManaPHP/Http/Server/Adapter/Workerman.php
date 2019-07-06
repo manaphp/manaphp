@@ -214,13 +214,13 @@ class Workerman extends Server
     }
 
     /**
-     * @param \ManaPHP\Http\ResponseInterface $response
+     * @param \ManaPHP\Http\Response $response
      */
     public function send($response)
     {
         $this->eventsManager->fireEvent('response:beforeSend', $this, $response);
 
-        $response_context = $this->response->_context;
+        $response_context = $response->_context;
 
         Http::header('HTTP', true, $response_context->status_code);
 
