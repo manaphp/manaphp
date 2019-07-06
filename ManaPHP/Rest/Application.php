@@ -5,6 +5,7 @@ namespace ManaPHP\Rest;
 use Error;
 use Exception;
 use ManaPHP\Http\Response;
+use Throwable;
 
 /**
  * Class ManaPHP\Mvc\Application
@@ -40,8 +41,8 @@ class Application extends \ManaPHP\Http\Application
             }
         } catch (Exception $exception) {
             $this->handleException($exception);
-        } catch (Error $error) {
-            $this->handleException($error);
+        } catch (Throwable $throwable) {
+            $this->handleException($throwable);
         }
 
         $this->httpServer->send($this->response);

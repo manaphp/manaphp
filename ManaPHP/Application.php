@@ -258,7 +258,7 @@ class Application extends Component implements ApplicationInterface
     }
 
     /**
-     * @param \Exception|\Error $exception
+     * @param \Exception|\Throwable $exception
      */
     public function handleException($exception)
     {

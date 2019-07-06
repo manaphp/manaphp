@@ -2,10 +2,10 @@
 
 namespace ManaPHP\Mvc;
 
-use Error;
 use Exception;
 use ManaPHP\Http\Response;
 use ManaPHP\View;
+use Throwable;
 
 /**
  * Class ManaPHP\Mvc\Application
@@ -47,7 +47,7 @@ class Application extends \ManaPHP\Http\Application
             }
         } catch (Exception $e) {
             $this->handleException($e);
-        } catch (Error $e) {
+        } catch (Throwable $e) {
             $this->handleException($e);
         }
 

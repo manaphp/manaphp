@@ -2,9 +2,9 @@
 
 namespace ManaPHP\Cli;
 
-use Error;
 use Exception;
 use ManaPHP\Logger\LogCategorizable;
+use Throwable;
 
 /**
  * Class ManaPHP\Cli\Application
@@ -64,10 +64,9 @@ class Application extends \ManaPHP\Application implements LogCategorizable
 
         try {
             exit($this->cliHandler->handle());
-        } /** @noinspection PhpUndefinedClassInspection */
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $this->errorHandler->handle($e);
-        } catch (Error $e) {
+        } catch (Throwable $e) {
             $this->errorHandler->handle($e);
         }
     }

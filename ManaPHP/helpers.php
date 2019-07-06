@@ -539,7 +539,7 @@ if (!function_exists('transaction')) {
             isset($db) && $db->rollback();
             error($exception);
             return $exception->getMessage();
-        } catch (Error $error) {
+        } catch (Throwable $error) {
             /** @noinspection UnSafeIsSetOverArrayInspection */
             isset($db) && $db->rollback();
             error($error);
