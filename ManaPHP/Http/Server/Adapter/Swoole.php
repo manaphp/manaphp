@@ -22,6 +22,7 @@ class SwooleContext
 /**
  * Class Server
  * @package ManaPHP\Http\Server
+ * @property-read \ManaPHP\RouterInterface              $router
  * @property \ManaPHP\Http\Server\Adapter\SwooleContext $_context
  */
 class Swoole extends Server
@@ -55,7 +56,8 @@ class Swoole extends Server
             'DOCUMENT_ROOT' => dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,
             'SCRIPT_NAME' => '/' . basename($script_filename),
-            'SERVER_ADDR' => $this->_host,
+            'SERVER_ADDR' => $this->_getLocalIp(),
+            'SERVER_PORT' => $this->_port,
             'SERVER_SOFTWARE' => 'Swoole/' . SWOOLE_VERSION . ' PHP/' . PHP_VERSION,
             'PHP_SELF' => '/' . basename($script_filename),
             'QUERY_STRING' => '',
@@ -81,9 +83,39 @@ class Swoole extends Server
     }
 
     /**
+     * @return string
+     */
+    protected function _getLocalIp()
+    {
+        if ($this->_host !== '0.0.0.0') {
+            return $this->_host;
+        }
+
+        $ips = swoole_get_local_ip();
+        if (!$ips) {
+            return '127.0.0.1';
+        } elseif (isset($ips['eth0'])) {
+            return $ips['eth0'];
+        } elseif (isset($ips['ens33'])) {
+            return $ips['ens33'];
+        } elseif (isset($ips['ens1'])) {
+            return $ips['ens1'];
+        } else {
+            foreach ($ips as $name => $ip) {
+                if ($name === 'docker' || strpos($name, 'br-') === 0) {
+                    continue;
+                }
+
+                return $ip;
+            }
+            return current($ips);
+        }
+    }
+
+    /**
      * @param \Swoole\Http\Request $request
      */
-    public function _prepareGlobals($request)
+    protected function _prepareGlobals($request)
     {
         $_server = array_change_key_case($request->server, CASE_UPPER);
         unset($_server['SERVER_SOFTWARE']);
@@ -161,7 +193,7 @@ class Swoole extends Server
 
         $this->log('info',
             sprintf('starting listen on: %s:%d with setting: %s', $this->_host, $this->_port, json_encode($this->_settings, JSON_UNESCAPED_SLASHES)));
-
+        $this->log('info', 'http://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT'] . ($this->router->getPrefix() ?: '/'));
         $this->_swoole->on('request', [$this, 'onRequest']);
 
         $this->_swoole->start();
