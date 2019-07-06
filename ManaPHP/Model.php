@@ -613,7 +613,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function assign($data, $whiteList = null)
     {
-        if ($data instanceof Model) {
+        if ($data instanceof self) {
             foreach ($whiteList as $k => $v) {
                 if (is_int($k)) {
                     $this->$v = $data->$v;
