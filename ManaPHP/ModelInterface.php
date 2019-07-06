@@ -378,6 +378,13 @@ interface ModelInterface
     public static function insert($record);
 
     /**
+     * @param string|array $withs
+     *
+     * @return static
+     */
+    public function with($withs);
+
+    /**
      * Returns the instance as an array representation
      *
      * @return array

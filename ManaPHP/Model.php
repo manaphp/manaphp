@@ -949,6 +949,17 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
+     * @param string|array $withs
+     *
+     * @return static
+     */
+    public function with($withs)
+    {
+        $this->_di->relationsManager->earlyLoad($this, [$this], $withs, false);
+        return $this;
+    }
+
+    /**
      * Returns the instance as an array representation
      *
      * @return array =get_object_vars(new static)
