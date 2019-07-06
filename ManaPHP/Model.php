@@ -80,7 +80,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @return array
+     * @return array =get_object_vars(new static)
      */
     public function getForeignKeys()
     {
@@ -374,9 +374,9 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param array $filters
+     * @param array $filters =get_object_vars(new static)
      * @param       $options
-     * @param       $fields
+     * @param       $fields =get_object_vars(new static)
      *
      * @return null|array
      */
@@ -716,7 +716,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param array $data
+     * @param array $data =get_object_vars(new static)
      *
      * @return static|null
      */
@@ -761,7 +761,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param array $data
+     * @param array $data =get_object_vars(new static)
      *
      * @return static|null
      */
@@ -939,7 +939,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param array $filters
+     * @param array $filters =get_object_vars(new static)
      *
      * @return int
      */
