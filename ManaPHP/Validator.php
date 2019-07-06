@@ -767,4 +767,33 @@ class Validator extends Component implements ValidatorInterface
 
         return ($value === '' || preg_match('#^1[3-8]\d{9}$#', $value)) ? $value : null;
     }
+
+    /**
+     * @param static $field
+     * @param string $value
+     *
+     * @return string
+     */
+    protected function _validate_safe($field, $value)
+    {
+        return $value;
+    }
+
+    /**
+     * @param string         $field
+     * @param \ManaPHP\Model $model
+     *
+     * @return mixed|null
+     */
+    public function _validate_model_readonly($field, $model)
+    {
+        $value = $model->$field;
+
+        $snap = $model->getSnapshotData();
+        if (isset($snap[$field]) && $snap[$field] !== $value) {
+            return null;
+        } else {
+            return $value;
+        }
+    }
 }

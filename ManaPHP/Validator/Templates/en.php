@@ -26,4 +26,5 @@ return [
     'json' => 'The :field must be a valid JSON string.',
     'ip' => 'The :field must be a valid IP address.',
     'unique' => 'The :field must be unique',
+    'readonly' => 'The :field can not be modified',
 ];
