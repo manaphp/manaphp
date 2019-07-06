@@ -1299,10 +1299,10 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             if ($this->_di->relationsManager->has($this, $relation)) {
                 return $this->_di->relationsManager->lazyLoad($this, $relation);
             } else {
-                throw new NotSupportedException(['`:class` model does not define `:method` relation', 'class' => static::class, 'method' => $relation]);
+                throw new NotSupportedException(['`:model` model does not define `:method` relation', 'model' => static::class, 'method' => $relation]);
             }
         }
-        throw new NotSupportedException(['`:class` does not contain `:method` method', 'class' => static::class, 'method' => $name]);
+        throw new NotSupportedException(['`:model` does not contain `:method` method', 'model' => static::class, 'method' => $name]);
     }
 
     /**
