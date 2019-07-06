@@ -65,10 +65,6 @@ class Mysql extends Connection
                 $this->_options[PDO::ATTR_TIMEOUT] = (int)$query['timeout'];
             }
 
-            if (isset($query['heartbeat'])) {
-                $this->_heartbeat = (int)$query['heartbeat'];
-            }
-
             if (isset($query['user'])) {
                 $this->_username = $query['user'];
             }
