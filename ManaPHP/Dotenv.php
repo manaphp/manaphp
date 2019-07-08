@@ -12,7 +12,7 @@ class Dotenv extends Component implements DotenvInterface
     /**
      * @var bool
      */
-    protected $_toEnv;
+    protected $_to_env;
 
     /**
      * @var string
@@ -31,8 +31,8 @@ class Dotenv extends Component implements DotenvInterface
      */
     public function __construct($options = [])
     {
-        if (isset($options['toEnv'])) {
-            $this->_toEnv = $options['toEnv'];
+        if (isset($options['to_env'])) {
+            $this->_to_env = $options['to_env'];
         }
 
         foreach ($_ENV as $k => $v) {
@@ -75,7 +75,7 @@ class Dotenv extends Component implements DotenvInterface
         /** @noinspection AdditionOperationOnArraysInspection */
         $this->_env += $env;
 
-        if ($this->_toEnv) {
+        if ($this->_to_env) {
             /** @noinspection AdditionOperationOnArraysInspection */
             $_ENV += $env;
         }
