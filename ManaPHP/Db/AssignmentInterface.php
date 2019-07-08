@@ -8,7 +8,7 @@ interface AssignmentInterface
      *
      * @return static
      */
-    public function setFieldName($name);
+    public function setField($name);
 
     /**
      *

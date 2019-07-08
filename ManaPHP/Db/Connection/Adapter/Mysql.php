@@ -332,7 +332,7 @@ class Mysql extends Connection
                 $updates[] = "[$field]=:{$field}_dku";
                 $bind["{$field}_dku"] = $insertFieldValues[$field];
             } elseif ($v instanceof AssignmentInterface) {
-                $v->setFieldName($k);
+                $v->setField($k);
                 $updates[] = $v->getSql();
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $bind = array_merge($bind, $v->getBind());

@@ -21,7 +21,7 @@ class Assignment implements AssignmentInterface
     /**
      * @var string
      */
-    protected $_fieldName;
+    protected $_field;
 
     /**
      * Assignment constructor.
@@ -42,9 +42,9 @@ class Assignment implements AssignmentInterface
      *
      * @return static
      */
-    public function setFieldName($name)
+    public function setField($name)
     {
-        $this->_fieldName = $name;
+        $this->_field = $name;
 
         return $this;
     }
@@ -55,7 +55,7 @@ class Assignment implements AssignmentInterface
     public function getSql()
     {
         if ($this->_operator !== null) {
-            return "$this->_fieldName = $this->_fieldName $this->_operator :$this->_fieldName";
+            return "$this->_field = $this->_field $this->_operator :$this->_field";
         } else {
             return $this->_value;
         }
@@ -67,7 +67,7 @@ class Assignment implements AssignmentInterface
     public function getBind()
     {
         if ($this->_operator !== null) {
-            return [$this->_fieldName => $this->_value];
+            return [$this->_field => $this->_value];
         } else {
             return $this->_bind;
         }

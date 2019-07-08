@@ -372,7 +372,7 @@ class Db extends Component implements DbInterface
             if (is_int($k)) {
                 $setFields[] = $v;
             } elseif ($v instanceof AssignmentInterface) {
-                $v->setFieldName($k);
+                $v->setField($k);
                 $setFields[] = $v->getSql();
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $bind = array_merge($bind, $v->getBind());
@@ -429,7 +429,7 @@ class Db extends Component implements DbInterface
                     $updates[] = "[$field]=:$field";
                     $bind[$field] = $insertFieldValues[$field];
                 } elseif ($v instanceof AssignmentInterface) {
-                    $v->setFieldName($k);
+                    $v->setField($k);
                     $updates[] = $v->getSql();
                     /** @noinspection SlowArrayOperationsInLoopInspection */
                     $bind = array_merge($bind, $v->getBind());
