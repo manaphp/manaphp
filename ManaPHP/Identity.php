@@ -2,8 +2,8 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Exception\UnauthorizedException;
 use ManaPHP\Exception\NotImplementedException;
+use ManaPHP\Exception\UnauthorizedException;
 
 class IdentityContext
 {

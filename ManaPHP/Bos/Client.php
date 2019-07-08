@@ -2,8 +2,8 @@
 namespace ManaPHP\Bos;
 
 use ManaPHP\Component;
-use ManaPHP\Exception\UnauthorizedException;
 use ManaPHP\Exception\MissingFieldException;
+use ManaPHP\Exception\UnauthorizedException;
 use ManaPHP\Identity\Adapter\Jwt;
 
 class Client extends Component implements ClientInterface

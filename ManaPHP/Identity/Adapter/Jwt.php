@@ -4,8 +4,8 @@ namespace ManaPHP\Identity\Adapter;
 
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Identity;
-use ManaPHP\Identity\ExpiredCredentialException;
 use ManaPHP\Identity\BadCredentialException;
+use ManaPHP\Identity\ExpiredCredentialException;
 use ManaPHP\Identity\NoCredentialException;
 use ManaPHP\Identity\NotBeforeCredentialException;
 
