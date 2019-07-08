@@ -2,7 +2,6 @@
 
 namespace ManaPHP\Rest;
 
-use Error;
 use Exception;
 use ManaPHP\Http\Response;
 use Throwable;
