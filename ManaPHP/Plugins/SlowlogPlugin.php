@@ -108,7 +108,7 @@ class SlowlogPlugin extends Plugin
             'uri' => $url,
             '_REQUEST' => $request,
             'host' => $this->request->getServer('HTTP_HOST'),
-            'eid' => $this->_getEid($elapsed, 0.1)];
+            'eid' => $this->_getEid($elapsed)];
 
         $this->_write('request', $elapsed, $message);
     }

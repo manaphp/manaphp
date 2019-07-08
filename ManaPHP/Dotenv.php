@@ -182,7 +182,7 @@ class Dotenv extends Component implements DotenvInterface
                 $value = strtr($value, ['\n' => PHP_EOL]);
 
                 if (strpos($value, '${') !== false) {
-                    preg_match_all('#\$\{([\w\.]+)\}#', $value, $matches, PREG_PATTERN_ORDER);
+                    preg_match_all('#\$\{([\w\.]+)\}#', $value, $matches);
                     foreach ((array)$matches[1] as $match) {
                         $ref_name = $match;
                         if (!isset($data[$ref_name])) {
@@ -191,7 +191,7 @@ class Dotenv extends Component implements DotenvInterface
                         $value = strtr($value, ['${' . $ref_name . '}' => $data[$ref_name]]);
                     }
                 } elseif (strpos($value, '$') !== false) {
-                    preg_match_all('#\$([A-Z_\d]+)#', $value, $matches, PREG_PATTERN_ORDER);
+                    preg_match_all('#\$([A-Z_\d]+)#', $value, $matches);
                     foreach ((array)$matches[1] as $match) {
                         $ref_name = $match;
                         if (!isset($data[$ref_name])) {

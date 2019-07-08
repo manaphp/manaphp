@@ -83,7 +83,7 @@ class Arguments extends Component implements ArgumentsInterface
             } elseif (strlen($o) > 2) {
                 if (!$args || $args[0][0] === '-') {
                     /** @noinspection PhpParamsInspection */
-                    foreach (str_split(substr($o, 1), 1) as $c) {
+                    foreach (str_split(substr($o, 1)) as $c) {
                         $this->_options[$c] = 1;
                     }
                 } else {

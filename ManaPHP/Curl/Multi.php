@@ -200,7 +200,7 @@ class Multi extends Component implements MultiInterface, Countable
             }
 
             $file = fopen($request->options['file'], 'wb');
-            fseek($file, 0, SEEK_SET);
+            fseek($file, 0);
 
             curl_setopt($curl, CURLOPT_HEADER, 0);
             curl_setopt($curl, CURLOPT_FILE, $file);

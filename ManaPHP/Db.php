@@ -304,7 +304,7 @@ class Db extends Component implements DbInterface
                 $insert_id = $connection->execute($sql, $record, true);
                 $context->affected_rows = 1;
             } else {
-                $connection->execute($sql, $record, false);
+                $connection->execute($sql, $record);
                 $insert_id = null;
             }
             $elapsed = round(microtime(true) - $start_time, 3);

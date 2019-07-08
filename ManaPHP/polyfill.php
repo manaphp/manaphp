@@ -9,7 +9,7 @@ if (!function_exists('random_bytes')) {
         } elseif (function_exists('mcrypt_create_iv')) {
             /** @noinspection CryptographicallySecureRandomnessInspection */
             /** @noinspection PhpDeprecationInspection */
-            return mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+            return mcrypt_create_iv($length);
         } else {
             throw new RuntimeException('random_bytes is not be implemented');
         }

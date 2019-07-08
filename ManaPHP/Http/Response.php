@@ -614,13 +614,13 @@ class Response extends Component implements ResponseInterface
 
         foreach ($context->headers as $header => $value) {
             if ($value !== null) {
-                header($header . ': ' . $value, true);
+                header($header . ': ' . $value);
             } else {
-                header($header, true);
+                header($header);
             }
         }
 
-        header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT')), true);
+        header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT')));
 
         foreach ($context->cookies as $cookie) {
             setcookie($cookie['name'], $cookie['value'], $cookie['expire'],

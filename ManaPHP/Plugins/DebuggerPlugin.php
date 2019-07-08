@@ -266,7 +266,7 @@ class DebuggerPlugin extends Plugin
 
         $template = strpos($this->_template, '/') !== false ? $this->_template : ('@manaphp/Plugins/DebuggerPlugin/Template/' . $this->_template);
 
-        return $this->renderer->render($template, ['data' => $data], false);
+        return $this->renderer->render($template, ['data' => $data]);
     }
 
     /**

@@ -72,7 +72,7 @@ class CsrfPlugin extends Plugin
     {
         if ($this->_useCookie) {
             if (!$this->cookies->has($this->_name)) {
-                $this->cookies->set($this->_name, $this->_generateToken(), 0, '/', null);
+                $this->cookies->set($this->_name, $this->_generateToken(), 0, '/');
             }
 
             return (string)$this->cookies->get($this->_name);

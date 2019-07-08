@@ -101,7 +101,7 @@ class Document extends Component
 
         libxml_clear_errors();
         $old_use_internal_errors = libxml_use_internal_errors(true);
-        $old_disable_entity_loader = libxml_disable_entity_loader(true);
+        $old_disable_entity_loader = libxml_disable_entity_loader();
 
         /** @noinspection SubStrUsedAsStrPosInspection */
         if (substr($str, 0, 5) === '<?xml') {
