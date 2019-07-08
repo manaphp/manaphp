@@ -205,14 +205,14 @@ class Db extends Component implements DbInterface
      *
      * @param string $sql
      * @param array  $bind
-     * @param int    $fetchMode
+     * @param int    $mode
      * @param bool   $useMaster
      *
      * @return array|false
      */
-    public function fetchOne($sql, $bind = [], $fetchMode = PDO::FETCH_ASSOC, $useMaster = false)
+    public function fetchOne($sql, $bind = [], $mode = PDO::FETCH_ASSOC, $useMaster = false)
     {
-        return ($rs = $this->fetchAll($sql, $bind, $fetchMode, $useMaster)) ? $rs[0] : false;
+        return ($rs = $this->fetchAll($sql, $bind, $mode, $useMaster)) ? $rs[0] : false;
     }
 
     /**
@@ -220,12 +220,12 @@ class Db extends Component implements DbInterface
      *
      * @param string $sql
      * @param array  $bind
-     * @param int    $fetchMode
+     * @param int    $mode
      * @param bool   $useMaster
      *
      * @return array
      */
-    public function fetchAll($sql, $bind = [], $fetchMode = PDO::FETCH_ASSOC, $useMaster = false)
+    public function fetchAll($sql, $bind = [], $mode = PDO::FETCH_ASSOC, $useMaster = false)
     {
         $context = $this->_context;
 
@@ -245,7 +245,7 @@ class Db extends Component implements DbInterface
 
         try {
             $start_time = microtime(true);
-            $result = $connection->query($sql, $bind, $fetchMode, $useMaster);
+            $result = $connection->query($sql, $bind, $mode, $useMaster);
             $elapsed = round(microtime(true) - $start_time, 3);
         } finally {
             if ($type) {

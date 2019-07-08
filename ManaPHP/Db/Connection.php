@@ -228,30 +228,30 @@ abstract class Connection extends Component implements ConnectionInterface
     /**
      * @param string $sql
      * @param array  $bind
-     * @param int    $fetchMode
+     * @param int    $mode
      * @param bool   $useMaster
      *
      * @return array
      */
-    public function query($sql, $bind = [], $fetchMode = PDO::FETCH_ASSOC, $useMaster = false)
+    public function query($sql, $bind = [], $mode = PDO::FETCH_ASSOC, $useMaster = false)
     {
         $sql = $this->_replaceQuoteCharacters($sql);
 
         if ($this->_in_transaction) {
             try {
                 $statement = $bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql);
-                return $statement->fetchAll($fetchMode);
+                return $statement->fetchAll($mode);
             } catch (PDOException $exception) {
             }
         } else {
             try {
                 $statement = $bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql);
-                return $statement->fetchAll($fetchMode);
+                return $statement->fetchAll($mode);
             } catch (PDOException $exception) {
                 try {
                     $this->close();
                     $statement = $bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql);
-                    return $statement->fetchAll($fetchMode);
+                    return $statement->fetchAll($mode);
                 } catch (PDOException $exception) {
                 }
             }

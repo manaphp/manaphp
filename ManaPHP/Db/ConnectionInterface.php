@@ -23,12 +23,12 @@ interface ConnectionInterface
     /**
      * @param string $sql
      * @param array  $bind
-     * @param int    $fetchMode
+     * @param int    $mode
      * @param bool   $useMaster
      *
      * @return array
      */
-    public function query($sql, $bind, $fetchMode, $useMaster = false);
+    public function query($sql, $bind, $mode, $useMaster = false);
 
     /**
      * @param string $source

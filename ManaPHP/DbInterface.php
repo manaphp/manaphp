@@ -16,24 +16,24 @@ interface DbInterface
      *
      * @param string $sql
      * @param array  $bind
-     * @param int    $fetchMode
+     * @param int    $mode
      * @param bool   $useMaster
      *
      * @return array|false
      */
-    public function fetchOne($sql, $bind = [], $fetchMode = PDO::FETCH_ASSOC, $useMaster = false);
+    public function fetchOne($sql, $bind = [], $mode = PDO::FETCH_ASSOC, $useMaster = false);
 
     /**
      * Dumps the complete result of a query into an array
      *
      * @param string $sql
      * @param array  $bind
-     * @param int    $fetchMode
+     * @param int    $mode
      * @param bool   $useMaster
      *
      * @return array
      */
-    public function fetchAll($sql, $bind = [], $fetchMode = PDO::FETCH_ASSOC, $useMaster = false);
+    public function fetchAll($sql, $bind = [], $mode = PDO::FETCH_ASSOC, $useMaster = false);
 
     /**
      * @param string $table
