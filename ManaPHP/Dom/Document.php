@@ -15,12 +15,12 @@ class Document extends Component
     /**
      * @var string
      */
-    protected $_sourceUrl;
+    protected $_source_url;
 
     /**
      * @var string
      */
-    protected $_baseUrl;
+    protected $_base_url;
 
     /**
      * @var string
@@ -40,7 +40,7 @@ class Document extends Component
     /**
      * @var array
      */
-    protected $_domErrors = [];
+    protected $_errors = [];
 
     /**
      * Document constructor.
@@ -69,7 +69,7 @@ class Document extends Component
      */
     public function loadFile($file, $url = null)
     {
-        $this->_sourceUrl = $file;
+        $this->_source_url = $file;
         $str = $this->filesystem->fileGet($file);
 
         return $this->loadString($str, $url);
@@ -110,7 +110,7 @@ class Document extends Component
             $r = $this->_dom->loadHTML($str, LIBXML_HTML_NODEFDTD);
         }
 
-        $this->_domErrors = libxml_get_errors();
+        $this->_errors = libxml_get_errors();
         libxml_clear_errors();
 
         libxml_disable_entity_loader($old_disable_entity_loader);
@@ -122,8 +122,8 @@ class Document extends Component
 
         $this->_query = new Query($this->_dom);
 
-        $this->_sourceUrl = $url;
-        $this->_baseUrl = $this->_getBaseUrl() ?: $this->_sourceUrl;
+        $this->_source_url = $url;
+        $this->_base_url = $this->_getBaseUrl() ?: $this->_source_url;
 
         return $this;
     }
@@ -143,7 +143,7 @@ class Document extends Component
      */
     public function getErrors()
     {
-        return $this->_domErrors;
+        return $this->_errors;
     }
 
     /**
@@ -184,9 +184,9 @@ class Document extends Component
             if (preg_match('#^https?://#', $href)) {
                 return $href;
             } elseif ($href[0] === '/') {
-                return substr($this->_sourceUrl, 0, strpos($this->_sourceUrl, '/', 10)) . $href;
+                return substr($this->_source_url, 0, strpos($this->_source_url, '/', 10)) . $href;
             } else {
-                return substr($this->_sourceUrl, 0, strrpos($this->_sourceUrl, '/', 10) + 1) . $href;
+                return substr($this->_source_url, 0, strrpos($this->_source_url, '/', 10) + 1) . $href;
             }
         }
 
@@ -200,7 +200,7 @@ class Document extends Component
      */
     public function setBaseUrl($url)
     {
-        $this->_baseUrl = rtrim($url, '/') . '/';
+        $this->_base_url = rtrim($url, '/') . '/';
 
         return $this;
     }
@@ -226,22 +226,22 @@ class Document extends Component
      */
     public function absolutizeUrl($url)
     {
-        if (!$this->_baseUrl || preg_match('#^https?://#i', $url) || strpos($url, 'javascript:') === 0) {
+        if (!$this->_base_url || preg_match('#^https?://#i', $url) || strpos($url, 'javascript:') === 0) {
             return $url;
         }
 
         if ($url === '') {
-            return $this->_baseUrl;
+            return $this->_base_url;
         } elseif ($url[0] === '/') {
-            return substr($this->_baseUrl, 0, strpos($this->_baseUrl, '/', 10)) . $url;
+            return substr($this->_base_url, 0, strpos($this->_base_url, '/', 10)) . $url;
         } elseif ($url[0] === '#') {
-            if (($pos = strrpos($this->_sourceUrl, '#')) === false) {
-                return $this->_sourceUrl . $url;
+            if (($pos = strrpos($this->_source_url, '#')) === false) {
+                return $this->_source_url . $url;
             } else {
-                return substr($this->_sourceUrl, 0, $pos) . $url;
+                return substr($this->_source_url, 0, $pos) . $url;
             }
         } else {
-            return substr($this->_baseUrl, 0, strrpos($this->_baseUrl, '/', 10) + 1) . $url;
+            return substr($this->_base_url, 0, strrpos($this->_base_url, '/', 10) + 1) . $url;
         }
     }
 
