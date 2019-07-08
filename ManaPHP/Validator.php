@@ -463,7 +463,7 @@ class Validator extends Component implements ValidatorInterface
      *
      * @return string
      */
-    public function _validate_lower($field, $value)
+    protected function _validate_lower($field, $value)
     {
         return strtolower($value);
     }
@@ -474,7 +474,7 @@ class Validator extends Component implements ValidatorInterface
      *
      * @return string
      */
-    public function _validate_upper($field, $value)
+    protected function _validate_upper($field, $value)
     {
         return strtoupper($value);
     }
@@ -485,7 +485,7 @@ class Validator extends Component implements ValidatorInterface
      *
      * @return string|array
      */
-    public function _validate_trim($field, $value)
+    protected function _validate_trim($field, $value)
     {
         if (is_array($value)) {
             $r = [];
@@ -586,7 +586,7 @@ class Validator extends Component implements ValidatorInterface
      *
      * @return string
      */
-    public function _validate_escape($field, $value)
+    protected function _validate_escape($field, $value)
     {
         return htmlspecialchars($value);
     }
@@ -719,7 +719,7 @@ class Validator extends Component implements ValidatorInterface
      *
      * @return string|null
      */
-    public function _validate_account($field, $value)
+    protected function _validate_account($field, $value)
     {
         $value = strtolower($value);
 
@@ -740,7 +740,7 @@ class Validator extends Component implements ValidatorInterface
      *
      * @return int|string|null
      */
-    public function _validate_model_account($field, $model)
+    protected function _validate_model_account($field, $model)
     {
         $value = $model->$field;
 
@@ -785,7 +785,7 @@ class Validator extends Component implements ValidatorInterface
      *
      * @return mixed|null
      */
-    public function _validate_model_readonly($field, $model)
+    protected function _validate_model_readonly($field, $model)
     {
         $value = $model->$field;
 

@@ -8,7 +8,7 @@ use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Model\ExpressionInterface;
-use MongoDB\BSON\ObjectID;
+use MongoDB\BSON\ObjectId;
 
 /**
  * Class ManaPHP\Mongodb\Model
@@ -174,7 +174,7 @@ class Model extends \ManaPHP\Model
                     $types[$field] = 'bool';
                 } elseif ($type === 'array') {
                     $types[$field] = 'array';
-                } elseif ($value instanceof ObjectID) {
+                } elseif ($value instanceof ObjectId) {
                     if ($field === '_id') {
                         continue;
                     }

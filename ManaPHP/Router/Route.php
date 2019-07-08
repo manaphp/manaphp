@@ -101,7 +101,7 @@ class Route implements RouteInterface
      *
      * @return array
      */
-    public function _normalizePaths($paths = [])
+    protected function _normalizePaths($paths = [])
     {
         $routePaths = [];
 

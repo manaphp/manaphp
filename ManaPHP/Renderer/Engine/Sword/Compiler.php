@@ -452,7 +452,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    private function _compileEchoDefaults($value)
+    protected function _compileEchoDefaults($value)
     {
         return preg_replace('/^(?=\$)(.+?)(?:\s+or\s+)(.+?)$/s', 'isset($1) ? $1 : $2', $value);
     }

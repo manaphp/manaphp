@@ -89,7 +89,7 @@ class Workerman extends Server
     /**
      * @return void
      */
-    public function _prepareGlobals()
+    protected function _prepareGlobals()
     {
         $_SERVER['REQUEST_TIME_FLOAT'] = microtime(true);
 

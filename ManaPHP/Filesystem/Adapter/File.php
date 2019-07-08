@@ -56,7 +56,7 @@ class File extends Component implements FilesystemInterface
      *
      * @return void
      */
-    public function _dirCreate($dir, $mode = 0755)
+    protected function _dirCreate($dir, $mode = 0755)
     {
         /** @noinspection NotOptimalIfConditionsInspection */
         if (!is_dir($dir) && !@mkdir($dir, $mode, true) && !is_dir($dir)) {

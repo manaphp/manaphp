@@ -53,7 +53,7 @@ class Arguments extends Component implements ArgumentsInterface
      * @return static
      * @throws \ManaPHP\Cli\Arguments\Exception
      */
-    public function _parse($args)
+    protected function _parse($args)
     {
         $this->_values = [];
         $this->_options = [];

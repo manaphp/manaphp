@@ -59,7 +59,7 @@ class SwordController extends Controller
      * @param string $file
      * @param bool   $replace
      */
-    public function _compile($file, $replace)
+    protected function _compile($file, $replace)
     {
         if ($replace) {
             $compiled = str_replace('.sword', '.phtml', $file);

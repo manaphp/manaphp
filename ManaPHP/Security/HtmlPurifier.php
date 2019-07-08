@@ -46,7 +46,7 @@ class HtmlPurifier extends Component implements HtmlPurifierInterface
      * @param string     $allowedTags
      * @param string     $allowedAttributes
      */
-    public function _purify($nodes, $allowedTags, $allowedAttributes)
+    protected function _purify($nodes, $allowedTags, $allowedAttributes)
     {
         /**
          * @var \DOMNode|\DOMDocument|\DOMElement $node

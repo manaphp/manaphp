@@ -85,7 +85,7 @@ class Connection extends Component implements ConnectionInterface
 
     /**
      * @param string                    $namespace
-     * @param \MongoDb\Driver\BulkWrite $bulk
+     * @param \MongoDB\Driver\BulkWrite $bulk
      *
      * @return \MongoDB\Driver\WriteResult
      * @throws \ManaPHP\Mongodb\Exception

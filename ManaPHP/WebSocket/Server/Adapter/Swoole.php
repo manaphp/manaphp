@@ -97,7 +97,7 @@ class Swoole extends Component implements ServerInterface
     /**
      * @param \Swoole\Http\Request $request
      */
-    public function _prepareGlobals($request)
+    protected function _prepareGlobals($request)
     {
         $_server = array_change_key_case($request->server, CASE_UPPER);
         unset($_server['SERVER_SOFTWARE']);
@@ -128,7 +128,7 @@ class Swoole extends Component implements ServerInterface
      * @param \Swoole\WebSocket\Server $server
      * @param \Swoole\Http\Request     $req
      */
-    public function _onOpen($server, $req)
+    protected function _onOpen($server, $req)
     {
         try {
             $fd = $req->fd;
@@ -145,7 +145,7 @@ class Swoole extends Component implements ServerInterface
      * @param \Swoole\WebSocket\Server $server
      * @param int                      $fd
      */
-    public function _onClose($server, $fd)
+    protected function _onClose($server, $fd)
     {
         /** @var  \Swoole\WebSocket\Server $server */
         if (!$server->isEstablished($fd)) {
@@ -175,7 +175,7 @@ class Swoole extends Component implements ServerInterface
      * @param \Swoole\WebSocket\Server $server
      * @param Frame                    $frame
      */
-    public function _onMessage($server, $frame)
+    protected function _onMessage($server, $frame)
     {
         $fd = $frame->fd;
         $cid = Coroutine::getCid();
