@@ -50,7 +50,7 @@ class Message implements JsonSerializable
     /**
      * @var array
      */
-    protected $_replayTo = [];
+    protected $_replay_to = [];
 
     /**
      * @var array
@@ -65,12 +65,12 @@ class Message implements JsonSerializable
     /**
      * @var string
      */
-    protected $_htmlBody;
+    protected $_html_body;
 
     /**
      * @var string
      */
-    protected $_textBody;
+    protected $_text_body;
 
     /**
      * @var array
@@ -80,7 +80,7 @@ class Message implements JsonSerializable
     /**
      * @var array
      */
-    protected $_embeddedFiles = [];
+    protected $_embedded_files = [];
 
     /**
      * Message constructor.
@@ -186,7 +186,7 @@ class Message implements JsonSerializable
      */
     public function setReplyTo($replyTo)
     {
-        $this->_replayTo = is_string($replyTo) ? [$replyTo] : $replyTo;
+        $this->_replay_to = is_string($replyTo) ? [$replyTo] : $replyTo;
 
         return $this;
     }
@@ -196,7 +196,7 @@ class Message implements JsonSerializable
      */
     public function getReplyTo()
     {
-        return $this->_replayTo;
+        return $this->_replay_to;
     }
 
     /**
@@ -267,8 +267,8 @@ class Message implements JsonSerializable
      */
     public function setBody($html, $text = null)
     {
-        $this->_htmlBody = $html;
-        $this->_textBody = $text;
+        $this->_html_body = $html;
+        $this->_text_body = $text;
 
         return $this;
     }
@@ -293,7 +293,7 @@ class Message implements JsonSerializable
             $body = Di::getDefault()->renderer->render($template, $vars);
         }
 
-        $this->_htmlBody = $body;
+        $this->_html_body = $body;
 
         return $this;
     }
@@ -303,7 +303,7 @@ class Message implements JsonSerializable
      */
     public function getHtmlBody()
     {
-        return $this->_htmlBody;
+        return $this->_html_body;
     }
 
     /**
@@ -313,7 +313,7 @@ class Message implements JsonSerializable
      */
     public function setTextBody($body)
     {
-        $this->_textBody = $body;
+        $this->_text_body = $body;
 
         return $this;
     }
@@ -324,7 +324,7 @@ class Message implements JsonSerializable
      */
     public function getTextBody()
     {
-        return $this->_textBody;
+        return $this->_text_body;
     }
 
     /**
@@ -394,7 +394,7 @@ class Message implements JsonSerializable
             $cid = md5($name) . '.' . pathinfo($name, PATHINFO_EXTENSION);
         }
 
-        $this->_embeddedFiles[] = ['file' => $file, 'name' => $name, 'cid' => $cid];
+        $this->_embedded_files[] = ['file' => $file, 'name' => $name, 'cid' => $cid];
 
         return 'cid:' . $cid;
     }
@@ -415,7 +415,7 @@ class Message implements JsonSerializable
      */
     public function getEmbeddedFiles()
     {
-        return $this->_embeddedFiles;
+        return $this->_embedded_files;
     }
 
     /**
