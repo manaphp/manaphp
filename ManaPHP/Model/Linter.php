@@ -21,12 +21,12 @@ class Linter extends Component
     /**
      * @var string
      */
-    protected $_className;
+    protected $_class;
 
     /**
      * @var \ReflectionClass
      */
-    protected $_reflectionClass;
+    protected $_reflection;
 
     /**
      * @var \ManaPHP\Db\Model|\ManaPHP\Mongodb\Model
@@ -40,9 +40,9 @@ class Linter extends Component
      */
     public function __construct($model)
     {
-        $this->_className = is_string($model) ? $model : get_class($model);
+        $this->_class = is_string($model) ? $model : get_class($model);
         $this->_model = is_string($model) ? new $model : $model;
-        $this->_reflectionClass = new ReflectionClass($model);
+        $this->_reflection = new ReflectionClass($model);
     }
 
     /**
@@ -54,8 +54,8 @@ class Linter extends Component
         $r = [];
         $model = $this->_model;
 
-        foreach ($this->_reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-            if ($method->getDeclaringClass()->getName() !== $this->_className) {
+        foreach ($this->_reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+            if ($method->getDeclaringClass()->getName() !== $this->_class) {
                 continue;
             }
 
@@ -102,7 +102,7 @@ class Linter extends Component
     public function getPropertyFields()
     {
         $fields = [];
-        foreach ($this->_reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
+        foreach ($this->_reflection->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
             if ($property->isStatic()) {
                 continue;
             }
@@ -121,7 +121,7 @@ class Linter extends Component
         $model = $this->_model;
 
         $properties = [];
-        foreach ($this->_reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
+        foreach ($this->_reflection->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
             if ($property->isStatic()) {
                 continue;
             }
@@ -137,7 +137,7 @@ class Linter extends Component
      */
     public function getMagicFields()
     {
-        $comment = $this->_reflectionClass->getDocComment();
+        $comment = $this->_reflection->getDocComment();
 
         if (!$comment) {
             return [];
