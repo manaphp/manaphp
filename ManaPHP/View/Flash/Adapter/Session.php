@@ -15,22 +15,21 @@ class Session extends Flash
     /**
      * @var string
      */
-    protected $_sessionKey = 'manaphp_flash';
+    protected $_key = 'manaphp_flash';
 
     /**
      * Session constructor.
      *
-     * @param array $cssClasses
+     * @param array $css
      */
-    public function __construct($cssClasses = [])
+    public function __construct($css = [])
     {
-        parent::__construct($cssClasses);
+        parent::__construct($css);
 
         $context = $this->_context;
 
-        $defaultMessages = [];
-        $context->messages = (array)$this->session->get($this->_sessionKey, $defaultMessages);
-        $this->session->remove($this->_sessionKey);
+        $context->messages = (array)$this->session->get($this->_key, []);
+        $this->session->remove($this->_key);
     }
 
     /**
@@ -41,11 +40,10 @@ class Session extends Flash
      */
     protected function _message($type, $message)
     {
-        $cssClasses = isset($this->_cssClasses[$type]) ? $this->_cssClasses[$type] : '';
+        $css = isset($this->_css[$type]) ? $this->_css[$type] : '';
 
-        $defaultMessages = [];
-        $messages = $this->session->get($this->_sessionKey, $defaultMessages);
-        $messages[] = '<div class="' . $cssClasses . '">' . $message . '</div>' . PHP_EOL;
-        $this->session->set($this->_sessionKey, $messages);
+        $messages = $this->session->get($this->_key, []);
+        $messages[] = '<div class="' . $css . '">' . $message . '</div>' . PHP_EOL;
+        $this->session->set($this->_key, $messages);
     }
 }

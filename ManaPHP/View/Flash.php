@@ -24,16 +24,16 @@ abstract class Flash extends Component implements FlashInterface, AdapterInterfa
     /**
      * @var array
      */
-    protected $_cssClasses;
+    protected $_css;
 
     /**
      * \ManaPHP\Flash constructor
      *
-     * @param array $cssClasses
+     * @param array $css
      */
-    public function __construct($cssClasses = [])
+    public function __construct($css = [])
     {
-        $this->_cssClasses = $cssClasses ?: [
+        $this->_css = $css ?: [
             'error' => 'flash-error',
             'notice' => 'flash-notice',
             'success' => 'flash-success',
