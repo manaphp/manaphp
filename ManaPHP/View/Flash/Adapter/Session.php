@@ -39,7 +39,7 @@ class Session extends Flash
      *
      * @return void
      */
-    public function _message($type, $message)
+    protected function _message($type, $message)
     {
         $cssClasses = isset($this->_cssClasses[$type]) ? $this->_cssClasses[$type] : '';
 

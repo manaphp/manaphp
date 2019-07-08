@@ -42,6 +42,16 @@ abstract class Flash extends Component implements FlashInterface, AdapterInterfa
     }
 
     /**
+     * Outputs a message
+     *
+     * @param string $type
+     * @param string $message
+     *
+     * @return void
+     */
+    abstract protected function _message($type, $message);
+
+    /**
      * Shows a HTML error message
      *
      * @param string $message

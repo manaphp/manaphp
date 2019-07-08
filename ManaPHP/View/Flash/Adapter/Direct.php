@@ -19,7 +19,7 @@ class Direct extends Flash
      *
      * @return void
      */
-    public function _message($type, $message)
+    protected function _message($type, $message)
     {
         $context = $this->_context;
 
