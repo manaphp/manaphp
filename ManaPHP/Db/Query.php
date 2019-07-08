@@ -54,7 +54,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
     /**
      * @var bool
      */
-    protected $_forUpdate;
+    protected $_for_update;
 
     /**
      * @var array
@@ -64,7 +64,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
     /**
      * @var int
      */
-    protected $_hiddenParamNumber = 0;
+    protected $_param_number = 0;
 
     /**
      * @var array
@@ -481,9 +481,9 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $minKey = $id . '_min';
             $maxKey = $id . '_max';
         } else {
-            $minKey = '_min_' . $this->_hiddenParamNumber;
-            $maxKey = '_max_' . $this->_hiddenParamNumber;
-            $this->_hiddenParamNumber++;
+            $minKey = '_min_' . $this->_param_number;
+            $maxKey = '_max_' . $this->_param_number;
+            $this->_param_number++;
         }
 
         $this->_conditions[] = "$expr BETWEEN :$minKey AND :$maxKey";
@@ -509,10 +509,10 @@ class Query extends \ManaPHP\Query implements QueryInterface
             return $min === null || $min === '' ? $this : $this->whereCmp($expr, '<', $min);
         }
 
-        $minKey = '_min_' . $this->_hiddenParamNumber;
-        $maxKey = '_max_' . $this->_hiddenParamNumber;
+        $minKey = '_min_' . $this->_param_number;
+        $maxKey = '_max_' . $this->_param_number;
 
-        $this->_hiddenParamNumber++;
+        $this->_param_number++;
 
         if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
             if (strpos($expr, '.') !== false) {
@@ -556,13 +556,13 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 $bindKeys = [];
                 /** @noinspection ForeachSourceInspection */
                 foreach ($values as $k => $value) {
-                    $key = '_in_' . $this->_hiddenParamNumber . '_' . $k;
+                    $key = '_in_' . $this->_param_number . '_' . $k;
                     $bindKeys[] = ":$key";
                     $this->_bind[$key] = $value;
                 }
 
                 $this->_conditions[] = $expr . ' IN (' . implode(', ', $bindKeys) . ')';
-                $this->_hiddenParamNumber++;
+                $this->_param_number++;
             }
         } else {
             $this->_conditions[] = 'FALSE';
@@ -614,12 +614,12 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 $bindKeys = [];
                 /** @noinspection ForeachSourceInspection */
                 foreach ($values as $k => $value) {
-                    $key = '_in_' . $this->_hiddenParamNumber . '_' . $k;
+                    $key = '_in_' . $this->_param_number . '_' . $k;
                     $bindKeys[] = ':' . $key;
                     $this->_bind[$key] = $value;
                 }
 
-                $this->_hiddenParamNumber++;
+                $this->_param_number++;
 
                 $this->_conditions[] = $expr . ' NOT IN (' . implode(', ', $bindKeys) . ')';
             }
@@ -981,7 +981,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function forUpdate($forUpdate = true)
     {
-        $this->_forUpdate = (bool)$forUpdate;
+        $this->_for_update = (bool)$forUpdate;
 
         return $this;
     }
@@ -1223,8 +1223,8 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $params['offset'] = $this->_offset;
         }
 
-        if ($this->_forUpdate) {
-            $params['forUpdate'] = $this->_forUpdate;
+        if ($this->_for_update) {
+            $params['forUpdate'] = $this->_for_update;
         }
 
         $sql = $this->_db->buildSql($params);
@@ -1292,7 +1292,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function execute()
     {
-        $this->_hiddenParamNumber = 0;
+        $this->_param_number = 0;
 
         $this->_sql = $this->_buildSql();
 
