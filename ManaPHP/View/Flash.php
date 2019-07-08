@@ -3,7 +3,6 @@
 namespace ManaPHP\View;
 
 use ManaPHP\Component;
-use ManaPHP\View\Flash\AdapterInterface;
 
 class FlashContext
 {
@@ -19,7 +18,7 @@ class FlashContext
  * @package flash
  * @property \ManaPHP\View\FlashContext $_context
  */
-abstract class Flash extends Component implements FlashInterface, AdapterInterface
+abstract class Flash extends Component implements FlashInterface
 {
     /**
      * @var array
