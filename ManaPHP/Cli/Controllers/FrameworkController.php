@@ -9,7 +9,7 @@ class FrameworkController extends Controller
     /**
      * @var string
      */
-    protected $_tmpLiteFile = '@tmp/manaphp_lite.tmp';
+    protected $_tmp_lite_file = '@tmp/manaphp_lite.tmp';
 
     /**
      * @param string $str
@@ -18,8 +18,8 @@ class FrameworkController extends Controller
      */
     protected function _strip_whitespaces($str)
     {
-        $this->filesystem->filePut($this->_tmpLiteFile, $str);
-        $str = php_strip_whitespace($this->alias->resolve($this->_tmpLiteFile));
+        $this->filesystem->filePut($this->_tmp_lite_file, $str);
+        $str = php_strip_whitespace($this->alias->resolve($this->_tmp_lite_file));
 //        $str = preg_replace('#\s*/\*\*.*?\*/#ms', '', $str);//remove comments
 //        $str = preg_replace('#([\r\n]+)\s*\\1#', '\\1', $str);//remove blank lines
 //        $str = preg_replace('#([\r\n]+)\s+{#', '{', $str);//repositionClose;
@@ -29,7 +29,7 @@ class FrameworkController extends Controller
 
     public function __destruct()
     {
-        $this->filesystem->fileDelete($this->_tmpLiteFile);
+        $this->filesystem->fileDelete($this->_tmp_lite_file);
     }
 
     protected function _getSourceFiles($dir)
