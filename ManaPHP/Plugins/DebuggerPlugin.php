@@ -43,7 +43,7 @@ class DebuggerPlugin extends Plugin
 
     public function __construct()
     {
-        $this->eventsManager->peekEvent([$this, '_eventHandlerPeek']);
+        $this->eventsManager->peekEvent([$this, 'onEvent']);
 
         $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
         $this->eventsManager->attachEvent('request:end', [$this, 'onRequestEnd']);
@@ -89,7 +89,7 @@ class DebuggerPlugin extends Plugin
      *
      * @return void
      */
-    public function _eventHandlerPeek($event, $source, $data)
+    public function onEvent($event, $source, $data)
     {
         $context = $this->_context;
 
