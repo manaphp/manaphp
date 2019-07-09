@@ -117,7 +117,7 @@ abstract class Client extends Component implements ClientInterface
                     $str = 'http://TRACK/';
                 }
                 $headers['Referer'] = $str . (strpos($str, '?') ? '&' : '?') . http_build_query($referer);
-            } elseif (!strpos($options['Referer'], '://')) {
+            } elseif (!strpos($headers['Referer'], '://')) {
                 $headers['Referer'] = 'http://TRACE/' . $headers['Referer'];
             }
         }
