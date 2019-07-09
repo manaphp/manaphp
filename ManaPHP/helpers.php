@@ -9,6 +9,7 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnauthorizedException;
 use ManaPHP\Identity\BadCredentialException;
 use ManaPHP\Identity\NoCredentialException;
+use Swoole\Coroutine;
 
 if (PHP_VERSION_ID < 70000) {
     require_once __DIR__ . '/polyfill.php';
@@ -474,10 +475,17 @@ if (!function_exists('render')) {
 if (!function_exists('dd')) {
     function dd()
     {
-        foreach (func_get_args() as $arg) {
-            var_dump($arg);
+        if (MANAPHP_COROUTINE) {
+            /** @noinspection PhpUndefinedMethodInspection */
+            $trace = Coroutine::getBackTrace(0, DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
+        } else {
+            $trace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
         }
-        exit(1);
+        echo var_export($trace['file'] . ':' . $trace['line']), PHP_EOL;
+        foreach (func_get_args() as $arg) {
+            echo var_export($arg), PHP_EOL;
+        }
+        throw new AbortException();
     }
 }
 
