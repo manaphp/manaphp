@@ -93,8 +93,6 @@ class SlowlogPlugin extends Plugin
             return;
         }
 
-        $elapsed = mt_rand(0, 20000) / 1000;
-
         $request = $this->request->get();
         if (isset($request['_url'])) {
             $url = $request['_url'];
