@@ -84,9 +84,9 @@ class Swoole extends Component implements ServerInterface
         $this->_swoole = new Server($this->_host, $this->_port);
         $this->_swoole->set($this->_settings);
 
-        $this->_swoole->on('open', [$this, '_onOpen']);
-        $this->_swoole->on('close', [$this, '_onClose']);
-        $this->_swoole->on('message', [$this, '_onMessage']);
+        $this->_swoole->on('open', [$this, 'onOpen']);
+        $this->_swoole->on('close', [$this, 'onClose']);
+        $this->_swoole->on('message', [$this, 'onMessage']);
     }
 
     public function log($level, $message)
@@ -128,7 +128,7 @@ class Swoole extends Component implements ServerInterface
      * @param \Swoole\WebSocket\Server $server
      * @param \Swoole\Http\Request     $req
      */
-    protected function _onOpen($server, $req)
+    public function onOpen($server, $req)
     {
         try {
             $fd = $req->fd;
@@ -145,7 +145,7 @@ class Swoole extends Component implements ServerInterface
      * @param \Swoole\WebSocket\Server $server
      * @param int                      $fd
      */
-    protected function _onClose($server, $fd)
+    public function onClose($server, $fd)
     {
         /** @var  \Swoole\WebSocket\Server $server */
         if (!$server->isEstablished($fd)) {
@@ -175,7 +175,7 @@ class Swoole extends Component implements ServerInterface
      * @param \Swoole\WebSocket\Server $server
      * @param Frame                    $frame
      */
-    protected function _onMessage($server, $frame)
+    public function onMessage($server, $frame)
     {
         $fd = $frame->fd;
         $cid = Coroutine::getCid();
