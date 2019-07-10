@@ -863,11 +863,8 @@ class Merger extends Component implements QueryInterface, IteratorAggregate
             $count = $this->_offset + count($items);
         }
 
-        $paginator = $this->paginator;
-
-        $paginator->items = $items;
-
-        return $paginator->paginate($count, $this->_limit, (int)($this->_offset / $this->_limit) + 1);
+        $this->paginator->items = $items;
+        return clone $this->paginator->paginate($count, $this->_limit, (int)($this->_offset / $this->_limit) + 1);
     }
 
     /**

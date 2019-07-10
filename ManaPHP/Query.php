@@ -312,7 +312,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
         }
 
         $this->paginator->items = $items;
-        return $this->paginator->paginate($count, $this->_limit, (int)($this->_offset / $this->_limit) + 1);
+        return clone $this->paginator->paginate($count, $this->_limit, (int)($this->_offset / $this->_limit) + 1);
     }
 
     /**
