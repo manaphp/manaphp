@@ -177,7 +177,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      * Allows to query a set of records that match the specified conditions
      *
      * @param array $filters =get_object_vars(new static)
-     * @param array $options
+     * @param array $options =['order'=>get_object_vars(new static)]
      * @param array $fields =get_object_vars(new static)
      *
      * @return  static[]
@@ -191,7 +191,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      * Allows to query a set of records that match the specified conditions
      *
      * @param array $filters =get_object_vars(new static)
-     * @param array $options
+     * @param array $options =['order'=>get_object_vars(new static)]
      * @param array $fields =get_object_vars(new static)
      *
      * @return  \ManaPHP\Paginator
@@ -375,7 +375,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
     /**
      * @param array $filters =get_object_vars(new static)
-     * @param       $options
+     * @param       $options =['order'=>get_object_vars(new static)]
      * @param       $fields =get_object_vars(new static)
      *
      * @return null|array
