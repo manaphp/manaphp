@@ -120,7 +120,7 @@ class Validator extends Component implements ValidatorInterface
                     } elseif ($r === false) {
                         throw new ValidateFailedException([$field => $this->createError('default', $field)]);
                     } else {
-                        $value = $v;
+                        $value = $r;
                     }
                     continue;
                 } elseif (strpos($v, '-') !== false) {
@@ -179,7 +179,7 @@ class Validator extends Component implements ValidatorInterface
                     } elseif ($r === false) {
                         throw new ValidateFailedException([$field => $this->createError('default', $field)]);
                     } else {
-                        $value = $v;
+                        $value = $r;
                     }
                     continue;
                 } elseif (strpos($v, '-') !== false) {
