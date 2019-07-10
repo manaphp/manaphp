@@ -67,7 +67,6 @@ class Compiler extends Component
         'widget',
         'partial',
         'block',
-        'pager',
         'json'
     ];
 
@@ -933,18 +932,6 @@ class Compiler extends Component
     ) {
         return '<?php if($di->has("debuggerPlugin")){?><div class="debugger"><a target="_self" href="' .
             '<?= $di->debuggerPlugin->getUrl(); ?>">Debugger</a></div><?php }?> ';
-    }
-
-    /**
-     * Compile the pager statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function _compile_pager($expression)
-    {
-        return "<?= pager{$expression}; ?>";
     }
 
     /**

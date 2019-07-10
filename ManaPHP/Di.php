@@ -43,7 +43,6 @@ use ReflectionClass;
  * @property-read \ManaPHP\AuthorizationInterface          $authorization
  * @property-read \ManaPHP\Security\CaptchaInterface       $captcha
  * @property-read \ManaPHP\IdentityInterface               $identity
- * @property-read \ManaPHP\Paginator                       $paginator
  * @property-read \ManaPHP\FilesystemInterface             $filesystem
  * @property-read \ManaPHP\Security\RandomInterface        $random
  * @property-read \ManaPHP\Message\QueueInterface          $messageQueue

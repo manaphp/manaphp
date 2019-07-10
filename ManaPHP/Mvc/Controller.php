@@ -22,7 +22,6 @@ use ManaPHP\Logger\LogCategorizable;
  * @property-read \ManaPHP\Http\ResponseInterface            $response
  * @property-read \ManaPHP\DispatcherInterface               $dispatcher
  * @property-read \ManaPHP\Http\SessionInterface             $session
- * @property-read \ManaPHP\Paginator                         $paginator
  * @property-read \ManaPHP\CacheInterface                    $viewsCache
  * @property-read \ManaPHP\Message\QueueInterface            $messageQueue
  * @property-read \ManaPHP\Db\Model\MetadataInterface        $modelsMetadata

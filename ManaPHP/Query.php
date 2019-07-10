@@ -10,7 +10,6 @@ use ManaPHP\Query\NotFoundException;
  * Class Query
  * @package ManaPHP
  * @property-read \ManaPHP\Http\RequestInterface           $request
- * @property-read \ManaPHP\Paginator                       $paginator
  * @property-read \ManaPHP\Model\Relation\ManagerInterface $relationsManager
  */
 abstract class Query extends Component implements QueryInterface, IteratorAggregate
@@ -311,8 +310,9 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
             $count = $this->_offset + count($items);
         }
 
-        $this->paginator->items = $items;
-        return clone $this->paginator->paginate($count, $this->_limit, (int)($this->_offset / $this->_limit) + 1);
+        $paginator = $this->_di->get('paginator');
+        $paginator->items = $items;
+        return $paginator->paginate($count, $this->_limit, (int)($this->_offset / $this->_limit) + 1);
     }
 
     /**

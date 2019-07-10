@@ -15,7 +15,6 @@ use ManaPHP\QueryInterface;
  * Class Merger
  * @package ManaPHP\Query
  * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\Paginator             $paginator
  */
 class Merger extends Component implements QueryInterface, IteratorAggregate
 {
@@ -863,8 +862,9 @@ class Merger extends Component implements QueryInterface, IteratorAggregate
             $count = $this->_offset + count($items);
         }
 
-        $this->paginator->items = $items;
-        return clone $this->paginator->paginate($count, $this->_limit, (int)($this->_offset / $this->_limit) + 1);
+        $paginator = $this->_di->get('paginator');
+        $paginator->items = $items;
+        return $paginator->paginate($count, $this->_limit, (int)($this->_offset / $this->_limit) + 1);
     }
 
     /**
