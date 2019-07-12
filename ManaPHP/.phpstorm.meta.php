@@ -127,7 +127,7 @@ namespace PHPSTORM_META {
 
     expectedArguments(\ManaPHP\Http\ResponseInterface::setJsonContent(), 0, ['code' => 0, 'message' => '', 'data' => []]);
     expectedReturnValues(\ManaPHP\Mvc\Controller::getAcl(), 0,
-        ['list' => '@index', 'detail' => '@index', 'create' => '@edit', 'delete' => '@edit', 'edit' => '@index']);
+        ['list' => '@index', 'detail' => '@index', 'create' => '@index', 'delete' => '@index', 'edit' => '@index']);
 
     registerArgumentsSet('wsPusherEndpoint', 'admin', 'user');
     expectedArguments(\ManaPHP\WebSocket\PusherInterface::pushToId(), 2, argumentsSet('wsPusherEndpoint'));
@@ -135,6 +135,15 @@ namespace PHPSTORM_META {
     expectedArguments(\ManaPHP\WebSocket\PusherInterface::pushToRole(), 2, argumentsSet('wsPusherEndpoint'));
     expectedArguments(\ManaPHP\WebSocket\PusherInterface::pushToAll(), 1, argumentsSet('wsPusherEndpoint'));
     expectedArguments(\ManaPHP\WebSocket\PusherInterface::broadcast(), 1, argumentsSet('wsPusherEndpoint'));
+
+    registerArgumentsSet('validator_rules', ['required', 'default', 'bool', 'int', 'float', 'string',
+        'min' => 1, 'max' => 2, 'length' => '1-10', 'minLength' => 1, 'maxLength' => 1, 'range' => '1-3',
+        'regex' => '#^\d+$#', 'alpha', 'digit', 'xdigit', 'alnum', 'lower', 'upper', 'trim', 'email', 'url', 'ip', 'date',
+        'timestamp', 'escape', 'xss', 'in' => [1, 2], 'not_in' => [1, 2], 'ext' => 'pdf,doc', 'unique', 'exists',
+        'const', 'account', 'mobile', 'safe', 'readonly']);
+    expectedArguments(\input(), 1, argumentsSet('validator_rules'));
+    expectedArguments(\ManaPHP\Validator::validateValue(), 2, argumentsSet('validator_rules'));
+    expectedArguments(\ManaPHP\Validator::validateModel(), 2, argumentsSet('validator_rules'));
 }
 
 /**
