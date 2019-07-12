@@ -233,9 +233,10 @@ class Application extends Component implements ApplicationInterface
             $this->_di->alias->set($alias, $path);
         }
 
-        $routerClass = $this->alias->get('@ns.app') . '\Router';
-        if (class_exists($routerClass)) {
-            $this->_di->setShared('router', $routerClass);
+        $app_dir = scandir($this->alias->resolve('@app'));
+
+        if (in_array('Router.php', $app_dir, true)) {
+            $this->_di->setShared('router', $this->alias->get('@ns.app') . '\Router');
         }
 
         if ($configure->components) {
@@ -244,7 +245,7 @@ class Application extends Component implements ApplicationInterface
 
         $this->_loadServices($configure->services);
 
-        if ($configure->plugins) {
+        if ($configure->plugins || in_array('Plugins', $app_dir, true)) {
             $this->_loadPlugins($configure->plugins);
         }
 
