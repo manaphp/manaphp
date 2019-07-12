@@ -252,7 +252,7 @@ class Console extends Component implements ConsoleInterface
         $progress = 0;
         while ($progress < 100) {
 
-            $progress += mt_rand(1, $progress > 10 ? 20 : 3);
+            $progress += random_int(1, $progress > 10 ? 20 : 3);
             $this->progress('current process is :value', $progress);
             sleep(1);
         }

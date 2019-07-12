@@ -108,7 +108,7 @@ class Captcha extends Component implements CaptchaInterface
      */
     protected function _rand_amplitude($a)
     {
-        return mt_rand((1 - $a) * 10000, (1 + $a) * 10000) / 10000;
+        return random_int((1 - $a) * 10000, (1 + $a) * 10000) / 10000;
     }
 
     /**
@@ -132,26 +132,26 @@ class Captcha extends Component implements CaptchaInterface
         $referenceFontSize = min($height, $width / $this->_length);
 
         $x = 0;
-        $points[2] = mt_rand($referenceFontSize * 0.1, $referenceFontSize * 0.3);
+        $points[2] = random_int($referenceFontSize * 0.1, $referenceFontSize * 0.3);
         $length = strlen($code);
         /** @noinspection ForeachInvariantsInspection */
         for ($i = 0; $i < $length; $i++) {
-            $fontSize = $referenceFontSize * mt_rand(800, 1000) / 1000;
-            $angle = mt_rand(-$this->_angleAmplitude, $this->_angleAmplitude);
-            $x += ($points[2] - $x) - round(mt_rand($fontSize * 0.1, $fontSize * 0.2));
-            $y = $height - (($height - $referenceFontSize) * mt_rand(0, 1000) / 1000);
-            $fgColor = imagecolorallocate($image, mt_rand(0, 240), mt_rand(0, 240), mt_rand(0, 240));
+            $fontSize = $referenceFontSize * random_int(800, 1000) / 1000;
+            $angle = random_int(-$this->_angleAmplitude, $this->_angleAmplitude);
+            $x += ($points[2] - $x) - round(random_int($fontSize * 0.1, $fontSize * 0.2));
+            $y = $height - (($height - $referenceFontSize) * random_int(0, 1000) / 1000);
+            $fgColor = imagecolorallocate($image, random_int(0, 240), random_int(0, 240), random_int(0, 240));
 
             $points = imagettftext($image, $fontSize, $angle, $x, $y, $fgColor, $fontFile, $code[$i]);
 
             for ($k = 0; $k < $this->_noiseCharCount; $k++) {
                 $letter = $this->_charset[mt_rand() % strlen($this->_charset)];
-                $fgColor = imagecolorallocate($image, mt_rand(0, 240), mt_rand(0, 240), mt_rand(0, 240));
+                $fgColor = imagecolorallocate($image, random_int(0, 240), random_int(0, 240), random_int(0, 240));
                 imagettftext($image,
                     $fontSize * 0.4 * $this->_rand_amplitude(0.1),
-                    mt_rand(-40, 40),
-                    round($x + mt_rand(-$fontSize * 1.5, $fontSize)),
-                    $height / 2 + mt_rand(-$fontSize * 0.5, $fontSize * 0.5),
+                    random_int(-40, 40),
+                    round($x + random_int(-$fontSize * 1.5, $fontSize)),
+                    $height / 2 + random_int(-$fontSize * 0.5, $fontSize * 0.5),
                     $fgColor, $fontFile, $letter);
             }
         }
@@ -183,28 +183,28 @@ class Captcha extends Component implements CaptchaInterface
 
         $referenceFontSize = min($height, $width / $this->_length);
 
-        $x = mt_rand($referenceFontSize * 0.1, $referenceFontSize * 0.3);
+        $x = random_int($referenceFontSize * 0.1, $referenceFontSize * 0.3);
         $length = strlen($code);
         $fgPixel = new ImagickPixel();
         /** @noinspection ForeachInvariantsInspection */
         for ($i = 0; $i < $length; $i++) {
-            $fontSize = $referenceFontSize * mt_rand(800, 1000) / 1000;
+            $fontSize = $referenceFontSize * random_int(800, 1000) / 1000;
             $draw->setFontSize($fontSize);
-            $fgPixel->setColor('rgb(' . mt_rand(0, 240) . ',' . mt_rand(0, 240) . ',' . mt_rand(0, 240) . ')');
+            $fgPixel->setColor('rgb(' . random_int(0, 240) . ',' . random_int(0, 240) . ',' . random_int(0, 240) . ')');
             $draw->setFillColor($fgPixel);
-            $angle = mt_rand(-$this->_angleAmplitude, $this->_angleAmplitude);
-            $y = ($height - $referenceFontSize) * mt_rand(-1000, 1000) / 1000;
+            $angle = random_int(-$this->_angleAmplitude, $this->_angleAmplitude);
+            $y = ($height - $referenceFontSize) * random_int(-1000, 1000) / 1000;
             $image->annotateImage($draw, $x, $y, $angle, $code[$i]);
-            $x += $fontSize * mt_rand(600, 800) / 1000;
+            $x += $fontSize * random_int(600, 800) / 1000;
 
             for ($k = 0; $k < $this->_noiseCharCount; $k++) {
                 $letter = $this->_charset[mt_rand() % strlen($this->_charset)];
-                $fgPixel->setColor('rgb(' . mt_rand(0, 240) . ',' . mt_rand(0, 240) . ',' . mt_rand(0, 240) . ')');
+                $fgPixel->setColor('rgb(' . random_int(0, 240) . ',' . random_int(0, 240) . ',' . random_int(0, 240) . ')');
                 $draw->setFillColor($fgPixel);
                 $draw->setFontSize($fontSize * 0.4 * $this->_rand_amplitude(0.1));
-                $angle = mt_rand(-40, 40);
-                $noise_x = $x + mt_rand(-700, 700) / 1000 * $fontSize;
-                $noise_y = $fontSize / 2 + mt_rand(-$fontSize * 0.5, $fontSize * 0.5);
+                $angle = random_int(-40, 40);
+                $noise_x = $x + random_int(-700, 700) / 1000 * $fontSize;
+                $noise_y = $fontSize / 2 + random_int(-$fontSize * 0.5, $fontSize * 0.5);
                 $image->annotateImage($draw, $noise_x, $noise_y, $angle, $letter);
             }
         }
