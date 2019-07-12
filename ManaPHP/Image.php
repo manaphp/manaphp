@@ -232,12 +232,10 @@ abstract class Image extends Component implements ImageInterface
      * @param string $file
      * @param int    $quality
      *
-     * @return static
+     * @return void
      */
     public function save($file, $quality = 80)
     {
         $this->do_save($file, $quality);
-
-        return $this;
     }
 }

@@ -245,6 +245,8 @@ class Gd extends Image
     /**
      * @param string $file
      * @param int    $quality
+     *
+     * @return void
      */
     public function do_save($file, $quality = 80)
     {
