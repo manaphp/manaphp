@@ -242,10 +242,6 @@ class Application extends Component implements ApplicationInterface
             $this->_loadComponents($configure->components);
         }
 
-        foreach ($configure->bootstraps as $bootstrap) {
-            $this->_di->getShared($bootstrap);
-        }
-
         $this->_loadServices($configure->services);
 
         if ($configure->plugins) {

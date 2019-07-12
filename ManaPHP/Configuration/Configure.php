@@ -77,11 +77,6 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @var array
      */
-    public $bootstraps = [];
-
-    /**
-     * @var array
-     */
     public $listeners = ['*'];
 
     /**
