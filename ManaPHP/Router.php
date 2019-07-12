@@ -110,13 +110,10 @@ class Router extends Component implements RouterInterface
     public function setAreas($areas = null)
     {
         if ($areas === null) {
-            $appDir = $this->alias->get('@app');
-            $dirs = glob("$appDir/Areas/*", GLOB_ONLYDIR) ?: glob("$appDir/Controllers/*", GLOB_ONLYDIR);
-
             $areas = [];
-            foreach ($dirs as $dir) {
+            foreach (glob($this->alias->resolve('@app/Areas/*'), GLOB_ONLYDIR) as $dir) {
                 $dir = substr($dir, strrpos($dir, '/') + 1);
-                if (preg_match('#^[A-Za-z]\w+$#', $dir)) {
+                if (preg_match('#^[A-Z]\w+$#', $dir)) {
                     $areas[] = $dir;
                 }
             }
