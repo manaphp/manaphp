@@ -95,7 +95,7 @@ class Alias extends Component implements AliasInterface
         if (strpos($path, '{') !== false && preg_match_all('#{([^\}]+)}#', $path, $matches)) {
             foreach ((array)$matches[1] as $k => $match) {
                 if (is_numeric($match)) {
-                    $replaced = substr(function_exists('random_bytes') ? bin2hex(random_bytes($match / 2 + 1)) : md5(uniqid(mt_rand(), true)), 0, $match);
+                    $replaced = substr(bin2hex(random_bytes($match / 2 + 1)), 0, $match);
                 } else {
                     /** @noinspection UnSafeIsSetOverArrayInspection */
                     $ts = isset($ts) ? $ts : time();

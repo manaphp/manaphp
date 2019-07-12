@@ -352,7 +352,7 @@ class Message implements JsonSerializable
      */
     public function getRandomId()
     {
-        return md5(microtime(true) . mt_rand());
+        return bin2hex(random_bytes(16));
     }
 
     /**

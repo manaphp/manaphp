@@ -57,7 +57,7 @@ class FiddlerPlugin extends Plugin
         $context->header = [
             'ip' => $this->request->getClientIp(),
             'url' => parse_url($this->request->getServer('REQUEST_URI'), PHP_URL_PATH),
-            'uuid' => substr(md5($this->request->getServer('REQUEST_TIME_FLOAT') . mt_rand()), 0, 8)
+            'uuid' => bin2hex(random_bytes(4))
         ];
         $context->channel = 'manaphp:fiddler:web:' . $this->configure->id . ':' . $this->request->getClientIp();
 

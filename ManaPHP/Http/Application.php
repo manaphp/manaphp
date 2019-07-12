@@ -56,15 +56,9 @@ abstract class Application extends \ManaPHP\Application implements HandlerInterf
     public function generateRequestId()
     {
         if (!$this->request->hasServer('HTTP_X_REQUEST_ID')) {
-            if (function_exists('random_bytes')) {
-                $request_id = random_bytes(15);
-            } else {
-                $request_id = substr(md5(microtime() . mt_rand(), true), 0, 15);
-            }
-
             $globals = $this->request->getGlobals();
 
-            $globals->_SERVER['HTTP_X_REQUEST_ID'] = 'aa' . bin2hex($request_id);
+            $globals->_SERVER['HTTP_X_REQUEST_ID'] = 'aa' . bin2hex(random_bytes(15));
         }
     }
 

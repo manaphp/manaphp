@@ -412,7 +412,7 @@ class Smtp extends Mailer
         $this->_writeLine('MIME-Version: 1.0');
 
         $htmlBody = $message->getHtmlBody();
-        $boundary = md5(microtime(true) . mt_rand());
+        $boundary = bin2hex(random_bytes(16));
         if (!$htmlBody) {
             if ($textBody = $message->getTextBody()) {
                 $this->_sendTextBody($textBody);

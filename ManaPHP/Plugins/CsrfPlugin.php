@@ -61,7 +61,7 @@ class CsrfPlugin extends Plugin
      */
     protected function _generateToken()
     {
-        $str = strtr(base64_encode(md5(microtime(true) . mt_rand(), true)), '+/=', '357');
+        $str = strtr(base64_encode(random_bytes(16)), '+/=', '357');
         return substr($str, 0, $this->_length);
     }
 
