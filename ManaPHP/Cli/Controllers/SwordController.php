@@ -32,26 +32,22 @@ class SwordController extends Controller
         $this->filesystem->dirDelete('@data/sword');
         $this->console->writeLn('delete `@data/sword` directory success');
 
-        $ext = '.sword';
+        $ext = 'sword';
 
-        foreach ($this->filesystem->glob('@app/Views/*' . $ext) as $item) {
+        foreach ($this->filesystem->glob("@app/Views/*.$ext") as $item) {
             $this->_compile($item, $replace);
         }
 
-        foreach ($this->filesystem->glob('@app/Views/*', GLOB_ONLYDIR) as $item) {
-            foreach ($this->filesystem->glob($item . '/*' . $ext) as $item2) {
-                $this->_compile($item2, $replace);
-            }
+        foreach ($this->filesystem->glob("@app/Views/*/*.$ext") as $item) {
+            $this->_compile($item, $replace);
         }
 
-        foreach ($this->filesystem->glob('@app/Areas/*', GLOB_ONLYDIR) as $item) {
-            foreach ($this->filesystem->glob($item . '/Views/*' . $ext) as $item2) {
-                $this->_compile($item2, $replace);
-            }
+        foreach ($this->filesystem->glob("@app/Areas/*/Views/*/*.$ext") as $item) {
+            $this->_compile($item, $replace);
+        }
 
-            foreach ($this->filesystem->glob($item . '/Views/*/*' . $ext) as $item2) {
-                $this->_compile($item2, $replace);
-            }
+        foreach ($this->filesystem->glob("@app/Areas/*/Views/*.$ext") as $item) {
+            $this->_compile($item, $replace);
         }
     }
 
