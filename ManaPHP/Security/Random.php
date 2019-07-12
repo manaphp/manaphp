@@ -21,29 +21,7 @@ class Random extends Component implements RandomInterface
             return '';
         }
 
-        if (function_exists('random_bytes')) {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            return random_bytes($length);
-        } elseif (function_exists('openssl_random_pseudo_bytes')) {
-            /** @noinspection CryptographicallySecureRandomnessInspection */
-            return openssl_random_pseudo_bytes($length);
-        } elseif (file_exists('/dev/urandom')) {
-            $handle = fopen('/dev/urandom', 'rb');
-
-            stream_set_read_buffer($handle, 0);
-            $r = fread($handle, $length);
-            fclose($handle);
-
-            return $r;
-        } else {
-            $r = '';
-
-            do {
-                $r .= pack('L', mt_rand());
-            } while (strlen($r) < $length);
-
-            return substr($r, 0, $length);
-        }
+        return random_bytes($length);
     }
 
     /**

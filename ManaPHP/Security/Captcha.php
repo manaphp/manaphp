@@ -127,7 +127,7 @@ class Captcha extends Component implements CaptchaInterface
 
         imagefilledrectangle($image, 0, 0, $width, $height, $bgColor);
 
-        $fontFile = $this->alias->resolve($this->_fonts[mt_rand() % count($this->_fonts)]);
+        $fontFile = $this->alias->resolve($this->_fonts[random_int(0, count($this->_fonts) - 1)]);
 
         $referenceFontSize = min($height, $width / $this->_length);
 
@@ -145,7 +145,7 @@ class Captcha extends Component implements CaptchaInterface
             $points = imagettftext($image, $fontSize, $angle, $x, $y, $fgColor, $fontFile, $code[$i]);
 
             for ($k = 0; $k < $this->_noiseCharCount; $k++) {
-                $letter = $this->_charset[mt_rand() % strlen($this->_charset)];
+                $letter = $this->_charset[random_int(0, strlen($this->_charset) - 1)];
                 $fgColor = imagecolorallocate($image, random_int(0, 240), random_int(0, 240), random_int(0, 240));
                 imagettftext($image,
                     $fontSize * 0.4 * $this->_rand_amplitude(0.1),
@@ -178,7 +178,7 @@ class Captcha extends Component implements CaptchaInterface
         $image = new Imagick();
         $draw = new ImagickDraw();
         $image->newImage($width, $height, new ImagickPixel('rgb(' . $this->_bgRGB . ')'));
-        $draw->setFont($this->alias->resolve($this->_fonts[mt_rand() % count($this->_fonts)]));
+        $draw->setFont($this->alias->resolve($this->_fonts[random_int(0, count($this->_fonts) - 1)]));
         $draw->setGravity(Imagick::GRAVITY_NORTHWEST);
 
         $referenceFontSize = min($height, $width / $this->_length);
@@ -198,7 +198,7 @@ class Captcha extends Component implements CaptchaInterface
             $x += $fontSize * random_int(600, 800) / 1000;
 
             for ($k = 0; $k < $this->_noiseCharCount; $k++) {
-                $letter = $this->_charset[mt_rand() % strlen($this->_charset)];
+                $letter = $this->_charset[random_int(0, strlen($this->_charset) - 1)];
                 $fgPixel->setColor('rgb(' . random_int(0, 240) . ',' . random_int(0, 240) . ',' . random_int(0, 240) . ')');
                 $draw->setFillColor($fgPixel);
                 $draw->setFontSize($fontSize * 0.4 * $this->_rand_amplitude(0.1));
@@ -231,7 +231,7 @@ class Captcha extends Component implements CaptchaInterface
         $code = '';
         $charsetCount = strlen($this->_charset);
         for ($i = 0; $i < $this->_length; $i++) {
-            $code .= $this->_charset[mt_rand() % $charsetCount];
+            $code .= $this->_charset[random_int(0, $charsetCount - 1)];
         }
 
         if (class_exists('Imagick')) {
