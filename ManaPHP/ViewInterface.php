@@ -67,6 +67,8 @@ interface ViewInterface
      *
      * @param string $path
      * @param array  $vars
+     *
+     * @return void
      */
     public function partial($path, $vars = []);
 
@@ -75,6 +77,8 @@ interface ViewInterface
      *
      * @param string $widget
      * @param array  $vars
+     *
+     * @return void
      */
     public function widget($widget, $vars = []);
 

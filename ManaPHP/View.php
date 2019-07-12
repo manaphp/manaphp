@@ -231,6 +231,8 @@ class View extends Component implements ViewInterface
      *
      * @param string $path
      * @param array  $vars
+     *
+     * @return void
      */
     public function partial($path, $vars = [])
     {
@@ -259,6 +261,8 @@ class View extends Component implements ViewInterface
     /**
      * @param string $widget
      * @param array  $options
+     *
+     * @return void
      */
     public function widget($widget, $options = [])
     {
