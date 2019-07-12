@@ -187,7 +187,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
      *
      * @param string $session_id
      *
-     * @return void
+     * @return static
      */
     public function destroy($session_id = null)
     {
@@ -212,6 +212,8 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
             $params = $this->_cookie_params;
             $this->cookies->delete($this->_name, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
         }
+
+        return $this;
     }
 
     /**
@@ -365,6 +367,8 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
      *
      * @param string $name
      * @param mixed  $value
+     *
+     * @return static
      */
     public function set($name, $value)
     {
@@ -376,6 +380,8 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
 
         $context->is_dirty = true;
         $context->_SESSION[$name] = $value;
+
+        return $this;
     }
 
     /**
@@ -400,6 +406,8 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
      * Removes a session variable from an application context
      *
      * @param string $name
+     *
+     * @return static
      */
     public function remove($name)
     {
@@ -411,6 +419,8 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
 
         $context->is_dirty = true;
         unset($context->_SESSION[$name]);
+
+        return $this;
     }
 
     /**
@@ -430,7 +440,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
     /**
      * @param string $id
      *
-     * @return void
+     * @return static
      */
     public function setId($id)
     {
@@ -441,6 +451,8 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
         }
 
         $context->session_id = $id;
+
+        return $this;
     }
 
     /**
@@ -509,11 +521,13 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
      * @param string $session_id
      * @param array  $data
      *
-     * @return void
+     * @return static
      */
     public function write($session_id, $data)
     {
         $session = $this->serialize($data);
         $this->do_write($session_id, $session, $this->_ttl);
+
+        return $this;
     }
 }

@@ -24,6 +24,8 @@ interface SessionInterface
      *
      * @param string $name
      * @param mixed  $value
+     *
+     * @return static
      */
     public function set($name, $value);
 
@@ -40,6 +42,8 @@ interface SessionInterface
      * Removes a session variable from an application context
      *
      * @param string $name
+     *
+     * @return static
      */
     public function remove($name);
 
@@ -48,7 +52,7 @@ interface SessionInterface
      *
      * @param string $session_id
      *
-     * @return void
+     * @return static
      */
     public function destroy($session_id = null);
 
@@ -60,7 +64,7 @@ interface SessionInterface
     /**
      * @param string $id
      *
-     * @return void
+     * @return static
      */
     public function setId($id);
 
@@ -80,7 +84,7 @@ interface SessionInterface
      * @param string $session_id
      * @param array  $data
      *
-     * @return void
+     * @return static
      */
     public function write($session_id, $data);
 }
