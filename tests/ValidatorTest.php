@@ -1,8 +1,8 @@
-<?php
+<?php /** @noinspection PhpParamsInspection */
 namespace Tests;
 
 use ManaPHP\Db;
-use ManaPHP\Di\FactoryDefault;
+use ManaPHP\Mvc\Factory;
 use ManaPHP\Validator;
 use ManaPHP\Validator\ValidateFailedException;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +15,7 @@ class ValidatorTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $di = new FactoryDefault();
+        $di = new Factory();
 
         $di->alias->set('@data', __DIR__ . '/tmp/data');
         $config = require __DIR__ . '/config.database.php';
@@ -140,7 +140,7 @@ class ValidatorTest extends TestCase
         $payment->amount = 'xxx';
 
         $this->expectException(ValidateFailedException::class);
-        $validator->validate($payment, ['amount']);
+        $validator->validate('', $payment, ['amount']);
     }
 
     public function test_range()
@@ -162,14 +162,13 @@ class ValidatorTest extends TestCase
         $city->city_id = 0;
         $this->expectException(ValidateFailedException::class);
         $city->validate();
-        $validator->validate($city, ['city_id']);
 
         $city->city_id = 3;
         $city->validate();
         $this->assertSame(3, $city->city_id);
 
         $city->city_id = 10;
-        $validator->validate($city, ['city_id']);
+        $validator->validate('city_id', $city);
         $this->assertSame(10, $city->city_id);
 
         $city->city_id = 100;
@@ -207,7 +206,7 @@ class ValidatorTest extends TestCase
 
         $city->city_id = 0;
         $this->expectException(ValidateFailedException::class);
-        $validator->validate($city, ['city_id']);
+        $validator->validate('city_id', $city, ['city_id']);
 
         $city->city_id = 10;
         $city->validate();
