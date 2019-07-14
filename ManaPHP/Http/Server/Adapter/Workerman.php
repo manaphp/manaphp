@@ -234,10 +234,7 @@ class Workerman extends Server
 
         $server = $this->request->getGlobals()->_SERVER;
 
-        if (isset($server['HTTP_X_REQUEST_ID']) && !isset($response_context->headers['X-Request-Id'])) {
-            Http::header('X-Request-Id: ' . $server['HTTP_X_REQUEST_ID']);
-        }
-
+        Http::header('X-Request-Id: ' . $server['HTTP_X_REQUEST_ID']);
         Http::header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']));
 
         foreach ($response_context->cookies as $cookie) {

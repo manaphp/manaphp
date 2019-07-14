@@ -604,10 +604,6 @@ class Response extends Component implements ResponseInterface
             throw new MisuseException("Headers has been sent in $file:$line");
         }
 
-        if (!isset($context->headers['X-Request-Id']) && ($request_id = $this->request->getServer('HTTP_X_REQUEST_ID'))) {
-            $context->headers['X-Request-Id'] = $request_id;
-        }
-
         $this->eventsManager->fireEvent('response:beforeSend', $this);
 
         header('HTTP/1.1 ' . $context->status_code . ' ' . $context->status_text);
@@ -620,13 +616,16 @@ class Response extends Component implements ResponseInterface
             }
         }
 
-        header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT')));
-
         foreach ($context->cookies as $cookie) {
             setcookie($cookie['name'], $cookie['value'], $cookie['expire'],
                 $cookie['path'], $cookie['domain'], $cookie['secure'],
                 $cookie['httpOnly']);
         }
+
+        $server = $this->request->getGlobals()->_SERVER;
+
+        header('X-Request-Id: ' . $server['HTTP_X_REQUEST_ID']);
+        header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']));
 
         if ($context->file) {
             readfile($this->alias->resolve($context->file));
