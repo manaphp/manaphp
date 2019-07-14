@@ -26,7 +26,6 @@ abstract class Application extends \ManaPHP\Application implements HandlerInterf
 
         parent::__construct($loader);
 
-        $this->eventsManager->attachEvent('request:begin', [$this, 'generateRequestId']);
         $this->eventsManager->attachEvent('request:authenticate', [$this, 'authenticate']);
 
         if (method_exists($this, 'authorize')) {
@@ -51,15 +50,6 @@ abstract class Application extends \ManaPHP\Application implements HandlerInterf
     public function authenticate()
     {
         $this->identity->authenticate();
-    }
-
-    public function generateRequestId()
-    {
-        if (!$this->request->hasServer('HTTP_X_REQUEST_ID')) {
-            $globals = $this->request->getGlobals();
-
-            $globals->_SERVER['HTTP_X_REQUEST_ID'] = 'aa' . bin2hex(random_bytes(15));
-        }
     }
 
     abstract public function handle();

@@ -119,6 +119,10 @@ class Php extends Server
             }
         }
 
+        if (!isset($_SERVER['HTTP_X_REQUEST_ID'])) {
+            $_SERVER['HTTP_X_REQUEST_ID'] = 'aa' . bin2hex(random_bytes(15));
+        }
+
         $globals = $this->request->getGlobals();
 
         $globals->_GET = $_GET;
