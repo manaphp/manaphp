@@ -5,19 +5,10 @@ namespace ManaPHP\Logger\Appender;
 use ManaPHP\Component;
 use ManaPHP\Logger\AppenderInterface;
 
-class FileContext
-{
-    /**
-     * @var array
-     */
-    public $logs = [];
-}
-
 /**
  * Class ManaPHP\Logger\Appender\File
  *
  * @package logger
- * @property \ManaPHP\Logger\Appender\FileContext $_context
  */
 class File extends Component implements AppenderInterface
 {
@@ -30,11 +21,6 @@ class File extends Component implements AppenderInterface
      * @var string
      */
     protected $_format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
-
-    /**
-     * @var array
-     */
-    protected $_lazy = false;
 
     /**
      * \ManaPHP\Logger\Adapter\File constructor.
@@ -53,23 +39,6 @@ class File extends Component implements AppenderInterface
 
         if (isset($options['format'])) {
             $this->_format = $options['format'];
-        }
-
-//        if (!empty($_SERVER['DOCUMENT_ROOT'])) {
-//            if (!isset($options['lazy']) || $options['lazy']) {
-//                $this->_lazy = true;
-//                $this->eventsManager->attachEvent('request:destruct', [$this, 'writeLazyLog']);
-//            }
-//        }
-    }
-
-    public function writeLazyLog()
-    {
-        $context = $this->_context;
-
-        if ($context->logs) {
-            $this->_write(implode('', $context->logs));
-            $context->logs = [];
         }
     }
 
@@ -131,19 +100,6 @@ class File extends Component implements AppenderInterface
      */
     public function append($log)
     {
-        if ($this->_lazy) {
-            $context = $this->_context;
-
-            $context->logs[] = $this->_format($log);
-        } else {
-            $this->_write($this->_format($log));
-        }
-    }
-
-    public function __destruct()
-    {
-        if ($this->_lazy) {
-            $this->writeLazyLog();
-        }
+        $this->_write($this->_format($log));
     }
 }
