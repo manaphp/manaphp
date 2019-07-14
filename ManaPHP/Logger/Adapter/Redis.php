@@ -1,10 +1,9 @@
 <?php
-namespace ManaPHP\Logger\Appender;
+namespace ManaPHP\Logger\Adapter;
 
-use ManaPHP\Component;
-use ManaPHP\Logger\AppenderInterface;
+use ManaPHP\Logger;
 
-class Redis extends Component implements AppenderInterface
+class Redis extends Logger
 {
     /**
      * @var string
@@ -19,20 +18,18 @@ class Redis extends Component implements AppenderInterface
     /**
      * Redis constructor.
      *
-     * @param string|array $options
+     * @param array $options
      */
-    public function __construct($options = 'redis')
+    public function __construct($options = null)
     {
-        if (is_string($options)) {
-            $this->_redis = $options;
-        } else {
-            if (isset($options['redis'])) {
-                $this->_redis = $options['redis'];
-            }
+        parent::__construct($options);
 
-            if (isset($options['key'])) {
-                $this->_key = $options['key'];
-            }
+        if (isset($options['redis'])) {
+            $this->_redis = $options['redis'];
+        }
+
+        if (isset($options['key'])) {
+            $this->_key = $options['key'];
         }
     }
 

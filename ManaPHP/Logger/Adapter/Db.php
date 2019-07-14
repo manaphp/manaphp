@@ -1,18 +1,16 @@
 <?php
 
-namespace ManaPHP\Logger\Appender;
+namespace ManaPHP\Logger\Adapter;
 
 use Exception;
-use ManaPHP\Component;
 use ManaPHP\Logger;
-use ManaPHP\Logger\AppenderInterface;
 
 /**
- * Class ManaPHP\Logger\Appender\Db
+ * Class ManaPHP\Logger\Adapter\Db
  *
  * @package logger
  */
-class Db extends Component implements AppenderInterface
+class Db extends Logger
 {
     /**
      * @var string
@@ -29,18 +27,16 @@ class Db extends Component implements AppenderInterface
      *
      * @param string|array $options
      */
-    public function __construct($options = [])
+    public function __construct($options = null)
     {
-        if (is_string($options)) {
-            $this->_table = $options;
-        } else {
-            if (isset($options['db'])) {
-                $this->_db = $options['db'];
-            }
+        parent::__construct($options);
 
-            if (isset($options['table'])) {
-                $this->_table = $options['table'];
-            }
+        if (isset($options['db'])) {
+            $this->_db = $options['db'];
+        }
+
+        if (isset($options['table'])) {
+            $this->_table = $options['table'];
         }
     }
 

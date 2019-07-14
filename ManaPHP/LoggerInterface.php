@@ -27,35 +27,6 @@ interface LoggerInterface
     public function getLevels();
 
     /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasAppender($name);
-
-    /**
-     * @param int|string $name
-     *
-     * @return \ManaPHP\Logger\AppenderInterface
-     */
-    public function getAppender($name);
-
-    /**
-     * @param string|array|\ManaPHP\Logger\AppenderInterface $appender
-     * @param string                                         $name
-     *
-     * @return static
-     */
-    public function addAppender($appender, $name = null);
-
-    /**
-     * @param string $appender
-     *
-     * @return static
-     */
-    public function removeAppender($appender);
-
-    /**
      * Sends/Writes a debug message to the log
      *
      * @param string|array $message

@@ -1,16 +1,15 @@
 <?php
 
-namespace ManaPHP\Logger\Appender;
+namespace ManaPHP\Logger\Adapter;
 
-use ManaPHP\Component;
-use ManaPHP\Logger\AppenderInterface;
+use ManaPHP\Logger;
 
 /**
- * Class ManaPHP\Logger\Appender\File
+ * Class ManaPHP\Logger\Adapter\File
  *
  * @package logger
  */
-class File extends Component implements AppenderInterface
+class File extends Logger
 {
     /**
      * @var string
@@ -25,13 +24,11 @@ class File extends Component implements AppenderInterface
     /**
      * \ManaPHP\Logger\Adapter\File constructor.
      *
-     * @param string|array $options
+     * @param array $options
      */
-    public function __construct($options = [])
+    public function __construct($options = null)
     {
-        if (is_string($options)) {
-            $options = [strpos($options, ':') === false ? 'file' : 'format' => $options];
-        }
+        parent::__construct($options);
 
         if (isset($options['file'])) {
             $this->_file = $options['file'];

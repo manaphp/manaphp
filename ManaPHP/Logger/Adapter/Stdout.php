@@ -1,16 +1,15 @@
 <?php
 
-namespace ManaPHP\Logger\Appender;
+namespace ManaPHP\Logger\Adapter;
 
-use ManaPHP\Component;
-use ManaPHP\Logger\AppenderInterface;
+use ManaPHP\Logger;
 
 /**
- * Class ManaPHP\Logger\Appender\Stdout
+ * Class ManaPHP\Logger\Adapter\Stdout
  *
  * @package logger
  */
-class Stdout extends Component implements AppenderInterface
+class Stdout extends Logger
 {
     /**
      * @var string
@@ -18,12 +17,14 @@ class Stdout extends Component implements AppenderInterface
     protected $_format = '[:date][:level][:category][:location] :message';
 
     /**
-     * \ManaPHP\Logger\Adapter\File constructor.
+     * Stdout constructor.
      *
-     * @param string|array $options
+     * @param array $options
      */
-    public function __construct($options = [])
+    public function __construct($options = null)
     {
+        parent::__construct($options);
+
         if (isset($options['format'])) {
             $this->_format = $options['format'];
         }

@@ -3,8 +3,6 @@
 namespace ManaPHP;
 
 use JsonSerializable;
-use ManaPHP\Exception\InvalidArgumentException;
-use ManaPHP\Exception\MisuseException;
 use ManaPHP\Logger\Log;
 use ManaPHP\Logger\LogCategorizable;
 use Serializable;
@@ -17,7 +15,7 @@ use Throwable;
  * @package logger
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
-class Logger extends Component implements LoggerInterface
+abstract class Logger extends Component implements LoggerInterface
 {
     const LEVEL_FATAL = 10;
     const LEVEL_ERROR = 20;
@@ -33,11 +31,6 @@ class Logger extends Component implements LoggerInterface
     /**
      * @var array
      */
-    protected $_appenders = [];
-
-    /**
-     * @var array
-     */
     protected static $_levels = [
         self::LEVEL_FATAL => 'fatal',
         self::LEVEL_ERROR => 'error',
@@ -48,31 +41,14 @@ class Logger extends Component implements LoggerInterface
     /**
      * Logger constructor.
      *
-     * @param string|array|\ManaPHP\Logger\AppenderInterface $options
+     * @param array $options
      *
      */
-    public function __construct($options = [])
+    public function __construct($options = null)
     {
-        if (is_string($options)) {
-            $this->_appenders[($pos = strrpos($options, '\\')) !== false ? lcfirst(substr($options, $pos + 1)) : $options] = $options;
-        } elseif (is_object($options)) {
-            $this->_appenders[] = ['appender' => ['instance' => $options]];
-        } elseif ($options) {
-            if (isset($options['level'])) {
-                $this->setLevel($options['level']);
-                unset($options['level']);
-            }
-
-            if ($options) {
-                $appenders = isset($options['appenders']) ? $options['appenders'] : $options;
-                foreach ($appenders as $k => $v) {
-                    $this->_appenders[is_string($k) ? $k : $v] = $v;
-                }
-            } else {
-                $this->_appenders['file'] = 'ManaPHP\Logger\Appender\File';
-            }
-        } else {
-            $this->_appenders['file'] = 'ManaPHP\Logger\Appender\File';
+        if (isset($options['level'])) {
+            $this->setLevel($options['level']);
+            unset($options['level']);
         }
 
         if ($this->_level === null) {
@@ -123,6 +99,13 @@ class Logger extends Component implements LoggerInterface
     }
 
     /**
+     * @param \ManaPHP\Logger\Log $log
+     *
+     * @return void
+     */
+    abstract public function append($log);
+
+    /**
      * @param array $traces
      *
      * @return array
@@ -155,101 +138,6 @@ class Logger extends Component implements LoggerInterface
             }
         }
         return 'unknown';
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasAppender($name)
-    {
-        return isset($this->_appenders[$name]);
-    }
-
-    /**
-     * @param int|string $name
-     *
-     * @return \ManaPHP\Logger\AppenderInterface|false
-     */
-    public function getAppender($name)
-    {
-        if (!isset($this->_appenders[$name])) {
-            return false;
-        }
-
-        $appender = $this->_appenders[$name];
-        if (is_object($appender)) {
-            return $appender;
-        } elseif (is_string($appender)) {
-            $className = strpos($appender, '\\') !== false ? $appender : 'ManaPHP\Logger\Appender\\' . ucfirst($appender);
-            return $this->_appenders[$name] = $this->_di->getShared($className);
-        } elseif (is_array($appender)) {
-            if (isset($appender['instance'])) {
-                return $appender['instance'];
-            } else {
-                if (isset($appender['level'])) {
-                    $appender['level'] = array_search($appender['level'], self::$_levels, true);
-                }
-                $className = isset($appender['class']) ? $appender['class'] : $name;
-                $className = strpos($className, '\\') ? $className : 'ManaPHP\Logger\Appender\\' . ucfirst($className);
-                $appender['instance'] = $instance = $this->_di->getInstance($className, $appender);
-                $this->_appenders[$name] = $appender;
-                return $instance;
-            }
-        } else {
-            throw new MisuseException('');
-        }
-    }
-
-    /**
-     * @param string|array|\ManaPHP\Logger\AppenderInterface $appender
-     * @param string                                         $name
-     *
-     * @return static
-     */
-    public function addAppender($appender, $name = null)
-    {
-        $level = null;
-        if (is_string($appender)) {
-            $definition = $appender;
-        } elseif (isset($appender['level'])) {
-            $level = is_numeric($appender['level']) ? (int)$appender['level'] : array_search(strtolower($appender['level']), self::$_levels, true);
-            unset($appender['level']);
-            $definition = $appender;
-        } else {
-            $definition = $appender;
-        }
-
-        if (is_string($definition)) {
-            if (strpos($definition, '\\') === false) {
-                $definition = 'ManaPHP\Logger\Appender\\' . ucfirst($definition);
-            }
-        } elseif (is_array($definition) && !isset($definition[0]) && !isset($definition['class'])) {
-            throw new InvalidArgumentException($appender);
-        } elseif (isset($definition['class']) && strpos($definition['class'], '\\') === false) {
-            $definition['class'] = 'ManaPHP\Logger\Appender\\' . ucfirst($definition['class']);
-        }
-
-        if ($name === null) {
-            $this->_appenders[] = $level !== null ? ['level' => $level, 'appender' => $definition] : ['appender' => $definition];
-        } else {
-            $this->_appenders[$name] = $level !== null ? ['level' => $level, 'appender' => $definition] : ['appender' => $definition];
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string $appender
-     *
-     * @return static
-     */
-    public function removeAppender($appender)
-    {
-        unset($this->_appenders[$appender]);
-
-        return $this;
     }
 
     /**
@@ -421,25 +309,7 @@ class Logger extends Component implements LoggerInterface
 
         $this->eventsManager->fireEvent('logger:log', $this, $log);
 
-        /**
-         * @var \ManaPHP\Logger\AppenderInterface $appender
-         */
-        foreach ($this->_appenders as $name => $value) {
-            if (is_object($value)) {
-                $appender = $value;
-            } elseif (is_string($value)) {
-                $appender = $this->getAppender($name);
-            } elseif (is_array($value)) {
-                if (isset($value['level']) && $level > $value['level']) {
-                    continue;
-                }
-                $appender = isset($value['instance']) ? $value['instance'] : $this->getAppender($name);
-            } else {
-                throw new MisuseException('');
-            }
-
-            $appender->append($log);
-        }
+        $this->append($log);
 
         return $this;
     }

@@ -1,8 +1,7 @@
 <?php
-namespace ManaPHP\Logger\Appender;
+namespace ManaPHP\Logger\Adapter;
 
-use ManaPHP\Component;
-use ManaPHP\Logger\AppenderInterface;
+use ManaPHP\Logger;
 
 class MemoryContext
 {
@@ -13,12 +12,12 @@ class MemoryContext
 }
 
 /**
- * Class ManaPHP\Logger\Appender\Memory
+ * Class ManaPHP\Logger\Adapter\Memory
  *
  * @package logger
- * @property \ManaPHP\Logger\Appender\MemoryContext $_context
+ * @property \ManaPHP\Logger\Adapter\MemoryContext $_context
  */
-class Memory extends Component implements AppenderInterface
+class Memory extends Logger
 {
     /**
      * @param \ManaPHP\Logger\Log $log
