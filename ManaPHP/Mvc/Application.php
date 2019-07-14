@@ -31,7 +31,6 @@ class Application extends \ManaPHP\Http\Application
     {
         try {
             $this->eventsManager->fireEvent('request:begin', $this);
-            $this->eventsManager->fireEvent('request:construct', $this);
 
             $this->eventsManager->fireEvent('request:authenticate', $this);
 
@@ -53,7 +52,6 @@ class Application extends \ManaPHP\Http\Application
 
         $this->httpServer->send($this->response);
 
-        $this->eventsManager->fireEvent('request:destruct', $this);
         $this->eventsManager->fireEvent('request:end', $this);
     }
 }

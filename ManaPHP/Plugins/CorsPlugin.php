@@ -51,10 +51,10 @@ class CorsPlugin extends Plugin
             }
         }
 
-        $this->eventsManager->attachEvent('request:construct', [$this, 'onConstruct']);
+        $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
     }
 
-    public function onConstruct()
+    public function onRequestBegin()
     {
         if ($this->_force || $this->request->hasServer('HTTP_ORIGIN')) {
             $this->response

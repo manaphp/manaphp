@@ -46,7 +46,6 @@ class Application extends \ManaPHP\Application implements HandlerInterface
             $throwable = null;
 
             $this->eventsManager->fireEvent('request:begin', $this);
-            $this->eventsManager->fireEvent('request:construct', $this);
 
             $this->router->match();
             $this->dispatcher->dispatch($this->router, false);
@@ -83,7 +82,6 @@ class Application extends \ManaPHP\Application implements HandlerInterface
     {
         $this->dispatcher->getControllerInstance()->onClose($fd);
         $this->eventsManager->fireEvent('ws:close', $this, $fd);
-        $this->eventsManager->fireEvent('request:destruct', $this);
         $this->eventsManager->fireEvent('request:end', $this);
     }
 

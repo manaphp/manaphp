@@ -47,8 +47,6 @@ class DebuggerPlugin extends Plugin
 
         $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
         $this->eventsManager->attachEvent('request:end', [$this, 'onRequestEnd']);
-
-        $this->eventsManager->attachEvent('request:destruct', [$this, 'onDestruct']);
     }
 
     public function onRequestBegin()
@@ -71,13 +69,6 @@ class DebuggerPlugin extends Plugin
 
         if ($context->file) {
             $this->filesystem->filePut('@data/debugger/' . $context->file, $this->output());
-        }
-    }
-
-    public function onDestruct()
-    {
-        $context = $this->_context;
-        if ($context->file) {
             $this->logger->info('debugger-link: `' . $this->getUrl() . '`', 'debugger.link');
         }
     }

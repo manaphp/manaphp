@@ -23,7 +23,7 @@ class SlowlogPlugin extends Plugin
             $this->_threshold = $options['threshold'] + $this->_threshold;
         }
 
-        $this->eventsManager->attachEvent('request:destruct', [$this, 'onDestruct']);
+        $this->eventsManager->attachEvent('request:end', [$this, 'onRequestEnd']);
     }
 
     protected function _write($type, $elapsed, $message)
@@ -81,7 +81,7 @@ class SlowlogPlugin extends Plugin
         return $id;
     }
 
-    public function onDestruct()
+    public function onRequestEnd()
     {
         if ($this->response->hasHeader('X-Response-Time')) {
             $elapsed = $this->response->getHeader('X-Response-Time');

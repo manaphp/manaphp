@@ -276,7 +276,6 @@ class Application extends Component implements ApplicationInterface
 
         if (!empty($_SERVER['DOCUMENT_ROOT'])) {
             $this->eventsManager->fireEvent('request:begin', $this);
-            $this->eventsManager->fireEvent('request:construct', $this);
         }
     }
 }
