@@ -18,40 +18,65 @@ class TranslatorContext
 class Translator extends Component implements TranslatorInterface
 {
     /**
-     * @var array
-     */
-    protected $_files = [];
-
-    /**
-     * @var array
-     */
-    protected $_messages;
-
-    /**
-     * @var array
+     * @var string
      */
     protected $_locale;
+
+    /**
+     * @var array
+     */
+    protected $_files = ['@resources/Translator'];
+
+    /**
+     * @var array
+     */
+    protected $_templates;
 
     /**
      * translator constructor.
      *
      * @param array $options
      */
-    public function __construct($options = [])
+    public function __construct($options = null)
     {
-        if (isset($options['files'])) {
-            $files = $options['files'];
-            if (is_string($files)) {
-                $files = preg_split('#[\s,]+#', $files, -1, PREG_SPLIT_NO_EMPTY);
-            }
-        } else {
-            $files = ['@manaphp/messages', '@root/messages'];
-        }
-        $this->_files = $files;
-
         if (isset($options['locale'])) {
             $this->_locale = $options['locale'];
         }
+
+        $dir = isset($options['dir']) ? $options['dir'] : '@resources/Translator';
+
+        foreach ($this->filesystem->glob($dir . '/*.php') as $file) {
+            $this->_files[strtolower(pathinfo($file, PATHINFO_FILENAME))] = $file;
+        }
+    }
+
+    public function createContext()
+    {
+        /** @var \ManaPHP\ValidatorContext $context */
+        $context = parent::createContext();
+
+        if ($this->_locale !== null) {
+            $context->locale = $this->_locale;
+        } elseif (!empty($_SERVER['DOCUMENT_ROOT'])) {
+            $locale = $this->configure->language;
+            if (($language = strtolower($this->request->get('lang', ''))) && isset($this->_files[$language])) {
+                $locale = $language;
+            } elseif ($language = $this->request->getServer('HTTP_ACCEPT_LANGUAGE')) {
+                if (preg_match_all('#[a-z\-]{2,}#', strtolower($language), $matches)) {
+                    foreach ($matches[0] as $lang) {
+                        if (isset($this->_files[$lang])) {
+                            $locale = $lang;
+                            break;
+                        }
+                    }
+                }
+            }
+            $context->locale = $locale;
+        } else {
+            $context->locale = $this->configure->language;
+        }
+
+        return $context;
     }
 
     /**
@@ -61,9 +86,7 @@ class Translator extends Component implements TranslatorInterface
      */
     public function setLocale($locale)
     {
-        $context = $this->_context;
-
-        $context->locale = $locale;
+        $this->_context->locale = $locale;
 
         return $this;
     }
@@ -73,23 +96,7 @@ class Translator extends Component implements TranslatorInterface
      */
     public function getLocale()
     {
-        $context = $this->_context;
-
-        if (!$context->locale) {
-            if ($this->_locale) {
-                $context->locale = $this->_locale;
-            } elseif ($accept_lang = $this->request->getServer('HTTP_ACCEPT_LANGUAGE')) {
-                if (($pos = strpos($accept_lang, ',')) !== false) {
-                    $context->locale = substr($accept_lang, 0, $pos);
-                } else {
-                    $context->locale = $accept_lang;
-                }
-            } else {
-                $context->locale = 'en';
-            }
-        }
-
-        return $context->locale;
+        return $this->_context->locale;
     }
 
     /**
@@ -100,43 +107,17 @@ class Translator extends Component implements TranslatorInterface
      */
     public function translate($template, $placeholders = null)
     {
-        $context = $this->_context;
+        $locale = $this->_locale ?: $this->_context->locale;
 
-        $locale = $context->locale ?: $this->getLocale();
-
-        if ($pos = strpos($locale, '-')) {
-            $fallback = substr($locale, 0, $pos);
+        if (!isset($this->_templates[$locale])) {
+            /** @noinspection PhpIncludeInspection */
+            $templates = require $this->_files[$locale];
+            $this->_templates[$locale] = $templates;
         } else {
-            $fallback = null;
+            $templates = $this->_templates[$locale];
         }
 
-        if ($this->_messages === null) {
-            foreach ($this->_files as $file) {
-                $messages = [];
-                $file = $this->alias->resolve("$file/$locale.php");
-                if (is_file($file)) {
-                    /** @noinspection PhpIncludeInspection */
-                    $messages = require $file;
-                } elseif ($fallback) {
-                    $file = $this->alias->resolve("$file/$fallback.php");
-                    if (is_file($file)) {
-                        /** @noinspection PhpIncludeInspection */
-                        $messages = require $file;
-                    }
-                }
-
-                if ($messages) {
-                    if ($this->_messages) {
-                        /** @noinspection SlowArrayOperationsInLoopInspection */
-                        $this->_messages = array_merge($this->_messages, $messages);
-                    } else {
-                        $this->_messages = $messages;
-                    }
-                }
-            }
-        }
-
-        $message = isset($this->_messages[$template]) ? $this->_messages[$template] : $template;
+        $message = isset($templates[$template]) ? $templates[$template] : $template;
 
         if ($placeholders) {
             $replaces = [];
