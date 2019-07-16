@@ -104,7 +104,7 @@ class Arguments extends Component implements ArgumentsInterface
      * @return mixed
      * @throws \ManaPHP\Cli\Arguments\Exception
      */
-    public function getOption($name = null, $default = null)
+    public function get($name = null, $default = null)
     {
         if ($name === null) {
             return $this->_options;
@@ -142,7 +142,7 @@ class Arguments extends Component implements ArgumentsInterface
      *
      * @return bool
      */
-    public function hasOption($name)
+    public function has($name)
     {
         foreach (preg_split('#[|,:]+#', $name) as $p) {
             if (isset($this->_options[$p])) {

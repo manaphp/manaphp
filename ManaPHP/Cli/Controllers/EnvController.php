@@ -43,7 +43,7 @@ class EnvController extends Controller
         }
 
         if ($target === '') {
-            $target = $this->arguments->getOption('env');
+            $target = $this->arguments->get('env');
         }
 
         $candidates = [];

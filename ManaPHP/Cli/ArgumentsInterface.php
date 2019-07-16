@@ -21,14 +21,14 @@ interface ArgumentsInterface
      *
      * @return mixed
      */
-    public function getOption($name = null, $default = null);
+    public function get($name = null, $default = null);
 
     /**
      * @param string $name
      *
      * @return bool
      */
-    public function hasOption($name);
+    public function has($name);
 
     /**
      * @param int $position
