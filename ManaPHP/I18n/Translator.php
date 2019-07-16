@@ -23,9 +23,14 @@ class Translator extends Component implements TranslatorInterface
     protected $_locale;
 
     /**
+     * @var string
+     */
+    protected $_dir = '@resources/Translator';
+
+    /**
      * @var array
      */
-    protected $_files = ['@resources/Translator'];
+    protected $_files = [];
 
     /**
      * @var array
@@ -43,9 +48,11 @@ class Translator extends Component implements TranslatorInterface
             $this->_locale = $options['locale'];
         }
 
-        $dir = isset($options['dir']) ? $options['dir'] : '@resources/Translator';
+        if (isset($options['dir'])) {
+            $this->_dir = $options['dir'];
+        }
 
-        foreach ($this->filesystem->glob($dir . '/*.php') as $file) {
+        foreach ($this->filesystem->glob($this->_dir . '/*.php') as $file) {
             $this->_files[strtolower(pathinfo($file, PATHINFO_FILENAME))] = $file;
         }
     }
