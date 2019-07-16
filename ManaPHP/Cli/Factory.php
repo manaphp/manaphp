@@ -12,7 +12,7 @@ class Factory extends FactoryDefault
         $this->_definitions = array_merge($this->_definitions, [
             'cliHandler' => 'ManaPHP\Cli\Handler',
             'console' => 'ManaPHP\Cli\Console',
-            'arguments' => 'ManaPHP\Cli\Arguments',
+            'request' => 'ManaPHP\Cli\Request',
             'commandInvoker' => 'ManaPHP\Cli\CommandInvoker',
             'errorHandler' => 'ManaPHP\Cli\ErrorHandler',
         ]);

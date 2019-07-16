@@ -39,7 +39,7 @@ $_REQUEST['_url'] = $uri;
 require_once  'index.php';
 STR;
 
-        if ($value = $this->arguments->getValue(0)) {
+        if ($value = $this->request->getValue(0)) {
             if (strpos($value, ':')) {
                 list($ip, $port) = explode(':', $value, 2);
             } elseif (is_numeric($value)) {

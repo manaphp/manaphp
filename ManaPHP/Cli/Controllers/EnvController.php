@@ -38,12 +38,12 @@ class EnvController extends Controller
      */
     public function switchCommand($target = '')
     {
-        if ($target === '' && $values = $this->arguments->getValues()) {
+        if ($target === '' && $values = $this->request->getValues()) {
             $target = $values[0];
         }
 
         if ($target === '') {
-            $target = $this->arguments->get('env');
+            $target = $this->request->get('env');
         }
 
         $candidates = [];

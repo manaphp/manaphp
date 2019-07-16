@@ -10,7 +10,7 @@ use ReflectionMethod;
  * Class Invoker
  * @package ManaPHP\Cli\Command
  *
- * @property-read \ManaPHP\Cli\ArgumentsInterface $arguments
+ * @property-read \ManaPHP\Cli\RequestInterface $request
  */
 class CommandInvoker extends Component implements CommandInvokerInterface
 {
@@ -73,16 +73,16 @@ class CommandInvoker extends Component implements CommandInvokerInterface
                 } else {
                     $value = $di->getShared($className);
                 }
-            } elseif ($this->arguments->has($name)) {
-                $value = $this->arguments->get($name);
-            } elseif (isset($shortNames[$name]) && $this->arguments->has($shortNames[$name])) {
-                $value = $this->arguments->get($shortNames[$name]);
-            } elseif (count($this->arguments->getValues()) === 1) {
-                $value = $this->arguments->getValues()[0];
+            } elseif ($this->request->has($name)) {
+                $value = $this->request->get($name);
+            } elseif (isset($shortNames[$name]) && $this->request->has($shortNames[$name])) {
+                $value = $this->request->get($shortNames[$name]);
+            } elseif (count($this->request->getValues()) === 1) {
+                $value = $this->request->getValues()[0];
             } elseif ($parameter->isDefaultValueAvailable()) {
                 $value = $parameter->getDefaultValue();
             } else {
-                $this->arguments->get($name . (isset($shortNames[$name]) ? ":$shortNames[$name]" : ''));
+                $this->request->get($name . (isset($shortNames[$name]) ? ":$shortNames[$name]" : ''));
             }
 
             switch ($type) {

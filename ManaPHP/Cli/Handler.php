@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Cli;
 
-use ManaPHP\Cli\Arguments\Exception as ArgumentsException;
+use ManaPHP\Cli\Request\Exception as RequestException;
 use ManaPHP\Component;
 use ManaPHP\Utility\Text;
 
@@ -13,7 +13,7 @@ use ManaPHP\Utility\Text;
  *
  * @property-read \ManaPHP\Cli\ConsoleInterface        $console
  * @property-read \ManaPHP\Cli\CommandInvokerInterface $commandInvoker
- * @property-read \ManaPHP\Cli\ArgumentsInterface      $arguments
+ * @property-read \ManaPHP\Cli\RequestInterface        $request
  */
 class Handler extends Component implements HandlerInterface
 {
@@ -121,11 +121,11 @@ class Handler extends Component implements HandlerInterface
         list(, $controllerName, $commandName) = array_pad($this->_args, 3, null);
 
         if ($commandName === null) {
-            $this->arguments->parse([]);
+            $this->request->parse([]);
         } elseif ($commandName[0] === '-') {
-            $this->arguments->parse(array_splice($this->_args, 2));
+            $this->request->parse(array_splice($this->_args, 2));
         } else {
-            $this->arguments->parse(array_splice($this->_args, 3));
+            $this->request->parse(array_splice($this->_args, 3));
         }
 
         if ($commandName !== null && $commandName[0] === '-') {
@@ -200,7 +200,7 @@ class Handler extends Component implements HandlerInterface
         try {
             $r = $this->commandInvoker->invoke($controllerInstance, $commandName);
         } /** @noinspection PhpRedundantCatchClauseInspection */
-        catch (ArgumentsException $e) {
+        catch (RequestException $e) {
             return $this->console->error($e->getMessage());
         }
 

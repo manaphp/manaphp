@@ -2,15 +2,15 @@
 
 namespace ManaPHP\Cli;
 
-use ManaPHP\Cli\Arguments\Exception as ArgumentsException;
+use ManaPHP\Cli\Request\Exception as RequestException;
 use ManaPHP\Component;
 
 /**
- * Class ManaPHP\Cli\Arguments
+ * Class ManaPHP\Cli\Request
  *
  * @package ManaPHP\Cli
  */
-class Arguments extends Component implements ArgumentsInterface
+class Request extends Component implements RequestInterface
 {
     /**
      * @var array
@@ -27,7 +27,7 @@ class Arguments extends Component implements ArgumentsInterface
      * @param array|string $arguments
      *
      * @return static
-     * @throws \ManaPHP\Cli\Arguments\Exception
+     * @throws \ManaPHP\Cli\Request\Exception
      */
     public function parse($arguments = null)
     {
@@ -51,7 +51,7 @@ class Arguments extends Component implements ArgumentsInterface
      * @param array $args
      *
      * @return static
-     * @throws \ManaPHP\Cli\Arguments\Exception
+     * @throws \ManaPHP\Cli\Request\Exception
      */
     protected function _parse($args)
     {
@@ -76,7 +76,7 @@ class Arguments extends Component implements ArgumentsInterface
 
             if ($o[1] === '-') {
                 if (strlen($o) < 3) {
-                    throw new ArgumentsException(['long `:option` option is too short', 'option' => $o]);
+                    throw new RequestException(['long `:option` option is too short', 'option' => $o]);
                 }
 
                 $this->_options[substr($o, 2)] = !$args || $args[0] === '-' ? 1 : array_shift($args);
@@ -102,7 +102,7 @@ class Arguments extends Component implements ArgumentsInterface
      * @param mixed      $default
      *
      * @return mixed
-     * @throws \ManaPHP\Cli\Arguments\Exception
+     * @throws \ManaPHP\Cli\Request\Exception
      */
     public function get($name = null, $default = null)
     {
@@ -111,7 +111,7 @@ class Arguments extends Component implements ArgumentsInterface
         }
 
         if (strpos($name, '-') !== false) {
-            throw new ArgumentsException(['please remove `-` characters for `:argument` argument', 'argument' => $name]);
+            throw new RequestException(['please remove `-` characters for `:argument` argument', 'argument' => $name]);
         }
 
         foreach (preg_split('#[|,:]+#', $name) as $o) {
@@ -131,7 +131,7 @@ class Arguments extends Component implements ArgumentsInterface
                 $options[] = (strlen($opt) === 1 ? '-' : '--') . $opt;
             }
 
-            throw new ArgumentsException('missing required options `' . implode('` or `', $options) . '` option');
+            throw new RequestException('missing required options `' . implode('` or `', $options) . '` option');
         }
 
         return $default;

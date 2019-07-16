@@ -2,11 +2,11 @@
 namespace ManaPHP\Cli;
 
 /**
- * Interface ManaPHP\Cli\ArgumentsInterface
+ * Interface ManaPHP\Cli\RequestInterface
  *
  * @package ManaPHP\Cli
  */
-interface ArgumentsInterface
+interface RequestInterface
 {
     /**
      * @param array|string $arguments

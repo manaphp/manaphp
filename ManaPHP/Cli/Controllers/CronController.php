@@ -62,7 +62,7 @@ class CronController extends Controller
         $this->logger->info(str_repeat('*====', 10), 'cron');
         $this->logger->info(['begin: `:command`.', 'command' => $commandLine], 'cron');
         try {
-            $this->arguments->parse($simArguments);
+            $this->request->parse($simArguments);
             $this->commandInvoker->invoke($controllerInstance, $commandName);
             $use_time = round(microtime(true) - $start_time, 3);
             $this->logger->info(['end: `:command`, :time seconds elapsed.', 'command' => $commandLine, 'time' => $use_time], 'cron');

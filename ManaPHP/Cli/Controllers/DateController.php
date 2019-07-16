@@ -104,7 +104,7 @@ class DateController extends Controller
      */
     public function setCommand($date, $time)
     {
-        $arguments = $this->arguments->getValues();
+        $arguments = $this->request->getValues();
         if (count($arguments) === 1) {
             $argument = $arguments[0];
             if ($argument[0] === 't') {
