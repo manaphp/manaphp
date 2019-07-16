@@ -31,6 +31,11 @@ class Validator extends Component implements ValidatorInterface
     /**
      * @var array
      */
+    protected $_dir = '@manaphp/Validator/Templates';
+
+    /**
+     * @var array
+     */
     protected $_files;
 
     /**
@@ -49,8 +54,11 @@ class Validator extends Component implements ValidatorInterface
             $this->_locale = $options['locale'];
         }
 
-        $dir = isset($options['dir']) ? $options['dir'] : '@manaphp/Validator/Templates';
-        foreach ($this->filesystem->glob($dir . '/*.php') as $file) {
+        if (isset($options['dir'])) {
+            $this->_dir = $options['dir'];
+        }
+
+        foreach ($this->filesystem->glob($this->_dir . '/*.php') as $file) {
             $this->_files[strtolower(pathinfo($file, PATHINFO_FILENAME))] = $file;
         }
     }
