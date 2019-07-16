@@ -41,4 +41,19 @@ interface RequestInterface
      * @return array
      */
     public function getValues();
+
+    /**
+     * @param string $name
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getServer($name = null, $default = '');
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasServer($name);
 }

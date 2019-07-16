@@ -22,7 +22,6 @@ class Request extends Component implements RequestInterface
      */
     protected $_values = [];
 
-
     /**
      * @param array|string $arguments
      *
@@ -171,5 +170,30 @@ class Request extends Component implements RequestInterface
     public function getValues()
     {
         return $this->_values;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getServer($name = null, $default = '')
+    {
+        if ($name === null) {
+            return $_SERVER;
+        } else {
+            return isset($_SERVER[$name]) ? $_SERVER[$name] : $default;
+        }
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasServer($name)
+    {
+        return isset($_SERVER[$name]);
     }
 }
