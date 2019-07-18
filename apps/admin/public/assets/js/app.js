@@ -2,6 +2,9 @@ Vue.prototype.$axios = axios;
 Vue.prototype.$moment = moment;
 Vue.prototype.$qs = Qs;
 Vue.prototype._ = _;
+
+document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substr(1)) : {};
+
 //axios.defaults.baseURL = 'http://www.manaphp.com';
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -25,7 +28,7 @@ axios.interceptors.response.use(function (res) {
         }
 
         if (typeof res.data === 'string') {
-            alert('unexpected response');
+            vm.$alert(res.data, '服务器错误', {customClass: 'error-response'});
         }
 
         return res;
@@ -68,9 +71,12 @@ Vue.mixin({
 
                 success = function (res) {
                     if (_.isArray(data)) {
-                        res.forEach(function (v) {
-                            data.push(v);
-                        })
+                        data.length = 0;
+                        if (_.isArray(res)) {
+                            res.forEach(function (v) {
+                                data.push(v);
+                            })
+                        }
                     } else {
                         Object.keys(res).forEach(function (key) {
                             data[key] = res[key];
@@ -84,14 +90,15 @@ Vue.mixin({
                 url += (url.indexOf('?') === -1 ? '?' : '&') + Qs.stringify(data);
             }
 
-            this.$axios.get(url).then(function (res) {
+            return this.$axios.get(url).then(function (res) {
                 if (res.data.code === 0) {
                     if (success) {
                         success.bind(this)(res.data.data);
                     }
-                } else {
+                } else if (typeof res.data.message !== 'undefined') {
                     this.$alert(res.data.message);
                 }
+                return res;
             }.bind(this));
         },
         ajax_post: function (url, data, success) {
@@ -105,7 +112,7 @@ Vue.mixin({
                 config.headers = {'Content-Type': 'multipart/form-data'};
             }
 
-            this.$axios.post(url, data, config).then(function (res) {
+            return this.$axios.post(url, data, config).then(function (res) {
                 if (res.data.code === 0 && success) {
                     success.bind(this)(res.data.data);
                 }
@@ -113,11 +120,13 @@ Vue.mixin({
                 if (res.data.message !== '') {
                     this.$alert(res.data.message);
                 }
+                return res
             }.bind(this));
         },
         reload: function () {
             var qs = this.$qs.stringify(this.request);
             window.history.replaceState(null, null, qs ? ('?' + qs) : '');
+            document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substr(1)) : {};
             this.response = [];
             this.$axios.get(document.location.href).then(function (res) {
                 if (res.data.code !== 0) {
@@ -175,12 +184,18 @@ Vue.mixin({
                 name = (typeof keys[1] !== 'undefined' && keys[1].indexOf('_name')) ? row[keys[1]] : row[key];
             }
 
-            this.$confirm('确认删除 `' + (name ? name : row[key]) + '` ?').then(function (value) {
+            if (window.event.ctrlKey) {
                 this.ajax_post(window.location.pathname + "/delete", data, function (res) {
                     this.reload();
                 });
-            }.bind(this));
-        }
+            } else {
+                this.$confirm('确认删除 `' + (name ? name : row[key]) + '` ?').then(function (value) {
+                    this.ajax_post(window.location.pathname + "/delete", data, function (res) {
+                        this.reload();
+                    });
+                }.bind(this));
+            }
+        },
     },
     created: function () {
         var qs = this.$qs.parse(document.location.search.substr(1));
@@ -202,12 +217,35 @@ Vue.mixin({
 
 Vue.component('pager', {
     props: ['request', 'response'],
-    template: ' <el-pagination :current-page="request.page"\n' +
+    template: ' <el-pagination background :current-page="response.page"\n' +
         '                   :page-size="request.size"\n' +
         '                   :page-sizes="[10,20,25,50,100,500,1000]"\n' +
         '                   @current-change="request.page=$event"\n' +
         '                   @size-change="request.size=$event; request.page=1"\n' +
-        '                   :total="response.count" layout="sizes,total, prev, pager, next"></el-pagination>\n',
+        '                   :total="response.count" layout="sizes,total, prev, pager, next, jumper"></el-pagination>\n',
+    watch: {
+        request: {
+            handler: function () {
+                for (var field in this.request) {
+                    if (field === 'page' || field === 'size') {
+                        continue;
+                    }
+                    if (field in this.last_request && this.last_request[field] != this.request[field]) {
+                        this.response.page = 1;
+                        this.request.page = 1;
+                        this.last_request = Object.assign({}, this.request);
+                        break;
+                    }
+                }
+            },
+            deep: true
+        }
+    },
+    data: function () {
+        return {
+            last_request: Object.assign({}, this.request)
+        }
+    }
 });
 
 Vue.component('date-picker', {

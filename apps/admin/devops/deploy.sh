@@ -15,7 +15,7 @@ REMOTE_PATH="${REMOTE_ROOT}/$type"
 
 rm -rf devops/*.tar.gz
 
-cp  -f .env-${type} .env
+cp  -f .env.${type} .env
 cp  -f docker/.env-${type} docker/.env
 
 (cd docker;mv docker-compose.yml fpm.yml;cp swoole.yml docker-compose.yml)

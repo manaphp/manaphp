@@ -9,7 +9,7 @@ class AdminController extends Controller
 {
     public function getAcl()
     {
-        return ['list' => '@index', 'lock' => '@edit', 'active' => '@edit', 'create' => '@edit'];
+        return ['list' => '@index', 'create' => '@index', 'lock' => '@index', 'active' => '@index', 'edit' => '@index'];
     }
 
     public function indexAction()

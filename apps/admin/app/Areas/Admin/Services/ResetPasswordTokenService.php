@@ -1,5 +1,5 @@
 <?php
-namespace App\Areas\User\Services;
+namespace App\Areas\Admin\Services;
 
 use App\Models\Admin;
 use ManaPHP\Identity\Adapter\Jwt;

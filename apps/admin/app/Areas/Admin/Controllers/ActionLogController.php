@@ -1,5 +1,5 @@
 <?php
-namespace App\Areas\User\Controllers;
+namespace App\Areas\Admin\Controllers;
 
 use App\Models\AdminActionLog;
 use ManaPHP\Mvc\Controller;

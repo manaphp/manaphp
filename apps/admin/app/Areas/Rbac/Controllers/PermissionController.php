@@ -19,7 +19,7 @@ class PermissionController extends Controller
 {
     public function getAcl()
     {
-        return ['list' => '@index', 'delete' => '@edit', 'rebuild' => '@edit'];
+        return ['list' => '@index', 'rebuild' => '@index', 'edit' => '@index', 'delete' => '@index'];
     }
 
     public function indexAction()

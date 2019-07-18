@@ -17,12 +17,21 @@
         .login-box > div {
             margin-bottom: 10px;
         }
+
+        .background {
+            position: absolute;
+            display: block;
+            top: 0;
+            left: 0;
+            z-index: -1000;
+        }
     </style>
 </head>
-<body>
+<body id="particles-js">
+<canvas class="background"></canvas>
 <div id="app" class="login-box">
     <h1 align="center">登录</h1>
-    <el-input v-model.trim="request.admin_name" placeholder="用户名" autofocus>
+    <el-input v-model.trim="request.admin_name" placeholder="用户名" @keyup.enter.native="login" autofocus>
         <template slot="prepend">账号</template>
     </el-input>
     <el-input v-model.trim="request.password" type="password" placeholder="密码" @keyup.enter.native="login">
@@ -40,14 +49,15 @@
         </el-col>
     </el-row>
     <el-button @click="login" style="width:100%" type="primary">登录</el-button>
-    <el-row>
-        <el-col :offset="16" span="8"><a href="password/forget"><span style="font-size: 0.8em">忘记密码?</span></a></el-col>
-    </el-row>
+    <div>
+        <a href="password/forget"><span style="font-size: 0.8em; margin-left: 218px; color: gray;">找回密码</span></a>
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/element-ui@2.7.2/lib/index.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios@0.18.0/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qs@6.7.0/dist/qs.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/particlesjs@2.2.3/dist/particles.min.js"></script>
 <script>
     Vue.prototype.$axios = axios;
 
@@ -79,6 +89,16 @@
             },
         }
     });
+    window.onload = function () {
+        Particles.init({
+            selector: '.background',
+            maxParticles: 150,
+            sizeVariations: 5,
+            speed: 0.5,
+            color: "#86C166",
+            connectParticles: false,
+        });
+    };
 </script>
 </body>
 </html>

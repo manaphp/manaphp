@@ -11,7 +11,7 @@ class AdminRoleController extends Controller
 {
     public function getAcl()
     {
-        return ['detail' => '@index'];
+        return ['detail' => '@index', 'edit' => '@index'];
     }
 
     public function indexAction()

@@ -41,7 +41,7 @@ class Admin extends Model
     public function rules()
     {
         return [
-            'admin_name' => ['length' => '4-16', 'account'],
+            'admin_name' => ['length' => '4-16', 'account', 'readonly'],
             'email' => ['lower', 'email', 'unique'],
             'status' => 'const'
         ];

@@ -82,7 +82,7 @@
             el: '#app',
             data: {
                 request: {
-                    group_id: ''
+                    group_id: 0
                 },
                 response: [],
                 createVisible: false,

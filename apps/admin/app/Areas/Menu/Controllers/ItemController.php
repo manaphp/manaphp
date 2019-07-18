@@ -8,7 +8,7 @@ class ItemController extends Controller
 {
     public function getAcl()
     {
-        return ['create' => '@edit', 'delete' => '@edit'];
+        return ['create' => '@index', 'edit' => '@index', 'delete' => '@index'];
     }
 
     public function indexAction()

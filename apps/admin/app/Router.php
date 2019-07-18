@@ -1,7 +1,7 @@
 <?php
 namespace App;
 
-use App\Areas\User\Controllers\SessionController;
+use App\Areas\Admin\Controllers\SessionController;
 
 class Router extends \ManaPHP\Router
 {
@@ -9,7 +9,7 @@ class Router extends \ManaPHP\Router
     {
         parent::__construct(true);
 
-        $this->_areas = ['Menu', 'Rbac', 'User'];
+        $this->_areas = ['Menu', 'Rbac', 'Admin'];
         $this->add('/login', [SessionController::class, 'login']);
         $this->add('/logout', [SessionController::class, 'logout']);
     }

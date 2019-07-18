@@ -96,3 +96,11 @@
 .search-box .el-date-editor {
     width: 220px;
 }
+
+.el-dialog .el-form-item{
+    margin-bottom: 3px;
+}
+
+.el-message-box.error-response{
+    width: 50%;
+}

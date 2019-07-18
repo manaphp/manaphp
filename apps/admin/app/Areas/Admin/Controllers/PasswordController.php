@@ -1,5 +1,5 @@
 <?php
-namespace App\Areas\User\Controllers;
+namespace App\Areas\Admin\Controllers;
 
 use App\Models\Admin;
 use ManaPHP\Mvc\Controller;
@@ -32,7 +32,7 @@ class PasswordController extends Controller
             $this->mailer->compose()
                 ->setSubject($this->configure->name . '-重置密码邮件')
                 ->setTo($email)
-                ->setHtmlBody(['@app/Areas/User/Views/Mail/ResetPassword', 'email' => $email, 'admin_name' => $admin_name, 'token' => $token])
+                ->setHtmlBody(['@app/Areas/Admin/Views/Mail/ResetPassword', 'email' => $email, 'admin_name' => $admin_name, 'token' => $token])
                 ->send();
             return $this->response->setJsonOk('重置密码连接已经发送到您的邮箱');
         } else {

@@ -1,6 +1,6 @@
 <div class="search-box">
     <el-button size="small" @click="do_rebuild" type="primary" icon="el-icon-refresh" style="width: 100px;">重新扫描</el-button>
-    <el-select v-model="filter.path" size="small" placeholder="分组" clearable style="width: 150px">
+    <el-select v-model="filter.path" size="small" placeholder="分组" clearable filterable style="width: 150px">
         <el-option v-for="path in paths" :key="path" :label="path" :value="path"></el-option>
     </el-select>
 </div>
@@ -52,7 +52,6 @@
                 response: [],
                 editVisible: false,
                 edit: {},
-                paths: [],
                 filter: {
                     path: ''
                 }
@@ -75,6 +74,20 @@
                     }
 
                     return permissions;
+                },
+                paths: function () {
+                    var paths = [];
+                    for (var item of this.response) {
+                        var path = item.path;
+                        var pos = 0;
+                        while ((pos = path.indexOf('/', pos + 1)) !== -1) {
+                            var sub = path.substring(0, pos);
+                            if (paths.indexOf(sub) === -1) {
+                                paths.push(sub);
+                            }
+                        }
+                    }
+                    return paths.sort();
                 }
             },
             methods: {
@@ -82,25 +95,6 @@
                     this.ajax_post("rebuild", {}, function () {
                         this.reload();
                     });
-                }
-            },
-            watch: {
-                response: function (v) {
-                    var paths = [];
-                    for (var item of this.response) {
-                        var count = 0;
-                        for (var item2 of this.response) {
-                            if (item2.path.indexOf(item.path) === 0) {
-                                count++;
-                            }
-                        }
-
-                        if (count > 1) {
-                            paths.push(item.path);
-                        }
-                    }
-                    this.paths = paths;
-                    this.filter.path = '';
                 }
             }
         });
