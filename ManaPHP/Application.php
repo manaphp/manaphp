@@ -92,7 +92,7 @@ class Application extends Component implements ApplicationInterface
     {
         if (!$this->_root_dir) {
             if (strpos(static::class, 'ManaPHP\\') !== 0) {
-                $this->_root_dir = dirname(dirname($this->_class_file));
+                $this->_root_dir = dirname($this->_class_file, 2);
             } elseif (!empty($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'] === dirname($_SERVER['SCRIPT_FILENAME'])) {
                 $this->_root_dir = dirname($_SERVER['DOCUMENT_ROOT']);
             } else {
