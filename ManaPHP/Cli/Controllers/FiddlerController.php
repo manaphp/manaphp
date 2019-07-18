@@ -10,6 +10,9 @@ use ManaPHP\Cli\Controller;
  */
 class FiddlerController extends Controller
 {
+    /**
+     * @param \ManaPHP\DiInterface $di
+     */
     public function setDi($di)
     {
         if (!$di->has('fiddlerPlugin')) {
