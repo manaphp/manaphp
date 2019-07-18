@@ -159,7 +159,7 @@ class Dispatcher extends Component implements DispatcherInterface
     public function getParam($name, $default = null)
     {
         $params = $this->_context->params;
-        return isset($params[$name]) ? $params[$name] : $default;
+        return $params[$name] ?? $default;
     }
 
     /**

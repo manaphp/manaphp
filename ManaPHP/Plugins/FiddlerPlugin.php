@@ -166,7 +166,7 @@ class FiddlerPlugin extends Plugin
      */
     public function subscribeWeb($options = [])
     {
-        $id = isset($options['id']) ? $options['id'] : $this->configure->id;
+        $id = $options['id'] ?? $this->configure->id;
         if (isset($options['ip'])) {
             $channel = 'manaphp:fiddler:web:' . $id . ":$options[ip]";
         } else {
@@ -198,7 +198,7 @@ class FiddlerPlugin extends Plugin
      */
     public function subscribeCli($options = [])
     {
-        $id = isset($options['id']) ? $options['id'] : $this->configure->id;
+        $id = $options['id'] ?? $this->configure->id;
         $channel = 'manaphp:fiddler:cli:' . $id;
 
         /** @noinspection PhpUndefinedMethodInspection */

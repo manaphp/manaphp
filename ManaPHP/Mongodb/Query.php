@@ -260,11 +260,11 @@ class Query extends \ManaPHP\Query
                     unset($v['$count_if'][0]);
                     $v = ['$sum' => ['$cond' => [$v['$count_if'], 1, 0]]];
                 } elseif (isset($v['$sum_if'])) {
-                    $field = isset($v['$sum_if'][0]) ? $v['$sum_if'][0] : 1;
+                    $field = $v['$sum_if'][0] ?? 1;
                     unset($v['$sum_if'][0]);
                     $v = ['$sum' => ['$cond' => [$v['$sum_if'], is_numeric($field) ? (float)$field : '$' . $field, 0]]];
                 } elseif (isset($v['$avg_if'])) {
-                    $field = isset($v['$avg_if'][0]) ? $v['$avg_if'][0] : 1;
+                    $field = $v['$avg_if'][0] ?? 1;
                     unset($v['$avg_if'][0]);
                     $v = ['$avg' => ['$cond' => [$v['$avg_if'], is_numeric($field) ? (float)$field : '$' . $field, 0]]];
                 }

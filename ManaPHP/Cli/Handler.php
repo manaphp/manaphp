@@ -116,7 +116,7 @@ class Handler extends Component implements HandlerInterface
      */
     public function handle($args = null)
     {
-        $this->_args = $args !== null ? $args : $GLOBALS['argv'];
+        $this->_args = $args ?? $GLOBALS['argv'];
 
         list(, $controllerName, $commandName) = array_pad($this->_args, 3, null);
 

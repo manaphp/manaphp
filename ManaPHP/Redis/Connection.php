@@ -76,7 +76,7 @@ class Connection extends Component
             throw new DsnFormatException(['`:uri` is invalid, `:scheme` scheme is not recognized', 'uri' => $uri, 'scheme' => $parts['scheme']]);
         }
 
-        $this->_host = isset($parts['host']) ? $parts['host'] : '127.0.0.1';
+        $this->_host = $parts['host'] ?? '127.0.0.1';
         $this->_port = isset($parts['port']) ? (int)$parts['port'] : 6379;
 
         if (isset($parts['path'])) {

@@ -335,7 +335,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         }
 
         $rs = $query->fetch();
-        return isset($rs[0]) ? $rs[0] : null;
+        return $rs[0] ?? null;
     }
 
     /**
@@ -413,7 +413,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         }
 
         $rs = static::query(null, $model)->select($fields)->where($filters)->limit(1)->fetch();
-        return isset($rs[0]) ? $rs[0] : null;
+        return $rs[0] ?? null;
     }
 
     /**
@@ -1219,7 +1219,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         foreach ($rc->getConstants() as $cName => $cValue) {
             if (strpos($cName, $name) === 0) {
                 if ($comment && preg_match('#\s+const\s+' . $cName . '\s*=[^/]+//(<([^>\r\n]+)>|[^\s]+)#', $file, $match)) {
-                    $constants[$cValue] = trim(isset($match[2]) ? $match[2] : $match[1]);
+                    $constants[$cValue] = trim($match[2] ?? $match[1]);
                 } else {
                     $constants[$cValue] = strtolower(substr($cName, strlen($name)));
                 }

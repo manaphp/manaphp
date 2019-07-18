@@ -377,7 +377,7 @@ class Smtp extends Mailer
         }
 
         $from = $message->getFrom();
-        $this->_transmit('MAIL FROM:<' . (isset($from[0]) ? $from[0] : key($from)) . '>', [250]);
+        $this->_transmit('MAIL FROM:<' . ($from[0] ?? key($from)) . '>', [250]);
 
         $to = $message->getTo();
         $cc = $message->getCc();

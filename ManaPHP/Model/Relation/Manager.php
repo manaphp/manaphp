@@ -273,7 +273,7 @@ class Manager extends Component implements ManagerInterface
 
                 foreach ($r as $ri => $rv) {
                     $key = $rv[$valueField];
-                    $r[$ri][$name] = isset($data[$key]) ? $data[$key] : null;
+                    $r[$ri][$name] = $data[$key] ?? null;
                 }
             } elseif ($relation->type === Relation::TYPE_HAS_MANY) {
                 $r_index = [];
@@ -294,7 +294,7 @@ class Manager extends Component implements ManagerInterface
                 }
 
                 foreach ($r as $ri => $rv) {
-                    $r[$ri][$name] = isset($rd[$ri]) ? $rd[$ri] : [];
+                    $r[$ri][$name] = $rd[$ri] ?? [];
                 }
             } elseif ($relation->type === Relation::TYPE_HAS_MANY_TO_MANY) {
                 $ids = PHP_MAJOR_VERSION >= 7 ? array_column($r, $valueField) : array_field($r, $valueField);
@@ -313,7 +313,7 @@ class Manager extends Component implements ManagerInterface
 
                 foreach ($r as $ri => $rv) {
                     $value = $rv[$valueField];
-                    $r[$ri][$name] = isset($rd[$value]) ? $rd[$value] : [];
+                    $r[$ri][$name] = $rd[$value] ?? [];
                 }
             } elseif ($relation->type === Relation::TYPE_HAS_MANY_VIA) {
                 /** @var \ManaPHP\ModelInterface $via */
@@ -336,7 +336,7 @@ class Manager extends Component implements ManagerInterface
 
                 foreach ($r as $ri => $rv) {
                     $rvr = $rv[$valueField];
-                    $r[$ri][$name] = isset($rd[$rvr]) ? $rd[$rvr] : [];
+                    $r[$ri][$name] = $rd[$rvr] ?? [];
                 }
             } else {
                 throw new NotSupportedException($name);

@@ -127,7 +127,7 @@ class Validator extends Component implements ValidatorInterface
         }
 
         $templates = $this->_templates[$locale];
-        return isset($templates[$validate]) ? $templates[$validate] : $templates['default'];
+        return $templates[$validate] ?? $templates['default'];
     }
 
     /**

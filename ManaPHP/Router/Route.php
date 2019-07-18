@@ -79,7 +79,7 @@ class Route implements RouteInterface
             if (preg_match_all('#{([A-Z].*)}#Ui', $pattern, $matches, PREG_SET_ORDER) > 0) {
                 foreach ($matches as $match) {
                     $parts = explode(':', $match[1], 2);
-                    $to = '(?<' . $parts[0] . '>' . (isset($parts[1]) ? $parts[1] : '[\w\-]+') . ')';
+                    $to = '(?<' . $parts[0] . '>' . ($parts[1] ?? '[\w\-]+') . ')';
                     $pattern = (string)str_replace($match[0], $to, $pattern);
                 }
             }
@@ -233,13 +233,13 @@ class Route implements RouteInterface
         }
 
         $r = [];
-        $r['controller'] = isset($parts['controller']) ? $parts['controller'] : 'index';
+        $r['controller'] = $parts['controller'] ?? 'index';
         if (isset($parts['area'])) {
             $r['area'] = $parts['area'];
         }
 
-        $r['action'] = isset($parts['action']) ? $parts['action'] : 'index';
-        $params = isset($parts['params']) ? $parts['params'] : '';
+        $r['action'] = $parts['action'] ?? 'index';
+        $params = $parts['params'] ?? '';
 
         unset($parts['area'], $parts['controller'], $parts['action'], $parts['params']);
         if ($params) {

@@ -151,11 +151,7 @@ class Di implements DiInterface
             }
         } elseif (preg_match('#^(.+)([A-Z].+?)$#', $name, $match)) {
             $maybe = lcfirst($match[2]);
-            if (isset($this->_definitions[$maybe])) {
-                $definition = $this->_definitions[$maybe];
-            } else {
-                $definition = $this->_getPatterned($name);
-            }
+            $definition = $this->_definitions[$maybe] ?? $this->_getPatterned($name);
         }
 
         if ($definition === null) {
@@ -439,7 +435,7 @@ class Di implements DiInterface
      */
     public function getDefinition($name)
     {
-        return isset($this->_definitions[$name]) ? $this->_definitions[$name] : null;
+        return $this->_definitions[$name] ?? null;
     }
 
     /**

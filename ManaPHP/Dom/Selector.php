@@ -84,7 +84,7 @@ class Selector
      */
     public function find($css = null)
     {
-        return $this->css('descendant::' . ($css === null ? '*' : $css));
+        return $this->css('descendant::' . ($css ?? '*'));
     }
 
     /**
@@ -94,7 +94,7 @@ class Selector
      */
     public function has($css)
     {
-        return $this->css('child::' . ($css === null ? '*' : $css));
+        return $this->css('child::' . ($css ?? '*'));
     }
 
     /**

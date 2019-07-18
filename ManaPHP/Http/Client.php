@@ -160,7 +160,7 @@ abstract class Client extends Component implements ClientInterface
         }
         $this->eventsManager->fireEvent('httpClient:afterRequest', $this, $response);
         $response->request = $request;
-        $response->user_data = isset($options['user_data']) ? $options['user_data'] : null;
+        $response->user_data = $options['user_data'] ?? null;
 
         $this->logger->debug($response, 'httpClient.response');
 

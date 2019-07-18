@@ -973,7 +973,7 @@ class Merger extends Component implements QueryInterface, IteratorAggregate
     public function value($field, $default = null)
     {
         $r = $this->first([$field]);
-        return isset($r[$field]) ? $r[$field] : $default;
+        return $r[$field] ?? $default;
     }
 
     public function when($value, $true_call, $false_call = null)

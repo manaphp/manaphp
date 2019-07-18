@@ -170,7 +170,7 @@ class Request extends Component implements RequestInterface
         if ($name === null) {
             return $context->_SERVER;
         } else {
-            return isset($context->_SERVER[$name]) ? $context->_SERVER[$name] : $default;
+            return $context->_SERVER[$name] ?? $default;
         }
     }
 

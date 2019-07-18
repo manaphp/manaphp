@@ -30,8 +30,8 @@ class Mysql extends Connection
             throw new DsnFormatException(['`:url` is invalid, `:scheme` scheme is not recognized', 'url' => $uri, 'scheme' => $parts['scheme']]);
         }
 
-        $this->_username = isset($parts['user']) ? $parts['user'] : 'root';
-        $this->_password = isset($parts['pass']) ? $parts['pass'] : '';
+        $this->_username = $parts['user'] ?? 'root';
+        $this->_password = $parts['pass'] ?? '';
 
         $dsn = [];
 

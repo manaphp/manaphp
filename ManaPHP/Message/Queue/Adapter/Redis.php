@@ -101,7 +101,7 @@ class Redis extends Queue
             return false;
         } else {
             $r = $redis->brPop($this->_topicKeys[$topic], $timeout);
-            return isset($r[1]) ? $r[1] : false;
+            return $r[1] ?? false;
         }
     }
 

@@ -100,7 +100,7 @@ class View extends Component implements ViewInterface
         if ($name === null) {
             return $context->vars;
         } else {
-            return isset($context->vars[$name]) ? $context->vars[$name] : null;
+            return $context->vars[$name] ?? null;
         }
     }
 
@@ -133,7 +133,7 @@ class View extends Component implements ViewInterface
         if (isset($vars['request'])) {
             throw new MisuseException('variable `request` is reserved for view');
         }
-        $vars['request'] = isset($this->request) ? $this->request : null;
+        $vars['request'] = $this->request ?? null;
 
         return $this->renderer->render($template, $vars, $directOutput);
     }

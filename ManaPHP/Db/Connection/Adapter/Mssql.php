@@ -25,14 +25,14 @@ class Mssql extends Connection
             throw new DsnFormatException(['`:uri` is invalid, `:scheme` scheme is not recognized', 'uri' => $uri, 'scheme' => $parts['scheme']]);
         }
 
-        $this->_username = isset($parts['user']) ? $parts['user'] : null;
-        $this->_password = isset($parts['pass']) ? $parts['pass'] : null;
+        $this->_username = $parts['user'] ?? null;
+        $this->_password = $parts['pass'] ?? null;
 
         $dsn = [];
         $use_dblib = DIRECTORY_SEPARATOR === '/';
 
-        $host = isset($parts['host']) ? $parts['host'] : '127.0.0.1';
-        $port = isset($parts['port']) ? $parts['port'] : '1433';
+        $host = $parts['host'] ?? '127.0.0.1';
+        $port = $parts['port'] ?? '1433';
 
         $dsn[$use_dblib ? 'host' : 'Server'] = $host . ($use_dblib ? ':' : ',') . $port;
 
@@ -184,7 +184,7 @@ class Mssql extends Connection
                     throw new PreconditionException('if use offset CLAUSE, must provide order CLAUSE.');
                 }
 
-                $sql .= ', ROW_NUMBER() OVER (ORDER BY ' . (isset($params['order']) ? $params['order'] : 'rand()') . ') AS _row_number_';
+                $sql .= ', ROW_NUMBER() OVER (ORDER BY ' . ($params['order'] ?? 'rand()') . ') AS _row_number_';
             }
         }
 

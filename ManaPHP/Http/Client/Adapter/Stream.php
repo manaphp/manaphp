@@ -33,7 +33,7 @@ class Stream extends Client
             if (isset($parts['pass'])) {
                 $headers[] = 'Proxy-Authorization: Basic ' . base64_encode($parts['user'] . ':' . $parts['pass']);
             }
-            $http['proxy'] = 'tcp://' . $parts['host'] . ':' . (isset($parts['port']) ? $parts['port'] : '80');
+            $http['proxy'] = 'tcp://' . $parts['host'] . ':' . ($parts['port'] ?? '80');
         }
 
         $http['header'] = $headers;
@@ -53,11 +53,7 @@ class Stream extends Client
 
         $ssl = [];
         $ssl['verify_peer'] = $request->options['verify_peer'];
-        if (isset($request->options['allow_self_signed'])) {
-            $ssl['allow_self_signed'] = $request->options['allow_self_signed'];
-        } else {
-            $ssl['allow_self_signed'] = !$request->options['verify_peer'];
-        }
+        $ssl['allow_self_signed'] = $request->options['allow_self_signed'] ?? !$request->options['verify_peer'];
 
         if (isset($request->options['cafile'])) {
             $ssl['cafile'] = $this->alias->resolve($request->options['cafile']);

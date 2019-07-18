@@ -235,7 +235,7 @@ class Response extends Component implements ResponseInterface
                 511 => 'Network Authentication Required',
             ];
 
-            return isset($texts[$code]) ? $texts[$code] : 'App Error';
+            return $texts[$code] ?? 'App Error';
         }
     }
 
@@ -266,7 +266,7 @@ class Response extends Component implements ResponseInterface
     {
         $context = $this->_context;
 
-        return isset($context->headers[$name]) ? $context->headers[$name] : $default;
+        return $context->headers[$name] ?? $default;
     }
 
     /**
@@ -400,7 +400,7 @@ class Response extends Component implements ResponseInterface
     {
         $context = $this->_context;
 
-        return isset($context->headers['Content-Type']) ? $context->headers['Content-Type'] : null;
+        return $context->headers['Content-Type'] ?? null;
     }
 
     /**

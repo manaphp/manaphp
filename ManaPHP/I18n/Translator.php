@@ -124,7 +124,7 @@ class Translator extends Component implements TranslatorInterface
             $templates = $this->_templates[$locale];
         }
 
-        $message = isset($templates[$template]) ? $templates[$template] : $template;
+        $message = $templates[$template] ?? $template;
 
         if ($placeholders) {
             $replaces = [];

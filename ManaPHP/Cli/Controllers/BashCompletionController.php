@@ -181,7 +181,7 @@ class BashCompletionController extends Controller
 
         $previous = $position > 0 ? $arguments[$position - 1] : null;
 
-        $current = isset($arguments[$position]) ? $arguments[$position] : '';
+        $current = $arguments[$position] ?? '';
 
         if ($position === 1) {
             $words = $this->_getControllers();

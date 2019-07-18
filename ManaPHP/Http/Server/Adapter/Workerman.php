@@ -190,7 +190,7 @@ class Workerman extends Server
                 $file = "$this->_doc_root/$file";
                 if ((DIRECTORY_SEPARATOR === '/' ? realpath($file) : str_replace('\\', '/', realpath($file))) === $file) {
                     $ext = pathinfo($file, PATHINFO_EXTENSION);
-                    $mime_type = isset($this->_mime_types[$ext]) ? $this->_mime_types[$ext] : 'application/octet-stream';
+                    $mime_type = $this->_mime_types[$ext] ?? 'application/octet-stream';
                     Http::header('Content-Type: ' . $mime_type);
                     $connection->close(file_get_contents($file));
                 } else {

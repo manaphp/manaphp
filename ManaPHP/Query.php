@@ -283,7 +283,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
             }
 
             if ($this->_multiple === false) {
-                return isset($r[0]) ? $r[0] : null;
+                return $r[0] ?? null;
             } else {
                 return $r;
             }
@@ -371,7 +371,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     public function value($field, $default = null)
     {
         $r = $this->first([$field]);
-        return isset($r[$field]) ? $r[$field] : $default;
+        return $r[$field] ?? $default;
     }
 
     /**
@@ -426,9 +426,9 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
         }
 
         if (isset($options['limit'])) {
-            $this->limit($options['limit'], isset($options['offset']) ? $options['offset'] : 0);
+            $this->limit($options['limit'], $options['offset'] ?? 0);
         } elseif (isset($options['size'])) {
-            $this->page($options['size'], isset($options['page']) ? $options['page'] : null);
+            $this->page($options['size'], $options['page'] ?? null);
         }
 
         if (isset($options['distinct'])) {

@@ -1259,7 +1259,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
     public function getBind($key = null)
     {
         if ($key !== null) {
-            return isset($this->_bind[$key]) ? $this->_bind[$key] : null;
+            return $this->_bind[$key] ?? null;
         } else {
             return $this->_bind;
         }

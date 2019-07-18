@@ -69,7 +69,7 @@ class Bag extends Component implements BagInterface
         if ($property === null) {
             return $data;
         } else {
-            return isset($data[$property]) ? $data[$property] : $default;
+            return $data[$property] ?? $default;
         }
     }
 

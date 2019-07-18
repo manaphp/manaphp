@@ -179,7 +179,7 @@ class Multi extends Component implements MultiInterface, Countable
                 break;
         }
 
-        curl_setopt($curl, CURLOPT_REFERER, isset($headers['Referer']) ? $headers['Referer'] : $request->url);
+        curl_setopt($curl, CURLOPT_REFERER, $headers['Referer'] ?? $request->url);
 
         unset($headers['Referer'], $headers['User-Agent'], $headers['Cookie']);
         if ($headers) {

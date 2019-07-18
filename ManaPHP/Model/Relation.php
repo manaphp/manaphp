@@ -51,7 +51,7 @@ class Relation
             /** @var \ManaPHP\Model $referenceModel */
             $this->referenceModel = $referenceModel = $definition[0];
             $this->type = $type = $definition[1];
-            $referenceField = isset($definition[2]) ? $definition[2] : null;
+            $referenceField = $definition[2] ?? null;
             if ($type === self::TYPE_BELONGS_TO) {
                 $reference = new $referenceModel;
                 $this->keyField = $reference->getPrimaryKey();

@@ -212,11 +212,7 @@ class Renderer extends Component implements RendererInterface
     {
         $context = $this->_context;
 
-        if (isset($context->sections[$section])) {
-            return $context->sections[$section];
-        } else {
-            return $default;
-        }
+        return $context->sections[$section] ?? $default;
     }
 
     /**

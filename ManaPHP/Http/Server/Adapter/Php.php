@@ -157,7 +157,7 @@ class Php extends Server
             $file = "$this->_doc_root/$file";
             if ((DIRECTORY_SEPARATOR === '/' ? realpath($file) : str_replace('\\', '/', realpath($file))) === $file) {
                 $ext = pathinfo($file, PATHINFO_EXTENSION);
-                $mime_type = isset($this->_mime_types[$ext]) ? $this->_mime_types[$ext] : 'application/octet-stream';
+                $mime_type = $this->_mime_types[$ext] ?? 'application/octet-stream';
                 header('Content-Type: ' . $mime_type);
                 readfile($file);
             } else {

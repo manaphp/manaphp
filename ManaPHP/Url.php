@@ -47,7 +47,7 @@ class Url extends Component implements UrlInterface
                 return $this->router->createUrl($args, $scheme);
             }
 
-            $anchor = isset($args['#']) ? $args['#'] : null;
+            $anchor = $args['#'] ?? null;
             unset($args[0], $args['#']);
         }
 

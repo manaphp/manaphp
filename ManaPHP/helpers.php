@@ -294,7 +294,7 @@ if (!function_exists('input')) {
         }
 
         if ($defaultOrRules && is_array($defaultOrRules)) {
-            $value = $request->getInput($name, isset($defaultOrRules['default']) ? $defaultOrRules['default'] : null);
+            $value = $request->getInput($name, $defaultOrRules['default'] ?? null);
             return $request->validator->validateValue($name, $value, $defaultOrRules);
         } else {
             return $request->getInput($name, $defaultOrRules);
@@ -808,7 +808,7 @@ if (!function_exists('array_get')) {
         }
 
         if (($pos = strrpos($key, '.')) === false) {
-            return isset($ar[$key]) ? $ar[$key] : null;
+            return $ar[$key] ?? null;
         }
 
         $t = $ar;
@@ -820,7 +820,7 @@ if (!function_exists('array_get')) {
         }
 
         $last = substr($key, $pos + 1);
-        return isset($t[$last]) ? $t[$last] : $default;
+        return $t[$last] ?? $default;
     }
 }
 

@@ -64,7 +64,7 @@ class Alias extends Component implements AliasInterface
             throw new MisuseException(['`:name` must start with `@`', 'name' => $name]);
         }
 
-        return isset($this->_aliases[$name]) ? $this->_aliases[$name] : false;
+        return $this->_aliases[$name] ?? false;
     }
 
     /**
@@ -98,7 +98,7 @@ class Alias extends Component implements AliasInterface
                     $replaced = substr(bin2hex(random_bytes($match / 2 + 1)), 0, $match);
                 } else {
                     /** @noinspection UnSafeIsSetOverArrayInspection */
-                    $ts = isset($ts) ? $ts : time();
+                    $ts = $ts ?? time();
                     $replaced = date($match, $ts);
                 }
 

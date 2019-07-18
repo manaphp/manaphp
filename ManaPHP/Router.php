@@ -384,7 +384,7 @@ class Router extends Component implements RouterInterface
 
         $context->controller = $parts['controller'];
         $context->action = $parts['action'];
-        $context->params = isset($parts['params']) ? $parts['params'] : [];
+        $context->params = $parts['params'] ?? [];
 
         return $context;
     }

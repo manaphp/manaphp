@@ -110,7 +110,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
      */
     public function children($css = null)
     {
-        return $this->css('child::' . ($css === null ? '*' : $css));
+        return $this->css('child::' . ($css ?? '*'));
     }
 
     /**
@@ -120,7 +120,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
      */
     public function closest($css = null)
     {
-        return $this->css('ancestor-or-self::' . ($css === null ? '*' : $css));
+        return $this->css('ancestor-or-self::' . ($css ?? '*'));
     }
 
     /**
@@ -187,7 +187,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
      */
     public function find($css = null)
     {
-        return $this->css('descendant::' . ($css === null ? '*' : $css));
+        return $this->css('descendant::' . ($css ?? '*'));
     }
 
     /**
@@ -205,7 +205,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
      */
     public function has($css)
     {
-        return $this->css('child::' . ($css === null ? '*' : $css));
+        return $this->css('child::' . ($css ?? '*'));
     }
 
     /**
@@ -215,7 +215,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
      */
     public function is($css)
     {
-        $r = $this->css('self::' . ($css === null ? '*' : $css) . '[1]');
+        $r = $this->css('self::' . ($css ?? '*') . '[1]');
         return (bool)$r->_nodes;
     }
 
@@ -226,7 +226,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
      */
     public function next($css = null)
     {
-        return $this->css('following-sibling::' . ($css === null ? '*' : $css) . '[1]');
+        return $this->css('following-sibling::' . ($css ?? '*') . '[1]');
     }
 
     /**
@@ -236,7 +236,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
      */
     public function nextAll($css = null)
     {
-        return $this->css('following-sibling::' . ($css === null ? '*' : $css));
+        return $this->css('following-sibling::' . ($css ?? '*'));
     }
 
     /**
@@ -246,7 +246,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
      */
     public function not($css)
     {
-        return $this->css('!self::' . ($css === null ? '*' : $css));
+        return $this->css('!self::' . ($css ?? '*'));
     }
 
     /**
@@ -260,7 +260,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
             return clone  $this;
         }
 
-        return $this->css('parent::' . ($css === null ? '*' : $css));
+        return $this->css('parent::' . ($css ?? '*'));
     }
 
     /**
@@ -270,7 +270,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
      */
     public function parents($css = null)
     {
-        return $this->css('ancestor::' . ($css === null ? '*' : $css));
+        return $this->css('ancestor::' . ($css ?? '*'));
     }
 
     /**
@@ -280,7 +280,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
      */
     public function prev($css = null)
     {
-        return $this->css('preceding-sibling::' . ($css === null ? '*' : $css) . '[1]');
+        return $this->css('preceding-sibling::' . ($css ?? '*') . '[1]');
     }
 
     /**
@@ -290,7 +290,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
      */
     public function prevAll($css = null)
     {
-        return $this->css('preceding-sibling::' . ($css === null ? '*' : $css));
+        return $this->css('preceding-sibling::' . ($css ?? '*'));
     }
 
     /**

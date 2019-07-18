@@ -53,7 +53,7 @@ class Identity extends Component implements IdentityInterface
             return $default;
         } else {
             $id = $context->type . '_id';
-            return isset($context->claims[$id]) ? $context->claims[$id] : 0;
+            return $context->claims[$id] ?? 0;
         }
     }
 
@@ -76,7 +76,7 @@ class Identity extends Component implements IdentityInterface
             return $default;
         } else {
             $name = $context->type . '_name';
-            return isset($context->claims[$name]) ? $context->claims[$name] : '';
+            return $context->claims[$name] ?? '';
         }
     }
 
@@ -90,11 +90,7 @@ class Identity extends Component implements IdentityInterface
         $context = $this->_context;
 
         if ($context->claims) {
-            if (isset($context->claims['role'])) {
-                return $context->claims['role'];
-            } else {
-                return isset($context->claims['admin_id']) && $context->claims['admin_id'] === 1 ? 'admin' : 'user';
-            }
+            return $context->claims['role'] ?? (isset($context->claims['admin_id']) && $context->claims['admin_id'] === 1 ? 'admin' : 'user');
         } else {
             return $default;
         }
@@ -181,7 +177,7 @@ class Identity extends Component implements IdentityInterface
     {
         $context = $this->_context;
 
-        return isset($context->claims[$claim]) ? $context->claims[$claim] : $default;
+        return $context->claims[$claim] ?? $default;
     }
 
     /**

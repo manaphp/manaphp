@@ -107,7 +107,7 @@ class Jwt extends Identity
     {
         $context = $this->_context;
 
-        return isset($context->claims['exp']) ? $context->claims['exp'] : null;
+        return $context->claims['exp'] ?? null;
     }
 
     /**

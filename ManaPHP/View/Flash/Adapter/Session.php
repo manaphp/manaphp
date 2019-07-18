@@ -40,7 +40,7 @@ class Session extends Flash
      */
     protected function _message($type, $message)
     {
-        $css = isset($this->_css[$type]) ? $this->_css[$type] : '';
+        $css = $this->_css[$type] ?? '';
 
         $messages = $this->session->get($this->_key, []);
         $messages[] = '<div class="' . $css . '">' . $message . '</div>' . PHP_EOL;
