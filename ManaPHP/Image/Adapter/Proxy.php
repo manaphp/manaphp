@@ -120,6 +120,6 @@ class Proxy extends Image
      */
     public function do_save($file, $quality = 80)
     {
-        return $this->_handler->do_save($file, $quality);
+        $this->_handler->do_save($file, $quality);
     }
 }
