@@ -135,8 +135,8 @@ class Identity extends Component implements IdentityInterface
     }
 
     /**
-     * @param string     $claim
-     * @param string|int $value
+     * @param string $claim
+     * @param mixed  $value
      *
      * @return static
      */
@@ -172,10 +172,10 @@ class Identity extends Component implements IdentityInterface
     }
 
     /**
-     * @param string     $claim
-     * @param string|int $default
+     * @param string $claim
+     * @param mixed  $default
      *
-     * @return string|int
+     * @return mixed
      */
     public function getClaim($claim, $default = null)
     {
