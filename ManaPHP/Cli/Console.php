@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP\Cli;
 
+use function getenv;
 use JsonSerializable;
 use ManaPHP\Component;
 use ReflectionClass;
@@ -52,7 +53,7 @@ class Console extends Component implements ConsoleInterface
             return true;
         }
 
-        return false !== \getenv('ANSICON') || 'ON' === \getenv('ConEmuANSI') || 'xterm' === \getenv('TERM');
+        return false !== getenv('ANSICON') || 'ON' === getenv('ConEmuANSI') || 'xterm' === getenv('TERM');
     }
 
     /**
