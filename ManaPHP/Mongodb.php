@@ -25,7 +25,7 @@ class Mongodb extends Component implements MongodbInterface
     /**
      * Mongodb constructor.
      *
-     * @param string|array $dsn
+     * @param string $dsn
      */
     public function __construct($dsn = 'mongodb://127.0.0.1:27017/')
     {

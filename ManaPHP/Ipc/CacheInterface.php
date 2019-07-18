@@ -17,7 +17,7 @@ interface CacheInterface
     /**
      * @param string $key
      *
-     * @return  false
+     * @return  mixed|false
      */
     public function get($key);
 }
