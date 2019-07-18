@@ -208,8 +208,7 @@ abstract class Logger extends Component implements LoggerInterface
                     $message[$k] = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
                 }
             }
-            /** @noinspection ArgumentUnpackingCanBeUsedInspection */
-            return (string)call_user_func_array('sprintf', $message);
+            return sprintf(...$message);
         }
 
         if (count($message) === 2) {

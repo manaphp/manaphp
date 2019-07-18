@@ -711,9 +711,7 @@ class Merger extends Component implements QueryInterface, IteratorAggregate
                     }
                 }
                 $params[] = &$r;
-                /** @noinspection ArgumentUnpackingCanBeUsedInspection */
-                /** @noinspection SpellCheckingInspection */
-                call_user_func_array('array_multisort', $params);
+                array_multisort(...$params);
             }
 
             if ($this->_offset) {

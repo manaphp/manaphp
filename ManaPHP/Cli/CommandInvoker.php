@@ -133,19 +133,6 @@ class CommandInvoker extends Component implements CommandInvokerInterface
         }
 
         $args = $this->_buildArgs($controller, $command);
-
-        switch (count($args)) {
-            case 0:
-                $r = $controller->$commandMethod();
-                break;
-            case 1:
-                $r = $controller->$commandMethod($args[0]);
-                break;
-            default:
-                $r = call_user_func_array([$controller, $commandMethod], $args);
-                break;
-        }
-
-        return $r;
+        return $controller->$commandMethod(...$args);
     }
 }

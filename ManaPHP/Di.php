@@ -6,7 +6,6 @@ use Closure;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
-use ReflectionClass;
 
 /**
  * Class ManaPHP\Di
@@ -318,22 +317,9 @@ class Di implements DiInterface
                     'name' => $name,
                     'class' => $definition]);
             }
-            $count = count($parameters);
-
-            if ($count === 0) {
-                $instance = new $definition();
-            } elseif ($count === 1) {
-                $instance = new $definition($parameters[0]);
-            } elseif ($count === 2) {
-                $instance = new $definition($parameters[0], $parameters[1]);
-            } elseif ($count === 3) {
-                $instance = new $definition($parameters[0], $parameters[1], $parameters[2]);
-            } else {
-                $reflection = new ReflectionClass($definition);
-                $instance = $reflection->newInstanceArgs($parameters);
-            }
+            $instance = new $definition(...$parameters);
         } elseif ($definition instanceof Closure) {
-            $instance = call_user_func_array($definition, $parameters);
+            $instance = $definition(...$parameters);
         } elseif (is_object($definition)) {
             $instance = $definition;
         } else {

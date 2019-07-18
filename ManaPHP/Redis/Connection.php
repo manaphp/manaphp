@@ -182,30 +182,9 @@ class Connection extends Component
     public function call($name, $arguments)
     {
         $redis = $this->getConnect();
+
         try {
-            switch (count($arguments)) {
-                case 0:
-                    $r = @$redis->$name();
-                    break;
-                case 1:
-                    $r = @$redis->$name($arguments[0]);
-                    break;
-                case 2:
-                    $r = @$redis->$name($arguments[0], $arguments[1]);
-                    break;
-                case 3:
-                    $r = @$redis->$name($arguments[0], $arguments[1], $arguments[2]);
-                    break;
-                case 4:
-                    $r = @$redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
-                    break;
-                case 5:
-                    $r = @$redis->$name($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4]);
-                    break;
-                default:
-                    $r = @call_user_func_array([$redis, $name], $arguments);
-                    break;
-            }
+            $r = @$redis->$name(...$arguments);
         } catch (\Exception  $exception) {
             $r = null;
             $failed = true;
@@ -214,7 +193,7 @@ class Connection extends Component
                 $this->getConnect();
 
                 try {
-                    $r = @call_user_func_array([$redis, $name], $arguments);
+                    $r = @$redis->$name(...$arguments);
                     $failed = false;
                 } /** @noinspection PhpRedundantCatchClauseInspection */
                 catch (\RedisException $exception) {

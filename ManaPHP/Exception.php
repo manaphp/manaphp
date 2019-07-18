@@ -31,7 +31,7 @@ class Exception extends \Exception
         if (is_array($message)) {
             if (substr_count($message[0], '%') + 1 >= ($count = count($message)) && isset($message[$count - 1])) {
                 /** @noinspection ArgumentUnpackingCanBeUsedInspection */
-                $message = call_user_func_array('sprintf', $message);
+                $message = sprintf(...$message);
             } else {
                 $this->_bind = $message;
                 $message = $message[0];

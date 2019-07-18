@@ -143,8 +143,7 @@ class Console extends Component implements ConsoleInterface
                     $message[$k] = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
                 }
             }
-            /** @noinspection ArgumentUnpackingCanBeUsedInspection */
-            echo call_user_func_array('sprintf', $message);
+            echo sprintf(...$message);
 
             return $this;
         }

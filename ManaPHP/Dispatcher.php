@@ -294,23 +294,7 @@ class Dispatcher extends Component implements DispatcherInterface
 
         $args = $this->_buildActionArgs($controller, $action, $params);
 
-        switch (count($args)) {
-            case 0:
-                $r = $controller->$actionMethod();
-                break;
-            case 1:
-                $r = $controller->$actionMethod($args[0]);
-                break;
-            case 2:
-                $r = $controller->$actionMethod($args[0], $args[1]);
-                break;
-            case 3:
-                $r = $controller->$actionMethod($args[0], $args[1], $args[2]);
-                break;
-            default:
-                $r = call_user_func_array([$controller, $actionMethod], $args);
-                break;
-        }
+        $r = $controller->$actionMethod(...$args);
 
         $this->eventsManager->fireEvent('request:invoked', $this, ['action' => $action, 'return' => $r]);
 
