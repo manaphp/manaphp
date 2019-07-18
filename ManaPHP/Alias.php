@@ -52,7 +52,7 @@ class Alias extends Component implements AliasInterface
     /**
      * @param string $name
      *
-     * @return bool|string|array
+     * @return string|array|null
      */
     public function get($name = null)
     {
@@ -64,7 +64,7 @@ class Alias extends Component implements AliasInterface
             throw new MisuseException(['`:name` must start with `@`', 'name' => $name]);
         }
 
-        return $this->_aliases[$name] ?? false;
+        return $this->_aliases[$name] ?? null;
     }
 
     /**

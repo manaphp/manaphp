@@ -20,7 +20,7 @@ interface AliasInterface
     /**
      * @param string $name
      *
-     * @return array|string|false
+     * @return array|string|null
      */
     public function get($name = null);
 
