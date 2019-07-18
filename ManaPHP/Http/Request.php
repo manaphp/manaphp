@@ -372,7 +372,7 @@ class Request extends Component implements RequestInterface
     {
         $context = $this->_context;
 
-        /** @var $_FILES array */
+        /** @var array $_FILES */
         foreach ($context->_FILES as $file) {
             if (is_int($file['error'])) {
                 $error = $file['error'];
@@ -406,7 +406,7 @@ class Request extends Component implements RequestInterface
 
         $r = [];
 
-        /** @var $_FILES array */
+        /** @var array $_FILES */
         foreach ($context->_FILES as $key => $files) {
             if (isset($files[0])) {
                 foreach ($files as $file) {
