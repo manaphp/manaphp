@@ -11,10 +11,6 @@ use ManaPHP\Identity\BadCredentialException;
 use ManaPHP\Identity\NoCredentialException;
 use Swoole\Coroutine;
 
-if (PHP_VERSION_ID < 70000) {
-    require_once __DIR__ . '/polyfill.php';
-}
-
 if (!function_exists('spl_object_id')) {
     function spl_object_id($object)
     {
