@@ -23,8 +23,8 @@ interface ClientInterface
     public function listObjects($params = []);
 
     /**
-     * @param $params
-     * @param $file
+     * @param array  $params
+     * @param string $file
      *
      * @return array
      */
@@ -50,8 +50,8 @@ interface ClientInterface
     /**
      * alias of putObjectByFile
      *
-     * @param $params
-     * @param $file
+     * @param array  $params
+     * @param string $file
      *
      * @return array
      */

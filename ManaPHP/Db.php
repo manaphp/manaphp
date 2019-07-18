@@ -744,7 +744,7 @@ class Db extends Component implements DbInterface
     }
 
     /**
-     * @param $source
+     * @param string $source
      *
      * @return array
      * @throws \ManaPHP\Db\Exception

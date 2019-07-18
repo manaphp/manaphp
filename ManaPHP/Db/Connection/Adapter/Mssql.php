@@ -56,7 +56,7 @@ class Mssql extends Connection
     }
 
     /**
-     * @param $source
+     * @param string $source
      *
      * @return array
      * @throws \ManaPHP\Db\Exception

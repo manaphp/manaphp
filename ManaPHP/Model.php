@@ -1314,8 +1314,8 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param $name
-     * @param $arguments
+     * @param string $name
+     * @param array  $arguments
      *
      * @return \ManaPHP\QueryInterface
      * @throws \ManaPHP\Exception\NotSupportedException

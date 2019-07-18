@@ -1199,7 +1199,7 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @param $fieldValues
+     * @param array $fieldValues
      *
      * @return int
      */
