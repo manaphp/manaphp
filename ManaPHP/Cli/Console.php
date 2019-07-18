@@ -112,7 +112,7 @@ class Console extends Component implements ConsoleInterface
      */
     public function write($message, $options = 0)
     {
-        if ($message instanceof \Exception || (interface_exists('\Throwable') && $message instanceof Throwable)) {
+        if ($message instanceof Throwable) {
             echo $message;
             return $this;
         } elseif ($message instanceof JsonSerializable) {
@@ -137,7 +137,7 @@ class Console extends Component implements ConsoleInterface
                     continue;
                 }
 
-                if ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof Throwable)) {
+                if ($v instanceof Throwable) {
                     $message[$k] = (string)$v;
                 } elseif (is_array($v) || $v instanceof JsonSerializable) {
                     $message[$k] = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -187,7 +187,7 @@ class Console extends Component implements ConsoleInterface
                     if (!$options && strpos($v, "\033[") === false) {
                         $v = $this->colorize($v, self::FC_CYAN);
                     }
-                } elseif ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof Throwable)) {
+                } elseif ($v instanceof Throwable) {
                     $v = (string)$v;
                 } elseif (is_array($v) || $v instanceof JsonSerializable) {
                     $v = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

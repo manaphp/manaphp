@@ -2,7 +2,6 @@
 
 namespace ManaPHP\Rest;
 
-use Exception;
 use ManaPHP\Http\Response;
 use Throwable;
 
@@ -37,8 +36,6 @@ class Application extends \ManaPHP\Http\Application
             } else {
                 $this->response->setJsonContent($actionReturnValue);
             }
-        } catch (Exception $exception) {
-            $this->handleException($exception);
         } catch (Throwable $throwable) {
             $this->handleException($throwable);
         }

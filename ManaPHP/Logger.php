@@ -182,7 +182,7 @@ abstract class Logger extends Component implements LoggerInterface
      */
     public function formatMessage($message)
     {
-        if ($message instanceof \Exception || (interface_exists('\Throwable') && $message instanceof Throwable)) {
+        if ($message instanceof Throwable) {
             return $this->exceptionToString($message);
         } elseif ($message instanceof JsonSerializable) {
             return json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -202,7 +202,7 @@ abstract class Logger extends Component implements LoggerInterface
                     continue;
                 }
 
-                if ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof Throwable)) {
+                if ($v instanceof Throwable) {
                     $message[$k] = $this->exceptionToString($v);
                 } elseif (is_array($v) || $v instanceof JsonSerializable) {
                     $message[$k] = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -230,7 +230,7 @@ abstract class Logger extends Component implements LoggerInterface
                 continue;
             }
 
-            if ($v instanceof \Exception || (interface_exists('\Throwable') && $v instanceof Throwable)) {
+            if ($v instanceof Throwable) {
                 $v = $this->exceptionToString($v);
             } elseif (is_array($v) || $v instanceof JsonSerializable) {
                 $v = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

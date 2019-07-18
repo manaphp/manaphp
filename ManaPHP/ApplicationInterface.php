@@ -19,7 +19,7 @@ interface ApplicationInterface
     public function main();
 
     /**
-     * @param \Exception|\Throwable $exception
+     * @param \Throwable $exception
      */
     public function handleException($exception);
 }
