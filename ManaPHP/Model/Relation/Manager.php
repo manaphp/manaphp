@@ -268,7 +268,7 @@ class Manager extends Component implements ManagerInterface
             }
 
             if ($relation->type === Relation::TYPE_HAS_ONE || $relation->type === Relation::TYPE_BELONGS_TO) {
-                $ids = array_values(array_unique(PHP_MAJOR_VERSION >= 7 ? array_column($r, $valueField) : array_field($r, $valueField)));
+                $ids = array_values(array_unique(array_column($r, $valueField)));
                 $data = $query->whereIn($keyField, $ids)->indexBy($keyField)->fetch($asArray);
 
                 foreach ($r as $ri => $rv) {
@@ -281,7 +281,7 @@ class Manager extends Component implements ManagerInterface
                     $r_index[$rv[$valueField]] = $ri;
                 }
 
-                $ids = PHP_MAJOR_VERSION >= 7 ? array_column($r, $valueField) : array_field($r, $valueField);
+                $ids = array_column($r, $valueField);
                 $data = $query->whereIn($keyField, $ids)->fetch($asArray);
 
                 if (isset($data[0]) && !isset($data[0][$relation->keyField])) {
@@ -297,7 +297,7 @@ class Manager extends Component implements ManagerInterface
                     $r[$ri][$name] = $rd[$ri] ?? [];
                 }
             } elseif ($relation->type === Relation::TYPE_HAS_MANY_TO_MANY) {
-                $ids = PHP_MAJOR_VERSION >= 7 ? array_column($r, $valueField) : array_field($r, $valueField);
+                $ids = array_column($r, $valueField);
                 $via_data = $model::query()->select([$keyField, $valueField])->whereIn($valueField, $ids)->execute();
                 $data = $query->where($query->getModel()->getPrimaryKey(),
                     array_ufield($via_data, $keyField))->indexBy($query->getModel()->getPrimaryKey())->fetch($asArray);
