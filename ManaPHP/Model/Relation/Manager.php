@@ -300,7 +300,7 @@ class Manager extends Component implements ManagerInterface
                 $ids = array_column($r, $valueField);
                 $via_data = $model::query()->select([$keyField, $valueField])->whereIn($valueField, $ids)->execute();
                 $data = $query->where($query->getModel()->getPrimaryKey(),
-                    array_ufield($via_data, $keyField))->indexBy($query->getModel()->getPrimaryKey())->fetch($asArray);
+                    array_unique_column($via_data, $keyField))->indexBy($query->getModel()->getPrimaryKey())->fetch($asArray);
 
                 $rd = [];
                 foreach ($via_data as $dv) {
@@ -321,8 +321,8 @@ class Manager extends Component implements ManagerInterface
                 /** @var \ManaPHP\ModelInterface $reference */
                 $reference = new $relation->referenceModel;
                 $keyField = $reference->getPrimaryKey();
-                $via_data = $via::query()->select([$keyField, $relation->valueField])->where($valueField, array_ufield($r, $model->getPrimaryKey()))->execute();
-                $ids = array_ufield($via_data, $keyField);
+                $via_data = $via::query()->select([$keyField, $relation->valueField])->where($valueField, array_unique_column($r, $model->getPrimaryKey()))->execute();
+                $ids = array_unique_column($via_data, $keyField);
                 $data = $query->where($query->getModel()->getPrimaryKey(), $ids)->indexBy($query->getModel()->getPrimaryKey())->fetch($asArray);
 
                 $rd = [];

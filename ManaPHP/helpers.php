@@ -687,7 +687,7 @@ if (!function_exists('mbstr_contains')) {
     }
 }
 
-if (!function_exists('array_ufield')) {
+if (!function_exists('array_unique_column')) {
     /**
      * @param array  $input
      * @param string $field_key
@@ -695,7 +695,7 @@ if (!function_exists('array_ufield')) {
      *
      * @return array
      */
-    function array_ufield($input, $field_key, $sort = SORT_REGULAR)
+    function array_unique_column($input, $field_key, $sort = SORT_REGULAR)
     {
         $values = [];
         foreach ($input as $item) {
