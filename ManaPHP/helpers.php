@@ -541,7 +541,7 @@ if (!function_exists('transaction')) {
             $db->begin();
             $work();
             $db->commit();
-        }catch (Throwable $error) {
+        } catch (Throwable $error) {
             /** @noinspection UnSafeIsSetOverArrayInspection */
             isset($db) && $db->rollback();
             error($error);
@@ -683,28 +683,6 @@ if (!function_exists('mbstr_contains')) {
             return false;
         } else {
             return mb_strpos($haystack, $needle) !== false;
-        }
-    }
-}
-
-if (!function_exists('array_field')) {
-    /**
-     * @param array  $input
-     * @param string $field_key
-     *
-     * @return array
-     */
-    function array_field($input, $field_key)
-    {
-        if (PHP_MAJOR_VERSION >= 7) {
-            return array_column($input, $field_key);
-        } else {
-            $values = [];
-            foreach ($input as $item) {
-                $values[] = is_array($item) ? $item[$field_key] : $item->$field_key;
-            }
-
-            return $values;
         }
     }
 }
@@ -899,15 +877,15 @@ if (!function_exists('collection_sort')) {
     function collection_sort(&$ar, $sort)
     {
         if (is_string($sort)) {
-            /** @noinspection PassingByReferenceCorrectnessInspection */
-            array_multisort(array_field($ar, $sort), SORT_ASC, $ar);
+            $ref = array_column($ar, $sort);
+            array_multisort($ref, SORT_ASC, $ar);
         } else {
             $params = [];
             foreach ((array)$sort as $k => $v) {
                 if (is_int($k)) {
-                    $params[] = array_field($ar, $v);
+                    $params[] = array_column($ar, $v);
                 } else {
-                    $params[] = array_field($ar, $k);
+                    $params[] = array_column($ar, $k);
                     $params[] = $v;
                 }
             }
