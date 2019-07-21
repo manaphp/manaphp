@@ -69,6 +69,10 @@ class Swoole extends Server
         $this->alias->set('@web', '');
         $this->alias->set('@asset', '');
 
+        if (!isset($options['port'])) {
+            $options['port'] = 9501;
+        }
+
         $options['enable_coroutine'] = MANAPHP_COROUTINE ? true : false;
 
         if (isset($options['max_request']) && $options['max_request'] < 1) {
