@@ -291,8 +291,13 @@ abstract class Logger extends Component implements LoggerInterface
             } else {
                 $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
             }
-            /** @noinspection NestedTernaryOperatorInspection */
-            $log->category = $category ?: $this->_inferCategory($traces);
+
+            if ($category !== null && $category[0] === '.') {
+                $log->category = $this->_inferCategory($traces) . $category;
+            } else {
+                $log->category = $category ?: $this->_inferCategory($traces);
+            }
+
             $location = $this->_getLocation($traces);
             if (isset($location['file'])) {
                 $log->file = basename($location['file']);
