@@ -25,7 +25,22 @@ class Request extends Component implements RequestInterface
     /**
      * @var string
      */
+    protected $_prefix;
+
+    /**
+     * @var int
+     */
+    protected $_count = 0;
+
+    /**
+     * @var string
+     */
     protected $_request_id;
+
+    public function __construct()
+    {
+        $this->_prefix = bin2hex(random_bytes(4));
+    }
 
     /**
      * @param array|string $arguments
@@ -217,6 +232,10 @@ class Request extends Component implements RequestInterface
      */
     public function setRequestId($request_id = null)
     {
-        $this->_request_id = $request_id ?: bin2hex(random_bytes(16));
+        if ($request_id) {
+            $this->_request_id = $request_id;
+        } else {
+            $this->_request_id = $this->_prefix . sprintf('%08x', $this->_count++);
+        }
     }
 }
