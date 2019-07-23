@@ -624,7 +624,7 @@ class Response extends Component implements ResponseInterface
 
         $server = $this->request->getGlobals()->_SERVER;
 
-        header('X-Request-Id: ' . $server['HTTP_X_REQUEST_ID']);
+        header('X-Request-Id: ' . $this->request->getRequestId());
         header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']));
 
         if ($context->file) {

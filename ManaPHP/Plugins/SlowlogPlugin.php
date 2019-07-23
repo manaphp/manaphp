@@ -15,7 +15,7 @@ class SlowlogPlugin extends Plugin
     /**
      * @var string
      */
-    protected $_format = '[:date][:client_ip][:request_id16][:elapsed] :message';
+    protected $_format = '[:date][:client_ip][:request_id][:elapsed] :message';
 
     public function __construct($options = null)
     {
@@ -30,12 +30,10 @@ class SlowlogPlugin extends Plugin
     {
         $elapsed = round($elapsed, 3);
 
-        $request_id = $this->response->getHeader('X-Request-Id');
         $replaced = [];
         $replaced[':date'] = date('Y-m-d\TH:i:s') . sprintf('%.03f', explode(' ', microtime())[0]);
         $replaced[':client_ip'] = $this->request->getClientIp();
-        $replaced[':request_id16'] = substr($request_id, 0, 16);
-        $replaced[':request_id'] = $request_id;
+        $replaced[':request_id'] = $this->request->getRequestId();
         $replaced[':elapsed'] = sprintf('%.03f', $elapsed);
         $replaced[':message'] = (is_string($message) ? $message : json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)) . PHP_EOL;
 

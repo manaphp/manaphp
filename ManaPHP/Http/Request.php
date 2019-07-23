@@ -10,6 +10,8 @@ use ManaPHP\Http\Request\File\Exception as FileException;
 
 class RequestContext
 {
+    public $request_id;
+
     public $_GET = [];
     public $_POST = [];
     public $_REQUEST = [];
@@ -518,5 +520,27 @@ class Request extends Component implements RequestInterface
     public function jsonSerialize()
     {
         return $this->_context;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestId()
+    {
+        return $this->_context->request_id;
+    }
+
+    /**
+     * @param string $request_id
+     *
+     * @return void
+     */
+    public function setRequestId($request_id = null)
+    {
+        if ($request_id !== null) {
+            $request_id = preg_replace('#[^\-\w\.]#', 'X', $request_id);
+        }
+
+        $this->_context->request_id = $request_id ?: 'aa' . bin2hex(random_bytes(15));
     }
 }

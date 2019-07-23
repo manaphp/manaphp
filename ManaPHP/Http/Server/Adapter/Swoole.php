@@ -154,9 +154,7 @@ class Swoole extends Server
             }
         }
 
-        if (!isset($_server['HTTP_X_REQUEST_ID'])) {
-            $_server['HTTP_X_REQUEST_ID'] = 'aa' . bin2hex(random_bytes(15));
-        }
+        $this->request->setRequestId($_server['HTTP_X_REQUEST_ID'] ?? null);
 
         $globals = $this->request->getGlobals();
 
@@ -261,7 +259,7 @@ class Swoole extends Server
 
         $server = $this->request->getGlobals()->_SERVER;
 
-        $sw_response->header('X-Request-Id', $server['HTTP_X_REQUEST_ID'], false);
+        $sw_response->header('X-Request-Id', $this->request->getRequestId(), false);
         $sw_response->header('X-Response-Time', sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']), false);
 
         foreach ($response_context->cookies as $cookie) {

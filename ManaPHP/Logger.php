@@ -271,14 +271,12 @@ abstract class Logger extends Component implements LoggerInterface
             $message = $message[0];
         }
 
-        $request_id = empty($_SERVER['DOCUMENT_ROOT']) ? '' : $this->request->getServer('HTTP_X_REQUEST_ID');
-
         $log = new Log();
 
         $log->host = gethostname();
         $log->client_ip = empty($_SERVER['DOCUMENT_ROOT']) ? '' : $this->request->getClientIp();
         $log->level = self::$_levels[$level];
-        $log->request_id = $request_id ? preg_replace('#[^a-zA-Z\d\-_\.]#', 'X', $request_id) : '';
+        $log->request_id = $this->request->getRequestId();
 
         if ($message instanceof \Exception) {
             $log->category = $category ?: 'exception';

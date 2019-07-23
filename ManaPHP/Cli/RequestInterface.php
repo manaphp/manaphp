@@ -56,4 +56,16 @@ interface RequestInterface
      * @return bool
      */
     public function hasServer($name);
+
+    /**
+     * @return string
+     */
+    public function getRequestId();
+
+    /**
+     * @param string $request_id
+     *
+     * @return void
+     */
+    public function setRequestId($request_id = null);
 }

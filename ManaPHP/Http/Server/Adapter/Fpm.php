@@ -33,9 +33,7 @@ class Fpm extends Server
             }
         }
 
-        if (!isset($_SERVER['HTTP_X_REQUEST_ID'])) {
-            $_SERVER['HTTP_X_REQUEST_ID'] = 'aa' . bin2hex(random_bytes(15));
-        }
+        $this->request->setRequestId($_SERVER['HTTP_X_REQUEST_ID'] ?? null);
 
         $globals = $this->request->getGlobals();
 

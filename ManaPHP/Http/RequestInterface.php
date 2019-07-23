@@ -219,4 +219,16 @@ interface RequestInterface
      * @return string|null
      */
     public function getToken($name = 'token');
+
+    /**
+     * @return string
+     */
+    public function getRequestId();
+
+    /**
+     * @param string $request_id
+     *
+     * @return void
+     */
+    public function setRequestId($request_id = null);
 }

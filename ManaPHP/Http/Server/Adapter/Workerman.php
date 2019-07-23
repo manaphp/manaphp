@@ -117,9 +117,7 @@ class Workerman extends Server
             }
         }
 
-        if (!isset($_SERVER['HTTP_X_REQUEST_ID'])) {
-            $_SERVER['HTTP_X_REQUEST_ID'] = 'aa' . bin2hex(random_bytes(15));
-        }
+        $this->request->setRequestId($_SERVER['HTTP_X_REQUEST_ID'] ?? null);
 
         $globals = $this->request->getGlobals();
 
@@ -234,7 +232,7 @@ class Workerman extends Server
 
         $server = $this->request->getGlobals()->_SERVER;
 
-        Http::header('X-Request-Id: ' . $server['HTTP_X_REQUEST_ID']);
+        Http::header('X-Request-Id: ' . $this->request->getRequestId());
         Http::header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']));
 
         foreach ($response_context->cookies as $cookie) {

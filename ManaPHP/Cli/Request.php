@@ -23,6 +23,11 @@ class Request extends Component implements RequestInterface
     protected $_values = [];
 
     /**
+     * @var string
+     */
+    protected $_request_id;
+
+    /**
      * @param array|string $arguments
      *
      * @return static
@@ -195,5 +200,23 @@ class Request extends Component implements RequestInterface
     public function hasServer($name)
     {
         return isset($_SERVER[$name]);
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestId()
+    {
+        return $this->_request_id;
+    }
+
+    /**
+     * @param string $request_id
+     *
+     * @return void
+     */
+    public function setRequestId($request_id = null)
+    {
+        $this->_request_id = $request_id ?: bin2hex(random_bytes(16));
     }
 }
