@@ -3,12 +3,12 @@ namespace ManaPHP\Pool;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\MisuseException;
-use SplQueue;
+use Swoole\Coroutine\Channel;
 
 class Manager extends Component implements ManagerInterface
 {
     /**
-     * @var \SplQueue[][]
+     * @var \Swoole\Coroutine\Channel[][]
      */
     protected $_pool = [];
 
@@ -76,7 +76,7 @@ class Manager extends Component implements ManagerInterface
                 throw new MisuseException(['`:type` pool of `:owner` is exists', 'type' => $type, 'owner' => get_class($owner)]);
             }
 
-            $this->_pool[$owner_id][$type] = $queue = new SplQueue();
+            $this->_pool[$owner_id][$type] = $queue = new Channel($size);
 
             $queue->push($sample);
 
@@ -142,27 +142,12 @@ class Manager extends Component implements ManagerInterface
                 throw new MisuseException(['`:type` pool of `:owner` is not exists', 'type' => $type, 'owner' => get_class($owner)]);
             }
 
-            if (!$queue->isEmpty()) {
-                return $queue->pop();
-            }
-
-            if (!$timeout) {
-                return null;
-            }
-
-            $end_time = microtime(true) + $timeout;
-            do {
-                if (!$queue->isEmpty()) {
-                    return $queue->pop();
-                }
-                usleep(1000);
-            } while ($end_time > microtime(true));
-
-            if ($queue->isEmpty()) {
+            /** @noinspection PhpMethodParametersCountMismatchInspection */
+            if (!$instance = $timeout ? $queue->pop($timeout) : $queue->pop()) {
                 throw new BusyException(['`:type` pool of `:owner` is busy', 'type' => $type, 'owner' => get_class($owner)]);
-            } else {
-                return $queue->pop();
             }
+
+            return $instance;
         } else {
             if (!$instance = $this->_pool[$owner_id][$type] ?? null) {
                 throw new BusyException(['`:type` pool of `:owner` is busy', 'type' => $type, 'owner' => get_class($owner)]);
