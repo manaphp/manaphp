@@ -67,6 +67,8 @@ class Manager extends Component implements ManagerInterface
             $class = $sample['class'];
             unset($sample['class']);
             $sample = $this->_di->getInstance($class, $sample);
+        } elseif (is_string($sample)) {
+            $sample = $this->_di->getInstance($sample);
         }
 
         if (MANAPHP_COROUTINE_ENABLED) {
@@ -136,7 +138,7 @@ class Manager extends Component implements ManagerInterface
         $owner_id = spl_object_id($owner);
 
         if (MANAPHP_COROUTINE_ENABLED) {
-            if ($queue = $this->_pool[$owner_id][$type] ?? null) {
+            if (!$queue = $this->_pool[$owner_id][$type] ?? null) {
                 throw new MisuseException(['`:type` pool of `:owner` is not exists', 'type' => $type, 'owner' => get_class($owner)]);
             }
 
