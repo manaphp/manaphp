@@ -10,5 +10,5 @@ services:
       - ../../../ManaPHP:/var/www/html/vendor/manaphp/framework
     command: php /var/www/html/public/index.php
     ports:
-      - ${WEB_PORT}:9501
+      - ${WEB_PORT}:9503
     restart: always
