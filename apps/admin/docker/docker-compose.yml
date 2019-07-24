@@ -1,7 +1,7 @@
 version: "2"
 services:
   admin_fpm:
-    image: manaphp/php72:1.3
+    image: manaphp/php73:2.0
     volumes:
       - ../:/var/www/html
       - ./fpm/conf.d:/etc/php/conf.d
@@ -11,7 +11,7 @@ services:
       - ../../../ManaPHP:/var/www/html/vendor/manaphp/framework
     restart: always
   admin_nginx:
-    image: nginx:1.13.3
+    image: nginx:1.17.2
     volumes:
       - /usr/share/zoneinfo/PRC:/etc/localtime
       - ../:/var/www/html
