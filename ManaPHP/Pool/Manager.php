@@ -2,6 +2,7 @@
 namespace ManaPHP\Pool;
 
 use ManaPHP\Component;
+use ManaPHP\Exception\MisuseException;
 use SplQueue;
 
 class Manager extends Component implements ManagerInterface
@@ -62,18 +63,18 @@ class Manager extends Component implements ManagerInterface
     {
         $owner_id = spl_object_id($owner);
 
+        if (is_array($sample)) {
+            $class = $sample['class'];
+            unset($sample['class']);
+            $sample = $this->_di->getInstance($class, $sample);
+        }
+
         if (MANAPHP_COROUTINE_ENABLED) {
-            if (!isset($this->_pool[$owner_id][$type])) {
-                $this->_pool[$owner_id][$type] = $queue = new SplQueue();
-            } else {
-                $queue = $this->_pool[$owner_id][$type];
+            if (isset($this->_pool[$owner_id][$type])) {
+                throw new MisuseException(['`:type` pool of `:owner` is exists', 'type' => $type, 'owner' => get_class($owner)]);
             }
 
-            if (is_array($sample)) {
-                $class = $sample['class'];
-                unset($sample['class']);
-                $sample = $this->_di->getInstance($class, $sample);
-            }
+            $this->_pool[$owner_id][$type] = $queue = new SplQueue();
 
             $queue->push($sample);
 
@@ -81,6 +82,10 @@ class Manager extends Component implements ManagerInterface
                 $queue->push(clone $sample);
             }
         } else {
+            if (isset($this->_pool[$owner_id]) && array_key_exists($type, $this->_pool[$owner_id])) {
+                throw new MisuseException(['`:type` pool of `:owner` is exists', 'type' => $type, 'owner' => get_class($owner)]);
+            }
+
             $this->_pool[$owner_id][$type] = $sample;
         }
 
@@ -103,15 +108,16 @@ class Manager extends Component implements ManagerInterface
         $owner_id = spl_object_id($owner);
 
         if (MANAPHP_COROUTINE_ENABLED) {
-            if (!isset($this->_pool[$owner_id][$type])) {
-                $queue = new SplQueue();
-                $this->_pool[$owner_id][$type] = $queue;
-            } else {
-                $queue = $this->_pool[$owner_id][$type];
+            if (!$queue = $this->_pool[$owner_id][$type] ?? null) {
+                throw new MisuseException(['`:type` pool of `:owner` is not exists', 'type' => $type, 'owner' => get_class($owner)]);
             }
 
             $queue->push($instance);
         } else {
+            if (!isset($this->_pool[$owner_id]) || !array_key_exists($type, $this->_pool[$owner_id])) {
+                throw new MisuseException(['`:type` pool of `:owner` is not exists', 'type' => $type, 'owner' => get_class($owner)]);
+            }
+
             $this->_pool[$owner_id][$type] = $instance;
         }
 
@@ -124,8 +130,6 @@ class Manager extends Component implements ManagerInterface
      * @param string $type
      *
      * @return object
-     *
-     * @throws \ManaPHP\Pool\NotExistsException
      */
     public function pop($owner, $timeout = null, $type = 'default')
     {
@@ -133,7 +137,7 @@ class Manager extends Component implements ManagerInterface
 
         if (MANAPHP_COROUTINE_ENABLED) {
             if ($queue = $this->_pool[$owner_id][$type] ?? null) {
-                throw new NotExistsException(['`:type` pool of `:owner` is not exists', 'type' => $type, 'owner' => get_class($owner)]);
+                throw new MisuseException(['`:type` pool of `:owner` is not exists', 'type' => $type, 'owner' => get_class($owner)]);
             }
 
             if (!$queue->isEmpty()) {
@@ -158,10 +162,6 @@ class Manager extends Component implements ManagerInterface
                 return $queue->pop();
             }
         } else {
-            if (!array_key_exists($type, $this->_pool[$owner_id])) {
-                throw new NotExistsException(['`:type` pool of `:owner` is not exists', 'type' => $type, 'owner' => get_class($owner)]);
-            }
-
             if (!$instance = $this->_pool[$owner_id][$type] ?? null) {
                 throw new BusyException(['`:type` pool of `:owner` is busy', 'type' => $type, 'owner' => get_class($owner)]);
             }
@@ -183,12 +183,12 @@ class Manager extends Component implements ManagerInterface
 
         if (MANAPHP_COROUTINE_ENABLED) {
             if ($queue = $this->_pool[$owner_id][$type] ?? null) {
-                throw new NotExistsException(['`:type` pool of `:owner` is not exists', 'type' => $type, 'owner' => get_class($owner)]);
+                throw new MisuseException(['`:type` pool of `:owner` is not exists', 'type' => $type, 'owner' => get_class($owner)]);
             }
             return $queue->isEmpty();
         } else {
-            if (!array_key_exists($type, $this->_pool[$owner_id])) {
-                throw new NotExistsException(['`:type` pool of `:owner` is not exists', 'type' => $type, 'owner' => get_class($owner)]);
+            if (!isset($this->_pool[$owner_id]) || !array_key_exists($type, $this->_pool[$owner_id])) {
+                throw new MisuseException(['`:type` pool of `:owner` is not exists', 'type' => $type, 'owner' => get_class($owner)]);
             }
 
             return $this->_pool[$owner_id][$type] === null;
