@@ -17,7 +17,7 @@ class ContextManager
      */
     public static function get($object)
     {
-        $cid = MANAPHP_COROUTINE ? Coroutine::getCid() : -1;
+        $cid = MANAPHP_COROUTINE_ENABLED ? Coroutine::getCid() : -1;
 
         $oid = spl_object_id($object);
         if (!isset(self::$_contexts[$cid][$oid])) {
@@ -33,7 +33,7 @@ class ContextManager
     public static function reset($cid = null)
     {
         if ($cid === null) {
-            $cid = MANAPHP_COROUTINE ? Coroutine::getCid() : -1;
+            $cid = MANAPHP_COROUTINE_ENABLED ? Coroutine::getCid() : -1;
         }
 
         unset(self::$_contexts[$cid]);

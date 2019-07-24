@@ -283,7 +283,7 @@ abstract class Logger extends Component implements LoggerInterface
             $log->file = basename($message->getFile());
             $log->line = $message->getLine();
         } else {
-            if (MANAPHP_COROUTINE) {
+            if (MANAPHP_COROUTINE_ENABLED) {
                 /** @noinspection PhpUndefinedMethodInspection */
                 $traces = Coroutine::getBackTrace(0, DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
             } else {

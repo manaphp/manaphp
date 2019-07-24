@@ -103,7 +103,7 @@ class Connection extends Component
             }
 
             if (isset($query['persistent'])) {
-                $this->_persistent = !MANAPHP_COROUTINE && $query['persistent'] === '1';
+                $this->_persistent = !MANAPHP_COROUTINE_ENABLED && $query['persistent'] === '1';
             }
 
             if (isset($query['heartbeat'])) {

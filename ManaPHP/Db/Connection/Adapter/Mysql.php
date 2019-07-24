@@ -57,7 +57,7 @@ class Mysql extends Connection
                 $this->_charset = $query['charset'];
             }
 
-            if (!MANAPHP_COROUTINE && isset($query['persistent'])) {
+            if (!MANAPHP_COROUTINE_ENABLED && isset($query['persistent'])) {
                 $this->_options[PDO::ATTR_PERSISTENT] = $query['persistent'] === '1';
             }
 

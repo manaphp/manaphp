@@ -43,6 +43,10 @@ class Application extends Component implements ApplicationInterface
 
         $GLOBALS['DI'] = $this->getDi();
 
+        if (!defined('MANAPHP_COROUTINE_ENABLED')) {
+            define('MANAPHP_COROUTINE_ENABLED', PHP_SAPI === 'cli' && extension_loaded('swoole'));
+        }
+
         $this->_di->setShared('loader', $loader ?: new Loader());
         $this->_di->setShared('app', $this);
 
@@ -81,8 +85,6 @@ class Application extends Component implements ApplicationInterface
         $this->alias->set('@asset', $web);
 
         $this->loader->registerFiles('@manaphp/helpers.php');
-
-        defined('MANAPHP_COROUTINE') or define('MANAPHP_COROUTINE', false);
     }
 
     /**

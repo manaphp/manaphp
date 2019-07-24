@@ -20,10 +20,6 @@ abstract class Application extends \ManaPHP\Application implements HandlerInterf
 {
     public function __construct($loader = null)
     {
-        if (!defined('MANAPHP_COROUTINE')) {
-            define('MANAPHP_COROUTINE', PHP_SAPI === 'cli' && class_exists('Swoole\Runtime') && !class_exists('Workerman\Worker'));
-        }
-
         parent::__construct($loader);
 
         $this->eventsManager->attachEvent('request:authenticate', [$this, 'authenticate']);

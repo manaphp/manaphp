@@ -471,7 +471,7 @@ if (!function_exists('render')) {
 if (!function_exists('dd')) {
     function dd()
     {
-        if (MANAPHP_COROUTINE) {
+        if (MANAPHP_COROUTINE_ENABLED) {
             /** @noinspection PhpUndefinedMethodInspection */
             $trace = Coroutine::getBackTrace(0, DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
         } else {

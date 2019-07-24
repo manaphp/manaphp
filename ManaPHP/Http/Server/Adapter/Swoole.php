@@ -73,7 +73,7 @@ class Swoole extends Server
             $options['port'] = 9501;
         }
 
-        $options['enable_coroutine'] = MANAPHP_COROUTINE ? true : false;
+        $options['enable_coroutine'] = MANAPHP_COROUTINE_ENABLED;
 
         if (isset($options['max_request']) && $options['max_request'] < 1) {
             $options['max_request'] = 1;
