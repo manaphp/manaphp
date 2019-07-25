@@ -2,6 +2,7 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\Db\AssignmentInterface;
 use ManaPHP\Db\Connection;
 use ManaPHP\Db\Exception as DbException;
@@ -10,7 +11,7 @@ use ManaPHP\Exception\MisuseException;
 use PDO;
 use PDOException;
 
-class DbContext
+class DbContext implements Inseparable
 {
     /**
      * @var \ManaPHP\Db\ConnectionInterface

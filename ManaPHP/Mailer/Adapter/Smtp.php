@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP\Mailer\Adapter;
 
+use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Mailer;
 use ManaPHP\Mailer\Adapter\Exception\AuthenticationException;
@@ -8,7 +9,7 @@ use ManaPHP\Mailer\Adapter\Exception\BadResponseException;
 use ManaPHP\Mailer\Adapter\Exception\ConnectionException;
 use ManaPHP\Mailer\Adapter\Exception\TransmitException;
 
-class SmtpContext
+class SmtpContext implements Inseparable
 {
     public $socket;
     public $file;

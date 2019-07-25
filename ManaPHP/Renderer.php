@@ -1,11 +1,12 @@
 <?php
 namespace ManaPHP;
 
+use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PreconditionException;
 
-class RendererContext
+class RendererContext implements Inseparable
 {
     /**
      * @var array

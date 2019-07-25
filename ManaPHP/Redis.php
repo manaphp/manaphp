@@ -1,7 +1,9 @@
 <?php
 namespace ManaPHP;
 
-class RedisContext
+use ManaPHP\Coroutine\Context\Inseparable;
+
+class RedisContext implements Inseparable
 {
     /**
      * @var \ManaPHP\Redis\Connection
