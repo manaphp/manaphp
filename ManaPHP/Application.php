@@ -5,6 +5,7 @@ namespace ManaPHP;
 use ManaPHP\Cli\Factory as CliFactory;
 use ManaPHP\Mvc\Factory as MvcFactory;
 use ReflectionClass;
+use Swoole\Runtime;
 
 /**
  * Class ManaPHP\Application
@@ -45,6 +46,10 @@ class Application extends Component implements ApplicationInterface
 
         if (!defined('MANAPHP_COROUTINE_ENABLED')) {
             define('MANAPHP_COROUTINE_ENABLED', PHP_SAPI === 'cli' && extension_loaded('swoole'));
+        }
+
+        if (MANAPHP_COROUTINE_ENABLED) {
+            Runtime::enableCoroutine();
         }
 
         $this->_di->setShared('loader', $loader ?: new Loader());

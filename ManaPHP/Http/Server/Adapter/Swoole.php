@@ -193,10 +193,6 @@ class Swoole extends Server
         $this->_swoole->set($this->_settings);
         $this->_handler = $handler;
 
-        if ($this->_settings['enable_coroutine']) {
-            Runtime::enableCoroutine();
-        }
-
         $this->log('info',
             sprintf('starting listen on: %s:%d with setting: %s', $this->_host, $this->_port, json_encode($this->_settings, JSON_UNESCAPED_SLASHES)));
         $this->log('info', 'http://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT'] . ($this->router->getPrefix() ?: '/'));
