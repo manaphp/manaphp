@@ -28,8 +28,6 @@ interface ManagerInterface
      * @param string $type
      *
      * @return mixed
-     *
-     * @throws \ManaPHP\Pool\NotExistsException
      */
     public function pop($owner, $timeout = null, $type = 'default');
 

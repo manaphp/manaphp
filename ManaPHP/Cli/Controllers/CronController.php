@@ -1,7 +1,6 @@
 <?php
 namespace ManaPHP\Cli\Controllers;
 
-use App\Crons\TestCron;
 use ManaPHP\Cli\Controller;
 
 use ManaPHP\ContextManager;

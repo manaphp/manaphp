@@ -3,7 +3,6 @@ namespace ManaPHP\Http\Server\Adapter;
 
 use ManaPHP\ContextManager;
 use ManaPHP\Http\Server;
-use Swoole\Runtime;
 use Throwable;
 
 class SwooleContext
