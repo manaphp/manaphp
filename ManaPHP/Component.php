@@ -34,6 +34,7 @@ use JsonSerializable;
  * @property-read \ManaPHP\ValidatorInterface              $validator
  * @property-read \ManaPHP\I18n\TranslatorInterface        $translator
  * @property-read \ManaPHP\WebSocket\PusherInterface       $wsPusher
+ * @property-read \ManaPHP\CoroutineInterface              $coroutine
  * @property \object                                       $_context
  */
 class Component implements ComponentInterface, JsonSerializable
