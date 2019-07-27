@@ -1,8 +1,14 @@
 <?php
 namespace ManaPHP\Cli\Controllers;
 
+use App\Crons\TestCron;
 use ManaPHP\Cli\Controller;
+
+use ManaPHP\ContextManager;
+use ManaPHP\Cron\ScheduleParser;
 use ManaPHP\Utility\Text;
+use Swoole\Coroutine;
+use Throwable;
 
 /**
  * Class CronController
@@ -11,66 +17,105 @@ use ManaPHP\Utility\Text;
  */
 class CronController extends Controller
 {
-    public function runCommand()
+    /**
+     * @var \ManaPHP\Cron\ScheduleParser
+     */
+    protected $_scheduleParser;
+
+    public function __construct()
     {
-        $arguments = $GLOBALS['argv'];
+        $this->_scheduleParser = new ScheduleParser();
+    }
 
-        if (count($arguments) < 4) {
-            $this->logger->error(['cron command line too short: `:command`.', 'command' => implode(' ', array_slice($arguments, 1))], 'cron');
-            return $this->console->error('missing cron name');
+    /**
+     * @param \ManaPHP\CronInterface $cron
+     */
+    public function routine($cron)
+    {
+        $schedule = $cron->schedule();
+
+        if (is_int($schedule) || is_float($schedule)) {
+            do {
+                $last = microtime(true);
+                try {
+                    $cron->run();
+                } catch (Throwable $throwable) {
+                    $this->logger->error($throwable);
+                }
+            } while (@time_sleep_until($last + $schedule));
+        } else {
+            $time = time();
+            while (true) {
+                if ($this->_scheduleParser->match($schedule, $time)) {
+                    try {
+                        $cron->run();
+                    } catch (Throwable $throwable) {
+                        $this->logger->error($throwable);
+                    }
+                }
+                @time_sleep_until(++$time);
+            }
         }
+        ContextManager::reset();
+    }
 
-        array_shift($arguments);//manacli
-        array_shift($arguments);//cron
-        array_shift($arguments);//run
-        $simArguments = array_merge([$GLOBALS['argv'][0]], $arguments);
-
-        $cron = null;
-        while (1) {
-            $cron = array_shift($arguments);
-            if ($cron[0] === '-') {
-                array_shift($arguments);
-            } else {
-                break;
+    /**
+     * @param string $name
+     */
+    public function runCommand($name = '')
+    {
+        $crons = [];
+        if ($name) {
+            $class_name = $this->alias->resolveNS('@ns.app\Crons\\' . Text::camelize($name) . 'Cron');
+            $crons[] = new $class_name();
+        } else {
+            foreach ($this->filesystem->glob('@app/Crons/*Cron.php') as $file) {
+                $class_name = $this->alias->resolveNS('@ns.app\Crons\\' . basename($file, '.php'));
+                $crons[] = new $class_name();
             }
         }
 
-        $controller = Text::camelize($cron) . 'Controller';
+        foreach ($crons as $cron) {
+            /** @noinspection PhpMethodParametersCountMismatchInspection */
+            Coroutine::create([$this, 'routine'], $cron);
+        }
+    }
 
-        if (class_exists(__NAMESPACE__ . '\\' . $controller)) {
-            $controllerName = __NAMESPACE__ . '\\' . $controller;
-        } else {
-            $controllerName = $this->alias->resolveNS('@ns.cli\\' . $controller);
+    /**
+     * @param string|float|int $schedule
+     * @param string           $name
+     */
+    public function testCommand($schedule = '', $name = '')
+    {
+        $count = 0;
+        if ($name) {
+            $class_name = $this->alias->resolveNS('@ns.app\Crons\\' . Text::camelize($name) . 'Cron');
+            /** @var \ManaPHP\CronInterface $cron */
+            $cron = new $class_name;
+            $schedule = $cron->schedule();
         }
 
-        /**
-         * @var \ManaPHP\Cli\Controller $controllerInstance
-         */
-        $controllerInstance = $this->_di->getShared($controllerName);
-        $commands = $controllerInstance->getCommands();
-        if (count($commands) === 1) {
-            $commandName = $commands[0];
-            if ($arguments && $arguments[0] === $commandName) {
-                array_shift($arguments);
+        if (is_int($schedule) || is_float($schedule)) {
+            $current = microtime(true);
+            for ($i = 0; ; $i++) {
+                $next = $current + $schedule * $i;
+                $this->console->writeLn(date('Y-m-d H:i:s', $next) . sprintf('.%03d', ($next - (int)$next) * 1000));
+                if (++$count === 10) {
+                    break;
+                }
             }
         } else {
-            $commandName = array_shift($arguments);
+            $current = time();
+            for ($i = 0; ; $i++) {
+                $time = $current + $i;
+                if ($this->_scheduleParser->match($schedule, $time)) {
+                    $this->console->writeLn(date('Y-m-d H:i:s', $time));
+                    if (++$count === 10) {
+                        break;
+                    }
+                }
+            }
         }
-
-        $start_time = microtime(true);
-        $commandLine = implode(' ', array_slice($simArguments, 1));
-        $this->logger->info(str_repeat('*====', 10), 'cron');
-        $this->logger->info(['begin: `:command`.', 'command' => $commandLine], 'cron');
-        try {
-            $this->request->parse($simArguments);
-            $this->commandInvoker->invoke($controllerInstance, $commandName);
-            $use_time = round(microtime(true) - $start_time, 3);
-            $this->logger->info(['end: `:command`, :time seconds elapsed.', 'command' => $commandLine, 'time' => $use_time], 'cron');
-        } catch (\Exception $e) {
-            $this->logger->error($e, $controllerInstance->categorizeLog());
-        }
-
-        return 0;
     }
 
 }
