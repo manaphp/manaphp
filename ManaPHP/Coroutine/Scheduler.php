@@ -2,7 +2,6 @@
 namespace ManaPHP\Coroutine;
 
 use ManaPHP\Component;
-use ManaPHP\ContextManager;
 use Swoole\Atomic;
 use Swoole\Coroutine;
 use Throwable;
@@ -48,8 +47,6 @@ class Scheduler extends Component implements SchedulerInterface
         if (--$this->_running_count === 0) {
             $this->_atomic->add(1);
         }
-
-        ContextManager::reset();
     }
 
     /**

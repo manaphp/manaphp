@@ -164,7 +164,7 @@ class Php extends Server
         } else {
             $handler->handle();
         }
-
+        
         return $this;
     }
 

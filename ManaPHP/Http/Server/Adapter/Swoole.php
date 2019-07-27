@@ -1,7 +1,6 @@
 <?php
 namespace ManaPHP\Http\Server\Adapter;
 
-use ManaPHP\ContextManager;
 use ManaPHP\Http\Server;
 use Throwable;
 
@@ -223,15 +222,24 @@ class Swoole extends Server
             $this->_prepareGlobals($request);
 
             $this->_handler->handle();
-
         } catch (Throwable $exception) {
             $str = date('c') . ' ' . get_class($exception) . ': ' . $exception->getMessage() . PHP_EOL;
             $str .= '    at ' . $exception->getFile() . ':' . $exception->getLine() . PHP_EOL;
             $traces = $exception->getTraceAsString();
             $str .= preg_replace('/#\d+\s/', '    at ', $traces);
             echo $str . PHP_EOL;
-        } finally {
-            ContextManager::reset();
+        }
+
+        if (!MANAPHP_COROUTINE_ENABLED) {
+            global $__root_context;
+	    
+            if ($__root_context !== null) {
+                foreach ($__root_context as $owner) {
+                    unset($owner->_context);
+                }
+
+                $__root_context = null;
+            }
         }
     }
 

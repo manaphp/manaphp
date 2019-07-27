@@ -2,12 +2,13 @@
 namespace ManaPHP\WebSocket\Server\Adapter;
 
 use ManaPHP\Component;
-use ManaPHP\ContextManager;
+use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\WebSocket\ServerInterface;
 use Swoole\Coroutine;
 use Swoole\Process;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
+use Throwable;
 
 /**
  * Class Server
@@ -44,7 +45,7 @@ class Swoole extends Component implements ServerInterface
     /**
      * @var array
      */
-    protected $_fd2cid = [];
+    protected $_contexts = [];
 
     /**
      * Server constructor.
@@ -132,12 +133,17 @@ class Swoole extends Component implements ServerInterface
     {
         try {
             $fd = $req->fd;
-            $cid = Coroutine::getCid();
 
             $this->_prepareGlobals($req);
             $this->_handler->onOpen($fd);
         } finally {
-            $this->_fd2cid[$fd] = $cid;
+            /** @noinspection PhpUndefinedMethodInspection */
+            $this->_contexts[$fd] = $context = Coroutine::getContext();
+            foreach ($context as $k => $v) {
+                if ($v instanceof Inseparable) {
+                    unset($k);
+                }
+            }
         }
     }
 
@@ -152,22 +158,23 @@ class Swoole extends Component implements ServerInterface
             return;
         }
 
-        $cid = Coroutine::getCid();
-
-        while (!isset($this->_fd2cid[$fd])) {
+        while (!isset($this->_contexts[$fd])) {
             Coroutine::sleep(0.01);
             $this->log('info', 'open is not ready');
         }
 
         try {
-            $old_cid = $this->_fd2cid[$fd];
+            /** @var \ArrayObject $context */
+            /** @noinspection PhpUndefinedMethodInspection */
+            $context = Coroutine::getContext();
 
-            ContextManager::clones($old_cid, $cid);
+            foreach ($this->_contexts[$fd] as $k => $v) {
+                /** @noinspection OnlyWritesOnParameterInspection */
+                $context[$k] = $v;
+            }
             $this->_handler->onClose($fd);
         } finally {
-            unset($this->_fd2cid[$fd]);
-            ContextManager::reset($cid);
-            ContextManager::reset($old_cid);
+            unset($this->_contexts[$fd]);
         }
     }
 
@@ -178,20 +185,24 @@ class Swoole extends Component implements ServerInterface
     public function onMessage($server, $frame)
     {
         $fd = $frame->fd;
-        $cid = Coroutine::getCid();
 
         try {
-            while (!isset($this->_fd2cid[$fd])) {
+            while (!isset($this->_contexts[$fd])) {
                 Coroutine::sleep(0.01);
                 $this->log('info', 'open is not ready');
             }
 
-            $old_cid = $this->_fd2cid[$fd];
+            /** @var \ArrayObject $context */
+            /** @noinspection PhpUndefinedMethodInspection */
+            $context = Coroutine::getContext();
 
-            ContextManager::clones($old_cid, $cid);
+            foreach ($this->_contexts[$fd] as $k => $v) {
+                /** @noinspection OnlyWritesOnParameterInspection */
+                $context[$k] = $v;
+            }
             $this->_handler->onMessage($fd, $frame->data);
-        } finally {
-            ContextManager::reset($cid);
+        } catch (Throwable $throwable) {
+            $this->logger->warn($throwable);
         }
     }
 

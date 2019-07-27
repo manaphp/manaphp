@@ -1,7 +1,6 @@
 <?php
 namespace ManaPHP\Http\Server\Adapter;
 
-use ManaPHP\ContextManager;
 use ManaPHP\Http\Server;
 use Throwable;
 use Workerman\Protocols\Http;
@@ -206,8 +205,16 @@ class Workerman extends Server
             $traces = $exception->getTraceAsString();
             $str .= preg_replace('/#\d+\s/', '    at ', $traces);
             echo $str . PHP_EOL;
-        } finally {
-            ContextManager::reset();
+        }
+
+        global $__root_context;
+	
+        if ($__root_context !== null) {
+            foreach ($__root_context as $owner) {
+                unset($owner->_context);
+            }
+
+            $__root_context = null;
         }
 
         if ($this->_max_request && ++$this->_request_count >= $this->_max_request) {

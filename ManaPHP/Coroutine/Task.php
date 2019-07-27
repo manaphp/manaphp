@@ -2,7 +2,6 @@
 namespace ManaPHP\Coroutine;
 
 use ManaPHP\Component;
-use ManaPHP\ContextManager;
 use Swoole\Coroutine;
 use Throwable;
 use Swoole\Coroutine\Channel;
@@ -53,8 +52,6 @@ class Task extends Component implements TaskInterface
                 $this->logger->error($throwable);
             }
         }
-
-        ContextManager::reset();
     }
 
     /**

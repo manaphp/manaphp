@@ -3,7 +3,6 @@ namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
 
-use ManaPHP\ContextManager;
 use ManaPHP\Cron\ScheduleParser;
 use ManaPHP\Utility\Text;
 use Swoole\Coroutine;
@@ -55,7 +54,6 @@ class CronController extends Controller
                 @time_sleep_until(++$time);
             }
         }
-        ContextManager::reset();
     }
 
     /**

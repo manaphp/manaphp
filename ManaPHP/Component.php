@@ -2,6 +2,8 @@
 namespace ManaPHP;
 
 use JsonSerializable;
+use ManaPHP\Coroutine\Context\Inseparable;
+use Swoole\Coroutine;
 
 /**
  * Class ManaPHP\Component
@@ -39,6 +41,11 @@ use JsonSerializable;
  */
 class Component implements ComponentInterface, JsonSerializable
 {
+    /**
+     * @var int
+     */
+    protected $_object_id;
+
     /**
      * @var \ManaPHP\Di
      */
@@ -86,8 +93,44 @@ class Component implements ComponentInterface, JsonSerializable
     public function __get($name)
     {
         if ($name === '_context') {
-            if (PHP_SAPI === 'cli') {
-                return ContextManager::get($this);
+            global $__root_context;
+
+            if (!$object_id = $this->_object_id) {
+                $object_id = $this->_object_id = spl_object_id($this);
+            }
+
+            if (MANAPHP_COROUTINE_ENABLED) {
+                if ($context = Coroutine::getContext()) {
+                    if (!$object = $context[$object_id] ?? null) {
+                        if (($parent_cid = Coroutine::getPcid()) === -1) {
+                            return $context[$object_id] = $this->createContext();
+                        }
+
+                        $parent_context = Coroutine::getContext($parent_cid);
+                        if ($object = $parent_context[$object_id] ?? null) {
+                            return $context[$object_id] = $object instanceof Inseparable ? $this->createContext() : $object;
+                        } else {
+                            $object = $context[$object_id] = $this->createContext();
+                            if (!$object instanceof Inseparable) {
+                                $parent_context[$object_id] = $object;
+                            }
+                        }
+                    }
+                    return $object;
+                } else {
+                    if (!$object = $__root_context[$object_id] ?? null) {
+                        return $__root_context[$object_id] = $this->createContext();
+                    } else {
+                        return $object;
+                    }
+                }
+            } elseif (PHP_SAPI === 'cli') {
+                if (!$object = $__root_context[$object_id] ?? null) {
+                    $__root_context[] = $this;
+                    return $this->_context = $this->createContext();
+                } else {
+                    return $object;
+                }
             } else {
                 return $this->_context = $this->createContext();
             }
@@ -165,7 +208,7 @@ class Component implements ComponentInterface, JsonSerializable
     {
         $data = [];
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k === '_di') {
+            if ($k === '_di' || $k === '_object_id') {
                 continue;
             }
 
