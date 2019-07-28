@@ -29,7 +29,7 @@ class Dispatcher extends \ManaPHP\Dispatcher
             }
 
             $action = $json['action'];
-            if (!preg_match('#^[a-z][a-z0-9_]*$#i', $action)) {
+            if (!preg_match('#^[a-z]\w*$#i', $action)) {
                 throw new BadRequestException(['bad action: `:action`', 'action' => $action]);
             }
 
@@ -45,7 +45,7 @@ class Dispatcher extends \ManaPHP\Dispatcher
             $globals = $this->request->getGlobals();
             $globals->_POST = $body;
             $globals->_REQUEST = $globals->_POST + $globals->_GET;
-        } elseif (preg_match('#^([a-z][a-z0-9_]*)[?]?#i', $message, $match) === 1) {
+        } elseif (preg_match('#^([a-z]\w*)[?]?#i', $message, $match) === 1) {
             $action = $match[1];
             $query = substr($message, strlen($match[0]));
             if ($query !== '') {
