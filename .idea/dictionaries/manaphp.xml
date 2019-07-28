@@ -22,6 +22,7 @@
       <w>colorizer</w>
       <w>compreply</w>
       <w>consts</w>
+      <w>crons</w>
       <w>csrf</w>
       <w>cword</w>
       <w>dblib</w>
@@ -98,6 +99,7 @@
       <w>swoole</w>
       <w>udid</w>
       <w>ufield</w>
+      <w>unicast</w>
       <w>unprocessable</w>
       <w>unserialize</w>
       <w>unserialized</w>
