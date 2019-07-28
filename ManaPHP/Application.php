@@ -68,7 +68,6 @@ class Application extends Component implements ApplicationInterface
 
         $this->alias->set('@public', $publicDir);
         $this->alias->set('@app', $appDir);
-        $this->alias->set('@ns.app', $appNamespace);
         $this->loader->registerNamespaces([$appNamespace => $appDir]);
 
         $this->alias->set('@views', $appDir . '/Views');
@@ -141,13 +140,13 @@ class Application extends Component implements ApplicationInterface
         foreach ($listeners as $listener) {
             if ($listener === '*') {
                 foreach ($this->filesystem->glob('@app/Areas/*/Listeners/*Listener.php') as $item) {
-                    $item = str_replace($this->alias->get('@app'), $this->alias->get('@ns.app'), $item);
+                    $item = str_replace($this->alias->get('@app'), 'App', $item);
                     $item = substr(str_replace('/', '\\', $item), 0, -4);
                     $this->eventsManager->addListener($item);
                 }
 
                 foreach ($this->filesystem->glob('@app/Listeners/*Listener.php') as $item) {
-                    $item = str_replace($this->alias->get('@app'), $this->alias->get('@ns.app'), $item);
+                    $item = str_replace($this->alias->get('@app'), 'App', $item);
                     $item = substr(str_replace('/', '\\', $item), 0, -4);
                     $this->eventsManager->addListener($item);
                 }
@@ -182,7 +181,7 @@ class Application extends Component implements ApplicationInterface
 
             $plugin = ucfirst($plugin);
 
-            $pluginClassName = isset($app_plugins[$plugin]) ? $this->alias->get('@ns.app') . "\\Plugins\\$plugin" : "ManaPHP\Plugins\\$plugin";
+            $pluginClassName = isset($app_plugins[$plugin]) ? "App\\Plugins\\$plugin" : "ManaPHP\Plugins\\$plugin";
             unset($app_plugins[$plugin]);
 
             $plugin = lcfirst($plugin);
@@ -190,7 +189,7 @@ class Application extends Component implements ApplicationInterface
         }
 
         foreach ($app_plugins as $plugin => $_) {
-            $pluginClassName = $this->alias->get('@ns.app') . "\\Plugins\\$plugin";
+            $pluginClassName = "App\\Plugins\\$plugin";
             $plugin = lcfirst($plugin);
             $this->_di->setShared($plugin, $pluginClassName)->getShared($plugin);
         }
@@ -220,7 +219,7 @@ class Application extends Component implements ApplicationInterface
      */
     protected function _loadServices($services)
     {
-        $this->_di->setPattern('*Service', $this->alias->get('@ns.app') . '\\Services\\');
+        $this->_di->setPattern('*Service', 'App\\Services\\');
 
         foreach ($services as $service => $params) {
             $this->_di->setShared($service, $params);
@@ -243,7 +242,7 @@ class Application extends Component implements ApplicationInterface
         $app_dir = scandir($this->alias->resolve('@app'));
 
         if (in_array('Router.php', $app_dir, true)) {
-            $this->_di->setShared('router', $this->alias->get('@ns.app') . '\Router');
+            $this->_di->setShared('router', 'App\\Router');
         }
 
         if ($configure->components) {

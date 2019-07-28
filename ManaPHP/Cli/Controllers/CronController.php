@@ -62,11 +62,11 @@ class CronController extends Controller
     {
         $crons = [];
         if ($name) {
-            $class_name = $this->alias->resolveNS('@ns.app\Crons\\' . Text::camelize($name) . 'Cron');
+            $class_name = 'App\\Crons\\' . Text::camelize($name) . 'Cron';
             $crons[] = new $class_name();
         } else {
             foreach ($this->filesystem->glob('@app/Crons/*Cron.php') as $file) {
-                $class_name = $this->alias->resolveNS('@ns.app\Crons\\' . basename($file, '.php'));
+                $class_name = 'App\\Crons\\' . basename($file, '.php');
                 $crons[] = new $class_name();
             }
         }
@@ -85,7 +85,7 @@ class CronController extends Controller
     {
         $count = 0;
         if ($name) {
-            $class_name = $this->alias->resolveNS('@ns.app\Crons\\' . Text::camelize($name) . 'Cron');
+            $class_name = 'App\\Crons\\' . Text::camelize($name) . 'Cron';
             /** @var \ManaPHP\CronInterface $cron */
             $cron = new $class_name;
             $schedule = $cron->schedule();

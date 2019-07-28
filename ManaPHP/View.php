@@ -251,11 +251,11 @@ class View extends Component implements ViewInterface
         }
 
         $area = $this->dispatcher->getArea();
-        if ($area && class_exists($widgetClassName = $this->alias->get('@ns.app') . "\\Areas\\$area\\Widgets\\{$widget}Widget")) {
+        if ($area && class_exists($widgetClassName = "App\\Areas\\$area\\Widgets\\{$widget}Widget")) {
             return $widgetClassName;
         }
 
-        return class_exists($widgetClassName = $this->alias->get('@ns.app') . "\\Widgets\\{$widget}Widget") ? $widgetClassName : false;
+        return class_exists($widgetClassName = "App\\Widgets\\{$widget}Widget") ? $widgetClassName : false;
     }
 
     /**

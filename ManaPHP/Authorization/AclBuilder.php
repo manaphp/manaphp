@@ -23,12 +23,12 @@ class AclBuilder extends Component implements AclBuilderInterface
             $controllers = [];
 
             foreach ($this->filesystem->glob('@app/Controllers/*Controller.php') as $item) {
-                $controller = str_replace($this->alias->resolve('@app'), $this->alias->resolveNS('@ns.app'), $item);
+                $controller = str_replace($this->alias->resolve('@app'), 'App', $item);
                 $controllers[] = str_replace('/', '\\', substr($controller, 0, -4));
             }
 
             foreach ($this->filesystem->glob('@app/Areas/*/Controllers/*Controller.php') as $item) {
-                $controller = str_replace($this->alias->resolve('@app'), $this->alias->resolveNS('@ns.app'), $item);
+                $controller = str_replace($this->alias->resolve('@app'), 'App', $item);
                 $controllers[] = str_replace('/', '\\', substr($controller, 0, -4));
             }
 

@@ -118,9 +118,9 @@ class Authorization extends Component implements AuthorizationInterface
         }
 
         if ($area) {
-            return ["@ns.app\\Areas\\$area\\Controllers\\{$controller}Controller", $action];
+            return ["App\\Areas\\$area\\Controllers\\{$controller}Controller", $action];
         } else {
-            return ["@ns.app\\Controllers\\{$controller}Controller", $action];
+            return ["App\\Controllers\\{$controller}Controller", $action];
         }
     }
 
@@ -261,7 +261,6 @@ class Authorization extends Component implements AuthorizationInterface
 
         if ($permission && strpos($permission, '/') !== false) {
             list($controllerClassName, $action) = $this->inferControllerAction($permission);
-            $controllerClassName = $this->alias->resolveNS($controllerClassName);
         } else {
             $controllerInstance = $this->dispatcher->getControllerInstance();
             $controllerClassName = get_class($controllerInstance);
