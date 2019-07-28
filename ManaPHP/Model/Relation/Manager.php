@@ -299,8 +299,9 @@ class Manager extends Component implements ManagerInterface
             } elseif ($relation->type === Relation::TYPE_HAS_MANY_TO_MANY) {
                 $ids = array_column($r, $valueField);
                 $via_data = $model::query()->select([$keyField, $valueField])->whereIn($valueField, $ids)->execute();
-                $data = $query->where($query->getModel()->getPrimaryKey(),
-                    array_unique_column($via_data, $keyField))->indexBy($query->getModel()->getPrimaryKey())->fetch($asArray);
+                $ids = array_unique_column($via_data, $keyField);
+                $primaryKey = $query->getModel()->getPrimaryKey();
+                $data = $query->whereIn($primaryKey, $ids)->indexBy($primaryKey)->fetch($asArray);
 
                 $rd = [];
                 foreach ($via_data as $dv) {
@@ -321,9 +322,10 @@ class Manager extends Component implements ManagerInterface
                 /** @var \ManaPHP\ModelInterface $reference */
                 $reference = new $relation->referenceModel;
                 $keyField = $reference->getPrimaryKey();
-                $via_data = $via::query()->select([$keyField, $relation->valueField])->where($valueField, array_unique_column($r, $model->getPrimaryKey()))->execute();
+                $ids = array_unique_column($r, $model->getPrimaryKey());
+                $via_data = $via::query()->select([$keyField, $relation->valueField])->whereIn($valueField, $ids)->execute();
                 $ids = array_unique_column($via_data, $keyField);
-                $data = $query->where($query->getModel()->getPrimaryKey(), $ids)->indexBy($query->getModel()->getPrimaryKey())->fetch($asArray);
+                $data = $query->whereIn($query->getModel()->getPrimaryKey(), $ids)->indexBy($query->getModel()->getPrimaryKey())->fetch($asArray);
 
                 $rd = [];
                 foreach ($via_data as $dv) {
