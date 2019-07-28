@@ -78,9 +78,27 @@ class Component implements ComponentInterface, JsonSerializable
      */
     public function createContext()
     {
-        $class = $this->getContextClass();
+        static $cached = [];
 
-        return new $class();
+        $class = static::class;
+        if (!$context = $cached[$class] ?? null) {
+            $parent = $class;
+            do {
+                $try = $parent . 'Context';
+                if (class_exists($try, false)) {
+                    $context = $try;
+                    break;
+                }
+            } while ($parent = get_parent_class($parent));
+
+            if ($context === null) {
+                throw new Exception(['`:context` context class is not exists', 'context' => get_class($this) . 'Context']);
+            }
+
+            $cached[$class] = $context;
+        }
+
+        return new $context();
     }
 
     /**
@@ -232,35 +250,6 @@ class Component implements ComponentInterface, JsonSerializable
         }
 
         return $data;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContextClass()
-    {
-        static $cached = [];
-
-        $class = static::class;
-        if (!isset($cached[$class])) {
-            $context = null;
-            $parent = $class;
-            do {
-                $try = $parent . 'Context';
-                if (class_exists($try, false)) {
-                    $context = $try;
-                    break;
-                }
-            } while ($parent = get_parent_class($parent));
-
-            if ($context === null) {
-                throw new Exception(['`:context` context class is not exists', 'context' => get_class($this) . 'Context']);
-            }
-
-            return $cached[$class] = $context;
-        }
-
-        return $cached[$class];
     }
 
     public function jsonSerialize()
