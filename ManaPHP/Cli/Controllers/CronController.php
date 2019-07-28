@@ -2,10 +2,13 @@
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
-use ManaPHP\Cron\ScheduleParser;
+use ManaPHP\Cli\Cron\ScheduleParser;
+use ManaPHP\Cli\Cronable;
+use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Utility\Text;
 use Swoole\Coroutine;
 use Throwable;
+use ReflectionClass;
 
 /**
  * Class CronController
@@ -15,7 +18,7 @@ use Throwable;
 class CronController extends Controller
 {
     /**
-     * @var \ManaPHP\Cron\ScheduleParser
+     * @var \ManaPHP\Cli\Cron\ScheduleParser
      */
     protected $_scheduleParser;
 
@@ -25,7 +28,7 @@ class CronController extends Controller
     }
 
     /**
-     * @param \ManaPHP\CronInterface $cron
+     * @param \ManaPHP\Cli\Cronable $cron
      */
     public function routine($cron)
     {
@@ -35,7 +38,7 @@ class CronController extends Controller
             do {
                 $last = microtime(true);
                 try {
-                    $cron->run();
+                    $cron->defaultCommand();
                 } catch (Throwable $throwable) {
                     $this->logger->error($throwable);
                 }
@@ -45,7 +48,7 @@ class CronController extends Controller
             while (true) {
                 if ($this->_scheduleParser->match($schedule, $time)) {
                     try {
-                        $cron->run();
+                        $cron->defaultCommand();
                     } catch (Throwable $throwable) {
                         $this->logger->error($throwable);
                     }
@@ -57,61 +60,79 @@ class CronController extends Controller
 
     /**
      * @param string $name
+     *
+     * @return Cronable[]
      */
-    public function runCommand($name = '')
+    protected function _getCrons($name = '')
     {
         $crons = [];
         if ($name) {
-            $class_name = 'App\\Crons\\' . Text::camelize($name) . 'Cron';
+            $class_name = $this->alias->get('@ns.cli') . '\\' . Text::camelize($name) . 'Controller';
+            $rc = new ReflectionClass($class_name);
+
+            if (!in_array(Cronable::class, $rc->getInterfaceNames(), true)) {
+                throw new RuntimeException('is not cronable');
+            }
             $crons[] = new $class_name();
         } else {
-            foreach ($this->filesystem->glob('@app/Crons/*Cron.php') as $file) {
-                $class_name = 'App\\Crons\\' . basename($file, '.php');
-                $crons[] = new $class_name();
+            foreach ($this->filesystem->glob('@cli/*Controller.php') as $file) {
+                $class_name = $this->alias->get('@ns.cli') . '\\' . basename($file, '.php');
+                $rc = new ReflectionClass($class_name);
+                if (in_array(Cronable::class, $rc->getInterfaceNames(), true)) {
+                    $crons[] = new $class_name();
+                }
             }
         }
 
-        foreach ($crons as $cron) {
+        return $crons;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function runCommand($name = '')
+    {
+        foreach ($this->_getCrons($name) as $cron) {
             /** @noinspection PhpMethodParametersCountMismatchInspection */
             Coroutine::create([$this, 'routine'], $cron);
         }
     }
 
     /**
-     * @param string|float|int $schedule
-     * @param string           $name
+     * @param string $name
      */
-    public function testCommand($schedule = '', $name = '')
+    public function listCommand($name = '')
     {
-        $count = 0;
-        if ($name) {
-            $class_name = 'App\\Crons\\' . Text::camelize($name) . 'Cron';
-            /** @var \ManaPHP\CronInterface $cron */
-            $cron = new $class_name;
+        foreach ($this->_getCrons($name) as $cron) {
             $schedule = $cron->schedule();
-        }
+            /** @noinspection PhpMethodParametersCountMismatchInspection */
+            $this->console->writeln(get_class($cron) . ': ' . $schedule);
 
-        if (is_int($schedule) || is_float($schedule)) {
-            $current = microtime(true);
-            for ($i = 0; ; $i++) {
-                $next = $current + $schedule * $i;
-                $this->console->writeLn(date('Y-m-d H:i:s', $next) . sprintf('.%03d', ($next - (int)$next) * 1000));
-                if (++$count === 10) {
-                    break;
-                }
-            }
-        } else {
-            $current = time();
-            for ($i = 0; ; $i++) {
-                $time = $current + $i;
-                if ($this->_scheduleParser->match($schedule, $time)) {
-                    $this->console->writeLn(date('Y-m-d H:i:s', $time));
-                    if (++$count === 10) {
+            $count = 0;
+
+            if (is_int($schedule) || is_float($schedule)) {
+                $current = microtime(true);
+                for ($i = 0; ; $i++) {
+                    $next = $current + $schedule * $i;
+                    $this->console->writeLn('     ' . date('Y-m-d H:i:s', $next) . sprintf('.%03d', ($next - (int)$next) * 1000));
+                    if (++$count === 5) {
                         break;
                     }
                 }
+            } else {
+                $current = time();
+                for ($i = 0; ; $i++) {
+                    $time = $current + $i;
+                    if ($this->_scheduleParser->match($schedule, $time)) {
+                        $this->console->writeln('    ' . date('Y-m-d H:i:s', $time));
+                        if (++$count === 5) {
+                            break;
+                        }
+                    }
+                }
             }
+
+            $this->console->writeLn();
         }
     }
-
 }

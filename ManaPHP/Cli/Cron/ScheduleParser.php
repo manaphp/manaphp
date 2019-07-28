@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Cron;
+namespace ManaPHP\Cli\Cron;
 
 class ScheduleParser
 {
