@@ -63,7 +63,7 @@ class Application extends \ManaPHP\Application implements LogCategorizable
 
         try {
             exit($this->cliHandler->handle());
-        }catch (Throwable $e) {
+        } catch (Throwable $e) {
             $this->errorHandler->handle($e);
         }
     }

@@ -3,8 +3,8 @@ namespace ManaPHP\Coroutine;
 
 use ManaPHP\Component;
 use Swoole\Coroutine;
-use Throwable;
 use Swoole\Coroutine\Channel;
+use Throwable;
 
 class Task extends Component implements TaskInterface
 {

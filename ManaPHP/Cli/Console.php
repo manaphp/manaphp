@@ -1,12 +1,12 @@
 <?php
 namespace ManaPHP\Cli;
 
-use function getenv;
 use JsonSerializable;
 use ManaPHP\Component;
 use ReflectionClass;
 use Serializable;
 use Throwable;
+use function getenv;
 
 /**
  * Class ManaPHP\Cli\Console

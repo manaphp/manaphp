@@ -208,7 +208,7 @@ class Workerman extends Server
         }
 
         global $__root_context;
-	
+
         if ($__root_context !== null) {
             foreach ($__root_context as $owner) {
                 unset($owner->_context);

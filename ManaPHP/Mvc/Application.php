@@ -43,7 +43,7 @@ class Application extends \ManaPHP\Http\Application
             } else {
                 $this->response->setJsonContent($actionReturnValue);
             }
-        }catch (Throwable $e) {
+        } catch (Throwable $e) {
             $this->handleException($e);
         }
 

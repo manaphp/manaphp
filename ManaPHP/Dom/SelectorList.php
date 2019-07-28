@@ -257,7 +257,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
     public function parent($css = null)
     {
         if ($css === '') {
-            return clone  $this;
+            return clone $this;
         }
 
         return $this->css('parent::' . ($css ?? '*'));
