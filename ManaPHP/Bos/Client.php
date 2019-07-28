@@ -52,7 +52,7 @@ class Client extends Component implements ClientInterface
     {
         $params['token'] = jwt_encode(['scope' => 'bos.bucket.create'], 60, $this->_admin_key);
 
-        $endpoint = preg_replace('#\{bucket\}[\-.]*#', '', $this->_endpoint);
+        $endpoint = preg_replace('#{bucket}[\-.]*#', '', $this->_endpoint);
 
         if (str_contains($this->_endpoint, '{bucket}')) {
             $params['base_url'] = str_replace('{bucket}', $params['bucket'], $this->_endpoint);
@@ -75,7 +75,7 @@ class Client extends Component implements ClientInterface
     public function listBuckets()
     {
         $token = jwt_encode(['scope' => 'bos.bucket.list'], 60, $this->_admin_key);
-        $endpoint = preg_replace('#\{bucket\}[\-.]*#', '', $this->_endpoint);
+        $endpoint = preg_replace('#{bucket}[\-.]*#', '', $this->_endpoint);
         $body = rest_get([$endpoint . '/api/buckets', 'token' => $token])['body'];
 
         $this->logger->debug($body, 'bosClient.listBuckets');

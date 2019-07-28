@@ -182,7 +182,7 @@ class Dotenv extends Component implements DotenvInterface
                 $value = strtr($value, ['\n' => PHP_EOL]);
 
                 if (strpos($value, '${') !== false) {
-                    preg_match_all('#\$\{([\w.]+)\}#', $value, $matches);
+                    preg_match_all('#\${([\w.]+)}#', $value, $matches);
                     foreach ((array)$matches[1] as $match) {
                         $ref_name = $match;
                         if (!isset($data[$ref_name])) {
