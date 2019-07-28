@@ -397,18 +397,17 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @param string|array           $filters
-     * @param int|float|string|array $values
+     * @param array $filters
      *
      * @return static
      */
-    public function where($filters, $values = null)
+    public function where($filters)
     {
         if ($filters === null) {
             return $this;
         }
 
-        foreach (is_array($filters) ? $filters : [$filters => $values] as $filter => $value) {
+        foreach ($filters as $filter => $value) {
             if (is_int($filter)) {
                 $this->whereExpr($value);
             } elseif (is_array($value)) {

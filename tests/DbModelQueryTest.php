@@ -4,17 +4,16 @@ namespace Tests;
 use ManaPHP\Db;
 use ManaPHP\Db\Adapter\Proxy;
 use ManaPHP\Db\Adapter\Sqlite;
-use ManaPHP\Db\Connection\Adapter\Mysql;
 use ManaPHP\Db\Query;
 use ManaPHP\DbInterface;
 use ManaPHP\Di;
 use ManaPHP\Di\FactoryDefault;
 use PHPUnit\Framework\TestCase;
+use Tests\Models\Actor;
 use Tests\Models\Address;
 use Tests\Models\City;
 use Tests\Models\Country;
 use Tests\Models\Payment;
-use Tests\Models\Actor;
 
 class DbModelQueryTest extends TestCase
 {
@@ -156,7 +155,7 @@ class DbModelQueryTest extends TestCase
             ->select(['*'])
             ->from(City::query()
                 ->select(['*'])
-                ->where('city_id<=', 5), 'cc');
+                ->where(['city_id<=' => 5]), 'cc');
         $rows = $query->execute();
         $this->assertCount(5, $rows);
     }
@@ -202,7 +201,7 @@ class DbModelQueryTest extends TestCase
             ->select(['a.address_id', 'a.address', 'a.city_id', 'c.city'])
             ->join(City::query()
                 ->select(['*'])
-                ->where('city_id <:city_id', ['city_id' => 50]), 'c.city_id =a.city_id', 'c', 'RIGHT');
+                ->where(['city_id<' => 50]), 'c.city_id =a.city_id', 'c', 'RIGHT');
         $rows = $query->execute();
         $this->assertCount(50, $rows);
     }
@@ -256,22 +255,18 @@ class DbModelQueryTest extends TestCase
     public function test_where()
     {
         $this->assertEquals('SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE [city_id]=:city_id',
-            City::query()->where('city_id', 1)->getSql());
+            City::where(['city_id' => 1])->getSql());
 
-        $query = Address::query()->where('address_id<=', 100);
+        $query = Address::where(['address_id<=' => 100]);
         $this->assertCount(100, $query->execute());
 
-        $query = Address::query()
-            ->where('address_id <=:max_address_id', ['max_address_id' => 100]);
+        $query = Address::where(['address_id<=' => 100]);
         $this->assertCount(100, $query->execute());
 
-        $query = Address::query()
-            ->where('address_id', 100);
+        $query = Address::where(['address_id' => 100]);
         $this->assertCount(1, $query->execute());
 
-        $query = Address::query()
-            ->where('address_id >=:min_address_id AND address_id <=:max_address_id',
-                ['min_address_id' => 51, 'max_address_id' => 100]);
+        $query = Address::where(['address_id~=' => [51, 100]]);
         $this->assertCount(50, $query->execute());
     }
 
@@ -279,42 +274,6 @@ class DbModelQueryTest extends TestCase
     {
         $this->assertEquals('SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE city_id >1',
             City::query()->whereRaw('city_id >1')->getSql());
-    }
-
-    public function test_andWhere()
-    {
-        $query = Address::query()
-            ->where('address_id<=', 100);
-        $this->assertCount(100, $query->execute());
-
-        $query = Address::query()
-            ->where('address_id <=:max_address_id', ['max_address_id' => 100]);
-        $this->assertCount(100, $query->execute());
-
-        $query = Address::query()
-            ->where('address_id>=:min_address_id', ['min_address_id' => 51])
-            ->where('address_id<=:max_address_id', ['max_address_id' => 100]);
-        $this->assertCount(50, $query->execute());
-
-        $query = Address::query()
-            ->where('address_id', 1);
-        $this->assertCount(1, $query->execute());
-
-        $query = Address::query()
-            ->where('address_id=', 1);
-        $this->assertCount(1, $query->execute());
-
-        $query = Address::query()
-            ->where('address_id<', 2);
-        $this->assertCount(1, $query->execute());
-
-        $query = Address::query('a')
-            ->where('a.address_id', 1);
-        $this->assertCount(1, $query->execute());
-
-        $query = Address::query('a')
-            ->where('a.address_id', 1);
-        $this->assertCount(1, $query->execute());
     }
 
     public function test_whereBetween()
@@ -493,7 +452,7 @@ class DbModelQueryTest extends TestCase
 
         $query = Address::query()
             ->select(['address_id'])
-            ->where('address_id <=:max_address_id', ['max_address_id' => 10])
+            ->where(['address_id<=' => 10])
             ->orderBy('address_id');
         $rows = $query->execute();
         $this->assertCount(10, $query->execute());
@@ -505,7 +464,7 @@ class DbModelQueryTest extends TestCase
 
         $query = Address::query()
             ->select(['address_id'])
-            ->where('address_id <=:max_address_id', ['max_address_id' => 10])
+            ->where(['address_id<=' => 10])
             ->orderBy('address_id ASC');
         $rows = $query->execute();
         $this->assertCount(10, $query->execute());
@@ -517,7 +476,7 @@ class DbModelQueryTest extends TestCase
 
         $query = Address::query()
             ->select(['address_id'])
-            ->where('address_id <=:max_address_id', ['max_address_id' => 10])
+            ->where(['address_id<=' => 10])
             ->orderBy('address_id DESC');
         $rows = $query->execute();
         $this->assertCount(10, $query->execute());
@@ -532,7 +491,7 @@ class DbModelQueryTest extends TestCase
     {
         $query = Address::query()
             ->select(['address_id'])
-            ->where('address_id>=', 5)
+            ->where(['address_id>=' => 5])
             ->indexBy('address_id')
             ->limit(1);
         $rows = $query->execute();
@@ -541,14 +500,13 @@ class DbModelQueryTest extends TestCase
 
         $query = Address::query()
             ->select(['address_id', 'address'])
-            ->where('address_id>=', 5)
+            ->where(['address_id>=' => 5])
             ->indexBy(['address_id' => 'address'])
             ->limit(1);
         $rows = $query->execute();
         $this->assertEquals([5 => '1913 Hanoi Way'], $rows);
 
-        $query = Address::query()
-            ->where('address_id>=', 5)
+        $query = Address::where(['address_id>=' => 5])
             ->indexBy(['address_id' => 'address'])
             ->limit(1);
         $rows = $query->execute();
@@ -556,7 +514,7 @@ class DbModelQueryTest extends TestCase
 
         $query = Address::query()
             ->select(['address_id'])
-            ->where('address_id>=', 5)
+            ->where(['address_id>=' => 5])
             ->indexBy(function ($row) {
                 return 'address_' . $row['address_id'];
             })
@@ -689,8 +647,8 @@ class DbModelQueryTest extends TestCase
     public function test_exists()
     {
         $this->assertTrue(City::query()->exists());
-        $this->assertTrue(City::query()->where('city_id', 1)->exists());
-        $this->assertFalse(City::query()->where('city_id', 0)->exists());
+        $this->assertTrue(City::where(['city_id' => 1])->exists());
+        $this->assertFalse(City::where(['city_id' => 0])->exists());
     }
 
     public function test_count()

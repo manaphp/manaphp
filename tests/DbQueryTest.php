@@ -3,7 +3,6 @@
 namespace Tests;
 
 use ManaPHP\Db;
-use ManaPHP\Db\Adapter\Mysql;
 use ManaPHP\Db\Query;
 use ManaPHP\DbInterface;
 use ManaPHP\Mvc\Factory;
@@ -124,7 +123,7 @@ class DbQueryTest extends TestCase
     public function test_where()
     {
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id]=:city_id',
-            (new Query())->from('city')->where('city_id', 1)->getSql());
+            (new Query())->from('city')->where(['city_id' => 1])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id]=:city_id',
             (new Query())->from('city')->where(['city_id' => 1])->getSql());
@@ -133,76 +132,73 @@ class DbQueryTest extends TestCase
             (new Query())->from('city')->where(['city_id = 1'])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id]=:city_id',
-            (new Query())->from('city')->where('city_id=', 1)->getSql());
+            (new Query())->from('city')->where(['city_id=' => 1])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id]!=:city_id',
-            (new Query())->from('city')->where('city_id!=', 1)->getSql());
+            (new Query())->from('city')->where(['city_id!=' => 1])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id]>:city_id',
-            (new Query())->from('city')->where('city_id>', 1)->getSql());
+            (new Query())->from('city')->where(['city_id>' => 1])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id]>=:city_id',
-            (new Query())->from('city')->where('city_id>=', 1)->getSql());
+            (new Query())->from('city')->where(['city_id>=' => 1])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id]<:city_id',
-            (new Query())->from('city')->where('city_id<', 1)->getSql());
+            (new Query())->from('city')->where(['city_id<' => 1])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id]<=:city_id',
-            (new Query())->from('city')->where('city_id<=', 1)->getSql());
+            (new Query())->from('city')->where(['city_id<=' => 1])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [c].[city_id]=:c_city_id',
-            (new Query())->from('city')->where('c.city_id', 1)->getSql());
+            (new Query())->from('city')->where(['c.city_id' => 1])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [c].[city_id]>=:c_city_id',
-            (new Query())->from('city')->where('c.city_id>=', 1)->getSql());
+            (new Query())->from('city')->where(['c.city_id>=' => 1])->getSql());
 
-        $result = (new Query())->from('city')->where('city^=', 'Ab')->all();
+        $result = (new Query())->from('city')->where(['city^=' => 'Ab'])->all();
         $this->assertCount(2, $result);
 
-        $result = (new Query())->from('city')->where('city$=', 'a')->all();
+        $result = (new Query())->from('city')->where(['city$=' => 'a'])->all();
         $this->assertCount(125, $result);
 
-        $result = (new Query())->from('city')->where('city*=', 'a')->all();
+        $result = (new Query())->from('city')->where(['city*=' => 'a'])->all();
         $this->assertCount(450, $result);
 
-        $result = (new Query())->from('city')->where('city_id', [1, 2, 3, 4])->all();
+        $result = (new Query())->from('city')->where(['city_id' => [1, 2, 3, 4]])->all();
         $this->assertCount(4, $result);
 
-        $result = (new Query())->from('city')->where('city_id~=', [1, 4])->all();
+        $result = (new Query())->from('city')->where(['city_id~=' => [1, 4]])->all();
         $this->assertCount(4, $result);
 
-        $result = (new Query())->from('city')->where('city_id', [])->all();
+        $result = (new Query())->from('city')->where(['city_id' => []])->all();
         $this->assertCount(0, $result);
 
         $this->assertEquals('SELECT * FROM [city] WHERE city_id>0',
-            (new Query())->from('city')->where('city_id>0')->getSql());
+            (new Query())->from('city')->where(['city_id>0'])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] IS NULL',
-            (new Query())->from('city')->where('city_id')->getSql());
+            (new Query())->from('city')->where(['city_id'])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] IS NULL',
             (new Query())->from('city')->where(['city_id' => null])->getSql());
 
         $this->assertEquals('SELECT * FROM [city]',
-            (new Query())->from('city')->where('city_id?')->getSql());
-
-        $this->assertEquals('SELECT * FROM [city]',
             (new Query())->from('city')->where(['city_id?' => null])->getSql());
-
-        $this->assertEquals('SELECT * FROM [city]',
-            (new Query())->from('city')->where('city_id?', '')->getSql());
 
         $this->assertEquals('SELECT * FROM [city]',
             (new Query())->from('city')->where(['city_id?' => ''])->getSql());
 
         $this->assertEquals('SELECT * FROM [city]',
-            (new Query())->from('city')->where('city_id?', ' ')->getSql());
+            (new Query())->from('city')->where(['city_id?' => ''])->getSql());
+
+        $this->assertEquals('SELECT * FROM [city]',
+            (new Query())->from('city')->where(['city_id?' => ' '])->getSql());
 
         $this->assertEquals('SELECT * FROM [city]',
             (new Query())->from('city')->where(['city_id?' => ' '])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id]=:city_id',
-            (new Query())->from('city')->where('city_id?', '12')->getSql());
+            (new Query())->from('city')->where(['city_id?' => '12'])->getSql());
 
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id]=:city_id',
             (new Query())->from('city')->where(['city_id?' => '12'])->getSql());
@@ -470,14 +466,14 @@ class DbQueryTest extends TestCase
     public function test_count()
     {
         $this->assertEquals(600, (new Query())->from('city')->count());
-        $this->assertEquals(3, (new Query())->from('city')->where('country_id', 2)->count());
+        $this->assertEquals(3, (new Query())->from('city')->where(['country_id' => 2])->count());
     }
 
     public function test_exists()
     {
         $this->assertTrue((new Query)->from('city')->exists());
-        $this->assertTrue((new Query)->from('city')->where('city_id', 1)->exists());
-        $this->assertFalse((new Query)->from('city')->where('city_id', 0)->exists());
+        $this->assertTrue((new Query)->from('city')->where(['city_id' => 1])->exists());
+        $this->assertFalse((new Query)->from('city')->where(['city_id' => 0])->exists());
     }
 
     public function test_aggregate()

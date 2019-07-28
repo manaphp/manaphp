@@ -26,7 +26,7 @@ class MongodbModelQueryTest extends TestCase
     public function test_values()
     {
         $this->assertCount(600, City::query()->values('city_id'));
-        $this->assertCount(3, City::query()->where('country_id', 2)->values('city_id'));
+        $this->assertCount(3, City::query()->where(['country_id' => 2])->values('city_id'));
     }
 
     public function test_select()
@@ -86,73 +86,73 @@ class MongodbModelQueryTest extends TestCase
         /**
          * @var City $document
          */
-        $document = City::query()->where('city_id', 2)->fetch();
+        $document = City::where(['city_id' => 2])->fetch();
         $this->assertEquals(2, $document[0]->city_id);
 
-        $document = City::query()->where('city_id', '2')->fetch();
+        $document = City::where(['city_id' => '2'])->fetch();
         $this->assertEquals(2, $document[0]->city_id);
 
-        $document = City::query()->where(['city_id' => 2])->fetch();
+        $document = City::where(['city_id' => 2])->fetch();
         $this->assertEquals(2, $document[0]->city_id);
 
-        $documents = City::query()->where('city_id', -2)->fetch();
+        $documents = City::where(['city_id' => -2])->fetch();
         $this->assertEmpty($documents);
 
-        $documents = City::query()->where('city_id=', 10)->fetch();
+        $documents = City::where(['city_id=' => 10])->fetch();
         $this->assertCount(1, $documents);
         $this->assertEquals(10, $documents[0]->city_id);
 
-        $documents = City::query()->where('city_id>', 10)->fetch();
+        $documents = City::where(['city_id>' => 10])->fetch();
         $this->assertCount(590, $documents);
         $this->assertEquals(11, $documents[0]->city_id);
 
-        $documents = City::query()->where('city_id>=', 10)->fetch();
+        $documents = City::where(['city_id>=' => 10])->fetch();
         $this->assertCount(591, $documents);
         $this->assertEquals(10, $documents[0]->city_id);
 
-        $documents = City::query()->where('city_id<', 10)->fetch();
+        $documents = City::where(['city_id<' => 10])->fetch();
         $this->assertCount(9, $documents);
         $this->assertEquals(1, $documents[0]->city_id);
 
-        $documents = City::query()->where('city_id<=', 10)->fetch();
+        $documents = City::where(['city_id<=' => 10])->fetch();
         $this->assertCount(10, $documents);
         $this->assertEquals(1, $documents[0]->city_id);
 
-        $documents = City::query()->where('city_id!=', 10)->fetch();
+        $documents = City::where(['city_id!=' => 10])->fetch();
         $this->assertCount(599, $documents);
         $this->assertEquals(1, $documents[0]->city_id);
 
-        $documents = City::query()->where('city_id<>', 10)->fetch();
+        $documents = City::where(['city_id<>' => 10])->fetch();
         $this->assertCount(599, $documents);
         $this->assertEquals(1, $documents[0]->city_id);
 
-        $documents = City::query()->where('city^=', 'Ab')->fetch();
+        $documents = City::where(['city^=' => 'Ab'])->fetch();
         $this->assertCount(2, $documents);
         $this->assertEquals(2, $documents[0]->city_id);
         $this->assertEquals(3, $documents[1]->city_id);
 
-        $documents = City::query()->where('city$=', 'a')->fetch();
+        $documents = City::where(['city$=' => 'a'])->fetch();
         $this->assertCount(125, $documents);
 
-        $documents = City::query()->where('city*=', 'a')->fetch();
+        $documents = City::where(['city*=' => 'a'])->fetch();
         $this->assertCount(450, $documents);
 
-        $documents = City::query()->where('city_id', [1, 2, 3, 4])->fetch();
+        $documents = City::where(['city_id' => [1, 2, 3, 4]])->fetch();
         $this->assertCount(4, $documents);
 
-        $documents = City::query()->where('city_id', ['1', '2', '3', '4'])->fetch();
+        $documents = City::where(['city_id'=> ['1', '2', '3', '4']])->fetch();
         $this->assertCount(4, $documents);
 
-        $documents = City::query()->where('city_id~=', [1, 4])->fetch();
+        $documents = City::where(['city_id~=' => [1, 4]])->fetch();
         $this->assertCount(4, $documents);
 
-        $documents = City::query()->where('city_id~=', ['1', '4'])->fetch();
+        $documents = City::where(['city_id~=' => ['1', '4']])->fetch();
         $this->assertCount(4, $documents);
 
-        $documents = City::query()->where('city_id', [])->fetch();
+        $documents = City::where(['city_id'=> []])->fetch();
         $this->assertCount(0, $documents);
 
-        $documents = City::query()->where('city_id', ['$ne' => 10])->fetch();
+        $documents = City::where(['city_id'=> ['$ne' => 10]])->fetch();
         $this->assertCount(599, $documents);
         $this->assertEquals(1, $documents[0]->city_id);
     }
@@ -398,6 +398,6 @@ class MongodbModelQueryTest extends TestCase
     public function test_count()
     {
         $this->assertEquals(600, City::query()->count());
-        $this->assertEquals(3, City::query()->where('country_id', 2)->count());
+        $this->assertEquals(3, City::query()->where(['country_id' => 2])->count());
     }
 }

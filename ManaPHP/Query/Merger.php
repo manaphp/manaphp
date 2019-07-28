@@ -169,15 +169,14 @@ class Merger extends Component implements QueryInterface, IteratorAggregate
     }
 
     /**
-     * @param string|array           $filter
-     * @param int|float|string|array $value
+     * @param array $filters
      *
      * @return static
      */
-    public function where($filter, $value = null)
+    public function where($filters)
     {
         foreach ($this->queries as $query) {
-            $query->where($filter, $value);
+            $query->where($filters);
         }
 
         return $this;

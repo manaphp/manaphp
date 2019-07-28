@@ -117,9 +117,9 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
                         continue;
                     }
                 }
-                $this->where($v, $value);
+                $this->where([$v => $value]);
             } else {
-                $this->where($k, $v);
+                $this->where([$k => $v]);
             }
         }
 

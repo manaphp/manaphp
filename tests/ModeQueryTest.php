@@ -34,35 +34,35 @@ class ModeQueryTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertSame(600, City::query()->where(null)->count());
 
-        $this->assertSame(3, City::query()->where('country_id', 2)->count());
-        $this->assertSame(3, City::query()->where('country_id=', 2)->count());
-        $this->assertSame(596, City::query()->where('country_id>', 2)->count());
-        $this->assertSame(599, City::query()->where('country_id>=', 2)->count());
-        $this->assertSame(1, City::query()->where('country_id<', 2)->count());
-        $this->assertSame(4, City::query()->where('country_id<=', 2)->count());
-        $this->assertSame(597, City::query()->where('country_id!=', 2)->count());
+        $this->assertSame(3, City::where(['country_id' => 2])->count());
+        $this->assertSame(3, City::where(['country_id=' => 2])->count());
+        $this->assertSame(596, City::where(['country_id>' => 2])->count());
+        $this->assertSame(599, City::where(['country_id>=' => 2])->count());
+        $this->assertSame(1, City::where(['country_id<' => 2])->count());
+        $this->assertSame(4, City::where(['country_id<=' => 2])->count());
+        $this->assertSame(597, City::where(['country_id!=' => 2])->count());
 
-        $this->assertSame(121, City::query()->where('city*=', 'b')->count());
-        $this->assertSame(121, City::query()->where('city*=', 'B')->count());
-        $this->assertSame(43, City::query()->where('city^=', 'a')->count());
-        $this->assertSame(43, City::query()->where('city^=', 'A')->count());
-        $this->assertSame(75, City::query()->where('city$=', 'n')->count());
-        $this->assertSame(75, City::query()->where('city$=', 'N')->count());
+        $this->assertSame(121, City::where(['city*=' => 'b'])->count());
+        $this->assertSame(121, City::where(['city*=' => 'B'])->count());
+        $this->assertSame(43, City::where(['city^=' => 'a'])->count());
+        $this->assertSame(43, City::where(['city^=' => 'A'])->count());
+        $this->assertSame(75, City::where(['city$=' => 'n'])->count());
+        $this->assertSame(75, City::where(['city$=' => 'N'])->count());
 
-        $this->assertSame(0, City::query()->where('country_id', [])->count());
-        $this->assertSame(1, City::query()->where('country_id', [1])->count());
-        $this->assertSame(3, City::query()->where('country_id', [2])->count());
-        $this->assertSame(4, City::query()->where('country_id', [1, 2])->count());
+        $this->assertSame(0, City::where(['country_id' => []])->count());
+        $this->assertSame(1, City::where(['country_id' => [1]])->count());
+        $this->assertSame(3, City::where(['country_id' => [2]])->count());
+        $this->assertSame(4, City::where(['country_id' => [1, 2]])->count());
 
-        $this->assertSame(0, City::query()->where('country_id=', [])->count());
-        $this->assertSame(1, City::query()->where('country_id=', [1])->count());
-        $this->assertSame(3, City::query()->where('country_id=', [2])->count());
-        $this->assertSame(4, City::query()->where('country_id=', [1, 2])->count());
+        $this->assertSame(0, City::where(['country_id=' => []])->count());
+        $this->assertSame(1, City::where(['country_id=' => [1]])->count());
+        $this->assertSame(3, City::where(['country_id=' => [2]])->count());
+        $this->assertSame(4, City::where(['country_id=' => [1, 2]])->count());
 
-        $this->assertSame(600, City::query()->where('country_id!=', [])->count());
-        $this->assertSame(599, City::query()->where('country_id!=', [1])->count());
-        $this->assertSame(597, City::query()->where('country_id!=', [2])->count());
-        $this->assertSame(596, City::query()->where('country_id!=', [1, 2])->count());
+        $this->assertSame(600, City::where(['country_id!=' => []])->count());
+        $this->assertSame(599, City::where(['country_id!=' => [1]])->count());
+        $this->assertSame(597, City::where(['country_id!=' => [2]])->count());
+        $this->assertSame(596, City::where(['country_id!=' => [1, 2]])->count());
     }
 
     public function test_toArray()

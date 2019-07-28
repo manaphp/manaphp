@@ -49,12 +49,11 @@ interface QueryInterface
     /**
      * Appends a condition to the current conditions using a AND operator
      *
-     * @param string|array           $filter
-     * @param int|float|string|array $value
+     * @param array $filters
      *
      * @return static
      */
-    public function where($filter, $value = null);
+    public function where($filters);
 
     /**
      * @param string $field
