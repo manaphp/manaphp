@@ -226,7 +226,7 @@ class Component implements ComponentInterface, JsonSerializable
     {
         $data = [];
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k === '_di' || $k === '_object_id') {
+            if ($k === '_di' || $k === '_object_id' || $k === 'eventsManager' || $v instanceof self) {
                 continue;
             }
 
