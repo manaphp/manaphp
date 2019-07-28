@@ -144,4 +144,13 @@ class Manager implements ManagerInterface
 
         return $this;
     }
+
+    public function __debugInfo()
+    {
+        $data = get_object_vars($this);
+
+        unset($data['_di']);
+
+        return $data;
+    }
 }
