@@ -362,7 +362,7 @@ class Validator extends Component implements ValidatorInterface
         }
 
         if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false
-            && preg_match('#^[+\-]?[\d\.]+$#', $value) === 1
+            && preg_match('#^[+\-]?[\d.]+$#', $value) === 1
         ) {
             return (float)$value;
         } else {
@@ -481,7 +481,7 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_range($field, $value, $parameter)
     {
-        if (!preg_match('#^(-?[\.\d]+)-(-?[\d\.]+)$#', $parameter, $match)) {
+        if (!preg_match('#^(-?[.\d]+)-(-?[\d.]+)$#', $parameter, $match)) {
             throw new InvalidValueException(['range validator `:parameter` parameter is not {min}-{max} format', 'parameter' => $parameter]);
         }
 

@@ -388,7 +388,7 @@ class Message implements JsonSerializable
             $name = basename($file);
         }
 
-        if (preg_match('#^[\w\.]+$#', $name)) {
+        if (preg_match('#^[\w.]+$#', $name)) {
             $cid = $name;
         } else {
             $cid = md5($name) . '.' . pathinfo($name, PATHINFO_EXTENSION);

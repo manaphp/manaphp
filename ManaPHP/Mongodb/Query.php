@@ -310,9 +310,9 @@ class Query extends \ManaPHP\Query
                     throw new MisuseException(['unknown AVG_IF expression: `:expression`', 'expression' => $operand]);
                 }
             } elseif (in_array($accumulator, ['avg', 'first', 'last', 'max', 'min', 'push', 'addToSet', 'stdDevPop', 'stdDevSamp', 'sum'], true)) {
-                if (preg_match('#^[\w\.]+$#', $operand) === 1) {
+                if (preg_match('#^[\w.]+$#', $operand) === 1) {
                     $this->_aggregate[$k] = ['$' . $accumulator => '$' . $operand];
-                } elseif (preg_match('#^([\w\.]+)\s*([\+\-\*/%])\s*([\w\.]+)$#', $operand, $match2) === 1) {
+                } elseif (preg_match('#^([\w.]+)\s*([\+\-\*/%])\s*([\w.]+)$#', $operand, $match2) === 1) {
                     $operator_map = ['+' => '$add', '-' => '$subtract', '*' => '$multiply', '/' => '$divide', '%' => '$mod'];
                     $sub_operand = $operator_map[$match2[2]];
                     $sub_operand1 = is_numeric($match2[1]) ? (float)$match2[1] : ('$' . $match2[1]);
@@ -437,7 +437,7 @@ class Query extends \ManaPHP\Query
                 } else {
                     $this->_filters[] = [$filter => $value];
                 }
-            } elseif (preg_match('#^([\w\.]+)\s*([<>=!^$*~,@dm?]*)$#', $filter, $matches) === 1) {
+            } elseif (preg_match('#^([\w.]+)\s*([<>=!^$*~,@dm?]*)$#', $filter, $matches) === 1) {
                 list(, $field, $operator) = $matches;
 
                 if (strpos($operator, '?') !== false) {
@@ -469,7 +469,7 @@ class Query extends \ManaPHP\Query
                 } else {
                     throw new MisuseException(['unknown `:operator` operator', 'operator' => $operator]);
                 }
-            } elseif (strpos($filter, ',') !== false && preg_match('#^[\w,\.]+$#', $filter)) {
+            } elseif (strpos($filter, ',') !== false && preg_match('#^[\w,.]+$#', $filter)) {
                 $this->where1v1($filter, $value);
             } else {
                 throw new InvalidValueException(['unknown mongodb query `filter` filter', 'filter' => $filter]);
@@ -938,7 +938,7 @@ class Query extends \ManaPHP\Query
     {
         if (is_string($orderBy)) {
             foreach (explode(',', $orderBy) as $item) {
-                if (preg_match('#^\s*([\w\.]+)(\s+asc|\s+desc)?$#i', $item, $match) !== 1) {
+                if (preg_match('#^\s*([\w.]+)(\s+asc|\s+desc)?$#i', $item, $match) !== 1) {
                     throw new MisuseException(['unknown `:1` order by for `:2` collection', $orderBy, get_class($this->getSource())]);
                 }
                 $this->_order[$match[1]] = (!isset($match[2]) || strtoupper(ltrim($match[2])) === 'ASC') ? 1 : -1;
@@ -966,7 +966,7 @@ class Query extends \ManaPHP\Query
     {
         if (is_string($groupBy)) {
             if (strpos($groupBy, '(') !== false) {
-                if (preg_match('#^([\w\.]+)\((.*)\)$#', $groupBy, $match) === 1) {
+                if (preg_match('#^([\w.]+)\((.*)\)$#', $groupBy, $match) === 1) {
                     $func = strtoupper($match[1]);
                     if ($func === 'SUBSTR') {
                         $parts = explode(',', $match[2]);

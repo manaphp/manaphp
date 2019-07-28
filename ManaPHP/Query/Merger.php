@@ -587,7 +587,7 @@ class Merger extends Component implements QueryInterface, IteratorAggregate
             $order = [];
             foreach (explode(',', $orderBy) as $item) {
                 $item = trim($item);
-                if (preg_match('#^([\w\.]+)(\s+asc|\s+desc)?$#i', $item, $match) !== 1) {
+                if (preg_match('#^([\w.]+)(\s+asc|\s+desc)?$#i', $item, $match) !== 1) {
                     throw new InvalidValueException(['unknown `:1` order by for `:2` model', $orderBy, get_class($this->getModel())]);
                 }
                 $order[$match[1]] = (!isset($match[2]) || strtoupper(ltrim($match[2])) === 'ASC') ? SORT_ASC : SORT_DESC;

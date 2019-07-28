@@ -50,7 +50,7 @@ class Redis extends Component
             $this->_uri = $uri->getUri();
         }
 
-        if (strpos($this->_uri, 'timeout=') !== false && preg_match('#timeout=([\d\\.]+)#', $this->_uri, $matches) === 1) {
+        if (strpos($this->_uri, 'timeout=') !== false && preg_match('#timeout=([\d.]+)#', $this->_uri, $matches) === 1) {
             $this->_timeout = (float)$matches[1];
         }
 
