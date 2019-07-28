@@ -1443,26 +1443,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @return array|false
-     * @deprecated
-     */
-    public function fetchOne()
-    {
-        $r = $this->limit(1)->execute();
-
-        return $r ? $r[0] : false;
-    }
-
-    /**
-     * @return array
-     * @deprecated
-     */
-    public function fetchAll()
-    {
-        return $this->execute();
-    }
-
-    /**
      * @param string $field
      *
      * @return array
