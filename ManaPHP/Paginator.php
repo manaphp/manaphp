@@ -123,7 +123,7 @@ class Paginator extends Component implements PaginatorInterface
             if (strpos($urlTemplate, '?page=') === false && strpos($urlTemplate, '&page=') === false) {
                 $urlTemplate .= (strpos($urlTemplate, '?') === false ? '?' : '&') . 'page={page}';
             } else {
-                $urlTemplate = (string)preg_replace('#([\?&]page)=\d+#', '\1={page}', $urlTemplate);
+                $urlTemplate = (string)preg_replace('#([?&]page)=\d+#', '\1={page}', $urlTemplate);
             }
         }
 

@@ -312,7 +312,7 @@ class Query extends \ManaPHP\Query
             } elseif (in_array($accumulator, ['avg', 'first', 'last', 'max', 'min', 'push', 'addToSet', 'stdDevPop', 'stdDevSamp', 'sum'], true)) {
                 if (preg_match('#^[\w.]+$#', $operand) === 1) {
                     $this->_aggregate[$k] = ['$' . $accumulator => '$' . $operand];
-                } elseif (preg_match('#^([\w.]+)\s*([\+\-\*/%])\s*([\w.]+)$#', $operand, $match2) === 1) {
+                } elseif (preg_match('#^([\w.]+)\s*([+\-*/%])\s*([\w.]+)$#', $operand, $match2) === 1) {
                     $operator_map = ['+' => '$add', '-' => '$subtract', '*' => '$multiply', '/' => '$divide', '%' => '$mod'];
                     $sub_operand = $operator_map[$match2[2]];
                     $sub_operand1 = is_numeric($match2[1]) ? (float)$match2[1] : ('$' . $match2[1]);

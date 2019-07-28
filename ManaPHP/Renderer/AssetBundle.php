@@ -91,7 +91,7 @@ class AssetBundle extends Component implements AssetBundleInterface
                     $content = $this->_replaceCssUrl($file, $content);
                 }
 
-                $content = preg_replace('@/\*\# sourceMappingURL=[^*]+\s+\*/@', '', $content);
+                $content = preg_replace('@/\*# sourceMappingURL=[^*]+\s+\*/@', '', $content);
 
                 $r .= PHP_EOL . PHP_EOL . "/* SOURCE_FILE `$source_file` */" . PHP_EOL . $content;
             }

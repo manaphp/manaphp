@@ -94,7 +94,7 @@ abstract class Client extends Component implements ClientInterface
             }
         }
 
-        if (preg_match('/^http(s)?:\/\//i', $url) !== 1) {
+        if (preg_match('#^http(s)?://#i', $url) !== 1) {
             throw new NotSupportedException(['only HTTP requests can be handled: `:url`', 'url' => $url]);
         }
 
