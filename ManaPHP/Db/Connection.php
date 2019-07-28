@@ -4,7 +4,6 @@ namespace ManaPHP\Db;
 use JsonSerializable;
 use ManaPHP\Component;
 use ManaPHP\Db\Exception as DbException;
-use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 use PDO;
 use PDOException;
@@ -142,36 +141,24 @@ abstract class Connection extends Component implements ConnectionInterface
     {
         $statement = $this->_getPrepared($sql);
 
+        $tr = [];
         foreach ($bind as $parameter => $value) {
-            if (is_string($value)) {
-                $type = PDO::PARAM_STR;
-            } elseif (is_int($value)) {
-                $type = PDO::PARAM_INT;
-            } elseif (is_bool($value)) {
-                $type = PDO::PARAM_BOOL;
-            } elseif ($value === null) {
-                $type = PDO::PARAM_NULL;
-            } elseif (is_float($value)) {
-                $type = PDO::PARAM_STR;
+            if (is_scalar($value) || $value === null) {
+                null;
             } elseif (is_array($value) || $value instanceof JsonSerializable) {
-                $type = PDO::PARAM_STR;
                 $value = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             } else {
                 throw new NotSupportedException(['The `:1` type of `:2` parameter is not support', $parameter, gettype($value)]);
             }
 
             if (is_int($parameter)) {
-                $statement->bindValue($parameter + 1, $value, $type);
+                $tr[$parameter + 1] = $value;
             } else {
-                if ($parameter[0] === ':') {
-                    throw new InvalidValueException(['Bind does not require started with `:` for `:parameter` parameter', 'parameter' => $parameter]);
-                }
-
-                $statement->bindValue(':' . $parameter, $value, $type);
+                $tr[$parameter[0] === ':' ? $parameter : ':' . $parameter] = $value;
             }
         }
 
-        @$statement->execute();
+        @$statement->execute($tr);
 
         return $statement;
     }
