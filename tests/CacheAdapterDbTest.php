@@ -26,7 +26,7 @@ class CacheAdapterDbTest extends TestCase
 
     public function test_exists()
     {
-        $cache = Di::getDefault()->getInstance('ManaPHP\Cache\Adapter\Db');
+        $cache = Di::getDefault()->get('ManaPHP\Cache\Adapter\Db');
 
         $cache->delete('var');
         $this->assertFalse($cache->exists('var'));
@@ -36,7 +36,7 @@ class CacheAdapterDbTest extends TestCase
 
     public function test_get()
     {
-        $cache = Di::getDefault()->getInstance('ManaPHP\Cache\Adapter\Db');
+        $cache = Di::getDefault()->get('ManaPHP\Cache\Adapter\Db');
 
         $cache->delete('var');
 
@@ -47,7 +47,7 @@ class CacheAdapterDbTest extends TestCase
 
     public function test_set()
     {
-        $cache = Di::getDefault()->getInstance('ManaPHP\Cache\Adapter\Db');
+        $cache = Di::getDefault()->get('ManaPHP\Cache\Adapter\Db');
 
         $cache->set('var', '', 100);
         $this->assertSame('', $cache->get('var'));
@@ -67,7 +67,7 @@ class CacheAdapterDbTest extends TestCase
 
     public function test_delete()
     {
-        $cache = Di::getDefault()->getInstance('ManaPHP\Cache\Adapter\Db');
+        $cache = Di::getDefault()->get('ManaPHP\Cache\Adapter\Db');
 
         //exists and delete
         $cache->set('var', 'value', 100);

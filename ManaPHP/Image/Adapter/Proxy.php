@@ -15,9 +15,9 @@ class Proxy extends Image
     public function __construct($file)
     {
         if (extension_loaded('imagick')) {
-            $this->_handler = Di::getDefault()->getInstance('ManaPHP\Image\Adapter\Imagick', [$file]);
+            $this->_handler = Di::getDefault()->get('ManaPHP\Image\Adapter\Imagick', [$file]);
         } elseif (extension_loaded('gd')) {
-            $this->_handler = Di::getDefault()->getInstance('ManaPHP\Image\Adapter\Gd', [$file]);
+            $this->_handler = Di::getDefault()->get('ManaPHP\Image\Adapter\Gd', [$file]);
         } else {
             throw new NotSupportedException('neither `imagic` nor `gd` extension is loaded');
         }

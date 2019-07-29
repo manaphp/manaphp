@@ -44,7 +44,7 @@ class Redis extends Cache
     protected function _getRedis()
     {
         if (strpos($this->_redis, '/') !== false) {
-            return $this->_redis = $this->_di->getInstance('ManaPHP\Redis', [$this->_redis]);
+            return $this->_redis = $this->_di->get('ManaPHP\Redis', [$this->_redis]);
         } else {
             return $this->_redis = $this->_di->getShared($this->_redis);
         }

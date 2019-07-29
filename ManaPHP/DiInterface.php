@@ -54,15 +54,6 @@ interface DiInterface
     public function remove($name);
 
     /**
-     * @param mixed  $definition
-     * @param array  $parameters
-     * @param string $name
-     *
-     * @return mixed
-     */
-    public function getInstance($definition, $parameters = null, $name = null);
-
-    /**
      * Resolves the component based on its configuration
      *
      * @param string $name
@@ -70,7 +61,7 @@ interface DiInterface
      *
      * @return mixed
      */
-    public function get($name, $parameters = null);
+    public function get($name, $parameters = []);
 
     /**
      * Resolves a shared component based on their configuration

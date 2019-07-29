@@ -32,7 +32,7 @@ class HttpSessionAdapterDbTest extends TestCase
     public function test_read()
     {
         $session_id = md5(microtime(true) . mt_rand());
-        $adapter = Di::getDefault()->getInstance('ManaPHP\Http\Session\Adapter\Db');
+        $adapter = Di::getDefault()->get('ManaPHP\Http\Session\Adapter\Db');
 
         $this->assertEquals('', $adapter->do_read($session_id));
 
@@ -43,7 +43,7 @@ class HttpSessionAdapterDbTest extends TestCase
     public function test_write()
     {
         $session_id = md5(microtime(true) . mt_rand());
-        $adapter = Di::getDefault()->getInstance('ManaPHP\Http\Session\Adapter\Db');
+        $adapter = Di::getDefault()->get('ManaPHP\Http\Session\Adapter\Db');
 
         $adapter->do_write($session_id, '', 100);
         $this->assertEquals('', $adapter->do_read($session_id));
@@ -55,7 +55,7 @@ class HttpSessionAdapterDbTest extends TestCase
     public function test_destory()
     {
         $session_id = md5(microtime(true) . mt_rand());
-        $adapter = Di::getDefault()->getInstance('ManaPHP\Http\Session\Adapter\Db');
+        $adapter = Di::getDefault()->get('ManaPHP\Http\Session\Adapter\Db');
         $this->assertTrue($adapter->do_destroy($session_id));
 
         $adapter->do_write($session_id, 'manaphp', 100);
@@ -68,7 +68,7 @@ class HttpSessionAdapterDbTest extends TestCase
     public function test_gc()
     {
         md5(microtime(true) . mt_rand());
-        $adapter = Di::getDefault()->getInstance('ManaPHP\Http\Session\Adapter\Db');
+        $adapter = Di::getDefault()->get('ManaPHP\Http\Session\Adapter\Db');
         $this->assertTrue($adapter->do_gc(100));
     }
 }

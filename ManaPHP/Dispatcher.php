@@ -207,13 +207,7 @@ class Dispatcher extends Component implements DispatcherInterface
             }
 
             if ($className = ($c = $parameter->getClass()) ? $c->getName() : null) {
-                if ($di->has($name)) {
-                    $value = $di->get($name);
-                } elseif ($di->has($className)) {
-                    $value = $di->get($className);
-                } else {
-                    $value = $di->getShared($className);
-                }
+                $value = $di->has($name) ? $di->getShared($name) : $di->getShared($className);
             } elseif (isset($params[$name])) {
                 $value = $params[$name];
             } elseif ($this->request->has($name)) {

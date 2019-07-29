@@ -275,48 +275,22 @@ class Di implements DiInterface
     }
 
     /**
-     * @param mixed  $definition
-     * @param array  $parameters
+     * Resolves the component based on its configuration
+     *
      * @param string $name
+     * @param array  $parameters
      *
      * @return mixed
      */
-    public function getInstance($definition, $parameters = null, $name = null)
+    public function get($name, $parameters = [])
     {
-        if (is_string($definition)) {
-            $params = [];
-        } elseif (isset($definition['class'])) {
-            $params = $definition;
-            $definition = $definition['class'];
-            unset($params['class'], $params['shared']);
-        } elseif (isset($definition[0])) {
-            $params = $definition;
-            $definition = $definition[0];
-            unset($params[0], $params['shared']);
-        } else {
-            $params = [];
-        }
+        $definition = $this->_definitions[$name] ?? $name;
 
-        if ($parameters === null) {
-            if (!$params || isset($params[0])) {
-                $parameters = $params;
-            } else {
-                $parameters = [$params];
-            }
-        } elseif (count($parameters) !== 0 && !isset($parameters[0])) {
+        if ($parameters && !isset($parameters[0])) {
             $parameters = [$parameters];
         }
 
         if (is_string($definition)) {
-            if ($definition[0] === '@') {
-                $definition = $this->alias->resolveNS($definition);
-            }
-
-            if (!class_exists($definition)) {
-                throw new InvalidValueException(['`:name` component cannot be resolved: `:class` class is not exists',
-                    'name' => $name,
-                    'class' => $definition]);
-            }
             $instance = new $definition(...$parameters);
         } elseif ($definition instanceof Closure) {
             $instance = $definition(...$parameters);
@@ -328,35 +302,6 @@ class Di implements DiInterface
 
         if ($instance instanceof Component || method_exists($instance, 'setDi')) {
             $instance->setDi($this);
-        }
-
-        return $instance;
-    }
-
-    /**
-     * Resolves the component based on its configuration
-     *
-     * @param string $name
-     * @param array  $parameters
-     *
-     * @return mixed
-     */
-    public function get($name, $parameters = null)
-    {
-        if (isset($this->_instances[$name])) {
-            return $this->_instances[$name];
-        }
-
-        if (isset($this->_definitions[$name])) {
-            $definition = $this->_definitions[$name];
-        } else {
-            return $this->getInstance($name, $parameters, $name);
-        }
-
-        $instance = $this->getInstance($definition, $parameters, $name);
-
-        if (is_string($definition) || !isset($definition['shared']) || $definition['shared'] === true) {
-            $this->_instances[$name] = $instance;
         }
 
         return $instance;
@@ -397,21 +342,54 @@ class Di implements DiInterface
      */
     public function getShared($name)
     {
-        if (isset($this->_instances[$name])) {
-            return $this->_instances[$name];
+        if ($instance = $this->_instances[$name] ?? null) {
+            return $instance;
         }
 
-        if (isset($this->_definitions[$name])) {
-            return $this->_instances[$name] = $this->getInstance($this->_definitions[$name], null, $name);
-        } elseif (strpos($name, '\\') !== false) {
-            return $this->_instances[$name] = $this->getInstance($name, null, $name);
+        $definition = $this->_definitions[$name] ?? $name;
+
+        if (is_string($definition)) {
+            $parameters = [];
+        } elseif (isset($definition['class'])) {
+            $parameters = $definition;
+            $definition = $definition['class'];
+            unset($parameters['class']);
+        } elseif (isset($definition[0])) {
+            $parameters = $definition;
+            $definition = $definition[0];
+            unset($parameters[0]);
         } else {
-            $className = $this->_getPatterned($name);
-            if ($className === null) {
-                throw new InvalidValueException(['`:component` component is not exists', 'component' => $name]);
-            }
-            return $this->_instances[$name] = $this->getInstance($className, null, $name);
+            $parameters = [];
         }
+
+        if ($parameters && !isset($parameters[0])) {
+            $parameters = [$parameters];
+        }
+
+        if (is_string($definition)) {
+            if (strpos($definition, '\\') === false) {
+                $definition = $this->_getPatterned($definition);
+            }
+
+            if (!class_exists($definition)) {
+                throw new InvalidValueException(['`:name` component cannot be resolved: `:class` class is not exists',
+                    'name' => $name,
+                    'class' => $definition]);
+            }
+            $instance = new $definition(...$parameters);
+        } elseif ($definition instanceof Closure) {
+            $instance = $definition(...$parameters);
+        } elseif (is_object($definition)) {
+            $instance = $definition;
+        } else {
+            throw new NotSupportedException(['`:name` component cannot be resolved: component implement type is not supported', 'name' => $name]);
+        }
+
+        if ($instance instanceof Component || method_exists($instance, 'setDi')) {
+            $instance->setDi($this);
+        }
+
+        return $this->_instances[$name] = $instance;
     }
 
     /**

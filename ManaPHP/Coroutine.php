@@ -8,7 +8,7 @@ class Coroutine extends Component implements CoroutineInterface
      */
     public function createScheduler()
     {
-        return $this->_di->getInstance('ManaPHP\Coroutine\Scheduler');
+        return $this->_di->get('ManaPHP\Coroutine\Scheduler');
     }
 
     /**
@@ -19,6 +19,6 @@ class Coroutine extends Component implements CoroutineInterface
      */
     public function createTask($fn, $count = 1)
     {
-        return $this->_di->getInstance('ManaPHP\Coroutine\Task', [$fn, $count]);
+        return $this->_di->get('ManaPHP\Coroutine\Task', [$fn, $count]);
     }
 }

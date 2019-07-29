@@ -66,9 +66,9 @@ class Manager extends Component implements ManagerInterface
         if (is_array($sample)) {
             $class = $sample['class'];
             unset($sample['class']);
-            $sample = $this->_di->getInstance($class, $sample);
+            $sample = $this->_di->get($class, $sample);
         } elseif (is_string($sample)) {
-            $sample = $this->_di->getInstance($sample);
+            $sample = $this->_di->get($sample);
         }
 
         if (MANAPHP_COROUTINE_ENABLED) {

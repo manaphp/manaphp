@@ -34,7 +34,7 @@ class Mongodb extends Component implements MongodbInterface
         $path = parse_url($dsn, PHP_URL_PATH);
         $this->_default_db = ($path !== '/' && $path !== null) ? (string)substr($path, 1) : null;
 
-        $this->poolManager->add($this, $this->di->getInstance('ManaPHP\Mongodb\Connection', [$this->_dsn]));
+        $this->poolManager->add($this, $this->di->get('ManaPHP\Mongodb\Connection', [$this->_dsn]));
     }
 
     /**
