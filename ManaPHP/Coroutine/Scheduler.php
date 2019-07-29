@@ -2,16 +2,12 @@
 namespace ManaPHP\Coroutine;
 
 use ManaPHP\Component;
-use Swoole\Atomic;
 use Swoole\Coroutine;
 use Throwable;
+use Swoole\Coroutine\Channel;
 
 class Scheduler extends Component implements SchedulerInterface
 {
-    /**
-     * @var \Swoole\Atomic
-     */
-    protected $_atomic;
     /**
      * @var array
      */
@@ -35,17 +31,26 @@ class Scheduler extends Component implements SchedulerInterface
         return $this;
     }
 
-    public function routine($routine)
+    /**
+     * @param \Swoole\Coroutine\Channel $sentinel
+     * @param callable                  $routine
+     */
+    public function routine($sentinel, $routine)
     {
         list($fn, $args) = $routine;
         try {
-            $throwable = null;
-            call_user_func_array($fn, $args);
+            if (is_array($fn)) {
+                list($object, $method) = $fn;
+                $object->$method(...$args);
+            } else {
+                $fn(...$args);
+            }
         } catch (Throwable $throwable) {
             $this->logger->error($throwable);
         }
+
         if (--$this->_running_count === 0) {
-            $this->_atomic->add(1);
+            $sentinel->push('end');
         }
     }
 
@@ -56,21 +61,25 @@ class Scheduler extends Component implements SchedulerInterface
     {
         if (MANAPHP_COROUTINE_ENABLED) {
             $this->_running_count = count($this->_routines);
-            $this->_atomic = new Atomic(0);
+            $sentinel = new Channel(1);
 
             foreach ($this->_routines as $i => $routine) {
                 /** @noinspection PhpMethodParametersCountMismatchInspection */
-                Coroutine::create([$this, 'routine'], $routine);
+                Coroutine::create([$this, 'routine'], $sentinel, $routine);
             }
 
-            $this->_atomic->wait();
-            $this->_atomic = null;
+            $sentinel->pop();
         } else {
             $this->logger->debug('polling');
-            foreach ($this->_routines as $routine) {
-                list($fn, $args) = $routine;
+            foreach ($this->_routines as list($fn, $args)) {
                 try {
-                    call_user_func_array($fn, $args);
+                    if (is_array($fn)) {
+                        /** @noinspection MultiAssignmentUsageInspection */
+                        list($object, $method) = $fn;
+                        $object->$method(...$args);
+                    } else {
+                        $fn(...$args);
+                    }
                 } catch (Throwable $throwable) {
                     $this->logger->error($throwable);
                 }
