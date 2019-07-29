@@ -84,7 +84,7 @@ class Db extends Component implements DbInterface
     /**
      * @var float
      */
-    protected $_timeout = 1.0;
+    protected $_timeout = 3.0;
 
     /**
      * @var int
