@@ -279,7 +279,7 @@ class View extends Component implements ViewInterface
         /**
          * @var \ManaPHP\View\WidgetInterface $widgetInstance
          */
-        $widgetInstance = $this->_di->get($widgetClassName);
+        $widgetInstance = $this->_di->getShared($widgetClassName);
         $vars = $widgetInstance->run($options);
 
         if (is_string($vars)) {
