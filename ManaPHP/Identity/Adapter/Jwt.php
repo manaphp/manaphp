@@ -131,18 +131,23 @@ class Jwt extends Identity
     }
 
     /**
-     * @param array $claims
-     * @param int   $ttl
+     * @param array  $claims
+     * @param int    $ttl
+     * @param string $scope
      *
      * @return string
      */
-    public function encode($claims, $ttl = null)
+    public function encode($claims, $ttl = null, $scope = null)
     {
-        if (!$this->_key) {
-            throw new MisuseException('Jwt key is not set');
-        }
+        if ($scope) {
+            $key = $this->crypt->getDerivedKey("jwt:$scope");
+        } else {
+            if (!$this->_key) {
+                throw new MisuseException('Jwt key is not set');
+            }
 
-        $key = is_string($this->_key) ? $this->_key : $this->_key[0];
+            $key = is_string($this->_key) ? $this->_key : $this->_key[0];
+        }
 
         $claims['iat'] = time();
         $claims['exp'] = time() + ($ttl ?: $this->_ttl);
@@ -156,18 +161,32 @@ class Jwt extends Identity
 
     /**
      * @param string $token
+     * @param string $scope
      * @param bool   $verify
      *
      * @return array
      */
-    public function decode($token, $verify = true)
+    public function decode($token, $scope = null, $verify = true)
     {
+        if ($token === null || $token === '') {
+            throw new NoCredentialException('No Credentials');
+        }
+
         $parts = explode('.', $token, 5);
         if (count($parts) !== 3) {
             throw new BadCredentialException(['The JWT `:token` must have one dot', 'token' => $token]);
         }
 
         list($header, $payload) = $parts;
+
+        if (!is_array($claims = json_decode($this->base64urlDecode($payload), true))) {
+            throw new BadCredentialException('payload is not array.');
+        }
+
+        if (!$verify) {
+            return $claims;
+        }
+
         $decoded_header = json_decode($this->base64urlDecode($header), true);
         if (!$decoded_header) {
             throw new BadCredentialException(['The JWT header `:header` is not distinguished', 'header' => $header]);
@@ -189,14 +208,7 @@ class Jwt extends Identity
             throw new BadCredentialException(['The JWT typ `:typ` is not JWT', 'typ' => $decoded_header['typ']]);
         }
 
-        if ($verify) {
-            $this->verify($token);
-        }
-
-        $claims = json_decode($this->base64urlDecode($payload), true);
-        if (!is_array($claims)) {
-            throw new BadCredentialException('payload is not array.');
-        }
+        $this->verify($token, $scope);
 
         if (isset($claims['exp']) && time() > $claims['exp']) {
             throw new ExpiredCredentialException('token is expired.');
@@ -210,13 +222,17 @@ class Jwt extends Identity
     }
 
     /**
-     * @param string       $token
-     * @param string|array $keys
+     * @param string $token
+     * @param string $scope
      */
-    public function verify($token, $keys = null)
+    public function verify($token, $scope = null)
     {
-        if (!$keys = $keys ?: $this->_key) {
-            throw new MisuseException('Jwt key is not set');
+        if ($scope) {
+            $keys = $this->crypt->getDerivedKey("jwt:$scope");
+        } else {
+            if (!$keys = $this->_key) {
+                throw new MisuseException('Jwt key is not set');
+            }
         }
 
         if (($pos = strrpos($token, '.')) === false) {

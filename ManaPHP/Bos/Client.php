@@ -148,7 +148,7 @@ class Client extends Component implements ClientInterface
     {
         $jwt = new Jwt();
 
-        $claims = $jwt->decode($token, false);
+        $claims = $jwt->decode($token, null, false);
 
         if (!isset($claims['scope'])) {
             throw new UnauthorizedException('scope is not exists');

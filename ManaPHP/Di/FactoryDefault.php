@@ -53,6 +53,7 @@ class FactoryDefault extends Di
             'wsPusher' => 'ManaPHP\WebSocket\Pusher',
             'identity' => 'ManaPHP\Identity',
             'coroutine' => 'ManaPHP\Coroutine',
+            'jwt' => 'ManaPHP\Identity\Adapter\Jwt'
         ];
     }
 }

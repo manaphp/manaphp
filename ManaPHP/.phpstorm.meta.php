@@ -56,6 +56,7 @@ namespace PHPSTORM_META {
             'bosClient' instanceof \ManaPHP\Bos\ClientInterface,
             'wsPusher' instanceof \ManaPHP\WebSocket\PusherInterface,
             'coroutine' instanceof \ManaPHP\CoroutineInterface,
+            'jwt' instanceof \ManaPHP\Identity\Adapter\Jwt,
         ],
         \di('') => [
             'di' instanceof \ManaPHP\DiInterface,
@@ -109,6 +110,7 @@ namespace PHPSTORM_META {
             'bosClient' instanceof \ManaPHP\Bos\ClientInterface,
             'wsPusher' instanceof \ManaPHP\WebSocket\PusherInterface,
             'coroutine' instanceof \ManaPHP\CoroutineInterface,
+            'jwt' instanceof \ManaPHP\Identity\Adapter\Jwt,
         ],
         \ManaPHP\DiInterface::get('') => [
             '' == '@',

@@ -4,11 +4,7 @@ use ManaPHP\Di;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\InvalidValueException;
-use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Exception\UnauthorizedException;
-use ManaPHP\Identity\BadCredentialException;
-use ManaPHP\Identity\NoCredentialException;
 use Swoole\Coroutine;
 
 if (!function_exists('spl_object_id')) {
@@ -202,17 +198,13 @@ if (!function_exists('jwt_encode')) {
     /**
      * @param array  $claims
      * @param int    $ttl
-     * @param string $key
+     * @param string $scope
      *
      * @return string
      */
-    function jwt_encode($claims, $ttl, $key = null)
+    function jwt_encode($claims, $ttl, $scope)
     {
-        if (!$key && !isset($claims['scope'])) {
-            throw new MisuseException('neither key nor scope field exists');
-        }
-        $jwt = new ManaPHP\Identity\Adapter\Jwt(['key' => $key ?: di('crypt')->getDerivedKey('jwt:' . $claims['scope'])]);
-        return $jwt->encode($claims, $ttl);
+        return di('jwt')->encode($claims, $ttl, $scope);
     }
 }
 
@@ -220,58 +212,13 @@ if (!function_exists('jwt_decode')) {
     /**
      * @param string $token
      * @param string $scope
-     * @param string $key
+     * @param bool   $verify
      *
      * @return array
      */
-    function jwt_decode($token, $scope, $key = null)
+    function jwt_decode($token, $scope, $verify = true)
     {
-        $jwt = new ManaPHP\Identity\Adapter\Jwt();
-
-        if ($token === null || $token === '') {
-            throw new NoCredentialException('No Credentials');
-        }
-
-        $claims = $jwt->decode($token, false);
-        if ($scope) {
-            if (!isset($claims['scope'])) {
-                throw new BadCredentialException('Jwt claims missing scope field');
-            }
-            if ($scope !== $claims['scope']) {
-                throw new BadCredentialException(['Jwt `:1` scope is not wanted `:2`', $claims['scope'], $scope]);
-            }
-        } else {
-            if (!$key) {
-                throw new BadCredentialException('Jwt claims missing scope field');
-            }
-        }
-        $jwt->setKey($key ?: di('crypt')->getDerivedKey('jwt:' . $scope));
-        $jwt->verify($token);
-
-        return $claims;
-    }
-}
-
-if (!function_exists('jwt_get_claim')) {
-    /**
-     * @param string $token
-     * @param string $name
-     * @param mixed  $default
-     *
-     * @return array|string
-     */
-    function jwt_get_claim($token, $name = null, $default = null)
-    {
-        $claims = (new ManaPHP\Identity\Adapter\Jwt())->decode($token, false);
-        if (!$name) {
-            return $claims;
-        } elseif (isset($name)) {
-            return $claims[$name];
-        } elseif ($default === null) {
-            throw new UnauthorizedException(['`claim` claim is not exists in token', 'claim' => $name]);
-        } else {
-            return $default;
-        }
+        return di('jwt')->decode($token, $scope, $verify);
     }
 }
 
