@@ -66,13 +66,7 @@ class CommandInvoker extends Component implements CommandInvokerInterface
             }
 
             if ($className = ($c = $parameter->getClass()) ? $c->getName() : null) {
-                if ($di->has($name)) {
-                    $value = $di->get($name);
-                } elseif ($di->has($className)) {
-                    $value = $di->get($className);
-                } else {
-                    $value = $di->getShared($className);
-                }
+                $value = $di->has($name) ? $di->getShared($name) : $di->getShared($className);
             } elseif ($this->request->has($name)) {
                 $value = $this->request->get($name);
             } elseif (isset($shortNames[$name]) && $this->request->has($shortNames[$name])) {
