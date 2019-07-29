@@ -415,7 +415,7 @@ class Request extends Component implements RequestInterface
                     if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {
                         $file['key'] = $key;
 
-                        $r[] = new File($file);
+                        $r[] = $this->_di->get('ManaPHP\Http\Request\File', $file);
                     }
                 }
             } elseif (is_int($files['error'])) {
@@ -423,14 +423,14 @@ class Request extends Component implements RequestInterface
                 if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {
                     $file['key'] = $key;
 
-                    $r[] = new File($file);
+                    $r[] = $this->_di->get('ManaPHP\Http\Request\File', $file);
                 }
             } else {
                 $countFiles = count($files['error']);
                 /** @noinspection ForeachInvariantsInspection */
                 for ($i = 0; $i < $countFiles; $i++) {
                     if (!$onlySuccessful || $files['error'][$i] === UPLOAD_ERR_OK) {
-                        $fileInfo = [
+                        $file = [
                             'key' => $key,
                             'name' => $files['name'][$i],
                             'type' => $files['type'][$i],
@@ -438,7 +438,7 @@ class Request extends Component implements RequestInterface
                             'error' => $files['error'][$i],
                             'size' => $files['size'][$i],
                         ];
-                        $r[] = new File($fileInfo);
+                        $r[] = $this->_di->get('ManaPHP\Http\Request\File', $file);
                     }
                 }
             }
