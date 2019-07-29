@@ -47,18 +47,6 @@ class Redis extends Queue
     }
 
     /**
-     * @return \Redis
-     */
-    protected function _getRedis()
-    {
-        if (strpos($this->_redis, '/') !== false) {
-            return $this->_redis = $this->_di->get('ManaPHP\Redis', [$this->_redis]);
-        } else {
-            return $this->_redis = $this->_di->getShared($this->_redis);
-        }
-    }
-
-    /**
      * @param string $topic
      * @param string $body
      * @param int    $priority
@@ -69,8 +57,11 @@ class Redis extends Queue
             throw new MisuseException(['`:priority` priority of `:topic is invalid`', 'priority' => $priority, 'topic' => $topic]);
         }
 
-        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
-        $redis->lPush($this->_prefix . $topic . ':' . $priority, $body);
+        if (is_string($this->_redis)) {
+            $this->_redis = $this->_di->getShared($this->_redis);
+        }
+
+        $this->_redis->lPush($this->_prefix . $topic . ':' . $priority, $body);
     }
 
     /**
@@ -81,7 +72,6 @@ class Redis extends Queue
      */
     public function do_pop($topic, $timeout = PHP_INT_MAX)
     {
-        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
         if (!isset($this->_topicKeys[$topic])) {
             $keys = [];
             foreach ($this->_priorities as $priority) {
@@ -90,6 +80,13 @@ class Redis extends Queue
 
             $this->_topicKeys[$topic] = $keys;
         }
+
+        if (is_string($this->_redis)) {
+            $redis = $this->_redis = $this->_di->getShared($this->_redis);
+        } else {
+            $redis = $this->_redis;
+        }
+
         if ($timeout === 0) {
             foreach ($this->_topicKeys[$topic] as $key) {
                 $r = $redis->rPop($key);
@@ -112,7 +109,12 @@ class Redis extends Queue
      */
     public function do_delete($topic)
     {
-        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
+        if (is_string($this->_redis)) {
+            $redis = $this->_redis = $this->_di->getShared($this->_redis);
+        } else {
+            $redis = $this->_redis;
+        }
+
         foreach ($this->_priorities as $priority) {
             $redis->delete($this->_prefix . $topic . ':' . $priority);
         }
@@ -126,7 +128,12 @@ class Redis extends Queue
      */
     public function do_length($topic, $priority = null)
     {
-        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
+        if (is_string($this->_redis)) {
+            $redis = $this->_redis = $this->_di->getShared($this->_redis);
+        } else {
+            $redis = $this->_redis;
+        }
+
         if ($priority === null) {
             $length = 0;
             foreach ($this->_priorities as $p) {

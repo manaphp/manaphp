@@ -39,26 +39,17 @@ class Redis extends Cache
     }
 
     /**
-     * @return \Redis
-     */
-    protected function _getRedis()
-    {
-        if (strpos($this->_redis, '/') !== false) {
-            return $this->_redis = $this->_di->get('ManaPHP\Redis', [$this->_redis]);
-        } else {
-            return $this->_redis = $this->_di->getShared($this->_redis);
-        }
-    }
-
-    /**
      * @param string $key
      *
      * @return string|false
      */
     public function do_get($key)
     {
-        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
-        return $redis->get($this->_prefix . $key);
+        if (is_string($this->_redis)) {
+            $this->_redis = $this->_di->getShared($this->_redis);
+        }
+
+        return $this->_redis->get($this->_prefix . $key);
     }
 
     /**
@@ -70,8 +61,11 @@ class Redis extends Cache
      */
     public function do_set($key, $value, $ttl)
     {
-        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
-        $redis->set($this->_prefix . $key, $value, $ttl);
+        if (is_string($this->_redis)) {
+            $this->_redis = $this->_di->getShared($this->_redis);
+        }
+
+        $this->_redis->set($this->_prefix . $key, $value, $ttl);
     }
 
     /**
@@ -81,8 +75,11 @@ class Redis extends Cache
      */
     public function do_delete($key)
     {
-        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
-        $redis->delete($this->_prefix . $key);
+        if (is_string($this->_redis)) {
+            $this->_redis = $this->_di->getShared($this->_redis);
+        }
+
+        $this->_redis->delete($this->_prefix . $key);
     }
 
     /**
@@ -92,7 +89,10 @@ class Redis extends Cache
      */
     public function do_exists($key)
     {
-        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
-        return (bool)$redis->exists($this->_prefix . $key);
+        if (is_string($this->_redis)) {
+            $this->_redis = $this->_di->getShared($this->_redis);
+        }
+
+        return (bool)$this->_redis->exists($this->_prefix . $key);
     }
 }

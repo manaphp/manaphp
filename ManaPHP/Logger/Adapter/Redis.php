@@ -47,19 +47,10 @@ class Redis extends Logger
             'location' => "$log->file:$log->line",
             'message' => $log->message];
 
-        $redis = is_object($this->_redis) ? $this->_redis : $this->_getRedis();
-        $redis->rPush($this->_key, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-    }
-
-    /**
-     * @return \ManaPHP\Redis
-     */
-    protected function _getRedis()
-    {
-        if (strpos($this->_redis, '/') !== false) {
-            return $this->_redis = $this->_di->get('ManaPHP\Redis', [$this->_redis]);
-        } else {
-            return $this->_redis = $this->_di->getShared($this->_redis);
+        if (is_string($this->_redis)) {
+            $this->_redis = $this->_di->getShared($this->_redis);
         }
+
+        $this->_redis->rPush($this->_key, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     }
 }
