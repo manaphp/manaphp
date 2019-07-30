@@ -1,8 +1,6 @@
 <?php
 namespace ManaPHP;
 
-use ManaPHP\Mailer\Message;
-
 abstract class Mailer extends Component implements MailerInterface
 {
     /**
@@ -25,7 +23,8 @@ abstract class Mailer extends Component implements MailerInterface
      */
     public function compose()
     {
-        $message = new Message();
+        $message = $this->_di->get('ManaPHP\Mailer\Message');
+
         $message->setMailer($this);
 
         if ($this->_from) {

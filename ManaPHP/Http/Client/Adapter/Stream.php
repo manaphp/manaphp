@@ -4,7 +4,6 @@ namespace ManaPHP\Http\Client\Adapter;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\Client;
 use ManaPHP\Http\Client\ConnectionException;
-use ManaPHP\Http\Client\Response;
 
 class Stream extends Client
 {
@@ -97,7 +96,7 @@ class Stream extends Client
             $http_code = (int)$match[0];
         }
 
-        $response = new Response();
+        $response = $this->_di->get('ManaPHP\Http\Client\Response');
         $response->url = $request->url;
         $response->remote_ip = null;
         $response->http_code = $http_code;
@@ -106,6 +105,8 @@ class Stream extends Client
         $response->content_type = $content_type;
         $response->body = $body;
         $response->process_time = $process_time;
+
+        $response->normalize();
 
         return $response;
     }

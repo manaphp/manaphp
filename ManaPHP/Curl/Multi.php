@@ -3,9 +3,6 @@ namespace ManaPHP\Curl;
 
 use Countable;
 use ManaPHP\Component;
-use ManaPHP\Curl\Multi\Error;
-use ManaPHP\Curl\Multi\Request;
-use ManaPHP\Curl\Multi\Response;
 
 class Multi extends Component implements MultiInterface, Countable
 {
@@ -128,7 +125,7 @@ class Multi extends Component implements MultiInterface, Countable
     public function add($request, $callbacks = null)
     {
         if (is_string($request)) {
-            $request = new Request($request, $callbacks);
+            $request = $this->_di->get('ManaPHP\Curl\Multi\Request', [$request, $callbacks]);
         } elseif (is_array($request)) {
             if (isset($request[1])) {
                 foreach ($request as $r) {
@@ -136,7 +133,7 @@ class Multi extends Component implements MultiInterface, Countable
                 }
                 return $this;
             } else {
-                $request = new Request($request, $callbacks);
+                $request = $this->_di->get('ManaPHP\Curl\Multi\Request', [$request, $callbacks]);
             }
         }
 
@@ -254,8 +251,8 @@ class Multi extends Component implements MultiInterface, Countable
         if (!$this->filesystem->fileExists($target)) {
             $this->filesystem->dirCreate(dir($target));
 
-            $request = new Request($url, $callback ?: static function ($response) {
-            });
+            $request = $this->_di->get('ManaPHP\Curl\Multi\Request', [$url, $callback ?: static function ($response) {
+            }]);
 
             $request->options['file'] = $target;
 
@@ -285,7 +282,7 @@ class Multi extends Component implements MultiInterface, Countable
                 unset($this->_requests[$id]);
 
                 if ($info['result'] === CURLE_OK) {
-                    $response = new Response();
+                    $response = $this->_di->get('ManaPHP\Curl\Multi\Response');
 
                     $response->request = $request;
                     $response->http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
@@ -318,7 +315,7 @@ class Multi extends Component implements MultiInterface, Countable
                         }
                     }
                 } else {
-                    $error = new Error();
+                    $error = $this->_di->get('ManaPHP\Curl\Multi\Error');
 
                     $error->code = $info['result'];
                     $error->message = curl_error($curl);

@@ -175,7 +175,7 @@ class Authorization extends Component implements AuthorizationInterface
 
         foreach ($controllers as $controller) {
             /** @var  \ManaPHP\Rest\Controller $controllerInstance */
-            $controllerInstance = new $controller();
+            $controllerInstance = $this->_di->get($controller);
             $acl = $controllerInstance->getAcl();
 
             foreach ($this->aclBuilder->getActions($controller) as $action) {

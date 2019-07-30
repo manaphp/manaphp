@@ -120,7 +120,7 @@ class Document extends Component
             throw new DocumentException('xx');
         }
 
-        $this->_query = new Query($this->_dom);
+        $this->_query = $this->_di->get('ManaPHP\Dom\Query', [$this->_dom]);
 
         $this->_source_url = $url;
         $this->_base_url = $this->_getBaseUrl() ?: $this->_source_url;

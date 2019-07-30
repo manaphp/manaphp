@@ -5,7 +5,6 @@ namespace ManaPHP\Http\Client\Adapter;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\Client;
 use ManaPHP\Http\Client\ConnectionException;
-use ManaPHP\Http\Client\Response;
 
 class Curl extends Client
 {
@@ -147,7 +146,7 @@ class Curl extends Client
 
         $header_length = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
 
-        $response = new Response();
+        $response = $this->_di->get('ManaPHP\Http\Client\Response');
 
         $response->url = $request->url;
         $response->remote_ip = curl_getinfo($curl, CURLINFO_PRIMARY_IP);
@@ -164,6 +163,8 @@ class Curl extends Client
             'starttransfer_time' => curl_getinfo($curl, CURLINFO_STARTTRANSFER_TIME)];
 
         curl_close($curl);
+
+        $response->normalize();
 
         return $response;
     }

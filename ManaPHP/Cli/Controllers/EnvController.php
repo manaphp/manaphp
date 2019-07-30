@@ -2,7 +2,6 @@
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
-use ManaPHP\Dotenv;
 
 class EnvController extends Controller
 {
@@ -91,7 +90,7 @@ class EnvController extends Controller
             return $this->console->writeLn(['`:file` dotenv file is not exists', 'file' => $file]);
         }
 
-        $data = (new Dotenv())->parse(file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+        $data = $this->_di->getShared('ManaPHP\Dotenv')->parse(file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
         $content = '<?php' . PHP_EOL .
             'return ' . var_export($data, true) . ';' . PHP_EOL;
         $this->filesystem->filePut('@root/.env.php', $content);
@@ -109,7 +108,7 @@ class EnvController extends Controller
             return $this->console->writeLn(['`:file` dotenv file is not exists', 'file' => $file]);
         }
 
-        $data = (new Dotenv())->parse(file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+        $data = $this->_di->getShared('ManaPHP\Dotenv')->parse(file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
 
         $this->console->write(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 

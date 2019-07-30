@@ -124,7 +124,7 @@ class BashCompletionController extends Controller
         $command = Text::camelize($command) . 'Completion';
         if (method_exists($controllerClassName, $command)) {
             try {
-                $argument_values = (new $controllerClassName())->$command($argumentName);
+                $argument_values = $this->_di->get($controllerClassName)->$command($argumentName);
             } catch (\Exception $e) {
 
             }

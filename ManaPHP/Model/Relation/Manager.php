@@ -187,7 +187,7 @@ class Manager extends Component implements ManagerInterface
         if (!isset($relation[1])) {
             $relation[1] = $this->_isPlural($name) ? Relation::TYPE_HAS_MANY : Relation::TYPE_HAS_ONE;
         }
-        return $this->_relations[$modelName][$name] = new Relation($model, $relation);
+        return $this->_relations[$modelName][$name] = $this->_di->get('ManaPHP\Model\Relation', [$model, $relation]);
     }
 
     /**

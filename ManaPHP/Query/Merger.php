@@ -8,7 +8,6 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Model;
-use ManaPHP\Query;
 use ManaPHP\QueryInterface;
 
 /**
@@ -94,12 +93,12 @@ class Merger extends Component implements QueryInterface, IteratorAggregate
     {
         if (is_string($queries[0])) {
             foreach ($queries as $k => $query) {
-                $queries[$k] = new $query();
+                $queries[$k] = $this->_di->get($query);
             }
         }
 
         foreach ($queries as $query) {
-            if ($query instanceof Query) {
+            if ($query instanceof QueryInterface) {
                 $this->queries[] = $query;
             } elseif ($query instanceof Model) {
                 $this->queries[] = $query::query(null, $query);

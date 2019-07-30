@@ -36,12 +36,13 @@ class Linter extends Component
     /**
      * Linter constructor.
      *
-     * @param string $model
+     * @param string|\ManaPHP\Model $model
      */
     public function __construct($model)
     {
         $this->_class = is_string($model) ? $model : get_class($model);
-        $this->_model = is_string($model) ? new $model : $model;
+        /** @noinspection PhpUndefinedMethodInspection */
+        $this->_model = is_string($model) ? $model::sample() : $model;
         $this->_reflection = new ReflectionClass($model);
     }
 

@@ -33,7 +33,7 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
             if ($data !== false) {
                 $this->_metadata[$modelName] = $data;
             } else {
-                $modelInstance = is_string($model) ? new $model : $model;
+                $modelInstance = is_string($model) ? $this->_di->getShared($model) : $model;
 
                 $data = $this->_di->getShared($modelInstance->getDb(true))->getMetadata($modelInstance->getSource(true));
 

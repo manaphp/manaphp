@@ -2,13 +2,13 @@
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
-use ManaPHP\Cli\Cron\ScheduleParser;
 use ManaPHP\Cli\Cronable;
+use ManaPHP\Di;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Utility\Text;
+use ReflectionClass;
 use Swoole\Coroutine;
 use Throwable;
-use ReflectionClass;
 
 /**
  * Class CronController
@@ -24,7 +24,7 @@ class CronController extends Controller
 
     public function __construct()
     {
-        $this->_scheduleParser = new ScheduleParser();
+        $this->_scheduleParser = Di::getDefault()->getShared('ManaPHP\Cli\Cron\ScheduleParser');
     }
 
     /**
@@ -73,13 +73,13 @@ class CronController extends Controller
             if (!in_array(Cronable::class, $rc->getInterfaceNames(), true)) {
                 throw new RuntimeException('is not cronable');
             }
-            $crons[] = new $class_name();
+            $crons[] = $this->_di->get($class_name);
         } else {
             foreach ($this->filesystem->glob('@cli/*Controller.php') as $file) {
                 $class_name = $this->alias->get('@ns.cli') . '\\' . basename($file, '.php');
                 $rc = new ReflectionClass($class_name);
                 if (in_array(Cronable::class, $rc->getInterfaceNames(), true)) {
-                    $crons[] = new $class_name();
+                    $crons[] = $this->_di->get($class_name);
                 }
             }
         }

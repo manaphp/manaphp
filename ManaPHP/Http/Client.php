@@ -8,7 +8,6 @@ use ManaPHP\Http\Client\BadRequestException;
 use ManaPHP\Http\Client\ContentTypeException;
 use ManaPHP\Http\Client\ForbiddenException;
 use ManaPHP\Http\Client\JsonDecodeException;
-use ManaPHP\Http\Client\Request;
 use ManaPHP\Http\Client\ServiceUnavailableException;
 use ManaPHP\Http\Client\TooManyRequestsException;
 use ManaPHP\Http\Client\UnauthorizedException;
@@ -144,12 +143,14 @@ abstract class Client extends Component implements ClientInterface
 
         $options['verify_peer'] = $this->_verify_peer;
 
-        $request = new Request();
+        $request = $this->_di->get('ManaPHP\Http\Client\Request');
         $request->method = $method;
         $request->url = $url;
         $request->headers = $headers;
         $request->body = $body;
         $request->options = $options;
+
+        $request->normalize();
 
         $this->logger->debug($request, 'httpClient.request');
 

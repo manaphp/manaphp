@@ -1,7 +1,6 @@
 <?php
 namespace ManaPHP\Cli\Controllers;
 
-use ManaPHP\Authorization;
 use ManaPHP\Cli\Controller;
 
 /**
@@ -17,10 +16,10 @@ class AclController extends Controller
      */
     public function listCommand($role = '')
     {
-        $authorization = new Authorization();
+        $authorization = $this->_di->getShared('ManaPHP\Authorization');
         foreach ($this->aclBuilder->getControllers() as $controller) {
             /** @var \ManaPHP\Rest\Controller $controllerInstance */
-            $controllerInstance = new $controller;
+            $controllerInstance = $this->_di->get($controller);
             $acl = $controllerInstance->getAcl();
             if ($role) {
                 $actions = [];
