@@ -174,6 +174,14 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
+     * @return static
+     */
+    public static function sample()
+    {
+        return Di::getDefault()->getShared(static::class);
+    }
+
+    /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param array $filters =get_object_vars(new static)
@@ -209,7 +217,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function lists($fields, $filters = null)
     {
-        $model = new static;
+        $model = static::sample();
 
         $query = static::query(null, $model)->where($filters);
 
@@ -268,7 +276,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             throw new InvalidValueException('Model::get id is not scalar');
         }
 
-        $model = new static;
+        $model = static::sample();
 
         if (!is_int($fieldsOrTtl)) {
             if (!$rs = static::query(null, $model)->select($fieldsOrTtl)->whereEq($model->getPrimaryKey(), $id)->limit(1)->fetch()) {
@@ -325,7 +333,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             throw new MisuseException('Model:first is not support null value filters');
         }
 
-        $model = new static;
+        $model = static::sample();
         $query = static::query(null, $model)->select($fields ?: null)->limit(1);
 
         if (is_scalar($filters)) {
@@ -369,7 +377,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             return null;
         }
 
-        $model = new static();
+        $model = static::sample();
         return static::get($request->getId($model->getPrimaryKey()));
     }
 
@@ -404,7 +412,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function last($filters = null, $fields = null)
     {
-        $model = new static();
+        $model = static::sample();
 
         if (is_string($primaryKey = $model->getPrimaryKey())) {
             $options['order'] = [$primaryKey => SORT_DESC];
@@ -433,7 +441,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             throw new MisuseException('ttl must be a integer');
         }
 
-        $model = new static;
+        $model = static::sample();
         $pkName = $model->getPrimaryKey();
 
         $pkValue = null;
@@ -515,7 +523,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     public static function exists($filters)
     {
         if (is_scalar($filters)) {
-            $model = new static;
+            $model = static::sample();
             return static::query(null, $model)->whereEq($model->getPrimaryKey(), $filters)->exists();
         } else {
             return static::where($filters)->exists();
@@ -748,7 +756,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             return null;
         }
 
-        $instance = new static();
+        $instance = static::sample();
 
         $_request = $request->get();
 
@@ -793,7 +801,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             return null;
         }
 
-        $model = new static;
+        $model = static::sample();
 
         $pkName = $model->getPrimaryKey();
 
@@ -922,7 +930,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             return null;
         }
 
-        $model = new static();
+        $model = static::sample();
         $pkName = $model->getPrimaryKey();
 
         return static::get($request->getId($pkName))->delete();
@@ -951,7 +959,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             throw new InvalidArgumentException(['`:value` is not a valid primary key value', 'value' => $primaryKey]);
         }
 
-        $instance = new static();
+        $instance = static::sample();
         return static::where([$instance->getPrimaryKey() => $primaryKey])->update($fieldValues);
     }
 

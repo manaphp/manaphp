@@ -43,7 +43,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
      */
     public static function connection($context = null)
     {
-        return (new static())->getConnection($context);
+        return static::sample()->getConnection($context);
     }
 
     /**
@@ -320,7 +320,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $bind = [];
         }
 
-        $model = new static;
+        $model = static::sample();
 
         $table = $model->getSource($bind);
         return $model->getConnection($bind)->insertBySql('INSERT' . " INTO [$table] " . $sql, $bind);
@@ -341,7 +341,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $bind = [];
         }
 
-        $model = new static;
+        $model = static::sample();
 
         $table = $model->getSource($bind);
         return $model->getConnection($bind)->deleteBySql('DELETE' . " FROM [$table] WHERE " . $sql, $bind);
@@ -362,7 +362,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $bind = [];
         }
 
-        $model = new static;
+        $model = static::sample();
 
         $table = $model->getSource($bind);
         return $model->getConnection($bind)->updateBySql('UPDATE' . " [$table] SET " . $sql, $bind);
@@ -375,7 +375,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
      */
     public static function insert($record)
     {
-        $instance = new static();
+        $instance = static::sample();
         if ($fields = array_diff(array_keys($record), $instance->_di->modelsMetadata->getAttributes($instance))) {
             $instance->_di->logger->debug(['insert `:1` table skip fields: :2', $instance->getSource(), array_values($fields)]);
 

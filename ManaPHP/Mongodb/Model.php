@@ -66,7 +66,7 @@ class Model extends \ManaPHP\Model
      */
     public static function connection($context = null)
     {
-        return (new static())->getConnection($context);
+        return static::sample()->getConnection($context);
     }
 
     /**
@@ -498,7 +498,7 @@ class Model extends \ManaPHP\Model
      */
     public static function aggregateEx($pipeline, $options = [])
     {
-        $instance = new static();
+        $instance = static::sample();
 
         return $instance->getConnection()->aggregate($instance->getSource(), $pipeline, $options);
     }
@@ -510,7 +510,7 @@ class Model extends \ManaPHP\Model
      */
     public static function bulkInsert($documents)
     {
-        $instance = new static();
+        $instance = static::sample();
 
         $autoIncrementField = $instance->getAutoIncrementField();
         $allowNull = $instance->isAllowNullValue();
@@ -539,7 +539,7 @@ class Model extends \ManaPHP\Model
      */
     public static function bulkUpdate($documents)
     {
-        $instance = new static();
+        $instance = static::sample();
 
         $primaryKey = $instance->getPrimaryKey();
         $allowNull = $instance->isAllowNullValue();
@@ -571,7 +571,7 @@ class Model extends \ManaPHP\Model
      */
     public static function bulkUpsert($documents)
     {
-        $instance = new static();
+        $instance = static::sample();
 
         $primaryKey = $instance->getPrimaryKey();
         $allowNull = $instance->isAllowNullValue();
@@ -604,7 +604,7 @@ class Model extends \ManaPHP\Model
      */
     public static function insert($document)
     {
-        $instance = new static();
+        $instance = static::sample();
 
         $allowNull = $instance->isAllowNullValue();
         $fieldTypes = $instance->getFieldTypes();

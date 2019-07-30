@@ -53,11 +53,11 @@ class Relation
             $this->type = $type = $definition[1];
             $referenceField = $definition[2] ?? null;
             if ($type === self::TYPE_BELONGS_TO) {
-                $reference = new $referenceModel;
+                $reference = $referenceModel::sample();
                 $this->keyField = $reference->getPrimaryKey();
                 $this->valueField = $referenceField ?: $this->_inferReferenceField($model, $referenceModel);
             } elseif ($type === self::TYPE_HAS_ONE) {
-                $reference = new $referenceModel;
+                $reference = $referenceModel::sample();
                 $this->keyField = $reference->getPrimaryKey();
                 $this->valueField = $referenceField ?: $this->_inferReferenceField($model, $referenceModel);
             } elseif ($type === self::TYPE_HAS_MANY) {
