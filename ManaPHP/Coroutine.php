@@ -16,7 +16,7 @@ class Coroutine extends Component implements CoroutineInterface
     public function __construct($options = [])
     {
         $this->_option = $options;
-        
+
         if (MANAPHP_COROUTINE_ENABLED) {
             \Swoole\Coroutine::set($options);
         }

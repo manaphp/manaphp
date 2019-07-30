@@ -177,7 +177,6 @@ abstract class Connection extends Component implements ConnectionInterface
      *
      * @return int
      * @throws \ManaPHP\Db\ConnectionException
-     * @throws \ManaPHP\Exception\InvalidValueException
      * @throws \ManaPHP\Exception\NotSupportedException
      */
     public function execute($sql, $bind = [], $has_insert_id = false)

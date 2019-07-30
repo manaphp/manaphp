@@ -519,7 +519,7 @@ class Model extends \ManaPHP\Model
             if ($autoIncrementField && !isset($document[$autoIncrementField])) {
                 $document[$autoIncrementField] = $instance->getNextAutoIncrementId();
             }
-            foreach ((array)$fieldTypes as $field => $type) {
+            foreach ($fieldTypes as $field => $type) {
                 if (isset($document[$field])) {
                     $document[$field] = $instance->normalizeValue($type, $document[$field]);
                 } elseif ($field !== '_id') {
@@ -580,7 +580,7 @@ class Model extends \ManaPHP\Model
             if (!isset($document[$primaryKey])) {
                 $document[$primaryKey] = $instance->getNextAutoIncrementId();
             }
-            foreach ((array)$fieldTypes as $field => $type) {
+            foreach ($fieldTypes as $field => $type) {
                 if (isset($document[$field])) {
                     $document[$field] = $instance->normalizeValue($type, $document[$field]);
                 } elseif ($field !== '_id') {
@@ -613,7 +613,7 @@ class Model extends \ManaPHP\Model
             $document[$autoIncrementField] = $instance->getNextAutoIncrementId();
         }
 
-        foreach ((array)$fieldTypes as $field => $type) {
+        foreach ($fieldTypes as $field => $type) {
             if (isset($document[$field])) {
                 $document[$field] = $instance->normalizeValue($type, $document[$field]);
             } elseif ($field !== '_id') {
