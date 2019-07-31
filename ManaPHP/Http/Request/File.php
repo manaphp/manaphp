@@ -133,8 +133,12 @@ class File extends Component implements FileInterface
 
         $this->filesystem->dirCreate(dirname($dst));
 
-        if (!move_uploaded_file($this->_file['tmp_name'], $this->alias->resolve($dst))) {
-            throw new FileException(['move_uploaded_file to `:dst` failed: :last_error_message', 'dst' => $dst]);
+        if (PHP_SAPI === 'cli') {
+            $this->filesystem->fileMove($this->_file['tmp_name'], $this->alias->resolveNS($dst));
+        } else {
+            if (!move_uploaded_file($this->_file['tmp_name'], $this->alias->resolve($dst))) {
+                throw new FileException(['move_uploaded_file to `:dst` failed: :last_error_message', 'dst' => $dst]);
+            }
         }
 
         if (!chmod($this->alias->resolve($dst), 0644)) {
