@@ -77,7 +77,7 @@ class Client extends Component implements ClientInterface
         $sec_key = base64_encode(pack('H*', sha1($key . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11')));
 
         while (true) {
-            if (($recv = fread($socket, 65535)) === false) {
+            if (($recv = fread($socket, 4096)) === false) {
                 throw new DataTransferException('send failed');
             }
             $buffer .= $recv;
@@ -110,6 +110,7 @@ class Client extends Component implements ClientInterface
         $send_length = 0;
         $data_length = strlen($data);
         $start_time = microtime(true);
+
         do {
             if ($timeout > 0 && microtime(true) - $start_time > $timeout) {
                 throw new TimeoutException('send timeout');
@@ -169,16 +170,22 @@ class Client extends Component implements ClientInterface
 
         $buffer = $this->_buffer;
         $start_time = microtime(true);
-        while (strlen($buffer) < 2) {
+        while (($left = 2 - strlen($buffer)) > 0) {
             if ($timeout > 0 && microtime(true) - $start_time > $timeout) {
                 throw new TimeoutException('receive timeout');
             }
 
-            if (($r = fread($socket, 4096)) === false) {
+            if (($r = fread($socket, $left)) === false) {
                 throw new DataTransferException('recv failed');
             }
 
             $buffer .= $r;
+        }
+
+        $byte0 = ord($buffer[0]);
+
+        if ($byte0 & 0x0F !== 0x02) {
+            throw new ProtocolException('only support binary frame');
         }
 
         $byte1 = ord($buffer[1]);
@@ -188,43 +195,53 @@ class Client extends Component implements ClientInterface
         }
 
         $len = $byte1 & 0x7F;
-        if ($len > 125) {
-            while (strlen($buffer) < 125) {
-                if ($timeout > 0 && microtime(true) - $start_time > $timeout) {
-                    throw new TimeoutException('receive timeout');
-                }
 
-                if (($r = fread($socket, 4096)) === false) {
-                    throw new DataTransferException('recv failed');
-                }
-                $buffer .= $r;
-            }
-        }
-
-        if ($len === 126) {
-            $header_length = 4;
-            $payload_length = unpack('n', substr($buffer, 2, 2))[1];
-        } elseif ($len === 127) {
-            $header_length = 10;
-            $payload_length = unpack('J', substr($buffer, 2, 8))[1];
-        } else {
+        if ($len <= 125) {
             $header_length = 2;
-            $payload_length = $len;
+        } elseif ($len === 126) {
+            $header_length = 4;
+        } else {
+            $header_length = 10;
         }
 
-        while ($header_length + $payload_length > strlen($buffer)) {
+        while (($left = $header_length - strlen($buffer)) > 0) {
             if ($timeout > 0 && microtime(true) - $start_time > $timeout) {
                 throw new TimeoutException('receive timeout');
             }
 
-            if (($r = fread($socket, 4096)) === false) {
-                throw new DataTransferException('recv failed');
+            if (($r = fread($socket, $left)) === false) {
+                throw new DataTransferException('receive failed');
             }
             $buffer .= $r;
         }
 
-        $message = substr($buffer, $header_length, $payload_length);
-        $this->_buffer = $header_length + $payload_length === strlen($buffer) ? '' : substr($buffer, $header_length + $payload_length);
+        if ($len <= 125) {
+            $message_length = $len;
+        } elseif ($len === 126) {
+            $message_length = unpack('n', substr($buffer, 2, 2))[1];
+        } else {
+            $message_length = unpack('J', substr($buffer, 2, 8))[1];
+        }
+
+        $message = strlen($buffer) > $header_length ? substr($buffer, $header_length, $message_length) : '';
+
+        while (($left = $message_length - strlen($message)) > 0) {
+            if ($timeout > 0 && microtime(true) - $start_time > $timeout) {
+                throw new TimeoutException('receive timeout');
+            }
+
+            if (($r = fread($socket, $left)) === false) {
+                throw new DataTransferException('recv failed');
+            }
+
+            if ($message === '') {
+                $message = $r;
+            } else {
+                $message .= $r;
+            }
+        }
+
+        $this->_buffer = strlen($buffer) - ($header_length + $message_length) > 0 ? substr($buffer, $header_length + $message_length) : '';
 
         return $message;
     }
