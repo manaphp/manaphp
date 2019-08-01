@@ -134,25 +134,27 @@ class Client extends Component implements ClientInterface
     }
 
     /**
-     * @param string $data
+     * @param string $message
      *
      * @return void
      */
-    public function sendMessage($data)
+    public function sendMessage($message)
     {
+        $this->logger->debug($message, 'wsClient.sendMessage');
+
         $socket = $this->_socket ?? $this->_connect();
-        $data_length = strlen($data);
+        $message_length = strlen($message);
 
         $header = chr(130);
-        if ($data_length <= 125) {
-            $header .= pack('C', $data_length);
-        } elseif ($data_length <= 65535) {
-            $header .= pack('Cn', 126, $data_length);
+        if ($message_length <= 125) {
+            $header .= pack('C', $message_length);
+        } elseif ($message_length <= 65535) {
+            $header .= pack('Cn', 126, $message_length);
         } else {
-            $header .= pack('CJ', 127, $data_length);
+            $header .= pack('CJ', 127, $message_length);
         }
 
-        $this->_send($socket, $header . $data);
+        $this->_send($socket, $header . $message);
     }
 
     /**
@@ -246,6 +248,8 @@ class Client extends Component implements ClientInterface
         }
 
         $this->_buffer = strlen($buffer) - ($header_length + $message_length) > 0 ? substr($buffer, $header_length + $message_length) : '';
+
+        $this->logger->debug($message, 'wsClient.receiveMessage');
 
         return $message;
     }

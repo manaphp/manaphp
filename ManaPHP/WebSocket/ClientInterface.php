@@ -9,11 +9,11 @@ interface ClientInterface
     public function hasMessage();
 
     /**
-     * @param string $data
+     * @param string $message
      *
      * @return void
      */
-    public function sendMessage($data);
+    public function sendMessage($message);
 
     /**
      * @param float
