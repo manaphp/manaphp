@@ -37,6 +37,7 @@ use Swoole\Coroutine;
  * @property-read \ManaPHP\I18n\TranslatorInterface        $translator
  * @property-read \ManaPHP\WebSocket\PusherInterface       $wsPusher
  * @property-read \ManaPHP\CoroutineInterface              $coroutine
+ * @property-read \ManaPHP\WebSocket\ClientInterface       $wsClient
  * @property \object                                       $_context
  */
 class Component implements ComponentInterface, JsonSerializable
