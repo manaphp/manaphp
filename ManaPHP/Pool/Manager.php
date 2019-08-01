@@ -64,8 +64,14 @@ class Manager extends Component implements ManagerInterface
         $owner_id = spl_object_id($owner);
 
         if (is_array($sample)) {
-            $class = $sample['class'];
-            unset($sample['class']);
+            if (isset($sample['class'])) {
+                $class = $sample['class'];
+                unset($sample['class']);
+            } else {
+                $class = $sample[0];
+                unset($sample[0]);
+            }
+
             $sample = $this->_di->get($class, $sample);
         } elseif (is_string($sample)) {
             $sample = $this->_di->get($sample);
