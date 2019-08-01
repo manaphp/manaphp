@@ -201,6 +201,9 @@ abstract class Client extends Component implements ClientInterface
             throw new InvalidValueException(['Content-Type of rest is not application/json: :content-type', 'content-type' => $headers['Content-Type']]);
         } else {
             $headers['Content-Type'] = 'application/json';
+            if (is_array($body)) {
+                $body = json_encode($body, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            }
         }
 
         if (!isset($headers['X-Requested-With'])) {
@@ -209,10 +212,6 @@ abstract class Client extends Component implements ClientInterface
 
         if (!isset($headers['Accept'])) {
             $headers['Accept'] = 'application/json';
-        }
-
-        if (is_array($body)) {
-            $body = json_encode($body, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         }
 
         $response = $this->request($method, $url, $body, $headers, $options);

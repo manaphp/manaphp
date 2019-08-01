@@ -114,7 +114,11 @@ class Curl extends Client
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         }
 
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $request->headers);
+        $headers = [];
+        foreach ($request->headers as $name => $value) {
+            $headers[] = "$name: $value";
+        }
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
         $start_time = microtime(true);
 
