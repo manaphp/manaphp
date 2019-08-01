@@ -12,7 +12,7 @@ class Client extends Component implements ClientInterface
     /**
      * @var string
      */
-    protected $_url;
+    protected $_endpoint;
 
     /**
      * @var resource
@@ -27,11 +27,15 @@ class Client extends Component implements ClientInterface
     /**
      * Client constructor.
      *
-     * @param string $url
+     * @param string|array $options
      */
-    public function __construct($url)
+    public function __construct($options)
     {
-        $this->_url = $url;
+        if (is_string($options)) {
+            $this->_endpoint = $options;
+        } elseif (is_array($options)) {
+            $this->_endpoint = $options['endpoint'];
+        }
     }
 
     public function __clone()
@@ -49,14 +53,14 @@ class Client extends Component implements ClientInterface
             return $this->_socket;
         }
 
-        $parts = parse_url($this->_url);
+        $parts = parse_url($this->_endpoint);
         $scheme = $parts['scheme'];
         $host = $parts['host'];
         $port = $parts['port'] ?? ($scheme === 'ws' ? 80 : 443);
-        if (($pos = strpos($this->_url, '/', $scheme === 'ws' ? 5 : 6)) === false) {
+        if (($pos = strpos($this->_endpoint, '/', $scheme === 'ws' ? 5 : 6)) === false) {
             $path = '/';
         } else {
-            $path = substr($this->_url, $pos);
+            $path = substr($this->_endpoint, $pos);
         }
 
         $key = bin2hex(random_bytes(16));
