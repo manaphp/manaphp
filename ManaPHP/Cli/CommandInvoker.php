@@ -75,6 +75,8 @@ class CommandInvoker extends Component implements CommandInvokerInterface
                 $value = $this->request->getValues()[0];
             } elseif ($parameter->isDefaultValueAvailable()) {
                 $value = $parameter->getDefaultValue();
+            } elseif ($di->has($name) || basename($name, 'Service')) {
+                $value = $di->getShared($name);
             } else {
                 $this->request->get($name . (isset($shortNames[$name]) ? ":$shortNames[$name]" : ''));
             }
