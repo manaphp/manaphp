@@ -1,0 +1,90 @@
+<?php
+namespace ManaPHP\Rpc\Client\Adapter;
+
+use ManaPHP\Component;
+use ManaPHP\Rpc\Client\Exception as ClientException;
+use ManaPHP\Rpc\Client\ProtocolException;
+use ManaPHP\Rpc\ClientInterface;
+
+class JsonRpc extends Component implements ClientInterface
+{
+    /**
+     * @var float
+     */
+    protected $_timeout = 3.0;
+
+    /**
+     * @var int
+     */
+    protected $_pool_size = 4;
+
+    /**
+     * @var int
+     */
+    protected $_id = 0;
+
+    /**
+     * JsonRpc constructor.
+     *
+     * @param array $options
+     */
+    public function __construct($options)
+    {
+        if (isset($options['pool_size'])) {
+            $this->_pool_size = $options['pool_size'];
+            unset($options['pool_size']);
+        }
+
+        if (isset($options['timeout'])) {
+            $this->_timeout = $options['timeout'];
+        }
+
+        if (!isset($options[0]) && !isset($options['class'])) {
+            $options['class'] = 'ManaPHP\WebSocket\Client';
+        }
+
+        $this->poolManager->add($this, $options, $this->_pool_size);
+    }
+
+    /**
+     * @param string          $method
+     * @param array           $params
+     * @param array|int|float $options
+     *
+     * @return mixed
+     */
+    public function invoke($method, $params = [], $options = null)
+    {
+        $request = json_encode(['jsonrpc' => '2.0', 'method' => $method, 'params' => $params, 'id' => ++$this->_id]);
+
+        /** @var \ManaPHP\WebSocket\ClientInterface $client */
+        $client = $this->poolManager->pop($this, $this->_timeout);
+
+        try {
+            $client->sendMessage($request);
+            $response = $client->recvMessage();
+        } finally {
+            $this->poolManager->push($this, $client);
+        }
+
+        if (!$json = json_decode($response, true)) {
+            throw new ClientException('json_decode failed');
+        }
+
+        if (!isset($json['jsonrpc'], $json['id']) || $json['jsonrpc'] !== '2.0') {
+            throw new ProtocolException('');
+        }
+
+        if (isset($json['error'])) {
+            $error = $json['error'];
+            if (isset($error['code'], $error['message'])) {
+                throw new ProtocolException('');
+            }
+            throw new ClientException($error['message'], $error['code']);
+        } elseif (!isset($json['result'])) {
+            throw new ProtocolException('');
+        } else {
+            return $json['result'];
+        }
+    }
+}
