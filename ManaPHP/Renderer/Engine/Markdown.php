@@ -15,9 +15,23 @@ namespace ManaPHP\Renderer\Engine;
 #
 #
 
-class Markdown
+use ManaPHP\Component;
+use ManaPHP\Renderer\EngineInterface;
+
+class Markdown extends Component implements EngineInterface
 {
     const version = '1.8.0-beta-7'; //bfaa76d370ecfae6fac85b30c15b90cc23cce895
+
+    /**
+     * @param string $file
+     * @param array  $vars
+     *
+     * @return void
+     */
+    public function render($file, $vars = [])
+    {
+        echo $this->text(file_get_contents($file));
+    }
 
     public function text($text)
     {
@@ -1657,6 +1671,18 @@ class Markdown
     protected $regexHtmlAttribute = '[a-zA-Z_:][\w:.-]*+(?:\s*+=\s*+(?:[^"\'=<>`\s]+|"[^"]*+"|\'[^\']*+\'))?+';
 
     protected $voidElements = [
-        'area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source',
+        'area',
+        'base',
+        'br',
+        'col',
+        'command',
+        'embed',
+        'hr',
+        'img',
+        'input',
+        'link',
+        'meta',
+        'param',
+        'source',
     ];
 }
