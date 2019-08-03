@@ -17,11 +17,7 @@ namespace ManaPHP\Renderer\Engine;
 
 class Markdown
 {
-    # ~
-
     const version = '1.8.0-beta-7'; //bfaa76d370ecfae6fac85b30c15b90cc23cce895
-
-    # ~
 
     function text($text)
     {
@@ -53,10 +49,6 @@ class Markdown
         # iterate through lines to identify blocks
         return $this->linesElements($lines);
     }
-
-    #
-    # Setters
-    #
 
     function setBreaksEnabled($breaksEnabled)
     {
@@ -121,10 +113,6 @@ class Markdown
         'steam:',
     );
 
-    #
-    # Lines
-    #
-
     protected $BlockTypes = array(
         '#' => array('Header'),
         '*' => array('Rule', 'List'),
@@ -151,15 +139,9 @@ class Markdown
         '~' => array('FencedCode'),
     );
 
-    # ~
-
     protected $unmarkedBlockTypes = array(
         'Code',
     );
-
-    #
-    # Blocks
-    #
 
     protected function lines(array $lines)
     {
@@ -199,11 +181,7 @@ class Markdown
 
             $text = $indent > 0 ? substr($line, $indent) : $line;
 
-            # ~
-
             $Line = array('body' => $line, 'indent' => $indent, 'text' => $text);
-
-            # ~
 
             if (isset($CurrentBlock['continuable']))
             {
@@ -226,11 +204,7 @@ class Markdown
                 }
             }
 
-            # ~
-
             $marker = $text[0];
-
-            # ~
 
             $blockTypes = $this->unmarkedBlockTypes;
 
@@ -241,9 +215,6 @@ class Markdown
                     $blockTypes []= $blockType;
                 }
             }
-
-            #
-            # ~
 
             foreach ($blockTypes as $blockType)
             {
@@ -274,8 +245,6 @@ class Markdown
                 }
             }
 
-            # ~
-
             if (isset($CurrentBlock) and $CurrentBlock['type'] === 'Paragraph')
             {
                 $Block = $this->paragraphContinue($Line, $CurrentBlock);
@@ -298,22 +267,16 @@ class Markdown
             }
         }
 
-        # ~
-
         if (isset($CurrentBlock['continuable']) and $this->isBlockCompletable($CurrentBlock['type']))
         {
             $methodName = 'block' . $CurrentBlock['type'] . 'Complete';
             $CurrentBlock = $this->$methodName($CurrentBlock);
         }
 
-        # ~
-
         if (isset($CurrentBlock))
         {
             $Elements[] = $this->extractElement($CurrentBlock);
         }
-
-        # ~
 
         return $Elements;
     }
@@ -344,9 +307,6 @@ class Markdown
     {
         return method_exists($this, 'block' . $Type . 'Complete');
     }
-
-    #
-    # Code
 
     protected function blockCode($Line, $Block = null)
     {
@@ -399,9 +359,6 @@ class Markdown
         return $Block;
     }
 
-    #
-    # Comment
-
     protected function blockComment($Line)
     {
         if ($this->markupEscaped or $this->safeMode)
@@ -443,9 +400,6 @@ class Markdown
 
         return $Block;
     }
-
-    #
-    # Fenced Code
 
     protected function blockFencedCode($Line)
     {
@@ -535,9 +489,6 @@ class Markdown
         return $Block;
     }
 
-    #
-    # Header
-
     protected function blockHeader($Line)
     {
         $level = strspn($Line['text'], '#');
@@ -569,9 +520,6 @@ class Markdown
 
         return $Block;
     }
-
-    #
-    # List
 
     protected function blockList($Line, array $CurrentBlock = null)
     {
@@ -744,9 +692,6 @@ class Markdown
         return $Block;
     }
 
-    #
-    # Quote
-
     protected function blockQuote($Line)
     {
         if (preg_match('/^>[ ]?+(.*+)/', $Line['text'], $matches))
@@ -788,9 +733,6 @@ class Markdown
         }
     }
 
-    #
-    # Rule
-
     protected function blockRule($Line)
     {
         $marker = $Line['text'][0];
@@ -807,9 +749,6 @@ class Markdown
         }
     }
 
-    #
-    # Setext
-
     protected function blockSetextHeader($Line, array $Block = null)
     {
         if ( ! isset($Block) or $Block['type'] !== 'Paragraph' or isset($Block['interrupted']))
@@ -824,9 +763,6 @@ class Markdown
             return $Block;
         }
     }
-
-    #
-    # Markup
 
     protected function blockMarkup($Line)
     {
@@ -868,9 +804,6 @@ class Markdown
         return $Block;
     }
 
-    #
-    # Reference
-
     protected function blockReference($Line)
     {
         if (strpos($Line['text'], ']') !== false
@@ -892,9 +825,6 @@ class Markdown
             return $Block;
         }
     }
-
-    #
-    # Table
 
     protected function blockTable($Line, array $Block = null)
     {
@@ -950,8 +880,6 @@ class Markdown
             $alignments []= $alignment;
         }
 
-        # ~
-
         $HeaderElements = array();
 
         $header = $Block['element']['handler']['argument'];
@@ -990,8 +918,6 @@ class Markdown
 
             $HeaderElements []= $HeaderElement;
         }
-
-        # ~
 
         $Block = array(
             'alignments' => $alignments,
@@ -1073,10 +999,6 @@ class Markdown
         }
     }
 
-    #
-    # ~
-    #
-
     protected function paragraph($Line)
     {
         return array(
@@ -1104,10 +1026,6 @@ class Markdown
         return $Block;
     }
 
-    #
-    # Inline Elements
-    #
-
     protected $InlineTypes = array(
         '!' => array('Image'),
         '&' => array('SpecialCharacter'),
@@ -1121,13 +1039,7 @@ class Markdown
         '\\' => array('EscapeSequence'),
     );
 
-    # ~
-
     protected $inlineMarkerList = '!*_&[:<`~\\';
-
-    #
-    # ~
-    #
 
     public function line($text, $nonNestables = array())
     {
@@ -1233,10 +1145,6 @@ class Markdown
 
         return $Elements;
     }
-
-    #
-    # ~
-    #
 
     protected function inlineText($text)
     {
@@ -1578,17 +1486,11 @@ class Markdown
         }
     }
 
-    # ~
-
     protected function unmarkedText($text)
     {
         $Inline = $this->inlineText($text);
         return $this->element($Inline['element']);
     }
-
-    #
-    # Handlers
-    #
 
     protected function handle(array $Element)
     {
@@ -1800,8 +1702,6 @@ class Markdown
         return $markup;
     }
 
-    # ~
-
     protected function li($lines)
     {
         $Elements = $this->linesElements($lines);
@@ -1815,10 +1715,6 @@ class Markdown
 
         return $Elements;
     }
-
-    #
-    # AST Convenience
-    #
 
     /**
      * Replace occurrences $regexp with $Elements in $text. Return an array of
@@ -1847,17 +1743,6 @@ class Markdown
         $newElements[] = array('text' => $text);
 
         return $newElements;
-    }
-
-    #
-    # Deprecated Methods
-    #
-
-    function parse($text)
-    {
-        $markup = $this->text($text);
-
-        return $markup;
     }
 
     protected function sanitiseElement(array $Element)
@@ -1914,10 +1799,6 @@ class Markdown
         return $Element;
     }
 
-    #
-    # Static Methods
-    #
-
     protected static function escape($text, $allowQuotes = false)
     {
         return htmlspecialchars($text, $allowQuotes ? ENT_NOQUOTES : ENT_QUOTES, 'UTF-8');
@@ -1937,30 +1818,7 @@ class Markdown
         }
     }
 
-    static function instance($name = 'default')
-    {
-        if (isset(self::$instances[$name]))
-        {
-            return self::$instances[$name];
-        }
-
-        $instance = new static();
-
-        self::$instances[$name] = $instance;
-
-        return $instance;
-    }
-
-    private static $instances = array();
-
-    #
-    # Fields
-    #
-
     protected $DefinitionData;
-
-    #
-    # Read-Only
 
     protected $specialCharacters = array(
         '\\', '`', '*', '_', '{', '}', '[', ']', '(', ')', '>', '#', '+', '-', '.', '!', '|', '~'
