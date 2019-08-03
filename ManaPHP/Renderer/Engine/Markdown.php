@@ -703,6 +703,18 @@ class Markdown
 
     protected function blockMarkup($Line)
     {
+        $textLevelElements = [
+            'a', 'br', 'bdo', 'abbr', 'blink', 'nextid', 'acronym', 'basefont',
+            'b', 'em', 'big', 'cite', 'small', 'spacer', 'listing',
+            'i', 'rp', 'del', 'code',          'strike', 'marquee',
+            'q', 'rt', 'ins', 'font',          'strong',
+            's', 'tt', 'kbd', 'mark',
+            'u', 'xm', 'sub', 'nobr',
+            'sup', 'ruby',
+            'var', 'span',
+            'wbr', 'time',
+        ];
+
         if ($this->markupEscaped || $this->safeMode) {
             return;
         }
@@ -710,7 +722,7 @@ class Markdown
         if (preg_match('/^<[\/]?+(\w*)(?:[ ]*+' . $this->regexHtmlAttribute . ')*+[ ]*+(\/)?>/', $Line['text'], $matches)) {
             $element = strtolower($matches[1]);
 
-            if (in_array($element, $this->textLevelElements, true)) {
+            if (in_array($element, $textLevelElements, true)) {
                 return;
             }
 
@@ -1124,15 +1136,25 @@ class Markdown
 
     protected function inlineEmphasis($Excerpt)
     {
+        $EmRegex = [
+            '*' => '/^[*]((?:\\\\\*|[^*]|[*][*][^*]+?[*][*])+?)[*](?![*])/s',
+            '_' => '/^_((?:\\\\_|[^_]|__[^_]*__)+?)_(?!_)\b/us',
+        ];
+
+        $StrongRegex = [
+            '*' => '/^[*]{2}((?:\\\\\*|[^*]|[*][^*]*+[*])+?)[*]{2}(?![*])/s',
+            '_' => '/^__((?:\\\\_|[^_]|_[^_]*+_)+?)__(?!_)/us',
+        ];
+
         if (!isset($Excerpt['text'][1])) {
             return;
         }
 
         $marker = $Excerpt['text'][0];
 
-        if ($Excerpt['text'][1] === $marker && preg_match($this->StrongRegex[$marker], $Excerpt['text'], $matches)) {
+        if ($Excerpt['text'][1] === $marker && preg_match($StrongRegex[$marker], $Excerpt['text'], $matches)) {
             $emphasis = 'strong';
-        } elseif (preg_match($this->EmRegex[$marker], $Excerpt['text'], $matches)) {
+        } elseif (preg_match($EmRegex[$marker], $Excerpt['text'], $matches)) {
             $emphasis = 'em';
         } else {
             return;
@@ -1153,7 +1175,11 @@ class Markdown
 
     protected function inlineEscapeSequence($Excerpt)
     {
-        if (isset($Excerpt['text'][1]) && in_array($Excerpt['text'][1], $this->specialCharacters, true)) {
+        $specialCharacters = [
+            '\\', '`', '*', '_', '{', '}', '[', ']', '(', ')', '>', '#', '+', '-', '.', '!', '|', '~'
+        ];
+
+        if (isset($Excerpt['text'][1]) && in_array($Excerpt['text'][1], $specialCharacters, true)) {
             return [
                 'element' => ['rawHtml' => $Excerpt['text'][1]],
                 'extent' => 2,
@@ -1644,35 +1670,9 @@ class Markdown
 
     protected $DefinitionData;
 
-    protected $specialCharacters = [
-        '\\', '`', '*', '_', '{', '}', '[', ']', '(', ')', '>', '#', '+', '-', '.', '!', '|', '~'
-    ];
-
-    protected $StrongRegex = [
-        '*' => '/^[*]{2}((?:\\\\\*|[^*]|[*][^*]*+[*])+?)[*]{2}(?![*])/s',
-        '_' => '/^__((?:\\\\_|[^_]|_[^_]*+_)+?)__(?!_)/us',
-    ];
-
-    protected $EmRegex = [
-        '*' => '/^[*]((?:\\\\\*|[^*]|[*][*][^*]+?[*][*])+?)[*](?![*])/s',
-        '_' => '/^_((?:\\\\_|[^_]|__[^_]*__)+?)_(?!_)\b/us',
-    ];
-
     protected $regexHtmlAttribute = '[a-zA-Z_:][\w:.-]*+(?:\s*+=\s*+(?:[^"\'=<>`\s]+|"[^"]*+"|\'[^\']*+\'))?+';
 
     protected $voidElements = [
         'area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source',
-    ];
-
-    protected $textLevelElements = [
-        'a', 'br', 'bdo', 'abbr', 'blink', 'nextid', 'acronym', 'basefont',
-        'b', 'em', 'big', 'cite', 'small', 'spacer', 'listing',
-        'i', 'rp', 'del', 'code',          'strike', 'marquee',
-        'q', 'rt', 'ins', 'font',          'strong',
-        's', 'tt', 'kbd', 'mark',
-        'u', 'xm', 'sub', 'nobr',
-                   'sup', 'ruby',
-                   'var', 'span',
-                   'wbr', 'time',
     ];
 }
