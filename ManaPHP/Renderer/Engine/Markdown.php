@@ -432,9 +432,7 @@ class Markdown
             unset($Block['interrupted']);
         }
 
-        if (($len = strspn($Line['text'], $Block['char'])) >= $Block['openerLength']
-            && rtrim(substr($Line['text'], $len), ' ') === ''
-        ) {
+        if (($len = strspn($Line['text'], $Block['char'])) >= $Block['openerLength'] && rtrim(substr($Line['text'], $len), ' ') === '') {
             $Block['element']['element']['text'] = substr($Block['element']['element']['text'], 1);
 
             $Block['complete'] = true;
@@ -466,14 +464,12 @@ class Markdown
             return;
         }
 
-        $text = trim($text, ' ');
-
         $Block = [
             'element' => [
                 'name' => 'h' . $level,
                 'handler' => [
                     'function' => 'lineElements',
-                    'argument' => $text,
+                    'argument' => trim($text, ' '),
                     'destination' => 'elements',
                 ]
             ],
@@ -984,10 +980,9 @@ class Markdown
 
         $Elements = [];
 
-        $nonNestables = (empty($nonNestables)
-            ? []
-            : array_combine($nonNestables, $nonNestables)
-        );
+        if ($nonNestables) {
+            $nonNestables = array_combine($nonNestables, $nonNestables);
+        }
 
         # $excerpt is based on the first occurrence of a marker
 
@@ -1527,11 +1522,7 @@ class Markdown
             } elseif (isset($Element['element'])) {
                 $markup .= $this->element($Element['element']);
             } else {
-                if (!$permitRawHtml) {
-                    $markup .= self::escape($text, true);
-                } else {
-                    $markup .= $text;
-                }
+                $markup .= $permitRawHtml ? $text : self::escape($text, true);
             }
 
             $markup .= $hasName ? '</' . $Element['name'] . '>' : '';
@@ -1570,10 +1561,7 @@ class Markdown
     {
         $Elements = $this->linesElements($lines);
 
-        if (!in_array('', $lines, true)
-            && isset($Elements[0]['name'])
-            && $Elements[0]['name'] === 'p'
-        ) {
+        if (!in_array('', $lines, true) && isset($Elements[0]['name']) && $Elements[0]['name'] === 'p') {
             unset($Elements[0]['name']);
         }
 
