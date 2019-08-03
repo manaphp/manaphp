@@ -67,11 +67,6 @@ class Di implements DiInterface
     /**
      * @var array
      */
-    protected $_patterns = [];
-
-    /**
-     * @var array
-     */
     protected $_instances = [];
 
     /**
@@ -150,7 +145,7 @@ class Di implements DiInterface
             }
         } elseif (preg_match('#^(.+)([A-Z].+?)$#', $name, $match)) {
             $maybe = lcfirst($match[2]);
-            $definition = $this->_definitions[$maybe] ?? $this->_getPatterned($name);
+            $definition = $this->_definitions[$maybe] ?? null;
         }
 
         if ($definition === null) {
@@ -248,19 +243,6 @@ class Di implements DiInterface
     }
 
     /**
-     * @param string       $pattern
-     * @param string|array $namespaces
-     *
-     * @return static
-     */
-    public function setPattern($pattern, $namespaces)
-    {
-        $this->_patterns[$pattern] = $namespaces;
-
-        return $this;
-    }
-
-    /**
      * Removes a component in the components container
      *
      * @param string $name
@@ -308,32 +290,6 @@ class Di implements DiInterface
     }
 
     /**
-     * @param string $name
-     *
-     * @return string|null
-     */
-    protected function _getPatterned($name)
-    {
-        foreach ($this->_patterns as $pattern => $namespaces) {
-            if (fnmatch($pattern, $name)) {
-                if (is_string($namespaces)) {
-                    return strpos($namespaces, '@') === false ? $namespaces . ucfirst($name) : $this->alias->resolveNS($namespaces . ucfirst($name));
-                } else {
-                    foreach ($namespaces as $namespace) {
-                        $className = strpos($namespace, '@') === false ? $namespace . ucfirst($name) : $this->alias->resolveNS($namespace . ucfirst($name));
-                        if (class_exists($className)) {
-                            return $className;
-                        }
-                    }
-                    return null;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Resolves a component, the resolved component is stored in the DI, subsequent requests for this component will return the same instance
      *
      * @param string $name
@@ -367,10 +323,6 @@ class Di implements DiInterface
         }
 
         if (is_string($definition)) {
-            if (strpos($definition, '\\') === false) {
-                $definition = $this->_getPatterned($definition);
-            }
-
             if (!class_exists($definition)) {
                 throw new InvalidValueException(['`:name` component cannot be resolved: `:class` class is not exists',
                     'name' => $name,

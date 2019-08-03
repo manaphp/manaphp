@@ -30,14 +30,6 @@ interface DiInterface
     public function setShared($name, $definition);
 
     /**
-     * @param string       $pattern
-     * @param string|array $namespaces
-     *
-     * @return static
-     */
-    public function setPattern($pattern, $namespaces);
-
-    /**
      * @param string $name
      *
      * @return string|array|callable|null

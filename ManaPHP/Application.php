@@ -219,13 +219,11 @@ class Application extends Component implements ApplicationInterface
      */
     protected function _loadServices($services)
     {
-        $this->_di->setPattern('*Service', 'App\\Services\\');
-
         $items = [];
         foreach (scandir($this->alias->resolve('@app/Services')) as $item) {
             $items[basename($item, '.php')] = 1;
         }
-        
+
         foreach ($services as $service => $params) {
             if (is_string($params)) {
                 $params = ['endpoint' => $params];
@@ -238,6 +236,13 @@ class Application extends Component implements ApplicationInterface
             }
 
             $this->_di->setShared($service, ['class' => $class, $params]);
+            unset($items[$class]);
+        }
+
+        foreach ($items as $item => $_) {
+            if (strpos($item, 'Interface') === false && strpos($item, 'Service') !== false) {
+                $this->_di->setShared(lcfirst($item), 'App\\Services\\' . $item);
+            }
         }
     }
 
