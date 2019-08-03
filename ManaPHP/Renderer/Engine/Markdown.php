@@ -1175,11 +1175,7 @@ class Markdown
 
     protected function inlineEscapeSequence($Excerpt)
     {
-        $specialCharacters = [
-            '\\', '`', '*', '_', '{', '}', '[', ']', '(', ')', '>', '#', '+', '-', '.', '!', '|', '~'
-        ];
-
-        if (isset($Excerpt['text'][1]) && in_array($Excerpt['text'][1], $specialCharacters, true)) {
+        if (isset($Excerpt['text'][1]) && strpos('\\`*_{}[]()>#+-.!|~', $Excerpt['text'][1]) !== false) {
             return [
                 'element' => ['rawHtml' => $Excerpt['text'][1]],
                 'extent' => 2,
@@ -1664,7 +1660,7 @@ class Markdown
         if ($len > strlen($string)) {
             return false;
         } else {
-            return strtolower(substr($string, 0, $len)) === strtolower($needle);
+            return strpos($string, $needle) === 0;
         }
     }
 
