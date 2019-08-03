@@ -216,7 +216,7 @@ class Dispatcher extends Component implements DispatcherInterface
                 $value = $params[0];
             } elseif ($parameter->isDefaultValueAvailable()) {
                 $value = $parameter->getDefaultValue();
-            } elseif ($di->has($name) || basename($name, 'Service') !== $name) {
+            } elseif ($di->has($name)) {
                 $value = $di->getShared($name);
             }
 
