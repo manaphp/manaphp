@@ -17,6 +17,11 @@ class Service extends Component implements LogCategorizable
     protected $_rpcClient;
 
     /**
+     * @var string
+     */
+    protected $_interface;
+
+    /**
      * @var array
      */
     protected $_parameters;
@@ -49,6 +54,9 @@ class Service extends Component implements LogCategorizable
             $options['class'] = $class;
         }
 
+        $this->_interface = $options['interface'];
+        unset($options['interface']);
+
         if (isset($options['class'])) {
             $class = $options['class'];
             unset($options['class']);
@@ -68,7 +76,7 @@ class Service extends Component implements LogCategorizable
     public function __call($method, $arguments)
     {
         if (!$parameters = $this->_parameters[$method] ?? null) {
-            $rm = new ReflectionMethod(static::class . 'Interface', $method);
+            $rm = new ReflectionMethod($this->_interface, $method);
             $parameters = [];
             foreach ($rm->getParameters() as $parameter) {
                 $name = $parameter->getName();

@@ -221,8 +221,23 @@ class Application extends Component implements ApplicationInterface
     {
         $this->_di->setPattern('*Service', 'App\\Services\\');
 
+        $items = [];
+        foreach (scandir($this->alias->resolve('@app/Services')) as $item) {
+            $items[basename($item, '.php')] = 1;
+        }
+        
         foreach ($services as $service => $params) {
-            $this->_di->setShared($service, ['class' => 'App\Services\\' . ucfirst($service), $params]);
+            if (is_string($params)) {
+                $params = ['endpoint' => $params];
+            }
+
+            $class = 'App\Services\\' . ucfirst($service);
+            $params['interface'] = $class . 'Interface';
+            if (!isset($items[$class])) {
+                $class = 'ManaPHP\Service';
+            }
+
+            $this->_di->setShared($service, ['class' => $class, $params]);
         }
     }
 
