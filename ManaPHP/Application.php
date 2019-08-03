@@ -3,7 +3,6 @@
 namespace ManaPHP;
 
 use ManaPHP\Cli\Factory as CliFactory;
-use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Mvc\Factory as MvcFactory;
 use ReflectionClass;
 use Swoole\Runtime;
@@ -222,29 +221,8 @@ class Application extends Component implements ApplicationInterface
     {
         $this->_di->setPattern('*Service', 'App\\Services\\');
 
-        if (!$services) {
-            return;
-        }
-
         foreach ($services as $service => $params) {
-            $endpoint = is_string($params) ? $params : $params['endpoint'];
-
-            $scheme = parse_url($endpoint, PHP_URL_SCHEME);
-            if ($scheme === 'ws' || $scheme === 'wss') {
-                $class = 'ManaPHP\\Rpc\\Client\\Adapter\\JsonRpc';
-            } elseif ($scheme === 'http' || $scheme === 'https') {
-                $class = 'ManaPHP\\Rpc\\Client\\Adapter\\Rest';
-            } else {
-                throw new NotSupportedException(['`:type` type rpc is not support', 'type' => $scheme]);
-            }
-
-            if (is_string($params)) {
-                $params = ['class' => $class, 'endpoint' => $params];
-            } elseif (!isset($params[0]) && !isset($params['class'])) {
-                $params['class'] = $class;
-            }
-
-            $this->_di->setShared('rpc' . ucfirst($service), $params);
+            $this->_di->setShared($service, ['class' => 'App\Services\\' . ucfirst($service), $params]);
         }
     }
 

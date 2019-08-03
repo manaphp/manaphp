@@ -1,16 +1,21 @@
 <?php
 namespace ManaPHP;
 
+use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Logger\LogCategorizable;
 use ReflectionMethod;
 
 /**
  * Class Service
  * @package ManaPHP
- * @property-read \ManaPHP\Rpc\ClientInterface $_rpcClient
  */
 class Service extends Component implements LogCategorizable
 {
+    /**
+     * @var \ManaPHP\Rpc\ClientInterface
+     */
+    protected $_rpcClient;
+
     /**
      * @var array
      */
@@ -19,19 +24,40 @@ class Service extends Component implements LogCategorizable
     /**
      * Service constructor.
      *
-     * @param array $options
+     * @param string|array $options
      */
     public function __construct($options = null)
     {
-        if (is_array($options)) {
-            foreach ($options as $name => $value) {
-                $property = '_' . $name;
-
-                if (property_exists($this, $property)) {
-                    $this->$property = $value;
-                }
-            }
+        if (!$options) {
+            return;
         }
+
+        $endpoint = is_string($options) ? $options : $options['endpoint'];
+
+        $scheme = parse_url($endpoint, PHP_URL_SCHEME);
+        if ($scheme === 'ws' || $scheme === 'wss') {
+            $class = 'ManaPHP\\Rpc\\Client\\Adapter\\JsonRpc';
+        } elseif ($scheme === 'http' || $scheme === 'https') {
+            $class = 'ManaPHP\\Rpc\\Client\\Adapter\\Rest';
+        } else {
+            throw new NotSupportedException(['`:type` type rpc is not support', 'type' => $scheme]);
+        }
+
+        if (is_string($options)) {
+            $options = ['class' => $class, 'endpoint' => $options];
+        } elseif (!isset($options[0]) && !isset($options['class'])) {
+            $options['class'] = $class;
+        }
+
+        if (isset($options['class'])) {
+            $class = $options['class'];
+            unset($options['class']);
+        } else {
+            $class = $options[0];
+            unset($options[0]);
+        }
+
+        $this->_rpcClient = Di::getDefault()->get($class, $options);
     }
 
     public function categorizeLog()
@@ -57,15 +83,5 @@ class Service extends Component implements LogCategorizable
         }
 
         return $this->_rpcClient->invoke($method, $params);
-    }
-
-    public function __get($name)
-    {
-        if ($name === '_rpcClient') {
-            $service = static::class;
-            return $this->_rpcClient = $this->_di->getShared('rpc' . substr($service, strrpos($service, '\\') + 1));
-        } else {
-            return parent::__get($name);
-        }
     }
 }
