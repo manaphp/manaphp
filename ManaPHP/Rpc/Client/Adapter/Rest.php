@@ -49,6 +49,11 @@ class Rest extends Component implements ClientInterface
         $this->poolManager->add($this, $options, $this->_pool_size);
     }
 
+    public function __destruct()
+    {
+        $this->poolManager->remove($this);
+    }
+
     /**
      * @param string          $method
      * @param array           $params

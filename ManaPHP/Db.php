@@ -132,6 +132,11 @@ class Db extends Component implements DbInterface
         }
     }
 
+    public function __destruct()
+    {
+        $this->poolManager->remove($this);
+    }
+
     protected function _escapeIdentifier($identifier)
     {
         $list = [];

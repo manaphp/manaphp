@@ -37,6 +37,11 @@ class Mongodb extends Component implements MongodbInterface
         $this->poolManager->add($this, $this->di->get('ManaPHP\Mongodb\Connection', [$this->_dsn]));
     }
 
+    public function __destruct()
+    {
+        $this->poolManager->remove($this);
+    }
+
     /**
      * @return string|null
      */

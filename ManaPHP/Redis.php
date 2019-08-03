@@ -59,6 +59,11 @@ class Redis extends Component
         $this->poolManager->add($this, $connection, $pool_size);
     }
 
+    public function __destruct()
+    {
+        $this->poolManager->remove($this);
+    }
+
     /**
      * @param string $name
      * @param array  $arguments

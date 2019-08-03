@@ -18,7 +18,7 @@ class Manager extends Component implements ManagerInterface
      *
      * @return static
      */
-    public function remove($owner, $type = 'default')
+    public function remove($owner, $type = null)
     {
         $owner_id = spl_object_id($owner);
 

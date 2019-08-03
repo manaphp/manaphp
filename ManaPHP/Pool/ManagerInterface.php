@@ -4,6 +4,14 @@ namespace ManaPHP\Pool;
 interface ManagerInterface
 {
     /**
+     * @param object $owner
+     * @param string $type
+     *
+     * @return static
+     */
+    public function remove($owner, $type = null);
+
+    /**
      * @param object       $owner
      * @param object|array $sample
      * @param int          $size
