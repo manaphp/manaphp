@@ -33,9 +33,9 @@ class ResponseContext
     public $cookies = [];
 
     /**
-     * @var string
+     * @var mixed
      */
-    public $content;
+    public $content = '';
 
     /**
      * @var string
@@ -475,16 +475,6 @@ class Response extends Component implements ResponseInterface
     }
 
     /**
-     * @param string|array $data
-     *
-     * @return string
-     */
-    protected function _jsonEncode($data)
-    {
-        return is_string($data) ? $data : json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . PHP_EOL;
-    }
-
-    /**
      * Sets HTTP response body. The parameter is automatically converted to JSON
      *
      * @param array|\JsonSerializable|int|string|\Exception $content
@@ -519,7 +509,7 @@ class Response extends Component implements ResponseInterface
             }
         }
 
-        $context->content = $this->_jsonEncode($content);
+        $context->content = $content;
 
         return $this;
     }
@@ -573,7 +563,13 @@ class Response extends Component implements ResponseInterface
         if ($context->file) {
             readfile($this->alias->resolve($context->file));
         } else {
-            echo $context->content;
+            $content = $context->content;
+
+            if (is_string($content)) {
+                echo $content;
+            } else {
+                echo json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+            }
         }
 
         $this->eventsManager->fireEvent('response:afterSend', $this);

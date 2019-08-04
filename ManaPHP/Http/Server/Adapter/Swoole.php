@@ -274,7 +274,13 @@ class Swoole extends Server
         if ($response_context->file) {
             $sw_response->sendfile($this->alias->resolve($response_context->file));
         } else {
-            $sw_response->end($response_context->content);
+            $content = $response_context->content;
+	    
+            if (is_string($content)) {
+                $sw_response->end($content);
+            } else {
+                $sw_response->end(json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+            }
         }
 
         $this->eventsManager->fireEvent('response:afterSend', $this, $response);

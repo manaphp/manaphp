@@ -248,7 +248,13 @@ class Workerman extends Server
                 $cookie['httpOnly']);
         }
 
-        $this->_context->connection->close((string)$response_context->content);
+        $content = $response_context->content;
+        if (is_string($content)) {
+            $this->_context->connection->close($content);
+        } else {
+            $this->_context->connection->close(json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+        }
+
         $this->eventsManager->fireEvent('response:afterSend', $this, $response);
     }
 }

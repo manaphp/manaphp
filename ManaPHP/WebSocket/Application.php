@@ -67,9 +67,14 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         }
 
         $content = $this->response->getContent();
-        if ($content !== null && $content !== '') {
-            $this->wsServer->push($fd, $content);
-            $this->response->setContent(null);
+        if ($content !== '') {
+            if (is_string($content)) {
+                $this->wsServer->push($fd, $content);
+            } else {
+                $this->wsServer->push($fd, json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+            }
+
+            $this->response->setContent('');
         }
 
         if ($throwable) {
@@ -110,9 +115,13 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         }
 
         $content = $this->response->getContent();
-        if ($content !== null && $content !== '') {
-            $this->wsServer->push($fd, $content);
-            $this->response->setContent(null);
+        if ($content !== '') {
+            if (is_string($content)) {
+                $this->wsServer->push($fd, $content);
+            } else {
+                $this->wsServer->push($fd, json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+            }
+            $this->response->setContent('');
         }
     }
 
