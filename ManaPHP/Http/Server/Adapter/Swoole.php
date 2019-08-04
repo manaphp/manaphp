@@ -244,19 +244,17 @@ class Swoole extends Server
     }
 
     /**
-     * @param \ManaPHP\Http\ResponseInterface $response
+     * @param \ManaPHP\Http\ResponseContext $response
      */
     public function send($response)
     {
         $this->eventsManager->fireEvent('response:beforeSend', $this, $response);
 
-        /** @var \ManaPHP\Http\Response $response */
-        $response_context = $response->_context;
         $sw_response = $this->_context->response;
 
-        $sw_response->status($response_context->status_code);
+        $sw_response->status($response->status_code);
 
-        foreach ($response_context->headers as $name => $value) {
+        foreach ($response->headers as $name => $value) {
             $sw_response->header($name, $value, false);
         }
 
@@ -265,17 +263,17 @@ class Swoole extends Server
         $sw_response->header('X-Request-Id', $this->request->getRequestId(), false);
         $sw_response->header('X-Response-Time', sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']), false);
 
-        foreach ($response_context->cookies as $cookie) {
+        foreach ($response->cookies as $cookie) {
             $sw_response->cookie($cookie['name'], $cookie['value'], $cookie['expire'],
                 $cookie['path'], $cookie['domain'], $cookie['secure'],
                 $cookie['httpOnly']);
         }
 
-        if ($response_context->file) {
-            $sw_response->sendfile($this->alias->resolve($response_context->file));
+        if ($response->file) {
+            $sw_response->sendfile($this->alias->resolve($response->file));
         } else {
-            $content = $response_context->content;
-	    
+            $content = $response->content;
+
             if (is_string($content)) {
                 $sw_response->end($content);
             } else {

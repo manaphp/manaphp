@@ -43,7 +43,7 @@ class Application extends \ManaPHP\Http\Application
             $this->handleException($throwable);
         }
 
-        $this->httpServer->send($this->response);
+        $this->httpServer->send($this->response->_context);
 
         $this->eventsManager->fireEvent('request:end', $this);
     }

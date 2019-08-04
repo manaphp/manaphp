@@ -11,8 +11,8 @@ interface ServerInterface
     public function start($handler);
 
     /**
-     * @param int    $fd
-     * @param string $data
+     * @param int   $fd
+     * @param mixed $data
      *
      * @return bool
      */

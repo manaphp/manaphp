@@ -223,17 +223,16 @@ class Workerman extends Server
     }
 
     /**
-     * @param \ManaPHP\Http\Response $response
+     * @param \ManaPHP\Http\ResponseContext $response
      */
     public function send($response)
     {
         $this->eventsManager->fireEvent('response:beforeSend', $this, $response);
 
-        $response_context = $response->_context;
 
-        Http::header('HTTP', true, $response_context->status_code);
+        Http::header('HTTP', true, $response->status_code);
 
-        foreach ($response_context->headers as $name => $value) {
+        foreach ($response->headers as $name => $value) {
             Http::header("$name: $value");
         }
 
@@ -242,13 +241,13 @@ class Workerman extends Server
         Http::header('X-Request-Id: ' . $this->request->getRequestId());
         Http::header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']));
 
-        foreach ($response_context->cookies as $cookie) {
+        foreach ($response->cookies as $cookie) {
             Http::setcookie($cookie['name'], $cookie['value'], $cookie['expire'],
                 $cookie['path'], $cookie['domain'], $cookie['secure'],
                 $cookie['httpOnly']);
         }
 
-        $content = $response_context->content;
+        $content = $response->content;
         if (is_string($content)) {
             $this->_context->connection->close($content);
         } else {

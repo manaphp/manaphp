@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP\Http\Server\Adapter;
 
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Http\Server;
 
 /**
@@ -71,10 +72,53 @@ class Fpm extends Server
     }
 
     /**
-     * @param \ManaPHP\Http\ResponseInterface $response
+     * @param \ManaPHP\Http\ResponseContext $response
+     *
+     * @return static
      */
     public function send($response)
     {
-        $response->send();
+        if (headers_sent($file, $line)) {
+            throw new MisuseException("Headers has been sent in $file:$line");
+        }
+
+        $this->eventsManager->fireEvent('response:beforeSend', $this);
+
+        header('HTTP/1.1 ' . $response->status_code . ' ' . $response->status_text);
+
+        foreach ($response->headers as $header => $value) {
+            if ($value !== null) {
+                header($header . ': ' . $value);
+            } else {
+                header($header);
+            }
+        }
+
+        foreach ($response->cookies as $cookie) {
+            setcookie($cookie['name'], $cookie['value'], $cookie['expire'],
+                $cookie['path'], $cookie['domain'], $cookie['secure'],
+                $cookie['httpOnly']);
+        }
+
+        $server = $this->request->getGlobals()->_SERVER;
+
+        header('X-Request-Id: ' . $this->request->getRequestId());
+        header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']));
+
+        if ($response->file) {
+            readfile($this->alias->resolve($response->file));
+        } else {
+            $content = $response->content;
+
+            if (is_string($content)) {
+                echo $content;
+            } else {
+                echo json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+            }
+        }
+
+        $this->eventsManager->fireEvent('response:afterSend', $this);
+
+        return $this;
     }
 }

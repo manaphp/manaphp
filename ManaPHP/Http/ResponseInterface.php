@@ -207,13 +207,6 @@ interface ResponseInterface
     public function getContent();
 
     /**
-     * Prints out HTTP response to the client
-     *
-     * @return static
-     */
-    public function send();
-
-    /**
      * Sets an attached file to be sent at the end of the request
      *
      * @param string $file

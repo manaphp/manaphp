@@ -230,14 +230,18 @@ class Swoole extends Component implements ServerInterface
     }
 
     /**
-     * @param int    $fd
-     * @param string $data
+     * @param int   $fd
+     * @param mixed $data
      *
      * @return bool
      */
     public function push($fd, $data)
     {
-        return $this->_swoole->push($fd, $data);
+        if (is_string($data)) {
+            return $this->_swoole->push($fd, $data);
+        } else {
+            return $this->_swoole->push($fd, json_encode($data), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+        }
     }
 
     public function broadcast($data)

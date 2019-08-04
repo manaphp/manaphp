@@ -523,60 +523,7 @@ class Response extends Component implements ResponseInterface
     {
         return $this->_context->content;
     }
-
-    /**
-     * Prints out HTTP response to the client
-     *
-     * @return static
-     */
-    public function send()
-    {
-        $context = $this->_context;
-
-        if (headers_sent($file, $line)) {
-            throw new MisuseException("Headers has been sent in $file:$line");
-        }
-
-        $this->eventsManager->fireEvent('response:beforeSend', $this);
-
-        header('HTTP/1.1 ' . $context->status_code . ' ' . $context->status_text);
-
-        foreach ($context->headers as $header => $value) {
-            if ($value !== null) {
-                header($header . ': ' . $value);
-            } else {
-                header($header);
-            }
-        }
-
-        foreach ($context->cookies as $cookie) {
-            setcookie($cookie['name'], $cookie['value'], $cookie['expire'],
-                $cookie['path'], $cookie['domain'], $cookie['secure'],
-                $cookie['httpOnly']);
-        }
-
-        $server = $this->request->getGlobals()->_SERVER;
-
-        header('X-Request-Id: ' . $this->request->getRequestId());
-        header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']));
-
-        if ($context->file) {
-            readfile($this->alias->resolve($context->file));
-        } else {
-            $content = $context->content;
-
-            if (is_string($content)) {
-                echo $content;
-            } else {
-                echo json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
-            }
-        }
-
-        $this->eventsManager->fireEvent('response:afterSend', $this);
-
-        return $this;
-    }
-
+    
     /**
      * Sets an attached file to be sent at the end of the request
      *
