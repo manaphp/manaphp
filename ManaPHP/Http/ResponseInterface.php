@@ -200,15 +200,6 @@ interface ResponseInterface
     public function setJsonContent($content);
 
     /**
-     * Appends a string to the HTTP response body
-     *
-     * @param string $content
-     *
-     * @return static
-     */
-    public function appendContent($content);
-
-    /**
      * Gets the HTTP response body
      *
      * @return string

@@ -525,22 +525,6 @@ class Response extends Component implements ResponseInterface
     }
 
     /**
-     * Appends a string to the HTTP response body
-     *
-     * @param string $content
-     *
-     * @return static
-     */
-    public function appendContent($content)
-    {
-        $context = $this->_context;
-
-        $context->content .= $content;
-
-        return $this;
-    }
-
-    /**
      * Gets the HTTP response body
      *
      * @return string
