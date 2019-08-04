@@ -2,9 +2,7 @@
 
 use ManaPHP\Di;
 use ManaPHP\Exception\AbortException;
-use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\InvalidValueException;
-use ManaPHP\Exception\NotSupportedException;
 use Swoole\Coroutine;
 
 if (!function_exists('spl_object_id')) {
@@ -13,6 +11,32 @@ if (!function_exists('spl_object_id')) {
         // https://github.com/akihiromukae/sample1/blob/1dc7b6e49684c882ef39476071179421fbd1e18e/vendor/phan/phan/src/spl_object_id.php
         $hash = spl_object_hash($object);
         return intval(PHP_INT_SIZE === 8 ? substr($hash, 1, 15) : substr($hash, 9, 7), 16);
+    }
+}
+
+defined('JSON_THROW_ON_ERROR') or define('JSON_THROW_ON_ERROR', 0);
+
+if (!function_exists('json_parse')) {
+    /**
+     * @param string $str
+     *
+     * @return mixed
+     */
+    function json_parse($str)
+    {
+        return json_decode($str, true, 16, JSON_THROW_ON_ERROR);
+    }
+}
+
+if (!function_exists('json_stringify')) {
+    /**
+     * @param string $json
+     *
+     * @return mixed
+     */
+    function json_stringify($json)
+    {
+        return json_encode($json, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR, 16);
     }
 }
 
@@ -447,28 +471,6 @@ if (!function_exists('seconds')) {
             return $r;
         } else {
             throw new InvalidValueException(['`:str` string is not a valid seconds expression', 'str' => $str]);
-        }
-    }
-}
-
-if (!function_exists('json')) {
-    /**
-     * @param array|string $data
-     *
-     * @return array|string
-     */
-    function json($data)
-    {
-        if (is_string($data)) {
-            if (!is_array($r = json_decode($data, true))) {
-                throw new InvalidJsonException(['`:data` data', 'data' => $data]);
-            } else {
-                return $r;
-            }
-        } elseif (is_array($data) || $data instanceof JsonSerializable) {
-            return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        } else {
-            throw new NotSupportedException(['`:data`', 'data' => $data]);
         }
     }
 }
