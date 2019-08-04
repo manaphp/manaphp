@@ -346,6 +346,7 @@ class Dispatcher extends Component implements DispatcherInterface
      *
      * @return mixed
      * @throws \ManaPHP\Dispatcher\NotFoundControllerException
+     * @throws \ManaPHP\Exception\AbortException
      */
     public function dispatch($router, $auto_invoke = true)
     {

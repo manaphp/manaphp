@@ -4,7 +4,6 @@ namespace ManaPHP\Mvc;
 use ManaPHP\Component;
 use ManaPHP\ErrorHandlerInterface;
 use ManaPHP\Exception;
-use ManaPHP\Exception\AbortException;
 
 /**
  * Class ManaPHP\Mvc\ErrorHandler
@@ -21,9 +20,7 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
      */
     public function handle($exception)
     {
-        if ($exception instanceof AbortException) {
-            return;
-        } elseif ($exception instanceof Exception) {
+        if ($exception instanceof Exception) {
             $code = $exception->getStatusCode();
             $json = $exception->getJson();
 

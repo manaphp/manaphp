@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Cli;
 
+use ManaPHP\Exception\AbortException;
 use ManaPHP\Logger\LogCategorizable;
 use Throwable;
 
@@ -61,8 +62,11 @@ class Application extends \ManaPHP\Application implements LogCategorizable
 
         try {
             exit($this->cliHandler->handle());
+        } catch (AbortException $exception) {
+            exit(0);
         } catch (Throwable $e) {
             $this->errorHandler->handle($e);
+	    exit(127);
         }
     }
 }

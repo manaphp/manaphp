@@ -139,6 +139,7 @@ interface RouterInterface
      * @param string $method
      *
      * @return mixed
+     * @throws \ManaPHP\Exception\AbortException
      */
     public function dispatch($uri = null, $method = null);
 
