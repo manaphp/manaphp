@@ -540,7 +540,11 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     public static function aggregate($filters, $aggregation, $options = null)
     {
         if (is_string($options)) {
-            $options = ['group' => $options];
+            if (strpos($options, ',') === false) {
+                $options = ['group' => $options, 'index' => $options];
+            } else {
+                $options = ['group' => $options];
+            }
         }
         return static::where($filters)->options($options)->aggregate($aggregation);
     }
