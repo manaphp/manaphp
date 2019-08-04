@@ -66,7 +66,7 @@ class Application extends \ManaPHP\Application implements LogCategorizable
             exit(0);
         } catch (Throwable $e) {
             $this->errorHandler->handle($e);
-	    exit(127);
+            exit(127);
         }
     }
 }

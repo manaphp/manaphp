@@ -3,7 +3,6 @@ namespace ManaPHP\Cli;
 
 use ManaPHP\Component;
 use ManaPHP\ErrorHandlerInterface;
-use ManaPHP\Exception\AbortException;
 
 class ErrorHandler extends Component implements ErrorHandlerInterface
 {

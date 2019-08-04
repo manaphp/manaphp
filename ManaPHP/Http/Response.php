@@ -8,7 +8,6 @@ use JsonSerializable;
 use ManaPHP\Component;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\FileNotFoundException;
-use ManaPHP\Exception\MisuseException;
 
 class ResponseContext
 {
@@ -523,7 +522,7 @@ class Response extends Component implements ResponseInterface
     {
         return $this->_context->content;
     }
-    
+
     /**
      * Sets an attached file to be sent at the end of the request
      *
