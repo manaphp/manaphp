@@ -200,13 +200,6 @@ interface ResponseInterface
     public function setJsonContent($content);
 
     /**
-     * @param array $content
-     *
-     * @return static
-     */
-    public function setXmlContent($content);
-
-    /**
      * Appends a string to the HTTP response body
      *
      * @param string $content

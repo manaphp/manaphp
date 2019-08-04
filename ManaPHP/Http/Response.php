@@ -9,7 +9,6 @@ use ManaPHP\Component;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
-use XMLWriter;
 
 class ResponseContext
 {
@@ -523,46 +522,6 @@ class Response extends Component implements ResponseInterface
         $context->content = $this->_jsonEncode($content);
 
         return $this;
-    }
-
-    /**
-     * @param array $content
-     *
-     * @return static
-     */
-    public function setXmlContent($content)
-    {
-        $context = $this->_context;
-
-        $this->setContentType('text/xml');
-
-        $writer = new XMLWriter();
-
-        $writer->openMemory();
-        $writer->startDocument();
-        $this->_toXml($writer, (count($content) !== 1) ? ['xml' => $content] : $content);
-        $context->content = $writer->outputMemory();
-
-        return $this;
-    }
-
-    /**
-     * @param \XMLWriter $writer
-     * @param            $data
-     */
-    protected function _toXml($writer, $data)
-    {
-        if (is_array($data)) {
-            foreach ($data as $k => $v) {
-                if (is_array($v)) {
-                    $writer->startElement($k);
-                    $this->_toXml($writer, $v);
-                    $writer->endElement();
-                } else {
-                    $writer->writeElement($k, $v);
-                }
-            }
-        }
     }
 
     /**
