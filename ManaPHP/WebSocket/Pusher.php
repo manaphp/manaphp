@@ -53,7 +53,7 @@ class Pusher extends Component implements PusherInterface
     public function pushToId($receivers, $message, $endpoint = null)
     {
         if (!is_string($message)) {
-            $message = json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $message = json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
         }
 
         if (!$endpoint = $endpoint ?: $this->_endpoint) {
