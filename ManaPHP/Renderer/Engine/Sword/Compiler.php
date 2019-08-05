@@ -916,7 +916,7 @@ class Compiler extends Component
     protected function _compile_json($expression)
     {
         $expression = (string)substr($expression, 1, -1);
-        return "<?= json_encode({$expression}, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ;?>";
+        return "<?= json_stringify({$expression}) ;?>";
     }
 
     /**
