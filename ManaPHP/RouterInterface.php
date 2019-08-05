@@ -115,12 +115,12 @@ interface RouterInterface
     public function addHead($pattern, $paths = null);
 
     /**
-     * @param string       $pattern
-     * @param string|array $paths
+     * @param string $pattern
+     * @param string $controller
      *
      * @return \ManaPHP\Router\RouteInterface
      */
-    public function addRest($pattern, $paths = null);
+    public function addRest($pattern, $controller = null);
 
     /**
      * Handles routing information received from the rewrite engine

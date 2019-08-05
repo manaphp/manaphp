@@ -2,6 +2,7 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Router\NotFoundRouteException;
 use ManaPHP\Router\Route;
 use ManaPHP\Utility\Text;
@@ -263,14 +264,38 @@ class Router extends Component implements RouterInterface
     }
 
     /**
-     * @param string       $pattern
-     * @param string|array $paths
+     * @param string $pattern
+     * @param string $controller
      *
      * @return \ManaPHP\Router\RouteInterface
      */
-    public function addRest($pattern, $paths = null)
+    public function addRest($pattern, $controller = null)
     {
-        return $this->_addRoute($pattern, $paths, 'REST');
+        if ($controller === null) {
+            if (!preg_match('#/(\w+)$#', $pattern, $match)) {
+                throw new MisuseException('must provide paths');
+            }
+
+            $str = $match[1];
+            if ($str[strlen($str) - 1] === 's') {
+                //https://github.com/UlvHare/PHPixie-demo/blob/d000d8f11e6ab7c522feeb4457da5a802ca3e0bc/vendor/phpixie/orm/src/PHPixie/ORM/Configs/Inflector.php
+                if (preg_match('#^(.*?us)$|(.*?[sxz])es$|(.*?[^aeioudgkprt]h)es$#', $str, $match)) {
+                    foreach ($match as $i => $word) {
+                        if ($i !== 0 && $word !== '') {
+                            $controller = $word;
+                        }
+                    }
+                } elseif (preg_match('#^(.*?[^aeiou])ies$#', $str, $match)) {
+                    $controller = $match[1] . 'y';
+                } else {
+                    $controller = substr($str, 0, -1);
+                }
+            } else {
+                $controller = $str;
+            }
+        }
+
+        return $this->_addRoute($pattern, $controller, 'REST');
     }
 
     /**
