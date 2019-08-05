@@ -221,7 +221,7 @@ class Manager extends Component implements ManagerInterface
                 }
             }
         } elseif (is_callable($data)) {
-            $query = $data($query);
+            $data($query);
         } else {
             throw new InvalidValueException(['`:with` with is invalid', 'with' => $name]);
         }
