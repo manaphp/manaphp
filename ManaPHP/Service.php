@@ -4,6 +4,7 @@ namespace ManaPHP;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Logger\LogCategorizable;
 use ReflectionMethod;
+use ManaPHP\Service\Exception as ServiceException;
 
 /**
  * Class Service
@@ -73,6 +74,26 @@ class Service extends Component implements LogCategorizable
         return basename(str_replace('\\', '.', static::class), 'Service');
     }
 
+    /**
+     * @param string $method
+     * @param array  $params
+     *
+     * @return mixed
+     * @throws \ManaPHP\Service\Exception
+     */
+    public function invoke($method, $params)
+    {
+        $response = $this->_rpcClient->invoke($method, $params);
+		
+        if (!isset($response['code'], $response['message']) || (!isset($response['data']) && array_key_exists('data', $response))) {
+            throw new ServiceException('bad response');
+        } elseif ($response['code'] !== 0) {
+            throw new ServiceException($response['message'], $response['code']);
+        } else {
+            return $response['data'];
+        }
+    }
+
     public function __call($method, $arguments)
     {
         if (!$parameters = $this->_parameters[$method] ?? null) {
@@ -90,6 +111,6 @@ class Service extends Component implements LogCategorizable
             $params[is_string($parameter) ? $parameter : $parameter[0]] = array_key_exists($i, $arguments) ? $arguments[$i] : $parameter[1];
         }
 
-        return $this->_rpcClient->invoke($method, $params);
+        return $this->invoke($method, $params);
     }
 }
