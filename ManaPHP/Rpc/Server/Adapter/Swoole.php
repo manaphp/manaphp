@@ -2,17 +2,13 @@
 namespace ManaPHP\Rpc\Server\Adapter;
 
 use ManaPHP\Component;
-use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Rpc\ServerInterface;
-use Swoole\Coroutine;
-use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
 use Throwable;
 
 class SwooleContext
 {
-    public $request;
     public $response;
     public $frame;
 }
@@ -20,9 +16,10 @@ class SwooleContext
 /**
  * Class Server
  * @package ManaPHP\WebSocket
- * @property-read \ManaPHP\Http\RequestInterface            $request
- * @property-read \ManaPHP\Http\ResponseInterface           $response
- * @property-read \ManaPHP\Rpc\Server\Adapter\SwooleContext $_context
+ * @property-read \ManaPHP\Http\RequestInterface              $request
+ * @property-read \ManaPHP\Http\Response                      $response
+ * @property-read \ManaPHP\Rpc\Server\Adapter\SwooleContext   $_context
+ * @property-read \ManaPHP\Coroutine\Context\ManagerInterface $contextManager
  */
 class Swoole extends Component implements ServerInterface
 {
@@ -50,11 +47,6 @@ class Swoole extends Component implements ServerInterface
      * @var \ManaPHP\Rpc\Server\HandlerInterface
      */
     protected $_handler;
-
-    /**
-     * @var array
-     */
-    protected $_contexts = [];
 
     /**
      * Server constructor.
@@ -89,15 +81,17 @@ class Swoole extends Component implements ServerInterface
             $options['max_request'] = 1;
         }
 
+        $options['enable_coroutine'] = MANAPHP_COROUTINE_ENABLED ? 1 : 0;
         $this->_settings = $options ?: [];
 
         $this->_swoole = new Server($this->_host, $this->_port);
         $this->_swoole->set($this->_settings);
 
+        $this->_swoole->on('request', [$this, 'onRequest']);
+
         $this->_swoole->on('open', [$this, 'onOpen']);
         $this->_swoole->on('close', [$this, 'onClose']);
         $this->_swoole->on('message', [$this, 'onMessage']);
-        $this->_swoole->on('request', [$this, 'onRequest']);
     }
 
     public function log($level, $message)
@@ -132,7 +126,6 @@ class Swoole extends Component implements ServerInterface
         $globals->_GET = $_get;
         $globals->_REQUEST = $_get;
         $globals->_SERVER = $_server;
-        $globals->_COOKIE = $request->cookie ?: [];
     }
 
     /**
@@ -149,7 +142,6 @@ class Swoole extends Component implements ServerInterface
             }
             $context = $this->_context;
 
-            $context->request = $request;
             $context->response = $response;
 
             $this->_prepareGlobals($request);
@@ -162,37 +154,17 @@ class Swoole extends Component implements ServerInterface
             $str .= preg_replace('/#\d+\s/', '    at ', $traces);
             echo $str . PHP_EOL;
         }
-
-        if (!MANAPHP_COROUTINE_ENABLED) {
-            global $__root_context;
-
-            if ($__root_context !== null) {
-                foreach ($__root_context as $owner) {
-                    unset($owner->_context);
-                }
-
-                $__root_context = null;
-            }
-        }
     }
 
     /**
      * @param \Swoole\WebSocket\Server $server
-     * @param \Swoole\Http\Request     $req
+     * @param \Swoole\Http\Request     $request
      */
-    public function onOpen($server, $req)
+    public function onOpen($server, $request)
     {
-        try {
-            $fd = $req->fd;
-            $this->_prepareGlobals($req);
-        } finally {
-            /** @noinspection PhpUndefinedMethodInspection */
-            $this->_contexts[$fd] = $context = Coroutine::getContext();
-            foreach ($context as $k => $v) {
-                if ($v instanceof Inseparable) {
-                    unset($k);
-                }
-            }
+        if (isset($request->header['upgrade'])) {
+            $this->_prepareGlobals($request);
+            $this->contextManager->save($request->fd);
         }
     }
 
@@ -202,53 +174,69 @@ class Swoole extends Component implements ServerInterface
      */
     public function onClose($server, $fd)
     {
-        /** @var  \Swoole\WebSocket\Server $server */
-        if (!$server->isEstablished($fd)) {
-            return;
-        }
-
-        while (!isset($this->_contexts[$fd])) {
-            Coroutine::sleep(0.01);
-            $this->log('info', 'open is not ready');
-        }
-
-        try {
-            /** @var \ArrayObject $context */
-            /** @noinspection PhpUndefinedMethodInspection */
-            $context = Coroutine::getContext();
-
-            foreach ($this->_contexts[$fd] as $k => $v) {
-                /** @noinspection OnlyWritesOnParameterInspection */
-                $context[$k] = $v;
-            }
-            $this->_handler->onClose($fd);
-        } finally {
-            unset($this->_contexts[$fd]);
+        if ($server->isEstablished($fd)) {
+            $this->contextManager->delete($fd);
         }
     }
 
+    /**
+     * @param array $data
+     *
+     * @return array
+     */
     public function message($data)
     {
-        if (!$json = json_decode($data, true)) {
-            return ['jsonrpc' => '2.0', 'error' => ['code' => '-32700', 'message' => 'Parse error'], 'id' => null];
+        if (!$data) {
+            return ['code' => -32700, 'message' => 'Parse error'];
         }
 
-        if (!isset($json['jsonrpc'], $json['method'], $json['params'], $json['id']) || $json['jsonrpc'] !== '2.0' || !is_array($json['params'])) {
-            return ['jsonrpc' => '2.0', 'error' => ['code' => '-32600', 'message' => 'Invalid Request'], 'id' => null];
+        if (!isset($data['jsonrpc'], $data['method'], $data['params'], $data['id']) || $data['jsonrpc'] !== '2.0' || !is_array($data['params'])) {
+            return ['code' => -32600, 'message' => 'Invalid Request'];
         }
 
         $globals = $this->request->getGlobals();
-        $globals->_POST = $json['params'];
+        $globals->_POST = $data['params'];
         $globals->_REQUEST = $globals->_GET + $globals->_POST;
         $response = $this->_handler->handle();
         if (!isset($response['code'], $response['message'])) {
-            return ['jsonrpc' => '2.0', 'error' => ['code' => '-32603', 'message' => 'Internal error'], 'id' => null];
-        }
-        if (isset($response['data'])) {
-            return ['jsonrpc' => '2.0', 'result' => $response['data'], 'id' => $json['id']];
+            return ['code' => -32603, 'message' => 'Internal error'];
         } else {
-            return ['jsonrpc' => '2.0', 'error' => $response, 'id' => $json['id']];
+            return $response;
         }
+    }
+
+    /**
+     * @param \Swoole\WebSocket\Server $server
+     * @param \Swoole\WebSocket\Frame  $frame
+     */
+    public function onMessage($server, $frame)
+    {
+        $this->_context->frame = $frame;
+        $this->contextManager->restore($frame->fd);
+
+        $response = $this->response->_context;
+        $json = json_decode($frame->data, true);
+        try {
+            $content = $this->message($json);
+            if (is_string($content)) {
+                if ($content === '') {
+                    $content = [];
+                } else {
+                    $content = json_decode($content, true);
+                }
+            }
+        } catch (Throwable $throwable) {
+            $content = ['code' => -32603, 'message' => 'Internal error'];
+            $this->logger->warn($throwable);
+        }
+
+        if ($content['code'] === 0) {
+            $response->content = ['jsonrpc' => '2.0', 'result' => $content, 'id' => $json['id'] ?? null];
+        } else {
+            $response->content = ['jsonrpc' => '2.0', 'error' => $content, 'id' => $json['id'] ?? null];
+        }
+
+        $this->send($response);
     }
 
     /**
@@ -258,69 +246,47 @@ class Swoole extends Component implements ServerInterface
     {
         $this->eventsManager->fireEvent('response:beforeSend', $this, $response);
 
-        $sw_response = $this->_context->response;
+        $context = $this->_context;
+        if ($context->frame) {
+            $server = $this->request->getGlobals()->_SERVER;
+            $response->content[isset($response->content['result']) ? 'result' : 'error']['headers'] = [
+                'X-Request-Id' => $this->request->getRequestId(),
+                'X-Response-Time' => sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT'])
+            ];
 
-        $sw_response->status($response->status_code);
-
-        foreach ($response->headers as $name => $value) {
-            $sw_response->header($name, $value, false);
-        }
-
-        $server = $this->request->getGlobals()->_SERVER;
-
-        $sw_response->header('X-Request-Id', $this->request->getRequestId(), false);
-        $sw_response->header('X-Response-Time', sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']), false);
-
-        if ($response->cookies) {
-            throw new NotSupportedException('rpc not support cookie send');
-        }
-
-        if ($response->file) {
-            throw new NotSupportedException('rpc not support send file');
-        }
-
-        $content = $response->content;
-
-        if (is_string($content)) {
-            $sw_response->end($content);
+            $this->_swoole->push($context->frame->fd, json_encode($response->content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
         } else {
-            $sw_response->end(json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+            $sw_response = $this->_context->response;
+
+            $sw_response->status($response->status_code);
+
+            foreach ($response->headers as $name => $value) {
+                $sw_response->header($name, $value, false);
+            }
+
+            $server = $this->request->getGlobals()->_SERVER;
+
+            $sw_response->header('X-Request-Id', $this->request->getRequestId(), false);
+            $sw_response->header('X-Response-Time', sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']), false);
+
+            if ($response->cookies) {
+                throw new NotSupportedException('rpc not support cookie send');
+            }
+
+            if ($response->file) {
+                throw new NotSupportedException('rpc not support send file');
+            }
+
+            $content = $response->content;
+
+            if (is_string($content)) {
+                $sw_response->end($content);
+            } else {
+                $sw_response->end(json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+            }
         }
 
         $this->eventsManager->fireEvent('response:afterSend', $this, $response);
-    }
-
-    /**
-     * @param \Swoole\WebSocket\Server $server
-     * @param Frame                    $frame
-     */
-    public function onMessage($server, $frame)
-    {
-        $fd = $frame->fd;
-        $this->_context->frame = $frame;
-
-        try {
-            while (!isset($this->_contexts[$fd])) {
-                Coroutine::sleep(0.01);
-                $this->log('info', 'open is not ready');
-            }
-
-            /** @var \ArrayObject $context */
-            /** @noinspection PhpUndefinedMethodInspection */
-            $context = Coroutine::getContext();
-
-            foreach ($this->_contexts[$fd] as $k => $v) {
-                /** @noinspection OnlyWritesOnParameterInspection */
-                $context[$k] = $v;
-            }
-            $this->_handler->onMessage($fd, $frame->data);
-            $response = $this->message($frame->data);
-        } catch (Throwable $throwable) {
-            $response = ['jsonrpc' => '2.0', 'error' => ['code' => -32603, 'message' => 'Internal error'], 'id' => null];
-            $this->logger->warn($throwable);
-        }
-
-        $server->push($frame->fd, json_encode($response, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), WEBSOCKET_OPCODE_BINARY);
     }
 
     /**
