@@ -59,10 +59,6 @@ STR;
             shell_exec("explorer.exe http://127.0.0.1:$port" . $prefix);
         }
 
-        if (MANAPHP_COROUTINE_ENABLED) {
-            Runtime::enableCoroutine(false);
-        }
-
         shell_exec("php -S $ip:$port -t public tmp/$router");
     }
 }

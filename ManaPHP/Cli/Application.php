@@ -4,6 +4,8 @@ namespace ManaPHP\Cli;
 
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Logger\LogCategorizable;
+use Swoole\Coroutine;
+use Swoole\Event;
 use Throwable;
 
 /**
@@ -15,6 +17,11 @@ use Throwable;
  */
 class Application extends \ManaPHP\Application implements LogCategorizable
 {
+    /**
+     * @var int
+     */
+    protected $_exit_code = 255;
+
     /**
      * @return string
      */
@@ -60,13 +67,29 @@ class Application extends \ManaPHP\Application implements LogCategorizable
 
         $this->logger->info(['command line: :cmd', 'cmd' => basename($GLOBALS['argv'][0]) . ' ' . implode(' ', array_slice($GLOBALS['argv'], 1))]);
 
-        try {
-            exit($this->cliHandler->handle());
-        } catch (AbortException $exception) {
-            exit(0);
-        } catch (Throwable $e) {
-            $this->errorHandler->handle($e);
-            exit(127);
+        if (MANAPHP_COROUTINE_ENABLED) {
+            Coroutine::create(function () {
+                try {
+                    $this->_exit_code = $this->cliHandler->handle();
+                } catch (AbortException $exception) {
+                    $this->_exit_code = 0;
+                } catch (Throwable $throwable) {
+                    $this->_exit_code = 127;
+                    $this->errorHandler->handle($throwable);
+                }
+            });
+            Event::wait();
+        } else {
+            try {
+                $this->_exit_code = $this->cliHandler->handle();
+            } catch (AbortException $exception) {
+                $this->_exit_code = 0;
+            } catch (Throwable $e) {
+                $this->_exit_code = 127;
+                $this->errorHandler->handle($e);
+            }
         }
+
+        exit($this->_exit_code);
     }
 }

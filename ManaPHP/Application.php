@@ -49,7 +49,7 @@ class Application extends Component implements ApplicationInterface
         }
 
         if (MANAPHP_COROUTINE_ENABLED) {
-            Runtime::enableCoroutine();
+            Runtime::enableCoroutine(true);
         }
 
         $this->_di->setShared('loader', $loader ?: new Loader());
