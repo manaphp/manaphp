@@ -84,7 +84,7 @@ class Service extends Component implements LogCategorizable
     public function invoke($method, $params)
     {
         $response = $this->_rpcClient->invoke($method, $params);
-		
+
         if (!isset($response['code'], $response['message']) || (!isset($response['data']) && array_key_exists('data', $response))) {
             throw new ServiceException('bad response');
         } elseif ($response['code'] !== 0) {

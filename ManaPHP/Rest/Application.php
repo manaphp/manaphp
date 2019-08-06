@@ -44,11 +44,11 @@ class Application extends \ManaPHP\Http\Application
         }
 
         $response = $this->response->_context;
-		
+
         if ($response->content === '') {
             $response->content = ['code' => 0, 'message' => '', 'data' => null];
         }
-		
+
         $this->httpServer->send($response);
 
         $this->eventsManager->fireEvent('request:end', $this);
