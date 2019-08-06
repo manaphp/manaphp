@@ -82,12 +82,12 @@ class JsonRpc extends Component implements ClientInterface
 
         if (isset($json['error'])) {
             $error = $json['error'];
-            if (isset($error['code'], $error['message'])) {
-                throw new ProtocolException('');
+            if (!isset($error['code'], $error['message'])) {
+                throw new ProtocolException($error['message'], $error['code']);
             }
             throw new ClientException($error['message'], $error['code']);
         } elseif (!isset($json['result'])) {
-            throw new ProtocolException('');
+            throw new ProtocolException('missing result field');
         } else {
             return $json['result'];
         }
