@@ -2,10 +2,11 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\UnauthorizedException;
 
-class IdentityContext
+class IdentityContext implements Stickyable
 {
     /**
      * @var string

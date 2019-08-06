@@ -3,11 +3,12 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Http\Request\File\Exception as FileException;
 
-class RequestContext
+class RequestContext implements Stickyable
 {
     public $request_id;
 
