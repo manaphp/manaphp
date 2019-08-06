@@ -3,6 +3,7 @@ namespace ManaPHP\WebSocket\Server\Adapter;
 
 use ManaPHP\Component;
 use ManaPHP\Coroutine\Context\Inseparable;
+use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\WebSocket\ServerInterface;
 use Swoole\Coroutine;
 use Swoole\Process;
@@ -78,6 +79,14 @@ class Swoole extends Component implements ServerInterface
 
         if (isset($options['max_request']) && $options['max_request'] < 1) {
             $options['max_request'] = 1;
+        }
+
+        if (isset($options['dispatch_mode'])) {
+            if (!in_array((int)$options['dispatch_mode'], [2, 4, 5], true)) {
+                throw new NotSupportedException('only support dispatch_mode=2,4,5');
+            }
+        } else {
+            $options['dispatch_mode'] = 2;
         }
 
         $this->_settings = $options ?: [];

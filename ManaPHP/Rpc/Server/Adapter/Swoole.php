@@ -81,6 +81,14 @@ class Swoole extends Component implements ServerInterface
             $options['max_request'] = 1;
         }
 
+        if (isset($options['dispatch_mode'])) {
+            if (!in_array((int)$options['dispatch_mode'], [2, 4, 5], true)) {
+                throw new NotSupportedException('only support dispatch_mode=2,4,5');
+            }
+        } else {
+            $options['dispatch_mode'] = 2;
+        }
+
         $options['enable_coroutine'] = MANAPHP_COROUTINE_ENABLED ? 1 : 0;
         $this->_settings = $options ?: [];
 
