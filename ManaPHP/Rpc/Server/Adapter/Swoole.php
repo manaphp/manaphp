@@ -180,60 +180,32 @@ class Swoole extends Component implements ServerInterface
     }
 
     /**
-     * @param array $data
-     *
-     * @return array
-     */
-    public function message($data)
-    {
-        if (!$data) {
-            return ['code' => -32700, 'message' => 'Parse error'];
-        }
-
-        if (!isset($data['jsonrpc'], $data['method'], $data['params'], $data['id']) || $data['jsonrpc'] !== '2.0' || !is_array($data['params'])) {
-            return ['code' => -32600, 'message' => 'Invalid Request'];
-        }
-
-        $globals = $this->request->getGlobals();
-        $globals->_POST = $data['params'];
-        $globals->_REQUEST = $globals->_GET + $globals->_POST;
-        $response = $this->_handler->handle();
-        if (!isset($response['code'], $response['message'])) {
-            return ['code' => -32603, 'message' => 'Internal error'];
-        } else {
-            return $response;
-        }
-    }
-
-    /**
      * @param \Swoole\WebSocket\Server $server
      * @param \Swoole\WebSocket\Frame  $frame
      */
     public function onMessage($server, $frame)
     {
         $this->_context->frame = $frame;
-        $this->contextManager->restore($frame->fd);
+        //     $this->contextManager->restore($frame->fd);
 
         $response = $this->response->_context;
         $json = json_decode($frame->data, true);
-        try {
-            $content = $this->message($json);
-            if (is_string($content)) {
-                if ($content === '') {
-                    $content = [];
-                } else {
-                    $content = json_decode($content, true);
-                }
-            }
-        } catch (Throwable $throwable) {
-            $content = ['code' => -32603, 'message' => 'Internal error'];
-            $this->logger->warn($throwable);
-        }
-
-        if ($content['code'] === 0) {
-            $response->content = ['jsonrpc' => '2.0', 'result' => $content, 'id' => $json['id'] ?? null];
+        if (!$json) {
+            $response->content = ['code' => -32700, 'message' => 'Parse error'];
+        } elseif (!isset($json['jsonrpc'], $json['method'], $json['params'], $json['id'])
+            || $json['jsonrpc'] !== '2.0' || !is_array($json['params'])) {
+            $response->content = ['code' => -32600, 'message' => 'Invalid Request'];
         } else {
-            $response->content = ['jsonrpc' => '2.0', 'error' => $content, 'id' => $json['id'] ?? null];
+            $globals = $this->request->getGlobals();
+            $globals->_POST = $json['params'];
+            $globals->_REQUEST = $globals->_GET + $globals->_POST;
+            try {
+                $this->_handler->handle();
+                return;
+            } catch (Throwable $throwable) {
+                $response->content = ['code' => -32603, 'message' => 'Internal error'];
+                $this->logger->warn($throwable);
+            }
         }
 
         $this->send($response);
@@ -248,13 +220,18 @@ class Swoole extends Component implements ServerInterface
 
         $context = $this->_context;
         if ($context->frame) {
-            $server = $this->request->getGlobals()->_SERVER;
-            $response->content[isset($response->content['result']) ? 'result' : 'error']['headers'] = [
-                'X-Request-Id' => $this->request->getRequestId(),
-                'X-Response-Time' => sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT'])
-            ];
+//            $server = $this->request->getGlobals()->_SERVER;
+//            $response->content[isset($response->content['result']) ? 'result' : 'error']['headers'] = [
+//                'X-Request-Id' => $this->request->getRequestId(),
+//     //           'X-Response-Time' => sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT'])
+//            ];
 
-            $this->_swoole->push($context->frame->fd, json_encode($response->content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+            if ($response->content['code'] === 0) {
+                $content = ['jsonrpc' => '2.0', 'result' => $response->content, 'id' => $json['id'] ?? null];
+            } else {
+                $content = ['jsonrpc' => '2.0', 'error' => $response->content, 'id' => $json['id'] ?? null];
+            }
+            $this->_swoole->push($context->frame->fd, json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR), WEBSOCKET_OPCODE_BINARY);
         } else {
             $sw_response = $this->_context->response;
 
