@@ -2,6 +2,7 @@
 namespace ManaPHP\Coroutine\Context;
 
 use ManaPHP\Component;
+use ManaPHP\Exception\RuntimeException;
 use Swoole\Coroutine;
 
 class Manager extends Component implements ManagerInterface
@@ -36,8 +37,8 @@ class Manager extends Component implements ManagerInterface
      */
     public function restore($fd)
     {
-        while (!isset($this->_contexts[$fd])) {
-            Coroutine::sleep(0.001);
+        if (!isset($this->_contexts[$fd])) {
+            throw new RuntimeException('dead');
         }
 
         /** @var \ArrayObject $context */
@@ -57,6 +58,10 @@ class Manager extends Component implements ManagerInterface
      */
     public function delete($fd)
     {
+        if (!isset($this->_contexts[$fd])) {
+            throw new RuntimeException('dead');
+        }
+
         unset($this->_contexts[$fd]);
     }
 }

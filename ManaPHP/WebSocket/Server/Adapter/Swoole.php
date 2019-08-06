@@ -2,10 +2,8 @@
 namespace ManaPHP\WebSocket\Server\Adapter;
 
 use ManaPHP\Component;
-use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\WebSocket\ServerInterface;
-use Swoole\Coroutine;
 use Swoole\Process;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
@@ -14,7 +12,8 @@ use Throwable;
 /**
  * Class Server
  * @package ManaPHP\WebSocket
- * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Http\RequestInterface              $request
+ * @property-read \ManaPHP\Coroutine\Context\ManagerInterface $contextManager
  */
 class Swoole extends Component implements ServerInterface
 {
@@ -42,11 +41,6 @@ class Swoole extends Component implements ServerInterface
      * @var \ManaPHP\WebSocket\Server\HandlerInterface
      */
     protected $_handler;
-
-    /**
-     * @var array
-     */
-    protected $_contexts = [];
 
     /**
      * Server constructor.
@@ -136,23 +130,15 @@ class Swoole extends Component implements ServerInterface
 
     /**
      * @param \Swoole\WebSocket\Server $server
-     * @param \Swoole\Http\Request     $req
+     * @param \Swoole\Http\Request     $request
      */
-    public function onOpen($server, $req)
+    public function onOpen($server, $request)
     {
         try {
-            $fd = $req->fd;
-
-            $this->_prepareGlobals($req);
-            $this->_handler->onOpen($fd);
+            $this->_prepareGlobals($request);
+            $this->_handler->onOpen($request->fd);
         } finally {
-            /** @noinspection PhpUndefinedMethodInspection */
-            $this->_contexts[$fd] = $context = Coroutine::getContext();
-            foreach ($context as $k => $v) {
-                if ($v instanceof Inseparable) {
-                    unset($k);
-                }
-            }
+            $this->contextManager->save($request->fd);
         }
     }
 
@@ -167,23 +153,12 @@ class Swoole extends Component implements ServerInterface
             return;
         }
 
-        while (!isset($this->_contexts[$fd])) {
-            Coroutine::sleep(0.01);
-            $this->log('info', 'open is not ready');
-        }
+        $this->contextManager->restore($fd);
 
         try {
-            /** @var \ArrayObject $context */
-            /** @noinspection PhpUndefinedMethodInspection */
-            $context = Coroutine::getContext();
-
-            foreach ($this->_contexts[$fd] as $k => $v) {
-                /** @noinspection OnlyWritesOnParameterInspection */
-                $context[$k] = $v;
-            }
             $this->_handler->onClose($fd);
         } finally {
-            unset($this->_contexts[$fd]);
+            $this->contextManager->delete($fd);
         }
     }
 
@@ -193,23 +168,10 @@ class Swoole extends Component implements ServerInterface
      */
     public function onMessage($server, $frame)
     {
-        $fd = $frame->fd;
+        $this->contextManager->restore($frame->fd);
 
         try {
-            while (!isset($this->_contexts[$fd])) {
-                Coroutine::sleep(0.01);
-                $this->log('info', 'open is not ready');
-            }
-
-            /** @var \ArrayObject $context */
-            /** @noinspection PhpUndefinedMethodInspection */
-            $context = Coroutine::getContext();
-
-            foreach ($this->_contexts[$fd] as $k => $v) {
-                /** @noinspection OnlyWritesOnParameterInspection */
-                $context[$k] = $v;
-            }
-            $this->_handler->onMessage($fd, $frame->data);
+            $this->_handler->onMessage($frame->fd, $frame->data);
         } catch (Throwable $throwable) {
             $this->logger->warn($throwable);
         }

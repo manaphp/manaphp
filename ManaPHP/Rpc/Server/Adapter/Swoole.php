@@ -194,7 +194,7 @@ class Swoole extends Component implements ServerInterface
     public function onMessage($server, $frame)
     {
         $this->_context->frame = $frame;
-        //     $this->contextManager->restore($frame->fd);
+        $this->contextManager->restore($frame->fd);
 
         $response = $this->response->_context;
         $json = json_decode($frame->data, true);
