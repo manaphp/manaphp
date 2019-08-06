@@ -20,7 +20,7 @@ class Application extends \ManaPHP\Application implements LogCategorizable
     /**
      * @var int
      */
-    protected $_exit_code = 255;
+    protected $_exit_code;
 
     /**
      * @return string
@@ -58,6 +58,21 @@ class Application extends \ManaPHP\Application implements LogCategorizable
         return $this->_di;
     }
 
+    public function handle()
+    {
+        try {
+            $this->_exit_code = $this->cliHandler->handle();
+        } catch (AbortException $exception) {
+            $this->_exit_code = 0;
+        } catch (\ManaPHP\Cli\Request\Exception $exception) {
+            $this->_exit_code = 254;
+            $this->errorHandler->handle($exception);
+        } catch (Throwable $e) {
+            $this->_exit_code = 255;
+            $this->errorHandler->handle($e);
+        }
+    }
+
     public function main()
     {
         $this->dotenv->load();
@@ -68,26 +83,10 @@ class Application extends \ManaPHP\Application implements LogCategorizable
         $this->logger->info(['command line: :cmd', 'cmd' => basename($GLOBALS['argv'][0]) . ' ' . implode(' ', array_slice($GLOBALS['argv'], 1))]);
 
         if (MANAPHP_COROUTINE_ENABLED) {
-            Coroutine::create(function () {
-                try {
-                    $this->_exit_code = $this->cliHandler->handle();
-                } catch (AbortException $exception) {
-                    $this->_exit_code = 0;
-                } catch (Throwable $throwable) {
-                    $this->_exit_code = 127;
-                    $this->errorHandler->handle($throwable);
-                }
-            });
+            Coroutine::create([$this, 'handle']);
             Event::wait();
         } else {
-            try {
-                $this->_exit_code = $this->cliHandler->handle();
-            } catch (AbortException $exception) {
-                $this->_exit_code = 0;
-            } catch (Throwable $e) {
-                $this->_exit_code = 127;
-                $this->errorHandler->handle($e);
-            }
+            $this->handle();
         }
 
         exit($this->_exit_code);

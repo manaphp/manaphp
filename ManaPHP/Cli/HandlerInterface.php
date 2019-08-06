@@ -9,6 +9,7 @@ interface HandlerInterface
      *
      * @return int
      * @throws \ManaPHP\Exception\AbortException
+     * @throws \ManaPHP\Cli\Request\Exception
      */
     public function handle($args = null);
 

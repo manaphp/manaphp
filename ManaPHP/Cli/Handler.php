@@ -2,7 +2,6 @@
 
 namespace ManaPHP\Cli;
 
-use ManaPHP\Cli\Request\Exception as RequestException;
 use ManaPHP\Component;
 use ManaPHP\Utility\Text;
 
@@ -197,12 +196,7 @@ class Handler extends Component implements HandlerInterface
             }
         }
 
-        try {
-            $r = $this->commandInvoker->invoke($controllerInstance, $commandName);
-        } /** @noinspection PhpRedundantCatchClauseInspection */
-        catch (RequestException $e) {
-            return $this->console->error($e->getMessage());
-        }
+        $r = $this->commandInvoker->invoke($controllerInstance, $commandName);
 
         return is_int($r) ? $r : 0;
     }
