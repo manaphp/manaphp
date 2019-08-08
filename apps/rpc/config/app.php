@@ -10,7 +10,7 @@ return [
     'params' => [],
     'aliases' => [],
     'components' => [
-        '!rpcServer' => ['port' => 9503, 'worker_num' => 4, 'max_request' => 1000000, 'dispatch_mode' => 1],
+        '!rpcServer' => ['port' => 9503, 'worker_num' => 4, 'max_request' => 1000000],
         'db' => [env('DB_URL')],
         'redis' => [env('REDIS_URL')],
         'logger' => ['level' => env('LOGGER_LEVEL', 'info')],
