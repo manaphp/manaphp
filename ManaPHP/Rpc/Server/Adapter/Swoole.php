@@ -126,9 +126,7 @@ class Swoole extends Component implements ServerInterface
         $_server += $_SERVER;
 
         $_get = $request->get ?: [];
-        $request_uri = $_server['REQUEST_URI'];
-        $_get['_url'] = ($pos = strpos($request_uri, '?')) ? substr($request_uri, 0, $pos) : $request_uri;
-
+        $_server['WS_ENDPOINT'] = $_get['_url'] = rtrim($_server['REQUEST_URI'], '/');
         $globals = $this->request->getGlobals();
 
         $globals->_GET = $_get;
@@ -205,6 +203,7 @@ class Swoole extends Component implements ServerInterface
             $response->content = ['code' => -32600, 'message' => 'Invalid Request'];
         } else {
             $globals = $this->request->getGlobals();
+            $globals->_GET['_url'] = $globals->_SERVER['WS_ENDPOINT'] . '/' . $json['method'];
             $globals->_POST = $json['params'];
             $globals->_REQUEST = $globals->_GET + $globals->_POST;
             try {
@@ -228,11 +227,11 @@ class Swoole extends Component implements ServerInterface
 
         $context = $this->_context;
         if ($context->frame) {
-//            $server = $this->request->getGlobals()->_SERVER;
-//            $response->content[isset($response->content['result']) ? 'result' : 'error']['headers'] = [
-//                'X-Request-Id' => $this->request->getRequestId(),
-//     //           'X-Response-Time' => sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT'])
-//            ];
+            $server = $this->request->getGlobals()->_SERVER;
+            $response->content[isset($response->content['result']) ? 'result' : 'error']['headers'] = [
+                'X-Request-Id' => $this->request->getRequestId(),
+                'X-Response-Time' => sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT'])
+            ];
 
             if ($response->content['code'] === 0) {
                 $content = ['jsonrpc' => '2.0', 'result' => $response->content, 'id' => $json['id'] ?? null];
