@@ -158,8 +158,6 @@ class Application extends Component implements ApplicationInterface
 
     /**
      * @param array $plugins
-     *
-     * @throws \ManaPHP\Exception\RuntimeException
      */
     protected function _loadPlugins($plugins)
     {
@@ -197,8 +195,6 @@ class Application extends Component implements ApplicationInterface
 
     /**
      * @param array $components
-     *
-     * @throws \ManaPHP\Exception\RuntimeException
      */
     protected function _loadComponents($components)
     {
