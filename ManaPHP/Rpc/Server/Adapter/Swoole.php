@@ -33,7 +33,7 @@ class Swoole extends Component implements ServerInterface
     /**
      * @var int
      */
-    protected $_port = 8300;
+    protected $_port = 9505;
 
     /**
      * @var array
@@ -277,7 +277,7 @@ class Swoole extends Component implements ServerInterface
             $sw_response->header('X-Response-Time', sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']), false);
 
             if ($response->cookies) {
-                throw new NotSupportedException('rpc not support cookie send');
+                throw new NotSupportedException('rpc not support cookies');
             }
 
             if ($response->file) {
