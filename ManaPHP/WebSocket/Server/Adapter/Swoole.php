@@ -111,7 +111,6 @@ class Swoole extends Component implements ServerInterface
     protected function _prepareGlobals($request)
     {
         $_server = array_change_key_case($request->server, CASE_UPPER);
-        unset($_server['SERVER_SOFTWARE']);
 
         foreach ($request->header ?: [] as $k => $v) {
             if (in_array($k, ['content-type', 'content-length'], true)) {
@@ -241,7 +240,7 @@ class Swoole extends Component implements ServerInterface
         if (is_string($data)) {
             return $this->_swoole->push($fd, $data);
         } else {
-            return $this->_swoole->push($fd, json_encode($data), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+            return $this->_swoole->push($fd, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
         }
     }
 
