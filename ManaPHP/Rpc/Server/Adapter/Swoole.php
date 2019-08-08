@@ -120,8 +120,6 @@ class Swoole extends Component implements ServerInterface
     protected function _prepareGlobals($request)
     {
         $_server = array_change_key_case($request->server, CASE_UPPER);
-        unset($_server['SERVER_SOFTWARE']);
-
         foreach ($request->header ?: [] as $k => $v) {
             if (in_array($k, ['content-type', 'content-length'], true)) {
                 $_server[strtoupper(strtr($k, '-', '_'))] = $v;
@@ -129,15 +127,16 @@ class Swoole extends Component implements ServerInterface
                 $_server['HTTP_' . strtoupper(strtr($k, '-', '_'))] = $v;
             }
         }
-
         $_server += $_SERVER;
 
         $_get = $request->get ?: [];
         $_server['WS_ENDPOINT'] = $_get['_url'] = rtrim($_server['REQUEST_URI'], '/');
+
         $globals = $this->request->getGlobals();
 
         $globals->_GET = $_get;
-        $globals->_REQUEST = $_get;
+        $globals->_POST = $request->post ?: [];
+        $globals->_REQUEST = $globals->_POST + $globals->_GET;
         $globals->_SERVER = $_server;
     }
 
@@ -147,12 +146,13 @@ class Swoole extends Component implements ServerInterface
      */
     public function onRequest($request, $response)
     {
+        if ($request->server['request_uri'] === '/favicon.ico') {
+            $response->status(404);
+            $response->end();
+            return;
+        }
+
         try {
-            if ($request->server['request_uri'] === '/favicon.ico') {
-                $response->status(404);
-                $response->end();
-                return;
-            }
             $context = $this->_context;
 
             $context->response = $response;
@@ -214,8 +214,7 @@ class Swoole extends Component implements ServerInterface
         $this->_context->frame = $frame;
 
         $response = $this->response->_context;
-        $json = json_decode($frame->data, true);
-        if (!$json) {
+        if (!$json = json_decode($frame->data, true)) {
             $response->content = ['code' => -32700, 'message' => 'Parse error'];
             $this->send($response);
         } elseif (!isset($json['jsonrpc'], $json['method'], $json['params'], $json['id'])
@@ -226,7 +225,9 @@ class Swoole extends Component implements ServerInterface
             $globals = $this->request->getGlobals();
             $globals->_GET['_url'] = $globals->_SERVER['WS_ENDPOINT'] . '/' . $json['method'];
             $globals->_POST = $json['params'];
-            $globals->_REQUEST = $globals->_GET + $globals->_POST;
+            $globals->_REQUEST = $globals->_POST + $globals->_GET;
+            $globals->_SERVER['REQUEST_TIME_FLOAT'] = microtime(true);
+            $globals->_SERVER['REQUEST_TIME'] = (int)$globals->_SERVER['REQUEST_TIME_FLOAT'];
             try {
                 $this->_handler->handle();
             } catch (Throwable $throwable) {
@@ -247,8 +248,6 @@ class Swoole extends Component implements ServerInterface
      */
     public function send($response)
     {
-        $this->eventsManager->fireEvent('response:beforeSend', $this, $response);
-
         $context = $this->_context;
         if ($context->frame) {
             $server = $this->request->getGlobals()->_SERVER;
@@ -293,8 +292,6 @@ class Swoole extends Component implements ServerInterface
                 $sw_response->end(json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
             }
         }
-
-        $this->eventsManager->fireEvent('response:afterSend', $this, $response);
     }
 
     /**
