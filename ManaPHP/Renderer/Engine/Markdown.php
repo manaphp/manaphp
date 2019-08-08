@@ -716,8 +716,8 @@ class Markdown extends Component implements EngineInterface
         $textLevelElements = [
             'a', 'br', 'bdo', 'abbr', 'blink', 'nextid', 'acronym', 'basefont',
             'b', 'em', 'big', 'cite', 'small', 'spacer', 'listing',
-            'i', 'rp', 'del', 'code',          'strike', 'marquee',
-            'q', 'rt', 'ins', 'font',          'strong',
+            'i', 'rp', 'del', 'code', 'strike', 'marquee',
+            'q', 'rt', 'ins', 'font', 'strong',
             's', 'tt', 'kbd', 'mark',
             'u', 'xm', 'sub', 'nobr',
             'sup', 'ruby',
@@ -773,11 +773,9 @@ class Markdown extends Component implements EngineInterface
 
             $this->DefinitionData['Reference'][$id] = $Data;
 
-            $Block = [
+            return [
                 'element' => [],
             ];
-
-            return $Block;
         }
     }
 
