@@ -1,10 +1,8 @@
 <?php
 namespace ManaPHP\Rpc\Server\Adapter;
 
-use ManaPHP\Component;
 use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Rpc\ServerInterface;
 use Swoole\Coroutine;
 use Swoole\WebSocket\Server;
 use Throwable;
@@ -19,22 +17,10 @@ class SwooleContext
 /**
  * Class Server
  * @package ManaPHP\WebSocket
- * @property-read \ManaPHP\Http\RequestInterface            $request
- * @property-read \ManaPHP\Http\Response                    $response
  * @property-read \ManaPHP\Rpc\Server\Adapter\SwooleContext $_context
  */
-class Swoole extends Component implements ServerInterface
+class Swoole extends \ManaPHP\Rpc\Server
 {
-    /**
-     * @var string
-     */
-    protected $_host = '0.0.0.0';
-
-    /**
-     * @var int
-     */
-    protected $_port = 9505;
-
     /**
      * @var array
      */
@@ -44,11 +30,6 @@ class Swoole extends Component implements ServerInterface
      * @var \Swoole\WebSocket\Server
      */
     protected $_swoole;
-
-    /**
-     * @var \ManaPHP\Rpc\Server\HandlerInterface
-     */
-    protected $_handler;
 
     /**
      * @var ArrayObject[]
@@ -62,6 +43,8 @@ class Swoole extends Component implements ServerInterface
      */
     public function __construct($options = null)
     {
+        parent::__construct($options);
+
         $script_filename = get_included_files()[0];
         $_SERVER = [
             'DOCUMENT_ROOT' => dirname($script_filename),
@@ -75,14 +58,6 @@ class Swoole extends Component implements ServerInterface
         ];
 
         unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
-
-        if (isset($options['host'])) {
-            $this->_host = $options['host'];
-        }
-
-        if (isset($options['port'])) {
-            $this->_port = (int)$options['port'];
-        }
 
         if (isset($options['max_request']) && $options['max_request'] < 1) {
             $options['max_request'] = 1;
@@ -107,11 +82,6 @@ class Swoole extends Component implements ServerInterface
         $this->_swoole->on('open', [$this, 'onOpen']);
         $this->_swoole->on('close', [$this, 'onClose']);
         $this->_swoole->on('message', [$this, 'onMessage']);
-    }
-
-    public function log($level, $message)
-    {
-        echo sprintf('[%s][%s]: ', date('c'), $level), $message, PHP_EOL;
     }
 
     /**
@@ -152,16 +122,14 @@ class Swoole extends Component implements ServerInterface
             return;
         }
 
+        $this->_context->response = $response;
+
         try {
             $this->_prepareGlobals($request);
-
-            if ($this->_handler->authenticate() === false) {
-                if (!$this->response->getContent()) {
-                    $this->response->setStatus(401)->setJsonContent(['code' => 401, 'message' => 'Unauthorized']);
-                }
-                $this->send($this->response->_context);
-            } else {
+            if ($this->authenticate()) {
                 $this->_handler->handle();
+            } else {
+                $this->send($this->response->_context);
             }
         } catch (Throwable $exception) {
             $str = date('c') . ' ' . get_class($exception) . ': ' . $exception->getMessage() . PHP_EOL;
@@ -189,18 +157,11 @@ class Swoole extends Component implements ServerInterface
             }
             $this->_contexts[$request->fd] = $context;
 
-            if ($this->_handler->authenticate() === false) {
+            if (!$this->authenticate()) {
                 $response = $this->response->_context;
-                if ($response->content) {
-                    if (is_string($response->content)) {
-                        $response->content = json_decode($response->content, true);
-                    }
-                } else {
-                    $response->content = ['code' => 401, 'message' => 'Unauthorized'];
-                }
                 $content = ['jsonrpc' => '2.0', 'error' => $response->content, 'id' => null];
                 $server->push($request->fd, json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), WEBSOCKET_OPCODE_BINARY);
-                $this->_swoole->close($request->fd);
+                $server->close($request->fd, true);
             }
         }
     }

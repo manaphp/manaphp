@@ -1,17 +1,14 @@
 <?php
 namespace ManaPHP\Rpc\Server\Adapter;
 
-use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Rpc\ServerInterface;
+use ManaPHP\Rpc\Server;
 
 /**
  * Class Fpm
  * @package ManaPHP\Rpc\Server\Adapter
- * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\Http\Response         $response
  */
-class Fpm extends Component implements ServerInterface
+class Fpm extends Server
 {
     protected function _prepareGlobals()
     {
@@ -56,16 +53,14 @@ class Fpm extends Component implements ServerInterface
      */
     public function start($handler)
     {
+        $this->_handler = $handler;
+
         $this->_prepareGlobals();
 
-        if ($handler->authenticate() === false) {
-            if (!$this->response->getContent()) {
-                $this->response->setStatus(401)->setJsonContent(['code' => 401, 'message' => 'Unauthorized']);
-            }
-
-            $this->send($this->response->_context);
+        if ($this->authenticate()) {
+            $this->_handler->handle();
         } else {
-            $handler->handle();
+            $this->send($this->response->_context);
         }
 
         return $this;

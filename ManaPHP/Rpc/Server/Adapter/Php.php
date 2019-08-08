@@ -10,31 +10,13 @@ namespace ManaPHP\Rpc\Server\Adapter;
 class Php extends Fpm
 {
     /**
-     * @var string
-     */
-    protected $_host = '0.0.0.0';
-
-    /**
-     * @var int
-     */
-    protected $_port = 9505;
-
-    /**
      * Fpm constructor.
      *
      * @param array $options
      */
     public function __construct($options = null)
     {
-        if (isset($options['host'])) {
-            $this->_host = $options['host'];
-            unset($options['host']);
-        }
-
-        if (isset($options['port'])) {
-            $this->_port = (int)$options['port'];
-            unset($options['port']);
-        }
+        parent::__construct($options);
 
         $public_dir = $this->alias->resolve('@public');
         $local_ip = $this->_getLocalIp();
@@ -56,11 +38,6 @@ class Php extends Fpm
             $_SERVER['REQUEST_SCHEME'] = 'http';
             $_GET['_url'] = $_REQUEST['_url'] = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
         }
-    }
-
-    public function log($level, $message)
-    {
-        echo sprintf('[%s][%s]: ', date('c'), $level), $message, PHP_EOL;
     }
 
     /**
