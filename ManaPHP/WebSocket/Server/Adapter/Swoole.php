@@ -10,6 +10,7 @@ use Swoole\Process;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
 use Throwable;
+use ArrayObject;
 
 /**
  * Class Server
@@ -44,7 +45,7 @@ class Swoole extends Component implements ServerInterface
     protected $_handler;
 
     /**
-     * @var array
+     * @var ArrayObject[]
      */
     protected $_contexts = [];
 
@@ -144,7 +145,7 @@ class Swoole extends Component implements ServerInterface
             $this->_prepareGlobals($request);
             $this->_handler->onOpen($request->fd);
         } finally {
-            $context = [];
+            $context = new ArrayObject();
             foreach (Coroutine::getContext() as $k => $v) {
                 if ($v instanceof Stickyable) {
                     $context[$k] = $v;
@@ -185,17 +186,24 @@ class Swoole extends Component implements ServerInterface
      */
     public function onMessage($server, $frame)
     {
-        /** @var \ArrayObject $context */
-        $context = Coroutine::getContext();
-        foreach ($this->_contexts[$frame->fd] as $k => $v) {
+        /** @var \ArrayObject $current_context */
+        $current_context = Coroutine::getContext();
+        $old_context = $this->_contexts[$frame->fd];
+        foreach ($old_context as $k => $v) {
             /** @noinspection OnlyWritesOnParameterInspection */
-            $context[$k] = $v;
+            $current_context[$k] = $v;
         }
 
         try {
             $this->_handler->onMessage($frame->fd, $frame->data);
         } catch (Throwable $throwable) {
             $this->logger->warn($throwable);
+        }
+
+        foreach ($current_context as $k => $v) {
+            if ($v instanceof Stickyable && !isset($old_context[$k])) {
+                $old_context[$k] = $v;
+            }
         }
     }
 

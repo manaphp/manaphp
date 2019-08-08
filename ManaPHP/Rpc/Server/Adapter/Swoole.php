@@ -8,6 +8,7 @@ use ManaPHP\Rpc\ServerInterface;
 use Swoole\Coroutine;
 use Swoole\WebSocket\Server;
 use Throwable;
+use ArrayObject;
 
 class SwooleContext
 {
@@ -50,7 +51,7 @@ class Swoole extends Component implements ServerInterface
     protected $_handler;
 
     /**
-     * @var array
+     * @var ArrayObject[]
      */
     protected $_contexts = [];
 
@@ -177,7 +178,7 @@ class Swoole extends Component implements ServerInterface
         if (isset($request->header['upgrade'])) {
             $this->_prepareGlobals($request);
 
-            $context = [];
+            $context = new ArrayObject();
             foreach (Coroutine::getContext() as $k => $v) {
                 if ($v instanceof Stickyable) {
                     $context[$k] = $v;
@@ -202,11 +203,12 @@ class Swoole extends Component implements ServerInterface
      */
     public function onMessage($server, $frame)
     {
-        /** @var \ArrayObject $context */
-        $context = Coroutine::getContext();
-        foreach ($this->_contexts[$frame->fd] as $k => $v) {
+        /** @var \ArrayObject $current_context */
+        $current_context = Coroutine::getContext();
+        $old_context = $this->_contexts[$frame->fd];
+        foreach ($old_context as $k => $v) {
             /** @noinspection OnlyWritesOnParameterInspection */
-            $context[$k] = $v;
+            $current_context[$k] = $v;
         }
 
         $this->_context->frame = $frame;
@@ -215,9 +217,11 @@ class Swoole extends Component implements ServerInterface
         $json = json_decode($frame->data, true);
         if (!$json) {
             $response->content = ['code' => -32700, 'message' => 'Parse error'];
+            $this->send($response);
         } elseif (!isset($json['jsonrpc'], $json['method'], $json['params'], $json['id'])
             || $json['jsonrpc'] !== '2.0' || !is_array($json['params'])) {
             $response->content = ['code' => -32600, 'message' => 'Invalid Request'];
+            $this->send($response);
         } else {
             $globals = $this->request->getGlobals();
             $globals->_GET['_url'] = $globals->_SERVER['WS_ENDPOINT'] . '/' . $json['method'];
@@ -225,14 +229,17 @@ class Swoole extends Component implements ServerInterface
             $globals->_REQUEST = $globals->_GET + $globals->_POST;
             try {
                 $this->_handler->handle();
-                return;
             } catch (Throwable $throwable) {
                 $response->content = ['code' => -32603, 'message' => 'Internal error'];
                 $this->logger->warn($throwable);
             }
         }
 
-        $this->send($response);
+        foreach ($current_context as $k => $v) {
+            if ($v instanceof Stickyable && !isset($old_context[$k])) {
+                $old_context[$k] = $v;
+            }
+        }
     }
 
     /**
