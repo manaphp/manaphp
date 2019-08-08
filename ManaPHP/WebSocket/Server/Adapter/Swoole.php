@@ -2,8 +2,10 @@
 namespace ManaPHP\WebSocket\Server\Adapter;
 
 use ManaPHP\Component;
+use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\WebSocket\ServerInterface;
+use Swoole\Coroutine;
 use Swoole\Process;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
@@ -12,8 +14,7 @@ use Throwable;
 /**
  * Class Server
  * @package ManaPHP\WebSocket
- * @property-read \ManaPHP\Http\RequestInterface              $request
- * @property-read \ManaPHP\Coroutine\Context\ManagerInterface $contextManager
+ * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class Swoole extends Component implements ServerInterface
 {
@@ -41,6 +42,11 @@ class Swoole extends Component implements ServerInterface
      * @var \ManaPHP\WebSocket\Server\HandlerInterface
      */
     protected $_handler;
+
+    /**
+     * @var array
+     */
+    protected $_contexts = [];
 
     /**
      * Server constructor.
@@ -138,7 +144,13 @@ class Swoole extends Component implements ServerInterface
             $this->_prepareGlobals($request);
             $this->_handler->onOpen($request->fd);
         } finally {
-            $this->contextManager->save($request->fd);
+            $context = [];
+            foreach (Coroutine::getContext() as $k => $v) {
+                if ($v instanceof Stickyable) {
+                    $context[$k] = $v;
+                }
+            }
+            $this->_contexts[$request->fd] = $context;
         }
     }
 
@@ -153,12 +165,17 @@ class Swoole extends Component implements ServerInterface
             return;
         }
 
-        $this->contextManager->restore($fd);
+        /** @var \ArrayObject $context */
+        $context = Coroutine::getContext();
+        foreach ($this->_contexts[$fd] as $k => $v) {
+            /** @noinspection OnlyWritesOnParameterInspection */
+            $context[$k] = $v;
+        }
 
         try {
             $this->_handler->onClose($fd);
         } finally {
-            $this->contextManager->delete($fd);
+            unset($this->_contexts[$fd]);
         }
     }
 
@@ -168,7 +185,12 @@ class Swoole extends Component implements ServerInterface
      */
     public function onMessage($server, $frame)
     {
-        $this->contextManager->restore($frame->fd);
+        /** @var \ArrayObject $context */
+        $context = Coroutine::getContext();
+        foreach ($this->_contexts[$frame->fd] as $k => $v) {
+            /** @noinspection OnlyWritesOnParameterInspection */
+            $context[$k] = $v;
+        }
 
         try {
             $this->_handler->onMessage($frame->fd, $frame->data);
