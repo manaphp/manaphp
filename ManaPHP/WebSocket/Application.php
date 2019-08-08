@@ -69,7 +69,6 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         $content = $this->response->getContent();
         if ($content !== '') {
             $this->wsServer->push($fd, $content);
-            $this->response->setContent('');
         }
 
         if ($throwable) {
@@ -112,7 +111,6 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         $content = $this->response->getContent();
         if ($content !== '') {
             $this->wsServer->push($fd, $content);
-            $this->response->setContent('');
         }
     }
 

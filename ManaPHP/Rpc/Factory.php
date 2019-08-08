@@ -7,7 +7,6 @@ class Factory extends \ManaPHP\Http\Factory
     {
         parent::__construct();
         $this->_definitions = array_merge($this->_definitions, [
-            'rpcServer' => 'ManaPHP\Rpc\Server\Adapter\Swoole',
             'errorHandler' => 'ManaPHP\Rest\ErrorHandler',
             'dispatcher' => 'ManaPHP\Rpc\Dispatcher']);
     }
