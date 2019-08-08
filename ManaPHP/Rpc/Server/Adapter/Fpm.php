@@ -9,14 +9,10 @@ use ManaPHP\Rpc\ServerInterface;
  * Class Fpm
  * @package ManaPHP\Rpc\Server\Adapter
  * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Http\Response         $response
  */
 class Fpm extends Component implements ServerInterface
 {
-    /**
-     * @var \ManaPHP\Rpc\Server\HandlerInterface
-     */
-    protected $_handler;
-
     protected function _prepareGlobals()
     {
         if (!isset($_GET['_url']) && ($pos = strpos($_SERVER['PHP_SELF'], '/index.php/')) !== false) {
@@ -54,7 +50,7 @@ class Fpm extends Component implements ServerInterface
     }
 
     /**
-     * @param \ManaPHP\Http\Server\HandlerInterface $handler
+     * @param \ManaPHP\Rpc\Server\HandlerInterface $handler
      *
      * @return static
      */
@@ -62,7 +58,15 @@ class Fpm extends Component implements ServerInterface
     {
         $this->_prepareGlobals();
 
-        $handler->handle();
+        if ($handler->authenticate() === false) {
+            if (!$this->response->getContent()) {
+                $this->response->setStatus(401)->setJsonContent(['code' => 401, 'message' => 'Unauthorized']);
+            }
+
+            $this->send($this->response->_context);
+        } else {
+            $handler->handle();
+        }
 
         return $this;
     }

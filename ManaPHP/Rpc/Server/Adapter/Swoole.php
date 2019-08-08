@@ -153,13 +153,16 @@ class Swoole extends Component implements ServerInterface
         }
 
         try {
-            $context = $this->_context;
-
-            $context->response = $response;
-
             $this->_prepareGlobals($request);
 
-            $this->_handler->handle();
+            if ($this->_handler->authenticate() === false) {
+                if (!$this->response->getContent()) {
+                    $this->response->setStatus(401)->setJsonContent(['code' => 401, 'message' => 'Unauthorized']);
+                }
+                $this->send($this->response->_context);
+            } else {
+                $this->_handler->handle();
+            }
         } catch (Throwable $exception) {
             $str = date('c') . ' ' . get_class($exception) . ': ' . $exception->getMessage() . PHP_EOL;
             $str .= '    at ' . $exception->getFile() . ':' . $exception->getLine() . PHP_EOL;
@@ -185,6 +188,20 @@ class Swoole extends Component implements ServerInterface
                 }
             }
             $this->_contexts[$request->fd] = $context;
+
+            if ($this->_handler->authenticate() === false) {
+                $response = $this->response->_context;
+                if ($response->content) {
+                    if (is_string($response->content)) {
+                        $response->content = json_decode($response->content, true);
+                    }
+                } else {
+                    $response->content = ['code' => 401, 'message' => 'Unauthorized'];
+                }
+                $content = ['jsonrpc' => '2.0', 'error' => $response->content, 'id' => null];
+                $server->push($request->fd, json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), WEBSOCKET_OPCODE_BINARY);
+                $this->_swoole->close($request->fd);
+            }
         }
     }
 

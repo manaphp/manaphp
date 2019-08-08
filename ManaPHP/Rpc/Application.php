@@ -43,6 +43,11 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         return $this->_di;
     }
 
+    public function authenticate()
+    {
+        return true;
+    }
+
     public function handle()
     {
         try {
