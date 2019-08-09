@@ -15,6 +15,11 @@ class Client extends Component implements ClientInterface
     protected $_endpoint;
 
     /**
+     * @var callable
+     */
+    protected $_on_connect;
+
+    /**
      * @var resource
      */
     protected $_socket;
@@ -35,6 +40,10 @@ class Client extends Component implements ClientInterface
             $this->_endpoint = $options;
         } elseif (is_array($options)) {
             $this->_endpoint = $options['endpoint'];
+			
+            if (isset($options['on_connect'])) {
+                $this->_on_connect = $options['on_connect'];
+            }
         }
     }
 
@@ -101,7 +110,14 @@ class Client extends Component implements ClientInterface
                 break;
             }
         }
-        return $this->_socket = $socket;
+
+        $this->_socket = $socket;
+
+        if ($this->_on_connect) {
+            call_user_func($this->_on_connect, $this);
+        }
+		
+        return $this->_socket;
     }
 
     /**
