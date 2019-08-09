@@ -2,10 +2,12 @@
 namespace ManaPHP\WebSocket;
 
 use ManaPHP\Component;
+use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\WebSocket\Client\DataTransferException;
 use ManaPHP\WebSocket\Client\HandshakeException;
 use ManaPHP\WebSocket\Client\ProtocolException;
 use ManaPHP\WebSocket\Client\TimeoutException;
+use ManaPHP\WebSocket\Client\ConnectionException;
 
 class Client extends Component implements ClientInterface
 {
@@ -13,6 +15,16 @@ class Client extends Component implements ClientInterface
      * @var string
      */
     protected $_endpoint;
+
+    /**
+     * @var string
+     */
+    protected $_proxy;
+
+    /**
+     * @var int
+     */
+    protected $_timeout = 3;
 
     /**
      * @var callable
@@ -40,7 +52,15 @@ class Client extends Component implements ClientInterface
             $this->_endpoint = $options;
         } elseif (is_array($options)) {
             $this->_endpoint = $options['endpoint'];
-			
+
+            if (isset($options['proxy'])) {
+                $this->_proxy = $options['proxy'];
+            }
+
+            if (isset($options['timeout'])) {
+                $this->_timeout = $options['timeout'];
+            }
+
             if (isset($options['on_connect'])) {
                 $this->_on_connect = $options['on_connect'];
             }
@@ -66,14 +86,26 @@ class Client extends Component implements ClientInterface
         $scheme = $parts['scheme'];
         $host = $parts['host'];
         $port = $parts['port'] ?? ($scheme === 'ws' ? 80 : 443);
-        if (($pos = strpos($this->_endpoint, '/', $scheme === 'ws' ? 5 : 6)) === false) {
-            $path = '/';
+
+        if ($this->_proxy) {
+            $parts = parse_url($this->_proxy);
+
+            $proxy_scheme = $parts['scheme'];
+            if ($proxy_scheme !== 'http' && $proxy_scheme !== 'https') {
+                throw new NotSupportedException('only support http and https proxy');
+            }
+            $socket = @fsockopen(($proxy_scheme === 'http' ? 'tcp' : 'ssl') . '://' . $parts['host'], $parts['port'], $errno, $errmsg, $this->_timeout);
         } else {
-            $path = substr($this->_endpoint, $pos);
+            $socket = @fsockopen(($scheme === 'ws' ? 'tcp' : 'ssl') . "://$host", $port, $errno, $errmsg, $this->_timeout);
         }
 
+        if (!$socket) {
+            throw new ConnectionException($errmsg . ': ' . $this->_endpoint, $errno);
+        }
+
+        $path = ($scheme === 'ws' ? 'http' : 'https') . substr($this->_endpoint, strpos($this->_endpoint, ':'));
+
         $key = bin2hex(random_bytes(16));
-        $socket = fsockopen(($scheme === 'ws' ? 'tcp' : 'ssl') . "://$host", $port);
         $headers = "GET $path HTTP/1.1\r\n" .
             "Origin: null\r\n" .
             "Host: $host:$port\r\n" .
@@ -98,7 +130,11 @@ class Client extends Component implements ClientInterface
             if (($pos = strpos($buffer, "\r\n\r\n")) !== false) {
                 $headers = substr($buffer, 0, $pos);
                 if (strpos($headers, $sec_key) === false) {
-                    throw new HandshakeException('');
+                    if ($this->_proxy) {
+                        throw new ConnectionException('Connection by proxy timed out:  ' . $this->_endpoint, 10060);
+                    } else {
+                        throw new HandshakeException('');
+                    }
                 }
 
                 if ($pos + 4 !== strlen($buffer)) {
@@ -116,7 +152,7 @@ class Client extends Component implements ClientInterface
         if ($this->_on_connect) {
             call_user_func($this->_on_connect, $this);
         }
-		
+
         return $this->_socket;
     }
 
@@ -205,7 +241,7 @@ class Client extends Component implements ClientInterface
         }
 
         $byte0 = ord($buffer[0]);
-		
+
         $op_code = $byte0 & 0x0F;
         if ($op_code !== 0x02 && $op_code !== 0x01) {
             throw new ProtocolException('only support binary and text frame: ' . bin2hex(chr($byte0)));
