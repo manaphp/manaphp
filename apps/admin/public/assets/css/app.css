@@ -1,3 +1,7 @@
+[v-cloak] {
+    display: none;
+}
+
 .right {
     float: right;
 }
@@ -97,10 +101,58 @@
     width: 220px;
 }
 
-.el-dialog .el-form-item{
+.el-dialog .el-form-item {
     margin-bottom: 3px;
 }
 
-.el-message-box.error-response{
+.el-message-box.error-response {
     width: 50%;
+}
+
+.el-menu-item.is-active {
+    background: lightgrey !important;
+    padding: 0 20px;
+}
+
+.el-backtop {
+    opacity: .6;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, .3);
+    background-color: rgb(130, 87, 213);
+}
+
+.el-backtop-icon {
+    transform: scale(1.1, 1.1);
+    background-color: rgb(130, 87, 213);
+    color: #ffffff;
+}
+
+.el-backtop:hover {
+    opacity: .5;
+    background-color: rgb(130, 87, 213);
+}
+
+.el-dialog .el-form-item {
+    margin-bottom: 30px;
+}
+
+.el-dialog .el-input {
+    width: 260px;
+}
+
+.el-dialog__body {
+    padding: 10px;
+}
+
+.el-form-item--small .el-form-item__error {
+    padding-top: 10px;
+    margin-left: 175px;
+}
+
+.el-menu-item .el-link {
+    display: inline-block;
+    min-width: 200px;
+}
+
+.el-menu-item .el-link.is-underline:hover:after {
+    border-bottom: none !important;
 }

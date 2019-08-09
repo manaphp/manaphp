@@ -31,6 +31,13 @@ axios.interceptors.response.use(function (res) {
             vm.$alert(res.data, '服务器错误', {customClass: 'error-response'});
         }
 
+        if (res.data.code === 0) {
+            if (res.data.message) {
+                vm.$message({type: 'success', duration: 1000, message: res.data.message});
+            } else if (res.config.method !== 'get') {
+                vm.$message({type: 'success', duration: 1000, message: '操作成功'});
+            }
+        }
         return res;
     },
     function (error) {
@@ -146,8 +153,12 @@ Vue.mixin({
         fEnabled: function (row, column, value) {
             return ['禁用', '启用'][value];
         },
-        do_create: function () {
-            this.ajax_post(window.location.pathname + "/create", this.create, function (res) {
+        do_create: function (create) {
+            var success = true;
+            if (typeof create === 'string') {
+                this.$refs[create].validate(valid => success = valid);
+            }
+            success && this.ajax_post(window.location.pathname + "/create", this.create, function (res) {
                 this.createVisible = false;
                 this.$refs.create.resetFields();
                 this.reload();
@@ -198,15 +209,13 @@ Vue.mixin({
         },
     },
     created: function () {
-        var qs = this.$qs.parse(document.location.search.substr(1));
+        var qs = this.$qs.parse(document.location.query);
         if (this.request) {
             for (var k in qs) {
                 var v = qs[k];
 
-                if (typeof this.request[k] === 'number') {
-                    if (v !== '') {
-                        this.request[k] = parseInt(v);
-                    }
+                if (/^\d+$/.test(v) && typeof this.request[k] !== 'string') {
+                    this.request[k] = parseInt(v);
                 } else {
                     this.request[k] = v;
                 }
