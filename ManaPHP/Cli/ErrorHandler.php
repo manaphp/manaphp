@@ -7,11 +7,11 @@ use ManaPHP\ErrorHandlerInterface;
 class ErrorHandler extends Component implements ErrorHandlerInterface
 {
     /**
-     * @param \Exception|\ManaPHP\Exception $exception
+     * @param \Throwable $throwable
      */
-    public function handle($exception)
+    public function handle($throwable)
     {
-        $this->logger->error($exception);
-        echo($exception);
+        $this->logger->error($throwable);
+        echo($throwable);
     }
 }

@@ -490,11 +490,11 @@ if (!function_exists('transaction')) {
             $db->begin();
             $work();
             $db->commit();
-        } catch (Throwable $error) {
+        } catch (Throwable $throwable) {
             /** @noinspection UnSafeIsSetOverArrayInspection */
             isset($db) && $db->rollback();
-            error($error);
-            return $error->getMessage();
+            error($throwable);
+            return $throwable->getMessage();
         }
         return true;
     }

@@ -61,8 +61,8 @@ abstract class Server extends Component implements ServerInterface
             if (!$this->response->getContent()) {
                 $this->response->setStatus(401)->setJsonContent(['code' => 401, 'message' => 'Unauthorized']);
             }
-        } catch (\Throwable $exception) {
-            $this->response->setJsonContent($exception);
+        } catch (Throwable $throwable) {
+            $this->response->setJsonContent($throwable);
         }
 
         return false;

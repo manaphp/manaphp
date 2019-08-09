@@ -155,10 +155,10 @@ class Swoole extends \ManaPHP\Rpc\Server
             } else {
                 $this->send($this->response->_context);
             }
-        } catch (Throwable $exception) {
-            $str = date('c') . ' ' . get_class($exception) . ': ' . $exception->getMessage() . PHP_EOL;
-            $str .= '    at ' . $exception->getFile() . ':' . $exception->getLine() . PHP_EOL;
-            $traces = $exception->getTraceAsString();
+        } catch (Throwable $throwable) {
+            $str = date('c') . ' ' . get_class($throwable) . ': ' . $throwable->getMessage() . PHP_EOL;
+            $str .= '    at ' . $throwable->getFile() . ':' . $throwable->getLine() . PHP_EOL;
+            $traces = $throwable->getTraceAsString();
             $str .= preg_replace('/#\d+\s/', '    at ', $traces);
             echo $str . PHP_EOL;
         }

@@ -104,8 +104,8 @@ class Application extends \ManaPHP\Application implements HandlerInterface
             } else {
                 $this->response->setJsonContent($returnValue);
             }
-        } catch (Throwable $exception) {
-            $this->handleException($exception);
+        } catch (Throwable $throwable) {
+            $this->handleException($throwable);
         }
 
         $content = $this->response->getContent();

@@ -67,9 +67,9 @@ class Application extends \ManaPHP\Application implements LogCategorizable
         } catch (\ManaPHP\Cli\Request\Exception $exception) {
             $this->_exit_code = 254;
             $this->errorHandler->handle($exception);
-        } catch (Throwable $e) {
+        } catch (Throwable $throwable) {
             $this->_exit_code = 255;
-            $this->errorHandler->handle($e);
+            $this->errorHandler->handle($throwable);
         }
     }
 

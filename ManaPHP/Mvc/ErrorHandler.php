@@ -16,13 +16,13 @@ use ManaPHP\Exception;
 class ErrorHandler extends Component implements ErrorHandlerInterface
 {
     /**
-     * @param \Exception $exception
+     * @param \Throwable $throwable
      */
-    public function handle($exception)
+    public function handle($throwable)
     {
-        if ($exception instanceof Exception) {
-            $code = $exception->getStatusCode();
-            $json = $exception->getJson();
+        if ($throwable instanceof Exception) {
+            $code = $throwable->getStatusCode();
+            $json = $throwable->getJson();
 
             if ($code !== 200) {
                 $this->response->setStatus($code);
@@ -35,16 +35,16 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
         }
 
         if ($code >= 500) {
-            $this->logger->error($exception);
+            $this->logger->error($throwable);
         }
 
         if ($this->request->isAjax()) {
             if ($this->configure->debug) {
-                $json['exception'] = explode("\n", $exception);
+                $json['exception'] = explode("\n", $throwable);
             }
             $this->response->setJsonContent($json);
         } else {
-            $this->response->setContent($this->render($exception));
+            $this->response->setContent($this->render($throwable));
         }
     }
 

@@ -46,8 +46,8 @@ class Application extends \ManaPHP\Http\Application
             }
         } catch (AbortException $exception) {
             null;
-        } catch (Throwable $e) {
-            $this->handleException($e);
+        } catch (Throwable $throwable) {
+            $this->handleException($throwable);
         }
 
         $this->httpServer->send($this->response->_context);
