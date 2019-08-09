@@ -78,8 +78,8 @@ class Rest extends Component implements ClientInterface
 
         if ($json['code'] !== 0) {
             throw new ClientException($json['message'], $json['code']);
-        } else {
-            return $json['data'] ?? null;
         }
+
+        return $json;
     }
 }

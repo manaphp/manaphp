@@ -109,11 +109,27 @@ class Swoole extends \ManaPHP\Rpc\Server
         $_get = $request->get ?: [];
         $_server['WS_ENDPOINT'] = $_get['_url'] = rtrim($_server['REQUEST_URI'], '/');
 
+        $_post = $request->post ?: [];
+        if (!$_post && isset($_server['REQUEST_METHOD']) && !in_array($_server['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
+            $data = $request->rawContent();
+
+            if (isset($_server['CONTENT_TYPE']) && strpos($_server['CONTENT_TYPE'], 'application/json') !== false) {
+                $_post = json_decode($data, true, 16);
+            } else {
+                parse_str($data, $_post);
+            }
+            if (!is_array($_post)) {
+                $_post = [];
+            }
+        }
+
+        unset($_post['_url']);
+
         $globals = $this->request->getGlobals();
 
         $globals->_GET = $_get;
-        $globals->_POST = $request->post ?: [];
-        $globals->_REQUEST = $globals->_POST + $globals->_GET;
+        $globals->_POST = $_post;
+        $globals->_REQUEST = $_post + $_get;
         $globals->_SERVER = $_server;
     }
 
@@ -133,6 +149,7 @@ class Swoole extends \ManaPHP\Rpc\Server
 
         try {
             $this->_prepareGlobals($request);
+
             if ($this->authenticate()) {
                 $this->_handler->handle();
             } else {
@@ -165,7 +182,7 @@ class Swoole extends \ManaPHP\Rpc\Server
             $this->_contexts[$request->fd] = $context;
 
             $this->request->setRequestId();
-			
+
             $response = $this->response->_context;
             if (!$this->authenticate()) {
                 $this->_context->fd = $request->fd;

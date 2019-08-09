@@ -26,6 +26,8 @@ class Fpm extends Server
                 parse_str($data, $_POST);
             }
 
+            unset($_POST['_url']);
+
             if (is_array($_POST)) {
                 /** @noinspection AdditionOperationOnArraysInspection */
                 $_REQUEST = $_POST + $_GET;
