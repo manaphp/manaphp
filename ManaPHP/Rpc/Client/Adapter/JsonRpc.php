@@ -62,6 +62,42 @@ class JsonRpc extends Component implements ClientInterface
         $this->poolManager->add($this, $options, $this->_pool_size);
     }
 
+    public function __destruct()
+    {
+        $this->poolManager->remove($this);
+    }
+
+    /**
+     * @param $response
+     *
+     * @return mixed
+     *
+     * @throws \ManaPHP\Rpc\Client\Exception
+     * @throws \ManaPHP\Rpc\Client\ProtocolException
+     */
+    protected function _parseResponse($response)
+    {
+        if (!$json = json_decode($response, true)) {
+            throw new ClientException('json_decode failed');
+        }
+
+        if (!isset($json['jsonrpc']) || $json['jsonrpc'] !== '2.0') {
+            throw new ProtocolException('');
+        }
+
+        if (isset($json['error'])) {
+            $error = $json['error'];
+            if (!isset($error['code'], $error['message'])) {
+                throw new ProtocolException($error['message'], $error['code']);
+            }
+            throw new ClientException($error['message'], $error['code']);
+        } elseif (!isset($json['result'])) {
+            throw new ProtocolException('missing result field');
+        } else {
+            return $json['result'];
+        }
+    }
+
     /**
      * @param \ManaPHP\WebSocket\ClientInterface $client
      */
@@ -70,35 +106,15 @@ class JsonRpc extends Component implements ClientInterface
         $response = $client->recvMessage();
 
         try {
+            /** @noinspection PhpUnusedLocalVariableInspection */
             $success = false;
-            if (!$json = json_decode($response, true)) {
-                throw new ClientException('json_decode failed');
-            }
-
-            if (!isset($json['jsonrpc']) || $json['jsonrpc'] !== '2.0') {
-                throw new ProtocolException('');
-            }
-
-            if (isset($json['error'])) {
-                $error = $json['error'];
-                if (!isset($error['code'], $error['message'])) {
-                    throw new ProtocolException($error['message'], $error['code']);
-                }
-                throw new ClientException($error['message'], $error['code']);
-            } elseif (!isset($json['result'])) {
-                throw new ProtocolException('missing result field');
-            }
+            $this->_parseResponse($response);
             $success = true;
         } finally {
             if (!$success) {
                 $client->close();
             }
         }
-    }
-
-    public function __destruct()
-    {
-        $this->poolManager->remove($this);
     }
 
     /**
@@ -122,24 +138,6 @@ class JsonRpc extends Component implements ClientInterface
             $this->poolManager->push($this, $client);
         }
 
-        if (!$json = json_decode($response, true)) {
-            throw new ClientException('json_decode failed');
-        }
-
-        if (!isset($json['jsonrpc']) || $json['jsonrpc'] !== '2.0') {
-            throw new ProtocolException('');
-        }
-
-        if (isset($json['error'])) {
-            $error = $json['error'];
-            if (!isset($error['code'], $error['message'])) {
-                throw new ProtocolException($error['message'], $error['code']);
-            }
-            throw new ClientException($error['message'], $error['code']);
-        } elseif (!isset($json['result'])) {
-            throw new ProtocolException('missing result field');
-        } else {
-            return $json['result'];
-        }
+        return $this->_parseResponse($response);
     }
 }
