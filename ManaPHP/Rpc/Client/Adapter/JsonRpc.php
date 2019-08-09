@@ -19,6 +19,11 @@ class JsonRpc extends Component implements ClientInterface
     protected $_pool_size = 4;
 
     /**
+     * @var bool
+     */
+    protected $_authentication;
+
+    /**
      * @var int
      */
     protected $_id = 0;
@@ -43,7 +48,52 @@ class JsonRpc extends Component implements ClientInterface
             $options['class'] = 'ManaPHP\WebSocket\Client';
         }
 
+        if (isset($options['authentication'])) {
+            $this->_authentication = $options['authentication'];
+            unset($options['authentication']);
+        } else {
+            $this->_authentication = preg_match('#[?&]token=#', $options['endpoint']) === 1;
+        }
+
+        if ($this->_authentication) {
+            $options['on_connect'] = [$this, 'authenticate'];
+        }
+
         $this->poolManager->add($this, $options, $this->_pool_size);
+    }
+
+    /**
+     * @param \ManaPHP\WebSocket\ClientInterface $client
+     */
+    public function authenticate($client)
+    {
+        $response = $client->recvMessage();
+
+        try {
+            $success = false;
+            if (!$json = json_decode($response, true)) {
+                throw new ClientException('json_decode failed');
+            }
+
+            if (!isset($json['jsonrpc']) || $json['jsonrpc'] !== '2.0') {
+                throw new ProtocolException('');
+            }
+
+            if (isset($json['error'])) {
+                $error = $json['error'];
+                if (!isset($error['code'], $error['message'])) {
+                    throw new ProtocolException($error['message'], $error['code']);
+                }
+                throw new ClientException($error['message'], $error['code']);
+            } elseif (!isset($json['result'])) {
+                throw new ProtocolException('missing result field');
+            }
+            $success = true;
+        } finally {
+            if (!$success) {
+                $client->close();
+            }
+        }
     }
 
     public function __destruct()
