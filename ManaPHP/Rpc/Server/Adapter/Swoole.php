@@ -164,6 +164,8 @@ class Swoole extends \ManaPHP\Rpc\Server
             }
             $this->_contexts[$request->fd] = $context;
 
+            $this->request->setRequestId();
+			
             $response = $this->response->_context;
             if (!$this->authenticate()) {
                 $this->_context->fd = $request->fd;
@@ -200,6 +202,8 @@ class Swoole extends \ManaPHP\Rpc\Server
         }
 
         $this->_context->fd = $frame->fd;
+
+        $this->request->setRequestId();
 
         $response = $this->response->_context;
         if (!$json = json_decode($frame->data, true)) {
@@ -239,15 +243,15 @@ class Swoole extends \ManaPHP\Rpc\Server
         $context = $this->_context;
         if ($context->fd) {
             $server = $this->request->getGlobals()->_SERVER;
-            $response->content[isset($response->content['result']) ? 'result' : 'error']['headers'] = [
+            $headers = [
                 'X-Request-Id' => $this->request->getRequestId(),
                 'X-Response-Time' => sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT'])
             ];
 
             if ($response->content['code'] === 0) {
-                $content = ['jsonrpc' => '2.0', 'result' => $response->content, 'id' => $json['id'] ?? null];
+                $content = ['jsonrpc' => '2.0', 'result' => $response->content, 'id' => $json['id'] ?? null, 'headers' => $headers];
             } else {
-                $content = ['jsonrpc' => '2.0', 'error' => $response->content, 'id' => $json['id'] ?? null];
+                $content = ['jsonrpc' => '2.0', 'error' => $response->content, 'id' => $json['id'] ?? null, 'headers' => $headers];
             }
             $this->_swoole->push($context->fd, json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR), WEBSOCKET_OPCODE_BINARY);
         } else {
