@@ -180,7 +180,7 @@ class Model extends \ManaPHP\Model
                     }
                     $types[$field] = 'objectid';
                 } else {
-                    throw new RuntimeException(['`:field` field value type can not be infered.', 'field' => $field]);
+                    throw new RuntimeException(['`:field` field value type can not be infer.', 'field' => $field]);
                 }
             }
 
