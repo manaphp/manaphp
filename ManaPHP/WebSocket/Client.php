@@ -161,7 +161,7 @@ class Client extends Component implements ClientInterface
         $socket = $this->_socket ?? $this->_connect();
         $message_length = strlen($message);
 
-        $header = chr(130);
+        $header = chr(129);
         if ($message_length <= 125) {
             $header .= pack('C', $message_length);
         } elseif ($message_length <= 65535) {
@@ -205,9 +205,10 @@ class Client extends Component implements ClientInterface
         }
 
         $byte0 = ord($buffer[0]);
-
-        if ($byte0 & 0x0F !== 0x02) {
-            throw new ProtocolException('only support binary frame');
+		
+        $op_code = $byte0 & 0x0F;
+        if ($op_code !== 0x02 && $op_code !== 0x01) {
+            throw new ProtocolException('only support binary and text frame: ' . bin2hex(chr($byte0)));
         }
 
         $byte1 = ord($buffer[1]);

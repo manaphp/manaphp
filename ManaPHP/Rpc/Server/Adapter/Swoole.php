@@ -253,7 +253,7 @@ class Swoole extends \ManaPHP\Rpc\Server
             } else {
                 $content = ['jsonrpc' => '2.0', 'error' => $response->content, 'id' => $json['id'] ?? null, 'headers' => $headers];
             }
-            $this->_swoole->push($context->fd, json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR), WEBSOCKET_OPCODE_BINARY);
+            $this->_swoole->push($context->fd, json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
         } else {
             $sw_response = $this->_context->response;
 
