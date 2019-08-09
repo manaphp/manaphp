@@ -10,8 +10,15 @@ use ArrayObject;
 
 class SwooleContext
 {
+    /**
+     * @var int
+     */
+    public $fd;
+
+    /**
+     * @var \Swoole\Http\Response
+     */
     public $response;
-    public $frame;
 }
 
 /**
@@ -157,11 +164,14 @@ class Swoole extends \ManaPHP\Rpc\Server
             }
             $this->_contexts[$request->fd] = $context;
 
+            $response = $this->response->_context;
             if (!$this->authenticate()) {
-                $response = $this->response->_context;
-                $content = ['jsonrpc' => '2.0', 'error' => $response->content, 'id' => null];
-                $server->push($request->fd, json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), WEBSOCKET_OPCODE_BINARY);
-                $server->close($request->fd, true);
+                $this->_context->fd = $request->fd;
+                $this->send($response);
+                $server->close($request->fd);
+            } elseif ($response->content) {
+                $this->_context->fd = $request->fd;
+                $this->send($response);
             }
         }
     }
@@ -189,7 +199,7 @@ class Swoole extends \ManaPHP\Rpc\Server
             $current_context[$k] = $v;
         }
 
-        $this->_context->frame = $frame;
+        $this->_context->fd = $frame->fd;
 
         $response = $this->response->_context;
         if (!$json = json_decode($frame->data, true)) {
@@ -227,7 +237,7 @@ class Swoole extends \ManaPHP\Rpc\Server
     public function send($response)
     {
         $context = $this->_context;
-        if ($context->frame) {
+        if ($context->fd) {
             $server = $this->request->getGlobals()->_SERVER;
             $response->content[isset($response->content['result']) ? 'result' : 'error']['headers'] = [
                 'X-Request-Id' => $this->request->getRequestId(),
@@ -239,7 +249,7 @@ class Swoole extends \ManaPHP\Rpc\Server
             } else {
                 $content = ['jsonrpc' => '2.0', 'error' => $response->content, 'id' => $json['id'] ?? null];
             }
-            $this->_swoole->push($context->frame->fd, json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR), WEBSOCKET_OPCODE_BINARY);
+            $this->_swoole->push($context->fd, json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR), WEBSOCKET_OPCODE_BINARY);
         } else {
             $sw_response = $this->_context->response;
 
