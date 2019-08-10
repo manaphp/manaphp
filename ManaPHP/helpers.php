@@ -95,14 +95,14 @@ if (!function_exists('param_get')) {
     }
 }
 
-if (!function_exists('debug')) {
+if (!function_exists('log_debug')) {
     /**
      * @param string|array $message
      * @param string       $category
      *
      * @return void
      */
-    function debug($message, $category = null)
+    function log_debug($message, $category = null)
     {
         static $logger;
         if (!$logger) {
@@ -113,14 +113,14 @@ if (!function_exists('debug')) {
     }
 }
 
-if (!function_exists('info')) {
+if (!function_exists('log_info')) {
     /**
      * @param string|array $message
      * @param string       $category
      *
      * @return void
      */
-    function info($message, $category = null)
+    function log_info($message, $category = null)
     {
         static $logger;
         if (!$logger) {
@@ -131,14 +131,14 @@ if (!function_exists('info')) {
     }
 }
 
-if (!function_exists('warn')) {
+if (!function_exists('log_warn')) {
     /**
      * @param string|array $message
      * @param string       $category
      *
      * @return void
      */
-    function warn($message, $category = null)
+    function log_warn($message, $category = null)
     {
         static $logger;
         if (!$logger) {
@@ -149,14 +149,14 @@ if (!function_exists('warn')) {
     }
 }
 
-if (!function_exists('error')) {
+if (!function_exists('log_error')) {
     /**
      * @param string|array $message
      * @param string       $category
      *
      * @return void
      */
-    function error($message, $category = null)
+    function log_error($message, $category = null)
     {
         static $logger;
         if (!$logger) {
@@ -167,14 +167,14 @@ if (!function_exists('error')) {
     }
 }
 
-if (!function_exists('fatal')) {
+if (!function_exists('log_fatal')) {
     /**
      * @param string|array $message
      * @param string       $category
      *
      * @return \ManaPHP\LoggerInterface
      */
-    function fatal($message, $category = null)
+    function log_fatal($message, $category = null)
     {
         static $logger;
         if (!$logger) {
