@@ -6,7 +6,7 @@ use ManaPHP\Component;
 use ManaPHP\Logger\LogCategorizable;
 
 /**
- * Class ManaPHP\Mvc\Controller
+ * Class ManaPHP\Rest\Controller
  *
  * @package controller
  *
