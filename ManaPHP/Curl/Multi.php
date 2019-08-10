@@ -251,8 +251,7 @@ class Multi extends Component implements MultiInterface, Countable
         if (!$this->filesystem->fileExists($target)) {
             $this->filesystem->dirCreate(dir($target));
 
-            $request = $this->_di->get('ManaPHP\Curl\Multi\Request', [$url, $callback ?: static function ($response) {
-            }]);
+            $request = $this->_di->get('ManaPHP\Curl\Multi\Request', [$url, $callback]);
 
             $request->options['file'] = $target;
 

@@ -3,8 +3,8 @@ namespace ManaPHP;
 
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Logger\LogCategorizable;
-use ReflectionMethod;
 use ManaPHP\Service\Exception as ServiceException;
+use ReflectionMethod;
 
 /**
  * Class Service

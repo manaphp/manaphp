@@ -3,11 +3,11 @@ namespace ManaPHP\WebSocket;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\WebSocket\Client\ConnectionException;
 use ManaPHP\WebSocket\Client\DataTransferException;
 use ManaPHP\WebSocket\Client\HandshakeException;
 use ManaPHP\WebSocket\Client\ProtocolException;
 use ManaPHP\WebSocket\Client\TimeoutException;
-use ManaPHP\WebSocket\Client\ConnectionException;
 
 class Client extends Component implements ClientInterface
 {

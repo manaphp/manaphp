@@ -1,12 +1,12 @@
 <?php
 namespace ManaPHP\Rpc\Server\Adapter;
 
+use ArrayObject;
 use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\NotSupportedException;
 use Swoole\Coroutine;
 use Swoole\WebSocket\Server;
 use Throwable;
-use ArrayObject;
 
 class SwooleContext
 {

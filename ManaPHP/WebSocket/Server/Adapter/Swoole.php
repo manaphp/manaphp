@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP\WebSocket\Server\Adapter;
 
+use ArrayObject;
 use ManaPHP\Component;
 use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\NotSupportedException;
@@ -10,7 +11,6 @@ use Swoole\Process;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
 use Throwable;
-use ArrayObject;
 
 /**
  * Class Server
