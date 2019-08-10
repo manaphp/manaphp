@@ -22,30 +22,10 @@ class Manager extends Component implements ManagerInterface
     {
         $owner_id = spl_object_id($owner);
 
-        if (!isset($this->_pool[$owner_id])) {
-            return $this;
-        }
-
-        if (MANAPHP_COROUTINE_ENABLED) {
-            foreach ($type === null ? array_keys($this->_pool[$owner_id]) : [$type] as $current) {
-                $queue = $this->_pool[$owner_id][$current];
-
-                while (!$queue->isEmpty()) {
-                    $queue->pop();
-                }
-
-                unset($this->_pool[$owner_id][$current]);
-            }
-
-            if ($type === null || count($this->_pool[$owner_id]) === 0) {
-                unset($this->_pool[$owner_id]);
-            }
+        if ($type === null) {
+            unset($this->_pool[$owner_id]);
         } else {
-            if ($type === null) {
-                unset($this->_pool[$owner_id]);
-            } else {
-                unset($this->_pool[$owner_id][$type]);
-            }
+            unset($this->_pool[$owner_id][$type]);
         }
 
         return $this;
