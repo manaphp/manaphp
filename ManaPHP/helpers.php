@@ -30,9 +30,9 @@ if (!function_exists('json_parse')) {
 
 if (!function_exists('json_stringify')) {
     /**
-     * @param string $json
+     * @param mixed $json
      *
-     * @return mixed
+     * @return string
      */
     function json_stringify($json)
     {
@@ -472,31 +472,6 @@ if (!function_exists('seconds')) {
         } else {
             throw new InvalidValueException(['`:str` string is not a valid seconds expression', 'str' => $str]);
         }
-    }
-}
-
-if (!function_exists('transaction')) {
-    /**
-     * @param callable $work
-     * @param string   $service
-     *
-     * @return true|string
-     */
-    function transaction($work, $service = 'db')
-    {
-        try {
-            /** @var \ManaPHP\DbInterface $db */
-            $db = di($service);
-            $db->begin();
-            $work();
-            $db->commit();
-        } catch (Throwable $throwable) {
-            /** @noinspection UnSafeIsSetOverArrayInspection */
-            isset($db) && $db->rollback();
-            error($throwable);
-            return $throwable->getMessage();
-        }
-        return true;
     }
 }
 
