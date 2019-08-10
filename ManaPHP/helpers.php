@@ -197,27 +197,6 @@ if (!function_exists('path')) {
     }
 }
 
-if (!function_exists('abort')) {
-    /**
-     * @param string|array $message
-     * @param int          $code
-     */
-    function abort($message = null, $code = 200)
-    {
-        if ($message) {
-            if (is_string($message)) {
-                di('response')->setStatus($code)->setContent($message);
-            } else {
-                di('response')->setStatus($code)->setJsonContent($message);
-            }
-        } else {
-            di('response')->setStatus($code);
-        }
-
-        throw new AbortException();
-    }
-}
-
 if (!function_exists('jwt_encode')) {
     /**
      * @param array  $claims
