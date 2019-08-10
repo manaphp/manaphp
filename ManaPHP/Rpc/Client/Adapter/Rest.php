@@ -39,8 +39,9 @@ class Rest extends Component implements ClientInterface
             $this->_timeout = $options['timeout'];
         }
 
-        $this->_endpoint = $options['endpoint'];
+        $endpoint = $options['endpoint'];
         unset($options['endpoint']);
+        $this->_endpoint = strpos($endpoint, '?') === false ? rtrim($endpoint, '/') : str_replace('/?', '?', $endpoint);
 
         if (!isset($options[0]) && !isset($options['class'])) {
             $options['class'] = 'ManaPHP\Http\Client\Adapter\Stream';
@@ -63,11 +64,13 @@ class Rest extends Component implements ClientInterface
      */
     public function invoke($method, $params = [], $options = null)
     {
+        $endpoint = $this->_endpoint;
+        $url = strpos($endpoint, '?') === false ? "$endpoint/$method" : str_replace('?', "/$method?", $endpoint);
+	
         /** @var \ManaPHP\Http\ClientInterface $client */
         $client = $this->poolManager->pop($this, $this->_timeout);
-
         try {
-            $json = $client->rest('POST', [$this->_endpoint . $method], $params, [], $options)->body;
+            $json = $client->rest('POST', $url, $params, [], $options)->body;
         } finally {
             $this->poolManager->push($this, $client);
         }
