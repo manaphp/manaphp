@@ -54,12 +54,12 @@ class Application extends \ManaPHP\Application implements HandlerInterface
             $this->eventsManager->fireEvent('request:begin', $this);
 
             $actionReturnValue = $this->router->dispatch();
-            if ($actionReturnValue === null || $actionReturnValue instanceof Response) {
+            if ($actionReturnValue instanceof Response) {
                 null;
-            } elseif (is_string($actionReturnValue)) {
-                $this->response->setJsonError($actionReturnValue);
-            } else {
+            } elseif ($actionReturnValue instanceof Throwable) {
                 $this->response->setJsonContent($actionReturnValue);
+            } else {
+                $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => $actionReturnValue]);
             }
         } catch (AbortException $exception) {
             null;
