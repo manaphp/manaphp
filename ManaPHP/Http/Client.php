@@ -156,6 +156,7 @@ abstract class Client extends Component implements ClientInterface
 
         $this->eventsManager->fireEvent('httpClient:beforeRequest', $this, $request);
         $response = $this->do_request($request);
+        $response_text = $response->body;
         if (strpos($response->content_type, '/json') !== false && $json = json_decode($response->body, true)) {
             $response->body = $json;
         }
@@ -174,13 +175,11 @@ abstract class Client extends Component implements ClientInterface
         }
 
         if ($response->http_code >= 500) {
-            throw new ServiceUnavailableException(['service is unavailable: :http_code => `:url`',
-                'http_code' => $response->http_code,
-                'url' => $response->url], $response);
+            throw new ServiceUnavailableException([':url => `:response`', 'url' => $response->url, 'response' => $response_text], $response);
         }
 
         if ($response->http_code >= 400) {
-            throw new BadRequestException(['bad request: :http_code => `:url`', 'http_code' => $response->http_code, 'url' => $response->url], $response);
+            throw new BadRequestException([':url => `:response`', 'url' => $response->url, 'response' => $response_text,], $response);
         }
 
         return $response;
