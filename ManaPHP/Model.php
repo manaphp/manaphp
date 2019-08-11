@@ -54,15 +54,8 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         if ($data) {
             foreach ($this->getJsonFields() as $field) {
                 if (isset($data[$field]) && is_string($data[$field])) {
-                    if ($data[$field] === '') {
-                        $data[$field] = [];
-                    } elseif (($json = json_parse($data[$field])) === null) {
-                        throw new InvalidJsonException(['`:field` field value of `:model` is not a valid json string',
-                            'field' => $field,
-                            'model' => static::class]);
-                    } else {
-                        $data[$field] = $json;
-                    }
+                    $value = $data[$field];
+                    $data[$field] = $value === '' ? [] : json_parse($value);
                 }
             }
 

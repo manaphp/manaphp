@@ -71,15 +71,6 @@ abstract class Cache extends Component implements CacheInterface
             $data = json_stringify($value);
         }
 
-        if ($data === false) {
-            throw new InvalidValueException([
-                '`:key` key cache value json_encode failed: `:code` `:message`',
-                'key' => $key,
-                'code' => json_last_error(),
-                'message' => json_last_error_msg()
-            ]);
-        }
-
         $this->do_set($key, $data, $ttl);
     }
 

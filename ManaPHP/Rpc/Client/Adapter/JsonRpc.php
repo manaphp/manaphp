@@ -77,9 +77,7 @@ class JsonRpc extends Component implements ClientInterface
      */
     protected function _parseResponse($response)
     {
-        if (!$json = json_parse($response)) {
-            throw new ClientException('json_decode failed');
-        }
+        $json = json_parse($response);
 
         if (!isset($json['jsonrpc']) || $json['jsonrpc'] !== '2.0') {
             throw new ProtocolException('');
