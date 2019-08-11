@@ -66,7 +66,7 @@ class Rest extends Component implements ClientInterface
     {
         $endpoint = $this->_endpoint;
         $url = strpos($endpoint, '?') === false ? "$endpoint/$method" : str_replace('?', "/$method?", $endpoint);
-	
+
         /** @var \ManaPHP\Http\ClientInterface $client */
         $client = $this->poolManager->pop($this, $this->_timeout);
         try {
