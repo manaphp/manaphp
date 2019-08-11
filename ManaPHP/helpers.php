@@ -3,6 +3,7 @@
 use ManaPHP\Di;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\JsonException;
 use Swoole\Coroutine;
 
 if (!function_exists('spl_object_id')) {
@@ -24,7 +25,11 @@ if (!function_exists('json_parse')) {
      */
     function json_parse($str)
     {
-        return json_decode($str, true, 16, JSON_THROW_ON_ERROR);
+        if (($json = json_decode($str, true, 16, JSON_THROW_ON_ERROR)) === null && $str !== 'null') {
+            throw new JsonException('json_parse failed: ' . $str);
+        }
+
+        return $json;
     }
 }
 
@@ -37,7 +42,11 @@ if (!function_exists('json_stringify')) {
      */
     function json_stringify($json, $options = 0)
     {
-        return json_encode($json, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR | $options, 16);
+        if (($str = json_encode($json, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR | $options, 16)) === false) {
+            throw new JsonException('json_stringify failed');
+        }
+
+        return $str;
     }
 }
 
