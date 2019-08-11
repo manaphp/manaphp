@@ -154,7 +154,7 @@ class Multi extends Component implements MultiInterface, Countable
 
         if (is_array($request->body)) {
             if (isset($headers['Content-Type']) && strpos($headers['Content-Type'], '/json') !== false) {
-                $request->body = json_encode($request->body, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                $request->body = json_stringify($request->body);
             } else {
                 $request->body = http_build_query($request->body);
             }

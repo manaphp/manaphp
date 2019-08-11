@@ -103,7 +103,7 @@ class Fpm extends Server
         if (is_string($content)) {
             echo $content;
         } else {
-            echo json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+            echo json_stringify($content);
         }
 
         return $this;

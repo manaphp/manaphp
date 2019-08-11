@@ -151,7 +151,7 @@ class Workerman extends Server
         $this->_handler = $handler;
 
         $this->log('info',
-            sprintf('starting listen on: %s:%d with setting: %s', $this->_host, $this->_port, json_encode($this->_settings, JSON_UNESCAPED_SLASHES)));
+            sprintf('starting listen on: %s:%d with setting: %s', $this->_host, $this->_port, json_stringify($this->_settings)));
         echo 'ab';
         $worker->onMessage = [$this, 'onRequest'];
 
@@ -251,7 +251,7 @@ class Workerman extends Server
         if (is_string($content)) {
             $this->_context->connection->close($content);
         } else {
-            $this->_context->connection->close(json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+            $this->_context->connection->close(json_stringify($content));
         }
 
         $this->eventsManager->fireEvent('response:afterSend', $this, $response);

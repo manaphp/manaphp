@@ -201,7 +201,7 @@ abstract class Client extends Component implements ClientInterface
         } else {
             $headers['Content-Type'] = 'application/json';
             if (is_array($body)) {
-                $body = json_encode($body, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                $body = json_stringify($body);
             }
         }
 

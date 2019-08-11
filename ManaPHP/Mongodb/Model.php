@@ -364,7 +364,7 @@ class Model extends \ManaPHP\Model
 
         foreach ($this->getJsonFields() as $field) {
             if (is_array($this->$field)) {
-                $fieldValues[$field] = json_encode($this->$field, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                $fieldValues[$field] = json_stringify($this->$field);
             }
         }
 
@@ -459,7 +459,7 @@ class Model extends \ManaPHP\Model
 
         foreach ($this->getJsonFields() as $field) {
             if (isset($fieldValues[$field]) && is_array($fieldValues[$field])) {
-                $fieldValues[$field] = json_encode($fieldValues[$field], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                $fieldValues[$field] = json_stringify($fieldValues[$field]);
             }
         }
 

@@ -270,7 +270,7 @@ class Swoole extends \ManaPHP\Rpc\Server
             } else {
                 $content = ['jsonrpc' => '2.0', 'error' => $response->content, 'id' => $json['id'] ?? null, 'headers' => $headers];
             }
-            $this->_swoole->push($context->fd, json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+            $this->_swoole->push($context->fd, json_stringify($content));
         } else {
             $sw_response = $this->_context->response;
 
@@ -298,7 +298,7 @@ class Swoole extends \ManaPHP\Rpc\Server
             if (is_string($content)) {
                 $sw_response->end($content);
             } else {
-                $sw_response->end(json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+                $sw_response->end(json_stringify($content));
             }
         }
     }
@@ -315,7 +315,7 @@ class Swoole extends \ManaPHP\Rpc\Server
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 
         $this->log('info',
-            sprintf('starting listen on: %s:%d with setting: %s', $this->_host, $this->_port, json_encode($this->_settings, JSON_UNESCAPED_SLASHES)));
+            sprintf('starting listen on: %s:%d with setting: %s', $this->_host, $this->_port, json_stringify($this->_settings)));
         $this->_swoole->start();
 
         echo sprintf('[%s][info]: shutdown', date('c')), PHP_EOL;

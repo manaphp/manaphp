@@ -17,7 +17,7 @@ class NotFoundException extends Exception
     {
         parent::__construct(['No record for `:model` model of `:filters`',
             'model' => $model,
-            'filters' => json_encode($filters, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
+            'filters' => json_stringify($filters)]);
 
         $this->model = $model;
         $this->filters = $filters;

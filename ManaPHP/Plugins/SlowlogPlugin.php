@@ -35,7 +35,7 @@ class SlowlogPlugin extends Plugin
         $replaced[':client_ip'] = $this->request->getClientIp();
         $replaced[':request_id'] = $this->request->getRequestId();
         $replaced[':elapsed'] = sprintf('%.03f', $elapsed);
-        $replaced[':message'] = (is_string($message) ? $message : json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)) . PHP_EOL;
+        $replaced[':message'] = (is_string($message) ? $message : json_stringify($message)) . PHP_EOL;
 
         $str = strtr($this->_format, $replaced);
 

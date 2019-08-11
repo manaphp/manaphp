@@ -146,7 +146,7 @@ abstract class Connection extends Component implements ConnectionInterface
             if (is_scalar($value) || $value === null) {
                 null;
             } elseif (is_array($value) || $value instanceof JsonSerializable) {
-                $value = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                $value = json_stringify($value);
             } else {
                 throw new NotSupportedException(['The `:1` type of `:2` parameter is not support', $parameter, gettype($value)]);
             }
@@ -207,7 +207,7 @@ abstract class Connection extends Component implements ConnectionInterface
             ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
             'message' => $exception->getMessage(),
             'sql' => $sql,
-            'bind' => json_encode($bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+            'bind' => json_stringify($bind, JSON_PRETTY_PRINT)
         ]);
     }
 
@@ -247,7 +247,7 @@ abstract class Connection extends Component implements ConnectionInterface
             ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
             'message' => $exception->getMessage(),
             'sql' => $sql,
-            'bind' => json_encode($bind, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+            'bind' => json_stringify($bind, JSON_PRETTY_PRINT)
         ], 0, $exception);
     }
 

@@ -31,7 +31,7 @@ class AclController extends Controller
 
                 $this->console->writeLn($controller . ': ' . implode(',', $actions));
             } else {
-                $this->console->writeLn($controller . ': ' . json_encode($acl));
+                $this->console->writeLn($controller . ': ' . json_stringify($acl));
             }
         }
     }

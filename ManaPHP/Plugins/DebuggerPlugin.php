@@ -160,9 +160,9 @@ class DebuggerPlugin extends Plugin
             $options = $data['options'];
             list(, $collection) = explode('.', $data['namespace'], 2);
             $shell = "db.$collection.";
-            $shell .= (isset($options['limit']) ? 'findOne(' : 'find(') . json_encode($data['filter'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $shell .= (isset($options['limit']) ? 'findOne(' : 'find(') . json_stringify($data['filter']);
             if (isset($options['projection'])) {
-                $shell .= ', ' . json_encode($options['projection'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . ');';
+                $shell .= ', ' . json_stringify($options['projection']) . ');';
             } else {
                 $shell .= ');';
             }

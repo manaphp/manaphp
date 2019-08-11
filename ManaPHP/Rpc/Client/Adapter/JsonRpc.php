@@ -126,7 +126,7 @@ class JsonRpc extends Component implements ClientInterface
      */
     public function invoke($method, $params = [], $options = null)
     {
-        $request = json_encode(['jsonrpc' => '2.0', 'method' => $method, 'params' => $params, 'id' => ++$this->_id]);
+        $request = json_stringify(['jsonrpc' => '2.0', 'method' => $method, 'params' => $params, 'id' => ++$this->_id]);
 
         /** @var \ManaPHP\WebSocket\ClientInterface $client */
         $client = $this->poolManager->pop($this, $this->_timeout);

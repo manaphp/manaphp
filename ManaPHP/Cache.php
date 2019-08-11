@@ -73,12 +73,12 @@ abstract class Cache extends Component implements CacheInterface
             if (is_string($value) && $value !== '' && $value[0] !== '{' && $value[0] !== '[') {
                 $data = $value;
             } else {
-                $data = json_encode(['_wrapper_' => $value], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                $data = json_stringify(['_wrapper_' => $value]);
             }
         } elseif (is_array($value) && isset($value['_wrapper_'])) {
-            $data = json_encode(['_wrapper_' => $value], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            $data = json_stringify(['_wrapper_' => $value]);
         } else {
-            $data = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            $data = json_stringify($value);
         }
 
         if ($data === false) {

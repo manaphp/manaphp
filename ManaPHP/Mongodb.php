@@ -330,7 +330,7 @@ class Mongodb extends Component implements MongodbInterface
         } catch (RuntimeException $e) {
             throw new MongodbException([
                 '`:aggregate` aggregate for `:collection` collection failed: :msg',
-                'aggregate' => json_encode($pipeline),
+                'aggregate' => json_stringify($pipeline),
                 'collection' => $source,
                 'msg' => $e->getMessage()
             ]);

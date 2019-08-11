@@ -373,7 +373,7 @@ class Amqp extends Component implements AmqpInterface
     {
         $attributes['content_type'] = 'application/json';
 
-        return $this->publishMessage(json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), $exchange, $routing_key, $flags, $attributes);
+        return $this->publishMessage(json_stringify($message), $exchange, $routing_key, $flags, $attributes);
     }
 
     /**

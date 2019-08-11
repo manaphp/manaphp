@@ -57,10 +57,10 @@ class File extends Mailer
         if ($this->_pretty) {
             $data = str_repeat('=', 20) . date('Y-m-d H:i:s') . str_repeat('=', 20)
                 . PHP_EOL
-                . json_encode($message, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+                . json_stringify($message, JSON_PRETTY_PRINT)
                 . PHP_EOL;
         } else {
-            $data = json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . PHP_EOL;
+            $data = json_stringify($message) . PHP_EOL;
         }
 
         $this->filesystem->fileAppend($this->_file ?: '@data/fileMailer/mailer_' . date('ymd') . '.log', $data);

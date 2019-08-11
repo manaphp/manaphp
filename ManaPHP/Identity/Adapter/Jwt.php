@@ -152,8 +152,8 @@ class Jwt extends Identity
         $claims['iat'] = time();
         $claims['exp'] = time() + ($ttl ?: $this->_ttl);
 
-        $header = $this->base64urlEncode(json_encode(['alg' => $this->_alg, 'typ' => 'JWT']));
-        $payload = $this->base64urlEncode(json_encode($claims, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $header = $this->base64urlEncode(json_stringify(['alg' => $this->_alg, 'typ' => 'JWT']));
+        $payload = $this->base64urlEncode(json_stringify($claims));
         $signature = $this->base64urlEncode(hash_hmac(strtr($this->_alg, ['HS' => 'sha']), "$header.$payload", $key, true));
 
         return "$header.$payload.$signature";

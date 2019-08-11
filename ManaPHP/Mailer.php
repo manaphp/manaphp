@@ -54,7 +54,7 @@ abstract class Mailer extends Component implements MailerInterface
     public function send($message, &$failedRecipients = null)
     {
         if ($this->_log) {
-            $this->filesystem->fileAppend($this->_log, json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . PHP_EOL);
+            $this->filesystem->fileAppend($this->_log, json_stringify($message) . PHP_EOL);
         }
 
         $this->logger->debug(['From: ', $message->getFrom()]);

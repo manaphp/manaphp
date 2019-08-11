@@ -16,7 +16,7 @@ class DbController extends Controller
     {
         $services = [];
         foreach ($this->configure->components as $service => $config) {
-            $config = json_encode($config, JSON_UNESCAPED_SLASHES);
+            $config = json_stringify($config);
             if (preg_match('#(mysql|mssql|sqlite)://#', $config)) {
                 $services[] = $service;
             }
@@ -379,7 +379,7 @@ class DbController extends Controller
 
                 $startTime = microtime(true);
                 foreach ($rows as $row) {
-                    fwrite($file, json_encode($row) . PHP_EOL);
+                    fwrite($file, json_stringify($row) . PHP_EOL);
                 }
                 fclose($file);
 

@@ -117,7 +117,7 @@ class Console extends Component implements ConsoleInterface
             echo $message;
             return $this;
         } elseif ($message instanceof JsonSerializable) {
-            echo json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            echo json_stringify($message);
             return $this;
         } elseif ($message instanceof Serializable) {
             echo serialize($message);
@@ -128,7 +128,7 @@ class Console extends Component implements ConsoleInterface
         }
 
         if (!isset($message[0]) || !is_string($message[0])) {
-            echo json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            echo json_stringify($message);
             return $this;
         }
 
@@ -141,7 +141,7 @@ class Console extends Component implements ConsoleInterface
                 if ($v instanceof Throwable) {
                     $message[$k] = (string)$v;
                 } elseif (is_array($v) || $v instanceof JsonSerializable) {
-                    $message[$k] = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    $message[$k] = json_stringify($v);
                 }
             }
             echo sprintf(...$message);
@@ -152,7 +152,7 @@ class Console extends Component implements ConsoleInterface
         if (count($message) === 2) {
             if (isset($message[1]) && strpos($message[0], ':1') === false) {
                 if (is_scalar($message[1])) {
-                    echo json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    echo json_stringify($message);
                     return $this;
                 } else {
                     $message[0] = rtrim($message[0], ': ') . ': :1';
@@ -163,7 +163,7 @@ class Console extends Component implements ConsoleInterface
                 if (is_scalar($message[1]) && !is_scalar($message[2])) {
                     $message[0] = rtrim($message[0], ': ') . ': :1 => :2';
                 } else {
-                    echo json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                    echo json_stringify($message);
                     return $this;
                 }
             }
@@ -190,11 +190,11 @@ class Console extends Component implements ConsoleInterface
                 } elseif ($v instanceof Throwable) {
                     $v = (string)$v;
                 } elseif (is_array($v) || $v instanceof JsonSerializable) {
-                    $v = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    $v = json_stringify($v);
                 } elseif ($v instanceof Serializable) {
                     $v = serialize($v);
                 } elseif ($v === null || is_scalar($v)) {
-                    $v = json_encode($v);
+                    $v = json_stringify($v);
                 } else {
                     $v = (string)$v;
                 }

@@ -76,7 +76,7 @@ class Redis extends Component
 
         if (stripos(',blPop,brPop,brpoplpush,subscribe,psubscribe,', ",$name,") !== false) {
             $this->logger->debug(["\$redis->$name(:args) ... blocking",
-                'args' => substr(json_encode($arguments, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 1, -1),
+                'args' => substr(json_stringify($arguments), 1, -1),
             ], 'redis.' . $name);
         }
 
@@ -107,8 +107,8 @@ class Redis extends Component
                 $args[1] = substr($args[1], 0, 64) . '...';
             }
             $this->logger->info(["\$redis->$name(:args) => :return",
-                'args' => substr(json_encode($args, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 1, -1),
-                'return' => json_encode($r, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+                'args' => substr(json_stringify($args), 1, -1),
+                'return' => json_stringify($r)
             ], 'redis.cache.set');
         } /** @noinspection SpellCheckingInspection */
         elseif (stripos(',_prefix,_serialize,_unserialize,auth,bitcount,bitop,bitpos,clearLastError,client,close,connect,dbSize,debug,
@@ -121,13 +121,13 @@ class Redis extends Component
                     ,zRevRangeByLex,zRevRangeByScore,zRevRank,zScore,zUnion,zscan,expire,keys,lLen,lindex,lrange,mget,open,popen,
                     ,sGetMembers,scard,sendEcho,sismember,substr,zReverseRange,zSize,', ",$name,") !== false) {
             $this->logger->debug(["\$redis->$name(:args) => :return",
-                'args' => substr(json_encode($arguments, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 1, -1),
-                'return' => json_encode($r, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+                'args' => substr(json_stringify($arguments), 1, -1),
+                'return' => json_stringify($r)
             ], 'redis.' . $name);
         } else {
             $this->logger->info(["\$redis->$name(:args) => :return",
-                'args' => substr(json_encode($arguments, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 1, -1),
-                'return' => json_encode($r, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+                'args' => substr(json_stringify($arguments), 1, -1),
+                'return' => json_stringify($r)
             ], 'redis.' . $name);
         }
 

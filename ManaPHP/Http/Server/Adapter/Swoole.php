@@ -192,7 +192,7 @@ class Swoole extends Server
         $this->_handler = $handler;
 
         $this->log('info',
-            sprintf('starting listen on: %s:%d with setting: %s', $this->_host, $this->_port, json_encode($this->_settings, JSON_UNESCAPED_SLASHES)));
+            sprintf('starting listen on: %s:%d with setting: %s', $this->_host, $this->_port, json_stringify($this->_settings)));
         $this->log('info', 'http://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT'] . ($this->router->getPrefix() ?: '/'));
         $this->_swoole->on('request', [$this, 'onRequest']);
 
@@ -277,7 +277,7 @@ class Swoole extends Server
             if (is_string($content)) {
                 $sw_response->end($content);
             } else {
-                $sw_response->end(json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+                $sw_response->end(json_stringify($content));
             }
         }
 

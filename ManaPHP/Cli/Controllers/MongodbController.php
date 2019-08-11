@@ -31,7 +31,7 @@ class MongodbController extends Controller
         } else {
             $services = [];
             foreach ($this->configure->components as $service => $config) {
-                $config = json_encode($config, JSON_UNESCAPED_SLASHES);
+                $config = json_stringify($config);
                 if (preg_match('#mongodb://#', $config)) {
                     $services[] = $service;
                 }

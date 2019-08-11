@@ -223,7 +223,7 @@ class Swoole extends Component implements ServerInterface
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 
         $this->log('info',
-            sprintf('starting listen on: %s:%d with setting: %s', $this->_host, $this->_port, json_encode($this->_settings, JSON_UNESCAPED_SLASHES)));
+            sprintf('starting listen on: %s:%d with setting: %s', $this->_host, $this->_port, json_stringify($this->_settings)));
         $this->_swoole->start();
 
         echo sprintf('[%s][info]: shutdown', date('c')), PHP_EOL;
@@ -240,7 +240,7 @@ class Swoole extends Component implements ServerInterface
         if (is_string($data)) {
             return $this->_swoole->push($fd, $data);
         } else {
-            return $this->_swoole->push($fd, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+            return $this->_swoole->push($fd, json_stringify($data));
         }
     }
 

@@ -26,7 +26,7 @@ class Curl extends Client
         $body = $request->body;
         if (is_array($body)) {
             if (isset($headers['Content-Type']) && strpos($request->headers['Content-Type'], 'json') !== false) {
-                $body = json_encode($body, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                $body = json_stringify($body);
             } else {
                 $hasFiles = false;
                 /** @noinspection ForeachSourceInspection */

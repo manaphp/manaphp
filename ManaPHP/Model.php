@@ -1422,6 +1422,6 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function __toString()
     {
-        return (string)json_encode($this->toArray(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        return json_stringify($this->toArray());
     }
 }

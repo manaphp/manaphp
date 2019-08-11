@@ -152,7 +152,7 @@ class FiddlerPlugin extends Plugin
         /** @noinspection PhpUndefinedMethodInspection */
         /** @var \Redis $redis */
         $redis = $this->redis->getConnection();
-        $r = $redis->publish($context->channel, json_encode($packet, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $r = $redis->publish($context->channel, json_stringify($packet));
         if ($r <= 0) {
             $this->_enabled = false;
             $this->_last_checked = microtime(true);
@@ -269,7 +269,7 @@ class FiddlerPlugin extends Plugin
      */
     public function process_default($data)
     {
-        return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        return json_stringify($data);
     }
 
     /**

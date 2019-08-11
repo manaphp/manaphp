@@ -335,7 +335,7 @@ unset($data['server']['PATH']);
 ?>
 <!--suppress JSUnresolvedFunction -->
 <script>
-    data =<?=json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_HEX_TAG)?>;
+    data =<?=json_stringify($data, JSON_PRETTY_PRINT | JSON_HEX_TAG)?>;
 
     data['included_files_application'] = [];
     data['included_files_application_only'] = true;

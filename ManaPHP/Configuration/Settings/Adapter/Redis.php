@@ -68,7 +68,7 @@ class Redis extends Component implements SettingsInterface
             $this->_redis = $this->_di->getShared($this->_redis);
         }
 
-        $this->_redis->set($this->_prefix . $key, json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $this->_redis->set($this->_prefix . $key, json_stringify($value));
 
         return $this;
     }

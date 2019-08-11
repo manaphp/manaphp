@@ -51,6 +51,6 @@ class Redis extends Logger
             $this->_redis = $this->_di->getShared($this->_redis);
         }
 
-        $this->_redis->rPush($this->_key, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        $this->_redis->rPush($this->_key, json_stringify($data));
     }
 }

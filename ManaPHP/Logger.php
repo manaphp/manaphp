@@ -189,7 +189,7 @@ abstract class Logger extends Component implements LoggerInterface
         if ($message instanceof Throwable) {
             return $this->exceptionToString($message);
         } elseif ($message instanceof JsonSerializable) {
-            return json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            return json_stringify($message);
         } elseif ($message instanceof Serializable) {
             return serialize($message);
         } elseif (!is_array($message)) {
@@ -197,7 +197,7 @@ abstract class Logger extends Component implements LoggerInterface
         }
 
         if (!isset($message[0]) || !is_string($message[0])) {
-            return json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            return json_stringify($message);
         }
 
         if (substr_count($message[0], '%') + 1 >= ($count = count($message)) && isset($message[$count - 1])) {
@@ -209,7 +209,7 @@ abstract class Logger extends Component implements LoggerInterface
                 if ($v instanceof Throwable) {
                     $message[$k] = $this->exceptionToString($v);
                 } elseif (is_array($v) || $v instanceof JsonSerializable) {
-                    $message[$k] = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    $message[$k] = json_stringify($v);
                 }
             }
             return sprintf(...$message);
@@ -236,13 +236,13 @@ abstract class Logger extends Component implements LoggerInterface
             if ($v instanceof Throwable) {
                 $v = $this->exceptionToString($v);
             } elseif (is_array($v) || $v instanceof JsonSerializable) {
-                $v = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                $v = json_stringify($v);
             } elseif ($v instanceof Serializable) {
                 $v = serialize($v);
             } elseif (is_string($v)) {
                 null;
             } elseif ($v === null || is_scalar($v)) {
-                $v = json_encode($v);
+                $v = json_stringify($v);
             } else {
                 $v = (string)$v;
             }

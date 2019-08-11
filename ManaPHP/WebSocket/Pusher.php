@@ -53,7 +53,7 @@ class Pusher extends Component implements PusherInterface
     public function pushToId($receivers, $message, $endpoint = null)
     {
         if (!is_string($message)) {
-            $message = json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+            $message = json_stringify($message);
         }
 
         if (!$endpoint = $endpoint ?: $this->_endpoint) {
@@ -73,7 +73,7 @@ class Pusher extends Component implements PusherInterface
     public function pushToName($receivers, $message, $endpoint = null)
     {
         if (!is_string($message)) {
-            $message = json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $message = json_stringify($message);
         }
 
         if (!$endpoint = $endpoint ?: $this->_endpoint) {
@@ -93,7 +93,7 @@ class Pusher extends Component implements PusherInterface
     public function pushToRole($receivers, $message, $endpoint = null)
     {
         if (!is_string($message)) {
-            $message = json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $message = json_stringify($message);
         }
 
         if (!$endpoint = $endpoint ?: $this->_endpoint) {
@@ -112,7 +112,7 @@ class Pusher extends Component implements PusherInterface
     public function pushToAll($message, $endpoint = null)
     {
         if (!is_string($message)) {
-            $message = json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $message = json_stringify($message);
         }
 
         if (!$endpoint = $endpoint ?: $this->_endpoint) {
@@ -131,7 +131,7 @@ class Pusher extends Component implements PusherInterface
     public function broadcast($message, $endpoint = null)
     {
         if (!is_string($message)) {
-            $message = json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $message = json_stringify($message);
         }
 
         if (!$endpoint = $endpoint ?: $this->_endpoint) {

@@ -110,7 +110,7 @@ class EnvController extends Controller
 
         $data = $this->_di->getShared('ManaPHP\Dotenv')->parse(file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
 
-        $this->console->write(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+        $this->console->write(json_stringify($data, JSON_PRETTY_PRINT));
 
         return 0;
     }
