@@ -121,7 +121,7 @@
                     <td>{{index}}</td>
                     <td :title="item.name">{{item.name}}</td>
                     <td>{{item.class}}</td>
-                    <td :title="json_encode(item.properties)">
+                    <td :title="json_stringify(item.properties)">
                         <pre>{{item.properties|json 4}}</pre>
                     </td>
                 </tr>
@@ -143,7 +143,7 @@
                     <td>{{index}}</td>
                     <td :title="item.file">{{item.base_name}}</td>
                     <td>
-                        <pre :title="json_encode(item.vars)">{{item.vars|json 4}}</pre>
+                        <pre :title="json_stringify(item.vars)">{{item.vars|json 4}}</pre>
                     </td>
                 </tr>
                 </tbody>
@@ -163,7 +163,7 @@
                 <tr v-for="(value,name, index) in configure">
                     <td>{{index}}</td>
                     <td>{{name}}</td>
-                    <td :title="json_encode(value)">
+                    <td :title="json_stringify(value)">
                         <pre>{{value|json 4}}</pre>
                     </td>
                 </tr>
@@ -243,7 +243,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="(item, index) in sql.executed" :title="json_encode(item)">
+                    <tr v-for="(item, index) in sql.executed" :title="json_stringify(item)">
                         <td>{{index}}</td>
                         <td>{{item.row_count}}</td>
                         <td>{{item.emulated}}</td>
@@ -363,7 +363,7 @@ unset($data['server']['PATH']);
             }
         },
         methods: {
-            json_encode: function (data) {
+            json_stringify: function (data) {
                 return JSON.stringify(data, null, 4);
             }
         }
