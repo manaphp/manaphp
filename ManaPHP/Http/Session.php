@@ -301,7 +301,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
         } elseif ($serializer === 'php_serialize') {
             return unserialize($data);
         } elseif ($serializer === 'json') {
-            return json_decode($data, true);
+            return json_parse($data);
         } elseif ($serializer === 'igbinary') {
             return igbinary_unserialize($data);
         } elseif ($serializer === 'wddx') {

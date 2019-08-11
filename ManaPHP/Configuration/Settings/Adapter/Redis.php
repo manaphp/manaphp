@@ -45,7 +45,7 @@ class Redis extends Component implements SettingsInterface
             $this->_redis = $this->_di->getShared($this->_redis);
         }
 
-        $value = json_decode($this->_redis->get($this->_prefix . $key) ?: '[]', true);
+        $value = json_parse($this->_redis->get($this->_prefix . $key) ?: '[]');
         if (!is_array($value)) {
             throw new InvalidJsonException('the settings of `:key` key value is not json format', ['key' => $key]);
         }

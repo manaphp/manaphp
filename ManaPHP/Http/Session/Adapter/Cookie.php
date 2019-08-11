@@ -57,7 +57,7 @@ class Cookie extends Session
             throw new CookieException(['hash invalid: `:cookie`', 'cookie' => $data]);
         }
 
-        $payload = json_decode(base64_decode($parts[0]), true);
+        $payload = json_parse($parts[0]);
         if (!is_array($payload)) {
             throw new CookieException(['payload invalid: `:cookie`', 'cookie' => $data]);
         }

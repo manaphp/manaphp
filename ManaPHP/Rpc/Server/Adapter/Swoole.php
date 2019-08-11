@@ -114,7 +114,7 @@ class Swoole extends \ManaPHP\Rpc\Server
             $data = $request->rawContent();
 
             if (isset($_server['CONTENT_TYPE']) && strpos($_server['CONTENT_TYPE'], 'application/json') !== false) {
-                $_post = json_decode($data, true, 16);
+                $_post = json_parse($data);
             } else {
                 parse_str($data, $_post);
             }
@@ -223,7 +223,7 @@ class Swoole extends \ManaPHP\Rpc\Server
         $this->request->setRequestId();
 
         $response = $this->response->_context;
-        if (!$json = json_decode($frame->data, true)) {
+        if (!$json = json_parse($frame->data)) {
             $response->content = ['code' => -32700, 'message' => 'Parse error'];
             $this->send($response);
         } elseif (!isset($json['jsonrpc'], $json['method'], $json['params'], $json['id'])

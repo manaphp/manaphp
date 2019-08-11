@@ -157,7 +157,7 @@ abstract class Client extends Component implements ClientInterface
         $this->eventsManager->fireEvent('httpClient:beforeRequest', $this, $request);
         $response = $this->do_request($request);
         $response_text = $response->body;
-        if (strpos($response->content_type, '/json') !== false && $json = json_decode($response->body, true)) {
+        if (strpos($response->content_type, '/json') !== false && $json = json_parse($response->body)) {
             $response->body = $json;
         }
         $this->eventsManager->fireEvent('httpClient:afterRequest', $this, $response);

@@ -215,7 +215,7 @@ class FiddlerPlugin extends Plugin
     {
         $ts = microtime(true);
 
-        $message = json_decode($packet, true);
+        $message = json_parse($packet);
 
         $ip = $message['ip'];
         $type = $message['type'];

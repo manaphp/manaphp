@@ -416,7 +416,7 @@ class Amqp extends Component implements AmqpInterface
         }
 
         if ($envelope !== false) {
-            $json = json_decode($envelope->getBody(), true);
+            $json = json_parse($envelope->getBody());
             if ($json === null) {
                 throw new AmqpException(['json_decode `:1` queue `:2` message failed: :3', $queue, $envelope->getBody(), json_last_error_msg()]);
             }

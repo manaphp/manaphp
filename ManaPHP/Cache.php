@@ -32,7 +32,7 @@ abstract class Cache extends Component implements CacheInterface
             return $data;
         }
 
-        $json = json_decode($data, true);
+        $json = json_parse($data);
         if ($json === null) {
             throw new InvalidJsonException([
                 '`:key` key cache value json_encode failed: `:code` `:message`',

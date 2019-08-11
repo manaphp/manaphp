@@ -24,7 +24,7 @@ class Dispatcher extends \ManaPHP\Dispatcher
         if ($message === '') {
             return null;
         } elseif ($message[0] === '{') {
-            if (!is_array($json = json_decode($message, 16)) || !isset($json['action'])) {
+            if (!is_array($json = json_parse($message)) || !isset($json['action'])) {
                 throw new BadRequestException('package format is not valid');
             }
 

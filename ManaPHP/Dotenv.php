@@ -109,7 +109,7 @@ class Dotenv extends Component implements DotenvInterface
             if (is_array($value)) {
                 return $value;
             } elseif ($value !== '' && $value[0] === '{') {
-                if (is_array($r = json_decode($value, true))) {
+                if (is_array($r = json_parse($value))) {
                     return $r;
                 } else {
                     throw new InvalidValueException(['the value of `:key` key is not valid json format array', 'key' => $key]);

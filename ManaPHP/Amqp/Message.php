@@ -86,7 +86,7 @@ class Message implements JsonSerializable
      */
     public function getJsonBody()
     {
-        return json_decode($this->_envelope->getBody(), true);
+        return json_parse($this->_envelope->getBody());
     }
 
     /**
@@ -168,7 +168,7 @@ class Message implements JsonSerializable
         $data['delivery_tag'] = $envelope->getDeliveryTag();
         $data['content_type'] = $envelope->getContentType();
         if ($data['content_type'] === 'application/json') {
-            $data['body'] = json_decode($envelope->getBody(), true);
+            $data['body'] = json_parse($envelope->getBody());
             if ($data['body'] === null) {
                 $data['body'] = $envelope->getBody();
             }

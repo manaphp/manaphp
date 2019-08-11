@@ -21,7 +21,7 @@ class Fpm extends Server
 
             if (isset($_SERVER['CONTENT_TYPE'])
                 && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
-                $_POST = json_decode($data, true, 16);
+                $_POST = json_parse($data);
             } else {
                 parse_str($data, $_POST);
             }
