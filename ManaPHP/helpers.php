@@ -31,12 +31,13 @@ if (!function_exists('json_parse')) {
 if (!function_exists('json_stringify')) {
     /**
      * @param mixed $json
+     * @param int   $options
      *
      * @return string
      */
-    function json_stringify($json)
+    function json_stringify($json, $options = 0)
     {
-        return json_encode($json, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR, 16);
+        return json_encode($json, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR | $options, 16);
     }
 }
 

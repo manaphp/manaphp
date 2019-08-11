@@ -144,6 +144,8 @@ namespace PHPSTORM_META {
     expectedArguments(\input(), 1, argumentsSet('validator_rules'));
     expectedArguments(\ManaPHP\Validator::validateValue(), 2, argumentsSet('validator_rules'));
     expectedArguments(\ManaPHP\Validator::validateModel(), 2, argumentsSet('validator_rules'));
+
+    expectedArguments(\json_stringify(), 1, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT | JSON_FORCE_OBJECT | JSON_PRESERVE_ZERO_FRACTION | JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_UNESCAPED_LINE_TERMINATORS);
 }
 
 /**
