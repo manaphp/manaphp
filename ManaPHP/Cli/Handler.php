@@ -10,9 +10,9 @@ use ManaPHP\Utility\Text;
  *
  * @package ManaPHP\Cli
  *
- * @property-read \ManaPHP\Cli\ConsoleInterface        $console
- * @property-read \ManaPHP\Cli\CommandInvokerInterface $commandInvoker
- * @property-read \ManaPHP\Cli\RequestInterface        $request
+ * @property-read \ManaPHP\Cli\ConsoleInterface $console
+ * @property-read \ManaPHP\InvokerInterface     $invoker
+ * @property-read \ManaPHP\Cli\RequestInterface $request
  */
 class Handler extends Component implements HandlerInterface
 {
@@ -196,8 +196,9 @@ class Handler extends Component implements HandlerInterface
             }
         }
 
-        $this->request->completeShortNames($controllerInstance, $commandName);
-        $r = $this->commandInvoker->invoke($controllerInstance, $commandName);
+        $commandMethod = $commandName . 'Command';
+        $this->request->completeShortNames($controllerInstance, $commandMethod);
+        $r = $this->invoker->invoke($controllerInstance, $commandMethod);
 
         return is_int($r) ? $r : 0;
     }

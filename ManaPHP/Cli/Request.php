@@ -248,7 +248,7 @@ class Request extends Component implements RequestInterface
     public function completeShortNames($instance, $command)
     {
         $shorts = [];
-        foreach ((new \ReflectionMethod($instance, $command . 'Command'))->getParameters() as $parameter) {
+        foreach ((new \ReflectionMethod($instance, $command))->getParameters() as $parameter) {
             $name = $parameter->getName();
 
             $type = $parameter->getType();

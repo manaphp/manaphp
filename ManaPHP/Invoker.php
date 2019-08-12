@@ -1,35 +1,31 @@
 <?php
+namespace ManaPHP;
 
-namespace ManaPHP\Cli;
-
-use ManaPHP\Cli\CommandInvoker\NotFoundException;
-use ManaPHP\Component;
 use ManaPHP\Validator\ValidateFailedException;
 use ReflectionMethod;
 
 /**
  * Class Invoker
- * @package ManaPHP\Cli\Command
+ * @package ManaPHP
  *
- * @property-read \ManaPHP\Cli\RequestInterface $request
+ * @property-read \ManaPHP\Http\RequestInterface $request
  */
-class CommandInvoker extends Component implements CommandInvokerInterface
+class Invoker extends Component implements InvokerInterface
 {
     /**
-     * @param \ManaPHP\Cli\Controller $controller
-     * @param string                  $command
+     * @param object $instance
+     * @param string $method
      *
      * @return array
      */
-    protected function _buildArgs($controller, $command)
+    public function buildArgs($instance, $method)
     {
         $args = [];
         $missing = [];
 
         $di = $this->_di;
 
-        $parameters = (new ReflectionMethod($controller, $command . 'Command'))->getParameters();
-
+        $parameters = (new ReflectionMethod($instance, $method))->getParameters();
         foreach ($parameters as $parameter) {
             $name = $parameter->getName();
             $value = null;
@@ -42,8 +38,8 @@ class CommandInvoker extends Component implements CommandInvokerInterface
                 $value = $this->request->get($name);
             } elseif ($parameter->isDefaultValueAvailable()) {
                 $value = $parameter->getDefaultValue();
-            } elseif (count($parameters) === 1 && count($this->request->getValues()) === 1) {
-                $value = $this->request->getValues()[0];
+            } elseif (count($parameters) === 1 && ($name === 'id' || strpos($name, '_id') !== false)) {
+                $value = $this->request->getId($name);
             }
 
             if ($value === null) {
@@ -94,25 +90,15 @@ class CommandInvoker extends Component implements CommandInvokerInterface
     }
 
     /**
-     * @param \ManaPHP\Cli\Controller $controller
-     * @param string                  $command
+     * @param object $instance
+     * @param string $method
      *
      * @return mixed
-     * @throws \ManaPHP\Cli\CommandInvoker\NotFoundException
      */
-    public function invoke($controller, $command)
+    public function invoke($instance, $method)
     {
-        $commandMethod = $command . 'Command';
+        $args = $this->buildArgs($instance, $method);
 
-        if (!method_exists($controller, $commandMethod)) {
-            throw new NotFoundException([
-                '`:controller:::action` is not found',
-                'action' => $commandMethod,
-                'controller' => get_class($controller)
-            ]);
-        }
-
-        $args = $this->_buildArgs($controller, $command);
-        return $controller->$commandMethod(...$args);
+        return $instance->$method(...$args);
     }
 }

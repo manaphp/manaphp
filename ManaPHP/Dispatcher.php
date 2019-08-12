@@ -47,6 +47,7 @@ class DispatcherContext
  * @package dispatcher
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response
+ * @property-read \ManaPHP\InvokerInterface       $invoker
  * @property \ManaPHP\DispatcherContext           $_context
  */
 class Dispatcher extends Component implements DispatcherInterface
@@ -185,84 +186,6 @@ class Dispatcher extends Component implements DispatcherInterface
      * @param string                   $action
      * @param array                    $params
      *
-     * @return array
-     */
-    protected function _buildActionArgs($controller, $action, $params)
-    {
-        $args = [];
-        $missing = [];
-
-        $di = $this->_di;
-
-        $parameters = (new ReflectionMethod($controller, $action . 'Action'))->getParameters();
-        foreach ($parameters as $parameter) {
-            $name = $parameter->getName();
-            $value = null;
-
-            if ($className = ($c = $parameter->getClass()) ? $c->getName() : null) {
-                $value = $di->has($name) ? $di->getShared($name) : $di->getShared($className);
-            } elseif (strpos($name, 'Service') !== false) {
-                $value = $di->getShared($name);
-            } elseif ($this->request->has($name)) {
-                $value = $this->request->get($name);
-            } elseif ($parameter->isDefaultValueAvailable()) {
-                $value = $parameter->getDefaultValue();
-            } elseif (count($parameters) === 1 && ($name === 'id' || strpos($name, '_id') !== false)) {
-                $value = $this->request->getId($name);
-            }
-
-            if ($value === null) {
-                $missing[] = $name;
-                continue;
-            }
-
-            $type = $parameter->getType();
-            if ($type !== null) {
-                $type = $type->getName();
-            } elseif ($parameter->isDefaultValueAvailable()) {
-                $type = gettype($parameter->getDefaultValue());
-            }
-
-            switch ($type) {
-                case 'boolean':
-                case 'bool':
-                    $value = $this->validator->validateValue($name, $value, ['bool']);
-                    break;
-                case 'integer':
-                case 'int':
-                    $value = $this->validator->validateValue($name, $value, ['int']);
-                    break;
-                case 'double':
-                case 'float':
-                    $value = $this->validator->validateValue($name, $value, ['float']);
-                    break;
-                case 'string':
-                    $value = (string)$value;
-                    break;
-                case 'array':
-                    $value = is_string($value) ? explode(',', $value) : (array)$value;
-                    break;
-            }
-
-            $args[] = $value;
-        }
-
-        if ($missing) {
-            $errors = [];
-            foreach ($missing as $field) {
-                $errors[$field] = $this->validator->createError('required', $field);
-            }
-            throw new ValidateFailedException($errors);
-        }
-
-        return $args;
-    }
-
-    /**
-     * @param \ManaPHP\Rest\Controller $controller
-     * @param string                   $action
-     * @param array                    $params
-     *
      * @return mixed
      */
     public function invokeAction($controller, $action, $params)
@@ -285,9 +208,7 @@ class Dispatcher extends Component implements DispatcherInterface
 
         $this->eventsManager->fireEvent('request:invoke', $this, $action);
 
-        $args = $this->_buildActionArgs($controller, $action, $params);
-
-        $r = $controller->$actionMethod(...$args);
+        $r = $this->invoker->invoke($controller, $actionMethod);
 
         $this->eventsManager->fireEvent('request:invoked', $this, ['action' => $action, 'return' => $r]);
 

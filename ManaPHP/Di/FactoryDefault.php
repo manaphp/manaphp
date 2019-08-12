@@ -25,6 +25,7 @@ class FactoryDefault extends Di
             'dotenv' => 'ManaPHP\Dotenv',
             'configure' => 'ManaPHP\Configuration\Configure',
             'settings' => 'ManaPHP\Configuration\Settings\Adapter\Redis',
+            'invoker' => 'ManaPHP\Invoker',
             'modelsMetadata' => 'ManaPHP\Db\Model\Metadata\Adapter\Memory',
             'validator' => 'ManaPHP\Validator',
             'crypt' => 'ManaPHP\Security\Crypt',

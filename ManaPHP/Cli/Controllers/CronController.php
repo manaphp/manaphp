@@ -13,7 +13,6 @@ use Throwable;
 /**
  * Class CronController
  * @package ManaPHP\Cli\Controllers
- * @property-read \ManaPHP\Cli\CommandInvoker $commandInvoker
  */
 class CronController extends Controller
 {
