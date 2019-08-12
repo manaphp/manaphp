@@ -488,9 +488,7 @@ class Response extends Component implements ResponseInterface
         $this->setHeader('Content-Type', 'application/json; charset=utf-8');
 
         if (is_array($content)) {
-            if (array_key_exists(0, $content) && count($content) === 1) {
-                $content = ['code' => 0, 'message' => '', 'data' => $content[0]];
-            } elseif (!isset($content['code'])) {
+            if (!isset($content['code'])) {
                 $content = ['code' => 0, 'message' => '', 'data' => $content];
             }
         } elseif ($content instanceof JsonSerializable) {
