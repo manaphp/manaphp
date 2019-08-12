@@ -4,6 +4,7 @@ namespace ManaPHP\Cli;
 
 use ManaPHP\Cli\CommandInvoker\NotFoundException;
 use ManaPHP\Component;
+use ManaPHP\Validator\ValidateFailedException;
 use ReflectionMethod;
 
 /**
@@ -48,6 +49,7 @@ class CommandInvoker extends Component implements CommandInvokerInterface
     protected function _buildArgs($controller, $command)
     {
         $args = [];
+        $missing = [];
 
         $di = $this->_di;
 
@@ -57,13 +59,6 @@ class CommandInvoker extends Component implements CommandInvokerInterface
         foreach ($parameters as $parameter) {
             $name = $parameter->getName();
             $value = null;
-
-            $type = $parameter->getClass();
-            if ($type !== null) {
-                $type = $type->getName();
-            } elseif ($parameter->isDefaultValueAvailable()) {
-                $type = gettype($parameter->getDefaultValue());
-            }
 
             if ($className = ($c = $parameter->getClass()) ? $c->getName() : null) {
                 $value = $di->has($name) ? $di->getShared($name) : $di->getShared($className);
@@ -81,15 +76,30 @@ class CommandInvoker extends Component implements CommandInvokerInterface
                 $this->request->get($name . (isset($shortNames[$name]) ? ":$shortNames[$name]" : ''));
             }
 
+            if ($value === null) {
+                $missing[] = $name;
+                continue;
+            }
+
+            $type = $parameter->getType();
+            if ($type !== null) {
+                $type = $type->getName();
+            } elseif ($parameter->isDefaultValueAvailable()) {
+                $type = gettype($parameter->getDefaultValue());
+            }
+
             switch ($type) {
                 case 'boolean':
-                    $value = (bool)$value;
+                case 'bool':
+                    $value = $this->validator->validateValue($name, $value, ['bool']);
                     break;
                 case 'integer':
-                    $value = (int)$value;
+                case 'int':
+                    $value = $this->validator->validateValue($name, $value, ['int']);
                     break;
                 case 'double':
-                    $value = (float)$value;
+                case 'float':
+                    $value = $this->validator->validateValue($name, $value, ['float']);
                     break;
                 case 'string':
                     $value = (string)$value;
@@ -99,11 +109,15 @@ class CommandInvoker extends Component implements CommandInvokerInterface
                     break;
             }
 
-            if ($parameter->isArray()) {
-                $args[] = (array)$value;
-            } else {
-                $args[] = $value;
+            $args[] = $value;
+        }
+
+        if ($missing) {
+            $errors = [];
+            foreach ($missing as $field) {
+                $errors[$field] = $this->validator->createError('required', $field);
             }
+            throw new ValidateFailedException($errors);
         }
 
         return $args;

@@ -199,13 +199,6 @@ class Dispatcher extends Component implements DispatcherInterface
             $name = $parameter->getName();
             $value = null;
 
-            $type = $parameter->getClass();
-            if ($type !== null) {
-                $type = $type->getName();
-            } elseif ($parameter->isDefaultValueAvailable()) {
-                $type = gettype($parameter->getDefaultValue());
-            }
-
             if ($className = ($c = $parameter->getClass()) ? $c->getName() : null) {
                 $value = $di->has($name) ? $di->getShared($name) : $di->getShared($className);
             } elseif (isset($params[$name])) {
@@ -225,29 +218,35 @@ class Dispatcher extends Component implements DispatcherInterface
                 continue;
             }
 
+            $type = $parameter->getType();
+            if ($type !== null) {
+                $type = $type->getName();
+            } elseif ($parameter->isDefaultValueAvailable()) {
+                $type = gettype($parameter->getDefaultValue());
+            }
+
             switch ($type) {
                 case 'boolean':
-                    $value = (bool)$value;
+                case 'bool':
+                    $value = $this->validator->validateValue($name, $value, ['bool']);
                     break;
                 case 'integer':
-                    $value = (int)$value;
+                case 'int':
+                    $value = $this->validator->validateValue($name, $value, ['int']);
                     break;
                 case 'double':
-                    $value = (float)$value;
+                case 'float':
+                    $value = $this->validator->validateValue($name, $value, ['float']);
                     break;
                 case 'string':
                     $value = (string)$value;
                     break;
                 case 'array':
-                    $value = (array)$value;
+                    $value = is_string($value) ? explode(',', $value) : (array)$value;
                     break;
             }
 
-            if ($parameter->isArray()) {
-                $args[] = (array)$value;
-            } else {
-                $args[] = $value;
-            }
+            $args[] = $value;
         }
 
         if ($missing) {
