@@ -250,10 +250,10 @@ if (!function_exists('input')) {
         }
 
         if ($defaultOrRules && is_array($defaultOrRules)) {
-            $value = $request->getInput($name, $defaultOrRules['default'] ?? null);
+            $value = $request->get($name, $defaultOrRules['default'] ?? null);
             return $request->validator->validateValue($name, $value, $defaultOrRules);
         } else {
-            return $request->getInput($name, $defaultOrRules);
+            return $request->get($name, $defaultOrRules);
         }
     }
 }

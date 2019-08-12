@@ -178,28 +178,6 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * @param string $name
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getInput($name = null, $default = null)
-    {
-        $params = $this->dispatcher->getParams();
-        if (isset($params[0]) && count($params) === 1) {
-            $params = ['id' => $params[0]];
-        }
-
-        if ($name === null) {
-            return array_merge($this->get(), $params);
-        } elseif (isset($params[$name])) {
-            return $default === null ? $params[$name] : $this->_normalizeValue($name, $params[$name], $default);
-        } else {
-            return $this->get($name, $default);
-        }
-    }
-
-    /**
      * Checks whether $_REQUEST has certain index
      *
      * @param string $name
@@ -211,16 +189,6 @@ class Request extends Component implements RequestInterface
         $context = $this->_context;
 
         return isset($context->_REQUEST[$name]);
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasInput($name)
-    {
-        return $this->has($name) || $this->dispatcher->hasParam($name);
     }
 
     /**

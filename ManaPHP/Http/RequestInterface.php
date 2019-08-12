@@ -41,14 +41,6 @@ interface RequestInterface
 
     /**
      * @param string $name
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getInput($name = null, $default = null);
-
-    /**
-     * @param string $name
      *
      * @return int|string
      */
@@ -73,13 +65,6 @@ interface RequestInterface
      * @return bool
      */
     public function has($name);
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasInput($name);
 
     /**
      * @param string $name
