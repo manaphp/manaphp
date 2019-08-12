@@ -363,6 +363,18 @@ class Dispatcher extends Component implements DispatcherInterface
             $params = $router->getParams();
         }
 
+        $globals = $this->request->getGlobals();
+
+        foreach ($params as $k => $v) {
+            if (is_string($k)) {
+                $globals->_REQUEST[$k] = $v;
+            }
+        }
+
+        if (isset($params[0])) {
+            $globals->_REQUEST['id'] = $params[0];
+        }
+
         if ($area) {
             $area = strpos($area, '_') === false ? ucfirst($area) : Text::camelize($area);
             $context->area = $area;

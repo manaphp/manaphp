@@ -137,17 +137,10 @@ class Request extends Component implements RequestInterface
 
         if (isset($source[$name])) {
             $id = $source[$name];
+        } elseif (isset($source['id'])) {
+            $id = $source['id'];
         } else {
-            $params = $this->dispatcher->getParams();
-            if (isset($params[$name])) {
-                $id = $params[$name];
-            } elseif (count($params) === 1 && isset($params[0])) {
-                $id = $params[0];
-            } elseif (isset($source['id'])) {
-                return $source['id'];
-            } else {
-                throw new MissingFieldException(['missing `:id` key value', 'id' => $name]);
-            }
+            throw new MissingFieldException(['missing `:id` key value', 'id' => $name]);
         }
 
         if (!is_scalar($id)) {
