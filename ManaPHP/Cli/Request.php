@@ -238,4 +238,44 @@ class Request extends Component implements RequestInterface
             $this->_request_id = $this->_prefix . sprintf('%08x', $this->_count++);
         }
     }
+
+    /**
+     * @param object $instance
+     * @param string $command
+     *
+     * @return void
+     */
+    public function completeShortNames($instance, $command)
+    {
+        $shorts = [];
+        foreach ((new \ReflectionMethod($instance, $command . 'Command'))->getParameters() as $parameter) {
+            $name = $parameter->getName();
+
+            $type = $parameter->getType();
+            if ($type && !$type->isBuiltin()) {
+                continue;
+            }
+
+            if (preg_match('#Service$#', $name) === 1) {
+                continue;
+            }
+
+            $short = $name[0];
+            if (isset($names[$short])) {
+                $shorts[$short] = false;
+            } else {
+                $shorts[$short] = $name;
+            }
+        }
+        $shorts = array_filter($shorts);
+
+        foreach ($this->_options as $k => $v) {
+            if (is_string($k) && strlen($k) === 1) {
+                $verbose = $shorts[$k];
+                if (!$this->_options[$verbose]) {
+                    $this->_options[$verbose] = $v;
+                }
+            }
+        }
+    }
 }

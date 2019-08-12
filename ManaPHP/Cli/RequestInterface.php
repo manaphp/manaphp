@@ -68,4 +68,12 @@ interface RequestInterface
      * @return void
      */
     public function setRequestId($request_id = null);
+
+    /**
+     * @param object $instance
+     * @param string $command
+     *
+     * @return void
+     */
+    public function completeShortNames($instance, $command);
 }

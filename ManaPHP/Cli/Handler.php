@@ -196,6 +196,7 @@ class Handler extends Component implements HandlerInterface
             }
         }
 
+        $this->request->completeShortNames($controllerInstance, $commandName);
         $r = $this->commandInvoker->invoke($controllerInstance, $commandName);
 
         return is_int($r) ? $r : 0;
