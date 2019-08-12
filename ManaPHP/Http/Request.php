@@ -7,6 +7,7 @@ use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Http\Request\File\Exception as FileException;
+use ManaPHP\Validator\ValidateFailedException;
 
 class RequestContext implements Stickyable
 {
@@ -140,7 +141,7 @@ class Request extends Component implements RequestInterface
         } elseif (isset($source['id'])) {
             $id = $source['id'];
         } else {
-            throw new MissingFieldException(['missing `:id` key value', 'id' => $name]);
+            throw new ValidateFailedException([$name => "$name field is required"]);
         }
 
         if (!is_scalar($id)) {
