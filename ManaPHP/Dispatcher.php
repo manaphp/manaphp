@@ -5,8 +5,6 @@ namespace ManaPHP;
 use ManaPHP\Dispatcher\NotFoundActionException;
 use ManaPHP\Dispatcher\NotFoundControllerException;
 use ManaPHP\Utility\Text;
-use ManaPHP\Validator\ValidateFailedException;
-use ReflectionMethod;
 
 class DispatcherContext
 {
