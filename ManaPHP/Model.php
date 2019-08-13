@@ -1189,7 +1189,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function unserialize($serialized)
     {
-        $unserialized = unserialize($serialized);
+        $unserialized = unserialize($serialized, ['allowed_classes' => false]);
         if ($this->_snapshot !== false) {
             $this->_snapshot = $unserialized;
         }

@@ -280,7 +280,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
                 $num = $pos - $offset;
                 $key = substr($data, $offset, $num);
                 $offset += $num + 1;
-                $value = unserialize(substr($data, $offset));
+                $value = unserialize(substr($data, $offset), ['allowed_classes' => true]);
                 $r[$key] = $value;
                 $offset += strlen(serialize($value));
             }
@@ -293,13 +293,13 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
                 $offset++;
                 $key = substr($data, $offset, $num);
                 $offset += $num;
-                $value = unserialize(substr($data, $offset));
+                $value = unserialize(substr($data, $offset), ['allowed_classes' => true]);
                 $r[$key] = $value;
                 $offset += strlen(serialize($value));
             }
             return $r;
         } elseif ($serializer === 'php_serialize') {
-            return unserialize($data);
+            return unserialize($data, ['allowed_classes' => true]);
         } elseif ($serializer === 'json') {
             return json_parse($data);
         } elseif ($serializer === 'igbinary') {
