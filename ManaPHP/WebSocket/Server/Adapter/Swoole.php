@@ -165,11 +165,15 @@ class Swoole extends Component implements ServerInterface
             return;
         }
 
-        /** @var \ArrayObject $context */
-        $context = Coroutine::getContext();
-        foreach ($this->_contexts[$fd] as $k => $v) {
+        if (!$old_context = $this->_contexts[$fd] ?? null) {
+            return;
+        }
+
+        /** @var \ArrayObject $current_context */
+        $current_context = Coroutine::getContext();
+        foreach ($old_context as $k => $v) {
             /** @noinspection OnlyWritesOnParameterInspection */
-            $context[$k] = $v;
+            $current_context[$k] = $v;
         }
 
         try {
@@ -237,11 +241,7 @@ class Swoole extends Component implements ServerInterface
      */
     public function push($fd, $data)
     {
-        if (is_string($data)) {
-            return $this->_swoole->push($fd, $data);
-        } else {
-            return $this->_swoole->push($fd, json_stringify($data));
-        }
+        return $this->_swoole->push($fd, is_string($data) ? $data : json_stringify($data));
     }
 
     public function broadcast($data)

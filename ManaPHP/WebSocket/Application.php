@@ -3,6 +3,7 @@ namespace ManaPHP\WebSocket;
 
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\Response;
+use ManaPHP\Router\NotFoundRouteException;
 use ManaPHP\WebSocket\Server\HandlerInterface;
 use Throwable;
 
@@ -11,9 +12,9 @@ use Throwable;
  * @package ManaPHP\WebSocket
  *
  * @property-read \ManaPHP\WebSocket\ServerInterface $wsServer
- * @property-read \ManaPHP\RouterInterface           $router
- * @property-read \ManaPHP\Http\ResponseInterface    $response
- * @property-read \ManaPHP\WebSocket\Dispatcher      $dispatcher
+ * @property-read \ManaPHP\Router                    $router
+ * @property-read \ManaPHP\Http\Response             $response
+ * @property-read \ManaPHP\DispatcherInterface       $dispatcher
  */
 class Application extends \ManaPHP\Application implements HandlerInterface
 {
@@ -32,19 +33,27 @@ class Application extends \ManaPHP\Application implements HandlerInterface
     }
 
     /**
-     * @param int $fd
+     * @param int    $fd
+     * @param string $event
+     *
+     * @return void
      */
-    public function onOpen($fd)
+    public function handle($fd, $event)
     {
         try {
             $throwable = null;
 
             $this->eventsManager->fireEvent('request:begin', $this);
 
-            $this->router->match();
-            $this->dispatcher->dispatch($this->router, false);
+            if (!$this->router->match()) {
+                throw new NotFoundRouteException(['router does not have matched route']);
+            }
 
-            $returnValue = $this->dispatcher->getControllerInstance()->onOpen($fd);
+            $router = $this->router->_context;
+            $router->action = $event;
+
+            $returnValue = $this->dispatcher->dispatch($router);
+
             if ($returnValue === null || $returnValue instanceof Response) {
                 null;
             } elseif (is_string($returnValue)) {
@@ -59,17 +68,22 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         }
 
         try {
-            $this->eventsManager->fireEvent('ws:open', $this, $fd);
+            if ($event === 'open') {
+                $this->eventsManager->fireEvent('ws:open', $this, $fd);
+            } elseif ($event === 'close') {
+                $this->eventsManager->fireEvent('ws:close', $this, $fd);
+            }
         } catch (AbortException $exception) {
             null;
         } catch (Throwable $throwable) {
             $this->handleException($throwable);
         }
 
-        $content = $this->response->getContent();
-        if ($content !== '') {
+        if ($content = $this->response->getContent()) {
             $this->wsServer->push($fd, $content);
         }
+
+        $this->eventsManager->fireEvent('request:end', $this);
 
         if ($throwable) {
             $this->wsServer->disconnect($fd);
@@ -79,11 +93,20 @@ class Application extends \ManaPHP\Application implements HandlerInterface
     /**
      * @param int $fd
      */
+    public function onOpen($fd)
+    {
+        $globals = $this->request->getGlobals();
+        $globals->_REQUEST['fd'] = $fd;
+
+        $this->handle($fd, 'open');
+    }
+
+    /**
+     * @param int $fd
+     */
     public function onClose($fd)
     {
-        $this->dispatcher->getControllerInstance()->onClose($fd);
-        $this->eventsManager->fireEvent('ws:close', $this, $fd);
-        $this->eventsManager->fireEvent('request:end', $this);
+        $this->handle($fd, 'close');
     }
 
     /**
@@ -92,26 +115,11 @@ class Application extends \ManaPHP\Application implements HandlerInterface
      */
     public function onMessage($fd, $data)
     {
-        $this->eventsManager->fireEvent('ws:message', $this, compact('fd', 'data'));
+        $globals = $this->request->getGlobals();
+        $globals->_REQUEST['data'] = $data;
 
-        try {
-            $returnValue = $this->dispatcher->getControllerInstance()->onMessage($fd, $data);
-
-            if ($returnValue === null || $returnValue instanceof Response) {
-                null;
-            } elseif (is_string($returnValue)) {
-                $this->response->setJsonError($returnValue);
-            } else {
-                $this->response->setJsonContent($returnValue);
-            }
-        } catch (Throwable $throwable) {
-            $this->handleException($throwable);
-        }
-
-        $content = $this->response->getContent();
-        if ($content !== '') {
-            $this->wsServer->push($fd, $content);
-        }
+        $this->handle($fd, 'message');
+        $globals->_REQUEST['data'] = null;
     }
 
     public function main()
