@@ -182,11 +182,10 @@ class Dispatcher extends Component implements DispatcherInterface
     /**
      * @param \ManaPHP\Rest\Controller $controller
      * @param string                   $action
-     * @param array                    $params
      *
      * @return mixed
      */
-    public function invokeAction($controller, $action, $params)
+    public function invokeAction($controller, $action)
     {
         $actionMethod = $action . 'Action';
 
@@ -211,13 +210,6 @@ class Dispatcher extends Component implements DispatcherInterface
         $this->eventsManager->fireEvent('request:invoked', $this, ['action' => $action, 'return' => $r]);
 
         return $r;
-    }
-
-    public function invoke()
-    {
-        $context = $this->_context;
-
-        return $this->invokeAction($context->controllerInstance, $context->action, $context->params);
     }
 
     /**
@@ -258,13 +250,12 @@ class Dispatcher extends Component implements DispatcherInterface
      * Dispatches a handle action taking into account the routing parameters
      *
      * @param \ManaPHP\RouterInterface $router
-     * @param bool                     $auto_invoke
      *
      * @return mixed
      * @throws \ManaPHP\Dispatcher\NotFoundControllerException
      * @throws \ManaPHP\Exception\AbortException
      */
-    public function dispatch($router, $auto_invoke = true)
+    public function dispatch($router)
     {
         $context = $this->_context;
 
@@ -331,9 +322,7 @@ class Dispatcher extends Component implements DispatcherInterface
         $controllerInstance = $this->_di->getShared($controllerClassName);
         $context->controllerInstance = $controllerInstance;
 
-        if ($auto_invoke) {
-            return $this->invokeAction($controllerInstance, $action, $params);
-        }
+        return $this->invokeAction($controllerInstance, $action);
     }
 
     /**
