@@ -49,7 +49,7 @@ class Invoker extends Component implements InvokerInterface
 
             $type = $parameter->getType();
             if ($type !== null) {
-                $type = $type->getName();
+                $type = (string)$type;
             } elseif ($parameter->isDefaultValueAvailable()) {
                 $type = gettype($parameter->getDefaultValue());
             }
