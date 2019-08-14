@@ -78,11 +78,7 @@ class Fpm extends Server
         header('HTTP/1.1 ' . $response->status_code . ' ' . $response->status_text);
 
         foreach ($response->headers as $header => $value) {
-            if ($value !== null) {
-                header($header . ': ' . $value);
-            } else {
-                header($header);
-            }
+            header($value === null ? $header : "$header: $value");
         }
 
         if ($response->cookies) {

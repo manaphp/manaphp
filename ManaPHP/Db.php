@@ -141,11 +141,7 @@ class Db extends Component implements DbInterface
     {
         $list = [];
         foreach (explode('.', $identifier) as $id) {
-            if ($identifier[0] === '[') {
-                $list[] = $id;
-            } else {
-                $list[] = "[$id]";
-            }
+            $list[] = $identifier[0] === '[' ? $id : "[$id]";
         }
 
         return implode('.', $list);
