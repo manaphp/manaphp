@@ -109,12 +109,7 @@ class Fpm extends Server
             readfile($this->alias->resolve($response->file));
         } else {
             $content = $response->content;
-
-            if (is_string($content)) {
-                echo $content;
-            } else {
-                echo json_stringify($content);
-            }
+            echo is_string($content) ? $content : json_stringify($content);
         }
 
         $this->eventsManager->fireEvent('response:afterSend', $this);

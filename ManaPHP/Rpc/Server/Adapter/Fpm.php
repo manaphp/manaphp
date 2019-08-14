@@ -99,12 +99,7 @@ class Fpm extends Server
         }
 
         $content = $response->content;
-
-        if (is_string($content)) {
-            echo $content;
-        } else {
-            echo json_stringify($content);
-        }
+        echo is_string($content) ? $content : json_stringify($content);
 
         return $this;
     }

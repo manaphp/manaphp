@@ -294,12 +294,7 @@ class Swoole extends \ManaPHP\Rpc\Server
             }
 
             $content = $response->content;
-
-            if (is_string($content)) {
-                $sw_response->end($content);
-            } else {
-                $sw_response->end(json_stringify($content));
-            }
+            $sw_response->end(is_string($content) ? $content : json_stringify($content));
         }
     }
 

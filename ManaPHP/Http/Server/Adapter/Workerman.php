@@ -248,11 +248,7 @@ class Workerman extends Server
         }
 
         $content = $response->content;
-        if (is_string($content)) {
-            $this->_context->connection->close($content);
-        } else {
-            $this->_context->connection->close(json_stringify($content));
-        }
+        $this->_context->connection->close(is_string($content) ? $content : json_stringify($content));
 
         $this->eventsManager->fireEvent('response:afterSend', $this, $response);
     }
