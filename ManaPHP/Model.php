@@ -753,7 +753,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             return null;
         }
 
-        $instance = static::sample();
+        $instance = new static();
 
         $_request = $request->get();
 
@@ -798,7 +798,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             return null;
         }
 
-        $model = static::sample();
+        $model = new static();
 
         $pkName = $model->getPrimaryKey();
 
