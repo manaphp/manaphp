@@ -179,7 +179,8 @@ class Jwt extends Identity
 
         list($header, $payload) = $parts;
 
-        if (!is_array($claims = json_parse($this->base64urlDecode($payload)))) {
+        //DO NOT use json_parse, it maybe generates a lot of Exceptions
+        if (!is_array($claims = json_decode($this->base64urlDecode($payload), true))) {
             throw new BadCredentialException('payload is not array.');
         }
 
@@ -187,7 +188,8 @@ class Jwt extends Identity
             return $claims;
         }
 
-        $decoded_header = json_parse($this->base64urlDecode($header));
+        //DO NOT use json_parse, it maybe generates a lot of Exceptions
+        $decoded_header = json_decode($this->base64urlDecode($header), true);
         if (!$decoded_header) {
             throw new BadCredentialException(['The JWT header `:header` is not distinguished', 'header' => $header]);
         }
