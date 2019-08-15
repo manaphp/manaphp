@@ -127,7 +127,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     public static function query($alias = null, $model = null)
     {
         if (!$model) {
-            $model = Di::getDefault()->getShared(static::class);
+            $model = static::sample();
         }
 
         $query = $model->_di->get('ManaPHP\Db\Query')->setModel($model);
@@ -397,9 +397,9 @@ class Model extends \ManaPHP\Model implements ModelInterface
     public static function where($filters)
     {
         if (is_scalar($filters)) {
-            /** @var \ManaPHP\ModelInterface $model */
-            $model = Di::getDefault()->getShared(static::class);
-            return static::query(null, $model)->whereEq($model->getPrimaryKey(), $filters);
+            /** @var \ManaPHP\ModelInterface $sample */
+            $sample = static::sample();
+            return static::query(null, $sample)->whereEq($sample->getPrimaryKey(), $filters);
         } else {
             return static::query()->where($filters);
         }

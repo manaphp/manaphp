@@ -302,7 +302,7 @@ class Model extends \ManaPHP\Model
     public static function query($alias = null, $model = null)
     {
         if (!$model) {
-            $model = Di::getDefault()->getShared(static::class);
+            $model = static::sample();
         }
 
         return $model->_di->get('ManaPHP\Mongodb\Query')->setModel($model)->setTypes($model->getFieldTypes());
@@ -631,9 +631,8 @@ class Model extends \ManaPHP\Model
     public static function where($filters)
     {
         if (is_scalar($filters)) {
-            /** @var \ManaPHP\ModelInterface $model */
-            $model = Di::getDefault()->getShared(static::class);
-            return static::query(null, $model)->whereEq($model->getPrimaryKey(), $filters);
+            $sample = static::sample();
+            return static::query(null, $sample)->whereEq($sample->getPrimaryKey(), $filters);
         } else {
             return static::query()->where($filters);
         }
