@@ -498,9 +498,9 @@ class Model extends \ManaPHP\Model
      */
     public static function aggregateEx($pipeline, $options = [])
     {
-        $instance = static::sample();
+        $sample = static::sample();
 
-        return $instance->getConnection()->aggregate($instance->getSource(), $pipeline, $options);
+        return $sample->getConnection()->aggregate($sample->getSource(), $pipeline, $options);
     }
 
     /**
@@ -510,26 +510,26 @@ class Model extends \ManaPHP\Model
      */
     public static function bulkInsert($documents)
     {
-        $instance = static::sample();
+        $sample = static::sample();
 
-        $autoIncrementField = $instance->getAutoIncrementField();
-        $allowNull = $instance->isAllowNullValue();
-        $fieldTypes = $instance->getFieldTypes();
+        $autoIncrementField = $sample->getAutoIncrementField();
+        $allowNull = $sample->isAllowNullValue();
+        $fieldTypes = $sample->getFieldTypes();
         foreach ($documents as $i => $document) {
             if ($autoIncrementField && !isset($document[$autoIncrementField])) {
-                $document[$autoIncrementField] = $instance->getNextAutoIncrementId();
+                $document[$autoIncrementField] = $sample->getNextAutoIncrementId();
             }
             foreach ($fieldTypes as $field => $type) {
                 if (isset($document[$field])) {
-                    $document[$field] = $instance->normalizeValue($type, $document[$field]);
+                    $document[$field] = $sample->normalizeValue($type, $document[$field]);
                 } elseif ($field !== '_id') {
-                    $document[$field] = $allowNull ? null : $instance->normalizeValue($type, '');
+                    $document[$field] = $allowNull ? null : $sample->normalizeValue($type, '');
                 }
             }
             $documents[$i] = $document;
         }
 
-        return $instance->getConnection()->bulkInsert($instance->getSource(), $documents);
+        return $sample->getConnection()->bulkInsert($sample->getSource(), $documents);
     }
 
     /**
@@ -539,20 +539,20 @@ class Model extends \ManaPHP\Model
      */
     public static function bulkUpdate($documents)
     {
-        $instance = static::sample();
+        $sample = static::sample();
 
-        $primaryKey = $instance->getPrimaryKey();
-        $allowNull = $instance->isAllowNullValue();
-        $fieldTypes = $instance->getFieldTypes();
+        $primaryKey = $sample->getPrimaryKey();
+        $allowNull = $sample->isAllowNullValue();
+        $fieldTypes = $sample->getFieldTypes();
         foreach ($documents as $i => $document) {
             if (!isset($document[$primaryKey])) {
                 throw new InvalidValueException(['bulkUpdate `:model` model must set primary value', 'model' => static::class]);
             }
             foreach ((array)$document as $field => $value) {
                 if ($value === null) {
-                    $document[$field] = $allowNull ? null : $instance->normalizeValue($fieldTypes[$field], '');
+                    $document[$field] = $allowNull ? null : $sample->normalizeValue($fieldTypes[$field], '');
                 } else {
-                    $document[$field] = $instance->normalizeValue($fieldTypes[$field], $value);
+                    $document[$field] = $sample->normalizeValue($fieldTypes[$field], $value);
                 }
             }
         }
@@ -560,8 +560,8 @@ class Model extends \ManaPHP\Model
         /**
          * @var \ManaPHP\MongodbInterface $connection
          */
-        $connection = $instance->getConnection();
-        return $connection->bulkUpdate($instance->getSource(), $documents, $primaryKey);
+        $connection = $sample->getConnection();
+        return $connection->bulkUpdate($sample->getSource(), $documents, $primaryKey);
     }
 
     /**
@@ -571,20 +571,20 @@ class Model extends \ManaPHP\Model
      */
     public static function bulkUpsert($documents)
     {
-        $instance = static::sample();
+        $sample = static::sample();
 
-        $primaryKey = $instance->getPrimaryKey();
-        $allowNull = $instance->isAllowNullValue();
-        $fieldTypes = $instance->getFieldTypes();
+        $primaryKey = $sample->getPrimaryKey();
+        $allowNull = $sample->isAllowNullValue();
+        $fieldTypes = $sample->getFieldTypes();
         foreach ($documents as $i => $document) {
             if (!isset($document[$primaryKey])) {
-                $document[$primaryKey] = $instance->getNextAutoIncrementId();
+                $document[$primaryKey] = $sample->getNextAutoIncrementId();
             }
             foreach ($fieldTypes as $field => $type) {
                 if (isset($document[$field])) {
-                    $document[$field] = $instance->normalizeValue($type, $document[$field]);
+                    $document[$field] = $sample->normalizeValue($type, $document[$field]);
                 } elseif ($field !== '_id') {
-                    $document[$field] = $allowNull ? null : $instance->normalizeValue($type, '');
+                    $document[$field] = $allowNull ? null : $sample->normalizeValue($type, '');
                 }
             }
             $documents[$i] = $document;
@@ -593,8 +593,8 @@ class Model extends \ManaPHP\Model
         /**
          * @var \ManaPHP\MongodbInterface $connection
          */
-        $connection = $instance->getConnection();
-        return $connection->bulkUpsert($instance->getSource(), $documents, $primaryKey);
+        $connection = $sample->getConnection();
+        return $connection->bulkUpsert($sample->getSource(), $documents, $primaryKey);
     }
 
     /**
@@ -604,23 +604,23 @@ class Model extends \ManaPHP\Model
      */
     public static function insert($document)
     {
-        $instance = static::sample();
+        $sample = static::sample();
 
-        $allowNull = $instance->isAllowNullValue();
-        $fieldTypes = $instance->getFieldTypes();
-        $autoIncrementField = $instance->getAutoIncrementField();
+        $allowNull = $sample->isAllowNullValue();
+        $fieldTypes = $sample->getFieldTypes();
+        $autoIncrementField = $sample->getAutoIncrementField();
         if ($autoIncrementField && !isset($document[$autoIncrementField])) {
-            $document[$autoIncrementField] = $instance->getNextAutoIncrementId();
+            $document[$autoIncrementField] = $sample->getNextAutoIncrementId();
         }
 
         foreach ($fieldTypes as $field => $type) {
             if (isset($document[$field])) {
-                $document[$field] = $instance->normalizeValue($type, $document[$field]);
+                $document[$field] = $sample->normalizeValue($type, $document[$field]);
             } elseif ($field !== '_id') {
-                $document[$field] = $allowNull ? null : $instance->normalizeValue($type, '');
+                $document[$field] = $allowNull ? null : $sample->normalizeValue($type, '');
             }
         }
-        return $instance->getConnection($document)->insert($instance->getSource($document), $document);
+        return $sample->getConnection($document)->insert($sample->getSource($document), $document);
     }
 
     /**

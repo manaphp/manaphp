@@ -320,10 +320,10 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $bind = [];
         }
 
-        $model = static::sample();
+        $sample = static::sample();
 
-        $table = $model->getSource($bind);
-        return $model->getConnection($bind)->insertBySql('INSERT' . " INTO [$table] " . $sql, $bind);
+        $table = $sample->getSource($bind);
+        return $sample->getConnection($bind)->insertBySql('INSERT' . " INTO [$table] " . $sql, $bind);
     }
 
     /**
@@ -341,10 +341,10 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $bind = [];
         }
 
-        $model = static::sample();
+        $sample = static::sample();
 
-        $table = $model->getSource($bind);
-        return $model->getConnection($bind)->deleteBySql('DELETE' . " FROM [$table] WHERE " . $sql, $bind);
+        $table = $sample->getSource($bind);
+        return $sample->getConnection($bind)->deleteBySql('DELETE' . " FROM [$table] WHERE " . $sql, $bind);
     }
 
     /**
@@ -362,10 +362,10 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $bind = [];
         }
 
-        $model = static::sample();
+        $sample = static::sample();
 
-        $table = $model->getSource($bind);
-        return $model->getConnection($bind)->updateBySql('UPDATE' . " [$table] SET " . $sql, $bind);
+        $table = $sample->getSource($bind);
+        return $sample->getConnection($bind)->updateBySql('UPDATE' . " [$table] SET " . $sql, $bind);
     }
 
     /**
@@ -375,16 +375,16 @@ class Model extends \ManaPHP\Model implements ModelInterface
      */
     public static function insert($record)
     {
-        $instance = static::sample();
-        if ($fields = array_diff(array_keys($record), $instance->_di->modelsMetadata->getAttributes($instance))) {
-            $instance->_di->logger->debug(['insert `:1` table skip fields: :2', $instance->getSource(), array_values($fields)]);
+        $sample = static::sample();
+        if ($fields = array_diff(array_keys($record), $sample->_di->modelsMetadata->getAttributes($sample))) {
+            $sample->_di->logger->debug(['insert `:1` table skip fields: :2', $sample->getSource($record), array_values($fields)]);
 
             foreach ($fields as $field) {
                 unset($record[$field]);
             }
         }
 
-        $instance->getConnection($record)->insert($instance->getSource($record), $record);
+        $sample->getConnection($record)->insert($sample->getSource($record), $record);
 
         return 1;
     }
