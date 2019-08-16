@@ -2,7 +2,6 @@
 
 namespace ManaPHP\Mongodb;
 
-use ManaPHP\Di;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\PreconditionException;

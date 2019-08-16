@@ -2,7 +2,6 @@
 
 namespace ManaPHP\Db;
 
-use ManaPHP\Di;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Model\ExpressionInterface;
 

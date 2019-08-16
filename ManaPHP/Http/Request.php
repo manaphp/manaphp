@@ -5,7 +5,6 @@ namespace ManaPHP\Http;
 use ManaPHP\Component;
 use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\InvalidValueException;
-use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Http\Request\File\Exception as FileException;
 use ManaPHP\Validator\ValidateFailedException;
 
