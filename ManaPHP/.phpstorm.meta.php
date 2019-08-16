@@ -109,7 +109,7 @@ namespace PHPSTORM_META {
             'aclbuilder' instanceof \ManaPHP\Authorization\AclBuilderInterface,
             'bosClient' instanceof \ManaPHP\Bos\ClientInterface,
             'wsPusher' instanceof \ManaPHP\WebSocket\PusherInterface,
-            'coroutine' instanceof \ManaPHP\CoroutineInterface,
+            'coroutineManager' instanceof \ManaPHP\Coroutine\ManagerInterface,
             'jwt' instanceof \ManaPHP\Identity\Adapter\Jwt,
         ],
         \ManaPHP\DiInterface::get('') => [

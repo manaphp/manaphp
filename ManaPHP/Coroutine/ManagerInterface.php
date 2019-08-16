@@ -1,7 +1,8 @@
 <?php
-namespace ManaPHP;
 
-interface CoroutineInterface
+namespace ManaPHP\Coroutine;
+
+interface ManagerInterface
 {
     /**
      * @return \ManaPHP\Coroutine\SchedulerInterface

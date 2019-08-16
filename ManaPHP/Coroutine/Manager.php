@@ -1,7 +1,10 @@
 <?php
-namespace ManaPHP;
+namespace ManaPHP\Coroutine;
 
-class Coroutine extends Component implements CoroutineInterface
+use ManaPHP\Component;
+use Swoole\Coroutine;
+
+class Manager extends Component implements ManagerInterface
 {
     /**
      * @var array
@@ -9,7 +12,7 @@ class Coroutine extends Component implements CoroutineInterface
     protected $_option;
 
     /**
-     * Coroutine constructor.
+     * Manager constructor.
      *
      * @param array $options
      */
@@ -18,7 +21,7 @@ class Coroutine extends Component implements CoroutineInterface
         $this->_option = $options;
 
         if (MANAPHP_COROUTINE_ENABLED) {
-            \Swoole\Coroutine::set($options);
+            Coroutine::set($options);
         }
     }
 

@@ -53,7 +53,7 @@ class FactoryDefault extends Di
             'bosClient' => 'ManaPHP\Bos\Client',
             'wsPusher' => 'ManaPHP\WebSocket\Pusher',
             'identity' => 'ManaPHP\Identity',
-            'coroutine' => 'ManaPHP\Coroutine',
+            'coroutineManager' => 'ManaPHP\Coroutine\Manager',
             'jwt' => 'ManaPHP\Identity\Adapter\Jwt',
             'wsClient' => 'ManaPHP\WebSocket\Client',
         ];
