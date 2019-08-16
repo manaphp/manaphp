@@ -5,6 +5,7 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Logger\LogCategorizable;
 use ManaPHP\Service\Exception as ServiceException;
 use ReflectionMethod;
+use BadMethodCallException;
 
 /**
  * Class Service
@@ -97,6 +98,10 @@ class Service extends Component implements LogCategorizable
     public function __call($method, $arguments)
     {
         if (!$parameters = $this->_parameters[$method] ?? null) {
+            if (!$this->_interface) {
+                throw new BadMethodCallException(get_called_class() . '->' . $method);
+            }
+
             $rm = new ReflectionMethod($this->_interface, $method);
             $parameters = [];
             foreach ($rm->getParameters() as $parameter) {
