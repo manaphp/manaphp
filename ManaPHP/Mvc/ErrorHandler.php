@@ -42,9 +42,9 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
             if ($this->configure->debug) {
                 $json['exception'] = explode("\n", $throwable);
             }
-            $this->response->setJsonContent($json);
+            $this->response->setStatus($code)->setJsonContent($json);
         } else {
-            $this->response->setContent($this->render($throwable));
+            $this->response->setStatus($code)->setContent($this->render($throwable));
         }
     }
 
