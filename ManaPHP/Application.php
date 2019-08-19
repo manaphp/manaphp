@@ -220,8 +220,8 @@ class Application extends Component implements ApplicationInterface
     protected function _loadServices($services)
     {
         $items = [];
-        foreach (scandir($this->alias->resolve('@app/Services')) as $item) {
-            $items[basename($item, '.php')] = 1;
+        foreach (@scandir($this->alias->resolve('@app/Services')) ?: [] as $file) {
+            $items[basename($file, '.php')] = 1;
         }
 
         foreach ($services as $service => $params) {
