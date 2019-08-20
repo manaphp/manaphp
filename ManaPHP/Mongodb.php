@@ -86,8 +86,9 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
+        $this->eventsManager->fireEvent('mongodb:bulkWriting', $this, ['namespace' => $namespace]);
         $this->eventsManager->fireEvent('mongodb:bulkInserting', $this, ['namespace' => $namespace]);
-
+        
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
         try {
@@ -96,6 +97,7 @@ class Mongodb extends Component implements MongodbInterface
             $this->poolManager->push($this, $connection);
         }
         $this->eventsManager->fireEvent('mongodb:bulkInserted', $this, ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:bulkWritten', $this, ['namespace' => $namespace]);
 
         $this->logger->info(compact('namespace', 'documents', 'count'), 'mongodb.bulk.insert');
         return $count;
@@ -138,6 +140,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
+        $this->eventsManager->fireEvent('mongodb:bulkWriting', $this, ['namespace' => $namespace]);
         $this->eventsManager->fireEvent('mongodb:bulkUpdating', $this, ['namespace' => $namespace]);
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
@@ -148,6 +151,7 @@ class Mongodb extends Component implements MongodbInterface
             $this->poolManager->push($this, $connection);
         }
         $this->eventsManager->fireEvent('mongodb:bulkUpdated', $this, ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:bulkWritten', $this, ['namespace' => $namespace]);
 
         $this->logger->info(compact('namespace', 'documents', 'primaryKey', 'count'), 'mongodb.bulk.update');
         return $count;
@@ -192,6 +196,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
+        $this->eventsManager->fireEvent('mongodb:bulkWriting', $this, ['namespace' => $namespace]);
         $this->eventsManager->fireEvent('mongodb:bulkUpserting', $this, ['namespace' => $namespace]);
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
@@ -202,6 +207,7 @@ class Mongodb extends Component implements MongodbInterface
             $this->poolManager->push($this, $connection);
         }
         $this->eventsManager->fireEvent('mongodb:bulkUpserted', $this);
+        $this->eventsManager->fireEvent('mongodb:bulkWritten', $this);
 
         $this->logger->info(compact('count', 'namespace', 'documents'), 'mongodb.bulk.upsert');
         return $count;
