@@ -88,7 +88,7 @@ class Mongodb extends Component implements MongodbInterface
 
         $this->eventsManager->fireEvent('mongodb:bulkWriting', $this, ['namespace' => $namespace]);
         $this->eventsManager->fireEvent('mongodb:bulkInserting', $this, ['namespace' => $namespace]);
-        
+
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
         try {

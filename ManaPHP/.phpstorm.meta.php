@@ -119,6 +119,7 @@ namespace PHPSTORM_META {
 
     registerArgumentsSet('eventsManager', 'request:begin', 'request:end',
         'request:validate', 'request:authorize', 'request:authenticate', 'request:invoke', 'request:invoked',
+        'response:sending', 'response:sent',
         'model:creating', 'model:created', 'model:saving', 'model:saved',
         'model:updating', 'model:updated', 'model:deleting', 'model:deleted',
     );
