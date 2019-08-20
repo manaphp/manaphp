@@ -118,7 +118,10 @@ namespace PHPSTORM_META {
     ];
 
     registerArgumentsSet('eventsManager', 'request:begin', 'request:end',
-        'request:validate', 'request:authorize', 'request:authenticate', 'request:invoke', 'request:invoked');
+        'request:validate', 'request:authorize', 'request:authenticate', 'request:invoke', 'request:invoked',
+        'model:beforeCreate', 'model:beforeSave', 'model:afterCreate', 'model:afterSave',
+        'model:beforeUpdate', 'model:afterUpdate', 'model:beforeDelete', 'model:afterDelete',
+    );
     expectedArguments(\ManaPHP\Event\ManagerInterface::attachEvent(), 0, argumentsSet('eventsManager'));
     expectedArguments(\ManaPHP\Component::attachEvent(), 0, argumentsSet('eventsManager'));
 
