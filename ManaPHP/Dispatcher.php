@@ -203,7 +203,7 @@ class Dispatcher extends Component implements DispatcherInterface
 
         $this->eventsManager->fireEvent('request:ready', $this);
 
-        $this->eventsManager->fireEvent('request:invoke', $this, $action);
+        $this->eventsManager->fireEvent('request:invoking', $this, $action);
 
         $r = $this->invoker->invoke($controller, $actionMethod);
 
