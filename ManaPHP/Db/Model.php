@@ -198,10 +198,10 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        $this->_snapshot = $this->toArray();
-
         $this->fireEvent('model:afterCreate');
         $this->fireEvent('model:afterSave');
+
+        $this->_snapshot = $this->toArray();
 
         return $this;
     }
@@ -296,10 +296,10 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        $this->_snapshot = $this->toArray();
-
         $this->fireEvent('model:afterUpdate');
         $this->fireEvent('model:afterSave');
+
+        $this->_snapshot = $this->toArray();
 
         return $this;
     }
