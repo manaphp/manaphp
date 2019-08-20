@@ -168,6 +168,7 @@ class Db extends Component implements DbInterface
 
         $context->affected_rows = 0;
 
+        $this->eventsManager->fireEvent('db:executing', $this);
         $this->eventsManager->fireEvent('db:' . $event[0], $this);
 
         if ($context->connection) {
@@ -188,11 +189,12 @@ class Db extends Component implements DbInterface
 
         $count = $context->affected_rows;
         $event_data = compact('count', 'sql', 'bind', 'elapsed');
-        if (is_int($context->affected_rows)) {
-            $this->eventsManager->fireEvent('db:' . $event[1], $this, $event_data);
-        }
+
+        $this->eventsManager->fireEvent('db:' . $event[1], $this, $event_data);
+        $this->eventsManager->fireEvent('db:executed', $this, $event_data);
 
         $this->logger->info($event_data, 'db.' . $type);
+
         return $count;
     }
 
