@@ -134,7 +134,7 @@ class Renderer extends Component implements RendererInterface
         $context->templates[] = $template;
 
         $eventArguments = ['file' => $file, 'vars' => $vars];
-        $this->eventsManager->fireEvent('renderer:beforeRender', $this, $eventArguments);
+        $this->eventsManager->fireEvent('renderer:rendering', $this, $eventArguments);
 
         if ($directOutput) {
             $engine->render($file, $vars);
@@ -146,7 +146,7 @@ class Renderer extends Component implements RendererInterface
             $content = ob_get_clean();
         }
 
-        $this->eventsManager->fireEvent('renderer:afterRender', $this, $eventArguments);
+        $this->eventsManager->fireEvent('renderer:rendered', $this, $eventArguments);
 
         array_pop($context->templates);
 

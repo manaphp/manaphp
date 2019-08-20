@@ -157,6 +157,10 @@ class Db extends Component implements DbInterface
      */
     protected function _execute($type, $sql, $bind = [])
     {
+        $event = ['delete' => ['deleting', 'deleted'],
+            'update' => ['updating', 'updated'],
+            'insert' => ['inserting', 'inserted']][$type];
+
         $context = $this->_context;
 
         $context->sql = $sql;
@@ -164,7 +168,7 @@ class Db extends Component implements DbInterface
 
         $context->affected_rows = 0;
 
-        $this->eventsManager->fireEvent('db:before' . ucfirst($type), $this);
+        $this->eventsManager->fireEvent('db:' . $event[0], $this);
 
         if ($context->connection) {
             $connection = $context->connection;
@@ -185,7 +189,7 @@ class Db extends Component implements DbInterface
         $count = $context->affected_rows;
         $event_data = compact('count', 'sql', 'bind', 'elapsed');
         if (is_int($context->affected_rows)) {
-            $this->eventsManager->fireEvent('db:after' . ucfirst($type), $this, $event_data);
+            $this->eventsManager->fireEvent('db:' . $event[1], $this, $event_data);
         }
 
         $this->logger->info($event_data, 'db.' . $type);
@@ -235,7 +239,7 @@ class Db extends Component implements DbInterface
         $context->bind = $bind;
         $context->affected_rows = 0;
 
-        $this->eventsManager->fireEvent('db:beforeQuery', $this);
+        $this->eventsManager->fireEvent('db:querying', $this);
 
         if ($context->connection) {
             $type = null;
@@ -261,7 +265,7 @@ class Db extends Component implements DbInterface
 
         $this->logger->debug($event_data, 'db.query');
 
-        $this->eventsManager->fireEvent('db:afterQuery', $this, $event_data);
+        $this->eventsManager->fireEvent('db:queried', $this, $event_data);
 
         return $result;
     }
@@ -298,7 +302,7 @@ class Db extends Component implements DbInterface
             $connection = $this->poolManager->pop($this, $this->_timeout, $type);
         }
 
-        $this->eventsManager->fireEvent('db:beforeInsert', $this);
+        $this->eventsManager->fireEvent('db:inserting', $this);
 
         try {
             $start_time = microtime(true);
@@ -318,7 +322,7 @@ class Db extends Component implements DbInterface
 
         $event_data = compact('sql', 'record', 'elapsed');
 
-        $this->eventsManager->fireEvent('db:afterInsert', $this, $event_data);
+        $this->eventsManager->fireEvent('db:inserted', $this, $event_data);
 
         $this->logger->info(compact('elapsed', 'insert_id', 'sql', 'bind'), 'db.insert');
 

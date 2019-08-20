@@ -82,7 +82,7 @@ class Fpm extends Server
             throw new MisuseException("Headers has been sent in $file:$line");
         }
 
-        $this->eventsManager->fireEvent('response:beforeSend', $this);
+        $this->eventsManager->fireEvent('response:sending', $this);
 
         header('HTTP/1.1 ' . $response->status_code . ' ' . $response->status_text);
 
@@ -112,7 +112,7 @@ class Fpm extends Server
             echo is_string($content) ? $content : json_stringify($content);
         }
 
-        $this->eventsManager->fireEvent('response:afterSend', $this);
+        $this->eventsManager->fireEvent('response:sent', $this);
 
         return $this;
     }

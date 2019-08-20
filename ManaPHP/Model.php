@@ -904,11 +904,11 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function delete()
     {
-        $this->fireEvent('model:beforeDelete');
+        $this->fireEvent('model:deleting');
 
         static::query(null, $this)->where($this->_getPrimaryKeyValuePairs())->delete();
 
-        $this->fireEvent('model:afterDelete');
+        $this->fireEvent('model:deleted');
 
         return $this;
     }

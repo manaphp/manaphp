@@ -66,9 +66,9 @@ abstract class Mailer extends Component implements MailerInterface
         $failedRecipients = [];
 
         $message->setMailer($this);
-        $this->eventsManager->fireEvent('mailer:beforeSend', $this, ['message' => $message]);
+        $this->eventsManager->fireEvent('mailer:sending', $this, ['message' => $message]);
         $r = $this->_send($message, $failedRecipients);
-        $this->eventsManager->fireEvent('mailer:afterSend', $this, ['message' => $message, 'failedRecipients' => $failedRecipients]);
+        $this->eventsManager->fireEvent('mailer:sent', $this, ['message' => $message, 'failedRecipients' => $failedRecipients]);
 
         return $r;
     }

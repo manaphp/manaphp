@@ -248,7 +248,7 @@ class Swoole extends Server
      */
     public function send($response)
     {
-        $this->eventsManager->fireEvent('response:beforeSend', $this, $response);
+        $this->eventsManager->fireEvent('response:sending', $this, $response);
 
         $sw_response = $this->_context->response;
 
@@ -276,7 +276,7 @@ class Swoole extends Server
             $sw_response->end(is_string($content) ? $content : json_stringify($content));
         }
 
-        $this->eventsManager->fireEvent('response:afterSend', $this, $response);
+        $this->eventsManager->fireEvent('response:sent', $this, $response);
     }
 
     public function __debugInfo()

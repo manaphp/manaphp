@@ -118,7 +118,7 @@ class DebuggerPlugin extends Plugin
                 'bind' => $source->getBind(),
                 'emulated' => $source->getEmulatedSQL()
             ];
-        } elseif ($event === 'db:afterQuery' || $event === 'db:afterExecute') {
+        } elseif ($event === 'db:queried' || $event === 'db:executed') {
             /**
              * @var \ManaPHP\DbInterface $source
              */
@@ -144,7 +144,7 @@ class DebuggerPlugin extends Plugin
             } else {
                 $context->sql_prepared[$preparedSQL]++;
             }
-        } elseif ($event === 'renderer:beforeRender') {
+        } elseif ($event === 'renderer:rendering') {
             $vars = $data['vars'];
             foreach ((array)$vars as $k => $v) {
                 if ($v instanceof Component) {
@@ -153,7 +153,7 @@ class DebuggerPlugin extends Plugin
             }
             unset($vars['di']);
             $context->view[] = ['file' => $data['file'], 'vars' => $vars, 'base_name' => basename(dirname($data['file'])) . '/' . basename($data['file'])];
-        } elseif ($event === 'mongodb:afterQuery') {
+        } elseif ($event === 'mongodb:queried') {
             $item = [];
             $item['type'] = 'query';
             $item['raw'] = ['namespace' => $data['namespace'], 'filter' => $data['filter'], 'options' => $data['options']];
@@ -170,14 +170,14 @@ class DebuggerPlugin extends Plugin
             $item['shell'] = $shell;
             $item['elapsed'] = $data['elapsed'];
             $context->mongodb[] = $item;
-        } elseif ($event === 'mongodb:afterCommand') {
+        } elseif ($event === 'mongodb:commanded') {
             $item = [];
             $item['type'] = 'command';
             $item['raw'] = ['db' => $data['db'], 'command' => $data['command'], 'options' => $data['options']];
             $item['shell'] = [];
             $item['elapsed'] = $data['elapsed'];
             $context->mongodb[] = $item;
-        } elseif ($event === 'mongodb:afterBulkWrite') {
+        } elseif ($event === 'mongodb:bulkWritten') {
             $item = [];
             $item['type'] = 'bulkWrite';
             $item['raw'] = ['db' => $data['db'], 'command' => $data['command'], 'options' => $data['options']];

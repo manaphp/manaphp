@@ -47,7 +47,7 @@ class FiddlerPlugin extends Plugin
 
         $this->eventsManager->attachEvent('logger:log', [$this, 'onLoggerLog']);
         $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
-        $this->eventsManager->attachEvent('response:afterSend', [$this, 'onAfterSendResponse']);
+        $this->eventsManager->attachEvent('response:sent', [$this, 'onResponseSent']);
     }
 
     public function onRequestBegin()
@@ -120,7 +120,7 @@ class FiddlerPlugin extends Plugin
     /**
      * @param \ManaPHP\Http\ResponseInterface $response
      */
-    public function onAfterSendResponse($response)
+    public function onResponseSent($response)
     {
         if ($this->enabled()) {
             /** @var \ManaPHP\Http\ResponseInterface $source */

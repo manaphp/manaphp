@@ -102,7 +102,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
             $this->_cookie_params['path'] = $this->alias->get('@web') ?: '/';
         }
 
-        $this->eventsManager->attachEvent('response:beforeSend', [$this, 'save']);
+        $this->eventsManager->attachEvent('response:sending', [$this, 'save']);
     }
 
     /**

@@ -160,8 +160,8 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         $this->validate($fields);
 
-        $this->fireEvent('model:beforeSave');
-        $this->fireEvent('model:beforeCreate');
+        $this->fireEvent('model:saving');
+        $this->fireEvent('model:creating');
 
         $fieldValues = [];
         $defaultValueFields = [];
@@ -198,8 +198,8 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        $this->fireEvent('model:afterCreate');
-        $this->fireEvent('model:afterSave');
+        $this->fireEvent('model:created');
+        $this->fireEvent('model:saved');
 
         $this->_snapshot = $this->toArray();
 
@@ -252,8 +252,8 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        $this->fireEvent('model:beforeSave');
-        $this->fireEvent('model:beforeUpdate');
+        $this->fireEvent('model:saving');
+        $this->fireEvent('model:updating');
 
         $fieldValues = [];
         foreach ($fields as $field) {
@@ -296,8 +296,8 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        $this->fireEvent('model:afterUpdate');
-        $this->fireEvent('model:afterSave');
+        $this->fireEvent('model:updated');
+        $this->fireEvent('model:saved');
 
         $this->_snapshot = $this->toArray();
 

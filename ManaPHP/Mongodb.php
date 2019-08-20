@@ -60,7 +60,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        $this->eventsManager->fireEvent('mongodb:beforeInsert', $this, ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:inserting', $this, ['namespace' => $namespace]);
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
@@ -69,7 +69,7 @@ class Mongodb extends Component implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->eventsManager->fireEvent('mongodb:afterInsert', $this, ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:inserted', $this, ['namespace' => $namespace]);
 
         $this->logger->info(compact('count', 'namespace', 'document'), 'mongodb.insert');
 
@@ -86,7 +86,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        $this->eventsManager->fireEvent('mongodb:beforeBulkInsert', $this, ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:bulkInserting', $this, ['namespace' => $namespace]);
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
@@ -95,7 +95,7 @@ class Mongodb extends Component implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->eventsManager->fireEvent('mongodb:afterBulkInsert', $this, ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:bulkInserted', $this, ['namespace' => $namespace]);
 
         $this->logger->info(compact('namespace', 'documents', 'count'), 'mongodb.bulk.insert');
         return $count;
@@ -112,7 +112,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        $this->eventsManager->fireEvent('mongodb:beforeUpdate', $this, ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:updating', $this, ['namespace' => $namespace]);
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
@@ -121,7 +121,7 @@ class Mongodb extends Component implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->eventsManager->fireEvent('mongodb:afterUpdate', $this);
+        $this->eventsManager->fireEvent('mongodb:updated', $this);
         $this->logger->info(compact('namespace', 'document', 'filter', 'count'), 'mongodb.update');
         return $count;
     }
@@ -138,7 +138,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        $this->eventsManager->fireEvent('mongodb:beforeBulkUpdate', $this, ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:bulkUpdating', $this, ['namespace' => $namespace]);
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
@@ -147,7 +147,7 @@ class Mongodb extends Component implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->eventsManager->fireEvent('mongodb:afterBulkUpdate', $this, ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:bulkUpdated', $this, ['namespace' => $namespace]);
 
         $this->logger->info(compact('namespace', 'documents', 'primaryKey', 'count'), 'mongodb.bulk.update');
         return $count;
@@ -165,7 +165,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        $this->eventsManager->fireEvent('mongodb:beforeUpsert', $this, ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:upserting', $this, ['namespace' => $namespace]);
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
@@ -174,7 +174,7 @@ class Mongodb extends Component implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->eventsManager->fireEvent('mongodb:afterUpsert', $this);
+        $this->eventsManager->fireEvent('mongodb:upserted', $this);
 
         $this->logger->info(compact('count', 'namespace', 'document'), 'mongodb.upsert');
         return $count;
@@ -192,7 +192,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        $this->eventsManager->fireEvent('mongodb:beforeBulkUpsert', $this, ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:bulkUpserting', $this, ['namespace' => $namespace]);
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
@@ -201,7 +201,7 @@ class Mongodb extends Component implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->eventsManager->fireEvent('mongodb:afterBulkUpsert', $this);
+        $this->eventsManager->fireEvent('mongodb:bulkUpserted', $this);
 
         $this->logger->info(compact('count', 'namespace', 'documents'), 'mongodb.bulk.upsert');
         return $count;
@@ -218,7 +218,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        $this->eventsManager->fireEvent('mongodb:beforeDelete', $this, ['namespace' => $namespace]);
+        $this->eventsManager->fireEvent('mongodb:deleting', $this, ['namespace' => $namespace]);
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
@@ -227,7 +227,7 @@ class Mongodb extends Component implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->eventsManager->fireEvent('mongodb:afterDelete', $this);
+        $this->eventsManager->fireEvent('mongodb:deleted', $this);
 
         $this->logger->info(compact('namespace', 'filter', 'count'), 'mongodb.delete');
         return $count;
@@ -245,7 +245,7 @@ class Mongodb extends Component implements MongodbInterface
     {
         $namespace = strpos($source, '.') !== false ? $source : ($this->_default_db . '.' . $source);
 
-        $this->eventsManager->fireEvent('mongodb:beforeQuery', $this, compact('namespace', 'filter', 'options'));
+        $this->eventsManager->fireEvent('mongodb:querying', $this, compact('namespace', 'filter', 'options'));
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
@@ -257,7 +257,7 @@ class Mongodb extends Component implements MongodbInterface
             $this->poolManager->push($this, $connection);
         }
 
-        $this->eventsManager->fireEvent('mongodb:afterQuery', $this, compact('namespace', 'filter', 'options', 'result', 'elapsed'));
+        $this->eventsManager->fireEvent('mongodb:queried', $this, compact('namespace', 'filter', 'options', 'result', 'elapsed'));
 
         $this->logger->debug(compact('namespace', 'filter', 'options', 'result', 'elapsed'), 'mongodb.query');
         return $result;
@@ -275,7 +275,7 @@ class Mongodb extends Component implements MongodbInterface
             $db = $this->_default_db;
         }
 
-        $this->eventsManager->fireEvent('mongodb:beforeCommand', $this, compact('db', 'command'));
+        $this->eventsManager->fireEvent('mongodb:commanding', $this, compact('db', 'command'));
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
@@ -286,7 +286,7 @@ class Mongodb extends Component implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->eventsManager->fireEvent('mongodb:afterCommand', $this, compact('db', 'command', 'result', 'elapsed'));
+        $this->eventsManager->fireEvent('mongodb:commanded', $this, compact('db', 'command', 'result', 'elapsed'));
 
         $count = count($result);
         $command_name = key($command);
