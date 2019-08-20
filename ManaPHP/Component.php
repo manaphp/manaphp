@@ -200,8 +200,13 @@ class Component implements ComponentInterface, JsonSerializable
      *
      * @return static
      */
-    public function attachEvent($event, $handler, $appended = true)
+    public function attachEvent($event, $handler = null, $appended = true)
     {
+        if ($handler === null) {
+            $parts = explode(':', $event);
+            $handler = [$this, 'on' . ucfirst($parts[0] . ucfirst($parts[1]))];
+        }
+
         $this->eventsManager->attachEvent($event, $handler, $appended);
 
         return $this;
