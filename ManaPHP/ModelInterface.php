@@ -274,7 +274,7 @@ interface ModelInterface
     public static function avg($field, $filters = null);
 
     /**
-     * @param array $fields =array_keys(get_object_vars(new static))[$i]
+     * @param array $fields =get_object_vars(new static)
      *
      * @return static
      */

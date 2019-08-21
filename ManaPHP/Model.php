@@ -647,7 +647,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param array $fields =array_keys(get_object_vars(new static))[$i]
+     * @param array $fields =get_object_vars(new static)
      *
      * @return static
      */
