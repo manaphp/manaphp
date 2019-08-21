@@ -274,6 +274,13 @@ interface ModelInterface
     public static function avg($field, $filters = null);
 
     /**
+     * @param array $fields =array_keys(get_object_vars(new static))[$i]
+     *
+     * @return static
+     */
+    public function load($fields);
+
+    /**
      * Assigns values to a model from an array
      *
      * @param array|\ManaPHP\Model $data

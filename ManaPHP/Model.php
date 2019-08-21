@@ -647,6 +647,29 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
+     * @param array $fields =array_keys(get_object_vars(new static))[$i]
+     *
+     * @return static
+     */
+    public function load($fields)
+    {
+        $_request = $this->_di->request->getGlobals()->_REQUEST;
+
+        foreach ($fields as $k => $v) {
+            $field = is_string($k) ? $k : $v;
+
+            if (isset($_request[$field])) {
+                $value = $_request[$field];
+                $this->$field = is_string($value) ? trim($value) : $value;
+            } elseif (is_string($k)) {
+                $this->$field = $v;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @param array $fields =get_object_vars(new static)
      *
      * @return void
