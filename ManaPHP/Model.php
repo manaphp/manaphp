@@ -3,7 +3,7 @@ namespace ManaPHP;
 
 use ArrayAccess;
 use JsonSerializable;
-use ManaPHP\Db\AssignmentInterface;
+use ManaPHP\Db\SqlFragmentable;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\InvalidValueException;
@@ -684,7 +684,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
         foreach ($fields ?: $this->getChangedFields() as $field) {
             /** @noinspection NotOptimalIfConditionsInspection */
-            if (!isset($rules[$field]) || $this->$field instanceof AssignmentInterface) {
+            if (!isset($rules[$field]) || $this->$field instanceof SqlFragmentable) {
                 continue;
             }
 

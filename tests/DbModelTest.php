@@ -9,7 +9,7 @@
 namespace Tests;
 
 use ManaPHP\Db;
-use ManaPHP\Db\Assignment;
+use ManaPHP\Db\SqlFragment\Increment;
 use ManaPHP\Db\Model;
 use ManaPHP\DbInterface;
 use ManaPHP\Exception;
@@ -383,12 +383,12 @@ class DbModelTest extends TestCase
         $payment = Payment::first(1);
         $this->assertEquals(2.99, round($payment->amount, 2));
 
-        $payment->amount = new Assignment(0.01, '+');
+        $payment->amount = new Increment(0.01, '+');
         $payment->save();
         $this->assertEquals(3, round(Payment::first(1)->amount, 2));
 
         $payment = Payment::first(1);
-        $payment->amount = new Assignment(0.01, '-');
+        $payment->amount = new Increment(0.01, '-');
         $payment->save();
         $this->assertEquals(2.99, round(Payment::first(1)->amount, 2));
     }

@@ -3,9 +3,9 @@
 namespace ManaPHP;
 
 use ManaPHP\Coroutine\Context\Inseparable;
-use ManaPHP\Db\AssignmentInterface;
 use ManaPHP\Db\Connection;
 use ManaPHP\Db\Exception as DbException;
+use ManaPHP\Db\SqlFragmentable;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
 use PDO;
@@ -379,7 +379,7 @@ class Db extends Component implements DbInterface
         foreach ($fieldValues as $k => $v) {
             if (is_int($k)) {
                 $setFields[] = $v;
-            } elseif ($v instanceof AssignmentInterface) {
+            } elseif ($v instanceof SqlFragmentable) {
                 $v->setField($k);
                 $setFields[] = $v->getSql();
                 /** @noinspection SlowArrayOperationsInLoopInspection */
@@ -436,7 +436,7 @@ class Db extends Component implements DbInterface
                 if (is_int($k)) {
                     $updates[] = "[$field]=:$field";
                     $bind[$field] = $insertFieldValues[$field];
-                } elseif ($v instanceof AssignmentInterface) {
+                } elseif ($v instanceof SqlFragmentable) {
                     $v->setField($k);
                     $updates[] = $v->getSql();
                     /** @noinspection SlowArrayOperationsInLoopInspection */

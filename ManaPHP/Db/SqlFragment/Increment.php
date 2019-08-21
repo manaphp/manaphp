@@ -1,7 +1,9 @@
 <?php
-namespace ManaPHP\Db;
+namespace ManaPHP\Db\SqlFragment;
 
-class Assignment implements AssignmentInterface
+use ManaPHP\Db\SqlFragmentable;
+
+class Increment implements SqlFragmentable
 {
     /**
      * @var string|int|float
@@ -30,7 +32,7 @@ class Assignment implements AssignmentInterface
      * @param string           $operator
      * @param array            $bind
      */
-    public function __construct($value, $operator = null, $bind = [])
+    public function __construct($value, $operator = '+', $bind = [])
     {
         $this->_value = $value;
         $this->_operator = $operator;

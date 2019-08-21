@@ -2,11 +2,11 @@
 namespace ManaPHP\Db\Connection\Adapter;
 
 use ManaPHP\Db;
-use ManaPHP\Db\AssignmentInterface;
 use ManaPHP\Db\Connection;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\InvalidArgumentException;
 use PDO;
+use ManaPHP\Db\SqlFragmentable;
 
 class Mysql extends Connection
 {
@@ -331,7 +331,7 @@ class Mysql extends Connection
             if (is_int($k)) {
                 $updates[] = "[$field]=:{$field}_dku";
                 $bind["{$field}_dku"] = $insertFieldValues[$field];
-            } elseif ($v instanceof AssignmentInterface) {
+            } elseif ($v instanceof SqlFragmentable) {
                 $v->setField($k);
                 $updates[] = $v->getSql();
                 /** @noinspection SlowArrayOperationsInLoopInspection */

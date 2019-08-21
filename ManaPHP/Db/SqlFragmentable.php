@@ -1,7 +1,7 @@
 <?php
 namespace ManaPHP\Db;
 
-interface AssignmentInterface
+interface SqlFragmentable
 {
     /**
      * @param string $name
