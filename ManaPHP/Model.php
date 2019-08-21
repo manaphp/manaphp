@@ -892,7 +892,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             $this->load($fields);
         }
 
-        if ($this->_exists()) {
+        if ($this->_snapshot) {
             return $this->update();
         } else {
             return $this->create();
