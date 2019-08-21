@@ -146,6 +146,8 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
             return;
         }
 
+        $this->eventsManager->fireEvent('session:end', $this);
+
         if ($context->is_new) {
             if (!$context->_SESSION) {
                 return;
