@@ -246,6 +246,17 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         $this->validate($changedFields);
 
+        //Model::validate() method maybe modify data, e.g. decimal data type of db
+        foreach ($changedFields as $key => $field) {
+            if (isset($snapshot[$field]) && $snapshot[$field] === $this->$field) {
+                unset($changedFields[$key]);
+            }
+        }
+
+        if (!$changedFields) {
+            return $this;
+        }
+
         foreach ($this->getAutoFilledData(self::OP_UPDATE) as $field => $value) {
             if (in_array($field, $fields, true)) {
                 $this->$field = $value;
