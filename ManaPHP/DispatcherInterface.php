@@ -101,4 +101,9 @@ interface DispatcherInterface
      * @return mixed
      */
     public function dispatch($router);
+
+    /**
+     * @return bool
+     */
+    public function isInvoking();
 }

@@ -37,6 +37,11 @@ class DispatcherContext
      * @var \ManaPHP\Rest\Controller
      */
     public $controllerInstance;
+
+    /**
+     * @var bool
+     */
+    public $isInvoking = false;
 }
 
 /**
@@ -205,7 +210,13 @@ class Dispatcher extends Component implements DispatcherInterface
 
         $this->eventsManager->fireEvent('request:invoking', $this, $action);
 
-        $r = $this->invoker->invoke($controller, $actionMethod);
+        try {
+            $context = $this->_context;
+            $context->isInvoking = true;
+            $r = $this->invoker->invoke($controller, $actionMethod);
+        } finally {
+            $context->isInvoking = false;
+        }
 
         $this->eventsManager->fireEvent('request:invoked', $this, ['action' => $action, 'return' => $r]);
 
@@ -331,5 +342,14 @@ class Dispatcher extends Component implements DispatcherInterface
     public function getControllerInstance()
     {
         return $this->_context->controllerInstance;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isInvoking()
+    {
+        return $this->_context->isInvoking;
     }
 }
