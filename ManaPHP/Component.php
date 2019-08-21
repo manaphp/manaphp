@@ -3,6 +3,7 @@ namespace ManaPHP;
 
 use JsonSerializable;
 use ManaPHP\Coroutine\Context\Inseparable;
+use ManaPHP\Exception\MisuseException;
 use Swoole\Coroutine;
 
 /**
@@ -204,7 +205,11 @@ class Component implements ComponentInterface, JsonSerializable
     {
         if ($handler === null) {
             $parts = explode(':', $event);
-            $handler = [$this, 'on' . ucfirst($parts[0] . ucfirst($parts[1]))];
+            $method = 'on' . ucfirst($parts[0] . ucfirst($parts[1]));
+            if (!method_exists($this, $method)) {
+                throw new MisuseException(['`:method` method is not exists', 'method' => static::class . '::' . $method . '()']);
+            }
+            $handler = [$this, $method];
         }
 
         $this->eventsManager->attachEvent($event, $handler, $appended);
