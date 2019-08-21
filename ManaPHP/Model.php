@@ -974,22 +974,6 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param int|string $primaryKey
-     * @param array      $fieldValues =get_object_vars(new static)
-     *
-     * @return int
-     */
-    public static function updateRecord($primaryKey, $fieldValues)
-    {
-        if (!is_scalar($primaryKey)) {
-            throw new InvalidArgumentException(['`:value` is not a valid primary key value', 'value' => $primaryKey]);
-        }
-
-        $sample = static::sample();
-        return static::where([$sample->getPrimaryKey() => $primaryKey])->update($fieldValues);
-    }
-
-    /**
      * @param array $filters =get_object_vars(new static)
      *
      * @return int
