@@ -371,7 +371,7 @@ class Router extends Component implements RouterInterface
                 }
             }
 
-            if ($parts === false) {
+            if ($parts === false && $this->_default_route) {
                 if ($handledUri !== '/' && $this->_areas) {
                     if (($pos = strpos($handledUri, '/', 1)) !== false) {
                         $area = Text::camelize(substr($handledUri, 1, $pos - 1));
