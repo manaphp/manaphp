@@ -64,10 +64,6 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             foreach ($data as $field => $value) {
                 $this->{$field} = $value;
             }
-
-            if (method_exists($this, 'afterFetch')) {
-                $this->afterFetch();
-            }
         }
     }
 
