@@ -884,10 +884,16 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * Inserts or updates a model instance. Returning true on success or false otherwise.
      *
+     * @param array $fields =get_object_vars(new static)
+     *
      * @return static
      */
-    public function save()
+    public function save($fields = null)
     {
+        if ($fields) {
+            $this->load($fields);
+        }
+
         if ($this->_exists()) {
             return $this->update();
         } else {

@@ -308,9 +308,11 @@ interface ModelInterface
     /**
      * Inserts or updates a model instance. Returning true on success or false otherwise.
      *
+     * @param array $fields =get_object_vars(new static)
+     *
      * @return static
      */
-    public function save();
+    public function save($fields = null);
 
     /**
      * Inserts a model instance. If the instance already exists in the persistence it will throw an exception
