@@ -4,7 +4,6 @@ namespace ManaPHP\Mongodb;
 
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotImplementedException;
-use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Model\ExpressionInterface;
 use MongoDB\BSON\ObjectId;
@@ -389,9 +388,6 @@ class Model extends \ManaPHP\Model
     public function update()
     {
         $snapshot = $this->_snapshot;
-        if ($snapshot === false) {
-            throw new PreconditionException(['update failed: `:model` instance is snapshot disabled', 'model' => static::class]);
-        }
 
         $primaryKeyValuePairs = $this->_getPrimaryKeyValuePairs();
 

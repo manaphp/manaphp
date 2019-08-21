@@ -414,11 +414,6 @@ interface ModelInterface
     public function getSnapshotData();
 
     /**
-     * @return static
-     */
-    public function disableSnapshot();
-
-    /**
      * Returns a list of changed values
      *
      * @return array

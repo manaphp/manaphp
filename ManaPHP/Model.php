@@ -59,9 +59,8 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
                 }
             }
 
-            if ($this->_snapshot !== false) {
-                $this->_snapshot = $data;
-            }
+            $this->_snapshot = $data;
+
             foreach ($data as $field => $value) {
                 $this->{$field} = $value;
             }
@@ -132,7 +131,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function getDateFormat($field)
     {
-        if ($this->_snapshot && isset($this->_snapshot[$field])) {
+        if (isset($this->_snapshot[$field])) {
             $ts = is_numeric($this->_snapshot[$field]);
         } elseif (isset($this->$field)) {
             $ts = is_numeric($this->$field);
@@ -293,7 +292,6 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             }
 
             $r = $rs[0];
-            $r->_snapshot = false;
 
             $model->_di->ipcCache->set($key, $r, $ttl);
         }
@@ -1069,21 +1067,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function getSnapshotData()
     {
-        if ($this->_snapshot === false) {
-            throw new PreconditionException(['getSnapshotData failed: `:model` instance is snapshot disabled', 'model' => static::class]);
-        }
-
         return $this->_snapshot;
-    }
-
-    /**
-     * @return static
-     */
-    public function disableSnapshot()
-    {
-        $this->_snapshot = false;
-
-        return $this;
     }
 
     /**
@@ -1093,10 +1077,6 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function getChangedFields()
     {
-        if ($this->_snapshot === false) {
-            throw new PreconditionException(['getChangedFields failed: `:model` instance is snapshot disabled', 'model' => static::class]);
-        }
-
         $changed = [];
 
         foreach ($this->getFields() as $field) {
@@ -1122,10 +1102,6 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function hasChanged($fields)
     {
-        if ($this->_snapshot === false) {
-            throw new PreconditionException(['getChangedFields failed: `:model` instance is snapshot disabled', 'model' => static::class]);
-        }
-
         /** @noinspection ForeachSourceInspection */
         foreach ((array)$fields as $field) {
             if (!isset($this->_snapshot[$field]) || $this->{$field} !== $this->_snapshot[$field]) {
@@ -1180,9 +1156,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             $this->$field = $value;
         }
 
-        if ($this->_snapshot !== false) {
-            $this->_snapshot = array_merge($this->_snapshot, $data);
-        }
+        $this->_snapshot = array_merge($this->_snapshot, $data);
 
         return $this;
     }
@@ -1203,9 +1177,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     public function unserialize($serialized)
     {
         $unserialized = unserialize($serialized, ['allowed_classes' => false]);
-        if ($this->_snapshot !== false) {
-            $this->_snapshot = $unserialized;
-        }
+        $this->_snapshot = $unserialized;
 
         foreach ((array)$unserialized as $field => $value) {
             $this->$field = $value;
@@ -1370,7 +1342,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             $data[$field] = $value;
         }
 
-        if ($this->_snapshot && $changedFields = $this->getChangedFields()) {
+        if ($changedFields = $this->getChangedFields()) {
             $data['*changed_fields*'] = $changedFields;
         }
 
