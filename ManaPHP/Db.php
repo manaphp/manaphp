@@ -3,7 +3,6 @@
 namespace ManaPHP;
 
 use ManaPHP\Coroutine\Context\Inseparable;
-use ManaPHP\Db\Connection;
 use ManaPHP\Db\Exception as DbException;
 use ManaPHP\Db\SqlFragmentable;
 use ManaPHP\Exception\InvalidArgumentException;
@@ -124,7 +123,7 @@ class Db extends Component implements DbInterface
             } else {
                 $this->poolManager->add($this, ['class' => $adapter, $uri], $this->_pool_size);
             }
-        } elseif ($uri instanceof Connection) {
+        } else {
             $this->_pool_size = 1;
             $connection = $uri;
             $this->_uri = $uri->getUri();
