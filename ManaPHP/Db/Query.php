@@ -168,8 +168,8 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @param string $table
-     * @param string $alias
+     * @param string|\ManaPHP\Db\Query $table
+     * @param string                   $alias
      *
      * @return static
      */
@@ -182,7 +182,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
 
             $this->_tables = $alias ? [$alias => $table] : [$table];
 
-            if ($table instanceof self) {
+            if (is_object($table)) {
                 $this->_db = $table->_db;
             }
         }
@@ -537,7 +537,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function whereIn($expr, $values)
     {
-        if ($values instanceof $this) {
+        if (is_object($values)) {
             $this->_conditions[] = $expr . ' IN (' . $values->getSql() . ')';
             $this->_bind = array_merge($this->_bind, $values->getBind());
         } elseif ($values) {
@@ -595,7 +595,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function whereNotIn($expr, $values)
     {
-        if ($values instanceof $this) {
+        if (is_object($values)) {
             $this->_conditions[] = $expr . ' NOT IN (' . $values->getSql() . ')';
             $this->_bind = array_merge($this->_bind, $values->getBind());
         } elseif ($values) {
@@ -1140,7 +1140,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
         $selectedTables = [];
 
         foreach ($this->_tables as $alias => $table) {
-            if ($table instanceof $this) {
+            if (is_object($table)) {
                 if (is_int($alias)) {
                     throw new NotSupportedException('if using SubQuery, you must assign an alias for it');
                 }
@@ -1172,7 +1172,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 $joinSQL .= ' ' . $joinType;
             }
 
-            if ($joinTable instanceof $this) {
+            if (is_object($joinTable)) {
                 $joinSQL .= ' JOIN (' . $joinTable->getSql() . ')';
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $this->_bind = array_merge($this->_bind, $joinTable->getBind());
@@ -1236,7 +1236,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
         $sql = strtr($sql, $replaces);
 
         foreach ($this->_tables as $table) {
-            if (!$table instanceof $this) {
+            if (is_string($table)) {
                 $source = $table;
                 if (strpos($source, '.')) {
                     $source = '[' . implode('].[', explode('.', $source)) . ']';
@@ -1410,8 +1410,8 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @param \ManaPHP\Db\QueryInterface[] $queries
-     * @param bool                         $distinct
+     * @param \ManaPHP\Db\Query[] $queries
+     * @param bool                $distinct
      *
      * @return static
      */
@@ -1419,7 +1419,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
     {
         if ($this->_db === null) {
             foreach ($queries as $query) {
-                if ($query instanceof self) {
+                if (is_object($query)) {
                     $this->_db = $query->_db;
                     break;
                 }
