@@ -140,7 +140,9 @@ class Console extends Component implements ConsoleInterface
 
                 if ($v instanceof Throwable) {
                     $message[$k] = (string)$v;
-                } elseif (is_array($v) || $v instanceof JsonSerializable) {
+                } elseif (is_array($v)) {
+                    $message[$k] = json_stringify($v);
+                } elseif ($v instanceof JsonSerializable) {
                     $message[$k] = json_stringify($v);
                 }
             }
@@ -189,7 +191,9 @@ class Console extends Component implements ConsoleInterface
                     }
                 } elseif ($v instanceof Throwable) {
                     $v = (string)$v;
-                } elseif (is_array($v) || $v instanceof JsonSerializable) {
+                } elseif (is_array($v)) {
+                    $v = json_stringify($v);
+                } elseif ($v instanceof JsonSerializable) {
                     $v = json_stringify($v);
                 } elseif ($v instanceof Serializable) {
                     $v = serialize($v);

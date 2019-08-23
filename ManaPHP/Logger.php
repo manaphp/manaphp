@@ -208,7 +208,9 @@ abstract class Logger extends Component implements LoggerInterface
 
                 if ($v instanceof Throwable) {
                     $message[$k] = $this->exceptionToString($v);
-                } elseif (is_array($v) || $v instanceof JsonSerializable) {
+                } elseif (is_array($v)) {
+                    $message[$k] = json_stringify($v);
+                } elseif ($v instanceof JsonSerializable) {
                     $message[$k] = json_stringify($v);
                 }
             }
@@ -235,7 +237,9 @@ abstract class Logger extends Component implements LoggerInterface
 
             if ($v instanceof Throwable) {
                 $v = $this->exceptionToString($v);
-            } elseif (is_array($v) || $v instanceof JsonSerializable) {
+            } elseif (is_array($v)) {
+                $v = json_stringify($v);
+            }elseif ($v instanceof JsonSerializable) {
                 $v = json_stringify($v);
             } elseif ($v instanceof Serializable) {
                 $v = serialize($v);

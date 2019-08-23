@@ -145,7 +145,9 @@ abstract class Connection extends Component implements ConnectionInterface
         foreach ($bind as $parameter => $value) {
             if (is_scalar($value) || $value === null) {
                 null;
-            } elseif (is_array($value) || $value instanceof JsonSerializable) {
+            } elseif (is_array($value)) {
+                $value = json_stringify($value);
+            } elseif ($value instanceof JsonSerializable) {
                 $value = json_stringify($value);
             } else {
                 throw new NotSupportedException(['The `:1` type of `:2` parameter is not support', $parameter, gettype($value)]);
