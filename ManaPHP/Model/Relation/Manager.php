@@ -171,7 +171,7 @@ class Manager extends Component implements ManagerInterface
         }
 
         if (isset($this->_relations[$modelName][$name])) {
-            if (($relation = $this->_relations[$modelName][$name]) instanceof Relation) {
+            if (is_object($relation = $this->_relations[$modelName][$name])) {
                 return $relation;
             }
         } elseif ($relation = $this->_inferRelation($model, $name)) {

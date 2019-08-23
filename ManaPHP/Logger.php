@@ -286,7 +286,7 @@ abstract class Logger extends Component implements LoggerInterface
         $log->level = self::$_levels[$level];
         $log->request_id = $this->request->getRequestId();
 
-        if ($message instanceof \Exception) {
+        if ($message instanceof Throwable) {
             $log->category = $category ?: 'exception';
             $log->file = basename($message->getFile());
             $log->line = $message->getLine();
