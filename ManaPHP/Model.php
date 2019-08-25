@@ -172,7 +172,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         if (!$sample = $cached[$class] ?? null) {
             $sample = $cached[$class] = new $class;
         }
-	
+
         return $sample;
     }
 

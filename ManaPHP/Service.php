@@ -1,11 +1,11 @@
 <?php
 namespace ManaPHP;
 
+use BadMethodCallException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Logger\LogCategorizable;
 use ManaPHP\Service\Exception as ServiceException;
 use ReflectionMethod;
-use BadMethodCallException;
 
 /**
  * Class Service
