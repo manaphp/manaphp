@@ -242,6 +242,16 @@ class Application extends Component implements ApplicationInterface
         }
     }
 
+    protected function _loadAspects()
+    {
+        foreach ($this->filesystem->glob('@app/Aspects/*Aspect.php') as $item) {
+            $class = 'App\Aspects\\' . basename($item, '.php');
+            /** @var \ManaPHP\Aop\Aspect $aspect */
+            $aspect = new $class();
+            $aspect->register();
+        }
+    }
+
     public function registerServices()
     {
         $configure = $this->configure;
@@ -259,6 +269,10 @@ class Application extends Component implements ApplicationInterface
 
         if (in_array('Router.php', $app_dir, true)) {
             $this->_di->setShared('router', 'App\\Router');
+        }
+
+        if (in_array('Aspects', $app_dir, true)) {
+            $this->_loadAspects();
         }
 
         if ($configure->components) {
