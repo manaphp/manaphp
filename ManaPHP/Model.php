@@ -13,6 +13,7 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\ParameterOrderException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\UnknownPropertyException;
+use ManaPHP\Model\Expression\Decrement;
 use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\NotFoundException;
 use ManaPHP\Utility\Text;
@@ -895,7 +896,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             $this->load($fields);
         }
 
-        if ($this->_snapshot) {
+        if ($this->_snapshot || $this->{$this->getPrimaryKey()}) {
             return $this->update();
         } else {
             return $this->create();
@@ -1251,7 +1252,13 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function decrement($field, $step = 1)
     {
-        return $this->increment($field, -$step);
+        if (!in_array($field, $this->getFields(), true)) {
+            throw new InvalidArgumentException([':field field is invalid.', 'field' => $field]);
+        }
+
+        $this->$field = new Decrement($step);
+
+        return $this;
     }
 
     /**

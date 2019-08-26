@@ -1,10 +1,17 @@
 <?php
 namespace ManaPHP\Model\Expression;
 
-class Decrement extends Increment
+use ManaPHP\Model\ExpressionInterface;
+
+class Decrement implements ExpressionInterface
 {
+    /**
+     * @var float|int
+     */
+    public $step;
+
     public function __construct($step = 1)
     {
-        parent::__construct(-$step);
+        $this->step = $step;
     }
 }

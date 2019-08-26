@@ -6,6 +6,7 @@ use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Model\Expression\Decrement;
 use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\ExpressionInterface;
 use MongoDB\BSON\ObjectId;
@@ -1231,6 +1232,8 @@ class Query extends \ManaPHP\Query
             foreach ($expressions as $field => $value) {
                 if ($value instanceof Increment) {
                     $fieldValues['$inc'][$field] = $value->step;
+                } elseif ($value instanceof Decrement) {
+                    $fieldValues['$inc'][$field] = -$value->step;
                 }
             }
         }
