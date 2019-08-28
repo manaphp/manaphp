@@ -2,6 +2,7 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Aop\Unaspectable;
 use ManaPHP\Cli\Factory as CliFactory;
 use ManaPHP\Mvc\Factory as MvcFactory;
 use ReflectionClass;
@@ -17,7 +18,7 @@ use Swoole\Runtime;
  * @property-read \ManaPHP\AuthorizationInterface $authorization
  * @property-read \ManaPHP\Http\RequestInterface  $request
  */
-class Application extends Component implements ApplicationInterface
+class Application extends Component implements ApplicationInterface, Unaspectable
 {
     /**
      * @var string
@@ -271,12 +272,12 @@ class Application extends Component implements ApplicationInterface
             $this->_di->setShared('router', 'App\\Router');
         }
 
-        if (in_array('Aspects', $app_dir, true)) {
-            $this->_loadAspects();
-        }
-
         if ($configure->components) {
             $this->_loadComponents($configure->components);
+        }
+
+        if (in_array('Aspects', $app_dir, true)) {
+            $this->_loadAspects();
         }
 
         $this->_loadServices($configure->services);

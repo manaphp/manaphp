@@ -8,18 +8,22 @@ interface AopInterface
     /**
      * @param string  $class
      * @param string  $method
-     * @param Closure $closure
+     * @param Closure $signature
      *
-     * @return \ManaPHP\Aop\JoinPoint
+     * @return \ManaPHP\Aop\Advice
      */
-    public function addPointCut($class, $method, $closure = null);
+    public function pointcutMethod($class, $method, $signature = null);
 
     /**
-     * @param string|array $class
-     * @param string|array $methods
+     * @param string|array $classes
      * @param Closure      $closure
      *
-     * @return static
+     * @return void
      */
-    public function addPointCuts($class, $methods, $closure);
+    public function pointCutMethods($classes = '*', $closure = null);
+
+    /**
+     * @param Closure $closure
+     */
+    public function test($closure = null);
 }

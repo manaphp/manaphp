@@ -3,6 +3,7 @@ namespace ManaPHP;
 
 use ArrayAccess;
 use JsonSerializable;
+use ManaPHP\Aop\Unaspectable;
 use ManaPHP\Db\SqlFragmentable;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidJsonException;
@@ -27,7 +28,7 @@ use Serializable;
  * @package ManaPHP
  * @property-read \ManaPHP\Di $_di
  */
-abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonSerializable
+abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonSerializable, Unaspectable
 {
     const OP_NONE = 0;
     const OP_CREATE = 1;

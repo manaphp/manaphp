@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP\Rpc;
 
+use ManaPHP\Aop\Unaspectable;
 use ManaPHP\Component;
 use Throwable;
 
@@ -10,7 +11,7 @@ use Throwable;
  * @property-read \ManaPHP\Http\RequestInterface $request
  * @property-read \ManaPHP\Http\Response         $response
  */
-abstract class Server extends Component implements ServerInterface
+abstract class Server extends Component implements ServerInterface, Unaspectable
 {
     /**
      * @var string

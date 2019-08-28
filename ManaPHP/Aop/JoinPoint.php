@@ -1,111 +1,154 @@
 <?php
 namespace ManaPHP\Aop;
 
-class JoinPoint
+use ManaPHP\Exception\MisuseException;
+use ReflectionMethod;
+
+class JoinPoint implements Unaspectable
 {
     public $class;
     public $method;
+    public $advice;
+    public $parent;
+    public $is_public;
+
     public $object;
     public $args;
+    public $invoked;
     public $return;
-    public $advice;
 
-    public function __construct($class, $method)
+    const AOP_METHOD_CALL_PARENT = '__aopCallParent';
+    const AOP_METHOD_CALL_PROTECTED = '__aopCallProtected';
+
+    /**
+     * @var JoinPoint[]
+     */
+    protected static $_oid2obj;
+
+    /**
+     * JoinPoint constructor.
+     *
+     * @param string $class
+     * @param string $method
+     * @param string $signature
+     */
+    public function __construct($class, $method, $signature)
     {
         $this->class = $class;
         $this->method = $method;
         $this->advice = new Advice();
-    }
 
-    public function invokeAspect($object, $args)
-    {
-        $copy = clone $this;
+        $rm = new ReflectionMethod($class, $method);
+        $parent = $rm->getDeclaringClass()->getName();
+        $this->parent = $parent;
+        $this->is_public = $rm->isPublic();
 
-        $copy->object = $object;
-        $copy->args = $args;
+        $oid = spl_object_id($this);
+        self::$_oid2obj[$oid] = $this;
+        $signature = $signature ?? self::_buildMethodSignature($parent, $method);
+        $code = "return ManaPHP\Aop\JoinPoint::invokeAspect($oid, \$this, func_get_args());";
 
-        $advice = $this->advice;
+        $parents = class_parents($class);
+        $base = $parents ? array_pop($parents) : $class;
 
-        foreach ($advice->before as $closure) {
-            if (is_array($closure)) {
-                list($object, $method) = $closure;
-                $object->$method($copy);
-            } else {
-                $closure($copy);
-            }
+        if (!$rm->isPublic() && !method_exists($class, self::AOP_METHOD_CALL_PROTECTED)) {
+            runkit7_method_add($base, self::AOP_METHOD_CALL_PROTECTED, function ($method, $args) {
+                return $this->$method(...$args);
+            });
         }
 
-        if ($advice->around) {
-            $closure = $advice->around;
-            if (is_array($closure)) {
-                list($object, $method) = $closure;
-                $object->$method($copy);
-            } else {
-                $closure($copy);
-            }
-        } else {
-            $copy->return = $copy->object->{'#' . $copy->method}(...$copy->args);
+        if ($class === $parent) {
+            runkit7_method_rename($parent, $method, "#$method");
+        } elseif (!method_exists($class, self::AOP_METHOD_CALL_PARENT)) {
+            runkit7_method_add($base, self::AOP_METHOD_CALL_PARENT, function (JoinPoint $joinPoint) {
+                return $joinPoint->parent::{$joinPoint->method}(...$joinPoint->args);
+            });
         }
 
-        foreach ($advice->after as $closure) {
-            if (is_array($closure)) {
-                list($object, $method) = $closure;
-                $object->$method($copy);
-            } else {
-                $closure($copy);
-            }
-        }
-
-        return $copy->return;
+        runkit7_method_add($class, $method, $signature, $code, RUNKIT7_ACC_PUBLIC, $rm->getDocComment() ?: null);
     }
 
     /**
-     * @param \Closure $closure
+     * @param string $class
+     * @param string $method
      *
-     * @return static
+     * @return string
      */
-    public function addAround($closure = null)
+    protected static function _buildMethodSignature($class, $method)
     {
-        if ($closure !== null) {
-            $this->advice->around[] = $closure;
+        $signature = [];
+        $rm = new ReflectionMethod($class, $method);
+
+        foreach ($rm->getParameters() as $parameter) {
+            if ($parameter->getType()) {
+                $param = $parameter->getType() . ' $' . $parameter->getName();
+            } else {
+                $param = '$' . $parameter->getName();
+            }
+
+            if ($parameter->isDefaultValueAvailable()) {
+                $param .= '=' . json_encode($parameter->getDefaultValue());
+            }
+
+            $signature[] = $param;
         }
 
-        return $this;
+        return implode(', ', $signature);
     }
 
     /**
-     * @param \Closure $closure
+     * @param bool $force
      *
-     * @return static
-     */
-    public function addBefore($closure = null)
-    {
-        if ($closure !== null) {
-            $this->advice->before[] = $closure;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param \Closure $closure
-     *
-     * @return static
-     */
-    public function addAfter($closure = null)
-    {
-        if ($closure !== null) {
-            $this->advice->after[] = $closure;
-        }
-
-        return $this;
-    }
-
-    /**
      * @return mixed
      */
-    public function invokeTarget()
+    public function invokeTarget($force = false)
     {
-        return $this->return = $this->object->{'#' . $this->method}(...$this->args);
+        if ($this->invoked) {
+            if (!$force) {
+                throw new MisuseException('has been invoked');
+            }
+        } else {
+            $this->invoked = true;
+        }
+
+        if ($this->parent === $this->class) {
+            if ($this->is_public) {
+                return $this->return = $this->object->{"#$this->method"}(...$this->args);
+            } else {
+                return $this->return = $this->object->{self::AOP_METHOD_CALL_PROTECTED}("#$this->method", $this->args);
+            }
+        } else {
+            return $this->return = $this->object->{self::AOP_METHOD_CALL_PARENT}($this);
+        }
+    }
+
+    /**
+     * @param int    $oid
+     * @param object $object
+     * @param array  $args
+     *
+     * @return mixed
+     */
+    public static function invokeAspect($oid, $object, $args)
+    {
+        $joinPoint = self::$_oid2obj[$oid];
+
+        $joinPoint->object = $object;
+        $joinPoint->args = $args;
+        $joinPoint->return = null;
+        $joinPoint->invoked = false;
+
+        $advice = $joinPoint->advice;
+        $advice->adviseBefore($joinPoint);
+        $advice->adviseAround($joinPoint);
+        $return = $joinPoint->invoked ? $joinPoint->return : $joinPoint->invokeTarget();
+        $advice->adviseAfter($joinPoint);
+
+        $joinPoint->object = null;
+        $joinPoint->args = null;
+        $joinPoint->return = null;
+        $joinPoint->invoked = null;
+
+        return $return;
     }
 }

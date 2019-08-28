@@ -8,7 +8,7 @@ use ManaPHP\Component;
  * @package ManaPHP\Aop
  * @property-read \ManaPHP\AopInterface $aop
  */
-abstract class Aspect extends Component
+abstract class Aspect extends Component implements Unaspectable
 {
     abstract public function register();
 }

@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP\Http;
 
+use ManaPHP\Aop\Unaspectable;
 use ManaPHP\Component;
 
 /**
@@ -9,7 +10,7 @@ use ManaPHP\Component;
  *
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
-abstract class Server extends Component implements ServerInterface
+abstract class Server extends Component implements ServerInterface, Unaspectable
 {
     /**
      * @var bool
