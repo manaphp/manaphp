@@ -139,15 +139,17 @@ class JoinPoint implements Unaspectable
         $joinPoint->invoked = false;
 
         $advice = $joinPoint->advice;
-        $advice->adviseBefore($joinPoint);
-        $advice->adviseAround($joinPoint);
-        $return = $joinPoint->invoked ? $joinPoint->return : $joinPoint->invokeTarget();
-        $advice->adviseAfter($joinPoint);
-
-        $joinPoint->object = null;
-        $joinPoint->args = null;
-        $joinPoint->return = null;
-        $joinPoint->invoked = null;
+        try {
+            $advice->adviseBefore($joinPoint);
+            $advice->adviseAround($joinPoint);
+            $return = $joinPoint->invoked ? $joinPoint->return : $joinPoint->invokeTarget();
+            $advice->adviseAfter($joinPoint);
+        } finally {
+            $joinPoint->object = null;
+            $joinPoint->args = null;
+            $joinPoint->return = null;
+            $joinPoint->invoked = null;
+        }
 
         return $return;
     }
