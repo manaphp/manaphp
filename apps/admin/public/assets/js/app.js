@@ -3,6 +3,17 @@ Vue.prototype.$moment = moment;
 Vue.prototype.$qs = Qs;
 Vue.prototype._ = _;
 
+(function(){
+    let urlKey = `last_url_query.${document.location.pathname}`;
+    let last_url_query = localStorage.getItem(urlKey);
+    window.history.replaceState(null, null, last_url_query === null ? '?' : last_url_query);
+
+    window.onbeforeunload = (e) => {
+        localStorage.setItem(urlKey, document.location.search);
+    };
+}());
+
+
 document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substr(1)) : {};
 
 //axios.defaults.baseURL = 'http://www.manaphp.com';

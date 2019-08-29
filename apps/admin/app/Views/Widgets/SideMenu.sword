@@ -1,7 +1,8 @@
 <div class="product-name"><el-link href="/">{{$this->configure->name}}</el-link></div>
 <el-menu
         default-active="<?=action('')?>"
-        class="el-menu-vertical-demo">
+        class="el-menu-vertical-demo"
+        :unique-opened="true">
     @foreach($menu as $group)
         <el-submenu index="{{$group['group_name']}}">
             <template slot="title">

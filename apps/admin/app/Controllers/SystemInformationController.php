@@ -33,7 +33,8 @@ class SystemInformationController extends Controller
         $loaded_extensions = get_loaded_extensions();
         sort($loaded_extensions);
         $data['loaded_extensions'] = implode(', ', $loaded_extensions);
-
+        $data['loaded_classes'] = get_declared_classes();
+		
         $this->view->setVar('data', $data);
     }
 }
