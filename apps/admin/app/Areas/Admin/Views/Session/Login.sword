@@ -99,6 +99,17 @@
             connectParticles: false,
         });
     };
+
+    (function () {
+        let len = sessionStorage.length;
+        for (let i = 0; i < len; i++) {
+            let key = sessionStorage.key(i);
+            if (key.startsWith('axios.cache') && /\bcache=2\b/.test(key)) {
+                sessionStorage.removeItem(key);
+            }
+        }
+    })();
+
 </script>
 </body>
 </html>

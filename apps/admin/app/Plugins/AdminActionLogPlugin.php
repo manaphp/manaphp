@@ -4,18 +4,39 @@ namespace App\Plugins;
 use App\Models\AdminActionLog;
 use ManaPHP\Plugin;
 
+class AdminActionLogPluginContext
+{
+    public $logged = false;
+}
+
+/**
+ * Class AdminActionLogPlugin
+ * @package App\Plugins
+ *
+ * @property-read \App\Plugins\AdminActionLogPluginContext $_context
+ */
 class AdminActionLogPlugin extends Plugin
 {
     public function __construct()
     {
-        $this->eventsManager->attachEvent('request:invoke', [$this, 'onInvoke']);
+        $this->eventsManager->attachEvent('app:logAction', [$this, 'onAppLogAction']);
+        $this->eventsManager->attachEvent('db:executing', [$this, 'onDbExecuting']);
     }
 
-    public function onInvoke()
+    public function onDbExecuting()
     {
-        if (in_array($this->request->getServer('REQUEST_METHOD'), ['GET', 'HEAD', 'OPTIONS'], true)) {
+        if (!$this->_context->logged && $this->dispatcher->isInvoking()) {
+            $this->onAppLogAction();
+        }
+    }
+
+    public function onAppLogAction()
+    {
+        $context = $this->_context;
+        if ($context->logged) {
             return;
         }
+        $context->logged = true;
 
         $data = array_except($this->request->get(), ['_url']);
         if (isset($data['password'])) {

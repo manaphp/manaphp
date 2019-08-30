@@ -2,8 +2,11 @@ Vue.prototype.$axios = axios;
 Vue.prototype.$moment = moment;
 Vue.prototype.$qs = Qs;
 Vue.prototype._ = _;
+Vue.prototype.sessionStorage = window.sessionStorage;
+Vue.prototype.localStorage = window.localStorage;
+Vue.prototype.console = console;
 
-(function(){
+(function () {
     let urlKey = `last_url_query.${document.location.pathname}`;
     let last_url_query = localStorage.getItem(urlKey);
     window.history.replaceState(null, null, last_url_query === null ? '?' : last_url_query);
@@ -86,7 +89,6 @@ Vue.mixin({
     methods: {
         ajax_get: function (url, data, success) {
             if (!success && typeof data === 'object') {
-
                 success = function (res) {
                     if (_.isArray(data)) {
                         data.length = 0;
@@ -108,9 +110,21 @@ Vue.mixin({
                 url += (url.indexOf('?') === -1 ? '?' : '&') + Qs.stringify(data);
             }
 
+            if (success && /\bcache=[12]\b/.test(url) && localStorage.getItem('axios.cache.enabled') !== '0') {
+                var cache_key = 'axios.cache.' + url;
+                let cache_value = sessionStorage.getItem(cache_key);
+                if (cache_value) {
+                    success.bind(this)(JSON.parse(cache_value));
+                    return;
+                }
+            }
+
             return this.$axios.get(url).then(function (res) {
                 if (res.data.code === 0) {
                     if (success) {
+                        if (cache_key) {
+                            sessionStorage.setItem(cache_key, JSON.stringify(res.data.data));
+                        }
                         success.bind(this)(res.data.data);
                     }
                 } else if (typeof res.data.message !== 'undefined') {
@@ -142,6 +156,10 @@ Vue.mixin({
             }.bind(this));
         },
         reload: function () {
+            if (typeof this.request === 'undefined' || typeof this.response === 'undefined') {
+                alert('bad reload');
+            }
+
             var qs = this.$qs.stringify(this.request);
             window.history.replaceState(null, null, qs ? ('?' + qs) : '');
             document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substr(1)) : {};
@@ -220,10 +238,14 @@ Vue.mixin({
         },
     },
     created: function () {
-        var qs = this.$qs.parse(document.location.query);
-        if (this.request) {
-            for (var k in qs) {
-                var v = qs[k];
+        if (this.$parent !== undefined) {
+            return;
+        }
+
+        if (typeof this.request !== 'undefined' && typeof this.response !== 'undefined') {
+            let qs = this.$qs.parse(document.location.query);
+            for (let k in qs) {
+                let v = qs[k];
 
                 if (/^\d+$/.test(v) && typeof this.request[k] !== 'string') {
                     this.request[k] = parseInt(v);
@@ -231,6 +253,12 @@ Vue.mixin({
                     this.request[k] = v;
                 }
             }
+
+            this.$watch('request', _.debounce(function () {
+                this.reload();
+            }, 500), {deep: true});
+
+            this.reload();
         }
     }
 });
@@ -378,6 +406,49 @@ Vue.component('date-picker', {
                     }
                 ]
             }
+        }
+    }
+});
+
+Vue.component('my-menu', {
+    template: `
+<el-menu :default-active="active" class="el-menu-vertical-demo" :unique-opened="true">
+    <template v-for="group in groups">
+        <el-submenu :index="group.group_name">
+            <template slot="title">
+                <i :class="group.icon"></i>
+                <span>{{group.group_name}}</span>
+            </template>
+            <template v-for="item in group.items ">
+                <el-menu-item :index="item.url"><i :class="item.icon"></i>
+                    <el-link :href="item.url">{{item.item_name}}</el-link>
+                </el-menu-item>
+            </template>
+        </el-submenu>
+     </template>
+</el-menu>`,
+    created() {
+        this.ajax_get('/menu/my?cache=2', function (res) {
+            this.groups = res;
+        })
+    },
+    data() {
+        return {
+            active: location.pathname,
+            groups: []
+        }
+    }
+});
+
+Vue.component('axios-cache-switcher', {
+    template: `
+    <div>
+        <div v-if="enabled" @click="localStorage.setItem('axios.cache.enabled','0');enabled=false">缓存 (√)</div>
+        <div v-else @click="localStorage.setItem('axios.cache.enabled','1');enabled=true">缓存 (×)</div>
+    </div>`,
+    data() {
+        return {
+            enabled: localStorage.getItem('axios.cache.enabled') !== '0'
         }
     }
 });

@@ -13,8 +13,12 @@
 </head>
 <body>
 
-<el-container id="app">
-    <el-aside style="overflow: hidden">@widget('SideMenu')</el-aside>
+<el-container id="app" v-cloak>
+    {{--    <el-aside style="overflow: hidden">@widget('SideMenu')</el-aside>--}}
+    <el-aside style="overflow: hidden">
+        <div class="product-name"><el-link href="/">{{$this->configure->name}}</el-link></div>
+        <my-menu/>
+    </el-aside>
     <el-container>
         <el-header>
             <span id="server-time" class="left"></span>
@@ -28,6 +32,9 @@
                                 class="el-icon-arrow-down el-icon--left"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown" trigger="click">
+                        <el-dropdown-item>
+                            <axios-cache-switcher></axios-cache-switcher>
+                        </el-dropdown-item>
                         <el-dropdown-item>
                             <el-link href="/admin/login_log/latest" target="_self">最近登录</el-link>
                         </el-dropdown-item>
@@ -76,18 +83,6 @@
             el: '#app'
         });
     }
-
-    if (typeof vm.request === 'object') {
-        // console.log(vm.$options.created);
-        if (vm.$options.created.length === 1) {
-            vm.reload();
-        }
-
-        vm.$watch('request', _.debounce(function () {
-            vm.reload();
-        }, 500), {deep: true});
-    }
-
 </script>
 </body>
 </html>
