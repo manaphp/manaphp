@@ -38,7 +38,7 @@ class Invoker extends Component implements InvokerInterface
                 $value = $this->request->get($name);
             } elseif ($parameter->isDefaultValueAvailable()) {
                 $value = $parameter->getDefaultValue();
-            } elseif (count($parameters) === 1 && ($name === 'id' || strpos($name, '_id') !== false)) {
+            } elseif (count($parameters) === 1) {
                 $value = $this->request->getId($name);
             }
 
