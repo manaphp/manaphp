@@ -8,12 +8,15 @@ Vue.prototype.console = console;
 
 (function () {
     let urlKey = `last_url_query.${document.location.pathname}`;
-    let last_url_query = localStorage.getItem(urlKey);
-    window.history.replaceState(null, null, last_url_query === null ? '?' : last_url_query);
-
     window.onbeforeunload = (e) => {
         localStorage.setItem(urlKey, document.location.search);
     };
+
+    if (document.location.search !== '') {
+        return;
+    }
+    let last_url_query = localStorage.getItem(urlKey);
+    window.history.replaceState(null, null, last_url_query === null ? '?' : last_url_query);
 }());
 
 
@@ -88,22 +91,7 @@ Vue.mixin({
 
     methods: {
         ajax_get: function (url, data, success) {
-            if (!success && typeof data === 'object') {
-                success = function (res) {
-                    if (_.isArray(data)) {
-                        data.length = 0;
-                        if (_.isArray(res)) {
-                            res.forEach(function (v) {
-                                data.push(v);
-                            })
-                        }
-                    } else {
-                        Object.keys(res).forEach(function (key) {
-                            data[key] = res[key];
-                        })
-                    }
-                }
-            } else if (typeof data === 'function') {
+            if (typeof data === 'function') {
                 success = data;
                 data = null;
             } else if (data) {
@@ -245,13 +233,7 @@ Vue.mixin({
         if (typeof this.request !== 'undefined' && typeof this.response !== 'undefined') {
             let qs = this.$qs.parse(document.location.query);
             for (let k in qs) {
-                let v = qs[k];
-
-                if (/^\d+$/.test(v) && typeof this.request[k] !== 'string') {
-                    this.request[k] = parseInt(v);
-                } else {
-                    this.request[k] = v;
-                }
+                this.request[k] = qs[k];
             }
 
             this.$watch('request', _.debounce(function () {
@@ -265,8 +247,8 @@ Vue.mixin({
 
 Vue.component('pager', {
     props: ['request', 'response'],
-    template: ' <el-pagination background :current-page="response.page"\n' +
-        '                   :page-size="request.size"\n' +
+    template: ' <el-pagination background :current-page="Number(response.page)"\n' +
+        '                   :page-size="Number(request.size)"\n' +
         '                   :page-sizes="[10,20,25,50,100,500,1000]"\n' +
         '                   @current-change="request.page=$event"\n' +
         '                   @size-change="request.size=$event; request.page=1"\n' +
@@ -430,6 +412,16 @@ Vue.component('my-menu', {
     created() {
         this.ajax_get('/menu/my?cache=2', function (res) {
             this.groups = res;
+
+            let active = location.pathname;
+            for (let group of res) {
+                for (let item of group.items) {
+                    if (item.url === active) {
+                        document.title = ' ' + group.group_name + ' - ' + item.item_name;
+                        break;
+                    }
+                }
+            }
         })
     },
     data() {
