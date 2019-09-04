@@ -7,6 +7,11 @@ use ManaPHP\Query;
 
 class MyController extends Controller
 {
+    public function getAcl()
+    {
+        return ['*' => 'user'];
+    }
+
     public function indexAction()
     {
         $groups = Group::select(['group_id', 'group_name', 'icon'])
@@ -42,7 +47,7 @@ class MyController extends Controller
                 continue;
             }
 
-            $group['items'] = $items;
+            $group['items'] = array_values($items);
             $menu[] = $group;
         }
 

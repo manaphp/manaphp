@@ -2,7 +2,6 @@
 namespace App\Widgets;
 
 use App\Areas\Menu\Models\Group;
-use App\Areas\Menu\Models\Item;
 use ManaPHP\Query;
 use ManaPHP\View\Widget;
 

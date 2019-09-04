@@ -2,7 +2,7 @@
     <el-button @click="create.group_id=request.group_id; createVisible=true" icon="el-icon-plus" size="small" type="primary">创建菜单项
     </el-button>
     <el-select v-model="request.group_id" size="small" clearable style="width: 150px">
-        <el-option v-for="group in groups" :key="group.group_id" :label="group.group_name" :value="group.group_id"></el-option>
+        <el-option v-for="group in groups" :key="group.group_id" :label="group.group_name" :value="String(group.group_id)"></el-option>
     </el-select>
 </div>
 <el-dialog title="创建菜单项" :visible.sync="createVisible">
