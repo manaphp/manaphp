@@ -58,7 +58,7 @@ class PusherProcess extends Process
         $this->eventsManager->attachEvent('ws:close', [$this, 'onWsClose']);
     }
 
-    public function onWsOpen($app, $fd)
+    public function onWsOpen(/** @noinspection PhpUnusedParameterInspection */ $app, $fd)
     {
         $identity = $this->identity;
         if (!$id = $identity->getId('')) {
@@ -75,7 +75,7 @@ class PusherProcess extends Process
         }
     }
 
-    public function onWsClose($app, $fd)
+    public function onWsClose(/** @noinspection PhpUnusedParameterInspection */ $app, $fd)
     {
         if (!$id = $this->identity->getId('')) {
             return;
@@ -254,7 +254,7 @@ class PusherProcess extends Process
 
     public function run()
     {
-        $this->redis->psubscribe([$this->_prefix . $this->_endpoint . ':*'], function ($redis, $pattern, $channel, $data) {
+        $this->redis->psubscribe([$this->_prefix . $this->_endpoint . ':*'], function (/** @noinspection PhpUnusedParameterInspection */ $redis, $pattern, $channel, $data) {
             if (($pos = strrpos($channel, ':')) !== false) {
                 $type = substr($channel, $pos + 1);
 

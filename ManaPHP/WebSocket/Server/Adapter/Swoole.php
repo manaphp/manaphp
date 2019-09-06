@@ -139,7 +139,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      * @param \Swoole\WebSocket\Server $server
      * @param \Swoole\Http\Request     $request
      */
-    public function onOpen($server, $request)
+    public function onOpen(/** @noinspection PhpUnusedParameterInspection */ $server, $request)
     {
         try {
             $this->_prepareGlobals($request);
@@ -188,7 +188,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      * @param \Swoole\WebSocket\Server $server
      * @param Frame                    $frame
      */
-    public function onMessage($server, $frame)
+    public function onMessage(/** @noinspection PhpUnusedParameterInspection */ $server, $frame)
     {
         /** @var \ArrayObject $current_context */
         $current_context = Coroutine::getContext();
@@ -283,7 +283,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function addProcess($process)
     {
-        $p = new Process(static function ($p) use ($process) {
+        $p = new Process(static function (/** @noinspection PhpUnusedParameterInspection */ $p) use ($process) {
             unset($_SERVER['DOCUMENT_ROOT']);
             $process->run();
         });

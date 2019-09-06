@@ -199,7 +199,7 @@ class Swoole extends \ManaPHP\Rpc\Server
      * @param \Swoole\WebSocket\Server $server
      * @param int                      $fd
      */
-    public function onClose($server, $fd)
+    public function onClose(/** @noinspection PhpUnusedParameterInspection */ $server, $fd)
     {
         unset($this->_contexts[$fd]);
     }
@@ -208,7 +208,7 @@ class Swoole extends \ManaPHP\Rpc\Server
      * @param \Swoole\WebSocket\Server $server
      * @param \Swoole\WebSocket\Frame  $frame
      */
-    public function onMessage($server, $frame)
+    public function onMessage(/** @noinspection PhpUnusedParameterInspection */ $server, $frame)
     {
         /** @var \ArrayObject $current_context */
         $current_context = Coroutine::getContext();
