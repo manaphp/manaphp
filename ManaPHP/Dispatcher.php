@@ -51,7 +51,7 @@ class DispatcherContext
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response
  * @property-read \ManaPHP\InvokerInterface       $invoker
- * @property \ManaPHP\DispatcherContext           $_context
+ * @property-read \ManaPHP\DispatcherContext      $_context
  */
 class Dispatcher extends Component implements DispatcherInterface
 {

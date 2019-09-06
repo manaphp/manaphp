@@ -30,7 +30,7 @@ class ViewContext
  *
  * @property-read \ManaPHP\RendererInterface   $renderer
  * @property-read \ManaPHP\DispatcherInterface $dispatcher
- * @property \ManaPHP\ViewContext              $_context
+ * @property-read \ManaPHP\ViewContext         $_context
  */
 class View extends Component implements ViewInterface
 {

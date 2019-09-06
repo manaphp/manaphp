@@ -18,12 +18,12 @@ class AuthorizationContext
  * Class Authorization
  * @package ManaPHP
  *
- * @property \ManaPHP\DispatcherInterface               $dispatcher
- * @property \ManaPHP\RouterInterface                   $router
- * @property \ManaPHP\Http\RequestInterface             $request
- * @property \ManaPHP\Http\ResponseInterface            $response
- * @property \ManaPHP\Authorization\AclBuilderInterface $aclBuilder
- * @property \ManaPHP\AuthorizationContext              $_context
+ * @property-read \ManaPHP\DispatcherInterface               $dispatcher
+ * @property-read \ManaPHP\RouterInterface                   $router
+ * @property-read \ManaPHP\Http\RequestInterface             $request
+ * @property-read \ManaPHP\Http\ResponseInterface            $response
+ * @property-read \ManaPHP\Authorization\AclBuilderInterface $aclBuilder
+ * @property-read \ManaPHP\AuthorizationContext              $_context
  */
 class Authorization extends Component implements AuthorizationInterface
 {

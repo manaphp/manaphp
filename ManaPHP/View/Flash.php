@@ -16,7 +16,7 @@ class FlashContext
  * Class ManaPHP\View\Flash
  *
  * @package flash
- * @property \ManaPHP\View\FlashContext $_context
+ * @property-read \ManaPHP\View\FlashContext $_context
  */
 abstract class Flash extends Component implements FlashInterface
 {

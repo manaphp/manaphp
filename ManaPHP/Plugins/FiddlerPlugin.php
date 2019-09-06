@@ -20,7 +20,7 @@ class FiddlerPluginContext
 /**
  * Class FiddlerPlugin
  * @package ManaPHP\Plugins
- * @property \ManaPHP\Plugins\FiddlerPluginContext $_context
+ * @property-read \ManaPHP\Plugins\FiddlerPluginContext $_context
  */
 class FiddlerPlugin extends Plugin
 {

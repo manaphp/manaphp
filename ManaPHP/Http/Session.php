@@ -40,7 +40,7 @@ class SessionContext
  * @package session
  * @property-read \ManaPHP\Http\CookiesInterface $cookies
  * @property-read \ManaPHP\Http\RequestInterface $request
- * @property  \ManaPHP\Http\SessionContext       $_context
+ * @property-read \ManaPHP\Http\SessionContext   $_context
  */
 abstract class Session extends Component implements SessionInterface, ArrayAccess
 {

@@ -14,7 +14,7 @@ class RedisContext implements Inseparable
 /**
  * Class Redis
  * @package ManaPHP
- * @property \ManaPHP\RedisContext $_context
+ * @property-read \ManaPHP\RedisContext $_context
  */
 class Redis extends Component
 {

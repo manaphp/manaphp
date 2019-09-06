@@ -15,7 +15,7 @@ class MemoryContext
  * Class ManaPHP\Cache\Adapter\Memory
  *
  * @package cache\adapter
- * @property \ManaPHP\Cache\Adapter\MemoryContext $_context
+ * @property-read \ManaPHP\Cache\Adapter\MemoryContext $_context
  */
 class Memory extends Cache
 {

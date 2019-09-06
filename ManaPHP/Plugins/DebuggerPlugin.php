@@ -32,7 +32,7 @@ class DebuggerPluginContext
 /**
  * Class DebuggerPlugin
  * @package ManaPHP\Plugins
- * @property \ManaPHP\Plugins\DebuggerPluginContext $_context
+ * @property-read \ManaPHP\Plugins\DebuggerPluginContext $_context
  */
 class DebuggerPlugin extends Plugin
 {

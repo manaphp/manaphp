@@ -17,7 +17,7 @@ class  ApcuContext
 /**
  * Class Apcu
  * @package ManaPHP\Ipc\Cache\Adapter
- * @property \ManaPHP\Ipc\Cache\Adapter\ApcuContext $_context
+ * @property-read \ManaPHP\Ipc\Cache\Adapter\ApcuContext $_context
  */
 class Apcu extends Component implements CacheInterface
 {

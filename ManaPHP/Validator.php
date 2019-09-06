@@ -19,7 +19,7 @@ class ValidatorContext
  *
  * @property-read \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
  * @property-read \ManaPHP\Http\RequestInterface          $request
- * @property \ManaPHP\ValidatorContext                    $_context
+ * @property-read \ManaPHP\ValidatorContext               $_context
  */
 class Validator extends Component implements ValidatorInterface
 {
