@@ -10,10 +10,10 @@ use Throwable;
  * Class Application
  * @package ManaPHP\Rpc
  *
- * @property-read \ManaPHP\Rpc\ServerInterface $rpcServer
- * @property-read \ManaPHP\RouterInterface     $router
- * @property-read \ManaPHP\Http\Response       $response
- * @property-read \ManaPHP\Rpc\Dispatcher      $dispatcher
+ * @property-read \ManaPHP\Rpc\ServerInterface    $rpcServer
+ * @property-read \ManaPHP\RouterInterface        $router
+ * @property-read \ManaPHP\Http\ResponseInterface $response
+ * @property-read \ManaPHP\Rpc\Dispatcher         $dispatcher
  */
 class Application extends \ManaPHP\Application implements HandlerInterface
 {
@@ -67,7 +67,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
             $this->handleException($throwable);
         }
 
-        $this->rpcServer->send($this->response->_context);
+        $this->rpcServer->send($this->response->getContext());
 
         $this->eventsManager->fireEvent('request:end', $this);
     }

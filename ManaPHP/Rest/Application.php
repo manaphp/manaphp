@@ -43,7 +43,7 @@ class Application extends \ManaPHP\Http\Application
             $this->handleException($throwable);
         }
 
-        $response = $this->response->_context;
+        $response = $this->response->getContext();
 
         if ($response->content === '') {
             $response->content = ['code' => 0, 'message' => '', 'data' => null];

@@ -10,6 +10,11 @@ namespace ManaPHP\Http;
 interface ResponseInterface
 {
     /**
+     * @return \ManaPHP\Http\ResponseContext
+     */
+    public function getContext();
+
+    /**
      * Sets a cookie to be sent at the end of the request
      *
      * @param string $name

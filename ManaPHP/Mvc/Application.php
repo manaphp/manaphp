@@ -50,7 +50,7 @@ class Application extends \ManaPHP\Http\Application
             $this->handleException($throwable);
         }
 
-        $this->httpServer->send($this->response->_context);
+        $this->httpServer->send($this->response->getContext());
 
         $this->eventsManager->fireEvent('request:end', $this);
     }

@@ -62,7 +62,7 @@ class Fpm extends Server
         if ($this->authenticate()) {
             $this->_handler->handle();
         } else {
-            $this->send($this->response->_context);
+            $this->send($this->response->getContext());
         }
 
         return $this;

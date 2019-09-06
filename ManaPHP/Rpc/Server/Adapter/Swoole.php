@@ -153,7 +153,7 @@ class Swoole extends \ManaPHP\Rpc\Server
             if ($this->authenticate()) {
                 $this->_handler->handle();
             } else {
-                $this->send($this->response->_context);
+                $this->send($this->response->getContext());
             }
         } catch (Throwable $throwable) {
             $str = date('c') . ' ' . get_class($throwable) . ': ' . $throwable->getMessage() . PHP_EOL;
@@ -183,7 +183,7 @@ class Swoole extends \ManaPHP\Rpc\Server
 
             $this->request->setRequestId();
 
-            $response = $this->response->_context;
+            $response = $this->response->getContext();
             if (!$this->authenticate()) {
                 $this->_context->fd = $request->fd;
                 $this->send($response);
@@ -222,7 +222,7 @@ class Swoole extends \ManaPHP\Rpc\Server
 
         $this->request->setRequestId();
 
-        $response = $this->response->_context;
+        $response = $this->response->getContext();
         if (!$json = json_parse($frame->data)) {
             $response->content = ['code' => -32700, 'message' => 'Parse error'];
             $this->send($response);

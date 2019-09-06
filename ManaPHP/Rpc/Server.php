@@ -8,8 +8,8 @@ use Throwable;
 /**
  * Class Server
  * @package ManaPHP\Rpc
- * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\Http\Response         $response
+ * @property-read \ManaPHP\Http\RequestInterface  $request
+ * @property-read \ManaPHP\Http\ResponseInterface $response
  */
 abstract class Server extends Component implements ServerInterface, Unaspectable
 {

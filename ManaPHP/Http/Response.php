@@ -51,10 +51,18 @@ class ResponseContext
  * @property-read \ManaPHP\Http\RequestInterface $request
  * @property-read \ManaPHP\UrlInterface          $url
  * @property-read \ManaPHP\RouterInterface       $router
- * @property \ManaPHP\Http\ResponseContext       $_context
+ * @property-read \ManaPHP\Http\ResponseContext  $_context
  */
 class Response extends Component implements ResponseInterface
 {
+    /**
+     * @return \ManaPHP\Http\ResponseContext
+     */
+    public function getContext()
+    {
+        return $this->_context;
+    }
+
     /**
      * Sets a cookie to be sent at the end of the request
      *
