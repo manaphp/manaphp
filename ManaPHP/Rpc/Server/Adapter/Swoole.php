@@ -129,6 +129,7 @@ class Swoole extends \ManaPHP\Rpc\Server
 
         $globals->_GET = $_get;
         $globals->_POST = $_post;
+        /** @noinspection AdditionOperationOnArraysInspection */
         $globals->_REQUEST = $_post + $_get;
         $globals->_SERVER = $_server;
     }
@@ -234,6 +235,7 @@ class Swoole extends \ManaPHP\Rpc\Server
             $globals = $this->request->getGlobals();
             $globals->_GET['_url'] = $globals->_SERVER['WS_ENDPOINT'] . '/' . $json['method'];
             $globals->_POST = $json['params'];
+            /** @noinspection AdditionOperationOnArraysInspection */
             $globals->_REQUEST = $globals->_POST + $globals->_GET;
             $globals->_SERVER['REQUEST_TIME_FLOAT'] = microtime(true);
             $globals->_SERVER['REQUEST_TIME'] = (int)$globals->_SERVER['REQUEST_TIME_FLOAT'];

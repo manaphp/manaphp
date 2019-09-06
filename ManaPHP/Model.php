@@ -709,6 +709,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             try {
                 $this->$field = $this->_di->validator->validateModel($field, $this, $rule);
             } catch (ValidateFailedException $exception) {
+                /** @noinspection AdditionOperationOnArraysInspection */
                 $errors += $exception->getErrors();
             }
         }

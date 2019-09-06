@@ -92,6 +92,7 @@ class Workerman extends Server
     {
         $_SERVER['REQUEST_TIME_FLOAT'] = microtime(true);
 
+        /** @noinspection AdditionOperationOnArraysInspection */
         $_SERVER += $this->_SERVER;
         if (!isset($_GET['_url'])) {
             $uri = $_SERVER['REQUEST_URI'];
