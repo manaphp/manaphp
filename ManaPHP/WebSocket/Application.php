@@ -12,8 +12,8 @@ use Throwable;
  * @package ManaPHP\WebSocket
  *
  * @property-read \ManaPHP\WebSocket\ServerInterface $wsServer
- * @property-read \ManaPHP\Router                    $router
- * @property-read \ManaPHP\Http\Response             $response
+ * @property-read \ManaPHP\RouterInterface           $router
+ * @property-read \ManaPHP\Http\ResponseInterface    $response
  * @property-read \ManaPHP\DispatcherInterface       $dispatcher
  */
 class Application extends \ManaPHP\Application implements HandlerInterface
@@ -49,10 +49,9 @@ class Application extends \ManaPHP\Application implements HandlerInterface
                 throw new NotFoundRouteException(['router does not have matched route']);
             }
 
-            $router = $this->router->_context;
-            $router->action = $event;
+            $this->router->setAction($event);
 
-            $returnValue = $this->dispatcher->dispatch($router);
+            $returnValue = $this->dispatcher->dispatch($this->router);
 
             if ($returnValue === null || $returnValue instanceof Response) {
                 null;

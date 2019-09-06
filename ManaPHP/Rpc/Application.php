@@ -13,7 +13,7 @@ use Throwable;
  * @property-read \ManaPHP\Rpc\ServerInterface    $rpcServer
  * @property-read \ManaPHP\RouterInterface        $router
  * @property-read \ManaPHP\Http\ResponseInterface $response
- * @property-read \ManaPHP\Rpc\Dispatcher         $dispatcher
+ * @property-read \ManaPHP\DispatcherInterface    $dispatcher
  */
 class Application extends \ManaPHP\Application implements HandlerInterface
 {

@@ -172,6 +172,13 @@ interface RouterInterface
     public function getAction();
 
     /**
+     * @param string $action
+     *
+     * @return static
+     */
+    public function setAction($action);
+
+    /**
      * Returns processed extra params
      *
      * @return array

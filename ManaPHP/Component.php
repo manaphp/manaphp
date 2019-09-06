@@ -27,7 +27,7 @@ use Swoole\Coroutine;
  * @property-read \ManaPHP\Http\ClientInterface            $restClient
  * @property-read \ManaPHP\DbInterface                     $db
  * @property-read \Redis                                   $redis
- * @property-read \ManaPHP\Mongodb                         $mongodb
+ * @property-read \ManaPHP\MongodbInterface                $mongodb
  * @property-read \ManaPHP\AmqpInterface                   $rabbitmq
  * @property-read \Elasticsearch\Client                    $elasticsearch
  * @property-read \ManaPHP\MailerInterface                 $mailer

@@ -45,11 +45,11 @@ use ManaPHP\Exception\NotSupportedException;
  * @property-read \ManaPHP\FilesystemInterface             $filesystem
  * @property-read \ManaPHP\Security\RandomInterface        $random
  * @property-read \ManaPHP\Message\QueueInterface          $messageQueue
- * @property-read \ManaPHP\I18n\Translator                 $translation
+ * @property-read \ManaPHP\I18n\TranslatorInterface        $translation
  * @property-read \ManaPHP\Renderer\Engine\Sword\Compiler  $swordCompiler
  * @property-read \ManaPHP\Security\HtmlPurifierInterface  $htmlPurifier
  * @property-read \ManaPHP\AmqpInterface                   $rabbitmq
- * @property-read \ManaPHP\Model\Relation\Manager          $relationsManager
+ * @property-read \ManaPHP\Model\Relation\ManagerInterface $relationsManager
  * @property-read \ManaPHP\MailerInterface                 $mailer
  * @property-read \ManaPHP\Ipc\CacheInterface              $ipcCache
  * @property-read \ManaPHP\MongodbInterface                $mongodb

@@ -457,6 +457,18 @@ class Router extends Component implements RouterInterface
     }
 
     /**
+     * @param string $action
+     *
+     * @return static
+     */
+    public function setAction($action)
+    {
+        $this->_context->action = $action;
+
+        return $this;
+    }
+
+    /**
      * Returns the processed parameters
      *
      * @return array

@@ -5,13 +5,13 @@ use ManaPHP\Http\Server\HandlerInterface;
 
 /**
  * Class Application
- * @property-read \ManaPHP\Http\ServerInterface  $httpServer
- * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\Http\Response         $response
- * @property-read \ManaPHP\RouterInterface       $router
- * @property-read \ManaPHP\DispatcherInterface   $dispatcher
- * @property-read \ManaPHP\ViewInterface         $view
- * @property-read \ManaPHP\Http\SessionInterface $session
+ * @property-read \ManaPHP\Http\ServerInterface   $httpServer
+ * @property-read \ManaPHP\Http\RequestInterface  $request
+ * @property-read \ManaPHP\Http\ResponseInterface $response
+ * @property-read \ManaPHP\RouterInterface        $router
+ * @property-read \ManaPHP\DispatcherInterface    $dispatcher
+ * @property-read \ManaPHP\ViewInterface          $view
+ * @property-read \ManaPHP\Http\SessionInterface  $session
  *
  * @package ManaPHP\Http
  * @method void authorize()
