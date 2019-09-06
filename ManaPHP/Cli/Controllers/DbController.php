@@ -89,7 +89,7 @@ class DbController extends Controller
             if (!in_array($metadata_table, $db->getTables(), true)) {
                 $cached[$service] = [];
             } else {
-                $rows = $db->fetchAll("SELECT `id`, `constants` FROM $metadata_table");
+                $rows = $db->fetchAll(/**@lang text */ "SELECT `id`, `constants` FROM $metadata_table");
                 foreach ($rows as $row) {
                     $cached[$service][$row['id']] = $row['constants'];
                 }

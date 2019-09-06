@@ -762,7 +762,7 @@ class Markdown extends Component implements EngineInterface
     protected function blockReference($Line)
     {
         if (strpos($Line['text'], ']') !== false
-            && preg_match('/^\[(.+?)\]:[ ]*+<?(\S+?)>?(?:[ ]+["\'(](.+)["\')])?[ ]*+$/', $Line['text'], $matches)
+            && preg_match(/**@lang text */ '/^\[(.+?)\]:[ ]*+<?(\S+?)>?(?:[ ]+["\'(](.+)["\')])?[ ]*+$/', $Line['text'], $matches)
         ) {
             $id = strtolower($matches[1]);
 
@@ -1243,7 +1243,7 @@ class Markdown extends Component implements EngineInterface
 
         $remainder = $Excerpt['text'];
 
-        if (preg_match('/\[((?:[^][]++|(?R))*+)\]/', $remainder, $matches)) {
+        if (preg_match(/**@lang text */ '/\[((?:[^][]++|(?R))*+)\]/', $remainder, $matches)) {
             $Element['handler']['argument'] = $matches[1];
 
             $extent += strlen($matches[0]);
@@ -1262,7 +1262,7 @@ class Markdown extends Component implements EngineInterface
 
             $extent += strlen($matches[0]);
         } else {
-            if (preg_match('/^\s*\[(.*?)\]/', $remainder, $matches)) {
+            if (preg_match(/**@lang text */ '/^\s*\[(.*?)\]/', $remainder, $matches)) {
                 $definition = $matches[1] !== '' ? $matches[1] : $Element['handler']['argument'];
                 $definition = strtolower($definition);
 
@@ -1293,7 +1293,7 @@ class Markdown extends Component implements EngineInterface
             return;
         }
 
-        if ($Excerpt['text'][1] === '/' && preg_match('/^<\/\w[\w-]*+[ ]*+>/s', $Excerpt['text'], $matches)) {
+        if ($Excerpt['text'][1] === '/' && preg_match(/**@lang text */ '/^<\/\w[\w-]*+[ ]*+>/s', $Excerpt['text'], $matches)) {
             return [
                 'element' => ['rawHtml' => $matches[0]],
                 'extent' => strlen($matches[0]),

@@ -121,7 +121,7 @@ class CssToXPath
 
         // arbitrary attribute strict equality
         $expression = preg_replace_callback(
-            '|\[@?([\w\-]*)([~*^$|!])?=([^\[]+)\]|',
+        /**@lang text */ '|\[@?([\w\-]*)([~*^$|!])?=([^\[]+)\]|',
             static function ($matches) {
                 $attr = strtolower($matches[1]);
                 $type = $matches[2];
@@ -152,7 +152,7 @@ class CssToXPath
 
         //attribute contains specified content
         $expression = preg_replace_callback(
-            '|\[(!?)([a-z][\w\-|&]*)\]|i',
+        /**@lang text */ '|\[(!?)([a-z][\w\-|&]*)\]|i',
             static function ($matches) {
                 $val = $matches[2];
                 $op = strpos($val, '|') !== false ? '|' : '&';
