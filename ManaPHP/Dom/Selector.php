@@ -201,8 +201,13 @@ class Selector
      */
     public function attr_first($css, $attr)
     {
-        $nodes = $this->_document->getQuery()->css($css, $this->_node);
-        return $nodes ? $nodes->item(0)->getAttribute($attr) : null;
+        if ($nodes = $this->_document->getQuery()->css($css, $this->_node)) {
+            /** @var \DOMElement $node */
+            $node = $nodes->item(0);
+            return $node->getAttribute($attr);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -223,9 +228,10 @@ class Selector
      */
     public function url_first($css, $attr)
     {
-        $nodes = $this->_document->getQuery()->css($css, $this->_node);
-        if ($nodes) {
-            return $this->_document->absolutizeUrl($nodes->item(0)->getAttribute($attr));
+        if ($nodes = $this->_document->getQuery()->css($css, $this->_node)) {
+            /** @var \DOMElement $node */
+            $node = $nodes->item(0);
+            return $this->_document->absolutizeUrl($node->getAttribute($attr));
         } else {
             return null;
         }
@@ -284,8 +290,13 @@ class Selector
                 $nodes = $this->_document->getQuery()->css($rule, $node);
                 $data[$name] = $nodes->length ? $nodes->item(0)->textContent : null;
             } else {
-                $nodes = $this->_document->getQuery()->css(substr($rule, 0, $pos), $node);
-                $data[$name] = $nodes->length ? $nodes->item(0)->getAttribute(substr($rule, $pos + 1)) : null;
+                if ($nodes = $this->_document->getQuery()->css(substr($rule, 0, $pos), $node)) {
+                    /** @var \DOMElement $node_temp */
+                    $node_temp = $nodes->item(0);
+                    $data[$name] = $node_temp->getAttribute(substr($rule, $pos + 1));
+                } else {
+                    $data[$name] = null;
+                }
             }
         }
 
@@ -333,6 +344,7 @@ class Selector
     public function html_first($css)
     {
         if ($nodes = $this->_document->getQuery()->css($css, $this->_node)) {
+            /** @var \DOMElement $node */
             $node = $nodes->item(0);
             return $node->ownerDocument->saveHTML($node);
         } else {
