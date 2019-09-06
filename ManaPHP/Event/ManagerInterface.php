@@ -37,7 +37,7 @@ interface ManagerInterface
      *
      * @param string $event
      * @param mixed  $source
-     * @param array  $data
+     * @param mixed  $data
      *
      * @return void
      */

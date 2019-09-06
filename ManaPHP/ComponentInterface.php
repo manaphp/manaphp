@@ -39,7 +39,7 @@ interface ComponentInterface
      * Fires an event in the events manager causing that the active listeners will be notified about it
      *
      * @param string $event
-     * @param array  $data
+     * @param mixed  $data
      *
      * @return void
      */
