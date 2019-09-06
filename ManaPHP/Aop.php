@@ -23,6 +23,7 @@ class Aop implements AopInterface, Unaspectable
     public function pointcutMethod($class, $method, $signature = null)
     {
         if (!$joinPoint = $this->_joinPoints[$class][$method] ?? null) {
+            /** @noinspection PhpUnusedLocalVariableInspection */
             $joinPoint = $this->_joinPoints[$class][$method] = new JoinPoint($class, $method, $signature);
         }
 

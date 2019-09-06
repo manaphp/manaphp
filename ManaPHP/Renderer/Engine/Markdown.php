@@ -1534,6 +1534,7 @@ class Markdown extends Component implements EngineInterface
             } elseif (isset($Element['element'])) {
                 $markup .= $this->element($Element['element']);
             } else {
+                /** @noinspection PhpUndefinedVariableInspection */
                 $markup .= $permitRawHtml ? $text : self::escape($text, true);
             }
 

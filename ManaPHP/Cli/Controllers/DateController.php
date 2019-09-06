@@ -97,9 +97,12 @@ class DateController extends Controller
     /**
      * set the system time
      *
+     * @param string $date
+     * @param string $time
+     *
      * @return int
      */
-    public function setCommand()
+    public function setCommand($date = '', $time = '')
     {
         $arguments = $this->request->getValues();
         if (count($arguments) === 1) {
