@@ -132,7 +132,7 @@ class Connection extends Component
     public function getConnect()
     {
         if ($this->_redis === null) {
-            $redis = new Redis();
+            $redis = $this->_di->get('Redis');
 
             if ($this->_persistent) {
                 if (!@$redis->pconnect($this->_host, $this->_port, $this->_timeout, $this->_db)) {

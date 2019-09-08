@@ -92,7 +92,7 @@ abstract class Connection extends Component implements ConnectionInterface
         if ($this->_pdo === null) {
             $this->logger->debug(['connect to `:dsn`', 'dsn' => $this->_dsn], 'db.connect');
             try {
-                $this->_pdo = @new PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
+                $this->_pdo = $this->_di->get('PDO', [$this->_dsn, $this->_username, $this->_password, $this->_options]);
             } catch (PDOException $e) {
                 throw new ConnectionException(['connect `:dsn` failed: :message', 'message' => $e->getMessage(), 'dsn' => $this->_dsn], $e->getCode(), $e);
             }
