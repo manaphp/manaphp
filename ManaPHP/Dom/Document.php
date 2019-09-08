@@ -172,9 +172,7 @@ class Document extends Component
     protected function _getBaseUrl()
     {
         foreach ($this->_dom->getElementsByTagName('base') as $node) {
-            /**
-             * @var \DOMElement $node
-             */
+            /** @var \DOMElement $node */
             if (!$node->hasAttribute('href')) {
                 continue;
             }
@@ -253,9 +251,7 @@ class Document extends Component
      */
     public function absolutizeAHref($selector = null, $context = null)
     {
-        /**
-         * @var \DOMElement $item
-         */
+        /** @var \DOMElement $item */
         if ($selector) {
             foreach ($this->_query->xpath($selector, $context) as $item) {
                 if ($item->nodeName === 'a') {
@@ -282,9 +278,7 @@ class Document extends Component
      */
     public function absolutizeImgSrc($selector = null, $context = null, $attr = 'src')
     {
-        /**
-         * @var \DOMElement $item
-         */
+        /** @var \DOMElement $item */
         if ($selector) {
             foreach ($this->_query->xpath($selector, $context) as $item) {
                 if ($item->nodeName === 'a') {

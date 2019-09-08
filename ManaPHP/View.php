@@ -276,9 +276,7 @@ class View extends Component implements ViewInterface
             $view = "@views/Widgets/$widget";
         }
 
-        /**
-         * @var \ManaPHP\View\WidgetInterface $widgetInstance
-         */
+        /** @var \ManaPHP\View\WidgetInterface $widgetInstance */
         $widgetInstance = $this->_di->getShared($widgetClassName);
         $vars = $widgetInstance->run($options);
 

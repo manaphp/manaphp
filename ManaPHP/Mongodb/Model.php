@@ -366,9 +366,7 @@ class Model extends \ManaPHP\Model
             }
         }
 
-        /**
-         * @var \ManaPHP\MongodbInterface $connection
-         */
+        /** @var \ManaPHP\MongodbInterface $connection */
         $connection = $this->_di->getShared($this->getDb($this));
         $connection->insert($this->getSource($this), $fieldValues);
 
@@ -552,9 +550,7 @@ class Model extends \ManaPHP\Model
             }
         }
 
-        /**
-         * @var \ManaPHP\MongodbInterface $connection
-         */
+        /** @var \ManaPHP\MongodbInterface $connection */
         $connection = $sample->getConnection();
         return $connection->bulkUpdate($sample->getSource(), $documents, $primaryKey);
     }
@@ -585,9 +581,7 @@ class Model extends \ManaPHP\Model
             $documents[$i] = $document;
         }
 
-        /**
-         * @var \ManaPHP\MongodbInterface $connection
-         */
+        /** @var \ManaPHP\MongodbInterface $connection */
         $connection = $sample->getConnection();
         return $connection->bulkUpsert($sample->getSource(), $documents, $primaryKey);
     }

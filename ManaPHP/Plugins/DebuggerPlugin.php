@@ -87,9 +87,7 @@ class DebuggerPlugin extends Plugin
         $context->events[] = $event;
 
         if ($event === 'logger:log') {
-            /**
-             * @var Log $log
-             */
+            /** @var Log $log */
             $log = $data;
             $format = '[%time%][%level%] %message%';
             $replaces = [
@@ -102,9 +100,7 @@ class DebuggerPlugin extends Plugin
                 'message' => strtr($format, $replaces)
             ];
         } elseif ($event === 'db:beforeQuery' || $event === 'db:beforeExecute') {
-            /**
-             * @var \ManaPHP\DbInterface $source
-             */
+            /** @var \ManaPHP\DbInterface $source */
             $preparedSQL = $source->getSQL();
             if (!isset($context->sql_prepared[$preparedSQL])) {
                 $context->sql_prepared[$preparedSQL] = 1;
@@ -119,9 +115,7 @@ class DebuggerPlugin extends Plugin
                 'emulated' => $source->getEmulatedSQL()
             ];
         } elseif ($event === 'db:queried' || $event === 'db:executed') {
-            /**
-             * @var \ManaPHP\DbInterface $source
-             */
+            /** @var \ManaPHP\DbInterface $source */
             $context->sql_executed[$context->sql_count - 1]['elapsed'] = $data['elapsed'];
             $context->sql_executed[$context->sql_count - 1]['row_count'] = $source->affectedRows();
         } elseif ($event === 'db:begin' || $event === 'db:rollback' || $event === 'db:commit') {

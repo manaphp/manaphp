@@ -51,9 +51,7 @@ class Selector
     public function xpath($query)
     {
         $nodes = [];
-        /**
-         * @var \DOMNode $node
-         */
+        /** @var \DOMNode $node */
         foreach ($this->_document->getQuery()->xpath($query, $this->_node) as $node) {
             $nodes[$node->getNodePath()] = $node;
         }
@@ -68,9 +66,7 @@ class Selector
     public function css($css)
     {
         $nodes = [];
-        /**
-         * @var \DOMNode $node
-         */
+        /** @var \DOMNode $node */
         foreach ($this->_document->getQuery()->css($css, $this->_node) as $node) {
             $nodes[$node->getNodePath()] = $node;
         }
@@ -104,9 +100,7 @@ class Selector
      */
     public function remove($css)
     {
-        /**
-         * @var \DOMNode $node
-         */
+        /** @var \DOMNode $node */
         foreach ($this->_document->getQuery()->css($css, $this->_node) as $node) {
             $node->parentNode->removeChild($node);
         }
@@ -126,9 +120,7 @@ class Selector
             $attr = (array)preg_split('#[\s,]+#', $attr, -1, PREG_SPLIT_NO_EMPTY);
         }
 
-        /**
-         * @var \DOMElement $node
-         */
+        /** @var \DOMElement $node */
         foreach ($this->_document->getQuery()->css($css, $this->_node) as $node) {
             foreach ($node->attributes as $attribute) {
                 if (!$attr || in_array($attribute->name, $attr, true)) {
@@ -152,9 +144,7 @@ class Selector
             $attr = (array)preg_split('#[\s,]+#', $attr, -1, PREG_SPLIT_NO_EMPTY);
         }
 
-        /**
-         * @var \DOMElement $node
-         */
+        /** @var \DOMElement $node */
         foreach ($this->_document->getQuery()->css($css, $this->_node) as $node) {
             foreach ($node->attributes as $attribute) {
                 if (!in_array($attribute->name, $attr, true)) {
@@ -173,9 +163,7 @@ class Selector
      */
     public function strip($css)
     {
-        /**
-         * @var \DOMNode $node
-         */
+        /** @var \DOMNode $node */
         foreach ($this->_document->getQuery()->css($css, $this->_node) as $node) {
             $node->parentNode->replaceChild(new DOMText($node->textContent), $node);
         }
@@ -359,9 +347,7 @@ class Selector
      */
     public function links($regex = null)
     {
-        /**
-         * @var \DOMElement $node
-         */
+        /** @var \DOMElement $node */
         $data = [];
         foreach ($this->_document->getQuery()->xpath('descendant::a[@href]', $this->_node) as $node) {
             $href = $this->_document->absolutizeUrl($node->getAttribute('href'));
@@ -384,9 +370,7 @@ class Selector
      */
     public function images($regex = null, $attr = 'src')
     {
-        /**
-         * @var \DOMElement $node
-         */
+        /** @var \DOMElement $node */
         $document = $this->_document;
         $data = [];
         foreach ($document->getQuery()->xpath("descendant::img[@$attr]", $this->_node) as $node) {

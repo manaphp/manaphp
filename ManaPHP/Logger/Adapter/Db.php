@@ -47,9 +47,7 @@ class Db extends Logger
      */
     public function append($log)
     {
-        /**
-         * @var \ManaPHP\DbInterface $db
-         */
+        /** @var \ManaPHP\DbInterface $db */
         $db = $this->_di->getShared($this->_db);
 
         $level = $this->logger->getLevel();

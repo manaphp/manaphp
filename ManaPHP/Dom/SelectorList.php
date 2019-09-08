@@ -45,9 +45,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
 
         $nodes = [];
         foreach ($this->_nodes as $node) {
-            /**
-             * @var \DOMNode $node2
-             */
+            /** @var \DOMNode $node2 */
             foreach ($query->xpath($path, $node) as $node2) {
                 $nodes[$node2->getNodePath()] = $node2;
             }
@@ -70,9 +68,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         $query = $this->_document->getQuery();
         $nodes = [];
         foreach ($this->_nodes as $node) {
-            /**
-             * @var \DOMNode $node2
-             */
+            /** @var \DOMNode $node2 */
             foreach ($query->css($css, $node) as $node2) {
                 $nodes[$node2->getNodePath()] = $node2;
             }
@@ -306,9 +302,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         foreach ($this->_nodes as $node) {
             $cur_xpath = $node->getNodePath();
             foreach ($query->css('parent::' . ($css ?: '*'), $node) as $node2) {
-                /**
-                 * @var \DOMNode $node2
-                 */
+                /** @var \DOMNode $node2 */
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 if ($node2->getNodePath() !== $cur_xpath) {
                     $nodes[$node2->getNodePath()] = $node2;
@@ -338,9 +332,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
      */
     public function remove($css)
     {
-        /**
-         * @var \DOMNode $node
-         */
+        /** @var \DOMNode $node */
         $query = $this->_document->getQuery();
         foreach ($this->_nodes as $node) {
             foreach ($query->css($css, $node) as $node2) {
@@ -363,9 +355,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
             $attr = (array)preg_split('#[\s,]+#', $attr, -1, PREG_SPLIT_NO_EMPTY);
         }
 
-        /**
-         * @var \DOMElement $node
-         */
+        /** @var \DOMElement $node */
         $query = $this->_document->getQuery();
         foreach ($this->_nodes as $node_0) {
             foreach ($query->css($css, $node_0) as $node) {
@@ -392,9 +382,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
             $attr = (array)preg_split('#[\s,]+#', $attr, -1, PREG_SPLIT_NO_EMPTY);
         }
 
-        /**
-         * @var \DOMElement $node
-         */
+        /** @var \DOMElement $node */
         $query = $this->_document->getQuery();
         foreach ($this->_nodes as $node_0) {
             foreach ($query->css($css, $node_0) as $node) {
@@ -416,9 +404,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
      */
     public function strip($css)
     {
-        /**
-         * @var \DOMNode $node
-         */
+        /** @var \DOMNode $node */
         $query = $this->_document->getQuery();
         foreach ($this->_nodes as $node) {
             foreach ($query->css($css, $node) as $node2) {
@@ -550,10 +536,8 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
      */
     public function links($regex = null)
     {
-        /**
-         * @var \DOMElement $node
-         * @var \DOMElement $node2
-         */
+        /** @var \DOMElement $node */
+        /** @var \DOMElement $node2 */
         $query = $this->_document->getQuery();
         $document = $this->_document;
 
@@ -591,10 +575,8 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
      */
     public function images($regex = null, $attr = 'src')
     {
-        /**
-         * @var \DOMElement $node
-         * @var \DOMElement $node2
-         */
+        /** @var \DOMElement $node */
+        /** @var \DOMElement $node2 */
         $query = $this->_document->getQuery();
         $document = $this->_document;
 

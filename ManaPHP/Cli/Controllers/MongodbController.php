@@ -80,9 +80,7 @@ class MongodbController extends Controller
         }
 
         foreach ($this->_getServices($services) as $service) {
-            /**
-             * @var \ManaPHP\Mongodb $mongodb
-             */
+            /** @var \ManaPHP\Mongodb $mongodb */
             $mongodb = $this->_di->getShared($service);
 
             $defaultDb = $mongodb->getDefaultDb();
@@ -381,9 +379,7 @@ class MongodbController extends Controller
     public function csvCommand($services = [], $collection_pattern = '', $bom = false)
     {
         foreach ($this->_getServices($services) as $service) {
-            /**
-             * @var \ManaPHP\Mongodb $mongodb
-             */
+            /** @var \ManaPHP\Mongodb $mongodb */
             $mongodb = $this->_di->getShared($service);
             $defaultDb = $mongodb->getDefaultDb();
 
@@ -464,9 +460,7 @@ class MongodbController extends Controller
     public function listCommand($services = [], $collection_pattern = '', $field = '', $db = [])
     {
         foreach ($this->_getServices($services) as $service) {
-            /**
-             * @var \ManaPHP\Mongodb $mongodb
-             */
+            /** @var \ManaPHP\Mongodb $mongodb */
             $mongodb = $this->_di->getShared($service);
 
             $defaultDb = $mongodb->getDefaultDb();

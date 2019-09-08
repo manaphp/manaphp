@@ -179,9 +179,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        /**
-         * @var \ManaPHP\DbInterface $connection
-         */
+        /** @var \ManaPHP\DbInterface $connection */
         $connection = $this->_di->getShared($this->getDb($this));
 
         if ($autoIncrementField && $this->$autoIncrementField === null) {
