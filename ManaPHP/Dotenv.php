@@ -162,8 +162,7 @@ class Dotenv extends Component implements DotenvInterface
             if (count($parts) !== 2) {
                 throw new InvalidValueException(['invalid line: :line, has no = character', 'line' => $line]);
             }
-            $name = $parts[0];
-            $value = $parts[1];
+            list($name, $value) = $parts;
 
             if ($value === '') {
                 null;
