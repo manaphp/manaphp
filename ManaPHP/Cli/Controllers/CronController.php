@@ -131,6 +131,7 @@ class CronController extends Controller
                 }
             }
 
+            /** @noinspection DisconnectedForeachInstructionInspection */
             $this->console->writeLn();
         }
     }
