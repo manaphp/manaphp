@@ -119,7 +119,8 @@ class HtmlPurifier extends Component implements HtmlPurifierInterface
         }
 
         if (strpos($html, '<body>') === false) {
-            $html = '<!doctype html><html><body>' . $html . '</body></html>';
+            $html = /** @lang text */
+                "<!doctype html><html><body>$html</body></html>";
         }
 
         $doc = new DOMDocument();
