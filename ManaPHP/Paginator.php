@@ -86,24 +86,17 @@ class Paginator extends Component implements PaginatorInterface
     }
 
     /**
-     * @param false|string $itemsName
-     *
      * @return array
      */
-    public function renderAsArray($itemsName = 'items')
+    public function renderAsArray()
     {
-        $data = [
+        return [
             'page' => $this->page,
             'size' => $this->size,
             'count' => $this->count,
             'pages' => $this->pages,
+            'items' => $this->items
         ];
-
-        if ($itemsName !== false) {
-            $data[$itemsName] = $this->items;
-        }
-
-        return $data;
     }
 
     /**

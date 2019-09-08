@@ -26,11 +26,9 @@ interface PaginatorInterface
     public function paginate($count, $size = null, $page = null);
 
     /**
-     * @param false|string $itemsName
-     *
      * @return array
      */
-    public function renderAsArray($itemsName = 'items');
+    public function renderAsArray();
 
     /**
      * @param string $urlTemplate
