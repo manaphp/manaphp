@@ -3,8 +3,7 @@ namespace ManaPHP\Bos;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\MissingFieldException;
-use ManaPHP\Exception\UnauthorizedException;
-use ManaPHP\Identity\Adapter\Jwt;
+use ManaPHP\Exception\MisuseException;
 
 class Client extends Component implements ClientInterface
 {
@@ -14,16 +13,6 @@ class Client extends Component implements ClientInterface
     protected $_endpoint;
 
     /**
-     * @var string
-     */
-    protected $_admin_key;
-
-    /**
-     * @var array
-     */
-    protected $_access_key;
-
-    /**
      * Client constructor.
      *
      * @param array $options
@@ -31,36 +20,29 @@ class Client extends Component implements ClientInterface
     public function __construct($options = [])
     {
         if (isset($options['endpoint'])) {
-            $this->_endpoint = $options['endpoint'];
-        }
-
-        if (isset($options['admin_key'])) {
-            $this->_admin_key = $options['admin_key'];
-        }
-
-        if (isset($options['access_key'])) {
-            $this->_access_key = $options['access_key'];
+            $this->_endpoint = rtrim($options['endpoint'], '/');
         }
     }
 
     /**
-     * @param array $params
+     * @param string $bucket
+     * @param string $base_url
      *
      * @return array
      */
-    public function createBucket($params)
+    public function createBucket($bucket, $base_url = null)
     {
-        $params['token'] = jwt_encode(['scope' => 'bos.bucket.create'], 60, $this->_admin_key);
+        $params['token'] = jwt_encode([], 300, 'bos.bucket.create');
+        $params['bucket'] = $bucket;
+        $params['base_url'] = $base_url;
 
         $endpoint = preg_replace('#{bucket}[\-.]*#', '', $this->_endpoint);
 
         if (str_contains($this->_endpoint, '{bucket}')) {
-            $params['base_url'] = str_replace('{bucket}', $params['bucket'], $this->_endpoint);
+            $params['base_url'] = str_replace('{bucket}', $bucket, $this->_endpoint);
         }
 
-        $body = rest_post($endpoint . '/api/buckets', $params)['body'];
-
-        $this->logger->info($body, 'bosClient.createBucket');
+        $body = rest_post($endpoint . '/api/buckets', $params)->body;
 
         if ($body['code'] !== 0) {
             throw new Exception($body['message'], $body['code']);
@@ -74,11 +56,9 @@ class Client extends Component implements ClientInterface
      */
     public function listBuckets()
     {
-        $token = jwt_encode(['scope' => 'bos.bucket.list'], 60, $this->_admin_key);
+        $token = jwt_encode([], 300, 'bos.bucket.list');
         $endpoint = preg_replace('#{bucket}[\-.]*#', '', $this->_endpoint);
-        $body = rest_get([$endpoint . '/api/buckets', 'token' => $token])['body'];
-
-        $this->logger->debug($body, 'bosClient.listBuckets');
+        $body = rest_get([$endpoint . '/api/buckets', 'token' => $token])->body;
 
         if ($body['code'] !== 0) {
             throw new Exception($body['message'], $body['code']);
@@ -88,23 +68,20 @@ class Client extends Component implements ClientInterface
     }
 
     /**
-     * @param array $params
+     * @param string $bucket
+     * @param array  $filters
      *
      * @return array
      */
-    public function listObjects($params = [])
+    public function listObjects($bucket, $filters = [])
     {
-        $bucket = $params['bucket'];
-
         $endpoint = str_replace('{bucket}', $bucket, $this->_endpoint);
 
         $params[] = $endpoint . '/api/objects';
-        $access_key = is_string($this->_access_key) ? $this->_access_key : $this->_access_key[$bucket];
-        $params['token'] = jwt_encode(['scope' => 'bos.object.list', 'bucket' => $bucket], 60, $access_key);
+        $params['bucket'] = $bucket;
+        $params['token'] = jwt_encode(['bucket' => $bucket], 300, 'bos.object.list');
 
-        $body = rest_get($params)['body'];
-
-        $this->logger->debug($body, 'bosClient.listObjects');
+        $body = rest_get($params)->body;
 
         if ($body['code'] !== 0) {
             throw new Exception($body['message'], $body['code']);
@@ -114,82 +91,43 @@ class Client extends Component implements ClientInterface
     }
 
     /**
-     * @param array $policy
-     * @param int   $ttl
+     * @param string $bucket
+     * @param string $key
+     * @param array  $policy
+     * @param int    $ttl
      *
      * @return string
      */
-    public function createUploadToken($policy, $ttl = 3600)
+    public function getPutObjectUrl($bucket, $key, $policy = [], $ttl = 3600)
     {
-        $policy['scope'] = 'bos.object.create.request';
-
-        if (!isset($policy['bucket'])) {
-            throw new MissingFieldException('bucket name');
+        if ($key[0] === '/') {
+            throw new MisuseException('key can NOT start with /');
         }
-        $bucket = $policy['bucket'];
 
-        $jwt = new Jwt(['key' => is_string($this->_access_key) ? $this->_access_key : $this->_access_key[$bucket]]);
+        $policy['bucket'] = $bucket;
+        $policy['key'] = $key;
 
-        $token = $jwt->encode($policy, $ttl);
-
-        $this->logger->info($token, 'bosClient.createUploadToken');
-
-        return $token;
+        return str_replace('{bucket}', $bucket, $this->_endpoint) . '/api/objects?token='
+            . jwt_encode($policy, $ttl, 'bos.object.create.request');
     }
 
     /**
-     * verify token of create object response
-     *
-     * @param string $token
-     *
-     * @return array
-     */
-    public function getUploadResult($token)
-    {
-        $jwt = new Jwt();
-
-        $claims = $jwt->decode($token, null, false);
-
-        if (!isset($claims['scope'])) {
-            throw new UnauthorizedException('scope is not exists');
-        }
-
-        if ($claims['scope'] !== 'bos.object.create.response') {
-            throw new UnauthorizedException(['`:scope` scope is not valid', 'scope' => $claims['scope']]);
-        }
-
-        if (!isset($claims['bucket'])) {
-            throw new UnauthorizedException('bucket is not exists');
-        }
-
-        $bucket = $claims['bucket'];
-
-        $this->logger->info($token, 'bosClient.getUploadResult');
-
-        $jwt->verify($token, is_string($this->_access_key) ? $this->_access_key : $this->_access_key[$bucket]);
-
-        return array_except($claims, ['scope', 'iat', 'exp']);
-    }
-
-    /**
-     * @param array  $params
      * @param string $file
+     * @param string $bucket
+     * @param string $key
+     * @param array  $policy
      *
-     * @return array
+     * @return string
      */
-    public function putObject($params, $file)
+    public function putObject($file, $bucket, $key, $policy = [])
     {
-        $token = $this->createUploadToken($params, 86400);
-
-        $bucket = $params['bucket'];
-
-        $endpoint = str_replace('{bucket}', $bucket, $this->_endpoint);
+        $url = $this->getPutObjectUrl($bucket, $key, $policy, 3600);
 
         $file = $this->alias->resolve($file);
 
         $curl_file = curl_file_create($file, mime_content_type($file), basename($file));
 
-        $body = $this->httpClient->post($endpoint . '/api/objects', ['token' => $token, 'file' => $curl_file])->getJsonBody();
+        $body = $this->httpClient->post($url, ['file' => $curl_file])->body;
 
         if ($body['code'] !== 0) {
             throw new Exception($body['message'], $body['code']);
@@ -199,17 +137,18 @@ class Client extends Component implements ClientInterface
             throw new MissingFieldException('token');
         }
 
-        return $this->getUploadResult($body['data']['token']);
+        return $this->parsePutObjectResponse($body['data']['token']);
     }
 
     /**
-     * @param array  $params
-     * @param string $file
+     * @param string $token
      *
      * @return array
      */
-    public function upload($params, $file)
+    public function parsePutObjectResponse($token)
     {
-        return $this->putObject($params, $file);
+        $claims = jwt_decode($token, 'bos.object.create.response');
+
+        return array_except($claims, ['scope', 'iat', 'exp']);
     }
 }

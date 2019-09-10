@@ -4,11 +4,12 @@ namespace ManaPHP\Bos;
 interface ClientInterface
 {
     /**
-     * @param array $params
+     * @param string $bucket
+     * @param string $base_url
      *
      * @return array
      */
-    public function createBucket($params);
+    public function createBucket($bucket, $base_url = null);
 
     /**
      * @return array
@@ -16,44 +17,37 @@ interface ClientInterface
     public function listBuckets();
 
     /**
-     * @param array $params
+     * @param string $bucket
+     * @param array  $filters
      *
      * @return array
      */
-    public function listObjects($params = []);
+    public function listObjects($bucket, $filters = []);
 
     /**
-     * @param array  $params
      * @param string $file
+     * @param string $bucket
+     * @param string $key
+     * @param array  $policy
      *
      * @return array
      */
-    public function putObject($params, $file);
+    public function putObject($file, $bucket, $key, $policy = []);
 
     /**
-     * @param array $policy
-     * @param int   $ttl
+     * @param string $bucket
+     * @param string $key
+     * @param array  $policy
+     * @param int    $ttl
      *
      * @return string
      */
-    public function createUploadToken($policy, $ttl = 3600);
+    public function getPutObjectUrl($bucket, $key, $policy = [], $ttl = 3600);
 
     /**
-     * verify token of create object response
-     *
      * @param string $token
      *
      * @return array
      */
-    public function getUploadResult($token);
-
-    /**
-     * alias of putObjectByFile
-     *
-     * @param array  $params
-     * @param string $file
-     *
-     * @return array
-     */
-    public function upload($params, $file);
+    public function parsePutObjectResponse($token);
 }
