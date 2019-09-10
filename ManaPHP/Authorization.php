@@ -274,6 +274,10 @@ class Authorization extends Component implements AuthorizationInterface
             if ($role === 'guest') {
                 return false;
             }
+
+            if (isset($acl[$action]) && $acl[$action][0] === '@') {
+                $action = substr($acl[$action], 1);
+            }
         }
 
         $permission = $this->generatePath($controllerClassName, $action);
