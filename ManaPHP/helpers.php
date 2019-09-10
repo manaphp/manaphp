@@ -235,6 +235,19 @@ if (!function_exists('jwt_decode')) {
     }
 }
 
+if (!function_exists('jwt_verify')) {
+    /**
+     * @param string $token
+     * @param string $scope
+     *
+     * @return array
+     */
+    function jwt_verify($token, $scope)
+    {
+        di('jwt')->decode($token, $scope);
+    }
+}
+
 if (!function_exists('input')) {
     /**
      * @param string $name
