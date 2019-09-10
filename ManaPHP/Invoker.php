@@ -36,7 +36,7 @@ class Invoker extends Component implements InvokerInterface
             } elseif (strpos($name, 'Service') !== false) {
                 $value = $di->getShared($name);
             } elseif ($this->request->has($name)) {
-                $value = $this->request->get($name);
+                $value = $this->request->get($name, '');
             } elseif ($parameter->isDefaultValueAvailable()) {
                 $value = $parameter->getDefaultValue();
             } elseif (count($parameters) === 1) {
