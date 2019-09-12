@@ -31,12 +31,19 @@ class Invoker extends Component implements InvokerInterface
             $name = $parameter->getName();
             $value = null;
 
+            $type = $parameter->getType();
+            if ($type !== null) {
+                $type = (string)$type;
+            } elseif ($parameter->isDefaultValueAvailable()) {
+                $type = gettype($parameter->getDefaultValue());
+            }
+
             if ($className = ($c = $parameter->getClass()) ? $c->getName() : null) {
                 $value = $di->has($name) ? $di->getShared($name) : $di->getShared($className);
             } elseif (strpos($name, 'Service') !== false) {
                 $value = $di->getShared($name);
             } elseif ($this->request->has($name)) {
-                $value = $this->request->get($name, '');
+                $value = $this->request->get($name, $type === 'array' ? [] : '');
             } elseif ($parameter->isDefaultValueAvailable()) {
                 $value = $parameter->getDefaultValue();
             } elseif (count($parameters) === 1) {
@@ -54,13 +61,6 @@ class Invoker extends Component implements InvokerInterface
             if ($value === null) {
                 $missing[] = $name;
                 continue;
-            }
-
-            $type = $parameter->getType();
-            if ($type !== null) {
-                $type = (string)$type;
-            } elseif ($parameter->isDefaultValueAvailable()) {
-                $type = gettype($parameter->getDefaultValue());
             }
 
             switch ($type) {
