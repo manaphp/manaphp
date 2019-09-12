@@ -36,43 +36,24 @@ class Authorization extends Component implements AuthorizationInterface
      */
     public function isAclAllowed($acl, $role, $action)
     {
-        if (isset($acl[$action])) {
-            $roles = $acl[$action];
-            if ($roles[0] === '@') {
-                $original_action = substr($roles, 1);
-                if (isset($acl[$original_action])) {
-                    $roles = $acl[$original_action];
-                    if ($roles[0] === '@') {
-                        throw new MisuseException(['`:action` original action is not allow indirect.', 'action' => $original_action]);
-                    }
-                } else {
-                    $roles = null;
-                }
+        if (($roles = $acl[$action] ?? null) && $roles[0] === '@') {
+            $original_action = substr($roles, 1);
+            /** @noinspection NotOptimalIfConditionsInspection */
+            if (($roles = $acl[$original_action] ?? null) && $roles[0] === '@') {
+                throw new MisuseException(['`:action` original action is not allow indirect.', 'action' => $original_action]);
             }
-        } else {
-            $roles = null;
         }
 
         if ($roles === null && isset($acl['*'])) {
             $roles = $acl['*'];
         }
 
-        if ($roles === null || $roles === '') {
-            return $role === 'admin';
-        } elseif ($roles === '*' || $roles === 'guest') {
-            return true;
-        } elseif ($roles === 'user') {
-            return $role !== 'guest';
-        } elseif ($roles === 'admin') {
-            return $role === 'admin';
-        } elseif ($roles === $role) {
+        if ($role === 'admin' || $roles === '*' || $roles === 'guest') {
             return true;
         } elseif ($role === 'guest') {
             return false;
-        } elseif ($role === 'admin') {
-            return true;
         } else {
-            return preg_match("#\b$role\b#", $roles) === 1;
+            return $roles === 'user' || $roles === $role || preg_match("#\b$role\b#", $roles) === 1;
         }
     }
 
@@ -180,18 +161,37 @@ class Authorization extends Component implements AuthorizationInterface
 
             foreach ($this->aclBuilder->getActions($controller) as $action) {
                 $path = $this->generatePath($controller, $action);
-                if ($this->isAclAllowed($acl, $role, $action)) {
-                    $paths[] = $path;
-                } elseif (in_array($path, $explicit_permissions, true)) {
-                    $paths[] = $path;
-                } elseif (isset($acl[$action]) && $acl[$action][0] === '@') {
-                    $real_path = $this->generatePath($controller, substr($acl[$action], 1));
-                    if (in_array($real_path, $explicit_permissions, true)) {
+                if ($role === 'guest') {
+                    if ($this->isAclAllowed($acl, 'guest', $action)) {
                         $paths[] = $path;
+                    }
+                } elseif ($role === 'user') {
+                    if ($this->isAclAllowed($acl, 'user', $action) && !$this->isAclAllowed($acl, 'guest', $action)) {
+                        $paths[] = $path;
+                    }
+                } elseif ($this->isAclAllowed($acl, 'user', $action)) {
+                    null;
+                } else {
+                    if ($this->isAclAllowed($acl, $role, $action)) {
+                        $paths[] = $path;
+                    } elseif (in_array($path, $explicit_permissions, true)) {
+                        $paths[] = $path;
+                    } elseif (isset($acl[$action]) && $acl[$action][0] === '@') {
+                        $real_path = $this->generatePath($controller, substr($acl[$action], 1));
+                        if (in_array($real_path, $explicit_permissions, true)) {
+                            $paths[] = $path;
+                        }
+                    } elseif (isset($acl['*']) && $acl['*'][0] === '@') {
+                        $real_path = $this->generatePath($controller, substr($acl['*'], 1));
+                        if (in_array($real_path, $explicit_permissions, true)) {
+                            $paths[] = $path;
+                        }
                     }
                 }
             }
         }
+
+        sort($paths);
 
         return $paths;
     }
@@ -221,7 +221,17 @@ class Authorization extends Component implements AuthorizationInterface
             }
 
             if ($roleModel) {
-                return $context->role_permissions[$role] = $roleModel::value(['role_name' => $role], 'permissions');
+                $permissions = $roleModel::value(['role_name' => $role], 'permissions');
+                if ($role === 'guest') {
+                    null;
+                } elseif ($role === 'user') {
+                    $permissions = $roleModel::valueOrDefault(['role_name' => 'guest'], 'permissions', '') . $permissions;
+                } else {
+                    $permissions = $roleModel::valueOrDefault(['role_name' => 'guest'], 'permissions', '')
+                        . $roleModel::valueOrDefault(['role_name' => 'user'], 'permissions', '')
+                        . $permissions;
+                }
+                return $context->role_permissions[$role] = $permissions;
             } else {
                 return $builtin[$role] = ',' . implode(',', $this->buildAllowed($role)) . ',';
             }

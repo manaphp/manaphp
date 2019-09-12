@@ -43,6 +43,6 @@ abstract class Controller extends Component implements LogCategorizable
      */
     public function getAcl()
     {
-        return [];
+        return ['*' => '@index'];
     }
 }
