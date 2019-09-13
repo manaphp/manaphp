@@ -7,11 +7,6 @@ use ManaPHP\Mvc\Controller;
 
 class GroupController extends Controller
 {
-    public function getAcl()
-    {
-        return ['list' => '@index', 'create' => '@index', 'edit' => '@index', 'delete' => '@index'];
-    }
-
     public function indexAction()
     {
         return $this->request->isAjax()

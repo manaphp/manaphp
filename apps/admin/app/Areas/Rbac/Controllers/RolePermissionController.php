@@ -15,11 +15,6 @@ use ManaPHP\Mvc\Controller;
  */
 class RolePermissionController extends Controller
 {
-    public function getAcl()
-    {
-        return ['save' => '@index', 'edit' => '@index'];
-    }
-
     public function indexAction()
     {
         if ($this->request->isAjax()) {

@@ -5,7 +5,8 @@
     <el-form :model="edit" ref="edit">
         <el-checkbox-group v-model="edit.role_ids">
             <el-checkbox v-for="role in roles" :label="parseInt(role.role_id)"
-                         :key="role.role_id" style="width: 20%; text-align: left">
+                         :key="role.role_id" style="width: 20%; text-align: left"
+                        v-if="!/^guest|user$/.test(role.role_name)">
                 @{{role.display_name}}
             </el-checkbox>
         </el-checkbox-group>

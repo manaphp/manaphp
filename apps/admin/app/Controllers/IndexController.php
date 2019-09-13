@@ -7,7 +7,7 @@ class IndexController extends Controller
 {
     public function getAcl()
     {
-        return ['index' => 'user'];
+        return ['*' => 'user'];
     }
 
     public function indexAction()

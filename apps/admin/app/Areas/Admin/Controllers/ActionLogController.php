@@ -8,7 +8,7 @@ class ActionLogController extends Controller
 {
     public function getAcl()
     {
-        return ['latest' => 'user', 'detail' => '@index', 'detailSelf' => 'user'];
+        return ['*' => '@index', 'latest' => 'user', 'detailSelf' => 'user'];
     }
 
     public function indexAction()

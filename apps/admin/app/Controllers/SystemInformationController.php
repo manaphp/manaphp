@@ -1,8 +1,9 @@
 <?php
+
 namespace App\Controllers;
 
-use ManaPHP\Mvc\Controller;
 use ManaPHP\Version;
+use ManaPHP\Mvc\Controller;
 
 class SystemInformationController extends Controller
 {
@@ -34,7 +35,6 @@ class SystemInformationController extends Controller
         sort($loaded_extensions);
         $data['loaded_extensions'] = implode(', ', $loaded_extensions);
         $data['loaded_classes'] = get_declared_classes();
-		
         $this->view->setVar('data', $data);
     }
 }

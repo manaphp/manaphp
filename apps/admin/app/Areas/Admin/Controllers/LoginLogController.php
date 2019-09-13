@@ -8,7 +8,7 @@ class LoginLogController extends Controller
 {
     public function getAcl()
     {
-        return ['latest' => 'user'];
+        return ['*' => '@index', 'latest' => 'user'];
     }
 
     public function indexAction()

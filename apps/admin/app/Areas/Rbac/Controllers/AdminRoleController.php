@@ -9,11 +9,6 @@ use ManaPHP\Mvc\Controller;
 
 class AdminRoleController extends Controller
 {
-    public function getAcl()
-    {
-        return ['detail' => '@index', 'edit' => '@index'];
-    }
-
     public function indexAction()
     {
         return $this->request->isAjax()

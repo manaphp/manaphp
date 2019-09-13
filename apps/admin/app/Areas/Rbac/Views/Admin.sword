@@ -1,5 +1,6 @@
 <div class="search-box">
-    <el-button @click="createVisible=true" type="primary" icon="el-icon-plus" size="small" style="width: 100px">新增用户</el-button>
+    <el-button @click="createVisible=true" type="primary" icon="el-icon-plus" size="small" style="width: 100px">新增用户
+    </el-button>
     <el-input v-model.trim="request.keyword" placeholder="用户名或邮箱" size="small" style="width: 150px;"></el-input>
 </div>
 <el-dialog title="新增用户" :visible.sync="createVisible">
@@ -12,6 +13,11 @@
         </el-form-item>
         <el-form-item label="密码:" prop="password">
             <el-input v-model.trim="create.password" auto-complete="off" type="password"></el-input>
+        </el-form-item>
+        <el-form-item label="角色:">
+            <el-select v-model="create.role_id" size="small" placeholder="角色" clearable filterable style="width: 150px">
+                <el-option v-for="role in roles" :key="role.role_id" :label="role.display_name" :value="role.role_id"></el-option>
+            </el-select>
         </el-form-item>
         <el-form-item label="状态:" prop="status">
             <el-radio-group v-model="create.status">
@@ -33,6 +39,12 @@
         <el-form-item label="密码:">
             <el-input v-model.trim="edit.password" auto-complete="off"></el-input>
         </el-form-item>
+        <el-checkbox-group v-model="edit.role_ids" style="padding: 30px 50px;">
+            <el-checkbox v-for="role in roles" :label="role.role_id"
+                         :key="role.role_id" style="width: 20%; text-align: left">
+                @{{role.display_name}}
+            </el-checkbox>
+        </el-checkbox-group>
     </el-form>
     <div slot="footer">
         <el-button type="primary" @click="do_edit">保存</el-button>
@@ -49,9 +61,13 @@
         <el-table-column label="状态" width="80">
             <template slot-scope="scope">@{{ statuses[scope.row.status] }}</template>
         </el-table-column>
+        <el-table-column label="角色" width="150">
+            <template slot-scope="scope">
+                <el-tag size="small" v-for="role in scope.row.roles" :key="role.role_id">@{{role.display_name}}</el-tag>
+            </template>
+        </el-table-column>
         <el-table-column prop="login_ip" label="登录IP" width="120"></el-table-column>
         <el-table-column prop="login_time" label="登录时间" :formatter="fDate" width="150"></el-table-column>
-        <el-table-column prop="updator_name" label="更新者" width="120"></el-table-column>
         <el-table-column prop="updated_time" label="更新时间" :formatter="fDate" width="150"></el-table-column>
         <el-table-column prop="creator_name" label="创建者" width="120"></el-table-column>
         <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
@@ -63,7 +79,6 @@
                 </el-button>
                 <el-button v-if="scope.row.status!==1" @click="do_active(scope.row)" size="mini" type="warning">激活
                 </el-button>
-                <el-link :href="'admin_role/?admin_id='+scope.row.admin_id" class="operate">角色</el-link>
             </template>
         </el-table-column>
     </el-table>
@@ -86,6 +101,7 @@
                     admin_name: '',
                     email: '',
                     password: '',
+                    role_id: '',
                     status: '1'
                 },
 
@@ -93,9 +109,11 @@
                 edit: {
                     admin_id: '',
                     email: '',
-                    password: ''
+                    password: '',
+                    role_ids: []
                 },
-                statuses: {0: '未激活', 1: '激活', 2: '锁定'}
+                statuses: {0: '未激活', 1: '激活', 2: '锁定'},
+                roles: []
             },
             methods: {
                 do_lock: function (row) {
@@ -107,7 +125,17 @@
                     this.ajax_post("active", {admin_id: row.admin_id}, function () {
                         row.status = 1;
                     });
+                },
+                show_edit: function (row) {
+                    this.edit = Object.assign({}, row);
+                    this.$set(this.edit, 'role_ids', this._.map(row.roles, 'role_id'));
+                    this.editVisible = true;
                 }
+            },
+            created: function () {
+                this.ajax_get('roles', function (res) {
+                    this.roles = res;
+                })
             }
         });
     </script>

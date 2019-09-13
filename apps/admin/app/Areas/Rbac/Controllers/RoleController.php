@@ -8,16 +8,12 @@ use ManaPHP\Mvc\Controller;
 
 class RoleController extends Controller
 {
-    public function getAcl()
-    {
-        return ['list' => '@index', 'create' => '@index', 'edit' => '@index', 'enable' => '@index', 'disable' => '@index', 'delete' => '@index'];
-    }
-
     public function indexAction()
     {
         return $this->request->isAjax()
             ? Role::select()
                 ->whereContains('role_name', input('keyword', ''))
+                ->whereNotIn('role_name', ['guest', 'user', 'admin'])
                 ->orderBy('role_id desc')
                 ->paginate()
             : null;
