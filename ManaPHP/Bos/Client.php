@@ -77,17 +77,17 @@ class Client extends Component implements ClientInterface
     {
         $endpoint = str_replace('{bucket}', $bucket, $this->_endpoint);
 
-        $params[] = $endpoint . '/api/objects';
-        $params['bucket'] = $bucket;
-        $params['token'] = jwt_encode(['bucket' => $bucket], 300, 'bos.object.list');
+        $filters[] = $endpoint . '/api/objects';
+        $filters['bucket'] = $bucket;
+        $filters['token'] = jwt_encode(['bucket' => $bucket], 300, 'bos.object.list');
 
-        $body = rest_get($params)->body;
+        $body = rest_get($filters)->body;
 
         if ($body['code'] !== 0) {
             throw new Exception($body['message'], $body['code']);
         }
 
-        return $body['data']['items'];
+        return $body['data'];
     }
 
     /**
@@ -117,7 +117,7 @@ class Client extends Component implements ClientInterface
      * @param string $key
      * @param array  $policy
      *
-     * @return string
+     * @return array
      */
     public function putObject($file, $bucket, $key, $policy = [])
     {
