@@ -45,7 +45,7 @@ class Application extends \ManaPHP\Http\Application
 
         $response = $this->response->getContext();
 
-        if ($response->content === '') {
+        if ($response->content === '' && !$this->request->isOptions() && !$this->request->isHead()) {
             $response->content = ['code' => 0, 'message' => '', 'data' => null];
         }
 
