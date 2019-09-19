@@ -729,7 +729,7 @@ class Markdown extends Component implements EngineInterface
             return;
         }
 
-        if (preg_match('/^<[/]?+(\w*)(?:[ ]*+' . $this->regexHtmlAttribute . ')*+[ ]*+(/)?>/', $Line['text'], $matches)) {
+        if (preg_match('/^<[\/]?+(\w*)(?:[ ]*+' . $this->regexHtmlAttribute . ')*+[ ]*+(\/)?>/', $Line['text'], $matches)) {
             $element = strtolower($matches[1]);
 
             if (in_array($element, $textLevelElements, true)) {
@@ -1307,7 +1307,7 @@ class Markdown extends Component implements EngineInterface
             ];
         }
 
-        if ($Excerpt['text'][1] !== ' ' && preg_match('/^<\w[\w-]*+(?:[ ]*+' . $this->regexHtmlAttribute . ')*+[ ]*+/?>/s', $Excerpt['text'], $matches)) {
+        if ($Excerpt['text'][1] !== ' ' && preg_match('/^<\w[\w-]*+(?:[ ]*+' . $this->regexHtmlAttribute . ')*+[ ]*+\/?>/s', $Excerpt['text'], $matches)) {
             return [
                 'element' => ['rawHtml' => $matches[0]],
                 'extent' => strlen($matches[0]),
@@ -1355,7 +1355,7 @@ class Markdown extends Component implements EngineInterface
         }
 
         if (strpos($Excerpt['context'], 'http') !== false
-            && preg_match('/\bhttps?+:[/]{2}[^\s<]+\b/*+/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE)
+            && preg_match('/\bhttps?+:[\/]{2}[^\s<]+\b\/*+/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE)
         ) {
             $url = $matches[0][0];
 
@@ -1377,7 +1377,7 @@ class Markdown extends Component implements EngineInterface
 
     protected function inlineUrlTag($Excerpt)
     {
-        if (strpos($Excerpt['text'], '>') !== false && preg_match('/^<(\w++:/{2}[^ >]++)>/i', $Excerpt['text'], $matches)) {
+        if (strpos($Excerpt['text'], '>') !== false && preg_match('/^<(\w++:\/{2}[^ >]++)>/i', $Excerpt['text'], $matches)) {
             $url = $matches[1];
 
             return [
