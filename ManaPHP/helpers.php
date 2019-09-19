@@ -240,7 +240,7 @@ if (!function_exists('jwt_verify')) {
      * @param string $token
      * @param string $scope
      *
-     * @return array
+     * @return void
      */
     function jwt_verify($token, $scope)
     {

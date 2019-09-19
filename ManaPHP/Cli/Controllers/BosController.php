@@ -23,7 +23,7 @@ class BosController extends Controller
      */
     public function createBucketCommand($bucket, $base_url = '')
     {
-        return $this->console->writeLn($this->bosClient->createBucket($bucket, $base_url));
+        $this->console->writeLn($this->bosClient->createBucket($bucket, $base_url));
     }
 
     /**
@@ -56,6 +56,8 @@ class BosController extends Controller
      * @param string $bucket
      * @param string $dir
      * @param string $prefix
+     *
+     * @return int
      */
     public function importCommand($bucket, $dir, $prefix)
     {
@@ -64,6 +66,8 @@ class BosController extends Controller
         }
 
         $this->_recursiveImport($dir, $bucket, $prefix);
+
+        return 0;
     }
 
     /**
