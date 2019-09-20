@@ -218,9 +218,8 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
         if (is_string($fields)) {
             $keyField = $sample->getPrimaryKey();
-            $valueField = $fields;
 
-            $query = static::select($keyField . ', ' . $valueField)->where($filters);
+            $query = static::select([$keyField, $fields])->where($filters);
             if (in_array('display_order', $sample->getFields(), true)) {
                 return $query->orderBy(['display_order' => SORT_DESC, $keyField => SORT_ASC])->fetch(true);
             } else {
@@ -327,16 +326,9 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             throw new MisuseException('Model:first is not support null value filters');
         }
 
-        $sample = static::sample();
-        $query = static::select($fields ?: null)->limit(1);
-
-        if (is_scalar($filters)) {
-            $query->whereEq($sample->getPrimaryKey(), $filters);
-        } else {
-            $query->where($filters);
-        }
-
-        $rs = $query->fetch();
+        $rs = static::select($fields)
+            ->where(is_scalar($filters) ? [static::sample()->getPrimaryKey() => $filters] : $filters)
+            ->limit(1)->fetch();
         return $rs[0] ?? null;
     }
 
@@ -516,12 +508,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function exists($filters)
     {
-        if (is_scalar($filters)) {
-            $sample = static::sample();
-            return static::select()->whereEq($sample->getPrimaryKey(), $filters)->exists();
-        } else {
-            return static::select()->where($filters)->exists();
-        }
+        return static::select()->where(is_scalar($filters) ? [static::sample()->getPrimaryKey() => $filters] : $filters)->exists();
     }
 
     /**
