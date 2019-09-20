@@ -97,6 +97,15 @@ class Query extends \ManaPHP\Query
         }
     }
 
+    public function setModel($model)
+    {
+        $this->_model = $model;
+
+        $this->setTypes($model->getFieldTypes());
+
+        return $this;
+    }
+
     /**
      * @param array $types
      *

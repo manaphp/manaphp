@@ -303,7 +303,7 @@ class Model extends \ManaPHP\Model
             $model = static::sample();
         }
 
-        return $model->_di->get('ManaPHP\Mongodb\Query')->setModel($model)->setTypes($model->getFieldTypes());
+        return $model->_di->get('ManaPHP\Mongodb\Query')->setModel($model);
     }
 
     /**
