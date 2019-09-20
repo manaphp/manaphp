@@ -420,6 +420,6 @@ class Model extends \ManaPHP\Model implements ModelInterface
      */
     public static function search($filters)
     {
-        return static::query()->search($filters);
+        return static::select()->search($filters);
     }
 }

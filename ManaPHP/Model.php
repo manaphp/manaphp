@@ -216,13 +216,11 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     {
         $sample = static::sample();
 
-        $query = static::query(null, $sample)->where($filters);
-
         if (is_string($fields)) {
             $keyField = $sample->getPrimaryKey();
             $valueField = $fields;
 
-            $query = $query->select($keyField . ', ' . $valueField);
+            $query = static::select($keyField . ', ' . $valueField)->where($filters);
             if (in_array('display_order', $sample->getFields(), true)) {
                 return $query->orderBy(['display_order' => SORT_DESC, $keyField => SORT_ASC])->fetch(true);
             } else {
@@ -232,19 +230,19 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             $keyField = $sample->getPrimaryKey();
             array_unshift($fields, $keyField);
 
-            $query->select($fields);
             if (in_array('display_order', $sample->getFields(), true)) {
-                return $query->orderBy(['display_order' => SORT_DESC, $keyField => SORT_ASC])->fetch(true);
+                $order = ['display_order' => SORT_DESC, $keyField => SORT_ASC];
             } else {
-                return $query->orderBy($keyField)->fetch(true);
+                $order = [$keyField => SORT_ASC];
             }
+            return static::select($fields)->where($filters)->orderBy($order)->fetch(true);
         } else {
             $keyField = key($fields);
             $valueField = current($fields);
 
             $list = [];
             /** @noinspection ForeachSourceInspection */
-            foreach ($query->select([$keyField, $valueField])->fetch(true) as $v) {
+            foreach (static::select([$keyField, $valueField])->where($filters)->fetch(true) as $v) {
                 $key = $v[$keyField];
                 $value = $v[$valueField];
 
@@ -276,7 +274,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         $model = static::sample();
 
         if (!is_int($fieldsOrTtl)) {
-            if (!$rs = static::query(null, $model)->select($fieldsOrTtl)->whereEq($model->getPrimaryKey(), $id)->limit(1)->fetch()) {
+            if (!$rs = static::select($fieldsOrTtl)->whereEq($model->getPrimaryKey(), $id)->limit(1)->fetch()) {
                 throw new NotFoundException(static::class, $id);
             } else {
                 return $rs[0];
@@ -292,7 +290,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         }
 
         if (!$r) {
-            if (!$rs = static::query(null, $model)->whereEq($model->getPrimaryKey(), $id)->limit(1)->fetch()) {
+            if (!$rs = static::select()->whereEq($model->getPrimaryKey(), $id)->limit(1)->fetch()) {
                 throw new NotFoundException(static::class, $id);
             }
 
@@ -330,7 +328,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         }
 
         $sample = static::sample();
-        $query = static::query(null, $sample)->select($fields ?: null)->limit(1);
+        $query = static::select($fields ?: null)->limit(1);
 
         if (is_scalar($filters)) {
             $query->whereEq($sample->getPrimaryKey(), $filters);
@@ -416,7 +414,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             throw new NotSupportedException('infer `:class` order condition for last failed:', ['class' => static::class]);
         }
 
-        $rs = static::query(null, $sample)->select($fields)->where($filters)->limit(1)->fetch();
+        $rs = static::select($fields)->where($filters)->limit(1)->fetch();
         return $rs[0] ?? null;
     }
 
@@ -451,7 +449,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         }
 
         if ($ttl === null || $pkValue === null) {
-            $rs = static::query(null, $sample)->select([$field])->where($filters)->limit(1)->fetch(true);
+            $rs = static::select([$field])->where($filters)->limit(1)->fetch(true);
             return $rs ? $rs[0][$field] : null;
         }
 
@@ -460,7 +458,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             return $value;
         }
 
-        $rs = static::query(null, $sample)->select([$field])->whereEq($pkName, $pkValue)->limit(1)->fetch(true);
+        $rs = static::select([$field])->whereEq($pkName, $pkValue)->limit(1)->fetch(true);
         $value = $rs ? $rs[0][$field] : null;
 
         $sample->_di->ipcCache->set($key, $value, $ttl);
@@ -520,9 +518,9 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     {
         if (is_scalar($filters)) {
             $sample = static::sample();
-            return static::query(null, $sample)->whereEq($sample->getPrimaryKey(), $filters)->exists();
+            return static::select()->whereEq($sample->getPrimaryKey(), $filters)->exists();
         } else {
-            return static::where($filters)->exists();
+            return static::select()->where($filters)->exists();
         }
     }
 

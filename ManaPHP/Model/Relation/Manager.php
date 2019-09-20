@@ -202,7 +202,7 @@ class Manager extends Component implements ManagerInterface
         $relation = $this->get($model, $name);
         /** @var \ManaPHP\Model $referenceModel */
         $referenceModel = $relation->referenceModel;
-        $query = $referenceModel::query();
+        $query = $referenceModel::select();
 
         if ($data === null) {
             null;
@@ -299,7 +299,7 @@ class Manager extends Component implements ManagerInterface
                 }
             } elseif ($relation->type === Relation::TYPE_HAS_MANY_TO_MANY) {
                 $ids = array_column($r, $valueField);
-                $via_data = $model::query()->select([$keyField, $valueField])->whereIn($valueField, $ids)->execute();
+                $via_data = $model::select([$keyField, $valueField])->whereIn($valueField, $ids)->execute();
                 $ids = array_unique_column($via_data, $keyField);
                 $primaryKey = $query->getModel()->getPrimaryKey();
                 $data = $query->whereIn($primaryKey, $ids)->indexBy($primaryKey)->fetch($asArray);
@@ -326,7 +326,7 @@ class Manager extends Component implements ManagerInterface
                 $reference = $referenceModel::sample();
                 $keyField = $reference->getPrimaryKey();
                 $ids = array_unique_column($r, $model->getPrimaryKey());
-                $via_data = $via::query()->select([$keyField, $relation->valueField])->whereIn($valueField, $ids)->execute();
+                $via_data = $via::select([$keyField, $relation->valueField])->whereIn($valueField, $ids)->execute();
                 $ids = array_unique_column($via_data, $keyField);
                 $data = $query->whereIn($query->getModel()->getPrimaryKey(), $ids)->indexBy($query->getModel()->getPrimaryKey())->fetch($asArray);
 
@@ -367,23 +367,23 @@ class Manager extends Component implements ManagerInterface
         $referenceModel = $relation->referenceModel;
         $valueField = $relation->valueField;
         if ($type === Relation::TYPE_HAS_ONE) {
-            return $referenceModel::query()->whereEq($relation->keyField, $instance->$valueField)->setFetchType(false);
+            return $referenceModel::select()->whereEq($relation->keyField, $instance->$valueField)->setFetchType(false);
         } elseif ($type === Relation::TYPE_BELONGS_TO) {
-            return $referenceModel::query()->whereEq($relation->keyField, $instance->$valueField)->setFetchType(false);
+            return $referenceModel::select()->whereEq($relation->keyField, $instance->$valueField)->setFetchType(false);
         } elseif ($type === Relation::TYPE_HAS_MANY) {
-            return $referenceModel::query()->whereEq($relation->keyField, $instance->$valueField)->setFetchType(true);
+            return $referenceModel::select()->whereEq($relation->keyField, $instance->$valueField)->setFetchType(true);
         } elseif ($type === Relation::TYPE_HAS_MANY_TO_MANY) {
             $ids = $instance::values($relation->keyField, [$valueField => $instance->$valueField]);
             /** @var \ManaPHP\Model $referenceInstance */
             /** @var \ManaPHP\Model $referenceModel */
             $referenceInstance = is_string($referenceModel) ? $referenceModel::sample() : $referenceModel;
-            return $referenceModel::query()->whereIn($referenceInstance->getPrimaryKey(), $ids)->setFetchType(true);
+            return $referenceModel::select()->whereIn($referenceInstance->getPrimaryKey(), $ids)->setFetchType(true);
         } elseif ($type === Relation::TYPE_HAS_MANY_VIA) {
             $via = $relation->keyField;
             /** @var \ManaPHP\Model $reference */
             $reference = $referenceModel::sample();
             $ids = $via::values($reference->getPrimaryKey(), [$valueField => $instance->$valueField]);
-            return $referenceModel::query()->whereIn($reference->getPrimaryKey(), $ids)->setFetchType(true);
+            return $referenceModel::select()->whereIn($reference->getPrimaryKey(), $ids)->setFetchType(true);
         } else {
             throw  new NotSupportedException(['unknown relation type: :type', 'type' => $type]);
         }

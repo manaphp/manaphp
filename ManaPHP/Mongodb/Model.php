@@ -634,7 +634,7 @@ class Model extends \ManaPHP\Model
      */
     public static function search($filters)
     {
-        return static::query()->search($filters);
+        return static::select()->search($filters);
     }
 
     public function __debugInfo()
