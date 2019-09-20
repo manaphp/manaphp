@@ -615,22 +615,17 @@ class Model extends \ManaPHP\Model
     /**
      * @param int|string|array $filters =get_object_vars(new static)
      *
-     * @return \ManaPHP\Mongodb\Query
+     * @return \ManaPHP\Mongodb\Query|\ManaPHP\QueryInterface
      */
     public static function where($filters)
     {
-        if (is_scalar($filters)) {
-            $sample = static::sample();
-            return static::query(null, $sample)->whereEq($sample->getPrimaryKey(), $filters);
-        } else {
-            return static::query()->where($filters);
-        }
+        return static::select()->where(is_scalar($filters) ? [static::sample()->getPrimaryKey() => $filters] : $filters);
     }
 
     /**
      * @param array $filters =get_object_vars(new static)
      *
-     * @return \ManaPHP\Mongodb\Query
+     * @return \ManaPHP\Mongodb\Query|\ManaPHP\QueryInterface
      */
     public static function search($filters)
     {

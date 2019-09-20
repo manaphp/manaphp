@@ -400,23 +400,17 @@ class Model extends \ManaPHP\Model implements ModelInterface
     /**
      * @param int|string|array $filters =get_object_vars(new static)
      *
-     * @return \ManaPHP\Db\Query
+     * @return \ManaPHP\Db\Query|\ManaPHP\QueryInterface
      */
     public static function where($filters)
     {
-        if (is_scalar($filters)) {
-            /** @var \ManaPHP\ModelInterface $sample */
-            $sample = static::sample();
-            return static::query(null, $sample)->whereEq($sample->getPrimaryKey(), $filters);
-        } else {
-            return static::query()->where($filters);
-        }
+        return static::select()->where(is_scalar($filters) ? [static::sample()->getPrimaryKey() => $filters] : $filters);
     }
 
     /**
      * @param array $filters =get_object_vars(new static)
      *
-     * @return \ManaPHP\Db\Query
+     * @return \ManaPHP\Db\Query|\ManaPHP\QueryInterface
      */
     public static function search($filters)
     {
