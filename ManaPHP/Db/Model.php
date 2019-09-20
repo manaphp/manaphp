@@ -118,23 +118,23 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @param string         $alias
-     * @param \ManaPHP\Model $model
-     *
      * @return \ManaPHP\Db\Query
      */
-    public static function query($alias = null, $model = null)
+    public function newQuery()
     {
-        if (!$model) {
-            $model = static::sample();
-        }
+        return $this->_di->get('ManaPHP\Db\Query')->setModel($this);
+    }
 
-        $query = $model->_di->get('ManaPHP\Db\Query')->setModel($model);
-        if ($alias) {
-            $query->from(get_class($model), $alias);
-        }
+    /**
+     * @param string $alias
+     *
+     * @return \ManaPHP\Db\Query|\ManaPHP\QueryInterface
+     */
+    public static function query($alias = null)
+    {
+        $model = static::sample();
 
-        return $query;
+        return $model->newQuery()->from(get_class($model), $alias);
     }
 
     /**
@@ -189,7 +189,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         }
 
         if ($defaultValueFields) {
-            if ($r = static::query(null, $this)->select($defaultValueFields)->where($this->_getPrimaryKeyValuePairs())->fetch(true)) {
+            if ($r = $this->newQuery()->select($defaultValueFields)->where($this->_getPrimaryKeyValuePairs())->fetch(true)) {
                 foreach ($r[0] as $field => $value) {
                     $this->$field = $value;
                 }
@@ -289,7 +289,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        $query = static::query(null, $this)->where($primaryKeyValuePairs);
+        $query = $this->newQuery()->where($primaryKeyValuePairs);
         $query->update($fieldValues);
 
         $expressionFields = [];

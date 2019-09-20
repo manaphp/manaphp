@@ -97,6 +97,11 @@ class Query extends \ManaPHP\Query
         }
     }
 
+    /**
+     * @param \ManaPHP\Model $model
+     *
+     * @return static
+     */
     public function setModel($model)
     {
         $this->_model = $model;

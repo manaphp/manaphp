@@ -84,11 +84,10 @@ interface ModelInterface
 
     /**
      * @param string         $alias
-     * @param \ManaPHP\Model $model
      *
      * @return \ManaPHP\QueryInterface
      */
-    public static function query($alias = null, $model = null);
+    public static function query($alias = null);
 
     /**
      * Allows to query a set of records that match the specified conditions
@@ -484,4 +483,9 @@ interface ModelInterface
      * @return \ManaPHP\QueryInterface
      */
     public static function search($filters);
+
+    /**
+     * @return \ManaPHP\QueryInterface
+     */
+    public function newQuery();
 }

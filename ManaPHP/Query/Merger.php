@@ -101,7 +101,7 @@ class Merger extends Component implements QueryInterface, IteratorAggregate
             if ($query instanceof QueryInterface) {
                 $this->queries[] = $query;
             } elseif ($query instanceof Model) {
-                $this->queries[] = $query::query(null, $query);
+                $this->queries[] = $query->newQuery();
             }
         }
 

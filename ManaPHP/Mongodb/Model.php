@@ -292,18 +292,21 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * @param string                 $alias
-     * @param \ManaPHP\Mongodb\Model $model
+     * @return \ManaPHP\Mongodb\Query|\ManaPHP\QueryInterface
+     */
+    public function newQuery()
+    {
+        return $this->_di->get('ManaPHP\Mongodb\Query')->setModel($this);
+    }
+
+    /**
+     * @param string $alias
      *
      * @return \ManaPHP\Mongodb\Query
      */
-    public static function query($alias = null, $model = null)
+    public static function query($alias = null)
     {
-        if (!$model) {
-            $model = static::sample();
-        }
-
-        return $model->_di->get('ManaPHP\Mongodb\Query')->setModel($model);
+        return static::sample()->newQuery();
     }
 
     /**
@@ -456,7 +459,7 @@ class Model extends \ManaPHP\Model
             }
         }
 
-        $query = static::query(null, $this)->where($primaryKeyValuePairs);
+        $query = $this->newQuery()->where($primaryKeyValuePairs);
         $query->update($fieldValues);
 
         $expressionFields = [];

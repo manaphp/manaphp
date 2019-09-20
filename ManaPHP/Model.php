@@ -867,7 +867,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             }
         }
 
-        return static::query(null, $this)->where($filters)->forceUseMaster()->exists();
+        return $this->newQuery()->where($filters)->forceUseMaster()->exists();
     }
 
     /**
@@ -924,7 +924,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     {
         $this->fireEvent('model:deleting');
 
-        static::query(null, $this)->where($this->_getPrimaryKeyValuePairs())->delete();
+        $this->newQuery()->where($this->_getPrimaryKeyValuePairs())->delete();
 
         $this->fireEvent('model:deleted');
 
@@ -1123,7 +1123,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             $this->_last_refresh = microtime(true);
         }
 
-        $r = static::query(null, $this)->select($fields)->where($this->_getPrimaryKeyValuePairs())->fetch(true);
+        $r = $this->newQuery()->select($fields)->where($this->_getPrimaryKeyValuePairs())->fetch(true);
         if (!$r) {
             throw new NotFoundException(static::class, $this->_getPrimaryKeyValuePairs());
         }
