@@ -3,6 +3,7 @@ namespace ManaPHP\Http\Client\Adapter;
 
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\Client;
+use ManaPHP\Http\Client\BadResponseException;
 use ManaPHP\Http\Client\ConnectionException;
 
 class Stream extends Client
@@ -71,18 +72,6 @@ class Stream extends Client
 
         $headers = $meta['wrapper_data'];
 
-        for ($i = count($headers) - 1; $i >= 0; $i--) {
-            $header = $headers[$i];
-            /** @noinspection NotOptimalIfConditionsInspection */
-            if (strpos($header, ':') === false && $headers !== '') {
-                break;
-            }
-        }
-
-        if ($i !== 0) {
-            $headers = array_slice($headers, $i);
-        }
-
         $content_type = null;
         foreach ($headers as $header) {
             if (strpos($header, 'Content-Type:') === 0) {
@@ -94,6 +83,22 @@ class Stream extends Client
         $http_code = null;
         if ($headers && preg_match('#\d{3}#', $headers[0], $match)) {
             $http_code = (int)$match[0];
+        }
+
+        if (is_string($body)) {
+            if (in_array('Content-Encoding: gzip', $headers, true)) {
+                if (($decoded = @gzinflate(substr($body, 10))) === false) {
+                    throw new BadResponseException(['`:url`: `:ungzip failed`', 'url' => $request->url]);
+                } else {
+                    $body = $decoded;
+                }
+            } elseif (in_array('Content-Encoding: deflate', $headers, true)) {
+                if (($decoded = @gzinflate($body)) === false) {
+                    throw new BadResponseException(['`:url`: deflat failed', 'url' => $request->url]);
+                } else {
+                    $body = $decoded;
+                }
+            }
         }
 
         $response = $this->_di->get('ManaPHP\Http\Client\Response');
