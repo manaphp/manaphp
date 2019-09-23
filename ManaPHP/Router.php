@@ -315,6 +315,39 @@ class Router extends Component implements RouterInterface
     }
 
     /**
+     * @param string $uri
+     * @param string $method
+     *
+     * @return array|false
+     */
+    protected function _matchDefaultRoutes($uri, $method)
+    {
+        $handledUri = $uri;
+
+        if ($handledUri !== '/' && $this->_areas) {
+            if (($pos = strpos($handledUri, '/', 1)) !== false) {
+                $area = Text::camelize(substr($handledUri, 1, $pos - 1));
+                if (in_array($area, $this->_areas, true)) {
+                    $handledUri = substr($handledUri, $pos);
+                } else {
+                    $area = null;
+                }
+            } else {
+                $area = Text::camelize(substr($handledUri, 1));
+                if (in_array($area, $this->_areas, true)) {
+                    $handledUri = '/';
+                } else {
+                    $area = null;
+                }
+            }
+        }
+
+        $handledUri = $handledUri === '/' ? '/' : rtrim($handledUri, '/');
+
+        return $this->_default_route->match($handledUri, $method);
+    }
+
+    /**
      * Handles routing information received from the rewrite engine
      *
      * @param string $uri
@@ -377,27 +410,8 @@ class Router extends Component implements RouterInterface
                 }
             }
 
-            if ($parts === false && $this->_default_route) {
-                if ($handledUri !== '/' && $this->_areas) {
-                    if (($pos = strpos($handledUri, '/', 1)) !== false) {
-                        $area = Text::camelize(substr($handledUri, 1, $pos - 1));
-                        if (in_array($area, $this->_areas, true)) {
-                            $handledUri = substr($handledUri, $pos);
-                        } else {
-                            $area = null;
-                        }
-                    } else {
-                        $area = Text::camelize(substr($handledUri, 1));
-                        if (in_array($area, $this->_areas, true)) {
-                            $handledUri = '/';
-                        } else {
-                            $area = null;
-                        }
-                    }
-                }
-
-                $handledUri = $handledUri === '/' ? '/' : rtrim($handledUri, '/');
-                $parts = $this->_default_route->match($handledUri, $method);
+            if ($parts === false) {
+                $parts = $this->_matchDefaultRoutes($handledUri, $method);
             }
         }
 
