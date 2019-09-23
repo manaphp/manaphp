@@ -57,9 +57,9 @@ class Router extends Component implements RouterInterface
     protected $_areas = [];
 
     /**
-     * @var \ManaPHP\Router\RouteInterface
+     * @var \ManaPHP\Router\RouteInterface[]
      */
-    protected $_default_route;
+    protected $_default_routes;
 
     /**
      * @var \ManaPHP\Router\RouteInterface[][]
@@ -79,7 +79,10 @@ class Router extends Component implements RouterInterface
     public function __construct($useDefaultRoutes = true)
     {
         if ($useDefaultRoutes) {
-            $this->_default_route = new Route('/(?:{controller}(?:/{action}(?:/{params})?)?)?');
+            $this->_default_routes = [
+                new Route('/(?:{controller}(?:/{params:\d+}?)?'),
+                new Route('/(?:{controller}(?:/{action}(?:/{params})?)?)?')
+            ];
         }
     }
 
@@ -344,7 +347,14 @@ class Router extends Component implements RouterInterface
 
         $handledUri = $handledUri === '/' ? '/' : rtrim($handledUri, '/');
 
-        return $this->_default_route->match($handledUri, $method);
+        for ($i = count($this->_default_routes) - 1; $i >= 0; $i--) {
+            $route = $this->_default_routes[$i];
+            if (($parts = $route->match($handledUri, $method)) !== false) {
+                return $parts;
+            }
+        }
+
+        return false;
     }
 
     /**
