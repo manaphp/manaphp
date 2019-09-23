@@ -232,6 +232,11 @@ class Route implements RouteInterface
             unset($parts['action']);
         }
 
+        if (isset($parts['action']) && preg_match('#^\d#', $parts['action'])) {
+            $parts['params'] = $parts['action'];
+            $parts['action'] = 'index';
+        }
+
         $r = [];
         $r['controller'] = $parts['controller'] ?? 'index';
         if (isset($parts['area'])) {
