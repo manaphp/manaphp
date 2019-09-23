@@ -234,7 +234,7 @@ class Route implements RouteInterface
 
         if (isset($parts['action']) && preg_match('#^\d#', $parts['action'])) {
             $parts['params'] = $parts['action'];
-            $parts['action'] = 'index';
+            $parts['action'] = 'detail';
         }
 
         $r = [];
