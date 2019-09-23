@@ -7,7 +7,6 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\Client\BadRequestException;
 use ManaPHP\Http\Client\ContentTypeException;
 use ManaPHP\Http\Client\ForbiddenException;
-use ManaPHP\Http\Client\JsonDecodeException;
 use ManaPHP\Http\Client\ServiceUnavailableException;
 use ManaPHP\Http\Client\TooManyRequestsException;
 use ManaPHP\Http\Client\UnauthorizedException;
@@ -215,15 +214,15 @@ abstract class Client extends Component implements ClientInterface
 
         $response = $this->request($method, $url, $body, $headers, $options);
 
-        if (!is_array($response->body)) {
-            if (strpos($response->content_type, '/json') === false) {
-                throw new ContentTypeException(['content-type of response is not application/json: :content-type => `:url`',
-                    'content-type' => $response->content_type,
-                    'url' => $response->url],
-                    $response);
-            }
+        if (is_string($response->body) && strpos($response->content_type, '/html') !== false) {
+            $response->body = json_parse($response->body);
+        }
 
-            throw new JsonDecodeException(['json decode failed: `:url`', 'url' => $response->url], $response);
+        if (is_string($response->body)) {
+            throw new ContentTypeException(['content-type of response is not application/json: :content-type => `:url`',
+                'content-type' => $response->content_type,
+                'url' => $response->url],
+                $response);
         }
 
         return $response;
