@@ -2,7 +2,6 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
-use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\Client\BadRequestException;
 use ManaPHP\Http\Client\ContentTypeException;
@@ -195,8 +194,8 @@ abstract class Client extends Component implements ClientInterface
      */
     public function rest($method, $url, $body = null, $headers = [], $options = [])
     {
-        if (isset($headers['Content-Type']) && strpos($headers['Content-Type'], '/json') === false) {
-            throw new InvalidValueException(['Content-Type of rest is not application/json: :content-type', 'content-type' => $headers['Content-Type']]);
+        if (is_string($body) && $body !== '') {
+            $headers['Content-Type'] = preg_match('#^\[|\{#', $body) ? 'application/json' : 'application/x-www-form-urlencoded';
         } else {
             $headers['Content-Type'] = 'application/json';
             if (is_array($body)) {
