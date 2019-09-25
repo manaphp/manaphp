@@ -326,6 +326,7 @@ class Router extends Component implements RouterInterface
     {
         $handledUri = $uri;
 
+        $area = null;
         if ($handledUri !== '/' && $this->_areas) {
             if (($pos = strpos($handledUri, '/', 1)) !== false) {
                 $area = Text::camelize(substr($handledUri, 1, $pos - 1));
@@ -349,6 +350,9 @@ class Router extends Component implements RouterInterface
         for ($i = count($this->_default_routes) - 1; $i >= 0; $i--) {
             $route = $this->_default_routes[$i];
             if (($parts = $route->match($handledUri, $method)) !== false) {
+                if ($area !== null) {
+                    $parts['area'] = $area;
+                }
                 return $parts;
             }
         }
