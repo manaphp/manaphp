@@ -441,6 +441,26 @@ if (!function_exists('render')) {
     }
 }
 
+if (!function_exists('abort')) {
+
+    /**
+     * @param string $message
+     * @param int    $code
+     *
+     * @throws \ManaPHP\Exception\AbortException
+     */
+    function abort($message, $code = 1)
+    {
+        if ($code === null) {
+            di('response')->setContent($message);
+        } else {
+            di('response')->setJsonContent(['code' => $code, 'message' => $message]);
+        }
+
+        throw new AbortException();
+    }
+}
+
 if (!function_exists('dd')) {
     function dd()
     {
