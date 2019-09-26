@@ -154,11 +154,11 @@ class Db extends Component implements DbInterface
      * @return int
      * @throws \ManaPHP\Db\Exception
      */
-    protected function _execute($type, $sql, $bind = [])
+    public function execute($type, $sql, $bind = [])
     {
         $event = ['delete' => ['deleting', 'deleted'],
-            'update' => ['updating', 'updated'],
-            'insert' => ['inserting', 'inserted']][$type];
+                'update' => ['updating', 'updated'],
+                'insert' => ['inserting', 'inserted']][$type] ?? null;
 
         $context = $this->_context;
 
@@ -168,7 +168,7 @@ class Db extends Component implements DbInterface
         $context->affected_rows = 0;
 
         $this->eventsManager->fireEvent('db:executing', $this);
-        $this->eventsManager->fireEvent('db:' . $event[0], $this);
+        $event && $this->eventsManager->fireEvent('db:' . $event[0], $this);
 
         if ($context->connection) {
             $connection = $context->connection;
@@ -187,9 +187,9 @@ class Db extends Component implements DbInterface
         }
 
         $count = $context->affected_rows;
-        $event_data = compact('count', 'sql', 'bind', 'elapsed');
+        $event_data = compact('type', 'count', 'sql', 'bind', 'elapsed');
 
-        $this->eventsManager->fireEvent('db:' . $event[1], $this, $event_data);
+        $event && $this->eventsManager->fireEvent('db:' . $event[1], $this, $event_data);
         $this->eventsManager->fireEvent('db:executed', $this, $event_data);
 
         $this->logger->info($event_data, 'db.' . $type);
@@ -338,7 +338,7 @@ class Db extends Component implements DbInterface
      */
     public function insertBySql($sql, $bind = [])
     {
-        return $this->_execute('insert', $sql, $bind);
+        return $this->execute('insert', $sql, $bind);
     }
 
     /**
@@ -391,7 +391,7 @@ class Db extends Component implements DbInterface
 
         $sql = 'UPDATE ' . $this->_escapeIdentifier($table) . ' SET ' . implode(',', $setFields) . ' WHERE ' . implode(' AND ', $wheres);
 
-        return $this->_execute('update', $sql, $bind);
+        return $this->execute('update', $sql, $bind);
     }
 
     /**
@@ -404,7 +404,7 @@ class Db extends Component implements DbInterface
      */
     public function updateBySql($sql, $bind = [])
     {
-        return $this->_execute('update', $sql, $bind);
+        return $this->execute('update', $sql, $bind);
     }
 
     /**
@@ -478,7 +478,7 @@ class Db extends Component implements DbInterface
         }
 
         $sql = 'DELETE' . ' FROM ' . $this->_escapeIdentifier($table) . ' WHERE ' . implode(' AND ', $wheres);
-        return $this->_execute('delete', $sql, $bind);
+        return $this->execute('delete', $sql, $bind);
     }
 
     /**
@@ -491,7 +491,7 @@ class Db extends Component implements DbInterface
      */
     public function deleteBySql($sql, $bind = [])
     {
-        return $this->_execute('delete', $sql, $bind);
+        return $this->execute('delete', $sql, $bind);
     }
 
     /**

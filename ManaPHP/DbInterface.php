@@ -12,6 +12,15 @@ use PDO;
 interface DbInterface
 {
     /**
+     * @param string $type
+     * @param string $sql
+     * @param array  $bind
+     *
+     * @return int
+     */
+    public function execute($type, $sql, $bind = []);
+
+    /**
      * Returns the first row in a SQL query result
      *
      * @param string $sql
