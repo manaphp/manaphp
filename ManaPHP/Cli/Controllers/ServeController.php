@@ -17,7 +17,7 @@ class ServeController extends Controller
      * @param string $ip
      * @param int    $port
      */
-    public function defaultCommand($ip = '0.0.0.0', $port = 1983)
+    public function defaultCommand($ip = '0.0.0.0', $port = 9501)
     {
         $router_str = <<<'STR'
 <?php
