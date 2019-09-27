@@ -18,5 +18,5 @@ services:
       - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf
       - /data/volumes/${COMPOSE_PROJECT_NAME}/admin/nginx/log:/var/log/nginx
     ports:
-      - ${WEB_PORT}:82
+      - ${WEB_PORT}:80
     restart: always

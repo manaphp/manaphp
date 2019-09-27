@@ -12,10 +12,9 @@ return [
     'aliases' => [
     ],
     'components' => [
-        '!httpServer' => ['port' => 9502,
+        '!httpServer' => ['port' => 9501,
             'worker_num' => 1,
             'max_request' => 1000000,
-            'dispatch_mode' => 1,
             'enable_static_handler' => env('APP_DEBUG', false)],
         'db' => env('DB_URL'),
         'redis' => env('REDIS_URL'),
