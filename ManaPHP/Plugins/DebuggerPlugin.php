@@ -104,15 +104,13 @@ class DebuggerPlugin extends Plugin
         if ($event === 'logger:log') {
             /** @var Log $log */
             $log = $data;
-            $format = '[%time%][%level%] %message%';
-            $replaces = [
-                '%time%' => date('H:i:s.', $log->timestamp) . sprintf('%.03d', ($log->timestamp - (int)$log->timestamp) * 1000),
-                '%level%' => $log->level,
-                '%message%' => $log->message
-            ];
             $context->log[] = [
+                'time' => date('H:i:s.', $log->timestamp) . sprintf('%.03d', ($log->timestamp - (int)$log->timestamp) * 1000),
                 'level' => $log->level,
-                'message' => strtr($format, $replaces)
+                'category' => $log->category,
+                'file' => $log->file,
+                'line' => $log->line,
+                'message' => $log->message
             ];
         } elseif ($event === 'db:beforeQuery' || $event === 'db:beforeExecute') {
             /** @var \ManaPHP\DbInterface $source */
