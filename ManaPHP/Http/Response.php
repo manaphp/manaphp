@@ -637,8 +637,11 @@ class Response extends Component implements ResponseInterface
     public function dump()
     {
         $data = parent::dump();
-		
+
         $data['_context']['content'] = '***';
+        if (isset($data['_context']['headers']['X-Logger'])) {
+            $data['_context']['headers']['X-Logger'] = '***';
+        }
 
         return $data;
     }

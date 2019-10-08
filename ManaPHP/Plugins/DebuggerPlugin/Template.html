@@ -112,14 +112,14 @@
                 <tr>
                     <td width="5%">#</td>
                     <td width="10%">name</td>
-                    <td width="20%">type</td>
-                    <td>value</td>
+                    <td width="20%">class</td>
+                    <td>properties</td>
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(item, index) in components">
+                <tr v-for="(item, name, index) in components">
                     <td>{{index}}</td>
-                    <td :title="item.name">{{item.name}}</td>
+                    <td :title="name">{{name}}</td>
                     <td>{{item.class}}</td>
                     <td :title="json_stringify(item.properties)">
                         <pre>{{item.properties|json 4}}</pre>

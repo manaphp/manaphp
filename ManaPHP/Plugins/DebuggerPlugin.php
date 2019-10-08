@@ -247,12 +247,12 @@ class DebuggerPlugin extends Plugin
         $data['components'] = [];
         $data['events'] = $context->events;
 
-        foreach ($this->_di->getInstances() as $k => $v) {
-            if ($k === 'configure' || $k === 'debuggerPlugin') {
+        foreach ($this->_di->getInstances() as $name => $instance) {
+            if ($name === 'configure' || $name === 'debuggerPlugin') {
                 continue;
             }
 
-            $properties = $v instanceof Component ? $v->dump() : [];
+            $properties = $instance instanceof Component ? $instance->dump() : [];
 
             foreach ($properties as $pk => $pv) {
                 if ($pv instanceof Component || $pk === 'eventsManager') {
@@ -260,7 +260,7 @@ class DebuggerPlugin extends Plugin
                 }
             }
 
-            $data['components'][] = ['name' => $k, 'class' => get_class($v), 'properties' => $properties];
+            $data['components'][$name] = ['class' => get_class($instance), 'properties' => $properties];
         }
 
         $globals = $this->request->getGlobals();

@@ -253,7 +253,7 @@ class Component implements ComponentInterface, JsonSerializable
     public function dump()
     {
         $data = $this->__debugInfo();
-        
+
         if (isset($data['_context'])) {
             $data['_context'] = (array)$data['_context'];
         }
