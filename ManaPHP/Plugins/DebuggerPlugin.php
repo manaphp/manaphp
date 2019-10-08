@@ -46,6 +46,7 @@ class DebuggerPlugin extends Plugin
         $this->eventsManager->peekEvent([$this, 'onEvent']);
 
         $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
+        $this->eventsManager->attachEvent('response:sending', [$this, 'onResponseSending']);
         $this->eventsManager->attachEvent('request:end', [$this, 'onRequestEnd']);
     }
 
@@ -61,6 +62,13 @@ class DebuggerPlugin extends Plugin
 
         $context = $this->_context;
         $context->file = date('/ymd/His_') . $this->random->getBase(32) . '.html';
+    }
+
+    public function onResponseSending()
+    {
+        if ($this->_context->file) {
+            $this->response->setHeader('X-Debugger-Link', $this->getUrl());
+        }
     }
 
     public function onRequestEnd()
