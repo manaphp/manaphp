@@ -160,7 +160,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(value,name, index) in configure">
+                <tr v-for="(value,name, index) in components.configure.properties">
                     <td>{{index}}</td>
                     <td>{{name}}</td>
                     <td :title="json_stringify(value)">

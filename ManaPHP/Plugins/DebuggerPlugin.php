@@ -239,27 +239,12 @@ class DebuggerPlugin extends Plugin
         $data['sql'] = ['prepared' => $context->sql_prepared, 'executed' => $context->sql_executed, 'count' => $context->sql_count];
         $data['mongodb'] = $context->mongodb;
 
-        $configure = isset($this->configure) ? $this->configure->__debugInfo() : [];
-        unset($configure['alias']);
-        $data['configure'] = $configure;
-
         $data['view'] = $context->view;
         $data['components'] = [];
         $data['events'] = $context->events;
 
         foreach ($this->_di->getInstances() as $name => $instance) {
-            if ($name === 'configure' || $name === 'debuggerPlugin') {
-                continue;
-            }
-
-            $properties = $instance instanceof Component ? $instance->dump() : [];
-
-            foreach ($properties as $pk => $pv) {
-                if ($pv instanceof Component || $pk === 'eventsManager') {
-                    unset($properties[$pk]);
-                }
-            }
-
+            $properties = $instance instanceof Component ? $instance->dump() : array_keys(get_object_vars($instance));
             $data['components'][$name] = ['class' => get_class($instance), 'properties' => $properties];
         }
 
@@ -275,6 +260,15 @@ class DebuggerPlugin extends Plugin
         unset($data['server']['PATH']);
 
         $this->filesystem->filePut($file, json_stringify($data, JSON_PRETTY_PRINT));
+    }
+
+    public function dump()
+    {
+        $data = parent::dump();
+
+        $data['_context'] = array_keys($data['_context']);
+
+        return $data;
     }
 
     /**
