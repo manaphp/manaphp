@@ -278,12 +278,4 @@ class Swoole extends Server
 
         $this->eventsManager->fireEvent('response:sent', $this, $response);
     }
-
-    public function __debugInfo()
-    {
-        $data = parent::__debugInfo();
-        unset($data['_swoole']);
-
-        return $data;
-    }
 }
