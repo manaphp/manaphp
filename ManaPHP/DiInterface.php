@@ -79,4 +79,9 @@ interface DiInterface
      * @return static
      */
     public static function getDefault();
+
+    /**
+     * @return array
+     */
+    public function getInstances();
 }

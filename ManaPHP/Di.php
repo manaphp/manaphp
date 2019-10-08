@@ -404,6 +404,14 @@ class Di implements DiInterface
     /**
      * @return array
      */
+    public function getInstances()
+    {
+        return $this->_instances;
+    }
+
+    /**
+     * @return array
+     */
     public function __debugInfo()
     {
         $data = get_object_vars($this);

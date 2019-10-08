@@ -247,7 +247,7 @@ class DebuggerPlugin extends Plugin
         $data['components'] = [];
         $data['events'] = $context->events;
 
-        foreach ($this->_di->__debugInfo()['_instances'] as $k => $v) {
+        foreach ($this->_di->getInstances() as $k => $v) {
             if ($k === 'configure' || $k === 'debuggerPlugin') {
                 continue;
             }
