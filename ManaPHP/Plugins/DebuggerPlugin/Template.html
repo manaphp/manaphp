@@ -328,14 +328,21 @@
 <script src='https://cdn.jsdelivr.net/npm/vue@2.6.9/dist/vue.min.js'></script>
 
 <script>
+    $(function () {
+        $('#tabs a').on('shown.bs.tab', function (e) {
+            localStorage.setItem('__last_debugger', e.target.hash);
+        })
+
+        let hash = localStorage.getItem('__last_debugger') || '#basic';
+        $("a[href='" + hash + "']").tab('show');
+    });
+
     let data = DEBUGGER_DATA;
 
     data['included_files_application'] = [];
     data['included_files_application_only'] = true;
     data['log_checked_executed'] = true;
     data['global_type'] = 'request';
-
-    $("a[href='#basic']").tab('show');
 
     var app = new Vue({
         el: '#app',
