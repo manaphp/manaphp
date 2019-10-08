@@ -81,8 +81,6 @@ class Di implements DiInterface
         if (self::$_default === null) {
             self::$_default = $this;
         }
-
-        $this->_instances['di'] = $this;
     }
 
     /**
@@ -405,17 +403,5 @@ class Di implements DiInterface
     public function has($name)
     {
         return isset($this->_definitions[$name]);
-    }
-
-    /**
-     * @return array
-     */
-    public function __debugInfo()
-    {
-        $data = get_object_vars($this);
-
-        unset($data['_instances']['di']);
-
-        return $data;
     }
 }
