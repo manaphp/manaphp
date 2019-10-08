@@ -35,6 +35,11 @@ interface DiInterface
     public function getDefinitions();
 
     /**
+     * @return array
+     */
+    public function getInstances();
+
+    /**
      * Removes a component from the components container
      *
      * @param string $name
@@ -77,9 +82,4 @@ interface DiInterface
      * @return static
      */
     public static function getDefault();
-
-    /**
-     * @return array
-     */
-    public function getInstances();
 }

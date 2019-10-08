@@ -353,6 +353,14 @@ class Di implements DiInterface
     }
 
     /**
+     * @return array
+     */
+    public function getInstances()
+    {
+        return $this->_instances;
+    }
+
+    /**
      * Magic method __get
      *
      * @param string $propertyName
@@ -397,14 +405,6 @@ class Di implements DiInterface
     public function has($name)
     {
         return isset($this->_definitions[$name]);
-    }
-
-    /**
-     * @return array
-     */
-    public function getInstances()
-    {
-        return $this->_instances;
     }
 
     /**
