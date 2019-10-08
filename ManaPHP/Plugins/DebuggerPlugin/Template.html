@@ -70,12 +70,7 @@
         <li><a href="#configure" data-toggle="tab">Configure</a></li>
         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Global <b class="caret"></b></a>
             <ul class="dropdown-menu">
-                <li><a data-toggle="tab" @click="global_type='request'" href="#global">REQUEST</a></li>
-                <li><a data-toggle="tab" @click="global_type='get'" href="#global">GET</a></li>
-                <li><a data-toggle="tab" @click="global_type='post'" href="#global">POST</a></li>
-                <li><a data-toggle="tab" @click="global_type='session'" href="#global">SESSION</a></li>
-                <li><a data-toggle="tab" @click="global_type='cookie'" href="#global">COOKIE</a></li>
-                <li><a data-toggle="tab" @click="global_type='server'" href="#global">SERVER</a></li>
+                <li v-for="(value, name) in components.request.properties._context" v-if="name!=='request_id'"><a data-toggle="tab" @click="global_type=name" href="#global">{{name}}<span v-if="!Object.keys(value).length">*</span></a></li>
             </ul>
         </li>
         <li><a href="#log" data-toggle="tab">Log</a></li>
@@ -181,7 +176,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(value, name, index) in data[global_type]">
+                <tr v-for="(value, name, index) in components.request.properties._context[global_type]">
                     <td>{{ index }}</td>
                     <td>{{ name }}</td>
                     <td>{{ value }}</td>

@@ -244,19 +244,15 @@ class DebuggerPlugin extends Plugin
         $data['events'] = $context->events;
 
         foreach ($this->_di->getInstances() as $name => $instance) {
+            if (strpos($name, '\\') !== false) {
+                continue;
+            }
+
             $properties = $instance instanceof Component ? $instance->dump() : array_keys(get_object_vars($instance));
             $data['components'][$name] = ['class' => get_class($instance), 'properties' => $properties];
         }
 
-        $globals = $this->request->getGlobals();
-
         $data['included_files'] = @get_included_files() ?: [];
-        $data['request'] = $globals->_REQUEST;
-        $data['get'] = $globals->_GET;
-        $data['post'] = $globals->_POST;
-        $data['cookie'] = $globals->_COOKIE;
-        $data['session'] = isset($globals->_COOKIE[$this->session->getName()]) ? $this->session->get() : [];
-        $data['server'] = $globals->_SERVER;
         unset($data['server']['PATH']);
 
         $this->filesystem->filePut($file, json_stringify($data, JSON_PRETTY_PRINT));
