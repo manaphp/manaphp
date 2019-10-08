@@ -252,7 +252,7 @@ class DebuggerPlugin extends Plugin
                 continue;
             }
 
-            $properties = $v instanceof Component ? $v->__debugInfo() : [];
+            $properties = $v instanceof Component ? $v->dump() : [];
 
             foreach ($properties as $pk => $pv) {
                 if ($pv instanceof Component || $pk === 'eventsManager') {

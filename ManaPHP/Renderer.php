@@ -278,4 +278,15 @@ class Renderer extends Component implements RendererInterface
             $context->sections[$last] = ob_get_clean();
         }
     }
+
+    public function dump()
+    {
+        $data = parent::dump();
+
+        foreach ($data['_context']['sections'] as $k => $v) {
+            $data['_context']['sections'][$k] = '***';
+        }
+
+        return $data;
+    }
 }

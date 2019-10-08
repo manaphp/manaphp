@@ -633,4 +633,13 @@ class Response extends Component implements ResponseInterface
     {
         return $this->_context->headers;
     }
+
+    public function dump()
+    {
+        $data = parent::dump();
+		
+        $data['_context']['content'] = '***';
+
+        return $data;
+    }
 }

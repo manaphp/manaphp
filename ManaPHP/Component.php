@@ -250,6 +250,20 @@ class Component implements ComponentInterface, JsonSerializable
     /**
      * @return array
      */
+    public function dump()
+    {
+        $data = $this->__debugInfo();
+        
+        if (isset($data['_context'])) {
+            $data['_context'] = (array)$data['_context'];
+        }
+
+        return $data;
+    }
+
+    /**
+     * @return array
+     */
     public function toArray()
     {
         $data = [];
