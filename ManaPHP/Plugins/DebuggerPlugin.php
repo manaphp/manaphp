@@ -112,7 +112,7 @@ class DebuggerPlugin extends Plugin
                 'line' => $log->line,
                 'message' => $log->message
             ];
-        } elseif ($event === 'db:beforeQuery' || $event === 'db:beforeExecute') {
+        } elseif ($event === 'db:querying' || $event === 'db:executing') {
             /** @var \ManaPHP\DbInterface $source */
             $preparedSQL = $source->getSQL();
             if (!isset($context->sql_prepared[$preparedSQL])) {
