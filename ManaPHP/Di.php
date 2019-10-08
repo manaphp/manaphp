@@ -345,13 +345,11 @@ class Di implements DiInterface
     }
 
     /**
-     * @param string $name
-     *
-     * @return string|array|callable|null
+     * @return array
      */
-    public function getDefinition($name)
+    public function getDefinitions()
     {
-        return $this->_definitions[$name] ?? null;
+        return $this->_definitions;
     }
 
     /**

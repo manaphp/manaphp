@@ -30,11 +30,9 @@ interface DiInterface
     public function setShared($name, $definition);
 
     /**
-     * @param string $name
-     *
-     * @return string|array|callable|null
+     * @return array
      */
-    public function getDefinition($name);
+    public function getDefinitions();
 
     /**
      * Removes a component from the components container
