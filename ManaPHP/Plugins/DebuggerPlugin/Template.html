@@ -192,8 +192,8 @@
         <div class="tab-pane" id="tab_log">
             <h4>Log Messages
                 <small><select v-model="logger.level" title="">
-                        <option v-for="(intLevel,strLevel) in logger.levels" :value="intLevel">{{strLevel}}</option>
-                    </select></small>
+                    <option v-for="(intLevel,strLevel) in logger.levels" :value="intLevel">{{strLevel}}</option>
+                </select></small>
             </h4>
             <table class="table table-striped table-bordered table-condensed">
                 <thead>
@@ -296,9 +296,10 @@
             </table>
         </div>
         <div class="tab-pane" id="tab_files">
-            <h4>IncludedFiles({{included_files_computed.length}}) <label><input type="checkbox" v-model="included_files_application_only">
-                    <small>Ignore Framework Files</small>
-                    </input></label></h4>
+            <h4>IncludedFiles({{included_files_computed.length}}) <label><input type="checkbox"
+                                                                                v-model="included_files_application_only">
+                <small>Ignore Framework Files</small>
+                </input></label></h4>
             <table class="table table-striped table-bordered table-condensed">
                 <thead>
                 <tr>
@@ -320,22 +321,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
 <script src='https://cdn.jsdelivr.net/npm/vue@2.6.9/dist/vue.min.js'></script>
 
-<?php
-$globals = di('request')->getGlobals();
-$session = di('session');
-
-$data['included_files'] = @get_included_files() ?: [];
-$data['request'] = $globals->_REQUEST;
-$data['get'] = $globals->_GET;
-$data['post'] = $globals->_POST;
-$data['cookie'] = $globals->_COOKIE;
-$data['session'] = isset($globals->_COOKIE[$session->getName()]) ? $session->get() : [];
-$data['server'] = $globals->_SERVER;
-unset($data['server']['PATH']);
-?>
-<!--suppress JSUnresolvedFunction -->
 <script>
-    data =<?=json_stringify($data, JSON_PRETTY_PRINT | JSON_HEX_TAG)?>;
+    let data = DEBUGGER_DATA;
 
     data['included_files_application'] = [];
     data['included_files_application_only'] = true;

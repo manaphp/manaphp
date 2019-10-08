@@ -39,7 +39,7 @@ class DebuggerPlugin extends Plugin
     /**
      * @var string
      */
-    protected $_template = 'Default';
+    protected $_template = '@manaphp/Plugins/DebuggerPlugin/Template.html';
 
     public function __construct()
     {
@@ -52,16 +52,23 @@ class DebuggerPlugin extends Plugin
 
     public function onRequestBegin()
     {
-        if (preg_match('#^[\w/]+\.html$#', $debugger = $this->request->get('_debugger', ''))) {
-            $file = '@data/debugger' . $debugger;
+        if (($debugger = $this->request->get('_debugger', '')) && preg_match('#^([\w/]+)\.(html|json)$#', $debugger, $match)) {
+            $file = '@data/debugger' . $match[1] . '.json';
             if ($this->filesystem->fileExists($file)) {
-                $this->response->setContent($this->filesystem->fileGet($file));
+                $ext = $match[2];
+                $json = $this->filesystem->fileGet($file);
+                if ($ext === 'html') {
+                    $this->response->setContent(strtr($this->filesystem->fileGet($this->_template), ['DEBUGGER_DATA' => $json]));
+                } else {
+                    $this->response->setJsonContent($json);
+                }
+
                 throw new AbortException();
             }
         }
 
         $context = $this->_context;
-        $context->file = date('/ymd/His_') . $this->random->getBase(32) . '.html';
+        $context->file = date('/ymd/His_') . $this->random->getBase(32);
     }
 
     public function onResponseSending()
@@ -76,7 +83,7 @@ class DebuggerPlugin extends Plugin
         $context = $this->_context;
 
         if ($context->file) {
-            $this->filesystem->filePut('@data/debugger/' . $context->file, $this->output());
+            $this->save('@data/debugger/' . $context->file . '.json');
             $this->logger->info('debugger-link: `' . $this->getUrl() . '`', 'debugger.link');
         }
     }
@@ -220,9 +227,11 @@ class DebuggerPlugin extends Plugin
     }
 
     /**
-     * @return string
+     * @param string $file
+     *
+     * @return void
      */
-    public function output()
+    public function save($file)
     {
         $context = $this->_context;
 
@@ -240,7 +249,6 @@ class DebuggerPlugin extends Plugin
         $data['components'] = [];
         $data['events'] = $context->events;
 
-        /** @noinspection ForeachSourceInspection */
         foreach ($this->_di->__debugInfo()['_instances'] as $k => $v) {
             if ($k === 'configure' || $k === 'debuggerPlugin') {
                 continue;
@@ -257,9 +265,18 @@ class DebuggerPlugin extends Plugin
             $data['components'][] = ['name' => $k, 'class' => get_class($v), 'properties' => $properties];
         }
 
-        $template = strpos($this->_template, '/') !== false ? $this->_template : ('@manaphp/Plugins/DebuggerPlugin/Template/' . $this->_template);
+        $globals = $this->request->getGlobals();
 
-        return $this->renderer->render($template, ['data' => $data]);
+        $data['included_files'] = @get_included_files() ?: [];
+        $data['request'] = $globals->_REQUEST;
+        $data['get'] = $globals->_GET;
+        $data['post'] = $globals->_POST;
+        $data['cookie'] = $globals->_COOKIE;
+        $data['session'] = isset($globals->_COOKIE[$this->session->getName()]) ? $this->session->get() : [];
+        $data['server'] = $globals->_SERVER;
+        unset($data['server']['PATH']);
+
+        $this->filesystem->filePut($file, json_stringify($data, JSON_PRETTY_PRINT));
     }
 
     /**
@@ -269,6 +286,6 @@ class DebuggerPlugin extends Plugin
     {
         $context = $this->_context;
 
-        return $this->router->createUrl('/?_debugger=' . $context->file, true);
+        return $this->router->createUrl('/?_debugger=' . $context->file . '.html', true);
     }
 }
