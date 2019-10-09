@@ -1,0 +1,128 @@
+<!doctype html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ManaPHP Debugger</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
+    <!--[if lt IE 9]>
+    <script src="https://cdn.jsdelivr.net/npm/response.js/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        #global tr td:nth-child(1) {
+            width: 5%;
+        }
+
+        #global tr td:nth-child(2) {
+            width: 20%;
+        }
+
+        body {
+            overflow-y: scroll;
+        }
+
+        table pre {
+            border: none;
+            padding: 0;
+            margin: 0;
+            background-color: transparent;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 80px;
+        }
+
+        #components pre {
+            max-height: 200px;
+        }
+
+        .debugger {
+            position: fixed;
+            top: 1px;
+            left: 1px;
+            z-index: 1000000;
+            width: 80px;
+            border-radius: 5px;
+            background-color: lightskyblue;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            box-sizing: border-box;
+            line-height: 21px;
+            font-family: Arial, sans-serif;
+            opacity: 0.8;
+        }
+
+        .debugger a {
+            display: block;
+            color: red;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <div class="tab-pane" id="log">
+        <h4>Log Messages
+            <small><select v-model="level" title="">
+                <option v-for="(intLevel,strLevel) in levels" :value="intLevel">{{strLevel}}</option>
+            </select></small>
+        </h4>
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+            <tr>
+                <td>#</td>
+                <td>time</td>
+                <td>category</td>
+                <td>location</td>
+                <td>message</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(log, index) in logs" v-if="levels[log.level] <= level">
+                <td>{{index+1}}</td>
+                <td>{{log.time}}</td>
+                <td>{{log.category}}</td>
+                <td>{{log.location}}</td>
+                <td :title="json_pretty(log.message)">{{log.message}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src='https://cdn.jsdelivr.net/npm/vue@2.6.9/dist/vue.min.js'></script>
+
+<script>
+    let data = {logs: LOGGER_DATA};
+    data['levels'] = {
+        "fatal": 10,
+        "error": 20,
+        "warn": 30,
+        "info": 40,
+        "debug": 50
+    };
+    data['level'] = 50;
+
+    var app = new Vue({
+        el: '#app',
+        data: data,
+        methods: {
+            json_stringify: function (data) {
+                return JSON.stringify(data, null, 4);
+            },
+            json_pretty: function (str) {
+                if (str === '') {
+                    return '';
+                } else if (str[0] === '{' || str[0] === ']') {
+                    return JSON.stringify(JSON.parse(str), null, 4);
+                } else {
+                    return str;
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>
