@@ -22,7 +22,7 @@ interface CacheInterface
      *
      * @param string $key
      *
-     * @return mixed|false|array
+     * @return string|false
      */
     public function get($key);
 
@@ -30,7 +30,7 @@ interface CacheInterface
      * Stores a value identified by a key into cache.
      *
      * @param string $key
-     * @param mixed  $value
+     * @param string $value
      * @param int    $ttl
      *
      * @return void

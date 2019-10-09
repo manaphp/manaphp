@@ -16,32 +16,22 @@ abstract class Cache extends Component implements CacheInterface
     /**
      * @param string $key
      *
-     * @return mixed|false
+     * @return string|false
      */
     public function get($key)
     {
         if (($data = $this->do_get($key)) === false) {
             $this->eventsManager->fireEvent('cache:miss', $this, ['key' => $key]);
             return false;
-        }
-
-        $this->eventsManager->fireEvent('cache:hit', $this, ['key' => $key]);
-
-        if ($data[0] !== '{' && $data[0] !== '[') {
-            return $data;
-        }
-
-        $json = json_parse($data);
-        if (count($json) === 1 && key($json) === '_wrapper_') {
-            return $json['_wrapper_'];
         } else {
-            return $json;
+            $this->eventsManager->fireEvent('cache:hit', $this, ['key' => $key]);
+            return $data;
         }
     }
 
     /**
      * @param string $key
-     * @param mixed  $value
+     * @param string $value
      * @param int    $ttl
      *
      * @return void
@@ -50,28 +40,20 @@ abstract class Cache extends Component implements CacheInterface
 
     /**
      * @param string $key
-     * @param mixed  $value
+     * @param string $value
      * @param int    $ttl
      *
      * @return void
      */
     public function set($key, $value, $ttl)
     {
-        if ($value === false) {
-            throw new InvalidValueException(['`:key` key cache value can not `false` bool value', 'key' => $key]);
-        } elseif (is_scalar($value) || $value === null) {
-            if (is_string($value) && $value !== '' && $value[0] !== '{' && $value[0] !== '[') {
-                $data = $value;
-            } else {
-                $data = json_stringify(['_wrapper_' => $value]);
-            }
-        } elseif (is_array($value) && isset($value['_wrapper_'])) {
-            $data = json_stringify(['_wrapper_' => $value]);
+        if (!is_string($value)) {
+            throw new InvalidValueException(['value of `:key` key must be a string', 'key' => $key]);
+        } elseif ($value === 'false') {
+            throw new InvalidValueException(['value of `:key` key must be NOT `false` string', 'key' => $key]);
         } else {
-            $data = json_stringify($value);
+            $this->do_set($key, $value, $ttl);
         }
-
-        $this->do_set($key, $data, $ttl);
     }
 
     abstract public function do_delete($key);
