@@ -28,6 +28,11 @@ class LoggerPluginContext
 class LoggerPlugin extends Plugin
 {
     /**
+     * @var bool
+     */
+    protected $_enabled;
+
+    /**
      * @var string
      */
     protected $_template = '@manaphp/Plugins/LoggerPlugin/Template.html';
@@ -39,13 +44,19 @@ class LoggerPlugin extends Plugin
      */
     public function __construct($options = [])
     {
+        if (isset($options['enabled'])) {
+            $this->_enabled = (bool)$options['enabled'];
+        }
+
         if (isset($options['template'])) {
             $this->_template = $options['template'];
         }
 
-        $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
-        $this->eventsManager->attachEvent('logger:log', [$this, 'onLoggerLog']);
-        $this->eventsManager->attachEvent('request:end', [$this, 'onRequestEnd']);
+        if ($this->_enabled !== false) {
+            $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
+            $this->eventsManager->attachEvent('logger:log', [$this, 'onLoggerLog']);
+            $this->eventsManager->attachEvent('request:end', [$this, 'onRequestEnd']);
+        }
     }
 
     public function onRequestBegin()

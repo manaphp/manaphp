@@ -41,6 +41,11 @@ class DebuggerPluginContext
 class DebuggerPlugin extends Plugin
 {
     /**
+     * @var bool
+     */
+    protected $_enabled;
+
+    /**
      * @var string
      */
     protected $_template = '@manaphp/Plugins/DebuggerPlugin/Template.html';
@@ -52,18 +57,24 @@ class DebuggerPlugin extends Plugin
      */
     public function __construct($options = [])
     {
+        if (isset($options['enabled'])) {
+            $this->_enabled = (bool)$options['enabled'];
+        }
+
         if (isset($options['template'])) {
             $this->_template = $options['template'];
         }
 
-        $this->eventsManager->peekEvent('db', [$this, 'onDb']);
-        $this->eventsManager->peekEvent('mongodb', [$this, 'onMongodb']);
+        if ($this->_enabled !== false) {
+            $this->eventsManager->peekEvent('db', [$this, 'onDb']);
+            $this->eventsManager->peekEvent('mongodb', [$this, 'onMongodb']);
 
-        $this->eventsManager->attachEvent('renderer:rendering', [$this, 'onRendererRendering']);
-        $this->eventsManager->attachEvent('logger:log', [$this, 'onLoggerLog']);
-        $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
-        $this->eventsManager->attachEvent('response:sending', [$this, 'onResponseSending']);
-        $this->eventsManager->attachEvent('request:end', [$this, 'onRequestEnd']);
+            $this->eventsManager->attachEvent('renderer:rendering', [$this, 'onRendererRendering']);
+            $this->eventsManager->attachEvent('logger:log', [$this, 'onLoggerLog']);
+            $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
+            $this->eventsManager->attachEvent('response:sending', [$this, 'onResponseSending']);
+            $this->eventsManager->attachEvent('request:end', [$this, 'onRequestEnd']);
+        }
     }
 
     public function onRequestBegin()
@@ -302,7 +313,7 @@ class DebuggerPlugin extends Plugin
 
         $data['included_files'] = @get_included_files() ?: [];
         unset($data['server']['PATH']);
-        
+
         $this->filesystem->filePut($file, gzencode(json_stringify($data)));
     }
 
