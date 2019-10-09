@@ -81,9 +81,11 @@ class DebuggerPlugin extends Plugin
                 } else {
                     $this->response->setJsonContent($json);
                 }
-
-                throw new AbortException();
+            } else {
+                $this->response->setContent('NOT FOUND')->setStatus(404);
             }
+			
+            throw new AbortException();
         } elseif (strpos($this->request->getServer('HTTP_USER_AGENT'), 'ApacheBench') !== false) {
             $context->enabled = false;
         } else {
