@@ -70,7 +70,7 @@ class DebuggerPlugin extends Plugin
     {
         $context = $this->_context;
 
-        if (($debugger = $this->request->get('_debugger', '')) && preg_match('#^([\w/]+)\.(html|json)$#', $debugger, $match)) {
+        if (($debugger = $this->request->get('__debuggerPlugin', '')) && preg_match('#^([\w/]+)\.(html|json)$#', $debugger, $match)) {
             $context->enabled = false;
             $file = '@data/debugger' . $match[1] . '.json';
             if ($this->filesystem->fileExists($file)) {
@@ -317,6 +317,6 @@ class DebuggerPlugin extends Plugin
     {
         $context = $this->_context;
 
-        return $this->router->createUrl('/?_debugger=' . $context->file . '.html', true);
+        return $this->router->createUrl('/?__debuggerPlugin=' . $context->file . '.html', true);
     }
 }

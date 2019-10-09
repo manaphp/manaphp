@@ -52,7 +52,7 @@ class LoggerPlugin extends Plugin
     {
         $context = $this->_context;
 
-        if (($logger = $this->request->get('_logger', '')) && preg_match('#^([\w/]+)\.(html|json|txt)$#', $logger, $match)) {
+        if (($logger = $this->request->get('__loggerPlugin', '')) && preg_match('#^([\w/]+)\.(html|json|txt)$#', $logger, $match)) {
             $context->enabled = false;
             $file = '@data/logger' . $match[1] . '.json';
             if ($this->filesystem->fileExists($file)) {
@@ -118,7 +118,7 @@ class LoggerPlugin extends Plugin
     {
         $context = $this->_context;
 
-        return $this->router->createUrl('/?_logger=' . $context->file . '.html', true);
+        return $this->router->createUrl('/?__loggerPlugin=' . $context->file . '.html', true);
     }
 
     public function dump()
