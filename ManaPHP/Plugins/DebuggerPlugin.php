@@ -56,8 +56,8 @@ class DebuggerPlugin extends Plugin
             $this->_template = $options['template'];
         }
 
-        $this->eventsManager->peekEvent([$this, 'onDb'], 'db');
-        $this->eventsManager->peekEvent([$this, 'onMongodb', 'mongodb']);
+        $this->eventsManager->peekEvent('db', [$this, 'onDb']);
+        $this->eventsManager->peekEvent('mongodb', [$this, 'onMongodb']);
 
         $this->eventsManager->attachEvent('renderer:rendering', [$this, 'onRendererRendering']);
         $this->eventsManager->attachEvent('logger:log', [$this, 'onLoggerLog']);

@@ -124,12 +124,12 @@ class Manager implements ManagerInterface
     }
 
     /**
-     * @param callable $handler
      * @param string   $group
+     * @param callable $handler
      *
      * @return static
      */
-    public function peekEvent($handler, $group = '*')
+    public function peekEvent($group, $handler)
     {
         $this->_peekers[$group][] = $handler;
 

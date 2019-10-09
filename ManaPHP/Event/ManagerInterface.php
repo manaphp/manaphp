@@ -44,12 +44,12 @@ interface ManagerInterface
     public function fireEvent($event, $source, $data = []);
 
     /**
-     * @param callable $handler
      * @param string   $group
+     * @param callable $handler
      *
      * @return static
      */
-    public function peekEvent($handler, $group = '*');
+    public function peekEvent($group, $handler);
 
     /**
      * @param string $listener
