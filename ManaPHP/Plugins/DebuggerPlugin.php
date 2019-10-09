@@ -12,6 +12,11 @@ use ManaPHP\Version;
 class DebuggerPluginContext
 {
     /**
+     * @var bool
+     */
+    public $enabled;
+
+    /**
      * @var string
      */
     public $file;
@@ -52,7 +57,10 @@ class DebuggerPlugin extends Plugin
 
     public function onRequestBegin()
     {
+        $context = $this->_context;
+
         if (($debugger = $this->request->get('_debugger', '')) && preg_match('#^([\w/]+)\.(html|json)$#', $debugger, $match)) {
+            $context->enabled = false;
             $file = '@data/debugger' . $match[1] . '.json';
             if ($this->filesystem->fileExists($file)) {
                 $ext = $match[2];
@@ -65,15 +73,17 @@ class DebuggerPlugin extends Plugin
 
                 throw new AbortException();
             }
+        } elseif (strpos($this->request->getServer('HTTP_USER_AGENT'), 'ApacheBench') !== false) {
+            $context->enabled = false;
+        } else {
+            $context->enabled = true;
+            $context->file = date('/ymd/His_') . $this->random->getBase(32);
         }
-
-        $context = $this->_context;
-        $context->file = date('/ymd/His_') . $this->random->getBase(32);
     }
 
     public function onResponseSending()
     {
-        if ($this->_context->file) {
+        if ($this->_context->enabled) {
             $this->response->setHeader('X-Debugger-Link', $this->getUrl());
         }
     }
@@ -82,7 +92,7 @@ class DebuggerPlugin extends Plugin
     {
         $context = $this->_context;
 
-        if ($context->file) {
+        if ($context->enabled) {
             $this->save('@data/debugger/' . $context->file . '.json');
             $this->logger->info('debugger-link: `' . $this->getUrl() . '`', 'debugger.link');
         }
@@ -98,6 +108,10 @@ class DebuggerPlugin extends Plugin
     public function onEvent($event, $source, $data)
     {
         $context = $this->_context;
+
+        if (!$context->enabled) {
+            return;
+        }
 
         $context->events[] = $event;
 
