@@ -46,6 +46,8 @@ class LoggerPlugin extends Plugin
     {
         if (isset($options['enabled'])) {
             $this->_enabled = (bool)$options['enabled'];
+        } elseif (in_array($this->configure->env, ['dev', 'test'], true)) {
+            $this->_enabled = true;
         }
 
         if (isset($options['template'])) {
