@@ -325,10 +325,10 @@
 <script>
     $(function () {
         $('#tabs a').on('shown.bs.tab', function (e) {
-            localStorage.setItem('__last_debugger', e.target.hash);
+            localStorage.setItem('__debuggerPlugin.last', e.target.hash);
         })
 
-        let hash = localStorage.getItem('__last_debugger') || '#basic';
+        let hash = localStorage.getItem('__debuggerPlugin.last') || '#basic';
         $("a[href='" + hash + "']").tab('show');
     });
 
