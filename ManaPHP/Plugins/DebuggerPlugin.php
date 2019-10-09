@@ -5,7 +5,6 @@ namespace ManaPHP\Plugins;
 use ManaPHP\Component;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Logger;
-use ManaPHP\Logger\Log;
 use ManaPHP\Plugin;
 use ManaPHP\Version;
 
@@ -57,8 +56,11 @@ class DebuggerPlugin extends Plugin
             $this->_template = $options['template'];
         }
 
-        $this->eventsManager->peekEvent([$this, 'onEvent']);
+        $this->eventsManager->peekEvent([$this, 'onDb'], 'db');
+        $this->eventsManager->peekEvent([$this, 'onMongodb', 'mongodb']);
 
+        $this->eventsManager->attachEvent('renderer:rendering', [$this, 'onRendererRendering']);
+        $this->eventsManager->attachEvent('logger:log', [$this, 'onLoggerLog']);
         $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
         $this->eventsManager->attachEvent('response:sending', [$this, 'onResponseSending']);
         $this->eventsManager->attachEvent('request:end', [$this, 'onRequestEnd']);
@@ -108,36 +110,34 @@ class DebuggerPlugin extends Plugin
     }
 
     /**
-     * @param string                      $event
-     * @param \ManaPHP\ComponentInterface $source
-     * @param mixed                       $data
-     *
-     * @return void
+     * @param \ManaPHP\LoggerInterface $logger
+     * @param \ManaPHP\Logger\Log      $log
      */
-    public function onEvent($event, $source, $data)
+    public function onLoggerLog($logger, $log)
     {
         $context = $this->_context;
 
-        if (!$context->enabled) {
-            return;
-        }
+        $context->log[] = [
+            'time' => date('H:i:s.', $log->timestamp) . sprintf('%.03d', ($log->timestamp - (int)$log->timestamp) * 1000),
+            'level' => $log->level,
+            'category' => $log->category,
+            'file' => $log->file,
+            'line' => $log->line,
+            'message' => $log->message
+        ];
+    }
 
-        $context->events[] = $event;
+    /**
+     * @param string               $event
+     * @param \ManaPHP\DbInterface $db
+     * @param array                $data
+     */
+    public function onDb($event, $db, $data)
+    {
+        $context = $this->_context;
 
-        if ($event === 'logger:log') {
-            /** @var Log $log */
-            $log = $data;
-            $context->log[] = [
-                'time' => date('H:i:s.', $log->timestamp) . sprintf('%.03d', ($log->timestamp - (int)$log->timestamp) * 1000),
-                'level' => $log->level,
-                'category' => $log->category,
-                'file' => $log->file,
-                'line' => $log->line,
-                'message' => $log->message
-            ];
-        } elseif ($event === 'db:querying' || $event === 'db:executing') {
-            /** @var \ManaPHP\DbInterface $source */
-            $preparedSQL = $source->getSQL();
+        if ($event === 'db:querying' || $event === 'db:executing') {
+            $preparedSQL = $db->getSQL();
             if (!isset($context->sql_prepared[$preparedSQL])) {
                 $context->sql_prepared[$preparedSQL] = 1;
             } else {
@@ -146,14 +146,14 @@ class DebuggerPlugin extends Plugin
 
             $context->sql_count++;
             $context->sql_executed[] = [
-                'prepared' => $source->getSQL(),
-                'bind' => $source->getBind(),
-                'emulated' => $source->getEmulatedSQL()
+                'prepared' => $db->getSQL(),
+                'bind' => $db->getBind(),
+                'emulated' => $db->getEmulatedSQL()
             ];
         } elseif ($event === 'db:queried' || $event === 'db:executed') {
             /** @var \ManaPHP\DbInterface $source */
             $context->sql_executed[$context->sql_count - 1]['elapsed'] = $data['elapsed'];
-            $context->sql_executed[$context->sql_count - 1]['row_count'] = $source->affectedRows();
+            $context->sql_executed[$context->sql_count - 1]['row_count'] = $db->affectedRows();
         } elseif ($event === 'db:begin' || $event === 'db:rollback' || $event === 'db:commit') {
             $context->sql_count++;
 
@@ -174,16 +174,36 @@ class DebuggerPlugin extends Plugin
             } else {
                 $context->sql_prepared[$preparedSQL]++;
             }
-        } elseif ($event === 'renderer:rendering') {
-            $vars = $data['vars'];
-            foreach ((array)$vars as $k => $v) {
-                if ($v instanceof Component) {
-                    unset($vars[$k]);
-                }
+        }
+    }
+
+    /**
+     * @param \ManaPHP\RendererInterface $renderer
+     * @param array[]                    $data
+     */
+    public function onRendererRendering($renderer, $data)
+    {
+        $context = $this->_context;
+
+        $vars = $data['vars'];
+        foreach ((array)$vars as $k => $v) {
+            if ($v instanceof Component) {
+                unset($vars[$k]);
             }
-            unset($vars['di']);
-            $context->view[] = ['file' => $data['file'], 'vars' => $vars, 'base_name' => basename(dirname($data['file'])) . '/' . basename($data['file'])];
-        } elseif ($event === 'mongodb:queried') {
+        }
+        unset($vars['di']);
+        $context->view[] = ['file' => $data['file'], 'vars' => $vars, 'base_name' => basename(dirname($data['file'])) . '/' . basename($data['file'])];
+    }
+
+    /**
+     * @param string                    $event
+     * @param \ManaPHP\MongodbInterface $mongodb
+     * @param array                     $data
+     */
+    public function onMongodb($event, $mongodb, $data)
+    {
+        $context = $this->_context;
+        if ($event === 'mongodb:queried') {
             $item = [];
             $item['type'] = 'query';
             $item['raw'] = ['namespace' => $data['namespace'], 'filter' => $data['filter'], 'options' => $data['options']];
