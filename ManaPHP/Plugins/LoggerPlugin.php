@@ -32,8 +32,17 @@ class LoggerPlugin extends Plugin
      */
     protected $_template = '@manaphp/Plugins/LoggerPlugin/Template.html';
 
-    public function __construct()
+    /**
+     * LoggerPlugin constructor.
+     *
+     * @param array $options
+     */
+    public function __construct($options = [])
     {
+        if (isset($options['template'])) {
+            $this->_template = $options['template'];
+        }
+
         $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
         $this->eventsManager->attachEvent('logger:log', [$this, 'onLoggerLog']);
         $this->eventsManager->attachEvent('request:end', [$this, 'onRequestEnd']);

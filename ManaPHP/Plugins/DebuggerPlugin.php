@@ -46,8 +46,17 @@ class DebuggerPlugin extends Plugin
      */
     protected $_template = '@manaphp/Plugins/DebuggerPlugin/Template.html';
 
-    public function __construct()
+    /**
+     * DebuggerPlugin constructor.
+     *
+     * @param array $options
+     */
+    public function __construct($options = [])
     {
+        if (isset($options['template'])) {
+            $this->_template = $options['template'];
+        }
+
         $this->eventsManager->peekEvent([$this, 'onEvent']);
 
         $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
