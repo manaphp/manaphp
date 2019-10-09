@@ -70,21 +70,25 @@ class DebuggerPlugin extends Plugin
     {
         $context = $this->_context;
 
-        if (($debugger = $this->request->get('__debuggerPlugin', '')) && preg_match('#^([\w/]+)\.(html|json)$#', $debugger, $match)) {
+        if (($debugger = $this->request->get('__debuggerPlugin', '')) && preg_match('#^([\w/]+)\.(html|json|txt|raw)$#', $debugger, $match)) {
             $context->enabled = false;
-            $file = '@data/debuggerPlugin' . $match[1] . '.json';
+            $file = '@data/debuggerPlugin' . $match[1] . '.zip';
             if ($this->filesystem->fileExists($file)) {
                 $ext = $match[2];
-                $json = $this->filesystem->fileGet($file);
+                $json = gzdecode($this->filesystem->fileGet($file));
                 if ($ext === 'html') {
                     $this->response->setContent(strtr($this->filesystem->fileGet($this->_template), ['DEBUGGER_DATA' => $json]));
+                } elseif ($ext === 'txt') {
+                    $this->response->setContent(json_stringify(json_parse($json), JSON_PRETTY_PRINT))->setContentType('text/plain;charset=UTF-8');
+                } elseif ($ext === 'raw') {
+                    $this->response->setContent($json)->setContentType('text/plain;charset=UTF-8');
                 } else {
                     $this->response->setJsonContent($json);
                 }
             } else {
                 $this->response->setContent('NOT FOUND')->setStatus(404);
             }
-			
+
             throw new AbortException();
         } elseif (strpos($this->request->getServer('HTTP_USER_AGENT'), 'ApacheBench') !== false) {
             $context->enabled = false;
@@ -106,7 +110,7 @@ class DebuggerPlugin extends Plugin
         $context = $this->_context;
 
         if ($context->enabled) {
-            $this->save('@data/debuggerPlugin/' . $context->file . '.json');
+            $this->save('@data/debuggerPlugin/' . $context->file . '.zip');
             $this->logger->info('debugger-link: `' . $this->getUrl() . '`', 'debugger.link');
         }
     }
@@ -298,8 +302,8 @@ class DebuggerPlugin extends Plugin
 
         $data['included_files'] = @get_included_files() ?: [];
         unset($data['server']['PATH']);
-
-        $this->filesystem->filePut($file, json_stringify($data, JSON_PRETTY_PRINT));
+        
+        $this->filesystem->filePut($file, gzencode(json_stringify($data)));
     }
 
     public function dump()

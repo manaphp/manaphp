@@ -52,14 +52,16 @@ class LoggerPlugin extends Plugin
     {
         $context = $this->_context;
 
-        if (($logger = $this->request->get('__loggerPlugin', '')) && preg_match('#^([\w/]+)\.(html|json|txt)$#', $logger, $match)) {
+        if (($logger = $this->request->get('__loggerPlugin', '')) && preg_match('#^([\w/]+)\.(html|json|txt|raw)$#', $logger, $match)) {
             $context->enabled = false;
-            $file = '@data/loggerPlugin' . $match[1] . '.json';
+            $file = '@data/loggerPlugin' . $match[1] . '.zip';
             if ($this->filesystem->fileExists($file)) {
                 $ext = $match[2];
-                $json = $this->filesystem->fileGet($file);
+                $json = gzdecode($this->filesystem->fileGet($file));
                 if ($ext === 'html') {
                     $this->response->setContent(strtr($this->filesystem->fileGet($this->_template), ['LOGGER_DATA' => $json]));
+                } elseif ($ext === 'raw') {
+                    $this->response->setContent($json)->setContentType('text/plain;charset=UTF-8');
                 } elseif ($ext === 'txt') {
                     $content = '';
                     foreach (json_parse($json) as $log) {
@@ -72,7 +74,7 @@ class LoggerPlugin extends Plugin
             } else {
                 $this->response->setContent('NOT FOUND')->setStatus(404);
             }
-			
+
             throw new AbortException();
         } elseif (strpos($this->request->getServer('HTTP_USER_AGENT'), 'ApacheBench') !== false) {
             $context->enabled = false;
@@ -101,7 +103,7 @@ class LoggerPlugin extends Plugin
 
     public function save($file)
     {
-        $this->filesystem->filePut($file, json_stringify($this->_context->logs, JSON_PRETTY_PRINT));
+        $this->filesystem->filePut($file, gzencode(json_stringify($this->_context->logs)));
     }
 
     public function onRequestEnd()
@@ -109,7 +111,7 @@ class LoggerPlugin extends Plugin
         $context = $this->_context;
 
         if ($context->enabled) {
-            $this->save('@data/loggerPlugin/' . $context->file . '.json');
+            $this->save('@data/loggerPlugin/' . $context->file . '.zip');
         }
     }
 
