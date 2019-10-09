@@ -27,7 +27,7 @@ class Sword extends Component implements EngineInterface
     {
         if (strpos($source, $root = $this->alias->get('@root')) === 0) {
             $compiled = '@data/sword' . substr($source, strlen($root));
-        } elseif (!empty($_SERVER['DOCUMENT_ROOT']) && strpos($source, $_SERVER['DOCUMENT_ROOT']) === 0) {
+        } elseif ($_SERVER['DOCUMENT_ROOT'] !== '' && strpos($source, $_SERVER['DOCUMENT_ROOT']) === 0) {
             $compiled = '@data/sword/' . substr($source, strlen($_SERVER['DOCUMENT_ROOT']));
         } else {
             $compiled = "@data/sword/$source";

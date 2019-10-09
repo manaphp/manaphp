@@ -59,7 +59,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         $rootDir = $this->getRootDir();
         $appDir = $rootDir . '/app';
         $appNamespace = 'App';
-        $publicDir = !empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : $rootDir . '/public';
+        $publicDir = $_SERVER['DOCUMENT_ROOT'] !== '' ? $_SERVER['DOCUMENT_ROOT'] : $rootDir . '/public';
 
         if (strpos($class, 'ManaPHP\\') !== 0) {
             $appDir = dirname($this->_class_file);
@@ -100,7 +100,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         if (!$this->_root_dir) {
             if (strpos(static::class, 'ManaPHP\\') !== 0) {
                 $this->_root_dir = dirname($this->_class_file, 2);
-            } elseif (!empty($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'] === dirname($_SERVER['SCRIPT_FILENAME'])) {
+            } elseif ($_SERVER['DOCUMENT_ROOT'] !== '' && $_SERVER['DOCUMENT_ROOT'] === dirname($_SERVER['SCRIPT_FILENAME'])) {
                 $this->_root_dir = dirname($_SERVER['DOCUMENT_ROOT']);
             } else {
                 $rootDir = realpath(dirname($_SERVER['SCRIPT_FILENAME']));
@@ -128,7 +128,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
     public function getDi()
     {
         if (!$this->_di) {
-            $this->_di = !empty($_SERVER['DOCUMENT_ROOT']) ? new MvcFactory() : new CliFactory();
+            $this->_di = $_SERVER['DOCUMENT_ROOT'] !== '' ? new MvcFactory() : new CliFactory();
         }
         return $this->_di;
     }
@@ -311,7 +311,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
 
         $this->registerServices();
 
-        if (!empty($_SERVER['DOCUMENT_ROOT'])) {
+        if ($_SERVER['DOCUMENT_ROOT'] !== '') {
             $this->eventsManager->fireEvent('request:begin', $this);
         }
     }

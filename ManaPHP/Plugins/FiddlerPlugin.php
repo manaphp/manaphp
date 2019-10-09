@@ -40,7 +40,7 @@ class FiddlerPlugin extends Plugin
     {
         $context = $this->_context;
 
-        if (empty($_SERVER['DOCUMENT_ROOT'])) {
+        if ($_SERVER['DOCUMENT_ROOT'] === '') {
             $context->header = ['ip' => '-', 'url' => '-', 'uuid' => '-'];
             $context->channel = 'manaphp:fiddler:cli:' . $this->configure->id;
         }
@@ -106,7 +106,7 @@ class FiddlerPlugin extends Plugin
      */
     public function enabled()
     {
-        if (empty($_SERVER['DOCUMENT_ROOT'])) {
+        if ($_SERVER['DOCUMENT_ROOT'] === '') {
             $current = microtime(true);
             if ($this->_last_checked && $current - $this->_last_checked >= 1.0) {
                 $this->_last_checked = $current;

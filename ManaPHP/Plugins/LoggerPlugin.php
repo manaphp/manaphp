@@ -44,7 +44,9 @@ class LoggerPlugin extends Plugin
      */
     public function __construct($options = [])
     {
-        if (isset($options['enabled'])) {
+        if ($_SERVER['DOCUMENT_ROOT'] === '') {
+            $this->_enabled = false;
+        } elseif (isset($options['enabled'])) {
             $this->_enabled = (bool)$options['enabled'];
         } elseif (in_array($this->configure->env, ['dev', 'test'], true)) {
             $this->_enabled = true;
