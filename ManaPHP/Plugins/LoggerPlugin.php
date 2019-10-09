@@ -54,7 +54,7 @@ class LoggerPlugin extends Plugin
 
         if (($logger = $this->request->get('__loggerPlugin', '')) && preg_match('#^([\w/]+)\.(html|json|txt)$#', $logger, $match)) {
             $context->enabled = false;
-            $file = '@data/logger' . $match[1] . '.json';
+            $file = '@data/loggerPlugin' . $match[1] . '.json';
             if ($this->filesystem->fileExists($file)) {
                 $ext = $match[2];
                 $json = $this->filesystem->fileGet($file);
@@ -109,7 +109,7 @@ class LoggerPlugin extends Plugin
         $context = $this->_context;
 
         if ($context->enabled) {
-            $this->save('@data/logger/' . $context->file . '.json');
+            $this->save('@data/loggerPlugin/' . $context->file . '.json');
         }
     }
 

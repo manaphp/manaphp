@@ -72,7 +72,7 @@ class DebuggerPlugin extends Plugin
 
         if (($debugger = $this->request->get('__debuggerPlugin', '')) && preg_match('#^([\w/]+)\.(html|json)$#', $debugger, $match)) {
             $context->enabled = false;
-            $file = '@data/debugger' . $match[1] . '.json';
+            $file = '@data/debuggerPlugin' . $match[1] . '.json';
             if ($this->filesystem->fileExists($file)) {
                 $ext = $match[2];
                 $json = $this->filesystem->fileGet($file);
@@ -106,7 +106,7 @@ class DebuggerPlugin extends Plugin
         $context = $this->_context;
 
         if ($context->enabled) {
-            $this->save('@data/debugger/' . $context->file . '.json');
+            $this->save('@data/debuggerPlugin/' . $context->file . '.json');
             $this->logger->info('debugger-link: `' . $this->getUrl() . '`', 'debugger.link');
         }
     }
@@ -153,7 +153,6 @@ class DebuggerPlugin extends Plugin
                 'emulated' => $db->getEmulatedSQL()
             ];
         } elseif ($event === 'db:queried' || $event === 'db:executed') {
-            /** @var \ManaPHP\DbInterface $source */
             $context->sql_executed[$context->sql_count - 1]['elapsed'] = $data['elapsed'];
             $context->sql_executed[$context->sql_count - 1]['row_count'] = $db->affectedRows();
         } elseif ($event === 'db:begin' || $event === 'db:rollback' || $event === 'db:commit') {
