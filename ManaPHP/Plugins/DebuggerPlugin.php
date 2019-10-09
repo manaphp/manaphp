@@ -125,7 +125,7 @@ class DebuggerPlugin extends Plugin
         $context = $this->_context;
 
         if ($context->enabled) {
-            $this->save('@data/debuggerPlugin/' . $context->file . '.zip');
+            $this->filesystem->filePut("@data/debuggerPlugin/{$context->file}.zip", gzencode(json_stringify($this->_getData())));
             $this->logger->info('debugger-link: `' . $this->getUrl() . '`', 'debugger.link');
         }
     }
@@ -288,11 +288,9 @@ class DebuggerPlugin extends Plugin
     }
 
     /**
-     * @param string $file
-     *
-     * @return void
+     * @return array
      */
-    public function save($file)
+    protected function _getData()
     {
         $context = $this->_context;
 
@@ -318,7 +316,7 @@ class DebuggerPlugin extends Plugin
         $data['included_files'] = @get_included_files() ?: [];
         unset($data['server']['PATH']);
 
-        $this->filesystem->filePut($file, gzencode(json_stringify($data)));
+        return $data;
     }
 
     public function dump()

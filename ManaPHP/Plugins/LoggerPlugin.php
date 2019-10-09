@@ -116,17 +116,12 @@ class LoggerPlugin extends Plugin
         }
     }
 
-    public function save($file)
-    {
-        $this->filesystem->filePut($file, gzencode(json_stringify($this->_context->logs)));
-    }
-
     public function onRequestEnd()
     {
         $context = $this->_context;
 
         if ($context->enabled) {
-            $this->save('@data/loggerPlugin/' . $context->file . '.zip');
+            $this->filesystem->filePut("@data/loggerPlugin/{$context->file}.zip", gzencode(json_stringify($context->logs)));
         }
     }
 
