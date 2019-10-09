@@ -78,23 +78,31 @@ class Manager implements ManagerInterface
      */
     public function fireEvent($event, $source, $data = [])
     {
+        list($group, $type) = explode(':', $event, 2);
         if ($this->_listeners) {
-            list($p1, $p2) = explode(':', $event, 2);
-            if (isset($this->_listeners[$p1])) {
-                foreach ($this->_listeners[$p1] as $k => $v) {
+            if (isset($this->_listeners[$group])) {
+                foreach ($this->_listeners[$group] as $k => $v) {
                     /**@var \ManaPHP\Event\Listener $listener */
                     if (is_int($v)) {
-                        $this->_listeners[$p1][$k] = $listener = $this->_di->getShared($k);
+                        $this->_listeners[$group][$k] = $listener = $this->_di->getShared($k);
                     } else {
                         $listener = $v;
                     }
 
-                    $listener->process($p2, $source, $data);
+                    $listener->process($type, $source, $data);
                 }
             }
         }
 
-        foreach ($this->_peekers as $handler) {
+        foreach ($this->_peekers['*'] ?? [] as $handler) {
+            if ($handler instanceof Closure) {
+                $handler($event, $source, $data);
+            } else {
+                $handler[0]->{$handler[1]}($event, $source, $data);
+            }
+        }
+
+        foreach ($this->_peekers[$group] ?? [] as $handler) {
             if ($handler instanceof Closure) {
                 $handler($event, $source, $data);
             } else {
@@ -117,30 +125,31 @@ class Manager implements ManagerInterface
 
     /**
      * @param callable $handler
+     * @param string   $group
      *
      * @return static
      */
-    public function peekEvent($handler)
+    public function peekEvent($handler, $group = '*')
     {
-        $this->_peekers[] = $handler;
+        $this->_peekers[$group][] = $handler;
 
         return $this;
     }
 
     /**
      * @param string $listener
-     * @param string $type
+     * @param string $group
      *
      * @return static
      */
-    public function addListener($listener, $type = null)
+    public function addListener($listener, $group = null)
     {
-        if (!$type) {
-            $type = basename(substr($listener, strrpos($listener, '\\') + 1), 'Listener');
-            $type = lcfirst(rtrim($type, '0123456789'));
+        if (!$group) {
+            $group = basename(substr($listener, strrpos($listener, '\\') + 1), 'Listener');
+            $group = lcfirst(rtrim($group, '0123456789'));
         }
 
-        $this->_listeners[$type][$listener] = 1;
+        $this->_listeners[$group][$listener] = 1;
 
         return $this;
     }

@@ -45,16 +45,17 @@ interface ManagerInterface
 
     /**
      * @param callable $handler
+     * @param string   $group
      *
      * @return static
      */
-    public function peekEvent($handler);
+    public function peekEvent($handler, $group = '*');
 
     /**
      * @param string $listener
-     * @param string $type
+     * @param string $group
      *
      * @return static
      */
-    public function addListener($listener, $type = null);
+    public function addListener($listener, $group = null);
 }
