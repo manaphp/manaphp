@@ -87,7 +87,7 @@ class Stream extends Client
 
         if (is_string($body)) {
             if (in_array('Content-Encoding: gzip', $headers, true)) {
-                if (($decoded = @gzinflate(substr($body, 10))) === false) {
+                if (($decoded = @gzdecode($body)) === false) {
                     throw new BadResponseException(['`:url`: `:ungzip failed`', 'url' => $request->url]);
                 } else {
                     $body = $decoded;
