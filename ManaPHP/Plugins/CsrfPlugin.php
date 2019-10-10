@@ -29,28 +29,20 @@ class CsrfPlugin extends Plugin
     /**
      * CsrfPlugin constructor.
      *
-     * @param int|string|array $options
+     * @param array $options
      */
     public function __construct($options = [])
     {
-        if (is_int($options) || is_string($options)) {
-            $_options = ['length' => $options];
-        } elseif (is_array($options)) {
-            $_options = (array)$options;
-        } else {
-            $_options = $options;
+        if (isset($options['length'])) {
+            $this->_length = $options['length'];
         }
 
-        if (isset($_options['length'])) {
-            $this->_length = $_options['length'];
+        if (isset($options['useCookie'])) {
+            $this->_useCookie = $options['useCookie'];
         }
 
-        if (isset($_options['useCookie'])) {
-            $this->_useCookie = $_options['useCookie'];
-        }
-
-        if (isset($_options['name'])) {
-            $this->_name = $_options['name'];
+        if (isset($options['name'])) {
+            $this->_name = $options['name'];
         }
 
         $this->eventsManager->attachEvent('request:validate', [$this, 'onRequestValidate']);
