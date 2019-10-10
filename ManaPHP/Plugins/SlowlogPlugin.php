@@ -17,7 +17,12 @@ class SlowlogPlugin extends Plugin
      */
     protected $_format = '[:date][:client_ip][:request_id][:elapsed] :message';
 
-    public function __construct($options = null)
+    /**
+     * SlowlogPlugin constructor.
+     *
+     * @param array $options
+     */
+    public function __construct($options = [])
     {
         if (isset($options['threshold'])) {
             $this->_threshold = $options['threshold'] + $this->_threshold;

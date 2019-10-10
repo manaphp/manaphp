@@ -30,27 +30,25 @@ class TracerPlugin extends Plugin
      *
      * @param array $options
      */
-    public function __construct($options = null)
+    public function __construct($options = [])
     {
-        if (is_array($options)) {
-            if (isset($options['params'])) {
-                $this->_params = $options['params'];
-            }
-
-            if (isset($options['return'])) {
-                $this->_return = $options['return'];
-            }
-
-            if (isset($options['max_depth'])) {
-                $this->_max_depth = $options['max_depth'];
-            }
-
-            if (isset($options['mem_delta'])) {
-                $this->_mem_delta = $options['mem_delta'];
-            }
+        if (isset($options['params'])) {
+            $this->_params = $options['params'];
         }
 
-        if (function_exists('xdebug_start_trace')) {
+        if (isset($options['return'])) {
+            $this->_return = $options['return'];
+        }
+
+        if (isset($options['max_depth'])) {
+            $this->_max_depth = $options['max_depth'];
+        }
+
+        if (isset($options['mem_delta'])) {
+            $this->_mem_delta = $options['mem_delta'];
+        }
+
+        if ($_SERVER['DOCUMENT_ROOT'] !== '' && function_exists('xdebug_start_trace')) {
             ini_set('xdebug.collect_return', $this->_return);
             ini_set('xdebug.collect_params', $this->_params);
             ini_set('xdebug.var_display_max_depth', $this->_max_depth);
