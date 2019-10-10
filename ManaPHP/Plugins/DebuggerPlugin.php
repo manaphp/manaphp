@@ -85,7 +85,6 @@ class DebuggerPlugin extends Plugin
             $this->eventsManager->attachEvent('renderer:rendering', [$this, 'onRendererRendering']);
             $this->eventsManager->attachEvent('logger:log', [$this, 'onLoggerLog']);
             $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
-            $this->eventsManager->attachEvent('response:sending', [$this, 'onResponseSending']);
             $this->eventsManager->attachEvent('request:end', [$this, 'onRequestEnd']);
         }
     }
@@ -150,12 +149,11 @@ class DebuggerPlugin extends Plugin
             $context->enabled = true;
             $context->key = date('/ymd/His_') . $this->random->getBase(32);
         }
-    }
 
-    public function onResponseSending()
-    {
-        if ($this->_context->enabled) {
-            $this->response->setHeader('X-Debugger-Link', $this->getUrl());
+        if ($context->enabled) {
+            $url = $this->router->createUrl("/?__debuggerPlugin={$context->key}.html", true);
+            $this->response->setHeader('X-Debugger-Link', $url);
+            $this->logger->info('debugger-link: `' . $url . '`', 'debugger.link');
         }
     }
 
@@ -165,7 +163,6 @@ class DebuggerPlugin extends Plugin
 
         if ($context->enabled) {
             $this->_writeData($context->key, $this->_getData());
-            $this->logger->info('debugger-link: `' . $this->getUrl() . '`', 'debugger.link');
         }
     }
 
@@ -365,15 +362,5 @@ class DebuggerPlugin extends Plugin
         $data['_context'] = array_keys($data['_context']);
 
         return $data;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUrl()
-    {
-        $context = $this->_context;
-
-        return $this->router->createUrl('/?__debuggerPlugin=' . $context->key . '.html', true);
     }
 }

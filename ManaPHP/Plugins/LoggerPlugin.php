@@ -138,7 +138,11 @@ class LoggerPlugin extends Plugin
             $context->enabled = true;
             $this->logger->info($this->request->getGlobals()->_REQUEST, 'globals.request');
             $context->key = date('/ymd/His_') . $this->random->getBase(32);
-            $this->response->setHeader('X-Logger-Link', $this->getUrl());
+        }
+
+        if ($context->enabled) {
+            $url = $this->router->createUrl("/?__loggerPlugin={$context->key}.html", true);
+            $this->response->setHeader('X-Logger-Link', $url);
         }
     }
 
@@ -164,16 +168,6 @@ class LoggerPlugin extends Plugin
         if ($context->enabled) {
             $this->_writeData($context->key, $context->logs);
         }
-    }
-
-    /**
-     * @return string
-     */
-    public function getUrl()
-    {
-        $context = $this->_context;
-
-        return $this->router->createUrl('/?__loggerPlugin=' . $context->key . '.html', true);
     }
 
     public function dump()
