@@ -173,7 +173,7 @@ class DebuggerPlugin extends Plugin
      * @param \ManaPHP\LoggerInterface $logger
      * @param \ManaPHP\Logger\Log      $log
      */
-    public function onLoggerLog($logger, $log)
+    public function onLoggerLog(/** @noinspection PhpUnusedParameterInspection */ $logger, $log)
     {
         $context = $this->_context;
 
@@ -240,7 +240,7 @@ class DebuggerPlugin extends Plugin
      * @param \ManaPHP\RendererInterface $renderer
      * @param array[]                    $data
      */
-    public function onRendererRendering($renderer, $data)
+    public function onRendererRendering(/** @noinspection PhpUnusedParameterInspection */ $renderer, $data)
     {
         $context = $this->_context;
 
@@ -259,7 +259,7 @@ class DebuggerPlugin extends Plugin
      * @param \ManaPHP\MongodbInterface $mongodb
      * @param array                     $data
      */
-    public function onMongodb($event, $mongodb, $data)
+    public function onMongodb($event, /** @noinspection PhpUnusedParameterInspection */ $mongodb, $data)
     {
         $context = $this->_context;
         if ($event === 'mongodb:queried') {
