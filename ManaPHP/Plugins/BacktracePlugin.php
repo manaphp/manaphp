@@ -3,7 +3,7 @@ namespace ManaPHP\Plugins;
 
 use ManaPHP\Plugin;
 
-class TracerPlugin extends Plugin
+class BacktracePlugin extends Plugin
 {
     /**
      * @var int
@@ -26,7 +26,7 @@ class TracerPlugin extends Plugin
     protected $_mem_delta = 1;
 
     /**
-     * TracerPlugin constructor.
+     * BacktracePlugin constructor.
      *
      * @param array $options
      */
@@ -61,7 +61,7 @@ class TracerPlugin extends Plugin
 
     public function onRequestBegin()
     {
-        $file = $this->alias->resolve('@data/tracerPlugin/trace_{ymd_His}_{8}.log');
+        $file = $this->alias->resolve('@data/backtracePlugin/trace_{ymd_His}_{8}.log');
         $dir = dirname($file);
         if (!is_dir($dir)) {
             /** @noinspection MkdirRaceConditionInspection */
