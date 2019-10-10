@@ -6,11 +6,9 @@ use ManaPHP\Plugin;
 class SlowlogPlugin extends Plugin
 {
     /**
-     * @var array
+     * @var float
      */
-    protected $_threshold = [
-        'request' => 1,
-    ];
+    protected $_threshold = 1.0;
 
     /**
      * @var string
@@ -25,13 +23,17 @@ class SlowlogPlugin extends Plugin
     public function __construct($options = [])
     {
         if (isset($options['threshold'])) {
-            $this->_threshold = $options['threshold'] + $this->_threshold;
+            $this->_threshold = (float)$options['threshold'];
+        }
+
+        if (isset($options['format'])) {
+            $this->_format = $options['format'];
         }
 
         $this->eventsManager->attachEvent('request:end', [$this, 'onRequestEnd']);
     }
 
-    protected function _write($type, $elapsed, $message)
+    protected function _write($elapsed, $message)
     {
         $elapsed = round($elapsed, 3);
 
@@ -42,22 +44,7 @@ class SlowlogPlugin extends Plugin
         $replaced[':elapsed'] = sprintf('%.03f', $elapsed);
         $replaced[':message'] = (is_string($message) ? $message : json_stringify($message)) . PHP_EOL;
 
-        $str = strtr($this->_format, $replaced);
-
-        $file = $this->alias->resolve("@data/slowlogPlugin/{$type}.log");
-        if (!is_file($file)) {
-            $dir = dirname($file);
-            /** @noinspection NotOptimalIfConditionsInspection */
-            if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
-                /** @noinspection ForgottenDebugOutputInspection */
-                trigger_error("Unable to create $dir directory: " . error_get_last()['message'], E_USER_WARNING);
-            }
-        }
-
-        if (file_put_contents($file, $str, FILE_APPEND | LOCK_EX) === false) {
-            /** @noinspection ForgottenDebugOutputInspection */
-            trigger_error('Write log to file failed: ' . $file, E_USER_WARNING);
-        }
+        $this->filesystem->fileAppend('@data/slowlogPlugin/app.log', strtr($this->_format, $replaced));
     }
 
     /**
@@ -92,25 +79,17 @@ class SlowlogPlugin extends Plugin
             $elapsed = microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT');
         }
 
-        if ($this->_threshold['request'] > $elapsed) {
+        if ($this->_threshold > $elapsed) {
             return;
-        }
-
-        $request = $this->request->get();
-        if (isset($request['_url'])) {
-            $url = $request['_url'];
-            unset($request['_url']);
-        } else {
-            $url = '/';
         }
 
         $message = [
             'method' => $this->request->getServer('REQUEST_METHOD'),
-            'uri' => $url,
-            '_REQUEST' => $request,
-            'host' => $this->request->getServer('HTTP_HOST'),
+            'route' => implode('::', [$this->dispatcher->getArea(), $this->dispatcher->getController(), $this->dispatcher->getAction()]),
+            'url' => $this->request->getUrl(),
+            '_REQUEST' => $this->request->get(),
             'eid' => $this->_getEid($elapsed)];
 
-        $this->_write('request', $elapsed, $message);
+        $this->_write($elapsed, $message);
     }
 }
