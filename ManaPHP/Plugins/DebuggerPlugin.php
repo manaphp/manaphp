@@ -18,7 +18,7 @@ class DebuggerPluginContext
     /**
      * @var string
      */
-    public $file;
+    public $key;
 
     public $view = [];
 
@@ -46,6 +46,11 @@ class DebuggerPlugin extends Plugin
     protected $_enabled;
 
     /**
+     * @var int
+     */
+    protected $_ttl = 300;
+
+    /**
      * @var string
      */
     protected $_template = '@manaphp/Plugins/DebuggerPlugin/Template.html';
@@ -65,6 +70,10 @@ class DebuggerPlugin extends Plugin
             $this->_enabled = true;
         }
 
+        if (isset($options['ttl'])) {
+            $this->_ttl = (int)$options['ttl'];
+        }
+
         if (isset($options['template'])) {
             $this->_template = $options['template'];
         }
@@ -81,24 +90,54 @@ class DebuggerPlugin extends Plugin
         }
     }
 
+    /**
+     * @param string $key
+     *
+     * @return string|false
+     */
+    protected function _readData($key)
+    {
+        if ($this->_ttl) {
+            $content = $this->cache->get('__debuggerPlugin:' . $key);
+        } else {
+            $file = "@data/debuggerPlugin/{$key}.zip";
+            $content = $this->filesystem->fileExists($file) ? $this->filesystem->fileGet($file) : false;
+        }
+
+        return is_string($content) ? gzdecode($content) : $content;
+    }
+
+    /**
+     * @param string $key
+     * @param array  $data
+     *
+     * @throws \ManaPHP\Exception\JsonException
+     */
+    protected function _writeData($key, $data)
+    {
+        if ($this->_ttl) {
+            $this->cache->set('__debuggerPlugin:' . $key, gzencode(json_stringify($data)), $this->_ttl);
+        } else {
+            $this->filesystem->filePut("@data/debuggerPlugin/{$key}.zip", gzencode(json_stringify($data)));
+        }
+    }
+
     public function onRequestBegin()
     {
         $context = $this->_context;
 
         if (($debugger = $this->request->get('__debuggerPlugin', '')) && preg_match('#^([\w/]+)\.(html|json|txt|raw)$#', $debugger, $match)) {
             $context->enabled = false;
-            $file = '@data/debuggerPlugin' . $match[1] . '.zip';
-            if ($this->filesystem->fileExists($file)) {
+            if (($data = $this->_readData($match[1])) !== false) {
                 $ext = $match[2];
-                $json = gzdecode($this->filesystem->fileGet($file));
                 if ($ext === 'html') {
-                    $this->response->setContent(strtr($this->filesystem->fileGet($this->_template), ['DEBUGGER_DATA' => $json]));
+                    $this->response->setContent(strtr($this->filesystem->fileGet($this->_template), ['DEBUGGER_DATA' => $data]));
                 } elseif ($ext === 'txt') {
-                    $this->response->setContent(json_stringify(json_parse($json), JSON_PRETTY_PRINT))->setContentType('text/plain;charset=UTF-8');
+                    $this->response->setContent(json_stringify(json_parse($data), JSON_PRETTY_PRINT))->setContentType('text/plain;charset=UTF-8');
                 } elseif ($ext === 'raw') {
-                    $this->response->setContent($json)->setContentType('text/plain;charset=UTF-8');
+                    $this->response->setContent($data)->setContentType('text/plain;charset=UTF-8');
                 } else {
-                    $this->response->setJsonContent($json);
+                    $this->response->setJsonContent($data);
                 }
             } else {
                 $this->response->setContent('NOT FOUND')->setStatus(404);
@@ -109,7 +148,7 @@ class DebuggerPlugin extends Plugin
             $context->enabled = false;
         } else {
             $context->enabled = true;
-            $context->file = date('/ymd/His_') . $this->random->getBase(32);
+            $context->key = date('/ymd/His_') . $this->random->getBase(32);
         }
     }
 
@@ -125,7 +164,7 @@ class DebuggerPlugin extends Plugin
         $context = $this->_context;
 
         if ($context->enabled) {
-            $this->filesystem->filePut("@data/debuggerPlugin/{$context->file}.zip", gzencode(json_stringify($this->_getData())));
+            $this->_writeData($context->key, $this->_getData());
             $this->logger->info('debugger-link: `' . $this->getUrl() . '`', 'debugger.link');
         }
     }
@@ -335,6 +374,6 @@ class DebuggerPlugin extends Plugin
     {
         $context = $this->_context;
 
-        return $this->router->createUrl('/?__debuggerPlugin=' . $context->file . '.html', true);
+        return $this->router->createUrl('/?__debuggerPlugin=' . $context->key . '.html', true);
     }
 }

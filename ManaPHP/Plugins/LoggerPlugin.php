@@ -15,7 +15,7 @@ class LoggerPluginContext
     /**
      * @var string
      */
-    public $file;
+    public $key;
 
     public $logs = [];
 }
@@ -31,6 +31,11 @@ class LoggerPlugin extends Plugin
      * @var bool
      */
     protected $_enabled;
+
+    /**
+     * @var int
+     */
+    protected $_ttl = 300;
 
     /**
      * @var string
@@ -52,6 +57,10 @@ class LoggerPlugin extends Plugin
             $this->_enabled = true;
         }
 
+        if (isset($options['ttl'])) {
+            $this->_ttl = (int)$options['ttl'];
+        }
+
         if (isset($options['template'])) {
             $this->_template = $options['template'];
         }
@@ -63,28 +72,60 @@ class LoggerPlugin extends Plugin
         }
     }
 
+    /**
+     * @param string $key
+     *
+     * @return string|false
+     */
+    protected function _readData($key)
+    {
+        if ($this->_ttl) {
+            $data = $this->cache->get('__loggerPlugin:' . $key);
+        } else {
+            $file = "@data/loggerPlugin/{$key}.zip";
+            $data = $this->filesystem->fileExists($file) ? $this->filesystem->fileGet($file) : false;
+        }
+
+        return is_string($data) ? gzdecode($data) : $data;
+    }
+
+    /**
+     * @param string $key
+     * @param array  $data
+     *
+     * @return void
+     *
+     * @throws \ManaPHP\Exception\JsonException
+     */
+    protected function _writeData($key, $data)
+    {
+        if ($this->_ttl) {
+            $this->cache->set('__loggerPlugin:' . $key, gzencode(json_stringify($data)), $this->_ttl);
+        } else {
+            $this->filesystem->filePut("@data/loggerPlugin/{$key}.zip", gzencode(json_stringify($data)));
+        }
+    }
+
     public function onRequestBegin()
     {
         $context = $this->_context;
 
         if (($logger = $this->request->get('__loggerPlugin', '')) && preg_match('#^([\w/]+)\.(html|json|txt|raw)$#', $logger, $match)) {
             $context->enabled = false;
-            $file = '@data/loggerPlugin' . $match[1] . '.zip';
-            if ($this->filesystem->fileExists($file)) {
+            if (($data = $this->_readData($match[1])) !== false) {
                 $ext = $match[2];
-                $json = gzdecode($this->filesystem->fileGet($file));
                 if ($ext === 'html') {
-                    $this->response->setContent(strtr($this->filesystem->fileGet($this->_template), ['LOGGER_DATA' => $json]));
+                    $this->response->setContent(strtr($this->filesystem->fileGet($this->_template), ['LOGGER_DATA' => $data]));
                 } elseif ($ext === 'raw') {
-                    $this->response->setContent($json)->setContentType('text/plain;charset=UTF-8');
+                    $this->response->setContent($data)->setContentType('text/plain;charset=UTF-8');
                 } elseif ($ext === 'txt') {
-                    $content = '';
-                    foreach (json_parse($json) as $log) {
-                        $content .= strtr('[time][level][category][location] message', $log) . PHP_EOL;
-                        $this->response->setContent($content)->setContentType('text/plain;charset=UTF-8');
+                    $txt = '';
+                    foreach (json_parse($data) as $log) {
+                        $txt .= strtr('[time][level][category][location] message', $log) . PHP_EOL;
+                        $this->response->setContent($txt)->setContentType('text/plain;charset=UTF-8');
                     }
                 } else {
-                    $this->response->setJsonContent($json);
+                    $this->response->setJsonContent($data);
                 }
             } else {
                 $this->response->setContent('NOT FOUND')->setStatus(404);
@@ -96,7 +137,7 @@ class LoggerPlugin extends Plugin
         } else {
             $context->enabled = true;
             $this->logger->info($this->request->getGlobals()->_REQUEST, 'globals.request');
-            $context->file = date('/ymd/His_') . $this->random->getBase(32);
+            $context->key = date('/ymd/His_') . $this->random->getBase(32);
             $this->response->setHeader('X-Logger-Link', $this->getUrl());
         }
     }
@@ -121,7 +162,7 @@ class LoggerPlugin extends Plugin
         $context = $this->_context;
 
         if ($context->enabled) {
-            $this->filesystem->filePut("@data/loggerPlugin/{$context->file}.zip", gzencode(json_stringify($context->logs)));
+            $this->_writeData($context->key, $context->logs);
         }
     }
 
@@ -132,7 +173,7 @@ class LoggerPlugin extends Plugin
     {
         $context = $this->_context;
 
-        return $this->router->createUrl('/?__loggerPlugin=' . $context->file . '.html', true);
+        return $this->router->createUrl('/?__loggerPlugin=' . $context->key . '.html', true);
     }
 
     public function dump()
