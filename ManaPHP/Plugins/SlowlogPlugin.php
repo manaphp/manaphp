@@ -39,7 +39,7 @@ class SlowlogPlugin extends Plugin
 
         $str = strtr($this->_format, $replaced);
 
-        $file = $this->alias->resolve("@data/slowlog/{$type}.log");
+        $file = $this->alias->resolve("@data/slowlogPlugin/{$type}.log");
         if (!is_file($file)) {
             $dir = dirname($file);
             /** @noinspection NotOptimalIfConditionsInspection */

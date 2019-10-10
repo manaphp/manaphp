@@ -63,7 +63,7 @@ class TracerPlugin extends Plugin
 
     public function onRequestBegin()
     {
-        $file = $this->alias->resolve('@data/tracer/trace_{ymd_His}_{8}.log');
+        $file = $this->alias->resolve('@data/tracerPlugin/trace_{ymd_His}_{8}.log');
         $dir = dirname($file);
         if (!is_dir($dir)) {
             /** @noinspection MkdirRaceConditionInspection */
