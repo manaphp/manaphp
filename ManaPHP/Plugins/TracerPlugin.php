@@ -25,6 +25,17 @@ class TracerPlugin extends Plugin
         $this->eventsManager->attachEvent('db:abnormal', [$this, 'onDbAbnormal']);
 
         $this->eventsManager->attachEvent('mailer:sending', [$this, 'onMailerSending']);
+
+        $this->eventsManager->attachEvent('mongodb:connect', [$this, 'onMongodbConnect']);
+        $this->eventsManager->attachEvent('mongodb:queried', [$this, 'onMongodbQueried']);
+        $this->eventsManager->attachEvent('mongodb:inserted', [$this, 'onMongodbInserted']);
+        $this->eventsManager->attachEvent('mongodb:updated', [$this, 'onMongodbUpdated']);
+        $this->eventsManager->attachEvent('mongodb:deleted', [$this, 'onMongodbDeleted']);
+        $this->eventsManager->attachEvent('mongodb:commanded', [$this, 'onMongodbCommanded']);
+        $this->eventsManager->attachEvent('mongodb:bulkInserted', [$this, 'onMongodbBulkInserted']);
+        $this->eventsManager->attachEvent('mongodb:bulkUpdated', [$this, 'onMongodbBulkUpdated']);
+        $this->eventsManager->attachEvent('mongodb:upserted', [$this, 'onMongodbUpserted']);
+        $this->eventsManager->attachEvent('mongodb:bulkUpserted', [$this, 'onMongodbBulkUpserted']);
     }
 
     public function onRedisCalling(/** @noinspection PhpUnusedParameterInspection */ $redis, $data)
@@ -137,5 +148,61 @@ class TracerPlugin extends Plugin
         $this->logger->debug(['Cc:', $message->getCc()]);
         $this->logger->debug(['Bcc: ', $message->getBcc()]);
         $this->logger->debug(['Subject: ', $message->getSubject()]);
+    }
+
+    public function onMongodbConnect($mongodb, $data)
+    {
+        $this->logger->debug(['connect to `:dsn`', $data], 'mongodb.connect');
+    }
+
+    public function onMongodbInserted($mongodb, $data)
+    {
+        $this->logger->info($data, 'mongodb.insert');
+    }
+
+    public function onMongodbBulkInserted($mongodb, $data)
+    {
+        $this->logger->info($data, 'mongodb.bulk.insert');
+    }
+
+    public function onMongodbUpdated($mongodb, $data)
+    {
+        $this->logger->info($data, 'mongodb.update');
+    }
+
+    public function onMongodbUpserted($mongodb, $data)
+    {
+        $this->logger->info($data, 'mongodb.upsert');
+    }
+
+    public function onMongodbBulkUpserted($mongodb, $data)
+    {
+        $this->logger->info($data, 'mongodb.bulk.upsert');
+    }
+
+    public function onMongodbDeleted($mongodb, $data)
+    {
+        $this->logger->info($data, 'mongodb.delete');
+    }
+
+    public function onMongodbQueried($mongodb, $data)
+    {
+        $this->logger->debug($data, 'mongodb.query');
+    }
+
+    public function onMongodbCommanded($mongodb, $data)
+    {
+        $command_name = key($data['command']);
+        if (strpos('ping,aggregate,count,distinct,group,mapReduce,geoNear,geoSearch,find,' .
+                'authenticate,listDatabases,listCollections,listIndexes', $command_name) !== false) {
+            $this->logger->debug($data, 'mongodb.command.' . $command_name);
+        } else {
+            $this->logger->info($data, 'mongodb.command.' . $command_name);
+        }
+    }
+
+    public function onMongodbBulkUpdated($mongodb, $data)
+    {
+        $this->logger->info($data, 'mongodb.bulk.update');
     }
 }

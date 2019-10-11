@@ -69,9 +69,7 @@ class Mongodb extends Component implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->eventsManager->fireEvent('mongodb:inserted', $this, ['namespace' => $namespace]);
-
-        $this->logger->info(compact('count', 'namespace', 'document'), 'mongodb.insert');
+        $this->eventsManager->fireEvent('mongodb:inserted', $this, compact('count', 'namespace', 'document'));
 
         return $count;
     }
@@ -96,10 +94,10 @@ class Mongodb extends Component implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->eventsManager->fireEvent('mongodb:bulkInserted', $this, ['namespace' => $namespace]);
-        $this->eventsManager->fireEvent('mongodb:bulkWritten', $this, ['namespace' => $namespace]);
+        $data = compact('namespace', 'documents', 'count');
+        $this->eventsManager->fireEvent('mongodb:bulkInserted', $this, $data);
+        $this->eventsManager->fireEvent('mongodb:bulkWritten', $this, $data);
 
-        $this->logger->info(compact('namespace', 'documents', 'count'), 'mongodb.bulk.insert');
         return $count;
     }
 
@@ -123,8 +121,7 @@ class Mongodb extends Component implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->eventsManager->fireEvent('mongodb:updated', $this);
-        $this->logger->info(compact('namespace', 'document', 'filter', 'count'), 'mongodb.update');
+        $this->eventsManager->fireEvent('mongodb:updated', $this, compact('namespace', 'document', 'filter', 'count'));
         return $count;
     }
 
@@ -150,10 +147,11 @@ class Mongodb extends Component implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->eventsManager->fireEvent('mongodb:bulkUpdated', $this, ['namespace' => $namespace]);
-        $this->eventsManager->fireEvent('mongodb:bulkWritten', $this, ['namespace' => $namespace]);
 
-        $this->logger->info(compact('namespace', 'documents', 'primaryKey', 'count'), 'mongodb.bulk.update');
+        $data = compact('namespace', 'documents', 'primaryKey', 'count');
+        $this->eventsManager->fireEvent('mongodb:bulkUpdated', $this, $data);
+        $this->eventsManager->fireEvent('mongodb:bulkWritten', $this, $data);
+
         return $count;
     }
 
@@ -178,9 +176,8 @@ class Mongodb extends Component implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->eventsManager->fireEvent('mongodb:upserted', $this);
-
-        $this->logger->info(compact('count', 'namespace', 'document'), 'mongodb.upsert');
+        $this->eventsManager->fireEvent('mongodb:upserted', $this, compact('count', 'namespace', 'document'));
+		
         return $count;
     }
 
@@ -209,7 +206,6 @@ class Mongodb extends Component implements MongodbInterface
         $this->eventsManager->fireEvent('mongodb:bulkUpserted', $this);
         $this->eventsManager->fireEvent('mongodb:bulkWritten', $this);
 
-        $this->logger->info(compact('count', 'namespace', 'documents'), 'mongodb.bulk.upsert');
         return $count;
     }
 
@@ -233,9 +229,8 @@ class Mongodb extends Component implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->eventsManager->fireEvent('mongodb:deleted', $this);
+        $this->eventsManager->fireEvent('mongodb:deleted', $this, compact('namespace', 'filter', 'count'));
 
-        $this->logger->info(compact('namespace', 'filter', 'count'), 'mongodb.delete');
         return $count;
     }
 
@@ -265,7 +260,6 @@ class Mongodb extends Component implements MongodbInterface
 
         $this->eventsManager->fireEvent('mongodb:queried', $this, compact('namespace', 'filter', 'options', 'result', 'elapsed'));
 
-        $this->logger->debug(compact('namespace', 'filter', 'options', 'result', 'elapsed'), 'mongodb.query');
         return $result;
     }
 
@@ -292,16 +286,9 @@ class Mongodb extends Component implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->eventsManager->fireEvent('mongodb:commanded', $this, compact('db', 'command', 'result', 'elapsed'));
 
         $count = count($result);
-        $command_name = key($command);
-        if (strpos('ping,aggregate,count,distinct,group,mapReduce,geoNear,geoSearch,find,' .
-                'authenticate,listDatabases,listCollections,listIndexes', $command_name) !== false) {
-            $this->logger->debug(compact('db', 'command', 'count', 'elapsed'), 'mongodb.command.' . $command_name);
-        } else {
-            $this->logger->info(compact('db', 'command', 'count', 'elapsed'), 'mongodb.command.' . $command_name);
-        }
+        $this->eventsManager->fireEvent('mongodb:commanded', $this, compact('db', 'command', 'result', 'count', 'elapsed'));
 
         return $result;
     }
