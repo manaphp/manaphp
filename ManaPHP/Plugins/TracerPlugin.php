@@ -23,6 +23,8 @@ class TracerPlugin extends Plugin
         $this->eventsManager->attachEvent('db:commit', [$this, 'onDbCommit']);
         $this->eventsManager->attachEvent('db:metadata', [$this, 'onDbMetadata']);
         $this->eventsManager->attachEvent('db:abnormal', [$this, 'onDbAbnormal']);
+
+        $this->eventsManager->attachEvent('mailer:sending', [$this, 'onMailerSending']);
     }
 
     public function onRedisCalling(/** @noinspection PhpUnusedParameterInspection */ $redis, $data)
@@ -124,5 +126,16 @@ class TracerPlugin extends Plugin
     public function onDbAbnormal()
     {
         $this->logger->error('transaction is not close correctly', 'db.abnormal');
+    }
+
+    public function onMailerSending($mailer, $data)
+    {
+        /** @var \ManaPHP\Mailer\Message $message */
+        $message = $data['message'];
+        $this->logger->debug(['From: ', $message->getFrom()]);
+        $this->logger->debug(['To: ', $message->getTo()]);
+        $this->logger->debug(['Cc:', $message->getCc()]);
+        $this->logger->debug(['Bcc: ', $message->getBcc()]);
+        $this->logger->debug(['Subject: ', $message->getSubject()]);
     }
 }
