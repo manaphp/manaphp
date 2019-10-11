@@ -36,6 +36,9 @@ class TracerPlugin extends Plugin
         $this->eventsManager->attachEvent('mongodb:bulkUpdated', [$this, 'onMongodbBulkUpdated']);
         $this->eventsManager->attachEvent('mongodb:upserted', [$this, 'onMongodbUpserted']);
         $this->eventsManager->attachEvent('mongodb:bulkUpserted', [$this, 'onMongodbBulkUpserted']);
+
+        $this->eventsManager->attachEvent('httpClient:requesting', [$this, 'onHttpClientRequesting']);
+        $this->eventsManager->attachEvent('httpClient:requested', [$this, 'onHttpClientRequested']);
     }
 
     public function onRedisCalling(/** @noinspection PhpUnusedParameterInspection */ $redis, $data)
@@ -204,5 +207,15 @@ class TracerPlugin extends Plugin
     public function onMongodbBulkUpdated($mongodb, $data)
     {
         $this->logger->info($data, 'mongodb.bulk.update');
+    }
+
+    public function onHttpClientRequesting($httpClient, $data)
+    {
+        $this->logger->debug($data, 'httpClient.request');
+    }
+
+    public function onHttpClientRequested($httpClient, $data)
+    {
+        $this->logger->debug($data, 'httpClient.response');
     }
 }

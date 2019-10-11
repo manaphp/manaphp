@@ -150,8 +150,6 @@ abstract class Client extends Component implements ClientInterface
 
         $request->normalize();
 
-        $this->logger->debug($request, 'httpClient.request');
-
         $this->eventsManager->fireEvent('httpClient:requesting', $this, $request);
         $response = $this->do_request($request);
         $response_text = $response->body;
@@ -161,8 +159,6 @@ abstract class Client extends Component implements ClientInterface
         $this->eventsManager->fireEvent('httpClient:requested', $this, $response);
         $response->request = $request;
         $response->user_data = $options['user_data'] ?? null;
-
-        $this->logger->debug($response, 'httpClient.response');
 
         if ($response->http_code === 429) {
             throw new TooManyRequestsException($response->url, $response);
