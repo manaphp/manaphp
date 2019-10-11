@@ -1,6 +1,7 @@
 <?php
 namespace App\Processes;
 
+use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Process;
 use Swoole\Table;
@@ -58,8 +59,10 @@ class PusherProcess extends Process
         $this->eventsManager->attachEvent('ws:close', [$this, 'onWsClose']);
     }
 
-    public function onWsOpen(/** @noinspection PhpUnusedParameterInspection */ $app, $fd)
+    public function onWsOpen(EventArgs $eventArgs)
     {
+        $fd = $eventArgs->data;
+
         $identity = $this->identity;
         if (!$id = $identity->getId('')) {
             return;
@@ -75,8 +78,10 @@ class PusherProcess extends Process
         }
     }
 
-    public function onWsClose(/** @noinspection PhpUnusedParameterInspection */ $app, $fd)
+    public function onWsClose(EventArgs $eventArgs)
     {
+        $fd = $eventArgs->data;
+
         if (!$id = $this->identity->getId('')) {
             return;
         }
