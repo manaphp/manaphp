@@ -315,7 +315,7 @@ class Db extends Component implements DbInterface
             }
         }
 
-        $event_data = compact('sql', 'record', 'elapsed', 'insert_id');
+        $event_data = compact('sql', 'record', 'elapsed', 'insert_id', 'bind');
 
         $this->eventsManager->fireEvent('db:inserted', $this, $event_data);
 
