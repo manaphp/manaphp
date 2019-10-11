@@ -189,7 +189,7 @@ abstract class Logger extends Component implements LoggerInterface
         if ($message instanceof Throwable) {
             return $this->exceptionToString($message);
         } elseif ($message instanceof JsonSerializable) {
-            return json_stringify($message);
+            return json_stringify($message, JSON_PARTIAL_OUTPUT_ON_ERROR);
         } elseif ($message instanceof Serializable) {
             return serialize($message);
         } elseif (!is_array($message)) {
@@ -197,7 +197,7 @@ abstract class Logger extends Component implements LoggerInterface
         }
 
         if (!isset($message[0]) || !is_string($message[0])) {
-            return json_stringify($message);
+            return json_stringify($message, JSON_PARTIAL_OUTPUT_ON_ERROR);
         }
 
         if (substr_count($message[0], '%') + 1 >= ($count = count($message)) && isset($message[$count - 1])) {
@@ -209,9 +209,9 @@ abstract class Logger extends Component implements LoggerInterface
                 if ($v instanceof Throwable) {
                     $message[$k] = $this->exceptionToString($v);
                 } elseif (is_array($v)) {
-                    $message[$k] = json_stringify($v);
+                    $message[$k] = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
                 } elseif ($v instanceof JsonSerializable) {
-                    $message[$k] = json_stringify($v);
+                    $message[$k] = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
                 }
             }
             return sprintf(...$message);
@@ -238,15 +238,15 @@ abstract class Logger extends Component implements LoggerInterface
             if ($v instanceof Throwable) {
                 $v = $this->exceptionToString($v);
             } elseif (is_array($v)) {
-                $v = json_stringify($v);
+                $v = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
             } elseif ($v instanceof JsonSerializable) {
-                $v = json_stringify($v);
+                $v = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
             } elseif ($v instanceof Serializable) {
                 $v = serialize($v);
             } elseif (is_string($v)) {
                 null;
             } elseif ($v === null || is_scalar($v)) {
-                $v = json_stringify($v);
+                $v = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
             } else {
                 $v = (string)$v;
             }
