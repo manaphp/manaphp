@@ -192,7 +192,7 @@ class Client extends Component implements ClientInterface
      */
     public function sendMessage($message)
     {
-        $this->logger->debug($message, 'wsClient.sendMessage');
+        $this->eventsManager->fireEvent('wsClient:send', $this, $message);
 
         $socket = $this->_socket ?? $this->_connect();
         $message_length = strlen($message);
@@ -302,7 +302,7 @@ class Client extends Component implements ClientInterface
 
         $this->_buffer = strlen($buffer) - ($header_length + $message_length) > 0 ? substr($buffer, $header_length + $message_length) : '';
 
-        $this->logger->debug($message, 'wsClient.receiveMessage');
+        $this->eventsManager->fireEvent('wsClient:receive', $this, $message);
 
         return $message;
     }

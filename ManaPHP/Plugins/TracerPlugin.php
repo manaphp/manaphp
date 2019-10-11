@@ -39,6 +39,9 @@ class TracerPlugin extends Plugin
 
         $this->eventsManager->attachEvent('httpClient:requesting', [$this, 'onHttpClientRequesting']);
         $this->eventsManager->attachEvent('httpClient:requested', [$this, 'onHttpClientRequested']);
+
+        $this->eventsManager->attachEvent('wsClient:send', [$this, 'onWsClientSend']);
+        $this->eventsManager->attachEvent('wsClient:receive', [$this, 'onWsClientReceive']);
     }
 
     public function onRedisCalling(/** @noinspection PhpUnusedParameterInspection */ $redis, $data)
@@ -217,5 +220,15 @@ class TracerPlugin extends Plugin
     public function onHttpClientRequested($httpClient, $data)
     {
         $this->logger->debug($data, 'httpClient.response');
+    }
+
+    public function onWsClientSend($wsClient, $data)
+    {
+        $this->logger->debug($data, 'wsClient.send');
+    }
+
+    public function onWsClientReceive($wsClient, $data)
+    {
+        $this->logger->debug($data, 'wsClient.receive');
     }
 }
