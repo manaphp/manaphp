@@ -137,12 +137,10 @@ class Component implements ComponentInterface, JsonSerializable
                         }
                     }
                     return $object;
+                } elseif (!$object = $__root_context[$object_id] ?? null) {
+                    return $__root_context[$object_id] = $this->createContext();
                 } else {
-                    if (!$object = $__root_context[$object_id] ?? null) {
-                        return $__root_context[$object_id] = $this->createContext();
-                    } else {
-                        return $object;
-                    }
+                    return $object;
                 }
             } elseif (PHP_SAPI === 'cli') {
                 if (!$object = $__root_context[$object_id] ?? null) {
