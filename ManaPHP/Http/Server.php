@@ -151,7 +151,7 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
     public function dump()
     {
         $data = parent::dump();
-		
+
         unset($data['_mime_types']);
 
         return $data;

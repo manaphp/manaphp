@@ -331,7 +331,7 @@ class View extends Component implements ViewInterface
     public function dump()
     {
         $data = parent::dump();
-		
+
         $data['_context']['content'] = '***';
 
         return $data;

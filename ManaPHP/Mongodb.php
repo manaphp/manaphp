@@ -177,7 +177,7 @@ class Mongodb extends Component implements MongodbInterface
             $this->poolManager->push($this, $connection);
         }
         $this->eventsManager->fireEvent('mongodb:upserted', $this, compact('count', 'namespace', 'document'));
-		
+
         return $count;
     }
 

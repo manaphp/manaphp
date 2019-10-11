@@ -83,7 +83,7 @@ interface ModelInterface
     public function rules();
 
     /**
-     * @param string         $alias
+     * @param string $alias
      *
      * @return \ManaPHP\QueryInterface
      */
