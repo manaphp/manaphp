@@ -1,8 +1,8 @@
 <?php
 namespace ManaPHP\Plugins;
 
+use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\AbortException;
-use ManaPHP\Logger\Log;
 use ManaPHP\Plugin;
 
 class LoggerPluginContext
@@ -146,10 +146,13 @@ class LoggerPlugin extends Plugin
         }
     }
 
-    public function onLoggerLog(/** @noinspection PhpUnusedParameterInspection */ $logger, Log $log)
+    public function onLoggerLog(EventArgs $eventArgs)
     {
         $context = $this->_context;
 
+        /** @var \ManaPHP\Logger\Log $log */
+        $log = $eventArgs->data;
+		
         if ($context->enabled) {
             $context->logs[] = [
                 'time' => date('H:i:s.', $log->timestamp) . sprintf('%.03d', ($log->timestamp - (int)$log->timestamp) * 1000),

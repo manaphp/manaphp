@@ -78,35 +78,36 @@ class Manager implements ManagerInterface
      */
     public function fireEvent($event, $source, $data = [])
     {
-        list($group, $type) = explode(':', $event, 2);
-        if ($this->_listeners) {
-            if (isset($this->_listeners[$group])) {
-                foreach ($this->_listeners[$group] as $k => $v) {
-                    /**@var \ManaPHP\Event\Listener $listener */
-                    if (is_int($v)) {
-                        $this->_listeners[$group][$k] = $listener = $this->_di->getShared($k);
-                    } else {
-                        $listener = $v;
-                    }
+        $eventArgs = new EventArgs($event, $source, $data);
+		
+        list($group) = explode(':', $event, 2);
 
-                    $listener->process($type, $source, $data);
+        if ($this->_listeners && isset($this->_listeners[$group])) {
+            foreach ($this->_listeners[$group] as $k => $v) {
+                /**@var \ManaPHP\Event\Listener $listener */
+                if (is_int($v)) {
+                    $this->_listeners[$group][$k] = $listener = $this->_di->getShared($k);
+                } else {
+                    $listener = $v;
                 }
+
+                $listener->process($eventArgs);
             }
         }
 
         foreach ($this->_peekers['*'] ?? [] as $handler) {
             if ($handler instanceof Closure) {
-                $handler($event, $source, $data);
+                $handler($eventArgs);
             } else {
-                $handler[0]->{$handler[1]}($event, $source, $data);
+                $handler[0]->{$handler[1]}($eventArgs);
             }
         }
 
         foreach ($this->_peekers[$group] ?? [] as $handler) {
             if ($handler instanceof Closure) {
-                $handler($event, $source, $data);
+                $handler($eventArgs);
             } else {
-                $handler[0]->{$handler[1]}($event, $source, $data);
+                $handler[0]->{$handler[1]}($eventArgs);
             }
         }
 
@@ -116,9 +117,9 @@ class Manager implements ManagerInterface
 
         foreach ($this->_events[$event] as $handler) {
             if ($handler instanceof Closure) {
-                $handler($source, $data, $event);
+                $handler($eventArgs);
             } else {
-                $handler[0]->{$handler[1]}($source, $data, $event);
+                $handler[0]->{$handler[1]}($eventArgs);
             }
         }
     }

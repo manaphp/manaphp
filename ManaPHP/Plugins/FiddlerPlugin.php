@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP\Plugins;
 
+use ManaPHP\Event\EventArgs;
 use ManaPHP\Logger;
 use ManaPHP\Plugin;
 
@@ -82,14 +83,11 @@ class FiddlerPlugin extends Plugin
         }
     }
 
-    /**
-     * @param \ManaPHP\LoggerInterface $logger
-     * @param \ManaPHP\Logger\Log      $log
-     */
-    public function onLoggerLog($logger, $log)
+    public function onLoggerLog(EventArgs $eventArgs)
     {
-        0 && $logger;
-
+        /** @var \ManaPHP\Logger\Log $log */
+        $log = $eventArgs->data;
+		
         if ($this->enabled()) {
             $data = [
                 'category' => $log->category,
@@ -117,13 +115,12 @@ class FiddlerPlugin extends Plugin
         return $this->_enabled;
     }
 
-    /**
-     * @param \ManaPHP\Http\ResponseInterface $response
-     */
-    public function onResponseSent($response)
+    public function onResponseSent(EventArgs $eventArgs)
     {
+        /** @var \ManaPHP\Http\ResponseInterface $response */
+        $response = $eventArgs->source;
+		
         if ($this->enabled()) {
-            /** @var \ManaPHP\Http\ResponseInterface $source */
             $data = [
                 'uri' => $this->request->getServer('REQUEST_URI'),
                 'code' => $response->getStatusCode(),

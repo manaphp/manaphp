@@ -3,6 +3,7 @@
 namespace ManaPHP\Plugins;
 
 use ManaPHP\Component;
+use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Logger;
 use ManaPHP\Plugin;
@@ -166,13 +167,12 @@ class DebuggerPlugin extends Plugin
         }
     }
 
-    /**
-     * @param \ManaPHP\LoggerInterface $logger
-     * @param \ManaPHP\Logger\Log      $log
-     */
-    public function onLoggerLog(/** @noinspection PhpUnusedParameterInspection */ $logger, $log)
+    public function onLoggerLog(EventArgs $eventArgs)
     {
         $context = $this->_context;
+
+        /** @var \ManaPHP\Logger\Log $log */
+        $log = $eventArgs->data;
 
         $context->log[] = [
             'time' => date('H:i:s.', $log->timestamp) . sprintf('%.03d', ($log->timestamp - (int)$log->timestamp) * 1000),
@@ -184,14 +184,13 @@ class DebuggerPlugin extends Plugin
         ];
     }
 
-    /**
-     * @param string               $event
-     * @param \ManaPHP\DbInterface $db
-     * @param array                $data
-     */
-    public function onDb($event, $db, $data)
+    public function onDb(EventArgs $eventArgs)
     {
         $context = $this->_context;
+
+        $event = $eventArgs->event;
+        /** @var \ManaPHP\DbInterface $db */
+        $db = $eventArgs->source;
 
         if ($event === 'db:querying' || $event === 'db:executing') {
             $preparedSQL = $db->getSQL();
@@ -208,7 +207,7 @@ class DebuggerPlugin extends Plugin
                 'emulated' => $db->getEmulatedSQL()
             ];
         } elseif ($event === 'db:queried' || $event === 'db:executed') {
-            $context->sql_executed[$context->sql_count - 1]['elapsed'] = $data['elapsed'];
+            $context->sql_executed[$context->sql_count - 1]['elapsed'] = $eventArgs->data['elapsed'];
             $context->sql_executed[$context->sql_count - 1]['row_count'] = $db->affectedRows();
         } elseif ($event === 'db:begin' || $event === 'db:rollback' || $event === 'db:commit') {
             $context->sql_count++;
@@ -233,13 +232,11 @@ class DebuggerPlugin extends Plugin
         }
     }
 
-    /**
-     * @param \ManaPHP\RendererInterface $renderer
-     * @param array[]                    $data
-     */
-    public function onRendererRendering(/** @noinspection PhpUnusedParameterInspection */ $renderer, $data)
+    public function onRendererRendering(EventArgs $eventArgs)
     {
         $context = $this->_context;
+
+        $data = $eventArgs->data;
 
         $vars = $data['vars'];
         foreach ((array)$vars as $k => $v) {
@@ -251,14 +248,13 @@ class DebuggerPlugin extends Plugin
         $context->view[] = ['file' => $data['file'], 'vars' => $vars, 'base_name' => basename(dirname($data['file'])) . '/' . basename($data['file'])];
     }
 
-    /**
-     * @param string                    $event
-     * @param \ManaPHP\MongodbInterface $mongodb
-     * @param array                     $data
-     */
-    public function onMongodb($event, /** @noinspection PhpUnusedParameterInspection */ $mongodb, $data)
+    public function onMongodb(EventArgs $eventArgs)
     {
         $context = $this->_context;
+
+        $event = $eventArgs->event;
+        $data = $eventArgs->data;
+
         if ($event === 'mongodb:queried') {
             $item = [];
             $item['type'] = 'query';

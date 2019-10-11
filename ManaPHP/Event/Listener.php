@@ -33,17 +33,18 @@ class Listener extends Component implements LogCategorizable
         }
     }
 
-    public function process($event, $source, $data)
+    public function process(EventArgs $eventArgs)
     {
+        list($group, $type) = explode(':', $eventArgs->event, 2);
         if (method_exists($this, 'peek')) {
-            if (($r = $this->peek($event, $source, $data)) !== null) {
+            if (($r = $this->peek($eventArgs)) !== null) {
                 return $r;
             }
         }
 
-        if (isset($this->_processors[$event])) {
-            foreach ($this->_processors[$event] as $processor) {
-                if (($r = $this->$processor($source, $data)) !== null) {
+        if (isset($this->_processors[$type])) {
+            foreach ($this->_processors[$type] as $processor) {
+                if (($r = $this->$processor($eventArgs)) !== null) {
                     return $r;
                 }
             }

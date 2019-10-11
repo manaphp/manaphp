@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP\Plugins;
 
+use ManaPHP\Event\EventArgs;
 use ManaPHP\Plugin;
 
 /**
@@ -44,10 +45,10 @@ class TracerPlugin extends Plugin
         $this->eventsManager->attachEvent('wsClient:receive', [$this, 'onWsClientReceive']);
     }
 
-    public function onRedisCalling(/** @noinspection PhpUnusedParameterInspection */ $redis, $data)
+    public function onRedisCalling(EventArgs $eventArgs)
     {
-        $name = $data['name'];
-        $arguments = $data['arguments'];
+        $name = $eventArgs->data['name'];
+        $arguments = $eventArgs->data['arguments'];
 
         if (stripos(',blPop,brPop,brpoplpush,subscribe,psubscribe,', ",$name,") !== false) {
             $this->logger->debug(["\$redis->$name(:args) ... blocking",
@@ -56,11 +57,11 @@ class TracerPlugin extends Plugin
         }
     }
 
-    public function onRedisCalled(/** @noinspection PhpUnusedParameterInspection */ $redis, $data)
+    public function onRedisCalled(EventArgs $eventArgs)
     {
-        $name = $data['name'];
-        $arguments = $data['arguments'];
-        $r = $data['return'];
+        $name = $eventArgs->data['name'];
+        $arguments = $eventArgs->data['arguments'];
+        $r = $eventArgs->data['return'];
 
         if ($name === 'get' && strpos($arguments[0], ':cache:') !== false) {
             if ($r === false) {
@@ -100,27 +101,29 @@ class TracerPlugin extends Plugin
         }
     }
 
-    public function onDbConnect(/** @noinspection PhpUnusedParameterInspection */ $db, $data)
+    public function onDbConnect(EventArgs $eventArgs)
     {
-        $this->logger->debug(['connect to `:dsn`', 'dsn' => $data['dsn']], 'db.connect');
+        $this->logger->debug(['connect to `:dsn`', 'dsn' => $eventArgs->data['dsn']], 'db.connect');
     }
 
-    public function onDbExecuted(/** @noinspection PhpUnusedParameterInspection */ $db, $data)
+    public function onDbExecuted(EventArgs $eventArgs)
     {
+        $data = $eventArgs->data;
+		
         $this->logger->info($data, 'db.' . $data['type']);
     }
 
-    public function onDbQueried(/** @noinspection PhpUnusedParameterInspection */ $db, $data)
+    public function onDbQueried(EventArgs $eventArgs)
     {
-        $this->logger->debug($data, 'db.query');
+        $this->logger->debug($eventArgs->data, 'db.query');
     }
 
-    public function onDbInserted(/** @noinspection PhpUnusedParameterInspection */ $db, $data)
+    public function onDbInserted(EventArgs $eventArgs)
     {
-        $this->logger->info($data, 'db.insert');
+        $this->logger->info($eventArgs->data, 'db.insert');
     }
 
-    public function onDbBegin(/** @noinspection PhpUnusedParameterInspection */ $db, $data)
+    public function onDbBegin()
     {
         $this->logger->info('transaction begin', 'db.begin');
     }
@@ -135,9 +138,9 @@ class TracerPlugin extends Plugin
         $this->logger->info('transaction commit', 'db.commit');
     }
 
-    public function onDbMetadata(/** @noinspection PhpUnusedParameterInspection */ $db, $data)
+    public function onDbMetadata(EventArgs $eventArgs)
     {
-        $this->logger->debug($data, 'db.metadata');
+        $this->logger->debug($eventArgs->data, 'db.metadata');
     }
 
     public function onDbAbnormal()
@@ -145,10 +148,11 @@ class TracerPlugin extends Plugin
         $this->logger->error('transaction is not close correctly', 'db.abnormal');
     }
 
-    public function onMailerSending($mailer, $data)
+    public function onMailerSending(EventArgs $eventArgs)
     {
         /** @var \ManaPHP\Mailer\Message $message */
-        $message = $data['message'];
+        $message = $eventArgs->data['message'];
+		
         $this->logger->debug(['From: ', $message->getFrom()]);
         $this->logger->debug(['To: ', $message->getTo()]);
         $this->logger->debug(['Cc:', $message->getCc()]);
@@ -156,48 +160,50 @@ class TracerPlugin extends Plugin
         $this->logger->debug(['Subject: ', $message->getSubject()]);
     }
 
-    public function onMongodbConnect($mongodb, $data)
+    public function onMongodbConnect(EventArgs $eventArgs)
     {
-        $this->logger->debug(['connect to `:dsn`', $data], 'mongodb.connect');
+        $this->logger->debug(['connect to `:dsn`', $eventArgs->data], 'mongodb.connect');
     }
 
-    public function onMongodbInserted($mongodb, $data)
+    public function onMongodbInserted(EventArgs $eventArgs)
     {
-        $this->logger->info($data, 'mongodb.insert');
+        $this->logger->info($eventArgs->data, 'mongodb.insert');
     }
 
-    public function onMongodbBulkInserted($mongodb, $data)
+    public function onMongodbBulkInserted(EventArgs $eventArgs)
     {
-        $this->logger->info($data, 'mongodb.bulk.insert');
+        $this->logger->info($eventArgs->data, 'mongodb.bulk.insert');
     }
 
-    public function onMongodbUpdated($mongodb, $data)
+    public function onMongodbUpdated(EventArgs $eventArgs)
     {
-        $this->logger->info($data, 'mongodb.update');
+        $this->logger->info($eventArgs->data, 'mongodb.update');
     }
 
-    public function onMongodbUpserted($mongodb, $data)
+    public function onMongodbUpserted(EventArgs $eventArgs)
     {
-        $this->logger->info($data, 'mongodb.upsert');
+        $this->logger->info($eventArgs->data, 'mongodb.upsert');
     }
 
-    public function onMongodbBulkUpserted($mongodb, $data)
+    public function onMongodbBulkUpserted(EventArgs $eventArgs)
     {
-        $this->logger->info($data, 'mongodb.bulk.upsert');
+        $this->logger->info($eventArgs->data, 'mongodb.bulk.upsert');
     }
 
-    public function onMongodbDeleted($mongodb, $data)
+    public function onMongodbDeleted(EventArgs $eventArgs)
     {
-        $this->logger->info($data, 'mongodb.delete');
+        $this->logger->info($eventArgs->data, 'mongodb.delete');
     }
 
-    public function onMongodbQueried($mongodb, $data)
+    public function onMongodbQueried(EventArgs $eventArgs)
     {
-        $this->logger->debug($data, 'mongodb.query');
+        $this->logger->debug($eventArgs->data, 'mongodb.query');
     }
 
-    public function onMongodbCommanded($mongodb, $data)
+    public function onMongodbCommanded(EventArgs $eventArgs)
     {
+        $data = $eventArgs->data;
+		
         $command_name = key($data['command']);
         if (strpos('ping,aggregate,count,distinct,group,mapReduce,geoNear,geoSearch,find,' .
                 'authenticate,listDatabases,listCollections,listIndexes', $command_name) !== false) {
@@ -207,28 +213,28 @@ class TracerPlugin extends Plugin
         }
     }
 
-    public function onMongodbBulkUpdated($mongodb, $data)
+    public function onMongodbBulkUpdated(EventArgs $eventArgs)
     {
-        $this->logger->info($data, 'mongodb.bulk.update');
+        $this->logger->info($eventArgs->data, 'mongodb.bulk.update');
     }
 
-    public function onHttpClientRequesting($httpClient, $data)
+    public function onHttpClientRequesting(EventArgs $eventArgs)
     {
-        $this->logger->debug($data, 'httpClient.request');
+        $this->logger->debug($eventArgs->data, 'httpClient.request');
     }
 
-    public function onHttpClientRequested($httpClient, $data)
+    public function onHttpClientRequested(EventArgs $eventArgs)
     {
-        $this->logger->debug($data, 'httpClient.response');
+        $this->logger->debug($eventArgs->data, 'httpClient.response');
     }
 
-    public function onWsClientSend($wsClient, $data)
+    public function onWsClientSend(EventArgs $eventArgs)
     {
-        $this->logger->debug($data, 'wsClient.send');
+        $this->logger->debug($eventArgs->data, 'wsClient.send');
     }
 
-    public function onWsClientReceive($wsClient, $data)
+    public function onWsClientReceive(EventArgs $eventArgs)
     {
-        $this->logger->debug($data, 'wsClient.receive');
+        $this->logger->debug($eventArgs->data, 'wsClient.receive');
     }
 }
