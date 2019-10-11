@@ -124,7 +124,12 @@ namespace PHPSTORM_META {
         'response:sending', 'response:sent',
         'model:creating', 'model:created', 'model:saving', 'model:saved',
         'model:updating', 'model:updated', 'model:deleting', 'model:deleted',
-        'db:executing', 'db:executed', 'db:querying', 'db:queried',
+        'db:connect', 'db:executing', 'db:executed', 'db:querying', 'db:queried',
+        'db:begin', 'db:rollback', 'db:commit',
+        'mailer:sending', 'mailer:sent',
+        'redis:connect', 'redis:calling', 'redis:called',
+        'httpClient:requesting', 'httpClient:requested',
+        'wsClient:send', 'wsClient:receive'
     );
     expectedArguments(\ManaPHP\Event\ManagerInterface::attachEvent(), 0, argumentsSet('eventsManager'));
     expectedArguments(\ManaPHP\Component::attachEvent(), 0, argumentsSet('eventsManager'));
