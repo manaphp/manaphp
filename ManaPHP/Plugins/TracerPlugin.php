@@ -48,7 +48,7 @@ class TracerPlugin extends Plugin
 
     public function onRedisConnect(EventArgs $eventArgs)
     {
-        $this->logger->debug(['connect to `:dsn`', 'dsn' => $eventArgs->data['dsn']], 'redis.connect');
+        $this->logger->debug(['connect to `:uri`', 'uri' => $eventArgs->data['uri']], 'redis.connect');
     }
 
     public function onRedisCalling(EventArgs $eventArgs)

@@ -132,7 +132,7 @@ class Connection extends Component
     public function getConnect()
     {
         if ($this->_redis === null) {
-            $this->eventsManager->fireEvent('redis:connect', $this, ['dsn' => $this->_uri]);
+            $this->eventsManager->fireEvent('redis:connect', $this, ['uri' => $this->_uri]);
 
             $redis = $this->_di->get('Redis');
 
