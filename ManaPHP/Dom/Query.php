@@ -45,8 +45,6 @@ class Query
     {
         if (is_array($expression)) {
             $tr = [];
-
-            /** @noinspection ForeachSourceInspection */
             foreach ($expression as $k => $v) {
                 $tr['$' . $k] = is_int($v) ? $v : "'$v'";
             }

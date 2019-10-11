@@ -148,7 +148,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
         }
 
         $r = '';
-        /** @noinspection ForeachSourceInspection */
         foreach ($fields as $k => $v) {
             if (strpos($v, '[') === false && strpos($v, '(') === false) {
                 /** @noinspection NotOptimalIfConditionsInspection */
@@ -554,7 +553,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 $this->_conditions[] = $expr . ' IN (' . implode(', ', array_map('intval', $values)) . ')';
             } else {
                 $bindKeys = [];
-                /** @noinspection ForeachSourceInspection */
                 foreach ($values as $k => $value) {
                     $key = '_in_' . $this->_param_number . '_' . $k;
                     $bindKeys[] = ":$key";
@@ -612,7 +610,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 $this->_conditions[] = $expr . ' NOT IN (' . implode(', ', array_map('intval', $values)) . ')';
             } else {
                 $bindKeys = [];
-                /** @noinspection ForeachSourceInspection */
                 foreach ($values as $k => $value) {
                     $key = '_in_' . $this->_param_number . '_' . $k;
                     $bindKeys[] = ':' . $key;
@@ -672,7 +669,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
 
         if (is_array($expr)) {
             $conditions = [];
-            /** @noinspection ForeachSourceInspection */
             foreach ($expr as $field) {
                 $key = strtr($field, '.', '_');
                 if (strpos($field, '.') !== false) {
@@ -718,7 +714,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
 
         if (is_array($expr)) {
             $conditions = [];
-            /** @noinspection ForeachSourceInspection */
             foreach ($expr as $field) {
                 $key = strtr($field, '.', '_');
                 if (strpos($field, '.') !== false) {
@@ -916,7 +911,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $this->_order = $orderBy;
         } else {
             $r = '';
-            /** @noinspection ForeachSourceInspection */
             foreach ($orderBy as $k => $v) {
                 if (is_int($k)) {
                     $type = 'ASC';
@@ -957,7 +951,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 $this->_having = $having[0];
             } else {
                 $items = [];
-                /** @noinspection ForeachSourceInspection */
                 foreach ($having as $item) {
                     $items[] = '(' . $item . ')';
                 }
@@ -1001,7 +994,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
             }
         } else {
             $r = '';
-            /** @noinspection ForeachSourceInspection */
             foreach ($groupBy as $item) {
                 if (strpos($item, '[') === false && strpos($item, '(') === false) {
                     $r .= preg_replace('#\w+#', '[\\0]', $item) . ', ';
@@ -1039,7 +1031,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
         $unions = [];
 
         /** @var \ManaPHP\Db\QueryInterface $queries */
-        /** @noinspection ForeachSourceInspection */
         foreach ($this->_union['queries'] as $queries) {
             $unions[] = '(' . $queries->getSql() . ')';
 
@@ -1159,7 +1150,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
         $params['from'] = implode(', ', $selectedTables);
 
         $joinSQL = '';
-        /** @noinspection ForeachSourceInspection */
         foreach ($this->_joins as $join) {
             list($joinTable, $joinCondition, $joinAlias, $joinType) = $join;
 

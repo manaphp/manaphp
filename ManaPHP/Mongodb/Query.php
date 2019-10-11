@@ -697,7 +697,6 @@ class Query extends \ManaPHP\Query
 
         if (is_array($expr)) {
             $or = [];
-            /** @noinspection ForeachSourceInspection */
             foreach ($expr as $v) {
                 $or[] = [$v => ['$regex' => $like, '$options' => 'i']];
             }
@@ -723,7 +722,6 @@ class Query extends \ManaPHP\Query
 
         if (is_array($expr)) {
             $and = [];
-            /** @noinspection ForeachSourceInspection */
             foreach ($expr as $v) {
                 $and[] = [$v => ['$not' => new Regex($like, 'i')]];
             }
@@ -959,7 +957,6 @@ class Query extends \ManaPHP\Query
                 $this->_order[$match[1]] = (!isset($match[2]) || strtoupper(ltrim($match[2])) === 'ASC') ? 1 : -1;
             }
         } else {
-            /** @noinspection ForeachSourceInspection */
             foreach ($orderBy as $field => $value) {
                 if ((is_int($value) && $value === SORT_ASC) || (is_string($value) && strtoupper($value) === 'ASC')) {
                     $this->_order[$field] = 1;

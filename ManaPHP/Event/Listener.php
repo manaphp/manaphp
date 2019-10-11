@@ -35,7 +35,7 @@ class Listener extends Component implements LogCategorizable
 
     public function process(EventArgs $eventArgs)
     {
-        list($group, $type) = explode(':', $eventArgs->event, 2);
+        list(, $type) = explode(':', $eventArgs->event, 2);
         if (method_exists($this, 'peek')) {
             if (($r = $this->peek($eventArgs)) !== null) {
                 return $r;

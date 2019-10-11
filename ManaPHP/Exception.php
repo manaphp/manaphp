@@ -42,7 +42,6 @@ class Exception extends \Exception
                 }
 
                 $tr = [];
-                /** @noinspection ForeachSourceInspection */
                 foreach ($this->_bind as $k => $v) {
                     $tr[':' . $k] = $v;
                 }

@@ -29,7 +29,6 @@ class Curl extends Client
                 $body = json_stringify($body);
             } else {
                 $hasFiles = false;
-                /** @noinspection ForeachSourceInspection */
                 foreach ($body as $k => $v) {
                     if (is_string($v) && strlen($v) > 1 && $v[0] === '@' && $this->filesystem->fileExists($v)) {
                         $hasFiles = true;

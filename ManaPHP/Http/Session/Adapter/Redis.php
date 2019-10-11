@@ -81,7 +81,7 @@ class Redis extends Session
             $this->_redis = $this->_di->getShared($this->_redis);
         }
 
-        $this->_redis->setTimeout($session_id, $ttl);
+        $this->_redis->expire($session_id, $ttl);
 
         return true;
     }
@@ -97,7 +97,7 @@ class Redis extends Session
             $this->_redis = $this->_di->getShared($this->_redis);
         }
 
-        $this->_redis->delete($this->_prefix . $session_id);
+        $this->_redis->del($this->_prefix . $session_id);
 
         return true;
     }

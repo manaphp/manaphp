@@ -137,7 +137,6 @@ class Route implements RouteInterface
             }
 
             $params = [];
-            /** @noinspection ForeachSourceInspection */
             foreach ($paths as $k => $v) {
                 if (is_string($k) && !in_array($k, ['area', 'controller', 'action'], true)) {
                     $params[$k] = $v;

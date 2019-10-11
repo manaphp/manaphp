@@ -240,7 +240,6 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             $valueField = current($fields);
 
             $list = [];
-            /** @noinspection ForeachSourceInspection */
             foreach (static::select([$keyField, $valueField])->where($filters)->fetch(true) as $v) {
                 $key = $v[$keyField];
                 $value = $v[$valueField];
@@ -1093,7 +1092,6 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function hasChanged($fields)
     {
-        /** @noinspection ForeachSourceInspection */
         foreach ((array)$fields as $field) {
             if (!isset($this->_snapshot[$field]) || $this->{$field} !== $this->_snapshot[$field]) {
                 return true;

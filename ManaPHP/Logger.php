@@ -229,7 +229,6 @@ abstract class Logger extends Component implements LoggerInterface
         }
 
         $replaces = [];
-        /** @noinspection ForeachSourceInspection */
         foreach ($message as $k => $v) {
             if ($k === 0) {
                 continue;

@@ -344,7 +344,6 @@ class Request extends Component implements RequestInterface
                     return true;
                 }
             } else {
-                /** @noinspection ForeachSourceInspection */
                 foreach ($file['error'] as $error) {
                     if (!$onlySuccessful || $error === UPLOAD_ERR_OK) {
                         return true;

@@ -245,7 +245,6 @@ class Jwt extends Identity
         $signature = substr($token, $pos + 1);
 
         $success = false;
-        /** @noinspection ForeachSourceInspection */
         foreach ((array)$keys as $key) {
             if ($this->base64urlEncode(hash_hmac(strtr($this->_alg, ['HS' => 'sha']), $data, $key, true)) === $signature) {
                 $success = true;

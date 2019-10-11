@@ -116,7 +116,7 @@ class Redis extends Queue
         }
 
         foreach ($this->_priorities as $priority) {
-            $redis->delete($this->_prefix . $topic . ':' . $priority);
+            $redis->del($this->_prefix . $topic . ':' . $priority);
         }
     }
 

@@ -356,7 +356,6 @@ class Db extends Component implements DbInterface
 
         $wheres = [];
 
-        /** @noinspection ForeachSourceInspection */
         foreach ($conditions as $k => $v) {
             if (is_int($k)) {
                 $wheres[] = stripos($v, ' or ') ? "($v)" : $v;
@@ -459,7 +458,6 @@ class Db extends Component implements DbInterface
         }
 
         $wheres = [];
-        /** @noinspection ForeachSourceInspection */
         foreach ($conditions as $k => $v) {
             if (is_int($k)) {
                 $wheres[] = stripos($v, ' or ') ? "($v)" : $v;
