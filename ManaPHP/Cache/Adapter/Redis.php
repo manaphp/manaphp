@@ -79,7 +79,7 @@ class Redis extends Cache
             $this->_redis = $this->_di->getShared($this->_redis);
         }
 
-        $this->_redis->delete($this->_prefix . $key);
+        $this->_redis->del($this->_prefix . $key);
     }
 
     /**
