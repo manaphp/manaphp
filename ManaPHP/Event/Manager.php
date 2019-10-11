@@ -79,7 +79,7 @@ class Manager implements ManagerInterface
     public function fireEvent($event, $source, $data = [])
     {
         $eventArgs = new EventArgs($event, $source, $data);
-		
+
         list($group) = explode(':', $event, 2);
 
         if ($this->_listeners && isset($this->_listeners[$group])) {
@@ -96,31 +96,15 @@ class Manager implements ManagerInterface
         }
 
         foreach ($this->_peekers['*'] ?? [] as $handler) {
-            if ($handler instanceof Closure) {
-                $handler($eventArgs);
-            } else {
-                $handler[0]->{$handler[1]}($eventArgs);
-            }
+            $handler instanceof Closure ? $handler($eventArgs) : $handler[0]->{$handler[1]}($eventArgs);
         }
 
         foreach ($this->_peekers[$group] ?? [] as $handler) {
-            if ($handler instanceof Closure) {
-                $handler($eventArgs);
-            } else {
-                $handler[0]->{$handler[1]}($eventArgs);
-            }
+            $handler instanceof Closure ? $handler($eventArgs) : $handler[0]->{$handler[1]}($eventArgs);
         }
 
-        if (!isset($this->_events[$event])) {
-            return;
-        }
-
-        foreach ($this->_events[$event] as $handler) {
-            if ($handler instanceof Closure) {
-                $handler($eventArgs);
-            } else {
-                $handler[0]->{$handler[1]}($eventArgs);
-            }
+        foreach ($this->_events[$event] ?? [] as $handler) {
+            $handler instanceof Closure ? $handler($eventArgs) : $handler[0]->{$handler[1]}($eventArgs);
         }
     }
 
