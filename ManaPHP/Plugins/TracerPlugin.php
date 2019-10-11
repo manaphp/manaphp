@@ -12,6 +12,7 @@ class TracerPlugin extends Plugin
 {
     public function __construct()
     {
+        $this->eventsManager->attachEvent('redis:connect', [$this, 'onRedisConnect']);
         $this->eventsManager->attachEvent('redis:calling', [$this, 'onRedisCalling']);
         $this->eventsManager->attachEvent('redis:called', [$this, 'onRedisCalled']);
 
@@ -43,6 +44,11 @@ class TracerPlugin extends Plugin
 
         $this->eventsManager->attachEvent('wsClient:send', [$this, 'onWsClientSend']);
         $this->eventsManager->attachEvent('wsClient:receive', [$this, 'onWsClientReceive']);
+    }
+
+    public function onRedisConnect(EventArgs $eventArgs)
+    {
+        $this->logger->debug(['connect to `:dsn`', 'dsn' => $eventArgs->data['dsn']], 'redis.connect');
     }
 
     public function onRedisCalling(EventArgs $eventArgs)
