@@ -13,6 +13,16 @@ class TracerPlugin extends Plugin
     {
         $this->eventsManager->attachEvent('redis:calling', [$this, 'onRedisCalling']);
         $this->eventsManager->attachEvent('redis:called', [$this, 'onRedisCalled']);
+
+        $this->eventsManager->attachEvent('db:connect', [$this, 'onDbConnect']);
+        $this->eventsManager->attachEvent('db:queried', [$this, 'onDbQueried']);
+        $this->eventsManager->attachEvent('db:executed', [$this, 'onDbExecuted']);
+        $this->eventsManager->attachEvent('db:inserted', [$this, 'onDbInserted']);
+        $this->eventsManager->attachEvent('db:begin', [$this, 'onDbBegin']);
+        $this->eventsManager->attachEvent('db:rollback', [$this, 'onDbRollback']);
+        $this->eventsManager->attachEvent('db:commit', [$this, 'onDbCommit']);
+        $this->eventsManager->attachEvent('db:metadata', [$this, 'onDbMetadata']);
+        $this->eventsManager->attachEvent('db:abnormal', [$this, 'onDbAbnormal']);
     }
 
     public function onRedisCalling(/** @noinspection PhpUnusedParameterInspection */ $redis, $data)
@@ -69,5 +79,50 @@ class TracerPlugin extends Plugin
                 'return' => @json_encode($r, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
             ], 'redis.' . $name);
         }
+    }
+
+    public function onDbConnect(/** @noinspection PhpUnusedParameterInspection */ $db, $data)
+    {
+        $this->logger->debug(['connect to `:dsn`', 'dsn' => $data['dsn']], 'db.connect');
+    }
+
+    public function onDbExecuted(/** @noinspection PhpUnusedParameterInspection */ $db, $data)
+    {
+        $this->logger->info($data, 'db.' . $data['type']);
+    }
+
+    public function onDbQueried(/** @noinspection PhpUnusedParameterInspection */ $db, $data)
+    {
+        $this->logger->debug($data, 'db.query');
+    }
+
+    public function onDbInserted(/** @noinspection PhpUnusedParameterInspection */ $db, $data)
+    {
+        $this->logger->info($data, 'db.insert');
+    }
+
+    public function onDbBegin(/** @noinspection PhpUnusedParameterInspection */ $db, $data)
+    {
+        $this->logger->info('transaction begin', 'db.begin');
+    }
+
+    public function onDbRollback()
+    {
+        $this->logger->info('transaction rollback', 'db.rollback');
+    }
+
+    public function onDbCommit()
+    {
+        $this->logger->info('transaction commit', 'db.commit');
+    }
+
+    public function onDbMetadata(/** @noinspection PhpUnusedParameterInspection */ $db, $data)
+    {
+        $this->logger->debug($data, 'db.metadata');
+    }
+
+    public function onDbAbnormal()
+    {
+        $this->logger->error('transaction is not close correctly', 'db.abnormal');
     }
 }

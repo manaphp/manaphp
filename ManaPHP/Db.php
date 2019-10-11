@@ -192,8 +192,6 @@ class Db extends Component implements DbInterface
         $event && $this->eventsManager->fireEvent('db:' . $event[1], $this, $event_data);
         $this->eventsManager->fireEvent('db:executed', $this, $event_data);
 
-        $this->logger->info($event_data, 'db.' . $type);
-
         return $count;
     }
 
@@ -262,11 +260,7 @@ class Db extends Component implements DbInterface
 
         $count = $context->affected_rows = count($result);
 
-        $event_data = compact('elapsed', 'count', 'sql', 'bind', 'result');
-
-        $this->logger->debug($event_data, 'db.query');
-
-        $this->eventsManager->fireEvent('db:queried', $this, $event_data);
+        $this->eventsManager->fireEvent('db:queried', $this, compact('elapsed', 'count', 'sql', 'bind', 'result'));
 
         return $result;
     }
@@ -321,11 +315,9 @@ class Db extends Component implements DbInterface
             }
         }
 
-        $event_data = compact('sql', 'record', 'elapsed');
+        $event_data = compact('sql', 'record', 'elapsed', 'insert_id');
 
         $this->eventsManager->fireEvent('db:inserted', $this, $event_data);
-
-        $this->logger->info(compact('elapsed', 'insert_id', 'sql', 'bind'), 'db.insert');
 
         return $insert_id;
     }
@@ -589,7 +581,6 @@ class Db extends Component implements DbInterface
         $context = $this->_context;
 
         if ($context->transaction_level === 0) {
-            $this->logger->info('transaction begin', 'db.begin');
             $this->eventsManager->fireEvent('db:begin', $this);
 
             /** @var \ManaPHP\Db\ConnectionInterface $connection */
@@ -649,7 +640,6 @@ class Db extends Component implements DbInterface
                     $this->poolManager->push($this, $context->connection);
                     $context->connection = null;
 
-                    $this->logger->info('transaction rollback', 'db.rollback');
                     $this->eventsManager->fireEvent('db:rollback', $this);
                 }
             }
@@ -682,8 +672,6 @@ class Db extends Component implements DbInterface
             } finally {
                 $this->poolManager->push($this, $context->connection);
                 $context->connection = null;
-
-                $this->logger->info('transaction commit', 'db.commit');
                 $this->eventsManager->fireEvent('db:commit', $this);
             }
         }
@@ -778,7 +766,7 @@ class Db extends Component implements DbInterface
             }
         }
 
-        $this->logger->debug(compact('elapsed', 'source', 'meta'), 'db.metadata');
+        $this->eventsManager->fireEvent('db:metadata', $this, compact('elapsed', 'source', 'meta'));
 
         return $meta;
     }
@@ -795,8 +783,7 @@ class Db extends Component implements DbInterface
                 } finally {
                     $this->poolManager->push($this, $context->connection);
                 }
-
-                $this->logger->error('transaction is not close correctly', 'db.transaction.abnormal');
+                $this->eventsManager->fireEvent('db:abnormal', $this);
             }
             $context->connection = null;
         }
