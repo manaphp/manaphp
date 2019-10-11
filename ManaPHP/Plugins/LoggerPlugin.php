@@ -99,10 +99,11 @@ class LoggerPlugin extends Plugin
      */
     protected function _writeData($key, $data)
     {
+        $content = gzencode(json_stringify($data, JSON_PARTIAL_OUTPUT_ON_ERROR));
         if ($this->_ttl) {
-            $this->cache->set('__loggerPlugin:' . $key, gzencode(json_stringify($data)), $this->_ttl);
+            $this->cache->set('__loggerPlugin:' . $key, $content, $this->_ttl);
         } else {
-            $this->filesystem->filePut("@data/loggerPlugin/{$key}.zip", gzencode(json_stringify($data)));
+            $this->filesystem->filePut("@data/loggerPlugin/{$key}.zip", $content);
         }
     }
 
@@ -152,7 +153,7 @@ class LoggerPlugin extends Plugin
 
         /** @var \ManaPHP\Logger\Log $log */
         $log = $eventArgs->data;
-		
+
         if ($context->enabled) {
             $context->logs[] = [
                 'time' => date('H:i:s.', $log->timestamp) . sprintf('%.03d', ($log->timestamp - (int)$log->timestamp) * 1000),

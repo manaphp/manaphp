@@ -115,10 +115,11 @@ class DebuggerPlugin extends Plugin
      */
     protected function _writeData($key, $data)
     {
+        $content = gzencode(json_stringify($data, JSON_PARTIAL_OUTPUT_ON_ERROR));
         if ($this->_ttl) {
-            $this->cache->set('__debuggerPlugin:' . $key, gzencode(json_stringify($data)), $this->_ttl);
+            $this->cache->set('__debuggerPlugin:' . $key, $content, $this->_ttl);
         } else {
-            $this->filesystem->filePut("@data/debuggerPlugin/{$key}.zip", gzencode(json_stringify($data)));
+            $this->filesystem->filePut("@data/debuggerPlugin/{$key}.zip", $content);
         }
     }
 
