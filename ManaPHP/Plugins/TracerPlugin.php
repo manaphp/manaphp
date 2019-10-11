@@ -69,22 +69,17 @@ class TracerPlugin extends Plugin
         $arguments = $eventArgs->data['arguments'];
         $r = $eventArgs->data['return'];
 
-        if ($name === 'get' && strpos($arguments[0], ':cache:') !== false) {
-            if ($r === false) {
-                $this->logger->info("\$redis->get(\"$arguments[0]\") => false", 'redis.cache.get');
-            } else {
-                $this->logger->debug("\$redis->get(\"$arguments[0]\") => " . (strlen($r) > 64 ? substr($r, 0, 64) . '...' : $r), 'redis.cache.get');
-            }
-        } /** @noinspection NotOptimalIfConditionsInspection */
-        elseif ($name === 'set' && strpos($arguments[0], ':cache:') !== false) {
+        if ($name === 'get') {
+            $this->logger->debug("\$redis->get(\"$arguments[0]\") => " . (strlen($r) > 64 ? substr($r, 0, 64) . '...' : $r), 'redis.get');
+        } elseif ($name === 'set') {
             $args = $arguments;
             if (strlen($args[1]) > 64) {
                 $args[1] = substr($args[1], 0, 64) . '...';
             }
-            $this->logger->info(["\$redis->$name(:args) => :return",
+            $this->logger->debug(["\$redis->$name(:args) => :return",
                 'args' => substr(json_stringify($args, JSON_PARTIAL_OUTPUT_ON_ERROR), 1, -1),
                 'return' => json_stringify($r, JSON_PARTIAL_OUTPUT_ON_ERROR)
-            ], 'redis.cache.set');
+            ], 'redis.set');
         } /** @noinspection SpellCheckingInspection */
         elseif (stripos(',_prefix,_serialize,_unserialize,auth,bitcount,bitop,bitpos,clearLastError,client,close,connect,dbSize,debug,
                     ,dump,echo,exists,expireAt,geodist,geohash,geopos,georadius,georadiusbymember,get,getBit,getDbNum,
