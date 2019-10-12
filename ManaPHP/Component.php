@@ -242,6 +242,12 @@ class Component implements ComponentInterface, JsonSerializable
             $data[$k] = $v;
         }
 
+        if (isset($data['_context'])) {
+            $data['_context'] = (array)$data['_context'];
+        } elseif ($this->_object_id !== null) {
+            $data['_context'] = (array)$this->__get('_context');
+        }
+
         return $data;
     }
 
@@ -250,13 +256,7 @@ class Component implements ComponentInterface, JsonSerializable
      */
     public function dump()
     {
-        $data = $this->__debugInfo();
-
-        if (isset($data['_context'])) {
-            $data['_context'] = (array)$data['_context'];
-        }
-
-        return $data;
+        return $this->__debugInfo();
     }
 
     /**
