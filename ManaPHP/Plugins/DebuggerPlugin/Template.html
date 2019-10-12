@@ -229,7 +229,6 @@
             </table>
         </div>
         <div class="tab-pane" id="sql">
-
             <h4>SQL Statements({{sql.count}})
                 <small><label><input type="checkbox" checked v-model="log_checked_executed">Executed</label></small>
             </h4>
@@ -247,7 +246,7 @@
                     <tr v-for="(item, index) in sql.executed" :title="json_stringify(item)">
                         <td>{{index}}</td>
                         <td>{{item.row_count}}</td>
-                        <td>{{item.emulated}}</td>
+                        <td>{{item.emulated.replace(/\[([\w]+)\]/g, '`$1`')}}</td>
                         <td>{{item.elapsed}}</td>
                     </tr>
                     </tbody>
@@ -266,7 +265,7 @@
                     <tr v-for="(count, sql, index) in sql.prepared">
                         <td>{{index}}</td>
                         <td>{{count}}</td>
-                        <td>{{sql}}</td>
+                        <td>{{sql.replace(/\[([\w]+)\]/g, '`$1`')}}</td>
                     </tr>
                     </tbody>
                 </table>
