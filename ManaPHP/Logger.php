@@ -12,7 +12,20 @@ use Throwable;
 
 class LoggerContext
 {
+    /**
+     * @var int
+     */
     public $level;
+
+    /**
+     * @var string
+     */
+    public $client_ip;
+
+    /**
+     * @var string
+     */
+    public $request_id;
 }
 
 /**
@@ -34,6 +47,11 @@ abstract class Logger extends Component implements LoggerInterface
      * @var int
      */
     protected $_level;
+
+    /**
+     * @var string
+     */
+    protected $_host;
 
     /**
      * @var array
@@ -68,13 +86,18 @@ abstract class Logger extends Component implements LoggerInterface
                 $this->_level = self::LEVEL_DEBUG;
             }
         }
+
+        $this->_host = $options['host'] ?? gethostname();
     }
 
     public function createContext()
     {
+        /** @var \ManaPHP\LoggerContext $context */
         $context = parent::createContext();
-		
+
         $context->level = $this->_level;
+        $context->client_ip = $_SERVER['DOCUMENT_ROOT'] === '' ? '' : $this->request->getClientIp();
+        $context->request_id = $this->request->getRequestId();
 
         return $context;
     }
@@ -306,10 +329,10 @@ abstract class Logger extends Component implements LoggerInterface
 
         $log = new Log();
 
-        $log->host = gethostname();
-        $log->client_ip = $_SERVER['DOCUMENT_ROOT'] === '' ? '' : $this->request->getClientIp();
+        $log->host = $this->_host;
+        $log->client_ip = $context->client_ip;
         $log->level = self::$_levels[$level];
-        $log->request_id = $this->request->getRequestId();
+        $log->request_id = $context->request_id ?: $this->request->getRequestId();
 
         if ($message instanceof Throwable) {
             $log->category = $category ?: 'exception';
