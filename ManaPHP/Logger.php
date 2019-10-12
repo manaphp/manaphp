@@ -10,11 +10,17 @@ use Serializable;
 use Swoole\Coroutine;
 use Throwable;
 
+class LoggerContext
+{
+    public $level;
+}
+
 /**
  * Class ManaPHP\Logger
  *
  * @package logger
  * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\LoggerContext         $_context
  */
 abstract class Logger extends Component implements LoggerInterface
 {
@@ -64,12 +70,21 @@ abstract class Logger extends Component implements LoggerInterface
         }
     }
 
+    public function createContext()
+    {
+        $context = parent::createContext();
+		
+        $context->level = $this->_level;
+
+        return $context;
+    }
+
     /**
      * @param int|string $level
      *
      * @return int
      */
-    public function _parseLevel($level)
+    protected function _parseLevel($level)
     {
         $r = is_numeric($level) ? (int)$level : array_search($level, self::$_levels, true);
         if (!is_int($r) || !isset(self::$_levels[$r])) {
@@ -86,7 +101,7 @@ abstract class Logger extends Component implements LoggerInterface
      */
     public function setLevel($level)
     {
-        $this->_level = $this->_parseLevel($level);
+        $this->_context->level = $this->_parseLevel($level);
 
         return $this;
     }
@@ -96,7 +111,7 @@ abstract class Logger extends Component implements LoggerInterface
      */
     public function getLevel()
     {
-        return $this->_level;
+        return $this->_context->level;
     }
 
     /**
@@ -274,7 +289,9 @@ abstract class Logger extends Component implements LoggerInterface
      */
     public function log($level, $message, $category = null)
     {
-        if ($level > $this->_level) {
+        $context = $this->_context;
+
+        if ($level > $context->level) {
             return $this;
         }
 
