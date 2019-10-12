@@ -67,39 +67,18 @@ class TracerPlugin extends Plugin
     {
         $name = $eventArgs->data['name'];
         $arguments = $eventArgs->data['arguments'];
-        $r = $eventArgs->data['return'];
-
-        if ($name === 'get') {
-            $this->logger->debug("\$redis->get(\"$arguments[0]\") => " . (strlen($r) > 64 ? substr($r, 0, 64) . '...' : $r), 'redis.get');
-        } elseif ($name === 'set') {
-            $args = $arguments;
-            if (strlen($args[1]) > 64) {
-                $args[1] = substr($args[1], 0, 64) . '...';
+        foreach ($arguments as $k => $v) {
+            if (is_string($v) && strlen($v) > 64) {
+                $arguments[$k] = substr($v, 0, 64) . '...';
             }
-            $this->logger->debug(["\$redis->$name(:args) => :return",
-                'args' => substr(json_stringify($args, JSON_PARTIAL_OUTPUT_ON_ERROR), 1, -1),
-                'return' => json_stringify($r, JSON_PARTIAL_OUTPUT_ON_ERROR)
-            ], 'redis.set');
-        } /** @noinspection SpellCheckingInspection */
-        elseif (stripos(',_prefix,_serialize,_unserialize,auth,bitcount,bitop,bitpos,clearLastError,client,close,connect,dbSize,debug,
-                    ,dump,echo,exists,expireAt,geodist,geohash,geopos,georadius,georadiusbymember,get,getBit,getDbNum,
-                    ,getHost,getKeys,getLastError,getMode,getMultiple,getOption,getPersistentID,getPort,getRange,getReadTimeout,
-                    ,getTimeout,hExists,hGet,hGetAll,hKeys,hLen,hMget,hStrLen,hVals,hscan,info,isConnected,lGet,lGetRange,
-                    ,lSize,lastSave,object,pconnect,persist,pexpire,pexpireAt,pfcount,ping,pttl,randomKey,role,sContains,sDiff,
-                    ,sInter,sMembers,sRandMember,sSize,sUnion,scan,select,setTimeout,slowlog,sort,sortAsc,sortAscAlpha,sortDesc,sortDescAlpha,
-                    sscan,strlen,time,ttl,type,zCard,zCount,zInter,zLexCount,zRange,zRangeByLex,zRangeByScore,zRank,zRevRange,
-                    ,zRevRangeByLex,zRevRangeByScore,zRevRank,zScore,zUnion,zscan,expire,keys,lLen,lindex,lrange,mget,open,popen,
-                    ,sGetMembers,scard,sendEcho,sismember,substr,zReverseRange,zSize,', ",$name,") !== false) {
-            $this->logger->debug(["\$redis->$name(:args) => :return",
-                'args' => substr(json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR), 1, -1),
-                'return' => json_stringify($r, JSON_PARTIAL_OUTPUT_ON_ERROR)
-            ], 'redis.' . $name);
-        } else {
-            $this->logger->info(["\$redis->$name(:args) => :return",
-                'args' => substr(json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR), 1, -1),
-                'return' => json_stringify($r, JSON_PARTIAL_OUTPUT_ON_ERROR)
-            ], 'redis.' . $name);
         }
+        $arguments = json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR);
+        $return = json_stringify($eventArgs->data['return'], JSON_PARTIAL_OUTPUT_ON_ERROR);
+
+        $this->logger->debug(["\$redis->$name(:args) => :return",
+            'args' => strlen($arguments) > 256 ? substr($arguments, 1, 256) . '...)' : substr($arguments, 1, -1),
+            'return' => strlen($return) > 64 ? substr($return, 0, 64) . '...' : $return
+        ], 'redis.' . $name);
     }
 
     public function onDbConnect(EventArgs $eventArgs)
