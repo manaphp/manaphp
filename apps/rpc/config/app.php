@@ -17,5 +17,7 @@ return [
     ],
     'services' => [],
     'listeners' => [],
-    'plugins' => []
+    'plugins' => [
+        'tracer',
+    ]
 ];

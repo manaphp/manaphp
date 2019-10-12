@@ -16,5 +16,7 @@ return [
         'logger' => ['level' => env('LOGGER_LEVEL', 'info')]
     ],
     'services' => [],
-    'plugins' => []
+    'plugins' => [
+        'tracer',
+    ]
 ];

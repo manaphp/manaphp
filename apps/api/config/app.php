@@ -17,5 +17,11 @@ return [
     ],
     'services' => [],
     'listeners' => [],
-    'plugins' => []
+    'plugins' => [
+        'cors',
+        'slowlog',
+        'tracer',
+        'logger',
+        'debugger',
+    ]
 ];

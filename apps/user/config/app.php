@@ -20,6 +20,9 @@ return [
     ],
     'services' => [],
     'plugins' => [
-        'debugger'
+        'tracer',
+        'slowlog',
+        'logger',
+        'debugger',
     ]
 ];

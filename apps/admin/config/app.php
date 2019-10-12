@@ -23,7 +23,9 @@ return [
     'services' => [],
     'listeners' => [],
     'plugins' => [
-        //'debugger',
-        //'fiddler',
+        'tracer',
+        'slowlog',
+        'logger',
+        'debugger',
         'adminActionLog']
 ];
