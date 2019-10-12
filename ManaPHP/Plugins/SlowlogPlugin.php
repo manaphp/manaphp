@@ -42,7 +42,7 @@ class SlowlogPlugin extends Plugin
         $replaced[':client_ip'] = $this->request->getClientIp();
         $replaced[':request_id'] = $this->request->getRequestId();
         $replaced[':elapsed'] = sprintf('%.03f', $elapsed);
-        $replaced[':message'] = (is_string($message) ? $message : json_stringify($message)) . PHP_EOL;
+        $replaced[':message'] = (is_string($message) ? $message : json_stringify($message, JSON_PARTIAL_OUTPUT_ON_ERROR)) . PHP_EOL;
 
         $this->filesystem->fileAppend('@data/slowlogPlugin/app.log', strtr($this->_format, $replaced));
     }
