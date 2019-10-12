@@ -41,6 +41,10 @@ abstract class Application extends \ManaPHP\Application implements HandlerInterf
         } else {
             $this->getDi()->setShared('httpServer', 'ManaPHP\Http\Server\Adapter\Fpm');
         }
+
+        if ($_SERVER['DOCUMENT_ROOT'] === '') {
+            $_SERVER['DOCUMENT_ROOT'] = dirname($_SERVER['SCRIPT_FILENAME']);
+        }
     }
 
     public function authenticate()

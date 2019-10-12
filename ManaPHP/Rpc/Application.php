@@ -32,6 +32,10 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         } else {
             $this->getDi()->setShared('rpcServer', 'ManaPHP\Rpc\Server\Adapter\Fpm');
         }
+
+        if ($_SERVER['DOCUMENT_ROOT'] === '') {
+            $_SERVER['DOCUMENT_ROOT'] = dirname($_SERVER['SCRIPT_FILENAME']);
+        }
     }
 
     public function getDi()
