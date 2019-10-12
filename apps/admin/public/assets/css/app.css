@@ -135,6 +135,10 @@
     margin-bottom: 30px;
 }
 
+.el-dialog .el-form-item--mini {
+    margin-bottom: 0;
+}
+
 .el-dialog .el-input {
     width: 260px;
 }

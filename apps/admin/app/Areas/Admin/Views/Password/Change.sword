@@ -50,7 +50,7 @@
                             window.location.href = "/";
                         } else {
                             this.$alert(res.data.message);
-                            this.captcha_url = "captcha" + '?t=' + new Date().getTime();
+                            this.captcha_url = "captcha" + '?t=' + Date.now();
                         }
                     }.bind(this));
                 },

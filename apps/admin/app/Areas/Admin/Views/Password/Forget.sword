@@ -36,7 +36,7 @@
         </el-col>
         <el-col :offset="1" :span="7">
             <img :src="captcha_url"
-                 @click="request.code=''; captcha_url='captcha'+'?t='+new Date().getTime()">
+                 @click="request.code=''; captcha_url='captcha'+'?t='+Date.now()">
         </el-col>
     </el-row>
     <el-button @click="login" style="width:100%" type="primary">找回</el-button>
@@ -68,7 +68,7 @@
                         if (res.data.code === 0) {
                             window.location.href = "{{$redirect}}";
                         } else {
-                            vm.captcha_url = "captcha" + '?t=' + new Date().getTime();
+                            vm.captcha_url = "captcha" + '?t=' + Date.now();
                         }
                     });
                 }.bind(this));

@@ -9,13 +9,13 @@ Vue.prototype.console = console;
 (function () {
     let urlKey = `last_url_query.${document.location.pathname}`;
     window.onbeforeunload = (e) => {
-        localStorage.setItem(urlKey, document.location.search);
+        sessionStorage.setItem(urlKey, document.location.search);
     };
 
     if (document.location.search !== '') {
         return;
     }
-    let last_url_query = localStorage.getItem(urlKey);
+    let last_url_query = sessionStorage.getItem(urlKey);
     window.history.replaceState(null, null, last_url_query === null ? '?' : last_url_query);
 }());
 
@@ -98,7 +98,7 @@ Vue.mixin({
                 url += (url.indexOf('?') === -1 ? '?' : '&') + Qs.stringify(data);
             }
 
-            if (success && /\bcache=[12]\b/.test(url) && localStorage.getItem('axios.cache.enabled') !== '0') {
+            if (success && url.match(/\bcache=[12]\b/) && localStorage.getItem('axios.cache.enabled') !== '0') {
                 var cache_key = 'axios.cache.' + url;
                 let cache_value = sessionStorage.getItem(cache_key);
                 if (cache_value) {
@@ -115,7 +115,7 @@ Vue.mixin({
                         }
                         success.bind(this)(res.data.data);
                     }
-                } else if (typeof res.data.message !== 'undefined') {
+                } else if (res.data.message) {
                     this.$alert(res.data.message);
                 }
                 return res;
@@ -144,7 +144,7 @@ Vue.mixin({
             }.bind(this));
         },
         reload: function () {
-            if (typeof this.request === 'undefined' || typeof this.response === 'undefined') {
+            if (!this.request || !this.response) {
                 alert('bad reload');
             }
 
@@ -181,8 +181,8 @@ Vue.mixin({
                 this.reload();
             });
         },
-        show_edit: function (row) {
-            this.edit = Object.assign({}, row);
+        show_edit: function (row, overwrite = {}) {
+            this.edit = Object.assign({}, row, overwrite);
             this.editVisible = true;
         },
         do_edit: function () {
@@ -209,7 +209,7 @@ Vue.mixin({
             data[key] = row[key];
 
             if (!name) {
-                name = (typeof keys[1] !== 'undefined' && keys[1].indexOf('_name')) ? row[keys[1]] : row[key];
+                name = (keys[1] && keys[1].indexOf('_name')) ? row[keys[1]] : row[key];
             }
 
             if (window.event.ctrlKey) {
@@ -226,11 +226,11 @@ Vue.mixin({
         },
     },
     created: function () {
-        if (this.$parent !== undefined) {
+        if (this.$parent) {
             return;
         }
 
-        if (typeof this.request !== 'undefined' && typeof this.response !== 'undefined') {
+        if (this.request && this.response) {
             let qs = this.$qs.parse(document.location.query);
             for (let k in qs) {
                 this.request[k] = qs[k];
