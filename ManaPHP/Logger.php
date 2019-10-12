@@ -3,6 +3,7 @@
 namespace ManaPHP;
 
 use JsonSerializable;
+use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Logger\Log;
 use ManaPHP\Logger\LogCategorizable;
 use Serializable;
@@ -47,11 +48,8 @@ abstract class Logger extends Component implements LoggerInterface
     public function __construct($options = null)
     {
         if (isset($options['level'])) {
-            $this->setLevel($options['level']);
-            unset($options['level']);
-        }
-
-        if ($this->_level === null) {
+            $this->_level = $this->_parseLevel($options['level']);
+        } else {
             $error_level = error_reporting();
 
             if ($error_level & E_ERROR) {
@@ -69,15 +67,26 @@ abstract class Logger extends Component implements LoggerInterface
     /**
      * @param int|string $level
      *
+     * @return int
+     */
+    public function _parseLevel($level)
+    {
+        $r = is_numeric($level) ? (int)$level : array_search($level, self::$_levels, true);
+        if (!is_int($r) || !isset(self::$_levels[$r])) {
+            throw new InvalidValueException('logger `:level` level is invalid', ['level' => $level]);
+        }
+
+        return $r;
+    }
+
+    /**
+     * @param int|string $level
+     *
      * @return static
      */
     public function setLevel($level)
     {
-        if (is_numeric($level)) {
-            $this->_level = (int)$level;
-        } else {
-            $this->_level = array_search($level, self::$_levels, true);
-        }
+        $this->_level = $this->_parseLevel($level);
 
         return $this;
     }
