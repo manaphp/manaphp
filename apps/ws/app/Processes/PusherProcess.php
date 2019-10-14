@@ -2,7 +2,6 @@
 namespace App\Processes;
 
 use ManaPHP\Event\EventArgs;
-use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Process;
 use Swoole\Table;
 
@@ -14,14 +13,19 @@ use Swoole\Table;
 class PusherProcess extends Process
 {
     /**
+     * @var array
+     */
+    protected $_endpoint;
+
+    /**
      * @var string
      */
     protected $_prefix = 'ws:pusher:';
 
     /**
-     * @var array
+     * @var int
      */
-    protected $_endpoint;
+    protected $_capacity = 10000;
 
     /**
      * @var bool
@@ -40,13 +44,21 @@ class PusherProcess extends Process
 
     public function __construct($options = [])
     {
-        if (!isset($options['endpoint'])) {
-            throw new MissingFieldException('endpoint');
-        }
-
         $this->_endpoint = $options['endpoint'];
 
-        $table = new Table($options['max_connection'] ?? 10000);
+        if (isset($options['prefix'])) {
+            $this->_prefix = $options['prefix'];
+        }
+
+        if (isset($options['capacity'])) {
+            $this->_capacity = (int)$options['capacity'];
+        }
+
+        if (isset($options['sso'])) {
+            $this->_sso = (bool)$options['sso'];
+        }
+
+        $table = new Table($this->_capacity);
         $table->column('fd', Table::TYPE_INT);
         $table->column('id', Table::TYPE_INT);
         $table->column('name', Table::TYPE_STRING, 32);
