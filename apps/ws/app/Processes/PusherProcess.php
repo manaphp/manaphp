@@ -46,7 +46,6 @@ class PusherProcess extends Process
 
         $this->_endpoint = $options['endpoint'];
 
-
         $table = new Table($options['max_connection'] ?? 10000);
         $table->column('fd', Table::TYPE_INT);
         $table->column('id', Table::TYPE_INT);
