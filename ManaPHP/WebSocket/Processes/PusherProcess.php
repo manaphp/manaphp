@@ -1,5 +1,5 @@
 <?php
-namespace App\Processes;
+namespace ManaPHP\WebSocket\Processes;
 
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Process;

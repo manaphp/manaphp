@@ -1,7 +1,7 @@
 <?php
 namespace App;
 
-use App\Processes\PusherProcess;
+use ManaPHP\WebSocket\Processes\PusherProcess;
 
 class Application extends \ManaPHP\WebSocket\Application
 {
