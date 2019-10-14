@@ -99,6 +99,7 @@ interface DispatcherInterface
      * @param \ManaPHP\RouterInterface|\ManaPHP\RouterContext $router
      *
      * @return mixed
+     * @throws \ManaPHP\Exception\AbortException
      */
     public function dispatch($router);
 

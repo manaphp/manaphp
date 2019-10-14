@@ -72,7 +72,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
             } elseif ($event === 'close') {
                 $this->eventsManager->fireEvent('ws:close', $this, $fd);
             }
-        } catch (AbortException $exception) {
+        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (AbortException $exception) {
             null;
         } catch (Throwable $throwable) {
             $this->handleException($throwable);
