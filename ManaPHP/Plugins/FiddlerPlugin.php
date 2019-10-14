@@ -223,7 +223,7 @@ class FiddlerPlugin extends Plugin
             $processor = self::PROCESSOR_PREFIX . 'default';
         }
 
-        $date = date('H:i:s.', $ts) . sprintf('%03d', ($ts - (int)$ts) * 1000);
+        $date = date('H:i:s', $ts) . sprintf('.%03d', ($ts - (int)$ts) * 1000);
         $body = $this->$processor($message['data']);
         echo "[$ip][$date][$uuid][$type]$body", PHP_EOL;
     }

@@ -183,7 +183,7 @@ class DebuggerPlugin extends Plugin
         $log = $eventArgs->data;
 
         $context->log[] = [
-            'time' => date('H:i:s.', $log->timestamp) . sprintf('%.03d', ($log->timestamp - (int)$log->timestamp) * 1000),
+            'time' => date('H:i:s', $log->timestamp) . sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000),
             'level' => $log->level,
             'category' => $log->category,
             'file' => $log->file,

@@ -38,7 +38,8 @@ class SlowlogPlugin extends Plugin
         $elapsed = round($elapsed, 3);
 
         $replaced = [];
-        $replaced[':date'] = date('Y-m-d\TH:i:s') . sprintf('%.03f', explode(' ', microtime())[0]);
+        $ts = microtime(true);
+        $replaced[':date'] = date('Y-m-d\TH:i:s', $ts) . sprintf('.%03d', ($ts - (int)$ts) * 1000);
         $replaced[':client_ip'] = $this->request->getClientIp();
         $replaced[':request_id'] = $this->request->getRequestId();
         $replaced[':elapsed'] = sprintf('%.03f', $elapsed);
