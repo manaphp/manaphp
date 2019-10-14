@@ -206,7 +206,7 @@
                     <td>{{log.time}}</td>
                     <td>{{log.category}}</td>
                     <td>{{log.file}}:{{log.line}}</td>
-                    <td :title="json_pretty(log.message)">{{log.message}}</td>
+                    <td :title="json_pretty(log.message)" :class="logLevelClass(log.level)">{{log.message}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -357,6 +357,17 @@
             }
         },
         methods: {
+            logLevelClass: function (level) {
+                let map = {
+                    debug: '',
+                    info: 'bg-info',
+                    warn: 'bg-warning',
+                    error: 'bg-danger',
+                    fatal: 'bg-danger',
+                };
+
+                return map[level];
+            },
             json_stringify: function (data) {
                 return JSON.stringify(data, null, 4);
             },
