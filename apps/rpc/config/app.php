@@ -19,5 +19,8 @@ return [
     'listeners' => [],
     'plugins' => [
         'tracer',
+        //'slowlog',
+        //'logger',
+        //'debugger',
     ]
 ];

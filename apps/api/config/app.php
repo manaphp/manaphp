@@ -19,9 +19,9 @@ return [
     'listeners' => [],
     'plugins' => [
         'cors',
-        'slowlog',
         'tracer',
-        'logger',
-        'debugger',
+        //'slowlog',
+        //'logger',
+        //'debugger',
     ]
 ];

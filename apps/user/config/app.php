@@ -21,8 +21,8 @@ return [
     'services' => [],
     'plugins' => [
         'tracer',
-        'slowlog',
-        'logger',
-        'debugger',
+        //'slowlog',
+        //'logger',
+        //'debugger',
     ]
 ];
