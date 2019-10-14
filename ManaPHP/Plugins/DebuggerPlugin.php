@@ -80,6 +80,8 @@ class DebuggerPlugin extends Plugin
         }
 
         if ($this->_enabled !== false) {
+            $this->eventsManager->peekEvent('*', [$this, 'onEvent']);
+
             $this->eventsManager->peekEvent('db', [$this, 'onDb']);
             $this->eventsManager->peekEvent('mongodb', [$this, 'onMongodb']);
 
@@ -166,6 +168,11 @@ class DebuggerPlugin extends Plugin
         if ($context->enabled) {
             $this->_writeData($context->key, $this->_getData());
         }
+    }
+
+    public function onEvent(EventArgs $eventArgs)
+    {
+        $this->_context->events[] = $eventArgs->event;
     }
 
     public function onLoggerLog(EventArgs $eventArgs)
