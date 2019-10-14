@@ -407,6 +407,6 @@ class Selector
      */
     public function __toString()
     {
-        return $this->_node->getNodePath();
+        return $this->_node->getNodePath() ?: '';
     }
 }

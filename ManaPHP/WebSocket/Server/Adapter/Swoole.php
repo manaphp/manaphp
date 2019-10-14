@@ -288,6 +288,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
                 try {
                     $process->run();
                 } catch (Throwable $throwable) {
+                    /** @noinspection ForgottenDebugOutputInspection */
                     error_log($throwable);
                     sleep(1);
                 }
