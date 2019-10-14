@@ -1,4 +1,7 @@
 <?php
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedMethodInspection */
+
 namespace ManaPHP\Mailer\Adapter;
 
 use ManaPHP\Exception\NotSupportedException;

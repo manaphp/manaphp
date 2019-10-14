@@ -1,4 +1,9 @@
 <?php
+/** @noinspection PhpUndefinedFieldInspection */
+/** @noinspection PhpUndefinedMethodInspection */
+/** @noinspection PhpUndefinedNamespaceInspection */
+/** @noinspection PhpUndefinedClassInspection */
+
 namespace ManaPHP\Http\Server\Adapter;
 
 use ManaPHP\Http\Server;
