@@ -284,8 +284,14 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     public function addProcess($process)
     {
         $p = new Process(static function (/** @noinspection PhpUnusedParameterInspection */ $p) use ($process) {
-            unset($_SERVER['DOCUMENT_ROOT']);
-            $process->run();
+            Coroutine::create(static function () use ($process) {
+                try {
+                    $process->run();
+                } catch (Throwable $throwable) {
+                    error_log($throwable);
+                    sleep(1);
+                }
+            });
         });
 
         $this->_swoole->addProcess($p);
