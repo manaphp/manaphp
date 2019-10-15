@@ -216,6 +216,28 @@ class Component implements ComponentInterface, JsonSerializable
     }
 
     /**
+     * @param string   $event
+     * @param callable $handler
+     *
+     * @return static
+     */
+    public function detachEvent($event, $handler = null)
+    {
+        if ($handler === null) {
+            $parts = explode(':', $event);
+            $method = 'on' . ucfirst($parts[0] . ucfirst($parts[1]));
+            if (!method_exists($this, $method)) {
+                throw new MisuseException(['`:method` method is not exists', 'method' => static::class . '::' . $method . '()']);
+            }
+            $handler = [$this, $method];
+        }
+
+        $this->eventsManager->detachEvent($event, $handler);
+
+        return $this;
+    }
+
+    /**
      * Fires an event in the events manager causing that the active listeners will be notified about it
      *
      * @param string $event

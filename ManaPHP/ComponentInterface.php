@@ -36,6 +36,14 @@ interface ComponentInterface
     public function attachEvent($event, $handler = null, $appended = true);
 
     /**
+     * @param string   $event
+     * @param callable $handler
+     *
+     * @return static
+     */
+    public function detachEvent($event, $handler = null);
+
+    /**
      * Fires an event in the events manager causing that the active listeners will be notified about it
      *
      * @param string $event

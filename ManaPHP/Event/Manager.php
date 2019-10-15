@@ -68,6 +68,29 @@ class Manager implements ManagerInterface
     }
 
     /**
+     * @param string   $event
+     * @param callable $handler
+     *
+     * @return void
+     */
+    public function detachEvent($event, $handler)
+    {
+        if (strpos($event, ':') === false) {
+            foreach ($this->_peekers[$event] ?? [] as $k => $v) {
+                if ($v === $handler) {
+                    unset($this->_peekers[$event][$k]);
+                }
+            }
+        } else {
+            foreach ($this->_events[$event] ?? [] as $k => $v) {
+                if ($v === $handler) {
+                    unset($this->_events[$event][$k]);
+                }
+            }
+        }
+    }
+
+    /**
      * Fires an event in the events manager causing that active listeners be notified about it
      *
      * @param string $event

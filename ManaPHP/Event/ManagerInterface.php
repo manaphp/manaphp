@@ -33,6 +33,14 @@ interface ManagerInterface
     public function attachEvent($event, $handler, $appended = true);
 
     /**
+     * @param string   $event
+     * @param callable $handler
+     *
+     * @return void
+     */
+    public function detachEvent($event, $handler);
+
+    /**
      * Fires an event in the events manager causing that the active listeners will be notified about it
      *
      * @param string $event
