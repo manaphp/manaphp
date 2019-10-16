@@ -28,7 +28,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     /**
      * @var int
      */
-    protected $_port = 8300;
+    protected $_port = 9501;
 
     /**
      * @var array
