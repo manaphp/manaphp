@@ -1,6 +1,6 @@
 version: "2"
 services:
-  admin_swoole:
+  admin:
     image: manaphp/php73:2.0
     volumes:
       - /usr/share/zoneinfo/PRC:/etc/localtime
