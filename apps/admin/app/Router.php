@@ -9,7 +9,8 @@ class Router extends \ManaPHP\Router
     {
         parent::__construct(true);
 
-        $this->_areas = ['Menu', 'Rbac', 'Admin'];
+        $this->setAreas();
+
         $this->add('/login', [SessionController::class, 'login']);
         $this->add('/logout', [SessionController::class, 'logout']);
     }
