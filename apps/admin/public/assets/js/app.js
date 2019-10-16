@@ -55,6 +55,14 @@ axios.interceptors.response.use(function (res) {
                 vm.$message({type: 'success', duration: 1000, message: '操作成功'});
             }
         }
+        
+        for (let name in res.headers) {
+            let value = res.headers[name];
+            if (value.match(/^https?:\/\//)) {
+                console.warn('*'.repeat(32) + ' ' + name + ': ' + value);
+            }
+        }
+
         return res;
     },
     function (error) {

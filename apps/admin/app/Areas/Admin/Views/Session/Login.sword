@@ -48,7 +48,9 @@
                  @click="request.code=''; captcha_url='captcha'+'?t='+Date.now()">
         </el-col>
     </el-row>
-    <el-button @click="login" style="width:100%" type="primary">登录</el-button>
+    <el-button @click="login" style="width:100%" type="primary"
+               :disabled="request.admin_name===''||request.password===''">登录
+    </el-button>
     <div>
         <a href="password/forget"><span style="font-size: 0.8em; margin-left: 218px; color: gray;">找回密码</span></a>
     </div>
@@ -63,8 +65,11 @@
 
     axios.defaults.baseURL = 'http://www.manaphp.com';
     axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+    axios.defaults.validateStatus = function (status) {
+        return true
+    };
 
-    vm = new Vue({
+    let vm = new Vue({
         el: '#app',
         data: {
             request: {
@@ -76,16 +81,20 @@
         },
         methods: {
             login: function () {
-                this.$axios.post(document.location.href, Qs.stringify(this.request)).then(function (res) {
+                if (this.request.admin_name === '' || this.request.password === '') {
+                    return;
+                }
+
+                this.$axios.post(document.location.href, Qs.stringify(this.request)).then((res) => {
                     if (res.data.code === 0) {
                         window.location.href = "{{$redirect}}";
                     } else {
-                        this.$alert(res.data.message);
+                        this.$alert(res.data.message ? res.data.message : res.data);
                         this.request.password = '';
                         this.request.code = '';
                         this.captcha_url = "captcha" + '?t=' + Date.now();
                     }
-                }.bind(this));
+                });
             },
         }
     });

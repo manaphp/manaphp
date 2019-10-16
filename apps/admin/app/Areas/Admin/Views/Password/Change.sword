@@ -14,7 +14,9 @@
             <template slot="prepend">新密码</template>
         </el-input>
         <el-form-item>
-            <el-button @click="change" type="primary" class="change-password">确认</el-button>
+            <el-button @click="change" type="primary" class="change-password"
+                       :disabled="!edit.old_password||!edit.new_password||!edit.new_password_confirm">确认
+            </el-button>
         </el-form-item>
     </el-form>
 </el-row>
