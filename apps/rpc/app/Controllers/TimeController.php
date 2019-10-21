@@ -18,6 +18,6 @@ class TimeController extends Controller
 
     public function currentAction()
     {
-        return ['code' => 0, 'message' => '', 'data' => time()];
+        return time();
     }
 }
