@@ -128,7 +128,9 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
     public function getDi()
     {
         if (!$this->_di) {
-            $this->_di = $_SERVER['DOCUMENT_ROOT'] !== '' ? new MvcFactory() : new CliFactory();
+            defined('MANAPHP_CLI') or define('MANAPHP_CLI', $_SERVER['DOCUMENT_ROOT'] === '');
+
+            $this->_di = MANAPHP_CLI ? new CliFactory() : new MvcFactory();
         }
         return $this->_di;
     }
@@ -311,7 +313,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
 
         $this->registerServices();
 
-        if ($_SERVER['DOCUMENT_ROOT'] !== '') {
+        if (!MANAPHP_CLI) {
             $this->eventsManager->fireEvent('request:begin', $this);
         }
     }
