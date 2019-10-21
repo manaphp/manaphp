@@ -169,7 +169,7 @@ class Swoole extends Server
         $globals->_COOKIE = $request->cookie ?: [];
         $globals->_FILES = $request->files ?: [];
 
-        if ($this->_compatible_globals) {
+        if ($this->_use_globals) {
             $_GET = $globals->_GET;
             $_POST = $globals->_POST;
             $_REQUEST = $globals->_REQUEST;

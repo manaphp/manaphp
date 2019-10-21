@@ -15,7 +15,7 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
     /**
      * @var bool
      */
-    protected $_compatible_globals = false;
+    protected $_use_globals = false;
 
     /**
      * @var string
@@ -49,9 +49,9 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
      */
     public function __construct($options = [])
     {
-        if (isset($options['compatible_globals'])) {
-            $this->_compatible_globals = (bool)$options['compatible_globals'];
-            unset($options['compatible_globals']);
+        if (isset($options['use_globals'])) {
+            $this->_use_globals = (bool)$options['use_globals'];
+            unset($options['use_globals']);
         }
 
         if (isset($options['max_request']) && $options['max_request'] < 1) {
