@@ -19,6 +19,8 @@ class Application extends \ManaPHP\Application implements HandlerInterface
 {
     public function __construct($loader = null)
     {
+        define('MANAPHP_CLI', false);
+
         parent::__construct($loader);
 
         if (PHP_SAPI === 'cli') {

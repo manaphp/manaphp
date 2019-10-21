@@ -37,6 +37,8 @@ class Application extends \ManaPHP\Application implements LogCategorizable
      */
     public function __construct($loader = null)
     {
+        define('MANAPHP_CLI', true);
+
         parent::__construct($loader);
 
         if ($appDir = $this->alias->get('@app')) {
