@@ -8,7 +8,8 @@ use ManaPHP\Component;
  * Class Server
  * @package ManaPHP\Http
  *
- * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Http\RequestInterface         $request
+ * @property-read \ManaPHP\Http\Globals\ManagerInterface $globalsManager
  */
 abstract class Server extends Component implements ServerInterface, Unaspectable
 {
@@ -73,6 +74,10 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
         if (isset($options['enable_static_handler'])) {
             $this->_root_files = $this->_getRootFiles();
             $this->_mime_types = $this->_getMimeTypes();
+        }
+
+        if ($this->_use_globals) {
+            $this->globalsManager->proxy();
         }
     }
 

@@ -2,6 +2,7 @@
 namespace ManaPHP\Http\Server\Adapter;
 
 use ManaPHP\Http\Server;
+
 use Throwable;
 
 class SwooleContext
@@ -52,10 +53,8 @@ class Swoole extends Server
      */
     public function __construct($options = [])
     {
-        parent::__construct($options);
-
         $script_filename = get_included_files()[0];
-        $this->_server = $_SERVER = [
+        $this->_server = [
             'DOCUMENT_ROOT' => dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,
             'SCRIPT_NAME' => '/' . basename($script_filename),
@@ -67,7 +66,6 @@ class Swoole extends Server
             'REQUEST_SCHEME' => 'http',
         ];
 
-        unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
 
         $this->alias->set('@web', '');
         $this->alias->set('@asset', '');
@@ -87,6 +85,8 @@ class Swoole extends Server
         }
 
         $this->_settings = $options;
+
+        parent::__construct($options);
     }
 
     /**
@@ -168,15 +168,6 @@ class Swoole extends Server
         $globals->_SERVER = $_server;
         $globals->_COOKIE = $request->cookie ?: [];
         $globals->_FILES = $request->files ?: [];
-
-        if ($this->_use_globals) {
-            $_GET = $globals->_GET;
-            $_POST = $globals->_POST;
-            $_REQUEST = $globals->_REQUEST;
-            $_SERVER = $globals->_SERVER;
-            $_COOKIE = $globals->_COOKIE;
-            $_FILES = $globals->_FILES;
-        }
     }
 
     /**

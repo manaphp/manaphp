@@ -15,8 +15,6 @@ class Php extends Fpm
      */
     public function __construct($options = null)
     {
-        parent::__construct($options);
-
         $public_dir = $this->alias->resolve('@public');
         $local_ip = $this->_getLocalIp();
 
@@ -39,6 +37,8 @@ class Php extends Fpm
             $this->_root_files = $this->_getRootFiles();
             $this->_mime_types = $this->_getMimeTypes();
         }
+
+        parent::__construct($options);
     }
 
     /**

@@ -19,7 +19,8 @@ class Factory extends FactoryDefault
             'cookies' => 'ManaPHP\Http\Cookies',
             'captcha' => 'ManaPHP\Security\Captcha',
             'authorization' => 'ManaPHP\Authorization',
-            'httpServer' => 'ManaPHP\Swoole\Http\Server'
+            'httpServer' => 'ManaPHP\Swoole\Http\Server',
+            'globalsManager' => 'ManaPHP\Http\Globals\Manager',
         ]);
     }
 }
