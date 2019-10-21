@@ -49,7 +49,7 @@ class LoggerPlugin extends Plugin
      */
     public function __construct($options = [])
     {
-        if ($_SERVER['DOCUMENT_ROOT'] === '') {
+        if (MANAPHP_CLI) {
             $this->_enabled = false;
         } elseif (isset($options['enabled'])) {
             $this->_enabled = (bool)$options['enabled'];

@@ -48,7 +48,7 @@ class BacktracePlugin extends Plugin
             $this->_mem_delta = $options['mem_delta'];
         }
 
-        if ($_SERVER['DOCUMENT_ROOT'] !== '' && function_exists('xdebug_start_trace')) {
+        if (!MANAPHP_CLI && function_exists('xdebug_start_trace')) {
             ini_set('xdebug.collect_return', $this->_return);
             ini_set('xdebug.collect_params', $this->_params);
             ini_set('xdebug.var_display_max_depth', $this->_max_depth);

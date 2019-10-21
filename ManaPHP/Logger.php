@@ -96,7 +96,7 @@ abstract class Logger extends Component implements LoggerInterface
         $context = parent::createContext();
 
         $context->level = $this->_level;
-        $context->client_ip = $_SERVER['DOCUMENT_ROOT'] === '' ? '' : $this->request->getClientIp();
+        $context->client_ip = MANAPHP_CLI ? '' : $this->request->getClientIp();
         $context->request_id = $this->request->getRequestId();
 
         return $context;

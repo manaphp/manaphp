@@ -70,7 +70,7 @@ class Validator extends Component implements ValidatorInterface
 
         if ($this->_locale !== null) {
             $context->locale = $this->_locale;
-        } elseif ($_SERVER['DOCUMENT_ROOT'] !== '') {
+        } elseif (!MANAPHP_CLI) {
             $locale = $this->configure->language;
             if (($language = strtolower($this->request->get('lang', ''))) && isset($this->_files[$language])) {
                 $locale = $language;
