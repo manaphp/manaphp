@@ -14,9 +14,24 @@ use ManaPHP\Renderer\EngineInterface;
 class Sword extends Component implements EngineInterface
 {
     /**
+     * @var string
+     */
+    protected $_doc_root;
+
+    /**
      * @var array
      */
     protected $_compiled = [];
+
+    /**
+     * Sword constructor.
+     *
+     * @param array $options
+     */
+    public function __construct($options = [])
+    {
+        $this->_doc_root = $options['doc_root'] ?? $_SERVER['DOCUMENT_ROOT'];
+    }
 
     /**
      * @param string $source
@@ -27,8 +42,8 @@ class Sword extends Component implements EngineInterface
     {
         if (strpos($source, $root = $this->alias->get('@root')) === 0) {
             $compiled = '@data/sword' . substr($source, strlen($root));
-        } elseif ($_SERVER['DOCUMENT_ROOT'] !== '' && strpos($source, $_SERVER['DOCUMENT_ROOT']) === 0) {
-            $compiled = '@data/sword/' . substr($source, strlen($_SERVER['DOCUMENT_ROOT']));
+        } elseif ($this->_doc_root !== '' && strpos($source, $this->_doc_root) === 0) {
+            $compiled = '@data/sword/' . substr($source, strlen($this->_doc_root));
         } else {
             $compiled = "@data/sword/$source";
             if (DIRECTORY_SEPARATOR === '\\') {
