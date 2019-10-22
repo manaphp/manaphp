@@ -78,7 +78,7 @@ class Db extends Component implements DbInterface
     /**
      * @var bool
      */
-    protected $_has_slave;
+    protected $_has_slave = false;
 
     /**
      * @var float
@@ -108,34 +108,47 @@ class Db extends Component implements DbInterface
                 $this->_pool_size = (int)$matches[1];
             }
 
-            $adapter = 'ManaPHP\Db\Connection\Adapter\\' . ucfirst(parse_url($uri, PHP_URL_SCHEME));
             if (strpos($uri, ',') !== false) {
                 $host_str = parse_url($uri, PHP_URL_HOST);
-                $hosts = explode(',', $host_str);
-                if ($hosts[0] !== '') {
-                    $this->poolManager->add($this, ['class' => $adapter, str_replace($host_str, $hosts[0], $uri)], $this->_pool_size);
+                if (strpos($host_str, ',') === false) {
+                    $urls = explode(',', $uri);
+                } else {
+                    $urls = [];
+                    foreach (explode(',', $host_str) as $url) {
+                        $urls[] = str_replace($host_str, $url, $uri);
+                    }
                 }
-                array_shift($hosts);
+
+                if ($urls[0]) {
+                    $url = $urls[0];
+                    $adapter = 'ManaPHP\Db\Connection\Adapter\\' . ucfirst(parse_url($url, PHP_URL_SCHEME));
+                    $this->poolManager->add($this, ['class' => $adapter, $url], $this->_pool_size);
+                }
+                array_shift($urls);
 
                 if (MANAPHP_COROUTINE_ENABLED) {
                     for ($i = 0; $i < $this->_pool_size; $i++) {
-                        foreach ($hosts as $host) {
-                            $this->poolManager->add($this, ['class' => $adapter, str_replace($host_str, $host, $uri)], 1, 'slave');
+                        foreach ($urls as $url) {
+                            $adapter = 'ManaPHP\Db\Connection\Adapter\\' . ucfirst(parse_url($url, PHP_URL_SCHEME));
+                            $this->poolManager->add($this, ['class' => $adapter, $url], 1, 'slave');
                         }
                     }
                 } else {
-                    $this->poolManager->add($this, ['class' => $adapter, str_replace($host_str, array_rand($hosts), $uri)], 1, 'slave');
+                    $url = $urls[random_int(0, count($urls) - 1)];
+                    $adapter = 'ManaPHP\Db\Connection\Adapter\\' . ucfirst(parse_url($url, PHP_URL_SCHEME));
+                    $this->poolManager->add($this, ['class' => $adapter, $url], 1, 'slave');
                 }
 
-                $this->_has_slave = $hosts ? true : false;
+                $this->_has_slave = true;
             } else {
+                $adapter = 'ManaPHP\Db\Connection\Adapter\\' . ucfirst(parse_url($uri, PHP_URL_SCHEME));
                 $this->poolManager->add($this, ['class' => $adapter, $uri], $this->_pool_size);
             }
         } else {
             $this->_pool_size = 1;
-            $connection = $uri;
+            $url = $uri;
             $this->_uri = $uri->getUri();
-            $this->poolManager->add($this, $connection, $this->_pool_size);
+            $this->poolManager->add($this, $url, $this->_pool_size);
         }
     }
 
