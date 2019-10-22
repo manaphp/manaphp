@@ -50,6 +50,11 @@ abstract class Connection extends Component implements ConnectionInterface
      */
     protected $_prepared = [];
 
+    /**
+     * @var bool
+     */
+    protected $_readonly = false;
+
     public function __construct()
     {
         $this->_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
@@ -183,6 +188,10 @@ abstract class Connection extends Component implements ConnectionInterface
      */
     public function execute($sql, $bind = [], $has_insert_id = false)
     {
+        if ($this->_readonly) {
+            throw new ReadonlyException(['`:uri` is readonly: => :sql ', 'uri' => $this->_uri, 'sql' => $sql]);
+        }
+
         $sql = $this->_replaceQuoteCharacters($sql);
 
         if ($this->_in_transaction) {
@@ -267,6 +276,10 @@ abstract class Connection extends Component implements ConnectionInterface
 
     public function begin()
     {
+        if ($this->_readonly) {
+            throw new ReadonlyException(['`:url` is readonly, transaction begin failed', 'url' => $this->_uri]);
+        }
+
         try {
             return $this->_in_transaction = $this->_getPdo()->beginTransaction();
         } catch (PDOException $exception) {

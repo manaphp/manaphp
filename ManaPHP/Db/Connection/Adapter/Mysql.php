@@ -76,6 +76,10 @@ class Mysql extends Connection
             if (isset($query['db'])) {
                 $dsn['dbname'] = $query['db'];
             }
+
+            if (isset($query['readonly']) && $query['readonly'] !== '0') {
+                $this->_readonly = true;
+            }
         }
 
         $this->_options[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES '{$this->_charset}'";
