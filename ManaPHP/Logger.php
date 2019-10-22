@@ -90,10 +90,10 @@ abstract class Logger extends Component implements LoggerInterface
         $this->_host = $options['host'] ?? gethostname();
     }
 
-    public function createContext()
+    protected function _createContext()
     {
         /** @var \ManaPHP\LoggerContext $context */
-        $context = parent::createContext();
+        $context = parent::_createContext();
 
         $context->level = $this->_level;
         $context->client_ip = MANAPHP_CLI ? '' : $this->request->getClientIp();

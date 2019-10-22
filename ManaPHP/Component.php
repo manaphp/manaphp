@@ -78,7 +78,7 @@ class Component implements ComponentInterface, JsonSerializable
     /**
      * @return object
      */
-    public function createContext()
+    protected function _createContext()
     {
         static $cached = [];
 
@@ -123,14 +123,14 @@ class Component implements ComponentInterface, JsonSerializable
                 if ($context = Coroutine::getContext()) {
                     if (!$object = $context[$object_id] ?? null) {
                         if (($parent_cid = Coroutine::getPcid()) === -1) {
-                            return $context[$object_id] = $this->createContext();
+                            return $context[$object_id] = $this->_createContext();
                         }
 
                         $parent_context = Coroutine::getContext($parent_cid);
                         if ($object = $parent_context[$object_id] ?? null) {
-                            return $context[$object_id] = $object instanceof Inseparable ? $this->createContext() : $object;
+                            return $context[$object_id] = $object instanceof Inseparable ? $this->_createContext() : $object;
                         } else {
-                            $object = $context[$object_id] = $this->createContext();
+                            $object = $context[$object_id] = $this->_createContext();
                             if (!$object instanceof Inseparable) {
                                 $parent_context[$object_id] = $object;
                             }
@@ -138,19 +138,19 @@ class Component implements ComponentInterface, JsonSerializable
                     }
                     return $object;
                 } elseif (!$object = $__root_context[$object_id] ?? null) {
-                    return $__root_context[$object_id] = $this->createContext();
+                    return $__root_context[$object_id] = $this->_createContext();
                 } else {
                     return $object;
                 }
             } elseif (PHP_SAPI === 'cli') {
                 if (!$object = $__root_context[$object_id] ?? null) {
                     $__root_context[] = $this;
-                    return $this->_context = $this->createContext();
+                    return $this->_context = $this->_createContext();
                 } else {
                     return $object;
                 }
             } else {
-                return $this->_context = $this->createContext();
+                return $this->_context = $this->_createContext();
             }
         }
 
