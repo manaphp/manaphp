@@ -46,6 +46,10 @@ class Fpm extends Server
         $globals->_SERVER = $_SERVER;
 
         $GLOBALS['globals'] = $globals;
+
+        if ($this->_use_globals) {
+            $this->globalsManager->proxy();
+        }
     }
 
     /**

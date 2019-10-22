@@ -87,6 +87,10 @@ class Swoole extends Server
         $this->_settings = $options;
 
         parent::__construct($options);
+
+        if ($this->_use_globals) {
+            $this->globalsManager->proxy();
+        }
     }
 
     /**
