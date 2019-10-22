@@ -116,9 +116,17 @@ class Db extends Component implements DbInterface
                     $this->poolManager->add($this, ['class' => $adapter, str_replace($host_str, $hosts[0], $uri)], $this->_pool_size);
                 }
                 array_shift($hosts);
-                foreach ($hosts as $host) {
-                    $this->poolManager->add($this, ['class' => $adapter, str_replace($host_str, $host, $uri)], $this->_pool_size, 'slave');
+
+                if (MANAPHP_COROUTINE_ENABLED) {
+                    for ($i = 0; $i < $this->_pool_size; $i++) {
+                        foreach ($hosts as $host) {
+                            $this->poolManager->add($this, ['class' => $adapter, str_replace($host_str, $host, $uri)], 1, 'slave');
+                        }
+                    }
+                } else {
+                    $this->poolManager->add($this, ['class' => $adapter, str_replace($host_str, array_rand($hosts), $uri)], 1, 'slave');
                 }
+
                 $this->_has_slave = $hosts ? true : false;
             } else {
                 $this->poolManager->add($this, ['class' => $adapter, $uri], $this->_pool_size);
