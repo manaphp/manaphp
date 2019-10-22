@@ -310,13 +310,7 @@ class Db extends Component implements DbInterface
 
         $context->affected_rows = 0;
 
-        if ($context->connection) {
-            $type = null;
-            $connection = $context->connection;
-        } else {
-            $type = $this->_has_slave ? 'slave' : 'default';
-            $connection = $this->poolManager->pop($this, $this->_timeout, $type);
-        }
+        $connection = $context->connection ?: $this->poolManager->pop($this, $this->_timeout);
 
         $this->eventsManager->fireEvent('db:inserting', $this);
 
@@ -331,8 +325,8 @@ class Db extends Component implements DbInterface
             }
             $elapsed = round(microtime(true) - $start_time, 3);
         } finally {
-            if ($type) {
-                $this->poolManager->push($this, $connection, $type);
+            if (!$context->connection) {
+                $this->poolManager->push($this, $connection);
             }
         }
 
