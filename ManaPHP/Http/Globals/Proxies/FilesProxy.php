@@ -1,8 +1,9 @@
 <?php
 namespace ManaPHP\Http\Globals\Proxies;
 use ArrayAccess;
+use JsonSerializable;
 
-class FilesProxy implements ArrayAccess
+class FilesProxy implements ArrayAccess, JsonSerializable
 {
     /**
      * @var \ManaPHP\Http\Request
@@ -40,6 +41,11 @@ class FilesProxy implements ArrayAccess
     }
 
     public function __debugInfo()
+    {
+        return $this->_request->_context->_FILES;
+    }
+
+    public function  jsonSerialize()
     {
         return $this->_request->_context->_FILES;
     }

@@ -2,8 +2,9 @@
 namespace ManaPHP\Http\Globals\Proxies;
 
 use ArrayAccess;
+use JsonSerializable;
 
-class RequestProxy implements ArrayAccess
+class RequestProxy implements ArrayAccess, JsonSerializable
 {
     /**
      * @var \ManaPHP\Http\Request
@@ -41,6 +42,11 @@ class RequestProxy implements ArrayAccess
     }
 
     public function __debugInfo()
+    {
+        return $this->_request->_context->_REQUEST;
+    }
+
+    public function jsonSerialize()
     {
         return $this->_request->_context->_REQUEST;
     }

@@ -2,9 +2,10 @@
 namespace ManaPHP\Http\Globals\Proxies;
 
 use ArrayAccess;
+use JsonSerializable;
 use ManaPHP\Exception\NotSupportedException;
 
-class CookieProxy implements ArrayAccess
+class CookieProxy implements ArrayAccess, JsonSerializable
 {
     /**
      * @var \ManaPHP\Http\Request
@@ -42,6 +43,11 @@ class CookieProxy implements ArrayAccess
     }
 
     public function __debugInfo()
+    {
+        return $this->_request->_context->_COOKIE;
+    }
+
+    public function jsonSerialize()
     {
         return $this->_request->_context->_COOKIE;
     }

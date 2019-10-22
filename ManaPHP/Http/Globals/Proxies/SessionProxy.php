@@ -2,8 +2,9 @@
 namespace ManaPHP\Http\Globals\Proxies;
 
 use ArrayAccess;
+use JsonSerializable;
 
-class SessionProxy implements ArrayAccess
+class SessionProxy implements ArrayAccess, JsonSerializable
 {
     /**
      * @var \ManaPHP\Http\Request
@@ -58,6 +59,11 @@ class SessionProxy implements ArrayAccess
     }
 
     public function __debugInfo()
+    {
+        return $this->_getSession()->get();
+    }
+
+    public function jsonSerialize()
     {
         return $this->_getSession()->get();
     }
