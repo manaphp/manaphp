@@ -12,7 +12,7 @@ class RequestProxy implements ArrayAccess, JsonSerializable
     protected $_request;
 
     /**
-     * RequestContext constructor.
+     * RequestProxy constructor.
      *
      * @param \ManaPHP\Http\Request $request
      */

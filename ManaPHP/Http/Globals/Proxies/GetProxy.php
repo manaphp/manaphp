@@ -11,7 +11,7 @@ class GetProxy implements ArrayAccess, \JsonSerializable
     protected $_request;
 
     /**
-     * GetContext constructor.
+     * GetProxy constructor.
      *
      * @param \ManaPHP\Http\Request $request
      */

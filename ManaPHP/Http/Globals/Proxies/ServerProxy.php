@@ -12,7 +12,7 @@ class ServerProxy implements ArrayAccess, JsonSerializable
     protected $_request;
 
     /**
-     * ServerContext constructor.
+     * ServerProxy constructor.
      *
      * @param \ManaPHP\Http\Request $request
      */
