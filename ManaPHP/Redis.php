@@ -25,19 +25,13 @@ class Redis extends Component
     /**
      * Redis constructor.
      *
-     * @param string|\ManaPHP\Redis\Connection $uri
+     * @param string $uri
      */
     public function __construct($uri = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0')
     {
-        if (is_string($uri)) {
-            $this->_uri = $uri;
-            $pool_size = preg_match('#pool_size=(\d+)#', $uri, $matches) ? $matches[1] : 4;
-            $connection = ['class' => 'ManaPHP\Redis\Connection', $this->_uri];
-        } else {
-            $pool_size = 1;
-            $connection = $uri;
-            $this->_uri = $uri->getUri();
-        }
+        $this->_uri = $uri;
+        $pool_size = preg_match('#pool_size=(\d+)#', $uri, $matches) ? $matches[1] : 4;
+        $connection = ['class' => 'ManaPHP\Redis\Connection', $this->_uri];
 
         if (strpos($this->_uri, 'timeout=') !== false && preg_match('#timeout=([\d.]+)#', $this->_uri, $matches) === 1) {
             $this->_timeout = (float)$matches[1];
