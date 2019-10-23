@@ -278,7 +278,22 @@ class Component implements ComponentInterface, JsonSerializable
      */
     public function dump()
     {
-        return $this->__debugInfo();
+        $data = [];
+        foreach (get_object_vars($this) as $k => $v) {
+            if ($k === '_object_id' || (is_object($v) && $k !== '_context')) {
+                continue;
+            }
+
+            $data[$k] = $v;
+        }
+
+        if (isset($data['_context'])) {
+            $data['_context'] = (array)$data['_context'];
+        } elseif ($this->_object_id !== null) {
+            $data['_context'] = (array)$this->__get('_context');
+        }
+
+        return $data;
     }
 
     /**
