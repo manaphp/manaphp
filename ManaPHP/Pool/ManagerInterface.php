@@ -12,6 +12,15 @@ interface ManagerInterface
     public function remove($owner, $type = null);
 
     /**
+     * @param object $owner
+     * @param int    $capacity
+     * @param string $type
+     *
+     * @return static
+     */
+    public function create($owner, $capacity, $type = 'default');
+
+    /**
      * @param object       $owner
      * @param object|array $sample
      * @param int          $size

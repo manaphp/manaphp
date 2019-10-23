@@ -32,6 +32,28 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
+     * @param object $owner
+     * @param int    $capacity
+     * @param string $type
+     *
+     * @return static
+     */
+    public function create($owner, $capacity, $type = 'default')
+    {
+        $owner_id = spl_object_id($owner);
+
+        if (isset($this->_pool[$owner_id][$type])) {
+            throw new MisuseException(['`:type` pool of `:owner` is exists', 'type' => $type, 'owner' => get_class($owner)]);
+        }
+
+        if (MANAPHP_COROUTINE_ENABLED) {
+            $this->_pool[$owner_id][$type] = new Channel($capacity);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param object       $owner
      * @param object|array $sample
      * @param int          $size
@@ -58,11 +80,9 @@ class Manager extends Component implements ManagerInterface
         }
 
         if (MANAPHP_COROUTINE_ENABLED) {
-            if (isset($this->_pool[$owner_id][$type])) {
-                throw new MisuseException(['`:type` pool of `:owner` is exists', 'type' => $type, 'owner' => get_class($owner)]);
+            if (!$queue = $this->_pool[$owner_id][$type] ?? null) {
+                $this->_pool[$owner_id][$type] = $queue = new Channel($size);
             }
-
-            $this->_pool[$owner_id][$type] = $queue = new Channel($size);
 
             $queue->push($sample);
 
