@@ -1,20 +1,9 @@
 <?php
 namespace ManaPHP;
 
-use ManaPHP\Coroutine\Context\Inseparable;
-
-class RedisContext implements Inseparable
-{
-    /**
-     * @var \ManaPHP\Redis\Connection
-     */
-    public $connection;
-}
-
 /**
  * Class Redis
  * @package ManaPHP
- * @property-read \ManaPHP\RedisContext $_context
  */
 class Redis extends Component
 {
@@ -72,22 +61,14 @@ class Redis extends Component
      */
     public function __call($name, $arguments)
     {
-        $context = $this->_context;
-
         $this->fireEvent('redis:calling', ['name' => $name, 'arguments' => $arguments]);
 
-        if ($context->connection) {
-            $connection = $context->connection;
-        } else {
-            $connection = $this->poolManager->pop($this, $this->_timeout);
-        }
+        $connection = $this->poolManager->pop($this, $this->_timeout);
 
         try {
             $r = $connection->call($name, $arguments);
         } finally {
-            if (!$context->connection) {
-                $this->poolManager->push($this, $connection);
-            }
+            $this->poolManager->push($this, $connection);
         }
 
         $this->fireEvent('redis:called', ['name' => $name, 'arguments' => $arguments, 'return' => $r]);
