@@ -18,7 +18,7 @@ class Redis extends Session
     /**
      * @var string
      */
-    protected $_prefix = 'session:';
+    protected $_prefix = 'cache:session:';
 
     /**
      * Redis constructor.
