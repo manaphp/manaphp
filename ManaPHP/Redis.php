@@ -13,11 +13,6 @@ class Redis extends Component
     protected $_uri;
 
     /**
-     * @var int
-     */
-    protected $_pool_size;
-
-    /**
      * @var float
      */
     protected $_timeout = 1.0;
@@ -30,16 +25,14 @@ class Redis extends Component
     public function __construct($uri = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0')
     {
         $this->_uri = $uri;
-        $pool_size = preg_match('#pool_size=(\d+)#', $uri, $matches) ? $matches[1] : 4;
-        $connection = ['class' => 'ManaPHP\Redis\Connection', $this->_uri];
 
-        if (strpos($this->_uri, 'timeout=') !== false && preg_match('#timeout=([\d.]+)#', $this->_uri, $matches) === 1) {
+        if (preg_match('#timeout=([\d.]+)#', $uri, $matches) === 1) {
             $this->_timeout = (float)$matches[1];
         }
 
-        $this->_pool_size = $pool_size;
+        $pool_size = preg_match('#pool_size=(\d+)#', $uri, $matches) ? $matches[1] : 4;
 
-        $this->poolManager->add($this, $connection, $pool_size);
+        $this->poolManager->add($this, ['class' => 'ManaPHP\Redis\Connection', $uri], $pool_size);
     }
 
     public function __destruct()
