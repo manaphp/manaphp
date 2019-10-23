@@ -126,8 +126,16 @@ class Db extends Component implements DbInterface
                 }
                 array_shift($urls);
 
+                foreach ($urls as $i => $url) {
+                    if (preg_match('#[?&]readonly\b#', $url) !== 1) {
+                        $urls[$i] .= (strpos($url, '?') ? '&' : '?') . 'readonly=1';
+                    }
+                }
+
                 if (MANAPHP_COROUTINE_ENABLED) {
                     shuffle($urls);
+					
+                    $this->poolManager->create($this, count($urls) * $this->_pool_size, 'slave');
                     for ($i = 0; $i < $this->_pool_size; $i++) {
                         foreach ($urls as $url) {
                             $adapter = 'ManaPHP\Db\Connection\Adapter\\' . ucfirst(parse_url($url, PHP_URL_SCHEME));
