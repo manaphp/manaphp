@@ -82,6 +82,11 @@ class Manager extends Component implements ManagerInterface
         if (MANAPHP_COROUTINE_ENABLED) {
             if (!$queue = $this->_pool[$owner_id][$type] ?? null) {
                 $this->_pool[$owner_id][$type] = $queue = new Channel($size);
+            } else {
+                if ($queue->length() + $size > $queue->capacity) {
+                    throw new FullException(['`:type` pool of `:owner` capacity(:capacity) is not big enough',
+                        'type' => $type, 'owner' => get_class($owner), 'capacity' => $queue->capacity]);
+                }
             }
 
             $queue->push($sample);
