@@ -162,32 +162,31 @@ class Arr
     }
 
     /**
-     * @param array        $ar
-     * @param string|array $sort
+     * @param array $ar
+     * @param array $sort
      *
      * @return array
      */
     public static function sort(&$ar, $sort)
     {
-        if (is_string($sort)) {
-            $ref = array_column($ar, $sort);
-            array_multisort($ref, SORT_ASC, $ar);
-        } else {
-            $params = [];
-            foreach ((array)$sort as $k => $v) {
-                if (is_int($k)) {
-                    $params[] = array_column($ar, $v);
-                } else {
-                    $params[] = array_column($ar, $k);
-                    $params[] = $v;
+        usort($ar, static function ($a, $b) use ($sort) {
+            foreach ($sort as $k => $v) {
+                $field = is_int($k) ? $v : $k;
+
+                $first = $a[$field];
+                $second = $b[$field];
+
+                $r = is_string($first) ? strcmp($first, $second) : $first - $second;
+                if ($r > 0) {
+                    return (is_int($k) || $v === SORT_ASC || $v === 'ASC' || $v === 'asc') ? 1 : -1;
+                } elseif ($r < 0) {
+                    return (is_int($k) || $v === SORT_ASC || $v === 'ASC' || $v === 'asc') ? -1 : 1;
                 }
             }
-            $params[] = &$ar;
-            /** @noinspection ArgumentUnpackingCanBeUsedInspection */
-            /** @noinspection SpellCheckingInspection */
-            call_user_func_array('array_multisort', $params);
-        }
+            return 0;
+        });
 
         return $ar;
     }
+
 }
