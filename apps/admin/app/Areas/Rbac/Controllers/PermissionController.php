@@ -6,7 +6,7 @@ use App\Areas\Rbac\Models\Permission;
 use App\Areas\Rbac\Models\Role;
 use App\Areas\Rbac\Models\RolePermission;
 use ManaPHP\Mvc\Controller;
-use ManaPHP\Utility\Text;
+use ManaPHP\Helper\Str;
 
 /**
  * Class RbacPermissionController
@@ -67,7 +67,7 @@ class PermissionController extends Controller
                         continue;
                     }
 
-                    $path = '/' . ($area ? Text::underscore($area) . '/' : '') . Text::underscore($controller_name) . '/' . Text::underscore($action);
+                    $path = '/' . ($area ? Str::underscore($area) . '/' : '') . Str::underscore($controller_name) . '/' . Str::underscore($action);
                     $path = preg_replace('#(/index)+$#', '', $path) ?: '/';
 
                     if (Permission::exists(['path' => $path])) {

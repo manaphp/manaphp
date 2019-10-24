@@ -5,7 +5,7 @@ use Closure;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Utility\Text;
+use ManaPHP\Helper\Str;
 use ManaPHP\Validator\ValidateFailedException;
 
 class ValidatorContext
@@ -778,9 +778,9 @@ class Validator extends Component implements ValidatorInterface
             $className = $parameter;
         } elseif (preg_match('#^(.*)_id$#', $field, $match)) {
             $modelName = get_class($model);
-            $className = substr($modelName, 0, strrpos($modelName, '\\') + 1) . Text::camelize($match[1]);
+            $className = substr($modelName, 0, strrpos($modelName, '\\') + 1) . Str::camelize($match[1]);
             if (!class_exists($className)) {
-                $className = 'App\\Models\\' . Text::camelize($match[1]);
+                $className = 'App\\Models\\' . Str::camelize($match[1]);
             }
         } else {
             throw new InvalidValueException(['validate `:field` field failed: related model class name is not provided', 'field' => $field]);

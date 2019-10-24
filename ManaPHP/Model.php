@@ -17,7 +17,7 @@ use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Model\Expression\Decrement;
 use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\NotFoundException;
-use ManaPHP\Utility\Text;
+use ManaPHP\Helper\Str;
 use ManaPHP\Validator\ValidateFailedException;
 use ReflectionClass;
 use Serializable;
@@ -100,7 +100,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     public function getSource($context = null)
     {
         $class = static::class;
-        return Text::underscore(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1));
+        return Str::underscore(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1));
     }
 
     /**

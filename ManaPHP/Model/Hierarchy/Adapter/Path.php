@@ -4,7 +4,7 @@ namespace ManaPHP\Model\Hierarchy\Adapter;
 
 use ManaPHP\Model\Hierarchy\Exception as HierarchyException;
 use ManaPHP\QueryInterface;
-use ManaPHP\Utility\Text;
+use ManaPHP\Helper\Str;
 
 /**
  * Class ManaPHP\Hierarchy
@@ -19,7 +19,7 @@ trait Path
      */
     public static function getHierarchyField()
     {
-        return Text::underscore(basename(strtr(static::class, '\\', '/'))) . '_code';
+        return Str::underscore(basename(strtr(static::class, '\\', '/'))) . '_code';
     }
 
     /**

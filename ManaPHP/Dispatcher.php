@@ -4,7 +4,7 @@ namespace ManaPHP;
 
 use ManaPHP\Dispatcher\NotFoundActionException;
 use ManaPHP\Dispatcher\NotFoundControllerException;
-use ManaPHP\Utility\Text;
+use ManaPHP\Helper\Str;
 
 class DispatcherContext
 {
@@ -74,7 +74,7 @@ class Dispatcher extends Component implements DispatcherInterface
     {
         $context = $this->_context;
 
-        $context->area = Text::camelize($area);
+        $context->area = Str::camelize($area);
 
         return $this;
     }
@@ -98,7 +98,7 @@ class Dispatcher extends Component implements DispatcherInterface
     {
         $context = $this->_context;
 
-        $context->controller = Text::camelize($controller);
+        $context->controller = Str::camelize($controller);
 
         return $this;
     }
@@ -122,7 +122,7 @@ class Dispatcher extends Component implements DispatcherInterface
     {
         $context = $this->_context;
 
-        $context->action = lcfirst(Text::camelize($action));
+        $context->action = lcfirst(Str::camelize($action));
 
         return $this;
     }
@@ -294,14 +294,14 @@ class Dispatcher extends Component implements DispatcherInterface
         }
 
         if ($area) {
-            $area = strpos($area, '_') === false ? ucfirst($area) : Text::camelize($area);
+            $area = strpos($area, '_') === false ? ucfirst($area) : Str::camelize($area);
             $context->area = $area;
         }
 
-        $controller = strpos($controller, '_') === false ? ucfirst($controller) : Text::camelize($controller);
+        $controller = strpos($controller, '_') === false ? ucfirst($controller) : Str::camelize($controller);
         $context->controller = $controller;
 
-        $action = strpos($action, '_') === false ? $action : lcfirst(Text::camelize($action));
+        $action = strpos($action, '_') === false ? $action : lcfirst(Str::camelize($action));
         $context->action = $action;
 
         $context->params = $params;
@@ -309,18 +309,18 @@ class Dispatcher extends Component implements DispatcherInterface
         if ($area) {
             if ($action === 'index') {
                 if ($controller === 'Index') {
-                    $context->path = $area === 'Index' ? '/' : '/' . Text::underscore($area);
+                    $context->path = $area === 'Index' ? '/' : '/' . Str::underscore($area);
                 } else {
-                    $context->path = '/' . Text::underscore($area) . '/' . Text::underscore($controller);
+                    $context->path = '/' . Str::underscore($area) . '/' . Str::underscore($controller);
                 }
             } else {
-                $context->path = '/' . Text::underscore($area) . '/' . Text::underscore($controller) . '/' . Text::underscore($action);
+                $context->path = '/' . Str::underscore($area) . '/' . Str::underscore($controller) . '/' . Str::underscore($action);
             }
         } else {
             if ($action === 'index') {
-                $context->path = $controller === 'Index' ? '/' : '/' . Text::underscore($controller);
+                $context->path = $controller === 'Index' ? '/' : '/' . Str::underscore($controller);
             } else {
-                $context->path = '/' . Text::underscore($controller) . '/' . Text::underscore($action);
+                $context->path = '/' . Str::underscore($controller) . '/' . Str::underscore($action);
             }
         }
 

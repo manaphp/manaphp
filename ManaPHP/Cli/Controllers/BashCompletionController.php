@@ -3,7 +3,7 @@
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
-use ManaPHP\Utility\Text;
+use ManaPHP\Helper\Str;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -21,12 +21,12 @@ class BashCompletionController extends Controller
                 if (in_array(pathinfo($file, PATHINFO_FILENAME), ['BashCompletionController'], true)) {
                     continue;
                 }
-                $controllers[] = Text::underscore(basename($file, 'Controller.php'));
+                $controllers[] = Str::underscore(basename($file, 'Controller.php'));
             }
 
             if ($this->alias->has('@cli')) {
                 foreach ($this->filesystem->glob('@cli/*Controller.php') as $file) {
-                    $controllers[] = Text::underscore(basename($file, 'Controller.php'));
+                    $controllers[] = Str::underscore(basename($file, 'Controller.php'));
                 }
             }
         } catch (\Exception $e) {
@@ -53,7 +53,7 @@ class BashCompletionController extends Controller
 
             foreach ((new ReflectionClass($controllerClassName))->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
                 if (!$method->isStatic() && $method->isPublic() && preg_match('#^(.*)Command$#', $method->getShortName(), $matches) === 1) {
-                    $commands[] = Text::underscore($matches[1]);
+                    $commands[] = Str::underscore($matches[1]);
                 }
             }
         } catch (\Exception $e) {
@@ -76,7 +76,7 @@ class BashCompletionController extends Controller
             return [];
         }
 
-        $command = Text::camelize($command) . 'Command';
+        $command = Str::camelize($command) . 'Command';
         if (!method_exists($controllerClassName, $command)) {
             return [];
         }
@@ -97,13 +97,13 @@ class BashCompletionController extends Controller
     protected function _getControllerClassName($controllerName)
     {
         if ($this->alias->has('@ns.cli')) {
-            $controllerClassName = $this->alias->resolveNS('@ns.cli\\' . Text::camelize($controllerName)) . 'Controller';
+            $controllerClassName = $this->alias->resolveNS('@ns.cli\\' . Str::camelize($controllerName)) . 'Controller';
             if (class_exists($controllerClassName)) {
                 return $controllerClassName;
             }
         }
 
-        return 'ManaPHP\\Cli\\Controllers\\' . Text::camelize($controllerName) . 'Controller';
+        return 'ManaPHP\\Cli\\Controllers\\' . Str::camelize($controllerName) . 'Controller';
     }
 
     /**
@@ -121,7 +121,7 @@ class BashCompletionController extends Controller
         }
 
         $argument_values = [];
-        $command = Text::camelize($command) . 'Completion';
+        $command = Str::camelize($command) . 'Completion';
         if (method_exists($controllerClassName, $command)) {
             try {
                 $argument_values = $this->_di->get($controllerClassName)->$command($argumentName);

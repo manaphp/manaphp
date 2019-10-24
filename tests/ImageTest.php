@@ -3,7 +3,6 @@
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
-
 use PHPUnit\Framework\TestCase;
 
 class ImageTest extends TestCase
@@ -150,7 +149,7 @@ class ImageTest extends TestCase
         $resultImageFile = $this->_resultDirectory . '/watermark_with_alpha.jpg';
         $image->watermark(__DIR__ . '/Image/watermark.png', 0, 0, 0.5)->save($resultImageFile);
 
-        $image =image_create($this->_originalImage);
+        $image = image_create($this->_originalImage);
         $resultImageFile = $this->_resultDirectory . '/' . 'watermark_without_alpha.jpg';
         $image->watermark(__DIR__ . '/Image/watermark.jpg', 0, 0, 0.5)->save($resultImageFile);
     }

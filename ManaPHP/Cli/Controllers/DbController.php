@@ -5,7 +5,7 @@ namespace ManaPHP\Cli\Controllers;
 use ManaPHP\Cli\Console;
 use ManaPHP\Cli\Controller;
 use ManaPHP\Db;
-use ManaPHP\Utility\Text;
+use ManaPHP\Helper\Str;
 
 class DbController extends Controller
 {
@@ -132,7 +132,7 @@ class DbController extends Controller
 
         $fields = (array)$metadata[Db::METADATA_ATTRIBUTES];
 
-        $plainClass = Text::camelize($table);
+        $plainClass = Str::camelize($table);
         $modelName = $rootNamespace . '\\' . $plainClass;
 
         if ($constants = $this->_getConstantsByDb($service, $table)) {
@@ -321,7 +321,7 @@ class DbController extends Controller
 
         $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
-        $plainClass = Text::camelize($table);
+        $plainClass = Str::camelize($table);
         $fileName = "@tmp/db_model/$plainClass.php";
         $model_str = $this->_renderModel($service, $table, $namespace, $optimized);
         $this->filesystem->filePut($fileName, $model_str);
@@ -347,7 +347,7 @@ class DbController extends Controller
             foreach ($this->_getTables($service, $table_pattern) as $table) {
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
-                $plainClass = Text::camelize($table);
+                $plainClass = Str::camelize($table);
                 $fileName = "@tmp/db_models/$plainClass.php";
                 $model_str = $this->_renderModel($service, $table, $namespace, $optimized);
                 $this->filesystem->filePut($fileName, $model_str);

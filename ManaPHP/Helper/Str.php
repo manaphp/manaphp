@@ -1,12 +1,12 @@
 <?php
-namespace ManaPHP\Utility;
+namespace ManaPHP\Helper;
 
 /**
- * Class ManaPHP\Utility\Text
+ * Class ManaPHP\Helper\Str
  *
  * @package text
  */
-class Text
+class Str
 {
     /**
      * @param string $haystack

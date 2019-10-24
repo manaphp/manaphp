@@ -3,7 +3,7 @@
 namespace ManaPHP\Cli;
 
 use ManaPHP\Component;
-use ManaPHP\Utility\Text;
+use ManaPHP\Helper\Str;
 
 /**
  * Class Handler
@@ -141,8 +141,8 @@ class Handler extends Component implements HandlerInterface
             $commandName = 'help';
         }
 
-        $controllerName = Text::camelize($controllerName);
-        $commandName = lcfirst(Text::camelize($commandName));
+        $controllerName = Str::camelize($controllerName);
+        $commandName = lcfirst(Str::camelize($commandName));
 
         $controllerClassName = null;
 

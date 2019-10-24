@@ -6,7 +6,7 @@ use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidUrlException;
 use ManaPHP\Exception\RuntimeException;
-use ManaPHP\Utility\Text;
+use ManaPHP\Helper\Str;
 
 /**
  * Class ManaPHP\Renderer\Engine\Sword
@@ -124,16 +124,16 @@ class Compiler extends Component
             return $this->alias->get('@web') . $str;
         }
 
-        $area = preg_match('#/Areas/([^/]+)#i', $file, $match) ? Text::underscore($match[1]) : null;
+        $area = preg_match('#/Areas/([^/]+)#i', $file, $match) ? Str::underscore($match[1]) : null;
         if (($pos = strripos($file, '/views/')) === false || strrpos($file, '_layout')) {
             return $str;
         }
 
         $parts = explode('/', substr($file, $pos + 7));
         if (count($parts) === 1) {
-            $controller = Text::underscore(pathinfo($parts[0], PATHINFO_FILENAME));
+            $controller = Str::underscore(pathinfo($parts[0], PATHINFO_FILENAME));
         } else {
-            $controller = Text::underscore($parts[0]);
+            $controller = Str::underscore($parts[0]);
         }
         if (strpos($str, '/') === false) {
             $absolute = $area ? "/$area/$controller/$str" : "/$controller/$str";

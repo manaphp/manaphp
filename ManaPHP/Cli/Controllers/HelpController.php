@@ -4,7 +4,7 @@ namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Console;
 use ManaPHP\Cli\Controller;
-use ManaPHP\Utility\Text;
+use ManaPHP\Helper\Str;
 use ReflectionClass;
 
 /**
@@ -26,7 +26,7 @@ class HelpController extends Controller
             if (in_array($plainName, ['BashCompletionController', 'HelpController'], true)) {
                 continue;
             }
-            $this->console->writeLn(' - ' . $this->console->colorize(Text::underscore(basename($plainName, 'Controller')), Console::FC_YELLOW));
+            $this->console->writeLn(' - ' . $this->console->colorize(Str::underscore(basename($plainName, 'Controller')), Console::FC_YELLOW));
             $commands = $this->_getCommands(__NAMESPACE__ . "\\" . $plainName);
 
             $width = max(max(array_map('strlen', array_keys($commands))), 18);
@@ -40,7 +40,7 @@ class HelpController extends Controller
 
             foreach (glob($this->alias->resolve('@cli/*Controller.php')) as $file) {
                 $plainName = basename($file, '.php');
-                $this->console->writeLn(' - ' . $this->console->colorize(Text::underscore(basename($plainName, 'Controller')), Console::FC_YELLOW));
+                $this->console->writeLn(' - ' . $this->console->colorize(Str::underscore(basename($plainName, 'Controller')), Console::FC_YELLOW));
 
                 $commands = $this->_getCommands($this->alias->resolveNS("@ns.cli\\$plainName"));
 
@@ -61,7 +61,7 @@ class HelpController extends Controller
      */
     protected function _getCommands($controllerClassName)
     {
-        $controller = Text::underscore(basename(strtr($controllerClassName, '\\', '/'), 'Controller'));
+        $controller = Str::underscore(basename(strtr($controllerClassName, '\\', '/'), 'Controller'));
 
         $commands = [];
         $rc = new ReflectionClass($controllerClassName);

@@ -5,7 +5,7 @@ use ManaPHP\Cli\Controller;
 use ManaPHP\Cli\Cronable;
 use ManaPHP\Di;
 use ManaPHP\Exception\RuntimeException;
-use ManaPHP\Utility\Text;
+use ManaPHP\Helper\Str;
 use ReflectionClass;
 use Swoole\Coroutine;
 use Throwable;
@@ -66,7 +66,7 @@ class CronController extends Controller
     {
         $crons = [];
         if ($name) {
-            $class_name = $this->alias->get('@ns.cli') . '\\' . Text::camelize($name) . 'Controller';
+            $class_name = $this->alias->get('@ns.cli') . '\\' . Str::camelize($name) . 'Controller';
             $rc = new ReflectionClass($class_name);
 
             if (!in_array(Cronable::class, $rc->getInterfaceNames(), true)) {

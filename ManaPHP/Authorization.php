@@ -4,7 +4,7 @@ namespace ManaPHP;
 use ManaPHP\Exception\ForbiddenException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Identity\NoCredentialException;
-use ManaPHP\Utility\Text;
+use ManaPHP\Helper\Str;
 
 class AuthorizationContext
 {
@@ -68,7 +68,7 @@ class Authorization extends Component implements AuthorizationInterface
         if ($permission[0] === '/') {
             if ($areas = $this->router->getAreas()) {
                 $pos = strpos($permission, '/', 1);
-                $area = Text::camelize($pos === false ? substr($permission, 1) : substr($permission, 1, $pos - 1));
+                $area = Str::camelize($pos === false ? substr($permission, 1) : substr($permission, 1, $pos - 1));
                 if (in_array($area, $areas, true)) {
                     $permission = $pos === false || $pos === strlen($permission) - 1 ? '' : (string)substr($permission, $pos + 1);
                 } else {
@@ -87,14 +87,14 @@ class Authorization extends Component implements AuthorizationInterface
             $action = 'index';
         } elseif ($pos = strpos($permission, '/')) {
             if ($pos === false || $pos === strlen($permission) - 1) {
-                $controller = Text::camelize($pos === false ? $permission : substr($permission, 0, -1));
+                $controller = Str::camelize($pos === false ? $permission : substr($permission, 0, -1));
                 $action = 'index';
             } else {
-                $controller = Text::camelize(substr($permission, 0, $pos));
-                $action = lcfirst(Text::camelize(substr($permission, $pos + 1)));
+                $controller = Str::camelize(substr($permission, 0, $pos));
+                $action = lcfirst(Str::camelize(substr($permission, $pos + 1)));
             }
         } else {
-            $controller = Text::camelize($permission);
+            $controller = Str::camelize($permission);
             $action = 'index';
         }
 
@@ -114,11 +114,11 @@ class Authorization extends Component implements AuthorizationInterface
     public function generatePath($controllerClassName, $action)
     {
         $controllerClassName = str_replace('\\', '/', $controllerClassName);
-        $action = Text::underscore($action);
+        $action = Str::underscore($action);
 
         if (preg_match('#Areas/([^/]+)/Controllers/(.*)Controller$#', $controllerClassName, $match)) {
-            $area = Text::underscore($match[1]);
-            $controller = Text::underscore($match[2]);
+            $area = Str::underscore($match[1]);
+            $controller = Str::underscore($match[2]);
 
             if ($action === 'index') {
                 if ($controller === 'index') {
@@ -130,7 +130,7 @@ class Authorization extends Component implements AuthorizationInterface
                 return "/$area/$controller/$action";
             }
         } elseif (preg_match('#/Controllers/(.*)Controller#', $controllerClassName, $match)) {
-            $controller = Text::underscore($match[1]);
+            $controller = Str::underscore($match[1]);
 
             if ($action === 'index') {
                 return $controller === 'index' ? '/' : "/$controller";
@@ -274,7 +274,7 @@ class Authorization extends Component implements AuthorizationInterface
         } else {
             $controllerInstance = $this->dispatcher->getControllerInstance();
             $controllerClassName = get_class($controllerInstance);
-            $action = $permission ? lcfirst(Text::camelize($permission)) : $this->dispatcher->getAction();
+            $action = $permission ? lcfirst(Str::camelize($permission)) : $this->dispatcher->getAction();
             $acl = $controllerInstance->getAcl();
 
             if ($this->isAclAllowed($acl, $role, $action)) {

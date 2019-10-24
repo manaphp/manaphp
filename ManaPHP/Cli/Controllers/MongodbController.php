@@ -4,7 +4,7 @@ namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Console;
 use ManaPHP\Cli\Controller;
-use ManaPHP\Utility\Text;
+use ManaPHP\Helper\Str;
 
 class MongodbController extends Controller
 {
@@ -98,7 +98,7 @@ class MongodbController extends Controller
                         continue;
                     }
 
-                    $plainClass = Text::camelize($collection);
+                    $plainClass = Str::camelize($collection);
                     $fileName = "@tmp/mongodb_models/$plainClass.php";
 
                     $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
@@ -352,7 +352,7 @@ class MongodbController extends Controller
 
         $plainClass = substr($modelName, strrpos($modelName, '\\'));
 
-        $underscoreClass = Text::underscore($plainClass);
+        $underscoreClass = Str::underscore($plainClass);
         $tryField = $underscoreClass . '_id';
         if (isset($fieldTypes[$tryField])) {
             return $tryField;
