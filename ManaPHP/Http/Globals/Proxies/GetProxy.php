@@ -2,8 +2,9 @@
 namespace ManaPHP\Http\Globals\Proxies;
 
 use ArrayAccess;
+use JsonSerializable;
 
-class GetProxy implements ArrayAccess, \JsonSerializable
+class GetProxy implements ArrayAccess, JsonSerializable
 {
     /**
      * @var \ManaPHP\Http\Request

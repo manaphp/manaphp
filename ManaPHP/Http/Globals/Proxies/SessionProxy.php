@@ -60,7 +60,7 @@ class SessionProxy implements ArrayAccess, JsonSerializable
 
     public function __debugInfo()
     {
-        return $this->_getSession()->get();
+        return (array)$this->_getSession()->get();
     }
 
     public function jsonSerialize()
