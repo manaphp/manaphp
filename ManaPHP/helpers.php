@@ -4,6 +4,7 @@ use ManaPHP\Di;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\JsonException;
+use ManaPHP\Exception\NotSupportedException;
 use Swoole\Coroutine;
 
 if (!function_exists('spl_object_id')) {
@@ -842,5 +843,23 @@ if (!function_exists('collection_sort')) {
         }
 
         return $ar;
+    }
+}
+
+if (!function_exists('image_create')) {
+    /**
+     * @param string $file
+     *
+     * @return \ManaPHP\ImageInterface
+     */
+    function image_create($file)
+    {
+        if (extension_loaded('imagick')) {
+            return Di::getDefault()->get('ManaPHP\Image\Adapter\Imagick', [$file]);
+        } elseif (extension_loaded('gd')) {
+            return Di::getDefault()->get('ManaPHP\Image\Adapter\Gd', [$file]);
+        } else {
+            throw new NotSupportedException('neither `imagic` nor `gd` extension is loaded');
+        }
     }
 }
