@@ -257,7 +257,11 @@ class Component implements ComponentInterface, JsonSerializable
     {
         $data = [];
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k === '_object_id' || (is_object($v) && $k !== '_context')) {
+            if ($k === '_object_id' || $k === '_di') {
+                continue;
+            }
+
+            if (PHP_SAPI !== 'apache2handler' && is_object($k)) {
                 continue;
             }
 
