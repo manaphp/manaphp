@@ -2,6 +2,7 @@
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
+use ManaPHP\Helper\Arr;
 
 class BosController extends Controller
 {
@@ -44,7 +45,7 @@ class BosController extends Controller
         $filters['mime_type'] = $mime_type;
         $filters['extension'] = $extension;
 
-        $filters = array_trim($filters);
+        $filters = Arr::trim($filters);
 
         $response = $this->bosClient->listObjects($bucket, $filters);
         $this->console->write($response);

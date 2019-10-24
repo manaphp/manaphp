@@ -8,6 +8,7 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Model\Relation;
 use ManaPHP\QueryInterface;
+use ManaPHP\Helper\Arr;
 
 class Manager extends Component implements ManagerInterface
 {
@@ -300,7 +301,7 @@ class Manager extends Component implements ManagerInterface
             } elseif ($relation->type === Relation::TYPE_HAS_MANY_TO_MANY) {
                 $ids = array_column($r, $valueField);
                 $via_data = $model::select([$keyField, $valueField])->whereIn($valueField, $ids)->execute();
-                $ids = array_unique_column($via_data, $keyField);
+                $ids = Arr::unique_column($via_data, $keyField);
                 $primaryKey = $query->getModel()->getPrimaryKey();
                 $data = $query->whereIn($primaryKey, $ids)->indexBy($primaryKey)->fetch($asArray);
 
@@ -325,9 +326,9 @@ class Manager extends Component implements ManagerInterface
                 $referenceModel = $relation->referenceModel;
                 $reference = $referenceModel::sample();
                 $keyField = $reference->getPrimaryKey();
-                $ids = array_unique_column($r, $model->getPrimaryKey());
+                $ids = Arr::unique_column($r, $model->getPrimaryKey());
                 $via_data = $via::select([$keyField, $relation->valueField])->whereIn($valueField, $ids)->execute();
-                $ids = array_unique_column($via_data, $keyField);
+                $ids = Arr::unique_column($via_data, $keyField);
                 $data = $query->whereIn($query->getModel()->getPrimaryKey(), $ids)->indexBy($query->getModel()->getPrimaryKey())->fetch($asArray);
 
                 $rd = [];

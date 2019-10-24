@@ -4,6 +4,8 @@ namespace ManaPHP\Bos;
 use ManaPHP\Component;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Helper\Str;
+use ManaPHP\Helper\Arr;
 
 class Client extends Component implements ClientInterface
 {
@@ -38,7 +40,7 @@ class Client extends Component implements ClientInterface
 
         $endpoint = preg_replace('#{bucket}[\-.]*#', '', $this->_endpoint);
 
-        if (str_contains($this->_endpoint, '{bucket}')) {
+        if (Str::contains($this->_endpoint, '{bucket}')) {
             $params['base_url'] = str_replace('{bucket}', $bucket, $this->_endpoint);
         }
 
@@ -149,6 +151,6 @@ class Client extends Component implements ClientInterface
     {
         $claims = jwt_decode($token, 'bos.object.create.response');
 
-        return array_except($claims, ['scope', 'iat', 'exp']);
+        return Arr::except($claims, ['scope', 'iat', 'exp']);
     }
 }

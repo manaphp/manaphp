@@ -5,6 +5,7 @@ namespace ManaPHP\Configuration;
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Helper\Arr;
 
 /**
  * Class ManaPHP\Configuration\Configure
@@ -113,7 +114,7 @@ class Configure extends Component implements ConfigureInterface
      */
     public function getParam($name, $default = null)
     {
-        $value = array_get($this->params, $name);
+        $value = Arr::get($this->params, $name);
         if ($value === null) {
             if ($default === null) {
                 throw new InvalidValueException(['`:param` param is not exists in $configure->params', 'param' => $name]);
