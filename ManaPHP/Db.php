@@ -99,7 +99,7 @@ class Db extends Component implements DbInterface
     {
         $this->_uri = $uri;
 
-        if (strpos($this->_uri, 'timeout=') !== false && preg_match('#timeout=([\d.]+)#', $this->_uri, $matches) === 1) {
+        if (strpos($uri, 'timeout=') !== false && preg_match('#timeout=([\d.]+)#', $uri, $matches) === 1) {
             $this->_timeout = (float)$matches[1];
         }
 
