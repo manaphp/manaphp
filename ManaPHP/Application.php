@@ -262,7 +262,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         if ($configure->timezone) {
             date_default_timezone_set($configure->timezone);
         }
-        $this->_di->setShared('crypt', [$configure->master_key]);
+        $this->_di->setShared('crypt', ['master_key' => $configure->master_key]);
 
         foreach ($configure->aliases as $alias => $path) {
             $this->_di->alias->set($alias, $path);

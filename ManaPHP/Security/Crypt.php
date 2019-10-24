@@ -25,15 +25,10 @@ class Crypt extends Component implements CryptInterface
     /**
      * Crypt constructor.
      *
-     * @param string|array $options
-     *
+     * @param array $options
      */
     public function __construct($options = [])
     {
-        if (is_string($options)) {
-            $options = ['master_key' => $options];
-        }
-
         if (isset($options['master_key'])) {
             $this->_master_key = $options['master_key'];
         }
