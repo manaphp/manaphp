@@ -2,6 +2,7 @@
 namespace App\Plugins;
 
 use App\Models\AdminActionLog;
+use ManaPHP\Helper\Arr;
 use ManaPHP\Plugin;
 
 class AdminActionLogPluginContext
@@ -38,7 +39,7 @@ class AdminActionLogPlugin extends Plugin
         }
         $context->logged = true;
 
-        $data = array_except($this->request->get(), ['_url']);
+        $data = Arr::except($this->request->get(), ['_url']);
         if (isset($data['password'])) {
             $data['password'] = '*';
         }
