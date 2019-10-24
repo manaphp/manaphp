@@ -67,9 +67,8 @@ abstract class Logger extends Component implements LoggerInterface
      * Logger constructor.
      *
      * @param array $options
-     *
      */
-    public function __construct($options = null)
+    public function __construct($options = [])
     {
         if (isset($options['level'])) {
             $this->_level = $this->_parseLevel($options['level']);

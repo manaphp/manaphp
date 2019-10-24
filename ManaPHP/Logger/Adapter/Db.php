@@ -25,9 +25,9 @@ class Db extends Logger
     /**
      * Db constructor.
      *
-     * @param string|array $options
+     * @param array $options
      */
-    public function __construct($options = null)
+    public function __construct($options = [])
     {
         parent::__construct($options);
 

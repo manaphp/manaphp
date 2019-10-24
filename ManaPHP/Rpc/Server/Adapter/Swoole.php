@@ -48,7 +48,7 @@ class Swoole extends \ManaPHP\Rpc\Server
      *
      * @param array $options
      */
-    public function __construct($options = null)
+    public function __construct($options = [])
     {
         parent::__construct($options);
 

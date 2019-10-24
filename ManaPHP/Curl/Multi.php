@@ -44,24 +44,20 @@ class Multi extends Component implements MultiInterface, Countable
     /**
      * CurlMulti constructor.
      *
-     * @param string|array $options
+     * @param array $options
      */
     public function __construct($options = [])
     {
-        if (is_string($options)) {
-            $this->_proxy = $options;
-        } else {
-            if (isset($options['proxy'])) {
-                $this->_proxy = $options['proxy'];
-            }
+        if (isset($options['proxy'])) {
+            $this->_proxy = $options['proxy'];
+        }
 
-            if (isset($options['timeout'])) {
-                $this->_timeout = $options['timeout'];
-            }
+        if (isset($options['timeout'])) {
+            $this->_timeout = $options['timeout'];
+        }
 
-            if (isset($options['tmp_dir'])) {
-                $this->_tmp_dir = $options['tmp_dir'];
-            }
+        if (isset($options['tmp_dir'])) {
+            $this->_tmp_dir = $options['tmp_dir'];
         }
 
         $this->_template = $this->_createCurlTemplate();

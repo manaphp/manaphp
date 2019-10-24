@@ -25,24 +25,20 @@ class Apcu extends Metadata
     /**
      * Apcu constructor.
      *
-     * @param string|array $options
+     * @param array $options
      */
-    public function __construct($options = 'models_metadata:')
+    public function __construct($options = [])
     {
         if (!extension_loaded('apcu')) {
             throw new ExtensionNotInstalledException('apcu');
         }
 
-        if (is_string($options)) {
-            $this->_prefix = $options;
-        } else {
-            if (isset($options['prefix'])) {
-                $this->_prefix .= $options['prefix'];
-            }
+        if (isset($options['prefix'])) {
+            $this->_prefix .= $options['prefix'];
+        }
 
-            if (isset($options['ttl'])) {
-                $this->_ttl = $options['ttl'];
-            }
+        if (isset($options['ttl'])) {
+            $this->_ttl = $options['ttl'];
         }
     }
 

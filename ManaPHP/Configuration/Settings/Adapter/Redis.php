@@ -23,7 +23,7 @@ class Redis extends Component implements SettingsInterface
      *
      * @param array $options
      */
-    public function __construct($options = null)
+    public function __construct($options = [])
     {
         if (isset($options['redis'])) {
             $this->_redis = $options['redis'];

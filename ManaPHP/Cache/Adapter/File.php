@@ -30,15 +30,10 @@ class File extends Cache
     /**
      * File constructor.
      *
-     * @param string|array $options
-     *
+     * @param array $options
      */
     public function __construct($options = [])
     {
-        if (is_string($options)) {
-            $options = ['dir' => $options];
-        }
-
         if (isset($options['dir'])) {
             $this->_dir = rtrim($options['dir'], '\\/');
         }

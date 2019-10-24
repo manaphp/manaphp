@@ -48,7 +48,7 @@ class Validator extends Component implements ValidatorInterface
      *
      * @param array $options
      */
-    public function __construct($options = null)
+    public function __construct($options = [])
     {
         if (isset($options['locale'])) {
             $this->_locale = $options['locale'];

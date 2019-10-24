@@ -42,6 +42,11 @@ class PusherProcess extends Process
      */
     protected $_users = [];
 
+    /**
+     * PusherProcess constructor.
+     *
+     * @param array $options
+     */
     public function __construct($options = [])
     {
         $this->_endpoint = $options['endpoint'];

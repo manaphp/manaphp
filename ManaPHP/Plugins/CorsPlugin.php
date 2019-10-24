@@ -31,24 +31,22 @@ class CorsPlugin extends Plugin
      *
      * @param array $options
      */
-    public function __construct($options = null)
+    public function __construct($options = [])
     {
-        if (is_array($options)) {
-            if (isset($options['force'])) {
-                $this->_force = (bool)$options['force'];
-            }
+        if (isset($options['force'])) {
+            $this->_force = (bool)$options['force'];
+        }
 
-            if (isset($options['max_age'])) {
-                $this->_max_age = $options['max_age'];
-            }
+        if (isset($options['max_age'])) {
+            $this->_max_age = $options['max_age'];
+        }
 
-            if (isset($options['origin'])) {
-                $this->_origin = $options['origin'];
-            }
+        if (isset($options['origin'])) {
+            $this->_origin = $options['origin'];
+        }
 
-            if (isset($options['credentials'])) {
-                $this->_credentials = $options['credentials'];
-            }
+        if (isset($options['credentials'])) {
+            $this->_credentials = $options['credentials'];
         }
 
         $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);

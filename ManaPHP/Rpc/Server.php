@@ -33,7 +33,7 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
      *
      * @param array $options
      */
-    public function __construct($options = null)
+    public function __construct($options = [])
     {
         if (isset($options['host'])) {
             $this->_host = $options['host'];

@@ -55,7 +55,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      *
      * @param array $options
      */
-    public function __construct($options = null)
+    public function __construct($options = [])
     {
         $script_filename = get_included_files()[0];
         $_SERVER = [

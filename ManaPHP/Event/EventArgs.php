@@ -18,6 +18,11 @@ class EventArgs
      */
     public $data;
 
+    /**
+     * @param string $event
+     * @param object $source
+     * @param mixed  $data
+     */
     public function __construct($event, $source, $data)
     {
         $this->event = $event;

@@ -14,7 +14,7 @@ class Php extends Fpm
      *
      * @param array $options
      */
-    public function __construct($options = null)
+    public function __construct($options = [])
     {
         parent::__construct($options);
 

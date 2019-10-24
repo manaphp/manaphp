@@ -18,31 +18,27 @@ class File extends Mailer
     /**
      * File constructor.
      *
-     * @param string|array $options
+     * @param array $options
      */
     public function __construct($options = [])
     {
-        if (is_string($options)) {
-            $this->_file = $options;
-        } else {
-            if (isset($options['file'])) {
-                $this->_file = $options['file'];
-            }
-            if (isset($options['pretty'])) {
-                $this->_pretty = (bool)$options['pretty'];
-            }
+        if (isset($options['file'])) {
+            $this->_file = $options['file'];
+        }
+        if (isset($options['pretty'])) {
+            $this->_pretty = (bool)$options['pretty'];
+        }
 
-            if (isset($options['log'])) {
-                $this->_log = $options['log'];
-            }
+        if (isset($options['log'])) {
+            $this->_log = $options['log'];
+        }
 
-            if (isset($options['from'])) {
-                $this->_from = $options['from'];
-            }
+        if (isset($options['from'])) {
+            $this->_from = $options['from'];
+        }
 
-            if (isset($options['to'])) {
-                $this->_to = $options['to'];
-            }
+        if (isset($options['to'])) {
+            $this->_to = $options['to'];
         }
     }
 

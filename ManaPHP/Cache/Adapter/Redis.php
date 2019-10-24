@@ -25,7 +25,6 @@ class Redis extends Cache
      * Redis constructor.
      *
      * @param array $options
-     *
      */
     public function __construct($options = [])
     {

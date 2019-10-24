@@ -13,7 +13,7 @@ class Php extends Fpm
      *
      * @param array $options
      */
-    public function __construct($options = null)
+    public function __construct($options = [])
     {
         $public_dir = $this->alias->resolve('@public');
         $local_ip = $this->_getLocalIp();

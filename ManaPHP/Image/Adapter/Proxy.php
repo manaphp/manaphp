@@ -12,6 +12,11 @@ class Proxy extends Image
      */
     protected $_handler;
 
+    /**
+     * Proxy constructor.
+     *
+     * @param string $file
+     */
     public function __construct($file)
     {
         if (extension_loaded('imagick')) {

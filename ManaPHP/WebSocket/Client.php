@@ -44,13 +44,10 @@ class Client extends Component implements ClientInterface
     /**
      * Client constructor.
      *
-     * @param string|array $options
+     * @param array $options
      */
     public function __construct($options)
     {
-        if (is_string($options)) {
-            $this->_endpoint = $options;
-        } elseif (is_array($options)) {
             $this->_endpoint = $options['endpoint'];
 
             if (isset($options['proxy'])) {
@@ -64,7 +61,6 @@ class Client extends Component implements ClientInterface
             if (isset($options['on_connect'])) {
                 $this->_on_connect = $options['on_connect'];
             }
-        }
     }
 
     public function __clone()

@@ -42,7 +42,7 @@ class Translator extends Component implements TranslatorInterface
      *
      * @param array $options
      */
-    public function __construct($options = null)
+    public function __construct($options = [])
     {
         if (isset($options['locale'])) {
             $this->_locale = $options['locale'];

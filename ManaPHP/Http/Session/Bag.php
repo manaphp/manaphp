@@ -22,7 +22,6 @@ class Bag extends Component implements BagInterface
      * \ManaPHP\Session\Bag constructor
      *
      * @param string $name
-     *
      */
     public function __construct($name)
     {

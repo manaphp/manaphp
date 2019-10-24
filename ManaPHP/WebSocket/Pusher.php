@@ -21,7 +21,7 @@ class Pusher extends Component implements PusherInterface
      *
      * @param array $options
      */
-    public function __construct($options = null)
+    public function __construct($options = [])
     {
         if (isset($options['prefix'])) {
             $this->_prefix = $options['prefix'];
