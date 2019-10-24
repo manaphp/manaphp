@@ -3,8 +3,8 @@ namespace ManaPHP;
 
 use ManaPHP\Exception\ForbiddenException;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Identity\NoCredentialException;
 use ManaPHP\Helper\Str;
+use ManaPHP\Identity\NoCredentialException;
 
 class AuthorizationContext
 {

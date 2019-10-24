@@ -4,8 +4,8 @@ namespace ManaPHP\Bos;
 use ManaPHP\Component;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Helper\Str;
 use ManaPHP\Helper\Arr;
+use ManaPHP\Helper\Str;
 
 class Client extends Component implements ClientInterface
 {

@@ -6,9 +6,9 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\RuntimeException;
+use ManaPHP\Helper\Arr;
 use ManaPHP\Model\Relation;
 use ManaPHP\QueryInterface;
-use ManaPHP\Helper\Arr;
 
 class Manager extends Component implements ManagerInterface
 {

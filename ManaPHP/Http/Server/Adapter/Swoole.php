@@ -2,7 +2,6 @@
 namespace ManaPHP\Http\Server\Adapter;
 
 use ManaPHP\Http\Server;
-
 use Throwable;
 
 class SwooleContext

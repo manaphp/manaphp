@@ -48,19 +48,19 @@ class Client extends Component implements ClientInterface
      */
     public function __construct($options)
     {
-            $this->_endpoint = $options['endpoint'];
+        $this->_endpoint = $options['endpoint'];
 
-            if (isset($options['proxy'])) {
-                $this->_proxy = $options['proxy'];
-            }
+        if (isset($options['proxy'])) {
+            $this->_proxy = $options['proxy'];
+        }
 
-            if (isset($options['timeout'])) {
-                $this->_timeout = $options['timeout'];
-            }
+        if (isset($options['timeout'])) {
+            $this->_timeout = $options['timeout'];
+        }
 
-            if (isset($options['on_connect'])) {
-                $this->_on_connect = $options['on_connect'];
-            }
+        if (isset($options['on_connect'])) {
+            $this->_on_connect = $options['on_connect'];
+        }
     }
 
     public function __clone()

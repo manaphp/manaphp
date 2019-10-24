@@ -87,7 +87,7 @@ class FiddlerPlugin extends Plugin
     {
         /** @var \ManaPHP\Logger\Log $log */
         $log = $eventArgs->data;
-		
+
         if ($this->enabled()) {
             $data = [
                 'category' => $log->category,
@@ -119,7 +119,7 @@ class FiddlerPlugin extends Plugin
     {
         /** @var \ManaPHP\Http\ResponseInterface $response */
         $response = $eventArgs->source;
-		
+
         if ($this->enabled()) {
             $data = [
                 'uri' => $this->request->getServer('REQUEST_URI'),

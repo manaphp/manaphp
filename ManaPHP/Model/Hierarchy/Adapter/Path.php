@@ -2,9 +2,9 @@
 
 namespace ManaPHP\Model\Hierarchy\Adapter;
 
+use ManaPHP\Helper\Str;
 use ManaPHP\Model\Hierarchy\Exception as HierarchyException;
 use ManaPHP\QueryInterface;
-use ManaPHP\Helper\Str;
 
 /**
  * Class ManaPHP\Hierarchy

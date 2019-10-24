@@ -3,9 +3,9 @@
 namespace ManaPHP;
 
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Helper\Str;
 use ManaPHP\Router\NotFoundRouteException;
 use ManaPHP\Router\Route;
-use ManaPHP\Helper\Str;
 
 class RouterContext
 {
