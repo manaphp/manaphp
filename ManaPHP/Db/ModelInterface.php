@@ -10,13 +10,6 @@ namespace ManaPHP\Db;
 interface ModelInterface extends \ManaPHP\ModelInterface
 {
     /**
-     * @param mixed $context
-     *
-     * @return \ManaPHP\DbInterface|false
-     */
-    public function getConnection($context = null);
-
-    /**
      * @param string $alias
      *
      * @return \ManaPHP\Db\Query

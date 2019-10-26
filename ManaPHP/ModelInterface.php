@@ -83,6 +83,11 @@ interface ModelInterface
     public function rules();
 
     /**
+     * @return static
+     */
+    public static function sample();
+
+    /**
      * @param string $alias
      *
      * @return \ManaPHP\QueryInterface
