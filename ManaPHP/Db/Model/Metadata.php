@@ -35,7 +35,10 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
             } else {
                 $modelInstance = is_string($model) ? $this->_di->getShared($model) : $model;
 
-                $data = $this->_di->getShared($modelInstance->getDb(true))->getMetadata($modelInstance->getSource(true));
+                list($db, $table) = $modelInstance->getAnyShard();
+                /** @var \ManaPHP\DbInterface $db */
+                $db = $this->_di->getShared($db);
+                $data = $db->getMetadata($table);
 
                 $this->_metadata[$modelName] = $data;
                 $this->write($modelName, $data);

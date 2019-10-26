@@ -22,6 +22,25 @@ interface ModelInterface
     public function getDb($context = null);
 
     /**
+     * @return array
+     */
+    public function getAnyShard();
+
+    /**
+     * @param mixed $context
+     *
+     * @return array
+     */
+    public function getUniqueShard($context);
+
+    /**
+     * @param mixed $context
+     *
+     * @return array
+     */
+    public function getShards($context);
+
+    /**
      * @return string|array
      */
     public function getPrimaryKey();

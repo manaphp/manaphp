@@ -70,6 +70,34 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
+     * @return array
+     */
+    public function getAnyShard()
+    {
+        return [$this->getDb(), $this->getSource()];
+    }
+
+    /**
+     * @param mixed $context
+     *
+     * @return array
+     */
+    public function getUniqueShard($context)
+    {
+        return [$this->getDb(), $this->getSource()];
+    }
+
+    /**
+     * @param mixed $context
+     *
+     * @return array
+     */
+    public function getShards($context)
+    {
+        return [[$this->getDb()], [$this->getSource()]];
+    }
+
+    /**
      * @return array =get_object_vars(new static)
      */
     public function getForeignKeys()
@@ -912,22 +940,6 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         } else {
             throw new NotSupportedException(['`:model` model does not has primary key', 'model' => static::class]);
         }
-    }
-
-    /**
-     * Deletes a model instance. Returning true on success or false otherwise.
-     *
-     * @return static
-     */
-    public function delete()
-    {
-        $this->fireEvent('model:deleting');
-
-        $this->newQuery()->where($this->_getPrimaryKeyValuePairs())->delete();
-
-        $this->fireEvent('model:deleted');
-
-        return $this;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Mongodb;
 
+use ManaPHP\Di;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\RuntimeException;
@@ -155,8 +156,12 @@ class Model extends \ManaPHP\Model
         $class = static::class;
 
         if (!isset($cached[$class])) {
-            if (!$docs = $this->getConnection()->fetchAll($this->getSource(), [], ['limit' => 1])) {
-                throw new RuntimeException(['`:collection` collection has none record', 'collection' => $this->getSource()]);
+            list($db, $collection) = $this->getAnyShard();
+
+            /** @var \ManaPHP\MongodbInterface $mongodb */
+            $mongodb = $this->_di->getShared($db);
+            if (!$docs = $mongodb->fetchAll($collection, [], ['limit' => 1])) {
+                throw new RuntimeException(['`:collection` collection has none record', 'collection' => $collection]);
             }
 
             $types = [];
@@ -197,12 +202,15 @@ class Model extends \ManaPHP\Model
     }
 
     /**
+     * @param \ManaPHP\MongodbInterface $mongodb
+     * @param string                    $source
+     *
      * @return bool
      */
-    protected function _createAutoIncrementIndex()
+    protected function _createAutoIncrementIndex($mongodb, $source)
     {
         $autoIncField = $this->getAutoIncrementField();
-        $source = $this->getSource();
+
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $pos);
             $collection = substr($source, $pos + 1);
@@ -224,7 +232,7 @@ class Model extends \ManaPHP\Model
             ]
         ];
 
-        $this->getConnection()->command($command, $db);
+        $mongodb->command($command, $db);
 
         return true;
     }
@@ -236,7 +244,11 @@ class Model extends \ManaPHP\Model
      */
     public function getNextAutoIncrementId($step = 1)
     {
-        $source = $this->getSource();
+        list($db, $source) = $this->getUniqueShard($this);
+
+        /** @var \ManaPHP\MongodbInterface $mongodb */
+        $mongodb = $this->_di->getShared($db);
+
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $pos);
             $collection = substr($source, $pos + 1);
@@ -253,10 +265,10 @@ class Model extends \ManaPHP\Model
             'upsert' => true
         ];
 
-        $id = $this->getConnection()->command($command, $db)[0]['value']['current_id'];
+        $id = $mongodb->command($command, $db)[0]['value']['current_id'];
 
         if ($id === $step) {
-            $this->_createAutoIncrementIndex();
+            $this->_createAutoIncrementIndex($mongodb, $source);
         }
 
         return $id;
@@ -353,6 +365,8 @@ class Model extends \ManaPHP\Model
             }
         }
 
+        list($db, $collection) = $this->getUniqueShard($this);
+
         $this->fireEvent('model:saving');
         $this->fireEvent('model:creating');
 
@@ -369,9 +383,9 @@ class Model extends \ManaPHP\Model
             }
         }
 
-        /** @var \ManaPHP\MongodbInterface $connection */
-        $connection = $this->_di->getShared($this->getDb($this));
-        $connection->insert($this->getSource($this), $fieldValues);
+        /** @var \ManaPHP\MongodbInterface $mongodb */
+        $mongodb = $this->_di->getShared($db);
+        $mongodb->insert($collection, $fieldValues);
 
         $this->fireEvent('model:created');
         $this->fireEvent('model:saved');
@@ -431,6 +445,8 @@ class Model extends \ManaPHP\Model
             }
         }
 
+        list($db, $collection) = $this->getUniqueShard($this);
+
         $this->fireEvent('model:saving');
         $this->fireEvent('model:updating');
 
@@ -459,8 +475,9 @@ class Model extends \ManaPHP\Model
             }
         }
 
-        $query = $this->newQuery()->where($primaryKeyValuePairs);
-        $query->update($fieldValues);
+        /** @var \ManaPHP\MongodbInterface $mongodb */
+        $mongodb = $this->_di->getShared($db);
+        $mongodb->update($collection, $fieldValues, $primaryKeyValuePairs);
 
         $expressionFields = [];
         foreach ($fieldValues as $field => $value) {
@@ -471,7 +488,7 @@ class Model extends \ManaPHP\Model
 
         if ($expressionFields) {
             $expressionFields['_id'] = false;
-            if ($rs = $query->select($expressionFields)->execute()) {
+            if ($rs = $this->newQuery()->where($primaryKeyValuePairs)->select($expressionFields)->execute()) {
                 foreach ((array)$rs[0] as $field => $value) {
                     $this->$field = $value;
                 }
@@ -487,6 +504,26 @@ class Model extends \ManaPHP\Model
     }
 
     /**
+     * Deletes a model instance. Returning true on success or false otherwise.
+     *
+     * @return static
+     */
+    public function delete()
+    {
+        list($db, $collection) = $this->getUniqueShard($this);
+
+        $this->fireEvent('model:deleting');
+
+        /** @var \ManaPHP\MongodbInterface */
+        $connection = $this->_di->getShared($db);
+        $connection->delete($collection, $this->_getPrimaryKeyValuePairs());
+
+        $this->fireEvent('model:deleted');
+
+        return $this;
+    }
+
+    /**
      * @param array $pipeline
      * @param array $options
      *
@@ -496,7 +533,11 @@ class Model extends \ManaPHP\Model
     {
         $sample = static::sample();
 
-        return $sample->getConnection()->aggregate($sample->getSource(), $pipeline, $options);
+        list($db, $collection) = $sample->getUniqueShard(null);
+
+        /** @var \ManaPHP\MongodbInterface $mongodb */
+        $mongodb = Di::getDefault()->getShared($db);
+        return $mongodb->aggregate($collection, $pipeline, $options);
     }
 
     /**
@@ -506,6 +547,10 @@ class Model extends \ManaPHP\Model
      */
     public static function bulkInsert($documents)
     {
+        if (!$documents) {
+            return 0;
+        }
+
         $sample = static::sample();
 
         $autoIncrementField = $sample->getAutoIncrementField();
@@ -535,6 +580,10 @@ class Model extends \ManaPHP\Model
      */
     public static function bulkUpdate($documents)
     {
+        if (!$documents) {
+            return 0;
+        }
+
         $sample = static::sample();
 
         $primaryKey = $sample->getPrimaryKey();
@@ -565,6 +614,10 @@ class Model extends \ManaPHP\Model
      */
     public static function bulkUpsert($documents)
     {
+        if (!$documents) {
+            return 0;
+        }
+
         $sample = static::sample();
 
         $primaryKey = $sample->getPrimaryKey();
@@ -612,7 +665,14 @@ class Model extends \ManaPHP\Model
                 $document[$field] = $allowNull ? null : $sample->normalizeValue($type, '');
             }
         }
-        return $sample->getConnection($document)->insert($sample->getSource($document), $document);
+
+        list($db, $collection) = $sample->getUniqueShard($document);
+
+        /** @var \ManaPHP\MongodbInterface $mongodb */
+        $mongodb = Di::getDefault()->getShared($db);
+        $mongodb->insert($collection, $document);
+
+        return 1;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Db;
 
+use ManaPHP\Di;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Model\ExpressionInterface;
 
@@ -160,6 +161,8 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         $this->validate($fields);
 
+        list($db, $table) = $this->getUniqueShard($this);
+
         $this->fireEvent('model:saving');
         $this->fireEvent('model:creating');
 
@@ -179,13 +182,12 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        /** @var \ManaPHP\DbInterface $connection */
-        $connection = $this->_di->getShared($this->getDb($this));
-
+        /** @var \ManaPHP\DbInterface $db */
+        $db = $this->_di->getShared($db);
         if ($autoIncrementField && $this->$autoIncrementField === null) {
-            $this->$autoIncrementField = (int)$connection->insert($this->getSource($this), $fieldValues, true);
+            $this->$autoIncrementField = (int)$db->insert($table, $fieldValues, true);
         } else {
-            $connection->insert($this->getSource($this), $fieldValues);
+            $db->insert($table, $fieldValues);
         }
 
         if ($defaultValueFields) {
@@ -261,6 +263,8 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
+        list($db, $table) = $this->getUniqueShard($this);
+
         $this->fireEvent('model:saving');
         $this->fireEvent('model:updating');
 
@@ -289,8 +293,9 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        $query = $this->newQuery()->where($primaryKeyValuePairs);
-        $query->update($fieldValues);
+        /** @var \ManaPHP\DbInterface $db */
+        $db = $this->_di->getShared($db);
+        $db->update($table, $fieldValues, $primaryKeyValuePairs);
 
         $expressionFields = [];
         foreach ($fieldValues as $field => $value) {
@@ -299,7 +304,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        if ($expressionFields && $rs = $query->select($expressionFields)->fetch(true)) {
+        if ($expressionFields && $rs = $this->newQuery()->select($expressionFields)->where($primaryKeyValuePairs)->fetch(true)) {
             foreach ((array)$rs[0] as $field => $value) {
                 $this->$field = $value;
             }
@@ -309,6 +314,26 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $this->fireEvent('model:saved');
 
         $this->_snapshot = $this->toArray();
+
+        return $this;
+    }
+
+    /**
+     * Deletes a model instance. Returning true on success or false otherwise.
+     *
+     * @return static
+     */
+    public function delete()
+    {
+        list($db, $table) = $this->getUniqueShard($this);
+
+        $this->fireEvent('model:deleting');
+
+        /** @var \ManaPHP\DbInterface */
+        $db = $this->_di->getShared($db);
+        $db->delete($table, $this->_getPrimaryKeyValuePairs());
+
+        $this->fireEvent('model:deleted');
 
         return $this;
     }
@@ -330,8 +355,11 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         $sample = static::sample();
 
-        $table = $sample->getSource($bind);
-        return $sample->getConnection($bind)->insertBySql('INSERT' . " INTO [$table] " . $sql, $bind);
+        list($db, $table) = $sample->getUniqueShard($bind);
+
+        /** @var \ManaPHP\DbInterface $db */
+        $db = Di::getDefault()->getShared($db);
+        return $db->insertBySql('INSERT' . " INTO [$table] " . $sql, $bind);
     }
 
     /**
@@ -351,8 +379,19 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         $sample = static::sample();
 
-        $table = $sample->getSource($bind);
-        return $sample->getConnection($bind)->deleteBySql('DELETE' . " FROM [$table] WHERE " . $sql, $bind);
+        list($dbs, $tables) = $sample->getShards($bind);
+
+        $affected_count = 0;
+        foreach ($dbs as $db) {
+            /** @var \ManaPHP\DbInterface $db */
+            $db = Di::getDefault()->getShared($db);
+
+            foreach ($tables as $table) {
+                $affected_count += $db->deleteBySql('DELETE' . " FROM [$table] WHERE " . $sql, $bind);
+            }
+        }
+
+        return $affected_count;
     }
 
     /**
@@ -372,8 +411,20 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         $sample = static::sample();
 
-        $table = $sample->getSource($bind);
-        return $sample->getConnection($bind)->updateBySql('UPDATE' . " [$table] SET " . $sql, $bind);
+        list($dbs, $tables) = $sample->getShards($bind);
+
+        $affected_count = 0;
+        foreach ($dbs as $db) {
+            /** @var \ManaPHP\DbInterface $db */
+            $db = Di::getDefault()->getShared($db);
+
+            foreach ($tables as $table) {
+                $affected_count += $db->updateBySql('UPDATE' . " [$table] SET " . $sql, $bind);
+            }
+        }
+
+
+        return $affected_count;
     }
 
     /**
@@ -384,15 +435,20 @@ class Model extends \ManaPHP\Model implements ModelInterface
     public static function insert($record)
     {
         $sample = static::sample();
+
+        list($db, $table) = $sample->getUniqueShard($record);
+
         if ($fields = array_diff(array_keys($record), $sample->_di->modelsMetadata->getAttributes($sample))) {
-            $sample->_di->logger->debug(['insert `:1` table skip fields: :2', $sample->getSource($record), array_values($fields)]);
+            $sample->_di->logger->debug(['insert `:1` table skip fields: :2', $table, array_values($fields)]);
 
             foreach ($fields as $field) {
                 unset($record[$field]);
             }
         }
 
-        $sample->getConnection($record)->insert($sample->getSource($record), $record);
+        /** @var \ManaPHP\DbInterface $db */
+        $db = Di::getDefault()->getShared($db);
+        $db->insert($table, $record);
 
         return 1;
     }
