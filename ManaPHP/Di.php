@@ -140,6 +140,11 @@ class Di implements DiInterface
             $maybe = substr($name, $pos + 1);
             if (isset($this->_definitions[$maybe])) {
                 $definition = $this->_definitions[$maybe];
+            } elseif ($pos = strpos($name, '_')) {
+                $maybe = substr($name, 0, $pos);
+                if (isset($this->_definitions[$maybe])) {
+                    $definition = $this->_definitions[$maybe];
+                }
             }
         } elseif (preg_match('#^(.+)([A-Z].+?)$#', $name, $match)) {
             $maybe = lcfirst($match[2]);
