@@ -97,12 +97,4 @@ interface QueryInterface extends \ManaPHP\QueryInterface
      * @return array
      */
     public function getTables();
-
-    /**
-     * @param \ManaPHP\Db\QueryInterface[] $queries
-     * @param bool                         $distinct
-     *
-     * @return static
-     */
-    public function union($queries, $distinct = false);
 }

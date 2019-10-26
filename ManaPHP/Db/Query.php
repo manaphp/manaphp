@@ -3,7 +3,6 @@ namespace ManaPHP\Db;
 
 use ManaPHP\Di;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Model\Expression\Decrement;
 use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\Expression\Raw;
@@ -66,11 +65,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
      * @var int
      */
     protected $_param_number = 0;
-
-    /**
-     * @var array
-     */
-    protected $_union = [];
 
     /**
      * @var string
@@ -1020,50 +1014,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     /**
      * @return string
      */
-    protected function _getUnionSql()
-    {
-        $unions = [];
-
-        /** @var \ManaPHP\Db\QueryInterface $queries */
-        foreach ($this->_union['queries'] as $queries) {
-            $unions[] = '(' . $queries->getSql() . ')';
-
-            /** @noinspection SlowArrayOperationsInLoopInspection */
-            $this->_bind = array_merge($this->_bind, $queries->getBind());
-        }
-
-        $sql = implode(' ' . $this->_union['type'] . ' ', $unions);
-
-        $params = [];
-
-        /**
-         * Process order clause
-         */
-        if ($this->_order !== null) {
-            $params['order'] = $this->_order;
-        }
-
-        /**
-         * Process limit parameters
-         */
-        if ($this->_limit !== null) {
-            $params['limit'] = $this->_limit;
-        }
-
-        if ($this->_offset !== null) {
-            $params['offset'] = $this->_offset;
-        }
-
-        $sql .= $this->getConnection()->buildSql($params);
-
-        $this->_tables[] = $queries->getTables()[0];
-
-        return $sql;
-    }
-
-    /**
-     * @return string
-     */
     public function getSql()
     {
         if ($this->_sql === null) {
@@ -1084,9 +1034,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $this->_db = $this->getConnection();
         }
 
-        if ($this->_union) {
-            return $this->_getUnionSql();
-        }
 
         if (!$this->_tables) {
             if ($this->_model) {
@@ -1335,10 +1282,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function count($field = '*')
     {
-        if ($this->_union) {
-            throw new NotSupportedException('Union query is not support to get total rows');
-        }
-
         $copy = clone $this;
 
         $copy->_fields = "COUNT($field) as [row_count]";
@@ -1375,27 +1318,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
         $rs = $this->execute();
 
         return isset($rs[0]);
-    }
-
-    /**
-     * @param \ManaPHP\Db\Query[] $queries
-     * @param bool                $distinct
-     *
-     * @return static
-     */
-    public function union($queries, $distinct = false)
-    {
-        if ($this->_db === null) {
-            foreach ($queries as $query) {
-                if (is_object($query)) {
-                    $this->_db = $query->_db;
-                    break;
-                }
-            }
-        }
-        $this->_union = ['type' => 'UNION ' . ($distinct ? 'DISTINCT' : 'ALL'), 'queries' => $queries];
-
-        return $this;
     }
 
     /**
