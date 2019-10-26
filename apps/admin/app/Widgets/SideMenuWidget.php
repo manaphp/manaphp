@@ -15,7 +15,7 @@ class SideMenuWidget extends Widget
     public function run($vars = [])
     {
         $groups = Group::select(['group_id', 'group_name', 'icon'])
-            ->orderBy('display_order DESC, group_id ASC')
+            ->orderBy(['display_order' => SORT_DESC, 'group_id' => SORT_ASC])
             ->with(['items' => function (Query $query) {
                 return $query
                     ->select(['item_id', 'item_name', 'url', 'icon', 'group_id'])

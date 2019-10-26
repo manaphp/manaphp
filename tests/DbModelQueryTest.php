@@ -98,7 +98,7 @@ class DbModelQueryTest extends TestCase
             ->select(['a.address_id', 'a.address', 'c.city'])
             ->leftJoin(get_class(new City()), 'c.city_id =a.city_id', 'c')
             ->limit(2)
-            ->orderBy('a.address_id');
+            ->orderBy(['a.address_id' => SORT_ASC]);
         $rows = $query->execute();
         $this->assertCount(2, $rows);
         $this->assertCount(3, $rows[0]);
@@ -567,7 +567,7 @@ class DbModelQueryTest extends TestCase
         //limit with offset
         $query = City::query()
             ->select(['city_id'])
-            ->orderBy('city_id')
+            ->orderBy(['city_id' => SORT_ASC])
             ->limit(10, 20);
 
         $rows = $query->execute();
@@ -588,7 +588,7 @@ class DbModelQueryTest extends TestCase
         //limit with offset
         $query = City::query()
             ->select(['city_id'])
-            ->orderBy('city_id')
+            ->orderBy(['city_id' => SORT_ASC])
             ->page(10, 3);
 
         $rows = $query->execute();

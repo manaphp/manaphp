@@ -13,7 +13,7 @@ class AdminController extends Controller
     {
         if ($this->request->isAjax()) {
             $builder = Admin::select(['admin_id', 'admin_name', 'status', 'login_ip', 'login_time', 'email', 'updator_name', 'creator_name', 'created_time', 'updated_time'])
-                ->orderBy('admin_id DESC')
+                ->orderBy(['admin_id' => SORT_DESC])
                 ->with(['roles' => 'role_id, display_name']);
 
             $keyword = input('keyword', '');
@@ -85,7 +85,7 @@ class AdminController extends Controller
                 $adminRole->create();
             }
         }
-		
+
         return $admin;
     }
 

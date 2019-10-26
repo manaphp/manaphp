@@ -14,7 +14,7 @@ class RoleController extends Controller
             ? Role::select()
                 ->whereContains('role_name', input('keyword', ''))
                 ->whereNotIn('role_name', ['guest', 'user', 'admin'])
-                ->orderBy('role_id desc')
+                ->orderBy(['role_id' => SORT_DESC])
                 ->paginate()
             : null;
     }
