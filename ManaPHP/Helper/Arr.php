@@ -124,23 +124,31 @@ class Arr
     }
 
     /**
-     * @param array  $ar
-     * @param string $key
+     * @param array                 $ar
+     * @param string|array|callable $index
      *
      * @return array
      */
-    public static function indexby($ar, $key)
+    public static function indexby($ar, $index)
     {
-        if (!is_array($ar)) {
-            return $ar;
+        $rows = [];
+        if (is_scalar($index)) {
+            foreach ($ar as $row) {
+                $rows[$row[$index]] = $row;
+            }
+        } elseif (is_array($index)) {
+            $k = key($index);
+            $v = current($index);
+            foreach ($ar as $row) {
+                $rows[$row[$k]] = $row[$v];
+            }
+        } else {
+            foreach ($ar as $row) {
+                $rows[$index($row)] = $row;
+            }
         }
 
-        $r = [];
-        foreach ($ar as $v) {
-            $r[is_object($v) ? $v->$key : $v[$key]] = $v;
-        }
-
-        return $r;
+        return $rows;
     }
 
     /**
