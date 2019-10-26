@@ -223,7 +223,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             if (in_array('display_order', $sample->getFields(), true)) {
                 return $query->orderBy(['display_order' => SORT_DESC, $keyField => SORT_ASC])->fetch(true);
             } else {
-                return $query->orderBy($keyField)->fetch(true);
+                return $query->orderBy([$keyField => SORT_ASC])->fetch(true);
             }
         } elseif (isset($fields[0])) {
             $keyField = $sample->getPrimaryKey();
@@ -497,7 +497,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         if (!is_string($field)) {
             throw new ParameterOrderException(__METHOD__ . ' field');
         }
-        return static::where($filters)->values($field);
+        return static::where($filters)->orderBy([$field => SORT_ASC])->values($field);
     }
 
     /**
