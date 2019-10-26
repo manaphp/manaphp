@@ -186,23 +186,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
 
     /**
      * @param string $table
-     * @param string $alias
-     *
-     * @return static
-     */
-    public function addFrom($table, $alias = null)
-    {
-        if ($alias) {
-            $this->_tables[$alias] = $table;
-        } else {
-            $this->_tables[] = $table;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string $table
      * @param string $condition
      * @param string $alias
      * @param string $type

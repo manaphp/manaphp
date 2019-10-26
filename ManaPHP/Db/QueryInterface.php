@@ -6,14 +6,6 @@ interface QueryInterface extends \ManaPHP\QueryInterface
 {
     /**
      * @param string $table
-     * @param string $alias
-     *
-     * @return static
-     */
-    public function addFrom($table, $alias = null);
-
-    /**
-     * @param string $table
      * @param string $condition
      * @param string $alias
      * @param string $type
