@@ -168,8 +168,8 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @param string|\ManaPHP\Db\Query $table
-     * @param string                   $alias
+     * @param string $table
+     * @param string $alias
      *
      * @return static
      */
@@ -208,10 +208,10 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @param string|\ManaPHP\Db\QueryInterface $table
-     * @param string                            $condition
-     * @param string                            $alias
-     * @param string                            $type
+     * @param string $table
+     * @param string $condition
+     * @param string $alias
+     * @param string $type
      *
      * @return static
      */
@@ -221,7 +221,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $condition = (string)preg_replace('#\w+#', '[\\0]', $condition);
         }
 
-        if (is_string($table) && strpos($table, '\\') !== false) {
+        if (strpos($table, '\\') !== false) {
             /** @var \ManaPHP\Model $model */
             $model = $this->_di->getShared($table);
             $table = $model->getSource($this->_bind);
@@ -233,9 +233,9 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @param string|\ManaPHP\Db\QueryInterface $table
-     * @param string                            $condition
-     * @param string                            $alias
+     * @param string $table
+     * @param string $condition
+     * @param string $alias
      *
      * @return static
      */
@@ -245,9 +245,9 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @param string|\ManaPHP\Db\QueryInterface $table
-     * @param string                            $condition
-     * @param string                            $alias
+     * @param string $table
+     * @param string $condition
+     * @param string $alias
      *
      * @return static
      */
@@ -257,9 +257,9 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @param string|\ManaPHP\Db\QueryInterface $table
-     * @param string                            $condition
-     * @param string                            $alias
+     * @param string $table
+     * @param string $condition
+     * @param string $alias
      *
      * @return static
      */
@@ -530,17 +530,14 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @param string                           $expr
-     * @param array|\ManaPHP\Db\QueryInterface $values
+     * @param string $expr
+     * @param array  $values
      *
      * @return static
      */
     public function whereIn($expr, $values)
     {
-        if (is_object($values)) {
-            $this->_conditions[] = $expr . ' IN (' . $values->getSql() . ')';
-            $this->_bind = array_merge($this->_bind, $values->getBind());
-        } elseif ($values) {
+        if ($values) {
             if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
                 if (strpos($expr, '.') !== false) {
                     $expr = '[' . str_replace('.', '].[', $expr) . ']';
@@ -587,17 +584,14 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @param string                           $expr
-     * @param array|\ManaPHP\Db\QueryInterface $values
+     * @param string $expr
+     * @param array  $values
      *
      * @return static
      */
     public function whereNotIn($expr, $values)
     {
-        if (is_object($values)) {
-            $this->_conditions[] = $expr . ' NOT IN (' . $values->getSql() . ')';
-            $this->_bind = array_merge($this->_bind, $values->getBind());
-        } elseif ($values) {
+        if ($values) {
             if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
                 if (strpos($expr, '.') !== false) {
                     $expr = '[' . str_replace('.', '].[', $expr) . ']';
@@ -1132,15 +1126,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
         $selectedTables = [];
 
         foreach ($this->_tables as $alias => $table) {
-            if (is_object($table)) {
-                if (is_int($alias)) {
-                    throw new NotSupportedException('if using SubQuery, you must assign an alias for it');
-                }
-
-                $selectedTables[] = '(' . $table->getSql() . ') AS [' . $alias . ']';
-                /** @noinspection SlowArrayOperationsInLoopInspection */
-                $this->_bind = array_merge($this->_bind, $table->getBind());
-            } elseif (is_string($alias)) {
+            if (is_string($alias)) {
                 $selectedTables[] = '[' . $table . '] AS [' . $alias . ']';
             } else {
                 $selectedTables[] = '[' . $table . ']';
@@ -1163,16 +1149,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 $joinSQL .= ' ' . $joinType;
             }
 
-            if (is_object($joinTable)) {
-                $joinSQL .= ' JOIN (' . $joinTable->getSql() . ')';
-                /** @noinspection SlowArrayOperationsInLoopInspection */
-                $this->_bind = array_merge($this->_bind, $joinTable->getBind());
-                if ($joinAlias === null) {
-                    throw new NotSupportedException('if using SubQuery, you must assign an alias for it');
-                }
-            } else {
-                $joinSQL .= ' JOIN [' . $joinTable . ']';
-            }
+            $joinSQL .= ' JOIN [' . $joinTable . ']';
 
             if ($joinAlias !== null) {
                 $joinSQL .= ' AS [' . $joinAlias . ']';

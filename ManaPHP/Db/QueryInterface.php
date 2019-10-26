@@ -13,37 +13,37 @@ interface QueryInterface extends \ManaPHP\QueryInterface
     public function addFrom($table, $alias = null);
 
     /**
-     * @param string|\ManaPHP\Db\QueryInterface $table
-     * @param string                            $condition
-     * @param string                            $alias
-     * @param string                            $type
+     * @param string $table
+     * @param string $condition
+     * @param string $alias
+     * @param string $type
      *
      * @return static
      */
     public function join($table, $condition = null, $alias = null, $type = null);
 
     /**
-     * @param string|\ManaPHP\Db\QueryInterface $table
-     * @param string                            $condition
-     * @param string                            $alias
+     * @param string $table
+     * @param string $condition
+     * @param string $alias
      *
      * @return static
      */
     public function innerJoin($table, $condition = null, $alias = null);
 
     /**
-     * @param string|\ManaPHP\Db\QueryInterface $table
-     * @param string                            $condition
-     * @param string                            $alias
+     * @param string $table
+     * @param string $condition
+     * @param string $alias
      *
      * @return static
      */
     public function leftJoin($table, $condition = null, $alias = null);
 
     /**
-     * @param string|\ManaPHP\Db\QueryInterface $table
-     * @param string                            $condition
-     * @param string                            $alias
+     * @param string $table
+     * @param string $condition
+     * @param string $alias
      *
      * @return static
      */
