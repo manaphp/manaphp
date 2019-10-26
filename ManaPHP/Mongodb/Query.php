@@ -517,7 +517,7 @@ class Query extends \ManaPHP\Query
     public function whereCmp($field, $operator, $value)
     {
         if ($operator === '=') {
-            $this->_filters[] = [$field => $this->normalizeValue($field, $value)];
+            return $this->whereEq($field, $value);
         } elseif ($operator === '~=') {
             if ($this->_types && !isset($this->_types[$field])) {
                 throw new InvalidArgumentException(['`:field` field is not exist in `:collection` collection',

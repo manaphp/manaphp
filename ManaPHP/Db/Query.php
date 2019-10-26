@@ -359,10 +359,15 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function whereEq($field, $value)
     {
-        $bind_key = strpos($field, '.') !== false ? strtr($field, '.', '_') : $field;
         $normalizedField = preg_replace('#\w+#', '[\\0]', $field);
-        $this->_conditions[] = "$normalizedField=:$bind_key";
-        $this->_bind[$bind_key] = $value;
+
+        if ($value === null) {
+            $this->_conditions[] = $normalizedField . ' IS NULL';
+        } else {
+            $bind_key = strpos($field, '.') !== false ? strtr($field, '.', '_') : $field;
+            $this->_conditions[] = "$normalizedField=:$bind_key";
+            $this->_bind[$bind_key] = $value;
+        }
 
         return $this;
     }
@@ -380,12 +385,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
         $normalizedField = preg_replace('#\w+#', '[\\0]', $field);
 
         if ($operator === '=') {
-            if ($value === null) {
-                $this->_conditions[] = $normalizedField . ' IS NULL';
-            } else {
-                $this->_conditions[] = $normalizedField . '=:' . $bind_key;
-                $this->_bind[$bind_key] = $value;
-            }
+            return $this->whereEq($field, $value);
         } elseif ($operator === '~=') {
             if ($value === 0 || $value === 0.0) {
                 $this->_conditions[] = "$normalizedField IS NULL OR $normalizedField=0";
