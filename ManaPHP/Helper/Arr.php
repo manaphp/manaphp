@@ -197,4 +197,51 @@ class Arr
         return $ar;
     }
 
+    /**
+     * @param array $rows
+     * @param array $aggs
+     * @param array $group
+     *
+     * @return array
+     */
+    public static function aggregate($rows, $aggs, $group = [])
+    {
+        $result = [];
+        foreach ($rows as $k => $v) {
+            $row = [];
+
+            foreach ($group as $gk => $gv) {
+                $field = is_int($gk) ? $gv : $gk;
+                $row[$field] = $v[0][$field];
+            }
+
+            foreach ($aggs as $field => $agg) {
+                if ($agg === 'MAX') {
+                    $values = array_column($v, $field);
+                    $max = max($values);
+                    $row[$field] = $max === false ? null : $max;
+                } elseif ($agg === 'MIN') {
+                    $values = array_column($v, $field);
+                    $max = min($values);
+                    $row[$field] = $max === false ? null : $max;
+                } elseif ($agg === 'COUNT') {
+                    $values = array_column($v, $field);
+                    $row[$field] = array_sum($values);
+                } elseif ($agg === 'SUM') {
+                    $values = array_column($v, $field);
+                    $row[$field] = array_sum($values);
+                } elseif ($agg === 'AVG') {
+                    $sum = array_sum(array_column($v, $field . '_sum'));
+                    $count = array_sum(array_column($v, $field . '_count'));
+                    $row[$field] = $count ? $sum / $count : null;
+                } else {
+                    null;
+                }
+            }
+
+            $result[] = $row;
+        }
+
+        return $result;
+    }
 }
