@@ -5,6 +5,7 @@ use ArrayIterator;
 use IteratorAggregate;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Query\NotFoundException;
+use ManaPHP\Exception\NotSupportedException;
 
 /**
  * Class Query
