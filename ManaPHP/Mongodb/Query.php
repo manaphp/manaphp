@@ -6,6 +6,7 @@ use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Helper\Arr;
 use ManaPHP\Model\Expression\Decrement;
 use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\ExpressionInterface;
@@ -1120,32 +1121,7 @@ class Query extends \ManaPHP\Query
             }
         }
 
-        if ($this->_index === null) {
-            return $r;
-        }
-
-        $indexBy = $this->_index;
-        if (is_scalar($indexBy)) {
-            $rows = [];
-            foreach ($r as $row) {
-                $rows[$row[$indexBy]] = $row;
-            }
-        } elseif (is_array($indexBy)) {
-            $k = key($indexBy);
-            $v = current($indexBy);
-
-            $rows = [];
-            foreach ($r as $row) {
-                $rows[$row[$k]] = $row[$v];
-            }
-        } else {
-            $rows = [];
-            foreach ($r as $row) {
-                $rows[$indexBy($row)] = $row;
-            }
-        }
-
-        return $rows;
+        return $this->_index ? Arr::indexby($r, $this->_index) : $r;
     }
 
     /**

@@ -3,6 +3,7 @@ namespace ManaPHP\Db;
 
 use ManaPHP\Di;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Helper\Arr;
 use ManaPHP\Model\Expression\Decrement;
 use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\Expression\Raw;
@@ -984,7 +985,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
 
         return substr($r, 0, -2);
     }
-    
+
     /**
      * Returns a SQL statement built based on the builder parameters
      *
@@ -1179,30 +1180,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
 
         $result = $this->getConnection()->fetchAll($this->_sql, $this->_bind, PDO::FETCH_ASSOC, $this->_force_master);
 
-        $indexBy = $this->_index;
-
-        if ($indexBy === null) {
-            return $result;
-        }
-
-        $rows = [];
-        if (is_scalar($indexBy)) {
-            foreach ($result as $row) {
-                $rows[$row[$indexBy]] = $row;
-            }
-        } elseif (is_array($indexBy)) {
-            $k = key($indexBy);
-            $v = current($indexBy);
-            foreach ($result as $row) {
-                $rows[$row[$k]] = $row[$v];
-            }
-        } else {
-            foreach ($result as $row) {
-                $rows[$indexBy($row)] = $row;
-            }
-        }
-
-        return $rows;
+        return $this->_index ? Arr::indexby($result, $this->_index) : $result;
     }
 
     /**
