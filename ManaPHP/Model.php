@@ -335,7 +335,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
         $ttl = $fieldsOrTtl;
 
-        $key = '_mp:models:get:' . $model->getSource($id) . ":$id:$ttl";
+        $key = '_mp:models:' . static::class . ":get:$id:$ttl";
         if ($r = $model->_di->ipcCache->get($key)) {
             /** @noinspection PhpIncompatibleReturnTypeInspection */
             return $r;
@@ -498,7 +498,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             return $rs ? $rs[0][$field] : null;
         }
 
-        $key = '_mp:models:value:' . $sample->getSource($pkValue) . ":$field:$pkValue:$ttl";
+        $key = '_mp:models:' . static::class . ":value:$field:$pkValue:$ttl";
         if (($value = $sample->_di->ipcCache->get($key)) !== false) {
             return $value;
         }
