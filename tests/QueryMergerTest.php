@@ -42,13 +42,13 @@ class QueryMergerTest extends TestCase
         $this->assertEquals([600, 1, 2], array_column((new Merger($models))->limit(3, 599)->fetch(true), 'city_id'));
         $this->assertEquals([11, 12, 13], array_column((new Merger($models))->limit(3, 610)->fetch(true), 'city_id'));
 
-        $this->assertEquals([306, 306, 307, 307], array_column((new Merger($models))->orderBy('city_id')->limit(4, 610)->fetch(true), 'city_id'));
+        $this->assertEquals([306, 306, 307, 307], array_column((new Merger($models))->orderBy(['city_id' => SORT_ASC])->limit(4, 610)->fetch(true), 'city_id'));
         $this->assertEquals([306, 306, 307, 307], array_column((new Merger($models))->orderBy(['city_id' => SORT_ASC])->limit(4, 610)->fetch(true), 'city_id'));
         $this->assertEquals([295, 295, 294, 294], array_column((new Merger($models))->orderBy(['city_id' => SORT_DESC])->limit(4, 610)->fetch(true), 'city_id'));
         $this->assertEquals([295, 295, 294, 294], array_column((new Merger($models))->orderBy(['city_id' => SORT_DESC])->limit(4, 610)->fetch(true), 'city_id'));
         $this->assertEquals([10, 10, 598, 598], array_column((new Merger($models))->orderBy(['country_id' => SORT_ASC, 'city_id' => SORT_DESC])->limit(4, 610)->fetch(true), 'city_id'));
         $this->assertEquals([376, 376, 355, 355], array_column((new Merger($models))->orderBy(['country_id' => SORT_DESC, 'city_id' => SORT_DESC])->limit(4, 610)->fetch(true), 'city_id'));
-        $this->assertEquals([376, 376, 355, 355], array_column((new Merger($models))->orderBy('country_id desc, city_id desc')->limit(4, 610)->fetch(true), 'city_id'));
-        $this->assertEquals([376, 376, 355, 355], array_column((new Merger($models))->orderBy(['country_id'=>SORT_DESC])->orderBy('city_id desc')->limit(4, 610)->fetch(true), 'city_id'));
+        $this->assertEquals([376, 376, 355, 355], array_column((new Merger($models))->orderBy(['country_id' => SORT_DESC, 'city_id' => SORT_DESC])->limit(4, 610)->fetch(true), 'city_id'));
+        $this->assertEquals([376, 376, 355, 355], array_column((new Merger($models))->orderBy(['country_id' => SORT_DESC])->orderBy(['city_id' => SORT_DESC])->limit(4, 610)->fetch(true), 'city_id'));
     }
 }
