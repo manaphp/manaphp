@@ -16,6 +16,11 @@ use ManaPHP\Query\NotFoundException;
 abstract class Query extends Component implements QueryInterface, IteratorAggregate
 {
     /**
+     * @var array
+     */
+    protected $_fields;
+
+    /**
      * @var int
      */
     protected $_limit;

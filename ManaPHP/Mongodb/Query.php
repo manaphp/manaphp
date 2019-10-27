@@ -33,12 +33,8 @@ class Query extends \ManaPHP\Query
     /**
      * @var array
      */
-    protected $_projection;
+    protected $_aliases;
 
-    /**
-     * @var array
-     */
-    protected $_projection_alias;
     /**
      * @var array
      */
@@ -174,25 +170,25 @@ class Query extends \ManaPHP\Query
         }
 
         if ($fields) {
-            $this->_projection_alias = [];
+            $this->_aliases = [];
 
             if (isset($fields[count($fields) - 1])) {
-                $this->_projection = array_fill_keys($fields, 1);
+                $this->_fields = array_fill_keys($fields, 1);
             } else {
                 $projection = [];
                 foreach ($fields as $k => $v) {
                     if (is_int($k)) {
                         $projection[$v] = 1;
                     } else {
-                        $this->_projection_alias[$k] = $v;
+                        $this->_aliases[$k] = $v;
                         $projection[$v] = 1;
                     }
                 }
-                $this->_projection = $projection;
+                $this->_fields = $projection;
             }
 
-            if (!isset($this->_projection['_id'])) {
-                $this->_projection['_id'] = false;
+            if (!isset($this->_fields['_id'])) {
+                $this->_fields['_id'] = false;
             }
         }
 
@@ -1017,11 +1013,11 @@ class Query extends \ManaPHP\Query
         if (!$this->_aggregate) {
             $options = [];
 
-            if ($this->_projection) {
-                if (isset($this->_projection['*'])) {
+            if ($this->_fields) {
+                if (isset($this->_fields['*'])) {
                     $options['projection'] = ['_id' => false];
                 } else {
-                    $options['projection'] = $this->_projection;
+                    $options['projection'] = $this->_fields;
                 }
             } elseif ($this->_model) {
                 $options['projection'] = array_fill_keys($this->_model->getFields(), 1);
@@ -1061,9 +1057,9 @@ class Query extends \ManaPHP\Query
             }
 
             $r = $mongodb->fetchAll($this->getSource(), $filters, $options, !$this->_force_master);
-            if ($this->_projection_alias) {
+            if ($this->_aliases) {
                 foreach ($r as $k => $v) {
-                    foreach ($this->_projection_alias as $ak => $av) {
+                    foreach ($this->_aliases as $ak => $av) {
                         if (isset($v[$av])) {
                             $v[$ak] = $v[$av];
                             unset($v[$av]);

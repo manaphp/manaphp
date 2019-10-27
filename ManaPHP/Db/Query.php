@@ -15,11 +15,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     /**
      * @var array
      */
-    protected $_fields;
-
-    /**
-     * @var array
-     */
     protected $_tables = [];
 
     /**
