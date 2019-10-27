@@ -50,11 +50,6 @@ class Query extends \ManaPHP\Query
     protected $_filters = [];
 
     /**
-     * @var string|callable
-     */
-    protected $_index;
-
-    /**
      * Query constructor.
      *
      * @param \ManaPHP\MongodbInterface|string $db
@@ -975,18 +970,6 @@ class Query extends \ManaPHP\Query
                 }
             }
         }
-
-        return $this;
-    }
-
-    /**
-     * @param callable|string|array $indexBy
-     *
-     * @return static
-     */
-    public function indexBy($indexBy)
-    {
-        $this->_index = $indexBy;
 
         return $this;
     }

@@ -38,11 +38,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     protected $_having;
 
     /**
-     * @var string|callable
-     */
-    protected $_index;
-
-    /**
      * @var bool
      */
     protected $_for_update;
@@ -936,22 +931,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
         }
 
         return substr($r, 0, -2);
-    }
-
-    /**
-     * @param callable|string|array $indexBy
-     *
-     * @return static
-     */
-    public function indexBy($indexBy)
-    {
-        if (is_array($indexBy)) {
-            $this->select([key($indexBy), current($indexBy)]);
-        }
-
-        $this->_index = $indexBy;
-
-        return $this;
     }
 
     /**

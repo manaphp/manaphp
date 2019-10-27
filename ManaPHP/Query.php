@@ -4,8 +4,8 @@ namespace ManaPHP;
 use ArrayIterator;
 use IteratorAggregate;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Query\NotFoundException;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Query\NotFoundException;
 
 /**
  * Class Query
@@ -59,7 +59,12 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      * @var array
      */
     protected $_equals = [];
-    
+
+    /**
+     * @var string|array|callable
+     */
+    protected $_index;
+
     /**
      * @var bool
      */
@@ -220,6 +225,22 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
                 }
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @param callable|string|array $indexBy
+     *
+     * @return static
+     */
+    public function indexBy($indexBy)
+    {
+        if (is_array($indexBy)) {
+            $this->select([key($indexBy), current($indexBy)]);
+        }
+
+        $this->_index = $indexBy;
 
         return $this;
     }
