@@ -332,6 +332,8 @@ class Query extends \ManaPHP\Query implements QueryInterface
         if ($value === null) {
             $this->_conditions[] = $normalizedField . ' IS NULL';
         } else {
+            $this->_equals[$field] = $value;
+
             $bind_key = strpos($field, '.') !== false ? strtr($field, '.', '_') : $field;
             $this->_conditions[] = "$normalizedField=:$bind_key";
             $this->_bind[$bind_key] = $value;
@@ -506,6 +508,8 @@ class Query extends \ManaPHP\Query implements QueryInterface
     public function whereIn($expr, $values)
     {
         if ($values) {
+            $this->_equals[$expr] = $values;
+
             if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
                 if (strpos($expr, '.') !== false) {
                     $expr = '[' . str_replace('.', '].[', $expr) . ']';

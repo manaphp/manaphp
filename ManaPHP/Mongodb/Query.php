@@ -493,7 +493,10 @@ class Query extends \ManaPHP\Query
      */
     public function whereEq($field, $value)
     {
-        $this->_filters[] = [$field => $this->normalizeValue($field, $value)];
+        $normalizedValue = $this->normalizeValue($field, $value);
+        $this->_equals[$field] = $normalizedValue;
+
+        $this->_filters[] = [$field => $normalizedValue];
 
         return $this;
     }
@@ -634,7 +637,10 @@ class Query extends \ManaPHP\Query
      */
     public function whereIn($field, $values)
     {
-        $this->_filters[] = [$field => ['$in' => $this->normalizeValues($field, $values)]];
+        $normalizedValues = $this->normalizeValues($field, $values);
+        $this->_equals[$field] = $normalizedValues;
+
+        $this->_filters[] = [$field => ['$in' => $normalizedValues]];
 
         return $this;
     }
