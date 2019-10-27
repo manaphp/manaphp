@@ -70,6 +70,14 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
+     * @return string|null
+     */
+    public function getShardKey()
+    {
+        return null;
+    }
+
+    /**
      * @return array
      */
     public function getAnyShard()
@@ -90,11 +98,29 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * @param mixed $context
      *
+     * @return string
+     */
+    public function getUniqueDbShard($context)
+    {
+        return $this->getDb();
+    }
+
+    /**
+     * @param mixed $context
+     *
      * @return array
      */
-    public function getShards($context)
+    public function getMultipleShards($context)
     {
-        return [[$this->getDb()], [$this->getSource()]];
+        return [$this->getDb() => [$this->getSource()]];
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllShards()
+    {
+        return [$this->getDb() => [$this->getSource()]];
     }
 
     /**

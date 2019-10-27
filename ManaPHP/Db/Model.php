@@ -31,19 +31,11 @@ class Model extends \ManaPHP\Model implements ModelInterface
      *
      * @return \ManaPHP\DbInterface
      */
-    public function getConnection($context = null)
-    {
-        return $this->_di->getShared($this->getDb($context));
-    }
-
-    /**
-     * @param mixed $context
-     *
-     * @return \ManaPHP\DbInterface
-     */
     public static function connection($context = null)
     {
-        return static::sample()->getConnection($context);
+        $db = static::sample()->getUniqueDbShard($context);
+
+        return Di::getDefault()->getShared($db);
     }
 
     /**
@@ -379,10 +371,15 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         $sample = static::sample();
 
-        list($dbs, $tables) = $sample->getShards($bind);
+        $shardKey = $sample->getShardKey();
+        if ($shardKey && isset($bind[$shardKey])) {
+            $shards = $sample->getMultipleShards($bind[$shardKey]);
+        } else {
+            $shards = $sample->getAllShards();
+        }
 
         $affected_count = 0;
-        foreach ($dbs as $db) {
+        foreach ($shards as $db => $tables) {
             /** @var \ManaPHP\DbInterface $db */
             $db = Di::getDefault()->getShared($db);
 
@@ -411,10 +408,15 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         $sample = static::sample();
 
-        list($dbs, $tables) = $sample->getShards($bind);
+        $shardKey = $sample->getShardKey();
+        if ($shardKey && isset($bind[$shardKey])) {
+            $shards = $sample->getMultipleShards($bind[$shardKey]);
+        } else {
+            $shards = $sample->getAllShards();
+        }
 
         $affected_count = 0;
-        foreach ($dbs as $db) {
+        foreach ($shards as $db => $tables) {
             /** @var \ManaPHP\DbInterface $db */
             $db = Di::getDefault()->getShared($db);
 
