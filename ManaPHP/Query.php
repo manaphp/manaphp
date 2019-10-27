@@ -50,6 +50,11 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     protected $_order;
 
     /**
+     * @var array
+     */
+    protected $_group;
+
+    /**
      * @var bool
      */
     protected $_force_master = false;

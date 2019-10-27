@@ -50,11 +50,6 @@ class Query extends \ManaPHP\Query
     protected $_filters = [];
 
     /**
-     * @var array
-     */
-    protected $_group;
-
-    /**
      * @var string|callable
      */
     protected $_index;

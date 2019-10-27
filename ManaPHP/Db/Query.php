@@ -33,11 +33,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     protected $_conditions = [];
 
     /**
-     * @var string
-     */
-    protected $_group;
-
-    /**
      * @var array
      */
     protected $_having;
@@ -912,24 +907,31 @@ class Query extends \ManaPHP\Query implements QueryInterface
     public function groupBy($groupBy)
     {
         if (is_string($groupBy)) {
-            if (strpos($groupBy, '[') === false && strpos($groupBy, '(') === false) {
-                $this->_group = preg_replace('#\w+#', '[\\0]', $groupBy);
-            } else {
-                $this->_group = $groupBy;
-            }
+            $this->_group = preg_split('#[\s,]+#', $groupBy, -1, PREG_SPLIT_NO_EMPTY);
         } else {
-            $r = '';
-            foreach ($groupBy as $item) {
-                if (strpos($item, '[') === false && strpos($item, '(') === false) {
-                    $r .= preg_replace('#\w+#', '[\\0]', $item) . ', ';
-                } else {
-                    $r .= $item . ', ';
-                }
-            }
-            $this->_group = substr($r, 0, -2);
+            $this->_group = $groupBy;
         }
 
         return $this;
+    }
+
+    /**
+     * @param array $group
+     *
+     * @return string
+     */
+    protected function _buildGroup($group)
+    {
+        $r = '';
+        foreach ($group as $item) {
+            if (strpos($item, '[') === false && strpos($item, '(') === false) {
+                $r .= preg_replace('#\w+#', '[\\0]', $item) . ', ';
+            } else {
+                $r .= $item . ', ';
+            }
+        }
+
+        return substr($r, 0, -2);
     }
 
     /**
@@ -1080,8 +1082,8 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $params['where'] = implode(' AND ', $wheres);
         }
 
-        if ($this->_group !== null) {
-            $params['group'] = $this->_group;
+        if ($this->_group) {
+            $params['group'] = $this->_buildGroup($this->_group);
         }
 
         if ($this->_having !== null) {
@@ -1206,11 +1208,11 @@ class Query extends \ManaPHP\Query implements QueryInterface
             }
         }
 
-        if ($this->_group) {
-            $this->_fields = $fields . $this->_group;
-        } else {
-            $this->_fields = substr($fields, 0, -2);
+        foreach ($this->_group as $k => $v) {
+            $fields .= is_int($k) ? "[$v], " : "$v, ";
         }
+
+        $this->_fields = substr($fields, 0, -2);
 
         return $this->execute();
     }
@@ -1232,7 +1234,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
 
         $copy->_sql = $copy->_buildSql();
 
-        if ($copy->_group === null) {
+        if ($copy->_group) {
             $result = $copy->getConnection()->fetchOne($copy->_sql, $copy->_bind);
 
             /** @noinspection CallableParameterUseCaseInTypeContextInspection */
