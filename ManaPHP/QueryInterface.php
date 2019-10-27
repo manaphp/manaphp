@@ -130,8 +130,8 @@ interface QueryInterface
     /**
      * Appends an IN condition to the current conditions
      *
-     * @param string                           $expr
-     * @param array|\ManaPHP\Db\QueryInterface $values
+     * @param string $expr
+     * @param array  $values
      *
      * @return static
      */
@@ -140,8 +140,8 @@ interface QueryInterface
     /**
      * Appends a NOT IN condition to the current conditions
      *
-     * @param string                           $expr
-     * @param array|\ManaPHP\Db\QueryInterface $values
+     * @param string $expr
+     * @param array  $values
      *
      * @return static
      */
