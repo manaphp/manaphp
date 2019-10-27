@@ -42,11 +42,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     protected $_having;
 
     /**
-     * @var string
-     */
-    protected $_order;
-
-    /**
      * @var string|callable
      */
     protected $_index;
@@ -868,48 +863,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @param string|array $orderBy
-     *
-     * @return static
-     */
-    public function orderBy($orderBy)
-    {
-        if (is_string($orderBy)) {
-            if (strpos($orderBy, '[') === false && strpos($orderBy, '(') === false) {
-                $orderBy = (string)preg_replace('#\w+#', '[\\0]', $orderBy);
-                $orderBy = str_ireplace(['[ASC]', '[DESC]'], ['ASC', 'DESC'], $orderBy);
-            }
-            $this->_order = $orderBy;
-        } else {
-            $r = '';
-            foreach ($orderBy as $k => $v) {
-                if (is_int($k)) {
-                    $type = 'ASC';
-                    $field = $v;
-                } else {
-                    $field = $k;
-                    if (is_int($v)) {
-                        $type = $v === SORT_ASC ? 'ASC' : 'DESC';
-                    } else {
-                        $type = strtoupper($v);
-                    }
-                }
-
-                if (strpos($field, '[') === false && strpos($field, '(') === false) {
-                    if (strpos($field, '.') !== false) {
-                        $r .= '[' . str_replace('.', '].[', $field) . '] ' . $type . ', ';
-                    } else {
-                        $r .= '[' . $field . '] ' . $type . ', ';
-                    }
-                }
-                $this->_order = substr($r, 0, -2);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @param string|array $having
      * @param array        $bind
      *
@@ -1006,6 +959,32 @@ class Query extends \ManaPHP\Query implements QueryInterface
         return $this->_sql;
     }
 
+    /**
+     * @param array $order
+     *
+     * @return string
+     */
+    protected function _buildOrder($order)
+    {
+        $r = '';
+
+        foreach ($order as $field => $v) {
+            $type = $v === SORT_ASC ? 'ASC' : 'DESC';
+
+            if (strpos($field, '[') === false && strpos($field, '(') === false) {
+                if (strpos($field, '.') !== false) {
+                    $r .= '[' . str_replace('.', '].[', $field) . '] ' . $type . ', ';
+                } else {
+                    $r .= '[' . $field . '] ' . $type . ', ';
+                }
+            } else {
+                $r .= "$field $type, ";
+            }
+        }
+
+        return substr($r, 0, -2);
+    }
+    
     /**
      * Returns a SQL statement built based on the builder parameters
      *
@@ -1108,8 +1087,8 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $params['having'] = $this->_having;
         }
 
-        if ($this->_order !== null) {
-            $params['order'] = $this->_order;
+        if ($this->_order) {
+            $params['order'] = $this->_buildOrder($this->_order);
         }
 
         if ($this->_limit !== null) {

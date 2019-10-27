@@ -49,11 +49,6 @@ class Query extends \ManaPHP\Query
     protected $_filters = [];
 
     /**
-     * @var string
-     */
-    protected $_order;
-
-    /**
      * @var array
      */
     protected $_group;
@@ -943,33 +938,6 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @param string|array $orderBy
-     *
-     * @return static
-     */
-    public function orderBy($orderBy)
-    {
-        if (is_string($orderBy)) {
-            foreach (explode(',', $orderBy) as $item) {
-                if (preg_match('#^\s*([\w.]+)(\s+asc|\s+desc)?$#i', $item, $match) !== 1) {
-                    throw new MisuseException(['unknown `:1` order by for `:2` collection', $orderBy, get_class($this->getSource())]);
-                }
-                $this->_order[$match[1]] = (!isset($match[2]) || strtoupper(ltrim($match[2])) === 'ASC') ? 1 : -1;
-            }
-        } else {
-            foreach ($orderBy as $field => $value) {
-                if ((is_int($value) && $value === SORT_ASC) || (is_string($value) && strtoupper($value) === 'ASC')) {
-                    $this->_order[$field] = 1;
-                } else {
-                    $this->_order[$field] = -1;
-                }
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @param string|array $groupBy
      *
      * @return static
@@ -1022,6 +990,22 @@ class Query extends \ManaPHP\Query
     }
 
     /**
+     * @param array $order
+     *
+     * @return array
+     */
+    protected function _buildOrder($order)
+    {
+        $r = [];
+
+        foreach ($order as $field => $type) {
+            $r[$field] = $type === SORT_ASC ? 1 : -1;
+        }
+
+        return $r;
+    }
+
+    /**
      * @return \ManaPHP\MongodbInterface
      */
     public function getConnection()
@@ -1068,8 +1052,8 @@ class Query extends \ManaPHP\Query
                 }
             }
 
-            if ($this->_order !== null) {
-                $options['sort'] = $this->_order;
+            if ($this->_order) {
+                $options['sort'] = $this->_buildOrder($this->_order);
             }
 
             if ($this->_offset !== null) {
@@ -1111,8 +1095,8 @@ class Query extends \ManaPHP\Query
 
             $pipeline[] = ['$group' => ['_id' => $this->_group] + $this->_aggregate];
 
-            if ($this->_order !== null) {
-                $pipeline[] = ['$sort' => $this->_order];
+            if ($this->_order) {
+                $pipeline[] = ['$sort' => $this->_buildOrder($this->_order)];
             }
 
             if ($this->_offset !== null) {

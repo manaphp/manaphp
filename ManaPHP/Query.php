@@ -45,6 +45,11 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     protected $_with = [];
 
     /**
+     * @var array
+     */
+    protected $_order;
+
+    /**
      * @var bool
      */
     protected $_force_master = false;
@@ -163,6 +168,49 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
         }
 
         return $this->whereBetween($field, $min ?: null, $max ?: null);
+    }
+
+    /**
+     * @param string|array $orderBy
+     *
+     * @return static
+     */
+    public function orderBy($orderBy)
+    {
+        if (is_string($orderBy)) {
+            foreach (explode(',', $orderBy) as $order) {
+                $order = trim($order);
+                if ($pos = strrpos($order, ' ')) {
+                    $field = substr($order, 0, $pos);
+                    $type = strtoupper(substr($order, $pos + 1));
+                    if ($type === 'ASC') {
+                        $this->_order[$field] = SORT_ASC;
+                    } elseif ($type === 'DESC') {
+                        $this->_order[$field] = SORT_DESC;
+                    } else {
+                        throw new NotSupportedException($orderBy);
+                    }
+                } else {
+                    $this->_order[$order] = SORT_ASC;
+                }
+            }
+        } else {
+            foreach ($orderBy as $k => $v) {
+                if (is_int($k)) {
+                    $this->_order[$v] = SORT_ASC;
+                } elseif ($v === SORT_ASC || $v === SORT_DESC) {
+                    $this->_order[$k] = $v;
+                } elseif ($v === 'ASC' || $v === 'asc') {
+                    $this->_order[$k] = SORT_ASC;
+                } elseif ($v === 'DESC' || $v === 'desc') {
+                    $this->_order[$k] = SORT_DESC;
+                } else {
+                    throw new MisuseException(['unknown sort order: `:order`', 'order' => $v]);
+                }
+            }
+        }
+
+        return $this;
     }
 
     /**
