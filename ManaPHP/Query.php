@@ -5,6 +5,7 @@ use ArrayIterator;
 use IteratorAggregate;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Model\ShardingTooManyException;
 use ManaPHP\Query\NotFoundException;
 
 /**
@@ -15,6 +16,16 @@ use ManaPHP\Query\NotFoundException;
  */
 abstract class Query extends Component implements QueryInterface, IteratorAggregate
 {
+    /**
+     * @var string
+     */
+    protected $_db;
+
+    /**
+     * @var string
+     */
+    protected $_table;
+
     /**
      * @var array
      */
@@ -71,6 +82,11 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     protected $_index;
 
     /**
+     * @var array
+     */
+    protected $_aggregate;
+
+    /**
      * @var bool
      */
     protected $_force_master = false;
@@ -92,7 +108,8 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function setModel($model)
     {
-        $this->_model = $model;
+        /** @noinspection PhpUndefinedMethodInspection */
+        $this->_model = is_string($model) ? $model::sample() : $model;
 
         return $this;
     }
@@ -103,6 +120,25 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     public function getModel()
     {
         return $this->_model;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUniqueShard()
+    {
+        $shards = $this->getShards();
+
+        if (count($shards) !== 1) {
+            throw new ShardingTooManyException(['too many dbs: `:dbs`', ':dbs' => implode(',', array_keys($shards))]);
+        }
+
+        $tables = current($shards);
+        if (count($tables) !== 1) {
+            throw new ShardingTooManyException(['too many tables: `:tables`', ':tables' => implode(',', $tables)]);
+        }
+
+        return [key($shards), $tables[0]];
     }
 
     /**

@@ -3,19 +3,26 @@ namespace ManaPHP\Db;
 
 use ManaPHP\Di;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Model\Expression\Decrement;
 use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\Expression\Raw;
 use ManaPHP\Model\ExpressionInterface;
+use ManaPHP\Model\ShardingTooManyException;
 use PDO;
 
 class Query extends \ManaPHP\Query implements QueryInterface
 {
     /**
-     * @var array
+     * @var string
      */
-    protected $_tables = [];
+    protected $_table;
+
+    /**
+     * @var string
+     */
+    protected $_alias;
 
     /**
      * @var array
@@ -52,15 +59,11 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     protected $_sql;
 
-    /**
-     * @var \ManaPHP\DbInterface
-     */
-    protected $_db;
 
     /**
      * @param \ManaPHP\DbInterface|string $db
      */
-    public function __construct($db = null)
+    public function __construct($db = 'db')
     {
         $this->_db = $db;
     }
@@ -78,32 +81,14 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @return \ManaPHP\DbInterface
+     * @return array
      */
-    public function getConnection()
-    {
-        if (!$this->_di) {
-            $this->_di = Di::getDefault();
-        }
-
-        if (is_object($this->_db)) {
-            return $this->_db;
-        } elseif ($this->_model) {
-            return $this->_di->getShared($this->_model->getDb($this->_bind));
-        } else {
-            return $this->_di->getShared($this->_db ?: 'db');
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public function getSource()
+    public function getShards()
     {
         if ($this->_model) {
-            return $this->_model->getSource($this->_bind);
+            return $this->_model->getMultipleShards($this->_equals);
         } else {
-            return current($this->_tables);
+            return [$this->_db => [$this->_table]];
         }
     }
 
@@ -151,15 +136,13 @@ class Query extends \ManaPHP\Query implements QueryInterface
     public function from($table, $alias = null)
     {
         if ($table) {
-            if (!$this->_model && strpos($table, '\\') !== false) {
-                $this->_model = $this->_di->getShared($table);
+            if (strpos($table, '\\') !== false) {
+                $this->setModel($table);
+                $table = $this->_model->getSource();
             }
 
-            $this->_tables = $alias ? [$alias => $table] : [$table];
-
-            if (is_object($table)) {
-                $this->_db = $table->_db;
-            }
+            $this->_table = $table;
+            $this->_alias = $alias;
         }
 
         return $this;
@@ -934,7 +917,15 @@ class Query extends \ManaPHP\Query implements QueryInterface
     public function getSql()
     {
         if ($this->_sql === null) {
-            $this->_sql = $this->_buildSql();
+            $shards = $this->getShards();
+
+            $tables = current($shards);
+            if (count($tables) !== 1) {
+                throw new ShardingTooManyException(__METHOD__);
+            }
+            /** @var \ManaPHP\DbInterface $db */
+            $db = Di::getDefault()->getShared(key($shards));
+            $this->_sql = $this->_buildSql($db, $tables[0]);
         }
 
         return $this->_sql;
@@ -969,29 +960,15 @@ class Query extends \ManaPHP\Query implements QueryInterface
     /**
      * Returns a SQL statement built based on the builder parameters
      *
+     * @param \ManaPHP\DbInterface $db
+     * @param string               $table
+     *
      * @return string
      */
-    protected function _buildSql()
+    protected function _buildSql($db, $table)
     {
-        if ($this->_db === null || is_string($this->_db)) {
-            $this->_db = $this->getConnection();
-        }
-
-
-        if (!$this->_tables) {
-            if ($this->_model) {
-                $this->_tables[] = $this->getSource();
-            } else {
-                throw new MisuseException('at least one model is required to build the query');
-            }
-        }
-
-        foreach ($this->_tables as $alias => $table) {
-            if (is_string($table) && strpos($table, '\\') !== false) {
-                /** @var \ManaPHP\Model $model */
-                $model = $this->_di->getShared($table);
-                $this->_tables[$alias] = $model->getSource($this->_bind);
-            }
+        if (!$this->_table) {
+            throw new MisuseException('at least one model is required to build the query');
         }
 
         $params = [];
@@ -1001,39 +978,20 @@ class Query extends \ManaPHP\Query implements QueryInterface
 
         if ($this->_fields !== null) {
             $fields = $this->_fields;
-        } elseif (count($this->_tables) === 1) {
-            $fields = $this->_model ? '[' . implode('], [', $this->_model->getFields()) . ']' : '*';
+        } elseif ($this->_joins) {
+            $fields = '*';
         } else {
-            $fields = '';
-            $selectedFields = [];
-            foreach ($this->_tables as $alias => $table) {
-                $selectedFields[] = '[' . (is_string($alias) ? $alias : $table) . '].*';
-            }
-            $fields .= implode(', ', $selectedFields);
+            $fields = $this->_model ? '[' . implode('], [', $this->_model->getFields()) . ']' : '*';
         }
         $params['fields'] = $fields;
 
-        $selectedTables = [];
+        $alias = $this->_alias;
 
-        foreach ($this->_tables as $alias => $table) {
-            if (is_string($alias)) {
-                $selectedTables[] = '[' . $table . '] AS [' . $alias . ']';
-            } else {
-                $selectedTables[] = '[' . $table . ']';
-            }
-        }
-
-        $params['from'] = implode(', ', $selectedTables);
+        $params['from'] = $alias ? "[$table] AS [$alias]" : $table;
 
         $joinSQL = '';
         foreach ($this->_joins as $join) {
             list($joinTable, $joinCondition, $joinAlias, $joinType) = $join;
-
-            if ($joinAlias !== null) {
-                $this->_tables[$joinAlias] = $joinTable;
-            } else {
-                $this->_tables[] = $joinTable;
-            }
 
             if ($joinType !== null) {
                 $joinSQL .= ' ' . $joinType;
@@ -1084,28 +1042,14 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $params['forUpdate'] = $this->_for_update;
         }
 
-        $sql = $this->_db->buildSql($params);
+        $sql = $db->buildSql($params);
         //compatible with other SQL syntax
         $replaces = [];
         foreach ($this->_bind as $key => $_) {
             $replaces[':' . $key . ':'] = ':' . $key;
         }
 
-        $sql = strtr($sql, $replaces);
-
-        foreach ($this->_tables as $table) {
-            if (is_string($table)) {
-                $source = $table;
-                if (strpos($source, '.')) {
-                    $source = '[' . implode('].[', explode('.', $source)) . ']';
-                } else {
-                    $source = '[' . $source . ']';
-                }
-                $sql = str_replace('[' . $table . ']', $source, $sql);
-            }
-        }
-
-        return $sql;
+        return strtr($sql, $replaces);
     }
 
     /**
@@ -1136,39 +1080,93 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @return array
-     */
-    public function getTables()
-    {
-        return $this->_tables;
-    }
-
-    /**
+     * @param string|\ManaPHP\DbInterface $db
+     * @param string                      $table
      *
      * @return array
      */
-    public function execute()
+    protected function _query($db, $table)
     {
-        $this->_param_number = 0;
+        $connection = is_string($db) ? $this->_di->getShared($db) : $db;
 
-        $this->_sql = $this->_buildSql();
+        $this->_sql = $this->_buildSql($connection, $table);
 
         if (in_array('FALSE', $this->_conditions, true)) {
             $this->logger->debug($this->_sql, 'db.query.skip');
             return [];
         }
 
-        $result = $this->getConnection()->fetchAll($this->_sql, $this->_bind, PDO::FETCH_ASSOC, $this->_force_master);
+        return $connection->fetchAll($this->_sql, $this->_bind, PDO::FETCH_ASSOC, $this->_force_master);
+    }
+
+    /**
+     * @return array
+     */
+    public function execute()
+    {
+        $this->_param_number = 0;
+
+        $shards = $this->getShards();
+
+        $result = [];
+        if (count($shards) === 1 && count(current($shards)) === 1) {
+            $result = $this->_query(key($shards), current($shards)[0]);
+        } elseif ($this->_order) {
+            $valid_times = 0;
+            foreach ($shards as $db => $tables) {
+                foreach ($tables as $table) {
+                    $copy = clone $this;
+
+                    if ($copy->_limit) {
+                        $copy->_limit += $copy->_offset;
+                        $copy->_offset = 0;
+                    }
+
+                    if ($r = $copy->_query($db, $table)) {
+                        $valid_times++;
+                        $result = $result ? array_merge($result, $r) : $r;
+                    }
+                }
+            }
+
+            if ($valid_times > 1) {
+                $result = Arr::sort($result, $this->_order);
+            }
+
+            $result = $this->_limit ? array_slice($result, $this->_offset, $this->_limit) : $result;
+        } elseif ($this->_limit) {
+            foreach ($shards as $db => $tables) {
+                foreach ($tables as $table) {
+                    if ($r = $this->_query($db, $table)) {
+                        $result = $result ? array_merge($result, $r) : $r;
+                        if (count($result) >= $this->_offset + $this->_limit) {
+                            return array_slice($result, (int)$this->_offset, $this->_limit);
+                        }
+                    }
+                }
+            }
+
+            $result = $result ? array_slice($result, (int)$this->_offset, $this->_limit) : [];
+        } else {
+            foreach ($shards as $db => $tables) {
+                foreach ($tables as $table) {
+                    if ($r = $this->_query($db, $table)) {
+                        $result = $result ? array_merge($result, $r) : $r;
+                    }
+                }
+            }
+        }
 
         return $this->_index ? Arr::indexby($result, $this->_index) : $result;
     }
 
     /**
      * @param array $expr
+     * @param array $group
      *
-     * @return array
+     * @return string
      */
-    public function aggregate($expr)
+    protected function _buildAggregate($expr, $group)
     {
         $fields = '';
 
@@ -1186,13 +1184,84 @@ class Query extends \ManaPHP\Query implements QueryInterface
             }
         }
 
-        foreach ($this->_group as $k => $v) {
-            $fields .= is_int($k) ? "[$v], " : "$v, ";
+        if ($group) {
+            foreach ($group as $k => $v) {
+                $fields .= is_int($k) ? "[$v], " : "$v, ";
+            }
         }
 
-        $this->_fields = substr($fields, 0, -2);
+        return substr($fields, 0, -2);
+    }
 
-        return $this->execute();
+    /**
+     * @param array $expr
+     *
+     * @return array
+     */
+    public function aggregate($expr)
+    {
+        $this->_aggregate = $expr;
+        $this->_fields = $this->_buildAggregate($expr, $this->_group);
+
+        $this->_param_number = 0;
+
+        $shards = $this->getShards();
+
+        if (count($shards) === 1 && count(current($shards)) === 1) {
+            return $this->_query(key($shards), current($shards)[0]);
+        }
+
+        if ($this->_having) {
+            throw new NotSupportedException('sharding not support having');
+        }
+
+        $aggs = [];
+        foreach ($this->_aggregate as $k => $v) {
+            if (preg_match('#^\w+#', $v, $match) !== 1) {
+                throw new NotSupportedException($v);
+            }
+
+            $agg = strtoupper($match[0]);
+            $aggs[$k] = $agg;
+            if (in_array($agg, ['COUNT', 'MAX', 'MIN', 'SUM'])) {
+                null;
+            } elseif ($agg === 'AVG') {
+                $sum = $k . '_sum';
+                if (!isset($this->_aggregate[$sum])) {
+                    $this->_aggregate[$sum] = 'SUM(' . substr($v, 4);
+                }
+
+                $count = $k . '_count';
+                if (!isset($this->_aggregate[$count])) {
+                    $this->_aggregate[$count] = 'COUNT(*)';
+                }
+            } else {
+                throw new NotSupportedException($v);
+            }
+        }
+
+        $rows = [];
+        foreach ($shards as $db => $tables) {
+            foreach ($tables as $table) {
+                if ($r = $this->_query($db, $table)) {
+                    foreach ($r as $item) {
+                        $key = '';
+                        foreach ($this->_group as $g) {
+                            if ($key === '') {
+                                $key = $item[$g];
+                            } else {
+                                $key .= ':' . $item[$g];
+                            }
+                        }
+                        $rows[$key][] = $item;
+                    }
+                }
+            }
+        }
+
+        $result = Arr::aggregate($rows, $aggs, $this->_group ?? []);
+
+        return $this->_index ? Arr::indexby($result, $this->_index) : $result;
     }
 
     /**
@@ -1202,27 +1271,33 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function count($field = '*')
     {
-        $copy = clone $this;
-
-        $copy->_fields = "COUNT($field) as [row_count]";
-        $copy->_limit = null;
-        $copy->_offset = null;
-        $copy->_order = null;
-        $copy->_index = null;
-
-        $copy->_sql = $copy->_buildSql();
-
-        if ($copy->_group) {
-            $result = $copy->getConnection()->fetchOne($copy->_sql, $copy->_bind);
-
-            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
-            $rowCount = (int)$result['row_count'];
-        } else {
-            $result = $copy->getConnection()->fetchAll($copy->_sql, $copy->_bind);
-            $rowCount = count($result);
+        if ($this->_group) {
+            throw new NotSupportedException('group is not support to get total rows');
         }
 
-        return $rowCount;
+        $row_count = 0;
+        $shards = $this->getShards();
+
+        foreach ($shards as $db => $tables) {
+            /** @var \ManaPHP\DbInterface $connection */
+            $connection = is_string($db) ? $this->_di->getShared($db) : $db;
+            foreach ($tables as $table) {
+                $copy = clone $this;
+
+                $copy->_fields = "COUNT($field) as [row_count]";
+                $copy->_limit = null;
+                $copy->_offset = null;
+                $copy->_order = null;
+                $copy->_index = null;
+
+                $copy->_sql = $copy->_buildSql($connection, $table);
+
+                $result = $connection->fetchOne($copy->_sql, $copy->_bind);
+                $row_count += $result['row_count'];
+            }
+        }
+
+        return $row_count;
     }
 
 
@@ -1260,8 +1335,28 @@ class Query extends \ManaPHP\Query implements QueryInterface
     public function values($field)
     {
         $values = [];
-        foreach ($this->distinct()->select([$field])->all() as $v) {
-            $values[] = $v[$field];
+
+        $shards = $this->getShards();
+
+        if (count($shards) > 1 || count(current($shards)) > 1) {
+            foreach ($this->distinct()->select([$field])->all() as $v) {
+                $value = $v[$field];
+                if (!in_array($value, $values, true)) {
+                    $values[] = $value;
+                }
+            }
+
+            if ($this->_order) {
+                if (current($this->_order) === SORT_ASC) {
+                    sort($values);
+                } else {
+                    rsort($values);
+                }
+            }
+        } else {
+            foreach ($this->distinct()->select([$field])->all() as $v) {
+                $values[] = $v[$field];
+            }
         }
 
         return $values;
@@ -1287,7 +1382,18 @@ class Query extends \ManaPHP\Query implements QueryInterface
             }
         }
 
-        return $this->getConnection()->update($this->getSource(), $fieldValues, $this->_conditions, $this->_bind);
+        $shards = $this->getShards();
+
+        $affected_count = 0;
+        foreach ($shards as $db => $tables) {
+            /** @var \ManaPHP\DbInterface $db */
+            $db = $this->_di->getShared($db);
+            foreach ($tables as $table) {
+                $affected_count += $db->update($table, $fieldValues, $this->_conditions, $this->_bind);
+            }
+        }
+
+        return $affected_count;
     }
 
     /**
@@ -1295,6 +1401,17 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function delete()
     {
-        return $this->getConnection()->delete($this->getSource(), $this->_conditions, $this->_bind);
+        $shards = $this->getShards();
+
+        $affected_count = 0;
+        foreach ($shards as $db => $tables) {
+            /** @var \ManaPHP\DbInterface $db */
+            $db = $this->_di->getShared($db);
+            foreach ($tables as $table) {
+                $affected_count += $db->delete($table, $this->_conditions, $this->_bind);
+            }
+        }
+
+        return $affected_count;
     }
 }

@@ -23,6 +23,16 @@ interface QueryInterface
     public function getModel();
 
     /**
+     * @return array
+     */
+    public function getShards();
+
+    /**
+     * @return array
+     */
+    public function getUniqueShard();
+
+    /**
      * @param string $table
      * @param string $alias
      *

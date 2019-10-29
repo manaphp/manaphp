@@ -4,7 +4,6 @@ namespace ManaPHP\Query;
 use ArrayIterator;
 use IteratorAggregate;
 use ManaPHP\Component;
-use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Model;
@@ -74,6 +73,11 @@ class Merger extends Component implements QueryInterface, IteratorAggregate
         throw new MisuseException(__METHOD__);
     }
 
+    public function getShards()
+    {
+        throw new NotSupportedException(__METHOD__);
+    }
+
     public function from($table, $alias = null)
     {
         throw new MisuseException(__METHOD__);
@@ -141,6 +145,11 @@ class Merger extends Component implements QueryInterface, IteratorAggregate
         }
 
         return $this;
+    }
+
+    public function getUniqueShard()
+    {
+        throw new NotSupportedException(__METHOD__);
     }
 
     /**

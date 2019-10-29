@@ -84,9 +84,4 @@ interface QueryInterface extends \ManaPHP\QueryInterface
      * @return static
      */
     public function setBind($bind, $merge = true);
-
-    /**
-     * @return array
-     */
-    public function getTables();
 }

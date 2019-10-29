@@ -16,11 +16,6 @@ use MongoDB\BSON\Regex;
 class Query extends \ManaPHP\Query
 {
     /**
-     * @var \ManaPHP\MongodbInterface|string
-     */
-    protected $_db;
-
-    /**
      * @var string
      */
     protected $_source;
@@ -38,11 +33,6 @@ class Query extends \ManaPHP\Query
     /**
      * @var array
      */
-    protected $_aggregate = [];
-
-    /**
-     * @var array
-     */
     protected $_filters = [];
 
     /**
@@ -50,7 +40,7 @@ class Query extends \ManaPHP\Query
      *
      * @param \ManaPHP\MongodbInterface|string $db
      */
-    public function __construct($db = null)
+    public function __construct($db = 'mongodb')
     {
         $this->_db = $db;
     }
@@ -79,8 +69,13 @@ class Query extends \ManaPHP\Query
         }
     }
 
+    public function getShards()
+    {
+        return $this->_model->getMultipleShards($this->_equals);
+    }
+
     /**
-     * @param \ManaPHP\Model $model
+     * @param \ManaPHP\Mongodb\Model $model
      *
      * @return static
      */
@@ -114,7 +109,11 @@ class Query extends \ManaPHP\Query
      */
     public function values($field)
     {
-        $source = $this->getSource();
+        list($db, $source) = $this->getUniqueShard();
+
+        /** @var \ManaPHP\MongodbInterface $mongodb */
+        $mongodb = $this->_di->getShared($db);
+
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $source);
             $collection = substr($source, $pos + 1);
@@ -122,8 +121,6 @@ class Query extends \ManaPHP\Query
             $db = null;
             $collection = $source;
         }
-
-        $mongodb = $this->getConnection();
 
         $cmd = ['distinct' => $collection, 'key' => $field];
         if ($this->_filters) {
@@ -987,29 +984,14 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @return \ManaPHP\MongodbInterface
-     */
-    public function getConnection()
-    {
-        if (!$this->_di) {
-            $this->_di = Di::getDefault();
-        }
-
-        if (is_object($this->_db)) {
-            return $this->_db;
-        } elseif ($this->_model) {
-            return $this->_di->getShared($this->_model->getDb());
-        } else {
-            return $this->_di->getShared($this->_db ?: 'mongodb');
-        }
-    }
-
-    /**
      * @return array
      */
     public function execute()
     {
-        $mongodb = $this->getConnection();
+        list($db, $collection) = $this->getUniqueShard();
+        /** @var \ManaPHP\MongodbInterface $mongodb */
+        $mongodb = $this->_di->getShared($db);
+
         if (!$this->_aggregate) {
             $options = [];
 
@@ -1056,7 +1038,7 @@ class Query extends \ManaPHP\Query
                 $filters[$key] = $value;
             }
 
-            $r = $mongodb->fetchAll($this->getSource(), $filters, $options, !$this->_force_master);
+            $r = $mongodb->fetchAll($collection, $filters, $options, !$this->_force_master);
             if ($this->_aliases) {
                 foreach ($r as $k => $v) {
                     foreach ($this->_aliases as $ak => $av) {
@@ -1088,7 +1070,7 @@ class Query extends \ManaPHP\Query
                 $pipeline[] = ['$limit' => $this->_limit];
             }
 
-            $r = $mongodb->aggregate($this->getSource(), $pipeline);
+            $r = $mongodb->aggregate($collection, $pipeline);
 
             if ($this->_group !== null) {
                 foreach ($r as $k => $row) {
@@ -1146,7 +1128,19 @@ class Query extends \ManaPHP\Query
             $filters[$key] = $value;
         }
 
-        return $this->getConnection()->delete($this->getSource(), $filters);
+        $shards = $this->getShards();
+
+        $affected_count = 0;
+        foreach ($shards as $db => $collections) {
+            /** @var \ManaPHP\MongodbInterface $mongodb */
+            $mongodb = Di::getDefault()->getShared($db);
+
+            foreach ($collections as $collection) {
+                $affected_count += $mongodb->delete($collection, $filters);
+            }
+        }
+
+        return $affected_count;
     }
 
     /**
@@ -1189,6 +1183,18 @@ class Query extends \ManaPHP\Query
             }
         }
 
-        return $this->getConnection()->update($this->getSource(), $fieldValues, $filters);
+        $shards = $this->getShards();
+
+        $affected_count = 0;
+        foreach ($shards as $db => $collections) {
+            /** @var \ManaPHP\MongodbInterface $mongodb */
+            $mongodb = $this->_di->getShared($db);
+
+            foreach ($collections as $collection) {
+                $affected_count += $mongodb->update($collection, $fieldValues, $filters);
+            }
+        }
+
+        return $affected_count;
     }
 }
