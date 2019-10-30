@@ -18,6 +18,7 @@ use ManaPHP\Helper\Str;
 use ManaPHP\Model\Expression\Decrement;
 use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\NotFoundException;
+use ManaPHP\Model\ShardingTooManyException;
 use ManaPHP\Validator\ValidateFailedException;
 use ReflectionClass;
 use Serializable;
@@ -80,9 +81,22 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * @return array
      */
+    public function getShardStrategy()
+    {
+        return [1, 1];
+    }
+
+    /**
+     * @return array
+     */
     public function getAnyShard()
     {
-        return [$this->getDb(), $this->getSource()];
+        if ($shardKey = $this->getShardKey()) {
+            $shards = $this->getAllShards();
+            return [key($shards), current($shards)[0]];
+        } else {
+            return [$this->getDb(), $this->getSource()];
+        }
     }
 
     /**
@@ -92,7 +106,24 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function getUniqueShard($context)
     {
-        return [$this->getDb(), $this->getSource()];
+        if ($shardKey = $this->getShardKey()) {
+            if ($context === null) {
+                throw new ShardingTooManyException('sharding context is null');
+            }
+
+            $shards = $this->getMultipleShards($context);
+            if (count($shards) !== 1) {
+                throw new ShardingTooManyException(['too many dbs: `dbs`', 'dbs' => implode(',', array_keys($shards))]);
+            }
+
+            $tables = current($shards);
+            if (count($tables) !== 1) {
+                throw new ShardingTooManyException(['too many tables: `tables`', 'tables' => implode(',', $tables)]);
+            }
+            return [key($shards), $tables[0]];
+        } else {
+            return [$this->getDb(), $this->getSource()];
+        }
     }
 
     /**
@@ -102,7 +133,20 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function getUniqueDbShard($context)
     {
-        return $this->getDb();
+        if ($shardKey = $this->getShardKey()) {
+            if ($context === null) {
+                throw new ShardingTooManyException('sharding context is null');
+            }
+
+            $shards = $this->getMultipleShards($context);
+            if (count($shards) !== 1) {
+                throw new ShardingTooManyException(['too many dbs `:dbs`', 'dbs' => implode(',', array_keys($shards))]);
+            }
+
+            return key($shards);
+        } else {
+            return $this->getDb();
+        }
     }
 
     /**
@@ -112,7 +156,40 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function getMultipleShards($context)
     {
-        return [$this->getDb() => [$this->getSource()]];
+        if ($shardKey = $this->getShardKey()) {
+            if ($context === null) {
+                return $this->getAllShards();
+            } elseif (is_object($context)) {
+                $shardValues = [$context->$shardKey];
+            } elseif (is_scalar($context)) {
+                $shardValues = [$context];
+            } elseif (is_array($context)) {
+                $shardValues = $context;
+            } else {
+                $shardValues = [];
+            }
+
+            list($db_strategy, $source_strategy) = $this->getShardStrategy();
+
+            $shards = [];
+            $_db = $this->getDb();
+            $_source = $this->getSource();
+            foreach ($shardValues as $value) {
+                $db_mod = $value % $db_strategy;
+                $db = $db_strategy === 1 ? $_db : "{$_db}_{$db_mod}";
+
+                $source_mod = $value % $source_strategy;
+                $source = $source_strategy === 1 ? $_source : "{$_source}_{$source_mod}";
+
+                if (!isset($shards[$db]) || !in_array($source, $shards[$db], true)) {
+                    $shards[$db][] = $source;
+                }
+            }
+
+            return $shards;
+        } else {
+            return [$this->getDb() => [$this->getSource()]];
+        }
     }
 
     /**
@@ -120,7 +197,39 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function getAllShards()
     {
-        return [$this->getDb() => [$this->getSource()]];
+        if ($shardKey = $this->getShardKey()) {
+            list($db_strategy, $source_strategy) = $this->getShardStrategy();
+
+            $db = $this->getDb();
+            if ($db_strategy === 1) {
+                $dbs = [$db];
+            } else {
+                $dbs = [];
+
+                for ($i = 0; $i < $db_strategy; $i++) {
+                    $dbs[] = "{$db}_$i";
+                }
+            }
+
+            $source = $this->getSource();
+            if ($source_strategy === 1) {
+                $tables = [$source];
+            } else {
+                $tables = [];
+                for ($i = 0; $i < $source_strategy; $i++) {
+                    $tables[] = "{$source}_$i";
+                }
+            }
+
+            $shards = [];
+            foreach ($dbs as $db) {
+                $shards[$db] = $tables;
+            }
+
+            return $shards;
+        } else {
+            return [$this->getDb() => [$this->getSource()]];
+        }
     }
 
     /**
