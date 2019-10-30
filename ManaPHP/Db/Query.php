@@ -1,7 +1,6 @@
 <?php
 namespace ManaPHP\Db;
 
-use ManaPHP\Di;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
@@ -81,6 +80,16 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
+     * @param string $db
+     *
+     * @return \ManaPHP\DbInterface
+     */
+    protected function _getDb($db)
+    {
+        return $db === '' ? $this->_db : $this->_di->getShared($db);
+    }
+
+    /**
      * @return array
      */
     public function getShards()
@@ -88,7 +97,9 @@ class Query extends \ManaPHP\Query implements QueryInterface
         if ($this->_model) {
             return $this->_model->getMultipleShards($this->_equals);
         } else {
-            return [$this->_db => [$this->_table]];
+            $db = is_object($this->_db) ? '' : $this->_db;
+	    
+            return [$db => [$this->_table]];
         }
     }
 
@@ -923,8 +934,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             if (count($tables) !== 1) {
                 throw new ShardingTooManyException(__METHOD__);
             }
-            /** @var \ManaPHP\DbInterface $db */
-            $db = Di::getDefault()->getShared(key($shards));
+            $db = $this->_getDb(key($shards));
             $this->_sql = $this->_buildSql($db, $tables[0]);
         }
 
@@ -1080,14 +1090,14 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @param string|\ManaPHP\DbInterface $db
-     * @param string                      $table
+     * @param string $db
+     * @param string $table
      *
      * @return array
      */
     protected function _query($db, $table)
     {
-        $connection = is_string($db) ? $this->_di->getShared($db) : $db;
+        $connection = $this->_getDb($db);
 
         $this->_sql = $this->_buildSql($connection, $table);
 
@@ -1279,8 +1289,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
         $shards = $this->getShards();
 
         foreach ($shards as $db => $tables) {
-            /** @var \ManaPHP\DbInterface $connection */
-            $connection = is_string($db) ? $this->_di->getShared($db) : $db;
+            $connection = $this->_getDb($db);
             foreach ($tables as $table) {
                 $copy = clone $this;
 
@@ -1386,8 +1395,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
 
         $affected_count = 0;
         foreach ($shards as $db => $tables) {
-            /** @var \ManaPHP\DbInterface $db */
-            $db = $this->_di->getShared($db);
+            $db = $this->_getDb($db);
             foreach ($tables as $table) {
                 $affected_count += $db->update($table, $fieldValues, $this->_conditions, $this->_bind);
             }
@@ -1405,8 +1413,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
 
         $affected_count = 0;
         foreach ($shards as $db => $tables) {
-            /** @var \ManaPHP\DbInterface $db */
-            $db = $this->_di->getShared($db);
+            $db = $this->_getDb($db);
             foreach ($tables as $table) {
                 $affected_count += $db->delete($table, $this->_conditions, $this->_bind);
             }

@@ -1,7 +1,6 @@
 <?php
 namespace ManaPHP\Mongodb;
 
-use ManaPHP\Di;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
@@ -58,6 +57,16 @@ class Query extends \ManaPHP\Query
     }
 
     /**
+     * @param string $db
+     *
+     * @return \ManaPHP\MongodbInterface
+     */
+    protected function _getDb($db)
+    {
+        return $db === '' ? $this->_db : $this->_di->getShared($db);
+    }
+
+    /**
      * @return string
      */
     public function getSource()
@@ -111,8 +120,7 @@ class Query extends \ManaPHP\Query
     {
         list($db, $source) = $this->getUniqueShard();
 
-        /** @var \ManaPHP\MongodbInterface $mongodb */
-        $mongodb = $this->_di->getShared($db);
+        $mongodb = $this->_getDb($db);
 
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $source);
@@ -989,8 +997,7 @@ class Query extends \ManaPHP\Query
     public function execute()
     {
         list($db, $collection) = $this->getUniqueShard();
-        /** @var \ManaPHP\MongodbInterface $mongodb */
-        $mongodb = $this->_di->getShared($db);
+        $mongodb = $this->_getDb($db);
 
         if (!$this->_aggregate) {
             $options = [];
@@ -1132,9 +1139,7 @@ class Query extends \ManaPHP\Query
 
         $affected_count = 0;
         foreach ($shards as $db => $collections) {
-            /** @var \ManaPHP\MongodbInterface $mongodb */
-            $mongodb = Di::getDefault()->getShared($db);
-
+            $mongodb = $this->_getDb($db);
             foreach ($collections as $collection) {
                 $affected_count += $mongodb->delete($collection, $filters);
             }
@@ -1187,9 +1192,7 @@ class Query extends \ManaPHP\Query
 
         $affected_count = 0;
         foreach ($shards as $db => $collections) {
-            /** @var \ManaPHP\MongodbInterface $mongodb */
-            $mongodb = $this->_di->getShared($db);
-
+            $mongodb = $this->_getDb($db);
             foreach ($collections as $collection) {
                 $affected_count += $mongodb->update($collection, $fieldValues, $filters);
             }
