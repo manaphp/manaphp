@@ -125,6 +125,20 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     /**
      * @return array
      */
+    public function getShards()
+    {
+        if ($this->_model) {
+            return $this->_model->getMultipleShards($this->_equals);
+        } else {
+            $db = is_object($this->_db) ? '' : $this->_db;
+
+            return [$db => [$this->_table]];
+        }
+    }
+
+    /**
+     * @return array
+     */
     public function getUniqueShard()
     {
         $shards = $this->getShards();

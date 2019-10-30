@@ -15,11 +15,6 @@ use MongoDB\BSON\Regex;
 class Query extends \ManaPHP\Query
 {
     /**
-     * @var string
-     */
-    protected $_source;
-
-    /**
      * @var array
      */
     protected $_types;
@@ -64,23 +59,6 @@ class Query extends \ManaPHP\Query
     protected function _getDb($db)
     {
         return $db === '' ? $this->_db : $this->_di->getShared($db);
-    }
-
-    /**
-     * @return string
-     */
-    public function getSource()
-    {
-        if ($this->_model) {
-            return $this->_model->getSource();
-        } else {
-            return $this->_source;
-        }
-    }
-
-    public function getShards()
-    {
-        return $this->_model->getMultipleShards($this->_equals);
     }
 
     /**
@@ -212,7 +190,7 @@ class Query extends \ManaPHP\Query
             if (!$this->_model && strpos($table, '\\') !== false) {
                 $this->_model = $this->_di->getShared($table);
             } else {
-                $this->_source = $table;
+                $this->_table = $table;
             }
         }
 
@@ -512,7 +490,7 @@ class Query extends \ManaPHP\Query
             if ($this->_types && !isset($this->_types[$field])) {
                 throw new InvalidArgumentException(['`:field` field is not exist in `:collection` collection',
                     'field' => $field,
-                    'collection' => $this->getSource()
+                    'collection' => $this->_model ? $this->_model->getSource() : $this->_table
                 ]);
             }
 
