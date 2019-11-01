@@ -57,7 +57,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
      * @var string
      */
     protected $_sql;
-    
+
     /**
      * @param \ManaPHP\DbInterface|string $db
      */
@@ -898,7 +898,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
         $params['fields'] = $fields;
 
         $alias = $this->_alias;
-
         $params['from'] = $alias ? "[$table] AS [$alias]" : $table;
 
         $joinSQL = '';
