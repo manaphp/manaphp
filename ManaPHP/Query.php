@@ -203,6 +203,89 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     }
 
     /**
+     * @param array $filters
+     *
+     * @return static
+     */
+    public function where($filters)
+    {
+        if ($filters === null) {
+            return $this;
+        }
+
+        foreach ($filters as $filter => $value) {
+            if (is_int($filter)) {
+                $this->whereExpr($value);
+            } elseif (is_array($value)) {
+                if (preg_match('#([~@!<>|=%]+)$#', $filter, $match)) {
+                    $operator = $match[1];
+                    $field = substr($filter, 0, -strlen($operator));
+                    if ($operator === '~=') {
+                        if (count($value) !== 2) {
+                            throw new MisuseException(['`value of :filter` filter is invalid', 'filter' => $filter]);
+                        }
+                        $this->whereBetween($field, $value[0], $value[1]);
+                    } elseif ($operator === '@=') {
+                        $this->whereDateBetween($field, $value[0], $value[1]);
+                    } elseif ($operator === '|=') {
+                        $this->whereIn($field, $value);
+                    } elseif ($operator === '!=' || $operator === '<>') {
+                        $this->whereNotIn($field, $value);
+                    } elseif ($operator === '=') {
+                        $this->whereIn($field, $value);
+                    } elseif ($operator === '%=') {
+                        $this->whereMod($field, $value[0], $value[1]);
+                    } else {
+                        throw new MisuseException(['unknown `:operator` operator', 'operator' => $operator]);
+                    }
+                } elseif (!$value || isset($value[0])) {
+                    $this->whereIn($filter, $value);
+                } else {
+                    throw new MisuseException(['unknown `:filter` filter', 'operator' => $filter]);
+                }
+            } elseif (preg_match('#^([\w.]+)([<>=!^$*~,@dm?]*)$#', $filter, $matches) === 1) {
+                list(, $field, $operator) = $matches;
+
+                if (strpos($operator, '?') !== false) {
+                    $value = is_string($value) ? trim($value) : $value;
+                    if ($value === '' || $value === null) {
+                        continue;
+                    }
+                    $operator = substr($operator, 0, -1);
+                }
+
+                if ($operator === '') {
+                    $operator = '=';
+                }
+
+                if (in_array($operator, ['=', '~=', '!=', '<>', '>', '>=', '<', '<='], true)) {
+                    $this->whereCmp($field, $operator, $value);
+                } elseif ($operator === '^=') {
+                    $this->whereStartsWith($field, $value);
+                } elseif ($operator === '$=') {
+                    $this->whereEndsWith($field, $value);
+                } elseif ($operator === '*=') {
+                    $this->whereContains($field, $value);
+                } elseif ($operator === ',=') {
+                    $this->whereInset($field, $value);
+                } elseif ($operator === '@d=') {
+                    $this->whereDate($field, $value);
+                } elseif ($operator === '@m=') {
+                    $this->whereMonth($field, $value);
+                } else {
+                    throw new MisuseException(['unknown `:operator` operator', 'operator' => $operator]);
+                }
+            } elseif (strpos($filter, ',') !== false && preg_match('#^[\w,.]+$#', $filter)) {
+                $this->where1v1($filter, $value);
+            } else {
+                throw new MisuseException(['unknown `:filter` filter', 'filter' => $filter]);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @param string     $field
      * @param int|string $min
      * @param int|string $max
