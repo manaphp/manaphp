@@ -1,6 +1,8 @@
 <?php
 namespace ManaPHP\Helper;
 
+use ManaPHP\Exception\MisuseException;
+
 class Arr
 {
     /**
@@ -231,8 +233,18 @@ class Arr
                     $values = array_column($v, $field);
                     $row[$field] = array_sum($values);
                 } elseif ($agg === 'AVG') {
-                    $sum = array_sum(array_column($v, $field . '_sum'));
-                    $count = array_sum(array_column($v, $field . '_count'));
+                    $sum_field = $field . '_sum';
+                    if (!isset($v[0][$sum_field])) {
+                        throw new MisuseException(['missing key: `:field` is not in `:keys`', 'field' => $sum_field, 'keys' => array_keys($v[0])]);
+                    }
+                    $sum = array_sum(array_column($v, $sum_field));
+
+                    $count_field = $field . '_count';
+                    if (!isset($v[0][$count_field])) {
+                        throw new MisuseException(['missing key: `:field` is not in `:keys`', 'field' => $count_field, 'keys' => array_keys($v[0])]);
+                    }
+                    $count = array_sum(array_column($v, $count_field));
+
                     $row[$field] = $count ? $sum / $count : null;
                 } else {
                     null;

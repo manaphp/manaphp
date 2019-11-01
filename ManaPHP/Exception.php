@@ -43,6 +43,12 @@ class Exception extends \Exception
 
                 $tr = [];
                 foreach ($this->_bind as $k => $v) {
+                    if (is_array($v)) {
+                        $v = implode(', ', $v);
+                    } elseif ($v === null || is_bool($v)) {
+                        $v = json_encode($v);
+                    }
+
                     $tr[':' . $k] = $v;
                 }
 

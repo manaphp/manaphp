@@ -149,12 +149,12 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
         $shards = $this->getShards();
 
         if (count($shards) !== 1) {
-            throw new ShardingTooManyException(['too many dbs: `:dbs`', ':dbs' => implode(',', array_keys($shards))]);
+            throw new ShardingTooManyException(['too many dbs: `:dbs`', 'dbs' => array_keys($shards)]);
         }
 
         $tables = current($shards);
         if (count($tables) !== 1) {
-            throw new ShardingTooManyException(['too many tables: `:tables`', ':tables' => implode(',', $tables)]);
+            throw new ShardingTooManyException(['too many tables: `:tables`', 'tables' => $tables]);
         }
 
         return [key($shards), $tables[0]];
