@@ -127,8 +127,13 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function getShards()
     {
-        if ($this->_model) {
-            return $this->_model->getMultipleShards($this->_equals);
+        if ($model = $this->_model ?? null) {
+            $shardKey = $model->getShardKey();
+            if ($shardKey && isset($this->_equals[$shardKey])) {
+                return $model->getMultipleShards($this->_equals[$shardKey]);
+            } else {
+                return $model->getAllShards();
+            }
         } else {
             $db = is_object($this->_db) ? '' : $this->_db;
 
