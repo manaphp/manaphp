@@ -57,8 +57,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
      * @var string
      */
     protected $_sql;
-
-
+    
     /**
      * @param \ManaPHP\DbInterface|string $db
      */
@@ -1017,8 +1016,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function execute()
     {
-        $this->_param_number = 0;
-
         $shards = $this->getShards();
 
         $result = [];
@@ -1114,8 +1111,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     public function aggregate($expr)
     {
         $this->_aggregate = $expr;
-
-        $this->_param_number = 0;
 
         $shards = $this->getShards();
 
