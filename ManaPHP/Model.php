@@ -140,7 +140,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
             $shards = $this->getMultipleShards($context);
             if (count($shards) !== 1) {
-                throw new ShardingTooManyException(['too many dbs `:dbs`', 'dbs' =>  array_keys($shards)]);
+                throw new ShardingTooManyException(['too many dbs `:dbs`', 'dbs' => array_keys($shards)]);
             }
 
             return key($shards);
@@ -562,13 +562,8 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     {
         $sample = static::sample();
 
-        if (is_string($primaryKey = $sample->getPrimaryKey())) {
-            $options['order'] = [$primaryKey => SORT_DESC];
-        } else {
-            throw new NotSupportedException('infer `:class` order condition for last failed:', ['class' => static::class]);
-        }
-
-        $rs = static::select($fields)->where($filters)->limit(1)->fetch();
+        $primaryKey = $sample->getPrimaryKey();
+        $rs = static::select($fields)->where($filters)->orderBy([$primaryKey => SORT_DESC])->limit(1)->fetch();
         return $rs[0] ?? null;
     }
 
@@ -1010,26 +1005,13 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     protected function _exists()
     {
-        $filters = [];
         $primaryKey = $this->getPrimaryKey();
-        if (is_string($primaryKey)) {
-            if ($this->$primaryKey === null) {
-                return false;
-            } else {
-                $filters[$primaryKey] = $this->$primaryKey;
-            }
+        if ($this->$primaryKey === null) {
+            return false;
         } else {
-            $field = $primaryKey[0];
-            if ($this->$field === null) {
-                return false;
-            }
-
-            foreach ($primaryKey as $field) {
-                $filters[$field] = $this->$field;
-            }
+            return $this->newQuery()->where([$primaryKey => $this->$primaryKey])->forceUseMaster()->exists();
         }
 
-        return $this->newQuery()->where($filters)->forceUseMaster()->exists();
     }
 
     /**
@@ -1045,35 +1027,11 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             $this->load($fields);
         }
 
-        if ($this->_snapshot || $this->{$this->getPrimaryKey()}) {
+        $primaryKey = $this->getPrimaryKey();
+        if ($this->_snapshot || $this->$primaryKey) {
             return $this->update();
         } else {
             return $this->create();
-        }
-    }
-
-    /**
-     * @return array
-     */
-    protected function _getPrimaryKeyValuePairs()
-    {
-        $primaryKey = $this->getPrimaryKey();
-        if (is_string($primaryKey)) {
-            if (!isset($this->{$primaryKey})) {
-                throw new PreconditionException(['`:model` model cannot be updated because primary key value is not provided', 'model' => static::class]);
-            }
-            return [$primaryKey => $this->$primaryKey];
-        } elseif (is_array($primaryKey)) {
-            $keyValue = [];
-            foreach ($primaryKey as $key) {
-                if (!isset($this->$key)) {
-                    throw new PreconditionException(['`:1` model cannot be updated because some primary key value is not provided', static::class]);
-                }
-                $keyValue[$key] = $this->$key;
-            }
-            return $keyValue;
-        } else {
-            throw new NotSupportedException(['`:model` model does not has primary key', 'model' => static::class]);
         }
     }
 
@@ -1092,9 +1050,9 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         }
 
         $sample = static::sample();
-        $pkName = $sample->getPrimaryKey();
+        $primaryKey = $sample->getPrimaryKey();
 
-        return static::get($request->getId($pkName))->delete();
+        return static::get($request->getId($primaryKey))->delete();
     }
 
     /**
@@ -1268,9 +1226,10 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             $this->_last_refresh = microtime(true);
         }
 
-        $r = $this->newQuery()->select($fields)->where($this->_getPrimaryKeyValuePairs())->fetch(true);
+        $primaryKey = $this->getPrimaryKey();
+        $r = $this->newQuery()->select($fields)->where([$primaryKey => $this->$primaryKey])->fetch(true);
         if (!$r) {
-            throw new NotFoundException(static::class, $this->_getPrimaryKeyValuePairs());
+            throw new NotFoundException(static::class, [$primaryKey => $this->$primaryKey]);
         }
 
         $data = (array)$r[0];

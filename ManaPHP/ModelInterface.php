@@ -58,7 +58,7 @@ interface ModelInterface
     public function getAllShards();
 
     /**
-     * @return string|array
+     * @return string
      */
     public function getPrimaryKey();
 

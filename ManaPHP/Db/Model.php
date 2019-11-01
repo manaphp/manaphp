@@ -3,6 +3,7 @@
 namespace ManaPHP\Db;
 
 use ManaPHP\Di;
+use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Model\ExpressionInterface;
 
@@ -39,7 +40,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @return string|array =array_keys(get_object_vars(new static))[$i]
+     * @return string =array_keys(get_object_vars(new static))[$i]
      */
     public function getPrimaryKey()
     {
@@ -63,8 +64,11 @@ class Model extends \ManaPHP\Model implements ModelInterface
                 return $cached[$class] = $tryField;
             }
 
-            $primaryKey = $this->_di->modelsMetadata->getPrimaryKeyAttributes($this);
-            return $cached[$class] = count($primaryKey) === 1 ? $primaryKey[0] : $primaryKey;
+            $primaryKeys = $this->_di->modelsMetadata->getPrimaryKeyAttributes($this);
+            if (count($primaryKeys) !== 1) {
+                throw new NotSupportedException('only support one primary key');
+            }
+            return $cached[$class] = $primaryKeys[0];
         }
 
         return $cached[$class];
@@ -183,7 +187,8 @@ class Model extends \ManaPHP\Model implements ModelInterface
         }
 
         if ($defaultValueFields) {
-            if ($r = $this->newQuery()->select($defaultValueFields)->where($this->_getPrimaryKeyValuePairs())->fetch(true)) {
+            $primaryKey = $this->getPrimaryKey();
+            if ($r = $this->newQuery()->select($defaultValueFields)->whereEq($primaryKey, $this->$primaryKey)->fetch(true)) {
                 foreach ($r[0] as $field => $value) {
                     $this->$field = $value;
                 }
@@ -210,7 +215,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
             throw new PreconditionException(['update failed: `:model` instance is snapshot disabled', 'model' => static::class]);
         }
 
-        $primaryKeyValuePairs = $this->_getPrimaryKeyValuePairs();
+        $primaryKey = $this->getPrimaryKey();
 
         $fields = $this->getFields();
 
@@ -271,9 +276,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        foreach ($primaryKeyValuePairs as $key => $value) {
-            unset($fieldValues[$key]);
-        }
+        unset($fieldValues[$primaryKey]);
 
         if (!$fieldValues) {
             return $this;
@@ -287,7 +290,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         /** @var \ManaPHP\DbInterface $db */
         $db = $this->_di->getShared($db);
-        $db->update($table, $fieldValues, $primaryKeyValuePairs);
+        $db->update($table, $fieldValues, [$primaryKey => $this->$primaryKey]);
 
         $expressionFields = [];
         foreach ($fieldValues as $field => $value) {
@@ -296,7 +299,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        if ($expressionFields && $rs = $this->newQuery()->select($expressionFields)->where($primaryKeyValuePairs)->fetch(true)) {
+        if ($expressionFields && $rs = $this->newQuery()->select($expressionFields)->whereEq($primaryKey, $this->$primaryKey)->fetch(true)) {
             foreach ((array)$rs[0] as $field => $value) {
                 $this->$field = $value;
             }
@@ -323,7 +326,9 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         /** @var \ManaPHP\DbInterface */
         $db = $this->_di->getShared($db);
-        $db->delete($table, $this->_getPrimaryKeyValuePairs());
+
+        $primaryKey = $this->getPrimaryKey();
+        $db->delete($table, [$primaryKey = $this->$primaryKey]);
 
         $this->fireEvent('model:deleted');
 

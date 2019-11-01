@@ -397,7 +397,7 @@ class Model extends \ManaPHP\Model
     {
         $snapshot = $this->_snapshot;
 
-        $primaryKeyValuePairs = $this->_getPrimaryKeyValuePairs();
+        $primaryKey = $this->getPrimaryKey();
 
         $fieldTypes = $this->getFieldTypes();
         $fields = array_keys($fieldTypes);
@@ -454,9 +454,7 @@ class Model extends \ManaPHP\Model
             }
         }
 
-        foreach ($primaryKeyValuePairs as $key => $value) {
-            unset($fieldValues[$key]);
-        }
+        unset($fieldValues[$primaryKey]);
 
         if (!$fieldValues) {
             return $this;
@@ -470,7 +468,7 @@ class Model extends \ManaPHP\Model
 
         /** @var \ManaPHP\MongodbInterface $mongodb */
         $mongodb = $this->_di->getShared($db);
-        $mongodb->update($collection, $fieldValues, $primaryKeyValuePairs);
+        $mongodb->update($collection, $fieldValues, [$primaryKey => $this->$primaryKey]);
 
         $expressionFields = [];
         foreach ($fieldValues as $field => $value) {
@@ -481,7 +479,7 @@ class Model extends \ManaPHP\Model
 
         if ($expressionFields) {
             $expressionFields['_id'] = false;
-            if ($rs = $this->newQuery()->where($primaryKeyValuePairs)->select($expressionFields)->execute()) {
+            if ($rs = $this->newQuery()->where([$primaryKey => $this->$primaryKey])->select($expressionFields)->execute()) {
                 foreach ((array)$rs[0] as $field => $value) {
                     $this->$field = $value;
                 }
@@ -509,7 +507,9 @@ class Model extends \ManaPHP\Model
 
         /** @var \ManaPHP\MongodbInterface */
         $connection = $this->_di->getShared($db);
-        $connection->delete($collection, $this->_getPrimaryKeyValuePairs());
+        $primaryKey = $this->getPrimaryKey();
+
+        $connection->delete($collection, [$primaryKey => $this->$primaryKey]);
 
         $this->fireEvent('model:deleted');
 
