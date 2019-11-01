@@ -402,7 +402,7 @@ class Query extends \ManaPHP\Query
                     } elseif ($operator === '@=') {
                         $this->whereDateBetween($field, $value[0], $value[1]);
                     } elseif ($operator === '|=') {
-                        $this->_filters[] = [$field => ['$in' => $value]];
+                        $this->whereIn($field, $value);
                     } elseif ($operator === '!=' || $operator === '<>') {
                         $this->whereNotIn($field, $value);
                     } elseif ($operator === '=') {
@@ -415,7 +415,7 @@ class Query extends \ManaPHP\Query
                 } elseif (!$value || isset($value[0])) {
                     $this->whereIn($filter, $value);
                 } else {
-                    $this->_filters[] = [$filter => $value];
+                    throw new MisuseException(['unknown `:filter` filter', 'operator' => $filter]);
                 }
             } elseif (preg_match('#^([\w.]+)\s*([<>=!^$*~,@dm?]*)$#', $filter, $matches) === 1) {
                 list(, $field, $operator) = $matches;
@@ -452,7 +452,7 @@ class Query extends \ManaPHP\Query
             } elseif (strpos($filter, ',') !== false && preg_match('#^[\w,.]+$#', $filter)) {
                 $this->where1v1($filter, $value);
             } else {
-                throw new InvalidValueException(['unknown mongodb query `filter` filter', 'filter' => $filter]);
+                throw new MisuseException(['unknown `:filter` filter', 'filter' => $filter]);
             }
         }
 

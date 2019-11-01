@@ -88,7 +88,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
     {
         return $db === '' ? $this->_db : $this->_di->getShared($db);
     }
-    
+
     /**
      * @param string|array $fields
      *
@@ -207,7 +207,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     *
      * @param array $filters
      *
      * @return static
@@ -246,10 +245,11 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 } elseif (!$value || isset($value[0])) {
                     $this->whereIn($filter, $value);
                 } else {
-                    $this->whereExpr($filter, $value);
+                    throw new MisuseException(['unknown `:filter` filter', 'operator' => $filter]);
                 }
             } elseif (preg_match('#^([\w.]+)([<>=!^$*~,@dm?]*)$#', $filter, $matches) === 1) {
                 list(, $field, $operator) = $matches;
+
                 if (strpos($operator, '?') !== false) {
                     $value = is_string($value) ? trim($value) : $value;
                     if ($value === '' || $value === null) {
@@ -282,7 +282,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             } elseif (strpos($filter, ',') !== false && preg_match('#^[\w,.]+$#', $filter)) {
                 $this->where1v1($filter, $value);
             } else {
-                $this->whereExpr($filter);
+                throw new MisuseException(['unknown `:filter` filter', 'filter' => $filter]);
             }
         }
 
