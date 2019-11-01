@@ -1114,65 +1114,72 @@ class Query extends \ManaPHP\Query implements QueryInterface
     public function aggregate($expr)
     {
         $this->_aggregate = $expr;
-        $this->_fields = $this->_buildAggregate($expr, $this->_group);
 
         $this->_param_number = 0;
 
         $shards = $this->getShards();
 
         if (count($shards) === 1 && count(current($shards)) === 1) {
-            return $this->_query(key($shards), current($shards)[0]);
-        }
+            $this->_fields = $this->_buildAggregate($expr, $this->_group);
 
-        if ($this->_having) {
-            throw new NotSupportedException('sharding not support having');
-        }
-
-        $aggs = [];
-        foreach ($this->_aggregate as $k => $v) {
-            if (preg_match('#^\w+#', $v, $match) !== 1) {
-                throw new NotSupportedException($v);
+            $result = $this->_query(key($shards), current($shards)[0]);
+        } else {
+            if ($this->_having) {
+                throw new NotSupportedException('sharding not support having');
             }
 
-            $agg = strtoupper($match[0]);
-            $aggs[$k] = $agg;
-            if (in_array($agg, ['COUNT', 'MAX', 'MIN', 'SUM'])) {
-                null;
-            } elseif ($agg === 'AVG') {
-                $sum = $k . '_sum';
-                if (!isset($this->_aggregate[$sum])) {
-                    $this->_aggregate[$sum] = 'SUM(' . substr($v, 4);
+            $aggs = [];
+            foreach ($this->_aggregate as $k => $v) {
+                if (preg_match('#^\w+#', $v, $match) !== 1) {
+                    throw new NotSupportedException($v);
                 }
 
-                $count = $k . '_count';
-                if (!isset($this->_aggregate[$count])) {
-                    $this->_aggregate[$count] = 'COUNT(*)';
+                $agg = strtoupper($match[0]);
+                $aggs[$k] = $agg;
+                if (in_array($agg, ['COUNT', 'MAX', 'MIN', 'SUM'])) {
+                    null;
+                } elseif ($agg === 'AVG') {
+                    $sum = $k . '_sum';
+                    if (!isset($this->_aggregate[$sum])) {
+                        $this->_aggregate[$sum] = 'SUM(' . substr($v, 4);
+                    }
+
+                    $count = $k . '_count';
+                    if (!isset($this->_aggregate[$count])) {
+                        $this->_aggregate[$count] = 'COUNT(*)';
+                    }
+                } else {
+                    throw new NotSupportedException($v);
                 }
-            } else {
-                throw new NotSupportedException($v);
             }
-        }
 
-        $rows = [];
-        foreach ($shards as $db => $tables) {
-            foreach ($tables as $table) {
-                if ($r = $this->_query($db, $table)) {
-                    foreach ($r as $item) {
-                        $key = '';
-                        foreach ($this->_group as $g) {
-                            if ($key === '') {
-                                $key = $item[$g];
-                            } else {
-                                $key .= ':' . $item[$g];
+            $this->_fields = $this->_buildAggregate($this->_aggregate, $this->_group);
+
+            $rows = [];
+            foreach ($shards as $db => $tables) {
+                foreach ($tables as $table) {
+                    if ($r = $this->_query($db, $table)) {
+                        foreach ($r as $item) {
+                            $key = '';
+                            foreach ($this->_group as $g) {
+                                if ($key === '') {
+                                    $key = $item[$g];
+                                } else {
+                                    $key .= ':' . $item[$g];
+                                }
                             }
+                            $rows[$key][] = $item;
                         }
-                        $rows[$key][] = $item;
                     }
                 }
             }
+
+            $result = Arr::aggregate($rows, $aggs, $this->_group ?? []);
         }
 
-        $result = Arr::aggregate($rows, $aggs, $this->_group ?? []);
+        if ($this->_order) {
+            $result = Arr::sort($result, $this->_order);
+        }
 
         return $this->_index ? Arr::indexby($result, $this->_index) : $result;
     }
