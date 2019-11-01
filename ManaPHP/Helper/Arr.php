@@ -208,8 +208,25 @@ class Arr
      */
     public static function aggregate($rows, $aggs, $group = [])
     {
+        if (!$rows) {
+            return [];
+        }
+
+        $grouped_rows = [];
+        foreach ($rows as $item) {
+            $key = '';
+            foreach ($group as $g) {
+                if ($key === '') {
+                    $key = $item[$g];
+                } else {
+                    $key .= ':' . $item[$g];
+                }
+            }
+            $grouped_rows[$key][] = $item;
+        }
+
         $result = [];
-        foreach ($rows as $k => $v) {
+        foreach ($grouped_rows as $k => $v) {
             $row = [];
 
             foreach ($group as $gk => $gv) {

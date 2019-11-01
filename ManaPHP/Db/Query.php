@@ -1159,17 +1159,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             foreach ($shards as $db => $tables) {
                 foreach ($tables as $table) {
                     if ($r = $this->_query($db, $table)) {
-                        foreach ($r as $item) {
-                            $key = '';
-                            foreach ($this->_group as $g) {
-                                if ($key === '') {
-                                    $key = $item[$g];
-                                } else {
-                                    $key .= ':' . $item[$g];
-                                }
-                            }
-                            $rows[$key][] = $item;
-                        }
+                        $rows = $rows ? array_merge($rows, $r) : $r;
                     }
                 }
             }
