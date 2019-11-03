@@ -4,11 +4,9 @@ namespace ManaPHP\Mongodb;
 
 use ManaPHP\Di;
 use ManaPHP\Exception\InvalidValueException;
-use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Model\ExpressionInterface;
-use ManaPHP\Model\MissingShardingFieldException;
 use MongoDB\BSON\ObjectId;
 
 /**
@@ -56,8 +54,7 @@ class Model extends \ManaPHP\Model
      */
     public static function connection($context = null)
     {
-        $db = static::sample()->getUniqueDbShard($context);
-
+        list($db) = static::sample()->getUniqueShard($context);
         return Di::getDefault()->getShared($db);
     }
 
@@ -83,7 +80,15 @@ class Model extends \ManaPHP\Model
             }
 
             $source = $this->getSource();
-            $tryField = (($pos = strpos($source, '.')) ? substr($source, $pos + 1) : $source) . '_id';
+            if (($pos = strpos($source, ':')) !== false) {
+                $collection = substr($source, 0, $pos);
+            } elseif (($pos = strpos($source, ',')) !== false) {
+                $collection = substr($source, 0, $pos);
+            } else {
+                $collection = $source;
+            }
+
+            $tryField = (($pos = strpos($collection, '.')) ? substr($collection, $pos + 1) : $collection) . '_id';
             if (in_array($tryField, $fields, true)) {
                 return $cached[$class] = $tryField;
             }
@@ -526,7 +531,7 @@ class Model extends \ManaPHP\Model
     {
         $sample = static::sample();
 
-        list($db, $collection) = $sample->getUniqueShard(null);
+        list($db, $collection) = $sample->getUniqueShard();
 
         /** @var \ManaPHP\MongodbInterface $mongodb */
         $mongodb = Di::getDefault()->getShared($db);
@@ -546,11 +551,6 @@ class Model extends \ManaPHP\Model
 
         $sample = static::sample();
 
-        $shardKey = $sample->getShardKey();
-        if ($shardKey && !isset($documents[0][$shardKey])) {
-            throw new MisuseException(__METHOD__);
-        }
-
         $autoIncrementField = $sample->getAutoIncrementField();
         $allowNull = $sample->isAllowNullValue();
         $fieldTypes = $sample->getFieldTypes();
@@ -568,7 +568,7 @@ class Model extends \ManaPHP\Model
             $documents[$i] = $document;
         }
 
-        list($db, $collection) = $sample->getUniqueShard($shardKey ? array_column($documents, $shardKey) : null);
+        list($db, $collection) = $sample->getUniqueShard();
 
         /** @var \ManaPHP\MongodbInterface $mongodb */
         $mongodb = Di::getDefault()->getShared($db);
@@ -604,12 +604,7 @@ class Model extends \ManaPHP\Model
             }
         }
 
-        $shardKey = $sample->getShardKey();
-        if ($shardKey && isset($document[0][$shardKey])) {
-            $shards = $sample->getMultipleShards(array_column($documents, $shardKey));
-        } else {
-            $shards = $sample->getAllShards();
-        }
+        $shards = $sample->getMultipleShards();
 
         $affected_count = 0;
         foreach ($shards as $db => $collections) {
@@ -636,11 +631,6 @@ class Model extends \ManaPHP\Model
 
         $sample = static::sample();
 
-        $shardKey = $sample->getShardKey();
-        if ($shardKey && !isset($documents[0][$shardKey])) {
-            throw new MissingShardingFieldException($shardKey);
-        }
-
         $primaryKey = $sample->getPrimaryKey();
         $allowNull = $sample->isAllowNullValue();
         $fieldTypes = $sample->getFieldTypes();
@@ -658,7 +648,7 @@ class Model extends \ManaPHP\Model
             $documents[$i] = $document;
         }
 
-        list($db, $collection) = $sample->getUniqueShard($shardKey ? [$shardKey => array_column($documents, $shardKey)] : null);
+        list($db, $collection) = $sample->getUniqueShard();
 
         /** @var \ManaPHP\MongodbInterface $mongodb */
         $mongodb = Di::getDefault()->getShared($db);

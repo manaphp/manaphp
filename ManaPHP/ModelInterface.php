@@ -22,11 +22,6 @@ interface ModelInterface
     public function getDb($context = null);
 
     /**
-     * @return string|null
-     */
-    public function getShardKey();
-
-    /**
      * @return array
      */
     public function getAnyShard();
@@ -36,26 +31,14 @@ interface ModelInterface
      *
      * @return array
      */
-    public function getUniqueShard($context);
-
-    /**
-     * @param mixed $context
-     *
-     * @return string
-     */
-    public function getUniqueDbShard($context);
+    public function getUniqueShard($context = null);
 
     /**
      * @param mixed $context
      *
      * @return array
      */
-    public function getMultipleShards($context);
-
-    /**
-     * @return array
-     */
-    public function getAllShards();
+    public function getMultipleShards($context = null);
 
     /**
      * @return string

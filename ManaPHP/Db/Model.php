@@ -34,7 +34,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
      */
     public static function connection($context = null)
     {
-        $db = static::sample()->getUniqueDbShard($context);
+        list($db) = static::sample()->getUniqueShard($context);
 
         return Di::getDefault()->getShared($db);
     }
@@ -59,7 +59,15 @@ class Model extends \ManaPHP\Model implements ModelInterface
                 return $cached[$class] = $tryField;
             }
 
-            $tryField = $this->getSource() . '_id';
+            $source = $this->getSource();
+            if (($pos = strpos($source, ':')) !== false) {
+                $table = substr($source, 0, $pos);
+            } elseif (($pos = strpos($source, ',')) !== false) {
+                $table = substr($source, 0, $pos);
+            } else {
+                $table = $source;
+            }
+            $tryField = $table . '_id';
             if (in_array($tryField, $fields, true)) {
                 return $cached[$class] = $tryField;
             }
@@ -374,14 +382,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $bind = [];
         }
 
-        $sample = static::sample();
-
-        $shardKey = $sample->getShardKey();
-        if ($shardKey && isset($bind[$shardKey])) {
-            $shards = $sample->getMultipleShards($bind[$shardKey]);
-        } else {
-            $shards = $sample->getAllShards();
-        }
+        $shards = static::sample()->getMultipleShards($bind);
 
         $affected_count = 0;
         foreach ($shards as $db => $tables) {
@@ -411,14 +412,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $bind = [];
         }
 
-        $sample = static::sample();
-
-        $shardKey = $sample->getShardKey();
-        if ($shardKey && isset($bind[$shardKey])) {
-            $shards = $sample->getMultipleShards($bind[$shardKey]);
-        } else {
-            $shards = $sample->getAllShards();
-        }
+        $shards = static::sample()->getMultipleShards($bind);
 
         $affected_count = 0;
         foreach ($shards as $db => $tables) {
@@ -429,7 +423,6 @@ class Model extends \ManaPHP\Model implements ModelInterface
                 $affected_count += $db->updateBySql('UPDATE' . " [$table] SET " . $sql, $bind);
             }
         }
-
 
         return $affected_count;
     }

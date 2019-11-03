@@ -385,7 +385,7 @@ class Query extends \ManaPHP\Query
     public function whereEq($field, $value)
     {
         $normalizedValue = $this->normalizeValue($field, $value);
-        $this->_equals[$field] = $normalizedValue;
+        $this->_shard_context[$field] = $normalizedValue;
 
         $this->_filters[] = [$field => $normalizedValue];
 
@@ -401,6 +401,10 @@ class Query extends \ManaPHP\Query
      */
     public function whereCmp($field, $operator, $value)
     {
+        if (in_array($operator, ['>=', '>', '<', '<='], true)) {
+            $this->_shard_context[$field] = [$operator, $value];
+        }
+
         if ($operator === '=') {
             return $this->whereEq($field, $value);
         } elseif ($operator === '~=') {
@@ -495,6 +499,8 @@ class Query extends \ManaPHP\Query
             return $min === null || $min === '' ? $this : $this->whereCmp($field, '>=', $min);
         }
 
+        $this->_shard_context[$field] = ['~=', [$min, $max]];
+
         $this->_filters[] = [$field => ['$gte' => $this->normalizeValue($field, $min), '$lte' => $this->normalizeValue($field, $max)]];
 
         return $this;
@@ -529,7 +535,7 @@ class Query extends \ManaPHP\Query
     public function whereIn($field, $values)
     {
         $normalizedValues = $this->normalizeValues($field, $values);
-        $this->_equals[$field] = $normalizedValues;
+        $this->_shard_context[$field] = $normalizedValues;
 
         $this->_filters[] = [$field => ['$in' => $normalizedValues]];
 

@@ -5,7 +5,8 @@ use ArrayIterator;
 use IteratorAggregate;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Model\ShardingTooManyException;
+use ManaPHP\Helper\Sharding;
+use ManaPHP\Helper\Sharding\ShardingTooManyException;
 use ManaPHP\Query\NotFoundException;
 
 /**
@@ -72,11 +73,6 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     protected $_group;
 
     /**
-     * @var array
-     */
-    protected $_equals = [];
-
-    /**
      * @var string|array|callable
      */
     protected $_index;
@@ -90,6 +86,15 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      * @var bool
      */
     protected $_force_master = false;
+
+    /**
+     * @var array
+     */
+    protected $_shard_context = [];
+    /**
+     * @var mixed
+     */
+    protected $_shard_strategy;
 
     public function getIterator()
     {
@@ -123,21 +128,33 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     }
 
     /**
+     * @param callable $strategy
+     *
+     * @return static
+     */
+    public function shard($strategy)
+    {
+        $this->_shard_strategy = $strategy;
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function getShards()
     {
         if ($model = $this->_model ?? null) {
-            $shardKey = $model->getShardKey();
-            if ($shardKey && isset($this->_equals[$shardKey])) {
-                return $model->getMultipleShards($this->_equals[$shardKey]);
-            } else {
-                return $model->getAllShards();
-            }
+            return $model->getMultipleShards($this->_shard_context);
         } else {
             $db = is_object($this->_db) ? '' : $this->_db;
+            $table = $this->_table;
 
-            return [$db => [$this->_table]];
+            if ($shard_strategy = $this->_shard_strategy) {
+                return $shard_strategy($db, $table, $this->_shard_context);
+            } else {
+                return Sharding::multiple($db, $table, $this->_shard_context);
+            }
         }
     }
 

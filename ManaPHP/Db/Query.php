@@ -4,11 +4,11 @@ namespace ManaPHP\Db;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
+use ManaPHP\Helper\Sharding\ShardingTooManyException;
 use ManaPHP\Model\Expression\Decrement;
 use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\Expression\Raw;
 use ManaPHP\Model\ExpressionInterface;
-use ManaPHP\Model\ShardingTooManyException;
 use PDO;
 
 class Query extends \ManaPHP\Query implements QueryInterface
@@ -218,7 +218,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
         if ($value === null) {
             $this->_conditions[] = $normalizedField . ' IS NULL';
         } else {
-            $this->_equals[$field] = $value;
+            $this->_shard_context[$field] = $value;
 
             $bind_key = strpos($field, '.') !== false ? strtr($field, '.', '_') : $field;
             $this->_conditions[] = "$normalizedField=:$bind_key";
@@ -237,6 +237,10 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function whereCmp($field, $operator, $value)
     {
+        if (in_array($operator, ['>=', '>', '<', '<='], true)) {
+            $this->_shard_context[$field] = [$operator, $value];
+        }
+
         $bind_key = strpos($field, '.') ? strtr($field, '.', '_') : $field;
         $normalizedField = preg_replace('#\w+#', '[\\0]', $field);
 
@@ -322,6 +326,8 @@ class Query extends \ManaPHP\Query implements QueryInterface
             return $min === null || $min === '' ? $this : $this->whereCmp($expr, '>=', $min);
         }
 
+        $this->_shard_context[$expr] = ['~=', [$min, $max]];
+
         if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
 
             if (strpos($expr, '.') !== false) {
@@ -394,7 +400,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
     public function whereIn($expr, $values)
     {
         if ($values) {
-            $this->_equals[$expr] = $values;
+            $this->_shard_context[$expr] = $values;
 
             if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
                 if (strpos($expr, '.') !== false) {

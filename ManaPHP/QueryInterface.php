@@ -23,14 +23,11 @@ interface QueryInterface
     public function getModel();
 
     /**
-     * @return array
+     * @param callable $strategy
+     *
+     * @return static
      */
-    public function getShards();
-
-    /**
-     * @return array
-     */
-    public function getUniqueShard();
+    public function shard($strategy);
 
     /**
      * @param string $table
