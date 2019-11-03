@@ -165,11 +165,9 @@ class DbController extends Controller
         if ($service !== 'db') {
             $str .= PHP_EOL;
             $str .= '    /**' . PHP_EOL;
-            $str .= '     * @param mixed $context' . PHP_EOL;
-            $str .= '     *' . PHP_EOL;
             $str .= '     * @return string' . PHP_EOL;
             $str .= '     */' . PHP_EOL;
-            $str .= '    public function getDb($context = null)' . PHP_EOL;
+            $str .= '    public function getDb()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$service';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
@@ -179,11 +177,9 @@ class DbController extends Controller
             $str .= PHP_EOL;
 
             $str .= '    /**' . PHP_EOL;
-            $str .= '     * @param mixed $context' . PHP_EOL;
-            $str .= '     *' . PHP_EOL;
             $str .= '     * @return string' . PHP_EOL;
             $str .= '     */' . PHP_EOL;
-            $str .= '    public function getSource($context = null)' . PHP_EOL;
+            $str .= '    public function getSource()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$table';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;

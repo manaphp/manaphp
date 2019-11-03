@@ -18,11 +18,9 @@ class Model extends \ManaPHP\Model implements ModelInterface
     /**
      * Gets the connection used to crud data to the model
      *
-     * @param mixed $context
-     *
      * @return string
      */
-    public function getDb($context = null)
+    public function getDb()
     {
         return 'db';
     }

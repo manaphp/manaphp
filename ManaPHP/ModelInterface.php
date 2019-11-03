@@ -6,20 +6,16 @@ interface ModelInterface
     /**
      * Returns table name mapped in the model
      *
-     * @param mixed $context
-     *
      * @return string
      */
-    public function getSource($context = null);
+    public function getSource();
 
     /**
      * Gets internal database connection
      *
-     * @param mixed $context
-     *
      * @return string
      */
-    public function getDb($context = null);
+    public function getDb();
 
     /**
      * @return array

@@ -142,11 +142,9 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * Returns table name mapped in the model
      *
-     * @param mixed $context
-     *
      * @return string
      */
-    public function getSource($context = null)
+    public function getSource()
     {
         $class = static::class;
         return Str::underscore(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1));

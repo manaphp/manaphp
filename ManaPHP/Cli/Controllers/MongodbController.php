@@ -252,11 +252,9 @@ class MongodbController extends Controller
         if ($service !== 'mongodb') {
             $str .= PHP_EOL;
             $str .= '    /**' . PHP_EOL;
-            $str .= '     * @param mixed $context' . PHP_EOL;
-            $str .= '     *' . PHP_EOL;
             $str .= '     * @return string' . PHP_EOL;
             $str .= '     */' . PHP_EOL;
-            $str .= '    public function getDb($context = null)' . PHP_EOL;
+            $str .= '    public function getDb()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$service';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
@@ -266,11 +264,9 @@ class MongodbController extends Controller
             $source = ($pos = strpos($namespace, '.')) ? substr($namespace, $pos + 1) : $namespace;
             $str .= PHP_EOL;
             $str .= '    /**' . PHP_EOL;
-            $str .= '     * @param mixed $context' . PHP_EOL;
-            $str .= '     *' . PHP_EOL;
             $str .= '     * @return string' . PHP_EOL;
             $str .= '     */' . PHP_EOL;
-            $str .= '    public function getSource($context = null)' . PHP_EOL;
+            $str .= '    public function getSource()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$source';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
