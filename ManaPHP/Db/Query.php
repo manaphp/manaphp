@@ -161,7 +161,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
         if (strpos($table, '\\') !== false) {
             /** @var \ManaPHP\Model $model */
             $model = $this->_di->getShared($table);
-            $table = $model->getSource($this->_bind);
+            $table = $model->getSource();
         }
 
         $this->_joins[] = [$table, $condition, $alias, $type];
