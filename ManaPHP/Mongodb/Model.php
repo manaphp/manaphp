@@ -77,7 +77,7 @@ class Model extends \ManaPHP\Model
                 return $cached[$class] = $tryField;
             }
 
-            $source = $this->getSource();
+            $source = $this->getTable();
             if (($pos = strpos($source, ':')) !== false) {
                 $collection = substr($source, 0, $pos);
             } elseif (($pos = strpos($source, ',')) !== false) {

@@ -8,7 +8,7 @@ interface ModelInterface
      *
      * @return string
      */
-    public function getSource();
+    public function getTable();
 
     /**
      * Gets internal database connection

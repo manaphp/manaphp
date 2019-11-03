@@ -57,7 +57,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
                 return $cached[$class] = $tryField;
             }
 
-            $source = $this->getSource();
+            $source = $this->getTable();
             if (($pos = strpos($source, ':')) !== false) {
                 $table = substr($source, 0, $pos);
             } elseif (($pos = strpos($source, ',')) !== false) {

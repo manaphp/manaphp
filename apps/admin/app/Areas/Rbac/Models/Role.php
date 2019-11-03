@@ -15,7 +15,7 @@ class Role extends Model
     public $created_time;
     public $updated_time;
 
-    public function getSource($context = null)
+    public function getTable()
     {
         return 'rbac_role';
     }

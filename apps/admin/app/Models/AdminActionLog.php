@@ -20,11 +20,9 @@ class AdminActionLog extends Model
     public $created_time;
 
     /**
-     * @param mixed $context
-     *
      * @return string
      */
-    public function getSource($context = null)
+    public function getTable()
     {
         return 'admin_action_log';
     }

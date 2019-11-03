@@ -5,7 +5,7 @@ use ManaPHP\Mongodb\Model;
 
 class City2 extends Model
 {
-    public function getSource($context = null)
+    public function getTable($context = null)
     {
         return 'city';
     }

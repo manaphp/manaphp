@@ -266,7 +266,7 @@ class MongodbController extends Controller
             $str .= '    /**' . PHP_EOL;
             $str .= '     * @return string' . PHP_EOL;
             $str .= '     */' . PHP_EOL;
-            $str .= '    public function getSource()' . PHP_EOL;
+            $str .= '    public function getTable()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$source';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;

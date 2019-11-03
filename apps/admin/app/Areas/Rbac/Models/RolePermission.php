@@ -11,7 +11,7 @@ class RolePermission extends Model
     public $creator_name;
     public $created_time;
 
-    public function getSource($context = null)
+    public function getTable()
     {
         return 'rbac_role_permission';
     }

@@ -10,7 +10,7 @@ class Student extends \ManaPHP\Db\Model
     public $age;
     public $name;
 
-    public function getSource($context = null)
+    public function getTable()
     {
         return '_student';
     }

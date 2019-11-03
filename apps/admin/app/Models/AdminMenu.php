@@ -14,7 +14,7 @@ class AdminMenu extends Model
     public $enabled;
     public $created_time;
 
-    public function getSource($context = null)
+    public function getTable()
     {
         return 'admin_menu';
     }

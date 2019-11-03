@@ -411,7 +411,7 @@ class Query extends \ManaPHP\Query
             if ($this->_types && !isset($this->_types[$field])) {
                 throw new InvalidArgumentException(['`:field` field is not exist in `:collection` collection',
                     'field' => $field,
-                    'collection' => $this->_model ? $this->_model->getSource() : $this->_table
+                    'collection' => $this->_model ? $this->_model->getTable() : $this->_table
                 ]);
             }
 

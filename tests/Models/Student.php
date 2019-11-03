@@ -15,7 +15,7 @@ class Student extends Model
     public $age;
     public $name;
 
-    public function getSource($context = null)
+    public function getTable($context = null)
     {
         return '_student';
     }

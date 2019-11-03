@@ -169,7 +169,7 @@ class MongodbModelTest extends TestCase
          * @var \ManaPHP\Db $db
          */
         $db = $this->di->getShared('mongodb');
-        $db->truncate($model->getSource());
+        $db->truncate($model->getTable());
     }
 
     public function test_create()
@@ -279,15 +279,15 @@ class MongodbModelTest extends TestCase
     {
         //infer the table name from table name
         $city = new City1();
-        $this->assertEquals('city1', $city->getSource());
+        $this->assertEquals('city1', $city->getTable());
 
         //use getSource
         $city = new City2();
-        $this->assertEquals('city', $city->getSource());
+        $this->assertEquals('city', $city->getTable());
 
         //use setSource
         $city = new City3();
-        $this->assertEquals('the_city', $city->getSource());
+        $this->assertEquals('the_city', $city->getTable());
     }
 
     public function test_getSnapshotData()

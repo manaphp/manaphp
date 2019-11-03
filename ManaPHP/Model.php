@@ -109,12 +109,12 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     public function getMultipleShards($context = null)
     {
         $db = $this->getDb();
-        $source = $this->getSource();
+        $table = $this->getTable();
 
-        if (strcspn($db, ':,') === strlen($db) && strcspn($source, ':,') === strlen($source)) {
-            return [$db => [$source]];
+        if (strcspn($db, ':,') === strlen($db) && strcspn($table, ':,') === strlen($table)) {
+            return [$db => [$table]];
         } else {
-            return Sharding::multiple($this->getDb(), $this->getSource(), $context);
+            return Sharding::multiple($this->getDb(), $this->getTable(), $context);
         }
     }
 
@@ -144,7 +144,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      *
      * @return string
      */
-    public function getSource()
+    public function getTable()
     {
         $class = static::class;
         return Str::underscore(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1));
