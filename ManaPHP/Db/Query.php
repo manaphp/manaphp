@@ -838,8 +838,9 @@ class Query extends \ManaPHP\Query implements QueryInterface
         }
         $params['fields'] = $fields;
 
+        $table = '[' . str_replace('.', '].[', $table) . ']';
         $alias = $this->_alias;
-        $params['from'] = $alias ? "[$table] AS [$alias]" : $table;
+        $params['from'] = $alias ? "$table AS [$alias]" : $table;
 
         $joinSQL = '';
         foreach ($this->_joins as $join) {
