@@ -504,13 +504,8 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $this->_conditions[] = implode(' OR ', $conditions);
         } else {
             $key = strtr($expr, '.', '_');
-
-            if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
-                $expr = '[' . str_replace('.', '].[', $expr) . ']';
-            }
-
+            $expr = '[' . str_replace('.', '].[', $expr) . ']';
             $this->_conditions[] = $expr . ' LIKE :' . $key;
-
             $this->_bind[$key] = $like;
         }
 
@@ -541,13 +536,8 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $this->_conditions[] = implode(' AND ', $conditions);
         } else {
             $key = strtr($expr, '.', '_');
-
-            if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
-                $expr = '[' . str_replace('.', '].[', $expr) . ']';
-            }
-
+            $expr = '[' . str_replace('.', '].[', $expr) . ']';
             $this->_conditions[] = $expr . ' NOT LIKE :' . $key;
-
             $this->_bind[$key] = $like;
         }
 
