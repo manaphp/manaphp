@@ -820,7 +820,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     protected function _buildSql($db, $table)
     {
-        if (!$this->_table) {
+        if (!$this->_table && !$this->_model) {
             throw new MisuseException('at least one model is required to build the query');
         }
 
