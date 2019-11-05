@@ -372,32 +372,30 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @param string $expr
+     * @param string $field
      * @param array  $values
      *
      * @return static
      */
-    public function whereIn($expr, $values)
+    public function whereIn($field, $values)
     {
         if ($values) {
-            $this->_shard_context[$expr] = $values;
+            $this->_shard_context[$field] = $values;
 
-            if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
-                $expr = '[' . str_replace('.', '].[', $expr) . ']';
-            }
+            $id = str_replace('.', '_', $field);
+            $field = '[' . str_replace('.', '].[', $field) . ']';
 
             if (is_int(current($values))) {
-                $this->_conditions[] = $expr . ' IN (' . implode(', ', array_map('intval', $values)) . ')';
+                $this->_conditions[] = $field . ' IN (' . implode(', ', array_map('intval', $values)) . ')';
             } else {
                 $bindKeys = [];
                 foreach ($values as $k => $value) {
-                    $key = '_in_' . $this->_param_number . '_' . $k;
+                    $key = "{$id}_in_{$k}";
                     $bindKeys[] = ":$key";
                     $this->_bind[$key] = $value;
                 }
 
-                $this->_conditions[] = $expr . ' IN (' . implode(', ', $bindKeys) . ')';
-                $this->_param_number++;
+                $this->_conditions[] = $field . ' IN (' . implode(', ', $bindKeys) . ')';
             }
         } else {
             $this->_conditions[] = 'FALSE';
@@ -424,31 +422,28 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @param string $expr
+     * @param string $field
      * @param array  $values
      *
      * @return static
      */
-    public function whereNotIn($expr, $values)
+    public function whereNotIn($field, $values)
     {
         if ($values) {
-            if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
-                $expr = '[' . str_replace('.', '].[', $expr) . ']';
-            }
+            $id = str_replace('.', '_', $field);
+            $field = '[' . str_replace('.', '].[', $field) . ']';
 
             if (is_int(current($values))) {
-                $this->_conditions[] = $expr . ' NOT IN (' . implode(', ', array_map('intval', $values)) . ')';
+                $this->_conditions[] = $field . ' NOT IN (' . implode(', ', array_map('intval', $values)) . ')';
             } else {
                 $bindKeys = [];
                 foreach ($values as $k => $value) {
-                    $key = '_in_' . $this->_param_number . '_' . $k;
+                    $key = "{$id}_not_in_{$k}";
                     $bindKeys[] = ':' . $key;
                     $this->_bind[$key] = $value;
                 }
 
-                $this->_param_number++;
-
-                $this->_conditions[] = $expr . ' NOT IN (' . implode(', ', $bindKeys) . ')';
+                $this->_conditions[] = $field . ' NOT IN (' . implode(', ', $bindKeys) . ')';
             }
         }
 

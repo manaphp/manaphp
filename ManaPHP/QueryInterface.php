@@ -137,22 +137,22 @@ interface QueryInterface
     /**
      * Appends an IN condition to the current conditions
      *
-     * @param string $expr
+     * @param string $field
      * @param array  $values
      *
      * @return static
      */
-    public function whereIn($expr, $values);
+    public function whereIn($field, $values);
 
     /**
      * Appends a NOT IN condition to the current conditions
      *
-     * @param string $expr
+     * @param string $field
      * @param array  $values
      *
      * @return static
      */
-    public function whereNotIn($expr, $values);
+    public function whereNotIn($field, $values);
 
     /**
      * @param string $field

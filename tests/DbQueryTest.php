@@ -253,11 +253,6 @@ class DbQueryTest extends TestCase
             (new Query())->from('city')->whereIn('city_id', [1, 2])->getSql());
         $this->assertEquals('SELECT * FROM [city] WHERE [city_id] IN (:_in_0_0, :_in_0_1)',
             (new Query())->from('city')->whereIn('city_id', ['1', '2'])->getSql());
-
-        $this->assertEquals('SELECT * FROM [city] WHERE DATE(created_time) IN (2000, 2001)',
-            (new Query())->from('city')->whereIn('DATE(created_time)', [2000, 2001])->getSql());
-        $this->assertEquals('SELECT * FROM [city] WHERE DATE(created_time) IN (:_in_0_0, :_in_0_1)',
-            (new Query())->from('city')->whereIn('DATE(created_time)', ['2000', '2001'])->getSql());
     }
 
     public function test_whereNotIn()
