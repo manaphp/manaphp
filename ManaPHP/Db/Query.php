@@ -330,14 +330,8 @@ class Query extends \ManaPHP\Query implements QueryInterface
 
         if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
 
-            if (strpos($expr, '.') !== false) {
-                $id = strtr($expr, '.', '_');
-                $expr = '[' . str_replace('.', '].[', $expr) . ']';
-
-            } else {
-                $id = $expr;
-                $expr = '[' . $expr . ']';
-            }
+            $id = strtr($expr, '.', '_');
+            $expr = '[' . str_replace('.', '].[', $expr) . ']';
 
             $minKey = $id . '_min';
             $maxKey = $id . '_max';
@@ -376,11 +370,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
         $this->_param_number++;
 
         if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
-            if (strpos($expr, '.') !== false) {
-                $expr = '[' . str_replace('.', '].[', $expr) . ']';
-            } else {
-                $expr = '[' . $expr . ']';
-            }
+            $expr = '[' . str_replace('.', '].[', $expr) . ']';
         }
 
         $this->_conditions[] = "$expr NOT BETWEEN :$minKey AND :$maxKey";
@@ -403,11 +393,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $this->_shard_context[$expr] = $values;
 
             if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
-                if (strpos($expr, '.') !== false) {
-                    $expr = '[' . str_replace('.', '].[', $expr) . ']';
-                } else {
-                    $expr = '[' . $expr . ']';
-                }
+                $expr = '[' . str_replace('.', '].[', $expr) . ']';
             }
 
             if (is_int(current($values))) {
@@ -457,11 +443,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
     {
         if ($values) {
             if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
-                if (strpos($expr, '.') !== false) {
-                    $expr = '[' . str_replace('.', '].[', $expr) . ']';
-                } else {
-                    $expr = '[' . $expr . ']';
-                }
+                $expr = '[' . str_replace('.', '].[', $expr) . ']';
             }
 
             if (is_int(current($values))) {
@@ -529,11 +511,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $conditions = [];
             foreach ($expr as $field) {
                 $key = strtr($field, '.', '_');
-                if (strpos($field, '.') !== false) {
-                    $conditions[] = '[' . str_replace('.', '].[', $field) . ']' . ' LIKE :' . $key;
-                } else {
-                    $conditions[] = '[' . $field . '] LIKE :' . $key;
-                }
+                $conditions[] = '[' . str_replace('.', '].[', $field) . ']' . ' LIKE :' . $key;
 
                 $this->_bind[$key] = $like;
             }
@@ -543,11 +521,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $key = strtr($expr, '.', '_');
 
             if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
-                if (strpos($expr, '.') !== false) {
-                    $expr = '[' . str_replace('.', '].[', $expr) . ']';
-                } else {
-                    $expr = '[' . $expr . ']';
-                }
+                $expr = '[' . str_replace('.', '].[', $expr) . ']';
             }
 
             $this->_conditions[] = $expr . ' LIKE :' . $key;
@@ -574,11 +548,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $conditions = [];
             foreach ($expr as $field) {
                 $key = strtr($field, '.', '_');
-                if (strpos($field, '.') !== false) {
-                    $conditions[] = '[' . str_replace('.', '].[', $field) . ']' . ' NOT LIKE :' . $key;
-                } else {
-                    $conditions[] = '[' . $field . '] NOT LIKE :' . $key;
-                }
+                $conditions[] = '[' . str_replace('.', '].[', $field) . ']' . ' NOT LIKE :' . $key;
 
                 $this->_bind[$key] = $like;
             }
@@ -588,11 +558,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $key = strtr($expr, '.', '_');
 
             if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
-                if (strpos($expr, '.') !== false) {
-                    $expr = '[' . str_replace('.', '].[', $expr) . ']';
-                } else {
-                    $expr = '[' . $expr . ']';
-                }
+                $expr = '[' . str_replace('.', '].[', $expr) . ']';
             }
 
             $this->_conditions[] = $expr . ' NOT LIKE :' . $key;
@@ -862,11 +828,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $type = $v === SORT_ASC ? 'ASC' : 'DESC';
 
             if (strpos($field, '[') === false && strpos($field, '(') === false) {
-                if (strpos($field, '.') !== false) {
-                    $r .= '[' . str_replace('.', '].[', $field) . '] ' . $type . ', ';
-                } else {
-                    $r .= '[' . $field . '] ' . $type . ', ';
-                }
+                $r .= '[' . str_replace('.', '].[', $field) . '] ' . $type . ', ';
             } else {
                 $r .= "$field $type, ";
             }
