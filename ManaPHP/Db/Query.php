@@ -497,7 +497,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
             foreach ($expr as $field) {
                 $key = strtr($field, '.', '_');
                 $conditions[] = '[' . str_replace('.', '].[', $field) . ']' . ' LIKE :' . $key;
-
                 $this->_bind[$key] = $like;
             }
 
@@ -529,7 +528,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
             foreach ($expr as $field) {
                 $key = strtr($field, '.', '_');
                 $conditions[] = '[' . str_replace('.', '].[', $field) . ']' . ' NOT LIKE :' . $key;
-
                 $this->_bind[$key] = $like;
             }
 
