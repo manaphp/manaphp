@@ -469,16 +469,27 @@ class Model extends \ManaPHP\Model
             }
         }
 
-        /** @var \ManaPHP\MongodbInterface $mongodb */
-        $mongodb = $this->_di->getShared($db);
-        $mongodb->update($collection, $fieldValues, [$primaryKey => $this->$primaryKey]);
-
+        $expressions = [];
         $expressionFields = [];
         foreach ($fieldValues as $field => $value) {
             if ($value instanceof ExpressionInterface) {
                 $expressionFields[] = $field;
+                $expressions[$field] = $value;
+                unset($fieldValues[$field]);
             }
         }
+
+        if ($expressions) {
+            $fieldValues = ['$set' => $fieldValues];
+            foreach ($expressions as $field => $value) {
+                $compiled = $value->compile($this, $field);
+                $fieldValues = $fieldValues ? array_merge_recursive($fieldValues, $compiled) : $compiled;
+            }
+        }
+
+        /** @var \ManaPHP\MongodbInterface $mongodb */
+        $mongodb = $this->_di->getShared($db);
+        $mongodb->update($collection, $fieldValues, [$primaryKey => $this->$primaryKey]);
 
         if ($expressionFields) {
             $expressionFields['_id'] = false;

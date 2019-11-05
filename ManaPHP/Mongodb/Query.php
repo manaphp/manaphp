@@ -6,9 +6,6 @@ use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Arr;
-use ManaPHP\Model\Expression\Decrement;
-use ManaPHP\Model\Expression\Increment;
-use ManaPHP\Model\ExpressionInterface;
 use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\Regex;
 
@@ -1065,28 +1062,6 @@ class Query extends \ManaPHP\Query
                 break;
             }
             $filters[$key] = $value;
-        }
-
-        $expressions = [];
-        foreach ($fieldValues as $field => $value) {
-            if ($value instanceof ExpressionInterface) {
-                $expressions[$field] = $value;
-                unset($fieldValues[$field]);
-            }
-        }
-
-        if ($expressions) {
-            if ($fieldValues) {
-                $fieldValues = ['$set' => $fieldValues];
-            }
-
-            foreach ($expressions as $field => $value) {
-                if ($value instanceof Increment) {
-                    $fieldValues['$inc'][$field] = $value->step;
-                } elseif ($value instanceof Decrement) {
-                    $fieldValues['$inc'][$field] = -$value->step;
-                }
-            }
         }
 
         $shards = $this->getShards();

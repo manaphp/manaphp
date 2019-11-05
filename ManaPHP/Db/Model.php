@@ -294,16 +294,25 @@ class Model extends \ManaPHP\Model implements ModelInterface
             }
         }
 
-        /** @var \ManaPHP\DbInterface $db */
-        $db = $this->_di->getShared($db);
-        $db->update($table, $fieldValues, [$primaryKey => $this->$primaryKey]);
-
+        $bind = [];
         $expressionFields = [];
         foreach ($fieldValues as $field => $value) {
             if ($value instanceof ExpressionInterface) {
                 $expressionFields[] = $field;
+                $compiled = $value->compile($this, $field);
+
+                $fieldValues[] = $compiled[0];
+                if (count($compiled) !== 1) {
+                    unset($compiled[0]);
+                    $bind = $bind ? array_merge($bind, $compiled) : $compiled;
+                }
+                unset($fieldValues[$field]);
             }
         }
+
+        /** @var \ManaPHP\DbInterface $db */
+        $db = $this->_di->getShared($db);
+        $db->update($table, $fieldValues, [$primaryKey => $this->$primaryKey], $bind);
 
         if ($expressionFields && $rs = $this->newQuery()->select($expressionFields)->whereEq($primaryKey, $this->$primaryKey)->fetch(true)) {
             foreach ((array)$rs[0] as $field => $value) {
