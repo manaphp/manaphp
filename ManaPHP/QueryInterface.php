@@ -106,24 +106,24 @@ interface QueryInterface
     /**
      * Appends a BETWEEN condition to the current conditions
      *
-     * @param string           $expr
+     * @param string           $field
      * @param int|float|string $min
      * @param int|float|string $max
      *
      * @return static
      */
-    public function whereBetween($expr, $min, $max);
+    public function whereBetween($field, $min, $max);
 
     /**
      * Appends a NOT BETWEEN condition to the current conditions
      *
-     * @param string           $expr
+     * @param string           $field
      * @param int|float|string $min
      * @param int|float|string $max
      *
      * @return static
      */
-    public function whereNotBetween($expr, $min, $max);
+    public function whereNotBetween($field, $min, $max);
 
     /**
      * @param string     $field

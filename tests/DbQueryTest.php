@@ -225,9 +225,6 @@ class DbQueryTest extends TestCase
         $this->assertEquals('SELECT * FROM [city] WHERE [c].[city_id] BETWEEN :c_city_id_min AND :c_city_id_max',
             (new Query())->from('city')->whereBetween('c.city_id', 1, 10)->getSql());
 
-        $this->assertEquals('SELECT * FROM [city] WHERE DATE(created_time) BETWEEN :_min_0 AND :_max_0',
-            (new Query())->from('city')->whereBetween('DATE(created_time)', 2000, 2100)->getSql());
-
         $this->assertCount(20, (new Query)->from('city')->whereBetween('city_id', 1, 20)->all());
     }
 
@@ -238,9 +235,6 @@ class DbQueryTest extends TestCase
 
         $this->assertEquals('SELECT * FROM [city] WHERE [c].[city_id] NOT BETWEEN :_min_0 AND :_max_0',
             (new Query())->from('city')->whereNotBetween('c.city_id', 1, 10)->getSql());
-
-        $this->assertEquals('SELECT * FROM [city] WHERE DATE(created_time) NOT BETWEEN :_min_0 AND :_max_0',
-            (new Query())->from('city')->whereNotBetween('DATE(created_time)', 2000, 2100)->getSql());
 
         $this->assertCount(580, (new Query)->from('city')->whereNotBetween('city_id', 1, 20)->all());
     }

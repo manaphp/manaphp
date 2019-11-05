@@ -312,71 +312,61 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @param string           $expr
+     * @param string           $field
      * @param int|float|string $min
      * @param int|float|string $max
      *
      * @return static
      */
-    public function whereBetween($expr, $min, $max)
+    public function whereBetween($field, $min, $max)
     {
         if ($min === null || $min === '') {
-            return $max === null || $max === '' ? $this : $this->whereCmp($expr, '<=', $max);
+            return $max === null || $max === '' ? $this : $this->whereCmp($field, '<=', $max);
         } elseif ($max === null || $max === '') {
-            return $min === null || $min === '' ? $this : $this->whereCmp($expr, '>=', $min);
+            return $min === null || $min === '' ? $this : $this->whereCmp($field, '>=', $min);
         }
 
-        $this->_shard_context[$expr] = ['~=', [$min, $max]];
+        $this->_shard_context[$field] = ['~=', [$min, $max]];
 
-        if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
+        $id = strtr($field, '.', '_');
+        $field = '[' . str_replace('.', '].[', $field) . ']';
 
-            $id = strtr($expr, '.', '_');
-            $expr = '[' . str_replace('.', '].[', $expr) . ']';
+        $min_key = $id . '_min';
+        $max_key = $id . '_max';
 
-            $minKey = $id . '_min';
-            $maxKey = $id . '_max';
-        } else {
-            $minKey = '_min_' . $this->_param_number;
-            $maxKey = '_max_' . $this->_param_number;
-            $this->_param_number++;
-        }
+        $this->_conditions[] = "$field BETWEEN :$min_key AND :$max_key";
 
-        $this->_conditions[] = "$expr BETWEEN :$minKey AND :$maxKey";
-
-        $this->_bind[$minKey] = $min;
-        $this->_bind[$maxKey] = $max;
+        $this->_bind[$min_key] = $min;
+        $this->_bind[$max_key] = $max;
 
         return $this;
     }
 
     /**
-     * @param string           $expr
+     * @param string           $field
      * @param int|float|string $min
      * @param int|float|string $max
      *
      * @return static
      */
-    public function whereNotBetween($expr, $min, $max)
+    public function whereNotBetween($field, $min, $max)
     {
         if ($min === null || $min === '') {
-            return $max === null || $max === '' ? $this : $this->whereCmp($expr, '>', $max);
+            return $max === null || $max === '' ? $this : $this->whereCmp($field, '>', $max);
         } elseif ($max === null || $max === '') {
-            return $min === null || $min === '' ? $this : $this->whereCmp($expr, '<', $min);
+            return $min === null || $min === '' ? $this : $this->whereCmp($field, '<', $min);
         }
 
-        $minKey = '_min_' . $this->_param_number;
-        $maxKey = '_max_' . $this->_param_number;
+        $id = strtr($field, '.', '_');
+        $field = '[' . str_replace('.', '].[', $field) . ']';
 
-        $this->_param_number++;
+        $min_key = $id . '_min';
+        $max_key = $id . '_max';
 
-        if (strpos($expr, '[') === false && strpos($expr, '(') === false) {
-            $expr = '[' . str_replace('.', '].[', $expr) . ']';
-        }
+        $this->_conditions[] = "$field NOT BETWEEN :$min_key AND :$max_key";
 
-        $this->_conditions[] = "$expr NOT BETWEEN :$minKey AND :$maxKey";
-
-        $this->_bind[$minKey] = $min;
-        $this->_bind[$maxKey] = $max;
+        $this->_bind[$min_key] = $min;
+        $this->_bind[$max_key] = $max;
 
         return $this;
     }
