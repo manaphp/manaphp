@@ -11,9 +11,22 @@ abstract class Model extends \ManaPHP\Model
     abstract public function getModel();
 
     /**
+     * @return array|\ManaPHP\Merger\Query
+     */
+    abstract public function getQueries();
+
+    /**
      * @return \ManaPHP\Merger\Query
      */
-    abstract public function newQuery();
+    public function newQuery()
+    {
+        $queries = $this->getQueries();
+        if (is_array($queries)) {
+            $queries = $this->_di->get('ManaPHP\Merger\Query', [$queries]);
+        }
+
+        return $queries->setModel($this->getModel())->select($this->getFields());
+    }
 
     public function getDb()
     {
@@ -66,8 +79,7 @@ abstract class Model extends \ManaPHP\Model
      */
     public static function query($alias = null)
     {
-        $model = static::sample();
-        return $model->newQuery()->setModel($model->getModel());
+        return static::sample()->newQuery();
     }
 
     public function create()
