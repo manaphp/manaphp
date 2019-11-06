@@ -161,7 +161,7 @@ class Sharding
      *
      * @return array
      */
-    public static function single($db, $source, $context)
+    public static function unique($db, $source, $context)
     {
         $shards = self::multiple($db, $source, $context);
         if (count($shards) !== 1) {
