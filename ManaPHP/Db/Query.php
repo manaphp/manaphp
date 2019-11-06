@@ -45,11 +45,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     protected $_bind = [];
 
     /**
-     * @var int
-     */
-    protected $_param_number = 0;
-
-    /**
      * @var string
      */
     protected $_sql;

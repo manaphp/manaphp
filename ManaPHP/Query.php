@@ -18,7 +18,7 @@ use ManaPHP\Query\NotFoundException;
 abstract class Query extends Component implements QueryInterface, IteratorAggregate
 {
     /**
-     * @var string
+     * @var \ManaPHP\DbInterface|string
      */
     protected $_db;
 
