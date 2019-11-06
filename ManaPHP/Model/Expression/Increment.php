@@ -21,7 +21,6 @@ class Increment implements ExpressionInterface
         $this->_step = $step;
     }
 
-
     /**
      * @param \ManaPHP\ModelInterface $model
      * @param string                  $field
