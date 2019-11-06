@@ -1,42 +1,24 @@
 <?php
 namespace ManaPHP\Merger;
 
-use ArrayIterator;
-use IteratorAggregate;
-use ManaPHP\Component;
-use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Di;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Helper\Arr;
 use ManaPHP\Model;
 use ManaPHP\QueryInterface;
-use ManaPHP\Exception\NotFoundException;
 
 /**
  * Class Merger
  * @package ManaPHP\Merger\Query
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
-class Query extends Component implements QueryInterface, IteratorAggregate
+class Query extends \ManaPHP\Query
 {
     /**
      * @var \ManaPHP\QueryInterface[]
      */
-    protected $queries;
-
-    /**
-     * @var int
-     */
-    protected $_limit;
-
-    /**
-     * @var int
-     */
-    protected $_offset;
-
-    /**
-     * @var array
-     */
-    protected $_order;
+    protected $_queries;
 
     /**
      * Merger constructor.
@@ -46,68 +28,34 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function __construct($queries, $fields = null)
     {
-        $this->setQueries($queries);
-
-        if ($fields) {
-            $this->select($fields);
-        }
+        $this->setQueries($queries)->select($fields);
     }
 
     public function __clone()
     {
-        foreach ($this->queries as $k => $v) {
-            $this->queries[$k] = clone $v;
+        foreach ($this->_queries as $k => $v) {
+            $this->_queries[$k] = clone $v;
         }
-    }
-
-    public function getIterator()
-    {
-        return new ArrayIterator($this->fetch(true));
-    }
-
-    public function jsonSerialize()
-    {
-        return $this->fetch(true);
-    }
-
-    public function setDb($db)
-    {
-        throw new MisuseException(__METHOD__);
-    }
-
-    public function shard($key = null, $strategy = null)
-    {
-        throw new NotSupportedException(__METHOD__);
-    }
-
-    public function from($table, $alias = null)
-    {
-        throw new MisuseException(__METHOD__);
-    }
-
-    public function execute()
-    {
-        throw new MisuseException(__METHOD__);
     }
 
     /**
-     * @param string[]|\ManaPHP\ModelInterface[]|\ManaPHP\QueryInterface[] $queries
+     * @param string[]|\ManaPHP\ModelInterface[]|\ManaPHP\QueryInterface[] $_queries
      *
      * @return static
      */
-    public function setQueries($queries)
+    public function setQueries($_queries)
     {
-        if (is_string($queries[0])) {
-            foreach ($queries as $k => $query) {
-                $queries[$k] = $this->_di->get($query);
+        foreach ($_queries as $id => $query) {
+            if (is_string($query)) {
+                $query = Di::getDefault()->get($query);
             }
-        }
 
-        foreach ($queries as $query) {
             if ($query instanceof QueryInterface) {
-                $this->queries[] = $query;
+                $this->_queries[$id] = $query;
             } elseif ($query instanceof Model) {
-                $this->queries[] = $query->newQuery();
+                $this->_queries[$id] = $query::query();
+            } else {
+                throw new MisuseException('');
             }
         }
 
@@ -119,19 +67,53 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function getQueries()
     {
-        return $this->queries;
+        return $this->_queries;
+    }
+
+    public function setDb($db)
+    {
+        throw new NotSupportedException(__METHOD__);
+    }
+
+    public function shard($key = null, $strategy = null)
+    {
+        throw new NotSupportedException(__METHOD__);
+    }
+
+    public function from($table, $alias = null)
+    {
+        throw new NotSupportedException(__METHOD__);
     }
 
     /**
-     * @return \ManaPHP\Model
+     * @return array
      */
-    public function getModel()
+    public function getShards()
     {
-        return $this->queries[0]->getModel();
+        throw new NotSupportedException(__METHOD__);
     }
 
+    /**
+     * @return array
+     */
+    public function getUniqueShard()
+    {
+        throw new NotSupportedException(__METHOD__);
+    }
+
+    /**
+     * @param \ManaPHP\Model|string $model
+     *
+     * @return static
+     */
     public function setModel($model)
     {
+        parent::setModel($model);
+
+        foreach ($this->_queries as $query) {
+            $query->setModel($this->_model);
+        }
+
         return $this;
     }
 
@@ -142,16 +124,11 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function select($fields)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->select($fields);
         }
 
         return $this;
-    }
-
-    public function getUniqueShard()
-    {
-        throw new NotSupportedException(__METHOD__);
     }
 
     /**
@@ -163,30 +140,8 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function distinct($distinct = true)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->distinct($distinct);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param array $expr
-     */
-    public function aggregate($expr)
-    {
-        throw new NotSupportedException(__METHOD__);
-    }
-
-    /**
-     * @param array $filters
-     *
-     * @return static
-     */
-    public function where($filters)
-    {
-        foreach ($this->queries as $query) {
-            $query->where($filters);
         }
 
         return $this;
@@ -200,7 +155,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereEq($field, $value)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereEq($field, $value);
         }
 
@@ -216,7 +171,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereCmp($field, $operator, $value)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereCmp($field, $operator, $value);
         }
 
@@ -232,7 +187,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereMod($field, $divisor, $remainder)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereMod($field, $divisor, $remainder);
         }
 
@@ -247,22 +202,8 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereExpr($expr, $bind = null)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereExpr($expr, $bind);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param array $filters
-     *
-     * @return static
-     */
-    public function search($filters)
-    {
-        foreach ($this->queries as $query) {
-            $query->search($filters);
         }
 
         return $this;
@@ -277,7 +218,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereBetween($field, $min, $max)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereBetween($field, $min, $max);
         }
 
@@ -285,23 +226,6 @@ class Query extends Component implements QueryInterface, IteratorAggregate
     }
 
     /**
-     * @param string     $field
-     * @param int|string $min
-     * @param int|string $max
-     *
-     * @return static
-     */
-    public function whereDateBetween($field, $min, $max)
-    {
-        foreach ($this->queries as $query) {
-            $query->whereDateBetween($field, $min, $max);
-        }
-
-        return $this;
-    }
-
-    /**
-     *
      * @param string           $field
      * @param int|float|string $min
      * @param int|float|string $max
@@ -310,7 +234,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereNotBetween($field, $min, $max)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereNotBetween($field, $min, $max);
         }
 
@@ -325,7 +249,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereIn($field, $values)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereIn($field, $values);
         }
 
@@ -339,7 +263,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereNotIn($field, $values)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereNotIn($field, $values);
         }
 
@@ -354,7 +278,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereInset($field, $value)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereInset($field, $value);
         }
 
@@ -369,7 +293,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereNotInset($field, $value)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereNotInset($field, $value);
         }
 
@@ -384,7 +308,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereContains($field, $value)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereContains($field, $value);
         }
 
@@ -399,7 +323,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereNotContains($field, $value)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereNotContains($field, $value);
         }
 
@@ -415,7 +339,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereStartsWith($field, $value, $length = null)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereStartsWith($field, $value, $length);
         }
 
@@ -431,7 +355,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereNotStartsWith($field, $value, $length = null)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereNotStartsWith($field, $value, $length);
         }
 
@@ -446,7 +370,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereEndsWith($field, $value)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereEndsWith($field, $value);
         }
 
@@ -461,7 +385,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereNotEndsWith($field, $value)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereNotEndsWith($field, $value);
         }
 
@@ -476,7 +400,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereLike($expr, $value)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereLike($expr, $value);
         }
 
@@ -491,7 +415,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereNotLike($expr, $value)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereNotLike($expr, $value);
         }
 
@@ -507,7 +431,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereRegex($field, $regex, $flags = '')
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereRegex($field, $regex, $flags);
         }
 
@@ -523,7 +447,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereNotRegex($field, $regex, $flags = '')
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereNotRegex($field, $regex, $flags);
         }
 
@@ -537,7 +461,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereNull($expr)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereNull($expr);
         }
 
@@ -551,36 +475,17 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function whereNotNull($expr)
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $query->whereNotNull($expr);
         }
 
         return $this;
     }
 
-    /**
-     * @param array $options
-     *
-     * @return static
-     */
-    public function options($options)
+    public function where1v1($id, $value)
     {
-        foreach ($this->queries as $query) {
-            $query->options($options);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string|array $with
-     *
-     * @return static
-     */
-    public function with($with)
-    {
-        foreach ($this->queries as $query) {
-            $query->with($with);
+        foreach ($this->_queries as $query) {
+            $query->where1v1($id, $value);
         }
 
         return $this;
@@ -593,167 +498,85 @@ class Query extends Component implements QueryInterface, IteratorAggregate
      */
     public function orderBy($orderBy)
     {
-        if (is_string($orderBy)) {
-            $order = [];
-            foreach (explode(',', $orderBy) as $item) {
-                $item = trim($item);
-                if (preg_match('#^([\w.]+)(\s+asc|\s+desc)?$#i', $item, $match) !== 1) {
-                    throw new InvalidValueException(['unknown `:1` order by for `:2` model', $orderBy, get_class($this->getModel())]);
-                }
-                $order[$match[1]] = (!isset($match[2]) || strtoupper(ltrim($match[2])) === 'ASC') ? SORT_ASC : SORT_DESC;
-            }
-        } else {
-            $order = $orderBy;
-        }
+        parent::orderBy($orderBy);
 
-        $this->_order = $this->_order ? array_merge($this->_order, $order) : $order;
+        foreach ($this->_queries as $query) {
+            $query->orderBy($this->_order);
+        }
 
         return $this;
     }
 
     /**
-     * @param int $limit
-     * @param int $offset
+     * @param bool $forceUseMaster
      *
      * @return static
      */
-    public function limit($limit, $offset = null)
+    public function forceUseMaster($forceUseMaster = true)
     {
-        $this->_limit = $limit > 0 ? (int)$limit : null;
-        $this->_offset = $offset > 0 ? (int)$offset : null;
-
-        return $this;
-    }
-
-    /**
-     * @param int $size
-     * @param int $page
-     *
-     * @return static
-     */
-    public function page($size = null, $page = null)
-    {
-        if ($size === null) {
-            $size = (int)$this->request->get('size', 10);
-        }
-
-        if ($page === null) {
-            $page = (int)$this->request->get('page', 1);
-        }
-
-        $this->limit($size, ($page - 1) * $size);
-
-        return $this;
-    }
-
-    /**
-     * @param string|array $groupBy
-     */
-    public function groupBy($groupBy)
-    {
-        throw new NotSupportedException(__METHOD__);
-    }
-
-    /**
-     * @param callable|string|array $indexBy
-     *
-     * @return static
-     */
-    public function indexBy($indexBy)
-    {
-        foreach ($this->queries as $query) {
-            $query->indexBy($indexBy);
+        foreach ($this->_queries as $query) {
+            $query->forceUseMaster($forceUseMaster);
         }
 
         return $this;
     }
 
     /**
-     * @param bool $multiple
-     *
-     * @return static
+     * @return array
      */
-    public function setFetchType($multiple)
+    public function execute()
     {
-        foreach ($this->queries as $query) {
-            $query->setFetchType($multiple);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param bool $asArray
-     *
-     * @return \ManaPHP\Model[]|\ManaPHP\Model|array
-     */
-    public function fetch($asArray = false)
-    {
-        $r = [];
+        $result = [];
 
         if ($this->_order) {
-            foreach ($this->queries as $query) {
-                if ($this->_limit) {
-                    $t = $query->limit($this->_limit + $this->_offset)->fetch($asArray);
-                } else {
-                    $t = $query->fetch($asArray);
+            if ($this->_limit) {
+                foreach ($this->_queries as $query) {
+                    $query->limit($this->_offset + $this->_limit, 0);
                 }
-                $r = $r ? array_merge($r, $t) : $t;
             }
 
-            if (count($this->_order) === 1) {
-                $k = key($this->_order);
-                $v = current($this->_order);
-                if (is_int($k)) {
-                    array_multisort(array_column($r, $v), $r);
-                } else {
-                    array_multisort(array_column($r, $k), $v, $r);
+            $valid_times = 0;
+            foreach ($this->_queries as $query) {
+                if ($r = $query->execute()) {
+                    $valid_times++;
+                    $result = $result ? array_merge($result, $r) : $r;
                 }
-            } else {
-                $params = [];
-                foreach ($this->_order as $k => $v) {
-                    if (is_int($k)) {
-                        $params[] = array_column($r, $v);
-                    } else {
-                        $params[] = array_column($r, $k);
-                        $params[] = $v;
+            }
+
+            if ($valid_times > 1) {
+                $result = Arr::sort($result, $this->_order);
+            }
+
+            $result = $this->_limit ? array_slice($result, (int)$this->_offset, $this->_limit) : $result;
+        } elseif ($this->_limit) {
+            foreach ($this->_queries as $query) {
+                if ($r = $query->execute()) {
+                    $result = $result ? array_merge($result, $r) : $r;
+                    if (count($result) >= $this->_offset + $this->_limit) {
+                        $result = array_slice($result, (int)$this->_offset, $this->_limit);
+                        return $this->_index ? Arr::indexby($result, $this->_index) : $result;
                     }
                 }
-                $params[] = &$r;
-                array_multisort(...$params);
             }
 
-            if ($this->_offset) {
-                $r = array_slice($r, $this->_offset ?: 0, $this->_limit);
-            }
-        } elseif ($this->_offset) {
-            $count = 0;
-            foreach ($this->queries as $query) {
-                $c_limit = $this->_limit - count($r);
-                $c_offset = max(0, $this->_offset - $count);
-                $t = $query->limit($c_limit, $c_offset)->fetch($asArray);
-                $r = $r ? array_merge($r, $t) : $t;
-                if (count($r) === $this->_limit) {
-                    break;
-                }
-                $count += $t ? count($t) + $c_offset : $query->count();
-            }
-        } elseif ($this->_limit) {
-            foreach ($this->queries as $query) {
-                $t = $query->limit($this->_limit - count($r))->fetch($asArray);
-                $r = $r ? array_merge($r, $t) : $t;
-                if (count($r) >= $this->_limit) {
-                    break;
-                }
-            }
+            $result = $result ? array_slice($result, (int)$this->_offset, $this->_limit) : [];
         } else {
-            foreach ($this->queries as $query) {
-                $t = $query->fetch($asArray);
-                $r = $r ? array_merge($r, $t) : $t;
+            foreach ($this->_queries as $query) {
+                if ($r = $query->execute()) {
+                    $result = $result ? array_merge($result, $r) : $r;
+                }
             }
         }
 
-        return $r;
+        return $this->_index ? Arr::indexby($result, $this->_index) : $result;
+    }
+
+    /**
+     * @param array $expr
+     */
+    public function aggregate($expr)
+    {
+        throw new NotSupportedException(__METHOD__);
     }
 
     /**
@@ -764,13 +587,26 @@ class Query extends Component implements QueryInterface, IteratorAggregate
     public function values($field)
     {
         $values = [];
-        foreach ($this->queries as $query) {
-            $t = $query->values($field);
-            /** @noinspection SlowArrayOperationsInLoopInspection */
-            $values = array_merge($values, $t);
+        $valid_times = 0;
+        foreach ($this->_queries as $query) {
+            if ($t = $query->values($field)) {
+                $valid_times++;
+                $values = $values ? array_merge($values, $t) : $t;
+            }
         }
 
-        return array_values(array_unique($values, SORT_REGULAR));
+        if ($valid_times > 1) {
+            $values = array_values(array_unique($values));
+            if ($this->_order) {
+                if (current($this->_order) === SORT_ASC) {
+                    sort($values);
+                } else {
+                    rsort($values);
+                }
+            }
+        }
+
+        return $values;
     }
 
     /**
@@ -781,7 +617,7 @@ class Query extends Component implements QueryInterface, IteratorAggregate
     public function count($field = '*')
     {
         $r = 0;
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             $t = $query->count($field);
             $r += $t;
         }
@@ -790,100 +626,16 @@ class Query extends Component implements QueryInterface, IteratorAggregate
     }
 
     /**
-     *
-     * @param string $field
-     *
-     * @return int|float|null
-     */
-    public function sum($field)
-    {
-        $r = 0;
-        foreach ($this->queries as $query) {
-            $t = $query->sum($field);
-            $r += $t;
-        }
-
-        return $r;
-    }
-
-    /**
-     * @param string $field
-     *
-     * @return int|float|null
-     */
-    public function max($field)
-    {
-        $r = null;
-        foreach ($this->queries as $query) {
-            $r = $r === null ? $query->max($field) : max($r, $query->max($field));
-        }
-
-        return $r;
-    }
-
-    /**
-     * @param string $field
-     *
-     * @return int|float|null
-     */
-    public function min($field)
-    {
-        $r = null;
-        foreach ($this->queries as $query) {
-            $r = $r === null ? $query->min($field) : max($r, $query->min($field));
-        }
-
-        return $r;
-    }
-
-    /**
-     * @param string $field
-     *
-     * @return float|null
-     */
-    public function avg($field)
-    {
-        $count = $this->count($field);
-        $sum = $this->count($field);
-
-        return $sum ? $count / $sum : null;
-    }
-
-    /**
-     * @param int $size
-     * @param int $page
-     *
-     * @return \ManaPHP\Paginator
-     */
-    public function paginate($size = null, $page = null)
-    {
-        $this->page($size, $page);
-
-        $items = $this->fetch(true);
-
-        if ($this->_limit === null) {
-            $count = count($items);
-        } elseif (count($items) % $this->_limit === 0) {
-            $count = $this->count();
-        } else {
-            $count = $this->_offset + count($items);
-        }
-
-        $paginator = $this->_di->get('paginator');
-        $paginator->items = $items;
-        return $paginator->paginate($count, $this->_limit, (int)($this->_offset / $this->_limit) + 1);
-    }
-
-    /**
      * @return bool
      */
     public function exists()
     {
-        foreach ($this->queries as $query) {
+        foreach ($this->_queries as $query) {
             if ($query->exists()) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -895,9 +647,8 @@ class Query extends Component implements QueryInterface, IteratorAggregate
     public function update($fieldValues)
     {
         $r = 0;
-        foreach ($this->queries as $query) {
-            $t = $query->update($fieldValues);
-            $r += $t;
+        foreach ($this->_queries as $query) {
+            $r += $query->update($fieldValues);
         }
 
         return $r;
@@ -909,113 +660,10 @@ class Query extends Component implements QueryInterface, IteratorAggregate
     public function delete()
     {
         $r = 0;
-        foreach ($this->queries as $query) {
-            $t = $query->delete();
-            $r += $t;
+        foreach ($this->_queries as $query) {
+            $r += $query->delete();
         }
 
         return $r;
-    }
-
-    /**
-     * @param bool $forceUseMaster
-     *
-     * @return static
-     */
-    public function forceUseMaster($forceUseMaster = true)
-    {
-        foreach ($this->queries as $query) {
-            $query->forceUseMaster($forceUseMaster);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string|array $fields
-     *
-     * @return array|null
-     */
-    public function first($fields = null)
-    {
-        foreach ($this->queries as $query) {
-            if ($r = $query->select($fields)->limit(1)->fetch(true)) {
-                return $r[0];
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @param string|array $fields
-     *
-     * @return array
-     */
-    public function get($fields = null)
-    {
-        if (!$r = $this->first($fields)) {
-            throw new NotFoundException('record is not exists');
-        }
-
-        return $r;
-    }
-
-    /**
-     * @param string|array $fields
-     *
-     * @return array
-     */
-    public function all($fields = null)
-    {
-        return $this->select($fields)->fetch(true);
-    }
-
-    /**
-     * @param string $field
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function value($field, $default = null)
-    {
-        $r = $this->first([$field]);
-        return $r[$field] ?? $default;
-    }
-
-    public function when($value, $true_call, $false_call = null)
-    {
-        foreach ($this->queries as $query) {
-            $query->when($value, $true_call, $false_call);
-        }
-
-        return $this;
-    }
-
-    public function whereDate($field, $date, $format = null)
-    {
-        foreach ($this->queries as $query) {
-            $query->whereDate($field, $date, $format);
-        }
-
-        return $this;
-    }
-
-    public function whereMonth($field, $date, $format = null)
-    {
-        foreach ($this->queries as $query) {
-            $query->whereMonth($field, $date, $format);
-        }
-
-        return $this;
-    }
-
-    public function where1v1($id, $value)
-    {
-        foreach ($this->queries as $query) {
-            $query->where1v1($id, $value);
-        }
-
-        return $this;
     }
 }
