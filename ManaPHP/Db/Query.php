@@ -993,16 +993,16 @@ class Query extends \ManaPHP\Query implements QueryInterface
         if (count($shards) === 1 && count(current($shards)) === 1) {
             $result = $this->_query(key($shards), current($shards)[0]);
         } elseif ($this->_order) {
+            $copy = clone $this;
+
+            if ($copy->_limit) {
+                $copy->_limit += $copy->_offset;
+                $copy->_offset = 0;
+            }
+
             $valid_times = 0;
             foreach ($shards as $db => $tables) {
                 foreach ($tables as $table) {
-                    $copy = clone $this;
-
-                    if ($copy->_limit) {
-                        $copy->_limit += $copy->_offset;
-                        $copy->_offset = 0;
-                    }
-
                     if ($r = $copy->_query($db, $table)) {
                         $valid_times++;
                         $result = $result ? array_merge($result, $r) : $r;
