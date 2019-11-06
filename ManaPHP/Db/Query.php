@@ -1207,15 +1207,26 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function values($field)
     {
+        $this->distinct()->select([$field]);
+
         $values = [];
 
         $shards = $this->getShards();
-
-        if (count($shards) > 1 || count(current($shards)) > 1) {
-            foreach ($this->distinct()->select([$field])->all() as $v) {
-                $value = $v[$field];
-                if (!in_array($value, $values, true)) {
-                    $values[] = $value;
+        if (count($shards) === 1 && count(current($shards)) === 1) {
+            $db = key($shards);
+            $table = current($shards)[0];
+            foreach ($this->_query($db, $table) as $row) {
+                $values[] = $row[$field];
+            }
+        } else {
+            foreach ($shards as $db => $tables) {
+                foreach ($tables as $table) {
+                    foreach ($this->_query($db, $table) as $row) {
+                        $value = $row[$field];
+                        if (!in_array($value, $values, true)) {
+                            $values[] = $value;
+                        }
+                    }
                 }
             }
 
@@ -1225,10 +1236,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 } else {
                     rsort($values);
                 }
-            }
-        } else {
-            foreach ($this->distinct()->select([$field])->all() as $v) {
-                $values[] = $v[$field];
             }
         }
 
