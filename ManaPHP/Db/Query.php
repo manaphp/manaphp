@@ -1151,21 +1151,19 @@ class Query extends \ManaPHP\Query implements QueryInterface
             throw new NotSupportedException('group is not support to get total rows');
         }
 
+        $copy = clone $this;
+
+        $copy->_fields = "COUNT($field) as [row_count]";
+        $copy->_limit = null;
+        $copy->_offset = null;
+        $copy->_order = null;
+        $copy->_index = null;
+
         $row_count = 0;
         $shards = $this->getShards();
-
         foreach ($shards as $db => $tables) {
             foreach ($tables as $table) {
-                $copy = clone $this;
-
-                $copy->_fields = "COUNT($field) as [row_count]";
-                $copy->_limit = null;
-                $copy->_offset = null;
-                $copy->_order = null;
-                $copy->_index = null;
-
                 $result = $copy->_query($db, $table);
-
                 $row_count += $result[0]['row_count'];
             }
         }
