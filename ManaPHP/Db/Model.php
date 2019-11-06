@@ -343,7 +343,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $db = $this->_di->getShared($db);
 
         $primaryKey = $this->getPrimaryKey();
-        $db->delete($table, [$primaryKey = $this->$primaryKey]);
+        $db->delete($table, [$primaryKey => $this->$primaryKey]);
 
         $this->fireEvent('model:deleted');
 
