@@ -940,11 +940,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
 
         $this->_sql = $this->_buildSql($connection, $table);
 
-        if (in_array('FALSE', $this->_conditions, true)) {
-            $this->logger->debug($this->_sql, 'db.query.skip');
-            return [];
-        }
-
         return $connection->fetchAll($this->_sql, $this->_bind, PDO::FETCH_ASSOC, $this->_force_master);
     }
 
@@ -953,6 +948,11 @@ class Query extends \ManaPHP\Query implements QueryInterface
      */
     public function execute()
     {
+        if (in_array('FALSE', $this->_conditions, true)) {
+            $this->logger->debug($this->_sql, 'db.query.skip');
+            return [];
+        }
+
         $shards = $this->getShards();
 
         $result = [];
