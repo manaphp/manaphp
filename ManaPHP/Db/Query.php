@@ -4,6 +4,7 @@ namespace ManaPHP\Db;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
+use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
 use PDO;
 
@@ -147,12 +148,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     {
         if (strpos($condition, '[') === false && strpos($condition, '(') === false) {
             $condition = (string)preg_replace('#\w+#', '[\\0]', $condition);
-        }
-
-        if (strpos($table, '\\') !== false) {
-            /** @var \ManaPHP\Model $model */
-            $model = $this->_di->getShared($table);
-            $table = $model->getTable();
         }
 
         $this->_joins[] = [$table, $condition, $alias, $type];
@@ -773,7 +768,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 throw new ShardingTooManyException(__METHOD__);
             }
             $db = $this->_getDb(key($shards));
-            $this->_sql = $this->_buildSql($db, $tables[0]);
+            $this->_sql = $this->_buildSql($db, $tables[0], $this->_joins);
         }
 
         return $this->_sql;
@@ -806,10 +801,11 @@ class Query extends \ManaPHP\Query implements QueryInterface
      *
      * @param \ManaPHP\DbInterface $db
      * @param string               $table
+     * @param array                $joins
      *
      * @return string
      */
-    protected function _buildSql($db, $table)
+    protected function _buildSql($db, $table, $joins)
     {
         if (!$this->_table && !$this->_model) {
             throw new MisuseException('at least one model is required to build the query');
@@ -822,7 +818,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
 
         if ($this->_fields !== null) {
             $fields = $this->_fields;
-        } elseif ($this->_joins) {
+        } elseif ($joins) {
             $fields = '*';
         } else {
             $fields = $this->_model ? '[' . implode('], [', $this->_model->getFields()) . ']' : '*';
@@ -834,14 +830,15 @@ class Query extends \ManaPHP\Query implements QueryInterface
         $params['from'] = $alias ? "$table AS [$alias]" : $table;
 
         $joinSQL = '';
-        foreach ($this->_joins as $join) {
+        foreach ($joins as $join) {
             list($joinTable, $joinCondition, $joinAlias, $joinType) = $join;
 
             if ($joinType !== null) {
                 $joinSQL .= ' ' . $joinType;
             }
 
-            $joinSQL .= ' JOIN [' . $joinTable . ']';
+            $joinTable = '[' . str_replace('.', '].[', $joinTable) . ']';
+            $joinSQL .= " JOIN $joinTable";
 
             if ($joinAlias !== null) {
                 $joinSQL .= ' AS [' . $joinAlias . ']';
@@ -933,7 +930,40 @@ class Query extends \ManaPHP\Query implements QueryInterface
     {
         $connection = $this->_getDb($db);
 
-        $this->_sql = $this->_buildSql($connection, $table);
+        if ($this->_joins) {
+            $joins = [];
+            foreach ($this->_joins as $k => $join) {
+                $join_table = $join[0];
+                if (strpos($join_table, '\\') !== false) {
+                    /** @var \ManaPHP\Db\ModelInterface $model */
+                    $model = $join_table::sample();
+                    $join_shards = $model->getMultipleShards($this->_shard_context);
+                } else {
+                    $db = is_object($this->_db) ? '' : (string)$this->_db;
+                    if ($shard_strategy = $this->_shard_strategy) {
+                        $join_shards = $shard_strategy($db, $join_table, $this->_shard_context);
+                    } else {
+                        $join_shards = Sharding::multiple($db, $join_table, $this->_shard_context);
+                    }
+                }
+
+                if (!isset($join_shards[$db])) {
+                    throw new NotSupportedException('');
+                }
+
+                $join_tables = $join_shards[$db];
+                if (count($join_tables) > 1) {
+                    throw new NotSupportedException('');
+                }
+
+                $join[0] = $join_tables[0];
+                $joins[] = $join;
+            }
+        } else {
+            $joins = [];
+        }
+
+        $this->_sql = $this->_buildSql($connection, $table, $joins);
 
         return $connection->fetchAll($this->_sql, $this->_bind, PDO::FETCH_ASSOC, $this->_force_master);
     }
@@ -946,6 +976,15 @@ class Query extends \ManaPHP\Query implements QueryInterface
         if (in_array('FALSE', $this->_conditions, true)) {
             $this->logger->debug($this->_sql, 'db.query.skip');
             return [];
+        }
+        
+        if ($this->_joins) {
+            foreach ($this->_shard_context as $k => $v) {
+                if (($pos = strpos($k, '.')) !== false) {
+                    $nk = substr($k, $pos + 1);
+                    $this->_shard_context[$nk] = $v;
+                }
+            }
         }
 
         $shards = $this->getShards();
@@ -1126,7 +1165,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 $copy->_order = null;
                 $copy->_index = null;
 
-                $copy->_sql = $copy->_buildSql($connection, $table);
+                $copy->_sql = $copy->_buildSql($connection, $table, $this->_joins);
 
                 $result = $connection->fetchOne($copy->_sql, $copy->_bind);
                 $row_count += $result['row_count'];
