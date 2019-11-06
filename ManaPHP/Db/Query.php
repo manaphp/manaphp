@@ -977,7 +977,7 @@ class Query extends \ManaPHP\Query implements QueryInterface
             $this->logger->debug($this->_sql, 'db.query.skip');
             return [];
         }
-        
+
         if ($this->_joins) {
             foreach ($this->_shard_context as $k => $v) {
                 if (($pos = strpos($k, '.')) !== false) {
@@ -1155,7 +1155,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
         $shards = $this->getShards();
 
         foreach ($shards as $db => $tables) {
-            $connection = $this->_getDb($db);
             foreach ($tables as $table) {
                 $copy = clone $this;
 
@@ -1165,10 +1164,9 @@ class Query extends \ManaPHP\Query implements QueryInterface
                 $copy->_order = null;
                 $copy->_index = null;
 
-                $copy->_sql = $copy->_buildSql($connection, $table, $this->_joins);
+                $result = $copy->_query($db, $table);
 
-                $result = $connection->fetchOne($copy->_sql, $copy->_bind);
-                $row_count += $result['row_count'];
+                $row_count += $result[0]['row_count'];
             }
         }
 
