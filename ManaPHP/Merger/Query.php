@@ -1,5 +1,5 @@
 <?php
-namespace ManaPHP\Query;
+namespace ManaPHP\Merger;
 
 use ArrayIterator;
 use IteratorAggregate;
@@ -9,13 +9,14 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Model;
 use ManaPHP\QueryInterface;
+use ManaPHP\Exception\NotFoundException;
 
 /**
  * Class Merger
- * @package ManaPHP\Query
+ * @package ManaPHP\Merger\Query
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
-class Merger extends Component implements QueryInterface, IteratorAggregate
+class Query extends Component implements QueryInterface, IteratorAggregate
 {
     /**
      * @var \ManaPHP\QueryInterface[]
