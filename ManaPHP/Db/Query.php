@@ -1021,7 +1021,8 @@ class Query extends \ManaPHP\Query implements QueryInterface
                     if ($r = $this->_query($db, $table)) {
                         $result = $result ? array_merge($result, $r) : $r;
                         if (count($result) >= $this->_offset + $this->_limit) {
-                            return array_slice($result, (int)$this->_offset, $this->_limit);
+                            $result = array_slice($result, (int)$this->_offset, $this->_limit);
+                            return $this->_index ? Arr::indexby($result, $this->_index) : $result;
                         }
                     }
                 }
