@@ -7,6 +7,7 @@ use ManaPHP\Db\Exception as DbException;
 use ManaPHP\Db\SqlFragmentable;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Exception\NotSupportedException;
 use PDO;
 use PDOException;
 
@@ -367,14 +368,17 @@ class Db extends Component implements DbInterface
             throw new InvalidArgumentException(['Unable to update :table table without data', 'table' => $table]);
         }
 
-        if (is_string($conditions)) {
-            $conditions = [$conditions];
+        if (!$conditions) {
+            throw new NotSupportedException(['update must with a condition!']);
         }
 
         $wheres = [];
 
-        foreach ($conditions as $k => $v) {
+        foreach ((array)$conditions as $k => $v) {
             if (is_int($k)) {
+                if (!is_string($v) || $v === '' || preg_match('#^\w+$#', $v) === 1) {
+                    throw new NotSupportedException(['update with `:condition` condition is danger!', 'condition' => $v]);
+                }
                 $wheres[] = stripos($v, ' or ') ? "($v)" : $v;
             } else {
                 $wheres[] = "[$k]=:$k";
@@ -470,13 +474,16 @@ class Db extends Component implements DbInterface
      */
     public function delete($table, $conditions, $bind = [])
     {
-        if (is_string($conditions)) {
-            $conditions = [$conditions];
+        if (!$conditions) {
+            throw new NotSupportedException(['delete must with a condition!']);
         }
 
         $wheres = [];
-        foreach ($conditions as $k => $v) {
+        foreach ((array)$conditions as $k => $v) {
             if (is_int($k)) {
+                if (!is_string($v) || $v === '' || preg_match('#^\w+$#', $v) === 1) {
+                    throw new NotSupportedException(['delete with `:condition` condition is danger!', 'condition' => $v]);
+                }
                 $wheres[] = stripos($v, ' or ') ? "($v)" : $v;
             } else {
                 $wheres[] = "[$k]=:$k";
