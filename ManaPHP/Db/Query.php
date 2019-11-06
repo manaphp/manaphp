@@ -721,22 +721,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
     }
 
     /**
-     * @param string|array $groupBy
-     *
-     * @return static
-     */
-    public function groupBy($groupBy)
-    {
-        if (is_string($groupBy)) {
-            $this->_group = preg_split('#[\s,]+#', $groupBy, -1, PREG_SPLIT_NO_EMPTY);
-        } else {
-            $this->_group = $groupBy;
-        }
-
-        return $this;
-    }
-
-    /**
      * @param array $group
      *
      * @return string

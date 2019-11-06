@@ -347,6 +347,22 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     }
 
     /**
+     * @param string|array $groupBy
+     *
+     * @return static
+     */
+    public function groupBy($groupBy)
+    {
+        if (is_string($groupBy)) {
+            $this->_group = preg_split('#[\s,]+#', $groupBy, -1, PREG_SPLIT_NO_EMPTY);
+        } else {
+            $this->_group = $groupBy;
+        }
+
+        return $this;
+    }
+
+    /**
      * @param string|array $orderBy
      *
      * @return static
