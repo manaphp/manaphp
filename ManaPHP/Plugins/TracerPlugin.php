@@ -10,25 +10,41 @@ use ManaPHP\Plugin;
  */
 class TracerPlugin extends Plugin
 {
-    public function __construct()
+    /**
+     * @var bool
+     */
+    protected $_verbose = false;
+
+    /**
+     * TracerPlugin constructor.
+     *
+     * @param array $options
+     */
+    public function __construct($options = [])
     {
-        $this->attachEvent('redis:connect', [$this, 'onRedisConnect']);
+        if (isset($options['verbose'])) {
+            $this->_verbose = (bool)$options['verbose'];
+        }
+
+        $verbose = $this->_verbose;
+
+        $verbose && $this->attachEvent('redis:connect', [$this, 'onRedisConnect']);
         $this->attachEvent('redis:calling', [$this, 'onRedisCalling']);
         $this->attachEvent('redis:called', [$this, 'onRedisCalled']);
 
-        $this->attachEvent('db:connect', [$this, 'onDbConnect']);
+        $verbose && $this->attachEvent('db:connect', [$this, 'onDbConnect']);
         $this->attachEvent('db:queried', [$this, 'onDbQueried']);
         $this->attachEvent('db:executed', [$this, 'onDbExecuted']);
         $this->attachEvent('db:inserted', [$this, 'onDbInserted']);
         $this->attachEvent('db:begin', [$this, 'onDbBegin']);
         $this->attachEvent('db:rollback', [$this, 'onDbRollback']);
         $this->attachEvent('db:commit', [$this, 'onDbCommit']);
-        $this->attachEvent('db:metadata', [$this, 'onDbMetadata']);
+        $verbose && $this->attachEvent('db:metadata', [$this, 'onDbMetadata']);
         $this->attachEvent('db:abnormal', [$this, 'onDbAbnormal']);
 
         $this->attachEvent('mailer:sending', [$this, 'onMailerSending']);
 
-        $this->attachEvent('mongodb:connect', [$this, 'onMongodbConnect']);
+        $verbose && $this->attachEvent('mongodb:connect', [$this, 'onMongodbConnect']);
         $this->attachEvent('mongodb:queried', [$this, 'onMongodbQueried']);
         $this->attachEvent('mongodb:inserted', [$this, 'onMongodbInserted']);
         $this->attachEvent('mongodb:updated', [$this, 'onMongodbUpdated']);
@@ -39,11 +55,11 @@ class TracerPlugin extends Plugin
         $this->attachEvent('mongodb:upserted', [$this, 'onMongodbUpserted']);
         $this->attachEvent('mongodb:bulkUpserted', [$this, 'onMongodbBulkUpserted']);
 
-        $this->attachEvent('httpClient:requesting', [$this, 'onHttpClientRequesting']);
+        $verbose && $this->attachEvent('httpClient:requesting', [$this, 'onHttpClientRequesting']);
         $this->attachEvent('httpClient:requested', [$this, 'onHttpClientRequested']);
 
-        $this->attachEvent('wsClient:send', [$this, 'onWsClientSend']);
-        $this->attachEvent('wsClient:receive', [$this, 'onWsClientReceive']);
+        $verbose && $this->attachEvent('wsClient:send', [$this, 'onWsClientSend']);
+        $verbose && $this->attachEvent('wsClient:receive', [$this, 'onWsClientReceive']);
     }
 
     public function onRedisConnect(EventArgs $eventArgs)
@@ -72,13 +88,27 @@ class TracerPlugin extends Plugin
                 $arguments[$k] = substr($v, 0, 64) . '...';
             }
         }
-        $arguments = json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR);
-        $return = json_stringify($eventArgs->data['return'], JSON_PARTIAL_OUTPUT_ON_ERROR);
 
-        $this->logger->debug(["\$redis->$name(:args) => :return",
-            'args' => strlen($arguments) > 256 ? substr($arguments, 1, 256) . '...)' : substr($arguments, 1, -1),
-            'return' => strlen($return) > 64 ? substr($return, 0, 64) . '...' : $return
-        ], 'redis.' . $name);
+        if ($this->_verbose) {
+            $arguments = json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR);
+            $return = json_stringify($eventArgs->data['return'], JSON_PARTIAL_OUTPUT_ON_ERROR);
+            $this->logger->debug(["\$redis->$name(:args) => :return",
+                'args' => strlen($arguments) > 256 ? substr($arguments, 1, 256) . '...)' : substr($arguments, 1, -1),
+                'return' => strlen($return) > 64 ? substr($return, 0, 64) . '...' : $return
+            ], 'redis.' . $name);
+        } else {
+            if (in_array($name, ['get', 'set'], true)) {
+                $key = $arguments[0];
+                if (strpos($key, 'cache:__') !== false) {
+                    return;
+                }
+            }
+            $arguments = json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR);
+            $this->logger->debug(["\$redis->$name(:args)",
+                'args' => strlen($arguments) > 256 ? substr($arguments, 1, 256) . '...)' : substr($arguments, 1, -1),
+            ], 'redis.' . $name);
+        }
+
     }
 
     public function onDbConnect(EventArgs $eventArgs)
@@ -95,7 +125,12 @@ class TracerPlugin extends Plugin
 
     public function onDbQueried(EventArgs $eventArgs)
     {
-        $this->logger->debug($eventArgs->data, 'db.query');
+        $data = $eventArgs->data;
+
+        if (!$this->_verbose) {
+            unset($data['result']);
+        }
+        $this->logger->debug($data, 'db.query');
     }
 
     public function onDbInserted(EventArgs $eventArgs)
@@ -133,11 +168,15 @@ class TracerPlugin extends Plugin
         /** @var \ManaPHP\Mailer\Message $message */
         $message = $eventArgs->data['message'];
 
-        $this->logger->debug(['From: ', $message->getFrom()]);
-        $this->logger->debug(['To: ', $message->getTo()]);
-        $this->logger->debug(['Cc:', $message->getCc()]);
-        $this->logger->debug(['Bcc: ', $message->getBcc()]);
-        $this->logger->debug(['Subject: ', $message->getSubject()]);
+        if ($this->_verbose) {
+            $this->logger->debug(['From: ', $message->getFrom()]);
+            $this->logger->debug(['To: ', $message->getTo()]);
+            $this->logger->debug(['Cc:', $message->getCc()]);
+            $this->logger->debug(['Bcc: ', $message->getBcc()]);
+            $this->logger->debug(['Subject: ', $message->getSubject()]);
+        } else {
+            $this->logger->debug(['To: ', $message->getTo()]);
+        }
     }
 
     public function onMongodbConnect(EventArgs $eventArgs)
