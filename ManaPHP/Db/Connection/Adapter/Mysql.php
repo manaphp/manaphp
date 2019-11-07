@@ -264,7 +264,7 @@ class Mysql extends Connection
      *
      * @return string
      */
-    protected function _replaceQuoteCharacters($sql)
+    public function replaceQuoteCharacters($sql)
     {
         return preg_replace(/**@lang text */ '#\[([a-z_]\w*)\]#i', '`\\1`', $sql);
     }

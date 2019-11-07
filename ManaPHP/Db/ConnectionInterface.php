@@ -91,4 +91,11 @@ interface ConnectionInterface
      * @return string
      */
     public function buildSql($params);
+
+    /**
+     * @param string $sql
+     *
+     * @return string
+     */
+    public function replaceQuoteCharacters($sql);
 }

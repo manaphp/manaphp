@@ -228,7 +228,7 @@ class Mssql extends Connection
      *
      * @return string
      */
-    protected function _replaceQuoteCharacters($sql)
+    public function replaceQuoteCharacters($sql)
     {
         return $sql;
     }

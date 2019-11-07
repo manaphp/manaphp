@@ -172,13 +172,6 @@ abstract class Connection extends Component implements ConnectionInterface
 
     /**
      * @param string $sql
-     *
-     * @return string
-     */
-    abstract protected function _replaceQuoteCharacters($sql);
-
-    /**
-     * @param string $sql
      * @param array  $bind
      * @param bool   $has_insert_id
      *
@@ -192,7 +185,7 @@ abstract class Connection extends Component implements ConnectionInterface
             throw new ReadonlyException(['`:uri` is readonly: => :sql ', 'uri' => $this->_uri, 'sql' => $sql]);
         }
 
-        $sql = $this->_replaceQuoteCharacters($sql);
+        $sql = $this->replaceQuoteCharacters($sql);
 
         if ($this->_in_transaction) {
             try {
@@ -232,7 +225,7 @@ abstract class Connection extends Component implements ConnectionInterface
      */
     public function query($sql, $bind = [], $mode = PDO::FETCH_ASSOC, $useMaster = false)
     {
-        $sql = $this->_replaceQuoteCharacters($sql);
+        $sql = $this->replaceQuoteCharacters($sql);
 
         if ($this->_in_transaction) {
             try {
