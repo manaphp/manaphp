@@ -300,21 +300,11 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * @return \ManaPHP\Mongodb\Query|\ManaPHP\QueryInterface
+     * @return \ManaPHP\Mongodb\Query
      */
     public function newQuery()
     {
         return $this->_di->get('ManaPHP\Mongodb\Query')->setModel($this);
-    }
-
-    /**
-     * @param string $alias
-     *
-     * @return \ManaPHP\Mongodb\Query
-     */
-    public static function query($alias = null)
-    {
-        return static::sample()->newQuery();
     }
 
     /**
@@ -695,26 +685,6 @@ class Model extends \ManaPHP\Model
         $mongodb->insert($collection, $document);
 
         return 1;
-    }
-
-    /**
-     * @param int|string|array $filters =get_object_vars(new static)
-     *
-     * @return \ManaPHP\Mongodb\Query|\ManaPHP\QueryInterface
-     */
-    public static function where($filters)
-    {
-        return static::select()->where(is_scalar($filters) ? [static::sample()->getPrimaryKey() => $filters] : $filters);
-    }
-
-    /**
-     * @param array $filters =get_object_vars(new static)
-     *
-     * @return \ManaPHP\Mongodb\Query|\ManaPHP\QueryInterface
-     */
-    public static function search($filters)
-    {
-        return static::select()->search($filters);
     }
 
     public function __debugInfo()

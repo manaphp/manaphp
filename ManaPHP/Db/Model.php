@@ -129,18 +129,6 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @param string $alias
-     *
-     * @return \ManaPHP\Db\Query|\ManaPHP\QueryInterface
-     */
-    public static function query($alias = null)
-    {
-        $model = static::sample();
-
-        return $model->newQuery()->from(get_class($model), $alias);
-    }
-
-    /**
      * Inserts a model instance. If the instance already exists in the persistence it will throw an exception
      *
      * @return static
@@ -458,25 +446,5 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $db->insert($table, $record);
 
         return 1;
-    }
-
-    /**
-     * @param int|string|array $filters =get_object_vars(new static)
-     *
-     * @return \ManaPHP\Db\Query|\ManaPHP\QueryInterface
-     */
-    public static function where($filters)
-    {
-        return static::select()->where(is_scalar($filters) ? [static::sample()->getPrimaryKey() => $filters] : $filters);
-    }
-
-    /**
-     * @param array $filters =get_object_vars(new static)
-     *
-     * @return \ManaPHP\Db\Query|\ManaPHP\QueryInterface
-     */
-    public static function search($filters)
-    {
-        return static::select()->search($filters);
     }
 }

@@ -5,6 +5,7 @@ use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
 use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\Regex;
@@ -471,10 +472,11 @@ class Query extends \ManaPHP\Query
 
     /**
      * @param array $filter
+     * @param array $bind
      *
      * @return static
      */
-    public function whereRaw($filter)
+    public function whereRaw($filter, $bind = null)
     {
         $this->_filters[] = $filter;
 
@@ -1075,5 +1077,35 @@ class Query extends \ManaPHP\Query
         }
 
         return $affected_count;
+    }
+
+    public function join($table, $condition = null, $alias = null, $type = null)
+    {
+        throw new NotSupportedException(__METHOD__);
+    }
+
+    public function getBind($key = null)
+    {
+        throw new NotSupportedException(__METHOD__);
+    }
+
+    public function setBind($bind, $merge = true)
+    {
+        throw new NotSupportedException(__METHOD__);
+    }
+
+    public function getSql()
+    {
+        throw new NotSupportedException(__METHOD__);
+    }
+
+    public function having($having, $bind = [])
+    {
+        throw new NotSupportedException(__METHOD__);
+    }
+
+    public function forUpdate($forUpdate = true)
+    {
+        throw new NotSupportedException(__METHOD__);
     }
 }

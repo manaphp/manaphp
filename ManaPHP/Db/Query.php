@@ -8,7 +8,7 @@ use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
 use PDO;
 
-class Query extends \ManaPHP\Query implements QueryInterface
+class Query extends \ManaPHP\Query
 {
     /**
      * @var string
@@ -153,42 +153,6 @@ class Query extends \ManaPHP\Query implements QueryInterface
         $this->_joins[] = [$table, $condition, $alias, $type];
 
         return $this;
-    }
-
-    /**
-     * @param string $table
-     * @param string $condition
-     * @param string $alias
-     *
-     * @return static
-     */
-    public function innerJoin($table, $condition = null, $alias = null)
-    {
-        return $this->join($table, $condition, $alias, 'INNER');
-    }
-
-    /**
-     * @param string $table
-     * @param string $condition
-     * @param string $alias
-     *
-     * @return static
-     */
-    public function leftJoin($table, $condition = null, $alias = null)
-    {
-        return $this->join($table, $condition, $alias, 'LEFT');
-    }
-
-    /**
-     * @param string $table
-     * @param string $condition
-     * @param string $alias
-     *
-     * @return static
-     */
-    public function rightJoin($table, $condition = null, $alias = null)
-    {
-        return $this->join($table, $condition, $alias, 'RIGHT');
     }
 
     /**

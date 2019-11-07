@@ -85,17 +85,11 @@ class Query extends \ManaPHP\Query
         throw new NotSupportedException(__METHOD__);
     }
 
-    /**
-     * @return array
-     */
     public function getShards()
     {
         throw new NotSupportedException(__METHOD__);
     }
 
-    /**
-     * @return array
-     */
     public function getUniqueShard()
     {
         throw new NotSupportedException(__METHOD__);
@@ -491,6 +485,15 @@ class Query extends \ManaPHP\Query
         return $this;
     }
 
+    public function whereRaw($filter, $bind = null)
+    {
+        foreach ($this->_queries as $query) {
+            $query->whereRaw($filter, $bind);
+        }
+
+        return $this;
+    }
+
     /**
      * @param string|array $orderBy
      *
@@ -519,6 +522,30 @@ class Query extends \ManaPHP\Query
         }
 
         return $this;
+    }
+
+    public function setBind($bind, $merge = true)
+    {
+        throw new NotSupportedException(__METHOD__);
+    }
+
+    public function getBind($key = null)
+    {
+        throw new NotSupportedException(__METHOD__);
+    }
+
+    public function having($having, $bind = [])
+    {
+        foreach ($this->_queries as $query) {
+            $query->having($having, $bind);
+        }
+
+        return $this;
+    }
+
+    public function forUpdate($forUpdate = true)
+    {
+        throw new NotSupportedException(__METHOD__);
     }
 
     /**
@@ -665,5 +692,27 @@ class Query extends \ManaPHP\Query
         }
 
         return $r;
+    }
+
+    /**
+     * @param string $table
+     * @param string $condition
+     * @param string $alias
+     * @param string $type
+     *
+     * @return static
+     */
+    public function join($table, $condition = null, $alias = null, $type = null)
+    {
+        foreach ($this->_queries as $query) {
+            $query->join($table, $condition, $alias, $type);
+        }
+
+        return $this;
+    }
+
+    public function getSql()
+    {
+        throw new NotSupportedException(__METHOD__);
     }
 }

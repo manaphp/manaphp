@@ -72,16 +72,6 @@ abstract class Model extends \ManaPHP\Model
         throw new NotSupportedException(__METHOD__);
     }
 
-    /**
-     * @param string $alias
-     *
-     * @return \ManaPHP\Merger\Query|\ManaPHP\QueryInterface
-     */
-    public static function query($alias = null)
-    {
-        return static::sample()->newQuery();
-    }
-
     public function create()
     {
         throw new NotSupportedException(__METHOD__);
@@ -100,25 +90,5 @@ abstract class Model extends \ManaPHP\Model
     public function delete()
     {
         throw new NotSupportedException(__METHOD__);
-    }
-
-    /**
-     * @param int|string|array $filters =get_object_vars(new static)
-     *
-     * @return \ManaPHP\Merger\Query|\ManaPHP\QueryInterface
-     */
-    public static function where($filters)
-    {
-        return static::select()->where(is_scalar($filters) ? [static::sample()->getPrimaryKey() => $filters] : $filters);
-    }
-
-    /**
-     * @param array $filters =get_object_vars(new static)
-     *
-     * @return \ManaPHP\Merger\Query|\ManaPHP\QueryInterface
-     */
-    public static function search($filters)
-    {
-        return static::select()->search($filters);
     }
 }

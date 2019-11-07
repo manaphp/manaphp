@@ -1236,6 +1236,36 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
+     * @param string $alias
+     *
+     * @return \ManaPHP\QueryInterface
+     */
+    public static function query($alias = null)
+    {
+        return static::sample()->newQuery();
+    }
+
+    /**
+     * @param int|string|array $filters =get_object_vars(new static)
+     *
+     * @return \ManaPHP\QueryInterface
+     */
+    public static function where($filters)
+    {
+        return static::select()->where(is_scalar($filters) ? [static::sample()->getPrimaryKey() => $filters] : $filters);
+    }
+
+    /**
+     * @param array $filters =get_object_vars(new static)
+     *
+     * @return \ManaPHP\QueryInterface
+     */
+    public static function search($filters)
+    {
+        return static::select()->search($filters);
+    }
+
+    /**
      * @param string $name
      *
      * @return \ManaPHP\Model|\ManaPHP\Model[]|mixed

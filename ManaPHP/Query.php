@@ -790,4 +790,40 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
             return $this->whereBetween($field, $min, $max);
         }
     }
+
+    /**
+     * @param string $table
+     * @param string $condition
+     * @param string $alias
+     *
+     * @return static
+     */
+    public function innerJoin($table, $condition = null, $alias = null)
+    {
+        return $this->join($table, $condition, $alias, 'INNER');
+    }
+
+    /**
+     * @param string $table
+     * @param string $condition
+     * @param string $alias
+     *
+     * @return static
+     */
+    public function leftJoin($table, $condition = null, $alias = null)
+    {
+        return $this->join($table, $condition, $alias, 'LEFT');
+    }
+
+    /**
+     * @param string $table
+     * @param string $condition
+     * @param string $alias
+     *
+     * @return static
+     */
+    public function rightJoin($table, $condition = null, $alias = null)
+    {
+        return $this->join($table, $condition, $alias, 'RIGHT');
+    }
 }
