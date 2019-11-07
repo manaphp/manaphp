@@ -49,7 +49,7 @@ class CorsPlugin extends Plugin
             $this->_credentials = $options['credentials'];
         }
 
-        $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
+        $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
     }
 
     public function onRequestBegin()

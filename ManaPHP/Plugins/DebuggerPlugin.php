@@ -80,15 +80,15 @@ class DebuggerPlugin extends Plugin
         }
 
         if ($this->_enabled !== false) {
-            $this->eventsManager->peekEvent('*', [$this, 'onEvent']);
+            $this->peekEvent('*', [$this, 'onEvent']);
 
-            $this->eventsManager->peekEvent('db', [$this, 'onDb']);
-            $this->eventsManager->peekEvent('mongodb', [$this, 'onMongodb']);
+            $this->peekEvent('db', [$this, 'onDb']);
+            $this->peekEvent('mongodb', [$this, 'onMongodb']);
 
-            $this->eventsManager->attachEvent('renderer:rendering', [$this, 'onRendererRendering']);
-            $this->eventsManager->attachEvent('logger:log', [$this, 'onLoggerLog']);
-            $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
-            $this->eventsManager->attachEvent('request:end', [$this, 'onRequestEnd']);
+            $this->attachEvent('renderer:rendering', [$this, 'onRendererRendering']);
+            $this->attachEvent('logger:log', [$this, 'onLoggerLog']);
+            $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
+            $this->attachEvent('request:end', [$this, 'onRequestEnd']);
         }
     }
 

@@ -30,7 +30,7 @@ class SlowlogPlugin extends Plugin
             $this->_format = $options['format'];
         }
 
-        $this->eventsManager->attachEvent('request:end', [$this, 'onRequestEnd']);
+        $this->attachEvent('request:end', [$this, 'onRequestEnd']);
     }
 
     protected function _write($elapsed, $message)

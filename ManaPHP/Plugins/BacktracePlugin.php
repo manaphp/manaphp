@@ -54,8 +54,8 @@ class BacktracePlugin extends Plugin
             ini_set('xdebug.var_display_max_depth', $this->_max_depth);
             ini_set('xdebug.show_mem_delta', $this->_mem_delta);
 
-            $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
-            $this->eventsManager->attachEvent('request:end', [$this, 'onRequestEnd']);
+            $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
+            $this->attachEvent('request:end', [$this, 'onRequestEnd']);
         }
     }
 

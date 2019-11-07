@@ -45,7 +45,7 @@ class CsrfPlugin extends Plugin
             $this->_name = $options['name'];
         }
 
-        $this->eventsManager->attachEvent('request:validate', [$this, 'onRequestValidate']);
+        $this->attachEvent('request:validate', [$this, 'onRequestValidate']);
     }
 
     /**

@@ -66,9 +66,9 @@ class LoggerPlugin extends Plugin
         }
 
         if ($this->_enabled !== false) {
-            $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
-            $this->eventsManager->attachEvent('logger:log', [$this, 'onLoggerLog']);
-            $this->eventsManager->attachEvent('request:end', [$this, 'onRequestEnd']);
+            $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
+            $this->attachEvent('logger:log', [$this, 'onLoggerLog']);
+            $this->attachEvent('request:end', [$this, 'onRequestEnd']);
         }
     }
 

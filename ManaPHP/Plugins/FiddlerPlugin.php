@@ -46,9 +46,9 @@ class FiddlerPlugin extends Plugin
             $context->channel = 'manaphp:fiddler:cli:' . $this->configure->id;
         }
 
-        $this->eventsManager->attachEvent('logger:log', [$this, 'onLoggerLog']);
-        $this->eventsManager->attachEvent('request:begin', [$this, 'onRequestBegin']);
-        $this->eventsManager->attachEvent('response:sent', [$this, 'onResponseSent']);
+        $this->attachEvent('logger:log', [$this, 'onLoggerLog']);
+        $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
+        $this->attachEvent('response:sent', [$this, 'onResponseSent']);
     }
 
     public function onRequestBegin()

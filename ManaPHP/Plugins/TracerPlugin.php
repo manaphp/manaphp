@@ -12,38 +12,38 @@ class TracerPlugin extends Plugin
 {
     public function __construct()
     {
-        $this->eventsManager->attachEvent('redis:connect', [$this, 'onRedisConnect']);
-        $this->eventsManager->attachEvent('redis:calling', [$this, 'onRedisCalling']);
-        $this->eventsManager->attachEvent('redis:called', [$this, 'onRedisCalled']);
+        $this->attachEvent('redis:connect', [$this, 'onRedisConnect']);
+        $this->attachEvent('redis:calling', [$this, 'onRedisCalling']);
+        $this->attachEvent('redis:called', [$this, 'onRedisCalled']);
 
-        $this->eventsManager->attachEvent('db:connect', [$this, 'onDbConnect']);
-        $this->eventsManager->attachEvent('db:queried', [$this, 'onDbQueried']);
-        $this->eventsManager->attachEvent('db:executed', [$this, 'onDbExecuted']);
-        $this->eventsManager->attachEvent('db:inserted', [$this, 'onDbInserted']);
-        $this->eventsManager->attachEvent('db:begin', [$this, 'onDbBegin']);
-        $this->eventsManager->attachEvent('db:rollback', [$this, 'onDbRollback']);
-        $this->eventsManager->attachEvent('db:commit', [$this, 'onDbCommit']);
-        $this->eventsManager->attachEvent('db:metadata', [$this, 'onDbMetadata']);
-        $this->eventsManager->attachEvent('db:abnormal', [$this, 'onDbAbnormal']);
+        $this->attachEvent('db:connect', [$this, 'onDbConnect']);
+        $this->attachEvent('db:queried', [$this, 'onDbQueried']);
+        $this->attachEvent('db:executed', [$this, 'onDbExecuted']);
+        $this->attachEvent('db:inserted', [$this, 'onDbInserted']);
+        $this->attachEvent('db:begin', [$this, 'onDbBegin']);
+        $this->attachEvent('db:rollback', [$this, 'onDbRollback']);
+        $this->attachEvent('db:commit', [$this, 'onDbCommit']);
+        $this->attachEvent('db:metadata', [$this, 'onDbMetadata']);
+        $this->attachEvent('db:abnormal', [$this, 'onDbAbnormal']);
 
-        $this->eventsManager->attachEvent('mailer:sending', [$this, 'onMailerSending']);
+        $this->attachEvent('mailer:sending', [$this, 'onMailerSending']);
 
-        $this->eventsManager->attachEvent('mongodb:connect', [$this, 'onMongodbConnect']);
-        $this->eventsManager->attachEvent('mongodb:queried', [$this, 'onMongodbQueried']);
-        $this->eventsManager->attachEvent('mongodb:inserted', [$this, 'onMongodbInserted']);
-        $this->eventsManager->attachEvent('mongodb:updated', [$this, 'onMongodbUpdated']);
-        $this->eventsManager->attachEvent('mongodb:deleted', [$this, 'onMongodbDeleted']);
-        $this->eventsManager->attachEvent('mongodb:commanded', [$this, 'onMongodbCommanded']);
-        $this->eventsManager->attachEvent('mongodb:bulkInserted', [$this, 'onMongodbBulkInserted']);
-        $this->eventsManager->attachEvent('mongodb:bulkUpdated', [$this, 'onMongodbBulkUpdated']);
-        $this->eventsManager->attachEvent('mongodb:upserted', [$this, 'onMongodbUpserted']);
-        $this->eventsManager->attachEvent('mongodb:bulkUpserted', [$this, 'onMongodbBulkUpserted']);
+        $this->attachEvent('mongodb:connect', [$this, 'onMongodbConnect']);
+        $this->attachEvent('mongodb:queried', [$this, 'onMongodbQueried']);
+        $this->attachEvent('mongodb:inserted', [$this, 'onMongodbInserted']);
+        $this->attachEvent('mongodb:updated', [$this, 'onMongodbUpdated']);
+        $this->attachEvent('mongodb:deleted', [$this, 'onMongodbDeleted']);
+        $this->attachEvent('mongodb:commanded', [$this, 'onMongodbCommanded']);
+        $this->attachEvent('mongodb:bulkInserted', [$this, 'onMongodbBulkInserted']);
+        $this->attachEvent('mongodb:bulkUpdated', [$this, 'onMongodbBulkUpdated']);
+        $this->attachEvent('mongodb:upserted', [$this, 'onMongodbUpserted']);
+        $this->attachEvent('mongodb:bulkUpserted', [$this, 'onMongodbBulkUpserted']);
 
-        $this->eventsManager->attachEvent('httpClient:requesting', [$this, 'onHttpClientRequesting']);
-        $this->eventsManager->attachEvent('httpClient:requested', [$this, 'onHttpClientRequested']);
+        $this->attachEvent('httpClient:requesting', [$this, 'onHttpClientRequesting']);
+        $this->attachEvent('httpClient:requested', [$this, 'onHttpClientRequested']);
 
-        $this->eventsManager->attachEvent('wsClient:send', [$this, 'onWsClientSend']);
-        $this->eventsManager->attachEvent('wsClient:receive', [$this, 'onWsClientReceive']);
+        $this->attachEvent('wsClient:send', [$this, 'onWsClientSend']);
+        $this->attachEvent('wsClient:receive', [$this, 'onWsClientReceive']);
     }
 
     public function onRedisConnect(EventArgs $eventArgs)
