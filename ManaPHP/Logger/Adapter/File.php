@@ -22,6 +22,11 @@ class File extends Logger
     protected $_format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
 
     /**
+     * @var string
+     */
+    protected $_tail = PHP_EOL;
+
+    /**
      * \ManaPHP\Logger\Adapter\File constructor.
      *
      * @param array $options
@@ -36,6 +41,19 @@ class File extends Logger
 
         if (isset($options['format'])) {
             $this->_format = $options['format'];
+        }
+
+        if (isset($options['tail'])) {
+            $this->_tail = $options['tail'];
+        }
+
+        $this->attachEvent('request:end', [$this, 'onRequestEnd']);
+    }
+
+    public function onRequestEnd()
+    {
+        if ($this->_tail !== '') {
+            $this->_write($this->_tail);
         }
     }
 
