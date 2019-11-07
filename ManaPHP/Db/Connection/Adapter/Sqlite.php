@@ -178,6 +178,6 @@ class Sqlite extends Connection
      */
     public function replaceQuoteCharacters($sql)
     {
-        return preg_replace(/**@lang text */ '#\[([a-z_]\w*)\]#i', '`\\1`', $sql);
+        return strpos($sql, '[') === false ? $sql : preg_replace(/**@lang text */ '#\[([a-z_]\w*)\]#i', '`\\1`', $sql);
     }
 }
