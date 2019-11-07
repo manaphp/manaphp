@@ -272,6 +272,7 @@ class Db extends Component implements DbInterface
             $connection = $this->poolManager->pop($this, $this->_timeout, $type);
         }
 
+        $sql = $connection->replaceQuoteCharacters($sql);
         try {
             $start_time = microtime(true);
             $result = $connection->query($sql, $bind, $mode, $useMaster);
