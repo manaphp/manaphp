@@ -543,30 +543,7 @@ interface QueryInterface
     public function having($having, $bind = []);
 
     /**
-     *
-     * @param bool $forUpdate
-     *
-     * @return static
-     */
-    public function forUpdate($forUpdate = true);
-
-    /**
      * @return string
      */
     public function getSql();
-
-    /**
-     * @param string $key
-     *
-     * @return array
-     */
-    public function getBind($key = null);
-
-    /**
-     * @param array $bind
-     * @param bool  $merge
-     *
-     * @return static
-     */
-    public function setBind($bind, $merge = true);
 }

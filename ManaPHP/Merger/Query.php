@@ -524,16 +524,6 @@ class Query extends \ManaPHP\Query
         return $this;
     }
 
-    public function setBind($bind, $merge = true)
-    {
-        throw new NotSupportedException(__METHOD__);
-    }
-
-    public function getBind($key = null)
-    {
-        throw new NotSupportedException(__METHOD__);
-    }
-
     public function having($having, $bind = [])
     {
         foreach ($this->_queries as $query) {
@@ -541,11 +531,6 @@ class Query extends \ManaPHP\Query
         }
 
         return $this;
-    }
-
-    public function forUpdate($forUpdate = true)
-    {
-        throw new NotSupportedException(__METHOD__);
     }
 
     /**
