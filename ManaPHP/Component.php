@@ -238,6 +238,19 @@ class Component implements ComponentInterface, JsonSerializable
     }
 
     /**
+     * @param string   $group
+     * @param callable $handler
+     *
+     * @return static
+     */
+    public function peekEvent($group, $handler)
+    {
+        $this->eventsManager->peekEvent($group, $handler);
+
+        return $this;
+    }
+
+    /**
      * Fires an event in the events manager causing that the active listeners will be notified about it
      *
      * @param string $event

@@ -44,6 +44,14 @@ interface ComponentInterface
     public function detachEvent($event, $handler = null);
 
     /**
+     * @param string   $group
+     * @param callable $handler
+     *
+     * @return static
+     */
+    public function peekEvent($group, $handler);
+
+    /**
      * Fires an event in the events manager causing that the active listeners will be notified about it
      *
      * @param string $event
