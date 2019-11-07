@@ -359,7 +359,9 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         /** @var \ManaPHP\DbInterface $db */
         $db = Di::getDefault()->getShared($db);
-        return $db->insertBySql('INSERT' . " INTO [$table] " . $sql, $bind);
+
+        $normalized_table = '[' . str_replace('.', '].[', $table) . ']';
+        return $db->insertBySql(/**@lang text */ "INSERT INTO $normalized_table $sql", $bind);
     }
 
     /**
@@ -385,7 +387,8 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $db = Di::getDefault()->getShared($db);
 
             foreach ($tables as $table) {
-                $affected_count += $db->deleteBySql('DELETE' . " FROM [$table] WHERE " . $sql, $bind);
+                $normalized_table = '[' . str_replace('.', '].[', $table) . ']';
+                $affected_count += $db->deleteBySql(/**@lang text */ "DELETE FROM $normalized_table WHERE $sql", $bind);
             }
         }
 
@@ -415,7 +418,8 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $db = Di::getDefault()->getShared($db);
 
             foreach ($tables as $table) {
-                $affected_count += $db->updateBySql('UPDATE' . " [$table] SET " . $sql, $bind);
+                $normalized_table = '[' . str_replace('.', '].[', $table) . ']';
+                $affected_count += $db->updateBySql(/**@lang text */ "UPDATE $normalized_table SET $sql", $bind);
             }
         }
 
