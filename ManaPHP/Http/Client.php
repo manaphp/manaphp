@@ -91,6 +91,8 @@ abstract class Client extends Component implements ClientInterface
             }
         }
 
+        $url = $this->alias->resolve($url);
+
         if (preg_match('#^http(s)?://#i', $url) !== 1) {
             throw new NotSupportedException(['only HTTP requests can be handled: `:url`', 'url' => $url]);
         }
