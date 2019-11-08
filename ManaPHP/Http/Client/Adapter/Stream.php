@@ -111,8 +111,6 @@ class Stream extends Client
         $response->body = $body;
         $response->process_time = $process_time;
 
-        $response->normalize();
-
         return $response;
     }
 }

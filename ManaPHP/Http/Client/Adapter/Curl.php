@@ -167,8 +167,6 @@ class Curl extends Client
 
         curl_close($curl);
 
-        $response->normalize();
-
         return $response;
     }
 }

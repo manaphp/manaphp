@@ -148,8 +148,6 @@ abstract class Client extends Component implements ClientInterface
         $request->body = $body;
         $request->options = $options;
 
-        $request->normalize();
-
         $this->eventsManager->fireEvent('httpClient:requesting', $this, $request);
         $response = $this->do_request($request);
         $response_text = $response->body;
