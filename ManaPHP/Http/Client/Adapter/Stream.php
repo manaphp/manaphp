@@ -89,7 +89,7 @@ class Stream extends Client
         $meta = stream_get_meta_data($stream);
 
         $remote = stream_socket_get_name($stream, true);
-        $remote_ip = ($pos = strpos($remote, ':')) ? substr($remote, 0, $pos) : null;
+        $remote_ip = ($pos = strrpos($remote, ':')) ? substr($remote, 0, $pos) : null;//strrpos compatibles with ipv6
 
         $body = stream_get_contents($stream);
         fclose($stream);
