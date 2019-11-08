@@ -105,27 +105,7 @@ abstract class Client extends Component implements ClientInterface
         }
 
         if (is_string($headers)) {
-            $headers = [strpos($headers, '://') ? 'Referer' : 'User-Agent' => $headers];
-        }
-
-        if (isset($headers['-'])) {
-            $headers['Referer'] = $headers['-'];
-            unset($headers['-']);
-        }
-
-        if (isset($headers['Referer'])) {
-            if (is_array($headers['Referer'])) {
-                $referer = $headers['Referer'];
-                if (isset($referer[0])) {
-                    $str = $referer[0];
-                    unset($referer[0]);
-                } else {
-                    $str = 'http://TRACK/';
-                }
-                $headers['Referer'] = $str . (strpos($str, '?') ? '&' : '?') . http_build_query($referer);
-            } elseif (!strpos($headers['Referer'], '://')) {
-                $headers['Referer'] = 'http://TRACE/' . $headers['Referer'];
-            }
+            $headers = [(strpos($headers, '://') ? 'Referer' : 'User-Agent') => $headers];
         }
 
         if (!isset($headers['User-Agent'])) {
