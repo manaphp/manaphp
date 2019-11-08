@@ -157,8 +157,6 @@ abstract class Client extends Component implements ClientInterface
             $response->body = $json;
         }
         $this->eventsManager->fireEvent('httpClient:requested', $this, $response);
-        $response->request = $request;
-        $response->user_data = $options['user_data'] ?? null;
 
         if ($response->http_code === 429) {
             throw new TooManyRequestsException($response->url, $response);

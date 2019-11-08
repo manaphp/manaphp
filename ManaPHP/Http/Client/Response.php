@@ -12,11 +12,6 @@ class Response implements JsonSerializable
     public $url;
 
     /**
-     * @var array
-     */
-    public $user_data;
-
-    /**
      * @var float
      */
     public $process_time;
@@ -50,11 +45,6 @@ class Response implements JsonSerializable
      * @var array
      */
     public $stats;
-
-    /**
-     * @var \ManaPHP\Http\Client\Request
-     */
-    public $request;
 
     /**
      * @return array
