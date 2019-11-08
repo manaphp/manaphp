@@ -112,6 +112,12 @@ abstract class Client extends Component implements ClientInterface
             $headers['User-Agent'] = $this->_user_agent;
         }
 
+        foreach ($headers as $name => $value) {
+            if (is_string($name) && $value === '') {
+                unset($headers[$name]);
+            }
+        }
+
         if (is_int($options) || is_float($options)) {
             $options = ['timeout' => $options];
         }
@@ -193,6 +199,14 @@ abstract class Client extends Component implements ClientInterface
 
         if (!isset($headers['Accept'])) {
             $headers['Accept'] = 'application/json';
+        }
+
+        if (!isset($headers['Accept-Encoding'])) {
+            $headers['Accept-Encoding'] = 'gzip, deflate';
+        }
+
+        if (isset($headers['Accept-Charset'], $headers['Authorization'], $headers['Cache-Control'], $headers['Host'], $headers['Cookie'])) {
+            null;
         }
 
         $response = $this->request($method, $url, $body, $headers, $options);
