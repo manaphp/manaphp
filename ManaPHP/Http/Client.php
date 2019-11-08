@@ -149,7 +149,7 @@ abstract class Client extends Component implements ClientInterface
 
         if ((isset($request->headers['Accept']) && strpos($request->headers['Accept'], '/json') !== false)
             || strpos($response->content_type, '/json') !== false) {
-            $response->body = json_parse($response->body);
+            $response->body = $response->body === '' ? [] : json_parse($response->body);
         }
 
         $this->eventsManager->fireEvent('httpClient:requested', $this, $response);
