@@ -9,6 +9,27 @@ use ManaPHP\Http\Client\ConnectionException;
 class Stream extends Client
 {
     /**
+     * @param array $headers
+     *
+     * @return array
+     */
+    protected function _getResponseHeaders($headers)
+    {
+        if (preg_match('#\s(?:301|302)\s#', $headers[0], $match) !== 1) {
+            return $headers;
+        }
+
+        for ($i = count($headers) - 1; $i >= 0; $i--) {
+            $header = $headers[$i];
+            if (strpos($header, 'HTTP/') === 0) {
+                return $i === 0 ? $headers : array_slice($headers, $i);
+            }
+        }
+
+        return $headers;
+    }
+
+    /**
      * @param \ManaPHP\Http\Client\Request $request
      *
      * @return \ManaPHP\Http\Client\Response
@@ -70,7 +91,7 @@ class Stream extends Client
 
         $process_time = round(microtime(true) - $start_time, 3);
 
-        $headers = $meta['wrapper_data'];
+        $headers = $this->_getResponseHeaders($meta['wrapper_data']);
 
         $content_type = null;
         foreach ($headers as $header) {
