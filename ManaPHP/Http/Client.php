@@ -40,6 +40,11 @@ abstract class Client extends Component implements ClientInterface
     protected $_verify_peer = true;
 
     /**
+     * @var string
+     */
+    protected $_user_agent;
+
+    /**
      * Client constructor.
      *
      * @param array $options
@@ -61,6 +66,8 @@ abstract class Client extends Component implements ClientInterface
         if (isset($options['verify_peer'])) {
             $this->_verify_peer = (bool)$options['verify_peer'];
         }
+
+        $this->_user_agent = $options['user_agent'] ?? self::USER_AGENT_IE;
     }
 
     /**
@@ -122,7 +129,7 @@ abstract class Client extends Component implements ClientInterface
         }
 
         if (!isset($headers['User-Agent'])) {
-            $headers['User-Agent'] = self::USER_AGENT_IE;
+            $headers['User-Agent'] = $this->_user_agent;
         }
 
         if (is_int($options) || is_float($options)) {
