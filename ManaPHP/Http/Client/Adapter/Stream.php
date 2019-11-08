@@ -46,6 +46,7 @@ class Stream extends Client
         }
 
         if (isset($request->options['proxy'])) {
+            //if you suffer "Cannot connect to HTTPS server through proxy", please set `verify_peer` to false
             $parts = parse_url($request->options['proxy']);
             if ($parts['scheme'] !== 'http') {
                 throw new NotSupportedException(['only support http type proxy: `:proxy`', 'proxy' => $request->options['proxy']]);
@@ -86,6 +87,10 @@ class Stream extends Client
             throw new ConnectionException(['`:url`: `:last_error_message`', 'url' => $request->url]);
         }
         $meta = stream_get_meta_data($stream);
+
+        $remote = stream_socket_get_name($stream, true);
+        $remote_ip = ($pos = strpos($remote, ':')) ? substr($remote, 0, $pos) : null;
+
         $body = stream_get_contents($stream);
         fclose($stream);
 
@@ -115,7 +120,7 @@ class Stream extends Client
                 }
             } elseif (in_array('Content-Encoding: deflate', $headers, true)) {
                 if (($decoded = @gzinflate($body)) === false) {
-                    throw new BadResponseException(['`:url`: deflat failed', 'url' => $request->url]);
+                    throw new BadResponseException(['`:url`: deflate failed', 'url' => $request->url]);
                 } else {
                     $body = $decoded;
                 }
@@ -124,13 +129,12 @@ class Stream extends Client
 
         $response = $this->_di->get('ManaPHP\Http\Client\Response');
         $response->url = $request->url;
-        $response->remote_ip = null;
+        $response->remote_ip = $remote_ip;
         $response->http_code = $http_code;
         $response->headers = $headers;
-        $response->process_time = 0;
+        $response->process_time = $process_time;
         $response->content_type = $content_type;
         $response->body = $body;
-        $response->process_time = $process_time;
 
         return $response;
     }
