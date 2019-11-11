@@ -115,8 +115,12 @@ class File extends Logger
      */
     public function append($logs)
     {
+        $str = '';
         foreach ($logs as $log) {
-            $this->_write($this->_format($log));
+            $s = $this->_format($log);
+            $str = $str === '' ? $s : $str . $s;
         }
+
+        $this->_write($str);
     }
 }
