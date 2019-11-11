@@ -244,7 +244,14 @@ class TracerPlugin extends Plugin
 
     public function onHttpClientRequested(EventArgs $eventArgs)
     {
-        $this->logger->debug($eventArgs->data, 'httpClient.response');
+        /** @var \ManaPHP\Http\Client\Response $response */
+        $response = clone $eventArgs->data;
+
+        if (!$this->_verbose) {
+            unset($response->stats, $response->headers);
+        }
+
+        $this->logger->debug($response, 'httpClient.response');
     }
 
     public function onWsClientSend(EventArgs $eventArgs)
