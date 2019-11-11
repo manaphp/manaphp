@@ -166,6 +166,7 @@ class Authorization extends Component implements AuthorizationInterface
                         $paths[] = $path;
                     }
                 } elseif ($role === 'user') {
+                    /** @noinspection NotOptimalIfConditionsInspection */
                     if ($this->isAclAllowed($acl, 'user', $action) && !$this->isAclAllowed($acl, 'guest', $action)) {
                         $paths[] = $path;
                     }

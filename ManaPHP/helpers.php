@@ -26,6 +26,7 @@ if (!function_exists('json_parse')) {
      */
     function json_parse($str)
     {
+        /** @noinspection NotOptimalIfConditionsInspection */
         if (($json = json_decode($str, true, 16, JSON_THROW_ON_ERROR)) === null && $str !== 'null') {
             throw new JsonException('json_parse failed: ' . $str);
         }

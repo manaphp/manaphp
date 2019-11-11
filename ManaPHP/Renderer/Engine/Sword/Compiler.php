@@ -95,6 +95,7 @@ class Compiler extends Component
         return preg_replace_callback('#="(/[^"\':{$?]+[^/])"#', function ($match) {
             $url = $match[1];
             $path = '@public' . $url;
+            /** @noinspection NotOptimalIfConditionsInspection */
             if (strpos($path, '.') === false || strpos(basename($path), '.') === false || pathinfo($path, PATHINFO_EXTENSION) === 'html') {
                 return $match[0];
             }
