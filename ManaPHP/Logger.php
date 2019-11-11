@@ -64,6 +64,26 @@ abstract class Logger extends Component implements LoggerInterface
         self::LEVEL_DEBUG => 'debug'];
 
     /**
+     * @var float
+     */
+    protected $_lazy;
+
+    /**
+     * @var int
+     */
+    protected $_buffer_size = 1024;
+
+    /**
+     * @var float
+     */
+    protected $_last_write;
+
+    /**
+     * @var \ManaPHP\Logger\Log[]
+     */
+    protected $_logs = [];
+
+    /**
      * Logger constructor.
      *
      * @param array $options
@@ -86,7 +106,15 @@ abstract class Logger extends Component implements LoggerInterface
             }
         }
 
+        $this->_lazy = MANAPHP_CLI ? false : $options['lazy'] ?? true;
+
+        if (isset($options['buffer_size'])) {
+            $this->_buffer_size = (int)$options['buffer_size'];
+        }
+
         $this->_host = $options['host'] ?? gethostname();
+
+        $this->attachEvent('request:end', [$this, 'onRequestEnd']);
     }
 
     protected function _createContext()
@@ -99,6 +127,14 @@ abstract class Logger extends Component implements LoggerInterface
         $context->request_id = $this->request->getRequestId();
 
         return $context;
+    }
+
+    public function onRequestEnd()
+    {
+        if ($this->_logs) {
+            $this->append($this->_logs);
+            $this->_logs = [];
+        }
     }
 
     /**
@@ -142,6 +178,18 @@ abstract class Logger extends Component implements LoggerInterface
     public function getLevels()
     {
         return self::$_levels;
+    }
+
+    /**
+     * @param bool $lazy
+     *
+     * @return static
+     */
+    public function setLazy($lazy = true)
+    {
+        $this->_lazy = $lazy;
+
+        return $this;
     }
 
     /**
@@ -366,7 +414,20 @@ abstract class Logger extends Component implements LoggerInterface
 
         $this->eventsManager->fireEvent('logger:log', $this, $log);
 
-        $this->append([$log]);
+        if ($this->_lazy) {
+            $this->_logs[] = $log;
+
+            if ($this->_last_write === null) {
+                $this->_last_write = $log->timestamp;
+            } elseif ($log->timestamp - $this->_last_write > 1 || count($this->_logs) > $this->_buffer_size) {
+                $this->_last_write = $log->timestamp;
+				
+                $this->append($this->_logs);
+                $this->_logs = [];
+            }
+        } else {
+            $this->append([$log]);
+        }
 
         return $this;
     }

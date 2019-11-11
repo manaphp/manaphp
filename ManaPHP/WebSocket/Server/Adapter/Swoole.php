@@ -277,7 +277,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     }
 
     /**
-     * @param \ManaPHP\ProcessInterface $process
+     * @param \ManaPHP\Process $process
      *
      * @return void
      */
@@ -285,6 +285,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     {
         $p = new Process(static function (/** @noinspection PhpUnusedParameterInspection */ $p) use ($process) {
             Coroutine::create(static function () use ($process) {
+                $process->logger->setLazy(false);
                 try {
                     $process->run();
                 } catch (Throwable $throwable) {

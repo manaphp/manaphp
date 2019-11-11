@@ -46,12 +46,12 @@ class File extends Logger
         if (isset($options['tail'])) {
             $this->_tail = $options['tail'];
         }
-
-        $this->attachEvent('request:end', [$this, 'onRequestEnd']);
     }
 
     public function onRequestEnd()
     {
+        parent::onRequestEnd();
+
         if ($this->_tail !== '') {
             $this->_write($this->_tail);
         }

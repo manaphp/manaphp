@@ -27,6 +27,13 @@ interface LoggerInterface
     public function getLevels();
 
     /**
+     * @param bool $lazy
+     *
+     * @return static
+     */
+    public function setLazy($lazy = true);
+
+    /**
      * Sends/Writes a debug message to the log
      *
      * @param string|array $message
