@@ -109,12 +109,14 @@ class File extends Logger
     }
 
     /**
-     * @param \ManaPHP\Logger\Log $log
+     * @param \ManaPHP\Logger\Log[] $logs
      *
      * @return void
      */
-    public function append($log)
+    public function append($logs)
     {
-        $this->_write($this->_format($log));
+        foreach ($logs as $log) {
+            $this->_write($this->_format($log));
+        }
     }
 }

@@ -20,15 +20,15 @@ class MemoryContext
 class Memory extends Logger
 {
     /**
-     * @param \ManaPHP\Logger\Log $log
+     * @param \ManaPHP\Logger\Log[] $logs
      *
      * @return void
      */
-    public function append($log)
+    public function append($logs)
     {
         $context = $this->_context;
-
-        $context->logs[] = $log;
+		
+        $context->logs = array_merge($context->logs, $logs);
     }
 
     /**

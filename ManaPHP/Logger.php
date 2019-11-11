@@ -145,11 +145,11 @@ abstract class Logger extends Component implements LoggerInterface
     }
 
     /**
-     * @param \ManaPHP\Logger\Log $log
+     * @param \ManaPHP\Logger\Log[] $logs
      *
      * @return void
      */
-    abstract public function append($log);
+    abstract public function append($logs);
 
     /**
      * @param array $traces
@@ -366,7 +366,7 @@ abstract class Logger extends Component implements LoggerInterface
 
         $this->eventsManager->fireEvent('logger:log', $this, $log);
 
-        $this->append($log);
+        $this->append([$log]);
 
         return $this;
     }

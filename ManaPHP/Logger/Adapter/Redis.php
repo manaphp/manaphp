@@ -34,23 +34,24 @@ class Redis extends Logger
     }
 
     /**
-     * @param \ManaPHP\Logger\Log $log
+     * @param \ManaPHP\Logger\Log[] $logs
      */
-    public function append($log)
+    public function append($logs)
     {
-        $data = [
-            'date' => date('Y-m-d\TH:i:s', $log->timestamp) . sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000),
-            '@timestamp' => $log->timestamp,
-            'host' => $log->host,
-            'category' => $log->category,
-            'level' => $log->level,
-            'location' => "$log->file:$log->line",
-            'message' => $log->message];
-
         if (is_string($this->_redis)) {
             $this->_redis = $this->_di->getShared($this->_redis);
         }
 
-        $this->_redis->rPush($this->_key, json_stringify($data));
+        foreach ($logs as $log) {
+            $data = [
+                'date' => date('Y-m-d\TH:i:s', $log->timestamp) . sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000),
+                '@timestamp' => $log->timestamp,
+                'host' => $log->host,
+                'category' => $log->category,
+                'level' => $log->level,
+                'location' => "$log->file:$log->line",
+                'message' => $log->message];
+            $this->_redis->rPush($this->_key, json_stringify($data));
+        }
     }
 }

@@ -31,20 +31,22 @@ class Stdout extends Logger
     }
 
     /**
-     * @param \ManaPHP\Logger\Log $log
+     * @param \ManaPHP\Logger\Log[] $logs
      *
      * @return void
      */
-    public function append($log)
+    public function append($logs)
     {
-        $replaced = [];
+        foreach ($logs as $log) {
+            $replaced = [];
 
-        $replaced[':date'] = date('Y-m-d\TH:i:s', $log->timestamp) . sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
-        $replaced[':level'] = $log->level;
-        $replaced[':category'] = $log->category;
-        $replaced[':location'] = "$log->file:$log->line";
-        $replaced[':message'] = $log->message;
+            $replaced[':date'] = date('Y-m-d\TH:i:s', $log->timestamp) . sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
+            $replaced[':level'] = $log->level;
+            $replaced[':category'] = $log->category;
+            $replaced[':location'] = "$log->file:$log->line";
+            $replaced[':message'] = $log->message;
 
-        echo strtr($this->_format, $replaced), PHP_EOL;
+            echo strtr($this->_format, $replaced), PHP_EOL;
+        }
     }
 }

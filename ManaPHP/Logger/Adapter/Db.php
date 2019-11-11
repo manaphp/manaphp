@@ -41,32 +41,36 @@ class Db extends Logger
     }
 
     /**
-     * @param \ManaPHP\Logger\Log $log
+     * @param \ManaPHP\Logger\Log[] $logs
      *
      * @return void
      */
-    public function append($log)
+    public function append($logs)
     {
         /** @var \ManaPHP\DbInterface $db */
         $db = $this->_di->getShared($this->_db);
 
         $level = $this->logger->getLevel();
         $this->logger->setLevel(Logger::LEVEL_FATAL);
-        try {
-            $db->insert($this->_table, [
-                'host' => $log->host,
-                'client_ip' => $log->client_ip,
-                'request_id' => $log->request_id,
-                'category' => $log->category,
-                'level' => $log->level,
-                'file' => $log->file,
-                'line' => $log->line,
-                'message' => $log->message,
-                'timestamp' => $log->timestamp - (int)$log->timestamp,
-                'created_time' => (int)$log->timestamp]);
-        } catch (Exception $e) {
-            null;
+
+        foreach ($logs as $log) {
+            try {
+                $db->insert($this->_table, [
+                    'host' => $log->host,
+                    'client_ip' => $log->client_ip,
+                    'request_id' => $log->request_id,
+                    'category' => $log->category,
+                    'level' => $log->level,
+                    'file' => $log->file,
+                    'line' => $log->line,
+                    'message' => $log->message,
+                    'timestamp' => $log->timestamp - (int)$log->timestamp,
+                    'created_time' => (int)$log->timestamp]);
+            } catch (Exception $e) {
+                null;
+            }
         }
+
         $this->logger->setLevel($level);
     }
 }
