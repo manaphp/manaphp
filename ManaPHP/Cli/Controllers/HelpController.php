@@ -23,9 +23,6 @@ class HelpController extends Controller
         $this->console->writeLn('manaphp commands:', Console::FC_GREEN | Console::AT_BOLD);
         foreach (glob(__DIR__ . '/*Controller.php') as $file) {
             $plainName = basename($file, '.php');
-            if (in_array($plainName, ['BashCompletionController', 'HelpController'], true)) {
-                continue;
-            }
             $this->console->writeLn(' - ' . $this->console->colorize(Str::underscore(basename($plainName, 'Controller')), Console::FC_YELLOW));
             $commands = $this->_getCommands(__NAMESPACE__ . "\\" . $plainName);
 
