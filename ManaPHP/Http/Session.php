@@ -135,7 +135,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
 
         $context->session_id = $session_id;
 
-        $this->fireEvent('session:start', ['context' => $this->_context]);
+        $this->fireEvent('session:start', $context);
     }
 
     public function onResponseSending()
@@ -146,7 +146,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
             return;
         }
 
-        $this->fireEvent('session:end');
+        $this->fireEvent('session:end', $context);
 
         if ($context->is_new) {
             if (!$context->_SESSION) {
@@ -158,7 +158,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
 
             $this->cookies->set($this->_name, $context->session_id, $expire, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
 
-            $this->fireEvent('session:create', ['context' => $this->_context]);
+            $this->fireEvent('session:create', $context);
         } elseif ($context->is_dirty) {
             null;
         } elseif ($this->_lazy) {
@@ -171,7 +171,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
             }
         }
 
-        $this->fireEvent('session:update', ['context' => $this->_context]);
+        $this->fireEvent('session:update', $context);
 
         if ($this->_lazy) {
             $context->_SESSION['__T'] = time();
@@ -194,7 +194,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
     public function destroy($session_id = null)
     {
         if ($session_id) {
-            $this->fireEvent('session:destroy', ['session_id' => $session_id]);
+            $this->fireEvent('session:destroy', $session_id);
             $this->do_destroy($session_id);
         } else {
             $context = $this->_context;
@@ -203,7 +203,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
                 $this->_start();
             }
 
-            $this->fireEvent('session:destroy', ['session_id' => $session_id, 'context' => $context]);
+            $this->fireEvent('session:destroy', $context);
 
             $context->started = false;
             $context->is_dirty = false;
