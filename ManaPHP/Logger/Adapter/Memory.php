@@ -27,7 +27,7 @@ class Memory extends Logger
     public function append($logs)
     {
         $context = $this->_context;
-		
+
         $context->logs = array_merge($context->logs, $logs);
     }
 

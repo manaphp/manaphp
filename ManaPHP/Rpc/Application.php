@@ -57,7 +57,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
     public function handle()
     {
         try {
-            $this->eventsManager->fireEvent('request:begin', $this);
+            $this->fireEvent('request:begin');
 
             $actionReturnValue = $this->router->dispatch();
             if ($actionReturnValue instanceof Response) {
@@ -75,7 +75,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
 
         $this->rpcServer->send($this->response->getContext());
 
-        $this->eventsManager->fireEvent('request:end', $this);
+        $this->fireEvent('request:end');
     }
 
     public function main()

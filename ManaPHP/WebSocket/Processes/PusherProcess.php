@@ -71,8 +71,8 @@ class PusherProcess extends Process
         $table->create();
 
         $this->_users = $table;
-        $this->eventsManager->attachEvent('ws:open', [$this, 'onWsOpen']);
-        $this->eventsManager->attachEvent('ws:close', [$this, 'onWsClose']);
+        $this->attachEvent('ws:open', [$this, 'onWsOpen']);
+        $this->attachEvent('ws:close', [$this, 'onWsClose']);
     }
 
     public function onWsOpen(EventArgs $eventArgs)

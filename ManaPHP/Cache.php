@@ -21,10 +21,10 @@ abstract class Cache extends Component implements CacheInterface
     public function get($key)
     {
         if (($data = $this->do_get($key)) === false) {
-            $this->eventsManager->fireEvent('cache:miss', $this, ['key' => $key]);
+            $this->fireEvent('cache:miss', ['key' => $key]);
             return false;
         } else {
-            $this->eventsManager->fireEvent('cache:hit', $this, ['key' => $key]);
+            $this->fireEvent('cache:hit', ['key' => $key]);
             return $data;
         }
     }

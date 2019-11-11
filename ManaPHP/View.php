@@ -212,7 +212,7 @@ class View extends Component implements ViewInterface
             }
         }
 
-        $this->eventsManager->fireEvent('view:rendering', $this);
+        $this->fireEvent('view:rendering');
 
         $context->content = $this->_render($template, $context->vars, false);
 
@@ -221,7 +221,7 @@ class View extends Component implements ViewInterface
             $context->content = $this->_render($layout, $context->vars, false);
         }
 
-        $this->eventsManager->fireEvent('view:rendered', $this);
+        $this->fireEvent('view:rendered');
 
         return $context->content;
     }

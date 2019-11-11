@@ -191,8 +191,8 @@ class Db extends Component implements DbInterface
 
         $context->affected_rows = 0;
 
-        $this->eventsManager->fireEvent('db:executing', $this);
-        $event && $this->eventsManager->fireEvent('db:' . $event[0], $this);
+        $this->fireEvent('db:executing');
+        $event && $this->fireEvent('db:' . $event[0]);
 
         if ($context->connection) {
             $connection = $context->connection;
@@ -213,8 +213,8 @@ class Db extends Component implements DbInterface
         $count = $context->affected_rows;
         $event_data = compact('type', 'count', 'sql', 'bind', 'elapsed');
 
-        $event && $this->eventsManager->fireEvent('db:' . $event[1], $this, $event_data);
-        $this->eventsManager->fireEvent('db:executed', $this, $event_data);
+        $event && $this->fireEvent('db:' . $event[1], $event_data);
+        $this->fireEvent('db:executed', $event_data);
 
         return $count;
     }
@@ -262,7 +262,7 @@ class Db extends Component implements DbInterface
         $context->bind = $bind;
         $context->affected_rows = 0;
 
-        $this->eventsManager->fireEvent('db:querying', $this);
+        $this->fireEvent('db:querying');
 
         if ($context->connection) {
             $type = null;
@@ -285,7 +285,7 @@ class Db extends Component implements DbInterface
 
         $count = $context->affected_rows = count($result);
 
-        $this->eventsManager->fireEvent('db:queried', $this, compact('elapsed', 'count', 'sql', 'bind', 'result'));
+        $this->fireEvent('db:queried', compact('elapsed', 'count', 'sql', 'bind', 'result'));
 
         return $result;
     }
@@ -316,7 +316,7 @@ class Db extends Component implements DbInterface
 
         $connection = $context->connection ?: $this->poolManager->pop($this, $this->_timeout);
 
-        $this->eventsManager->fireEvent('db:inserting', $this);
+        $this->fireEvent('db:inserting');
 
         try {
             $start_time = microtime(true);
@@ -336,7 +336,7 @@ class Db extends Component implements DbInterface
 
         $event_data = compact('sql', 'record', 'elapsed', 'insert_id', 'bind');
 
-        $this->eventsManager->fireEvent('db:inserted', $this, $event_data);
+        $this->fireEvent('db:inserted', $event_data);
 
         return $insert_id;
     }
@@ -604,7 +604,7 @@ class Db extends Component implements DbInterface
         $context = $this->_context;
 
         if ($context->transaction_level === 0) {
-            $this->eventsManager->fireEvent('db:begin', $this);
+            $this->fireEvent('db:begin');
 
             /** @var \ManaPHP\Db\ConnectionInterface $connection */
             $connection = $this->poolManager->pop($this, $this->_timeout);
@@ -663,7 +663,7 @@ class Db extends Component implements DbInterface
                     $this->poolManager->push($this, $context->connection);
                     $context->connection = null;
 
-                    $this->eventsManager->fireEvent('db:rollback', $this);
+                    $this->fireEvent('db:rollback');
                 }
             }
         }
@@ -695,7 +695,7 @@ class Db extends Component implements DbInterface
             } finally {
                 $this->poolManager->push($this, $context->connection);
                 $context->connection = null;
-                $this->eventsManager->fireEvent('db:commit', $this);
+                $this->fireEvent('db:commit');
             }
         }
     }
@@ -789,7 +789,7 @@ class Db extends Component implements DbInterface
             }
         }
 
-        $this->eventsManager->fireEvent('db:metadata', $this, compact('elapsed', 'source', 'meta'));
+        $this->fireEvent('db:metadata', compact('elapsed', 'source', 'meta'));
 
         return $meta;
     }
@@ -806,7 +806,7 @@ class Db extends Component implements DbInterface
                 } finally {
                     $this->poolManager->push($this, $context->connection);
                 }
-                $this->eventsManager->fireEvent('db:abnormal', $this);
+                $this->fireEvent('db:abnormal');
             }
             $context->connection = null;
         }

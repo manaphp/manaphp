@@ -50,7 +50,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         try {
             $throwable = null;
 
-            $this->eventsManager->fireEvent('request:begin', $this);
+            $this->fireEvent('request:begin');
 
             if (!$this->router->match()) {
                 throw new NotFoundRouteException(['router does not have matched route']);
@@ -75,9 +75,9 @@ class Application extends \ManaPHP\Application implements HandlerInterface
 
         try {
             if ($event === 'open') {
-                $this->eventsManager->fireEvent('ws:open', $this, $fd);
+                $this->fireEvent('ws:open', $fd);
             } elseif ($event === 'close') {
-                $this->eventsManager->fireEvent('ws:close', $this, $fd);
+                $this->fireEvent('ws:close', $fd);
             }
         } /** @noinspection PhpRedundantCatchClauseInspection */ catch (AbortException $exception) {
             null;
@@ -89,7 +89,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
             $this->wsServer->push($fd, $content);
         }
 
-        $this->eventsManager->fireEvent('request:end', $this);
+        $this->fireEvent('request:end');
 
         if ($throwable) {
             $this->wsServer->disconnect($fd);

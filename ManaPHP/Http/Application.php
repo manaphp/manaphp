@@ -24,10 +24,10 @@ abstract class Application extends \ManaPHP\Application implements HandlerInterf
 
         parent::__construct($loader);
 
-        $this->eventsManager->attachEvent('request:authenticate', [$this, 'authenticate']);
+        $this->attachEvent('request:authenticate', [$this, 'authenticate']);
 
         if (method_exists($this, 'authorize')) {
-            $this->eventsManager->attachEvent('request:authorize', [$this, 'authorize']);
+            $this->attachEvent('request:authorize', [$this, 'authorize']);
         }
 
         if (PHP_SAPI === 'cli') {

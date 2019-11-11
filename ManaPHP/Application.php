@@ -140,21 +140,22 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
      */
     protected function _loadListeners($listeners)
     {
+        $eventsManager = $this->_di->eventsManager;
         foreach ($listeners as $listener) {
             if ($listener === '*') {
                 foreach ($this->filesystem->glob('@app/Areas/*/Listeners/*Listener.php') as $item) {
                     $item = str_replace($this->alias->get('@app'), 'App', $item);
                     $item = substr(str_replace('/', '\\', $item), 0, -4);
-                    $this->eventsManager->addListener($item);
+                    $eventsManager->addListener($item);
                 }
 
                 foreach ($this->filesystem->glob('@app/Listeners/*Listener.php') as $item) {
                     $item = str_replace($this->alias->get('@app'), 'App', $item);
                     $item = substr(str_replace('/', '\\', $item), 0, -4);
-                    $this->eventsManager->addListener($item);
+                    $eventsManager->addListener($item);
                 }
             } else {
-                $this->eventsManager->addListener($listener);
+                $eventsManager->addListener($listener);
             }
         }
     }
@@ -314,7 +315,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         $this->registerServices();
 
         if (!MANAPHP_CLI) {
-            $this->eventsManager->fireEvent('request:begin', $this);
+            $this->fireEvent('request:begin');
         }
     }
 }

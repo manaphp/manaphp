@@ -233,7 +233,7 @@ class Workerman extends Server
      */
     public function send($response)
     {
-        $this->eventsManager->fireEvent('response:sending', $this, $response);
+        $this->fireEvent('response:sending', $response);
 
 
         Http::header('HTTP', true, $response->status_code);
@@ -256,6 +256,6 @@ class Workerman extends Server
         $content = $response->content;
         $this->_context->connection->close(is_string($content) ? $content : json_stringify($content));
 
-        $this->eventsManager->fireEvent('response:sent', $this, $response);
+        $this->fireEvent('response:sent', $response);
     }
 }

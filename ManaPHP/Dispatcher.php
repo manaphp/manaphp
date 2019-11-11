@@ -202,13 +202,13 @@ class Dispatcher extends Component implements DispatcherInterface
             ]);
         }
 
-        $this->eventsManager->fireEvent('request:authorize', $this);
+        $this->fireEvent('request:authorize');
 
-        $this->eventsManager->fireEvent('request:validate', $this, ['controller' => get_class($controller), 'action' => $action]);
+        $this->fireEvent('request:validate', ['controller' => get_class($controller), 'action' => $action]);
 
-        $this->eventsManager->fireEvent('request:ready', $this);
+        $this->fireEvent('request:ready');
 
-        $this->eventsManager->fireEvent('request:invoking', $this, $action);
+        $this->fireEvent('request:invoking', $action);
 
         try {
             $context = $this->_context;
@@ -218,7 +218,7 @@ class Dispatcher extends Component implements DispatcherInterface
             $context->isInvoking = false;
         }
 
-        $this->eventsManager->fireEvent('request:invoked', $this, ['action' => $action, 'return' => $r]);
+        $this->fireEvent('request:invoked', ['action' => $action, 'return' => $r]);
 
         return $r;
     }

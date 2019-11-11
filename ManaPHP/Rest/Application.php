@@ -25,9 +25,9 @@ class Application extends \ManaPHP\Http\Application
     public function handle()
     {
         try {
-            $this->eventsManager->fireEvent('request:begin', $this);
+            $this->fireEvent('request:begin');
 
-            $this->eventsManager->fireEvent('request:authenticate', $this);
+            $this->fireEvent('request:authenticate');
 
             $actionReturnValue = $this->router->dispatch();
             if ($actionReturnValue === null || $actionReturnValue instanceof Response) {
@@ -51,6 +51,6 @@ class Application extends \ManaPHP\Http\Application
 
         $this->httpServer->send($response);
 
-        $this->eventsManager->fireEvent('request:end', $this);
+        $this->fireEvent('request:end');
     }
 }

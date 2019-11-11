@@ -95,7 +95,7 @@ abstract class Connection extends Component implements ConnectionInterface
     protected function _getPdo()
     {
         if ($this->_pdo === null) {
-            $this->eventsManager->fireEvent('db:connect', $this, ['dsn' => $this->_dsn]);
+            $this->fireEvent('db:connect', ['dsn' => $this->_dsn]);
             try {
                 $this->_pdo = $this->_di->get('PDO', [$this->_dsn, $this->_username, $this->_password, $this->_options]);
             } catch (PDOException $e) {
@@ -262,7 +262,7 @@ abstract class Connection extends Component implements ConnectionInterface
             $this->_prepared = [];
             if ($this->_in_transaction) {
                 $this->_in_transaction = false;
-                $this->eventsManager->fireEvent('db:abnormal', $this);
+                $this->fireEvent('db:abnormal');
             }
         }
     }
