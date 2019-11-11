@@ -412,7 +412,7 @@ abstract class Logger extends Component implements LoggerInterface
         $log->message = is_string($message) ? $message : $this->formatMessage($message);
         $log->timestamp = microtime(true);
 
-        $this->eventsManager->fireEvent('logger:log', $this, $log);
+        $this->fireEvent('logger:log', $log);
 
         if ($this->_lazy) {
             $this->_logs[] = $log;
@@ -421,7 +421,7 @@ abstract class Logger extends Component implements LoggerInterface
                 $this->_last_write = $log->timestamp;
             } elseif ($log->timestamp - $this->_last_write > 1 || count($this->_logs) > $this->_buffer_size) {
                 $this->_last_write = $log->timestamp;
-				
+
                 $this->append($this->_logs);
                 $this->_logs = [];
             }

@@ -1088,7 +1088,7 @@ class Query extends \ManaPHP\Query
     {
         throw new NotSupportedException(__METHOD__);
     }
-    
+
     public function having($having, $bind = [])
     {
         throw new NotSupportedException(__METHOD__);

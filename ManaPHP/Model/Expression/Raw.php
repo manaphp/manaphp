@@ -30,7 +30,7 @@ class Raw implements ExpressionInterface
     public function compile($model, $field)
     {
         $expression = $this->_expression;
-		
+
         if ($model instanceof DbModel) {
             return ["[$field]=$expression"];
         } else {
