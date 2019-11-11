@@ -192,9 +192,9 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
-     * @param \ManaPHP\Model          $model
-     * @param                         $name
-     * @param                         $data
+     * @param \ManaPHP\Model        $model
+     * @param string                $name
+     * @param string|array|callable $data
      *
      * @return \ManaPHP\QueryInterface
      */
