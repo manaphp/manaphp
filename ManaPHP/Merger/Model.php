@@ -33,7 +33,7 @@ abstract class Model extends \ManaPHP\Model
         throw new NotSupportedException(__METHOD__);
     }
 
-    public static function connection($context = null)
+    public static function connection(/** @noinspection PhpUnusedParameterInspection */ $context = null)
     {
         throw new NotSupportedException(__METHOD__);
     }

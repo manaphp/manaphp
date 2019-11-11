@@ -68,7 +68,7 @@ class Redis extends Component
      *
      * @return string
      */
-    protected function _getType($name, $arguments)
+    protected function _getType(/** @noinspection PhpUnusedParameterInspection */ $name, $arguments)
     {
         if ($this->_types && isset($arguments[0]) && is_string($arguments[0])) {
             $key = $arguments[0];
