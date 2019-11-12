@@ -3,6 +3,7 @@
 namespace ManaPHP\Http\Request;
 
 use ManaPHP\Component;
+use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Request\File\Exception as FileException;
 
 /**
@@ -123,18 +124,18 @@ class File extends Component implements FileInterface
             throw new FileException(['error code of upload file is not UPLOAD_ERR_OK: :error', 'error' => $this->_file['error']]);
         }
 
-        if ($this->filesystem->fileExists($dst)) {
+        if (LocalFS::fileExists($dst)) {
             if ($overwrite) {
-                $this->filesystem->fileDelete($dst);
+                LocalFS::fileDelete($dst);
             } else {
                 throw new FileException(['`:file` file already exists', 'file' => $dst]);
             }
         }
 
-        $this->filesystem->dirCreate(dirname($dst));
+        LocalFS::dirCreate(dirname($dst));
 
         if (PHP_SAPI === 'cli') {
-            $this->filesystem->fileMove($this->_file['tmp_name'], $this->alias->resolve($dst));
+            LocalFS::fileMove($this->_file['tmp_name'], $this->alias->resolve($dst));
         } else {
             if (!move_uploaded_file($this->_file['tmp_name'], $this->alias->resolve($dst))) {
                 throw new FileException(['move_uploaded_file to `:dst` failed: :last_error_message', 'dst' => $dst]);

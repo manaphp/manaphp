@@ -2,6 +2,7 @@
 namespace ManaPHP\I18n;
 
 use ManaPHP\Component;
+use ManaPHP\Helper\LocalFS;
 
 class TranslatorContext
 {
@@ -52,7 +53,7 @@ class Translator extends Component implements TranslatorInterface
             $this->_dir = $options['dir'];
         }
 
-        foreach ($this->filesystem->glob($this->_dir . '/*.php') as $file) {
+        foreach (LocalFS::glob($this->_dir . '/*.php') as $file) {
             $this->_files[strtolower(pathinfo($file, PATHINFO_FILENAME))] = $file;
         }
     }

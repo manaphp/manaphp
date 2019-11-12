@@ -3,6 +3,7 @@ namespace ManaPHP\Renderer;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\FileNotFoundException;
+use ManaPHP\Helper\LocalFS;
 
 class AssetBundle extends Component implements AssetBundleInterface
 {
@@ -96,7 +97,7 @@ class AssetBundle extends Component implements AssetBundleInterface
                 $r .= PHP_EOL . PHP_EOL . "/* SOURCE_FILE `$source_file` */" . PHP_EOL . $content;
             }
 
-            $this->filesystem->filePut("@public$bundle", $r);
+            LocalFS::filePut("@public$bundle", $r);
         }
 
         return $this->alias->resolve("@asset$bundle");

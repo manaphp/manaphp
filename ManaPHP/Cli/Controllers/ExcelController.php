@@ -2,6 +2,7 @@
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
+use ManaPHP\Helper\LocalFS;
 
 class ExcelController extends Controller
 {
@@ -10,16 +11,16 @@ class ExcelController extends Controller
      */
     public function odsCommand($file)
     {
-        if ($this->filesystem->dirExists($file)) {
+        if (LocalFS::dirExists($file)) {
             $file .= '/content.xml';
         }
 
-        $content = $this->filesystem->fileGet($file);
+        $content = LocalFS::fileGet($file);
 
         $content = preg_replace('#table:formula="[^\"]+" #', '', $content);
         $content = preg_replace('#table:number-rows-repeated="\d+"#', 'table:number-rows-repeated="100"', $content);
         $content = preg_replace('#office:value-type="float" office:value=".*?" #', '', $content);
 
-        $this->filesystem->filePut($file . '.xml', $content);
+        LocalFS::filePut($file . '.xml', $content);
     }
 }

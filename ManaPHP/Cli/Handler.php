@@ -3,6 +3,7 @@
 namespace ManaPHP\Cli;
 
 use ManaPHP\Component;
+use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
 /**
@@ -30,14 +31,14 @@ class Handler extends Component implements HandlerInterface
     {
         $controllers = [];
 
-        foreach ($this->filesystem->glob('@manaphp/Cli/Controllers/*Controller.php') as $file) {
+        foreach (LocalFS::glob('@manaphp/Cli/Controllers/*Controller.php') as $file) {
             if (preg_match('#/(\w+)Controller\.php$#', $file, $matches)) {
                 $controllers[$matches[1]] = "ManaPHP\\Cli\Controllers\\{$matches[1]}Controller";
             }
         }
 
         if ($this->alias->has('@cli')) {
-            foreach ($this->filesystem->glob('@cli/*Controller.php') as $file) {
+            foreach (LocalFS::glob('@cli/*Controller.php') as $file) {
                 if (preg_match('#/(\w+)Controller\.php$#', $file, $matches)) {
                     $controllers[$matches[1]] = $this->alias->resolveNS("@ns.cli\\{$matches[1]}Controller");
                 }

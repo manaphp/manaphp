@@ -1,6 +1,7 @@
 <?php
 namespace ManaPHP\Mailer\Adapter;
 
+use ManaPHP\Helper\LocalFS;
 use ManaPHP\Mailer;
 
 class File extends Mailer
@@ -59,7 +60,7 @@ class File extends Mailer
             $data = json_stringify($message) . PHP_EOL;
         }
 
-        $this->filesystem->fileAppend($this->_file ?: '@data/fileMailer/mailer_' . date('ymd') . '.log', $data);
+        LocalFS::fileAppend($this->_file ?: '@data/fileMailer/mailer_' . date('ymd') . '.log', $data);
 
         return count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
     }

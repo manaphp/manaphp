@@ -1,6 +1,8 @@
 <?php
 namespace ManaPHP;
 
+use ManaPHP\Helper\LocalFS;
+
 abstract class Mailer extends Component implements MailerInterface
 {
     /**
@@ -54,7 +56,7 @@ abstract class Mailer extends Component implements MailerInterface
     public function send($message, &$failedRecipients = null)
     {
         if ($this->_log) {
-            $this->filesystem->fileAppend($this->_log, json_stringify($message) . PHP_EOL);
+            LocalFS::fileAppend($this->_log, json_stringify($message) . PHP_EOL);
         }
 
         $failedRecipients = [];

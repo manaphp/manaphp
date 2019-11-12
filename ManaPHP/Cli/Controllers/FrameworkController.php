@@ -3,6 +3,7 @@
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
+use ManaPHP\Helper\LocalFS;
 
 class FrameworkController extends Controller
 {
@@ -18,7 +19,7 @@ class FrameworkController extends Controller
      */
     protected function _strip_whitespaces($str)
     {
-        $this->filesystem->filePut($this->_tmp_lite_file, $str);
+        LocalFS::filePut($this->_tmp_lite_file, $str);
         $str = php_strip_whitespace($this->alias->resolve($this->_tmp_lite_file));
 //        $str = preg_replace('#\s*/\*\*.*?\*/#ms', '', $str);//remove comments
 //        $str = preg_replace('#([\r\n]+)\s*\\1#', '\\1', $str);//remove blank lines
@@ -29,7 +30,7 @@ class FrameworkController extends Controller
 
     public function __destruct()
     {
-        $this->filesystem->fileDelete($this->_tmp_lite_file);
+        LocalFS::fileDelete($this->_tmp_lite_file);
     }
 
     protected function _getSourceFiles($dir)
@@ -81,7 +82,7 @@ class FrameworkController extends Controller
         foreach ($sourceFiles as $file) {
             $dstFile = str_replace($ManaPHPSrcDir, $ManaPHPDstDir, $file);
 
-            $content = $this->_minify($this->filesystem->fileGet($file));
+            $content = $this->_minify(LocalFS::fileGet($file));
             $lineCount = substr_count($content, strpos($content, "\r") !== false ? "\r" : "\n");
 
             if (strpos($file, 'Interface.php')) {
@@ -93,7 +94,7 @@ class FrameworkController extends Controller
             }
 
             $this->console->writeLn($content);
-            $this->filesystem->filePut($dstFile, $content);
+            LocalFS::filePut($dstFile, $content);
             $fileLines[$file] = $lineCount;
         }
 

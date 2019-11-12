@@ -3,6 +3,7 @@ namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
 use ManaPHP\Helper\Arr;
+use ManaPHP\Helper\LocalFS;
 
 class BosController extends Controller
 {
@@ -62,7 +63,7 @@ class BosController extends Controller
      */
     public function importCommand($bucket, $dir, $prefix)
     {
-        if (!$this->filesystem->dirExists($dir)) {
+        if (!LocalFS::dirExists($dir)) {
             return $this->console->error(['`:dir` directory is not exists', 'dir' => $dir]);
         }
 
@@ -81,9 +82,9 @@ class BosController extends Controller
         $dir = rtrim($dir, '\\/');
         $prefix = trim($prefix, '/');
 
-        foreach ($this->filesystem->scandir($dir) as $item) {
+        foreach (LocalFS::scandir($dir) as $item) {
             $file = "$dir/$item";
-            if ($this->filesystem->fileExists($file)) {
+            if (LocalFS::fileExists($file)) {
                 $response = $this->bosClient->putObject($file, $bucket, "$prefix/$item");
                 $this->console->writeLn($response);
             } else {

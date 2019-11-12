@@ -4,6 +4,7 @@ namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Console;
 use ManaPHP\Cli\Controller;
+use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
 class MongodbController extends Controller
@@ -57,7 +58,7 @@ class MongodbController extends Controller
         $fieldTypes = $this->_inferFieldTypes([$input]);
         $model = $this->_renderModel($fieldTypes, $modelName, 'mongodb', $optimized);
         $file = '@tmp/mongodb_model/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
-        $this->filesystem->filePut($file, $model);
+        LocalFS::filePut($file, $model);
 
         $this->console->writeLn(['write model to :file', 'file' => $file]);
     }
@@ -106,7 +107,7 @@ class MongodbController extends Controller
                     $fieldTypes = $this->_inferFieldTypes($docs);
                     $modelClass = $namespace . '\\' . $plainClass;
                     $model = $this->_renderModel($fieldTypes, $modelClass, $service, $defaultDb ? $collection : "$cdb.$collection", $optimized);
-                    $this->filesystem->filePut($fileName, $model);
+                    LocalFS::filePut($fileName, $model);
 
                     $this->console->progress([
                         ' `:namespace` collection saved to `:file`',
@@ -168,7 +169,7 @@ class MongodbController extends Controller
     protected function _getConstants($modelName)
     {
         $file = "@app/Models/$modelName.php";
-        if (!$this->filesystem->fileExists($file)) {
+        if (!LocalFS::fileExists($file)) {
             return '';
         }
 
@@ -393,7 +394,7 @@ class MongodbController extends Controller
 
                     $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
 
-                    $this->filesystem->dirCreate(dirname($fileName));
+                    LocalFS::dirCreate(dirname($fileName));
 
                     $file = fopen($this->alias->resolve($fileName), 'wb');
 

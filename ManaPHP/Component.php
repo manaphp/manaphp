@@ -13,7 +13,6 @@ use Swoole\Coroutine;
  *
  * @property-read \ManaPHP\AliasInterface                  $alias
  * @property-read \ManaPHP\Event\ManagerInterface          $eventsManager
- * @property-read \ManaPHP\FilesystemInterface             $filesystem
  * @property-read \ManaPHP\LoggerInterface                 $logger
  * @property-read \ManaPHP\Configuration\Configure         $configure
  * @property-read \ManaPHP\Configuration\SettingsInterface $settings

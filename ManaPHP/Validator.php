@@ -5,6 +5,7 @@ use Closure;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use ManaPHP\Validator\ValidateFailedException;
 
@@ -58,7 +59,7 @@ class Validator extends Component implements ValidatorInterface
             $this->_dir = $options['dir'];
         }
 
-        foreach ($this->filesystem->glob($this->_dir . '/*.php') as $file) {
+        foreach (LocalFS::glob($this->_dir . '/*.php') as $file) {
             $this->_files[strtolower(pathinfo($file, PATHINFO_FILENAME))] = $file;
         }
     }

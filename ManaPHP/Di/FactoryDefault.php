@@ -38,7 +38,6 @@ class FactoryDefault extends Di
             'httpClient' => 'ManaPHP\Http\Client\Adapter\Curl',
             'restClient' => 'ManaPHP\Http\Client\Adapter\Stream',
             'paginator' => 'ManaPHP\Paginator',
-            'filesystem' => 'ManaPHP\Filesystem\Adapter\File',
             'random' => 'ManaPHP\Security\Random',
             'messageQueue' => 'ManaPHP\Message\Queue\Adapter\Redis',
             'swordCompiler' => 'ManaPHP\Renderer\Engine\Sword\Compiler',

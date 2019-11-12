@@ -5,6 +5,7 @@ namespace ManaPHP\Plugins;
 use ManaPHP\Component;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\AbortException;
+use ManaPHP\Helper\LocalFS;
 use ManaPHP\Logger;
 use ManaPHP\Plugin;
 use ManaPHP\Version;
@@ -103,7 +104,7 @@ class DebuggerPlugin extends Plugin
             $content = $this->cache->get('__debuggerPlugin:' . $key);
         } else {
             $file = "@data/debuggerPlugin/{$key}.zip";
-            $content = $this->filesystem->fileExists($file) ? $this->filesystem->fileGet($file) : false;
+            $content = LocalFS::fileExists($file) ? LocalFS::fileGet($file) : false;
         }
 
         return is_string($content) ? gzdecode($content) : $content;
@@ -121,7 +122,7 @@ class DebuggerPlugin extends Plugin
         if ($this->_ttl) {
             $this->cache->set('__debuggerPlugin:' . $key, $content, $this->_ttl);
         } else {
-            $this->filesystem->filePut("@data/debuggerPlugin/{$key}.zip", $content);
+            LocalFS::filePut("@data/debuggerPlugin/{$key}.zip", $content);
         }
     }
 
@@ -134,7 +135,7 @@ class DebuggerPlugin extends Plugin
             if (($data = $this->_readData($match[1])) !== false) {
                 $ext = $match[2];
                 if ($ext === 'html') {
-                    $this->response->setContent(strtr($this->filesystem->fileGet($this->_template), ['DEBUGGER_DATA' => $data]));
+                    $this->response->setContent(strtr(LocalFS::fileGet($this->_template), ['DEBUGGER_DATA' => $data]));
                 } elseif ($ext === 'txt') {
                     $this->response->setContent(json_stringify(json_parse($data), JSON_PRETTY_PRINT))->setContentType('text/plain;charset=UTF-8');
                 } elseif ($ext === 'raw') {

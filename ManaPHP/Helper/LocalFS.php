@@ -1,19 +1,18 @@
 <?php
-namespace ManaPHP\Filesystem\Adapter;
+namespace ManaPHP\Helper;
 
-use ManaPHP\Component;
+use ManaPHP\Di;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\RuntimeException;
-use ManaPHP\FilesystemInterface;
 
-/**
- * Class ManaPHP\Filesystem\Adapter\File
- *
- * @package filesystem\adapter
- */
-class File extends Component implements FilesystemInterface
+class LocalFS
 {
+    /**
+     * @var \ManaPHP\AliasInterface
+     */
+    public static $alias;
+
     /**
      * Determine if a file exists.
      *
@@ -21,9 +20,9 @@ class File extends Component implements FilesystemInterface
      *
      * @return bool
      */
-    public function fileExists($file)
+    public static function fileExists($file)
     {
-        return is_file($this->alias->resolve($file));
+        return is_file(self::$alias->resolve($file));
     }
 
     /**
@@ -31,9 +30,9 @@ class File extends Component implements FilesystemInterface
      *
      * @return int|false
      */
-    public function fileSize($file)
+    public static function fileSize($file)
     {
-        return @filesize($this->alias->resolve($file));
+        return @filesize(self::$alias->resolve($file));
     }
 
     /**
@@ -41,10 +40,10 @@ class File extends Component implements FilesystemInterface
      *
      * @return void
      */
-    public function fileDelete($file)
+    public static function fileDelete($file)
     {
-        foreach ($this->files($file) as $f) {
-            if (!unlink($f) && $this->fileExists($f)) {
+        foreach (self::files($file) as $f) {
+            if (!unlink($f) && self::fileExists($f)) {
                 throw new RuntimeException(['delete `:file` failed: :last_error_message', 'file' => $f]);
             }
         }
@@ -56,7 +55,7 @@ class File extends Component implements FilesystemInterface
      *
      * @return void
      */
-    protected function _dirCreate($dir, $mode = 0755)
+    protected static function _dirCreate($dir, $mode = 0755)
     {
         /** @noinspection NotOptimalIfConditionsInspection */
         if (!is_dir($dir) && !@mkdir($dir, $mode, true) && !is_dir($dir)) {
@@ -69,9 +68,9 @@ class File extends Component implements FilesystemInterface
      *
      * @return string|false
      */
-    public function fileGet($file)
+    public static function fileGet($file)
     {
-        if (($r = @file_get_contents($this->alias->resolve($file))) === false) {
+        if (($r = @file_get_contents(self::$alias->resolve($file))) === false) {
             throw new FileNotFoundException($file);
         }
 
@@ -84,11 +83,11 @@ class File extends Component implements FilesystemInterface
      *
      * @return void
      */
-    public function filePut($file, $data)
+    public static function filePut($file, $data)
     {
-        $file = $this->alias->resolve($file);
+        $file = self::$alias->resolve($file);
 
-        $this->_dirCreate(dirname($file));
+        self::_dirCreate(dirname($file));
         if (file_put_contents($file, $data, LOCK_EX) === false) {
             throw new RuntimeException(['write `:file` file failed: :last_error_message', 'file' => $file]);
         }
@@ -100,10 +99,10 @@ class File extends Component implements FilesystemInterface
      *
      * @return void
      */
-    public function fileAppend($file, $data)
+    public static function fileAppend($file, $data)
     {
-        $file = $this->alias->resolve($file);
-        $this->_dirCreate(dirname($file));
+        $file = self::$alias->resolve($file);
+        self::_dirCreate(dirname($file));
 
         if (file_put_contents($file, $data, LOCK_EX | FILE_APPEND) === false) {
             throw new RuntimeException(['write `:file` file failed: :last_error_message', 'file' => $file]);
@@ -117,10 +116,10 @@ class File extends Component implements FilesystemInterface
      *
      * @return void
      */
-    public function fileMove($src, $dst, $overwrite = false)
+    public static function fileMove($src, $dst, $overwrite = false)
     {
-        $src = $this->alias->resolve($src);
-        $dst = $this->alias->resolve($dst);
+        $src = self::$alias->resolve($src);
+        $dst = self::$alias->resolve($dst);
 
         if (rtrim($dst, '\\/') !== $dst) {
             $dst .= basename($src);
@@ -131,7 +130,7 @@ class File extends Component implements FilesystemInterface
         }
 
         if (!is_dir($dir = dirname($dst))) {
-            $this->_dirCreate($dir);
+            self::_dirCreate($dir);
         }
 
         if (!rename($src, $dst)) {
@@ -146,17 +145,17 @@ class File extends Component implements FilesystemInterface
      *
      * @return void
      */
-    public function fileCopy($src, $dst, $overwrite = false)
+    public static function fileCopy($src, $dst, $overwrite = false)
     {
         if (rtrim($dst, '\\/') !== $dst) {
             $dst .= basename($src);
         }
 
-        $src = $this->alias->resolve($src);
-        $dst = $this->alias->resolve($dst);
+        $src = self::$alias->resolve($src);
+        $dst = self::$alias->resolve($dst);
 
         if ($overwrite || !is_file($dst)) {
-            $this->_dirCreate(dirname($dst));
+            self::_dirCreate(dirname($dst));
 
             if (!copy($src, $dst)) {
                 throw new RuntimeException(['move `:src` to `:dst` failed: :last_error_message', 'src' => $src, 'dst' => $dst]);
@@ -169,15 +168,15 @@ class File extends Component implements FilesystemInterface
      *
      * @return bool
      */
-    public function dirExists($dir)
+    public static function dirExists($dir)
     {
-        return is_dir($this->alias->resolve($dir));
+        return is_dir(self::$alias->resolve($dir));
     }
 
     /**
      * @param string $dir
      */
-    protected function _dirDelete($dir)
+    protected static function _dirDelete($dir)
     {
         foreach (scandir($dir, SCANDIR_SORT_NONE) as $item) {
             if ($item === '.' || $item === '..') {
@@ -190,7 +189,7 @@ class File extends Component implements FilesystemInterface
                     throw new RuntimeException(['delete `:file` file failed: :last_error_message', 'file' => $path]);
                 }
             } elseif (is_dir($path)) {
-                $this->_dirDelete($path);
+                self::_dirDelete($path);
             } else {
                 break;
             }
@@ -206,15 +205,15 @@ class File extends Component implements FilesystemInterface
      *
      * @return void
      */
-    public function dirDelete($dir)
+    public static function dirDelete($dir)
     {
-        $dir = $this->alias->resolve($dir);
+        $dir = self::$alias->resolve($dir);
 
         if (!is_dir($dir)) {
             return;
         }
 
-        $this->_dirDelete($dir);
+        self::_dirDelete($dir);
     }
 
     /**
@@ -223,9 +222,9 @@ class File extends Component implements FilesystemInterface
      *
      * @return void
      */
-    public function dirCreate($dir, $mode = 0755)
+    public static function dirCreate($dir, $mode = 0755)
     {
-        $this->_dirCreate($this->alias->resolve($dir), $mode);
+        self::_dirCreate(self::$alias->resolve($dir), $mode);
     }
 
     /**
@@ -234,11 +233,11 @@ class File extends Component implements FilesystemInterface
      *
      * @return void
      */
-    public function dirReCreate($dir, $mode = 0755)
+    public static function dirReCreate($dir, $mode = 0755)
     {
-        $this->dirDelete($dir);
+        self::dirDelete($dir);
 
-        $this->dirCreate($dir, $mode);
+        self::dirCreate($dir, $mode);
     }
 
     /**
@@ -248,17 +247,17 @@ class File extends Component implements FilesystemInterface
      *
      * @return void
      */
-    public function dirMove($src, $dst, $overwrite = false)
+    public static function dirMove($src, $dst, $overwrite = false)
     {
-        $src = $this->alias->resolve($src);
-        $dst = $this->alias->resolve($dst);
+        $src = self::$alias->resolve($src);
+        $dst = self::$alias->resolve($dst);
 
         if (!$overwrite && is_dir($dst)) {
             throw new RuntimeException(['move `:src` to `:dst` failed: destination directory is exists already', 'src' => $src, 'dst' => $dst]);
         }
 
         if (!is_dir($dir = dirname($dst))) {
-            $this->_dirCreate($dir);
+            self::_dirCreate($dir);
         }
 
         if (!rename($src, $dst)) {
@@ -273,7 +272,7 @@ class File extends Component implements FilesystemInterface
      *
      * @return void
      */
-    protected function _dirCopy($src, $dst, $overwrite)
+    protected static function _dirCopy($src, $dst, $overwrite)
     {
         foreach (scandir($src, SCANDIR_SORT_NONE) as $item) {
             if ($item === '.' || $item === '..') {
@@ -288,8 +287,8 @@ class File extends Component implements FilesystemInterface
                 }
             } elseif (is_dir($srcPath)) {
                 if ($overwrite || !is_dir($dstPath)) {
-                    $this->_dirCreate($dstPath);
-                    $this->_dirCopy($srcPath, $dstPath, $overwrite);
+                    self::_dirCreate($dstPath);
+                    self::_dirCopy($srcPath, $dstPath, $overwrite);
                 }
             } else {
                 break;
@@ -304,16 +303,16 @@ class File extends Component implements FilesystemInterface
      *
      * @return void
      */
-    public function dirCopy($src, $dst, $overwrite = false)
+    public static function dirCopy($src, $dst, $overwrite = false)
     {
-        $src = $this->alias->resolve($src);
-        $dst = $this->alias->resolve($dst);
+        $src = self::$alias->resolve($src);
+        $dst = self::$alias->resolve($dst);
 
         if (!is_dir($src)) {
             throw new RuntimeException(['copy `:src` directory to `:dst` directory failed: source directory is not exists', 'src' => $src, 'dst' => $dst]);
         }
-        $this->_dirCreate($dst);
-        $this->_dirCopy($src, $dst, $overwrite);
+        self::_dirCreate($dst);
+        self::_dirCopy($src, $dst, $overwrite);
     }
 
     /**
@@ -322,14 +321,14 @@ class File extends Component implements FilesystemInterface
      *
      * @return array
      */
-    public function glob($pattern, $flags = 0)
+    public static function glob($pattern, $flags = 0)
     {
-        $pattern = $this->alias->resolve($pattern);
+        $pattern = self::$alias->resolve($pattern);
 
         if (strpos($pattern, 'phar://') === 0) {
             $dir = dirname($pattern);
 
-            if (!$this->dirExists($dir)) {
+            if (!self::dirExists($dir)) {
                 return [];
             }
 
@@ -372,9 +371,9 @@ class File extends Component implements FilesystemInterface
      *
      * @return array
      */
-    public function scandir($dir, $sorting_order = SCANDIR_SORT_ASCENDING)
+    public static function scandir($dir, $sorting_order = SCANDIR_SORT_ASCENDING)
     {
-        $r = @scandir($this->alias->resolve($dir), $sorting_order);
+        $r = @scandir(self::$alias->resolve($dir), $sorting_order);
         if ($r === false) {
             throw new RuntimeException(['scandir `:dir` directory failed: :last_error_message', 'dir' => $dir]);
         }
@@ -394,12 +393,12 @@ class File extends Component implements FilesystemInterface
      *
      * @return array
      */
-    public function files($dir)
+    public static function files($dir)
     {
-        $dir = $this->alias->resolve($dir);
+        $dir = self::$alias->resolve($dir);
 
         $files = [];
-        foreach ($this->glob($dir . (strpos($dir, '*') === false ? '/*' : ''), SCANDIR_SORT_ASCENDING) as $item) {
+        foreach (self::glob($dir . (strpos($dir, '*') === false ? '/*' : ''), SCANDIR_SORT_ASCENDING) as $item) {
             if (is_file($item)) {
                 $files[] = $item;
             }
@@ -413,9 +412,9 @@ class File extends Component implements FilesystemInterface
      *
      * @return array
      */
-    public function directories($dir)
+    public static function directories($dir)
     {
-        return $this->glob($dir . (strpos($dir, '*') === false ? '/*' : ''), GLOB_ONLYDIR);
+        return self::glob($dir . (strpos($dir, '*') === false ? '/*' : ''), GLOB_ONLYDIR);
     }
 
     /**
@@ -423,9 +422,9 @@ class File extends Component implements FilesystemInterface
      *
      * @return int|false
      */
-    public function getModifiedTime($path)
+    public static function getModifiedTime($path)
     {
-        return filemtime($this->alias->resolve($path));
+        return filemtime(self::$alias->resolve($path));
     }
 
     /**
@@ -434,10 +433,12 @@ class File extends Component implements FilesystemInterface
      *
      * @return void
      */
-    public function chmod($file, $mode)
+    public static function chmod($file, $mode)
     {
-        if (!chmod($this->alias->resolve($file), $mode)) {
+        if (!chmod(self::$alias->resolve($file), $mode)) {
             throw new RuntimeException(['chmod `:file` file to `:mode` mode failed: :last_error_message', 'file' => $file, 'mode' => $mode]);
         }
     }
 }
+
+LocalFS::$alias = Di::getDefault()->getShared('alias');

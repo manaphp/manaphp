@@ -4,6 +4,7 @@ namespace ManaPHP;
 
 use ManaPHP\Aop\Unaspectable;
 use ManaPHP\Cli\Factory as CliFactory;
+use ManaPHP\Helper\LocalFS;
 use ManaPHP\Mvc\Factory as MvcFactory;
 use ReflectionClass;
 use Swoole\Runtime;
@@ -143,13 +144,13 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         $eventsManager = $this->_di->eventsManager;
         foreach ($listeners as $listener) {
             if ($listener === '*') {
-                foreach ($this->filesystem->glob('@app/Areas/*/Listeners/*Listener.php') as $item) {
+                foreach (LocalFS::glob('@app/Areas/*/Listeners/*Listener.php') as $item) {
                     $item = str_replace($this->alias->get('@app'), 'App', $item);
                     $item = substr(str_replace('/', '\\', $item), 0, -4);
                     $eventsManager->addListener($item);
                 }
 
-                foreach ($this->filesystem->glob('@app/Listeners/*Listener.php') as $item) {
+                foreach (LocalFS::glob('@app/Listeners/*Listener.php') as $item) {
                     $item = str_replace($this->alias->get('@app'), 'App', $item);
                     $item = substr(str_replace('/', '\\', $item), 0, -4);
                     $eventsManager->addListener($item);
@@ -166,7 +167,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
     protected function _loadPlugins($plugins)
     {
         $app_plugins = [];
-        foreach ($this->filesystem->glob('@app/Plugins/*Plugin.php') as $item) {
+        foreach (LocalFS::glob('@app/Plugins/*Plugin.php') as $item) {
             $app_plugins[basename($item, '.php')] = 1;
         }
 
@@ -248,7 +249,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
 
     protected function _loadAspects()
     {
-        foreach ($this->filesystem->glob('@app/Aspects/*Aspect.php') as $item) {
+        foreach (LocalFS::glob('@app/Aspects/*Aspect.php') as $item) {
             $class = 'App\Aspects\\' . basename($item, '.php');
             /** @var \ManaPHP\Aop\Aspect $aspect */
             $aspect = new $class();
@@ -304,11 +305,11 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
 
     public function main()
     {
-        if ($this->filesystem->fileExists('@root/.env')) {
+        if (LocalFS::fileExists('@root/.env')) {
             $this->dotenv->load();
         }
 
-        if ($this->filesystem->fileExists('@config/app.php')) {
+        if (LocalFS::fileExists('@config/app.php')) {
             $this->configure->load();
         }
 

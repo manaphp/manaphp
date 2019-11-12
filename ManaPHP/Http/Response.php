@@ -8,6 +8,7 @@ use JsonSerializable;
 use ManaPHP\Component;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\FileNotFoundException;
+use ManaPHP\Helper\LocalFS;
 use Throwable;
 
 class ResponseContext
@@ -546,10 +547,10 @@ class Response extends Component implements ResponseInterface
             $attachmentName = basename($file);
         }
 
-        if (!$this->filesystem->fileExists($file)) {
+        if (!LocalFS::fileExists($file)) {
             throw new FileNotFoundException(['Sent file is not exists: `:file`', 'file' => $file]);
         }
-        $this->setHeader('Content-Length', $this->filesystem->fileSize($file));
+        $this->setHeader('Content-Length', LocalFS::fileSize($file));
 
         $context->file = $file;
 

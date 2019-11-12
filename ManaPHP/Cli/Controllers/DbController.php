@@ -5,6 +5,7 @@ namespace ManaPHP\Cli\Controllers;
 use ManaPHP\Cli\Console;
 use ManaPHP\Cli\Controller;
 use ManaPHP\Db;
+use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
 class DbController extends Controller
@@ -55,7 +56,7 @@ class DbController extends Controller
     protected function _getConstantsByFile($modelName)
     {
         $file = "@app/Models/$modelName.php";
-        if (!$this->filesystem->fileExists($file)) {
+        if (!LocalFS::fileExists($file)) {
             return '';
         }
 
@@ -320,7 +321,7 @@ class DbController extends Controller
         $plainClass = Str::camelize($table);
         $fileName = "@tmp/db_model/$plainClass.php";
         $model_str = $this->_renderModel($service, $table, $namespace, $optimized);
-        $this->filesystem->filePut($fileName, $model_str);
+        LocalFS::filePut($fileName, $model_str);
 
         $this->console->progress(['`:table` table saved to `:file`', 'table' => $table, 'file' => $fileName]);
     }
@@ -346,7 +347,7 @@ class DbController extends Controller
                 $plainClass = Str::camelize($table);
                 $fileName = "@tmp/db_models/$plainClass.php";
                 $model_str = $this->_renderModel($service, $table, $namespace, $optimized);
-                $this->filesystem->filePut($fileName, $model_str);
+                LocalFS::filePut($fileName, $model_str);
 
                 $this->console->progress(['  `:table` table saved to `:file`', 'table' => $table, 'file' => $fileName]);
             }
@@ -369,7 +370,7 @@ class DbController extends Controller
 
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
-                $this->filesystem->dirCreate(dirname($fileName));
+                LocalFS::dirCreate(dirname($fileName));
                 $rows = $db->fetchAll("SELECT * FROM [$table]");
                 $file = fopen($this->alias->resolve($fileName), 'wb');
 
@@ -405,7 +406,7 @@ class DbController extends Controller
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
                 $fileName = "@tmp/db_csv/$service/$table.csv";
-                $this->filesystem->dirCreate(dirname($fileName));
+                LocalFS::dirCreate(dirname($fileName));
                 $rows = $db->fetchAll("SELECT * FROM [$table]");
 
                 $file = fopen($this->alias->resolve($fileName), 'wb');

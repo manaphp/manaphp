@@ -3,6 +3,7 @@
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
+use ManaPHP\Helper\LocalFS;
 
 /**
  * Class ServeController
@@ -49,7 +50,7 @@ STR;
             }
         }
         $router = 'builtin_server_router.php';
-        $this->filesystem->filePut("@tmp/$router", strtr($router_str, [':ip' => $ip, ':port' => $port]));
+        LocalFS::filePut("@tmp/$router", strtr($router_str, [':ip' => $ip, ':port' => $port]));
 
         echo "server listen on: $ip:$port", PHP_EOL;
 

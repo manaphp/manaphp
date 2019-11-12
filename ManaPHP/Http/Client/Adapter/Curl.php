@@ -3,6 +3,7 @@ namespace ManaPHP\Http\Client\Adapter;
 
 
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Client;
 use ManaPHP\Http\Client\ConnectionException;
 
@@ -30,7 +31,7 @@ class Curl extends Client
             } else {
                 $hasFiles = false;
                 foreach ($body as $k => $v) {
-                    if (is_string($v) && strlen($v) > 1 && $v[0] === '@' && $this->filesystem->fileExists($v)) {
+                    if (is_string($v) && strlen($v) > 1 && $v[0] === '@' && LocalFS::fileExists($v)) {
                         $hasFiles = true;
                         $file = $this->alias->resolve($v);
                         $body[$k] = curl_file_create($file, mime_content_type($file) ?: null, basename($file));

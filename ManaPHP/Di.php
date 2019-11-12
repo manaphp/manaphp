@@ -42,7 +42,6 @@ use ManaPHP\Exception\NotSupportedException;
  * @property-read \ManaPHP\AuthorizationInterface          $authorization
  * @property-read \ManaPHP\Security\CaptchaInterface       $captcha
  * @property-read \ManaPHP\IdentityInterface               $identity
- * @property-read \ManaPHP\FilesystemInterface             $filesystem
  * @property-read \ManaPHP\Security\RandomInterface        $random
  * @property-read \ManaPHP\Message\QueueInterface          $messageQueue
  * @property-read \ManaPHP\I18n\TranslatorInterface        $translation

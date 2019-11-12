@@ -3,6 +3,7 @@
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
+use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use ReflectionClass;
 use ReflectionMethod;
@@ -17,12 +18,12 @@ class BashCompletionController extends Controller
         $controllers = [];
 
         try {
-            foreach ($this->filesystem->glob('@manaphp/Cli/Controllers/*Controller.php') as $file) {
+            foreach (LocalFS::glob('@manaphp/Cli/Controllers/*Controller.php') as $file) {
                 $controllers[] = Str::underscore(basename($file, 'Controller.php'));
             }
 
             if ($this->alias->has('@cli')) {
-                foreach ($this->filesystem->glob('@cli/*Controller.php') as $file) {
+                foreach (LocalFS::glob('@cli/*Controller.php') as $file) {
                     $controllers[] = Str::underscore(basename($file, 'Controller.php'));
                 }
             }
@@ -217,8 +218,8 @@ EOT;
         }
 
         try {
-            $this->filesystem->filePut($file, PHP_EOL === '\n' ? $content : str_replace("\r", '', $content));
-            $this->filesystem->chmod($file, 0755);
+            LocalFS::filePut($file, PHP_EOL === '\n' ? $content : str_replace("\r", '', $content));
+            LocalFS::chmod($file, 0755);
         } catch (\Exception $e) {
             return $this->console->error('write bash completion script failed: ' . $e->getMessage());
         }

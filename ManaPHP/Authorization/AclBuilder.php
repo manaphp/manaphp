@@ -2,6 +2,7 @@
 namespace ManaPHP\Authorization;
 
 use ManaPHP\Component;
+use ManaPHP\Helper\LocalFS;
 
 /**
  * Class Builder
@@ -22,12 +23,12 @@ class AclBuilder extends Component implements AclBuilderInterface
         if ($this->_controllers === null) {
             $controllers = [];
 
-            foreach ($this->filesystem->glob('@app/Controllers/*Controller.php') as $item) {
+            foreach (LocalFS::glob('@app/Controllers/*Controller.php') as $item) {
                 $controller = str_replace($this->alias->resolve('@app'), 'App', $item);
                 $controllers[] = str_replace('/', '\\', substr($controller, 0, -4));
             }
 
-            foreach ($this->filesystem->glob('@app/Areas/*/Controllers/*Controller.php') as $item) {
+            foreach (LocalFS::glob('@app/Areas/*/Controllers/*Controller.php') as $item) {
                 $controller = str_replace($this->alias->resolve('@app'), 'App', $item);
                 $controllers[] = str_replace('/', '\\', substr($controller, 0, -4));
             }

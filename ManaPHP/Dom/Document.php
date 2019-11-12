@@ -4,6 +4,7 @@ namespace ManaPHP\Dom;
 use DOMDocument;
 use ManaPHP\Component;
 use ManaPHP\Dom\Document\Exception as DocumentException;
+use ManaPHP\Helper\LocalFS;
 
 /**
  * Class Document
@@ -70,7 +71,7 @@ class Document extends Component
     public function loadFile($file, $url = null)
     {
         $this->_source_url = $file;
-        $str = $this->filesystem->fileGet($file);
+        $str = LocalFS::fileGet($file);
 
         return $this->loadString($str, $url);
     }
@@ -153,7 +154,7 @@ class Document extends Component
      */
     public function save($file)
     {
-        $this->filesystem->filePut($file, $this->getString());
+        LocalFS::filePut($file, $this->getString());
 
         return $this;
     }

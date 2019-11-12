@@ -3,6 +3,7 @@ namespace ManaPHP\Curl;
 
 use Countable;
 use ManaPHP\Component;
+use ManaPHP\Helper\LocalFS;
 
 class Multi extends Component implements MultiInterface, Countable
 {
@@ -66,7 +67,7 @@ class Multi extends Component implements MultiInterface, Countable
 
         $this->_tmp_dir = $this->alias->resolve('@data/CurlMulti');
 
-        $this->filesystem->dirCreate($this->_tmp_dir);
+        LocalFS::dirCreate($this->_tmp_dir);
     }
 
     /**
@@ -244,8 +245,8 @@ class Multi extends Component implements MultiInterface, Countable
      */
     public function download($url, $target, $callback = null)
     {
-        if (!$this->filesystem->fileExists($target)) {
-            $this->filesystem->dirCreate(dir($target));
+        if (!LocalFS::fileExists($target)) {
+            LocalFS::dirCreate(dir($target));
 
             $request = $this->_di->get('ManaPHP\Curl\Multi\Request', [$url, $callback]);
 

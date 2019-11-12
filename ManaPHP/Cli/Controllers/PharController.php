@@ -3,6 +3,7 @@ namespace ManaPHP\Cli\Controllers;
 
 use FilesystemIterator;
 use ManaPHP\Cli\Controller;
+use ManaPHP\Helper\LocalFS;
 use Phar;
 
 class PharController extends Controller
@@ -16,12 +17,12 @@ class PharController extends Controller
         $pharFile = $this->alias->resolve('@root/manacli.phar');
 
         $this->console->writeLn(['cleaning `:dir` dir', 'dir' => $this->alias->resolve('@phar')]);
-        $this->filesystem->dirReCreate('@phar');
+        LocalFS::dirReCreate('@phar');
 
         $this->console->writeLn('copying manaphp framework files.');
-        $this->filesystem->dirCopy('@root/ManaPHP', '@phar/ManaPHP');
-        //$di->filesystem->dirCopy('@root/Application', '@phar/Application');
-        $this->filesystem->fileCopy('@root/manacli.php', '@phar/manacli.php');
+        LocalFS::dirCopy('@root/ManaPHP', '@phar/ManaPHP');
+        //LocalFS::dirCopy('@root/Application', '@phar/Application');
+        LocalFS::fileCopy('@root/manacli.php', '@phar/manacli.php');
 
         $phar = new Phar($pharFile, FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::KEY_AS_FILENAME, basename($pharFile));
         $phar->buildFromDirectory($this->alias->resolve('@phar'));

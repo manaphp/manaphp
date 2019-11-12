@@ -2,6 +2,7 @@
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
+use ManaPHP\Helper\LocalFS;
 
 /**
  * Class SwordController
@@ -29,24 +30,24 @@ class SwordController extends Controller
             $this->alias->set('@asset', $asset);
         }
 
-        $this->filesystem->dirDelete('@data/sword');
+        LocalFS::dirDelete('@data/sword');
         $this->console->writeLn('delete `@data/sword` directory success');
 
         $ext = 'sword';
 
-        foreach ($this->filesystem->glob("@app/Views/*.$ext") as $item) {
+        foreach (LocalFS::glob("@app/Views/*.$ext") as $item) {
             $this->_compile($item, $replace);
         }
 
-        foreach ($this->filesystem->glob("@app/Views/*/*.$ext") as $item) {
+        foreach (LocalFS::glob("@app/Views/*/*.$ext") as $item) {
             $this->_compile($item, $replace);
         }
 
-        foreach ($this->filesystem->glob("@app/Areas/*/Views/*/*.$ext") as $item) {
+        foreach (LocalFS::glob("@app/Areas/*/Views/*/*.$ext") as $item) {
             $this->_compile($item, $replace);
         }
 
-        foreach ($this->filesystem->glob("@app/Areas/*/Views/*.$ext") as $item) {
+        foreach (LocalFS::glob("@app/Areas/*/Views/*.$ext") as $item) {
             $this->_compile($item, $replace);
         }
     }

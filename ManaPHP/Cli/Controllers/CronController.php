@@ -5,6 +5,7 @@ use ManaPHP\Cli\Controller;
 use ManaPHP\Cli\Cronable;
 use ManaPHP\Di;
 use ManaPHP\Exception\RuntimeException;
+use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use ReflectionClass;
 use Swoole\Coroutine;
@@ -74,7 +75,7 @@ class CronController extends Controller
             }
             $crons[] = $this->_di->get($class_name);
         } else {
-            foreach ($this->filesystem->glob('@cli/*Controller.php') as $file) {
+            foreach (LocalFS::glob('@cli/*Controller.php') as $file) {
                 $class_name = $this->alias->get('@ns.cli') . '\\' . basename($file, '.php');
                 $rc = new ReflectionClass($class_name);
                 if (in_array(Cronable::class, $rc->getInterfaceNames(), true)) {

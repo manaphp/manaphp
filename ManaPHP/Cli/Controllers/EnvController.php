@@ -2,6 +2,7 @@
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
+use ManaPHP\Helper\LocalFS;
 
 class EnvController extends Controller
 {
@@ -58,12 +59,12 @@ class EnvController extends Controller
         $target = $candidates[0];
 
         $glob = '@root/.env[._-]' . $target;
-        $files = $this->filesystem->glob($glob);
+        $files = LocalFS::glob($glob);
         if ($files) {
             $file = $files[0];
-            $this->filesystem->fileCopy($file, '@root/.env', true);
+            LocalFS::fileCopy($file, '@root/.env', true);
             if (file_exists($file . '.php')) {
-                $this->filesystem->fileDelete($file . '.php');
+                LocalFS::fileDelete($file . '.php');
             }
             $this->console->writeLn(['copy `:src` to `:dst` success.', 'src' => basename($file), 'dst' => '.env']);
             return 0;
@@ -93,7 +94,7 @@ class EnvController extends Controller
         $data = $this->_di->getShared('ManaPHP\Dotenv')->parse(file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
         $content = '<?php' . PHP_EOL .
             'return ' . var_export($data, true) . ';' . PHP_EOL;
-        $this->filesystem->filePut('@root/.env.php', $content);
+        LocalFS::filePut('@root/.env.php', $content);
 
         return 0;
     }

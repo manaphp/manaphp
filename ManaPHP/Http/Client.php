@@ -3,6 +3,7 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Client\BadRequestException;
 use ManaPHP\Http\Client\ContentTypeException;
 use ManaPHP\Http\Client\ForbiddenException;
@@ -375,7 +376,7 @@ abstract class Client extends Component implements ClientInterface
             if (is_file($file)) {
                 unset($files[$url]);
             } else {
-                $this->filesystem->dirCreate(dirname($file));
+                LocalFS::dirCreate(dirname($file));
                 $files[$url] = $file;
             }
         }

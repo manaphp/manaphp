@@ -3,6 +3,7 @@ namespace ManaPHP\Plugins;
 
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\AbortException;
+use ManaPHP\Helper\LocalFS;
 use ManaPHP\Plugin;
 
 class LoggerPluginContext
@@ -83,7 +84,7 @@ class LoggerPlugin extends Plugin
             $data = $this->cache->get('__loggerPlugin:' . $key);
         } else {
             $file = "@data/loggerPlugin/{$key}.zip";
-            $data = $this->filesystem->fileExists($file) ? $this->filesystem->fileGet($file) : false;
+            $data = LocalFS::fileExists($file) ? LocalFS::fileGet($file) : false;
         }
 
         return is_string($data) ? gzdecode($data) : $data;
@@ -103,7 +104,7 @@ class LoggerPlugin extends Plugin
         if ($this->_ttl) {
             $this->cache->set('__loggerPlugin:' . $key, $content, $this->_ttl);
         } else {
-            $this->filesystem->filePut("@data/loggerPlugin/{$key}.zip", $content);
+            LocalFS::filePut("@data/loggerPlugin/{$key}.zip", $content);
         }
     }
 
@@ -116,7 +117,7 @@ class LoggerPlugin extends Plugin
             if (($data = $this->_readData($match[1])) !== false) {
                 $ext = $match[2];
                 if ($ext === 'html') {
-                    $this->response->setContent(strtr($this->filesystem->fileGet($this->_template), ['LOGGER_DATA' => $data]));
+                    $this->response->setContent(strtr(LocalFS::fileGet($this->_template), ['LOGGER_DATA' => $data]));
                 } elseif ($ext === 'raw') {
                     $this->response->setContent($data)->setContentType('text/plain;charset=UTF-8');
                 } elseif ($ext === 'txt') {

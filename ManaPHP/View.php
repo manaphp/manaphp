@@ -4,6 +4,7 @@ namespace ManaPHP;
 
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Helper\LocalFS;
 
 class ViewContext
 {
@@ -202,7 +203,7 @@ class View extends Component implements ViewInterface
             }
 
             if (!isset($this->_dirs[$dir])) {
-                $this->_dirs[$dir] = $this->filesystem->dirExists($dir);
+                $this->_dirs[$dir] = LocalFS::dirExists($dir);
             }
 
             if ($this->_dirs[$dir]) {
