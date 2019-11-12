@@ -123,9 +123,9 @@ interface ModelInterface
     /**
      * Allows to query a set of records that match the specified conditions
      *
-     * @param array $filters =get_object_vars(new static)
+     * @param array $filters
      * @param array $options
-     * @param array $fields =get_object_vars(new static)
+     * @param array $fields
      *
      * @return  \ManaPHP\Paginator
      */
@@ -293,7 +293,7 @@ interface ModelInterface
     public static function avg($field, $filters = null);
 
     /**
-     * @param array $fields =get_object_vars(new static)
+     * @param array $fields
      *
      * @return static
      */
@@ -327,7 +327,7 @@ interface ModelInterface
     /**
      * Inserts or updates a model instance. Returning true on success or false otherwise.
      *
-     * @param array $fields =get_object_vars(new static)
+     * @param array $fields
      *
      * @return static
      */

@@ -1,6 +1,11 @@
 <?php
 namespace ManaPHP;
 
+/**
+ * Interface QueryInterface
+ * @package ManaPHP
+ * @template Model
+ */
 interface QueryInterface
 {
     /**
@@ -18,7 +23,7 @@ interface QueryInterface
     public function setModel($model);
 
     /**
-     * @return \ManaPHP\Model
+     * @return \ManaPHP\Model|Model
      */
     public function getModel();
 
@@ -56,14 +61,14 @@ interface QueryInterface
     /**
      * Appends a condition to the current conditions using a AND operator
      *
-     * @param array $filters
+     * @param array $filters =get_object_vars(new Model)
      *
      * @return static
      */
     public function where($filters);
 
     /**
-     * @param string $field
+     * @param string $field =key(get_object_vars(new Model))
      * @param mixed  $value
      *
      * @return static
@@ -71,7 +76,7 @@ interface QueryInterface
     public function whereEq($field, $value);
 
     /**
-     * @param string $field
+     * @param string $field =key(get_object_vars(new Model))
      * @param string $operator
      * @param mixed  $value
      *
@@ -80,7 +85,7 @@ interface QueryInterface
     public function whereCmp($field, $operator, $value);
 
     /**
-     * @param string $field
+     * @param string $field =key(get_object_vars(new Model))
      * @param int    $divisor
      * @param int    $remainder
      *
@@ -97,7 +102,7 @@ interface QueryInterface
     public function whereExpr($expr, $bind = null);
 
     /**
-     * @param array $filters
+     * @param array $filters =get_object_vars(new Model)
      *
      * @return static
      */
@@ -106,7 +111,7 @@ interface QueryInterface
     /**
      * Appends a BETWEEN condition to the current conditions
      *
-     * @param string           $field
+     * @param string           $field =key(get_object_vars(new Model))
      * @param int|float|string $min
      * @param int|float|string $max
      *
@@ -117,7 +122,7 @@ interface QueryInterface
     /**
      * Appends a NOT BETWEEN condition to the current conditions
      *
-     * @param string           $field
+     * @param string           $field =key(get_object_vars(new Model))
      * @param int|float|string $min
      * @param int|float|string $max
      *
@@ -126,7 +131,7 @@ interface QueryInterface
     public function whereNotBetween($field, $min, $max);
 
     /**
-     * @param string     $field
+     * @param string     $field =key(get_object_vars(new Model))
      * @param int|string $min
      * @param int|string $max
      *
@@ -137,7 +142,7 @@ interface QueryInterface
     /**
      * Appends an IN condition to the current conditions
      *
-     * @param string $field
+     * @param string $field =key(get_object_vars(new Model))
      * @param array  $values
      *
      * @return static
@@ -147,7 +152,7 @@ interface QueryInterface
     /**
      * Appends a NOT IN condition to the current conditions
      *
-     * @param string $field
+     * @param string $field =key(get_object_vars(new Model))
      * @param array  $values
      *
      * @return static
@@ -155,7 +160,7 @@ interface QueryInterface
     public function whereNotIn($field, $values);
 
     /**
-     * @param string $field
+     * @param string $field =key(get_object_vars(new Model))
      * @param string $value
      *
      * @return static
@@ -163,7 +168,7 @@ interface QueryInterface
     public function whereInset($field, $value);
 
     /**
-     * @param string $field
+     * @param string $field =key(get_object_vars(new Model))
      * @param string $value
      *
      * @return static
@@ -171,7 +176,7 @@ interface QueryInterface
     public function whereNotInset($field, $value);
 
     /**
-     * @param string|array $expr
+     * @param string|array $expr =key(get_object_vars(new Model))
      * @param string       $value
      *
      * @return static
@@ -179,7 +184,7 @@ interface QueryInterface
     public function whereContains($expr, $value);
 
     /**
-     * @param string|array $expr
+     * @param string|array $expr =key(get_object_vars(new Model))
      * @param string       $value
      *
      * @return static
@@ -187,7 +192,7 @@ interface QueryInterface
     public function whereNotContains($expr, $value);
 
     /**
-     * @param string|array $expr
+     * @param string|array $expr =key(get_object_vars(new Model))
      * @param string       $value
      * @param int          $length
      *
@@ -196,7 +201,7 @@ interface QueryInterface
     public function whereStartsWith($expr, $value, $length = null);
 
     /**
-     * @param string|array $expr
+     * @param string|array $expr =key(get_object_vars(new Model))
      * @param string       $value
      * @param int          $length
      *
@@ -205,7 +210,7 @@ interface QueryInterface
     public function whereNotStartsWith($expr, $value, $length = null);
 
     /**
-     * @param string|array $expr
+     * @param string|array $expr =key(get_object_vars(new Model))
      * @param string       $value
      *
      * @return static
@@ -213,7 +218,7 @@ interface QueryInterface
     public function whereEndsWith($expr, $value);
 
     /**
-     * @param string|array $expr
+     * @param string|array $expr =key(get_object_vars(new Model))
      * @param string       $value
      *
      * @return static
@@ -221,7 +226,7 @@ interface QueryInterface
     public function whereNotEndsWith($expr, $value);
 
     /**
-     * @param string|array $expr
+     * @param string|array $expr =key(get_object_vars(new Model))
      * @param string       $like
      *
      * @return static
@@ -229,7 +234,7 @@ interface QueryInterface
     public function whereLike($expr, $like);
 
     /**
-     * @param string|array $expr
+     * @param string|array $expr =key(get_object_vars(new Model))
      * @param string       $like
      *
      * @return static
@@ -237,7 +242,7 @@ interface QueryInterface
     public function whereNotLike($expr, $like);
 
     /**
-     * @param string $expr
+     * @param string $expr =key(get_object_vars(new Model))
      * @param string $regex
      * @param string $flags
      *
@@ -246,7 +251,7 @@ interface QueryInterface
     public function whereRegex($expr, $regex, $flags = '');
 
     /**
-     * @param string $expr
+     * @param string $expr =key(get_object_vars(new Model))
      * @param string $regex
      * @param string $flags
      *
@@ -255,14 +260,14 @@ interface QueryInterface
     public function whereNotRegex($expr, $regex, $flags = '');
 
     /**
-     * @param string $expr
+     * @param string $expr =key(get_object_vars(new Model))
      *
      * @return static
      */
     public function whereNull($expr);
 
     /**
-     * @param string $expr
+     * @param string $expr =key(get_object_vars(new Model))
      *
      * @return static
      */
@@ -271,14 +276,14 @@ interface QueryInterface
     /**
      * Sets a ORDER BY condition clause
      *
-     * @param string|array $orderBy
+     * @param string|array $orderBy =get_object_vars(new Model)
      *
      * @return static
      */
     public function orderBy($orderBy);
 
     /**
-     * @param callable|string|array $indexBy
+     * @param callable|string|array $indexBy =key(get_object_vars(new Model))
      *
      * @return static
      */
@@ -287,7 +292,7 @@ interface QueryInterface
     /**
      * Sets a GROUP BY clause
      *
-     * @param string|array $groupBy
+     * @param string|array $groupBy =get_object_vars(new Model)+key(get_object_vars(new Model))
      *
      * @return static
      */
@@ -367,28 +372,28 @@ interface QueryInterface
     public function fetch($asArray = false);
 
     /**
-     * @param string|array $fields
+     * @param string|array $fields =get_object_vars(new Model)
      *
      * @return array|null
      */
     public function first($fields = null);
 
     /**
-     * @param string|array $fields
+     * @param string|array $fields =get_object_vars(new Model)
      *
      * @return array
      */
     public function get($fields = null);
 
     /**
-     * @param string|array $fields
+     * @param string|array $fields =get_object_vars(new Model)
      *
      * @return array
      */
     public function all($fields = null);
 
     /**
-     * @param string $field
+     * @param string $field =key(get_object_vars(new Model))
      * @param mixed  $default
      *
      * @return mixed
@@ -396,7 +401,7 @@ interface QueryInterface
     public function value($field, $default = null);
 
     /**
-     * @param string $field
+     * @param string $field =key(get_object_vars(new Model))
      *
      * @return array
      */
@@ -408,35 +413,35 @@ interface QueryInterface
     public function exists();
 
     /**
-     * @param string $field
+     * @param string $field =key(get_object_vars(new Model))
      *
      * @return int
      */
     public function count($field = '*');
 
     /**
-     * @param string $field
+     * @param string $field =key(get_object_vars(new Model))
      *
      * @return int|float|null
      */
     public function sum($field);
 
     /**
-     * @param string $field
+     * @param string $field =key(get_object_vars(new Model))
      *
      * @return int|float|null
      */
     public function max($field);
 
     /**
-     * @param string $field
+     * @param string $field =key(get_object_vars(new Model))
      *
      * @return int|float|null
      */
     public function min($field);
 
     /**
-     * @param string $field
+     * @param string $field =key(get_object_vars(new Model))
      *
      * @return float|null
      */
@@ -448,7 +453,7 @@ interface QueryInterface
     public function delete();
 
     /**
-     * @param array $fieldValues
+     * @param array $fieldValues =get_object_vars(new Model)
      *
      * @return int
      */
@@ -464,7 +469,7 @@ interface QueryInterface
     public function when($value, $true_call, $false_call = null);
 
     /**
-     * @param string     $field
+     * @param string     $field =key(get_object_vars(new Model))
      * @param string|int $date
      * @param string     $format
      *
@@ -473,7 +478,7 @@ interface QueryInterface
     public function whereDate($field, $date, $format = null);
 
     /**
-     * @param string     $field
+     * @param string     $field =key(get_object_vars(new Model))
      * @param string|int $date
      * @param string     $format
      *

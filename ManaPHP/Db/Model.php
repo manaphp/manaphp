@@ -26,7 +26,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @param mixed $context
+     * @param mixed $context =get_object_vars(new static)
      *
      * @return \ManaPHP\DbInterface
      */
@@ -38,7 +38,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @return string =array_keys(get_object_vars(new static))[$i]
+     * @return string =key(get_object_vars(new static))
      */
     public function getPrimaryKey()
     {
@@ -121,7 +121,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @return \ManaPHP\Db\Query
+     * @return \ManaPHP\Db\Query <static>
      */
     public function newQuery()
     {
@@ -427,7 +427,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * @param array $record
+     * @param array $record =get_object_vars(new static)
      *
      * @return int
      */

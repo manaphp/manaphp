@@ -82,7 +82,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param mixed $context
+     * @param mixed $context =get_object_vars(new static)
      *
      * @return array
      */
@@ -102,7 +102,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param mixed $context
+     * @param mixed $context =get_object_vars(new static)
      *
      * @return array
      */
@@ -151,7 +151,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @return string|null =array_keys(get_object_vars(new static))[$i]
+     * @return string|null =key(get_object_vars(new static))
      */
     public function getAutoIncrementField()
     {
@@ -160,7 +160,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param string $field =array_keys(get_object_vars(new static))[$i]
+     * @param string $field =key(get_object_vars(new static))
      *
      * @return bool
      */
@@ -170,7 +170,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param string $field =array_keys(get_object_vars(new static))[$i]
+     * @param string $field =key(get_object_vars(new static))
      *
      * @return string
      */
@@ -254,7 +254,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param string|array $fields =array_keys(get_object_vars(new static))[$i]
+     * @param string|array $fields =get_object_vars(new static)+key(get_object_vars(new static))
      * @param array        $filters =get_object_vars(new static)
      *
      * @return array
@@ -351,7 +351,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      * @param array|string $fields =get_object_vars(new static)
      * @param string       $alias
      *
-     * @return \ManaPHP\QueryInterface
+     * @return \ManaPHP\QueryInterface <static>
      */
     public static function select($fields = [], $alias = null)
     {
@@ -453,7 +453,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
     /**
      * @param int|string|array $filters =get_object_vars(new static)
-     * @param string           $field =array_keys(get_object_vars(new static))[$i]
+     * @param string           $field =key(get_object_vars(new static))
      * @param int              $ttl
      *
      * @return int|float|string|null
@@ -501,7 +501,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
     /**
      * @param int|string|array $filters =get_object_vars(new static)
-     * @param string           $field =array_keys(get_object_vars(new static))[$i]
+     * @param string           $field =key(get_object_vars(new static))
      * @param int              $ttl
      *
      * @return int|float|string
@@ -518,7 +518,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
     /**
      * @param int|string|array $filters =get_object_vars(new static)
-     * @param string|float|int $field =array_keys(get_object_vars(new static))[$i]
+     * @param string|float|int $field =key(get_object_vars(new static))
      * @param mixed            $default
      *
      * @return float|int|string
@@ -529,7 +529,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param string $field =array_keys(get_object_vars(new static))[$i]
+     * @param string $field =key(get_object_vars(new static))
      * @param array  $filters =get_object_vars(new static)
      *
      * @return array
@@ -575,7 +575,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      * Allows to count how many records match the specified conditions
      *
      * @param array  $filters =get_object_vars(new static)
-     * @param string $field =array_keys(get_object_vars(new static))[$i]
+     * @param string $field =key(get_object_vars(new static))
      *
      * @return int
      */
@@ -587,7 +587,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * Allows to calculate a summary on a field that match the specified conditions
      *
-     * @param string $field =array_keys(get_object_vars(new static))[$i]
+     * @param string $field =key(get_object_vars(new static))
      * @param array  $filters =get_object_vars(new static)
      *
      * @return int|float|null
@@ -600,7 +600,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * Allows to get the max value of a column that match the specified conditions
      *
-     * @param string $field =array_keys(get_object_vars(new static))[$i]
+     * @param string $field =key(get_object_vars(new static))
      * @param array  $filters =get_object_vars(new static)
      *
      * @return int|float|null
@@ -614,7 +614,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      * Allows to get the min value of a column that match the specified conditions
      *
      *
-     * @param string $field =array_keys(get_object_vars(new static))[$i]
+     * @param string $field =key(get_object_vars(new static))
      * @param array  $filters =get_object_vars(new static)
      *
      * @return int|float|null
@@ -627,7 +627,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * Allows to calculate the average value on a column matching the specified conditions
      *
-     * @param string $field =array_keys(get_object_vars(new static))[$i]
+     * @param string $field =key(get_object_vars(new static))
      * @param array  $filters =get_object_vars(new static)
      *
      * @return float|null
@@ -640,7 +640,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * Assigns values to a model from an array
      *
-     * @param array|\ManaPHP\Model $data
+     * @param array|\ManaPHP\Model $data =get_object_vars(new static)
      * @param array                $whiteList =get_object_vars(new static)
      *
      * @return static
@@ -746,7 +746,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param string $field =array_keys(get_object_vars(new static))[$i]
+     * @param string $field =key(get_object_vars(new static))
      * @param array  $rules
      *
      * @return void
@@ -1202,7 +1202,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param string    $field =array_keys(get_object_vars(new static))[$i]
+     * @param string    $field =key(get_object_vars(new static))
      * @param int|float $step
      *
      * @return static
@@ -1219,7 +1219,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param string    $field =array_keys(get_object_vars(new static))[$i]
+     * @param string    $field =key(get_object_vars(new static))
      * @param int|float $step
      *
      * @return static
@@ -1238,7 +1238,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * @param string $alias
      *
-     * @return \ManaPHP\QueryInterface
+     * @return \ManaPHP\QueryInterface <static>
      */
     public static function query($alias = null)
     {
@@ -1248,7 +1248,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * @param int|string|array $filters =get_object_vars(new static)
      *
-     * @return \ManaPHP\QueryInterface
+     * @return \ManaPHP\QueryInterface <static>
      */
     public static function where($filters)
     {
@@ -1258,7 +1258,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * @param array $filters =get_object_vars(new static)
      *
-     * @return \ManaPHP\QueryInterface
+     * @return \ManaPHP\QueryInterface <static>
      */
     public static function search($filters)
     {

@@ -46,7 +46,7 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * @param mixed $context
+     * @param mixed $context =get_object_vars(new static)
      *
      * @return \ManaPHP\MongodbInterface
      */
@@ -57,7 +57,7 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * @return string =array_keys(get_object_vars(new static))[$i]
+     * @return string =key(get_object_vars(new static))
      */
     public function getPrimaryKey()
     {
@@ -143,7 +143,7 @@ class Model extends \ManaPHP\Model
     /**
      * bool, int, float, string, array, objectid
      *
-     * @return array =array_keys(get_object_vars(new static))
+     * @return array =get_object_vars(new static)
      */
     public function getFieldTypes()
     {
@@ -300,7 +300,7 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * @return \ManaPHP\Mongodb\Query
+     * @return \ManaPHP\Mongodb\Query <static>
      */
     public function newQuery()
     {
@@ -655,7 +655,7 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * @param array $document
+     * @param array $document =get_object_vars(new static)
      *
      * @return int
      */
