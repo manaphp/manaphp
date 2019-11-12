@@ -55,24 +55,17 @@ if (!function_exists('json_stringify')) {
 if (!function_exists('di')) {
     /**
      * @param string $name
-     * @param string $child
      *
      * @return mixed
      */
-    function di($name = null, $child = null)
+    function di($name = null)
     {
         static $di;
         if (!$di) {
             $di = Di::getDefault();
         }
 
-        if ($name === null || $name === 'di') {
-            return $di;
-        } elseif ($child) {
-            return $di->has("{$child}_{$name}") ? $di->{"{$child}_{$name}"} : $di->{$child . ucfirst($name)};
-        } else {
-            return $di->$name;
-        }
+        return $name === null ? $di : $di->getShared($name);
     }
 }
 

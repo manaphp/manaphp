@@ -58,7 +58,6 @@ namespace PHPSTORM_META {
             'jwt' instanceof \ManaPHP\Identity\Adapter\Jwt,
         ],
         \di('') => [
-            'di' instanceof \ManaPHP\DiInterface,
             'eventsManager' instanceof \ManaPHP\Event\ManagerInterface,
             'alias' instanceof \ManaPHP\AliasInterface,
             'dotenv' instanceof \ManaPHP\DotenvInterface,
