@@ -98,12 +98,7 @@ if (!function_exists('param_get')) {
      */
     function param_get($name, $default = null)
     {
-        static $configure;
-        if (!$configure) {
-            $configure = Di::getDefault()->getShared('configure');
-        }
-
-        return $configure->getParam($name, $default);
+        return di('configure')->getParam($name, $default);
     }
 }
 
@@ -116,12 +111,7 @@ if (!function_exists('log_debug')) {
      */
     function log_debug($message, $category = null)
     {
-        static $logger;
-        if (!$logger) {
-            $logger = di('logger');
-        }
-
-        $logger->debug($message, $category);
+        di('logger')->debug($message, $category);
     }
 }
 
@@ -134,12 +124,7 @@ if (!function_exists('log_info')) {
      */
     function log_info($message, $category = null)
     {
-        static $logger;
-        if (!$logger) {
-            $logger = di('logger');
-        }
-
-        $logger->info($message, $category);
+        di('logger')->info($message, $category);
     }
 }
 
@@ -152,12 +137,7 @@ if (!function_exists('log_warn')) {
      */
     function log_warn($message, $category = null)
     {
-        static $logger;
-        if (!$logger) {
-            $logger = di('logger');
-        }
-
-        $logger->warn($message, $category);
+        di('logger')->warn($message, $category);
     }
 }
 
@@ -170,12 +150,7 @@ if (!function_exists('log_error')) {
      */
     function log_error($message, $category = null)
     {
-        static $logger;
-        if (!$logger) {
-            $logger = di('logger');
-        }
-
-        $logger->error($message, $category);
+        di('logger')->error($message, $category);
     }
 }
 
@@ -184,16 +159,11 @@ if (!function_exists('log_fatal')) {
      * @param string|array $message
      * @param string       $category
      *
-     * @return \ManaPHP\LoggerInterface
+     * @return void
      */
     function log_fatal($message, $category = null)
     {
-        static $logger;
-        if (!$logger) {
-            $logger = di('logger');
-        }
-
-        return $logger->fatal($message, $category);
+        di('logger')->fatal($message, $category);
     }
 }
 
