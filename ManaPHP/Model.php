@@ -1242,7 +1242,9 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function query($alias = null)
     {
-        return static::sample()->newQuery();
+        $query = static::sample()->newQuery();
+
+        return $alias ? $query->from(static::class, $alias) : $query;
     }
 
     /**
