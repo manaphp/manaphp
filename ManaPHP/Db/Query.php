@@ -442,6 +442,10 @@ class Query extends \ManaPHP\Query
             return $this;
         }
 
+        if (is_string($fields) && strpos($fields, ',') !== false) {
+            $fields = preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY);
+        }
+
         if (is_array($fields)) {
             $conditions = [];
             foreach ($fields as $field) {
@@ -471,6 +475,10 @@ class Query extends \ManaPHP\Query
     {
         if ($like === '') {
             return $this;
+        }
+
+        if (is_string($fields) && strpos($fields, ',') !== false) {
+            $fields = preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY);
         }
 
         if (is_array($fields)) {
@@ -561,16 +569,16 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @param string $expr
+     * @param string $field
      * @param string $regex
      * @param string $flags
      *
      * @return static
      */
-    public function whereRegex($expr, $regex, $flags = '')
+    public function whereRegex($field, $regex, $flags = '')
     {
-        $key = $expr;
-        $this->_conditions[] = $expr . ' REGEXP ' . (strpos($flags, 'i') !== false ? '' : 'BINARY ') . ':' . $key;
+        $key = strtr($field, '.', '_');
+        $this->_conditions[] = '[' . str_replace('.', '].[', $field) . '] REGEXP ' . (strpos($flags, 'i') !== false ? '' : 'BINARY ') . ':' . $key;
         $this->_bind[$key] = $regex;
 
         return $this;
@@ -585,8 +593,8 @@ class Query extends \ManaPHP\Query
      */
     public function whereNotRegex($field, $regex, $flags = '')
     {
-        $key = $field;
-        $this->_conditions[] = $field . ' NOT REGEXP ' . (strpos($flags, 'i') !== false ? '' : 'BINARY ') . ':' . $key;
+        $key = strtr($field, '.', '_');
+        $this->_conditions[] = '[' . str_replace('.', '].[', $field) . '] NOT REGEXP ' . (strpos($flags, 'i') !== false ? '' : 'BINARY ') . ':' . $key;
         $this->_bind[$key] = $regex;
 
         return $this;
@@ -599,7 +607,7 @@ class Query extends \ManaPHP\Query
      */
     public function whereNull($field)
     {
-        $this->_conditions[] = $field . ' IS NULL';
+        $this->_conditions[] = '[' . str_replace('.', '].[', $field) . '] IS NULL';
 
         return $this;
     }
@@ -611,7 +619,7 @@ class Query extends \ManaPHP\Query
      */
     public function whereNotNull($field)
     {
-        $this->_conditions[] = $field . ' IS NOT NULL';
+        $this->_conditions[] = '[' . str_replace('.', '].[', $field) . '] IS NOT NULL';
 
         return $this;
     }
@@ -625,6 +633,10 @@ class Query extends \ManaPHP\Query
     public function where1v1($id, $value)
     {
         list($id_a, $id_b) = explode(',', $id);
+        $key_a = str_replace('.', '_', $id_a);
+        $key_b = str_replace('.', '_', $id_b);
+        $id_a = '[' . str_replace('.', '].[', $id_a) . ']';
+        $id_b = '[' . str_replace('.', '].[', $id_b) . ']';
         if (($pos = strpos($value, ',')) === false) {
             $this->_conditions[] = "$id_a=:$id_a OR $id_b=:$id_b";
             $this->_bind[$id_a] = $value;
@@ -632,12 +644,11 @@ class Query extends \ManaPHP\Query
         } else {
             $value_a = substr($value, 0, $pos);
             $value_b = substr($value, $pos + 1);
-
-            $this->_conditions[] = "($id_a=:${id_a}_a AND $id_b=:${id_b}_b) OR ($id_a=:${id_a}_b AND $id_b=:${id_b}_a)";
-            $this->_bind["${id_a}_a"] = $value_a;
-            $this->_bind["${id_b}_b"] = $value_b;
-            $this->_bind["${id_a}_b"] = $value_b;
-            $this->_bind["${id_b}_a"] = $value_a;
+            $this->_conditions[] = "($id_a=:${key_a}_a AND $id_b=:${key_b}_b) OR ($id_a=:${key_a}_b AND $id_b=:${key_b}_a)";
+            $this->_bind["${key_a}_a"] = $value_a;
+            $this->_bind["${key_b}_b"] = $value_b;
+            $this->_bind["${key_a}_b"] = $value_b;
+            $this->_bind["${key_b}_a"] = $value_a;
         }
 
         return $this;
