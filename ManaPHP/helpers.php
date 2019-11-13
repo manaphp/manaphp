@@ -216,7 +216,7 @@ if (!function_exists('jwt_verify')) {
 if (!function_exists('input')) {
     /**
      * @param string $name
-     * @param mixed  $defaultOrRules
+     * @param mixed  $defaultOrRules =\PHPSTORM_META\validator_rule()
      *
      * @return mixed
      */

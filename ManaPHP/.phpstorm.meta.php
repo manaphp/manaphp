@@ -155,6 +155,21 @@ namespace PHPSTORM_META {
     expectedArguments(\ManaPHP\Validator::validateModel(), 2, argumentsSet('validator_rules'));
 
     expectedArguments(\json_stringify(), 1, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT | JSON_FORCE_OBJECT | JSON_PRESERVE_ZERO_FRACTION | JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_UNESCAPED_LINE_TERMINATORS);
+
+    function validator_rule()
+    {
+        return [
+            'required', 'bool', 'int', 'float', 'string', 'alpha', 'digit', 'xdigit', 'alnum', 'lower', 'upper',
+            'trim', 'email', 'url', 'ip', 'date', 'timestamp', 'escape', 'xss', 'unique', 'exists', 'const',
+            'account', 'mobile', 'safe', 'readonly',
+            'default' => '',
+            'min' => 0, 'max' => 1, 'range' => '0-1',
+            'length' => '0-1', 'minLength' => 1, 'maxLength' => 1,
+            'regex' => '#^\d+#',
+            'in' => '1,2', 'not_in' => '1,2',
+            'ext' => 'jpg,jpeg',
+        ];
+    }
 }
 
 /**

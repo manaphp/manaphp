@@ -43,7 +43,7 @@ interface QueryInterface
     public function from($table, $alias = null);
 
     /**
-     * @param string|array $fields
+     * @param string|array $fields =get_object_vars(new Model)
      *
      * @return static
      */
@@ -176,7 +176,7 @@ interface QueryInterface
     public function whereNotInset($field, $value);
 
     /**
-     * @param string|array $expr =key(get_object_vars(new Model))
+     * @param string|array $expr =get_object_vars(new Model) ?: key(get_object_vars(new Model))
      * @param string       $value
      *
      * @return static
@@ -184,7 +184,7 @@ interface QueryInterface
     public function whereContains($expr, $value);
 
     /**
-     * @param string|array $expr =key(get_object_vars(new Model))
+     * @param string|array $expr =get_object_vars(new Model) ?: key(get_object_vars(new Model))
      * @param string       $value
      *
      * @return static
@@ -192,7 +192,7 @@ interface QueryInterface
     public function whereNotContains($expr, $value);
 
     /**
-     * @param string|array $expr =key(get_object_vars(new Model))
+     * @param string|array $expr =get_object_vars(new Model) ?: key(get_object_vars(new Model))
      * @param string       $value
      * @param int          $length
      *
@@ -201,7 +201,7 @@ interface QueryInterface
     public function whereStartsWith($expr, $value, $length = null);
 
     /**
-     * @param string|array $expr =key(get_object_vars(new Model))
+     * @param string|array $expr =get_object_vars(new Model) ?: key(get_object_vars(new Model))
      * @param string       $value
      * @param int          $length
      *
@@ -210,7 +210,7 @@ interface QueryInterface
     public function whereNotStartsWith($expr, $value, $length = null);
 
     /**
-     * @param string|array $expr =key(get_object_vars(new Model))
+     * @param string|array $expr =get_object_vars(new Model)?: key(get_object_vars(new Model))
      * @param string       $value
      *
      * @return static
@@ -218,7 +218,7 @@ interface QueryInterface
     public function whereEndsWith($expr, $value);
 
     /**
-     * @param string|array $expr =key(get_object_vars(new Model))
+     * @param string|array $expr =get_object_vars(new Model) ?: key(get_object_vars(new Model))
      * @param string       $value
      *
      * @return static
@@ -226,7 +226,7 @@ interface QueryInterface
     public function whereNotEndsWith($expr, $value);
 
     /**
-     * @param string|array $expr =key(get_object_vars(new Model))
+     * @param string|array $expr =get_object_vars(new Model) ?: key(get_object_vars(new Model))
      * @param string       $like
      *
      * @return static
@@ -234,7 +234,7 @@ interface QueryInterface
     public function whereLike($expr, $like);
 
     /**
-     * @param string|array $expr =key(get_object_vars(new Model))
+     * @param string|array $expr =get_object_vars(new Model) ?: key(get_object_vars(new Model))
      * @param string       $like
      *
      * @return static
@@ -276,7 +276,7 @@ interface QueryInterface
     /**
      * Sets a ORDER BY condition clause
      *
-     * @param string|array $orderBy =get_object_vars(new Model)
+     * @param string|array $orderBy =get_object_vars(new Model) ?: key(get_object_vars(new Model))
      *
      * @return static
      */
@@ -292,7 +292,7 @@ interface QueryInterface
     /**
      * Sets a GROUP BY clause
      *
-     * @param string|array $groupBy =get_object_vars(new Model)+key(get_object_vars(new Model))
+     * @param string|array $groupBy =get_object_vars(new Model) ?: key(get_object_vars(new Model))
      *
      * @return static
      */
