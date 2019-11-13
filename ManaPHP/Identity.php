@@ -3,16 +3,12 @@
 namespace ManaPHP;
 
 use ManaPHP\Coroutine\Context\Stickyable;
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\UnauthorizedException;
 
 class IdentityContext implements Stickyable
 {
-    /**
-     * @var string
-     */
-    public $type;
-
     /**
      * @var array
      */
@@ -30,9 +26,7 @@ class Identity extends Component implements IdentityInterface
      */
     public function isGuest()
     {
-        $context = $this->_context;
-
-        return !$context->claims;
+        return !$this->_context->claims;
     }
 
     /**
@@ -42,20 +36,30 @@ class Identity extends Component implements IdentityInterface
      */
     public function getId($default = null)
     {
-        $context = $this->_context;
+        $claims = $this->_context->claims;
 
-        if (!$context->claims) {
+        if (!$claims) {
             if ($default === null) {
                 throw new UnauthorizedException('Not Authenticated');
-            } else {
-                return $default;
             }
-        } elseif (!$context->type) {
             return $default;
-        } else {
-            $id = $context->type . '_id';
-            return $context->claims[$id] ?? 0;
         }
+
+        if (isset($claims['id'])) {
+            return $claims['id'];
+        }
+
+        foreach ($claims as $name => $value) {
+            if (($pos = strrpos($name, '_id', -3)) !== false) {
+                $name_name = substr($name, 0, $pos) . '_name';
+
+                if (isset($claims[$name_name])) {
+                    return $value;
+                }
+            }
+        }
+
+        throw new MisuseException('missing id in claims');
     }
 
     /**
@@ -65,20 +69,30 @@ class Identity extends Component implements IdentityInterface
      */
     public function getName($default = null)
     {
-        $context = $this->_context;
+        $claims = $this->_context->claims;
 
-        if (!$context->claims) {
+        if (!$claims) {
             if ($default === null) {
                 throw new UnauthorizedException('Not Authenticated');
-            } else {
-                return $default;
             }
-        } elseif (!$context->type) {
             return $default;
-        } else {
-            $name = $context->type . '_name';
-            return $context->claims[$name] ?? '';
         }
+
+        if (isset($claims['name'])) {
+            return $claims['name'];
+        }
+
+        foreach ($claims as $name => $value) {
+            if (($pos = strrpos($name, '_id', -3)) !== false) {
+                $name_name = substr($name, 0, $pos) . '_name';
+
+                if (isset($claims[$name_name])) {
+                    return $claims[$name_name];
+                }
+            }
+        }
+
+        throw new MisuseException('missing name in claims');
     }
 
     /**
@@ -88,13 +102,21 @@ class Identity extends Component implements IdentityInterface
      */
     public function getRole($default = 'guest')
     {
-        $context = $this->_context;
+        $claims = $this->_context->claims;
 
-        if ($context->claims) {
-            return $context->claims['role'] ?? (isset($context->claims['admin_id']) && $context->claims['admin_id'] === 1 ? 'admin' : 'user');
-        } else {
+        if (!$claims) {
             return $default;
         }
+
+        if (isset($claims['role'])) {
+            return $claims['role'];
+        }
+
+        if (isset($claims['admin_id'])) {
+            return $claims['admin_id'] === 1 ? 'admin' : 'user';
+        }
+
+        throw new MisuseException('missing role in claims');
     }
 
     /**
@@ -110,11 +132,7 @@ class Identity extends Component implements IdentityInterface
             return true;
         }
 
-        if (strpos($role, ',') === false) {
-            return false;
-        } else {
-            return strpos(",$role,", ",$name,") !== false;
-        }
+        return strpos($role, ',') === false ? false : strpos(",$role,", ",$name,") !== false;
     }
 
     /**
@@ -124,24 +142,22 @@ class Identity extends Component implements IdentityInterface
      */
     public function setRole($role)
     {
-        $context = $this->_context;
-
-        $context->claims['role'] = $role;
+        $this->_context->claims['role'] = $role;
 
         return $this;
     }
 
     /**
-     * @param string $claim
+     * @param string $name
      * @param mixed  $value
      *
      * @return static
      */
-    public function setClaim($claim, $value)
+    public function setClaim($name, $value)
     {
         $context = $this->_context;
 
-        $context->claims[$claim] = $value;
+        $context->claims[$name] = $value;
 
         return $this;
     }
@@ -153,32 +169,33 @@ class Identity extends Component implements IdentityInterface
      */
     public function setClaims($claims)
     {
-        $context = $this->_context;
-
-        if ($claims && (!$context->type || !isset($claims[$context->type]))) {
-            foreach ($claims as $claim => $value) {
-                if (strlen($claim) > 3 && strrpos($claim, '_id', -3) !== false) {
-                    $context->type = substr($claim, 0, -3);
-                    break;
-                }
-            }
-        }
-        $context->claims = $claims;
+        $this->_context->claims = $claims;
 
         return $this;
     }
 
     /**
-     * @param string $claim
+     * @param string $name
      * @param mixed  $default
      *
      * @return mixed
      */
-    public function getClaim($claim, $default = null)
+    public function getClaim($name, $default = null)
     {
-        $context = $this->_context;
+        $claims = $this->_context->claims;
 
-        return $context->claims[$claim] ?? $default;
+        if (!$claims) {
+            if ($default === null) {
+                throw new UnauthorizedException('Not Authenticated');
+            }
+            return $default;
+        }
+
+        if (isset($claims[$name])) {
+            return $claims[$name];
+        }
+
+        throw new MisuseException("missing $name in claims");
     }
 
     /**
@@ -190,15 +207,13 @@ class Identity extends Component implements IdentityInterface
     }
 
     /**
-     * @param string $claim
+     * @param string $name
      *
      * @return bool
      */
-    public function hasClaim($claim)
+    public function hasClaim($name)
     {
-        $context = $this->_context;
-
-        return isset($context->claims[$claim]);
+        return isset($this->_context->claims[$name]);
     }
 
     public function authenticate($silent = true)

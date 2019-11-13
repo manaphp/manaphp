@@ -55,12 +55,12 @@ interface IdentityInterface
     public function setRole($role);
 
     /**
-     * @param string $claim
+     * @param string $name
      * @param mixed  $value
      *
      * @return static
      */
-    public function setClaim($claim, $value);
+    public function setClaim($name, $value);
 
     /**
      * @param array $claims
@@ -70,12 +70,12 @@ interface IdentityInterface
     public function setClaims($claims);
 
     /**
-     * @param string $claim
+     * @param string $name
      * @param mixed  $default
      *
      * @return mixed
      */
-    public function getClaim($claim, $default = null);
+    public function getClaim($name, $default = null);
 
     /**
      * @return array
@@ -83,9 +83,9 @@ interface IdentityInterface
     public function getClaims();
 
     /**
-     * @param string $claim
+     * @param string $name
      *
      * @return bool
      */
-    public function hasClaim($claim);
+    public function hasClaim($name);
 }
