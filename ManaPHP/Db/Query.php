@@ -809,12 +809,14 @@ class Query extends \ManaPHP\Query
         }
         $params['join'] = $joinSQL;
 
-        $wheres = [];
-        foreach ($this->_conditions as $v) {
-            $wheres[] = stripos($v, ' or ') ? "($v)" : $v;
-        }
+        if (count($this->_conditions) === 1) {
+            $params['where'] = $this->_conditions[0];
+        } elseif ($this->_conditions) {
+            $wheres = [];
+            foreach ($this->_conditions as $v) {
+                $wheres[] = stripos($v, ' or ') ? "($v)" : $v;
+            }
 
-        if ($wheres) {
             $params['where'] = implode(' AND ', $wheres);
         }
 
