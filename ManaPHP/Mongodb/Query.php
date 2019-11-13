@@ -577,50 +577,50 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @param string|array $expr
+     * @param string|array $fields
      * @param string       $like
      *
      * @return static
      */
-    protected function _whereLike($expr, $like)
+    protected function _whereLike($fields, $like)
     {
         if ($like === '') {
             return $this;
         }
 
-        if (is_array($expr)) {
+        if (is_array($fields)) {
             $or = [];
-            foreach ($expr as $v) {
+            foreach ($fields as $v) {
                 $or[] = [$v => ['$regex' => $like, '$options' => 'i']];
             }
             $this->_filters[] = ['$or' => $or];
         } else {
-            $this->_filters[] = [$expr => ['$regex' => $like, '$options' => 'i']];
+            $this->_filters[] = [$fields => ['$regex' => $like, '$options' => 'i']];
         }
 
         return $this;
     }
 
     /**
-     * @param string|array $expr
+     * @param string|array $fields
      * @param string       $like
      *
      * @return static
      */
-    protected function _whereNotLike($expr, $like)
+    protected function _whereNotLike($fields, $like)
     {
         if ($like === '') {
             return $this;
         }
 
-        if (is_array($expr)) {
+        if (is_array($fields)) {
             $and = [];
-            foreach ($expr as $v) {
+            foreach ($fields as $v) {
                 $and[] = [$v => ['$not' => new Regex($like, 'i')]];
             }
             $this->_filters[] = ['$and' => $and];
         } else {
-            $this->_filters[] = [$expr => ['$not' => new Regex($like, 'i')]];
+            $this->_filters[] = [$fields => ['$not' => new Regex($like, 'i')]];
         }
 
         return $this;
@@ -711,12 +711,12 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @param string|array $expr
+     * @param string|array $fields
      * @param string       $value
      *
      * @return static
      */
-    public function whereLike($expr, $value)
+    public function whereLike($fields, $value)
     {
         if ($value === '') {
             return $this;
@@ -732,16 +732,16 @@ class Query extends \ManaPHP\Query
 
         $value = strtr($value, ['%' => '.*', '_' => '.']);
 
-        return $this->_whereLike($expr, $value);
+        return $this->_whereLike($fields, $value);
     }
 
     /**
-     * @param string|array $expr
+     * @param string|array $fields
      * @param string       $value
      *
      * @return static
      */
-    public function whereNotLike($expr, $value)
+    public function whereNotLike($fields, $value)
     {
         if ($value === '') {
             return $this;
@@ -757,7 +757,7 @@ class Query extends \ManaPHP\Query
 
         $value = strtr($value, ['%' => '.*', '_' => '.']);
 
-        return $this->_whereNotLike($expr, $value);
+        return $this->_whereNotLike($fields, $value);
     }
 
     /**
@@ -789,25 +789,25 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @param string $expr
+     * @param string $field
      *
      * @return static
      */
-    public function whereNull($expr)
+    public function whereNull($field)
     {
-        $this->_filters[] = [$expr => ['$type' => 10]];
+        $this->_filters[] = [$field => ['$type' => 10]];
 
         return $this;
     }
 
     /**
-     * @param string $expr
+     * @param string $field
      *
      * @return static
      */
-    public function whereNotNull($expr)
+    public function whereNotNull($field)
     {
-        $this->_filters[] = [$expr => ['$ne' => null]];
+        $this->_filters[] = [$field => ['$ne' => null]];
 
         return $this;
     }

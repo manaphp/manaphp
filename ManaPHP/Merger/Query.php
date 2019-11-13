@@ -387,30 +387,30 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @param string|array $expr
+     * @param string|array $fields
      * @param string       $value
      *
      * @return static
      */
-    public function whereLike($expr, $value)
+    public function whereLike($fields, $value)
     {
         foreach ($this->_queries as $query) {
-            $query->whereLike($expr, $value);
+            $query->whereLike($fields, $value);
         }
 
         return $this;
     }
 
     /**
-     * @param string|array $expr
+     * @param string|array $fields
      * @param string       $value
      *
      * @return static
      */
-    public function whereNotLike($expr, $value)
+    public function whereNotLike($fields, $value)
     {
         foreach ($this->_queries as $query) {
-            $query->whereNotLike($expr, $value);
+            $query->whereNotLike($fields, $value);
         }
 
         return $this;
@@ -449,28 +449,28 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @param string $expr
+     * @param string $field
      *
      * @return static
      */
-    public function whereNull($expr)
+    public function whereNull($field)
     {
         foreach ($this->_queries as $query) {
-            $query->whereNull($expr);
+            $query->whereNull($field);
         }
 
         return $this;
     }
 
     /**
-     * @param string $expr
+     * @param string $field
      *
      * @return static
      */
-    public function whereNotNull($expr)
+    public function whereNotNull($field)
     {
         foreach ($this->_queries as $query) {
-            $query->whereNotNull($expr);
+            $query->whereNotNull($field);
         }
 
         return $this;

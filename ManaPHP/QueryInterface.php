@@ -176,102 +176,102 @@ interface QueryInterface
     public function whereNotInset($field, $value);
 
     /**
-     * @param string|array $expr =get_object_vars(new Model) ?: key(get_object_vars(new Model))
+     * @param string|array $fields =get_object_vars(new Model) ?: key(get_object_vars(new Model))
      * @param string       $value
      *
      * @return static
      */
-    public function whereContains($expr, $value);
+    public function whereContains($fields, $value);
 
     /**
-     * @param string|array $expr =get_object_vars(new Model) ?: key(get_object_vars(new Model))
+     * @param string|array $fields =get_object_vars(new Model) ?: key(get_object_vars(new Model))
      * @param string       $value
      *
      * @return static
      */
-    public function whereNotContains($expr, $value);
+    public function whereNotContains($fields, $value);
 
     /**
-     * @param string|array $expr =get_object_vars(new Model) ?: key(get_object_vars(new Model))
-     * @param string       $value
-     * @param int          $length
-     *
-     * @return static
-     */
-    public function whereStartsWith($expr, $value, $length = null);
-
-    /**
-     * @param string|array $expr =get_object_vars(new Model) ?: key(get_object_vars(new Model))
+     * @param string|array $fields =get_object_vars(new Model) ?: key(get_object_vars(new Model))
      * @param string       $value
      * @param int          $length
      *
      * @return static
      */
-    public function whereNotStartsWith($expr, $value, $length = null);
+    public function whereStartsWith($fields, $value, $length = null);
 
     /**
-     * @param string|array $expr =get_object_vars(new Model)?: key(get_object_vars(new Model))
+     * @param string|array $fields =get_object_vars(new Model) ?: key(get_object_vars(new Model))
+     * @param string       $value
+     * @param int          $length
+     *
+     * @return static
+     */
+    public function whereNotStartsWith($fields, $value, $length = null);
+
+    /**
+     * @param string|array $fields =get_object_vars(new Model)?: key(get_object_vars(new Model))
      * @param string       $value
      *
      * @return static
      */
-    public function whereEndsWith($expr, $value);
+    public function whereEndsWith($fields, $value);
 
     /**
-     * @param string|array $expr =get_object_vars(new Model) ?: key(get_object_vars(new Model))
+     * @param string|array $fields =get_object_vars(new Model) ?: key(get_object_vars(new Model))
      * @param string       $value
      *
      * @return static
      */
-    public function whereNotEndsWith($expr, $value);
+    public function whereNotEndsWith($fields, $value);
 
     /**
-     * @param string|array $expr =get_object_vars(new Model) ?: key(get_object_vars(new Model))
+     * @param string|array $fields =get_object_vars(new Model) ?: key(get_object_vars(new Model))
      * @param string       $like
      *
      * @return static
      */
-    public function whereLike($expr, $like);
+    public function whereLike($fields, $like);
 
     /**
-     * @param string|array $expr =get_object_vars(new Model) ?: key(get_object_vars(new Model))
+     * @param string|array $fields =get_object_vars(new Model) ?: key(get_object_vars(new Model))
      * @param string       $like
      *
      * @return static
      */
-    public function whereNotLike($expr, $like);
+    public function whereNotLike($fields, $like);
 
     /**
-     * @param string $expr =key(get_object_vars(new Model))
+     * @param string $field =key(get_object_vars(new Model))
      * @param string $regex
      * @param string $flags
      *
      * @return static
      */
-    public function whereRegex($expr, $regex, $flags = '');
+    public function whereRegex($field, $regex, $flags = '');
 
     /**
-     * @param string $expr =key(get_object_vars(new Model))
+     * @param string $field =key(get_object_vars(new Model))
      * @param string $regex
      * @param string $flags
      *
      * @return static
      */
-    public function whereNotRegex($expr, $regex, $flags = '');
+    public function whereNotRegex($field, $regex, $flags = '');
 
     /**
-     * @param string $expr =key(get_object_vars(new Model))
+     * @param string $field =key(get_object_vars(new Model))
      *
      * @return static
      */
-    public function whereNull($expr);
+    public function whereNull($field);
 
     /**
-     * @param string $expr =key(get_object_vars(new Model))
+     * @param string $field =key(get_object_vars(new Model))
      *
      * @return static
      */
-    public function whereNotNull($expr);
+    public function whereNotNull($field);
 
     /**
      * Sets a ORDER BY condition clause

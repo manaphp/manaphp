@@ -431,20 +431,20 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @param string|array $expr
+     * @param string|array $fields
      * @param string       $like
      *
      * @return static
      */
-    public function whereLike($expr, $like)
+    public function whereLike($fields, $like)
     {
         if ($like === '') {
             return $this;
         }
 
-        if (is_array($expr)) {
+        if (is_array($fields)) {
             $conditions = [];
-            foreach ($expr as $field) {
+            foreach ($fields as $field) {
                 $key = strtr($field, '.', '_');
                 $conditions[] = '[' . str_replace('.', '].[', $field) . ']' . ' LIKE :' . $key;
                 $this->_bind[$key] = $like;
@@ -452,9 +452,9 @@ class Query extends \ManaPHP\Query
 
             $this->_conditions[] = implode(' OR ', $conditions);
         } else {
-            $key = strtr($expr, '.', '_');
-            $expr = '[' . str_replace('.', '].[', $expr) . ']';
-            $this->_conditions[] = $expr . ' LIKE :' . $key;
+            $key = strtr($fields, '.', '_');
+            $fields = '[' . str_replace('.', '].[', $fields) . ']';
+            $this->_conditions[] = $fields . ' LIKE :' . $key;
             $this->_bind[$key] = $like;
         }
 
@@ -462,20 +462,20 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @param string|array $expr
+     * @param string|array $fields
      * @param string       $like
      *
      * @return static
      */
-    public function whereNotLike($expr, $like)
+    public function whereNotLike($fields, $like)
     {
         if ($like === '') {
             return $this;
         }
 
-        if (is_array($expr)) {
+        if (is_array($fields)) {
             $conditions = [];
-            foreach ($expr as $field) {
+            foreach ($fields as $field) {
                 $key = strtr($field, '.', '_');
                 $conditions[] = '[' . str_replace('.', '].[', $field) . ']' . ' NOT LIKE :' . $key;
                 $this->_bind[$key] = $like;
@@ -483,9 +483,9 @@ class Query extends \ManaPHP\Query
 
             $this->_conditions[] = implode(' AND ', $conditions);
         } else {
-            $key = strtr($expr, '.', '_');
-            $expr = '[' . str_replace('.', '].[', $expr) . ']';
-            $this->_conditions[] = $expr . ' NOT LIKE :' . $key;
+            $key = strtr($fields, '.', '_');
+            $fields = '[' . str_replace('.', '].[', $fields) . ']';
+            $this->_conditions[] = $fields . ' NOT LIKE :' . $key;
             $this->_bind[$key] = $like;
         }
 
@@ -493,71 +493,71 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @param string|array $expr
+     * @param string|array $fields
      * @param string       $value
      *
      * @return static
      */
-    public function whereContains($expr, $value)
+    public function whereContains($fields, $value)
     {
-        return $value === '' ? $this : $this->whereLike($expr, '%' . $value . '%');
+        return $value === '' ? $this : $this->whereLike($fields, '%' . $value . '%');
     }
 
     /**
-     * @param string|array $expr
+     * @param string|array $fields
      * @param string       $value
      *
      * @return static
      */
-    public function whereNotContains($expr, $value)
+    public function whereNotContains($fields, $value)
     {
-        return $value === '' ? $this : $this->whereNotLike($expr, '%' . $value . '%');
+        return $value === '' ? $this : $this->whereNotLike($fields, '%' . $value . '%');
     }
 
     /**
-     * @param string|array $expr
+     * @param string|array $fields
      * @param string       $value
      * @param int          $length
      *
      * @return static
      */
-    public function whereStartsWith($expr, $value, $length = null)
+    public function whereStartsWith($fields, $value, $length = null)
     {
-        return $value === '' ? $this : $this->whereLike($expr, $length === null ? $value . '%' : str_pad($value, $length, '_'));
+        return $value === '' ? $this : $this->whereLike($fields, $length === null ? $value . '%' : str_pad($value, $length, '_'));
     }
 
     /**
-     * @param string|array $expr
+     * @param string|array $fields
      * @param string       $value
      * @param int          $length
      *
      * @return static
      */
-    public function whereNotStartsWith($expr, $value, $length = null)
+    public function whereNotStartsWith($fields, $value, $length = null)
     {
-        return $value === '' ? $this : $this->whereNotLike($expr, $length === null ? $value . '%' : str_pad($value, $length, '_'));
+        return $value === '' ? $this : $this->whereNotLike($fields, $length === null ? $value . '%' : str_pad($value, $length, '_'));
     }
 
     /**
-     * @param string|array $expr
+     * @param string|array $fields
      * @param string       $value
      *
      * @return static
      */
-    public function whereEndsWith($expr, $value)
+    public function whereEndsWith($fields, $value)
     {
-        return $value === '' ? $this : $this->whereLike($expr, '%' . $value);
+        return $value === '' ? $this : $this->whereLike($fields, '%' . $value);
     }
 
     /**
-     * @param string|array $expr
+     * @param string|array $fields
      * @param string       $value
      *
      * @return static
      */
-    public function whereNotEndsWith($expr, $value)
+    public function whereNotEndsWith($fields, $value)
     {
-        return $value === '' ? $this : $this->whereNotLike($expr, '%' . $value);
+        return $value === '' ? $this : $this->whereNotLike($fields, '%' . $value);
     }
 
     /**
@@ -577,41 +577,41 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @param string $expr
+     * @param string $field
      * @param string $regex
      * @param string $flags
      *
      * @return static
      */
-    public function whereNotRegex($expr, $regex, $flags = '')
+    public function whereNotRegex($field, $regex, $flags = '')
     {
-        $key = $expr;
-        $this->_conditions[] = $expr . ' NOT REGEXP ' . (strpos($flags, 'i') !== false ? '' : 'BINARY ') . ':' . $key;
+        $key = $field;
+        $this->_conditions[] = $field . ' NOT REGEXP ' . (strpos($flags, 'i') !== false ? '' : 'BINARY ') . ':' . $key;
         $this->_bind[$key] = $regex;
 
         return $this;
     }
 
     /**
-     * @param string $expr
+     * @param string $field
      *
      * @return static
      */
-    public function whereNull($expr)
+    public function whereNull($field)
     {
-        $this->_conditions[] = $expr . ' IS NULL';
+        $this->_conditions[] = $field . ' IS NULL';
 
         return $this;
     }
 
     /**
-     * @param string $expr
+     * @param string $field
      *
      * @return static
      */
-    public function whereNotNull($expr)
+    public function whereNotNull($field)
     {
-        $this->_conditions[] = $expr . ' IS NOT NULL';
+        $this->_conditions[] = $field . ' IS NOT NULL';
 
         return $this;
     }
