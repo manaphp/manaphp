@@ -789,9 +789,7 @@ class Query extends \ManaPHP\Query
         $params['from'] = $alias ? "$table AS [$alias]" : $table;
 
         $joinSQL = '';
-        foreach ($joins as $join) {
-            list($joinTable, $joinCondition, $joinAlias, $joinType) = $join;
-
+        foreach ($joins as list($joinTable, $joinCondition, $joinAlias, $joinType)) {
             if ($joinType !== null) {
                 $joinSQL .= ' ' . $joinType;
             }
