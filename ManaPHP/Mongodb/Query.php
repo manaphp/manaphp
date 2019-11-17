@@ -108,17 +108,7 @@ class Query extends \ManaPHP\Query
 
         $cmd = ['distinct' => $collection, 'key' => $field];
         if ($this->_filters) {
-            $filters = [];
-            foreach ($this->_filters as $filter) {
-                $key = key($filter);
-                $value = current($filter);
-                if (isset($filters[$key]) || count($filter) !== 1) {
-                    $filters = ['$and' => $this->_filters];
-                    break;
-                }
-                $filters[$key] = $value;
-            }
-            $cmd['query'] = $filters;
+            $cmd['query'] = $this->_buildConditions();
         }
 
         $r = $mongodb->command($cmd, $db)[0];
@@ -894,6 +884,25 @@ class Query extends \ManaPHP\Query
     /**
      * @return array
      */
+    protected function _buildConditions()
+    {
+        $filters = [];
+        foreach ($this->_filters as $filter) {
+            $key = key($filter);
+            $value = current($filter);
+            if (isset($filters[$key]) || count($filter) !== 1) {
+                $filters = ['$and' => $this->_filters];
+                break;
+            }
+            $filters[$key] = $value;
+        }
+
+        return $filters;
+    }
+
+    /**
+     * @return array
+     */
     public function execute()
     {
         list($db, $collection) = $this->getUniqueShard();
@@ -934,18 +943,7 @@ class Query extends \ManaPHP\Query
                 $options['limit'] = $this->_limit;
             }
 
-            $filters = [];
-            foreach ($this->_filters as $filter) {
-                $key = key($filter);
-                $value = current($filter);
-                if (isset($filters[$key]) || count($filter) !== 1) {
-                    $filters = ['$and' => $this->_filters];
-                    break;
-                }
-                $filters[$key] = $value;
-            }
-
-            $r = $mongodb->fetchAll($collection, $filters, $options, !$this->_force_master);
+            $r = $mongodb->fetchAll($collection, $this->_buildConditions(), $options, !$this->_force_master);
             if ($this->_aliases) {
                 foreach ($r as $k => $v) {
                     foreach ($this->_aliases as $ak => $av) {
@@ -1024,24 +1022,13 @@ class Query extends \ManaPHP\Query
      */
     public function delete()
     {
-        $filters = [];
-        foreach ($this->_filters as $filter) {
-            $key = key($filter);
-            $value = current($filter);
-            if (isset($filters[$key]) || count($filter) !== 1) {
-                $filters = ['$and' => $this->_filters];
-                break;
-            }
-            $filters[$key] = $value;
-        }
-
         $shards = $this->getShards();
 
         $affected_count = 0;
         foreach ($shards as $db => $collections) {
             $mongodb = $this->_getDb($db);
             foreach ($collections as $collection) {
-                $affected_count += $mongodb->delete($collection, $filters);
+                $affected_count += $mongodb->delete($collection, $this->_buildConditions());
             }
         }
 
@@ -1055,24 +1042,13 @@ class Query extends \ManaPHP\Query
      */
     public function update($fieldValues)
     {
-        $filters = [];
-        foreach ($this->_filters as $filter) {
-            $key = key($filter);
-            $value = current($filter);
-            if (isset($filters[$key]) || count($filter) !== 1) {
-                $filters = ['$and' => $this->_filters];
-                break;
-            }
-            $filters[$key] = $value;
-        }
-
         $shards = $this->getShards();
 
         $affected_count = 0;
         foreach ($shards as $db => $collections) {
             $mongodb = $this->_getDb($db);
             foreach ($collections as $collection) {
-                $affected_count += $mongodb->update($collection, $fieldValues, $filters);
+                $affected_count += $mongodb->update($collection, $fieldValues, $this->_buildConditions());
             }
         }
 
