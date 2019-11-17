@@ -374,35 +374,25 @@ class Model extends \ManaPHP\Model
         $fieldTypes = $this->getFieldTypes();
         $fields = $this->getFields();
 
-        $changedFields = [];
         foreach ($fields as $field) {
             if ($this->$field === null) {
-                /** @noinspection NotOptimalIfConditionsInspection */
-                if (isset($snapshot[$field])) {
-                    $changedFields[] = $field;
-                }
+                null;
             } elseif (!isset($snapshot[$field])) {
                 if (is_scalar($this->$field)) {
                     $this->$field = $this->normalizeValue($fieldTypes[$field], $this->$field);
                 }
-                $changedFields[] = $field;
             } elseif ($snapshot[$field] !== $this->$field) {
                 if (is_scalar($this->$field)) {
                     $this->$field = $this->normalizeValue($fieldTypes[$field], $this->$field);
                 }
-
-                /** @noinspection NotOptimalIfConditionsInspection */
-                if ($snapshot[$field] !== $this->$field) {
-                    $changedFields[] = $field;
-                }
             }
         }
 
-        if (!$changedFields) {
+        $this->validate();
+
+        if (!$this->hasChanged($fields)) {
             return $this;
         }
-
-        $this->validate($changedFields);
 
         foreach ($this->getAutoFilledData(self::OP_UPDATE) as $field => $value) {
             if (in_array($field, $fields, true)) {
@@ -427,10 +417,6 @@ class Model extends \ManaPHP\Model
         }
 
         unset($fieldValues[$primaryKey]);
-
-        if (!$fieldValues) {
-            return $this;
-        }
 
         foreach ($this->getJsonFields() as $field) {
             if (isset($fieldValues[$field]) && is_array($fieldValues[$field])) {

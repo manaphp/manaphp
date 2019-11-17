@@ -190,38 +190,21 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         $fields = $this->getFields();
 
-        $changedFields = [];
         foreach ($fields as $field) {
             if ($this->$field === null) {
-                /** @noinspection NotOptimalIfConditionsInspection */
-                if (isset($snapshot[$field])) {
-                    $changedFields[] = $field;
-                }
+                null;
             } elseif (!isset($snapshot[$field])) {
-                $changedFields[] = $field;
+                null;
             } elseif ($snapshot[$field] !== $this->$field) {
                 if (is_string($this->$field) && !is_string($snapshot[$field]) && (string)$snapshot[$field] === $this->$field) {
                     $this->$field = $snapshot[$field];
-                } else {
-                    $changedFields[] = $field;
                 }
             }
         }
 
-        if (!$changedFields) {
-            return $this;
-        }
+        $this->validate();
 
-        $this->validate($changedFields);
-
-        //Model::validate() method maybe modify data, e.g. decimal data type of db
-        foreach ($changedFields as $key => $field) {
-            if (isset($snapshot[$field]) && $snapshot[$field] === $this->$field) {
-                unset($changedFields[$key]);
-            }
-        }
-
-        if (!$changedFields) {
+        if (!$this->hasChanged($fields)) {
             return $this;
         }
 
@@ -248,10 +231,6 @@ class Model extends \ManaPHP\Model implements ModelInterface
         }
 
         unset($fieldValues[$primaryKey]);
-
-        if (!$fieldValues) {
-            return $this;
-        }
 
         foreach ($this->getJsonFields() as $field) {
             if (isset($fieldValues[$field]) && is_array($fieldValues[$field])) {
