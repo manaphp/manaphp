@@ -383,13 +383,13 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string         $field
-     * @param int|float|null $value
-     * @param int|float      $parameter
+     * @param string $field
+     * @param mixed  $value
+     * @param mixed  $parameter
      *
-     * @return int|float|null
+     * @return int|float
      */
-    protected function _validate_min($field, $value, $parameter)
+    protected function _normalizeNumber($field, $value, $parameter)
     {
         if (!is_int($value) && !is_float($value)) {
             if (strpos($parameter, '.') !== false) {
@@ -402,6 +402,20 @@ class Validator extends Component implements ValidatorInterface
                 }
             }
         }
+
+        return $value;
+    }
+
+    /**
+     * @param string         $field
+     * @param int|float|null $value
+     * @param int|float      $parameter
+     *
+     * @return int|float|null
+     */
+    protected function _validate_min($field, $value, $parameter)
+    {
+        $value = $this->_normalizeNumber($field, $value, $parameter);
 
         return $value < $parameter ? null : $value;
     }
@@ -415,17 +429,7 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_max($field, $value, $parameter)
     {
-        if (!is_int($value) && !is_float($value)) {
-            if (strpos($parameter, '.') !== false) {
-                if (($value = $this->_validate_float($field, $value)) === null) {
-                    throw new ValidateFailedException([$field => $this->createError('float', $field)]);
-                }
-            } else {
-                if (($value = $this->_validate_int($field, $value)) === null) {
-                    throw new ValidateFailedException([$field => $this->createError('int', $field)]);
-                }
-            }
-        }
+        $value = $this->_normalizeNumber($field, $value, $parameter);
 
         return $value > $parameter ? null : $value;
     }
@@ -486,17 +490,7 @@ class Validator extends Component implements ValidatorInterface
             throw new InvalidValueException(['range validator `:parameter` parameter is not {min}-{max} format', 'parameter' => $parameter]);
         }
 
-        if (!is_int($value) && !is_float($value)) {
-            if (strpos($parameter, '.') !== false) {
-                if (($value = $this->_validate_float($field, $value)) === null) {
-                    throw new ValidateFailedException([$field => $this->createError('float', $field)]);
-                }
-            } else {
-                if (($value = $this->_validate_int($field, $value)) === null) {
-                    throw new ValidateFailedException([$field => $this->createError('int', $field)]);
-                }
-            }
-        }
+        $value = $this->_normalizeNumber($field, $value, $parameter);
 
         return $value >= $match[1] && $value <= $match[2] ? $value : null;
     }
