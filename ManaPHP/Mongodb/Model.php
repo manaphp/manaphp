@@ -590,9 +590,10 @@ class Model extends \ManaPHP\Model
         $primaryKey = $sample->getPrimaryKey();
         $allowNull = $sample->isAllowNullValue();
         $fieldTypes = $sample->getFieldTypes();
+        $autoIncrementField = $sample->getAutoIncrementField();
         foreach ($documents as $i => $document) {
-            if (!isset($document[$primaryKey])) {
-                $document[$primaryKey] = $sample->getNextAutoIncrementId();
+            if ($autoIncrementField && !isset($document[$autoIncrementField])) {
+                $document[$autoIncrementField] = $sample->getNextAutoIncrementId();
             }
             foreach ($fieldTypes as $field => $type) {
                 if (isset($document[$field])) {
