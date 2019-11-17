@@ -190,6 +190,22 @@ class Component implements ComponentInterface, JsonSerializable
     }
 
     /**
+     * @param string $event
+     *
+     * @return callable
+     */
+    protected function _inferEventHandler($event)
+    {
+        $parts = explode(':', $event);
+        $method = 'on' . ucfirst($parts[0] . ucfirst($parts[1]));
+        if (!method_exists($this, $method)) {
+            throw new MisuseException(['`:method` method is not exists', 'method' => static::class . '::' . $method . '()']);
+        }
+
+        return [$this, $method];
+    }
+
+    /**
      * Attach a listener to the events manager
      *
      * @param string   $event
@@ -200,16 +216,7 @@ class Component implements ComponentInterface, JsonSerializable
      */
     public function attachEvent($event, $handler = null, $appended = true)
     {
-        if ($handler === null) {
-            $parts = explode(':', $event);
-            $method = 'on' . ucfirst($parts[0] . ucfirst($parts[1]));
-            if (!method_exists($this, $method)) {
-                throw new MisuseException(['`:method` method is not exists', 'method' => static::class . '::' . $method . '()']);
-            }
-            $handler = [$this, $method];
-        }
-
-        $this->eventsManager->attachEvent($event, $handler, $appended);
+        $this->eventsManager->attachEvent($event, $handler ?? $this->_inferEventHandler($event), $appended);
 
         return $this;
     }
@@ -222,16 +229,7 @@ class Component implements ComponentInterface, JsonSerializable
      */
     public function detachEvent($event, $handler = null)
     {
-        if ($handler === null) {
-            $parts = explode(':', $event);
-            $method = 'on' . ucfirst($parts[0] . ucfirst($parts[1]));
-            if (!method_exists($this, $method)) {
-                throw new MisuseException(['`:method` method is not exists', 'method' => static::class . '::' . $method . '()']);
-            }
-            $handler = [$this, $method];
-        }
-
-        $this->eventsManager->detachEvent($event, $handler);
+        $this->eventsManager->detachEvent($event, $handler ?? $this->_inferEventHandler($event));
 
         return $this;
     }
