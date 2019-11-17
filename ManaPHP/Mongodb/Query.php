@@ -568,24 +568,24 @@ class Query extends \ManaPHP\Query
 
     /**
      * @param string|array $fields
-     * @param string       $like
+     * @param string       $regex
      *
      * @return static
      */
-    protected function _whereLike($fields, $like)
+    protected function _whereLike($fields, $regex)
     {
-        if ($like === '') {
+        if ($regex === '') {
             return $this;
         }
 
         if (is_array($fields)) {
             $or = [];
             foreach ($fields as $v) {
-                $or[] = [$v => ['$regex' => $like, '$options' => 'i']];
+                $or[] = [$v => ['$regex' => $regex, '$options' => 'i']];
             }
             $this->_filters[] = ['$or' => $or];
         } else {
-            $this->_filters[] = [$fields => ['$regex' => $like, '$options' => 'i']];
+            $this->_filters[] = [$fields => ['$regex' => $regex, '$options' => 'i']];
         }
 
         return $this;
@@ -593,24 +593,24 @@ class Query extends \ManaPHP\Query
 
     /**
      * @param string|array $fields
-     * @param string       $like
+     * @param string       $regex
      *
      * @return static
      */
-    protected function _whereNotLike($fields, $like)
+    protected function _whereNotLike($fields, $regex)
     {
-        if ($like === '') {
+        if ($regex === '') {
             return $this;
         }
 
         if (is_array($fields)) {
             $and = [];
             foreach ($fields as $v) {
-                $and[] = [$v => ['$not' => new Regex($like, 'i')]];
+                $and[] = [$v => ['$not' => new Regex($regex, 'i')]];
             }
             $this->_filters[] = ['$and' => $and];
         } else {
-            $this->_filters[] = [$fields => ['$not' => new Regex($like, 'i')]];
+            $this->_filters[] = [$fields => ['$not' => new Regex($regex, 'i')]];
         }
 
         return $this;
