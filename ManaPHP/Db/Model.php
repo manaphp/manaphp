@@ -3,6 +3,7 @@
 namespace ManaPHP\Db;
 
 use ManaPHP\Di;
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Model\ExpressionInterface;
 
@@ -188,6 +189,11 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         $primaryKey = $this->getPrimaryKey();
 
+        /** @noinspection TypeUnsafeComparisonInspection */
+        if ($this->$primaryKey != $snapshot[$primaryKey]) {
+            throw new MisuseException('updating model primary key value is not support');
+        }
+
         $fields = $this->getFields();
 
         foreach ($fields as $field) {
@@ -229,8 +235,6 @@ class Model extends \ManaPHP\Model implements ModelInterface
                 $fieldValues[$field] = $this->$field;
             }
         }
-
-        unset($fieldValues[$primaryKey]);
 
         foreach ($this->getJsonFields() as $field) {
             if (isset($fieldValues[$field]) && is_array($fieldValues[$field])) {

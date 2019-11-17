@@ -4,6 +4,7 @@ namespace ManaPHP\Mongodb;
 
 use ManaPHP\Di;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Model\ExpressionInterface;
@@ -371,6 +372,11 @@ class Model extends \ManaPHP\Model
 
         $primaryKey = $this->getPrimaryKey();
 
+        /** @noinspection TypeUnsafeComparisonInspection */
+        if ($this->$primaryKey != $snapshot[$primaryKey]) {
+            throw new MisuseException('updating model primary key value is not support');
+        }
+
         $fieldTypes = $this->getFieldTypes();
         $fields = $this->getFields();
 
@@ -415,8 +421,6 @@ class Model extends \ManaPHP\Model
                 $fieldValues[$field] = $this->$field;
             }
         }
-
-        unset($fieldValues[$primaryKey]);
 
         foreach ($this->getJsonFields() as $field) {
             if (isset($fieldValues[$field]) && is_array($fieldValues[$field])) {
