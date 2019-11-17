@@ -495,6 +495,33 @@ class Model extends \ManaPHP\Model
     }
 
     /**
+     * @param array $document
+     *
+     * @return array
+     */
+    public function normalizeDocument($document)
+    {
+        $sample = static::sample();
+
+        $allowNull = $sample->isAllowNullValue();
+        $fieldTypes = $sample->getFieldTypes();
+        $autoIncrementField = $sample->getAutoIncrementField();
+        if ($autoIncrementField && !isset($document[$autoIncrementField])) {
+            $document[$autoIncrementField] = $sample->getNextAutoIncrementId();
+        }
+
+        foreach ($fieldTypes as $field => $type) {
+            if (isset($document[$field])) {
+                $document[$field] = $sample->normalizeValue($type, $document[$field]);
+            } elseif ($field !== '_id') {
+                $document[$field] = $allowNull ? null : $sample->normalizeValue($type, '');
+            }
+        }
+
+        return $document;
+    }
+
+    /**
      * @param array[] $documents
      *
      * @return int
@@ -507,21 +534,8 @@ class Model extends \ManaPHP\Model
 
         $sample = static::sample();
 
-        $autoIncrementField = $sample->getAutoIncrementField();
-        $allowNull = $sample->isAllowNullValue();
-        $fieldTypes = $sample->getFieldTypes();
         foreach ($documents as $i => $document) {
-            if ($autoIncrementField && !isset($document[$autoIncrementField])) {
-                $document[$autoIncrementField] = $sample->getNextAutoIncrementId();
-            }
-            foreach ($fieldTypes as $field => $type) {
-                if (isset($document[$field])) {
-                    $document[$field] = $sample->normalizeValue($type, $document[$field]);
-                } elseif ($field !== '_id') {
-                    $document[$field] = $allowNull ? null : $sample->normalizeValue($type, '');
-                }
-            }
-            $documents[$i] = $document;
+            $documents[$i] = $sample->normalizeDocument($document);
         }
 
         list($db, $collection) = $sample->getUniqueShard();
@@ -587,29 +601,15 @@ class Model extends \ManaPHP\Model
 
         $sample = static::sample();
 
-        $primaryKey = $sample->getPrimaryKey();
-        $allowNull = $sample->isAllowNullValue();
-        $fieldTypes = $sample->getFieldTypes();
-        $autoIncrementField = $sample->getAutoIncrementField();
         foreach ($documents as $i => $document) {
-            if ($autoIncrementField && !isset($document[$autoIncrementField])) {
-                $document[$autoIncrementField] = $sample->getNextAutoIncrementId();
-            }
-            foreach ($fieldTypes as $field => $type) {
-                if (isset($document[$field])) {
-                    $document[$field] = $sample->normalizeValue($type, $document[$field]);
-                } elseif ($field !== '_id') {
-                    $document[$field] = $allowNull ? null : $sample->normalizeValue($type, '');
-                }
-            }
-            $documents[$i] = $document;
+            $documents[$i] = $sample->normalizeDocument($document);
         }
 
         list($db, $collection) = $sample->getUniqueShard();
 
         /** @var \ManaPHP\MongodbInterface $mongodb */
         $mongodb = Di::getDefault()->getShared($db);
-        return $mongodb->bulkUpsert($collection, $documents, $primaryKey);
+        return $mongodb->bulkUpsert($collection, $documents, $sample->getPrimaryKey());
     }
 
     /**
@@ -621,20 +621,7 @@ class Model extends \ManaPHP\Model
     {
         $sample = static::sample();
 
-        $allowNull = $sample->isAllowNullValue();
-        $fieldTypes = $sample->getFieldTypes();
-        $autoIncrementField = $sample->getAutoIncrementField();
-        if ($autoIncrementField && !isset($document[$autoIncrementField])) {
-            $document[$autoIncrementField] = $sample->getNextAutoIncrementId();
-        }
-
-        foreach ($fieldTypes as $field => $type) {
-            if (isset($document[$field])) {
-                $document[$field] = $sample->normalizeValue($type, $document[$field]);
-            } elseif ($field !== '_id') {
-                $document[$field] = $allowNull ? null : $sample->normalizeValue($type, '');
-            }
-        }
+        $document = $sample->normalizeDocument($document);
 
         list($db, $collection) = $sample->getUniqueShard($document);
 
