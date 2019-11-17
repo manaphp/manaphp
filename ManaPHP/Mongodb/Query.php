@@ -701,6 +701,28 @@ class Query extends \ManaPHP\Query
     }
 
     /**
+     * @param string $like
+     *
+     * @return string
+     */
+    protected function _like2regex($like)
+    {
+        if ($like === '') {
+            return '';
+        }
+
+        if ($like[0] !== '%') {
+            $like = '^' . $like;
+        }
+
+        if ($like[strlen($like) - 1] !== '%') {
+            $like .= '$';
+        }
+
+        return strtr($like, ['%' => '.*', '_' => '.']);
+    }
+
+    /**
      * @param string|array $fields
      * @param string       $value
      *
@@ -708,21 +730,7 @@ class Query extends \ManaPHP\Query
      */
     public function whereLike($fields, $value)
     {
-        if ($value === '') {
-            return $this;
-        }
-
-        if ($value[0] !== '%') {
-            $value = '^' . $value;
-        }
-
-        if ($value[strlen($value) - 1] !== '%') {
-            $value .= '$';
-        }
-
-        $value = strtr($value, ['%' => '.*', '_' => '.']);
-
-        return $this->_whereLike($fields, $value);
+        return $this->_whereLike($fields, $this->_like2regex($value));
     }
 
     /**
@@ -733,21 +741,7 @@ class Query extends \ManaPHP\Query
      */
     public function whereNotLike($fields, $value)
     {
-        if ($value === '') {
-            return $this;
-        }
-
-        if ($value[0] !== '%') {
-            $value = '^' . $value;
-        }
-
-        if ($value[strlen($value) - 1] !== '%') {
-            $value .= '$';
-        }
-
-        $value = strtr($value, ['%' => '.*', '_' => '.']);
-
-        return $this->_whereNotLike($fields, $value);
+        return $this->_whereNotLike($fields, $this->_like2regex($value));
     }
 
     /**
