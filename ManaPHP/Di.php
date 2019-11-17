@@ -128,7 +128,7 @@ class Di implements DiInterface
      *
      * @return string
      */
-    protected function _interClassName($name)
+    protected function _inferClassName($name)
     {
         $definition = null;
         if (isset($this->_definitions[$name])) {
@@ -169,7 +169,7 @@ class Di implements DiInterface
     {
         if (is_string($definition)) {
             if (strpos($definition, '/') !== false || preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
-                $definition = ['class' => $this->_interClassName($name), $definition, 'shared' => false];
+                $definition = ['class' => $this->_inferClassName($name), $definition, 'shared' => false];
             } else {
                 if (strpos($definition, '\\') === false) {
                     $definition = $this->_completeClassName($name, $definition);
@@ -186,7 +186,7 @@ class Di implements DiInterface
                     $definition[0] = $this->_completeClassName($name, $definition[0]);
                 }
             } else {
-                $definition['class'] = $this->_interClassName($name);
+                $definition['class'] = $this->_inferClassName($name);
             }
 
             $definition['shared'] = false;
@@ -217,7 +217,7 @@ class Di implements DiInterface
 
         if (is_string($definition)) {
             if (strpos($definition, '/') !== false || preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
-                $definition = ['class' => $this->_interClassName($name), $definition];
+                $definition = ['class' => $this->_inferClassName($name), $definition];
             } elseif (strpos($definition, '\\') === false) {
                 $definition = $this->_completeClassName($name, $definition);
             }
@@ -231,7 +231,7 @@ class Di implements DiInterface
                     $definition[0] = $this->_completeClassName($name, $definition[0]);
                 }
             } else {
-                $definition['class'] = $this->_interClassName($name);
+                $definition['class'] = $this->_inferClassName($name);
             }
         } elseif (is_object($definition)) {
             $definition = ['class' => $definition];
