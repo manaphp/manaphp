@@ -3,7 +3,6 @@
 namespace ManaPHP\Mongodb;
 
 use ManaPHP\Di;
-use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\RuntimeException;
@@ -275,7 +274,7 @@ class Model extends \ManaPHP\Model
         } elseif ($type === 'array') {
             return (array)$value;
         } else {
-            throw new InvalidValueException(['`:model` model is not supported `:type` type', 'model' => static::class, 'type' => $type]);
+            throw new MisuseException(['`:model` model is not supported `:type` type', 'model' => static::class, 'type' => $type]);
         }
     }
 
@@ -549,19 +548,11 @@ class Model extends \ManaPHP\Model
         $sample = static::sample();
 
         $primaryKey = $sample->getPrimaryKey();
-        $allowNull = $sample->isAllowNullValue();
-        $fieldTypes = $sample->getFieldTypes();
         foreach ($documents as $i => $document) {
             if (!isset($document[$primaryKey])) {
-                throw new InvalidValueException(['bulkUpdate `:model` model must set primary value', 'model' => static::class]);
+                throw new MisuseException(['bulkUpdate `:model` model must set primary value', 'model' => static::class]);
             }
-            foreach ((array)$document as $field => $value) {
-                if ($value === null) {
-                    $document[$field] = $allowNull ? null : $sample->normalizeValue($fieldTypes[$field], '');
-                } else {
-                    $document[$field] = $sample->normalizeValue($fieldTypes[$field], $value);
-                }
-            }
+            $documents[$i] = $sample->normalizeDocument($document);
         }
 
         $shards = $sample->getMultipleShards();
