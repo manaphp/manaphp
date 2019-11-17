@@ -45,36 +45,17 @@ class Model extends \ManaPHP\Model implements ModelInterface
         static $cached = [];
 
         $class = static::class;
+
         if (!isset($cached[$class])) {
-            $fields = $this->getFields();
-
-            if (in_array('id', $fields, true)) {
-                return $cached[$class] = 'id';
-            }
-
-            $tryField = lcfirst(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1)) . '_id';
-            if (in_array($tryField, $fields, true)) {
-                return $cached[$class] = $tryField;
-            }
-
-            $source = $this->getTable();
-            if (($pos = strpos($source, ':')) !== false) {
-                $table = substr($source, 0, $pos);
-            } elseif (($pos = strpos($source, ',')) !== false) {
-                $table = substr($source, 0, $pos);
+            if ($primaryKey = $this->_inferPrimaryKey($class)) {
+                return $cached[$class] = $primaryKey;
             } else {
-                $table = $source;
+                $primaryKeys = $this->_di->modelsMetadata->getPrimaryKeyAttributes($this);
+                if (count($primaryKeys) !== 1) {
+                    throw new NotSupportedException('only support one primary key');
+                }
+                return $cached[$class] = $primaryKeys[0];
             }
-            $tryField = $table . '_id';
-            if (in_array($tryField, $fields, true)) {
-                return $cached[$class] = $tryField;
-            }
-
-            $primaryKeys = $this->_di->modelsMetadata->getPrimaryKeyAttributes($this);
-            if (count($primaryKeys) !== 1) {
-                throw new NotSupportedException('only support one primary key');
-            }
-            return $cached[$class] = $primaryKeys[0];
         }
 
         return $cached[$class];

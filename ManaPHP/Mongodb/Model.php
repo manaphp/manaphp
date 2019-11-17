@@ -66,32 +66,11 @@ class Model extends \ManaPHP\Model
         $class = static::class;
 
         if (!isset($cached[$class])) {
-            $fields = $this->getFields();
-
-            if (in_array('id', $fields, true)) {
-                return $cached[$class] = 'id';
-            }
-
-            $tryField = lcfirst(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1)) . '_id';
-            if (in_array($tryField, $fields, true)) {
-                return $cached[$class] = $tryField;
-            }
-
-            $source = $this->getTable();
-            if (($pos = strpos($source, ':')) !== false) {
-                $collection = substr($source, 0, $pos);
-            } elseif (($pos = strpos($source, ',')) !== false) {
-                $collection = substr($source, 0, $pos);
+            if ($primaryKey = $this->_inferPrimaryKey($class)) {
+                return $cached[$class] = $primaryKey;
             } else {
-                $collection = $source;
+                throw new NotImplementedException(['Primary key of `:model` model can not be inferred', 'model' => $class]);
             }
-
-            $tryField = (($pos = strpos($collection, '.')) ? substr($collection, $pos + 1) : $collection) . '_id';
-            if (in_array($tryField, $fields, true)) {
-                return $cached[$class] = $tryField;
-            }
-
-            throw new NotImplementedException(['Primary key of `:model` model can not be inferred', 'model' => $class]);
         }
 
         return $cached[$class];

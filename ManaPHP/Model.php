@@ -119,6 +119,39 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
+     * @param string $class
+     *
+     * @return string|null
+     */
+    protected function _inferPrimaryKey($class)
+    {
+        $fields = $this->getFields();
+
+        if (in_array('id', $fields, true)) {
+            return 'id';
+        }
+
+        $tryField = lcfirst(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1)) . '_id';
+        if (in_array($tryField, $fields, true)) {
+            return $tryField;
+        }
+
+        $table = $this->getTable();
+        if (($pos = strpos($table, ':')) !== false) {
+            $table = substr($table, 0, $pos);
+        } elseif (($pos = strpos($table, ',')) !== false) {
+            $table = substr($table, 0, $pos);
+        }
+
+        $tryField = (($pos = strpos($table, '.')) ? substr($table, $pos + 1) : $table) . '_id';
+        if (in_array($tryField, $fields, true)) {
+            return $tryField;
+        }
+
+        return null;
+    }
+
+    /**
      * @return array =get_object_vars(new static)
      */
     public function getForeignKeys()
