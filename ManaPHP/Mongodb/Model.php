@@ -478,28 +478,6 @@ class Model extends \ManaPHP\Model
     }
 
     /**
-     * Deletes a model instance. Returning true on success or false otherwise.
-     *
-     * @return static
-     */
-    public function delete()
-    {
-        list($db, $collection) = $this->getUniqueShard($this);
-
-        $this->fireEvent('model:deleting');
-
-        /** @var \ManaPHP\MongodbInterface */
-        $connection = $this->_di->getShared($db);
-        $primaryKey = $this->getPrimaryKey();
-
-        $connection->delete($collection, [$primaryKey => $this->$primaryKey]);
-
-        $this->fireEvent('model:deleted');
-
-        return $this;
-    }
-
-    /**
      * @param array $pipeline
      * @param array $options
      *

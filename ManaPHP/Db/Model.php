@@ -298,28 +298,6 @@ class Model extends \ManaPHP\Model implements ModelInterface
     }
 
     /**
-     * Deletes a model instance. Returning true on success or false otherwise.
-     *
-     * @return static
-     */
-    public function delete()
-    {
-        list($db, $table) = $this->getUniqueShard($this);
-
-        $this->fireEvent('model:deleting');
-
-        /** @var \ManaPHP\DbInterface */
-        $db = $this->_di->getShared($db);
-
-        $primaryKey = $this->getPrimaryKey();
-        $db->delete($table, [$primaryKey => $this->$primaryKey]);
-
-        $this->fireEvent('model:deleted');
-
-        return $this;
-    }
-
-    /**
      * @param array|string $sql
      *
      * @return int

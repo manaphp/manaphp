@@ -1301,6 +1301,27 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
+     * Deletes a model instance.
+     *
+     * @return static
+     */
+    public function delete()
+    {
+        list($db, $table) = $this->getUniqueShard($this);
+
+        $this->fireEvent('model:deleting');
+
+        $db = $this->_di->getShared($db);
+
+        $primaryKey = $this->getPrimaryKey();
+        $db->delete($table, [$primaryKey => $this->$primaryKey]);
+
+        $this->fireEvent('model:deleted');
+
+        return $this;
+    }
+
+    /**
      * @param string $name
      *
      * @return \ManaPHP\Model|\ManaPHP\Model[]|mixed
