@@ -1088,11 +1088,12 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function getChangedFields()
     {
-        $changed = [];
+        $snapshot = $this->_snapshot;
 
+        $changed = [];
         foreach ($this->getFields() as $field) {
-            if (isset($this->_snapshot[$field])) {
-                if ($this->{$field} !== $this->_snapshot[$field]) {
+            if (isset($snapshot[$field])) {
+                if ($this->{$field} !== $snapshot[$field]) {
                     $changed[] = $field;
                 }
             } elseif ($this->$field !== null) {
@@ -1113,8 +1114,10 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function hasChanged($fields)
     {
+        $snapshot = $this->_snapshot;
+
         foreach ((array)$fields as $field) {
-            if (!isset($this->_snapshot[$field]) || $this->{$field} !== $this->_snapshot[$field]) {
+            if (!isset($snapshot[$field]) || $this->{$field} !== $snapshot[$field]) {
                 return true;
             }
         }
