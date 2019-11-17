@@ -224,8 +224,7 @@ class Swoole extends Server
         } catch (Throwable $throwable) {
             $str = date('c') . ' ' . get_class($throwable) . ': ' . $throwable->getMessage() . PHP_EOL;
             $str .= '    at ' . $throwable->getFile() . ':' . $throwable->getLine() . PHP_EOL;
-            $traces = $throwable->getTraceAsString();
-            $str .= preg_replace('/#\d+\s/', '    at ', $traces);
+            $str .= preg_replace('/#\d+\s/', '    at ', $throwable->getTraceAsString());
             echo $str . PHP_EOL;
         }
 
