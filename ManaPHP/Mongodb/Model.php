@@ -372,7 +372,7 @@ class Model extends \ManaPHP\Model
         $primaryKey = $this->getPrimaryKey();
 
         $fieldTypes = $this->getFieldTypes();
-        $fields = array_keys($fieldTypes);
+        $fields = $this->getFields();
 
         $changedFields = [];
         foreach ($fields as $field) {
