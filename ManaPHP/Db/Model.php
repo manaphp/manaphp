@@ -4,7 +4,6 @@ namespace ManaPHP\Db;
 
 use ManaPHP\Di;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Model\ExpressionInterface;
 
 /**
@@ -186,9 +185,6 @@ class Model extends \ManaPHP\Model implements ModelInterface
     public function update()
     {
         $snapshot = $this->_snapshot;
-        if ($snapshot === false) {
-            throw new PreconditionException(['update failed: `:model` instance is snapshot disabled', 'model' => static::class]);
-        }
 
         $primaryKey = $this->getPrimaryKey();
 
