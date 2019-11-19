@@ -42,9 +42,17 @@ class LocalFS
      */
     public static function fileDelete($file)
     {
-        foreach (self::files($file) as $f) {
-            if (!unlink($f) && self::fileExists($f)) {
-                throw new RuntimeException(['delete `:file` failed: :last_error_message', 'file' => $f]);
+        if (Str::contains($file, '*')) {
+            foreach (self::files($file) as $f) {
+                if (!unlink($f) && self::fileExists($f)) {
+                    throw new RuntimeException(['delete `:file` failed: :last_error_message', 'file' => $f]);
+                }
+            }
+        } else {
+            $file = self::$alias->resolve($file);
+
+            if (!unlink($file) && self::fileExists($file)) {
+                throw new RuntimeException(['delete `:file` failed: :last_error_message', 'file' => $file]);
             }
         }
     }
