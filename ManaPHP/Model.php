@@ -427,16 +427,21 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
+     * @return \ManaPHP\Http\RequestInterface
+     */
+    protected static function _getRequest()
+    {
+        return self::sample()->_di->getShared('request');
+    }
+
+    /**
      * @param array $fields =get_object_vars(new static)
      *
      * @return static|null
      */
     public static function viewOrFirst($fields = null)
     {
-        static $request;
-        if (!$request) {
-            $request = Di::getDefault()->getShared('request');
-        }
+        $request = self::_getRequest();
 
         if (!$request->isAjax()) {
             return null;
@@ -455,12 +460,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function viewOrAll($filters, $options = null, $fields = null)
     {
-        static $request;
-        if (!$request) {
-            $request = Di::getDefault()->getShared('request');
-        }
-
-        if (!$request->isAjax()) {
+        if (!self::_getRequest()->isAjax()) {
             return null;
         }
 
@@ -476,15 +476,10 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function viewOrPaginate($filters = [], $options = null, $fields = null)
     {
-        static $request;
-        if (!$request) {
-            $request = Di::getDefault()->getShared('request');
-        }
-
-        if (!$request->isAjax()) {
+        if (!self::_getRequest()->isAjax()) {
             return null;
         }
-		
+
         return static::paginate($filters, $options, $fields);
     }
 
@@ -851,10 +846,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function viewOrCreate($data = null)
     {
-        static $request;
-        if (!$request) {
-            $request = Di::getDefault()->getShared('request');
-        }
+        $request = self::_getRequest();
 
         if (!$request->isPost()) {
             return null;
@@ -896,10 +888,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function viewOrUpdate($data = null)
     {
-        static $request;
-        if (!$request) {
-            $request = Di::getDefault()->getShared('request');
-        }
+        $request = self::_getRequest();
 
         if ($request->isGet()) {
             return null;
@@ -977,10 +966,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function viewOrDelete()
     {
-        static $request;
-        if (!$request) {
-            $request = Di::getDefault()->getShared('request');
-        }
+        $request = self::_getRequest();
 
         if (!$request->isDelete() && !$request->isPost()) {
             return null;
