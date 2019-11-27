@@ -468,6 +468,27 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
+     * @param array $filters =get_object_vars(new static)
+     * @param array $options =['order'=>get_object_vars(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC], 'index'=>get_object_vars(new static)]
+     * @param array $fields =get_object_vars(new static)
+     *
+     * @return \ManaPHP\Paginator
+     */
+    public static function viewOrPaginate($filters = [], $options = null, $fields = null)
+    {
+        static $request;
+        if (!$request) {
+            $request = Di::getDefault()->getShared('request');
+        }
+
+        if (!$request->isAjax()) {
+            return null;
+        }
+		
+        return static::paginate($filters, $options, $fields);
+    }
+
+    /**
      * Allows to query the last record that match the specified conditions
      *
      * @param array $filters =get_object_vars(new static)

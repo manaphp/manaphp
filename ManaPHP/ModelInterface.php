@@ -141,6 +141,15 @@ interface ModelInterface
     public static function viewOrAll($filters, $options = null, $fields = null);
 
     /**
+     * @param array $filters
+     * @param array $options
+     * @param array $fields
+     *
+     * @return \ManaPHP\Paginator
+     */
+    public static function ViewOrPaginate($filters = [], $options = null, $fields = null);
+
+    /**
      * @param string|array $fields
      * @param array        $filters
      *
