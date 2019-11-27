@@ -15,9 +15,7 @@ class Dispatcher extends \ManaPHP\Dispatcher
      */
     public function invokeAction($controller, $action)
     {
-        $actionMethod = $action . 'Action';
-
-        if (!method_exists($controller, $actionMethod)) {
+        if (!$controller->isInvokable($action)) {
             return null;
         }
 

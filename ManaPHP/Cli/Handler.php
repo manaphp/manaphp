@@ -188,7 +188,7 @@ class Handler extends Component implements HandlerInterface
             $commandName = 'help';
         }
 
-        if (!method_exists($controllerInstance, $commandName . 'Command')) {
+        if (!$controllerInstance->isInvokable($commandName)) {
             $guessed = $this->_guessCommand($controllerClassName, $commandName);
             if (!$guessed) {
                 return $this->console->error(['`:command` sub command is not exists', 'command' => lcfirst($controllerName) . ':' . $commandName]);

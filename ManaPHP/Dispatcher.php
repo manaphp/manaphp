@@ -193,7 +193,7 @@ class Dispatcher extends Component implements DispatcherInterface
     {
         $actionMethod = $action . 'Action';
 
-        if (!method_exists($controller, $actionMethod)) {
+        if (!$controller->isInvokable($action)) {
             throw new NotFoundActionException([
                 '`:controller:::action` method does not exist',
                 'action' => $actionMethod,

@@ -21,6 +21,16 @@ abstract class Controller extends \ManaPHP\Controller
     /**
      * @param string $action
      *
+     * @return bool
+     */
+    public function isInvokable($action)
+    {
+        return method_exists($this, $action . 'Command');
+    }
+
+    /**
+     * @param string $action
+     *
      * @return mixed
      */
     public function invoke($action)
