@@ -2,8 +2,6 @@
 
 namespace ManaPHP\Cli;
 
-use ManaPHP\Component;
-use ManaPHP\Logger\LogCategorizable;
 use ReflectionMethod;
 
 /**
@@ -18,13 +16,8 @@ use ReflectionMethod;
  * @property-read \ManaPHP\Cli\RequestInterface    $request
  * @property-read \ManaPHP\Cli\HandlerInterface    $cliHandler
  */
-abstract class Controller extends Component implements LogCategorizable
+abstract class Controller extends \ManaPHP\Controller
 {
-    public function categorizeLog()
-    {
-        return basename(str_replace('\\', '.', static::class), 'Controller');
-    }
-
     /**
      * show this help information
      */

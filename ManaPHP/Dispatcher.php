@@ -34,7 +34,7 @@ class DispatcherContext
     public $params = [];
 
     /**
-     * @var \ManaPHP\Rest\Controller
+     * @var \ManaPHP\Controller
      */
     public $controllerInstance;
 
@@ -185,8 +185,8 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
-     * @param \ManaPHP\Rest\Controller $controller
-     * @param string                   $action
+     * @param \ManaPHP\Controller $controller
+     * @param string              $action
      *
      * @return mixed
      */
@@ -326,7 +326,7 @@ class Dispatcher extends Component implements DispatcherInterface
 
         $controllerClassName = $this->_getControllerClassName();
 
-        /** @var \ManaPHP\Rest\Controller $controllerInstance */
+        /** @var \ManaPHP\Controller $controllerInstance */
         $controllerInstance = $this->_di->getShared($controllerClassName);
         $context->controllerInstance = $controllerInstance;
 
@@ -334,7 +334,7 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
-     * @return \ManaPHP\Rest\Controller
+     * @return \ManaPHP\Controller
      */
     public function getControllerInstance()
     {

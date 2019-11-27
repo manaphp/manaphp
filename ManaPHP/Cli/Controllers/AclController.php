@@ -18,7 +18,7 @@ class AclController extends Controller
     {
         $authorization = $this->_di->getShared('ManaPHP\Authorization');
         foreach ($this->aclBuilder->getControllers() as $controller) {
-            /** @var \ManaPHP\Rest\Controller $controllerInstance */
+            /** @var \ManaPHP\Controller $controllerInstance */
             $controllerInstance = $this->_di->get($controller);
             $acl = $controllerInstance->getAcl();
             if ($role) {

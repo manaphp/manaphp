@@ -1,9 +1,6 @@
 <?php
 namespace ManaPHP\WebSocket;
 
-use ManaPHP\Component;
-use ManaPHP\Logger\LogCategorizable;
-
 /**
  * Class Controller
  * @package ManaPHP\WebSocket
@@ -13,10 +10,7 @@ use ManaPHP\Logger\LogCategorizable;
  * @property-read \ManaPHP\DispatcherInterface       $dispatcher
  * @property-read \ManaPHP\RouterInterface           $router
  */
-class Controller extends Component implements LogCategorizable
+class Controller extends \ManaPHP\Controller
 {
-    public function categorizeLog()
-    {
-        return basename(str_replace('\\', '.', static::class), 'Controller');
-    }
+
 }

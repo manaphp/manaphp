@@ -2,9 +2,6 @@
 
 namespace ManaPHP\Rest;
 
-use ManaPHP\Component;
-use ManaPHP\Logger\LogCategorizable;
-
 /**
  * Class ManaPHP\Rest\Controller
  *
@@ -22,18 +19,7 @@ use ManaPHP\Logger\LogCategorizable;
  * @property-read \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
  * @property-read \ManaPHP\RouterInterface                $router
  */
-abstract class Controller extends Component implements LogCategorizable
+abstract class Controller extends \ManaPHP\Controller
 {
-    public function categorizeLog()
-    {
-        return basename(str_replace('\\', '.', static::class), 'Controller');
-    }
 
-    /**
-     * @return array
-     */
-    public function getAcl()
-    {
-        return [];
-    }
 }

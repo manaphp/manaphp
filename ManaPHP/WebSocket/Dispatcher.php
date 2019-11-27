@@ -8,8 +8,8 @@ namespace ManaPHP\WebSocket;
 class Dispatcher extends \ManaPHP\Dispatcher
 {
     /**
-     * @param \ManaPHP\Rest\Controller $controller
-     * @param string                   $action
+     * @param \ManaPHP\Controller $controller
+     * @param string              $action
      *
      * @return mixed
      */

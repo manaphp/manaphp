@@ -89,7 +89,7 @@ interface DispatcherInterface
     public function getPath();
 
     /**
-     * @return \ManaPHP\Rest\Controller
+     * @return \ManaPHP\Controller
      */
     public function getControllerInstance();
 
