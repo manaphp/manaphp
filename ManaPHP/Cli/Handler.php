@@ -12,7 +12,6 @@ use ManaPHP\Helper\Str;
  * @package ManaPHP\Cli
  *
  * @property-read \ManaPHP\Cli\ConsoleInterface $console
- * @property-read \ManaPHP\InvokerInterface     $invoker
  * @property-read \ManaPHP\Cli\RequestInterface $request
  */
 class Handler extends Component implements HandlerInterface
@@ -172,6 +171,7 @@ class Handler extends Component implements HandlerInterface
             }
         }
 
+        /** @var \ManaPHP\Controller $controllerInstance */
         $controllerInstance = $this->_di->getShared($controllerClassName);
         if ($commandName === '') {
             $commands = $this->_getCommands($controllerClassName);
@@ -199,7 +199,7 @@ class Handler extends Component implements HandlerInterface
 
         $commandMethod = $commandName . 'Command';
         $this->request->completeShortNames($controllerInstance, $commandMethod);
-        $r = $this->invoker->invoke($controllerInstance, $commandMethod);
+        $r = $controllerInstance->invoke($commandName);
 
         return is_int($r) ? $r : 0;
     }

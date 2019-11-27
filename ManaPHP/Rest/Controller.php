@@ -7,9 +7,6 @@ namespace ManaPHP\Rest;
  *
  * @package controller
  *
- * @method bool beforeInvoke(string $action);
- * @method bool afterInvoke(string $action, mixed $r);
- *
  * @property-read \ManaPHP\Security\CaptchaInterface      $captcha
  * @property-read \ManaPHP\Http\RequestInterface          $request
  * @property-read \ManaPHP\Http\ResponseInterface         $response

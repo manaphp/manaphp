@@ -7,9 +7,6 @@ namespace ManaPHP\Mvc;
  *
  * @package controller
  *
- * @method mixed beforeInvoke(string $action);
- * @method mixed afterInvoke(string $action, mixed $r);
- *
  * @property-read \ManaPHP\ViewInterface                     $view
  * @property-read \ManaPHP\View\FlashInterface               $flash
  * @property-read \ManaPHP\View\FlashInterface               $flashSession

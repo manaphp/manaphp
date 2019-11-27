@@ -50,7 +50,6 @@ class DispatcherContext
  * @package dispatcher
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response
- * @property-read \ManaPHP\InvokerInterface       $invoker
  * @property-read \ManaPHP\DispatcherContext      $_context
  */
 class Dispatcher extends Component implements DispatcherInterface
@@ -213,7 +212,7 @@ class Dispatcher extends Component implements DispatcherInterface
         try {
             $context = $this->_context;
             $context->isInvoking = true;
-            $r = $this->invoker->invoke($controller, $actionMethod);
+            $r = $controller->invoke($action);
         } finally {
             $context->isInvoking = false;
         }

@@ -21,6 +21,6 @@ class Dispatcher extends \ManaPHP\Dispatcher
             return null;
         }
 
-        return $this->invoker->invoke($controller, $actionMethod);
+        return $controller->invoke($action);
     }
 }

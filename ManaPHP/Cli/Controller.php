@@ -19,6 +19,16 @@ use ReflectionMethod;
 abstract class Controller extends \ManaPHP\Controller
 {
     /**
+     * @param string $action
+     *
+     * @return mixed
+     */
+    public function invoke($action)
+    {
+        return $this->invoker->invoke($this, $action . 'Command');
+    }
+
+    /**
      * show this help information
      */
     public function helpCommand()
