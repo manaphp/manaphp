@@ -428,7 +428,7 @@ class Markdown extends Component implements EngineInterface
             $Element['attributes'] = ['class' => "language-$language"];
         }
 
-        $Block = [
+        return [
             'char' => $marker,
             'openerLength' => $openerLength,
             'element' => [
@@ -436,8 +436,6 @@ class Markdown extends Component implements EngineInterface
                 'element' => $Element,
             ],
         ];
-
-        return $Block;
     }
 
     protected function blockFencedCodeContinue($Line, $Block)
@@ -484,7 +482,7 @@ class Markdown extends Component implements EngineInterface
             return;
         }
 
-        $Block = [
+        return [
             'element' => [
                 'name' => 'h' . $level,
                 'handler' => [
@@ -494,8 +492,6 @@ class Markdown extends Component implements EngineInterface
                 ]
             ],
         ];
-
-        return $Block;
     }
 
     protected function blockList($Line, array $CurrentBlock = null)
@@ -655,7 +651,7 @@ class Markdown extends Component implements EngineInterface
     protected function blockQuote($Line)
     {
         if (preg_match('/^>[ ]?+(.*+)/', $Line['text'], $matches)) {
-            $Block = [
+            return [
                 'element' => [
                     'name' => 'blockquote',
                     'handler' => [
@@ -665,8 +661,6 @@ class Markdown extends Component implements EngineInterface
                     ]
                 ],
             ];
-
-            return $Block;
         }
     }
 
@@ -694,13 +688,11 @@ class Markdown extends Component implements EngineInterface
         $marker = $Line['text'][0];
 
         if (substr_count($Line['text'], $marker) >= 3 && rtrim($Line['text'], " $marker") === '') {
-            $Block = [
+            return [
                 'element' => [
                     'name' => 'hr',
                 ],
             ];
-
-            return $Block;
         }
     }
 
@@ -742,15 +734,13 @@ class Markdown extends Component implements EngineInterface
                 return;
             }
 
-            $Block = [
+            return [
                 'name' => $matches[1],
                 'element' => [
                     'rawHtml' => $Line['text'],
                     'autobreak' => true,
                 ],
             ];
-
-            return $Block;
         }
     }
 
@@ -1365,7 +1355,7 @@ class Markdown extends Component implements EngineInterface
         ) {
             $url = $matches[0][0];
 
-            $Inline = [
+            return [
                 'extent' => strlen($matches[0][0]),
                 'position' => $matches[0][1],
                 'element' => [
@@ -1376,8 +1366,6 @@ class Markdown extends Component implements EngineInterface
                     ],
                 ],
             ];
-
-            return $Inline;
         }
     }
 

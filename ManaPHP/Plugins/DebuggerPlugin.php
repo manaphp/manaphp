@@ -307,7 +307,8 @@ class DebuggerPlugin extends Plugin
 
         $loaded_extensions = get_loaded_extensions();
         sort($loaded_extensions, SORT_STRING | SORT_FLAG_CASE);
-        $r = [
+	
+        return [
             'mvc' => $this->router->getController() . '::' . $this->router->getAction(),
             'request_method' => $this->request->getServer('REQUEST_METHOD'),
             'request_url' => $this->request->getUrl(),
@@ -324,8 +325,6 @@ class DebuggerPlugin extends Plugin
             'loaded_ini' => php_ini_loaded_file(),
             'loaded_extensions' => implode(', ', $loaded_extensions)
         ];
-
-        return $r;
     }
 
     /**

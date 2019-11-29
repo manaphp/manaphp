@@ -127,14 +127,12 @@ class Mysql extends Connection
             }
         }
 
-        $r = [
+        return [
             Db::METADATA_ATTRIBUTES => $attributes,
             Db::METADATA_PRIMARY_KEY => $primaryKeys,
             Db::METADATA_AUTO_INCREMENT_KEY => $autoIncrementAttribute,
             Db::METADATA_INT_TYPE_ATTRIBUTES => $intTypes,
         ];
-
-        return $r;
     }
 
     /**
