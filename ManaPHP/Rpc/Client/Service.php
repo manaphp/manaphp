@@ -27,10 +27,14 @@ class Service extends \ManaPHP\Service
     /**
      * Service constructor.
      *
-     * @param array $options
+     * @param string|array $options
      */
     public function __construct($options = [])
     {
+        if (is_string($options)) {
+            $options = ['endpoint' => $options];
+        }
+
         parent::__construct($options);
 
         if (!$endpoint = $this->_endpoint) {

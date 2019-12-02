@@ -230,6 +230,9 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         }
 
         foreach ($services as $service => $params) {
+            if (is_string($params)) {
+                $params = [$params];
+            }
             $params['class'] = 'App\Services\\' . ucfirst($service);
             $this->_di->setShared($service, $params);
         }
