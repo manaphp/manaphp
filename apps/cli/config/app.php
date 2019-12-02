@@ -15,7 +15,9 @@ return [
         'redis' => env('REDIS_URL'),
         'logger' => ['level' => env('LOGGER_LEVEL', 'info')]
     ],
-    'services' => [],
+    'services' => [
+        'timeService' => ['endpoint' => 'http://localhost:85/time']
+    ],
     'plugins' => [
         'tracer',
     ]

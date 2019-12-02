@@ -220,30 +220,18 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
      */
     protected function _loadServices($services)
     {
-        $items = [];
         foreach (@scandir($this->alias->resolve('@app/Services')) ?: [] as $file) {
-            $items[basename($file, '.php')] = 1;
+            if (substr($file, -11) === 'Service.php') {
+                $service = lcfirst(basename($file, '.php'));
+                if (!isset($services[$service])) {
+                    $services[$service] = [];
+                }
+            }
         }
 
         foreach ($services as $service => $params) {
-            if (is_string($params)) {
-                $params = ['endpoint' => $params];
-            }
-
-            $class = 'App\Services\\' . ucfirst($service);
-            $params['interface'] = $class . 'Interface';
-            if (!isset($items[$class])) {
-                $class = 'ManaPHP\Service';
-            }
-
-            $this->_di->setShared($service, ['class' => $class, $params]);
-            unset($items[$class]);
-        }
-
-        foreach ($items as $item => $_) {
-            if (strpos($item, 'Interface') === false && strpos($item, 'Service') !== false) {
-                $this->_di->setShared(lcfirst($item), 'App\\Services\\' . $item);
-            }
+            $params['class'] = 'App\Services\\' . ucfirst($service);
+            $this->_di->setShared($service, $params);
         }
     }
 
