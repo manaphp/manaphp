@@ -52,6 +52,30 @@ if (!function_exists('json_stringify')) {
     }
 }
 
+if (!function_exists('xml_decode')) {
+    /**
+     * @param string $xml
+     *
+     * @return array|null
+     */
+    function xml_decode($xml)
+    {
+        if (($ret = @simplexml_load_string($xml, null, LIBXML_NOCDATA | LIBXML_NOBLANKS)) === false) {
+            return null;
+        }
+
+        $ret = (array)$ret;
+
+        foreach ($ret as $value) {
+            if (!is_scalar($value) && $value !== null) {
+                return json_decode(json_encode($ret), true);
+            }
+        }
+
+        return $ret;
+    }
+}
+
 if (!function_exists('di')) {
     /**
      * @param string $name
