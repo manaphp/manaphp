@@ -18,6 +18,8 @@ class RequestContext implements Stickyable
     public $_SERVER = [];
     public $_COOKIE = [];
     public $_FILES = [];
+
+    public $rawBody;
 }
 
 /**
@@ -36,6 +38,14 @@ class Request extends Component implements RequestInterface
     public function getGlobals()
     {
         return $this->_context;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRawBody()
+    {
+        return $this->_context->rawBody;
     }
 
     /**

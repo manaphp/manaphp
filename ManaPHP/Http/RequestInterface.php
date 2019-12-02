@@ -15,6 +15,11 @@ interface RequestInterface
     public function getGlobals();
 
     /**
+     * @return string
+     */
+    public function getRawBody();
+
+    /**
      * Gets a cookie
      *
      * @param string $name

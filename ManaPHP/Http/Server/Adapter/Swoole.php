@@ -147,13 +147,15 @@ class Swoole extends Server
 
         $_post = $request->post ?: [];
 
+        $globals = $this->request->getGlobals();
+
         if (!$_post && isset($_server['REQUEST_METHOD']) && !in_array($_server['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
-            $data = $request->rawContent();
+            $globals->rawBody = $rowBody = $request->rawContent();
 
             if (isset($_server['CONTENT_TYPE']) && strpos($_server['CONTENT_TYPE'], 'application/json') !== false) {
-                $_post = json_parse($data);
+                $_post = json_parse($rowBody);
             } else {
-                parse_str($data, $_post);
+                parse_str($rowBody, $_post);
             }
             if (!is_array($_post)) {
                 $_post = [];
@@ -161,8 +163,6 @@ class Swoole extends Server
         }
 
         $this->request->setRequestId($_server['HTTP_X_REQUEST_ID'] ?? null);
-
-        $globals = $this->request->getGlobals();
 
         $globals->_GET = $_get;
         $globals->_POST = $_post;
