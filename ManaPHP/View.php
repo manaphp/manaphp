@@ -245,6 +245,8 @@ class View extends Component implements ViewInterface
      */
     public function exists($template = null)
     {
+        static $cached = [];
+
         if ($template === null) {
             $action = $this->dispatcher->getAction();
         } elseif (strpos($template, '/') === false) {
@@ -277,7 +279,11 @@ class View extends Component implements ViewInterface
             }
         }
 
-        return $this->renderer->exists($template);
+        if (isset($cached[$template])) {
+            return $cached[$template];
+        } else {
+            return $cached[$template] = $this->renderer->exists($template);
+        }
     }
 
     /**
