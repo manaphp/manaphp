@@ -155,7 +155,7 @@ class Authorization extends Component implements AuthorizationInterface
         $controllers = $this->aclBuilder->getControllers();
 
         foreach ($controllers as $controller) {
-            /** @var \ManaPHP\Controller $controllerInstance */
+            /** @var \ManaPHP\Http\Controller $controllerInstance */
             $controllerInstance = $this->_di->get($controller);
             $acl = $controllerInstance->getAcl();
 
@@ -273,6 +273,7 @@ class Authorization extends Component implements AuthorizationInterface
         if ($permission && strpos($permission, '/') !== false) {
             list($controllerClassName, $action) = $this->inferControllerAction($permission);
         } else {
+            /** @var \ManaPHP\Http\Controller $controllerInstance */
             $controllerInstance = $this->dispatcher->getControllerInstance();
             $controllerClassName = get_class($controllerInstance);
             $action = $permission ? lcfirst(Str::camelize($permission)) : $this->dispatcher->getAction();

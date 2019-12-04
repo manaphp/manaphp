@@ -17,14 +17,6 @@ class Controller extends Component implements LogCategorizable
     }
 
     /**
-     * @return array
-     */
-    public function getAcl()
-    {
-        return [];
-    }
-
-    /**
      * @param string $action
      *
      * @return bool
