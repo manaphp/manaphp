@@ -203,7 +203,7 @@ class Dispatcher extends Component implements DispatcherInterface
 
         $this->fireEvent('request:authorize');
 
-        $this->fireEvent('request:validate', ['controller' => get_class($controller), 'action' => $action]);
+        $this->fireEvent('request:validate', ['controller' => $controller, 'action' => $action]);
 
         $this->fireEvent('request:ready');
 

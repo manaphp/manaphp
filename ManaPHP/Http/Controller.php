@@ -14,7 +14,7 @@ namespace ManaPHP\Http;
  * @property-read \ManaPHP\Message\QueueInterface         $messageQueue
  * @property-read \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
  */
-class Controller extends \ManaPHP\Controller
+abstract class Controller extends \ManaPHP\Controller
 {
     /**
      * @return array
@@ -23,4 +23,9 @@ class Controller extends \ManaPHP\Controller
     {
         return [];
     }
+
+    /**
+     * @return array
+     */
+    abstract public function getVerbs();
 }

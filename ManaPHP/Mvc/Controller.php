@@ -26,4 +26,22 @@ abstract class Controller extends \ManaPHP\Http\Controller
     {
         return ['*' => '@index'];
     }
+
+    public function getVerbs()
+    {
+        return [
+            'index' => 'GET',
+            'list' => 'GET',
+            'detail' => 'GET',
+            'create' => 'POST',
+            'update' => 'POST',
+            'edit' => 'POST',
+            'save' => 'POST',
+            'delete' => ['DELETE', 'POST'],
+            'enable' => 'POST',
+            'disable' => 'POST',
+            'active' => 'POST',
+            'inactive' => 'POST',
+        ];
+    }
 }
