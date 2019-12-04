@@ -52,14 +52,12 @@ class RoleController extends Controller
 
     public function deleteAction()
     {
-        if (!$this->request->isGet()) {
-            $role = Role::get(input('role_id'));
+        $role = Role::get(input('role_id'));
 
-            if (AdminRole::exists(['role_id' => $role->role_id])) {
-                return '删除失败: 有用户绑定到此角色';
-            }
-
-            return $role->delete();
+        if (AdminRole::exists(['role_id' => $role->role_id])) {
+            return '删除失败: 有用户绑定到此角色';
         }
+
+        return $role->delete();
     }
 }
