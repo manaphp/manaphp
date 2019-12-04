@@ -496,4 +496,13 @@ abstract class Logger extends Component implements LoggerInterface
     {
         return $this->log(self::LEVEL_FATAL, $message, $category);
     }
+
+    public function dump()
+    {
+        $data = parent::dump();
+
+        unset($data['_logs'], $data['_last_write']);
+
+        return $data;
+    }
 }

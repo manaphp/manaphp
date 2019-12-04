@@ -286,6 +286,7 @@ class Renderer extends Component implements RendererInterface
         foreach ($data['_context']['sections'] as $k => $v) {
             $data['_context']['sections'][$k] = '***';
         }
+        $data['_files'] = ['***'];
 
         return $data;
     }

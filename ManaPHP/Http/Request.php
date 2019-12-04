@@ -513,4 +513,17 @@ class Request extends Component implements RequestInterface
 
         $this->_context->request_id = $request_id ?: 'aa' . bin2hex(random_bytes(15));
     }
+
+    public function dump()
+    {
+        $data = parent::dump();
+
+        if (DIRECTORY_SEPARATOR === '\\') {
+            foreach (['PATH', 'SystemRoot', 'COMSPEC', 'PATHEXT', 'WINDIR'] as $name) {
+                unset($data['_context']['_SERVER'][$name]);
+            }
+        }
+
+        return $data;
+    }
 }
