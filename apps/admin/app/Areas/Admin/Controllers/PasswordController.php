@@ -27,7 +27,7 @@ class PasswordController extends Controller
                 return $this->response->setJsonError('账号不存在或账号与邮箱不匹配');
             }
 
-            $token = jwt_encode(['admin_name' => $admin_name, 'scope' => 'admin.password.forget'], 600);
+            $token = jwt_encode(['admin_name' => $admin_name], 600, 'admin.password.forget');
 
             $this->mailer->compose()
                 ->setSubject($this->configure->name . '-重置密码邮件')
