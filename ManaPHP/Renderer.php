@@ -283,9 +283,12 @@ class Renderer extends Component implements RendererInterface
     {
         $data = parent::dump();
 
-        foreach ($data['_context']['sections'] as $k => $v) {
-            $data['_context']['sections'][$k] = '***';
+        if (isset($data['_context'])) {
+            foreach ($data['_context']['sections'] as $k => $v) {
+                $data['_context']['sections'][$k] = '***';
+            }
         }
+
         $data['_files'] = ['***'];
 
         return $data;
