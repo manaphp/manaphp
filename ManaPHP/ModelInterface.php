@@ -186,6 +186,13 @@ interface ModelInterface
     /**
      * @param array $fields
      *
+     * @return static
+     */
+    public static function rGet($fields = null);
+
+    /**
+     * @param array $fields
+     *
      * @return static|null
      */
     public static function viewOrFirst($fields = null);
@@ -353,6 +360,13 @@ interface ModelInterface
     /**
      * @param array $data
      *
+     * @return static
+     */
+    public static function rCreate($data = null);
+
+    /**
+     * @param array $data
+     *
      * @return static|null
      */
     public static function viewOrCreate($data = null);
@@ -364,6 +378,13 @@ interface ModelInterface
      * @return static
      */
     public function update();
+
+    /**
+     * @param array $data
+     *
+     * @return static
+     */
+    public static function rUpdate($data = null);
 
     /**
      * @param array $data
@@ -386,6 +407,11 @@ interface ModelInterface
      * @return static
      */
     public function delete();
+
+    /**
+     * @return static|null
+     */
+    public static function rDelete();
 
     /**
      * @return static|null

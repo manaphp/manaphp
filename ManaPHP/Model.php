@@ -437,18 +437,24 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * @param array $fields =get_object_vars(new static)
      *
+     * @return static
+     */
+    public static function rGet($fields = null)
+    {
+        $request = self::_getRequest();
+
+        $sample = static::sample();
+        return static::get($request->getId($sample->getPrimaryKey()));
+    }
+
+    /**
+     * @param array $fields =get_object_vars(new static)
+     *
      * @return static|null
      */
     public static function viewOrFirst($fields = null)
     {
-        $request = self::_getRequest();
-
-        if (!$request->isAjax()) {
-            return null;
-        }
-
-        $sample = static::sample();
-        return static::get($request->getId($sample->getPrimaryKey()));
+        return self::_getRequest()->isAjax() ? static::rGet($fields) : null;
     }
 
     /**
@@ -842,15 +848,11 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * @param array $data =get_object_vars(new static)
      *
-     * @return static|null
+     * @return static
      */
-    public static function viewOrCreate($data = null)
+    public static function rCreate($data = null)
     {
         $request = self::_getRequest();
-
-        if (!$request->isPost()) {
-            return null;
-        }
 
         $instance = new static();
 
@@ -886,13 +888,19 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      *
      * @return static|null
      */
-    public static function viewOrUpdate($data = null)
+    public static function viewOrCreate($data = null)
+    {
+        return self::_getRequest()->isPost() ? static::rCreate($data) : null;
+    }
+
+    /**
+     * @param array $data =get_object_vars(new static)
+     *
+     * @return static
+     */
+    public static function rUpdate($data = null)
     {
         $request = self::_getRequest();
-
-        if ($request->isGet()) {
-            return null;
-        }
 
         $model = new static();
 
@@ -923,6 +931,16 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         }
 
         return $instance->update();
+    }
+
+    /**
+     * @param array $data =get_object_vars(new static)
+     *
+     * @return static|null
+     */
+    public static function viewOrUpdate($data = null)
+    {
+        return self::_getRequest()->isGet() ? null : static::rUpdate($data);
     }
 
     /**
@@ -962,20 +980,26 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
+     * @return static
+     */
+    public static function rDelete()
+    {
+        $request = self::_getRequest();
+
+        $sample = static::sample();
+        $primaryKey = $sample->getPrimaryKey();
+
+        return static::get($request->getId($primaryKey))->delete();
+    }
+
+    /**
      * @return static|null
      */
     public static function viewOrDelete()
     {
         $request = self::_getRequest();
 
-        if (!$request->isDelete() && !$request->isPost()) {
-            return null;
-        }
-
-        $sample = static::sample();
-        $primaryKey = $sample->getPrimaryKey();
-
-        return static::get($request->getId($primaryKey))->delete();
+        return ($request->isDelete() || $request->isPost()) ? static::rDelete() : null;
     }
 
     /**
