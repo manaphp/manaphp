@@ -53,6 +53,13 @@ interface ViewInterface
     public function hasVar($name);
 
     /**
+     * @param string $template
+     *
+     * @return string|false
+     */
+    public function exists($template = null);
+
+    /**
      * Executes render process from dispatching data
      *
      * @param string $template
