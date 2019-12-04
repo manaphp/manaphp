@@ -108,7 +108,7 @@ class PermissionController extends Controller
 
     public function editAction()
     {
-        return Permission::viewOrUpdate();
+        return Permission::rUpdate();
     }
 
     public function deleteAction()

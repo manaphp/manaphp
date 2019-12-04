@@ -38,28 +38,28 @@ class AdminController extends Controller
             return '不能锁定自己';
         }
 
-        return Admin::viewOrUpdate(['status' => Admin::STATUS_LOCKED]);
+        return Admin::rUpdate(['status' => Admin::STATUS_LOCKED]);
     }
 
     public function activeAction()
     {
-        return Admin::viewOrUpdate(['status' => Admin::STATUS_ACTIVE]);
+        return Admin::rUpdate(['status' => Admin::STATUS_ACTIVE]);
     }
 
     public function createAction($role_id)
     {
-        if ($admin = Admin::viewOrCreate()) {
-            if ($role_id) {
-                $role = Role::get($role_id);
+        $admin = Admin::rCreate();
+		
+        if ($role_id) {
+            $role = Role::get($role_id);
 
-                $adminRole = new AdminRole();
+            $adminRole = new AdminRole();
 
-                $adminRole->admin_id = $admin->admin_id;
-                $adminRole->admin_name = $admin->admin_name;
-                $adminRole->role_id = $role->role_id;
-                $adminRole->role_name = $role->role_name;
-                $adminRole->create();
-            }
+            $adminRole->admin_id = $admin->admin_id;
+            $adminRole->admin_name = $admin->admin_name;
+            $adminRole->role_id = $role->role_id;
+            $adminRole->role_name = $role->role_name;
+            $adminRole->create();
         }
 
         return $admin;
@@ -67,23 +67,23 @@ class AdminController extends Controller
 
     public function editAction($role_ids = [])
     {
-        if ($admin = Admin::viewOrUpdate()) {
-            $old_role_ids = AdminRole::values('role_id', ['admin_id' => $admin->admin_id]);
-            foreach (array_diff($old_role_ids, $role_ids) as $role_id) {
-                AdminRole::firstOrFail(['admin_id' => $admin->admin_id, 'role_id' => $role_id])->delete();
-            }
+        $admin = Admin::rUpdate();
+		
+        $old_role_ids = AdminRole::values('role_id', ['admin_id' => $admin->admin_id]);
+        foreach (array_diff($old_role_ids, $role_ids) as $role_id) {
+            AdminRole::firstOrFail(['admin_id' => $admin->admin_id, 'role_id' => $role_id])->delete();
+        }
 
-            foreach (array_diff($role_ids, $old_role_ids) as $role_id) {
-                $role = Role::get($role_id);
-                $adminRole = new AdminRole();
+        foreach (array_diff($role_ids, $old_role_ids) as $role_id) {
+            $role = Role::get($role_id);
+            $adminRole = new AdminRole();
 
-                $adminRole->admin_id = $admin->admin_id;
-                $adminRole->admin_name = $admin->admin_name;
-                $adminRole->role_id = $role->role_id;
-                $adminRole->role_name = $role->role_name;
+            $adminRole->admin_id = $admin->admin_id;
+            $adminRole->admin_name = $admin->admin_name;
+            $adminRole->role_id = $role->role_id;
+            $adminRole->role_name = $role->role_name;
 
-                $adminRole->create();
-            }
+            $adminRole->create();
         }
 
         return $admin;

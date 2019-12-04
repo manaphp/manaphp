@@ -132,24 +132,6 @@ interface ModelInterface
     public static function paginate($filters = [], $options = null, $fields = null);
 
     /**
-     * @param array $filters
-     * @param       $options
-     * @param       $fields
-     *
-     * @return null|array
-     */
-    public static function viewOrAll($filters, $options = null, $fields = null);
-
-    /**
-     * @param array $filters
-     * @param array $options
-     * @param array $fields
-     *
-     * @return \ManaPHP\Paginator
-     */
-    public static function ViewOrPaginate($filters = [], $options = null, $fields = null);
-
-    /**
      * @param string|array $fields
      * @param array        $filters
      *
@@ -189,13 +171,6 @@ interface ModelInterface
      * @return static
      */
     public static function rGet($fields = null);
-
-    /**
-     * @param array $fields
-     *
-     * @return static|null
-     */
-    public static function viewOrFirst($fields = null);
 
     /**
      * Allows to query the last record that match the specified conditions
@@ -365,13 +340,6 @@ interface ModelInterface
     public static function rCreate($data = null);
 
     /**
-     * @param array $data
-     *
-     * @return static|null
-     */
-    public static function viewOrCreate($data = null);
-
-    /**
      * Updates a model instance. If the instance does n't exist in the persistence it will throw an exception
      * Returning true on success or false otherwise.
      *
@@ -385,13 +353,6 @@ interface ModelInterface
      * @return static
      */
     public static function rUpdate($data = null);
-
-    /**
-     * @param array $data
-     *
-     * @return static|null
-     */
-    public static function viewOrUpdate($data = null);
 
     /**
      * @param array $fieldValues
@@ -412,11 +373,6 @@ interface ModelInterface
      * @return static|null
      */
     public static function rDelete();
-
-    /**
-     * @return static|null
-     */
-    public static function viewOrDelete();
 
     /**
      * @param array $filters

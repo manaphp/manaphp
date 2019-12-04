@@ -448,48 +448,6 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param array $fields =get_object_vars(new static)
-     *
-     * @return static|null
-     */
-    public static function viewOrFirst($fields = null)
-    {
-        return self::_getRequest()->isAjax() ? static::rGet($fields) : null;
-    }
-
-    /**
-     * @param array $filters =get_object_vars(new static)
-     * @param array $options =['order'=>get_object_vars(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC], 'index'=>get_object_vars(new static)]
-     * @param array $fields =get_object_vars(new static)
-     *
-     * @return null|array
-     */
-    public static function viewOrAll($filters, $options = null, $fields = null)
-    {
-        if (!self::_getRequest()->isAjax()) {
-            return null;
-        }
-
-        return static::select($fields)->search($filters)->options($options)->fetch(true);
-    }
-
-    /**
-     * @param array $filters =get_object_vars(new static)
-     * @param array $options =['order'=>get_object_vars(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC], 'index'=>get_object_vars(new static)]
-     * @param array $fields =get_object_vars(new static)
-     *
-     * @return \ManaPHP\Paginator
-     */
-    public static function viewOrPaginate($filters = [], $options = null, $fields = null)
-    {
-        if (!self::_getRequest()->isAjax()) {
-            return null;
-        }
-
-        return static::paginate($filters, $options, $fields);
-    }
-
-    /**
      * Allows to query the last record that match the specified conditions
      *
      * @param array $filters =get_object_vars(new static)
@@ -886,16 +844,6 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * @param array $data =get_object_vars(new static)
      *
-     * @return static|null
-     */
-    public static function viewOrCreate($data = null)
-    {
-        return self::_getRequest()->isPost() ? static::rCreate($data) : null;
-    }
-
-    /**
-     * @param array $data =get_object_vars(new static)
-     *
      * @return static
      */
     public static function rUpdate($data = null)
@@ -931,16 +879,6 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         }
 
         return $instance->update();
-    }
-
-    /**
-     * @param array $data =get_object_vars(new static)
-     *
-     * @return static|null
-     */
-    public static function viewOrUpdate($data = null)
-    {
-        return self::_getRequest()->isGet() ? null : static::rUpdate($data);
     }
 
     /**
@@ -990,16 +928,6 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         $primaryKey = $sample->getPrimaryKey();
 
         return static::get($request->getId($primaryKey))->delete();
-    }
-
-    /**
-     * @return static|null
-     */
-    public static function viewOrDelete()
-    {
-        $request = self::_getRequest();
-
-        return ($request->isDelete() || $request->isPost()) ? static::rDelete() : null;
     }
 
     /**

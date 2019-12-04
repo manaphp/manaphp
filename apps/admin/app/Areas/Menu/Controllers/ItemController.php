@@ -17,16 +17,16 @@ class ItemController extends Controller
 
     public function createAction()
     {
-        return Item::viewOrCreate();
+        return Item::rCreate();
     }
 
     public function editAction()
     {
-        return Item::viewOrUpdate();
+        return Item::rUpdate();
     }
 
     public function deleteAction()
     {
-        return Item::viewOrDelete();
+        return Item::rDelete();
     }
 }
