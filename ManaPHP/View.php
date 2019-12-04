@@ -192,7 +192,16 @@ class View extends Component implements ViewInterface
             $context->vars = $vars;
         }
 
-        if (!$template) {
+        if ($template === null) {
+            $action = $this->dispatcher->getAction();
+        } elseif (strpos($template, '/') === false) {
+            $action = $template;
+            $template = null;
+        } else {
+            $action = null;
+        }
+
+        if ($template === null) {
             $area = $this->dispatcher->getArea();
             $controller = $this->dispatcher->getController();
 
@@ -206,7 +215,6 @@ class View extends Component implements ViewInterface
                 $this->_dirs[$dir] = LocalFS::dirExists($dir);
             }
 
-            $action = $this->dispatcher->getAction();
             if ($this->_dirs[$dir]) {
                 $template = $dir . '/' . ucfirst($action);
             } elseif ($action === 'index') {
@@ -237,7 +245,16 @@ class View extends Component implements ViewInterface
      */
     public function exists($template = null)
     {
-        if (!$template) {
+        if ($template === null) {
+            $action = $this->dispatcher->getAction();
+        } elseif (strpos($template, '/') === false) {
+            $action = $template;
+            $template = null;
+        } else {
+            $action = null;
+        }
+
+        if ($template === null) {
             $area = $this->dispatcher->getArea();
             $controller = $this->dispatcher->getController();
 
@@ -251,7 +268,6 @@ class View extends Component implements ViewInterface
                 $this->_dirs[$dir] = LocalFS::dirExists($dir);
             }
 
-            $action = $this->dispatcher->getAction();
             if ($this->_dirs[$dir]) {
                 $template = $dir . '/' . ucfirst($action);
             } elseif ($action === 'index') {
