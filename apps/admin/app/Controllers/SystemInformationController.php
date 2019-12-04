@@ -2,8 +2,8 @@
 
 namespace App\Controllers;
 
-use ManaPHP\Version;
 use ManaPHP\Mvc\Controller;
+use ManaPHP\Version;
 
 class SystemInformationController extends Controller
 {

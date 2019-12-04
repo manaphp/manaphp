@@ -27,33 +27,30 @@ class RolePermissionController extends Controller
 
     public function saveAction()
     {
-        if ($this->request->isPost()) {
+        $role_id = input('role_id');
+        $permission_ids = input('permission_ids', []);
 
-            $role_id = input('role_id');
-            $permission_ids = input('permission_ids', []);
+        $old_permissions = RolePermission::values('permission_id', ['role_id' => $role_id]);
 
-            $old_permissions = RolePermission::values('permission_id', ['role_id' => $role_id]);
+        RolePermission::deleteAll(['role_id' => $role_id, 'permission_id' => array_values(array_diff($old_permissions, $permission_ids))]);
 
-            RolePermission::deleteAll(['role_id' => $role_id, 'permission_id' => array_values(array_diff($old_permissions, $permission_ids))]);
-
-            foreach (array_diff($permission_ids, $old_permissions) as $permission_id) {
-                $rolePermission = new RolePermission();
-                $rolePermission->role_id = $role_id;
-                $rolePermission->permission_id = $permission_id;
-                $rolePermission->create();
-            }
-
-            $role = Role::get($role_id);
-
-            $explicit_permissions = Permission::values('path', ['permission_id' => $permission_ids]);
-            $paths = $this->authorization->buildAllowed($role->role_name, $explicit_permissions);
-            sort($paths);
-
-            $role->permissions = ',' . implode(',', $paths) . ',';
-            $role->update();
-
-            return 0;
+        foreach (array_diff($permission_ids, $old_permissions) as $permission_id) {
+            $rolePermission = new RolePermission();
+            $rolePermission->role_id = $role_id;
+            $rolePermission->permission_id = $permission_id;
+            $rolePermission->create();
         }
+
+        $role = Role::get($role_id);
+
+        $explicit_permissions = Permission::values('path', ['permission_id' => $permission_ids]);
+        $paths = $this->authorization->buildAllowed($role->role_name, $explicit_permissions);
+        sort($paths);
+
+        $role->permissions = ',' . implode(',', $paths) . ',';
+        $role->update();
+
+        return 0;
     }
 
     public function editAction()

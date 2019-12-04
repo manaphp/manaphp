@@ -18,7 +18,7 @@ class GroupController extends Controller
 
     public function listAction()
     {
-        return $this->request->isAjax() ? Group::all([], null, ['group_id', 'group_name']) : null;
+        return Group::all([], null, ['group_id', 'group_name']);
     }
 
     public function createAction()

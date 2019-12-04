@@ -23,11 +23,9 @@ class LoginLogController extends Controller
 
     public function latestAction()
     {
-        return $this->request->isAjax()
-            ? AdminLoginLog::select(['login_id', 'client_udid', 'user_agent', 'client_ip', 'created_time'])
-                ->orderBy(['login_id' => SORT_DESC])
-                ->where(['admin_id' => $this->identity->getId()])
-                ->paginate()
-            : null;
+        return AdminLoginLog::select(['login_id', 'client_udid', 'user_agent', 'client_ip', 'created_time'])
+            ->orderBy(['login_id' => SORT_DESC])
+            ->where(['admin_id' => $this->identity->getId()])
+            ->paginate();
     }
 }

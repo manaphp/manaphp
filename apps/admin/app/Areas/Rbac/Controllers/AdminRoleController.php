@@ -22,7 +22,7 @@ class AdminRoleController extends Controller
 
     public function detailAction()
     {
-        return $this->request->isAjax() ? AdminRole::all(['admin_id' => input('admin_id')]) : null;
+        return AdminRole::all(['admin_id' => input('admin_id')]);
     }
 
     public function editAction()

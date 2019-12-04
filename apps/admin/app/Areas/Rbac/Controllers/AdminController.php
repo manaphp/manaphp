@@ -49,7 +49,7 @@ class AdminController extends Controller
     public function createAction($role_id)
     {
         $admin = Admin::rCreate();
-		
+
         if ($role_id) {
             $role = Role::get($role_id);
 
@@ -68,7 +68,7 @@ class AdminController extends Controller
     public function editAction($role_ids = [])
     {
         $admin = Admin::rUpdate();
-		
+
         $old_role_ids = AdminRole::values('role_id', ['admin_id' => $admin->admin_id]);
         foreach (array_diff($old_role_ids, $role_ids) as $role_id) {
             AdminRole::firstOrFail(['admin_id' => $admin->admin_id, 'role_id' => $role_id])->delete();

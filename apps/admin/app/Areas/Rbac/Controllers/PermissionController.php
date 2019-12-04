@@ -5,8 +5,8 @@ namespace App\Areas\Rbac\Controllers;
 use App\Areas\Rbac\Models\Permission;
 use App\Areas\Rbac\Models\Role;
 use App\Areas\Rbac\Models\RolePermission;
-use ManaPHP\Mvc\Controller;
 use ManaPHP\Helper\Str;
+use ManaPHP\Mvc\Controller;
 
 /**
  * Class RbacPermissionController
@@ -26,7 +26,7 @@ class PermissionController extends Controller
 
     public function listAction()
     {
-        return $this->request->isAjax() ? Permission::all([], [], ['permission_id', 'path', 'display_name']) : null;
+        return Permission::all([], [], ['permission_id', 'path', 'display_name']);
     }
 
     public function rebuildAction()

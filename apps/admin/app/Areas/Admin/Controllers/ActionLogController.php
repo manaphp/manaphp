@@ -34,12 +34,10 @@ class ActionLogController extends Controller
 
     public function latestAction()
     {
-        return $this->request->isAjax()
-            ? AdminActionLog::select(['id', 'client_ip', 'method', 'path', 'url', 'created_time'])
-                ->where(['admin_id' => $this->identity->getId()])
-                ->search(['path', 'client_ip', 'created_time@='])
-                ->orderBy(['id' => SORT_DESC])
-                ->paginate()
-            : null;
+        return AdminActionLog::select(['id', 'client_ip', 'method', 'path', 'url', 'created_time'])
+            ->where(['admin_id' => $this->identity->getId()])
+            ->search(['path', 'client_ip', 'created_time@='])
+            ->orderBy(['id' => SORT_DESC])
+            ->paginate();
     }
 }
