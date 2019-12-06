@@ -460,13 +460,11 @@ interface QueryInterface
     public function update($fieldValues);
 
     /**
-     * @param mixed    $value
-     * @param callable $true_call
-     * @param callable $false_call
+     * @param callable $call
      *
      * @return static
      */
-    public function when($value, $true_call, $false_call = null);
+    public function when($call);
 
     /**
      * @param string     $field =key(get_object_vars(new Model))
