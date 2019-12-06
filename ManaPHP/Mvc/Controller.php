@@ -52,6 +52,8 @@ abstract class Controller extends \ManaPHP\Http\Controller
             if (method_exists($this, $view)) {
                 if (is_array($r = $this->invoker->invoke($this, $view))) {
                     return $this->view->setVars($r);
+                } elseif ($r === null) {
+                    return $this->view;
                 } else {
                     return $r;
                 }
