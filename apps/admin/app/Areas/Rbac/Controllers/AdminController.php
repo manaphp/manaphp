@@ -6,23 +6,23 @@ use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
 use App\Models\Admin;
 use ManaPHP\Mvc\Controller;
+use ManaPHP\QueryInterface;
 
 class AdminController extends Controller
 {
     public function indexAction()
     {
-        $builder = Admin::select(['admin_id', 'admin_name', 'status', 'login_ip', 'login_time', 'email', 'updator_name', 'creator_name', 'created_time', 'updated_time'])
+        return Admin::select(['admin_id', 'admin_name', 'status', 'login_ip', 'login_time', 'email', 'updator_name', 'creator_name', 'created_time', 'updated_time'])
             ->orderBy(['admin_id' => SORT_DESC])
-            ->with(['roles' => 'role_id, display_name']);
-
-        $keyword = input('keyword', '');
-        if (strpos($keyword, '@') !== false) {
-            $builder->whereContains('email', $keyword);
-        } else {
-            $builder->whereContains(['admin_name', 'email'], $keyword);
-        }
-
-        return $builder->paginate();
+            ->with(['roles' => 'role_id, display_name'])
+            ->when(static function (QueryInterface $query) {
+                $keyword = input('keyword', '');
+                if (strpos($keyword, '@') !== false) {
+                    $query->whereContains('email', $keyword);
+                } else {
+                    $query->whereContains(['admin_name', 'email'], $keyword);
+                }
+            })->paginate();
     }
 
     public function listAction()
