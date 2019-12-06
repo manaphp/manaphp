@@ -3,8 +3,15 @@ namespace ManaPHP\Plugins;
 
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\MethodNotAllowedHttpException;
+use ManaPHP\Mvc\Controller;
 use ManaPHP\Plugin;
 
+/**
+ * Class VerbsPlugin
+ * @package ManaPHP\Plugins
+ *
+ * @property-read \ManaPHP\ViewInterface $view
+ */
 class VerbsPlugin extends Plugin
 {
     /**
@@ -40,16 +47,17 @@ class VerbsPlugin extends Plugin
 
         $request_method = $this->request->getMethod();
 
-        if (is_string($verbs)) {
-            if ($request_method === $verbs) {
-                return;
-            }
-            throw new MethodNotAllowedHttpException([$verbs]);
-        } else {
-            if (in_array($request_method, $verbs, true)) {
-                return;
-            }
-            throw new MethodNotAllowedHttpException($verbs);
+        if (is_string($verbs) ? $request_method === $verbs : in_array($request_method, $verbs, true)) {
+            return;
         }
+
+        if ($request_method === 'GET'
+            && $controller instanceof Controller
+            && !$this->request->isAjax()
+            && $this->view->exists()) {
+            return;
+        }
+
+        throw new MethodNotAllowedHttpException(is_string($verbs) ? [$verbs] : $verbs);
     }
 }
