@@ -307,7 +307,7 @@ class DebuggerPlugin extends Plugin
 
         $loaded_extensions = get_loaded_extensions();
         sort($loaded_extensions, SORT_STRING | SORT_FLAG_CASE);
-	
+
         return [
             'mvc' => $this->router->getController() . '::' . $this->router->getAction(),
             'request_method' => $this->request->getServer('REQUEST_METHOD'),

@@ -99,7 +99,7 @@ class Renderer extends Component implements RendererInterface
                             trigger_error("File name ($realPath) case mismatch for $tmp", E_USER_ERROR);
                         }
                     }
-					
+
                     $file = $tmp;
                     break;
                 }
