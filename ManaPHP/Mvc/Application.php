@@ -19,6 +19,7 @@ class Application extends \ManaPHP\Http\Application
         if (!$this->_di) {
             $this->_di = new Factory();
         }
+
         return $this->_di;
     }
 
@@ -35,10 +36,13 @@ class Application extends \ManaPHP\Http\Application
             $this->fireEvent('request:authenticate');
 
             $actionReturnValue = $this->router->dispatch();
-            if ($actionReturnValue === null || $actionReturnValue instanceof View) {
-                $this->response->setContent($this->view->render());
+
+            if ($actionReturnValue === null) {
+                $this->response->setJsonOk();
             } elseif ($actionReturnValue instanceof Response) {
                 null;
+            } elseif ($actionReturnValue instanceof View) {
+                $this->response->setContent($this->view->render());
             } elseif (is_string($actionReturnValue)) {
                 $this->response->setJsonError($actionReturnValue);
             } else {
