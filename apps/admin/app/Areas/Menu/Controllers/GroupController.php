@@ -9,11 +9,9 @@ class GroupController extends Controller
 {
     public function indexAction()
     {
-        return $this->request->isAjax()
-            ? Group::search(['group_id'])
-                ->orderBy(['display_order' => SORT_DESC, 'group_id' => SORT_ASC])
-                ->fetch(true)
-            : null;
+        return Group::search(['group_id'])
+            ->orderBy(['display_order' => SORT_DESC, 'group_id' => SORT_ASC])
+            ->fetch(true);
     }
 
     public function listAction()

@@ -7,9 +7,7 @@ class BucketController extends Controller
 {
     public function indexAction()
     {
-        if ($this->request->isAjax()) {
-            return $this->bosClient->listBuckets();
-        }
+        return $this->bosClient->listBuckets();
     }
 
     public function createAction($bucket_name, $base_url)

@@ -8,11 +8,9 @@ class ItemController extends Controller
 {
     public function indexAction()
     {
-        return $this->request->isAjax()
-            ? Item::search(['group_id'])
-                ->orderBy(['group_id' => SORT_ASC, 'display_order' => SORT_DESC, 'item_id' => SORT_ASC])
-                ->fetch(true)
-            : null;
+        return Item::search(['group_id'])
+            ->orderBy(['group_id' => SORT_ASC, 'display_order' => SORT_DESC, 'item_id' => SORT_ASC])
+            ->fetch(true);
     }
 
     public function createAction()

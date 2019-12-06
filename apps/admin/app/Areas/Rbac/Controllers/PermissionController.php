@@ -19,9 +19,7 @@ class PermissionController extends Controller
 {
     public function indexAction()
     {
-        return $this->request->isAjax()
-            ? Permission::all(['permission_id?' => input('permission_id', '')], ['with' => ['roles' => 'role_id, role_name, display_name'], 'order' => 'permission_id DESC'])
-            : null;
+        return Permission::all(['permission_id?' => input('permission_id', '')], ['with' => ['roles' => 'role_id, role_name, display_name'], 'order' => 'permission_id DESC']);
     }
 
     public function listAction()

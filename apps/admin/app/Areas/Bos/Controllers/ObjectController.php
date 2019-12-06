@@ -12,16 +12,14 @@ class ObjectController extends Controller
 
     public function indexAction($bucket_name = '')
     {
-        if ($this->request->isAjax()) {
-            $filters = [];
-			
-            $filters['prefix'] = input('prefix', '');
-            $filters['extension'] = input('extension', '');
-            $filters['page'] = input('page', 1);
-            $filters['size'] = input('size', 10);
-			
-            return $this->bosClient->listObjects($bucket_name, $filters);
-        }
+        $filters = [];
+
+        $filters['prefix'] = input('prefix', '');
+        $filters['extension'] = input('extension', '');
+        $filters['page'] = input('page', 1);
+        $filters['size'] = input('size', 10);
+
+        return $this->bosClient->listObjects($bucket_name, $filters);
     }
 
     public function getUploadTokenAction($bucket_name, $key, $insert_only)

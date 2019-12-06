@@ -18,9 +18,7 @@ class AccountController extends Controller
 
     public function registerAction()
     {
-        if ($this->request->isAjax()) {
-            $this->captcha->verify();
-            return Admin::rCreate();
-        }
+        $this->captcha->verify();
+        return Admin::rCreate();
     }
 }

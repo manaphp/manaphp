@@ -10,13 +10,11 @@ class RoleController extends Controller
 {
     public function indexAction()
     {
-        return $this->request->isAjax()
-            ? Role::select()
-                ->whereContains('role_name', input('keyword', ''))
-                ->whereNotIn('role_name', ['guest', 'user', 'admin'])
-                ->orderBy(['role_id' => SORT_DESC])
-                ->paginate()
-            : null;
+        return Role::select()
+            ->whereContains('role_name', input('keyword', ''))
+            ->whereNotIn('role_name', ['guest', 'user', 'admin'])
+            ->orderBy(['role_id' => SORT_DESC])
+            ->paginate();
     }
 
     public function listAction()

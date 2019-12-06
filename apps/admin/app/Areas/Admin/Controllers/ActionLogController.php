@@ -13,12 +13,10 @@ class ActionLogController extends Controller
 
     public function indexAction()
     {
-        return $this->request->isAjax()
-            ? AdminActionLog::select(['id', 'admin_name', 'client_ip', 'client_udid', 'method', 'path', 'url', 'created_time'])
-                ->search(['admin_name', 'path', 'client_ip', 'created_time@='])
-                ->orderBy(['id' => SORT_DESC])
-                ->paginate()
-            : null;
+        return AdminActionLog::select(['id', 'admin_name', 'client_ip', 'client_udid', 'method', 'path', 'url', 'created_time'])
+            ->search(['admin_name', 'path', 'client_ip', 'created_time@='])
+            ->orderBy(['id' => SORT_DESC])
+            ->paginate();
     }
 
     public function detailAction()
