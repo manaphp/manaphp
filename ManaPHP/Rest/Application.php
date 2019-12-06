@@ -30,7 +30,10 @@ class Application extends \ManaPHP\Http\Application
             $this->fireEvent('request:authenticate');
 
             $actionReturnValue = $this->router->dispatch();
-            if ($actionReturnValue === null || $actionReturnValue instanceof Response) {
+
+            if ($actionReturnValue === null) {
+                $this->response->setJsonOk();
+            } elseif ($actionReturnValue instanceof Response) {
                 null;
             } elseif (is_string($actionReturnValue)) {
                 $this->response->setJsonError($actionReturnValue);
@@ -43,13 +46,7 @@ class Application extends \ManaPHP\Http\Application
             $this->handleException($throwable);
         }
 
-        $response = $this->response->getContext();
-
-        if ($response->content === '' && !$this->request->isOptions() && !$this->request->isHead()) {
-            $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => null]);
-        }
-
-        $this->httpServer->send($response);
+        $this->httpServer->send($this->response->getContext());
 
         $this->fireEvent('request:end');
     }
