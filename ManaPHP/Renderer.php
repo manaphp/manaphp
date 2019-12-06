@@ -92,14 +92,15 @@ class Renderer extends Component implements RendererInterface
             $file = null;
             $extension = null;
             foreach ($this->_engines as $extension => $engine) {
-                if (is_file($file = $template . $extension)) {
+                if (is_file($tmp = $template . $extension)) {
                     if (PHP_EOL !== "\n") {
-                        $realPath = strtr(realpath($file), '\\', '/');
-                        if ($file !== $realPath) {
-                            trigger_error("File name ($realPath) case mismatch for $file", E_USER_ERROR);
+                        $realPath = strtr(realpath($tmp), '\\', '/');
+                        if ($tmp !== $realPath) {
+                            trigger_error("File name ($realPath) case mismatch for $tmp", E_USER_ERROR);
                         }
                     }
-
+					
+                    $file = $tmp;
                     break;
                 }
             }
