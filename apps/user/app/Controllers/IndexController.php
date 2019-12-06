@@ -14,10 +14,10 @@ class IndexController extends Controller
 
     public function indexAction()
     {
-        $this->response->redirect('about');
+        return $this->response->redirect('about');
     }
 
-    public function aboutAction()
+    public function aboutView()
     {
         $this->view->setVar('version', Version::get());
         $this->view->setVar('current_time', date('Y-m-d H:i:s'));
@@ -25,7 +25,7 @@ class IndexController extends Controller
         $this->flash->error(date('Y-m-d H:i:s'));
     }
 
-    public function benchmarkAction()
+    public function aboutAction()
     {
 
     }
