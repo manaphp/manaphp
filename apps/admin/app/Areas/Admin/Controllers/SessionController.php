@@ -86,8 +86,6 @@ class SessionController extends Controller
         $adminLoginLog->user_agent = $this->request->getUserAgent();
 
         $adminLoginLog->create();
-
-        return 0;
     }
 
     public function logoutAction()

@@ -30,7 +30,7 @@ class PasswordController extends Controller
 
         $admin = Admin::first(['admin_name' => $admin_name]);
         if (!$admin || $admin->email !== $email) {
-            return $this->response->setJsonError('账号不存在或账号与邮箱不匹配');
+            return '账号不存在或账号与邮箱不匹配';
         }
 
         $token = jwt_encode(['admin_name' => $admin_name], 600, 'admin.password.forget');
@@ -74,7 +74,7 @@ class PasswordController extends Controller
         $admin->password = input('password');
         $admin->update();
 
-        return $this->response->setJsonData([], '重置密码成功');
+        return $this->response->setJsonOk('重置密码成功');
     }
 
     public function changeAction()
@@ -91,6 +91,5 @@ class PasswordController extends Controller
 
         $admin->update();
         $this->session->destroy();
-        return 0;
     }
 }

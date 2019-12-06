@@ -13,6 +13,6 @@ class TestController extends Controller
 
     public function indexAction()
     {
-        return 0;
+
     }
 }

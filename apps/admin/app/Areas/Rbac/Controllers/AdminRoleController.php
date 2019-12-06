@@ -41,7 +41,5 @@ class AdminRoleController extends Controller
 
             $adminRole->create();
         }
-
-        return 0;
     }
 }

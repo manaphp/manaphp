@@ -47,8 +47,6 @@ class RolePermissionController extends Controller
 
         $role->permissions = ',' . implode(',', $paths) . ',';
         $role->update();
-
-        return 0;
     }
 
     public function editAction()
