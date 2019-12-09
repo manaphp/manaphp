@@ -11,6 +11,13 @@ class LoginLogController extends Controller
         return ['*' => '@index', 'latest' => 'user'];
     }
 
+    public function getVerbs()
+    {
+        return array_merge(parent::getVerbs(), [
+            'latest' => 'GET'
+        ]);
+    }
+
     public function indexAction()
     {
         return AdminLoginLog::select(['login_id', 'admin_id', 'admin_name', 'client_udid', 'user_agent', 'client_ip', 'created_time'])

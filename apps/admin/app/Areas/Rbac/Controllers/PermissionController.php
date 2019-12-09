@@ -109,7 +109,7 @@ class PermissionController extends Controller
 
     public function deleteAction()
     {
-        $permission = Permission::get(input('permission_id'));
+        $permission = Permission::rGet();
         foreach (Role::all(['role_id' => RolePermission::values('role_id', ['permission_id' => $permission->permission_id])]) as $role) {
             if (strpos($role->permissions, ",$permission->path,") !== false) {
                 $role->permissions = str_replace(",$permission->path,", ',', $role->permissions);

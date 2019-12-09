@@ -11,6 +11,13 @@ class ActionLogController extends Controller
         return ['*' => '@index', 'latest' => 'user', 'detailSelf' => 'user'];
     }
 
+    public function getVerbs()
+    {
+        return array_merge(parent::getVerbs(), [
+            'latest' => 'GET'
+        ]);
+    }
+
     public function indexAction()
     {
         return AdminActionLog::select(['id', 'admin_name', 'client_ip', 'client_udid', 'method', 'path', 'url', 'created_time'])

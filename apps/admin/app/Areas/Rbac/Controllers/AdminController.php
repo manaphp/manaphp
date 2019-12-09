@@ -10,6 +10,13 @@ use ManaPHP\QueryInterface;
 
 class AdminController extends Controller
 {
+    public function getVerbs()
+    {
+        return array_merge(parent::getVerbs(), [
+            'roles' => 'GET'
+        ]);
+    }
+
     public function indexAction()
     {
         return Admin::select(['admin_id', 'admin_name', 'status', 'login_ip', 'login_time', 'email', 'updator_name', 'creator_name', 'created_time', 'updated_time'])
@@ -65,7 +72,13 @@ class AdminController extends Controller
 
     public function editAction($role_ids = [])
     {
-        $admin = Admin::rUpdate();
+        $admin = Admin::rGet();
+
+        $admin->load(['email']);
+        if ($password = input('password', '')) {
+            $admin->password = $password;
+        }
+        $admin->update();
 
         $old_role_ids = AdminRole::values('role_id', ['admin_id' => $admin->admin_id]);
         foreach (array_diff($old_role_ids, $role_ids) as $role_id) {

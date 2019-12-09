@@ -24,7 +24,7 @@ class Item extends Model
     public function rules()
     {
         return [
-            'item_name' => ['length' => '4-32'],
+            'item_name' => ['length' => '2-32'],
             'group_id' => 'exists',
             'url' => ['length' => '1-128'],
             'display_order' => ['range' => '0-127'],
