@@ -482,7 +482,7 @@ class Db extends Component implements DbInterface
         $wheres = [];
         foreach ((array)$conditions as $k => $v) {
             if (is_int($k)) {
-                if (!is_string($v) || $v === '' || preg_match('#^\w+$#', $v) === 1) {
+                if (!is_string($v) || $v === '' || ($v !== 'FALSE' && preg_match('#^\w+$#', $v) === 1)) {
                     throw new NotSupportedException(['delete with `:condition` condition is danger!', 'condition' => $v]);
                 }
                 $wheres[] = stripos($v, ' or ') ? "($v)" : $v;
