@@ -2,6 +2,7 @@
 namespace ManaPHP\Plugins;
 
 use ManaPHP\Event\EventArgs;
+use ManaPHP\Helper\Str;
 use ManaPHP\Mvc\Controller;
 use ManaPHP\Plugin;
 use ManaPHP\Plugins\CsrfPlugin\AttackDetectedException;
@@ -25,6 +26,11 @@ class CsrfPlugin extends Plugin
     protected $_strict = true;
 
     /**
+     * @var array
+     */
+    protected $_domains = [];
+
+    /**
      * CsrfPlugin constructor.
      *
      * @param array $options
@@ -37,6 +43,10 @@ class CsrfPlugin extends Plugin
 
         if (isset($options['strict'])) {
             $this->_strict = (bool)$options['strict'];
+        }
+
+        if ($domains = $options['domains'] ?? false) {
+            $this->_domains = is_string($domains) ? preg_split('#[\s,]+#', $domains, -1, PREG_SPLIT_NO_EMPTY) : $domains;
         }
 
         if ($this->_enabled) {
@@ -57,8 +67,31 @@ class CsrfPlugin extends Plugin
             return false;
         }
 
-        if (($pos = strpos($origin, '://')) > 0 && substr($origin, $pos + 3) === $host) {
+        if (($pos = strpos($origin, '://')) === false) {
+            return false;
+        }
+        $origin_domain = substr($origin, $pos + 3);
+
+        if ($origin_domain === $host) {
             return true;
+        }
+
+        if ($domains = $this->_domains) {
+            if (in_array($origin_domain, $domains, true)) {
+                return true;
+            }
+
+            foreach ($domains as $domain) {
+                if ($domain[0] === '*') {
+                    if (Str::endsWith($origin_domain, substr($domain, 1))) {
+                        return true;
+                    }
+                } elseif (strpos($domain, '^') !== false && strpos($domain, '$') !== false) {
+                    if (preg_match($origin_domain, $domain) === 1) {
+                        return true;
+                    }
+                }
+            }
         }
 
         return false;
