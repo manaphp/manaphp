@@ -1,30 +1,28 @@
 <?php
 namespace ManaPHP\Plugins;
 
-use ManaPHP\Exception\CsrfTokenException;
+use ManaPHP\Event\EventArgs;
+use ManaPHP\Mvc\Controller;
 use ManaPHP\Plugin;
+use ManaPHP\Plugins\CsrfPlugin\AttackDetectedException;
 
+/**
+ * Class CsrfPlugin
+ * @package ManaPHP\Plugins
+ *
+ * @property-read \ManaPHP\ViewInterface $view
+ */
 class CsrfPlugin extends Plugin
 {
     /**
-     * @var string
+     * @var bool
      */
-    protected $_header = 'HTTP_X_CSRF_TOKEN';
-
-    /**
-     * @var int
-     */
-    protected $_length = 8;
+    protected $_enabled = true;
 
     /**
      * @var bool
      */
-    protected $_useCookie = true;
-
-    /**
-     * @var string
-     */
-    protected $_name = 'csrf_token';
+    protected $_strict = true;
 
     /**
      * CsrfPlugin constructor.
@@ -33,104 +31,59 @@ class CsrfPlugin extends Plugin
      */
     public function __construct($options = [])
     {
-        if (isset($options['length'])) {
-            $this->_length = $options['length'];
+        if (isset($options['enabled'])) {
+            $this->_enabled = (bool)$options['enabled'];
         }
 
-        if (isset($options['useCookie'])) {
-            $this->_useCookie = $options['useCookie'];
+        if (isset($options['strict'])) {
+            $this->_strict = (bool)$options['strict'];
         }
 
-        if (isset($options['name'])) {
-            $this->_name = $options['name'];
+        if ($this->_enabled) {
+            $this->attachEvent('request:validate', [$this, 'onRequestValidate']);
         }
-
-        $this->attachEvent('request:validate', [$this, 'onRequestValidate']);
-    }
-
-    /**
-     * @return string
-     */
-    protected function _generateToken()
-    {
-        $str = strtr(base64_encode(random_bytes(16)), '+/=', '357');
-        return substr($str, 0, $this->_length);
-    }
-
-    /**
-     * @return string
-     */
-    public function get()
-    {
-        if ($this->_useCookie) {
-            if (!$this->cookies->has($this->_name)) {
-                $this->cookies->set($this->_name, $this->_generateToken(), 0, '/');
-            }
-
-            return (string)$this->cookies->get($this->_name);
-        } else {
-            if (!$this->session->has($this->_name)) {
-                $this->session->set($this->_name, $this->_generateToken());
-            }
-
-            return (string)$this->session->get($this->_name);
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->_name;
     }
 
     /**
      * @return bool
      */
-    protected function _isSafe()
+    protected function _isOriginSafe()
     {
-        $request = $this->request;
-        return $request->isGet() || $request->isOptions() || $request->isHead();
+        if (($origin = $this->request->getOrigin(false)) === '') {
+            return false;
+        }
+
+        if (($host = $this->request->getHost()) === '') {
+            return false;
+        }
+
+        if (($pos = strpos($origin, '://')) > 0 && substr($origin, $pos + 3) === $host) {
+            return true;
+        }
+
+        return false;
     }
 
-    /**
-     * @return void
-     * @throws \ManaPHP\Exception\CsrfTokenException
-     */
-    public function onRequestValidate()
+    public function onRequestValidate(EventArgs $eventArgs)
     {
-        if ($this->_isSafe()) {
+        if ($this->_isOriginSafe()) {
             return;
-        }
-
-        if ($this->_useCookie) {
-            $token_server = $this->cookies->get($this->_name);
-        } else {
-            $token_server = $this->session->get($this->_name);
-        }
-        if ($token_server === null) {
-            throw new CsrfTokenException('The CSRF token could not be verified: missing in server');
-        } else {
-            if ($this->request->has($this->_name)) {
-                $token_client = $this->request->get($this->_name);
-            } elseif ($this->request->hasServer($this->_header)) {
-                $token_client = $this->request->getServer($this->_header);
-            } else {
-                throw new CsrfTokenException('The CSRF token could not be verified: missing in client');
+        } elseif ($this->request->isGet()) {
+            if (!$this->_strict) {
+                return;
+            }
+            $controller = $eventArgs->data['controller'];
+            if ($controller instanceof Controller && !$this->request->isAjax() && $this->view->exists()) {
+                return;
             }
 
-            if ($token_client !== $token_server) {
-                throw new CsrfTokenException('The CSRF token could not be verified: not match');
+            $action = $eventArgs->data['action'];
+            $verbs = $controller->getVerbs()[$action] ?? [];
+            if (is_string($verbs) ? 'GET' === $verbs : in_array('GET', $verbs, true)) {
+                return;
             }
         }
-    }
 
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->get();
+        throw new AttackDetectedException();
     }
 }
