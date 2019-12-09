@@ -16,7 +16,7 @@ Vue.prototype.console = console;
         return;
     }
     let last_url_query = sessionStorage.getItem(urlKey);
-    window.history.replaceState(null, null, last_url_query === null ? '?' : last_url_query);
+    window.history.replaceState(null, null, last_url_query === null ? '' : last_url_query);
 }());
 
 
