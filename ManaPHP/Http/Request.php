@@ -453,6 +453,47 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * @param bool $strict
+     *
+     * @return string
+     */
+    public function getOrigin($strict = true)
+    {
+        $context = $this->_context;
+
+        if ($origin = $context->_SERVER['HTTP_ORIGIN'] ?? null) {
+            return $origin;
+        }
+
+        if (!$strict && ($referer = $context->_SERVER['HTTP_REFERER'] ?? null)) {
+            if ($pos = strpos($referer, '?')) {
+                $referer = substr($referer, 0, $pos);
+            }
+
+            if ($pos = strpos($referer, '://')) {
+                $pos = strpos($referer, '/', $pos + 3);
+                return $pos ? substr($referer, 0, $pos) : $referer;
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getHost()
+    {
+        $context = $this->_context;
+
+        if ($host = $context->_SERVER['HTTP_HOST'] ?? null) {
+            return $host;
+        }
+
+        return '';
+    }
+
+    /**
      * @return string
      */
     public function getUrl()

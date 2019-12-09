@@ -188,6 +188,18 @@ interface RequestInterface
     public function getReferer();
 
     /**
+     * @param bool $strict
+     *
+     * @return string
+     */
+    public function getOrigin($strict = true);
+
+    /**
+     * @return string
+     */
+    public function getHost();
+
+    /**
      * http://localhost:8080/test/test.jsp
      *
      *
