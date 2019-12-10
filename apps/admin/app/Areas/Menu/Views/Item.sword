@@ -60,10 +60,10 @@
     <el-table :data="response" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
         <el-table-column prop="item_id" label="菜单ID" width="100"></el-table-column>
-        <el-table-column prop="item_name" label="菜单名"></el-table-column>
-        <el-table-column prop="display_order" label="排序"></el-table-column>
-        <el-table-column prop="icon" label="图标"></el-table-column>
-        <el-table-column prop="url" label="链接"></el-table-column>
+        <el-table-column prop="item_name" label="菜单名" width="150"></el-table-column>
+        <el-table-column prop="url" label="链接" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="display_order" label="排序" width="100"></el-table-column>
+        <el-table-column prop="icon" label="图标" width="200"></el-table-column>
         <el-table-column prop="updator_name" label="更新者" width="120"></el-table-column>
         <el-table-column prop="updated_time" label="更新时间" :formatter="fDate" width="150"></el-table-column>
         <el-table-column prop="creator_name" label="创建者" width="120"></el-table-column>

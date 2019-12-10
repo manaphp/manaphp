@@ -21,14 +21,13 @@
 <div class="result-box">
     <el-table :data="response" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
-        <el-table-column prop="id" label="ID" width="50"></el-table-column>
-        <el-table-column label="权限ID" width="120">
+        <el-table-column prop="id" label="ID" width="100"></el-table-column>
+        <el-table-column label="权限ID" width="100">
             <template slot-scope="scope"><a :href="'permission/?permission_id='+scope.row.permission_id">@{{scope.row.permission_id}}</a>
             </template>
         </el-table-column>
-        <el-table-column prop="permission.path" label="权限路径"></el-table-column>
-        <el-table-column prop="permission.display_name" label="权限简述"></el-table-column>
-        <el-table-column label="角色列表">
+        <el-table-column prop="permission.path" label="权限路径" width="200"></el-table-column>
+        <el-table-column label="角色列表" width="300">
             <template slot-scope="scope">
                 <el-button size="small" v-for="role in scope.row.roles" :key="role.role_id" type="text"
                            @click.native="request.role_id = role.role_id" :disabled="request.role_id == role.role_id" :title="role.role_name">
@@ -36,6 +35,7 @@
                 </el-button>
             </template>
         </el-table-column>
+        <el-table-column prop="permission.display_name" label="权限简述" show-overflow-tooltip></el-table-column>
         <el-table-column prop="creator_name" label="创建者" width="120"></el-table-column>
         <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
     </el-table>

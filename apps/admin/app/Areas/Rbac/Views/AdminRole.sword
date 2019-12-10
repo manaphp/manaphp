@@ -21,7 +21,7 @@
         <el-table-column type="index" label="#" width="50"></el-table-column>
         <el-table-column prop="id" label="ID" width="100"></el-table-column>
         <el-table-column prop="admin_id" label="用户ID" with="100"></el-table-column>
-        <el-table-column prop="admin_name" label="用户名" width="100"></el-table-column>
+        <el-table-column prop="admin_name" label="用户名" width="120"></el-table-column>
         <el-table-column prop="role_id" label="角色ID" width="100"></el-table-column>
         <el-table-column prop="role_name" label="角色名"></el-table-column>
         <el-table-column prop="creator_id" label="创建者ID"></el-table-column>
@@ -33,14 +33,14 @@
     <el-table :data="response.items" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
         <el-table-column prop="admin_id" label="用户ID" width="100"></el-table-column>
-        <el-table-column prop="admin_name" label="用户名" width="100"></el-table-column>
+        <el-table-column prop="admin_name" label="用户名" width="120"></el-table-column>
         <el-table-column label="角色列表">
             <template slot-scope="scope">
                 <el-tag size="small" v-for="role in scope.row.roles" :key="role.role_id">@{{role.display_name}}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column prop="created_time" label="创建时间" width="200" :formatter="fDate"></el-table-column>
-        <el-table-column fixed="right" label="操作" width="200">
+        <el-table-column prop="created_time" label="创建时间" width="150" :formatter="fDate"></el-table-column>
+        <el-table-column fixed="right" label="操作" width="100">
             <template slot-scope="scope">
                 <el-button @click="show_edit(scope.row)" size="mini" type="primary">编辑</el-button>
             </template>

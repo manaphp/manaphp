@@ -28,12 +28,13 @@
     <el-table :data="response.items" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
         <el-table-column prop="id" label="记录ID" width="100"></el-table-column>
-        <el-table-column prop="method" label="请求方式" width="80"></el-table-column>
-        <el-table-column prop="path" label="请求路径"></el-table-column>
-        <el-table-column prop="url" label="请求Url"></el-table-column>
+        <el-table-column prop="method" label="请求方式" width="100"></el-table-column>
+        <el-table-column prop="path" label="请求路径" width="200" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="url" label="请求Url" show-overflow-tooltip></el-table-column>
         <el-table-column prop="client_ip" label="客户端IP" width="120"></el-table-column>
+        <el-table-column prop="client_udid" label="客户端ID" width="200" show-overflow-tooltip></el-table-column>
         <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
-        <el-table-column fixed="right" label="操作" width="80">
+        <el-table-column fixed="right" label="操作" width="100">
             <template slot-scope="scope">
                 <el-button @click="show_detail(scope.row, '../detail')" size="mini" type="info">详情
                 </el-button>

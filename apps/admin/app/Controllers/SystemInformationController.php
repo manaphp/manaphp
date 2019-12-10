@@ -7,7 +7,7 @@ use ManaPHP\Version;
 
 class SystemInformationController extends Controller
 {
-    public function indexAction()
+    public function indexView()
     {
         $globals = $this->request->getGlobals();
 
@@ -16,7 +16,6 @@ class SystemInformationController extends Controller
         $data['framework_version'] = Version::get();
         $data['php_version'] = PHP_VERSION;
         $data['sapi'] = PHP_SAPI;
-
 
         if (function_exists('apache_get_version')) {
             $data['apache_version'] = apache_get_version();
@@ -36,5 +35,10 @@ class SystemInformationController extends Controller
         $data['loaded_extensions'] = implode(', ', $loaded_extensions);
         $data['loaded_classes'] = get_declared_classes();
         $this->view->setVar('data', $data);
+    }
+
+    public function indexAction()
+    {
+
     }
 }
