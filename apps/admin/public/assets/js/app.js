@@ -12,7 +12,7 @@ Vue.prototype.console = console;
         sessionStorage.setItem(urlKey, document.location.search);
     };
 
-    if (document.location.search !== '') {
+    if (document.location.search !== '' || document.referrer === '') {
         return;
     }
     let last_url_query = sessionStorage.getItem(urlKey);
@@ -55,7 +55,7 @@ axios.interceptors.response.use(function (res) {
                 vm.$message({type: 'success', duration: 1000, message: '操作成功'});
             }
         }
-        
+
         for (let name in res.headers) {
             let value = res.headers[name];
             if (value.match(/^https?:\/\//)) {
