@@ -25,6 +25,11 @@ class Dotenv extends Component implements DotenvInterface
     protected $_env = [];
 
     /**
+     * @var int
+     */
+    protected $_ttl = 1;
+
+    /**
      * DotEnv constructor.
      *
      * @param array $options
@@ -33,6 +38,10 @@ class Dotenv extends Component implements DotenvInterface
     {
         if (isset($options['to_env'])) {
             $this->_to_env = $options['to_env'];
+        }
+
+        if (isset($options['ttl'])) {
+            $this->_ttl = (int)$options['ttl'];
         }
 
         foreach ($_ENV as $k => $v) {
@@ -53,17 +62,58 @@ class Dotenv extends Component implements DotenvInterface
      *
      * @return static
      */
-    public function load($file = '@root/.env')
+    public function load($file = null)
     {
+        if ($file === null) {
+            if ($v = $_SERVER['DOTENV_URL'] ?? null) {
+                $file = $v;
+            } elseif ($v = getenv('DOTENV_URL')) {
+                $file = (string)$v;
+            } else {
+                $file = '@root/.env';
+            }
+        }
+
         $this->_file = $file;
 
-        if (!is_file($file = $this->alias->resolve($file))) {
-            throw new FileNotFoundException(['.env file is not found: :file', 'file' => $file]);
+        if (strpos($file, '://')) {
+            if (!is_file($config_file = $this->alias->resolve('@config/app.php'))) {
+                throw new RuntimeException('@config/app.php file is not exists');
+            }
+
+            if (!preg_match('#[\'"]id[\'"]\s*=>\s*[\'"]([\w-]+)#', file_get_contents($config_file), $match)) {
+                throw new RuntimeException('missing app_id config');
+            }
+            $app_id = $match[1];
+
+            $key = ".env:$app_id";
+            if (!function_exists('apcu_fetch') || !$lines = apcu_fetch($key)) {
+                $scheme = parse_url($file, PHP_URL_SCHEME);
+                if ($scheme === 'redis') {
+                    $redis = new Redis($file);
+                    $lines = $redis->call('hGet', '.env', $app_id);
+                } else {
+                    throw new RuntimeException(['`:scheme` scheme is not support', 'scheme' => $scheme]);
+                }
+
+                if (function_exists('apcu_store')) {
+                    apcu_store($key, $lines, $this->_ttl);
+                }
+            }
+        } else {
+            if (!is_file($file = $this->alias->resolve($file))) {
+                throw new FileNotFoundException(['.env file is not found: :file', 'file' => $file]);
+            }
+
+            $lines = file_get_contents($file);
         }
 
-        if (($lines = file($file, FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES)) === false) {
-            throw new RuntimeException(['read `:file` failed', 'file' => $file]);
+        if (!$lines) {
+            throw new RuntimeException('.env content is empty');
         }
+
+        $lines = preg_split('#[\r\n]+#', $lines, -1, PREG_SPLIT_NO_EMPTY);
+
         $env = $this->parse($lines);
 
         /** @noinspection AdditionOperationOnArraysInspection */
