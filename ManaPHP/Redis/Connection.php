@@ -144,7 +144,7 @@ class Connection extends Component
                 throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->_uri]);
             }
 
-            if ($this->_auth !== '' && !$redis->auth($this->_auth)) {
+            if ($this->_auth && !$redis->auth($this->_auth)) {
                 throw new AuthException(['`:auth` auth is wrong.', 'auth' => $this->_auth]);
             }
 
