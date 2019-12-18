@@ -88,6 +88,27 @@ class Redis extends Component
      *
      * @return bool|mixed
      */
+    public function call($name, ...$arguments)
+    {
+        $type = $this->_types ? $this->_getType($name, $arguments) : 'default';
+
+        $connection = $this->poolManager->pop($this, $this->_timeout, $type);
+
+        try {
+            $r = $connection->call($name, $arguments);
+        } finally {
+            $this->poolManager->push($this, $connection, $type);
+        }
+
+        return $r;
+    }
+
+    /**
+     * @param string $name
+     * @param array  $arguments
+     *
+     * @return bool|mixed
+     */
     public function __call($name, $arguments)
     {
         $this->fireEvent('redis:calling', ['name' => $name, 'arguments' => $arguments]);
