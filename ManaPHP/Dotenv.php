@@ -57,20 +57,14 @@ class Dotenv extends Component implements DotenvInterface
     {
         $this->_file = $file;
 
-        $file = $this->alias->resolve($file);
-        $parsed_file = $file . '.php';
-        if (is_file($parsed_file)) {
-            /** @noinspection PhpIncludeInspection */
-            $env = require $parsed_file;
-        } elseif (is_file($file)) {
-            $lines = file($file, FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
-            if ($lines === false) {
-                throw new RuntimeException(['read `:file` failed', 'file' => $file]);
-            }
-            $env = $this->parse($lines);
-        } else {
+        if (!is_file($file = $this->alias->resolve($file))) {
             throw new FileNotFoundException(['.env file is not found: :file', 'file' => $file]);
         }
+
+        if (($lines = file($file, FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES)) === false) {
+            throw new RuntimeException(['read `:file` failed', 'file' => $file]);
+        }
+        $env = $this->parse($lines);
 
         /** @noinspection AdditionOperationOnArraysInspection */
         $this->_env += $env;
