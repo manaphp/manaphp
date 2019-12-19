@@ -155,7 +155,7 @@ class Manager extends Component implements ManagerInterface
 
             /** @noinspection PhpMethodParametersCountMismatchInspection */
             if (!$instance = $timeout ? $queue->pop($timeout) : $queue->pop()) {
-                throw new BusyException(['`:type` pool of `:owner` is busy', 'type' => $type, 'owner' => get_class($owner)]);
+                throw new BusyException(['`:type` pool of `:owner` is busy: capacity[:capacity]', 'type' => $type, 'capacity' => $queue->capacity, 'owner' => get_class($owner)]);
             }
 
             return $instance;
