@@ -6,6 +6,7 @@ use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\RuntimeException;
+use ManaPHP\Redis\Connection;
 
 class Dotenv extends Component implements DotenvInterface
 {
@@ -90,8 +91,8 @@ class Dotenv extends Component implements DotenvInterface
             if (!function_exists('apcu_fetch') || !$lines = apcu_fetch($key)) {
                 $scheme = parse_url($file, PHP_URL_SCHEME);
                 if ($scheme === 'redis') {
-                    $redis = new Redis($file);
-                    $lines = $redis->call('hGet', '.env', $app_id);
+                    $redis = new Connection($file);
+                    $lines = $redis->getConnect()->hGet('.env', $app_id);
                 } else {
                     throw new RuntimeException(['`:scheme` scheme is not support', 'scheme' => $scheme]);
                 }
