@@ -1107,10 +1107,6 @@ class Query extends \ManaPHP\Query
      */
     public function count($field = '*')
     {
-        if ($this->_group) {
-            throw new NotSupportedException('group is not support to get total rows');
-        }
-
         $copy = clone $this;
 
         $copy->_fields = "COUNT($field) as [row_count]";
@@ -1124,7 +1120,7 @@ class Query extends \ManaPHP\Query
         foreach ($shards as $db => $tables) {
             foreach ($tables as $table) {
                 $result = $copy->_query($db, $table);
-                $row_count += $result[0]['row_count'];
+                $row_count += $this->_group ? count($result) : $result[0]['row_count'];
             }
         }
 
