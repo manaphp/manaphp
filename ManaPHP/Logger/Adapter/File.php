@@ -14,7 +14,7 @@ class File extends Logger
     /**
      * @var string
      */
-    protected $_file = '@data/logger/app.log';
+    protected $_file = '@data/logger/{id}.log';
 
     /**
      * @var string
@@ -38,6 +38,8 @@ class File extends Logger
         if (isset($options['file'])) {
             $this->_file = $options['file'];
         }
+
+        $this->_file = strtr($this->_file, ['{id}' => $this->configure->id]);
 
         if (isset($options['format'])) {
             $this->_format = $options['format'];
