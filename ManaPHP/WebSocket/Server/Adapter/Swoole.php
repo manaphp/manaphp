@@ -9,6 +9,7 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\WebSocket\ServerInterface;
 use Swoole\Coroutine;
 use Swoole\Process;
+use Swoole\Runtime;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
 use Throwable;
@@ -218,6 +219,10 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function start($handler)
     {
+        if (MANAPHP_COROUTINE_ENABLED) {
+            Runtime::enableCoroutine(true);
+        }
+
         foreach ($handler->getProcesses() as $process => $config) {
             $process = $this->_di->setShared($process, $config)->getShared($process);
             $this->addProcess($process);

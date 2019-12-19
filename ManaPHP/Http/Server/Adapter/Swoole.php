@@ -2,6 +2,7 @@
 namespace ManaPHP\Http\Server\Adapter;
 
 use ManaPHP\Http\Server;
+use Swoole\Runtime;
 use Throwable;
 
 class SwooleContext
@@ -180,6 +181,10 @@ class Swoole extends Server
      */
     public function start($handler)
     {
+        if (MANAPHP_COROUTINE_ENABLED) {
+            Runtime::enableCoroutine(true);
+        }
+
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 
         if (!empty($this->_settings['enable_static_handler'])) {

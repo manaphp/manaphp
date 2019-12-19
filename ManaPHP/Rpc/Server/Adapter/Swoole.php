@@ -5,6 +5,7 @@ use ArrayObject;
 use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\NotSupportedException;
 use Swoole\Coroutine;
+use Swoole\Runtime;
 use Swoole\WebSocket\Server;
 use Throwable;
 
@@ -306,6 +307,10 @@ class Swoole extends \ManaPHP\Rpc\Server
      */
     public function start($handler)
     {
+        if (MANAPHP_COROUTINE_ENABLED) {
+            Runtime::enableCoroutine(true);
+        }
+
         $this->_handler = $handler;
 
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;

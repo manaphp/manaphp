@@ -6,6 +6,7 @@ use ManaPHP\Exception\AbortException;
 use ManaPHP\Logger\LogCategorizable;
 use Swoole\Coroutine;
 use Swoole\Event;
+use Swoole\Runtime;
 use Throwable;
 
 /**
@@ -62,6 +63,8 @@ class Application extends \ManaPHP\Application implements LogCategorizable
 
     public function handle()
     {
+        $this->logger->info(['command line: :cmd', 'cmd' => basename($GLOBALS['argv'][0]) . ' ' . implode(' ', array_slice($GLOBALS['argv'], 1))]);
+
         try {
             $this->_exit_code = $this->cliHandler->handle();
         } catch (AbortException $exception) {
@@ -82,9 +85,8 @@ class Application extends \ManaPHP\Application implements LogCategorizable
 
         $this->registerServices();
 
-        $this->logger->info(['command line: :cmd', 'cmd' => basename($GLOBALS['argv'][0]) . ' ' . implode(' ', array_slice($GLOBALS['argv'], 1))]);
-
         if (MANAPHP_COROUTINE_ENABLED) {
+            Runtime::enableCoroutine(true);
             Coroutine::create([$this, 'handle']);
             Event::wait();
         } else {
