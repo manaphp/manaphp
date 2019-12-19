@@ -201,10 +201,12 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
         $data = $this->request->get();
 
         foreach ($filters as $k => $v) {
-            preg_match('#^(\w+)(.*)$#', is_string($k) ? $k : $v, $match);
-            $field = $match[1];
+            if (is_string($k)) {
+                $this->where([$k => $v]);
+            } else {
+                preg_match('#^\w+#', ($pos = strpos($v, '.')) ? substr($v, $pos + 1) : $v, $match);
+                $field = $match[0];
 
-            if (is_int($k)) {
                 if (!isset($data[$field])) {
                     continue;
                 }
@@ -216,8 +218,6 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
                     }
                 }
                 $this->where([$v => $value]);
-            } else {
-                $this->where([$k => $v]);
             }
         }
 
@@ -327,7 +327,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
             $max = (int)(is_numeric($max) ? $max : strtotime($max . ' 23:59:59'));
         }
 
-        if ($format = $this->_model->getDateFormat($field)) {
+        if ($format = $this->_model->getDateFormat(($pos = strpos($field, '.')) ? substr($field, $pos + 1) : $field)) {
             if (is_int($min)) {
                 $min = date($format, $min);
             }
