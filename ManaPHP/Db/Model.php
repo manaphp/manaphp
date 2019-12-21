@@ -185,9 +185,17 @@ class Model extends \ManaPHP\Model implements ModelInterface
      */
     public function update()
     {
-        $snapshot = $this->_snapshot;
-
         $primaryKey = $this->getPrimaryKey();
+
+        if ($this->$primaryKey === null) {
+            throw new MisuseException('missing primary key value');
+        }
+
+        if (!isset($snapshot[$primaryKey])) {
+            $this->_snapshot[$primaryKey] = $this->$primaryKey;
+        }
+        
+        $snapshot = $this->_snapshot;
 
         /** @noinspection TypeUnsafeComparisonInspection */
         if ($this->$primaryKey != $snapshot[$primaryKey]) {
