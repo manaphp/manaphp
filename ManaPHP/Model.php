@@ -1272,7 +1272,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         if ($this->$primaryKey === null) {
             throw new MisuseException('missing primary key value');
         }
-        
+
         list($db, $table) = $this->getUniqueShard($this);
 
         $this->fireEvent('model:deleting');

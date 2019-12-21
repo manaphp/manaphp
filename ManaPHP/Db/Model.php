@@ -194,7 +194,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         if (!isset($snapshot[$primaryKey])) {
             $this->_snapshot[$primaryKey] = $this->$primaryKey;
         }
-        
+
         $snapshot = $this->_snapshot;
 
         /** @noinspection TypeUnsafeComparisonInspection */
