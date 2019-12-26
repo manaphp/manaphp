@@ -1269,6 +1269,8 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function delete()
     {
+        $primaryKey = $this->getPrimaryKey();
+
         if ($this->$primaryKey === null) {
             throw new MisuseException('missing primary key value');
         }
@@ -1278,8 +1280,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         $this->fireEvent('model:deleting');
 
         $db = $this->_di->getShared($db);
-
-        $primaryKey = $this->getPrimaryKey();
+        
         $db->delete($table, [$primaryKey => $this->$primaryKey]);
 
         $this->fireEvent('model:deleted');
