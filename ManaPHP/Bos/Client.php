@@ -77,6 +77,10 @@ class Client extends Component implements ClientInterface
      */
     public function listObjects($bucket, $filters = [])
     {
+        if ($bucket === '') {
+            return [];
+        }
+
         $endpoint = str_replace('{bucket}', $bucket, $this->_endpoint);
 
         $filters[] = $endpoint . '/api/objects';
