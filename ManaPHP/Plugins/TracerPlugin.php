@@ -55,7 +55,7 @@ class TracerPlugin extends Plugin
         $this->attachEvent('mongodb:upserted', [$this, 'onMongodbUpserted']);
         $this->attachEvent('mongodb:bulkUpserted', [$this, 'onMongodbBulkUpserted']);
 
-        $verbose && $this->attachEvent('httpClient:requesting', [$this, 'onHttpClientRequesting']);
+        $this->attachEvent('httpClient:requesting', [$this, 'onHttpClientRequesting']);
         $this->attachEvent('httpClient:requested', [$this, 'onHttpClientRequested']);
 
         $verbose && $this->attachEvent('wsClient:send', [$this, 'onWsClientSend']);
@@ -239,7 +239,12 @@ class TracerPlugin extends Plugin
 
     public function onHttpClientRequesting(EventArgs $eventArgs)
     {
-        $this->logger->debug($eventArgs->data, 'httpClient.request');
+        /** @var \ManaPHP\Http\Client\Request $request */
+        $request = $eventArgs->data;
+
+        if ($request->method === 'POST' && $request->body) {
+            $this->logger->info($eventArgs->data, 'httpClient.request');
+        }
     }
 
     public function onHttpClientRequested(EventArgs $eventArgs)
