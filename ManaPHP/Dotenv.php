@@ -91,8 +91,8 @@ class Dotenv extends Component implements DotenvInterface
             if (!function_exists('apcu_fetch') || !$lines = apcu_fetch($key)) {
                 $scheme = parse_url($file, PHP_URL_SCHEME);
                 if ($scheme === 'redis') {
-                    $redis = new Connection($file);
-                    $lines = $redis->getConnect()->hGet('.env', $app_id);
+                    $redis = (new Connection($file))->getConnect();
+                    $lines = $redis->hGet('.env', 'default') . PHP_EOL . $redis->hGet('.env', $app_id);
                 } else {
                     throw new RuntimeException(['`:scheme` scheme is not support', 'scheme' => $scheme]);
                 }
@@ -134,7 +134,7 @@ class Dotenv extends Component implements DotenvInterface
      *
      * @return mixed|array
      */
-    public function get($key, $default = null)
+    public function get($key = null, $default = null)
     {
         if ($key === null) {
             return $this->_env;

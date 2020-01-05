@@ -23,5 +23,5 @@ interface DotenvInterface
      *
      * @return mixed|array
      */
-    public function get($key, $default = null);
+    public function get($key = null, $default = null);
 }
