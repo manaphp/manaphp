@@ -745,13 +745,33 @@ class Validator extends Component implements ValidatorInterface
     /**
      * @param string|int     $field
      * @param \ManaPHP\Model $model
+     * @param string|array   $parameters
      *
      * @return int|string|null
      */
-    protected function _validate_model_unique($field, $model)
+    protected function _validate_model_unique($field, $model, $parameters = null)
     {
         $value = $model->$field;
-        return $model::exists([$field => $value]) ? null : $value;
+
+        $filters = [$field => $value];
+
+        if (is_string($parameters)) {
+            foreach (explode(',', $parameters) as $parameter) {
+                if (($parameter = trim($parameter)) !== '') {
+                    $filters[$parameter] = $model->$parameter;
+                }
+            }
+        } elseif (is_array($parameters)) {
+            foreach ($parameters as $k => $v) {
+                if (is_int($k)) {
+                    $filters[$v] = $model->$v;
+                } else {
+                    $filters[$k] = $v;
+                }
+            }
+        }
+
+        return $model::exists($filters) ? null : $value;
     }
 
     /**
