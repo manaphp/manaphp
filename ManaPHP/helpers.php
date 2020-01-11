@@ -475,8 +475,8 @@ if (!function_exists('seconds')) {
      */
     function seconds($str)
     {
-        if (preg_match('#^([\d.]+)([smhd]?)$#', $str, $match)) {
-            $units = ['' => 1, 's' => 1, 'm' => 60, 'h' => 3600, 'd' => 86400];
+        if (preg_match('#^([\d.]+)([smhdMy]?)$#', $str, $match)) {
+            $units = ['' => 1, 's' => 1, 'm' => 60, 'h' => 3600, 'd' => 86400, 'M' => 2592000, 'y' => 31536000];
             return $match[1] * $units[$match[2]];
         } elseif (($r = strtotime($str, 0)) !== false) {
             return $r;
