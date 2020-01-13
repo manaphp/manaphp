@@ -40,7 +40,7 @@ class Pusher extends Component implements PusherInterface
      */
     protected function _push($channel, $data)
     {
-        $this->redis->publish($this->_prefix . '' . $channel, $data);
+        $this->pubSub->publish($this->_prefix . $channel, $data);
     }
 
     /**

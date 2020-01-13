@@ -145,10 +145,7 @@ class FiddlerPlugin extends Plugin
         $packet['type'] = $type;
         $packet['data'] = $data;
 
-        /** @noinspection PhpUndefinedMethodInspection */
-        /** @var \Redis $redis */
-        $redis = $this->redis->getConnection();
-        $r = $redis->publish($context->channel, json_stringify($packet));
+        $r = $this->pubSub->publish($context->channel, json_stringify($packet));
         if ($r <= 0) {
             $this->_enabled = false;
             $this->_last_checked = microtime(true);
@@ -168,22 +165,14 @@ class FiddlerPlugin extends Plugin
         } else {
             $channel = 'manaphp:fiddler:web:' . $id . ':*';
         }
-
-        /** @noinspection PhpUndefinedMethodInspection */
-        /** @var \Redis $redis */
-        $redis = $this->redis->getConnection();
         if (strpos($channel, '*') === false) {
             echo "subscribe on `$channel`", PHP_EOL, PHP_EOL;
-            $redis->subscribe([$channel], function ($redis, $chan, $packet) {
-                0 && $redis && $chan;
-
+            $this->pubSub->subscribe([$channel], function ($chan, $packet) {
                 $this->processMessage($packet);
             });
         } else {
             echo "psubscribe on `$channel`", PHP_EOL, PHP_EOL;
-            $redis->psubscribe([$channel], function ($redis, $pattern, $chan, $packet) {
-                0 && $redis && $chan && $pattern;
-
+            $this->pubSub->psubscribe([$channel], function ($chan, $packet) {
                 $this->processMessage($packet);
             });
         }
@@ -197,12 +186,8 @@ class FiddlerPlugin extends Plugin
         $id = $options['id'] ?? $this->configure->id;
         $channel = 'manaphp:fiddler:cli:' . $id;
 
-        /** @noinspection PhpUndefinedMethodInspection */
-        /** @var \Redis $redis */
-        $redis = $this->redis->getConnection();
         echo "subscribe on `$channel`", PHP_EOL, PHP_EOL;
-        $redis->subscribe([$channel], function ($redis, $chan, $packet) {
-            0 && $redis && $chan;
+        $this->pubSub->subscribe([$channel], function ($chan, $packet) {
             $this->processMessage($packet);
         });
     }

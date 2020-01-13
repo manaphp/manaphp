@@ -275,7 +275,7 @@ class PusherProcess extends Process
 
     public function run()
     {
-        $this->redis->psubscribe([$this->_prefix . $this->_endpoint . ':*'], function (/** @noinspection PhpUnusedParameterInspection */ $redis, $pattern, $channel, $data) {
+        $this->pubSub->psubscribe([$this->_prefix . $this->_endpoint . ':*'], function ($channel, $data) {
             if (($pos = strrpos($channel, ':')) !== false) {
                 $type = substr($channel, $pos + 1);
 

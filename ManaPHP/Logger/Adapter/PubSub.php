@@ -27,6 +27,6 @@ class PubSub extends Logger
      */
     public function append($logs)
     {
-        $this->redis->call('publish', $this->_channel . ':' . $this->configure->id, json_stringify($logs));
+        $this->pubSub->publish($this->_channel . ':' . $this->configure->id, json_stringify($logs));
     }
 }
