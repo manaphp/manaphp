@@ -76,7 +76,7 @@ class Fpm extends Server
             throw new MisuseException("Headers has been sent in $file:$line");
         }
 
-        $this->fireEvent('response:sending');
+        $this->fireEvent('response:sending', ['response' => $response]);
 
         header('HTTP/1.1 ' . $response->status_code . ' ' . $response->status_text);
 
@@ -102,11 +102,10 @@ class Fpm extends Server
         if ($response->file) {
             readfile($this->alias->resolve($response->file));
         } else {
-            $content = $response->content;
-            echo is_string($content) ? $content : json_stringify($content);
+            echo $response->content;
         }
 
-        $this->fireEvent('response:sent');
+        $this->fireEvent('response:sent', ['response' => $response]);
 
         return $this;
     }

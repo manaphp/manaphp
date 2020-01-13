@@ -251,7 +251,7 @@ class Swoole extends Server
      */
     public function send($response)
     {
-        $this->fireEvent('response:sending', $response);
+        $this->fireEvent('response:sending', ['response' => $response]);
 
         $sw_response = $this->_context->response;
 
@@ -275,10 +275,9 @@ class Swoole extends Server
         if ($response->file) {
             $sw_response->sendfile($this->alias->resolve($response->file));
         } else {
-            $content = $response->content;
-            $sw_response->end(is_string($content) ? $content : json_stringify($content));
+            $sw_response->end($response->content);
         }
 
-        $this->fireEvent('response:sent', $response);
+        $this->fireEvent('response:sent', ['response' => $response]);
     }
 }
