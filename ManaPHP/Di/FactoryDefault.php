@@ -56,6 +56,7 @@ class FactoryDefault extends Di
             'coroutineManager' => 'ManaPHP\Coroutine\Manager',
             'jwt' => 'ManaPHP\Identity\Adapter\Jwt',
             'wsClient' => 'ManaPHP\WebSocket\Client',
+            'pubSub' => 'ManaPHP\Message\PubSub\Adapter\Redis',
         ];
     }
 }

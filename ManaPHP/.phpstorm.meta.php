@@ -56,6 +56,7 @@ namespace PHPSTORM_META {
             'wsPusher' instanceof \ManaPHP\WebSocket\PusherInterface,
             'coroutine' instanceof \ManaPHP\CoroutineInterface,
             'jwt' instanceof \ManaPHP\Identity\Adapter\Jwt,
+            'pubSub' instanceof \ManaPHP\Message\PubSubInterface,
         ],
         \di('') => [
             'eventsManager' instanceof \ManaPHP\Event\ManagerInterface,
@@ -108,6 +109,7 @@ namespace PHPSTORM_META {
             'wsPusher' instanceof \ManaPHP\WebSocket\PusherInterface,
             'coroutineManager' instanceof \ManaPHP\Coroutine\ManagerInterface,
             'jwt' instanceof \ManaPHP\Identity\Adapter\Jwt,
+            'pubSub' instanceof \ManaPHP\Message\PubSubInterface,
         ],
         \ManaPHP\DiInterface::get('') => [
             '' == '@',
