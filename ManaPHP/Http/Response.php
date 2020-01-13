@@ -333,7 +333,12 @@ class Response extends Component implements ResponseInterface
      */
     public function setNotModified()
     {
-        $this->setStatus(304, 'Not modified');
+        $context = $this->_context;
+
+        $context->status_code = 304;
+        $context->status_text = 'Not Modified';
+
+        $context->content = '';
 
         return $this;
     }
