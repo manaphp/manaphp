@@ -43,7 +43,7 @@ class PageCachePlugin extends Plugin
             $this->_enabled = (bool)$options['enabled'];
         }
 
-        $this->_prefix = $options['prefix'] ?? 'cache:page_cache:' . $this->configure->id . ':';
+        $this->_prefix = $options['prefix'] ?? "cache:{$this->configure->id}:pageCachePlugin:";
 
         if ($this->_enabled) {
             $this->attachEvent('request:ready', [$this, 'onRequestReady']);
