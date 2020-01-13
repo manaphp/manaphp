@@ -61,4 +61,12 @@ abstract class Controller extends \ManaPHP\Controller
     {
         return [];
     }
+
+    /**
+     * @return array
+     */
+    public function getPageCache()
+    {
+        return [];
+    }
 }
