@@ -121,7 +121,7 @@ interface ResponseInterface
      *
      * @return static
      */
-    public function setEtag($etag);
+    public function setETag($etag);
 
     /**
      * @param string $control

@@ -345,9 +345,9 @@ class Response extends Component implements ResponseInterface
      *
      * @return static
      */
-    public function setEtag($etag)
+    public function setETag($etag)
     {
-        $this->setHeader('Etag', $etag);
+        $this->setHeader('ETag', $etag);
 
         return $this;
     }
