@@ -251,7 +251,14 @@ class Workerman extends Server
                 $cookie['httpOnly']);
         }
 
-        $this->_context->connection->close($response->content);
+        if ($response->status_code === 304) {
+            $this->_context->connection->close('');
+        } elseif ($server['REQUEST_METHOD'] === 'HEAD') {
+            Http::header('Content-Length: ' . strlen($response->content));
+            $this->_context->connection->close('');
+        } else {
+            $this->_context->connection->close($response->content);
+        }
 
         $this->fireEvent('response:sent', ['response' => $response]);
     }

@@ -272,7 +272,12 @@ class Swoole extends Server
                 $cookie['httpOnly']);
         }
 
-        if ($response->file) {
+        if ($response->status_code === 304) {
+            $sw_response->end('');
+        } elseif ($server['REQUEST_METHOD'] === 'HEAD') {
+            $sw_response->header('Content-Length', strlen($response->content), false);
+            $sw_response->end('');
+        } elseif ($response->file) {
             $sw_response->sendfile($this->alias->resolve($response->file));
         } else {
             $sw_response->end($response->content);

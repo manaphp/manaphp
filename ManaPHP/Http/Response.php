@@ -338,8 +338,6 @@ class Response extends Component implements ResponseInterface
         $context->status_code = 304;
         $context->status_text = 'Not Modified';
 
-        $context->content = '';
-
         return $this;
     }
 

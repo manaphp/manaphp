@@ -99,7 +99,11 @@ class Fpm extends Server
         header('X-Request-Id: ' . $this->request->getRequestId());
         header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']));
 
-        if ($response->file) {
+        if ($response->status_code === 304) {
+            null;
+        } elseif ($server['REQUEST_METHOD'] === 'HEAD') {
+            header('Content-Length: ' . strlen($response->content));
+        } elseif ($response->file) {
             readfile($this->alias->resolve($response->file));
         } else {
             echo $response->content;
