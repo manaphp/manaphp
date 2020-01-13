@@ -12,4 +12,9 @@ class TooManyRequestsException extends Exception
          */
         return 429;
     }
+
+    public function getJson()
+    {
+        return ['code' => 429, 'message' => 'Too Many Request'];
+    }
 }

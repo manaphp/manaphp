@@ -45,4 +45,12 @@ abstract class Controller extends \ManaPHP\Controller
             'inactive' => 'POST',
         ];
     }
+
+    /**
+     * @return array
+     */
+    public function getRateLimit()
+    {
+        return [];
+    }
 }
