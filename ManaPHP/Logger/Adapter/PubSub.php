@@ -8,12 +8,7 @@ class PubSub extends Logger
     /**
      * @var string
      */
-    protected $_redis = 'redis';
-
-    /**
-     * @var string
-     */
-    protected $_channel = 'logger';
+    protected $_channel;
 
     /**
      * Redis constructor.
@@ -24,13 +19,7 @@ class PubSub extends Logger
     {
         parent::__construct($options);
 
-        if (isset($options['redis'])) {
-            $this->_redis = $options['redis'];
-        }
-
-        if (isset($options['channel'])) {
-            $this->_channel = $options['channel'];
-        }
+        $this->_channel = $options['channel'] ?? 'logger';
     }
 
     /**
@@ -38,10 +27,6 @@ class PubSub extends Logger
      */
     public function append($logs)
     {
-        if (is_string($this->_redis)) {
-            $this->_redis = $this->_di->getShared($this->_redis);
-        }
-
         $this->redis->call('publish', $this->_channel . ':' . $this->configure->id, json_stringify($logs));
     }
 }

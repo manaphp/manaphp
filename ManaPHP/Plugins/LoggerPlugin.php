@@ -41,6 +41,11 @@ class LoggerPlugin extends Plugin
     /**
      * @var string
      */
+    protected $_prefix;
+
+    /**
+     * @var string
+     */
     protected $_template = '@manaphp/Plugins/LoggerPlugin/Template.html';
 
     /**
@@ -62,6 +67,8 @@ class LoggerPlugin extends Plugin
             $this->_ttl = (int)$options['ttl'];
         }
 
+        $this->_prefix = $options['prefix'] ?? "cache:{$this->configure->id}:loggerPlugin:";
+
         if (isset($options['template'])) {
             $this->_template = $options['template'];
         }
@@ -81,7 +88,7 @@ class LoggerPlugin extends Plugin
     protected function _readData($key)
     {
         if ($this->_ttl) {
-            $data = $this->cache->get('__loggerPlugin:' . $key);
+            $data = $this->redis->get($this->_prefix . $key);
         } else {
             $file = "@data/loggerPlugin/{$key}.zip";
             $data = LocalFS::fileExists($file) ? LocalFS::fileGet($file) : false;
@@ -102,7 +109,7 @@ class LoggerPlugin extends Plugin
     {
         $content = gzencode(json_stringify($data, JSON_PARTIAL_OUTPUT_ON_ERROR));
         if ($this->_ttl) {
-            $this->cache->set('__loggerPlugin:' . $key, $content, $this->_ttl);
+            $this->redis->set($this->_prefix . $key, $content, $this->_ttl);
         } else {
             LocalFS::filePut("@data/loggerPlugin/{$key}.zip", $content);
         }

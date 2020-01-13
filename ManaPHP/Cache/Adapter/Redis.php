@@ -14,12 +14,7 @@ class Redis extends Cache
     /**
      * @var string
      */
-    protected $_prefix = 'cache:';
-
-    /**
-     * @var string|\Redis
-     */
-    protected $_redis = 'redis';
+    protected $_prefix;
 
     /**
      * Redis constructor.
@@ -28,13 +23,7 @@ class Redis extends Cache
      */
     public function __construct($options = [])
     {
-        if (isset($options['prefix'])) {
-            $this->_prefix = $options['prefix'];
-        }
-
-        if (isset($options['redis'])) {
-            $this->_redis = $options['redis'];
-        }
+        $this->_prefix = $options['prefix'] ?? "cache:{$this->configure->id}:";
     }
 
     /**
@@ -44,11 +33,7 @@ class Redis extends Cache
      */
     public function do_get($key)
     {
-        if (is_string($this->_redis)) {
-            $this->_redis = $this->_di->getShared($this->_redis);
-        }
-
-        return $this->_redis->get($this->_prefix . $key);
+        return $this->redis->get($this->_prefix . $key);
     }
 
     /**
@@ -60,11 +45,7 @@ class Redis extends Cache
      */
     public function do_set($key, $value, $ttl)
     {
-        if (is_string($this->_redis)) {
-            $this->_redis = $this->_di->getShared($this->_redis);
-        }
-
-        $this->_redis->set($this->_prefix . $key, $value, $ttl);
+        $this->redis->set($this->_prefix . $key, $value, $ttl);
     }
 
     /**
@@ -74,11 +55,7 @@ class Redis extends Cache
      */
     public function do_delete($key)
     {
-        if (is_string($this->_redis)) {
-            $this->_redis = $this->_di->getShared($this->_redis);
-        }
-
-        $this->_redis->del($this->_prefix . $key);
+        $this->redis->del($this->_prefix . $key);
     }
 
     /**
@@ -88,10 +65,6 @@ class Redis extends Cache
      */
     public function do_exists($key)
     {
-        if (is_string($this->_redis)) {
-            $this->_redis = $this->_di->getShared($this->_redis);
-        }
-
-        return (bool)$this->_redis->exists($this->_prefix . $key);
+        return (bool)$this->redis->exists($this->_prefix . $key);
     }
 }

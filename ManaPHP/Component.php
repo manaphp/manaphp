@@ -20,7 +20,6 @@ use Swoole\Coroutine;
  * @property-read \ManaPHP\IdentityInterface               $identity
  * @property-read \ManaPHP\Loader                          $loader
  * @property-read \ManaPHP\CacheInterface                  $cache
- * @property-read \ManaPHP\CacheInterface                  $redisCache
  * @property-read \ManaPHP\Security\RandomInterface        $random
  * @property-read \ManaPHP\Http\ClientInterface            $httpClient
  * @property-read \ManaPHP\Http\ClientInterface            $restClient

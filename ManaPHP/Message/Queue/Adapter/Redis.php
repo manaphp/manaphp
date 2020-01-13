@@ -7,14 +7,9 @@ use ManaPHP\Message\Queue;
 class Redis extends Queue
 {
     /**
-     * @var string|\Redis
-     */
-    protected $_redis = 'redis';
-
-    /**
      * @var string
      */
-    protected $_prefix = 'message_queue:';
+    protected $_prefix;
 
     /**
      * @var int[]
@@ -33,13 +28,7 @@ class Redis extends Queue
      */
     public function __construct($options = [])
     {
-        if (isset($options['redis'])) {
-            $this->_redis = $options['redis'];
-        }
-
-        if (isset($options['prefix'])) {
-            $this->_prefix = $options['prefix'];
-        }
+        $this->_prefix = $options['prefix'] ?? 'cache:messageQueue:';
 
         if (isset($options['priorities'])) {
             $this->_priorities = (array)$options['priorities'];
@@ -57,11 +46,7 @@ class Redis extends Queue
             throw new MisuseException(['`:priority` priority of `:topic is invalid`', 'priority' => $priority, 'topic' => $topic]);
         }
 
-        if (is_string($this->_redis)) {
-            $this->_redis = $this->_di->getShared($this->_redis);
-        }
-
-        $this->_redis->lPush($this->_prefix . $topic . ':' . $priority, $body);
+        $this->redis->lPush($this->_prefix . $topic . ':' . $priority, $body);
     }
 
     /**
@@ -81,15 +66,10 @@ class Redis extends Queue
             $this->_topicKeys[$topic] = $keys;
         }
 
-        if (is_string($this->_redis)) {
-            $redis = $this->_redis = $this->_di->getShared($this->_redis);
-        } else {
-            $redis = $this->_redis;
-        }
 
         if ($timeout === 0) {
             foreach ($this->_topicKeys[$topic] as $key) {
-                $r = $redis->rPop($key);
+                $r = $this->redis->rPop($key);
                 if ($r !== false) {
                     return $r;
                 }
@@ -97,7 +77,7 @@ class Redis extends Queue
 
             return false;
         } else {
-            $r = $redis->brPop($this->_topicKeys[$topic], $timeout);
+            $r = $this->redis->brPop($this->_topicKeys[$topic], $timeout);
             return $r[1] ?? false;
         }
     }
@@ -109,14 +89,8 @@ class Redis extends Queue
      */
     public function do_delete($topic)
     {
-        if (is_string($this->_redis)) {
-            $redis = $this->_redis = $this->_di->getShared($this->_redis);
-        } else {
-            $redis = $this->_redis;
-        }
-
         foreach ($this->_priorities as $priority) {
-            $redis->del($this->_prefix . $topic . ':' . $priority);
+            $this->redis->del($this->_prefix . $topic . ':' . $priority);
         }
     }
 
@@ -124,25 +98,19 @@ class Redis extends Queue
      * @param string $topic
      * @param int    $priority
      *
-     * @return         int
+     * @return int
      */
     public function do_length($topic, $priority = null)
     {
-        if (is_string($this->_redis)) {
-            $redis = $this->_redis = $this->_di->getShared($this->_redis);
-        } else {
-            $redis = $this->_redis;
-        }
-
         if ($priority === null) {
             $length = 0;
             foreach ($this->_priorities as $p) {
-                $length += $redis->lLen($this->_prefix . $topic . ':' . $p);
+                $length += $this->redis->lLen($this->_prefix . $topic . ':' . $p);
             }
 
             return $length;
         } else {
-            return $redis->lLen($this->_prefix . $topic . ':' . $priority);
+            return $this->redis->lLen($this->_prefix . $topic . ':' . $priority);
         }
     }
 }

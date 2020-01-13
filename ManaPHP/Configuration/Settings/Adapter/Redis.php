@@ -9,14 +9,9 @@ use ManaPHP\Exception\InvalidValueException;
 class Redis extends Component implements SettingsInterface
 {
     /**
-     * @var string|\ManaPHP\Redis
-     */
-    protected $_redis = 'redis';
-
-    /**
      * @var string
      */
-    protected $_prefix = 'settings:';
+    protected $_prefix;
 
     /**
      * Settings constructor.
@@ -25,13 +20,7 @@ class Redis extends Component implements SettingsInterface
      */
     public function __construct($options = [])
     {
-        if (isset($options['redis'])) {
-            $this->_redis = $options['redis'];
-        }
-
-        if (isset($options['prefix'])) {
-            $this->_prefix = $options['prefix'];
-        }
+        $this->_prefix = $options['prefix'] ?? 'settings:';
     }
 
     /**
@@ -41,11 +30,7 @@ class Redis extends Component implements SettingsInterface
      */
     public function get($key)
     {
-        if (is_string($this->_redis)) {
-            $this->_redis = $this->_di->getShared($this->_redis);
-        }
-
-        $value = json_parse($this->_redis->get($this->_prefix . $key) ?: '[]');
+        $value = json_parse($this->redis->get($this->_prefix . $key) ?: '[]');
         if (!is_array($value)) {
             throw new InvalidJsonException('the settings of `:key` key value is not json format', ['key' => $key]);
         }
@@ -64,11 +49,7 @@ class Redis extends Component implements SettingsInterface
             throw new InvalidValueException(['the settings of `:key` key value must be array', 'key' => $key]);
         }
 
-        if (is_string($this->_redis)) {
-            $this->_redis = $this->_di->getShared($this->_redis);
-        }
-
-        $this->_redis->set($this->_prefix . $key, json_stringify($value));
+        $this->redis->set($this->_prefix . $key, json_stringify($value));
 
         return $this;
     }
@@ -80,11 +61,7 @@ class Redis extends Component implements SettingsInterface
      */
     public function exists($key)
     {
-        if (is_string($this->_redis)) {
-            $this->_redis = $this->_di->getShared($this->_redis);
-        }
-
-        return $this->_redis->exists($this->_prefix . $key);
+        return $this->redis->exists($this->_prefix . $key);
     }
 
     /**
@@ -94,11 +71,7 @@ class Redis extends Component implements SettingsInterface
      */
     public function delete($key)
     {
-        if (is_string($this->_redis)) {
-            $this->_redis = $this->_di->getShared($this->_redis);
-        }
-
-        $this->_redis->delete($this->_prefix . $key);
+        $this->redis->del($this->_prefix . $key);
 
         return $this;
     }

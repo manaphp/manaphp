@@ -33,7 +33,7 @@ class RateLimitPlugin extends Plugin
             $this->_enabled = (bool)$options['enabled'];
         }
 
-        $this->_prefix = $options['prefix'] ?? 'cache:__rateLimitPlugin:' . $this->configure->id . ':';
+        $this->_prefix = $options['prefix'] ?? "cache:{$this->configure->id}:rateLimitPlugin:";
 
         if (isset($options['action_limit'])) {
             $this->_action_limit = $options['action_limit'];

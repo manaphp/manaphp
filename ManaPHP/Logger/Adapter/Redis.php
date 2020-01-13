@@ -8,12 +8,7 @@ class Redis extends Logger
     /**
      * @var string
      */
-    protected $_redis = 'redis';
-
-    /**
-     * @var string
-     */
-    protected $_key = 'log';
+    protected $_key;
 
     /**
      * Redis constructor.
@@ -24,13 +19,7 @@ class Redis extends Logger
     {
         parent::__construct($options);
 
-        if (isset($options['redis'])) {
-            $this->_redis = $options['redis'];
-        }
-
-        if (isset($options['key'])) {
-            $this->_key = $options['key'];
-        }
+        $this->_key = $options['key'] ?? "cache:{$this->configure->id}:logger";
     }
 
     /**
@@ -38,10 +27,6 @@ class Redis extends Logger
      */
     public function append($logs)
     {
-        if (is_string($this->_redis)) {
-            $this->_redis = $this->_di->getShared($this->_redis);
-        }
-
         foreach ($logs as $log) {
             $data = [
                 'date' => date('Y-m-d\TH:i:s', $log->timestamp) . sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000),
@@ -51,7 +36,7 @@ class Redis extends Logger
                 'level' => $log->level,
                 'location' => "$log->file:$log->line",
                 'message' => $log->message];
-            $this->_redis->rPush($this->_key, json_stringify($data));
+            $this->redis->rPush($this->_key, json_stringify($data));
         }
     }
 }
