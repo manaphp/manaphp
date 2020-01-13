@@ -53,4 +53,12 @@ abstract class Controller extends \ManaPHP\Controller
     {
         return [];
     }
+
+    /**
+     * @return array =[$field => ["etag", "max-age"=>1, "Cache-Control"=>"private, max-age=0, no-store, no-cache, must-revalidate"]]
+     */
+    public function getHttpCache()
+    {
+        return [];
+    }
 }
