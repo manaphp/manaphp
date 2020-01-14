@@ -33,7 +33,7 @@ class Redis extends Cache
      */
     public function do_get($key)
     {
-        return $this->redis->get($this->_prefix . $key);
+        return $this->redisCache->get($this->_prefix . $key);
     }
 
     /**
@@ -45,7 +45,7 @@ class Redis extends Cache
      */
     public function do_set($key, $value, $ttl)
     {
-        $this->redis->set($this->_prefix . $key, $value, $ttl);
+        $this->redisCache->set($this->_prefix . $key, $value, $ttl);
     }
 
     /**
@@ -55,7 +55,7 @@ class Redis extends Cache
      */
     public function do_delete($key)
     {
-        $this->redis->del($this->_prefix . $key);
+        $this->redisCache->del($this->_prefix . $key);
     }
 
     /**
@@ -65,6 +65,6 @@ class Redis extends Cache
      */
     public function do_exists($key)
     {
-        return (bool)$this->redis->exists($this->_prefix . $key);
+        return (bool)$this->redisCache->exists($this->_prefix . $key);
     }
 }

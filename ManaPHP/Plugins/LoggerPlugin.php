@@ -88,7 +88,7 @@ class LoggerPlugin extends Plugin
     protected function _readData($key)
     {
         if ($this->_ttl) {
-            $data = $this->redis->get($this->_prefix . $key);
+            $data = $this->redisCache->get($this->_prefix . $key);
         } else {
             $file = "@data/loggerPlugin/{$key}.zip";
             $data = LocalFS::fileExists($file) ? LocalFS::fileGet($file) : false;
@@ -109,7 +109,7 @@ class LoggerPlugin extends Plugin
     {
         $content = gzencode(json_stringify($data, JSON_PARTIAL_OUTPUT_ON_ERROR));
         if ($this->_ttl) {
-            $this->redis->set($this->_prefix . $key, $content, $this->_ttl);
+            $this->redisCache->set($this->_prefix . $key, $content, $this->_ttl);
         } else {
             LocalFS::filePut("@data/loggerPlugin/{$key}.zip", $content);
         }

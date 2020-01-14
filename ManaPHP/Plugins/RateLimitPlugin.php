@@ -74,32 +74,32 @@ class RateLimitPlugin extends Plugin
             $key = $this->_prefix . $dispatcher->getPath() . ':' . $uid . ':' . $period;
 
             if ($k === 0 && $burst !== null) {
-                if (($used = $this->redis->get($key)) === false) {
-                    $this->redis->setex($key, $period, '1');
+                if (($used = $this->redisCache->get($key)) === false) {
+                    $this->redisCache->setex($key, $period, '1');
                 } elseif ($used >= $limit) {
                     throw new TooManyRequestsException();
                 } else {
-                    if (($left = $this->redis->ttl($key)) <= 0) {
-                        $this->redis->setex($key, $period, '1');
+                    if (($left = $this->redisCache->ttl($key)) <= 0) {
+                        $this->redisCache->setex($key, $period, '1');
                     } else {
                         $ideal = (int)(($period - $left) * $limit / $period) + 1;
                         if ($used < $ideal) {
                             $diff = $ideal - $used;
-                            if ($this->redis->incrBy($key, $diff) === $diff) {
-                                $this->redis->setex($key, $period, '1');
+                            if ($this->redisCache->incrBy($key, $diff) === $diff) {
+                                $this->redisCache->setex($key, $period, '1');
                             }
                         } elseif ($used > $ideal + $burst) {
                             throw new TooManyRequestsException();
                         } else {
-                            if ($this->redis->incr($key) === 1) {
-                                $this->redis->expire($key, $period);
+                            if ($this->redisCache->incr($key) === 1) {
+                                $this->redisCache->expire($key, $period);
                             }
                         }
                     }
                 }
             } else {
-                if (($count = $this->redis->incr($key)) === 1) {
-                    $this->redis->expire($key, $period);
+                if (($count = $this->redisCache->incr($key)) === 1) {
+                    $this->redisCache->expire($key, $period);
                 } else {
                     if ($count > $limit) {
                         throw new TooManyRequestsException();

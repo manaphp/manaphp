@@ -34,7 +34,7 @@ class Redis extends Session
      */
     public function do_read($session_id)
     {
-        $data = $this->redis->get($this->_prefix . $session_id);
+        $data = $this->redisCache->get($this->_prefix . $session_id);
         return is_string($data) ? $data : '';
     }
 
@@ -47,7 +47,7 @@ class Redis extends Session
      */
     public function do_write($session_id, $data, $ttl)
     {
-        return $this->redis->set($this->_prefix . $session_id, $data, $ttl);
+        return $this->redisCache->set($this->_prefix . $session_id, $data, $ttl);
     }
 
     /**
@@ -58,7 +58,7 @@ class Redis extends Session
      */
     public function do_touch($session_id, $ttl)
     {
-        $this->redis->expire($this->_prefix . $session_id, $ttl);
+        $this->redisCache->expire($this->_prefix . $session_id, $ttl);
 
         return true;
     }
@@ -70,7 +70,7 @@ class Redis extends Session
      */
     public function do_destroy($session_id)
     {
-        $this->redis->del($this->_prefix . $session_id);
+        $this->redisCache->del($this->_prefix . $session_id);
 
         return true;
     }

@@ -106,7 +106,7 @@ class PageCachePlugin extends Plugin
 
         $context->if_none_match = $this->request->getServer('HTTP_IF_NONE_MATCH');
 
-        if (($etag = $this->redis->hGet($context->key, 'etag')) === false) {
+        if (($etag = $this->redisCache->hGet($context->key, 'etag')) === false) {
             return;
         }
 
@@ -115,12 +115,12 @@ class PageCachePlugin extends Plugin
             throw new AbortException();
         }
 
-        if (!$cache = $this->redis->hGetAll($context->key)) {
+        if (!$cache = $this->redisCache->hGetAll($context->key)) {
             return;
         }
 
         $this->response->setETag($cache['etag']);
-        $this->response->setMaxAge(max($this->redis->ttl($context->key), 1));
+        $this->response->setMaxAge(max($this->redisCache->ttl($context->key), 1));
 
         $this->response->setContentType($cache['content-type']);
 
@@ -151,12 +151,12 @@ class PageCachePlugin extends Plugin
 
         $etag = strlen($response->content) . '-' . md5($response->content);
 
-        $this->redis->hMSet($context->key, [
+        $this->redisCache->hMSet($context->key, [
             'ttl' => $context->ttl,
             'etag' => $etag,
             'content-type' => $response->headers['Content-Type'],
             'content' => gzencode($response->content)]);
-        $this->redis->expire($context->key, $context->ttl);
+        $this->redisCache->expire($context->key, $context->ttl);
 
         if ($context->if_none_match === $etag) {
             $this->response->setNotModified();
