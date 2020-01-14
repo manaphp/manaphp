@@ -27,7 +27,7 @@ class FiddlerController extends Controller
      * @param string $id application id
      * @param string $ip client ip
      */
-    public function webCommand($id = '', $ip = '')
+    public function defaultCommand($id = '', $ip = '')
     {
         $options = [];
 
@@ -39,22 +39,6 @@ class FiddlerController extends Controller
             $options['ip'] = $ip;
         }
 
-        $this->fiddlerPlugin->subscribeWeb($options);
-    }
-
-    /**
-     * fiddler cli app
-     *
-     * @param string $id application id
-     */
-    public function cliCommand($id = '')
-    {
-        $options = [];
-
-        if ($id) {
-            $options['id'] = $id;
-        }
-
-        $this->fiddlerPlugin->subscribeCli($options);
+        $this->fiddlerPlugin->subscribe($options);
     }
 }

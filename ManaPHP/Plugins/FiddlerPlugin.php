@@ -33,18 +33,29 @@ class FiddlerPlugin extends Plugin
     protected $_enabled = true;
 
     /**
+     * @var string
+     */
+    protected $_prefix;
+
+    /**
      * @var float
      */
     protected $_last_checked;
 
-    public function __construct()
+    /**
+     * FiddlerPlugin constructor.
+     *
+     * @param array $options
+     */
+    public function __construct($options = [])
     {
         $context = $this->_context;
 
         if (MANAPHP_CLI) {
-            $context->header = ['ip' => '-', 'url' => '-', 'uuid' => '-'];
-            $context->channel = 'manaphp:fiddler:cli:' . $this->configure->id;
+            $context->channel = $this->_prefix . $this->configure->id . ':-';
         }
+
+        $this->_prefix = $options['prefix'] ?? 'broker:fiddlerPlugin:';
 
         $this->attachEvent('logger:log', [$this, 'onLoggerLog']);
         $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
@@ -55,12 +66,7 @@ class FiddlerPlugin extends Plugin
     {
         $context = $this->_context;
 
-        $context->header = [
-            'ip' => $this->request->getClientIp(),
-            'url' => parse_url($this->request->getServer('REQUEST_URI'), PHP_URL_PATH),
-            'uuid' => bin2hex(random_bytes(4))
-        ];
-        $context->channel = 'manaphp:fiddler:web:' . $this->configure->id . ':' . $this->request->getClientIp();
+        $context->channel = $this->_prefix . $this->configure->id . ':' . $this->request->getClientIp();
 
         $current = microtime(true);
         if ($current - $this->_last_checked >= 1.0) {
@@ -79,7 +85,7 @@ class FiddlerPlugin extends Plugin
                 $server[$k] = $v;
             }
 
-            $this->publish('request', ['_REQUEST' => $this->request->get(), 'SERVER' => $server]);
+            $this->logger->debug(['_REQUEST' => $this->request->get(), 'SERVER' => $server], 'request.data');
         }
     }
 
@@ -89,13 +95,7 @@ class FiddlerPlugin extends Plugin
         $log = $eventArgs->data;
 
         if ($this->enabled()) {
-            $data = [
-                'category' => $log->category,
-                'location' => "$log->file:$log->line",
-                'level' => $log->level,
-                'message' => $log->message,
-            ];
-            $this->publish('logger', $data);
+            $this->publish('logger', (array)$log);
         }
     }
 
@@ -122,8 +122,8 @@ class FiddlerPlugin extends Plugin
 
         if ($this->enabled()) {
             $data = [
-                'uri' => $this->request->getServer('REQUEST_URI'),
                 'code' => $response->status_code,
+                'path' => $this->dispatcher->getPath(),
                 'body' => $response->content,
                 'elapsed' => round(microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT'), 3)];
             $this->publish('response', $data);
@@ -140,12 +140,12 @@ class FiddlerPlugin extends Plugin
     {
         $context = $this->_context;
 
-        $packet = $context->header;
+        $packet = [];
 
         $packet['type'] = $type;
         $packet['data'] = $data;
 
-        $r = $this->pubSub->publish($context->channel, json_stringify($packet));
+        $r = $this->redisBroker->call('publish', $context->channel, json_stringify($packet));
         if ($r <= 0) {
             $this->_enabled = false;
             $this->_last_checked = microtime(true);
@@ -157,100 +157,36 @@ class FiddlerPlugin extends Plugin
     /**
      * @param array $options
      */
-    public function subscribeWeb($options = [])
+    public function subscribe($options = [])
     {
         $id = $options['id'] ?? $this->configure->id;
-        if (isset($options['ip'])) {
-            $channel = 'manaphp:fiddler:web:' . $id . ":$options[ip]";
-        } else {
-            $channel = 'manaphp:fiddler:web:' . $id . ':*';
-        }
-        if (strpos($channel, '*') === false) {
-            echo "subscribe on `$channel`", PHP_EOL, PHP_EOL;
-            $this->pubSub->subscribe([$channel], function ($chan, $packet) {
+
+        if ($ip = $options['ip'] ?? false) {
+            $this->pubSub->subscribe(["{$this->_prefix}$id:$ip"], function ($chan, $packet) {
                 $this->processMessage($packet);
             });
         } else {
-            echo "psubscribe on `$channel`", PHP_EOL, PHP_EOL;
-            $this->pubSub->psubscribe([$channel], function ($chan, $packet) {
+            $this->pubSub->psubscribe(["{$this->_prefix}$id:*"], function ($chan, $packet) {
                 $this->processMessage($packet);
             });
         }
-    }
-
-    /**
-     * @param array $options
-     */
-    public function subscribeCli($options = [])
-    {
-        $id = $options['id'] ?? $this->configure->id;
-        $channel = 'manaphp:fiddler:cli:' . $id;
-
-        echo "subscribe on `$channel`", PHP_EOL, PHP_EOL;
-        $this->pubSub->subscribe([$channel], function ($chan, $packet) {
-            $this->processMessage($packet);
-        });
     }
 
     public function processMessage($packet)
     {
-        $ts = microtime(true);
-
         $message = json_parse($packet);
 
-        $ip = $message['ip'];
         $type = $message['type'];
-        $uuid = $message['uuid'];
 
-        $processor = self::PROCESSOR_PREFIX . $type;
-        if (!method_exists($this, $processor)) {
-            $processor = self::PROCESSOR_PREFIX . 'default';
+        if ($type === 'ping') {
+            return;
+        } elseif ($type === 'response') {
+            echo strtr('[path][elapsed][code] body', $message['data']), PHP_EOL;
+        } elseif ($type === 'logger') {
+            echo $this->process_logger($message['data']), PHP_EOL;
+        } else {
+            echo json_stringify($message['data']), PHP_EOL;
         }
-
-        $date = date('H:i:s', $ts) . sprintf('.%03d', ($ts - (int)$ts) * 1000);
-        $body = $this->$processor($message['data']);
-        echo "[$ip][$date][$uuid][$type]$body", PHP_EOL;
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return string
-     */
-    public function process_ping($data)
-    {
-        $ts = $data['timestamp'];
-
-        return 'remote time: ' . date('c', $ts) . sprintf('.%03d', ($ts - (int)$ts) * 1000);
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return string
-     */
-    public function process_response($data)
-    {
-        $format = '[:uri][:elapsed][:code][:content-type] :body';
-
-        $replaced = [];
-        $replaced[':uri'] = $data['uri'];
-        $replaced[':elapsed'] = $data['elapsed'];
-        $replaced[':code'] = $data['code'];
-        $replaced[':content-type'] = $data['content-type'];
-        $replaced[':body'] = $data['body'];
-
-        return strtr($format, $replaced);
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return string
-     */
-    public function process_default($data)
-    {
-        return json_stringify($data);
     }
 
     /**
@@ -260,13 +196,24 @@ class FiddlerPlugin extends Plugin
      */
     public function process_logger($log)
     {
-        $format = '[:level][:category][:location] :message';
+        $format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
         $replaced = [];
 
-        $replaced[':category'] = $log['category'];
-        $replaced[':location'] = $log['location'];
-        $replaced[':level'] = strtoupper($log['level']);
-        $replaced[':message'] = $log['message'];
+        $log = (object)$log;
+        $replaced[':date'] = date('Y-m-d\TH:i:s', $log->timestamp) . sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
+        $replaced[':client_ip'] = $log->client_ip ?: '-';
+        $replaced[':request_id'] = $log->request_id ?: '-';
+        $replaced[':request_id16'] = $log->request_id ? substr($log->request_id, 0, 16) : '-';
+        $replaced[':category'] = $log->category;
+        $replaced[':location'] = "$log->file:$log->line";
+        $replaced[':level'] = strtoupper($log->level);
+        if ($log->category === 'exception') {
+            $replaced[':message'] = '';
+            /** @noinspection SuspiciousAssignmentsInspection */
+            $replaced[':message'] = preg_replace('#[\\r\\n]+#', '\0' . strtr($this->_format, $replaced), $log->message);
+        } else {
+            $replaced[':message'] = $log->message;
+        }
 
         return strtr($format, $replaced);
     }
