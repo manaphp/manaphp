@@ -36,7 +36,7 @@ class Redis extends Logger
                 'level' => $log->level,
                 'location' => "$log->file:$log->line",
                 'message' => $log->message];
-            $this->redis->rPush($this->_key, json_stringify($data));
+            $this->redisBroker->rPush($this->_key, json_stringify($data));
         }
     }
 }

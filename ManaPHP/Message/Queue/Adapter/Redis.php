@@ -46,7 +46,7 @@ class Redis extends Queue
             throw new MisuseException(['`:priority` priority of `:topic is invalid`', 'priority' => $priority, 'topic' => $topic]);
         }
 
-        $this->redis->lPush($this->_prefix . $topic . ':' . $priority, $body);
+        $this->redisBroker->lPush($this->_prefix . $topic . ':' . $priority, $body);
     }
 
     /**
@@ -69,7 +69,7 @@ class Redis extends Queue
 
         if ($timeout === 0) {
             foreach ($this->_topicKeys[$topic] as $key) {
-                $r = $this->redis->rPop($key);
+                $r = $this->redisBroker->rPop($key);
                 if ($r !== false) {
                     return $r;
                 }
@@ -77,7 +77,7 @@ class Redis extends Queue
 
             return false;
         } else {
-            $r = $this->redis->brPop($this->_topicKeys[$topic], $timeout);
+            $r = $this->redisBroker->brPop($this->_topicKeys[$topic], $timeout);
             return $r[1] ?? false;
         }
     }
@@ -90,7 +90,7 @@ class Redis extends Queue
     public function do_delete($topic)
     {
         foreach ($this->_priorities as $priority) {
-            $this->redis->del($this->_prefix . $topic . ':' . $priority);
+            $this->redisBroker->del($this->_prefix . $topic . ':' . $priority);
         }
     }
 
@@ -105,12 +105,12 @@ class Redis extends Queue
         if ($priority === null) {
             $length = 0;
             foreach ($this->_priorities as $p) {
-                $length += $this->redis->lLen($this->_prefix . $topic . ':' . $p);
+                $length += $this->redisBroker->lLen($this->_prefix . $topic . ':' . $p);
             }
 
             return $length;
         } else {
-            return $this->redis->lLen($this->_prefix . $topic . ':' . $priority);
+            return $this->redisBroker->lLen($this->_prefix . $topic . ':' . $priority);
         }
     }
 }
