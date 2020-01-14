@@ -34,7 +34,10 @@ class Redis extends Component
      */
     public function __construct($uri = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0')
     {
-        $this->_uri = $uri ?: Di::getDefault()->getShared('redis')->getUri();
+        if ($uri === null) {
+            $uri = Di::getDefault()->getShared('redis')->getUri();
+        }
+        $this->_uri = $uri;
 
         if (preg_match('#timeout=([\d.]+)#', $uri, $matches) === 1) {
             $this->_timeout = (float)$matches[1];
