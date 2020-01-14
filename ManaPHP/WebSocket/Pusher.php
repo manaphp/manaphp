@@ -9,7 +9,7 @@ class Pusher extends Component implements PusherInterface
     /**
      * @var string
      */
-    protected $_prefix = 'ws:pusher:';
+    protected $_prefix = 'broker:pusher:';
 
     /**
      * @var string
