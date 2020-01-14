@@ -23,11 +23,6 @@ class Redis extends Component
     protected $_timeout = 1.0;
 
     /**
-     * @var array
-     */
-    protected $_types;
-
-    /**
      * @var string
      */
     protected $_serve_as = self::SERVE_AS_ANY;
@@ -45,26 +40,8 @@ class Redis extends Component
             $this->_timeout = (float)$matches[1];
         }
 
-        if (strpos($uri, ',') !== false) {
-            $urls = explode(',', $uri);
-            if ($urls[0]) {
-                $url = $urls[0];
-                $pool_size = preg_match('#pool_size=(\d+)#', $url, $matches) ? $matches[1] : 4;
-                $this->poolManager->add($this, ['class' => 'ManaPHP\Redis\Connection', $url], $pool_size);
-            }
-            array_shift($urls);
-
-            $this->_types = [];
-            foreach ($urls as $url) {
-                $this->_types[] = $type = preg_match('#type=([^=?]+)#', $url, $matches) ? rtrim($matches[1], ':') . ':' : 'cache:';
-                $pool_size = preg_match('#pool_size=(\d+)#', $url, $matches) ? $matches[1] : 4;
-                $this->poolManager->add($this, ['class' => 'ManaPHP\Redis\Connection', $url], $pool_size, $type);
-            }
-        } else {
-            $pool_size = preg_match('#pool_size=(\d+)#', $uri, $matches) ? $matches[1] : 4;
-
-            $this->poolManager->add($this, ['class' => 'ManaPHP\Redis\Connection', $uri], $pool_size);
-        }
+        $pool_size = preg_match('#pool_size=(\d+)#', $uri, $matches) ? $matches[1] : 4;
+        $this->poolManager->add($this, ['class' => 'ManaPHP\Redis\Connection', $uri], $pool_size);
     }
 
     public function __destruct()
@@ -84,38 +61,16 @@ class Redis extends Component
      * @param string $name
      * @param array  $arguments
      *
-     * @return string
-     */
-    protected function _getType(/** @noinspection PhpUnusedParameterInspection */ $name, $arguments)
-    {
-        if ($this->_types && isset($arguments[0]) && is_string($arguments[0])) {
-            $key = $arguments[0];
-            foreach ($this->_types as $type) {
-                if (strncmp($key, $type, strlen($type)) === 0) {
-                    return $type;
-                }
-            }
-        }
-
-        return 'default';
-    }
-
-    /**
-     * @param string $name
-     * @param array  $arguments
-     *
      * @return bool|mixed
      */
     public function call($name, ...$arguments)
     {
-        $type = $this->_types ? $this->_getType($name, $arguments) : 'default';
-
-        $connection = $this->poolManager->pop($this, $this->_timeout, $type);
+        $connection = $this->poolManager->pop($this, $this->_timeout);
 
         try {
             $r = $connection->call($name, $arguments);
         } finally {
-            $this->poolManager->push($this, $connection, $type);
+            $this->poolManager->push($this, $connection);
         }
 
         return $r;
@@ -131,14 +86,12 @@ class Redis extends Component
     {
         $this->fireEvent('redis:calling', ['name' => $name, 'arguments' => $arguments]);
 
-        $type = $this->_types ? $this->_getType($name, $arguments) : 'default';
-
-        $connection = $this->poolManager->pop($this, $this->_timeout, $type);
+        $connection = $this->poolManager->pop($this, $this->_timeout);
 
         try {
             $r = $connection->call($name, $arguments);
         } finally {
-            $this->poolManager->push($this, $connection, $type);
+            $this->poolManager->push($this, $connection);
         }
 
         $this->fireEvent('redis:called', ['name' => $name, 'arguments' => $arguments, 'return' => $r]);
