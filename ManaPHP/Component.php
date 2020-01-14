@@ -24,7 +24,9 @@ use Swoole\Coroutine;
  * @property-read \ManaPHP\Http\ClientInterface            $httpClient
  * @property-read \ManaPHP\Http\ClientInterface            $restClient
  * @property-read \ManaPHP\DbInterface                     $db
- * @property-read \Redis|\ManaPHP\Redis                    $redis
+ * @property-read \Redis|\ManaPHP\Redis\ServeAs\Cache      $redisCache
+ * @property-read \Redis|\ManaPHP\Redis\ServeAs\Db         $redisDb
+ * @property-read \Redis|\ManaPHP\Redis\ServeAs\Broker     $redisBroker
  * @property-read \ManaPHP\MongodbInterface                $mongodb
  * @property-read \ManaPHP\AmqpInterface                   $rabbitmq
  * @property-read \Elasticsearch\Client                    $elasticsearch

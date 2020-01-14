@@ -34,7 +34,9 @@ use ManaPHP\Exception\NotSupportedException;
  * @property-read \ManaPHP\RendererInterface               $renderer
  * @property-read \ManaPHP\Configuration\Configure         $configure
  * @property-read \ManaPHP\Configuration\SettingsInterface $settings
- * @property-read \Redis|\ManaPHP\Redis                    $redis
+ * @property-read \Redis|\ManaPHP\Redis\ServeAs\Cache      $redisCache
+ * @property-read \Redis|\ManaPHP\Redis\ServeAs\Db         $redisDb
+ * @property-read \Redis|\ManaPHP\Redis\ServeAs\Broker     $redisBroker
  * @property-read \ManaPHP\CacheInterface                  $cache
  * @property-read \ManaPHP\CacheInterface                  $viewsCache
  * @property-read \ManaPHP\Http\ClientInterface            $httpClient
@@ -68,6 +70,11 @@ class Di implements DiInterface
      * @var array
      */
     protected $_instances = [];
+
+    /**
+     * @var array
+     */
+    protected $_aliases = [];
 
     /**
      * First DI build
