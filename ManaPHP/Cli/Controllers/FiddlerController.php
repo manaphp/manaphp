@@ -22,9 +22,9 @@ class FiddlerController extends Controller
     }
 
     /**
-     * fiddler web app
+     * fiddler app
      *
-     * @param string $id application id
+     * @param string $id app id
      * @param string $ip client ip
      */
     public function defaultCommand($id = '', $ip = '')
