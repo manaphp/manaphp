@@ -1280,7 +1280,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         $this->fireEvent('model:deleting');
 
         $db = $this->_di->getShared($db);
-        
+
         $db->delete($table, [$primaryKey => $this->$primaryKey]);
 
         $this->fireEvent('model:deleted');
