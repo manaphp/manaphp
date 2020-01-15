@@ -33,7 +33,7 @@ class SessionController extends Controller
             $this->cookies->set('CLIENT_UDID', $udid, strtotime('10 year'), '/');
         }
 
-        if ($this->configure->debug) {
+        if ($this->configure->env !== 'prod') {
             $this->session->remove('captcha');
         } else {
             $this->captcha->verify();

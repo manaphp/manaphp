@@ -29,7 +29,6 @@ class Admin extends Model
     public $updated_time;
 
     /**
-     *
      * @return string
      */
     public function getTable()
@@ -82,9 +81,9 @@ class Admin extends Model
 
     public function update()
     {
-        if (($password = input('password', ['default' => '', self::PASSWORD_LENGTH])) !== '') {
+        if ($this->hasChanged(['password'])) {
             $this->salt = bin2hex(random_bytes(8));
-            $this->password = $this->hashPassword($password);
+            $this->password = $this->hashPassword($this->password);
         }
 
         return parent::update();

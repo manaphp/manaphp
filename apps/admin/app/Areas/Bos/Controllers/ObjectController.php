@@ -2,6 +2,7 @@
 namespace App\Areas\Bos\Controllers;
 
 use ManaPHP\Mvc\Controller;
+use Throwable;
 
 class ObjectController extends Controller
 {
@@ -19,7 +20,11 @@ class ObjectController extends Controller
         $filters['page'] = input('page', 1);
         $filters['size'] = input('size', 10);
 
-        return $this->bosClient->listObjects($bucket_name, $filters);
+        try {
+            return $this->bosClient->listObjects($bucket_name, $filters);
+        } catch (Throwable $throwable) {
+            return $throwable->getMessage();
+        }
     }
 
     public function getUploadTokenAction($bucket_name, $key, $insert_only)

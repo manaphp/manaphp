@@ -1,7 +1,10 @@
 <div class="search-box">
-    <el-input v-model.trim="request.admin_name" placeholder="用户名" size="small" clearable style="width: 130px"></el-input>
+    <el-input v-model.trim="request.admin_name" placeholder="用户名" size="small" clearable
+              style="width: 130px"></el-input>
     <el-input v-model.trim="request.path" placeholder="请求路径" size="small" clearable style="width: 150px;"></el-input>
-    <el-input v-model.trim="request.client_ip" placeholder="客户端IP" size="small" clearable style="width: 130px"></el-input>
+    <el-input v-model.trim="request.tag" placeholder="tag" size="small" clearable style="width: 150px;"></el-input>
+    <el-input v-model.trim="request.client_ip" placeholder="客户端IP" size="small" clearable
+              style="width: 130px"></el-input>
     <date-picker v-model="request.created_time"></date-picker>
 </div>
 <el-dialog title="详情" :visible.sync="detailVisible">
@@ -10,6 +13,7 @@
         <el-form-item label="用户名:">@{{ detail.admin_name }}</el-form-item>
         <el-form-item label="请求方法:">@{{ detail.method }}</el-form-item>
         <el-form-item label="请求路径:">@{{ detail.path }}</el-form-item>
+        <el-form-item label="tag:">@{{ detail.tag }}</el-form-item>
         <el-form-item label="请求URL:">@{{ detail.url }}</el-form-item>
         <el-form-item label="客户端IP:">@{{ detail.client_ip }}</el-form-item>
         <el-form-item label="客户端ID:">@{{ detail.client_udid }}</el-form-item>
@@ -26,8 +30,9 @@
         <el-table-column prop="id" label="记录ID" width="100"></el-table-column>
         <el-table-column prop="admin_name" label="用户名" width="120"></el-table-column>
         <el-table-column prop="method" label="请求方式" width="100"></el-table-column>
-        <el-table-column prop="path" label="请求路径" width="200" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="url" label="请求URL" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="path" label="请求路径" width="250" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="tag" label="tag" width="100"></el-table-column>
+        <el-table-column prop="data" label="data" show-overflow-tooltip></el-table-column>
         <el-table-column prop="client_ip" label="客户端IP" width="120"></el-table-column>
         <el-table-column prop="client_udid" label="客户端ID" width="200"></el-table-column>
         <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
@@ -48,6 +53,7 @@
                 request: {
                     admin_name: '',
                     path: '',
+                    tag: '',
                     client_ip: '',
                     client_udid: '',
                     created_time: [],

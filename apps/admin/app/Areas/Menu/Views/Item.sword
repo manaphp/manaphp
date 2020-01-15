@@ -9,7 +9,7 @@
     <el-form :model="create" ref="create" v-if="createVisible">
         <el-form-item label="组名:">
             <el-select v-model="create.group_id" size="small">
-                <el-option v-for="group in groups" :key="group.group_id" :label="group.group_name" :value="group.group_id"></el-option>
+                <el-option v-for="group in groups" :key="group.group_id" :label="group.group_name" :value="String(group.group_id)"></el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="名称:" prop="item_name">
