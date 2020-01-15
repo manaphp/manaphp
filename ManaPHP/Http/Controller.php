@@ -47,7 +47,7 @@ abstract class Controller extends \ManaPHP\Controller
     }
 
     /**
-     * @return array
+     * @return array =[$field=>[60,'burst'=>3],'*'=>'','index'=>'','list'=>'','detail'=>'','captcha'=>'', 'create'=>'','update'=>'','edit'=>'', 'save'=>'','delete'=>'']
      */
     public function getRateLimit()
     {
@@ -63,7 +63,7 @@ abstract class Controller extends \ManaPHP\Controller
     }
 
     /**
-     * @return array
+     * @return array =['*'=>'', 'index'=>'','list'=>'','detail'=>'','captcha'=>'', 'create'=>'','update'=>'','edit'=>'', 'save'=>'','delete'=>'']
      */
     public function getPageCache()
     {
