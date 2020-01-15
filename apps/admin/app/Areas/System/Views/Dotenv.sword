@@ -1,0 +1,93 @@
+<div class="search-box">
+    <el-button @click="createVisible=true" type="primary" icon="el-icon-plus" size="small">新增</el-button>
+    <el-select v-model="request.app_id" size="small" style="width: 150px">
+        <el-option v-for="app in apps" :key="app" :label="app" :value="app"></el-option>
+    </el-select>
+</div>
+<el-dialog title="新增" :visible.sync="createVisible">
+    <el-form :model="create" ref="create">
+        <el-form-item label="ID:" prop="app_id">
+            <el-input v-model="create.app_id" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="值:" prop="env">
+            <el-input v-model.trim="create.env" auto-complete="off" type="textarea" rows="10"></el-input>
+        </el-form-item>
+    </el-form>
+    <span slot="footer">
+        <el-button type="primary" @click="do_create">创建</el-button>
+        <el-button @click="createVisible = false; $refs.create.resetFields()">取消</el-button>
+    </span>
+</el-dialog>
+<el-dialog title="编辑" :visible.sync="editVisible">
+    <el-form :model="edit">
+        <el-form-item label="app_id:">
+            <el-input v-model="edit.app_id" auto-complete="off" disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label=".env:" prop="env">
+            <el-input v-model="edit.env" auto-complete="off" type="textarea" rows="10"></el-input>
+        </el-form-item>
+    </el-form>
+    <div slot="footer">
+        <el-button type="primary" @click="do_edit">保存</el-button>
+        <el-button @click="editVisible=false">取消</el-button>
+    </div>
+</el-dialog>
+
+<div class="result-box">
+    <el-table :data="response.current" border size="small">
+        <el-table-column type="index" label="#" width="50"></el-table-column>
+        <el-table-column prop="app_id" label="app_id" width="300"></el-table-column>
+        <el-table-column label=".env">
+            <template slot-scope="scope">
+                <pre>@{{scope.row.env}}</pre>
+            </template>
+        </el-table-column>
+        <el-table-column fixed="right" label="操作" width="150">
+            <template slot-scope="scope">
+                <el-button @click="show_edit(scope.row)" size="mini" type="primary">编辑</el-button>
+                <el-button @click="do_delete(scope.row)" size="mini" type="danger">删除</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+
+    <el-table :data="response.logs" border size="small">
+        <el-table-column type="index" label="#" width="50"></el-table-column>
+        <el-table-column prop="app_id" label="app_id" width="300"></el-table-column>
+        <el-table-column label=".env">
+            <template slot-scope="scope">
+                <pre>@{{scope.row.env}}</pre>
+            </template>
+        </el-table-column>
+        <el-table-column prop="created_time" label="修改时间" :formatter="fDate" width="150"></el-table-column>
+    </el-table>
+</div>
+@section('script')
+    <script>
+
+        vm = new Vue({
+            el: '#app',
+            data: {
+                request: {
+                    app_id: ''
+                },
+                response: {},
+                createVisible: false,
+                create: {
+                    app_id: '',
+                    env: '',
+                },
+                apps: [],
+                editVisible: false,
+                edit: {
+                    app_id: '',
+                    env: '',
+                }
+            },
+            created: function () {
+                this.ajax_get('apps', function (res) {
+                    this.apps = res;
+                })
+            }
+        });
+    </script>
+@append
