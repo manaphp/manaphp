@@ -1,11 +1,10 @@
 <?php
-
-namespace App\Controllers;
+namespace App\Areas\System\Controllers;
 
 use ManaPHP\Mvc\Controller;
 use ManaPHP\Version;
 
-class SystemInformationController extends Controller
+class InformationController extends Controller
 {
     public function indexView()
     {
