@@ -25,12 +25,10 @@ class FiddlerPluginContext
  */
 class FiddlerPlugin extends Plugin
 {
-    const PROCESSOR_PREFIX = 'process_';
-
     /**
      * @var bool
      */
-    protected $_enabled = true;
+    protected $_watched = true;
 
     /**
      * @var string
@@ -71,10 +69,10 @@ class FiddlerPlugin extends Plugin
         $current = microtime(true);
         if ($current - $this->_last_checked >= 1.0) {
             $this->_last_checked = $current;
-            $this->_enabled = $this->publish('ping', ['timestamp' => round($current, 3)]) > 0;
+            $this->_watched = $this->publish('ping', ['timestamp' => round($current, 3)]) > 0;
         }
 
-        if ($this->_enabled) {
+        if ($this->_watched) {
             $this->logger->setLevel(Logger::LEVEL_DEBUG);
 
             $server = [];
@@ -94,7 +92,7 @@ class FiddlerPlugin extends Plugin
         /** @var \ManaPHP\Logger\Log $log */
         $log = $eventArgs->data;
 
-        if ($this->enabled()) {
+        if ($this->watched()) {
             $this->publish('logger', (array)$log);
         }
     }
@@ -102,17 +100,17 @@ class FiddlerPlugin extends Plugin
     /**
      * @return bool
      */
-    public function enabled()
+    public function watched()
     {
         if (MANAPHP_CLI) {
             $current = microtime(true);
             if ($this->_last_checked && $current - $this->_last_checked >= 1.0) {
                 $this->_last_checked = $current;
-                $this->_enabled = $this->publish('ping', ['timestamp' => round($current, 3)]) > 0;
+                $this->_watched = $this->publish('ping', ['timestamp' => round($current, 3)]) > 0;
             }
         }
 
-        return $this->_enabled;
+        return $this->_watched;
     }
 
     public function onResponseSent(EventArgs $eventArgs)
@@ -120,7 +118,7 @@ class FiddlerPlugin extends Plugin
         /** @var \ManaPHP\Http\ResponseContext $response */
         $response = $eventArgs->data['response'];
 
-        if ($this->enabled()) {
+        if ($this->watched()) {
             $data = [
                 'code' => $response->status_code,
                 'path' => $this->dispatcher->getPath(),
@@ -147,7 +145,7 @@ class FiddlerPlugin extends Plugin
 
         $r = $this->redisBroker->call('publish', $context->channel, json_stringify($packet));
         if ($r <= 0) {
-            $this->_enabled = false;
+            $this->_watched = false;
             $this->_last_checked = microtime(true);
         }
 
@@ -210,7 +208,7 @@ class FiddlerPlugin extends Plugin
         if ($log->category === 'exception') {
             $replaced[':message'] = '';
             /** @noinspection SuspiciousAssignmentsInspection */
-            $replaced[':message'] = preg_replace('#[\\r\\n]+#', '\0' . strtr($this->_format, $replaced), $log->message);
+            $replaced[':message'] = preg_replace('#[\\r\\n]+#', '\0' . strtr($format, $replaced), $log->message);
         } else {
             $replaced[':message'] = $log->message;
         }
