@@ -51,6 +51,8 @@ class Application extends \ManaPHP\Http\Application
         } catch (AbortException $exception) {
             null;
         } catch (Throwable $throwable) {
+            $this->fireEvent('request:exception', $throwable);
+
             $this->handleException($throwable);
         }
 

@@ -70,6 +70,8 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         } catch (AbortException $exception) {
             null;
         } catch (Throwable $throwable) {
+            $this->fireEvent('request:exception', $throwable);
+
             $this->handleException($throwable);
         }
 
