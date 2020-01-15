@@ -80,7 +80,7 @@ class Router extends Component implements RouterInterface
     {
         if ($useDefaultRoutes) {
             $this->_default_routes = [
-                new Route('/(?:{controller}(?:/{action:\d[-\w]*$|[a-z]\w*}(?:/{params})?)?)?')
+                new Route('/(?:{controller}(?:/{action:\d[-\w]*$|[a-zA-Z]\w*}(?:/{params})?)?)?')
             ];
         }
     }
@@ -173,7 +173,7 @@ class Router extends Component implements RouterInterface
     {
         if ($method === null && is_string($paths) && strpos($paths, '\\') !== false) {
             if (strpos($pattern, '{action}') === false && strpos($pattern, '/:action') === false) {
-                $pattern = rtrim($pattern, '/') . '(?:/{action:\d[-\w]*$|[a-z]\w*}(?:/{params})?)?';
+                $pattern = rtrim($pattern, '/') . '(?:/{action:\d[-\w]*$|[a-zA-Z]\w*}(?:/{params})?)?';
             }
         }
 

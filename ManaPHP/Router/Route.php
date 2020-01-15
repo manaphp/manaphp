@@ -41,7 +41,7 @@ class Route implements RouteInterface
     public function __construct($pattern, $paths = null, $method = null)
     {
         $this->_pattern = $pattern;
-        $this->_compiledPattern = $this->_compilePattern($method !== 'REST' ? $pattern : ($pattern . '(/{params:[a-z0-9_-]+})?'));
+        $this->_compiledPattern = $this->_compilePattern($method !== 'REST' ? $pattern : ($pattern . '(/{params:[-\w]+})?'));
         $this->_paths = $this->_normalizePaths($paths);
         $this->_method = $method;
     }
@@ -57,9 +57,9 @@ class Route implements RouteInterface
     {
         if (strpos($pattern, '{') !== false) {
             $tr = [
-                '{area}' => '{area:[a-z]\w*}',
-                '{controller}' => '{controller:[a-z]\w*}',
-                '{action}' => '{action:[a-z]\w*}',
+                '{area}' => '{area:[a-zA-Z]\w*}',
+                '{controller}' => '{controller:[a-zA-Z]\w*}',
+                '{action}' => '{action:[a-zA-Z]\w*}',
                 '{params}' => '{params:.*}',
                 '{id}' => '{id:[^/]+}',
                 ':int' => ':\d+',
