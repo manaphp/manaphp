@@ -13,11 +13,6 @@ class HttpCachePlugin extends Plugin
     protected $_enabled = true;
 
     /**
-     * @var bool
-     */
-    protected $_force_etag = false;
-
-    /**
      * HttpCachePlugin constructor.
      *
      * @param array $options
@@ -26,10 +21,6 @@ class HttpCachePlugin extends Plugin
     {
         if (isset($options['enabled'])) {
             $this->_enabled = (bool)$options['enabled'];
-        }
-
-        if (isset($options['force_etag'])) {
-            $this->_force_etag = (bool)$options['force_etag'];
         }
 
         if ($this->_enabled) {
@@ -51,31 +42,24 @@ class HttpCachePlugin extends Plugin
 
         $httpCache = $controller->getHttpCache();
         if ($httpCache === [] || ($httpCache = $httpCache[$action] ?? $httpCache['*'] ?? false) === false) {
-            if (!$this->_force_etag) {
-                return;
-            }
-
-            $httpCache = ['etag'];
+            return;
         }
 
         foreach ((array)$httpCache as $k => $v) {
             if (is_int($k)) {
                 if ($v === 'etag' || $v === 'ETag') {
-                    $if_none_match = $this->request->getServer('HTTP_IF_NONE_MATCH');
-                    if ($if_none_match === ''
-                        || ($pos = strpos($if_none_match, '-')) === false
-                        || (int)substr($if_none_match, 0, $pos) !== strlen($response->content)
-                    ) {
-                        $response->headers['ETag'] = strlen($response->content) . '-' . md5($response->content);
+                    if (isset($response->headers['ETag'])) {
+                        $etag = $response->headers['ETag'];
                     } else {
                         $etag = strlen($response->content) . '-' . md5($response->content);
-                        if ($if_none_match === $etag) {
-                            $response->status_code = 304;
-                            $response->status_text = 'Not Modified';
-                            return;
-                        } else {
-                            $response->headers['ETag'] = $etag;
-                        }
+                        $response->headers['ETag'] = $etag;
+                    }
+
+                    $if_none_match = $this->request->getServer('HTTP_IF_NONE_MATCH');
+                    if ($if_none_match === $etag) {
+                        $response->status_code = 304;
+                        $response->status_text = 'Not Modified';
+                        return;
                     }
                 } else {
                     $response->headers['Cache-Control'] = $v;
