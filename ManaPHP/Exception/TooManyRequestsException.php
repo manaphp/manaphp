@@ -5,6 +5,11 @@ use ManaPHP\Exception;
 
 class TooManyRequestsException extends Exception
 {
+    public function __construct($message = 'Too Many Request', $code = 0, $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
+
     public function getStatusCode()
     {
         /**
