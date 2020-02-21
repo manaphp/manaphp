@@ -188,7 +188,7 @@ class FiddlerPlugin extends Plugin
     }
 
     /**
-     * @param array $log
+     * @param array|object $log
      *
      * @return string
      */
