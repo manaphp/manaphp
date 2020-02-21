@@ -99,7 +99,7 @@ class TracerPlugin extends Plugin
         } else {
             if (in_array($name, ['get', 'set'], true)) {
                 $key = $arguments[0];
-                if (strpos($key, 'cache:__') !== false) {
+                if (strpos($key, 'cache:') === 0) {
                     return;
                 }
             }
