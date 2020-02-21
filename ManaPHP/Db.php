@@ -109,13 +109,13 @@ class Db extends Component implements DbInterface
         }
 
         if (strpos($uri, ',') !== false) {
-            $host_str = parse_url($uri, PHP_URL_HOST);
-            if (strpos($host_str, ',') === false) {
+            $hosts = parse_url($uri, PHP_URL_HOST);
+            if (strpos($hosts, ',') === false) {
                 $urls = explode(',', $uri);
             } else {
                 $urls = [];
-                foreach (explode(',', $host_str) as $url) {
-                    $urls[] = str_replace($host_str, $url, $uri);
+                foreach (explode(',', $hosts) as $host) {
+                    $urls[] = str_replace($hosts, $host, $uri);
                 }
             }
 
