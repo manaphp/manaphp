@@ -40,11 +40,11 @@ class Connection extends Component implements ConnectionInterface
     /**
      * Connection constructor.
      *
-     * @param string $uri
+     * @param string $url
      */
-    public function __construct($uri)
+    public function __construct($url)
     {
-        $this->_dsn = $uri;
+        $this->_dsn = $url;
     }
 
     /**

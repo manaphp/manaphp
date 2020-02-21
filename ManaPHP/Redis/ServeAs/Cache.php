@@ -5,10 +5,10 @@ use ManaPHP\Redis;
 
 class Cache extends Redis
 {
-    public function __construct($uri = null)
+    public function __construct($url = null)
     {
         $this->_serve_as = self::SERVE_AS_CACHE;
 
-        parent::__construct($uri);
+        parent::__construct($url);
     }
 }

@@ -15,7 +15,7 @@ class Redis extends Component
     /**
      * @var string
      */
-    protected $_uri;
+    protected $_url;
 
     /**
      * @var float
@@ -30,21 +30,21 @@ class Redis extends Component
     /**
      * Redis constructor.
      *
-     * @param string $uri
+     * @param string $url
      */
-    public function __construct($uri = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0')
+    public function __construct($url = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0')
     {
-        if ($uri === null) {
-            $uri = Di::getDefault()->getShared('redis')->getUri();
+        if ($url === null) {
+            $url = Di::getDefault()->getShared('redis')->getUrl();
         }
-        $this->_uri = $uri;
+        $this->_url = $url;
 
-        if (preg_match('#timeout=([\d.]+)#', $uri, $matches) === 1) {
+        if (preg_match('#timeout=([\d.]+)#', $url, $matches) === 1) {
             $this->_timeout = (float)$matches[1];
         }
 
-        $pool_size = preg_match('#pool_size=(\d+)#', $uri, $matches) ? $matches[1] : 4;
-        $this->poolManager->add($this, ['class' => 'ManaPHP\Redis\Connection', $uri], $pool_size);
+        $pool_size = preg_match('#pool_size=(\d+)#', $url, $matches) ? $matches[1] : 4;
+        $this->poolManager->add($this, ['class' => 'ManaPHP\Redis\Connection', $url], $pool_size);
     }
 
     public function __destruct()
@@ -55,9 +55,9 @@ class Redis extends Component
     /**
      * @return string
      */
-    public function getUri()
+    public function getUrl()
     {
-        return $this->_uri;
+        return $this->_url;
     }
 
     /**

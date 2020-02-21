@@ -74,7 +74,7 @@ class Db extends Component implements DbInterface
     /**
      * @var string
      */
-    protected $_uri;
+    protected $_url;
 
     /**
      * @var bool
@@ -98,7 +98,7 @@ class Db extends Component implements DbInterface
      */
     public function __construct($uri)
     {
-        $this->_uri = $uri;
+        $this->_url = $uri;
 
         if (strpos($uri, 'timeout=') !== false && preg_match('#timeout=([\d.]+)#', $uri, $matches) === 1) {
             $this->_timeout = (float)$matches[1];

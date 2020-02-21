@@ -13,16 +13,16 @@ class Mssql extends Connection
     /**
      * SqlSrv constructor.
      *
-     * @param string $uri
+     * @param string $url
      */
-    public function __construct($uri)
+    public function __construct($url)
     {
-        $this->_uri = $uri;
+        $this->_url = $url;
 
-        $parts = parse_url($uri);
+        $parts = parse_url($url);
 
         if ($parts['scheme'] !== 'mssql') {
-            throw new DsnFormatException(['`:uri` is invalid, `:scheme` scheme is not recognized', 'uri' => $uri, 'scheme' => $parts['scheme']]);
+            throw new DsnFormatException(['`:url` is invalid, `:scheme` scheme is not recognized', 'url' => $url, 'scheme' => $parts['scheme']]);
         }
 
         $this->_username = $parts['user'] ?? null;

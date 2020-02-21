@@ -17,7 +17,7 @@ class Amqp extends Component implements AmqpInterface
     /**
      * @var string
      */
-    protected $_uri;
+    protected $_url;
 
     /**
      * @var \AMQPConnection
@@ -44,21 +44,21 @@ class Amqp extends Component implements AmqpInterface
     /**
      * Amqp constructor.
      *
-     * @param string $uri
+     * @param string $url
      */
-    public function __construct($uri = null)
+    public function __construct($url = null)
     {
-        $this->_uri = $uri;
+        $this->_url = $url;
 
         $credentials = [];
 
         $query = [];
 
-        if ($uri) {
-            $parts = parse_url($uri);
+        if ($url) {
+            $parts = parse_url($url);
 
             if ($parts['scheme'] !== 'amqp') {
-                throw new DsnFormatException(['`:scheme` scheme is unknown: `:uri`', 'scheme' => $parts['scheme'], 'uri' => $uri]);
+                throw new DsnFormatException(['`:scheme` scheme is unknown: `:url`', 'scheme' => $parts['scheme'], 'url' => $url]);
             }
 
             if (isset($parts['host'])) {
@@ -98,16 +98,16 @@ class Amqp extends Component implements AmqpInterface
             }
 
             if (!$r) {
-                throw new ConnectionException(['connect to `:uri` amqp broker failed', 'uri' => $this->_uri]);
+                throw new ConnectionException(['connect to `:url` amqp broker failed', 'url' => $this->_url]);
             }
         } catch (\Exception $e) {
-            throw new ConnectionException(['connect to `:uri` amqp broker failed: :error', 'uri' => $this->_uri, 'error' => $e->getMessage()]);
+            throw new ConnectionException(['connect to `:url` amqp broker failed: :error', 'url' => $this->_url, 'error' => $e->getMessage()]);
         }
 
         try {
             $this->_channel = new AMQPChannel($this->_connection);
         } catch (\Exception $e) {
-            throw new ConnectionException(['create channel with `:uri` uri failed: :error', 'uri' => $this->_uri, 'error' => $e->getMessage()]);
+            throw new ConnectionException(['create channel with `:url` url failed: :error', 'url' => $this->_url, 'error' => $e->getMessage()]);
         }
         try {
             $this->_exchanges[''] = new AMQPExchange($this->_channel);

@@ -18,16 +18,16 @@ class Mysql extends Connection
     /**
      * \ManaPHP\Db\Adapter constructor
      *
-     * @param string $uri
+     * @param string $url
      */
-    public function __construct($uri = 'mysql://root@localhost/test?charset=utf8')
+    public function __construct($url = 'mysql://root@localhost/test?charset=utf8')
     {
-        $this->_uri = $uri;
+        $this->_url = $url;
 
-        $parts = parse_url($uri);
+        $parts = parse_url($url);
 
         if ($parts['scheme'] !== 'mysql') {
-            throw new DsnFormatException(['`:url` is invalid, `:scheme` scheme is not recognized', 'url' => $uri, 'scheme' => $parts['scheme']]);
+            throw new DsnFormatException(['`:url` is invalid, `:scheme` scheme is not recognized', 'url' => $url, 'scheme' => $parts['scheme']]);
         }
 
         $this->_username = $parts['user'] ?? 'root';

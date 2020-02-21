@@ -12,7 +12,7 @@ class Connection extends Component
     /**
      * @var string
      */
-    protected $_uri;
+    protected $_url;
 
     /**
      * @var string
@@ -62,18 +62,18 @@ class Connection extends Component
     /**
      * Connection constructor.
      *
-     * @param string|\ManaPHP\Redis\Connection $uri
+     * @param string|\ManaPHP\Redis\Connection $url
      *
      * @throws \ManaPHP\Exception\DsnFormatException
      */
-    public function __construct($uri)
+    public function __construct($url)
     {
-        $this->_uri = $uri;
+        $this->_url = $url;
 
-        $parts = parse_url($uri);
+        $parts = parse_url($url);
 
         if ($parts['scheme'] !== 'redis') {
-            throw new DsnFormatException(['`:uri` is invalid, `:scheme` scheme is not recognized', 'uri' => $uri, 'scheme' => $parts['scheme']]);
+            throw new DsnFormatException(['`:url` is invalid, `:scheme` scheme is not recognized', 'url' => $url, 'scheme' => $parts['scheme']]);
         }
 
         $this->_host = $parts['host'] ?? '127.0.0.1';
@@ -82,7 +82,7 @@ class Connection extends Component
         if (isset($parts['path'])) {
             $path = trim($parts['path'], '/');
             if ($path !== '' && !is_numeric($path)) {
-                throw new DsnFormatException(['`:uri` is invalid, `:db` db is not integer', 'uri' => $uri, 'db' => $path]);
+                throw new DsnFormatException(['`:url` is invalid, `:db` db is not integer', 'url' => $url, 'db' => $path]);
             }
             $this->_db = (int)$path;
         }
@@ -121,9 +121,9 @@ class Connection extends Component
     /**
      * @return string
      */
-    public function getUri()
+    public function getUrl()
     {
-        return $this->_uri;
+        return $this->_url;
     }
 
     /**
@@ -132,16 +132,16 @@ class Connection extends Component
     public function getConnect()
     {
         if ($this->_redis === null) {
-            $this->fireEvent('redis:connect', ['uri' => $this->_uri]);
+            $this->fireEvent('redis:connect', ['url' => $this->_url]);
 
             $redis = $this->_di->get('Redis');
 
             if ($this->_persistent) {
                 if (!@$redis->pconnect($this->_host, $this->_port, $this->_timeout, $this->_db)) {
-                    throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->_uri]);
+                    throw new ConnectionException(['connect to `:url` failed', 'url' => $this->_url]);
                 }
             } elseif (!@$redis->connect($this->_host, $this->_port, $this->_timeout)) {
-                throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->_uri]);
+                throw new ConnectionException(['connect to `:url` failed', 'url' => $this->_url]);
             }
 
             if ($this->_auth && !$redis->auth($this->_auth)) {

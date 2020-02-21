@@ -6,7 +6,7 @@ interface ConnectionInterface
     /**
      * @return string
      */
-    public function getUri();
+    public function getUrl();
 
     /**
      * @param string $sql
