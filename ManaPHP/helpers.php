@@ -438,9 +438,11 @@ if (!function_exists('abort')) {
      *
      * @throws \ManaPHP\Exception\AbortException
      */
-    function abort($message, $code = 1)
+    function abort($message = null, $code = 1)
     {
-        if ($code === null) {
+        if ($message === null) {
+            null;
+        } elseif ($code === null) {
             di('response')->setContent($message);
         } else {
             di('response')->setJsonContent(['code' => $code, 'message' => $message]);
