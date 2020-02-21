@@ -97,11 +97,9 @@ class TracerPlugin extends Plugin
                 'return' => strlen($return) > 64 ? substr($return, 0, 64) . '...' : $return
             ], 'redis.' . $name);
         } else {
-            if (in_array($name, ['get', 'set'], true)) {
-                $key = $arguments[0];
-                if (strpos($key, 'cache:') === 0) {
-                    return;
-                }
+            $key = $arguments[0] ?? false;
+            if (is_string($key) && strpos($key, 'cache:') === 0) {
+                return;
             }
             $arguments = json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR);
             $this->logger->debug(["\$redis->$name(:args)",
