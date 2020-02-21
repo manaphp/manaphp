@@ -7,11 +7,6 @@ namespace ManaPHP;
  */
 class Redis extends Component
 {
-    const SERVE_AS_CACHE = 'cache';
-    const SERVE_AS_DB = 'db';
-    const SERVE_AS_BROKER = 'broker';
-    const SERVE_AS_ANY = '';
-
     /**
      * @var string
      */
@@ -23,20 +18,12 @@ class Redis extends Component
     protected $_timeout = 1.0;
 
     /**
-     * @var string
-     */
-    protected $_serve_as = self::SERVE_AS_ANY;
-
-    /**
      * Redis constructor.
      *
      * @param string $url
      */
     public function __construct($url = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0')
     {
-        if ($url === null) {
-            $url = Di::getDefault()->getShared('redis')->getUrl();
-        }
         $this->_url = $url;
 
         if (preg_match('#timeout=([\d.]+)#', $url, $matches) === 1) {
@@ -100,13 +87,5 @@ class Redis extends Component
         $this->fireEvent('redis:called', ['name' => $name, 'arguments' => $arguments, 'return' => $r]);
 
         return $r;
-    }
-
-    /**
-     * @return string
-     */
-    public function getServeAs()
-    {
-        return $this->_serve_as;
     }
 }
