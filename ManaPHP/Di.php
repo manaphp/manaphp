@@ -72,11 +72,6 @@ class Di implements DiInterface
     protected $_instances = [];
 
     /**
-     * @var array
-     */
-    protected $_aliases = [];
-
-    /**
      * First DI build
      *
      * @var \ManaPHP\Di
@@ -160,9 +155,11 @@ class Di implements DiInterface
 
         if ($definition === null) {
             throw new InvalidValueException(['`:definition` definition is invalid: missing class field', 'definition' => $name]);
+        } elseif (is_string($definition)) {
+            return $definition[0] === '@' ? $this->_inferClassName(substr($definition, 1)) : $definition;
+        } else {
+            return $definition['class'];
         }
-
-        return is_string($definition) ? $definition : $definition['class'];
     }
 
     /**
@@ -224,7 +221,9 @@ class Di implements DiInterface
         }
 
         if (is_string($definition)) {
-            if (strpos($definition, '/') !== false || preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
+            if ($definition[0] === '@') {
+                null;
+            } elseif (strpos($definition, '/') !== false || preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
                 $definition = ['class' => $this->_inferClassName($name), $definition];
             } elseif (strpos($definition, '\\') === false) {
                 $definition = $this->_completeClassName($name, $definition);
@@ -315,6 +314,9 @@ class Di implements DiInterface
         $definition = $this->_definitions[$name] ?? $name;
 
         if (is_string($definition)) {
+            if ($definition[0] === '@') {
+                return $this->_instances[$name] = $this->getShared(substr($definition, 1));
+            }
             $parameters = [];
         } elseif (isset($definition['class'])) {
             $parameters = $definition;
