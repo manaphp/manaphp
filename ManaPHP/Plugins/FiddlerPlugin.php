@@ -154,6 +154,8 @@ class FiddlerPlugin extends Plugin
 
     /**
      * @param array $options
+     *
+     * @noinspection PhpUnusedParameterInspection
      */
     public function subscribe($options = [])
     {
