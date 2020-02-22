@@ -256,11 +256,15 @@ class Request extends Component implements RequestInterface
     /**
      * Gets HTTP user agent used to made the request
      *
+     * @param int $max_len
+     *
      * @return string
      */
-    public function getUserAgent()
+    public function getUserAgent($max_len = -1)
     {
-        return $this->getServer('HTTP_USER_AGENT');
+        $user_agent = $this->getServer('HTTP_USER_AGENT');
+
+        return $max_len > 0 && strlen($user_agent) > $max_len ? substr($user_agent, 0, $max_len) : $user_agent;
     }
 
     /**
@@ -445,11 +449,15 @@ class Request extends Component implements RequestInterface
     /**
      * Gets web page that refers active request. ie: http://www.google.com
      *
+     * @param int $max_len
+     *
      * @return string
      */
-    public function getReferer()
+    public function getReferer($max_len = -1)
     {
-        return $this->getServer('HTTP_REFERER');
+        $referer = $this->getServer('HTTP_REFERER');
+
+        return $max_len > 0 && strlen($referer) > $max_len ? substr($referer, 0, $max_len) : $referer;
     }
 
     /**

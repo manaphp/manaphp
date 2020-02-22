@@ -101,9 +101,11 @@ interface RequestInterface
     public function getClientIp();
 
     /**
+     * @param int $max_len
+     *
      * @return string
      */
-    public function getUserAgent();
+    public function getUserAgent($max_len = -1);
 
     /**
      * Checks whether HTTP method is POST.
@@ -183,9 +185,11 @@ interface RequestInterface
     /**
      * Gets web page that refers active request. ie: http://www.google.com
      *
+     * @param int $max_len
+     *
      * @return string
      */
-    public function getReferer();
+    public function getReferer($max_len = -1);
 
     /**
      * @param bool $strict
