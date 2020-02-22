@@ -260,7 +260,7 @@ class Request extends Component implements RequestInterface
      */
     public function getUserAgent()
     {
-        return strip_tags($this->getServer('HTTP_USER_AGENT'));
+        return $this->getServer('HTTP_USER_AGENT');
     }
 
     /**
@@ -449,7 +449,7 @@ class Request extends Component implements RequestInterface
      */
     public function getReferer()
     {
-        return strip_tags($this->getServer('HTTP_REFERER'));
+        return $this->getServer('HTTP_REFERER');
     }
 
     /**
