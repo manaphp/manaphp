@@ -4,6 +4,7 @@ namespace Tests;
 use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Router;
 use ManaPHP\Router\Route;
+use ManaPHP\RouterContext;
 use PHPUnit\Framework\TestCase;
 
 class RouterRouteTest extends TestCase
@@ -90,7 +91,7 @@ class RouterRouteTest extends TestCase
         $router->add('/some/{name}/{id:[0-9]+}/{date}', 'c::a');
 
         foreach ($tests as $n => $test) {
-            $this->assertTrue($router->match($test['uri'], 'GET'));
+            $this->assertInstanceOf(RouterContext::class, $router->match($test['uri'], 'GET'));
             $this->assertEquals($test['controller'], $router->getController());
             $this->assertEquals($test['action'], $router->getAction());
             $this->assertEquals($test['params'], $router->getParams());
