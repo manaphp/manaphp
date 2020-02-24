@@ -186,12 +186,10 @@ namespace PHPSTORM_META {
 /**
  * @var \ManaPHP\ViewInterface         $view
  * @var \ManaPHP\Di                    $di
- * @var \ManaPHP\Http\RequestInterface $request
  * @var \ManaPHP\RendererInterface     $renderer
  */
 $view = null;
 $di = null;
-$request = null;
 unset($view, $renderer);
 
 class_exists('\Elasticsearch\Client') || class_alias('\stdClass', '\Elasticsearch\Client');
