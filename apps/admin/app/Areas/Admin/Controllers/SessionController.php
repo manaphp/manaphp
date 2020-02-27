@@ -83,7 +83,7 @@ class SessionController extends Controller
         $adminLoginLog->admin_name = $admin->admin_name;
         $adminLoginLog->client_ip = $this->request->getClientIp();
         $adminLoginLog->client_udid = $udid;
-        $adminLoginLog->user_agent = $this->request->getUserAgent();
+        $adminLoginLog->user_agent = $this->request->getUserAgent(255);
 
         $adminLoginLog->create();
     }
