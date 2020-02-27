@@ -20,9 +20,4 @@ class RolePermission extends Model
     {
         return [];
     }
-
-    public function relations()
-    {
-        return ['permission' => Permission::class];
-    }
 }

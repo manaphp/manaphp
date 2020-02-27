@@ -47,7 +47,7 @@ class Admin extends Model
 
     public function relations()
     {
-        return ['roles' => [Role::class, Relation::TYPE_HAS_MANY_VIA, AdminRole::class]];
+        return ['roles' => $this->hasManyToMany(Role::class, AdminRole::class)];
     }
 
     /**

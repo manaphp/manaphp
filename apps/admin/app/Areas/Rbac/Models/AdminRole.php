@@ -1,9 +1,7 @@
 <?php
 namespace App\Areas\Rbac\Models;
 
-use App\Models\Admin;
 use ManaPHP\Db\Model;
-use ManaPHP\Model\Relation;
 
 class AdminRole extends Model
 {
@@ -23,10 +21,5 @@ class AdminRole extends Model
     public function getSafeFields()
     {
         return [];
-    }
-
-    public function relations()
-    {
-        return ['admins' => [Admin::class, Relation::TYPE_HAS_MANY_TO_MANY, 'admin_id', 'role_id']];
     }
 }

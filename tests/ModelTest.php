@@ -158,8 +158,6 @@ class ModelTest extends TestCase
         $rental = Rental::first(10);
         $this->assertCount(21, $rental->inventories);
 
-        $rental = Rental::first(10);
-        $this->assertCount(21, $rental->inventoriesOfCustomer);
 
         $rental = Rental::first(10);
         $this->assertSame(399, $rental->customer->customer_id);
@@ -167,7 +165,5 @@ class ModelTest extends TestCase
         $rental = Rental::first(10);
         $this->assertCount(5, $rental->customers);
 
-        $rental = Rental::first(10);
-        $this->assertCount(5, $rental->customersOfInventory);
     }
 }
