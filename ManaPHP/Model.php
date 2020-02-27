@@ -152,6 +152,26 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
+     * @return string
+     */
+    public function getForeignedKey()
+    {
+        $primaryKey = $this->getPrimaryKey();
+        if ($primaryKey !== 'id') {
+            return $primaryKey;
+        }
+
+        $table = $this->getTable();
+        if (($pos = strpos($table, ':')) !== false) {
+            $key = substr($table, 0, $pos) . '_id';
+        } else {
+            $key = $table . '_id';
+        }
+
+        return $key;
+    }
+
+    /**
      * @return array =get_object_vars(new static)
      */
     public function getForeignKeys()

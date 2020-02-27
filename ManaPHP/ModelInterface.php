@@ -42,6 +42,11 @@ interface ModelInterface
     public function getPrimaryKey();
 
     /**
+     * @return string
+     */
+    public function getForeignedKey();
+
+    /**
      * @return array
      */
     public function getForeignKeys();
