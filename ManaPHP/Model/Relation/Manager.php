@@ -3,10 +3,8 @@ namespace ManaPHP\Model\Relation;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
-use ManaPHP\Exception\MisuseException;
-use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\RuntimeException;
-use ManaPHP\Helper\Arr;
+use ManaPHP\Helper\Str;
 use ManaPHP\Model\Relation;
 use ManaPHP\QueryInterface;
 
@@ -57,91 +55,83 @@ class Manager extends Component implements ManagerInterface
      */
     protected function _inferClassName($model, $plainName)
     {
+        $plainName = Str::camelize($plainName);
+
         $modelName = get_class($model);
 
-        if (class_exists($try = $modelName . ucfirst($plainName))) {
-            return $try;
-        } elseif (($pos = strrpos($modelName, '\\')) !== false) {
-            $className = substr($modelName, 0, $pos + 1) . ucfirst($plainName);
+        if (($pos = strrpos($modelName, '\\')) !== false) {
+            $className = substr($modelName, 0, $pos + 1) . $plainName;
+            if (class_exists($className)) {
+                return $className;
+            } elseif (($pos = strpos($modelName, '\Areas\\')) !== false) {
+                $className = substr($modelName, 0, $pos) . '\Models\\' . $plainName;
+                if (class_exists($className)) {
+                    return $className;
+                }
+            }
+            $className = $modelName . $plainName;
+            return class_exists($className) ? $className : false;
         } else {
-            $className = ucfirst($plainName);
+            $className = $plainName;
+            return class_exists($className) ? $className : false;
         }
-
-        return class_exists($className) ? $className : false;
     }
 
     /**
-     * @param \ManaPHP\Model $model
+     * @param \ManaPHP\Model $thisInstance
      * @param string         $name
      *
-     * @return  array|false
+     * @return  Relation|false
      */
-    protected function _inferRelation($model, $name)
+    protected function _inferRelation($thisInstance, $name)
     {
-        if (in_array($name . '_id', $model->getFields(), true)) {
-            $referenceName = $this->_inferClassName($model, $name);
-            return $referenceName ? [$referenceName, Relation::TYPE_HAS_ONE] : false;
+        if (in_array($name . '_id', $thisInstance->getFields(), true)) {
+            $thatModel = $this->_inferClassName($thisInstance, $name);
+            return $thatModel ? $thisInstance->hasOne($thatModel, $name . '_id') : false;
         }
 
-        /** @var \ManaPHP\Model $reference */
-        /** @var \ManaPHP\Model $referenceName */
-
-        if (preg_match('#^(.+[a-z\d])Of([A-Z].*)$#', $name, $match)) {
-            if (!$singular = $this->_pluralToSingular($match[1])) {
-                return false;
-            }
-
-            if (!$referenceName = $this->_inferClassName($model, $singular)) {
-                return false;
-            }
-
-            $valueField = lcfirst($match[2]) . '_id';
-            if (in_array($valueField, $model->getForeignKeys(), true)) {
-                $reference = $referenceName::sample();
-                return [$referenceName, Relation::TYPE_HAS_MANY_TO_MANY, $reference->getPrimaryKey(), $valueField];
-            } else {
-                return false;
-            }
-        }
+        /** @var \ManaPHP\Model $thatInstance */
+        /** @var \ManaPHP\Model $thatModel */
 
         if ($singular = $this->_pluralToSingular($name)) {
-            if (!$referenceName = $this->_inferClassName($model, $singular)) {
+            if (!$thatModel = $this->_inferClassName($thisInstance, $singular)) {
                 return false;
             }
 
-            $reference = $referenceName::sample();
+            $thatInstance = $thatModel::sample();
 
-            $keys = $model->getForeignKeys();
-            if (count($keys) === 2) {
-                $foreignKey = $singular . '_id';
-                if (in_array($foreignKey, $keys, true)) {
-                    $keys = array_flip($keys);
-                    unset($keys[$foreignKey]);
-                    return [$referenceName, Relation::TYPE_HAS_MANY_TO_MANY, $reference->getPrimaryKey(), key($keys)];
+            $foreignedKey = $thisInstance->getForeignedKey();
+            if (in_array($foreignedKey, $thatInstance->getFields(), true)) {
+                return $thisInstance->hasMany($thatModel, $foreignedKey);
+            }
+
+            $thatPlain = substr($thatModel, strrpos($thatModel, '\\') + 1);
+
+            $thisModel = get_class($thisInstance);
+            $pos = strrpos($thisModel, '\\');
+            $namespace = substr($thisModel, 0, $pos + 1);
+            $thisPlain = substr($thisModel, $pos + 1);
+
+            $pivotModel = $namespace . $thatPlain . $thisPlain;
+            if (class_exists($pivotModel)) {
+                return $thisInstance->hasManyToMany($thatModel, $pivotModel);
+            }
+
+            $pivotModel = $namespace . $thisPlain . $thatPlain;
+            if (class_exists($pivotModel)) {
+                return $thisInstance->hasManyToMany($thatModel, $pivotModel);
+            }
+
+            $thisLen = strlen($thisPlain);
+            $thatLen = strlen($thatPlain);
+            if ($thisLen > $thatLen) {
+                $pos = strpos($thisPlain, $thatPlain);
+                if ($pos === 0 || $pos + $thatLen === $thisLen) {
+                    return $thisInstance->hasManyOthers($thatModel);
                 }
             }
-            if (in_array($model->getPrimaryKey(), $reference->getFields(), true)) {
-                return [$referenceName, Relation::TYPE_HAS_MANY];
-            } else {
-                $r1Name = substr($referenceName, strrpos($referenceName, '\\') + 1);
 
-                $modelName = get_class($model);
-                $pos = strrpos($modelName, '\\');
-                $baseName = substr($modelName, 0, $pos + 1);
-                $r2Name = substr($modelName, $pos + 1);
-
-                $tryViaName = $baseName . $r1Name . $r2Name;
-                if (class_exists($tryViaName)) {
-                    return [$referenceName, Relation::TYPE_HAS_MANY_VIA, $tryViaName, $model->getPrimaryKey()];
-                } else {
-                    $tryViaName = $baseName . $r2Name . $r1Name;
-                    if (!class_exists($tryViaName)) {
-                        throw new RuntimeException(['infer `:relation` relation failed', 'relation' => $name]);
-                    }
-
-                    return [$referenceName, Relation::TYPE_HAS_MANY_VIA, $tryViaName, $model->getPrimaryKey()];
-                }
-            }
+            throw new RuntimeException(['infer `:relation` relation failed', 'relation' => $name]);
         }
 
         return false;
@@ -174,21 +164,19 @@ class Manager extends Component implements ManagerInterface
         if (isset($this->_relations[$modelName][$name])) {
             if (is_object($relation = $this->_relations[$modelName][$name])) {
                 return $relation;
+            } else {
+                if ($this->_isPlural($name)) {
+                    $relation = $model->hasMany($relation);
+                } else {
+                    $relation = $model->hasOne($relation);
+                }
+                return $this->_relations[$modelName][$name] = $relation;
             }
         } elseif ($relation = $this->_inferRelation($model, $name)) {
-            $this->_relations[$modelName][$name] = $relation;
+            return $this->_relations[$modelName][$name] = $relation;
         } else {
             return false;
         }
-
-        if (is_string($relation)) {
-            $relation = [$relation];
-        }
-
-        if (!isset($relation[1])) {
-            $relation[1] = $this->_isPlural($name) ? Relation::TYPE_HAS_MANY : Relation::TYPE_HAS_ONE;
-        }
-        return $this->_relations[$modelName][$name] = $this->_di->get('ManaPHP\Model\Relation', [$model, $relation]);
     }
 
     /**
@@ -201,9 +189,7 @@ class Manager extends Component implements ManagerInterface
     public function getQuery($model, $name, $data)
     {
         $relation = $this->get($model, $name);
-        /** @var \ManaPHP\Model $referenceModel */
-        $referenceModel = $relation->referenceModel;
-        $query = $referenceModel::select();
+        $query = $relation->getThatQuery();
 
         if ($data === null) {
             null;
@@ -239,7 +225,6 @@ class Manager extends Component implements ManagerInterface
      * @return array
      *
      * @throws \ManaPHP\Exception\InvalidValueException
-     * @throws \ManaPHP\Exception\NotSupportedException
      */
     public function earlyLoad($model, $r, $withs, $asArray)
     {
@@ -255,8 +240,6 @@ class Manager extends Component implements ManagerInterface
             if (($relation = $this->get($model, $name)) === false) {
                 throw new InvalidValueException(['unknown `:relation` relation', 'relation' => $name]);
             }
-            $keyField = $relation->keyField;
-            $valueField = $relation->valueField;
 
             $query = $v instanceof QueryInterface ? $v : $this->getQuery($model, $name, is_string($k) ? $v : null);
 
@@ -269,84 +252,7 @@ class Manager extends Component implements ManagerInterface
                 $query = $model->$method($query);
             }
 
-            if ($relation->type === Relation::TYPE_HAS_ONE || $relation->type === Relation::TYPE_BELONGS_TO) {
-                $ids = array_values(array_unique(array_column($r, $valueField)));
-                $data = $query->whereIn($keyField, $ids)->indexBy($keyField)->fetch($asArray);
-
-                foreach ($r as $ri => $rv) {
-                    $key = $rv[$valueField];
-                    $r[$ri][$name] = $data[$key] ?? null;
-                }
-            } elseif ($relation->type === Relation::TYPE_HAS_MANY) {
-                $r_index = [];
-                foreach ($r as $ri => $rv) {
-                    $r_index[$rv[$valueField]] = $ri;
-                }
-
-                $ids = array_column($r, $valueField);
-                $data = $query->whereIn($keyField, $ids)->fetch($asArray);
-
-                if (isset($data[0]) && !isset($data[0][$relation->keyField])) {
-                    throw new MisuseException(['missing `:field` field in `:name` with', 'field' => $relation->keyField, 'name' => $name]);
-                }
-
-                $rd = [];
-                foreach ($data as $dv) {
-                    $rd[$r_index[$dv[$keyField]]][] = $dv;
-                }
-
-                foreach ($r as $ri => $rv) {
-                    $r[$ri][$name] = $rd[$ri] ?? [];
-                }
-            } elseif ($relation->type === Relation::TYPE_HAS_MANY_TO_MANY) {
-                $ids = array_column($r, $valueField);
-                $via_data = $model::select([$keyField, $valueField])->whereIn($valueField, $ids)->execute();
-                $ids = Arr::unique_column($via_data, $keyField);
-                $primaryKey = $query->getModel()->getPrimaryKey();
-                $data = $query->whereIn($primaryKey, $ids)->indexBy($primaryKey)->fetch($asArray);
-
-                $rd = [];
-                foreach ($via_data as $dv) {
-                    $key = $dv[$keyField];
-
-                    if (isset($data[$key])) {
-                        $rd[$dv[$valueField]][] = $data[$key];
-                    }
-                }
-
-                foreach ($r as $ri => $rv) {
-                    $value = $rv[$valueField];
-                    $r[$ri][$name] = $rd[$value] ?? [];
-                }
-            } elseif ($relation->type === Relation::TYPE_HAS_MANY_VIA) {
-                /** @var \ManaPHP\ModelInterface $via */
-                /** @var \ManaPHP\ModelInterface $reference */
-                /** @var \ManaPHP\Model $referenceModel */
-                $via = $relation->keyField;
-                $referenceModel = $relation->referenceModel;
-                $reference = $referenceModel::sample();
-                $keyField = $reference->getPrimaryKey();
-                $ids = Arr::unique_column($r, $model->getPrimaryKey());
-                $via_data = $via::select([$keyField, $relation->valueField])->whereIn($valueField, $ids)->execute();
-                $ids = Arr::unique_column($via_data, $keyField);
-                $data = $query->whereIn($query->getModel()->getPrimaryKey(), $ids)->indexBy($query->getModel()->getPrimaryKey())->fetch($asArray);
-
-                $rd = [];
-                foreach ($via_data as $dv) {
-                    $key = $dv[$keyField];
-
-                    if (isset($data[$key])) {
-                        $rd[$dv[$valueField]][] = $data[$key];
-                    }
-                }
-
-                foreach ($r as $ri => $rv) {
-                    $rvr = $rv[$valueField];
-                    $r[$ri][$name] = $rd[$rvr] ?? [];
-                }
-            } else {
-                throw new NotSupportedException($name);
-            }
+            $r = $relation->earlyLoad($r, $query, $name, $asArray);
         }
 
         return $r;
@@ -364,29 +270,6 @@ class Manager extends Component implements ManagerInterface
             throw new InvalidValueException($relation);
         }
 
-        $type = $relation->type;
-        $referenceModel = $relation->referenceModel;
-        $valueField = $relation->valueField;
-        if ($type === Relation::TYPE_HAS_ONE) {
-            return $referenceModel::select()->whereEq($relation->keyField, $instance->$valueField)->setFetchType(false);
-        } elseif ($type === Relation::TYPE_BELONGS_TO) {
-            return $referenceModel::select()->whereEq($relation->keyField, $instance->$valueField)->setFetchType(false);
-        } elseif ($type === Relation::TYPE_HAS_MANY) {
-            return $referenceModel::select()->whereEq($relation->keyField, $instance->$valueField)->setFetchType(true);
-        } elseif ($type === Relation::TYPE_HAS_MANY_TO_MANY) {
-            $ids = $instance::values($relation->keyField, [$valueField => $instance->$valueField]);
-            /** @var \ManaPHP\Model $referenceInstance */
-            /** @var \ManaPHP\Model $referenceModel */
-            $referenceInstance = is_string($referenceModel) ? $referenceModel::sample() : $referenceModel;
-            return $referenceModel::select()->whereIn($referenceInstance->getPrimaryKey(), $ids)->setFetchType(true);
-        } elseif ($type === Relation::TYPE_HAS_MANY_VIA) {
-            $via = $relation->keyField;
-            /** @var \ManaPHP\Model $reference */
-            $reference = $referenceModel::sample();
-            $ids = $via::values($reference->getPrimaryKey(), [$valueField => $instance->$valueField]);
-            return $referenceModel::select()->whereIn($reference->getPrimaryKey(), $ids)->setFetchType(true);
-        } else {
-            throw  new NotSupportedException(['unknown relation type: :type', 'type' => $type]);
-        }
+        return $relation->lazyLoad($instance);
     }
 }

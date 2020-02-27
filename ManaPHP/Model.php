@@ -20,6 +20,11 @@ use ManaPHP\Helper\Str;
 use ManaPHP\Model\Expression\Decrement;
 use ManaPHP\Model\Expression\Increment;
 use ManaPHP\Model\NotFoundException;
+use ManaPHP\Model\Relation\BelongsTo;
+use ManaPHP\Model\Relation\HasMany;
+use ManaPHP\Model\Relation\HasManyOthers;
+use ManaPHP\Model\Relation\HasManyToMany;
+use ManaPHP\Model\Relation\HasOne;
 use ManaPHP\Validator\ValidateFailedException;
 use ReflectionClass;
 use Serializable;
@@ -1306,6 +1311,113 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         $this->fireEvent('model:deleted');
 
         return $this;
+    }
+
+    /**
+     * @param string $thatModel
+     * @param string $thisField =key(get_object_vars(new static))
+     *
+     * @return \ManaPHP\Model\Relation\BelongsTo
+     */
+    public function belongsTo($thatModel, $thisField = null)
+    {
+        /** @var \ManaPHP\Model $thatModel */
+        $thatInstance = $thatModel::sample();
+
+        return new BelongsTo(static::class, $thisField ?? $thatInstance->getForeignedKey(), $thatModel, $thatInstance->getPrimaryKey());
+    }
+
+    /**
+     * @param string $thatModel
+     * @param string $thisField =key(get_object_vars(new static))
+     *
+     * @return \ManaPHP\Model\Relation\HasOne
+     */
+    public function hasOne($thatModel, $thisField = null)
+    {
+        /** @var \ManaPHP\Model $thatModel */
+        $thatInstance = $thatModel::sample();
+
+        return new HasOne(static::class, $thisField ?? $thatInstance->getForeignedKey(), $thatModel, $thatInstance->getPrimaryKey());
+    }
+
+    /**
+     * @param string $thatModel
+     * @param string $thisField =key(get_object_vars(new static))
+     *
+     * @return \ManaPHP\Model\Relation\HasMany
+     */
+    public function hasMany($thatModel, $thisField = null)
+    {
+        /** @var \ManaPHP\Model $thatModel */
+        $thatInstance = $thatModel::sample();
+
+        return new HasMany(static::class, $thisField ?? $thatInstance->getForeignedKey(), $thatModel, $this->getPrimaryKey());
+    }
+
+    /**
+     * @param string $thatModel
+     * @param string $pivotModel
+     *
+     * @return \ManaPHP\Model\Relation\HasManyToMany
+     */
+    public function hasManyToMany($thatModel, $pivotModel)
+    {
+        /** @var \ManaPHP\Model $thatModel */
+        $thatInstance = $thatModel::sample();
+
+        return new HasManyToMany(static::class, $this->getPrimaryKey(), $thatModel, $thatInstance->getPrimaryKey(),
+            $pivotModel, $this->getForeignedKey(), $thatInstance->getForeignedKey());
+    }
+
+    /**
+     * @param string $thatModel
+     * @param string $thisFilter =key(get_object_vars(new static))
+     *
+     * @return \ManaPHP\Model\Relation\HasManyOthers
+     */
+    public function hasManyOthers($thatModel, $thisFilter = null)
+    {
+        /** @var \ManaPHP\Model $thatModel */
+        $thatInstance = $thatModel::sample();
+
+        $foreingedKey = $thatInstance->getForeignedKey();
+
+        if ($thisFilter === null) {
+            $keys = [];
+            foreach ($this->getFields() as $field) {
+                if ($field === $foreingedKey || $field === 'id' || $field === '_id' || strpos($field, '_id') === false) {
+                    continue;
+                }
+
+                if (in_array($field, ['updator_id', 'creator_id'], true)) {
+                    continue;
+                }
+
+                $keys[] = $field;
+            }
+
+            if (count($keys) === 1) {
+                $thisFilter = $keys[0];
+            } else {
+                throw new MisuseException('$thisValue must be not null');
+            }
+        }
+
+        return new HasManyOthers(static::class, $thisFilter, $thatInstance->getForeignedKey(), $thatModel, $thatInstance->getPrimaryKey());
+    }
+
+    /**
+     * alias of hasManyToMany
+     *
+     * @param string $thatModel
+     * @param string $pivotModel
+     *
+     * @return \ManaPHP\Model\Relation\HasManyToMany
+     */
+    public function belongsToMany($thatModel, $pivotModel)
+    {
+        return $this->hasManyToMany($thatModel, $pivotModel);
     }
 
     /**

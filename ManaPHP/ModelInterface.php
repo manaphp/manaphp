@@ -504,4 +504,54 @@ interface ModelInterface
      * @return \ManaPHP\QueryInterface
      */
     public function newQuery();
+
+    /**
+     * @param string $thatModel
+     * @param string $thisField
+     *
+     * @return \ManaPHP\Model\Relation\BelongsTo
+     */
+    public function belongsTo($thatModel, $thisField = null);
+
+    /**
+     * @param string $thatModel
+     * @param string $thisField
+     *
+     * @return \ManaPHP\Model\Relation\HasOne
+     */
+    public function hasOne($thatModel, $thisField = null);
+
+    /**
+     * @param string $thatModel
+     * @param string $thisField
+     *
+     * @return \ManaPHP\Model\Relation\HasMany
+     */
+    public function hasMany($thatModel, $thisField = null);
+
+    /**
+     * @param string $thatModel
+     * @param string $pivotModel
+     *
+     * @return \ManaPHP\Model\Relation\HasManyToMany
+     */
+    public function hasManyToMany($thatModel, $pivotModel);
+
+    /**
+     * @param string $thatModel
+     * @param string $thisFilter =key(get_object_vars(new static))
+     *
+     * @return \ManaPHP\Model\Relation\HasManyOthers
+     */
+    public function hasManyOthers($thatModel, $thisFilter = null);
+
+    /**
+     * alias of hasManyToMany
+     *
+     * @param string $thatModel
+     * @param string $pivotModel
+     *
+     * @return \ManaPHP\Model\Relation\HasManyToMany
+     */
+    public function belongsToMany($thatModel, $pivotModel);
 }
