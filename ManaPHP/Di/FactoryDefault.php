@@ -35,7 +35,7 @@ class FactoryDefault extends Di
             'assetBundle' => 'ManaPHP\Renderer\AssetBundle',
             'cache' => 'ManaPHP\Cache\Adapter\Redis',
             'ipcCache' => 'ManaPHP\Ipc\Cache\Adapter\Apcu',
-            'httpClient' => 'ManaPHP\Http\Client\Adapter\Curl',
+            'httpClient' => 'ManaPHP\Http\Client\Adapter\Stream',
             'restClient' => 'ManaPHP\Http\Client\Adapter\Stream',
             'paginator' => 'ManaPHP\Paginator',
             'random' => 'ManaPHP\Security\Random',
