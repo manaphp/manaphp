@@ -270,23 +270,7 @@ if (!function_exists('client_ip')) {
     }
 }
 
-if (!function_exists('curl')) {
-    /**
-     * @param string          $type
-     * @param string|array    $url
-     * @param string|array    $body
-     * @param array|string    $headers
-     * @param array|int|float $options
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    function curl($type, $url, $body = null, $headers = [], $options = [])
-    {
-        return di('httpClient')->request($type, $url, $body, $headers, $options);
-    }
-}
-
-if (!function_exists('curl_get')) {
+if (!function_exists('http_get')) {
     /**
      * @param string|array    $url
      * @param array|string    $headers
@@ -294,13 +278,13 @@ if (!function_exists('curl_get')) {
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    function curl_get($url, $headers = [], $options = [])
+    function http_get($url, $headers = [], $options = [])
     {
         return di('httpClient')->get($url, $headers, $options);
     }
 }
 
-if (!function_exists('curl_post')) {
+if (!function_exists('http_post')) {
     /**
      * @param string|array    $url
      * @param string|array    $body
@@ -309,20 +293,20 @@ if (!function_exists('curl_post')) {
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    function curl_post($url, $body = null, $headers = [], $options = [])
+    function http_post($url, $body = null, $headers = [], $options = [])
     {
         return di('httpClient')->post($url, $body, $headers, $options);
     }
 }
 
-if (!function_exists('download')) {
+if (!function_exists('http_download')) {
     /**
      * @param string|array     $files
      * @param string|int|array $options
      *
      * @return string|array
      */
-    function download($files, $options = [])
+    function http_download($files, $options = [])
     {
         return di('httpClient')->download($files, $options);
     }
