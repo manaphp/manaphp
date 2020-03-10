@@ -91,31 +91,4 @@ class Scheduler extends Component implements SchedulerInterface
 
         return $returns;
     }
-
-    /**
-     * @param callable  $fn
-     * @param array|int $args
-     * @param int       $count
-     *
-     * @return void
-     */
-    public function parallel($fn, $args, $count = null)
-    {
-        if ($count === null && is_int($args)) {
-            $count = $args;
-            $args = [];
-        }
-
-        if ($count === null) {
-            foreach ($args as $arg) {
-                $this->add($fn, $arg);
-            }
-        } else {
-            for ($i = 0; $i < $count; $i++) {
-                $this->add($fn, $args);
-            }
-        }
-
-        $this->start();
-    }
 }

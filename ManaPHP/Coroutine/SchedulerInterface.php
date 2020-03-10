@@ -15,13 +15,4 @@ interface SchedulerInterface
      * @return array
      */
     public function start();
-
-    /**
-     * @param callable  $fn
-     * @param array|int $args
-     * @param int       $count
-     *
-     * @return void
-     */
-    public function parallel($fn, $args, $count = null);
 }
