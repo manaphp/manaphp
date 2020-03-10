@@ -12,7 +12,7 @@ interface SchedulerInterface
     public function add($fn, ...$args);
 
     /**
-     * @return void
+     * @return array
      */
     public function start();
 

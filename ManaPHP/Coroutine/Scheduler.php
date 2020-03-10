@@ -14,11 +14,6 @@ class Scheduler extends Component implements SchedulerInterface
     protected $_routines = [];
 
     /**
-     * @var int
-     */
-    protected $_running_count;
-
-    /**
      * @param callable $fn
      * @param mixed    ...$args
      *
@@ -32,59 +27,69 @@ class Scheduler extends Component implements SchedulerInterface
     }
 
     /**
-     * @param \Swoole\Coroutine\Channel $sentinel
+     * @param int                       $id
+     * @param \Swoole\Coroutine\Channel $channel
      * @param callable                  $routine
      */
-    public function routine($sentinel, $routine)
+    public function routine($id, $channel, $routine)
     {
         list($fn, $args) = $routine;
         try {
             if (is_array($fn)) {
                 list($object, $method) = $fn;
-                $object->$method(...$args);
+                $return = $object->$method(...$args);
             } else {
-                $fn(...$args);
+                $return = $fn(...$args);
             }
         } catch (Throwable $throwable) {
+            $return = null;
             $this->logger->error($throwable);
         }
-
-        if (--$this->_running_count === 0) {
-            $sentinel->push('end');
-        }
+        $channel->push([$id, $return]);
     }
 
     /**
-     * @return void
+     *
+     * @return array
      */
     public function start()
     {
-        if (MANAPHP_COROUTINE_ENABLED) {
-            $this->_running_count = count($this->_routines);
-            $sentinel = new Channel(1);
+        $returns = [];
 
-            foreach ($this->_routines as $i => $routine) {
-                /** @noinspection PhpMethodParametersCountMismatchInspection */
-                Coroutine::create([$this, 'routine'], $sentinel, $routine);
+        if (MANAPHP_COROUTINE_ENABLED) {
+            $routines_count = count($this->_routines);
+
+            $channel = new Channel($routines_count);
+
+            foreach ($this->_routines as $id => $routine) {
+                $returns[$id] = null;
+                Coroutine::create([$this, 'routine'], $id, $channel, $routine);
             }
 
-            $sentinel->pop();
+            for ($i = 0; $i < $routines_count; $i++) {
+                list($id, $return) = $channel->pop();
+                $returns[$id] = $return;
+            }
         } else {
-            $this->logger->debug('polling');
-            foreach ($this->_routines as list($fn, $args)) {
+            foreach ($this->_routines as $id => list($fn, $args)) {
                 try {
                     if (is_array($fn)) {
                         /** @noinspection MultiAssignmentUsageInspection */
                         list($object, $method) = $fn;
-                        $object->$method(...$args);
+                        $return = $object->$method(...$args);
                     } else {
-                        $fn(...$args);
+                        $return = $fn(...$args);
                     }
                 } catch (Throwable $throwable) {
+                    $return = null;
                     $this->logger->error($throwable);
                 }
+
+                $returns[$id] = $return;
             }
         }
+
+        return $returns;
     }
 
     /**
