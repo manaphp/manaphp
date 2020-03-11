@@ -791,6 +791,8 @@ class Validator extends Component implements ValidatorInterface
 
         if ($parameter) {
             $className = $parameter;
+        } elseif ($field === 'parent_id') {
+            $className = get_class($model);
         } elseif (preg_match('#^(.*)_id$#', $field, $match)) {
             $modelName = get_class($model);
             $className = substr($modelName, 0, strrpos($modelName, '\\') + 1) . Str::camelize($match[1]);
