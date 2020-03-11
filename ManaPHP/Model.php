@@ -761,17 +761,8 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
                 continue;
             }
 
-            $rule = (array)$rules[$field];
-            if ($this->$field === null && !isset($rule['required'])) {
-                if (isset($rule['default'])) {
-                    $this->$field = $rule['default'];
-                }
-
-                continue;
-            }
-
             try {
-                $this->$field = $this->_di->validator->validateModel($field, $this, $rule);
+                $this->$field = $this->_di->validator->validateModel($field, $this, $rules[$field]);
             } catch (ValidateFailedException $exception) {
                 /** @noinspection AdditionOperationOnArraysInspection */
                 $errors += $exception->getErrors();
@@ -799,7 +790,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             $rules = $rules[$field];
         }
 
-        $this->$field = $this->_di->validator->validateModel($field, $this, (array)$rules);
+        $this->$field = $this->_di->validator->validateModel($field, $this, $rules);
     }
 
     /**
