@@ -180,11 +180,17 @@ class Validator extends Component implements ValidatorInterface
         $value = $model->$field;
 
         if ($value === '' || $value === null) {
-            if (isset($rules['default'])) {
-                return $model->$field = $rules['default'];
-            } else {
-                throw new ValidateFailedException([$field => $this->createError('required', $field)]);
+            if (is_array($rules)) {
+                if (isset($rules['default'])) {
+                    return $model->$field = $rules['default'];
+                } elseif (in_array('safe', $rules, true)) {
+                    return $model->$field = '';
+                }
+            } elseif ($rules === 'safe') {
+                return $model->$field = '';
             }
+
+            throw new ValidateFailedException([$field => $this->createError('required', $field)]);
         }
 
         foreach ((array)$rules as $k => $v) {
@@ -238,11 +244,17 @@ class Validator extends Component implements ValidatorInterface
     public function validateValue($field, $value, $rules)
     {
         if ($value === '' || $value === null) {
-            if (isset($rules['default'])) {
-                return $rules['default'];
-            } else {
-                throw new ValidateFailedException([$field => $this->createError('required', $field)]);
+            if (is_array($rules)) {
+                if (isset($rules['default'])) {
+                    return $rules['default'];
+                } elseif (in_array('safe', $rules, true)) {
+                    return '';
+                }
+            } elseif ($rules === 'safe') {
+                return '';
             }
+
+            throw new ValidateFailedException([$field => $this->createError('required', $field)]);
         }
 
         $rules = (array)$rules;
