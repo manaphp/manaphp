@@ -818,6 +818,24 @@ class Validator extends Component implements ValidatorInterface
      *
      * @return int|string|null
      */
+    protected function _validate_model_level($field, $model, $parameter = null)
+    {
+        $value = $model->$field;
+
+        if (!$value) {
+            return 0;
+        } else {
+            return $this->_validate_model_exists($field, $model, $parameter);
+        }
+    }
+
+    /**
+     * @param string         $field
+     * @param \ManaPHP\Model $model
+     * @param string         $parameter
+     *
+     * @return int|string|null
+     */
     protected function _validate_model_const($field, $model, $parameter = null)
     {
         $value = $model->$field;
