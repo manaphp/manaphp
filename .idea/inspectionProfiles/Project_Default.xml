@@ -142,23 +142,37 @@
       <option name="myCustomValuesEnabled" value="true" />
     </inspection_tool>
     <inspection_tool class="HtmlUnknownTarget" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="LongInheritanceChainInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="MoreThanThreeArgumentsInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="MultiAssignmentUsageInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PhpDocMissingThrowsInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PhpUnhandledExceptionInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="RedundantElseClauseInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="ReturnTypeCanBeDeclaredInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="SecurityAdvisoriesInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="optionConfiguration">
         <list>
+          <option value="barryvdh/laravel-debugbar" />
           <option value="behat/behat" />
+          <option value="brianium/paratest" />
+          <option value="codeception/codeception" />
+          <option value="codedungeon/phpunit-result-printer" />
           <option value="composer/composer" />
+          <option value="doctrine/coding-standard" />
+          <option value="filp/whoops" />
           <option value="friendsofphp/php-cs-fixer" />
+          <option value="humbug/humbug" />
+          <option value="infection/infection" />
           <option value="jakub-onderka/php-parallel-lint" />
           <option value="johnkary/phpunit-speedtrap" />
+          <option value="kalessil/production-dependencies-guard" />
+          <option value="mikey179/vfsStream" />
           <option value="mockery/mockery" />
+          <option value="mybuilder/phpunit-accelerator" />
+          <option value="orchestra/testbench" />
           <option value="pdepend/pdepend" />
+          <option value="phan/phan" />
           <option value="phing/phing" />
+          <option value="phpcompatibility/php-compatibility" />
           <option value="phpmd/phpmd" />
           <option value="phpro/grumphp" />
           <option value="phpspec/phpspec" />
@@ -167,15 +181,28 @@
           <option value="phpunit/dbunit" />
           <option value="phpunit/phpunit" />
           <option value="povils/phpmnd" />
+          <option value="roave/security-advisories" />
           <option value="satooshi/php-coveralls" />
           <option value="sebastian/phpcpd" />
           <option value="slevomat/coding-standard" />
+          <option value="spatie/phpunit-watcher" />
           <option value="squizlabs/php_codesniffer" />
+          <option value="sstalle/php7cc" />
+          <option value="symfony/debug" />
+          <option value="symfony/maker-bundle" />
           <option value="symfony/phpunit-bridge" />
+          <option value="symfony/var-dumper" />
           <option value="vimeo/psalm" />
+          <option value="wimg/php-compatibility" />
+          <option value="wp-coding-standards/wpcs" />
+          <option value="yiisoft/yii2-coding-standards" />
+          <option value="yiisoft/yii2-debug" />
+          <option value="yiisoft/yii2-gii" />
+          <option value="zendframework/zend-coding-standard" />
+          <option value="zendframework/zend-debug" />
+          <option value="zendframework/zend-test" />
         </list>
       </option>
-      <option name="optionConfigurationMigrated" value="true" />
     </inspection_tool>
     <inspection_tool class="StrTrUsageAsStrReplaceInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
   </profile>
