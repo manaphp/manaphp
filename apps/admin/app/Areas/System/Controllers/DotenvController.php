@@ -15,7 +15,7 @@ class DotenvController extends Controller
         if ($app_id === '') {
             return [];
         } else {
-            $current = [['app_id' => $app_id, 'env' => $this->redis->hGet(self::REDIS_KEY, $app_id) ?: '']];
+            $current = [['app_id' => $app_id, 'env' => $this->redisDb->hGet(self::REDIS_KEY, $app_id) ?: '']];
             $logs = DotenvLog::where(['app_id' => $app_id])->orderBy(['id' => SORT_DESC])->limit(10)->execute();
 
             return compact('current', 'logs');
@@ -24,7 +24,7 @@ class DotenvController extends Controller
 
     public function appsAction()
     {
-        $apps = $this->redis->hKeys(self::REDIS_KEY);
+        $apps = $this->redisDb->hKeys(self::REDIS_KEY);
         sort($apps);
 
         return $apps;
@@ -35,7 +35,7 @@ class DotenvController extends Controller
         $app_id = input('app_id');
         $env = input('env');
 
-        if ($this->redis->hExists(self::REDIS_KEY, $app_id)) {
+        if ($this->redisDb->hExists(self::REDIS_KEY, $app_id)) {
             return sprintf("${app_id}已存在");
         }
 
@@ -46,7 +46,7 @@ class DotenvController extends Controller
 
         $dotenvLog->create();
 
-        $this->redis->hSet(self::REDIS_KEY, $app_id, $env);
+        $this->redisDb->hSet(self::REDIS_KEY, $app_id, $env);
     }
 
     public function editAction()
@@ -54,11 +54,11 @@ class DotenvController extends Controller
         $app_id = input('app_id');
         $env = input('env');
 
-        if (!$this->redis->hExists(self::REDIS_KEY, $app_id)) {
+        if (!$this->redisDb->hExists(self::REDIS_KEY, $app_id)) {
             return sprintf("${app_id}不存在");
         }
 
-        if ($this->redis->hGet(self::REDIS_KEY, $app_id) === $env) {
+        if ($this->redisDb->hGet(self::REDIS_KEY, $app_id) === $env) {
             return 0;
         }
 
@@ -69,11 +69,11 @@ class DotenvController extends Controller
 
         $dotenvLog->create();
 
-        $this->redis->hSet(self::REDIS_KEY, $app_id, $env);
+        $this->redisDb->hSet(self::REDIS_KEY, $app_id, $env);
     }
 
     public function deleteAction()
     {
-        $this->redis->hDel(self::REDIS_KEY, input('app_id'));
+        $this->redisDb->hDel(self::REDIS_KEY, input('app_id'));
     }
 }
