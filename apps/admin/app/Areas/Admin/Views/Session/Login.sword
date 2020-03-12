@@ -69,7 +69,7 @@
         return true
     };
 
-    let vm = new Vue({
+    var vm = new Vue({
         el: '#app',
         data: {
             request: {
@@ -110,9 +110,9 @@
     };
 
     (function () {
-        let len = sessionStorage.length;
-        for (let i = 0; i < len; i++) {
-            let key = sessionStorage.key(i);
+        var len = sessionStorage.length;
+        for (var i = 0; i < len; i++) {
+            var key = sessionStorage.key(i);
             if (key && key.startsWith('axios.cache.') && key.match(/\bcache=2\b/)) {
                 sessionStorage.removeItem(key);
             }

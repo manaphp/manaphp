@@ -19,8 +19,7 @@
 </div>
 @section('script')
     <script>
-        vm = new Vue({
-            el: '#app',
+        vm = new App({
             data: {
                 request: {
                     admin_name: '',

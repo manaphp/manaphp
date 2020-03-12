@@ -87,171 +87,69 @@ axios.interceptors.response.use(function (res) {
             alert('网络错误，请稍后重试。');
         }
     });
-Vue.mixin({
-    filters: {
-        date: function (value, format = 'YYYY-MM-DD HH:mm:ss') {
-            return value ? moment(value * 1000).format(format) : '';
-        },
-        json: function (value) {
-            return JSON.stringify(typeof value === 'string' ? JSON.parse(value) : value, null, 2);
-        }
-    },
 
-    methods: {
-        ajax_get: function (url, data, success) {
-            if (typeof data === 'function') {
-                success = data;
-                data = null;
-            } else if (data) {
-                url += (url.indexOf('?') === -1 ? '?' : '&') + Qs.stringify(data);
-            }
+Vue.prototype.ajax_get = function (url, data, success) {
+    if (typeof data === 'function') {
+        success = data;
+        data = null;
+    } else if (data) {
+        url += (url.indexOf('?') === -1 ? '?' : '&') + Qs.stringify(data);
+    }
 
-            if (success && url.match(/\bcache=[12]\b/) && localStorage.getItem('axios.cache.enabled') !== '0') {
-                var cache_key = 'axios.cache.' + url;
-                let cache_value = sessionStorage.getItem(cache_key);
-                if (cache_value) {
-                    success.bind(this)(JSON.parse(cache_value));
-                    return;
-                }
-            }
-
-            return this.$axios.get(url).then(function (res) {
-                if (res.data.code === 0) {
-                    if (success) {
-                        if (cache_key) {
-                            sessionStorage.setItem(cache_key, JSON.stringify(res.data.data));
-                        }
-                        success.bind(this)(res.data.data);
-                    }
-                } else if (res.data.message) {
-                    this.$alert(res.data.message);
-                }
-                return res;
-            }.bind(this));
-        },
-        ajax_post: function (url, data, success) {
-            if (typeof data === 'function') {
-                success = data;
-                data = {};
-            }
-
-            var config = {};
-            if (data instanceof FormData) {
-                config.headers = {'Content-Type': 'multipart/form-data'};
-            }
-
-            return this.$axios.post(url, data, config).then(function (res) {
-                if (res.data.code === 0 && success) {
-                    success.bind(this)(res.data.data);
-                }
-
-                if (res.data.message !== '') {
-                    this.$alert(res.data.message);
-                }
-                return res
-            }.bind(this));
-        },
-        reload: function () {
-            if (!this.request || !this.response) {
-                alert('bad reload');
-            }
-
-            var qs = this.$qs.stringify(this.request);
-            window.history.replaceState(null, null, qs ? ('?' + qs) : '');
-            document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substr(1)) : {};
-            this.response = [];
-            this.$axios.get(document.location.href).then(function (res) {
-                if (res.data.code !== 0) {
-                    this.$alert(res.data.message);
-                } else {
-                    this.response = res.data.data;
-                }
-            }.bind(this));
-        },
-        format_date: function (value) {
-            return value ? this.$moment(value * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
-        },
-        fDate: function (row, column, value) {
-            return this.format_date(value);
-        },
-
-        fEnabled: function (row, column, value) {
-            return ['禁用', '启用'][value];
-        },
-        do_create: function (create) {
-            var success = true;
-            if (typeof create === 'string') {
-                this.$refs[create].validate(valid => success = valid);
-            }
-            success && this.ajax_post(window.location.pathname + "/create", this.create, function (res) {
-                this.createVisible = false;
-                this.$refs.create.resetFields();
-                this.reload();
-            });
-        },
-        show_edit: function (row, overwrite = {}) {
-            this.edit = Object.assign({}, row, overwrite);
-            this.editVisible = true;
-        },
-        do_edit: function () {
-            this.ajax_post(window.location.pathname + "/edit", this.edit, function (res) {
-                this.editVisible = false;
-                this.reload();
-            });
-        },
-        show_detail: function (row, action) {
-            this.detailVisible = true;
-
-            var data = {};
-            var key = Object.keys(row)[0];
-            data[key] = row[key];
-
-            this.ajax_get(window.location.pathname + '/' + (action ? action : "/detail"), data, function (res) {
-                this.detail = res;
-            });
-        },
-        do_delete: function (row, name = '') {
-            var data = {};
-            var keys = Object.keys(row);
-            var key = keys[0];
-            data[key] = row[key];
-
-            if (!name) {
-                name = (keys[1] && keys[1].indexOf('_name')) ? row[keys[1]] : row[key];
-            }
-
-            if (window.event.ctrlKey) {
-                this.ajax_post(window.location.pathname + "/delete", data, function (res) {
-                    this.reload();
-                });
-            } else {
-                this.$confirm('确认删除 `' + (name ? name : row[key]) + '` ?').then(function (value) {
-                    this.ajax_post(window.location.pathname + "/delete", data, function (res) {
-                        this.reload();
-                    });
-                }.bind(this));
-            }
-        },
-    },
-    created: function () {
-        if (this.$parent) {
+    if (success && url.match(/\bcache=[12]\b/) && localStorage.getItem('axios.cache.enabled') !== '0') {
+        var cache_key = 'axios.cache.' + url;
+        let cache_value = sessionStorage.getItem(cache_key);
+        if (cache_value) {
+            success.bind(this)(JSON.parse(cache_value));
             return;
         }
-
-        if (this.request && this.response) {
-            let qs = this.$qs.parse(document.location.query);
-            for (let k in qs) {
-                this.request[k] = qs[k];
-            }
-
-            this.$watch('request', _.debounce(function () {
-                this.reload();
-            }, 500), {deep: true});
-
-            this.reload();
-        }
     }
-});
+
+    return this.$axios.get(url).then(function (res) {
+        if (res.data.code === 0) {
+            if (success) {
+                if (cache_key) {
+                    sessionStorage.setItem(cache_key, JSON.stringify(res.data.data));
+                }
+                success.bind(this)(res.data.data);
+            }
+        } else if (res.data.message) {
+            this.$alert(res.data.message);
+        }
+        return res;
+    }.bind(this));
+}
+
+Vue.prototype.ajax_post = function (url, data, success) {
+    if (typeof data === 'function') {
+        success = data;
+        data = {};
+    }
+
+    var config = {};
+    if (data instanceof FormData) {
+        config.headers = {'Content-Type': 'multipart/form-data'};
+    }
+
+    return this.$axios.post(url, data, config).then(function (res) {
+        if (res.data.code === 0 && success) {
+            success.bind(this)(res.data.data);
+        }
+
+        if (res.data.message !== '') {
+            this.$alert(res.data.message);
+        }
+        return res
+    }.bind(this));
+}
+
+Vue.filter('date', function (value, format = 'YYYY-MM-DD HH:mm:ss') {
+    return value ? moment(value * 1000).format(format) : '';
+})
+
+Vue.filter('json', function (value) {
+    return JSON.stringify(typeof value === 'string' ? JSON.parse(value) : value, null, 2);
+})
 
 Vue.component('pager', {
     props: ['request', 'response'],
@@ -451,4 +349,106 @@ Vue.component('axios-cache-switcher', {
             enabled: localStorage.getItem('axios.cache.enabled') !== '0'
         }
     }
+});
+Vue.prototype.format_date = function (value) {
+    return value ? this.$moment(value * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
+}
+
+Vue.prototype.auto_reload = function () {
+    if (this.request && this.response) {
+        let qs = this.$qs.parse(document.location.query);
+        for (let k in qs) {
+            this.request[k] = qs[k];
+        }
+
+        this.$watch('request', _.debounce(function () {
+            this.reload();
+        }, 500), {deep: true});
+
+        this.reload();
+    }
+    return this;
+}
+
+App = Vue.extend({
+    methods: {
+        reload: function () {
+            if (!this.request || !this.response) {
+                alert('bad reload');
+            }
+
+            var qs = this.$qs.stringify(this.request);
+            window.history.replaceState(null, null, qs ? ('?' + qs) : '');
+            document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substr(1)) : {};
+            this.response = [];
+            this.$axios.get(document.location.href).then(function (res) {
+                if (res.data.code !== 0) {
+                    this.$alert(res.data.message);
+                } else {
+                    this.response = res.data.data;
+                }
+            }.bind(this));
+        },
+        fDate: function (row, column, value) {
+            return this.format_date(value);
+        },
+
+        fEnabled: function (row, column, value) {
+            return ['禁用', '启用'][value];
+        },
+        do_create: function (create) {
+            var success = true;
+            if (typeof create === 'string') {
+                this.$refs[create].validate(valid => success = valid);
+            }
+            success && this.ajax_post(window.location.pathname + "/create", this.create, function (res) {
+                this.createVisible = false;
+                this.$refs.create.resetFields();
+                this.reload();
+            });
+        },
+        show_edit: function (row, overwrite = {}) {
+            this.edit = Object.assign({}, row, overwrite);
+            this.editVisible = true;
+        },
+        do_edit: function () {
+            this.ajax_post(window.location.pathname + "/edit", this.edit, function (res) {
+                this.editVisible = false;
+                this.reload();
+            });
+        },
+        show_detail: function (row, action) {
+            this.detailVisible = true;
+
+            var data = {};
+            var key = Object.keys(row)[0];
+            data[key] = row[key];
+
+            this.ajax_get(window.location.pathname + '/' + (action ? action : "detail"), data, function (res) {
+                this.detail = res;
+            });
+        },
+        do_delete: function (row, name = '') {
+            var data = {};
+            var keys = Object.keys(row);
+            var key = keys[0];
+            data[key] = row[key];
+
+            if (!name) {
+                name = (keys[1] && keys[1].indexOf('_name')) ? row[keys[1]] : row[key];
+            }
+
+            if (window.event.ctrlKey) {
+                this.ajax_post(window.location.pathname + "/delete", data, function (res) {
+                    this.reload();
+                });
+            } else {
+                this.$confirm('确认删除 `' + (name ? name : row[key]) + '` ?').then(function (value) {
+                    this.ajax_post(window.location.pathname + "/delete", data, function (res) {
+                        this.reload();
+                    });
+                }.bind(this));
+            }
+        },
+    },
 });

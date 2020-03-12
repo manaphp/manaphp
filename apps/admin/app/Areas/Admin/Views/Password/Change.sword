@@ -35,8 +35,7 @@
 @append
 @section('script')
     <script>
-        vm = new Vue({
-            el: '#app',
+        vm = new App({
             data: {
                 edit: {
                     admin_name: "<?=di('identity')->getName()?>",

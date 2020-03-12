@@ -67,22 +67,26 @@
 @yield('script')
 @debugger()
 <script>
-    setInterval(function (diff, $element) {
-        $element.title = diff.toFixed(3);
-        if (Math.abs(diff) >= 2) {
-            $element.style.backgroundColor = 'red';
-        }
+    axios.get('/index/time').then(function (res) {
+        if (res.data.code === 0) {
+            setInterval(function (diff, $element) {
+                $element.title = diff.toFixed(3);
+                if (Math.abs(diff) >= 2) {
+                    $element.style.backgroundColor = 'red';
+                }
 
-        $element.textContent = (moment().add(diff, 'seconds').format('YYYY-MM-DD hh:mm:ss'));
-    }, 1000, {{microtime(true)}} -Date.now() / 1000, document.getElementById('server-time'));
+                $element.textContent = (moment().add(diff, 'seconds').format('YYYY-MM-DD hh:mm:ss'));
+            }, 1000, res.data.data.timestamp - Date.now() / 1000, document.getElementById('server-time'));
+        }
+    });
 
     login_url = '/login';
 
     if (typeof vm === 'undefined') {
-        vm = new Vue({
-            el: '#app'
-        });
+        vm = new App();
     }
+
+    vm.auto_reload().$mount('#app');
 </script>
 </body>
 </html>

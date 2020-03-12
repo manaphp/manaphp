@@ -27,7 +27,7 @@
         <el-table-column prop="permission_id" label="ID" width="100"></el-table-column>
         <el-table-column prop="path" label="路径" width="200"></el-table-column>
         <el-table-column label="角色列表" width="300">
-            <template slot-scope="scope">
+            <template v-slot="scope">
                 <el-tag size="small" v-for="role in scope.row.roles" :key="role.role_id">@{{role.display_name}}</el-tag>
             </template>
         </el-table-column>
@@ -35,7 +35,7 @@
         <el-table-column prop="updated_time" label="重新时间" :formatter="fDate" width="150"></el-table-column>
         <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
         <el-table-column fixed="right" label="操作" width="150">
-            <template slot-scope="scope">
+            <template v-slot="scope">
                 <el-button @click="show_edit(scope.row)" size="mini" type="primary">编辑</el-button>
                 <el-button @click="do_delete(scope.row)" size="mini" type="danger">删除</el-button>
             </template>
@@ -45,8 +45,7 @@
 @section('script')
     <script>
 
-        vm = new Vue({
-            el: '#app',
+        vm = new App({
             data: {
                 request: {},
                 response: [],

@@ -51,7 +51,7 @@
     <el-table :data="response.items" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
         <el-table-column label="缩略图" width="80">
-            <template slot-scope="scope">
+            <template v-slot="scope">
                 <img v-if="['png', 'jpeg', 'jpg'].includes(scope.row.extension)" :src="scope.row.url"
                      alt="scope.row.original_name"
                      style="width: 50px; height: 50px">
@@ -62,13 +62,13 @@
         <el-table-column prop="mime_type" label="mime_type" width="100"></el-table-column>
         <el-table-column prop="size" label="size" width="80"></el-table-column>
         <el-table-column label="dimension" width="100">
-            <template slot-scope="scope">@{{scope.row.width}}*@{{scope.row.height}}</template>
+            <template v-slot="scope">@{{scope.row.width}}*@{{scope.row.height}}</template>
         </el-table-column>
         <el-table-column prop="md5" label="md5" width="150"></el-table-column>
         <el-table-column prop="ip" label="ip" width="120"></el-table-column>
         <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
         <el-table-column fixed="right" label="操作" width="150">
-            <template slot-scope="scope">
+            <template v-slot="scope">
                 <el-button @click="do_delete(scope.row)" size="mini" type="danger">删除</el-button>
             </template>
         </el-table-column>
@@ -100,8 +100,7 @@
 @append
 @section('script')
     <script>
-        vm = new Vue({
-            el: '#app',
+        vm = new App({
             data: {
                 request: {
                     page: 1,
