@@ -84,6 +84,10 @@ class Swoole extends Server
             }
         }
 
+        if (!empty($options['enable_static_handler'])) {
+            $options['document_root'] = $this->_server['DOCUMENT_ROOT'];
+        }
+
         $this->_settings = $options;
 
         parent::__construct($options);
@@ -91,6 +95,10 @@ class Swoole extends Server
         if ($this->_use_globals) {
             $this->globalsManager->proxy();
         }
+
+        $this->_swoole = new \Swoole\Http\Server($this->_host, $this->_port);
+        $this->_swoole->set($this->_settings);
+        $this->_swoole->on('request', [$this, 'onRequest']);
     }
 
     /**
@@ -187,18 +195,11 @@ class Swoole extends Server
 
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 
-        if (!empty($this->_settings['enable_static_handler'])) {
-            $this->_settings['document_root'] = $this->_server['DOCUMENT_ROOT'];
-        }
-
-        $this->_swoole = new \Swoole\Http\Server($this->_host, $this->_port);
-        $this->_swoole->set($this->_settings);
         $this->_handler = $handler;
 
         $this->log('info',
             sprintf('starting listen on: %s:%d with setting: %s', $this->_host, $this->_port, json_stringify($this->_settings)));
         $this->log('info', 'http://' . $this->_server['SERVER_ADDR'] . ':' . $this->_server['SERVER_PORT'] . ($this->router->getPrefix() ?: '/'));
-        $this->_swoole->on('request', [$this, 'onRequest']);
 
         $this->_swoole->start();
         echo sprintf('[%s][info]: shutdown', date('c')), PHP_EOL;
