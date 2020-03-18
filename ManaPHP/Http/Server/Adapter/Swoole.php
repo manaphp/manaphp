@@ -98,6 +98,9 @@ class Swoole extends Server
 
         $this->_swoole = new \Swoole\Http\Server($this->_host, $this->_port);
         $this->_swoole->set($this->_settings);
+        $this->_swoole->on('Start', [$this, 'onStart']);
+        $this->_swoole->on('ManagerStart', [$this, 'onManagerStart']);
+        $this->_swoole->on('WorkerStart', [$this, 'onWorkerStart']);
         $this->_swoole->on('request', [$this, 'onRequest']);
     }
 
@@ -180,6 +183,34 @@ class Swoole extends Server
         $globals->_SERVER = $_server;
         $globals->_COOKIE = $request->cookie ?: [];
         $globals->_FILES = $request->files ?: [];
+    }
+
+    /**
+     * @param \Swoole\WebSocket\Server $server
+     */
+    public function onStart($server)
+    {
+        $title = sprintf('manaphp %s: master', $this->configure->id);
+
+        @cli_set_process_title($title);
+    }
+
+    public function onManagerStart()
+    {
+        $title = sprintf('manaphp %s: manager', $this->configure->id);
+
+        @cli_set_process_title($title);
+    }
+
+    /**
+     * @param \Swoole\WebSocket\Server $server
+     * @param int                      $worker_id
+     */
+    public function onWorkerStart($server, $worker_id)
+    {
+        $title = sprintf('manaphp %s: worker/%d', $this->configure->id, $worker_id);
+
+        @cli_set_process_title($title);
     }
 
     /**

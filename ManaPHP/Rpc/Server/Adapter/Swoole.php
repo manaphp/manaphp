@@ -85,6 +85,10 @@ class Swoole extends \ManaPHP\Rpc\Server
         $this->_swoole = new Server($this->_host, $this->_port);
         $this->_swoole->set($this->_settings);
 
+        $this->_swoole->on('Start', [$this, 'onStart']);
+        $this->_swoole->on('ManagerStart', [$this, 'onManagerStart']);
+        $this->_swoole->on('WorkerStart', [$this, 'onWorkerStart']);
+
         $this->_swoole->on('request', [$this, 'onRequest']);
 
         $this->_swoole->on('open', [$this, 'onOpen']);
@@ -133,6 +137,34 @@ class Swoole extends \ManaPHP\Rpc\Server
         /** @noinspection AdditionOperationOnArraysInspection */
         $globals->_REQUEST = $_post + $_get;
         $globals->_SERVER = $_server;
+    }
+
+    /**
+     * @param \Swoole\WebSocket\Server $server
+     */
+    public function onStart($server)
+    {
+        $title = sprintf('manaphp %s: master', $this->configure->id);
+
+        @cli_set_process_title($title);
+    }
+
+    public function onManagerStart()
+    {
+        $title = sprintf('manaphp %s: manager', $this->configure->id);
+
+        @cli_set_process_title($title);
+    }
+
+    /**
+     * @param \Swoole\WebSocket\Server $server
+     * @param int                      $worker_id
+     */
+    public function onWorkerStart($server, $worker_id)
+    {
+        $title = sprintf('manaphp %s: worker/%d', $this->configure->id, $worker_id);
+
+        @cli_set_process_title($title);
     }
 
     /**
