@@ -17,6 +17,7 @@ return [
         'logger' => ['level' => env('LOGGER_LEVEL', 'info')],
     ],
     'plugins' => [
+        'wsPusher' => ['endpoint' => 'admin'],
         'tracer'
     ]
 ];

@@ -4,6 +4,11 @@ namespace ManaPHP\WebSocket\Server;
 interface HandlerInterface
 {
     /**
+     * @param int $worker_id
+     */
+    public function onStart($worker_id);
+
+    /**
      * @param int $fd
      */
     public function onOpen($fd);
@@ -18,9 +23,4 @@ interface HandlerInterface
      * @param string $data
      */
     public function onMessage($fd, $data);
-
-    /**
-     * @return array
-     */
-    public function getProcesses();
 }

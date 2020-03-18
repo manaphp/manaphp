@@ -1,16 +1,16 @@
 <?php
-namespace ManaPHP\WebSocket\Processes;
+namespace ManaPHP\Plugins;
 
 use ManaPHP\Event\EventArgs;
-use ManaPHP\Process;
-use Swoole\Table;
+use ManaPHP\Plugin;
 
 /**
- * Class SubscriberProcess
- * @package App\Processes
+ * Class WsPusherPlugin
+ * @package ManaPHP\Plugins
+ *
  * @property-read \ManaPHP\WebSocket\ServerInterface $wsServer
  */
-class PusherProcess extends Process
+class  WsPusherPlugin extends Plugin
 {
     /**
      * @var array
@@ -23,27 +23,27 @@ class PusherProcess extends Process
     protected $_prefix = 'broker:pusher:';
 
     /**
-     * @var int
-     */
-    protected $_capacity = 10000;
-
-    /**
      * @var bool
      */
     protected $_sso = false;
 
     /**
-     * @var \swoole_table
+     * @var array
      */
-    protected $_name2id;
+    protected $_name2id = [];
 
     /**
-     * @var \swoole_table
+     * @var array
      */
     protected $_users = [];
 
     /**
-     * PusherProcess constructor.
+     * @var int
+     */
+    protected $_worker_id;
+
+    /**
+     * WsPusherPlugin constructor.
      *
      * @param array $options
      */
@@ -55,22 +55,11 @@ class PusherProcess extends Process
             $this->_prefix = $options['prefix'];
         }
 
-        if (isset($options['capacity'])) {
-            $this->_capacity = (int)$options['capacity'];
-        }
-
         if (isset($options['sso'])) {
             $this->_sso = (bool)$options['sso'];
         }
 
-        $table = new Table($this->_capacity);
-        $table->column('fd', Table::TYPE_INT);
-        $table->column('id', Table::TYPE_INT);
-        $table->column('name', Table::TYPE_STRING, 32);
-        $table->column('role', Table::TYPE_STRING, 64);
-        $table->create();
-
-        $this->_users = $table;
+        $this->attachEvent('ws:start', [$this, 'onWsStart']);
         $this->attachEvent('ws:open', [$this, 'onWsOpen']);
         $this->attachEvent('ws:close', [$this, 'onWsClose']);
     }
@@ -79,18 +68,22 @@ class PusherProcess extends Process
     {
         $fd = $eventArgs->data;
 
-        $identity = $this->identity;
-        if (!$id = $identity->getId('')) {
+        if (!$id = $this->identity->getId('')) {
             return;
         }
 
-        $user = ['fd' => $fd, 'id' => $id, 'name' => $identity->getName(), 'role' => $identity->getRole()];
+        if ($this->_sso && $user = $this->_users[$id] ?? false) {
+            $this->wsServer->disconnect($user['fd']);
+        }
+
+        $name = $this->identity->getName();
+        $user = ['fd' => $fd, 'id' => $id, 'name' => $name, 'role' => $this->identity->getRole()];
 
         if ($this->_sso) {
-            $this->_users->set($id, $user);
-            $this->_name2id->set($user['name'], ['id' => $id]);
+            $this->_name2id[$name] = $id;
+            $this->_users[$id] = $user;
         } else {
-            $this->_users->set($fd, $user);
+            $this->_users[$fd] = $user;
         }
     }
 
@@ -103,10 +96,10 @@ class PusherProcess extends Process
         }
 
         if ($this->_sso) {
-            $this->_users->del($id);
-            $this->_name2id->del($this->identity->getName());
+            unset($this->_users[$id]);
+            unset($this->_name2id[$this->identity->getName()]);
         } else {
-            $this->_users->del($fd);
+            unset($this->_users[$fd]);
         }
     }
 
@@ -133,28 +126,28 @@ class PusherProcess extends Process
 
         if ($this->_sso) {
             if (strpos($receivers, ',') === false) {
-                if ($user = $users->get($receivers)) {
+                if ($user = $users[$receivers] ?? false) {
                     $this->push($user['fd'], $message);
                 }
             } else {
-                foreach (explode(',', $receivers) as $user_id) {
-                    if ($user = $users->get($user_id)) {
+                foreach (explode(',', $receivers) as $id) {
+                    if ($user = $users[$id] ?? false) {
                         $this->push($user['fd'], $message);
                     }
                 }
             }
         } else {
             if (strpos($receivers, ',') === false) {
-                $user_id = (int)$receivers;
+                $id = (int)$receivers;
                 foreach ($users as $user) {
-                    if ($user['id'] === $user_id) {
+                    if ($user['id'] === $id) {
                         $this->push($user['fd'], $message);
                     }
                 }
             } else {
                 foreach ($users as $user) {
-                    $user_id = (string)$user['id'];
-                    if (strpos($receivers, $user_id) !== false && preg_match("#\\b$user_id\\b#", $receivers) === 1) {
+                    $id = (string)$user['id'];
+                    if (strpos($receivers, $id) !== false && preg_match("#\\b$id\\b#", $receivers) === 1) {
                         $this->push($user['fd'], $message);
                     }
                 }
@@ -166,32 +159,24 @@ class PusherProcess extends Process
      * @param string $receivers
      * @param string $message
      */
-    public function pushName($receivers, $message)
+    public function pushToName($receivers, $message)
     {
         $users = $this->_users;
 
         if ($this->_sso) {
-            $name2id = $this->_name2id;
-
             if (strpos($receivers, ',') === false) {
-                if ($name = $name2id->get($receivers)) {
-                    $user_id = $name['id'];
-                    if (isset($users[$user_id])) {
-                        $this->push($users[$user_id]['fd'], $message);
-                    }
+                if ($id = $this->_name2id[$receivers] ?? false) {
+                    $this->push($user[$id]['fd'], $message);
                 }
             } else {
-                foreach (explode(',', $receivers) as $user_name) {
-                    if ($name = $name2id->get($user_name)) {
-                        $user_id = $name['id'];
-                        if (isset($users[$user_id])) {
-                            $this->push($users[$user_id]['fd'], $message);
-                        }
+                foreach (explode(',', $receivers) as $name) {
+                    if ($id = $this->_name2id[$name] ?? false) {
+                        $this->push($user[$id]['fd'], $message);
                     }
                 }
             }
         } else {
-            if (strpos(',', $receivers) === false) {
+            if (strpos($receivers, ',') === false) {
                 foreach ($users as $user) {
                     if ($user['name'] === $receivers) {
                         $this->push($user['fd'], $message);
@@ -199,8 +184,8 @@ class PusherProcess extends Process
                 }
             } else {
                 foreach ($users as $user) {
-                    $user_name = $user['name'];
-                    if (strpos($receivers, $user_name) !== false && preg_match('#\b' . preg_quote($user_name, '#') . '\b#', $receivers) === 1) {
+                    $name = $user['name'];
+                    if (strpos($receivers, $name) !== false && preg_match("#\\b$name\\b#", $receivers) === 1) {
                         $this->push($user['fd'], $message);
                     }
                 }
@@ -212,25 +197,24 @@ class PusherProcess extends Process
      * @param string $receivers
      * @param string $message
      */
-    public function pushRole($receivers, $message)
+    public function pushToRole($receivers, $message)
     {
         $users = $this->_users;
 
-        if (strpos(',', $receivers) === false) {
+        if (strpos($receivers, ',') === false) {
             foreach ($users as $user) {
                 $role = $user['role'];
-                if ($role === $receivers || (strpos($role, $receivers) !== false && preg_match('#\b' . preg_quote($receivers, '#') . '\b#', $role) === 1)) {
+                if ($role === $receivers || (strpos($role, $receivers) !== false && preg_match("#\\b$receivers\\b#", $role) === 1)) {
                     $this->push($user['fd'], $message);
                 }
             }
         } else {
-            $roles = explode(',', $receivers);
+            $receivers = explode(',', $receivers);
             foreach ($users as $user) {
-                $current_role = $user['role'];
+                $role = $user['role'];
 
-                foreach ($roles as $role) {
-                    if ($current_role === $role || (strpos($current_role, $role) !== false && preg_match('#b' . preg_quote($role, '#') . '\b#',
-                                $current_role) === 1)) {
+                foreach ($receivers as $receiver) {
+                    if ($role === $receiver || (strpos($role, $receiver) !== false && preg_match("#\\b$receiver\\b#", $role) === 1)) {
                         $this->push($user['fd'], $message);
                         break;
                     }
@@ -248,7 +232,9 @@ class PusherProcess extends Process
 
     public function broadcast($message)
     {
-        $this->wsServer->broadcast($message);
+        if ($this->_worker_id === 0) {
+            $this->wsServer->broadcast($message);
+        }
     }
 
     /**
@@ -265,16 +251,18 @@ class PusherProcess extends Process
         } elseif ($type === 'id') {
             $this->pushToId($receivers, $message);
         } elseif ($type === 'name') {
-            $this->pushName($receivers, $message);
+            $this->pushToName($receivers, $message);
         } elseif ($type === 'role') {
-            $this->pushRole($receivers, $message);
+            $this->pushToRole($receivers, $message);
         } else {
             $this->logger->warn(['unknown `:type` type message: :message', 'type' => $type, 'message' => $message], 'wsPusher.bad_type');
         }
     }
 
-    public function run()
+    public function onWsStart(EventArgs $eventArgs)
     {
+        $this->_worker_id = $eventArgs->data;
+
         $this->pubSub->psubscribe([$this->_prefix . $this->_endpoint . ':*'], function ($channel, $data) {
             if (($pos = strrpos($channel, ':')) !== false) {
                 $type = substr($channel, $pos + 1);

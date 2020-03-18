@@ -8,7 +8,6 @@ use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\WebSocket\ServerInterface;
 use Swoole\Coroutine;
-use Swoole\Process;
 use Swoole\Runtime;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
@@ -97,6 +96,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
         $this->_swoole = new Server($this->_host, $this->_port);
         $this->_swoole->set($this->_settings);
 
+        $this->_swoole->on('WorkerStart', [$this, 'onWorkerStart']);
         $this->_swoole->on('open', [$this, 'onOpen']);
         $this->_swoole->on('close', [$this, 'onClose']);
         $this->_swoole->on('message', [$this, 'onMessage']);
@@ -138,12 +138,22 @@ class Swoole extends Component implements ServerInterface, Unaspectable
 
     /**
      * @param \Swoole\WebSocket\Server $server
+     * @param int                      $worker_id
+     */
+    public function onWorkerStart($server, $worker_id)
+    {
+        $this->_handler->onStart($worker_id);
+    }
+
+    /**
+     * @param \Swoole\WebSocket\Server $server
      * @param \Swoole\Http\Request     $request
      */
     public function onOpen(/** @noinspection PhpUnusedParameterInspection */ $server, $request)
     {
         try {
             $this->_prepareGlobals($request);
+
             $this->_handler->onOpen($request->fd);
         } finally {
             $context = new ArrayObject();
@@ -166,6 +176,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
         if (!$server->isEstablished($fd)) {
             return;
         }
+
 
         if (!$old_context = $this->_contexts[$fd] ?? null) {
             return;
@@ -223,11 +234,6 @@ class Swoole extends Component implements ServerInterface, Unaspectable
             Runtime::enableCoroutine(true);
         }
 
-        foreach ($handler->getProcesses() as $process => $config) {
-            $process = $this->_di->setShared($process, $config)->getShared($process);
-            $this->addProcess($process);
-        }
-
         $this->_handler = $handler;
 
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
@@ -279,28 +285,5 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     public function exists($fd)
     {
         return $this->_swoole->exist($fd);
-    }
-
-    /**
-     * @param \ManaPHP\Process $process
-     *
-     * @return void
-     */
-    public function addProcess($process)
-    {
-        $p = new Process(static function (/** @noinspection PhpUnusedParameterInspection */ $p) use ($process) {
-            Coroutine::create(static function () use ($process) {
-                $process->logger->setLazy(false);
-                try {
-                    $process->run();
-                } catch (Throwable $throwable) {
-                    /** @noinspection ForgottenDebugOutputInspection */
-                    error_log($throwable);
-                    sleep(1);
-                }
-            });
-        });
-
-        $this->_swoole->addProcess($p);
     }
 }

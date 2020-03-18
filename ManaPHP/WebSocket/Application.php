@@ -34,11 +34,6 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         return $this->_di;
     }
 
-    public function getProcesses()
-    {
-        return [];
-    }
-
     /**
      * @param int    $fd
      * @param string $event
@@ -94,6 +89,11 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         if ($throwable) {
             $this->wsServer->disconnect($fd);
         }
+    }
+
+    public function onStart($worker_id)
+    {
+        $this->fireEvent('ws:start', $worker_id);
     }
 
     /**
