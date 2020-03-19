@@ -51,6 +51,16 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     protected $_contexts = [];
 
     /**
+     * @var array
+     */
+    protected $_messageCoroutines = [];
+
+    /**
+     * @var array
+     */
+    protected $_closeCoroutine = [];
+
+    /**
      * Server constructor.
      *
      * @param array $options
@@ -174,18 +184,31 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function onOpen(/** @noinspection PhpUnusedParameterInspection */ $server, $request)
     {
+        $fd = $request->fd;
+
         try {
             $this->_prepareGlobals($request);
-
-            $this->_handler->onOpen($request->fd);
+            $this->_handler->onOpen($fd);
         } finally {
-            $context = new ArrayObject();
-            foreach (Coroutine::getContext() as $k => $v) {
-                if ($v instanceof Stickyable) {
-                    $context[$k] = $v;
-                }
+            null;
+        }
+
+        $context = new ArrayObject();
+        foreach (Coroutine::getContext() as $k => $v) {
+            if ($v instanceof Stickyable) {
+                $context[$k] = $v;
             }
-            $this->_contexts[$request->fd] = $context;
+        }
+        $this->_contexts[$fd] = $context;
+
+        foreach ($this->_messageCoroutines[$fd] ?? [] as $cid) {
+            Coroutine::resume($cid);
+        }
+        unset($this->_messageCoroutines[$fd]);
+
+        if ($cid = $this->_closeCoroutine[$fd] ?? false) {
+            unset($this->_closeCoroutine[$fd]);
+            Coroutine::resume($cid);
         }
     }
 
@@ -195,15 +218,16 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function onClose($server, $fd)
     {
-        /** @var  \Swoole\WebSocket\Server $server */
         if (!$server->isEstablished($fd)) {
             return;
         }
 
-
-        if (!$old_context = $this->_contexts[$fd] ?? null) {
-            return;
+        if (!$old_context = $this->_contexts[$fd] ?? false) {
+            $this->_closeCoroutine[$fd] = Coroutine::getCid();
+            Coroutine::suspend();
+            $old_context = $this->_contexts[$fd];
         }
+        unset($this->_contexts[$fd]);
 
         /** @var \ArrayObject $current_context */
         $current_context = Coroutine::getContext();
@@ -215,7 +239,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
         try {
             $this->_handler->onClose($fd);
         } finally {
-            unset($this->_contexts[$fd]);
+            null;
         }
     }
 
@@ -225,9 +249,16 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function onMessage(/** @noinspection PhpUnusedParameterInspection */ $server, $frame)
     {
+        $fd = $frame->fd;
+
+        if (!$old_context = $this->_contexts[$fd] ?? false) {
+            $this->_messageCoroutines[$fd][] = Coroutine::getCid();
+            Coroutine::suspend();
+            $old_context = $this->_contexts[$fd];
+        }
+
         /** @var \ArrayObject $current_context */
         $current_context = Coroutine::getContext();
-        $old_context = $this->_contexts[$frame->fd];
         foreach ($old_context as $k => $v) {
             /** @noinspection OnlyWritesOnParameterInspection */
             $current_context[$k] = $v;
@@ -276,7 +307,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function push($fd, $data)
     {
-        return $this->_swoole->push($fd, is_string($data) ? $data : json_stringify($data));
+        return @$this->_swoole->push($fd, is_string($data) ? $data : json_stringify($data));
     }
 
     public function broadcast($data)
