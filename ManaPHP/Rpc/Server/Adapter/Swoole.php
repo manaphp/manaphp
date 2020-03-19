@@ -45,6 +45,16 @@ class Swoole extends \ManaPHP\Rpc\Server
     protected $_contexts = [];
 
     /**
+     * @var array
+     */
+    protected $_messageCoroutines = [];
+
+    /**
+     * @var array
+     */
+    protected $_closeCoroutine = [];
+
+    /**
      * Server constructor.
      *
      * @param array $options
@@ -204,7 +214,21 @@ class Swoole extends \ManaPHP\Rpc\Server
     public function onOpen($server, $request)
     {
         if (isset($request->header['upgrade'])) {
+            $fd = $request->fd;
+
             $this->_prepareGlobals($request);
+
+            $this->request->setRequestId();
+
+            $response = $this->response->getContext();
+            if (!$this->authenticate()) {
+                $this->_context->fd = $fd;
+                $this->send($response);
+                $server->close($fd);
+            } elseif ($response->content) {
+                $this->_context->fd = $fd;
+                $this->send($response);
+            }
 
             $context = new ArrayObject();
             foreach (Coroutine::getContext() as $k => $v) {
@@ -212,18 +236,17 @@ class Swoole extends \ManaPHP\Rpc\Server
                     $context[$k] = $v;
                 }
             }
-            $this->_contexts[$request->fd] = $context;
 
-            $this->request->setRequestId();
+            $this->_contexts[$fd] = $context;
 
-            $response = $this->response->getContext();
-            if (!$this->authenticate()) {
-                $this->_context->fd = $request->fd;
-                $this->send($response);
-                $server->close($request->fd);
-            } elseif ($response->content) {
-                $this->_context->fd = $request->fd;
-                $this->send($response);
+            foreach ($this->_messageCoroutines[$fd] ?? [] as $cid) {
+                Coroutine::resume($cid);
+            }
+            unset($this->_messageCoroutines[$fd]);
+
+            if ($cid = $this->_closeCoroutine[$fd] ?? false) {
+                unset($this->_closeCoroutine[$fd]);
+                Coroutine::resume($cid);
             }
         }
     }
@@ -234,6 +257,14 @@ class Swoole extends \ManaPHP\Rpc\Server
      */
     public function onClose(/** @noinspection PhpUnusedParameterInspection */ $server, $fd)
     {
+        if (!$server->isEstablished($fd)) {
+            return;
+        }
+
+        if (!isset($this->_contexts[$fd])) {
+            $this->_closeCoroutine[$fd] = Coroutine::getCid();
+            Coroutine::suspend();
+        }
         unset($this->_contexts[$fd]);
     }
 
@@ -243,15 +274,22 @@ class Swoole extends \ManaPHP\Rpc\Server
      */
     public function onMessage(/** @noinspection PhpUnusedParameterInspection */ $server, $frame)
     {
+        $fd = $frame->fd;
+
+        if (!$old_context = $this->_contexts[$fd] ?? false) {
+            $this->_messageCoroutines[$fd][] = Coroutine::getCid();
+            Coroutine::suspend();
+            $old_context = $this->_contexts[$fd];
+        }
+
         /** @var \ArrayObject $current_context */
         $current_context = Coroutine::getContext();
-        $old_context = $this->_contexts[$frame->fd];
         foreach ($old_context as $k => $v) {
             /** @noinspection OnlyWritesOnParameterInspection */
             $current_context[$k] = $v;
         }
 
-        $this->_context->fd = $frame->fd;
+        $this->_context->fd = $fd;
 
         $this->request->setRequestId();
 
