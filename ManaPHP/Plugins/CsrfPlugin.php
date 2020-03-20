@@ -3,9 +3,10 @@ namespace ManaPHP\Plugins;
 
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Helper\Str;
-use ManaPHP\Mvc\Controller;
+use ManaPHP\Mvc\Controller as MvcController;
 use ManaPHP\Plugin;
 use ManaPHP\Plugins\CsrfPlugin\AttackDetectedException;
+use ManaPHP\Rest\Controller as RestController;
 
 /**
  * Class CsrfPlugin
@@ -101,12 +102,20 @@ class CsrfPlugin extends Plugin
     {
         if ($this->_isOriginSafe()) {
             return;
-        } elseif ($this->request->isGet()) {
+        }
+
+        $controller = $eventArgs->data['controller'];
+
+        if ($controller instanceof RestController) {
+            return;
+        }
+
+        if ($this->request->isGet()) {
             if (!$this->_strict) {
                 return;
             }
-            $controller = $eventArgs->data['controller'];
-            if ($controller instanceof Controller && !$this->request->isAjax() && $this->view->exists()) {
+
+            if ($controller instanceof MvcController && !$this->request->isAjax() && $this->view->exists()) {
                 return;
             }
 
