@@ -181,7 +181,8 @@ class Validator extends Component implements ValidatorInterface
 
         if ($value === '' || $value === null) {
             if (is_array($rules)) {
-                if (isset($rules['default'])) {
+                //default value maybe is `NULL`
+                if (array_key_exists('default', $rules)) {
                     return $model->$field = $rules['default'];
                 } elseif (in_array('safe', $rules, true)) {
                     return $model->$field = '';
@@ -245,7 +246,8 @@ class Validator extends Component implements ValidatorInterface
     {
         if ($value === '' || $value === null) {
             if (is_array($rules)) {
-                if (isset($rules['default'])) {
+                //default value maybe is `NULL`
+                if (array_key_exists('default', $rules)) {
                     return $rules['default'];
                 } elseif (in_array('safe', $rules, true)) {
                     return '';
