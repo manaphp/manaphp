@@ -74,6 +74,18 @@ interface SessionInterface
     public function getName();
 
     /**
+     * @return int
+     */
+    public function getTtl();
+
+    /**
+     * @param int $ttl
+     *
+     * @return static
+     */
+    public function setTtl($ttl);
+
+    /**
      * @param string $session_id
      *
      * @return array

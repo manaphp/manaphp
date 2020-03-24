@@ -9,6 +9,11 @@ use ManaPHP\Exception\NotSupportedException;
 class SessionContext
 {
     /**
+     * @var int
+     */
+    public $ttl;
+
+    /**
      * @var bool
      */
     public $started = false;
@@ -166,7 +171,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
                 return;
             }
         } else {
-            if ($this->do_touch($context->session_id, $this->_ttl)) {
+            if ($this->do_touch($context->session_id, $context->ttl ?? $this->_ttl)) {
                 return;
             }
         }
@@ -181,7 +186,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
         if (!is_string($data)) {
             $this->logger->error('serialize data failed', 'session.serialize');
         }
-        $this->do_write($context->session_id, $data, $this->_ttl);
+        $this->do_write($context->session_id, $data, $context->ttl ?? $this->_ttl);
     }
 
     /**
@@ -458,6 +463,26 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
     }
 
     /**
+     * @return int
+     */
+    public function getTtl()
+    {
+        return $this->_context->ttl ?? $this->_ttl;
+    }
+
+    /**
+     * @param int $ttl
+     *
+     * @return static
+     */
+    public function setTtl($ttl)
+    {
+        $this->_context->ttl = $ttl;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getName()
@@ -528,7 +553,8 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
     public function write($session_id, $data)
     {
         $session = $this->serialize($data);
-        $this->do_write($session_id, $session, $this->_ttl);
+
+        $this->do_write($session_id, $session, $this->_context->ttl ?? $this->_ttl);
 
         return $this;
     }
