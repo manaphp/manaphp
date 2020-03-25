@@ -13,7 +13,7 @@
               style="width: 100px;"></el-input>
 </div>
 <el-dialog title="增加存储对象" :visible.sync="createVisible">
-    <el-form :model="create" ref="create" v-if="createVisible">
+    <el-form :model="create" ref="create" size="small">
         <el-form-item label="桶名:">
             <el-select v-model="create.bucket_name" size="small">
                 <el-option v-for="bucket in buckets" :key="bucket.bucket_name" :label="bucket.bucket_name"
@@ -41,8 +41,8 @@
         </el-form-item>
     </el-form>
     <span slot="footer">
-        <el-button type="primary" @click="this.$refs.upload.submit()">创建</el-button>
-        <el-button @click="createVisible = false; $refs.create.resetFields()">取消</el-button>
+        <el-button type="primary" @click="this.$refs.upload.submit()" size="small">创建</el-button>
+        <el-button @click="createVisible = false; $refs.create.resetFields()" size="small">取消</el-button>
     </span>
 </el-dialog>
 

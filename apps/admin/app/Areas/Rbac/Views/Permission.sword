@@ -17,8 +17,8 @@
         </el-form-item>
     </el-form>
     <div slot="footer">
-        <el-button type="primary" @click="do_edit">保存</el-button>
-        <el-button @click="editVisible=false">取消</el-button>
+        <el-button type="primary" @click="do_edit" size="small">保存</el-button>
+        <el-button @click="editVisible=false" size="small">取消</el-button>
     </div>
 </el-dialog>
 <div class="result-box">

@@ -86,7 +86,7 @@
         vm = new App();
     }
 
-    vm.auto_reload().$mount('#app');
+    vm.$mount('#app').auto_reload();
 </script>
 </body>
 </html>

@@ -2,33 +2,21 @@
     <el-input v-model.trim="request.keyword" placeholder="用户名" size="small" style="width: 150px;"></el-input>
 </div>
 <el-dialog class="edit-dialog" title="编辑" :visible.sync="editVisible" width="50%">
-    <el-form :model="edit" ref="edit">
+    <el-form :model="edit" ref="edit" size="small">
         <el-checkbox-group v-model="edit.role_ids">
             <el-checkbox v-for="role in roles" :label="parseInt(role.role_id)"
                          :key="role.role_id" style="width: 20%; text-align: left"
-                        v-if="!['guest', 'user'].includes(role.role_name)">
+                         v-if="!['guest', 'user'].includes(role.role_name)">
                 @{{role.display_name}}
             </el-checkbox>
         </el-checkbox-group>
     </el-form>
     <div slot="footer">
-        <el-button type="primary" @click="do_edit">保存</el-button>
-        <el-button @click="editVisible=false">取消</el-button>
+        <el-button type="primary" @click="do_edit" size="small">保存</el-button>
+        <el-button @click="editVisible=false" size="small">取消</el-button>
     </div>
 </el-dialog>
-<el-dialog title="详情" :visible.sync="detailVisible">
-    <el-table :data="detail" border size="small">
-        <el-table-column type="index" label="#" width="50"></el-table-column>
-        <el-table-column prop="id" label="ID" width="100"></el-table-column>
-        <el-table-column prop="admin_id" label="用户ID" with="100"></el-table-column>
-        <el-table-column prop="admin_name" label="用户名" width="120"></el-table-column>
-        <el-table-column prop="role_id" label="角色ID" width="100"></el-table-column>
-        <el-table-column prop="role_name" label="角色名"></el-table-column>
-        <el-table-column prop="creator_id" label="创建者ID"></el-table-column>
-        <el-table-column prop="creator_name" label="创建者"></el-table-column>
-        <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
-    </el-table>
-</el-dialog>
+
 <div class="result-box">
     <el-table :data="response.items" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
@@ -65,8 +53,6 @@
                     role_ids: []
                 },
 
-                detailVisible: false,
-                detail: [],
                 admins: [],
                 roles: []
             },
