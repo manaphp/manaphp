@@ -103,6 +103,11 @@ interface ModelInterface
     public function rules();
 
     /**
+     * @return array
+     */
+    public function labels();
+
+    /**
      * @return static
      */
     public static function sample();

@@ -269,6 +269,14 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
+     * @return array =get_object_vars(new static)
+     */
+    public function labels()
+    {
+        return [];
+    }
+
+    /**
      * @return static
      */
     public static function sample()
