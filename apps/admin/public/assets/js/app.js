@@ -195,6 +195,11 @@ Vue.component('date-picker', {
             this.$emit('input', value);
         }
     },
+    watch: {
+        value: function (val) {
+            this.time = val;
+        }
+    },
     data: function () {
         return {
             time: this.value,
@@ -358,7 +363,7 @@ Vue.prototype.auto_reload = function () {
     if (this.request && this.response) {
         let qs = this.$qs.parse(document.location.query);
         for (let k in qs) {
-            this.request[k] = qs[k];
+            this.$set(this.request, k, qs[k]);
         }
 
         this.$watch('request', _.debounce(function () {
@@ -367,7 +372,6 @@ Vue.prototype.auto_reload = function () {
 
         this.reload();
     }
-    return this;
 }
 
 App = Vue.extend({
