@@ -461,7 +461,7 @@ class Validator extends Component implements ValidatorInterface
         if (preg_match('#^(\d+)-(\d+)$#', $parameter, $match)) {
             return $len >= $match[1] && $len <= $match[2] ? $value : null;
         } elseif (is_numeric($parameter)) {
-            return $len === $parameter ? $value : null;
+            return $len === (int)$parameter ? $value : null;
         } else {
             throw new InvalidValueException(['length validator `:parameter` parameter is not {minLength}-{maxLength} format', 'parameter' => $parameter]);
         }
