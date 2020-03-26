@@ -59,13 +59,19 @@
         },
         methods: {
             reset_pwd: function () {
-                this.$axios.post(document.location.href, Qs.stringify(this.request)).then(function (res) {
+                this.$axios.post(document.location.href, Qs.stringify(this.request)).then((res) => {
                     if (res.data.code === 0) {
                         window.location.href = "/";
                     } else {
                         this.$alert(res.data.message);
                     }
-                }.bind(this));
+                }).catch((error) => {
+                    if (error.response.data.message) {
+                        this.$alert(error.response.data.message, '失败');
+                    } else {
+                        this.$alert(error.response.statusText, '失败');
+                    }
+                });
             },
         }
     });

@@ -46,14 +46,20 @@
             },
             methods: {
                 change: function () {
-                    this.$axios.post(document.location.href, Qs.stringify(this.edit)).then(function (res) {
+                    this.$axios.post(document.location.href, Qs.stringify(this.edit)).then((res) => {
                         if (res.data.code === 0) {
                             window.location.href = "/";
                         } else {
                             this.$alert(res.data.message);
                             this.captcha_url = "captcha" + '?t=' + Date.now();
                         }
-                    }.bind(this));
+                    }).catch((error) => {
+                        if (error.response.data.message) {
+                            this.$alert(error.response.data.message, '失败');
+                        } else {
+                            this.$alert(error.response.statusText, '失败');
+                        }
+                    });
                 },
             }
         });

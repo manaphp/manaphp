@@ -63,15 +63,21 @@
         },
         methods: {
             login: function () {
-                this.$axios.post(document.location.href, Qs.stringify(this.request)).then(function (res) {
+                this.$axios.post(document.location.href, Qs.stringify(this.request)).then((res) => {
                     this.$alert(res.data.message).then(function () {
                         if (res.data.code === 0) {
                             window.location.href = "{{$redirect}}";
                         } else {
-                            vm.captcha_url = "captcha" + '?t=' + Date.now();
+                            this.captcha_url = "captcha" + '?t=' + Date.now();
                         }
                     });
-                }.bind(this));
+                }).catch((error) => {
+                    if (error.response.data.message) {
+                        this.$alert(error.response.data.message, '失败');
+                    } else {
+                        this.$alert(error.response.statusText, '失败');
+                    }
+                });
             },
         }
     });

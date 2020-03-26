@@ -65,9 +65,6 @@
 
     axios.defaults.baseURL = 'http://www.manaphp.com';
     axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-    axios.defaults.validateStatus = function (status) {
-        return true
-    };
 
     var vm = new Vue({
         el: '#app',
@@ -89,10 +86,16 @@
                     if (res.data.code === 0) {
                         window.location.href = "{{$redirect}}";
                     } else {
-                        this.$alert(res.data.message ? res.data.message : res.data);
+                        this.$alert(res.data.message ? res.data.message : res.data, '失败');
                         this.request.password = '';
                         this.request.code = '';
                         this.captcha_url = "captcha" + '?t=' + Date.now();
+                    }
+                }).catch((error) => {
+                    if (error.response.data.message) {
+                        this.$alert(error.response.data.message, '失败');
+                    } else {
+                        this.$alert(error.response.statusText, '失败');
                     }
                 });
             },
