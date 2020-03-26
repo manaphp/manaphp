@@ -366,11 +366,12 @@ Vue.prototype.auto_reload = function () {
             this.$set(this.request, k, qs[k]);
         }
 
-        this.$watch('request', _.debounce(function () {
-            this.reload();
-        }, 500), {deep: true});
-
-        this.reload();
+        let vm = this;
+        this.reload().then(function () {
+            vm.$watch('request', _.debounce(function () {
+                vm.reload();
+            }, 500), {deep: true});
+        });
     }
 }
 
@@ -385,7 +386,7 @@ App = Vue.extend({
             window.history.replaceState(null, null, qs ? ('?' + qs) : '');
             document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substr(1)) : {};
             this.response = [];
-            this.$axios.get(document.location.href).then(function (res) {
+            return this.$axios.get(document.location.href).then(function (res) {
                 if (res.data.code !== 0) {
                     this.$alert(res.data.message);
                 } else {
