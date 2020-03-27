@@ -36,9 +36,30 @@ class ViewContext
 class View extends Component implements ViewInterface
 {
     /**
+     * @var string
+     */
+    protected $_base_url;
+
+    /**
+     * @var bool
+     */
+    protected $_autofix_url;
+
+    /**
      * @var array
      */
     protected $_dirs = [];
+
+    /**
+     * View constructor.
+     *
+     * @param array $options
+     */
+    public function __construct($options = [])
+    {
+        $this->_base_url = rtrim($options['base_url'] ?? $this->alias->resolve('@web'));
+        $this->_autofix_url = $options['autofix_url'] ?? $this->_base_url !== '';
+    }
 
     /**
      * @param false|string $layout
@@ -230,7 +251,23 @@ class View extends Component implements ViewInterface
 
         $this->fireEvent('view:rendered');
 
+        if ($this->_autofix_url) {
+            $this->fixUrl();
+        }
+
         return $context->content;
+    }
+
+    /**
+     * @return void
+     */
+    public function fixUrl()
+    {
+        $context = $this->_context;
+
+        $context->content = preg_replace_callback('#\b(href|src|action|data-src)=(["\'])/(?!/)#', function ($match) {
+            return "$match[1]=$match[2]{$this->_base_url}/";
+        }, $context->content);
     }
 
     /**
