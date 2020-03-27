@@ -12,7 +12,7 @@
     @yield('css')
 </head>
 <body>
-
+<script >var BASE_URL = '{{base_url()}}';</script>
 <el-container id="app" v-cloak>
     {{--    <el-aside style="overflow: hidden">@widget('SideMenu')</el-aside>--}}
     <el-aside style="overflow: hidden">

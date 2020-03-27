@@ -22,7 +22,7 @@ Vue.prototype.console = console;
 
 document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substr(1)) : {};
 
-//axios.defaults.baseURL = 'http://www.manaphp.com';
+axios.defaults.baseURL = BASE_URL;
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 axios.interceptors.request.use(function (config) {
