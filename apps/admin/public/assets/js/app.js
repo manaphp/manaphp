@@ -324,10 +324,9 @@ Vue.component('my-menu', {
         this.ajax_get('/menu/my?cache=2', function (res) {
             this.groups = res;
 
-            let active = location.pathname;
             for (let group of res) {
                 for (let item of group.items) {
-                    if (item.url === active) {
+                    if (item.url === this.active) {
                         document.title = ' ' + group.group_name + ' - ' + item.item_name;
                         break;
                     }
