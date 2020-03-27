@@ -152,22 +152,9 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _replaceAxiosLinks($file, $str)
+    protected function _completeLinks($file, $str)
     {
-        return preg_replace_callback('#(axios\.[a-z]+\(["\'])([\w\-/:.]+)#', function ($match) use ($file) {
-            return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
-        }, $str);
-    }
-
-    /**
-     * @param string $file
-     * @param string $str
-     *
-     * @return string
-     */
-    protected function _replaceAjaxLinks($file, $str)
-    {
-        $str = preg_replace_callback('#((?:\$\.|ajax_)\w+\\(["\'])([\w\-/:.]+)#', function ($match) use ($file) {
+        $str = preg_replace_callback('#\b((?:ajax|axios\.)\w*\\(["\'])([^/][\w\-/:.]+)#', function ($match) use ($file) {
             return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
         }, $str);
 
@@ -234,8 +221,7 @@ class Compiler extends Component
 
         $result = $this->compileString($str);
 
-        $result = $this->_replaceAjaxLinks($source, $result);
-        $result = $this->_replaceAxiosLinks($source, $result);
+        $result = $this->_completeLinks($source, $result);
 
         if (file_put_contents($compiled, $result, LOCK_EX) === false) {
             throw new RuntimeException(['write `:compiled` compiled file for `:source` file failed: :last_error_message',
