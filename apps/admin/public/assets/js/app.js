@@ -313,8 +313,8 @@ Vue.component('my-menu', {
                 <span>{{group.group_name}}</span>
             </template>
             <template v-for="item in group.items ">
-                <el-menu-item :index="item.url"><i :class="item.icon"></i>
-                    <el-link :href="item.url">{{item.item_name}}</el-link>
+                <el-menu-item :index="baseURL+item.url"><i :class="item.icon"></i>
+                    <el-link :href="baseURL+item.url">{{item.item_name}}</el-link>
                 </el-menu-item>
             </template>
         </el-submenu>
@@ -336,6 +336,7 @@ Vue.component('my-menu', {
     },
     data() {
         return {
+            baseURL: window.BASE_URL,
             active: location.pathname,
             groups: []
         }
