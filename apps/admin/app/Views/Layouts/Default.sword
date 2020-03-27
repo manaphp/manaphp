@@ -17,7 +17,7 @@
     {{--    <el-aside style="overflow: hidden">@widget('SideMenu')</el-aside>--}}
     <el-aside style="overflow: hidden">
         <div class="product-name"><el-link href="/">{{$this->configure->name}}</el-link></div>
-        <my-menu/>
+        <my-menu></my-menu>
     </el-aside>
     <el-container>
         <el-header>
