@@ -123,7 +123,7 @@ class Compiler extends Component
         }
 
         if ($str[0] === '/') {
-            return $this->alias->get('@web') . $str;
+            return $str;
         }
 
         $area = preg_match('#/Areas/([^/]+)#i', $file, $match) ? Str::underscore($match[1]) : null;
@@ -143,7 +143,7 @@ class Compiler extends Component
             $absolute = $area ? "/$area/$str" : "/$str";
         }
 
-        return $this->alias->get('@web') . $absolute;
+        return $absolute;
     }
 
     /**
