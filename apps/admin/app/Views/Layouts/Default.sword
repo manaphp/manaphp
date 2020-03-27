@@ -67,8 +67,6 @@
 @yield('script')
 @debugger()
 <script>
-    login_url = '/login';
-
     if (typeof vm === 'undefined') {
         vm = new App();
     }
