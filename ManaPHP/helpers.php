@@ -515,3 +515,13 @@ if (!function_exists('image_create')) {
         }
     }
 }
+
+if (!function_exists('base_url')) {
+    /**
+     * @return string
+     */
+    function base_url()
+    {
+        return di('alias')->get('@web');
+    }
+}

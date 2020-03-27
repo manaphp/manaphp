@@ -67,7 +67,8 @@ class Compiler extends Component
         'widget',
         'partial',
         'block',
-        'json'
+        'json',
+        'base_url'
     ];
 
     /**
