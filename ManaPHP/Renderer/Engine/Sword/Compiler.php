@@ -175,51 +175,6 @@ class Compiler extends Component
     }
 
     /**
-     * @param string $file
-     * @param string $str
-     *
-     * @return string
-     */
-    protected function _replaceAttrLinks($file, $str)
-    {
-        return preg_replace_callback('#(\s+(?:href|src|data-src|action)=["\'])([\w\-/:.]+)#', function ($match) use ($file) {
-            return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
-        }, $str);
-    }
-
-    /**
-     * @param string $file
-     * @param string $str
-     *
-     * @return string
-     */
-    protected function _replaceVueAttrLinks($file, $str)
-    {
-        return preg_replace_callback("#(:(?:href|src|data-src|action)=\"')([\w\-/:.]+)#", function ($match) use ($file) {
-            return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
-        }, $str);
-    }
-
-    /**
-     * @param string $file
-     * @param string $str
-     *
-     * @return string
-     */
-    protected function _replaceUrlValLinks($file, $str)
-    {
-        $str = preg_replace_callback('#((?:\s+|_)url\s*[:=]\s*[\"\'])([\w\-/:.]+)#', function ($match) use ($file) {
-            return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
-        }, $str);
-
-        $str = preg_replace_callback('#([._]href\s*=\s*["\'])([\w\-/:.]+)#', function ($match) use ($file) {
-            return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
-        }, $str);
-
-        return $str;
-    }
-
-    /**
      * Compile the given Sword template contents.
      *
      * @param string $value
@@ -281,9 +236,6 @@ class Compiler extends Component
 
         $result = $this->_replaceAjaxLinks($source, $result);
         $result = $this->_replaceAxiosLinks($source, $result);
-        $result = $this->_replaceAttrLinks($source, $result);
-        $result = $this->_replaceVueAttrLinks($source, $result);
-        $result = $this->_replaceUrlValLinks($source, $result);
 
         if (file_put_contents($compiled, $result, LOCK_EX) === false) {
             throw new RuntimeException(['write `:compiled` compiled file for `:source` file failed: :last_error_message',
