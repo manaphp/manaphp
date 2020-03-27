@@ -6,6 +6,11 @@ Vue.prototype.sessionStorage = window.sessionStorage;
 Vue.prototype.localStorage = window.localStorage;
 Vue.prototype.console = console;
 
+CONTROLLER_URL = location.pathname.substr(BASE_URL.length);
+if (CONTROLLER_URL.endsWith('/index')) {
+    CONTROLLER_URL = CONTROLLER_URL.substr(0, CONTROLLER_URL.length - 6);
+}
+
 (function () {
     let urlKey = `last_url_query.${document.location.pathname}`;
     window.onbeforeunload = (e) => {
@@ -432,7 +437,7 @@ App = Vue.extend({
             if (typeof create === 'string') {
                 this.$refs[create].validate(valid => success = valid);
             }
-            success && this.ajax_post(window.location.pathname + "/create", this.create, function (res) {
+            success && this.ajax_post(CONTROLLER_PATH + "/create", this.create, function (res) {
                 this.createVisible = false;
                 this.$refs.create.resetFields();
                 this.reload();
@@ -443,7 +448,7 @@ App = Vue.extend({
             this.editVisible = true;
         },
         do_edit: function () {
-            this.ajax_post(window.location.pathname + "/edit", this.edit, function (res) {
+            this.ajax_post(CONTROLLER_URL + "/edit", this.edit, function (res) {
                 this.editVisible = false;
                 this.reload();
             });
@@ -455,7 +460,7 @@ App = Vue.extend({
             var key = Object.keys(row)[0];
             data[key] = row[key];
 
-            this.ajax_get(window.location.pathname + '/' + (action ? action : "detail"), data, function (res) {
+            this.ajax_get(CONTROLLER_URL + '/' + (action ? action : "detail"), data, function (res) {
                 this.detail = res;
             });
         },
@@ -470,12 +475,12 @@ App = Vue.extend({
             }
 
             if (window.event.ctrlKey) {
-                this.ajax_post(window.location.pathname + "/delete", data, function (res) {
+                this.ajax_post(CONTROLLER_URL + "/delete", data, function (res) {
                     this.reload();
                 });
             } else {
                 this.$confirm('确认删除 `' + (name ? name : row[key]) + '` ?').then(function (value) {
-                    this.ajax_post(window.location.pathname + "/delete", data, function (res) {
+                    this.ajax_post(CONTROLLER_URL + "/delete", data, function (res) {
                         this.reload();
                     });
                 }.bind(this));
