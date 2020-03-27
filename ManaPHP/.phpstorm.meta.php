@@ -134,7 +134,9 @@ namespace PHPSTORM_META {
         'mailer:sending', 'mailer:sent',
         'redis:connect', 'redis:calling', 'redis:called',
         'httpClient:requesting', 'httpClient:requested',
-        'wsClient:send', 'wsClient:receive'
+        'wsClient:send', 'wsClient:receive',
+        'view:rendering', 'view:rendered',
+        'renderer:rendering', 'renderer:rendered',
     );
     expectedArguments(\ManaPHP\Event\ManagerInterface::attachEvent(), 0, argumentsSet('eventsManager'));
     expectedArguments(\ManaPHP\Component::attachEvent(), 0, argumentsSet('eventsManager'));
