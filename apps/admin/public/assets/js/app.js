@@ -355,6 +355,32 @@ Vue.component('axios-cache-switcher', {
         }
     }
 });
+
+Vue.component('system-time', {
+    template: '<span class="left" :title="title" :style="{backgroundColor: color}" v-if="time">{{time}}</span>',
+    data: function () {
+        return {
+            time: 0,
+            title: '',
+            color: ''
+        }
+    },
+    created: function () {
+        axios.get('/index/time').then((res) => {
+            if (res.data.code === 0) {
+                setInterval((diff) => {
+                    this.title = diff.toFixed(3);
+                    if (Math.abs(diff) >= 2) {
+                        this.color = 'red';
+                    }
+
+                    this.time = (moment().add(diff, 'seconds').format('YYYY-MM-DD hh:mm:ss'));
+                }, 1000, res.data.data.timestamp - Date.now() / 1000);
+            }
+        });
+    }
+});
+
 Vue.prototype.format_date = function (value) {
     return value ? this.$moment(value * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
 }

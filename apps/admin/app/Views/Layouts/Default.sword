@@ -21,7 +21,7 @@
     </el-aside>
     <el-container>
         <el-header>
-            <span id="server-time" class="left"></span>
+            <system-time></system-time>
             <marquee class="left" width="70%">
                 <el-link href="https://github.com/manaphp">您有新到消息，请注意查收。</el-link>
             </marquee>
@@ -67,19 +67,6 @@
 @yield('script')
 @debugger()
 <script>
-    axios.get('/index/time').then(function (res) {
-        if (res.data.code === 0) {
-            setInterval(function (diff, $element) {
-                $element.title = diff.toFixed(3);
-                if (Math.abs(diff) >= 2) {
-                    $element.style.backgroundColor = 'red';
-                }
-
-                $element.textContent = (moment().add(diff, 'seconds').format('YYYY-MM-DD hh:mm:ss'));
-            }, 1000, res.data.data.timestamp - Date.now() / 1000, document.getElementById('server-time'));
-        }
-    });
-
     login_url = '/login';
 
     if (typeof vm === 'undefined') {
