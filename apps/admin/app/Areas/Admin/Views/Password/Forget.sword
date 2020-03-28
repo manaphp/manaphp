@@ -62,7 +62,7 @@
             captcha_timestamp: Date.now()
         },
         methods: {
-            login: function () {
+            login() {
                 this.$axios.post(document.location.href, Qs.stringify(this.request)).then((res) => {
                     if (res.data.code === 0) {
                         window.location.href = "{{$redirect}}";

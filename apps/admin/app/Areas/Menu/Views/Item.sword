@@ -105,8 +105,8 @@
                 groups: {},
                 permissions: {}
             },
-            mounted: function () {
-                this.ajax_get("group/list", function (res) {
+            mounted() {
+                this.ajax_get("group/list", (res) => {
                     this.groups = res;
                     if (!this.request.group_id) {
                         this.request.group_id = this.groups[0].group_id;

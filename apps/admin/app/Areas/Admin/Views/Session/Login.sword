@@ -84,7 +84,7 @@
             },
             captcha_timestamp: Date.now()
         },
-        mounted: function () {
+        mounted() {
             this.$cookies.config('30d', document.location.pathname);
 
             this.request.remember_me = this.$cookies.get('remember_me') !== '0';
@@ -97,7 +97,7 @@
             }
         },
         methods: {
-            login: function () {
+            login() {
                 if (this.request.admin_name === '' || this.request.password === '') {
                     return;
                 }

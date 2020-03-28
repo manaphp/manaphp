@@ -88,15 +88,11 @@
                 }
             },
             methods: {
-                do_enable: function (row) {
-                    this.ajax_post("enable", {role_id: row.role_id}, function () {
-                        row.enabled = 1;
-                    });
+                do_enable(row) {
+                    this.ajax_post("enable", {role_id: row.role_id}, () => row.enabled = 1);
                 },
-                do_disable: function (row) {
-                    this.ajax_post("disable", {role_id: row.role_id}, function () {
-                        row.enabled = 0;
-                    });
+                do_disable(row) {
+                    this.ajax_post("disable", {role_id: row.role_id}, () => row.enabled = 0);
                 }
             }
         });

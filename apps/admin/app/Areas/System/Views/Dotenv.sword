@@ -82,10 +82,8 @@
                     env: '',
                 }
             },
-            created: function () {
-                this.ajax_get('apps', function (res) {
-                    this.apps = res;
-                })
+            created() {
+                this.ajax_get('apps', (res) => this.apps = res);
             }
         });
     </script>

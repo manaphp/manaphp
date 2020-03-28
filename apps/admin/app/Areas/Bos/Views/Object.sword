@@ -120,8 +120,8 @@
                 upload_action: '',
                 buckets: [],
             },
-            created: function () {
-                this.ajax_get("buckets", function (res) {
+            created() {
+                this.ajax_get("buckets", (res) => {
                     this.buckets = res;
                     if (!this.request.bucket_name) {
                         this.request.bucket_name = this.buckets[0].bucket_name;

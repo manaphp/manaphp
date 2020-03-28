@@ -56,7 +56,7 @@
                 }
             },
             computed: {
-                filteredResponse: function () {
+                filteredResponse() {
                     var filter = this.filter;
 
                     if (!filter.path) {
@@ -74,7 +74,7 @@
 
                     return permissions;
                 },
-                paths: function () {
+                paths() {
                     var paths = [];
                     for (var item of this.response) {
                         var path = item.path;
@@ -90,10 +90,8 @@
                 }
             },
             methods: {
-                do_rebuild: function () {
-                    this.ajax_post("rebuild", {}, function () {
-                        this.reload();
-                    });
+                do_rebuild() {
+                    this.ajax_post("rebuild", {}, () => this.reload());
                 }
             }
         });

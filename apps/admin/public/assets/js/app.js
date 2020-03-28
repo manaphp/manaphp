@@ -110,7 +110,7 @@ Vue.prototype.ajax_get = function (url, data, success) {
         }
     }
 
-    return this.$axios.get(url).then(function (res) {
+    return this.$axios.get(url).then((res) => {
         if (res.data.code === 0) {
             if (success) {
                 if (cache_key) {
@@ -122,7 +122,7 @@ Vue.prototype.ajax_get = function (url, data, success) {
             this.$alert(res.data.message);
         }
         return res;
-    }.bind(this));
+    });
 }
 
 Vue.prototype.ajax_post = function (url, data, success) {
@@ -136,7 +136,7 @@ Vue.prototype.ajax_post = function (url, data, success) {
         config.headers = {'Content-Type': 'multipart/form-data'};
     }
 
-    return this.$axios.post(url, data, config).then(function (res) {
+    return this.$axios.post(url, data, config).then((res) => {
         if (res.data.code === 0 && success) {
             success.bind(this)(res.data.data);
         }
@@ -145,7 +145,7 @@ Vue.prototype.ajax_post = function (url, data, success) {
             this.$alert(res.data.message);
         }
         return res
-    }.bind(this));
+    });
 }
 
 Vue.filter('date', function (value, format = 'YYYY-MM-DD HH:mm:ss') {
@@ -166,7 +166,7 @@ Vue.component('pager', {
         '                   :total="response.count" layout="sizes,total, prev, pager, next, jumper"></el-pagination>\n',
     watch: {
         request: {
-            handler: function () {
+            handler() {
                 for (var field in this.request) {
                     if (field === 'page' || field === 'size') {
                         continue;
@@ -182,7 +182,7 @@ Vue.component('pager', {
             deep: true
         }
     },
-    data: function () {
+    data() {
         return {
             last_request: Object.assign({}, this.request)
         }
@@ -196,23 +196,23 @@ Vue.component('date-picker', {
         ' :picker-options="pickerOptions" @change="change"' +
         '></el-date-picker>',
     methods: {
-        change: function (value) {
+        change(value) {
             this.$emit('input', value);
         }
     },
     watch: {
-        value: function (val) {
+        value(val) {
             this.time = val;
         }
     },
-    data: function () {
+    data() {
         return {
             time: this.value,
             pickerOptions: {
                 shortcuts: [
                     {
                         text: '今天',
-                        onClick: function (picker) {
+                        onClick(picker) {
                             var end = new Date();
                             var start = new Date();
                             start.setTime(start.getTime());
@@ -221,7 +221,7 @@ Vue.component('date-picker', {
                     },
                     {
                         text: '昨天',
-                        onClick: function (picker) {
+                        onClick(picker) {
                             var end = new Date();
                             var start = new Date();
                             start.setTime(start.getTime() - 3600 * 1000 * 24);
@@ -231,7 +231,7 @@ Vue.component('date-picker', {
                     },
                     {
                         text: '最近三天',
-                        onClick: function (picker) {
+                        onClick(picker) {
                             var end = new Date();
                             var start = new Date();
                             start.setTime(start.getTime() - 3600 * 1000 * 24 * 3);
@@ -240,7 +240,7 @@ Vue.component('date-picker', {
                     },
                     {
                         text: '最近一周',
-                        onClick: function (picker) {
+                        onClick(picker) {
                             var end = new Date();
                             var start = new Date();
                             start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
@@ -249,7 +249,7 @@ Vue.component('date-picker', {
                     },
                     {
                         text: '最近一个月',
-                        onClick: function (picker) {
+                        onClick(picker) {
                             var end = new Date();
                             var start = new Date();
                             start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
@@ -258,7 +258,7 @@ Vue.component('date-picker', {
                     },
                     {
                         text: '最近三个月',
-                        onClick: function (picker) {
+                        onClick(picker) {
                             var end = new Date();
                             var start = new Date();
                             start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
@@ -267,7 +267,7 @@ Vue.component('date-picker', {
                     },
                     {
                         text: '最近一年',
-                        onClick: function (picker) {
+                        onClick(picker) {
                             var end = new Date();
                             var start = new Date();
                             start.setTime(start.getTime() - 3600 * 1000 * 24 * 365);
@@ -276,7 +276,7 @@ Vue.component('date-picker', {
                     },
                     {
                         text: '本周',
-                        onClick: function (picker) {
+                        onClick(picker) {
                             var end = new Date();
                             var start = new Date();
                             start.setDate(start.getDate() - start.getDay() + 1);
@@ -285,7 +285,7 @@ Vue.component('date-picker', {
                     },
                     {
                         text: '本月',
-                        onClick: function (picker) {
+                        onClick(picker) {
                             var end = new Date();
                             var start = new Date();
                             start.setDate(1);
@@ -294,7 +294,7 @@ Vue.component('date-picker', {
                     },
                     {
                         text: '本季',
-                        onClick: function (picker) {
+                        onClick(picker) {
                             var end = new Date();
                             var start = new Date();
                             start.setMonth(parseInt(start.getMonth() / 3) * 3);
@@ -326,7 +326,7 @@ Vue.component('my-menu', {
      </template>
 </el-menu>`,
     created() {
-        this.ajax_get('/menu/my?cache=2', function (res) {
+        this.ajax_get('/menu/my?cache=2', (res) => {
             this.groups = res;
 
             for (let group of res) {
@@ -363,14 +363,14 @@ Vue.component('axios-cache-switcher', {
 
 Vue.component('system-time', {
     template: '<span class="left" :title="title" :style="{backgroundColor: color}" v-if="time">{{time}}</span>',
-    data: function () {
+    data() {
         return {
             time: 0,
             title: '',
             color: ''
         }
     },
-    created: function () {
+    created() {
         axios.get('/index/time').then((res) => {
             if (res.data.code === 0) {
                 setInterval((diff) => {
@@ -397,18 +397,13 @@ Vue.prototype.auto_reload = function () {
             this.$set(this.request, k, qs[k]);
         }
 
-        let vm = this;
-        this.reload().then(function () {
-            vm.$watch('request', _.debounce(function () {
-                vm.reload();
-            }, 500), {deep: true});
-        });
+        this.reload().then(() => this.$watch('request', _.debounce(() => this.reload(), 500), {deep: true}));
     }
 }
 
 App = Vue.extend({
     methods: {
-        reload: function () {
+        reload() {
             if (!this.request || !this.response) {
                 alert('bad reload');
             }
@@ -417,54 +412,54 @@ App = Vue.extend({
             window.history.replaceState(null, null, qs ? ('?' + qs) : '');
             document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substr(1)) : {};
             this.response = [];
-            return this.$axios.get(document.location.href).then(function (res) {
+            return this.$axios.get(document.location.href).then((res) => {
                 if (res.data.code !== 0) {
                     this.$alert(res.data.message);
                 } else {
                     this.response = res.data.data;
                 }
-            }.bind(this));
+            });
         },
-        fDate: function (row, column, value) {
+        fDate(row, column, value) {
             return this.format_date(value);
         },
 
-        fEnabled: function (row, column, value) {
+        fEnabled(row, column, value) {
             return ['禁用', '启用'][value];
         },
-        do_create: function (create) {
+        do_create(create) {
             var success = true;
             if (typeof create === 'string') {
                 this.$refs[create].validate(valid => success = valid);
             }
-            success && this.ajax_post(CONTROLLER_PATH + "/create", this.create, function (res) {
+            success && this.ajax_post(CONTROLLER_PATH + "/create", this.create, (res) => {
                 this.createVisible = false;
                 this.$refs.create.resetFields();
                 this.reload();
             });
         },
-        show_edit: function (row, overwrite = {}) {
+        show_edit(row, overwrite = {}) {
             this.edit = Object.assign({}, row, overwrite);
             this.editVisible = true;
         },
-        do_edit: function () {
-            this.ajax_post(CONTROLLER_URL + "/edit", this.edit, function (res) {
+        do_edit() {
+            this.ajax_post(CONTROLLER_URL + "/edit", this.edit, (res) => {
                 this.editVisible = false;
                 this.reload();
             });
         },
-        show_detail: function (row, action) {
+        show_detail(row, action) {
             this.detailVisible = true;
 
             var data = {};
             var key = Object.keys(row)[0];
             data[key] = row[key];
 
-            this.ajax_get(CONTROLLER_URL + '/' + (action ? action : "detail"), data, function (res) {
+            this.ajax_get(CONTROLLER_URL + '/' + (action ? action : "detail"), data, (res) => {
                 this.detail = res;
             });
         },
-        do_delete: function (row, name = '') {
+        do_delete(row, name = '') {
             var data = {};
             var keys = Object.keys(row);
             var key = keys[0];
@@ -475,15 +470,11 @@ App = Vue.extend({
             }
 
             if (window.event.ctrlKey) {
-                this.ajax_post(CONTROLLER_URL + "/delete", data, function (res) {
-                    this.reload();
-                });
+                this.ajax_post(CONTROLLER_URL + "/delete", data, (res) => this.reload());
             } else {
-                this.$confirm('确认删除 `' + (name ? name : row[key]) + '` ?').then(function (value) {
-                    this.ajax_post(CONTROLLER_URL + "/delete", data, function (res) {
-                        this.reload();
-                    });
-                }.bind(this));
+                this.$confirm('确认删除 `' + (name ? name : row[key]) + '` ?').then((value) => {
+                    this.ajax_post(CONTROLLER_URL + "/delete", data, () => this.reload());
+                });
             }
         },
     },

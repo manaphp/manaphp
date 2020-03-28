@@ -57,12 +57,12 @@
                 roles: []
             },
             methods: {
-                show_edit: function (row) {
+                show_edit(row) {
                     this.edit.role_ids = this._.map(row.roles, 'role_id');
                     this.edit.admin_id = row.admin_id;
                     this.editVisible = true;
                     if (!this.roles.length) {
-                        this.ajax_get("role/list", function (res) {
+                        this.ajax_get("role/list", (res) => {
                             this.roles = res;
                             this.editVisible = true;
                         })

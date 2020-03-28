@@ -57,8 +57,8 @@
                 },
                 permissions: []
             },
-            mounted: function () {
-                this.ajax_get("role/list", function (res) {
+            mounted() {
+                this.ajax_get("role/list", (res) => {
                     this.roles = res;
                     if (!this.request.role_id) {
                         this.request.role_id = res ? res[0].role_id : 0;
@@ -66,12 +66,12 @@
                 });
             },
             methods: {
-                show_edit: function () {
+                show_edit() {
                     this.edit.permission_ids = this._.map(this.response, 'permission_id');
                     this.edit.role_id = this.request.role_id;
 
                     if (!this.permissions.length) {
-                        this.ajax_get("permission/list", function (res) {
+                        this.ajax_get("permission/list", (res) => {
                             this.permissions = res;
                             this.editVisible = true;
                         });

@@ -59,7 +59,7 @@
             },
         },
         methods: {
-            reset_pwd: function () {
+            reset_pwd() {
                 this.$axios.post(document.location.href, Qs.stringify(this.request)).then((res) => {
                     if (res.data.code === 0) {
                         window.location.href = "/";
