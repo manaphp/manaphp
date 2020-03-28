@@ -25,6 +25,7 @@
     </style>
 </head>
 <body>
+<script>var BASE_URL = '{{base_url()}}';</script>
 <div id="app" class="login-box">
     <h1 align="center">重置密码</h1>
     @if($expired)
