@@ -50,11 +50,6 @@ class SessionController extends Controller
             return '账号已锁定';
         }
 
-        if ($this->request->has('remember_me')) {
-            $this->cookies->set('admin_name', $admin->admin_name, strtotime('1 year'));
-        } else {
-            $this->cookies->delete('admin_name');
-        }
 
         if ($admin->admin_id === 1) {
             $roles = ['admin'];
