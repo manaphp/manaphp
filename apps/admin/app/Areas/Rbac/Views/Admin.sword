@@ -14,6 +14,9 @@
         <el-form-item label="密码:" prop="password">
             <el-input v-model.trim="create.password" auto-complete="off" type="password"></el-input>
         </el-form-item>
+        <el-form-item label="IP白名单:" prop="white_ip">
+            <el-input v-model.trim="create.white_ip" auto-complete="off"></el-input>
+        </el-form-item>
         <el-form-item label="角色:">
             <el-select v-model="create.role_id" size="small" placeholder="角色" clearable filterable style="width: 150px">
                 <el-option v-for="role in roles" :key="role.role_id" :label="role.display_name"
@@ -40,6 +43,9 @@
         <el-form-item label="密码:">
             <el-input v-model.trim="edit.password" auto-complete="off"></el-input>
         </el-form-item>
+        <el-form-item label="IP白名单:">
+            <el-input v-model.trim="edit.white_ip" auto-complete="off"></el-input>
+        </el-form-item>
         <el-checkbox-group v-model="edit.role_ids" style="padding: 30px 50px;">
             <el-checkbox v-for="role in roles" :label="role.role_id"
                          :key="role.role_id" style="width: 20%; text-align: left">
@@ -59,6 +65,7 @@
         <el-table-column prop="admin_id" label="用户ID" width="100"></el-table-column>
         <el-table-column prop="admin_name" label="用户名" width="120"></el-table-column>
         <el-table-column prop="email" label="邮箱" width="200"></el-table-column>
+        <el-table-column prop="white_ip" label="IP白名单" width="100"></el-table-column>
         <el-table-column label="状态" width="100">
             <template v-slot="scope">@{{ statuses[scope.row.status] }}</template>
         </el-table-column>
@@ -101,6 +108,7 @@
                     admin_name: '',
                     email: '',
                     password: '',
+                    white_ip: '*',
                     role_id: '',
                     status: '1'
                 },
@@ -110,6 +118,7 @@
                     admin_id: '',
                     email: '',
                     password: '',
+                    white_ip: '',
                     role_ids: []
                 },
                 statuses: {0: '未激活', 1: '激活', 2: '锁定'},

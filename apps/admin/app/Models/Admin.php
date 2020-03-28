@@ -19,6 +19,7 @@ class Admin extends Model
     public $status;
     public $salt;
     public $password;
+    public $white_ip;
     public $login_ip;
     public $login_time;
     public $session_id;
@@ -40,7 +41,8 @@ class Admin extends Model
         return [
             'admin_name' => ['length' => '4-16', 'account', 'readonly'],
             'email' => ['lower', 'email', 'unique'],
-            'status' => 'const'
+            'status' => 'const',
+            'white_ip' => ['default' => '', 'maxLength' => 64]
         ];
     }
 

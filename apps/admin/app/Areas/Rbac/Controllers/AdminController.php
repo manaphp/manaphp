@@ -19,7 +19,7 @@ class AdminController extends Controller
 
     public function indexAction()
     {
-        return Admin::select(['admin_id', 'admin_name', 'status', 'login_ip', 'login_time', 'email', 'updator_name', 'creator_name', 'created_time', 'updated_time'])
+        return Admin::select(['admin_id', 'admin_name', 'status', 'white_ip', 'login_ip', 'login_time', 'email', 'updator_name', 'creator_name', 'created_time', 'updated_time'])
             ->orderBy(['admin_id' => SORT_DESC])
             ->with(['roles' => 'role_id, display_name'])
             ->when(static function (QueryInterface $query) {
@@ -74,7 +74,7 @@ class AdminController extends Controller
     {
         $admin = Admin::rGet();
 
-        $admin->load(['email']);
+        $admin->load(['email', 'white_ip']);
         if ($password = input('password', '')) {
             $admin->password = $password;
         }

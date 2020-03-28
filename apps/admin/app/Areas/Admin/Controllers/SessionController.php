@@ -5,6 +5,7 @@ use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
 use App\Models\Admin;
 use App\Models\AdminLoginLog;
+use ManaPHP\Helper\Ip;
 use ManaPHP\Mvc\Controller;
 
 class SessionController extends Controller
@@ -50,6 +51,11 @@ class SessionController extends Controller
             return '账号已锁定';
         }
 
+        $client_ip = $this->request->getClientIp();
+
+        if (!Ip::contains($admin->white_ip, $client_ip)) {
+            return "$client_ip 地址未在白名单";
+        }
 
         if ($admin->admin_id === 1) {
             $roles = ['admin'];
@@ -67,7 +73,7 @@ class SessionController extends Controller
             // $this->session->destroy($admin->session_id);
         }
 
-        $admin->login_ip = $this->request->getClientIp();
+        $admin->login_ip = $client_ip;
         $admin->login_time = time();
         $admin->session_id = $session_id;
         $admin->update();
@@ -76,7 +82,7 @@ class SessionController extends Controller
 
         $adminLoginLog->admin_id = $admin->admin_id;
         $adminLoginLog->admin_name = $admin->admin_name;
-        $adminLoginLog->client_ip = $this->request->getClientIp();
+        $adminLoginLog->client_ip = $client_ip;
         $adminLoginLog->client_udid = $udid;
         $adminLoginLog->user_agent = $this->request->getUserAgent(255);
 
