@@ -23,7 +23,7 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
 
             if ($code !== 200) {
                 $this->response->setStatus($code);
-            } elseif ($this->response->getContent() !== null) {
+            } elseif ($this->response->getContent() !== '') {
                 return;
             }
         } else {
