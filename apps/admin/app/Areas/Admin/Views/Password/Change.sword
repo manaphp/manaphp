@@ -48,7 +48,7 @@
                 change() {
                     this.$axios.post(document.location.href, Qs.stringify(this.edit)).then((res) => {
                         if (res.data.code === 0) {
-                            window.location.href = "/";
+                            window.location.href = BASE_URL;
                         } else {
                             this.$alert(res.data.message);
                         }
