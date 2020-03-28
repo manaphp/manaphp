@@ -432,7 +432,7 @@ App = Vue.extend({
             if (typeof create === 'string') {
                 this.$refs[create].validate(valid => success = valid);
             }
-            success && this.ajax_post(CONTROLLER_PATH + "/create", this.create, (res) => {
+            success && this.ajax_post(CONTROLLER_URL + "/create", this.create, (res) => {
                 this.createVisible = false;
                 this.$refs.create.resetFields();
                 this.reload();
