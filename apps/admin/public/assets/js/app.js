@@ -123,7 +123,7 @@ Vue.prototype.ajax_get = function (url, data, success) {
         }
         return res;
     });
-}
+};
 
 Vue.prototype.ajax_post = function (url, data, success) {
     if (typeof data === 'function') {
@@ -146,15 +146,15 @@ Vue.prototype.ajax_post = function (url, data, success) {
         }
         return res
     });
-}
+};
 
 Vue.filter('date', function (value, format = 'YYYY-MM-DD HH:mm:ss') {
     return value ? moment(value * 1000).format(format) : '';
-})
+});
 
 Vue.filter('json', function (value) {
     return JSON.stringify(typeof value === 'string' ? JSON.parse(value) : value, null, 2);
-})
+});
 
 Vue.component('pager', {
     props: ['request', 'response'],
@@ -388,7 +388,7 @@ Vue.component('system-time', {
 
 Vue.prototype.format_date = function (value) {
     return value ? this.$moment(value * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
-}
+};
 
 Vue.prototype.auto_reload = function () {
     if (this.request && this.response) {
@@ -399,7 +399,7 @@ Vue.prototype.auto_reload = function () {
 
         this.reload().then(() => this.$watch('request', _.debounce(() => this.reload(), 500), {deep: true}));
     }
-}
+};
 
 App = Vue.extend({
     methods: {
