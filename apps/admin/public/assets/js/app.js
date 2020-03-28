@@ -443,7 +443,7 @@ App = Vue.extend({
             this.editVisible = true;
         },
         do_edit() {
-            this.ajax_post(CONTROLLER_URL + "/edit", this.edit, (res) => {
+            this.ajax_post(CONTROLLER_URL + "/edit", this.edit, () => {
                 this.editVisible = false;
                 this.reload();
             });
@@ -470,9 +470,9 @@ App = Vue.extend({
             }
 
             if (window.event.ctrlKey) {
-                this.ajax_post(CONTROLLER_URL + "/delete", data, (res) => this.reload());
+                this.ajax_post(CONTROLLER_URL + "/delete", data, () => this.reload());
             } else {
-                this.$confirm('确认删除 `' + (name ? name : row[key]) + '` ?').then((value) => {
+                this.$confirm('确认删除 `' + (name ? name : row[key]) + '` ?').then(() => {
                     this.ajax_post(CONTROLLER_URL + "/delete", data, () => this.reload());
                 });
             }
