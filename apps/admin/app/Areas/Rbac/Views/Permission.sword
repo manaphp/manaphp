@@ -57,14 +57,14 @@
             },
             computed: {
                 filteredResponse() {
-                    var filter = this.filter;
+                    let filter = this.filter;
 
                     if (!filter.path) {
                         return this.response;
                     }
 
-                    var permissions = [];
-                    for (var item of this.response) {
+                    let permissions = [];
+                    for (let item of this.response) {
                         if (filter.path !== '' && item.path !== filter.path && item.path.indexOf(filter.path + '/') !== 0 && filter.path !== '/') {
                             continue;
                         }
@@ -75,12 +75,12 @@
                     return permissions;
                 },
                 paths() {
-                    var paths = [];
-                    for (var item of this.response) {
-                        var path = item.path;
-                        var pos = 0;
+                    let paths = [];
+                    for (let item of this.response) {
+                        let path = item.path;
+                        let pos = 0;
                         while ((pos = path.indexOf('/', pos + 1)) !== -1) {
-                            var sub = path.substring(0, pos);
+                            let sub = path.substring(0, pos);
                             if (paths.indexOf(sub) === -1) {
                                 paths.push(sub);
                             }

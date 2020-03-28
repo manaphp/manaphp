@@ -52,9 +52,9 @@
 @section('script')
     <script>
         $(function () {
-            var $error = $('#error');
-            var $captcha = $('img[name=captcha]');
-            var $code = $('input[name=code]');
+            let $error = $('#error');
+            let $captcha = $('img[name=captcha]');
+            let $code = $('input[name=code]');
 
             $captcha.attr('data-src', $captcha.attr('src')).on('click', function ($e) {
                 $captcha.attr('src', $captcha.attr('data-src') + '?' + Date.now());
@@ -62,7 +62,7 @@
 
             $('form').bootstrapValidator().on('success.form.bv', function (e) {
                 e.preventDefault();
-                var form = $(e.target);
+                let form = $(e.target);
 
                 $.post(form.attr('action'), form.serialize(), function (result) {
                     if (result.code === 0) {

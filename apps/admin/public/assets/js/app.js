@@ -101,8 +101,9 @@ Vue.prototype.ajax_get = function (url, data, success) {
         url += (url.indexOf('?') === -1 ? '?' : '&') + Qs.stringify(data);
     }
 
+    let cache_key = null;
     if (success && url.match(/\bcache=[12]\b/) && localStorage.getItem('axios.cache.enabled') !== '0') {
-        var cache_key = 'axios.cache.' + url;
+        cache_key = 'axios.cache.' + url;
         let cache_value = sessionStorage.getItem(cache_key);
         if (cache_value) {
             success.bind(this)(JSON.parse(cache_value));
@@ -131,7 +132,7 @@ Vue.prototype.ajax_post = function (url, data, success) {
         data = {};
     }
 
-    var config = {};
+    let config = {};
     if (data instanceof FormData) {
         config.headers = {'Content-Type': 'multipart/form-data'};
     }
@@ -167,7 +168,7 @@ Vue.component('pager', {
     watch: {
         request: {
             handler() {
-                for (var field in this.request) {
+                for (let field in this.request) {
                     if (field === 'page' || field === 'size') {
                         continue;
                     }
@@ -213,8 +214,8 @@ Vue.component('date-picker', {
                     {
                         text: '今天',
                         onClick(picker) {
-                            var end = new Date();
-                            var start = new Date();
+                            let end = new Date();
+                            let start = new Date();
                             start.setTime(start.getTime());
                             picker.$emit('pick', [start, end]);
                         }
@@ -222,8 +223,8 @@ Vue.component('date-picker', {
                     {
                         text: '昨天',
                         onClick(picker) {
-                            var end = new Date();
-                            var start = new Date();
+                            let end = new Date();
+                            let start = new Date();
                             start.setTime(start.getTime() - 3600 * 1000 * 24);
                             end.setDate(end.getDate() - 1);
                             picker.$emit('pick', [start, end]);
@@ -232,8 +233,8 @@ Vue.component('date-picker', {
                     {
                         text: '最近三天',
                         onClick(picker) {
-                            var end = new Date();
-                            var start = new Date();
+                            let end = new Date();
+                            let start = new Date();
                             start.setTime(start.getTime() - 3600 * 1000 * 24 * 3);
                             picker.$emit('pick', [start, end]);
                         }
@@ -241,8 +242,8 @@ Vue.component('date-picker', {
                     {
                         text: '最近一周',
                         onClick(picker) {
-                            var end = new Date();
-                            var start = new Date();
+                            let end = new Date();
+                            let start = new Date();
                             start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
                             picker.$emit('pick', [start, end]);
                         }
@@ -250,8 +251,8 @@ Vue.component('date-picker', {
                     {
                         text: '最近一个月',
                         onClick(picker) {
-                            var end = new Date();
-                            var start = new Date();
+                            let end = new Date();
+                            let start = new Date();
                             start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
                             picker.$emit('pick', [start, end]);
                         }
@@ -259,8 +260,8 @@ Vue.component('date-picker', {
                     {
                         text: '最近三个月',
                         onClick(picker) {
-                            var end = new Date();
-                            var start = new Date();
+                            let end = new Date();
+                            let start = new Date();
                             start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
                             picker.$emit('pick', [start, end]);
                         }
@@ -268,8 +269,8 @@ Vue.component('date-picker', {
                     {
                         text: '最近一年',
                         onClick(picker) {
-                            var end = new Date();
-                            var start = new Date();
+                            let end = new Date();
+                            let start = new Date();
                             start.setTime(start.getTime() - 3600 * 1000 * 24 * 365);
                             picker.$emit('pick', [start, end]);
                         }
@@ -277,8 +278,8 @@ Vue.component('date-picker', {
                     {
                         text: '本周',
                         onClick(picker) {
-                            var end = new Date();
-                            var start = new Date();
+                            let end = new Date();
+                            let start = new Date();
                             start.setDate(start.getDate() - start.getDay() + 1);
                             picker.$emit('pick', [start, end]);
                         }
@@ -286,8 +287,8 @@ Vue.component('date-picker', {
                     {
                         text: '本月',
                         onClick(picker) {
-                            var end = new Date();
-                            var start = new Date();
+                            let end = new Date();
+                            let start = new Date();
                             start.setDate(1);
                             picker.$emit('pick', [start, end]);
                         }
@@ -295,8 +296,8 @@ Vue.component('date-picker', {
                     {
                         text: '本季',
                         onClick(picker) {
-                            var end = new Date();
-                            var start = new Date();
+                            let end = new Date();
+                            let start = new Date();
                             start.setMonth(parseInt(start.getMonth() / 3) * 3);
                             start.setDate(1);
                             picker.$emit('pick', [start, end]);
@@ -408,7 +409,7 @@ App = Vue.extend({
                 alert('bad reload');
             }
 
-            var qs = this.$qs.stringify(this.request);
+            let qs = this.$qs.stringify(this.request);
             window.history.replaceState(null, null, qs ? ('?' + qs) : '');
             document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substr(1)) : {};
             this.response = [];
@@ -428,7 +429,7 @@ App = Vue.extend({
             return ['禁用', '启用'][value];
         },
         do_create(create) {
-            var success = true;
+            let success = true;
             if (typeof create === 'string') {
                 this.$refs[create].validate(valid => success = valid);
             }
@@ -451,8 +452,8 @@ App = Vue.extend({
         show_detail(row, action) {
             this.detailVisible = true;
 
-            var data = {};
-            var key = Object.keys(row)[0];
+            let data = {};
+            let key = Object.keys(row)[0];
             data[key] = row[key];
 
             this.ajax_get(CONTROLLER_URL + '/' + (action ? action : "detail"), data, (res) => {
@@ -460,9 +461,9 @@ App = Vue.extend({
             });
         },
         do_delete(row, name = '') {
-            var data = {};
-            var keys = Object.keys(row);
-            var key = keys[0];
+            let data = {};
+            let keys = Object.keys(row);
+            let key = keys[0];
             data[key] = row[key];
 
             if (!name) {
