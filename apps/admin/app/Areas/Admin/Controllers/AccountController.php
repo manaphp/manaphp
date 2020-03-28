@@ -8,7 +8,7 @@ class AccountController extends Controller
 {
     public function getAcl()
     {
-        return ['*' => 'user'];
+        return ['*' => 'admin'];
     }
 
     public function captchaAction()
@@ -19,6 +19,6 @@ class AccountController extends Controller
     public function registerAction()
     {
         $this->captcha->verify();
-        return Admin::rCreate();
+        return Admin::rCreate(['admin_name', 'email', 'password', 'white_ip' => '*', 'status' => Admin::STATUS_INIT]);
     }
 }

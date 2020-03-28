@@ -1,79 +1,112 @@
 @layout(false)
-<body class="hold-transition register-page">
-<div class="register-box">
-    <div class="register-logo">
-        <a href="/">ManaPHP</a>
-    </div>
-    <div class="register-box-body">
-        <p class="login-box-msg">Register a new membership</p>
-        <form action="register" method="post">
-            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-            <div class="form-group has-feedback">
-                <input required type="text" class="form-control" placeholder="admin name" name="admin_name">
-                <span class="glyphicon glyphicon-user form-control-feedback"></span>
-            </div>
-            <div class="form-group has-feedback">
-                <input required type="email" class="form-control" placeholder="Email" name="email">
-                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-            </div>
-            <div class="form-group has-feedback">
-                <input required type="password" class="form-control" placeholder="Password" name="password"
-                       data-bv-identical-field="password_confirmed"
-                       data-bv-identical-message="The password and its confirm are not the same">
-                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-            </div>
-            <div class="form-group has-feedback">
-                <input required type="password" class="form-control" placeholder="Retype password"
-                       name="password_confirmed" data-bv-identical-field="password">
-                <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
-            </div>
-            <div class="row">
-                <div class="col-md-4"><input type="text" name="code" class="form-control" required></div>
-                <div class="col-md-8"></div>
-                <span><img name="captcha" src="captcha" alt=""></span></div>
-            <h3 id="error" class="text-danger"></h3>
-            <div class="row">
-                <div class="col-xs-offset-1 col-xs-7">
-                    <div class="checkbox icheck">
-                        <label>
-                            <input type="checkbox"> I agree to the <a href="#">terms</a>
-                        </label>
-                    </div>
-                </div>
-                <div class="col-xs-4">
-                    <button type="submit" class="btn btn-primary btn-block btn-flat" id="register">Register</button>
-                </div>
-            </div>
-        </form>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>ManaPHP Admin</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.7.2/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <style>
+        .register-box {
+            margin: 10% auto;
+            width: 270px;
+        }
 
-        <a href="/login" class="text-center">I already have a membership</a>
+        .register-box > div {
+            margin-bottom: 10px;
+        }
+
+        .background {
+            position: absolute;
+            display: block;
+            top: 0;
+            left: 0;
+            z-index: -1000;
+        }
+    </style>
+</head>
+
+<body>
+<script>var BASE_URL = '{{base_url()}}';</script>
+
+<div id="app" class="register-box">
+    <h1 align="center">注册</h1>
+    <el-input v-model.trim="request.admin_name" placeholder="用户名" ref="admin_name">
+        <template slot="prepend">账号</template>
+    </el-input>
+    <el-input v-model.trim="request.email" placeholder="邮箱" ref="admin_name">
+        <template slot="prepend">邮箱</template>
+    </el-input>
+    <el-input v-model.trim="request.password" type="password" placeholder="密码" ref="password">
+        <template slot="prepend">密码</template>
+    </el-input>
+    <el-row>
+        <el-col :span="16">
+            <el-input v-model.trim="request.code" placeholder="验证码" @keyup.enter.native="login">
+                <template slot="prepend">验证码</template>
+            </el-input>
+        </el-col>
+        <el-col :offset="1" :span="7">
+            <img :src="BASE_URL+'/admin/account/captcha?t='+captcha_timestamp"
+                 @click="request.code=''; captcha_timestamp=Date.now()">
+        </el-col>
+    </el-row>
+    <el-button @click="register" style="width:100%" type="primary"
+               :disabled="request.admin_name===''||request.password===''||request.email===''">注册
+    </el-button>
+    <div>
+        <a href="/login"><span
+                    style="font-size: 0.8em; margin-left: 218px; color: gray;">已有账号</span></a>
     </div>
 </div>
-@section('script')
-    <script>
-        $(function () {
-            let $error = $('#error');
-            let $captcha = $('img[name=captcha]');
-            let $code = $('input[name=code]');
 
-            $captcha.attr('data-src', $captcha.attr('src')).on('click', function ($e) {
-                $captcha.attr('src', $captcha.attr('data-src') + '?' + Date.now());
-            });
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/element-ui@2.7.2/lib/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@0.18.0/dist/axios.min.js"></script>
+<script>
+    Vue.prototype.$axios = axios;
 
-            $('form').bootstrapValidator().on('success.form.bv', function (e) {
-                e.preventDefault();
-                let form = $(e.target);
+    axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-                $.post(form.attr('action'), form.serialize(), function (result) {
-                    if (result.code === 0) {
-                        window.location.href = "/";
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            request: {
+                admin_name: '',
+                email: '',
+                password: '',
+                code: '',
+            },
+            captcha_timestamp: Date.now()
+        },
+        methods: {
+            register() {
+                if (this.request.admin_name === '' || this.request.password === '') {
+                    return;
+                }
+
+                this.$axios.post(document.location.href, this.request).then((res) => {
+                    if (res.data.code === 0) {
+                        window.location.href = BASE_URL + '/';
                     } else {
-                        $error.text(result.error);
-                        $code.val('');
-                        $captcha.click();
+                        this.request.code = '';
+                        this.captcha_timestamp = Date.now();
+                        this.$alert(res.data.message ? res.data.message : res.data, '失败');
+                    }
+                }).catch((error) => {
+                    this.captcha_timestamp = Date.now();
+
+                    if (error.response.data.message) {
+                        this.$alert(error.response.data.message, '失败');
+                    } else {
+                        this.$alert(error.response.statusText, '失败');
                     }
                 });
-            });
-        });
-    </script>
-@append
+            },
+        }
+    });
+</script>
+</body>
+</html>
