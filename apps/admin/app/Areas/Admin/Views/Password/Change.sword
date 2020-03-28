@@ -51,7 +51,6 @@
                             window.location.href = "/";
                         } else {
                             this.$alert(res.data.message);
-                            this.captcha_url = "captcha" + '?t=' + Date.now();
                         }
                     }).catch((error) => {
                         if (error.response.data.message) {
