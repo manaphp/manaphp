@@ -13,8 +13,10 @@ class Ip
     public static function contains($haystack, $needle, $cidr_only = false)
     {
         if (is_string($haystack)) {
-            if ($needle === $haystack) {
+            if ($needle === $haystack || $haystack === '*') {
                 return true;
+            } elseif ($haystack === '') {
+                return false;
             }
             $haystack = preg_split('#[,\s]+#', $haystack, -1, PREG_SPLIT_NO_EMPTY);
         }
