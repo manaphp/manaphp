@@ -50,7 +50,7 @@ class PasswordController extends Controller
         try {
             $claims = jwt_decode($token, 'admin.password.forget');
         } catch (\Exception $exception) {
-            return $this->view->setVars(['expired' => true]);
+            return $this->view->setVars(['expired' => true, 'token' => $token]);
         }
 
         return $this->view->setVars([
