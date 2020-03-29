@@ -13,23 +13,10 @@ use ManaPHP\Helper\LocalFS;
 class SwordController extends Controller
 {
     /**
-     * @param string $web
-     * @param string $asset
      * @param bool   $replace
      */
-    public function compileCommand($web = null, $asset = null, $replace = false)
+    public function compileCommand($replace = false)
     {
-        if ($web) {
-            $this->alias->set('@web', $web);
-            if ($asset === null && $this->alias->get('@asset') === '') {
-                $this->alias->set('@asset', $web);
-            }
-        }
-
-        if ($asset) {
-            $this->alias->set('@asset', $asset);
-        }
-
         LocalFS::dirDelete('@data/sword');
         $this->console->writeLn('delete `@data/sword` directory success');
 
