@@ -166,12 +166,12 @@ class  WsPusherPlugin extends Plugin
         if ($this->_sso) {
             if (strpos($receivers, ',') === false) {
                 if ($id = $this->_name2id[$receivers] ?? false) {
-                    $this->push($user[$id]['fd'], $message);
+                    $this->push($users[$id]['fd'], $message);
                 }
             } else {
                 foreach (explode(',', $receivers) as $name) {
                     if ($id = $this->_name2id[$name] ?? false) {
-                        $this->push($user[$id]['fd'], $message);
+                        $this->push($users[$id]['fd'], $message);
                     }
                 }
             }
