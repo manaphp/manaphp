@@ -110,7 +110,7 @@ class Request extends Component implements RequestInterface
                     $this->_options[substr($o, 1)] = array_shift($args);
                 }
             } else {
-                $this->_options[substr($o, 1)] = !$args || $args[0] === '-' ? 1 : array_shift($args);
+                $this->_options[substr($o, 1)] = !$args || $args[0][0] === '-' ? 1 : array_shift($args);
             }
         }
 
