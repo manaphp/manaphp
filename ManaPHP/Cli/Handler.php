@@ -184,7 +184,7 @@ class Handler extends Component implements HandlerInterface
             }
         }
 
-        if ($commandName !== 'help' && in_array('--help', $this->_args, true)) {
+        if ($commandName !== 'help' && $this->request->has('help')) {
             $commandName = 'help';
         }
 
