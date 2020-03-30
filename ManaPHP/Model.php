@@ -708,8 +708,9 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      *
      * @return static
      */
-    public function load($fields)
+    public function load($fields = null)
     {
+        $fields = $fields ?? $this->getSafeFields();
         $data = $this->_di->request->getGlobals()->_REQUEST;
 
         foreach ($fields as $k => $v) {
@@ -818,11 +819,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function rCreate($fields = null)
     {
-        $instance = new static();
-
-        $instance->load($fields ?? $instance->getSafeFields());
-
-        return $instance->create();
+        return (new static())->load($fields)->create();
     }
 
     /**
@@ -832,11 +829,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function rUpdate($fields = null)
     {
-        $instance = static::rGet();
-
-        $instance->load($fields ?? $instance->getSafeFields());
-
-        return $instance->update();
+        return static::rGet()->load($fields)->update();
     }
 
     /**

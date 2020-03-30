@@ -303,7 +303,7 @@ interface ModelInterface
      *
      * @return static
      */
-    public function load($fields);
+    public function load($fields = null);
 
     /**
      * Assigns values to a model from an array
