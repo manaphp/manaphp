@@ -812,29 +812,29 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param array $data =get_object_vars(new static)
+     * @param array $fields =get_object_vars(new static)
      *
      * @return static
      */
-    public static function rCreate($data = null)
+    public static function rCreate($fields = null)
     {
         $instance = new static();
 
-        $instance->load($data ?? $instance->getSafeFields());
+        $instance->load($fields ?? $instance->getSafeFields());
 
         return $instance->create();
     }
 
     /**
-     * @param array $data =get_object_vars(new static)
+     * @param array $fields =get_object_vars(new static)
      *
      * @return static
      */
-    public static function rUpdate($data = null)
+    public static function rUpdate($fields = null)
     {
         $instance = static::rGet();
 
-        $instance->load($data ?? $instance->getSafeFields());
+        $instance->load($fields ?? $instance->getSafeFields());
 
         return $instance->update();
     }

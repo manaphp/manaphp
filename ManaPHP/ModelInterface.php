@@ -348,11 +348,11 @@ interface ModelInterface
     public function create();
 
     /**
-     * @param array $data
+     * @param array $fields
      *
      * @return static
      */
-    public static function rCreate($data = null);
+    public static function rCreate($fields = null);
 
     /**
      * Updates a model instance. If the instance does n't exist in the persistence it will throw an exception
@@ -363,11 +363,11 @@ interface ModelInterface
     public function update();
 
     /**
-     * @param array $data
+     * @param array $fields
      *
      * @return static
      */
-    public static function rUpdate($data = null);
+    public static function rUpdate($fields = null);
 
     /**
      * @param array $fieldValues
