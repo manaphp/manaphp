@@ -8,7 +8,6 @@ use ManaPHP\Db\SqlFragmentable;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\InvalidValueException;
-use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\ParameterOrderException;
@@ -459,14 +458,6 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @return \ManaPHP\Http\RequestInterface
-     */
-    protected static function _getRequest()
-    {
-        return self::sample()->_di->getShared('request');
-    }
-
-    /**
      * @return int|string
      */
     public static function rId()
@@ -827,33 +818,9 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function rCreate($data = null)
     {
-        $request = self::_getRequest();
-
         $instance = new static();
 
-        $_request = $request->get();
-
-        if ($data === null || !isset($data[0])) {
-            foreach ($instance->getSafeFields() as $field) {
-                if (isset($_request[$field])) {
-                    $instance->$field = $_request[$field];
-                }
-            }
-        }
-
-        if ($data) {
-            foreach ($data as $k => $v) {
-                if (is_int($k)) {
-                    $field = $v;
-                    if (!isset($_request[$field])) {
-                        throw new MissingFieldException($field);
-                    }
-                    $instance->$field = $_request[$field];
-                } else {
-                    $instance->$k = $v;
-                }
-            }
-        }
+        $instance->load($data ?? $instance->getSafeFields());
 
         return $instance->create();
     }
@@ -865,33 +832,9 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function rUpdate($data = null)
     {
-        $request = self::_getRequest();
-
-        $model = new static();
-
-        $_request = $request->get();
-
         $instance = static::get(static::rId());
 
-        if ($data === null) {
-            foreach ($model->getSafeFields() as $field) {
-                if (isset($_request[$field])) {
-                    $instance->$field = $_request[$field];
-                }
-            }
-        } else {
-            foreach ($data as $k => $v) {
-                if (is_int($k)) {
-                    $field = $v;
-                    if (!isset($_request[$field])) {
-                        throw new MissingFieldException($field);
-                    }
-                    $instance->$field = $_request[$field];
-                } else {
-                    $instance->$k = $v;
-                }
-            }
-        }
+        $instance->load($data ?? $instance->getSafeFields());
 
         return $instance->update();
     }
