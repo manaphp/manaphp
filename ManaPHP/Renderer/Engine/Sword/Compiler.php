@@ -154,7 +154,7 @@ class Compiler extends Component
      */
     protected function _completeLinks($file, $str)
     {
-        $str = preg_replace_callback('#\b((?:ajax|axios\.)\w*\\(["\'])([^/][\w\-/:.]+)#', function ($match) use ($file) {
+        $str = preg_replace_callback('#\b((?:ajax|axios\.)\w*\\(["\'`])([^/][\w\-/:.]+)#', function ($match) use ($file) {
             return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
         }, $str);
 
