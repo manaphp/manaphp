@@ -176,6 +176,11 @@ interface ModelInterface
     public static function firstOrFail($filters, $fields = null);
 
     /**
+     * @return int|string
+     */
+    public static function rId();
+
+    /**
      * @param array $fields
      *
      * @return static

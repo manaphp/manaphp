@@ -467,16 +467,23 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
+     * @return int|string
+     */
+    public static function rId()
+    {
+        $sample = static::sample();
+
+        return $sample->_di->request->getId($sample->getPrimaryKey());
+    }
+
+    /**
      * @param array $fields =get_object_vars(new static)
      *
      * @return static
      */
     public static function rGet($fields = null)
     {
-        $request = self::_getRequest();
-
-        $sample = static::sample();
-        return static::get($request->getId($sample->getPrimaryKey()));
+        return static::get(static::rId());
     }
 
     /**
@@ -860,11 +867,9 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
         $model = new static();
 
-        $pkName = $model->getPrimaryKey();
-
         $_request = $request->get();
 
-        $instance = static::get($request->getId($pkName));
+        $instance = static::get(static::rId());
 
         if ($data === null) {
             foreach ($model->getSafeFields() as $field) {
@@ -930,12 +935,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function rDelete()
     {
-        $request = self::_getRequest();
-
-        $sample = static::sample();
-        $primaryKey = $sample->getPrimaryKey();
-
-        return static::get($request->getId($primaryKey))->delete();
+        return static::get(static::rId())->delete();
     }
 
     /**
