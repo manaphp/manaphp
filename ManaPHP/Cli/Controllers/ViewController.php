@@ -65,7 +65,7 @@ HTML;
      */
     public function renderCreateDialog($model)
     {
-        if (!$fields = $model->getSafeFields() ?? []) {
+        if (!$fields = $model->getSafeFields()) {
             return '';
         }
 
@@ -102,7 +102,7 @@ HTML;
      */
     public function renderEditDialog($model)
     {
-        if (!$fields = $model->getSafeFields() ?? []) {
+        if (!$fields = $model->getSafeFields()) {
             return '';
         }
 
@@ -225,7 +225,7 @@ HTML;
      */
     public function renderScript($model)
     {
-        $fields = $model->getSafeFields() ?? [];
+        $fields = $model->getSafeFields();
 
         $content = PHP_EOL . <<<HTML
 @section('script')

@@ -81,7 +81,7 @@ class Linter extends Component
                     }));
                 }
             } elseif ($methodName === 'getSafeFields') {
-                $some = $model->getSafeFields() ?: [];
+                $some = $model->getSafeFields();
                 $all = $model->getFields();
             } elseif ($methodName === 'rules') {
                 $some = array_keys($model->rules());

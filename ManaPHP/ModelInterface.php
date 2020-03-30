@@ -71,7 +71,7 @@ interface ModelInterface
     public function getDateFormat($field);
 
     /**
-     * @return array|null
+     * @return array
      */
     public function getSafeFields();
 

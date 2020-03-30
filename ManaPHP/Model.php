@@ -243,11 +243,11 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @return array|null =get_object_vars(new static)
+     * @return array =get_object_vars(new static)
      */
     public function getSafeFields()
     {
-        return array_keys($this->rules()) ?: null;
+        return array_keys($this->rules());
     }
 
     /**
