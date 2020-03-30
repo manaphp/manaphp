@@ -832,7 +832,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function rUpdate($data = null)
     {
-        $instance = static::get(static::rId());
+        $instance = static::rGet();
 
         $instance->load($data ?? $instance->getSafeFields());
 
@@ -880,7 +880,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function rDelete()
     {
-        return static::get(static::rId())->delete();
+        return static::rGet()->delete();
     }
 
     /**
