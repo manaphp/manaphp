@@ -220,11 +220,10 @@ HTML;
 
     /**
      * @param \ManaPHP\ModelInterface $model
-     * @param bool                    $hasDetailDialog
      *
      * @return string
      */
-    public function renderScript($model, $hasDetailDialog = true)
+    public function renderScript($model)
     {
         $fields = $model->getSafeFields() ?? [];
 
