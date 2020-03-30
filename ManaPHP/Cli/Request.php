@@ -273,7 +273,7 @@ class Request extends Component implements RequestInterface
         foreach ($this->_options as $k => $v) {
             if (is_string($k) && strlen($k) === 1 && isset($shorts[$k])) {
                 $verbose = $shorts[$k];
-                if (!$this->_options[$verbose]) {
+                if (!isset($this->_options[$verbose])) {
                     $this->_options[$verbose] = $v;
                 }
             }
