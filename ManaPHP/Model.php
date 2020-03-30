@@ -719,17 +719,19 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function load($fields)
     {
-        $_request = $this->_di->request->getGlobals()->_REQUEST;
+        $data = $this->_di->request->getGlobals()->_REQUEST;
 
         foreach ($fields as $k => $v) {
-            $field = is_string($k) ? $k : $v;
-
-            if (isset($_request[$field])) {
-                $value = $_request[$field];
-                $this->$field = is_string($value) ? trim($value) : $value;
-            } elseif (is_string($k)) {
-                $this->$field = $v;
+            if (is_string($k)) {
+                $field = $k;
+                $value = $v;
+            } elseif (isset($data[$field = $v])) {
+                $value = $data[$field];
+            } else {
+                continue;
             }
+
+            $this->$field = is_string($value) ? trim($value) : $value;
         }
 
         return $this;
