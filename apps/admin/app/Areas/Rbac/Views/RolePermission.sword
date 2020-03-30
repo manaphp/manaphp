@@ -1,6 +1,6 @@
 <div class="search-box">
     <el-button @click="show_edit()" type="primary" size="small" icon="el-icon-edit" >编辑</el-button>
-    <el-select v-model="request.role_id" size="small" filterable style="width: 150px">
+    <el-select v-model="request.role_id" size="small" filterable style="width: 150px" clearable>
         <el-option v-for="role in roles" :key="role.role_id" :label="role.display_name" :value="String(role.role_id)" v-if="!['guest', 'user', 'admin'].includes(role.role_name)"></el-option>
     </el-select>
 </div>
@@ -45,7 +45,7 @@
     <script>
         vm = new App({
             data: {
-                request: {role_id: 0},
+                request: {role_id: ''},
                 response: [],
 
                 roles: [],
@@ -58,12 +58,7 @@
                 permissions: []
             },
             mounted() {
-                this.ajax_get("role/list", (res) => {
-                    this.roles = res;
-                    if (!this.request.role_id) {
-                        this.request.role_id = res ? res[0].role_id : 0;
-                    }
-                });
+                this.ajax_get("role/list", (res) => this.roles = res);
             },
             methods: {
                 show_edit() {

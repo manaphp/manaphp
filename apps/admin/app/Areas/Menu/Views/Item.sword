@@ -81,7 +81,7 @@
         vm = new App({
             data: {
                 request: {
-                    group_id: 0
+                    group_id: ''
                 },
                 response: [],
                 createVisible: false,
@@ -106,12 +106,7 @@
                 permissions: {}
             },
             mounted() {
-                this.ajax_get("group/list", (res) => {
-                    this.groups = res;
-                    if (!this.request.group_id) {
-                        this.request.group_id = this.groups[0].group_id;
-                    }
-                });
+                this.ajax_get("group/list", (res) => this.groups = res);
             }
         });
     </script>
