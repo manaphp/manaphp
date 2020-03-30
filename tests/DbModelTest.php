@@ -9,8 +9,8 @@
 namespace Tests;
 
 use ManaPHP\Db;
-use ManaPHP\Db\SqlFragment\Increment;
 use ManaPHP\Db\Model;
+use ManaPHP\Db\SqlFragment\Increment;
 use ManaPHP\DbInterface;
 use ManaPHP\Exception;
 use ManaPHP\Identity\Adapter\Jwt;
@@ -60,7 +60,7 @@ class DbModelTest extends TestCase
         $this->connection = new Db\Connection\Adapter\Mysql($config['mysql']);
         $db = new Db($this->connection);
         $di->set('db', $db);
-        $di->set('identity', new Jwt(['key'=>'test']));
+        $di->set('identity', new Jwt(['key' => 'test']));
         $db->attachEvent('db:beforeQuery', function (DbInterface $source) {
             // var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
             var_dump($source->getEmulatedSQL());
@@ -325,14 +325,18 @@ class DbModelTest extends TestCase
     public function test_assign()
     {
         //normal usage
+        $template = new  City();
+    
+        $template->city_id = 1;
+        $template->city = 'beijing';
+
         $city = new City();
-        $city->assign(['city_id' => 1, 'city' => 'beijing'], []);
+        $city->assign($template, ['city_id', 'city']);
         $this->assertEquals(1, $city->city_id);
         $this->assertEquals('beijing', $city->city);
 
-        //normal usage with whitelist
         $city = new City();
-        $city->assign(['city_id' => 1, 'city' => 'beijing'], ['city_id', 'city']);
+        $city->assign($template->toArray(), ['city_id', 'city']);
         $this->assertEquals(1, $city->city_id);
         $this->assertEquals('beijing', $city->city);
     }

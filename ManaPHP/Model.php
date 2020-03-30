@@ -12,7 +12,6 @@ use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\ParameterOrderException;
-use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
@@ -687,30 +686,19 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      * Assigns values to a model from an array
      *
      * @param array|\ManaPHP\Model $data =get_object_vars(new static)
-     * @param array                $whiteList =get_object_vars(new static)
+     * @param array                $fields =get_object_vars(new static)
      *
      * @return static
      */
-    public function assign($data, $whiteList = null)
+    public function assign($data, $fields)
     {
         if ($data instanceof self) {
-            foreach ($whiteList as $field) {
+            foreach ($fields as $field) {
                 $this->$field = $data->$field;
             }
         } else {
-            if ($whiteList === null) {
-                $whiteList = $this->getSafeFields();
-            }
-
-            if ($whiteList === null) {
-                throw new PreconditionException(['`:model` model do not define accessible fields.', 'model' => static::class]);
-            }
-
-            foreach ($whiteList ?: $this->getFields() as $field) {
-                if (isset($data[$field])) {
-                    $value = $data[$field];
-                    $this->{$field} = is_string($value) ? trim($value) : $value;
-                }
+            foreach ($fields as $field) {
+                $this->$field = $data[$field];
             }
         }
 

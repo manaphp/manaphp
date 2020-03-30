@@ -259,16 +259,19 @@ class MongodbModelTest extends TestCase
 
     public function test_assign()
     {
-        //normal usage
+        $template = new City();
+
+        $template->city_id = 1;
+        $template->city = 'beijing';
+
         $city = new City();
-        $city->assign(['city_id' => 1, 'city' => 'beijing'], []);
+        $city->assign($template, ['city_id', 'city']);
         $this->assertEquals(1, $city->city_id);
         $this->assertEquals('beijing', $city->city);
 
-        //normal usage with whitelist
         $city = new City();
         try {
-            $city->assign(['city_id' => 1, 'city' => 'beijing'], ['city_id']);
+            $city->assign($template->toArray(), ['city_id']);
             $this->assertFalse('why not1!');
         } catch (\Exception $e) {
 

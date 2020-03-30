@@ -304,11 +304,11 @@ interface ModelInterface
      * Assigns values to a model from an array
      *
      * @param array|\ManaPHP\Model $data
-     * @param array                $whiteList
+     * @param array                $fields
      *
      * @return static
      */
-    public function assign($data, $whiteList = null);
+    public function assign($data, $fields);
 
     /**
      * @param array $fields
