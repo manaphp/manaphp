@@ -67,11 +67,11 @@
         <el-table-column prop="email" label="邮箱" width="200" show-overflow-tooltip></el-table-column>
         <el-table-column prop="white_ip" label="IP白名单" width="150" show-overflow-tooltip></el-table-column>
         <el-table-column label="状态" width="100">
-            <template v-slot="scope">@{{ statuses[scope.row.status] }}</template>
+            <template v-slot="{row}">@{{ statuses[row.status] }}</template>
         </el-table-column>
         <el-table-column label="角色">
-            <template v-slot="scope">
-                <el-tag size="small" v-for="role in scope.row.roles" :key="role.role_id">@{{role.display_name}}</el-tag>
+            <template v-slot="{row}">
+                <el-tag size="small" v-for="role in row.roles" :key="role.role_id">@{{role.display_name}}</el-tag>
             </template>
         </el-table-column>
         <el-table-column prop="login_ip" label="登录IP" width="120" show-overflow-tooltip></el-table-column>
@@ -79,12 +79,12 @@
         <el-table-column prop="creator_name" label="创建者" width="120"></el-table-column>
         <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
         <el-table-column fixed="right" label="操作" width="150">
-            <template v-slot="scope">
-                <el-button @click="edit.password = ''; show_edit(scope.row)" size="mini" type="primary">编辑</el-button>
-                <el-button v-if="scope.row.status==1" @click="do_lock(scope.row)" size="mini" type="danger">
+            <template v-slot="{row}">
+                <el-button @click="edit.password = ''; show_edit(row)" size="mini" type="primary">编辑</el-button>
+                <el-button v-if="row.status==1" @click="do_lock(row)" size="mini" type="danger">
                     锁定
                 </el-button>
-                <el-button v-if="scope.row.status!==1" @click="do_active(scope.row)" size="mini" type="warning">激活
+                <el-button v-if="row.status!==1" @click="do_active(row)" size="mini" type="warning">激活
                 </el-button>
             </template>
         </el-table-column>

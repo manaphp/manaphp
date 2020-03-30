@@ -187,9 +187,9 @@ HTML;
 
         $content .= PHP_EOL . <<<HTML
         <el-table-column fixed="right" label="操作" width="150">
-            <template v-slot="scope">
-                <el-button @click="show_edit(scope.row)" size="mini" type="primary">编辑</el-button>
-                <el-button @click="do_delete(scope.row)" size="mini" type="danger">删除</el-button>
+            <template v-slot="{row}">
+                <el-button @click="show_edit(row)" size="mini" type="primary">编辑</el-button>
+                <el-button @click="do_delete(row)" size="mini" type="danger">删除</el-button>
             </template>
         </el-table-column>
 HTML;

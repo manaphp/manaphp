@@ -23,13 +23,13 @@
         <el-table-column type="index" label="#" width="50"></el-table-column>
         <el-table-column prop="id" label="ID" width="100"></el-table-column>
         <el-table-column label="权限ID" width="100">
-            <template v-slot="scope"><a :href="'permission/?permission_id='+scope.row.permission_id">@{{scope.row.permission_id}}</a>
+            <template v-slot="{row}"><a :href="'permission/?permission_id='+row.permission_id">@{{row.permission_id}}</a>
             </template>
         </el-table-column>
         <el-table-column prop="permission.path" label="权限路径" width="200"></el-table-column>
         <el-table-column label="角色列表" width="300">
-            <template v-slot="scope">
-                <el-button size="small" v-for="role in scope.row.roles" :key="role.role_id" type="text"
+            <template v-slot="{row}">
+                <el-button size="small" v-for="role in row.roles" :key="role.role_id" type="text"
                            @click.native="request.role_id = role.role_id" :disabled="request.role_id == role.role_id" :title="role.role_name">
                     @{{ role.display_name }}
                 </el-button>
