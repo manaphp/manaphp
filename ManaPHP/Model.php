@@ -474,7 +474,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function rGet($fields = null)
     {
-        return static::get(static::rId());
+        return static::get(static::rId(), $fields);
     }
 
     /**
