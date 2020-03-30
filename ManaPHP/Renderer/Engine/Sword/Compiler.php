@@ -4,7 +4,6 @@ namespace ManaPHP\Renderer\Engine\Sword;
 use ManaPHP\Component;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\InvalidArgumentException;
-use ManaPHP\Exception\InvalidUrlException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\Str;
 
@@ -93,16 +92,17 @@ class Compiler extends Component
      */
     protected function _addFileHash($str)
     {
-        return preg_replace_callback('#="(/[^"\':{$?]+[^/])"#', function ($match) {
+        return preg_replace_callback('#="(/[-\w/.]+\.\w+)"#', function ($match) {
             $url = $match[1];
-            $path = '@public' . $url;
-            /** @noinspection NotOptimalIfConditionsInspection */
-            if (strpos($path, '.') === false || strpos(basename($path), '.') === false || pathinfo($path, PATHINFO_EXTENSION) === 'html') {
+
+            if (in_array(pathinfo($url, PATHINFO_EXTENSION), ['htm', 'html', 'php'], true)) {
                 return $match[0];
             }
+
+            $path = '@public' . $url;
             $file = $this->alias->resolve($path);
             if (!is_file($file)) {
-                throw new InvalidUrlException(['`:file` file is not exists', 'file' => $path]);
+                return $match[0];
             }
             $hash = substr(md5_file($file), 0, $this->_hash_length);
 
