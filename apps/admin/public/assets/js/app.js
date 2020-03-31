@@ -363,27 +363,42 @@ Vue.component('axios-cache-switcher', {
 });
 
 Vue.component('system-time', {
-    template: '<span class="left" :title="title" :style="{backgroundColor: color}" v-if="time">{{time}}</span>',
+    template: '<span class="left" :title="diff.toFixed(3)" :style="{backgroundColor: bgColor}" style="cursor:pointer"" v-show="diff!==null&&time!==null" @click="update">{{time}}</span>',
     data() {
         return {
-            time: 0,
-            title: '',
-            color: ''
+            diff: null,
+            time: null,
+            key: 'system-time.diff'
+        }
+    },
+    computed: {
+        bgColor() {
+            return Math.abs(this.diff) >= 2 ? 'red' : 'parent';
         }
     },
     created() {
-        axios.get('/index/time').then((res) => {
-            if (res.data.code === 0) {
-                setInterval((diff) => {
-                    this.title = diff.toFixed(3);
-                    if (Math.abs(diff) >= 2) {
-                        this.color = 'red';
-                    }
-
-                    this.time = (moment().add(diff, 'seconds').format('YYYY-MM-DD hh:mm:ss'));
-                }, 1000, res.data.data.timestamp - Date.now() / 1000);
+        setInterval(() => {
+            if (this.diff !== null) {
+                this.time = (moment().subtract(this.diff, 'seconds').format('YYYY-MM-DD hh:mm:ss'))
             }
-        });
+        }, 1000);
+
+        let diff = window.sessionStorage.getItem(this.key);
+        if (diff === null) {
+            this.update();
+        } else {
+            this.diff = parseFloat(diff);
+        }
+    },
+    methods: {
+        update() {
+            axios.get('/index/time?t=' + Date.now()).then((res) => {
+                if (res.data.code === 0) {
+                    this.diff = Math.round(Date.now() - res.data.data.timestamp * 1000) / 1000;
+                    window.sessionStorage.setItem(this.key, this.diff);
+                }
+            });
+        }
     }
 });
 
