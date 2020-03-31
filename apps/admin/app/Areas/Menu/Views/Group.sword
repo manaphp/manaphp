@@ -59,6 +59,7 @@
 
         vm = new App({
             data: {
+                topic: '菜单组',
                 request: {},
                 response: [],
                 create: {

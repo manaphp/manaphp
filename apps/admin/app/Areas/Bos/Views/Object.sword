@@ -96,6 +96,7 @@
     <script>
         vm = new App({
             data: {
+                topic: '对象',
                 request: {
                     page: 1,
                     size: 10,

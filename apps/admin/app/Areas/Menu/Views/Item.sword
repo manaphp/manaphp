@@ -74,6 +74,7 @@
     <script>
         vm = new App({
             data: {
+                topic: '菜单项',
                 request: {
                     group_id: ''
                 },

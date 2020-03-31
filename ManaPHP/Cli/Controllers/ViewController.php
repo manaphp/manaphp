@@ -232,6 +232,7 @@ HTML;
     <script>
         vm = new App({
             data: {
+                topic: '',
                 request: {
                     page: 1,
                     size: 10

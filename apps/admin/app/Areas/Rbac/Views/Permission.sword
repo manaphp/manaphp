@@ -45,6 +45,7 @@
 
         vm = new App({
             data: {
+                topic: '权限',
                 request: {},
                 response: [],
                 edit: {},

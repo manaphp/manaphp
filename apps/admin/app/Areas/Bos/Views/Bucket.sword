@@ -27,6 +27,7 @@
     <script>
         vm = new App({
             data: {
+                topic: '存储桶',
                 request: {},
                 response: [],
                 create: {

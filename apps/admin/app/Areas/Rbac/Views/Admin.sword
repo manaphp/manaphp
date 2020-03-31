@@ -93,6 +93,7 @@
 
         vm = new App({
             data: {
+                topic: '用户',
                 request: {
                     keyword: '',
                     size: 20,

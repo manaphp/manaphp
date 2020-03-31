@@ -444,6 +444,7 @@ Vue.prototype.auto_reload = function () {
 App = Vue.extend({
     data() {
         return {
+            topic: '',
             createVisible: false,
             editVisible: false,
             detailVisible: false,
