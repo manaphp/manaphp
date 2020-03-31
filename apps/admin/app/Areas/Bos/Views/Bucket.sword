@@ -29,7 +29,6 @@
             data: {
                 request: {},
                 response: [],
-                createVisible: false,
                 create: {
                     bucket_name: '',
                     base_url: 'http://',

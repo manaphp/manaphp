@@ -70,13 +70,11 @@
                     app_id: ''
                 },
                 response: {},
-                createVisible: false,
                 create: {
                     app_id: '',
                     env: '',
                 },
                 apps: [],
-                editVisible: false,
                 edit: {
                     app_id: '',
                     env: '',

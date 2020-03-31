@@ -110,7 +110,6 @@
                     prefix: '',
                 },
                 response: [],
-                createVisible: false,
                 create: {
                     bucket_name: '',
                     key: '',

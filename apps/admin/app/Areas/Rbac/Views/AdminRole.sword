@@ -47,7 +47,6 @@
                 },
                 response: [],
 
-                editVisible: false,
                 edit: {
                     admin_id: '',
                     role_ids: []

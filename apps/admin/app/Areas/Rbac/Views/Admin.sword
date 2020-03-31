@@ -102,7 +102,6 @@
                     page: 1
                 },
                 response: {},
-                createVisible: false,
                 create: {
                     admin_name: '',
                     email: '',
@@ -112,7 +111,6 @@
                     status: '1'
                 },
 
-                editVisible: false,
                 edit: {
                     admin_id: '',
                     email: '',

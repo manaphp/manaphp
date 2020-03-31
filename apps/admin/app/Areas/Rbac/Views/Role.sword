@@ -73,14 +73,11 @@
                     page: 1
                 },
                 response: {},
-                createVisible: false,
                 create: {
                     role_name: '',
                     display_name: '',
                     enabled: true
                 },
-
-                editVisible: false,
                 edit: {
                     role_id: '',
                     role_name: '',

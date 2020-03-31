@@ -84,7 +84,6 @@
                     group_id: ''
                 },
                 response: [],
-                createVisible: false,
                 create: {
                     item_name: '',
                     display_order: 0,
@@ -93,7 +92,6 @@
                     icon: 'el-icon-arrow-right'
                 },
 
-                editVisible: false,
                 edit: {
                     item_id: 0,
                     item_name: '',

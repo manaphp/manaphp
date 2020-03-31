@@ -60,8 +60,6 @@
                     page: 1
                 },
                 response: {},
-                detailVisible: false,
-                detail: {}
             }
         });
     </script>

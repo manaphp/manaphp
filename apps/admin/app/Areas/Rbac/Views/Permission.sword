@@ -49,7 +49,6 @@
             data: {
                 request: {},
                 response: [],
-                editVisible: false,
                 edit: {},
                 filter: {
                     path: ''

@@ -416,6 +416,14 @@ Vue.prototype.auto_reload = function () {
 };
 
 App = Vue.extend({
+    data() {
+        return {
+            createVisible: false,
+            editVisible: false,
+            detailVisible: false,
+            detail: {},
+        }
+    },
     methods: {
         reload() {
             if (!this.request || !this.response) {

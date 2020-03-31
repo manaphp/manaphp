@@ -237,13 +237,10 @@ HTML;
                     size: 10
                 },
                 response: {},
-                detailVisible: false,
-                detail: {},
 HTML;
 
         if ($fields) {
             $content .= PHP_EOL . <<<HTML
-                createVisible: false,
                 create: {
 HTML;
             $rules = $model->rules();
@@ -262,7 +259,6 @@ HTML;
 
             $content .= PHP_EOL . <<<HTML
                 },
-                editVisible: false,
                 edit: {
 HTML;
             $content .= PHP_EOL . '                    ' . $model->getPrimaryKey() . ': 0,';

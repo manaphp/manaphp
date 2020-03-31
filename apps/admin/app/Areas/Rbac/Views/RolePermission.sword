@@ -49,7 +49,6 @@
                 response: [],
 
                 roles: [],
-                editVisible: false,
                 edit: {
                     role_id: '',
                     role_name: '',

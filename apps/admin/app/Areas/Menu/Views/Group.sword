@@ -61,13 +61,11 @@
             data: {
                 request: {},
                 response: [],
-                createVisible: false,
                 create: {
                     group_name: '',
                     display_order: 0,
                     icon: 'el-icon-caret-right'
                 },
-                editVisible: false,
                 edit: {
                     group_id: '',
                     group_name: '',
