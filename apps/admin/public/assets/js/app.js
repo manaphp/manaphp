@@ -550,13 +550,17 @@ App = Vue.extend({
             });
         },
         show_edit(row, overwrite = {}) {
-            for (let key in this.edit) {
-                if (row.hasOwnProperty(key)) {
-                    this.edit[key] = row[key];
+            if (Object.keys(this.edit).length === 0) {
+                this.edit = Object.assign({}, row, overwrite);
+            } else {
+                for (let key in this.edit) {
+                    if (row.hasOwnProperty(key)) {
+                        this.edit[key] = row[key];
+                    }
                 }
-            }
-            for (let key in overwrite) {
-                this.edit[key] = overwrite[key]
+                for (let key in overwrite) {
+                    this.edit[key] = overwrite[key]
+                }
             }
 
             this.editVisible = true;
