@@ -7,7 +7,7 @@
               style="width: 130px"></el-input>
     <date-picker v-model="request.created_time"></date-picker>
 </div>
-<el-dialog title="详情" :visible.sync="detailVisible">
+<detail-dialog>
     <el-form :model="detail" label-width="100px" size="mini">
         <el-form-item label="id:">@{{ detail.id }}</el-form-item>
         <el-form-item label="用户名:">@{{ detail.admin_name }}</el-form-item>
@@ -22,7 +22,7 @@
             <pre>@{{  detail.data|json }}</pre>
         </el-form-item>
     </el-form>
-</el-dialog>
+</detail-dialog>
 <div class="result-box">
     <pager></pager>
     <el-table :data="response.items" border size="small">

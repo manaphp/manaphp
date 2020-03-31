@@ -400,6 +400,30 @@ Vue.component('system-time', {
     }
 });
 
+Vue.component('create-dialog', {
+    template: `<el-dialog :title="'新增-'+$root.topic" :visible.sync="$root.createVisible" class="create-dialog">
+    <slot></slot>
+    <span slot="footer">
+         <el-button type="primary" @click="$root.do_create" size="small">创建</el-button>
+        <el-button @click="$root.createVisible = false; $root.$refs.create.resetFields()" size="small">取消</el-button>
+    </span>
+</el-dialog>`
+});
+
+Vue.component('edit-dialog', {
+    template: `<el-dialog :title="'编辑-'+$root.topic" :visible.sync="$root.editVisible" class="edit-dialog">
+      <slot></slot>
+    <span slot="footer">
+        <el-button type="primary" @click="$root.do_edit" size="small">保存</el-button>
+        <el-button @click="$root.editVisible=false" size="small">取消</el-button>
+    </span>
+</el-dialog>`
+});
+
+Vue.component('detail-dialog', {
+    template: `<el-dialog title="详情" :visible.sync="$root.detailVisible" class="detail-dialog"><slot></slot></el-dialog>`
+});
+
 Vue.component('selector', {
     props: ['value', 'data'],
     template: ` <el-select v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)">

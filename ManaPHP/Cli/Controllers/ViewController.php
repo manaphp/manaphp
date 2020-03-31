@@ -31,7 +31,7 @@ HTML;
         $content = '';
 
         $content .= PHP_EOL . <<<HTML
-<el-dialog title="详情" :visible.sync="detailVisible">
+<detail-dialog>
     <el-form :model="detail" label-width="150px" size="mini">
 HTML;
 
@@ -52,7 +52,7 @@ HTML;
 
         $content .= PHP_EOL . <<<HTML
     </el-form>
-</el-dialog>
+</detail-dialog>
 HTML;
 
         return $content . PHP_EOL;
@@ -70,7 +70,7 @@ HTML;
         }
 
         $content = PHP_EOL . <<<HTML
-<el-dialog title="新增" :visible.sync="createVisible">
+<create-dialog>
     <el-form :model.trim="create" ref="create" size="small">
 HTML;
         $labels = $model->labels();
@@ -86,11 +86,7 @@ HTML;
 
         $content .= PHP_EOL . <<<HTML
     </el-form>
-    <span slot="footer">
-        <el-button type="primary" @click="do_create" size="small">创建</el-button>
-        <el-button @click="createVisible = false; \$refs.create.resetFields()" size="small">取消</el-button>
-    </span>
-</el-dialog>
+</create-dialog>
 HTML;
         return $content . PHP_EOL;
     }
@@ -107,7 +103,7 @@ HTML;
         }
 
         $content = PHP_EOL . <<<HTML
-<el-dialog title="编辑" :visible.sync="editVisible">
+<edit-dialog>
     <el-form :model="edit" ref="edit" size="small">
 HTML;
 
@@ -133,11 +129,7 @@ HTML;
 
         $content .= PHP_EOL . <<<HTML
     </el-form>
-    <div slot="footer">
-        <el-button type="primary" @click="do_edit" size="small">保存</el-button>
-        <el-button @click="editVisible=false" size="small">取消</el-button>
-    </div>
-</el-dialog>
+</edit-dialog>
 HTML;
         return $content . PHP_EOL;
     }

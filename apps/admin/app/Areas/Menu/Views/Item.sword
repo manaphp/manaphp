@@ -3,8 +3,8 @@
     </el-button>
     <selector v-model="request.group_id" :data="groups"></selector>
 </div>
-<el-dialog title="创建菜单项" :visible.sync="createVisible">
-    <el-form :model="create" ref="create" v-if="createVisible" size="small">
+<create-dialog>
+    <el-form :model="create" ref="create" size="small">
         <el-form-item label="组名:">
             <selector v-model="create.group_id" :data="groups"></selector>
         </el-form-item>
@@ -21,13 +21,9 @@
             <el-input v-model="create.icon" auto-complete="off"></el-input>
         </el-form-item>
     </el-form>
-    <span slot="footer">
-        <el-button type="primary" @click="do_create" size="small">创建</el-button>
-        <el-button @click="createVisible = false; $refs.create.resetFields()" size="small">取消</el-button>
-    </span>
-</el-dialog>
+</create-dialog>
 
-<el-dialog title="菜单项编辑" :visible.sync="editVisible">
+<edit-dialog>
     <el-form :model="edit" ref="edit" size="small">
         <el-form-item label="组名:">
             <selector v-model="edit.group_id" :data="groups"></selector>
@@ -45,11 +41,7 @@
             <el-input v-model="edit.icon" auto-complete="off"></el-input>
         </el-form-item>
     </el-form>
-    <div slot="footer">
-        <el-button type="primary" @click="do_edit" size="small">保存</el-button>
-        <el-button @click="editVisible=false" size="small">取消</el-button>
-    </div>
-</el-dialog>
+</edit-dialog>
 <div class="result-box">
     <el-table :data="response" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>

@@ -1,7 +1,7 @@
 <div class="search-box">
     <el-button @click="createVisible=true" type="primary" icon="el-icon-plus" size="small">创建存储桶</el-button>
 </div>
-<el-dialog title="创建存储桶" :visible.sync="createVisible">
+<create-dialog>
     <el-form :model="create" ref="create" size="small">
         <el-form-item label="桶名:" prop="bucket_name">
             <el-input v-model="create.bucket_name" auto-complete="off"></el-input>
@@ -10,11 +10,7 @@
             <el-input v-model.trim="create.base_url" auto-complete="off"></el-input>
         </el-form-item>
     </el-form>
-    <span slot="footer">
-        <el-button type="primary" @click="do_create" size="small">创建</el-button>
-        <el-button @click="createVisible = false; $refs.create.resetFields()" size="small">取消</el-button>
-    </span>
-</el-dialog>
+</create-dialog>
 <div class="result-box">
     <el-table :data="response" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>

@@ -2,7 +2,7 @@
     <el-button @click="show_edit()" type="primary" size="small" icon="el-icon-edit">编辑</el-button>
     <selector v-model="request.role_id" :data="roles2"></selector>
 </div>
-<el-dialog class="edit-dialog" title="编辑" :visible.sync="editVisible" width="50%">
+<edit-dialog>
     <el-form :model="edit" ref="edit" size="small">
         <el-checkbox-group v-model="edit.permission_ids">
             <el-checkbox v-for="permission in permissions" :label="permission.permission_id"
@@ -11,11 +11,7 @@
             </el-checkbox>
         </el-checkbox-group>
     </el-form>
-    <div slot="footer">
-        <el-button type="primary" @click="do_edit" size="small">保存</el-button>
-        <el-button @click="editVisible=false" size="small">取消</el-button>
-    </div>
-</el-dialog>
+</edit-dialog>
 <div class="result-box">
     <el-table :data="response" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>

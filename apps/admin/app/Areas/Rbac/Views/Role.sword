@@ -2,7 +2,7 @@
     <el-button @click="createVisible=true" icon="el-icon-plus" size="small" type="primary" style="width: 100px">新增角色</el-button>
     <el-input v-model.trim="request.keyword" placeholder="角色" size="small" style="width: 150px"></el-input>
 </div>
-<el-dialog title="新增角色" :visible.sync="createVisible">
+<create-dialog>
     <el-form :model="create" ref="create" size="small">
         <el-form-item label="编码:" prop="role_name">
             <el-input v-model.trim="create.role_name" auto-complete="off"></el-input>
@@ -14,13 +14,9 @@
             <el-switch v-model="create.enabled"></el-switch>
         </el-form-item>
     </el-form>
-    <span slot="footer">
-        <el-button type="primary" @click="do_create" size="small">创建</el-button>
-        <el-button @click="createVisible = false; $refs.create.resetFields()" size="small">取消</el-button>
-    </span>
-</el-dialog>
+</create-dialog>
 
-<el-dialog title="角色编辑" :visible.sync="editVisible">
+<edit-dialog>
     <el-form :model="edit" ref="edit" size="small">
         <el-form-item label="ID:"><span text-align="left">@{{ edit.role_id }}</span></el-form-item>
         <el-form-item label="编码:">
@@ -30,11 +26,7 @@
             <el-input v-model="edit.display_name" auto-complete="off"></el-input>
         </el-form-item>
     </el-form>
-    <div slot="footer">
-        <el-button type="primary" @click="do_edit" size="small">保存</el-button>
-        <el-button @click="editVisible=false" size="small">取消</el-button>
-    </div>
-</el-dialog>
+</edit-dialog>
 <div class="result-box">
     <pager></pager>
     <el-table :data="response.items" border size="small">

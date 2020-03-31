@@ -3,7 +3,7 @@
     </el-button>
     <el-input v-model.trim="request.keyword" placeholder="用户名或邮箱" size="small" style="width: 150px;"></el-input>
 </div>
-<el-dialog title="新增用户" :visible.sync="createVisible">
+<create-dialog>
     <el-form :model="create" ref="create" size="small">
         <el-form-item label="用户名:" prop="admin_name">
             <el-input v-model.trim="create.admin_name" auto-complete="off"></el-input>
@@ -26,12 +26,9 @@
             </el-radio-group>
         </el-form-item>
     </el-form>
-    <span slot="footer">
-        <el-button type="primary" @click="do_create" size="small">创建</el-button>
-        <el-button @click="createVisible = false; $refs.create.resetFields()" size="small">取消</el-button>
-    </span>
-</el-dialog>
-<el-dialog title="用户编辑" :visible.sync="editVisible">
+</create-dialog>
+
+<edit-dialog>
     <el-form :model="edit" ref="edit" size="small">
         <el-form-item label="用户名:"><span text-align="left">@{{ edit.admin_name }}</span></el-form-item>
         <el-form-item label="邮箱:">
@@ -50,11 +47,7 @@
             </el-checkbox>
         </el-checkbox-group>
     </el-form>
-    <div slot="footer">
-        <el-button type="primary" @click="do_edit" size="small">保存</el-button>
-        <el-button @click="editVisible=false" size="small">取消</el-button>
-    </div>
-</el-dialog>
+</edit-dialog>
 <div class="result-box">
     <pager></pager>
     <el-table :data="response.items" border size="small">

@@ -12,7 +12,7 @@
     </style>
 @append
 
-<el-dialog title="详情" :visible.sync="detailVisible">
+<detail-dialog>
     <el-form :model="detail" label-width="100px" size="mini">
         <el-form-item label="id:">@{{ detail.id }}</el-form-item>
         <el-form-item label="请求方法:">@{{ detail.method }}</el-form-item>
@@ -25,7 +25,7 @@
             <pre>@{{  detail.data|json }}</pre>
         </el-form-item>
     </el-form>
-</el-dialog>
+</detail-dialog>
 <div class="result-box">
     <el-table :data="response.items" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>

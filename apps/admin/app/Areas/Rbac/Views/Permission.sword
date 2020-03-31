@@ -2,7 +2,7 @@
     <el-button size="small" @click="do_rebuild" type="primary" icon="el-icon-refresh" style="width: 100px;">重新扫描</el-button>
     <selector v-model="filter.path" :data="paths"></selector>
 </div>
-<el-dialog title="权限编辑" :visible.sync="editVisible">
+<edit-dialog>
     <el-form :model="edit" ref="edit" size="mini">
         <el-form-item label="ID:">
             <div>@{{edit.permission_id}}</div>
@@ -14,11 +14,7 @@
             <el-input v-model="edit.display_name"></el-input>
         </el-form-item>
     </el-form>
-    <div slot="footer">
-        <el-button type="primary" @click="do_edit" size="small">保存</el-button>
-        <el-button @click="editVisible=false" size="small">取消</el-button>
-    </div>
-</el-dialog>
+</edit-dialog>
 <div class="result-box">
     <el-table :data="filteredResponse" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>

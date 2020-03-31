@@ -2,7 +2,7 @@
     <el-button @click="createVisible=true" type="primary" icon="el-icon-plus" size="small">新增</el-button>
     <selector v-model="request.app_id" :data="apps"></selector>
 </div>
-<el-dialog title="新增" :visible.sync="createVisible">
+<create-dialog>
     <el-form :model="create" ref="create" size="small">
         <el-form-item label="ID:" prop="app_id">
             <el-input v-model="create.app_id" auto-complete="off"></el-input>
@@ -11,12 +11,8 @@
             <el-input v-model.trim="create.env" auto-complete="off" type="textarea" rows="10"></el-input>
         </el-form-item>
     </el-form>
-    <span slot="footer">
-        <el-button type="primary" @click="do_create" size="small">创建</el-button>
-        <el-button @click="createVisible = false; $refs.create.resetFields()" size="small">取消</el-button>
-    </span>
-</el-dialog>
-<el-dialog title="编辑" :visible.sync="editVisible">
+</create-dialog>
+<edit-dialog>
     <el-form :model="edit" ref="edit" size="small">
         <el-form-item label="app_id:">
             <el-input v-model="edit.app_id" auto-complete="off" disabled="true"></el-input>
@@ -25,11 +21,7 @@
             <el-input v-model="edit.env" auto-complete="off" type="textarea" rows="10"></el-input>
         </el-form-item>
     </el-form>
-    <div slot="footer">
-        <el-button type="primary" @click="do_edit" size="small">保存</el-button>
-        <el-button @click="editVisible=false" size="small">取消</el-button>
-    </div>
-</el-dialog>
+</edit-dialog>
 
 <div class="result-box">
     <el-table :data="response.current" border size="small">
