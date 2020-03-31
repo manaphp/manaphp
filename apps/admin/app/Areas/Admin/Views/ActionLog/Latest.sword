@@ -6,7 +6,7 @@
 
 @section('css')
     <style>
-        .search-box .el-input{
+        .search-box .el-input {
             width: 200px;
         }
     </style>
