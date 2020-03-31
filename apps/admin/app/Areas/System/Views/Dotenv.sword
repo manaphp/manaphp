@@ -1,8 +1,6 @@
 <div class="search-box">
     <el-button @click="createVisible=true" type="primary" icon="el-icon-plus" size="small">新增</el-button>
-    <el-select v-model="request.app_id" size="small" style="width: 150px">
-        <el-option v-for="app in apps" :key="app" :label="app" :value="app"></el-option>
-    </el-select>
+    <selector v-model="request.app_id" :data="apps"></selector>
 </div>
 <el-dialog title="新增" :visible.sync="createVisible">
     <el-form :model="create" ref="create" size="small">

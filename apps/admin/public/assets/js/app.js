@@ -400,6 +400,32 @@ Vue.component('system-time', {
     }
 });
 
+Vue.component('selector', {
+    props: ['value', 'data'],
+    template: ` <el-select v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)">
+        <el-option v-for="item in data" :key="item[key]" :label="item[label]" :value="String(item[key])"></el-option>
+    </el-select>`,
+    data() {
+        return {
+            key: '',
+            label: '',
+            val: String(this.value),
+        }
+    },
+    watch: {
+        data() {
+            if (this.data.length > 0) {
+                let keys = Object.keys(this.data[0]);
+                this.key = keys[0];
+                this.label = keys[1];
+            }
+        },
+        value(val) {
+            this.val = String(val);
+        }
+    }
+});
+
 Vue.prototype.format_date = function (value) {
     return value ? this.$moment(value * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
 };

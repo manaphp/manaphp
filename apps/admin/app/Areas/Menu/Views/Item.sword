@@ -1,16 +1,12 @@
 <div class="search-box">
     <el-button @click="create.group_id=request.group_id; createVisible=true" icon="el-icon-plus" size="small" type="primary">创建菜单项
     </el-button>
-    <el-select v-model="request.group_id" size="small" clearable style="width: 150px">
-        <el-option v-for="group in groups" :key="group.group_id" :label="group.group_name" :value="String(group.group_id)"></el-option>
-    </el-select>
+    <selector v-model="request.group_id" :data="groups"></selector>
 </div>
 <el-dialog title="创建菜单项" :visible.sync="createVisible">
     <el-form :model="create" ref="create" v-if="createVisible" size="small">
         <el-form-item label="组名:">
-            <el-select v-model="create.group_id" size="small">
-                <el-option v-for="group in groups" :key="group.group_id" :label="group.group_name" :value="String(group.group_id)"></el-option>
-            </el-select>
+            <selector v-model="create.group_id" :data="groups"></selector>
         </el-form-item>
         <el-form-item label="名称:" prop="item_name">
             <el-input v-model="create.item_name" auto-complete="off"></el-input>
@@ -34,9 +30,7 @@
 <el-dialog title="菜单项编辑" :visible.sync="editVisible">
     <el-form :model="edit" ref="edit" size="small">
         <el-form-item label="组名:">
-            <el-select v-model="edit.group_id" size="small">
-                <el-option v-for="group in groups" :key="group.group_id" :label="group.group_name" :value="group.group_id"></el-option>
-            </el-select>
+            <selector v-model="edit.group_id" :data="groups"></selector>
         </el-form-item>
         <el-form-item label="名称:" prop="item_name">
             <el-input v-model="edit.item_name" auto-complete="off"></el-input>

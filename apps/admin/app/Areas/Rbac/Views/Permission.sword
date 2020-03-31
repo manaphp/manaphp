@@ -1,8 +1,6 @@
 <div class="search-box">
     <el-button size="small" @click="do_rebuild" type="primary" icon="el-icon-refresh" style="width: 100px;">重新扫描</el-button>
-    <el-select v-model="filter.path" size="small" placeholder="分组" clearable filterable style="width: 150px">
-        <el-option v-for="path in paths" :key="path" :label="path" :value="path"></el-option>
-    </el-select>
+    <selector v-model="filter.path" :data="paths"></selector>
 </div>
 <el-dialog title="权限编辑" :visible.sync="editVisible">
     <el-form :model="edit" ref="edit" size="mini">

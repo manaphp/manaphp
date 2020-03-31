@@ -3,10 +3,7 @@
                icon="el-icon-plus" size="small"
                type="primary">增加存储对象
     </el-button>
-    <el-select v-model="request.bucket_name" size="small" clearable style="width: 150px">
-        <el-option v-for="bucket in buckets" :key="bucket.bucket_name" :label="bucket.bucket_name"
-                   :value="bucket.bucket_name"></el-option>
-    </el-select>
+    <selector v-model="request.bucket_name" :data="buckets"></selector>
     <el-input v-model.trim="request.prefix" clearable placeholder="prefix" size="small"
               style="width: 120px;"></el-input>
     <el-input v-model.trim="request.extension" clearable placeholder="extension" size="small"
@@ -15,10 +12,7 @@
 <el-dialog title="增加存储对象" :visible.sync="createVisible">
     <el-form :model="create" ref="create" size="small">
         <el-form-item label="桶名:">
-            <el-select v-model="create.bucket_name" size="small">
-                <el-option v-for="bucket in buckets" :key="bucket.bucket_name" :label="bucket.bucket_name"
-                           :value="bucket.bucket_name"></el-option>
-            </el-select>
+            <selector v-model="create.bucket_name" :data="buckets"></selector>
         </el-form-item>
         <el-form-item label="key:" prop="key">
             <el-input v-model.trim="create.key" auto-complete="off"></el-input>
@@ -121,7 +115,12 @@
             },
             created() {
                 this.ajax_get("buckets", (res) => {
-                    this.buckets = res;
+                    this.buckets = res.map((bucket) => {
+                        return {
+                            id: bucket.name,
+                            name: bucket.name
+                        }
+                    });
                     if (!this.request.bucket_name) {
                         this.request.bucket_name = this.buckets[0].bucket_name;
                     }

@@ -18,10 +18,7 @@
             <el-input v-model.trim="create.white_ip" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="角色:">
-            <el-select v-model="create.role_id" size="small" placeholder="角色" clearable filterable style="width: 150px">
-                <el-option v-for="role in roles" :key="role.role_id" :label="role.display_name"
-                           :value="role.role_id"></el-option>
-            </el-select>
+            <selector v-model="create.role_id" :data="roles"></selector>
         </el-form-item>
         <el-form-item label="状态:" prop="status">
             <el-radio-group v-model="create.status">

@@ -1,8 +1,6 @@
 <div class="search-box">
     <el-button @click="show_edit()" type="primary" size="small" icon="el-icon-edit">编辑</el-button>
-    <el-select v-model="request.role_id" size="small" filterable style="width: 150px" clearable>
-        <el-option v-for="role in roles2" :key="role.role_id" :label="role.display_name" :value="String(role.role_id)"></el-option>
-    </el-select>
+    <selector v-model="request.role_id" :data="roles2"></selector>
 </div>
 <el-dialog class="edit-dialog" title="编辑" :visible.sync="editVisible" width="50%">
     <el-form :model="edit" ref="edit" size="small">
