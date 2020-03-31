@@ -24,7 +24,7 @@ class PermissionController extends Controller
 
     public function listAction()
     {
-        return Permission::all([], [], ['permission_id', 'path', 'display_name']);
+        return Permission::all([], ['order' => 'path'], ['permission_id', 'path', 'display_name']);
     }
 
     public function rebuildAction()
