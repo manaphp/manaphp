@@ -22,4 +22,11 @@ class AdminRole extends Model
     {
         return [];
     }
+
+    public function rules()
+    {
+        return [
+            'admin_id' => ['unique' => 'role_id']
+        ];
+    }
 }
