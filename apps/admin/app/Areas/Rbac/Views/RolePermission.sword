@@ -1,7 +1,7 @@
 <div class="search-box">
-    <el-button @click="show_edit()" type="primary" size="small" icon="el-icon-edit" >编辑</el-button>
+    <el-button @click="show_edit()" type="primary" size="small" icon="el-icon-edit">编辑</el-button>
     <el-select v-model="request.role_id" size="small" filterable style="width: 150px" clearable>
-        <el-option v-for="role in roles" :key="role.role_id" :label="role.display_name" :value="String(role.role_id)" v-if="!['guest', 'user', 'admin'].includes(role.role_name)"></el-option>
+        <el-option v-for="role in roles2" :key="role.role_id" :label="role.display_name" :value="String(role.role_id)"></el-option>
     </el-select>
 </div>
 <el-dialog class="edit-dialog" title="编辑" :visible.sync="editVisible" width="50%">
@@ -55,6 +55,12 @@
                     permission_ids: []
                 },
                 permissions: []
+            },
+            computed: {
+                roles2() {
+                    let excludes = ['guest', 'user', 'admin'];
+                    return this.roles.filter(v => !excludes.includes(v.role_name));
+                }
             },
             mounted() {
                 this.ajax_get("role/list", (res) => this.roles = res);
