@@ -400,6 +400,44 @@ Vue.component('system-time', {
     }
 });
 
+Vue.component('show-create', {
+    template: `<el-button @click="$root.createVisible=true;$emit('click');" type="primary" icon="el-icon-plus" size="small">新增{{$root.topic}}</el-button>`
+});
+
+Vue.component('show-edit', {
+    props: ['row'],
+    template: `<el-button @click="$root.show_edit(row);$emit('click')" size="mini" type="primary"><slot>编辑</slot></el-button>`
+});
+
+Vue.component('show-delete', {
+    props: ['row'],
+    template: '<el-button @click="$root.do_delete(row)" size="mini" type="danger"><slot>删除</slot></el-button>'
+});
+
+Vue.component('show-detail', {
+    props: ['row', 'link'],
+    template: '<el-button @click="$root.show_detail(row,link)" size="mini" type="info"><slot>详情</slot></el-button>'
+});
+
+Vue.component('show-enable', {
+    props: ['row'],
+    template: `<el-button v-if="row.enabled" @click.native.prevent="$root.do_disable(row)" size="mini"
+                           type="danger">禁用
+                </el-button>
+                <el-button v-else @click.native.prevent="$root.do_enable(row)" size="mini"
+                           type="warning">启用
+                </el-button>`
+});
+
+Vue.component('show-active', {
+    props: ['row'],
+    template: ` <el-button v-if="row.status==1" @click="$root.do_lock(row)" size="mini" type="danger">
+                    锁定
+                </el-button>
+                <el-button v-else="row.status!==1" @click="$root.do_active(row)" size="mini" type="warning">激活
+                </el-button>`
+});
+
 Vue.component('create-dialog', {
     template: `<el-dialog :title="'新增-'+$root.topic" :visible.sync="$root.createVisible" class="create-dialog">
     <slot></slot>

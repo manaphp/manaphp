@@ -39,8 +39,7 @@
         <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
         <el-table-column fixed="right" label="操作" width="100">
             <template v-slot="{row}">
-                <el-button @click="show_detail(row, '../detail')" size="mini" type="info">详情
-                </el-button>
+                <show-detail :row="row" link="../detail"></show-detail>
             </template>
         </el-table-column>
     </el-table>

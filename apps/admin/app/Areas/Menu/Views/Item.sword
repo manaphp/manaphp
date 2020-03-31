@@ -1,6 +1,5 @@
 <div class="search-box">
-    <el-button @click="create.group_id=request.group_id; createVisible=true" icon="el-icon-plus" size="small" type="primary">创建菜单项
-    </el-button>
+    <show-create @click="create.group_id=request.group_id"></show-create>
     <selector v-model="request.group_id" :data="groups"></selector>
 </div>
 <create-dialog>
@@ -56,8 +55,8 @@
         <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
         <el-table-column fixed="right" label="操作" width="150">
             <template v-slot="{row}">
-                <el-button @click="show_edit(row)" size="mini" type="primary">编辑</el-button>
-                <el-button @click="do_delete(row)" size="mini" type="danger">删除</el-button>
+                <show-edit :row="row"></show-edit>
+                <show-delete :row="row"></show-delete>
             </template>
         </el-table-column>
     </el-table>

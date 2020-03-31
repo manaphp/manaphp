@@ -1,6 +1,5 @@
 <div class="search-box">
-    <el-button @click="createVisible=true" type="primary" icon="el-icon-plus" size="small" style="width: 100px">新增用户
-    </el-button>
+    <show-create></show-create>
     <el-input v-model.trim="request.keyword" placeholder="用户名或邮箱" size="small" style="width: 150px;"></el-input>
 </div>
 <create-dialog>
@@ -70,12 +69,8 @@
         <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
         <el-table-column fixed="right" label="操作" width="150">
             <template v-slot="{row}">
-                <el-button @click="edit.password = ''; show_edit(row)" size="mini" type="primary">编辑</el-button>
-                <el-button v-if="row.status==1" @click="do_lock(row)" size="mini" type="danger">
-                    锁定
-                </el-button>
-                <el-button v-if="row.status!==1" @click="do_active(row)" size="mini" type="warning">激活
-                </el-button>
+                <show-edit :row="row"></show-edit>
+                <show-active :row="row"></show-active>
             </template>
         </el-table-column>
     </el-table>

@@ -180,8 +180,8 @@ HTML;
         $content .= PHP_EOL . <<<HTML
         <el-table-column fixed="right" label="操作" width="150">
             <template v-slot="{row}">
-                <el-button @click="show_edit(row)" size="mini" type="primary">编辑</el-button>
-                <el-button @click="do_delete(row)" size="mini" type="danger">删除</el-button>
+                <show-edit :row="row"></show-edit>
+                <show-delete :row="row"></show-delete>          
             </template>
         </el-table-column>
 HTML;

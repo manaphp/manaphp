@@ -1,5 +1,5 @@
 <div class="search-box">
-    <el-button @click="show_edit()" type="primary" size="small" icon="el-icon-edit">编辑</el-button>
+    <show-edit></show-edit>
     <selector v-model="request.role_id" :data="roles2"></selector>
 </div>
 <edit-dialog>

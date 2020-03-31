@@ -1,5 +1,5 @@
 <div class="search-box">
-    <el-button @click="createVisible=true" type="primary" icon="el-icon-plus" size="small">创建存储桶</el-button>
+    <show-create></show-create>
 </div>
 <create-dialog>
     <el-form :model="create" ref="create" size="small">
