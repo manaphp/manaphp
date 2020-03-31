@@ -166,7 +166,7 @@ HTML;
     {
         $content = PHP_EOL . <<<HTML
 <div class="result-box">
-    <pager :request="request" :response="response"></pager>
+    <pager></pager>
     <el-table :data="response.items" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
 HTML;
@@ -195,7 +195,7 @@ HTML;
 HTML;
         $content .= PHP_EOL . <<<HTML
     </el-table>
-    <pager :request="request" :response="response"></pager>
+    <pager></pager>
 </div>
 HTML;
         return $content . PHP_EOL;

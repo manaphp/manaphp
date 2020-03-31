@@ -11,7 +11,7 @@
         <el-table-column prop="user_agent" label="浏览器" show-overflow-tooltip></el-table-column>
         <el-table-column prop="created_time" label="生成时间" :formatter="fDate" width="150"></el-table-column>
     </el-table>
-    <pager :request="request" :response="response"></pager>
+    <pager></pager>
 </div>
 @section('script')
     <script>

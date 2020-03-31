@@ -158,24 +158,22 @@ Vue.filter('json', function (value) {
 });
 
 Vue.component('pager', {
-    props: ['request', 'response'],
-    template: ' <el-pagination background :current-page="Number(response.page)"\n' +
-        '                   :page-size="Number(request.size)"\n' +
+    template: ' <el-pagination background :current-page="Number($root.response.page)"\n' +
+        '                   :page-size="Number($root.request.size)"\n' +
         '                   :page-sizes="[10,20,25,50,100,500,1000]"\n' +
-        '                   @current-change="request.page=$event"\n' +
-        '                   @size-change="request.size=$event; request.page=1"\n' +
-        '                   :total="response.count" layout="sizes,total, prev, pager, next, jumper"></el-pagination>\n',
+        '                   @current-change="$root.request.page=$event"\n' +
+        '                   @size-change="$root.request.size=$event; $root.request.page=1"\n' +
+        '                   :total="$root.response.count" layout="sizes,total, prev, pager, next, jumper"></el-pagination>\n',
     watch: {
-        request: {
+        '$root.request': {
             handler() {
-                for (let field in this.request) {
+                for (let field in this.$root.request) {
                     if (field === 'page' || field === 'size') {
                         continue;
                     }
-                    if (field in this.last_request && this.last_request[field] != this.request[field]) {
-                        this.response.page = 1;
-                        this.request.page = 1;
-                        this.last_request = Object.assign({}, this.request);
+                    if (field in this.last && this.last[field] != this.$root.request[field]) {
+                        this.$root.request.page = 1;
+                        this.last = Object.assign({}, this.$root.request);
                         break;
                     }
                 }
@@ -185,7 +183,7 @@ Vue.component('pager', {
     },
     data() {
         return {
-            last_request: Object.assign({}, this.request)
+            last: Object.assign({}, this.$root.request)
         }
     }
 });
