@@ -11,14 +11,12 @@
         </el-form-item>
     </el-form>
 </create-dialog>
-<div class="result-box">
-    <el-table :data="response" border size="small">
-        <el-table-column type="index" label="#" width="50"></el-table-column>
-        <el-table-column prop="bucket_name" label="桶名" width="100"></el-table-column>
-        <el-table-column prop="base_url" label="BaseURL" width="300"></el-table-column>
-        <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
-    </el-table>
-</div>
+<result-table>
+    <el-table-column type="index" label="#" width="50"></el-table-column>
+    <el-table-column prop="bucket_name" label="桶名" width="100"></el-table-column>
+    <el-table-column prop="base_url" label="BaseURL" width="300"></el-table-column>
+    <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
+</result-table>
 @section('script')
     <script>
         vm = new App({

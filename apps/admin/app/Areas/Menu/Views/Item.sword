@@ -41,26 +41,24 @@
         </el-form-item>
     </el-form>
 </edit-dialog>
-<div class="result-box">
-    <el-table :data="response" border size="small">
-        <el-table-column type="index" label="#" width="50"></el-table-column>
-        <el-table-column prop="item_id" label="菜单ID" width="100"></el-table-column>
-        <el-table-column prop="item_name" label="菜单名" width="150"></el-table-column>
-        <el-table-column prop="url" label="链接" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="display_order" label="排序" width="100"></el-table-column>
-        <el-table-column prop="icon" label="图标" width="200"></el-table-column>
-        <el-table-column prop="updator_name" label="更新者" width="120"></el-table-column>
-        <el-table-column prop="updated_time" label="更新时间" :formatter="fDate" width="150"></el-table-column>
-        <el-table-column prop="creator_name" label="创建者" width="120"></el-table-column>
-        <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
-        <el-table-column fixed="right" label="操作" width="150">
-            <template v-slot="{row}">
-                <show-edit :row="row"></show-edit>
-                <show-delete :row="row"></show-delete>
-            </template>
-        </el-table-column>
-    </el-table>
-</div>
+<result-table>
+    <el-table-column type="index" label="#" width="50"></el-table-column>
+    <el-table-column prop="item_id" label="菜单ID" width="100"></el-table-column>
+    <el-table-column prop="item_name" label="菜单名" width="150"></el-table-column>
+    <el-table-column prop="url" label="链接" show-overflow-tooltip></el-table-column>
+    <el-table-column prop="display_order" label="排序" width="100"></el-table-column>
+    <el-table-column prop="icon" label="图标" width="200"></el-table-column>
+    <el-table-column prop="updator_name" label="更新者" width="120"></el-table-column>
+    <el-table-column prop="updated_time" label="更新时间" :formatter="fDate" width="150"></el-table-column>
+    <el-table-column prop="creator_name" label="创建者" width="120"></el-table-column>
+    <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
+    <el-table-column fixed="right" label="操作" width="150">
+        <template v-slot="{row}">
+            <show-edit :row="row"></show-edit>
+            <show-delete :row="row"></show-delete>
+        </template>
+    </el-table-column>
+</result-table>
 @section('script')
     <script>
         vm = new App({

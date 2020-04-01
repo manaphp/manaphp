@@ -26,25 +26,22 @@
         </el-form-item>
     </el-form>
 </detail-dialog>
-<div class="result-box">
-    <el-table :data="response.items" border size="small">
-        <el-table-column type="index" label="#" width="50"></el-table-column>
-        <el-table-column prop="id" label="记录ID" width="100"></el-table-column>
-        <el-table-column prop="method" label="请求方式" width="100"></el-table-column>
-        <el-table-column prop="path" label="请求路径" width="250" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="tag" label="tag" width="100"></el-table-column>
-        <el-table-column prop="data" label="请求数据" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="client_ip" label="客户端IP" width="120"></el-table-column>
-        <el-table-column prop="client_udid" label="客户端ID" width="200" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
-        <el-table-column fixed="right" label="操作" width="100">
-            <template v-slot="{row}">
-                <show-detail :row="row" link="../detail"></show-detail>
-            </template>
-        </el-table-column>
-    </el-table>
-    <pager></pager>
-</div>
+<result-table>
+    <el-table-column type="index" label="#" width="50"></el-table-column>
+    <el-table-column prop="id" label="记录ID" width="100"></el-table-column>
+    <el-table-column prop="method" label="请求方式" width="100"></el-table-column>
+    <el-table-column prop="path" label="请求路径" width="250" show-overflow-tooltip></el-table-column>
+    <el-table-column prop="tag" label="tag" width="100"></el-table-column>
+    <el-table-column prop="data" label="请求数据" show-overflow-tooltip></el-table-column>
+    <el-table-column prop="client_ip" label="客户端IP" width="120"></el-table-column>
+    <el-table-column prop="client_udid" label="客户端ID" width="200" show-overflow-tooltip></el-table-column>
+    <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
+    <el-table-column fixed="right" label="操作" width="100">
+        <template v-slot="{row}">
+            <show-detail :row="row" link="../detail"></show-detail>
+        </template>
+    </el-table-column>
+</result-table>
 @section('script')
     <script>
 

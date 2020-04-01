@@ -462,17 +462,37 @@ Vue.component('detail-dialog', {
     template: `<el-dialog title="详情" :visible.sync="$root.detailVisible" class="detail-dialog"><slot></slot></el-dialog>`
 });
 
+Vue.component('result-table', {
+    props:['data'],
+    template: `
+<div class="result-table">
+    <el-table v-if="data" :data="data" border size="small">
+        <slot></slot>
+    </el-table>
+    <template v-else-if="$root.request.page">
+        <pager></pager>
+        <el-table :data="$root.response.items" border size="small">
+            <slot></slot>
+        </el-table>
+        <pager></pager>
+    </template>
+    <el-table v-else :data="$root.response" border size="small">
+        <slot></slot>
+    </el-table>
+</div>`,
+});
+
 Vue.component('selector', {
     props: ['value', 'data'],
     template: `
-<div>
+<span>
     <el-select v-if="data && typeof data[0]==='object'" v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)">
         <el-option v-for="item in data" :key="item[key]" :label="item[label]" :value="String(item[key])"></el-option>
     </el-select>
     <el-select v-else v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)">
         <el-option v-for="item in data" :key="item" :label="item" :value="String(item)"></el-option>
     </el-select>
-</div>`,
+</span>`,
     data() {
         return {
             key: '',
