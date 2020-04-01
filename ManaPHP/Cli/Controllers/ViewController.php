@@ -157,10 +157,8 @@ HTML;
     public function renderResultBox($model)
     {
         $content = PHP_EOL . <<<HTML
-<div class="result-box">
-    <pager></pager>
-    <el-table :data="response.items" border size="small">
-        <el-table-column type="index" label="#" width="50"></el-table-column>
+<result-table>
+    <el-table-column type="index" label="#" width="50"></el-table-column>
 HTML;
         $labels = $model->labels();
         foreach ($model->getFields() as $field) {
@@ -168,27 +166,25 @@ HTML;
 
             if ($this->isTimestampField($model, $field)) {
                 $content .= PHP_EOL . <<<HTML
-        <el-table-column prop="$field" label="$label" :formatter="fDate" width="150"></el-table-column>
+    <el-table-column prop="$field" label="$label" :formatter="fDate" width="150"></el-table-column>
 HTML;
             } else {
                 $content .= PHP_EOL . <<<HTML
-        <el-table-column prop="$field" label="$label" width="100"></el-table-column>
+    <el-table-column prop="$field" label="$label" width="100"></el-table-column>
 HTML;
             }
         }
 
         $content .= PHP_EOL . <<<HTML
-        <el-table-column fixed="right" label="操作" width="150">
-            <template v-slot="{row}">
-                <show-edit :row="row"></show-edit>
-                <show-delete :row="row"></show-delete>          
-            </template>
-        </el-table-column>
+    <el-table-column fixed="right" label="操作" width="150">
+        <template v-slot="{row}">
+            <show-edit :row="row"></show-edit>
+            <show-delete :row="row"></show-delete>          
+        </template>
+    </el-table-column>
 HTML;
         $content .= PHP_EOL . <<<HTML
-    </el-table>
-    <pager></pager>
-</div>
+</result-table>
 HTML;
         return $content . PHP_EOL;
     }
