@@ -464,9 +464,15 @@ Vue.component('detail-dialog', {
 
 Vue.component('selector', {
     props: ['value', 'data'],
-    template: ` <el-select v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)">
+    template: `
+<div>
+    <el-select v-if="data && typeof data[0]==='object'" v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)">
         <el-option v-for="item in data" :key="item[key]" :label="item[label]" :value="String(item[key])"></el-option>
-    </el-select>`,
+    </el-select>
+    <el-select v-else v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)">
+        <el-option v-for="item in data" :key="item" :label="item" :value="String(item)"></el-option>
+    </el-select>
+</div>`,
     data() {
         return {
             key: '',
@@ -476,7 +482,7 @@ Vue.component('selector', {
     },
     watch: {
         data() {
-            if (this.data.length > 0) {
+            if (this.data.length > 0 && typeof this.data[0] === 'object') {
                 let keys = Object.keys(this.data[0]);
                 this.key = keys[0];
                 this.label = keys[1];
