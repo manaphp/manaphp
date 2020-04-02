@@ -483,13 +483,13 @@ Vue.component('result-table', {
 });
 
 Vue.component('selector', {
-    props: ['value', 'data'],
+    props: ['value', 'data', 'disabled'],
     template: `
 <span>
-    <el-select v-if="data && typeof data[0]==='object'" v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)">
+    <el-select v-if="data && typeof data[0]==='object'" v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)" :disabled="disabled">
         <el-option v-for="item in data" :key="item[key]" :label="item[label]" :value="String(item[key])"></el-option>
     </el-select>
-    <el-select v-else v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)">
+    <el-select v-else v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)" :disabled="disabled">
         <el-option v-for="item in data" :key="item" :label="item" :value="String(item)"></el-option>
     </el-select>
 </span>`,
@@ -553,9 +553,9 @@ Vue.component('create-checkbox', {
 });
 
 Vue.component('create-select', {
-    props: ['label', 'prop', 'data'],
+    props: ['label', 'prop', 'data', 'disabled'],
     template: `<el-form-item :label="label">
-            <selector v-model="$root.create[prop]" :data="data"></selector>
+            <selector v-model="$root.create[prop]" :data="data" :disabled="disabled"></selector>
         </el-form-item>`
 });
 
