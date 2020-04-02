@@ -30,7 +30,7 @@ class RoleController extends Controller
             $permissions = '';
         }
 
-        return Role::rCreate(['permissions' => $permissions]);
+        return Role::rCreate(['role_name', 'display_name', 'enabled', 'permissions' => $permissions]);
     }
 
     public function editAction()
