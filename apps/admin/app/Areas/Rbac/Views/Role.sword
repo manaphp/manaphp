@@ -4,27 +4,17 @@
 </div>
 <create-dialog>
     <el-form :model="create" ref="create" size="small">
-        <el-form-item label="编码:" prop="role_name">
-            <el-input v-model.trim="create.role_name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="名称:" prop="display_name">
-            <el-input v-model="create.display_name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="启用:" prop="enabled">
-            <el-switch v-model="create.enabled"></el-switch>
-        </el-form-item>
+        <create-text label="编码:" prop="role_name"></create-text>
+        <create-text label="名称:" prop="display_name"></create-text>
+        <create-switch label="启用:" prop="enabled"></create-switch>
     </el-form>
 </create-dialog>
 
 <edit-dialog>
     <el-form :model="edit" ref="edit" size="small">
-        <el-form-item label="ID:"><span text-align="left">@{{ edit.role_id }}</span></el-form-item>
-        <el-form-item label="编码:">
-            <el-input v-model.trim="edit.role_name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="名称:">
-            <el-input v-model="edit.display_name" auto-complete="off"></el-input>
-        </el-form-item>
+        <edit-text label="ID:" prop="role_id" disabled></edit-text>
+        <edit-text label="编码:" prop="role_name"></edit-text>
+        <edit-text label="名称:" prop="display_name"></edit-text>
     </el-form>
 </edit-dialog>
 <result-table>

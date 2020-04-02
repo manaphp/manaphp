@@ -3,12 +3,8 @@
 </div>
 <create-dialog>
     <el-form :model="create" ref="create" size="small">
-        <el-form-item label="桶名:" prop="bucket_name">
-            <el-input v-model="create.bucket_name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="BaseURL:" prop="base_url">
-            <el-input v-model.trim="create.base_url" auto-complete="off"></el-input>
-        </el-form-item>
+        <create-text label="桶名:" prop="bucket_name"></create-text>
+        <create-text label="BaseURL:" prop="base_url"></create-text>
     </el-form>
 </create-dialog>
 <result-table>

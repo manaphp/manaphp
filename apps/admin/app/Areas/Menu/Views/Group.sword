@@ -3,28 +3,16 @@
 </div>
 <create-dialog>
     <el-form :model="create" ref="create" size="small">
-        <el-form-item label="组名:" prop="group_name">
-            <el-input v-model="create.group_name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="排序:" prop="display_order">
-            <el-input v-model.trim="create.display_order" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="图标:" prop="icon">
-            <el-input v-model="create.icon" auto-complete="off"></el-input>
-        </el-form-item>
+        <create-text label="组名:" prop="group_name"></create-text>
+        <create-text label="排序:" prop="display_order"></create-text>
+        <create-text label="图标:" prop="icon"></create-text>
     </el-form>
 </create-dialog>
 <edit-dialog>
     <el-form :model="edit" ref="edit" size="small">
-        <el-form-item label="组名:">
-            <el-input v-model="edit.group_name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="排序:">
-            <el-input v-model.trim="edit.display_order" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="图标:" prop="icon">
-            <el-input v-model="edit.icon" auto-complete="off"></el-input>
-        </el-form-item>
+        <edit-text label="组名:" prop="group_name"></edit-text>
+        <edit-text label="排序:" prop="display_order"></edit-text>
+        <edit-text label="图标:" prop="icon"></edit-text>
     </el-form>
 </edit-dialog>
 <result-table>

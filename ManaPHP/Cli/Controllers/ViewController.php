@@ -78,9 +78,7 @@ HTML;
             $label = $labels[$field] ?? $field;
 
             $content .= PHP_EOL . <<<HTML
-        <el-form-item label="$label:" prop="$field">
-            <el-input v-model.trim="create.$field" auto-complete="off"></el-input>
-        </el-form-item>
+        <create-input label="$label:" prop="$field"></create-input>
 HTML;
         }
 
@@ -112,18 +110,14 @@ HTML;
         $primaryKey = $model->getPrimaryKey();
         $label = $labels[$primaryKey] ?? $primaryKey;
         $content .= PHP_EOL . <<<HTML
-        <el-form-item label="$label">
-            <el-input v-model="edit.$primaryKey" disabled></el-input>
-        </el-form-item>
+        <edit-input label="$label" prop="$primaryKey" disabled></edit-input>
 HTML;
 
         foreach ($fields as $field) {
             $label = $labels[$field] ?? $field;
 
             $content .= PHP_EOL . <<<HTML
-        <el-form-item label="$label:">
-            <el-input v-model.trim="edit.$field" auto-complete="off"></el-input>
-        </el-form-item>
+        <edit-input label="$label:" prop="$field"></edit-input>
 HTML;
         }
 

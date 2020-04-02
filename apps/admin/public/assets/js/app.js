@@ -515,6 +515,67 @@ Vue.component('selector', {
     }
 });
 
+Vue.component('create-text', {
+    props: ['label', 'prop', 'disabled'],
+    template: `
+        <el-form-item :label="label" :prop="prop">
+            <el-input v-model="$root.create[prop]" auto-complete="off" :disabled="disabled" @change="$emit('input', $event)"></el-input>
+        </el-form-item>`
+});
+
+Vue.component('create-textarea', {
+    props: ['label', 'prop', 'rows', 'disabled'],
+    template: `
+        <el-form-item :label="label" :prop="prop">
+            <el-input v-model="$root.create[prop]" auto-complete="off" type="textarea" :rows="rows" :disabled="disabled" @change="$emit('input', $event)"></el-input>
+        </el-form-item>`
+});
+
+Vue.component('create-checkbox', {
+    props: ['label', 'prop', 'disabled'],
+    template: `
+        <el-form-item :label="label" :prop="prop">
+            <el-checkbox v-model="$root.create[insert_only]" :disabled="disabled"><slot></slot></el-checkbox>
+        </el-form-item>`
+});
+
+Vue.component('create-select', {
+    props: ['label', 'prop', 'data'],
+    template: `<el-form-item :label="label">
+            <selector v-model="$root.create[prop]" :data="data"></selector>
+        </el-form-item>`
+});
+
+Vue.component('create-switch', {
+    props: ['label', 'prop', 'disabled'],
+    template: `<el-form-item :label="label">
+            <el-switch v-model="$root.create[prop]" :disabled="disabled"></el-switch>
+        </el-form-item>`
+});
+
+Vue.component('edit-text', {
+    props: ['label', 'prop', 'disabled'],
+    template: `
+        <el-form-item :label="label" :prop="prop">
+            <el-input v-model="$root.edit[prop]" auto-complete="off" :disabled="disabled" @change="$emit('input', $event)"></el-input>
+        </el-form-item>`
+});
+
+Vue.component('edit-textarea', {
+    props: ['label', 'prop', 'disabled', 'rows'],
+    template: `
+        <el-form-item :label="label" :prop="prop">
+            <el-input v-model="$root.edit[prop]" auto-complete="off" type="textarea" :disabled="disabled" @change="$emit('input', $event)" :rows="rows"></el-input>
+        </el-form-item>`
+});
+
+Vue.component('edit-select', {
+    props: ['label', 'prop', 'data', 'disabled'],
+    template: `<el-form-item :label="label">
+            <selector v-model="$root.edit[prop]" :disabled="disabled" :data="data"></selector>
+        </el-form-item>`
+});
+
 Vue.prototype.format_date = function (value) {
     return value ? this.$moment(value * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
 };

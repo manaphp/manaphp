@@ -4,22 +4,14 @@
 </div>
 <create-dialog>
     <el-form :model="create" ref="create" size="small">
-        <el-form-item label="ID:" prop="app_id">
-            <el-input v-model="create.app_id" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="值:" prop="env">
-            <el-input v-model.trim="create.env" auto-complete="off" type="textarea" rows="10"></el-input>
-        </el-form-item>
+        <create-text label="ID:" prop="app_id"></create-text>
+        <create-textarea label="值:" prop="env" :rows="10"></create-textarea>
     </el-form>
 </create-dialog>
 <edit-dialog>
     <el-form :model="edit" ref="edit" size="small">
-        <el-form-item label="app_id:">
-            <el-input v-model="edit.app_id" auto-complete="off" disabled="true"></el-input>
-        </el-form-item>
-        <el-form-item label=".env:" prop="env">
-            <el-input v-model="edit.env" auto-complete="off" type="textarea" rows="10"></el-input>
-        </el-form-item>
+        <edit-text label="app_id:" prop="app_id" disabled></edit-text>
+        <edit-textarea label=".env:" prop="env" :rows="10"></edit-textarea>
     </el-form>
 </edit-dialog>
 

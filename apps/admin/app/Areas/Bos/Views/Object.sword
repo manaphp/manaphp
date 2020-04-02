@@ -8,15 +8,9 @@
 </div>
 <create-dialog>
     <el-form :model="create" ref="create" size="small">
-        <el-form-item label="桶名:">
-            <selector v-model="create.bucket_name" :data="buckets"></selector>
-        </el-form-item>
-        <el-form-item label="key:" prop="key">
-            <el-input v-model.trim="create.key" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="仅增加:" prop="insert_only">
-            <el-checkbox v-model="create.insert_only">是</el-checkbox>
-        </el-form-item>
+        <create-select label="桶名:" prop="bucket_name" :data="buckets"></create-select>
+        <create-text label="key:" prop="key"></create-text>
+        <create-checkbox label="仅增加:" prop="insert_only">是</create-checkbox>
         <el-form-item prop="image_url">
             <el-upload
                     :action="upload_action"

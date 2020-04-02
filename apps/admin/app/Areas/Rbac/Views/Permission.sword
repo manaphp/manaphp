@@ -1,18 +1,13 @@
 <div class="search-box">
-    <el-button size="small" @click="do_rebuild" type="primary" icon="el-icon-refresh" style="width: 100px;">重新扫描</el-button>
+    <el-button size="small" @click="do_rebuild" type="primary" icon="el-icon-refresh" style="width: 100px;">重新扫描
+    </el-button>
     <selector v-model="filter.path" :data="paths"></selector>
 </div>
 <edit-dialog>
-    <el-form :model="edit" ref="edit" size="mini">
-        <el-form-item label="ID:">
-            <div>@{{edit.permission_id}}</div>
-        </el-form-item>
-        <el-form-item label="路径:">
-            <div>@{{edit.path}}</div>
-        </el-form-item>
-        <el-form-item label="描述:">
-            <el-input v-model="edit.display_name"></el-input>
-        </el-form-item>
+    <el-form :model="edit" ref="edit" size="small">
+        <edit-text label="ID:" prop="permission_id" disabled></edit-text>
+        <edit-text label="路径:" prop="path" disabled></edit-text>
+        <edit-text label="描述:" prop="display_name"></edit-text>
     </el-form>
 </edit-dialog>
 <result-table :data="filteredResponse">

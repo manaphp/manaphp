@@ -4,41 +4,21 @@
 </div>
 <create-dialog>
     <el-form :model="create" ref="create" size="small">
-        <el-form-item label="组名:">
-            <selector v-model="create.group_id" :data="groups"></selector>
-        </el-form-item>
-        <el-form-item label="名称:" prop="item_name">
-            <el-input v-model="create.item_name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="排序:" prop="display_order">
-            <el-input v-model.trim="create.display_order" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="链接:" prop="url">
-            <el-input v-model.trim="create.url" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="图标:" prop="icon">
-            <el-input v-model="create.icon" auto-complete="off"></el-input>
-        </el-form-item>
+        <create-select label="组名:" prop="group_id" :data="groups"></create-select>
+        <create-text label="名称:" prop="item_name"></create-text>
+        <create-text label="排序:" prop="display_order"></create-text>
+        <create-text label="链接:" prop="url"></create-text>
+        <create-text label="图标:" prop="icon"></create-text>
     </el-form>
 </create-dialog>
 
 <edit-dialog>
     <el-form :model="edit" ref="edit" size="small">
-        <el-form-item label="组名:">
-            <selector v-model="edit.group_id" :data="groups"></selector>
-        </el-form-item>
-        <el-form-item label="名称:" prop="item_name">
-            <el-input v-model="edit.item_name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="排序:" prop="display_order">
-            <el-input v-model.trim="edit.display_order" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="链接:" prop="url">
-            <el-input v-model.trim="edit.url" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="图标:" prop="icon">
-            <el-input v-model="edit.icon" auto-complete="off"></el-input>
-        </el-form-item>
+        <edit-select label="组名:" prop="group_id" :data="groups"></edit-select>
+        <edit-text label="名称:" prop="item_name"></edit-text>
+        <edit-text label="排序:" prop="display_order"></edit-text>
+        <edit-text label="链接:" prop="url"></edit-text>
+        <edit-text label="图标:" prop="icon"></edit-text>
     </el-form>
 </edit-dialog>
 <result-table>
