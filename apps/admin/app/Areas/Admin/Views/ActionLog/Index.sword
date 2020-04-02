@@ -7,22 +7,18 @@
               style="width: 130px"></el-input>
     <date-picker v-model="request.created_time"></date-picker>
 </div>
-<detail-dialog>
-    <el-form :model="detail" label-width="100px" size="mini">
-        <el-form-item label="id:">@{{ detail.id }}</el-form-item>
-        <el-form-item label="用户名:">@{{ detail.admin_name }}</el-form-item>
-        <el-form-item label="请求方法:">@{{ detail.method }}</el-form-item>
-        <el-form-item label="请求路径:">@{{ detail.path }}</el-form-item>
-        <el-form-item label="tag:">@{{ detail.tag }}</el-form-item>
-        <el-form-item label="请求URL:">@{{ detail.url }}</el-form-item>
-        <el-form-item label="客户端IP:">@{{ detail.client_ip }}</el-form-item>
-        <el-form-item label="客户端ID:">@{{ detail.client_udid }}</el-form-item>
-        <el-form-item label="生成时间:">@{{ detail.created_time|date }}</el-form-item>
-        <el-form-item label="数据:">
-            <pre>@{{  detail.data|json }}</pre>
-        </el-form-item>
-    </el-form>
-</detail-dialog>
+<detail-form>
+    <detail-text label="id:" prop="id"></detail-text>
+    <detail-text label="用户名:" prop="admin_name"></detail-text>
+    <detail-text label="请求方法:" prop="method"></detail-text>
+    <detail-text label="请求路径:" prop="path"></detail-text>
+    <detail-text label="tag:" prop="tag"></detail-text>
+    <detail-text label="请求URL:" prop="url"></detail-text>
+    <detail-text label="客户端IP:" prop="client_ip"></detail-text>
+    <detail-text label="客户端ID:" prop="client_udid"></detail-text>
+    <detail-timestamp label="生成时间:" prop="created_time"></detail-timestamp>
+    <detail-json label="数据:" prop="data"></detail-json>
+</detail-form>
 <result-table>
     <el-table-column type="index" label="#" width="50"></el-table-column>
     <el-table-column prop="id" label="记录ID" width="100"></el-table-column>

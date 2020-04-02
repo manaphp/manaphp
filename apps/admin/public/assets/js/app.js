@@ -601,6 +601,29 @@ Vue.component('edit-select', {
         </el-form-item>`
 });
 
+Vue.component('detail-form', {
+    template: `<el-dialog title="详情" :visible.sync="$root.detailVisible" class="detail-dialog" @opened="$root.$refs.detail=$refs.detail">
+    <el-form :model="$root.detail" ref="detail" label-width="150px" size="mini">
+        <slot></slot>
+    </el-form>
+</el-dialog>`
+});
+
+Vue.component('detail-text', {
+    props: ['label', 'prop', 'disabled'],
+    template: `<el-form-item :label="label">{{ $root.detail[prop]}}</el-form-item>`
+});
+
+Vue.component('detail-timestamp', {
+    props: ['label', 'prop', 'disabled'],
+    template: `<el-form-item :label="label">{{ $root.detail[prop]|date}}</el-form-item>`
+});
+
+Vue.component('detail-json', {
+    props: ['label', 'prop', 'disabled'],
+    template: `<el-form-item :label="label"><pre>{{ $root.detail[prop]|json}}</pre></el-form-item>`
+});
+
 Vue.prototype.format_date = function (value) {
     return value ? this.$moment(value * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
 };

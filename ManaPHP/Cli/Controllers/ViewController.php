@@ -31,8 +31,7 @@ HTML;
         $content = '';
 
         $content .= PHP_EOL . <<<HTML
-<detail-dialog>
-    <el-form :model="detail" label-width="150px" size="mini">
+<detail-form>
 HTML;
 
         $labels = $model->labels();
@@ -40,19 +39,18 @@ HTML;
             $label = $labels[$field] ?? $field;
             if ($this->isTimestampField($model, $field)) {
                 $content .= PHP_EOL . <<<HTML
-        <el-form-item label="$label:">@{{ detail.$field|date }}</el-form-item>
+    <detail-timestamp label="$label:" prop="$field"></detail-timestamp>
 HTML;
             } else {
                 $content .= PHP_EOL . <<<HTML
-        <el-form-item label="$label:">@{{ detail.$field }}</el-form-item>
+    <detail-text label="$label:" prop="$field"></detail-text>
 HTML;
             }
 
         }
 
         $content .= PHP_EOL . <<<HTML
-    </el-form>
-</detail-dialog>
+</detail-form>
 HTML;
 
         return $content . PHP_EOL;
