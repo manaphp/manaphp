@@ -99,12 +99,7 @@
             },
             created() {
                 this.ajax_get("buckets", (res) => {
-                    this.buckets = res.map((bucket) => {
-                        return {
-                            id: bucket.name,
-                            name: bucket.name
-                        }
-                    });
+                    this.buckets = res.map((bucket) => bucket.bucket_name);
                     if (!this.request.bucket_name) {
                         this.request.bucket_name = this.buckets[0].bucket_name;
                     }
