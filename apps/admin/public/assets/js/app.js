@@ -662,7 +662,12 @@ Vue.component('result-email', {
 
 Vue.component('result-ip', {
     props: ['label', 'prop'],
-    template: `<el-table-column :prop="prop" :label="label" width="120"></el-table-column>`
+    template: `<el-table-column :prop="prop" :label="label" width="120">
+    <template v-slot="{row}">
+        <span v-if="row[prop]==='127.0.0.1'||row[prop].startsWith('192.168.')">{{row[prop]}}</span>
+        <a v-else target="_blank" class="el-link" :href="'https://www.baidu.com/s?wd='+row[prop]" type="primary">{{row[prop]}}</a>
+    </template>
+</el-table-column>`
 });
 
 Vue.component('result-enabled', {
