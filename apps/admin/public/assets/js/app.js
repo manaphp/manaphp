@@ -552,6 +552,15 @@ Vue.component('create-checkbox', {
         </el-form-item>`
 });
 
+Vue.component('create-radio', {
+    props: ['label', 'prop', 'data', 'disabled'],
+    template: `<el-form-item :label="label" :prop="prop">
+        <el-radio-group v-model="$root.create[prop]" :disabled="disabled">
+            <el-radio v-for="(status, id) in data" :label="id" :key="id">{{status}}</el-radio>
+        </el-radio-group>
+    </el-form-item>`
+});
+
 Vue.component('create-select', {
     props: ['label', 'prop', 'data', 'disabled'],
     template: `<el-form-item :label="label">
@@ -599,6 +608,15 @@ Vue.component('edit-select', {
     template: `<el-form-item :label="label">
             <selector v-model="$root.edit[prop]" :disabled="disabled" :data="data"></selector>
         </el-form-item>`
+});
+
+Vue.component('edit-radio', {
+    props: ['label', 'prop', 'data', 'disabled'],
+    template: `<el-form-item :label="label" :prop="prop">
+        <el-radio-group v-model="$root.edit[prop]" :disabled="disabled">
+            <el-radio v-for="(status, id) in data" :label="id" :key="id">{{status}}</el-radio>
+        </el-radio-group>
+    </el-form-item>`
 });
 
 Vue.component('detail-form', {

@@ -8,11 +8,7 @@
     <create-text label="密码:" prop="password"></create-text>
     <create-text label="IP白名单:" prop="white_ip"></create-text>
     <create-select label="角色:" prop="role_id" :data="roles"></create-select>
-    <el-form-item label="状态:" prop="status">
-        <el-radio-group v-model="create.status">
-            <el-radio v-for="(status, id) in statuses" :label="id" :key="id">@{{status}}</el-radio>
-        </el-radio-group>
-    </el-form-item>
+    <create-radio label="状态:" prop="status" :data="statuses"></create-radio>
 </create-form>
 
 <edit-form>
