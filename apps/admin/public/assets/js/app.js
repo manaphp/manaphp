@@ -463,7 +463,7 @@ Vue.component('detail-dialog', {
 });
 
 Vue.component('result-table', {
-    props:['data'],
+    props: ['data'],
     template: `
 <div class="result-table">
     <el-table v-if="data" :data="data" border size="small">
@@ -494,18 +494,19 @@ Vue.component('selector', {
     </el-select>
 </span>`,
     data() {
-        return {
-            key: '',
-            label: '',
-            val: String(this.value),
+        let key = '';
+        let label = '';
+        let val = String(this.value);
+
+        if (this.data.length > 0 && typeof this.data[0] === 'object') {
+            [key, label] = Object.keys(this.data[0]);
         }
+        return {key, label, val};
     },
     watch: {
         data() {
             if (this.data.length > 0 && typeof this.data[0] === 'object') {
-                let keys = Object.keys(this.data[0]);
-                this.key = keys[0];
-                this.label = keys[1];
+                [this.key, this.label] = Object.keys(this.data[0]);
             }
         },
         value(val) {
