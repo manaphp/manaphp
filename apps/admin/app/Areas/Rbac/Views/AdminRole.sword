@@ -12,15 +12,15 @@
 </edit-form>
 
 <result-table>
-    <el-table-column type="index" label="#" width="50"></el-table-column>
-    <el-table-column prop="admin_id" label="用户ID" width="100"></el-table-column>
-    <el-table-column prop="admin_name" label="用户名" width="120"></el-table-column>
+    <result-index></result-index>
+    <result-id prop="admin_id" label="用户ID"></result-id>
+    <result-account prop="admin_name" label="用户名"></result-account>
     <el-table-column label="角色列表">
         <template v-slot="{row}">
             <el-tag size="small" v-for="role in row.roles" :key="role.role_id">@{{role.display_name}}</el-tag>
         </template>
     </el-table-column>
-    <el-table-column prop="created_time" label="创建时间" width="150" :formatter="fDate"></el-table-column>
+    <result-timestamp prop="created_time" label="创建时间"></result-timestamp>
     <el-table-column fixed="right" label="操作" width="100">
         <template v-slot="{row}">
             <show-edit :row="row"></show-edit>

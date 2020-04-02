@@ -28,10 +28,10 @@
     </el-checkbox-group>
 </edit-form>
 <result-table>
-    <el-table-column type="index" label="#" width="50"></el-table-column>
-    <el-table-column prop="admin_id" label="用户ID" width="100"></el-table-column>
-    <el-table-column prop="admin_name" label="用户名" width="120"></el-table-column>
-    <el-table-column prop="email" label="邮箱" width="200" show-overflow-tooltip></el-table-column>
+    <result-index></result-index>
+    <result-id prop="admin_id" label="用户ID"></result-id>
+    <result-account prop="admin_name" label="用户名"></result-account>
+    <result-email></result-email>
     <el-table-column prop="white_ip" label="IP白名单" width="150" show-overflow-tooltip></el-table-column>
     <el-table-column label="状态" width="100">
         <template v-slot="{row}">@{{ statuses[row.status] }}</template>
@@ -41,10 +41,10 @@
             <el-tag size="small" v-for="role in row.roles" :key="role.role_id">@{{role.display_name}}</el-tag>
         </template>
     </el-table-column>
-    <el-table-column prop="login_ip" label="登录IP" width="120" show-overflow-tooltip></el-table-column>
-    <el-table-column prop="login_time" label="登录时间" :formatter="fDate" width="150"></el-table-column>
-    <el-table-column prop="creator_name" label="创建者" width="120"></el-table-column>
-    <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
+    <result-ip prop="login_ip" label="登录IP"></result-ip>
+    <result-timestamp prop="login_time" label="登录时间"></result-timestamp>
+    <result-account prop="creator_name" label="创建者"></result-account>
+    <result-timestamp prop="created_time" label="创建时间"></result-timestamp>
     <el-table-column fixed="right" label="操作" width="150">
         <template v-slot="{row}">
             <show-edit :row="row"></show-edit>

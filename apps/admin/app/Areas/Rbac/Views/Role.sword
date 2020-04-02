@@ -14,15 +14,15 @@
     <edit-text label="名称:" prop="display_name"></edit-text>
 </edit-form>
 <result-table>
-    <el-table-column type="index" label="#" width="50"></el-table-column>
-    <el-table-column prop="role_id" label="角色ID" width="100"></el-table-column>
+    <result-index></result-index>
+    <result-id prop="role_id" label="角色ID"></result-id>
     <el-table-column prop="role_name" label="角色编码" width="120"></el-table-column>
     <el-table-column prop="display_name" label="角色名" show-overflow-tooltip></el-table-column>
-    <el-table-column prop="enabled" :formatter="fEnabled" label="状态" width="100"></el-table-column>
-    <el-table-column prop="updator_name" label="更新者" width="120"></el-table-column>
-    <el-table-column prop="updated_time" label="更新时间" :formatter="fDate" width="150"></el-table-column>
-    <el-table-column prop="creator_name" label="创建者" width="120"></el-table-column>
-    <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
+    <result-enabled prop="enabled"></result-enabled>
+    <result-account prop="updator_name" label="更新者"></result-account>
+    <result-timestamp prop="updated_time" label="更新时间"></result-timestamp>
+    <result-account prop="creator_name" label="创建者"></result-account>
+    <result-timestamp prop="created_time" label="创建时间"></result-timestamp>
     <el-table-column fixed="right" label="操作" width="220">
         <template v-slot="{row}">
             <show-edit :row="row"></show-edit>

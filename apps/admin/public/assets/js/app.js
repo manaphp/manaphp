@@ -624,6 +624,38 @@ Vue.component('detail-json', {
     template: `<el-form-item :label="label"><pre>{{ $root.detail[prop]|json}}</pre></el-form-item>`
 });
 
+Vue.component('result-index', {
+    template: `<el-table-column type="index" label="#" width="50"></el-table-column>`
+});
+
+Vue.component('result-id', {
+    props: ['label', 'prop'],
+    template: `<el-table-column :prop="prop" :label="label" width="100"></el-table-column>`
+});
+
+Vue.component('result-account', {
+    props: ['label', 'prop'],
+    template: `<el-table-column :prop="prop" :label="label" width="120"></el-table-column>`
+});
+
+Vue.component('result-email', {
+    template: `<el-table-column prop="email" label="邮箱" width="100"  with="200" show-overflow-tooltip></el-table-column>`
+});
+
+Vue.component('result-ip', {
+    props: ['label', 'prop'],
+    template: `<el-table-column :prop="prop" :label="label" width="120"></el-table-column>`
+});
+
+Vue.component('result-enabled', {
+    template: `<el-table-column prop="enabled" :formatter="$root.fEnabled" label="状态" width="100"></el-table-column>`
+});
+
+Vue.component('result-timestamp', {
+    props: ['label', 'prop'],
+    template: `<el-table-column :prop="prop" :label="label" :formatter="$root.fDate" width="150"></el-table-column>`
+});
+
 Vue.prototype.format_date = function (value) {
     return value ? this.$moment(value * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
 };

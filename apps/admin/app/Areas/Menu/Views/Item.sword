@@ -18,16 +18,16 @@
     <edit-text label="图标:" prop="icon"></edit-text>
 </edit-form>
 <result-table>
-    <el-table-column type="index" label="#" width="50"></el-table-column>
-    <el-table-column prop="item_id" label="菜单ID" width="100"></el-table-column>
+    <result-index></result-index>
+    <result-id prop="item_id" label="菜单ID"></result-id>
     <el-table-column prop="item_name" label="菜单名" width="150"></el-table-column>
     <el-table-column prop="url" label="链接" show-overflow-tooltip></el-table-column>
     <el-table-column prop="display_order" label="排序" width="100"></el-table-column>
     <el-table-column prop="icon" label="图标" width="200"></el-table-column>
-    <el-table-column prop="updator_name" label="更新者" width="120"></el-table-column>
-    <el-table-column prop="updated_time" label="更新时间" :formatter="fDate" width="150"></el-table-column>
-    <el-table-column prop="creator_name" label="创建者" width="120"></el-table-column>
-    <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
+    <result-aacount prop="updator_name" label="更新者"></result-aacount>
+    <result-timestamp prop="updated_time" label="更新时间"></result-timestamp>
+    <result-account prop="creator_name" label="创建者"></result-account>
+    <result-timestamp prop="created_time" label="创建时间"></result-timestamp>
     <el-table-column fixed="right" label="操作" width="150">
         <template v-slot="{row}">
             <show-edit :row="row"></show-edit>

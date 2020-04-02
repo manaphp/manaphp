@@ -6,10 +6,10 @@
     <create-text label="BaseURL:" prop="base_url"></create-text>
 </create-form>
 <result-table>
-    <el-table-column type="index" label="#" width="50"></el-table-column>
+    <result-index></result-index>
     <el-table-column prop="bucket_name" label="桶名" width="100"></el-table-column>
     <el-table-column prop="base_url" label="BaseURL" width="300"></el-table-column>
-    <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
+    <result-timestamp prop="created_time" label="创建时间"></result-timestamp>
 </result-table>
 @section('script')
     <script>

@@ -20,16 +20,16 @@
     <detail-json label="数据:" prop="data"></detail-json>
 </detail-form>
 <result-table>
-    <el-table-column type="index" label="#" width="50"></el-table-column>
-    <el-table-column prop="id" label="记录ID" width="100"></el-table-column>
-    <el-table-column prop="admin_name" label="用户名" width="120"></el-table-column>
+    <result-index></result-index>
+    <result-id prop="id" label="记录ID"></result-id>
+    <result-account prop="admin_name" label="用户名"></result-account>
     <el-table-column prop="method" label="请求方式" width="100"></el-table-column>
     <el-table-column prop="path" label="请求路径" width="250" show-overflow-tooltip></el-table-column>
-    <el-table-column prop="tag" label="tag" width="100"></el-table-column>
+    <result-id prop="tag" label="tag"></result-id>
     <el-table-column prop="data" label="data" show-overflow-tooltip></el-table-column>
-    <el-table-column prop="client_ip" label="客户端IP" width="120"></el-table-column>
+    <result-ip prop="client_ip" label="客户端IP"></result-ip>
     <el-table-column prop="client_udid" label="客户端ID" width="200"></el-table-column>
-    <el-table-column prop="created_time" label="创建时间" :formatter="fDate" width="150"></el-table-column>
+    <result-timestamp prop="created_time" label="创建时间"></result-timestamp>
     <el-table-column fixed="right" label="操作" width="100">
         <template v-slot="{row}">
             <show-detail :row="row"></show-detail>

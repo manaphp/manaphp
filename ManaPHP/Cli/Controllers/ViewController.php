@@ -3,6 +3,7 @@ namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Helper\Str;
 
 class ViewController extends Controller
 {
@@ -146,7 +147,7 @@ HTML;
     {
         $content = PHP_EOL . <<<HTML
 <result-table>
-    <el-table-column type="index" label="#" width="50"></el-table-column>
+    <result-index></result-index>
 HTML;
         $labels = $model->labels();
         foreach ($model->getFields() as $field) {
@@ -154,7 +155,27 @@ HTML;
 
             if ($this->isTimestampField($model, $field)) {
                 $content .= PHP_EOL . <<<HTML
-    <el-table-column prop="$field" label="$label" :formatter="fDate" width="150"></el-table-column>
+    <result-timestamp prop="$field" label="$label"></result-timestamp>
+HTML;
+            } elseif (strpos($field, '_id')) {
+                $content .= PHP_EOL . <<<HTML
+    <result-id prop="$field" label="$label"></result-id>
+HTML;
+            } elseif ($field === 'email') {
+                $content .= PHP_EOL . <<<HTML
+    <result-email></result-email>
+HTML;
+            } elseif ($field === 'id' || Str::endsWith($field, '_ip')) {
+                $content .= PHP_EOL . <<<HTML
+    <result-ip prop="$field" label="$label"></result-ip>
+HTML;
+            } elseif (in_array($field, ['admin_name', 'user_name', 'updator_name', 'creator_name'], true)) {
+                $content .= PHP_EOL . <<<HTML
+    <result-account prop="$field" label="$label"></result-account>
+HTML;
+            } elseif ($field === 'enabled') {
+                $content .= PHP_EOL . <<<HTML
+    <result-enabled></result-enabled>
 HTML;
             } else {
                 $content .= PHP_EOL . <<<HTML
