@@ -1,12 +1,10 @@
 <div class="search-box">
     <show-create></show-create>
 </div>
-<create-dialog>
-    <el-form :model="create" ref="create" size="small">
-        <create-text label="桶名:" prop="bucket_name"></create-text>
-        <create-text label="BaseURL:" prop="base_url"></create-text>
-    </el-form>
-</create-dialog>
+<create-form>
+    <create-text label="桶名:" prop="bucket_name"></create-text>
+    <create-text label="BaseURL:" prop="base_url"></create-text>
+</create-form>
 <result-table>
     <el-table-column type="index" label="#" width="50"></el-table-column>
     <el-table-column prop="bucket_name" label="桶名" width="100"></el-table-column>

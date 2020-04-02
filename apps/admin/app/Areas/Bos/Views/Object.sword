@@ -6,26 +6,24 @@
     <el-input v-model.trim="request.extension" clearable placeholder="extension" size="small"
               style="width: 100px;"></el-input>
 </div>
-<create-dialog>
-    <el-form :model="create" ref="create" size="small">
-        <create-select label="桶名:" prop="bucket_name" :data="buckets"></create-select>
-        <create-text label="key:" prop="key"></create-text>
-        <create-checkbox label="仅增加:" prop="insert_only">是</create-checkbox>
-        <el-form-item prop="image_url">
-            <el-upload
-                    :action="upload_action"
-                    :show-file-list="false"
-                    :before-upload="beforeUpload"
-                    :on-success="uploadSuccess"
-                    :on-change="uploadChange"
-                    :auto-upload='false'
-                    ref="upload"
-            >
-                <img v-if="create.image_url" :src="create.image_url" alt="">
-            </el-upload>
-        </el-form-item>
-    </el-form>
-</create-dialog>
+<create-form>
+    <create-select label="桶名:" prop="bucket_name" :data="buckets"></create-select>
+    <create-text label="key:" prop="key"></create-text>
+    <create-checkbox label="仅增加:" prop="insert_only">是</create-checkbox>
+    <el-form-item prop="image_url">
+        <el-upload
+                :action="upload_action"
+                :show-file-list="false"
+                :before-upload="beforeUpload"
+                :on-success="uploadSuccess"
+                :on-change="uploadChange"
+                :auto-upload='false'
+                ref="upload"
+        >
+            <img v-if="create.image_url" :src="create.image_url" alt="">
+        </el-upload>
+    </el-form-item>
+</create-form>
 
 <result-table>
     <el-table-column type="index" label="#" width="50"></el-table-column>

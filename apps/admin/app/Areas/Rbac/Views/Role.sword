@@ -2,21 +2,17 @@
     <show-create></show-create>
     <el-input v-model.trim="request.keyword" placeholder="角色" size="small" style="width: 150px"></el-input>
 </div>
-<create-dialog>
-    <el-form :model="create" ref="create" size="small">
-        <create-text label="编码:" prop="role_name"></create-text>
-        <create-text label="名称:" prop="display_name"></create-text>
-        <create-switch label="启用:" prop="enabled"></create-switch>
-    </el-form>
-</create-dialog>
+<create-form>
+    <create-text label="编码:" prop="role_name"></create-text>
+    <create-text label="名称:" prop="display_name"></create-text>
+    <create-switch label="启用:" prop="enabled"></create-switch>
+</create-form>
 
-<edit-dialog>
-    <el-form :model="edit" ref="edit" size="small">
-        <edit-text label="ID:" prop="role_id" disabled></edit-text>
-        <edit-text label="编码:" prop="role_name"></edit-text>
-        <edit-text label="名称:" prop="display_name"></edit-text>
-    </el-form>
-</edit-dialog>
+<edit-form>
+    <edit-text label="ID:" prop="role_id" disabled></edit-text>
+    <edit-text label="编码:" prop="role_name"></edit-text>
+    <edit-text label="名称:" prop="display_name"></edit-text>
+</edit-form>
 <result-table>
     <el-table-column type="index" label="#" width="50"></el-table-column>
     <el-table-column prop="role_id" label="角色ID" width="100"></el-table-column>

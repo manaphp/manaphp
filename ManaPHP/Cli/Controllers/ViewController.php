@@ -70,21 +70,19 @@ HTML;
         }
 
         $content = PHP_EOL . <<<HTML
-<create-dialog>
-    <el-form :model.trim="create" ref="create" size="small">
+<create-form>
 HTML;
         $labels = $model->labels();
         foreach ($fields as $field) {
             $label = $labels[$field] ?? $field;
 
             $content .= PHP_EOL . <<<HTML
-        <create-input label="$label:" prop="$field"></create-input>
+    <create-input label="$label:" prop="$field"></create-input>
 HTML;
         }
 
         $content .= PHP_EOL . <<<HTML
-    </el-form>
-</create-dialog>
+</create-form>
 HTML;
         return $content . PHP_EOL;
     }
@@ -101,8 +99,7 @@ HTML;
         }
 
         $content = PHP_EOL . <<<HTML
-<edit-dialog>
-    <el-form :model="edit" ref="edit" size="small">
+<edit-form>
 HTML;
 
         $labels = $model->labels();
@@ -110,20 +107,19 @@ HTML;
         $primaryKey = $model->getPrimaryKey();
         $label = $labels[$primaryKey] ?? $primaryKey;
         $content .= PHP_EOL . <<<HTML
-        <edit-input label="$label" prop="$primaryKey" disabled></edit-input>
+    <edit-input label="$label" prop="$primaryKey" disabled></edit-input>
 HTML;
 
         foreach ($fields as $field) {
             $label = $labels[$field] ?? $field;
 
             $content .= PHP_EOL . <<<HTML
-        <edit-input label="$label:" prop="$field"></edit-input>
+    <edit-input label="$label:" prop="$field"></edit-input>
 HTML;
         }
 
         $content .= PHP_EOL . <<<HTML
-    </el-form>
-</edit-dialog>
+</edit-form>
 HTML;
         return $content . PHP_EOL;
     }

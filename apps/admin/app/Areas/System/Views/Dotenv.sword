@@ -2,18 +2,14 @@
     <show-create></show-create>
     <selector v-model="request.app_id" :data="apps"></selector>
 </div>
-<create-dialog>
-    <el-form :model="create" ref="create" size="small">
-        <create-text label="ID:" prop="app_id"></create-text>
-        <create-textarea label="值:" prop="env" :rows="10"></create-textarea>
-    </el-form>
-</create-dialog>
-<edit-dialog>
-    <el-form :model="edit" ref="edit" size="small">
-        <edit-text label="app_id:" prop="app_id" disabled></edit-text>
-        <edit-textarea label=".env:" prop="env" :rows="10"></edit-textarea>
-    </el-form>
-</edit-dialog>
+<create-form>
+    <create-text label="ID:" prop="app_id"></create-text>
+    <create-textarea label="值:" prop="env" :rows="10"></create-textarea>
+</create-form>
+<edit-form>
+    <edit-text label="app_id:" prop="app_id" disabled></edit-text>
+    <edit-textarea label=".env:" prop="env" :rows="10"></edit-textarea>
+</edit-form>
 
 <div class="result-box">
     <el-table :data="response.current" border size="small">

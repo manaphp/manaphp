@@ -1,17 +1,15 @@
 <div class="search-box">
     <el-input v-model.trim="request.keyword" placeholder="用户名" size="small" style="width: 150px;"></el-input>
 </div>
-<edit-dialog>
-    <el-form :model="edit" ref="edit" size="small">
-        <el-checkbox-group v-model="edit.role_ids">
-            <el-checkbox v-for="role in roles" :label="parseInt(role.role_id)"
-                         :key="role.role_id" style="width: 20%; text-align: left"
-                         v-if="!['guest', 'user'].includes(role.role_name)">
-                @{{role.display_name}}
-            </el-checkbox>
-        </el-checkbox-group>
-    </el-form>
-</edit-dialog>
+<edit-form>
+    <el-checkbox-group v-model="edit.role_ids">
+        <el-checkbox v-for="role in roles" :label="parseInt(role.role_id)"
+                     :key="role.role_id" style="width: 20%; text-align: left"
+                     v-if="!['guest', 'user'].includes(role.role_name)">
+            @{{role.display_name}}
+        </el-checkbox>
+    </el-checkbox-group>
+</edit-form>
 
 <result-table>
     <el-table-column type="index" label="#" width="50"></el-table-column>

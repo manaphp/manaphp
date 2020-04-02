@@ -2,35 +2,31 @@
     <show-create></show-create>
     <el-input v-model.trim="request.keyword" placeholder="用户名或邮箱" size="small" style="width: 150px;"></el-input>
 </div>
-<create-dialog>
-    <el-form :model="create" ref="create" size="small">
-        <create-text label="用户名:" prop="admin_name"></create-text>
-        <create-text label="邮箱:" prop="email"></create-text>
-        <create-text label="密码:" prop="password"></create-text>
-        <create-text label="IP白名单:" prop="white_ip"></create-text>
-        <create-select label="角色:" prop="role_id" :data="roles"></create-select>
-        <el-form-item label="状态:" prop="status">
-            <el-radio-group v-model="create.status">
-                <el-radio v-for="(status, id) in statuses" :label="id" :key="id">@{{status}}</el-radio>
-            </el-radio-group>
-        </el-form-item>
-    </el-form>
-</create-dialog>
+<create-form>
+    <create-text label="用户名:" prop="admin_name"></create-text>
+    <create-text label="邮箱:" prop="email"></create-text>
+    <create-text label="密码:" prop="password"></create-text>
+    <create-text label="IP白名单:" prop="white_ip"></create-text>
+    <create-select label="角色:" prop="role_id" :data="roles"></create-select>
+    <el-form-item label="状态:" prop="status">
+        <el-radio-group v-model="create.status">
+            <el-radio v-for="(status, id) in statuses" :label="id" :key="id">@{{status}}</el-radio>
+        </el-radio-group>
+    </el-form-item>
+</create-form>
 
-<edit-dialog>
-    <el-form :model="edit" ref="edit" size="small">
-        <edit-text label="用户名:" prop="admin_name" disabled></edit-text>
-        <edit-text label="邮箱:" prop="email"></edit-text>
-        <edit-text label="密码:" prop="password"></edit-text>
-        <edit-text label="IP白名单:" prop="white_ip"></edit-text>
-        <el-checkbox-group v-model="edit.role_ids" style="padding: 30px 50px;">
-            <el-checkbox v-for="role in roles" :label="role.role_id"
-                         :key="role.role_id" style="width: 20%; text-align: left">
-                @{{role.display_name}}
-            </el-checkbox>
-        </el-checkbox-group>
-    </el-form>
-</edit-dialog>
+<edit-form>
+    <edit-text label="用户名:" prop="admin_name" disabled></edit-text>
+    <edit-text label="邮箱:" prop="email"></edit-text>
+    <edit-text label="密码:" prop="password"></edit-text>
+    <edit-text label="IP白名单:" prop="white_ip"></edit-text>
+    <el-checkbox-group v-model="edit.role_ids" style="padding: 30px 50px;">
+        <el-checkbox v-for="role in roles" :label="role.role_id"
+                     :key="role.role_id" style="width: 20%; text-align: left">
+            @{{role.display_name}}
+        </el-checkbox>
+    </el-checkbox-group>
+</edit-form>
 <result-table>
     <el-table-column type="index" label="#" width="50"></el-table-column>
     <el-table-column prop="admin_id" label="用户ID" width="100"></el-table-column>

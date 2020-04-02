@@ -1,20 +1,16 @@
 <div class="search-box">
     <show-create></show-create>
 </div>
-<create-dialog>
-    <el-form :model="create" ref="create" size="small">
-        <create-text label="组名:" prop="group_name"></create-text>
-        <create-text label="排序:" prop="display_order"></create-text>
-        <create-text label="图标:" prop="icon"></create-text>
-    </el-form>
-</create-dialog>
-<edit-dialog>
-    <el-form :model="edit" ref="edit" size="small">
-        <edit-text label="组名:" prop="group_name"></edit-text>
-        <edit-text label="排序:" prop="display_order"></edit-text>
-        <edit-text label="图标:" prop="icon"></edit-text>
-    </el-form>
-</edit-dialog>
+<create-form>
+    <create-text label="组名:" prop="group_name"></create-text>
+    <create-text label="排序:" prop="display_order"></create-text>
+    <create-text label="图标:" prop="icon"></create-text>
+</create-form>
+<edit-form>
+    <edit-text label="组名:" prop="group_name"></edit-text>
+    <edit-text label="排序:" prop="display_order"></edit-text>
+    <edit-text label="图标:" prop="icon"></edit-text>
+</edit-form>
 <result-table>
     <el-table-column type="index" label="#" width="50"></el-table-column>
     <el-table-column prop="group_id" label="组ID" width="100"></el-table-column>

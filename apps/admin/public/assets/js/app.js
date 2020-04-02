@@ -515,6 +515,19 @@ Vue.component('selector', {
     }
 });
 
+Vue.component('create-form', {
+    template: `
+<el-dialog :title="'新增-'+$root.topic" :visible.sync="$root.createVisible" class="create-dialog" @opened="$root.$refs.create=$refs.create">
+    <el-form :model="$root.create" ref="create" size="small">
+        <slot></slot>
+    </el-form>
+    <span slot="footer">
+         <el-button type="primary" @click="$root.do_create" size="small">创建</el-button>
+        <el-button @click="$root.createVisible = false; $root.$refs.create.resetFields()" size="small">取消</el-button>
+    </span>
+</el-dialog>`,
+});
+
 Vue.component('create-text', {
     props: ['label', 'prop', 'disabled'],
     template: `
@@ -553,6 +566,18 @@ Vue.component('create-switch', {
         </el-form-item>`
 });
 
+Vue.component('edit-form', {
+    template: `
+<el-dialog :title="'编辑-'+$root.topic" :visible.sync="$root.editVisible" class="edit-dialog" @opened="$root.$refs.edit=$refs.edit">
+     <el-form :model="$root.edit" ref="edit" size="small">
+        <slot></slot>
+    </el-form>
+    <span slot="footer">
+        <el-button type="primary" @click="$root.do_edit" size="small">保存</el-button>
+        <el-button @click="$root.editVisible=false" size="small">取消</el-button>
+    </span>
+</el-dialog>`,
+});
 Vue.component('edit-text', {
     props: ['label', 'prop', 'disabled'],
     template: `
