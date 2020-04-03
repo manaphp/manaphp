@@ -158,12 +158,14 @@ Vue.filter('json', function (value) {
 });
 
 Vue.component('pager', {
-    template: ' <el-pagination background :current-page="Number($root.response.page)"\n' +
-        '                   :page-size="Number($root.request.size)"\n' +
-        '                   :page-sizes="[10,20,25,50,100,500,1000]"\n' +
-        '                   @current-change="$root.request.page=$event"\n' +
-        '                   @size-change="$root.request.size=$event; $root.request.page=1"\n' +
-        '                   :total="$root.response.count" layout="sizes,total, prev, pager, next, jumper"></el-pagination>\n',
+    template: ` 
+ <el-pagination background :current-page="Number($root.response.page)"
+       :page-size="Number($root.request.size)"
+       :page-sizes="[10,20,25,50,100,500,1000]"
+       @current-change="$root.request.page=$event"
+       @size-change="$root.request.size=$event; $root.request.page=1"
+       :total="$root.response.count" layout="sizes,total, prev, pager, next, jumper">
+</el-pagination>`,
     watch: {
         '$root.request': {
             handler() {
@@ -190,10 +192,13 @@ Vue.component('pager', {
 
 Vue.component('date-picker', {
     props: ['value'],
-    template: '<el-date-picker v-model="time" type="daterange" start-placeholder="开始日期"\n ' +
-        '                            end-placeholder="结束日期" value-format="yyyy-MM-dd" size="small"\n ' +
-        ' :picker-options="pickerOptions" @change="change"' +
-        '></el-date-picker>',
+    template: `
+<el-date-picker v-model="time" type="daterange" 
+    start-placeholder="开始日期" end-placeholder="结束日期" 
+    value-format="yyyy-MM-dd" 
+    size="small"
+    :picker-options="pickerOptions" @change="change">
+</el-date-picker>`,
     methods: {
         change(value) {
             this.$emit('input', value);
@@ -349,10 +354,10 @@ Vue.component('my-menu', {
 
 Vue.component('axios-cache-switcher', {
     template: `
-    <div>
-        <div v-if="enabled" @click="localStorage.setItem('axios.cache.enabled','0');enabled=false">缓存 (√)</div>
-        <div v-else @click="localStorage.setItem('axios.cache.enabled','1');enabled=true">缓存 (×)</div>
-    </div>`,
+<div>
+    <div v-if="enabled" @click="localStorage.setItem('axios.cache.enabled','0');enabled=false">缓存 (√)</div>
+    <div v-else @click="localStorage.setItem('axios.cache.enabled','1');enabled=true">缓存 (×)</div>
+</div>`,
     data() {
         return {
             enabled: localStorage.getItem('axios.cache.enabled') !== '0'
@@ -421,36 +426,33 @@ Vue.component('show-detail', {
 
 Vue.component('show-enable', {
     props: ['row'],
-    template: `<el-button v-if="row.enabled" @click.native.prevent="$root.do_disable(row)" size="mini"
-                           type="danger">禁用
-                </el-button>
-                <el-button v-else @click.native.prevent="$root.do_enable(row)" size="mini"
-                           type="warning">启用
-                </el-button>`
+    template: `
+<el-button v-if="row.enabled" @click.native.prevent="$root.do_disable(row)" size="mini" type="danger">禁用</el-button>
+<el-button v-else @click.native.prevent="$root.do_enable(row)" size="mini" type="warning">启用</el-button>`
 });
 
 Vue.component('show-active', {
     props: ['row'],
-    template: ` <el-button v-if="row.status==1" @click="$root.do_lock(row)" size="mini" type="danger">
-                    锁定
-                </el-button>
-                <el-button v-else="row.status!==1" @click="$root.do_active(row)" size="mini" type="warning">激活
-                </el-button>`
+    template: `
+<el-button v-if="row.status==1" @click="$root.do_lock(row)" size="mini" type="danger">锁定</el-button>
+<el-button v-else="row.status!==1" @click="$root.do_active(row)" size="mini" type="warning">激活</el-button>`
 });
 
 Vue.component('create-dialog', {
-    template: `<el-dialog :title="'新增-'+$root.topic" :visible.sync="$root.createVisible" class="create-dialog">
+    template: `
+<el-dialog :title="'新增-'+$root.topic" :visible.sync="$root.createVisible" class="create-dialog">
     <slot></slot>
     <span slot="footer">
-         <el-button type="primary" @click="$root.do_create" size="small">创建</el-button>
+        <el-button type="primary" @click="$root.do_create" size="small">创建</el-button>
         <el-button @click="$root.createVisible = false; $root.$refs.create.resetFields()" size="small">取消</el-button>
     </span>
 </el-dialog>`
 });
 
 Vue.component('edit-dialog', {
-    template: `<el-dialog :title="'编辑-'+$root.topic" :visible.sync="$root.editVisible" class="edit-dialog">
-      <slot></slot>
+    template: `
+<el-dialog :title="'编辑-'+$root.topic" :visible.sync="$root.editVisible" class="edit-dialog">
+    <slot></slot>
     <span slot="footer">
         <el-button type="primary" @click="$root.do_edit" size="small">保存</el-button>
         <el-button @click="$root.editVisible=false" size="small">取消</el-button>
@@ -531,48 +533,51 @@ Vue.component('create-form', {
 Vue.component('create-text', {
     props: ['label', 'prop', 'disabled'],
     template: `
-        <el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
-            <el-input v-model="$root.create[prop]" auto-complete="off" :disabled="disabled" @change="$emit('input', $event)"></el-input>
-        </el-form-item>`
+<el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
+    <el-input v-model="$root.create[prop]" auto-complete="off" :disabled="disabled" @change="$emit('input', $event)"></el-input>
+</el-form-item>`
 });
 
 Vue.component('create-textarea', {
     props: ['label', 'prop', 'rows', 'disabled'],
     template: `
-        <el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
-            <el-input v-model="$root.create[prop]" auto-complete="off" type="textarea" :rows="rows" :disabled="disabled" @change="$emit('input', $event)"></el-input>
-        </el-form-item>`
+<el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
+    <el-input v-model="$root.create[prop]" auto-complete="off" type="textarea" :rows="rows" :disabled="disabled" @change="$emit('input', $event)"></el-input>
+</el-form-item>`
 });
 
 Vue.component('create-checkbox', {
     props: ['label', 'prop', 'disabled'],
     template: `
-        <el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
-            <el-checkbox v-model="$root.create[prop]" :disabled="disabled"><slot></slot></el-checkbox>
-        </el-form-item>`
+<el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
+    <el-checkbox v-model="$root.create[prop]" :disabled="disabled"><slot></slot></el-checkbox>
+</el-form-item>`
 });
 
 Vue.component('create-radio', {
     props: ['label', 'prop', 'data', 'disabled'],
-    template: `<el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
-        <el-radio-group v-model="$root.create[prop]" :disabled="disabled">
-            <el-radio v-for="(status, id) in data" :label="id" :key="id">{{status}}</el-radio>
-        </el-radio-group>
-    </el-form-item>`
+    template: `
+<el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
+    <el-radio-group v-model="$root.create[prop]" :disabled="disabled">
+        <el-radio v-for="(status, id) in data" :label="id" :key="id">{{status}}</el-radio>
+    </el-radio-group>
+</el-form-item>`
 });
 
 Vue.component('create-select', {
     props: ['label', 'prop', 'data', 'disabled'],
-    template: `<el-form-item :label="(label||$root.label[prop]||prop)+':'">
-            <selector v-model="$root.create[prop]" :data="data" :disabled="disabled"></selector>
-        </el-form-item>`
+    template: `
+<el-form-item :label="(label||$root.label[prop]||prop)+':'">
+    <selector v-model="$root.create[prop]" :data="data" :disabled="disabled"></selector>
+</el-form-item>`
 });
 
 Vue.component('create-switch', {
     props: ['label', 'prop', 'disabled'],
-    template: `<el-form-item :label="(label||$root.label[prop]||prop)+':'">
-            <el-switch v-model="$root.create[prop]" :disabled="disabled"></el-switch>
-        </el-form-item>`
+    template: `
+<el-form-item :label="(label||$root.label[prop]||prop)+':'">
+    <el-switch v-model="$root.create[prop]" :disabled="disabled"></el-switch>
+</el-form-item>`
 });
 
 Vue.component('edit-form', {
@@ -590,37 +595,40 @@ Vue.component('edit-form', {
 Vue.component('edit-text', {
     props: ['label', 'prop', 'disabled'],
     template: `
-        <el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
-            <el-input v-model="$root.edit[prop]" auto-complete="off" :disabled="disabled" @change="$emit('input', $event)"></el-input>
-        </el-form-item>`
+<el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
+    <el-input v-model="$root.edit[prop]" auto-complete="off" :disabled="disabled" @change="$emit('input', $event)"></el-input>
+</el-form-item>`
 });
 
 Vue.component('edit-textarea', {
     props: ['label', 'prop', 'disabled', 'rows'],
     template: `
-        <el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
-            <el-input v-model="$root.edit[prop]" auto-complete="off" type="textarea" :disabled="disabled" @change="$emit('input', $event)" :rows="rows"></el-input>
-        </el-form-item>`
+<el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
+    <el-input v-model="$root.edit[prop]" auto-complete="off" type="textarea" :disabled="disabled" @change="$emit('input', $event)" :rows="rows"></el-input>
+</el-form-item>`
 });
 
 Vue.component('edit-select', {
     props: ['label', 'prop', 'data', 'disabled'],
-    template: `<el-form-item :label="(label||$root.label[prop]||prop)+':'">
-            <selector v-model="$root.edit[prop]" :disabled="disabled" :data="data"></selector>
-        </el-form-item>`
+    template: `
+<el-form-item :label="(label||$root.label[prop]||prop)+':'">
+    <selector v-model="$root.edit[prop]" :disabled="disabled" :data="data"></selector>
+</el-form-item>`
 });
 
 Vue.component('edit-radio', {
     props: ['label', 'prop', 'data', 'disabled'],
-    template: `<el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
-        <el-radio-group v-model="$root.edit[prop]" :disabled="disabled">
-            <el-radio v-for="(status, id) in data" :label="id" :key="id">{{status}}</el-radio>
-        </el-radio-group>
-    </el-form-item>`
+    template: `
+<el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
+    <el-radio-group v-model="$root.edit[prop]" :disabled="disabled">
+        <el-radio v-for="(status, id) in data" :label="id" :key="id">{{status}}</el-radio>
+    </el-radio-group>
+</el-form-item>`
 });
 
 Vue.component('detail-form', {
-    template: `<el-dialog title="详情" :visible.sync="$root.detailVisible" class="detail-dialog" @opened="$root.$refs.detail=$refs.detail">
+    template: `
+<el-dialog title="详情" :visible.sync="$root.detailVisible" class="detail-dialog" @opened="$root.$refs.detail=$refs.detail">
     <el-form :model="$root.detail" ref="detail" label-width="150px" size="mini">
         <slot></slot>
     </el-form>
@@ -662,7 +670,8 @@ Vue.component('result-email', {
 
 Vue.component('result-ip', {
     props: ['label', 'prop'],
-    template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" width="120">
+    template: `
+<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" width="120">
     <template v-slot="{row}">
         <span v-if="row[prop]==='127.0.0.1'||row[prop]==='::1'||row[prop].startsWith('192.168.')">{{row[prop]}}</span>
         <a v-else target="_blank" class="el-link" :href="'https://www.baidu.com/s?wd='+row[prop]" type="primary">{{row[prop]}}</a>
