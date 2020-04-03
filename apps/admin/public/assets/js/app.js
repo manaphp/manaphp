@@ -531,7 +531,7 @@ Vue.component('create-form', {
 Vue.component('create-text', {
     props: ['label', 'prop', 'disabled'],
     template: `
-        <el-form-item :label="label" :prop="prop">
+        <el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
             <el-input v-model="$root.create[prop]" auto-complete="off" :disabled="disabled" @change="$emit('input', $event)"></el-input>
         </el-form-item>`
 });
@@ -539,7 +539,7 @@ Vue.component('create-text', {
 Vue.component('create-textarea', {
     props: ['label', 'prop', 'rows', 'disabled'],
     template: `
-        <el-form-item :label="label" :prop="prop">
+        <el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
             <el-input v-model="$root.create[prop]" auto-complete="off" type="textarea" :rows="rows" :disabled="disabled" @change="$emit('input', $event)"></el-input>
         </el-form-item>`
 });
@@ -547,14 +547,14 @@ Vue.component('create-textarea', {
 Vue.component('create-checkbox', {
     props: ['label', 'prop', 'disabled'],
     template: `
-        <el-form-item :label="label" :prop="prop">
+        <el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
             <el-checkbox v-model="$root.create[insert_only]" :disabled="disabled"><slot></slot></el-checkbox>
         </el-form-item>`
 });
 
 Vue.component('create-radio', {
     props: ['label', 'prop', 'data', 'disabled'],
-    template: `<el-form-item :label="label" :prop="prop">
+    template: `<el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
         <el-radio-group v-model="$root.create[prop]" :disabled="disabled">
             <el-radio v-for="(status, id) in data" :label="id" :key="id">{{status}}</el-radio>
         </el-radio-group>
@@ -563,14 +563,14 @@ Vue.component('create-radio', {
 
 Vue.component('create-select', {
     props: ['label', 'prop', 'data', 'disabled'],
-    template: `<el-form-item :label="label">
+    template: `<el-form-item :label="(label||$root.label[prop]||prop)+':'">
             <selector v-model="$root.create[prop]" :data="data" :disabled="disabled"></selector>
         </el-form-item>`
 });
 
 Vue.component('create-switch', {
     props: ['label', 'prop', 'disabled'],
-    template: `<el-form-item :label="label">
+    template: `<el-form-item :label="(label||$root.label[prop]||prop)+':'">
             <el-switch v-model="$root.create[prop]" :disabled="disabled"></el-switch>
         </el-form-item>`
 });
@@ -590,7 +590,7 @@ Vue.component('edit-form', {
 Vue.component('edit-text', {
     props: ['label', 'prop', 'disabled'],
     template: `
-        <el-form-item :label="label" :prop="prop">
+        <el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
             <el-input v-model="$root.edit[prop]" auto-complete="off" :disabled="disabled" @change="$emit('input', $event)"></el-input>
         </el-form-item>`
 });
@@ -598,21 +598,21 @@ Vue.component('edit-text', {
 Vue.component('edit-textarea', {
     props: ['label', 'prop', 'disabled', 'rows'],
     template: `
-        <el-form-item :label="label" :prop="prop">
+        <el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
             <el-input v-model="$root.edit[prop]" auto-complete="off" type="textarea" :disabled="disabled" @change="$emit('input', $event)" :rows="rows"></el-input>
         </el-form-item>`
 });
 
 Vue.component('edit-select', {
     props: ['label', 'prop', 'data', 'disabled'],
-    template: `<el-form-item :label="label">
+    template: `<el-form-item :label="(label||$root.label[prop]||prop)+':'">
             <selector v-model="$root.edit[prop]" :disabled="disabled" :data="data"></selector>
         </el-form-item>`
 });
 
 Vue.component('edit-radio', {
     props: ['label', 'prop', 'data', 'disabled'],
-    template: `<el-form-item :label="label" :prop="prop">
+    template: `<el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
         <el-radio-group v-model="$root.edit[prop]" :disabled="disabled">
             <el-radio v-for="(status, id) in data" :label="id" :key="id">{{status}}</el-radio>
         </el-radio-group>
@@ -629,17 +629,17 @@ Vue.component('detail-form', {
 
 Vue.component('detail-text', {
     props: ['label', 'prop', 'disabled'],
-    template: `<el-form-item :label="label">{{ $root.detail[prop]}}</el-form-item>`
+    template: `<el-form-item :label="(label||$root.label[prop]||prop)+':'">{{ $root.detail[prop]}}</el-form-item>`
 });
 
 Vue.component('detail-timestamp', {
     props: ['label', 'prop', 'disabled'],
-    template: `<el-form-item :label="label">{{ $root.detail[prop]|date}}</el-form-item>`
+    template: `<el-form-item :label="(label||$root.label[prop]||prop)+':'">{{ $root.detail[prop]|date}}</el-form-item>`
 });
 
 Vue.component('detail-json', {
     props: ['label', 'prop', 'disabled'],
-    template: `<el-form-item :label="label"><pre>{{ $root.detail[prop]|json}}</pre></el-form-item>`
+    template: `<el-form-item :label="(label||$root.label[prop]||prop)+':'"><pre>{{ $root.detail[prop]|json}}</pre></el-form-item>`
 });
 
 Vue.component('result-index', {
@@ -648,12 +648,12 @@ Vue.component('result-index', {
 
 Vue.component('result-id', {
     props: ['label', 'prop'],
-    template: `<el-table-column :prop="prop" :label="label" width="100"></el-table-column>`
+    template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" width="100"></el-table-column>`
 });
 
 Vue.component('result-account', {
     props: ['label', 'prop'],
-    template: `<el-table-column :prop="prop" :label="label" width="120"></el-table-column>`
+    template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" width="120"></el-table-column>`
 });
 
 Vue.component('result-email', {
@@ -662,7 +662,7 @@ Vue.component('result-email', {
 
 Vue.component('result-ip', {
     props: ['label', 'prop'],
-    template: `<el-table-column :prop="prop" :label="label" width="120">
+    template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" width="120">
     <template v-slot="{row}">
         <span v-if="row[prop]==='127.0.0.1'||row[prop]==='::1'||row[prop].startsWith('192.168.')">{{row[prop]}}</span>
         <a v-else target="_blank" class="el-link" :href="'https://www.baidu.com/s?wd='+row[prop]" type="primary">{{row[prop]}}</a>
@@ -676,7 +676,12 @@ Vue.component('result-enabled', {
 
 Vue.component('result-timestamp', {
     props: ['label', 'prop'],
-    template: `<el-table-column :prop="prop" :label="label" :formatter="$root.fDate" width="150"></el-table-column>`
+    template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" :formatter="$root.fDate" width="150"></el-table-column>`
+});
+
+Vue.component('result-column', {
+    props: ['label', 'prop'],
+    template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" v-bind="$attrs"></el-table-column>`
 });
 
 Vue.prototype.format_date = function (value) {
@@ -698,6 +703,26 @@ App = Vue.extend({
     data() {
         return {
             topic: '',
+            label: {
+                id: 'ID',
+                admin_id: '用户ID',
+                admin_name: '用户名',
+                created_time: '创建时间',
+                updated_time: '更新时间',
+                creator_name: '创建者',
+                updator_name: '更新者',
+                data: '数据',
+                client_ip: '客户端IP',
+                display_order: '排序',
+                display_name: '显示名称',
+                password: '密码',
+                white_ip: 'IP白名单',
+                status: '状态',
+                email: '邮箱',
+                tag: 'Tag',
+                icon: '图标',
+                path: '路径'
+            },
             createVisible: false,
             editVisible: false,
             detailVisible: false,

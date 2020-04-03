@@ -3,19 +3,19 @@
     <el-input v-model.trim="request.keyword" placeholder="用户名或邮箱" size="small" style="width: 150px;"></el-input>
 </div>
 <create-form>
-    <create-text label="用户名:" prop="admin_name"></create-text>
-    <create-text label="邮箱:" prop="email"></create-text>
-    <create-text label="密码:" prop="password"></create-text>
-    <create-text label="IP白名单:" prop="white_ip"></create-text>
-    <create-select label="角色:" prop="role_id" :data="roles"></create-select>
-    <create-radio label="状态:" prop="status" :data="statuses"></create-radio>
+    <create-text prop="admin_name"></create-text>
+    <create-text prop="email"></create-text>
+    <create-text prop="password"></create-text>
+    <create-text prop="white_ip"></create-text>
+    <create-select prop="role_id" :data="roles"></create-select>
+    <create-radio prop="status" :data="statuses"></create-radio>
 </create-form>
 
 <edit-form>
-    <edit-text label="用户名:" prop="admin_name" disabled></edit-text>
-    <edit-text label="邮箱:" prop="email"></edit-text>
-    <edit-text label="密码:" prop="password"></edit-text>
-    <edit-text label="IP白名单:" prop="white_ip"></edit-text>
+    <edit-text prop="admin_name" disabled></edit-text>
+    <edit-text prop="email"></edit-text>
+    <edit-text prop="password"></edit-text>
+    <edit-text prop="white_ip"></edit-text>
     <el-checkbox-group v-model="edit.role_ids" style="padding: 30px 50px;">
         <el-checkbox v-for="role in roles" :label="role.role_id"
                      :key="role.role_id" style="width: 20%; text-align: left">
@@ -25,10 +25,10 @@
 </edit-form>
 <result-table>
     <result-index></result-index>
-    <result-id prop="admin_id" label="用户ID"></result-id>
-    <result-account prop="admin_name" label="用户名"></result-account>
+    <result-id prop="admin_id"></result-id>
+    <result-account prop="admin_name"></result-account>
     <result-email></result-email>
-    <el-table-column prop="white_ip" label="IP白名单" width="150" show-overflow-tooltip></el-table-column>
+    <result-column prop="white_ip" width="150" show-overflow-tooltip></result-column>
     <el-table-column label="状态" width="100">
         <template v-slot="{row}">@{{ statuses[row.status] }}</template>
     </el-table-column>
@@ -37,10 +37,10 @@
             <el-tag size="small" v-for="role in row.roles" :key="role.role_id">@{{role.display_name}}</el-tag>
         </template>
     </el-table-column>
-    <result-ip prop="login_ip" label="登录IP"></result-ip>
-    <result-timestamp prop="login_time" label="登录时间"></result-timestamp>
-    <result-account prop="creator_name" label="创建者"></result-account>
-    <result-timestamp prop="created_time" label="创建时间"></result-timestamp>
+    <result-ip prop="login_ip"></result-ip>
+    <result-timestamp prop="login_time"></result-timestamp>
+    <result-account prop="creator_name"></result-account>
+    <result-timestamp prop="created_time"></result-timestamp>
     <el-table-column fixed="right" label="操作" width="150">
         <template v-slot="{row}">
             <show-edit :row="row"></show-edit>
@@ -77,7 +77,12 @@
                     role_ids: []
                 },
                 statuses: {0: '未激活', 1: '激活', 2: '锁定'},
-                roles: []
+                roles: [],
+                label: {
+                    role_id: '角色',
+                    login_ip: '登录IP',
+                    login_time: '登录时间',
+                }
             },
             methods: {
                 do_lock(row) {

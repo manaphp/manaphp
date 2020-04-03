@@ -3,31 +3,31 @@
     <selector v-model="request.group_id" :data="groups"></selector>
 </div>
 <create-form>
-    <create-select label="组名:" prop="group_id" :data="groups"></create-select>
-    <create-text label="名称:" prop="item_name"></create-text>
-    <create-text label="排序:" prop="display_order"></create-text>
-    <create-text label="链接:" prop="url"></create-text>
-    <create-text label="图标:" prop="icon"></create-text>
+    <create-select prop="group_id" :data="groups"></create-select>
+    <create-text prop="item_name"></create-text>
+    <create-text prop="display_order"></create-text>
+    <create-text prop="url"></create-text>
+    <create-text prop="icon"></create-text>
 </create-form>
 
 <edit-form>
-    <edit-select label="组名:" prop="group_id" :data="groups"></edit-select>
-    <edit-text label="名称:" prop="item_name"></edit-text>
-    <edit-text label="排序:" prop="display_order"></edit-text>
-    <edit-text label="链接:" prop="url"></edit-text>
-    <edit-text label="图标:" prop="icon"></edit-text>
+    <edit-select prop="group_id" :data="groups"></edit-select>
+    <edit-text prop="item_name"></edit-text>
+    <edit-text prop="display_order"></edit-text>
+    <edit-text prop="url"></edit-text>
+    <edit-text prop="icon"></edit-text>
 </edit-form>
 <result-table>
     <result-index></result-index>
-    <result-id prop="item_id" label="菜单ID"></result-id>
-    <el-table-column prop="item_name" label="菜单名" width="150"></el-table-column>
-    <el-table-column prop="url" label="链接" show-overflow-tooltip></el-table-column>
-    <el-table-column prop="display_order" label="排序" width="100"></el-table-column>
-    <el-table-column prop="icon" label="图标" width="200"></el-table-column>
-    <result-aacount prop="updator_name" label="更新者"></result-aacount>
-    <result-timestamp prop="updated_time" label="更新时间"></result-timestamp>
-    <result-account prop="creator_name" label="创建者"></result-account>
-    <result-timestamp prop="created_time" label="创建时间"></result-timestamp>
+    <result-id prop="item_id"></result-id>
+    <result-column prop="item_name" width="150"></result-column>
+    <result-column prop="url" show-overflow-tooltip></result-column>
+    <result-column prop="display_order" width="100"></result-column>
+    <result-column prop="icon" width="200"></result-column>
+    <result-account prop="updator_name"></result-account>
+    <result-timestamp prop="updated_time"></result-timestamp>
+    <result-account prop="creator_name"></result-account>
+    <result-timestamp prop="created_time"></result-timestamp>
     <el-table-column fixed="right" label="操作" width="150">
         <template v-slot="{row}">
             <show-edit :row="row"></show-edit>
@@ -61,7 +61,12 @@
                     icon: ''
                 },
                 groups: {},
-                permissions: {}
+                permissions: {},
+                label: {
+                    group_id: '组名',
+                    item_id: '菜单项ID',
+                    item_name: '菜单名',
+                }
             },
             mounted() {
                 this.ajax_get("group/list", (res) => this.groups = res);

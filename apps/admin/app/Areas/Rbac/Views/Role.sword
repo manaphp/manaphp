@@ -3,26 +3,26 @@
     <el-input v-model.trim="request.keyword" placeholder="角色" size="small" style="width: 150px"></el-input>
 </div>
 <create-form>
-    <create-text label="编码:" prop="role_name"></create-text>
-    <create-text label="名称:" prop="display_name"></create-text>
-    <create-switch label="启用:" prop="enabled"></create-switch>
+    <create-text prop="role_name"></create-text>
+    <create-text prop="display_name"></create-text>
+    <create-switch prop="enabled"></create-switch>
 </create-form>
 
 <edit-form>
-    <edit-text label="ID:" prop="role_id" disabled></edit-text>
-    <edit-text label="编码:" prop="role_name"></edit-text>
-    <edit-text label="名称:" prop="display_name"></edit-text>
+    <edit-text prop="role_id" disabled></edit-text>
+    <edit-text prop="role_name"></edit-text>
+    <edit-text prop="display_name"></edit-text>
 </edit-form>
 <result-table>
     <result-index></result-index>
-    <result-id prop="role_id" label="角色ID"></result-id>
-    <el-table-column prop="role_name" label="角色编码" width="120"></el-table-column>
-    <el-table-column prop="display_name" label="角色名" show-overflow-tooltip></el-table-column>
+    <result-id prop="role_id"></result-id>
+    <result-column prop="role_name" width="120"></result-column>
+    <result-column prop="display_name" show-overflow-tooltip></result-column>
     <result-enabled prop="enabled"></result-enabled>
-    <result-account prop="updator_name" label="更新者"></result-account>
-    <result-timestamp prop="updated_time" label="更新时间"></result-timestamp>
-    <result-account prop="creator_name" label="创建者"></result-account>
-    <result-timestamp prop="created_time" label="创建时间"></result-timestamp>
+    <result-account prop="updator_name"></result-account>
+    <result-timestamp prop="updated_time"></result-timestamp>
+    <result-account prop="creator_name"></result-account>
+    <result-timestamp prop="created_time"></result-timestamp>
     <el-table-column fixed="right" label="操作" width="220">
         <template v-slot="{row}">
             <show-edit :row="row"></show-edit>
@@ -52,6 +52,10 @@
                     role_id: '',
                     role_name: '',
                     display_name: ''
+                },
+                label: {
+                    role_id: '角色ID',
+                    role_name: '角色名称',
                 }
             },
             methods: {

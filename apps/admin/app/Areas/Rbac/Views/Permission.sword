@@ -4,22 +4,22 @@
     <selector v-model="filter.path" :data="paths"></selector>
 </div>
 <edit-form>
-    <edit-text label="ID:" prop="permission_id" disabled></edit-text>
-    <edit-text label="路径:" prop="path" disabled></edit-text>
-    <edit-text label="描述:" prop="display_name"></edit-text>
+    <edit-text prop="permission_id" disabled></edit-text>
+    <edit-text prop="path" disabled></edit-text>
+    <edit-text prop="display_name"></edit-text>
 </edit-form>
 <result-table :data="filteredResponse">
     <result-index></result-index>
-    <result-id prop="permission_id" label="ID"></result-id>
-    <el-table-column prop="path" label="路径" width="200"></el-table-column>
+    <result-id prop="permission_id"></result-id>
+    <result-column prop="path" width="200"></result-column>
     <el-table-column label="角色列表" width="300">
         <template v-slot="{row}">
             <el-tag size="small" v-for="role in row.roles" :key="role.role_id">@{{role.display_name}}</el-tag>
         </template>
     </el-table-column>
-    <el-table-column prop="display_name" label="简述" show-overflow-tooltip></el-table-column>
-    <result-timestamp prop="updated_time" label="重新时间"></result-timestamp>
-    <result-timestamp prop="created_time" label="创建时间"></result-timestamp>
+    <result-column prop="display_name" show-overflow-tooltip></result-column>
+    <result-timestamp prop="updated_time"></result-timestamp>
+    <result-timestamp prop="created_time"></result-timestamp>
     <el-table-column fixed="right" label="操作" width="150">
         <template v-slot="{row}">
             <show-edit :row="row"></show-edit>
@@ -38,6 +38,9 @@
                 edit: {},
                 filter: {
                     path: ''
+                },
+                label: {
+                    permission_id: '权限ID',
                 }
             },
             computed: {

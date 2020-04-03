@@ -34,17 +34,14 @@ HTML;
         $content .= PHP_EOL . <<<HTML
 <detail-form>
 HTML;
-
-        $labels = $model->labels();
         foreach ($model->getFields() as $field) {
-            $label = $labels[$field] ?? $field;
             if ($this->isTimestampField($model, $field)) {
                 $content .= PHP_EOL . <<<HTML
-    <detail-timestamp label="$label:" prop="$field"></detail-timestamp>
+    <detail-timestamp prop="$field"></detail-timestamp>
 HTML;
             } else {
                 $content .= PHP_EOL . <<<HTML
-    <detail-text label="$label:" prop="$field"></detail-text>
+    <detail-text prop="$field"></detail-text>
 HTML;
             }
 
@@ -71,12 +68,9 @@ HTML;
         $content = PHP_EOL . <<<HTML
 <create-form>
 HTML;
-        $labels = $model->labels();
         foreach ($fields as $field) {
-            $label = $labels[$field] ?? $field;
-
             $content .= PHP_EOL . <<<HTML
-    <create-input label="$label:" prop="$field"></create-input>
+    <create-input prop="$field"></create-input>
 HTML;
         }
 
@@ -100,20 +94,14 @@ HTML;
         $content = PHP_EOL . <<<HTML
 <edit-form>
 HTML;
-
-        $labels = $model->labels();
-
         $primaryKey = $model->getPrimaryKey();
-        $label = $labels[$primaryKey] ?? $primaryKey;
         $content .= PHP_EOL . <<<HTML
-    <edit-input label="$label" prop="$primaryKey" disabled></edit-input>
+    <edit-input prop="$primaryKey" disabled></edit-input>
 HTML;
 
         foreach ($fields as $field) {
-            $label = $labels[$field] ?? $field;
-
             $content .= PHP_EOL . <<<HTML
-    <edit-input label="$label:" prop="$field"></edit-input>
+    <edit-input prop="$field"></edit-input>
 HTML;
         }
 
@@ -149,17 +137,14 @@ HTML;
 <result-table>
     <result-index></result-index>
 HTML;
-        $labels = $model->labels();
         foreach ($model->getFields() as $field) {
-            $label = $labels[$field] ?? $field;
-
             if ($this->isTimestampField($model, $field)) {
                 $content .= PHP_EOL . <<<HTML
-    <result-timestamp prop="$field" label="$label"></result-timestamp>
+    <result-timestamp prop="$field"></result-timestamp>
 HTML;
             } elseif (strpos($field, '_id')) {
                 $content .= PHP_EOL . <<<HTML
-    <result-id prop="$field" label="$label"></result-id>
+    <result-id prop="$field"></result-id>
 HTML;
             } elseif ($field === 'email') {
                 $content .= PHP_EOL . <<<HTML
@@ -167,11 +152,11 @@ HTML;
 HTML;
             } elseif ($field === 'id' || Str::endsWith($field, '_ip')) {
                 $content .= PHP_EOL . <<<HTML
-    <result-ip prop="$field" label="$label"></result-ip>
+    <result-ip prop="$field"></result-ip>
 HTML;
             } elseif (in_array($field, ['admin_name', 'user_name', 'updator_name', 'creator_name'], true)) {
                 $content .= PHP_EOL . <<<HTML
-    <result-account prop="$field" label="$label"></result-account>
+    <result-account prop="$field"></result-account>
 HTML;
             } elseif ($field === 'enabled') {
                 $content .= PHP_EOL . <<<HTML
@@ -179,7 +164,7 @@ HTML;
 HTML;
             } else {
                 $content .= PHP_EOL . <<<HTML
-    <el-table-column prop="$field" label="$label" width="100"></el-table-column>
+    <result-column prop="$field" width="100"></result-column>
 HTML;
             }
         }
@@ -272,7 +257,24 @@ HTML;
                 }
                 $content .= PHP_EOL . "                    $field: $value,";
             }
-            $content .= PHP_EOL . '                }';
+            $content .= PHP_EOL . '                },';
+        }
+
+        $labels = $model->labels();
+        if ($labels) {
+            $content .= PHP_EOL . <<<HTML
+                label: {
+HTML;
+            foreach ($labels as $k => $v) {
+                $content .= PHP_EOL . <<<HTML
+                    $k: '$v',
+HTML;
+            }
+            $content .= PHP_EOL . <<<HTML
+                }
+HTML;
+        } else {
+            $content .= PHP_EOL . '                label: {}';
         }
 
         $content .= PHP_EOL . <<<HTML

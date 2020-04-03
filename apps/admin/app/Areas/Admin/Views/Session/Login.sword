@@ -114,7 +114,6 @@
 
                         window.location.href = "{{$redirect}}";
                     } else {
-                        this.request.password = '';
                         this.request.code = '';
                         this.captcha_timestamp = Date.now();
                         this.$alert(res.data.message ? res.data.message : res.data, '失败');

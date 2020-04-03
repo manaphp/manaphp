@@ -2,14 +2,14 @@
     <show-create></show-create>
 </div>
 <create-form>
-    <create-text label="桶名:" prop="bucket_name"></create-text>
-    <create-text label="BaseURL:" prop="base_url"></create-text>
+    <create-text prop="bucket_name"></create-text>
+    <create-text prop="base_url"></create-text>
 </create-form>
 <result-table>
     <result-index></result-index>
-    <el-table-column prop="bucket_name" label="桶名" width="100"></el-table-column>
-    <el-table-column prop="base_url" label="BaseURL" width="300"></el-table-column>
-    <result-timestamp prop="created_time" label="创建时间"></result-timestamp>
+    <result-column prop="bucket_name" width="100"></result-column>
+    <result-column prop="base_url" width="300"></result-column>
+    <result-timestamp prop="created_time"></result-timestamp>
 </result-table>
 @section('script')
     <script>
@@ -21,6 +21,10 @@
                 create: {
                     bucket_name: '',
                     base_url: 'http://',
+                },
+                label: {
+                    bucket_name: '桶名',
+                    base_url: 'BaseURL',
                 }
             }
         });

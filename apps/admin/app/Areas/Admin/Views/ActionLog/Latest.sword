@@ -13,25 +13,25 @@
 @append
 
 <detail-form>
-    <detail-text label="id:" prop="id"></detail-text>
-    <detail-text label="请求方法:" prop="method"></detail-text>
-    <detail-text label="请求路径:" prop="path"></detail-text>
-    <detail-text label="请求URL:" prop="url"></detail-text>
-    <detail-text label="tag:" prop="tag"></detail-text>
-    <detail-text label="客户端IP:" prop="client_ip"></detail-text>
-    <detail-timestamp label="生成时间:" prop="created_time"></detail-timestamp>
-    <detail-json label="数据:" prop="data"></detail-json>
+    <detail-text prop="id"></detail-text>
+    <detail-text prop="method"></detail-text>
+    <detail-text prop="path"></detail-text>
+    <detail-text prop="url"></detail-text>
+    <detail-text prop="tag"></detail-text>
+    <detail-text prop="client_ip"></detail-text>
+    <detail-timestamp prop="created_time"></detail-timestamp>
+    <detail-json prop="data"></detail-json>
 </detail-form>
 <result-table>
     <result-index></result-index>
-    <result-id prop="id" label="记录ID"></result-id>
-    <el-table-column prop="method" label="请求方式" width="100"></el-table-column>
-    <el-table-column prop="path" label="请求路径" width="250" show-overflow-tooltip></el-table-column>
-    <result-id prop="tag" label="tag"></result-id>
-    <el-table-column prop="data" label="请求数据" show-overflow-tooltip></el-table-column>
-    <result-ip prop="client_ip" label="客户端IP"></result-ip>
-    <el-table-column prop="client_udid" label="客户端ID" width="200" show-overflow-tooltip></el-table-column>
-    <result-timestamp prop="created_time" label="创建时间"></result-timestamp>
+    <result-id prop="id"></result-id>
+    <result-column prop="method" width="100"></result-column>
+    <result-column prop="path" width="250" show-overflow-tooltip></result-column>
+    <result-id prop="tag"></result-id>
+    <result-column prop="data" show-overflow-tooltip></result-column>
+    <result-ip prop="client_ip"></result-ip>
+    <result-column prop="client_udid" width="200" show-overflow-tooltip></result-column>
+    <result-timestamp prop="created_time"></result-timestamp>
     <el-table-column fixed="right" label="操作" width="100">
         <template v-slot="{row}">
             <show-detail :row="row" link="../detail"></show-detail>
@@ -52,6 +52,13 @@
                     page: 1
                 },
                 response: {},
+                label: {
+                    method: '请求方法',
+                    path: '请求路径',
+                    url: '请求URL',
+                    client_ip: '客户端IP',
+                    client_udid: '客户端ID'
+                }
             }
         });
     </script>

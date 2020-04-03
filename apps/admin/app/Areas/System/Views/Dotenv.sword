@@ -3,18 +3,18 @@
     <selector v-model="request.app_id" :data="apps"></selector>
 </div>
 <create-form>
-    <create-text label="ID:" prop="app_id"></create-text>
-    <create-textarea label="值:" prop="env" :rows="10"></create-textarea>
+    <create-text prop="app_id"></create-text>
+    <create-textarea prop="env" :rows="10"></create-textarea>
 </create-form>
 <edit-form>
-    <edit-text label="app_id:" prop="app_id" disabled></edit-text>
-    <edit-textarea label=".env:" prop="env" :rows="10"></edit-textarea>
+    <edit-text prop="app_id" disabled></edit-text>
+    <edit-textarea prop="env" :rows="10"></edit-textarea>
 </edit-form>
 
 <div class="result-box">
     <el-table :data="response.current" border size="small">
         <result-index></result-index>
-        <el-table-column prop="app_id" label="app_id" width="300"></el-table-column>
+        <result-column prop="app_id" width="300"></result-column>
         <el-table-column label=".env">
             <template v-slot="{row}">
                 <pre>@{{row.env}}</pre>
@@ -30,13 +30,13 @@
 
     <el-table :data="response.logs" border size="small">
         <el-table-column type="index" label="#" width="50"></el-table-column>
-        <el-table-column prop="app_id" label="app_id" width="300"></el-table-column>
+        <result-column prop="app_id" width="300"></result-column>
         <el-table-column label=".env">
             <template v-slot="{row}">
                 <pre>@{{row.env}}</pre>
             </template>
         </el-table-column>
-        <result-timestamp prop="created_time" label="修改时间"></result-timestamp>
+        <result-timestamp prop="created_time"></result-timestamp>
     </el-table>
 </div>
 @section('script')

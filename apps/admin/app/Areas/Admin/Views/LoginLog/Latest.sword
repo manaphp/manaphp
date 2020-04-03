@@ -4,11 +4,11 @@
 
 <result-table>
     <result-index></result-index>
-    <reslt-id prop="login_id" label="日志ID"></reslt-id>
-    <reslt-ip prop="client_ip" label="客户端IP"></reslt-ip>
-    <el-table-column prop="client_udid" label="客户端ID" width="150" show-overflow-tooltip></el-table-column>
-    <el-table-column prop="user_agent" label="浏览器" show-overflow-tooltip></el-table-column>
-    <result-timestamp prop="created_time" label="生成时间"></result-timestamp>
+    <result-id prop="login_id"></result-id>
+    <result-ip prop="client_ip"></result-ip>
+    <result-column prop="client_udid" width="150" show-overflow-tooltip></result-column>
+    <result-column prop="user_agent" show-overflow-tooltip></result-column>
+    <result-timestamp prop="created_time"></result-timestamp>
 </result-table>
 @section('script')
     <script>

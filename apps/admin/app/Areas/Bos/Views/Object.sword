@@ -7,9 +7,9 @@
               style="width: 100px;"></el-input>
 </div>
 <create-form>
-    <create-select label="桶名:" prop="bucket_name" :data="buckets"></create-select>
-    <create-text label="key:" prop="key"></create-text>
-    <create-checkbox label="仅增加:" prop="insert_only">是</create-checkbox>
+    <create-select prop="bucket_name" :data="buckets"></create-select>
+    <create-text prop="key"></create-text>
+    <create-checkbox label="仅增加" prop="insert_only">是</create-checkbox>
     <el-form-item prop="image_url">
         <el-upload
                 :action="upload_action"
@@ -34,16 +34,16 @@
                  style="width: 50px; height: 50px">
         </template>
     </el-table-column>
-    <el-table-column prop="url" label="url" width="400"></el-table-column>
-    <el-table-column prop="original_name" label="original_name" width="200"></el-table-column>
-    <el-table-column prop="mime_type" label="mime_type" width="100"></el-table-column>
-    <el-table-column prop="size" label="size" width="80"></el-table-column>
+    <result-column prop="url" width="400"></result-column>
+    <result-column prop="original_name" width="200"></result-column>
+    <result-column prop="mime_type" width="100"></result-column>
+    <result-column prop="size" width="80"></result-column>
     <el-table-column label="dimension" width="100">
         <template v-slot="{row}">@{{row.width}}*@{{row.height}}</template>
     </el-table-column>
-    <el-table-column prop="md5" label="md5" width="150"></el-table-column>
-    <result-ip prop="ip" label="ip"></result-ip>
-    <result-timestamp prop="created_time" label="创建时间"></result-timestamp>
+    <result-column prop="md5" width="150"></result-column>
+    <result-ip prop="ip"></result-ip>
+    <result-timestamp prop="created_time"></result-timestamp>
     <el-table-column fixed="right" label="操作" width="150">
         <template v-slot="{row}">
             <show-delete :row="row"></show-delete>

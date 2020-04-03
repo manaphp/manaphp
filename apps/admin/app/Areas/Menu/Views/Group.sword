@@ -2,25 +2,25 @@
     <show-create></show-create>
 </div>
 <create-form>
-    <create-text label="组名:" prop="group_name"></create-text>
-    <create-text label="排序:" prop="display_order"></create-text>
-    <create-text label="图标:" prop="icon"></create-text>
+    <create-text prop="group_name"></create-text>
+    <create-text prop="display_order"></create-text>
+    <create-text prop="icon"></create-text>
 </create-form>
 <edit-form>
-    <edit-text label="组名:" prop="group_name"></edit-text>
-    <edit-text label="排序:" prop="display_order"></edit-text>
-    <edit-text label="图标:" prop="icon"></edit-text>
+    <edit-text prop="group_name"></edit-text>
+    <edit-text prop="display_order"></edit-text>
+    <edit-text prop="icon"></edit-text>
 </edit-form>
 <result-table>
     <result-index></result-index>
-    <result-id prop="group_id" label="组ID"></result-id>
-    <el-table-column prop="display_order" label="排序" width="100"></el-table-column>
-    <el-table-column prop="group_name" label="组名"></el-table-column>
-    <el-table-column prop="icon" label="图标" width="200" show-overflow-tooltip></el-table-column>
-    <result-account prop="updator_name" label="更新者"></result-account>
-    <result-timestamp prop="updated_time" label="更新时间"></result-timestamp>
-    <result-account prop="creator_name" label="创建者"></result-account>
-    <result-timestamp prop="created_time" label="创建时间"></result-timestamp>
+    <result-id prop="group_id"></result-id>
+    <result-column prop="display_order" width="100"></result-column>
+    <result-column prop="group_name"></result-column>
+    <result-column prop="icon" width="200" show-overflow-tooltip></result-column>
+    <result-account prop="updator_name"></result-account>
+    <result-timestamp prop="updated_time"></result-timestamp>
+    <result-account prop="creator_name"></result-account>
+    <result-timestamp prop="created_time"></result-timestamp>
     <el-table-column fixed="right" label="操作" width="150">
         <template v-slot="{row}">
             <show-edit :row="row"></show-edit>
@@ -46,6 +46,10 @@
                     group_name: '',
                     display_order: 0,
                     icon: ''
+                },
+                label:{
+                    group_id:'ID',
+                    group_name:'组名',
                 }
             }
         });
