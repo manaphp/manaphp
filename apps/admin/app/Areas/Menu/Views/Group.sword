@@ -1,6 +1,5 @@
-<div class="search-box">
-    <show-create></show-create>
-</div>
+<request-form>
+</request-form>
 <create-form>
     <create-text prop="group_name"></create-text>
     <create-text prop="display_order"></create-text>

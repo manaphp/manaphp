@@ -1,7 +1,7 @@
-<div class="search-box">
+<request-form>
     <show-edit></show-edit>
     <request-select prop="role_id" :data="roles2"></request-select>
-</div>
+</request-form>
 <edit-form>
     <el-checkbox-group v-model="edit.permission_ids">
         <el-checkbox v-for="permission in permissions" :label="permission.permission_id"

@@ -1,8 +1,8 @@
-<div class="search-box">
+<request-form>
     <el-button size="small" @click="do_rebuild" type="primary" icon="el-icon-refresh" style="width: 100px;">重新扫描
     </el-button>
     <selector v-model="filter.path" :data="paths"></selector>
-</div>
+</request-form>
 <edit-form>
     <edit-text prop="permission_id" disabled></edit-text>
     <edit-text prop="path" disabled></edit-text>

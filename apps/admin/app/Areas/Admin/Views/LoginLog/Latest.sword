@@ -1,7 +1,7 @@
-<div class="search-box">
+<request-form>
     <span>登录时间: </span>
     <request-date prop="created_time"></request-date>
-</div>
+</request-form>
 
 <result-table>
     <result-index></result-index>

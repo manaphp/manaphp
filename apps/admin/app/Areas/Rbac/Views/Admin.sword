@@ -1,7 +1,6 @@
-<div class="search-box">
-    <show-create></show-create>
+<request-form>
     <request-text prop="keyword" placeholder="用户名或邮箱"></request-text>
-</div>
+</request-form>
 <create-form>
     <create-text prop="admin_name"></create-text>
     <create-text prop="email"></create-text>

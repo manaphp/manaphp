@@ -502,6 +502,14 @@ Vue.component('selector', {
     }
 });
 
+Vue.component('request-form', {
+    template: `
+<div class="request-form">
+    <el-button v-if="$root.create" @click="$root.createVisible=true;$emit('open-create');" type="primary" icon="el-icon-plus" size="small">新增{{$root.topic}}</el-button>
+    <slot></slot>   
+</div>`,
+});
+
 Vue.component('request-text', {
     props: ['prop', 'width', 'placeholder'],
     template: `

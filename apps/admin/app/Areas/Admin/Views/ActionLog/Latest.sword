@@ -1,16 +1,8 @@
-<div class="search-box">
+<request-form>
     <request-text prop="path"></request-text>
     <request-text prop="tag"></request-text>
     <request-date prop="created_time"></request-date>
-</div>
-
-@section('css')
-    <style>
-        .search-box .el-input {
-            width: 200px;
-        }
-    </style>
-@append
+</request-form>
 
 <detail-form>
     <detail-text prop="id"></detail-text>

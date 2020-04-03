@@ -1,7 +1,6 @@
-<div class="search-box">
-    <show-create @click="create.group_id=request.group_id"></show-create>
+<request-form @open-create="create.group_id=request.group_id">
     <request-select prop="group_id" :data="groups"></request-select>
-</div>
+</request-form>
 <create-form>
     <create-select prop="group_id" :data="groups"></create-select>
     <create-text prop="item_name"></create-text>

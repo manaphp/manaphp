@@ -1,9 +1,10 @@
-<div class="search-box">
+<request-form>
     <request-text prop="admin_name"></request-text>
     <request-text prop="client_ip"></request-text>
     <request-text prop="client_udid"></request-text>
     <request-date prop="created_time"></request-date>
-</div>
+</request-form>
+
 <result-table>
     <result-index></result-index>
     <result-id prop="login_id"></result-id>

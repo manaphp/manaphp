@@ -1,10 +1,10 @@
-<div class="search-box">
+<request-form>
     <request-text prop="admin_name"></request-text>
     <request-text prop="path"></request-text>
     <request-text prop="tag"></request-text>
     <request-text prop="client_ip"></request-text>
     <request-date prop="created_time"></request-date>
-</div>
+</request-form>
 <detail-form>
     <detail-text prop="id"></detail-text>
     <detail-text prop="admin_name"></detail-text>

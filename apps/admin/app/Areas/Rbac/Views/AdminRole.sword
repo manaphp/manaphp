@@ -1,6 +1,6 @@
-<div class="search-box">
+<request-form>
     <request-text prop="keyword" placeholder="用户名"></request-text>
-</div>
+</request-form>
 <edit-form>
     <el-checkbox-group v-model="edit.role_ids">
         <el-checkbox v-for="role in roles" :label="parseInt(role.role_id)"
