@@ -1,8 +1,8 @@
 <div class="search-box">
-    <el-input v-model.trim="request.admin_name" placeholder="用户名" size="small" clearable style="width: 130px"></el-input>
-    <el-input v-model.trim="request.client_ip" placeholder="客户端IP" size="small" clearable style="width: 150px"></el-input>
-    <el-input v-model.trim="request.client_udid" placeholder="客户端ID" size="small" clearable style="width: 130px"></el-input>
-    <date-picker v-model="request.created_time"></date-picker>
+    <request-text prop="admin_name"></request-text>
+    <request-text prop="client_ip"></request-text>
+    <request-text prop="client_udid"></request-text>
+    <request-date prop="created_time"></request-date>
 </div>
 <result-table>
     <result-index></result-index>

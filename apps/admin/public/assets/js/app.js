@@ -502,6 +502,27 @@ Vue.component('selector', {
     }
 });
 
+Vue.component('request-text', {
+    props: ['prop', 'width', 'placeholder'],
+    template: `
+<el-input v-model.trim="$root.request[prop]"
+    size="small" clearable 
+    :style="{width: (width||150)+'px'}"
+    :placeholder="placeholder||$root.label[prop]||prop"
+    v-bind="$attrs">
+</el-input>`
+});
+
+Vue.component('request-date', {
+    props: ['prop'],
+    template: `<date-picker v-model.trim="$root.request[prop]"></date-picker>`
+});
+
+Vue.component('request-select', {
+    props: ['prop', 'data'],
+    template: `<selector v-model.trim="$root.request[prop]" :data="data"></selector>`
+});
+
 Vue.component('create-form', {
     template: `
 <el-dialog :title="'新增-'+$root.topic" :visible.sync="$root.createVisible" class="create-dialog" @opened="$root.$refs.create=$refs.create">

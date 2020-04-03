@@ -1,6 +1,6 @@
 <div class="search-box">
     <show-create></show-create>
-    <selector v-model="request.app_id" :data="apps"></selector>
+    <request-select prop="app_id" :data="apps"></request-select>
 </div>
 <create-form>
     <create-text prop="app_id"></create-text>

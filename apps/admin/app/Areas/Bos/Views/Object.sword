@@ -1,10 +1,8 @@
 <div class="search-box">
     <show-create @click="create.bucket_name=request.bucket_name"></show-create>
-    <selector v-model="request.bucket_name" :data="buckets"></selector>
-    <el-input v-model.trim="request.prefix" clearable placeholder="prefix" size="small"
-              style="width: 120px;"></el-input>
-    <el-input v-model.trim="request.extension" clearable placeholder="extension" size="small"
-              style="width: 100px;"></el-input>
+    <request-select prop="bucket_name" :data="buckets"></request-select>
+    <request-text prop="prefix"></request-text>
+    <request-text prop="extension"></request-text>
 </div>
 <create-form>
     <create-select prop="bucket_name" :data="buckets"></create-select>

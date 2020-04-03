@@ -1,5 +1,5 @@
 <div class="search-box">
-    <el-input v-model.trim="request.keyword" placeholder="用户名" size="small" style="width: 150px;"></el-input>
+    <request-text prop="keyword" placeholder="用户名"></request-text>
 </div>
 <edit-form>
     <el-checkbox-group v-model="edit.role_ids">

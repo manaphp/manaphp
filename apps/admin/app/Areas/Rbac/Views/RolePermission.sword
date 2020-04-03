@@ -1,6 +1,6 @@
 <div class="search-box">
     <show-edit></show-edit>
-    <selector v-model="request.role_id" :data="roles2"></selector>
+    <request-select prop="role_id" :data="roles2"></request-select>
 </div>
 <edit-form>
     <el-checkbox-group v-model="edit.permission_ids">

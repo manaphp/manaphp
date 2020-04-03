@@ -1,6 +1,6 @@
 <div class="search-box">
     <show-create></show-create>
-    <el-input v-model.trim="request.keyword" placeholder="用户名或邮箱" size="small" style="width: 150px;"></el-input>
+    <request-text prop="keyword" placeholder="用户名或邮箱"></request-text>
 </div>
 <create-form>
     <create-text prop="admin_name"></create-text>
