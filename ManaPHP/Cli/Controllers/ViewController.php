@@ -12,12 +12,11 @@ class ViewController extends Controller
      *
      * @return string
      */
-    public function renderSearchBox($model)
+    public function renderRequestForm($model)
     {
         $content = <<<HTML
-<div class="search-box">
-    <el-button @click="createVisible=true" type="primary" icon="el-icon-plus" size="small">创建</el-button>
-</div>
+<request-form>
+</request-form>
 HTML;
         return $content . PHP_EOL;
     }
@@ -27,7 +26,7 @@ HTML;
      *
      * @return string
      */
-    public function renderDetailDialog($model)
+    public function renderDetailForm($model)
     {
         $content = '';
 
@@ -59,7 +58,7 @@ HTML;
      *
      * @return string
      */
-    public function renderCreateDialog($model)
+    public function renderCreateForm($model)
     {
         if (!$fields = $model->getSafeFields()) {
             return '';
@@ -85,7 +84,7 @@ HTML;
      *
      * @return string
      */
-    public function renderEditDialog($model)
+    public function renderEditForm($model)
     {
         if (!$fields = $model->getSafeFields()) {
             return '';
@@ -131,7 +130,7 @@ HTML;
      *
      * @return string
      */
-    public function renderResultBox($model)
+    public function renderResultTable($model)
     {
         $content = PHP_EOL . <<<HTML
 <result-table>
@@ -295,11 +294,11 @@ HTML;
     {
         $content = '';
 
-        $content .= $this->renderSearchBox($model);
-        $content .= $this->renderDetailDialog($model);
-        $content .= $this->renderCreateDialog($model);
-        $content .= $this->renderEditDialog($model);
-        $content .= $this->renderResultBox($model);
+        $content .= $this->renderRequestForm($model);
+        $content .= $this->renderDetailForm($model);
+        $content .= $this->renderCreateForm($model);
+        $content .= $this->renderEditForm($model);
+        $content .= $this->renderResultTable($model);
         $content .= $this->renderCss($model);
         $content .= $this->renderScript($model);
 
