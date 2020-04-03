@@ -704,7 +704,9 @@ Vue.prototype.auto_reload = function () {
 };
 
 Vue.prototype.extract_ill = function (data) {
-    if (!data || data.length === 0) {
+    if (!Array.isArray(data)) {
+        return [];
+    } else if (!data || data.length === 0) {
         return [];
     } else if (typeof data[0] === 'object') {
         return data.map(v => {
