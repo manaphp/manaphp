@@ -657,7 +657,7 @@ Vue.component('result-account', {
 });
 
 Vue.component('result-email', {
-    template: `<el-table-column prop="email" label="邮箱" width="100"  with="200" show-overflow-tooltip></el-table-column>`
+    template: `<el-table-column prop="email" label="邮箱" with="200" show-overflow-tooltip></el-table-column>`
 });
 
 Vue.component('result-ip', {
