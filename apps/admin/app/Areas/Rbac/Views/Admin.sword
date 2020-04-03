@@ -32,11 +32,7 @@
     <el-table-column label="状态" width="100">
         <template v-slot="{row}">@{{ statuses[row.status] }}</template>
     </el-table-column>
-    <el-table-column label="角色">
-        <template v-slot="{row}">
-            <el-tag size="small" v-for="role in row.roles" :key="role.role_id">@{{role.display_name}}</el-tag>
-        </template>
-    </el-table-column>
+    <result-tag prop="roles"></result-tag>
     <result-ip prop="login_ip"></result-ip>
     <result-timestamp prop="login_time"></result-timestamp>
     <result-account prop="creator_name"></result-account>
@@ -82,6 +78,7 @@
                     role_id: '角色',
                     login_ip: '登录IP',
                     login_time: '登录时间',
+                    roles: '角色',
                 }
             },
             methods: {

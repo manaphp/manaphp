@@ -678,6 +678,16 @@ Vue.component('result-column', {
     template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" v-bind="$attrs"></el-table-column>`
 });
 
+Vue.component('result-tag', {
+    props: ['label', 'prop'],
+    template: `
+<el-table-column :label="label||$root.label[prop]||prop" v-bind="$attrs">
+    <template v-slot="{row}">
+        <el-tag size="small" v-for="item in extract_ill(row[prop])" :key="item.id">{{item.label}}</el-tag>
+    </template>
+</el-table-column>`,
+});
+
 Vue.prototype.format_date = function (value) {
     return value ? this.$moment(value * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
 };
@@ -728,7 +738,7 @@ App = Vue.extend({
                 email: '邮箱',
                 tag: 'Tag',
                 icon: '图标',
-                path: '路径'
+                path: '路径',
             },
             createVisible: false,
             editVisible: false,

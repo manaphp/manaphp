@@ -12,11 +12,7 @@
     <result-index></result-index>
     <result-id prop="permission_id"></result-id>
     <result-column prop="path" width="200"></result-column>
-    <el-table-column label="角色列表" width="300">
-        <template v-slot="{row}">
-            <el-tag size="small" v-for="role in row.roles" :key="role.role_id">@{{role.display_name}}</el-tag>
-        </template>
-    </el-table-column>
+    <result-tag prop="roles"></result-tag>
     <result-column prop="display_name" show-overflow-tooltip></result-column>
     <result-timestamp prop="updated_time"></result-timestamp>
     <result-timestamp prop="created_time"></result-timestamp>
@@ -41,6 +37,7 @@
                 },
                 label: {
                     permission_id: '权限ID',
+                    roles: '角色列表',
                 }
             },
             computed: {
