@@ -488,29 +488,14 @@ Vue.component('selector', {
     props: ['value', 'data', 'disabled'],
     template: `
 <span>
-    <el-select v-if="data && typeof data[0]==='object'" v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)" :disabled="disabled">
-        <el-option v-for="item in data" :key="item[key]" :label="item[label]" :value="String(item[key])"></el-option>
-    </el-select>
-    <el-select v-else v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)" :disabled="disabled">
-        <el-option v-for="item in data" :key="item" :label="item" :value="String(item)"></el-option>
+    <el-select v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)" :disabled="disabled">
+        <el-option v-for="item in extract_ill(data)" :key="item.id" :label="item.label" :value="String(item.id)"></el-option>
     </el-select>
 </span>`,
     data() {
-        let key = '';
-        let label = '';
-        let val = String(this.value);
-
-        if (this.data.length > 0 && typeof this.data[0] === 'object') {
-            [key, label] = Object.keys(this.data[0]);
-        }
-        return {key, label, val};
+        return {val: String(this.value)};
     },
     watch: {
-        data() {
-            if (this.data.length > 0 && typeof this.data[0] === 'object') {
-                [this.key, this.label] = Object.keys(this.data[0]);
-            }
-        },
         value(val) {
             this.val = String(val);
         }
@@ -705,6 +690,19 @@ Vue.prototype.auto_reload = function () {
         }
 
         this.reload().then(() => this.$watch('request', _.debounce(() => this.reload(), 500), {deep: true}));
+    }
+};
+
+Vue.prototype.extract_ill = function (data) {
+    if (!data || data.length === 0) {
+        return [];
+    } else if (typeof data[0] === 'object') {
+        return data.map(v => {
+            let [id, label] = Object.values(v);
+            return {id, label};
+        });
+    } else {
+        return data.map(v => ({id: v, label: v}));
     }
 };
 
