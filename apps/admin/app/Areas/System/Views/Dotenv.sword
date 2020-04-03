@@ -28,7 +28,7 @@
     </el-table>
 
     <el-table :data="response.logs" border size="small">
-        <el-table-column type="index" label="#" width="50"></el-table-column>
+        <result-index></result-index>
         <result-column prop="app_id" width="300"></result-column>
         <el-table-column label=".env">
             <template v-slot="{row}">

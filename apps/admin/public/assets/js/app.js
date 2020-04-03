@@ -718,6 +718,16 @@ Vue.component('result-tag', {
 </el-table-column>`,
 });
 
+Vue.component('result-link', {
+    props: ['label', 'prop', 'href'],
+    template: `
+<el-table-column :label="label||$root.label[prop]||prop" width="100">
+    <template v-slot="{row}">
+        <a :href="href+(href.includes('?')?'&':'?')+prop+'='+row[prop]"><slot>{{row[prop]}}</slot></a>
+    </template>
+</el-table-column>`
+});
+
 Vue.prototype.format_date = function (value) {
     return value ? this.$moment(value * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
 };

@@ -13,10 +13,7 @@
 <result-table>
     <result-index></result-index>
     <result-id prop="id"></result-id>
-    <el-table-column label="权限ID" width="100">
-        <template v-slot="{row}"><a :href="'permission/?permission_id='+row.permission_id">@{{row.permission_id}}</a>
-        </template>
-    </el-table-column>
+    <result-link prop="permission_id" href="/rbac/permission"></result-link>
     <result-column prop="permission.path" width="200"></result-column>
     <el-table-column label="角色列表" width="300">
         <template v-slot="{row}">
@@ -45,7 +42,10 @@
                     role_name: '',
                     permission_ids: []
                 },
-                permissions: []
+                permissions: [],
+                label: {
+                    permission_id: '权限id',
+                }
             },
             computed: {
                 roles2() {
