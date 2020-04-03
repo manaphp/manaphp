@@ -548,7 +548,7 @@ Vue.component('create-checkbox', {
     props: ['label', 'prop', 'disabled'],
     template: `
         <el-form-item :label="(label||$root.label[prop]||prop)+':'" :prop="prop">
-            <el-checkbox v-model="$root.create[insert_only]" :disabled="disabled"><slot></slot></el-checkbox>
+            <el-checkbox v-model="$root.create[prop]" :disabled="disabled"><slot></slot></el-checkbox>
         </el-form-item>`
 });
 
