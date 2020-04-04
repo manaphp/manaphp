@@ -13,7 +13,7 @@ use ManaPHP\Helper\LocalFS;
 class SwordController extends Controller
 {
     /**
-     * @param bool   $replace
+     * @param bool $replace
      */
     public function compileCommand($replace = false)
     {
