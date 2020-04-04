@@ -762,6 +762,10 @@ Vue.component('result-op', {
     }
 });
 
+Vue.component('result-button', {
+    template: `<el-button size="mini" v-bind="$attrs" @click="$emit('click')"><slot></slot></el-button>`
+});
+
 Vue.prototype.format_date = function (value) {
     return value ? this.$moment(value * 1000).format('YYYY-MM-DD HH:mm:ss') : '';
 };
