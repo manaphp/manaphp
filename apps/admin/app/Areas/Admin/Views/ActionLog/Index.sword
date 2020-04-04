@@ -28,11 +28,7 @@
     <result-ip prop="client_ip"></result-ip>
     <result-column prop="client_udid" width="200"></result-column>
     <result-timestamp prop="created_time"></result-timestamp>
-    <el-table-column fixed="right" label="操作" width="100">
-        <template v-slot="{row}">
-            <show-detail :row="row"></show-detail>
-        </template>
-    </el-table-column>
+    <result-op></result-op>
 </result-table>
 @section('script')
     <script>

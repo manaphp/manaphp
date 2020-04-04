@@ -36,12 +36,7 @@
     <result-timestamp prop="login_time"></result-timestamp>
     <result-account prop="creator_name"></result-account>
     <result-timestamp prop="created_time"></result-timestamp>
-    <el-table-column fixed="right" label="操作" width="150">
-        <template v-slot="{row}">
-            <show-edit :row="row"></show-edit>
-            <show-active :row="row"></show-active>
-        </template>
-    </el-table-column>
+    <result-op show-active></result-op>
 </result-table>
 @section('script')
     <script>

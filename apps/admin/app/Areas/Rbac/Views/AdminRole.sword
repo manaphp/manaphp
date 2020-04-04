@@ -17,11 +17,7 @@
     <result-account prop="admin_name"></result-account>
     <result-tag prop="roles"></result-tag>
     <result-timestamp prop="created_time"></result-timestamp>
-    <el-table-column fixed="right" label="操作" width="100">
-        <template v-slot="{row}">
-            <show-edit :row="row"></show-edit>
-        </template>
-    </el-table-column>
+    <result-op></result-op>
 </result-table>
 @section('script')
     <script>

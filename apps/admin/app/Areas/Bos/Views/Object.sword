@@ -42,11 +42,7 @@
     <result-column prop="md5" width="150"></result-column>
     <result-ip prop="ip"></result-ip>
     <result-timestamp prop="created_time"></result-timestamp>
-    <el-table-column fixed="right" label="操作" width="150">
-        <template v-slot="{row}">
-            <show-delete :row="row"></show-delete>
-        </template>
-    </el-table-column>
+    <result-op show-delete></result-op>
 </result-table>
 @section('css')
     <style>
