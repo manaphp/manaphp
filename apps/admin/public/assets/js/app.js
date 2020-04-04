@@ -44,11 +44,6 @@ axios.interceptors.response.use(function (res) {
             vm.loading = false;
         }
 
-        if (!Vue.config.silent) {
-            var now = new Date();
-            console.warn('[AJAX][%s.%i][%s][%s] %o', now.toLocaleString('en-GB'), now.getMilliseconds(), res.headers['x-response-time'], res.config.url, res);
-        }
-
         if (typeof res.data === 'string') {
             vm.$alert(res.data, '服务器错误', {customClass: 'error-response'});
         }
