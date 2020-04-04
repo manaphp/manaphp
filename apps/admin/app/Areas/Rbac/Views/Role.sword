@@ -50,14 +50,6 @@
                     role_id: '角色ID',
                     role_name: '角色名称',
                 }
-            },
-            methods: {
-                do_enable(row) {
-                    this.ajax_post("enable", {role_id: row.role_id}, () => row.enabled = 1);
-                },
-                do_disable(row) {
-                    this.ajax_post("disable", {role_id: row.role_id}, () => row.enabled = 0);
-                }
             }
         });
     </script>

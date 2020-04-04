@@ -925,5 +925,17 @@ App = Vue.extend({
                 });
             }
         },
+        do_enable(row) {
+            let params = {};
+            let key = Object.keys(row)[0];
+            params[key] = row[key];
+            this.ajax_post(CONTROLLER_URL + "/enable", params, () => row.enabled = 1);
+        },
+        do_disable(row) {
+            let params = {};
+            let key = Object.keys(row)[0];
+            params[key] = row[key];
+            this.ajax_post(CONTROLLER_URL + "/disable", params, () => row.enabled = 0);
+        }
     },
 });
