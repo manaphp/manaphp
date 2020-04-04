@@ -432,13 +432,6 @@ Vue.component('show-enable', {
 <el-button v-else @click.native.prevent="$root.do_enable(row)" size="mini" type="warning">启用</el-button>`
 });
 
-Vue.component('show-active', {
-    props: ['row'],
-    template: `
-<el-button v-if="row.status==1" @click="$root.do_lock(row)" size="mini" type="danger">锁定</el-button>
-<el-button v-else="row.status!==1" @click="$root.do_active(row)" size="mini" type="warning">激活</el-button>`
-});
-
 Vue.component('create-dialog', {
     template: `
 <el-dialog :title="'新增-'+$root.topic" :visible.sync="$root.createVisible" class="create-dialog">
@@ -746,13 +739,12 @@ Vue.component('result-link', {
 });
 
 Vue.component('result-op', {
-    props: ['show-detail', 'detail-link', 'show-edit', 'show-active', 'show-enable', 'show-delete', 'width'],
+    props: ['show-detail', 'detail-link', 'show-edit', 'show-enable', 'show-delete', 'width'],
     template: `
 <el-table-column fixed="right" label="操作" :width="calcWidth()" v-slot="{row}">
     <show-detail v-if="$root.hasDetail&&showDetail!==false" :row="row" :link="detailLink"></show-detail>
     <show-edit v-if="$root.edit&&showEdit!==false" :row="row"></show-edit>
     <slot :row="row"></slot>
-    <show-active v-if="showActive===''||showActive===true" :row="row"></show-active>
     <show-enable v-if="showEnable===''||showEnable===true" :row="row"></show-enable>
     <show-delete v-if="showDelete===''||showDelete===true" :row="row"></show-delete>
 </el-table-column>`,
@@ -765,7 +757,6 @@ Vue.component('result-op', {
             let count = 0;
             count += !!this.$root.hasDetail && this.showDetail !== false;
             count += !!this.$root.edit && this.showEdit !== false;
-            count += this.showActive === '' || this.showActive === true;
             count += this.showEnable === '' || this.showEnable === true;
             count += this.showDelete === '' || this.showDelete === true;
 

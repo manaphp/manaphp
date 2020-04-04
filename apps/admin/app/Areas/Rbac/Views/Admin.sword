@@ -34,7 +34,10 @@
     <result-timestamp prop="login_time"></result-timestamp>
     <result-account prop="creator_name"></result-account>
     <result-timestamp prop="created_time"></result-timestamp>
-    <result-op show-active></result-op>
+    <result-op v-slot="{row}" width="150">
+        <result-button v-if="row.status==1" @click="do_lock(row)" type="danger">锁定</result-button>
+        <result-button v-else="row.status!==1" @click="do_active(row)" type="warning">激活</result-button>
+    </result-op>
 </result-table>
 @section('script')
     <script>
