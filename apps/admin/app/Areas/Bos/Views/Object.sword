@@ -25,20 +25,16 @@
 
 <result-table>
     <result-index></result-index>
-    <el-table-column label="缩略图" width="80">
-        <template v-slot="{row}">
-            <img v-if="['png', 'jpeg', 'jpg'].includes(row.extension)" :src="row.url"
-                 alt="row.original_name"
-                 style="width: 50px; height: 50px">
-        </template>
+    <el-table-column label="缩略图" width="80" v-slot="{row}">
+        <img v-if="['png', 'jpeg', 'jpg'].includes(row.extension)" :src="row.url"
+             alt="row.original_name"
+             style="width: 50px; height: 50px">
     </el-table-column>
     <result-column prop="url" width="400"></result-column>
     <result-column prop="original_name" width="200"></result-column>
     <result-column prop="mime_type" width="100"></result-column>
     <result-column prop="size" width="80"></result-column>
-    <el-table-column label="dimension" width="100">
-        <template v-slot="{row}">@{{row.width}}*@{{row.height}}</template>
-    </el-table-column>
+    <el-table-column label="dimension" width="100" v-slot="{row}">@{{row.width}}*@{{row.height}}</el-table-column>
     <result-column prop="md5" width="150"></result-column>
     <result-ip prop="ip"></result-ip>
     <result-timestamp prop="created_time"></result-timestamp>

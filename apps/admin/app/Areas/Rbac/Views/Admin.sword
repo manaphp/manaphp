@@ -28,9 +28,7 @@
     <result-account prop="admin_name"></result-account>
     <result-email></result-email>
     <result-column prop="white_ip" width="150" show-overflow-tooltip></result-column>
-    <el-table-column label="状态" width="100">
-        <template v-slot="{row}">@{{ statuses[row.status] }}</template>
-    </el-table-column>
+    <el-table-column label="状态" width="100" v-slot="{row}">@{{ statuses[row.status] }}</el-table-column>
     <result-tag prop="roles"></result-tag>
     <result-ip prop="login_ip"></result-ip>
     <result-timestamp prop="login_time"></result-timestamp>

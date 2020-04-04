@@ -689,11 +689,9 @@ Vue.component('result-email', {
 Vue.component('result-ip', {
     props: ['label', 'prop'],
     template: `
-<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" width="120">
-    <template v-slot="{row}">
-        <span v-if="row[prop]==='127.0.0.1'||row[prop]==='::1'||row[prop].startsWith('192.168.')">{{row[prop]}}</span>
-        <a v-else target="_blank" class="el-link" :href="'https://www.baidu.com/s?wd='+row[prop]" type="primary">{{row[prop]}}</a>
-    </template>
+<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" width="120" v-slot="{row}">
+    <span v-if="row[prop]==='127.0.0.1'||row[prop]==='::1'||row[prop].startsWith('192.168.')">{{row[prop]}}</span>
+    <a v-else target="_blank" class="el-link" :href="'https://www.baidu.com/s?wd='+row[prop]" type="primary">{{row[prop]}}</a>
 </el-table-column>`
 });
 
@@ -714,35 +712,29 @@ Vue.component('result-column', {
 Vue.component('result-tag', {
     props: ['label', 'prop'],
     template: `
-<el-table-column :label="label||$root.label[prop]||prop" v-bind="$attrs">
-    <template v-slot="{row}">
-        <el-tag size="small" v-for="item in extract_ill(row[prop])" :key="item.id">{{item.label}}</el-tag>
-    </template>
+<el-table-column :label="label||$root.label[prop]||prop" v-bind="$attrs" v-slot="{row}">
+    <el-tag size="small" v-for="item in extract_ill(row[prop])" :key="item.id">{{item.label}}</el-tag>
 </el-table-column>`,
 });
 
 Vue.component('result-link', {
     props: ['label', 'prop', 'href'],
     template: `
-<el-table-column :label="label||$root.label[prop]||prop" width="100">
-    <template v-slot="{row}">
-        <a :href="href+(href.includes('?')?'&':'?')+prop+'='+row[prop]"><slot>{{row[prop]}}</slot></a>
-    </template>
+<el-table-column :label="label||$root.label[prop]||prop" width="100" v-slot="{row}">
+    <a :href="href+(href.includes('?')?'&':'?')+prop+'='+row[prop]"><slot>{{row[prop]}}</slot></a>
 </el-table-column>`
 });
 
 Vue.component('result-op', {
     props: ['show-detail', 'detail-link', 'show-edit', 'show-active', 'show-enable', 'show-delete', 'width'],
     template: `
-<el-table-column fixed="right" label="操作" :width="calcWidth()">
-    <template v-slot="{row}">
-        <show-detail v-if="$root.hasDetail&&showDetail!==false" :row="row" :link="detailLink"></show-detail>
-        <show-edit v-if="$root.edit&&showEdit!==false" :row="row"></show-edit>
-        <slot :row="row"></slot>
-        <show-active v-if="showActive===''||showActive===true" :row="row"></show-active>
-        <show-enable v-if="showEnable===''||showEnable===true" :row="row"></show-enable>
-        <show-delete v-if="showDelete===''||showDelete===true" :row="row"></show-delete>
-    </template>
+<el-table-column fixed="right" label="操作" :width="calcWidth()" v-slot="{row}">
+    <show-detail v-if="$root.hasDetail&&showDetail!==false" :row="row" :link="detailLink"></show-detail>
+    <show-edit v-if="$root.edit&&showEdit!==false" :row="row"></show-edit>
+    <slot :row="row"></slot>
+    <show-active v-if="showActive===''||showActive===true" :row="row"></show-active>
+    <show-enable v-if="showEnable===''||showEnable===true" :row="row"></show-enable>
+    <show-delete v-if="showDelete===''||showDelete===true" :row="row"></show-delete>
 </el-table-column>`,
     methods: {
         calcWidth() {

@@ -15,14 +15,12 @@
     <result-id prop="id"></result-id>
     <result-link prop="permission_id" href="/rbac/permission"></result-link>
     <result-column prop="permission.path" width="200"></result-column>
-    <el-table-column label="角色列表" width="300">
-        <template v-slot="{row}">
-            <el-button size="small" v-for="role in row.roles" :key="role.role_id" type="text"
-                       @click.native="request.role_id = role.role_id" :disabled="request.role_id == role.role_id"
-                       :title="role.role_name">
-                @{{ role.display_name }}
-            </el-button>
-        </template>
+    <el-table-column label="角色列表" width="300" v-slot="{row}">
+        <el-button size="small" v-for="role in row.roles" :key="role.role_id" type="text"
+                   @click.native="request.role_id = role.role_id" :disabled="request.role_id == role.role_id"
+                   :title="role.role_name">
+            @{{ role.display_name }}
+        </el-button>
     </el-table-column>
     <result-column prop="permission.display_name" label="显示名称" show-overflow-tooltip></result-column>
     <result-account prop="creator_name"></result-account>
