@@ -742,6 +742,18 @@ class Compiler extends Component
     }
 
     /**
+     * Compile the maxAge statements into valid PHP.
+     *
+     * @param string $expression
+     *
+     * @return string
+     */
+    protected function _compile_maxAge($expression)
+    {
+        return "<?php \$view->setMaxAge{$expression}; ?>";
+    }
+
+    /**
      * Compile the break statements into valid PHP.
      *
      * @param string $expression

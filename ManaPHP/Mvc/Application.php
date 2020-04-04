@@ -43,6 +43,9 @@ class Application extends \ManaPHP\Http\Application
                 null;
             } elseif ($actionReturnValue instanceof View) {
                 $this->response->setContent($actionReturnValue->render());
+                if (($maxAge = $actionReturnValue->getMaxAge()) > 0) {
+                    $this->response->setMaxAge($maxAge);
+                }
             } elseif (is_string($actionReturnValue)) {
                 $this->response->setJsonError($actionReturnValue);
             } else {

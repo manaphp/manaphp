@@ -9,6 +9,11 @@ use ManaPHP\Helper\LocalFS;
 class ViewContext
 {
     /**
+     * @var int
+     */
+    public $max_age;
+
+    /**
      * @var false|string|null
      */
     public $layout;
@@ -36,6 +41,11 @@ class ViewContext
 class View extends Component implements ViewInterface
 {
     /**
+     * @var int
+     */
+    protected $_max_age;
+
+    /**
      * @var string
      */
     protected $_base_url;
@@ -57,8 +67,41 @@ class View extends Component implements ViewInterface
      */
     public function __construct($options = [])
     {
+        if (isset($options['max_age'])) {
+            $this->_max_age = (int)$options['max_age'];
+        }
+
         $this->_base_url = rtrim($options['base_url'] ?? $this->alias->resolve('@web'));
         $this->_autofix_url = $options['autofix_url'] ?? $this->_base_url !== '';
+    }
+
+    /**
+     * @param int $max_age
+     *
+     * @return static
+     */
+    public function setMaxAge($max_age)
+    {
+        $this->_context->max_age = (int)$max_age;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxAge()
+    {
+        if ($this->_max_age > 0) {
+            $context = $this->_context;
+            if ($context->max_age === null) {
+                return $this->_max_age;
+            } else {
+                return $context->max_age > 0 ? $context->max_age : 0;
+            }
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -147,6 +190,10 @@ class View extends Component implements ViewInterface
      */
     protected function _render($template, $vars, $directOutput)
     {
+        if ($vars) {
+            $this->setMaxAge(0);
+        }
+
         if (isset($vars['view'])) {
             throw new MisuseException('variable `view` is reserved for view');
         }
@@ -358,6 +405,10 @@ class View extends Component implements ViewInterface
      */
     public function widget($widget, $options = [])
     {
+        if ($options) {
+            $this->setMaxAge(0);
+        }
+
         if (!$widgetClassName = $this->getWidgetClassName($widget)) {
             throw new InvalidValueException(['`:widget` widget is invalid: `:class` class is not exists', 'widget' => $widget, 'class' => $widgetClassName]);
         }

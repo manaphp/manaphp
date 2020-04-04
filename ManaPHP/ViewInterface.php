@@ -10,6 +10,18 @@ namespace ManaPHP;
 interface ViewInterface
 {
     /**
+     * @param int $max_age
+     *
+     * @return static
+     */
+    public function setMaxAge($max_age);
+
+    /**
+     * @return int
+     */
+    public function getMaxAge();
+
+    /**
      * @param false|string $layout
      *
      * @return static
