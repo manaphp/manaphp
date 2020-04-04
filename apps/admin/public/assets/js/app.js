@@ -532,6 +532,10 @@ Vue.component('request-select', {
     template: `<selector v-model.trim="$root.request[prop]" :data="data"></selector>`
 });
 
+Vue.component('request-button', {
+    template: `<el-button size="small" @click="$emit('click')" v-bind="$attrs""><slot></slot></el-button>`
+});
+
 Vue.component('create-form', {
     template: `
 <el-dialog :title="'新增-'+$root.topic" :visible.sync="$root.createVisible" class="create-dialog" @opened="$root.$refs.create=$refs.create">

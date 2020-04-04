@@ -1,6 +1,5 @@
 <request-form>
-    <el-button size="small" @click="do_rebuild" type="primary" icon="el-icon-refresh" style="width: 100px;">重新扫描
-    </el-button>
+    <request-button @click="do_rebuild" type="primary" icon="el-icon-refresh">重新扫描</request-button>
     <selector v-model="filter.path" :data="paths"></selector>
 </request-form>
 <edit-form>
