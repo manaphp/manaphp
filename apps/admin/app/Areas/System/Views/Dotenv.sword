@@ -14,18 +14,18 @@
     <el-table :data="response.current" border size="small">
         <result-index></result-index>
         <result-column prop="app_id" width="300"></result-column>
-        <el-table-column label=".env" v-slot="{row}">
+        <result-column label=".env" v-slot="{row}">
             <pre>@{{row.env}}</pre>
-        </el-table-column>
+        </result-column>
         <result-op show-delete></result-op>
     </el-table>
 
     <el-table :data="response.logs" border size="small">
         <result-index></result-index>
         <result-column prop="app_id" width="300"></result-column>
-        <el-table-column label=".env" v-slot="{row}">
+        <result-column label=".env" v-slot="{row}">
             <pre>@{{row.env}}</pre>
-        </el-table-column>
+        </result-column>
         <result-timestamp prop="created_time"></result-timestamp>
     </el-table>
 </div>

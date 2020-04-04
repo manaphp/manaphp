@@ -706,7 +706,23 @@ Vue.component('result-timestamp', {
 
 Vue.component('result-column', {
     props: ['label', 'prop'],
-    template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" v-bind="$attrs"></el-table-column>`
+    template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" v-bind="$attrs" v-slot="{row}"><slot :row="row">{{getProp(row,prop)}}</slot></el-table-column>`,
+    methods: {
+        getProp(row, prop) {
+            if (prop === undefined) {
+                return '';
+            }
+            let v = row;
+            for (let part of prop.split('.')) {
+                if (!v.hasOwnProperty(part)) {
+                    return '';
+                }
+                v = v[part];
+            }
+
+            return v;
+        }
+    }
 });
 
 Vue.component('result-tag', {
