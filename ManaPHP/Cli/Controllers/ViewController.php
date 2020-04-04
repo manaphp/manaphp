@@ -169,12 +169,7 @@ HTML;
         }
 
         $content .= PHP_EOL . <<<HTML
-    <el-table-column fixed="right" label="操作" width="150">
-        <template v-slot="{row}">
-            <show-edit :row="row"></show-edit>
-            <show-delete :row="row"></show-delete>          
-        </template>
-    </el-table-column>
+    <result-op></result-op>
 HTML;
         $content .= PHP_EOL . <<<HTML
 </result-table>
