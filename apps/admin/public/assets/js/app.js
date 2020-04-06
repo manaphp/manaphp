@@ -885,43 +885,34 @@ App = Vue.extend({
         show_detail(row, action) {
             this.detailVisible = true;
 
-            let data = {};
             let key = Object.keys(row)[0];
-            data[key] = row[key];
-
-            this.ajax_get(CONTROLLER_URL + '/' + (action ? action : "detail"), data, (res) => {
+            this.ajax_get(CONTROLLER_URL + '/' + (action ? action : "detail"), {[key]: row[key]}, (res) => {
                 this.detail = res;
             });
         },
         do_delete(row, name = '') {
-            let data = {};
             let keys = Object.keys(row);
             let key = keys[0];
-            data[key] = row[key];
 
             if (!name) {
                 name = (keys[1] && keys[1].indexOf('_name')) ? row[keys[1]] : row[key];
             }
 
             if (window.event.ctrlKey) {
-                this.ajax_post(CONTROLLER_URL + "/delete", data, () => this.reload());
+                this.ajax_post(CONTROLLER_URL + "/delete", {[key]: row[key]}, () => this.reload());
             } else {
                 this.$confirm('确认删除 `' + (name ? name : row[key]) + '` ?').then(() => {
-                    this.ajax_post(CONTROLLER_URL + "/delete", data, () => this.reload());
+                    this.ajax_post(CONTROLLER_URL + "/delete", {[key]: row[key]}, () => this.reload());
                 });
             }
         },
         do_enable(row) {
-            let params = {};
             let key = Object.keys(row)[0];
-            params[key] = row[key];
-            this.ajax_post(CONTROLLER_URL + "/enable", params, () => row.enabled = 1);
+            this.ajax_post(CONTROLLER_URL + "/enable", {[key]: row[key]}, () => row.enabled = 1);
         },
         do_disable(row) {
-            let params = {};
             let key = Object.keys(row)[0];
-            params[key] = row[key];
-            this.ajax_post(CONTROLLER_URL + "/disable", params, () => row.enabled = 0);
+            this.ajax_post(CONTROLLER_URL + "/disable", {[key]: row[key]}, () => row.enabled = 0);
         }
     },
 });
