@@ -469,6 +469,13 @@ class Router extends Component implements RouterInterface
         return $this->_context->area;
     }
 
+    public function setArea($area)
+    {
+        $this->_context->area = $area;
+
+        return $this;
+    }
+
     /**
      * Returns the processed controller name
      *
@@ -477,6 +484,13 @@ class Router extends Component implements RouterInterface
     public function getController()
     {
         return $this->_context->controller;
+    }
+
+    public function setController($controller)
+    {
+        $this->_context->controller = $controller;
+
+        return $this;
     }
 
     /**
@@ -511,6 +525,13 @@ class Router extends Component implements RouterInterface
         return $this->_context->params;
     }
 
+    public function setParams($params)
+    {
+        $this->_context->params = $params;
+
+        return $this;
+    }
+
     /**
      * Checks if the router matches any of the defined routes
      *
@@ -519,6 +540,11 @@ class Router extends Component implements RouterInterface
     public function wasMatched()
     {
         return $this->_context->matched;
+    }
+
+    public function setMatched($matched)
+    {
+        $this->_context->matched = $matched;
     }
 
     /**

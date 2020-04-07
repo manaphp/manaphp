@@ -158,11 +158,25 @@ interface RouterInterface
     public function getArea();
 
     /**
+     * @param string $area
+     *
+     * @return static
+     */
+    public function setArea($area);
+
+    /**
      * Returns processed controller name
      *
      * @return string
      */
     public function getController();
+
+    /**
+     * @param string $controller
+     *
+     * @return static
+     */
+    public function setController($controller);
 
     /**
      * Returns processed action name
@@ -186,11 +200,25 @@ interface RouterInterface
     public function getParams();
 
     /**
+     * @param array $params
+     *
+     * @return static
+     */
+    public function setParams($params);
+
+    /**
      * Check if the router matches any of the defined routes
      *
      * @return bool
      */
     public function wasMatched();
+
+    /**
+     * @param bool $matched
+     *
+     * @return static
+     */
+    public function setMatched($matched);
 
     /**
      * @param array|string $args
