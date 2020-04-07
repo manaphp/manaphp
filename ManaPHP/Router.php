@@ -372,6 +372,8 @@ class Router extends Component implements RouterInterface
     {
         $context = $this->_context;
 
+        $this->fireEvent('request:routing');
+
         $uri = $uri ?: $this->getRewriteUri();
 
         if ($method === null) {
@@ -429,6 +431,8 @@ class Router extends Component implements RouterInterface
         }
 
         if ($parts === false) {
+            $this->fireEvent('request:routed');
+
             return false;
         }
 
@@ -443,6 +447,8 @@ class Router extends Component implements RouterInterface
         $context->controller = $parts['controller'];
         $context->action = $parts['action'];
         $context->params = $parts['params'] ?? [];
+
+        $this->fireEvent('request:routed');
 
         return $context;
     }
