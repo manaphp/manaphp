@@ -307,20 +307,22 @@ HTML;
     {
         foreach (LocalFS::glob('@app/Models/*.php') as $model_file) {
             $plain = basename($model_file, '.php');
-            $view_file = path("@tmp/view/Views/{$plain}.sword");
+            $view_file = "@tmp/view/Views/{$plain}.sword";
             $model = "App\Models\\$plain";
             $instance = new $model();
             LocalFS::filePut($view_file, $this->render($instance));
+            $this->console->writeLn("view of `$model` saved to `$view_file`");
         }
 
         foreach (LocalFS::glob('@app/Areas/*/Models/*.php') as $model_file) {
             preg_match('#Areas/(\w+)/Models/(\w+).php$#', $model_file, $match);
             list(, $area, $plain) = $match;
 
-            $view_file = path("@tmp/view/Areas/$area/Views/{$plain}.sword");
+            $view_file = "@tmp/view/Areas/$area/Views/{$plain}.sword";
             $model = "App\\Areas\\$area\\Models\\$plain";
             $instance = new $model();
             LocalFS::filePut($view_file, $this->render($instance));
+            $this->console->writeLn("view of `$model` saved to `$view_file`");
         }
     }
 }
