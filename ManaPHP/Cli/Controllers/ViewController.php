@@ -69,7 +69,7 @@ HTML;
 HTML;
         foreach ($fields as $field) {
             $content .= PHP_EOL . <<<HTML
-    <create-input prop="$field"></create-input>
+    <create-text prop="$field"></create-text>
 HTML;
         }
 
@@ -95,12 +95,12 @@ HTML;
 HTML;
         $primaryKey = $model->getPrimaryKey();
         $content .= PHP_EOL . <<<HTML
-    <edit-input prop="$primaryKey" disabled></edit-input>
+    <edit-text prop="$primaryKey" disabled></edit-text>
 HTML;
 
         foreach ($fields as $field) {
             $content .= PHP_EOL . <<<HTML
-    <edit-input prop="$field"></edit-input>
+    <edit-text prop="$field"></edit-text>
 HTML;
         }
 
