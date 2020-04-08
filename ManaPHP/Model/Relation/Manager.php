@@ -85,7 +85,7 @@ class Manager extends Component implements ManagerInterface
      */
     protected function _inferRelation($thisInstance, $name)
     {
-        if (in_array($name . '_id', $thisInstance->getFields(), true)) {
+        if ($thisInstance->hasField($name . '_id')) {
             $thatModel = $this->_inferClassName($thisInstance, $name);
             return $thatModel ? $thisInstance->belongsTo($thatModel, $name . '_id') : false;
         }
@@ -101,7 +101,7 @@ class Manager extends Component implements ManagerInterface
             $thatInstance = $thatModel::sample();
 
             $thisForeignedKey = $thisInstance->getForeignedKey();
-            if (in_array($thisForeignedKey, $thatInstance->getFields(), true)) {
+            if ($thatInstance->hasField($thisForeignedKey)) {
                 return $thisInstance->hasMany($thatModel, $thisForeignedKey);
             }
 
@@ -137,9 +137,9 @@ class Manager extends Component implements ManagerInterface
             $thatInstance = $thatModel::sample();
             $thisForeignedKey = $thisInstance->getForeignedKey();
             $thatForeignedKey = $thatInstance->getForeignedKey();
-            if (in_array($thisForeignedKey, $thatInstance->getFields(), true)) {
+            if ($thatInstance->hasField($thisForeignedKey)) {
                 return $thisInstance->hasOne($thatModel, $thisForeignedKey);
-            } elseif (in_array($thatForeignedKey, $thisInstance->getFields(), true)) {
+            } elseif ($thisInstance->hasField($thatForeignedKey)) {
                 return $thisInstance->belongsTo($thatModel, $thatForeignedKey);
             }
         }

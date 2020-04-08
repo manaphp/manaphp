@@ -310,7 +310,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             $keyField = $sample->getPrimaryKey();
 
             $query = static::select([$keyField, $fields])->where($filters);
-            if (in_array('display_order', $sample->getFields(), true)) {
+            if ($sample->hasField('display_order')) {
                 return $query->orderBy(['display_order' => SORT_DESC, $keyField => SORT_ASC])->fetch(true);
             } else {
                 return $query->orderBy([$keyField => SORT_ASC])->fetch(true);
@@ -319,7 +319,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             $keyField = $sample->getPrimaryKey();
             array_unshift($fields, $keyField);
 
-            if (in_array('display_order', $sample->getFields(), true)) {
+            if ($sample->hasField('display_order')) {
                 $order = ['display_order' => SORT_DESC, $keyField => SORT_ASC];
             } else {
                 $order = [$keyField => SORT_ASC];
@@ -1129,7 +1129,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function increment($field, $step = 1)
     {
-        if (!in_array($field, $this->getFields(), true)) {
+        if (!$this->hasField($field)) {
             throw new InvalidArgumentException([':field field is invalid.', 'field' => $field]);
         }
 
@@ -1146,7 +1146,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function decrement($field, $step = 1)
     {
-        if (!in_array($field, $this->getFields(), true)) {
+        if (!$this->hasField($field)) {
             throw new InvalidArgumentException([':field field is invalid.', 'field' => $field]);
         }
 
