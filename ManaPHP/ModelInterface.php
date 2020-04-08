@@ -525,11 +525,11 @@ interface ModelInterface
 
     /**
      * @param string $thatModel
-     * @param string $thisField
+     * @param string $thatField
      *
      * @return \ManaPHP\Model\Relation\HasOne
      */
-    public function hasOne($thatModel, $thisField = null);
+    public function hasOne($thatModel, $thatField = null);
 
     /**
      * @param string $thatModel

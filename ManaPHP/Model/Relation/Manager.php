@@ -87,7 +87,7 @@ class Manager extends Component implements ManagerInterface
     {
         if (in_array($name . '_id', $thisInstance->getFields(), true)) {
             $thatModel = $this->_inferClassName($thisInstance, $name);
-            return $thatModel ? $thisInstance->hasOne($thatModel, $name . '_id') : false;
+            return $thatModel ? $thisInstance->belongsTo($thatModel, $name . '_id') : false;
         }
 
         /** @var \ManaPHP\Model $thatInstance */
