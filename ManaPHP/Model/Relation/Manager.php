@@ -100,9 +100,9 @@ class Manager extends Component implements ManagerInterface
 
             $thatInstance = $thatModel::sample();
 
-            $foreignedKey = $thisInstance->getForeignedKey();
-            if (in_array($foreignedKey, $thatInstance->getFields(), true)) {
-                return $thisInstance->hasMany($thatModel, $foreignedKey);
+            $thisForeignedKey = $thisInstance->getForeignedKey();
+            if (in_array($thisForeignedKey, $thatInstance->getFields(), true)) {
+                return $thisInstance->hasMany($thatModel, $thisForeignedKey);
             }
 
             $thatPlain = substr($thatModel, strrpos($thatModel, '\\') + 1);
@@ -132,6 +132,16 @@ class Manager extends Component implements ManagerInterface
             }
 
             throw new RuntimeException(['infer `:relation` relation failed', 'relation' => $name]);
+        } elseif ($thatModel = $this->_inferClassName($thisInstance, $name)) {
+            /** @var \ManaPHP\ModelInterface $thatInstance */
+            $thatInstance = $thatModel::sample();
+            $thisForeignedKey = $thisInstance->getForeignedKey();
+            $thatForeignedKey = $thatInstance->getForeignedKey();
+            if (in_array($thisForeignedKey, $thatInstance->getFields(), true)) {
+                return $thisInstance->hasOne($thatModel, $thisForeignedKey);
+            } elseif (in_array($thatForeignedKey, $thisInstance->getFields(), true)) {
+                return $thisInstance->belongsTo($thatModel, $thatForeignedKey);
+            }
         }
 
         return false;
