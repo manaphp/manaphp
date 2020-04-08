@@ -528,11 +528,11 @@ interface ModelInterface
 
     /**
      * @param string $thatModel
-     * @param string $thisField
+     * @param string $thatField
      *
      * @return \ManaPHP\Model\Relation\HasMany
      */
-    public function hasMany($thatModel, $thisField = null);
+    public function hasMany($thatModel, $thatField = null);
 
     /**
      * @param string $thatModel

@@ -1235,21 +1235,18 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function hasOne($thatModel, $thatField = null)
     {
-        return new HasOne(static::class, $this->getPrimaryKey(), $thatModel, $thatField ?: $this->getForeignedKey());
+        return new HasOne(static::class, $this->getPrimaryKey(), $thatModel, $thatField ?? $this->getForeignedKey());
     }
 
     /**
      * @param string $thatModel
-     * @param string $thisField =key(get_object_vars(new static))
+     * @param string $thatField =key(get_object_vars(new static))
      *
      * @return \ManaPHP\Model\Relation\HasMany
      */
-    public function hasMany($thatModel, $thisField = null)
+    public function hasMany($thatModel, $thatField = null)
     {
-        /** @var \ManaPHP\Model $thatModel */
-        $thatInstance = $thatModel::sample();
-
-        return new HasMany(static::class, $thisField ?? $thatInstance->getForeignedKey(), $thatModel, $this->getPrimaryKey());
+        return new HasMany(static::class, $this->getPrimaryKey(), $thatModel, $thatField ?? $this->getForeignedKey());
     }
 
     /**
