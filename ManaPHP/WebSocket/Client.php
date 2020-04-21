@@ -208,7 +208,7 @@ class Client extends Component implements ClientInterface
      *
      * @return void
      */
-    public function sendMessage($message)
+    public function send($message)
     {
         $this->fireEvent('wsClient:send', $message);
 
@@ -232,7 +232,7 @@ class Client extends Component implements ClientInterface
      *
      * @return false|string
      */
-    public function recvMessage($timeout = 0.0)
+    public function recv($timeout = 0.0)
     {
         $socket = $this->_socket ?? $this->_connect();
 

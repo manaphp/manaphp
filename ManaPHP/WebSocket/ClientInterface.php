@@ -13,14 +13,14 @@ interface ClientInterface
      *
      * @return void
      */
-    public function sendMessage($message);
+    public function send($message);
 
     /**
      * @param float
      *
      * @return string|false
      */
-    public function recvMessage($timeout = 0.0);
+    public function recv($timeout = 0.0);
 
     /**
      * @return void
