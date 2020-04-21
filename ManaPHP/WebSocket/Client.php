@@ -275,13 +275,6 @@ class Client extends Component implements ClientInterface
             $buffer .= $r;
         }
 
-        $byte0 = ord($buffer[0]);
-
-        $op_code = $byte0 & 0x0F;
-        if ($op_code !== 0x02 && $op_code !== 0x01) {
-            throw new ProtocolException('only support binary and text frame: ' . bin2hex(chr($byte0)));
-        }
-
         $byte1 = ord($buffer[1]);
 
         if ($byte1 & 0x80) {
@@ -333,6 +326,13 @@ class Client extends Component implements ClientInterface
             } else {
                 $message .= $r;
             }
+        }
+
+        $byte0 = ord($buffer[0]);
+		
+        $op_code = $byte0 & 0x0F;
+        if ($op_code !== 0x02 && $op_code !== 0x01) {
+            throw new ProtocolException('only support binary and text frame: ' . bin2hex(chr($byte0)));
         }
 
         $this->_buffer = strlen($buffer) - ($header_length + $message_length) > 0 ? substr($buffer, $header_length + $message_length) : '';
