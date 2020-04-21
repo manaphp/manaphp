@@ -46,7 +46,7 @@ class Client extends Component implements ClientInterface
     /**
      * @var callable
      */
-    protected $_on_connect;
+    protected $_on_open;
 
     /**
      * @var resource
@@ -82,8 +82,8 @@ class Client extends Component implements ClientInterface
             $this->_user_agent = $options['user_agent'];
         }
 
-        if (isset($options['on_connect'])) {
-            $this->_on_connect = $options['on_connect'];
+        if (isset($options['on_open'])) {
+            $this->_on_open = $options['on_open'];
         }
     }
 
@@ -103,7 +103,7 @@ class Client extends Component implements ClientInterface
     /**
      * @return resource
      */
-    protected function _connect()
+    protected function _open()
     {
         if ($this->_socket) {
             return $this->_socket;
@@ -167,8 +167,8 @@ class Client extends Component implements ClientInterface
 
         $this->_socket = $socket;
 
-        if ($this->_on_connect) {
-            call_user_func($this->_on_connect, $this);
+        if ($this->_on_open) {
+            call_user_func($this->_on_open, $this);
         }
 
         return $this->_socket;
@@ -212,7 +212,7 @@ class Client extends Component implements ClientInterface
     {
         $this->fireEvent('wsClient:send', $message);
 
-        $socket = $this->_socket ?? $this->_connect();
+        $socket = $this->_socket ?? $this->_open();
         $message_length = strlen($message);
 
         $header = chr(129);
@@ -234,7 +234,7 @@ class Client extends Component implements ClientInterface
      */
     public function recv($timeout = 0.0)
     {
-        $socket = $this->_socket ?? $this->_connect();
+        $socket = $this->_socket ?? $this->_open();
 
         $buf = '';
         $start_time = microtime(true);

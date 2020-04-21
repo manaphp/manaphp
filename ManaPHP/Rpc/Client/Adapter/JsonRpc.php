@@ -58,7 +58,7 @@ class JsonRpc extends Component implements ClientInterface
         }
 
         if ($this->_authentication) {
-            $options['on_connect'] = [$this, 'authenticate'];
+            $options['on_open'] = [$this, 'authenticate'];
         }
 
         $this->poolManager->add($this, $options, $this->_pool_size);
