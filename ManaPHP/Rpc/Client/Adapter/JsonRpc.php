@@ -39,6 +39,8 @@ class JsonRpc extends Component implements ClientInterface
             $this->_pool_size = $options['pool_size'];
             unset($options['pool_size']);
         }
+	
+	$options['protocol'] = 'jsonrpc';
 
         if (isset($options['timeout'])) {
             $this->_timeout = $options['timeout'];

@@ -27,6 +27,21 @@ class Client extends Component implements ClientInterface
     protected $_timeout = 3;
 
     /**
+     * @var string
+     */
+    protected $_protocol;
+
+    /**
+     * @var string
+     */
+    protected $_origin;
+
+    /**
+     * @var string
+     */
+    protected $_user_agent = 'manaphp/client';
+
+    /**
      * @var callable
      */
     protected $_on_connect;
@@ -56,6 +71,18 @@ class Client extends Component implements ClientInterface
 
         if (isset($options['timeout'])) {
             $this->_timeout = $options['timeout'];
+        }
+
+        if (isset($options['protocol'])) {
+            $this->_protocol = $options['protocol'];
+        }
+
+        if (isset($options['origin'])) {
+            $this->_origin = $options['origin'];
+        }
+
+        if (isset($options['user_agent'])) {
+            $this->_user_agent = $options['user_agent'];
         }
 
         if (isset($options['on_connect'])) {
@@ -104,13 +131,15 @@ class Client extends Component implements ClientInterface
 
         $key = bin2hex(random_bytes(16));
         $headers = "GET $path HTTP/1.1\r\n" .
-            "Origin: null\r\n" .
             "Host: $host:$port\r\n" .
             "Sec-WebSocket-Key: $key\r\n" .
-            "User-Agent: manaphp/client\r\n" .
-            "Upgrade: Websocket\r\n" .
-            "Sec-WebSocket-Protocol: jsonrpc\r\n" .
-            "Sec-WebSocket-Version: 13\r\n\r\n";
+            "User-Agent: $this->_user_agent\r\n" .
+            "Upgrade: Websocket\r\n";
+
+        $headers .= $this->_origin ? "Origin: $this->_origin\r\n" : '';
+        $headers .= $this->_protocol ? "Sec-WebSocket-Protocol: $this->_protocol\r\n" : '';
+
+        $headers .= "Sec-WebSocket-Version: 13\r\n\r\n";
 
         $this->_send($socket, $headers);
 
