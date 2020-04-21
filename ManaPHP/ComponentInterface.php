@@ -60,4 +60,28 @@ interface ComponentInterface
      * @return void
      */
     public function fireEvent($event, $data = []);
+
+    /**
+     * @param string   $event
+     * @param callable $handler
+     *
+     * @return static
+     */
+    public function on($event, $handler);
+
+    /**
+     * @param array    $event
+     * @param callable $handler
+     *
+     * @return static
+     */
+    public function off($event = null, $handler = null);
+
+    /**
+     * @param string $event
+     * @param array  $data
+     *
+     * @return void
+     */
+    public function emit($event, $data = []);
 }

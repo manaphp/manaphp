@@ -3,8 +3,10 @@ namespace ManaPHP;
 
 use JsonSerializable;
 use ManaPHP\Coroutine\Context\Inseparable;
+use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\MisuseException;
 use Swoole\Coroutine;
+use \Closure;
 
 /**
  * Class ManaPHP\Component
@@ -53,6 +55,11 @@ class Component implements ComponentInterface, JsonSerializable
      * @var \ManaPHP\Di
      */
     protected $_di;
+
+    /**
+     * @var callable[]
+     */
+    protected $_on;
 
     /**
      * Sets the dependency injector
@@ -259,7 +266,65 @@ class Component implements ComponentInterface, JsonSerializable
      */
     public function fireEvent($event, $data = [])
     {
+        $on = substr($event, strpos($event, ':') + 1);
+
+        if (isset($this->_on[$on])) {
+            $this->emit($on, $data);
+        }
+
         $this->eventsManager->fireEvent($event, $this, $data);
+    }
+
+    /**
+     * @param string   $event
+     * @param callable $handler
+     *
+     * @return static
+     */
+    public function on($event, $handler)
+    {
+        $this->_on[$event][] = $handler;
+
+        return $this;
+    }
+
+    /**
+     * @param array    $event
+     * @param callable $handler
+     *
+     * @return static
+     */
+    public function off($event = null, $handler = null)
+    {
+        if ($event === null) {
+            $this->_on = null;
+        } elseif ($handler === null) {
+            unset($this->_on[$event]);
+        } else {
+            foreach ($this->_on[$event] as $i => $v) {
+                if ($v === $handler) {
+                    unset($this->_on[$event[$i]]);
+                    break;
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $event
+     * @param array  $data
+     *
+     * @return void
+     */
+    public function emit($event, $data = [])
+    {
+        $eventArgs = new EventArgs($event, $this, $data);
+
+        foreach ($this->_on[$event] ?? [] as $handler) {
+            $handler instanceof Closure ? $handler($eventArgs) : $handler[0]->{$handler[1]}($eventArgs);
+        }
     }
 
     /**
@@ -269,7 +334,7 @@ class Component implements ComponentInterface, JsonSerializable
     {
         $data = [];
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k === '_object_id' || $k === '_di') {
+            if ($k === '_object_id' || $k === '_di' || $k === '_on') {
                 continue;
             }
 
@@ -296,7 +361,7 @@ class Component implements ComponentInterface, JsonSerializable
     {
         $data = [];
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k === '_object_id' || (is_object($v) && $k !== '_context')) {
+            if ($k === '_object_id' || $k === '_on' || (is_object($v) && $k !== '_context')) {
                 continue;
             }
 
