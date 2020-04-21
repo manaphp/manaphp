@@ -236,21 +236,25 @@ class Client extends Component implements ClientInterface
     {
         $socket = $this->_socket ?? $this->_connect();
 
-        $buffer = '';
+        $buf = '';
         $start_time = microtime(true);
-        while (($left = 2 - strlen($buffer)) > 0) {
+        while (($left = 2 - ($buf_len = strlen($buf))) > 0) {
             if ($timeout > 0 && microtime(true) - $start_time > $timeout) {
-                throw new TimeoutException('receive timeout');
+                if ($buf_len === 0) {
+                    return false;
+                } else {
+                    throw new TimeoutException('receive timeout');
+                }
             }
 
             if (($r = fread($socket, $left)) === false) {
                 throw new DataTransferException('recv failed');
             }
 
-            $buffer .= $r;
+            $buf .= $r;
         }
 
-        $byte1 = ord($buffer[1]);
+        $byte1 = ord($buf[1]);
 
         if ($byte1 & 0x80) {
             throw new ProtocolException('Mask not support');
@@ -259,14 +263,15 @@ class Client extends Component implements ClientInterface
         $len = $byte1 & 0x7F;
 
         if ($len <= 125) {
-            $header_length = 2;
+            $header_len = 2;
         } elseif ($len === 126) {
-            $header_length = 4;
+            $header_len = 4;
         } else {
-            $header_length = 10;
+            $header_len = 10;
         }
 
-        while (($left = $header_length - strlen($buffer)) > 0) {
+        $start_time = microtime(true);
+        while (($left = $header_len - strlen($buf)) > 0) {
             if ($timeout > 0 && microtime(true) - $start_time > $timeout) {
                 throw new TimeoutException('receive timeout');
             }
@@ -274,20 +279,20 @@ class Client extends Component implements ClientInterface
             if (($r = fread($socket, $left)) === false) {
                 throw new DataTransferException('receive failed');
             }
-            $buffer .= $r;
+            $buf .= $r;
         }
 
         if ($len <= 125) {
-            $payload_length = $len;
+            $payload_len = $len;
         } elseif ($len === 126) {
-            $payload_length = unpack('n', substr($buffer, 2, 2))[1];
+            $payload_len = unpack('n', substr($buf, 2, 2))[1];
         } else {
-            $payload_length = unpack('J', substr($buffer, 2, 8))[1];
+            $payload_len = unpack('J', substr($buf, 2, 8))[1];
         }
 
-        $payload = strlen($buffer) > $header_length ? substr($buffer, $header_length, $payload_length) : '';
+        $payload = strlen($buf) > $header_len ? substr($buf, $header_len, $payload_len) : '';
 
-        while (($left = $payload_length - strlen($payload)) > 0) {
+        while (($left = $payload_len - strlen($payload)) > 0) {
             if ($timeout > 0 && microtime(true) - $start_time > $timeout) {
                 throw new TimeoutException('receive timeout');
             }
@@ -303,7 +308,7 @@ class Client extends Component implements ClientInterface
             }
         }
 
-        $byte0 = ord($buffer[0]);
+        $byte0 = ord($buf[0]);
 
         $op_code = $byte0 & 0x0F;
         $message = new Message($op_code, $payload);
