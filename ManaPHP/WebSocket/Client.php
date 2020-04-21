@@ -8,6 +8,7 @@ use ManaPHP\WebSocket\Client\ConnectionException;
 use ManaPHP\WebSocket\Client\DataTransferException;
 use ManaPHP\WebSocket\Client\HandshakeException;
 use ManaPHP\WebSocket\Client\ProtocolException;
+use ManaPHP\WebSocket\Client\SwitchingProtocolsException;
 use ManaPHP\WebSocket\Client\TimeoutException;
 
 class Client extends Component implements ClientInterface
@@ -53,11 +54,6 @@ class Client extends Component implements ClientInterface
     protected $_socket;
 
     /**
-     * @var string
-     */
-    protected $_buffer = '';
-
-    /**
      * Client constructor.
      *
      * @param array $options
@@ -94,7 +90,6 @@ class Client extends Component implements ClientInterface
     public function __clone()
     {
         $this->_socket = null;
-        $this->_buffer = '';
     }
 
     /**
@@ -153,33 +148,20 @@ class Client extends Component implements ClientInterface
 
         $this->_send($socket, $headers);
 
-        $buffer = '';
+        if (($first = fgets($socket)) !== "HTTP/1.1 101 Switching Protocols\r\n") {
+            throw new SwitchingProtocolsException($first);
+        }
+
+        if (($headers = stream_get_line($socket, 4096, "\r\n\r\n")) === false) {
+            throw new HandshakeException('receive headers failed');
+        }
 
         $sec_key = base64_encode(pack('H*', sha1($key . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11')));
-
-        while (true) {
-            if (($recv = fread($socket, 4096)) === false) {
-                throw new DataTransferException('send failed');
-            }
-            $buffer .= $recv;
-
-            if (($pos = strpos($buffer, "\r\n\r\n")) !== false) {
-                $headers = substr($buffer, 0, $pos);
-                if (strpos($headers, $sec_key) === false) {
-                    if ($this->_proxy) {
-                        throw new ConnectionException('Connection by proxy timed out:  ' . $this->_endpoint, 10060);
-                    } else {
-                        throw new HandshakeException('');
-                    }
-                }
-
-                if ($pos + 4 !== strlen($buffer)) {
-                    $this->_buffer = substr($buffer, $pos + 4);
-                    if (ord($this->_buffer[0]) & 0x0F === 0x08) {
-                        throw new HandshakeException('');
-                    }
-                }
-                break;
+        if (strpos($headers, $sec_key) === false) {
+            if ($this->_proxy) {
+                throw new ConnectionException('Connection by proxy timed out:  ' . $this->_endpoint, 10060);
+            } else {
+                throw new HandshakeException('');
             }
         }
 
@@ -250,7 +232,10 @@ class Client extends Component implements ClientInterface
      */
     public function hasMessage()
     {
-        return $this->_buffer !== '';
+        $read = [$this->_socket ?? $this->_connect()];
+        $write = null;
+        $except = null;
+        return stream_select($read, $write, $except, 0) > 0;
     }
 
     /**
@@ -262,7 +247,7 @@ class Client extends Component implements ClientInterface
     {
         $socket = $this->_socket ?? $this->_connect();
 
-        $buffer = $this->_buffer;
+        $buffer = '';
         $start_time = microtime(true);
         while (($left = 2 - strlen($buffer)) > 0) {
             if ($timeout > 0 && microtime(true) - $start_time > $timeout) {
@@ -330,7 +315,7 @@ class Client extends Component implements ClientInterface
         }
 
         $byte0 = ord($buffer[0]);
-		
+
         $op_code = $byte0 & 0x0F;
         if ($op_code === 0x00) {
             throw new ProtocolException('continuation frame');
@@ -350,8 +335,6 @@ class Client extends Component implements ClientInterface
             throw new ProtocolException('reserved for further control frames');
         }
 
-        $this->_buffer = strlen($buffer) - ($header_length + $message_length) > 0 ? substr($buffer, $header_length + $message_length) : '';
-
         $this->fireEvent('wsClient:receive', $message);
 
         return $message;
@@ -360,7 +343,6 @@ class Client extends Component implements ClientInterface
     public function close()
     {
         $this->_socket = null;
-        $this->_buffer = '';
     }
 
     public function __destruct()
