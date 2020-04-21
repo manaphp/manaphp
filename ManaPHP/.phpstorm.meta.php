@@ -134,7 +134,7 @@ namespace PHPSTORM_META {
         'mailer:sending', 'mailer:sent',
         'redis:connect', 'redis:calling', 'redis:called',
         'httpClient:requesting', 'httpClient:requested',
-        'wsClient:send', 'wsClient:recv',
+        'wsClient:open', 'wsClient:close', 'wsClient:send', 'wsClient:recv', 'wsClient:message',
         'view:rendering', 'view:rendered',
         'renderer:rendering', 'renderer:rendered',
     );

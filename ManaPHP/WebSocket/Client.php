@@ -304,6 +304,10 @@ class Client extends Component implements ClientInterface
 
         $this->fireEvent('wsClient:recv', $message);
 
+        if ($op_code === Message::TEXT_FRAME || $op_code === Message::BINARY_FRAME) {
+            $this->fireEvent('wsClient:message', $message->payload);
+        }
+
         return $message;
     }
 
