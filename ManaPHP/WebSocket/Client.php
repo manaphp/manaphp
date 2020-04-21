@@ -44,11 +44,6 @@ class Client extends Component implements ClientInterface
     protected $_user_agent = 'manaphp/client';
 
     /**
-     * @var callable
-     */
-    protected $_on_open;
-
-    /**
      * @var resource
      */
     protected $_socket;
@@ -80,10 +75,6 @@ class Client extends Component implements ClientInterface
 
         if (isset($options['user_agent'])) {
             $this->_user_agent = $options['user_agent'];
-        }
-
-        if (isset($options['on_open'])) {
-            $this->_on_open = $options['on_open'];
         }
     }
 
@@ -167,9 +158,7 @@ class Client extends Component implements ClientInterface
 
         $this->_socket = $socket;
 
-        if ($this->_on_open) {
-            call_user_func($this->_on_open, $this);
-        }
+        $this->fireEvent('wsClient:open');
 
         return $this->_socket;
     }
@@ -313,14 +302,17 @@ class Client extends Component implements ClientInterface
         $op_code = $byte0 & 0x0F;
         $message = new Message($op_code, $payload);
 
-        $this->fireEvent('wsClient:receive', $message);
+        $this->fireEvent('wsClient:recv', $message);
 
         return $message;
     }
 
     public function close()
     {
-        $this->_socket = null;
+        if ($this->_socket !== null) {
+            $this->fireEvent('wsClient:close');
+            $this->_socket = null;
+        }
     }
 
     public function __destruct()

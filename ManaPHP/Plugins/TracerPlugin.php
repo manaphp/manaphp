@@ -59,7 +59,7 @@ class TracerPlugin extends Plugin
         $this->attachEvent('httpClient:requested', [$this, 'onHttpClientRequested']);
 
         $verbose && $this->attachEvent('wsClient:send', [$this, 'onWsClientSend']);
-        $verbose && $this->attachEvent('wsClient:receive', [$this, 'onWsClientReceive']);
+        $verbose && $this->attachEvent('wsClient:recv', [$this, 'onWsClientRecv']);
     }
 
     public function onRedisConnect(EventArgs $eventArgs)
@@ -262,8 +262,8 @@ class TracerPlugin extends Plugin
         $this->logger->debug($eventArgs->data, 'wsClient.send');
     }
 
-    public function onWsClientReceive(EventArgs $eventArgs)
+    public function onWsClientRecv(EventArgs $eventArgs)
     {
-        $this->logger->debug($eventArgs->data, 'wsClient.receive');
+        $this->logger->debug($eventArgs->data, 'wsClient.recv');
     }
 }
