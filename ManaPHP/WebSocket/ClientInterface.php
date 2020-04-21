@@ -24,6 +24,13 @@ interface ClientInterface
     public function recv($timeout = 0.0);
 
     /**
+     * @param callable $handler
+     *
+     * @return static
+     */
+    public function subscribe($handler);
+
+    /**
      * @return void
      */
     public function close();

@@ -307,6 +307,27 @@ class Client extends Component implements ClientInterface
         return $message;
     }
 
+    /**
+     * @param callable $handler
+     *
+     * @return void
+     */
+    public function subscribe($handler)
+    {
+        do {
+            $r = null;
+            if ($message = $this->recv()) {
+                $op_code = $message->op_code;
+
+                if ($op_code === Message::TEXT_FRAME || $op_code === Message::BINARY_FRAME) {
+                    $r = $handler($message->payload, $this);
+                } elseif ($op_code === Message::CLOSE_FRAME) {
+                    $r = false;
+                }
+            }
+        } while ($r !== false);
+    }
+
     public function close()
     {
         if ($this->_socket !== null) {

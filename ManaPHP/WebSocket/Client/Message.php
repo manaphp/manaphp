@@ -6,6 +6,7 @@ class Message implements \JsonSerializable
 {
     const TEXT_FRAME = 0x01;
     const BINARY_FRAME = 0x02;
+    const CLOSE_FRAME = 0x08;
     const PING_FRAME = 0x09;
     const PONG_FRAME = 0x0A;
 
