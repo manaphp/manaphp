@@ -93,7 +93,7 @@ class Client extends Component implements ClientInterface
     public function __clone()
     {
         $this->_socket = null;
-        $this->_buffer = null;
+        $this->_buffer = '';
     }
 
     /**
