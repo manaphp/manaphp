@@ -4,6 +4,11 @@ namespace ManaPHP\WebSocket;
 interface ClientInterface
 {
     /**
+     * @return string
+     */
+    public function getEndpoint();
+
+    /**
      * @return bool
      */
     public function hasMessage();

@@ -97,6 +97,14 @@ class Client extends Component implements ClientInterface
     }
 
     /**
+     * @return string
+     */
+    public function getEndpoint()
+    {
+        return $this->_endpoint;
+    }
+
+    /**
      * @return resource
      */
     protected function _connect()
