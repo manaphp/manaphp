@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\WebSocket;
 
 interface ClientInterface
@@ -18,7 +19,7 @@ interface ClientInterface
     /**
      * @param float
      *
-     * @return \ManaPHP\WebSocket\Client\Message|false
+     * @return \ManaPHP\WebSocket\Client\Message|null
      */
     public function recv($timeout = 0.0);
 

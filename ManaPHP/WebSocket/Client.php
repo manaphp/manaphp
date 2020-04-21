@@ -230,7 +230,7 @@ class Client extends Component implements ClientInterface
     /**
      * @param float $timeout
      *
-     * @return \ManaPHP\WebSocket\Client\Message|false
+     * @return \ManaPHP\WebSocket\Client\Message|null
      */
     public function recv($timeout = 0.0)
     {
@@ -241,7 +241,7 @@ class Client extends Component implements ClientInterface
         while (($left = 2 - ($buf_len = strlen($buf))) > 0) {
             if ($timeout > 0 && microtime(true) - $start_time > $timeout) {
                 if ($buf_len === 0) {
-                    return false;
+                    return null;
                 } else {
                     throw new TimeoutException('receive timeout');
                 }
