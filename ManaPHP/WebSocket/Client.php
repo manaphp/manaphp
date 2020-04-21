@@ -3,10 +3,10 @@ namespace ManaPHP\WebSocket;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\WebSocket\Client\CloseFrameException;
 use ManaPHP\WebSocket\Client\ConnectionException;
 use ManaPHP\WebSocket\Client\DataTransferException;
 use ManaPHP\WebSocket\Client\HandshakeException;
+use ManaPHP\WebSocket\Client\Message;
 use ManaPHP\WebSocket\Client\ProtocolException;
 use ManaPHP\WebSocket\Client\SwitchingProtocolsException;
 use ManaPHP\WebSocket\Client\TimeoutException;
@@ -230,7 +230,7 @@ class Client extends Component implements ClientInterface
     /**
      * @param float $timeout
      *
-     * @return false|string
+     * @return \ManaPHP\WebSocket\Client\Message|false
      */
     public function recv($timeout = 0.0)
     {
@@ -278,16 +278,16 @@ class Client extends Component implements ClientInterface
         }
 
         if ($len <= 125) {
-            $message_length = $len;
+            $payload_length = $len;
         } elseif ($len === 126) {
-            $message_length = unpack('n', substr($buffer, 2, 2))[1];
+            $payload_length = unpack('n', substr($buffer, 2, 2))[1];
         } else {
-            $message_length = unpack('J', substr($buffer, 2, 8))[1];
+            $payload_length = unpack('J', substr($buffer, 2, 8))[1];
         }
 
-        $message = strlen($buffer) > $header_length ? substr($buffer, $header_length, $message_length) : '';
+        $payload = strlen($buffer) > $header_length ? substr($buffer, $header_length, $payload_length) : '';
 
-        while (($left = $message_length - strlen($message)) > 0) {
+        while (($left = $payload_length - strlen($payload)) > 0) {
             if ($timeout > 0 && microtime(true) - $start_time > $timeout) {
                 throw new TimeoutException('receive timeout');
             }
@@ -296,33 +296,17 @@ class Client extends Component implements ClientInterface
                 throw new DataTransferException('recv failed');
             }
 
-            if ($message === '') {
-                $message = $r;
+            if ($payload === '') {
+                $payload = $r;
             } else {
-                $message .= $r;
+                $payload .= $r;
             }
         }
 
         $byte0 = ord($buffer[0]);
 
         $op_code = $byte0 & 0x0F;
-        if ($op_code === 0x00) {
-            throw new ProtocolException('continuation frame');
-        } elseif ($op_code === 0x01) {
-            null;//denotes a text frame
-        } elseif ($op_code === 0x02) {
-            null;//denotes a binary frame
-        } elseif ($op_code >= 0x03 && $op_code <= 0x07) {
-            throw new ProtocolException('reserved for further non-control frames');
-        } elseif ($op_code === 0x08) {
-            throw new CloseFrameException('closed by peer');
-        } elseif ($op_code === 0x09) {
-            null;//denotes a ping
-        } elseif ($op_code === 0x0A) {
-            null;//denotes a pong
-        } else {
-            throw new ProtocolException('reserved for further control frames');
-        }
+        $message = new Message($op_code, $payload);
 
         $this->fireEvent('wsClient:receive', $message);
 

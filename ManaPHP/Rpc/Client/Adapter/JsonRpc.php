@@ -103,12 +103,12 @@ class JsonRpc extends Component implements ClientInterface
      */
     public function authenticate($client)
     {
-        $response = $client->recv();
+        $message = $client->recv();
 
         try {
             /** @noinspection PhpUnusedLocalVariableInspection */
             $success = false;
-            $this->_parseResponse($response);
+            $this->_parseResponse($message->payload);
             $success = true;
         } finally {
             if (!$success) {
@@ -133,11 +133,11 @@ class JsonRpc extends Component implements ClientInterface
 
         try {
             $client->send($request);
-            $response = $client->recv();
+            $message = $client->recv();
         } finally {
             $this->poolManager->push($this, $client);
         }
 
-        return $this->_parseResponse($response);
+        return $this->_parseResponse($message->payload);
     }
 }
