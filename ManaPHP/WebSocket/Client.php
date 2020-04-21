@@ -141,6 +141,7 @@ class Client extends Component implements ClientInterface
         $headers = "GET $path HTTP/1.1\r\n" .
             "Host: $host:$port\r\n" .
             "Sec-WebSocket-Key: $key\r\n" .
+            "Connection: Upgrade\r\n" .
             "User-Agent: $this->_user_agent\r\n" .
             "Upgrade: Websocket\r\n";
 
