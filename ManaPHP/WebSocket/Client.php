@@ -99,6 +99,7 @@ class Client extends Component implements ClientInterface
             throw new ConnectionException($errmsg . ': ' . $this->_endpoint, $errno);
         }
 
+        stream_set_timeout($socket, (int)$this->_timeout, ($this->_timeout - (int)$this->_timeout) * 1000);
         $path = ($scheme === 'ws' ? 'http' : 'https') . substr($this->_endpoint, strpos($this->_endpoint, ':'));
 
         $key = bin2hex(random_bytes(16));
