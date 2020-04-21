@@ -3,6 +3,7 @@ namespace ManaPHP\WebSocket;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\WebSocket\Client\CloseFrameException;
 use ManaPHP\WebSocket\Client\ConnectionException;
 use ManaPHP\WebSocket\Client\DataTransferException;
 use ManaPHP\WebSocket\Client\HandshakeException;
@@ -331,8 +332,22 @@ class Client extends Component implements ClientInterface
         $byte0 = ord($buffer[0]);
 		
         $op_code = $byte0 & 0x0F;
-        if ($op_code !== 0x02 && $op_code !== 0x01) {
-            throw new ProtocolException('only support binary and text frame: ' . bin2hex(chr($byte0)));
+        if ($op_code === 0x00) {
+            throw new ProtocolException('continuation frame');
+        } elseif ($op_code === 0x01) {
+            null;//denotes a text frame
+        } elseif ($op_code === 0x02) {
+            null;//denotes a binary frame
+        } elseif ($op_code >= 0x03 && $op_code <= 0x07) {
+            throw new ProtocolException('reserved for further non-control frames');
+        } elseif ($op_code === 0x08) {
+            throw new CloseFrameException('closed by peer');
+        } elseif ($op_code === 0x09) {
+            null;//denotes a ping
+        } elseif ($op_code === 0x0A) {
+            null;//denotes a pong
+        } else {
+            throw new ProtocolException('reserved for further control frames');
         }
 
         $this->_buffer = strlen($buffer) - ($header_length + $message_length) > 0 ? substr($buffer, $header_length + $message_length) : '';
