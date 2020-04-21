@@ -228,17 +228,6 @@ class Client extends Component implements ClientInterface
     }
 
     /**
-     * @return bool
-     */
-    public function hasMessage()
-    {
-        $read = [$this->_socket ?? $this->_connect()];
-        $write = null;
-        $except = null;
-        return stream_select($read, $write, $except, 0) > 0;
-    }
-
-    /**
      * @param float $timeout
      *
      * @return false|string

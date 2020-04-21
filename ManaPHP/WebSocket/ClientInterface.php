@@ -9,11 +9,6 @@ interface ClientInterface
     public function getEndpoint();
 
     /**
-     * @return bool
-     */
-    public function hasMessage();
-
-    /**
      * @param string $message
      *
      * @return void
