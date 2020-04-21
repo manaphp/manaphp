@@ -325,8 +325,6 @@ class Client extends Component implements ClientInterface
 
     public function __destruct()
     {
-        if ($this->_socket !== null) {
-            $this->close();
-        }
+        $this->close();
     }
 }
