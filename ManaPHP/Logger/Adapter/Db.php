@@ -67,7 +67,8 @@ class Db extends Logger
                     'line' => $log->line,
                     'message' => $log->message,
                     'timestamp' => $log->timestamp - (int)$log->timestamp,
-                    'created_time' => (int)$log->timestamp]);
+                    'created_time' => (int)$log->timestamp
+                ]);
             } catch (Exception $e) {
                 null;
             }

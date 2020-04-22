@@ -146,10 +146,12 @@ abstract class Controller extends \ManaPHP\Controller
                     if (isset($shortNames[$name])) {
                         $option .= ', -' . $shortNames[$name];
                     }
-                    $this->console->writeLn(['    :option :value :default',
+                    $this->console->writeLn([
+                        '    :option :value :default',
                         'option' => $this->console->colorize($option, Console::FC_CYAN, $width),
                         'value' => $value ? "  $value" : '',
-                        'default' => isset($defaultValues[$name]) ? " (default: $defaultValues[$name])" : '']);
+                        'default' => isset($defaultValues[$name]) ? " (default: $defaultValues[$name])" : ''
+                    ]);
                 }
             }
         }

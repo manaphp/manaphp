@@ -246,14 +246,16 @@ class Query extends \ManaPHP\Query
             }
 
             $accumulator = strtolower($match[1]);
-            $normalizes = ['group_concat' => 'push',
+            $normalizes = [
+                'group_concat' => 'push',
                 'std' => 'stdDevPop',
                 'stddev' => 'stdDevPop',
                 'stddev_pop' => 'stdDevPop',
                 'stddev_samp' => 'stdDevSamp',
                 'addtoset' => 'addToSet',
                 'stddevpop' => 'stdDevPop',
-                'stddevsamp' => 'stdDevSamp'];
+                'stddevsamp' => 'stdDevSamp'
+            ];
             if (isset($normalizes[$accumulator])) {
                 $accumulator = $normalizes[$accumulator];
             }
@@ -398,7 +400,8 @@ class Query extends \ManaPHP\Query
             return $this->whereEq($field, $value);
         } elseif ($operator === '~=') {
             if ($this->_types && !isset($this->_types[$field])) {
-                throw new InvalidArgumentException(['`:field` field is not exist in `:collection` collection',
+                throw new InvalidArgumentException([
+                    '`:field` field is not exist in `:collection` collection',
                     'field' => $field,
                     'collection' => $this->_model ? $this->_model->getTable() : $this->_table
                 ]);

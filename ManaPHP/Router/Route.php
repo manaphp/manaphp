@@ -204,7 +204,8 @@ class Route implements RouteInterface
                     if (is_string($k)) {
                         if (strpos($v, '_') !== false
                             && in_array($k, ['area', 'controller', 'action'], true)
-                            && preg_match('#_$|_\w$|_\w_#', $v) === 1) {
+                            && preg_match('#_$|_\w$|_\w_#', $v) === 1
+                        ) {
                             return false;
                         }
 

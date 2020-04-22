@@ -109,7 +109,8 @@ class Workerman extends Server
             $data = $GLOBALS['HTTP_RAW_POST_DATA'];
 
             if (isset($_SERVER['CONTENT_TYPE'])
-                && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
+                && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false
+            ) {
                 $_POST = json_parse($data);
             } else {
                 parse_str($data, $_POST);

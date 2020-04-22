@@ -56,7 +56,8 @@ class VerbsPlugin extends Plugin
         if ($request_method === 'GET'
             && $controller instanceof Controller
             && !$this->request->isAjax()
-            && $this->view->exists()) {
+            && $this->view->exists()
+        ) {
             return;
         }
 

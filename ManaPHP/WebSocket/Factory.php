@@ -10,6 +10,7 @@ class Factory extends \ManaPHP\Http\Factory
         $this->_definitions = array_merge($this->_definitions, [
             'errorHandler' => 'ManaPHP\Rest\ErrorHandler',
             'wsServer' => 'ManaPHP\WebSocket\Server\Adapter\Swoole',
-            'dispatcher' => 'ManaPHP\WebSocket\Dispatcher']);
+            'dispatcher' => 'ManaPHP\WebSocket\Dispatcher'
+        ]);
     }
 }

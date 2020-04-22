@@ -165,7 +165,8 @@ class Curl extends Client
             'namelookup_time' => curl_getinfo($curl, CURLINFO_NAMELOOKUP_TIME),
             'connect_time' => curl_getinfo($curl, CURLINFO_CONNECT_TIME),
             'pretransfer_time' => curl_getinfo($curl, CURLINFO_PRETRANSFER_TIME),
-            'starttransfer_time' => curl_getinfo($curl, CURLINFO_STARTTRANSFER_TIME)];
+            'starttransfer_time' => curl_getinfo($curl, CURLINFO_STARTTRANSFER_TIME)
+        ];
 
         curl_close($curl);
 

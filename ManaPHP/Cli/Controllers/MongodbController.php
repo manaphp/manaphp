@@ -112,7 +112,8 @@ class MongodbController extends Controller
                     $this->console->progress([
                         ' `:namespace` collection saved to `:file`',
                         'namespace' => "$cdb.$collection",
-                        'file' => $fileName]);
+                        'file' => $fileName
+                    ]);
 
                     $pending_fields = [];
                     foreach ($fieldTypes as $field => $type) {
@@ -122,9 +123,11 @@ class MongodbController extends Controller
                     }
 
                     if ($pending_fields) {
-                        $this->console->warn(['`:collection` has pending fields: :fields',
+                        $this->console->warn([
+                            '`:collection` has pending fields: :fields',
                             'collection' => $collection,
-                            'fields' => implode(', ', $pending_fields)]);
+                            'fields' => implode(', ', $pending_fields)
+                        ]);
                     }
                 }
             }
@@ -435,10 +438,12 @@ class MongodbController extends Controller
 
                     fclose($file);
 
-                    $this->console->progress(['write to `:file` success: :count [:time]',
+                    $this->console->progress([
+                        'write to `:file` success: :count [:time]',
                         'file' => $fileName,
                         'count' => $linesCount,
-                        'time' => round(microtime(true) - $startTime, 4)]);
+                        'time' => round(microtime(true) - $startTime, 4)
+                    ]);
                     /** @noinspection DisconnectedForeachInstructionInspection */
                 }
             }
@@ -480,10 +485,12 @@ class MongodbController extends Controller
                     }
                     $columns = $docs ? array_keys($docs[0]) : [];
 
-                    $this->console->writeLn([' :row :namespace(:columns)',
+                    $this->console->writeLn([
+                        ' :row :namespace(:columns)',
                         'row' => sprintf('%2d ', $row + 1),
                         'namespace' => $this->console->colorize("$cdb.$collection", Console::FC_GREEN),
-                        'columns' => implode(', ', $columns)]);
+                        'columns' => implode(', ', $columns)
+                    ]);
                 }
             }
         }

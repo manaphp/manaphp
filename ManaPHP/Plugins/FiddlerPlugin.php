@@ -125,7 +125,8 @@ class FiddlerPlugin extends Plugin
                 'code' => $response->status_code,
                 'path' => $this->dispatcher->getPath(),
                 'body' => $response->content,
-                'elapsed' => round(microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT'), 3)];
+                'elapsed' => round(microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT'), 3)
+            ];
             $this->publish('response', $data);
         }
     }

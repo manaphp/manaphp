@@ -150,7 +150,8 @@ abstract class Client extends Component implements ClientInterface
         $response_text = $response->body;
 
         if ((isset($request->headers['Accept']) && strpos($request->headers['Accept'], '/json') !== false)
-            || strpos($response->content_type, '/json') !== false) {
+            || strpos($response->content_type, '/json') !== false
+        ) {
             $response->body = $response->body === '' ? [] : json_parse($response->body);
         }
 
@@ -218,9 +219,11 @@ abstract class Client extends Component implements ClientInterface
         }
 
         if (is_string($response->body)) {
-            throw new ContentTypeException(['content-type of response is not application/json: :content-type => `:url`',
+            throw new ContentTypeException([
+                'content-type of response is not application/json: :content-type => `:url`',
                 'content-type' => $response->content_type,
-                'url' => $response->url],
+                'url' => $response->url
+            ],
                 $response);
         }
 

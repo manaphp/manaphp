@@ -70,8 +70,12 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
 
         $statusCode = $exception instanceof Exception ? $exception->getStatusCode() : 500;
 
-        foreach (["@views/Errors/$statusCode",
-                     '@views/Errors/error'] as $template) {
+        foreach (
+            [
+                "@views/Errors/$statusCode",
+                '@views/Errors/error'
+            ] as $template
+        ) {
             if ($this->renderer->exists($template)) {
                 return $this->renderer->render($template, ['statusCode' => $statusCode, 'exception' => $exception]);
             }

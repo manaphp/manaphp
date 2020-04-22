@@ -188,8 +188,7 @@ class Gd extends Image
         $color = 0x000000,
         $size = 12,
         $font_file = null
-    )
-    {
+    ) {
         $textColor = imagecolorallocatealpha($this->_image, ($color >> 16) & 0xFF, ($color >> 8) & 0xFF,
             $color & 0xFF, abs(1 - $opacity) * 127);
         if ($font_file) {

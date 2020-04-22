@@ -157,7 +157,8 @@ class PageCachePlugin extends Plugin
             'ttl' => $context->ttl,
             'etag' => $etag,
             'content-type' => $response->headers['Content-Type'],
-            'content' => gzencode($response->content)]);
+            'content' => gzencode($response->content)
+        ]);
         $this->redisCache->expire($context->key, $context->ttl);
 
         if ($context->if_none_match === $etag) {

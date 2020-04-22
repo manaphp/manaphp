@@ -113,7 +113,8 @@ class HtmlPurifier extends Component implements HtmlPurifierInterface
     public function purify($html, $allowedTags = null, $allowedAttributes = null)
     {
         if (strpos($html, '<body>') === false) {
-            $html = /** @lang text */
+            $html
+                = /** @lang text */
                 "<!doctype html><html><body>$html</body></html>";
         }
 

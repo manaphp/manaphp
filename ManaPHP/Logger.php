@@ -56,12 +56,14 @@ abstract class Logger extends Component implements LoggerInterface
     /**
      * @var array
      */
-    protected static $_levels = [
-        self::LEVEL_FATAL => 'fatal',
-        self::LEVEL_ERROR => 'error',
-        self::LEVEL_WARN => 'warn',
-        self::LEVEL_INFO => 'info',
-        self::LEVEL_DEBUG => 'debug'];
+    protected static $_levels
+        = [
+            self::LEVEL_FATAL => 'fatal',
+            self::LEVEL_ERROR => 'error',
+            self::LEVEL_WARN => 'warn',
+            self::LEVEL_INFO => 'info',
+            self::LEVEL_DEBUG => 'debug'
+        ];
 
     /**
      * @var float

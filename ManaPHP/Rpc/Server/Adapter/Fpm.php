@@ -22,7 +22,8 @@ class Fpm extends Server
             $data = file_get_contents('php://input');
 
             if (isset($_SERVER['CONTENT_TYPE'])
-                && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
+                && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false
+            ) {
                 $_POST = json_parse($data);
             } else {
                 parse_str($data, $_POST);

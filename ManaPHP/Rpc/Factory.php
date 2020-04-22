@@ -9,6 +9,7 @@ class Factory extends \ManaPHP\Http\Factory
         parent::__construct();
         $this->_definitions = array_merge($this->_definitions, [
             'errorHandler' => 'ManaPHP\Rest\ErrorHandler',
-            'dispatcher' => 'ManaPHP\Rpc\Dispatcher']);
+            'dispatcher' => 'ManaPHP\Rpc\Dispatcher'
+        ]);
     }
 }

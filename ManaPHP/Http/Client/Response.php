@@ -82,9 +82,11 @@ class Response implements JsonSerializable
     {
         $data = json_parse($this->body);
         if (!is_array($data)) {
-            throw new InvalidJsonException(['response of `:url` url is not a valid json: `:response`',
+            throw new InvalidJsonException([
+                'response of `:url` url is not a valid json: `:response`',
                 'url' => $this->url,
-                'response' => substr($this->body, 0, 128)]);
+                'response' => substr($this->body, 0, 128)
+            ]);
         }
 
         return $data;

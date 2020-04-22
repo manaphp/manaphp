@@ -75,7 +75,8 @@ class TracerPlugin extends Plugin
         $arguments = $eventArgs->data['arguments'];
 
         if (stripos(',blPop,brPop,brpoplpush,subscribe,psubscribe,', ",$name,") !== false) {
-            $this->logger->debug(["\$redis->$name(:args) ... blocking",
+            $this->logger->debug([
+                "\$redis->$name(:args) ... blocking",
                 'args' => substr(json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR), 1, -1),
             ], 'redis.' . $name);
         }
@@ -94,7 +95,8 @@ class TracerPlugin extends Plugin
         if ($this->_verbose) {
             $arguments = json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR);
             $return = json_stringify($eventArgs->data['return'], JSON_PARTIAL_OUTPUT_ON_ERROR);
-            $this->logger->debug(["\$redis->$name(:args) => :return",
+            $this->logger->debug([
+                "\$redis->$name(:args) => :return",
                 'args' => strlen($arguments) > 256 ? substr($arguments, 1, 256) . '...)' : substr($arguments, 1, -1),
                 'return' => strlen($return) > 64 ? substr($return, 0, 64) . '...' : $return
             ], 'redis.' . $name);
@@ -104,7 +106,8 @@ class TracerPlugin extends Plugin
                 return;
             }
             $arguments = json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR);
-            $this->logger->debug(["\$redis->$name(:args)",
+            $this->logger->debug([
+                "\$redis->$name(:args)",
                 'args' => strlen($arguments) > 256 ? substr($arguments, 1, 256) . '...)' : substr($arguments, 1, -1),
             ], 'redis.' . $name);
         }
@@ -225,7 +228,8 @@ class TracerPlugin extends Plugin
 
         $command_name = key($data['command']);
         if (strpos('ping,aggregate,count,distinct,group,mapReduce,geoNear,geoSearch,find,' .
-                'authenticate,listDatabases,listCollections,listIndexes', $command_name) !== false) {
+                'authenticate,listDatabases,listCollections,listIndexes', $command_name) !== false
+        ) {
             $this->logger->debug($data, 'mongodb.command.' . $command_name);
         } else {
             $this->logger->info($data, 'mongodb.command.' . $command_name);

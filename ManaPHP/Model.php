@@ -721,9 +721,11 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         }
 
         if (isset($rules[0])) {
-            throw new MisuseException(['`:model` rules must be an associative array: `:field` is invalid',
+            throw new MisuseException([
+                '`:model` rules must be an associative array: `:field` is invalid',
                 'model' => static::class,
-                'field' => $rules[0]]);
+                'field' => $rules[0]
+            ]);
         }
 
         $errors = [];
@@ -1042,9 +1044,11 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
                 if ($data[$field] === '') {
                     $data[$field] = [];
                 } elseif (($json = json_parse($data[$field])) === null) {
-                    throw new InvalidJsonException(['`:field` field value of `:model` is not a valid json string',
+                    throw new InvalidJsonException([
+                        '`:field` field value of `:model` is not a valid json string',
                         'field' => $field,
-                        'model' => static::class]);
+                        'model' => static::class
+                    ]);
                 } else {
                     $data[$field] = $json;
                 }
@@ -1335,10 +1339,12 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         } elseif ($this->_di->relationsManager->has($this, $name)) {
             return $this->$name = $this->_di->relationsManager->lazyLoad($this, $name)->fetch();
         } else {
-            throw new UnknownPropertyException(['`:model` does not contain `:field` field: `:fields`',
+            throw new UnknownPropertyException([
+                '`:model` does not contain `:field` field: `:fields`',
                 'model' => static::class,
                 'field' => $name,
-                'fields' => $this->getFields()]);
+                'fields' => $this->getFields()
+            ]);
         }
     }
 

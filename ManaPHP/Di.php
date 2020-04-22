@@ -336,9 +336,11 @@ class Di implements DiInterface
 
         if (is_string($definition)) {
             if (!class_exists($definition)) {
-                throw new InvalidValueException(['`:name` component cannot be resolved: `:class` class is not exists',
+                throw new InvalidValueException([
+                    '`:name` component cannot be resolved: `:class` class is not exists',
                     'name' => $name,
-                    'class' => $definition]);
+                    'class' => $definition
+                ]);
             }
             $instance = new $definition(...$parameters);
         } elseif ($definition instanceof Closure) {

@@ -115,53 +115,56 @@ class Markdown extends Component implements EngineInterface
 
     protected $strictMode;
 
-    protected $safeLinksWhitelist = [
-        'http://',
-        'https://',
-        'ftp://',
-        'ftps://',
-        'mailto:',
-        'tel:',
-        'data:image/png;base64,',
-        'data:image/gif;base64,',
-        'data:image/jpeg;base64,',
-        'irc:',
-        'ircs:',
-        'git:',
-        'ssh:',
-        'news:',
-        'steam:',
-    ];
+    protected $safeLinksWhitelist
+        = [
+            'http://',
+            'https://',
+            'ftp://',
+            'ftps://',
+            'mailto:',
+            'tel:',
+            'data:image/png;base64,',
+            'data:image/gif;base64,',
+            'data:image/jpeg;base64,',
+            'irc:',
+            'ircs:',
+            'git:',
+            'ssh:',
+            'news:',
+            'steam:',
+        ];
 
-    protected $BlockTypes = [
-        '#' => ['Header'],
-        '*' => ['Rule', 'List'],
-        '+' => ['List'],
-        '-' => ['SetextHeader', 'Table', 'Rule', 'List'],
-        '0' => ['List'],
-        '1' => ['List'],
-        '2' => ['List'],
-        '3' => ['List'],
-        '4' => ['List'],
-        '5' => ['List'],
-        '6' => ['List'],
-        '7' => ['List'],
-        '8' => ['List'],
-        '9' => ['List'],
-        ':' => ['Table'],
-        '<' => ['Comment', 'Markup'],
-        '=' => ['SetextHeader'],
-        '>' => ['Quote'],
-        '[' => ['Reference'],
-        '_' => ['Rule'],
-        '`' => ['FencedCode'],
-        '|' => ['Table'],
-        '~' => ['FencedCode'],
-    ];
+    protected $BlockTypes
+        = [
+            '#' => ['Header'],
+            '*' => ['Rule', 'List'],
+            '+' => ['List'],
+            '-' => ['SetextHeader', 'Table', 'Rule', 'List'],
+            '0' => ['List'],
+            '1' => ['List'],
+            '2' => ['List'],
+            '3' => ['List'],
+            '4' => ['List'],
+            '5' => ['List'],
+            '6' => ['List'],
+            '7' => ['List'],
+            '8' => ['List'],
+            '9' => ['List'],
+            ':' => ['Table'],
+            '<' => ['Comment', 'Markup'],
+            '=' => ['SetextHeader'],
+            '>' => ['Quote'],
+            '[' => ['Reference'],
+            '_' => ['Rule'],
+            '`' => ['FencedCode'],
+            '|' => ['Table'],
+            '~' => ['FencedCode'],
+        ];
 
-    protected $unmarkedBlockTypes = [
-        'Code',
-    ];
+    protected $unmarkedBlockTypes
+        = [
+            'Code',
+        ];
 
     /**
      * @param array $lines
@@ -570,7 +573,8 @@ class Markdown extends Component implements EngineInterface
                 (
                     $Block['data']['type'] === 'ol'
                     && preg_match('/^[0-9]++' . $Block['data']['markerTypeRegex'] . '(?:[ ]++(.*)|$)/', $Line['text'], $matches)
-                ) || (
+                )
+                || (
                     $Block['data']['type'] === 'ul'
                     && preg_match('/^' . $Block['data']['markerTypeRegex'] . '(?:[ ]++(.*)|$)/', $Line['text'], $matches)
                 )
@@ -712,15 +716,46 @@ class Markdown extends Component implements EngineInterface
     protected function blockMarkup($Line)
     {
         $textLevelElements = [
-            'a', 'br', 'bdo', 'abbr', 'blink', 'nextid', 'acronym', 'basefont',
-            'b', 'em', 'big', 'cite', 'small', 'spacer', 'listing',
-            'i', 'rp', 'del', 'code', 'strike', 'marquee',
-            'q', 'rt', 'ins', 'font', 'strong',
-            's', 'tt', 'kbd', 'mark',
-            'u', 'xm', 'sub', 'nobr',
-            'sup', 'ruby',
-            'var', 'span',
-            'wbr', 'time',
+            'a',
+            'br',
+            'bdo',
+            'abbr',
+            'blink',
+            'nextid',
+            'acronym',
+            'basefont',
+            'b',
+            'em',
+            'big',
+            'cite',
+            'small',
+            'spacer',
+            'listing',
+            'i',
+            'rp',
+            'del',
+            'code',
+            'strike',
+            'marquee',
+            'q',
+            'rt',
+            'ins',
+            'font',
+            'strong',
+            's',
+            'tt',
+            'kbd',
+            'mark',
+            'u',
+            'xm',
+            'sub',
+            'nobr',
+            'sup',
+            'ruby',
+            'var',
+            'span',
+            'wbr',
+            'time',
         ];
 
         if ($this->markupEscaped || $this->safeMode) {
@@ -961,18 +996,19 @@ class Markdown extends Component implements EngineInterface
         return $Block;
     }
 
-    protected $InlineTypes = [
-        '!' => ['Image'],
-        '&' => ['SpecialCharacter'],
-        '*' => ['Emphasis'],
-        ':' => ['Url'],
-        '<' => ['UrlTag', 'EmailTag', 'Markup'],
-        '[' => ['Link'],
-        '_' => ['Emphasis'],
-        '`' => ['Code'],
-        '~' => ['Strikethrough'],
-        '\\' => ['EscapeSequence'],
-    ];
+    protected $InlineTypes
+        = [
+            '!' => ['Image'],
+            '&' => ['SpecialCharacter'],
+            '*' => ['Emphasis'],
+            ':' => ['Url'],
+            '<' => ['UrlTag', 'EmailTag', 'Markup'],
+            '[' => ['Link'],
+            '_' => ['Emphasis'],
+            '`' => ['Code'],
+            '~' => ['Strikethrough'],
+            '\\' => ['EscapeSequence'],
+        ];
 
     protected $inlineMarkerList = '!*_&[:<`~\\';
 
@@ -1663,19 +1699,20 @@ class Markdown extends Component implements EngineInterface
 
     protected $regexHtmlAttribute = '[a-zA-Z_:][\w:.-]*+(?:\s*+=\s*+(?:[^"\'=<>`\s]+|"[^"]*+"|\'[^\']*+\'))?+';
 
-    protected $voidElements = [
-        'area',
-        'base',
-        'br',
-        'col',
-        'command',
-        'embed',
-        'hr',
-        'img',
-        'input',
-        'link',
-        'meta',
-        'param',
-        'source',
-    ];
+    protected $voidElements
+        = [
+            'area',
+            'base',
+            'br',
+            'col',
+            'command',
+            'embed',
+            'hr',
+            'img',
+            'input',
+            'link',
+            'meta',
+            'param',
+            'source',
+        ];
 }

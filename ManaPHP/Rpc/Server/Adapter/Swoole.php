@@ -300,7 +300,9 @@ class Swoole extends \ManaPHP\Rpc\Server
             $response->content = ['code' => -32700, 'message' => 'Parse error'];
             $this->send($response);
         } elseif (!isset($json['jsonrpc'], $json['method'], $json['params'], $json['id'])
-            || $json['jsonrpc'] !== '2.0' || !is_array($json['params'])) {
+            || $json['jsonrpc'] !== '2.0'
+            || !is_array($json['params'])
+        ) {
             $response->content = ['code' => -32600, 'message' => 'Invalid Request'];
             $this->send($response);
         } else {

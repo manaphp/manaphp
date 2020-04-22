@@ -52,24 +52,25 @@ class Compiler extends Component
     /**
      * @var array
      */
-    protected $_safe_functions = [
-        'e',
-        'url',
-        'action',
-        'asset',
-        'csrf_token',
-        'csrf_field',
-        'date',
-        'html',
-        'bundle',
-        'attr_nv',
-        'attr_inv',
-        'widget',
-        'partial',
-        'block',
-        'json',
-        'base_url'
-    ];
+    protected $_safe_functions
+        = [
+            'e',
+            'url',
+            'action',
+            'asset',
+            'csrf_token',
+            'csrf_field',
+            'date',
+            'html',
+            'bundle',
+            'attr_nv',
+            'attr_inv',
+            'widget',
+            'partial',
+            'block',
+            'json',
+            'base_url'
+        ];
 
     /**
      * Compiler constructor.
@@ -225,9 +226,11 @@ class Compiler extends Component
         $result = $this->_completeLinks($source, $result);
 
         if (file_put_contents($compiled, $result, LOCK_EX) === false) {
-            throw new RuntimeException(['write `:compiled` compiled file for `:source` file failed: :last_error_message',
+            throw new RuntimeException([
+                'write `:compiled` compiled file for `:source` file failed: :last_error_message',
                 'complied' => $compiled,
-                'source' => $source]);
+                'source' => $source
+            ]);
         }
 
         return $this;
@@ -431,8 +434,7 @@ class Compiler extends Component
     protected function _compile_append(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php $renderer->appendSection(); ?>';
     }
 
@@ -446,8 +448,7 @@ class Compiler extends Component
     protected function _compile_endSection(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php $renderer->stopSection(); ?>';
     }
 
@@ -461,8 +462,7 @@ class Compiler extends Component
     protected function _compile_stop(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php $renderer->stopSection(); ?>';
     }
 
@@ -476,8 +476,7 @@ class Compiler extends Component
     protected function _compile_else(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php else: ?>';
     }
 
@@ -600,8 +599,7 @@ class Compiler extends Component
     protected function _compile_endWhile(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php endwhile; ?>';
     }
 
@@ -615,8 +613,7 @@ class Compiler extends Component
     protected function _compile_endFor(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php endfor; ?>';
     }
 
@@ -630,8 +627,7 @@ class Compiler extends Component
     protected function _compile_endForeach(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         $r = $this->_foreachelse_used ? '<?php endif; ?>' : '<?php endforeach; ?>';
         $this->_foreachelse_used = false;
         return $r;
@@ -647,8 +643,7 @@ class Compiler extends Component
     protected function _compile_endCan(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php endif; ?>';
     }
 
@@ -662,8 +657,7 @@ class Compiler extends Component
     protected function _compile_endCannot(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php endif; ?>';
     }
 
@@ -677,8 +671,7 @@ class Compiler extends Component
     protected function _compile_endIf(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php endif; ?>';
     }
 
@@ -776,8 +769,7 @@ class Compiler extends Component
     protected function _compile_content(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?= $view->getContent(); ?>';
     }
 
@@ -807,8 +799,7 @@ class Compiler extends Component
     protected function _compile_endPhp(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return ' ?>';
     }
 
@@ -867,8 +858,7 @@ class Compiler extends Component
     protected function _compile_flash(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php $di->flash->output() ?>';
     }
 
@@ -895,8 +885,7 @@ class Compiler extends Component
     protected function _compile_debugger(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?php if($di->response->hasHeader("X-Debugger-Link")){?><div class="debugger"><a target="_self" href="' .
             '<?= $di->response->getHeader("X-Debugger-Link") ?>">Debugger</a></div><?php }?> ';
     }
@@ -911,8 +900,7 @@ class Compiler extends Component
     protected function _compile_eol(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         return '<?= PHP_EOL ?>';
     }
 
@@ -926,8 +914,7 @@ class Compiler extends Component
     protected function _compile_date(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
-    )
-    {
+    ) {
         $time = substr($expression, 1, -1);
         return "<?= date('Y-m-d H:i:s', $time) ?>";
     }

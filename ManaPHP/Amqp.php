@@ -267,27 +267,33 @@ class Amqp extends Component implements AmqpInterface
     public function bindQueue($queue, $exchange, $binding_key = '')
     {
         if (!isset($this->_queues[$queue])) {
-            throw new InvalidKeyException(['bind `:queue` queue to `:exchange` exchange with `:binding_key` binding key failed: queue is NOT exists',
+            throw new InvalidKeyException([
+                'bind `:queue` queue to `:exchange` exchange with `:binding_key` binding key failed: queue is NOT exists',
                 'queue' => $queue,
                 'exchange' => $exchange,
-                'binding_key' => $binding_key]);
+                'binding_key' => $binding_key
+            ]);
         }
 
         if (!isset($this->_exchanges[$exchange])) {
-            throw new AmqpException(['bind `:queue` queue to `:exchange` exchange with `:binding_key` binding key failed: exchange is NOT exists',
+            throw new AmqpException([
+                'bind `:queue` queue to `:exchange` exchange with `:binding_key` binding key failed: exchange is NOT exists',
                 'queue' => $queue,
                 'exchange' => $exchange,
-                'binding_key' => $binding_key]);
+                'binding_key' => $binding_key
+            ]);
         }
 
         try {
             $this->_queues[$queue]->bind($exchange, $binding_key);
         } catch (\Exception $e) {
-            throw new AmqpException(['bind `:queue` queue to `:exchange` exchange with `:binding_key` binding key failed: :error',
+            throw new AmqpException([
+                'bind `:queue` queue to `:exchange` exchange with `:binding_key` binding key failed: :error',
                 'queue' => $queue,
                 'exchange' => $exchange,
                 'binding_key' => $binding_key,
-                'error' => $e->getMessage()]);
+                'error' => $e->getMessage()
+            ]);
         }
 
         return $this;

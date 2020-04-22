@@ -155,28 +155,92 @@ namespace PHPSTORM_META {
     expectedArguments(\ManaPHP\WebSocket\PusherInterface::pushToAll(), 1, argumentsSet('wsPusherEndpoint'));
     expectedArguments(\ManaPHP\WebSocket\PusherInterface::broadcast(), 1, argumentsSet('wsPusherEndpoint'));
 
-    registerArgumentsSet('validator_rules', ['required', 'default', 'bool', 'int', 'float', 'string',
-        'min' => 1, 'max' => 2, 'length' => '1-10', 'minLength' => 1, 'maxLength' => 1, 'range' => '1-3',
-        'regex' => '#^\d+$#', 'alpha', 'digit', 'xdigit', 'alnum', 'lower', 'upper', 'trim', 'email', 'url', 'ip', 'date',
-        'timestamp', 'escape', 'xss', 'in' => [1, 2], 'not_in' => [1, 2], 'ext' => 'pdf,doc', 'unique', 'exists',
-        'const', 'account', 'mobile', 'safe', 'readonly']);
+    registerArgumentsSet('validator_rules', [
+        'required',
+        'default',
+        'bool',
+        'int',
+        'float',
+        'string',
+        'min' => 1,
+        'max' => 2,
+        'length' => '1-10',
+        'minLength' => 1,
+        'maxLength' => 1,
+        'range' => '1-3',
+        'regex' => '#^\d+$#',
+        'alpha',
+        'digit',
+        'xdigit',
+        'alnum',
+        'lower',
+        'upper',
+        'trim',
+        'email',
+        'url',
+        'ip',
+        'date',
+        'timestamp',
+        'escape',
+        'xss',
+        'in' => [1, 2],
+        'not_in' => [1, 2],
+        'ext' => 'pdf,doc',
+        'unique',
+        'exists',
+        'const',
+        'account',
+        'mobile',
+        'safe',
+        'readonly'
+    ]);
     expectedArguments(\input(), 1, argumentsSet('validator_rules'));
     expectedArguments(\ManaPHP\Validator::validateValue(), 2, argumentsSet('validator_rules'));
     expectedArguments(\ManaPHP\Validator::validateModel(), 2, argumentsSet('validator_rules'));
 
-    expectedArguments(\json_stringify(), 1, JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT | JSON_FORCE_OBJECT | JSON_PRESERVE_ZERO_FRACTION | JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_UNESCAPED_LINE_TERMINATORS);
+    expectedArguments(\json_stringify(), 1,
+        JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT | JSON_FORCE_OBJECT | JSON_PRESERVE_ZERO_FRACTION | JSON_PARTIAL_OUTPUT_ON_ERROR
+        | JSON_UNESCAPED_LINE_TERMINATORS);
 
     function validator_rule()
     {
         return [
-            'required', 'bool', 'int', 'float', 'string', 'alpha', 'digit', 'xdigit', 'alnum', 'lower', 'upper',
-            'trim', 'email', 'url', 'ip', 'date', 'timestamp', 'escape', 'xss', 'unique', 'exists', 'const',
-            'account', 'mobile', 'safe', 'readonly',
+            'required',
+            'bool',
+            'int',
+            'float',
+            'string',
+            'alpha',
+            'digit',
+            'xdigit',
+            'alnum',
+            'lower',
+            'upper',
+            'trim',
+            'email',
+            'url',
+            'ip',
+            'date',
+            'timestamp',
+            'escape',
+            'xss',
+            'unique',
+            'exists',
+            'const',
+            'account',
+            'mobile',
+            'safe',
+            'readonly',
             'default' => '',
-            'min' => 0, 'max' => 1, 'range' => '0-1',
-            'length' => '0-1', 'minLength' => 1, 'maxLength' => 1,
+            'min' => 0,
+            'max' => 1,
+            'range' => '0-1',
+            'length' => '0-1',
+            'minLength' => 1,
+            'maxLength' => 1,
             'regex' => '#^\d+#',
-            'in' => '1,2', 'not_in' => '1,2',
+            'in' => '1,2',
+            'not_in' => '1,2',
             'ext' => 'jpg,jpeg',
         ];
     }
