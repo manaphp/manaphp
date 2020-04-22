@@ -2,11 +2,11 @@
 
 namespace ManaPHP;
 
+use Closure;
 use JsonSerializable;
 use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\Event\EventArgs;
 use Swoole\Coroutine;
-use \Closure;
 
 /**
  * Class ManaPHP\Component
