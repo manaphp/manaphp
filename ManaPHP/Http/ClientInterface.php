@@ -4,11 +4,11 @@ namespace ManaPHP\Http;
 interface ClientInterface
 {
     /**
-     * @param string                $method
-     * @param string|array          $url
-     * @param string|array          $body
-     * @param array|string          $headers
-     * @param array|int|float|float $options
+     * @param string          $method
+     * @param string|array    $url
+     * @param string|array    $body
+     * @param array|string    $headers
+     * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
      */

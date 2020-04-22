@@ -1095,7 +1095,6 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      * @param bool   $comment
      *
      * @return array
-     * @throws \ReflectionException
      */
     public static function constants($name, $comment = false)
     {

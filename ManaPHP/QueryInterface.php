@@ -23,7 +23,7 @@ interface QueryInterface
     public function setModel($model);
 
     /**
-     * @return \ManaPHP\Model|Model
+     * @return \ManaPHP\Model
      */
     public function getModel();
 
