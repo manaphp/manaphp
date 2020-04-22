@@ -1,10 +1,12 @@
 <?php
+
 namespace ManaPHP;
 
 use ManaPHP\Logger\LogCategorizable;
 
 /**
  * Class Plugin
+ *
  * @package ManaPHP
  *
  * @property-read \ManaPHP\Security\CaptchaInterface      $captcha

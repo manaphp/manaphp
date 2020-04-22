@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\View;
 
 use ManaPHP\Component;

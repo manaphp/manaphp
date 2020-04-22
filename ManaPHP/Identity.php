@@ -17,6 +17,7 @@ class IdentityContext implements Stickyable
 
 /**
  * Class ManaPHP\Identity
+ *
  * @property-read \ManaPHP\IdentityContext $_context
  */
 class Identity extends Component implements IdentityInterface

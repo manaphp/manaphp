@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;

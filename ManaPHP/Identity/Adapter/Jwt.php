@@ -11,6 +11,7 @@ use ManaPHP\Identity\NotBeforeCredentialException;
 
 /**
  * Class Jwt
+ *
  * @package ManaPHP\Identity\Adapter
  * @property-read \ManaPHP\Http\RequestInterface $request
  */

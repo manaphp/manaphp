@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Cache\Adapter;
 
 use ManaPHP\Cache;

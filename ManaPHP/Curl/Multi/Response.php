@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Curl\Multi;
 
 class Response

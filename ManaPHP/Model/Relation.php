@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Model;
 
 abstract class Relation

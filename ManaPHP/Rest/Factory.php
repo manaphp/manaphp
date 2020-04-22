@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Rest;
 
 class Factory extends \ManaPHP\Http\Factory

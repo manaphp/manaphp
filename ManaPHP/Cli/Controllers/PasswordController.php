@@ -1,10 +1,12 @@
 <?php
+
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
 
 /**
  * Class PasswordController
+ *
  * @package ManaPHP\Cli\Controllers
  */
 class PasswordController extends Controller

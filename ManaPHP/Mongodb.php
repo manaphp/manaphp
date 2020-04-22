@@ -7,6 +7,7 @@ use MongoDB\Driver\Exception\RuntimeException;
 
 /**
  * Class Mongodb
+ *
  * @package ManaPHP
  * @property-read \ManaPHP\DiInterface $di
  */

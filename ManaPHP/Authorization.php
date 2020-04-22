@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP;
 
 use ManaPHP\Exception\ForbiddenException;
@@ -16,6 +17,7 @@ class AuthorizationContext
 
 /**
  * Class Authorization
+ *
  * @package ManaPHP
  *
  * @property-read \ManaPHP\DispatcherInterface               $dispatcher

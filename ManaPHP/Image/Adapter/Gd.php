@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Image\Adapter;
 
 use ManaPHP\Exception\CreateDirectoryFailedException;

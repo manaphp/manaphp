@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Model\Expression;
 
 use ManaPHP\Db\Model as DbModel;

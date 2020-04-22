@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Mailer\Adapter;
 
 use ManaPHP\Mailer;

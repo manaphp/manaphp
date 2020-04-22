@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Http;
 
 use ManaPHP\Aop\Unaspectable;
@@ -6,6 +7,7 @@ use ManaPHP\Component;
 
 /**
  * Class Server
+ *
  * @package ManaPHP\Http
  *
  * @property-read \ManaPHP\Http\RequestInterface         $request

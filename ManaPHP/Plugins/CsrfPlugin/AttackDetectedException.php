@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Plugins\CsrfPlugin;
 
 use ManaPHP\Exception;

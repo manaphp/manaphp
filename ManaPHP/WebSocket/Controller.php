@@ -1,8 +1,10 @@
 <?php
+
 namespace ManaPHP\WebSocket;
 
 /**
  * Class Controller
+ *
  * @package ManaPHP\WebSocket
  * @property-read \ManaPHP\WebSocket\ServerInterface $wsServer
  * @property-read \ManaPHP\Http\RequestInterface     $request

@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Http\Globals;
 
 use ManaPHP\Component;
@@ -12,6 +13,7 @@ use ManaPHP\Http\Globals\Proxies\SessionProxy;
 
 /**
  * Class Manager
+ *
  * @package ManaPHP\Http
  * @property-read \ManaPHP\Http\RequestInterface $request
  */

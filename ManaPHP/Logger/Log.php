@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Logger;
 
 class Log

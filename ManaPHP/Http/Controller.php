@@ -1,8 +1,10 @@
 <?php
+
 namespace ManaPHP\Http;
 
 /**
  * Class Controller
+ *
  * @package ManaPHP\Http
  *
  * @property-read \ManaPHP\InvokerInterface               $invoker

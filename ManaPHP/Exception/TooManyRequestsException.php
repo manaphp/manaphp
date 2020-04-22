@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Exception;
 
 use ManaPHP\Exception;

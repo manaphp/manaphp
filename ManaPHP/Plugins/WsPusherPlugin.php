@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Plugins;
 
 use ManaPHP\Event\EventArgs;
@@ -6,6 +7,7 @@ use ManaPHP\Plugin;
 
 /**
  * Class WsPusherPlugin
+ *
  * @package ManaPHP\Plugins
  *
  * @property-read \ManaPHP\WebSocket\ServerInterface $wsServer

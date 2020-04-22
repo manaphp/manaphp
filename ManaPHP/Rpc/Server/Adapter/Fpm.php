@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Rpc\Server\Adapter;
 
 use ManaPHP\Exception\NotSupportedException;
@@ -6,6 +7,7 @@ use ManaPHP\Rpc\Server;
 
 /**
  * Class Fpm
+ *
  * @package ManaPHP\Rpc\Server\Adapter
  */
 class Fpm extends Server

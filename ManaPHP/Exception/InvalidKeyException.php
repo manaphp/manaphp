@@ -1,8 +1,10 @@
 <?php
+
 namespace ManaPHP\Exception;
 
 /**
  * Class InvalidKeyException
+ *
  * @package ManaPHP\Exception
  *
  *This runtime exception is thrown to indicate that a method parameter which was expected to be

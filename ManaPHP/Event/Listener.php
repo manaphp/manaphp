@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Event;
 
 use ManaPHP\Component;

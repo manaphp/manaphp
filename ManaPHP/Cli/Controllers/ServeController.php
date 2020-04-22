@@ -7,6 +7,7 @@ use ManaPHP\Helper\LocalFS;
 
 /**
  * Class ServeController
+ *
  * @package ManaPHP\Cli\Controllers
  * @property-read \ManaPHP\RouterInterface $router
  */

@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Query;
 
 use ManaPHP\Exception;

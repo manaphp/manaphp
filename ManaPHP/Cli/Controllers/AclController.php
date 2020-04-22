@@ -1,10 +1,12 @@
 <?php
+
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
 
 /**
  * Class AclController
+ *
  * @package ManaPHP\Cli\Controllers
  *
  * @property-read \ManaPHP\Authorization\AclBuilderInterface $aclBuilder

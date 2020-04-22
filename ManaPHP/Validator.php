@@ -1,4 +1,5 @@
 <?php /** @noinspection PhpUnusedParameterInspection */
+
 namespace ManaPHP;
 
 use Closure;
@@ -16,6 +17,7 @@ class ValidatorContext
 
 /**
  * Class Validator
+ *
  * @package ManaPHP
  *
  * @property-read \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier

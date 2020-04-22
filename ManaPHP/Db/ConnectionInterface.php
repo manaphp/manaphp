@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Db;
 
 interface ConnectionInterface

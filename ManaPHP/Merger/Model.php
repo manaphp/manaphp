@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Merger;
 
 use ManaPHP\Exception\NotSupportedException;

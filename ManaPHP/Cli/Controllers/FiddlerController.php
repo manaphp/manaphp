@@ -1,10 +1,12 @@
 <?php
+
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
 
 /**
  * Class FiddlerController
+ *
  * @package ManaPHP\Cli\Controllers
  * @property-read \ManaPHP\Plugins\FiddlerPlugin $fiddlerPlugin
  */

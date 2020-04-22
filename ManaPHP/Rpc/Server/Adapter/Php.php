@@ -1,8 +1,10 @@
 <?php
+
 namespace ManaPHP\Rpc\Server\Adapter;
 
 /**
  * Class Php
+ *
  * @package ManaPHP\Rpc\Server\Adapter
  *
  * @property-read \ManaPHP\RouterInterface $router

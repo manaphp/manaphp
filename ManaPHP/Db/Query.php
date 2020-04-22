@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Db;
 
 use ManaPHP\Exception\MisuseException;

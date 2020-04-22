@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Mvc;
 
 class Factory extends \ManaPHP\Http\Factory

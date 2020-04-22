@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Renderer\Engine\Sword;
 
 use ManaPHP\Component;

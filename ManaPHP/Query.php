@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP;
 
 use ArrayIterator;
@@ -11,6 +12,7 @@ use ManaPHP\Query\NotFoundException;
 
 /**
  * Class Query
+ *
  * @package ManaPHP
  * @property-read \ManaPHP\Http\RequestInterface           $request
  * @property-read \ManaPHP\Model\Relation\ManagerInterface $relationsManager

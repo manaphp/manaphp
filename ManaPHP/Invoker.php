@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP;
 
 use ManaPHP\Validator\ValidateFailedException;
@@ -6,6 +7,7 @@ use ReflectionMethod;
 
 /**
  * Class Invoker
+ *
  * @package ManaPHP
  *
  * @property-read \ManaPHP\Http\RequestInterface $request

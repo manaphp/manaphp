@@ -68,6 +68,7 @@ class FrameworkController extends Controller
 
     /**
      * minify framework source code
+     *
      * @return int
      */
     public function minifyCommand()

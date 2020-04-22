@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Cli;
 
 use ManaPHP\Component;

@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Helper;
 
 use ManaPHP\Di;

@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Configuration;
 
 interface SettingsInterface

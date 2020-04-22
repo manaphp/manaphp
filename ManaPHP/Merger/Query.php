@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Merger;
 
 use ManaPHP\Di;
@@ -10,6 +11,7 @@ use ManaPHP\QueryInterface;
 
 /**
  * Class Merger
+ *
  * @package ManaPHP\Merger\Query
  * @property-read \ManaPHP\Http\RequestInterface $request
  */

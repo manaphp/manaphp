@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Rpc;
 
 use ManaPHP\Exception\AbortException;
@@ -8,6 +9,7 @@ use Throwable;
 
 /**
  * Class Application
+ *
  * @package ManaPHP\Rpc
  *
  * @property-read \ManaPHP\Rpc\ServerInterface    $rpcServer

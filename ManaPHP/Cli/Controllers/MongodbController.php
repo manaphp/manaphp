@@ -45,7 +45,7 @@ class MongodbController extends Controller
     /**
      * generate model file from base64 encoded string
      *
-     * @param string $input the base64 encoded json string
+     * @param string $input     the base64 encoded json string
      * @param string $modelName
      * @param bool   $optimized output as more methods as possible
      */
@@ -66,11 +66,11 @@ class MongodbController extends Controller
     /**
      * generate models file from data files or online data
      *
-     * @param array  $services explicit the mongodb service name
+     * @param array  $services  explicit the mongodb service name
      * @param string $namespace namespaces of models
      * @param bool   $optimized output as more methods as possible
-     * @param int    $sample sample size
-     * @param array  $db db name list
+     * @param int    $sample    sample size
+     * @param array  $db        db name list
      *
      * @throws \ManaPHP\Mongodb\Exception
      */
@@ -369,9 +369,9 @@ class MongodbController extends Controller
     /**
      * export mongodb data to csv files
      *
-     * @param array  $services services list
+     * @param array  $services           services list
      * @param string $collection_pattern match collection against a pattern
-     * @param bool   $bom contains BOM or not
+     * @param bool   $bom                contains BOM or not
      */
     public function csvCommand($services = [], $collection_pattern = '', $bom = false)
     {
@@ -449,9 +449,9 @@ class MongodbController extends Controller
     /**
      * list databases and collections
      *
-     * @param array  $services services list
+     * @param array  $services           services list
      * @param string $collection_pattern match collection against a pattern
-     * @param string $field collection must contains one this field
+     * @param string $field              collection must contains one this field
      * @param array  $db
      */
     public function listCommand($services = [], $collection_pattern = '', $field = '', $db = [])

@@ -1,10 +1,12 @@
 <?php
+
 namespace ManaPHP\Http;
 
 use ManaPHP\Http\Server\HandlerInterface;
 
 /**
  * Class Application
+ *
  * @property-read \ManaPHP\Http\ServerInterface   $httpServer
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response

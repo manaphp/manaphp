@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Message;
 
 use ManaPHP\Component;

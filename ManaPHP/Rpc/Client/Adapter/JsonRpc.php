@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Rpc\Client\Adapter;
 
 use ManaPHP\Component;

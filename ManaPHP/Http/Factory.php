@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Http;
 
 use ManaPHP\Di\FactoryDefault;

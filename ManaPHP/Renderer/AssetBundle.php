@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Renderer;
 
 use ManaPHP\Component;

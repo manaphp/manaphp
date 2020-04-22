@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Http\Server\Adapter;
 
 use ManaPHP\Http\Server;
@@ -20,6 +21,7 @@ class SwooleContext
 
 /**
  * Class Server
+ *
  * @package ManaPHP\Http\Server
  * @property-read \ManaPHP\RouterInterface                   $router
  * @property-read \ManaPHP\Http\Server\Adapter\SwooleContext $_context

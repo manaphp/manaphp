@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Redis;
 
 use ManaPHP\Component;

@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Plugins;
 
 use ManaPHP\Event\EventArgs;
@@ -20,6 +21,7 @@ class FiddlerPluginContext
 
 /**
  * Class FiddlerPlugin
+ *
  * @package ManaPHP\Plugins
  * @property-read \ManaPHP\Plugins\FiddlerPluginContext $_context
  */

@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Aop;
 
 use ManaPHP\Exception\MisuseException;

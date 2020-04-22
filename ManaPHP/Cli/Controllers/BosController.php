@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
@@ -31,9 +32,9 @@ class BosController extends Controller
     /**
      * list all objects of one bucket
      *
-     * @param string $bucket the bucket name of objects
-     * @param string $key the key of object
-     * @param string $prefix the prefix of keys
+     * @param string $bucket    the bucket name of objects
+     * @param string $key       the key of object
+     * @param string $prefix    the prefix of keys
      * @param string $mime_type the mime-type of object
      * @param string $extension the extension of object
      */

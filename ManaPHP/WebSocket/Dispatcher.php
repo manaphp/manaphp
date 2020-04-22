@@ -1,8 +1,10 @@
 <?php
+
 namespace ManaPHP\WebSocket;
 
 /**
  * Class Dispatcher
+ *
  * @package ManaPHP\WebSocket
  */
 class Dispatcher extends \ManaPHP\Dispatcher

@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Plugins;
 
 use ManaPHP\Event\EventArgs;
@@ -23,6 +24,7 @@ class LoggerPluginContext
 
 /**
  * Class LoggerPlugin
+ *
  * @package ManaPHP\Plugins
  * @property-read \ManaPHP\Plugins\LoggerPluginContext $_context
  */

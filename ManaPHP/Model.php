@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP;
 
 use ArrayAccess;
@@ -273,7 +274,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      *
      * @param array $filters =get_object_vars(new static)
      * @param array $options =['order'=>get_object_vars(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC], 'index'=>get_object_vars(new static)]
-     * @param array $fields =get_object_vars(new static)
+     * @param array $fields  =get_object_vars(new static)
      *
      * @return  static[]
      */
@@ -287,7 +288,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      *
      * @param array $filters =get_object_vars(new static)
      * @param array $options =['order'=>get_object_vars(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC], 'index'=>get_object_vars(new static)]
-     * @param array $fields =get_object_vars(new static)
+     * @param array $fields  =get_object_vars(new static)
      *
      * @return  \ManaPHP\Paginator
      */
@@ -297,7 +298,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param string|array $fields =get_object_vars(new static) ?: key(get_object_vars(new static)) ?: [$k=>key(get_object_vars(new static))]
+     * @param string|array $fields  =get_object_vars(new static) ?: key(get_object_vars(new static)) ?: [$k=>key(get_object_vars(new static))]
      * @param array        $filters =get_object_vars(new static)
      *
      * @return array
@@ -405,7 +406,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      * Allows to query the first record that match the specified conditions
      *
      * @param int|string|array $filters =get_object_vars(new static)
-     * @param array            $fields =get_object_vars(new static)
+     * @param array            $fields  =get_object_vars(new static)
      *
      * @return static|null
      */
@@ -423,7 +424,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
     /**
      * @param int|string|array $filters =get_object_vars(new static)
-     * @param array            $fields =get_object_vars(new static)
+     * @param array            $fields  =get_object_vars(new static)
      *
      * @return static
      */
@@ -460,7 +461,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      * Allows to query the last record that match the specified conditions
      *
      * @param array $filters =get_object_vars(new static)
-     * @param array $fields =get_object_vars(new static)
+     * @param array $fields  =get_object_vars(new static)
      *
      * @return static|null
      */
@@ -475,7 +476,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
     /**
      * @param int|string|array $filters =get_object_vars(new static)
-     * @param string           $field =key(get_object_vars(new static))
+     * @param string           $field   =key(get_object_vars(new static))
      * @param int              $ttl
      *
      * @return int|float|string|null
@@ -523,7 +524,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
     /**
      * @param int|string|array $filters =get_object_vars(new static)
-     * @param string           $field =key(get_object_vars(new static))
+     * @param string           $field   =key(get_object_vars(new static))
      * @param int              $ttl
      *
      * @return int|float|string
@@ -540,7 +541,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
     /**
      * @param int|string|array $filters =get_object_vars(new static)
-     * @param string|float|int $field =key(get_object_vars(new static))
+     * @param string|float|int $field   =key(get_object_vars(new static))
      * @param mixed            $default
      *
      * @return float|int|string
@@ -551,7 +552,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param string $field =key(get_object_vars(new static))
+     * @param string $field   =key(get_object_vars(new static))
      * @param array  $filters =get_object_vars(new static)
      *
      * @return array
@@ -597,7 +598,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      * Allows to count how many records match the specified conditions
      *
      * @param array  $filters =get_object_vars(new static)
-     * @param string $field =key(get_object_vars(new static))
+     * @param string $field   =key(get_object_vars(new static))
      *
      * @return int
      */
@@ -609,7 +610,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * Allows to calculate a summary on a field that match the specified conditions
      *
-     * @param string $field =key(get_object_vars(new static))
+     * @param string $field   =key(get_object_vars(new static))
      * @param array  $filters =get_object_vars(new static)
      *
      * @return int|float|null
@@ -622,7 +623,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * Allows to get the max value of a column that match the specified conditions
      *
-     * @param string $field =key(get_object_vars(new static))
+     * @param string $field   =key(get_object_vars(new static))
      * @param array  $filters =get_object_vars(new static)
      *
      * @return int|float|null
@@ -636,7 +637,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      * Allows to get the min value of a column that match the specified conditions
      *
      *
-     * @param string $field =key(get_object_vars(new static))
+     * @param string $field   =key(get_object_vars(new static))
      * @param array  $filters =get_object_vars(new static)
      *
      * @return int|float|null
@@ -649,7 +650,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * Allows to calculate the average value on a column matching the specified conditions
      *
-     * @param string $field =key(get_object_vars(new static))
+     * @param string $field   =key(get_object_vars(new static))
      * @param array  $filters =get_object_vars(new static)
      *
      * @return float|null
@@ -662,7 +663,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * Assigns values to a model from an array
      *
-     * @param array|\ManaPHP\Model $data =get_object_vars(new static)
+     * @param array|\ManaPHP\Model $data   =get_object_vars(new static)
      * @param array                $fields =get_object_vars(new static)
      *
      * @return static
@@ -857,7 +858,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
     /**
      * @param array $fieldValues =get_object_vars(new static)
-     * @param array $filters =get_object_vars(new static)
+     * @param array $filters     =get_object_vars(new static)
      *
      * @return int
      */

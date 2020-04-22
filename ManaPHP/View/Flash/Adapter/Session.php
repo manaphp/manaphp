@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\View\Flash\Adapter;
 
 use ManaPHP\View\Flash;

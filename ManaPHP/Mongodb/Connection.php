@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Mongodb;
 
 use ManaPHP\Component;

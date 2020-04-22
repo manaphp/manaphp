@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Model;
 
 class NotFoundException extends Exception

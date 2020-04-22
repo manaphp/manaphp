@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Dispatcher;
 
 use ManaPHP\Exception\NotFoundException;

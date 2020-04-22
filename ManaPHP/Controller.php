@@ -1,10 +1,12 @@
 <?php
+
 namespace ManaPHP;
 
 use ManaPHP\Logger\LogCategorizable;
 
 /**
  * Class Controller
+ *
  * @package ManaPHP
  *
  * @property-read \ManaPHP\InvokerInterface $invoker

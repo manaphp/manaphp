@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\WebSocket;
 
 use ManaPHP\Component;

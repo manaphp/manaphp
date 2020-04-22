@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Cli\Controllers;
 
 use FilesystemIterator;

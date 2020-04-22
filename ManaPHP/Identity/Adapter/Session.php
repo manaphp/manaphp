@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Identity\Adapter;
 
 use ManaPHP\Identity;
@@ -6,6 +7,7 @@ use ManaPHP\Identity\NoCredentialException;
 
 /**
  * Class Session
+ *
  * @package ManaPHP\Identity\Adapter
  * @property-read \ManaPHP\Http\SessionInterface $session
  */

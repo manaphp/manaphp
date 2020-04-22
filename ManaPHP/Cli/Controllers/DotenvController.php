@@ -1,10 +1,12 @@
 <?php
+
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
 
 /**
  * Class DotenvController
+ *
  * @package App\Cli\Controllers
  *
  * @property-read \ManaPHP\DotenvInterface $dotenv

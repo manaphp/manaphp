@@ -1,10 +1,12 @@
 <?php
+
 namespace ManaPHP;
 
 use ManaPHP\Logger\LogCategorizable;
 
 /**
  * Class Service
+ *
  * @package ManaPHP
  */
 class Service extends Component implements LogCategorizable

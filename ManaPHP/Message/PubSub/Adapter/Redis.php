@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Message\PubSub\Adapter;
 
 use ManaPHP\Component;

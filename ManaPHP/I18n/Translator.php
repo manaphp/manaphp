@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\I18n;
 
 use ManaPHP\Component;

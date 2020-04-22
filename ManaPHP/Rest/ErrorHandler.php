@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Rest;
 
 use ManaPHP\Component;
@@ -7,6 +8,7 @@ use ManaPHP\Exception;
 
 /**
  * Class ErrorHandler
+ *
  * @package ManaPHP\Rest
  * @property-read \ManaPHP\Http\ResponseInterface $response
  */

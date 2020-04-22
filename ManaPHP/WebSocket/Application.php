@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\WebSocket;
 
 use ManaPHP\Exception\AbortException;
@@ -9,6 +10,7 @@ use Throwable;
 
 /**
  * Class Application
+ *
  * @package ManaPHP\WebSocket
  *
  * @property-read \ManaPHP\WebSocket\ServerInterface $wsServer

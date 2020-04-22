@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Coroutine;
 
 use ManaPHP\Component;

@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Plugins;
 
 use Closure;
@@ -17,6 +18,7 @@ class PageCachePluginContext
 
 /**
  * Class PageCachePlugin
+ *
  * @package ManaPHP\Plugins
  * @property-read \ManaPHP\Plugins\PageCachePluginContext $_context
  */

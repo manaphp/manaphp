@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Plugins;
 
 use ManaPHP\Event\EventArgs;
@@ -8,6 +9,7 @@ use ManaPHP\Plugin;
 
 /**
  * Class VerbsPlugin
+ *
  * @package ManaPHP\Plugins
  *
  * @property-read \ManaPHP\ViewInterface $view

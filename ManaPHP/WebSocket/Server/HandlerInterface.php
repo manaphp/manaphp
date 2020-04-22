@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\WebSocket\Server;
 
 interface HandlerInterface

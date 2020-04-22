@@ -16,6 +16,7 @@ class HelpController extends Controller
 {
     /**
      * list all commands
+     *
      * @return int
      */
     public function listCommand()

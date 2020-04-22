@@ -1,5 +1,6 @@
 <?php
 /** @noinspection PhpUndefinedClassInspection */
+
 /** @noinspection PhpUndefinedMethodInspection */
 
 namespace ManaPHP\Mailer\Adapter;

@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
@@ -13,6 +14,7 @@ use Throwable;
 
 /**
  * Class CronController
+ *
  * @package ManaPHP\Cli\Controllers
  */
 class CronController extends Controller

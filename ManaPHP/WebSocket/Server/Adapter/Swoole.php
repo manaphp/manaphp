@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\WebSocket\Server\Adapter;
 
 use ArrayObject;
@@ -15,6 +16,7 @@ use Throwable;
 
 /**
  * Class Server
+ *
  * @package ManaPHP\WebSocket
  * @property-read \ManaPHP\Http\RequestInterface $request
  */

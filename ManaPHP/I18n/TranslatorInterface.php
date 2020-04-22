@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\I18n;
 
 interface TranslatorInterface

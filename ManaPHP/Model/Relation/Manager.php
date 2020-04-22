@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Model\Relation;
 
 use ManaPHP\Component;

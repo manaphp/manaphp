@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\WebSocket;
 
 class Factory extends \ManaPHP\Http\Factory

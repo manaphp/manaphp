@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Helper\Sharding;
 
 use ManaPHP\Exception\RuntimeException;

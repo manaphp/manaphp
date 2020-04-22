@@ -16,6 +16,7 @@ class  ApcuContext
 
 /**
  * Class Apcu
+ *
  * @package ManaPHP\Ipc\Cache\Adapter
  * @property-read \ManaPHP\Ipc\Cache\Adapter\ApcuContext $_context
  */

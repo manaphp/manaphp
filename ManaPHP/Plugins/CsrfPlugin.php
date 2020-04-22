@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Plugins;
 
 use ManaPHP\Event\EventArgs;
@@ -10,6 +11,7 @@ use ManaPHP\Rest\Controller as RestController;
 
 /**
  * Class CsrfPlugin
+ *
  * @package ManaPHP\Plugins
  *
  * @property-read \ManaPHP\ViewInterface $view

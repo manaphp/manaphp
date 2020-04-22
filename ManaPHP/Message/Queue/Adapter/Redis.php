@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Message\Queue\Adapter;
 
 use ManaPHP\Exception\MisuseException;

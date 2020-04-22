@@ -1,9 +1,11 @@
 <?php
+
 namespace ManaPHP;
 
 /**
  * Interface QueryInterface
- * @package ManaPHP
+ *
+ * @package  ManaPHP
  * @template Model
  */
 interface QueryInterface

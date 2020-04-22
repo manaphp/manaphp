@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Mailer;
 
 use JsonSerializable;

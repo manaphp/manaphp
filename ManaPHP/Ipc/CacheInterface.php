@@ -1,8 +1,10 @@
 <?php
+
 namespace ManaPHP\Ipc;
 
 /**
  * Interface CacheInterface
+ *
  * @package ipc
  */
 interface CacheInterface

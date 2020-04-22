@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Bos;
 
 interface ClientInterface

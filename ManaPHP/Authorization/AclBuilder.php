@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Authorization;
 
 use ManaPHP\Component;
@@ -6,6 +7,7 @@ use ManaPHP\Helper\LocalFS;
 
 /**
  * Class Builder
+ *
  * @package ManaPHP\Authorization
  */
 class AclBuilder extends Component implements AclBuilderInterface

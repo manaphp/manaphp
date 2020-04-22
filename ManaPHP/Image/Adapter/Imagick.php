@@ -173,8 +173,7 @@ class Imagick extends Image
         $color = 0x000000,
         $size = 12,
         $font_file = null
-    )
-    {
+    ) {
         $draw = new ImagickDraw();
         $textColor = sprintf('rgb(%u,%u,%u)', ($color >> 16) & 0xFF, ($color >> 8) & 0xFF, $color & 0xFF);
         $draw->setFillColor(new ImagickPixel($textColor));

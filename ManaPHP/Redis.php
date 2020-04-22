@@ -1,8 +1,10 @@
 <?php
+
 namespace ManaPHP;
 
 /**
  * Class Redis
+ *
  * @package ManaPHP
  */
 class Redis extends Component

@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Rpc\Server\Adapter;
 
 use ArrayObject;
@@ -24,6 +25,7 @@ class SwooleContext
 
 /**
  * Class Server
+ *
  * @package ManaPHP\WebSocket
  * @property-read \ManaPHP\Rpc\Server\Adapter\SwooleContext $_context
  */

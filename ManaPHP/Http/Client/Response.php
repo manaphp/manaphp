@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Http\Client;
 
 use JsonSerializable;

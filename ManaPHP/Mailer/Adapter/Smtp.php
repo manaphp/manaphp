@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Mailer\Adapter;
 
 use ManaPHP\Coroutine\Context\Inseparable;
@@ -17,6 +18,7 @@ class SmtpContext implements Inseparable
 
 /**
  * Class Smtp
+ *
  * @package ManaPHP\Mailer\Adapter
  * @property-read \ManaPHP\Mailer\Adapter\SmtpContext $_context
  */

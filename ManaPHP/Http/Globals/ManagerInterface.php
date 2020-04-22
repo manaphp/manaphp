@@ -1,4 +1,5 @@
 <?php
+
 namespace ManaPHP\Http\Globals;
 
 interface ManagerInterface

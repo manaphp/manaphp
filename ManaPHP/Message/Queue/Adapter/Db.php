@@ -1,10 +1,12 @@
 <?php
+
 namespace ManaPHP\Message\Queue\Adapter;
 
 use ManaPHP\Message\Queue;
 
 /**
  * Class Db
+ *
  * @package ManaPHP\Message\Queue\Adapter
  *
  *CREATE TABLE `manaphp_message_queue` (
