@@ -4,7 +4,6 @@ namespace ManaPHP;
 use JsonSerializable;
 use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\Event\EventArgs;
-use ManaPHP\Exception\MisuseException;
 use Swoole\Coroutine;
 use \Closure;
 
