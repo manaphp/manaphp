@@ -439,6 +439,10 @@ if (!function_exists('abort')) {
 if (!function_exists('dd')) {
     function dd()
     {
+        if (!Di::getDefault()->configure->debug) {
+            return;
+        }
+
         if (MANAPHP_COROUTINE_ENABLED) {
             /** @noinspection PhpUndefinedMethodInspection */
             $trace = Coroutine::getBackTrace(0, DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
