@@ -98,8 +98,7 @@ class  WsPusherPlugin extends Plugin
         }
 
         if ($this->_sso) {
-            unset($this->_users[$id]);
-            unset($this->_name2id[$this->identity->getName()]);
+            unset($this->_users[$id], $this->_name2id[$this->identity->getName()]);
         } else {
             unset($this->_users[$fd]);
         }
