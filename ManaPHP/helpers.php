@@ -449,10 +449,10 @@ if (!function_exists('dd')) {
         } else {
             $trace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
         }
+
         echo var_export($trace['file'] . ':' . $trace['line']), PHP_EOL;
-        foreach (func_get_args() as $arg) {
-            echo var_export($arg), PHP_EOL;
-        }
+        var_dump(func_num_args() === 1 ? func_get_args()[0] : func_get_args());
+
         throw new AbortException();
     }
 }
