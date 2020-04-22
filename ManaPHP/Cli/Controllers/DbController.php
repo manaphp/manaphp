@@ -129,7 +129,9 @@ class DbController extends Controller
      */
     protected function _renderModel($service, $table, $rootNamespace = 'App\Models', $optimized = false)
     {
-        $metadata = $this->_di->getShared($service)->getMetadata($table);
+        /** @var Db $db */
+        $db = $this->_di->getShared($service);
+        $metadata = $db->getMetadata($table);
 
         $fields = (array)$metadata[Db::METADATA_ATTRIBUTES];
 

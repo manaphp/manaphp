@@ -566,6 +566,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
             $count = $this->_offset + count($items);
         }
 
+        /** @var Paginator $paginator */
         $paginator = $this->_di->get('paginator');
         $paginator->items = $items;
         return $paginator->paginate($count, $this->_limit, (int)($this->_offset / $this->_limit) + 1);
