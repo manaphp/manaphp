@@ -26,7 +26,7 @@ interface ClientInterface
     /**
      * @param callable $handler
      *
-     * @return static
+     * @return void
      */
     public function subscribe($handler);
 
