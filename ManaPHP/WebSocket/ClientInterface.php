@@ -25,10 +25,11 @@ interface ClientInterface
 
     /**
      * @param callable $handler
+     * @param int      $keepalive
      *
      * @return void
      */
-    public function subscribe($handler);
+    public function subscribe($handler, $keepalive = 0);
 
     /**
      * @return static

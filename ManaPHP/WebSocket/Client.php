@@ -333,14 +333,21 @@ class Client extends Component implements ClientInterface
 
     /**
      * @param callable $handler
+     * @param int      $keepalive
      *
      * @return void
      */
-    public function subscribe($handler)
+    public function subscribe($handler, $keepalive = 0)
     {
+        $last_time = null;
+
         do {
             $r = null;
-            if ($message = $this->recv()) {
+            if ($message = $this->recv($keepalive)) {
+                if ($keepalive > 0) {
+                    $last_time = microtime(true);
+                }
+				
                 $op_code = $message->op_code;
 
                 if ($op_code === Message::TEXT_FRAME || $op_code === Message::BINARY_FRAME) {
@@ -349,6 +356,10 @@ class Client extends Component implements ClientInterface
                     $r = false;
                 } elseif ($op_code === Message::PING_FRAME) {
                     $this->pong();
+                }
+            } else {
+                if ($keepalive > 0 && microtime(true) - $last_time > $keepalive) {
+                    $this->ping();
                 }
             }
         } while ($r !== false);
