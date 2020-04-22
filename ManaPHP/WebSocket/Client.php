@@ -34,6 +34,11 @@ class Client extends Component implements ClientInterface
     protected $_protocol;
 
     /**
+     * @var bool
+     */
+    protected $_masking = true;
+
+    /**
      * @var string
      */
     protected $_origin;
@@ -67,6 +72,10 @@ class Client extends Component implements ClientInterface
 
         if (isset($options['protocol'])) {
             $this->_protocol = $options['protocol'];
+        }
+
+        if (isset($options['masking'])) {
+            $this->_masking = (bool)$options['masking'];
         }
 
         if (isset($options['origin'])) {
@@ -202,20 +211,25 @@ class Client extends Component implements ClientInterface
 
         $data_len = strlen($data);
 
+        $mask_bit = $this->_masking ? 0x80 : 0x00;
         if ($data_len <= 125) {
-            $str .= pack('C', $data_len | 0x80);
+            $str .= pack('C', $data_len | $mask_bit);
         } elseif ($data_len <= 65535) {
-            $str .= pack('Cn', 126 | 0x80, $data_len);
+            $str .= pack('Cn', 126 | $mask_bit, $data_len);
         } else {
-            $str .= pack('CJ', 127 | 0x80, $data_len);
+            $str .= pack('CJ', 127 | $mask_bit, $data_len);
         }
 
-        $key = random_bytes(4);
-        $str .= $key;
+        if ($this->_masking) {
+            $key = random_bytes(4);
+            $str .= $key;
 
-        for ($i = 0; $i < $data_len; $i++) {
-            $chr = $data[$i];
-            $str .= chr(ord($key[$i % 4]) ^ ord($chr));
+            for ($i = 0; $i < $data_len; $i++) {
+                $chr = $data[$i];
+                $str .= chr(ord($key[$i % 4]) ^ ord($chr));
+            }
+        } else {
+            $str .= $data;
         }
 
         $this->_send($this->_socket ?? $this->_open(), $str);
@@ -368,7 +382,7 @@ class Client extends Component implements ClientInterface
                 if ($keepalive > 0) {
                     $last_time = microtime(true);
                 }
-				
+
                 $op_code = $message->op_code;
 
                 if ($op_code === Message::TEXT_FRAME || $op_code === Message::BINARY_FRAME) {
