@@ -32,14 +32,18 @@ interface ClientInterface
     public function subscribe($handler, $keepalive = 0);
 
     /**
+     * @param string $data
+     *
      * @return static
      */
-    public function ping();
+    public function ping($data = '');
 
     /**
+     * @param string $data
+     *
      * @return static
      */
-    public function pong();
+    public function pong($data);
 
     /**
      * @return void

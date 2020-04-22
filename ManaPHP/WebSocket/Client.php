@@ -193,6 +193,35 @@ class Client extends Component implements ClientInterface
     }
 
     /**
+     * @param int    $op_code
+     * @param string $data
+     */
+    public function _sendFrame($op_code, $data)
+    {
+        $str = chr(0x80 | $op_code);
+
+        $data_len = strlen($data);
+
+        if ($data_len <= 125) {
+            $str .= pack('C', $data_len | 0x80);
+        } elseif ($data_len <= 65535) {
+            $str .= pack('Cn', 126 | 0x80, $data_len);
+        } else {
+            $str .= pack('CJ', 127 | 0x80, $data_len);
+        }
+
+        $key = random_bytes(4);
+        $str .= $key;
+
+        for ($i = 0; $i < $data_len; $i++) {
+            $chr = $data[$i];
+            $str .= chr(ord($key[$i % 4]) ^ ord($chr));
+        }
+
+        $this->_send($this->_socket ?? $this->_open(), $str);
+    }
+
+    /**
      * @param string $message
      *
      * @return void
@@ -201,37 +230,29 @@ class Client extends Component implements ClientInterface
     {
         $this->fireEvent('wsClient:send', $message);
 
-        $socket = $this->_socket ?? $this->_open();
-        $message_length = strlen($message);
-
-        $header = chr(129);
-        if ($message_length <= 125) {
-            $header .= pack('C', $message_length);
-        } elseif ($message_length <= 65535) {
-            $header .= pack('Cn', 126, $message_length);
-        } else {
-            $header .= pack('CJ', 127, $message_length);
-        }
-
-        $this->_send($socket, $header . $message);
+        $this->_sendFrame(Message::TEXT_FRAME, $message);
     }
 
     /**
+     * @param string $data
+     *
      * @return static
      */
-    public function ping()
+    public function ping($data = '')
     {
-        $this->_send($this->_socket ?? $this->_open(), "\x89\x00");
+        $this->_sendFrame(Message::PING_FRAME, $data);
 
         return $this;
     }
 
     /**
+     * @param string $data
+     *
      * @return static
      */
-    public function pong()
+    public function pong($data)
     {
-        $this->_send($this->_socket ?? $this->_open(), "\x8A\x00");
+        $this->_sendFrame(Message::PONG_FRAME, $data);
 
         return $this;
     }
@@ -355,7 +376,7 @@ class Client extends Component implements ClientInterface
                 } elseif ($op_code === Message::CLOSE_FRAME) {
                     $r = false;
                 } elseif ($op_code === Message::PING_FRAME) {
-                    $this->pong();
+                    $this->pong($message->payload);
                 }
             } else {
                 if ($keepalive > 0 && microtime(true) - $last_time > $keepalive) {
