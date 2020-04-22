@@ -31,6 +31,16 @@ interface ClientInterface
     public function subscribe($handler);
 
     /**
+     * @return static
+     */
+    public function ping();
+
+    /**
+     * @return static
+     */
+    public function pong();
+
+    /**
      * @return void
      */
     public function close();

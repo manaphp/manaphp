@@ -217,6 +217,26 @@ class Client extends Component implements ClientInterface
     }
 
     /**
+     * @return static
+     */
+    public function ping()
+    {
+        $this->_send($this->_socket ?? $this->_open(), "\x89\x00");
+
+        return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function pong()
+    {
+        $this->_send($this->_socket ?? $this->_open(), "\x8A\x00");
+
+        return $this;
+    }
+
+    /**
      * @param float $timeout
      *
      * @return \ManaPHP\WebSocket\Client\Message|null
@@ -327,6 +347,8 @@ class Client extends Component implements ClientInterface
                     $r = $handler($message->payload, $this);
                 } elseif ($op_code === Message::CLOSE_FRAME) {
                     $r = false;
+                } elseif ($op_code === Message::PING_FRAME) {
+                    $this->pong();
                 }
             }
         } while ($r !== false);
