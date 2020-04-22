@@ -451,6 +451,12 @@ if (!function_exists('dd')) {
         }
 
         echo var_export($trace['file'] . ':' . $trace['line']), PHP_EOL;
+
+        $line = $trace['line'] - 1;
+        if (($lines = file($trace['file'])) !== false && isset($lines[$line])) {
+            echo trim($lines[$line]), PHP_EOL;
+        }
+
         var_dump(func_num_args() === 1 ? func_get_args()[0] : func_get_args());
 
         throw new AbortException();
