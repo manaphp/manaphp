@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Http\Server\Adapter;
 
+use ManaPHP\Helper\Ip;
 use ManaPHP\Http\Server;
 use Swoole\Runtime;
 use Throwable;
@@ -60,7 +61,7 @@ class Swoole extends Server
             'DOCUMENT_ROOT' => dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,
             'SCRIPT_NAME' => '/' . basename($script_filename),
-            'SERVER_ADDR' => $this->_getLocalIp(),
+            'SERVER_ADDR' => $this->_host === '0.0.0.0' ? Ip::local() : $this->_host,
             'SERVER_PORT' => $this->_port,
             'SERVER_SOFTWARE' => 'Swoole/' . SWOOLE_VERSION . ' PHP/' . PHP_VERSION,
             'PHP_SELF' => '/' . basename($script_filename),
@@ -104,36 +105,6 @@ class Swoole extends Server
         $this->_swoole->on('ManagerStart', [$this, 'onManagerStart']);
         $this->_swoole->on('WorkerStart', [$this, 'onWorkerStart']);
         $this->_swoole->on('request', [$this, 'onRequest']);
-    }
-
-    /**
-     * @return string
-     */
-    protected function _getLocalIp()
-    {
-        if ($this->_host !== '0.0.0.0') {
-            return $this->_host;
-        }
-
-        $ips = swoole_get_local_ip();
-        if (!$ips) {
-            return '127.0.0.1';
-        } elseif (isset($ips['eth0'])) {
-            return $ips['eth0'];
-        } elseif (isset($ips['ens33'])) {
-            return $ips['ens33'];
-        } elseif (isset($ips['ens1'])) {
-            return $ips['ens1'];
-        } else {
-            foreach ($ips as $name => $ip) {
-                if ($name === 'docker' || strpos($name, 'br-') === 0) {
-                    continue;
-                }
-
-                return $ip;
-            }
-            return current($ips);
-        }
     }
 
     /**
@@ -190,7 +161,8 @@ class Swoole extends Server
     /**
      * @param \Swoole\WebSocket\Server $server
      *
-     * @noinspection PhpUnusedParameterInspection*/
+     * @noinspection PhpUnusedParameterInspection
+     */
     public function onStart($server)
     {
         $title = sprintf('manaphp %s: master', $this->configure->id);
@@ -209,7 +181,8 @@ class Swoole extends Server
      * @param \Swoole\WebSocket\Server $server
      * @param int                      $worker_id
      *
-     * @noinspection PhpUnusedParameterInspection*/
+     * @noinspection PhpUnusedParameterInspection
+     */
     public function onWorkerStart($server, $worker_id)
     {
         $title = sprintf('manaphp %s: worker/%d', $this->configure->id, $worker_id);

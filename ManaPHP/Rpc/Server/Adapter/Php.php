@@ -2,6 +2,8 @@
 
 namespace ManaPHP\Rpc\Server\Adapter;
 
+use ManaPHP\Helper\Ip;
+
 /**
  * Class Php
  *
@@ -21,7 +23,7 @@ class Php extends Fpm
         parent::__construct($options);
 
         $public_dir = $this->alias->resolve('@public');
-        $local_ip = $this->_getLocalIp();
+        $local_ip = $this->_host === '0.0.0.0' ? Ip::local() : $this->_host;
 
         if (PHP_SAPI === 'cli') {
             if (DIRECTORY_SEPARATOR === '\\') {
@@ -39,62 +41,6 @@ class Php extends Fpm
             $_SERVER['SERVER_PORT'] = $this->_port;
             $_SERVER['REQUEST_SCHEME'] = 'http';
             $_GET['_url'] = $_REQUEST['_url'] = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
-        }
-    }
-
-    /**
-     * @return string
-     */
-    protected function _getLocalIp()
-    {
-        if ($this->_host === '0.0.0.0') {
-            if (function_exists('net_get_interfaces')) {
-                $ips = net_get_interfaces();
-
-                if (isset($ips['eth0'])) {
-                    $unicast = $ips['eth0'];
-                } elseif (isset($ips['ens33'])) {
-                    $unicast = $ips['ens33'];
-                } else {
-                    $unicast = [];
-                    foreach ($ips as $name => $ip) {
-                        if ($name !== 'lo' && $name !== 'docker' && strpos($name, 'br-') !== 0) {
-                            $unicast = $ip;
-                            break;
-                        }
-                    }
-                }
-
-                foreach ($unicast as $items) {
-                    foreach ($items as $item) {
-                        if (isset($item['address'])) {
-                            $ip = $item['address'];
-                            if (strpos($ip, '192.168.') === 0 || strpos($ip, '10.') === 0) {
-                                return $ip;
-                            }
-                        }
-                    }
-                }
-                return $this->_host;
-            } elseif (DIRECTORY_SEPARATOR === '\\') {
-                return '127.0.0.1';
-            } else {
-                if (!$ips = @exec('hostname --all-ip-addresses')) {
-                    return '127.0.0.1';
-                }
-
-                $ips = explode(' ', $ips);
-
-                foreach ($ips as $ip) {
-                    if (strpos($ip, '172.') === 0 && preg_match('#\.1$#', $ip)) {
-                        continue;
-                    }
-                    return $ip;
-                }
-                return $ips[0];
-            }
-        } else {
-            return $this->_host;
         }
     }
 }

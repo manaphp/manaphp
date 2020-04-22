@@ -71,4 +71,48 @@ class Ip
 
         return false;
     }
+
+    /**
+     * @return string
+     */
+    public static function local()
+    {
+        if (function_exists('swoole_get_local_ip')) {
+            $ips = swoole_get_local_ip();
+            if (!$ips) {
+                return '127.0.0.1';
+            } elseif (isset($ips['eth0'])) {
+                return $ips['eth0'];
+            } elseif (isset($ips['ens33'])) {
+                return $ips['ens33'];
+            } elseif (isset($ips['ens1'])) {
+                return $ips['ens1'];
+            } else {
+                foreach ($ips as $name => $ip) {
+                    if ($name === 'docker' || strpos($name, 'br-') === 0) {
+                        continue;
+                    }
+
+                    return $ip;
+                }
+                return current($ips);
+            }
+        } elseif (DIRECTORY_SEPARATOR === '\\') {
+            return '127.0.0.1';
+        } else {
+            if (!$ips = @exec('hostname --all-ip-addresses')) {
+                return '127.0.0.1';
+            }
+
+            $ips = explode(' ', $ips);
+
+            foreach ($ips as $ip) {
+                if (strpos($ip, '172.') === 0 && preg_match('#\.1$#', $ip)) {
+                    continue;
+                }
+                return $ip;
+            }
+            return $ips[0];
+        }
+    }
 }
