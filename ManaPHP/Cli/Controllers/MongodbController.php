@@ -55,7 +55,7 @@ class MongodbController extends Controller
             $modelName = 'App\\Models\\' . ucfirst($modelName);
         }
 
-        $fieldTypes = $this->_inferFieldTypes([$input]);
+        $fieldTypes = $this->_inferFieldTypes([json_parse($input)]);
         $model = $this->_renderModel($fieldTypes, $modelName, 'mongodb', $optimized);
         $file = '@tmp/mongodb_model/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
         LocalFS::filePut($file, $model);
