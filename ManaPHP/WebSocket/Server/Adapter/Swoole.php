@@ -152,7 +152,8 @@ class Swoole extends Component implements ServerInterface, Unaspectable
 
     /**
      * @param \Swoole\WebSocket\Server $server
-     */
+     *
+     * @noinspection PhpUnusedParameterInspection*/
     public function onStart($server)
     {
         $title = sprintf('manaphp %s: master', $this->configure->id);
@@ -170,7 +171,8 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     /**
      * @param \Swoole\WebSocket\Server $server
      * @param int                      $worker_id
-     */
+     *
+     * @noinspection PhpUnusedParameterInspection*/
     public function onWorkerStart($server, $worker_id)
     {
         $title = sprintf('manaphp %s: worker/%d', $this->configure->id, $worker_id);

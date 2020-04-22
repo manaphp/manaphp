@@ -12,6 +12,7 @@ class ViewController extends Controller
      * @param \ManaPHP\ModelInterface $model
      *
      * @return string
+     * @noinspection PhpUnusedParameterInspection
      */
     public function renderRequestForm($model)
     {
@@ -182,6 +183,7 @@ HTML;
      * @param \ManaPHP\ModelInterface $model
      *
      * @return string
+     * @noinspection PhpUnusedParameterInspection
      */
     public function renderCss($model)
     {
