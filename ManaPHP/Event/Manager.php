@@ -79,12 +79,14 @@ class Manager implements ManagerInterface
             foreach ($this->_peekers[$event] ?? [] as $k => $v) {
                 if ($v === $handler) {
                     unset($this->_peekers[$event][$k]);
+                    break;
                 }
             }
         } else {
             foreach ($this->_events[$event] ?? [] as $k => $v) {
                 if ($v === $handler) {
                     unset($this->_events[$event][$k]);
+                    break;
                 }
             }
         }
