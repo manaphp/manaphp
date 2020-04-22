@@ -355,7 +355,7 @@ class Client extends Component implements ClientInterface
         $byte0 = ord($buf[0]);
 
         $op_code = $byte0 & 0x0F;
-        $message = new Message($op_code, $payload);
+        $message = new Message($op_code, $payload, round(microtime(true) - $start_time, 3));
 
         $this->fireEvent('wsClient:recv', $message);
 

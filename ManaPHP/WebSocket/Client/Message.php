@@ -21,15 +21,22 @@ class Message implements \JsonSerializable
     public $payload;
 
     /**
+     * @var float
+     */
+    public $elapsed;
+
+    /**
      * Message constructor.
      *
      * @param int    $op_code
      * @param string $payload
+     * @param float  $elapsed
      */
-    public function __construct($op_code, $payload)
+    public function __construct($op_code, $payload, $elapsed)
     {
         $this->op_code = $op_code;
         $this->payload = $payload;
+        $this->elapsed = $elapsed;
     }
 
     public function jsonSerialize()
