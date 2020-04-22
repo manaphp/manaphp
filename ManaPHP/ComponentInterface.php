@@ -70,7 +70,7 @@ interface ComponentInterface
     public function on($event, $handler);
 
     /**
-     * @param array    $event
+     * @param string   $event
      * @param callable $handler
      *
      * @return static

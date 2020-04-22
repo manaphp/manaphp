@@ -272,7 +272,7 @@ class Component implements ComponentInterface, JsonSerializable
     }
 
     /**
-     * @param array    $event
+     * @param string   $event
      * @param callable $handler
      *
      * @return static
