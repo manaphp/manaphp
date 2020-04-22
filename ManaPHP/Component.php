@@ -199,22 +199,6 @@ class Component implements ComponentInterface, JsonSerializable
     }
 
     /**
-     * @param string $event
-     *
-     * @return callable
-     */
-    protected function _inferEventHandler($event)
-    {
-        $parts = explode(':', $event);
-        $method = 'on' . ucfirst($parts[0] . ucfirst($parts[1]));
-        if (!method_exists($this, $method)) {
-            throw new MisuseException(['`:method` method is not exists', 'method' => static::class . '::' . $method . '()']);
-        }
-
-        return [$this, $method];
-    }
-
-    /**
      * Attach a listener to the events manager
      *
      * @param string   $event
@@ -223,9 +207,9 @@ class Component implements ComponentInterface, JsonSerializable
      *
      * @return static
      */
-    public function attachEvent($event, $handler = null, $appended = true)
+    public function attachEvent($event, $handler, $appended = true)
     {
-        $this->eventsManager->attachEvent($event, $handler ?? $this->_inferEventHandler($event), $appended);
+        $this->eventsManager->attachEvent($event, $handler, $appended);
 
         return $this;
     }
@@ -236,9 +220,9 @@ class Component implements ComponentInterface, JsonSerializable
      *
      * @return static
      */
-    public function detachEvent($event, $handler = null)
+    public function detachEvent($event, $handler)
     {
-        $this->eventsManager->detachEvent($event, $handler ?? $this->_inferEventHandler($event));
+        $this->eventsManager->detachEvent($event, $handler);
 
         return $this;
     }

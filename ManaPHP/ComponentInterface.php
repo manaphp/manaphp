@@ -33,7 +33,7 @@ interface ComponentInterface
      *
      * @return static
      */
-    public function attachEvent($event, $handler = null, $appended = true);
+    public function attachEvent($event, $handler, $appended = true);
 
     /**
      * @param string   $event
@@ -41,7 +41,7 @@ interface ComponentInterface
      *
      * @return static
      */
-    public function detachEvent($event, $handler = null);
+    public function detachEvent($event, $handler);
 
     /**
      * @param string   $group
