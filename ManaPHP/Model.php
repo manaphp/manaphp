@@ -374,7 +374,6 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
         $key = '_mp:models:' . static::class . ":get:$id:$ttl";
         if ($r = $model->_di->ipcCache->get($key)) {
-            /** @noinspection PhpIncompatibleReturnTypeInspection */
             return $r;
         }
 
@@ -731,7 +730,6 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         $errors = [];
 
         foreach ($fields ?: $this->getChangedFields() as $field) {
-            /** @noinspection NotOptimalIfConditionsInspection */
             if (!isset($rules[$field]) || $this->$field instanceof SqlFragmentable) {
                 continue;
             }

@@ -135,7 +135,6 @@ class Captcha extends Component implements CaptchaInterface
         $x = 0;
         $points[2] = random_int($referenceFontSize * 0.1, $referenceFontSize * 0.3);
         $length = strlen($code);
-        /** @noinspection ForeachInvariantsInspection */
         for ($i = 0; $i < $length; $i++) {
             $fontSize = $referenceFontSize * random_int(800, 1000) / 1000;
             $angle = random_int(-$this->_angleAmplitude, $this->_angleAmplitude);
@@ -187,7 +186,6 @@ class Captcha extends Component implements CaptchaInterface
         $x = random_int($referenceFontSize * 0.1, $referenceFontSize * 0.3);
         $length = strlen($code);
         $fgPixel = new ImagickPixel();
-        /** @noinspection ForeachInvariantsInspection */
         for ($i = 0; $i < $length; $i++) {
             $fontSize = $referenceFontSize * random_int(800, 1000) / 1000;
             $draw->setFontSize($fontSize);

@@ -401,7 +401,6 @@ class Request extends Component implements RequestInterface
                 }
             } else {
                 $countFiles = count($files['error']);
-                /** @noinspection ForeachInvariantsInspection */
                 for ($i = 0; $i < $countFiles; $i++) {
                     if (!$onlySuccessful || $files['error'][$i] === UPLOAD_ERR_OK) {
                         $file = [

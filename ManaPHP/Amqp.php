@@ -91,7 +91,6 @@ class Amqp extends Component implements AmqpInterface
         try {
             $this->_connection = new AMQPConnection($credentials);
 
-            /** @noinspection NotOptimalIfConditionsInspection */
             if (isset($query['persistent']) && $query['persistent']) {
                 $r = $this->_connection->pconnect();
             } else {

@@ -102,7 +102,6 @@ class Request extends Component implements RequestInterface
                 $this->_options[substr($o, 2)] = !$args || $args[0] === '-' ? 1 : array_shift($args);
             } elseif (strlen($o) > 2) {
                 if (!$args || $args[0][0] === '-') {
-                    /** @noinspection PhpParamsInspection */
                     foreach (str_split(substr($o, 1)) as $c) {
                         $this->_options[$c] = 1;
                     }

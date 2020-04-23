@@ -96,16 +96,13 @@ class File extends Logger
         $file = $this->alias->resolve($this->_file);
         if (!is_file($file)) {
             $dir = dirname($file);
-            /** @noinspection NotOptimalIfConditionsInspection */
             if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
-                /** @noinspection ForgottenDebugOutputInspection */
                 trigger_error("Unable to create $dir directory: " . error_get_last()['message'], E_USER_WARNING);
             }
         }
 
         //LOCK_EX flag fight with SWOOLE COROUTINE
         if (file_put_contents($file, $str, FILE_APPEND) === false) {
-            /** @noinspection ForgottenDebugOutputInspection */
             trigger_error('Write log to file failed: ' . $file, E_USER_WARNING);
         }
     }

@@ -212,7 +212,6 @@ class Compiler extends Component
 
         $dir = dirname($compiled);
 
-        /** @noinspection NotOptimalIfConditionsInspection */
         if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
             throw new CreateDirectoryFailedException(['create `:dir` directory failed: :last_error_message', 'dir' => $dir]);
         }
@@ -911,10 +910,8 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_date(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
+    protected function _compile_date($expression)
+    {
         $time = substr($expression, 1, -1);
         return "<?= date('Y-m-d H:i:s', $time) ?>";
     }

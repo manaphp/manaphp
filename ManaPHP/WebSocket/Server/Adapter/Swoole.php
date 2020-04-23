@@ -238,7 +238,6 @@ class Swoole extends Component implements ServerInterface, Unaspectable
         /** @var \ArrayObject $current_context */
         $current_context = Coroutine::getContext();
         foreach ($old_context as $k => $v) {
-            /** @noinspection OnlyWritesOnParameterInspection */
             $current_context[$k] = $v;
         }
 
@@ -266,7 +265,6 @@ class Swoole extends Component implements ServerInterface, Unaspectable
         /** @var \ArrayObject $current_context */
         $current_context = Coroutine::getContext();
         foreach ($old_context as $k => $v) {
-            /** @noinspection OnlyWritesOnParameterInspection */
             $current_context[$k] = $v;
         }
 

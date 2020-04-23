@@ -219,7 +219,6 @@ class Console extends Component implements ConsoleInterface
      */
     public function sampleColorizer()
     {
-        /** @noinspection PhpUnhandledExceptionInspection */
         $rc = new ReflectionClass($this);
         $bc_list = [0 => 0];
         $fc_list = [0 => 0];

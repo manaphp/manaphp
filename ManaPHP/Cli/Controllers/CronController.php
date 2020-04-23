@@ -107,7 +107,6 @@ class CronController extends Controller
     {
         foreach ($this->_getCrons($name) as $cron) {
             $schedule = $cron->schedule();
-            /** @noinspection PhpMethodParametersCountMismatchInspection */
             $this->console->writeln(get_class($cron) . ': ' . $schedule);
 
             $count = 0;

@@ -444,7 +444,6 @@ class MongodbController extends Controller
                         'count' => $linesCount,
                         'time' => round(microtime(true) - $startTime, 4)
                     ]);
-                    /** @noinspection DisconnectedForeachInstructionInspection */
                 }
             }
 

@@ -36,7 +36,6 @@ class Random extends Component implements RandomInterface
         $str = '';
 
         $bytes = $this->getByte($length);
-        /** @noinspection ForeachInvariantsInspection */
         for ($i = 0; $i < $length; $i++) {
             $r = ord($bytes[$i]) % $base;
 

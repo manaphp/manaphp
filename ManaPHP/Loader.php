@@ -153,7 +153,6 @@ class Loader
             return true;
         }
 
-        /** @noinspection LoopWhichDoesNotLoopInspection */
         foreach ($this->_namespaces as $namespace => $path) {
             if (strpos($className, $namespace) !== 0) {
                 continue;

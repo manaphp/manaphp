@@ -261,7 +261,7 @@ class Swoole extends \ManaPHP\Rpc\Server
      * @param \Swoole\WebSocket\Server $server
      * @param int                      $fd
      */
-    public function onClose(/** @noinspection PhpUnusedParameterInspection */ $server, $fd)
+    public function onClose($server, $fd)
     {
         if (!$server->isEstablished($fd)) {
             return;
@@ -291,7 +291,6 @@ class Swoole extends \ManaPHP\Rpc\Server
         /** @var \ArrayObject $current_context */
         $current_context = Coroutine::getContext();
         foreach ($old_context as $k => $v) {
-            /** @noinspection OnlyWritesOnParameterInspection */
             $current_context[$k] = $v;
         }
 

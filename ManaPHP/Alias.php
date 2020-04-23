@@ -97,7 +97,6 @@ class Alias extends Component implements AliasInterface
                 if (is_numeric($match)) {
                     $replaced = substr(bin2hex(random_bytes($match / 2 + 1)), 0, $match);
                 } else {
-                    /** @noinspection UnSafeIsSetOverArrayInspection */
                     $ts = $ts ?? time();
                     $replaced = date($match, $ts);
                 }

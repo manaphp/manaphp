@@ -304,7 +304,6 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
             $cur_xpath = $node->getNodePath();
             foreach ($query->css('parent::' . ($css ?: '*'), $node) as $node2) {
                 /** @var \DOMNode $node2 */
-                /** @noinspection SlowArrayOperationsInLoopInspection */
                 if ($node2->getNodePath() !== $cur_xpath) {
                     $nodes[$node2->getNodePath()] = $node2;
                 }

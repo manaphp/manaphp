@@ -66,7 +66,6 @@ class Dispatcher extends \ManaPHP\Dispatcher
         }
 
         /** @var \ManaPHP\RouterContext $routerContext */
-        /** @noinspection PhpUndefinedFieldInspection */
         $routerContext = $this->router->_context;
 
         $routerContext->action = $action;
