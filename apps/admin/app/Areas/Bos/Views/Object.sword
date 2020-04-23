@@ -6,7 +6,7 @@
 </div>
 <create-form>
     <create-select prop="bucket_name" :data="buckets"></create-select>
-    <create-text prop="key"></create-text>
+    <create-text prop="key" title="ext,file,md5,md5_l1,md5_2,uuid,uuid_l1,uuid_l2,ymd..."></create-text>
     <create-checkbox label="仅增加" prop="insert_only">是</create-checkbox>
     <el-form-item prop="image_url">
         <el-upload
@@ -30,7 +30,7 @@
              alt="row.original_name"
              style="width: 50px; height: 50px">
     </result-column>
-    <result-column prop="url" width="400"></result-column>
+    <result-column prop="url"></result-column>
     <result-column prop="original_name" width="200"></result-column>
     <result-column prop="mime_type" width="100"></result-column>
     <result-column prop="size" width="80"></result-column>
@@ -78,7 +78,7 @@
                 response: [],
                 create: {
                     bucket_name: '',
-                    key: '',
+                    key: '{uuid_l2}.{ext}',
                     insert_only: true,
                     image_url: '',
                 },
@@ -109,7 +109,8 @@
                 },
                 uploadSuccess(res) {
                     if (res.code === 0) {
-                        this.$alert('成功');
+                        this.createVisible = false;
+                        this.create.image_url = '';
                         this.reload();
                     } else {
                         this.$alert(res.message);
@@ -117,7 +118,6 @@
                 },
                 uploadChange(file, fileList) {
                     if (file.status === 'ready') {
-                        this.create.key = file.name;
                         this.create.image_url = file.raw.type.indexOf('image/') === 0 ? URL.createObjectURL(file.raw) : '';
                         if (fileList.length > 1) {
                             fileList.shift();
