@@ -49,6 +49,28 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * @param array $params
+     *
+     * @return static
+     */
+    public function setParams($params)
+    {
+        $context = $this->_context;
+
+        foreach ($params as $k => $v) {
+            if (is_string($k)) {
+                $context->_REQUEST[$k] = $v;
+            }
+        }
+
+        if (isset($params[0])) {
+            $context->_REQUEST['id'] = $params[0];
+        }
+
+        return $this;
+    }
+
+    /**
      * Gets a cookie
      *
      * @param string $name
