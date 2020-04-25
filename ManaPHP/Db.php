@@ -344,14 +344,16 @@ class Db extends Component implements DbInterface
     }
 
     /**
+     * @param string $table
      * @param string $sql
      * @param array  $bind
      *
      * @return int
      */
-    public function insertBySql($sql, $bind = [])
+    public function insertBySql($table, $sql, $bind = [])
     {
-        return $this->execute('insert', $sql, $bind);
+        $table = '[' . str_replace('.', '].[', $table) . ']';
+        return $this->execute('insert', /**@lang text */ "INSERT INTO $table $sql", $bind);
     }
 
     /**
@@ -412,14 +414,16 @@ class Db extends Component implements DbInterface
     /**
      * Updates data on a table using custom SQL syntax
      *
+     * @param string $table
      * @param string $sql
      * @param array  $bind
      *
      * @return    int
      */
-    public function updateBySql($sql, $bind = [])
+    public function updateBySql($table, $sql, $bind = [])
     {
-        return $this->execute('update', $sql, $bind);
+        $table = '[' . str_replace('.', '].[', $table) . ']';
+        return $this->execute('update', /** @lang text */ "UPDATE $table SET $sql", $bind);
     }
 
     /**
@@ -501,14 +505,16 @@ class Db extends Component implements DbInterface
     /**
      * Deletes data from a table using custom SQL syntax
      *
+     * @param string $table
      * @param string $sql
      * @param array  $bind
      *
      * @return int
      */
-    public function deleteBySql($sql, $bind = [])
+    public function deleteBySql($table, $sql, $bind = [])
     {
-        return $this->execute('delete', $sql, $bind);
+        $table = '[' . str_replace('.', '].[', $table) . ']';
+        return $this->execute('delete', /**@lang text */ "DELETE FROM $table WHERE $sql", $bind);
     }
 
     /**

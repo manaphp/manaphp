@@ -55,12 +55,13 @@ interface DbInterface
     public function insert($table, $record, $fetchInsertId = false);
 
     /**
+     * @param string $table
      * @param string $sql
      * @param array  $bind
      *
      * @return int
      */
-    public function insertBySql($sql, $bind = []);
+    public function insertBySql($table, $sql, $bind = []);
 
     /**
      * Updates data on a table using custom SQL syntax
@@ -77,12 +78,13 @@ interface DbInterface
     /**
      * Updates data on a table using custom SQL syntax
      *
+     * @param string $table
      * @param string $sql
      * @param array  $bind
      *
      * @return    int
      */
-    public function updateBySql($sql, $bind = []);
+    public function updateBySql($table, $sql, $bind = []);
 
     /**
      * Updates data on a table using custom SQL syntax
@@ -110,12 +112,13 @@ interface DbInterface
     /**
      * Deletes data from a table using custom SQL syntax
      *
+     * @param string $table
      * @param string $sql
      * @param array  $bind
      *
      * @return int
      */
-    public function deleteBySql($sql, $bind = []);
+    public function deleteBySql($table, $sql, $bind = []);
 
     /**
      * Active SQL statement in the object

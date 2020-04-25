@@ -306,8 +306,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         /** @var \ManaPHP\DbInterface $db */
         $db = Di::getDefault()->getShared($db);
 
-        $normalized_table = '[' . str_replace('.', '].[', $table) . ']';
-        return $db->insertBySql(/**@lang text */ "INSERT INTO $normalized_table $sql", $bind);
+        return $db->insertBySql($table, $sql, $bind);
     }
 
     /**
@@ -333,8 +332,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $db = Di::getDefault()->getShared($db);
 
             foreach ($tables as $table) {
-                $normalized_table = '[' . str_replace('.', '].[', $table) . ']';
-                $affected_count += $db->deleteBySql(/**@lang text */ "DELETE FROM $normalized_table WHERE $sql", $bind);
+                $affected_count += $db->deleteBySql($table, $sql, $bind);
             }
         }
 
@@ -364,8 +362,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
             $db = Di::getDefault()->getShared($db);
 
             foreach ($tables as $table) {
-                $normalized_table = '[' . str_replace('.', '].[', $table) . ']';
-                $affected_count += $db->updateBySql(/**@lang text */ "UPDATE $normalized_table SET $sql", $bind);
+                $affected_count += $db->updateBySql($table, $sql, $bind);
             }
         }
 
