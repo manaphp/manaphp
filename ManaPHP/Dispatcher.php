@@ -235,28 +235,15 @@ class Dispatcher extends Component implements DispatcherInterface
         $controller = $context->controller;
 
         if ($area) {
-            $controllerClassName = "App\\Controllers\\$area\\{$controller}Controller";
-            if (class_exists($controllerClassName)) {
-                return $controllerClassName;
-            }
-
-            $controllerClassName2 = "App\\Areas\\$area\\Controllers\\{$controller}Controller";
-            if (class_exists($controllerClassName2)) {
-                return $controllerClassName2;
-            } else {
-                throw new NotFoundControllerException([
-                    'both `:controller1` and `:controller2` class cannot be loaded',
-                    'controller1' => $controllerClassName,
-                    'controller2' => $controllerClassName2
-                ]);
-            }
+            $controllerClassName = "App\\Areas\\$area\\Controllers\\{$controller}Controller";
         } else {
             $controllerClassName = "App\\Controllers\\{$controller}Controller";
-            if (class_exists($controllerClassName)) {
-                return $controllerClassName;
-            } else {
-                throw new NotFoundControllerException(['`:controller` class cannot be loaded', 'controller' => $controllerClassName]);
-            }
+        }
+
+        if (class_exists($controllerClassName)) {
+            return $controllerClassName;
+        } else {
+            throw new NotFoundControllerException(['`:controller` class cannot be loaded', 'controller' => $controllerClassName]);
         }
     }
 
