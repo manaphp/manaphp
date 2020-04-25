@@ -90,6 +90,7 @@ class DbController extends Controller
             if (!in_array($metadata_table, $db->getTables(), true)) {
                 $cached[$service] = [];
             } else {
+                $metadata_table = $db->getPrefix() . $metadata_table;
                 $rows = $db->fetchAll(/**@lang text */ "SELECT `id`, `constants` FROM $metadata_table");
                 foreach ($rows as $row) {
                     $cached[$service][$row['id']] = $row['constants'];
@@ -375,6 +376,7 @@ class DbController extends Controller
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
                 LocalFS::dirCreate(dirname($fileName));
+                $table = $db->getPrefix() . $table;
                 $rows = $db->fetchAll("SELECT * FROM [$table]");
                 $file = fopen($this->alias->resolve($fileName), 'wb');
 
@@ -411,6 +413,7 @@ class DbController extends Controller
 
                 $fileName = "@tmp/db_csv/$service/$table.csv";
                 LocalFS::dirCreate(dirname($fileName));
+                $table = $db->getPrefix() . $table;
                 $rows = $db->fetchAll("SELECT * FROM [$table]");
 
                 $file = fopen($this->alias->resolve($fileName), 'wb');

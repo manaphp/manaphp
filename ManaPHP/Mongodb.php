@@ -76,9 +76,9 @@ class Mongodb extends Component implements MongodbInterface
     protected function _completeNamespace($source)
     {
         if (strpos($source, '.') === false) {
-            return $this->_default_db . '.' . $source;
+            return $this->_default_db . '.' . $this->_prefix . $source;
         } else {
-            return $source;
+            return str_replace('.', '.' . $this->_prefix, $source);
         }
     }
 
@@ -343,6 +343,7 @@ class Mongodb extends Component implements MongodbInterface
             $collection = $source;
         }
 
+        $collection = $this->_prefix . $collection;
         try {
             $command = ['aggregate' => $collection, 'pipeline' => $pipeline];
             if ($options) {
@@ -377,6 +378,7 @@ class Mongodb extends Component implements MongodbInterface
             $collection = $source;
         }
 
+        $collection = $this->_prefix . $collection;
         try {
             $this->command(['drop' => $collection], $db);
             return true;
@@ -416,8 +418,19 @@ class Mongodb extends Component implements MongodbInterface
     {
         $collections = [];
         $result = $this->command(['listCollections' => 1], $db);
-        foreach ($result as $collection) {
-            $collections[] = $collection['name'];
+        if ($this->_prefix === '') {
+            foreach ($result as $collection) {
+                $collections[] = $collection['name'];
+            }
+        } else {
+            $prefix = $this->_prefix;
+            $prefix_len = strlen($prefix);
+            foreach ($result as $collection) {
+                $name = $collection['name'];
+                if (strpos($name, $prefix) === 0) {
+                    $collections[] = substr($name, $prefix_len);
+                }
+            }
         }
 
         return $collections;

@@ -194,6 +194,8 @@ class Model extends \ManaPHP\Model
             $collection = $source;
         }
 
+        $collection = $mongodb->getPrefix() . $collection;
+		
         $command = [
             'createIndexes' => $collection,
             'indexes' => [
@@ -231,6 +233,8 @@ class Model extends \ManaPHP\Model
             $db = null;
             $collection = $source;
         }
+
+        $collection = $mongodb->getPrefix() . $collection;
 
         $command = [
             'findAndModify' => 'auto_increment_id',

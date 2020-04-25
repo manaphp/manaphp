@@ -107,6 +107,7 @@ class Query extends \ManaPHP\Query
             $collection = $source;
         }
 
+        $collection = $mongodb->getPrefix() . $collection;
         $cmd = ['distinct' => $collection, 'key' => $field];
         if ($this->_filters) {
             $cmd['query'] = $this->_buildConditions();

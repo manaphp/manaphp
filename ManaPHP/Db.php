@@ -307,9 +307,9 @@ class Db extends Component implements DbInterface
     protected function _completeTable($table)
     {
         if (($pos = strpos($table, '.')) === false) {
-            return '[' . $table . ']';
+            return '[' . $this->_prefix . $table . ']';
         } else {
-            return '[' . substr($table, 0, $pos) . '].[' . substr($table, $pos + 1) . ']';
+            return '[' . substr($table, 0, $pos) . '].[' . $this->_prefix . substr($table, $pos + 1) . ']';
         }
     }
 
@@ -771,7 +771,19 @@ class Db extends Component implements DbInterface
         }
 
         try {
-            return $connection->getTables($schema);
+            if ($this->_prefix === '') {
+                return $connection->getTables($schema);
+            } else {
+                $prefix = $this->_prefix;
+                $prefix_len = strlen($prefix);
+                $tables = [];
+                foreach ($connection->getTables($schema) as $table) {
+                    if (strpos($table, $prefix) === 0) {
+                        $tables[] = substr($table, $prefix_len);
+                    }
+                }
+                return $tables;
+            }
         } finally {
             if ($type) {
                 $this->poolManager->push($this, $connection, $type);

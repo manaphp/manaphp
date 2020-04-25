@@ -785,6 +785,7 @@ class Query extends \ManaPHP\Query
         }
         $params['fields'] = $fields;
 
+        $table = $db->getPrefix() . $table;
         $table = '[' . str_replace('.', '].[', $table) . ']';
         $alias = $this->_alias;
         $params['from'] = $alias ? "$table AS [$alias]" : $table;
@@ -795,6 +796,7 @@ class Query extends \ManaPHP\Query
                 $joinSQL .= ' ' . $joinType;
             }
 
+            $joinTable = $db->getPrefix() . $joinTable;
             $joinTable = '[' . str_replace('.', '].[', $joinTable) . ']';
             $joinSQL .= " JOIN $joinTable";
 
