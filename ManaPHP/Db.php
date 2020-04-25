@@ -229,6 +229,39 @@ class Db extends Component implements DbInterface
     }
 
     /**
+     * @param string $sql
+     * @param array  $bind
+     *
+     * @return int
+     */
+    public function executeInsert($sql, $bind = [])
+    {
+        return $this->execute('insert', $sql, $bind);
+    }
+
+    /**
+     * @param string $sql
+     * @param array  $bind
+     *
+     * @return int
+     */
+    public function executeUpdate($sql, $bind = [])
+    {
+        return $this->execute('update', $sql, $bind);
+    }
+
+    /**
+     * @param string $sql
+     * @param array  $bind
+     *
+     * @return int
+     */
+    public function executeDelete($sql, $bind = [])
+    {
+        return $this->execute('delete', $sql, $bind);
+    }
+
+    /**
      * Returns the number of affected rows by the last INSERT/UPDATE/DELETE reported by the database system
      *
      * @return int

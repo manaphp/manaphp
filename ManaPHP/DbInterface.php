@@ -26,6 +26,30 @@ interface DbInterface
     public function execute($type, $sql, $bind = []);
 
     /**
+     * @param string $sql
+     * @param array  $bind
+     *
+     * @return int
+     */
+    public function executeInsert($sql, $bind = []);
+
+    /**
+     * @param string $sql
+     * @param array  $bind
+     *
+     * @return int
+     */
+    public function executeUpdate($sql, $bind = []);
+
+    /**
+     * @param string $sql
+     * @param array  $bind
+     *
+     * @return int
+     */
+    public function executeDelete($sql, $bind = []);
+
+    /**
      * Returns the first row in a SQL query result
      *
      * @param string $sql
