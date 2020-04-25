@@ -77,6 +77,11 @@ class Db extends Component implements DbInterface
     protected $_url;
 
     /**
+     * @var string
+     */
+    protected $_prefix = '';
+
+    /**
      * @var bool
      */
     protected $_has_slave = false;
@@ -106,6 +111,10 @@ class Db extends Component implements DbInterface
 
         if (preg_match('#pool_size=(\d+)#', $uri, $matches)) {
             $this->_pool_size = (int)$matches[1];
+        }
+
+        if (preg_match('#[?&]prefix=(\w+)#', $uri, $matches)) {
+            $this->_prefix = $matches[1];
         }
 
         if (strpos($uri, ',') !== false) {
@@ -158,6 +167,14 @@ class Db extends Component implements DbInterface
     public function __destruct()
     {
         $this->poolManager->remove($this);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrefix()
+    {
+        return $this->_prefix;
     }
 
     protected function _escapeIdentifier($identifier)

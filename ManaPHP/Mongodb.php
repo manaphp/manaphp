@@ -21,6 +21,11 @@ class Mongodb extends Component implements MongodbInterface
     /**
      * @var string
      */
+    protected $_prefix;
+
+    /**
+     * @var string
+     */
     protected $_default_db;
 
     /**
@@ -32,6 +37,10 @@ class Mongodb extends Component implements MongodbInterface
     {
         $this->_dsn = $dsn;
 
+        if (preg_match('#[?&]prefix=(\w+)#', $dsn, $matches)) {
+            $this->_prefix = $matches[1];
+        }
+
         $path = parse_url($dsn, PHP_URL_PATH);
         $this->_default_db = ($path !== '/' && $path !== null) ? (string)substr($path, 1) : null;
 
@@ -41,6 +50,14 @@ class Mongodb extends Component implements MongodbInterface
     public function __destruct()
     {
         $this->poolManager->remove($this);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrefix()
+    {
+        return $this->_prefix;
     }
 
     /**

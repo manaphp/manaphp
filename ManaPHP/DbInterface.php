@@ -12,6 +12,11 @@ use PDO;
 interface DbInterface
 {
     /**
+     * @return string
+     */
+    public function getPrefix();
+
+    /**
      * @param string $type
      * @param string $sql
      * @param array  $bind

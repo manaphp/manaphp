@@ -5,6 +5,11 @@ namespace ManaPHP;
 interface MongodbInterface
 {
     /**
+     * @return string
+     */
+    public function getPrefix();
+
+    /**
      * @return string|null
      */
     public function getDefaultDb();
