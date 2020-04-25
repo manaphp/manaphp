@@ -177,16 +177,6 @@ class Db extends Component implements DbInterface
         return $this->_prefix;
     }
 
-    protected function _escapeIdentifier($identifier)
-    {
-        $list = [];
-        foreach (explode('.', $identifier) as $id) {
-            $list[] = $identifier[0] === '[' ? $id : "[$id]";
-        }
-
-        return implode('.', $list);
-    }
-
     /**
      * @param string $type
      * @param string $sql
@@ -311,6 +301,20 @@ class Db extends Component implements DbInterface
 
     /**
      * @param string $table
+     *
+     * @return string
+     */
+    protected function _completeTable($table)
+    {
+        if (($pos = strpos($table, '.')) === false) {
+            return '[' . $table . ']';
+        } else {
+            return '[' . substr($table, 0, $pos) . '].[' . substr($table, $pos + 1) . ']';
+        }
+    }
+
+    /**
+     * @param string $table
      * @param array  $record
      * @param bool   $fetchInsertId
      *
@@ -320,6 +324,8 @@ class Db extends Component implements DbInterface
     {
         $context = $this->_context;
 
+        $table = $this->_completeTable($table);
+
         if (!$record) {
             throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
         }
@@ -327,7 +333,9 @@ class Db extends Component implements DbInterface
         $insertedValues = ':' . implode(',:', $fields);
         $insertedFields = '[' . implode('],[', $fields) . ']';
 
-        $context->sql = $sql = 'INSERT' . ' INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES ($insertedValues)";
+        $context->sql = $sql
+            = /** @lang text */
+            "INSERT INTO $table ($insertedFields) VALUES ($insertedValues)";
 
         $context->bind = $bind = $record;
 
@@ -369,7 +377,8 @@ class Db extends Component implements DbInterface
      */
     public function insertBySql($table, $sql, $bind = [])
     {
-        $table = '[' . str_replace('.', '].[', $table) . ']';
+        $table = $this->_completeTable($table);
+
         return $this->execute('insert', /**@lang text */ "INSERT INTO $table $sql", $bind);
     }
 
@@ -386,6 +395,8 @@ class Db extends Component implements DbInterface
      */
     public function update($table, $fieldValues, $conditions, $bind = [])
     {
+        $table = $this->_completeTable($table);
+
         if (!$fieldValues) {
             throw new InvalidArgumentException(['Unable to update :table table without data', 'table' => $table]);
         }
@@ -423,7 +434,9 @@ class Db extends Component implements DbInterface
             }
         }
 
-        $sql = 'UPDATE ' . $this->_escapeIdentifier($table) . ' SET ' . implode(',', $setFields) . ' WHERE ' . implode(' AND ', $wheres);
+        $sql
+            = /**@lang text */
+            "UPDATE $table SET " . implode(',', $setFields) . ' WHERE ' . implode(' AND ', $wheres);
 
         return $this->execute('update', $sql, $bind);
     }
@@ -439,7 +452,8 @@ class Db extends Component implements DbInterface
      */
     public function updateBySql($table, $sql, $bind = [])
     {
-        $table = '[' . str_replace('.', '].[', $table) . ']';
+        $table = $this->_completeTable($table);
+
         return $this->execute('update', /** @lang text */ "UPDATE $table SET $sql", $bind);
     }
 
@@ -498,6 +512,8 @@ class Db extends Component implements DbInterface
      */
     public function delete($table, $conditions, $bind = [])
     {
+        $table = $this->_completeTable($table);
+
         if (!$conditions) {
             throw new NotSupportedException(['delete must with a condition!']);
         }
@@ -515,7 +531,9 @@ class Db extends Component implements DbInterface
             }
         }
 
-        $sql = 'DELETE' . ' FROM ' . $this->_escapeIdentifier($table) . ' WHERE ' . implode(' AND ', $wheres);
+        $sql
+            = /** @lang text */
+            "DELETE FROM $table WHERE " . implode(' AND ', $wheres);
         return $this->execute('delete', $sql, $bind);
     }
 
@@ -530,7 +548,8 @@ class Db extends Component implements DbInterface
      */
     public function deleteBySql($table, $sql, $bind = [])
     {
-        $table = '[' . str_replace('.', '].[', $table) . ']';
+        $table = $this->_completeTable($table);
+
         return $this->execute('delete', /**@lang text */ "DELETE FROM $table WHERE $sql", $bind);
     }
 
@@ -787,12 +806,12 @@ class Db extends Component implements DbInterface
     }
 
     /**
-     * @param string $source
+     * @param string $table
      *
      * @return array
      * @throws \ManaPHP\Db\Exception
      */
-    public function getMetadata($source)
+    public function getMetadata($table)
     {
         $context = $this->_context;
 
@@ -804,9 +823,10 @@ class Db extends Component implements DbInterface
             $connection = $this->poolManager->pop($this, $this->_timeout, $type);
         }
 
+        $table = $this->_completeTable($table);
         try {
             $start_time = microtime(true);
-            $meta = $connection->getMetadata($source);
+            $meta = $connection->getMetadata($table);
             $elapsed = round(microtime(true) - $start_time, 3);
         } finally {
             if ($type) {
@@ -814,7 +834,7 @@ class Db extends Component implements DbInterface
             }
         }
 
-        $this->fireEvent('db:metadata', compact('elapsed', 'source', 'meta'));
+        $this->fireEvent('db:metadata', compact('elapsed', 'table', 'meta'));
 
         return $meta;
     }
