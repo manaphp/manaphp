@@ -180,7 +180,33 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function getPath()
     {
-        return $this->_context->path;
+        $context = $this->_context;
+
+        if ($context->path === null) {
+            $area = $context->area;
+            $controller = $context->controller;
+            $action = $context->action;
+
+            if ($area) {
+                if ($action === 'index') {
+                    if ($controller === 'Index') {
+                        $context->path = $area === 'Index' ? '/' : '/' . Str::underscore($area);
+                    } else {
+                        $context->path = '/' . Str::underscore($area) . '/' . Str::underscore($controller);
+                    }
+                } else {
+                    $context->path = '/' . Str::underscore($area) . '/' . Str::underscore($controller) . '/' . Str::underscore($action);
+                }
+            } else {
+                if ($action === 'index') {
+                    $context->path = $controller === 'Index' ? '/' : '/' . Str::underscore($controller);
+                } else {
+                    $context->path = '/' . Str::underscore($controller) . '/' . Str::underscore($action);
+                }
+            }
+        }
+
+        return $context->path;
     }
 
     /**
@@ -296,23 +322,6 @@ class Dispatcher extends Component implements DispatcherInterface
 
         $context->params = $params;
 
-        if ($area) {
-            if ($action === 'index') {
-                if ($controller === 'Index') {
-                    $context->path = $area === 'Index' ? '/' : '/' . Str::underscore($area);
-                } else {
-                    $context->path = '/' . Str::underscore($area) . '/' . Str::underscore($controller);
-                }
-            } else {
-                $context->path = '/' . Str::underscore($area) . '/' . Str::underscore($controller) . '/' . Str::underscore($action);
-            }
-        } else {
-            if ($action === 'index') {
-                $context->path = $controller === 'Index' ? '/' : '/' . Str::underscore($controller);
-            } else {
-                $context->path = '/' . Str::underscore($controller) . '/' . Str::underscore($action);
-            }
-        }
 
         $controllerClassName = $this->_getControllerClassName();
 
