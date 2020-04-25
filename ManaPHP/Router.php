@@ -47,6 +47,11 @@ class RouterContext
 class Router extends Component implements RouterInterface
 {
     /**
+     * @var bool
+     */
+    protected $_case_sensitive = true;
+
+    /**
      * @var string
      */
     protected $_prefix = '';
@@ -83,6 +88,14 @@ class Router extends Component implements RouterInterface
                 new Route('/(?:{controller}(?:/{action:\d[-\w]*$|[a-zA-Z]\w*}(?:/{params})?)?)?')
             ];
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCaseSensitive()
+    {
+        return $this->_case_sensitive;
     }
 
     /**
@@ -150,7 +163,7 @@ class Router extends Component implements RouterInterface
             $pattern = preg_replace('#/:(\w+)#', '/{\1}', $pattern);
         }
 
-        $route = new Route($pattern, $paths, $method);
+        $route = new Route($pattern, $paths, $method, $this->_case_sensitive);
         if ($method !== 'REST' && strpos($pattern, '{') === false) {
             $this->_simple_routes[$method][$pattern] = $route;
         } else {

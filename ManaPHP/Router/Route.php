@@ -37,11 +37,12 @@ class Route implements RouteInterface
      * @param string       $pattern
      * @param string|array $paths
      * @param string       $method
+     * @param bool         $case_sensitive
      */
-    public function __construct($pattern, $paths = null, $method = null)
+    public function __construct($pattern, $paths = null, $method = null, $case_sensitive = true)
     {
         $this->_pattern = $pattern;
-        $this->_compiledPattern = $this->_compilePattern($method !== 'REST' ? $pattern : ($pattern . '(/{params:[-\w]+})?'));
+        $this->_compiledPattern = $this->_compilePattern($method !== 'REST' ? $pattern : ($pattern . '(/{params:[-\w]+})?'), $case_sensitive);
         $this->_paths = $this->_normalizePaths($paths);
         $this->_method = $method;
     }
@@ -50,10 +51,11 @@ class Route implements RouteInterface
      * Replaces placeholders from pattern returning a valid PCRE regular expression
      *
      * @param string $pattern
+     * @param bool   $case_sensitive
      *
      * @return string
      */
-    protected function _compilePattern($pattern)
+    protected function _compilePattern($pattern, $case_sensitive)
     {
         if (strpos($pattern, '{') !== false) {
             $tr = [
@@ -88,7 +90,7 @@ class Route implements RouteInterface
                 $pattern = (string)preg_replace('#@([\d,]+)@#', '{\1}', $pattern);
             }
 
-            return '#^' . $pattern . '$#i';
+            return '#^' . $pattern . '$#' . ($case_sensitive ? '' : 'i');
         } else {
             return $pattern;
         }

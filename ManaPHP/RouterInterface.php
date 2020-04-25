@@ -10,6 +10,11 @@ namespace ManaPHP;
 interface RouterInterface
 {
     /**
+     * @return bool
+     */
+    public function isCaseSensitive();
+
+    /**
      * @param string $prefix
      *
      * @return static
