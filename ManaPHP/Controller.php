@@ -2,7 +2,9 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Dispatcher\NotFoundActionException;
 use ManaPHP\Logger\LogCategorizable;
+use Throwable;
 
 /**
  * Class Controller
@@ -21,11 +23,34 @@ class Controller extends Component implements LogCategorizable
     /**
      * @param string $action
      *
+     * @throws NotFoundActionException
+     */
+    public function validateInvokable($action)
+    {
+        $method = $action . 'Action';
+
+        if (!in_array($method, get_class_methods($this), true)) {
+            throw new NotFoundActionException([
+                '`:controller:::action` method does not exist',
+                'action' => $method,
+                'controller' => static::class
+            ]);
+        }
+    }
+
+    /**
+     * @param string $action
+     *
      * @return bool
      */
     public function isInvokable($action)
     {
-        return method_exists($this, $action . 'Action');
+        try {
+            $this->validateInvokable($action);
+            return true;
+        } catch (Throwable $throwable) {
+            return false;
+        }
     }
 
     /**

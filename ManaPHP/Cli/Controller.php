@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Cli;
 
+use ManaPHP\Dispatcher\NotFoundActionException;
 use ReflectionMethod;
 
 /**
@@ -21,11 +22,19 @@ abstract class Controller extends \ManaPHP\Controller
     /**
      * @param string $action
      *
-     * @return bool
+     * @throws NotFoundActionException
      */
-    public function isInvokable($action)
+    public function validateInvokable($action)
     {
-        return method_exists($this, $action . 'Command');
+        $method = $action . 'Command';
+
+        if (!in_array($method, get_class_methods($this), true)) {
+            throw new NotFoundActionException([
+                '`:controller:::action` method does not exist',
+                'action' => $method,
+                'controller' => static::class
+            ]);
+        }
     }
 
     /**
