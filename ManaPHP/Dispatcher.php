@@ -251,29 +251,6 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
-     * @return string
-     */
-    protected function _getControllerClassName()
-    {
-        $context = $this->_context;
-
-        $area = $context->area;
-        $controller = $context->controller;
-
-        if ($area) {
-            $controllerClassName = "App\\Areas\\$area\\Controllers\\{$controller}Controller";
-        } else {
-            $controllerClassName = "App\\Controllers\\{$controller}Controller";
-        }
-
-        if (class_exists($controllerClassName)) {
-            return $controllerClassName;
-        } else {
-            throw new NotFoundControllerException(['`:controller` class cannot be loaded', 'controller' => $controllerClassName]);
-        }
-    }
-
-    /**
      * Dispatches a handle action taking into account the routing parameters
      *
      * @param \ManaPHP\RouterInterface $router
@@ -312,7 +289,15 @@ class Dispatcher extends Component implements DispatcherInterface
 
         $context->params = $params;
 
-        $controllerClassName = $this->_getControllerClassName();
+        if ($area) {
+            $controllerClassName = "App\\Areas\\$area\\Controllers\\{$controller}Controller";
+        } else {
+            $controllerClassName = "App\\Controllers\\{$controller}Controller";
+        }
+
+        if (!class_exists($controllerClassName)) {
+            throw new NotFoundControllerException(['`:controller` class cannot be loaded', 'controller' => $controllerClassName]);
+        }
 
         /** @var \ManaPHP\Controller $controllerInstance */
         $controllerInstance = $this->_di->getShared($controllerClassName);
