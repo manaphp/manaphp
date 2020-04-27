@@ -15,6 +15,11 @@ class SlowlogPlugin extends Plugin
     /**
      * @var string
      */
+    protected $_file = '@data/slowlogPlugin/{id}.log';
+
+    /**
+     * @var string
+     */
     protected $_format = '[:date][:client_ip][:request_id][:elapsed] :message';
 
     /**
@@ -27,6 +32,12 @@ class SlowlogPlugin extends Plugin
         if (isset($options['threshold'])) {
             $this->_threshold = (float)$options['threshold'];
         }
+
+        if (isset($options['file'])) {
+            $this->_file = $options['file'];
+        }
+
+        $this->_file = strtr($this->_file, ['{id}' => $this->configure->id]);
 
         if (isset($options['format'])) {
             $this->_format = $options['format'];
@@ -47,7 +58,7 @@ class SlowlogPlugin extends Plugin
         $replaced[':elapsed'] = sprintf('%.03f', $elapsed);
         $replaced[':message'] = (is_string($message) ? $message : json_stringify($message, JSON_PARTIAL_OUTPUT_ON_ERROR)) . PHP_EOL;
 
-        LocalFS::fileAppend('@data/slowlogPlugin/app.log', strtr($this->_format, $replaced));
+        LocalFS::fileAppend($this->_file, strtr($this->_format, $replaced));
     }
 
     /**
