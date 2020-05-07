@@ -146,8 +146,11 @@ class Renderer extends Component implements RendererInterface
         } else {
             ob_start();
             ob_implicit_flush(false);
-            $engine->render($file, $vars);
-            $content = ob_get_clean();
+            try {
+                $engine->render($file, $vars);
+            } finally {
+                $content = ob_get_clean();
+            }
         }
 
         $this->fireEvent('renderer:rendered', $eventArguments);
