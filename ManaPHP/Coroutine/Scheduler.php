@@ -30,7 +30,7 @@ class Scheduler extends Component implements SchedulerInterface
     /**
      * @param int                       $id
      * @param \Swoole\Coroutine\Channel $channel
-     * @param callable                  $routine
+     * @param array                     $routine
      */
     public function routine($id, $channel, $routine)
     {
