@@ -446,6 +446,7 @@ if (!function_exists('dd')) {
         if (MANAPHP_COROUTINE_ENABLED) {
             /** @noinspection PhpUndefinedMethodInspection */
             $trace = Coroutine::getBackTrace(0, DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
+            ob_start();
         } else {
             $trace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
         }
@@ -459,6 +460,11 @@ if (!function_exists('dd')) {
 
         var_dump(func_num_args() === 1 ? func_get_args()[0] : func_get_args());
 
+        if (MANAPHP_COROUTINE_ENABLED) {
+            $content = ob_get_clean();
+            Di::getDefault()->response->setContent($content);
+        }
+		
         throw new AbortException();
     }
 }
