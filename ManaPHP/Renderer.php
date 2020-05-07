@@ -6,6 +6,7 @@ use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PreconditionException;
+use Swoole\Coroutine\Channel;
 
 class RendererContext implements Inseparable
 {
@@ -144,12 +145,30 @@ class Renderer extends Component implements RendererInterface
             $engine->render($file, $vars);
             $content = null;
         } else {
-            ob_start();
-            ob_implicit_flush(false);
-            try {
-                $engine->render($file, $vars);
-            } finally {
-                $content = ob_get_clean();
+            if (MANAPHP_COROUTINE_ENABLED) {
+                static $channel;
+                if ($channel === null) {
+                    $channel = new Channel(1);
+                    $channel->push(1);
+                }
+
+                $channel->pop();
+                ob_start();
+                ob_implicit_flush(false);
+                try {
+                    $engine->render($file, $vars);
+                } finally {
+                    $content = ob_get_clean();
+                    $channel->push(1);
+                }
+            } else {
+                ob_start();
+                ob_implicit_flush(false);
+                try {
+                    $engine->render($file, $vars);
+                } finally {
+                    $content = ob_get_clean();
+                }
             }
         }
 
