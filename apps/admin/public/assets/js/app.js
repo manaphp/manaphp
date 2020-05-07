@@ -836,7 +836,11 @@ App = Vue.extend({
             let qs = this.$qs.stringify(this.request);
             window.history.replaceState(null, null, qs ? ('?' + qs) : '');
             document.location.query = document.location.search !== '' ? Qs.parse(document.location.search.substr(1)) : {};
-            this.response = [];
+
+            if (Array.isArray(this.response)) {
+                this.response = [];
+            }
+
             return this.$axios.get(document.location.href).then((res) => {
                 if (res.data.code !== 0) {
                     this.$alert(res.data.message);
