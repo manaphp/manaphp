@@ -12,7 +12,7 @@ class Scheduler extends Component implements SchedulerInterface
     /**
      * @var array
      */
-    protected $_routines = [];
+    protected $_tasks = [];
 
     /**
      * @param callable $fn
@@ -22,7 +22,7 @@ class Scheduler extends Component implements SchedulerInterface
      */
     public function add($fn, ...$args)
     {
-        $this->_routines[] = [$fn, $args];
+        $this->_tasks[] = [$fn, $args];
 
         return $this;
     }
@@ -30,11 +30,11 @@ class Scheduler extends Component implements SchedulerInterface
     /**
      * @param int                       $id
      * @param \Swoole\Coroutine\Channel $channel
-     * @param array                     $routine
+     * @param array                     $task
      */
-    public function routine($id, $channel, $routine)
+    public function routine($id, $channel, $task)
     {
-        list($fn, $args) = $routine;
+        list($fn, $args) = $task;
         try {
             if (is_array($fn)) {
                 list($object, $method) = $fn;
@@ -58,21 +58,21 @@ class Scheduler extends Component implements SchedulerInterface
         $returns = [];
 
         if (MANAPHP_COROUTINE_ENABLED) {
-            $routines_count = count($this->_routines);
+            $tasks_count = count($this->_tasks);
 
-            $channel = new Channel($routines_count);
+            $channel = new Channel($tasks_count);
 
-            foreach ($this->_routines as $id => $routine) {
+            foreach ($this->_tasks as $id => $task) {
                 $returns[$id] = null;
-                Coroutine::create([$this, 'routine'], $id, $channel, $routine);
+                Coroutine::create([$this, 'routine'], $id, $channel, $task);
             }
 
-            for ($i = 0; $i < $routines_count; $i++) {
+            for ($i = 0; $i < $tasks_count; $i++) {
                 list($id, $return) = $channel->pop();
                 $returns[$id] = $return;
             }
         } else {
-            foreach ($this->_routines as $id => list($fn, $args)) {
+            foreach ($this->_tasks as $id => list($fn, $args)) {
                 try {
                     if (is_array($fn)) {
                         /** @noinspection MultiAssignmentUsageInspection */
