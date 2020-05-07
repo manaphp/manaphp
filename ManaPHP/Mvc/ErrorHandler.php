@@ -56,10 +56,6 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
      */
     public function render($exception)
     {
-        for ($level = ob_get_level(); $level > 0; $level--) {
-            ob_end_clean();
-        }
-
         if ($this->configure->debug) {
             if ($this->renderer->exists('@views/Errors/debug')) {
                 return $this->renderer->render('@views/Errors/debug', ['exception' => $exception]);
