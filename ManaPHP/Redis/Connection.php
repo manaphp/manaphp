@@ -61,6 +61,11 @@ class Connection extends Component
     protected $_last_heartbeat;
 
     /**
+     * @var bool
+     */
+    protected $_multi = false;
+
+    /**
      * Connection constructor.
      *
      * @param string|\ManaPHP\Redis\Connection $url
@@ -117,6 +122,7 @@ class Connection extends Component
     {
         $this->_redis = null;
         $this->_last_heartbeat = null;
+        $this->_multi = false;
     }
 
     /**
@@ -179,6 +185,7 @@ class Connection extends Component
             $this->_redis->close();
             $this->_redis = null;
             $this->_last_heartbeat = null;
+            $this->_multi = false;
         }
     }
 
@@ -191,7 +198,7 @@ class Connection extends Component
         } catch (\Exception  $exception) {
             $r = null;
             $failed = true;
-            if (!$this->_ping()) {
+            if (!$this->_multi && !$this->_ping()) {
                 $this->close();
                 $this->getConnect();
 
@@ -204,8 +211,15 @@ class Connection extends Component
             }
 
             if ($failed) {
+                $this->_multi = false;
                 throw new RedisException($exception->getMessage(), $exception->getCode(), $exception);
             }
+        }
+
+        if ($name === 'multi') {
+            $this->_multi = true;
+        } elseif ($name === 'exec' || $name === 'discard') {
+            $this->_multi = false;
         }
 
         return $r;
