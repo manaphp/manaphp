@@ -2,10 +2,21 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Exception\MisuseException;
+
+class RedisContext
+{
+    /**
+     * @var \ManaPHP\Redis\Connection
+     */
+    public $connection;
+}
+
 /**
  * Class Redis
  *
  * @package ManaPHP
+ * @property-read \ManaPHP\RedisContext $_context
  */
 class Redis extends Component
 {
@@ -57,15 +68,41 @@ class Redis extends Component
      */
     public function call($name, ...$arguments)
     {
-        $connection = $this->poolManager->pop($this, $this->_timeout);
+        $context = $this->_context;
 
-        try {
-            $r = $connection->call($name, $arguments);
-        } finally {
-            $this->poolManager->push($this, $connection);
+        if ($name === 'multi') {
+            if ($context->connection !== null) {
+                $this->poolManager->push($this, $context->connection);
+                $context->connection = null;
+                throw new MisuseException('redis is in multi already.');
+            }
+
+            $context->connection = $this->poolManager->pop($this, $this->_timeout);
+            $context->connection->call($name, $arguments);
+            return $this;
+        } elseif ($name === 'exec' || $name === 'discard') {
+            if ($context->connection === null) {
+                throw new MisuseException('redis is not in multi.');
+            }
+
+            try {
+                return $context->connection->call($name, $arguments);
+            } finally {
+                $this->poolManager->push($this, $context->connection);
+                $context->connection = null;
+            }
+        } elseif ($context->connection) {
+            $context->connection->call($name, $arguments);
+            return $this;
+        } else {
+            $connection = $this->poolManager->pop($this, $this->_timeout);
+
+            try {
+                return $connection->call($name, $arguments);
+            } finally {
+                $this->poolManager->push($this, $connection);
+            }
         }
-
-        return $r;
     }
 
     /**
