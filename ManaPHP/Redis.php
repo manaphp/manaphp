@@ -78,7 +78,19 @@ class Redis extends Component
             }
 
             $context->connection = $this->poolManager->pop($this, $this->_timeout);
-            $context->connection->call($name, $arguments);
+
+            try {
+                /** @noinspection PhpUnusedLocalVariableInspection */
+                $success = false;
+                $context->connection->call($name, $arguments);
+                $success = true;
+            } finally {
+                if (!$success) {
+                    $this->poolManager->push($this, $context->connection);
+                    $context->connection = null;
+                }
+            }
+
             return $this;
         } elseif ($name === 'exec' || $name === 'discard') {
             if ($context->connection === null) {
@@ -92,7 +104,18 @@ class Redis extends Component
                 $context->connection = null;
             }
         } elseif ($context->connection) {
-            $context->connection->call($name, $arguments);
+            try {
+                /** @noinspection PhpUnusedLocalVariableInspection */
+                $success = false;
+                $context->connection->call($name, $arguments);
+                $success = true;
+            } finally {
+                if (!$success) {
+                    $this->poolManager->push($this, $context->connection);
+                    $context->connection = null;
+                }
+            }
+
             return $this;
         } else {
             $connection = $this->poolManager->pop($this, $this->_timeout);
