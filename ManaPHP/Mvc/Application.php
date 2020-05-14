@@ -11,6 +11,7 @@ use Throwable;
  * Class ManaPHP\Mvc\Application
  *
  * @package application
+ * @property-read \ManaPHP\AuthorizationInterface $authorization
  */
 class Application extends \ManaPHP\Http\Application
 {
