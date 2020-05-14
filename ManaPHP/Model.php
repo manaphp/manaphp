@@ -690,7 +690,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     public function load($fields = null)
     {
         $fields = $fields ?? $this->getSafeFields();
-        $data = $this->_di->request->getGlobals()->_REQUEST;
+        $data = $this->_di->request->getContext()->_REQUEST;
 
         foreach ($fields as $k => $v) {
             if (is_string($k)) {

@@ -142,7 +142,7 @@ class Swoole extends \ManaPHP\Rpc\Server
 
         unset($_post['_url']);
 
-        $globals = $this->request->getGlobals();
+        $globals = $this->request->getContext();
 
         $globals->_GET = $_get;
         $globals->_POST = $_post;
@@ -309,7 +309,7 @@ class Swoole extends \ManaPHP\Rpc\Server
             $response->content = ['code' => -32600, 'message' => 'Invalid Request'];
             $this->send($response);
         } else {
-            $globals = $this->request->getGlobals();
+            $globals = $this->request->getContext();
             $globals->_GET['_url'] = $globals->_SERVER['WS_ENDPOINT'] . '/' . $json['method'];
             $globals->_POST = $json['params'];
             /** @noinspection AdditionOperationOnArraysInspection */
@@ -338,7 +338,7 @@ class Swoole extends \ManaPHP\Rpc\Server
     {
         $context = $this->_context;
         if ($context->fd) {
-            $server = $this->request->getGlobals()->_SERVER;
+            $server = $this->request->getContext()->_SERVER;
             $headers = [
                 'X-Request-Id' => $this->request->getRequestId(),
                 'X-Response-Time' => sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT'])
@@ -359,7 +359,7 @@ class Swoole extends \ManaPHP\Rpc\Server
                 $sw_response->header($name, $value, false);
             }
 
-            $server = $this->request->getGlobals()->_SERVER;
+            $server = $this->request->getContext()->_SERVER;
 
             $sw_response->header('X-Request-Id', $this->request->getRequestId(), false);
             $sw_response->header('X-Response-Time', sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']), false);

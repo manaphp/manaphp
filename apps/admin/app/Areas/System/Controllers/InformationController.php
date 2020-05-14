@@ -8,7 +8,7 @@ class InformationController extends Controller
 {
     public function indexView()
     {
-        $globals = $this->request->getGlobals();
+        $globals = $this->request->getContext();
 
         $data = [];
 

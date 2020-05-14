@@ -126,7 +126,7 @@ class Workerman extends Server
 
         $this->request->setRequestId($_SERVER['HTTP_X_REQUEST_ID'] ?? null);
 
-        $globals = $this->request->getGlobals();
+        $globals = $this->request->getContext();
 
         $globals->_GET = $_GET;
         $globals->_POST = $_POST;
@@ -242,7 +242,7 @@ class Workerman extends Server
             Http::header("$name: $value");
         }
 
-        $server = $this->request->getGlobals()->_SERVER;
+        $server = $this->request->getContext()->_SERVER;
 
         Http::header('X-Request-Id: ' . $this->request->getRequestId());
         Http::header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']));

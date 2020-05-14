@@ -44,7 +44,7 @@ class Dispatcher extends \ManaPHP\Dispatcher
                 unset($body['action']);
             }
 
-            $globals = $this->request->getGlobals();
+            $globals = $this->request->getContext();
             $globals->_POST = $body;
             /** @noinspection AdditionOperationOnArraysInspection */
             $globals->_REQUEST = $globals->_POST + $globals->_GET;
@@ -57,7 +57,7 @@ class Dispatcher extends \ManaPHP\Dispatcher
                     throw new BadRequestException('invalid body');
                 }
 
-                $globals = $this->request->getGlobals();
+                $globals = $this->request->getContext();
                 /** @noinspection AdditionOperationOnArraysInspection */
                 $globals->_REQUEST = $globals->_GET = $body + $globals->_GET;
             }

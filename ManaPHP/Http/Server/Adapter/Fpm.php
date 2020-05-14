@@ -18,7 +18,7 @@ class Fpm extends Server
             $_GET['_url'] = $_REQUEST['_url'] = '/index' . substr($_SERVER['PHP_SELF'], $pos + 10);
         }
 
-        $globals = $this->request->getGlobals();
+        $globals = $this->request->getContext();
 
         if (!$_POST && isset($_SERVER['REQUEST_METHOD']) && !in_array($_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
             $globals->rawBody = $rawBody = file_get_contents('php://input');
@@ -97,7 +97,7 @@ class Fpm extends Server
                 $cookie['httpOnly']);
         }
 
-        $server = $this->request->getGlobals()->_SERVER;
+        $server = $this->request->getContext()->_SERVER;
 
         header('X-Request-Id: ' . $this->request->getRequestId());
         header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']));

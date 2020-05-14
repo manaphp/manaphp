@@ -104,7 +104,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
      */
     public function onOpen($fd)
     {
-        $globals = $this->request->getGlobals();
+        $globals = $this->request->getContext();
         $globals->_REQUEST['fd'] = $fd;
 
         $this->handle($fd, 'open');
@@ -124,7 +124,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
      */
     public function onMessage($fd, $data)
     {
-        $globals = $this->request->getGlobals();
+        $globals = $this->request->getContext();
         $globals->_REQUEST['data'] = $data;
 
         $this->handle($fd, 'message');

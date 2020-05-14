@@ -26,7 +26,7 @@ class Manager extends Component implements ManagerInterface
     {
         /** @var \ManaPHP\Http\Request $request */
         $request = $this->request;
-        $request->getGlobals()->_SERVER = $_SERVER;
+        $request->getContext()->_SERVER = $_SERVER;
 
         $_GET = new GetProxy($request);
         $_POST = new PostProxy($request);

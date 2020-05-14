@@ -41,7 +41,7 @@ class Fpm extends Server
 
         $this->request->setRequestId($_SERVER['HTTP_X_REQUEST_ID'] ?? null);
 
-        $globals = $this->request->getGlobals();
+        $globals = $this->request->getContext();
 
         $globals->_GET = $_GET;
         $globals->_POST = $_POST;
@@ -88,7 +88,7 @@ class Fpm extends Server
             throw new NotSupportedException('rpc not support cookies');
         }
 
-        $server = $this->request->getGlobals()->_SERVER;
+        $server = $this->request->getContext()->_SERVER;
 
         header('X-Request-Id: ' . $this->request->getRequestId());
         header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']));

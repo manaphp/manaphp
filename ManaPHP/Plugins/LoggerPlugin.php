@@ -147,7 +147,7 @@ class LoggerPlugin extends Plugin
             $context->enabled = false;
         } else {
             $context->enabled = true;
-            $this->logger->info($this->request->getGlobals()->_REQUEST, 'globals.request');
+            $this->logger->info($this->request->getContext()->_REQUEST, 'globals.request');
             $context->key = date('/ymd/His_') . $this->random->getBase(32);
         }
 

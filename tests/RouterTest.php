@@ -45,14 +45,14 @@ class MvcRouterTest extends TestCase
 
     public function test_getRewriteUri()
     {
-        di('request')->getGlobals()->_REQUEST['_url'] = '/some/route';
+        di('request')->getContext()->_REQUEST['_url'] = '/some/route';
 
         $router = new Router();
 
         //first try getting from url
         $this->assertEquals('/some/route', $router->getRewriteUri());
 
-        unset(di('request')->getGlobals()->_REQUEST['_url']);
+        unset(di('request')->getContext()->_REQUEST['_url']);
         $this->assertEquals('/', $router->getRewriteUri());
     }
 

@@ -132,7 +132,7 @@ class Swoole extends Server
 
         $_post = $request->post ?: [];
 
-        $globals = $this->request->getGlobals();
+        $globals = $this->request->getContext();
 
         if (!$_post && isset($_server['REQUEST_METHOD']) && !in_array($_server['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
             $globals->rawBody = $rowBody = $request->rawContent();
@@ -270,7 +270,7 @@ class Swoole extends Server
             $sw_response->header($name, $value, false);
         }
 
-        $server = $this->request->getGlobals()->_SERVER;
+        $server = $this->request->getContext()->_SERVER;
 
         $sw_response->header('X-Request-Id', $this->request->getRequestId(), false);
         $sw_response->header('X-Response-Time', sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']), false);
