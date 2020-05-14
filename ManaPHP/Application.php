@@ -16,7 +16,6 @@ use ReflectionClass;
  * @property-read \ManaPHP\DotenvInterface        $dotenv
  * @property-read \ManaPHP\ErrorHandlerInterface  $errorHandler
  * @property-read \ManaPHP\AuthorizationInterface $authorization
- * @property-read \ManaPHP\Http\RequestInterface  $request
  */
 class Application extends Component implements ApplicationInterface, Unaspectable
 {
