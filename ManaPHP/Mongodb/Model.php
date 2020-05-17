@@ -302,11 +302,9 @@ class Model extends \ManaPHP\Model
 
         $fields = $this->getFields();
         foreach ($this->getAutoFilledData(self::OP_CREATE) as $field => $value) {
-            /** @noinspection NotOptimalIfConditionsInspection */
-            if (!in_array($field, $fields, true) || $this->$field !== null) {
-                continue;
+            if ($this->$field === null) {
+                $this->$field = $value;
             }
-            $this->$field = $value;
         }
 
         $this->validate($fields);
