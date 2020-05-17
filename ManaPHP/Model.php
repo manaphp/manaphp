@@ -776,17 +776,35 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         $data = [];
 
         $current_time = time();
+        $user_id = $this->_di->identity->getId(0);
+        $user_name = $this->_di->identity->getName('');
+
         if ($opMode === self::OP_CREATE) {
-            $data['updated_time'] = $data['created_time'] = date($this->getDateFormat('created_time'), $current_time);
-            $data['updated_at'] = $data['created_at'] = date($this->getDateFormat('created_at'), $current_time);
-            $data['created_date'] = (int)date('ymd', $current_time);
-            $data['creator_id'] = $data['updator_id'] = $this->_di->identity->getId(0);
-            $data['creator_name'] = $data['updator_name'] = $this->_di->identity->getName('');
+            foreach ($this->getFields() as $field) {
+                if ($this->$field !== null) {
+                    continue;
+                }
+
+                if (in_array($field, ['created_time', 'created_at', 'updated_time', 'updated_at'], true)) {
+                    $data[$field] = date($this->getDateFormat($field), $current_time);
+                } elseif (in_array($field, ['creator_id', 'updator_id'], true)) {
+                    $data[$field] = $user_id;
+                } elseif (in_array($field, ['creator_name', 'updator_name'], true)) {
+                    $data[$field] = $user_name;
+                } elseif ($field === 'created_date') {
+                    $data[$field] = (int)date('ymd', $current_time);
+                }
+            }
         } elseif ($opMode === self::OP_UPDATE) {
-            $data['updated_time'] = date($this->getDateFormat('updated_time'), $current_time);
-            $data['updated_at'] = date($this->getDateFormat('updated_at'), $current_time);
-            $data['updator_id'] = $this->_di->identity->getId(0);
-            $data['updator_name'] = $this->_di->identity->getName('');
+            foreach ($this->getFields() as $field) {
+                if (in_array($field, ['updated_time', 'updated_at'], true)) {
+                    $data[$field] = date($this->getDateFormat($field), $current_time);
+                } elseif ($field === 'updator_id') {
+                    $data[$field] = $user_id;
+                } elseif ($field === 'updator_name') {
+                    $data[$field] = $user_name;
+                }
+            }
         }
 
         return $data;
