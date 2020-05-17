@@ -791,7 +791,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
                     $data[$field] = $user_id;
                 } elseif (in_array($field, ['creator_name', 'updator_name'], true)) {
                     $data[$field] = $user_name;
-                } elseif ($field === 'created_date') {
+                } elseif (in_array($field, ['created_date', 'updated_date'], true)) {
                     $data[$field] = (int)date('ymd', $current_time);
                 }
             }
@@ -803,6 +803,8 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
                     $data[$field] = $user_id;
                 } elseif ($field === 'updator_name') {
                     $data[$field] = $user_name;
+                } elseif ($field === 'updated_date') {
+                    $data[$field] = (int)date('ymd', $current_time);
                 }
             }
         }
