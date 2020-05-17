@@ -92,7 +92,9 @@ abstract class Cache extends Component implements CacheInterface
         $r = $this->get($key);
         if ($r === false) {
             $r = $callback();
-            $this->set($key, $r, $ttl);
+            $this->set($key, json_stringify($r), $ttl);
+        } else {
+            $r = json_parse($r);
         }
 
         return $r;
