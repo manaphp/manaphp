@@ -221,9 +221,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         }
 
         foreach ($this->getAutoFilledData(self::OP_UPDATE) as $field => $value) {
-            if (in_array($field, $fields, true)) {
-                $this->$field = $value;
-            }
+            $this->$field = $value;
         }
 
         list($db, $table) = $this->getUniqueShard($this);

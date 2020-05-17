@@ -410,9 +410,7 @@ class Model extends \ManaPHP\Model
         }
 
         foreach ($this->getAutoFilledData(self::OP_UPDATE) as $field => $value) {
-            if (in_array($field, $fields, true)) {
-                $this->$field = $value;
-            }
+            $this->$field = $value;
         }
 
         list($db, $collection) = $this->getUniqueShard($this);
