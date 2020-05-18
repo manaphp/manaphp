@@ -124,7 +124,9 @@ class PageCachePlugin extends Plugin
         $this->response->setETag($cache['etag']);
         $this->response->setMaxAge(max($this->redisCache->ttl($context->key), 1));
 
-        $this->response->setContentType($cache['content-type']);
+        if (isset($cache['content-type'])) {
+            $this->response->setContentType($cache['content-type']);
+        }
 
         if (strpos($this->request->hasServer('HTTP_ACCEPT_ENCODING'), 'gzip') !== false) {
             $this->response->setHeader('Content-Encoding', 'gzip');
@@ -156,7 +158,7 @@ class PageCachePlugin extends Plugin
         $this->redisCache->hMSet($context->key, [
             'ttl' => $context->ttl,
             'etag' => $etag,
-            'content-type' => $response->headers['Content-Type'],
+            'content-type' => $response->headers['Content-Type'] ?? null,
             'content' => gzencode($response->content)
         ]);
         $this->redisCache->expire($context->key, $context->ttl);
