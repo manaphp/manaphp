@@ -87,13 +87,19 @@ class PageCachePlugin extends Plugin
 
                 if ($key instanceof Closure) {
                     $key = $key();
-                } else {
+                } elseif (is_array($key)) {
                     $params = [];
                     foreach ((array)$pageCache['key'] as $k => $v) {
                         if (is_int($k)) {
-                            $params[$v] = input($v, '');
+                            $param_name = $v;
+                            $param_value = input($param_name, '');
                         } else {
-                            $params[$k] = $v;
+                            $param_name = $k;
+                            $param_value = $v;
+                        }
+
+                        if ($param_value !== '') {
+                            $params[$param_name] = $param_value;
                         }
                     }
                     $key = http_build_query($params);
