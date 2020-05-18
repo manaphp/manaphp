@@ -87,8 +87,8 @@ class TracerPlugin extends Plugin
         $name = $eventArgs->data['name'];
         $arguments = $eventArgs->data['arguments'];
         foreach ($arguments as $k => $v) {
-            if (is_string($v) && strlen($v) > 64) {
-                $arguments[$k] = substr($v, 0, 64) . '...';
+            if (is_string($v) && strlen($v) > 128) {
+                $arguments[$k] = substr($v, 0, 128) . '...';
             }
         }
 
