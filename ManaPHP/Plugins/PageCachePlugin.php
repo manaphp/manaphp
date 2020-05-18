@@ -6,6 +6,7 @@ use Closure;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\MissingFieldException;
+use ManaPHP\Mvc\Controller as MvcController;
 use ManaPHP\Plugin;
 
 class PageCachePluginContext
@@ -104,6 +105,10 @@ class PageCachePlugin extends Plugin
             $context->key = $this->_prefix . $dispatcher->getPath();
         } else {
             $context->key = $this->_prefix . $dispatcher->getPath() . ':' . $key;
+        }
+
+        if ($controller instanceof MvcController && $this->request->isAjax()) {
+            $context->key .= ':ajax';
         }
 
         $context->if_none_match = $this->request->getServer('HTTP_IF_NONE_MATCH');
