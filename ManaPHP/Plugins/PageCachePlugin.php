@@ -102,6 +102,8 @@ class PageCachePlugin extends Plugin
                             $params[$param_name] = $param_value;
                         }
                     }
+
+                    ksort($params);
                     $key = http_build_query($params);
                 }
             }
@@ -114,6 +116,8 @@ class PageCachePlugin extends Plugin
                     $params[$name] = $value;
                 }
             }
+
+            ksort($params);
             $key = http_build_query($params);
         }
 
