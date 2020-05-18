@@ -73,7 +73,7 @@ class PageCachePlugin extends Plugin
 
         $context = $this->_context;
 
-        $key = '';
+        $key = null;
         if (is_int($pageCache)) {
             $context->ttl = $pageCache;
         } elseif (is_array($pageCache)) {
@@ -105,6 +105,16 @@ class PageCachePlugin extends Plugin
                     $key = http_build_query($params);
                 }
             }
+        }
+
+        if ($key === null) {
+            $params = [];
+            foreach ($this->request->get() as $name => $value) {
+                if ($name !== '_url' && $value !== '') {
+                    $params[$name] = $value;
+                }
+            }
+            $key = http_build_query($params);
         }
 
         if ($key === '') {
