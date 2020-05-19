@@ -374,25 +374,19 @@ interface QueryInterface
     public function fetch($asArray = false);
 
     /**
-     * @param string|array $fields =get_object_vars(new Model)
-     *
      * @return array|null
      */
-    public function first($fields = null);
+    public function first();
 
     /**
-     * @param string|array $fields =get_object_vars(new Model)
-     *
      * @return array
      */
-    public function get($fields = null);
+    public function get();
 
     /**
-     * @param string|array $fields =get_object_vars(new Model)
-     *
      * @return array
      */
-    public function all($fields = null);
+    public function all();
 
     /**
      * @param string $field =key(get_object_vars(new Model))

@@ -589,24 +589,20 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     }
 
     /**
-     * @param string|array $fields
-     *
      * @return array|null
      */
-    public function first($fields = null)
+    public function first()
     {
-        $r = $this->select($fields)->limit(1)->fetch(true);
+        $r = $this->limit(1)->fetch(true);
         return $r ? $r[0] : null;
     }
 
     /**
-     * @param string|array $fields
-     *
      * @return array
      */
-    public function get($fields = null)
+    public function get()
     {
-        if (!$r = $this->first($fields)) {
+        if (!$r = $this->first()) {
             throw new NotFoundException('record is not exists');
         }
 
@@ -614,13 +610,11 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     }
 
     /**
-     * @param string|array $fields
-     *
      * @return array
      */
-    public function all($fields = null)
+    public function all()
     {
-        return $this->select($fields)->fetch(true);
+        return $this->fetch(true);
     }
 
     /**
