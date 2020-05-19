@@ -521,23 +521,25 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function fetch($asArray = false)
     {
+        $model = $this->_model;
+
         if ($asArray) {
             $r = $this->execute();
 
             if ($r && $this->_with) {
-                $r = $this->relationsManager->earlyLoad($this->_model, $r, $this->_with, $asArray);
+                $r = $this->relationsManager->earlyLoad($model, $r, $this->_with, $asArray);
             }
 
             return $r;
         } else {
-            $modelName = get_class($this->_model);
+            $modelName = get_class($model);
             $r = $this->execute();
             foreach ($r as $k => $v) {
                 $r[$k] = new $modelName($v);
             }
 
             if ($r && $this->_with) {
-                $r = $this->relationsManager->earlyLoad($this->_model, $r, $this->_with, $asArray);
+                $r = $this->relationsManager->earlyLoad($model, $r, $this->_with, $asArray);
             }
 
             if ($this->_multiple === false) {
