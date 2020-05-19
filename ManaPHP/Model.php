@@ -945,35 +945,35 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * @param array $fields =get_object_vars(new static)
      *
-     * @return array
+     * @return static
      */
     public function only($fields)
     {
-        $data = [];
+        $model = new static();
+        $model->_snapshot = false;
 
         foreach ($fields as $field) {
-            $data[$field] = $this->$field;
+            $model->$field = $this->$field;
         }
 
-        return $data;
+        return $model;
     }
 
     /**
      * @param array $fields =get_object_vars(new static)
      *
-     * @return array
+     * @return static
      */
     public function except($fields)
     {
-        $data = [];
+        $model = clone $this;
+        $model->_snapshot = false;
 
-        foreach ($this->getFields() as $field) {
-            if (!in_array($field, $fields, true)) {
-                $data[$field] = $this->$field;
-            }
+        foreach ($fields as $field) {
+            unset($model->$field);
         }
 
-        return $data;
+        return $model;
     }
 
     /**

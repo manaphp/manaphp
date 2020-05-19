@@ -416,14 +416,14 @@ interface ModelInterface
     /**
      * @param array $fields
      *
-     * @return array
+     * @return static
      */
     public function only($fields);
 
     /**
      * @param array $fields
      *
-     * @return array
+     * @return static
      */
     public function except($fields);
 
