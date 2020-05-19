@@ -631,8 +631,8 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function value($field, $default = null)
     {
-        $r = $this->first([$field]);
-        return $r[$field] ?? $default;
+        $rs = $this->select([$field])->limit(1)->execute();
+        return $rs[0][$field] ?? $default;
     }
 
     /**
