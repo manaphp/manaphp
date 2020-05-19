@@ -161,7 +161,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         if ($defaultValueFields) {
             $primaryKey = $this->getPrimaryKey();
-            if ($r = $this->newQuery()->select($defaultValueFields)->whereEq($primaryKey, $this->$primaryKey)->fetch(true)) {
+            if ($r = $this->newQuery()->select($defaultValueFields)->whereEq($primaryKey, $this->$primaryKey)->execute()) {
                 foreach ($r[0] as $field => $value) {
                     $this->$field = $value;
                 }
@@ -266,7 +266,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $db = $this->_di->getShared($db);
         $db->update($table, $fieldValues, [$primaryKey => $this->$primaryKey], $bind);
 
-        if ($expressionFields && $rs = $this->newQuery()->select($expressionFields)->whereEq($primaryKey, $this->$primaryKey)->fetch(true)) {
+        if ($expressionFields && $rs = $this->newQuery()->select($expressionFields)->whereEq($primaryKey, $this->$primaryKey)->execute()) {
             foreach ((array)$rs[0] as $field => $value) {
                 $this->$field = $value;
             }

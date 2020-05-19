@@ -312,9 +312,9 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
             $query = static::select([$keyField, $fields])->where($filters);
             if ($sample->hasField('display_order')) {
-                return $query->orderBy(['display_order' => SORT_DESC, $keyField => SORT_ASC])->fetch(true);
+                return $query->orderBy(['display_order' => SORT_DESC, $keyField => SORT_ASC])->execute();
             } else {
-                return $query->orderBy([$keyField => SORT_ASC])->fetch(true);
+                return $query->orderBy([$keyField => SORT_ASC])->execute();
             }
         } elseif (isset($fields[0])) {
             $keyField = $sample->getPrimaryKey();
@@ -325,13 +325,13 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             } else {
                 $order = [$keyField => SORT_ASC];
             }
-            return static::select($fields)->where($filters)->orderBy($order)->fetch(true);
+            return static::select($fields)->where($filters)->orderBy($order)->execute();
         } else {
             $keyField = key($fields);
             $valueField = current($fields);
 
             $list = [];
-            foreach (static::select([$keyField, $valueField])->where($filters)->fetch(true) as $v) {
+            foreach (static::select([$keyField, $valueField])->where($filters)->execute() as $v) {
                 $key = $v[$keyField];
                 $value = $v[$valueField];
 
@@ -504,7 +504,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         }
 
         if ($ttl === null || $pkValue === null) {
-            $rs = static::select([$field])->where($filters)->limit(1)->fetch(true);
+            $rs = static::select([$field])->where($filters)->limit(1)->execute();
             return $rs ? $rs[0][$field] : null;
         }
 
@@ -513,7 +513,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             return $value;
         }
 
-        $rs = static::select([$field])->whereEq($pkName, $pkValue)->limit(1)->fetch(true);
+        $rs = static::select([$field])->whereEq($pkName, $pkValue)->limit(1)->execute();
         $value = $rs ? $rs[0][$field] : null;
 
         $sample->_di->ipcCache->set($key, $value, $ttl);
@@ -1051,7 +1051,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         }
 
         $primaryKey = $this->getPrimaryKey();
-        $r = $this->newQuery()->select($fields)->where([$primaryKey => $this->$primaryKey])->fetch(true);
+        $r = $this->newQuery()->select($fields)->where([$primaryKey => $this->$primaryKey])->execute();
         if (!$r) {
             throw new NotFoundException(static::class, [$primaryKey => $this->$primaryKey]);
         }
