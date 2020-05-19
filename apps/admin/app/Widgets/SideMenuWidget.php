@@ -21,7 +21,7 @@ class SideMenuWidget extends Widget
                     ->select(['item_id', 'item_name', 'url', 'icon', 'group_id'])
                     ->orderBy('display_order DESC, item_id ASC');
             }])
-            ->fetch(true);
+            ->all();
 
         $role = $this->identity->getRole();
         $menu = [];

@@ -11,7 +11,7 @@ class GroupController extends Controller
     {
         return Group::search(['group_id'])
             ->orderBy(['display_order' => SORT_DESC, 'group_id' => SORT_ASC])
-            ->fetch(true);
+            ->all();
     }
 
     public function listAction()
