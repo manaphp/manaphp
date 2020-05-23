@@ -86,7 +86,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param mixed $context =get_object_vars(new static)
+     * @param array|\ManaPHP\Model $context =get_object_vars(new static)
      *
      * @return array
      */
@@ -106,7 +106,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param mixed $context =get_object_vars(new static)
+     * @param array|\ManaPHP\Model $context =get_object_vars(new static)
      *
      * @return array
      */

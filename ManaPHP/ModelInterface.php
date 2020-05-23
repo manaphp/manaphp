@@ -24,14 +24,14 @@ interface ModelInterface
     public function getAnyShard();
 
     /**
-     * @param mixed $context
+     * @param array|\ManaPHP\Model $context
      *
      * @return array
      */
     public function getUniqueShard($context = null);
 
     /**
-     * @param mixed $context
+     * @param array|\ManaPHP\Model $context
      *
      * @return array
      */
