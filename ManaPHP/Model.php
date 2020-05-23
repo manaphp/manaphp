@@ -94,12 +94,12 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     {
         $shards = $this->getMultipleShards($context);
         if (count($shards) !== 1) {
-            throw new ShardingTooManyException(['too many dbs: `dbs`', 'dbs' => array_keys($shards)]);
+            throw new ShardingTooManyException(['too many dbs: `:dbs`', 'dbs' => array_keys($shards)]);
         }
 
         $tables = current($shards);
         if (count($tables) !== 1) {
-            throw new ShardingTooManyException(['too many tables: `tables`', 'tables' => $tables]);
+            throw new ShardingTooManyException(['too many tables: `:tables`', 'tables' => $tables]);
         }
 
         return [key($shards), $tables[0]];
