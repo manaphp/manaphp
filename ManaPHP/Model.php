@@ -110,7 +110,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      *
      * @return array
      */
-    public function getMultipleShards($context = null)
+    public function getMultipleShards($context)
     {
         $db = $this->getDb();
         $table = $this->getTable();

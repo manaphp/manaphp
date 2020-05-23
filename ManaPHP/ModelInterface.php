@@ -35,7 +35,7 @@ interface ModelInterface
      *
      * @return array
      */
-    public function getMultipleShards($context = null);
+    public function getMultipleShards($context);
 
     /**
      * @return array
