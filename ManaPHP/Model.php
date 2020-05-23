@@ -90,7 +90,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      *
      * @return array
      */
-    public function getUniqueShard($context = null)
+    public function getUniqueShard($context)
     {
         $shards = $this->getMultipleShards($context);
         if (count($shards) !== 1) {

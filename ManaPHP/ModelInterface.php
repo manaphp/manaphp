@@ -28,7 +28,7 @@ interface ModelInterface
      *
      * @return array
      */
-    public function getUniqueShard($context = null);
+    public function getUniqueShard($context);
 
     /**
      * @param array|\ManaPHP\Model $context

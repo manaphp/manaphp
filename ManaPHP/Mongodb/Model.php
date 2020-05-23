@@ -484,7 +484,7 @@ class Model extends \ManaPHP\Model
     {
         $sample = static::sample();
 
-        list($db, $collection) = $sample->getUniqueShard();
+        list($db, $collection) = $sample->getUniqueShard([]);
 
         /** @var \ManaPHP\MongodbInterface $mongodb */
         $mongodb = Di::getDefault()->getShared($db);
@@ -535,7 +535,7 @@ class Model extends \ManaPHP\Model
             $documents[$i] = $sample->normalizeDocument($document);
         }
 
-        list($db, $collection) = $sample->getUniqueShard();
+        list($db, $collection) = $sample->getUniqueShard([]);
 
         /** @var \ManaPHP\MongodbInterface $mongodb */
         $mongodb = Di::getDefault()->getShared($db);
@@ -594,7 +594,7 @@ class Model extends \ManaPHP\Model
             $documents[$i] = $sample->normalizeDocument($document);
         }
 
-        list($db, $collection) = $sample->getUniqueShard();
+        list($db, $collection) = $sample->getUniqueShard([]);
 
         /** @var \ManaPHP\MongodbInterface $mongodb */
         $mongodb = Di::getDefault()->getShared($db);
