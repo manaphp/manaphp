@@ -126,8 +126,12 @@ class Query extends \ManaPHP\Query
     {
         if ($table) {
             if (strpos($table, '\\') !== false) {
-                $this->setModel($table);
-                $table = $this->_model->getTable();
+                /** @var \ManaPHP\Model $table */
+                /** @var \ManaPHP\Model $model */
+                $model = $table::sample();
+
+                $this->setModel($model);
+                $table = $model->getTable();
             }
 
             $this->_table = $table;

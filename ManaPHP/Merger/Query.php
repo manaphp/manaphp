@@ -98,16 +98,16 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @param \ManaPHP\Model|string $model
+     * @param \ManaPHP\Model $model
      *
      * @return static
      */
     public function setModel($model)
     {
-        parent::setModel($model);
+        $this->_model = $model;
 
         foreach ($this->_queries as $query) {
-            $query->setModel($this->_model);
+            $query->setModel($model);
         }
 
         return $this;

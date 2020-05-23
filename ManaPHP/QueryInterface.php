@@ -18,7 +18,7 @@ interface QueryInterface
     public function setDb($db);
 
     /**
-     * @param string|\ManaPHP\Model $model
+     * @param \ManaPHP\Model $model
      *
      * @return static
      */

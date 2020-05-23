@@ -109,14 +109,13 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     }
 
     /**
-     * @param string|\ManaPHP\Model $model
+     * @param \ManaPHP\Model $model
      *
      * @return static
      */
     public function setModel($model)
     {
-        /** @noinspection PhpUndefinedMethodInspection */
-        $this->_model = is_string($model) ? $model::sample() : $model;
+        $this->_model = $model;
 
         return $this;
     }
