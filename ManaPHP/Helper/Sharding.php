@@ -8,6 +8,21 @@ use ManaPHP\Helper\Sharding\ShardingTooManyException;
 class Sharding
 {
     /**
+     * @param string $divisor
+     *
+     * @return array
+     */
+    public static function divisorToFD($divisor)
+    {
+        if ($divisor[0] === '0') {
+            $divisor = substr($divisor, 1);
+            return ['%0' . strlen($divisor) . 'd', (int)$divisor];
+        } else {
+            return ['%d', (int)$divisor];
+        }
+    }
+
+    /**
      * @param string $str
      *
      * @return array
@@ -19,12 +34,13 @@ class Sharding
         } elseif (strpos($str, '%') !== false) {
             if (preg_match('#([\w.]+):(\w+)%(\d+)#', $str, $match)) {
                 list(, $base, , $divisor) = $match;
+                list($format, $divisor) = self::divisorToFD($divisor);
                 if ($divisor === '1') {
                     return [$base];
                 } else {
                     $r = [];
                     for ($i = 0; $i < $divisor; $i++) {
-                        $r[] = "{$base}_$i";
+                        $r[] = "{$base}_" . sprintf($format, $i);
                     }
                 }
                 return $r;
@@ -49,6 +65,7 @@ class Sharding
         }
 
         list(, $base, $key, $divisor) = $match;
+        list($format, $divisor) = self::divisorToFD($divisor);
         $values = isset($context[$key]) ? (array)$context[$key] : range(0, $divisor - 1);
 
         $flags = [];
@@ -58,7 +75,7 @@ class Sharding
 
             if (!isset($flags[$remainder])) {
                 $flags[$remainder] = true;
-                $r[] = "{$base}_{$remainder}";
+                $r[] = "{$base}_" . sprintf($format, $remainder);
             }
         }
         return $r;
@@ -107,12 +124,12 @@ class Sharding
                 throw new MisuseException($db);
             }
             list(, $db_base, $db_key, $db_divisor) = $match;
-
+            list($db_format, $db_divisor) = self::divisorToFD($db_divisor);
             if (preg_match('#^([\w.]+):(\w+)%(\d+)$#', $table, $match) !== 1) {
                 throw new MisuseException($table);
             }
             list(, $table_base, $table_key, $table_divisor) = $match;
-
+            list($table_format, $table_divisor) = self::divisorToFD($table_divisor);
             if ($db_key === $table_key) {
                 $shards = [];
                 $key = $db_key;
@@ -127,7 +144,7 @@ class Sharding
 
                     if (!isset($flags[$quotient][$remainder])) {
                         $flags[$quotient][$remainder] = true;
-                        $shards["{$db_base}_{$quotient}"][] = "{$table_base}_{$remainder}";
+                        $shards["{$db_base}_" . sprintf($db_format, $quotient)][] = "{$table_base}_" . sprintf($table_format, $remainder);
                     }
                 }
                 return $shards;
