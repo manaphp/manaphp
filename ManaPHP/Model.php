@@ -118,7 +118,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         if (strcspn($db, ':,') === strlen($db) && strcspn($table, ':,') === strlen($table)) {
             return [$db => [$table]];
         } else {
-            return Sharding::multiple($this->getDb(), $this->getTable(), $context);
+            return Sharding::multiple($db, $table, $context);
         }
     }
 
