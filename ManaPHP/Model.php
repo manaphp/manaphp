@@ -181,6 +181,11 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         }
 
         $table = $this->getTable();
+
+        if (($pos = strpos($table, '.')) !== false) {
+            $table = substr($table, $pos + 1);
+        }
+
         if (($pos = strpos($table, ':')) !== false) {
             $key = substr($table, 0, $pos) . '_id';
         } else {
