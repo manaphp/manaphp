@@ -80,7 +80,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function getAnyShard()
     {
-        $shards = $this->getMultipleShards();
+        $shards = $this->getAllShards();
 
         return [key($shards), current($shards)[0]];
     }
@@ -119,6 +119,21 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             return [$db => [$table]];
         } else {
             return Sharding::multiple($db, $table, $context);
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllShards()
+    {
+        $db = $this->getDb();
+        $table = $this->getTable();
+
+        if (strcspn($db, ':,') === strlen($db) && strcspn($table, ':,') === strlen($table)) {
+            return [$db => [$table]];
+        } else {
+            return Sharding::all($db, $table);
         }
     }
 

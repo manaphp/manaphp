@@ -563,7 +563,7 @@ class Model extends \ManaPHP\Model
             $documents[$i] = $sample->normalizeDocument($document);
         }
 
-        $shards = $sample->getMultipleShards();
+        $shards = $sample->getAllShards();
 
         $affected_count = 0;
         foreach ($shards as $db => $collections) {

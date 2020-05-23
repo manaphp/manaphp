@@ -38,6 +38,11 @@ interface ModelInterface
     public function getMultipleShards($context = null);
 
     /**
+     * @return array
+     */
+    public function getAllShards();
+
+    /**
      * @return string
      */
     public function getPrimaryKey();
