@@ -3,6 +3,7 @@
 namespace ManaPHP;
 
 use ArrayIterator;
+use Closure;
 use IteratorAggregate;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
@@ -98,8 +99,9 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      * @var array
      */
     protected $_shard_context = [];
+
     /**
-     * @var mixed
+     * @var callable
      */
     protected $_shard_strategy;
 
@@ -157,7 +159,13 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
             $table = $this->_table;
 
             if ($shard_strategy = $this->_shard_strategy) {
-                return $shard_strategy($db, $table, $this->_shard_context);
+                if ($shard_strategy instanceof Closure) {
+                    return $shard_strategy($db, $table, $this->_shard_context);
+                } else {
+                    list($object, $method) = $shard_strategy;
+
+                    return $object->$method($db, $table, $this->_shard_context);
+                }
             } else {
                 return Sharding::multiple($db, $table, $this->_shard_context);
             }
