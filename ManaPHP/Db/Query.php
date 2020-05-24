@@ -771,10 +771,6 @@ class Query extends \ManaPHP\Query
      */
     protected function _buildSql($db, $table, $joins)
     {
-        if (!$this->_table && !$this->_model) {
-            throw new MisuseException('at least one model is required to build the query');
-        }
-
         $params = [];
         if ($this->_distinct) {
             $params['distinct'] = true;
