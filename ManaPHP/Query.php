@@ -333,6 +333,8 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
                     $this->whereDate($field, $value);
                 } elseif ($operator === '@m=') {
                     $this->whereMonth($field, $value);
+                } elseif ($operator === '@y=') {
+                    $this->whereYear($field, $value);
                 } else {
                     throw new MisuseException(['unknown `:operator` operator', 'operator' => $operator]);
                 }
@@ -761,29 +763,25 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     /**
      * @param string     $field
      * @param string|int $date
-     * @param string     $format
      *
      * @return static
      */
-    public function whereDate($field, $date, $format = null)
+    public function whereDate($field, $date)
     {
-        if ($format === null) {
-            if ($this->_model) {
-                $format = $this->_model->getDateFormat($field);
-            } else {
-                $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
-            }
+        if ($this->_model) {
+            $format = $this->_model->getDateFormat($field);
+        } else {
+            $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }
 
         $ts = is_int($date) ? $date : strtotime($date);
 
+        $min = date('Y-m-d 00:00:00', $ts);
+        $max = date('Y-m-d 23:59:59', $ts);
+
         if ($format === 'U') {
-            $min = date('Y-m-d 00:00:00', $ts);
-            $max = date('Y-m-d 23:59:59', $ts);
             return $this->whereBetween($field, strtotime($min), strtotime($max));
         } else {
-            $min = date(str_replace('H:i:s', '00:00:00', $format), $ts);
-            $max = date(str_replace('H:i:s', '23:59:59', $format), $ts);
             return $this->whereBetween($field, $min, $max);
         }
     }
@@ -791,32 +789,51 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     /**
      * @param string     $field
      * @param string|int $date
-     * @param string     $format
      *
      * @return static
      */
-    public function whereMonth($field, $date, $format = null)
+    public function whereMonth($field, $date)
     {
-        if ($format === null) {
-            if ($this->_model) {
-                $format = $this->_model->getDateFormat($field);
-            } else {
-                $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
-            }
+        if ($this->_model) {
+            $format = $this->_model->getDateFormat($field);
+        } else {
+            $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }
 
-        if (is_string($date)) {
-            $date = str_replace('/', '-', $date);
-        }
         $ts = is_int($date) ? $date : strtotime($date);
 
+        $min = date('Y-m-01 00:00:00', $ts);
+        $max = date('Y-m-t 23:59:59', $ts);
+
         if ($format === 'U') {
-            $min = date('Y-m-01 00:00:00', $ts);
-            $max = date('Y-m-t 23:59:59', $ts);
             return $this->whereBetween($field, strtotime($min), strtotime($max));
         } else {
-            $min = date(strtr($format, ['H:i:s' => '00:00:00', 'd' => '01']), $ts);
-            $max = date(strtr($format, ['H:i:s' => '23:59:59', 'd' => date('t', $ts)]), $ts);
+            return $this->whereBetween($field, $min, $max);
+        }
+    }
+
+    /**
+     * @param string     $field
+     * @param string|int $date
+     *
+     * @return static
+     */
+    public function whereYear($field, $date)
+    {
+        if ($this->_model) {
+            $format = $this->_model->getDateFormat($field);
+        } else {
+            $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
+        }
+
+        $ts = is_int($date) ? $date : strtotime($date);
+
+        $min = date('Y-01-01 00:00:00', $ts);
+        $max = date('Y-12-31 23:59:59', $ts);
+
+        if ($format === 'U') {
+            return $this->whereBetween($field, strtotime($min), strtotime($max));
+        } else {
             return $this->whereBetween($field, $min, $max);
         }
     }

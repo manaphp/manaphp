@@ -465,20 +465,26 @@ interface QueryInterface
     /**
      * @param string     $field =key(get_object_vars(new Model))
      * @param string|int $date
-     * @param string     $format
      *
      * @return static
      */
-    public function whereDate($field, $date, $format = null);
+    public function whereDate($field, $date);
 
     /**
      * @param string     $field =key(get_object_vars(new Model))
      * @param string|int $date
-     * @param string     $format
      *
      * @return static
      */
-    public function whereMonth($field, $date, $format = null);
+    public function whereMonth($field, $date);
+
+    /**
+     * @param string     $field
+     * @param string|int $date
+     *
+     * @return static
+     */
+    public function whereYear($field, $date);
 
     /**
      * @param string $id

@@ -312,44 +312,6 @@ class DbQueryTest extends TestCase
         $this->assertEquals(39, (new Query())->from('city')->whereRegex('city', '^A....', 'i')->count());
     }
 
-    public function test_whereDate()
-    {
-        $query = (new Query())->from('city')->whereDate('last_update', '2018/10/01', 'Y-m-d H:i:s');
-        $this->assertEquals('SELECT * FROM [city] WHERE [last_update] BETWEEN :last_update_min AND :last_update_max', $query->getSql());
-        $this->assertEquals(['last_update_min' => '2018-10-01 00:00:00', 'last_update_max' => '2018-10-01 23:59:59'], $query->getBind());
-
-        $query = (new Query())->from('city')->whereDate('last_update', '2018/10/01');
-        $this->assertEquals('SELECT * FROM [city] WHERE [last_update] BETWEEN :last_update_min AND :last_update_max', $query->getSql());
-        $this->assertEquals(['last_update_min' => '2018-10-01 00:00:00', 'last_update_max' => '2018-10-01 23:59:59'], $query->getBind());
-
-        $query = (new Query())->from('city')->whereDate('last_update', '2018/10/01', 'U');
-        $this->assertEquals('SELECT * FROM [city] WHERE [last_update] BETWEEN :last_update_min AND :last_update_max', $query->getSql());
-        $this->assertEquals(['last_update_min' => strtotime('2018-10-01 00:00:00'), 'last_update_max' => strtotime('2018-10-01 23:59:59')], $query->getBind());
-    }
-
-    public function test_whereMonth()
-    {
-        $query = (new Query())->from('city')->whereMonth('last_update', '2018/10', 'Y-m-d H:i:s');
-        $this->assertEquals('SELECT * FROM [city] WHERE [last_update] BETWEEN :last_update_min AND :last_update_max', $query->getSql());
-        $this->assertEquals(['last_update_min' => '2018-10-01 00:00:00', 'last_update_max' => '2018-10-31 23:59:59'], $query->getBind());
-
-        $query = (new Query())->from('city')->whereMonth('last_update', '2018-10', 'Y-m-d H:i:s');
-        $this->assertEquals('SELECT * FROM [city] WHERE [last_update] BETWEEN :last_update_min AND :last_update_max', $query->getSql());
-        $this->assertEquals(['last_update_min' => '2018-10-01 00:00:00', 'last_update_max' => '2018-10-31 23:59:59'], $query->getBind());
-
-        $query = (new Query())->from('city')->whereMonth('last_update', '2018-9', 'Y-m-d H:i:s');
-        $this->assertEquals('SELECT * FROM [city] WHERE [last_update] BETWEEN :last_update_min AND :last_update_max', $query->getSql());
-        $this->assertEquals(['last_update_min' => '2018-09-01 00:00:00', 'last_update_max' => '2018-09-30 23:59:59'], $query->getBind());
-
-        $query = (new Query())->from('city')->whereMonth('last_update', '2018-10');
-        $this->assertEquals('SELECT * FROM [city] WHERE [last_update] BETWEEN :last_update_min AND :last_update_max', $query->getSql());
-        $this->assertEquals(['last_update_min' => '2018-10-01 00:00:00', 'last_update_max' => '2018-10-31 23:59:59'], $query->getBind());
-
-        $query = (new Query())->from('city')->whereMonth('last_update', '2018-10', 'U');
-        $this->assertEquals('SELECT * FROM [city] WHERE [last_update] BETWEEN :last_update_min AND :last_update_max', $query->getSql());
-        $this->assertEquals(['last_update_min' => strtotime('2018-10-01 00:00:00'), 'last_update_max' => strtotime('2018-10-31 23:59:59')], $query->getBind());
-    }
-
     public function test_where1v1()
     {
         $query = (new Query())->from('city')->where1v1('city_id,country_id', '10');
