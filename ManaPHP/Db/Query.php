@@ -14,11 +14,6 @@ class Query extends \ManaPHP\Query
     /**
      * @var string
      */
-    protected $_table;
-
-    /**
-     * @var string
-     */
     protected $_alias;
 
     /**
