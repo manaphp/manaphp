@@ -12,11 +12,6 @@ use PDO;
 class Query extends \ManaPHP\Query
 {
     /**
-     * @var string
-     */
-    protected $_alias;
-
-    /**
      * @var array
      */
     protected $_joins = [];
@@ -107,31 +102,6 @@ class Query extends \ManaPHP\Query
             }
         }
         $this->_fields = substr($r, 0, -2);
-
-        return $this;
-    }
-
-    /**
-     * @param string $table
-     * @param string $alias
-     *
-     * @return static
-     */
-    public function from($table, $alias = null)
-    {
-        if ($table) {
-            if (strpos($table, '\\') !== false) {
-                /** @var \ManaPHP\Model $table */
-                /** @var \ManaPHP\Model $model */
-                $model = $table::sample();
-
-                $this->setModel($model);
-                $table = $model->getTable();
-            }
-
-            $this->_table = $table;
-            $this->_alias = $alias;
-        }
 
         return $this;
     }

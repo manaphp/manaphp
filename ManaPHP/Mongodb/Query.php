@@ -169,25 +169,6 @@ class Query extends \ManaPHP\Query
     }
 
     /**
-     * @param string $table
-     * @param string $alias
-     *
-     * @return static
-     */
-    public function from($table, $alias = null)
-    {
-        if ($table) {
-            if (!$this->_model && strpos($table, '\\') !== false) {
-                $this->_model = $this->_di->getShared($table);
-            } else {
-                $this->_table = $table;
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @param string $expr
      *
      * @return array

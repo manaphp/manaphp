@@ -30,6 +30,11 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     protected $_table;
 
     /**
+     * @var string
+     */
+    protected $_alias;
+
+    /**
      * @var array
      */
     protected $_fields;
@@ -176,6 +181,31 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
         }
 
         return [key($shards), $tables[0]];
+    }
+
+    /**
+     * @param string $table
+     * @param string $alias
+     *
+     * @return static
+     */
+    public function from($table, $alias = null)
+    {
+        if ($table) {
+            if (strpos($table, '\\') !== false) {
+                /** @var \ManaPHP\Model $table */
+                /** @var \ManaPHP\Model $model */
+                $model = $table::sample();
+
+                $this->setModel($model);
+                $table = $model->getTable();
+            }
+
+            $this->_table = $table;
+            $this->_alias = $alias;
+        }
+
+        return $this;
     }
 
     /**
