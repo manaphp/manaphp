@@ -889,6 +889,8 @@ class Query extends \ManaPHP\Query
         $mongodb = $this->_getDb($db);
 
         if (!$this->_aggregate) {
+            $model = $this->_model;
+
             $options = [];
 
             if ($this->_fields) {
@@ -897,13 +899,13 @@ class Query extends \ManaPHP\Query
                 } else {
                     $options['projection'] = $this->_fields;
                 }
-            } elseif ($this->_model) {
-                $options['projection'] = array_fill_keys($this->_model->getFields(), 1);
+            } elseif ($model !== null) {
+                $options['projection'] = array_fill_keys($model->getFields(), 1);
             }
 
             if (isset($options['projection']) && !isset($options['projection']['_id'])) {
-                if ($this->_model) {
-                    if ($this->_model->getPrimaryKey() !== '_id') {
+                if ($model !== null) {
+                    if ($model->getPrimaryKey() !== '_id') {
                         $options['projection']['_id'] = false;
                     }
                 } else {
