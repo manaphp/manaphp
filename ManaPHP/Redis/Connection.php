@@ -172,7 +172,7 @@ class Connection extends Component
     protected function _ping()
     {
         try {
-            $this->_redis->ping();
+            $this->_redis->echo('OK');
             return true;
         } catch (\Exception  $exception) {
             return false;
