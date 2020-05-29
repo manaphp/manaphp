@@ -195,7 +195,7 @@ class Model extends \ManaPHP\Model
         }
 
         $collection = $mongodb->getPrefix() . $collection;
-		
+
         $command = [
             'createIndexes' => $collection,
             'indexes' => [
