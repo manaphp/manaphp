@@ -335,6 +335,8 @@ class Di implements DiInterface
         }
 
         if (is_string($definition)) {
+            $definition = $this->_definitions[$definition] ?? $definition;
+
             if (!class_exists($definition)) {
                 throw new InvalidValueException([
                     '`:name` component cannot be resolved: `:class` class is not exists',
