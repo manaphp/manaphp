@@ -24,6 +24,7 @@ use ManaPHP\Model\Relation\HasMany;
 use ManaPHP\Model\Relation\HasManyOthers;
 use ManaPHP\Model\Relation\HasManyToMany;
 use ManaPHP\Model\Relation\HasOne;
+use ManaPHP\Model\SerializeNormalizable;
 use ManaPHP\Validator\ValidateFailedException;
 use ReflectionClass;
 use Serializable;
@@ -1500,7 +1501,9 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
     public function jsonSerialize()
     {
-        return $this->toArray();
+        $data = $this->toArray();
+
+        return $this instanceof SerializeNormalizable ? $this->serializeNormalize($data) : $data;
     }
 
     /**
