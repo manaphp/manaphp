@@ -17,6 +17,7 @@ if (!function_exists('spl_object_id')) {
 }
 
 defined('JSON_THROW_ON_ERROR') or define('JSON_THROW_ON_ERROR', 0);
+defined('JSON_INVALID_UTF8_SUBSTITUTE') or define('JSON_INVALID_UTF8_SUBSTITUTE', 0);
 
 if (!function_exists('json_parse')) {
     /**
@@ -464,7 +465,7 @@ if (!function_exists('dd')) {
             $content = ob_get_clean();
             Di::getDefault()->response->setContent($content);
         }
-		
+
         throw new AbortException();
     }
 }
