@@ -161,43 +161,43 @@ class Redis extends Component implements RedisInterface
     }
 
     /**
-     * @param string $name
+     * @param string $method
      * @param array  $arguments
      *
      * @return bool|mixed
      */
-    public function call($name, $arguments)
+    public function call($method, $arguments)
     {
-        if ($name === 'multi' || $name === 'pipeline') {
+        if ($method === 'multi' || $method === 'pipeline') {
             if ($this->_connection !== null) {
-                $this->_connection->call($name, $arguments);
+                $this->_connection->call($method, $arguments);
                 return $this;
             } else {
                 if ($this->_has_slave) {
-                    throw new MisuseException("slave is exists, `$name` method only can be used on instance that created by calling getMaster or getSlave");
+                    throw new MisuseException("slave is exists, `$method` method only can be used on instance that created by calling getMaster or getSlave");
                 }
 
                 $master = $this->getMaster();
-                $master->call($name, $arguments);
+                $master->call($method, $arguments);
 
                 return $master;
             }
-        } elseif ($name === 'watch') {
+        } elseif ($method === 'watch') {
             if ($this->_connection !== null) {
-                $this->_connection->call($name, $arguments);
+                $this->_connection->call($method, $arguments);
                 return null;
             } else {
                 throw new MisuseException('`watch` method only can be used on instance that created by calling getMaster or getSlave');
             }
         } elseif ($this->_connection !== null) {
-            return $this->_connection->call($name, $arguments);
+            return $this->_connection->call($method, $arguments);
         } else {
-            $type = $this->_has_slave ? $this->_getConnectionType($name) : 'default';
+            $type = $this->_has_slave ? $this->_getConnectionType($method) : 'default';
 
             $connection = $this->poolManager->pop($this, $this->_timeout, $type);
 
             try {
-                return $connection->call($name, $arguments);
+                return $connection->call($method, $arguments);
             } finally {
                 $this->poolManager->push($this, $connection, $type);
             }
@@ -205,18 +205,18 @@ class Redis extends Component implements RedisInterface
     }
 
     /**
-     * @param string $name
+     * @param string $method
      * @param array  $arguments
      *
      * @return bool|mixed
      */
-    public function __call($name, $arguments)
+    public function __call($method, $arguments)
     {
-        $this->fireEvent('redis:calling', ['name' => $name, 'arguments' => $arguments]);
+        $this->fireEvent('redis:calling', ['method' => $method, 'arguments' => $arguments]);
 
-        $r = $this->call($name, $arguments);
+        $r = $this->call($method, $arguments);
 
-        $this->fireEvent('redis:called', ['name' => $name, 'arguments' => $arguments, 'return' => $r]);
+        $this->fireEvent('redis:called', ['method' => $method, 'arguments' => $arguments, 'return' => $r]);
 
         return $r;
     }
