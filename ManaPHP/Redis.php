@@ -70,7 +70,7 @@ class Redis extends Component
     {
         $context = $this->_context;
 
-        if ($name === 'multi') {
+        if ($name === 'multi' || $name === 'pipeline') {
             if ($context->connection !== null) {
                 $this->poolManager->push($this, $context->connection);
                 $context->connection = null;
