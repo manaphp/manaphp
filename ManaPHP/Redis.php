@@ -24,7 +24,7 @@ class RedisContext
  * @package ManaPHP
  * @property-read \ManaPHP\RedisContext $_context
  */
-class Redis extends Component
+class Redis extends Component implements RedisInterface
 {
     const TYPE_MASTER = 1;
     const TYPE_SLAVE = 2;

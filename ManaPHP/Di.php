@@ -34,9 +34,9 @@ use ManaPHP\Exception\NotSupportedException;
  * @property-read \ManaPHP\RendererInterface               $renderer
  * @property-read \ManaPHP\Configuration\Configure         $configure
  * @property-read \ManaPHP\Configuration\SettingsInterface $settings
- * @property-read \Redis|\ManaPHP\Redis                    $redisCache
- * @property-read \Redis|\ManaPHP\Redis                    $redisDb
- * @property-read \Redis|\ManaPHP\Redis                    $redisBroker
+ * @property-read \Redis|\ManaPHP\RedisInterface           $redisCache
+ * @property-read \Redis|\ManaPHP\RedisInterface           $redisDb
+ * @property-read \Redis|\ManaPHP\RedisInterface           $redisBroker
  * @property-read \ManaPHP\CacheInterface                  $cache
  * @property-read \ManaPHP\CacheInterface                  $viewsCache
  * @property-read \ManaPHP\Http\ClientInterface            $httpClient
