@@ -349,7 +349,7 @@ class Component implements ComponentInterface, JsonSerializable
                 continue;
             }
 
-            $data[$k] = $v;
+            $data[$k] = $v instanceof self ? $v->dump() : $v;
         }
 
         if (isset($data['_context'])) {
