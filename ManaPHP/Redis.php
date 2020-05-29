@@ -2,29 +2,12 @@
 
 namespace ManaPHP;
 
-use Closure;
 use ManaPHP\Exception\MisuseException;
-
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class RedisContext
-{
-    /**
-     * @var bool
-     */
-    public $in_do = false;
-
-    /**
-     * @var \ManaPHP\Redis\Connection
-     */
-    public $connection;
-}
 
 /**
  * Class Redis
  *
  * @package ManaPHP
- * @property-read \ManaPHP\RedisContext $_context
  */
 class Redis extends Component implements RedisInterface
 {
@@ -45,6 +28,21 @@ class Redis extends Component implements RedisInterface
      * @var bool
      */
     protected $_has_slave = false;
+
+    /**
+     * @var static
+     */
+    protected $_owner;
+
+    /**
+     * @var string
+     */
+    protected $_type;
+
+    /**
+     * @var \ManaPHP\Redis\Connection
+     */
+    protected $_connection;
 
     /**
      * Redis constructor.
@@ -98,7 +96,11 @@ class Redis extends Component implements RedisInterface
 
     public function __destruct()
     {
-        $this->poolManager->remove($this);
+        if ($this->_owner === null) {
+            $this->poolManager->remove($this);
+        } else {
+            $this->poolManager->push($this->_owner, $this->_connection, $this->_type);
+        }
     }
 
     /**
@@ -159,46 +161,6 @@ class Redis extends Component implements RedisInterface
     }
 
     /**
-     * @param int      $type
-     * @param callable $func
-     *
-     * @return mixed
-     */
-    public function do($type, $func)
-    {
-        $context = $this->_context;
-
-        if ($context->in_do) {
-            throw new MisuseException('do is called nesting.');
-        } elseif ($context->connection !== null) {
-            $this->poolManager->push($this, $context->connection);
-            $context->connection = null;
-            throw new MisuseException('redis is connected already.');
-        }
-
-        if ($this->_has_slave) {
-            $connection_type = $type === self::TYPE_SLAVE ? 'slave' : 'default';
-        } else {
-            $connection_type = 'default';
-        }
-
-        $context->connection = $this->poolManager->pop($this, $this->_timeout, $connection_type);
-        $context->in_do = true;
-        try {
-            if ($func instanceof Closure) {
-                return $func($this);
-            } else {
-                list($object, $method) = $func;
-                return $object->$method($this);
-            }
-        } finally {
-            $this->poolManager->push($this, $context->connection, $connection_type);
-            $context->in_do = false;
-            $context->connection = null;
-        }
-    }
-
-    /**
      * @param string $name
      * @param array  $arguments
      *
@@ -206,61 +168,29 @@ class Redis extends Component implements RedisInterface
      */
     public function call($name, $arguments)
     {
-        $context = $this->_context;
-
-        if ($context->in_do) {
-            return $context->connection->call($name, $arguments);
-        } elseif ($name === 'multi' || $name === 'pipeline') {
-            if ($this->_has_slave) {
-                throw new MisuseException('use `do` when has slave');
-            }
-
-            if ($context->connection !== null) {
-                $this->poolManager->push($this, $context->connection);
-                $context->connection = null;
-                throw new MisuseException('redis is in multi already.');
-            }
-
-            $context->connection = $this->poolManager->pop($this, $this->_timeout);
-
-            try {
-                /** @noinspection PhpUnusedLocalVariableInspection */
-                $success = false;
-                $context->connection->call($name, $arguments);
-                $success = true;
-            } finally {
-                if (!$success) {
-                    $this->poolManager->push($this, $context->connection);
-                    $context->connection = null;
+        if ($name === 'multi' || $name === 'pipeline') {
+            if ($this->_connection !== null) {
+                $this->_connection->call($name, $arguments);
+                return $this;
+            } else {
+                if ($this->_has_slave) {
+                    throw new MisuseException("slave is exists, `$name` method only can be used on instance that created by calling getMaster or getSlave");
                 }
-            }
 
-            return $this;
-        } elseif ($name === 'exec' || $name === 'discard') {
-            if ($context->connection === null) {
-                throw new MisuseException('redis is not in multi.');
-            }
+                $master = $this->getMaster();
+                $master->call($name, $arguments);
 
-            try {
-                return $context->connection->call($name, $arguments);
-            } finally {
-                $this->poolManager->push($this, $context->connection);
-                $context->connection = null;
+                return $master;
             }
-        } elseif ($context->connection) {
-            try {
-                /** @noinspection PhpUnusedLocalVariableInspection */
-                $success = false;
-                $context->connection->call($name, $arguments);
-                $success = true;
-            } finally {
-                if (!$success) {
-                    $this->poolManager->push($this, $context->connection);
-                    $context->connection = null;
-                }
+        } elseif ($name === 'watch') {
+            if ($this->_connection !== null) {
+                $this->_connection->call($name, $arguments);
+                return null;
+            } else {
+                throw new MisuseException('`watch` method only can be used on instance that created by calling getMaster or getSlave');
             }
-
-            return $this;
+        } elseif ($this->_connection !== null) {
+            return $this->_connection->call($name, $arguments);
         } else {
             $type = $this->_has_slave ? $this->_getConnectionType($name) : 'default';
 
@@ -289,5 +219,41 @@ class Redis extends Component implements RedisInterface
         $this->fireEvent('redis:called', ['name' => $name, 'arguments' => $arguments, 'return' => $r]);
 
         return $r;
+    }
+
+    /**
+     * @return static
+     */
+    public function getMaster()
+    {
+        if ($this->_owner !== null) {
+            throw new MisuseException('getMaster does\'t support nesting.');
+        }
+
+        $clone = clone $this;
+
+        $clone->_owner = $this;
+        $clone->_type = 'default';
+        $clone->_connection = $this->poolManager->pop($this, $this->_timeout, $clone->_type);
+
+        return $clone;
+    }
+
+    /**
+     * @return static
+     */
+    public function getSlave()
+    {
+        if ($this->_owner !== null) {
+            throw new MisuseException('getSlave does\'t support nesting.');
+        }
+
+        $clone = clone $this;
+
+        $clone->_owner = $this;
+        $clone->_type = $this->_has_slave ? 'slave' : 'default';
+        $clone->_connection = $this->poolManager->pop($this, $this->_timeout, $clone->_type);
+
+        return $clone;
     }
 }
