@@ -5,6 +5,8 @@ namespace ManaPHP;
 use ManaPHP\Dispatcher\NotFoundControllerException;
 use ManaPHP\Helper\Str;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class DispatcherContext
 {
     /**

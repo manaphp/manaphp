@@ -11,6 +11,8 @@ use ManaPHP\Exception\NotSupportedException;
 use PDO;
 use PDOException;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class DbContext implements Inseparable
 {
     /**

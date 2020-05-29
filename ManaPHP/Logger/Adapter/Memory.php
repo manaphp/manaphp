@@ -4,6 +4,8 @@ namespace ManaPHP\Logger\Adapter;
 
 use ManaPHP\Logger;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class MemoryContext
 {
     /**

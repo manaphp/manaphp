@@ -10,6 +10,8 @@ use Serializable;
 use Swoole\Coroutine;
 use Throwable;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class LoggerContext
 {
     /**

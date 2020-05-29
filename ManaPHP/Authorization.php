@@ -7,6 +7,8 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Identity\NoCredentialException;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class AuthorizationContext
 {
     /**

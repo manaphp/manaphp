@@ -10,6 +10,8 @@ use ManaPHP\Mailer\Adapter\Exception\BadResponseException;
 use ManaPHP\Mailer\Adapter\Exception\ConnectionException;
 use ManaPHP\Mailer\Adapter\Exception\TransmitException;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class SmtpContext implements Inseparable
 {
     public $socket;

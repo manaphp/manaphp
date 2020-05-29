@@ -6,6 +6,8 @@ use ManaPHP\Component;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Ipc\CacheInterface;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class  ApcuContext
 {
     /**

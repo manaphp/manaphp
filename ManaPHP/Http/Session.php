@@ -6,6 +6,8 @@ use ArrayAccess;
 use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class SessionContext
 {
     /**

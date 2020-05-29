@@ -7,6 +7,8 @@ use ManaPHP\Exception\AbortException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Plugin;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class LoggerPluginContext
 {
     /**

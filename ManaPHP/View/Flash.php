@@ -4,6 +4,8 @@ namespace ManaPHP\View;
 
 use ManaPHP\Component;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class FlashContext
 {
     /**

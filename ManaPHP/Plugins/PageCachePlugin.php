@@ -9,6 +9,8 @@ use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Mvc\Controller as MvcController;
 use ManaPHP\Plugin;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class PageCachePluginContext
 {
     public $ttl;

@@ -8,6 +8,8 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Http\Request\File\Exception as FileException;
 use ManaPHP\Validator\ValidateFailedException;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class RequestContext implements Stickyable
 {
     public $request_id;

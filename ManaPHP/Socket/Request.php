@@ -5,6 +5,8 @@ namespace ManaPHP\Socket;
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class RequestContext
 {
     /**

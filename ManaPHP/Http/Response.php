@@ -11,6 +11,8 @@ use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Helper\LocalFS;
 use Throwable;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class ResponseContext
 {
     /**

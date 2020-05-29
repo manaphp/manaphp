@@ -6,6 +6,8 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\LocalFS;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class ViewContext
 {
     /**

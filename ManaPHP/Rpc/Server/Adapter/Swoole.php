@@ -10,6 +10,8 @@ use Swoole\Runtime;
 use Swoole\WebSocket\Server;
 use Throwable;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class SwooleContext
 {
     /**

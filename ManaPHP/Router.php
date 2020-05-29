@@ -7,6 +7,8 @@ use ManaPHP\Helper\Str;
 use ManaPHP\Router\NotFoundRouteException;
 use ManaPHP\Router\Route;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class RouterContext
 {
     /**

@@ -10,6 +10,8 @@ use ManaPHP\Logger;
 use ManaPHP\Plugin;
 use ManaPHP\Version;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class DebuggerPluginContext
 {
     /**

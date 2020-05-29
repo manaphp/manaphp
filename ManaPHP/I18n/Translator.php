@@ -5,6 +5,8 @@ namespace ManaPHP\I18n;
 use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class TranslatorContext
 {
     public $locale;

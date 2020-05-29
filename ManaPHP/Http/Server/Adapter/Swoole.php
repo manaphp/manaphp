@@ -7,6 +7,8 @@ use ManaPHP\Http\Server;
 use Swoole\Runtime;
 use Throwable;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class SwooleContext
 {
     /**

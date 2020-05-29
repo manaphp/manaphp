@@ -4,6 +4,8 @@ namespace ManaPHP\Cache\Adapter;
 
 use ManaPHP\Cache;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class MemoryContext
 {
     /**

@@ -5,6 +5,8 @@ namespace ManaPHP;
 use Closure;
 use ManaPHP\Exception\MisuseException;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class RedisContext
 {
     /**

@@ -7,6 +7,8 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\UnauthorizedException;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class IdentityContext implements Stickyable
 {
     /**

@@ -11,6 +11,8 @@ use Throwable;
 use Workerman\Protocols\Http;
 use Workerman\Worker;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class WorkermanContext
 {
     /**

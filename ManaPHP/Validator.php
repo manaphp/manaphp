@@ -10,6 +10,8 @@ use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use ManaPHP\Validator\ValidateFailedException;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class ValidatorContext
 {
     public $locale;

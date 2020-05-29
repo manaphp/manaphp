@@ -8,6 +8,8 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PreconditionException;
 use Swoole\Coroutine\Channel;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class RendererContext implements Inseparable
 {
     /**

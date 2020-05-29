@@ -6,6 +6,8 @@ use ManaPHP\Event\EventArgs;
 use ManaPHP\Logger;
 use ManaPHP\Plugin;
 
+/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+
 class FiddlerPluginContext
 {
     /**
