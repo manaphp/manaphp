@@ -369,7 +369,7 @@ interface QueryInterface
     /**
      * @param bool $asArray
      *
-     * @return \ManaPHP\Model[]|\ManaPHP\Model|array|null
+     * @return \ManaPHP\Model[]|\ManaPHP\Model|array|null|\ManaPHP\Query\Row
      */
     public function fetch($asArray = false);
 

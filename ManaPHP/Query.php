@@ -9,7 +9,9 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
+use ManaPHP\Model\SerializeNormalizable;
 use ManaPHP\Query\NotFoundException;
+use ManaPHP\Query\Row;
 
 /**
  * Class Query
@@ -556,7 +558,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     /**
      * @param bool $asArray
      *
-     * @return \ManaPHP\Model[]|\ManaPHP\Model|null|array
+     * @return \ManaPHP\Model[]|\ManaPHP\Model|null|array|\ManaPHP\Query\Row
      */
     public function fetch($asArray = false)
     {
@@ -569,7 +571,15 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
                 $r = $this->relationsManager->earlyLoad($model, $r, $this->_with, $asArray);
             }
 
-            return $r;
+            if ($model instanceof SerializeNormalizable) {
+                $rows = [];
+                foreach ($r as $k => $v) {
+                    $rows[$k] = new Row($model, $v);
+                }
+                return $rows;
+            } else {
+                return $r;
+            }
         } else {
             $modelName = get_class($model);
             $r = $this->execute();
