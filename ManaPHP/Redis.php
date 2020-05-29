@@ -202,7 +202,7 @@ class Redis extends Component
      *
      * @return bool|mixed
      */
-    public function call($name, ...$arguments)
+    public function call($name, $arguments)
     {
         $context = $this->_context;
 
@@ -282,7 +282,7 @@ class Redis extends Component
     {
         $this->fireEvent('redis:calling', ['name' => $name, 'arguments' => $arguments]);
 
-        $r = $this->call($name, ...$arguments);
+        $r = $this->call($name, $arguments);
 
         $this->fireEvent('redis:called', ['name' => $name, 'arguments' => $arguments, 'return' => $r]);
 

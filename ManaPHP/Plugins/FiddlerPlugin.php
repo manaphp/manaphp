@@ -146,7 +146,7 @@ class FiddlerPlugin extends Plugin
         $packet['type'] = $type;
         $packet['data'] = $data;
 
-        $r = $this->redisBroker->call('publish', $context->channel, json_stringify($packet));
+        $r = $this->redisBroker->call('publish', [$context->channel, json_stringify($packet)]);
         if ($r <= 0) {
             $this->_watched = false;
             $this->_last_checked = microtime(true);
