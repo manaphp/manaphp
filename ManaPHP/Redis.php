@@ -138,13 +138,7 @@ class Redis extends Component
     {
         $this->fireEvent('redis:calling', ['name' => $name, 'arguments' => $arguments]);
 
-        $connection = $this->poolManager->pop($this, $this->_timeout);
-
-        try {
-            $r = $connection->call($name, $arguments);
-        } finally {
-            $this->poolManager->push($this, $connection);
-        }
+        $r = $this->call($name, ...$arguments);
 
         $this->fireEvent('redis:called', ['name' => $name, 'arguments' => $arguments, 'return' => $r]);
 
