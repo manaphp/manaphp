@@ -164,7 +164,7 @@ class Redis extends Component implements RedisInterface
      * @param string $method
      * @param array  $arguments
      *
-     * @return bool|mixed
+     * @return mixed
      */
     public function call($method, $arguments)
     {
