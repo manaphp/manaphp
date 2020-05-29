@@ -256,4 +256,13 @@ class Redis extends Component implements RedisInterface
 
         return $clone;
     }
+
+    public function dump()
+    {
+        $data = parent::dump();
+
+        unset($data['_owner'], $data['_type'], $data['_connection']);
+
+        return $data;
+    }
 }
