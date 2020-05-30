@@ -256,7 +256,7 @@ class Request extends Component implements RequestInterface
                 continue;
             }
 
-            if (preg_match('#Service$#', $name) === 1) {
+            if (str_ends_with($name, 'Service')) {
                 continue;
             }
 
