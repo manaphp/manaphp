@@ -111,7 +111,7 @@ class DbController extends Controller
                 continue;
             }
 
-            if (strpos($constant, ';') === false) {
+            if (!str_contains($constant, ';')) {
                 $constant .= ';';
             }
             $lines[] = '    const ' . $constant;
@@ -298,7 +298,7 @@ class DbController extends Controller
      */
     public function modelCommand($table, $service = '', $namespace = 'App\Models', $optimized = false)
     {
-        if (strpos($namespace, '\\') === false) {
+        if (!str_contains($namespace, '\\')) {
             $namespace = 'App\\' . ucfirst($namespace) . '\\Models';
         }
 
@@ -341,7 +341,7 @@ class DbController extends Controller
      */
     public function modelsCommand($services = [], $table_pattern = '', $namespace = 'App\Models', $optimized = false)
     {
-        if (strpos($namespace, '\\') === false) {
+        if (!str_contains($namespace, '\\')) {
             $namespace = 'App\\' . ucfirst($namespace) . '\\Models';
         }
 

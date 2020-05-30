@@ -261,7 +261,7 @@ class Authorization extends Component implements AuthorizationInterface
         }
 
         if ($role !== 'guest' && $permission && $permission[0] === '/') {
-            if (strpos($role, ',') === false) {
+            if (!str_contains($role, ',')) {
                 if (str_contains($this->getAllowed($role), ",$permission,")) {
                     return true;
                 }
@@ -297,7 +297,7 @@ class Authorization extends Component implements AuthorizationInterface
         }
 
         $permission = $this->generatePath($controllerClassName, $action);
-        if (strpos($role, ',') === false) {
+        if (!str_contains($role, ',')) {
             if (str_contains($this->getAllowed($role), ",$permission,")) {
                 return true;
             }

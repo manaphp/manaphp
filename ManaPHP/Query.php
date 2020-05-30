@@ -363,10 +363,10 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
             throw new MisuseException('use whereDateBetween must provide model');
         }
 
-        if ($min && strpos($min, ':') === false) {
+        if ($min && !str_contains($min, ':')) {
             $min = (int)(is_numeric($min) ? $min : strtotime($min . ' 00:00:00'));
         }
-        if ($max && strpos($max, ':') === false) {
+        if ($max && !str_contains($max, ':')) {
             $max = (int)(is_numeric($max) ? $max : strtotime($max . ' 23:59:59'));
         }
 
@@ -488,7 +488,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     public function with($with)
     {
         if (is_string($with)) {
-            if (strpos($with, ',') === false) {
+            if (!str_contains($with, ',')) {
                 $with = [$with];
             } else {
                 $with = (array)preg_split('#[\s,]+#', $with, -1, PREG_SPLIT_NO_EMPTY);

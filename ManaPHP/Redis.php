@@ -61,7 +61,7 @@ class Redis extends Component implements RedisInterface
 
         if (str_contains($url, ',')) {
             $hosts = parse_url($url, PHP_URL_HOST);
-            if (strpos($hosts, ',') === false) {
+            if (!str_contains($hosts, ',')) {
                 $urls = explode(',', $url);
             } else {
                 $urls = [];

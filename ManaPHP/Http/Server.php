@@ -113,7 +113,7 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
     {
         $mime_types = [];
         foreach (file(__DIR__ . '/Server/mime.types', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-            if (strpos($line, ';') === false) {
+            if (!str_contains($line, ';')) {
                 continue;
             }
 

@@ -126,7 +126,7 @@ class  WsPusherPlugin extends Plugin
         $users = $this->_users;
 
         if ($this->_sso) {
-            if (strpos($receivers, ',') === false) {
+            if (!str_contains($receivers, ',')) {
                 if ($user = $users[$receivers] ?? false) {
                     $this->push($user['fd'], $message);
                 }
@@ -138,7 +138,7 @@ class  WsPusherPlugin extends Plugin
                 }
             }
         } else {
-            if (strpos($receivers, ',') === false) {
+            if (!str_contains($receivers, ',')) {
                 $id = (int)$receivers;
                 foreach ($users as $user) {
                     if ($user['id'] === $id) {
@@ -165,7 +165,7 @@ class  WsPusherPlugin extends Plugin
         $users = $this->_users;
 
         if ($this->_sso) {
-            if (strpos($receivers, ',') === false) {
+            if (!str_contains($receivers, ',')) {
                 if ($id = $this->_name2id[$receivers] ?? false) {
                     $this->push($users[$id]['fd'], $message);
                 }
@@ -177,7 +177,7 @@ class  WsPusherPlugin extends Plugin
                 }
             }
         } else {
-            if (strpos($receivers, ',') === false) {
+            if (!str_contains($receivers, ',')) {
                 foreach ($users as $user) {
                     if ($user['name'] === $receivers) {
                         $this->push($user['fd'], $message);
@@ -202,7 +202,7 @@ class  WsPusherPlugin extends Plugin
     {
         $users = $this->_users;
 
-        if (strpos($receivers, ',') === false) {
+        if (!str_contains($receivers, ',')) {
             foreach ($users as $user) {
                 $role = $user['role'];
                 if ($role === $receivers || (str_contains($role, $receivers) && preg_match("#\\b$receivers\\b#", $role) === 1)) {

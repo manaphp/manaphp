@@ -89,7 +89,7 @@ class Query extends \ManaPHP\Query
 
         $r = '';
         foreach ($fields as $k => $v) {
-            if (strpos($v, '[') === false && strpos($v, '(') === false) {
+            if (!str_contains($v, '[') && !str_contains($v, '(')) {
                 /** @noinspection NotOptimalIfConditionsInspection */
                 if (is_int($k)) {
                     $r .= preg_replace('#\w+#', '[\\0]', $v) . ', ';
@@ -117,7 +117,7 @@ class Query extends \ManaPHP\Query
      */
     public function join($table, $condition = null, $alias = null, $type = null)
     {
-        if (strpos($condition, '[') === false && strpos($condition, '(') === false) {
+        if (!str_contains($condition, '[') && !str_contains($condition, '(')) {
             $condition = (string)preg_replace('#\w+#', '[\\0]', $condition);
         }
 
@@ -675,7 +675,7 @@ class Query extends \ManaPHP\Query
     {
         $r = '';
         foreach ($group as $item) {
-            if (strpos($item, '[') === false && strpos($item, '(') === false) {
+            if (!str_contains($item, '[') && !str_contains($item, '(')) {
                 $r .= preg_replace('#\w+#', '[\\0]', $item) . ', ';
             } else {
                 $r .= $item . ', ';
@@ -716,7 +716,7 @@ class Query extends \ManaPHP\Query
         foreach ($order as $field => $v) {
             $type = $v === SORT_ASC ? 'ASC' : 'DESC';
 
-            if (strpos($field, '[') === false && strpos($field, '(') === false) {
+            if (!str_contains($field, '[') && !str_contains($field, '(')) {
                 $r .= '[' . str_replace('.', '].[', $field) . '] ' . $type . ', ';
             } else {
                 $r .= "$field $type, ";

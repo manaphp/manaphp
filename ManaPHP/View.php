@@ -259,7 +259,7 @@ class View extends Component implements ViewInterface
 
         if ($template === null) {
             $action = $this->dispatcher->getAction();
-        } elseif (strpos($template, '/') === false) {
+        } elseif (!str_contains($template, '/')) {
             $action = $template;
             $template = null;
         } else {
@@ -330,7 +330,7 @@ class View extends Component implements ViewInterface
 
         if ($template === null) {
             $action = $this->dispatcher->getAction();
-        } elseif (strpos($template, '/') === false) {
+        } elseif (!str_contains($template, '/')) {
             $action = $template;
             $template = null;
         } else {
@@ -440,7 +440,7 @@ class View extends Component implements ViewInterface
      */
     public function block($path, $vars = [])
     {
-        if ($path[0] !== '@' && strpos($path, '/') === false) {
+        if ($path[0] !== '@' && !str_contains($path, '/')) {
             $path = "@views/Blocks/$path";
         }
 

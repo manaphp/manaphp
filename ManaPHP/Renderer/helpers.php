@@ -194,7 +194,7 @@ if (!function_exists('asset')) {
             return $paths[$path];
         }
 
-        if (strpos($path, '?') === false && is_file($file = $alias->get('@public') . $path)) {
+        if (!str_contains($path, '?') && is_file($file = $alias->get('@public') . $path)) {
             return $paths[$path] = $alias->get('@asset') . $path . '?' . substr(md5_file($file), 0, 12);
         } else {
             return $paths[$path] = $alias->get('@asset') . $path;

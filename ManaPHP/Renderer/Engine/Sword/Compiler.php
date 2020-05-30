@@ -139,7 +139,7 @@ class Compiler extends Component
         } else {
             $controller = Str::underscore($parts[0]);
         }
-        if (strpos($str, '/') === false) {
+        if (!str_contains($str, '/')) {
             $absolute = $area ? "/$area/$controller/$str" : "/$controller/$str";
         } else {
             $absolute = $area ? "/$area/$str" : "/$str";

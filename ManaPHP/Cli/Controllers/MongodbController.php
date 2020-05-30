@@ -51,7 +51,7 @@ class MongodbController extends Controller
      */
     public function modelCommand($input, $modelName, $optimized = false)
     {
-        if (strpos($modelName, '\\') === false) {
+        if (!str_contains($modelName, '\\')) {
             $modelName = 'App\\Models\\' . ucfirst($modelName);
         }
 
@@ -76,7 +76,7 @@ class MongodbController extends Controller
      */
     public function modelsCommand($services = [], $namespace = 'App\Models', $optimized = false, $sample = 1000, $db = [])
     {
-        if (strpos($namespace, '\\') === false) {
+        if (!str_contains($namespace, '\\')) {
             $namespace = 'App\\' . ucfirst($namespace) . '\\Models';
         }
 

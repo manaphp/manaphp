@@ -315,7 +315,7 @@ abstract class Client extends Component implements ClientInterface
     public function download($files, $options = [])
     {
         if (is_string($files)) {
-            if (is_string($options) && strpos($options, '://') === false) {
+            if (is_string($options) && !str_contains($options, '://')) {
                 $return_file = $options;
             } else {
                 $path = parse_url($files, PHP_URL_PATH);

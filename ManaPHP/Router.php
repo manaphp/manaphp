@@ -166,7 +166,7 @@ class Router extends Component implements RouterInterface
         }
 
         $route = new Route($pattern, $paths, $method, $this->_case_sensitive);
-        if ($method !== 'REST' && strpos($pattern, '{') === false) {
+        if ($method !== 'REST' && !str_contains($pattern, '{')) {
             $this->_simple_routes[$method][$pattern] = $route;
         } else {
             $this->_regex_routes[] = $route;
@@ -187,7 +187,7 @@ class Router extends Component implements RouterInterface
     public function add($pattern, $paths = null, $method = null)
     {
         if ($method === null && is_string($paths) && str_contains($paths, '\\')) {
-            if (strpos($pattern, '{action}') === false && strpos($pattern, '/:action') === false) {
+            if (!str_contains($pattern, '{action}') && !str_contains($pattern, '/:action')) {
                 $pattern = rtrim($pattern, '/') . '(?:/{action:\d[-\w]*$|[a-zA-Z]\w*}(?:/{params})?)?';
             }
         }
@@ -597,7 +597,7 @@ class Router extends Component implements RouterInterface
         if ($path === '') {
             $action = $context->action;
             $ca = $area ? "{$area}/{$controller}/$action" : "{$controller}/$action";
-        } elseif (strpos($path, '/') === false) {
+        } elseif (!str_contains($path, '/')) {
             $ca = $area ? "{$area}/{$controller}/$path" : "{$controller}/$path";
         } elseif ($path === '/') {
             $ca = '';

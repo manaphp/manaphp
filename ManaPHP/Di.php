@@ -176,18 +176,18 @@ class Di implements DiInterface
             if (str_contains($definition, '/') || preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
                 $definition = ['class' => $this->_inferClassName($name), $definition, 'shared' => false];
             } else {
-                if (strpos($definition, '\\') === false) {
+                if (!str_contains($definition, '\\')) {
                     $definition = $this->_completeClassName($name, $definition);
                 }
                 $definition = ['class' => $definition, 'shared' => false];
             }
         } elseif (is_array($definition)) {
             if (isset($definition['class'])) {
-                if (strpos($definition['class'], '\\') === false) {
+                if (!str_contains($definition['class'], '\\')) {
                     $definition['class'] = $this->_completeClassName($name, $definition['class']);
                 }
             } elseif (isset($definition[0]) && count($definition) !== 1) {
-                if (strpos($definition[0], '\\') === false) {
+                if (!str_contains($definition[0], '\\')) {
                     $definition[0] = $this->_completeClassName($name, $definition[0]);
                 }
             } else {
@@ -225,16 +225,16 @@ class Di implements DiInterface
                 null;
             } elseif (str_contains($definition, '/') || preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
                 $definition = ['class' => $this->_inferClassName($name), $definition];
-            } elseif (strpos($definition, '\\') === false) {
+            } elseif (!str_contains($definition, '\\')) {
                 $definition = $this->_completeClassName($name, $definition);
             }
         } elseif (is_array($definition)) {
             if (isset($definition['class'])) {
-                if (strpos($definition['class'], '\\') === false) {
+                if (!str_contains($definition['class'], '\\')) {
                     $definition['class'] = $this->_completeClassName($name, $definition['class']);
                 }
             } elseif (isset($definition[0]) && count($definition) !== 1) {
-                if (strpos($definition[0], '\\') === false) {
+                if (!str_contains($definition[0], '\\')) {
                     $definition[0] = $this->_completeClassName($name, $definition[0]);
                 }
             } else {

@@ -62,7 +62,7 @@ class HtmlPurifier extends Component implements HtmlPurifierInterface
 
             $tag = $node->nodeName;
 
-            if (strpos($allowedTags, ',' . $tag . ',') === false) {
+            if (!str_contains($allowedTags, ',' . $tag . ',')) {
                 $node->parentNode->removeChild($node);
                 continue;
             }
@@ -73,7 +73,7 @@ class HtmlPurifier extends Component implements HtmlPurifierInterface
                     $attributeName = $attributeNode->name;
                     $attributeValue = $attributeNode->value;
 
-                    if (strpos($allowedAttributes, ',' . $attributeName . ',') === false) {
+                    if (!str_contains($allowedAttributes, ',' . $attributeName . ',')) {
                         $node->removeAttribute($attributeName);
                         continue;
                     }
@@ -112,7 +112,7 @@ class HtmlPurifier extends Component implements HtmlPurifierInterface
      */
     public function purify($html, $allowedTags = null, $allowedAttributes = null)
     {
-        if (strpos($html, '<body>') === false) {
+        if (!str_contains($html, '<body>')) {
             $html
                 = /** @lang text */
                 "<!doctype html><html><body>$html</body></html>";

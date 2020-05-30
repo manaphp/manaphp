@@ -153,7 +153,7 @@ class Console extends Component implements ConsoleInterface
         }
 
         if (count($message) === 2) {
-            if (isset($message[1]) && strpos($message[0], ':1') === false) {
+            if (isset($message[1]) && !str_contains($message[0], ':1')) {
                 if (is_scalar($message[1])) {
                     echo json_stringify($message);
                     return $this;
@@ -162,7 +162,7 @@ class Console extends Component implements ConsoleInterface
                 }
             }
         } elseif (count($message) === 3) {
-            if (isset($message[1], $message[2]) && strpos($message[0], ':1') === false) {
+            if (isset($message[1], $message[2]) && !str_contains($message[0], ':1')) {
                 if (is_scalar($message[1]) && !is_scalar($message[2])) {
                     $message[0] = rtrim($message[0], ': ') . ': :1 => :2';
                 } else {
@@ -172,7 +172,7 @@ class Console extends Component implements ConsoleInterface
             }
         }
 
-        if (strpos($message[0], ':') === false) {
+        if (!str_contains($message[0], ':')) {
             echo $this->colorize($message[0], $options);
         } else {
             $replaces = [];
@@ -183,11 +183,11 @@ class Console extends Component implements ConsoleInterface
                 }
 
                 if (is_int($v)) {
-                    if (!$options && strpos($v, "\033[") === false) {
+                    if (!$options && !str_contains($v, "\033[")) {
                         $v = $this->colorize($v, self::FC_GREEN);
                     }
                 } elseif (is_string($v)) {
-                    if (!$options && strpos($v, "\033[") === false) {
+                    if (!$options && !str_contains($v, "\033[")) {
                         $v = $this->colorize($v, self::FC_CYAN);
                     }
                 } elseif ($v instanceof Throwable) {

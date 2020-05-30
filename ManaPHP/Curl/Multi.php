@@ -141,7 +141,7 @@ class Multi extends Component implements MultiInterface, Countable
             $url = $request->url[0];
 
             if ($queries) {
-                $request->url = $url . (strpos($url, '?') === false ? '?' : '&') . http_build_query($queries);
+                $request->url = $url . (!str_contains($url, '?') ? '?' : '&') . http_build_query($queries);
             } else {
                 $request->url = $url;
             }

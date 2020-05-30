@@ -121,7 +121,7 @@ class Db extends Component implements DbInterface
 
         if (str_contains($uri, ',')) {
             $hosts = parse_url($uri, PHP_URL_HOST);
-            if (strpos($hosts, ',') === false) {
+            if (!str_contains($hosts, ',')) {
                 $urls = explode(',', $uri);
             } else {
                 $urls = [];

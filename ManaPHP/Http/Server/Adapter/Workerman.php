@@ -140,7 +140,7 @@ class Workerman extends Server
         if (!$this->_use_globals) {
             unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
             foreach ($_SERVER as $k => $v) {
-                if (strpos('DOCUMENT_ROOT,SERVER_SOFTWARE,SCRIPT_NAME,SCRIPT_FILENAME', $k) === false) {
+                if (!str_contains('DOCUMENT_ROOT,SERVER_SOFTWARE,SCRIPT_NAME,SCRIPT_FILENAME', $k)) {
                     unset($_SERVER[$k]);
                 }
             }

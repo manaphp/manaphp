@@ -406,7 +406,7 @@ class LocalFS
         $dir = self::$alias->resolve($dir);
 
         $files = [];
-        foreach (self::glob($dir . (strpos($dir, '*') === false ? '/*' : ''), SCANDIR_SORT_ASCENDING) as $item) {
+        foreach (self::glob($dir . (!str_contains($dir, '*') ? '/*' : ''), SCANDIR_SORT_ASCENDING) as $item) {
             if (is_file($item)) {
                 $files[] = $item;
             }
@@ -422,7 +422,7 @@ class LocalFS
      */
     public static function directories($dir)
     {
-        return self::glob($dir . (strpos($dir, '*') === false ? '/*' : ''), GLOB_ONLYDIR);
+        return self::glob($dir . (!str_contains($dir, '*') ? '/*' : ''), GLOB_ONLYDIR);
     }
 
     /**

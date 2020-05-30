@@ -104,7 +104,7 @@ abstract class Controller extends \ManaPHP\Controller
 
             $params = [];
             foreach ($lines as $line) {
-                if (strpos($line, '@param') === false) {
+                if (!str_contains($line, '@param')) {
                     continue;
                 }
 

@@ -270,14 +270,14 @@ class Dispatcher extends Component implements DispatcherInterface
         $this->request->setParams($params);
 
         if ($area) {
-            $area = strpos($area, '_') === false ? ucfirst($area) : Str::camelize($area);
+            $area = !str_contains($area, '_') ? ucfirst($area) : Str::camelize($area);
             $context->area = $area;
         }
 
-        $controller = strpos($controller, '_') === false ? ucfirst($controller) : Str::camelize($controller);
+        $controller = !str_contains($controller, '_') ? ucfirst($controller) : Str::camelize($controller);
         $context->controller = $controller;
 
-        $action = strpos($action, '_') === false ? $action : lcfirst(Str::camelize($action));
+        $action = !str_contains($action, '_') ? $action : lcfirst(Str::camelize($action));
         $context->action = $action;
 
         $context->params = $params;

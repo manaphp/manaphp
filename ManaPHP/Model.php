@@ -605,7 +605,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     public static function aggregate($filters, $aggregation, $options = null)
     {
         if (is_string($options)) {
-            if (strpos($options, ',') === false) {
+            if (!str_contains($options, ',')) {
                 $options = ['group' => $options, 'index' => $options];
             } else {
                 $options = ['group' => $options];
@@ -1324,7 +1324,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         if ($thisFilter === null) {
             $keys = [];
             foreach ($this->getFields() as $field) {
-                if ($field === $foreingedKey || $field === 'id' || $field === '_id' || strpos($field, '_id') === false) {
+                if ($field === $foreingedKey || $field === 'id' || $field === '_id' || !str_contains($field, '_id')) {
                     continue;
                 }
 
@@ -1462,7 +1462,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
             $value = $this->$field;
 
-            if (is_int($value) && $value > 100000000 /**1973/3/3 17:46:40*/ && strpos($field, '_id') === false) {
+            if (is_int($value) && $value > 100000000 /**1973/3/3 17:46:40*/ && !str_contains($field, '_id')) {
                 $data['*human_time*'][$field] = date('Y-m-d H:i:s', $value);
             }
 

@@ -817,9 +817,9 @@ class Markdown extends Component implements EngineInterface
         }
 
         if (
-            strpos($Block['element']['handler']['argument'], '|') === false
-            and strpos($Line['text'], '|') === false
-            and strpos($Line['text'], ':') === false
+            !str_contains($Block['element']['handler']['argument'], '|')
+            and !str_contains($Line['text'], '|')
+            and !str_contains($Line['text'], ':')
             or str_contains($Block['element']['handler']['argument'], "\n")
         ) {
             return;
@@ -1321,7 +1321,7 @@ class Markdown extends Component implements EngineInterface
 
     protected function inlineMarkup($Excerpt)
     {
-        if ($this->markupEscaped || $this->safeMode || strpos($Excerpt['text'], '>') === false) {
+        if ($this->markupEscaped || $this->safeMode || !str_contains($Excerpt['text'], '>')) {
             return;
         }
 

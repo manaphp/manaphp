@@ -86,7 +86,7 @@ class Renderer extends Component implements RendererInterface
             $template = str_replace('\\', '/', $template);
         }
 
-        if (strpos($template, '/') === false) {
+        if (!str_contains($template, '/')) {
             $template = dirname(end($context->templates)) . '/' . $template;
         }
 
@@ -203,7 +203,7 @@ class Renderer extends Component implements RendererInterface
             $template = str_replace('\\', '/', $template);
         }
 
-        if (strpos($template, '/') === false) {
+        if (!str_contains($template, '/')) {
             $template = dirname(end($this->_context->templates)) . '/' . $template;
         }
 

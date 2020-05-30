@@ -113,14 +113,14 @@ class Paginator extends Component implements PaginatorInterface
                 $urlTemplate = $this->request->getServer('REQUEST_URI', 'ignore');
             }
 
-            if (strpos($urlTemplate, '?page=') === false && strpos($urlTemplate, '&page=') === false) {
-                $urlTemplate .= (strpos($urlTemplate, '?') === false ? '?' : '&') . 'page={page}';
+            if (!str_contains($urlTemplate, '?page=') && !str_contains($urlTemplate, '&page=')) {
+                $urlTemplate .= (!str_contains($urlTemplate, '?') ? '?' : '&') . 'page={page}';
             } else {
                 $urlTemplate = (string)preg_replace('#([?&]page)=\d+#', '\1={page}', $urlTemplate);
             }
         }
 
-        if (strpos($urlTemplate, '{page}') === false) {
+        if (!str_contains($urlTemplate, '{page}')) {
             throw new InvalidValueException(['`:template` url template is invalid: it must contain {page} pattern', 'template' => $urlTemplate]);
         }
 

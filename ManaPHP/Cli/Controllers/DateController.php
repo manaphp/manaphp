@@ -14,7 +14,7 @@ class DateController extends Controller
      */
     protected function _getRemoteTimestamp($url, $onlyOnce = false)
     {
-        if (strpos($url, '://') === false) {
+        if (!str_contains($url, '://')) {
             $url = 'http://' . $url;
         }
 
@@ -112,7 +112,7 @@ class DateController extends Controller
                 $time = substr($argument, 1);
             } else {
                 $str = trim(strtr($argument, 'Tt', '  '));
-                if (strpos($str, ' ') === false) {
+                if (!str_contains($str, ' ')) {
                     if (str_contains($str, ':')) {
                         $date = '';
                         $time = $str;

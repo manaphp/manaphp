@@ -282,7 +282,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
             $r = [];
             $offset = 0;
             while ($offset < strlen($data)) {
-                if (strpos(substr($data, $offset), '|') === false) {
+                if (!str_contains(substr($data, $offset), '|')) {
                     return false;
                 }
                 $pos = strpos($data, '|', $offset);
