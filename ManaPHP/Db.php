@@ -107,7 +107,7 @@ class Db extends Component implements DbInterface
     {
         $this->_url = $uri;
 
-        if (strpos($uri, 'timeout=') !== false && preg_match('#timeout=([\d.]+)#', $uri, $matches) === 1) {
+        if (str_contains($uri, 'timeout=') && preg_match('#timeout=([\d.]+)#', $uri, $matches) === 1) {
             $this->_timeout = (float)$matches[1];
         }
 
@@ -119,7 +119,7 @@ class Db extends Component implements DbInterface
             $this->_prefix = $matches[1];
         }
 
-        if (strpos($uri, ',') !== false) {
+        if (str_contains($uri, ',')) {
             $hosts = parse_url($uri, PHP_URL_HOST);
             if (strpos($hosts, ',') === false) {
                 $urls = explode(',', $uri);

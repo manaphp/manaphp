@@ -94,7 +94,7 @@ abstract class Client extends Component implements ClientInterface
             if (count($url) > 1) {
                 $uri = $url[0];
                 unset($url[0]);
-                $url = $uri . (strpos($uri, '?') !== false ? '&' : '?') . http_build_query($url);
+                $url = $uri . (str_contains($uri, '?') ? '&' : '?') . http_build_query($url);
             } else {
                 $url = $url[0];
             }
@@ -149,8 +149,8 @@ abstract class Client extends Component implements ClientInterface
         $response = $this->do_request($request);
         $response_text = $response->body;
 
-        if ((isset($request->headers['Accept']) && strpos($request->headers['Accept'], '/json') !== false)
-            || strpos($response->content_type, '/json') !== false
+        if ((isset($request->headers['Accept']) && str_contains($request->headers['Accept'], '/json'))
+            || str_contains($response->content_type, '/json')
         ) {
             $response->body = $response->body === '' ? [] : json_parse($response->body);
         }
@@ -214,7 +214,7 @@ abstract class Client extends Component implements ClientInterface
 
         $response = $this->request($method, $url, $body, $headers, $options);
 
-        if (is_string($response->body) && strpos($response->content_type, '/html') !== false) {
+        if (is_string($response->body) && str_contains($response->content_type, '/html')) {
             $response->body = json_parse($response->body);
         }
 

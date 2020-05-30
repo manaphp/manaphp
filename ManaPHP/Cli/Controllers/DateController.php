@@ -113,7 +113,7 @@ class DateController extends Controller
             } else {
                 $str = trim(strtr($argument, 'Tt', '  '));
                 if (strpos($str, ' ') === false) {
-                    if (strpos($str, ':') !== false) {
+                    if (str_contains($str, ':')) {
                         $date = '';
                         $time = $str;
                     } else {

@@ -387,7 +387,7 @@ class View extends Component implements ViewInterface
      */
     public function getWidgetClassName($widget)
     {
-        if (strpos($widget, '/') !== false) {
+        if (str_contains($widget, '/')) {
             throw new MisuseException(['it is not allowed to access other area `:widget` widget', 'widget' => $widget]);
         }
 

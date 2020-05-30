@@ -141,7 +141,7 @@ class Query extends \ManaPHP\Query
         } else {
             $this->_shard_context[$field] = $value;
 
-            $bind_key = strpos($field, '.') !== false ? strtr($field, '.', '_') : $field;
+            $bind_key = str_contains($field, '.') ? strtr($field, '.', '_') : $field;
             $this->_conditions[] = "$normalizedField=:$bind_key";
             $this->_bind[$bind_key] = $value;
         }
@@ -413,7 +413,7 @@ class Query extends \ManaPHP\Query
             return $this;
         }
 
-        if (is_string($fields) && strpos($fields, ',') !== false) {
+        if (is_string($fields) && str_contains($fields, ',')) {
             $fields = preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY);
         }
 
@@ -448,7 +448,7 @@ class Query extends \ManaPHP\Query
             return $this;
         }
 
-        if (is_string($fields) && strpos($fields, ',') !== false) {
+        if (is_string($fields) && str_contains($fields, ',')) {
             $fields = preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY);
         }
 
@@ -549,7 +549,7 @@ class Query extends \ManaPHP\Query
     public function whereRegex($field, $regex, $flags = '')
     {
         $key = strtr($field, '.', '_');
-        $this->_conditions[] = '[' . str_replace('.', '].[', $field) . '] REGEXP ' . (strpos($flags, 'i') !== false ? '' : 'BINARY ') . ':' . $key;
+        $this->_conditions[] = '[' . str_replace('.', '].[', $field) . '] REGEXP ' . (str_contains($flags, 'i') ? '' : 'BINARY ') . ':' . $key;
         $this->_bind[$key] = $regex;
 
         return $this;
@@ -565,7 +565,7 @@ class Query extends \ManaPHP\Query
     public function whereNotRegex($field, $regex, $flags = '')
     {
         $key = strtr($field, '.', '_');
-        $this->_conditions[] = '[' . str_replace('.', '].[', $field) . '] NOT REGEXP ' . (strpos($flags, 'i') !== false ? '' : 'BINARY ') . ':' . $key;
+        $this->_conditions[] = '[' . str_replace('.', '].[', $field) . '] NOT REGEXP ' . (str_contains($flags, 'i') ? '' : 'BINARY ') . ':' . $key;
         $this->_bind[$key] = $regex;
 
         return $this;
@@ -862,7 +862,7 @@ class Query extends \ManaPHP\Query
             $joins = [];
             foreach ($this->_joins as $k => $join) {
                 $join_table = $join[0];
-                if (strpos($join_table, '\\') !== false) {
+                if (str_contains($join_table, '\\')) {
                     /** @var \ManaPHP\Db\ModelInterface $model */
                     $model = $join_table::sample();
                     $join_shards = $model->getMultipleShards($this->_shard_context);

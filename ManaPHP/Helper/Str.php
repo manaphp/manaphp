@@ -21,9 +21,8 @@ class Str
         if ($ignoreCase) {
             return stripos($haystack, $needle) !== false;
         } else {
-            return strpos($haystack, $needle) !== false;
+            return str_contains($haystack, $needle);
         }
-
     }
 
     /**
@@ -76,7 +75,7 @@ class Str
      */
     public static function camelize($str)
     {
-        if (strpos($str, '_') !== false) {
+        if (str_contains($str, '_')) {
             if (PHP_VERSION_ID >= 50516) {
                 //http://php.net/manual/en/function.ucwords.php
                 return str_replace('_', '', ucwords($str, '_'));

@@ -29,9 +29,9 @@ class Sharding
      */
     public static function explode($str)
     {
-        if (strpos($str, ',') !== false) {
+        if (str_contains($str, ',')) {
             return preg_split('#[\s,]+#', $str, -1, PREG_SPLIT_NO_EMPTY);
-        } elseif (strpos($str, '%') !== false) {
+        } elseif (str_contains($str, '%')) {
             if (preg_match('#([\w.]+):(\w+)%(\d+)#', $str, $match)) {
                 list(, $base, , $divisor) = $match;
                 list($format, $divisor) = self::divisorToFD($divisor);
@@ -108,8 +108,8 @@ class Sharding
             return self::all($db, $table);
         }
 
-        $db_is_modulo = strpos($db, '%') !== false;
-        $table_is_modulo = strpos($table, '%') !== false;
+        $db_is_modulo = str_contains($db, '%');
+        $table_is_modulo = str_contains($table, '%');
 
         if (!$db_is_modulo && !$table_is_modulo) {
             return self::all($db, $table);

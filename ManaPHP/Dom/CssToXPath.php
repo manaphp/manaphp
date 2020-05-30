@@ -7,7 +7,7 @@ class CssToXPath
     public function transform($path)
     {
         $path = $this->_transform($path);
-        if (strpos($path, ':') !== false) {
+        if (str_contains($path, ':')) {
 
             $path = preg_replace_callback('#:(eq|gt|lt)\((-?\d+)\)#', static function ($match) {
                 $word = $match[1];
@@ -58,7 +58,7 @@ class CssToXPath
     {
         $path = (string)$path_src;
 
-        if (strpos($path, ',') !== false) {
+        if (str_contains($path, ',')) {
             $paths = explode(',', $path);
             $expressions = [];
             foreach ($paths as $path) {
@@ -131,7 +131,7 @@ class CssToXPath
                 $field = ($attr === '' ? 'text()' : '@' . $attr);
 
                 $items = [];
-                foreach (explode(strpos($val, '|') !== false ? '|' : '&', $val) as $word) {
+                foreach (explode(str_contains($val, '|') ? '|' : '&', $val) as $word) {
                     if ($type === '') {
                         $items[] = "$field='$word'";
                     } elseif ($type === '~') {
@@ -146,7 +146,7 @@ class CssToXPath
                         $items[] = ['*' => 'contains', '^' => 'starts-with', '$' => 'ends-with'][$type] . "($field, '$word')";
                     }
                 }
-                return '[' . implode(strpos($val, '|') !== false ? ' or ' : ' and ', $items) . ']';
+                return '[' . implode(str_contains($val, '|') ? ' or ' : ' and ', $items) . ']';
             },
             $expression
         );
@@ -156,7 +156,7 @@ class CssToXPath
         /**@lang text */ '|\[(!?)([a-z][\w\-|&]*)\]|i',
             static function ($matches) {
                 $val = $matches[2];
-                $op = strpos($val, '|') !== false ? '|' : '&';
+                $op = str_contains($val, '|') ? '|' : '&';
 
                 $items = [];
                 foreach (explode($op, $val) as $word) {

@@ -123,7 +123,7 @@ class Mysql extends Connection
             }
 
             $type = $field[1];
-            if (strpos($type, 'int') !== false) {
+            if (str_contains($type, 'int')) {
                 $intTypes[] = $fieldName;
             }
         }

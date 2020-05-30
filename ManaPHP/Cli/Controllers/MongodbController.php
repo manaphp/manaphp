@@ -117,7 +117,7 @@ class MongodbController extends Controller
 
                     $pending_fields = [];
                     foreach ($fieldTypes as $field => $type) {
-                        if ($type === '' || strpos($type, '|') !== false) {
+                        if ($type === '' || str_contains($type, '|')) {
                             $pending_fields[] = $field;
                         }
                     }
@@ -203,7 +203,7 @@ class MongodbController extends Controller
 
         $hasPendingType = false;
         foreach ($fieldTypes as $type) {
-            if (strpos($type, '|') !== false) {
+            if (str_contains($type, '|')) {
                 $hasPendingType = true;
                 break;
             }

@@ -89,7 +89,7 @@ class CsrfPlugin extends Plugin
                     if (Str::endsWith($origin_domain, substr($domain, 1))) {
                         return true;
                     }
-                } elseif (strpos($domain, '^') !== false && strpos($domain, '$') !== false) {
+                } elseif (str_contains($domain, '^') && str_contains($domain, '$')) {
                     if (preg_match($origin_domain, $domain) === 1) {
                         return true;
                     }

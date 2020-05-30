@@ -55,7 +55,7 @@ class Ip
                 } elseif (($pos = strpos($item, '/')) !== false) {
                     $net = substr($item, 0, $pos);
                     $mask = substr($item, $pos + 1);
-                    if (strpos($mask, '.') !== false/** 126.1.0.0/255.255.0.0 */) {
+                    if (str_contains($mask, '.')/** 126.1.0.0/255.255.0.0 */) {
                         if (($needle_int & ip2long($mask)) === ip2long($net)) {
                             return true;
                         }

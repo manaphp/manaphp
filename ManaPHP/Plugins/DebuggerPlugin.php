@@ -158,7 +158,7 @@ class DebuggerPlugin extends Plugin
             }
 
             throw new AbortException();
-        } elseif (strpos($this->request->getServer('HTTP_USER_AGENT'), 'ApacheBench') !== false) {
+        } elseif (str_contains($this->request->getServer('HTTP_USER_AGENT'), 'ApacheBench')) {
             $context->enabled = false;
         } else {
             $context->enabled = true;
@@ -355,7 +355,7 @@ class DebuggerPlugin extends Plugin
         $data['events'] = $context->events;
 
         foreach ($this->_di->getInstances() as $name => $instance) {
-            if (strpos($name, '\\') !== false) {
+            if (str_contains($name, '\\')) {
                 continue;
             }
 

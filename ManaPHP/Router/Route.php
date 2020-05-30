@@ -57,7 +57,7 @@ class Route implements RouteInterface
      */
     protected function _compilePattern($pattern, $case_sensitive)
     {
-        if (strpos($pattern, '{') !== false) {
+        if (str_contains($pattern, '{')) {
             $tr = [
                 '{area}' => '{area:[a-zA-Z]\w*}',
                 '{controller}' => '{controller:[a-zA-Z]\w*}',
@@ -69,7 +69,7 @@ class Route implements RouteInterface
             $pattern = strtr($pattern, $tr);
         }
 
-        if (strpos($pattern, '{') !== false) {
+        if (str_contains($pattern, '{')) {
             $need_restore_token = false;
 
             if (preg_match('#{\d#', $pattern) === 1) {
@@ -150,7 +150,7 @@ class Route implements RouteInterface
             }
         }
 
-        if (isset($routePaths['controller']) && strpos($routePaths['controller'], '\\') !== false) {
+        if (isset($routePaths['controller']) && str_contains($routePaths['controller'], '\\')) {
             $controller = strtr($routePaths['controller'], '\\', '/');
 
             if (substr_count($controller, '/') === 2) {
@@ -204,7 +204,7 @@ class Route implements RouteInterface
 
                 foreach ($matches as $k => $v) {
                     if (is_string($k)) {
-                        if (strpos($v, '_') !== false
+                        if (str_contains($v, '_')
                             && in_array($k, ['area', 'controller', 'action'], true)
                             && preg_match('#_$|_\w$|_\w_#', $v) === 1
                         ) {

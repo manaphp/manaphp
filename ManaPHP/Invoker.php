@@ -42,7 +42,7 @@ class Invoker extends Component implements InvokerInterface
 
             if ($className = ($c = $parameter->getClass()) ? $c->getName() : null) {
                 $value = $di->has($name) ? $di->getShared($name) : $di->getShared($className);
-            } elseif (strpos($name, 'Service') !== false) {
+            } elseif (str_contains($name, 'Service')) {
                 $value = $di->getShared($name);
             } elseif ($this->request->has($name)) {
                 $value = $this->request->get($name, $type === 'array' ? [] : '');

@@ -132,7 +132,7 @@ class Swoole extends \ManaPHP\Rpc\Server
         if (!$_post && isset($_server['REQUEST_METHOD']) && !in_array($_server['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
             $data = $request->rawContent();
 
-            if (isset($_server['CONTENT_TYPE']) && strpos($_server['CONTENT_TYPE'], 'application/json') !== false) {
+            if (isset($_server['CONTENT_TYPE']) && str_contains($_server['CONTENT_TYPE'], 'application/json')) {
                 $_post = json_parse($data);
             } else {
                 parse_str($data, $_post);

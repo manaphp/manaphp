@@ -59,7 +59,7 @@ class Redis extends Component implements RedisInterface
 
         $pool_size = preg_match('#pool_size=(\d+)#', $url, $matches) ? $matches[1] : 4;
 
-        if (strpos($url, ',') !== false) {
+        if (str_contains($url, ',')) {
             $hosts = parse_url($url, PHP_URL_HOST);
             if (strpos($hosts, ',') === false) {
                 $urls = explode(',', $url);

@@ -161,7 +161,7 @@ class Router extends Component implements RouterInterface
      */
     protected function _addRoute($pattern, $paths = null, $method = null)
     {
-        if (strpos($pattern, '/:') !== false) {
+        if (str_contains($pattern, '/:')) {
             $pattern = preg_replace('#/:(\w+)#', '/{\1}', $pattern);
         }
 
@@ -186,7 +186,7 @@ class Router extends Component implements RouterInterface
      */
     public function add($pattern, $paths = null, $method = null)
     {
-        if ($method === null && is_string($paths) && strpos($paths, '\\') !== false) {
+        if ($method === null && is_string($paths) && str_contains($paths, '\\')) {
             if (strpos($pattern, '{action}') === false && strpos($pattern, '/:action') === false) {
                 $pattern = rtrim($pattern, '/') . '(?:/{action:\d[-\w]*$|[a-zA-Z]\w*}(?:/{params})?)?';
             }

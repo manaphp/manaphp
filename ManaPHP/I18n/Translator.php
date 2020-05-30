@@ -133,13 +133,13 @@ class Translator extends Component implements TranslatorInterface
         if ($placeholders) {
             $replaces = [];
 
-            if (strpos($message, ':') !== false) {
+            if (str_contains($message, ':')) {
                 foreach ($placeholders as $k => $v) {
                     $replaces[':' . $k] = $v;
                 }
             }
 
-            if (strpos($message, '{') !== false) {
+            if (str_contains($message, '{')) {
                 foreach ($placeholders as $k => $v) {
                     $replaces['{' . $k . '}'] = $v;
                 }

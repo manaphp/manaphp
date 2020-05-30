@@ -120,7 +120,7 @@ class Compiler extends Component
      */
     protected function _completeRelativeLinks($file, $str)
     {
-        if ($str === '#' || strpos($str, '://') !== false || strpos($str, '//') === 0) {
+        if ($str === '#' || str_contains($str, '://') || strpos($str, '//') === 0) {
             return $str;
         }
 

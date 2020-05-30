@@ -369,7 +369,7 @@ class Markdown extends Component implements EngineInterface
                 ],
             ];
 
-            if (strpos($Line['text'], '-->') !== false) {
+            if (str_contains($Line['text'], '-->')) {
                 $Block['closed'] = true;
             }
 
@@ -385,7 +385,7 @@ class Markdown extends Component implements EngineInterface
 
         $Block['element']['rawHtml'] .= "\n" . $Line['body'];
 
-        if (strpos($Line['text'], '-->') !== false) {
+        if (str_contains($Line['text'], '-->')) {
             $Block['closed'] = true;
         }
 
@@ -404,7 +404,7 @@ class Markdown extends Component implements EngineInterface
 
         $infostring = trim(substr($Line['text'], $openerLength), "\t ");
 
-        if (strpos($infostring, '`') !== false) {
+        if (str_contains($infostring, '`')) {
             return;
         }
 
@@ -792,7 +792,7 @@ class Markdown extends Component implements EngineInterface
 
     protected function blockReference($Line)
     {
-        if (strpos($Line['text'], ']') !== false
+        if (str_contains($Line['text'], ']')
             && preg_match(/**@lang text */ '/^\[(.+?)\]:[ ]*+<?(\S+?)>?(?:[ ]+["\'(](.+)["\')])?[ ]*+$/', $Line['text'], $matches)
         ) {
             $id = strtolower($matches[1]);
@@ -820,7 +820,7 @@ class Markdown extends Component implements EngineInterface
             strpos($Block['element']['handler']['argument'], '|') === false
             and strpos($Line['text'], '|') === false
             and strpos($Line['text'], ':') === false
-            or strpos($Block['element']['handler']['argument'], "\n") !== false
+            or str_contains($Block['element']['handler']['argument'], "\n")
         ) {
             return;
         }
@@ -1151,7 +1151,7 @@ class Markdown extends Component implements EngineInterface
         $commonMarkEmail = '[a-zA-Z0-9.!#$%&\'*+\/=?^_`{|}~-]++@'
             . $hostnameLabel . '(?:\.' . $hostnameLabel . ')*';
 
-        if (strpos($Excerpt['text'], '>') !== false
+        if (str_contains($Excerpt['text'], '>')
             && preg_match("/^<((mailto:)?$commonMarkEmail)>/i", $Excerpt['text'], $matches)
         ) {
             $url = $matches[1];
@@ -1214,7 +1214,7 @@ class Markdown extends Component implements EngineInterface
 
     protected function inlineEscapeSequence($Excerpt)
     {
-        if (isset($Excerpt['text'][1]) && strpos('\\`*_{}[]()>#+-.!|~', $Excerpt['text'][1]) !== false) {
+        if (isset($Excerpt['text'][1]) && str_contains('\\`*_{}[]()>#+-.!|~', $Excerpt['text'][1])) {
             return [
                 'element' => ['rawHtml' => $Excerpt['text'][1]],
                 'extent' => 2,
@@ -1349,7 +1349,7 @@ class Markdown extends Component implements EngineInterface
 
     protected function inlineSpecialCharacter($Excerpt)
     {
-        if (substr($Excerpt['text'], 1, 1) !== ' ' && strpos($Excerpt['text'], ';') !== false
+        if (substr($Excerpt['text'], 1, 1) !== ' ' && str_contains($Excerpt['text'], ';')
             && preg_match('/^&(#?+[0-9a-zA-Z]++);/', $Excerpt['text'], $matches)
         ) {
             return [
@@ -1386,7 +1386,7 @@ class Markdown extends Component implements EngineInterface
             return;
         }
 
-        if (strpos($Excerpt['context'], 'http') !== false
+        if (str_contains($Excerpt['context'], 'http')
             && preg_match('/\bhttps?+:[\/]{2}[^\s<]+\b\/*+/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE)
         ) {
             $url = $matches[0][0];
@@ -1407,7 +1407,7 @@ class Markdown extends Component implements EngineInterface
 
     protected function inlineUrlTag($Excerpt)
     {
-        if (strpos($Excerpt['text'], '>') !== false && preg_match('/^<(\w++:\/{2}[^ >]++)>/i', $Excerpt['text'], $matches)) {
+        if (str_contains($Excerpt['text'], '>') && preg_match('/^<(\w++:\/{2}[^ >]++)>/i', $Excerpt['text'], $matches)) {
             $url = $matches[1];
 
             return [

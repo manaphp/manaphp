@@ -175,7 +175,7 @@ class Query extends \ManaPHP\Query
      */
     protected function _compileCondExpression($expr)
     {
-        if (strpos($expr, ',') !== false) {
+        if (str_contains($expr, ',')) {
             $parts = explode(',', $expr);
             $cond = trim($parts[0]);
             $true = trim($parts[1]);
@@ -813,7 +813,7 @@ class Query extends \ManaPHP\Query
     public function groupBy($groupBy)
     {
         if (is_string($groupBy)) {
-            if (strpos($groupBy, '(') !== false) {
+            if (str_contains($groupBy, '(')) {
                 if (preg_match('#^([\w.]+)\((.*)\)$#', $groupBy, $match) === 1) {
                     $func = strtoupper($match[1]);
                     if ($func === 'SUBSTR') {

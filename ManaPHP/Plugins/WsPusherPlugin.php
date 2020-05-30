@@ -148,7 +148,7 @@ class  WsPusherPlugin extends Plugin
             } else {
                 foreach ($users as $user) {
                     $id = (string)$user['id'];
-                    if (strpos($receivers, $id) !== false && preg_match("#\\b$id\\b#", $receivers) === 1) {
+                    if (str_contains($receivers, $id) && preg_match("#\\b$id\\b#", $receivers) === 1) {
                         $this->push($user['fd'], $message);
                     }
                 }
@@ -186,7 +186,7 @@ class  WsPusherPlugin extends Plugin
             } else {
                 foreach ($users as $user) {
                     $name = $user['name'];
-                    if (strpos($receivers, $name) !== false && preg_match("#\\b$name\\b#", $receivers) === 1) {
+                    if (str_contains($receivers, $name) && preg_match("#\\b$name\\b#", $receivers) === 1) {
                         $this->push($user['fd'], $message);
                     }
                 }
@@ -205,7 +205,7 @@ class  WsPusherPlugin extends Plugin
         if (strpos($receivers, ',') === false) {
             foreach ($users as $user) {
                 $role = $user['role'];
-                if ($role === $receivers || (strpos($role, $receivers) !== false && preg_match("#\\b$receivers\\b#", $role) === 1)) {
+                if ($role === $receivers || (str_contains($role, $receivers) && preg_match("#\\b$receivers\\b#", $role) === 1)) {
                     $this->push($user['fd'], $message);
                 }
             }
@@ -215,7 +215,7 @@ class  WsPusherPlugin extends Plugin
                 $role = $user['role'];
 
                 foreach ($receivers as $receiver) {
-                    if ($role === $receiver || (strpos($role, $receiver) !== false && preg_match("#\\b$receiver\\b#", $role) === 1)) {
+                    if ($role === $receiver || (str_contains($role, $receiver) && preg_match("#\\b$receiver\\b#", $role) === 1)) {
                         $this->push($user['fd'], $message);
                         break;
                     }

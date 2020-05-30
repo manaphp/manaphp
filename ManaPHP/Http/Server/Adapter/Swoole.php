@@ -139,7 +139,7 @@ class Swoole extends Server
         if (!$_post && isset($_server['REQUEST_METHOD']) && !in_array($_server['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
             $globals->rawBody = $rowBody = $request->rawContent();
 
-            if (isset($_server['CONTENT_TYPE']) && strpos($_server['CONTENT_TYPE'], 'application/json') !== false) {
+            if (isset($_server['CONTENT_TYPE']) && str_contains($_server['CONTENT_TYPE'], 'application/json')) {
                 $_post = json_parse($rowBody);
             } else {
                 parse_str($rowBody, $_post);

@@ -262,19 +262,19 @@ class Authorization extends Component implements AuthorizationInterface
 
         if ($role !== 'guest' && $permission && $permission[0] === '/') {
             if (strpos($role, ',') === false) {
-                if (strpos($this->getAllowed($role), ",$permission,") !== false) {
+                if (str_contains($this->getAllowed($role), ",$permission,")) {
                     return true;
                 }
             } else {
                 foreach (explode(',', $role) as $r) {
-                    if (strpos($this->getAllowed($r), ",$permission,") !== false) {
+                    if (str_contains($this->getAllowed($r), ",$permission,")) {
                         return true;
                     }
                 }
             }
         }
 
-        if ($permission && strpos($permission, '/') !== false) {
+        if ($permission && str_contains($permission, '/')) {
             list($controllerClassName, $action) = $this->inferControllerAction($permission);
         } else {
             /** @var \ManaPHP\Http\Controller $controllerInstance */
@@ -298,12 +298,12 @@ class Authorization extends Component implements AuthorizationInterface
 
         $permission = $this->generatePath($controllerClassName, $action);
         if (strpos($role, ',') === false) {
-            if (strpos($this->getAllowed($role), ",$permission,") !== false) {
+            if (str_contains($this->getAllowed($role), ",$permission,")) {
                 return true;
             }
         } else {
             foreach (explode(',', $role) as $r) {
-                if (strpos($this->getAllowed($r), ",$permission,") !== false) {
+                if (str_contains($this->getAllowed($r), ",$permission,")) {
                     return true;
                 }
             }

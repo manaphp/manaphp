@@ -37,7 +37,7 @@ class AssetBundle extends Component implements AssetBundleInterface
 
         return preg_replace_callback('#url\((.+?)\)#', function ($match) use ($path) {
             $url = trim($match[1], '\'"');
-            if ($url === '' || strpos($url, '//') !== false) {
+            if ($url === '' || str_contains($url, '//')) {
                 return $match[0];
             }
 

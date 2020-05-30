@@ -76,7 +76,7 @@ class Swift extends Mailer
         $this->_encryption = $encryption;
 
         if (isset($parts['user'])) {
-            if (strpos($parts['user'], '@') !== false) {
+            if (str_contains($parts['user'], '@')) {
                 $this->_from = $parts['user'];
             }
             $this->_username = $parts['user'];

@@ -22,7 +22,7 @@ class ScheduleParser
             if ($v === '*') {
                 continue;
             }
-            if (strpos($v, ',') !== false) {
+            if (str_contains($v, ',')) {
                 $v = explode(',', $v);
             }
 
@@ -58,7 +58,7 @@ class ScheduleParser
             }
 
             if (is_string($v)) {
-                if (strpos($v, '-') !== false) {
+                if (str_contains($v, '-')) {
                     $parts = explode($v, '-');
                     if ($value > $parts[0] || $value < $parts[1]) {
                         return false;

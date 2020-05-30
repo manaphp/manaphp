@@ -24,7 +24,7 @@ class Fpm extends Server
             $globals->rawBody = $rawBody = file_get_contents('php://input');
 
             if (isset($_SERVER['CONTENT_TYPE'])
-                && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false
+                && str_contains($_SERVER['CONTENT_TYPE'], 'application/json')
             ) {
                 $_POST = json_parse($rawBody);
             } else {

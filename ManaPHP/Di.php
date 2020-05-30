@@ -136,7 +136,7 @@ class Di implements DiInterface
         $definition = null;
         if (isset($this->_definitions[$name])) {
             $definition = $this->_definitions[$name];
-        } elseif (strpos($name, '\\') !== false) {
+        } elseif (str_contains($name, '\\')) {
             $definition = $name;
         } elseif ($pos = strrpos($name, '_')) {
             $maybe = substr($name, $pos + 1);
@@ -173,7 +173,7 @@ class Di implements DiInterface
     public function set($name, $definition)
     {
         if (is_string($definition)) {
-            if (strpos($definition, '/') !== false || preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
+            if (str_contains($definition, '/') || preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
                 $definition = ['class' => $this->_inferClassName($name), $definition, 'shared' => false];
             } else {
                 if (strpos($definition, '\\') === false) {
@@ -223,7 +223,7 @@ class Di implements DiInterface
         if (is_string($definition)) {
             if ($definition[0] === '@') {
                 null;
-            } elseif (strpos($definition, '/') !== false || preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
+            } elseif (str_contains($definition, '/') || preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
                 $definition = ['class' => $this->_inferClassName($name), $definition];
             } elseif (strpos($definition, '\\') === false) {
                 $definition = $this->_completeClassName($name, $definition);

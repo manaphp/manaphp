@@ -202,7 +202,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     public function from($table, $alias = null)
     {
         if ($table) {
-            if (strpos($table, '\\') !== false) {
+            if (str_contains($table, '\\')) {
                 /** @var \ManaPHP\Model $table */
                 /** @var \ManaPHP\Model $model */
                 $model = $table::sample();
@@ -309,7 +309,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
             } elseif (preg_match('#^([\w.]+)([<>=!^$*~,@dm?]*)$#', $filter, $matches) === 1) {
                 list(, $field, $operator) = $matches;
 
-                if (strpos($operator, '?') !== false) {
+                if (str_contains($operator, '?')) {
                     $value = is_string($value) ? trim($value) : $value;
                     if ($value === '' || $value === null) {
                         continue;
@@ -340,7 +340,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
                 } else {
                     throw new MisuseException(['unknown `:operator` operator', 'operator' => $operator]);
                 }
-            } elseif (strpos($filter, ',') !== false && preg_match('#^[\w,.]+$#', $filter)) {
+            } elseif (str_contains($filter, ',') && preg_match('#^[\w,.]+$#', $filter)) {
                 $this->where1v1($filter, $value);
             } else {
                 throw new MisuseException(['unknown `:filter` filter', 'filter' => $filter]);

@@ -314,7 +314,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setExpires($timestamp)
     {
-        if (strpos('GET,OPTIONS', $this->request->getServer('REQUEST_METHOD')) !== false) {
+        if (str_contains('GET,OPTIONS', $this->request->getServer('REQUEST_METHOD'))) {
             if ($timestamp <= 2592000) {
                 $timestamp += time();
             }
@@ -364,7 +364,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setCacheControl($control)
     {
-        if (strpos('GET,OPTIONS', $this->request->getServer('REQUEST_METHOD')) !== false) {
+        if (str_contains('GET,OPTIONS', $this->request->getServer('REQUEST_METHOD'))) {
             return $this->setHeader('Cache-Control', $control);
         }
 
@@ -379,7 +379,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setMaxAge($age, $extra = null)
     {
-        if (strpos('GET,OPTIONS', $this->request->getServer('REQUEST_METHOD')) !== false) {
+        if (str_contains('GET,OPTIONS', $this->request->getServer('REQUEST_METHOD'))) {
             $this->setHeader('Cache-Control', $extra ? "$extra, max-age=$age" : "max-age=$age");
             $this->setExpires(time() + $age);
         }
@@ -580,7 +580,7 @@ class Response extends Component implements ResponseInterface
     public function setAttachment($attachmentName)
     {
         if ($userAgent = $this->request->getServer('HTTP_USER_AGENT')) {
-            if (strpos($userAgent, 'Trident') !== false || strpos($userAgent, 'MSIE') !== false) {
+            if (str_contains($userAgent, 'Trident') || str_contains($userAgent, 'MSIE')) {
                 $attachmentName = urlencode($attachmentName);
             }
         }

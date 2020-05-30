@@ -129,14 +129,14 @@ class Request extends Component implements RequestInterface
             return $this->_options;
         }
 
-        if (strpos($name, '-') !== false) {
+        if (str_contains($name, '-')) {
             throw new RequestException(['please remove `-` characters for `:argument` argument', 'argument' => $name]);
         }
 
         foreach (preg_split('#[|,:]+#', $name) as $o) {
             if (isset($this->_options[$o])) {
                 return $this->_options[$o];
-            } elseif (strpos($o, '_') !== false) {
+            } elseif (str_contains($o, '_')) {
                 $o = strtr($o, '_', '-');
                 if (isset($this->_options[$o])) {
                     return $this->_options[$o];
@@ -166,7 +166,7 @@ class Request extends Component implements RequestInterface
         foreach (preg_split('#[|,:]+#', $name) as $p) {
             if (isset($this->_options[$p])) {
                 return true;
-            } elseif (strpos($p, '_') !== false) {
+            } elseif (str_contains($p, '_')) {
                 $p = strtr($p, '_', '-');
                 if (isset($this->_options[$p])) {
                     return true;

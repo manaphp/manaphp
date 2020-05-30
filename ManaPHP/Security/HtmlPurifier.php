@@ -79,7 +79,7 @@ class HtmlPurifier extends Component implements HtmlPurifierInterface
                     }
 
                     if ($attributeName === 'src' || $attributeName === 'href') {
-                        if (strpos($attributeValue, 'http://') !== 0 && strpos($attributeValue, 'https://') !== 0 && strpos($attributeValue, ':') !== false) {
+                        if (strpos($attributeValue, 'http://') !== 0 && strpos($attributeValue, 'https://') !== 0 && str_contains($attributeValue, ':')) {
                             $node->removeAttributeNode($attributeNode);
                             continue;
                         }

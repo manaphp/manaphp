@@ -53,7 +53,7 @@ class Url extends Component implements UrlInterface
         }
 
         if ($args) {
-            $url .= (strpos($url, '?') !== false ? '&' : '?') . http_build_query($args);
+            $url .= (str_contains($url, '?') ? '&' : '?') . http_build_query($args);
         }
 
         if ($anchor !== null) {

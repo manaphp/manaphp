@@ -64,7 +64,7 @@ class Stream extends Client
         if (is_string($request->body)) {
             $http['content'] = $request->body;
         } elseif (is_array($request->body)) {
-            if (isset($options['Content-Type']) && strpos($request->headers['Content-Type'], 'json') !== false) {
+            if (isset($options['Content-Type']) && str_contains($request->headers['Content-Type'], 'json')) {
                 $http['content'] = json_stringify($request->body);
             } else {
                 $http['content'] = http_build_query($request->body);

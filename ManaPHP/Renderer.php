@@ -82,7 +82,7 @@ class Renderer extends Component implements RendererInterface
     {
         $context = $this->_context;
 
-        if (DIRECTORY_SEPARATOR === '\\' && strpos($template, '\\') !== false) {
+        if (DIRECTORY_SEPARATOR === '\\' && str_contains($template, '\\')) {
             $template = str_replace('\\', '/', $template);
         }
 
@@ -199,7 +199,7 @@ class Renderer extends Component implements RendererInterface
      */
     public function exists($template)
     {
-        if (DIRECTORY_SEPARATOR === '\\' && strpos($template, '\\') !== false) {
+        if (DIRECTORY_SEPARATOR === '\\' && str_contains($template, '\\')) {
             $template = str_replace('\\', '/', $template);
         }
 

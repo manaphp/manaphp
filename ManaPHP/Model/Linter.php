@@ -164,7 +164,7 @@ class Linter extends Component
     {
         $fields = [];
         foreach ($this->getMagicFields() as $field => $type) {
-            if (strpos($type, '\\') !== false) {
+            if (str_contains($type, '\\')) {
                 continue;
             }
 

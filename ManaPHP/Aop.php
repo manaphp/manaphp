@@ -62,7 +62,7 @@ class Aop implements AopInterface, Unaspectable
                     continue;
                 }
                 $method = $rm->getName();
-                if (strpos($method, '__') === 0 || strpos($method, '#') !== false || $rm->isStatic()) {
+                if (strpos($method, '__') === 0 || str_contains($method, '#') || $rm->isStatic()) {
                     continue;
                 }
                 $this->pointcutMethod($class, $rm->getName())->addAfter($closure);

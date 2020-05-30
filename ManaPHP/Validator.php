@@ -210,7 +210,7 @@ class Validator extends Component implements ValidatorInterface
                         $value = $r;
                     }
                     continue;
-                } elseif (strpos($v, '-') !== false) {
+                } elseif (str_contains($v, '-')) {
                     $validate = in_array($field, $model->getIntFields(), true) ? 'range' : 'length';
                     $parameter = $v;
                 } else {
@@ -276,7 +276,7 @@ class Validator extends Component implements ValidatorInterface
                         $value = $r;
                     }
                     continue;
-                } elseif (strpos($v, '-') !== false) {
+                } elseif (str_contains($v, '-')) {
                     $parameter = $v;
                     if (in_array('string', $rules, true)) {
                         $validate = 'length';
@@ -344,9 +344,9 @@ class Validator extends Component implements ValidatorInterface
             return (int)$value;
         }
 
-        if (strpos(',1,true,on,yes,', ",$value,") !== false) {
+        if (str_contains(',1,true,on,yes,', ",$value,")) {
             return 1;
-        } elseif (strpos(',0,false,off,no,', ",$value,") !== false) {
+        } elseif (str_contains(',0,false,off,no,', ",$value,")) {
             return 0;
         } else {
             return null;
@@ -410,7 +410,7 @@ class Validator extends Component implements ValidatorInterface
     protected function _normalizeNumber($field, $value, $parameter)
     {
         if (!is_int($value) && !is_float($value)) {
-            if (strpos($parameter, '.') !== false) {
+            if (str_contains($parameter, '.')) {
                 if (($value = $this->_validate_float($field, $value)) === null) {
                     throw new ValidateFailedException([$field => $this->createError('float', $field)]);
                 }
@@ -879,7 +879,7 @@ class Validator extends Component implements ValidatorInterface
             return null;
         }
 
-        if (strpos($value, '__') !== false) {
+        if (str_contains($value, '__')) {
             return null;
         }
 
