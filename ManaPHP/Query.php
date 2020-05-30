@@ -488,10 +488,10 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     public function with($with)
     {
         if (is_string($with)) {
-            if (!str_contains($with, ',')) {
-                $with = [$with];
-            } else {
+            if (str_contains($with, ',')) {
                 $with = (array)preg_split('#[\s,]+#', $with, -1, PREG_SPLIT_NO_EMPTY);
+            } else {
+                $with = [$with];
             }
         }
 

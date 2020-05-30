@@ -75,10 +75,10 @@ class Mongodb extends Component implements MongodbInterface
      */
     protected function _completeNamespace($source)
     {
-        if (!str_contains($source, '.')) {
-            return $this->_default_db . '.' . $this->_prefix . $source;
-        } else {
+        if (str_contains($source, '.')) {
             return str_replace('.', '.' . $this->_prefix, $source);
+        } else {
+            return $this->_default_db . '.' . $this->_prefix . $source;
         }
     }
 

@@ -112,7 +112,9 @@ class DateController extends Controller
                 $time = substr($argument, 1);
             } else {
                 $str = trim(strtr($argument, 'Tt', '  '));
-                if (!str_contains($str, ' ')) {
+                if (str_contains($str, ' ')) {
+                    list($date, $time) = explode(' ', $str);
+                } else {
                     if (str_contains($str, ':')) {
                         $date = '';
                         $time = $str;
@@ -120,8 +122,6 @@ class DateController extends Controller
                         $date = $str;
                         $time = '';
                     }
-                } else {
-                    list($date, $time) = explode(' ', $str);
                 }
             }
         }

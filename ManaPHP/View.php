@@ -259,11 +259,11 @@ class View extends Component implements ViewInterface
 
         if ($template === null) {
             $action = $this->dispatcher->getAction();
-        } elseif (!str_contains($template, '/')) {
+        } elseif (str_contains($template, '/')) {
+            $action = null;
+        } else {
             $action = $template;
             $template = null;
-        } else {
-            $action = null;
         }
 
         if ($template === null) {
@@ -330,11 +330,11 @@ class View extends Component implements ViewInterface
 
         if ($template === null) {
             $action = $this->dispatcher->getAction();
-        } elseif (!str_contains($template, '/')) {
+        } elseif (str_contains($template, '/')) {
+            $action = null;
+        } else {
             $action = $template;
             $template = null;
-        } else {
-            $action = null;
         }
 
         if ($template === null) {

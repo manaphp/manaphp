@@ -172,9 +172,7 @@ class Console extends Component implements ConsoleInterface
             }
         }
 
-        if (!str_contains($message[0], ':')) {
-            echo $this->colorize($message[0], $options);
-        } else {
+        if (str_contains($message[0], ':')) {
             $replaces = [];
 
             foreach ((array)$message as $k => $v) {
@@ -208,6 +206,8 @@ class Console extends Component implements ConsoleInterface
             }
 
             echo $this->colorize(strtr($message[0], $replaces), $options);
+        } else {
+            echo $this->colorize($message[0], $options);
         }
 
         return $this;

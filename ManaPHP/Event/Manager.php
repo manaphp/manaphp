@@ -75,17 +75,17 @@ class Manager implements ManagerInterface
      */
     public function detachEvent($event, $handler)
     {
-        if (!str_contains($event, ':')) {
-            foreach ($this->_peekers[$event] ?? [] as $k => $v) {
+        if (str_contains($event, ':')) {
+            foreach ($this->_events[$event] ?? [] as $k => $v) {
                 if ($v === $handler) {
-                    unset($this->_peekers[$event][$k]);
+                    unset($this->_events[$event][$k]);
                     break;
                 }
             }
         } else {
-            foreach ($this->_events[$event] ?? [] as $k => $v) {
+            foreach ($this->_peekers[$event] ?? [] as $k => $v) {
                 if ($v === $handler) {
-                    unset($this->_events[$event][$k]);
+                    unset($this->_peekers[$event][$k]);
                     break;
                 }
             }

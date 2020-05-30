@@ -126,29 +126,29 @@ class  WsPusherPlugin extends Plugin
         $users = $this->_users;
 
         if ($this->_sso) {
-            if (!str_contains($receivers, ',')) {
-                if ($user = $users[$receivers] ?? false) {
-                    $this->push($user['fd'], $message);
-                }
-            } else {
+            if (str_contains($receivers, ',')) {
                 foreach (explode(',', $receivers) as $id) {
                     if ($user = $users[$id] ?? false) {
                         $this->push($user['fd'], $message);
                     }
                 }
+            } else {
+                if ($user = $users[$receivers] ?? false) {
+                    $this->push($user['fd'], $message);
+                }
             }
         } else {
-            if (!str_contains($receivers, ',')) {
-                $id = (int)$receivers;
+            if (str_contains($receivers, ',')) {
                 foreach ($users as $user) {
-                    if ($user['id'] === $id) {
+                    $id = (string)$user['id'];
+                    if (str_contains($receivers, $id) && preg_match("#\\b$id\\b#", $receivers) === 1) {
                         $this->push($user['fd'], $message);
                     }
                 }
             } else {
+                $id = (int)$receivers;
                 foreach ($users as $user) {
-                    $id = (string)$user['id'];
-                    if (str_contains($receivers, $id) && preg_match("#\\b$id\\b#", $receivers) === 1) {
+                    if ($user['id'] === $id) {
                         $this->push($user['fd'], $message);
                     }
                 }
@@ -165,28 +165,28 @@ class  WsPusherPlugin extends Plugin
         $users = $this->_users;
 
         if ($this->_sso) {
-            if (!str_contains($receivers, ',')) {
-                if ($id = $this->_name2id[$receivers] ?? false) {
-                    $this->push($users[$id]['fd'], $message);
-                }
-            } else {
+            if (str_contains($receivers, ',')) {
                 foreach (explode(',', $receivers) as $name) {
                     if ($id = $this->_name2id[$name] ?? false) {
                         $this->push($users[$id]['fd'], $message);
                     }
                 }
+            } else {
+                if ($id = $this->_name2id[$receivers] ?? false) {
+                    $this->push($users[$id]['fd'], $message);
+                }
             }
         } else {
-            if (!str_contains($receivers, ',')) {
+            if (str_contains($receivers, ',')) {
                 foreach ($users as $user) {
-                    if ($user['name'] === $receivers) {
+                    $name = $user['name'];
+                    if (str_contains($receivers, $name) && preg_match("#\\b$name\\b#", $receivers) === 1) {
                         $this->push($user['fd'], $message);
                     }
                 }
             } else {
                 foreach ($users as $user) {
-                    $name = $user['name'];
-                    if (str_contains($receivers, $name) && preg_match("#\\b$name\\b#", $receivers) === 1) {
+                    if ($user['name'] === $receivers) {
                         $this->push($user['fd'], $message);
                     }
                 }
@@ -202,14 +202,7 @@ class  WsPusherPlugin extends Plugin
     {
         $users = $this->_users;
 
-        if (!str_contains($receivers, ',')) {
-            foreach ($users as $user) {
-                $role = $user['role'];
-                if ($role === $receivers || (str_contains($role, $receivers) && preg_match("#\\b$receivers\\b#", $role) === 1)) {
-                    $this->push($user['fd'], $message);
-                }
-            }
-        } else {
+        if (str_contains($receivers, ',')) {
             $receivers = explode(',', $receivers);
             foreach ($users as $user) {
                 $role = $user['role'];
@@ -219,6 +212,13 @@ class  WsPusherPlugin extends Plugin
                         $this->push($user['fd'], $message);
                         break;
                     }
+                }
+            }
+        } else {
+            foreach ($users as $user) {
+                $role = $user['role'];
+                if ($role === $receivers || (str_contains($role, $receivers) && preg_match("#\\b$receivers\\b#", $role) === 1)) {
+                    $this->push($user['fd'], $message);
                 }
             }
         }
