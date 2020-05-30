@@ -199,7 +199,7 @@ class Dotenv extends Component implements DotenvInterface
                 $line = substr($line, 0, $pos);
             }
             $line = trim($line);
-            if (strpos($line, 'export ') === 0) {
+            if (str_starts_with($line, 'export ')) {
                 $parts = explode('=', ltrim(substr($line, 7)), 2);
             } else {
                 $parts = explode('=', $line, 2);

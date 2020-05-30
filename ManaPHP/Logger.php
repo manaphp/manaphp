@@ -216,7 +216,7 @@ abstract class Logger extends Component implements LoggerInterface
 
             if (in_array($function, self::$_levels, true)) {
                 return $trace;
-            } elseif (strpos($function, 'log_') === 0 && in_array(substr($function, 4), self::$_levels, true)) {
+            } elseif (str_starts_with($function, 'log_') && in_array(substr($function, 4), self::$_levels, true)) {
                 return $trace;
             }
         }

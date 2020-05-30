@@ -224,9 +224,9 @@ class Console extends Component implements ConsoleInterface
         $fc_list = [0 => 0];
 
         foreach ($rc->getConstants() as $name => $value) {
-            if (strpos($name, 'BC_') === 0) {
+            if (str_starts_with($name, 'BC_')) {
                 $bc_list[$name] = $value;
-            } elseif (strpos($name, 'FC_') === 0) {
+            } elseif (str_starts_with($name, 'FC_')) {
                 $fc_list[$name] = $value;
             }
         }

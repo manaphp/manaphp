@@ -813,7 +813,7 @@ class Db extends Component implements DbInterface
                 $prefix_len = strlen($prefix);
                 $tables = [];
                 foreach ($connection->getTables($schema) as $table) {
-                    if (strpos($table, $prefix) === 0) {
+                    if (str_starts_with($table, $prefix)) {
                         $tables[] = substr($table, $prefix_len);
                     }
                 }

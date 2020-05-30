@@ -402,7 +402,7 @@ class Router extends Component implements RouterInterface
         $context->matched = false;
 
         if ($this->_prefix) {
-            if (strpos($uri, $this->_prefix) === 0) {
+            if (str_starts_with($uri, $this->_prefix)) {
                 $handledUri = substr($uri, strlen($this->_prefix)) ?: '/';
             } else {
                 $handledUri = false;

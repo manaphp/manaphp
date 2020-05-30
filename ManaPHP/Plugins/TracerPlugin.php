@@ -102,7 +102,7 @@ class TracerPlugin extends Plugin
             ], 'redis.' . $method);
         } else {
             $key = $arguments[0] ?? false;
-            if (!$this->configure->debug && is_string($key) && strpos($key, 'cache:') === 0) {
+            if (!$this->configure->debug && is_string($key) && str_starts_with($key, 'cache:')) {
                 return;
             }
             $arguments = json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR);

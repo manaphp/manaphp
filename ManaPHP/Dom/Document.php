@@ -226,7 +226,7 @@ class Document extends Component
      */
     public function absolutizeUrl($url)
     {
-        if (!$this->_base_url || preg_match('#^https?://#i', $url) || strpos($url, 'javascript:') === 0) {
+        if (!$this->_base_url || preg_match('#^https?://#i', $url) || str_starts_with($url, 'javascript:')) {
             return $url;
         }
 

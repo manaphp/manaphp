@@ -42,7 +42,7 @@ class AssetBundle extends Component implements AssetBundleInterface
             }
 
             if ($url[0] !== '/') {
-                while (strpos($url, '../') === 0) {
+                while (str_starts_with($url, '../')) {
                     $path = dirname($path);
                     $url = substr($url, 3);
                 }

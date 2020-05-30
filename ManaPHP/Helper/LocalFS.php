@@ -333,7 +333,7 @@ class LocalFS
     {
         $pattern = self::$alias->resolve($pattern);
 
-        if (strpos($pattern, 'phar://') === 0) {
+        if (str_starts_with($pattern, 'phar://')) {
             $dir = dirname($pattern);
 
             if (!self::dirExists($dir)) {

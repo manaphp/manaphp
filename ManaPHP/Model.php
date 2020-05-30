@@ -1148,7 +1148,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         $rc = new ReflectionClass(static::class);
         $file = $comment ? file_get_contents($rc->getFileName()) : '';
         foreach ($rc->getConstants() as $cName => $cValue) {
-            if (strpos($cName, $name) === 0) {
+            if (str_starts_with($cName, $name)) {
                 if ($comment && preg_match('#\s+const\s+' . $cName . '\s*=[^/]+//(<([^>\r\n]+)>|[^\s]+)#', $file, $match)) {
                     $constants[$cValue] = trim($match[2] ?? $match[1]);
                 } else {
@@ -1421,7 +1421,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function __call($name, $arguments)
     {
-        if (strpos($name, 'get') === 0) {
+        if (str_starts_with($name, 'get')) {
             $relation = lcfirst(substr($name, 3));
             if ($this->_di->relationsManager->has($this, $relation)) {
                 return $this->_di->relationsManager->lazyLoad($this, $relation);

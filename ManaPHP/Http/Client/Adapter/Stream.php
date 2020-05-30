@@ -22,7 +22,7 @@ class Stream extends Client
 
         for ($i = count($headers) - 1; $i >= 0; $i--) {
             $header = $headers[$i];
-            if (strpos($header, 'HTTP/') === 0) {
+            if (str_starts_with($header, 'HTTP/')) {
                 return $i === 0 ? $headers : array_slice($headers, $i);
             }
         }
@@ -101,7 +101,7 @@ class Stream extends Client
 
         $content_type = null;
         foreach ($headers as $header) {
-            if (strpos($header, 'Content-Type:') === 0) {
+            if (str_starts_with($header, 'Content-Type:')) {
                 $content_type = trim(substr($header, 13));
                 break;
             }

@@ -41,9 +41,9 @@ class Sword extends Component implements EngineInterface
      */
     public function getCompiledFile($source)
     {
-        if (strpos($source, $root = $this->alias->get('@root')) === 0) {
+        if (str_starts_with($source, $root = $this->alias->get('@root'))) {
             $compiled = '@data/sword' . substr($source, strlen($root));
-        } elseif ($this->_doc_root !== '' && strpos($source, $this->_doc_root) === 0) {
+        } elseif ($this->_doc_root !== '' && str_starts_with($source, $this->_doc_root)) {
             $compiled = '@data/sword/' . substr($source, strlen($this->_doc_root));
         } else {
             $compiled = "@data/sword/$source";

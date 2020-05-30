@@ -89,7 +89,7 @@ class Ip
                 return $ips['ens1'];
             } else {
                 foreach ($ips as $name => $ip) {
-                    if ($name === 'docker' || strpos($name, 'br-') === 0) {
+                    if ($name === 'docker' || str_starts_with($name, 'br-')) {
                         continue;
                     }
 
@@ -107,7 +107,7 @@ class Ip
             $ips = explode(' ', $ips);
 
             foreach ($ips as $ip) {
-                if (strpos($ip, '172.') === 0 && preg_match('#\.1$#', $ip)) {
+                if (str_starts_with($ip, '172.') && preg_match('#\.1$#', $ip)) {
                     continue;
                 }
                 return $ip;

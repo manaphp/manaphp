@@ -361,7 +361,7 @@ class Markdown extends Component implements EngineInterface
             return;
         }
 
-        if (strpos($Line['text'], '<!--') === 0) {
+        if (str_starts_with($Line['text'], '<!--')) {
             $Block = [
                 'element' => [
                     'rawHtml' => $Line['body'],
@@ -1691,7 +1691,7 @@ class Markdown extends Component implements EngineInterface
         if ($len > strlen($string)) {
             return false;
         } else {
-            return strpos($string, $needle) === 0;
+            return str_starts_with($string, $needle);
         }
     }
 

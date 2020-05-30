@@ -44,7 +44,7 @@ class Aop implements AopInterface, Unaspectable
         }
 
         foreach ($classes as $class) {
-            if ($class === 'ManaPHP\Loader' || strpos($class, 'Composer\\') === 0) {
+            if ($class === 'ManaPHP\Loader' || str_starts_with($class, 'Composer\\')) {
                 continue;
             }
 
@@ -62,7 +62,7 @@ class Aop implements AopInterface, Unaspectable
                     continue;
                 }
                 $method = $rm->getName();
-                if (strpos($method, '__') === 0 || str_contains($method, '#') || $rm->isStatic()) {
+                if (str_starts_with($method, '__') || str_contains($method, '#') || $rm->isStatic()) {
                     continue;
                 }
                 $this->pointcutMethod($class, $rm->getName())->addAfter($closure);

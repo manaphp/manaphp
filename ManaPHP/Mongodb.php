@@ -427,7 +427,7 @@ class Mongodb extends Component implements MongodbInterface
             $prefix_len = strlen($prefix);
             foreach ($result as $collection) {
                 $name = $collection['name'];
-                if (strpos($name, $prefix) === 0) {
+                if (str_starts_with($name, $prefix)) {
                     $collections[] = substr($name, $prefix_len);
                 }
             }
