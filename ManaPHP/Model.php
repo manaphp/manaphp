@@ -283,11 +283,12 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         static $cached;
 
         $class = static::class;
-        if (!$sample = $cached[$class] ?? null) {
-            $sample = $cached[$class] = new $class;
+
+        if (!isset($cached[$class])) {
+            $cached[$class] = new $class;
         }
 
-        return $sample;
+        return $cached[$class];
     }
 
     /**
