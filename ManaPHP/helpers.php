@@ -16,6 +16,13 @@ if (!function_exists('spl_object_id')) {
     }
 }
 
+if (!function_exists('str_contains')) {
+    function str_contains($haystack, $needle)
+    {
+        return strpos($haystack, $needle) !== false;
+    }
+}
+
 defined('JSON_THROW_ON_ERROR') or define('JSON_THROW_ON_ERROR', 0);
 defined('JSON_INVALID_UTF8_SUBSTITUTE') or define('JSON_INVALID_UTF8_SUBSTITUTE', 0);
 
