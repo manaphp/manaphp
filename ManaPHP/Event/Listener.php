@@ -23,7 +23,7 @@ class Listener extends Component implements LogCategorizable
         sort($methods);
 
         foreach ($methods as $method) {
-            if (strpos($method, 'on') !== 0) {
+            if (!str_starts_with($method, 'on')) {
                 continue;
             }
 

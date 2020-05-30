@@ -81,7 +81,7 @@ class FiddlerPlugin extends Plugin
 
             $server = [];
             foreach ($this->request->getServer() as $k => $v) {
-                if (strpos($k, 'HTTP_') !== 0) {
+                if (!str_starts_with($k, 'HTTP_')) {
                     continue;
                 }
                 $server[$k] = $v;
