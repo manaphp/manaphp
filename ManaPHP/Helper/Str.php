@@ -37,7 +37,7 @@ class Str
         if ($ignoreCase) {
             return stripos($haystack, $needle) === 0;
         } else {
-            return strpos($haystack, $needle) === 0;
+            return str_starts_with($haystack, $needle);
         }
     }
 
@@ -53,9 +53,8 @@ class Str
         if ($ignoreCase) {
             return strripos($haystack, $needle) === strlen($haystack) - strlen($needle);
         } else {
-            return substr_compare($haystack, $needle, -strlen($needle)) === 0;
+            return str_ends_with($haystack, $needle);
         }
-
     }
 
     /**

@@ -23,6 +23,20 @@ if (!function_exists('str_contains')) {
     }
 }
 
+if (!function_exists('str_starts_with')) {
+    function str_starts_with($haystack, $needle)
+    {
+        return strncmp($haystack, $needle, strlen($needle)) === 0;
+    }
+}
+
+if (!function_exists('str_ends_with')) {
+    function str_ends_with($haystack, $needle)
+    {
+        return substr_compare($haystack, $needle, -strlen($needle)) === 0;
+    }
+}
+
 defined('JSON_THROW_ON_ERROR') or define('JSON_THROW_ON_ERROR', 0);
 defined('JSON_INVALID_UTF8_SUBSTITUTE') or define('JSON_INVALID_UTF8_SUBSTITUTE', 0);
 
