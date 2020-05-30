@@ -42,7 +42,7 @@ class Http extends Component implements ClientInterface
 
         $endpoint = $options['endpoint'];
         unset($options['endpoint']);
-        $this->_endpoint = !str_contains($endpoint, '?') ? rtrim($endpoint, '/') : str_replace('/?', '?', $endpoint);
+        $this->_endpoint = str_contains($endpoint, '?') ? str_replace('/?', '?', $endpoint) : rtrim($endpoint, '/');
 
         if (!isset($options[0]) && !isset($options['class'])) {
             $options['class'] = 'ManaPHP\Http\Client\Adapter\Stream';
@@ -66,7 +66,7 @@ class Http extends Component implements ClientInterface
     public function invoke($method, $params = [], $options = null)
     {
         $endpoint = $this->_endpoint;
-        $url = !str_contains($endpoint, '?') ? "$endpoint/$method" : str_replace('?', "/$method?", $endpoint);
+        $url = str_contains($endpoint, '?') ? str_replace('?', "/$method?", $endpoint) : "$endpoint/$method";
 
         /** @var \ManaPHP\Http\ClientInterface $client */
         $client = $this->poolManager->pop($this, $this->_timeout);

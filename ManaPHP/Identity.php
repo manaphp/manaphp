@@ -135,7 +135,7 @@ class Identity extends Component implements IdentityInterface
             return true;
         }
 
-        return !str_contains($role, ',') ? false : str_contains(",$role,", ",$name,");
+        return str_contains($role, ',') ? str_contains(",$role,", ",$name,") : false;
     }
 
     /**
