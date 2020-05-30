@@ -31,6 +31,8 @@ class Loader
     {
         $this->_namespaces['ManaPHP'] = DIRECTORY_SEPARATOR === '\\' ? strtr(__DIR__, '\\', '/') : __DIR__;
         spl_autoload_register([$this, 'load'], true, true);
+
+        $this->registerFiles(__DIR__ . '/helpers.php');
     }
 
     /**
