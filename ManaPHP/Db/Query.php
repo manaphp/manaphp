@@ -2,7 +2,6 @@
 
 namespace ManaPHP\Db;
 
-use Closure;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
@@ -869,13 +868,7 @@ class Query extends \ManaPHP\Query
                 } else {
                     $db = is_object($this->_db) ? '' : (string)$this->_db;
                     if ($shard_strategy = $this->_shard_strategy) {
-                        if ($shard_strategy instanceof Closure) {
-                            $join_shards = $shard_strategy($db, $join_table, $this->_shard_context);
-                        } else {
-                            list($object, $method) = $shard_strategy;
-
-                            $join_shards = $object->$method($db, $join_table, $this->_shard_context);
-                        }
+                        $join_shards = $shard_strategy($db, $join_table, $this->_shard_context);
                     } else {
                         $join_shards = Sharding::multiple($db, $join_table, $this->_shard_context);
                     }

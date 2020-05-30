@@ -2,7 +2,6 @@
 
 namespace ManaPHP;
 
-use Closure;
 use ManaPHP\Aop\JoinPoint;
 use ManaPHP\Aop\Unaspectable;
 use ReflectionClass;
@@ -33,7 +32,7 @@ class Aop implements AopInterface, Unaspectable
 
     /**
      * @param string|array $classes
-     * @param Closure      $closure
+     * @param callable     $closure
      *
      * @return void
      */
@@ -71,7 +70,7 @@ class Aop implements AopInterface, Unaspectable
     }
 
     /**
-     * @param Closure $closure
+     * @param callable $closure
      */
     public function test($closure = null)
     {

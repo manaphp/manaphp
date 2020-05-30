@@ -2,14 +2,12 @@
 
 namespace ManaPHP;
 
-use Closure;
-
 interface AopInterface
 {
     /**
-     * @param string  $class
-     * @param string  $method
-     * @param Closure $signature
+     * @param string $class
+     * @param string $method
+     * @param string $signature
      *
      * @return \ManaPHP\Aop\Advice
      */
@@ -17,14 +15,14 @@ interface AopInterface
 
     /**
      * @param string|array $classes
-     * @param Closure      $closure
+     * @param callable     $closure
      *
      * @return void
      */
     public function pointCutMethods($classes = '*', $closure = null);
 
     /**
-     * @param Closure $closure
+     * @param callable $closure
      */
     public function test($closure = null);
 }

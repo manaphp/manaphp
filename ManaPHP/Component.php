@@ -2,7 +2,6 @@
 
 namespace ManaPHP;
 
-use Closure;
 use JsonSerializable;
 use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\Event\EventArgs;
@@ -307,7 +306,7 @@ class Component implements ComponentInterface, JsonSerializable
         $eventArgs = new EventArgs($event, $this, $data);
 
         foreach ($this->_on[$event] ?? [] as $handler) {
-            $handler instanceof Closure ? $handler($eventArgs) : $handler[0]->{$handler[1]}($eventArgs);
+            $handler($eventArgs);
         }
     }
 

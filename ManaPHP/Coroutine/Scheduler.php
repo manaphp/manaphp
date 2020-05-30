@@ -36,12 +36,7 @@ class Scheduler extends Component implements SchedulerInterface
     {
         list($fn, $args) = $task;
         try {
-            if (is_array($fn)) {
-                list($object, $method) = $fn;
-                $return = $object->$method(...$args);
-            } else {
-                $return = $fn(...$args);
-            }
+            $return = $fn(...$args);
         } catch (Throwable $throwable) {
             $return = null;
             $this->logger->error($throwable);
@@ -74,13 +69,7 @@ class Scheduler extends Component implements SchedulerInterface
         } else {
             foreach ($this->_tasks as $id => list($fn, $args)) {
                 try {
-                    if (is_array($fn)) {
-                        /** @noinspection MultiAssignmentUsageInspection */
-                        list($object, $method) = $fn;
-                        $return = $object->$method(...$args);
-                    } else {
-                        $return = $fn(...$args);
-                    }
+                    $return = $fn(...$args);
                 } catch (Throwable $throwable) {
                     $return = null;
                     $this->logger->error($throwable);

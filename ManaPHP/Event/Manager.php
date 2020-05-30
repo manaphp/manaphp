@@ -2,8 +2,6 @@
 
 namespace ManaPHP\Event;
 
-use Closure;
-
 /**
  * Class ManaPHP\Event\Manager
  *
@@ -121,15 +119,15 @@ class Manager implements ManagerInterface
         }
 
         foreach ($this->_peekers['*'] ?? [] as $handler) {
-            $handler instanceof Closure ? $handler($eventArgs) : $handler[0]->{$handler[1]}($eventArgs);
+            $handler($eventArgs);
         }
 
         foreach ($this->_peekers[$group] ?? [] as $handler) {
-            $handler instanceof Closure ? $handler($eventArgs) : $handler[0]->{$handler[1]}($eventArgs);
+            $handler($eventArgs);
         }
 
         foreach ($this->_events[$event] ?? [] as $handler) {
-            $handler instanceof Closure ? $handler($eventArgs) : $handler[0]->{$handler[1]}($eventArgs);
+            $handler($eventArgs);
         }
     }
 

@@ -2,27 +2,25 @@
 
 namespace ManaPHP\Aop;
 
-use Closure;
-
 class Advice implements Unaspectable
 {
     /**
-     * @var Closure[]
+     * @var callable[]
      */
     protected $_before = [];
 
     /**
-     * @var Closure
+     * @var callable[]
      */
     protected $_around = [];
 
     /**
-     * @var Closure[]
+     * @var callable[]
      */
     protected $_after = [];
 
     /**
-     * @param \Closure $closure
+     * @param callable $closure
      *
      * @return static
      */
@@ -36,7 +34,7 @@ class Advice implements Unaspectable
     }
 
     /**
-     * @param \Closure $closure
+     * @param callable $closure
      *
      * @return static
      */
@@ -50,7 +48,7 @@ class Advice implements Unaspectable
     }
 
     /**
-     * @param \Closure $closure
+     * @param callable $closure
      *
      * @return static
      */
@@ -71,12 +69,7 @@ class Advice implements Unaspectable
     public function adviseBefore($joinPoint)
     {
         foreach ($this->_before as $closure) {
-            if (is_array($closure)) {
-                list($object, $method) = $closure;
-                $object->$method($joinPoint);
-            } else {
-                $closure($joinPoint);
-            }
+            $closure($joinPoint);
         }
     }
 
@@ -88,12 +81,7 @@ class Advice implements Unaspectable
     public function adviseAfter($joinPoint)
     {
         foreach ($this->_after as $closure) {
-            if (is_array($closure)) {
-                list($object, $method) = $closure;
-                $object->$method($joinPoint);
-            } else {
-                $closure($joinPoint);
-            }
+            $closure($joinPoint);
         }
     }
 
@@ -105,12 +93,7 @@ class Advice implements Unaspectable
     public function adviseAround($joinPoint)
     {
         foreach ($this->_around as $closure) {
-            if (is_array($closure)) {
-                list($object, $method) = $closure;
-                $object->$method($joinPoint);
-            } else {
-                $closure($joinPoint);
-            }
+            $closure($joinPoint);
         }
     }
 }
