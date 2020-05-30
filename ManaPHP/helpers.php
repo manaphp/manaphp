@@ -37,6 +37,24 @@ if (!function_exists('str_ends_with')) {
     }
 }
 
+if (!function_exists('array_key_first')) {
+    function array_key_first($ar)
+    {
+        /** @noinspection LoopWhichDoesNotLoopInspection */
+        foreach ($ar as $key => $unused) {
+            return $key;
+        }
+        return null;
+    }
+}
+
+if (!function_exists('array_key_last')) {
+    function array_key_last($ar)
+    {
+        return count($ar) === 0 ? null : key(array_slice($ar, -1, 1, true));
+    }
+}
+
 defined('JSON_THROW_ON_ERROR') or define('JSON_THROW_ON_ERROR', 0);
 defined('JSON_INVALID_UTF8_SUBSTITUTE') or define('JSON_INVALID_UTF8_SUBSTITUTE', 0);
 
