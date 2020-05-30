@@ -3,6 +3,7 @@
 namespace ManaPHP;
 
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Exception\NotSupportedException;
 
 /**
  * Class Redis
@@ -121,6 +122,10 @@ class Redis extends Component implements RedisInterface
         static $map;
 
         if ($map === null) {
+            if (!class_exists('Redis')) {
+                throw new NotSupportedException('Redis class is not exists');
+            }
+
             $map = array_fill_keys(get_class_methods('Redis'), self::TYPE_MASTER);
 
             /** @noinspection SpellCheckingInspection */
