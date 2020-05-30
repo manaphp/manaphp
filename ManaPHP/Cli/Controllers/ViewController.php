@@ -4,7 +4,6 @@ namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
 use ManaPHP\Helper\LocalFS;
-use ManaPHP\Helper\Str;
 
 class ViewController extends Controller
 {
