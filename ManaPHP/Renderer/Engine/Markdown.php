@@ -1471,7 +1471,7 @@ class Markdown extends Component implements EngineInterface
 
     protected function elementApplyRecursive($closure, array $Element)
     {
-        $Element = call_user_func($closure, $Element);
+        $Element = $closure($Element);
 
         if (isset($Element['elements'])) {
             $Element['elements'] = $this->elementsApplyRecursive($closure, $Element['elements']);
@@ -1490,7 +1490,7 @@ class Markdown extends Component implements EngineInterface
             $Element['element'] = $this->elementsApplyRecursiveDepthFirst($closure, $Element['element']);
         }
 
-        $Element = call_user_func($closure, $Element);
+        $Element = $closure($Element);
 
         return $Element;
     }

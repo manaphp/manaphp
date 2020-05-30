@@ -86,7 +86,8 @@ class HtmlPurifier extends Component implements HtmlPurifierInterface
                     }
 
                     if ($this->_filter !== null) {
-                        $r = call_user_func($this->_filter, $tag, $attributeName, $attributeValue);
+                        $filter = $this->_filter;
+                        $r = $filter($tag, $attributeName, $attributeValue);
                         if ($r === false) {
                             $node->removeAttributeNode($attributeNode);
                             continue;

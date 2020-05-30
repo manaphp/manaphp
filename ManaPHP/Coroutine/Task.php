@@ -46,9 +46,10 @@ class Task extends Component implements TaskInterface
 
     public function routine()
     {
+        $fn = $this->_fn;
         while (($data = $this->_channel->pop()) !== false) {
             try {
-                call_user_func($this->_fn, $data);
+                $fn($data);
             } catch (Throwable $throwable) {
                 $this->logger->error($throwable);
             }
@@ -67,8 +68,10 @@ class Task extends Component implements TaskInterface
             /** @noinspection PhpMethodParametersCountMismatchInspection */
             return $this->_channel->push($data, $timeout);
         } else {
+            $fn = $this->_fn;
+
             try {
-                call_user_func($this->_fn, $data);
+                $fn($data);
             } catch (Throwable $throwable) {
                 $this->logger->error($throwable);
             }

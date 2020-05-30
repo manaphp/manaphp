@@ -320,7 +320,8 @@ class Compiler extends Component
             if (method_exists($this, $method = '_compile_' . $match[1])) {
                 $match[0] = $this->$method($match[3] ?? null);
             } elseif (isset($this->_directives[$match[1]])) {
-                $match[0] = call_user_func($this->_directives[$match[1]], $match[3] ?? null);
+                $func = $this->_directives[$match[1]];
+                $match[0] = $func($match[3] ?? null);
             }
 
             return isset($match[3]) ? $match[0] : $match[0] . $match[2];
