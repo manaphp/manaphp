@@ -151,7 +151,7 @@ HTML;
                 $content .= PHP_EOL . <<<HTML
     <result-email></result-email>
 HTML;
-            } elseif ($field === 'id' || Str::endsWith($field, '_ip')) {
+            } elseif ($field === 'id' || str_ends_with($field, '_ip')) {
                 $content .= PHP_EOL . <<<HTML
     <result-ip prop="$field"></result-ip>
 HTML;

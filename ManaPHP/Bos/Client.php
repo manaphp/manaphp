@@ -6,7 +6,6 @@ use ManaPHP\Component;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Arr;
-use ManaPHP\Helper\Str;
 
 class Client extends Component implements ClientInterface
 {
@@ -41,7 +40,7 @@ class Client extends Component implements ClientInterface
 
         $endpoint = preg_replace('#{bucket}[\-.]*#', '', $this->_endpoint);
 
-        if (Str::contains($this->_endpoint, '{bucket}')) {
+        if (str_contains($this->_endpoint, '{bucket}')) {
             $params['base_url'] = str_replace('{bucket}', $bucket, $this->_endpoint);
         }
 

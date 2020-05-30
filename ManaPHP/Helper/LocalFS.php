@@ -43,7 +43,7 @@ class LocalFS
      */
     public static function fileDelete($file)
     {
-        if (Str::contains($file, '*')) {
+        if (str_contains($file, '*')) {
             foreach (self::files($file) as $f) {
                 if (!unlink($f) && self::fileExists($f)) {
                     throw new RuntimeException(['delete `:file` failed: :last_error_message', 'file' => $f]);

@@ -3,7 +3,6 @@
 namespace ManaPHP\Plugins;
 
 use ManaPHP\Event\EventArgs;
-use ManaPHP\Helper\Str;
 use ManaPHP\Mvc\Controller as MvcController;
 use ManaPHP\Plugin;
 use ManaPHP\Plugins\CsrfPlugin\AttackDetectedException;
@@ -86,7 +85,7 @@ class CsrfPlugin extends Plugin
 
             foreach ($domains as $domain) {
                 if ($domain[0] === '*') {
-                    if (Str::endsWith($origin_domain, substr($domain, 1))) {
+                    if (str_ends_with($origin_domain, substr($domain, 1))) {
                         return true;
                     }
                 } elseif (str_contains($domain, '^') && str_contains($domain, '$')) {
