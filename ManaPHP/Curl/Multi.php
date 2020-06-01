@@ -115,8 +115,8 @@ class Multi extends Component implements MultiInterface, Countable
     }
 
     /**
-     * @param string|array|\ManaPHP\Curl\Multi\Request $request
-     * @param callable|array                           $callbacks
+     * @param string|array|\ManaPHP\Curl\Multi\Request|\ManaPHP\Component $request
+     * @param callable|array                                              $callbacks
      *
      * @return static
      */
