@@ -69,6 +69,7 @@ class Syslog extends Logger
             throw new MisuseException('syslog receiver is not assign');
         }
 
+        $this->_receiver = $options['receiver'];
         $parts = parse_url($options['receiver']);
         $this->_receiver_host = $parts['host'];
         if (isset($parts['scheme'])) {
