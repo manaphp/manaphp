@@ -433,9 +433,9 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_min($field, $value, $parameter)
     {
-        $value = $this->_normalizeNumber($field, $value, $parameter);
+        $number = $this->_normalizeNumber($field, $value, $parameter);
 
-        return $value < $parameter ? null : $value;
+        return $number < $parameter ? null : $number;
     }
 
     /**
@@ -447,9 +447,9 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function _validate_max($field, $value, $parameter)
     {
-        $value = $this->_normalizeNumber($field, $value, $parameter);
+        $number = $this->_normalizeNumber($field, $value, $parameter);
 
-        return $value > $parameter ? null : $value;
+        return $number > $parameter ? null : $number;
     }
 
     /**
@@ -508,9 +508,9 @@ class Validator extends Component implements ValidatorInterface
             throw new InvalidValueException(['range validator `:parameter` parameter is not {min}-{max} format', 'parameter' => $parameter]);
         }
 
-        $value = $this->_normalizeNumber($field, $value, $parameter);
+        $number = $this->_normalizeNumber($field, $value, $parameter);
 
-        return $value >= $match[1] && $value <= $match[2] ? $value : null;
+        return $number >= $match[1] && $number <= $match[2] ? $number : null;
     }
 
     /**
