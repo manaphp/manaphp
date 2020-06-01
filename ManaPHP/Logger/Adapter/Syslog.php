@@ -132,16 +132,16 @@ class Syslog extends Logger
                     $replaced[':message'] = $line;
                     $content = strtr($this->_format, $replaced);
 
-                    // <PRI>TIMESTAMP HOST TAG: CONTENT
-                    $packet = "<$priority>$timestamp $log->host $tag: $content";
+                    // <PRI>TIMESTAMP HOST TAG:CONTENT
+                    $packet = "<$priority>$timestamp $log->host $tag:$content";
                     socket_sendto($this->_socket, $packet, strlen($packet), 0, $this->_receiver_host, $this->_receiver_port);
                 }
             } else {
                 $replaced[':message'] = $log->message;
                 $content = strtr($this->_format, $replaced);
 
-                // <PRI>TIMESTAMP HOST TAG: CONTENT
-                $packet = "<$priority>$timestamp $log->host $tag: $content";
+                // <PRI>TIMESTAMP HOST TAG:CONTENT
+                $packet = "<$priority>$timestamp $log->host $tag:$content";
                 socket_sendto($this->_socket, $packet, strlen($packet), 0, $this->_receiver_host, $this->_receiver_port);
             }
         }
