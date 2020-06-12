@@ -6,7 +6,6 @@ use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PreconditionException;
-use Swoole\Coroutine\Channel;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
 
@@ -32,7 +31,8 @@ class RendererContext implements Inseparable
  * Class ManaPHP\Renderer
  *
  * @package renderer
- * @property-read \ManaPHP\RendererContext $_context
+ * @property-read \ManaPHP\RendererContext           $_context
+ * @property-read \ManaPHP\Coroutine\SerialInterface $coroutineSerial
  */
 class Renderer extends Component implements RendererInterface
 {
@@ -143,26 +143,14 @@ class Renderer extends Component implements RendererInterface
         $eventArguments = ['file' => $file, 'vars' => $vars];
         $this->fireEvent('renderer:rendering', $eventArguments);
 
-        if ($directOutput) {
-            $engine->render($file, $vars);
-            $content = null;
-        } else {
+        try {
             if (MANAPHP_COROUTINE_ENABLED) {
-                static $channel;
-                if ($channel === null) {
-                    $channel = new Channel(1);
-                    $channel->push(1);
-                }
+                $this->coroutineSerial->start($this->_object_id);
+            }
 
-                $channel->pop();
-                ob_start();
-                ob_implicit_flush(false);
-                try {
-                    $engine->render($file, $vars);
-                } finally {
-                    $content = ob_get_clean();
-                    $channel->push(1);
-                }
+            if ($directOutput) {
+                $engine->render($file, $vars);
+                $content = null;
             } else {
                 ob_start();
                 ob_implicit_flush(false);
@@ -171,6 +159,10 @@ class Renderer extends Component implements RendererInterface
                 } finally {
                     $content = ob_get_clean();
                 }
+            }
+        } finally {
+            if (MANAPHP_COROUTINE_ENABLED) {
+                $this->coroutineSerial->stop($this->_object_id);
             }
         }
 
@@ -256,6 +248,10 @@ class Renderer extends Component implements RendererInterface
     {
         $context = $this->_context;
 
+        if (MANAPHP_COROUTINE_ENABLED) {
+            $this->coroutineSerial->start($this->_object_id);
+        }
+
         if ($default === null) {
             ob_start();
             ob_implicit_flush(false);
@@ -286,6 +282,10 @@ class Renderer extends Component implements RendererInterface
         } else {
             $context->sections[$last] .= ob_get_clean();
         }
+
+        if (MANAPHP_COROUTINE_ENABLED) {
+            $this->coroutineSerial->stop($this->_object_id);
+        }
     }
 
     /**
@@ -304,6 +304,10 @@ class Renderer extends Component implements RendererInterface
             $context->sections[$last] .= ob_get_clean();
         } else {
             $context->sections[$last] = ob_get_clean();
+        }
+
+        if (MANAPHP_COROUTINE_ENABLED) {
+            $this->coroutineSerial->stop($this->_object_id);
         }
     }
 
