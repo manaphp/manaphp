@@ -58,6 +58,7 @@ use ManaPHP\Exception\NotSupportedException;
  * @property-read \ManaPHP\Bos\ClientInterface             $bosClient
  * @property-read \ManaPHP\WebSocket\PusherInterface       $wsPusher
  * @property-read \ManaPHP\Message\PubSubInterface         $pubSub
+ * @property-read \ManaPHP\Coroutine\SerialInterface       $coroutineSerial
  */
 class Di implements DiInterface
 {
