@@ -29,7 +29,9 @@
 <div id="app" class="login-box">
     <h1 align="center">重置密码</h1>
     @if($expired)
-        <h3>TOKEN已过期 <el-link href="/admin/password/forget" size="mini">再次重置密码</el-link></h3>
+        <h3>TOKEN已过期
+            <el-link href="/admin/password/forget" size="mini">再次重置密码</el-link>
+        </h3>
     @else
         <el-input value="{{$admin_name}}" placeholder="用户名" readonly="true">
             <template slot="prepend">账号</template>

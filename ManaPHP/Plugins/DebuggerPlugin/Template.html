@@ -70,7 +70,12 @@
         <li><a href="#configure" data-toggle="tab">Configure</a></li>
         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Global <b class="caret"></b></a>
             <ul class="dropdown-menu">
-                <li v-for="(value, name) in components.request.properties._context" v-if="typeof value === 'object' && value !== null"><a data-toggle="tab" @click="global_type=name" href="#global">{{name}}<span v-if="!Object.keys(value).length">*</span></a></li>
+                <li v-for="(value, name) in components.request.properties._context"
+                    v-if="typeof value === 'object' && value !== null">
+                    <a data-toggle="tab" @click="global_type=name" href="#global">{{name}}
+                        <span v-if="!Object.keys(value).length">*</span>
+                    </a>
+                </li>
             </ul>
         </li>
         <li><a href="#log" data-toggle="tab">Log</a></li>
