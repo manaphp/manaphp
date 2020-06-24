@@ -5,7 +5,7 @@ set -xe
 #export REMOTE_HOST="project.d"
 #bash docker/deploy-stack.sh
 
-PROJECT_NAME="ties"
+PROJECT_NAME="mana"
 SERVICE_NAME="admin"
 
 if [ -z $IMAGE_TAG ]; then

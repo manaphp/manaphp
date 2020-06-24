@@ -2,6 +2,7 @@
 
 return [
     'id' => 'user',
+    'env' => env('APP_ENV', 'prod'),
     'debug' => env('APP_DEBUG', false),
     'version' => '1.1.1',
     'timezone' => 'PRC',
@@ -18,13 +19,11 @@ return [
         ],
         'db' => env('DB_URL'),
         'redis' => env('REDIS_URL'),
-        'logger' => ['level' => 'debug'],
+        'logger' => ['level' => env('LOGGER_LEVEL', 'info')],
     ],
     'services' => [],
     'plugins' => [
         'tracer',
-        'slowlog',
-        //'logger',
         //'debugger',
     ]
 ];
