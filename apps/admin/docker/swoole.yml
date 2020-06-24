@@ -1,7 +1,7 @@
 version: "2"
 services:
   admin:
-    image: manaphp/php73:3.0
+    image: manaphp/php74:3.1
     volumes:
       - /usr/share/zoneinfo/PRC:/etc/localtime
       - ../:/var/www/html
