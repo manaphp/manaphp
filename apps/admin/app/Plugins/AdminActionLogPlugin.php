@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Plugins;
 
 use App\Models\AdminActionLog;
@@ -12,6 +13,7 @@ class AdminActionLogPluginContext
 
 /**
  * Class AdminActionLogPlugin
+ *
  * @package App\Plugins
  *
  * @property-read \App\Plugins\AdminActionLogPluginContext $_context

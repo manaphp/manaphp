@@ -1,4 +1,5 @@
 <?php
+
 namespace App;
 
 use App\Areas\Admin\Controllers\SessionController;

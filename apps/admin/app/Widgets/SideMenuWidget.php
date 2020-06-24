@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Widgets;
 
 use App\Areas\Menu\Models\Group;
@@ -7,6 +8,7 @@ use ManaPHP\View\Widget;
 
 /**
  * Class SideMenuWidget
+ *
  * @package App\Widgets
  * @property-read \ManaPHP\AuthorizationInterface $authorization
  */
@@ -16,11 +18,13 @@ class SideMenuWidget extends Widget
     {
         $groups = Group::select(['group_id', 'group_name', 'icon'])
             ->orderBy('display_order DESC, group_id ASC')
-            ->with(['items' => static function (Query $query) {
-                return $query
-                    ->select(['item_id', 'item_name', 'url', 'icon', 'group_id'])
-                    ->orderBy('display_order DESC, item_id ASC');
-            }])
+            ->with([
+                'items' => static function (Query $query) {
+                    return $query
+                        ->select(['item_id', 'item_name', 'url', 'icon', 'group_id'])
+                        ->orderBy('display_order DESC, item_id ASC');
+                }
+            ])
             ->all();
 
         $role = $this->identity->getRole();

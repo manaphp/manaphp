@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Areas\Admin\Services;
 
 use App\Models\Admin;

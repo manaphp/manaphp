@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Areas\Rbac\Models;
 
 use ManaPHP\Db\Model;

@@ -12,10 +12,12 @@ return [
     'aliases' => [
     ],
     'components' => [
-        '!httpServer' => ['port' => 9501,
+        '!httpServer' => [
+            'port' => 9501,
             'worker_num' => 1,
             'max_request' => 1000000,
-            'enable_static_handler' => env('APP_DEBUG', false)],
+            'enable_static_handler' => env('APP_DEBUG', false)
+        ],
         'db' => env('DB_URL'),
         'redis' => env('REDIS_URL'),
         'logger' => ['level' => env('LOGGER_LEVEL', 'info')],

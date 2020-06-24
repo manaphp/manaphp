@@ -9,6 +9,7 @@ use ManaPHP\Mvc\Controller;
 
 /**
  * Class RolePermission
+ *
  * @package App\Areas\Rbac\Models
  *
  * @property-read \ManaPHP\AuthorizationInterface $authorization

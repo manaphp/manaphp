@@ -6,6 +6,7 @@ use ManaPHP\Cli\Controller;
 
 /**
  * Class TimeController
+ *
  * @package App\Controllers
  *
  * @property-read \App\Services\TimeService $timeService

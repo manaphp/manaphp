@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Models;
 
 /**
  * Class Address
+ *
  * @property-read \App\Models\Customer $customers
  */
 class Address extends \ManaPHP\Db\Model

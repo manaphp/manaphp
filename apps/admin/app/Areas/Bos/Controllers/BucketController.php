@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Areas\Bos\Controllers;
 
 use ManaPHP\Mvc\Controller;

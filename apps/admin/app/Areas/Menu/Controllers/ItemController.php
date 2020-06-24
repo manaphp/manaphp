@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Areas\Menu\Controllers;
 
 use App\Areas\Menu\Models\Item;

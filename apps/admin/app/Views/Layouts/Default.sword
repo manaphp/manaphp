@@ -16,7 +16,9 @@
 <el-container id="app" v-cloak>
     {{--    <el-aside style="overflow: hidden">@widget('SideMenu')</el-aside>--}}
     <el-aside style="overflow: hidden">
-        <div class="product-name"><el-link href="/">{{$this->configure->name}}</el-link></div>
+        <div class="product-name">
+            <el-link href="/">{{$this->configure->name}}</el-link>
+        </div>
         <my-menu></my-menu>
     </el-aside>
     <el-container>
@@ -52,7 +54,9 @@
             </div>
         </el-header>
         <el-main>@content()</el-main>
-        <el-backtop :scrollmyself="true"><div><i class="el-icon-top el-backtop-icon"></i></div></el-backtop>
+        <el-backtop :scrollmyself="true">
+            <div><i class="el-icon-top el-backtop-icon"></i></div>
+        </el-backtop>
     </el-container>
 </el-container>
 

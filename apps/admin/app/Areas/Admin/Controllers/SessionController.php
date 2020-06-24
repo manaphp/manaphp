@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Areas\Admin\Controllers;
 
 use App\Areas\Rbac\Models\AdminRole;

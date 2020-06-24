@@ -8,6 +8,6 @@
 </head>
 <body>
 <div>
-     {{--<a href="/admin">Admin</a> --}}
+    {{--<a href="/admin">Admin</a> --}}
     @flash()
 </div>

@@ -9,5 +9,5 @@ services:
       - ../../../ManaPHP:/var/www/html/vendor/manaphp/framework
     command: php /var/www/html/public/index.php
     ports:
-    - 9501:9501
+      - 9501:9501
     restart: always

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Areas\Menu\Controllers;
 
 use App\Areas\Menu\Models\Group;
@@ -16,11 +17,13 @@ class MyController extends Controller
     {
         $groups = Group::select(['group_id', 'group_name', 'icon'])
             ->orderBy(['display_order' => SORT_DESC, 'group_id' => SORT_ASC])
-            ->with(['items' => static function (Query $query) {
-                return $query
-                    ->select(['item_id', 'item_name', 'url', 'icon', 'group_id'])
-                    ->orderBy('display_order DESC, item_id ASC');
-            }])
+            ->with([
+                'items' => static function (Query $query) {
+                    return $query
+                        ->select(['item_id', 'item_name', 'url', 'icon', 'group_id'])
+                        ->orderBy('display_order DESC, item_id ASC');
+                }
+            ])
             ->all();
 
         $role = $this->identity->getRole();

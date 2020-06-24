@@ -1,9 +1,8 @@
 <?php
+
 namespace App\Aspects;
 
 use ManaPHP\Aop\Aspect;
-use ManaPHP\Aop\JoinPoint;
-use ManaPHP\Db;
 
 class PeekAspect extends Aspect
 {

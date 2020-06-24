@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Areas\System\Models;
 
 use ManaPHP\Db\Model;

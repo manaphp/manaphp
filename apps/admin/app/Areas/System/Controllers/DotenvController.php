@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Areas\System\Controllers;
 
 use App\Areas\System\Models\DotenvLog;
