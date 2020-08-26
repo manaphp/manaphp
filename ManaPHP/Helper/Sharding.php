@@ -134,18 +134,22 @@ class Sharding
                 $shards = [];
                 $key = $db_key;
 
-                $flags = [];
-                $values = isset($context[$key]) ? (array)$context[$key] : range(0, $db_divisor * $table_divisor - 1);
-                foreach ($values as $value) {
-                    $db_shard = $value % $db_divisor;
-                    $table_shard = (int)($value / $db_divisor) % $table_divisor;
+                if (isset($context[$key])) {
+                    $flags = [];
+                    $values = (array)$context[$key];
+                    foreach ($values as $value) {
+                        $db_shard = $value % $db_divisor;
+                        $table_shard = (int)($value / $db_divisor) % $table_divisor;
 
-                    if (!isset($flags[$db_shard][$table_shard])) {
-                        $flags[$db_shard][$table_shard] = true;
-                        $shards["{$db_base}_" . sprintf($db_format, $db_shard)][] = "{$table_base}_" . sprintf($table_format, $table_shard);
+                        if (!isset($flags[$db_shard][$table_shard])) {
+                            $flags[$db_shard][$table_shard] = true;
+                            $shards["{$db_base}_" . sprintf($db_format, $db_shard)][] = "{$table_base}_" . sprintf($table_format, $table_shard);
+                        }
                     }
+                    return $shards;
+                } else {
+                    return self::all($db, $table);
                 }
-                return $shards;
             } else {
                 $db_has_context = isset($context[$db_key]);
                 $table_has_context = isset($context[$table_key]);
