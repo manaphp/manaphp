@@ -133,14 +133,12 @@ class Sharding
             if ($db_key === $table_key) {
                 $shards = [];
                 $key = $db_key;
-                $divisor = $db_divisor * $table_divisor;
-                $flags = [];
-                $values = isset($context[$key]) ? (array)$context[$key] : range(0, $divisor - 1);
-                foreach ($values as $value) {
-                    $dividend = $value % $divisor;
 
-                    $db_shard = $dividend % $db_divisor;
-                    $table_shard = (int)($dividend / $db_divisor);
+                $flags = [];
+                $values = isset($context[$key]) ? (array)$context[$key] : range(0, $db_divisor * $table_divisor - 1);
+                foreach ($values as $value) {
+                    $db_shard = $value % $db_divisor;
+                    $table_shard = (int)($value / $db_divisor) % $table_divisor;
 
                     if (!isset($flags[$db_shard][$table_shard])) {
                         $flags[$db_shard][$table_shard] = true;
