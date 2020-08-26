@@ -139,12 +139,12 @@ class Sharding
                 foreach ($values as $value) {
                     $dividend = $value % $divisor;
 
-                    $quotient = (int)($dividend / $db_divisor);
-                    $remainder = $dividend % $table_divisor;
+                    $db_shard = $dividend % $db_divisor;
+                    $table_shard = (int)($dividend / $db_divisor);
 
-                    if (!isset($flags[$quotient][$remainder])) {
-                        $flags[$quotient][$remainder] = true;
-                        $shards["{$db_base}_" . sprintf($db_format, $quotient)][] = "{$table_base}_" . sprintf($table_format, $remainder);
+                    if (!isset($flags[$db_shard][$table_shard])) {
+                        $flags[$db_shard][$table_shard] = true;
+                        $shards["{$db_base}_" . sprintf($db_format, $db_shard)][] = "{$table_base}_" . sprintf($table_format, $table_shard);
                     }
                 }
                 return $shards;

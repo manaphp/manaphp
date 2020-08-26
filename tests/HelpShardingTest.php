@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Helper\Sharding;
@@ -19,9 +20,6 @@ class HelpShardingTest extends TestCase
         $this->assertEquals(['db_0' => ['table_0', 'table_1'], 'db_1' => ['table_0', 'table_1']], Sharding::all('db:id%2', 'table:id%2'));
         $this->assertEquals(['db_0' => ['table_a', 'table_b'], 'db_1' => ['table_a', 'table_b']], Sharding::all('db:id%2', 'table_a,table_b'));
 
-        $this->assertEquals(['db' => ['table']], Sharding::all('db:id%1', 'table:id%1'));
-        $this->assertEquals(['db' => ['table_0', 'table_1']], Sharding::all('db:id%1', 'table:id%2'));
-        $this->assertEquals(['db_0' => ['table'], 'db_1' => ['table']], Sharding::all('db:id%2', 'table:id%1'));
         $this->assertEquals(['db_0' => ['table_0', 'table_1'], 'db_1' => ['table_0', 'table_1']], Sharding::all('db:id%2', 'table:id%2'));
     }
 
@@ -63,15 +61,15 @@ class HelpShardingTest extends TestCase
         $this->assertEquals(['db_0' => ['table_0', 'table_1'], 'db_1' => ['table_0', 'table_1']], Sharding::multiple('db:user_id%2', 'table:order_id%2', ['id' => 1]));
 
         $this->assertEquals(['db_0' => ['table_0']], Sharding::multiple('db:id%2', 'table:id%2', ['id' => [0]]));
-        $this->assertEquals(['db_0' => ['table_1']], Sharding::multiple('db:id%2', 'table:id%2', ['id' => [1]]));
-        $this->assertEquals(['db_1' => ['table_0']], Sharding::multiple('db:id%2', 'table:id%2', ['id' => [2]]));
+        $this->assertEquals(['db_1' => ['table_0']], Sharding::multiple('db:id%2', 'table:id%2', ['id' => [1]]));
+        $this->assertEquals(['db_0' => ['table_1']], Sharding::multiple('db:id%2', 'table:id%2', ['id' => [2]]));
         $this->assertEquals(['db_1' => ['table_1']], Sharding::multiple('db:id%2', 'table:id%2', ['id' => [3]]));
         $this->assertEquals(['db_0' => ['table_0']], Sharding::multiple('db:id%2', 'table:id%2', ['id' => [4]]));
-        $this->assertEquals(['db_0' => ['table_0', 'table_1']], Sharding::multiple('db:id%2', 'table:id%2', ['id' => [0, 1]]));
+        $this->assertEquals(['db_0' => ['table_0'], 'db_1' => ['table_0']], Sharding::multiple('db:id%2', 'table:id%2', ['id' => [0, 1]]));
         $this->assertEquals(['db_0' => ['table_0', 'table_1'], 'db_1' => ['table_0']], Sharding::multiple('db:id%2', 'table:id%2', ['id' => [0, 1, 2]]));
         $this->assertEquals(['db_0' => ['table_0', 'table_1'], 'db_1' => ['table_0', 'table_1']], Sharding::multiple('db:id%2', 'table:id%2', ['id' => [0, 1, 2, 3]]));
         $this->assertEquals(['db_0' => ['table_0', 'table_1'], 'db_1' => ['table_0', 'table_1']], Sharding::multiple('db:id%2', 'table:id%2', ['id' => [0, 1, 2, 3, 4]]));
-        $this->assertEquals(['db_0' => ['table_0', 'table_1']], Sharding::multiple('db:id%2', 'table:id%2', ['id' => [4, 5]]));
+        $this->assertEquals(['db_0' => ['table_0'], 'db_1' => ['table_0']], Sharding::multiple('db:id%2', 'table:id%2', ['id' => [4, 5]]));
 
         $this->assertEquals(['db_0' => ['table_0', 'table_1'], 'db_1' => ['table_0', 'table_1']], Sharding::multiple('db:user_id%2', 'table:order_id%2', []));
 
