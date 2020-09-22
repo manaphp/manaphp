@@ -220,11 +220,10 @@ abstract class Connection extends Component implements ConnectionInterface
      * @param string $sql
      * @param array  $bind
      * @param int    $mode
-     * @param bool   $useMaster
      *
      * @return array
      */
-    public function query($sql, $bind = [], $mode = PDO::FETCH_ASSOC, $useMaster = false)
+    public function query($sql, $bind = [], $mode = PDO::FETCH_ASSOC)
     {
         $sql = $this->replaceQuoteCharacters($sql);
 

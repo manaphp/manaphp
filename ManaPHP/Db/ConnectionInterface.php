@@ -25,11 +25,10 @@ interface ConnectionInterface
      * @param string $sql
      * @param array  $bind
      * @param int    $mode
-     * @param bool   $useMaster
      *
      * @return array
      */
-    public function query($sql, $bind, $mode, $useMaster = false);
+    public function query($sql, $bind, $mode);
 
     /**
      * @param string $source

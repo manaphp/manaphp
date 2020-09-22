@@ -312,14 +312,19 @@ class Db extends Component implements DbInterface
             $type = null;
             $connection = $context->connection;
         } else {
-            $type = $this->_has_slave ? 'slave' : 'default';
+            if ($useMaster) {
+                $type = 'default';
+            } else {
+                $type = $this->_has_slave ? 'slave' : 'default';
+            }
+
             $connection = $this->poolManager->pop($this, $this->_timeout, $type);
         }
 
         $sql = $connection->replaceQuoteCharacters($sql);
         try {
             $start_time = microtime(true);
-            $result = $connection->query($sql, $bind, $mode, $useMaster);
+            $result = $connection->query($sql, $bind, $mode);
             $elapsed = round(microtime(true) - $start_time, 3);
         } finally {
             if ($type) {
