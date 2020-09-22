@@ -80,10 +80,10 @@ class RateLimitPlugin extends Plugin
                 } elseif ($used >= $limit) {
                     throw new TooManyRequestsException();
                 } else {
-                    if (($left = $this->redisCache->ttl($key)) <= 0) {
+                    if (($left = $this->redisCache->pttl($key)) <= 0) {
                         $this->redisCache->setex($key, $period, '1');
                     } else {
-                        $ideal = (int)(($period - $left) * $limit / $period) + 1;
+                        $ideal = (int)(($period - $left/1000) * $limit / $period) + 1;
                         if ($used < $ideal) {
                             $diff = $ideal - $used;
                             if ($this->redisCache->incrBy($key, $diff) === $diff) {
