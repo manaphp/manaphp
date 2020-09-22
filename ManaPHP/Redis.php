@@ -183,7 +183,7 @@ class Redis extends Component implements RedisInterface
                 }
 
                 $master = $this->getMaster();
-                $master->call($method, $arguments);
+                $master->_connection->call($method, $arguments);
 
                 return $master;
             }
