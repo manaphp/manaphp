@@ -77,7 +77,7 @@ class Response extends Component implements ResponseInterface
     /**
      * Sets socket response body. The parameter is automatically converted to JSON
      *
-     * @param array|\JsonSerializable|int|string|\Exception $content
+     * @param array|\JsonSerializable|string|\Exception $content
      *
      * @return static
      */
@@ -89,8 +89,6 @@ class Response extends Component implements ResponseInterface
             null;
         } elseif ($content instanceof JsonSerializable) {
             $content = ['code' => 0, 'message' => '', 'data' => $content];
-        } elseif (is_int($content)) {
-            $content = ['code' => $content, 'message' => ''];
         } elseif ($content === null) {
             $content = ['code' => 0, 'message' => '', 'data' => null];
         } elseif ($content instanceof \ManaPHP\Exception) {
