@@ -67,7 +67,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
             } elseif ($actionReturnValue instanceof Throwable) {
                 $this->response->setJsonContent($actionReturnValue);
             } else {
-                $this->response->setJsonContent(['code' => 0, 'message' => '', 'data' => $actionReturnValue]);
+                $this->response->setJsonData($actionReturnValue);
             }
         } catch (AbortException $exception) {
             null;

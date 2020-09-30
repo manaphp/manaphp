@@ -62,7 +62,7 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
             }
 
             if (!$this->response->getContent()) {
-                $this->response->setStatus(401)->setJsonContent(['code' => 401, 'message' => 'Unauthorized']);
+                $this->response->setStatus(401)->setJsonError('Unauthorized', 401);
             }
         } catch (Throwable $throwable) {
             $this->response->setJsonContent($throwable);

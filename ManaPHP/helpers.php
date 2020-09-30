@@ -469,7 +469,7 @@ if (!function_exists('abort')) {
         } elseif ($code === null) {
             di('response')->setContent($message);
         } else {
-            di('response')->setJsonContent(['code' => $code, 'message' => $message]);
+            di('response')->setJsonError($message, $code);
         }
 
         throw new AbortException();
