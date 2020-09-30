@@ -86,9 +86,7 @@ class Response extends Component implements ResponseInterface
         $context = $this->_context;
 
         if (is_array($content)) {
-            if (!isset($content['code'])) {
-                $content = ['code' => 0, 'message' => '', 'data' => $content];
-            }
+            null;
         } elseif ($content instanceof JsonSerializable) {
             $content = ['code' => 0, 'message' => '', 'data' => $content];
         } elseif (is_string($content)) {

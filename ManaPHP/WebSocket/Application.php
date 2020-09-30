@@ -62,6 +62,8 @@ class Application extends \ManaPHP\Application implements HandlerInterface
                 null;
             } elseif (is_string($returnValue)) {
                 $this->response->setJsonError($returnValue);
+            } elseif (is_array($returnValue)) {
+                $this->response->setJsonData($returnValue);
             } else {
                 $this->response->setJsonContent($returnValue);
             }

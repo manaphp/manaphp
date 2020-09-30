@@ -37,6 +37,8 @@ class Application extends \ManaPHP\Http\Application
                 null;
             } elseif (is_string($actionReturnValue)) {
                 $this->response->setJsonError($actionReturnValue);
+            } elseif (is_array($actionReturnValue)) {
+                $this->response->setJsonData($actionReturnValue);
             } else {
                 $this->response->setJsonContent($actionReturnValue);
             }
