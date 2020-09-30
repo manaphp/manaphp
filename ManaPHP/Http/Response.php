@@ -501,12 +501,10 @@ class Response extends Component implements ResponseInterface
 
         $this->setHeader('Content-Type', 'application/json; charset=utf-8');
 
-        if (is_array($content)) {
+        if (is_array($content) || is_string($content)) {
             null;
         } elseif ($content instanceof JsonSerializable) {
             $content = ['code' => 0, 'message' => '', 'data' => $content];
-        } elseif (is_string($content)) {
-            null;
         } elseif (is_int($content)) {
             $content = ['code' => $content, 'message' => ''];
         } elseif ($content === null) {
