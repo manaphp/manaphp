@@ -43,9 +43,9 @@ class Service extends \ManaPHP\Service
 
         $scheme = parse_url($endpoint, PHP_URL_SCHEME);
         if ($scheme === 'ws' || $scheme === 'wss') {
-            $class = 'ManaPHP\\Rpc\\Client\\Adapter\\JsonRpc';
+            $class = 'ManaPHP\\Rpc\\Client\\Adapter\\Ws';
         } elseif ($scheme === 'http' || $scheme === 'https') {
-            $class = 'ManaPHP\\Rpc\\Client\\Adapter\\Rest';
+            $class = 'ManaPHP\\Rpc\\Client\\Adapter\\Http';
         } else {
             throw new NotSupportedException(['`:type` type rpc is not support', 'type' => $scheme]);
         }

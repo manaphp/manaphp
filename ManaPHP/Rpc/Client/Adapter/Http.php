@@ -70,7 +70,7 @@ class Http extends Client
         /** @var \ManaPHP\Http\ClientInterface $client */
         $client = $this->poolManager->pop($this, $this->_timeout);
         try {
-            $response = $client->post($url, $params, [], $options)->body;
+            $response = $client->rest('POST', $url, $params, [], $options)->body;
         } finally {
             $this->poolManager->push($this, $client);
         }

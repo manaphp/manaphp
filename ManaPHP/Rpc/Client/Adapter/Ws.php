@@ -6,7 +6,7 @@ use ManaPHP\Rpc\Client;
 use ManaPHP\Rpc\Client\Exception as ClientException;
 use ManaPHP\Rpc\Client\ProtocolException;
 
-class JsonRpc extends Client
+class Ws extends Client
 {
     /**
      * @var float
