@@ -83,7 +83,7 @@ class RateLimitPlugin extends Plugin
                     if (($left = $this->redisCache->pttl($key)) <= 0) {
                         $this->redisCache->setex($key, $period, '1');
                     } else {
-                        $ideal = (int)(($period - $left/1000) * $limit / $period) + 1;
+                        $ideal = (int)(($period - $left / 1000) * $limit / $period) + 1;
                         if ($used < $ideal) {
                             $diff = $ideal - $used;
                             if ($this->redisCache->incrBy($key, $diff) === $diff) {
