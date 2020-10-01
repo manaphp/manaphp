@@ -134,7 +134,7 @@ class Client extends Component implements ClientInterface
         stream_set_timeout($socket, (int)$this->_timeout, ($this->_timeout - (int)$this->_timeout) * 1000);
         $path = ($scheme === 'ws' ? 'http' : 'https') . substr($this->_endpoint, strpos($this->_endpoint, ':'));
 
-        $key = bin2hex(random_bytes(16));
+        $key = base64_encode(random_bytes(16));
         $headers = "GET $path HTTP/1.1\r\n" .
             "Host: $host:$port\r\n" .
             "Sec-WebSocket-Key: $key\r\n" .
@@ -157,12 +157,12 @@ class Client extends Component implements ClientInterface
             throw new HandshakeException('receive headers failed');
         }
 
-        $sec_key = base64_encode(pack('H*', sha1($key . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11')));
+        $sec_key = base64_encode(sha1($key . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11', true));
         if (!str_contains($headers, $sec_key)) {
             if ($this->_proxy) {
                 throw new ConnectionException('Connection by proxy timed out:  ' . $this->_endpoint, 10060);
             } else {
-                throw new HandshakeException('');
+                throw new HandshakeException('handshake fail');
             }
         }
 
