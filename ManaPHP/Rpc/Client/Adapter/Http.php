@@ -2,12 +2,11 @@
 
 namespace ManaPHP\Rpc\Client\Adapter;
 
-use ManaPHP\Component;
+use ManaPHP\Rpc\Client;
 use ManaPHP\Rpc\Client\Exception as ClientException;
 use ManaPHP\Rpc\Client\ProtocolException;
-use ManaPHP\Rpc\ClientInterface;
 
-class Http extends Component implements ClientInterface
+class Http extends Client
 {
     /**
      * @var string
