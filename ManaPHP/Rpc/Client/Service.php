@@ -5,7 +5,6 @@ namespace ManaPHP\Rpc\Client;
 use ManaPHP\Di;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Service\Exception as ServiceException;
 use ReflectionMethod;
 
 class Service extends \ManaPHP\Service
@@ -59,7 +58,6 @@ class Service extends \ManaPHP\Service
      * @param array  $params
      *
      * @return mixed
-     * @throws \ManaPHP\Service\Exception
      */
     public function invoke($method, $params = [])
     {
@@ -83,14 +81,6 @@ class Service extends \ManaPHP\Service
             $params = array_combine($parameters, $params);
         }
 
-        $response = $this->_rpcClient->invoke($method, $params);
-
-        if (!isset($response['code'], $response['message']) || (!isset($response['data']) && array_key_exists('data', $response))) {
-            throw new ServiceException('bad response');
-        } elseif ($response['code'] !== 0) {
-            throw new ServiceException($response['message'], $response['code']);
-        } else {
-            return $response['data'];
-        }
+        return $this->_rpcClient->invoke($method, $params);
     }
 }

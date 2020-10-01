@@ -141,6 +141,16 @@ class JsonRpc extends Client
             $this->poolManager->push($this, $client);
         }
 
-        return $this->_parseResponse($message->payload);
+        $response = $this->_parseResponse($message->payload);
+
+        if (!isset($response['code'], $response['message'])) {
+            throw new ProtocolException('missing `code` or `message` field');
+        }
+
+        if ($response['code'] !== 0) {
+            throw new ClientException($response['message'], $response['code']);
+        }
+
+        return $response['data'] ?? null;
     }
 }

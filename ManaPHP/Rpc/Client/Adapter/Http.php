@@ -70,19 +70,19 @@ class Http extends Client
         /** @var \ManaPHP\Http\ClientInterface $client */
         $client = $this->poolManager->pop($this, $this->_timeout);
         try {
-            $json = $client->post($url, $params, [], $options)->body;
+            $response = $client->post($url, $params, [], $options)->body;
         } finally {
             $this->poolManager->push($this, $client);
         }
 
-        if (!isset($json['code'], $json['message'])) {
-            throw new ProtocolException('');
+        if (!isset($response['code'], $response['message'])) {
+            throw new ProtocolException('missing `code` or `message` field');
         }
 
-        if ($json['code'] !== 0) {
-            throw new ClientException($json['message'], $json['code']);
-        } else {
-            return $json;
+        if ($response['code'] !== 0) {
+            throw new ClientException($response['message'], $response['code']);
         }
+
+        return $response['data'] ?? null;
     }
 }
