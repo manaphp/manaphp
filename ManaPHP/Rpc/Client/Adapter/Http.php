@@ -67,10 +67,17 @@ class Http extends Client
         $endpoint = $this->_endpoint;
         $url = str_contains($endpoint, '?') ? str_replace('?', "/$method?", $endpoint) : "$endpoint/$method";
 
+        if (isset($options['method'])) {
+            $method = $options['method'];
+            unset($options['method']);
+        } else {
+            $method = 'POST';
+        }
+
         /** @var \ManaPHP\Http\ClientInterface $client */
         $client = $this->poolManager->pop($this, $this->_timeout);
         try {
-            $response = $client->rest('POST', $url, $params, [], $options)->body;
+            $response = $client->rest($method, $url, $params, [], $options)->body;
         } finally {
             $this->poolManager->push($this, $client);
         }
