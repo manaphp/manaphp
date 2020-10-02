@@ -126,31 +126,83 @@ class Stream extends Client
         $body = substr($recv, $headers_end + 4);
 
         $content_length = null;
+        $transfer_encoding = null;
         foreach ($headers as $header) {
             if (stripos($header, 'Content-Length:') === 0) {
                 $content_length = (int)trim(substr($header, 15));
-                break;
+            } elseif (stripos($header, 'Transfer-Encoding:') === 0) {
+                $transfer_encoding = trim(substr($header, 18));
             }
         }
 
-        while ($content_length !== strlen($body)) {
-            $read = [$stream];
-            if (stream_select($read, $write, $except, 0, 10000) <= 0) {
-                if (microtime(true) > $end_time) {
-                    throw new TimeoutException($request->url);
-                } else {
-                    continue;
+        if ($transfer_encoding === 'chunked') {
+            $chunked = $body;
+            $body = '';
+
+            $write = null;
+
+            while (true) {
+                $next_read_len = 1;
+                while (true) {
+                    if (($pos = strpos($chunked, "\r\n")) !== false) {
+                        $len = (int)base_convert(substr($chunked, 0, $pos), 16, 10);
+                        $chunk_package_len = $pos + 2 + $len + 2;
+                        if (strlen($chunked) >= $chunk_package_len) {
+                            if ($len === 0) {
+                                goto READ_CHUNKED_COMPLETE;
+                            }
+
+                            $body .= substr($chunked, $pos + 2, $len);
+                            $chunked = substr($chunked, $chunk_package_len);
+                        } else {
+                            $next_read_len = $chunk_package_len - strlen($chunked);
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
                 }
+
+                $read = [$stream];
+                if (stream_select($read, $write, $except, 0, 10000) <= 0) {
+                    if (microtime(true) > $end_time) {
+                        throw new TimeoutException($request->url);
+                    } else {
+                        continue;
+                    }
+                }
+
+                if (($r = fread($stream, $next_read_len)) === false) {
+                    if (feof($stream)) {
+                        break;
+                    } else {
+                        throw new TimeoutException($request->url);
+                    }
+                }
+                $chunked .= $r;
             }
 
-            if (($r = fread($stream, 4096)) === false) {
-                if (feof($stream)) {
-                    break;
-                } else {
-                    throw new TimeoutException($request->url);
+            READ_CHUNKED_COMPLETE:
+        } else {
+            while ($content_length !== strlen($body)) {
+                $read = [$stream];
+                if (stream_select($read, $write, $except, 0, 10000) <= 0) {
+                    if (microtime(true) > $end_time) {
+                        throw new TimeoutException($request->url);
+                    } else {
+                        continue;
+                    }
                 }
+
+                if (($r = fread($stream, 4096)) === false) {
+                    if (feof($stream)) {
+                        break;
+                    } else {
+                        throw new TimeoutException($request->url);
+                    }
+                }
+                $body .= $r;
             }
-            $body .= $r;
         }
 
         $request->process_time = round(microtime(true) - $start_time, 3);
