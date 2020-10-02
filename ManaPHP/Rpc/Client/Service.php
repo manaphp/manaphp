@@ -56,10 +56,11 @@ class Service extends \ManaPHP\Service
     /**
      * @param string $method
      * @param array  $params
+     * @param array  $options
      *
      * @return mixed
      */
-    public function invoke($method, $params = [])
+    public function invoke($method, $params = [], $options = null)
     {
         if ($pos = strpos($method, '::')) {
             $method = substr($method, $pos + 2);
@@ -81,6 +82,6 @@ class Service extends \ManaPHP\Service
             $params = array_combine($parameters, $params);
         }
 
-        return $this->_rpcClient->invoke($method, $params);
+        return $this->_rpcClient->invoke($method, $params, $options);
     }
 }
