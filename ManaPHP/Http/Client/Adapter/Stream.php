@@ -15,6 +15,14 @@ class Stream extends Client
      */
     protected $_stream;
 
+    public function __destruct()
+    {
+        if ($this->_stream !== null) {
+            fclose($this->_stream);
+            $this->_stream = null;
+        }
+    }
+
     /**
      * @param \ManaPHP\Http\Client\Request $request
      *

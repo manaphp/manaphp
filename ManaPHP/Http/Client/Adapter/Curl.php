@@ -16,6 +16,14 @@ class Curl extends Client
      */
     protected $_curl;
 
+    public function __destruct()
+    {
+        if ($this->_curl !== null) {
+            curl_close($this->_curl);
+            $this->_curl = null;
+        }
+    }
+
     /**
      * @param \ManaPHP\Http\Client\Request $request
      *
