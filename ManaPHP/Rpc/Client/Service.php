@@ -5,6 +5,7 @@ namespace ManaPHP\Rpc\Client;
 use ManaPHP\Di;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Helper\Str;
 use ReflectionMethod;
 
 class Service extends \ManaPHP\Service
@@ -33,6 +34,16 @@ class Service extends \ManaPHP\Service
     {
         if (is_string($options)) {
             $options = ['endpoint' => $options];
+        }
+
+        if ($endpoint = $options['endpoint'] ?? null) {
+            $path = rtrim(parse_url($endpoint, PHP_URL_PATH), '/');
+            if ($path === '' || $path === '/api') {
+                $class_name = static::class;
+                $service = basename(substr($class_name, strrpos($class_name, '\\') + 1), 'Service');
+
+                $options['endpoint'] = rtrim($endpoint, '/') . '/' . Str::underscore($service);
+            }
         }
 
         parent::__construct($options);
