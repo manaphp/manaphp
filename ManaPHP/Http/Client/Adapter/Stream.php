@@ -6,15 +6,204 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\Client;
 use ManaPHP\Http\Client\ConnectionException;
 use ManaPHP\Http\Client\Response;
+use ManaPHP\Http\Client\TimeoutException;
 
 class Stream extends Client
 {
+    /**
+     * @var resource
+     */
+    protected $_stream;
+
+    /**
+     * @param \ManaPHP\Http\Client\Request $request
+     *
+     * @return \ManaPHP\Http\Client\Response
+     */
+    public function do_request_with_keepalive($request)
+    {
+        $host = parse_url($request->url, PHP_URL_HOST);
+        $port = parse_url($request->url, PHP_URL_PORT);
+        $scheme = parse_url($request->url, PHP_URL_SCHEME);
+
+        $request->headers['Host'] = $port ? "$host:$port" : $host;
+        $request->headers['Connection'] = 'keep-alive';
+
+        if (is_array($request->body)) {
+            if (isset($request->headers['Content-Type']) && str_contains($request->headers['Content-Type'], 'json')) {
+                $body = json_stringify($request->body);
+            } else {
+                $body = http_build_query($request->body);
+            }
+        } else {
+            $body = $request->body;
+        }
+
+        $request->headers['Content-Length'] = strlen($body);
+
+        $data = strtoupper($request->method) . ' ' . $request->url . " HTTP/1.1\r\n";
+        foreach ($request->headers as $name => $value) {
+            $data .= is_int($name) ? "$value\r\n" : "$name: $value\r\n";
+        }
+
+        $data .= "\r\n";
+
+        if ($body !== '') {
+            $data .= $body;
+        }
+
+        $start_time = microtime(true);
+        $timeout = $request->options['timeout'];
+        $end_time = $start_time + $timeout;
+
+        if (($stream = $this->_stream) === null) {
+            if ($scheme === 'https') {
+                $stream = fsockopen("ssl://$host", $port ?? 443, $errno, $errstr, $timeout);
+            } else {
+                $stream = fsockopen($host, $port ?? 80, $errno, $errstr, $timeout);
+            }
+
+            if ($stream === false) {
+                throw new ConnectionException($errstr);
+            }
+
+            stream_set_blocking($stream, false);
+
+            $this->_stream = $stream;
+        }
+
+        $send_length = 0;
+        $data_length = strlen($data);
+
+        $read = null;
+        $except = null;
+        do {
+            $write = [$stream];
+            if (stream_select($read, $write, $except, 0, 10000) <= 0) {
+                if (microtime(true) > $end_time) {
+                    throw new TimeoutException($request->url);
+                } else {
+                    continue;
+                }
+            }
+
+            if (($n = fwrite($stream, $send_length === 0 ? $data : substr($data, $send_length))) === false) {
+                $errno = socket_last_error($stream);
+                if ($errno === 11 || $errno === 4) {
+                    continue;
+                }
+
+                throw new TimeoutException($request->url);
+            }
+            $send_length += $n;
+        } while ($send_length !== $data_length);
+
+        $recv = '';
+        $write = null;
+        $headers_end = null;
+        while (true) {
+            $read = [$stream];
+            if (stream_select($read, $write, $except, 0, 10000) <= 0) {
+                if (microtime(true) > $end_time) {
+                    throw new TimeoutException($request->url);
+                } else {
+                    continue;
+                }
+            }
+
+            if (($r = fread($stream, 4096)) === false) {
+                throw new TimeoutException($request->url);
+            }
+
+            $recv .= $r;
+
+            if (($headers_end = strpos($recv, "\r\n\r\n")) !== false) {
+                break;
+            }
+        }
+
+        $headers = explode("\r\n", substr($recv, 0, $headers_end));
+        $body = substr($recv, $headers_end + 4);
+
+        $content_length = null;
+        foreach ($headers as $header) {
+            if (stripos($header, 'Content-Length:') === 0) {
+                $content_length = (int)trim(substr($header, 15));
+                break;
+            }
+        }
+
+        while ($content_length !== strlen($body)) {
+            $read = [$stream];
+            if (stream_select($read, $write, $except, 0, 10000) <= 0) {
+                if (microtime(true) > $end_time) {
+                    throw new TimeoutException($request->url);
+                } else {
+                    continue;
+                }
+            }
+
+            if (($r = fread($stream, 4096)) === false) {
+                if (feof($stream)) {
+                    break;
+                } else {
+                    throw new TimeoutException($request->url);
+                }
+            }
+            $body .= $r;
+        }
+
+        $request->process_time = round(microtime(true) - $start_time, 3);
+
+        $remote = stream_socket_get_name($stream, true);
+        $request->remote_ip = ($pos = strrpos($remote, ':')) ? substr($remote, 0, $pos) : null;//strrpos compatibles with ipv6
+
+        $connection_value = null;
+        foreach ($headers as $header) {
+            if (stripos($header, 'Connection:') === 0) {
+                $connection_value = trim(substr($header, 11));
+                break;
+            }
+        }
+
+        if ($connection_value !== 'keep-alive') {
+            fclose($this->_stream);
+            $this->_stream = null;
+        }
+
+        return new Response($request, $headers, $body);
+    }
+
     /**
      * @param \ManaPHP\Http\Client\Request $request
      *
      * @return \ManaPHP\Http\Client\Response
      */
     public function do_request($request)
+    {
+        if ($this->_keepalive) {
+            if ($this->_stream === null) {
+                return $this->do_request_with_keepalive($request);
+            } else {
+                try {
+                    return $this->do_request_with_keepalive($request);
+                } catch (TimeoutException $exception) {
+                    fclose($this->_stream);
+                    $this->_stream = null;
+                    return $this->do_request_with_keepalive($request);
+                }
+            }
+        } else {
+            return $this->do_request_without_keepalive($request);
+        }
+    }
+
+    /**
+     * @param \ManaPHP\Http\Client\Request $request
+     *
+     * @return \ManaPHP\Http\Client\Response
+     */
+    public function do_request_without_keepalive($request)
     {
         $http = [];
 
