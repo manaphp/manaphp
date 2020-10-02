@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Http\Client;
 
-class ForbiddenException extends Exception
+class ForbiddenException extends ClientErrorException
 {
 
 }

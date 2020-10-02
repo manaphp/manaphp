@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Http\Client;
 
-class ServiceUnavailableException extends Exception
+class ServiceUnavailableException extends ServerErrorException
 {
 
 }

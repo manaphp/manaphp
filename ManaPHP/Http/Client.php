@@ -5,9 +5,16 @@ namespace ManaPHP\Http;
 use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Http\Client\BadGatewayException;
 use ManaPHP\Http\Client\BadRequestException;
+use ManaPHP\Http\Client\ClientErrorException;
 use ManaPHP\Http\Client\ContentTypeException;
 use ManaPHP\Http\Client\ForbiddenException;
+use ManaPHP\Http\Client\GatewayTimeoutException;
+use ManaPHP\Http\Client\InternalServerErrorException;
+use ManaPHP\Http\Client\NotFoundException;
+use ManaPHP\Http\Client\RedirectionException;
+use ManaPHP\Http\Client\ServerErrorException;
 use ManaPHP\Http\Client\ServiceUnavailableException;
 use ManaPHP\Http\Client\TooManyRequestsException;
 use ManaPHP\Http\Client\UnauthorizedException;
@@ -168,20 +175,39 @@ abstract class Client extends Component implements ClientInterface
 
         $this->fireEvent('httpClient:requested', $response);
 
-        if ($response->http_code === 429) {
-            throw new TooManyRequestsException($response->url, $response);
-        } elseif ($response->http_code === 403) {
-            throw new ForbiddenException($response->url, $response);
-        } elseif ($response->http_code === 401) {
-            throw new UnauthorizedException($response->url, $response);
-        }
+        $http_code = $response->http_code;
+        $http_code_class = substr($http_code, 0, -2) * 100;
 
-        if ($response->http_code >= 500) {
-            throw new ServiceUnavailableException([':url => `:response`', 'url' => $response->url, 'response' => $response_text], $response);
-        }
-
-        if ($response->http_code >= 400) {
-            throw new BadRequestException([':url => `:response`', 'url' => $response->url, 'response' => $response_text,], $response);
+        if ($http_code_class === 200) {
+            null;
+        } elseif ($http_code_class === 300) {
+            throw new RedirectionException($response->url, $response);
+        } elseif ($http_code_class === 400) {
+            if ($http_code === 400) {
+                throw new BadRequestException([':url => `:response`', 'url' => $response->url, 'response' => $response_text], $response);
+            } elseif ($http_code === 401) {
+                throw new UnauthorizedException($response->url, $response);
+            } elseif ($http_code === 403) {
+                throw new ForbiddenException($response->url, $response);
+            } elseif ($http_code === 404) {
+                throw new NotFoundException($response->url, $response);
+            } elseif ($http_code === 429) {
+                throw new TooManyRequestsException($response->url, $response);
+            } else {
+                throw new ClientErrorException($response->url, $response);
+            }
+        } elseif ($http_code_class === 500) {
+            if ($http_code === 500) {
+                throw new InternalServerErrorException($response->url, $response);
+            } elseif ($http_code === 502) {
+                throw new BadGatewayException($response->url, $response);
+            } elseif ($http_code === 503) {
+                throw new ServiceUnavailableException($response->url, $response);
+            } elseif ($http_code === 504) {
+                throw new GatewayTimeoutException($response->url, $response);
+            } else {
+                throw new ServerErrorException($response->url, $response);
+            }
         }
 
         return $response;
