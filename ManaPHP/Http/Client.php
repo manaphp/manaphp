@@ -47,6 +47,11 @@ abstract class Client extends Component implements ClientInterface
     protected $_user_agent;
 
     /**
+     * @var bool
+     */
+    protected $_keepalive = false;
+
+    /**
      * Client constructor.
      *
      * @param array $options
@@ -70,6 +75,10 @@ abstract class Client extends Component implements ClientInterface
         }
 
         $this->_user_agent = $options['user_agent'] ?? self::USER_AGENT_IE;
+
+        if (isset($options['keepalive'])) {
+            $this->_keepalive = (bool)$options['keepalive'];
+        }
     }
 
     /**

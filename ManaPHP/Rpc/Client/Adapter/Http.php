@@ -39,6 +39,10 @@ class Http extends Client
             $this->_timeout = $options['timeout'];
         }
 
+        if (!isset($options['keepalive'])) {
+            $options['keepalive'] = true;
+        }
+
         $endpoint = $options['endpoint'];
         unset($options['endpoint']);
         $this->_endpoint = str_contains($endpoint, '?') ? str_replace('/?', '?', $endpoint) : rtrim($endpoint, '/');

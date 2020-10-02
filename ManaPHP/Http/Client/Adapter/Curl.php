@@ -12,6 +12,11 @@ use ManaPHP\Http\Client\Response;
 class Curl extends Client
 {
     /**
+     * @var resource
+     */
+    protected $_curl;
+
+    /**
      * @param \ManaPHP\Http\Client\Request $request
      *
      * @return \ManaPHP\Http\Client\Response
@@ -43,7 +48,13 @@ class Curl extends Client
         $content = '';
         $header_length = 0;
 
-        $curl = curl_init();
+        if (($curl = $this->_curl) === null) {
+            $curl = curl_init();
+            if ($this->_keepalive) {
+                $this->_curl = $curl;
+            }
+        }
+
         try {
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($curl, CURLOPT_AUTOREFERER, true);
@@ -146,7 +157,9 @@ class Curl extends Client
             $request->remote_ip = curl_getinfo($curl, CURLINFO_PRIMARY_IP);
             $request->process_time = round(microtime(true) - $start_time, 3);
         } finally {
-            curl_close($curl);
+            if (!$this->_keepalive) {
+                curl_close($curl);
+            }
         }
 
         return new Response($request, explode("\r\n", substr($content, 0, $header_length - 4)), substr($content, $header_length));
