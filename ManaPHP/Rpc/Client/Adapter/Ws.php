@@ -134,9 +134,10 @@ class Ws extends Client
         /** @var \ManaPHP\WebSocket\ClientInterface $client */
         $client = $this->poolManager->pop($this, $this->_timeout);
 
+        $timout = $options['timeout'] ?? $this->_timeout;
+
         try {
-            $client->send($request);
-            $message = $client->recv();
+            $message = $client->request($request, $timout);
         } finally {
             $this->poolManager->push($this, $client);
         }

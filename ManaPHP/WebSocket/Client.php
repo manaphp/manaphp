@@ -12,6 +12,7 @@ use ManaPHP\WebSocket\Client\Message;
 use ManaPHP\WebSocket\Client\ProtocolException;
 use ManaPHP\WebSocket\Client\SwitchingProtocolsException;
 use ManaPHP\WebSocket\Client\TimeoutException;
+use Throwable;
 
 class Client extends Component implements ClientInterface
 {
@@ -259,6 +260,26 @@ class Client extends Component implements ClientInterface
         $this->fireEvent('wsClient:send', $message);
 
         $this->_sendFrame(Message::TEXT_FRAME, $message, $timeout);
+    }
+
+    /**
+     * @param string $message
+     * @param float  $timeout
+     *
+     * @return \ManaPHP\WebSocket\Client\Message
+     */
+    public function request($message, $timeout = null)
+    {
+        $end_time = microtime(true) + ($timeout ?? $this->_timeout);
+
+        try {
+            $this->send($message, max($end_time - microtime(true), 0.01));
+            return $this->recv(max($end_time - microtime(true), 0.01));
+        } catch (Throwable $throwable) {
+            $this->close();
+            $this->send($message, max($end_time - microtime(true), 0.01));
+            return $this->recv(max($end_time - microtime(true), 0.01));
+        }
     }
 
     /**
