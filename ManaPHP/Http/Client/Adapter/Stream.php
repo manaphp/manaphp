@@ -20,6 +20,8 @@ class Stream extends Client
 
         $http['method'] = $request->method;
 
+        $request->headers['Connection'] = 'close';
+
         $headers = [];
         foreach ($request->headers as $k => $v) {
             $headers[] = is_string($k) ? "$k: $v" : $v;
@@ -52,6 +54,7 @@ class Stream extends Client
 
         $http['timeout'] = $request->options['timeout'];
         $http['ignore_errors'] = true;
+        $http['protocol_version'] = 1.1;
 
         $ssl = [];
         $ssl['verify_peer'] = $request->options['verify_peer'];
