@@ -43,9 +43,79 @@ class Response implements JsonSerializable
     public $body;
 
     /**
-     * @var array
+     * Response constructor.
+     *
+     * @param \ManaPHP\Http\Client\Request $request
+     * @param array                        $headers
+     * @param string                       $body
      */
-    public $stats;
+    public function __construct($request, $headers, $body)
+    {
+        if (preg_match('#\s(?:301|302)\s#', $headers[0], $match) === 1) {
+            $headers = $this->_getLastHeaders($headers);
+        }
+
+        $this->url = $request->url;
+        $this->remote_ip = $request->remote_ip;
+        $this->process_time = $request->process_time;
+        $this->headers = $headers;
+
+        $content_type = null;
+        foreach ($headers as $header) {
+            if (stripos($header, 'Content-Type:') === 0) {
+                $content_type = trim(substr($header, 13));
+                break;
+            }
+        }
+        $this->content_type = $content_type;
+
+        $http_code = null;
+        if ($headers && preg_match('#\d{3}#', $headers[0], $match)) {
+            $http_code = (int)$match[0];
+        }
+        $this->http_code = $http_code;
+
+        if (is_string($body)) {
+            $content_encoding = null;
+            foreach ($headers as $header) {
+                if (stripos($header, 'Content-Encoding:') === 0) {
+                    $content_encoding = trim(substr($header, 17));
+                    break;
+                }
+            }
+
+            if ($content_encoding === 'gzip') {
+                if (($decoded = @gzdecode($body)) === false) {
+                    throw new BadResponseException(['`:url`: `:ungzip failed`', 'url' => $request->url]);
+                } else {
+                    $body = $decoded;
+                }
+            } elseif ($content_encoding === 'deflate') {
+                if (($decoded = @gzinflate($body)) === false) {
+                    throw new BadResponseException(['`:url`: deflate failed', 'url' => $request->url]);
+                } else {
+                    $body = $decoded;
+                }
+            }
+        }
+
+        $this->body = $body;
+    }
+
+    /**
+     * @param array $headers
+     *
+     * @return array
+     */
+    protected function _getLastHeaders($headers)
+    {
+        for ($i = count($headers) - 1; $i >= 0; $i--) {
+            $header = $headers[$i];
+            if (str_starts_with($header, 'HTTP/')) {
+                return $i === 0 ? $headers : array_slice($headers, $i);
+            }
+        }
+    }
 
     /**
      * @return array

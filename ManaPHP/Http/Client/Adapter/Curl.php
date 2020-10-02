@@ -7,6 +7,7 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Client;
 use ManaPHP\Http\Client\ConnectionException;
+use ManaPHP\Http\Client\Response;
 
 class Curl extends Client
 {
@@ -143,33 +144,16 @@ class Curl extends Client
             $errno = curl_error($curl);
         }
 
-        $process_time = round(microtime(true) - $start_time, 3);
-
         if ($errno) {
             throw new ConnectionException(['connect failed: `:url` :message', 'url' => $request->url, 'message' => curl_error($curl)]);
         }
 
         $header_length = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-
-        $response = $this->_di->get('ManaPHP\Http\Client\Response');
-
-        $response->url = $request->url;
-        $response->remote_ip = curl_getinfo($curl, CURLINFO_PRIMARY_IP);
-        $response->http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        $response->headers = explode("\r\n", substr($content, 0, $header_length - 4));
-        $response->process_time = $process_time;
-        $response->content_type = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
-        $response->body = substr($content, $header_length);
-        $response->stats = [
-            'total_time' => curl_getinfo($curl, CURLINFO_TOTAL_TIME),
-            'namelookup_time' => curl_getinfo($curl, CURLINFO_NAMELOOKUP_TIME),
-            'connect_time' => curl_getinfo($curl, CURLINFO_CONNECT_TIME),
-            'pretransfer_time' => curl_getinfo($curl, CURLINFO_PRETRANSFER_TIME),
-            'starttransfer_time' => curl_getinfo($curl, CURLINFO_STARTTRANSFER_TIME)
-        ];
+        $request->remote_ip = curl_getinfo($curl, CURLINFO_PRIMARY_IP);
+        $request->process_time = round(microtime(true) - $start_time, 3);
 
         curl_close($curl);
 
-        return $response;
+        return new Response($request, explode("\r\n", substr($content, 0, $header_length - 4)), substr($content, $header_length));
     }
 }

@@ -31,6 +31,16 @@ class Request implements JsonSerializable
      */
     public $options;
 
+    /**
+     * @var float
+     */
+    public $process_time;
+
+    /**
+     * @var string
+     */
+    public $remote_ip;
+
     public function jsonSerialize()
     {
         return get_object_vars($this);

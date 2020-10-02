@@ -4,32 +4,11 @@ namespace ManaPHP\Http\Client\Adapter;
 
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\Client;
-use ManaPHP\Http\Client\BadResponseException;
 use ManaPHP\Http\Client\ConnectionException;
+use ManaPHP\Http\Client\Response;
 
 class Stream extends Client
 {
-    /**
-     * @param array $headers
-     *
-     * @return array
-     */
-    protected function _getResponseHeaders($headers)
-    {
-        if (preg_match('#\s(?:301|302)\s#', $headers[0], $match) !== 1) {
-            return $headers;
-        }
-
-        for ($i = count($headers) - 1; $i >= 0; $i--) {
-            $header = $headers[$i];
-            if (str_starts_with($header, 'HTTP/')) {
-                return $i === 0 ? $headers : array_slice($headers, $i);
-            }
-        }
-
-        return $headers;
-    }
-
     /**
      * @param \ManaPHP\Http\Client\Request $request
      *
@@ -87,56 +66,17 @@ class Stream extends Client
         if (!$stream = @fopen($request->url, 'rb', false, stream_context_create(['http' => $http, 'ssl' => $ssl]))) {
             throw new ConnectionException(['`:url`: `:last_error_message`', 'url' => $request->url]);
         }
-        $meta = stream_get_meta_data($stream);
+
+        $headers = stream_get_meta_data($stream)['wrapper_data'];
 
         $remote = stream_socket_get_name($stream, true);
-        $remote_ip = ($pos = strrpos($remote, ':')) ? substr($remote, 0, $pos) : null;//strrpos compatibles with ipv6
+        $request->remote_ip = ($pos = strrpos($remote, ':')) ? substr($remote, 0, $pos) : null;//strrpos compatibles with ipv6
 
         $body = stream_get_contents($stream);
         fclose($stream);
 
-        $process_time = round(microtime(true) - $start_time, 3);
+        $request->process_time = round(microtime(true) - $start_time, 3);
 
-        $headers = $this->_getResponseHeaders($meta['wrapper_data']);
-
-        $content_type = null;
-        foreach ($headers as $header) {
-            if (str_starts_with($header, 'Content-Type:')) {
-                $content_type = trim(substr($header, 13));
-                break;
-            }
-        }
-
-        $http_code = null;
-        if ($headers && preg_match('#\d{3}#', $headers[0], $match)) {
-            $http_code = (int)$match[0];
-        }
-
-        if (is_string($body)) {
-            if (in_array('Content-Encoding: gzip', $headers, true)) {
-                if (($decoded = @gzdecode($body)) === false) {
-                    throw new BadResponseException(['`:url`: `:ungzip failed`', 'url' => $request->url]);
-                } else {
-                    $body = $decoded;
-                }
-            } elseif (in_array('Content-Encoding: deflate', $headers, true)) {
-                if (($decoded = @gzinflate($body)) === false) {
-                    throw new BadResponseException(['`:url`: deflate failed', 'url' => $request->url]);
-                } else {
-                    $body = $decoded;
-                }
-            }
-        }
-
-        $response = $this->_di->get('ManaPHP\Http\Client\Response');
-        $response->url = $request->url;
-        $response->remote_ip = $remote_ip;
-        $response->http_code = $http_code;
-        $response->headers = $headers;
-        $response->process_time = $process_time;
-        $response->content_type = $content_type;
-        $response->body = $body;
-
-        return $response;
+        return new Response($request, $headers, $body);
     }
 }
