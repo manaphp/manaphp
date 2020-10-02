@@ -20,7 +20,7 @@ interface ClientInterface
     /**
      * @param float $timeout
      *
-     * @return \ManaPHP\WebSocket\Client\Message|null
+     * @return \ManaPHP\WebSocket\Client\Message
      */
     public function recv($timeout = null);
 
@@ -30,7 +30,7 @@ interface ClientInterface
      *
      * @return void
      */
-    public function subscribe($handler, $keepalive = 0);
+    public function subscribe($handler, $keepalive = 60);
 
     /**
      * @param string $data

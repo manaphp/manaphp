@@ -288,7 +288,7 @@ class Client extends Component implements ClientInterface
     /**
      * @param float $timeout
      *
-     * @return \ManaPHP\WebSocket\Client\Message|null
+     * @return \ManaPHP\WebSocket\Client\Message
      */
     public function recv($timeout = null)
     {
@@ -300,15 +300,11 @@ class Client extends Component implements ClientInterface
         $write = null;
         $except = null;
 
-        while (($left = 2 - ($buf_len = strlen($buf))) > 0) {
+        while (($left = 2 - strlen($buf)) > 0) {
             $read = [$socket];
             if (stream_select($read, $write, $except, 0, 10000) <= 0) {
                 if (microtime(true) > $end_time) {
-                    if ($buf_len === 0) {
-                        return null;
-                    } else {
-                        throw new TimeoutException('receive timeout');
-                    }
+                    throw new TimeoutException('receive timeout');
                 } else {
                     continue;
                 }
@@ -342,7 +338,6 @@ class Client extends Component implements ClientInterface
         }
 
         $start_time = microtime(true);
-        $end_time = microtime(true) + min(($timeout ?: $this->_timeout) / 2, $this->_timeout);
         while (($left = $header_len - strlen($buf)) > 0) {
             $read = [$socket];
             if (stream_select($read, $write, $except, 0, 10000) <= 0) {
@@ -414,35 +409,61 @@ class Client extends Component implements ClientInterface
     }
 
     /**
+     * @param float $timeout
+     *
+     * @return bool
+     */
+    public function isRecvReady($timeout)
+    {
+        $socket = $this->_socket ?? $this->_open();
+
+        $write = null;
+        $except = null;
+        $end_time = microtime(true) + $timeout;
+
+        do {
+            $read = [$socket];
+            if (stream_select($read, $write, $except, 0, 10000) > 0) {
+                return true;
+            }
+        } while ($end_time > microtime(true));
+
+        return false;
+    }
+
+    /**
      * @param callable $handler
      * @param int      $keepalive
      *
      * @return void
      */
-    public function subscribe($handler, $keepalive = 0)
+    public function subscribe($handler, $keepalive = 60)
     {
         $last_time = null;
 
         do {
-            $r = null;
-            if ($message = $this->recv($keepalive > 0 ? $keepalive : $this->_timeout)) {
-                if ($keepalive > 0) {
-                    $last_time = microtime(true);
+            while (true) {
+                if ($this->isRecvReady($keepalive > 0 ? $keepalive : 1)) {
+                    break;
                 }
 
-                $op_code = $message->op_code;
-
-                if ($op_code === Message::TEXT_FRAME || $op_code === Message::BINARY_FRAME) {
-                    $r = $handler($message->payload, $this);
-                } elseif ($op_code === Message::CLOSE_FRAME) {
-                    $r = false;
-                } elseif ($op_code === Message::PING_FRAME) {
-                    $this->pong($message->payload);
-                }
-            } else {
                 if ($keepalive > 0 && microtime(true) - $last_time > $keepalive) {
                     $this->ping();
+                    $last_time = microtime(true);
                 }
+            }
+
+            $message = $this->recv($this->_timeout);
+            $last_time = microtime(true);
+            $op_code = $message->op_code;
+
+            $r = null;
+            if ($op_code === Message::TEXT_FRAME || $op_code === Message::BINARY_FRAME) {
+                $r = $handler($message->payload, $this);
+            } elseif ($op_code === Message::CLOSE_FRAME) {
+                $r = false;
+            } elseif ($op_code === Message::PING_FRAME) {
+                $this->pong($message->payload);
             }
         } while ($r !== false);
     }
