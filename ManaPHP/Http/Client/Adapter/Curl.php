@@ -64,6 +64,8 @@ class Curl extends Client
         }
 
         try {
+            $success = false;
+
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($curl, CURLOPT_AUTOREFERER, true);
 
@@ -164,8 +166,10 @@ class Curl extends Client
             $header_length = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
             $request->remote_ip = curl_getinfo($curl, CURLINFO_PRIMARY_IP);
             $request->process_time = round(microtime(true) - $start_time, 3);
+
+            $success = true;
         } finally {
-            if (!$this->_keepalive) {
+            if (!$success || !$this->_keepalive) {
                 curl_close($curl);
             }
         }

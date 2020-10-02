@@ -82,96 +82,15 @@ class Stream extends Client
 
         $send_length = 0;
         $data_length = strlen($data);
+        $headers = null;
 
-        $read = null;
-        $except = null;
-        do {
-            $write = [$stream];
-            if (stream_select($read, $write, $except, 0, 10000) <= 0) {
-                if (microtime(true) > $end_time) {
-                    throw new TimeoutException($request->url);
-                } else {
-                    continue;
-                }
-            }
+        try {
+            $success = false;
 
-            if (($n = fwrite($stream, $send_length === 0 ? $data : substr($data, $send_length))) === false) {
-                $errno = socket_last_error($stream);
-                if ($errno === 11 || $errno === 4) {
-                    continue;
-                }
-
-                throw new TimeoutException($request->url);
-            }
-            $send_length += $n;
-        } while ($send_length !== $data_length);
-
-        $recv = '';
-        $write = null;
-        $headers_end = null;
-        while (true) {
-            $read = [$stream];
-            if (stream_select($read, $write, $except, 0, 10000) <= 0) {
-                if (microtime(true) > $end_time) {
-                    throw new TimeoutException($request->url);
-                } else {
-                    continue;
-                }
-            }
-
-            if (($r = fread($stream, 4096)) === false) {
-                throw new TimeoutException($request->url);
-            }
-
-            $recv .= $r;
-
-            if (($headers_end = strpos($recv, "\r\n\r\n")) !== false) {
-                break;
-            }
-        }
-
-        $headers = explode("\r\n", substr($recv, 0, $headers_end));
-        $body = substr($recv, $headers_end + 4);
-
-        $content_length = null;
-        $transfer_encoding = null;
-        foreach ($headers as $header) {
-            if (stripos($header, 'Content-Length:') === 0) {
-                $content_length = (int)trim(substr($header, 15));
-            } elseif (stripos($header, 'Transfer-Encoding:') === 0) {
-                $transfer_encoding = trim(substr($header, 18));
-            }
-        }
-
-        if ($transfer_encoding === 'chunked') {
-            $chunked = $body;
-            $body = '';
-
-            $write = null;
-
-            while (true) {
-                $next_read_len = 1;
-                while (true) {
-                    if (($pos = strpos($chunked, "\r\n")) !== false) {
-                        $len = (int)base_convert(substr($chunked, 0, $pos), 16, 10);
-                        $chunk_package_len = $pos + 2 + $len + 2;
-                        if (strlen($chunked) >= $chunk_package_len) {
-                            if ($len === 0) {
-                                goto READ_CHUNKED_COMPLETE;
-                            }
-
-                            $body .= substr($chunked, $pos + 2, $len);
-                            $chunked = substr($chunked, $chunk_package_len);
-                        } else {
-                            $next_read_len = $chunk_package_len - strlen($chunked);
-                            break;
-                        }
-                    } else {
-                        break;
-                    }
-                }
-
-                $read = [$stream];
+            $read = null;
+            $except = null;
+            do {
+                $write = [$stream];
                 if (stream_select($read, $write, $except, 0, 10000) <= 0) {
                     if (microtime(true) > $end_time) {
                         throw new TimeoutException($request->url);
@@ -180,19 +99,21 @@ class Stream extends Client
                     }
                 }
 
-                if (($r = fread($stream, $next_read_len)) === false) {
-                    if (feof($stream)) {
-                        break;
-                    } else {
-                        throw new TimeoutException($request->url);
+                if (($n = fwrite($stream, $send_length === 0 ? $data : substr($data, $send_length))) === false) {
+                    $errno = socket_last_error($stream);
+                    if ($errno === 11 || $errno === 4) {
+                        continue;
                     }
-                }
-                $chunked .= $r;
-            }
 
-            READ_CHUNKED_COMPLETE:
-        } else {
-            while ($content_length !== strlen($body)) {
+                    throw new TimeoutException($request->url);
+                }
+                $send_length += $n;
+            } while ($send_length !== $data_length);
+
+            $recv = '';
+            $write = null;
+            $headers_end = null;
+            while (true) {
                 $read = [$stream];
                 if (stream_select($read, $write, $except, 0, 10000) <= 0) {
                     if (microtime(true) > $end_time) {
@@ -203,34 +124,125 @@ class Stream extends Client
                 }
 
                 if (($r = fread($stream, 4096)) === false) {
-                    if (feof($stream)) {
+                    throw new TimeoutException($request->url);
+                }
+
+                $recv .= $r;
+
+                if (($headers_end = strpos($recv, "\r\n\r\n")) !== false) {
+                    break;
+                }
+            }
+
+            $headers = explode("\r\n", substr($recv, 0, $headers_end));
+            $body = substr($recv, $headers_end + 4);
+
+            $content_length = null;
+            $transfer_encoding = null;
+            foreach ($headers as $header) {
+                if (stripos($header, 'Content-Length:') === 0) {
+                    $content_length = (int)trim(substr($header, 15));
+                } elseif (stripos($header, 'Transfer-Encoding:') === 0) {
+                    $transfer_encoding = trim(substr($header, 18));
+                }
+            }
+
+            if ($transfer_encoding === 'chunked') {
+                $chunked = $body;
+                $body = '';
+
+                $write = null;
+
+                while (true) {
+                    $next_read_len = 1;
+                    while (true) {
+                        if (($pos = strpos($chunked, "\r\n")) !== false) {
+                            $len = (int)base_convert(substr($chunked, 0, $pos), 16, 10);
+                            $chunk_package_len = $pos + 2 + $len + 2;
+                            if (strlen($chunked) >= $chunk_package_len) {
+                                if ($len === 0) {
+                                    goto READ_CHUNKED_COMPLETE;
+                                }
+
+                                $body .= substr($chunked, $pos + 2, $len);
+                                $chunked = substr($chunked, $chunk_package_len);
+                            } else {
+                                $next_read_len = $chunk_package_len - strlen($chunked);
+                                break;
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+
+                    $read = [$stream];
+                    if (stream_select($read, $write, $except, 0, 10000) <= 0) {
+                        if (microtime(true) > $end_time) {
+                            throw new TimeoutException($request->url);
+                        } else {
+                            continue;
+                        }
+                    }
+
+                    if (($r = fread($stream, $next_read_len)) === false) {
+                        if (feof($stream)) {
+                            break;
+                        } else {
+                            throw new TimeoutException($request->url);
+                        }
+                    }
+                    $chunked .= $r;
+                }
+
+                READ_CHUNKED_COMPLETE:
+            } else {
+                while ($content_length !== strlen($body)) {
+                    $read = [$stream];
+                    if (stream_select($read, $write, $except, 0, 10000) <= 0) {
+                        if (microtime(true) > $end_time) {
+                            throw new TimeoutException($request->url);
+                        } else {
+                            continue;
+                        }
+                    }
+
+                    if (($r = fread($stream, 4096)) === false) {
+                        if (feof($stream)) {
+                            break;
+                        } else {
+                            throw new TimeoutException($request->url);
+                        }
+                    }
+                    $body .= $r;
+                }
+            }
+
+            $request->process_time = round(microtime(true) - $start_time, 3);
+
+            $remote = stream_socket_get_name($stream, true);
+            $request->remote_ip = ($pos = strrpos($remote, ':')) ? substr($remote, 0, $pos) : null;//strrpos compatibles with ipv6
+
+            $success = true;
+        } finally {
+            if ($success && $this->_keepalive) {
+                $connection_value = null;
+                foreach ($headers as $header) {
+                    if (stripos($header, 'Connection:') === 0) {
+                        $connection_value = trim(substr($header, 11));
                         break;
-                    } else {
-                        throw new TimeoutException($request->url);
                     }
                 }
-                $body .= $r;
+
+                if ($connection_value !== 'keep-alive') {
+                    fclose($this->_stream);
+                    $this->_stream = null;
+                }
+            } else {
+                fclose($this->_stream);
+                $this->_stream = null;
             }
         }
-
-        $request->process_time = round(microtime(true) - $start_time, 3);
-
-        $remote = stream_socket_get_name($stream, true);
-        $request->remote_ip = ($pos = strrpos($remote, ':')) ? substr($remote, 0, $pos) : null;//strrpos compatibles with ipv6
-
-        $connection_value = null;
-        foreach ($headers as $header) {
-            if (stripos($header, 'Connection:') === 0) {
-                $connection_value = trim(substr($header, 11));
-                break;
-            }
-        }
-
-        if ($connection_value !== 'keep-alive') {
-            fclose($this->_stream);
-            $this->_stream = null;
-        }
-
+	
         return new Response($request, $headers, $body);
     }
 
