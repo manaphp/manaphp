@@ -11,17 +11,18 @@ interface ClientInterface
 
     /**
      * @param string $message
+     * @param float  $timeout
      *
      * @return void
      */
-    public function send($message);
+    public function send($message, $timeout = null);
 
     /**
-     * @param float
+     * @param float $timeout
      *
      * @return \ManaPHP\WebSocket\Client\Message|null
      */
-    public function recv($timeout = 0.0);
+    public function recv($timeout = null);
 
     /**
      * @param callable $handler

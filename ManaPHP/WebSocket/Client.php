@@ -178,14 +178,14 @@ class Client extends Component implements ClientInterface
      * @param string   $data
      * @param float    $timeout
      */
-    protected function _send($socket, $data, $timeout = 0.0)
+    protected function _send($socket, $data, $timeout = null)
     {
         $send_length = 0;
         $data_length = strlen($data);
-        $start_time = microtime(true);
+        $end_time = microtime(true) + ($timeout ?: $this->_timeout);
 
         do {
-            if ($timeout > 0 && microtime(true) - $start_time > $timeout) {
+            if (microtime(true) > $end_time) {
                 throw new TimeoutException('send timeout');
             }
 
@@ -205,8 +205,9 @@ class Client extends Component implements ClientInterface
     /**
      * @param int    $op_code
      * @param string $data
+     * @param float  $timeout
      */
-    public function _sendFrame($op_code, $data)
+    public function _sendFrame($op_code, $data, $timeout = null)
     {
         $str = chr(0x80 | $op_code);
 
@@ -233,19 +234,20 @@ class Client extends Component implements ClientInterface
             $str .= $data;
         }
 
-        $this->_send($this->_socket ?? $this->_open(), $str);
+        $this->_send($this->_socket ?? $this->_open(), $str, $timeout);
     }
 
     /**
      * @param string $message
+     * @param float  $timeout
      *
      * @return void
      */
-    public function send($message)
+    public function send($message, $timeout = null)
     {
         $this->fireEvent('wsClient:send', $message);
 
-        $this->_sendFrame(Message::TEXT_FRAME, $message);
+        $this->_sendFrame(Message::TEXT_FRAME, $message, $timeout);
     }
 
     /**
@@ -277,14 +279,14 @@ class Client extends Component implements ClientInterface
      *
      * @return \ManaPHP\WebSocket\Client\Message|null
      */
-    public function recv($timeout = 0.0)
+    public function recv($timeout = null)
     {
         $socket = $this->_socket ?? $this->_open();
 
         $buf = '';
-        $start_time = microtime(true);
+        $end_time = microtime(true) + ($timeout ?: $this->_timeout);
         while (($left = 2 - ($buf_len = strlen($buf))) > 0) {
-            if ($timeout > 0 && microtime(true) - $start_time > $timeout) {
+            if (microtime(true) > $end_time) {
                 if ($buf_len === 0) {
                     return null;
                 } else {
@@ -316,8 +318,9 @@ class Client extends Component implements ClientInterface
         }
 
         $start_time = microtime(true);
+        $end_time = microtime(true) + min(($timeout ?: $this->_timeout) / 2, $this->_timeout);
         while (($left = $header_len - strlen($buf)) > 0) {
-            if ($timeout > 0 && microtime(true) - $start_time > $timeout) {
+            if (microtime(true) > $end_time) {
                 throw new TimeoutException('receive timeout');
             }
 
@@ -338,7 +341,7 @@ class Client extends Component implements ClientInterface
         $payload = strlen($buf) > $header_len ? substr($buf, $header_len, $payload_len) : '';
 
         while (($left = $payload_len - strlen($payload)) > 0) {
-            if ($timeout > 0 && microtime(true) - $start_time > $timeout) {
+            if (microtime(true) > $end_time) {
                 throw new TimeoutException('receive timeout');
             }
 
@@ -379,7 +382,7 @@ class Client extends Component implements ClientInterface
 
         do {
             $r = null;
-            if ($message = $this->recv($keepalive)) {
+            if ($message = $this->recv($keepalive > 0 ? $keepalive : $this->_timeout)) {
                 if ($keepalive > 0) {
                     $last_time = microtime(true);
                 }
