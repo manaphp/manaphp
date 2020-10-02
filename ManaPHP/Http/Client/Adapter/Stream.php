@@ -22,24 +22,25 @@ class Stream extends Client
 
         $request->headers['Connection'] = 'close';
 
-        $headers = [];
-        foreach ($request->headers as $k => $v) {
-            $headers[] = is_string($k) ? "$k: $v" : $v;
-        }
+        if (($proxy = $request->options['proxy']) !== '') {
+            //if not, you will suffer "Cannot connect to HTTPS server through proxy"
+            $request->options['verify_peer'] = false;
 
-        if (isset($request->options['proxy'])) {
-            //if you suffer "Cannot connect to HTTPS server through proxy", please set `verify_peer` to false
-            $parts = parse_url($request->options['proxy']);
+            $parts = parse_url($proxy);
             if ($parts['scheme'] !== 'http') {
-                throw new NotSupportedException(['only support http type proxy: `:proxy`', 'proxy' => $request->options['proxy']]);
+                throw new NotSupportedException(['only support http type proxy: `:proxy`', 'proxy' => $proxy]);
             }
 
             if (isset($parts['pass'])) {
-                $headers[] = 'Proxy-Authorization: Basic ' . base64_encode($parts['user'] . ':' . $parts['pass']);
+                $request->headers['Proxy-Authorization'] = 'Basic ' . base64_encode($parts['user'] . ':' . $parts['pass']);
             }
             $http['proxy'] = 'tcp://' . $parts['host'] . ':' . ($parts['port'] ?? '80');
         }
 
+        $headers = [];
+        foreach ($request->headers as $name => $value) {
+            $headers[] = is_int($name) ? $value : "$name: $value";
+        }
         $http['header'] = $headers;
 
         if (is_string($request->body)) {
@@ -60,14 +61,14 @@ class Stream extends Client
         $ssl['verify_peer'] = $request->options['verify_peer'];
         $ssl['allow_self_signed'] = $request->options['allow_self_signed'] ?? !$request->options['verify_peer'];
 
-        if (isset($request->options['cafile'])) {
-            $ssl['cafile'] = $this->alias->resolve($request->options['cafile']);
+        if (($cafile = $request->options['cafile']) !== '') {
+            $ssl['cafile'] = $this->alias->resolve($cafile);
         }
 
         $start_time = microtime(true);
 
         if (!$stream = @fopen($request->url, 'rb', false, stream_context_create(['http' => $http, 'ssl' => $ssl]))) {
-            throw new ConnectionException(['`:url`: `:last_error_message`', 'url' => $request->url]);
+            throw new ConnectionException([':last_error_message', 'url' => $request->url]);
         }
 
         $headers = stream_get_meta_data($stream)['wrapper_data'];

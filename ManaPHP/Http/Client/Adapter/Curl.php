@@ -84,8 +84,8 @@ class Curl extends Client
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $timeout);
         curl_setopt($curl, CURLOPT_HEADER, 1);
 
-        if ($this->_proxy) {
-            $parts = parse_url($this->_proxy);
+        if (($proxy = $request->options['proxy']) !== '') {
+            $parts = parse_url($proxy);
             $scheme = $parts['scheme'];
             if ($scheme === 'http') {
                 curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
@@ -94,7 +94,7 @@ class Curl extends Client
             } elseif ($scheme === 'sock5') {
                 curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
             } else {
-                throw new NotSupportedException(['`:scheme` scheme of `:proxy` proxy is unknown', 'scheme' => $scheme, 'proxy' => $this->_proxy]);
+                throw new NotSupportedException(['`:scheme` scheme of `:proxy` proxy is unknown', 'scheme' => $scheme, 'proxy' => $proxy]);
             }
 
             curl_setopt($curl, CURLOPT_PROXYPORT, $parts['port']);
@@ -105,8 +105,10 @@ class Curl extends Client
             }
         }
 
-        if (isset($request->options['cafile'])) {
-            curl_setopt($curl, CURLOPT_CAINFO, $this->alias->resolve($request->options['cafile']));
+        if (($cafile = $request->options['cafile']) !== '') {
+            curl_setopt($curl, CURLOPT_CAINFO, $this->alias->resolve($cafile));
+        } elseif (DIRECTORY_SEPARATOR === '\\') {
+            $request->options['verify_peer'] = false;
         }
 
         if (!$request->options['verify_peer']) {
@@ -118,7 +120,7 @@ class Curl extends Client
 
         $headers = [];
         foreach ($request->headers as $name => $value) {
-            $headers[] = "$name: $value";
+            $headers[] = is_int($name) ? $value : "$name: $value";
         }
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
@@ -126,22 +128,11 @@ class Curl extends Client
 
         $content = curl_exec($curl);
 
-        $err = curl_errno($curl);
-        if ($err === 23 || $err === 61) {
+        $errno = curl_errno($curl);
+        if ($errno === 23 || $errno === 61) {
             curl_setopt($curl, CURLOPT_ENCODING, 'none');
             $content = curl_exec($curl);
-        }
-
-        /** @noinspection NotOptimalIfConditionsInspection */
-        if (($errno = curl_errno($curl)) === CURLE_SSL_CACERT && !isset($options['cafile']) && DIRECTORY_SEPARATOR === '\\') {
-            $this->logger->warn('ca.pem file is not exists, you should download from https://curl.haxx.se/ca/cacert.pem', 'httpClient.noCaCert');
-            /** @noinspection CurlSslServerSpoofingInspection */
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-            /** @noinspection CurlSslServerSpoofingInspection */
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-
-            $content = curl_exec($curl);
-            $errno = curl_error($curl);
+            $errno = curl_errno($curl);
         }
 
         if ($errno) {

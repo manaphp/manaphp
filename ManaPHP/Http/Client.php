@@ -29,7 +29,7 @@ abstract class Client extends Component implements ClientInterface
     /**
      * @var string
      */
-    protected $_cafile;
+    protected $_cafile = '';
 
     /**
      * @var int
@@ -128,15 +128,17 @@ abstract class Client extends Component implements ClientInterface
             $options['timeout'] = $this->_timeout;
         }
 
-        if ($this->_proxy && !isset($options['proxy'])) {
+        if (!isset($options['proxy'])) {
             $options['proxy'] = $this->_proxy;
         }
 
-        if ($this->_cafile && !isset($options['cafile'])) {
+        if (!isset($options['cafile'])) {
             $options['cafile'] = $this->_cafile;
         }
 
-        $options['verify_peer'] = $this->_verify_peer;
+        if (!isset($options['verify_peer'])) {
+            $options['verify_peer'] = $this->_verify_peer;
+        }
 
         $request = $this->_di->get('ManaPHP\Http\Client\Request');
         $request->method = $method;
