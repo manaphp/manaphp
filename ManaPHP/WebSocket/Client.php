@@ -4,6 +4,7 @@ namespace ManaPHP\WebSocket;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\WebSocket\Client\ConnectionBrokenException;
 use ManaPHP\WebSocket\Client\ConnectionException;
 use ManaPHP\WebSocket\Client\DataTransferException;
 use ManaPHP\WebSocket\Client\HandshakeException;
@@ -25,9 +26,9 @@ class Client extends Component implements ClientInterface
     protected $_proxy;
 
     /**
-     * @var int
+     * @var float
      */
-    protected $_timeout = 3;
+    protected $_timeout = 3.0;
 
     /**
      * @var string
@@ -166,6 +167,8 @@ class Client extends Component implements ClientInterface
             }
         }
 
+        stream_set_blocking($socket, false);
+
         $this->_socket = $socket;
 
         $this->fireEvent('wsClient:open');
@@ -184,9 +187,17 @@ class Client extends Component implements ClientInterface
         $data_length = strlen($data);
         $end_time = microtime(true) + ($timeout ?: $this->_timeout);
 
+        $read = null;
+        $except = null;
+
         do {
-            if (microtime(true) > $end_time) {
-                throw new TimeoutException('send timeout');
+            $write = [$socket];
+            if (stream_select($read, $write, $except, 0, 10000) <= 0) {
+                if (microtime(true) > $end_time) {
+                    throw new TimeoutException('send timeout');
+                } else {
+                    continue;
+                }
             }
 
             if (($n = fwrite($socket, $send_length === 0 ? $data : substr($data, $send_length))) === false) {
@@ -285,17 +296,30 @@ class Client extends Component implements ClientInterface
 
         $buf = '';
         $end_time = microtime(true) + ($timeout ?: $this->_timeout);
+
+        $write = null;
+        $except = null;
+
         while (($left = 2 - ($buf_len = strlen($buf))) > 0) {
-            if (microtime(true) > $end_time) {
-                if ($buf_len === 0) {
-                    return null;
+            $read = [$socket];
+            if (stream_select($read, $write, $except, 0, 10000) <= 0) {
+                if (microtime(true) > $end_time) {
+                    if ($buf_len === 0) {
+                        return null;
+                    } else {
+                        throw new TimeoutException('receive timeout');
+                    }
                 } else {
-                    throw new TimeoutException('receive timeout');
+                    continue;
                 }
             }
 
             if (($r = fread($socket, $left)) === false) {
                 throw new DataTransferException('recv failed');
+            }
+
+            if ($r === '') {
+                throw new ConnectionBrokenException();
             }
 
             $buf .= $r;
@@ -320,13 +344,23 @@ class Client extends Component implements ClientInterface
         $start_time = microtime(true);
         $end_time = microtime(true) + min(($timeout ?: $this->_timeout) / 2, $this->_timeout);
         while (($left = $header_len - strlen($buf)) > 0) {
-            if (microtime(true) > $end_time) {
-                throw new TimeoutException('receive timeout');
+            $read = [$socket];
+            if (stream_select($read, $write, $except, 0, 10000) <= 0) {
+                if (microtime(true) > $end_time) {
+                    throw new TimeoutException('receive timeout');
+                } else {
+                    continue;
+                }
             }
 
             if (($r = fread($socket, $left)) === false) {
                 throw new DataTransferException('receive failed');
             }
+
+            if ($r === '') {
+                throw new ConnectionBrokenException();
+            }
+
             $buf .= $r;
         }
 
@@ -341,12 +375,21 @@ class Client extends Component implements ClientInterface
         $payload = strlen($buf) > $header_len ? substr($buf, $header_len, $payload_len) : '';
 
         while (($left = $payload_len - strlen($payload)) > 0) {
-            if (microtime(true) > $end_time) {
-                throw new TimeoutException('receive timeout');
+            $read = [$socket];
+            if (stream_select($read, $write, $except, 0, 10000) <= 0) {
+                if (microtime(true) > $end_time) {
+                    throw new TimeoutException('receive timeout');
+                } else {
+                    continue;
+                }
             }
 
             if (($r = fread($socket, $left)) === false) {
                 throw new DataTransferException('recv failed');
+            }
+
+            if ($r === '') {
+                throw new ConnectionBrokenException();
             }
 
             if ($payload === '') {
