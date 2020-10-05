@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Rpc\Client\Adapter;
 
+use ManaPHP\Di;
 use ManaPHP\Rpc\Client;
 use ManaPHP\Rpc\Client\Exception as ClientException;
 use ManaPHP\Rpc\Client\ProtocolException;
@@ -19,9 +20,9 @@ class Http extends Client
     protected $_timeout = 3.0;
 
     /**
-     * @var int
+     * @var \ManaPHP\Http\ClientInterface
      */
-    protected $_pool_size = 4;
+    protected $_client;
 
     /**
      * JsonRpc constructor.
@@ -30,11 +31,6 @@ class Http extends Client
      */
     public function __construct($options)
     {
-        if (isset($options['pool_size'])) {
-            $this->_pool_size = $options['pool_size'];
-            unset($options['pool_size']);
-        }
-
         if (isset($options['timeout'])) {
             $this->_timeout = $options['timeout'];
         }
@@ -47,20 +43,21 @@ class Http extends Client
         unset($options['endpoint']);
         $this->_endpoint = str_contains($endpoint, '?') ? str_replace('/?', '?', $endpoint) : rtrim($endpoint, '/');
 
-        if (!isset($options[0]) && !isset($options['class'])) {
-            $options['class'] = 'ManaPHP\Http\Client';
+        if (isset($options[0])) {
+            $client = $options[0];
+            unset($options[0]);
+        } elseif (isset($options['class'])) {
+            $client = $options['class'];
+            unset($options['class']);
+        } else {
+            $client = 'ManaPHP\Http\Client';
         }
 
         if (!isset($options['engine'])) {
             $options['engine'] = 'ManaPHP\Http\Client\Engine\Stream';
         }
 
-        $this->poolManager->add($this, $options, $this->_pool_size);
-    }
-
-    public function __destruct()
-    {
-        $this->poolManager->remove($this);
+        $this->_client = Di::getDefault()->get($client, $options);
     }
 
     /**
@@ -82,13 +79,7 @@ class Http extends Client
             $method = 'POST';
         }
 
-        /** @var \ManaPHP\Http\ClientInterface $client */
-        $client = $this->poolManager->pop($this, $this->_timeout);
-        try {
-            $response = $client->rest($method, $url, $params, [], $options)->body;
-        } finally {
-            $this->poolManager->push($this, $client);
-        }
+        $response = $this->_client->rest($method, $url, $params, [], $options)->body;
 
         if (!isset($response['code'], $response['message'])) {
             throw new ProtocolException('missing `code` or `message` field');
