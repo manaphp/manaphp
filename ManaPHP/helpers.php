@@ -5,7 +5,6 @@ use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\JsonException;
 use ManaPHP\Exception\NotSupportedException;
-use Swoole\Coroutine;
 
 if (!function_exists('spl_object_id')) {
     function spl_object_id($object)
@@ -483,39 +482,6 @@ if (!function_exists('abort')) {
             di('response')->setContent($message);
         } else {
             di('response')->setJsonError($message, $code);
-        }
-
-        throw new AbortException();
-    }
-}
-
-if (!function_exists('dd')) {
-    function dd()
-    {
-        if (!Di::getDefault()->configure->debug) {
-            return;
-        }
-
-        if (MANAPHP_COROUTINE_ENABLED) {
-            /** @noinspection PhpUndefinedMethodInspection */
-            $trace = Coroutine::getBackTrace(0, DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
-            ob_start();
-        } else {
-            $trace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
-        }
-
-        echo var_export($trace['file'] . ':' . $trace['line']), PHP_EOL;
-
-        $line = $trace['line'] - 1;
-        if (($lines = file($trace['file'])) !== false && isset($lines[$line])) {
-            echo trim($lines[$line]), PHP_EOL;
-        }
-
-        var_dump(func_num_args() === 1 ? func_get_args()[0] : func_get_args());
-
-        if (MANAPHP_COROUTINE_ENABLED) {
-            $content = ob_get_clean();
-            Di::getDefault()->response->setContent($content);
         }
 
         throw new AbortException();
