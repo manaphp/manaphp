@@ -188,13 +188,9 @@ class Component implements ComponentInterface, JsonSerializable
             } else {
                 return $this->_context = $this->_createContext();
             }
+        } else {
+            return $this->{$name} = $this->getShared($name);
         }
-
-        if ($this->_di === null) {
-            $this->_di = Di::getDefault();
-        }
-
-        return $this->{$name} = $this->_di->{$name};
     }
 
     /**
