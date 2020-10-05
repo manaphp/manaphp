@@ -123,7 +123,7 @@ class Multi extends Component implements MultiInterface, Countable
     public function add($request, $callbacks = null)
     {
         if (is_string($request)) {
-            $request = $this->_di->get('ManaPHP\Curl\Multi\Request', [$request, $callbacks]);
+            $request = $this->getInstance('ManaPHP\Curl\Multi\Request', [$request, $callbacks]);
         } elseif (is_array($request)) {
             if (isset($request[1])) {
                 foreach ($request as $r) {
@@ -131,7 +131,7 @@ class Multi extends Component implements MultiInterface, Countable
                 }
                 return $this;
             } else {
-                $request = $this->_di->get('ManaPHP\Curl\Multi\Request', [$request, $callbacks]);
+                $request = $this->getInstance('ManaPHP\Curl\Multi\Request', [$request, $callbacks]);
             }
         }
 
@@ -249,7 +249,7 @@ class Multi extends Component implements MultiInterface, Countable
         if (!LocalFS::fileExists($target)) {
             LocalFS::dirCreate(dir($target));
 
-            $request = $this->_di->get('ManaPHP\Curl\Multi\Request', [$url, $callback]);
+            $request = $this->getInstance('ManaPHP\Curl\Multi\Request', [$url, $callback]);
 
             $request->options['file'] = $target;
 
@@ -279,7 +279,7 @@ class Multi extends Component implements MultiInterface, Countable
                 unset($this->_requests[$id]);
 
                 if ($info['result'] === CURLE_OK) {
-                    $response = $this->_di->get('ManaPHP\Curl\Multi\Response');
+                    $response = $this->getInstance('ManaPHP\Curl\Multi\Response');
 
                     $response->request = $request;
                     $response->http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
@@ -312,7 +312,7 @@ class Multi extends Component implements MultiInterface, Countable
                         }
                     }
                 } else {
-                    $error = $this->_di->get('ManaPHP\Curl\Multi\Error');
+                    $error = $this->getInstance('ManaPHP\Curl\Multi\Error');
 
                     $error->code = $info['result'];
                     $error->message = curl_error($curl);

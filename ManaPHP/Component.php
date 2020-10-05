@@ -83,6 +83,21 @@ class Component implements ComponentInterface, JsonSerializable
     }
 
     /**
+     * @param string $class
+     * @param array  $params
+     *
+     * @return mixed
+     */
+    public function getInstance($class, $params = [])
+    {
+        if ($this->_di === null) {
+            $this->_di = Di::getDefault();
+        }
+
+        return $this->_di->get($class, $params);
+    }
+
+    /**
      * @return object
      */
     protected function _createContext()

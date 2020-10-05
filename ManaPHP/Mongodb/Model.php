@@ -287,7 +287,7 @@ class Model extends \ManaPHP\Model
      */
     public function newQuery()
     {
-        return $this->_di->get('ManaPHP\Mongodb\Query')->setModel($this);
+        return $this->getInstance('ManaPHP\Mongodb\Query')->setModel($this);
     }
 
     /**

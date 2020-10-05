@@ -400,7 +400,7 @@ class Amqp extends Component implements AmqpInterface
             throw new AmqpException(['retrieve message from `:queue` queue failed: :error ', 'queue' => $queue, 'error' => $e->getMessage()]);
         }
 
-        return $envelope === false ? false : $this->_di->get('ManaPHP\Amqp\Message', [$this, $queue, $envelope]);
+        return $envelope === false ? false : $this->getInstance('ManaPHP\Amqp\Message', [$this, $queue, $envelope]);
     }
 
     /**
@@ -508,7 +508,7 @@ class Amqp extends Component implements AmqpInterface
 
         try {
             $this->_queues[$queue]->consume(function (AMQPEnvelope $envelope) use ($callback, $queue) {
-                return $callback($this->_di->get('ManaPHP\Amqp\Message', [$this, $queue, $envelope]));
+                return $callback($this->getInstance('ManaPHP\Amqp\Message', [$this, $queue, $envelope]));
             }, $flags);
         } catch (\Exception $e) {
             throw new AmqpException('consume `:queue` queue message failed: ', $e->getMessage());

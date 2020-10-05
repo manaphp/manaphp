@@ -121,6 +121,9 @@ namespace PHPSTORM_META {
         ],
         \ManaPHP\DiInterface::get('') => [
             '' == '@',
+        ],
+        \ManaPHP\Component::getInstance('') => [
+            '' == '@',
         ]
     ];
 

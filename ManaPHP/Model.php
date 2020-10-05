@@ -1360,6 +1360,17 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
+     * @param string $class
+     * @param array  $params
+     *
+     * @return mixed
+     */
+    public function getInstance($class, $params = [])
+    {
+        return $this->_di->get($class, $params);
+    }
+
+    /**
      * @param string $name
      *
      * @return \ManaPHP\Model|\ManaPHP\Model[]|mixed

@@ -122,7 +122,7 @@ class BashCompletionController extends Controller
         $command = Str::camelize($command) . 'Completion';
         if (method_exists($controllerClassName, $command)) {
             try {
-                $argument_values = $this->_di->get($controllerClassName)->$command($argumentName);
+                $argument_values = $this->getInstance($controllerClassName)->$command($argumentName);
             } catch (\Exception $e) {
 
             }

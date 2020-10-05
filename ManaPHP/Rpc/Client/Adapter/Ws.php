@@ -2,7 +2,6 @@
 
 namespace ManaPHP\Rpc\Client\Adapter;
 
-use ManaPHP\Di;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Rpc\Client;
 use ManaPHP\Rpc\Client\Exception as ClientException;
@@ -50,7 +49,7 @@ class Ws extends Client
             $this->_authentication = preg_match('#[?&]token=#', $options['endpoint']) === 1;
         }
 
-        $this->_client = Di::getDefault()->get('ManaPHP\WebSocket\Client', $options);
+        $this->_client = $this->getInstance('ManaPHP\WebSocket\Client', $options);
 
         if ($this->_authentication) {
             $this->_client->on('open', function (EventArgs $eventArgs) {

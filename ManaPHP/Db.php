@@ -917,6 +917,6 @@ class Db extends Component implements DbInterface
      */
     public function query($table = null, $alias = null)
     {
-        return $this->_di->get('ManaPHP\Db\Query', [$this])->from($table, $alias);
+        return $this->getInstance('ManaPHP\Db\Query', [$this])->from($table, $alias);
     }
 }

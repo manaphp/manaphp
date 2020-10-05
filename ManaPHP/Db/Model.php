@@ -106,7 +106,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
      */
     public function newQuery()
     {
-        return $this->_di->get('ManaPHP\Db\Query')->setModel($this);
+        return $this->getInstance('ManaPHP\Db\Query')->setModel($this);
     }
 
     /**

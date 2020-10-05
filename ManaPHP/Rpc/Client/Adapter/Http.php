@@ -2,7 +2,6 @@
 
 namespace ManaPHP\Rpc\Client\Adapter;
 
-use ManaPHP\Di;
 use ManaPHP\Rpc\Client;
 use ManaPHP\Rpc\Client\Exception as ClientException;
 use ManaPHP\Rpc\Client\ProtocolException;
@@ -57,7 +56,7 @@ class Http extends Client
             $options['engine'] = 'ManaPHP\Http\Client\Engine\Stream';
         }
 
-        $this->_client = Di::getDefault()->get($client, $options);
+        $this->_client = $this->getInstance($client, $options);
     }
 
     /**

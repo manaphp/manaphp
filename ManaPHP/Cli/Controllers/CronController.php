@@ -75,13 +75,13 @@ class CronController extends Controller
             if (!in_array(Cronable::class, $rc->getInterfaceNames(), true)) {
                 throw new RuntimeException('is not cronable');
             }
-            $crons[] = $this->_di->get($class_name);
+            $crons[] = $this->getInstance($class_name);
         } else {
             foreach (LocalFS::glob('@cli/*Controller.php') as $file) {
                 $class_name = $this->alias->get('@ns.cli') . '\\' . basename($file, '.php');
                 $rc = new ReflectionClass($class_name);
                 if (in_array(Cronable::class, $rc->getInterfaceNames(), true)) {
-                    $crons[] = $this->_di->get($class_name);
+                    $crons[] = $this->getInstance($class_name);
                 }
             }
         }

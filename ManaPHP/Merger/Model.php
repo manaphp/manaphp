@@ -23,7 +23,7 @@ abstract class Model extends \ManaPHP\Model
     {
         $queries = $this->getQueries();
         if (is_array($queries)) {
-            $queries = $this->_di->get('ManaPHP\Merger\Query', [$queries]);
+            $queries = $this->getInstance('ManaPHP\Merger\Query', [$queries]);
         }
 
         return $queries->setModel($this->getModel())->select($this->getFields());

@@ -2,7 +2,6 @@
 
 namespace ManaPHP\Rpc\Client;
 
-use ManaPHP\Di;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Str;
@@ -61,7 +60,7 @@ class Service extends \ManaPHP\Service
             throw new NotSupportedException(['`:type` type rpc is not support', 'type' => $scheme]);
         }
 
-        $this->_rpcClient = Di::getDefault()->get($class, $options);
+        $this->_rpcClient = $this->getInstance($class, $options);
     }
 
     /**
