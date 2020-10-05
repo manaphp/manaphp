@@ -21,17 +21,7 @@ class Cookie extends Session
     {
         parent::__construct($options);
 
-        if (isset($options['key'])) {
-            $this->_key = $options['key'];
-        }
-    }
-
-    /**
-     * @return string
-     */
-    protected function _getKey()
-    {
-        return $this->_key = $this->crypt->getDerivedKey('cookieSession');
+        $this->_key = $options['key'] ?? $this->crypt->getDerivedKey('cookieSession');
     }
 
     /**
@@ -42,7 +32,7 @@ class Cookie extends Session
      */
     public function do_read($session_id)
     {
-        $data = $this->_di->cookies->get($session_id) ?: '';
+        $data = $this->cookies->get($session_id) ?: '';
         if ($data === '') {
             return '';
         }
@@ -53,8 +43,7 @@ class Cookie extends Session
             throw new CookieException(['format invalid: `:cookie`', 'cookie' => $data]);
         }
 
-        $key = $this->_key ?: $this->_getKey();
-        if (md5($parts[0] . $key) !== $parts[1]) {
+        if (md5($parts[0] . $this->_key) !== $parts[1]) {
             throw new CookieException(['hash invalid: `:cookie`', 'cookie' => $data]);
         }
 
@@ -81,9 +70,8 @@ class Cookie extends Session
     {
         $params = session_get_cookie_params();
 
-        $key = $this->_key ?: $this->_getKey();
         $payload = base64_encode(json_stringify(['exp' => time() + $ttl, 'data' => $data]));
-        $this->_di->cookies->set($session_id, $payload . '.' . md5($payload . $key), $params['lifetime'], $params['path'], $params['domain'],
+        $this->cookies->set($session_id, $payload . '.' . md5($payload . $this->_key), $params['lifetime'], $params['path'], $params['domain'],
             $params['secure']);
 
         return true;
@@ -107,7 +95,7 @@ class Cookie extends Session
      */
     public function do_destroy($session_id)
     {
-        $this->_di->cookies->delete($session_id);
+        $this->cookies->delete($session_id);
 
         return true;
     }
