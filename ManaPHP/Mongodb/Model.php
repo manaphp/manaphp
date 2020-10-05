@@ -2,7 +2,6 @@
 
 namespace ManaPHP\Mongodb;
 
-use ManaPHP\Di;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\RuntimeException;
@@ -53,7 +52,7 @@ class Model extends \ManaPHP\Model
     public static function connection($context = null)
     {
         list($db) = static::sample()->getUniqueShard($context);
-        return Di::getDefault()->getShared($db);
+        return static::sample()->getShared($db);
     }
 
     /**
@@ -487,7 +486,7 @@ class Model extends \ManaPHP\Model
         list($db, $collection) = $sample->getUniqueShard([]);
 
         /** @var \ManaPHP\MongodbInterface $mongodb */
-        $mongodb = Di::getDefault()->getShared($db);
+        $mongodb = static::sample()->getShared($db);
         return $mongodb->aggregate($collection, $pipeline, $options);
     }
 
@@ -538,7 +537,7 @@ class Model extends \ManaPHP\Model
         list($db, $collection) = $sample->getUniqueShard([]);
 
         /** @var \ManaPHP\MongodbInterface $mongodb */
-        $mongodb = Di::getDefault()->getShared($db);
+        $mongodb = static::sample()->getShared($db);
         return $mongodb->bulkInsert($collection, $documents);
     }
 
@@ -568,7 +567,7 @@ class Model extends \ManaPHP\Model
         $affected_count = 0;
         foreach ($shards as $db => $collections) {
             /** @var \ManaPHP\MongodbInterface $mongodb */
-            $mongodb = Di::getDefault()->getShared($db);
+            $mongodb = static::sample()->getShared($db);
             foreach ($collections as $collection) {
                 $affected_count += $mongodb->bulkUpdate($collection, $documents, $primaryKey);
             }
@@ -597,7 +596,7 @@ class Model extends \ManaPHP\Model
         list($db, $collection) = $sample->getUniqueShard([]);
 
         /** @var \ManaPHP\MongodbInterface $mongodb */
-        $mongodb = Di::getDefault()->getShared($db);
+        $mongodb = static::sample()->getShared($db);
         return $mongodb->bulkUpsert($collection, $documents, $sample->getPrimaryKey());
     }
 
@@ -615,7 +614,7 @@ class Model extends \ManaPHP\Model
         list($db, $collection) = $sample->getUniqueShard($document);
 
         /** @var \ManaPHP\MongodbInterface $mongodb */
-        $mongodb = Di::getDefault()->getShared($db);
+        $mongodb = static::sample()->getShared($db);
         $mongodb->insert($collection, $document);
 
         return 1;

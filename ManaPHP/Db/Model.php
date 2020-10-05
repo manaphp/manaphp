@@ -34,7 +34,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
     {
         list($db) = static::sample()->getUniqueShard($context);
 
-        return Di::getDefault()->getShared($db);
+        return static::sample()->getShared($db);
     }
 
     /**
@@ -300,7 +300,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         list($db, $table) = $sample->getUniqueShard($bind);
 
         /** @var \ManaPHP\DbInterface $db */
-        $db = Di::getDefault()->getShared($db);
+        $db = static::sample()->getShared($db);
 
         return $db->insertBySql($table, $sql, $bind);
     }
@@ -325,7 +325,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $affected_count = 0;
         foreach ($shards as $db => $tables) {
             /** @var \ManaPHP\DbInterface $db */
-            $db = Di::getDefault()->getShared($db);
+            $db = static::sample()->getShared($db);
 
             foreach ($tables as $table) {
                 $affected_count += $db->deleteBySql($table, $sql, $bind);
@@ -355,7 +355,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $affected_count = 0;
         foreach ($shards as $db => $tables) {
             /** @var \ManaPHP\DbInterface $db */
-            $db = Di::getDefault()->getShared($db);
+            $db = static::sample()->getShared($db);
 
             foreach ($tables as $table) {
                 $affected_count += $db->updateBySql($table, $sql, $bind);
@@ -385,7 +385,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         }
 
         /** @var \ManaPHP\DbInterface $db */
-        $db = Di::getDefault()->getShared($db);
+        $db = static::sample()->getShared($db);
         $db->insert($table, $record);
 
         return 1;
