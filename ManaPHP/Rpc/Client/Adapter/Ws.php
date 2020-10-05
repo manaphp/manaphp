@@ -2,6 +2,8 @@
 
 namespace ManaPHP\Rpc\Client\Adapter;
 
+use ManaPHP\Di;
+use ManaPHP\Event\EventArgs;
 use ManaPHP\Rpc\Client;
 use ManaPHP\Rpc\Client\Exception as ClientException;
 use ManaPHP\Rpc\Client\ProtocolException;
@@ -14,11 +16,6 @@ class Ws extends Client
     protected $_timeout = 3.0;
 
     /**
-     * @var int
-     */
-    protected $_pool_size = 4;
-
-    /**
      * @var bool
      */
     protected $_authentication;
@@ -29,47 +26,37 @@ class Ws extends Client
     protected $_id = 0;
 
     /**
+     * @var client
+     */
+    protected $_client;
+
+    /**
      * JsonRpc constructor.
      *
      * @param array $options
      */
     public function __construct($options)
     {
-        if (isset($options['pool_size'])) {
-            $this->_pool_size = $options['pool_size'];
-            unset($options['pool_size']);
-        }
-
         $options['protocol'] = 'jsonrpc';
 
         if (isset($options['timeout'])) {
             $this->_timeout = $options['timeout'];
         }
 
-        if (!isset($options[0]) && !isset($options['class'])) {
-            $options['class'] = 'ManaPHP\WebSocket\Client';
-        }
-
         if (isset($options['authentication'])) {
-            $this->_authentication = $options['authentication'];
+            $this->_authentication = (bool)$options['authentication'];
             unset($options['authentication']);
         } else {
             $this->_authentication = preg_match('#[?&]token=#', $options['endpoint']) === 1;
         }
 
+        $this->_client = Di::getDefault()->get('ManaPHP\WebSocket\Client', $options);
+
         if ($this->_authentication) {
-            $sample = $this->_di->get($options['class'], $options);
-            $sample->on('open', [$this, 'authenticate']);
-        } else {
-            $sample = $options;
+            $this->_client->on('open', function (EventArgs $eventArgs) {
+                $this->authenticate($eventArgs->data);
+            });
         }
-
-        $this->poolManager->add($this, $sample, $this->_pool_size);
-    }
-
-    public function __destruct()
-    {
-        $this->poolManager->remove($this);
     }
 
     /**
@@ -102,11 +89,11 @@ class Ws extends Client
     }
 
     /**
-     * @param \ManaPHP\WebSocket\ClientInterface $client
+     * @param \ManaPHP\WebSocket\Client\EngineInterface $engine
      */
-    public function authenticate($client)
+    public function authenticate($engine)
     {
-        $message = $client->recv();
+        $message = $engine->recv();
 
         try {
             /** @noinspection PhpUnusedLocalVariableInspection */
@@ -115,7 +102,7 @@ class Ws extends Client
             $success = true;
         } finally {
             if (!$success) {
-                $client->close();
+                $engine->close();
             }
         }
     }
@@ -131,16 +118,9 @@ class Ws extends Client
     {
         $request = json_stringify(['jsonrpc' => '2.0', 'method' => $method, 'params' => $params, 'id' => ++$this->_id]);
 
-        /** @var \ManaPHP\WebSocket\ClientInterface $client */
-        $client = $this->poolManager->pop($this, $this->_timeout);
-
         $timout = $options['timeout'] ?? $this->_timeout;
 
-        try {
-            $message = $client->request($request, $timout);
-        } finally {
-            $this->poolManager->push($this, $client);
-        }
+        $message = $this->_client->request($request, $timout);
 
         $response = $this->_parseResponse($message->payload);
 
