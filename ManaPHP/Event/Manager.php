@@ -132,7 +132,7 @@ class Manager implements ManagerInterface, Injectable
             foreach ($this->_listeners[$group] as $k => $v) {
                 /**@var \ManaPHP\Event\Listener $listener */
                 if (is_int($v)) {
-                    $this->_listeners[$group][$k] = $listener = $this->_di->getShared($k);
+                    $this->_listeners[$group][$k] = $listener = $this->getShared($k);
                 } else {
                     $listener = $v;
                 }
