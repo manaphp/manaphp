@@ -4,6 +4,7 @@ namespace ManaPHP;
 
 use JsonSerializable;
 use ManaPHP\Coroutine\Context\Inseparable;
+use ManaPHP\Di\Injectable;
 use ManaPHP\Event\EventArgs;
 use Swoole\Coroutine;
 
@@ -43,7 +44,7 @@ use Swoole\Coroutine;
  * @property-read \ManaPHP\Message\PubSubInterface         $pubSub
  * @property-read \object                                  $_context
  */
-class Component implements ComponentInterface, JsonSerializable
+class Component implements ComponentInterface, Injectable, JsonSerializable
 {
     /**
      * @var int

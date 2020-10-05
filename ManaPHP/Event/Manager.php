@@ -2,12 +2,14 @@
 
 namespace ManaPHP\Event;
 
+use ManaPHP\Di\Injectable;
+
 /**
  * Class ManaPHP\Event\Manager
  *
  * @package eventsManager
  */
-class Manager implements ManagerInterface
+class Manager implements ManagerInterface, Injectable
 {
     /**
      * @var \ManaPHP\DiInterface
@@ -45,6 +47,27 @@ class Manager implements ManagerInterface
     public function setDi($di)
     {
         $this->_di = $di;
+    }
+
+    /**
+     * @param string $class
+     * @param array  $params
+     *
+     * @return mixed
+     */
+    public function getInstance($class, $params = [])
+    {
+        return $this->_di->get($class, $params);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function getShared($name)
+    {
+        return $this->_di->getShared($name);
     }
 
     /**

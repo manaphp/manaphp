@@ -10,22 +10,6 @@ namespace ManaPHP;
 interface ComponentInterface
 {
     /**
-     * Sets the dependency injector
-     *
-     * @param \ManaPHP\DiInterface $di
-     *
-     * @return void
-     */
-    public function setDi($di);
-
-    /**
-     * Returns the internal dependency injector
-     *
-     * @return \ManaPHP\Di
-     */
-    public function getDi();
-
-    /**
      * Attach a listener to the events manager
      *
      * @param string   $event

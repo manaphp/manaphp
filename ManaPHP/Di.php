@@ -3,6 +3,7 @@
 namespace ManaPHP;
 
 use Closure;
+use ManaPHP\Di\Injectable;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
@@ -353,7 +354,7 @@ class Di implements DiInterface
             throw new NotSupportedException(['`:name` component cannot be resolved: component implement type is not supported', 'name' => $name]);
         }
 
-        if ($instance instanceof Component || method_exists($instance, 'setDi')) {
+        if ($instance instanceof Injectable) {
             $instance->setDi($this);
         }
 
