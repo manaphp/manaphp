@@ -292,7 +292,7 @@ class Di implements DiInterface
             throw new NotSupportedException(['`:name` component cannot be resolved: component implement type is not supported', 'name' => $name]);
         }
 
-        if ($instance instanceof Component || method_exists($instance, 'setDi')) {
+        if ($instance instanceof Injectable) {
             $instance->setDi($this);
         }
 
