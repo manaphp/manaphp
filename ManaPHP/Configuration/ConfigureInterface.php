@@ -23,4 +23,34 @@ interface ConfigureInterface
      * @return mixed
      */
     public function getParam($name, $default = null);
+
+    /**
+     * @return static
+     */
+    public function registerAliases();
+
+    /**
+     * @return static
+     */
+    public function registerComponents();
+
+    /**
+     * @return static
+     */
+    public function registerAspects();
+
+    /**
+     * @return static
+     */
+    public function registerServices();
+
+    /**
+     * @return static
+     */
+    public function registerPlugins();
+
+    /**
+     * @return static
+     */
+    public function registerListeners();
 }

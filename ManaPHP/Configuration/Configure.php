@@ -6,6 +6,7 @@ use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
+use ManaPHP\Helper\LocalFS;
 
 /**
  * Class ManaPHP\Configuration\Configure
@@ -124,5 +125,150 @@ class Configure extends Component implements ConfigureInterface
         } else {
             return $value;
         }
+    }
+
+    /**
+     * @return static
+     */
+    public function registerAliases()
+    {
+        foreach ($this->aliases as $alias => $path) {
+            $this->alias->set($alias, $path);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function registerComponents()
+    {
+        $di = $this->_di;
+
+        foreach ($this->components as $component => $definition) {
+            if (is_int($component)) {
+                $component = lcfirst(($pos = strrpos($definition, '\\')) ? substr($definition, $pos + 1) : $definition);
+                $di->setShared($component, $definition);
+            } elseif ($definition === null) {
+                $di->remove($component);
+            } elseif ($component[0] !== '!' || $di->has($component = substr($component, 1))) {
+                $di->setShared($component, $definition);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function registerAspects()
+    {
+        foreach (LocalFS::glob('@app/Aspects/*Aspect.php') as $item) {
+            $class = 'App\Aspects\\' . basename($item, '.php');
+            /** @var \ManaPHP\Aop\Aspect $aspect */
+            $aspect = new $class();
+            $aspect->register();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function registerServices()
+    {
+        $di = $this->_di;
+
+        foreach (@scandir($this->alias->resolve('@app/Services')) ?: [] as $file) {
+            if (substr($file, -11) === 'Service.php') {
+                $service = lcfirst(basename($file, '.php'));
+                if (!isset($services[$service])) {
+                    $services[$service] = [];
+                }
+            }
+        }
+
+        foreach ($this->services as $service => $params) {
+            if (is_string($params)) {
+                $params = [$params];
+            }
+            $params['class'] = 'App\Services\\' . ucfirst($service);
+            $di->setShared($service, $params);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * @return static
+     */
+    public function registerPlugins()
+    {
+        $di = $this->_di;
+
+        $app_plugins = [];
+        foreach (LocalFS::glob('@app/Plugins/*Plugin.php') as $item) {
+            $app_plugins[basename($item, '.php')] = 1;
+        }
+
+        foreach ($this->plugins as $k => $v) {
+            $plugin = is_string($k) ? $k : $v;
+            if (($pos = strrpos($plugin, 'Plugin')) === false || $pos !== strlen($plugin) - 6) {
+                $plugin .= 'Plugin';
+            }
+
+            if ($plugin[0] === '!') {
+                unset($app_plugins[ucfirst(substr($plugin, 1))]);
+                continue;
+            }
+
+            $plugin = ucfirst($plugin);
+
+            $pluginClassName = isset($app_plugins[$plugin]) ? "App\\Plugins\\$plugin" : "ManaPHP\Plugins\\$plugin";
+            unset($app_plugins[$plugin]);
+
+            $plugin = lcfirst($plugin);
+            $di->setShared($plugin, is_int($k) ? $pluginClassName : array_merge($v, ['class' => $pluginClassName]))->getShared($plugin);
+        }
+
+        foreach ($app_plugins as $plugin => $_) {
+            $pluginClassName = "App\\Plugins\\$plugin";
+            $plugin = lcfirst($plugin);
+            $di->setShared($plugin, $pluginClassName)->getShared($plugin);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function registerListeners()
+    {
+        $eventsManager = $this->getShared('eventsManager');
+
+        foreach ($this->listeners as $listener) {
+            if ($listener === '*') {
+                foreach (LocalFS::glob('@app/Areas/*/Listeners/*Listener.php') as $item) {
+                    $item = str_replace($this->alias->get('@app'), 'App', $item);
+                    $item = substr(str_replace('/', '\\', $item), 0, -4);
+                    $eventsManager->addListener($item);
+                }
+
+                foreach (LocalFS::glob('@app/Listeners/*Listener.php') as $item) {
+                    $item = str_replace($this->alias->get('@app'), 'App', $item);
+                    $item = substr(str_replace('/', '\\', $item), 0, -4);
+                    $eventsManager->addListener($item);
+                }
+            } else {
+                $eventsManager->addListener($listener);
+            }
+        }
+
+        return $this;
     }
 }

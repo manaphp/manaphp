@@ -139,121 +139,6 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         return $this;
     }
 
-    /**
-     * @param array $listeners
-     */
-    protected function _loadListeners($listeners)
-    {
-        $eventsManager = $this->getShared('eventsManager');
-
-        foreach ($listeners as $listener) {
-            if ($listener === '*') {
-                foreach (LocalFS::glob('@app/Areas/*/Listeners/*Listener.php') as $item) {
-                    $item = str_replace($this->alias->get('@app'), 'App', $item);
-                    $item = substr(str_replace('/', '\\', $item), 0, -4);
-                    $eventsManager->addListener($item);
-                }
-
-                foreach (LocalFS::glob('@app/Listeners/*Listener.php') as $item) {
-                    $item = str_replace($this->alias->get('@app'), 'App', $item);
-                    $item = substr(str_replace('/', '\\', $item), 0, -4);
-                    $eventsManager->addListener($item);
-                }
-            } else {
-                $eventsManager->addListener($listener);
-            }
-        }
-    }
-
-    /**
-     * @param array $plugins
-     */
-    protected function _loadPlugins($plugins)
-    {
-        $app_plugins = [];
-        foreach (LocalFS::glob('@app/Plugins/*Plugin.php') as $item) {
-            $app_plugins[basename($item, '.php')] = 1;
-        }
-
-        foreach ($plugins as $k => $v) {
-            $plugin = is_string($k) ? $k : $v;
-            if (($pos = strrpos($plugin, 'Plugin')) === false || $pos !== strlen($plugin) - 6) {
-                $plugin .= 'Plugin';
-            }
-
-            if ($plugin[0] === '!') {
-                unset($app_plugins[ucfirst(substr($plugin, 1))]);
-                continue;
-            }
-
-            $plugin = ucfirst($plugin);
-
-            $pluginClassName = isset($app_plugins[$plugin]) ? "App\\Plugins\\$plugin" : "ManaPHP\Plugins\\$plugin";
-            unset($app_plugins[$plugin]);
-
-            $plugin = lcfirst($plugin);
-            $this->setShared($plugin, is_int($k) ? $pluginClassName : array_merge($v, ['class' => $pluginClassName]))->getShared($plugin);
-        }
-
-        foreach ($app_plugins as $plugin => $_) {
-            $pluginClassName = "App\\Plugins\\$plugin";
-            $plugin = lcfirst($plugin);
-            $this->setShared($plugin, $pluginClassName)->getShared($plugin);
-        }
-    }
-
-    /**
-     * @param array $components
-     */
-    protected function _loadComponents($components)
-    {
-        $di = $this->_di;
-
-        foreach ($components as $component => $definition) {
-            if (is_int($component)) {
-                $component = lcfirst(($pos = strrpos($definition, '\\')) ? substr($definition, $pos + 1) : $definition);
-                $this->setShared($component, $definition);
-            } elseif ($definition === null) {
-                $di->remove($component);
-            } elseif ($component[0] !== '!' || $di->has($component = substr($component, 1))) {
-                $this->setShared($component, $definition);
-            }
-        }
-    }
-
-    /**
-     * @param array $services
-     */
-    protected function _loadServices($services)
-    {
-        foreach (@scandir($this->alias->resolve('@app/Services')) ?: [] as $file) {
-            if (substr($file, -11) === 'Service.php') {
-                $service = lcfirst(basename($file, '.php'));
-                if (!isset($services[$service])) {
-                    $services[$service] = [];
-                }
-            }
-        }
-
-        foreach ($services as $service => $params) {
-            if (is_string($params)) {
-                $params = [$params];
-            }
-            $params['class'] = 'App\Services\\' . ucfirst($service);
-            $this->setShared($service, $params);
-        }
-    }
-
-    protected function _loadAspects()
-    {
-        foreach (LocalFS::glob('@app/Aspects/*Aspect.php') as $item) {
-            $class = 'App\Aspects\\' . basename($item, '.php');
-            /** @var \ManaPHP\Aop\Aspect $aspect */
-            $aspect = new $class();
-            $aspect->register();
-        }
-    }
-
     public function registerServices()
     {
         $configure = $this->configure;
@@ -263,9 +148,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         }
         $this->setShared('crypt', ['master_key' => $configure->master_key]);
 
-        foreach ($configure->aliases as $alias => $path) {
-            $this->alias->set($alias, $path);
-        }
+        $configure->registerAliases();
 
         $app_dir = scandir($this->alias->resolve('@app'));
 
@@ -273,23 +156,11 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
             $this->setShared('router', 'App\\Router');
         }
 
-        if ($configure->components) {
-            $this->_loadComponents($configure->components);
-        }
-
-        if (in_array('Aspects', $app_dir, true)) {
-            $this->_loadAspects();
-        }
-
-        $this->_loadServices($configure->services);
-
-        if ($configure->plugins || in_array('Plugins', $app_dir, true)) {
-            $this->_loadPlugins($configure->plugins);
-        }
-
-        if ($configure->listeners) {
-            $this->_loadListeners($configure->listeners);
-        }
+        $configure->registerComponents();
+        $configure->registerAspects();
+        $configure->registerServices();
+        $configure->registerPlugins();
+        $configure->registerListeners();
     }
 
     /**
