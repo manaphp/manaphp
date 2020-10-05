@@ -18,7 +18,7 @@ class AclController extends Controller
      */
     public function listCommand($role = '')
     {
-        $authorization = $this->_di->getShared('ManaPHP\Authorization');
+        $authorization = $this->getShared('ManaPHP\Authorization');
         foreach ($this->aclBuilder->getControllers() as $controller) {
             /** @var \ManaPHP\Http\Controller $controllerInstance */
             $controllerInstance = $this->getInstance($controller);

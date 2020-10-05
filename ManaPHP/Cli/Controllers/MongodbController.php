@@ -82,7 +82,7 @@ class MongodbController extends Controller
 
         foreach ($this->_getServices($services) as $service) {
             /** @var \ManaPHP\Mongodb $mongodb */
-            $mongodb = $this->_di->getShared($service);
+            $mongodb = $this->getShared($service);
 
             $defaultDb = $mongodb->getDefaultDb();
             foreach ($defaultDb ? [$defaultDb] : $mongodb->listDatabases() as $cdb) {
@@ -380,7 +380,7 @@ class MongodbController extends Controller
     {
         foreach ($this->_getServices($services) as $service) {
             /** @var \ManaPHP\Mongodb $mongodb */
-            $mongodb = $this->_di->getShared($service);
+            $mongodb = $this->getShared($service);
             $defaultDb = $mongodb->getDefaultDb();
 
             foreach ($defaultDb ? [$defaultDb] : $mongodb->listDatabases() as $db) {
@@ -462,7 +462,7 @@ class MongodbController extends Controller
     {
         foreach ($this->_getServices($services) as $service) {
             /** @var \ManaPHP\Mongodb $mongodb */
-            $mongodb = $this->_di->getShared($service);
+            $mongodb = $this->getShared($service);
 
             $defaultDb = $mongodb->getDefaultDb();
             foreach ($defaultDb ? [$defaultDb] : $mongodb->listDatabases() as $cdb) {

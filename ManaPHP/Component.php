@@ -98,6 +98,20 @@ class Component implements ComponentInterface, JsonSerializable
     }
 
     /**
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function getShared($name)
+    {
+        if ($this->_di === null) {
+            $this->_di = Di::getDefault();
+        }
+
+        return $this->_di->getShared($name);
+    }
+
+    /**
      * @return object
      */
     protected function _createContext()

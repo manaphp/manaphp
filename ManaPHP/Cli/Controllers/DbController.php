@@ -34,7 +34,7 @@ class DbController extends Controller
     protected function _getTables($service, $pattern = null)
     {
         /** @var \ManaPHP\DbInterface $db */
-        $db = $this->_di->getShared($service);
+        $db = $this->getShared($service);
         $tables = [];
         foreach ($db->getTables() as $table) {
             if ($pattern && !fnmatch($pattern, $table)) {
@@ -85,7 +85,7 @@ class DbController extends Controller
 
         if (!isset($cached[$service])) {
             /** @var \ManaPHP\DbInterface $db */
-            $db = $this->_di->getShared($service);
+            $db = $this->getShared($service);
             $metadata_table = 'metadata_constant';
             if (!in_array($metadata_table, $db->getTables(), true)) {
                 $cached[$service] = [];
@@ -131,7 +131,7 @@ class DbController extends Controller
     protected function _renderModel($service, $table, $rootNamespace = 'App\Models', $optimized = false)
     {
         /** @var Db $db */
-        $db = $this->_di->getShared($service);
+        $db = $this->getShared($service);
         $metadata = $db->getMetadata($table);
 
         $fields = (array)$metadata[Db::METADATA_ATTRIBUTES];
@@ -264,7 +264,7 @@ class DbController extends Controller
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
             /** @var \ManaPHP\DbInterface $db */
-            $db = $this->_di->getShared($service);
+            $db = $this->getShared($service);
 
             $this->console->writeLn(['service: `:service`', 'service' => $service], Console::FC_CYAN);
             foreach ($this->_getTables($service, $table_pattern) as $row => $table) {
@@ -304,13 +304,13 @@ class DbController extends Controller
 
         /** @var \ManaPHP\DbInterface $db */
         if ($service) {
-            $db = $this->_di->getShared($service);
+            $db = $this->getShared($service);
             if (!in_array($table, $db->getTables(), true)) {
                 throw new Exception(['`:table` is not exists', 'table' => $table]);
             }
         } else {
             foreach ($this->_getDbServices() as $s) {
-                $db = $this->_di->getShared($s);
+                $db = $this->getShared($s);
                 if (in_array($table, $db->getTables(), true)) {
                     $service = $s;
                     break;
@@ -369,7 +369,7 @@ class DbController extends Controller
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
             /** @var \ManaPHP\DbInterface $db */
-            $db = $this->_di->getShared($service);
+            $db = $this->getShared($service);
             foreach ($this->_getTables($service, $table_pattern) as $table) {
                 $fileName = "@tmp/db_json/$service/$table.json";
 
@@ -407,7 +407,7 @@ class DbController extends Controller
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
             /** @var \ManaPHP\Db $db */
-            $db = $this->_di->getShared($service);
+            $db = $this->getShared($service);
             foreach ($this->_getTables($service, $table_pattern) as $table) {
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
 

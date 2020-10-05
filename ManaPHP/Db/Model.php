@@ -152,7 +152,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         }
 
         /** @var \ManaPHP\DbInterface $db */
-        $db = $this->_di->getShared($db);
+        $db = $this->getShared($db);
         if ($autoIncrementField && $this->$autoIncrementField === null) {
             $this->$autoIncrementField = (int)$db->insert($table, $fieldValues, true);
         } else {
@@ -263,7 +263,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
         }
 
         /** @var \ManaPHP\DbInterface $db */
-        $db = $this->_di->getShared($db);
+        $db = $this->getShared($db);
         $db->update($table, $fieldValues, [$primaryKey => $this->$primaryKey], $bind);
 
         if ($expressionFields && $rs = $this->newQuery()->select($expressionFields)->whereEq($primaryKey, $this->$primaryKey)->execute()) {

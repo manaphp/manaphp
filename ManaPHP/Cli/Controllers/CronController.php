@@ -4,7 +4,6 @@ namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
 use ManaPHP\Cli\Cronable;
-use ManaPHP\Di;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
@@ -26,7 +25,7 @@ class CronController extends Controller
 
     public function __construct()
     {
-        $this->_scheduleParser = Di::getDefault()->getShared('ManaPHP\Cli\Cron\ScheduleParser');
+        $this->_scheduleParser = $this->getShared('ManaPHP\Cli\Cron\ScheduleParser');
     }
 
     /**

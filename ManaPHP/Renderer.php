@@ -123,7 +123,7 @@ class Renderer extends Component implements RendererInterface
         }
 
         if (!isset($this->_resolved[$extension])) {
-            $engine = $this->_resolved[$extension] = $this->_di->getShared($this->_engines[$extension]);
+            $engine = $this->_resolved[$extension] = $this->getShared($this->_engines[$extension]);
         } else {
             $engine = $this->_resolved[$extension];
         }

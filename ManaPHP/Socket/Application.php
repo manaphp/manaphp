@@ -34,7 +34,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
     {
         static $controller;
         if ($controller === null) {
-            $controller = $this->_di->getShared('App\Controllers\IndexController');
+            $controller = $this->getShared('App\Controllers\IndexController');
         }
 
         if (($r = $controller->invoke($action)) !== null) {

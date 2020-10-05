@@ -33,11 +33,11 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
             if ($data !== false) {
                 $this->_metadata[$modelName] = $data;
             } else {
-                $modelInstance = is_string($model) ? $this->_di->getShared($model) : $model;
+                $modelInstance = is_string($model) ? $this->getShared($model) : $model;
 
                 list($db, $table) = $modelInstance->getAnyShard();
                 /** @var \ManaPHP\DbInterface $db */
-                $db = $this->_di->getShared($db);
+                $db = $this->getShared($db);
                 $data = $db->getMetadata($table);
 
                 $this->_metadata[$modelName] = $data;

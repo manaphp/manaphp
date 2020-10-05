@@ -57,7 +57,7 @@ class Query extends \ManaPHP\Query
      */
     protected function _getDb($db)
     {
-        return $db === '' ? $this->_db : $this->_di->getShared($db);
+        return $db === '' ? $this->_db : $this->getShared($db);
     }
 
     /**

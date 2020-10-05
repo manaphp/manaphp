@@ -124,6 +124,9 @@ namespace PHPSTORM_META {
         ],
         \ManaPHP\Component::getInstance('') => [
             '' == '@',
+        ],
+        \ManaPHP\Component::getShared('') => [
+            '' == '@',
         ]
     ];
 

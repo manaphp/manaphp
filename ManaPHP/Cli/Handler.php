@@ -175,7 +175,7 @@ class Handler extends Component implements HandlerInterface
         }
 
         /** @var \ManaPHP\Controller $controllerInstance */
-        $controllerInstance = $this->_di->getShared($controllerClassName);
+        $controllerInstance = $this->getShared($controllerClassName);
         if ($commandName === '') {
             $commands = $this->_getCommands($controllerClassName);
             if (count($commands) === 1) {

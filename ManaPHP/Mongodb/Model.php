@@ -134,7 +134,7 @@ class Model extends \ManaPHP\Model
             list($db, $collection) = $this->getAnyShard();
 
             /** @var \ManaPHP\MongodbInterface $mongodb */
-            $mongodb = $this->_di->getShared($db);
+            $mongodb = $this->getShared($db);
             if (!$docs = $mongodb->fetchAll($collection, [], ['limit' => 1])) {
                 throw new RuntimeException(['`:collection` collection has none record', 'collection' => $collection]);
             }
@@ -224,7 +224,7 @@ class Model extends \ManaPHP\Model
         list($db, $source) = $this->getUniqueShard($this);
 
         /** @var \ManaPHP\MongodbInterface $mongodb */
-        $mongodb = $this->_di->getShared($db);
+        $mongodb = $this->getShared($db);
 
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $pos);
@@ -351,7 +351,7 @@ class Model extends \ManaPHP\Model
         }
 
         /** @var \ManaPHP\MongodbInterface $mongodb */
-        $mongodb = $this->_di->getShared($db);
+        $mongodb = $this->getShared($db);
         $mongodb->insert($collection, $fieldValues);
 
         $this->fireEvent('model:created');
@@ -454,7 +454,7 @@ class Model extends \ManaPHP\Model
         }
 
         /** @var \ManaPHP\MongodbInterface $mongodb */
-        $mongodb = $this->_di->getShared($db);
+        $mongodb = $this->getShared($db);
         $mongodb->update($collection, $fieldValues, [$primaryKey => $this->$primaryKey]);
 
         if ($expressionFields) {

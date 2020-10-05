@@ -293,7 +293,7 @@ class Dispatcher extends Component implements DispatcherInterface
         }
 
         /** @var \ManaPHP\Controller $controllerInstance */
-        $controllerInstance = $this->_di->getShared($controllerClassName);
+        $controllerInstance = $this->getShared($controllerClassName);
         $context->controllerInstance = $controllerInstance;
 
         return $this->invokeAction($controllerInstance, $action);

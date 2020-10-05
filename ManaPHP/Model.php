@@ -1249,7 +1249,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         $this->fireEvent('model:deleting');
 
         /** @var DbInterface $db */
-        $db = $this->_di->getShared($db);
+        $db = $this->getShared($db);
 
         $db->delete($table, [$primaryKey => $this->$primaryKey]);
 
@@ -1373,6 +1373,16 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     /**
      * @param string $name
      *
+     * @return mixed
+     */
+    public function getShared($name)
+    {
+        return $this->_di->getShared($name);
+    }
+
+    /**
+     * @param string $name
+     *
      * @return \ManaPHP\Model|\ManaPHP\Model[]|mixed
      * @throws \ManaPHP\Exception\UnknownPropertyException
      */
@@ -1386,7 +1396,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         if (method_exists($this, $method)) {
             return $this->$name = $this->$method()->fetch();
         } elseif ($this->_di->has($name)) {
-            return $this->{$name} = $this->_di->getShared($name);
+            return $this->{$name} = $this->getShared($name);
         } elseif ($this->_di->relationsManager->has($this, $name)) {
             return $this->$name = $this->_di->relationsManager->lazyLoad($this, $name)->fetch();
         } else {
