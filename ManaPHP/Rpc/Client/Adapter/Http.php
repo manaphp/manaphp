@@ -33,9 +33,8 @@ class Http extends Client
             $options['keepalive'] = true;
         }
 
-        $endpoint = $options['endpoint'];
+        $this->setEndpoint($options['endpoint']);
         unset($options['endpoint']);
-        $this->_endpoint = str_contains($endpoint, '?') ? str_replace('/?', '?', $endpoint) : rtrim($endpoint, '/');
 
         if (isset($options[0])) {
             $client = $options[0];
@@ -61,7 +60,7 @@ class Http extends Client
      */
     public function setEndpoint($endpoint)
     {
-        $this->_endpoint = $endpoint;
+        $this->_endpoint = str_contains($endpoint, '?') ? str_replace('/?', '?', $endpoint) : rtrim($endpoint, '/');
 
         return $this;
     }
