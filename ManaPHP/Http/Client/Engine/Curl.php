@@ -1,15 +1,15 @@
 <?php
 
-namespace ManaPHP\Http\Client\Adapter;
+namespace ManaPHP\Http\Client\Engine;
 
-
+use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\LocalFS;
-use ManaPHP\Http\Client;
 use ManaPHP\Http\Client\ConnectionException;
+use ManaPHP\Http\Client\EngineInterface;
 use ManaPHP\Http\Client\Response;
 
-class Curl extends Client
+class Curl extends Component implements EngineInterface
 {
     /**
      * @var resource
@@ -26,10 +26,11 @@ class Curl extends Client
 
     /**
      * @param \ManaPHP\Http\Client\Request $request
+     * @param bool                         $keepalive
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    public function do_request($request)
+    public function request($request, $keepalive = false)
     {
         $body = $request->body;
         if (is_array($body)) {
@@ -58,7 +59,7 @@ class Curl extends Client
 
         if (($curl = $this->_curl) === null) {
             $curl = curl_init();
-            if ($this->_keepalive) {
+            if ($keepalive) {
                 $this->_curl = $curl;
             }
         }
@@ -169,7 +170,7 @@ class Curl extends Client
 
             $success = true;
         } finally {
-            if (!$success || !$this->_keepalive) {
+            if (!$success || !$keepalive) {
                 curl_close($curl);
             }
         }

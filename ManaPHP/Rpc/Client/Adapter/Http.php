@@ -48,7 +48,11 @@ class Http extends Client
         $this->_endpoint = str_contains($endpoint, '?') ? str_replace('/?', '?', $endpoint) : rtrim($endpoint, '/');
 
         if (!isset($options[0]) && !isset($options['class'])) {
-            $options['class'] = 'ManaPHP\Http\Client\Adapter\Stream';
+            $options['class'] = 'ManaPHP\Http\Client';
+        }
+
+        if (!isset($options['engine'])) {
+            $options['engine'] = 'ManaPHP\Http\Client\Engine\Stream';
         }
 
         $this->poolManager->add($this, $options, $this->_pool_size);

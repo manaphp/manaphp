@@ -1,14 +1,15 @@
 <?php
 
-namespace ManaPHP\Http\Client\Adapter;
+namespace ManaPHP\Http\Client\Engine;
 
+use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Http\Client;
 use ManaPHP\Http\Client\ConnectionException;
+use ManaPHP\Http\Client\EngineInterface;
 use ManaPHP\Http\Client\Response;
 use ManaPHP\Http\Client\TimeoutException;
 
-class Stream extends Client
+class Stream extends Component implements EngineInterface
 {
     /**
      * @var resource
@@ -28,7 +29,7 @@ class Stream extends Client
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    public function do_request_with_keepalive($request)
+    protected function _request_with_keepalive($request)
     {
         $host = parse_url($request->url, PHP_URL_HOST);
         $port = parse_url($request->url, PHP_URL_PORT);
@@ -224,7 +225,7 @@ class Stream extends Client
 
             $success = true;
         } finally {
-            if ($success && $this->_keepalive) {
+            if ($success) {
                 $connection_value = null;
                 foreach ($headers as $header) {
                     if (stripos($header, 'Connection:') === 0) {
@@ -242,31 +243,32 @@ class Stream extends Client
                 $this->_stream = null;
             }
         }
-	
+
         return new Response($request, $headers, $body);
     }
 
     /**
      * @param \ManaPHP\Http\Client\Request $request
+     * @param bool                         $keepalive
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    public function do_request($request)
+    public function request($request, $keepalive = false)
     {
-        if ($this->_keepalive) {
+        if ($keepalive) {
             if ($this->_stream === null) {
-                return $this->do_request_with_keepalive($request);
+                return $this->_request_with_keepalive($request);
             } else {
                 try {
-                    return $this->do_request_with_keepalive($request);
+                    return $this->_request_with_keepalive($request);
                 } catch (TimeoutException $exception) {
                     fclose($this->_stream);
                     $this->_stream = null;
-                    return $this->do_request_with_keepalive($request);
+                    return $this->_request_with_keepalive($request);
                 }
             }
         } else {
-            return $this->do_request_without_keepalive($request);
+            return $this->_request_without_keepalive($request);
         }
     }
 
@@ -275,7 +277,7 @@ class Stream extends Client
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    public function do_request_without_keepalive($request)
+    protected function _request_without_keepalive($request)
     {
         $http = [];
 

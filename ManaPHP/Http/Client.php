@@ -24,9 +24,14 @@ use ManaPHP\Http\Client\UnauthorizedException;
  *
  * @package Curl
  */
-abstract class Client extends Component implements ClientInterface
+class Client extends Component implements ClientInterface
 {
     const USER_AGENT_IE = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
+
+    /**
+     * @var string|\ManaPHP\Http\Client\EngineInterface
+     */
+    protected $_engine;
 
     /**
      * @var string
@@ -65,6 +70,12 @@ abstract class Client extends Component implements ClientInterface
      */
     public function __construct($options = [])
     {
+        if ($engine = $options['engine'] ?? null) {
+            $this->_engine = str_contains($engine, '\\') ? $engine : "ManaPHP\Http\Client\Engine\\" . ucfirst($engine);
+        } else {
+            $this->_engine = 'ManaPHP\Http\Client\Engine\Stream';
+        }
+
         if (isset($options['proxy'])) {
             $this->_proxy = $options['proxy'];
         }
@@ -87,13 +98,6 @@ abstract class Client extends Component implements ClientInterface
             $this->_keepalive = (bool)$options['keepalive'];
         }
     }
-
-    /**
-     * @param \ManaPHP\Http\Client\Request $request
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    abstract public function do_request($request);
 
     /**
      * @param string          $method
@@ -163,8 +167,12 @@ abstract class Client extends Component implements ClientInterface
         $request->body = $body;
         $request->options = $options;
 
+        if (is_string($engine = $this->_engine)) {
+            $engine = $this->_engine = $this->_di->get($engine);
+        }
+
         $this->fireEvent('httpClient:requesting', $request);
-        $response = $this->do_request($request);
+        $response = $engine->request($request, $this->_keepalive);
         $response_text = $response->body;
 
         if ((isset($request->headers['Accept']) && str_contains($request->headers['Accept'], '/json'))
