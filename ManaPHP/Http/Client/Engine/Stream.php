@@ -24,6 +24,14 @@ class Stream extends Component implements EngineInterface
         }
     }
 
+    public function __clone()
+    {
+        if ($this->_stream !== null) {
+            fclose($this->_stream);
+            $this->_stream = null;
+        }
+    }
+
     /**
      * @param \ManaPHP\Http\Client\Request $request
      *

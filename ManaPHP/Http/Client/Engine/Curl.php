@@ -24,6 +24,14 @@ class Curl extends Component implements EngineInterface
         }
     }
 
+    public function __clone()
+    {
+        if ($this->_curl !== null) {
+            curl_close($this->_curl);
+            $this->_curl = null;
+        }
+    }
+
     /**
      * @param \ManaPHP\Http\Client\Request $request
      * @param bool                         $keepalive
