@@ -13,21 +13,6 @@ interface ClientInterface
      * @param string $message
      * @param float  $timeout
      *
-     * @return void
-     */
-    public function send($message, $timeout = null);
-
-    /**
-     * @param float $timeout
-     *
-     * @return \ManaPHP\WebSocket\Client\Message
-     */
-    public function recv($timeout = null);
-
-    /**
-     * @param string $message
-     * @param float  $timeout
-     *
      * @return \ManaPHP\WebSocket\Client\Message
      */
     public function request($message, $timeout = null);
@@ -39,23 +24,4 @@ interface ClientInterface
      * @return void
      */
     public function subscribe($handler, $keepalive = 60);
-
-    /**
-     * @param string $data
-     *
-     * @return static
-     */
-    public function ping($data = '');
-
-    /**
-     * @param string $data
-     *
-     * @return static
-     */
-    public function pong($data);
-
-    /**
-     * @return void
-     */
-    public function close();
 }
