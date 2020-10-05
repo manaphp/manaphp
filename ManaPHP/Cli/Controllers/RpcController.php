@@ -17,7 +17,7 @@ class RpcController extends Controller
     public function servicesCommand($output = '@tmp/rpc_services')
     {
         foreach (LocalFS::glob('@app/Controllers/*Controller.php') as $file) {
-            $className = $this->alias->resolveNS('App\\Controllers\\' . basename($file, '.php'));
+            $className = 'App\\Controllers\\' . basename($file, '.php');
 
             $methods = [];
             foreach (get_class_methods($className) as $method) {
