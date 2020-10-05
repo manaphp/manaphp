@@ -16,6 +16,7 @@ use Throwable;
  * @property-read \ManaPHP\RouterInterface        $router
  * @property-read \ManaPHP\Http\ResponseInterface $response
  * @property-read \ManaPHP\DispatcherInterface    $dispatcher
+ * @property-read \ManaPHP\Http\RequestInterface  $request
  */
 class Application extends \ManaPHP\Application implements HandlerInterface
 {
