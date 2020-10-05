@@ -43,21 +43,10 @@ class Jwt extends Identity
             $this->_alg = $options['alg'];
         }
 
-        if (isset($options['key'])) {
-            $this->_key = $options['key'];
-        }
+        $this->_key = $options['key'] ?? $this->crypt->getDerivedKey('jwt');
 
         if (isset($options['ttl'])) {
             $this->_ttl = $options['ttl'];
-        }
-    }
-
-    public function setDi($di)
-    {
-        parent::setDi($di);
-
-        if ($this->_key === null) {
-            $this->_key = $this->crypt->getDerivedKey('jwt');
         }
     }
 
