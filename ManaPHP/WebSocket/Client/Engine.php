@@ -96,6 +96,30 @@ class Engine extends Component implements EngineInterface
     }
 
     /**
+     * @param string $endpoint
+     *
+     * @return static
+     */
+    public function setEndpoint($endpoint)
+    {
+        if ($this->_socket !== null) {
+            $this->close();
+        }
+
+        $this->_endpoint = $endpoint;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEndpoint()
+    {
+        return $this->_endpoint;
+    }
+
+    /**
      * @return resource
      */
     protected function _open()

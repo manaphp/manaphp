@@ -5,6 +5,18 @@ namespace ManaPHP\WebSocket\Client;
 interface EngineInterface
 {
     /**
+     * @param string $endpoint
+     *
+     * @return static
+     */
+    public function setEndpoint($endpoint);
+
+    /**
+     * @return string
+     */
+    public function getEndpoint();
+
+    /**
      * @param int    $op_code
      * @param string $data
      * @param float  $timeout
