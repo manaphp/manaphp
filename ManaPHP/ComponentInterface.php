@@ -41,10 +41,11 @@ interface ComponentInterface
      *
      * @param string $event
      * @param mixed  $data
+     * @param mixed  $source
      *
      * @return void
      */
-    public function fireEvent($event, $data = []);
+    public function fireEvent($event, $data = [], $source = null);
 
     /**
      * @param string   $event
