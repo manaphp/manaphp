@@ -2,7 +2,6 @@
 
 namespace ManaPHP\Db;
 
-use ManaPHP\Di;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Model\ExpressionInterface;
