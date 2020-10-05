@@ -2,6 +2,7 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Mongodb\Exception as MongodbException;
 use MongoDB\Driver\Exception\RuntimeException;
 
@@ -50,6 +51,11 @@ class Mongodb extends Component implements MongodbInterface
     public function __destruct()
     {
         $this->poolManager->remove($this);
+    }
+
+    public function __clone()
+    {
+        throw new NonCloneableException($this);
     }
 
     /**

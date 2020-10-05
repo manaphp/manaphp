@@ -3,6 +3,7 @@
 namespace ManaPHP;
 
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Exception\NotSupportedException;
 
 /**
@@ -102,6 +103,11 @@ class Redis extends Component implements RedisInterface
         } else {
             $this->poolManager->push($this->_owner, $this->_connection, $this->_type);
         }
+    }
+
+    public function __clone()
+    {
+        throw new NonCloneableException($this);
     }
 
     /**

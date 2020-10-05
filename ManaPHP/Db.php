@@ -7,6 +7,7 @@ use ManaPHP\Db\Exception as DbException;
 use ManaPHP\Db\SqlFragmentable;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Exception\NotSupportedException;
 use PDO;
 use PDOException;
@@ -169,6 +170,11 @@ class Db extends Component implements DbInterface
     public function __destruct()
     {
         $this->poolManager->remove($this);
+    }
+
+    public function __clone()
+    {
+        throw new NonCloneableException($this);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Client\BadGatewayException;
 use ManaPHP\Http\Client\BadRequestException;
@@ -111,6 +112,11 @@ class Client extends Component implements ClientInterface
     public function __destruct()
     {
         $this->poolManager->remove($this);
+    }
+
+    public function __clone()
+    {
+        throw new NonCloneableException($this);
     }
 
     /**
