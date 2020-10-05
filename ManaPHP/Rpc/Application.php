@@ -28,14 +28,14 @@ class Application extends \ManaPHP\Application implements HandlerInterface
 
         if (PHP_SAPI === 'cli') {
             if (extension_loaded('swoole')) {
-                $this->getDi()->setShared('rpcServer', 'ManaPHP\Rpc\Server\Adapter\Swoole');
+                $this->setShared('rpcServer', 'ManaPHP\Rpc\Server\Adapter\Swoole');
             } else {
-                $this->getDi()->setShared('rpcServer', 'ManaPHP\Rpc\Server\Adapter\Php');
+                $this->setShared('rpcServer', 'ManaPHP\Rpc\Server\Adapter\Php');
             }
         } elseif (PHP_SAPI === 'cli-server') {
-            $this->getDi()->setShared('rpcServer', 'ManaPHP\Rpc\Server\Adapter\Php');
+            $this->setShared('rpcServer', 'ManaPHP\Rpc\Server\Adapter\Php');
         } else {
-            $this->getDi()->setShared('rpcServer', 'ManaPHP\Rpc\Server\Adapter\Fpm');
+            $this->setShared('rpcServer', 'ManaPHP\Rpc\Server\Adapter\Fpm');
         }
 
         if ($_SERVER['DOCUMENT_ROOT'] === '') {

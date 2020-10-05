@@ -46,8 +46,8 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
             define('MANAPHP_COROUTINE_ENABLED', PHP_SAPI === 'cli' && extension_loaded('swoole'));
         }
 
-        $this->_di->setShared('loader', $loader ?: new Loader());
-        $this->_di->setShared('app', $this);
+        $this->setShared('loader', $loader ?: new Loader());
+        $this->setShared('app', $this);
 
         $rootDir = $this->getRootDir();
         $appDir = $rootDir . '/app';
@@ -127,6 +127,19 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
     }
 
     /**
+     * @param string $name
+     * @param mixed  $definition
+     *
+     * @return static
+     */
+    public function setShared($name, $definition)
+    {
+        $this->_di->setShared($name, $definition);
+
+        return $this;
+    }
+
+    /**
      * @param array $listeners
      */
     protected function _loadListeners($listeners)
@@ -178,13 +191,13 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
             unset($app_plugins[$plugin]);
 
             $plugin = lcfirst($plugin);
-            $this->_di->setShared($plugin, is_int($k) ? $pluginClassName : array_merge($v, ['class' => $pluginClassName]))->getShared($plugin);
+            $this->setShared($plugin, is_int($k) ? $pluginClassName : array_merge($v, ['class' => $pluginClassName]))->getShared($plugin);
         }
 
         foreach ($app_plugins as $plugin => $_) {
             $pluginClassName = "App\\Plugins\\$plugin";
             $plugin = lcfirst($plugin);
-            $this->_di->setShared($plugin, $pluginClassName)->getShared($plugin);
+            $this->setShared($plugin, $pluginClassName)->getShared($plugin);
         }
     }
 
@@ -196,11 +209,11 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         foreach ($components as $component => $definition) {
             if (is_int($component)) {
                 $component = lcfirst(($pos = strrpos($definition, '\\')) ? substr($definition, $pos + 1) : $definition);
-                $this->_di->setShared($component, $definition);
+                $this->setShared($component, $definition);
             } elseif ($definition === null) {
                 $this->_di->remove($component);
             } elseif ($component[0] !== '!' || $this->_di->has($component = substr($component, 1))) {
-                $this->_di->setShared($component, $definition);
+                $this->setShared($component, $definition);
             }
         }
     }
@@ -224,7 +237,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
                 $params = [$params];
             }
             $params['class'] = 'App\Services\\' . ucfirst($service);
-            $this->_di->setShared($service, $params);
+            $this->setShared($service, $params);
         }
     }
 
@@ -245,16 +258,16 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         if ($configure->timezone) {
             date_default_timezone_set($configure->timezone);
         }
-        $this->_di->setShared('crypt', ['master_key' => $configure->master_key]);
+        $this->setShared('crypt', ['master_key' => $configure->master_key]);
 
         foreach ($configure->aliases as $alias => $path) {
-            $this->_di->alias->set($alias, $path);
+            $this->alias->set($alias, $path);
         }
 
         $app_dir = scandir($this->alias->resolve('@app'));
 
         if (in_array('Router.php', $app_dir, true)) {
-            $this->_di->setShared('router', 'App\\Router');
+            $this->setShared('router', 'App\\Router');
         }
 
         if ($configure->components) {
