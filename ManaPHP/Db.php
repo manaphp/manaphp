@@ -835,6 +835,8 @@ class Db extends Component implements DbInterface
                 $this->poolManager->push($this, $connection, $type);
             }
         }
+
+        return [];
     }
 
     /**
