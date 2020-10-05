@@ -382,10 +382,10 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             throw new InvalidValueException('Model::get id is not scalar');
         }
 
-        $model = static::sample();
+        $sample = static::sample();
 
         if (!is_int($fieldsOrTtl)) {
-            if (!$rs = static::select($fieldsOrTtl)->whereEq($model->getPrimaryKey(), $id)->limit(1)->fetch()) {
+            if (!$rs = static::select($fieldsOrTtl)->whereEq($sample->getPrimaryKey(), $id)->limit(1)->fetch()) {
                 throw new NotFoundException(static::class, $id);
             } else {
                 return $rs[0];
@@ -393,7 +393,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         }
 
         /** @var \ManaPHP\Ipc\CacheInterface $ipcCache */
-        $ipcCache = $model->getShared('ipcCache');
+        $ipcCache = $sample->getShared('ipcCache');
 
         $ttl = $fieldsOrTtl;
         $key = '_mp:models:' . static::class . ":get:$id:$ttl";
@@ -402,7 +402,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         }
 
         if (!$r) {
-            if (!$rs = static::select()->whereEq($model->getPrimaryKey(), $id)->limit(1)->fetch()) {
+            if (!$rs = static::select()->whereEq($sample->getPrimaryKey(), $id)->limit(1)->fetch()) {
                 throw new NotFoundException(static::class, $id);
             }
 

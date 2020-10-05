@@ -197,10 +197,10 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
         if ($table) {
             if (str_contains($table, '\\')) {
                 /** @var \ManaPHP\Model $table */
-                $model = $table::sample();
+                $sample = $table::sample();
 
-                $this->setModel($model);
-                $table = $model->getTable();
+                $this->setModel($sample);
+                $table = $sample->getTable();
             }
 
             $this->_table = $table;
