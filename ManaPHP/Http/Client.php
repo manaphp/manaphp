@@ -3,7 +3,6 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
-use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Client\BadGatewayException;
 use ManaPHP\Http\Client\BadRequestException;
@@ -14,6 +13,7 @@ use ManaPHP\Http\Client\GatewayTimeoutException;
 use ManaPHP\Http\Client\InternalServerErrorException;
 use ManaPHP\Http\Client\NotFoundException;
 use ManaPHP\Http\Client\RedirectionException;
+use ManaPHP\Http\Client\Request;
 use ManaPHP\Http\Client\ServerErrorException;
 use ManaPHP\Http\Client\ServiceUnavailableException;
 use ManaPHP\Http\Client\TooManyRequestsException;
@@ -124,22 +124,6 @@ class Client extends Component implements ClientInterface
      */
     public function request($method, $url, $body = null, $headers = [], $options = [])
     {
-        if (is_array($url)) {
-            if (count($url) > 1) {
-                $uri = $url[0];
-                unset($url[0]);
-                $url = $uri . (str_contains($uri, '?') ? '&' : '?') . http_build_query($url);
-            } else {
-                $url = $url[0];
-            }
-        }
-
-        $url = $this->alias->resolve($url);
-
-        if (preg_match('#^http(s)?://#i', $url) !== 1) {
-            throw new NotSupportedException(['only HTTP requests can be handled: `:url`', 'url' => $url]);
-        }
-
         if (is_string($headers)) {
             $headers = [(strpos($headers, '://') ? 'Referer' : 'User-Agent') => $headers];
         }
@@ -174,14 +158,9 @@ class Client extends Component implements ClientInterface
             $options['verify_peer'] = $this->_verify_peer;
         }
 
-        $request = $this->_di->get('ManaPHP\Http\Client\Request');
-        $request->method = $method;
-        $request->url = $url;
-        $request->headers = $headers;
-        $request->body = $body;
-        $request->options = $options;
+        $request = new Request($method, $url, $body, $headers, $options);
 
-        $engine_id = substr($url, 0, strpos($url, '/', 8));
+        $engine_id = substr($request->url, 0, strpos($request->url, '/', 8));
 
         if (!$this->poolManager->exists($this, $engine_id)) {
             $this->poolManager->add($this, $this->_engine, $this->_pool_size, $engine_id);
