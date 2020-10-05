@@ -66,13 +66,13 @@ class Http extends Client
     }
 
     /**
-     * @param string          $method
-     * @param array           $params
-     * @param array|int|float $options
+     * @param string $method
+     * @param array  $params
+     * @param array  $options
      *
      * @return mixed
      */
-    public function invoke($method, $params = [], $options = null)
+    public function invoke($method, $params = [], $options = [])
     {
         $endpoint = $this->_endpoint;
         $url = str_contains($endpoint, '?') ? str_replace('?', "/$method?", $endpoint) : "$endpoint/$method";
