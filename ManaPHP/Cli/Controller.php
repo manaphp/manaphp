@@ -10,7 +10,6 @@ use ReflectionMethod;
  *
  * @package controller
  *
- * @property-read \ManaPHP\Di|\ManaPHP\DiInterface $di
  * @property-read \ManaPHP\CacheInterface          $viewsCache
  * @property-read \ManaPHP\Message\QueueInterface  $messageQueue
  * @property-read \ManaPHP\Cli\ConsoleInterface    $console

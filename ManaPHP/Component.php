@@ -215,10 +215,6 @@ class Component implements ComponentInterface, JsonSerializable
      */
     public function __isset($name)
     {
-        if ($name === 'di') {
-            return true;
-        }
-
         if ($this->_di === null) {
             $this->_di = Di::getDefault();
         }

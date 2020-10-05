@@ -27,7 +27,6 @@ use ManaPHP\Exception\NotSupportedException;
  * @property-read \ManaPHP\Security\CryptInterface         $crypt
  * @property-read \ManaPHP\Db\Model\MetadataInterface      $modelsMetadata
  * @property-read \ManaPHP\ValidatorInterface              $validator
- * @property-read \ManaPHP\Di|\ManaPHP\DiInterface         $di
  * @property-read \ManaPHP\ViewInterface                   $view
  * @property-read \ManaPHP\Loader                          $loader
  * @property-read \ManaPHP\LoggerInterface                 $logger
