@@ -10,7 +10,6 @@ use MongoDB\Driver\Exception\RuntimeException;
  * Class Mongodb
  *
  * @package ManaPHP
- * @property-read \ManaPHP\DiInterface $di
  */
 class Mongodb extends Component implements MongodbInterface
 {
