@@ -117,6 +117,32 @@ class Client extends Component implements ClientInterface
     }
 
     /**
+     * @param string $endpoint
+     *
+     * @return static
+     */
+    public function setEndpoint($endpoint)
+    {
+        $this->_endpoint = $endpoint;
+
+        $size = $this->poolManager->size($this);
+
+        $engines = [];
+        for ($i = 0; $i < $size; $i++) {
+            /** @var \ManaPHP\WebSocket\Client\EngineInterface $engine */
+            $engine = $this->poolManager->pop($this);
+            $engine->setEndpoint($endpoint);
+            $engines[] = $engine;
+        }
+
+        foreach ($engines as $engine) {
+            $this->poolManager->push($this, $engine);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param string $message
      * @param float  $timeout
      *

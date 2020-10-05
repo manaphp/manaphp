@@ -10,6 +10,13 @@ interface ClientInterface
     public function getEndpoint();
 
     /**
+     * @param string $endpoint
+     *
+     * @return static
+     */
+    public function setEndpoint($endpoint);
+
+    /**
      * @param string $message
      * @param float  $timeout
      *
