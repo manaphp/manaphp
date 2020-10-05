@@ -57,11 +57,7 @@ class Apcu extends Component implements CacheInterface
         }
 
         $this->_is_cli = (PHP_SAPI === 'cli');
-    }
 
-    public function setDi($di)
-    {
-        parent::setDi($di);
         if (!$this->_enabled) {
             $this->logger->info('APCu needs enabling for the cli via apc.enable_cli=1 or apcu.enable_cli=1', 'ipcCache.enabled');
         }
