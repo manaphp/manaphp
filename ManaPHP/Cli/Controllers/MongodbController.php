@@ -17,11 +17,13 @@ class MongodbController extends Controller
     protected function _getServices($services)
     {
         if ($services) {
+            $di = $this->_di;
+
             foreach ($services as $index => $service) {
-                if (!$this->_di->has($service)) {
-                    if ($this->_di->has($service . 'Mongodb')) {
+                if (!$di->has($service)) {
+                    if ($di->has($service . 'Mongodb')) {
                         $services[$index] = $service . 'Mongodb';
-                    } elseif ($this->_di->has($service . '_mongodb')) {
+                    } elseif ($di->has($service . '_mongodb')) {
                         $services[$index] = $service . '_mongodb';
                     } else {
                         $this->console->warn(['`:service` service is not exists: ignoring', 'service' => $service]);
