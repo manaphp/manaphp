@@ -27,27 +27,6 @@ class Manager extends Component implements ManagerInterface
     protected $_listeners = [];
 
     /**
-     * @param string $class
-     * @param array  $params
-     *
-     * @return mixed
-     */
-    public function getInstance($class, $params = [])
-    {
-        return $this->_di->get($class, $params);
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return mixed
-     */
-    public function getShared($name)
-    {
-        return $this->_di->getShared($name);
-    }
-
-    /**
      * Attach a listener to the events manager
      *
      * @param string   $event
