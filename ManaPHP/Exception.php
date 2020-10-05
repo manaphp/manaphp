@@ -37,7 +37,7 @@ class Exception extends \Exception
                 unset($this->_bind[0]);
 
                 if (!isset($this->_bind['last_error_message'])) {
-                    $this->_bind['last_error_message'] = error_get_last()['message'];
+                    $this->_bind['last_error_message'] = error_get_last()['message'] ?? '';
                 }
 
                 $tr = [];
