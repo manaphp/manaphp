@@ -56,4 +56,12 @@ interface ManagerInterface
      * @return bool
      */
     public function exists($owner, $type = 'default');
+
+    /**
+     * @param object $owner
+     * @param string $type
+     *
+     * @return int
+     */
+    public function size($owner, $type = 'default');
 }

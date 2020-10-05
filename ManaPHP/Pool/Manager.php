@@ -214,4 +214,21 @@ class Manager extends Component implements ManagerInterface
             return isset($this->_pool[$owner_id]) && array_key_exists($type, $this->_pool[$owner_id]);
         }
     }
+
+    /**
+     * @param object $owner
+     * @param string $type
+     *
+     * @return int
+     */
+    public function size($owner, $type = 'default')
+    {
+        $owner_id = spl_object_id($owner);
+
+        if (MANAPHP_COROUTINE_ENABLED) {
+            return isset($this->_pool[$owner_id][$type]) ? $this->_pool[$owner_id][$type]->capacity : 0;
+        } else {
+            return isset($this->_pool[$owner_id]) && array_key_exists($type, $this->_pool[$owner_id]) ? 1 : 0;
+        }
+    }
 }
