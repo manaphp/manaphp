@@ -64,6 +64,11 @@ class Client extends Component implements ClientInterface
     protected $_keepalive = false;
 
     /**
+     * @var int
+     */
+    protected $_pool_size = 4;
+
+    /**
      * Client constructor.
      *
      * @param array $options
@@ -97,6 +102,15 @@ class Client extends Component implements ClientInterface
         if (isset($options['keepalive'])) {
             $this->_keepalive = (bool)$options['keepalive'];
         }
+
+        if (isset($options['pool_size'])) {
+            $this->_pool_size = (int)$options['pool_size'];
+        }
+    }
+
+    public function __destruct()
+    {
+        $this->poolManager->remove($this);
     }
 
     /**
@@ -167,12 +181,22 @@ class Client extends Component implements ClientInterface
         $request->body = $body;
         $request->options = $options;
 
-        if (is_string($engine = $this->_engine)) {
-            $engine = $this->_engine = $this->_di->get($engine);
+        $engine_id = substr($url, 0, strpos($url, '/', 8));
+
+        if (!$this->poolManager->exists($this, $engine_id)) {
+            $this->poolManager->add($this, $this->_engine, $this->_pool_size, $engine_id);
         }
 
+        $engine = $this->poolManager->pop($this, $options['timeout'], $engine_id);
+
         $this->fireEvent('httpClient:requesting', $request);
-        $response = $engine->request($request, $this->_keepalive);
+
+        try {
+            $response = $engine->request($request, $this->_keepalive);
+        } finally {
+            $this->poolManager->push($this, $engine, $engine_id);
+        }
+
         $response_text = $response->body;
 
         if ((isset($request->headers['Accept']) && str_contains($request->headers['Accept'], '/json'))
