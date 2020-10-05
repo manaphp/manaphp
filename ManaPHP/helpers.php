@@ -224,6 +224,19 @@ if (!function_exists('log_fatal')) {
     }
 }
 
+if (!function_exists('dd')) {
+
+    /**
+     * @param mixed $message
+     *
+     * @return void
+     */
+    function dd($message)
+    {
+        di('dataDump')->output($message);
+    }
+}
+
 if (!function_exists('path')) {
     /**
      * @param string $path

@@ -118,6 +118,7 @@ namespace PHPSTORM_META {
             'jwt' instanceof \ManaPHP\Identity\Adapter\Jwt,
             'pubSub' instanceof \ManaPHP\Message\PubSubInterface,
             'coroutineSerial' instanceof \ManaPHP\Coroutine\SerialInterface,
+            'dataDump' instanceof \ManaPHP\DataDumpInterface,
         ],
         \ManaPHP\DiInterface::get('') => [
             '' == '@',
