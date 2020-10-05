@@ -80,7 +80,7 @@ class Application extends \ManaPHP\Application implements LogCategorizable
         $this->dotenv->load();
         $this->configure->load();
 
-        $this->registerServices();
+        $this->registerConfigure();
 
         if (MANAPHP_COROUTINE_ENABLED) {
             Runtime::enableCoroutine(true);

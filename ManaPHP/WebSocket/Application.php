@@ -136,7 +136,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         $this->dotenv->load();
         $this->configure->load();
 
-        $this->registerServices();
+        $this->registerConfigure();
 
         $this->wsServer->start($this);
     }

@@ -63,7 +63,7 @@ abstract class Application extends \ManaPHP\Application implements HandlerInterf
         $this->dotenv->load();
         $this->configure->load();
 
-        $this->registerServices();
+        $this->registerConfigure();
 
         $this->httpServer->start($this);
     }

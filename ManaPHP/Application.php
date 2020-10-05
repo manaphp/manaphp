@@ -139,7 +139,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         return $this;
     }
 
-    public function registerServices()
+    public function registerConfigure()
     {
         $configure = $this->configure;
 
@@ -181,7 +181,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
             $this->configure->load();
         }
 
-        $this->registerServices();
+        $this->registerConfigure();
 
         if (!MANAPHP_CLI) {
             $this->fireEvent('request:begin');

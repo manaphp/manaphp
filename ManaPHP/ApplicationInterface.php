@@ -12,7 +12,7 @@ interface ApplicationInterface
     /**
      * @return void
      */
-    public function registerServices();
+    public function registerConfigure();
 
     /**
      * @return void
