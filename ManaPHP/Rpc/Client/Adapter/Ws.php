@@ -38,6 +38,8 @@ class Ws extends Client
     {
         $options['protocol'] = 'jsonrpc';
 
+        $this->_endpoint = $options['endpoint'];
+
         if (isset($options['timeout'])) {
             $this->_timeout = $options['timeout'];
         }
@@ -56,6 +58,18 @@ class Ws extends Client
                 $this->authenticate($eventArgs->data);
             });
         }
+    }
+
+    /**
+     * @param string $endpoint
+     *
+     * @return static
+     */
+    public function setEndpoint($endpoint)
+    {
+        $this->_client->setEndpoint($endpoint);
+
+        return $this;
     }
 
     /**

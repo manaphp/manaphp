@@ -9,11 +9,6 @@ use ManaPHP\Rpc\Client\ProtocolException;
 class Http extends Client
 {
     /**
-     * @var string
-     */
-    protected $_endpoint;
-
-    /**
      * @var float
      */
     protected $_timeout = 3.0;
@@ -57,6 +52,18 @@ class Http extends Client
         }
 
         $this->_client = $this->getInstance($client, $options);
+    }
+
+    /**
+     * @param string $endpoint
+     *
+     * @return static
+     */
+    public function setEndpoint($endpoint)
+    {
+        $this->_endpoint = $endpoint;
+
+        return $this;
     }
 
     /**

@@ -6,5 +6,16 @@ use ManaPHP\Component;
 
 abstract class Client extends Component implements ClientInterface
 {
+    /**
+     * @var string
+     */
+    protected $_endpoint;
 
+    /**
+     * @return string
+     */
+    public function getEndpoint()
+    {
+        return $this->_endpoint;
+    }
 }
