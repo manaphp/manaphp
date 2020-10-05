@@ -278,7 +278,7 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
             $this->emit($on, $data);
         }
 
-        $this->eventsManager->fireEvent($event, $source ?? $this, $data);
+        $this->eventsManager->fireEvent($event, $data, $source ?? $this);
     }
 
     /**

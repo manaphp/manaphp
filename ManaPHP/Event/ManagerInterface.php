@@ -32,12 +32,12 @@ interface ManagerInterface
      * Fires an event in the events manager causing that the active listeners will be notified about it
      *
      * @param string $event
-     * @param mixed  $source
      * @param mixed  $data
+     * @param mixed  $source
      *
      * @return void
      */
-    public function fireEvent($event, $source, $data = []);
+    public function fireEvent($event, $data = [], $source = null);
 
     /**
      * @param string   $group

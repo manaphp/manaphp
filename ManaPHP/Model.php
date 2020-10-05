@@ -1080,7 +1080,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         /** @var \ManaPHP\Event\ManagerInterface $eventsManager */
         $eventsManager = $this->getShared('eventsManager');
 
-        $eventsManager->fireEvent($event, $this, $data);
+        $eventsManager->fireEvent($event, $data, $this);
     }
 
     /**

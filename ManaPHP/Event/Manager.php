@@ -2,20 +2,15 @@
 
 namespace ManaPHP\Event;
 
-use ManaPHP\Di\Injectable;
+use ManaPHP\Component;
 
 /**
  * Class ManaPHP\Event\Manager
  *
  * @package eventsManager
  */
-class Manager implements ManagerInterface, Injectable
+class Manager extends Component implements ManagerInterface
 {
-    /**
-     * @var \ManaPHP\DiInterface
-     */
-    protected $_di;
-
     /**
      * @var array[]
      */
@@ -30,24 +25,6 @@ class Manager implements ManagerInterface, Injectable
      * @var array
      */
     protected $_listeners = [];
-
-    /**
-     * @return \ManaPHP\DiInterface
-     */
-    public function getDi()
-    {
-        return $this->_di;
-    }
-
-    /**
-     * @param \ManaPHP\DiInterface $di
-     *
-     * @return void
-     */
-    public function setDi($di)
-    {
-        $this->_di = $di;
-    }
 
     /**
      * @param string $class
@@ -117,12 +94,12 @@ class Manager implements ManagerInterface, Injectable
      * Fires an event in the events manager causing that active listeners be notified about it
      *
      * @param string $event
-     * @param mixed  $source
      * @param mixed  $data
+     * @param mixed  $source
      *
      * @return void
      */
-    public function fireEvent($event, $source, $data = [])
+    public function fireEvent($event, $data = [], $source = null)
     {
         $eventArgs = new EventArgs($event, $source, $data);
 
@@ -192,5 +169,18 @@ class Manager implements ManagerInterface, Injectable
         unset($data['_di']);
 
         return $data;
+    }
+
+    public function dump()
+    {
+        $dump = parent::dump();
+
+        $dump['*_events'] = array_keys($dump['_events']);
+        $dump['*_peekers'] = array_keys($dump['_peekers']);
+        $dump['*_listeners'] = array_keys($dump['_listeners']);
+
+        unset($dump['_events'], $dump['_peekers'], $dump['_listeners']);
+
+        return $dump;
     }
 }
