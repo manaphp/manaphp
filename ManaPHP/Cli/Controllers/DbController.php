@@ -77,7 +77,6 @@ class DbController extends Controller
      * @param string $table
      *
      * @return string
-     * @throws \ManaPHP\Exception\InvalidValueException
      */
     protected function _getConstantsByDb($service, $table)
     {

@@ -115,6 +115,8 @@ class Response implements JsonSerializable
                 return $i === 0 ? $headers : array_slice($headers, $i);
             }
         }
+
+        return [];
     }
 
     /**
