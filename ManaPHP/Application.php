@@ -144,7 +144,8 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
      */
     protected function _loadListeners($listeners)
     {
-        $eventsManager = $this->_di->eventsManager;
+        $eventsManager = $this->getShared('eventsManager');
+
         foreach ($listeners as $listener) {
             if ($listener === '*') {
                 foreach (LocalFS::glob('@app/Areas/*/Listeners/*Listener.php') as $item) {
@@ -206,13 +207,15 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
      */
     protected function _loadComponents($components)
     {
+        $di = $this->_di;
+
         foreach ($components as $component => $definition) {
             if (is_int($component)) {
                 $component = lcfirst(($pos = strrpos($definition, '\\')) ? substr($definition, $pos + 1) : $definition);
                 $this->setShared($component, $definition);
             } elseif ($definition === null) {
-                $this->_di->remove($component);
-            } elseif ($component[0] !== '!' || $this->_di->has($component = substr($component, 1))) {
+                $di->remove($component);
+            } elseif ($component[0] !== '!' || $di->has($component = substr($component, 1))) {
                 $this->setShared($component, $definition);
             }
         }
