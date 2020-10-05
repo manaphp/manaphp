@@ -49,7 +49,10 @@ class Model extends \ManaPHP\Model implements ModelInterface
             if ($primaryKey = $this->_inferPrimaryKey($class)) {
                 return $cached[$class] = $primaryKey;
             } else {
-                $primaryKeys = $this->_di->modelsMetadata->getPrimaryKeyAttributes($this);
+                /** @var \ManaPHP\Db\Model\MetadataInterface $modelsMetadata */
+                $modelsMetadata = $this->getShared('modelsMetadata');
+
+                $primaryKeys = $modelsMetadata->getPrimaryKeyAttributes($this);
                 if (count($primaryKeys) !== 1) {
                     throw new NotSupportedException('only support one primary key');
                 }
@@ -76,7 +79,10 @@ class Model extends \ManaPHP\Model implements ModelInterface
                 }
             }
 
-            $cached[$class] = $fields ?: $this->_di->modelsMetadata->getAttributes($this);
+            /** @var \ManaPHP\Db\Model\MetadataInterface $modelsMetadata */
+            $modelsMetadata = $this->getShared('modelsMetadata');
+
+            $cached[$class] = $fields ?: $modelsMetadata->getAttributes($this);
         }
 
         return $cached[$class];
@@ -87,7 +93,10 @@ class Model extends \ManaPHP\Model implements ModelInterface
      */
     public function getIntFields()
     {
-        return $this->_di->modelsMetadata->getIntTypeAttributes($this);
+        /** @var \ManaPHP\Db\Model\MetadataInterface $modelsMetadata */
+        $modelsMetadata = $this->getShared('modelsMetadata');
+
+        return $modelsMetadata->getIntTypeAttributes($this);
     }
 
     /**
@@ -374,9 +383,13 @@ class Model extends \ManaPHP\Model implements ModelInterface
         $sample = static::sample();
 
         list($db, $table) = $sample->getUniqueShard($record);
+        /** @var \ManaPHP\Db\Model\MetadataInterface $modelsMetadata */
+        /** @var \ManaPHP\LoggerInterface $logger */
+        $modelsMetadata = $sample->getShared('modelsMetadata');
+        $logger = $sample->getShared('logger');
 
-        if ($fields = array_diff(array_keys($record), $sample->_di->modelsMetadata->getAttributes($sample))) {
-            $sample->_di->logger->debug(['insert `:1` table skip fields: :2', $table, array_values($fields)]);
+        if ($fields = array_diff(array_keys($record), $modelsMetadata->getAttributes($sample))) {
+            $logger->debug(['insert `:1` table skip fields: :2', $table, array_values($fields)]);
 
             foreach ($fields as $field) {
                 unset($record[$field]);

@@ -392,10 +392,12 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             }
         }
 
-        $ttl = $fieldsOrTtl;
+        /** @var \ManaPHP\Ipc\CacheInterface $ipcCache */
+        $ipcCache = $model->getShared('ipcCache');
 
+        $ttl = $fieldsOrTtl;
         $key = '_mp:models:' . static::class . ":get:$id:$ttl";
-        if ($r = $model->_di->ipcCache->get($key)) {
+        if ($r = $ipcCache->get($key)) {
             return $r;
         }
 
@@ -406,7 +408,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
             $r = $rs[0];
 
-            $model->_di->ipcCache->set($key, $r, $ttl);
+            $ipcCache->set($key, $r, $ttl);
         }
 
         return $r;
@@ -465,7 +467,10 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     {
         $sample = static::sample();
 
-        return $sample->_di->request->getId($sample->getPrimaryKey());
+        /** @var \ManaPHP\Http\RequestInterface $request */
+        $request = $sample->getShared('request');
+
+        return $request->getId($sample->getPrimaryKey());
     }
 
     /**
@@ -530,15 +535,18 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             return $rs ? $rs[0][$field] : null;
         }
 
+        /** @var \ManaPHP\Ipc\CacheInterface $ipcCache */
+        $ipcCache = $sample->getShared('ipcCache');
+
         $key = '_mp:models:' . static::class . ":value:$field:$pkValue:$ttl";
-        if (($value = $sample->_di->ipcCache->get($key)) !== false) {
+        if (($value = $ipcCache->get($key)) !== false) {
             return $value;
         }
 
         $rs = static::select([$field])->whereEq($pkName, $pkValue)->limit(1)->execute();
         $value = $rs ? $rs[0][$field] : null;
 
-        $sample->_di->ipcCache->set($key, $value, $ttl);
+        $ipcCache->set($key, $value, $ttl);
 
         return $value;
     }
@@ -712,7 +720,11 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     public function load($fields = null)
     {
         $fields = $fields ?? $this->getSafeFields();
-        $data = $this->_di->request->getContext()->_REQUEST;
+
+        /** @var \ManaPHP\Http\RequestInterface $request */
+        $request = $this->getShared('request');
+
+        $data = $request->getContext()->_REQUEST;
 
         foreach ($fields as $k => $v) {
             if (is_string($k)) {
@@ -749,6 +761,9 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             ]);
         }
 
+        /** @var \ManaPHP\ValidatorInterface $validator */
+        $validator = $this->getShared('validator');
+
         $errors = [];
 
         foreach ($fields ?: $this->getChangedFields() as $field) {
@@ -757,7 +772,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             }
 
             try {
-                $this->$field = $this->_di->validator->validateModel($field, $this, $rules[$field]);
+                $this->$field = $validator->validateModel($field, $this, $rules[$field]);
             } catch (ValidateFailedException $exception) {
                 /** @noinspection AdditionOperationOnArraysInspection */
                 $errors += $exception->getErrors();
@@ -785,7 +800,10 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             $rules = $rules[$field];
         }
 
-        $this->$field = $this->_di->validator->validateModel($field, $this, $rules);
+        /** @var \ManaPHP\ValidatorInterface $validator */
+        $validator = $this->getShared('validator');
+
+        $this->$field = $validator->validateModel($field, $this, $rules);
     }
 
     /**
@@ -798,8 +816,10 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         $data = [];
 
         $current_time = time();
-        $user_id = $this->_di->identity->getId(0);
-        $user_name = $this->_di->identity->getName('');
+
+        $identity = $this->getShared('identity');
+        $user_id = $identity->getId(0);
+        $user_name = $identity->getName('');
 
         if ($opMode === self::OP_CREATE) {
             foreach ($this->getFields() as $field) {
@@ -926,7 +946,10 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function with($withs)
     {
-        $this->_di->relationsManager->earlyLoad($this, [$this], $withs, false);
+        /** @var \ManaPHP\Model\Relation\ManagerInterface $relationsManager */
+        $relationsManager = $this->getShared('relationsManager');
+
+        $relationsManager->earlyLoad($this, [$this], $withs, false);
         return $this;
     }
 
@@ -1054,7 +1077,10 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
     public function fireEvent($event, $data = [])
     {
-        $this->_di->eventsManager->fireEvent($event, $this, $data);
+        /** @var \ManaPHP\Event\ManagerInterface $eventsManager */
+        $eventsManager = $this->getShared('eventsManager');
+
+        $eventsManager->fireEvent($event, $this, $data);
     }
 
     /**
@@ -1392,13 +1418,15 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             return $this->_di = Di::getDefault();
         }
 
+        /** @var \ManaPHP\Model\Relation\ManagerInterface $relationsManager */
+
         $method = 'get' . ucfirst($name);
         if (method_exists($this, $method)) {
             return $this->$name = $this->$method()->fetch();
         } elseif ($this->_di->has($name)) {
             return $this->{$name} = $this->getShared($name);
-        } elseif ($this->_di->relationsManager->has($this, $name)) {
-            return $this->$name = $this->_di->relationsManager->lazyLoad($this, $name)->fetch();
+        } elseif (($relationsManager = $this->getShared('relationsManager'))->has($this, $name)) {
+            return $this->$name = $relationsManager->lazyLoad($this, $name)->fetch();
         } else {
             throw new UnknownPropertyException([
                 '`:model` does not contain `:field` field: `:fields`',
@@ -1444,9 +1472,12 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     public function __call($name, $arguments)
     {
         if (str_starts_with($name, 'get')) {
+            /** @var \ManaPHP\Model\Relation\ManagerInterface $relationsManager */
+            $relationsManager = $this->getShared('relationsManager');
+
             $relation = lcfirst(substr($name, 3));
-            if ($this->_di->relationsManager->has($this, $relation)) {
-                return $this->_di->relationsManager->lazyLoad($this, $relation);
+            if ($relationsManager->has($this, $relation)) {
+                return $relationsManager->lazyLoad($this, $relation);
             } else {
                 throw new NotSupportedException(['`:model` model does not define `:method` relation', 'model' => static::class, 'method' => $relation]);
             }
