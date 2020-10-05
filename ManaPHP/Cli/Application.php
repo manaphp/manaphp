@@ -53,12 +53,9 @@ class Application extends \ManaPHP\Application implements LogCategorizable
         }
     }
 
-    public function getDi()
+    public function getFactory()
     {
-        if (!$this->_di) {
-            $this->_di = new Factory();
-        }
-        return $this->_di;
+        return 'ManaPHP\Cli\Factory';
     }
 
     public function handle()

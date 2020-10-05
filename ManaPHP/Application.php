@@ -3,9 +3,7 @@
 namespace ManaPHP;
 
 use ManaPHP\Aop\Unaspectable;
-use ManaPHP\Cli\Factory as CliFactory;
 use ManaPHP\Helper\LocalFS;
-use ManaPHP\Mvc\Factory as MvcFactory;
 use ReflectionClass;
 
 /**
@@ -41,7 +39,8 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         ini_set('html_errors', 'off');
         ini_set('default_socket_timeout', -1);
 
-        $GLOBALS['DI'] = $this->getDi();
+        $factory = $this->getFactory();
+        $GLOBALS['DI'] = $this->_di = new $factory();
 
         if (!defined('MANAPHP_COROUTINE_ENABLED')) {
             define('MANAPHP_COROUTINE_ENABLED', PHP_SAPI === 'cli' && extension_loaded('swoole'));
@@ -117,14 +116,14 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         return $this;
     }
 
-    public function getDi()
+    /**
+     * @return string
+     */
+    public function getFactory()
     {
-        if (!$this->_di) {
-            defined('MANAPHP_CLI') or define('MANAPHP_CLI', $_SERVER['DOCUMENT_ROOT'] === '');
+        defined('MANAPHP_CLI') or define('MANAPHP_CLI', $_SERVER['DOCUMENT_ROOT'] === '');
 
-            $this->_di = MANAPHP_CLI ? new CliFactory() : new MvcFactory();
-        }
-        return $this->_di;
+        return MANAPHP_CLI ? 'ManaPHP\Cli\Factory' : 'ManaPHP\Mvc\Factory';
     }
 
     /**

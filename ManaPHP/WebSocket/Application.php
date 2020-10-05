@@ -28,13 +28,9 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         parent::__construct($loader);
     }
 
-    public function getDi()
+    public function getFactory()
     {
-        if (!$this->_di) {
-            $this->_di = new Factory();
-        }
-
-        return $this->_di;
+        return 'ManaPHP\WebSocket\Factory';
     }
 
     /**

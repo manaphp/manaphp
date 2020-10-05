@@ -43,13 +43,9 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         }
     }
 
-    public function getDi()
+    public function getFactory()
     {
-        if (!$this->_di) {
-            $this->_di = new Factory();
-        }
-
-        return $this->_di;
+        return 'ManaPHP\Rpc\Factory';
     }
 
     public function authenticate()

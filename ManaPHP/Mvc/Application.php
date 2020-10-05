@@ -15,13 +15,9 @@ use Throwable;
  */
 class Application extends \ManaPHP\Http\Application
 {
-    public function getDi()
+    public function getFactory()
     {
-        if (!$this->_di) {
-            $this->_di = new Factory();
-        }
-
-        return $this->_di;
+        return 'ManaPHP\Mvc\Factory';
     }
 
     public function authorize()
