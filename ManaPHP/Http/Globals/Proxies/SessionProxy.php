@@ -8,11 +8,6 @@ use JsonSerializable;
 class SessionProxy implements ArrayAccess, JsonSerializable
 {
     /**
-     * @var \ManaPHP\Http\Request
-     */
-    protected $_request;
-
-    /**
      * @var \ManaPHP\Http\SessionInterface
      */
     protected $_session;
@@ -24,48 +19,36 @@ class SessionProxy implements ArrayAccess, JsonSerializable
      */
     public function __construct($request)
     {
-        $this->_request = $request;
-    }
-
-    /**
-     * @return \ManaPHP\Http\SessionInterface
-     */
-    protected function _getSession()
-    {
-        if (!$session = $this->_session ?? null) {
-            return $this->_session = $this->_request->getDi()->getShared('session');
-        } else {
-            return $session;
-        }
+        $this->_session = $request->getShared('session');
     }
 
     public function offsetExists($offset)
     {
-        return $this->_getSession()->has($offset);
+        return $this->_session->has($offset);
     }
 
     public function offsetGet($offset)
     {
-        return $this->_getSession()->get($offset);
+        return $this->_session->get($offset);
     }
 
     public function offsetSet($offset, $value)
     {
-        return $this->_getSession()->set($offset, $value);
+        return $this->_session->set($offset, $value);
     }
 
     public function offsetUnset($offset)
     {
-        return $this->_getSession()->remove($offset);
+        return $this->_session->remove($offset);
     }
 
     public function __debugInfo()
     {
-        return (array)$this->_getSession()->get();
+        return (array)$this->_session->get();
     }
 
     public function jsonSerialize()
     {
-        return $this->_getSession()->get();
+        return $this->_session->get();
     }
 }
