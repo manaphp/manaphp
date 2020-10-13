@@ -3,6 +3,7 @@
 namespace ManaPHP;
 
 use ManaPHP\Coroutine\Context\Inseparable;
+use ManaPHP\Coroutine\Mutex;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PreconditionException;
@@ -56,6 +57,11 @@ class Renderer extends Component implements RendererInterface
     protected $_files = [];
 
     /**
+     * @var \ManaPHP\Coroutine\Mutex
+     */
+    protected $_mutex;
+
+    /**
      * Renderer constructor.
      *
      * @param array $options
@@ -67,6 +73,18 @@ class Renderer extends Component implements RendererInterface
         }
 
         $this->loader->registerFiles('@manaphp/Renderer/helpers.php');
+
+        $this->_mutex = new Mutex();
+    }
+
+    public function lock()
+    {
+        $this->_mutex->lock();
+    }
+
+    public function unlock()
+    {
+        $this->_mutex->unlock();
     }
 
     /**
@@ -81,6 +99,10 @@ class Renderer extends Component implements RendererInterface
     public function render($template, $vars = [], $directOutput = false)
     {
         $context = $this->_context;
+
+        if (!$this->_mutex->isLocked()) {
+            throw new MisuseException('renderer is not locked');
+        }
 
         if (DIRECTORY_SEPARATOR === '\\' && str_contains($template, '\\')) {
             $template = str_replace('\\', '/', $template);
@@ -143,26 +165,16 @@ class Renderer extends Component implements RendererInterface
         $eventArguments = ['file' => $file, 'vars' => $vars];
         $this->fireEvent('renderer:rendering', $eventArguments);
 
-        try {
-            if (MANAPHP_COROUTINE_ENABLED) {
-                $this->coroutineSerial->start($this->_object_id);
-            }
-
-            if ($directOutput) {
+        if ($directOutput) {
+            $engine->render($file, $vars);
+            $content = null;
+        } else {
+            ob_start();
+            ob_implicit_flush(false);
+            try {
                 $engine->render($file, $vars);
-                $content = null;
-            } else {
-                ob_start();
-                ob_implicit_flush(false);
-                try {
-                    $engine->render($file, $vars);
-                } finally {
-                    $content = ob_get_clean();
-                }
-            }
-        } finally {
-            if (MANAPHP_COROUTINE_ENABLED) {
-                $this->coroutineSerial->stop($this->_object_id);
+            } finally {
+                $content = ob_get_clean();
             }
         }
 
@@ -181,7 +193,12 @@ class Renderer extends Component implements RendererInterface
      */
     public function renderFile($file, $vars = [])
     {
-        return $this->render($file, $vars);
+        $this->lock();
+        try {
+            return $this->render($file, $vars);
+        } finally {
+            $this->unlock();
+        }
     }
 
     /**
@@ -259,10 +276,6 @@ class Renderer extends Component implements RendererInterface
     {
         $context = $this->_context;
 
-        if (MANAPHP_COROUTINE_ENABLED) {
-            $this->coroutineSerial->start($this->_object_id);
-        }
-
         if ($default === null) {
             ob_start();
             ob_implicit_flush(false);
@@ -293,10 +306,6 @@ class Renderer extends Component implements RendererInterface
         } else {
             $context->sections[$last] .= ob_get_clean();
         }
-
-        if (MANAPHP_COROUTINE_ENABLED) {
-            $this->coroutineSerial->stop($this->_object_id);
-        }
     }
 
     /**
@@ -316,10 +325,6 @@ class Renderer extends Component implements RendererInterface
         } else {
             $context->sections[$last] = ob_get_clean();
         }
-
-        if (MANAPHP_COROUTINE_ENABLED) {
-            $this->coroutineSerial->stop($this->_object_id);
-        }
     }
 
     public function dump()
@@ -333,6 +338,7 @@ class Renderer extends Component implements RendererInterface
         }
 
         $data['_files'] = ['***'];
+        unset($data['_mutex']);
 
         return $data;
     }

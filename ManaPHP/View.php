@@ -291,11 +291,16 @@ class View extends Component implements ViewInterface
 
         $this->fireEvent('view:rendering');
 
-        $context->content = $this->_render($template, $context->vars, false);
+        $this->renderer->lock();
+        try {
+            $context->content = $this->_render($template, $context->vars, false);
 
-        if ($context->layout !== false) {
-            $layout = $this->_findLayout();
-            $context->content = $this->_render($layout, $context->vars, false);
+            if ($context->layout !== false) {
+                $layout = $this->_findLayout();
+                $context->content = $this->_render($layout, $context->vars, false);
+            }
+        } finally {
+            $this->renderer->unlock();
         }
 
         $this->fireEvent('view:rendered');

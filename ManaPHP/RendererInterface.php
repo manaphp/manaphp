@@ -10,6 +10,16 @@ namespace ManaPHP;
 interface RendererInterface
 {
     /**
+     * @return void
+     */
+    public function lock();
+
+    /**
+     * @return void
+     */
+    public function unlock();
+
+    /**
      * Checks whether view exists on registered extensions and render it
      *
      * @param string $template
