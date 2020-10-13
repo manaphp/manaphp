@@ -60,7 +60,6 @@ namespace PHPSTORM_META {
             'coroutine' instanceof \ManaPHP\CoroutineInterface,
             'jwt' instanceof \ManaPHP\Identity\Adapter\Jwt,
             'pubSub' instanceof \ManaPHP\Message\PubSubInterface,
-            'coroutineSerial' instanceof \ManaPHP\Coroutine\SerialInterface,
         ],
         \di('') => [
             'eventsManager' instanceof \ManaPHP\Event\ManagerInterface,
@@ -117,7 +116,6 @@ namespace PHPSTORM_META {
             'coroutineManager' instanceof \ManaPHP\Coroutine\ManagerInterface,
             'jwt' instanceof \ManaPHP\Identity\Adapter\Jwt,
             'pubSub' instanceof \ManaPHP\Message\PubSubInterface,
-            'coroutineSerial' instanceof \ManaPHP\Coroutine\SerialInterface,
             'dataDump' instanceof \ManaPHP\DataDumpInterface,
         ],
         \ManaPHP\Di\Injectable::getShared('') => [
@@ -175,7 +173,6 @@ namespace PHPSTORM_META {
             'coroutineManager' instanceof \ManaPHP\Coroutine\ManagerInterface,
             'jwt' instanceof \ManaPHP\Identity\Adapter\Jwt,
             'pubSub' instanceof \ManaPHP\Message\PubSubInterface,
-            'coroutineSerial' instanceof \ManaPHP\Coroutine\SerialInterface,
             'dataDump' instanceof \ManaPHP\DataDumpInterface,
         ],
         \ManaPHP\DiInterface::get('') => [

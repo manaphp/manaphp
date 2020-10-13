@@ -33,7 +33,6 @@ class RendererContext implements Inseparable
  *
  * @package renderer
  * @property-read \ManaPHP\RendererContext           $_context
- * @property-read \ManaPHP\Coroutine\SerialInterface $coroutineSerial
  */
 class Renderer extends Component implements RendererInterface
 {
