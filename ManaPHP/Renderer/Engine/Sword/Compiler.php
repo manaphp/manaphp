@@ -708,7 +708,7 @@ class Compiler extends Component
      */
     protected function _compile_block($expression)
     {
-        return "<?php block{$expression} ?>";
+        return "<?php \$di->view->block{$expression} ?>";
     }
 
     /**
@@ -744,7 +744,7 @@ class Compiler extends Component
      */
     protected function _compile_maxAge($expression)
     {
-        return "<?php \$view->setMaxAge{$expression}; ?>";
+        return "<?php \$di->view->setMaxAge{$expression}; ?>";
     }
 
     /**
@@ -756,7 +756,7 @@ class Compiler extends Component
      */
     protected function _compile_layout($expression)
     {
-        return "<?php \$view->setLayout{$expression}; ?>";
+        return "<?php \$di->view->setLayout{$expression}; ?>";
     }
 
     /**
@@ -770,7 +770,7 @@ class Compiler extends Component
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
-        return '<?= $view->getContent(); ?>';
+        return '<?= $di->view->getContent(); ?>';
     }
 
     /**
@@ -812,7 +812,7 @@ class Compiler extends Component
      */
     protected function _compile_widget($expression)
     {
-        return "<?php widget{$expression}; ?>";
+        return "<?php \$di->view->widget{$expression}; ?>";
     }
 
     /**
