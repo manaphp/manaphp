@@ -79,7 +79,7 @@ interface ViewInterface
      *
      * @return  string
      */
-    public function render($template = null, $vars = null);
+    public function render($template = null, $vars = []);
 
     /**
      * Renders a partial view

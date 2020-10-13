@@ -244,13 +244,11 @@ class View extends Component implements ViewInterface
      *
      * @return string
      */
-    public function render($template = null, $vars = null)
+    public function render($template = null, $vars = [])
     {
         $context = $this->_context;
 
-        if ($vars !== null) {
-            $context->vars = $vars;
-        }
+        $context->vars = $vars;
 
         if ($template === null) {
             $action = $this->dispatcher->getAction();
