@@ -65,9 +65,7 @@ class Compiler extends Component
             'bundle',
             'attr_nv',
             'attr_inv',
-            'widget',
             'partial',
-            'block',
             'json',
             'base_url'
         ];

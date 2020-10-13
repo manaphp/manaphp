@@ -34,24 +34,6 @@ if (!function_exists('attr_inv')) {
     }
 }
 
-if (!function_exists('widget')) {
-    /**
-     * @param string $name
-     * @param array  $vars
-     *
-     * @return void
-     */
-    function widget($name, $vars = [])
-    {
-        static $view;
-        if (!$view) {
-            $view = Di::getDefault()->getShared('view');
-        }
-
-        $view->widget($name, $vars);
-    }
-}
-
 if (!function_exists('partial')) {
     /**
      * @param string $path
@@ -67,40 +49,6 @@ if (!function_exists('partial')) {
         }
 
         $view->partial($path, $vars);
-    }
-}
-
-if (!function_exists('block')) {
-    /**
-     * @param string $path
-     * @param array  $vars
-     *
-     * @return void
-     */
-    function block($path, $vars = [])
-    {
-        static $view;
-        if (!$view) {
-            $view = Di::getDefault()->getShared('view');
-        }
-
-        $view->block($path, $vars);
-    }
-}
-
-if (!function_exists('layout')) {
-
-    /**
-     * @param string|false $template
-     */
-    function layout($template = 'Default')
-    {
-        static $view;
-        if (!$view) {
-            $view = Di::getDefault()->getShared('view');
-        }
-
-        $view->setLayout($template);
     }
 }
 
