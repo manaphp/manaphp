@@ -453,16 +453,16 @@ if (!function_exists('rest_delete')) {
     }
 }
 
-if (!function_exists('render')) {
+if (!function_exists('render_file')) {
     /**
      * @param string $file
      * @param array  $vars
      *
      * @return string
      */
-    function render($file, $vars = [])
+    function render_file($file, $vars = [])
     {
-        return di('renderer')->render($file, $vars);
+        return di('renderer')->renderFile($file, $vars);
     }
 }
 

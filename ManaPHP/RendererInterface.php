@@ -21,6 +21,14 @@ interface RendererInterface
     public function render($template, $vars = [], $directOutput = false);
 
     /**
+     * @param string $file
+     * @param array  $vars
+     *
+     * @return string
+     */
+    public function renderFile($file, $vars = []);
+
+    /**
      * @param string $path
      * @param array  $vars
      *

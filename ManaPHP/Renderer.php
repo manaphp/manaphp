@@ -174,6 +174,17 @@ class Renderer extends Component implements RendererInterface
     }
 
     /**
+     * @param string $file
+     * @param array  $vars
+     *
+     * @return string
+     */
+    public function renderFile($file, $vars = [])
+    {
+        return $this->render($file, $vars);
+    }
+
+    /**
      * @param string $path
      * @param array  $vars
      *

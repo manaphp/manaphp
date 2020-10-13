@@ -291,7 +291,7 @@ class Message implements JsonSerializable
                 $template = "@views/Mail/$template";
             }
 
-            $body = Di::getDefault()->renderer->render($template, $vars);
+            $body = Di::getDefault()->renderer->renderFile($template, $vars);
         }
 
         $this->_html_body = $body;
