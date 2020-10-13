@@ -196,11 +196,6 @@ class View extends Component implements ViewInterface
             $this->setMaxAge(0);
         }
 
-        if (isset($vars['view'])) {
-            throw new MisuseException('variable `view` is reserved for view');
-        }
-        $vars['view'] = $this;
-
         return $this->renderer->render($template, $vars, $directOutput);
     }
 
