@@ -58,16 +58,18 @@ class Channel
     public function pop($timeout = null)
     {
         if (MANAPHP_COROUTINE_ENABLED) {
-            $this->_length--;
-            return $this->_queue->pop($timeout);
+            $data = $this->_queue->pop($timeout);
         } else {
             if ($this->_length === 0) {
                 throw new MisuseException('channel is empty');
             }
 
-            $this->_length--;
-            return $this->_queue->pop();
+            $data = $this->_queue->pop();
         }
+
+        $this->_length--;
+
+        return $data;
     }
 
     /**
