@@ -694,7 +694,7 @@ class Compiler extends Component
      */
     protected function _compile_partial($expression)
     {
-        return "<?php partial{$expression} ?>";
+        return "<?php \$renderer->partial{$expression} ?>";
     }
 
     /**

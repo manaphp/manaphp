@@ -34,24 +34,6 @@ if (!function_exists('attr_inv')) {
     }
 }
 
-if (!function_exists('partial')) {
-    /**
-     * @param string $path
-     * @param array  $vars
-     *
-     * @return void
-     */
-    function partial($path, $vars = [])
-    {
-        static $view;
-        if (!$view) {
-            $view = Di::getDefault()->getShared('view');
-        }
-
-        $view->partial($path, $vars);
-    }
-}
-
 if (!function_exists('csrf_token')) {
     /**
      * @return string

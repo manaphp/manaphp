@@ -353,19 +353,6 @@ class View extends Component implements ViewInterface
     }
 
     /**
-     * Renders a partial view
-     *
-     * @param string $path
-     * @param array  $vars
-     *
-     * @return void
-     */
-    public function partial($path, $vars = [])
-    {
-        $this->renderer->render($path, $vars, true);
-    }
-
-    /**
      * @param string $widget
      *
      * @return string|false

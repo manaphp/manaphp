@@ -82,16 +82,6 @@ interface ViewInterface
     public function render($template = null, $vars = []);
 
     /**
-     * Renders a partial view
-     *
-     * @param string $path
-     * @param array  $vars
-     *
-     * @return void
-     */
-    public function partial($path, $vars = []);
-
-    /**
      * Renders a widget
      *
      * @param string $widget
