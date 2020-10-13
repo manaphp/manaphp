@@ -184,22 +184,6 @@ class View extends Component implements ViewInterface
     }
 
     /**
-     * @param string $template
-     * @param array  $vars
-     * @param bool   $directOutput
-     *
-     * @return string
-     */
-    protected function _render($template, $vars, $directOutput)
-    {
-        if ($vars) {
-            $this->setMaxAge(0);
-        }
-
-        return $this->renderer->render($template, $vars, $directOutput);
-    }
-
-    /**
      * @return string
      */
     protected function _findLayout()
@@ -248,7 +232,10 @@ class View extends Component implements ViewInterface
     {
         $context = $this->_context;
 
-        $context->vars = $vars;
+        if ($vars !== []) {
+            $context->vars = $vars;
+            $this->setMaxAge(0);
+        }
 
         if ($template === null) {
             $action = $this->dispatcher->getAction();
@@ -286,11 +273,11 @@ class View extends Component implements ViewInterface
 
         $this->renderer->lock();
         try {
-            $context->content = $this->_render($template, $context->vars, false);
+            $context->content = $this->renderer->render($template, $context->vars, false);
 
             if ($context->layout !== false) {
                 $layout = $this->_findLayout();
-                $context->content = $this->_render($layout, $context->vars, false);
+                $context->content = $this->renderer->render($layout, $context->vars, false);
             }
         } finally {
             $this->renderer->unlock();
@@ -375,7 +362,7 @@ class View extends Component implements ViewInterface
      */
     public function partial($path, $vars = [])
     {
-        $this->_render($path, $vars, true);
+        $this->renderer->render($path, $vars, true);
     }
 
     /**
@@ -405,7 +392,7 @@ class View extends Component implements ViewInterface
      */
     public function widget($widget, $options = [])
     {
-        if ($options) {
+        if ($options !== []) {
             $this->setMaxAge(0);
         }
 
@@ -426,7 +413,7 @@ class View extends Component implements ViewInterface
         if (is_string($vars)) {
             echo $vars;
         } else {
-            $this->_render($view, $vars, true);
+            $this->renderer->render($view, $vars, true);
         }
     }
 
@@ -442,7 +429,7 @@ class View extends Component implements ViewInterface
             $path = "@views/Blocks/$path";
         }
 
-        $this->_render($path, $vars, true);
+        $this->renderer->render($path, $vars, true);
     }
 
     /**
