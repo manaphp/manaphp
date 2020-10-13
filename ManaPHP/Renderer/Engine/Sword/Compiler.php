@@ -812,7 +812,7 @@ class Compiler extends Component
      */
     protected function _compile_widget($expression)
     {
-        return "<?= widget{$expression}; ?>";
+        return "<?php widget{$expression}; ?>";
     }
 
     /**

@@ -39,7 +39,7 @@ if (!function_exists('widget')) {
      * @param string $name
      * @param array  $vars
      *
-     * @return string|array
+     * @return void
      */
     function widget($name, $vars = [])
     {
@@ -48,7 +48,7 @@ if (!function_exists('widget')) {
             $view = Di::getDefault()->getShared('view');
         }
 
-        return $view->widget($name, $vars);
+        $view->widget($name, $vars);
     }
 }
 
