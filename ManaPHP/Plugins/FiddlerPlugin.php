@@ -184,7 +184,7 @@ class FiddlerPlugin extends Plugin
         $type = $message['type'];
 
         if ($type === 'ping') {
-            return;
+            null;
         } elseif ($type === 'response') {
             echo strtr('[path][elapsed][code] body', $message['data']), PHP_EOL;
         } elseif ($type === 'logger') {
