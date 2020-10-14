@@ -243,7 +243,7 @@ abstract class Logger extends Component implements LoggerInterface
     }
 
     /**
-     * @param \Exception $exception
+     * @param \Throwable $exception
      *
      * @return string
      */
@@ -278,7 +278,7 @@ abstract class Logger extends Component implements LoggerInterface
     }
 
     /**
-     * @param \Exception|array|\Serializable|\JsonSerializable $message
+     * @param \Throwable|array|\Serializable|\JsonSerializable $message
      *
      * @return string
      */

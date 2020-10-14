@@ -45,7 +45,7 @@ class DataDump extends Component implements DataDumpInterface
     }
 
     /**
-     * @param \Exception $exception
+     * @param \Throwable $exception
      *
      * @return string
      */
@@ -80,7 +80,7 @@ class DataDump extends Component implements DataDumpInterface
     }
 
     /**
-     * @param \Exception|array|\Serializable|\JsonSerializable $message
+     * @param \Throwable|array|\Serializable|\JsonSerializable $message
      *
      * @return string
      */
