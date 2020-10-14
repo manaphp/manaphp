@@ -304,7 +304,7 @@ class DebuggerPlugin extends Plugin
             $item['raw'] = ['db' => $data['db'], 'command' => $data['command'], 'options' => $data['options']];
             $item['shell'] = [];
             $item['elapsed'] = $data['elapsed'];
-            $context->mongodb = [];
+            $context->mongodb = $item;
         }
     }
 
