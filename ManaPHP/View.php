@@ -345,11 +345,7 @@ class View extends Component implements ViewInterface
             }
         }
 
-        if (isset($cached[$template])) {
-            return $cached[$template];
-        } else {
-            return $cached[$template] = $this->renderer->exists($template);
-        }
+        return $cached[$template] ?? ($cached[$template] = $this->renderer->exists($template));
     }
 
     /**

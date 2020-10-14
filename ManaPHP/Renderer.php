@@ -143,11 +143,8 @@ class Renderer extends Component implements RendererInterface
             $this->_files[$template] = [$file, $extension];
         }
 
-        if (!isset($this->_resolved[$extension])) {
-            $engine = $this->_resolved[$extension] = $this->getShared($this->_engines[$extension]);
-        } else {
-            $engine = $this->_resolved[$extension];
-        }
+        $engine = $this->_resolved[$extension] ??
+            ($this->_resolved[$extension] = $this->getShared($this->_engines[$extension]));
 
         if (isset($vars['renderer'])) {
             throw new MisuseException('variable `renderer` is reserved for renderer');
