@@ -4,6 +4,8 @@ namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Controller;
 use ManaPHP\Helper\LocalFS;
+use ReflectionClass;
+use ReflectionMethod;
 
 class RpcController extends Controller
 {
@@ -47,7 +49,7 @@ class RpcController extends Controller
     {
         $serviceName = basename($class, 'Controller') . 'Service';
 
-        $lines = file((new \ReflectionClass($class))->getFileName());
+        $lines = file((new ReflectionClass($class))->getFileName());
         $content = <<<EOT
 <?php
 
@@ -60,7 +62,7 @@ class $serviceName extends Service
 EOT;
         foreach ($methods as $method) {
             $content .= PHP_EOL;
-            $rm = new \ReflectionMethod($class, $method);
+            $rm = new ReflectionMethod($class, $method);
             if ($doc = $rm->getDocComment()) {
                 $content .= "\t" . $doc . PHP_EOL;
             }

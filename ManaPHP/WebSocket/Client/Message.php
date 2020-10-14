@@ -2,7 +2,9 @@
 
 namespace ManaPHP\WebSocket\Client;
 
-class Message implements \JsonSerializable
+use JsonSerializable;
+
+class Message implements JsonSerializable
 {
     const TEXT_FRAME = 0x01;
     const BINARY_FRAME = 0x02;
