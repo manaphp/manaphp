@@ -108,7 +108,6 @@ class Curl extends Component implements EngineInterface
                     break;
                 default:
                     throw new NotSupportedException(['`:method` method is not support', 'method' => $request->method]);
-                    break;
             }
 
             $timeout = $request->options['timeout'];
