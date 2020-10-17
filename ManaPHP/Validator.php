@@ -486,7 +486,7 @@ class Validator extends Component implements ValidatorInterface
     /**
      * @param string  $field
      * @param string  $value
-     * @param integer $parameter
+     * @param int     $parameter
      *
      * @return string|null
      */
