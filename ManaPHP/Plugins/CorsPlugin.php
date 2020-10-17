@@ -56,7 +56,9 @@ class CorsPlugin extends Plugin
                 $origin_pos = strpos($origin, '.');
                 $host_pos = strpos($host, '.');
 
-                if ($origin_pos !== false && $host_pos !== false && substr($origin, $origin_pos) === substr($host, $host_pos)) {
+                if (($origin_pos !== false && $host_pos !== false)
+                    && substr($origin, $origin_pos) === substr($host, $host_pos)
+                ) {
                     $allow_origin = $origin;
                 } else {
                     $allow_origin = '*';

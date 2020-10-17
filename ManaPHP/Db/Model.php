@@ -216,7 +216,9 @@ class Model extends \ManaPHP\Model implements ModelInterface
             } elseif (!isset($snapshot[$field])) {
                 null;
             } elseif ($snapshot[$field] !== $this->$field) {
-                if (is_string($this->$field) && !is_string($snapshot[$field]) && (string)$snapshot[$field] === $this->$field) {
+                if ((is_string($this->$field) && !is_string($snapshot[$field]))
+                    && (string)$snapshot[$field] === $this->$field
+                ) {
                     $this->$field = $snapshot[$field];
                 }
             }

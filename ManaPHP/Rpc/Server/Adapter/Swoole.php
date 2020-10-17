@@ -129,7 +129,9 @@ class Swoole extends \ManaPHP\Rpc\Server
         $_server['WS_ENDPOINT'] = $_get['_url'] = rtrim($_server['REQUEST_URI'], '/');
 
         $_post = $request->post ?: [];
-        if (!$_post && isset($_server['REQUEST_METHOD']) && !in_array($_server['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
+        if (!$_post
+            && (isset($_server['REQUEST_METHOD']) && !in_array($_server['REQUEST_METHOD'], ['GET', 'OPTIONS'], true))
+        ) {
             $data = $request->rawContent();
 
             if (isset($_server['CONTENT_TYPE']) && str_contains($_server['CONTENT_TYPE'], 'application/json')) {

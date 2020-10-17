@@ -91,7 +91,9 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         if (!$this->_root_dir) {
             if (strpos(static::class, 'ManaPHP\\') !== 0) {
                 $this->_root_dir = dirname($this->_class_file, 2);
-            } elseif ($_SERVER['DOCUMENT_ROOT'] !== '' && $_SERVER['DOCUMENT_ROOT'] === dirname($_SERVER['SCRIPT_FILENAME'])) {
+            } elseif ($_SERVER['DOCUMENT_ROOT'] !== ''
+                && $_SERVER['DOCUMENT_ROOT'] === dirname($_SERVER['SCRIPT_FILENAME'])
+            ) {
                 $this->_root_dir = dirname($_SERVER['DOCUMENT_ROOT']);
             } else {
                 $rootDir = realpath(dirname($_SERVER['SCRIPT_FILENAME']));

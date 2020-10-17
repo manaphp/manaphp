@@ -18,7 +18,9 @@ class Fpm extends Server
             $_GET['_url'] = $_REQUEST['_url'] = '/index' . substr($_SERVER['PHP_SELF'], $pos + 10);
         }
 
-        if (!$_POST && isset($_SERVER['REQUEST_METHOD']) && !in_array($_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
+        if (!$_POST
+            && (isset($_SERVER['REQUEST_METHOD']) && !in_array($_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true))
+        ) {
             $data = file_get_contents('php://input');
 
             if (isset($_SERVER['CONTENT_TYPE'])

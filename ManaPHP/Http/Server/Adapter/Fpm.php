@@ -20,7 +20,9 @@ class Fpm extends Server
 
         $globals = $this->request->getContext();
 
-        if (!$_POST && isset($_SERVER['REQUEST_METHOD']) && !in_array($_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
+        if (!$_POST
+            && (isset($_SERVER['REQUEST_METHOD']) && !in_array($_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true))
+        ) {
             $globals->rawBody = $rawBody = file_get_contents('php://input');
 
             if (isset($_SERVER['CONTENT_TYPE'])
