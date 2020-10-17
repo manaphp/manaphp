@@ -883,8 +883,8 @@ class Compiler extends Component
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
-        return '<?php if($di->response->hasHeader("X-Debugger-Link")){?><div class="debugger"><a target="_self" href="' .
-            '<?= $di->response->getHeader("X-Debugger-Link") ?>">Debugger</a></div><?php }?> ';
+        return '<?php if($di->response->hasHeader("X-Debugger-Link")){?><div class="debugger"><a target="_self" href="'
+            . '<?= $di->response->getHeader("X-Debugger-Link") ?>">Debugger</a></div><?php }?> ';
     }
 
     /**
