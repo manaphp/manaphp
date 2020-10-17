@@ -197,7 +197,13 @@ class Workerman extends Server
         try {
             if ($this->_doc_root && $file = $this->_isStaticFile()) {
                 $file = "$this->_doc_root/$file";
-                if ((DIRECTORY_SEPARATOR === '/' ? realpath($file) : str_replace('\\', '/', realpath($file))) === $file) {
+
+                $realpath = realpath($file);
+                if (DIRECTORY_SEPARATOR === '\\') {
+                    $realpath = str_replace('\\', '/', realpath($file));
+                }
+
+                if ($realpath === $file) {
                     $ext = pathinfo($file, PATHINFO_EXTENSION);
                     $mime_type = $this->_mime_types[$ext] ?? 'application/octet-stream';
                     Http::header('Content-Type: ' . $mime_type);
