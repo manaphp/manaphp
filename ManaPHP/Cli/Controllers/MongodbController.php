@@ -108,7 +108,8 @@ class MongodbController extends Controller
 
                     $fieldTypes = $this->_inferFieldTypes($docs);
                     $modelClass = $namespace . '\\' . $plainClass;
-                    $model = $this->_renderModel($fieldTypes, $modelClass, $service, $defaultDb ? $collection : "$cdb.$collection", $optimized);
+                    $ns = $defaultDb ? $collection : "$cdb.$collection";
+                    $model = $this->_renderModel($fieldTypes, $modelClass, $service, $ns, $optimized);
                     LocalFS::filePut($fileName, $model);
 
                     $this->console->progress([
