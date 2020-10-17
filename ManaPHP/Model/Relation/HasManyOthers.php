@@ -56,7 +56,8 @@ class HasManyOthers extends Relation
         $thatField = $this->_thatField;
 
         $ids = Arr::unique_column($r, $this->_thisFilter);
-        $pivot_data = $thisModel::select([$this->_thisFilter, $this->_thisValue])->whereIn($this->_thisFilter, $ids)->execute();
+        $pivotQuery = $thisModel::select([$this->_thisFilter, $this->_thisValue])->whereIn($this->_thisFilter, $ids);
+        $pivot_data = $pivotQuery->execute();
         $ids = Arr::unique_column($pivot_data, $this->_thisValue);
         $data = $query->whereIn($this->_thatField, $ids)->indexBy($this->_thatField)->fetch($asArray);
 

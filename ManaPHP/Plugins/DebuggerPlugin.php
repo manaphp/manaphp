@@ -5,6 +5,7 @@ namespace ManaPHP\Plugins;
 use ManaPHP\Component;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\AbortException;
+use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Logger;
 use ManaPHP\Plugin;
@@ -140,14 +141,17 @@ class DebuggerPlugin extends Plugin
     {
         $context = $this->_context;
 
-        if (($debugger = $this->request->get('__debuggerPlugin', '')) && preg_match('#^([\w/]+)\.(html|json|txt|raw)$#', $debugger, $match)) {
+        if (($debugger = $this->request->get('__debuggerPlugin', ''))
+            && preg_match('#^([\w/]+)\.(html|json|txt|raw)$#', $debugger, $match)
+        ) {
             $context->enabled = false;
             if (($data = $this->_readData($match[1])) !== false) {
                 $ext = $match[2];
                 if ($ext === 'html') {
                     $this->response->setContent(strtr(LocalFS::fileGet($this->_template), ['DEBUGGER_DATA' => $data]));
                 } elseif ($ext === 'txt') {
-                    $this->response->setContent(json_stringify(json_parse($data), JSON_PRETTY_PRINT))->setContentType('text/plain;charset=UTF-8');
+                    $this->response->setContent(json_stringify(json_parse($data), JSON_PRETTY_PRINT))
+                        ->setContentType('text/plain;charset=UTF-8');
                 } elseif ($ext === 'raw') {
                     $this->response->setContent($data)->setContentType('text/plain;charset=UTF-8');
                 } else {
@@ -192,9 +196,9 @@ class DebuggerPlugin extends Plugin
 
         /** @var \ManaPHP\Logger\Log $log */
         $log = $eventArgs->data;
-
+        $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
         $context->log[] = [
-            'time' => date('H:i:s', $log->timestamp) . sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000),
+            'time' => date('H:i:s', $log->timestamp) . $ms,
             'level' => $log->level,
             'category' => $log->category,
             'file' => $log->file,
@@ -264,7 +268,8 @@ class DebuggerPlugin extends Plugin
             }
         }
         unset($vars['di']);
-        $context->view[] = ['file' => $data['file'], 'vars' => $vars, 'base_name' => basename(dirname($data['file'])) . '/' . basename($data['file'])];
+        $base_name = basename(dirname($data['file'])) . '/' . basename($data['file']);
+        $context->view[] = ['file' => $data['file'], 'vars' => $vars, 'base_name' => $base_name];
     }
 
     public function onMongodb(EventArgs $eventArgs)
@@ -277,7 +282,7 @@ class DebuggerPlugin extends Plugin
         if ($event === 'mongodb:queried') {
             $item = [];
             $item['type'] = 'query';
-            $item['raw'] = ['namespace' => $data['namespace'], 'filter' => $data['filter'], 'options' => $data['options']];
+            $item['raw'] = Arr::only($data, ['namespace', 'filter', 'options']);
             $options = $data['options'];
             list(, $collection) = explode('.', $data['namespace'], 2);
             $shell = "db.$collection.";
@@ -317,6 +322,7 @@ class DebuggerPlugin extends Plugin
 
         $loaded_extensions = get_loaded_extensions();
         sort($loaded_extensions, SORT_STRING | SORT_FLAG_CASE);
+        $memory_usage = (int)(memory_get_usage(true) / 1024) . 'k/' . (int)(memory_get_peak_usage(true) / 1024) . 'k';
 
         return [
             'mvc' => $this->router->getController() . '::' . $this->router->getAction(),
@@ -324,7 +330,7 @@ class DebuggerPlugin extends Plugin
             'request_url' => $this->request->getUrl(),
             'query_count' => $context->sql_count,
             'execute_time' => round(microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT'), 4),
-            'memory_usage' => (int)(memory_get_usage(true) / 1024) . 'k/' . (int)(memory_get_peak_usage(true) / 1024) . 'k',
+            'memory_usage' => $memory_usage,
             'system_time' => date('Y-m-d H:i:s'),
             'server_ip' => $this->request->getServer('SERVER_ADDR'),
             'client_ip' => $this->request->getClientIp(),
@@ -346,7 +352,8 @@ class DebuggerPlugin extends Plugin
 
         $data = [];
         $data['basic'] = $this->_getBasic();
-        $data['logger'] = ['log' => $context->log, 'levels' => array_flip($this->logger->getLevels()), 'level' => Logger::LEVEL_DEBUG];
+        $levels = array_flip($this->logger->getLevels());
+        $data['logger'] = ['log' => $context->log, 'levels' => $levels, 'level' => Logger::LEVEL_DEBUG];
         $data['sql'] = ['prepared' => $context->sql_prepared, 'executed' => $context->sql_executed, 'count' => $context->sql_count];
         $data['mongodb'] = $context->mongodb;
 

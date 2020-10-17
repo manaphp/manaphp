@@ -143,7 +143,8 @@ class CssToXPath
                         $item = "not($field) or $field!='$word'";
                         $items[] = $word === $val ? $item : "($item)";
                     } else {
-                        $items[] = ['*' => 'contains', '^' => 'starts-with', '$' => 'ends-with'][$type] . "($field, '$word')";
+                        $p2t = ['*' => 'contains', '^' => 'starts-with', '$' => 'ends-with'];
+                        $items[] = $p2t[$type] . "($field, '$word')";
                     }
                 }
                 return '[' . implode(str_contains($val, '|') ? ' or ' : ' and ', $items) . ']';

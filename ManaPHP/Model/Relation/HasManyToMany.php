@@ -70,7 +70,8 @@ class HasManyToMany extends Relation
         $thatPivot = $this->_thatPivot;
 
         $ids = Arr::unique_column($r, $this->_thisField);
-        $pivot_data = $pivotModel::select([$this->_thisPivot, $this->_thatPivot])->whereIn($this->_thisPivot, $ids)->execute();
+        $pivotQuery = $pivotModel::select([$this->_thisPivot, $this->_thatPivot])->whereIn($this->_thisPivot, $ids);
+        $pivot_data = $pivotQuery->execute();
         $ids = Arr::unique_column($pivot_data, $this->_thatPivot);
         $data = $query->whereIn($this->_thatField, $ids)->indexBy($this->_thatField)->fetch($asArray);
 

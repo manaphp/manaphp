@@ -59,7 +59,7 @@ class Apcu extends Component implements CacheInterface
         $this->_is_cli = (PHP_SAPI === 'cli');
 
         if (!$this->_enabled) {
-            $this->logger->info('APCu needs enabling for the cli via apc.enable_cli=1 or apcu.enable_cli=1', 'ipcCache.enabled');
+            $this->logger->info('APCu needs enabling for the cli via apcu.enable_cli=1', 'ipcCache.enabled');
         }
     }
 
@@ -79,7 +79,8 @@ class Apcu extends Component implements CacheInterface
         if ($ttl === 0) {
             $context->cache[$key] = $value;
         } elseif ($this->_enabled) {
-            apcu_store($this->_prefix ? ($this->_prefix . $key) : $key, $this->_is_cli ? [time() + $ttl, $value] : $value, $ttl);
+            $cache_key = $this->_prefix ? ($this->_prefix . $key) : $key;
+            apcu_store($cache_key, $this->_is_cli ? [time() + $ttl, $value] : $value, $ttl);
         }
     }
 

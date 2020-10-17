@@ -205,7 +205,8 @@ class FiddlerPlugin extends Plugin
         $replaced = [];
 
         $log = (object)$log;
-        $replaced[':date'] = date('Y-m-d\TH:i:s', $log->timestamp) . sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
+        $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
+        $replaced[':date'] = date('Y-m-d\TH:i:s', $log->timestamp) . $ms;
         $replaced[':client_ip'] = $log->client_ip ?: '-';
         $replaced[':request_id'] = $log->request_id ?: '-';
         $replaced[':request_id16'] = $log->request_id ? substr($log->request_id, 0, 16) : '-';

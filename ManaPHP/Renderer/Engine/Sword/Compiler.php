@@ -383,7 +383,8 @@ class Compiler extends Component
      */
     protected function _isSafeEchos($value)
     {
-        return preg_match('#^([a-z\d_]+)\\(#', $value, $match) === 1 && in_array($match[1], $this->_safe_functions, true);
+        return preg_match('#^([a-z\d_]+)\\(#', $value, $match) === 1
+            && in_array($match[1], $this->_safe_functions, true);
     }
 
     /**

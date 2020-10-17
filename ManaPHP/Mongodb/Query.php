@@ -192,7 +192,9 @@ class Query extends \ManaPHP\Query
         if (preg_match('#^(.+)\s*([<>=]+)\s*(.+)$#', $cond, $match)) {
             list(, $op1, $op2, $op3) = $match;
             $alg = ['=' => '$eq', '>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$neq', '<>' => '$neq'];
-            return ['$cond' => [[$alg[$op2] => [is_numeric($op1) ? (float)$op1 : '$' . $op1, is_numeric($op3) ? (float)$op3 : '$' . $op3]], $true, $false]];
+            $normalized_op1 = is_numeric($op1) ? (float)$op1 : '$' . $op1;
+            $normalized_op3 = is_numeric($op3) ? (float)$op3 : '$' . $op3;
+            return ['$cond' => [[$alg[$op2] => [$normalized_op1, $normalized_op3]], $true, $false]];
         } else {
             return null;
         }
@@ -476,7 +478,9 @@ class Query extends \ManaPHP\Query
 
         $this->_shard_context[$field] = ['~=', [$min, $max]];
 
-        $this->_filters[] = [$field => ['$gte' => $this->normalizeValue($field, $min), '$lte' => $this->normalizeValue($field, $max)]];
+        $normalized_min = $this->normalizeValue($field, $min);
+        $normalized_max = $this->normalizeValue($field, $max);
+        $this->_filters[] = [$field => ['$gte' => $normalized_min, '$lte' => $normalized_max]];
 
         return $this;
     }
@@ -496,7 +500,9 @@ class Query extends \ManaPHP\Query
             return $min === null || $min === '' ? $this : $this->whereCmp($field, '<', $min);
         }
 
-        $this->_filters[] = [$field => ['$not' => ['$gte' => $this->normalizeValue($field, $min), '$lte' => $this->normalizeValue($field, $max)]]];
+        $normalized_min = $this->normalizeValue($field, $min);
+        $normalized_max = $this->normalizeValue($field, $max);
+        $this->_filters[] = [$field => ['$not' => ['$gte' => $normalized_min, '$lte' => $normalized_max]]];
 
         return $this;
     }
@@ -795,12 +801,13 @@ class Query extends \ManaPHP\Query
         if (($pos = strpos($value, ',')) === false) {
             /** @noinspection CallableParameterUseCaseInTypeContextInspection */
             $value = $this->normalizeValue($id_a, $value);
-            $this->_filters[] = ['$or' => [[$id_a => $value], [$id_b => $value]]];
+            $or = [[$id_a => $value], [$id_b => $value]];
         } else {
             $value_a = $this->normalizeValue($id_a, substr($value, 0, $pos));
             $value_b = $this->normalizeValue($id_b, substr($value, $pos + 1));
-            $this->_filters[] = ['$or' => [[$id_a => $value_a, $id_b => $value_b], [$id_a => $value_b, $id_b => $value_a]]];
+            $or = [[$id_a => $value_a, $id_b => $value_b], [$id_a => $value_b, $id_b => $value_a]];
         }
+        $this->_filters[] = ['$or' => $or];
 
         return $this;
     }

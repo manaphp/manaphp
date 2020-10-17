@@ -140,12 +140,14 @@ class Engine extends Component implements EngineInterface
             if ($proxy_scheme !== 'http' && $proxy_scheme !== 'https') {
                 throw new NotSupportedException('only support http and https proxy');
             }
-            $socket = @fsockopen(($proxy_scheme === 'http' ? 'tcp' : 'ssl') . '://' . $parts['host'], $parts['port'], $errno, $errmsg, $this->_timeout);
+            $server_host = ($proxy_scheme === 'http' ? 'tcp' : 'ssl') . '://' . $parts['host'];
+            $server_port = $parts['port'];
         } else {
-            $socket = @fsockopen(($scheme === 'ws' ? 'tcp' : 'ssl') . "://$host", $port, $errno, $errmsg, $this->_timeout);
+            $server_host = ($scheme === 'ws' ? 'tcp' : 'ssl') . "://$host";
+            $server_port = $port;
         }
 
-        if (!$socket) {
+        if (!$socket = @fsockopen($server_host, $server_port, $errno, $errmsg, $this->_timeout)) {
             throw new ConnectionException($errmsg . ': ' . $this->_endpoint, $errno);
         }
 

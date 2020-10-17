@@ -123,7 +123,9 @@ class LoggerPlugin extends Plugin
     {
         $context = $this->_context;
 
-        if (($logger = $this->request->get('__loggerPlugin', '')) && preg_match('#^([\w/]+)\.(html|json|txt|raw)$#', $logger, $match)) {
+        if (($logger = $this->request->get('__loggerPlugin', ''))
+            && preg_match('#^([\w/]+)\.(html|json|txt|raw)$#', $logger, $match)
+        ) {
             $context->enabled = false;
             if (($data = $this->_readData($match[1])) !== false) {
                 $ext = $match[2];

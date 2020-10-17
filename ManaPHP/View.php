@@ -201,13 +201,19 @@ class View extends Component implements ViewInterface
                     $layout = '@views/Layouts/Default';
                 }
             } else {
-                $layout = $this->renderer->exists("@views/Layouts/$controller") ? "@views/Layouts/$controller" : '@views/Layouts/Default';
+                if ($this->renderer->exists("@views/Layouts/$controller")) {
+                    $layout = "@views/Layouts/$controller";
+                } else {
+                    $layout = '@views/Layouts/Default';
+                }
             }
         } elseif (is_string($context->layout)) {
             $layout = $context->layout;
             if ($layout[0] !== '@') {
                 $layout = ucfirst($layout);
-                if (($area = $this->dispatcher->getArea()) && $this->renderer->exists("@app/Areas/$area/Views/Layouts/$layout")) {
+                if (($area = $this->dispatcher->getArea())
+                    && $this->renderer->exists("@app/Areas/$area/Views/Layouts/$layout")
+                ) {
                     $layout = "@app/Areas/$area/Views/Layouts/$layout";
                 } else {
                     $layout = "@views/Layouts/$layout";

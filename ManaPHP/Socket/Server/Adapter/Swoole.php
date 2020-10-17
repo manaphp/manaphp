@@ -220,8 +220,8 @@ class Swoole extends Component implements ServerInterface, Unaspectable
 
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 
-        $this->log('info',
-            sprintf('starting listen on: %s:%d with setting: %s', $this->_host, $this->_port, json_stringify($this->_settings)));
+        $settings = json_stringify($this->_settings);
+        $this->log('info', sprintf('listen on: %s:%d with setting: %s', $this->_host, $this->_port, $settings));
         $this->_swoole->start();
 
         echo sprintf('[%s][info]: shutdown', date('c')), PHP_EOL;

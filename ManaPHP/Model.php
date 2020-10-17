@@ -601,7 +601,9 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function exists($filters)
     {
-        return static::select()->where(is_scalar($filters) ? [static::sample()->getPrimaryKey() => $filters] : $filters)->exists();
+        $primaryKey = static::sample()->getPrimaryKey();
+
+        return static::select()->where(is_scalar($filters) ? [$primaryKey => $filters] : $filters)->exists();
     }
 
     /**
@@ -1172,7 +1174,9 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         $file = $comment ? file_get_contents($rc->getFileName()) : '';
         foreach ($rc->getConstants() as $cName => $cValue) {
             if (str_starts_with($cName, $name)) {
-                if ($comment && preg_match('#\s+const\s+' . $cName . '\s*=[^/]+//(<([^>\r\n]+)>|[^\s]+)#', $file, $match)) {
+                if ($comment
+                    && preg_match('#\s+const\s+' . $cName . '\s*=[^/]+//(<([^>\r\n]+)>|[^\s]+)#', $file, $match)
+                ) {
                     $constants[$cValue] = trim($match[2] ?? $match[1]);
                 } else {
                     $constants[$cValue] = strtolower(substr($cName, strlen($name)));
@@ -1240,7 +1244,9 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function where($filters)
     {
-        return static::select()->where(is_scalar($filters) ? [static::sample()->getPrimaryKey() => $filters] : $filters);
+        $primaryKey = static::sample()->getPrimaryKey();
+
+        return static::select()->where(is_scalar($filters) ? [$primaryKey => $filters] : $filters);
     }
 
     /**

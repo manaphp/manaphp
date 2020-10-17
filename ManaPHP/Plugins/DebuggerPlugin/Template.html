@@ -233,7 +233,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="(log, index) in logger.log" v-if="logger.levels[log.level] <= logger.level">
-                    <td>{{index+1}}</td>
+                    <td>{{index + 1}}</td>
                     <td>{{log.time}}</td>
                     <td>{{log.level}}</td>
                     <td>{{log.category}}</td>

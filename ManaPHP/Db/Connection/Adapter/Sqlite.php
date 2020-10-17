@@ -110,7 +110,10 @@ class Sqlite extends Connection
     {
         $parts = explode('.', str_replace('[]`', '', $source));
 
-        $sql = 'SELECT' . " CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM sqlite_master WHERE type='table' AND tbl_name='$parts[0]'";
+        $sql
+            = /** @lang text */
+            "SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM sqlite_master"
+            . " WHERE type='table' AND tbl_name='$parts[0]'";
 
         $r = $this->query($sql, [], PDO::FETCH_NUM);
 

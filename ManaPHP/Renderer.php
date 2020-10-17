@@ -32,7 +32,7 @@ class RendererContext implements Inseparable
  * Class ManaPHP\Renderer
  *
  * @package renderer
- * @property-read \ManaPHP\RendererContext           $_context
+ * @property-read \ManaPHP\RendererContext $_context
  */
 class Renderer extends Component implements RendererInterface
 {

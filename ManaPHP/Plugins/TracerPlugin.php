@@ -227,8 +227,10 @@ class TracerPlugin extends Plugin
         $data = $eventArgs->data;
 
         $command_name = key($data['command']);
-        if (strpos('ping,aggregate,count,distinct,group,mapReduce,geoNear,geoSearch,find,' .
-                'authenticate,listDatabases,listCollections,listIndexes', $command_name) !== false
+        if (str_contains(
+            'ping,aggregate,count,distinct,group,mapReduce,geoNear,geoSearch,find,' .
+            'authenticate,listDatabases,listCollections,listIndexes', $command_name
+        )
         ) {
             $this->logger->debug($data, 'mongodb.command.' . $command_name);
         } else {

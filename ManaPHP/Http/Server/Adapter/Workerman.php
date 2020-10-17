@@ -107,7 +107,9 @@ class Workerman extends Server
             $_GET['_url'] = $_REQUEST['_url'] = ($pos = strpos($uri, '?')) === false ? $uri : substr($uri, 0, $pos);
         }
 
-        if (!$_POST && isset($_SERVER['REQUEST_METHOD']) && !in_array($_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true)) {
+        if (!$_POST
+            && (isset($_SERVER['REQUEST_METHOD']) && !in_array($_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true))
+        ) {
             $data = $GLOBALS['HTTP_RAW_POST_DATA'];
 
             if (isset($_SERVER['CONTENT_TYPE'])
@@ -160,8 +162,8 @@ class Workerman extends Server
 
         $this->_handler = $handler;
 
-        $this->log('info',
-            sprintf('starting listen on: %s:%d with setting: %s', $this->_host, $this->_port, json_stringify($this->_settings)));
+        $settings = json_stringify($this->_settings);
+        $this->log('info', sprintf('listen on: %s:%d with setting: %s', $this->_host, $this->_port, $settings));
         echo 'ab';
         $worker->onMessage = [$this, 'onRequest'];
 
@@ -251,8 +253,7 @@ class Workerman extends Server
 
         foreach ($response->cookies as $cookie) {
             Http::setcookie($cookie['name'], $cookie['value'], $cookie['expire'],
-                $cookie['path'], $cookie['domain'], $cookie['secure'],
-                $cookie['httpOnly']);
+                $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httpOnly']);
         }
 
         if ($response->status_code === 304) {

@@ -81,7 +81,7 @@
             </thead>
             <tbody>
             <tr v-for="(log, index) in logs" v-if="levels[log.level] <= level">
-                <td>{{index+1}}</td>
+                <td>{{index + 1}}</td>
                 <td>{{log.time}}</td>
                 <td>{{log.category}}</td>
                 <td>{{log.location}}</td>
