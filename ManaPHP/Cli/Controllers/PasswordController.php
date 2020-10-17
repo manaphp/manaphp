@@ -31,7 +31,8 @@ class PasswordController extends Controller
             for ($i = 7; $i < 14; $i++) {
                 $start = microtime(true);
                 $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => $i]);
-                $this->console->writeLn([':time: :hash', 'time' => sprintf('%.3f', microtime(true) - $start), 'hash' => $hash]);
+                $elapsed = microtime(true) - $start;
+                $this->console->writeLn([':time: :hash', 'time' => sprintf('%.3f', $elapsed), 'hash' => $hash]);
             }
         }
     }
