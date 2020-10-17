@@ -98,7 +98,8 @@ abstract class Connection extends Component implements ConnectionInterface
         if ($this->_pdo === null) {
             $this->fireEvent('db:connect', ['dsn' => $this->_dsn]);
             try {
-                $this->_pdo = $this->getInstance('PDO', [$this->_dsn, $this->_username, $this->_password, $this->_options]);
+                $params = [$this->_dsn, $this->_username, $this->_password, $this->_options];
+                $this->_pdo = $this->getInstance('PDO', $params);
             } catch (PDOException $e) {
                 $code = $e->getCode();
                 throw new ConnectionException(['connect `%s` failed: %s', $this->_dsn, $e->getMessage()], $code, $e);
@@ -157,7 +158,8 @@ abstract class Connection extends Component implements ConnectionInterface
             } elseif ($value instanceof JsonSerializable) {
                 $value = json_stringify($value);
             } else {
-                throw new NotSupportedException(['The `:1` type of `:2` parameter is not support', $parameter, gettype($value)]);
+                $type = gettype($value);
+                throw new NotSupportedException(['The `:1` type of `:2` parameter is not support', $parameter, $type]);
             }
 
             if (is_int($parameter)) {
@@ -209,12 +211,8 @@ abstract class Connection extends Component implements ConnectionInterface
             }
         }
 
-        throw new DbException([
-            ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
-            'message' => $exception->getMessage(),
-            'sql' => $sql,
-            'bind' => json_stringify($bind, JSON_PRETTY_PRINT)
-        ]);
+        $bind_str = json_stringify($bind, JSON_PRETTY_PRINT);
+        throw new DbException(["%s =>\r\n SQL: %s\r\n BIND: %s", $exception->getMessage(), $sql, $bind_str]);
     }
 
     /**
@@ -248,12 +246,8 @@ abstract class Connection extends Component implements ConnectionInterface
             }
         }
 
-        throw new DbException([
-            ':message => ' . PHP_EOL . 'SQL: ":sql"' . PHP_EOL . ' BIND: :bind',
-            'message' => $exception->getMessage(),
-            'sql' => $sql,
-            'bind' => json_stringify($bind, JSON_PRETTY_PRINT)
-        ], 0, $exception);
+        $bind_str = json_stringify($bind, JSON_PRETTY_PRINT);
+        throw new DbException(["%s =>\r\n SQL: %s\r\n BIND: %s", $exception->getMessage(), $sql, $bind_str]);
     }
 
     public function close()
