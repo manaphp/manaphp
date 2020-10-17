@@ -18,11 +18,11 @@ interface CookiesInterface
      * @param string $path
      * @param string $domain
      * @param bool   $secure
-     * @param bool   $httpOnly
+     * @param bool   $httponly
      *
      * @return static
      */
-    public function set($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = true);
+    public function set($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httponly = true);
 
     /**
      * Gets a cookie from the bag
@@ -48,9 +48,9 @@ interface CookiesInterface
      * @param string $path
      * @param string $domain
      * @param bool   $secure
-     * @param bool   $httpOnly
+     * @param bool   $httponly
      *
      * @return bool
      */
-    public function delete($name, $path = null, $domain = null, $secure = false, $httpOnly = true);
+    public function delete($name, $path = null, $domain = null, $secure = false, $httponly = true);
 }

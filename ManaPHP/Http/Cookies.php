@@ -23,13 +23,13 @@ class Cookies extends Component implements CookiesInterface
      * @param string $path
      * @param string $domain
      * @param bool   $secure
-     * @param bool   $httpOnly
+     * @param bool   $httponly
      *
      * @return static
      */
-    public function set($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = true)
+    public function set($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httponly = true)
     {
-        $this->response->setCookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
+        $this->response->setCookie($name, $value, $expire, $path, $domain, $secure, $httponly);
 
         return $this;
     }
@@ -64,13 +64,13 @@ class Cookies extends Component implements CookiesInterface
      * @param string $path
      * @param string $domain
      * @param bool   $secure
-     * @param bool   $httpOnly
+     * @param bool   $httponly
      *
      * @return static
      */
-    public function delete($name, $path = null, $domain = null, $secure = false, $httpOnly = true)
+    public function delete($name, $path = null, $domain = null, $secure = false, $httponly = true)
     {
-        $this->response->deleteCookie($name, $path, $domain, $secure, $httpOnly);
+        $this->response->deleteCookie($name, $path, $domain, $secure, $httponly);
 
         return $this;
     }

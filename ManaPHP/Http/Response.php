@@ -75,11 +75,11 @@ class Response extends Component implements ResponseInterface
      * @param string $path
      * @param string $domain
      * @param bool   $secure
-     * @param bool   $httpOnly
+     * @param bool   $httponly
      *
      * @return static
      */
-    public function setCookie($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = true)
+    public function setCookie($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httponly = true)
     {
         $context = $this->_context;
 
@@ -97,7 +97,7 @@ class Response extends Component implements ResponseInterface
             'path' => $path,
             'domain' => $domain,
             'secure' => $secure,
-            'httpOnly' => $httpOnly
+            'httpOnly' => $httponly
         ];
 
         $globals = $this->request->getContext();
@@ -114,11 +114,11 @@ class Response extends Component implements ResponseInterface
      * @param string $path
      * @param string $domain
      * @param bool   $secure
-     * @param bool   $httpOnly
+     * @param bool   $httponly
      *
      * @return static
      */
-    public function deleteCookie($name, $path = null, $domain = null, $secure = false, $httpOnly = true)
+    public function deleteCookie($name, $path = null, $domain = null, $secure = false, $httponly = true)
     {
         $context = $this->_context;
 
@@ -129,7 +129,7 @@ class Response extends Component implements ResponseInterface
             'path' => $path,
             'domain' => $domain,
             'secure' => $secure,
-            'httpOnly' => $httpOnly
+            'httpOnly' => $httponly
         ];
 
         $globals = $this->request->getContext();

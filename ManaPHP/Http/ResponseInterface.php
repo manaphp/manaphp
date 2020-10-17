@@ -23,11 +23,11 @@ interface ResponseInterface
      * @param string $path
      * @param string $domain
      * @param bool   $secure
-     * @param bool   $httpOnly
+     * @param bool   $httponly
      *
      * @return static
      */
-    public function setCookie($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = true);
+    public function setCookie($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httponly = true);
 
     /**
      * Deletes a cookie by its name
@@ -36,11 +36,11 @@ interface ResponseInterface
      * @param string $path
      * @param string $domain
      * @param bool   $secure
-     * @param bool   $httpOnly
+     * @param bool   $httponly
      *
      * @return static
      */
-    public function deleteCookie($name, $path = null, $domain = null, $secure = false, $httpOnly = true);
+    public function deleteCookie($name, $path = null, $domain = null, $secure = false, $httponly = true);
 
     /**
      * Sets the HTTP response code
