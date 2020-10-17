@@ -138,12 +138,14 @@ class File extends Component implements FileInterface
             LocalFS::fileMove($this->_file['tmp_name'], $this->alias->resolve($dst));
         } else {
             if (!move_uploaded_file($this->_file['tmp_name'], $this->alias->resolve($dst))) {
-                throw new FileException(['move_uploaded_file to `:dst` failed: :last_error_message', 'dst' => $dst]);
+                $error = error_get_last()['message'] ?? '';
+                throw new FileException(['move_uploaded_file to `%s` failed: %s', $dst, $error]);
             }
         }
 
         if (!chmod($this->alias->resolve($dst), 0644)) {
-            throw new FileException(['chmod `:dst` destination failed: :last_error_message', 'dst' => $dst]);
+            $error = error_get_last()['message'] ?? '';
+            throw new FileException(['chmod `%s` destination failed: %s', $dst, $error]);
         }
     }
 

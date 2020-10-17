@@ -342,7 +342,8 @@ class Stream extends Component implements EngineInterface
         $start_time = microtime(true);
 
         if (!$stream = @fopen($request->url, 'rb', false, stream_context_create(['http' => $http, 'ssl' => $ssl]))) {
-            throw new ConnectionException([':last_error_message', 'url' => $request->url]);
+            $error = error_get_last()['message'] ?? '';
+            throw new ConnectionException(['connect to `%s` failed: %s', $request->url, $error]);
         }
 
         $headers = stream_get_meta_data($stream)['wrapper_data'];

@@ -36,10 +36,6 @@ class Exception extends \Exception
                 $message = $message[0];
                 unset($this->_bind[0]);
 
-                if (!isset($this->_bind['last_error_message'])) {
-                    $this->_bind['last_error_message'] = error_get_last()['message'] ?? '';
-                }
-
                 $tr = [];
                 foreach ($this->_bind as $k => $v) {
                     if (is_array($v)) {

@@ -92,7 +92,8 @@ class File extends Session
         }
 
         if (file_put_contents($file, $data, LOCK_EX) === false) {
-            trigger_error(strtr('write `:file` session file failed: :last_error_message', [':file' => $file]));
+            $error = error_get_last()['message'] ?? '';
+            trigger_error(sprintf('write `%s` session file failed: %s', $file, $error));
         }
 
         @touch($file, time() + $ttl);

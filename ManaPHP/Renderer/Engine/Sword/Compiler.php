@@ -215,7 +215,8 @@ class Compiler extends Component
         }
 
         if (($str = @file_get_contents($source)) === false) {
-            throw new InvalidArgumentException(['read `:file` sword source file failed: :last_error_message', 'file' => $source]);
+            $error = error_get_last()['message'] ?? '';
+            throw new InvalidArgumentException(['read `%s` sword source file failed: %s', $source, $error]);
         }
 
         $result = $this->compileString($str);
@@ -223,11 +224,8 @@ class Compiler extends Component
         $result = $this->_completeLinks($source, $result);
 
         if (file_put_contents($compiled, $result, LOCK_EX) === false) {
-            throw new RuntimeException([
-                'write `:compiled` compiled file for `:source` file failed: :last_error_message',
-                'complied' => $compiled,
-                'source' => $source
-            ]);
+            $error = error_get_last()['message'] ?? '';
+            throw new RuntimeException(['write `%s` compiled file file failed: %s', $compiled, $error]);
         }
 
         return $this;

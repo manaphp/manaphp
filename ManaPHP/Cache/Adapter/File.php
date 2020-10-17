@@ -121,7 +121,8 @@ class File extends Cache
         }
 
         if (file_put_contents($file, $value, LOCK_EX) === false) {
-            throw new WriteFileFailedException(['write `:file` cache file failed: :last_error_message', 'file' => $file]);
+            $error = error_get_last()['message'] ?? '';
+            throw new WriteFileFailedException(['write `%s` cache file failed: %s', $file, $error]);
         }
 
         @touch($file, time() + $ttl);

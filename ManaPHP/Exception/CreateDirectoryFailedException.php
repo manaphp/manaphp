@@ -6,6 +6,7 @@ class CreateDirectoryFailedException extends RuntimeException
 {
     public function __construct($dir, $previous = null)
     {
-        parent::__construct(['create `:dir` directory failed: :last_error_message', 'dir' => $dir], 0, $previous);
+        $error = error_get_last()['message'] ?? '';
+        parent::__construct(['create `%s` directory failed: %s', $dir, $error], 0, $previous);
     }
 }
