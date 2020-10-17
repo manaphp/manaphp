@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Db;
@@ -21,17 +22,21 @@ class ModelTest extends TestCase
     {
         $this->di = new FactoryDefault();
         $this->di->alias->set('@data', __DIR__ . '/tmp/data');
-        $this->di->set('db', function () {
+        $this->di->set(
+            'db', function () {
             $config = require __DIR__ . '/config.database.php';
             $db = new Db($config['mysql']);
 
-            $db->attachEvent('db:beforeQuery', function (DbInterface $source) {
+            $db->attachEvent(
+                'db:beforeQuery', function (DbInterface $source) {
                 // var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
                 var_dump($source->getEmulatedSQL());
-            });
+            }
+            );
 
             return $db;
-        });
+        }
+        );
     }
 
     public function test_implicit_hasOne()
@@ -40,7 +45,9 @@ class ModelTest extends TestCase
         $city = City::first(1);
         $country = $city->country;
         $this->assertSame(87, $city->country_id);
-        $this->assertEquals(['country_id' => 87, 'country' => 'Spain', 'last_update' => '2006-02-15 04:44:00'], $country->toArray());
+        $this->assertEquals(
+            ['country_id' => 87, 'country' => 'Spain', 'last_update' => '2006-02-15 04:44:00'], $country->toArray()
+        );
 
         //magic property and return false
         $city = new City();
@@ -51,7 +58,9 @@ class ModelTest extends TestCase
         $city = City::first(1);
         $country = $city->getCountry()->fetch();
         $this->assertSame(87, $city->country_id);
-        $this->assertEquals(['country_id' => 87, 'country' => 'Spain', 'last_update' => '2006-02-15 04:44:00'], $country->toArray());
+        $this->assertEquals(
+            ['country_id' => 87, 'country' => 'Spain', 'last_update' => '2006-02-15 04:44:00'], $country->toArray()
+        );
 
         //magic method and return false
         $city = new City();
@@ -70,7 +79,9 @@ class ModelTest extends TestCase
         $city = City::first(1);
         $country = $city->countryExplicit;
         $this->assertSame(87, $city->country_id);
-        $this->assertEquals(['country_id' => 87, 'country' => 'Spain', 'last_update' => '2006-02-15 04:44:00'], $country->toArray());
+        $this->assertEquals(
+            ['country_id' => 87, 'country' => 'Spain', 'last_update' => '2006-02-15 04:44:00'], $country->toArray()
+        );
 
         //magic property and result is false
         $city = new City();
@@ -81,7 +92,9 @@ class ModelTest extends TestCase
         $city = City::first(1);
         $country = $city->getCountryExplicit()->fetch();
         $this->assertSame(87, $city->country_id);
-        $this->assertEquals(['country_id' => 87, 'country' => 'Spain', 'last_update' => '2006-02-15 04:44:00'], $country->toArray());
+        $this->assertEquals(
+            ['country_id' => 87, 'country' => 'Spain', 'last_update' => '2006-02-15 04:44:00'], $country->toArray()
+        );
 
         //normal method and result is false
         $city = new City();

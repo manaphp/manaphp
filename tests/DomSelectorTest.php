@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
@@ -44,7 +45,8 @@ STR;
 
         $this->assertEquals(
             ['image1_thumb.jpg', 'image2_thumb.jpg', 'image3_thumb.jpg', 'image4_thumb.jpg', 'image5_thumb.jpg'],
-            array_values($selector->css('img')->attr('src')));
+            array_values($selector->css('img')->attr('src'))
+        );
 
         $this->assertEquals(['Example website'], $selector->xpath('//title')->text());
         $this->assertEquals('Example website', $selector->xpath('//title')->first()->text());
@@ -58,7 +60,8 @@ STR;
 
         $this->assertEquals(
             ['image1.html', 'image2.html', 'image3.html', 'image4.html', 'image5.html'],
-            array_values($selector->xpath('//a[contains(@href, "image")]')->attr('href')));
+            array_values($selector->xpath('//a[contains(@href, "image")]')->attr('href'))
+        );
 
 //        $this->assertEquals(
 //            ['image1.html', 'image2.html', 'image3.html', 'image4.html', 'image5.html'],
@@ -66,7 +69,8 @@ STR;
 
         $this->assertEquals(
             ['image1_thumb.jpg', 'image2_thumb.jpg', 'image3_thumb.jpg', 'image4_thumb.jpg', 'image5_thumb.jpg'],
-            array_values($selector->xpath('//a[contains(@href, "image")]/img')->attr('src')));
+            array_values($selector->xpath('//a[contains(@href, "image")]/img')->attr('src'))
+        );
 
 //        $this->assertEquals(
 //            ['image1_thumb.jpg', 'image2_thumb.jpg', 'image3_thumb.jpg', 'image4_thumb.jpg', 'image5_thumb.jpg'],
@@ -86,7 +90,9 @@ STR;
 //            'My image 1 ',
 //            $selector->xpath('//a[contains(@href, "image")]/text()')->re_first('#Name:\s*(.*)#'));
 
-        $this->assertEquals('Name: My image 1 ', $selector->xpath(['//div[@id=$val]/a', 'val' => 'images'])->first()->text());
+        $this->assertEquals(
+            'Name: My image 1 ', $selector->xpath(['//div[@id=$val]/a', 'val' => 'images'])->first()->text()
+        );
 
 //      $this->assertEquals('Name: My image 1 ', $selector->xpath(['//div[count(a)=$cnt]/@id', 'cnt'=>5])->extract_first());
 
@@ -95,7 +101,9 @@ STR;
 //      $this->assertEquals(['Click here to go to the '], $selector->xpath('string(//a[1]//text())')->extract());
 
         $selector = new Selector('<div class="hero shout"><time datetime="2014-07-23 19:00">Special date</time></div>');
-        $this->assertEquals(['2014-07-23 19:00'], array_values($selector->css('.shout')->xpath('./time')->attr('datetime')));
+        $this->assertEquals(
+            ['2014-07-23 19:00'], array_values($selector->css('.shout')->xpath('./time')->attr('datetime'))
+        );
 
         $body = <<<STR
         <body>
@@ -222,7 +230,8 @@ STR;
         $selector = new Selector($html);
         $selector->strip('p');
 
-        $this->assertEquals(<<<XXX
+        $this->assertEquals(
+            <<<XXX
 <div id="demo">
         xxx
         <span class="tt">yyy</span>
@@ -230,6 +239,7 @@ STR;
         nnn
     </div>
 XXX
-, $selector->find('#demo')->first()->html());
+            , $selector->find('#demo')->first()->html()
+        );
     }
 }

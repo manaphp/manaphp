@@ -80,6 +80,7 @@ namespace App\Test\Controllers {
     }
 
     /** @noinspection LongInheritanceChainInspection */
+
     class Test7Controller extends ControllerBase
     {
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
@@ -31,7 +32,9 @@ class  IdentityAdapterJwtTest extends TestCase
         $this->assertEquals('mana', $decoded['name']);
 
         $jwt = new Jwt(['key' => '123456']);
-        $decoded = $jwt->decode('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.keH6T3x1z7mmhKL1T3r9sQdAxxdzB6siemGMr_6ZOwU');
+        $decoded = $jwt->decode(
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.keH6T3x1z7mmhKL1T3r9sQdAxxdzB6siemGMr_6ZOwU'
+        );
         $this->assertEquals('1234567890', $decoded['sub']);
         $this->assertEquals('John Doe', $decoded['name']);
         $this->assertEquals(1516239022, $decoded['iat']);

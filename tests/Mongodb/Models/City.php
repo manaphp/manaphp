@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests\Mongodb\Models;
 
 use ManaPHP\Mongodb\Model;
@@ -13,10 +14,10 @@ class City extends Model
     public function getFieldTypes()
     {
         return [
-            '_id' => 'integer',
-            'city_id' => 'integer',
-            'city' => 'string',
-            'country_id' => 'integer',
+            '_id'         => 'integer',
+            'city_id'     => 'integer',
+            'city'        => 'string',
+            'country_id'  => 'integer',
             'last_update' => 'string'
         ];
     }

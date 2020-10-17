@@ -14,14 +14,18 @@ class LoginLogController extends Controller
 
     public function getVerbs()
     {
-        return array_merge(parent::getVerbs(), [
-            'latest' => 'GET'
-        ]);
+        return array_merge(
+            parent::getVerbs(), [
+                'latest' => 'GET'
+            ]
+        );
     }
 
     public function indexAction()
     {
-        return AdminLoginLog::select(['login_id', 'admin_id', 'admin_name', 'client_udid', 'user_agent', 'client_ip', 'created_time'])
+        return AdminLoginLog::select(
+            ['login_id', 'admin_id', 'admin_name', 'client_udid', 'user_agent', 'client_ip', 'created_time']
+        )
             ->orderBy(['login_id' => SORT_DESC])
             ->search(['admin_id', 'admin_name*=', 'client_ip', 'client_udid', 'created_time@='])
             ->paginate();

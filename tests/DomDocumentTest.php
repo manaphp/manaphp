@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Di;
@@ -116,7 +117,9 @@ STR;
         $links = $selector->find('a')->attr('href');
         $this->assertEquals('http://www.baidu.com/localhost/test', $document->absolutizeUrl($links['/html/body/a[1]']));
         $this->assertEquals('http://www.baidu.com', $document->absolutizeUrl($links['/html/body/a[2]']));
-        $this->assertEquals('http://www.baidu.com/localhost/test.html', $document->absolutizeUrl($links['/html/body/a[3]']));
+        $this->assertEquals(
+            'http://www.baidu.com/localhost/test.html', $document->absolutizeUrl($links['/html/body/a[3]'])
+        );
 
         $body = <<<STR
 <!DOCTYPE html>

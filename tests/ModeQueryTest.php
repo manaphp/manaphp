@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Db;
@@ -17,17 +18,21 @@ class ModeQueryTest extends \PHPUnit_Framework_TestCase
     {
         $this->di = new FactoryDefault();
         $this->di->alias->set('@data', __DIR__);
-        $this->di->set('db', function () {
+        $this->di->set(
+            'db', function () {
             $config = require __DIR__ . '/config.database.php';
             $db = new Db($config['mysql']);
 
-            $db->attachEvent('db:beforeQuery', function (DbInterface $source) {
+            $db->attachEvent(
+                'db:beforeQuery', function (DbInterface $source) {
                 // var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
                 var_dump($source->getEmulatedSQL());
-            });
+            }
+            );
 
             return $db;
-        });
+        }
+        );
     }
 
     public function test_where()
@@ -89,7 +94,8 @@ class ModeQueryTest extends \PHPUnit_Framework_TestCase
         $r = City::query()->where(['city_id<=' => 2])->with(['country' => ['country_id<' => 0]])->fetch(true);
         $this->assertNull($r[0]['country']);
 
-        $r = City::query()->where(['city_id<=' => 2])->with(['country' => ['country_id, country', 'country_id<' => 0]])->fetch(true);
+        $r = City::query()->where(['city_id<=' => 2])->with(['country' => ['country_id, country', 'country_id<' => 0]])
+            ->fetch(true);
         $this->assertNull($r[0]['country']);
     }
 

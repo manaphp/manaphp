@@ -41,9 +41,9 @@ class Admin extends Model
     {
         return [
             'admin_name' => ['length' => '4-16', 'account', 'readonly'],
-            'email' => ['lower', 'email', 'unique'],
-            'status' => 'const',
-            'white_ip' => ['default' => '', 'maxLength' => 64]
+            'email'      => ['lower', 'email', 'unique'],
+            'status'     => 'const',
+            'white_ip'   => ['default' => '', 'maxLength' => 64]
         ];
     }
 

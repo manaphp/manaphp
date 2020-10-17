@@ -24,9 +24,9 @@ class Role extends Model
     public function rules()
     {
         return [
-            'role_name' => ['lower', 'length' => '3-15', 'unique'],
+            'role_name'    => ['lower', 'length' => '3-15', 'unique'],
             'display_name' => ['trim', 'lower', 'length' => '3-15', 'unique'],
-            'enabled' => 'bool',
+            'enabled'      => 'bool',
         ];
     }
 }

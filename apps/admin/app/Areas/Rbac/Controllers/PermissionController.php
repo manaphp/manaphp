@@ -19,7 +19,10 @@ class PermissionController extends Controller
 {
     public function indexAction()
     {
-        return Permission::all(['permission_id?' => input('permission_id', '')], ['with' => ['roles' => 'role_id, display_name'], 'order' => 'permission_id DESC']);
+        return Permission::all(
+            ['permission_id?' => input('permission_id', '')],
+            ['with' => ['roles' => 'role_id, display_name'], 'order' => 'permission_id DESC']
+        );
     }
 
     public function listAction()
@@ -36,7 +39,10 @@ class PermissionController extends Controller
             $controllerInstance = new $controller;
             $acl = $controllerInstance->getAcl();
 
-            if (preg_match('#/Areas/([^/]*)/Controllers/(.*)Controller$#', str_replace('\\', '/', $controller), $match)) {
+            if (preg_match(
+                '#/Areas/([^/]*)/Controllers/(.*)Controller$#', str_replace('\\', '/', $controller), $match
+            )
+            ) {
                 $area = $match[1];
                 $controller_name = $match[2];
             } else {
@@ -54,7 +60,10 @@ class PermissionController extends Controller
                 if ($ac[0] === '@') {
                     $original_action = substr($ac, 1);
                     if (!in_array($original_action, $actions, true)) {
-                        return sprintf('invalid original action: `%s` controller does not exist `%sAction` method', $controller, $original_action);
+                        return sprintf(
+                            'invalid original action: `%s` controller does not exist `%sAction` method', $controller,
+                            $original_action
+                        );
                     }
                 }
             }
@@ -64,7 +73,8 @@ class PermissionController extends Controller
                     continue;
                 }
 
-                $path = '/' . ($area ? Str::underscore($area) . '/' : '') . Str::underscore($controller_name) . '/' . Str::underscore($action);
+                $path = '/' . ($area ? Str::underscore($area) . '/' : '') . Str::underscore($controller_name) . '/'
+                    . Str::underscore($action);
                 $path = preg_replace('#(/index)+$#', '', $path) ?: '/';
 
                 if (Permission::exists(['path' => $path])) {
@@ -111,7 +121,11 @@ class PermissionController extends Controller
     public function deleteAction()
     {
         $permission = Permission::rGet();
-        foreach (Role::all(['role_id' => RolePermission::values('role_id', ['permission_id' => $permission->permission_id])]) as $role) {
+        foreach (
+            Role::all(
+                ['role_id' => RolePermission::values('role_id', ['permission_id' => $permission->permission_id])]
+            ) as $role
+        ) {
             if (strpos($role->permissions, ",$permission->path,") !== false) {
                 $role->permissions = str_replace(",$permission->path,", ',', $role->permissions);
                 $role->update();

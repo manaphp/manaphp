@@ -31,7 +31,9 @@ class RolePermissionController extends Controller
 
         $old_permissions = RolePermission::values('permission_id', ['role_id' => $role_id]);
 
-        RolePermission::deleteAll(['role_id' => $role_id, 'permission_id' => array_values(array_diff($old_permissions, $permission_ids))]);
+        RolePermission::deleteAll(
+            ['role_id' => $role_id, 'permission_id' => array_values(array_diff($old_permissions, $permission_ids))]
+        );
 
         foreach (array_diff($permission_ids, $old_permissions) as $permission_id) {
             $rolePermission = new RolePermission();

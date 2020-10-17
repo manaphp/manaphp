@@ -13,16 +13,20 @@ class TestController extends Controller
     public function defaultCommand()
     {
         $returns = $this->coroutineManager->createScheduler()
-            ->add(function () {
-                rest_get()
+            ->add(
+                function () {
+                    rest_get()
                 Coroutine::sleep(mt_rand(1, 1000) / 1000);
                 var_dump('a');
                 return 'a';
-            })->add(function () {
-                Coroutine::sleep(mt_rand(1, 1000) / 1000);
-                var_dump('b');
-                return 'b';
-            })->start();
+            }
+            )->add(
+                function () {
+                    Coroutine::sleep(mt_rand(1, 1000) / 1000);
+                    var_dump('b');
+                    return 'b';
+                }
+            )->start();
 
         var_dump($returns);
     }

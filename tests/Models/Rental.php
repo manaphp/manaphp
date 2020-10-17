@@ -5,12 +5,14 @@
  * Date: 2015/12/28
  * Time: 0:04
  */
+
 namespace Tests\Models;
 
 use ManaPHP\Db\Model;
 
 /**
  * Class Rental
+ *
  * @package Tests\Models
  * @property \Tests\Models\Inventory   $inventory
  * @property \Tests\Models\Inventory[] $inventories

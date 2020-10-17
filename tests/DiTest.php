@@ -68,16 +68,20 @@ class DiTest extends TestCase
 
         //closure
         $di = new Di();
-        $di->set('request', function () {
+        $di->set(
+            'request', function () {
             return new Request();
-        });
+        }
+        );
         $this->assertNotSame($di->get('request'), $di->get('request'));
         $this->assertInstanceOf('ManaPHP\Http\Request', $di->get('request'));
 
         $di = new Di();
-        $di->set('request', function () {
+        $di->set(
+            'request', function () {
             return new Request();
-        });
+        }
+        );
         $this->assertSame($di->getShared('request'), $di->getShared('request'));
         $this->assertInstanceOf('ManaPHP\Http\Request', $di->getShared('request'));
     }
@@ -131,17 +135,21 @@ class DiTest extends TestCase
 
         //closure
         $di = new Di();
-        $di->setShared('request', function () {
+        $di->setShared(
+            'request', function () {
             return new \ManaPHP\Http\Request();
-        });
+        }
+        );
         $this->assertSame($di->getShared('request'), $di->getShared('request'));
         $this->assertInstanceOf('ManaPHP\Http\Request', $di->getShared('request'));
 
         //closure
         $di = new Di();
-        $di->setShared('request', function () {
+        $di->setShared(
+            'request', function () {
             return new \ManaPHP\Http\Request();
-        });
+        }
+        );
         $this->assertSame($di->get('request'), $di->get('request'));
         $this->assertInstanceOf('ManaPHP\Http\Request', $di->get('request'));
     }
@@ -168,9 +176,11 @@ class DiTest extends TestCase
     public function test_get()
     {
         $di = new Di();
-        $di->set('getComponent1', function ($v) {
+        $di->set(
+            'getComponent1', function ($v) {
             return new SomeComponent($v);
-        });
+        }
+        );
 
         $di->set('getComponent2', 'Tests\SomeComponent');
 
@@ -181,9 +191,11 @@ class DiTest extends TestCase
     public function test_remove()
     {
         $di = new Di();
-        $di->set('removeService', function () {
+        $di->set(
+            'removeService', function () {
             return new \stdClass();
-        });
+        }
+        );
 
         $this->assertTrue($di->has('removeService'));
 

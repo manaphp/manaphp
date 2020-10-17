@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Model\Hierarchy\Adapter\Path;
@@ -7,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 class Category extends \ManaPHP\Db\Model
 {
     use Path;
+
     public static function getHierarchyLengths()
     {
         return [2, 3, 1];

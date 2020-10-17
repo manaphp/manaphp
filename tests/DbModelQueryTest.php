@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Db;
@@ -22,24 +23,30 @@ class DbModelQueryTest extends TestCase
         $di = new FactoryDefault();
         $di->alias->set('@data', __DIR__ . '/tmp/data');
 
-        $di->setShared('db', function () {
+        $di->setShared(
+            'db', function () {
             $config = require __DIR__ . '/config.database.php';
             $db = new Db($config['mysql']);
 
-            $db->attachEvent('db:beforeQuery', function (DbInterface $source) {
+            $db->attachEvent(
+                'db:beforeQuery', function (DbInterface $source) {
                 var_dump($source->getSQL());
                 var_dump($source->getEmulatedSQL());
-            });
+            }
+            );
 
             echo get_class($db), PHP_EOL;
             return $db;
-        });
+        }
+        );
     }
 
     public function test_select()
     {
-        $this->assertEquals('SELECT [city_id] FROM [city]',
-            City::query()->select(['city_id'])->getSql());
+        $this->assertEquals(
+            'SELECT [city_id] FROM [city]',
+            City::query()->select(['city_id'])->getSql()
+        );
     }
 
 
@@ -153,9 +160,11 @@ class DbModelQueryTest extends TestCase
 
         $query = (new Query())
             ->select(['*'])
-            ->from(City::query()
-                ->select(['*'])
-                ->where(['city_id<=' => 5]), 'cc');
+            ->from(
+                City::query()
+                    ->select(['*'])
+                    ->where(['city_id<=' => 5]), 'cc'
+            );
         $rows = $query->execute();
         $this->assertCount(5, $rows);
     }
@@ -199,9 +208,11 @@ class DbModelQueryTest extends TestCase
 
         $query = Address::query('a')
             ->select(['a.address_id', 'a.address', 'a.city_id', 'c.city'])
-            ->join(City::query()
-                ->select(['*'])
-                ->where(['city_id<' => 50]), 'c.city_id =a.city_id', 'c', 'RIGHT');
+            ->join(
+                City::query()
+                    ->select(['*'])
+                    ->where(['city_id<' => 50]), 'c.city_id =a.city_id', 'c', 'RIGHT'
+            );
         $rows = $query->execute();
         $this->assertCount(50, $rows);
     }
@@ -254,8 +265,10 @@ class DbModelQueryTest extends TestCase
 
     public function test_where()
     {
-        $this->assertEquals('SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE [city_id]=:city_id',
-            City::where(['city_id' => 1])->getSql());
+        $this->assertEquals(
+            'SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE [city_id]=:city_id',
+            City::where(['city_id' => 1])->getSql()
+        );
 
         $query = Address::where(['address_id<=' => 100]);
         $this->assertCount(100, $query->execute());
@@ -272,14 +285,18 @@ class DbModelQueryTest extends TestCase
 
     public function test_whereRaw()
     {
-        $this->assertEquals('SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE city_id >1',
-            City::query()->whereRaw('city_id >1')->getSql());
+        $this->assertEquals(
+            'SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE city_id >1',
+            City::query()->whereRaw('city_id >1')->getSql()
+        );
     }
 
     public function test_whereBetween()
     {
-        $this->assertEquals('SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE [city_id] BETWEEN :city_id_min AND :city_id_max',
-            City::query()->whereBetween('city_id', 1, 10)->getSql());
+        $this->assertEquals(
+            'SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE [city_id] BETWEEN :city_id_min AND :city_id_max',
+            City::query()->whereBetween('city_id', 1, 10)->getSql()
+        );
 
         $this->assertCount(50, Address::query()->whereBetween('address_id', 51, 100)->execute());
         $this->assertCount(100, Address::query()->whereBetween('address_id', null, 100)->execute());
@@ -290,8 +307,10 @@ class DbModelQueryTest extends TestCase
 
     public function test_whereNotBetween()
     {
-        $this->assertEquals('SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE [city_id] NOT BETWEEN :_min_0 AND :_max_0',
-            City::query()->whereNotBetween('city_id', 1, 10)->getSql());
+        $this->assertEquals(
+            'SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE [city_id] NOT BETWEEN :_min_0 AND :_max_0',
+            City::query()->whereNotBetween('city_id', 1, 10)->getSql()
+        );
 
         $this->assertCount(553, Address::query()->whereNotBetween('address_id', 51, 100)->execute());
         $this->assertCount(503, Address::query()->whereNotBetween('address_id', null, 100)->execute());
@@ -306,14 +325,20 @@ class DbModelQueryTest extends TestCase
 
     public function test_whereIn()
     {
-        $this->assertEquals('SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE FALSE',
-            City::query()->whereIn('city_id', [])->getSql());
+        $this->assertEquals(
+            'SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE FALSE',
+            City::query()->whereIn('city_id', [])->getSql()
+        );
 
-        $this->assertEquals('SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE [city_id] IN (1)',
-            City::query()->whereIn('city_id', [1])->getSql());
+        $this->assertEquals(
+            'SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE [city_id] IN (1)',
+            City::query()->whereIn('city_id', [1])->getSql()
+        );
 
-        $this->assertEquals('SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE [city_id] IN (:_in_0_0)',
-            City::query()->whereIn('city_id', ['1'])->getSql());
+        $this->assertEquals(
+            'SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE [city_id] IN (:_in_0_0)',
+            City::query()->whereIn('city_id', ['1'])->getSql()
+        );
 
         $query = Address::query()->whereIn('address_id', []);
         $this->assertCount(0, $query->execute());
@@ -331,28 +356,38 @@ class DbModelQueryTest extends TestCase
 
         $query = Address::query()
             ->select(['*'])
-            ->whereIn('city_id', Address::query()
+            ->whereIn(
+                'city_id', Address::query()
                 ->select(['city_id'])
-                ->whereIn('city_id', [1, 2, 3, 4]));
+                ->whereIn('city_id', [1, 2, 3, 4])
+            );
         $this->assertCount(4, $query->execute());
     }
 
     public function test_whereNotIn()
     {
-        $this->assertEquals('SELECT [city_id], [city], [country_id], [last_update] FROM [city]',
-            City::query()->whereNotIn('city_id', [])->getSql());
+        $this->assertEquals(
+            'SELECT [city_id], [city], [country_id], [last_update] FROM [city]',
+            City::query()->whereNotIn('city_id', [])->getSql()
+        );
 
-        $this->assertEquals('SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE [city_id] NOT IN (1)',
-            City::query()->whereNotIn('city_id', [1])->getSql());
+        $this->assertEquals(
+            'SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE [city_id] NOT IN (1)',
+            City::query()->whereNotIn('city_id', [1])->getSql()
+        );
 
-        $this->assertEquals('SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE [city_id] NOT IN (:_in_0_0)',
-            City::query()->whereNotIn('city_id', ['1'])->getSql());
+        $this->assertEquals(
+            'SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE [city_id] NOT IN (:_in_0_0)',
+            City::query()->whereNotIn('city_id', ['1'])->getSql()
+        );
     }
 
     public function test_whereContains()
     {
-        $this->assertEquals('SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE [city_name] LIKE :city_name',
-            City::query()->whereContains('city_name', 'A')->getSql());
+        $this->assertEquals(
+            'SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE [city_name] LIKE :city_name',
+            City::query()->whereContains('city_name', 'A')->getSql()
+        );
 
         $documents = Address::query()->whereContains('address', 'as')->fetch();
         $this->assertCount(24, $documents);
@@ -365,8 +400,10 @@ class DbModelQueryTest extends TestCase
 
     public function test_whereNotContains()
     {
-        $this->assertEquals('SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE [city_name] NOT LIKE :city_name',
-            City::query()->whereNotContains('city_name', 'A')->getSql());
+        $this->assertEquals(
+            'SELECT [city_id], [city], [country_id], [last_update] FROM [city] WHERE [city_name] NOT LIKE :city_name',
+            City::query()->whereNotContains('city_name', 'A')->getSql()
+        );
     }
 
     public function test_whereStartsWith()
@@ -447,8 +484,10 @@ class DbModelQueryTest extends TestCase
 
     public function test_orderBy()
     {
-        $this->assertEquals('SELECT [city_id], [city], [country_id], [last_update] FROM [city] ORDER BY [city_id]',
-            City::query()->orderBy('city_id')->getSql());
+        $this->assertEquals(
+            'SELECT [city_id], [city], [country_id], [last_update] FROM [city] ORDER BY [city_id]',
+            City::query()->orderBy('city_id')->getSql()
+        );
 
         $query = Address::query()
             ->select(['address_id'])
@@ -515,9 +554,11 @@ class DbModelQueryTest extends TestCase
         $query = Address::query()
             ->select(['address_id'])
             ->where(['address_id>=' => 5])
-            ->indexBy(function ($row) {
-                return 'address_' . $row['address_id'];
-            })
+            ->indexBy(
+                function ($row) {
+                    return 'address_' . $row['address_id'];
+                }
+            )
             ->limit(1);
         $rows = $query->execute();
         $this->assertCount(1, $rows);
@@ -557,8 +598,10 @@ class DbModelQueryTest extends TestCase
 
     public function test_limit()
     {
-        $this->assertEquals('SELECT [city_id], [city], [country_id], [last_update] FROM [city] LIMIT 10',
-            City::query()->limit(10)->getSql());
+        $this->assertEquals(
+            'SELECT [city_id], [city], [country_id], [last_update] FROM [city] LIMIT 10',
+            City::query()->limit(10)->getSql()
+        );
 
         //limit without offset
         $query = City::query()->select(['city_id'])->limit(1);
@@ -578,8 +621,10 @@ class DbModelQueryTest extends TestCase
 
     public function test_page()
     {
-        $this->assertEquals('SELECT [city_id], [city], [country_id], [last_update] FROM [city] LIMIT 10 OFFSET 20',
-            City::query()->page(10, 3)->getSql());
+        $this->assertEquals(
+            'SELECT [city_id], [city], [country_id], [last_update] FROM [city] LIMIT 10 OFFSET 20',
+            City::query()->page(10, 3)->getSql()
+        );
 
         //limit without offset
         $query = City::query()->select(['city_id'])->limit(1);
@@ -599,8 +644,10 @@ class DbModelQueryTest extends TestCase
 
     public function test_groupBy()
     {
-        $this->assertEquals('SELECT [city_id], [city], [country_id], [last_update] FROM [city] GROUP BY [city_id]',
-            City::query()->groupBy('city_id')->getSql());
+        $this->assertEquals(
+            'SELECT [city_id], [city], [country_id], [last_update] FROM [city] GROUP BY [city_id]',
+            City::query()->groupBy('city_id')->getSql()
+        );
 
         $query = City::query()
             ->select(['count_city' => 'COUNT(city_id)', 'country_id'])
@@ -638,9 +685,11 @@ class DbModelQueryTest extends TestCase
 
         $query = Address::query()
             ->select(['*'])
-            ->whereNotIn('city_id', Address::query()
+            ->whereNotIn(
+                'city_id', Address::query()
                 ->select(['city_id'])
-                ->whereIn('city_id', [1, 2, 3, 4]));
+                ->whereIn('city_id', [1, 2, 3, 4])
+            );
         $this->assertCount(599, $query->execute());
     }
 
@@ -728,11 +777,13 @@ class DbModelQueryTest extends TestCase
         }
 
         $query = (new Query())
-            ->union([
-                City::query()
-                    ->select(['*'])
-                    ->whereIn('city_id', [1, 2, 3, 4, 5])
-            ]);
+            ->union(
+                [
+                    City::query()
+                        ->select(['*'])
+                        ->whereIn('city_id', [1, 2, 3, 4, 5])
+                ]
+            );
         $this->assertCount(5, $query->execute());
 
 //        $builder = $this->modelsManager->createBuilder()

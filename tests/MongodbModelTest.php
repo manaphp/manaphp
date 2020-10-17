@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Mongodb;
@@ -43,7 +44,9 @@ class MongodbModelTest extends TestCase
         $objectId = new ObjectID();
         $this->assertEquals($objectId, $dt->normalizeValue('objectid', $objectId));
 
-        $this->assertEquals(new ObjectID('123456789012345678901234'), $dt->normalizeValue('objectid', '123456789012345678901234'));
+        $this->assertEquals(
+            new ObjectID('123456789012345678901234'), $dt->normalizeValue('objectid', '123456789012345678901234')
+        );
 
         $this->assertTrue($dt->normalizeValue('boolean', true));
         $this->assertTrue($dt->normalizeValue('boolean', 1));

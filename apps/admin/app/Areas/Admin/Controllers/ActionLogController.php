@@ -14,9 +14,11 @@ class ActionLogController extends Controller
 
     public function getVerbs()
     {
-        return array_merge(parent::getVerbs(), [
-            'latest' => 'GET'
-        ]);
+        return array_merge(
+            parent::getVerbs(), [
+                'latest' => 'GET'
+            ]
+        );
     }
 
     public function indexAction()

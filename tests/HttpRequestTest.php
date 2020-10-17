@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
@@ -253,11 +254,11 @@ class HttpRequestTest extends TestCase
 
         $_FILES = array(
             'test' => array(
-                'name' => 'name',
-                'type' => 'text/plain',
-                'size' => 1,
+                'name'     => 'name',
+                'type'     => 'text/plain',
+                'size'     => 1,
                 'tmp_name' => 'tmp_name',
-                'error' => 0,
+                'error'    => 0,
             )
         );
 
@@ -266,11 +267,11 @@ class HttpRequestTest extends TestCase
 
         $_FILES = array(
             'test' => array(
-                'name' => array('name1', 'name2'),
-                'type' => array('text/plain', 'text/plain'),
-                'size' => array(1, 1),
+                'name'     => array('name1', 'name2'),
+                'type'     => array('text/plain', 'text/plain'),
+                'size'     => array(1, 1),
                 'tmp_name' => array('tmp_name1', 'tmp_name2'),
-                'error' => array(0, 0),
+                'error'    => array(0, 0),
             )
         );
 
@@ -279,7 +280,7 @@ class HttpRequestTest extends TestCase
 
         $_FILES = array(
             'photo' => array(
-                'name' => array(
+                'name'     => array(
                     0 => '',
                     1 => '',
                     2 => array(0 => '', 1 => '', 2 => ''),
@@ -295,7 +296,7 @@ class HttpRequestTest extends TestCase
                         ),
                     ),
                 ),
-                'type' => array(
+                'type'     => array(
                     0 => '',
                     1 => '',
                     2 => array(0 => '', 1 => '', 2 => ''),
@@ -327,7 +328,7 @@ class HttpRequestTest extends TestCase
                         ),
                     ),
                 ),
-                'error' => array(
+                'error'    => array(
                     0 => 4,
                     1 => 4,
                     2 => array(0 => 4, 1 => 4, 2 => 4),
@@ -343,7 +344,7 @@ class HttpRequestTest extends TestCase
                         ),
                     ),
                 ),
-                'size' => array(
+                'size'     => array(
                     0 => 0,
                     1 => 0,
                     2 => array(0 => 0, 1 => 0, 2 => 0),
@@ -360,12 +361,12 @@ class HttpRequestTest extends TestCase
                     ),
                 ),
             ),
-            'test' => array(
-                'name' => '',
-                'type' => '',
+            'test'  => array(
+                'name'     => '',
+                'type'     => '',
                 'tmp_name' => '',
-                'error' => 4,
-                'size' => 0,
+                'error'    => 4,
+                'size'     => 0,
             ),
         );
 
@@ -379,11 +380,11 @@ class HttpRequestTest extends TestCase
 
         $_FILES = array(
             'fieldNameHere' => array(
-                'name' => 'favicon.ico',
-                'type' => 'image/x-icon',
+                'name'     => 'favicon.ico',
+                'type'     => 'image/x-icon',
                 'tmp_name' => '/tmp/php7F4.tmp',
-                'error' => 0,
-                'size' => 202575,
+                'error'    => 0,
+                'size'     => 202575,
             ),
         );
 
@@ -401,11 +402,11 @@ class HttpRequestTest extends TestCase
 
         $_FILES = [
             'photo' => array(
-                'name' => [0 => 'f0', 1 => 'f1'],
-                'type' => [0 => 'text/plain', 1 => 'text/csv'],
+                'name'     => [0 => 'f0', 1 => 'f1'],
+                'type'     => [0 => 'text/plain', 1 => 'text/csv'],
                 'tmp_name' => [0 => 't0', 1 => 't1'],
-                'error' => [0 => 0, 1 => UPLOAD_ERR_NO_FILE],
-                'size' => [0 => 10, 1 => 20],
+                'error'    => [0 => 0, 1 => UPLOAD_ERR_NO_FILE],
+                'size'     => [0 => 10, 1 => 20],
             ),
         ];
 
@@ -432,9 +433,9 @@ class HttpRequestTest extends TestCase
 
         $base = [
             'REQUEST_SCHEME' => 'http',
-            'HTTP_HOST' => 'www.manaphp.com',
-            'SERVER_PORT' => '80',
-            'REQUEST_URI' => '/index.php'
+            'HTTP_HOST'      => 'www.manaphp.com',
+            'SERVER_PORT'    => '80',
+            'REQUEST_URI'    => '/index.php'
         ];
 
         $_SERVER = $base;

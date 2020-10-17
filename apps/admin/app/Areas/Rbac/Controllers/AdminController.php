@@ -12,24 +12,31 @@ class AdminController extends Controller
 {
     public function getVerbs()
     {
-        return array_merge(parent::getVerbs(), [
-            'roles' => 'GET'
-        ]);
+        return array_merge(
+            parent::getVerbs(), [
+                'roles' => 'GET'
+            ]
+        );
     }
 
     public function indexAction()
     {
-        return Admin::select(['admin_id', 'admin_name', 'status', 'white_ip', 'login_ip', 'login_time', 'email', 'updator_name', 'creator_name', 'created_time', 'updated_time'])
+        return Admin::select(
+            ['admin_id', 'admin_name', 'status', 'white_ip', 'login_ip', 'login_time', 'email', 'updator_name',
+             'creator_name', 'created_time', 'updated_time']
+        )
             ->orderBy(['admin_id' => SORT_DESC])
             ->with(['roles' => 'role_id, display_name'])
-            ->when(static function (QueryInterface $query) {
-                $keyword = input('keyword', '');
-                if (strpos($keyword, '@') !== false) {
-                    $query->whereContains('email', $keyword);
-                } else {
-                    $query->whereContains(['admin_name', 'email'], $keyword);
+            ->when(
+                static function (QueryInterface $query) {
+                    $keyword = input('keyword', '');
+                    if (strpos($keyword, '@') !== false) {
+                        $query->whereContains('email', $keyword);
+                    } else {
+                        $query->whereContains(['admin_name', 'email'], $keyword);
+                    }
                 }
-            })->paginate();
+            )->paginate();
     }
 
     public function listAction()

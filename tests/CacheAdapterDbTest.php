@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Db\Adapter\Mysql;
@@ -12,16 +13,20 @@ class CacheAdapterDbTest extends TestCase
     {
         $di = new FactoryDefault();
         $di->alias->set('@data', __DIR__ . '/tmp/data');
-        $di->setShared('db', function () {
+        $di->setShared(
+            'db', function () {
             $config = require __DIR__ . '/config.database.php';
             $db = new Mysql($config['mysql']);
-            $db->attachEvent('db:beforeQuery', function (\ManaPHP\DbInterface $source, $data) {
+            $db->attachEvent(
+                'db:beforeQuery', function (\ManaPHP\DbInterface $source, $data) {
                 //  var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
                 var_dump($source->getSQL(), $source->getEmulatedSQL(2));
 
-            });
+            }
+            );
             return $db;
-        });
+        }
+        );
     }
 
     public function test_exists()

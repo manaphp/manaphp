@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
@@ -140,7 +141,7 @@ class MongodbModelQueryTest extends TestCase
         $documents = City::where(['city_id' => [1, 2, 3, 4]])->fetch();
         $this->assertCount(4, $documents);
 
-        $documents = City::where(['city_id'=> ['1', '2', '3', '4']])->fetch();
+        $documents = City::where(['city_id' => ['1', '2', '3', '4']])->fetch();
         $this->assertCount(4, $documents);
 
         $documents = City::where(['city_id~=' => [1, 4]])->fetch();
@@ -149,10 +150,10 @@ class MongodbModelQueryTest extends TestCase
         $documents = City::where(['city_id~=' => ['1', '4']])->fetch();
         $this->assertCount(4, $documents);
 
-        $documents = City::where(['city_id'=> []])->fetch();
+        $documents = City::where(['city_id' => []])->fetch();
         $this->assertCount(0, $documents);
 
-        $documents = City::where(['city_id'=> ['$ne' => 10]])->fetch();
+        $documents = City::where(['city_id' => ['$ne' => 10]])->fetch();
         $this->assertCount(599, $documents);
         $this->assertEquals(1, $documents[0]->city_id);
     }
@@ -365,16 +366,22 @@ class MongodbModelQueryTest extends TestCase
         $documents = City::query()->groupBy('country_id, city_id')->aggregate(['sum' => 'SUM(city_id)']);
         $this->assertCount(600, $documents);
 
-        $documents = City::query()->where(['country_id' => 24])->groupBy('country_id')->aggregate(['sum' => 'SUM(city_id)']);
+        $documents = City::query()->where(['country_id' => 24])->groupBy('country_id')->aggregate(
+            ['sum' => 'SUM(city_id)']
+        );
         $this->assertCount(1, $documents);
 
-        $documents = City::query()->groupBy(['city' => ['$substr' => ['$city', 0, 1]]])->orderBy('count')->aggregate(['count' => 'COUNT(*)']);
+        $documents = City::query()->groupBy(['city' => ['$substr' => ['$city', 0, 1]]])->orderBy('count')->aggregate(
+            ['count' => 'COUNT(*)']
+        );
         $this->assertCount(30, $documents);
 
         $documents = City::query()->groupBy('substr(city, 1, 1)')->orderBy('count')->aggregate(['count' => 'COUNT(*)']);
         $this->assertCount(30, $documents);
 
-        $documents = City::query()->groupBy('substr(city, 1, 1)')->orderBy('count')->indexBy('city')->aggregate(['count' => 'COUNT(*)']);
+        $documents = City::query()->groupBy('substr(city, 1, 1)')->orderBy('count')->indexBy('city')->aggregate(
+            ['count' => 'COUNT(*)']
+        );
         $this->assertCount(30, $documents);
         $this->assertArrayHasKey('s', $documents);
     }
@@ -386,12 +393,16 @@ class MongodbModelQueryTest extends TestCase
         $cities = City::query()->indexBy(['city_id' => 'city'])->limit(1)->execute();
         $this->assertEquals([1 => 'A Corua (La Corua)'], $cities);
 
-        $cities = City::query()->indexBy(function ($row) {
-            return 'city_id_' . $row['city_id'];
-        })->limit(1)->execute();
+        $cities = City::query()->indexBy(
+            function ($row) {
+                return 'city_id_' . $row['city_id'];
+            }
+        )->limit(1)->execute();
         $this->assertArrayHasKey('city_id_1', $cities);
 
-        $this->assertArrayHasKey('s', City::query()->groupBy('substr(city, 1, 1)')->indexBy('city')->aggregate(['count' => 'COUNT(*)']));
+        $this->assertArrayHasKey(
+            's', City::query()->groupBy('substr(city, 1, 1)')->indexBy('city')->aggregate(['count' => 'COUNT(*)'])
+        );
         $this->assertArrayHasKey(600, City::query()->indexBy('city_id')->fetch());
     }
 

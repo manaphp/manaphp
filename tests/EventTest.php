@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Component;
@@ -50,10 +51,12 @@ class EventTest extends TestCase
         //use closure
         $component = new DummyComponent();
         $that = $this;
-        $component->attachEvent('dummy:doAction', function ($source, $data) use ($that) {
+        $component->attachEvent(
+            'dummy:doAction', function ($source, $data) use ($that) {
             $that->assertInstanceOf('Tests\DummyComponent', $source);
             $that->assertEquals($data, ['extra data']);
-        });
+        }
+        );
         $component->doAction();
     }
 }

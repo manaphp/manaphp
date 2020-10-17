@@ -5,6 +5,7 @@
  * Date: 2015/12/28
  * Time: 0:04
  */
+
 namespace Tests\MongoDB\Models;
 
 use ManaPHP\Mongodb\Model;
@@ -22,13 +23,13 @@ class Payment extends Model
     public function getFieldTypes()
     {
         return [
-            '_id' => 'integer',
-            'payment_id' => 'integer',
-            'customer_id' => 'integer',
-            'staff_id' => 'integer',
-            'amount' => 'string',
+            '_id'          => 'integer',
+            'payment_id'   => 'integer',
+            'customer_id'  => 'integer',
+            'staff_id'     => 'integer',
+            'amount'       => 'string',
             'payment_date' => 'string',
-            'last_update' => 'string'
+            'last_update'  => 'string'
         ];
     }
 }

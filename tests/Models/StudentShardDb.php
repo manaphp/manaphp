@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests\Models;
 
 use ManaPHP\Db\Query;

@@ -5,6 +5,7 @@
  * Date: 2015/12/28
  * Time: 0:01
  */
+
 namespace Tests\Models;
 
 use ManaPHP\Model\Relation;
@@ -29,9 +30,9 @@ class City extends Model
     public function rules()
     {
         return [
-            'city' => ['required', 'unique'],
-            'city_id' => 'int',
-            'country_id' => 'exists',
+            'city'        => ['required', 'unique'],
+            'city_id'     => 'int',
+            'country_id'  => 'exists',
             'last_update' => 'date'
         ];
     }

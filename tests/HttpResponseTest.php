@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Di;
@@ -38,10 +39,12 @@ class HttpResponseTest extends TestCase
         $this->assertEquals(['Content-Type' => 'text/html'], $response->getHeaders());
 
         $response->setHeader('Content-Length', '1234');
-        $this->assertEquals([
-            'Content-Type' => 'text/html',
-            'Content-Length' => '1234'
-        ], $response->getHeaders());
+        $this->assertEquals(
+            [
+                'Content-Type' => 'text/html',
+                'Content-Length' => '1234'
+            ], $response->getHeaders()
+        );
     }
 
     public function test_setExpires()
@@ -127,7 +130,9 @@ class HttpResponseTest extends TestCase
         $this->assertEquals(['code' => 100, 'message' => ''], json_decode($response->getContent(), true));
 
         $response->setJsonContent(['name' => 'manaphp']);
-        $this->assertEquals(['code' => 0, 'message' => '', 'data' => ['name' => 'manaphp']], json_decode($response->getContent(), true));
+        $this->assertEquals(
+            ['code' => 0, 'message' => '', 'data' => ['name' => 'manaphp']], json_decode($response->getContent(), true)
+        );
 
         $response->setJsonContent(['code' => 0, 'message' => 'OK']);
         $this->assertEquals(['code' => 0, 'message' => 'OK'], json_decode($response->getContent(), true));
@@ -136,8 +141,10 @@ class HttpResponseTest extends TestCase
         $this->assertEquals(['code' => 10, 'message' => 'OK'], json_decode($response->getContent(), true));
 
         $response->setJsonContent(['code' => 0, 'message' => 'OK', 'data' => 'http://www.manaphp.com/tags/中国']);
-        $this->assertEquals(['code' => 0, 'message' => 'OK', 'data' => 'http://www.manaphp.com/tags/中国'],
-            json_decode($response->getContent(), true));
+        $this->assertEquals(
+            ['code' => 0, 'message' => 'OK', 'data' => 'http://www.manaphp.com/tags/中国'],
+            json_decode($response->getContent(), true)
+        );
     }
 
     public function test_appendContent()

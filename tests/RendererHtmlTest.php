@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
@@ -20,7 +21,8 @@ class RendererHtmlTest extends TestCase
 
         //no value
         $data = $base;
-        $this->assertEquals(<<<EOT
+        $this->assertEquals(
+            <<<EOT
 
   <select>
     <option value="" selected>all</option>
@@ -29,12 +31,14 @@ class RendererHtmlTest extends TestCase
   </select>
 
 EOT
-            , $html->render('select', $data));
+            , $html->render('select', $data)
+        );
 
         //value=''
         $data = $base;
         $data['value'] = '';
-        $this->assertEquals(<<<EOT
+        $this->assertEquals(
+            <<<EOT
 
   <select>
     <option value="" selected>all</option>
@@ -43,12 +47,14 @@ EOT
   </select>
 
 EOT
-            , $html->render('select', $data));
+            , $html->render('select', $data)
+        );
 
         //value=1
         $data = $base;
         $data['value'] = 1;
-        $this->assertEquals(<<<EOT
+        $this->assertEquals(
+            <<<EOT
 
   <select>
     <option value="">all</option>
@@ -57,12 +63,14 @@ EOT
   </select>
 
 EOT
-            , $html->render('select', $data));
+            , $html->render('select', $data)
+        );
 
         //value='1'
         $data = $base;
         $data['value'] = '1';
-        $this->assertEquals(<<<EOT
+        $this->assertEquals(
+            <<<EOT
 
   <select>
     <option value="">all</option>
@@ -71,14 +79,16 @@ EOT
   </select>
 
 EOT
-            , $html->render('select', $data));
+            , $html->render('select', $data)
+        );
 
         //name='engine' class='engine_select'
         $data = $base;
         $data['name'] = 'engine';
         $data['class'] = 'engine_select';
         $data['value'] = '1';
-        $this->assertEquals(<<<EOT
+        $this->assertEquals(
+            <<<EOT
 
   <select name="engine" class="engine_select">
     <option value="">all</option>
@@ -87,6 +97,7 @@ EOT
   </select>
 
 EOT
-            , $html->render('select', $data));
+            , $html->render('select', $data)
+        );
     }
 }

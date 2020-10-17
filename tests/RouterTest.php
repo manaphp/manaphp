@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Di;
@@ -121,106 +122,106 @@ class MvcRouterTest extends TestCase
     {
         $tests = array(
             array(
-                'uri' => '',
+                'uri'        => '',
                 'controller' => 'index',
-                'action' => 'index',
-                'params' => array()
+                'action'     => 'index',
+                'params'     => array()
             ),
             array(
-                'uri' => '/',
+                'uri'        => '/',
                 'controller' => 'index',
-                'action' => 'index',
-                'params' => array()
+                'action'     => 'index',
+                'params'     => array()
             ),
             array(
-                'uri' => '/documentation/index/hello/ñda/dld/cc-ccc',
+                'uri'        => '/documentation/index/hello/ñda/dld/cc-ccc',
                 'controller' => 'documentation',
-                'action' => 'index',
-                'params' => ['hello/ñda/dld/cc-ccc']
+                'action'     => 'index',
+                'params'     => ['hello/ñda/dld/cc-ccc']
             ),
             array(
-                'uri' => '/documentation/index/',
+                'uri'        => '/documentation/index/',
                 'controller' => 'documentation',
-                'action' => 'index',
-                'params' => array()
+                'action'     => 'index',
+                'params'     => array()
             ),
             array(
-                'uri' => '/documentation/index',
+                'uri'        => '/documentation/index',
                 'controller' => 'documentation',
-                'action' => 'index',
-                'params' => array()
+                'action'     => 'index',
+                'params'     => array()
             ),
             array(
-                'uri' => '/documentation/',
+                'uri'        => '/documentation/',
                 'controller' => 'documentation',
-                'action' => 'index',
-                'params' => array()
+                'action'     => 'index',
+                'params'     => array()
             ),
             array(
-                'uri' => '/documentation',
+                'uri'        => '/documentation',
                 'controller' => 'documentation',
-                'action' => 'index',
-                'params' => array()
+                'action'     => 'index',
+                'params'     => array()
             ),
             array(
-                'uri' => '/system/admin/a/edit/hello/adp',
+                'uri'        => '/system/admin/a/edit/hello/adp',
                 'controller' => 'admin',
-                'action' => 'edit',
-                'params' => ['hello/adp']
+                'action'     => 'edit',
+                'params'     => ['hello/adp']
             ),
             array(
-                'uri' => '/es/news',
+                'uri'        => '/es/news',
                 'controller' => 'news',
-                'action' => 'index',
-                'params' => array('language' => 'es')
+                'action'     => 'index',
+                'params'     => array('language' => 'es')
             ),
             array(
-                'uri' => '/admin/posts/edit/100',
+                'uri'        => '/admin/posts/edit/100',
                 'controller' => 'posts',
-                'action' => 'edit',
-                'params' => array('id' => 100)
+                'action'     => 'edit',
+                'params'     => array('id' => 100)
             ),
             array(
-                'uri' => '/posts/2010/02/10/title/content',
+                'uri'        => '/posts/2010/02/10/title/content',
                 'controller' => 'posts',
-                'action' => 'show',
-                'params' => array('year' => '2010', 'month' => '02', 'day' => '10', 0 => 'title/content')
+                'action'     => 'show',
+                'params'     => array('year' => '2010', 'month' => '02', 'day' => '10', 0 => 'title/content')
             ),
             array(
-                'uri' => '/manual/en/translate.adapter.html',
+                'uri'        => '/manual/en/translate.adapter.html',
                 'controller' => 'manual',
-                'action' => 'show',
-                'params' => array('language' => 'en', 'file' => 'translate.adapter')
+                'action'     => 'show',
+                'params'     => array('language' => 'en', 'file' => 'translate.adapter')
             ),
             array(
-                'uri' => '/named-manual/en/translate.adapter.html',
+                'uri'        => '/named-manual/en/translate.adapter.html',
                 'controller' => 'manual',
-                'action' => 'show',
-                'params' => array('language' => 'en', 'file' => 'translate.adapter')
+                'action'     => 'show',
+                'params'     => array('language' => 'en', 'file' => 'translate.adapter')
             ),
             array(
-                'uri' => '/posts/1999/s/le-nice-title',
+                'uri'        => '/posts/1999/s/le-nice-title',
                 'controller' => 'posts',
-                'action' => 'show',
-                'params' => array('year' => '1999', 'title' => 'le-nice-title')
+                'action'     => 'show',
+                'params'     => array('year' => '1999', 'title' => 'le-nice-title')
             ),
             array(
-                'uri' => '/feed/fr/blog/ema.json',
+                'uri'        => '/feed/fr/blog/ema.json',
                 'controller' => 'feed',
-                'action' => 'get',
-                'params' => array('lang' => 'fr', 'blog' => 'ema', 'type' => 'json')
+                'action'     => 'get',
+                'params'     => array('lang' => 'fr', 'blog' => 'ema', 'type' => 'json')
             ),
             array(
-                'uri' => '/posts/delete/150',
+                'uri'        => '/posts/delete/150',
                 'controller' => 'posts',
-                'action' => 'delete',
-                'params' => array('id' => '150')
+                'action'     => 'delete',
+                'params'     => array('id' => '150')
             ),
             array(
-                'uri' => '/very/static/route',
+                'uri'        => '/very/static/route',
                 'controller' => 'static',
-                'action' => 'route',
-                'params' => array()
+                'action'     => 'route',
+                'params'     => array()
             ),
         );
 
@@ -261,53 +262,53 @@ class MvcRouterTest extends TestCase
     {
         $tests = array(
             array(
-                'method' => null,
-                'uri' => '/documentation/index/hello',
+                'method'     => null,
+                'uri'        => '/documentation/index/hello',
                 'controller' => 'documentation',
-                'action' => 'index',
-                'params' => array('hello')
+                'action'     => 'index',
+                'params'     => array('hello')
             ),
             array(
-                'method' => 'POST',
-                'uri' => '/docs/index',
+                'method'     => 'POST',
+                'uri'        => '/docs/index',
                 'controller' => 'documentation3',
-                'action' => 'index',
-                'params' => array()
+                'action'     => 'index',
+                'params'     => array()
             ),
             array(
-                'method' => 'GET',
-                'uri' => '/docs/index',
+                'method'     => 'GET',
+                'uri'        => '/docs/index',
                 'controller' => 'documentation4',
-                'action' => 'index',
-                'params' => array()
+                'action'     => 'index',
+                'params'     => array()
             ),
             array(
-                'method' => 'PUT',
-                'uri' => '/docs/index',
+                'method'     => 'PUT',
+                'uri'        => '/docs/index',
                 'controller' => 'documentation5',
-                'action' => 'index',
-                'params' => array()
+                'action'     => 'index',
+                'params'     => array()
             ),
             array(
-                'method' => 'DELETE',
-                'uri' => '/docs/index',
+                'method'     => 'DELETE',
+                'uri'        => '/docs/index',
                 'controller' => 'documentation6',
-                'action' => 'index',
-                'params' => array()
+                'action'     => 'index',
+                'params'     => array()
             ),
             array(
-                'method' => 'OPTIONS',
-                'uri' => '/docs/index',
+                'method'     => 'OPTIONS',
+                'uri'        => '/docs/index',
                 'controller' => 'documentation7',
-                'action' => 'index',
-                'params' => array()
+                'action'     => 'index',
+                'params'     => array()
             ),
             array(
-                'method' => 'HEAD',
-                'uri' => '/docs/index',
+                'method'     => 'HEAD',
+                'uri'        => '/docs/index',
                 'controller' => 'documentation8',
-                'action' => 'index',
-                'params' => array()
+                'action'     => 'index',
+                'params'     => array()
             ),
         );
 
@@ -350,25 +351,25 @@ class MvcRouterTest extends TestCase
     {
         $tests = array(
             array(
-                'method' => null,
-                'uri' => '/some/hattie',
+                'method'     => null,
+                'uri'        => '/some/hattie',
                 'controller' => 'c',
-                'action' => 'a',
-                'params' => array('name' => 'hattie')
+                'action'     => 'a',
+                'params'     => array('name' => 'hattie')
             ),
             array(
-                'method' => null,
-                'uri' => '/some/hattie/100',
+                'method'     => null,
+                'uri'        => '/some/hattie/100',
                 'controller' => 'c',
-                'action' => 'a',
-                'params' => array('name' => 'hattie', 'id' => 100)
+                'action'     => 'a',
+                'params'     => array('name' => 'hattie', 'id' => 100)
             ),
             array(
-                'method' => null,
-                'uri' => '/some/hattie/100/2011-01-02',
+                'method'     => null,
+                'uri'        => '/some/hattie/100/2011-01-02',
                 'controller' => 'c',
-                'action' => 'a',
-                'params' => array('name' => 'hattie', 'id' => 100, 'date' => '2011-01-02')
+                'action'     => 'a',
+                'params'     => array('name' => 'hattie', 'id' => 100, 'date' => '2011-01-02')
             ),
         );
         $router = new Router();
@@ -387,17 +388,17 @@ class MvcRouterTest extends TestCase
     public function test_removeExtraSlashes()
     {
         $routes = array(
-            '/index/' => array(
+            '/index/'          => array(
                 'controller' => 'index',
-                'action' => 'index',
+                'action'     => 'index',
             ),
-            '/session/start/' => array(
+            '/session/start/'  => array(
                 'controller' => 'session',
-                'action' => 'start'
+                'action'     => 'start'
             ),
             '/users/edit/100/' => array(
                 'controller' => 'users',
-                'action' => 'edit'
+                'action'     => 'edit'
             ),
         );
         $router = new Router();

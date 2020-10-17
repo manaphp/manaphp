@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
@@ -45,7 +46,9 @@ class DomSelectorListTest extends \PHPUnit_Framework_TestCase
         $selector = new Selector(self::SAMPLE_FILE);
 
         $this->assertCount(0, $selector->find('.subtitle')->closest('not_exits'));
-        $this->assertEquals('/html/body/div[1]/h1/span', (string)$selector->find('.subtitle')->closest('span')->first());
+        $this->assertEquals(
+            '/html/body/div[1]/h1/span', (string)$selector->find('.subtitle')->closest('span')->first()
+        );
         $this->assertEquals('/html/body/div[1]', (string)$selector->find('.subtitle')->closest('#header')->first());
     }
 
@@ -97,7 +100,9 @@ class DomSelectorListTest extends \PHPUnit_Framework_TestCase
         $selector = new Selector(self::SAMPLE_FILE);
 
         $this->assertEquals('/html/body/ul/li[2]', (string)$selector->find('li.current')->next()->first());
-        $this->assertEquals('/html/body/ul/li[3]/a', (string)$selector->find('li.current')->next('li a[href="#"]')->first());
+        $this->assertEquals(
+            '/html/body/ul/li[3]/a', (string)$selector->find('li.current')->next('li a[href="#"]')->first()
+        );
         $this->assertCount(0, $selector->find('li.current')->next('not_exists'));
     }
 
@@ -136,8 +141,12 @@ class DomSelectorListTest extends \PHPUnit_Framework_TestCase
     {
         $selector = new Selector(self::SAMPLE_FILE);
 
-        $this->assertEquals('/html/body/div[2]/div[2]/div[2]/ul/li[1]', (string)$selector->find('li.foo.current')->prev()->first());
-        $this->assertEquals('/html/body/div[2]/div[2]/div[2]/ul/li[1]', (string)$selector->find('li.foo.current')->prev('.foo')->first());
+        $this->assertEquals(
+            '/html/body/div[2]/div[2]/div[2]/ul/li[1]', (string)$selector->find('li.foo.current')->prev()->first()
+        );
+        $this->assertEquals(
+            '/html/body/div[2]/div[2]/div[2]/ul/li[1]', (string)$selector->find('li.foo.current')->prev('.foo')->first()
+        );
     }
 
     public function test_prevAll()

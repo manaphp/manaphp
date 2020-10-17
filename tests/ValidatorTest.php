@@ -1,4 +1,5 @@
 <?php /** @noinspection PhpParamsInspection */
+
 namespace Tests;
 
 use ManaPHP\Db;

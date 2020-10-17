@@ -14,20 +14,24 @@ class MessageQueueEngineDbTest extends TestCase
     {
         parent::setUp();
         $di = new FactoryDefault();
-        $di->setShared('redis', function () {
+        $di->setShared(
+            'redis', function () {
             $redis = new \Redis();
             $redis->connect('localhost');
             return $redis;
-        });
+        }
+        );
 
         $config = require __DIR__ . '/config.database.php';
         $db = new Mysql($config['mysql']);
         // $this->db = new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
-        $db->attachEvent('db:beforeQuery', function (\ManaPHP\DbInterface $source, $data) {
+        $db->attachEvent(
+            'db:beforeQuery', function (\ManaPHP\DbInterface $source, $data) {
             //  var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
             var_dump($source->getSQL(), $source->getEmulatedSQL(2));
 
-        });
+        }
+        );
         $di->setShared('db', $db);
     }
 

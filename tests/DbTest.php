@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use ManaPHP\Db;
@@ -24,11 +25,13 @@ class DbTest extends TestCase
         $this->connection = new Db\Connection\Adapter\Mysql($config['mysql']);
         $this->db = new Db($this->connection);
 
-        $this->db->attachEvent('db:beforeQuery', function (\ManaPHP\DbInterface $source, $data) {
+        $this->db->attachEvent(
+            'db:beforeQuery', function (\ManaPHP\DbInterface $source, $data) {
             //  var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
             var_dump($source->getSQL(), $source->getEmulatedSQL(2));
 
-        });
+        }
+        );
 
         echo get_class($this->db), PHP_EOL;
     }
@@ -48,12 +51,16 @@ class DbTest extends TestCase
 
         $this->connection->truncate('_student');
 
-        $affectedRows = $this->db->insertBySql('INSERT INTO _student(id,age,name) VALUES(:id,:age,:name)',
-            ['id' => 11, 'age' => 220, 'name' => 'mana2']);
+        $affectedRows = $this->db->insertBySql(
+            'INSERT INTO _student(id,age,name) VALUES(:id,:age,:name)',
+            ['id' => 11, 'age' => 220, 'name' => 'mana2']
+        );
         $this->assertEquals(1, $affectedRows);
 
-        $affectedRows = $this->db->updateBySql('UPDATE _student set age=:age, name=:name',
-            ['age' => 22, 'name' => 'mana2']);
+        $affectedRows = $this->db->updateBySql(
+            'UPDATE _student set age=:age, name=:name',
+            ['age' => 22, 'name' => 'mana2']
+        );
         $this->assertEquals(1, $affectedRows);
 
         $affectedRows = $this->db->deleteBySql('DELETE FROM _student WHERE id=:id', ['id' => 11]);

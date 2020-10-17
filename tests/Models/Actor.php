@@ -5,6 +5,7 @@
  * Date: 2015/12/27
  * Time: 23:58
  */
+
 namespace Tests\Models;
 
 use ManaPHP\Db\Model;

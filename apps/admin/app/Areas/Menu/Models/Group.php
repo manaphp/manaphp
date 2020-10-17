@@ -23,9 +23,9 @@ class Group extends Model
     public function rules()
     {
         return [
-            'group_name' => 'unique',
+            'group_name'    => 'unique',
             'display_order' => ['range' => '0-127'],
-            'icon' => ['length' => '0-64']
+            'icon'          => ['length' => '0-64']
         ];
     }
 }

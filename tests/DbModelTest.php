@@ -6,6 +6,7 @@
  * Date: 2015/12/12
  * Time: 17:07
  */
+
 namespace Tests;
 
 use ManaPHP\Db;
@@ -61,10 +62,12 @@ class DbModelTest extends TestCase
         $db = new Db($this->connection);
         $di->set('db', $db);
         $di->set('identity', new Jwt(['key' => 'test']));
-        $db->attachEvent('db:beforeQuery', function (DbInterface $source) {
+        $db->attachEvent(
+            'db:beforeQuery', function (DbInterface $source) {
             // var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
             var_dump($source->getEmulatedSQL());
-        });
+        }
+        );
         $di->identity->setClaims([]);
     }
 
@@ -326,7 +329,7 @@ class DbModelTest extends TestCase
     {
         //normal usage
         $template = new  City();
-    
+
         $template->city_id = 1;
         $template->city = 'beijing';
 

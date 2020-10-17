@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests\Mongodb\Models;
 
 use ManaPHP\Mongodb\Model;

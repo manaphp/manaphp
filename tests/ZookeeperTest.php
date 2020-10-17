@@ -154,9 +154,11 @@ class ZookeeperTest extends TestCase
         $zookeeper = new ZooKeeper('localhost:2181');
 
         $count = 0;
-        $zookeeper->watchData('/manaphp', function ($e) use (&$count) {
+        $zookeeper->watchData(
+            '/manaphp', function ($e) use (&$count) {
             $count++;
-        });
+        }
+        );
 
         $this->assertEquals(1, $count);
         sleep(1);
@@ -175,9 +177,11 @@ class ZookeeperTest extends TestCase
 
         $count = 0;
 
-        $zookeeper->watchChildren('/manaphp', function ($e) use (&$count) {
+        $zookeeper->watchChildren(
+            '/manaphp', function ($e) use (&$count) {
             $count++;
-        });
+        }
+        );
 
         $this->assertEquals(1, $count);
         $zookeeper->create('/manaphp/a', '');
