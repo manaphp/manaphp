@@ -348,10 +348,11 @@ class Swoole extends \ManaPHP\Rpc\Server
                 'X-Response-Time' => sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT'])
             ];
 
+            $id = $json['id'] ?? null;
             if ($response->content['code'] === 0) {
-                $content = ['jsonrpc' => '2.0', 'result' => $response->content, 'id' => $json['id'] ?? null, 'headers' => $headers];
+                $content = ['jsonrpc' => '2.0', 'result' => $response->content, 'id' => $id, 'headers' => $headers];
             } else {
-                $content = ['jsonrpc' => '2.0', 'error' => $response->content, 'id' => $json['id'] ?? null, 'headers' => $headers];
+                $content = ['jsonrpc' => '2.0', 'error' => $response->content, 'id' => $id, 'headers' => $headers];
             }
             $this->_swoole->push($context->fd, json_stringify($content));
         } else {
