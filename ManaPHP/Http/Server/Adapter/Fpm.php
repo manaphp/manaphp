@@ -96,7 +96,7 @@ class Fpm extends Server
         foreach ($response->cookies as $cookie) {
             setcookie(
                 $cookie['name'], $cookie['value'], $cookie['expire'],
-                $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httpOnly']
+                $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']
             );
         }
 

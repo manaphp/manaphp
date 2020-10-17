@@ -259,7 +259,7 @@ class Workerman extends Server
 
         foreach ($response->cookies as $cookie) {
             Http::setcookie($cookie['name'], $cookie['value'], $cookie['expire'],
-                $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httpOnly']);
+                $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
         }
 
         if ($response->status_code === 304) {

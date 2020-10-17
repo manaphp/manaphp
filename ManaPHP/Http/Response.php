@@ -97,7 +97,7 @@ class Response extends Component implements ResponseInterface
             'path' => $path,
             'domain' => $domain,
             'secure' => $secure,
-            'httpOnly' => $httponly
+            'httponly' => $httponly
         ];
 
         $globals = $this->request->getContext();
@@ -129,7 +129,7 @@ class Response extends Component implements ResponseInterface
             'path' => $path,
             'domain' => $domain,
             'secure' => $secure,
-            'httpOnly' => $httponly
+            'httponly' => $httponly
         ];
 
         $globals = $this->request->getContext();
