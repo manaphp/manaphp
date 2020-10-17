@@ -24,12 +24,14 @@ class HelpController extends Controller
         $this->console->writeLn('manaphp commands:', Console::FC_GREEN | Console::AT_BOLD);
         foreach (glob(__DIR__ . '/*Controller.php') as $file) {
             $plainName = basename($file, '.php');
-            $this->console->writeLn(' - ' . $this->console->colorize(Str::underscore(basename($plainName, 'Controller')), Console::FC_YELLOW));
+            $controller = Str::underscore(basename($plainName, 'Controller'));
+            $this->console->writeLn(' - ' . $this->console->colorize($controller, Console::FC_YELLOW));
             $commands = $this->_getCommands(__NAMESPACE__ . "\\" . $plainName);
 
             $width = max(max(array_map('strlen', array_keys($commands))), 18);
             foreach ($commands as $command => $description) {
-                $this->console->writeLn('    ' . $this->console->colorize($command, Console::FC_CYAN, $width) . ' ' . $description);
+                $colored_command = $this->console->colorize($command, Console::FC_CYAN, $width);
+                $this->console->writeLn('    ' . $colored_command . ' ' . $description);
             }
         }
 
@@ -38,13 +40,15 @@ class HelpController extends Controller
 
             foreach (glob($this->alias->resolve('@cli/*Controller.php')) as $file) {
                 $plainName = basename($file, '.php');
-                $this->console->writeLn(' - ' . $this->console->colorize(Str::underscore(basename($plainName, 'Controller')), Console::FC_YELLOW));
+                $controller = Str::underscore(basename($plainName, 'Controller'));
+                $this->console->writeLn(' - ' . $this->console->colorize($controller, Console::FC_YELLOW));
 
                 $commands = $this->_getCommands($this->alias->resolveNS("@ns.cli\\$plainName"));
 
                 $width = max(max(array_map('strlen', array_keys($commands))), 18);
                 foreach ($commands as $command => $description) {
-                    $this->console->writeLn('    ' . $this->console->colorize($command, Console::FC_CYAN, $width + 1) . ' ' . $description);
+                    $colored_command = $this->console->colorize($command, Console::FC_CYAN, $width + 1);
+                    $this->console->writeLn("    $colored_command $description");
                 }
             }
         }
