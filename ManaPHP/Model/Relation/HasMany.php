@@ -55,7 +55,7 @@ class HasMany extends Relation
         $data = $query->whereIn($thatField, $ids)->fetch($asArray);
 
         if (isset($data[0]) && !isset($data[0][$thatField])) {
-            throw new MisuseException(['missing `:field` field in `:name` with', 'field' => $thatField, 'name' => $name]);
+            throw new MisuseException(['missing `%s` field in `%s` with', $thatField, $name]);
         }
 
         $rd = [];

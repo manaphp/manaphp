@@ -1108,11 +1108,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
                 if ($data[$field] === '') {
                     $data[$field] = [];
                 } elseif (($json = json_parse($data[$field])) === null) {
-                    throw new InvalidJsonException([
-                        '`:field` field value of `:model` is not a valid json string',
-                        'field' => $field,
-                        'model' => static::class
-                    ]);
+                    throw new InvalidJsonException(['`%s` field of `%s` is not a json string', $field, static::class]);
                 } else {
                     $data[$field] = $json;
                 }
@@ -1434,12 +1430,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         } elseif (($relationsManager = $this->getShared('relationsManager'))->has($this, $name)) {
             return $this->$name = $relationsManager->lazyLoad($this, $name)->fetch();
         } else {
-            throw new UnknownPropertyException([
-                '`:model` does not contain `:field` field: `:fields`',
-                'model' => static::class,
-                'field' => $name,
-                'fields' => $this->getFields()
-            ]);
+            throw new UnknownPropertyException(['`%s` does not contain `%s` field.`', static::class, 'field' => $name]);
         }
     }
 

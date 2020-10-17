@@ -253,13 +253,13 @@ class Arr
                 } elseif ($agg === 'AVG') {
                     $sum_field = $field . '_sum';
                     if (!isset($v[0][$sum_field])) {
-                        throw new MisuseException(['missing key: `:field` is not in `:keys`', 'field' => $sum_field, 'keys' => array_keys($v[0])]);
+                        throw new MisuseException(['`%s` not in `%s`', $sum_field, implode(',', array_keys($v[0]))]);
                     }
                     $sum = array_sum(array_column($v, $sum_field));
 
                     $count_field = $field . '_count';
                     if (!isset($v[0][$count_field])) {
-                        throw new MisuseException(['missing key: `:field` is not in `:keys`', 'field' => $count_field, 'keys' => array_keys($v[0])]);
+                        throw new MisuseException(['`%s` not in `%s`', $count_field, implode(',', array_keys($v[0]))]);
                     }
                     $count = array_sum(array_column($v, $count_field));
 

@@ -276,14 +276,10 @@ class Query extends \ManaPHP\Query
                 } elseif ($cond = $this->_compileCondExpression($operand)) {
                     $this->_aggregate[$k] = ['$' . $accumulator => $this->_compileCondExpression($operand)];
                 } else {
-                    throw new MisuseException(['unknown `:operand` operand of `:aggregate` aggregate', 'operand' => $operand, 'aggregate' => $v]);
+                    throw new MisuseException(['unknown `%s` operand of `%s` aggregate', $operand, $v]);
                 }
             } else {
-                throw new MisuseException([
-                    'unknown `:accumulator` accumulator of `:aggregate` aggregate',
-                    'accumulator' => $accumulator,
-                    'aggregate' => $v
-                ]);
+                throw new MisuseException(['unknown `%s` accumulator of `%s` aggregate', $accumulator, $v]);
             }
         }
 
@@ -400,7 +396,7 @@ class Query extends \ManaPHP\Query
                     $this->_filters[] = [$field => ['$in' => [(string)$value, (int)$value, (float)$value]]];
                 }
             } else {
-                throw new InvalidValueException(['`:operator` operator is not  valid: value must be scalar value', 'operator' => $operator]);
+                throw new InvalidValueException(['`%s` operator is not valid: value must be scalar value', $operator]);
             }
         } else {
             $operator_map = ['>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$ne', '<>' => '$ne'];
