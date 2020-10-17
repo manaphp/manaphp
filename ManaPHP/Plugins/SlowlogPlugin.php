@@ -50,13 +50,17 @@ class SlowlogPlugin extends Plugin
     {
         $elapsed = round($elapsed, 3);
 
+        if (!is_string($message)) {
+            $message = json_stringify($message, JSON_PARTIAL_OUTPUT_ON_ERROR);
+        }
+
         $replaced = [];
         $ts = microtime(true);
         $replaced[':date'] = date('Y-m-d\TH:i:s', $ts) . sprintf('.%03d', ($ts - (int)$ts) * 1000);
         $replaced[':client_ip'] = $this->request->getClientIp();
         $replaced[':request_id'] = $this->request->getRequestId();
         $replaced[':elapsed'] = sprintf('%.03f', $elapsed);
-        $replaced[':message'] = (is_string($message) ? $message : json_stringify($message, JSON_PARTIAL_OUTPUT_ON_ERROR)) . PHP_EOL;
+        $replaced[':message'] = $message . PHP_EOL;
 
         LocalFS::fileAppend($this->_file, strtr($this->_format, $replaced));
     }
@@ -97,12 +101,15 @@ class SlowlogPlugin extends Plugin
             return;
         }
 
+        $dispatcher = $this->dispatcher;
+        $route = implode('::', [$dispatcher->getArea(), $dispatcher->getController(), $dispatcher->getAction()]);
+
         $message = [
-            'method' => $this->request->getServer('REQUEST_METHOD'),
-            'route' => implode('::', [$this->dispatcher->getArea(), $this->dispatcher->getController(), $this->dispatcher->getAction()]),
-            'url' => $this->request->getUrl(),
+            'method'   => $this->request->getServer('REQUEST_METHOD'),
+            'route'    => $route,
+            'url'      => $this->request->getUrl(),
             '_REQUEST' => $this->request->get(),
-            'eid' => $this->_getEid($elapsed)
+            'eid'      => $this->_getEid($elapsed)
         ];
 
         $this->_write($elapsed, $message);

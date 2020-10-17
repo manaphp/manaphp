@@ -198,7 +198,10 @@ class Captcha extends Component implements CaptchaInterface
 
             for ($k = 0; $k < $this->_noiseCharCount; $k++) {
                 $letter = $this->_charset[random_int(0, strlen($this->_charset) - 1)];
-                $fgPixel->setColor('rgb(' . random_int(0, 240) . ',' . random_int(0, 240) . ',' . random_int(0, 240) . ')');
+                $red = random_int(0, 240);
+                $green = random_int(0, 240);
+                $blue = random_int(0, 240);
+                $fgPixel->setColor("rgb($red,$green,$blue)");
                 $draw->setFillColor($fgPixel);
                 $draw->setFontSize($fontSize * 0.4 * $this->_rand_amplitude(0.1));
                 $angle = random_int(-40, 40);

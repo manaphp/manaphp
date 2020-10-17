@@ -278,7 +278,9 @@ trait Path
         if ($next_node_int >= pow($base, $self_length)) {
             return false;
         } else {
-            return substr($code, 0, $parent_length) . str_pad(base_convert($next_node_int, 10, $base), $self_length, '0', STR_PAD_LEFT);
+            $parent_code = substr($code, 0, $parent_length);
+            $child_code = str_pad(base_convert($next_node_int, 10, $base), $self_length, '0', STR_PAD_LEFT);
+            return $parent_code . $child_code;
         }
     }
 

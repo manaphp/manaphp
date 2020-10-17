@@ -182,6 +182,9 @@ class Curl extends Component implements EngineInterface
             }
         }
 
-        return new Response($request, explode("\r\n", substr($content, 0, $header_length - 4)), substr($content, $header_length));
+        $response_headers = explode("\r\n", substr($content, 0, $header_length - 4));
+        $response_body = substr($content, $header_length);
+
+        return new Response($request, $response_headers, $response_body);
     }
 }

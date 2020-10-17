@@ -141,7 +141,8 @@ class Loader
         if (isset($this->_classes[$className])) {
             $file = $this->_classes[$className];
             if (!is_file($file)) {
-                trigger_error(strtr('load `:class` class failed: `:file` is not exists.', [':class' => $className, ':file' => $file]), E_USER_ERROR);
+                $error = sprintf('load `%s` class failed: `%s` is not exists.', $className, $file);
+                trigger_error($error, E_USER_ERROR);
             }
 
             //either linux or phar://

@@ -144,7 +144,8 @@ class Jwt extends Identity
 
         $header = $this->base64urlEncode(json_stringify(['alg' => $this->_alg, 'typ' => 'JWT']));
         $payload = $this->base64urlEncode(json_stringify($claims));
-        $signature = $this->base64urlEncode(hash_hmac(strtr($this->_alg, ['HS' => 'sha']), "$header.$payload", $key, true));
+        $hmac = hash_hmac(strtr($this->_alg, ['HS' => 'sha']), "$header.$payload", $key, true);
+        $signature = $this->base64urlEncode($hmac);
 
         return "$header.$payload.$signature";
     }
@@ -236,7 +237,8 @@ class Jwt extends Identity
 
         $success = false;
         foreach ((array)$keys as $key) {
-            if ($this->base64urlEncode(hash_hmac(strtr($this->_alg, ['HS' => 'sha']), $data, $key, true)) === $signature) {
+            $hmac = hash_hmac(strtr($this->_alg, ['HS' => 'sha']), $data, $key, true);
+            if ($this->base64urlEncode($hmac) === $signature) {
                 $success = true;
                 break;
             }

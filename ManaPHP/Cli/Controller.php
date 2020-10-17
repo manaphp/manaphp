@@ -91,7 +91,8 @@ abstract class Controller extends \ManaPHP\Controller
                 break;
             }
 
-            $command = $this->console->colorize(str_pad(basename($method, 'Command'), 10), Console::FC_YELLOW) . ' ' . $description;
+            $method_name = str_pad(basename($method, 'Command'), 10);
+            $command = $this->console->colorize($method_name, Console::FC_YELLOW) . ' ' . $description;
             $this->console->writeLn($command);
 
             $defaultValues = [];

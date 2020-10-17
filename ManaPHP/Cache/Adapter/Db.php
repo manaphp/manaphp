@@ -90,11 +90,12 @@ class Db extends Cache
         $db = $this->getShared($this->_db);
 
         $hash = md5($key);
+        $expired_time = time() + $ttl;
 
         if ($db->query($this->_source)->whereEq('hash', $hash)->exists()) {
-            $db->update($this->_source, ['value' => $value, 'ttl' => $ttl, 'expired_time' => time() + $ttl], ['hash' => $hash]);
+            $db->update($this->_source, compact('value', 'ttl', 'expired_time'), ['hash' => $hash]);
         } else {
-            $db->insert($this->_source, ['hash' => $hash, 'key' => $key, 'value' => $value, 'ttl' => $ttl, 'expired_time' => time() + $ttl]);
+            $db->insert($this->_source, compact('hash', 'key', 'value', 'ttl', 'expired_time'));
         }
     }
 

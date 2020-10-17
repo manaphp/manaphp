@@ -67,11 +67,13 @@ class CorsPlugin extends Plugin
                 $allow_origin = $origin;
             }
 
+            $allow_headers = 'Origin, Accept, Authorization, Content-Type, X-Requested-With';
+            $allow_methods = 'HEAD,GET,POST,PUT,DELETE';
             $this->response
                 ->setHeader('Access-Control-Allow-Origin', $allow_origin)
                 ->setHeader('Access-Control-Allow-Credentials', $this->_credentials ? 'true' : 'false')
-                ->setHeader('Access-Control-Allow-Headers', 'Origin, Accept, Authorization, Content-Type, X-Requested-With')
-                ->setHeader('Access-Control-Allow-Methods', 'HEAD,GET,POST,PUT,DELETE')
+                ->setHeader('Access-Control-Allow-Headers', $allow_headers)
+                ->setHeader('Access-Control-Allow-Methods', $allow_methods)
                 ->setHeader('Access-Control-Max-Age', $this->_max_age);
         }
 

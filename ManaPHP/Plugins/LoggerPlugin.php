@@ -167,8 +167,9 @@ class LoggerPlugin extends Plugin
         $log = $eventArgs->data;
 
         if ($context->enabled) {
+            $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
             $context->logs[] = [
-                'time' => date('H:i:s.', $log->timestamp) . sprintf('%.03d', ($log->timestamp - (int)$log->timestamp) * 1000),
+                'time' => date('H:i:s', $log->timestamp) . $ms,
                 'category' => $log->category,
                 'location' => "$log->file:$log->line",
                 'level' => $log->level,

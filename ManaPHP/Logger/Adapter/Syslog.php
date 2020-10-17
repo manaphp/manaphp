@@ -110,8 +110,10 @@ class Syslog extends Logger
             ];
         }
 
+        $host = $this->_receiver_host;
+        $port = $this->_receiver_port;
         $tag = $this->configure->id;
-
+        
         foreach ($logs as $log) {
             $severity = $map[$log->level];
             $priority = $this->_facility * 8 + $severity;
@@ -119,7 +121,8 @@ class Syslog extends Logger
 
             $replaced = [];
 
-            $replaced[':date'] = date('Y-m-d\TH:i:s', $log->timestamp) . sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
+            $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
+            $replaced[':date'] = date('Y-m-d\TH:i:s', $log->timestamp) . $ms;
             $replaced[':client_ip'] = $log->client_ip ?: '-';
             $replaced[':request_id'] = $log->request_id ?: '-';
             $replaced[':request_id16'] = $log->request_id ? substr($log->request_id, 0, 16) : '-';
@@ -134,7 +137,7 @@ class Syslog extends Logger
 
                     // <PRI>TIMESTAMP HOST TAG:CONTENT
                     $packet = "<$priority>$timestamp $log->host $tag:$content";
-                    socket_sendto($this->_socket, $packet, strlen($packet), 0, $this->_receiver_host, $this->_receiver_port);
+                    socket_sendto($this->_socket, $packet, strlen($packet), 0, $host, $port);
                 }
             } else {
                 $replaced[':message'] = $log->message;
@@ -142,7 +145,7 @@ class Syslog extends Logger
 
                 // <PRI>TIMESTAMP HOST TAG:CONTENT
                 $packet = "<$priority>$timestamp $log->host $tag:$content";
-                socket_sendto($this->_socket, $packet, strlen($packet), 0, $this->_receiver_host, $this->_receiver_port);
+                socket_sendto($this->_socket, $packet, strlen($packet), 0, $host, $port);
             }
         }
     }

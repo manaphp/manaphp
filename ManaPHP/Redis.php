@@ -87,7 +87,8 @@ class Redis extends Component implements RedisInterface
                     }
                 }
             } else {
-                $this->poolManager->add($this, ['class' => 'ManaPHP\Redis\Connection', $urls[random_int(0, count($urls) - 1)]], 1, 'slave');
+                $u = $urls[random_int(0, count($urls) - 1)];
+                $this->poolManager->add($this, ['class' => 'ManaPHP\Redis\Connection', $u], 1, 'slave');
             }
 
             $this->_has_slave = true;
@@ -137,7 +138,8 @@ class Redis extends Component implements RedisInterface
             /** @noinspection SpellCheckingInspection */
             unset($map['__construct'], $map['__destruct'], $map['_prefix'], $map['_serialize'], $map['_unserialize'],
                 $map['auth'], $map['bgSave'], $map['bgrewriteaof'], $map['clearLastError'], $map['client'],
-                $map['close'], $map['command'], $map['config'], $map['connect'], $map['debug'], $map['echo'], $map['getAuth'],
+                $map['close'], $map['command'], $map['config'], $map['connect'], $map['debug'], $map['echo'],
+                $map['getAuth'],
                 $map['getHost'], $map['getLastError'], $map['getMode'], $map['getOption'], $map['getPersistentID'],
                 $map['getPort'], $map['isConnected'], $map['migrate'], $map['pconnect'], $map['ping'], $map['role'],
                 $map['info'], $map['lastSave'], $map['eval'], $map['evalsha'], $map['exec'],

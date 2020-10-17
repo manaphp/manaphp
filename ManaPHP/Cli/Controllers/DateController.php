@@ -137,9 +137,14 @@ class DateController extends Controller
                 $date = date('Y-') . $date;
                 break;
         }
+
         $parts = explode('-', $date);
-        $parts[0] = substr(date('Y'), 0, 4 - strlen($parts[0])) . $parts[0];
-        $date = $parts[0] . '-' . str_pad($parts[1], 2, '0', STR_PAD_LEFT) . '-' . str_pad($parts[2], 2, '0', STR_PAD_LEFT);
+
+        $year = substr(date('Y'), 0, 4 - strlen($parts[0])) . $parts[0];
+        $month = str_pad($parts[1], 2, '0', STR_PAD_LEFT);
+        $day = str_pad($parts[2], 2, '0', STR_PAD_LEFT);
+
+        $date = $year . '-' . $month . '-' . $day;
 
         $time = $time ? trim($time) : (string)date('H:i:s');
         if ($time[0] === ':') {
@@ -155,7 +160,11 @@ class DateController extends Controller
         }
         $parts = explode(':', $time);
 
-        $time = str_pad($parts[0], 2, '0', STR_PAD_LEFT) . ':' . str_pad($parts[1], 2, '0', STR_PAD_LEFT) . ':' . str_pad($parts[2], 2, '0', STR_PAD_LEFT);
+        $hour = str_pad($parts[0], 2, '0', STR_PAD_LEFT);
+        $minute = str_pad($parts[1], 2, '0', STR_PAD_LEFT);
+        $second = str_pad($parts[2], 2, '0', STR_PAD_LEFT);
+
+        $time = $hour . ':' . $minute . ':' . $second;
 
         $str = $date . ' ' . $time;
         $timestamp = strtotime($str);

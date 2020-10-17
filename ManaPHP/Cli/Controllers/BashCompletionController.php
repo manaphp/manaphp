@@ -49,8 +49,9 @@ class BashCompletionController extends Controller
                 return [];
             }
 
-            foreach ((new ReflectionClass($controllerClassName))->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-                if (!$method->isStatic() && $method->isPublic() && preg_match('#^(.*)Command$#', $method->getShortName(), $matches) === 1) {
+            $rc = new ReflectionClass($controllerClassName);
+            foreach ($rc->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+                if (!$method->isStatic() && preg_match('#^(.*)Command$#', $method->getShortName(), $matches) === 1) {
                     $commands[] = Str::underscore($matches[1]);
                 }
             }

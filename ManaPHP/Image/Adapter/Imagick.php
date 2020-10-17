@@ -122,8 +122,10 @@ class Imagick extends Image
      */
     public function do_rotate($degrees, $background = 0xffffff, $alpha = 1.0)
     {
-        $backgroundColor = sprintf('rgba(%u,%u,%u,%f)', ($background >> 16) & 0xFF, ($background >> 8) & 0xFF,
-            $background & 0xFF, $alpha);
+        $red = ($background >> 16) & 0xFF;
+        $green = ($background >> 8) & 0xFF;
+        $blue = $background & 0xFF;
+        $backgroundColor = sprintf('rgba(%u,%u,%u,%f)', $red, $green, $blue, $alpha);
         $this->_image->rotateImage(new ImagickPixel($backgroundColor), $degrees);
         $this->_image->setImagePage($this->_width, $this->_height, 0, 0);
 

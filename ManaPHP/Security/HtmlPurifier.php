@@ -49,13 +49,15 @@ class HtmlPurifier extends Component implements HtmlPurifierInterface
      */
     protected function _purify($nodes, $allowedTags, $allowedAttributes)
     {
+        $types = [XML_ELEMENT_NODE, XML_ATTRIBUTE_NODE, XML_DOCUMENT_NODE, XML_TEXT_NODE, XML_DOCUMENT_TYPE_NODE];
+
         /** @var \DOMNode|\DOMDocument|\DOMElement $node */
         foreach ($nodes as $node) {
             if ($node->nodeType === XML_TEXT_NODE) {
                 continue;
             }
 
-            if (!in_array($node->nodeType, [XML_ELEMENT_NODE, XML_ATTRIBUTE_NODE, XML_DOCUMENT_NODE, XML_TEXT_NODE, XML_DOCUMENT_TYPE_NODE], true)) {
+            if (!in_array($node->nodeType, $types, true)) {
                 $node->parentNode->removeChild($node);
                 continue;
             }

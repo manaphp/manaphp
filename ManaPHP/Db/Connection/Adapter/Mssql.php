@@ -200,7 +200,9 @@ class Mssql extends Connection
         }
 
         if (isset($params['limit'], $params['offset'])) {
-            $sql = 'SELECT' . ' t.* FROM (' . $sql . ') as t WHERE t._row_number_ BETWEEN ' . $params['offset'] . ' + 1 AND ' . $params['offset'] . ' + ' . $params['limit'];
+            $offset = $params['offset'];
+            $limit = $params['limit'];
+            $sql = 'SELECT' . " t.* FROM ($sql) as t WHERE t._row_number_ BETWEEN $offset  + 1 AND $offset + $limit";
         }
 
         if (isset($params['group'])) {

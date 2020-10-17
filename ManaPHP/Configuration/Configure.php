@@ -232,7 +232,8 @@ class Configure extends Component implements ConfigureInterface
             unset($app_plugins[$plugin]);
 
             $plugin = lcfirst($plugin);
-            $di->setShared($plugin, is_int($k) ? $pluginClassName : array_merge($v, ['class' => $pluginClassName]))->getShared($plugin);
+            $definition = is_int($k) ? $pluginClassName : array_merge($v, ['class' => $pluginClassName]);
+            $di->setShared($plugin, $definition)->getShared($plugin);
         }
 
         foreach ($app_plugins as $plugin => $_) {

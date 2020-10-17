@@ -120,8 +120,8 @@ class File extends Component implements FileInterface
             }
         }
 
-        if ($this->_file['error'] !== UPLOAD_ERR_OK) {
-            throw new FileException(['error code of upload file is not UPLOAD_ERR_OK: :error', 'error' => $this->_file['error']]);
+        if (($error = $this->_file['error']) !== UPLOAD_ERR_OK) {
+            throw new FileException(['error code of upload file is not UPLOAD_ERR_OK: :error', 'error' => $error]);
         }
 
         if (LocalFS::fileExists($dst)) {

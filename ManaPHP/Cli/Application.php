@@ -60,7 +60,8 @@ class Application extends \ManaPHP\Application implements LogCategorizable
 
     public function handle()
     {
-        $this->logger->info(['command line: :cmd', 'cmd' => basename($GLOBALS['argv'][0]) . ' ' . implode(' ', array_slice($GLOBALS['argv'], 1))]);
+        $args = implode(' ', array_slice($GLOBALS['argv'], 1));
+        $this->logger->info(['command line: :cmd', 'cmd' => basename($GLOBALS['argv'][0]) . ' ' . $args]);
 
         try {
             $this->_exit_code = $this->cliHandler->handle();

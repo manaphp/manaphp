@@ -58,10 +58,11 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
     {
         if ($this->configure->debug) {
             if ($this->renderer->exists('@views/Errors/debug')) {
-                return $this->renderer->renderFile('@views/Errors/debug', ['exception' => $exception]);
+                $template = '@views/Errors/debug';
             } else {
-                return $this->renderer->renderFile('@manaphp/Mvc/ErrorHandler/Views/debug', ['exception' => $exception]);
+                $template = '@manaphp/Mvc/ErrorHandler/Views/debug';
             }
+            return $this->renderer->renderFile($template, ['exception' => $exception]);
         }
 
         $statusCode = $exception instanceof Exception ? $exception->getStatusCode() : 500;

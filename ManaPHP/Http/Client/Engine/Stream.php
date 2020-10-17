@@ -229,7 +229,9 @@ class Stream extends Component implements EngineInterface
             $request->process_time = round(microtime(true) - $start_time, 3);
 
             $remote = stream_socket_get_name($stream, true);
-            $request->remote_ip = ($pos = strrpos($remote, ':')) ? substr($remote, 0, $pos) : null;//strrpos compatibles with ipv6
+
+            //strrpos compatibles with ipv6
+            $request->remote_ip = ($pos = strrpos($remote, ':')) ? substr($remote, 0, $pos) : null;
 
             $success = true;
         } finally {
@@ -303,7 +305,8 @@ class Stream extends Component implements EngineInterface
             }
 
             if (isset($parts['pass'])) {
-                $request->headers['Proxy-Authorization'] = 'Basic ' . base64_encode($parts['user'] . ':' . $parts['pass']);
+                $auth = base64_encode($parts['user'] . ':' . $parts['pass']);
+                $request->headers['Proxy-Authorization'] = "Basic $auth";
             }
             $http['proxy'] = 'tcp://' . $parts['host'] . ':' . ($parts['port'] ?? '80');
         }
@@ -345,7 +348,9 @@ class Stream extends Component implements EngineInterface
         $headers = stream_get_meta_data($stream)['wrapper_data'];
 
         $remote = stream_socket_get_name($stream, true);
-        $request->remote_ip = ($pos = strrpos($remote, ':')) ? substr($remote, 0, $pos) : null;//strrpos compatibles with ipv6
+
+        //strrpos compatibles with ipv6
+        $request->remote_ip = ($pos = strrpos($remote, ':')) ? substr($remote, 0, $pos) : null;
 
         $body = stream_get_contents($stream);
         fclose($stream);

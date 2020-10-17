@@ -159,9 +159,10 @@ class Swift extends Mailer
             $swiftMessage->setPriority($priority);
         }
 
-        foreach ($message->getAttachments() as $attachment) {
-            $swiftMessage->attach(
-                (new Swift_Attachment($attachment['data'], $attachment['file'], $attachment['contentType']))->setId($attachment['cid']));
+        foreach ($message->getAttachments() as $at) {
+            $swiftAttachment = new Swift_Attachment($at['data'], $at['file'], $at['contentType']);
+            $swiftAttachment->setId($at['cid']);
+            $swiftMessage->attach($swiftAttachment);
         }
 
         return $swift->send($swiftMessage, $failedRecipients);

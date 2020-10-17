@@ -61,7 +61,9 @@ class Db extends Queue
         /** @var \ManaPHP\DbInterface $db */
         $db = $this->getShared($this->_db);
 
-        $db->insert($this->_source, ['topic' => $topic, 'body' => $body, 'priority' => $priority, 'created_time' => time(), 'deleted_time' => 0]);
+        $created_time = time();
+        $deleted_time = 0;
+        $db->insert($this->_source, compact('topic', 'body', 'priority', 'created_time', 'deleted_time'));
     }
 
     /**
@@ -122,10 +124,12 @@ class Db extends Queue
         /** @var \ManaPHP\DbInterface $db */
         $db = $this->getShared($this->_db);
 
-        if ($priority === null) {
-            return $db->query($this->_source)->where(['topic' => $topic, 'deleted_time' => 0])->count();
-        } else {
-            return $db->query($this->_source)->where(['topic' => $topic, 'deleted_time' => 0, 'priority' => $priority])->count();
+        $query = $db->query($this->_source)->where(['topic' => $topic, 'deleted_time' => 0]);
+
+        if ($priority !== null) {
+            $query->where(['priority' => $priority]);
         }
+
+        return $query->count();
     }
 }

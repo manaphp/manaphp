@@ -458,7 +458,8 @@ class Model extends \ManaPHP\Model
 
         if ($expressionFields) {
             $expressionFields['_id'] = false;
-            if ($rs = $this->newQuery()->where([$primaryKey => $this->$primaryKey])->select($expressionFields)->execute()) {
+            $query = $this->newQuery()->where([$primaryKey => $this->$primaryKey])->select($expressionFields);
+            if ($rs = $query->execute()) {
                 foreach ((array)$rs[0] as $field => $value) {
                     $this->$field = $value;
                 }

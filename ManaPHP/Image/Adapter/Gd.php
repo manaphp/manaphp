@@ -125,8 +125,10 @@ class Gd extends Image
      */
     public function do_rotate($degrees, $background = 0xffffff, $alpha = 1.0)
     {
-        $transparent = imagecolorallocatealpha($this->_image, ($background >> 16) & 0xFF, ($background >> 8) & 0xFF,
-            $background & 0xFF, $alpha * 127);
+        $red = ($background >> 16) & 0xFF;
+        $green = ($background >> 8) & 0xFF;
+        $blue = $background & 0xFF;
+        $transparent = imagecolorallocatealpha($this->_image, $red, $green, $blue, $alpha * 127);
         $image = imagerotate($this->_image, 360 - $degrees, $transparent, true);
         imagealphablending($image, false);
         imagesavealpha($image, true);
@@ -189,10 +191,13 @@ class Gd extends Image
         $size = 12,
         $font_file = null
     ) {
-        $textColor = imagecolorallocatealpha($this->_image, ($color >> 16) & 0xFF, ($color >> 8) & 0xFF,
-            $color & 0xFF, abs(1 - $opacity) * 127);
+        $red = ($color >> 16) & 0xFF;
+        $green = ($color >> 8) & 0xFF;
+        $blue = $color & 0xFF;
+        $textColor = imagecolorallocatealpha($this->_image, $red, $green, $blue, abs(1 - $opacity) * 127);
         if ($font_file) {
-            imagettftext($this->_image, $size, 0, $offsetX, $offsetY, $textColor, $this->alias->resolve($font_file), $text);
+            $font_file = $this->alias->resolve($font_file);
+            imagettftext($this->_image, $size, 0, $offsetX, $offsetY, $textColor, $font_file, $text);
         } else {
             imagestring($this->_image, $size, $offsetX, $offsetY, $text, $textColor);
         }

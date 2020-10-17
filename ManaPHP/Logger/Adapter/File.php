@@ -68,7 +68,8 @@ class File extends Logger
     {
         $replaced = [];
 
-        $replaced[':date'] = date('Y-m-d\TH:i:s', $log->timestamp) . sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
+        $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
+        $replaced[':date'] = date('Y-m-d\TH:i:s', $log->timestamp) . $ms;
         $replaced[':client_ip'] = $log->client_ip ?: '-';
         $replaced[':request_id'] = $log->request_id ?: '-';
         $replaced[':request_id16'] = $log->request_id ? substr($log->request_id, 0, 16) : '-';
@@ -77,8 +78,8 @@ class File extends Logger
         $replaced[':level'] = strtoupper($log->level);
         if ($log->category === 'exception') {
             $replaced[':message'] = '';
-            /** @noinspection SuspiciousAssignmentsInspection */
-            $replaced[':message'] = preg_replace('#[\\r\\n]+#', '\0' . strtr($this->_format, $replaced), $log->message) . PHP_EOL;
+            $message = preg_replace('#[\\r\\n]+#', '\0' . strtr($this->_format, $replaced), $log->message);
+            $replaced[':message'] = $message . PHP_EOL;
         } else {
             $replaced[':message'] = $log->message . PHP_EOL;
         }

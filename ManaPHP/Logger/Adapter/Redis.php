@@ -29,8 +29,9 @@ class Redis extends Logger
     public function append($logs)
     {
         foreach ($logs as $log) {
+            $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
             $data = [
-                'date' => date('Y-m-d\TH:i:s', $log->timestamp) . sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000),
+                'date' => date('Y-m-d\TH:i:s', $log->timestamp) . $ms,
                 '@timestamp' => $log->timestamp,
                 'host' => $log->host,
                 'category' => $log->category,

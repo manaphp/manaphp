@@ -556,7 +556,8 @@ class Query extends \ManaPHP\Query
     public function whereRegex($field, $regex, $flags = '')
     {
         $key = strtr($field, '.', '_');
-        $this->_conditions[] = '[' . str_replace('.', '].[', $field) . '] REGEXP ' . (str_contains($flags, 'i') ? '' : 'BINARY ') . ':' . $key;
+        $mode = (str_contains($flags, 'i') ? '' : 'BINARY ');
+        $this->_conditions[] = '[' . str_replace('.', '].[', $field) . '] REGEXP ' . $mode . ':' . $key;
         $this->_bind[$key] = $regex;
 
         return $this;
@@ -572,7 +573,8 @@ class Query extends \ManaPHP\Query
     public function whereNotRegex($field, $regex, $flags = '')
     {
         $key = strtr($field, '.', '_');
-        $this->_conditions[] = '[' . str_replace('.', '].[', $field) . '] NOT REGEXP ' . (str_contains($flags, 'i') ? '' : 'BINARY ') . ':' . $key;
+        $mode = (str_contains($flags, 'i') ? '' : 'BINARY ');
+        $this->_conditions[] = '[' . str_replace('.', '].[', $field) . '] NOT REGEXP ' . $mode . ':' . $key;
         $this->_bind[$key] = $regex;
 
         return $this;
@@ -622,7 +624,10 @@ class Query extends \ManaPHP\Query
         } else {
             $value_a = substr($value, 0, $pos);
             $value_b = substr($value, $pos + 1);
-            $this->_conditions[] = "($id_a=:${key_a}_a AND $id_b=:${key_b}_b) OR ($id_a=:${key_a}_b AND $id_b=:${key_b}_a)";
+
+            $condition = "($id_a=:${key_a}_a AND $id_b=:${key_b}_b) OR ($id_a=:${key_a}_b AND $id_b=:${key_b}_a)";
+            $this->_conditions[] = $condition;
+
             $this->_bind["${key_a}_a"] = $value_a;
             $this->_bind["${key_b}_b"] = $value_b;
             $this->_bind["${key_a}_b"] = $value_b;

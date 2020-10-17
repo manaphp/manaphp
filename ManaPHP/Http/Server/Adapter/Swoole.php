@@ -207,9 +207,14 @@ class Swoole extends Server
 
         $this->_handler = $handler;
 
-        $this->log('info',
-            sprintf('starting listen on: %s:%d with setting: %s', $this->_host, $this->_port, json_stringify($this->_settings)));
-        $this->log('info', 'http://' . $this->_server['SERVER_ADDR'] . ':' . $this->_server['SERVER_PORT'] . ($this->router->getPrefix() ?: '/'));
+        $host = $this->_host;
+        $port = $this->_port;
+        $settings = json_stringify($this->_settings);
+        $this->log('info', sprintf('starting listen on: %s:%d with setting: %s', $host, $port, $settings));
+
+        $server_addr = $this->_server['SERVER_ADDR'];
+        $server_port = $this->_server['SERVER_PORT'];
+        $this->log('info', "http://$server_addr:$server_port" . ($this->router->getPrefix() ?: '/'));
 
         $this->_swoole->start();
         echo sprintf('[%s][info]: shutdown', date('c')), PHP_EOL;
@@ -275,12 +280,14 @@ class Swoole extends Server
         $server = $this->request->getContext()->_SERVER;
 
         $sw_response->header('X-Request-Id', $this->request->getRequestId(), false);
-        $sw_response->header('X-Response-Time', sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']), false);
+        $elapsed_time = microtime(true) - $server['REQUEST_TIME_FLOAT'];
+        $sw_response->header('X-Response-Time', sprintf('%.3f', $elapsed_time), false);
 
         foreach ($response->cookies as $cookie) {
-            $sw_response->cookie($cookie['name'], $cookie['value'], $cookie['expire'],
-                $cookie['path'], $cookie['domain'], $cookie['secure'],
-                $cookie['httpOnly']);
+            $sw_response->cookie(
+                $cookie['name'], $cookie['value'], $cookie['expire'],
+                $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httpOnly']
+            );
         }
 
         if ($response->status_code === 304) {

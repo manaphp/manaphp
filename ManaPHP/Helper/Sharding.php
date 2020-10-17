@@ -143,7 +143,9 @@ class Sharding
 
                         if (!isset($flags[$db_shard][$table_shard])) {
                             $flags[$db_shard][$table_shard] = true;
-                            $shards["{$db_base}_" . sprintf($db_format, $db_shard)][] = "{$table_base}_" . sprintf($table_format, $table_shard);
+                            $db_name = "{$db_base}_" . sprintf($db_format, $db_shard);
+                            $table_name = "{$table_base}_" . sprintf($table_format, $table_shard);
+                            $shards[$db_name][] = $table_name;
                         }
                     }
                     return $shards;

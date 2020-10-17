@@ -94,9 +94,10 @@ class Fpm extends Server
         }
 
         foreach ($response->cookies as $cookie) {
-            setcookie($cookie['name'], $cookie['value'], $cookie['expire'],
-                $cookie['path'], $cookie['domain'], $cookie['secure'],
-                $cookie['httpOnly']);
+            setcookie(
+                $cookie['name'], $cookie['value'], $cookie['expire'],
+                $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httpOnly']
+            );
         }
 
         $server = $this->request->getContext()->_SERVER;

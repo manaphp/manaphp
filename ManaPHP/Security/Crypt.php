@@ -75,7 +75,9 @@ class Crypt extends Component implements CryptInterface
             throw new CryptException('encrypted data is too short.');
         }
 
-        $decrypted = openssl_decrypt(substr($text, $iv_length), $this->_method, md5($key, true), OPENSSL_RAW_DATA, substr($text, 0, $iv_length));
+        $data = substr($text, $iv_length);
+        $iv = substr($text, 0, $iv_length);
+        $decrypted = openssl_decrypt($data, $this->_method, md5($key, true), OPENSSL_RAW_DATA, $iv);
 
         $length = unpack('N', $decrypted)[1];
 

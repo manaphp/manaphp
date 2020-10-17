@@ -234,11 +234,12 @@ class Authorization extends Component implements AuthorizationInterface
                 if ($role === 'guest') {
                     null;
                 } elseif ($role === 'user') {
-                    $permissions = $roleModel::valueOrDefault(['role_name' => 'guest'], 'permissions', '') . $permissions;
+                    $guest_permissions = $roleModel::valueOrDefault(['role_name' => 'guest'], 'permissions', '');
+                    $permissions = $guest_permissions . $permissions;
                 } else {
-                    $permissions = $roleModel::valueOrDefault(['role_name' => 'guest'], 'permissions', '')
-                        . $roleModel::valueOrDefault(['role_name' => 'user'], 'permissions', '')
-                        . $permissions;
+                    $guest_permissions = $roleModel::valueOrDefault(['role_name' => 'guest'], 'permissions', '');
+                    $user_permissions = $roleModel::valueOrDefault(['role_name' => 'user'], 'permissions', '');
+                    $permissions = $guest_permissions . $user_permissions . $permissions;
                 }
                 return $context->role_permissions[$role] = $permissions;
             } else {

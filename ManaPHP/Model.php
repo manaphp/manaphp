@@ -1293,9 +1293,9 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     public function belongsTo($thatModel, $thisField = null)
     {
         /** @var \ManaPHP\Model $thatModel */
-        $thatInstance = $thatModel::sample();
+        $that = $thatModel::sample();
 
-        return new BelongsTo(static::class, $thisField ?? $thatInstance->getForeignedKey(), $thatModel, $thatInstance->getPrimaryKey());
+        return new BelongsTo(static::class, $thisField ?? $that->getForeignedKey(), $thatModel, $that->getPrimaryKey());
     }
 
     /**
@@ -1329,10 +1329,12 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     public function hasManyToMany($thatModel, $pivotModel)
     {
         /** @var \ManaPHP\Model $thatModel */
-        $thatInstance = $thatModel::sample();
+        $that = $thatModel::sample();
 
-        return new HasManyToMany(static::class, $this->getPrimaryKey(), $thatModel, $thatInstance->getPrimaryKey(),
-            $pivotModel, $this->getForeignedKey(), $thatInstance->getForeignedKey());
+        return new HasManyToMany(
+            static::class, $this->getPrimaryKey(), $thatModel, $that->getPrimaryKey(),
+            $pivotModel, $this->getForeignedKey(), $that->getForeignedKey()
+        );
     }
 
     /**
@@ -1344,9 +1346,9 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     public function hasManyOthers($thatModel, $thisFilter = null)
     {
         /** @var \ManaPHP\Model $thatModel */
-        $thatInstance = $thatModel::sample();
+        $that = $thatModel::sample();
 
-        $foreingedKey = $thatInstance->getForeignedKey();
+        $foreingedKey = $that->getForeignedKey();
 
         if ($thisFilter === null) {
             $keys = [];
@@ -1369,7 +1371,9 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             }
         }
 
-        return new HasManyOthers(static::class, $thisFilter, $thatInstance->getForeignedKey(), $thatModel, $thatInstance->getPrimaryKey());
+        return new HasManyOthers(
+            static::class, $thisFilter, $that->getForeignedKey(), $thatModel, $that->getPrimaryKey()
+        );
     }
 
     /**
