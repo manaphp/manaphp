@@ -320,7 +320,7 @@ class Markdown extends Component implements EngineInterface
 
             $Block = [
                 'element' => [
-                    'name' => 'pre',
+                    'name'    => 'pre',
                     'element' => [
                         'name' => 'code',
                         'text' => $text,
@@ -365,7 +365,7 @@ class Markdown extends Component implements EngineInterface
         if (str_starts_with($Line['text'], '<!--')) {
             $Block = [
                 'element' => [
-                    'rawHtml' => $Line['body'],
+                    'rawHtml'   => $Line['body'],
                     'autobreak' => true,
                 ],
             ];
@@ -433,10 +433,10 @@ class Markdown extends Component implements EngineInterface
         }
 
         return [
-            'char' => $marker,
+            'char'         => $marker,
             'openerLength' => $openerLength,
-            'element' => [
-                'name' => 'pre',
+            'element'      => [
+                'name'    => 'pre',
                 'element' => $Element,
             ],
         ];
@@ -455,7 +455,8 @@ class Markdown extends Component implements EngineInterface
         }
 
         if (($len = strspn($Line['text'], $Block['char'])) >= $Block['openerLength']
-            && rtrim(substr($Line['text'], $len), ' ') === '') {
+            && rtrim(substr($Line['text'], $len), ' ') === ''
+        ) {
             $Block['element']['element']['text'] = substr($Block['element']['element']['text'], 1);
 
             $Block['complete'] = true;
@@ -489,10 +490,10 @@ class Markdown extends Component implements EngineInterface
 
         return [
             'element' => [
-                'name' => 'h' . $level,
+                'name'    => 'h' . $level,
                 'handler' => [
-                    'function' => 'lineElements',
-                    'argument' => trim($text, ' '),
+                    'function'    => 'lineElements',
+                    'argument'    => trim($text, ' '),
                     'destination' => 'elements',
                 ]
             ],
@@ -517,15 +518,15 @@ class Markdown extends Component implements EngineInterface
             $markerWithoutWhitespace = strstr($matches[1], ' ', true);
 
             $Block = [
-                'indent' => $Line['indent'],
+                'indent'  => $Line['indent'],
                 'pattern' => $pattern,
-                'data' => [
-                    'type' => $name,
-                    'marker' => $matches[1],
+                'data'    => [
+                    'type'       => $name,
+                    'marker'     => $matches[1],
                     'markerType' => $name === 'ul' ? $markerWithoutWhitespace : substr($markerWithoutWhitespace, -1),
                 ],
                 'element' => [
-                    'name' => $name,
+                    'name'     => $name,
                     'elements' => [],
                 ],
             ];
@@ -548,10 +549,10 @@ class Markdown extends Component implements EngineInterface
             }
 
             $Block['li'] = [
-                'name' => 'li',
+                'name'    => 'li',
                 'handler' => [
-                    'function' => 'li',
-                    'argument' => !empty($matches[3]) ? [$matches[3]] : [],
+                    'function'    => 'li',
+                    'argument'    => !empty($matches[3]) ? [$matches[3]] : [],
                     'destination' => 'elements'
                 ]
             ];
@@ -574,13 +575,17 @@ class Markdown extends Component implements EngineInterface
             && (
                 (
                     $Block['data']['type'] === 'ol'
-                    && preg_match('/^\d++' . $Block['data']['markerTypeRegex'] . '(?:[ ]++(.*)|$)/', $Line['text'],
-                        $matches)
+                    && preg_match(
+                        '/^\d++' . $Block['data']['markerTypeRegex'] . '(?:[ ]++(.*)|$)/', $Line['text'],
+                        $matches
+                    )
                 )
                 || (
                     $Block['data']['type'] === 'ul'
-                    && preg_match('/^' . $Block['data']['markerTypeRegex'] . '(?:[ ]++(.*)|$)/', $Line['text'],
-                        $matches)
+                    && preg_match(
+                        '/^' . $Block['data']['markerTypeRegex'] . '(?:[ ]++(.*)|$)/', $Line['text'],
+                        $matches
+                    )
                 )
             )
         ) {
@@ -599,10 +604,10 @@ class Markdown extends Component implements EngineInterface
             $Block['indent'] = $Line['indent'];
 
             $Block['li'] = [
-                'name' => 'li',
+                'name'    => 'li',
                 'handler' => [
-                    'function' => 'li',
-                    'argument' => [$text],
+                    'function'    => 'li',
+                    'argument'    => [$text],
                     'destination' => 'elements'
                 ]
             ];
@@ -661,10 +666,10 @@ class Markdown extends Component implements EngineInterface
         if (preg_match('/^>[ ]?+(.*+)/', $Line['text'], $matches)) {
             return [
                 'element' => [
-                    'name' => 'blockquote',
+                    'name'    => 'blockquote',
                     'handler' => [
-                        'function' => 'linesElements',
-                        'argument' => (array)$matches[1],
+                        'function'    => 'linesElements',
+                        'argument'    => (array)$matches[1],
                         'destination' => 'elements',
                     ]
                 ],
@@ -766,8 +771,11 @@ class Markdown extends Component implements EngineInterface
             return;
         }
 
-        if (preg_match('/^<[\/]?+(\w*)(?:[ ]*+' . $this->regexHtmlAttribute . ')*+[ ]*+(\/)?>/', $Line['text'],
-            $matches)) {
+        if (preg_match(
+            '/^<[\/]?+(\w*)(?:[ ]*+' . $this->regexHtmlAttribute . ')*+[ ]*+(\/)?>/', $Line['text'],
+            $matches
+        )
+        ) {
             $element = strtolower($matches[1]);
 
             if (in_array($element, $textLevelElements, true)) {
@@ -775,9 +783,9 @@ class Markdown extends Component implements EngineInterface
             }
 
             return [
-                'name' => $matches[1],
+                'name'    => $matches[1],
                 'element' => [
-                    'rawHtml' => $Line['text'],
+                    'rawHtml'   => $Line['text'],
                     'autobreak' => true,
                 ],
             ];
@@ -798,13 +806,15 @@ class Markdown extends Component implements EngineInterface
     protected function blockReference($Line)
     {
         if (str_contains($Line['text'], ']')
-            && preg_match(/**@lang text */ '/^\[(.+?)\]:[ ]*+<?(\S+?)>?(?:[ ]+["\'(](.+)["\')])?[ ]*+$/', $Line['text'],
-                $matches)
+            && preg_match(
+            /**@lang text */ '/^\[(.+?)\]:[ ]*+<?(\S+?)>?(?:[ ]+["\'(](.+)["\')])?[ ]*+$/', $Line['text'],
+                $matches
+            )
         ) {
             $id = strtolower($matches[1]);
 
             $Data = [
-                'url' => $matches[2],
+                'url'   => $matches[2],
                 'title' => $matches[3] ?? null,
             ];
 
@@ -881,10 +891,10 @@ class Markdown extends Component implements EngineInterface
             $headerCell = trim($headerCell);
 
             $HeaderElement = [
-                'name' => 'th',
+                'name'    => 'th',
                 'handler' => [
-                    'function' => 'lineElements',
-                    'argument' => $headerCell,
+                    'function'    => 'lineElements',
+                    'argument'    => $headerCell,
                     'destination' => 'elements',
                 ]
             ];
@@ -903,8 +913,8 @@ class Markdown extends Component implements EngineInterface
         $Block = [
             'alignments' => $alignments,
             'identified' => true,
-            'element' => [
-                'name' => 'table',
+            'element'    => [
+                'name'     => 'table',
                 'elements' => [],
             ],
         ];
@@ -914,12 +924,12 @@ class Markdown extends Component implements EngineInterface
         ];
 
         $Block['element']['elements'] [] = [
-            'name' => 'tbody',
+            'name'     => 'tbody',
             'elements' => [],
         ];
 
         $Block['element']['elements'][0]['elements'] [] = [
-            'name' => 'tr',
+            'name'     => 'tr',
             'elements' => $HeaderElements,
         ];
 
@@ -948,10 +958,10 @@ class Markdown extends Component implements EngineInterface
                 $cell = trim($cell);
 
                 $Element = [
-                    'name' => 'td',
+                    'name'    => 'td',
                     'handler' => [
-                        'function' => 'lineElements',
-                        'argument' => $cell,
+                        'function'    => 'lineElements',
+                        'argument'    => $cell,
                         'destination' => 'elements',
                     ]
                 ];
@@ -966,7 +976,7 @@ class Markdown extends Component implements EngineInterface
             }
 
             $Element = [
-                'name' => 'tr',
+                'name'     => 'tr',
                 'elements' => $Elements,
             ];
 
@@ -979,12 +989,12 @@ class Markdown extends Component implements EngineInterface
     protected function paragraph($Line)
     {
         return [
-            'type' => 'Paragraph',
+            'type'    => 'Paragraph',
             'element' => [
-                'name' => 'p',
+                'name'    => 'p',
                 'handler' => [
-                    'function' => 'lineElements',
-                    'argument' => $Line['text'],
+                    'function'    => 'lineElements',
+                    'argument'    => $Line['text'],
                     'destination' => 'elements',
                 ],
             ],
@@ -1004,15 +1014,15 @@ class Markdown extends Component implements EngineInterface
 
     protected $InlineTypes
         = [
-            '!' => ['Image'],
-            '&' => ['SpecialCharacter'],
-            '*' => ['Emphasis'],
-            ':' => ['Url'],
-            '<' => ['UrlTag', 'EmailTag', 'Markup'],
-            '[' => ['Link'],
-            '_' => ['Emphasis'],
-            '`' => ['Code'],
-            '~' => ['Strikethrough'],
+            '!'  => ['Image'],
+            '&'  => ['SpecialCharacter'],
+            '*'  => ['Emphasis'],
+            ':'  => ['Url'],
+            '<'  => ['UrlTag', 'EmailTag', 'Markup'],
+            '['  => ['Link'],
+            '_'  => ['Emphasis'],
+            '`'  => ['Code'],
+            '~'  => ['Strikethrough'],
             '\\' => ['EscapeSequence'],
         ];
 
@@ -1116,7 +1126,7 @@ class Markdown extends Component implements EngineInterface
     protected function inlineText($text)
     {
         $Inline = [
-            'extent' => strlen($text),
+            'extent'  => strlen($text),
             'element' => [],
         ];
 
@@ -1136,13 +1146,16 @@ class Markdown extends Component implements EngineInterface
     {
         $marker = $Excerpt['text'][0];
 
-        if (preg_match('/^([' . $marker . ']++)[ ]*+(.+?)[ ]*+(?<![' . $marker . '])\1(?!' . $marker . ')/s',
-            $Excerpt['text'], $matches)) {
+        if (preg_match(
+            '/^([' . $marker . ']++)[ ]*+(.+?)[ ]*+(?<![' . $marker . '])\1(?!' . $marker . ')/s',
+            $Excerpt['text'], $matches
+        )
+        ) {
             $text = $matches[2];
             $text = preg_replace('/[ ]*+\n/', ' ', $text);
 
             return [
-                'extent' => strlen($matches[0]),
+                'extent'  => strlen($matches[0]),
                 'element' => [
                     'name' => 'code',
                     'text' => $text,
@@ -1168,10 +1181,10 @@ class Markdown extends Component implements EngineInterface
             }
 
             return [
-                'extent' => strlen($matches[0]),
+                'extent'  => strlen($matches[0]),
                 'element' => [
-                    'name' => 'a',
-                    'text' => $matches[1],
+                    'name'       => 'a',
+                    'text'       => $matches[1],
                     'attributes' => [
                         'href' => $url,
                     ],
@@ -1207,12 +1220,12 @@ class Markdown extends Component implements EngineInterface
         }
 
         return [
-            'extent' => strlen($matches[0]),
+            'extent'  => strlen($matches[0]),
             'element' => [
-                'name' => $emphasis,
+                'name'    => $emphasis,
                 'handler' => [
-                    'function' => 'lineElements',
-                    'argument' => $matches[1],
+                    'function'    => 'lineElements',
+                    'argument'    => $matches[1],
                     'destination' => 'elements',
                 ]
             ],
@@ -1224,7 +1237,7 @@ class Markdown extends Component implements EngineInterface
         if (isset($Excerpt['text'][1]) && str_contains('\\`*_{}[]()>#+-.!|~', $Excerpt['text'][1])) {
             return [
                 'element' => ['rawHtml' => $Excerpt['text'][1]],
-                'extent' => 2,
+                'extent'  => 2,
             ];
         }
     }
@@ -1244,14 +1257,14 @@ class Markdown extends Component implements EngineInterface
         }
 
         $Inline = [
-            'extent' => $Link['extent'] + 1,
+            'extent'  => $Link['extent'] + 1,
             'element' => [
-                'name' => 'img',
+                'name'       => 'img',
                 'attributes' => [
                     'src' => $Link['element']['attributes']['href'],
                     'alt' => $Link['element']['handler']['argument'],
                 ],
-                'autobreak' => true,
+                'autobreak'  => true,
             ],
         ];
 
@@ -1265,15 +1278,15 @@ class Markdown extends Component implements EngineInterface
     protected function inlineLink($Excerpt)
     {
         $Element = [
-            'name' => 'a',
-            'handler' => [
-                'function' => 'lineElements',
-                'argument' => null,
+            'name'         => 'a',
+            'handler'      => [
+                'function'    => 'lineElements',
+                'argument'    => null,
                 'destination' => 'elements',
             ],
             'nonNestables' => ['Url', 'Link'],
-            'attributes' => [
-                'href' => null,
+            'attributes'   => [
+                'href'  => null,
                 'title' => null,
             ],
         ];
@@ -1292,8 +1305,11 @@ class Markdown extends Component implements EngineInterface
             return;
         }
 
-        if (preg_match('/^[(]\s*+((?:[^ ()]++|[(][^ )]+[)])++)(?:[ ]+("[^"]*+"|\'[^\']*+\'))?\s*+[)]/', $remainder,
-            $matches)) {
+        if (preg_match(
+            '/^[(]\s*+((?:[^ ()]++|[(][^ )]+[)])++)(?:[ ]+("[^"]*+"|\'[^\']*+\'))?\s*+[)]/', $remainder,
+            $matches
+        )
+        ) {
             $Element['attributes']['href'] = $matches[1];
 
             if (isset($matches[2])) {
@@ -1322,7 +1338,7 @@ class Markdown extends Component implements EngineInterface
         }
 
         return [
-            'extent' => $extent,
+            'extent'  => $extent,
             'element' => $Element,
         ];
     }
@@ -1334,26 +1350,30 @@ class Markdown extends Component implements EngineInterface
         }
 
         if ($Excerpt['text'][1] === '/'
-            && preg_match(/**@lang text */ '/^<\/\w[\w-]*+[ ]*+>/s', $Excerpt['text'], $matches)) {
+            && preg_match(/**@lang text */ '/^<\/\w[\w-]*+[ ]*+>/s', $Excerpt['text'], $matches)
+        ) {
             return [
                 'element' => ['rawHtml' => $matches[0]],
-                'extent' => strlen($matches[0]),
+                'extent'  => strlen($matches[0]),
             ];
         }
 
         if ($Excerpt['text'][1] === '!' && preg_match('/^<!---?[^>-](?:-?+[^-])*-->/s', $Excerpt['text'], $matches)) {
             return [
                 'element' => ['rawHtml' => $matches[0]],
-                'extent' => strlen($matches[0]),
+                'extent'  => strlen($matches[0]),
             ];
         }
 
         if ($Excerpt['text'][1] !== ' '
-            && preg_match('/^<\w[\w-]*+(?:[ ]*+' . $this->regexHtmlAttribute . ')*+[ ]*+\/?>/s', $Excerpt['text'],
-                $matches)) {
+            && preg_match(
+                '/^<\w[\w-]*+(?:[ ]*+' . $this->regexHtmlAttribute . ')*+[ ]*+\/?>/s', $Excerpt['text'],
+                $matches
+            )
+        ) {
             return [
                 'element' => ['rawHtml' => $matches[0]],
-                'extent' => strlen($matches[0]),
+                'extent'  => strlen($matches[0]),
             ];
         }
     }
@@ -1365,7 +1385,7 @@ class Markdown extends Component implements EngineInterface
         ) {
             return [
                 'element' => ['rawHtml' => '&' . $matches[1] . ';'],
-                'extent' => strlen($matches[0]),
+                'extent'  => strlen($matches[0]),
             ];
         }
     }
@@ -1378,12 +1398,12 @@ class Markdown extends Component implements EngineInterface
 
         if ($Excerpt['text'][1] === '~' && preg_match('/^~~(?=\S)(.+?)(?<=\S)~~/', $Excerpt['text'], $matches)) {
             return [
-                'extent' => strlen($matches[0]),
+                'extent'  => strlen($matches[0]),
                 'element' => [
-                    'name' => 'del',
+                    'name'    => 'del',
                     'handler' => [
-                        'function' => 'lineElements',
-                        'argument' => $matches[1],
+                        'function'    => 'lineElements',
+                        'argument'    => $matches[1],
                         'destination' => 'elements',
                     ]
                 ],
@@ -1403,11 +1423,11 @@ class Markdown extends Component implements EngineInterface
             $url = $matches[0][0];
 
             return [
-                'extent' => strlen($matches[0][0]),
+                'extent'   => strlen($matches[0][0]),
                 'position' => $matches[0][1],
-                'element' => [
-                    'name' => 'a',
-                    'text' => $url,
+                'element'  => [
+                    'name'       => 'a',
+                    'text'       => $url,
                     'attributes' => [
                         'href' => $url,
                     ],
@@ -1419,14 +1439,15 @@ class Markdown extends Component implements EngineInterface
     protected function inlineUrlTag($Excerpt)
     {
         if (str_contains($Excerpt['text'], '>')
-            && preg_match('/^<(\w++:\/{2}[^ >]++)>/i', $Excerpt['text'], $matches)) {
+            && preg_match('/^<(\w++:\/{2}[^ >]++)>/i', $Excerpt['text'], $matches)
+        ) {
             $url = $matches[1];
 
             return [
-                'extent' => strlen($matches[0]),
+                'extent'  => strlen($matches[0]),
                 'element' => [
-                    'name' => 'a',
-                    'text' => $url,
+                    'name'       => 'a',
+                    'text'       => $url,
                     'attributes' => [
                         'href' => $url,
                     ],
@@ -1650,7 +1671,7 @@ class Markdown extends Component implements EngineInterface
     {
         static $goodAttribute = '/^[a-zA-Z0-9][a-zA-Z0-9-_]*+$/';
         static $safeUrlNameToAtt = [
-            'a' => 'href',
+            'a'   => 'href',
             'img' => 'src',
         ];
 

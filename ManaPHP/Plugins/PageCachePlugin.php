@@ -182,12 +182,14 @@ class PageCachePlugin extends Plugin
 
         $etag = strlen($response->content) . '-' . md5($response->content);
 
-        $this->redisCache->hMSet($context->key, [
-            'ttl' => $context->ttl,
-            'etag' => $etag,
-            'content-type' => $response->headers['Content-Type'] ?? null,
-            'content' => gzencode($response->content)
-        ]);
+        $this->redisCache->hMSet(
+            $context->key, [
+                'ttl'          => $context->ttl,
+                'etag'         => $etag,
+                'content-type' => $response->headers['Content-Type'] ?? null,
+                'content'      => gzencode($response->content)
+            ]
+        );
         $this->redisCache->expire($context->key, $context->ttl);
 
         if ($context->if_none_match === $etag) {

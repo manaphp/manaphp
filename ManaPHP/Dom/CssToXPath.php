@@ -9,7 +9,8 @@ class CssToXPath
         $path = $this->_transform($path);
         if (str_contains($path, ':')) {
 
-            $path = preg_replace_callback('#:(eq|gt|lt)\((-?\d+)\)#', static function ($match) {
+            $path = preg_replace_callback(
+                '#:(eq|gt|lt)\((-?\d+)\)#', static function ($match) {
                 $word = $match[1];
                 if ($word === 'eq') {
                     if ($match[2] >= 0) {
@@ -26,22 +27,25 @@ class CssToXPath
                 } else {
                     return '';
                 }
-            }, $path);
+            }, $path
+            );
 
             $path = preg_replace(['#:contains\((["\'])([^\'"]+)\\1\)#'], ["[contains(.,'\\2')]"], $path);
-            $path = strtr($path, [
-                ':header' => '*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6]',
-                ':first' => '[first()]',
-                ':last' => '[last()]',
-                ':even' => '[position() mod 2 = 0]',
-                ':odd' => '[position() mod 2 = 1]',
-                ':contains(' => 'contains(.,',
-                ':not(' => 'not(',
-                ':empty' => '[not(* or text())]',
-                ':only-child' => '[last()=1]',
-                ':first-child' => '[position()=1]',
-                ':last-child' => '[position()=last()]'
-            ]);
+            $path = strtr(
+                $path, [
+                    ':header'      => '*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6]',
+                    ':first'       => '[first()]',
+                    ':last'        => '[last()]',
+                    ':even'        => '[position() mod 2 = 0]',
+                    ':odd'         => '[position() mod 2 = 1]',
+                    ':contains('   => 'contains(.,',
+                    ':not('        => 'not(',
+                    ':empty'       => '[not(* or text())]',
+                    ':only-child'  => '[last()=1]',
+                    ':first-child' => '[position()=1]',
+                    ':last-child'  => '[position()=last()]'
+                ]
+            );
         }
 
         return $path;

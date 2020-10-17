@@ -32,18 +32,18 @@ abstract class Controller extends \ManaPHP\Controller
     public function getVerbs()
     {
         return [
-            'index' => 'GET',
-            'list' => 'GET',
-            'detail' => 'GET',
-            'captcha' => 'GET',
-            'create' => 'POST',
-            'update' => 'POST',
-            'edit' => 'POST',
-            'save' => 'POST',
-            'delete' => ['DELETE', 'POST'],
-            'enable' => 'POST',
-            'disable' => 'POST',
-            'active' => 'POST',
+            'index'    => 'GET',
+            'list'     => 'GET',
+            'detail'   => 'GET',
+            'captcha'  => 'GET',
+            'create'   => 'POST',
+            'update'   => 'POST',
+            'edit'     => 'POST',
+            'save'     => 'POST',
+            'delete'   => ['DELETE', 'POST'],
+            'enable'   => 'POST',
+            'disable'  => 'POST',
+            'active'   => 'POST',
             'inactive' => 'POST',
         ];
     }

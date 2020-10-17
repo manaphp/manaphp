@@ -117,11 +117,13 @@ class MongodbController extends Controller
                     $model = $this->_renderModel($fieldTypes, $modelClass, $service, $ns, $optimized);
                     LocalFS::filePut($fileName, $model);
 
-                    $this->console->progress([
-                        ' `:namespace` collection saved to `:file`',
-                        'namespace' => "$cdb.$collection",
-                        'file' => $fileName
-                    ]);
+                    $this->console->progress(
+                        [
+                            ' `:namespace` collection saved to `:file`',
+                            'namespace' => "$cdb.$collection",
+                            'file'      => $fileName
+                        ]
+                    );
 
                     $pending_fields = [];
                     foreach ($fieldTypes as $field => $type) {
@@ -131,11 +133,13 @@ class MongodbController extends Controller
                     }
 
                     if ($pending_fields) {
-                        $this->console->warn([
-                            '`:collection` has pending fields: :fields',
-                            'collection' => $collection,
-                            'fields' => implode(', ', $pending_fields)
-                        ]);
+                        $this->console->warn(
+                            [
+                                '`:collection` has pending fields: :fields',
+                                'collection' => $collection,
+                                'fields'     => implode(', ', $pending_fields)
+                            ]
+                        );
                     }
                 }
             }
@@ -227,8 +231,10 @@ class MongodbController extends Controller
         $str .= ' * Class ' . $modelName . PHP_EOL;
         $str .= ' */' . PHP_EOL;
 
-        $str .= 'class ' . substr($modelName,
-                strrpos($modelName, '\\') + 1) . ' extends \ManaPHP\Mongodb\Model' . PHP_EOL;
+        $str .= 'class ' . substr(
+                $modelName,
+                strrpos($modelName, '\\') + 1
+            ) . ' extends \ManaPHP\Mongodb\Model' . PHP_EOL;
         $str .= '{';
         if ($constants) {
             $str .= PHP_EOL . '    ' . $constants . PHP_EOL;
@@ -446,12 +452,14 @@ class MongodbController extends Controller
 
                     fclose($file);
 
-                    $this->console->progress([
-                        'write to `:file` success: :count [:time]',
-                        'file' => $fileName,
-                        'count' => $linesCount,
-                        'time' => round(microtime(true) - $startTime, 4)
-                    ]);
+                    $this->console->progress(
+                        [
+                            'write to `:file` success: :count [:time]',
+                            'file'  => $fileName,
+                            'count' => $linesCount,
+                            'time'  => round(microtime(true) - $startTime, 4)
+                        ]
+                    );
                 }
             }
         }
@@ -477,15 +485,20 @@ class MongodbController extends Controller
                     continue;
                 }
 
-                $this->console->writeLn(['---`:db` db of `:service` service---', 'db' => $cdb, 'service' => $service],
-                    Console::BC_CYAN);
+                $this->console->writeLn(
+                    ['---`:db` db of `:service` service---', 'db' => $cdb, 'service' => $service],
+                    Console::BC_CYAN
+                );
                 foreach ($mongodb->listCollections($cdb) as $row => $collection) {
                     if ($collection_pattern && !fnmatch($collection_pattern, $collection)) {
                         continue;
                     }
                     if ($field) {
-                        if (!$docs = $mongodb->fetchAll("$cdb.$collection", [$field => ['$exists' => 1]],
-                            ['limit' => 1])) {
+                        if (!$docs = $mongodb->fetchAll(
+                            "$cdb.$collection", [$field => ['$exists' => 1]],
+                            ['limit' => 1]
+                        )
+                        ) {
                             continue;
                         }
                     } else {
@@ -493,12 +506,14 @@ class MongodbController extends Controller
                     }
                     $columns = $docs ? array_keys($docs[0]) : [];
 
-                    $this->console->writeLn([
-                        ' :row :namespace(:columns)',
-                        'row' => sprintf('%2d ', $row + 1),
-                        'namespace' => $this->console->colorize("$cdb.$collection", Console::FC_GREEN),
-                        'columns' => implode(', ', $columns)
-                    ]);
+                    $this->console->writeLn(
+                        [
+                            ' :row :namespace(:columns)',
+                            'row'       => sprintf('%2d ', $row + 1),
+                            'namespace' => $this->console->colorize("$cdb.$collection", Console::FC_GREEN),
+                            'columns'   => implode(', ', $columns)
+                        ]
+                    );
                 }
             }
         }

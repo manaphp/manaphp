@@ -171,11 +171,11 @@ class LoggerPlugin extends Plugin
         if ($context->enabled) {
             $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
             $context->logs[] = [
-                'time' => date('H:i:s', $log->timestamp) . $ms,
+                'time'     => date('H:i:s', $log->timestamp) . $ms,
                 'category' => $log->category,
                 'location' => "$log->file:$log->line",
-                'level' => $log->level,
-                'message' => $log->message,
+                'level'    => $log->level,
+                'message'  => $log->message,
             ];
         }
     }

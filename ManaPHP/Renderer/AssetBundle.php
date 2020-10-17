@@ -35,7 +35,8 @@ class AssetBundle extends Component implements AssetBundleInterface
     {
         $path = dirname(substr($this->alias->resolve($file), strlen($this->alias->get('@public'))));
 
-        return preg_replace_callback('#url\((.+?)\)#', function ($match) use ($path) {
+        return preg_replace_callback(
+            '#url\((.+?)\)#', function ($match) use ($path) {
             $url = trim($match[1], '\'"');
             if ($url === '' || str_contains($url, '//')) {
                 return $match[0];
@@ -50,7 +51,8 @@ class AssetBundle extends Component implements AssetBundleInterface
                 $url = rtrim($path, '/\\') . '/' . $url;
             }
             return sprintf('url("%s")', $this->alias->get('@asset') . $url);
-        }, $content);
+        }, $content
+        );
     }
 
     /**

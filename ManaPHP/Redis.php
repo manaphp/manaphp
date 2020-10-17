@@ -136,7 +136,8 @@ class Redis extends Component implements RedisInterface
             $map = array_fill_keys(get_class_methods('Redis'), self::TYPE_MASTER);
 
             /** @noinspection SpellCheckingInspection */
-            unset($map['__construct'], $map['__destruct'], $map['_prefix'], $map['_serialize'], $map['_unserialize'],
+            unset(
+                $map['__construct'], $map['__destruct'], $map['_prefix'], $map['_serialize'], $map['_unserialize'],
                 $map['auth'], $map['bgSave'], $map['bgrewriteaof'], $map['clearLastError'], $map['client'],
                 $map['close'], $map['command'], $map['config'], $map['connect'], $map['debug'], $map['echo'],
                 $map['getAuth'],
@@ -145,19 +146,22 @@ class Redis extends Component implements RedisInterface
                 $map['info'], $map['lastSave'], $map['eval'], $map['evalsha'], $map['exec'],
                 $map['getReadTimeout'], $map['getTimeout'], $map['rawcommand'], $map['script'],
                 $map['select'], $map['slaveof'], $map['slowlog'], $map['time'], $map['evaluate'], $map['evaluateSha'],
-                $map['open'], $map['popen'], $map['multi'], $map['pipeline'], $map['discard']);
+                $map['open'], $map['popen'], $map['multi'], $map['pipeline'], $map['discard']
+            );
 
             /** @noinspection SpellCheckingInspection */
             $read_ops = ['bitcount', 'bitop', 'bitpos', 'dbSize', 'dump', 'exists'
-                ,'geodist','geohash','geopos','georadius','georadius_ro', 'georadiusbymember','georadiusbymember_ro'
-                ,'get','getBit','getDBNum','getRange'
-                ,'hExists','hGet','hGetAll', 'hKeys','hLen','hMget','hStrLen','hVals','hscan'
-                ,'keys','lLen','lindex','lrange','mget','object','pfcount'
-                ,'sDiff','sInter','sMembers','sRandMember','sUnion','scan','scard','sismember','sscan'
-                ,'strlen','ttl','type','zCard','zCount','zLexCount','zRange','zRangeByLex','zRangeByScore'
-                ,'zRank','zRevRange','zRevRangeByLex','zRevRangeByScore','zRevRank','zScore'
-                ,'zscan','getKeys','getMultiple','lGet','lGetRange','lSize'
-                ,'sContains','sGetMembers','sSize','substr','zSize'];
+                         , 'geodist', 'geohash', 'geopos', 'georadius', 'georadius_ro', 'georadiusbymember',
+                         'georadiusbymember_ro'
+                         , 'get', 'getBit', 'getDBNum', 'getRange'
+                         , 'hExists', 'hGet', 'hGetAll', 'hKeys', 'hLen', 'hMget', 'hStrLen', 'hVals', 'hscan'
+                         , 'keys', 'lLen', 'lindex', 'lrange', 'mget', 'object', 'pfcount'
+                         , 'sDiff', 'sInter', 'sMembers', 'sRandMember', 'sUnion', 'scan', 'scard', 'sismember', 'sscan'
+                         , 'strlen', 'ttl', 'type', 'zCard', 'zCount', 'zLexCount', 'zRange', 'zRangeByLex',
+                         'zRangeByScore'
+                         , 'zRank', 'zRevRange', 'zRevRangeByLex', 'zRevRangeByScore', 'zRevRank', 'zScore'
+                         , 'zscan', 'getKeys', 'getMultiple', 'lGet', 'lGetRange', 'lSize'
+                         , 'sContains', 'sGetMembers', 'sSize', 'substr', 'zSize'];
 
             foreach ($read_ops as $item) {
                 $map[$item] = self::TYPE_SLAVE;
@@ -187,7 +191,9 @@ class Redis extends Component implements RedisInterface
                 return $this;
             } else {
                 if ($this->_has_slave) {
-                    throw new MisuseException("slave is exists, `$method` method only can be used on instance that created by calling getMaster or getSlave");
+                    throw new MisuseException(
+                        "slave is exists, `$method` method only can be used on instance that created by calling getMaster or getSlave"
+                    );
                 }
 
                 $master = $this->getMaster();
@@ -200,7 +206,9 @@ class Redis extends Component implements RedisInterface
                 $this->_connection->call($method, $arguments);
                 return null;
             } else {
-                throw new MisuseException('`watch` method only can be used on instance that created by calling getMaster or getSlave');
+                throw new MisuseException(
+                    '`watch` method only can be used on instance that created by calling getMaster or getSlave'
+                );
             }
         } elseif ($this->_connection !== null) {
             return $this->_connection->call($method, $arguments);

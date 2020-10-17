@@ -267,33 +267,39 @@ class Amqp extends Component implements AmqpInterface
     public function bindQueue($queue, $exchange, $binding_key = '')
     {
         if (!isset($this->_queues[$queue])) {
-            throw new InvalidKeyException([
-                'bind `:queue` queue to `:exchange` exchange with `:binding_key` binding key failed: queue is NOT exists',
-                'queue' => $queue,
-                'exchange' => $exchange,
-                'binding_key' => $binding_key
-            ]);
+            throw new InvalidKeyException(
+                [
+                    'bind `:queue` queue to `:exchange` exchange with `:binding_key` binding key failed: queue is NOT exists',
+                    'queue'       => $queue,
+                    'exchange'    => $exchange,
+                    'binding_key' => $binding_key
+                ]
+            );
         }
 
         if (!isset($this->_exchanges[$exchange])) {
-            throw new AmqpException([
-                'bind `:queue` queue to `:exchange` exchange with `:binding_key` binding key failed: exchange is NOT exists',
-                'queue' => $queue,
-                'exchange' => $exchange,
-                'binding_key' => $binding_key
-            ]);
+            throw new AmqpException(
+                [
+                    'bind `:queue` queue to `:exchange` exchange with `:binding_key` binding key failed: exchange is NOT exists',
+                    'queue'       => $queue,
+                    'exchange'    => $exchange,
+                    'binding_key' => $binding_key
+                ]
+            );
         }
 
         try {
             $this->_queues[$queue]->bind($exchange, $binding_key);
         } catch (\Exception $e) {
-            throw new AmqpException([
-                'bind `:queue` queue to `:exchange` exchange with `:binding_key` binding key failed: :error',
-                'queue' => $queue,
-                'exchange' => $exchange,
-                'binding_key' => $binding_key,
-                'error' => $e->getMessage()
-            ]);
+            throw new AmqpException(
+                [
+                    'bind `:queue` queue to `:exchange` exchange with `:binding_key` binding key failed: :error',
+                    'queue'       => $queue,
+                    'exchange'    => $exchange,
+                    'binding_key' => $binding_key,
+                    'error'       => $e->getMessage()
+                ]
+            );
         }
 
         return $this;
@@ -355,13 +361,19 @@ class Amqp extends Component implements AmqpInterface
     public function publishMessage($message, $exchange, $routing_key = '', $flags = AMQP_NOPARAM, $attributes = [])
     {
         if (!isset($this->_exchanges[$exchange])) {
-            throw new InvalidKeyException(['publish message to `:1` exchange with `:2` routing_key failed: exchange is NOT exists', $exchange, $routing_key]);
+            throw new InvalidKeyException(
+                ['publish message to `:1` exchange with `:2` routing_key failed: exchange is NOT exists', $exchange,
+                 $routing_key]
+            );
         }
 
         try {
             $this->_exchanges[$exchange]->publish($message, $routing_key, $flags, $attributes);
         } catch (\Exception $e) {
-            throw new AmqpException(['publish message to `:1` exchange with `:2` routing_key failed: `:3`', $exchange, $routing_key, $e->getMessage()]);
+            throw new AmqpException(
+                ['publish message to `:1` exchange with `:2` routing_key failed: `:3`', $exchange, $routing_key,
+                 $e->getMessage()]
+            );
         }
 
         return $this;
@@ -425,8 +437,8 @@ class Amqp extends Component implements AmqpInterface
         if ($envelope !== false) {
             $json = json_parse($envelope->getBody());
             $json[self::MESSAGE_METADATA] = [
-                'queue' => $queue,
-                'delivery_tag' => $envelope->getDeliveryTag(),
+                'queue'         => $queue,
+                'delivery_tag'  => $envelope->getDeliveryTag(),
                 'is_redelivery' => $envelope->isRedelivery()
             ];
 
@@ -512,9 +524,11 @@ class Amqp extends Component implements AmqpInterface
         }
 
         try {
-            $this->_queues[$queue]->consume(function (AMQPEnvelope $envelope) use ($callback, $queue) {
-                return $callback($this->getInstance('ManaPHP\Amqp\Message', [$this, $queue, $envelope]));
-            }, $flags);
+            $this->_queues[$queue]->consume(
+                function (AMQPEnvelope $envelope) use ($callback, $queue) {
+                    return $callback($this->getInstance('ManaPHP\Amqp\Message', [$this, $queue, $envelope]));
+                }, $flags
+            );
         } catch (\Exception $e) {
             throw new AmqpException('consume `:queue` queue message failed: ', $e->getMessage());
         }

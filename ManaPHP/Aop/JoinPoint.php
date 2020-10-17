@@ -53,17 +53,21 @@ class JoinPoint implements Unaspectable
         $base = $parents ? array_pop($parents) : $class;
 
         if (!$rm->isPublic() && !method_exists($class, self::AOP_METHOD_CALL_PROTECTED)) {
-            runkit7_method_add($base, self::AOP_METHOD_CALL_PROTECTED, function ($method, $args) {
+            runkit7_method_add(
+                $base, self::AOP_METHOD_CALL_PROTECTED, function ($method, $args) {
                 return $this->$method(...$args);
-            });
+            }
+            );
         }
 
         if ($class === $parent) {
             runkit7_method_rename($parent, $method, "#$method");
         } elseif (!method_exists($class, self::AOP_METHOD_CALL_PARENT)) {
-            runkit7_method_add($base, self::AOP_METHOD_CALL_PARENT, function (JoinPoint $joinPoint) {
+            runkit7_method_add(
+                $base, self::AOP_METHOD_CALL_PARENT, function (JoinPoint $joinPoint) {
                 return $joinPoint->parent::{$joinPoint->method}(...$joinPoint->args);
-            });
+            }
+            );
         }
 
         runkit7_method_add($class, $method, $signature, $code, RUNKIT7_ACC_PUBLIC, $rm->getDocComment() ?: null);

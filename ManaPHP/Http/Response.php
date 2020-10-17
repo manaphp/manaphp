@@ -98,12 +98,12 @@ class Response extends Component implements ResponseInterface
         }
 
         $context->cookies[$name] = [
-            'name' => $name,
-            'value' => $value,
-            'expire' => $expire,
-            'path' => $path,
-            'domain' => $domain,
-            'secure' => $secure,
+            'name'     => $name,
+            'value'    => $value,
+            'expire'   => $expire,
+            'path'     => $path,
+            'domain'   => $domain,
+            'secure'   => $secure,
             'httponly' => $httponly
         ];
 
@@ -130,12 +130,12 @@ class Response extends Component implements ResponseInterface
         $context = $this->_context;
 
         $context->cookies[$name] = [
-            'name' => $name,
-            'value' => 'deleted',
-            'expire' => 1,
-            'path' => $path,
-            'domain' => $domain,
-            'secure' => $secure,
+            'name'     => $name,
+            'value'    => 'deleted',
+            'expire'   => 1,
+            'path'     => $path,
+            'domain'   => $domain,
+            'secure'   => $secure,
             'httponly' => $httponly
         ];
 

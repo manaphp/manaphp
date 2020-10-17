@@ -58,10 +58,10 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     {
         $script_filename = get_included_files()[0];
         $_SERVER = [
-            'DOCUMENT_ROOT' => dirname($script_filename),
+            'DOCUMENT_ROOT'   => dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,
-            'SCRIPT_NAME' => '/' . basename($script_filename),
-            'SERVER_ADDR' => $this->_host,
+            'SCRIPT_NAME'     => '/' . basename($script_filename),
+            'SERVER_ADDR'     => $this->_host,
             'SERVER_SOFTWARE' => 'Swoole/' . SWOOLE_VERSION . ' PHP/' . PHP_VERSION,
         ];
 

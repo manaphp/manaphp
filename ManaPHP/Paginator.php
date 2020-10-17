@@ -91,8 +91,8 @@ class Paginator extends Component implements PaginatorInterface
     public function renderAsArray()
     {
         return [
-            'page' => $this->page,
-            'size' => $this->size,
+            'page'  => $this->page,
+            'size'  => $this->size,
             'count' => $this->count,
             'pages' => $this->pages,
             'items' => $this->items

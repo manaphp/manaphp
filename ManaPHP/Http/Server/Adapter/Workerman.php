@@ -72,13 +72,13 @@ class Workerman extends Server
 
         $script_filename = get_included_files()[0];
         $this->_SERVER = [
-            'DOCUMENT_ROOT' => dirname($script_filename),
+            'DOCUMENT_ROOT'   => dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,
-            'SCRIPT_NAME' => '/' . basename($script_filename),
-            'SERVER_ADDR' => $this->_host,
-            'PHP_SELF' => '/' . basename($script_filename),
-            'QUERY_STRING' => '',
-            'REQUEST_SCHEME' => 'http',
+            'SCRIPT_NAME'     => '/' . basename($script_filename),
+            'SERVER_ADDR'     => $this->_host,
+            'PHP_SELF'        => '/' . basename($script_filename),
+            'QUERY_STRING'    => '',
+            'REQUEST_SCHEME'  => 'http',
         ];
 
         unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);

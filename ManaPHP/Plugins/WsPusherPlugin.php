@@ -260,8 +260,10 @@ class  WsPusherPlugin extends Plugin
         } elseif ($type === 'role') {
             $this->pushToRole($receivers, $message);
         } else {
-            $this->logger->warn(['unknown `:type` type message: :message', 'type' => $type, 'message' => $message],
-                'wsPusher.bad_type');
+            $this->logger->warn(
+                ['unknown `:type` type message: :message', 'type' => $type, 'message' => $message],
+                'wsPusher.bad_type'
+            );
         }
     }
 
@@ -269,7 +271,8 @@ class  WsPusherPlugin extends Plugin
     {
         $this->_worker_id = $eventArgs->data;
 
-        $this->pubSub->psubscribe([$this->_prefix . $this->_endpoint . ':*'], function ($channel, $data) {
+        $this->pubSub->psubscribe(
+            [$this->_prefix . $this->_endpoint . ':*'], function ($channel, $data) {
             if (($pos = strrpos($channel, ':')) !== false) {
                 $type = substr($channel, $pos + 1);
 
@@ -281,6 +284,7 @@ class  WsPusherPlugin extends Plugin
             } else {
                 $this->logger->warn($channel, 'wsPusher.bad_channel');
             }
-        });
+        }
+        );
     }
 }

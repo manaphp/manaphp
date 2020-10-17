@@ -196,10 +196,10 @@ class Db extends Component implements DbInterface
     public function execute($type, $sql, $bind = [])
     {
         $event = [
-                'delete' => ['deleting', 'deleted'],
-                'update' => ['updating', 'updated'],
-                'insert' => ['inserting', 'inserted']
-            ][$type] ?? null;
+                     'delete' => ['deleting', 'deleted'],
+                     'update' => ['updating', 'updated'],
+                     'insert' => ['inserting', 'inserted']
+                 ][$type] ?? null;
 
         $context = $this->_context;
 

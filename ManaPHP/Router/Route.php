@@ -64,12 +64,12 @@ class Route implements RouteInterface
     {
         if (str_contains($pattern, '{')) {
             $tr = [
-                '{area}' => '{area:[a-zA-Z]\w*}',
+                '{area}'       => '{area:[a-zA-Z]\w*}',
                 '{controller}' => '{controller:[a-zA-Z]\w*}',
-                '{action}' => '{action:[a-zA-Z]\w*}',
-                '{params}' => '{params:.*}',
-                '{id}' => '{id:[^/]+}',
-                ':int' => ':\d+',
+                '{action}'     => '{action:[a-zA-Z]\w*}',
+                '{params}'     => '{params:.*}',
+                '{id}'         => '{id:[^/]+}',
+                ':int'         => ':\d+',
             ];
             $pattern = strtr($pattern, $tr);
         }

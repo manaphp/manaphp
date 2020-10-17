@@ -54,9 +54,11 @@ class Ws extends Client
         $this->_client = $this->getInstance('ManaPHP\WebSocket\Client', $options);
 
         if ($this->_authentication) {
-            $this->_client->on('open', function (EventArgs $eventArgs) {
+            $this->_client->on(
+                'open', function (EventArgs $eventArgs) {
                 $this->authenticate($eventArgs->data);
-            });
+            }
+            );
         }
     }
 

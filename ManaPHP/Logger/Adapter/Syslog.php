@@ -104,8 +104,8 @@ class Syslog extends Logger
             $map = [
                 'fatal' => LOG_CRIT,
                 'error' => LOG_ERR,
-                'warn' => LOG_WARNING,
-                'info' => LOG_INFO,
+                'warn'  => LOG_WARNING,
+                'info'  => LOG_INFO,
                 'debug' => LOG_DEBUG,
             ];
         }

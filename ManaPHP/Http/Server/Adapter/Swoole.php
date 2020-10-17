@@ -60,15 +60,15 @@ class Swoole extends Server
     {
         $script_filename = get_included_files()[0];
         $this->_server = [
-            'DOCUMENT_ROOT' => dirname($script_filename),
+            'DOCUMENT_ROOT'   => dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,
-            'SCRIPT_NAME' => '/' . basename($script_filename),
-            'SERVER_ADDR' => $this->_host === '0.0.0.0' ? Ip::local() : $this->_host,
-            'SERVER_PORT' => $this->_port,
+            'SCRIPT_NAME'     => '/' . basename($script_filename),
+            'SERVER_ADDR'     => $this->_host === '0.0.0.0' ? Ip::local() : $this->_host,
+            'SERVER_PORT'     => $this->_port,
             'SERVER_SOFTWARE' => 'Swoole/' . SWOOLE_VERSION . ' PHP/' . PHP_VERSION,
-            'PHP_SELF' => '/' . basename($script_filename),
-            'QUERY_STRING' => '',
-            'REQUEST_SCHEME' => 'http',
+            'PHP_SELF'        => '/' . basename($script_filename),
+            'QUERY_STRING'    => '',
+            'REQUEST_SCHEME'  => 'http',
         ];
 
 

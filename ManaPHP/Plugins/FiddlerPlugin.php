@@ -124,9 +124,9 @@ class FiddlerPlugin extends Plugin
 
         if ($this->watched()) {
             $data = [
-                'code' => $response->status_code,
-                'path' => $this->dispatcher->getPath(),
-                'body' => $response->content,
+                'code'    => $response->status_code,
+                'path'    => $this->dispatcher->getPath(),
+                'body'    => $response->content,
                 'elapsed' => round(microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT'), 3)
             ];
             $this->publish('response', $data);
@@ -167,13 +167,17 @@ class FiddlerPlugin extends Plugin
         $id = $options['id'] ?? $this->configure->id;
 
         if ($ip = $options['ip'] ?? false) {
-            $this->pubSub->subscribe(["{$this->_prefix}$id:$ip"], function ($chan, $packet) {
+            $this->pubSub->subscribe(
+                ["{$this->_prefix}$id:$ip"], function ($chan, $packet) {
                 $this->processMessage($packet);
-            });
+            }
+            );
         } else {
-            $this->pubSub->psubscribe(["{$this->_prefix}$id:*"], function ($chan, $packet) {
+            $this->pubSub->psubscribe(
+                ["{$this->_prefix}$id:*"], function ($chan, $packet) {
                 $this->processMessage($packet);
-            });
+            }
+            );
         }
     }
 

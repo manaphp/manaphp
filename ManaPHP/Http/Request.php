@@ -428,12 +428,12 @@ class Request extends Component implements RequestInterface
                 for ($i = 0; $i < $countFiles; $i++) {
                     if (!$onlySuccessful || $files['error'][$i] === UPLOAD_ERR_OK) {
                         $file = [
-                            'key' => $key,
-                            'name' => $files['name'][$i],
-                            'type' => $files['type'][$i],
+                            'key'      => $key,
+                            'name'     => $files['name'][$i],
+                            'type'     => $files['type'][$i],
                             'tmp_name' => $files['tmp_name'][$i],
-                            'error' => $files['error'][$i],
-                            'size' => $files['size'][$i],
+                            'error'    => $files['error'][$i],
+                            'size'     => $files['size'][$i],
                         ];
                         $r[] = $this->getInstance('ManaPHP\Http\Request\File', $file);
                     }

@@ -180,7 +180,8 @@ class Arr
      */
     public static function sort(&$ar, $sort)
     {
-        usort($ar, static function ($a, $b) use ($sort) {
+        usort(
+            $ar, static function ($a, $b) use ($sort) {
             foreach ($sort as $k => $v) {
                 $field = is_int($k) ? $v : $k;
 
@@ -195,7 +196,8 @@ class Arr
                 }
             }
             return 0;
-        });
+        }
+        );
 
         return $ar;
     }

@@ -197,13 +197,13 @@ class Model extends \ManaPHP\Model
 
         $command = [
             'createIndexes' => $collection,
-            'indexes' => [
+            'indexes'       => [
                 [
-                    'key' => [
+                    'key'    => [
                         $autoIncField => 1
                     ],
                     'unique' => true,
-                    'name' => $autoIncField
+                    'name'   => $autoIncField
                 ]
             ]
         ];
@@ -237,10 +237,10 @@ class Model extends \ManaPHP\Model
 
         $command = [
             'findAndModify' => 'auto_increment_id',
-            'query' => ['_id' => $collection],
-            'update' => ['$inc' => ['current_id' => $step]],
-            'new' => true,
-            'upsert' => true
+            'query'         => ['_id' => $collection],
+            'update'        => ['$inc' => ['current_id' => $step]],
+            'new'           => true,
+            'upsert'        => true
         ];
 
         $id = $mongodb->command($command, $db)[0]['value']['current_id'];

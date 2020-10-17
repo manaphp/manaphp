@@ -57,18 +57,20 @@ class Db extends Logger
 
         foreach ($logs as $log) {
             try {
-                $db->insert($this->_table, [
-                    'host' => $log->host,
-                    'client_ip' => $log->client_ip,
-                    'request_id' => $log->request_id,
-                    'category' => $log->category,
-                    'level' => $log->level,
-                    'file' => $log->file,
-                    'line' => $log->line,
-                    'message' => $log->message,
-                    'timestamp' => $log->timestamp - (int)$log->timestamp,
-                    'created_time' => (int)$log->timestamp
-                ]);
+                $db->insert(
+                    $this->_table, [
+                        'host'         => $log->host,
+                        'client_ip'    => $log->client_ip,
+                        'request_id'   => $log->request_id,
+                        'category'     => $log->category,
+                        'level'        => $log->level,
+                        'file'         => $log->file,
+                        'line'         => $log->line,
+                        'message'      => $log->message,
+                        'timestamp'    => $log->timestamp - (int)$log->timestamp,
+                        'created_time' => (int)$log->timestamp
+                    ]
+                );
             } catch (Exception $e) {
                 null;
             }

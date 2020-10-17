@@ -76,9 +76,9 @@ class Db extends Session
         $db = $this->getShared($this->_db);
 
         $field_values = [
-            'user_id' => $this->identity->getId(0),
-            'client_ip' => $this->request->getClientIp(),
-            'data' => $data,
+            'user_id'      => $this->identity->getId(0),
+            'client_ip'    => $this->request->getClientIp(),
+            'data'         => $data,
             'updated_time' => time(),
             'expired_time' => $ttl + time()
         ];
@@ -105,8 +105,8 @@ class Db extends Session
         $db = $this->getShared($this->_db);
 
         $field_values = [
-            'user_id' => $this->identity->getId(0),
-            'client_ip' => $this->request->getClientIp(),
+            'user_id'      => $this->identity->getId(0),
+            'client_ip'    => $this->request->getClientIp(),
             'updated_time' => time(),
             'expired_time' => $ttl + time()
         ];

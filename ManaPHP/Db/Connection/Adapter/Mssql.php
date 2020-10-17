@@ -98,8 +98,8 @@ class Mssql extends Connection
         }
 
         return [
-            Db::METADATA_ATTRIBUTES => $attributes,
-            Db::METADATA_PRIMARY_KEY => $primaryKeys,
+            Db::METADATA_ATTRIBUTES         => $attributes,
+            Db::METADATA_PRIMARY_KEY        => $primaryKeys,
             Db::METADATA_AUTO_INCREMENT_KEY => $autoIncrementAttribute
         ];
     }

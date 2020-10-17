@@ -92,7 +92,8 @@ class Compiler extends Component
      */
     protected function _addFileHash($str)
     {
-        return preg_replace_callback('#="(/[-\w/.]+\.\w+)"#', function ($match) {
+        return preg_replace_callback(
+            '#="(/[-\w/.]+\.\w+)"#', function ($match) {
             $url = $match[1];
 
             if (in_array(pathinfo($url, PATHINFO_EXTENSION), ['htm', 'html', 'php'], true)) {
@@ -107,7 +108,8 @@ class Compiler extends Component
             $hash = substr(md5_file($file), 0, $this->_hash_length);
 
             return "=\"$url?v=$hash\"";
-        }, $str);
+        }, $str
+        );
     }
 
     /**
@@ -154,10 +156,12 @@ class Compiler extends Component
      */
     protected function _completeLinks($file, $str)
     {
-        $str = preg_replace_callback('#\b((?:ajax|axios\.)\w*\\(["\'`])([^/][\w\-/:.]+)#',
+        $str = preg_replace_callback(
+            '#\b((?:ajax|axios\.)\w*\\(["\'`])([^/][\w\-/:.]+)#',
             function ($match) use ($file) {
                 return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
-            }, $str);
+            }, $str
+        );
 
         return $str;
     }
@@ -270,11 +274,12 @@ class Compiler extends Component
     protected function _getEchoMethods()
     {
         $methods = [
-            '_compileRawEchos' => strlen(stripcslashes($this->_rawTags[0])),
+            '_compileRawEchos'     => strlen(stripcslashes($this->_rawTags[0])),
             '_compileEscapedEchos' => strlen(stripcslashes($this->_escapedTags[0])),
         ];
 
-        uksort($methods, static function ($method1, $method2) use ($methods) {
+        uksort(
+            $methods, static function ($method1, $method2) use ($methods) {
             // Ensure the longest tags are processed first
             if ($methods[$method1] > $methods[$method2]) {
                 return -1;
@@ -299,7 +304,8 @@ class Compiler extends Component
             }
 
             return 0;
-        });
+        }
+        );
 
         return $methods;
     }
@@ -324,8 +330,10 @@ class Compiler extends Component
             return isset($match[3]) ? $match[0] : $match[0] . $match[2];
         };
 
-        return preg_replace_callback(/** @lang text */ '/\B@(\w+)([ \t]*)(\( ( (?>[^()]+) | (?3) )* \))?/x', $callback,
-            $value);
+        return preg_replace_callback(
+        /** @lang text */ '/\B@(\w+)([ \t]*)(\( ( (?>[^()]+) | (?3) )* \))?/x', $callback,
+            $value
+        );
     }
 
     /**
@@ -371,7 +379,8 @@ class Compiler extends Component
             } elseif ($this->_isSafeEchos($matches[2])) {
                 return "<?= $matches[2] ?>" . (empty($matches[3]) ? '' : $matches[3]);
             } else {
-                return '<?= e(' . $this->_compileEchoDefaults($matches[2]) . '); ?>' . (empty($matches[3]) ? '' : $matches[3]);
+                return '<?= e(' . $this->_compileEchoDefaults($matches[2]) . '); ?>' . (empty($matches[3]) ? ''
+                        : $matches[3]);
             }
         };
 

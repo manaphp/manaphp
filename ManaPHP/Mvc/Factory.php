@@ -8,13 +8,15 @@ class Factory extends \ManaPHP\Http\Factory
     {
         parent::__construct();
 
-        $this->_definitions = array_merge($this->_definitions, [
-            'errorHandler' => 'ManaPHP\Mvc\ErrorHandler',
-            'view' => 'ManaPHP\View',
-            'flash' => 'ManaPHP\View\Flash\Adapter\Direct',
-            'flashSession' => 'ManaPHP\View\Flash\Adapter\Session',
-            'viewsCache' => ['ManaPHP\Cache\Adapter\Redis', 'prefix' => 'cache:views:'],
-            'identity' => 'ManaPHP\Identity\Adapter\Session',
-        ]);
+        $this->_definitions = array_merge(
+            $this->_definitions, [
+                'errorHandler' => 'ManaPHP\Mvc\ErrorHandler',
+                'view'         => 'ManaPHP\View',
+                'flash'        => 'ManaPHP\View\Flash\Adapter\Direct',
+                'flashSession' => 'ManaPHP\View\Flash\Adapter\Session',
+                'viewsCache'   => ['ManaPHP\Cache\Adapter\Redis', 'prefix' => 'cache:views:'],
+                'identity'     => 'ManaPHP\Identity\Adapter\Session',
+            ]
+        );
     }
 }

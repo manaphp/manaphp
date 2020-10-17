@@ -36,8 +36,8 @@ abstract class Flash extends Component implements FlashInterface
     {
         $this->_css = $css
             ?: [
-                'error' => 'flash-error',
-                'notice' => 'flash-notice',
+                'error'   => 'flash-error',
+                'notice'  => 'flash-notice',
                 'success' => 'flash-success',
                 'warning' => 'flash-warning'
             ];

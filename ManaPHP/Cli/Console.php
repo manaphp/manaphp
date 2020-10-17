@@ -68,29 +68,29 @@ class Console extends Component implements ConsoleInterface
     public function colorize($text, $options = 0, $width = 0)
     {
         $map = [
-            self::AT_BOLD => "\033[1m",
-            self::AT_ITALICS => "\033[3m",
+            self::AT_BOLD      => "\033[1m",
+            self::AT_ITALICS   => "\033[3m",
             self::AT_UNDERLINE => "\033[4m",
-            self::AT_BLINK => "\033[5m",
-            self::AT_INVERSE => "\033[7m",
+            self::AT_BLINK     => "\033[5m",
+            self::AT_INVERSE   => "\033[7m",
 
-            self::BC_BLACK => "\033[40m",
-            self::BC_RED => "\033[41m",
-            self::BC_GREEN => "\033[42m",
-            self::BC_YELLOW => "\033[43m",
-            self::BC_BLUE => "\033[44m",
+            self::BC_BLACK   => "\033[40m",
+            self::BC_RED     => "\033[41m",
+            self::BC_GREEN   => "\033[42m",
+            self::BC_YELLOW  => "\033[43m",
+            self::BC_BLUE    => "\033[44m",
             self::BC_MAGENTA => "\033[45m",
-            self::BC_CYAN => "\033[46m",
-            self::BC_WHITE => "\033[47m",
+            self::BC_CYAN    => "\033[46m",
+            self::BC_WHITE   => "\033[47m",
 
-            self::FC_BLACK => "\033[30m",
-            self::FC_RED => "\033[31m",
-            self::FC_GREEN => "\033[32m",
-            self::FC_YELLOW => "\033[33m",
-            self::FC_BLUE => "\033[34m",
+            self::FC_BLACK   => "\033[30m",
+            self::FC_RED     => "\033[31m",
+            self::FC_GREEN   => "\033[32m",
+            self::FC_YELLOW  => "\033[33m",
+            self::FC_BLUE    => "\033[34m",
             self::FC_MAGENTA => "\033[35m",
-            self::FC_CYAN => "\033[36m",
-            self::FC_WHITE => "\033[37m",
+            self::FC_CYAN    => "\033[36m",
+            self::FC_WHITE   => "\033[37m",
         ];
 
         if (!$this->isSupportColor()) {

@@ -97,9 +97,11 @@ class Random extends Component implements RandomInterface
     public function getUuid()
     {
         $bytes = unpack('N1a/n1b/n1c/n1d/n1e/N1f', $this->getByte(16));
-        return sprintf('%08x-%04x-%04x-%04x-%04x%08x',
+        return sprintf(
+            '%08x-%04x-%04x-%04x-%04x%08x',
             $bytes['a'], $bytes['b'], ($bytes['c'] & 0x0FFF) | 0x4000, ($bytes['d'] & 0x3FFF) | 0x8000, $bytes['e'],
-            $bytes['f']);
+            $bytes['f']
+        );
     }
 
     /**
