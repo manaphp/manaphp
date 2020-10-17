@@ -188,23 +188,21 @@ class Dispatcher extends Component implements DispatcherInterface
             $controller = $context->controller;
             $action = $context->action;
 
-            if ($area) {
-                if ($action === 'index') {
-                    if ($controller === 'Index') {
-                        $context->path = $area === 'Index' ? '/' : '/' . Str::underscore($area);
-                    } else {
-                        $context->path = '/' . Str::underscore($area) . '/' . Str::underscore($controller);
-                    }
-                } else {
-                    $context->path = '/' . Str::underscore($area) . '/' . Str::underscore($controller) . '/' . Str::underscore($action);
-                }
+            if ($action === 'index') {
+                $path = $controller === 'Index' ? '/' : '/' . Str::underscore($controller);
             } else {
-                if ($action === 'index') {
-                    $context->path = $controller === 'Index' ? '/' : '/' . Str::underscore($controller);
+                $path = '/' . Str::underscore($controller) . '/' . Str::underscore($action);
+            }
+
+            if ($area !== '' && $area !== null) {
+                if ($area === 'Index' && $path === '/') {
+                    null;
                 } else {
-                    $context->path = '/' . Str::underscore($controller) . '/' . Str::underscore($action);
+                    $path = '/' . Str::underscore($area) . $path;
                 }
             }
+
+            $context->path = $path;
         }
 
         return $context->path;
