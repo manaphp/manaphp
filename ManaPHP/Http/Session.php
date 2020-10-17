@@ -163,7 +163,8 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
             $params = $this->_params;
             $expire = $params['expire'] ? time() + $params['expire'] : 0;
 
-            $this->cookies->set($this->_name, $context->session_id, $expire, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+            $this->cookies->set($this->_name, $context->session_id,
+                $expire, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
 
             $this->fireEvent('session:create', $context);
         } elseif ($context->is_dirty) {
@@ -218,8 +219,9 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
             $context->_SESSION = null;
             $this->do_destroy($context->session_id);
 
+            $name = $this->_name;
             $params = $this->_params;
-            $this->cookies->delete($this->_name, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+            $this->cookies->delete($name, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
         }
 
         return $this;
