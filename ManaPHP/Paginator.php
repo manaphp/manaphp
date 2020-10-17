@@ -125,12 +125,14 @@ class Paginator extends Component implements PaginatorInterface
         }
 
         $str = PHP_EOL . '<ul class="pagination">' . PHP_EOL;
-        $str .= '  <li class="first"><a href="' . str_replace('{page}', 1, $urlTemplate) . '">&lt;&lt;</a></li>' . PHP_EOL;
+        $first_url = str_replace('{page}', 1, $urlTemplate);
+        $str .= '  <li class="first"><a href="' . $first_url . '">&lt;&lt;</a></li>' . PHP_EOL;
 
         if ($this->prev < 0) {
             $str .= '  <li class="prev disabled"><span>&lt;</span></li>' . PHP_EOL;
         } else {
-            $str .= '  <li class="prev"><a href="' . str_replace('{page}', $this->prev, $urlTemplate) . '">&lt;</a></li>' . PHP_EOL;
+            $prev_url = str_replace('{page}', $this->prev, $urlTemplate);
+            $str .= '  <li class="prev"><a href="' . $prev_url . '">&lt;</a></li>' . PHP_EOL;
         }
 
         $startPage = (int)min($this->page - ceil($this->_links / 2), $this->pages - $this->_links);
@@ -142,18 +144,22 @@ class Paginator extends Component implements PaginatorInterface
             if ($i === $this->page) {
                 $str .= '  <li class="active"><span>' . $i . '</span></li>' . PHP_EOL;
             } else {
-                $str .= '  <li><a href="' . str_replace('{page}', $i, $urlTemplate) . '">' . $i . '</a></li>' . PHP_EOL;
+                $i_url = str_replace('{page}', $i, $urlTemplate);
+                $str .= '  <li><a href="' . $i_url . '">' . $i . '</a></li>' . PHP_EOL;
             }
         }
 
         if ($this->next < 0) {
             $str .= '  <li class="next disabled"><span>&gt;</span></li>' . PHP_EOL;
         } else {
-            $str .= '  <li class="next"><a href="' . str_replace('{page}', $this->next, $urlTemplate) . '">&gt;</a></li>' . PHP_EOL;
+            $next_url = str_replace('{page}', $this->next, $urlTemplate);
+            $str .= '  <li class="next"><a href="' . $next_url . '">&gt;</a></li>' . PHP_EOL;
         }
 
-        $str .= '  <li class="last"><a href="' . str_replace('{page}', $this->pages, $urlTemplate) . '">&gt;&gt;</a></li>' . PHP_EOL;
+        $last_url = str_replace('{page}', $this->pages, $urlTemplate);
+        $str .= '  <li class="last"><a href="' . $last_url . '">&gt;&gt;</a></li>' . PHP_EOL;
         $str .= '</ul>' . PHP_EOL;
+        
         return $str;
     }
 
