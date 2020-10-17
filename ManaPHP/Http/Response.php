@@ -79,8 +79,15 @@ class Response extends Component implements ResponseInterface
      *
      * @return static
      */
-    public function setCookie($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httponly = true)
-    {
+    public function setCookie(
+        $name,
+        $value,
+        $expire = 0,
+        $path = null,
+        $domain = null,
+        $secure = false,
+        $httponly = true
+    ) {
         $context = $this->_context;
 
         if ($expire > 0) {

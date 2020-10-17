@@ -305,9 +305,10 @@ class View extends Component implements ViewInterface
     {
         $context = $this->_context;
 
-        $context->content = preg_replace_callback('#\b(href|src|action|data-src)=(["\'`]{1,2})/(?!/)#', function ($match) {
-            return "$match[1]=$match[2]{$this->_base_url}/";
-        }, $context->content);
+        $context->content = preg_replace_callback('#\b(href|src|action|data-src)=(["\'`]{1,2})/(?!/)#',
+            function ($match) {
+                return "$match[1]=$match[2]{$this->_base_url}/";
+            }, $context->content);
     }
 
     /**

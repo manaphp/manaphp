@@ -453,7 +453,8 @@ class Markdown extends Component implements EngineInterface
             unset($Block['interrupted']);
         }
 
-        if (($len = strspn($Line['text'], $Block['char'])) >= $Block['openerLength'] && rtrim(substr($Line['text'], $len), ' ') === '') {
+        if (($len = strspn($Line['text'], $Block['char'])) >= $Block['openerLength']
+            && rtrim(substr($Line['text'], $len), ' ') === '') {
             $Block['element']['element']['text'] = substr($Block['element']['element']['text'], 1);
 
             $Block['complete'] = true;
@@ -572,11 +573,13 @@ class Markdown extends Component implements EngineInterface
             && (
                 (
                     $Block['data']['type'] === 'ol'
-                    && preg_match('/^[0-9]++' . $Block['data']['markerTypeRegex'] . '(?:[ ]++(.*)|$)/', $Line['text'], $matches)
+                    && preg_match('/^\d++' . $Block['data']['markerTypeRegex'] . '(?:[ ]++(.*)|$)/', $Line['text'],
+                        $matches)
                 )
                 || (
                     $Block['data']['type'] === 'ul'
-                    && preg_match('/^' . $Block['data']['markerTypeRegex'] . '(?:[ ]++(.*)|$)/', $Line['text'], $matches)
+                    && preg_match('/^' . $Block['data']['markerTypeRegex'] . '(?:[ ]++(.*)|$)/', $Line['text'],
+                        $matches)
                 )
             )
         ) {
@@ -762,7 +765,8 @@ class Markdown extends Component implements EngineInterface
             return;
         }
 
-        if (preg_match('/^<[\/]?+(\w*)(?:[ ]*+' . $this->regexHtmlAttribute . ')*+[ ]*+(\/)?>/', $Line['text'], $matches)) {
+        if (preg_match('/^<[\/]?+(\w*)(?:[ ]*+' . $this->regexHtmlAttribute . ')*+[ ]*+(\/)?>/', $Line['text'],
+            $matches)) {
             $element = strtolower($matches[1]);
 
             if (in_array($element, $textLevelElements, true)) {
@@ -793,7 +797,8 @@ class Markdown extends Component implements EngineInterface
     protected function blockReference($Line)
     {
         if (str_contains($Line['text'], ']')
-            && preg_match(/**@lang text */ '/^\[(.+?)\]:[ ]*+<?(\S+?)>?(?:[ ]+["\'(](.+)["\')])?[ ]*+$/', $Line['text'], $matches)
+            && preg_match(/**@lang text */ '/^\[(.+?)\]:[ ]*+<?(\S+?)>?(?:[ ]+["\'(](.+)["\')])?[ ]*+$/', $Line['text'],
+                $matches)
         ) {
             $id = strtolower($matches[1]);
 
@@ -1130,7 +1135,8 @@ class Markdown extends Component implements EngineInterface
     {
         $marker = $Excerpt['text'][0];
 
-        if (preg_match('/^([' . $marker . ']++)[ ]*+(.+?)[ ]*+(?<![' . $marker . '])\1(?!' . $marker . ')/s', $Excerpt['text'], $matches)) {
+        if (preg_match('/^([' . $marker . ']++)[ ]*+(.+?)[ ]*+(?<![' . $marker . '])\1(?!' . $marker . ')/s',
+            $Excerpt['text'], $matches)) {
             $text = $matches[2];
             $text = preg_replace('/[ ]*+\n/', ' ', $text);
 
@@ -1285,7 +1291,8 @@ class Markdown extends Component implements EngineInterface
             return;
         }
 
-        if (preg_match('/^[(]\s*+((?:[^ ()]++|[(][^ )]+[)])++)(?:[ ]+("[^"]*+"|\'[^\']*+\'))?\s*+[)]/', $remainder, $matches)) {
+        if (preg_match('/^[(]\s*+((?:[^ ()]++|[(][^ )]+[)])++)(?:[ ]+("[^"]*+"|\'[^\']*+\'))?\s*+[)]/', $remainder,
+            $matches)) {
             $Element['attributes']['href'] = $matches[1];
 
             if (isset($matches[2])) {
@@ -1325,7 +1332,8 @@ class Markdown extends Component implements EngineInterface
             return;
         }
 
-        if ($Excerpt['text'][1] === '/' && preg_match(/**@lang text */ '/^<\/\w[\w-]*+[ ]*+>/s', $Excerpt['text'], $matches)) {
+        if ($Excerpt['text'][1] === '/'
+            && preg_match(/**@lang text */ '/^<\/\w[\w-]*+[ ]*+>/s', $Excerpt['text'], $matches)) {
             return [
                 'element' => ['rawHtml' => $matches[0]],
                 'extent' => strlen($matches[0]),
@@ -1339,7 +1347,8 @@ class Markdown extends Component implements EngineInterface
             ];
         }
 
-        if ($Excerpt['text'][1] !== ' ' && preg_match('/^<\w[\w-]*+(?:[ ]*+' . $this->regexHtmlAttribute . ')*+[ ]*+\/?>/s', $Excerpt['text'], $matches)) {
+        if ($Excerpt['text'][1] !== ' '
+            && preg_match('/^<\w[\w-]*+(?:[ ]*+' . $this->regexHtmlAttribute . ')*+[ ]*+\/?>/s', $Excerpt['text'], $matches)) {
             return [
                 'element' => ['rawHtml' => $matches[0]],
                 'extent' => strlen($matches[0]),
@@ -1407,7 +1416,8 @@ class Markdown extends Component implements EngineInterface
 
     protected function inlineUrlTag($Excerpt)
     {
-        if (str_contains($Excerpt['text'], '>') && preg_match('/^<(\w++:\/{2}[^ >]++)>/i', $Excerpt['text'], $matches)) {
+        if (str_contains($Excerpt['text'], '>')
+            && preg_match('/^<(\w++:\/{2}[^ >]++)>/i', $Excerpt['text'], $matches)) {
             $url = $matches[1];
 
             return [

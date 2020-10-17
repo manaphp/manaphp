@@ -260,7 +260,8 @@ class  WsPusherPlugin extends Plugin
         } elseif ($type === 'role') {
             $this->pushToRole($receivers, $message);
         } else {
-            $this->logger->warn(['unknown `:type` type message: :message', 'type' => $type, 'message' => $message], 'wsPusher.bad_type');
+            $this->logger->warn(['unknown `:type` type message: :message', 'type' => $type, 'message' => $message],
+                'wsPusher.bad_type');
         }
     }
 

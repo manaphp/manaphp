@@ -423,7 +423,11 @@ class Amqp extends Component implements AmqpInterface
 
         if ($envelope !== false) {
             $json = json_parse($envelope->getBody());
-            $json[self::MESSAGE_METADATA] = ['queue' => $queue, 'delivery_tag' => $envelope->getDeliveryTag(), 'is_redelivery' => $envelope->isRedelivery()];
+            $json[self::MESSAGE_METADATA] = [
+                'queue' => $queue,
+                'delivery_tag' => $envelope->getDeliveryTag(),
+                'is_redelivery' => $envelope->isRedelivery()
+            ];
 
             return $json;
         } else {

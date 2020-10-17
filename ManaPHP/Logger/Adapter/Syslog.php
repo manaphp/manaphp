@@ -113,7 +113,7 @@ class Syslog extends Logger
         $host = $this->_receiver_host;
         $port = $this->_receiver_port;
         $tag = $this->configure->id;
-        
+
         foreach ($logs as $log) {
             $severity = $map[$log->level];
             $priority = $this->_facility * 8 + $severity;

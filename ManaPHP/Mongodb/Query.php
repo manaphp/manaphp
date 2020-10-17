@@ -191,8 +191,15 @@ class Query extends \ManaPHP\Query
 
         if (preg_match('#^(.+)\s*([<>=]+)\s*(.+)$#', $cond, $match)) {
             list(, $op1, $op2, $op3) = $match;
-            $alg = ['=' => '$eq', '!=' => '$neq', '<>' => '$neq',
-                    '>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte'];
+            $alg = [
+                '=' => '$eq',
+                '!=' => '$neq',
+                '<>' => '$neq',
+                '>' => '$gt',
+                '>=' => '$gte',
+                '<' => '$lt',
+                '<=' => '$lte'
+            ];
             $normalized_op1 = is_numeric($op1) ? (float)$op1 : '$' . $op1;
             $normalized_op3 = is_numeric($op3) ? (float)$op3 : '$' . $op3;
             return ['$cond' => [[$alg[$op2] => [$normalized_op1, $normalized_op3]], $true, $false]];
@@ -271,8 +278,13 @@ class Query extends \ManaPHP\Query
                 if (preg_match('#^[\w.]+$#', $operand) === 1) {
                     $this->_aggregate[$k] = ['$' . $accumulator => '$' . $operand];
                 } elseif (preg_match('#^([\w.]+)\s*([+\-*/%])\s*([\w.]+)$#', $operand, $match2) === 1) {
-                    $operator_map = ['+' => '$add', '-' => '$subtract',
-                                     '*' => '$multiply', '/' => '$divide', '%' => '$mod'];
+                    $operator_map = [
+                        '+' => '$add',
+                        '-' => '$subtract',
+                        '*' => '$multiply',
+                        '/' => '$divide',
+                        '%' => '$mod'
+                    ];
                     $sub_operand = $operator_map[$match2[2]];
                     $sub_operand1 = is_numeric($match2[1]) ? (float)$match2[1] : ('$' . $match2[1]);
                     $sub_operand2 = is_numeric($match2[3]) ? (float)$match2[3] : ('$' . $match2[3]);

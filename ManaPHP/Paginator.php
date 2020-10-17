@@ -159,7 +159,7 @@ class Paginator extends Component implements PaginatorInterface
         $last_url = str_replace('{page}', $this->pages, $urlTemplate);
         $str .= '  <li class="last"><a href="' . $last_url . '">&gt;&gt;</a></li>' . PHP_EOL;
         $str .= '</ul>' . PHP_EOL;
-        
+
         return $str;
     }
 

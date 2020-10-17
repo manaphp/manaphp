@@ -154,9 +154,10 @@ class Compiler extends Component
      */
     protected function _completeLinks($file, $str)
     {
-        $str = preg_replace_callback('#\b((?:ajax|axios\.)\w*\\(["\'`])([^/][\w\-/:.]+)#', function ($match) use ($file) {
-            return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
-        }, $str);
+        $str = preg_replace_callback('#\b((?:ajax|axios\.)\w*\\(["\'`])([^/][\w\-/:.]+)#',
+            function ($match) use ($file) {
+                return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
+            }, $str);
 
         return $str;
     }
@@ -323,7 +324,8 @@ class Compiler extends Component
             return isset($match[3]) ? $match[0] : $match[0] . $match[2];
         };
 
-        return preg_replace_callback(/** @lang text */ '/\B@(\w+)([ \t]*)(\( ( (?>[^()]+) | (?3) )* \))?/x', $callback, $value);
+        return preg_replace_callback(/** @lang text */ '/\B@(\w+)([ \t]*)(\( ( (?>[^()]+) | (?3) )* \))?/x', $callback,
+            $value);
     }
 
     /**
@@ -340,7 +342,9 @@ class Compiler extends Component
         $callback = function ($matches) {
             $whitespace = empty($matches[3]) ? '' : $matches[3];
 
-            return $matches[1] ? substr($matches[0], 1) : '<?= ' . $this->_compileEchoDefaults($matches[2]) . '; ?>' . $whitespace;
+            return $matches[1]
+                ? substr($matches[0], 1)
+                : '<?= ' . $this->_compileEchoDefaults($matches[2]) . '; ?>' . $whitespace;
         };
 
         return preg_replace_callback($pattern, $callback, $value);

@@ -76,8 +76,13 @@ class MongodbController extends Controller
      *
      * @throws \ManaPHP\Mongodb\Exception
      */
-    public function modelsCommand($services = [], $namespace = 'App\Models', $optimized = false, $sample = 1000, $db = [])
-    {
+    public function modelsCommand(
+        $services = [],
+        $namespace = 'App\Models',
+        $optimized = false,
+        $sample = 1000,
+        $db = []
+    ) {
         if (!str_contains($namespace, '\\')) {
             $namespace = 'App\\' . ucfirst($namespace) . '\\Models';
         }
@@ -473,13 +478,15 @@ class MongodbController extends Controller
                     continue;
                 }
 
-                $this->console->writeLn(['---`:db` db of `:service` service---', 'db' => $cdb, 'service' => $service], Console::BC_CYAN);
+                $this->console->writeLn(['---`:db` db of `:service` service---', 'db' => $cdb, 'service' => $service],
+                    Console::BC_CYAN);
                 foreach ($mongodb->listCollections($cdb) as $row => $collection) {
                     if ($collection_pattern && !fnmatch($collection_pattern, $collection)) {
                         continue;
                     }
                     if ($field) {
-                        if (!$docs = $mongodb->fetchAll("$cdb.$collection", [$field => ['$exists' => 1]], ['limit' => 1])) {
+                        if (!$docs = $mongodb->fetchAll("$cdb.$collection", [$field => ['$exists' => 1]],
+                            ['limit' => 1])) {
                             continue;
                         }
                     } else {

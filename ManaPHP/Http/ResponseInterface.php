@@ -27,7 +27,15 @@ interface ResponseInterface
      *
      * @return static
      */
-    public function setCookie($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httponly = true);
+    public function setCookie(
+        $name,
+        $value,
+        $expire = 0,
+        $path = null,
+        $domain = null,
+        $secure = false,
+        $httponly = true
+    );
 
     /**
      * Deletes a cookie by its name

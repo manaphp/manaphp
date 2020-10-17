@@ -354,7 +354,11 @@ class DebuggerPlugin extends Plugin
         $data['basic'] = $this->_getBasic();
         $levels = array_flip($this->logger->getLevels());
         $data['logger'] = ['log' => $context->log, 'levels' => $levels, 'level' => Logger::LEVEL_DEBUG];
-        $data['sql'] = ['prepared' => $context->sql_prepared, 'executed' => $context->sql_executed, 'count' => $context->sql_count];
+        $data['sql'] = [
+            'prepared' => $context->sql_prepared,
+            'executed' => $context->sql_executed,
+            'count' => $context->sql_count
+        ];
         $data['mongodb'] = $context->mongodb;
 
         $data['view'] = $context->view;
