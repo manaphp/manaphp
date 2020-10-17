@@ -147,7 +147,7 @@ class Handler extends Component implements HandlerInterface
         $controllerName = Str::camelize($controllerName);
         $commandName = lcfirst(Str::camelize($commandName));
 
-        $controllerClassName = null;
+        $controller = null;
 
         if ($this->alias->has('@ns.cli')) {
             $namespaces = ['@ns.cli', 'ManaPHP\\Cli\\Controllers'];
@@ -159,25 +159,26 @@ class Handler extends Component implements HandlerInterface
             $className = $this->alias->resolveNS($prefix . '\\' . $controllerName . 'Controller');
 
             if (class_exists($className)) {
-                $controllerClassName = $className;
+                $controller = $className;
                 break;
             }
         }
 
-        if (!$controllerClassName) {
+        if (!$controller) {
             $guessed = $this->_guessController($controllerName);
             if ($guessed) {
-                $controllerClassName = $guessed;
-                $controllerName = basename(substr($controllerClassName, strrpos($controllerClassName, '\\')), 'Controller');
+                $controller = $guessed;
+                $controllerName = basename(substr($controller, strrpos($controller, '\\')), 'Controller');
             } else {
-                return $this->console->error(['`:command` command is not exists', 'command' => lcfirst($controllerName) . ':' . $commandName]);
+                $command = lcfirst($controllerName) . ':' . $commandName;
+                return $this->console->error(['`:command` command is not exists', 'command' => $command]);
             }
         }
 
-        /** @var \ManaPHP\Controller $controllerInstance */
-        $controllerInstance = $this->getShared($controllerClassName);
+        /** @var \ManaPHP\Controller $instance */
+        $instance = $this->getShared($controller);
         if ($commandName === '') {
-            $commands = $this->_getCommands($controllerClassName);
+            $commands = $this->_getCommands($controller);
             if (count($commands) === 1) {
                 $commandName = $commands[0];
             } elseif (in_array('default', $commands, true)) {
@@ -191,18 +192,19 @@ class Handler extends Component implements HandlerInterface
             $commandName = 'help';
         }
 
-        if (!$controllerInstance->isInvokable($commandName)) {
-            $guessed = $this->_guessCommand($controllerClassName, $commandName);
+        if (!$instance->isInvokable($commandName)) {
+            $guessed = $this->_guessCommand($controller, $commandName);
             if (!$guessed) {
-                return $this->console->error(['`:command` sub command is not exists', 'command' => lcfirst($controllerName) . ':' . $commandName]);
+                $command = lcfirst($controllerName) . ':' . $commandName;
+                return $this->console->error(['`:command` sub command is not exists', 'command' => $command]);
             } else {
                 $commandName = $guessed;
             }
         }
 
         $commandMethod = $commandName . 'Command';
-        $this->request->completeShortNames($controllerInstance, $commandMethod);
-        $r = $controllerInstance->invoke($commandName);
+        $this->request->completeShortNames($instance, $commandMethod);
+        $r = $instance->invoke($commandName);
 
         return is_int($r) ? $r : 0;
     }
