@@ -299,7 +299,8 @@ class Di implements DiInterface
     }
 
     /**
-     * Resolves a component, the resolved component is stored in the DI, subsequent requests for this component will return the same instance
+     * Resolves a component, the resolved component is stored in the DI, subsequent requests for this component will
+     * return the same instance
      *
      * @param string $name
      *

@@ -193,7 +193,8 @@ class Amqp extends Component implements AmqpInterface
 
     /**
      * @param string $name
-     * @param int    $flags Optionally AMQP_IFUNUSED can be specified to indicate the exchange should not be deleted until no clients are connected to it.
+     * @param int    $flags Optionally AMQP_IFUNUSED can be specified to indicate the exchange should not be deleted
+     *                      until no clients are connected to it.
      *
      * @return static
      */

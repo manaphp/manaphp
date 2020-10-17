@@ -44,7 +44,6 @@ HTML;
     <detail-text prop="$field"></detail-text>
 HTML;
             }
-
         }
 
         $content .= PHP_EOL . <<<HTML

@@ -29,6 +29,5 @@ class Memory extends Metadata
      */
     public function write($key, $data)
     {
-
     }
 }

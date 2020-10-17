@@ -28,7 +28,6 @@ class BashCompletionController extends Controller
                 }
             }
         } catch (\Exception $e) {
-
         }
 
         return $controllers;
@@ -56,7 +55,6 @@ class BashCompletionController extends Controller
                 }
             }
         } catch (\Exception $e) {
-
         }
 
         return $commands;
@@ -125,7 +123,6 @@ class BashCompletionController extends Controller
             try {
                 $argument_values = $this->getInstance($controllerClassName)->$command($argumentName);
             } catch (\Exception $e) {
-
             }
         }
 

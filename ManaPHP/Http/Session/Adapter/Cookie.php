@@ -71,8 +71,14 @@ class Cookie extends Session
         $params = session_get_cookie_params();
 
         $payload = base64_encode(json_stringify(['exp' => time() + $ttl, 'data' => $data]));
-        $this->cookies->set($session_id, $payload . '.' . md5($payload . $this->_key),
-            $params['lifetime'], $params['path'], $params['domain'], $params['secure']);
+        $this->cookies->set(
+            $session_id,
+            $payload . '.' . md5($payload . $this->_key),
+            $params['lifetime'],
+            $params['path'],
+            $params['domain'],
+            $params['secure']
+        );
 
         return true;
     }

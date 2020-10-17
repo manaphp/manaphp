@@ -71,7 +71,6 @@ class HtmlPurifier extends Component implements HtmlPurifierInterface
 
             if ($node->hasAttributes()) {
                 foreach (iterator_to_array($node->attributes) as $attributeNode) {
-
                     $attributeName = $attributeNode->name;
                     $attributeValue = $attributeNode->value;
 

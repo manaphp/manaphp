@@ -682,7 +682,6 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
 
     public function offsetSet($offset, $value)
     {
-
     }
 
     public function offsetGet($offset)
@@ -697,7 +696,6 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
 
     public function offsetUnset($offset)
     {
-
     }
 
     public function __toString()

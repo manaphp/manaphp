@@ -295,7 +295,8 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      * Allows to query a set of records that match the specified conditions
      *
      * @param array $filters =get_object_vars(new static)
-     * @param array $options =['order'=>get_object_vars(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC], 'index'=>get_object_vars(new static)]
+     * @param array $options =['order'=>get_object_vars(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC],
+     *                       'index'=>get_object_vars(new static)]
      * @param array $fields  =get_object_vars(new static)
      *
      * @return  static[]
@@ -309,7 +310,8 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      * Allows to query a set of records that match the specified conditions
      *
      * @param array $filters =get_object_vars(new static)
-     * @param array $options =['order'=>get_object_vars(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC], 'index'=>get_object_vars(new static)]
+     * @param array $options =['order'=>get_object_vars(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC],
+     *                       'index'=>get_object_vars(new static)]
      * @param array $fields  =get_object_vars(new static)
      *
      * @return  \ManaPHP\Paginator
@@ -320,7 +322,8 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param string|array $fields  =get_object_vars(new static) ?: key(get_object_vars(new static)) ?: [$k=>key(get_object_vars(new static))]
+     * @param string|array $fields  =get_object_vars(new static) ?: key(get_object_vars(new static)) ?:
+     *                              [$k=>key(get_object_vars(new static))]
      * @param array        $filters =get_object_vars(new static)
      *
      * @return array

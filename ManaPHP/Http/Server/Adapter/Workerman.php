@@ -258,8 +258,15 @@ class Workerman extends Server
         Http::header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']));
 
         foreach ($response->cookies as $cookie) {
-            Http::setcookie($cookie['name'], $cookie['value'], $cookie['expire'],
-                $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
+            Http::setcookie(
+                $cookie['name'],
+                $cookie['value'],
+                $cookie['expire'],
+                $cookie['path'],
+                $cookie['domain'],
+                $cookie['secure'],
+                $cookie['httponly']
+            );
         }
 
         if ($response->status_code === 304) {

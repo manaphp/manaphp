@@ -287,8 +287,13 @@ class Swoole extends Server
 
         foreach ($response->cookies as $cookie) {
             $sw_response->cookie(
-                $cookie['name'], $cookie['value'], $cookie['expire'],
-                $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']
+                $cookie['name'],
+                $cookie['value'],
+                $cookie['expire'],
+                $cookie['path'],
+                $cookie['domain'],
+                $cookie['secure'],
+                $cookie['httponly']
             );
         }
 

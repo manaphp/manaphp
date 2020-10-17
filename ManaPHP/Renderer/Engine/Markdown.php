@@ -1,5 +1,6 @@
 <?php
 /** @noinspection SubStrUsedAsStrPosInspection */
+
 /** @noinspection VariableFunctionsUsageInspection */
 /** @noinspection NotOptimalRegularExpressionsInspection */
 /** @noinspection SpellCheckingInspection */
@@ -1348,7 +1349,8 @@ class Markdown extends Component implements EngineInterface
         }
 
         if ($Excerpt['text'][1] !== ' '
-            && preg_match('/^<\w[\w-]*+(?:[ ]*+' . $this->regexHtmlAttribute . ')*+[ ]*+\/?>/s', $Excerpt['text'], $matches)) {
+            && preg_match('/^<\w[\w-]*+(?:[ ]*+' . $this->regexHtmlAttribute . ')*+[ ]*+\/?>/s', $Excerpt['text'],
+                $matches)) {
             return [
                 'element' => ['rawHtml' => $matches[0]],
                 'extent' => strlen($matches[0]),

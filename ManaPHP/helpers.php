@@ -226,7 +226,6 @@ if (!function_exists('log_fatal')) {
 }
 
 if (!function_exists('dd')) {
-
     /**
      * @param mixed $message
      *
@@ -469,7 +468,6 @@ if (!function_exists('render_file')) {
 }
 
 if (!function_exists('abort')) {
-
     /**
      * @param string $message
      * @param int    $code

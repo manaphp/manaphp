@@ -454,7 +454,6 @@ class MongodbController extends Controller
                     ]);
                 }
             }
-
         }
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 return [
     'default' => 'The :field is invalid.',
     'required' => 'The :field field is required.',

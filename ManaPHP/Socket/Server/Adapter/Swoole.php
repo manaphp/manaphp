@@ -150,7 +150,6 @@ class Swoole extends Component implements ServerInterface, Unaspectable
             Coroutine::resume($cid);
         }
         unset($this->_coroutines[$fd]);
-
     }
 
     /**

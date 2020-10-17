@@ -69,7 +69,6 @@ if (!function_exists('bundle')) {
 }
 
 if (!function_exists('action')) {
-
     /**
      * @param array|string $args
      * @param bool|string  $scheme

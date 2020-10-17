@@ -1,4 +1,5 @@
 <?php
+
 return [
     'default' => ':field 值无效',
     'required' => ':field 是必填项',

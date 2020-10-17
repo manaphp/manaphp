@@ -2,6 +2,7 @@
 /**
  * @var \Exception $exception
  */
+
 ?>
 <br>
 <table class="error" dir="ldr" border="1" cellspacing="0" cellpadding="1">

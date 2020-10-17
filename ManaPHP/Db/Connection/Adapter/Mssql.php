@@ -168,7 +168,6 @@ class Mssql extends Connection
         $sql = '';
 
         if (isset($params['fields'])) {
-
             $sql .= 'SELECT ';
             if (isset($params['limit']) && !isset($params['offset'])) {
                 $sql .= 'TOP ' . $params['limit'] . ' ';

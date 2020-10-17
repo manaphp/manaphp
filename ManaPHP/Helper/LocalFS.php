@@ -369,7 +369,6 @@ class LocalFS
                 $r[] = $dir . '/' . $file;
             }
         } else {
-
             $r = glob($pattern, $flags);
             $r = $r !== false ? $r : [];
         }
