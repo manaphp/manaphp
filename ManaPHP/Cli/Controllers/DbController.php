@@ -275,12 +275,8 @@ class DbController extends Controller
                     }
                 }
 
-                $this->console->writeLn([
-                    ' :row :table(:columns)',
-                    'row' => sprintf('%2d ', $row + 1),
-                    'table' => $this->console->colorize($table, Console::FC_GREEN),
-                    'columns' => implode(', ', $columns)
-                ]);
+                $colored_table = $this->console->colorize($table, Console::FC_GREEN);
+                $this->console->writeLn(['%2d %s(%s)', $row + 1, $colored_table, implode(', ', $columns)]);
             }
         }
     }
@@ -385,12 +381,8 @@ class DbController extends Controller
                 }
                 fclose($file);
 
-                $this->console->progress([
-                    'write to `:file` success: :count [:time]',
-                    'file' => $fileName,
-                    'count' => count($rows),
-                    'time' => round(microtime(true) - $startTime, 4)
-                ]);
+                $elapsed = microtime(true) - $startTime;
+                $this->console->progress(['write to `%s` success: %d [%.3f]', $fileName, count($rows), $elapsed]);
             }
         }
     }
@@ -431,13 +423,9 @@ class DbController extends Controller
                 }
                 fclose($file);
 
-                $this->console->progress([
-                    ' `:table` imported to `:file`: :count [:time]',
-                    'table' => $table,
-                    'file' => $fileName,
-                    'count' => count($rows),
-                    'time' => round(microtime(true) - $startTime, 4)
-                ]);
+                $count = count($rows);
+                $elapsed = microtime(true) - $startTime;
+                $this->console->progress([' `%s` imported to `%s`:%d [%.3f]', $table, $fileName, $count, $elapsed]);
             }
         }
     }
