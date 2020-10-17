@@ -67,7 +67,7 @@ class LocalFS
     protected static function _dirCreate($dir, $mode = 0755)
     {
         if (!is_dir($dir) && !@mkdir($dir, $mode, true) && !is_dir($dir)) {
-            throw new CreateDirectoryFailedException(['create `:dir` directory failed: :last_error_message', 'dir' => $dir]);
+            throw new CreateDirectoryFailedException($dir);
         }
     }
 

@@ -117,7 +117,7 @@ class File extends Cache
 
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new CreateDirectoryFailedException(['create `:dir` cache directory failed: :last_error_message', 'dir' => $dir]);
+            throw new CreateDirectoryFailedException($dir);
         }
 
         if (file_put_contents($file, $value, LOCK_EX) === false) {

@@ -88,7 +88,7 @@ class File extends Session
         $file = $this->_getFileName($session_id);
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new CreateDirectoryFailedException(['create `:dir` session directory failed: :last_error_message', 'dir' => $dir]);
+            throw new CreateDirectoryFailedException($dir);
         }
 
         if (file_put_contents($file, $data, LOCK_EX) === false) {

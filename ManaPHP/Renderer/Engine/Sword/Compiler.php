@@ -211,7 +211,7 @@ class Compiler extends Component
         $dir = dirname($compiled);
 
         if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new CreateDirectoryFailedException(['create `:dir` directory failed: :last_error_message', 'dir' => $dir]);
+            throw new CreateDirectoryFailedException($dir);
         }
 
         if (($str = @file_get_contents($source)) === false) {
