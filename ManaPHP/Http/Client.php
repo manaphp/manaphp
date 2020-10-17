@@ -277,12 +277,8 @@ class Client extends Component implements ClientInterface
         }
 
         if (is_string($response->body)) {
-            throw new ContentTypeException([
-                'content-type of response is not application/json: :content-type => `:url`',
-                'content-type' => $response->content_type,
-                'url' => $response->url
-            ],
-                $response);
+            $content_type = $response->content_type;
+            throw new ContentTypeException(['content-type is not application/json: %s', $content_type], $response);
         }
 
         return $response;
