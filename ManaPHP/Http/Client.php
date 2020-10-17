@@ -242,7 +242,11 @@ class Client extends Component implements ClientInterface
     public function rest($method, $url, $body = null, $headers = [], $options = [])
     {
         if (is_string($body) && $body !== '') {
-            $headers['Content-Type'] = preg_match(/** @lang text */ '#^\[|\{#', $body) ? 'application/json' : 'application/x-www-form-urlencoded';
+            if (preg_match('#^\[|{#', $body)) {
+                $headers['Content-Type'] = 'application/json';
+            } else {
+                $headers['Content-Type'] = 'application/x-www-form-urlencoded';
+            }
         } else {
             $headers['Content-Type'] = 'application/json';
             if (is_array($body)) {

@@ -41,7 +41,11 @@ class Alias extends Component implements AliasInterface
         if ($path === '') {
             $this->_aliases[$name] = $path;
         } elseif ($path[0] !== '@') {
-            $this->_aliases[$name] = (strpos($name, '@ns.') === 0 || DIRECTORY_SEPARATOR === '/') ? $path : strtr($path, '\\', '/');
+            if (DIRECTORY_SEPARATOR === '/' || str_starts_with($name, '@ns.')) {
+                $this->_aliases[$name] = $path;
+            } else {
+                $this->_aliases[$name] = strtr($path, '\\', '/');
+            }
         } else {
             $this->_aliases[$name] = $this->resolve($path);
         }

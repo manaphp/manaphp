@@ -223,9 +223,17 @@ class Validator extends Component implements ValidatorInterface
             }
 
             if (method_exists($this, $method = '_validate_model_' . $validate)) {
-                $value = $parameter === null ? $this->$method($field, $model) : $this->$method($field, $model, $parameter);
+                if ($parameter === null) {
+                    $value = $this->$method($field, $model);
+                } else {
+                    $value = $this->$method($field, $model, $parameter);
+                }
             } elseif (method_exists($this, $method = '_validate_' . $validate)) {
-                $value = $parameter === null ? $this->$method($field, $value) : $this->$method($field, $value, $parameter);
+                if ($parameter === null) {
+                    $value = $this->$method($field, $value);
+                } else {
+                    $value = $this->$method($field, $value, $parameter);
+                }
             } else {
                 throw new NotSupportedException(['unsupported `:validate` validate method', 'validate' => $validate]);
             }
@@ -297,7 +305,11 @@ class Validator extends Component implements ValidatorInterface
             }
 
             if (method_exists($this, $method = '_validate_' . $validate)) {
-                $value = $parameter === null ? $this->$method($field, $value) : $this->$method($field, $value, $parameter);
+                if ($parameter === null) {
+                    $value = $this->$method($field, $value)
+                } else {
+                    $value = $this->$method($field, $value, $parameter);
+                }
             } else {
                 throw new NotSupportedException(['unsupported `:validate` validate method', 'validate' => $validate]);
             }

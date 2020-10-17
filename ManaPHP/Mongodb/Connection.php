@@ -280,7 +280,11 @@ class Connection extends Component implements ConnectionInterface
     public function fetchAll($namespace, $filter = [], $options = [], $secondaryPreferred = true)
     {
         if (is_bool($secondaryPreferred)) {
-            $readPreference = new ReadPreference($secondaryPreferred ? ReadPreference::RP_SECONDARY_PREFERRED : ReadPreference::RP_PRIMARY);
+            if ($secondaryPreferred) {
+                $readPreference = new ReadPreference(ReadPreference::RP_SECONDARY_PREFERRED);
+            } else {
+                $readPreference = new ReadPreference(ReadPreference::RP_PRIMARY);
+            }
         } else {
             $readPreference = new ReadPreference($secondaryPreferred);
         }

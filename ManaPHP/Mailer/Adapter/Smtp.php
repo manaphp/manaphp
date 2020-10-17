@@ -252,7 +252,11 @@ class Smtp extends Mailer
      */
     protected function _sendHtmlBody($htmlBody, $boundary = null)
     {
-        $contentType = preg_match('#<meta http-equiv="Content-Type" content="([^"]+)">#i', $htmlBody, $match) ? $match[1] : 'text/html; charset=utf-8';
+        if (preg_match('#<meta http-equiv="Content-Type" content="([^"]+)">#i', $htmlBody, $match)) {
+            $contentType = $match[1];
+        } else {
+            $contentType = 'text/html; charset=utf-8';
+        }
 
         if ($boundary) {
             $this->_writeLine();

@@ -501,7 +501,11 @@ class Query extends \ManaPHP\Query
      */
     public function whereStartsWith($fields, $value, $length = null)
     {
-        return $value === '' ? $this : $this->whereLike($fields, $length === null ? $value . '%' : str_pad($value, $length, '_'));
+        if ($value !== '') {
+            $this->whereLike($fields, $length === null ? $value . '%' : str_pad($value, $length, '_'));
+        }
+
+        return $this;
     }
 
     /**
@@ -513,7 +517,11 @@ class Query extends \ManaPHP\Query
      */
     public function whereNotStartsWith($fields, $value, $length = null)
     {
-        return $value === '' ? $this : $this->whereNotLike($fields, $length === null ? $value . '%' : str_pad($value, $length, '_'));
+        if ($value !== '') {
+            $this->whereNotLike($fields, $length === null ? $value . '%' : str_pad($value, $length, '_'));
+        }
+
+        return $this;
     }
 
     /**

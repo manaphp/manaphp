@@ -165,7 +165,11 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
 
                         $parent_context = Coroutine::getContext($parent_cid);
                         if ($object = $parent_context[$object_id] ?? null) {
-                            return $context[$object_id] = $object instanceof Inseparable ? $this->_createContext() : $object;
+                            if ($object instanceof Inseparable) {
+                                return $context[$object_id] = $this->_createContext();
+                            } else {
+                                return $context[$object_id] = $object;
+                            }
                         } else {
                             $object = $context[$object_id] = $this->_createContext();
                             if (!$object instanceof Inseparable) {

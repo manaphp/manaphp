@@ -74,7 +74,11 @@ class Authorization extends Component implements AuthorizationInterface
                 $pos = strpos($permission, '/', 1);
                 $area = Str::camelize($pos === false ? substr($permission, 1) : substr($permission, 1, $pos - 1));
                 if (in_array($area, $areas, true)) {
-                    $permission = $pos === false || $pos === strlen($permission) - 1 ? '' : (string)substr($permission, $pos + 1);
+                    if ($pos === false || $pos === strlen($permission) - 1) {
+                        $permission = '';
+                    } else {
+                        $permission = substr($permission, $pos + 1);
+                    }
                 } else {
                     $area = null;
                     $permission = $permission === '/' ? '' : (string)substr($permission, 1);

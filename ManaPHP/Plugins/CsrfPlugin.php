@@ -48,7 +48,11 @@ class CsrfPlugin extends Plugin
         }
 
         if ($domains = $options['domains'] ?? false) {
-            $this->_domains = is_string($domains) ? preg_split('#[\s,]+#', $domains, -1, PREG_SPLIT_NO_EMPTY) : $domains;
+            if (is_string($domains)) {
+                $this->_domains = preg_split('#[\s,]+#', $domains, -1, PREG_SPLIT_NO_EMPTY);
+            } else {
+                $this->_domains = $domains;
+            }
         }
 
         if ($this->_enabled) {
