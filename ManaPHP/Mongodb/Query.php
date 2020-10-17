@@ -191,7 +191,8 @@ class Query extends \ManaPHP\Query
 
         if (preg_match('#^(.+)\s*([<>=]+)\s*(.+)$#', $cond, $match)) {
             list(, $op1, $op2, $op3) = $match;
-            $alg = ['=' => '$eq', '>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte', '!=' => '$neq', '<>' => '$neq'];
+            $alg = ['=' => '$eq', '!=' => '$neq', '<>' => '$neq',
+                    '>' => '$gt', '>=' => '$gte', '<' => '$lt', '<=' => '$lte'];
             $normalized_op1 = is_numeric($op1) ? (float)$op1 : '$' . $op1;
             $normalized_op3 = is_numeric($op3) ? (float)$op3 : '$' . $op3;
             return ['$cond' => [[$alg[$op2] => [$normalized_op1, $normalized_op3]], $true, $false]];
@@ -264,11 +265,14 @@ class Query extends \ManaPHP\Query
                 } else {
                     throw new MisuseException(['unknown AVG_IF expression: `:expression`', 'expression' => $operand]);
                 }
-            } elseif (in_array($accumulator, ['avg', 'first', 'last', 'max', 'min', 'push', 'addToSet', 'stdDevPop', 'stdDevSamp', 'sum'], true)) {
+            } elseif (in_array($accumulator,
+                ['avg', 'first', 'last', 'max', 'min', 'push', 'addToSet', 'stdDevPop', 'stdDevSamp', 'sum'],
+                true)) {
                 if (preg_match('#^[\w.]+$#', $operand) === 1) {
                     $this->_aggregate[$k] = ['$' . $accumulator => '$' . $operand];
                 } elseif (preg_match('#^([\w.]+)\s*([+\-*/%])\s*([\w.]+)$#', $operand, $match2) === 1) {
-                    $operator_map = ['+' => '$add', '-' => '$subtract', '*' => '$multiply', '/' => '$divide', '%' => '$mod'];
+                    $operator_map = ['+' => '$add', '-' => '$subtract',
+                                     '*' => '$multiply', '/' => '$divide', '%' => '$mod'];
                     $sub_operand = $operator_map[$match2[2]];
                     $sub_operand1 = is_numeric($match2[1]) ? (float)$match2[1] : ('$' . $match2[1]);
                     $sub_operand2 = is_numeric($match2[3]) ? (float)$match2[3] : ('$' . $match2[3]);
@@ -380,11 +384,8 @@ class Query extends \ManaPHP\Query
             return $this->whereEq($field, $value);
         } elseif ($operator === '~=') {
             if ($this->_types && !isset($this->_types[$field])) {
-                throw new InvalidArgumentException([
-                    '`:field` field is not exist in `:collection` collection',
-                    'field' => $field,
-                    'collection' => $this->_model ? $this->_model->getTable() : $this->_table
-                ]);
+                $collection = $this->_model ? $this->_model->getTable() : $this->_table;
+                throw new InvalidArgumentException(['`%s` field is not exist in `%s` collection', $field, $collection]);
             }
 
             if (is_scalar($value)) {
