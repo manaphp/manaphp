@@ -3,8 +3,8 @@
 namespace ManaPHP\Pool;
 
 use ManaPHP\Component;
-use ManaPHP\Exception\MisuseException;
 use ManaPHP\Coroutine\Channel;
+use ManaPHP\Exception\MisuseException;
 
 class Manager extends Component implements ManagerInterface
 {

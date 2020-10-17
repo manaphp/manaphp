@@ -3,8 +3,8 @@
 namespace ManaPHP\Coroutine;
 
 use ManaPHP\Exception\MisuseException;
+use SplQueue;
 use Swoole\Coroutine\Channel as SwooleChannel;
-use \SplQueue;
 
 class Channel
 {
