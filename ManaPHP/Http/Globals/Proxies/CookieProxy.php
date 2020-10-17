@@ -40,7 +40,7 @@ class CookieProxy implements ArrayAccess, JsonSerializable
 
     public function offsetUnset($offset)
     {
-        throw new NotSupportedException(['please use $this->cookies->delete to remove cookie `:name`', 'name' => $offset]);
+        throw new NotSupportedException(['please use $this->cookies->delete to remove cookie `%s`', $offset]);
     }
 
     public function __debugInfo()

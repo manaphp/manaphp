@@ -28,7 +28,7 @@ class Mysql extends Connection
         $parts = parse_url($url);
 
         if ($parts['scheme'] !== 'mysql') {
-            throw new DsnFormatException(['`:url` is invalid, `:scheme` scheme is not recognized', 'url' => $url, 'scheme' => $parts['scheme']]);
+            throw new DsnFormatException(['`%s` is invalid, `%s` scheme is not recognized', $url, $parts['scheme']]);
         }
 
         $this->_username = $parts['user'] ?? 'root';

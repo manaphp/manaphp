@@ -44,7 +44,7 @@ class Authorization extends Component implements AuthorizationInterface
             $original_action = substr($roles, 1);
             /** @noinspection NotOptimalIfConditionsInspection */
             if (($roles = $acl[$original_action] ?? null) && $roles[0] === '@') {
-                throw new MisuseException(['`:action` original action is not allow indirect.', 'action' => $original_action]);
+                throw new MisuseException(['`%s` original action is not allow indirect.', $original_action]);
             }
         }
 

@@ -44,7 +44,7 @@ class Redis extends Queue
     public function do_push($topic, $body, $priority = Queue::PRIORITY_NORMAL)
     {
         if (!in_array($priority, $this->_priorities, true)) {
-            throw new MisuseException(['`:priority` priority of `:topic is invalid`', 'priority' => $priority, 'topic' => $topic]);
+            throw new MisuseException(['`%d` priority of `%s` is invalid', $priority, $topic]);
         }
 
         $this->redisBroker->lPush($this->_prefix . $topic . ':' . $priority, $body);

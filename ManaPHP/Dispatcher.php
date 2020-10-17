@@ -289,7 +289,7 @@ class Dispatcher extends Component implements DispatcherInterface
         }
 
         if (!class_exists($controllerClassName)) {
-            throw new NotFoundControllerException(['`:controller` class cannot be loaded', 'controller' => $controllerClassName]);
+            throw new NotFoundControllerException(['`%s` class cannot be loaded', $controllerClassName]);
         }
 
         /** @var \ManaPHP\Controller $controllerInstance */

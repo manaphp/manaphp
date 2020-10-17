@@ -190,7 +190,8 @@ class Jwt extends Identity
         }
 
         if ($decoded_header['alg'] !== $this->_alg) {
-            throw new BadCredentialException(['The JWT alg `:alg` is not same as configured :alg2', 'alg' => $decoded_header['alg'], 'alg2' => $this->_alg]);
+            $decoded_alg = $decoded_header['alg'];
+            throw new BadCredentialException(['The JWT alg `%s` is not same as %s', $decoded_alg, $this->_alg]);
         }
 
         if (!$decoded_header['typ']) {

@@ -754,11 +754,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         }
 
         if (isset($rules[0])) {
-            throw new MisuseException([
-                '`:model` rules must be an associative array: `:field` is invalid',
-                'model' => static::class,
-                'field' => $rules[0]
-            ]);
+            throw new MisuseException(['`%s` rules must be an associative array', static::class]);
         }
 
         /** @var \ManaPHP\ValidatorInterface $validator */
@@ -1450,7 +1446,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     public function __set($name, $value)
     {
         if (is_scalar($value)) {
-            throw new MisuseException(['`:model` Model does\'t contains `:field` field', 'field' => $name, 'model' => static::class]);
+            throw new MisuseException(['`%s` Model does\'t contains `%s` field', static::class, $name]);
         }
 
         $this->$name = $value;
@@ -1483,10 +1479,10 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             if ($relationsManager->has($this, $relation)) {
                 return $relationsManager->lazyLoad($this, $relation);
             } else {
-                throw new NotSupportedException(['`:model` model does not define `:method` relation', 'model' => static::class, 'method' => $relation]);
+                throw new NotSupportedException(['`%s` model does not define `%s` relation', static::class, $relation]);
             }
         }
-        throw new NotSupportedException(['`:model` does not contain `:method` method', 'model' => static::class, 'method' => $name]);
+        throw new NotSupportedException(['`%s` does not contain `%s` method', static::class, $name]);
     }
 
     /**

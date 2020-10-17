@@ -28,11 +28,7 @@ abstract class Controller extends \ManaPHP\Controller
         $method = $action . 'Command';
 
         if (!in_array($method, get_class_methods($this), true)) {
-            throw new NotFoundActionException([
-                '`:controller:::action` method does not exist',
-                'action' => $method,
-                'controller' => static::class
-            ]);
+            throw new NotFoundActionException(['`%s::%s` method does not exist', static::class, $method]);
         }
     }
 

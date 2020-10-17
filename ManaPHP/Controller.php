@@ -30,11 +30,7 @@ class Controller extends Component implements LogCategorizable
         $method = $action . 'Action';
 
         if (!in_array($method, get_class_methods($this), true)) {
-            throw new NotFoundActionException([
-                '`:controller:::action` method does not exist',
-                'action' => $method,
-                'controller' => static::class
-            ]);
+            throw new NotFoundActionException(['`%s::%s` method does not exist', static::class, $method]);
         }
     }
 

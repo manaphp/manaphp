@@ -195,11 +195,7 @@ class Route implements RouteInterface
         } else {
             $r = preg_match($this->_compiled, $uri, $matches);
             if ($r === false) {
-                throw new InvalidFormatException([
-                    '`:compiled` pcre pattern is invalid for `:pattern`',
-                    'compiled' => $this->_compiled,
-                    'pattern' => $this->_pattern
-                ]);
+                throw new InvalidFormatException(['`%s` is invalid for `%s`', $this->_compiled, $this->_pattern]);
             } elseif ($r === 1) {
                 $parts = $this->_paths;
 

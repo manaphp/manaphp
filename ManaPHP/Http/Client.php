@@ -201,7 +201,7 @@ class Client extends Component implements ClientInterface
             throw new RedirectionException($response->url, $response);
         } elseif ($http_code_class === 400) {
             if ($http_code === 400) {
-                throw new BadRequestException([':url => `:response`', 'url' => $response->url, 'response' => $response_text], $response);
+                throw new BadRequestException(['%s => `%s`', $response->url, $response_text], $response);
             } elseif ($http_code === 401) {
                 throw new UnauthorizedException($response->url, $response);
             } elseif ($http_code === 403) {

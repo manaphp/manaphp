@@ -359,12 +359,9 @@ class Mongodb extends Component implements MongodbInterface
             }
             return $this->command($command, $db);
         } catch (RuntimeException $e) {
-            throw new MongodbException([
-                '`:aggregate` aggregate for `:collection` collection failed: :msg',
-                'aggregate' => json_stringify($pipeline),
-                'collection' => $source,
-                'msg' => $e->getMessage()
-            ]);
+            throw new MongodbException(
+                ['`%s` aggregate for `%s` collection failed: %s', json_stringify($pipeline), $source, $e->getMessage()]
+            );
         }
     }
 

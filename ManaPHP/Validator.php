@@ -479,7 +479,7 @@ class Validator extends Component implements ValidatorInterface
         } elseif (is_numeric($parameter)) {
             return $len === (int)$parameter ? $value : null;
         } else {
-            throw new InvalidValueException(['length validator `:parameter` parameter is not {minLength}-{maxLength} format', 'parameter' => $parameter]);
+            throw new InvalidValueException(['length validator `%s` parameter is not {min}-{max} format', $parameter]);
         }
     }
 
@@ -517,7 +517,7 @@ class Validator extends Component implements ValidatorInterface
     protected function _validate_range($field, $value, $parameter)
     {
         if (!preg_match('#^(-?[.\d]+)-(-?[\d.]+)$#', $parameter, $match)) {
-            throw new InvalidValueException(['range validator `:parameter` parameter is not {min}-{max} format', 'parameter' => $parameter]);
+            throw new InvalidValueException(['range validator `%s` parameter is not {min}-{max} format', $parameter]);
         }
 
         $number = $this->_normalizeNumber($field, $value, $parameter);
@@ -830,11 +830,11 @@ class Validator extends Component implements ValidatorInterface
                 $className = 'App\\Models\\' . Str::camelize($match[1]);
             }
         } else {
-            throw new InvalidValueException(['validate `:field` field failed: related model class name is not provided', 'field' => $field]);
+            throw new InvalidValueException(['validate `%s` failed: related model class is not provided', $field]);
         }
 
         if (!class_exists($className)) {
-            throw new InvalidValueException(['validate `:1` field failed: related `:2` model class is not exists.', $field, $className]);
+            throw new InvalidValueException(['validate `:1` failed: `:2` class is not exists.', $field, $className]);
         }
 
         /** @var \ManaPHP\ModelInterface $className */

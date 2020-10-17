@@ -133,11 +133,8 @@ class Renderer extends Component implements RendererInterface
             }
 
             if (!$file) {
-                throw new FileNotFoundException([
-                    '`:template` with `:extensions` extension file was not found',
-                    'template' => $template,
-                    'extensions' => implode(', or ', array_keys($this->_engines))
-                ]);
+                $extensions = implode(', or ', array_keys($this->_engines));
+                throw new FileNotFoundException(['`%s` with `%s` extension was not found', $template, $extensions]);
             }
 
             $this->_files[$template] = [$file, $extension];

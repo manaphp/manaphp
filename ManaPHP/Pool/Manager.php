@@ -44,7 +44,7 @@ class Manager extends Component implements ManagerInterface
         $owner_id = spl_object_id($owner);
 
         if (isset($this->_pool[$owner_id][$type])) {
-            throw new MisuseException(['`:type` pool of `:owner` is exists', 'type' => $type, 'owner' => get_class($owner)]);
+            throw new MisuseException(['`%s` pool of `%s` is exists', $type, get_class($owner)]);
         }
 
         $this->_pool[$owner_id][$type] = new Channel($capacity);
@@ -82,10 +82,9 @@ class Manager extends Component implements ManagerInterface
             $this->_pool[$owner_id][$type] = $queue = new Channel($size);
         } else {
             if ($queue->length() + $size > $queue->capacity()) {
-                throw new FullException(['`:type` pool of `:owner` capacity(:capacity) is not big enough',
-                        'type' => $type,
-                        'owner' => get_class($owner),
-                        'capacity' => $queue->capacity()]);
+                throw new FullException(
+                    ['`%s` pool of `%s` capacity(%d) is not big enough', $type, get_class($owner), $queue->capacity()]
+                );
             }
         }
 
@@ -114,7 +113,7 @@ class Manager extends Component implements ManagerInterface
         $owner_id = spl_object_id($owner);
 
         if (!$queue = $this->_pool[$owner_id][$type] ?? null) {
-            throw new MisuseException(['`:type` pool of `:owner` is not exists', 'type' => $type, 'owner' => get_class($owner)]);
+            throw new MisuseException(['`%s` pool of `%s` is not exists', $type, get_class($owner)]);
         }
 
         $queue->push($instance);
@@ -134,7 +133,7 @@ class Manager extends Component implements ManagerInterface
         $owner_id = spl_object_id($owner);
 
         if (!$queue = $this->_pool[$owner_id][$type] ?? null) {
-            throw new MisuseException(['`:type` pool of `:owner` is not exists', 'type' => $type, 'owner' => get_class($owner)]);
+            throw new MisuseException(['`%s` pool of `%s` is not exists', $type, get_class($owner)]);
         }
 
         if (!$instance = $timeout ? $queue->pop($timeout) : $queue->pop()) {
@@ -157,7 +156,7 @@ class Manager extends Component implements ManagerInterface
         $owner_id = spl_object_id($owner);
 
         if (!$queue = $this->_pool[$owner_id][$type] ?? null) {
-            throw new MisuseException(['`:type` pool of `:owner` is not exists', 'type' => $type, 'owner' => get_class($owner)]);
+            throw new MisuseException(['`%s` pool of `%s` is not exists', $type, get_class($owner)]);
         }
 
         return $queue->isEmpty();
@@ -187,7 +186,7 @@ class Manager extends Component implements ManagerInterface
         $owner_id = spl_object_id($owner);
 
         if (!$queue = $this->_pool[$owner_id][$type] ?? null) {
-            throw new MisuseException(['`:type` pool of `:owner` is not exists', 'type' => $type, 'owner' => get_class($owner)]);
+            throw new MisuseException(['`%s` pool of `%s` is not exists', $type, get_class($owner)]);
         }
 
         return $queue->capacity();

@@ -123,7 +123,7 @@ class Alias extends Component implements AliasInterface
         $alias = substr($path, 0, $pos);
 
         if (!isset($this->_aliases[$alias])) {
-            throw new InvalidArgumentException(['`:alias` is not exists for `:path`', 'alias' => $alias, 'path' => $path]);
+            throw new InvalidArgumentException(['`%s` is not exists for `%s`', $alias, $path]);
         }
 
         return $this->_aliases[$alias] . substr($path, $pos);
@@ -144,7 +144,7 @@ class Alias extends Component implements AliasInterface
 
         $alias = $parts[0];
         if (!isset($this->_aliases[$alias])) {
-            throw new InvalidArgumentException(['`:alias` is not exists for `:namespace`', 'alias' => $alias, 'namespace' => $ns]);
+            throw new InvalidArgumentException(['`%s` is not exists for `%s`', $alias, $ns]);
         }
 
         return $this->_aliases[$alias] . (isset($parts[1]) ? '\\' . $parts[1] : '');

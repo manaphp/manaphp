@@ -131,7 +131,7 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
             } while ($parent = get_parent_class($parent));
 
             if ($context === null) {
-                throw new Exception(['`:context` context class is not exists', 'context' => get_class($this) . 'Context']);
+                throw new Exception(['`%s` context class is not exists', get_class($this) . 'Context']);
             }
 
             $cached[$class] = $context;

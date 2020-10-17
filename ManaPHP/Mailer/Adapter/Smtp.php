@@ -141,7 +141,7 @@ class Smtp extends Mailer
         $response = fgets($socket);
         list($code,) = explode(' ', $response, 2);
         if ($code !== '220') {
-            throw new ConnectionException(['connection protocol is not be recognized: :message', 'message' => $response]);
+            throw new ConnectionException(['connection protocol is not be recognized: %s', $response]);
         }
 
         $context->file = $this->alias->resolve('@data/mail/{ymd}/{ymd_His_}{16}.log');
@@ -377,11 +377,11 @@ class Smtp extends Mailer
 
             list($code, $msg) = $this->_transmit(base64_encode($this->_username));
             if ($code !== 334) {
-                throw new AuthenticationException(['authenticate with `:url` failed: :message', 'url' => $this->_url, 'message' => $code . ' ' . $msg]);
+                throw new AuthenticationException(['authenticate with `%s` failed: %d %s', $this->_url, $code, $msg]);
             }
             list($code, $msg) = $this->_transmit(base64_encode($this->_password));
             if ($code !== 235) {
-                throw new AuthenticationException(['authenticate with `:url` failed: :message', 'url' => $this->_url, 'message' => $code . ' ' . $msg]);
+                throw new AuthenticationException(['authenticate with `%s` failed: %d %s', $this->_url, $code, $msg]);
             }
         }
 

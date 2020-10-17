@@ -79,7 +79,7 @@ class Connection extends Component
         $parts = parse_url($url);
 
         if ($parts['scheme'] !== 'redis') {
-            throw new DsnFormatException(['`:url` is invalid, `:scheme` scheme is not recognized', 'url' => $url, 'scheme' => $parts['scheme']]);
+            throw new DsnFormatException(['`%s` is invalid, `%s` scheme is not recognized', $url, $parts['scheme']]);
         }
 
         $this->_host = $parts['host'] ?? '127.0.0.1';
@@ -88,7 +88,7 @@ class Connection extends Component
         if (isset($parts['path'])) {
             $path = trim($parts['path'], '/');
             if ($path !== '' && !is_numeric($path)) {
-                throw new DsnFormatException(['`:url` is invalid, `:db` db is not integer', 'url' => $url, 'db' => $path]);
+                throw new DsnFormatException(['`%s` is invalid, `%s` db is not integer', $url, $path]);
             }
             $this->_db = (int)$path;
         }

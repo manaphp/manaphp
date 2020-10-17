@@ -126,7 +126,7 @@ class Curl extends Component implements EngineInterface
                 } elseif ($scheme === 'sock5') {
                     curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
                 } else {
-                    throw new NotSupportedException(['`:scheme` scheme of `:proxy` proxy is unknown', 'scheme' => $scheme, 'proxy' => $proxy]);
+                    throw new NotSupportedException(['`%s` scheme of `%s` proxy is unknown', $scheme, $proxy]);
                 }
 
                 curl_setopt($curl, CURLOPT_PROXYPORT, $parts['port']);
@@ -168,7 +168,7 @@ class Curl extends Component implements EngineInterface
             }
 
             if ($errno) {
-                throw new ConnectionException(['connect failed: `:url` :message', 'url' => $request->url, 'message' => curl_error($curl)]);
+                throw new ConnectionException(['connect failed: `%s` %s', $request->url, curl_error($curl)]);
             }
 
             $header_length = curl_getinfo($curl, CURLINFO_HEADER_SIZE);

@@ -98,7 +98,7 @@ class Configure extends Component implements ConfigureInterface
 
         foreach ((array)$data as $field => $value) {
             if (!property_exists($this, $field)) {
-                throw new NotSupportedException(['`:item` item is not allowed: it must be a public property of `configure` component', 'item' => $field]);
+                throw new NotSupportedException(['`%s` must be a public property of `configure` component', $field]);
             }
 
             $this->$field = $value;
@@ -118,7 +118,7 @@ class Configure extends Component implements ConfigureInterface
         $value = Arr::get($this->params, $name);
         if ($value === null) {
             if ($default === null) {
-                throw new InvalidValueException(['`:param` param is not exists in $configure->params', 'param' => $name]);
+                throw new InvalidValueException(['`%s` param is not exists in $configure->params', $name]);
             } else {
                 return $default;
             }

@@ -68,7 +68,7 @@ class Model extends \ManaPHP\Model
             if ($primaryKey = $this->_inferPrimaryKey($class)) {
                 return $cached[$class] = $primaryKey;
             } else {
-                throw new NotImplementedException(['Primary key of `:model` model can not be inferred', 'model' => $class]);
+                throw new NotImplementedException(['Primary key of `%s` model can not be inferred', $class]);
             }
         }
 
@@ -277,7 +277,7 @@ class Model extends \ManaPHP\Model
         } elseif ($type === 'array') {
             return (array)$value;
         } else {
-            throw new MisuseException(['`:model` model is not supported `:type` type', 'model' => static::class, 'type' => $type]);
+            throw new MisuseException(['`%s` model is not supported `%s` type', static::class, $type]);
         }
     }
 
@@ -558,7 +558,7 @@ class Model extends \ManaPHP\Model
         $primaryKey = $sample->getPrimaryKey();
         foreach ($documents as $i => $document) {
             if (!isset($document[$primaryKey])) {
-                throw new MisuseException(['bulkUpdate `:model` model must set primary value', 'model' => static::class]);
+                throw new MisuseException(['bulkUpdate `%s` model must set primary value', static::class]);
             }
             $documents[$i] = $sample->normalizeDocument($document);
         }

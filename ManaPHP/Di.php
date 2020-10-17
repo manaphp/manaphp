@@ -154,7 +154,7 @@ class Di implements DiInterface
         }
 
         if ($definition === null) {
-            throw new InvalidValueException(['`:definition` definition is invalid: missing class field', 'definition' => $name]);
+            throw new InvalidValueException(['`%s` definition is invalid: missing class field', $name]);
         } elseif (is_string($definition)) {
             return $definition[0] === '@' ? $this->_inferClassName(substr($definition, 1)) : $definition;
         } else {
@@ -217,7 +217,7 @@ class Di implements DiInterface
     public function setShared($name, $definition)
     {
         if (isset($this->_instances[$name])) {
-            throw new MisuseException(['it\'s too late to setShared(): `:name` instance has been created', 'name' => $name]);
+            throw new MisuseException(['it\'s too late to setShared(): `%s` instance has been created', $name]);
         }
 
         if (is_string($definition)) {
@@ -288,7 +288,7 @@ class Di implements DiInterface
         } elseif (is_object($definition)) {
             $instance = $definition;
         } else {
-            throw new NotSupportedException(['`:name` component cannot be resolved: component implement type is not supported', 'name' => $name]);
+            throw new NotSupportedException(['`%s` component cannot be resolved', $name]);
         }
 
         if ($instance instanceof Injectable) {
@@ -338,11 +338,9 @@ class Di implements DiInterface
             $definition = $this->_definitions[$definition] ?? $definition;
 
             if (!class_exists($definition)) {
-                throw new InvalidValueException([
-                    '`:name` component cannot be resolved: `:class` class is not exists',
-                    'name' => $name,
-                    'class' => $definition
-                ]);
+                throw new InvalidValueException(
+                    ['`%s` component cannot be resolved: `%s` class is not exists', $name, $definition]
+                );
             }
             $instance = new $definition(...$parameters);
         } elseif ($definition instanceof Closure) {
@@ -350,7 +348,7 @@ class Di implements DiInterface
         } elseif (is_object($definition)) {
             $instance = $definition;
         } else {
-            throw new NotSupportedException(['`:name` component cannot be resolved: component implement type is not supported', 'name' => $name]);
+            throw new NotSupportedException(['`%s` component implement type is not supported', $name]);
         }
 
         if ($instance instanceof Injectable) {

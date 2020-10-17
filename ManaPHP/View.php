@@ -380,7 +380,7 @@ class View extends Component implements ViewInterface
         }
 
         if (!$widgetClassName = $this->getWidgetClassName($widget)) {
-            throw new InvalidValueException(['`:widget` widget is invalid: `:class` class is not exists', 'widget' => $widget, 'class' => $widgetClassName]);
+            throw new InvalidValueException(['`%s` class is not exists', $widgetClassName]);
         }
 
         if (strpos($widgetClassName, '\\Areas\\')) {

@@ -144,7 +144,7 @@ class Dotenv extends Component implements DotenvInterface
         if (isset($this->_env[$key])) {
             $value = $this->_env[$key];
         } elseif (!$this->_file) {
-            throw new PreconditionException('@root/.env file is not exists: you can copy from @root/.env.sample to @root/.env file');
+            throw new PreconditionException('@root/.env file is not exists');
         } elseif ($default !== null) {
             $value = $default;
         } else {
@@ -158,7 +158,7 @@ class Dotenv extends Component implements DotenvInterface
                 if (is_array($r = json_parse($value))) {
                     return $r;
                 } else {
-                    throw new InvalidValueException(['the value of `:key` key is not valid json format array', 'key' => $key]);
+                    throw new InvalidValueException(['the value of `%s` key is not valid json format array', $key]);
                 }
             } else {
                 return preg_split('#[\s,]+#', $value, -1, PREG_SPLIT_NO_EMPTY);
@@ -175,7 +175,7 @@ class Dotenv extends Component implements DotenvInterface
             } elseif (in_array(strtolower($value), ['0', 'off', 'false'], true)) {
                 return false;
             } else {
-                throw new InvalidArgumentException(['`:key` key value is not a valid bool value: :value', 'key' => $key, 'value' => $value]);
+                throw new InvalidArgumentException(['`%s` key value is not a valid bool value: %s', $key, $value]);
             }
         } else {
             return $value;
@@ -231,7 +231,7 @@ class Dotenv extends Component implements DotenvInterface
                     foreach ((array)$matches[1] as $match) {
                         $ref_name = $match;
                         if (!isset($data[$ref_name])) {
-                            throw new InvalidValueException('`:ref` ref variable is not exists: :value', ['ref' => $ref_name, 'value' => $value]);
+                            throw new InvalidValueException(['`%s` ref variable is not exists: %s', $ref_name, $value]);
                         }
                         $value = strtr($value, ['${' . $ref_name . '}' => $data[$ref_name]]);
                     }
@@ -240,7 +240,7 @@ class Dotenv extends Component implements DotenvInterface
                     foreach ((array)$matches[1] as $match) {
                         $ref_name = $match;
                         if (!isset($data[$ref_name])) {
-                            throw new InvalidValueException(['`:ref` ref variable is not exists: :value', 'ref' => $ref_name, 'value' => $value]);
+                            throw new InvalidValueException(['`%s` ref variable is not exists: %s', $ref_name, $value]);
                         }
                         $value = strtr($value, ['$' . $ref_name => $data[$ref_name]]);
                     }

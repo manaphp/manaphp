@@ -479,7 +479,7 @@ class Router extends Component implements RouterInterface
     public function dispatch($uri = null, $method = null)
     {
         if (!$router_context = $this->match($uri, $method)) {
-            throw new NotFoundRouteException(['router does not have matched route for `:uri`', 'uri' => $this->getRewriteUri()]);
+            throw new NotFoundRouteException(['router does not have matched route for `%s`', $this->getRewriteUri()]);
         }
 
         return $this->dispatcher->dispatch($router_context);

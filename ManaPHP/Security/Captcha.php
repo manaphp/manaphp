@@ -241,7 +241,7 @@ class Captcha extends Component implements CaptchaInterface
         } elseif (function_exists('gd_info')) {
             $response = $this->_generateByGd($code, $width, $height);
         } else {
-            throw new ExtensionNotInstalledException('`captcha` service is not support, please install `gd` or `imagic` extension first');
+            throw new ExtensionNotInstalledException('please install `gd` or `imagic` extension first');
         }
 
         $captchaData = ['code' => $code, 'created_time' => time(), 'ttl' => $ttl];

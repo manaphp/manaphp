@@ -456,7 +456,7 @@ class Db extends Component implements DbInterface
         foreach ((array)$conditions as $k => $v) {
             if (is_int($k)) {
                 if (!is_string($v) || $v === '' || preg_match('#^\w+$#', $v) === 1) {
-                    throw new NotSupportedException(['update with `:condition` condition is danger!', 'condition' => $v]);
+                    throw new NotSupportedException(['update with `%s` condition is danger!', json_stringify($v)]);
                 }
                 $wheres[] = stripos($v, ' or ') ? "($v)" : $v;
             } else {
@@ -568,7 +568,7 @@ class Db extends Component implements DbInterface
         foreach ((array)$conditions as $k => $v) {
             if (is_int($k)) {
                 if (!is_string($v) || $v === '' || ($v !== 'FALSE' && preg_match('#^\w+$#', $v) === 1)) {
-                    throw new NotSupportedException(['delete with `:condition` condition is danger!', 'condition' => $v]);
+                    throw new NotSupportedException(['delete with `%s` condition is danger!', json_stringify($v)]);
                 }
                 $wheres[] = stripos($v, ' or ') ? "($v)" : $v;
             } else {
