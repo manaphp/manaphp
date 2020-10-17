@@ -19,7 +19,7 @@ class Route implements RouteInterface
     /**
      * @var string
      */
-    protected $_compiledPattern;
+    protected $_compiled;
 
     /**
      * @var array
@@ -42,7 +42,7 @@ class Route implements RouteInterface
     public function __construct($pattern, $paths = null, $method = null, $case_sensitive = true)
     {
         $this->_pattern = $pattern;
-        $this->_compiledPattern = $this->_compilePattern($method !== 'REST' ? $pattern : ($pattern . '(/{params:[-\w]+})?'), $case_sensitive);
+        $this->_compiled = $this->_compilePattern($method !== 'REST' ? $pattern : ($pattern . '(/{params:[-\w]+})?'), $case_sensitive);
         $this->_paths = $this->_normalizePaths($paths);
         $this->_method = $method;
     }
@@ -185,18 +185,18 @@ class Route implements RouteInterface
             return false;
         }
 
-        if ($this->_compiledPattern[0] !== '#') {
-            if ($this->_compiledPattern === $uri) {
+        if ($this->_compiled[0] !== '#') {
+            if ($this->_compiled === $uri) {
                 return $this->_paths;
             } else {
                 return false;
             }
         } else {
-            $r = preg_match($this->_compiledPattern, $uri, $matches);
+            $r = preg_match($this->_compiled, $uri, $matches);
             if ($r === false) {
                 throw new InvalidFormatException([
                     '`:compiled` pcre pattern is invalid for `:pattern`',
-                    'compiled' => $this->_compiledPattern,
+                    'compiled' => $this->_compiled,
                     'pattern' => $this->_pattern
                 ]);
             } elseif ($r === 1) {
@@ -217,12 +217,12 @@ class Route implements RouteInterface
 
                 if ($this->_method === 'REST') {
                     if (isset($matches['params'])) {
-                        $methodAction = ['GET' => 'detail', 'POST' => 'update', 'PUT' => 'update', 'DELETE' => 'delete'];
+                        $m2a = ['GET' => 'detail', 'POST' => 'update', 'PUT' => 'update', 'DELETE' => 'delete'];
                     } else {
-                        $methodAction = ['GET' => 'index', 'POST' => 'create'];
+                        $m2a = ['GET' => 'index', 'POST' => 'create'];
                     }
-                    if (isset($methodAction[$method])) {
-                        $parts['action'] = $methodAction[$method];
+                    if (isset($m2a[$method])) {
+                        $parts['action'] = $m2a[$method];
                     } else {
                         return false;
                     }
@@ -243,11 +243,11 @@ class Route implements RouteInterface
         if (isset($parts['action']) && preg_match('#^\d#', $parts['action'])) {
             $parts['params'] = $parts['action'];
 
-            $methodAction = ['GET' => 'detail', 'POST' => 'edit', 'DELETE' => 'delete'];
-            if (!isset($methodAction[$method])) {
+            $m2a = ['GET' => 'detail', 'POST' => 'edit', 'DELETE' => 'delete'];
+            if (!isset($m2a[$method])) {
                 return false;
             }
-            $parts['action'] = $methodAction[$method];
+            $parts['action'] = $m2a[$method];
         }
 
         $r = [];
