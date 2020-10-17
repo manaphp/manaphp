@@ -46,14 +46,16 @@ class LocalFS
         if (str_contains($file, '*')) {
             foreach (self::files($file) as $f) {
                 if (!unlink($f) && self::fileExists($f)) {
-                    throw new RuntimeException(['delete `:file` failed: :last_error_message', 'file' => $f]);
+                    $error = error_get_last()['message'] ?? '';
+                    throw new RuntimeException(['delete `%s` failed: %s', $f, $error]);
                 }
             }
         } else {
             $file = self::$alias->resolve($file);
 
             if (!unlink($file) && self::fileExists($file)) {
-                throw new RuntimeException(['delete `:file` failed: :last_error_message', 'file' => $file]);
+                $error = error_get_last()['message'] ?? '';
+                throw new RuntimeException(['delete `%s` failed: %s', $file, $error]);
             }
         }
     }
@@ -97,7 +99,8 @@ class LocalFS
 
         self::_dirCreate(dirname($file));
         if (file_put_contents($file, $data, LOCK_EX) === false) {
-            throw new RuntimeException(['write `:file` file failed: :last_error_message', 'file' => $file]);
+            $error = error_get_last()['message'] ?? '';
+            throw new RuntimeException(['write `%s` file failed: %s', $file, $error]);
         }
     }
 
@@ -113,7 +116,8 @@ class LocalFS
         self::_dirCreate(dirname($file));
 
         if (file_put_contents($file, $data, LOCK_EX | FILE_APPEND) === false) {
-            throw new RuntimeException(['write `:file` file failed: :last_error_message', 'file' => $file]);
+            $error = error_get_last()['message'] ?? '';
+            throw new RuntimeException(['write `%s` file failed: %s', $file, $error]);
         }
     }
 
@@ -134,7 +138,7 @@ class LocalFS
         }
 
         if (!$overwrite && is_file($dst)) {
-            throw new RuntimeException(['move `:src` to `:dst` failed: file exists already', 'src' => $src, 'dst' => $dst]);
+            throw new RuntimeException(['move `%s` to `%s` failed: file exists already', $src, $dst]);
         }
 
         if (!is_dir($dir = dirname($dst))) {
@@ -142,7 +146,8 @@ class LocalFS
         }
 
         if (!rename($src, $dst)) {
-            throw new RuntimeException(['move `:src` to `:dst` failed: :last_error_message', 'src' => $src, 'dst' => $dst]);
+            $error = error_get_last()['message'] ?? '';
+            throw new RuntimeException(['move `%s` to `%s` failed: %s', $src, $dst, $error]);
         }
     }
 
@@ -166,7 +171,8 @@ class LocalFS
             self::_dirCreate(dirname($dst));
 
             if (!copy($src, $dst)) {
-                throw new RuntimeException(['move `:src` to `:dst` failed: :last_error_message', 'src' => $src, 'dst' => $dst]);
+                $error = error_get_last()['message'] ?? '';
+                throw new RuntimeException(['move `%s` to `%s` failed: %s', $src, $dst, $error]);
             }
         }
     }
@@ -194,7 +200,8 @@ class LocalFS
             $path = $dir . '/' . $item;
             if (is_file($path)) {
                 if (!unlink($path)) {
-                    throw new RuntimeException(['delete `:file` file failed: :last_error_message', 'file' => $path]);
+                    $error = error_get_last()['message'] ?? '';
+                    throw new RuntimeException(['delete `%s` file failed: %s', $path, $error]);
                 }
             } elseif (is_dir($path)) {
                 self::_dirDelete($path);
@@ -204,7 +211,8 @@ class LocalFS
         }
 
         if (!rmdir($dir)) {
-            throw new RuntimeException(['delete `:dir` directory failed: :last_error_message', 'dir' => $dir]);
+            $error = error_get_last()['message'] ?? '';
+            throw new RuntimeException(['delete `%s` directory failed: %s', $dir, $error]);
         }
     }
 
@@ -261,7 +269,7 @@ class LocalFS
         $dst = self::$alias->resolve($dst);
 
         if (!$overwrite && is_dir($dst)) {
-            throw new RuntimeException(['move `:src` to `:dst` failed: destination directory is exists already', 'src' => $src, 'dst' => $dst]);
+            throw new RuntimeException(['move `%s` to `%s` failed: directory is exists already', $src, $dst]);
         }
 
         if (!is_dir($dir = dirname($dst))) {
@@ -269,7 +277,8 @@ class LocalFS
         }
 
         if (!rename($src, $dst)) {
-            throw new RuntimeException(['move `:src` directory to `:dst` directory failed: :last_error_message', 'src' => $src, 'dst' => $dst]);
+            $error = error_get_last()['message'] ?? '';
+            throw new RuntimeException(['move `%s` directory to `%s` directory failed: %s', $src, $dst, $error]);
         }
     }
 
@@ -291,7 +300,8 @@ class LocalFS
             $dstPath = $dst . '/' . $item;
             if (is_file($srcPath)) {
                 if (($overwrite || !file_exists($dstPath)) && !copy($srcPath, $dstPath)) {
-                    throw new RuntimeException(['copy `:src` file to `:dst` file failed: :last_error_message', 'src' => $srcPath, 'dst' => $dstPath]);
+                    $error = error_get_last()['message'] ?? '';
+                    throw new RuntimeException(['copy `%s` file to `%s` file failed: %s', $srcPath, $dstPath, $error]);
                 }
             } elseif (is_dir($srcPath)) {
                 if ($overwrite || !is_dir($dstPath)) {
@@ -317,7 +327,7 @@ class LocalFS
         $dst = self::$alias->resolve($dst);
 
         if (!is_dir($src)) {
-            throw new RuntimeException(['copy `:src` directory to `:dst` directory failed: source directory is not exists', 'src' => $src, 'dst' => $dst]);
+            throw new RuntimeException(['copy `%s` to `%s` failed: source directory is not exists', $src, $dst]);
         }
         self::_dirCreate($dst);
         self::_dirCopy($src, $dst, $overwrite);
@@ -383,7 +393,8 @@ class LocalFS
     {
         $r = @scandir(self::$alias->resolve($dir), $sorting_order);
         if ($r === false) {
-            throw new RuntimeException(['scandir `:dir` directory failed: :last_error_message', 'dir' => $dir]);
+            $error = error_get_last()['message'] ?? '';
+            throw new RuntimeException(['scandir `%s` directory failed: %s', $dir, $error]);
         }
 
         $items = [];
@@ -444,7 +455,8 @@ class LocalFS
     public static function chmod($file, $mode)
     {
         if (!chmod(self::$alias->resolve($file), $mode)) {
-            throw new RuntimeException(['chmod `:file` file to `:mode` mode failed: :last_error_message', 'file' => $file, 'mode' => $mode]);
+            $error = error_get_last()['message'] ?? '';
+            throw new RuntimeException(['chmod `%s` file to `%s` mode failed: %s', $file, $mode, $error]);
         }
     }
 }
