@@ -74,7 +74,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
     /**
      * @var array
      */
-    protected $_cookie_params = ['expire' => 0, 'path' => null, 'domain' => null, 'secure' => false, 'httponly' => true];
+    protected $_params = ['expire' => 0, 'path' => null, 'domain' => null, 'secure' => false, 'httponly' => true];
 
     /**
      * Session constructor.
@@ -101,12 +101,12 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
             $this->_serializer = $options['serializer'];
         }
 
-        if (isset($options['cookie_params'])) {
-            $this->_cookie_params = $options['cookie_params'] + $this->_cookie_params;
+        if (isset($options['params'])) {
+            $this->_params = $options['params'] + $this->_params;
         }
 
-        if (!isset($this->_cookie_params['path'])) {
-            $this->_cookie_params['path'] = $this->alias->get('@web') ?: '/';
+        if (!isset($this->_params['path'])) {
+            $this->_params['path'] = $this->alias->get('@web') ?: '/';
         }
 
         $this->attachEvent('response:sending', [$this, 'onResponseSending']);
@@ -160,7 +160,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
                 return;
             }
 
-            $params = $this->_cookie_params;
+            $params = $this->_params;
             $expire = $params['expire'] ? time() + $params['expire'] : 0;
 
             $this->cookies->set($this->_name, $context->session_id, $expire, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
@@ -218,7 +218,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
             $context->_SESSION = null;
             $this->do_destroy($context->session_id);
 
-            $params = $this->_cookie_params;
+            $params = $this->_params;
             $this->cookies->delete($this->_name, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
         }
 
