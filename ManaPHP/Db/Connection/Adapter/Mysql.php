@@ -195,9 +195,15 @@ class Mysql extends Connection
         $parts = explode('.', str_replace('[]`', '', $source));
 
         if (count($parts) === 2) {
-            $sql = 'SELECT' . " IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME`= '$parts[0]' AND `TABLE_SCHEMA` = '$parts[1]'";
+            $sql
+                = /**@lang text */
+                'SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES`'
+                . " WHERE `TABLE_NAME`= '$parts[0]' AND `TABLE_SCHEMA` = '$parts[1]'";
         } else {
-            $sql = 'SELECT' . " IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_NAME` = '$parts[0]' AND `TABLE_SCHEMA` = DATABASE()";
+            $sql
+                = /** @lang text */
+                'SELECT IF(COUNT(*) > 0, 1, 0) FROM `INFORMATION_SCHEMA`.`TABLES`'
+                . " WHERE `TABLE_NAME` = '$parts[0]' AND `TABLE_SCHEMA` = DATABASE()";
         }
 
         $r = $this->query($sql, [], PDO::FETCH_NUM);
@@ -296,7 +302,9 @@ class Mysql extends Connection
             $rows[] = '(' . implode(',', $row) . ')';
         }
 
-        $sql = 'INSERT' . ' INTO ' . $this->_escapeIdentifier($table) . " ($insertedFields) VALUES " . implode(', ', $rows);
+        $sql
+            = /**@lang text */
+            "INSERT INTO {$this->_escapeIdentifier($table)} ($insertedFields) VALUES " . implode(', ', $rows);
 
         return $this->execute($sql);
     }
@@ -349,7 +357,10 @@ class Mysql extends Connection
 
         $updateFieldsSql = implode(',', $updates);
 
-        $sql = 'INSERT' . " INTO {$this->_escapeIdentifier($table)}($insertFieldsSql) VALUES($insertValuesSql) ON DUPLICATE KEY UPDATE $updateFieldsSql";
+        $sql
+            = /** @lang text */
+            "INSERT INTO {$this->_escapeIdentifier($table)}($insertFieldsSql)"
+            . " VALUES($insertValuesSql) ON DUPLICATE KEY UPDATE $updateFieldsSql";
 
         return $this->execute('insert', $sql, $bind);
     }
