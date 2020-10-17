@@ -306,7 +306,7 @@ class Validator extends Component implements ValidatorInterface
 
             if (method_exists($this, $method = '_validate_' . $validate)) {
                 if ($parameter === null) {
-                    $value = $this->$method($field, $value)
+                    $value = $this->$method($field, $value);
                 } else {
                     $value = $this->$method($field, $value, $parameter);
                 }
