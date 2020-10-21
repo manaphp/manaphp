@@ -29,10 +29,6 @@ abstract class Application extends \ManaPHP\Application implements HandlerInterf
         if (method_exists($this, 'authorize')) {
             $this->attachEvent('request:authorize', [$this, 'authorize']);
         }
-
-        if ($_SERVER['DOCUMENT_ROOT'] === '') {
-            $_SERVER['DOCUMENT_ROOT'] = dirname($_SERVER['SCRIPT_FILENAME']);
-        }
     }
 
     public function authenticate()

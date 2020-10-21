@@ -83,6 +83,10 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         }
         $this->alias->set('@web', $web);
         $this->alias->set('@asset', $web);
+
+        if ($_SERVER['DOCUMENT_ROOT'] === '') {
+            $_SERVER['DOCUMENT_ROOT'] = dirname($_SERVER['SCRIPT_FILENAME']);
+        }
     }
 
     /**

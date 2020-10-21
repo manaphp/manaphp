@@ -20,15 +20,6 @@ use Throwable;
  */
 class Application extends \ManaPHP\Application implements HandlerInterface
 {
-    public function __construct($loader = null)
-    {
-        parent::__construct($loader);
-
-        if ($_SERVER['DOCUMENT_ROOT'] === '') {
-            $_SERVER['DOCUMENT_ROOT'] = dirname($_SERVER['SCRIPT_FILENAME']);
-        }
-    }
-
     public function getFactory()
     {
         return 'ManaPHP\Rpc\Factory';
