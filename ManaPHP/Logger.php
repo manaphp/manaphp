@@ -7,7 +7,6 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Logger\Log;
 use ManaPHP\Logger\LogCategorizable;
 use Serializable;
-use Swoole\Coroutine;
 use Throwable;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
@@ -390,13 +389,7 @@ abstract class Logger extends Component implements LoggerInterface
             $log->file = basename($message->getFile());
             $log->line = $message->getLine();
         } else {
-            if (MANAPHP_COROUTINE_ENABLED) {
-                /** @noinspection PhpUndefinedMethodInspection */
-                $traces = Coroutine::getBackTrace(0, DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
-            } else {
-                $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
-            }
-
+            $traces = Coroutine::getBacktrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
             if ($category !== null && $category[0] === '.') {
                 $log->category = $this->_inferCategory($traces) . $category;
             } else {

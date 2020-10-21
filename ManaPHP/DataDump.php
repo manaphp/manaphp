@@ -4,7 +4,6 @@ namespace ManaPHP;
 
 use JsonSerializable;
 use Serializable;
-use Swoole\Coroutine;
 use Throwable;
 
 class DataDump extends Component implements DataDumpInterface
@@ -171,13 +170,7 @@ class DataDump extends Component implements DataDumpInterface
             $file = basename($message->getFile());
             $line = $message->getLine();
         } else {
-            if (MANAPHP_COROUTINE_ENABLED) {
-                /** @noinspection PhpUndefinedMethodInspection */
-                $traces = Coroutine::getBackTrace(0, DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 5);
-            } else {
-                $traces = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 5);
-            }
-
+            $traces = Coroutine::getBacktrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 5);
             $location = $this->_getLocation($traces);
             if (isset($location['file'])) {
                 $file = basename($location['file']);
