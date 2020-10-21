@@ -22,8 +22,6 @@ abstract class Application extends \ManaPHP\Application implements HandlerInterf
 {
     public function __construct($loader = null)
     {
-        define('MANAPHP_CLI', false);
-
         parent::__construct($loader);
 
         $this->attachEvent('request:authenticate', [$this, 'authenticate']);

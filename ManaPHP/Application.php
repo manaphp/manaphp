@@ -33,6 +33,8 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
      */
     public function __construct($loader = null)
     {
+        defined('MANAPHP_CLI') or define('MANAPHP_CLI', false);
+
         $class = static::class;
         $this->_class_file = (new ReflectionClass($class))->getFileName();
 
@@ -112,8 +114,6 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
      */
     public function getFactory()
     {
-        defined('MANAPHP_CLI') or define('MANAPHP_CLI', $_SERVER['DOCUMENT_ROOT'] === '');
-
         return MANAPHP_CLI ? 'ManaPHP\Cli\Factory' : 'ManaPHP\Mvc\Factory';
     }
 
