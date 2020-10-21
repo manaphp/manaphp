@@ -224,15 +224,7 @@ class Workerman extends Server
             echo $str . PHP_EOL;
         }
 
-        global $__root_context;
-
-        if ($__root_context !== null) {
-            foreach ($__root_context as $owner) {
-                unset($owner->_context);
-            }
-
-            $__root_context = null;
-        }
+        $this->_releaseContexts();
 
         if ($this->_max_request && ++$this->_request_count >= $this->_max_request) {
             Worker::stopAll();
