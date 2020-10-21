@@ -108,17 +108,6 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
     }
 
     /**
-     * @param string $rootDir
-     *
-     * @return static
-     */
-    public function setRootDir($rootDir)
-    {
-        $this->_root_dir = $rootDir;
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getFactory()
