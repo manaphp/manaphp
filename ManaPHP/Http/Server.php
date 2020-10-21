@@ -77,10 +77,6 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
             $this->_root_files = $this->_getRootFiles();
             $this->_mime_types = $this->_getMimeTypes();
         }
-
-        if (ob_get_level() === 0) {
-            ob_start();
-        }
     }
 
     public function log($level, $message)
