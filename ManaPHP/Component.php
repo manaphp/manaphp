@@ -183,10 +183,9 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
                 } else {
                     return $object;
                 }
-            } elseif (PHP_SAPI === 'cli') {
-                $__root_context[] = $this;
-                return $this->_context = $this->_createContext();
             } else {
+                $__root_context[] = $this;
+
                 return $this->_context = $this->_createContext();
             }
         } else {
