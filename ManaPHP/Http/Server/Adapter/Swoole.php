@@ -133,31 +133,8 @@ class Swoole extends Server
         $_get['_url'] = ($pos = strpos($request_uri, '?')) ? substr($request_uri, 0, $pos) : $request_uri;
 
         $_post = $request->post ?: [];
-
-        $globals = $this->request->getContext();
-
-        if (!$_post
-            && (isset($_server['REQUEST_METHOD']) && !in_array($_server['REQUEST_METHOD'], ['GET', 'OPTIONS'], true))
-        ) {
-            $globals->rawBody = $rowBody = $request->rawContent();
-
-            if (isset($_server['CONTENT_TYPE']) && str_contains($_server['CONTENT_TYPE'], 'application/json')) {
-                $_post = json_parse($rowBody);
-            } else {
-                parse_str($rowBody, $_post);
-            }
-            if (!is_array($_post)) {
-                $_post = [];
-            }
-        }
-
-        $globals->_GET = $_get;
-        $globals->_POST = $_post;
-        /** @noinspection AdditionOperationOnArraysInspection */
-        $globals->_REQUEST = $_post + $_get;
-        $globals->_SERVER = $_server;
-        $globals->_COOKIE = $request->cookie ?: [];
-        $globals->_FILES = $request->files ?: [];
+        $raw_body = $request->rawContent();
+        $this->request->prepare($_get, $_post, $_server, $raw_body, $request->cookie ?? [], $request->files ?? []);
     }
 
     /**

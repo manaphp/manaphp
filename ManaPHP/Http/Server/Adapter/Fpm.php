@@ -18,36 +18,8 @@ class Fpm extends Server
             $_GET['_url'] = $_REQUEST['_url'] = '/index' . substr($_SERVER['PHP_SELF'], $pos + 10);
         }
 
-        $globals = $this->request->getContext();
-
-        if (!$_POST
-            && (isset($_SERVER['REQUEST_METHOD']) && !in_array($_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true))
-        ) {
-            $globals->rawBody = $rawBody = file_get_contents('php://input');
-
-            if (isset($_SERVER['CONTENT_TYPE'])
-                && str_contains($_SERVER['CONTENT_TYPE'], 'application/json')
-            ) {
-                $_POST = json_parse($rawBody);
-            } else {
-                parse_str($rawBody, $_POST);
-            }
-
-            if (is_array($_POST)) {
-                $_REQUEST = $_POST + $_GET;
-            } else {
-                $_POST = [];
-            }
-        }
-
-        $globals->_GET = $_GET;
-        $globals->_POST = $_POST;
-        $globals->_REQUEST = $_REQUEST;
-        $globals->_FILES = $_FILES;
-        $globals->_COOKIE = $_COOKIE;
-        $globals->_SERVER = $_SERVER;
-
-        $GLOBALS['globals'] = $globals;
+        $rawBody = file_get_contents('php://input');
+        $this->request->prepare($_GET, $_POST, $_SERVER, $rawBody, $_COOKIE, $_SERVER);
 
         if ($this->_use_globals) {
             $this->globalsManager->proxy();

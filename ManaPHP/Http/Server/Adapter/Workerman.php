@@ -107,35 +107,8 @@ class Workerman extends Server
             $_GET['_url'] = $_REQUEST['_url'] = ($pos = strpos($uri, '?')) === false ? $uri : substr($uri, 0, $pos);
         }
 
-        if (!$_POST
-            && (isset($_SERVER['REQUEST_METHOD']) && !in_array($_SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true))
-        ) {
-            $data = $GLOBALS['HTTP_RAW_POST_DATA'];
-
-            if (isset($_SERVER['CONTENT_TYPE'])
-                && str_contains($_SERVER['CONTENT_TYPE'], 'application/json')
-            ) {
-                $_POST = json_parse($data);
-            } else {
-                parse_str($data, $_POST);
-            }
-
-            if (is_array($_POST)) {
-                /** @noinspection AdditionOperationOnArraysInspection */
-                $_REQUEST = $_POST + $_GET;
-            } else {
-                $_POST = [];
-            }
-        }
-
-        $globals = $this->request->getContext();
-
-        $globals->_GET = $_GET;
-        $globals->_POST = $_POST;
-        $globals->_REQUEST = $_REQUEST;
-        $globals->_FILES = $_FILES;
-        $globals->_COOKIE = $_COOKIE;
-        $globals->_SERVER = $_SERVER;
+        $raw_body = $GLOBALS['HTTP_RAW_POST_DATA'] ?? null;
+        $this->request->prepare($_GET, $_POST, $_SERVER, $raw_body, $_COOKIE, $_FILES);
 
         if (!$this->_use_globals) {
             unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);

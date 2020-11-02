@@ -15,6 +15,18 @@ interface RequestInterface
     public function getContext();
 
     /**
+     * @param array  $GET
+     * @param array  $POST
+     * @param array  $SERVER
+     * @param string $RAW_BODY
+     * @param array  $COOKIE
+     * @param array  $FILES
+     *
+     * @return void
+     */
+    public function prepare($GET, $POST, $SERVER, $RAW_BODY = null, $COOKIE = [], $FILES = []);
+
+    /**
      * @return string
      */
     public function getRawBody();

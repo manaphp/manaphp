@@ -43,6 +43,47 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * @param array  $GET
+     * @param array  $POST
+     * @param array  $SERVER
+     * @param string $RAW_BODY
+     * @param array  $COOKIE
+     * @param array  $FILES
+     *
+     * @return void
+     */
+    public function prepare($GET, $POST, $SERVER, $RAW_BODY = null, $COOKIE = [], $FILES = [])
+    {
+        $context = $this->_context;
+
+        if (!$POST
+            && (isset($SERVER['REQUEST_METHOD']) && !in_array($SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true))
+        ) {
+            if (isset($SERVER['CONTENT_TYPE'])
+                && str_contains($SERVER['CONTENT_TYPE'], 'application/json')
+            ) {
+                $POST = json_parse($RAW_BODY);
+            } else {
+                parse_str($RAW_BODY, $POST);
+            }
+
+            if (!is_array($POST)) {
+                $POST = [];
+            }
+        }
+
+        unset($POST['_url']);
+
+        $context->_GET = $GET;
+        $context->_POST = $POST;
+        $context->_REQUEST = $POST === [] ? $GET : $POST + $GET;
+        $context->_SERVER = $SERVER;
+        $context->rawBody = $RAW_BODY;
+        $context->_COOKIE = $COOKIE;
+        $context->_FILES = $FILES;
+    }
+
+    /**
      * @return string
      */
     public function getRawBody()
