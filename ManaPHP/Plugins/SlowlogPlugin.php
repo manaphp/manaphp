@@ -94,7 +94,7 @@ class SlowlogPlugin extends Plugin
         if ($this->response->hasHeader('X-Response-Time')) {
             $elapsed = $this->response->getHeader('X-Response-Time');
         } else {
-            $elapsed = microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT');
+            $elapsed = $this->request->getElapsedTime();
         }
 
         if ($this->_threshold > $elapsed) {

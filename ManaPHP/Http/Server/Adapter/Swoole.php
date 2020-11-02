@@ -249,8 +249,7 @@ class Swoole extends Server
         $server = $this->request->getServer();
 
         $sw_response->header('X-Request-Id', $this->request->getRequestId(), false);
-        $elapsed_time = microtime(true) - $server['REQUEST_TIME_FLOAT'];
-        $sw_response->header('X-Response-Time', sprintf('%.3f', $elapsed_time), false);
+        $sw_response->header('X-Response-Time', $this->request->getElapsedTime(), false);
 
         foreach ($response->cookies as $cookie) {
             $sw_response->cookie(

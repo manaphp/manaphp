@@ -218,7 +218,7 @@ class Workerman extends Server
         $server = $this->request->getServer();
 
         Http::header('X-Request-Id: ' . $this->request->getRequestId());
-        Http::header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']));
+        Http::header('X-Response-Time: ' . $this->request->getElapsedTime());
 
         foreach ($response->cookies as $cookie) {
             Http::setcookie(

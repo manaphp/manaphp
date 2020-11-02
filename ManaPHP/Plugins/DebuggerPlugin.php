@@ -329,7 +329,7 @@ class DebuggerPlugin extends Plugin
             'request_method'    => $this->request->getServer('REQUEST_METHOD'),
             'request_url'       => $this->request->getUrl(),
             'query_count'       => $context->sql_count,
-            'execute_time'      => round(microtime(true) - $this->request->getServer('REQUEST_TIME_FLOAT'), 4),
+            'execute_time'      => $this->request->getElapsedTime(),
             'memory_usage'      => $memory_usage,
             'system_time'       => date('Y-m-d H:i:s'),
             'server_ip'         => $this->request->getServer('SERVER_ADDR'),

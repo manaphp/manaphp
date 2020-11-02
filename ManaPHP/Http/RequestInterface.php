@@ -256,4 +256,16 @@ interface RequestInterface
      * @return void
      */
     public function setRequestId($request_id = null);
+
+    /**
+     * @return float
+     */
+    public function getRequestTime();
+
+    /**
+     * @param int $precision
+     *
+     * @return float
+     */
+    public function getElapsedTime($precision = 3);
 }

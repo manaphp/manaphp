@@ -633,6 +633,26 @@ class Request extends Component implements RequestInterface
         $this->_context->request_id = $request_id ?: 'aa' . bin2hex(random_bytes(15));
     }
 
+    /**
+     * @return float
+     */
+    public function getRequestTime()
+    {
+        $context = $this->_context;
+
+        return $context->_SERVER['REQUEST_TIME_FLOAT'];
+    }
+
+    /**
+     * @param int $precision
+     *
+     * @return float
+     */
+    public function getElapsedTime($precision = 3)
+    {
+        return round(microtime(true) - $this->getRequestTime(), $precision);
+    }
+
     public function dump()
     {
         $data = parent::dump();

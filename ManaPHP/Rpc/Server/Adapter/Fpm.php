@@ -59,10 +59,8 @@ class Fpm extends Server
             throw new NotSupportedException('rpc not support cookies');
         }
 
-        $server = $this->request->getServer();
-
         header('X-Request-Id: ' . $this->request->getRequestId());
-        header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']));
+        header('X-Response-Time: ' . $this->request->getElapsedTime());
 
         if ($response->file) {
             throw new NotSupportedException('rpc not support send file');

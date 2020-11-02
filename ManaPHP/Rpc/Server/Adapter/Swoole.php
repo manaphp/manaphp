@@ -321,10 +321,9 @@ class Swoole extends \ManaPHP\Rpc\Server
     {
         $context = $this->_context;
         if ($context->fd) {
-            $server = $this->request->getServer();
             $headers = [
                 'X-Request-Id'    => $this->request->getRequestId(),
-                'X-Response-Time' => sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT'])
+                'X-Response-Time' => $this->request->getElapsedTime()
             ];
 
             $id = $json['id'] ?? null;
@@ -343,10 +342,8 @@ class Swoole extends \ManaPHP\Rpc\Server
                 $sw_response->header($name, $value, false);
             }
 
-            $server = $this->request->getServer();
-            $elapsed_time = microtime(true) - $server['REQUEST_TIME_FLOAT'];
             $sw_response->header('X-Request-Id', $this->request->getRequestId(), false);
-            $sw_response->header('X-Response-Time', sprintf('%.3f', $elapsed_time), false);
+            $sw_response->header('X-Response-Time', $this->request->getElapsedTime(), false);
 
             if ($response->cookies) {
                 throw new NotSupportedException('rpc not support cookies');
