@@ -129,30 +129,9 @@ class Swoole extends \ManaPHP\Rpc\Server
         $_server['WS_ENDPOINT'] = $_get['_url'] = rtrim($_server['REQUEST_URI'], '/');
 
         $_post = $request->post ?: [];
-        if (!$_post
-            && (isset($_server['REQUEST_METHOD']) && !in_array($_server['REQUEST_METHOD'], ['GET', 'OPTIONS'], true))
-        ) {
-            $data = $request->rawContent();
 
-            if (isset($_server['CONTENT_TYPE']) && str_contains($_server['CONTENT_TYPE'], 'application/json')) {
-                $_post = json_parse($data);
-            } else {
-                parse_str($data, $_post);
-            }
-            if (!is_array($_post)) {
-                $_post = [];
-            }
-        }
-
-        unset($_post['_url']);
-
-        $globals = $this->request->getContext();
-
-        $globals->_GET = $_get;
-        $globals->_POST = $_post;
-        /** @noinspection AdditionOperationOnArraysInspection */
-        $globals->_REQUEST = $_post + $_get;
-        $globals->_SERVER = $_server;
+        $raw_body = $request->rawContent();
+        $this->request->prepare($_get, $_post, $_server, $raw_body);
     }
 
     /**
