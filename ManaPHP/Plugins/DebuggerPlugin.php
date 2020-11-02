@@ -334,7 +334,7 @@ class DebuggerPlugin extends Plugin
             'system_time'       => date('Y-m-d H:i:s'),
             'server_ip'         => $this->request->getServer('SERVER_ADDR'),
             'client_ip'         => $this->request->getClientIp(),
-            'operating_system'  => $_SERVER['SERVER_SOFTWARE'] ?? '',
+            'server_software'  => $this->request->getServer('SERVER_SOFTWARE'),
             'manaphp_version'   => Version::get(),
             'php_version'       => PHP_VERSION,
             'sapi'              => PHP_SAPI,
