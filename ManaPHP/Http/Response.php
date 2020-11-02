@@ -321,7 +321,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setExpires($timestamp)
     {
-        if (str_contains('GET,OPTIONS', $this->request->getServer('REQUEST_METHOD'))) {
+        if (str_contains('GET,OPTIONS', $this->request->getMethod())) {
             if ($timestamp <= 2592000) {
                 $timestamp += time();
             }
@@ -371,7 +371,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setCacheControl($control)
     {
-        if (str_contains('GET,OPTIONS', $this->request->getServer('REQUEST_METHOD'))) {
+        if (str_contains('GET,OPTIONS', $this->request->getMethod())) {
             return $this->setHeader('Cache-Control', $control);
         }
 
@@ -386,7 +386,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setMaxAge($age, $extra = null)
     {
-        if (str_contains('GET,OPTIONS', $this->request->getServer('REQUEST_METHOD'))) {
+        if (str_contains('GET,OPTIONS', $this->request->getMethod())) {
             $this->setHeader('Cache-Control', $extra ? "$extra, max-age=$age" : "max-age=$age");
             $this->setExpires(time() + $age);
         }

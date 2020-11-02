@@ -339,7 +339,7 @@ class Request extends Component implements RequestInterface
      */
     public function isPost()
     {
-        return $this->getServer('REQUEST_METHOD') === 'POST';
+        return $this->getMethod() === 'POST';
     }
 
     /**
@@ -349,7 +349,7 @@ class Request extends Component implements RequestInterface
      */
     public function isGet()
     {
-        return $this->getServer('REQUEST_METHOD') === 'GET';
+        return $this->getMethod() === 'GET';
     }
 
     /**
@@ -359,7 +359,7 @@ class Request extends Component implements RequestInterface
      */
     public function isPut()
     {
-        return $this->getServer('REQUEST_METHOD') === 'PUT';
+        return $this->getMethod() === 'PUT';
     }
 
     /**
@@ -369,7 +369,7 @@ class Request extends Component implements RequestInterface
      */
     public function isPatch()
     {
-        return $this->getServer('REQUEST_METHOD') === 'PATCH';
+        return $this->getMethod() === 'PATCH';
     }
 
     /**
@@ -379,7 +379,7 @@ class Request extends Component implements RequestInterface
      */
     public function isHead()
     {
-        return $this->getServer('REQUEST_METHOD') === 'HEAD';
+        return $this->getMethod() === 'HEAD';
     }
 
     /**
@@ -389,7 +389,7 @@ class Request extends Component implements RequestInterface
      */
     public function isDelete()
     {
-        return $this->getServer('REQUEST_METHOD') === 'DELETE';
+        return $this->getMethod() === 'DELETE';
     }
 
     /**
@@ -399,7 +399,7 @@ class Request extends Component implements RequestInterface
      */
     public function isOptions()
     {
-        return $this->getServer('REQUEST_METHOD') === 'OPTIONS';
+        return $this->getMethod() === 'OPTIONS';
     }
 
     /**

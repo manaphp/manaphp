@@ -105,7 +105,7 @@ class SlowlogPlugin extends Plugin
         $route = implode('::', [$dispatcher->getArea(), $dispatcher->getController(), $dispatcher->getAction()]);
 
         $message = [
-            'method'   => $this->request->getServer('REQUEST_METHOD'),
+            'method'   => $this->request->getMethod(),
             'route'    => $route,
             'url'      => $this->request->getUrl(),
             '_REQUEST' => $this->request->get(),

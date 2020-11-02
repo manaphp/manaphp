@@ -326,7 +326,7 @@ class DebuggerPlugin extends Plugin
 
         return [
             'mvc'               => $this->router->getController() . '::' . $this->router->getAction(),
-            'request_method'    => $this->request->getServer('REQUEST_METHOD'),
+            'request_method'    => $this->request->getMethod(),
             'request_url'       => $this->request->getUrl(),
             'query_count'       => $context->sql_count,
             'execute_time'      => $this->request->getElapsedTime(),

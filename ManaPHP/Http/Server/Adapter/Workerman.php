@@ -215,8 +215,6 @@ class Workerman extends Server
             Http::header("$name: $value");
         }
 
-        $server = $this->request->getServer();
-
         Http::header('X-Request-Id: ' . $this->request->getRequestId());
         Http::header('X-Response-Time: ' . $this->request->getElapsedTime());
 
@@ -234,7 +232,7 @@ class Workerman extends Server
 
         if ($response->status_code === 304) {
             $this->_context->connection->close('');
-        } elseif ($server['REQUEST_METHOD'] === 'HEAD') {
+        } elseif ($this->request->isHead()) {
             Http::header('Content-Length: ' . strlen($response->content));
             $this->_context->connection->close('');
         } else {

@@ -246,8 +246,6 @@ class Swoole extends Server
             $sw_response->header($name, $value, false);
         }
 
-        $server = $this->request->getServer();
-
         $sw_response->header('X-Request-Id', $this->request->getRequestId(), false);
         $sw_response->header('X-Response-Time', $this->request->getElapsedTime(), false);
 
@@ -265,7 +263,7 @@ class Swoole extends Server
 
         if ($response->status_code === 304) {
             $sw_response->end('');
-        } elseif ($server['REQUEST_METHOD'] === 'HEAD') {
+        } elseif ($this->request->isHead()) {
             $sw_response->header('Content-Length', strlen($response->content), false);
             $sw_response->end('');
         } elseif ($response->file) {

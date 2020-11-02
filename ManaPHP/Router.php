@@ -392,7 +392,7 @@ class Router extends Component implements RouterInterface
         $uri = $uri ?: $this->getRewriteUri();
 
         if ($method === null) {
-            $method = $this->request->getServer('REQUEST_METHOD');
+            $method = $this->request->getMethod();
         }
 
         $context->controller = null;

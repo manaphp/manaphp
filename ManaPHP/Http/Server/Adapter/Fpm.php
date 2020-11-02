@@ -75,14 +75,12 @@ class Fpm extends Server
             );
         }
 
-        $server = $this->request->getServer();
-
         header('X-Request-Id: ' . $this->request->getRequestId());
         header('X-Response-Time: ' . $this->request->getElapsedTime());
 
         if ($response->status_code === 304) {
             null;
-        } elseif ($server['REQUEST_METHOD'] === 'HEAD') {
+        } elseif ($this->request->isHead()) {
             header('Content-Length: ' . strlen($response->content));
         } elseif ($response->file) {
             readfile($this->alias->resolve($response->file));
