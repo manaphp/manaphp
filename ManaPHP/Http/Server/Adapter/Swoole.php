@@ -246,7 +246,7 @@ class Swoole extends Server
             $sw_response->header($name, $value, false);
         }
 
-        $server = $this->request->getContext()->_SERVER;
+        $server = $this->request->getServer();
 
         $sw_response->header('X-Request-Id', $this->request->getRequestId(), false);
         $elapsed_time = microtime(true) - $server['REQUEST_TIME_FLOAT'];

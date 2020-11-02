@@ -215,7 +215,7 @@ class Workerman extends Server
             Http::header("$name: $value");
         }
 
-        $server = $this->request->getContext()->_SERVER;
+        $server = $this->request->getServer();
 
         Http::header('X-Request-Id: ' . $this->request->getRequestId());
         Http::header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']));

@@ -729,7 +729,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         /** @var \ManaPHP\Http\RequestInterface $request */
         $request = $this->getShared('request');
 
-        $data = $request->getContext()->_REQUEST;
+        $data = $request->get();
 
         foreach ($fields as $k => $v) {
             if (is_string($k)) {

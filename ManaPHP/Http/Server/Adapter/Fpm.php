@@ -75,7 +75,7 @@ class Fpm extends Server
             );
         }
 
-        $server = $this->request->getContext()->_SERVER;
+        $server = $this->request->getServer();
 
         header('X-Request-Id: ' . $this->request->getRequestId());
         header('X-Response-Time: ' . sprintf('%.3f', microtime(true) - $server['REQUEST_TIME_FLOAT']));
