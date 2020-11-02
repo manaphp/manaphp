@@ -569,7 +569,13 @@ class Request extends Component implements RequestInterface
      */
     public function getRequestId()
     {
-        return $this->_context->request_id;
+        $context = $this->_context;
+
+        if ($context->request_id === null) {
+            $this->setRequestId($context->_SERVER['HTTP_X_REQUEST_ID'] ?? null);
+        }
+
+        return $context->request_id;
     }
 
     /**

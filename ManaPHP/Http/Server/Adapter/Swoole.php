@@ -151,8 +151,6 @@ class Swoole extends Server
             }
         }
 
-        $this->request->setRequestId($_server['HTTP_X_REQUEST_ID'] ?? null);
-
         $globals->_GET = $_get;
         $globals->_POST = $_post;
         /** @noinspection AdditionOperationOnArraysInspection */

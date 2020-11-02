@@ -128,8 +128,6 @@ class Workerman extends Server
             }
         }
 
-        $this->request->setRequestId($_SERVER['HTTP_X_REQUEST_ID'] ?? null);
-
         $globals = $this->request->getContext();
 
         $globals->_GET = $_GET;

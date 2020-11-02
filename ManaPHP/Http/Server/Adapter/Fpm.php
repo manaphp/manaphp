@@ -40,8 +40,6 @@ class Fpm extends Server
             }
         }
 
-        $this->request->setRequestId($_SERVER['HTTP_X_REQUEST_ID'] ?? null);
-
         $globals->_GET = $_GET;
         $globals->_POST = $_POST;
         $globals->_REQUEST = $_REQUEST;
