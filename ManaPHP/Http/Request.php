@@ -76,7 +76,7 @@ class Request extends Component implements RequestInterface
 
         $context->_GET = $GET;
         $context->_POST = $POST;
-        $context->_REQUEST = $POST === [] ? $GET : $POST + $GET;
+        $context->_REQUEST = $POST === [] ? $GET : array_merge($GET, $POST);
         $context->_SERVER = $SERVER;
         $context->rawBody = $RAW_BODY;
         $context->_COOKIE = $COOKIE;
