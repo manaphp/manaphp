@@ -28,7 +28,7 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
     /**
      * @var int
      */
-    protected $_port = '9501';
+    protected $_port = 9501;
 
     /**
      * @var array

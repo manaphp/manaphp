@@ -71,7 +71,6 @@ class Swoole extends Server
             'REQUEST_SCHEME'  => 'http',
         ];
 
-
         $this->alias->set('@web', '');
         $this->alias->set('@asset', '');
 
