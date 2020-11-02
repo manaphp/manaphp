@@ -162,7 +162,7 @@ class DebuggerPlugin extends Plugin
             }
 
             throw new AbortException();
-        } elseif (str_contains($this->request->getServer('HTTP_USER_AGENT'), 'ApacheBench')) {
+        } elseif (str_contains($this->request->getUserAgent(), 'ApacheBench')) {
             $context->enabled = false;
         } else {
             $context->enabled = true;

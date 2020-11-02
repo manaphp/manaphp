@@ -578,7 +578,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setAttachment($attachmentName)
     {
-        if ($userAgent = $this->request->getServer('HTTP_USER_AGENT')) {
+        if ($userAgent = $this->request->getUserAgent()) {
             if (str_contains($userAgent, 'Trident') || str_contains($userAgent, 'MSIE')) {
                 $attachmentName = urlencode($attachmentName);
             }
