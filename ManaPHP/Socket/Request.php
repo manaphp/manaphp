@@ -144,6 +144,6 @@ class Request extends Component implements RequestInterface
             $request_id = preg_replace('#[^\-\w.]#', 'X', $request_id);
         }
 
-        $this->_context->request_id = $request_id ?: 'aa' . bin2hex(random_bytes(15));
+        $this->_context->request_id = $request_id ?: bin2hex(random_bytes(16));
     }
 }
