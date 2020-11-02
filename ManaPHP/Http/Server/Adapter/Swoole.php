@@ -65,7 +65,7 @@ class Swoole extends Server
             'SCRIPT_NAME'     => '/' . basename($script_filename),
             'SERVER_ADDR'     => $this->_host === '0.0.0.0' ? Ip::local() : $this->_host,
             'SERVER_PORT'     => $this->_port,
-            'SERVER_SOFTWARE' => 'Swoole/' . SWOOLE_VERSION . ' PHP/' . PHP_VERSION,
+            'SERVER_SOFTWARE' => 'Swoole/' . SWOOLE_VERSION . ' (' . PHP_OS . ') PHP/' . PHP_VERSION,
             'PHP_SELF'        => '/' . basename($script_filename),
             'QUERY_STRING'    => '',
             'REQUEST_SCHEME'  => 'http',
