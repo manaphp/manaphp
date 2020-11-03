@@ -138,6 +138,10 @@ class Client extends Component implements ClientInterface
             $headers['User-Agent'] = $this->_user_agent;
         }
 
+        if (isset($headers['X-Request-Id'])) {
+            null;//code completion
+        }
+
         foreach ($headers as $name => $value) {
             if (is_string($name) && $value === '') {
                 unset($headers[$name]);
