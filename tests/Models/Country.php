@@ -8,8 +8,8 @@
 
 namespace Tests\Models;
 
-use ManaPHP\Model\Relation;
 use ManaPHP\Db\Model;
+use ManaPHP\Model\Relation;
 
 /**
  * Class Country

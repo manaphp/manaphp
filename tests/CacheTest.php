@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use ManaPHP\Cache;
 use ManaPHP\Di\FactoryDefault;
 use PHPUnit\Framework\TestCase;
 

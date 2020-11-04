@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Curl\Easy;
+use ManaPHP\Di\FactoryDefault;
 use PHPUnit\Framework\TestCase;
 
 class HttpClientTest extends TestCase

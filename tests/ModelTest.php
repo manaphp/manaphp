@@ -4,10 +4,9 @@ namespace Tests;
 
 use ManaPHP\Db;
 use ManaPHP\DbInterface;
-use ManaPHP\QueryInterface;
+use ManaPHP\Di\FactoryDefault;
 use PHPUnit\Framework\TestCase;
 use Tests\Models\City;
-use ManaPHP\Di\FactoryDefault;
 use Tests\Models\Country;
 use Tests\Models\Rental;
 

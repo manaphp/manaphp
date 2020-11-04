@@ -41,7 +41,7 @@ class HttpResponseTest extends TestCase
         $response->setHeader('Content-Length', '1234');
         $this->assertEquals(
             [
-                'Content-Type' => 'text/html',
+                'Content-Type'   => 'text/html',
                 'Content-Length' => '1234'
             ], $response->getHeaders()
         );

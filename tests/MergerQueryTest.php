@@ -65,30 +65,34 @@ class MergerQueryTest extends TestCase
         );
         $this->assertEquals(
             [10, 10, 598, 598], array_column(
-            (new Query($models))->orderBy(['country_id' => SORT_ASC, 'city_id' => SORT_DESC])->limit(4, 610)->fetch(
-                true
-            ), 'city_id'
-        )
+                (new Query($models))->orderBy(['country_id' => SORT_ASC, 'city_id' => SORT_DESC])->limit(4, 610)->fetch(
+                    true
+                ), 'city_id'
+            )
         );
         $this->assertEquals(
             [376, 376, 355, 355], array_column(
-            (new Query($models))->orderBy(['country_id' => SORT_DESC, 'city_id' => SORT_DESC])->limit(4, 610)->fetch(
-                true
-            ), 'city_id'
-        )
+                (new Query($models))->orderBy(['country_id' => SORT_DESC, 'city_id' => SORT_DESC])->limit(4, 610)
+                    ->fetch(
+                        true
+                    ), 'city_id'
+            )
         );
         $this->assertEquals(
             [376, 376, 355, 355], array_column(
-            (new Query($models))->orderBy(['country_id' => SORT_DESC, 'city_id' => SORT_DESC])->limit(4, 610)->fetch(
-                true
-            ), 'city_id'
-        )
+                (new Query($models))->orderBy(['country_id' => SORT_DESC, 'city_id' => SORT_DESC])->limit(4, 610)
+                    ->fetch(
+                        true
+                    ), 'city_id'
+            )
         );
         $this->assertEquals(
             [376, 376, 355, 355], array_column(
-            (new Query($models))->orderBy(['country_id' => SORT_DESC])->orderBy(['city_id' => SORT_DESC])->limit(4, 610)
-                ->fetch(true), 'city_id'
-        )
+                (new Query($models))->orderBy(['country_id' => SORT_DESC])->orderBy(['city_id' => SORT_DESC])->limit(
+                    4, 610
+                )
+                    ->fetch(true), 'city_id'
+            )
         );
     }
 }
