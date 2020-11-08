@@ -48,7 +48,7 @@ class EtagPlugin extends Plugin
         if (isset($response->headers['ETag'])) {
             $etag = $response->headers['ETag'];
         } else {
-            $etag = strlen($response->content) . '-' . hash($this->_algo, $response->content);
+            $etag = hash($this->_algo, $response->content);
             $response->headers['ETag'] = $etag;
         }
 

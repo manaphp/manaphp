@@ -180,7 +180,7 @@ class PageCachePlugin extends Plugin
             return;
         }
 
-        $etag = strlen($response->content) . '-' . md5($response->content);
+        $etag = md5($response->content);
 
         $this->redisCache->hMSet(
             $context->key, [

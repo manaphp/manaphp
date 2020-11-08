@@ -52,7 +52,7 @@ class HttpCachePlugin extends Plugin
                     if (isset($response->headers['ETag'])) {
                         $etag = $response->headers['ETag'];
                     } else {
-                        $etag = strlen($response->content) . '-' . md5($response->content);
+                        $etag = md5($response->content);
                         $response->headers['ETag'] = $etag;
                     }
 
