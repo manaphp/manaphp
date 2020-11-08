@@ -155,7 +155,7 @@ class PageCachePlugin extends Plugin
             $this->response->setContentType($cache['content-type']);
         }
 
-        if (str_contains($this->request->hasServer('HTTP_ACCEPT_ENCODING'), 'gzip')) {
+        if (str_contains($this->request->getServer('HTTP_ACCEPT_ENCODING'), 'gzip')) {
             $this->response->setHeader('Content-Encoding', 'gzip');
             $this->response->setContent($cache['content']);
         } else {
