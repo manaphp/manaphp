@@ -68,13 +68,13 @@ class Connection extends Component implements ConnectionInterface
     protected function _getManager()
     {
         if ($this->_manager === null) {
-            $this->fireEvent('mongodb:connect', ['dsn' => $this->_dsn]);
+            $this->fireEvent('mongodb:connect', $this->_dsn);
             $this->_manager = new Manager($this->_dsn);
         }
 
         if (microtime(true) - $this->_last_heartbeat > $this->_heartbeat && !$this->_ping()) {
             $this->close();
-            $this->fireEvent('mongodb:connect', ['dsn' => $this->_dsn]);
+            $this->fireEvent('mongodb:connect', $this->_dsn);
 
             $this->_manager = new Manager($this->_dsn);
         }

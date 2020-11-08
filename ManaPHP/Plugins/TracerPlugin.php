@@ -130,7 +130,7 @@ class TracerPlugin extends Plugin
 
     public function onDbConnect(EventArgs $eventArgs)
     {
-        $this->logger->debug(['connect to `:dsn`', 'dsn' => $eventArgs->data['dsn']], 'db.connect');
+        $this->logger->debug(['connect to `:dsn`', 'dsn' => $eventArgs->data], 'db.connect');
     }
 
     public function onDbExecuted(EventArgs $eventArgs)
@@ -198,7 +198,7 @@ class TracerPlugin extends Plugin
 
     public function onMongodbConnect(EventArgs $eventArgs)
     {
-        $this->logger->debug(['connect to `:dsn`', $eventArgs->data], 'mongodb.connect');
+        $this->logger->debug(['connect to `:dsn`', 'dsn' => $eventArgs->data], 'mongodb.connect');
     }
 
     public function onMongodbInserted(EventArgs $eventArgs)
