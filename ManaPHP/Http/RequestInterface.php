@@ -268,4 +268,9 @@ interface RequestInterface
      * @return float
      */
     public function getElapsedTime($precision = 3);
+
+    /**
+     * @return string|null
+     */
+    public function getIfNoneMatch();
 }

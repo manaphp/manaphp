@@ -653,6 +653,16 @@ class Request extends Component implements RequestInterface
         return round(microtime(true) - $this->getRequestTime(), $precision);
     }
 
+    /**
+     * @return string|null
+     */
+    public function getIfNoneMatch()
+    {
+        $context = $this->_context;
+
+        return $context->_SERVER['HTTP_IF_NONE_MATCH'] ?? null;
+    }
+
     public function dump()
     {
         $data = parent::dump();

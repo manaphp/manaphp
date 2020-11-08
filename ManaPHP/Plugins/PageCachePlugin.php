@@ -133,7 +133,7 @@ class PageCachePlugin extends Plugin
             $context->key .= ':ajax';
         }
 
-        $context->if_none_match = $this->request->getServer('HTTP_IF_NONE_MATCH');
+        $context->if_none_match = $this->request->getIfNoneMatch();
 
         if (($etag = $this->redisCache->hGet($context->key, 'etag')) === false) {
             return;

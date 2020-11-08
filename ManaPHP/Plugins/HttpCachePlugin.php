@@ -56,7 +56,7 @@ class HttpCachePlugin extends Plugin
                         $response->headers['ETag'] = $etag;
                     }
 
-                    $if_none_match = $this->request->getServer('HTTP_IF_NONE_MATCH');
+                    $if_none_match = $this->request->getIfNoneMatch();
                     if ($if_none_match === $etag) {
                         $response->status_code = 304;
                         $response->status_text = 'Not Modified';
