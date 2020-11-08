@@ -30,7 +30,7 @@ class AdminController extends Controller
             ->when(
                 static function (QueryInterface $query) {
                     $keyword = input('keyword', '');
-                    if (strpos($keyword, '@') !== false) {
+                    if (str_contains($keyword, '@')) {
                         $query->whereContains('email', $keyword);
                     } else {
                         $query->whereContains(['admin_name', 'email'], $keyword);

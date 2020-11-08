@@ -126,7 +126,7 @@ class PermissionController extends Controller
                 ['role_id' => RolePermission::values('role_id', ['permission_id' => $permission->permission_id])]
             ) as $role
         ) {
-            if (strpos($role->permissions, ",$permission->path,") !== false) {
+            if (str_contains($role->permissions, ",$permission->path,")) {
                 $role->permissions = str_replace(",$permission->path,", ',', $role->permissions);
                 $role->update();
             }

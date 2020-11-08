@@ -39,7 +39,7 @@ class AdminActionLogPlugin extends Plugin
             if (is_numeric($v)) {
                 if ($k === 'id') {
                     return $v;
-                } elseif (strpos($k, '_id') === strlen($k) - 3) {
+                } elseif (str_ends_with($k, '_id')) {
                     return $v;
                 }
             }
