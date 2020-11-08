@@ -42,7 +42,7 @@ require_once  'index.php';
 STR;
 
         if ($value = $this->request->getValue(0)) {
-            if (strpos($value, ':')) {
+            if (str_contains($value, ':')) {
                 list($ip, $port) = explode(':', $value, 2);
             } elseif (is_numeric($value)) {
                 $port = (int)$value;

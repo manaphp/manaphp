@@ -86,7 +86,7 @@ class FrameworkController extends Controller
             $content = $this->_minify(LocalFS::fileGet($file));
             $lineCount = substr_count($content, str_contains($content, "\r") ? "\r" : "\n");
 
-            if (strpos($file, 'Interface.php')) {
+            if (str_ends_with($file, 'Interface.php')) {
                 $totalInterfaceLines += $lineCount;
                 $totalLines += $lineCount;
             } else {

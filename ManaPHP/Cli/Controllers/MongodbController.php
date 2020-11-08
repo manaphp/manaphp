@@ -98,7 +98,7 @@ class MongodbController extends Controller
                 }
 
                 foreach ($mongodb->listCollections($cdb) as $collection) {
-                    if (strpos($collection, '.')) {
+                    if (str_contains($collection, '.')) {
                         continue;
                     }
 

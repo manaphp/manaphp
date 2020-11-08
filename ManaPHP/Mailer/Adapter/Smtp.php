@@ -82,7 +82,7 @@ class Smtp extends Mailer
         }
 
         if (isset($parts['user'])) {
-            if (strpos($parts['user'], '@')) {
+            if (str_contains($parts['user'], '@')) {
                 $this->_from = $parts['user'];
             }
             $this->_username = $parts['user'];

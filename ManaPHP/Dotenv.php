@@ -78,7 +78,7 @@ class Dotenv extends Component implements DotenvInterface
 
         $this->_file = $file;
 
-        if (strpos($file, '://')) {
+        if (str_contains($file, '://')) {
             if (!is_file($config_file = $this->alias->resolve('@config/app.php'))) {
                 throw new RuntimeException('@config/app.php file is not exists');
             }

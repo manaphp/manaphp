@@ -83,14 +83,14 @@ class CssToXPath
         foreach ($segments as $key => $segment) {
             $pathSegment = static::_tokenize($segment);
             if (0 === $key) {
-                if (0 === strpos($pathSegment, '[contains(')) {
+                if (str_starts_with($pathSegment, '[contains(')) {
                     $paths[0] .= '*' . ltrim($pathSegment, '*');
                 } else {
                     $paths[0] .= $pathSegment;
                 }
                 continue;
             }
-            if (0 === strpos($pathSegment, '[contains(')) {
+            if (str_starts_with($pathSegment, '[contains(')) {
                 foreach ($paths as $pathKey => $xpath) {
                     $paths[$pathKey] .= '//*' . ltrim($pathSegment, '*');
                     $paths[] = $xpath . $pathSegment;
@@ -174,7 +174,7 @@ class CssToXPath
             $expression
         );
         // Classes
-        if (false === strpos($expression, '[@')) {
+        if (!str_contains($expression, '[@')) {
             $expression = preg_replace(
                 '|\.([a-z][\w\-]*)|i',
                 "[contains(concat(' ', normalize-space(@class), ' '), ' \$1 ')]",

@@ -392,7 +392,7 @@ class View extends Component implements ViewInterface
             throw new InvalidValueException(['`%s` class is not exists', $widgetClassName]);
         }
 
-        if (strpos($widgetClassName, '\\Areas\\')) {
+        if (str_contains($widgetClassName, '\\Areas\\')) {
             $view = "@app/Areas/{$this->dispatcher->getArea()}/Views/Widgets/$widget";
         } else {
             $view = "@views/Widgets/$widget";

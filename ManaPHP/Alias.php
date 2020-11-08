@@ -96,7 +96,7 @@ class Alias extends Component implements AliasInterface
             return DIRECTORY_SEPARATOR === '/' ? $path : strtr($path, '\\', '/');
         }
 
-        if (strpos($path, '{') !== false && preg_match_all('#{([^}]+)}#', $path, $matches)) {
+        if (str_contains($path, '{') && preg_match_all('#{([^}]+)}#', $path, $matches)) {
             foreach ((array)$matches[1] as $k => $match) {
                 if (is_numeric($match)) {
                     $replaced = substr(bin2hex(random_bytes($match / 2 + 1)), 0, $match);

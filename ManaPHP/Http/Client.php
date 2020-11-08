@@ -131,7 +131,7 @@ class Client extends Component implements ClientInterface
     public function request($method, $url, $body = null, $headers = [], $options = [])
     {
         if (is_string($headers)) {
-            $headers = [(strpos($headers, '://') ? 'Referer' : 'User-Agent') => $headers];
+            $headers = [(str_contains($headers, '://') ? 'Referer' : 'User-Agent') => $headers];
         }
 
         if (!isset($headers['User-Agent'])) {

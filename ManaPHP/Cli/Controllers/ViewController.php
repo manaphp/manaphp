@@ -141,7 +141,7 @@ HTML;
                 $content .= PHP_EOL . <<<HTML
     <result-timestamp prop="$field"></result-timestamp>
 HTML;
-            } elseif (strpos($field, '_id')) {
+            } elseif (str_ends_with($field, '_id')) {
                 $content .= PHP_EOL . <<<HTML
     <result-id prop="$field"></result-id>
 HTML;

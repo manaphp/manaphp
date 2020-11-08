@@ -51,7 +51,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         $appNamespace = 'App';
         $publicDir = $_SERVER['DOCUMENT_ROOT'] !== '' ? $_SERVER['DOCUMENT_ROOT'] : $rootDir . '/public';
 
-        if (strpos($class, 'ManaPHP\\') !== 0) {
+        if (!str_starts_with($class, 'ManaPHP\\')) {
             $appDir = dirname($this->_class_file);
             $appNamespace = substr($class, 0, strrpos($class, '\\'));
             $publicDir = $rootDir . '/public';
@@ -89,7 +89,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
      */
     public function getRootDir()
     {
-        if (strpos(static::class, 'ManaPHP\\') !== 0) {
+        if (!str_starts_with(static::class, 'ManaPHP\\')) {
             return dirname($this->_class_file, 2);
         } elseif ($_SERVER['DOCUMENT_ROOT'] !== ''
             && $_SERVER['DOCUMENT_ROOT'] === dirname($_SERVER['SCRIPT_FILENAME'])

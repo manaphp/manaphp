@@ -140,7 +140,7 @@ class Db extends Component implements DbInterface
 
             foreach ($urls as $i => $url) {
                 if (preg_match('#[?&]readonly\b#', $url) !== 1) {
-                    $urls[$i] .= (strpos($url, '?') ? '&' : '?') . 'readonly=1';
+                    $urls[$i] .= (str_contains($url, '?') ? '&' : '?') . 'readonly=1';
                 }
             }
 
