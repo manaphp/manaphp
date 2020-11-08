@@ -80,7 +80,7 @@ class Validator extends Component implements ValidatorInterface
             $locale = $this->configure->language;
             if (($language = strtolower($this->request->get('lang', ''))) && isset($this->_files[$language])) {
                 $locale = $language;
-            } elseif ($language = $this->request->getServer('HTTP_ACCEPT_LANGUAGE')) {
+            } elseif ($language = $this->request->getAcceptLanguage()) {
                 if (preg_match_all('#[a-z\-]{2,}#', strtolower($language), $matches)) {
                     foreach ($matches[0] as $lang) {
                         if (isset($this->_files[$lang])) {

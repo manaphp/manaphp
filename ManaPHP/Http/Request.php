@@ -663,6 +663,16 @@ class Request extends Component implements RequestInterface
         return $context->_SERVER['HTTP_IF_NONE_MATCH'] ?? null;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getAcceptLanguage()
+    {
+        $context = $this->_context;
+
+        return $context->_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? null;
+    }
+
     public function dump()
     {
         $data = parent::dump();

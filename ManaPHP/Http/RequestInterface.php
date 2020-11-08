@@ -273,4 +273,9 @@ interface RequestInterface
      * @return string|null
      */
     public function getIfNoneMatch();
+
+    /**
+     * @return string|null
+     */
+    public function getAcceptLanguage();
 }
