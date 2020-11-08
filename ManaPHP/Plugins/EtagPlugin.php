@@ -13,6 +13,11 @@ class EtagPlugin extends Plugin
     protected $_enabled = true;
 
     /**
+     * @var string
+     */
+    protected $_algo = 'md5';
+
+    /**
      * EtagPlugin constructor.
      *
      * @param array $options
@@ -21,6 +26,10 @@ class EtagPlugin extends Plugin
     {
         if (isset($options['enabled'])) {
             $this->_enabled = (bool)$options['enabled'];
+        }
+
+        if (isset($options['algo'])) {
+            $this->_algo = $options['algo'];
         }
 
         if ($this->_enabled) {
@@ -39,7 +48,7 @@ class EtagPlugin extends Plugin
         if (isset($response->headers['ETag'])) {
             $etag = $response->headers['ETag'];
         } else {
-            $etag = strlen($response->content) . '-' . md5($response->content);
+            $etag = strlen($response->content) . '-' . hash($this->_algo, $response->content);
             $response->headers['ETag'] = $etag;
         }
 
