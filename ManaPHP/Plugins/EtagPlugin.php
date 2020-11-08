@@ -40,7 +40,7 @@ class EtagPlugin extends Plugin
     public function onResponseSending(EventArgs $eventArgs)
     {
         /** @var \ManaPHP\Http\ResponseContext $response */
-        $response = $eventArgs->data['response'];
+        $response = $eventArgs->data;
         if ($response->status_code !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
             return;
         }
@@ -55,7 +55,7 @@ class EtagPlugin extends Plugin
         $if_none_match = $this->request->getIfNoneMatch();
         if ($if_none_match === $etag) {
             unset($response->headers['ETag']);
-            
+
             $response->status_code = 304;
             $response->status_text = 'Not Modified';
         }

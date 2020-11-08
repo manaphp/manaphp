@@ -235,7 +235,7 @@ class Swoole extends Server
      */
     public function send($response)
     {
-        $this->fireEvent('response:sending', ['response' => $response]);
+        $this->fireEvent('response:sending', $response);
 
         $sw_response = $this->_context->response;
 
@@ -271,6 +271,6 @@ class Swoole extends Server
             $sw_response->end($response->content);
         }
 
-        $this->fireEvent('response:sent', ['response' => $response]);
+        $this->fireEvent('response:sent', $response);
     }
 }

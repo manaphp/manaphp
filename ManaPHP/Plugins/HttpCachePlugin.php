@@ -32,7 +32,7 @@ class HttpCachePlugin extends Plugin
     public function onResponseSending(EventArgs $eventArgs)
     {
         /** @var \ManaPHP\Http\ResponseContext $response */
-        $response = $eventArgs->data['response'];
+        $response = $eventArgs->data;
         if ($response->status_code !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
             return;
         }
