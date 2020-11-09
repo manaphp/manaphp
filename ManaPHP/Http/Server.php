@@ -54,7 +54,6 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
     {
         if (isset($options['use_globals'])) {
             $this->_use_globals = (bool)$options['use_globals'];
-            unset($options['use_globals']);
         }
 
         if (isset($options['max_request']) && $options['max_request'] < 1) {
@@ -63,12 +62,10 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
 
         if (isset($options['host'])) {
             $this->_host = $options['host'];
-            unset($options['host']);
         }
 
         if (isset($options['port'])) {
             $this->_port = (int)$options['port'];
-            unset($options['port']);
         }
 
         $this->_doc_root = $this->alias->resolve('@public');

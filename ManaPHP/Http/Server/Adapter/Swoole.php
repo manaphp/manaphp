@@ -74,10 +74,6 @@ class Swoole extends Server
         $this->alias->set('@web', '');
         $this->alias->set('@asset', '');
 
-        if (!isset($options['port'])) {
-            $options['port'] = 9501;
-        }
-
         $options['enable_coroutine'] = MANAPHP_COROUTINE_ENABLED;
 
         if (isset($options['max_request']) && $options['max_request'] < 1) {
@@ -92,9 +88,11 @@ class Swoole extends Server
             $options['document_root'] = $this->_server['DOCUMENT_ROOT'];
         }
 
-        $this->_settings = $options;
-
         parent::__construct($options);
+
+        unset($options['use_globals'], $options['host'], $options['port']);
+
+        $this->_settings = $options;
 
         if ($this->_use_globals) {
             $this->globalsManager->proxy();
