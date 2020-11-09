@@ -170,32 +170,48 @@ class Client extends Component implements ClientInterface
 
         $request = new Request($method, $url, $body, $headers, $options);
 
-        $engine_id = substr($request->url, 0, strpos($request->url, '/', 8));
-
-        if (!$this->poolManager->exists($this, $engine_id)) {
-            $this->poolManager->add($this, $this->_engine, $this->_pool_size, $engine_id);
-        }
-
-        /** @var \ManaPHP\Http\Client\EngineInterface $engine */
-        $engine = $this->poolManager->pop($this, $options['timeout'], $engine_id);
+        $this->fireEvent('httpClient:start', $request);
 
         try {
-            $this->fireEvent('httpClient:requesting', $request);
+            $success = false;
 
-            $response = $engine->request($request, $this->_keepalive);
+            $engine_id = substr($request->url, 0, strpos($request->url, '/', 8));
+
+            if (!$this->poolManager->exists($this, $engine_id)) {
+                $this->poolManager->add($this, $this->_engine, $this->_pool_size, $engine_id);
+            }
+
+            /** @var \ManaPHP\Http\Client\EngineInterface $engine */
+            $engine = $this->poolManager->pop($this, $options['timeout'], $engine_id);
+
+            try {
+                $this->fireEvent('httpClient:requesting', $request);
+
+                $response = $engine->request($request, $this->_keepalive);
+
+                $success = true;
+            } finally {
+                $this->poolManager->push($this, $engine, $engine_id);
+            }
+
+            $response_text = $response->body;
+
+            if ((isset($request->headers['Accept']) && str_contains($request->headers['Accept'], '/json'))
+                || str_contains($response->content_type, '/json')
+            ) {
+                $response->body = $response->body === '' ? [] : json_parse($response->body);
+            }
+
+            $this->fireEvent('httpClient:requested', $response);
         } finally {
-            $this->poolManager->push($this, $engine, $engine_id);
+            if ($success) {
+                $this->fireEvent('httpClient:success', $response);
+            } else {
+                $this->fireEvent('httpClient:error', $request);
+            }
+
+            $this->fireEvent('httpClient:complete', $response);
         }
-
-        $response_text = $response->body;
-
-        if ((isset($request->headers['Accept']) && str_contains($request->headers['Accept'], '/json'))
-            || str_contains($response->content_type, '/json')
-        ) {
-            $response->body = $response->body === '' ? [] : json_parse($response->body);
-        }
-
-        $this->fireEvent('httpClient:requested', $response);
 
         $http_code = $response->http_code;
         $http_code_class = substr($http_code, 0, -2) * 100;
