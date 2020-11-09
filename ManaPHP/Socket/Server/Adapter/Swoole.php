@@ -79,6 +79,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
             $options['dispatch_mode'] = 2;
         }
 
+        unset($options['host'], $options['port']);
         $this->_settings = $options ?: [];
 
         $this->_swoole = new Server($this->_host, $this->_port, $this->_settings['dispatch_mode']);

@@ -94,6 +94,8 @@ class Swoole extends \ManaPHP\Rpc\Server
         }
 
         $options['enable_coroutine'] = MANAPHP_COROUTINE_ENABLED ? 1 : 0;
+
+        unset($options['host'], $options['port']);
         $this->_settings = $options ?: [];
 
         $this->_swoole = new Server($this->_host, $this->_port);
