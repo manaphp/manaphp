@@ -176,11 +176,12 @@ class Client extends Component implements ClientInterface
             $this->poolManager->add($this, $this->_engine, $this->_pool_size, $engine_id);
         }
 
+        /** @var \ManaPHP\Http\Client\EngineInterface $engine */
         $engine = $this->poolManager->pop($this, $options['timeout'], $engine_id);
 
-        $this->fireEvent('httpClient:requesting', $request);
-
         try {
+            $this->fireEvent('httpClient:requesting', $request);
+
             $response = $engine->request($request, $this->_keepalive);
         } finally {
             $this->poolManager->push($this, $engine, $engine_id);
