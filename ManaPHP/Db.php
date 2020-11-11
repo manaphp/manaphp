@@ -120,22 +120,28 @@ class Db extends Component implements DbInterface
             $this->_prefix = $matches[1];
         }
 
-        if (str_contains($uri, ',')) {
-            $hosts = parse_url($uri, PHP_URL_HOST);
-            if (str_contains($hosts, ',')) {
-                $urls = [];
-                foreach (explode(',', $hosts) as $host) {
-                    $urls[] = str_replace($hosts, $host, $uri);
-                }
-            } else {
-                $urls = explode(',', $uri);
+        $urls = [];
+        if (str_contains($uri, '[') && preg_match('#\[[^]]+]#', $uri, $matches)) {
+            $hosts = $matches[0];
+            foreach (explode(',', substr($hosts, 1, -1)) as $value) {
+                $value = trim($value);
+                $urls[] = $value === '' ? $value : str_replace($hosts, $value, $uri);
             }
+        } elseif (str_contains($uri, ',')) {
+            foreach (explode(',', $uri) as $value) {
+                $urls[] = trim($value);
+            }
+        } else {
+            $urls[] = $uri;
+        }
 
-            if ($urls[0]) {
-                $url = $urls[0];
-                $adapter = 'ManaPHP\Db\Connection\Adapter\\' . ucfirst(parse_url($url, PHP_URL_SCHEME));
-                $this->poolManager->add($this, ['class' => $adapter, $url], $this->_pool_size);
-            }
+        if ($urls[0] !== '') {
+            $url = $urls[0];
+            $adapter = 'ManaPHP\Db\Connection\Adapter\\' . ucfirst(parse_url($url, PHP_URL_SCHEME));
+            $this->poolManager->add($this, ['class' => $adapter, $url], $this->_pool_size);
+        }
+
+        if (count($urls) > 1) {
             array_shift($urls);
 
             foreach ($urls as $i => $url) {
@@ -161,9 +167,6 @@ class Db extends Component implements DbInterface
             }
 
             $this->_has_slave = true;
-        } else {
-            $adapter = 'ManaPHP\Db\Connection\Adapter\\' . ucfirst(parse_url($uri, PHP_URL_SCHEME));
-            $this->poolManager->add($this, ['class' => $adapter, $uri], $this->_pool_size);
         }
     }
 
