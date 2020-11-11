@@ -77,7 +77,7 @@ class Redis extends Component implements RedisInterface
         }
 
         $urls = [];
-        if (str_contains($url, '[') && preg_match('#\[[^]]+]#', $url, $matches)) {
+        if (str_contains($url, '{') && preg_match('#{[^}]+}#', $url, $matches)) {
             $hosts = $matches[0];
             foreach (explode(',', substr($hosts, 1, -1)) as $value) {
                 $value = trim($value);

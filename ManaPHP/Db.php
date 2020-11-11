@@ -121,7 +121,7 @@ class Db extends Component implements DbInterface
         }
 
         $urls = [];
-        if (str_contains($uri, '[') && preg_match('#\[[^]]+]#', $uri, $matches)) {
+        if (str_contains($uri, '{') && preg_match('#{[^}]+}#', $uri, $matches)) {
             $hosts = $matches[0];
             foreach (explode(',', substr($hosts, 1, -1)) as $value) {
                 $value = trim($value);
