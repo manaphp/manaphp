@@ -19,7 +19,7 @@ class Redis extends Component implements RedisInterface
     /**
      * @var string
      */
-    protected $_url;
+    protected $_uri;
 
     /**
      * @var float
@@ -54,17 +54,17 @@ class Redis extends Component implements RedisInterface
     /**
      * Redis constructor.
      *
-     * @param string $url
+     * @param string $uri
      */
-    public function __construct($url = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0')
+    public function __construct($uri = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0')
     {
-        $this->_url = $url;
+        $this->_uri = $uri;
 
-        if (preg_match('#timeout=([\d.]+)#', $url, $matches) === 1) {
+        if (preg_match('#timeout=([\d.]+)#', $uri, $matches) === 1) {
             $this->_timeout = (float)$matches[1];
         }
 
-        if (preg_match('#pool_size=([\d/]+)#', $url, $matches)) {
+        if (preg_match('#pool_size=([\d/]+)#', $uri, $matches)) {
             $this->_pool_size = $matches[1];
         }
 
@@ -77,18 +77,18 @@ class Redis extends Component implements RedisInterface
         }
 
         $urls = [];
-        if (str_contains($url, '{') && preg_match('#{[^}]+}#', $url, $matches)) {
+        if (str_contains($uri, '{') && preg_match('#{[^}]+}#', $uri, $matches)) {
             $hosts = $matches[0];
             foreach (explode(',', substr($hosts, 1, -1)) as $value) {
                 $value = trim($value);
-                $urls[] = $value === '' ? $value : str_replace($hosts, $value, $url);
+                $urls[] = $value === '' ? $value : str_replace($hosts, $value, $uri);
             }
-        } elseif (str_contains($url, ',')) {
-            foreach (explode(',', $url) as $value) {
+        } elseif (str_contains($uri, ',')) {
+            foreach (explode(',', $uri) as $value) {
                 $urls[] = trim($value);
             }
         } else {
-            $urls[] = $url;
+            $urls[] = $uri;
         }
 
         if ($urls[0] !== '') {
@@ -133,9 +133,9 @@ class Redis extends Component implements RedisInterface
     /**
      * @return string
      */
-    public function getUrl()
+    public function getUri()
     {
-        return $this->_url;
+        return $this->_uri;
     }
 
     /**
