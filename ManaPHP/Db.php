@@ -95,9 +95,9 @@ class Db extends Component implements DbInterface
     protected $_timeout = 3.0;
 
     /**
-     * @var int
+     * @var string
      */
-    protected $_pool_size = 4;
+    protected $_pool_size = '4';
 
     /**
      * Db constructor.
@@ -112,8 +112,8 @@ class Db extends Component implements DbInterface
             $this->_timeout = (float)$matches[1];
         }
 
-        if (preg_match('#pool_size=(\d+)#', $uri, $matches)) {
-            $this->_pool_size = (int)$matches[1];
+        if (preg_match('#pool_size=([\d/]+)#', $uri, $matches)) {
+            $this->_pool_size = $matches[1];
         }
 
         if (preg_match('#[?&]prefix=(\w+)#', $uri, $matches)) {
@@ -135,10 +135,18 @@ class Db extends Component implements DbInterface
             $urls[] = $uri;
         }
 
+        if (($pos = strpos($this->_pool_size, '/')) === false) {
+            $master_pool_size = (int)$this->_pool_size;
+            $slave_pool_size = (int)$this->_pool_size;
+        } else {
+            $master_pool_size = (int)substr($this->_pool_size, 0, $pos);
+            $slave_pool_size = (int)substr($this->_pool_size, $pos + 1);
+        }
+
         if ($urls[0] !== '') {
             $url = $urls[0];
             $adapter = 'ManaPHP\Db\Connection\Adapter\\' . ucfirst(parse_url($url, PHP_URL_SCHEME));
-            $this->poolManager->add($this, ['class' => $adapter, $url], $this->_pool_size);
+            $this->poolManager->add($this, ['class' => $adapter, $url], $master_pool_size);
         }
 
         if (count($urls) > 1) {
@@ -153,8 +161,8 @@ class Db extends Component implements DbInterface
             if (MANAPHP_COROUTINE_ENABLED) {
                 shuffle($urls);
 
-                $this->poolManager->create($this, count($urls) * $this->_pool_size, 'slave');
-                for ($i = 0; $i < $this->_pool_size; $i++) {
+                $this->poolManager->create($this, count($urls) * $slave_pool_size, 'slave');
+                for ($i = 0; $i < $slave_pool_size; $i++) {
                     foreach ($urls as $url) {
                         $adapter = 'ManaPHP\Db\Connection\Adapter\\' . ucfirst(parse_url($url, PHP_URL_SCHEME));
                         $this->poolManager->add($this, ['class' => $adapter, $url], 1, 'slave');

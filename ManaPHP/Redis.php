@@ -32,6 +32,11 @@ class Redis extends Component implements RedisInterface
     protected $_has_slave = false;
 
     /**
+     * @var string
+     */
+    protected $_pool_size = '4';
+
+    /**
      * @var static
      */
     protected $_owner;
@@ -59,7 +64,17 @@ class Redis extends Component implements RedisInterface
             $this->_timeout = (float)$matches[1];
         }
 
-        $pool_size = preg_match('#pool_size=(\d+)#', $url, $matches) ? $matches[1] : 4;
+        if (preg_match('#pool_size=([\d/]+)#', $url, $matches)) {
+            $this->_pool_size = $matches[1];
+        }
+
+        if (($pos = strpos($this->_pool_size, '/')) === false) {
+            $master_pool_size = (int)$this->_pool_size;
+            $slave_pool_size = (int)$this->_pool_size;
+        } else {
+            $master_pool_size = (int)substr($this->_pool_size, 0, $pos);
+            $slave_pool_size = (int)substr($this->_pool_size, $pos + 1);
+        }
 
         $urls = [];
         if (str_contains($url, '[') && preg_match('#\[[^]]+]#', $url, $matches)) {
@@ -77,7 +92,7 @@ class Redis extends Component implements RedisInterface
         }
 
         if ($urls[0] !== '') {
-            $this->poolManager->add($this, ['class' => 'ManaPHP\Redis\Connection', $urls[0]], $pool_size);
+            $this->poolManager->add($this, ['class' => 'ManaPHP\Redis\Connection', $urls[0]], $master_pool_size);
         }
 
         if (count($urls) > 1) {
@@ -86,8 +101,8 @@ class Redis extends Component implements RedisInterface
             if (MANAPHP_COROUTINE_ENABLED) {
                 shuffle($urls);
 
-                $this->poolManager->create($this, count($urls) * $pool_size, 'slave');
-                for ($i = 0; $i <= $pool_size; $i++) {
+                $this->poolManager->create($this, count($urls) * $slave_pool_size, 'slave');
+                for ($i = 0; $i <= $slave_pool_size; $i++) {
                     foreach ($urls as $u) {
                         $this->poolManager->add($this, ['class' => 'ManaPHP\Redis\Connection', $u], 1, 'slave');
                     }
