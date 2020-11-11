@@ -32,6 +32,11 @@ abstract class Connection extends Component implements ConnectionInterface
     protected $_password;
 
     /**
+     * @var bool
+     */
+    protected $_emulate_prepares = false;
+
+    /**
      * @var array
      */
     protected $_options = [];
@@ -59,7 +64,7 @@ abstract class Connection extends Component implements ConnectionInterface
     public function __construct()
     {
         $this->_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
-        $this->_options[PDO::ATTR_EMULATE_PREPARES] = false;
+        $this->_options[PDO::ATTR_EMULATE_PREPARES] = $this->_emulate_prepares;
     }
 
     public function __clone()

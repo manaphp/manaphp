@@ -81,6 +81,10 @@ class Mysql extends Connection
             if (isset($query['readonly']) && $query['readonly'] !== '0') {
                 $this->_readonly = true;
             }
+
+            if (isset($query['emulate_prepares']) && $query['emulate_prepares'] !== '0') {
+                $this->_emulate_prepares = true;
+            }
         }
 
         $this->_options[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES '{$this->_charset}'";
