@@ -61,20 +61,26 @@ class Redis extends Component implements RedisInterface
 
         $pool_size = preg_match('#pool_size=(\d+)#', $url, $matches) ? $matches[1] : 4;
 
-        if (str_contains($url, ',')) {
-            $hosts = parse_url($url, PHP_URL_HOST);
-            if (str_contains($hosts, ',')) {
-                $urls = [];
-                foreach (explode(',', $hosts) as $host) {
-                    $urls[] = str_replace($hosts, $host, $url);
-                }
-            } else {
-                $urls = explode(',', $url);
+        $urls = [];
+        if (str_contains($url, '[') && preg_match('#\[[^]]+]#', $url, $matches)) {
+            $hosts = $matches[0];
+            foreach (explode(',', substr($hosts, 1, -1)) as $value) {
+                $value = trim($value);
+                $urls[] = $value === '' ? $value : str_replace($hosts, $value, $url);
             }
+        } elseif (str_contains($url, ',')) {
+            foreach (explode(',', $url) as $value) {
+                $urls[] = trim($value);
+            }
+        } else {
+            $urls[] = $url;
+        }
 
-            if ($urls[0] !== '') {
-                $this->poolManager->add($this, ['class' => 'ManaPHP\Redis\Connection', $urls[0]], $pool_size);
-            }
+        if ($urls[0] !== '') {
+            $this->poolManager->add($this, ['class' => 'ManaPHP\Redis\Connection', $urls[0]], $pool_size);
+        }
+
+        if (count($urls) > 1) {
             array_shift($urls);
 
             if (MANAPHP_COROUTINE_ENABLED) {
@@ -92,8 +98,6 @@ class Redis extends Component implements RedisInterface
             }
 
             $this->_has_slave = true;
-        } else {
-            $this->poolManager->add($this, ['class' => 'ManaPHP\Redis\Connection', $url], $pool_size);
         }
     }
 
