@@ -32,8 +32,21 @@ class Redis extends Component implements SettingsInterface
      */
     public function get($key)
     {
-        if (($value = $this->redisDb->hGet($this->_key, $key)) === false) {
-            throw new InvalidArgumentException(['`%s` key is not exists', $key]);
+        static $last_time;
+        static $cached;
+
+        $time = time();
+
+        if ($last_time !== $time) {
+            $last_time = $time;
+            $cached = [];
+        }
+
+        if (($value = $cached[$key] ?? null) === null) {
+            if (($value = $this->redisDb->hGet($this->_key, $key)) === false) {
+                throw new InvalidArgumentException(['`%s` key is not exists', $key]);
+            }
+            $cached[$key] = $value;
         }
 
         return $value;
