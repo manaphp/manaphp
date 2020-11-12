@@ -4,15 +4,14 @@ namespace ManaPHP\Configuration\Settings\Adapter;
 
 use ManaPHP\Component;
 use ManaPHP\Configuration\SettingsInterface;
-use ManaPHP\Exception\InvalidJsonException;
-use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\InvalidArgumentException;
 
 class Redis extends Component implements SettingsInterface
 {
     /**
      * @var string
      */
-    protected $_prefix;
+    protected $_key = 'settings';
 
     /**
      * Settings constructor.
@@ -21,36 +20,64 @@ class Redis extends Component implements SettingsInterface
      */
     public function __construct($options = [])
     {
-        $this->_prefix = $options['prefix'] ?? 'settings:';
+        if (isset($options['key'])) {
+            $this->_key = $options['key'];
+        }
     }
 
     /**
      * @param string $key
      *
-     * @return array
+     * @return string
      */
     public function get($key)
     {
-        $value = json_parse($this->redisDb->get($this->_prefix . $key) ?: '[]');
-        if (!is_array($value)) {
-            throw new InvalidJsonException('the settings of `:key` key value is not json format', ['key' => $key]);
+        if (($value = $this->redisDb->hGet($this->_key, $key)) === false) {
+            throw new InvalidArgumentException(['`%s` key is not exists', $key]);
         }
+
         return $value;
     }
 
     /**
-     * @param string|array $key
-     * @param array        $value
+     * @param array $keys
+     *
+     * @return array
+     */
+    public function mGet($keys)
+    {
+        $values = $this->redisDb->hMGet($this->_key, $keys);
+
+        foreach ($keys as $key) {
+            if (!isset($values[$key])) {
+                throw new InvalidArgumentException(['`%s` key is not exists', $key]);
+            }
+        }
+
+        return $values;
+    }
+
+    /**
+     * @param string           $key
+     * @param string|int|float $value
      *
      * @return static
      */
     public function set($key, $value)
     {
-        if (!is_array($value)) {
-            throw new InvalidValueException(['the settings of `:key` key value must be array', 'key' => $key]);
-        }
+        $this->redisDb->hSet($this->_key, $key, (string)$value);
 
-        $this->redisDb->set($this->_prefix . $key, json_stringify($value));
+        return $this;
+    }
+
+    /**
+     * @param array $kvs
+     *
+     * @return static
+     */
+    public function mSet($kvs)
+    {
+        $this->redisDb->hMSet($this->_key, $kvs);
 
         return $this;
     }
@@ -62,7 +89,7 @@ class Redis extends Component implements SettingsInterface
      */
     public function exists($key)
     {
-        return $this->redisDb->exists($this->_prefix . $key);
+        return $this->redisDb->hExists($this->_key, $key);
     }
 
     /**
@@ -72,7 +99,7 @@ class Redis extends Component implements SettingsInterface
      */
     public function delete($key)
     {
-        $this->redisDb->del($this->_prefix . $key);
+        $this->redisDb->hDel($this->_key, $key);
 
         return $this;
     }

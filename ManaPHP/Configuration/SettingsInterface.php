@@ -7,17 +7,31 @@ interface SettingsInterface
     /**
      * @param string $key
      *
-     * @return array
+     * @return string
      */
     public function get($key);
 
     /**
-     * @param string $key
-     * @param array  $value
+     * @param array $keys
+     *
+     * @return array
+     */
+    public function mGet($keys);
+
+    /**
+     * @param string           $key
+     * @param string|int|float $value
      *
      * @return static
      */
     public function set($key, $value);
+
+    /**
+     * @param array $kvs
+     *
+     * @return static
+     */
+    public function mSet($kvs);
 
     /**
      * @param string $key
