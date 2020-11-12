@@ -14,6 +14,16 @@ class Redis extends Component implements SettingsInterface
     protected $_key = 'settings';
 
     /**
+     * @var int
+     */
+    protected $_last_time;
+
+    /**
+     * @var array
+     */
+    protected $_cache;
+
+    /**
      * Settings constructor.
      *
      * @param array $options
@@ -27,26 +37,28 @@ class Redis extends Component implements SettingsInterface
 
     /**
      * @param string $key
+     * @param string $default
      *
      * @return string
      */
-    public function get($key)
+    public function get($key, $default = null)
     {
-        static $last_time;
-        static $cached;
-
         $time = time();
 
-        if ($last_time !== $time) {
-            $last_time = $time;
-            $cached = [];
+        if ($this->_last_time !== $time) {
+            $this->_last_time = $time;
+            $this->_cache = [];
         }
 
-        if (($value = $cached[$key] ?? null) === null) {
+        if (($value = $this->_cache[$key] ?? null) === null) {
             if (($value = $this->redisDb->hGet($this->_key, $key)) === false) {
-                throw new InvalidArgumentException(['`%s` key is not exists', $key]);
+                if ($default === null) {
+                    throw new InvalidArgumentException(['`%s` key is not exists', $key]);
+                } else {
+                    $value = $default;
+                }
             }
-            $cached[$key] = $value;
+            $this->_cache[$key] = $value;
         }
 
         return $value;
@@ -115,5 +127,13 @@ class Redis extends Component implements SettingsInterface
         $this->redisDb->hDel($this->_key, $key);
 
         return $this;
+    }
+
+    public function dump()
+    {
+        $data = parent::dump();
+        unset($data['_last_time'], $data['_cache']);
+
+        return $data;
     }
 }

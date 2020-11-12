@@ -6,10 +6,11 @@ interface SettingsInterface
 {
     /**
      * @param string $key
+     * @param string $default
      *
      * @return string
      */
-    public function get($key);
+    public function get($key, $default = null);
 
     /**
      * @param array $keys
