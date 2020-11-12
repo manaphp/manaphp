@@ -14,12 +14,7 @@ class Redis extends Component implements SettingsInterface
     protected $_key = 'settings';
 
     /**
-     * @var int
-     */
-    protected $_last_time;
-
-    /**
-     * @var array
+     * @var \ManaPHP\MCacheInterface
      */
     protected $_cache;
 
@@ -33,6 +28,16 @@ class Redis extends Component implements SettingsInterface
         if (isset($options['key'])) {
             $this->_key = $options['key'];
         }
+
+        if (isset($options['cache'])) {
+            $cacheClass = 'ManaPHP\MCache\\' . ucfirst($options['cache']) . 'Cache';
+        } elseif (function_exists('apcu_enabled') && apcu_enabled()) {
+            $cacheClass = 'ManaPHP\MCache\ApcuCache';
+        } else {
+            $cacheClass = 'ManaPHP\MCache\ArrCache';
+        }
+
+        $this->_cache = new $cacheClass();
     }
 
     /**
@@ -43,14 +48,8 @@ class Redis extends Component implements SettingsInterface
      */
     public function get($key, $default = null)
     {
-        $time = time();
-
-        if ($this->_last_time !== $time) {
-            $this->_last_time = $time;
-            $this->_cache = [];
-        }
-
-        if (($value = $this->_cache[$key] ?? null) === null) {
+        return $this->_cache->get(
+            $key, function ($key) use ($default) {
             if (($value = $this->redisDb->hGet($this->_key, $key)) === false) {
                 if ($default === null) {
                     throw new InvalidArgumentException(['`%s` key is not exists', $key]);
@@ -58,10 +57,9 @@ class Redis extends Component implements SettingsInterface
                     $value = $default;
                 }
             }
-            $this->_cache[$key] = $value;
+            return $value;
         }
-
-        return $value;
+        );
     }
 
     /**
@@ -132,7 +130,7 @@ class Redis extends Component implements SettingsInterface
     public function dump()
     {
         $data = parent::dump();
-        unset($data['_last_time'], $data['_cache']);
+        unset($data['_cache']);
 
         return $data;
     }
