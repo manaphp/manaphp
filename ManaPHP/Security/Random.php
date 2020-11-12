@@ -80,31 +80,6 @@ class Random extends Component implements RandomInterface
     }
 
     /**
-     * Generates a v4 random UUID (Universally Unique IDentifier)
-     *
-     * The version 4 UUID is purely random (except the version). It doesn't contain meaningful
-     * information such as MAC address, time, etc. See RFC 4122 for details of UUID.
-     *
-     * This algorithm sets the version number (4 bits) as well as two reserved bits.
-     * All other bits (the remaining 122 bits) are set using a random or pseudo-random data source.
-     * Version 4 UUIDs have the form xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx where x is any hexadecimal
-     * digit and y is one of 8, 9, A, or B (e.g., f47ac10b-58cc-4372-a567-0e02b2c3d479).
-     *
-     * @link https://www.ietf.org/rfc/rfc4122.txt
-     *
-     * @return string
-     */
-    public function getUuid()
-    {
-        $bytes = unpack('N1a/n1b/n1c/n1d/n1e/N1f', $this->getByte(16));
-        return sprintf(
-            '%08x-%04x-%04x-%04x-%04x%08x',
-            $bytes['a'], $bytes['b'], ($bytes['c'] & 0x0FFF) | 0x4000, ($bytes['d'] & 0x3FFF) | 0x8000, $bytes['e'],
-            $bytes['f']
-        );
-    }
-
-    /**
      * https://en.wikipedia.org/wiki/Linear_congruential_generator
      *
      * @param int $n

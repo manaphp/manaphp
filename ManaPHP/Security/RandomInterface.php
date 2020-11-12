@@ -41,11 +41,6 @@ interface RandomInterface
     public function getFloat($min = 0.0, $max = 1.0);
 
     /**
-     * @return string
-     */
-    public function getUuid();
-
-    /**
      * https://en.wikipedia.org/wiki/Linear_congruential_generator
      *
      * @param int $n
