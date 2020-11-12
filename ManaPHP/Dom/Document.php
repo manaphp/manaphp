@@ -65,7 +65,7 @@ class Document extends Component
 
     /**
      * @param string $file
-     * @param static $url
+     * @param string $url
      *
      * @return static
      */
