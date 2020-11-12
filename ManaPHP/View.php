@@ -63,6 +63,11 @@ class View extends Component implements ViewInterface
     protected $_dirs = [];
 
     /**
+     * @var array
+     */
+    protected $_exists_cache;
+
+    /**
      * View constructor.
      *
      * @param array $options
@@ -320,8 +325,6 @@ class View extends Component implements ViewInterface
      */
     public function exists($template = null)
     {
-        static $cached = [];
-
         if ($template === null) {
             $action = $this->dispatcher->getAction();
         } elseif (str_contains($template, '/')) {
@@ -354,7 +357,8 @@ class View extends Component implements ViewInterface
             }
         }
 
-        return $cached[$template] ?? ($cached[$template] = $this->renderer->exists($template));
+        return $this->_exists_cache[$template] ??
+            ($this->_exists_cache[$template] = $this->renderer->exists($template));
     }
 
     /**
@@ -455,6 +459,7 @@ class View extends Component implements ViewInterface
         $data = parent::dump();
 
         $data['_context']['content'] = '***';
+        unset($data['_exists_cache']);
 
         return $data;
     }
