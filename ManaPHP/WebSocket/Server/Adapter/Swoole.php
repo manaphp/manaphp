@@ -153,16 +153,12 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function onStart($server)
     {
-        $title = sprintf('manaphp %s: master', $this->configure->id);
-
-        @cli_set_process_title($title);
+        @cli_set_process_title(sprintf('manaphp %s: master', $this->configure->id));
     }
 
     public function onManagerStart()
     {
-        $title = sprintf('manaphp %s: manager', $this->configure->id);
-
-        @cli_set_process_title($title);
+        @cli_set_process_title(sprintf('manaphp %s: manager', $this->configure->id));
     }
 
     /**
@@ -173,9 +169,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function onWorkerStart($server, $worker_id)
     {
-        $title = sprintf('manaphp %s: worker/%d', $this->configure->id, $worker_id);
-
-        @cli_set_process_title($title);
+        @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->configure->id, $worker_id));
 
         $this->_handler->onStart($worker_id);
     }
