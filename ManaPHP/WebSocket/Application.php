@@ -87,11 +87,6 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         }
     }
 
-    public function onStart($worker_id)
-    {
-        $this->fireEvent('wsServer:start', $worker_id);
-    }
-
     /**
      * @param int $fd
      */

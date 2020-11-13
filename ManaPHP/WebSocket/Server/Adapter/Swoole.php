@@ -171,7 +171,11 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     {
         @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->configure->id, $worker_id));
 
-        $this->_handler->onStart($worker_id);
+        try {
+            $this->fireEvent('wsServer:start', $worker_id);
+        } catch (Throwable $throwable) {
+            $this->logger->error($throwable);
+        }
     }
 
     /**
