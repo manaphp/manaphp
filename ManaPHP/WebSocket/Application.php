@@ -21,9 +21,21 @@ use Throwable;
  */
 class Application extends \ManaPHP\Application implements HandlerInterface
 {
+    public function __construct($loader = null)
+    {
+        parent::__construct($loader);
+
+        $this->attachEvent('request:authenticate', [$this, 'authenticate']);
+    }
+
     public function getFactory()
     {
         return 'ManaPHP\WebSocket\Factory';
+    }
+
+    public function authenticate()
+    {
+        $this->identity->authenticate();
     }
 
     /**
@@ -38,6 +50,10 @@ class Application extends \ManaPHP\Application implements HandlerInterface
             $throwable = null;
 
             $this->fireEvent('request:begin');
+
+            if ($event === 'open') {
+                $this->fireEvent('request:authenticate');
+            }
 
             if (!$this->router->match()) {
                 throw new NotFoundRouteException(['router does not have matched route']);
