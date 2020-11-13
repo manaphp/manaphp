@@ -58,19 +58,13 @@ class Application extends \ManaPHP\Application implements HandlerInterface
             } else {
                 $this->response->setJsonContent($returnValue);
             }
-        } catch (AbortException $exception) {
-            null;
-        } catch (Throwable $throwable) {
-            $this->handleException($throwable);
-        }
 
-        try {
             if ($event === 'open') {
                 $this->fireEvent('wsServer:open', $fd);
             } elseif ($event === 'close') {
                 $this->fireEvent('wsServer:close', $fd);
             }
-        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (AbortException $exception) {
+        } catch (AbortException $exception) {
             null;
         } catch (Throwable $throwable) {
             $this->handleException($throwable);
