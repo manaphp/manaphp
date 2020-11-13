@@ -66,9 +66,9 @@ class Application extends \ManaPHP\Application implements HandlerInterface
 
         try {
             if ($event === 'open') {
-                $this->fireEvent('ws:open', $fd);
+                $this->fireEvent('wsServer:open', $fd);
             } elseif ($event === 'close') {
-                $this->fireEvent('ws:close', $fd);
+                $this->fireEvent('wsServer:close', $fd);
             }
         } /** @noinspection PhpRedundantCatchClauseInspection */ catch (AbortException $exception) {
             null;
@@ -89,7 +89,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
 
     public function onStart($worker_id)
     {
-        $this->fireEvent('ws:start', $worker_id);
+        $this->fireEvent('wsServer:start', $worker_id);
     }
 
     /**

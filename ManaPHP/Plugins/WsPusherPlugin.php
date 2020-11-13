@@ -61,12 +61,12 @@ class  WsPusherPlugin extends Plugin
             $this->_sso = (bool)$options['sso'];
         }
 
-        $this->attachEvent('ws:start', [$this, 'onWsStart']);
-        $this->attachEvent('ws:open', [$this, 'onWsOpen']);
-        $this->attachEvent('ws:close', [$this, 'onWsClose']);
+        $this->attachEvent('wsServer:start', [$this, 'onWsServerStart']);
+        $this->attachEvent('wsServer:open', [$this, 'onWsServerOpen']);
+        $this->attachEvent('wsServer:close', [$this, 'onWsServerClose']);
     }
 
-    public function onWsOpen(EventArgs $eventArgs)
+    public function onWsServerOpen(EventArgs $eventArgs)
     {
         $fd = $eventArgs->data;
 
@@ -89,7 +89,7 @@ class  WsPusherPlugin extends Plugin
         }
     }
 
-    public function onWsClose(EventArgs $eventArgs)
+    public function onWsServerClose(EventArgs $eventArgs)
     {
         $fd = $eventArgs->data;
 
@@ -267,7 +267,7 @@ class  WsPusherPlugin extends Plugin
         }
     }
 
-    public function onWsStart(EventArgs $eventArgs)
+    public function onWsServerStart(EventArgs $eventArgs)
     {
         $this->_worker_id = $eventArgs->data;
 

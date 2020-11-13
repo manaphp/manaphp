@@ -201,6 +201,7 @@ namespace PHPSTORM_META {
         'httpClient:requesting', 'httpClient:requested',
         'httpClient:start', 'httpClient:complete', 'httpClient:error', 'httpClient:success',
         'wsClient:open', 'wsClient:close', 'wsClient:send', 'wsClient:recv', 'wsClient:message',
+        'wsServer:open', 'wsServer:close', 'wsServer:start',
         'view:rendering', 'view:rendered',
         'renderer:rendering', 'renderer:rendered',
     );
