@@ -112,6 +112,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
         $this->_swoole->on('Start', [$this, 'onStart']);
         $this->_swoole->on('ManagerStart', [$this, 'onManagerStart']);
         $this->_swoole->on('WorkerStart', [$this, 'onWorkerStart']);
+        $this->_swoole->on('WorkerStop', [$this, 'onWorkerStop']);
         $this->_swoole->on('open', [$this, 'onOpen']);
         $this->_swoole->on('close', [$this, 'onClose']);
         $this->_swoole->on('message', [$this, 'onMessage']);
@@ -173,6 +174,21 @@ class Swoole extends Component implements ServerInterface, Unaspectable
 
         try {
             $this->fireEvent('wsServer:start', $worker_id);
+        } catch (Throwable $throwable) {
+            $this->logger->error($throwable);
+        }
+    }
+
+    /**
+     * @param \Swoole\WebSocket\Server $server
+     * @param int                      $worker_id
+     *
+     * @noinspection PhpUnusedParameterInspection
+     */
+    public function onWorkerStop($server, $worker_id)
+    {
+        try {
+            $this->fireEvent('wsServer:stop', $worker_id);
         } catch (Throwable $throwable) {
             $this->logger->error($throwable);
         }
