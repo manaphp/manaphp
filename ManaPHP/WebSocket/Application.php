@@ -92,9 +92,6 @@ class Application extends \ManaPHP\Application implements HandlerInterface
      */
     public function onOpen($fd)
     {
-        $globals = $this->request->getContext();
-        $globals->_REQUEST['fd'] = $fd;
-
         $this->handle($fd, 'open');
     }
 
