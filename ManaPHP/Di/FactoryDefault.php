@@ -58,6 +58,7 @@ class FactoryDefault extends Di
             'identity'         => 'ManaPHP\Identity',
             'coroutineManager' => 'ManaPHP\Coroutine\Manager',
             'jwt'              => 'ManaPHP\Jwt',
+            'scopedJwt'        => 'ManaPHP\ScopedJwt',
             'wsClient'         => 'ManaPHP\WebSocket\Client',
             'pubSub'           => 'ManaPHP\Message\PubSub\Adapter\Redis',
             'dataDump'         => 'ManaPHP\DataDump',

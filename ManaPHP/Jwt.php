@@ -2,12 +2,10 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Exception\MisuseException;
 use ManaPHP\Jwt\ExpiredException;
 use ManaPHP\Jwt\MalformedException;
 use ManaPHP\Jwt\NoCredentialException;
 use ManaPHP\Jwt\NotBeforeException;
-use ManaPHP\Jwt\ScopeException;
 use ManaPHP\Jwt\SignatureException;
 
 /**
@@ -28,11 +26,6 @@ class Jwt extends Component implements JwtInterface
     protected $_secret;
 
     /**
-     * @var array
-     */
-    protected $_scopedSecrets = [];
-
-    /**
      * Jwt constructor.
      *
      * @param array $options
@@ -46,29 +39,7 @@ class Jwt extends Component implements JwtInterface
         if (isset($options['secret'])) {
             $this->_secret = $options['secret'];
         } else {
-            $this->_secret = $this->getScopedSecret($this->configure->id);
-        }
-    }
-
-    /**
-     * @param string $scope
-     * @param bool   $cache
-     *
-     * @return string
-     */
-    public function getScopedSecret($scope, $cache = true)
-    {
-        if ($cache) {
-            if (($secret = $this->_scopedSecrets[$scope] ?? null) === null) {
-                $secret = $this->_scopedSecrets[$scope] = $this->getScopedSecret($scope, false);
-            }
-            return $secret;
-        } else {
-            if ($scope === '') {
-                return $this->crypt->getDerivedKey('jwt');
-            } else {
-                return $this->crypt->getDerivedKey("jwt:$scope");
-            }
+            $this->_secret = $this->crypt->getDerivedKey('jwt:' . $this->configure->id);
         }
     }
 
@@ -200,40 +171,5 @@ class Jwt extends Component implements JwtInterface
         if (!$success) {
             throw new SignatureException('signature is not corrected');
         }
-    }
-
-    public function scopedEncode($claims, $ttl, $scope)
-    {
-        if (isset($claims['scope'])) {
-            throw new MisuseException('scope field is exists');
-        }
-
-        $claims['scope'] = $scope;
-
-        return $this->encode($claims, $ttl, $this->getScopedSecret($scope));
-    }
-
-    public function scopedDecode($token, $scope, $verify = true)
-    {
-        $claims = $this->decode($token, false);
-
-        if (!isset($claims['scope'])) {
-            throw new ScopeException('scope is not exists');
-        }
-
-        if ($claims['scope'] !== $scope) {
-            throw new ScopeException(['`%s` is not equal `%s`', $claims['scope'], $scope]);
-        }
-
-        if ($verify) {
-            $this->scopedVerify($token, $scope);
-        }
-
-        return $claims;
-    }
-
-    public function scopedVerify($token, $scope)
-    {
-        $this->verify($token, $this->getScopedSecret($scope));
     }
 }

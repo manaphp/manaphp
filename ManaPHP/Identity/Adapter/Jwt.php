@@ -9,7 +9,7 @@ use ManaPHP\Identity;
  *
  * @package ManaPHP\Identity\Adapter
  * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\JwtInterface          $jwt
+ * @property-read \ManaPHP\ScopedJwtInterface    $scopedJwt
  */
 class Jwt extends Identity
 {
@@ -34,7 +34,7 @@ class Jwt extends Identity
     public function authenticate()
     {
         if ($token = $this->request->getToken()) {
-            $claims = $this->jwt->scopedDecode($token, $this->_scope);
+            $claims = $this->scopedJwt->decode($token, $this->_scope);
             $this->setClaims($claims);
         }
 

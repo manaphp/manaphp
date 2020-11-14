@@ -59,6 +59,7 @@ namespace PHPSTORM_META {
             'wsPusher' instanceof \ManaPHP\WebSocket\PusherInterface,
             'coroutine' instanceof \ManaPHP\CoroutineInterface,
             'jwt' instanceof \ManaPHP\JwtInterface,
+            'scopedJwt' instanceof \ManaPHP\ScopedJwtInterface,
             'pubSub' instanceof \ManaPHP\Message\PubSubInterface,
         ],
         \di('')                               => [
@@ -115,6 +116,7 @@ namespace PHPSTORM_META {
             'wsPusher' instanceof \ManaPHP\WebSocket\PusherInterface,
             'coroutineManager' instanceof \ManaPHP\Coroutine\ManagerInterface,
             'jwt' instanceof \ManaPHP\JwtInterface,
+            'scopedJwt' instanceof \ManaPHP\ScopedJwtInterface,
             'pubSub' instanceof \ManaPHP\Message\PubSubInterface,
             'dataDump' instanceof \ManaPHP\DataDumpInterface,
         ],
@@ -172,6 +174,7 @@ namespace PHPSTORM_META {
             'wsPusher' instanceof \ManaPHP\WebSocket\PusherInterface,
             'coroutineManager' instanceof \ManaPHP\Coroutine\ManagerInterface,
             'jwt' instanceof \ManaPHP\JwtInterface,
+            'scopedJwt' instanceof \ManaPHP\ScopedJwtInterface,
             'pubSub' instanceof \ManaPHP\Message\PubSubInterface,
             'dataDump' instanceof \ManaPHP\DataDumpInterface,
         ],
