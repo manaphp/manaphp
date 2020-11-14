@@ -16,7 +16,7 @@ class ScopedJwt extends Component implements ScopedJwtInterface
     /**
      * @var array
      */
-    protected $_scopedSecrets = [];
+    protected $_secrets = [];
 
     /**
      * @param string $scope
@@ -27,8 +27,8 @@ class ScopedJwt extends Component implements ScopedJwtInterface
     public function getSecret($scope, $cache = true)
     {
         if ($cache) {
-            if (($secret = $this->_scopedSecrets[$scope] ?? null) === null) {
-                $secret = $this->_scopedSecrets[$scope] = $this->getSecret($scope, false);
+            if (($secret = $this->_secrets[$scope] ?? null) === null) {
+                $secret = $this->_secrets[$scope] = $this->getSecret($scope, false);
             }
             return $secret;
         } else {
