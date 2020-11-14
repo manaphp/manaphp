@@ -23,6 +23,11 @@ class Jwt extends Identity
     protected $_alg = 'HS256';
 
     /**
+     * @var string
+     */
+    protected $_scope;
+
+    /**
      * @var string|array
      */
     protected $_key;
@@ -43,7 +48,8 @@ class Jwt extends Identity
             $this->_alg = $options['alg'];
         }
 
-        $this->_key = $options['key'] ?? $this->getScopedKey('');
+        $this->_scope = $options['scope'] ?? $this->configure->id;
+        $this->_key = $options['key'] ?? $this->getScopedKey($this->_scope);
 
         if (isset($options['ttl'])) {
             $this->_ttl = $options['ttl'];
