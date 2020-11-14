@@ -85,4 +85,12 @@ class ScopedJwt extends Component implements ScopedJwtInterface
     {
         $this->jwt->verify($token, $this->getSecret($scope));
     }
+
+    public function dump()
+    {
+        $data = parent::dump();
+        $data['_secrets'] = '***';
+
+        return $data;
+    }
 }
