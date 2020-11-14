@@ -19,6 +19,18 @@ class ScopedJwt extends Component implements ScopedJwtInterface
     protected $_secrets = [];
 
     /**
+     * ScopedJwt constructor.
+     *
+     * @param array $options
+     */
+    public function __construct($options = [])
+    {
+        if (isset($options['secrets'])) {
+            $this->_secrets = $options['secrets'];
+        }
+    }
+
+    /**
      * @param string $scope
      * @param bool   $cache
      *
@@ -26,18 +38,17 @@ class ScopedJwt extends Component implements ScopedJwtInterface
      */
     public function getSecret($scope, $cache = true)
     {
-        if ($cache) {
-            if (($secret = $this->_secrets[$scope] ?? null) === null) {
-                $secret = $this->_secrets[$scope] = $this->getSecret($scope, false);
-            }
+        if (($secret = $this->_secrets[$scope] ?? null) !== null) {
             return $secret;
-        } else {
-            if ($scope === '') {
-                return $this->crypt->getDerivedKey('jwt');
-            } else {
-                return $this->crypt->getDerivedKey("jwt:$scope");
-            }
         }
+
+        $secret = $this->crypt->getDerivedKey($scope === '' ? 'jwt' : "jwt:$scope");
+
+        if ($cache) {
+            $this->_secrets[$scope] = $secret;
+        }
+
+        return $secret;
     }
 
     public function encode($claims, $ttl, $scope)
