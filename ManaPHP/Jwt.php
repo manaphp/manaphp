@@ -112,7 +112,7 @@ class Jwt extends Component implements JwtInterface
 
         $parts = explode('.', $token, 5);
         if (count($parts) !== 3) {
-            throw new MalformedException(['The JWT `:token` must have one dot', 'token' => $token]);
+            throw new MalformedException('The JWT must have three dots');
         }
 
         list($header, $payload) = $parts;
@@ -125,11 +125,11 @@ class Jwt extends Component implements JwtInterface
         //DO NOT use json_parse, it maybe generates a lot of Exceptions
         $decoded_header = json_decode($this->base64UrlDecode($header), true);
         if (!$decoded_header) {
-            throw new MalformedException(['The JWT header `:header` is not distinguished', 'header' => $header]);
+            throw new MalformedException('The JWT header is not distinguished');
         }
 
         if (!isset($decoded_header['alg'])) {
-            throw new MalformedException(['The JWT alg field is missing: `:token`', 'token' => $token]);
+            throw new MalformedException('The JWT alg field is missing');
         }
 
         if ($decoded_header['alg'] !== $this->_alg) {
@@ -163,7 +163,7 @@ class Jwt extends Component implements JwtInterface
     public function verify($token, $secrets = null)
     {
         if (($pos = strrpos($token, '.')) === false) {
-            throw new MalformedException(['`:token` token is not distinguished', 'token' => $token]);
+            throw new MalformedException('The JWT must have three dots');
         }
 
         $data = substr($token, 0, $pos);
@@ -179,7 +179,7 @@ class Jwt extends Component implements JwtInterface
         }
 
         if (!$success) {
-            throw new SignatureException(['signature is not corrected: :signature', 'signature' => $signature]);
+            throw new SignatureException('signature is not corrected');
         }
     }
 
