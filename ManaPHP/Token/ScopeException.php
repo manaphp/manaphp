@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Jwt;
+namespace ManaPHP\Token;
 
 class ScopeException extends Exception
 {

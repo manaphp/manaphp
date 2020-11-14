@@ -8,8 +8,8 @@ use ManaPHP\Identity;
  * Class Jwt
  *
  * @package ManaPHP\Identity\Adapter
- * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\ScopedJwtInterface    $scopedJwt
+ * @property-read \ManaPHP\Http\RequestInterface    $request
+ * @property-read \ManaPHP\Token\ScopedJwtInterface $scopedJwt
  */
 class Jwt extends Identity
 {

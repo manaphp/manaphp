@@ -1,15 +1,15 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Token;
 
+use ManaPHP\Component;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Jwt\ScopeException;
 
 /**
  * Class ScopedJwt
  *
- * @package ManaPHP\Jwt
- * @property-read \ManaPHP\JwtInterface $jwt
+ * @package ManaPHP\Token\Jwt
+ * @property-read \ManaPHP\Token\JwtInterface $jwt
  */
 class ScopedJwt extends Component implements ScopedJwtInterface
 {

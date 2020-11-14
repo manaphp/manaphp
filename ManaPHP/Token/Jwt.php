@@ -1,17 +1,13 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Token;
 
-use ManaPHP\Jwt\ExpiredException;
-use ManaPHP\Jwt\MalformedException;
-use ManaPHP\Jwt\NoCredentialException;
-use ManaPHP\Jwt\NotBeforeException;
-use ManaPHP\Jwt\SignatureException;
+use ManaPHP\Component;
 
 /**
  * Class Jwt
  *
- * @package ManaPHP
+ * @package ManaPHP\Token
  */
 class Jwt extends Component implements JwtInterface
 {
