@@ -11,6 +11,12 @@ namespace ManaPHP\WebSocket;
  * @property-read \ManaPHP\Http\ResponseInterface    $response
  * @property-read \ManaPHP\DispatcherInterface       $dispatcher
  * @property-read \ManaPHP\RouterInterface           $router
+ * @method startAction()
+ * @method stopAction()
+ * @method openAction($fd)
+ * @method closeAction($fd)
+ * @method messageAction($fd, $data)
+ *
  */
 class Controller extends \ManaPHP\Controller
 {

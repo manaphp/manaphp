@@ -10,6 +10,11 @@ namespace ManaPHP\WebSocket;
 class Dispatcher extends \ManaPHP\Dispatcher
 {
     /**
+     * @var array
+     */
+    protected $_controllers;
+
+    /**
      * @param \ManaPHP\Controller $controller
      * @param string              $action
      *
@@ -17,7 +22,20 @@ class Dispatcher extends \ManaPHP\Dispatcher
      */
     public function invokeAction($controller, $action)
     {
-        if (!$controller->isInvokable($action)) {
+        $controller_oid = $controller->_object_id;
+        if (!isset($this->_controllers[$controller_oid])) {
+            $this->_controllers[$controller_oid] = true;
+
+            if (method_exists($controller, 'startAction')) {
+                $controller->startAction();
+            }
+
+            if (method_exists($controller, 'stopAction')) {
+                $controller->attachEvent('wsServer:stop', [$controller, 'stopAction']);
+            }
+        }
+
+        if (!method_exists($controller, $action . 'Action')) {
             return null;
         }
 
