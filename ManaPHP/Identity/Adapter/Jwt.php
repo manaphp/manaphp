@@ -105,7 +105,7 @@ class Jwt extends Identity
      *
      * @return string
      */
-    public function base64urlEncode($str)
+    public function base64UrlEncode($str)
     {
         return strtr(rtrim(base64_encode($str), '='), '+/', '-_');
     }
@@ -115,7 +115,7 @@ class Jwt extends Identity
      *
      * @return bool|string
      */
-    public function base64urlDecode($str)
+    public function base64UrlDecode($str)
     {
         return base64_decode(strtr($str, '-_', '+/'));
     }
@@ -142,10 +142,10 @@ class Jwt extends Identity
         $claims['iat'] = time();
         $claims['exp'] = time() + ($ttl ?: $this->_ttl);
 
-        $header = $this->base64urlEncode(json_stringify(['alg' => $this->_alg, 'typ' => 'JWT']));
-        $payload = $this->base64urlEncode(json_stringify($claims));
+        $header = $this->base64UrlEncode(json_stringify(['alg' => $this->_alg, 'typ' => 'JWT']));
+        $payload = $this->base64UrlEncode(json_stringify($claims));
         $hmac = hash_hmac(strtr($this->_alg, ['HS' => 'sha']), "$header.$payload", $key, true);
-        $signature = $this->base64urlEncode($hmac);
+        $signature = $this->base64UrlEncode($hmac);
 
         return "$header.$payload.$signature";
     }
@@ -171,7 +171,7 @@ class Jwt extends Identity
         list($header, $payload) = $parts;
 
         //DO NOT use json_parse, it maybe generates a lot of Exceptions
-        if (!is_array($claims = json_decode($this->base64urlDecode($payload), true))) {
+        if (!is_array($claims = json_decode($this->base64UrlDecode($payload), true))) {
             throw new BadCredentialException('payload is not array.');
         }
 
@@ -180,7 +180,7 @@ class Jwt extends Identity
         }
 
         //DO NOT use json_parse, it maybe generates a lot of Exceptions
-        $decoded_header = json_decode($this->base64urlDecode($header), true);
+        $decoded_header = json_decode($this->base64UrlDecode($header), true);
         if (!$decoded_header) {
             throw new BadCredentialException(['The JWT header `:header` is not distinguished', 'header' => $header]);
         }
@@ -239,7 +239,7 @@ class Jwt extends Identity
         $success = false;
         foreach ((array)$keys as $key) {
             $hmac = hash_hmac(strtr($this->_alg, ['HS' => 'sha']), $data, $key, true);
-            if ($this->base64urlEncode($hmac) === $signature) {
+            if ($this->base64UrlEncode($hmac) === $signature) {
                 $success = true;
                 break;
             }
