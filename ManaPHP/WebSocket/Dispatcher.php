@@ -7,7 +7,7 @@ namespace ManaPHP\WebSocket;
  *
  * @package ManaPHP\WebSocket
  */
-class Dispatcher extends \ManaPHP\Dispatcher
+class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
 {
     /**
      * @var array

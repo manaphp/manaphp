@@ -1,11 +1,11 @@
 <?php
 
-namespace ManaPHP\Dispatcher;
+namespace ManaPHP\Http\Dispatcher;
 
 use ManaPHP\Exception\NotFoundException;
 
 /**
- * Class ManaPHP\Dispatcher\NotFoundControllerException
+ * Class ManaPHP\Http\Dispatcher\NotFoundControllerException
  *
  * @package dispatcher
  */

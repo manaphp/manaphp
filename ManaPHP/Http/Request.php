@@ -29,8 +29,8 @@ class RequestContext implements Stickyable
  *
  * @package request
  *
- * @property-read \ManaPHP\DispatcherInterface $dispatcher
- * @property-read \ManaPHP\Http\RequestContext $_context
+ * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
+ * @property-read \ManaPHP\Http\RequestContext      $_context
  */
 class Request extends Component implements RequestInterface
 {

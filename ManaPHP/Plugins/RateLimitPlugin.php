@@ -47,7 +47,7 @@ class RateLimitPlugin extends Plugin
 
     public function onRequestValidate(EventArgs $eventArgs)
     {
-        /** @var \ManaPHP\DispatcherInterface $dispatcher */
+        /** @var \ManaPHP\Http\DispatcherInterface $dispatcher */
         $dispatcher = $eventArgs->source;
         /** @var \ManaPHP\Rest\Controller $controller */
         $controller = $eventArgs->data['controller'];

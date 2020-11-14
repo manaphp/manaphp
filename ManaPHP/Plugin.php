@@ -12,7 +12,7 @@ use ManaPHP\Logger\LogCategorizable;
  * @property-read \ManaPHP\Security\CaptchaInterface      $captcha
  * @property-read \ManaPHP\Http\RequestInterface          $request
  * @property-read \ManaPHP\Http\ResponseInterface         $response
- * @property-read \ManaPHP\DispatcherInterface            $dispatcher
+ * @property-read \ManaPHP\Http\DispatcherInterface       $dispatcher
  * @property-read \ManaPHP\Message\QueueInterface         $messageQueue
  * @property-read \ManaPHP\Db\Model\MetadataInterface     $modelsMetadata
  * @property-read \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier

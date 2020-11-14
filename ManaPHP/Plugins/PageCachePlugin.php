@@ -62,7 +62,7 @@ class PageCachePlugin extends Plugin
             return;
         }
 
-        /** @var \ManaPHP\DispatcherInterface $dispatcher */
+        /** @var \ManaPHP\Http\DispatcherInterface $dispatcher */
         /** @var \ManaPHP\Http\Controller $controller */
         $dispatcher = $eventArgs->source;
         $controller = $eventArgs->data['controller'];

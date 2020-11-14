@@ -1,11 +1,11 @@
 <?php
 
-namespace ManaPHP\Dispatcher;
+namespace ManaPHP\Http\Dispatcher;
 
 use ManaPHP\Exception\NotFoundException;
 
 /**
- * Class ManaPHP\Dispatcher\NotFoundActionException
+ * Class ManaPHP\Http\Dispatcher\NotFoundActionException
  *
  * @package dispatcher
  */

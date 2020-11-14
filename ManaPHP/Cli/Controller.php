@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Cli;
 
-use ManaPHP\Dispatcher\NotFoundActionException;
+use ManaPHP\Http\Dispatcher\NotFoundActionException;
 use ReflectionMethod;
 
 /**

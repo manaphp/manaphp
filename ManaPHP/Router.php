@@ -42,9 +42,9 @@ class RouterContext
  *
  * @package router
  *
- * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\DispatcherInterface   $dispatcher
- * @property-read \ManaPHP\RouterContext         $_context
+ * @property-read \ManaPHP\Http\RequestInterface    $request
+ * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
+ * @property-read \ManaPHP\RouterContext            $_context
  */
 class Router extends Component implements RouterInterface
 {

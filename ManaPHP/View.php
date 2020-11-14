@@ -36,9 +36,9 @@ class ViewContext
  *
  * @package view
  *
- * @property-read \ManaPHP\RendererInterface   $renderer
- * @property-read \ManaPHP\DispatcherInterface $dispatcher
- * @property-read \ManaPHP\ViewContext         $_context
+ * @property-read \ManaPHP\RendererInterface        $renderer
+ * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
+ * @property-read \ManaPHP\ViewContext              $_context
  */
 class View extends Component implements ViewInterface
 {

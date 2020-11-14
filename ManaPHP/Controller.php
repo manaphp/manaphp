@@ -2,7 +2,7 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Dispatcher\NotFoundActionException;
+use ManaPHP\Http\Dispatcher\NotFoundActionException;
 use ManaPHP\Logger\LogCategorizable;
 use Throwable;
 

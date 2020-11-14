@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP\Dispatcher;
+namespace ManaPHP\Http\Dispatcher;
 
 /**
- * Class ManaPHP\Dispatcher\Exception
+ * Class ManaPHP\Http\Dispatcher\Exception
  *
  * @package dispatcher
  */

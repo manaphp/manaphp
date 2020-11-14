@@ -22,7 +22,7 @@ class AuthorizationContext
  *
  * @package ManaPHP
  *
- * @property-read \ManaPHP\DispatcherInterface               $dispatcher
+ * @property-read \ManaPHP\Http\DispatcherInterface          $dispatcher
  * @property-read \ManaPHP\RouterInterface                   $router
  * @property-read \ManaPHP\Http\RequestInterface             $request
  * @property-read \ManaPHP\Http\ResponseInterface            $response

@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Http;
 
 /**
- * Interface ManaPHP\DispatcherInterface
+ * Interface ManaPHP\Http\DispatcherInterface
  *
  * @package dispatcher
  */
