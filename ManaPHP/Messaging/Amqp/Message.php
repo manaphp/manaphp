@@ -1,13 +1,13 @@
 <?php
 
-namespace ManaPHP\Amqp;
+namespace ManaPHP\Messaging\Amqp;
 
 use JsonSerializable;
 
 class Message implements JsonSerializable
 {
     /**
-     * @var \ManaPHP\Amqp
+     * @var \ManaPHP\Messaging\Amqp
      */
     protected $_amqp;
     /**
@@ -23,9 +23,9 @@ class Message implements JsonSerializable
     /**
      * Message constructor.
      *
-     * @param \ManaPHP\Amqp $amqp
-     * @param string        $queue
-     * @param \AMQPEnvelope $envelope
+     * @param \ManaPHP\Messaging\Amqp $amqp
+     * @param string                  $queue
+     * @param \AMQPEnvelope           $envelope
      */
     public function __construct($amqp, $queue, $envelope)
     {
@@ -35,7 +35,7 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @return \ManaPHP\Amqp
+     * @return \ManaPHP\Messaging\Amqp
      */
     public function getAmqp()
     {

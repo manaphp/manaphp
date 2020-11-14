@@ -45,11 +45,11 @@ use ManaPHP\Exception\NotSupportedException;
  * @property-read \ManaPHP\Http\CaptchaInterface           $captcha
  * @property-read \ManaPHP\IdentityInterface               $identity
  * @property-read \ManaPHP\Security\RandomInterface        $random
- * @property-read \ManaPHP\Message\QueueInterface          $messageQueue
+ * @property-read \ManaPHP\Messaging\QueueInterface        $messageQueue
  * @property-read \ManaPHP\I18n\TranslatorInterface        $translation
  * @property-read \ManaPHP\Renderer\Engine\Sword\Compiler  $swordCompiler
  * @property-read \ManaPHP\Security\HtmlPurifierInterface  $htmlPurifier
- * @property-read \ManaPHP\AmqpInterface                   $rabbitmq
+ * @property-read \ManaPHP\Messaging\AmqpInterface         $rabbitmq
  * @property-read \ManaPHP\Model\Relation\ManagerInterface $relationsManager
  * @property-read \ManaPHP\MailerInterface                 $mailer
  * @property-read \ManaPHP\Ipc\CacheInterface              $ipcCache
@@ -57,7 +57,7 @@ use ManaPHP\Exception\NotSupportedException;
  * @property-read \ManaPHP\I18n\TranslatorInterface        $translator
  * @property-read \ManaPHP\Bos\ClientInterface             $bosClient
  * @property-read \ManaPHP\Ws\PusherInterface              $wsPusher
- * @property-read \ManaPHP\Message\PubSubInterface         $pubSub
+ * @property-read \ManaPHP\Messaging\PubSubInterface       $pubSub
  */
 class Di implements DiInterface
 {

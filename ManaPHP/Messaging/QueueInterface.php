@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP\Message;
+namespace ManaPHP\Messaging;
 
 /**
- * Interface ManaPHP\Message\QueueInterface
+ * Interface ManaPHP\Messaging\QueueInterface
  *
  * @package messageQueue
  */

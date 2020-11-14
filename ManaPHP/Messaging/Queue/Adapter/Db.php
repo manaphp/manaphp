@@ -1,13 +1,13 @@
 <?php
 
-namespace ManaPHP\Message\Queue\Adapter;
+namespace ManaPHP\Messaging\Queue\Adapter;
 
-use ManaPHP\Message\Queue;
+use ManaPHP\Messaging\Queue;
 
 /**
  * Class Db
  *
- * @package ManaPHP\Message\Queue\Adapter
+ * @package ManaPHP\Messaging\Queue\Adapter
  *
  *CREATE TABLE `manaphp_message_queue` (
  * `id` int(11) NOT NULL AUTO_INCREMENT,

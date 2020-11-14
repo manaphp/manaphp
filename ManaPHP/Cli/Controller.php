@@ -10,11 +10,11 @@ use ReflectionMethod;
  *
  * @package controller
  *
- * @property-read \ManaPHP\CacheInterface         $viewsCache
- * @property-read \ManaPHP\Message\QueueInterface $messageQueue
- * @property-read \ManaPHP\Cli\ConsoleInterface   $console
- * @property-read \ManaPHP\Cli\RequestInterface   $request
- * @property-read \ManaPHP\Cli\HandlerInterface   $cliHandler
+ * @property-read \ManaPHP\CacheInterface           $viewsCache
+ * @property-read \ManaPHP\Messaging\QueueInterface $messageQueue
+ * @property-read \ManaPHP\Cli\ConsoleInterface     $console
+ * @property-read \ManaPHP\Cli\RequestInterface     $request
+ * @property-read \ManaPHP\Cli\HandlerInterface     $cliHandler
  */
 abstract class Controller extends \ManaPHP\Controller
 {

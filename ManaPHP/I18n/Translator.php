@@ -13,7 +13,6 @@ class TranslatorContext
 }
 
 /**
- * Class ManaPHP\Message\Translator
  *
  * @package i18n
  * @property-read \ManaPHP\Http\RequestInterface  $request

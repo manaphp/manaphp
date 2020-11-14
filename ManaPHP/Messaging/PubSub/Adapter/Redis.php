@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP\Message\PubSub\Adapter;
+namespace ManaPHP\Messaging\PubSub\Adapter;
 
 use ManaPHP\Component;
-use ManaPHP\Message\PubSubInterface;
+use ManaPHP\Messaging\PubSubInterface;
 
 class Redis extends Component implements PubSubInterface
 {

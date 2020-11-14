@@ -3,10 +3,10 @@
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
-use ManaPHP\Message\Queue\Adapter\Redis;
+use ManaPHP\Messaging\Queue\Adapter\Redis;
 use PHPUnit\Framework\TestCase;
 
-class MessageQueueEngineRedisTest extends TestCase
+class MessagingQueueEngineRedisTest extends TestCase
 {
     public function test_push()
     {

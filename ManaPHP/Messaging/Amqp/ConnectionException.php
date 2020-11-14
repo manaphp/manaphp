@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Amqp;
+namespace ManaPHP\Messaging\Amqp;
 
 class ConnectionException extends Exception
 {

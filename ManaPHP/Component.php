@@ -30,7 +30,7 @@ use Swoole\Coroutine;
  * @property-read \Redis|\ManaPHP\RedisInterface           $redisDb
  * @property-read \Redis|\ManaPHP\RedisInterface           $redisBroker
  * @property-read \ManaPHP\MongodbInterface                $mongodb
- * @property-read \ManaPHP\AmqpInterface                   $rabbitmq
+ * @property-read \ManaPHP\Messaging\AmqpInterface         $rabbitmq
  * @property-read \Elasticsearch\Client                    $elasticsearch
  * @property-read \ManaPHP\MailerInterface                 $mailer
  * @property-read \ManaPHP\Ipc\CacheInterface              $ipcCache
@@ -41,7 +41,7 @@ use Swoole\Coroutine;
  * @property-read \ManaPHP\Ws\PusherInterface              $wsPusher
  * @property-read \ManaPHP\Coroutine\ManagerInterface      $coroutineManager
  * @property-read \ManaPHP\Ws\ClientInterface              $wsClient
- * @property-read \ManaPHP\Message\PubSubInterface         $pubSub
+ * @property-read \ManaPHP\Messaging\PubSubInterface       $pubSub
  * @property-read \object                                  $_context
  */
 class Component implements ComponentInterface, Injectable, JsonSerializable

@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Message;
+namespace ManaPHP\Messaging;
 
 use ManaPHP\Component;
 

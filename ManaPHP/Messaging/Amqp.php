@@ -1,17 +1,18 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Messaging;
 
 use AMQPChannel;
 use AMQPConnection;
 use AMQPEnvelope;
 use AMQPExchange;
 use AMQPQueue;
-use ManaPHP\Amqp\ConnectionException;
-use ManaPHP\Amqp\Exception as AmqpException;
+use ManaPHP\Component;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\InvalidKeyException;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Messaging\Amqp\ConnectionException;
+use ManaPHP\Messaging\Amqp\Exception as AmqpException;
 
 class Amqp extends Component implements AmqpInterface
 {
@@ -399,7 +400,7 @@ class Amqp extends Component implements AmqpInterface
      * @param string $queue
      * @param bool   $auto_ack
      *
-     * @return false|\ManaPHP\Amqp\Message
+     * @return false|\ManaPHP\Messaging\Amqp\Message
      */
     public function getMessage($queue, $auto_ack = false)
     {
@@ -449,8 +450,8 @@ class Amqp extends Component implements AmqpInterface
     }
 
     /**
-     * @param \ManaPHP\Amqp\Message|array $message
-     * @param bool                        $multiple
+     * @param \ManaPHP\Messaging\Amqp\Message|array $message
+     * @param bool                                  $multiple
      *
      * @return static
      */
@@ -480,8 +481,8 @@ class Amqp extends Component implements AmqpInterface
     }
 
     /**
-     * @param \ManaPHP\Amqp\Message|array $message
-     * @param bool                        $multiple
+     * @param \ManaPHP\Messaging\Amqp\Message|array $message
+     * @param bool                                  $multiple
      *
      * @return static
      */

@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP\Message\Queue\Adapter;
+namespace ManaPHP\Messaging\Queue\Adapter;
 
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Message\Queue;
+use ManaPHP\Messaging\Queue;
 
 class Redis extends Queue
 {

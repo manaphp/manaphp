@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Messaging;
 
 interface AmqpInterface
 {
@@ -108,7 +108,7 @@ interface AmqpInterface
      * @param string $queue
      * @param bool   $auto_ack
      *
-     * @return false|\ManaPHP\Amqp\Message
+     * @return false|\ManaPHP\Messaging\Amqp\Message
      */
     public function getMessage($queue, $auto_ack = false);
 
@@ -121,16 +121,16 @@ interface AmqpInterface
     public function getJsonMessage($queue, $auto_ack = false);
 
     /**
-     * @param \ManaPHP\Amqp\Message|array $message
-     * @param bool                        $multiple
+     * @param \ManaPHP\Messaging\Amqp\Message|array $message
+     * @param bool                                  $multiple
      *
      * @return static
      */
     public function ackMessage($message, $multiple = false);
 
     /**
-     * @param \ManaPHP\Amqp\Message|array $message
-     * @param bool                        $multiple
+     * @param \ManaPHP\Messaging\Amqp\Message|array $message
+     * @param bool                                  $multiple
      *
      * @return static
      */

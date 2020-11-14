@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Amqp;
+namespace ManaPHP\Messaging\Amqp;
 
 class Exception extends \ManaPHP\Exception
 {

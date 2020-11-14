@@ -39,7 +39,7 @@ class FactoryDefault extends Di
             'restClient'       => ['class' => 'ManaPHP\Http\Client', 'engine' => 'ManaPHP\Http\Client\Engine\Stream'],
             'paginator'        => 'ManaPHP\Paginator',
             'random'           => 'ManaPHP\Security\Random',
-            'messageQueue'     => 'ManaPHP\Message\Queue\Adapter\Redis',
+            'messageQueue'     => 'ManaPHP\Messaging\Queue\Adapter\Redis',
             'swordCompiler'    => 'ManaPHP\Renderer\Engine\Sword\Compiler',
             'htmlPurifier'     => 'ManaPHP\Security\HtmlPurifier',
             'db'               => 'ManaPHP\Db',
@@ -60,7 +60,7 @@ class FactoryDefault extends Di
             'jwt'              => 'ManaPHP\Token\Jwt',
             'scopedJwt'        => 'ManaPHP\Token\ScopedJwt',
             'wsClient'         => 'ManaPHP\Ws\Client',
-            'pubSub'           => 'ManaPHP\Message\PubSub\Adapter\Redis',
+            'pubSub'           => 'ManaPHP\Messaging\PubSub\Adapter\Redis',
             'dataDump'         => 'ManaPHP\DataDump',
         ];
     }
