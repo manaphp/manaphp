@@ -32,10 +32,11 @@ interface JwtInterface
 
     /**
      * @param string $scope
+     * @param bool   $cache
      *
      * @return string
      */
-    public function getScopedSecret($scope);
+    public function getScopedSecret($scope, $cache = true);
 
     /**
      * @param array  $claims

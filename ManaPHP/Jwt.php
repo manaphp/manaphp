@@ -28,6 +28,11 @@ class Jwt extends Component implements JwtInterface
     protected $_secret;
 
     /**
+     * @var array
+     */
+    protected $_scopedSecrets = [];
+
+    /**
      * Jwt constructor.
      *
      * @param array $options
@@ -47,15 +52,23 @@ class Jwt extends Component implements JwtInterface
 
     /**
      * @param string $scope
+     * @param bool   $cache
      *
      * @return string
      */
-    public function getScopedSecret($scope)
+    public function getScopedSecret($scope, $cache = true)
     {
-        if ($scope === '') {
-            return $this->crypt->getDerivedKey('jwt');
+        if ($cache) {
+            if (($secret = $this->_scopedSecrets[$scope] ?? null) === null) {
+                $secret = $this->_scopedSecrets[$scope] = $this->getScopedSecret($scope, false);
+            }
+            return $secret;
         } else {
-            return $this->crypt->getDerivedKey("jwt:$scope");
+            if ($scope === '') {
+                return $this->crypt->getDerivedKey('jwt');
+            } else {
+                return $this->crypt->getDerivedKey("jwt:$scope");
+            }
         }
     }
 
