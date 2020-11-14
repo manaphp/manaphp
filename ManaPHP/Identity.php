@@ -4,7 +4,6 @@ namespace ManaPHP;
 
 use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\UnauthorizedException;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
@@ -22,7 +21,7 @@ class IdentityContext implements Stickyable
  *
  * @property-read \ManaPHP\IdentityContext $_context
  */
-class Identity extends Component implements IdentityInterface
+abstract class Identity extends Component implements IdentityInterface
 {
     /**
      * @return bool
@@ -217,10 +216,5 @@ class Identity extends Component implements IdentityInterface
     public function hasClaim($name)
     {
         return isset($this->_context->claims[$name]);
-    }
-
-    public function authenticate($silent = true)
-    {
-        throw new NotImplementedException(__METHOD__);
     }
 }

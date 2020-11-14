@@ -3,7 +3,6 @@
 namespace ManaPHP\Identity\Adapter;
 
 use ManaPHP\Identity;
-use ManaPHP\Identity\NoCredentialException;
 
 /**
  * Class Jwt
@@ -31,20 +30,13 @@ class Jwt extends Identity
     /**
      * @return static
      */
-    /**
-     * @param bool $silent
-     *
-     * @return static
-     */
-    public function authenticate($silent = true)
+    public function authenticate()
     {
         if ($token = $this->request->getToken()) {
             $claims = $this->jwt->scopedDecode($token, $this->_scope);
-            return $this->setClaims($claims);
-        } elseif ($silent) {
-            return $this;
-        } else {
-            throw new NoCredentialException('no token');
+            $this->setClaims($claims);
         }
+
+        return $this;
     }
 }

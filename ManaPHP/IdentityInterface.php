@@ -8,11 +8,9 @@ namespace ManaPHP;
 interface IdentityInterface
 {
     /**
-     * @param bool $silent
-     *
      * @return static
      */
-    public function authenticate($silent = true);
+    public function authenticate();
 
     /**
      * @return bool
