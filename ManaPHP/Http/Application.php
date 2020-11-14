@@ -12,7 +12,6 @@ use ManaPHP\Http\Server\HandlerInterface;
  * @property-read \ManaPHP\Http\ResponseInterface   $response
  * @property-read \ManaPHP\RouterInterface          $router
  * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
- * @property-read \ManaPHP\Mvc\ViewInterface        $view
  * @property-read \ManaPHP\Http\SessionInterface    $session
  *
  * @package ManaPHP\Http
