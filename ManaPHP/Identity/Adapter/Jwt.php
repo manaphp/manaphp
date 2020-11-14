@@ -7,6 +7,7 @@ use ManaPHP\Identity\BadCredentialException;
 use ManaPHP\Identity\ExpiredCredentialException;
 use ManaPHP\Identity\NoCredentialException;
 use ManaPHP\Identity\NotBeforeCredentialException;
+use ManaPHP\Identity\ScopeCredentialException;
 use ManaPHP\Identity\SignatureCredentialException;
 
 /**
@@ -149,9 +150,15 @@ class Jwt extends Identity
      */
     public function encode($claims, $ttl = null, $scope = null)
     {
-        if ($scope) {
+        if ($scope !== null) {
+            $claims['scope'] = $scope;
+
             $key = $this->getScopedKey($scope);
         } else {
+            if ($this->_scope !== '') {
+                $claims['scope'] = $this->_scope;
+            }
+
             $key = is_string($this->_key) ? $this->_key : $this->_key[0];
         }
 
@@ -226,6 +233,10 @@ class Jwt extends Identity
 
         if (isset($claims['nbf']) && time() < $claims['nbf']) {
             throw new NotBeforeCredentialException('token is not active.');
+        }
+
+        if (isset($claims['scope']) && $claims['scope'] !== ($scope ?? $this->_scope)) {
+            throw new ScopeCredentialException('scope is wrong');
         }
 
         return $claims;
