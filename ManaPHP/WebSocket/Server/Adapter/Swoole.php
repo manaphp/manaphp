@@ -357,4 +357,9 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     {
         return $this->_swoole->exist($fd);
     }
+
+    public function reload()
+    {
+        $this->_swoole->reload();
+    }
 }

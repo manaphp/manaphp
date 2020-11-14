@@ -39,4 +39,9 @@ interface ServerInterface
      * @return bool
      */
     public function exists($fd);
+
+    /**
+     * @return void
+     */
+    public function reload();
 }
