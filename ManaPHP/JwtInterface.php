@@ -14,11 +14,13 @@ interface JwtInterface
     public function encode($claims, $ttl, $secret = null);
 
     /**
-     * @param string $token
+     * @param string       $token
+     * @param bool         $verify
+     * @param string|array $secrets
      *
      * @return array
      */
-    public function decode($token);
+    public function decode($token, $verify = true, $secrets = null);
 
     /**
      * @param string       $token

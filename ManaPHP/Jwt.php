@@ -100,11 +100,13 @@ class Jwt extends Component implements JwtInterface
     }
 
     /**
-     * @param string $token
+     * @param string       $token
+     * @param bool         $verify
+     * @param string|array $secrets
      *
      * @return array
      */
-    public function decode($token)
+    public function decode($token, $verify = true, $secrets = null)
     {
         if ($token === null || $token === '') {
             throw new NoCredentialException('No Credentials');
@@ -153,6 +155,10 @@ class Jwt extends Component implements JwtInterface
             throw new NotBeforeException('token is not active.');
         }
 
+        if ($verify) {
+            $this->verify($token, $secrets);
+        }
+
         return $claims;
     }
 
@@ -196,7 +202,7 @@ class Jwt extends Component implements JwtInterface
 
     public function scopedDecode($token, $scope, $verify = true)
     {
-        $claims = $this->decode($token);
+        $claims = $this->decode($token, false);
 
         if (!isset($claims['scope'])) {
             throw new ScopeException('scope is not exists');
