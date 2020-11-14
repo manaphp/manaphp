@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Http;
 
 /**
- * Interface ManaPHP\RouterInterface
+ * Interface ManaPHP\Http\RouterInterface
  *
  * @package router
  */
@@ -45,7 +45,7 @@ interface RouterInterface
      * @param string|array $paths
      * @param string       $method
      *
-     * @return \ManaPHP\Router\RouteInterface
+     * @return \ManaPHP\Http\Router\RouteInterface
      */
     public function add($pattern, $paths = null, $method = null);
 
@@ -55,7 +55,7 @@ interface RouterInterface
      * @param string       $pattern
      * @param string|array $paths
      *
-     * @return \ManaPHP\Router\RouteInterface
+     * @return \ManaPHP\Http\Router\RouteInterface
      */
     public function addGet($pattern, $paths = null);
 
@@ -65,7 +65,7 @@ interface RouterInterface
      * @param string       $pattern
      * @param string|array $paths
      *
-     * @return \ManaPHP\Router\RouteInterface
+     * @return \ManaPHP\Http\Router\RouteInterface
      */
     public function addPost($pattern, $paths = null);
 
@@ -75,7 +75,7 @@ interface RouterInterface
      * @param string       $pattern
      * @param string|array $paths
      *
-     * @return \ManaPHP\Router\RouteInterface
+     * @return \ManaPHP\Http\Router\RouteInterface
      */
     public function addPut($pattern, $paths = null);
 
@@ -85,7 +85,7 @@ interface RouterInterface
      * @param string       $pattern
      * @param string|array $paths
      *
-     * @return \ManaPHP\Router\RouteInterface
+     * @return \ManaPHP\Http\Router\RouteInterface
      */
     public function addPatch($pattern, $paths = null);
 
@@ -95,7 +95,7 @@ interface RouterInterface
      * @param string       $pattern
      * @param string|array $paths
      *
-     * @return \ManaPHP\Router\RouteInterface
+     * @return \ManaPHP\Http\Router\RouteInterface
      */
     public function addDelete($pattern, $paths = null);
 
@@ -105,7 +105,7 @@ interface RouterInterface
      * @param string       $pattern
      * @param string|array $paths
      *
-     * @return \ManaPHP\Router\RouteInterface
+     * @return \ManaPHP\Http\Router\RouteInterface
      */
     public function addOptions($pattern = '{all:.*}', $paths = null);
 
@@ -115,7 +115,7 @@ interface RouterInterface
      * @param string       $pattern
      * @param string|array $paths
      *
-     * @return \ManaPHP\Router\RouteInterface
+     * @return \ManaPHP\Http\Router\RouteInterface
      */
     public function addHead($pattern, $paths = null);
 
@@ -123,7 +123,7 @@ interface RouterInterface
      * @param string $pattern
      * @param string $controller
      *
-     * @return \ManaPHP\Router\RouteInterface
+     * @return \ManaPHP\Http\Router\RouteInterface
      */
     public function addRest($pattern, $controller = null);
 
@@ -133,7 +133,7 @@ interface RouterInterface
      * @param string $uri
      * @param string $method
      *
-     * @return \ManaPHP\RouterContext|false
+     * @return \ManaPHP\Http\RouterContext|false
      */
     public function match($uri = null, $method = null);
 

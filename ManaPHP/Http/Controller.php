@@ -10,7 +10,7 @@ namespace ManaPHP\Http;
  * @property-read \ManaPHP\InvokerInterface               $invoker
  * @property-read \ManaPHP\Http\RequestInterface          $request
  * @property-read \ManaPHP\Http\ResponseInterface         $response
- * @property-read \ManaPHP\RouterInterface                $router
+ * @property-read \ManaPHP\Http\RouterInterface           $router
  * @property-read \ManaPHP\Http\DispatcherInterface       $dispatcher
  * @property-read \ManaPHP\Http\CaptchaInterface          $captcha
  * @property-read \ManaPHP\Message\QueueInterface         $messageQueue

@@ -26,7 +26,7 @@ class WorkermanContext
  *
  * @package ManaPHP\Http\Server\Adapter
  *
- * @property-read \ManaPHP\RouterInterface                      $router
+ * @property-read \ManaPHP\Http\RouterInterface                 $router
  * @property-read \ManaPHP\Http\Server\Adapter\WorkermanContext $_context
  */
 class Workerman extends Server

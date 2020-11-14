@@ -15,7 +15,7 @@ use ManaPHP\Exception\NotSupportedException;
  *
  * @property-read \ManaPHP\AliasInterface                  $alias
  * @property-read \ManaPHP\Http\DispatcherInterface        $dispatcher
- * @property-read \ManaPHP\RouterInterface                 $router
+ * @property-read \ManaPHP\Http\RouterInterface            $router
  * @property-read \ManaPHP\Http\UrlInterface               $url
  * @property-read \ManaPHP\Http\RequestInterface           $request
  * @property-read \ManaPHP\Http\ResponseInterface          $response

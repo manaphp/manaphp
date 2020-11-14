@@ -11,7 +11,7 @@ use ManaPHP\Exception\BadRequestException;
  *
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response
- * @property-read \ManaPHP\RouterInterface        $router
+ * @property-read \ManaPHP\Http\RouterInterface   $router
  */
 class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
 {
@@ -64,7 +64,7 @@ class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
             return $this->response->setContent($message);
         }
 
-        /** @var \ManaPHP\RouterContext $routerContext */
+        /** @var \ManaPHP\Http\RouterContext $routerContext */
         $routerContext = $this->router->_context;
 
         $routerContext->action = $action;

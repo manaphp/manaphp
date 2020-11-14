@@ -1,11 +1,11 @@
 <?php
 
-namespace ManaPHP\Router;
+namespace ManaPHP\Http\Router;
 
 use ManaPHP\Exception\InvalidFormatException;
 
 /**
- * Class ManaPHP\Router\Route
+ * Class ManaPHP\Http\Router\Route
  *
  * @package router
  */
@@ -32,7 +32,7 @@ class Route implements RouteInterface
     protected $_method;
 
     /**
-     * \ManaPHP\Router\Route constructor
+     * \ManaPHP\Http\Router\Route constructor
      *
      * @param string       $pattern
      * @param string|array $paths

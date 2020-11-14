@@ -26,7 +26,7 @@ class SwooleContext
  * Class Server
  *
  * @package ManaPHP\Http\Server
- * @property-read \ManaPHP\RouterInterface                   $router
+ * @property-read \ManaPHP\Http\RouterInterface              $router
  * @property-read \ManaPHP\Http\Server\Adapter\SwooleContext $_context
  */
 class Swoole extends Server

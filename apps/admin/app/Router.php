@@ -4,7 +4,7 @@ namespace App;
 
 use App\Areas\Admin\Controllers\SessionController;
 
-class Router extends \ManaPHP\Router
+class Router extends \ManaPHP\Http\Router
 {
     public function __construct()
     {

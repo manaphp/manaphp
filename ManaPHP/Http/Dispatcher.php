@@ -5,7 +5,6 @@ namespace ManaPHP\Http;
 use ManaPHP\Component;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\Dispatcher\NotFoundControllerException;
-use ManaPHP\RouterContext;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
 
@@ -246,7 +245,7 @@ class Dispatcher extends Component implements DispatcherInterface
     /**
      * Dispatches a handle action taking into account the routing parameters
      *
-     * @param \ManaPHP\RouterInterface|\ManaPHP\RouterContext $router
+     * @param \ManaPHP\Http\RouterInterface|\ManaPHP\Http\RouterContext $router
      *
      * @return mixed
      * @throws \ManaPHP\Http\Dispatcher\NotFoundControllerException

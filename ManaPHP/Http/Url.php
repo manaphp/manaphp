@@ -9,7 +9,7 @@ use ManaPHP\Component;
  *
  * @package url
  * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\RouterInterface       $router
+ * @property-read \ManaPHP\Http\RouterInterface  $router
  *
  */
 class Url extends Component implements UrlInterface

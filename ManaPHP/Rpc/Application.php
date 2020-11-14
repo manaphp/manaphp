@@ -13,7 +13,7 @@ use Throwable;
  * @package ManaPHP\Rpc
  *
  * @property-read \ManaPHP\Rpc\ServerInterface     $rpcServer
- * @property-read \ManaPHP\RouterInterface         $router
+ * @property-read \ManaPHP\Http\RouterInterface    $router
  * @property-read \ManaPHP\Http\ResponseInterface  $response
  * @property-read \ManaPHP\Rpc\DispatcherInterface $dispatcher
  * @property-read \ManaPHP\Http\RequestInterface   $request

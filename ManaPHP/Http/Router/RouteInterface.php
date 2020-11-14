@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP\Router;
+namespace ManaPHP\Http\Router;
 
 /**
- * Interface ManaPHP\Router\RouteInterface
+ * Interface ManaPHP\Http\Router\RouteInterface
  *
  * @package router
  */

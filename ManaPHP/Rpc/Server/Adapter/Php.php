@@ -9,7 +9,7 @@ use ManaPHP\Helper\Ip;
  *
  * @package ManaPHP\Rpc\Server\Adapter
  *
- * @property-read \ManaPHP\RouterInterface $router
+ * @property-read \ManaPHP\Http\RouterInterface $router
  */
 class Php extends Fpm
 {

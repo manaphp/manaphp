@@ -12,7 +12,7 @@ class Factory extends FactoryDefault
 
         $this->_definitions = array_merge(
             $this->_definitions, [
-                'router'         => 'ManaPHP\Router',
+                'router'         => 'ManaPHP\Http\Router',
                 'dispatcher'     => 'ManaPHP\Http\Dispatcher',
                 'url'            => 'ManaPHP\Http\Url',
                 'response'       => 'ManaPHP\Http\Response',

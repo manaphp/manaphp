@@ -4,7 +4,7 @@ namespace ManaPHP\WebSocket;
 
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\Response;
-use ManaPHP\Router\NotFoundRouteException;
+use ManaPHP\Http\Router\NotFoundRouteException;
 use ManaPHP\WebSocket\Server\HandlerInterface;
 use Throwable;
 
@@ -14,7 +14,7 @@ use Throwable;
  * @package ManaPHP\WebSocket
  *
  * @property-read \ManaPHP\WebSocket\ServerInterface     $wsServer
- * @property-read \ManaPHP\RouterInterface               $router
+ * @property-read \ManaPHP\Http\RouterInterface          $router
  * @property-read \ManaPHP\Http\RequestInterface         $request
  * @property-read \ManaPHP\Http\ResponseInterface        $response
  * @property-read \ManaPHP\WebSocket\DispatcherInterface $dispatcher

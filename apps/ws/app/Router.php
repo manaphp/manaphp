@@ -2,7 +2,7 @@
 
 namespace App;
 
-class Router extends \ManaPHP\Router
+class Router extends \ManaPHP\Http\Router
 {
 
 }

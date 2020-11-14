@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Router;
+namespace ManaPHP\Http\Router;
 
 class NotFoundRouteException extends Exception
 {

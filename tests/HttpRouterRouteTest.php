@@ -3,12 +3,12 @@
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
-use ManaPHP\Router;
-use ManaPHP\Router\Route;
-use ManaPHP\RouterContext;
+use ManaPHP\Http\Router;
+use ManaPHP\Http\Router\Route;
+use ManaPHP\Http\RouterContext;
 use PHPUnit\Framework\TestCase;
 
-class RouterRouteTest extends TestCase
+class HttpRouterRouteTest extends TestCase
 {
     public function setUp()
     {

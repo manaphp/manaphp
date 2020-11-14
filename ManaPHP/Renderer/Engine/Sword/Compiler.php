@@ -13,8 +13,8 @@ use ManaPHP\Helper\Str;
  *
  * @package renderer\engine
  *
- * @property-read \ManaPHP\Http\UrlInterface $url
- * @property-read \ManaPHP\RouterInterface   $router
+ * @property-read \ManaPHP\Http\UrlInterface    $url
+ * @property-read \ManaPHP\Http\RouterInterface $router
  */
 class Compiler extends Component
 {
