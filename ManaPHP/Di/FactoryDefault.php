@@ -57,7 +57,7 @@ class FactoryDefault extends Di
             'wsPusher'         => 'ManaPHP\WebSocket\Pusher',
             'identity'         => 'ManaPHP\Identity',
             'coroutineManager' => 'ManaPHP\Coroutine\Manager',
-            'jwt'              => 'ManaPHP\Identity\Adapter\Jwt',
+            'jwt'              => 'ManaPHP\Jwt',
             'wsClient'         => 'ManaPHP\WebSocket\Client',
             'pubSub'           => 'ManaPHP\Message\PubSub\Adapter\Redis',
             'dataDump'         => 'ManaPHP\DataDump',

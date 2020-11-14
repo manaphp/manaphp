@@ -42,6 +42,7 @@ use Swoole\Coroutine;
  * @property-read \ManaPHP\Coroutine\ManagerInterface      $coroutineManager
  * @property-read \ManaPHP\WebSocket\ClientInterface       $wsClient
  * @property-read \ManaPHP\Message\PubSubInterface         $pubSub
+ * @property-read \ManaPHP\JwtInterface                    $jwt
  * @property-read \object                                  $_context
  */
 class Component implements ComponentInterface, Injectable, JsonSerializable

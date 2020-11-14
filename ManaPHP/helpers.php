@@ -259,7 +259,7 @@ if (!function_exists('jwt_encode')) {
      */
     function jwt_encode($claims, $ttl, $scope)
     {
-        return di('jwt')->encode($claims, $ttl, $scope);
+        return di('jwt')->scopedEncode($claims, $ttl, $scope);
     }
 }
 
@@ -273,7 +273,7 @@ if (!function_exists('jwt_decode')) {
      */
     function jwt_decode($token, $scope, $verify = true)
     {
-        return di('jwt')->decode($token, $scope, $verify);
+        return di('jwt')->scopedDecode($token, $scope, $verify);
     }
 }
 
@@ -286,7 +286,7 @@ if (!function_exists('jwt_verify')) {
      */
     function jwt_verify($token, $scope)
     {
-        di('jwt')->decode($token, $scope);
+        di('jwt')->scopedVerify($token, $scope);
     }
 }
 
