@@ -2,7 +2,6 @@
 
 namespace ManaPHP\Identity\Adapter;
 
-use ManaPHP\Exception\MisuseException;
 use ManaPHP\Identity;
 use ManaPHP\Identity\BadCredentialException;
 use ManaPHP\Identity\ExpiredCredentialException;
@@ -44,7 +43,7 @@ class Jwt extends Identity
             $this->_alg = $options['alg'];
         }
 
-        $this->_key = $options['key'] ?? $this->crypt->getDerivedKey('jwt');
+        $this->_key = $options['key'] ?? $this->getScopedKey('');
 
         if (isset($options['ttl'])) {
             $this->_ttl = $options['ttl'];
@@ -92,6 +91,20 @@ class Jwt extends Identity
     }
 
     /**
+     * @param string $scope
+     *
+     * @return string
+     */
+    public function getScopedKey($scope)
+    {
+        if ($scope === '') {
+            return $this->crypt->getDerivedKey('jwt');
+        } else {
+            return $this->crypt->getDerivedKey("jwt:$scope");
+        }
+    }
+
+    /**
      * @return int|null
      */
     public function getExpiredTime()
@@ -131,12 +144,8 @@ class Jwt extends Identity
     public function encode($claims, $ttl = null, $scope = null)
     {
         if ($scope) {
-            $key = $this->crypt->getDerivedKey("jwt:$scope");
+            $key = $this->getScopedKey($scope);
         } else {
-            if (!$this->_key) {
-                throw new MisuseException('Jwt key is not set');
-            }
-
             $key = is_string($this->_key) ? $this->_key : $this->_key[0];
         }
 
@@ -223,11 +232,9 @@ class Jwt extends Identity
     public function verify($token, $scope = null)
     {
         if ($scope) {
-            $keys = $this->crypt->getDerivedKey("jwt:$scope");
+            $keys = $this->getScopedKey($scope);
         } else {
-            if (!$keys = $this->_key) {
-                throw new MisuseException('Jwt key is not set');
-            }
+            $keys = $this->_key;
         }
 
         if (($pos = strrpos($token, '.')) === false) {
