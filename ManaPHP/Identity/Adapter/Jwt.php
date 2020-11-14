@@ -9,6 +9,7 @@ use ManaPHP\Identity;
  *
  * @package ManaPHP\Identity\Adapter
  * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\JwtInterface          $jwt
  */
 class Jwt extends Identity
 {
