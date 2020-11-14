@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\WebSocket\Client;
+namespace ManaPHP\Ws\Client;
 
 interface EngineInterface
 {
@@ -35,7 +35,7 @@ interface EngineInterface
     /**
      * @param float $timeout
      *
-     * @return \ManaPHP\WebSocket\Client\Message
+     * @return \ManaPHP\Ws\Client\Message
      */
     public function recv($timeout = null);
 

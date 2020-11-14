@@ -56,7 +56,7 @@ use ManaPHP\Exception\NotSupportedException;
  * @property-read \ManaPHP\MongodbInterface                $mongodb
  * @property-read \ManaPHP\I18n\TranslatorInterface        $translator
  * @property-read \ManaPHP\Bos\ClientInterface             $bosClient
- * @property-read \ManaPHP\WebSocket\PusherInterface       $wsPusher
+ * @property-read \ManaPHP\Ws\PusherInterface              $wsPusher
  * @property-read \ManaPHP\Message\PubSubInterface         $pubSub
  */
 class Di implements DiInterface

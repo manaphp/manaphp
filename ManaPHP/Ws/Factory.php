@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\WebSocket;
+namespace ManaPHP\Ws;
 
 class Factory extends \ManaPHP\Http\Factory
 {
@@ -10,8 +10,8 @@ class Factory extends \ManaPHP\Http\Factory
         $this->_definitions = array_merge(
             $this->_definitions, [
                 'errorHandler' => 'ManaPHP\Rest\ErrorHandler',
-                'wsServer'     => 'ManaPHP\WebSocket\Server\Adapter\Swoole',
-                'dispatcher'   => 'ManaPHP\WebSocket\Dispatcher',
+                'wsServer'     => 'ManaPHP\Ws\Server\Adapter\Swoole',
+                'dispatcher'   => 'ManaPHP\Ws\Dispatcher',
                 'identity'     => 'ManaPHP\Identity\Adapter\Jwt'
             ]
         );

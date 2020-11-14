@@ -38,9 +38,9 @@ use Swoole\Coroutine;
  * @property-read \ManaPHP\Pool\ManagerInterface           $poolManager
  * @property-read \ManaPHP\ValidatorInterface              $validator
  * @property-read \ManaPHP\I18n\TranslatorInterface        $translator
- * @property-read \ManaPHP\WebSocket\PusherInterface       $wsPusher
+ * @property-read \ManaPHP\Ws\PusherInterface              $wsPusher
  * @property-read \ManaPHP\Coroutine\ManagerInterface      $coroutineManager
- * @property-read \ManaPHP\WebSocket\ClientInterface       $wsClient
+ * @property-read \ManaPHP\Ws\ClientInterface              $wsClient
  * @property-read \ManaPHP\Message\PubSubInterface         $pubSub
  * @property-read \object                                  $_context
  */

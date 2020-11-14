@@ -10,7 +10,7 @@ use ManaPHP\Plugin;
  *
  * @package ManaPHP\Plugins
  *
- * @property-read \ManaPHP\WebSocket\ServerInterface $wsServer
+ * @property-read \ManaPHP\Ws\ServerInterface $wsServer
  */
 class  WsPusherPlugin extends Plugin
 {

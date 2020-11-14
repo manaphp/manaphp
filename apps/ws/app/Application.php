@@ -2,7 +2,7 @@
 
 namespace App;
 
-class Application extends \ManaPHP\WebSocket\Application
+class Application extends \ManaPHP\Ws\Application
 {
     public function authenticate()
     {

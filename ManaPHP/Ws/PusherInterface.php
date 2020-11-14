@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\WebSocket;
+namespace ManaPHP\Ws;
 
 interface PusherInterface
 {

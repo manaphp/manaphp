@@ -1,13 +1,13 @@
 <?php
 
-namespace ManaPHP\WebSocket\Server\Adapter;
+namespace ManaPHP\Ws\Server\Adapter;
 
 use ArrayObject;
 use ManaPHP\Aop\Unaspectable;
 use ManaPHP\Component;
 use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\WebSocket\ServerInterface;
+use ManaPHP\Ws\ServerInterface;
 use Swoole\Coroutine;
 use Swoole\Runtime;
 use Swoole\WebSocket\Frame;
@@ -17,7 +17,7 @@ use Throwable;
 /**
  * Class Server
  *
- * @package ManaPHP\WebSocket
+ * @package ManaPHP\Ws
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class Swoole extends Component implements ServerInterface, Unaspectable
@@ -43,7 +43,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     protected $_swoole;
 
     /**
-     * @var \ManaPHP\WebSocket\Server\HandlerInterface
+     * @var \ManaPHP\Ws\Server\HandlerInterface
      */
     protected $_handler;
 
@@ -295,7 +295,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     }
 
     /**
-     * @param \ManaPHP\WebSocket\Server\HandlerInterface $handler
+     * @param \ManaPHP\Ws\Server\HandlerInterface $handler
      *
      * @return void
      */

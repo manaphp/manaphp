@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use ManaPHP\WebSocket\Controller;
+use ManaPHP\Ws\Controller;
 
 class IndexController extends Controller
 {

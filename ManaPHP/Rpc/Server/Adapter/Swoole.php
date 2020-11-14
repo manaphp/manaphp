@@ -28,7 +28,7 @@ class SwooleContext
 /**
  * Class Server
  *
- * @package ManaPHP\WebSocket
+ * @package ManaPHP\Ws
  * @property-read \ManaPHP\Rpc\Server\Adapter\SwooleContext $_context
  */
 class Swoole extends \ManaPHP\Rpc\Server

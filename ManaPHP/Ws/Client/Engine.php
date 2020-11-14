@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\WebSocket\Client;
+namespace ManaPHP\Ws\Client;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
@@ -272,7 +272,7 @@ class Engine extends Component implements EngineInterface
     /**
      * @param float $timeout
      *
-     * @return \ManaPHP\WebSocket\Client\Message
+     * @return \ManaPHP\Ws\Client\Message
      */
     public function recv($timeout = null)
     {

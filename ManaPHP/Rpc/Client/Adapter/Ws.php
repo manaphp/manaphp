@@ -104,7 +104,7 @@ class Ws extends Client
     }
 
     /**
-     * @param \ManaPHP\WebSocket\Client\EngineInterface $engine
+     * @param \ManaPHP\Ws\Client\EngineInterface $engine
      */
     public function authenticate($engine)
     {

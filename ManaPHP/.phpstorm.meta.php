@@ -56,7 +56,7 @@ namespace PHPSTORM_META {
             'assetBundle' instanceof \ManaPHP\Renderer\AssetBundleInterface,
             'aclbuilder' instanceof \ManaPHP\Http\Authorization\AclBuilderInterface,
             'bosClient' instanceof \ManaPHP\Bos\ClientInterface,
-            'wsPusher' instanceof \ManaPHP\WebSocket\PusherInterface,
+            'wsPusher' instanceof \ManaPHP\Ws\PusherInterface,
             'coroutine' instanceof \ManaPHP\CoroutineInterface,
             'jwt' instanceof \ManaPHP\Token\JwtInterface,
             'scopedJwt' instanceof \ManaPHP\Token\ScopedJwtInterface,
@@ -113,7 +113,7 @@ namespace PHPSTORM_META {
             'assetBundle' instanceof \ManaPHP\Renderer\AssetBundleInterface,
             'aclbuilder' instanceof \ManaPHP\Http\Authorization\AclBuilderInterface,
             'bosClient' instanceof \ManaPHP\Bos\ClientInterface,
-            'wsPusher' instanceof \ManaPHP\WebSocket\PusherInterface,
+            'wsPusher' instanceof \ManaPHP\Ws\PusherInterface,
             'coroutineManager' instanceof \ManaPHP\Coroutine\ManagerInterface,
             'jwt' instanceof \ManaPHP\Token\JwtInterface,
             'scopedJwt' instanceof \ManaPHP\Token\ScopedJwtInterface,
@@ -171,7 +171,7 @@ namespace PHPSTORM_META {
             'assetBundle' instanceof \ManaPHP\Renderer\AssetBundleInterface,
             'aclbuilder' instanceof \ManaPHP\Http\Authorization\AclBuilderInterface,
             'bosClient' instanceof \ManaPHP\Bos\ClientInterface,
-            'wsPusher' instanceof \ManaPHP\WebSocket\PusherInterface,
+            'wsPusher' instanceof \ManaPHP\Ws\PusherInterface,
             'coroutineManager' instanceof \ManaPHP\Coroutine\ManagerInterface,
             'jwt' instanceof \ManaPHP\Token\JwtInterface,
             'scopedJwt' instanceof \ManaPHP\Token\ScopedJwtInterface,
@@ -224,11 +224,11 @@ namespace PHPSTORM_META {
     );
 
     registerArgumentsSet('wsPusherEndpoint', 'admin', 'user');
-    expectedArguments(\ManaPHP\WebSocket\PusherInterface::pushToId(), 2, argumentsSet('wsPusherEndpoint'));
-    expectedArguments(\ManaPHP\WebSocket\PusherInterface::pushToName(), 2, argumentsSet('wsPusherEndpoint'));
-    expectedArguments(\ManaPHP\WebSocket\PusherInterface::pushToRole(), 2, argumentsSet('wsPusherEndpoint'));
-    expectedArguments(\ManaPHP\WebSocket\PusherInterface::pushToAll(), 1, argumentsSet('wsPusherEndpoint'));
-    expectedArguments(\ManaPHP\WebSocket\PusherInterface::broadcast(), 1, argumentsSet('wsPusherEndpoint'));
+    expectedArguments(\ManaPHP\Ws\PusherInterface::pushToId(), 2, argumentsSet('wsPusherEndpoint'));
+    expectedArguments(\ManaPHP\Ws\PusherInterface::pushToName(), 2, argumentsSet('wsPusherEndpoint'));
+    expectedArguments(\ManaPHP\Ws\PusherInterface::pushToRole(), 2, argumentsSet('wsPusherEndpoint'));
+    expectedArguments(\ManaPHP\Ws\PusherInterface::pushToAll(), 1, argumentsSet('wsPusherEndpoint'));
+    expectedArguments(\ManaPHP\Ws\PusherInterface::broadcast(), 1, argumentsSet('wsPusherEndpoint'));
 
     registerArgumentsSet(
         'validator_rules', [

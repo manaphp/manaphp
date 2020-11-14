@@ -1,11 +1,11 @@
 <?php
 
-namespace ManaPHP\WebSocket;
+namespace ManaPHP\Ws;
 
 /**
  * Class Dispatcher
  *
- * @package ManaPHP\WebSocket
+ * @package ManaPHP\Ws
  */
 class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
 {

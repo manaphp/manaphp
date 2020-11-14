@@ -1,10 +1,10 @@
 <?php
 
-namespace ManaPHP\WebSocket;
+namespace ManaPHP\Ws;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\NonCloneableException;
-use ManaPHP\WebSocket\Client\Message;
+use ManaPHP\Ws\Client\Message;
 use Throwable;
 
 class Client extends Component implements ClientInterface
@@ -45,7 +45,7 @@ class Client extends Component implements ClientInterface
     protected $_user_agent = 'manaphp/client';
 
     /**
-     * @var \ManaPHP\WebSocket\Client\EngineInterface
+     * @var \ManaPHP\Ws\Client\EngineInterface
      */
     protected $_engine;
 
@@ -93,7 +93,7 @@ class Client extends Component implements ClientInterface
 
         $options['owner'] = $this;
 
-        $options['class'] = 'ManaPHP\WebSocket\Client\Engine';
+        $options['class'] = 'ManaPHP\Ws\Client\Engine';
 
         $this->poolManager->add($this, $options, $this->_pool_size);
     }
@@ -129,7 +129,7 @@ class Client extends Component implements ClientInterface
 
         $engines = [];
         for ($i = 0; $i < $size; $i++) {
-            /** @var \ManaPHP\WebSocket\Client\EngineInterface $engine */
+            /** @var \ManaPHP\Ws\Client\EngineInterface $engine */
             $engine = $this->poolManager->pop($this);
             $engine->setEndpoint($endpoint);
             $engines[] = $engine;
@@ -146,7 +146,7 @@ class Client extends Component implements ClientInterface
      * @param string $message
      * @param float  $timeout
      *
-     * @return \ManaPHP\WebSocket\Client\Message
+     * @return \ManaPHP\Ws\Client\Message
      */
     public function request($message, $timeout = null)
     {

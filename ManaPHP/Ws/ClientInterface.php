@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\WebSocket;
+namespace ManaPHP\Ws;
 
 interface ClientInterface
 {
@@ -20,7 +20,7 @@ interface ClientInterface
      * @param string $message
      * @param float  $timeout
      *
-     * @return \ManaPHP\WebSocket\Client\Message
+     * @return \ManaPHP\Ws\Client\Message
      */
     public function request($message, $timeout = null);
 

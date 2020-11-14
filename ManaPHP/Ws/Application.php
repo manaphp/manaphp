@@ -1,23 +1,23 @@
 <?php
 
-namespace ManaPHP\WebSocket;
+namespace ManaPHP\Ws;
 
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\Response;
 use ManaPHP\Http\Router\NotFoundRouteException;
-use ManaPHP\WebSocket\Server\HandlerInterface;
+use ManaPHP\Ws\Server\HandlerInterface;
 use Throwable;
 
 /**
  * Class Application
  *
- * @package ManaPHP\WebSocket
+ * @package ManaPHP\Ws
  *
- * @property-read \ManaPHP\WebSocket\ServerInterface     $wsServer
- * @property-read \ManaPHP\Http\RouterInterface          $router
- * @property-read \ManaPHP\Http\RequestInterface         $request
- * @property-read \ManaPHP\Http\ResponseInterface        $response
- * @property-read \ManaPHP\WebSocket\DispatcherInterface $dispatcher
+ * @property-read \ManaPHP\Ws\ServerInterface     $wsServer
+ * @property-read \ManaPHP\Http\RouterInterface   $router
+ * @property-read \ManaPHP\Http\RequestInterface  $request
+ * @property-read \ManaPHP\Http\ResponseInterface $response
+ * @property-read \ManaPHP\Ws\DispatcherInterface $dispatcher
  */
 class Application extends \ManaPHP\Application implements HandlerInterface
 {
@@ -30,7 +30,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
 
     public function getFactory()
     {
-        return 'ManaPHP\WebSocket\Factory';
+        return 'ManaPHP\Ws\Factory';
     }
 
     public function authenticate()

@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\WebSocket\Client;
+namespace ManaPHP\Ws\Client;
 
 class ConnectionBrokenException extends Exception
 {

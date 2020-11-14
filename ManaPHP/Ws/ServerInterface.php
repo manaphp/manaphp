@@ -1,11 +1,11 @@
 <?php
 
-namespace ManaPHP\WebSocket;
+namespace ManaPHP\Ws;
 
 interface ServerInterface
 {
     /**
-     * @param \ManaPHP\WebSocket\Server\HandlerInterface $handler
+     * @param \ManaPHP\Ws\Server\HandlerInterface $handler
      *
      * @return void
      */

@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\WebSocket;
+namespace ManaPHP\Ws;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\MissingFieldException;
