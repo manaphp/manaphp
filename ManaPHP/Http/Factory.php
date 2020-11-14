@@ -21,7 +21,6 @@ class Factory extends FactoryDefault
                 'cookies'        => 'ManaPHP\Http\Cookies',
                 'captcha'        => 'ManaPHP\Http\Captcha',
                 'authorization'  => 'ManaPHP\Authorization',
-                'httpServer'     => 'ManaPHP\Swoole\Http\Server',
                 'globalsManager' => 'ManaPHP\Http\Globals\Manager',
             ]
         );
