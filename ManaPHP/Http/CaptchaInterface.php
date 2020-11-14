@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP\Security;
+namespace ManaPHP\Http;
 
 /**
- * Interface ManaPHP\Security\CaptchaInterface
+ * Interface ManaPHP\Http\CaptchaInterface
  *
  * @package captcha
  */
@@ -23,7 +23,7 @@ interface CaptchaInterface
      * @param bool   $isTry
      *
      * @return void
-     * @throws \ManaPHP\Security\Captcha\InvalidCaptchaException
+     * @throws \ManaPHP\Http\Captcha\InvalidCaptchaException
      */
     public function verify($code = null, $isTry = false);
 }

@@ -1,16 +1,16 @@
 <?php
 
-namespace ManaPHP\Security;
+namespace ManaPHP\Http;
 
 use Imagick;
 use ImagickDraw;
 use ImagickPixel;
 use ManaPHP\Component;
 use ManaPHP\Exception\ExtensionNotInstalledException;
-use ManaPHP\Security\Captcha\InvalidCaptchaException;
+use ManaPHP\Http\Captcha\InvalidCaptchaException;
 
 /**
- * Class ManaPHP\Security\Captcha
+ * Class ManaPHP\Http\Captcha
  *
  * @package captcha
  *
@@ -74,9 +74,9 @@ class Captcha extends Component implements CaptchaInterface
 
         if (!isset($options['fonts'])) {
             $options['fonts'] = [
-                '@manaphp/Security/Captcha/Fonts/AirbusSpecial.ttf',
-                '@manaphp/Security/Captcha/Fonts/StencilFour.ttf',
-                '@manaphp/Security/Captcha/Fonts/SpicyRice.ttf'
+                '@manaphp/Http/Captcha/Fonts/AirbusSpecial.ttf',
+                '@manaphp/Http/Captcha/Fonts/StencilFour.ttf',
+                '@manaphp/Http/Captcha/Fonts/SpicyRice.ttf'
             ];
         }
         $this->_fonts = $options['fonts'];
@@ -256,7 +256,7 @@ class Captcha extends Component implements CaptchaInterface
      * @param bool   $isTry
      *
      * @return void
-     * @throws \ManaPHP\Security\Captcha\InvalidCaptchaException
+     * @throws \ManaPHP\Http\Captcha\InvalidCaptchaException
      */
     public function verify($code = null, $isTry = false)
     {

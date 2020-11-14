@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Security\Captcha;
+namespace ManaPHP\Http\Captcha;
 
 use ManaPHP\Exception;
 

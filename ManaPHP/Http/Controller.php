@@ -12,7 +12,7 @@ namespace ManaPHP\Http;
  * @property-read \ManaPHP\Http\ResponseInterface         $response
  * @property-read \ManaPHP\RouterInterface                $router
  * @property-read \ManaPHP\Http\DispatcherInterface       $dispatcher
- * @property-read \ManaPHP\Security\CaptchaInterface      $captcha
+ * @property-read \ManaPHP\Http\CaptchaInterface          $captcha
  * @property-read \ManaPHP\Message\QueueInterface         $messageQueue
  * @property-read \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
  */

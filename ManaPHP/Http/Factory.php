@@ -19,7 +19,7 @@ class Factory extends FactoryDefault
                 'request'        => 'ManaPHP\Http\Request',
                 'session'        => 'ManaPHP\Http\Session\Adapter\File',
                 'cookies'        => 'ManaPHP\Http\Cookies',
-                'captcha'        => 'ManaPHP\Security\Captcha',
+                'captcha'        => 'ManaPHP\Http\Captcha',
                 'authorization'  => 'ManaPHP\Authorization',
                 'httpServer'     => 'ManaPHP\Swoole\Http\Server',
                 'globalsManager' => 'ManaPHP\Http\Globals\Manager',
