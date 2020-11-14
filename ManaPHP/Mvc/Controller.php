@@ -7,9 +7,9 @@ namespace ManaPHP\Mvc;
  *
  * @package controller
  *
- * @property-read \ManaPHP\ViewInterface                     $view
- * @property-read \ManaPHP\View\FlashInterface               $flash
- * @property-read \ManaPHP\View\FlashInterface               $flashSession
+ * @property-read \ManaPHP\Mvc\ViewInterface                 $view
+ * @property-read \ManaPHP\Mvc\View\FlashInterface           $flash
+ * @property-read \ManaPHP\Mvc\View\FlashInterface           $flashSession
  * @property-read \ManaPHP\Http\CookiesInterface             $cookies
  * @property-read \ManaPHP\Http\SessionInterface             $session
  * @property-read \ManaPHP\CacheInterface                    $viewsCache

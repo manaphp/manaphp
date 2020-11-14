@@ -11,9 +11,9 @@ class Factory extends \ManaPHP\Http\Factory
         $this->_definitions = array_merge(
             $this->_definitions, [
                 'errorHandler' => 'ManaPHP\Mvc\ErrorHandler',
-                'view'         => 'ManaPHP\View',
-                'flash'        => 'ManaPHP\View\Flash\Adapter\Direct',
-                'flashSession' => 'ManaPHP\View\Flash\Adapter\Session',
+                'view'         => 'ManaPHP\Mvc\View',
+                'flash'        => 'ManaPHP\Mvc\View\Flash\Adapter\Direct',
+                'flashSession' => 'ManaPHP\Mvc\View\Flash\Adapter\Session',
                 'viewsCache'   => ['ManaPHP\Cache\Adapter\Redis', 'prefix' => 'cache:views:'],
                 'identity'     => 'ManaPHP\Identity\Adapter\Session',
             ]

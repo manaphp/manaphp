@@ -4,7 +4,7 @@ namespace App\Widgets;
 
 use App\Areas\Menu\Models\Group;
 use ManaPHP\Query;
-use ManaPHP\View\Widget;
+use ManaPHP\Mvc\View\Widget;
 
 /**
  * Class SideMenuWidget

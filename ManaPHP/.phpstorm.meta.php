@@ -21,10 +21,10 @@ namespace PHPSTORM_META {
             'cookies' instanceof \ManaPHP\Http\CookiesInterface,
             'request' instanceof \ManaPHP\Http\RequestInterface,
             'crypt' instanceof \ManaPHP\Security\CryptInterface,
-            'flash' instanceof \ManaPHP\View\FlashInterface,
-            'flashSession' instanceof \ManaPHP\View\FlashInterface,
+            'flash' instanceof \ManaPHP\Mvc\View\FlashInterface,
+            'flashSession' instanceof \ManaPHP\Mvc\View\FlashInterface,
             'session' instanceof \ManaPHP\Http\SessionInterface,
-            'view' instanceof \ManaPHP\ViewInterface,
+            'view' instanceof \ManaPHP\Mvc\ViewInterface,
             'logger' instanceof \ManaPHP\LoggerInterface,
             'renderer' instanceof \ManaPHP\RendererInterface,
             'cache' instanceof \ManaPHP\CacheInterface,
@@ -78,10 +78,10 @@ namespace PHPSTORM_META {
             'cookies' instanceof \ManaPHP\Http\CookiesInterface,
             'request' instanceof \ManaPHP\Http\RequestInterface,
             'crypt' instanceof \ManaPHP\Security\CryptInterface,
-            'flash' instanceof \ManaPHP\View\FlashInterface,
-            'flashSession' instanceof \ManaPHP\View\FlashInterface,
+            'flash' instanceof \ManaPHP\Mvc\View\FlashInterface,
+            'flashSession' instanceof \ManaPHP\Mvc\View\FlashInterface,
             'session' instanceof \ManaPHP\Http\SessionInterface,
-            'view' instanceof \ManaPHP\ViewInterface,
+            'view' instanceof \ManaPHP\Mvc\ViewInterface,
             'logger' instanceof \ManaPHP\LoggerInterface,
             'renderer' instanceof \ManaPHP\RendererInterface,
             'cache' instanceof \ManaPHP\CacheInterface,
@@ -136,10 +136,10 @@ namespace PHPSTORM_META {
             'cookies' instanceof \ManaPHP\Http\CookiesInterface,
             'request' instanceof \ManaPHP\Http\RequestInterface,
             'crypt' instanceof \ManaPHP\Security\CryptInterface,
-            'flash' instanceof \ManaPHP\View\FlashInterface,
-            'flashSession' instanceof \ManaPHP\View\FlashInterface,
+            'flash' instanceof \ManaPHP\Mvc\View\FlashInterface,
+            'flashSession' instanceof \ManaPHP\Mvc\View\FlashInterface,
             'session' instanceof \ManaPHP\Http\SessionInterface,
-            'view' instanceof \ManaPHP\ViewInterface,
+            'view' instanceof \ManaPHP\Mvc\ViewInterface,
             'logger' instanceof \ManaPHP\LoggerInterface,
             'renderer' instanceof \ManaPHP\RendererInterface,
             'cache' instanceof \ManaPHP\CacheInterface,
@@ -327,10 +327,10 @@ namespace PHPSTORM_META {
 }
 
 /**
- * @xglobal $view ManaPHP\ViewInterface
+ * @xglobal $view ManaPHP\Mvc\ViewInterface
  */
 /**
- * @var \ManaPHP\ViewInterface     $view
+ * @var \ManaPHP\Mvc\ViewInterface $view
  * @var \ManaPHP\Di                $di
  * @var \ManaPHP\RendererInterface $renderer
  */

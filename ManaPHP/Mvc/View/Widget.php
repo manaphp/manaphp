@@ -1,12 +1,12 @@
 <?php
 
-namespace ManaPHP\View;
+namespace ManaPHP\Mvc\View;
 
 use ManaPHP\Component;
 use ManaPHP\Logger\LogCategorizable;
 
 /**
- * Class ManaPHP\View\Widget
+ * Class ManaPHP\Mvc\View\Widget
  *
  * @package widget
  *

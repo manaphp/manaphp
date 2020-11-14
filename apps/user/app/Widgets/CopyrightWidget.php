@@ -2,7 +2,7 @@
 
 namespace App\Widgets;
 
-use ManaPHP\View\Widget;
+use ManaPHP\Mvc\View\Widget;
 
 class CopyrightWidget extends Widget
 {

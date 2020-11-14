@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\View;
+namespace ManaPHP\Mvc\View;
 
 use ManaPHP\Component;
 
@@ -15,10 +15,10 @@ class FlashContext
 }
 
 /**
- * Class ManaPHP\View\Flash
+ * Class ManaPHP\Mvc\View\Flash
  *
  * @package flash
- * @property-read \ManaPHP\View\FlashContext $_context
+ * @property-read \ManaPHP\Mvc\View\FlashContext $_context
  */
 abstract class Flash extends Component implements FlashInterface
 {

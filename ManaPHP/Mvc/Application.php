@@ -4,7 +4,6 @@ namespace ManaPHP\Mvc;
 
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\Response;
-use ManaPHP\View;
 use Throwable;
 
 /**

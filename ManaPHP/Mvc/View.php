@@ -1,7 +1,8 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Mvc;
 
+use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\LocalFS;
@@ -32,13 +33,13 @@ class ViewContext
 }
 
 /**
- * Class ManaPHP\View
+ * Class ManaPHP\Mvc\View
  *
  * @package view
  *
  * @property-read \ManaPHP\RendererInterface        $renderer
  * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
- * @property-read \ManaPHP\ViewContext              $_context
+ * @property-read \ManaPHP\Mvc\ViewContext          $_context
  */
 class View extends Component implements ViewInterface
 {
@@ -402,7 +403,7 @@ class View extends Component implements ViewInterface
             $view = "@views/Widgets/$widget";
         }
 
-        /** @var \ManaPHP\View\WidgetInterface $widgetInstance */
+        /** @var \ManaPHP\Mvc\View\WidgetInterface $widgetInstance */
         $widgetInstance = $this->getShared($widgetClassName);
         $vars = $widgetInstance->run($options);
 

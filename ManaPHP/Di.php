@@ -20,15 +20,15 @@ use ManaPHP\Exception\NotSupportedException;
  * @property-read \ManaPHP\Http\RequestInterface           $request
  * @property-read \ManaPHP\Http\ResponseInterface          $response
  * @property-read \ManaPHP\Http\CookiesInterface           $cookies
- * @property-read \ManaPHP\View\FlashInterface             $flash
- * @property-read \ManaPHP\View\FlashInterface             $flashSession
+ * @property-read \ManaPHP\Mvc\View\FlashInterface         $flash
+ * @property-read \ManaPHP\Mvc\View\FlashInterface         $flashSession
  * @property-read \ManaPHP\Http\SessionInterface           $session
  * @property-read \ManaPHP\Event\ManagerInterface          $eventsManager
  * @property-read \ManaPHP\DbInterface                     $db
  * @property-read \ManaPHP\Security\CryptInterface         $crypt
  * @property-read \ManaPHP\Db\Model\MetadataInterface      $modelsMetadata
  * @property-read \ManaPHP\ValidatorInterface              $validator
- * @property-read \ManaPHP\ViewInterface                   $view
+ * @property-read \ManaPHP\Mvc\ViewInterface               $view
  * @property-read \ManaPHP\Loader                          $loader
  * @property-read \ManaPHP\LoggerInterface                 $logger
  * @property-read \ManaPHP\RendererInterface               $renderer

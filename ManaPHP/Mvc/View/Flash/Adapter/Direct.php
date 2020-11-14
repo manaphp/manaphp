@@ -1,11 +1,11 @@
 <?php
 
-namespace ManaPHP\View\Flash\Adapter;
+namespace ManaPHP\Mvc\View\Flash\Adapter;
 
-use ManaPHP\View\Flash;
+use ManaPHP\Mvc\View\Flash;
 
 /**
- * Class ManaPHP\View\Flash\Adapter\Direct
+ * Class ManaPHP\Mvc\View\Flash\Adapter\Direct
  *
  * @package flash\adapter
  */

@@ -13,7 +13,7 @@ use ManaPHP\Rest\Controller as RestController;
  *
  * @package ManaPHP\Plugins
  *
- * @property-read \ManaPHP\ViewInterface $view
+ * @property-read \ManaPHP\Mvc\ViewInterface $view
  */
 class CsrfPlugin extends Plugin
 {
