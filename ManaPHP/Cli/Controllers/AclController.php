@@ -9,7 +9,7 @@ use ManaPHP\Cli\Controller;
  *
  * @package ManaPHP\Cli\Controllers
  *
- * @property-read \ManaPHP\Authorization\AclBuilderInterface $aclBuilder
+ * @property-read \ManaPHP\Http\Authorization\AclBuilderInterface $aclBuilder
  */
 class AclController extends Controller
 {
@@ -18,7 +18,7 @@ class AclController extends Controller
      */
     public function listCommand($role = '')
     {
-        $authorization = $this->getShared('ManaPHP\Authorization');
+        $authorization = $this->getShared('ManaPHP\Http\Authorization');
         foreach ($this->aclBuilder->getControllers() as $controller) {
             /** @var \ManaPHP\Http\Controller $controllerInstance */
             $controllerInstance = $this->getInstance($controller);

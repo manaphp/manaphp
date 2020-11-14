@@ -17,7 +17,7 @@ use ManaPHP\Logger\LogCategorizable;
  * @property-read \ManaPHP\Db\Model\MetadataInterface     $modelsMetadata
  * @property-read \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
  * @property-read \ManaPHP\RouterInterface                $router
- * @property-read \ManaPHP\AuthorizationInterface         $authorization
+ * @property-read \ManaPHP\Http\AuthorizationInterface    $authorization
  * @property-read \ManaPHP\Http\CookiesInterface          $cookies
  * @property-read \ManaPHP\Http\SessionInterface          $session
  * @property-read \ManaPHP\RendererInterface              $renderer

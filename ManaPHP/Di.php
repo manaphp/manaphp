@@ -41,7 +41,7 @@ use ManaPHP\Exception\NotSupportedException;
  * @property-read \ManaPHP\CacheInterface                  $viewsCache
  * @property-read \ManaPHP\Http\ClientInterface            $httpClient
  * @property-read \ManaPHP\Http\ClientInterface            $restClient
- * @property-read \ManaPHP\AuthorizationInterface          $authorization
+ * @property-read \ManaPHP\Http\AuthorizationInterface     $authorization
  * @property-read \ManaPHP\Http\CaptchaInterface           $captcha
  * @property-read \ManaPHP\IdentityInterface               $identity
  * @property-read \ManaPHP\Security\RandomInterface        $random

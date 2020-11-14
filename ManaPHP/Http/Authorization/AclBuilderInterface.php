@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Authorization;
+namespace ManaPHP\Http\Authorization;
 
 interface AclBuilderInterface
 {

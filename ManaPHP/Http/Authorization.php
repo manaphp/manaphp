@@ -1,7 +1,8 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Http;
 
+use ManaPHP\Component;
 use ManaPHP\Exception\ForbiddenException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
@@ -22,12 +23,12 @@ class AuthorizationContext
  *
  * @package ManaPHP
  *
- * @property-read \ManaPHP\Http\DispatcherInterface          $dispatcher
- * @property-read \ManaPHP\RouterInterface                   $router
- * @property-read \ManaPHP\Http\RequestInterface             $request
- * @property-read \ManaPHP\Http\ResponseInterface            $response
- * @property-read \ManaPHP\Authorization\AclBuilderInterface $aclBuilder
- * @property-read \ManaPHP\AuthorizationContext              $_context
+ * @property-read \ManaPHP\Http\DispatcherInterface               $dispatcher
+ * @property-read \ManaPHP\RouterInterface                        $router
+ * @property-read \ManaPHP\Http\RequestInterface                  $request
+ * @property-read \ManaPHP\Http\ResponseInterface                 $response
+ * @property-read \ManaPHP\Http\Authorization\AclBuilderInterface $aclBuilder
+ * @property-read \ManaPHP\Http\AuthorizationContext              $_context
  */
 class Authorization extends Component implements AuthorizationInterface
 {

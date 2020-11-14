@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Http;
 
 /**
- * Interface ManaPHP\AuthorizationInterface
+ * Interface ManaPHP\Http\AuthorizationInterface
  *
  * @package authorization
  */
