@@ -52,7 +52,7 @@ class ResponseContext
  * @package response
  *
  * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\UrlInterface          $url
+ * @property-read \ManaPHP\Http\UrlInterface     $url
  * @property-read \ManaPHP\RouterInterface       $router
  * @property-read \ManaPHP\Http\ResponseContext  $_context
  */

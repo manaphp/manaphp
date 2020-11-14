@@ -13,7 +13,7 @@ namespace ManaPHP\Mvc;
  * @property-read \ManaPHP\Http\CookiesInterface             $cookies
  * @property-read \ManaPHP\Http\SessionInterface             $session
  * @property-read \ManaPHP\CacheInterface                    $viewsCache
- * @property-read \ManaPHP\UrlInterface                      $url
+ * @property-read \ManaPHP\Http\UrlInterface                 $url
  * @property-read \ManaPHP\AuthorizationInterface            $authorization
  * @property-read \ManaPHP\Authorization\AclBuilderInterface $aclBuilder
  */

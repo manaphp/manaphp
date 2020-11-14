@@ -14,7 +14,7 @@ class Factory extends FactoryDefault
             $this->_definitions, [
                 'router'         => 'ManaPHP\Router',
                 'dispatcher'     => 'ManaPHP\Http\Dispatcher',
-                'url'            => 'ManaPHP\Url',
+                'url'            => 'ManaPHP\Http\Url',
                 'response'       => 'ManaPHP\Http\Response',
                 'request'        => 'ManaPHP\Http\Request',
                 'session'        => 'ManaPHP\Http\Session\Adapter\File',

@@ -1,9 +1,11 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Http;
+
+use ManaPHP\Component;
 
 /**
- * Class ManaPHP\Url
+ * Class ManaPHP\Http\Url
  *
  * @package url
  * @property-read \ManaPHP\Http\RequestInterface $request

@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Http;
 
 /**
- * Interface ManaPHP\UrlInterface
+ * Interface ManaPHP\Http\UrlInterface
  *
  * @package url
  */

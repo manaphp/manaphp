@@ -10,7 +10,7 @@ use ManaPHP\Logger\LogCategorizable;
  *
  * @package widget
  *
- * @property-read \ManaPHP\UrlInterface      $url
+ * @property-read \ManaPHP\Http\UrlInterface $url
  * @property-read \ManaPHP\CacheInterface    $cache
  * @property-read \ManaPHP\RendererInterface $renderer
  * @property-read \ManaPHP\DbInterface       $db
