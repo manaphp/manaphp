@@ -31,6 +31,13 @@ interface JwtInterface
     public function verify($token, $secrets = null);
 
     /**
+     * @param string $scope
+     *
+     * @return string
+     */
+    public function getScopedSecret($scope);
+
+    /**
      * @param array  $claims
      * @param int    $ttl
      * @param string $scope

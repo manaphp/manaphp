@@ -41,7 +41,7 @@ class Jwt extends Component implements JwtInterface
         if (isset($options['secret'])) {
             $this->_secret = $options['secret'];
         } else {
-            $this->_secret = $this->getScopedKey($this->configure->id);
+            $this->_secret = $this->getScopedSecret($this->configure->id);
         }
     }
 
@@ -50,7 +50,7 @@ class Jwt extends Component implements JwtInterface
      *
      * @return string
      */
-    public function getScopedKey($scope)
+    public function getScopedSecret($scope)
     {
         if ($scope === '') {
             return $this->crypt->getDerivedKey('jwt');
@@ -197,7 +197,7 @@ class Jwt extends Component implements JwtInterface
 
         $claims['scope'] = $scope;
 
-        return $this->encode($claims, $ttl, $this->getScopedKey($scope));
+        return $this->encode($claims, $ttl, $this->getScopedSecret($scope));
     }
 
     public function scopedDecode($token, $scope, $verify = true)
@@ -221,6 +221,6 @@ class Jwt extends Component implements JwtInterface
 
     public function scopedVerify($token, $scope)
     {
-        $this->verify($token, $this->getScopedKey($scope));
+        $this->verify($token, $this->getScopedSecret($scope));
     }
 }
