@@ -9,7 +9,7 @@ use ManaPHP\Cli\Controller;
  *
  * @package App\Cli\Controllers
  *
- * @property-read \ManaPHP\DotenvInterface $dotenv
+ * @property-read \ManaPHP\Configuration\DotenvInterface $dotenv
  */
 class DotenvController extends Controller
 {

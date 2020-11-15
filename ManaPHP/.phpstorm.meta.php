@@ -8,7 +8,7 @@ namespace PHPSTORM_META {
         \ManaPHP\DiInterface::getShared('')   => [
             'eventsManager' instanceof \ManaPHP\Event\ManagerInterface,
             'alias' instanceof \ManaPHP\AliasInterface,
-            'dotenv' instanceof \ManaPHP\DotenvInterface,
+            'dotenv' instanceof \ManaPHP\Configuration\DotenvInterface,
             'configure' instanceof \ManaPHP\Configuration\Configure,
             'settings' instanceof \ManaPHP\Configuration\SettingsInterface,
             'errorHandler' instanceof \ManaPHP\ErrorHandlerInterface,
@@ -65,7 +65,7 @@ namespace PHPSTORM_META {
         \di('')                               => [
             'eventsManager' instanceof \ManaPHP\Event\ManagerInterface,
             'alias' instanceof \ManaPHP\AliasInterface,
-            'dotenv' instanceof \ManaPHP\DotenvInterface,
+            'dotenv' instanceof \ManaPHP\Configuration\DotenvInterface,
             'configure' instanceof \ManaPHP\Configuration\Configure,
             'settings' instanceof \ManaPHP\Configuration\SettingsInterface,
             'errorHandler' instanceof \ManaPHP\ErrorHandlerInterface,
@@ -123,7 +123,7 @@ namespace PHPSTORM_META {
         \ManaPHP\Di\Injectable::getShared('') => [
             'eventsManager' instanceof \ManaPHP\Event\ManagerInterface,
             'alias' instanceof \ManaPHP\AliasInterface,
-            'dotenv' instanceof \ManaPHP\DotenvInterface,
+            'dotenv' instanceof \ManaPHP\Configuration\DotenvInterface,
             'configure' instanceof \ManaPHP\Configuration\Configure,
             'settings' instanceof \ManaPHP\Configuration\SettingsInterface,
             'errorHandler' instanceof \ManaPHP\ErrorHandlerInterface,

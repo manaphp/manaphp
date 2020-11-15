@@ -11,8 +11,8 @@ use ReflectionClass;
  *
  * @package application
  *
- * @property-read \ManaPHP\DotenvInterface       $dotenv
- * @property-read \ManaPHP\ErrorHandlerInterface $errorHandler
+ * @property-read \ManaPHP\Configuration\DotenvInterface $dotenv
+ * @property-read \ManaPHP\ErrorHandlerInterface         $errorHandler
  */
 class Application extends Component implements ApplicationInterface, Unaspectable
 {

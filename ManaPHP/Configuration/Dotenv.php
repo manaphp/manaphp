@@ -1,7 +1,8 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Configuration;
 
+use ManaPHP\Component;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
