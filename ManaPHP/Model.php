@@ -314,7 +314,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      *                       'index'=>get_object_vars(new static)]
      * @param array $fields  =get_object_vars(new static)
      *
-     * @return  \ManaPHP\Paginator
+     * @return  \ManaPHP\Query\Paginator
      */
     public static function paginate($filters = [], $options = null, $fields = null)
     {

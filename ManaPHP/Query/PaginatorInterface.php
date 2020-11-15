@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Query;
 
 /**
- * Interface ManaPHP\PaginatorInterface
+ * Interface ManaPHP\Query\PaginatorInterface
  *
  * @package paginator
  */
