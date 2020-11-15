@@ -22,7 +22,7 @@ class FactoryDefault extends Di
             'eventsManager'    => 'ManaPHP\Event\Manager',
             'poolManager'      => 'ManaPHP\Pool\Manager',
             'alias'            => 'ManaPHP\Alias',
-            'aop'              => 'ManaPHP\Aop',
+            'aopCutter'        => 'ManaPHP\Aop\Cutter',
             'dotenv'           => 'ManaPHP\Dotenv',
             'configure'        => 'ManaPHP\Configuration\Configure',
             'settings'         => 'ManaPHP\Configuration\Settings\Adapter\Redis',

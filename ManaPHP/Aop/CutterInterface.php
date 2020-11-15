@@ -1,8 +1,8 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Aop;
 
-interface AopInterface
+interface CutterInterface
 {
     /**
      * @param string $class

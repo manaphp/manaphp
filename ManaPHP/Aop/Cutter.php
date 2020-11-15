@@ -1,12 +1,10 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Aop;
 
-use ManaPHP\Aop\JoinPoint;
-use ManaPHP\Aop\Unaspectable;
 use ReflectionClass;
 
-class Aop implements AopInterface, Unaspectable
+class Cutter implements CutterInterface, Unaspectable
 {
     /**
      * @var \ManaPHP\Aop\JoinPoint[][]
