@@ -3,7 +3,7 @@
 namespace ManaPHP\Cli;
 
 use ManaPHP\Exception\AbortException;
-use ManaPHP\Logger\LogCategorizable;
+use ManaPHP\Logging\Logger\LogCategorizable;
 use Swoole\Coroutine;
 use Swoole\Event;
 use Swoole\Runtime;

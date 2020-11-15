@@ -3,7 +3,7 @@
 namespace ManaPHP\Plugins;
 
 use ManaPHP\Event\EventArgs;
-use ManaPHP\Logger;
+use ManaPHP\Logging\Logger;
 use ManaPHP\Plugin;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
@@ -93,7 +93,7 @@ class FiddlerPlugin extends Plugin
 
     public function onLoggerLog(EventArgs $eventArgs)
     {
-        /** @var \ManaPHP\Logger\Log $log */
+        /** @var \ManaPHP\Logging\Logger\Log $log */
         $log = $eventArgs->data;
 
         if ($this->watched()) {

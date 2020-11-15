@@ -30,7 +30,7 @@ class FactoryDefault extends Di
             'modelsMetadata'   => 'ManaPHP\Db\Model\Metadata\Adapter\Memory',
             'validator'        => 'ManaPHP\Validator',
             'crypt'            => 'ManaPHP\Security\Crypt',
-            'logger'           => 'ManaPHP\Logger\Adapter\File',
+            'logger'           => 'ManaPHP\Logging\Logger\Adapter\File',
             'renderer'         => 'ManaPHP\Renderer',
             'assetBundle'      => 'ManaPHP\Renderer\AssetBundle',
             'cache'            => 'ManaPHP\Caching\Cache\Adapter\Redis',

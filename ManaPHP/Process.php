@@ -2,7 +2,7 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Logger\LogCategorizable;
+use ManaPHP\Logging\Logger\LogCategorizable;
 
 abstract class Process extends Component implements ProcessInterface, LogCategorizable
 {

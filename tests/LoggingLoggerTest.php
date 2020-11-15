@@ -2,13 +2,13 @@
 
 namespace Tests;
 
-use ManaPHP\Logger;
-use ManaPHP\Logger\Adapter\Memory;
+use ManaPHP\Logging\Logger;
+use ManaPHP\Logging\Logger\Adapter\Memory;
 use ManaPHP\Mvc\Factory;
 use PHPUnit\Framework\TestCase;
 use Tests\Models\City;
 
-class LoggerTest extends TestCase
+class LoggingLoggerTest extends TestCase
 {
     /**
      * @var \ManaPHP\DiInterface

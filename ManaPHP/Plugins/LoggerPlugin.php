@@ -165,7 +165,7 @@ class LoggerPlugin extends Plugin
     {
         $context = $this->_context;
 
-        /** @var \ManaPHP\Logger\Log $log */
+        /** @var \ManaPHP\Logging\Logger\Log $log */
         $log = $eventArgs->data;
 
         if ($context->enabled) {

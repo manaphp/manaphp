@@ -30,7 +30,7 @@ use ManaPHP\Exception\NotSupportedException;
  * @property-read \ManaPHP\ValidatorInterface              $validator
  * @property-read \ManaPHP\Mvc\ViewInterface               $view
  * @property-read \ManaPHP\Loader                          $loader
- * @property-read \ManaPHP\LoggerInterface                 $logger
+ * @property-read \ManaPHP\Logging\LoggerInterface         $logger
  * @property-read \ManaPHP\RendererInterface               $renderer
  * @property-read \ManaPHP\Configuration\Configure         $configure
  * @property-read \ManaPHP\Configuration\SettingsInterface $settings

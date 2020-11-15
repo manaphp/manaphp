@@ -3,7 +3,7 @@
 namespace ManaPHP\Event;
 
 use ManaPHP\Component;
-use ManaPHP\Logger\LogCategorizable;
+use ManaPHP\Logging\Logger\LogCategorizable;
 
 class Listener extends Component implements LogCategorizable
 {

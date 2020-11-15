@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Logging;
 
 /**
- * Interface ManaPHP\LoggerInterface
+ * Interface ManaPHP\Logging\LoggerInterface
  *
  * @package logger
  */

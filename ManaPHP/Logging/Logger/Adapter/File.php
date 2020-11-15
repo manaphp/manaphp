@@ -1,11 +1,11 @@
 <?php
 
-namespace ManaPHP\Logger\Adapter;
+namespace ManaPHP\Logging\Logger\Adapter;
 
-use ManaPHP\Logger;
+use ManaPHP\Logging\Logger;
 
 /**
- * Class ManaPHP\Logger\Adapter\File
+ * Class ManaPHP\Logging\Logger\Adapter\File
  *
  * @package logger
  */
@@ -27,7 +27,7 @@ class File extends Logger
     protected $_tail = PHP_EOL;
 
     /**
-     * \ManaPHP\Logger\Adapter\File constructor.
+     * \ManaPHP\Logging\Logger\Adapter\File constructor.
      *
      * @param array $options
      */
@@ -60,7 +60,7 @@ class File extends Logger
     }
 
     /**
-     * @param \ManaPHP\Logger\Log $log
+     * @param \ManaPHP\Logging\Logger\Log $log
      *
      * @return string
      */
@@ -109,7 +109,7 @@ class File extends Logger
     }
 
     /**
-     * @param \ManaPHP\Logger\Log[] $logs
+     * @param \ManaPHP\Logging\Logger\Log[] $logs
      *
      * @return void
      */

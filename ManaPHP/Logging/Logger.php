@@ -1,11 +1,13 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Logging;
 
 use JsonSerializable;
+use ManaPHP\Component;
+use ManaPHP\Coroutine;
 use ManaPHP\Exception\InvalidValueException;
-use ManaPHP\Logger\Log;
-use ManaPHP\Logger\LogCategorizable;
+use ManaPHP\Logging\Logger\Log;
+use ManaPHP\Logging\Logger\LogCategorizable;
 use Serializable;
 use Throwable;
 
@@ -30,11 +32,11 @@ class LoggerContext
 }
 
 /**
- * Class ManaPHP\Logger
+ * Class ManaPHP\Logging\Logger
  *
  * @package logger
  * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\LoggerContext         $_context
+ * @property-read \ManaPHP\Logging\LoggerContext $_context
  */
 abstract class Logger extends Component implements LoggerInterface
 {
@@ -82,7 +84,7 @@ abstract class Logger extends Component implements LoggerInterface
     protected $_last_write;
 
     /**
-     * @var \ManaPHP\Logger\Log[]
+     * @var \ManaPHP\Logging\Logger\Log[]
      */
     protected $_logs = [];
 
@@ -122,7 +124,7 @@ abstract class Logger extends Component implements LoggerInterface
 
     protected function _createContext()
     {
-        /** @var \ManaPHP\LoggerContext $context */
+        /** @var \ManaPHP\Logging\LoggerContext $context */
         $context = parent::_createContext();
 
         $context->level = $this->_level;
@@ -196,7 +198,7 @@ abstract class Logger extends Component implements LoggerInterface
     }
 
     /**
-     * @param \ManaPHP\Logger\Log[] $logs
+     * @param \ManaPHP\Logging\Logger\Log[] $logs
      *
      * @return void
      */

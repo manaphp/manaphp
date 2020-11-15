@@ -1,8 +1,8 @@
 <?php
 
-namespace ManaPHP\Logger\Adapter;
+namespace ManaPHP\Logging\Logger\Adapter;
 
-use ManaPHP\Logger;
+use ManaPHP\Logging\Logger;
 
 class Noop extends Logger
 {

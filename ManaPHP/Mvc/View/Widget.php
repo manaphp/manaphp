@@ -3,7 +3,7 @@
 namespace ManaPHP\Mvc\View;
 
 use ManaPHP\Component;
-use ManaPHP\Logger\LogCategorizable;
+use ManaPHP\Logging\Logger\LogCategorizable;
 
 /**
  * Class ManaPHP\Mvc\View\Widget

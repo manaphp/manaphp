@@ -1,11 +1,11 @@
 <?php
 
-namespace ManaPHP\Logger\Adapter;
+namespace ManaPHP\Logging\Logger\Adapter;
 
-use ManaPHP\Logger;
+use ManaPHP\Logging\Logger;
 
 /**
- * Class ManaPHP\Logger\Adapter\Stdout
+ * Class ManaPHP\Logging\Logger\Adapter\Stdout
  *
  * @package logger
  */
@@ -31,7 +31,7 @@ class Stdout extends Logger
     }
 
     /**
-     * @param \ManaPHP\Logger\Log[] $logs
+     * @param \ManaPHP\Logging\Logger\Log[] $logs
      *
      * @return void
      */

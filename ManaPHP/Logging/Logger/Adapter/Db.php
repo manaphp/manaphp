@@ -1,12 +1,12 @@
 <?php
 
-namespace ManaPHP\Logger\Adapter;
+namespace ManaPHP\Logging\Logger\Adapter;
 
 use Exception;
-use ManaPHP\Logger;
+use ManaPHP\Logging\Logger;
 
 /**
- * Class ManaPHP\Logger\Adapter\Db
+ * Class ManaPHP\Logging\Logger\Adapter\Db
  *
  * @package logger
  */
@@ -41,7 +41,7 @@ class Db extends Logger
     }
 
     /**
-     * @param \ManaPHP\Logger\Log[] $logs
+     * @param \ManaPHP\Logging\Logger\Log[] $logs
      *
      * @return void
      */

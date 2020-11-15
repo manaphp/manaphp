@@ -1,29 +1,29 @@
 <?php
 
-namespace ManaPHP\Logger\Adapter;
+namespace ManaPHP\Logging\Logger\Adapter;
 
-use ManaPHP\Logger;
+use ManaPHP\Logging\Logger;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
 
 class MemoryContext
 {
     /**
-     * @var \ManaPHP\Logger\Log[]
+     * @var \ManaPHP\Logging\Logger\Log[]
      */
     public $logs = [];
 }
 
 /**
- * Class ManaPHP\Logger\Adapter\Memory
+ * Class ManaPHP\Logging\Logger\Adapter\Memory
  *
  * @package logger
- * @property-read \ManaPHP\Logger\Adapter\MemoryContext $_context
+ * @property-read \ManaPHP\Logging\Logger\Adapter\MemoryContext $_context
  */
 class Memory extends Logger
 {
     /**
-     * @param \ManaPHP\Logger\Log[] $logs
+     * @param \ManaPHP\Logging\Logger\Log[] $logs
      *
      * @return void
      */
@@ -35,7 +35,7 @@ class Memory extends Logger
     }
 
     /**
-     * @return \ManaPHP\Logger\Log[]
+     * @return \ManaPHP\Logging\Logger\Log[]
      */
     public function getLogs()
     {

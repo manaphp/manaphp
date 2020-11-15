@@ -390,7 +390,7 @@ class Model extends \ManaPHP\Model implements ModelInterface
 
         list($db, $table) = $sample->getUniqueShard($record);
         /** @var \ManaPHP\Db\Model\MetadataInterface $modelsMetadata */
-        /** @var \ManaPHP\LoggerInterface $logger */
+        /** @var \ManaPHP\Logging\LoggerInterface $logger */
         $modelsMetadata = $sample->getShared('modelsMetadata');
         $logger = $sample->getShared('logger');
 

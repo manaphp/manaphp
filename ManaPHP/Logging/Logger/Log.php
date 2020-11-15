@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Logger;
+namespace ManaPHP\Logging\Logger;
 
 class Log
 {

@@ -2,7 +2,7 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Logger\LogCategorizable;
+use ManaPHP\Logging\Logger\LogCategorizable;
 
 /**
  * Class Service

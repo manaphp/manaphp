@@ -1,8 +1,8 @@
 <?php
 
-namespace ManaPHP\Logger\Adapter;
+namespace ManaPHP\Logging\Logger\Adapter;
 
-use ManaPHP\Logger;
+use ManaPHP\Logging\Logger;
 
 class Redis extends Logger
 {
@@ -24,7 +24,7 @@ class Redis extends Logger
     }
 
     /**
-     * @param \ManaPHP\Logger\Log[] $logs
+     * @param \ManaPHP\Logging\Logger\Log[] $logs
      */
     public function append($logs)
     {

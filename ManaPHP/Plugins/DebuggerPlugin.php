@@ -7,7 +7,7 @@ use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
-use ManaPHP\Logger;
+use ManaPHP\Logging\Logger;
 use ManaPHP\Plugin;
 use ManaPHP\Version;
 
@@ -194,7 +194,7 @@ class DebuggerPlugin extends Plugin
     {
         $context = $this->_context;
 
-        /** @var \ManaPHP\Logger\Log $log */
+        /** @var \ManaPHP\Logging\Logger\Log $log */
         $log = $eventArgs->data;
         $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
         $context->log[] = [
