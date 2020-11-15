@@ -118,7 +118,7 @@ namespace PHPSTORM_META {
             'jwt' instanceof \ManaPHP\Token\JwtInterface,
             'scopedJwt' instanceof \ManaPHP\Token\ScopedJwtInterface,
             'pubSub' instanceof \ManaPHP\Messaging\PubSubInterface,
-            'dataDump' instanceof \ManaPHP\DataDumpInterface,
+            'dataDump' instanceof \ManaPHP\Debugging\DataDumpInterface,
         ],
         \ManaPHP\Di\Injectable::getShared('') => [
             'eventsManager' instanceof \ManaPHP\Event\ManagerInterface,
@@ -176,7 +176,7 @@ namespace PHPSTORM_META {
             'jwt' instanceof \ManaPHP\Token\JwtInterface,
             'scopedJwt' instanceof \ManaPHP\Token\ScopedJwtInterface,
             'pubSub' instanceof \ManaPHP\Messaging\PubSubInterface,
-            'dataDump' instanceof \ManaPHP\DataDumpInterface,
+            'dataDump' instanceof \ManaPHP\Debugging\DataDumpInterface,
         ],
         \ManaPHP\DiInterface::get('')         => [
             '' == '@',

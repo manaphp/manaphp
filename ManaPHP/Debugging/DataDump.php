@@ -1,8 +1,10 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Debugging;
 
 use JsonSerializable;
+use ManaPHP\Component;
+use ManaPHP\Coroutine;
 use Serializable;
 use Throwable;
 

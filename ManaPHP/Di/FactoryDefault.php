@@ -61,7 +61,7 @@ class FactoryDefault extends Di
             'scopedJwt'        => 'ManaPHP\Token\ScopedJwt',
             'wsClient'         => 'ManaPHP\Ws\Client',
             'pubSub'           => 'ManaPHP\Messaging\PubSub\Adapter\Redis',
-            'dataDump'         => 'ManaPHP\DataDump',
+            'dataDump'         => 'ManaPHP\Debugging\DataDump',
         ];
     }
 }
