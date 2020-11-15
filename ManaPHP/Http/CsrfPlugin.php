@@ -3,9 +3,9 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Event\EventArgs;
+use ManaPHP\Http\CsrfPlugin\AttackDetectedException;
 use ManaPHP\Mvc\Controller as MvcController;
 use ManaPHP\Plugin;
-use ManaPHP\Plugins\CsrfPlugin\AttackDetectedException;
 use ManaPHP\Rest\Controller as RestController;
 
 /**
