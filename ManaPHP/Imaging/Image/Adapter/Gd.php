@@ -1,15 +1,15 @@
 <?php
 
-namespace ManaPHP\Image\Adapter;
+namespace ManaPHP\Imaging\Image\Adapter;
 
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\PreconditionException;
-use ManaPHP\Image;
+use ManaPHP\Imaging\Image;
 
 /**
- * Class ManaPHP\Image\Adapter\Gd
+ * Class ManaPHP\Imaging\Image\Adapter\Gd
  *
  * @package image\adapter
  */

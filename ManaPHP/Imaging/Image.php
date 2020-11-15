@@ -1,9 +1,11 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Imaging;
+
+use ManaPHP\Component;
 
 /**
- * Class ManaPHP\Image
+ * Class ManaPHP\Imaging\Image
  *
  * @package image
  */

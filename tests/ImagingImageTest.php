@@ -5,7 +5,7 @@ namespace Tests;
 use ManaPHP\Di\FactoryDefault;
 use PHPUnit\Framework\TestCase;
 
-class ImageTest extends TestCase
+class ImagingImageTest extends TestCase
 {
     protected $_originalImage;
     protected $_resultDirectory;

@@ -537,14 +537,14 @@ if (!function_exists('image_create')) {
     /**
      * @param string $file
      *
-     * @return \ManaPHP\ImageInterface
+     * @return \ManaPHP\Imaging\ImageInterface
      */
     function image_create($file)
     {
         if (extension_loaded('imagick')) {
-            return Di::getDefault()->get('ManaPHP\Image\Adapter\Imagick', [$file]);
+            return Di::getDefault()->get('ManaPHP\Imaging\Image\Adapter\Imagick', [$file]);
         } elseif (extension_loaded('gd')) {
-            return Di::getDefault()->get('ManaPHP\Image\Adapter\Gd', [$file]);
+            return Di::getDefault()->get('ManaPHP\Imaging\Image\Adapter\Gd', [$file]);
         } else {
             throw new NotSupportedException('neither `imagic` nor `gd` extension is loaded');
         }

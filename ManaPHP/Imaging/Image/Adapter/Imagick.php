@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Image\Adapter;
+namespace ManaPHP\Imaging\Image\Adapter;
 
 use ImagickDraw;
 use ImagickPixel;
@@ -10,10 +10,10 @@ use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\RuntimeException;
-use ManaPHP\Image;
+use ManaPHP\Imaging\Image;
 
 /**
- * Class ManaPHP\Image\Adapter\Imagick
+ * Class ManaPHP\Imaging\Image\Adapter\Imagick
  *
  * @package image\adapter
  */

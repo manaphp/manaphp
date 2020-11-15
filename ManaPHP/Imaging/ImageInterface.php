@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Imaging;
 
 /**
- * Interface ManaPHP\ImageInterface
+ * Interface ManaPHP\Imaging\ImageInterface
  *
  * @package image
  */
