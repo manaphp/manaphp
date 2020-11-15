@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Dom;
+namespace ManaPHP\Html\Dom;
 
 use DOMXPath;
 use ManaPHP\Exception\MisuseException;
@@ -18,7 +18,7 @@ class Query
     protected $_xpath;
 
     /**
-     * @var \ManaPHP\Dom\CssToXPath
+     * @var \ManaPHP\Html\Dom\CssToXPath
      */
     protected $_cssToXPath;
 

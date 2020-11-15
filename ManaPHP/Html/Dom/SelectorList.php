@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Dom;
+namespace ManaPHP\Html\Dom;
 
 use ArrayAccess;
 use ArrayIterator;
@@ -16,15 +16,15 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
     protected $_nodes;
 
     /**
-     * @var \ManaPHP\Dom\Document
+     * @var \ManaPHP\Html\Dom\Document
      */
     protected $_document;
 
     /**
      * SelectorList constructor.
      *
-     * @param \ManaPHP\Dom\Document|\ManaPHP\Dom\SelectorList $document
-     * @param \DOMNode[]                                      $nodes
+     * @param \ManaPHP\Html\Dom\Document|\ManaPHP\Html\Dom\SelectorList $document
+     * @param \DOMNode[]                                                $nodes
      */
     public function __construct($document, $nodes)
     {
@@ -79,7 +79,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
     }
 
     /**
-     * @param string|\ManaPHP\Dom\SelectorList $selectors
+     * @param string|\ManaPHP\Html\Dom\SelectorList $selectors
      *
      * @return static
      */
@@ -188,7 +188,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
     }
 
     /**
-     * @return \ManaPHP\Dom\Selector|null
+     * @return \ManaPHP\Html\Dom\Selector|null
      */
     public function first()
     {

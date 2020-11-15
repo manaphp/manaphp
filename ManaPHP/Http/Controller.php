@@ -7,14 +7,14 @@ namespace ManaPHP\Http;
  *
  * @package ManaPHP\Http
  *
- * @property-read \ManaPHP\InvokerInterface               $invoker
- * @property-read \ManaPHP\Http\RequestInterface          $request
- * @property-read \ManaPHP\Http\ResponseInterface         $response
- * @property-read \ManaPHP\Http\RouterInterface           $router
- * @property-read \ManaPHP\Http\DispatcherInterface       $dispatcher
- * @property-read \ManaPHP\Http\CaptchaInterface          $captcha
- * @property-read \ManaPHP\Messaging\QueueInterface       $messageQueue
- * @property-read \ManaPHP\Security\HtmlPurifierInterface $htmlPurifier
+ * @property-read \ManaPHP\InvokerInterface         $invoker
+ * @property-read \ManaPHP\Http\RequestInterface    $request
+ * @property-read \ManaPHP\Http\ResponseInterface   $response
+ * @property-read \ManaPHP\Http\RouterInterface     $router
+ * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
+ * @property-read \ManaPHP\Http\CaptchaInterface    $captcha
+ * @property-read \ManaPHP\Messaging\QueueInterface $messageQueue
+ * @property-read \ManaPHP\Html\PurifierInterface   $htmlPurifier
  */
 abstract class Controller extends \ManaPHP\Controller
 {

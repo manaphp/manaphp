@@ -1,8 +1,8 @@
 <?php
 
-namespace ManaPHP\Security;
+namespace ManaPHP\Html;
 
-interface HtmlPurifierInterface
+interface PurifierInterface
 {
     /**
      * @param string $html

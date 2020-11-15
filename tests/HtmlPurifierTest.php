@@ -2,14 +2,14 @@
 
 namespace Tests;
 
-use ManaPHP\Security\HtmlPurifier;
+use ManaPHP\Html\Purifier;
 use PHPUnit\Framework\TestCase;
 
-class SecurityHttpPurifierTest extends TestCase
+class HtmlPurifierTest extends TestCase
 {
     public function test_purify()
     {
-        $httpPurifier = new HtmlPurifier();
+        $httpPurifier = new Purifier();
 
 //最简单最常用的测试代码
         $source = <<<EOT
@@ -121,7 +121,7 @@ EOT;
 
     public function test_purify_normal()
     {
-        $httpPurifier = new HtmlPurifier();
+        $httpPurifier = new Purifier();
 
         $source = <<<EOT
 <p>manaphp</p>

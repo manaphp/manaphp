@@ -48,7 +48,7 @@ use ManaPHP\Exception\NotSupportedException;
  * @property-read \ManaPHP\Messaging\QueueInterface        $messageQueue
  * @property-read \ManaPHP\I18n\TranslatorInterface        $translation
  * @property-read \ManaPHP\Renderer\Engine\Sword\Compiler  $swordCompiler
- * @property-read \ManaPHP\Security\HtmlPurifierInterface  $htmlPurifier
+ * @property-read \ManaPHP\Html\PurifierInterface          $htmlPurifier
  * @property-read \ManaPHP\Messaging\AmqpInterface         $rabbitmq
  * @property-read \ManaPHP\Model\Relation\ManagerInterface $relationsManager
  * @property-read \ManaPHP\Mailing\MailerInterface         $mailer

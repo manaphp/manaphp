@@ -1,13 +1,13 @@
 <?php
 
-namespace ManaPHP\Dom;
+namespace ManaPHP\Html\Dom;
 
 use DOMText;
 
 class Selector
 {
     /**
-     * @var \ManaPHP\Dom\Document
+     * @var \ManaPHP\Html\Dom\Document
      */
     protected $_document;
 
@@ -19,8 +19,8 @@ class Selector
     /**
      * Selector constructor.
      *
-     * @param string|\ManaPHP\Dom\Document $document
-     * @param \DOMNode                     $node
+     * @param string|\ManaPHP\Html\Dom\Document $document
+     * @param \DOMNode                          $node
      */
     public function __construct($document, $node = null)
     {
@@ -37,7 +37,7 @@ class Selector
     }
 
     /**
-     * @return \ManaPHP\Dom\Document
+     * @return \ManaPHP\Html\Dom\Document
      */
     public function document()
     {
@@ -47,7 +47,7 @@ class Selector
     /**
      * @param string|array $query
      *
-     * @return \ManaPHP\Dom\SelectorList
+     * @return \ManaPHP\Html\Dom\SelectorList
      */
     public function xpath($query)
     {
@@ -62,7 +62,7 @@ class Selector
     /**
      * @param string|array $css
      *
-     * @return \ManaPHP\Dom\SelectorList
+     * @return \ManaPHP\Html\Dom\SelectorList
      */
     public function css($css)
     {
@@ -77,7 +77,7 @@ class Selector
     /**
      * @param string $css
      *
-     * @return \ManaPHP\Dom\SelectorList
+     * @return \ManaPHP\Html\Dom\SelectorList
      */
     public function find($css = null)
     {
@@ -87,7 +87,7 @@ class Selector
     /**
      * @param string $css
      *
-     * @return \ManaPHP\Dom\SelectorList
+     * @return \ManaPHP\Html\Dom\SelectorList
      */
     public function has($css)
     {

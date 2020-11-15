@@ -1,16 +1,16 @@
 <?php
 
-namespace ManaPHP\Dom;
+namespace ManaPHP\Html\Dom;
 
 use DOMDocument;
 use ManaPHP\Component;
-use ManaPHP\Dom\Document\Exception as DocumentException;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Html\Dom\Document\Exception as DocumentException;
 
 /**
  * Class Document
  *
- * @package ManaPHP\Dom
+ * @package ManaPHP\Html\Dom
  */
 class Document extends Component
 {
@@ -35,7 +35,7 @@ class Document extends Component
     protected $_dom;
 
     /**
-     * @var \ManaPHP\Dom\Query
+     * @var \ManaPHP\Html\Dom\Query
      */
     protected $_query;
 
@@ -122,7 +122,7 @@ class Document extends Component
             throw new DocumentException('xx');
         }
 
-        $this->_query = $this->getInstance('ManaPHP\Dom\Query', [$this->_dom]);
+        $this->_query = $this->getInstance('ManaPHP\Html\Dom\Query', [$this->_dom]);
 
         $this->_source_url = $url;
         $this->_base_url = $this->_getBaseUrl() ?: $this->_source_url;
@@ -161,7 +161,7 @@ class Document extends Component
     }
 
     /**
-     * @return \ManaPHP\Dom\Query
+     * @return \ManaPHP\Html\Dom\Query
      */
     public function getQuery()
     {
@@ -299,7 +299,7 @@ class Document extends Component
     }
 
     /**
-     * @return \ManaPHP\Dom\Selector
+     * @return \ManaPHP\Html\Dom\Selector
      */
     public function selector()
     {
@@ -309,7 +309,7 @@ class Document extends Component
     /**
      * @param string|array $css
      *
-     * @return \ManaPHP\Dom\SelectorList
+     * @return \ManaPHP\Html\Dom\SelectorList
      */
     public function css($css)
     {

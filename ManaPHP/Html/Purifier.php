@@ -1,11 +1,11 @@
 <?php
 
-namespace ManaPHP\Security;
+namespace ManaPHP\Html;
 
 use DOMDocument;
 use ManaPHP\Component;
 
-class HtmlPurifier extends Component implements HtmlPurifierInterface
+class Purifier extends Component implements PurifierInterface
 {
     /**
      * @var string
@@ -23,7 +23,7 @@ class HtmlPurifier extends Component implements HtmlPurifierInterface
     protected $_filter;
 
     /**
-     * HtmlPurifier constructor.
+     * Purifier constructor.
      *
      * @param array $options
      */

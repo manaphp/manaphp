@@ -41,7 +41,7 @@ class FactoryDefault extends Di
             'random'           => 'ManaPHP\Security\Random',
             'messageQueue'     => 'ManaPHP\Messaging\Queue\Adapter\Redis',
             'swordCompiler'    => 'ManaPHP\Renderer\Engine\Sword\Compiler',
-            'htmlPurifier'     => 'ManaPHP\Security\HtmlPurifier',
+            'htmlPurifier'     => 'ManaPHP\Html\Purifier',
             'db'               => 'ManaPHP\Db',
             'redis'            => 'ManaPHP\Redis',
             'redisCache'       => '@redis',
