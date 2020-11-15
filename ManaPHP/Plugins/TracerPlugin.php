@@ -182,7 +182,7 @@ class TracerPlugin extends Plugin
 
     public function onMailerSending(EventArgs $eventArgs)
     {
-        /** @var \ManaPHP\Mailer\Message $message */
+        /** @var \ManaPHP\Mailing\Mailer\Message $message */
         $message = $eventArgs->data['message'];
 
         if ($this->_verbose) {

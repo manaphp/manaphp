@@ -1,13 +1,13 @@
 <?php
 
-namespace ManaPHP\Mailer\Adapter;
+namespace ManaPHP\Mailing\Mailer\Adapter;
 
-use ManaPHP\Mailer;
+use ManaPHP\Mailing\Mailer;
 
 class Memory extends Mailer
 {
     /**
-     * @var \ManaPHP\Mailer\Message
+     * @var \ManaPHP\Mailing\Mailer\Message
      */
     protected $_message;
 
@@ -32,7 +32,7 @@ class Memory extends Mailer
     }
 
     /**
-     * @return \ManaPHP\Mailer\Message
+     * @return \ManaPHP\Mailing\Mailer\Message
      */
     public function getLastMessage()
     {
@@ -40,8 +40,8 @@ class Memory extends Mailer
     }
 
     /**
-     * @param \ManaPHP\Mailer\Message $message
-     * @param array                   $failedRecipients
+     * @param \ManaPHP\Mailing\Mailer\Message $message
+     * @param array                           $failedRecipients
      *
      * @return int
      */

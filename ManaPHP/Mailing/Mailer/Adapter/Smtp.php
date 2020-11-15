@@ -1,14 +1,14 @@
 <?php
 
-namespace ManaPHP\Mailer\Adapter;
+namespace ManaPHP\Mailing\Mailer\Adapter;
 
 use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\Exception\InvalidValueException;
-use ManaPHP\Mailer;
-use ManaPHP\Mailer\Adapter\Exception\AuthenticationException;
-use ManaPHP\Mailer\Adapter\Exception\BadResponseException;
-use ManaPHP\Mailer\Adapter\Exception\ConnectionException;
-use ManaPHP\Mailer\Adapter\Exception\TransmitException;
+use ManaPHP\Mailing\Mailer;
+use ManaPHP\Mailing\Mailer\Adapter\Exception\AuthenticationException;
+use ManaPHP\Mailing\Mailer\Adapter\Exception\BadResponseException;
+use ManaPHP\Mailing\Mailer\Adapter\Exception\ConnectionException;
+use ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
 
@@ -21,8 +21,8 @@ class SmtpContext implements Inseparable
 /**
  * Class Smtp
  *
- * @package ManaPHP\Mailer\Adapter
- * @property-read \ManaPHP\Mailer\Adapter\SmtpContext $_context
+ * @package ManaPHP\Mailing\Mailer\Adapter
+ * @property-read \ManaPHP\Mailing\Mailer\Adapter\SmtpContext $_context
  */
 class Smtp extends Mailer
 {
@@ -123,7 +123,7 @@ class Smtp extends Mailer
 
     /**
      * @return resource
-     * @throws \ManaPHP\Mailer\Adapter\Exception\ConnectionException
+     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\ConnectionException
      */
     protected function _connect()
     {
@@ -158,8 +158,8 @@ class Smtp extends Mailer
      * @param array
      *
      * @return array
-     * @throws \ManaPHP\Mailer\Adapter\Exception\BadResponseException
-     * @throws \ManaPHP\Mailer\Adapter\Exception\TransmitException
+     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\BadResponseException
+     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
      */
     protected function _transmit($str, $expected = null)
     {
@@ -188,7 +188,7 @@ class Smtp extends Mailer
      * @param string $data
      *
      * @return static
-     * @throws \ManaPHP\Mailer\Adapter\Exception\TransmitException
+     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
      */
     protected function _writeLine($data = null)
     {
@@ -212,7 +212,7 @@ class Smtp extends Mailer
 
     /**
      * @return string
-     * @throws \ManaPHP\Mailer\Adapter\Exception\TransmitException
+     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
      */
     protected function _readLine()
     {
@@ -230,7 +230,7 @@ class Smtp extends Mailer
      * @param string $textBody
      *
      * @return static
-     * @throws \ManaPHP\Mailer\Adapter\Exception\TransmitException
+     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
      */
     protected function _sendTextBody($textBody)
     {
@@ -248,7 +248,7 @@ class Smtp extends Mailer
      * @param string $boundary
      *
      * @return static
-     * @throws \ManaPHP\Mailer\Adapter\Exception\TransmitException
+     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
      */
     protected function _sendHtmlBody($htmlBody, $boundary = null)
     {
@@ -277,7 +277,7 @@ class Smtp extends Mailer
      *
      * @return static
      * @throws \ManaPHP\Exception\InvalidValueException
-     * @throws \ManaPHP\Mailer\Adapter\Exception\TransmitException
+     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
      */
     protected function _sendAttachments($attachments, $boundary)
     {
@@ -306,7 +306,7 @@ class Smtp extends Mailer
      *
      * @return static
      *
-     * @throws \ManaPHP\Mailer\Adapter\Exception\TransmitException
+     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
      */
     protected function _sendEmbeddedFiles($embeddedFiles, $boundary)
     {
@@ -343,7 +343,7 @@ class Smtp extends Mailer
      * @param array  $addresses
      *
      * @return static
-     * @throws \ManaPHP\Mailer\Adapter\Exception\TransmitException
+     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
      */
     protected function _sendAddresses($type, $addresses)
     {
@@ -358,14 +358,14 @@ class Smtp extends Mailer
     }
 
     /**
-     * @param \ManaPHP\Mailer\Message $message
-     * @param array                   $failedRecipients
+     * @param \ManaPHP\Mailing\Mailer\Message $message
+     * @param array                           $failedRecipients
      *
      * @return int
-     * @throws \ManaPHP\Mailer\Adapter\Exception\BadResponseException
-     * @throws \ManaPHP\Mailer\Adapter\Exception\TransmitException
-     * @throws \ManaPHP\Mailer\Adapter\Exception\ConnectionException
-     * @throws \ManaPHP\Mailer\Adapter\Exception\AuthenticationException
+     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\BadResponseException
+     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
+     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\ConnectionException
+     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\AuthenticationException
      */
     protected function _send($message, &$failedRecipients = null)
     {

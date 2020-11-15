@@ -51,7 +51,7 @@ class FactoryDefault extends Di
             'translator'       => 'ManaPHP\I18n\Translator',
             'rabbitmq'         => 'ManaPHP\Amqp',
             'relationsManager' => 'ManaPHP\Model\Relation\Manager',
-            'mailer'           => 'ManaPHP\Mailer\Adapter\Smtp',
+            'mailer'           => 'ManaPHP\Mailing\Mailer\Adapter\Smtp',
             'aclBuilder'       => 'ManaPHP\Http\Authorization\AclBuilder',
             'bosClient'        => 'ManaPHP\Bos\Client',
             'wsPusher'         => 'ManaPHP\Ws\Pusher',

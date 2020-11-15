@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Mailer;
+namespace ManaPHP\Mailing\Mailer;
 
 use JsonSerializable;
 use ManaPHP\Di;
@@ -14,7 +14,7 @@ class Message implements JsonSerializable
     const PRIORITY_LOWEST = 5;
 
     /**
-     * @var \ManaPHP\MailerInterface
+     * @var \ManaPHP\Mailing\MailerInterface
      */
     protected $_mailer;
 
@@ -101,7 +101,7 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @param \ManaPHP\MailerInterface $mailer
+     * @param \ManaPHP\Mailing\MailerInterface $mailer
      *
      * @return static
      */
@@ -113,7 +113,7 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @return \ManaPHP\MailerInterface
+     * @return \ManaPHP\Mailing\MailerInterface
      */
     public function getMailer()
     {

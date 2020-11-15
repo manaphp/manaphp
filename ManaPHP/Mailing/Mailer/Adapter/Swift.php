@@ -3,10 +3,10 @@
 
 /** @noinspection PhpUndefinedMethodInspection */
 
-namespace ManaPHP\Mailer\Adapter;
+namespace ManaPHP\Mailing\Mailer\Adapter;
 
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Mailer;
+use ManaPHP\Mailing\Mailer;
 use Swift_Attachment;
 use Swift_Mailer;
 use Swift_Message;
@@ -112,8 +112,8 @@ class Swift extends Mailer
     }
 
     /**
-     * @param \ManaPHP\Mailer\Message $message
-     * @param array                   $failedRecipients
+     * @param \ManaPHP\Mailing\Mailer\Message $message
+     * @param array                           $failedRecipients
      *
      * @return int
      */

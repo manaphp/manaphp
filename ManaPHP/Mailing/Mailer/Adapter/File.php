@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP\Mailer\Adapter;
+namespace ManaPHP\Mailing\Mailer\Adapter;
 
 use ManaPHP\Helper\LocalFS;
-use ManaPHP\Mailer;
+use ManaPHP\Mailing\Mailer;
 
 class File extends Mailer
 {
@@ -45,8 +45,8 @@ class File extends Mailer
     }
 
     /**
-     * @param \ManaPHP\Mailer\Message $message
-     * @param array                   $failedRecipients
+     * @param \ManaPHP\Mailing\Mailer\Message $message
+     * @param array                           $failedRecipients
      *
      * @return int
      */

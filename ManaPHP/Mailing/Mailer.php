@@ -1,7 +1,8 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Mailing;
 
+use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
 
 abstract class Mailer extends Component implements MailerInterface
@@ -22,11 +23,11 @@ abstract class Mailer extends Component implements MailerInterface
     protected $_to;
 
     /**
-     * @return \ManaPHP\Mailer\Message
+     * @return \ManaPHP\Mailing\Mailer\Message
      */
     public function compose()
     {
-        $message = $this->getInstance('ManaPHP\Mailer\Message');
+        $message = $this->getInstance('ManaPHP\Mailing\Mailer\Message');
 
         $message->setMailer($this);
 
@@ -41,16 +42,16 @@ abstract class Mailer extends Component implements MailerInterface
     }
 
     /**
-     * @param \ManaPHP\Mailer\Message $message
-     * @param array                   $failedRecipients
+     * @param \ManaPHP\Mailing\Mailer\Message $message
+     * @param array                           $failedRecipients
      *
      * @return int
      */
     abstract protected function _send($message, &$failedRecipients = null);
 
     /**
-     * @param \ManaPHP\Mailer\Message $message
-     * @param array                   $failedRecipients
+     * @param \ManaPHP\Mailing\Mailer\Message $message
+     * @param array                           $failedRecipients
      *
      * @return int
      */

@@ -32,7 +32,7 @@ use Swoole\Coroutine;
  * @property-read \ManaPHP\MongodbInterface                $mongodb
  * @property-read \ManaPHP\Messaging\AmqpInterface         $rabbitmq
  * @property-read \Elasticsearch\Client                    $elasticsearch
- * @property-read \ManaPHP\MailerInterface                 $mailer
+ * @property-read \ManaPHP\Mailing\MailerInterface         $mailer
  * @property-read \ManaPHP\Ipc\CacheInterface              $ipcCache
  * @property-read \ManaPHP\Bos\ClientInterface             $bosClient
  * @property-read \ManaPHP\Pool\ManagerInterface           $poolManager
