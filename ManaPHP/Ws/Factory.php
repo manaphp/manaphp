@@ -12,7 +12,9 @@ class Factory extends \ManaPHP\Http\Factory
                 'errorHandler' => 'ManaPHP\Rest\ErrorHandler',
                 'wsServer'     => 'ManaPHP\Ws\Server\Adapter\Swoole',
                 'dispatcher'   => 'ManaPHP\Ws\Dispatcher',
-                'identity'     => 'ManaPHP\Identity\Adapter\Jwt'
+                'identity'     => 'ManaPHP\Identity\Adapter\Jwt',
+
+                'wsPusherPlugin' => 'ManaPHP\Ws\PusherPlugin',
             ]
         );
     }

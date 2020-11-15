@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Plugins;
+namespace ManaPHP\Debugging;
 
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Plugin;
@@ -8,7 +8,7 @@ use ManaPHP\Plugin;
 /**
  * Class TracerPlugin
  *
- * @package ManaPHP\Plugins
+ * @package ManaPHP\Debugging
  */
 class TracerPlugin extends Plugin
 {

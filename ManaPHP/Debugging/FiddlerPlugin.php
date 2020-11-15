@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Plugins;
+namespace ManaPHP\Debugging;
 
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Logging\Logger;
@@ -25,7 +25,7 @@ class FiddlerPluginContext
  * Class FiddlerPlugin
  *
  * @package ManaPHP\Plugins
- * @property-read \ManaPHP\Plugins\FiddlerPluginContext $_context
+ * @property-read \ManaPHP\Debugging\FiddlerPluginContext $_context
  */
 class FiddlerPlugin extends Plugin
 {

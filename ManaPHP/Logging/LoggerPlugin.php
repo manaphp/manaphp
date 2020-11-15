@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Plugins;
+namespace ManaPHP\Logging;
 
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\AbortException;
@@ -27,8 +27,7 @@ class LoggerPluginContext
 /**
  * Class LoggerPlugin
  *
- * @package ManaPHP\Plugins
- * @property-read \ManaPHP\Plugins\LoggerPluginContext $_context
+ * @property-read \ManaPHP\Logging\LoggerPluginContext $_context
  */
 class LoggerPlugin extends Plugin
 {

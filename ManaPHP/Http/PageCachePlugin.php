@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Plugins;
+namespace ManaPHP\Http;
 
 use Closure;
 use ManaPHP\Event\EventArgs;
@@ -23,7 +23,7 @@ class PageCachePluginContext
  * Class PageCachePlugin
  *
  * @package ManaPHP\Plugins
- * @property-read \ManaPHP\Plugins\PageCachePluginContext $_context
+ * @property-read \ManaPHP\Http\PageCachePluginContext $_context
  */
 class PageCachePlugin extends Plugin
 {

@@ -1,18 +1,18 @@
 <?php
 
-namespace ManaPHP\Plugins;
+namespace ManaPHP\Ws;
 
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Plugin;
 
 /**
- * Class WsPusherPlugin
+ * Class PusherPlugin
  *
- * @package ManaPHP\Plugins
+ * @package ManaPHP\Ws
  *
  * @property-read \ManaPHP\Ws\ServerInterface $wsServer
  */
-class  WsPusherPlugin extends Plugin
+class PusherPlugin extends Plugin
 {
     /**
      * @var array
@@ -45,7 +45,7 @@ class  WsPusherPlugin extends Plugin
     protected $_worker_id;
 
     /**
-     * WsPusherPlugin constructor.
+     * PusherPlugin constructor.
      *
      * @param array $options
      */

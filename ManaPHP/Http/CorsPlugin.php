@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Plugins;
+namespace ManaPHP\Http;
 
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Plugin;

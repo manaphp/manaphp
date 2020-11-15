@@ -22,6 +22,16 @@ class Factory extends FactoryDefault
                 'captcha'        => 'ManaPHP\Http\Captcha',
                 'authorization'  => 'ManaPHP\Http\Authorization',
                 'globalsManager' => 'ManaPHP\Http\Globals\Manager',
+
+                'corsPlugin'      => 'ManaPHP\Http\CorsPlugin',
+                'csrfPlugin'      => 'ManaPHP\Http\CsrfPlugin',
+                'etagPlugin'      => 'ManaPHP\Http\EtagPlugin',
+                'httpCachePlugin' => 'ManaPHP\Http\HttpCachePlugin',
+                'pageCachePlugin' => 'ManaPHP\Http\PageCachePlugin',
+                'rateLimitPlugin' => 'ManaPHP\Http\RateLimitPlugin',
+                'requestIdPlugin' => 'ManaPHP\Http\RequestIdPlugin',
+                'slowlogPlugin'   => 'ManaPHP\Http\SlowlogPlugin',
+                'verbsPlugin'     => 'ManaPHP\Http\VerbsPlugin',
             ]
         );
 

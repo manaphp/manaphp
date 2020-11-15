@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Plugins;
+namespace ManaPHP\Debugging;
 
 use ManaPHP\Component;
 use ManaPHP\Event\EventArgs;
@@ -41,8 +41,7 @@ class DebuggerPluginContext
 /**
  * Class DebuggerPlugin
  *
- * @package ManaPHP\Plugins
- * @property-read \ManaPHP\Plugins\DebuggerPluginContext $_context
+ * @property-read \ManaPHP\Debugging\DebuggerPluginContext $_context
  */
 class DebuggerPlugin extends Plugin
 {
@@ -64,7 +63,7 @@ class DebuggerPlugin extends Plugin
     /**
      * @var string
      */
-    protected $_template = '@manaphp/Plugins/DebuggerPlugin/Template.html';
+    protected $_template = '@manaphp/Debugging/DebuggerPlugin/Template.html';
 
     /**
      * DebuggerPlugin constructor.

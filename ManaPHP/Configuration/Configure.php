@@ -227,13 +227,19 @@ class Configure extends Component implements ConfigureInterface
             }
 
             $plugin = ucfirst($plugin);
+            $pluginName = lcfirst($plugin);
 
-            $pluginClassName = isset($app_plugins[$plugin]) ? "App\\Plugins\\$plugin" : "ManaPHP\Plugins\\$plugin";
-            unset($app_plugins[$plugin]);
-
-            $plugin = lcfirst($plugin);
-            $definition = is_int($k) ? $pluginClassName : array_merge($v, ['class' => $pluginClassName]);
-            $di->setShared($plugin, $definition)->getShared($plugin);
+            if (isset($app_plugins[$plugin])) {
+                unset($app_plugins[$plugin]);
+                $pluginClassName = "App\\Plugins\\$plugin";
+                $definition = is_int($k) ? $pluginClassName : array_merge($v, ['class' => $pluginClassName]);
+                $di->setShared($pluginName, $definition);
+            } else {
+                if (is_string($k)) {
+                    $di->setShared($pluginName, $v);
+                }
+            }
+            $di->getShared($pluginName);
         }
 
         foreach ($app_plugins as $plugin => $_) {

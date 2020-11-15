@@ -8,7 +8,7 @@ use ManaPHP\Cli\Controller;
  * Class FiddlerController
  *
  * @package ManaPHP\Cli\Controllers
- * @property-read \ManaPHP\Plugins\FiddlerPlugin $fiddlerPlugin
+ * @property-read \ManaPHP\Debugging\FiddlerPlugin $fiddlerPlugin
  */
 class FiddlerController extends Controller
 {
