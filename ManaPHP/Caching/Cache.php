@@ -1,11 +1,12 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Caching;
 
+use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
 
 /**
- * Class ManaPHP\Cache
+ * Class ManaPHP\Caching\Cache
  *
  * @package cache
  */

@@ -1,12 +1,12 @@
 <?php
 
-namespace ManaPHP\Cache\Adapter;
+namespace ManaPHP\Caching\Cache\Adapter;
 
-use ManaPHP\Cache;
+use ManaPHP\Caching\Cache;
 use ManaPHP\Exception\RuntimeException;
 
 /**
- * Class ManaPHP\Cache\Adapter\Apcu
+ * Class ManaPHP\Caching\Cache\Adapter\Apcu
  *
  * @package cache\adapter
  */

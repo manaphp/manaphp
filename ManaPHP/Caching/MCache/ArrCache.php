@@ -1,8 +1,8 @@
 <?php
 
-namespace ManaPHP\MCache;
+namespace ManaPHP\Caching\MCache;
 
-use ManaPHP\MCacheInterface;
+use ManaPHP\Caching\MCacheInterface;
 
 class ArrCache implements MCacheInterface
 {

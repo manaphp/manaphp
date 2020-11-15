@@ -14,7 +14,7 @@ class Factory extends \ManaPHP\Http\Factory
                 'view'         => 'ManaPHP\Mvc\View',
                 'flash'        => 'ManaPHP\Mvc\View\Flash\Adapter\Direct',
                 'flashSession' => 'ManaPHP\Mvc\View\Flash\Adapter\Session',
-                'viewsCache'   => ['ManaPHP\Cache\Adapter\Redis', 'prefix' => 'cache:views:'],
+                'viewsCache'   => ['ManaPHP\Caching\Cache\Adapter\Redis', 'prefix' => 'cache:views:'],
                 'identity'     => 'ManaPHP\Identity\Adapter\Session',
             ]
         );

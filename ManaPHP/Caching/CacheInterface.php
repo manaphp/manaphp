@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Caching;
 
 /**
- * Interface ManaPHP\CacheInterface
+ * Interface ManaPHP\Caching\CacheInterface
  *
  * @package cache
  */

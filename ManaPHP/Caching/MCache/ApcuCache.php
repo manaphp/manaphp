@@ -1,10 +1,10 @@
 <?php
 
-namespace ManaPHP\MCache;
+namespace ManaPHP\Caching\MCache;
 
+use ManaPHP\Caching\MCacheInterface;
 use ManaPHP\Coroutine;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\MCacheInterface;
 
 class ApcuCache implements MCacheInterface
 {

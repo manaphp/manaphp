@@ -1,13 +1,13 @@
 <?php
 
-namespace ManaPHP\Cache\Adapter;
+namespace ManaPHP\Caching\Cache\Adapter;
 
-use ManaPHP\Cache;
+use ManaPHP\Caching\Cache;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\WriteFileFailedException;
 
 /**
- * Class ManaPHP\Cache\Adapter\File
+ * Class ManaPHP\Caching\Cache\Adapter\File
  *
  * @package cache\adapter
  */

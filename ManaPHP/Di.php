@@ -37,8 +37,8 @@ use ManaPHP\Exception\NotSupportedException;
  * @property-read \Redis|\ManaPHP\RedisInterface           $redisCache
  * @property-read \Redis|\ManaPHP\RedisInterface           $redisDb
  * @property-read \Redis|\ManaPHP\RedisInterface           $redisBroker
- * @property-read \ManaPHP\CacheInterface                  $cache
- * @property-read \ManaPHP\CacheInterface                  $viewsCache
+ * @property-read \ManaPHP\Caching\CacheInterface          $cache
+ * @property-read \ManaPHP\Caching\CacheInterface          $viewsCache
  * @property-read \ManaPHP\Http\ClientInterface            $httpClient
  * @property-read \ManaPHP\Http\ClientInterface            $restClient
  * @property-read \ManaPHP\Http\AuthorizationInterface     $authorization

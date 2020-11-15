@@ -10,10 +10,10 @@ use ManaPHP\Logger\LogCategorizable;
  *
  * @package widget
  *
- * @property-read \ManaPHP\Http\UrlInterface $url
- * @property-read \ManaPHP\CacheInterface    $cache
- * @property-read \ManaPHP\RendererInterface $renderer
- * @property-read \ManaPHP\DbInterface       $db
+ * @property-read \ManaPHP\Http\UrlInterface      $url
+ * @property-read \ManaPHP\Caching\CacheInterface $cache
+ * @property-read \ManaPHP\RendererInterface      $renderer
+ * @property-read \ManaPHP\DbInterface            $db
  */
 abstract class Widget extends Component implements WidgetInterface, LogCategorizable
 {

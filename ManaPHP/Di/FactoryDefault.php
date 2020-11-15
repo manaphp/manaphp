@@ -33,7 +33,7 @@ class FactoryDefault extends Di
             'logger'           => 'ManaPHP\Logger\Adapter\File',
             'renderer'         => 'ManaPHP\Renderer',
             'assetBundle'      => 'ManaPHP\Renderer\AssetBundle',
-            'cache'            => 'ManaPHP\Cache\Adapter\Redis',
+            'cache'            => 'ManaPHP\Caching\Cache\Adapter\Redis',
             'ipcCache'         => 'ManaPHP\Ipc\Cache\Adapter\Apcu',
             'httpClient'       => ['class' => 'ManaPHP\Http\Client', 'engine' => 'ManaPHP\Http\Client\Engine\Curl'],
             'restClient'       => ['class' => 'ManaPHP\Http\Client', 'engine' => 'ManaPHP\Http\Client\Engine\Stream'],

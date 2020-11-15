@@ -14,7 +14,7 @@ class Redis extends Component implements SettingsInterface
     protected $_key = 'settings';
 
     /**
-     * @var \ManaPHP\MCacheInterface
+     * @var \ManaPHP\Caching\MCacheInterface
      */
     protected $_cache;
 
@@ -30,11 +30,11 @@ class Redis extends Component implements SettingsInterface
         }
 
         if (isset($options['cache'])) {
-            $cacheClass = 'ManaPHP\MCache\\' . ucfirst($options['cache']) . 'Cache';
+            $cacheClass = 'ManaPHP\Caching\MCache\\' . ucfirst($options['cache']) . 'Cache';
         } elseif (function_exists('apcu_enabled') && apcu_enabled()) {
-            $cacheClass = 'ManaPHP\MCache\ApcuCache';
+            $cacheClass = 'ManaPHP\Caching\MCache\ApcuCache';
         } else {
-            $cacheClass = 'ManaPHP\MCache\ArrCache';
+            $cacheClass = 'ManaPHP\Caching\MCache\ArrCache';
         }
 
         $this->_cache = new $cacheClass();

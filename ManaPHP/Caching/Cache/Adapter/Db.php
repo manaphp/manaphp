@@ -1,11 +1,11 @@
 <?php
 
-namespace ManaPHP\Cache\Adapter;
+namespace ManaPHP\Caching\Cache\Adapter;
 
-use ManaPHP\Cache;
+use ManaPHP\Caching\Cache;
 
 /**
- * Class ManaPHP\Cache\Adapter\Db
+ * Class ManaPHP\Caching\Cache\Adapter\Db
  *
  * CREATE TABLE `manaphp_cache` (
  * `hash` char(32) CHARACTER SET ascii NOT NULL,

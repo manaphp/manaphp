@@ -1,8 +1,8 @@
 <?php
 
-namespace ManaPHP\Cache\Adapter;
+namespace ManaPHP\Caching\Cache\Adapter;
 
-use ManaPHP\Cache;
+use ManaPHP\Caching\Cache;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
 
@@ -15,10 +15,10 @@ class MemoryContext
 }
 
 /**
- * Class ManaPHP\Cache\Adapter\Memory
+ * Class ManaPHP\Caching\Cache\Adapter\Memory
  *
  * @package cache\adapter
- * @property-read \ManaPHP\Cache\Adapter\MemoryContext $_context
+ * @property-read \ManaPHP\Caching\Cache\Adapter\MemoryContext $_context
  */
 class Memory extends Cache
 {

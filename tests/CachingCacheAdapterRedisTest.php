@@ -2,11 +2,11 @@
 
 namespace Tests;
 
-use ManaPHP\Cache\Adapter\Redis;
+use ManaPHP\Caching\Cache\Adapter\Redis;
 use ManaPHP\Di\FactoryDefault;
 use PHPUnit\Framework\TestCase;
 
-class CacheAdapterRedisTest extends TestCase
+class CachingCacheAdapterRedisTest extends TestCase
 {
     public function test_construct()
     {

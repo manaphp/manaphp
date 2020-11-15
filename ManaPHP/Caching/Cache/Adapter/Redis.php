@@ -1,11 +1,11 @@
 <?php
 
-namespace ManaPHP\Cache\Adapter;
+namespace ManaPHP\Caching\Cache\Adapter;
 
-use ManaPHP\Cache;
+use ManaPHP\Caching\Cache;
 
 /**
- * Class ManaPHP\Cache\Adapter\Redis
+ * Class ManaPHP\Caching\Cache\Adapter\Redis
  *
  * @package cache\adapter
  */

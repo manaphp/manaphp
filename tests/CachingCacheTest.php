@@ -2,10 +2,11 @@
 
 namespace Tests;
 
+use ManaPHP\Caching\Cache\Adapter\Memory;
 use ManaPHP\Di\FactoryDefault;
 use PHPUnit\Framework\TestCase;
 
-class CacheTest extends TestCase
+class CachingCacheTest extends TestCase
 {
     public function setUp()
     {
@@ -16,7 +17,7 @@ class CacheTest extends TestCase
 
     public function test_exists()
     {
-        $cache = new Cache\Adapter\Memory();
+        $cache = new Memory();
         $cache->delete('country');
 
         $this->assertFalse($cache->exists('country'));
@@ -27,7 +28,7 @@ class CacheTest extends TestCase
 
     public function test_get()
     {
-        $cache = new Cache\Adapter\Memory();
+        $cache = new Memory();
 
         $cache->delete('country');
         $this->assertFalse($cache->get('country'));
@@ -38,7 +39,7 @@ class CacheTest extends TestCase
 
     public function test_set()
     {
-        $cache = new Cache\Adapter\Memory();
+        $cache = new Memory();
         $cache->delete('var');
 
         $this->assertFalse($cache->get('var'));
@@ -98,7 +99,7 @@ class CacheTest extends TestCase
 
     public function test_delete()
     {
-        $cache = new Cache\Adapter\Memory();
+        $cache = new Memory();
         $cache->delete('val');
 
         // delete a not existed
