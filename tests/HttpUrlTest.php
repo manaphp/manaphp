@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use ManaPHP\Mvc\Factory;
 use ManaPHP\Http\Url;
+use ManaPHP\Mvc\Factory;
 use PHPUnit\Framework\TestCase;
 
 class HttpUrlTest extends TestCase

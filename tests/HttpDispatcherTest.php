@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use ManaPHP\Http\Dispatcher;
 use ManaPHP\Exception;
+use ManaPHP\Http\Dispatcher;
 use ManaPHP\Mvc\Factory;
 use PHPUnit\Framework\TestCase;
 
