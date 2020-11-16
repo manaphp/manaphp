@@ -22,34 +22,20 @@ class HelpCommand extends Command
     public function listAction()
     {
         $this->console->writeLn('manaphp commands:', Console::FC_GREEN | Console::AT_BOLD);
-        foreach (glob(__DIR__ . '/*Command.php') as $file) {
-            $plainName = basename($file, '.php');
+        foreach ($this->_di->getDefinitions() as $name => $definition) {
+            if (!str_ends_with($name, 'Command')) {
+                continue;
+            }
+
+            $plainName = ucfirst($name);
             $command = Str::underscore(basename($plainName, 'Command'));
             $this->console->writeLn(' - ' . $this->console->colorize($command, Console::FC_YELLOW));
-            $actions = $this->_getActions(__NAMESPACE__ . "\\" . $plainName);
+            $actions = $this->_getActions($definition);
 
             $width = max(max(array_map('strlen', array_keys($actions))), 18);
             foreach ($actions as $action => $description) {
                 $colored_action = $this->console->colorize($action, Console::FC_CYAN, $width);
                 $this->console->writeLn('    ' . $colored_action . ' ' . $description);
-            }
-        }
-
-        if ($this->alias->has('@cli')) {
-            $this->console->writeLn('application commands: ', Console::FC_GREEN | Console::AT_BOLD);
-
-            foreach (glob($this->alias->resolve('@cli/*Command.php')) as $file) {
-                $plainName = basename($file, '.php');
-                $command = Str::underscore(basename($plainName, 'Command'));
-                $this->console->writeLn(' - ' . $this->console->colorize($command, Console::FC_YELLOW));
-
-                $actions = $this->_getActions($this->alias->resolveNS("@ns.cli\\$plainName"));
-
-                $width = max(max(array_map('strlen', array_keys($actions))), 18);
-                foreach ($actions as $action => $description) {
-                    $colored_action = $this->console->colorize($action, Console::FC_CYAN, $width + 1);
-                    $this->console->writeLn("    $colored_action $description");
-                }
             }
         }
 

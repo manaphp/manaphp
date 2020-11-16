@@ -41,16 +41,6 @@ class Application extends \ManaPHP\Application implements LogCategorizable
         define('MANAPHP_CLI', true);
 
         parent::__construct($loader);
-
-        if ($appDir = $this->alias->get('@app')) {
-            if (is_dir("$appDir/Commands")) {
-                $this->alias->set('@cli', "$appDir/Commands");
-                $this->alias->set('@ns.cli', "App\\Commands");
-            } elseif (($class = static::class) !== __CLASS__) {
-                $this->alias->set('@cli', "$appDir/Commands");
-                $this->alias->set('@ns.cli', substr($class, 0, strrpos($class, '\\') + 1) . 'Commands');
-            }
-        }
     }
 
     public function getFactory()

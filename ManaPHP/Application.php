@@ -143,6 +143,11 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         }
 
         $configure->registerComponents();
+
+        if (MANAPHP_CLI) {
+            $configure->registerCommands();
+        }
+
         $configure->registerAspects();
         $configure->registerServices();
         $configure->registerPlugins();

@@ -17,17 +17,10 @@ class BashCompletionCommand extends Command
     {
         $commands = [];
 
-        try {
-            foreach (LocalFS::glob('@manaphp/Cli/Commands/*Command.php') as $file) {
-                $commands[] = Str::underscore(basename($file, 'Command.php'));
+        foreach ($this->_di->getDefinitions() as $name => $_) {
+            if (str_ends_with($name, 'Command')) {
+                $commands[] = Str::underscore(basename($name, 'Command'));
             }
-
-            if ($this->alias->has('@cli')) {
-                foreach (LocalFS::glob('@cli/*Command.php') as $file) {
-                    $commands[] = Str::underscore(basename($file, 'Command.php'));
-                }
-            }
-        } catch (\Exception $e) {
         }
 
         return $commands;
@@ -42,9 +35,7 @@ class BashCompletionCommand extends Command
     {
         $actions = [];
         try {
-            $commandClassName = $this->_getCommandClassName($command);
-
-            if (!class_exists($commandClassName)) {
+            if (!$commandClassName = $this->_di->getDefinition(lcfirst(Str::camelize($command)) . 'Command')) {
                 return [];
             }
 
@@ -68,8 +59,7 @@ class BashCompletionCommand extends Command
      */
     protected function _getArgumentNames($command, $action)
     {
-        $commandClassName = $this->_getCommandClassName($command);
-        if (!class_exists($commandClassName)) {
+        if (!$commandClassName = $this->_di->getDefinition(lcfirst(Str::camelize($command)) . 'Command')) {
             return [];
         }
 
@@ -87,23 +77,6 @@ class BashCompletionCommand extends Command
     }
 
     /**
-     * @param string $commandName
-     *
-     * @return string
-     */
-    protected function _getCommandClassName($commandName)
-    {
-        if ($this->alias->has('@ns.cli')) {
-            $commandClassName = $this->alias->resolveNS('@ns.cli\\' . Str::camelize($commandName)) . 'Command';
-            if (class_exists($commandClassName)) {
-                return $commandClassName;
-            }
-        }
-
-        return 'ManaPHP\\Cli\\Commands\\' . Str::camelize($commandName) . 'Command';
-    }
-
-    /**
      * @param string $command
      * @param string $action
      * @param string $argumentName
@@ -112,8 +85,7 @@ class BashCompletionCommand extends Command
      */
     protected function _getArgumentValues($command, $action, $argumentName)
     {
-        $commandClassName = $this->_getCommandClassName($command);
-        if (!class_exists($commandClassName)) {
+        if (!$commandClassName = $this->_di->getDefinition(lcfirst(Str::camelize($command)) . 'Command')) {
             return [];
         }
 

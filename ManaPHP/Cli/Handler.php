@@ -3,7 +3,6 @@
 namespace ManaPHP\Cli;
 
 use ManaPHP\Component;
-use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
 /**
@@ -29,18 +28,9 @@ class Handler extends Component implements HandlerInterface
     protected function _guessCommand($keyword)
     {
         $commands = [];
-
-        foreach (LocalFS::glob('@manaphp/Cli/Commands/*Command.php') as $file) {
-            if (preg_match('#/(\w+)Command\.php$#', $file, $matches)) {
-                $commands[$matches[1]] = "ManaPHP\\Cli\Commands\\{$matches[1]}Command";
-            }
-        }
-
-        if ($this->alias->has('@cli')) {
-            foreach (LocalFS::glob('@cli/*Command.php') as $file) {
-                if (preg_match('#/(\w+)Command\.php$#', $file, $matches)) {
-                    $commands[$matches[1]] = $this->alias->resolveNS("@ns.cli\\{$matches[1]}Command");
-                }
+        foreach ($this->_di->getDefinitions() as $name => $definition) {
+            if (str_ends_with($name, 'Command')) {
+                $commands[basename($name, 'Command')] = $definition;
             }
         }
 
@@ -147,24 +137,7 @@ class Handler extends Component implements HandlerInterface
         $commandName = Str::camelize($commandName);
         $actionName = lcfirst(Str::camelize($actionName));
 
-        $command = null;
-
-        if ($this->alias->has('@ns.cli')) {
-            $namespaces = ['@ns.cli', 'ManaPHP\\Cli\\Commands'];
-        } else {
-            $namespaces = ['ManaPHP\\Cli\\Commands'];
-        }
-
-        foreach ($namespaces as $prefix) {
-            $className = $this->alias->resolveNS($prefix . '\\' . $commandName . 'Command');
-
-            if (class_exists($className)) {
-                $command = $className;
-                break;
-            }
-        }
-
-        if (!$command) {
+        if (!$command = $this->_di->getDefinition(lcfirst($commandName) . 'Command')) {
             $guessed = $this->_guessCommand($commandName);
             if ($guessed) {
                 $command = $guessed;
@@ -175,7 +148,7 @@ class Handler extends Component implements HandlerInterface
             }
         }
 
-        /** @var \ManaPHP\Command $instance */
+        /** @var \ManaPHP\Cli\Command $instance */
         $instance = $this->getShared($command);
         if ($actionName === '') {
             $actions = $this->_getActions($command);

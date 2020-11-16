@@ -37,6 +37,11 @@ interface ConfigureInterface
     /**
      * @return static
      */
+    public function registerCommands();
+
+    /**
+     * @return static
+     */
     public function registerAspects();
 
     /**

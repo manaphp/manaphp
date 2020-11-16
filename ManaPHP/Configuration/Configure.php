@@ -163,6 +163,23 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @return static
      */
+    public function registerCommands()
+    {
+        $di = $this->_di;
+
+        if ($appDir = $this->alias->get('@app')) {
+            foreach (LocalFS::glob('@app/Commands/*Command.php') as $file) {
+                $command = basename($file, '.php');
+                $di->setShared(lcfirst($command), "App\Commands\\$command");
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return static
+     */
     public function registerAspects()
     {
         foreach (LocalFS::glob('@app/Aspects/*Aspect.php') as $item) {
