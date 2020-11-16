@@ -52,7 +52,6 @@ use ManaPHP\Exception\NotSupportedException;
  * @property-read \ManaPHP\Messaging\AmqpInterface             $rabbitmq
  * @property-read \ManaPHP\Data\Relation\ManagerInterface      $relationsManager
  * @property-read \ManaPHP\Mailing\MailerInterface             $mailer
- * @property-read \ManaPHP\Ipc\CacheInterface                  $ipcCache
  * @property-read \ManaPHP\Data\MongodbInterface               $mongodb
  * @property-read \ManaPHP\I18n\TranslatorInterface            $translator
  * @property-read \ManaPHP\Bos\ClientInterface                 $bosClient

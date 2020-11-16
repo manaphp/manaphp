@@ -397,23 +397,18 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             }
         }
 
-        /** @var \ManaPHP\Ipc\CacheInterface $ipcCache */
-        $ipcCache = $sample->getShared('ipcCache');
-
         $ttl = $fieldsOrTtl;
         $key = '_mp:models:' . static::class . ":get:$id:$ttl";
-        if ($r = $ipcCache->get($key)) {
-            return $r;
-        }
 
-        if (!$r) {
+        $r = apcu_fetch($key, $success);
+        if (!$success) {
             if (!$rs = static::select()->whereEq($sample->getPrimaryKey(), $id)->limit(1)->fetch()) {
                 throw new NotFoundException(static::class, $id);
             }
 
             $r = $rs[0];
 
-            $ipcCache->set($key, $r, $ttl);
+            apcu_store($key, $r, $ttl);
         }
 
         return $r;
@@ -540,18 +535,15 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             return $rs ? $rs[0][$field] : null;
         }
 
-        /** @var \ManaPHP\Ipc\CacheInterface $ipcCache */
-        $ipcCache = $sample->getShared('ipcCache');
-
         $key = '_mp:models:' . static::class . ":value:$field:$pkValue:$ttl";
-        if (($value = $ipcCache->get($key)) !== false) {
-            return $value;
+
+        $value = apcu_fetch($key, $success);
+        if (!$success) {
+            $rs = static::select([$field])->whereEq($pkName, $pkValue)->limit(1)->execute();
+            $value = $rs ? $rs[0][$field] : null;
+
+            apcu_store($key, $value, $ttl);
         }
-
-        $rs = static::select([$field])->whereEq($pkName, $pkValue)->limit(1)->execute();
-        $value = $rs ? $rs[0][$field] : null;
-
-        $ipcCache->set($key, $value, $ttl);
 
         return $value;
     }
