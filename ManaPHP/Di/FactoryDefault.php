@@ -48,7 +48,7 @@ class FactoryDefault extends Di
             'redisBroker'      => '@redis',
             'mongodb'          => 'ManaPHP\Data\Mongodb',
             'translator'       => 'ManaPHP\I18n\Translator',
-            'rabbitmq'         => 'ManaPHP\Amqp',
+            'rabbitmq'         => 'ManaPHP\Messaging\Amqp',
             'relationsManager' => 'ManaPHP\Data\Relation\Manager',
             'mailer'           => 'ManaPHP\Mailing\Mailer\Adapter\Smtp',
             'aclBuilder'       => 'ManaPHP\Http\Authorization\AclBuilder',
