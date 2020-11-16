@@ -1,8 +1,8 @@
 <?php
 
-namespace ManaPHP\Data\Model\Relation;
+namespace ManaPHP\Data\Relation;
 
-use ManaPHP\Data\Model\Relation;
+use ManaPHP\Data\Relation;
 use ManaPHP\Helper\Arr;
 
 class HasManyOthers extends Relation

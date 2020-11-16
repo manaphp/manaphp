@@ -1,10 +1,11 @@
 <?php
 
-namespace ManaPHP\Data\Model\Relation;
+namespace ManaPHP\Data\Relation;
 
-use ManaPHP\Data\Model\Relation;
+use ManaPHP\Data\Relation;
+use ManaPHP\Exception\MisuseException;
 
-class HasOne extends Relation
+class HasMany extends Relation
 {
     /**
      * @var string
@@ -45,12 +46,25 @@ class HasOne extends Relation
         $thisField = $this->_thisField;
         $thatField = $this->_thatField;
 
-        $ids = array_values(array_unique(array_column($r, $thisField)));
-        $data = $query->whereIn($thatField, $ids)->indexBy($thatField)->fetch($asArray);
+        $r_index = [];
+        foreach ($r as $ri => $rv) {
+            $r_index[$rv[$thisField]] = $ri;
+        }
+
+        $ids = array_column($r, $thisField);
+        $data = $query->whereIn($thatField, $ids)->fetch($asArray);
+
+        if (isset($data[0]) && !isset($data[0][$thatField])) {
+            throw new MisuseException(['missing `%s` field in `%s` with', $thatField, $name]);
+        }
+
+        $rd = [];
+        foreach ($data as $dv) {
+            $rd[$r_index[$dv[$thatField]]][] = $dv;
+        }
 
         foreach ($r as $ri => $rv) {
-            $key = $rv[$thisField];
-            $r[$ri][$name] = $data[$key] ?? null;
+            $r[$ri][$name] = $rd[$ri] ?? [];
         }
 
         return $r;
@@ -66,8 +80,7 @@ class HasOne extends Relation
         /** @var \ManaPHP\Data\Model $thatModel */
         $thatModel = $this->_thatModel;
         $thisField = $this->_thisField;
-        $thatField = $this->_thatField;
 
-        return $thatModel::select()->whereEq($thatField, $instance->$thisField)->setFetchType(false);
+        return $thatModel::select()->whereEq($this->_thatField, $instance->$thisField)->setFetchType(true);
     }
 }

@@ -520,7 +520,7 @@ interface ModelInterface
      * @param string $thatModel
      * @param string $thisField
      *
-     * @return \ManaPHP\Data\Model\Relation\BelongsTo
+     * @return \ManaPHP\Data\Relation\BelongsTo
      */
     public function belongsTo($thatModel, $thisField = null);
 
@@ -528,7 +528,7 @@ interface ModelInterface
      * @param string $thatModel
      * @param string $thatField
      *
-     * @return \ManaPHP\Data\Model\Relation\HasOne
+     * @return \ManaPHP\Data\Relation\HasOne
      */
     public function hasOne($thatModel, $thatField = null);
 
@@ -536,7 +536,7 @@ interface ModelInterface
      * @param string $thatModel
      * @param string $thatField
      *
-     * @return \ManaPHP\Data\Model\Relation\HasMany
+     * @return \ManaPHP\Data\Relation\HasMany
      */
     public function hasMany($thatModel, $thatField = null);
 
@@ -544,7 +544,7 @@ interface ModelInterface
      * @param string $thatModel
      * @param string $pivotModel
      *
-     * @return \ManaPHP\Data\Model\Relation\HasManyToMany
+     * @return \ManaPHP\Data\Relation\HasManyToMany
      */
     public function hasManyToMany($thatModel, $pivotModel);
 
@@ -552,7 +552,7 @@ interface ModelInterface
      * @param string $thatModel
      * @param string $thisFilter =key(get_object_vars(new static))
      *
-     * @return \ManaPHP\Data\Model\Relation\HasManyOthers
+     * @return \ManaPHP\Data\Relation\HasManyOthers
      */
     public function hasManyOthers($thatModel, $thisFilter = null);
 
@@ -562,7 +562,7 @@ interface ModelInterface
      * @param string $thatModel
      * @param string $pivotModel
      *
-     * @return \ManaPHP\Data\Model\Relation\HasManyToMany
+     * @return \ManaPHP\Data\Relation\HasManyToMany
      */
     public function belongsToMany($thatModel, $pivotModel);
 }

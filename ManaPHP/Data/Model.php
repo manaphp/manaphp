@@ -10,12 +10,12 @@ use ManaPHP\Data\Db\SqlFragmentable;
 use ManaPHP\Data\Model\Expression\Decrement;
 use ManaPHP\Data\Model\Expression\Increment;
 use ManaPHP\Data\Model\NotFoundException;
-use ManaPHP\Data\Model\Relation\BelongsTo;
-use ManaPHP\Data\Model\Relation\HasMany;
-use ManaPHP\Data\Model\Relation\HasManyOthers;
-use ManaPHP\Data\Model\Relation\HasManyToMany;
-use ManaPHP\Data\Model\Relation\HasOne;
 use ManaPHP\Data\Model\SerializeNormalizable;
+use ManaPHP\Data\Relation\BelongsTo;
+use ManaPHP\Data\Relation\HasMany;
+use ManaPHP\Data\Relation\HasManyOthers;
+use ManaPHP\Data\Relation\HasManyToMany;
+use ManaPHP\Data\Relation\HasOne;
 use ManaPHP\Di;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidJsonException;
@@ -949,7 +949,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public function with($withs)
     {
-        /** @var \ManaPHP\Data\Model\Relation\ManagerInterface $relationsManager */
+        /** @var \ManaPHP\Data\Relation\ManagerInterface $relationsManager */
         $relationsManager = $this->getShared('relationsManager');
 
         $relationsManager->earlyLoad($this, [$this], $withs, false);
@@ -1291,7 +1291,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      * @param string $thatModel
      * @param string $thisField =key(get_object_vars(new static))
      *
-     * @return \ManaPHP\Data\Model\Relation\BelongsTo
+     * @return \ManaPHP\Data\Relation\BelongsTo
      */
     public function belongsTo($thatModel, $thisField = null)
     {
@@ -1305,7 +1305,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      * @param string $thatModel
      * @param string $thatField =key(get_object_vars(new static))
      *
-     * @return \ManaPHP\Data\Model\Relation\HasOne
+     * @return \ManaPHP\Data\Relation\HasOne
      */
     public function hasOne($thatModel, $thatField = null)
     {
@@ -1316,7 +1316,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      * @param string $thatModel
      * @param string $thatField =key(get_object_vars(new static))
      *
-     * @return \ManaPHP\Data\Model\Relation\HasMany
+     * @return \ManaPHP\Data\Relation\HasMany
      */
     public function hasMany($thatModel, $thatField = null)
     {
@@ -1327,7 +1327,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      * @param string $thatModel
      * @param string $pivotModel
      *
-     * @return \ManaPHP\Data\Model\Relation\HasManyToMany
+     * @return \ManaPHP\Data\Relation\HasManyToMany
      */
     public function hasManyToMany($thatModel, $pivotModel)
     {
@@ -1344,7 +1344,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      * @param string $thatModel
      * @param string $thisFilter =key(get_object_vars(new static))
      *
-     * @return \ManaPHP\Data\Model\Relation\HasManyOthers
+     * @return \ManaPHP\Data\Relation\HasManyOthers
      */
     public function hasManyOthers($thatModel, $thisFilter = null)
     {
@@ -1385,7 +1385,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      * @param string $thatModel
      * @param string $pivotModel
      *
-     * @return \ManaPHP\Data\Model\Relation\HasManyToMany
+     * @return \ManaPHP\Data\Relation\HasManyToMany
      */
     public function belongsToMany($thatModel, $pivotModel)
     {
@@ -1425,7 +1425,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             return $this->_di = Di::getDefault();
         }
 
-        /** @var \ManaPHP\Data\Model\Relation\ManagerInterface $relationsManager */
+        /** @var \ManaPHP\Data\Relation\ManagerInterface $relationsManager */
 
         $method = 'get' . ucfirst($name);
         if (method_exists($this, $method)) {
@@ -1474,7 +1474,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     public function __call($name, $arguments)
     {
         if (str_starts_with($name, 'get')) {
-            /** @var \ManaPHP\Data\Model\Relation\ManagerInterface $relationsManager */
+            /** @var \ManaPHP\Data\Relation\ManagerInterface $relationsManager */
             $relationsManager = $this->getShared('relationsManager');
 
             $relation = lcfirst(substr($name, 3));

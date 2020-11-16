@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Data\Model\Relation;
+namespace ManaPHP\Data\Relation;
 
 interface ManagerInterface
 {
@@ -16,7 +16,7 @@ interface ManagerInterface
      * @param \ManaPHP\Data\Model $model
      * @param string              $name
      *
-     * @return \ManaPHP\Data\Model\Relation|false
+     * @return \ManaPHP\Data\Relation|false
      */
     public function get($model, $name);
 

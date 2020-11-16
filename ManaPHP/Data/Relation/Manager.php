@@ -1,10 +1,10 @@
 <?php
 
-namespace ManaPHP\Data\Model\Relation;
+namespace ManaPHP\Data\Relation;
 
 use ManaPHP\Component;
-use ManaPHP\Data\Model\Relation;
 use ManaPHP\Data\QueryInterface;
+use ManaPHP\Data\Relation;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\Str;
@@ -162,7 +162,7 @@ class Manager extends Component implements ManagerInterface
      * @param \ManaPHP\Data\Model $model
      * @param string              $name
      *
-     * @return \ManaPHP\Data\Model\Relation|false
+     * @return \ManaPHP\Data\Relation|false
      */
     public function get($model, $name)
     {

@@ -50,7 +50,7 @@ class FactoryDefault extends Di
             'mongodb'          => 'ManaPHP\Data\Mongodb',
             'translator'       => 'ManaPHP\I18n\Translator',
             'rabbitmq'         => 'ManaPHP\Amqp',
-            'relationsManager' => 'ManaPHP\Data\Model\Relation\Manager',
+            'relationsManager' => 'ManaPHP\Data\Relation\Manager',
             'mailer'           => 'ManaPHP\Mailing\Mailer\Adapter\Smtp',
             'aclBuilder'       => 'ManaPHP\Http\Authorization\AclBuilder',
             'bosClient'        => 'ManaPHP\Bos\Client',

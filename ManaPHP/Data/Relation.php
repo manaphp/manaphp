@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Data\Model;
+namespace ManaPHP\Data;
 
 abstract class Relation
 {
