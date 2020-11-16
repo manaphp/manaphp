@@ -1,12 +1,12 @@
 <?php
 
-namespace ManaPHP\Cli\Controllers;
+namespace ManaPHP\Cli\Commands;
 
-use ManaPHP\Cli\Controller;
+use ManaPHP\Cli\Command;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
 
-class BosController extends Controller
+class BosCommand extends Command
 {
     /**
      * list buckets

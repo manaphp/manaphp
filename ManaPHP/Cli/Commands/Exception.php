@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Cli\Controllers;
+namespace ManaPHP\Cli\Commands;
 
 class Exception extends \ManaPHP\Cli\Exception
 {

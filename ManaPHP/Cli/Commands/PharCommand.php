@@ -1,13 +1,13 @@
 <?php
 
-namespace ManaPHP\Cli\Controllers;
+namespace ManaPHP\Cli\Commands;
 
 use FilesystemIterator;
-use ManaPHP\Cli\Controller;
+use ManaPHP\Cli\Command;
 use ManaPHP\Helper\LocalFS;
 use Phar;
 
-class PharController extends Controller
+class PharCommand extends Command
 {
     /**
      * create manacli.phar file

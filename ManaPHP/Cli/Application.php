@@ -44,11 +44,11 @@ class Application extends \ManaPHP\Application implements LogCategorizable
 
         if ($appDir = $this->alias->get('@app')) {
             if (is_dir("$appDir/Cli")) {
-                $this->alias->set('@cli', "$appDir/Cli/Controllers");
-                $this->alias->set('@ns.cli', "App\\Cli\\Controllers");
+                $this->alias->set('@cli', "$appDir/Cli/Commands");
+                $this->alias->set('@ns.cli', "App\\Cli\\Commands");
             } elseif (($class = static::class) !== __CLASS__) {
-                $this->alias->set('@cli', "$appDir/Controllers");
-                $this->alias->set('@ns.cli', substr($class, 0, strrpos($class, '\\') + 1) . 'Controllers');
+                $this->alias->set('@cli', "$appDir/Commands");
+                $this->alias->set('@ns.cli', substr($class, 0, strrpos($class, '\\') + 1) . 'Commands');
             }
         }
     }

@@ -1,18 +1,18 @@
 <?php
 
-namespace ManaPHP\Cli\Controllers;
+namespace ManaPHP\Cli\Commands;
 
+use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
-use ManaPHP\Cli\Controller;
 use ManaPHP\Helper\Str;
 use ReflectionClass;
 
 /**
- * Class ManaPHP\Cli\Controllers\HelpController
+ * Class ManaPHP\Cli\Commands\HelpCommand
  *
- * @package ManaPHP\Cli\Controllers
+ * @package ManaPHP\Cli\Commands
  */
-class HelpController extends Controller
+class HelpCommand extends Command
 {
     /**
      * list all actions
@@ -22,10 +22,10 @@ class HelpController extends Controller
     public function listAction()
     {
         $this->console->writeLn('manaphp commands:', Console::FC_GREEN | Console::AT_BOLD);
-        foreach (glob(__DIR__ . '/*Controller.php') as $file) {
+        foreach (glob(__DIR__ . '/*Command.php') as $file) {
             $plainName = basename($file, '.php');
-            $controller = Str::underscore(basename($plainName, 'Controller'));
-            $this->console->writeLn(' - ' . $this->console->colorize($controller, Console::FC_YELLOW));
+            $command = Str::underscore(basename($plainName, 'Command'));
+            $this->console->writeLn(' - ' . $this->console->colorize($command, Console::FC_YELLOW));
             $actions = $this->_getActions(__NAMESPACE__ . "\\" . $plainName);
 
             $width = max(max(array_map('strlen', array_keys($actions))), 18);
@@ -38,10 +38,10 @@ class HelpController extends Controller
         if ($this->alias->has('@cli')) {
             $this->console->writeLn('application commands: ', Console::FC_GREEN | Console::AT_BOLD);
 
-            foreach (glob($this->alias->resolve('@cli/*Controller.php')) as $file) {
+            foreach (glob($this->alias->resolve('@cli/*Command.php')) as $file) {
                 $plainName = basename($file, '.php');
-                $controller = Str::underscore(basename($plainName, 'Controller'));
-                $this->console->writeLn(' - ' . $this->console->colorize($controller, Console::FC_YELLOW));
+                $command = Str::underscore(basename($plainName, 'Command'));
+                $this->console->writeLn(' - ' . $this->console->colorize($command, Console::FC_YELLOW));
 
                 $actions = $this->_getActions($this->alias->resolveNS("@ns.cli\\$plainName"));
 
@@ -57,17 +57,17 @@ class HelpController extends Controller
     }
 
     /**
-     * @param string $controllerClassName
+     * @param string $commandClassName
      *
      * @return array
      */
-    protected function _getActions($controllerClassName)
+    protected function _getActions($commandClassName)
     {
-        $controller = Str::underscore(basename(strtr($controllerClassName, '\\', '/'), 'Controller'));
+        $command = Str::underscore(basename(strtr($commandClassName, '\\', '/'), 'Command'));
 
         $actions = [];
-        $rc = new ReflectionClass($controllerClassName);
-        foreach (get_class_methods($controllerClassName) as $method) {
+        $rc = new ReflectionClass($commandClassName);
+        foreach (get_class_methods($commandClassName) as $method) {
             if (preg_match('#^(.*)Action$#', $method, $match) !== 1) {
                 continue;
             }
@@ -75,7 +75,7 @@ class HelpController extends Controller
                 continue;
             }
 
-            $action = $controller . ($match[1] === 'default' ? '' : (' ' . $match[1]));
+            $action = $command . ($match[1] === 'default' ? '' : (' ' . $match[1]));
 
             $description = '';
             foreach (preg_split('#[\r\n]+#', $rc->getMethod($match[0])->getDocComment()) as $line) {

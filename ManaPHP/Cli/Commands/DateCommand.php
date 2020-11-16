@@ -1,10 +1,10 @@
 <?php
 
-namespace ManaPHP\Cli\Controllers;
+namespace ManaPHP\Cli\Commands;
 
-use ManaPHP\Cli\Controller;
+use ManaPHP\Cli\Command;
 
-class DateController extends Controller
+class DateCommand extends Command
 {
     /**
      * @param string $url

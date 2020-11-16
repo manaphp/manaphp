@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Commands;
 
-use ManaPHP\Cli\Controller;
+use ManaPHP\Cli\Command;
 use Swoole\Coroutine;
 
-class TestController extends Controller
+class TestCommand extends Command
 {
     /**
      * @CliCommand demo for cli write

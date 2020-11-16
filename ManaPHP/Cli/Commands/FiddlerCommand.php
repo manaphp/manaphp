@@ -1,16 +1,16 @@
 <?php
 
-namespace ManaPHP\Cli\Controllers;
+namespace ManaPHP\Cli\Commands;
 
-use ManaPHP\Cli\Controller;
+use ManaPHP\Cli\Command;
 
 /**
- * Class FiddlerController
+ * Class FiddlerCommand
  *
- * @package ManaPHP\Cli\Controllers
+ * @package ManaPHP\Cli\Commands
  * @property-read \ManaPHP\Debugging\FiddlerPlugin $fiddlerPlugin
  */
-class FiddlerController extends Controller
+class FiddlerCommand extends Command
 {
     /**
      * @param \ManaPHP\DiInterface $di

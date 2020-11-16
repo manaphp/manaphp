@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Cli\Controllers;
+namespace App\Cli\Commands;
 
-use ManaPHP\Cli\Controller;
+use ManaPHP\Cli\Command;
 use ManaPHP\Exception;
 
-class TcpController extends Controller
+class TcpCommand extends Command
 {
     public function echoAction($str = 'Hello World')
     {

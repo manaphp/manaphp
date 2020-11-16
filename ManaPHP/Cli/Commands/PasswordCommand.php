@@ -1,15 +1,15 @@
 <?php
 
-namespace ManaPHP\Cli\Controllers;
+namespace ManaPHP\Cli\Commands;
 
-use ManaPHP\Cli\Controller;
+use ManaPHP\Cli\Command;
 
 /**
- * Class PasswordController
+ * Class PasswordCommand
  *
- * @package ManaPHP\Cli\Controllers
+ * @package ManaPHP\Cli\Commands
  */
-class PasswordController extends Controller
+class PasswordCommand extends Command
 {
     /**
      * @param int    $length

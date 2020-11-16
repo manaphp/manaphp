@@ -1,54 +1,54 @@
 <?php
 
-namespace ManaPHP\Cli\Controllers;
+namespace ManaPHP\Cli\Commands;
 
-use ManaPHP\Cli\Controller;
+use ManaPHP\Cli\Command;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use ReflectionClass;
 use ReflectionMethod;
 
-class BashCompletionController extends Controller
+class BashCompletionCommand extends Command
 {
     /**
      * @return array
      */
-    protected function _getControllers()
+    protected function _getCommands()
     {
-        $controllers = [];
+        $commands = [];
 
         try {
-            foreach (LocalFS::glob('@manaphp/Cli/Controllers/*Controller.php') as $file) {
-                $controllers[] = Str::underscore(basename($file, 'Controller.php'));
+            foreach (LocalFS::glob('@manaphp/Cli/Commands/*Command.php') as $file) {
+                $commands[] = Str::underscore(basename($file, 'Command.php'));
             }
 
             if ($this->alias->has('@cli')) {
-                foreach (LocalFS::glob('@cli/*Controller.php') as $file) {
-                    $controllers[] = Str::underscore(basename($file, 'Controller.php'));
+                foreach (LocalFS::glob('@cli/*Command.php') as $file) {
+                    $commands[] = Str::underscore(basename($file, 'Command.php'));
                 }
             }
         } catch (\Exception $e) {
         }
 
-        return $controllers;
+        return $commands;
     }
 
     /**
-     * @param string $controller
+     * @param string $command
      *
      * @return array
      */
-    protected function _getActions($controller)
+    protected function _getActions($command)
     {
         $actions = [];
         try {
-            $controllerClassName = $this->_getControllerClassName($controller);
+            $commandClassName = $this->_getCommandClassName($command);
 
-            if (!class_exists($controllerClassName)) {
+            if (!class_exists($commandClassName)) {
                 return [];
             }
 
-            $rc = new ReflectionClass($controllerClassName);
+            $rc = new ReflectionClass($commandClassName);
             foreach ($rc->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
                 if (!$method->isStatic() && preg_match('#^(.*)Action$#', $method->getShortName(), $matches) === 1) {
                     $actions[] = Str::underscore($matches[1]);
@@ -61,25 +61,25 @@ class BashCompletionController extends Controller
     }
 
     /**
-     * @param string $controller
+     * @param string $command
      * @param string $action
      *
      * @return array
      */
-    protected function _getArgumentNames($controller, $action)
+    protected function _getArgumentNames($command, $action)
     {
-        $controllerClassName = $this->_getControllerClassName($controller);
-        if (!class_exists($controllerClassName)) {
+        $commandClassName = $this->_getCommandClassName($command);
+        if (!class_exists($commandClassName)) {
             return [];
         }
 
         $action = Str::camelize($action) . 'Action';
-        if (!method_exists($controllerClassName, $action)) {
+        if (!method_exists($commandClassName, $action)) {
             return [];
         }
 
         $arguments = [];
-        foreach ((new ReflectionMethod($controllerClassName, $action))->getParameters() as $parameter) {
+        foreach ((new ReflectionMethod($commandClassName, $action))->getParameters() as $parameter) {
             $arguments[] = '--' . strtr($parameter->name, '_', '-');
         }
 
@@ -87,41 +87,41 @@ class BashCompletionController extends Controller
     }
 
     /**
-     * @param string $controllerName
+     * @param string $commandName
      *
      * @return string
      */
-    protected function _getControllerClassName($controllerName)
+    protected function _getCommandClassName($commandName)
     {
         if ($this->alias->has('@ns.cli')) {
-            $controllerClassName = $this->alias->resolveNS('@ns.cli\\' . Str::camelize($controllerName)) . 'Controller';
-            if (class_exists($controllerClassName)) {
-                return $controllerClassName;
+            $commandClassName = $this->alias->resolveNS('@ns.cli\\' . Str::camelize($commandName)) . 'Command';
+            if (class_exists($commandClassName)) {
+                return $commandClassName;
             }
         }
 
-        return 'ManaPHP\\Cli\\Controllers\\' . Str::camelize($controllerName) . 'Controller';
+        return 'ManaPHP\\Cli\\Commands\\' . Str::camelize($commandName) . 'Command';
     }
 
     /**
-     * @param string $controller
+     * @param string $command
      * @param string $action
      * @param string $argumentName
      *
      * @return array
      */
-    protected function _getArgumentValues($controller, $action, $argumentName)
+    protected function _getArgumentValues($command, $action, $argumentName)
     {
-        $controllerClassName = $this->_getControllerClassName($controller);
-        if (!class_exists($controllerClassName)) {
+        $commandClassName = $this->_getCommandClassName($command);
+        if (!class_exists($commandClassName)) {
             return [];
         }
 
         $argument_values = [];
         $action = Str::camelize($action) . 'Completion';
-        if (method_exists($controllerClassName, $action)) {
+        if (method_exists($commandClassName, $action)) {
             try {
-                $argument_values = $this->getInstance($controllerClassName)->$action($argumentName);
+                $argument_values = $this->getInstance($commandClassName)->$action($argumentName);
             } catch (\Exception $e) {
             }
         }
@@ -162,9 +162,9 @@ class BashCompletionController extends Controller
 
         $count = count($arguments);
 
-        $controller = null;
+        $command = null;
         if ($count > 1) {
-            $controller = $arguments[1];
+            $command = $arguments[1];
         }
 
         $action = null;
@@ -180,13 +180,13 @@ class BashCompletionController extends Controller
         $current = $arguments[$position] ?? '';
 
         if ($position === 1) {
-            $words = $this->_getControllers();
+            $words = $this->_getCommands();
         } elseif ($current !== '' && $current[0] === '-') {
-            $words = $this->_getArgumentNames($controller, $action);
+            $words = $this->_getArgumentNames($command, $action);
         } elseif ($position === 2) {
-            $words = $this->_getActions($controller);
+            $words = $this->_getActions($command);
         } else {
-            $words = $this->_getArgumentValues($controller, $action, $previous);
+            $words = $this->_getArgumentValues($command, $action, $previous);
         }
 
         $this->console->writeLn(implode(' ', $this->_filterWords($words, $current)));

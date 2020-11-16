@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Commands;
 
-use ManaPHP\Cli\Controller;
+use ManaPHP\Cli\Command;
 
-class DbToJsonController extends Controller
+class DbToJsonCommand extends Command
 {
     public function defaultAction()
     {

@@ -2,14 +2,14 @@
 
 namespace App\Cli\Controllers;
 
-use ManaPHP\Cli\Controller;
+use ManaPHP\Cli\Command;
 
 /**
- * Class TestController
+ * Class TestCommand
  *
- * @package App\Cli\Controllers
+ * @package App\Cli\Commands
  */
-class TestController extends Controller
+class TestCommand extends Command
 {
     public function defaultAction()
     {

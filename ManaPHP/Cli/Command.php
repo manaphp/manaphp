@@ -6,7 +6,7 @@ use ManaPHP\Http\Dispatcher\NotFoundActionException;
 use ReflectionMethod;
 
 /**
- * Class ManaPHP\Cli\Controller
+ * Class ManaPHP\Cli\Command
  *
  * @package controller
  *
@@ -16,7 +16,7 @@ use ReflectionMethod;
  * @property-read \ManaPHP\Cli\RequestInterface     $request
  * @property-read \ManaPHP\Cli\HandlerInterface     $cliHandler
  */
-abstract class Controller extends \ManaPHP\Controller
+abstract class Command extends \ManaPHP\Controller
 {
     /**
      * @param string $action

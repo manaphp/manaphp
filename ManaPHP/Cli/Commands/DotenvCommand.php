@@ -1,17 +1,17 @@
 <?php
 
-namespace ManaPHP\Cli\Controllers;
+namespace ManaPHP\Cli\Commands;
 
-use ManaPHP\Cli\Controller;
+use ManaPHP\Cli\Command;
 
 /**
- * Class DotenvController
+ * Class DotenvCommand
  *
- * @package App\Cli\Controllers
+ * @package App\Cli\Commands
  *
  * @property-read \ManaPHP\Configuration\DotenvInterface $dotenv
  */
-class DotenvController extends Controller
+class DotenvCommand extends Command
 {
     public function defaultAction()
     {

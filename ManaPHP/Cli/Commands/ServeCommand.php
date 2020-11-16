@@ -1,17 +1,17 @@
 <?php
 
-namespace ManaPHP\Cli\Controllers;
+namespace ManaPHP\Cli\Commands;
 
-use ManaPHP\Cli\Controller;
+use ManaPHP\Cli\Command;
 use ManaPHP\Helper\LocalFS;
 
 /**
- * Class ServeController
+ * Class ServeCommand
  *
- * @package ManaPHP\Cli\Controllers
+ * @package ManaPHP\Cli\Commands
  * @property-read \ManaPHP\Http\RouterInterface $router
  */
-class ServeController extends Controller
+class ServeCommand extends Command
 {
     /**
      * start with php builtin server

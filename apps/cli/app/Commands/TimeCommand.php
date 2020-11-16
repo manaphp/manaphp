@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Commands;
 
-use ManaPHP\Cli\Controller;
+use ManaPHP\Cli\Command;
 
 /**
- * Class TimeController
+ * Class TimeCommand
  *
- * @package App\Controllers
+ * @package App\Commands
  *
  * @property-read \App\Services\TimeService $timeService
  */
-class TimeController extends Controller
+class TimeCommand extends Command
 {
     public function defaultAction()
     {

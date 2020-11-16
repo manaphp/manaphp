@@ -15,6 +15,6 @@
 /ManaPHP/.idea
 /apps/user/app/Controllers/TestController.php
 /apps/admin/app/Controllers/TestController.php
-/apps/admin/app/Cli/Controllers/TestController.php
+/apps/admin/app/Cli/Commands/TestCommand.php
 /apps/api/app/Controllers/TimeController.php
-/apps/cli/app/Controllers/TestController.php
+/apps/cli/app/Commands/TestCommand.php

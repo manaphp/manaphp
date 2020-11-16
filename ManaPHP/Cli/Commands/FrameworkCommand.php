@@ -1,11 +1,11 @@
 <?php
 
-namespace ManaPHP\Cli\Controllers;
+namespace ManaPHP\Cli\Commands;
 
-use ManaPHP\Cli\Controller;
+use ManaPHP\Cli\Command;
 use ManaPHP\Helper\LocalFS;
 
-class FrameworkController extends Controller
+class FrameworkCommand extends Command
 {
     /**
      * @var string

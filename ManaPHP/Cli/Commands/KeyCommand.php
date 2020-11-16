@@ -1,10 +1,10 @@
 <?php
 
-namespace ManaPHP\Cli\Controllers;
+namespace ManaPHP\Cli\Commands;
 
-use ManaPHP\Cli\Controller;
+use ManaPHP\Cli\Command;
 
-class KeyController extends Controller
+class KeyCommand extends Command
 {
     /**
      * generate random key
