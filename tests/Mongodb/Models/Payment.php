@@ -8,7 +8,7 @@
 
 namespace Tests\MongoDB\Models;
 
-use ManaPHP\Mongodb\Model;
+use ManaPHP\Data\Mongodb\Model;
 
 class Payment extends Model
 {

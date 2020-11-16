@@ -6,7 +6,7 @@ use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
 use App\Models\Admin;
 use ManaPHP\Mvc\Controller;
-use ManaPHP\QueryInterface;
+use ManaPHP\Data\QueryInterface;
 
 class AdminController extends Controller
 {

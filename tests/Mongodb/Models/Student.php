@@ -8,7 +8,7 @@
 
 namespace Tests\Mongodb\Models;
 
-use ManaPHP\Mongodb\Model;
+use ManaPHP\Data\Mongodb\Model;
 
 class Student extends Model
 {

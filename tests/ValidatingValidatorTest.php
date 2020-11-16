@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use ManaPHP\Db;
+use ManaPHP\Data\Db;
 use ManaPHP\Mvc\Factory;
 use ManaPHP\Validating\Validator;
 use ManaPHP\Validating\Validator\ValidateFailedException;

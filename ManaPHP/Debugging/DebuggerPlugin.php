@@ -211,7 +211,7 @@ class DebuggerPlugin extends Plugin
         $context = $this->_context;
 
         $event = $eventArgs->event;
-        /** @var \ManaPHP\DbInterface $db */
+        /** @var \ManaPHP\Data\DbInterface $db */
         $db = $eventArgs->source;
 
         if ($event === 'db:querying' || $event === 'db:executing') {

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use ManaPHP\Db\Model;
+use ManaPHP\Data\Db\Model;
 
 /**
  * Class App\Models\AdminLoginLog

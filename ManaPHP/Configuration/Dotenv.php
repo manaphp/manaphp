@@ -3,12 +3,12 @@
 namespace ManaPHP\Configuration;
 
 use ManaPHP\Component;
+use ManaPHP\Data\Redis\Connection;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\RuntimeException;
-use ManaPHP\Redis\Connection;
 
 class Dotenv extends Component implements DotenvInterface
 {

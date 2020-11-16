@@ -7,7 +7,7 @@ namespace App\Models;
  *
  * @property \App\Models\Country $country
  */
-class City extends \ManaPHP\Db\Model
+class City extends \ManaPHP\Data\Db\Model
 {
     public $city_id;
     public $city;

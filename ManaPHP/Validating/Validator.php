@@ -5,12 +5,12 @@ namespace ManaPHP\Validating;
 
 use Closure;
 use ManaPHP\Component;
+use ManaPHP\Data\Model;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
-use ManaPHP\Model;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
@@ -139,9 +139,9 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string                $field
-     * @param \ManaPHP\Model|mixed  $value
-     * @param array|string|\Closure $rules
+     * @param string                    $field
+     * @param \ManaPHP\Data\Model|mixed $value
+     * @param array|string|\Closure     $rules
      *
      * @return mixed
      * @throws \ManaPHP\Validating\Validator\ValidateFailedException
@@ -177,7 +177,7 @@ class Validator extends Component implements ValidatorInterface
 
     /**
      * @param string                $field
-     * @param \ManaPHP\Model        $model
+     * @param \ManaPHP\Data\Model   $model
      * @param array|string|\Closure $rules
      *
      * @return mixed
@@ -690,9 +690,9 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string         $field
-     * @param \ManaPHP\Model $model
-     * @param null|string    $parameter
+     * @param string              $field
+     * @param \ManaPHP\Data\Model $model
+     * @param null|string         $parameter
      *
      * @return string|int
      */
@@ -776,9 +776,9 @@ class Validator extends Component implements ValidatorInterface
 
 
     /**
-     * @param string|int     $field
-     * @param \ManaPHP\Model $model
-     * @param string|array   $parameters
+     * @param string|int          $field
+     * @param \ManaPHP\Data\Model $model
+     * @param string|array        $parameters
      *
      * @return int|string|null
      */
@@ -808,9 +808,9 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string         $field
-     * @param \ManaPHP\Model $model
-     * @param string         $parameter
+     * @param string              $field
+     * @param \ManaPHP\Data\Model $model
+     * @param string              $parameter
      *
      * @return string|null
      */
@@ -840,14 +840,14 @@ class Validator extends Component implements ValidatorInterface
             throw new InvalidValueException(['validate `:1` failed: `:2` class is not exists.', $field, $className]);
         }
 
-        /** @var \ManaPHP\ModelInterface $className */
+        /** @var \ManaPHP\Data\ModelInterface $className */
         return $className::exists($value) ? $value : null;
     }
 
     /**
-     * @param string         $field
-     * @param \ManaPHP\Model $model
-     * @param string         $parameter
+     * @param string              $field
+     * @param \ManaPHP\Data\Model $model
+     * @param string              $parameter
      *
      * @return int|string|null
      */
@@ -863,9 +863,9 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string         $field
-     * @param \ManaPHP\Model $model
-     * @param string         $parameter
+     * @param string              $field
+     * @param \ManaPHP\Data\Model $model
+     * @param string              $parameter
      *
      * @return int|string|null
      */
@@ -902,8 +902,8 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string         $field
-     * @param \ManaPHP\Model $model
+     * @param string              $field
+     * @param \ManaPHP\Data\Model $model
      *
      * @return int|string|null
      */
@@ -947,8 +947,8 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string         $field
-     * @param \ManaPHP\Model $model
+     * @param string              $field
+     * @param \ManaPHP\Data\Model $model
      *
      * @return mixed|null
      */

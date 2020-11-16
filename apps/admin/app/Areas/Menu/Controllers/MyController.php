@@ -4,7 +4,7 @@ namespace App\Areas\Menu\Controllers;
 
 use App\Areas\Menu\Models\Group;
 use ManaPHP\Mvc\Controller;
-use ManaPHP\Query;
+use ManaPHP\Data\Query;
 
 class MyController extends Controller
 {

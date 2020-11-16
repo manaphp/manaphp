@@ -57,7 +57,7 @@ class Db extends Session
      */
     public function do_read($session_id)
     {
-        /** @var \ManaPHP\DbInterface $db */
+        /** @var \ManaPHP\Data\DbInterface $db */
         $db = $this->getShared($this->_db);
 
         return $db->query($this->_source)->whereEq('session_id', $session_id)->value('data', '');
@@ -72,7 +72,7 @@ class Db extends Session
      */
     public function do_write($session_id, $data, $ttl)
     {
-        /** @var \ManaPHP\DbInterface $db */
+        /** @var \ManaPHP\Data\DbInterface $db */
         $db = $this->getShared($this->_db);
 
         $field_values = [
@@ -101,7 +101,7 @@ class Db extends Session
      */
     public function do_touch($session_id, $ttl)
     {
-        /** @var \ManaPHP\DbInterface $db */
+        /** @var \ManaPHP\Data\DbInterface $db */
         $db = $this->getShared($this->_db);
 
         $field_values = [
@@ -121,7 +121,7 @@ class Db extends Session
      */
     public function do_destroy($session_id)
     {
-        /** @var \ManaPHP\DbInterface $db */
+        /** @var \ManaPHP\Data\DbInterface $db */
         $db = $this->getShared($this->_db);
 
         $db->delete($this->_source, ['session_id' => $session_id]);
@@ -136,7 +136,7 @@ class Db extends Session
      */
     public function do_gc($ttl)
     {
-        /** @var \ManaPHP\DbInterface $db */
+        /** @var \ManaPHP\Data\DbInterface $db */
         $db = $this->getShared($this->_db);
 
         $db->query($this->_source)->whereCmp('expired_time', '<=', time())->delete();

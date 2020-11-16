@@ -8,7 +8,7 @@ use ManaPHP\Helper\LocalFS;
 class ViewController extends Controller
 {
     /**
-     * @param \ManaPHP\ModelInterface $model
+     * @param \ManaPHP\Data\ModelInterface $model
      *
      * @return string
      * @noinspection PhpUnusedParameterInspection
@@ -23,7 +23,7 @@ HTML;
     }
 
     /**
-     * @param \ManaPHP\ModelInterface $model
+     * @param \ManaPHP\Data\ModelInterface $model
      *
      * @return string
      */
@@ -54,7 +54,7 @@ HTML;
     }
 
     /**
-     * @param \ManaPHP\ModelInterface $model
+     * @param \ManaPHP\Data\ModelInterface $model
      *
      * @return string
      */
@@ -80,7 +80,7 @@ HTML;
     }
 
     /**
-     * @param \ManaPHP\ModelInterface $model
+     * @param \ManaPHP\Data\ModelInterface $model
      *
      * @return string
      */
@@ -111,8 +111,8 @@ HTML;
     }
 
     /**
-     * @param \ManaPHP\ModelInterface $model
-     * @param string                  $field
+     * @param \ManaPHP\Data\ModelInterface $model
+     * @param string                       $field
      *
      * @return bool
      */
@@ -126,7 +126,7 @@ HTML;
     }
 
     /**
-     * @param \ManaPHP\ModelInterface $model
+     * @param \ManaPHP\Data\ModelInterface $model
      *
      * @return string
      */
@@ -178,7 +178,7 @@ HTML;
     }
 
     /**
-     * @param \ManaPHP\ModelInterface $model
+     * @param \ManaPHP\Data\ModelInterface $model
      *
      * @return string
      * @noinspection PhpUnusedParameterInspection
@@ -196,7 +196,7 @@ HTML;
     }
 
     /**
-     * @param \ManaPHP\ModelInterface $model
+     * @param \ManaPHP\Data\ModelInterface $model
      *
      * @return string
      */
@@ -282,7 +282,7 @@ HTML;
     }
 
     /**
-     * @param \ManaPHP\ModelInterface $model
+     * @param \ManaPHP\Data\ModelInterface $model
      *
      * @return string
      */

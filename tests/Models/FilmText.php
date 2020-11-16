@@ -8,7 +8,7 @@
 
 namespace Tests\Models;
 
-use ManaPHP\Db\Model;
+use ManaPHP\Data\Db\Model;
 
 class FilmText extends Model
 {

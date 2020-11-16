@@ -25,7 +25,7 @@ class ResetPasswordTokenService extends Service
      * @param $admin_name
      *
      * @return string
-     * @throws \ManaPHP\Model\NotFoundException
+     * @throws \ManaPHP\Data\Model\NotFoundException
      */
     public function generate($admin_name)
     {

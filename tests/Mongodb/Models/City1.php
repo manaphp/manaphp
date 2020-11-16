@@ -2,7 +2,7 @@
 
 namespace Tests\Mongodb\Models;
 
-use ManaPHP\Mongodb\Model;
+use ManaPHP\Data\Mongodb\Model;
 
 class City1 extends Model
 {

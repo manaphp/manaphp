@@ -6,9 +6,8 @@ namespace ManaPHP\Mvc;
  * Class Model
  *
  * @package ManaPHP\Mvc
- * @deprecated
  */
-class Model extends \ManaPHP\Db\Model
+class Model extends \ManaPHP\Data\Db\Model
 {
 
 }

@@ -2,7 +2,7 @@
 
 namespace App\Areas\Rbac\Models;
 
-use ManaPHP\Db\Model;
+use ManaPHP\Data\Db\Model;
 
 class Permission extends Model
 {

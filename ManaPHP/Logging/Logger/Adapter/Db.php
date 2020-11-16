@@ -49,7 +49,7 @@ class Db extends Logger
     {
         $context = $this->_context;
 
-        /** @var \ManaPHP\DbInterface $db */
+        /** @var \ManaPHP\Data\DbInterface $db */
         $db = $this->getShared($this->_db);
 
         $level = $context->level;

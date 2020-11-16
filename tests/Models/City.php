@@ -8,8 +8,8 @@
 
 namespace Tests\Models;
 
-use ManaPHP\Db\Model;
-use ManaPHP\Model\Relation;
+use ManaPHP\Data\Db\Model;
+use ManaPHP\Data\Model\Relation;
 
 /**
  * Class City
@@ -17,8 +17,8 @@ use ManaPHP\Model\Relation;
  * @package Tests\Models
  * @property \Tests\Models\Country|false $country
  * @property \Tests\Models\Country|false $countryExplicit
- * @method \ManaPHP\Query getCountry
- * @method \ManaPHP\Query getCountryExplicit
+ * @method \ManaPHP\Data\Query getCountry
+ * @method \ManaPHP\Data\Query getCountryExplicit
  */
 class City extends Model
 {

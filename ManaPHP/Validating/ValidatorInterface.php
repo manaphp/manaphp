@@ -26,9 +26,9 @@ interface ValidatorInterface
     public function createError($validate, $field, $parameter = null);
 
     /**
-     * @param string                $field
-     * @param \ManaPHP\Model|mixed  $model
-     * @param array|string|\Closure $rules
+     * @param string                    $field
+     * @param \ManaPHP\Data\Model|mixed $model
+     * @param array|string|\Closure     $rules
      *
      * @return mixed
      */
@@ -36,7 +36,7 @@ interface ValidatorInterface
 
     /**
      * @param string                $field
-     * @param \ManaPHP\Model        $model
+     * @param \ManaPHP\Data\Model   $model
      * @param array|string|\Closure $rules
      *
      * @return mixed

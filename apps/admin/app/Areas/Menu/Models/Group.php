@@ -2,7 +2,7 @@
 
 namespace App\Areas\Menu\Models;
 
-use ManaPHP\Db\Model;
+use ManaPHP\Data\Db\Model;
 
 class Group extends Model
 {

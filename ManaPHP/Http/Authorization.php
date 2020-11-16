@@ -222,7 +222,7 @@ class Authorization extends Component implements AuthorizationInterface
         $context = $this->_context;
 
         if (!isset($context->role_permissions[$role])) {
-            /** @var \ManaPHP\ModelInterface $roleModel */
+            /** @var \ManaPHP\Data\ModelInterface $roleModel */
             $roleModel = null;
             if (class_exists('App\Areas\Rbac\Models\Role')) {
                 $roleModel = 'App\Areas\Rbac\Models\Role';

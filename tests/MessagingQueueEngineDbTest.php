@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use ManaPHP\Db\Adapter\Mysql;
+use ManaPHP\Data\Db\Adapter\Mysql;
 use ManaPHP\Di;
 use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Messaging\Queue\Adapter\Db;
@@ -24,9 +24,9 @@ class MessagingQueueEngineDbTest extends TestCase
 
         $config = require __DIR__ . '/config.database.php';
         $db = new Mysql($config['mysql']);
-        // $this->db = new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
+        // $this->db = new ManaPHP\Data\Db\Adapter\Sqlite($config['sqlite']);
         $db->attachEvent(
-            'db:beforeQuery', function (\ManaPHP\DbInterface $source, $data) {
+            'db:beforeQuery', function (\ManaPHP\Data\DbInterface $source, $data) {
             //  var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);
             var_dump($source->getSQL(), $source->getEmulatedSQL(2));
 

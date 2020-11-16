@@ -2,8 +2,8 @@
 
 namespace Tests\Models;
 
-use ManaPHP\Db\Model;
-use ManaPHP\Db\Query;
+use ManaPHP\Data\Db\Model;
+use ManaPHP\Data\Db\Query;
 
 class StudentShardTable extends Model
 {

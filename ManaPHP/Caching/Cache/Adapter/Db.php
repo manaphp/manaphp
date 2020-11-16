@@ -53,7 +53,7 @@ class Db extends Cache
      */
     public function do_exists($key)
     {
-        /** @var \ManaPHP\DbInterface $db */
+        /** @var \ManaPHP\Data\DbInterface $db */
         $db = $this->getShared($this->_db);
 
         return $db->query($this->_source)->whereEq('hash', md5($key))->value('expired_time') >= time();
@@ -66,7 +66,7 @@ class Db extends Cache
      */
     public function do_get($key)
     {
-        /** @var \ManaPHP\DbInterface $db */
+        /** @var \ManaPHP\Data\DbInterface $db */
         $db = $this->getShared($this->_db);
 
         $r = $db->query($this->_source)->whereEq('hash', md5($key))->first();
@@ -86,7 +86,7 @@ class Db extends Cache
      */
     public function do_set($key, $value, $ttl)
     {
-        /** @var \ManaPHP\DbInterface $db */
+        /** @var \ManaPHP\Data\DbInterface $db */
         $db = $this->getShared($this->_db);
 
         $hash = md5($key);
@@ -106,7 +106,7 @@ class Db extends Cache
      */
     public function do_delete($key)
     {
-        /** @var \ManaPHP\DbInterface $db */
+        /** @var \ManaPHP\Data\DbInterface $db */
         $db = $this->getShared($this->_db);
         $db->delete($this->_source, ['hash' => md5($key)]);
     }

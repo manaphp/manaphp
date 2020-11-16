@@ -58,7 +58,7 @@ class Db extends Queue
      */
     public function do_push($topic, $body, $priority = Queue::PRIORITY_NORMAL)
     {
-        /** @var \ManaPHP\DbInterface $db */
+        /** @var \ManaPHP\Data\DbInterface $db */
         $db = $this->getShared($this->_db);
 
         $created_time = time();
@@ -74,7 +74,7 @@ class Db extends Queue
      */
     public function do_pop($topic, $timeout = PHP_INT_MAX)
     {
-        /** @var \ManaPHP\DbInterface $db */
+        /** @var \ManaPHP\Data\DbInterface $db */
         $db = $this->getShared($this->_db);
 
         $startTime = time();
@@ -107,7 +107,7 @@ class Db extends Queue
      */
     public function do_delete($topic)
     {
-        /** @var \ManaPHP\DbInterface $db */
+        /** @var \ManaPHP\Data\DbInterface $db */
         $db = $this->getShared($this->_db);
 
         $db->delete($this->_source, ['topic' => $topic]);
@@ -121,7 +121,7 @@ class Db extends Queue
      */
     public function do_length($topic, $priority = null)
     {
-        /** @var \ManaPHP\DbInterface $db */
+        /** @var \ManaPHP\Data\DbInterface $db */
         $db = $this->getShared($this->_db);
 
         $query = $db->query($this->_source)->where(['topic' => $topic, 'deleted_time' => 0]);

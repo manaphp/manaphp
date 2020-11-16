@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use ManaPHP\Db\Adapter\Mysql;
-use ManaPHP\DbInterface;
+use ManaPHP\Data\Db\Adapter\Mysql;
+use ManaPHP\Data\DbInterface;
 use ManaPHP\Di;
 use ManaPHP\Mvc\Factory;
 use PHPUnit\Framework\TestCase;
@@ -19,7 +19,7 @@ class HttpSessionAdapterDbTest extends TestCase
             'db', function () {
             $config = require __DIR__ . '/config.database.php';
             $db = new Mysql($config['mysql']);
-            //   $db = new ManaPHP\Db\Adapter\Sqlite($config['sqlite']);
+            //   $db = new ManaPHP\Data\Db\Adapter\Sqlite($config['sqlite']);
 
             $db->attachEvent(
                 'db:beforeQuery', function (DbInterface $source) {

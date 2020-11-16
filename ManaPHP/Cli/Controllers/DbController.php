@@ -4,7 +4,7 @@ namespace ManaPHP\Cli\Controllers;
 
 use ManaPHP\Cli\Console;
 use ManaPHP\Cli\Controller;
-use ManaPHP\Db;
+use ManaPHP\Data\Db;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
@@ -33,7 +33,7 @@ class DbController extends Controller
      */
     protected function _getTables($service, $pattern = null)
     {
-        /** @var \ManaPHP\DbInterface $db */
+        /** @var \ManaPHP\Data\DbInterface $db */
         $db = $this->getShared($service);
         $tables = [];
         foreach ($db->getTables() as $table) {
@@ -83,7 +83,7 @@ class DbController extends Controller
         static $cached;
 
         if (!isset($cached[$service])) {
-            /** @var \ManaPHP\DbInterface $db */
+            /** @var \ManaPHP\Data\DbInterface $db */
             $db = $this->getShared($service);
             $metadata_table = 'metadata_constant';
             if (!in_array($metadata_table, $db->getTables(), true)) {
@@ -147,7 +147,7 @@ class DbController extends Controller
         $str = '<?php' . PHP_EOL;
         $str .= 'namespace ' . substr($modelName, 0, strrpos($modelName, '\\')) . ';' . PHP_EOL;
         $str .= PHP_EOL;
-        $str .= 'use ManaPHP\Db\Model;' . PHP_EOL;
+        $str .= 'use ManaPHP\Data\Db\Model;' . PHP_EOL;
         $str .= PHP_EOL;
 
         $str .= '/**' . PHP_EOL;
@@ -262,7 +262,7 @@ class DbController extends Controller
     public function listCommand($services = [], $table_pattern = '')
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
-            /** @var \ManaPHP\DbInterface $db */
+            /** @var \ManaPHP\Data\DbInterface $db */
             $db = $this->getShared($service);
 
             $this->console->writeLn(['service: `:service`', 'service' => $service], Console::FC_CYAN);
@@ -297,7 +297,7 @@ class DbController extends Controller
             $namespace = 'App\\' . ucfirst($namespace) . '\\Models';
         }
 
-        /** @var \ManaPHP\DbInterface $db */
+        /** @var \ManaPHP\Data\DbInterface $db */
         if ($service) {
             $db = $this->getShared($service);
             if (!in_array($table, $db->getTables(), true)) {
@@ -363,7 +363,7 @@ class DbController extends Controller
     public function jsonCommand($services = [], $table_pattern = '')
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
-            /** @var \ManaPHP\DbInterface $db */
+            /** @var \ManaPHP\Data\DbInterface $db */
             $db = $this->getShared($service);
             foreach ($this->_getTables($service, $table_pattern) as $table) {
                 $fileName = "@tmp/db_json/$service/$table.json";
@@ -397,7 +397,7 @@ class DbController extends Controller
     public function csvCommand($services = [], $table_pattern = '', $bom = false)
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
-            /** @var \ManaPHP\Db $db */
+            /** @var \ManaPHP\Data\Db $db */
             $db = $this->getShared($service);
             foreach ($this->_getTables($service, $table_pattern) as $table) {
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
