@@ -11,7 +11,7 @@ use ReflectionMethod;
  * @package controller
  *
  * @property-read \ManaPHP\Caching\CacheInterface   $viewsCache
- * @property-read \ManaPHP\Messaging\QueueInterface $messageQueue
+ * @property-read \ManaPHP\Messaging\QueueInterface $msgQueue
  * @property-read \ManaPHP\Cli\ConsoleInterface     $console
  * @property-read \ManaPHP\Cli\RequestInterface     $request
  * @property-read \ManaPHP\Cli\HandlerInterface     $cliHandler

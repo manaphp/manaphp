@@ -13,7 +13,7 @@ namespace ManaPHP\Http;
  * @property-read \ManaPHP\Http\RouterInterface     $router
  * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
  * @property-read \ManaPHP\Http\CaptchaInterface    $captcha
- * @property-read \ManaPHP\Messaging\QueueInterface $messageQueue
+ * @property-read \ManaPHP\Messaging\QueueInterface $msgQueue
  * @property-read \ManaPHP\Html\PurifierInterface   $htmlPurifier
  */
 abstract class Controller extends \ManaPHP\Controller

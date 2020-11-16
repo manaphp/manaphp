@@ -45,7 +45,7 @@ use ManaPHP\Exception\NotSupportedException;
  * @property-read \ManaPHP\Http\CaptchaInterface               $captcha
  * @property-read \ManaPHP\IdentityInterface                   $identity
  * @property-read \ManaPHP\Security\RandomInterface            $random
- * @property-read \ManaPHP\Messaging\QueueInterface            $messageQueue
+ * @property-read \ManaPHP\Messaging\QueueInterface            $msgQueue
  * @property-read \ManaPHP\I18n\TranslatorInterface            $translation
  * @property-read \ManaPHP\Html\Renderer\Engine\Sword\Compiler $swordCompiler
  * @property-read \ManaPHP\Html\PurifierInterface              $htmlPurifier

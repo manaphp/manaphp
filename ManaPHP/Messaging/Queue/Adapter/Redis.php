@@ -29,7 +29,7 @@ class Redis extends Queue
      */
     public function __construct($options = [])
     {
-        $this->_prefix = $options['prefix'] ?? 'cache:messageQueue:';
+        $this->_prefix = $options['prefix'] ?? 'cache:msgQueue:';
 
         if (isset($options['priorities'])) {
             $this->_priorities = (array)$options['priorities'];
