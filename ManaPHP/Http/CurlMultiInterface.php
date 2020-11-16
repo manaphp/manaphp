@@ -1,12 +1,12 @@
 <?php
 
-namespace ManaPHP\Curl;
+namespace ManaPHP\Http;
 
-interface MultiInterface
+interface CurlMultiInterface
 {
     /**
-     * @param string|array|\ManaPHP\Curl\Multi\Request $request
-     * @param callable|array                           $callbacks
+     * @param string|array|\ManaPHP\Http\CurlMulti\Request $request
+     * @param callable|array                               $callbacks
      *
      * @return static
      */
@@ -27,14 +27,14 @@ interface MultiInterface
     public function start();
 
     /**
-     * @param \ManaPHP\Curl\Multi\Response $response
+     * @param \ManaPHP\Http\CurlMulti\Response $response
      *
      * @return false|null
      */
     public function onSuccess($response);
 
     /**
-     * @param \ManaPHP\Curl\Multi\Error $error
+     * @param \ManaPHP\Http\CurlMulti\Error $error
      *
      * @return false|null
      */

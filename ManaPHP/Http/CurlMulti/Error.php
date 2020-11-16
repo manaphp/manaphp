@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Curl\Multi;
+namespace ManaPHP\Http\CurlMulti;
 
 class Error
 {
@@ -15,7 +15,7 @@ class Error
     public $message;
 
     /**
-     * @var \ManaPHP\Curl\Multi\Request
+     * @var \ManaPHP\Http\CurlMulti\Request
      */
     public $request;
 }

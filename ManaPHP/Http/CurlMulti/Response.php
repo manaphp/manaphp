@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Curl\Multi;
+namespace ManaPHP\Http\CurlMulti;
 
 class Response
 {
@@ -40,7 +40,7 @@ class Response
     public $stats;
 
     /**
-     * @var \ManaPHP\Curl\Multi\Request
+     * @var \ManaPHP\Http\CurlMulti\Request
      */
     public $request;
 }

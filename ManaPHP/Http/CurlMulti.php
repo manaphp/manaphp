@@ -1,12 +1,12 @@
 <?php
 
-namespace ManaPHP\Curl;
+namespace ManaPHP\Http;
 
 use Countable;
 use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
 
-class Multi extends Component implements MultiInterface, Countable
+class CurlMulti extends Component implements CurlMultiInterface, Countable
 {
     /**
      * @var string
@@ -34,7 +34,7 @@ class Multi extends Component implements MultiInterface, Countable
     protected $_mh;
 
     /**
-     * @var \ManaPHP\Curl\Multi\Request[]
+     * @var \ManaPHP\Http\CurlMulti\Request[]
      */
     protected $_requests = [];
 
@@ -115,8 +115,8 @@ class Multi extends Component implements MultiInterface, Countable
     }
 
     /**
-     * @param string|array|\ManaPHP\Curl\Multi\Request|\ManaPHP\Component $request
-     * @param callable|array                                              $callbacks
+     * @param string|array|\ManaPHP\Http\CurlMulti\Request|\ManaPHP\Component $request
+     * @param callable|array                                                  $callbacks
      *
      * @return static
      */
@@ -344,7 +344,7 @@ class Multi extends Component implements MultiInterface, Countable
     }
 
     /**
-     * @param \ManaPHP\Curl\Multi\Response $response
+     * @param \ManaPHP\Http\CurlMulti\Response $response
      *
      * @return false|null
      */
@@ -354,7 +354,7 @@ class Multi extends Component implements MultiInterface, Countable
     }
 
     /**
-     * @param \ManaPHP\Curl\Multi\Error $error
+     * @param \ManaPHP\Http\CurlMulti\Error $error
      *
      * @return false|null
      */

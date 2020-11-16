@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Curl\Multi;
+namespace ManaPHP\Http\CurlMulti;
 
 class Request
 {
