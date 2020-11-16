@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Cli\Commands;
+namespace App\Commands;
 
 use ManaPHP\Cli\Command;
 use ManaPHP\Exception;
