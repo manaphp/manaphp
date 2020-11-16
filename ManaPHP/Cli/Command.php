@@ -145,7 +145,7 @@ abstract class Command extends \ManaPHP\Controller
                     $ov = $this->console->colorize($option, Console::FC_CYAN, $width);
                     $vv = $value ? "  $value" : '';
                     $dv = isset($defaultValues[$name]) ? " (default: $defaultValues[$name])" : '';
-                    $this->console->writeLn(['    :ov :vv :dv', compact('ov', 'vv', 'dv')]);
+                    $this->console->writeLn(['    %s %s %s', $ov, $vv, $dv]);
                 }
             }
         }
