@@ -13,7 +13,7 @@ use ManaPHP\Cli\Controller;
  */
 class DotenvController extends Controller
 {
-    public function defaultCommand()
+    public function defaultAction()
     {
         foreach ($this->dotenv->get() as $k => $v) {
             echo sprintf('%s=%s', $k, $v), PHP_EOL;

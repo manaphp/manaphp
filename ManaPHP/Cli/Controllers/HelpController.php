@@ -15,23 +15,23 @@ use ReflectionClass;
 class HelpController extends Controller
 {
     /**
-     * list all commands
+     * list all actions
      *
      * @return int
      */
-    public function listCommand()
+    public function listAction()
     {
         $this->console->writeLn('manaphp commands:', Console::FC_GREEN | Console::AT_BOLD);
         foreach (glob(__DIR__ . '/*Controller.php') as $file) {
             $plainName = basename($file, '.php');
             $controller = Str::underscore(basename($plainName, 'Controller'));
             $this->console->writeLn(' - ' . $this->console->colorize($controller, Console::FC_YELLOW));
-            $commands = $this->_getCommands(__NAMESPACE__ . "\\" . $plainName);
+            $actions = $this->_getActions(__NAMESPACE__ . "\\" . $plainName);
 
-            $width = max(max(array_map('strlen', array_keys($commands))), 18);
-            foreach ($commands as $command => $description) {
-                $colored_command = $this->console->colorize($command, Console::FC_CYAN, $width);
-                $this->console->writeLn('    ' . $colored_command . ' ' . $description);
+            $width = max(max(array_map('strlen', array_keys($actions))), 18);
+            foreach ($actions as $action => $description) {
+                $colored_action = $this->console->colorize($action, Console::FC_CYAN, $width);
+                $this->console->writeLn('    ' . $colored_action . ' ' . $description);
             }
         }
 
@@ -43,12 +43,12 @@ class HelpController extends Controller
                 $controller = Str::underscore(basename($plainName, 'Controller'));
                 $this->console->writeLn(' - ' . $this->console->colorize($controller, Console::FC_YELLOW));
 
-                $commands = $this->_getCommands($this->alias->resolveNS("@ns.cli\\$plainName"));
+                $actions = $this->_getActions($this->alias->resolveNS("@ns.cli\\$plainName"));
 
-                $width = max(max(array_map('strlen', array_keys($commands))), 18);
-                foreach ($commands as $command => $description) {
-                    $colored_command = $this->console->colorize($command, Console::FC_CYAN, $width + 1);
-                    $this->console->writeLn("    $colored_command $description");
+                $width = max(max(array_map('strlen', array_keys($actions))), 18);
+                foreach ($actions as $action => $description) {
+                    $colored_action = $this->console->colorize($action, Console::FC_CYAN, $width + 1);
+                    $this->console->writeLn("    $colored_action $description");
                 }
             }
         }
@@ -61,21 +61,21 @@ class HelpController extends Controller
      *
      * @return array
      */
-    protected function _getCommands($controllerClassName)
+    protected function _getActions($controllerClassName)
     {
         $controller = Str::underscore(basename(strtr($controllerClassName, '\\', '/'), 'Controller'));
 
-        $commands = [];
+        $actions = [];
         $rc = new ReflectionClass($controllerClassName);
         foreach (get_class_methods($controllerClassName) as $method) {
-            if (preg_match('#^(.*)Command$#', $method, $match) !== 1) {
+            if (preg_match('#^(.*)Action$#', $method, $match) !== 1) {
                 continue;
             }
             if ($match[1] === 'help') {
                 continue;
             }
 
-            $command = $controller . ($match[1] === 'default' ? '' : (' ' . $match[1]));
+            $action = $controller . ($match[1] === 'default' ? '' : (' ' . $match[1]));
 
             $description = '';
             foreach (preg_split('#[\r\n]+#', $rc->getMethod($match[0])->getDocComment()) as $line) {
@@ -89,11 +89,11 @@ class HelpController extends Controller
                 }
                 break;
             }
-            $commands[$command] = $description;
+            $actions[$action] = $description;
         }
 
-        ksort($commands);
+        ksort($actions);
 
-        return $commands;
+        return $actions;
     }
 }

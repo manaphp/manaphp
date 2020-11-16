@@ -304,7 +304,7 @@ HTML;
     /**
      * auto generate views file
      */
-    public function defaultCommand()
+    public function defaultAction()
     {
         foreach (LocalFS::glob('@app/Models/*.php') as $model_file) {
             $plain = basename($model_file, '.php');

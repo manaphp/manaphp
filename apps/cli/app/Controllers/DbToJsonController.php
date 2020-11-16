@@ -6,7 +6,7 @@ use ManaPHP\Cli\Controller;
 
 class DbToJsonController extends Controller
 {
-    public function defaultCommand()
+    public function defaultAction()
     {
         foreach ($this->db->getTables() as $table) {
             $f = fopen("d:/manaphp_unit_test/$table.json", 'wb+');

@@ -51,7 +51,7 @@ class MongodbController extends Controller
      * @param string $modelName
      * @param bool   $optimized output as more methods as possible
      */
-    public function modelCommand($input, $modelName, $optimized = false)
+    public function modelAction($input, $modelName, $optimized = false)
     {
         if (!str_contains($modelName, '\\')) {
             $modelName = 'App\\Models\\' . ucfirst($modelName);
@@ -76,7 +76,7 @@ class MongodbController extends Controller
      *
      * @throws \ManaPHP\Data\Mongodb\Exception
      */
-    public function modelsCommand(
+    public function modelsAction(
         $services = [],
         $namespace = 'App\Models',
         $optimized = false,
@@ -390,7 +390,7 @@ class MongodbController extends Controller
      * @param string $collection_pattern match collection against a pattern
      * @param bool   $bom                contains BOM or not
      */
-    public function csvCommand($services = [], $collection_pattern = '', $bom = false)
+    public function csvAction($services = [], $collection_pattern = '', $bom = false)
     {
         foreach ($this->_getServices($services) as $service) {
             /** @var \ManaPHP\Data\Mongodb $mongodb */
@@ -473,7 +473,7 @@ class MongodbController extends Controller
      * @param string $field              collection must contains one this field
      * @param array  $db
      */
-    public function listCommand($services = [], $collection_pattern = '', $field = '', $db = [])
+    public function listAction($services = [], $collection_pattern = '', $field = '', $db = [])
     {
         foreach ($this->_getServices($services) as $service) {
             /** @var \ManaPHP\Data\Mongodb $mongodb */

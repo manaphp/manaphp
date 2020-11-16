@@ -12,7 +12,7 @@ class PharController extends Controller
     /**
      * create manacli.phar file
      */
-    public function manacliCommand()
+    public function manacliAction()
     {
         $this->alias->set('@phar', '@data/manacli_phar');
         $pharFile = $this->alias->resolve('@root/manacli.phar');

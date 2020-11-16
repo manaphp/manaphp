@@ -11,7 +11,7 @@ class BosController extends Controller
     /**
      * list buckets
      */
-    public function listBucketsCommand()
+    public function listBucketsAction()
     {
         foreach ($this->bosClient->listBuckets() as $bucket) {
             $this->console->writeLn($bucket);
@@ -24,7 +24,7 @@ class BosController extends Controller
      * @param string $bucket
      * @param string $base_url
      */
-    public function createBucketCommand($bucket, $base_url = '')
+    public function createBucketAction($bucket, $base_url = '')
     {
         $this->console->writeLn($this->bosClient->createBucket($bucket, $base_url));
     }
@@ -38,7 +38,7 @@ class BosController extends Controller
      * @param string $mime_type the mime-type of object
      * @param string $extension the extension of object
      */
-    public function listCommand($bucket, $key = '', $prefix = '', $mime_type = '', $extension = '')
+    public function listAction($bucket, $key = '', $prefix = '', $mime_type = '', $extension = '')
     {
         $filters = [];
 
@@ -62,7 +62,7 @@ class BosController extends Controller
      *
      * @return int
      */
-    public function importCommand($bucket, $dir, $prefix)
+    public function importAction($bucket, $dir, $prefix)
     {
         if (!LocalFS::dirExists($dir)) {
             return $this->console->error(['`:dir` directory is not exists', 'dir' => $dir]);
@@ -102,7 +102,7 @@ class BosController extends Controller
      * @param string $prefix
      * @param string $key
      */
-    public function exportCommand($bucket, $dir = '', $prefix = '', $key = '')
+    public function exportAction($bucket, $dir = '', $prefix = '', $key = '')
     {
         $filters = [];
         $filters['prefix'] = $prefix;

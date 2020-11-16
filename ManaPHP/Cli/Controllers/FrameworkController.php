@@ -71,7 +71,7 @@ class FrameworkController extends Controller
      *
      * @return int
      */
-    public function minifyCommand()
+    public function minifyAction()
     {
         $ManaPHPSrcDir = $this->alias->get('@manaphp');
         $ManaPHPDstDir = $ManaPHPSrcDir . '_' . date('ymd');

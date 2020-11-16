@@ -17,7 +17,7 @@ class SwordController extends Controller
     /**
      * @param bool $replace
      */
-    public function compileCommand($replace = false)
+    public function compileAction($replace = false)
     {
         LocalFS::dirDelete('@data/sword');
         $this->console->writeLn('delete `@data/sword` directory success');

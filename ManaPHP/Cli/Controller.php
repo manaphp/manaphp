@@ -25,7 +25,7 @@ abstract class Controller extends \ManaPHP\Controller
      */
     public function validateInvokable($action)
     {
-        $method = $action . 'Command';
+        $method = $action . 'Action';
 
         if (!in_array($method, get_class_methods($this), true)) {
             throw new NotFoundActionException(['`%s::%s` method does not exist', static::class, $method]);
@@ -33,19 +33,9 @@ abstract class Controller extends \ManaPHP\Controller
     }
 
     /**
-     * @param string $action
-     *
-     * @return mixed
-     */
-    public function invoke($action)
-    {
-        return $this->invoker->invoke($this, $action . 'Command');
-    }
-
-    /**
      * show this help information
      */
-    public function helpCommand()
+    public function helpAction()
     {
         $args = $this->cliHandler->getArgs();
         if (isset($args[2]) && $args[2] !== 'help' && $args[2][0] !== '-') {
@@ -57,7 +47,7 @@ abstract class Controller extends \ManaPHP\Controller
         }
 
         foreach (get_class_methods($this) as $method) {
-            if (!preg_match('#^([a-z].*)Command$#', $method, $match)) {
+            if (!preg_match('#^([a-z].*)Action$#', $method, $match)) {
                 continue;
             }
 
@@ -87,9 +77,9 @@ abstract class Controller extends \ManaPHP\Controller
                 break;
             }
 
-            $method_name = str_pad(basename($method, 'Command'), 10);
-            $command = $this->console->colorize($method_name, Console::FC_YELLOW) . ' ' . $description;
-            $this->console->writeLn($command);
+            $method_name = str_pad(basename($method, 'Action'), 10);
+            $action = $this->console->colorize($method_name, Console::FC_YELLOW) . ' ' . $description;
+            $this->console->writeLn($action);
 
             $defaultValues = [];
             foreach ($rm->getParameters() as $parameter) {
@@ -164,18 +154,18 @@ abstract class Controller extends \ManaPHP\Controller
     /**
      * @return array
      */
-    public function getCommands()
+    public function getActions()
     {
-        $commands = [];
+        $actions = [];
         foreach (get_class_methods($this) as $method) {
-            if ($method === 'helpCommand' || $method[0] === '_') {
+            if ($method === 'helpAction' || $method[0] === '_') {
                 continue;
             }
-            if (preg_match('#^([a-z].*)Command$#', $method, $match)) {
-                $commands[] = $match[1];
+            if (preg_match('#^([a-z].*)Action$#', $method, $match)) {
+                $actions[] = $match[1];
             }
         }
 
-        return $commands;
+        return $actions;
     }
 }

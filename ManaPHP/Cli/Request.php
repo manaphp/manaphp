@@ -241,14 +241,14 @@ class Request extends Component implements RequestInterface
 
     /**
      * @param object $instance
-     * @param string $command
+     * @param string $action
      *
      * @return void
      */
-    public function completeShortNames($instance, $command)
+    public function completeShortNames($instance, $action)
     {
         $shorts = [];
-        foreach ((new ReflectionMethod($instance, $command))->getParameters() as $parameter) {
+        foreach ((new ReflectionMethod($instance, $action))->getParameters() as $parameter) {
             $name = $parameter->getName();
 
             $type = $parameter->getType();

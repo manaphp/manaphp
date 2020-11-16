@@ -10,7 +10,7 @@ class ExcelController extends Controller
     /**
      * @param string $file ods content file path
      */
-    public function odsCommand($file)
+    public function odsAction($file)
     {
         if (LocalFS::dirExists($file)) {
             $file .= '/content.xml';

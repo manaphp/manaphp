@@ -17,7 +17,7 @@ class PasswordController extends Controller
      * @param int    $base
      * @param int    $cost
      */
-    public function generateCommand($length = 32, $password = '', $base = 62, $cost = 0)
+    public function generateAction($length = 32, $password = '', $base = 62, $cost = 0)
     {
         if ($password === '') {
             $password = $this->random->getBase($length, $base);
@@ -37,7 +37,7 @@ class PasswordController extends Controller
         }
     }
 
-    public function costCommand()
+    public function costAction()
     {
         for ($i = 7; $i < 14; $i++) {
             $start = microtime(true);

@@ -11,7 +11,7 @@ use ManaPHP\Cli\Controller;
  */
 class TestController extends Controller
 {
-    public function defaultCommand()
+    public function defaultAction()
     {
         $this->console->writeLn(date('Y-m-d H:i:s'));
     }

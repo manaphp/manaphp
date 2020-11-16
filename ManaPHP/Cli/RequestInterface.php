@@ -72,9 +72,9 @@ interface RequestInterface
 
     /**
      * @param object $instance
-     * @param string $command
+     * @param string $action
      *
      * @return void
      */
-    public function completeShortNames($instance, $command);
+    public function completeShortNames($instance, $action);
 }

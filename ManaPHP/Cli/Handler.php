@@ -67,17 +67,17 @@ class Handler extends Component implements HandlerInterface
      *
      * @return array
      */
-    protected function _getCommands($controllerName)
+    protected function _getActions($controllerName)
     {
-        $commands = [];
+        $actions = [];
 
         foreach (get_class_methods($controllerName) as $method) {
-            if (preg_match('#^(.*)Command$#', $method, $match) === 1 && $match[1] !== 'help') {
-                $commands[] = $match[1];
+            if (preg_match('#^(.*)Action$#', $method, $match) === 1 && $match[1] !== 'help') {
+                $actions[] = $match[1];
             }
         }
 
-        return $commands;
+        return $actions;
     }
 
     /**
@@ -86,21 +86,21 @@ class Handler extends Component implements HandlerInterface
      *
      * @return string|false
      */
-    protected function _guessCommand($controllerName, $keyword)
+    protected function _guessAction($controllerName, $keyword)
     {
-        $commands = $this->_getCommands($controllerName);
+        $actions = $this->_getActions($controllerName);
 
         $guessed = [];
-        foreach ($commands as $command) {
-            if (stripos($command, $keyword) === 0) {
-                $guessed[] = $command;
+        foreach ($actions as $action) {
+            if (stripos($action, $keyword) === 0) {
+                $guessed[] = $action;
             }
         }
 
         if (!$guessed) {
-            foreach ($commands as $command) {
-                if (stripos($command, $keyword) !== false) {
-                    $guessed[] = $command;
+            foreach ($actions as $action) {
+                if (stripos($action, $keyword) !== false) {
+                    $guessed[] = $action;
                 }
             }
         }
@@ -117,35 +117,35 @@ class Handler extends Component implements HandlerInterface
     {
         $this->_args = $args ?? $GLOBALS['argv'];
 
-        list(, $controllerName, $commandName) = array_pad($this->_args, 3, null);
+        list(, $controllerName, $actionName) = array_pad($this->_args, 3, null);
 
-        if ($commandName === null) {
+        if ($actionName === null) {
             $this->request->parse([]);
-        } elseif ($commandName[0] === '-') {
+        } elseif ($actionName[0] === '-') {
             $this->request->parse(array_splice($this->_args, 2));
         } else {
             $this->request->parse(array_splice($this->_args, 3));
         }
 
-        if ($commandName !== null && $commandName[0] === '-') {
-            $commandName = null;
+        if ($actionName !== null && $actionName[0] === '-') {
+            $actionName = null;
         }
 
         if ($controllerName === 'list') {
             $controllerName = 'help';
-            $commandName = $commandName ?: 'list';
+            $actionName = $actionName ?: 'list';
         } elseif ($controllerName === null) {
             $controllerName = 'help';
         } elseif ($controllerName === '--help' || $controllerName === '-h') {
             $controllerName = 'help';
-            $commandName = 'list';
-        } elseif ($controllerName === 'help' && $commandName !== null && $commandName !== 'list') {
-            $controllerName = $commandName;
-            $commandName = 'help';
+            $actionName = 'list';
+        } elseif ($controllerName === 'help' && $actionName !== null && $actionName !== 'list') {
+            $controllerName = $actionName;
+            $actionName = 'help';
         }
 
         $controllerName = Str::camelize($controllerName);
-        $commandName = lcfirst(Str::camelize($commandName));
+        $actionName = lcfirst(Str::camelize($actionName));
 
         $controller = null;
 
@@ -170,41 +170,41 @@ class Handler extends Component implements HandlerInterface
                 $controller = $guessed;
                 $controllerName = basename(substr($controller, strrpos($controller, '\\')), 'Controller');
             } else {
-                $command = lcfirst($controllerName) . ':' . $commandName;
-                return $this->console->error(['`:command` command is not exists', 'command' => $command]);
+                $action = lcfirst($controllerName) . ':' . $actionName;
+                return $this->console->error(['`:action` action is not exists', 'action' => $action]);
             }
         }
 
         /** @var \ManaPHP\Controller $instance */
         $instance = $this->getShared($controller);
-        if ($commandName === '') {
-            $commands = $this->_getCommands($controller);
-            if (count($commands) === 1) {
-                $commandName = $commands[0];
-            } elseif (in_array('default', $commands, true)) {
-                $commandName = 'default';
+        if ($actionName === '') {
+            $actions = $this->_getActions($controller);
+            if (count($actions) === 1) {
+                $actionName = $actions[0];
+            } elseif (in_array('default', $actions, true)) {
+                $actionName = 'default';
             } else {
-                $commandName = 'help';
+                $actionName = 'help';
             }
         }
 
-        if ($commandName !== 'help' && $this->request->has('help')) {
-            $commandName = 'help';
+        if ($actionName !== 'help' && $this->request->has('help')) {
+            $actionName = 'help';
         }
 
-        if (!$instance->isInvokable($commandName)) {
-            $guessed = $this->_guessCommand($controller, $commandName);
+        if (!$instance->isInvokable($actionName)) {
+            $guessed = $this->_guessAction($controller, $actionName);
             if (!$guessed) {
-                $command = lcfirst($controllerName) . ':' . $commandName;
-                return $this->console->error(['`:command` sub command is not exists', 'command' => $command]);
+                $action = lcfirst($controllerName) . ':' . $actionName;
+                return $this->console->error(['`:action` sub action is not exists', 'action' => $action]);
             } else {
-                $commandName = $guessed;
+                $actionName = $guessed;
             }
         }
 
-        $commandMethod = $commandName . 'Command';
-        $this->request->completeShortNames($instance, $commandMethod);
-        $r = $instance->invoke($commandName);
+        $actionMethod = $actionName . 'Action';
+        $this->request->completeShortNames($instance, $actionMethod);
+        $r = $instance->invoke($actionName);
 
         return is_int($r) ? $r : 0;
     }

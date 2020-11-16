@@ -38,9 +38,9 @@ class BashCompletionController extends Controller
      *
      * @return array
      */
-    protected function _getCommands($controller)
+    protected function _getActions($controller)
     {
-        $commands = [];
+        $actions = [];
         try {
             $controllerClassName = $this->_getControllerClassName($controller);
 
@@ -50,36 +50,36 @@ class BashCompletionController extends Controller
 
             $rc = new ReflectionClass($controllerClassName);
             foreach ($rc->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-                if (!$method->isStatic() && preg_match('#^(.*)Command$#', $method->getShortName(), $matches) === 1) {
-                    $commands[] = Str::underscore($matches[1]);
+                if (!$method->isStatic() && preg_match('#^(.*)Action$#', $method->getShortName(), $matches) === 1) {
+                    $actions[] = Str::underscore($matches[1]);
                 }
             }
         } catch (\Exception $e) {
         }
 
-        return $commands;
+        return $actions;
     }
 
     /**
      * @param string $controller
-     * @param string $command
+     * @param string $action
      *
      * @return array
      */
-    protected function _getArgumentNames($controller, $command)
+    protected function _getArgumentNames($controller, $action)
     {
         $controllerClassName = $this->_getControllerClassName($controller);
         if (!class_exists($controllerClassName)) {
             return [];
         }
 
-        $command = Str::camelize($command) . 'Command';
-        if (!method_exists($controllerClassName, $command)) {
+        $action = Str::camelize($action) . 'Action';
+        if (!method_exists($controllerClassName, $action)) {
             return [];
         }
 
         $arguments = [];
-        foreach ((new ReflectionMethod($controllerClassName, $command))->getParameters() as $parameter) {
+        foreach ((new ReflectionMethod($controllerClassName, $action))->getParameters() as $parameter) {
             $arguments[] = '--' . strtr($parameter->name, '_', '-');
         }
 
@@ -105,12 +105,12 @@ class BashCompletionController extends Controller
 
     /**
      * @param string $controller
-     * @param string $command
+     * @param string $action
      * @param string $argumentName
      *
      * @return array
      */
-    protected function _getArgumentValues($controller, $command, $argumentName)
+    protected function _getArgumentValues($controller, $action, $argumentName)
     {
         $controllerClassName = $this->_getControllerClassName($controller);
         if (!class_exists($controllerClassName)) {
@@ -118,10 +118,10 @@ class BashCompletionController extends Controller
         }
 
         $argument_values = [];
-        $command = Str::camelize($command) . 'Completion';
-        if (method_exists($controllerClassName, $command)) {
+        $action = Str::camelize($action) . 'Completion';
+        if (method_exists($controllerClassName, $action)) {
             try {
-                $argument_values = $this->getInstance($controllerClassName)->$command($argumentName);
+                $argument_values = $this->getInstance($controllerClassName)->$action($argumentName);
             } catch (\Exception $e) {
             }
         }
@@ -153,7 +153,7 @@ class BashCompletionController extends Controller
      *
      * @return int
      */
-    public function completeCommand()
+    public function completeAction()
     {
         $arguments = array_slice($GLOBALS['argv'], 3);
         $position = (int)$arguments[0];
@@ -167,11 +167,11 @@ class BashCompletionController extends Controller
             $controller = $arguments[1];
         }
 
-        $command = null;
+        $action = null;
         if ($count > 2) {
-            $command = $arguments[2];
-            if ($command !== '' && $command[0] === '-') {
-                $command = 'default';
+            $action = $arguments[2];
+            if ($action !== '' && $action[0] === '-') {
+                $action = 'default';
             }
         }
 
@@ -182,11 +182,11 @@ class BashCompletionController extends Controller
         if ($position === 1) {
             $words = $this->_getControllers();
         } elseif ($current !== '' && $current[0] === '-') {
-            $words = $this->_getArgumentNames($controller, $command);
+            $words = $this->_getArgumentNames($controller, $action);
         } elseif ($position === 2) {
-            $words = $this->_getCommands($controller);
+            $words = $this->_getActions($controller);
         } else {
-            $words = $this->_getArgumentValues($controller, $command, $previous);
+            $words = $this->_getArgumentValues($controller, $action, $previous);
         }
 
         $this->console->writeLn(implode(' ', $this->_filterWords($words, $current)));
@@ -197,7 +197,7 @@ class BashCompletionController extends Controller
     /**
      * install bash completion script
      */
-    public function installCommand()
+    public function installAction()
     {
         $content = <<<'EOT'
 #!/bin/bash

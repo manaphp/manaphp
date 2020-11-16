@@ -29,7 +29,7 @@ class FiddlerController extends Controller
      * @param string $id app id
      * @param string $ip client ip
      */
-    public function defaultCommand($id = '', $ip = '')
+    public function defaultAction($id = '', $ip = '')
     {
         $options = [];
 

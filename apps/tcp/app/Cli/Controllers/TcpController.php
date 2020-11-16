@@ -7,7 +7,7 @@ use ManaPHP\Exception;
 
 class TcpController extends Controller
 {
-    public function echoCommand($str = 'Hello World')
+    public function echoAction($str = 'Hello World')
     {
         $server = env('SOCKET_SERVER');
         $parts = parse_url($server);

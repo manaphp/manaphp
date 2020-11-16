@@ -43,7 +43,7 @@ class DateController extends Controller
      *
      * @return  int
      */
-    public function syncCommand($url = 'http://www.baidu.com')
+    public function syncAction($url = 'http://www.baidu.com')
     {
         $timestamp = $this->_getRemoteTimestamp($url);
         if ($timestamp === false) {
@@ -62,7 +62,7 @@ class DateController extends Controller
      *
      * @return int
      */
-    public function remoteCommand($url = 'http://www.baidu.com')
+    public function remoteAction($url = 'http://www.baidu.com')
     {
         $timestamp = $this->_getRemoteTimestamp($url);
         if ($timestamp === false) {
@@ -80,7 +80,7 @@ class DateController extends Controller
      *
      * @return string
      */
-    public function diffCommand($url = 'http://www.baidu.com')
+    public function diffAction($url = 'http://www.baidu.com')
     {
         $remote_ts = $this->_getRemoteTimestamp($url);
         $local_ts = time();
@@ -102,7 +102,7 @@ class DateController extends Controller
      *
      * @return int
      */
-    public function setCommand($date = '', $time = '')
+    public function setAction($date = '', $time = '')
     {
         $arguments = $this->request->getValues();
         if (count($arguments) === 1) {

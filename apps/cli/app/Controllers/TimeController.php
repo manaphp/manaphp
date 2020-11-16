@@ -13,7 +13,7 @@ use ManaPHP\Cli\Controller;
  */
 class TimeController extends Controller
 {
-    public function defaultCommand()
+    public function defaultAction()
     {
         $current = date('Y-m-d H:i:s', $this->timeService->current());
         var_dump($current);

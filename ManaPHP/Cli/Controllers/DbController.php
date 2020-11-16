@@ -259,7 +259,7 @@ class DbController extends Controller
      * @param array  $services      services name list
      * @param string $table_pattern match table against a pattern
      */
-    public function listCommand($services = [], $table_pattern = '')
+    public function listAction($services = [], $table_pattern = '')
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
             /** @var \ManaPHP\Data\DbInterface $db */
@@ -291,7 +291,7 @@ class DbController extends Controller
      *
      * @throws \ManaPHP\Cli\Controllers\Exception
      */
-    public function modelCommand($table, $service = '', $namespace = 'App\Models', $optimized = false)
+    public function modelAction($table, $service = '', $namespace = 'App\Models', $optimized = false)
     {
         if (!str_contains($namespace, '\\')) {
             $namespace = 'App\\' . ucfirst($namespace) . '\\Models';
@@ -334,7 +334,7 @@ class DbController extends Controller
      * @param string $namespace     namespace of models
      * @param bool   $optimized     output as more methods as possible
      */
-    public function modelsCommand($services = [], $table_pattern = '', $namespace = 'App\Models', $optimized = false)
+    public function modelsAction($services = [], $table_pattern = '', $namespace = 'App\Models', $optimized = false)
     {
         if (!str_contains($namespace, '\\')) {
             $namespace = 'App\\' . ucfirst($namespace) . '\\Models';
@@ -360,7 +360,7 @@ class DbController extends Controller
      * @param array  $services      services name list
      * @param string $table_pattern match table against a pattern
      */
-    public function jsonCommand($services = [], $table_pattern = '')
+    public function jsonAction($services = [], $table_pattern = '')
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
             /** @var \ManaPHP\Data\DbInterface $db */
@@ -394,7 +394,7 @@ class DbController extends Controller
      * @param string $table_pattern match table against a pattern
      * @param bool   $bom           contains BOM or not
      */
-    public function csvCommand($services = [], $table_pattern = '', $bom = false)
+    public function csvAction($services = [], $table_pattern = '', $bom = false)
     {
         foreach ($services ?: $this->_getDbServices() as $service) {
             /** @var \ManaPHP\Data\Db $db */
