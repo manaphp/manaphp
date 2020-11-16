@@ -356,7 +356,7 @@ interface QueryInterface
      * @param int $size
      * @param int $page
      *
-     * @return \ManaPHP\Data\Query\Paginator
+     * @return \ManaPHP\Data\Paginator
      */
     public function paginate($size = null, $page = null);
 

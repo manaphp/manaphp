@@ -1,13 +1,13 @@
 <?php
 
-namespace ManaPHP\Data\Query;
+namespace ManaPHP\Data;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\PreconditionException;
 
 /**
- * Class ManaPHP\Data\Query\Paginator
+ * Class ManaPHP\Data\Paginator
  *
  * @package paginator
  *

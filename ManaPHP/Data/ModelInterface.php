@@ -138,7 +138,7 @@ interface ModelInterface
      * @param array $options
      * @param array $fields
      *
-     * @return  \ManaPHP\Data\Query\Paginator
+     * @return  \ManaPHP\Data\Paginator
      */
     public static function paginate($filters = [], $options = null, $fields = null);
 
