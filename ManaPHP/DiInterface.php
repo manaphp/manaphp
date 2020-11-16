@@ -35,6 +35,13 @@ interface DiInterface
     public function getDefinitions();
 
     /**
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function getDefinition($name);
+
+    /**
      * @return array
      */
     public function getInstances();

@@ -367,6 +367,16 @@ class Di implements DiInterface
     }
 
     /**
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function getDefinition($name)
+    {
+        return $this->_definitions[$name] ?? null;
+    }
+
+    /**
      * @return array
      */
     public function getInstances()
