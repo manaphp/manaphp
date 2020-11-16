@@ -16,7 +16,7 @@ namespace PHPSTORM_META {
             'dispatcher' instanceof \ManaPHP\Http\DispatcherInterface,
             'url' instanceof \ManaPHP\Http\UrlInterface,
             'modelsMetadata' instanceof \ManaPHP\Mvc\Model\MetadataInterface,
-            'validator' instanceof \ManaPHP\ValidatorInterface,
+            'validator' instanceof \ManaPHP\Validating\ValidatorInterface,
             'response' instanceof \ManaPHP\Http\ResponseInterface,
             'cookies' instanceof \ManaPHP\Http\CookiesInterface,
             'request' instanceof \ManaPHP\Http\RequestInterface,
@@ -73,7 +73,7 @@ namespace PHPSTORM_META {
             'dispatcher' instanceof \ManaPHP\Http\DispatcherInterface,
             'url' instanceof \ManaPHP\Http\UrlInterface,
             'modelsMetadata' instanceof \ManaPHP\Mvc\Model\MetadataInterface,
-            'validator' instanceof \ManaPHP\ValidatorInterface,
+            'validator' instanceof \ManaPHP\Validating\ValidatorInterface,
             'response' instanceof \ManaPHP\Http\ResponseInterface,
             'cookies' instanceof \ManaPHP\Http\CookiesInterface,
             'request' instanceof \ManaPHP\Http\RequestInterface,
@@ -131,7 +131,7 @@ namespace PHPSTORM_META {
             'dispatcher' instanceof \ManaPHP\Http\DispatcherInterface,
             'url' instanceof \ManaPHP\Http\UrlInterface,
             'modelsMetadata' instanceof \ManaPHP\Mvc\Model\MetadataInterface,
-            'validator' instanceof \ManaPHP\ValidatorInterface,
+            'validator' instanceof \ManaPHP\Validating\ValidatorInterface,
             'response' instanceof \ManaPHP\Http\ResponseInterface,
             'cookies' instanceof \ManaPHP\Http\CookiesInterface,
             'request' instanceof \ManaPHP\Http\RequestInterface,
@@ -272,8 +272,8 @@ namespace PHPSTORM_META {
         ]
     );
     expectedArguments(\input(), 1, argumentsSet('validator_rules'));
-    expectedArguments(\ManaPHP\Validator::validateValue(), 2, argumentsSet('validator_rules'));
-    expectedArguments(\ManaPHP\Validator::validateModel(), 2, argumentsSet('validator_rules'));
+    expectedArguments(\ManaPHP\Validating\Validator::validateValue(), 2, argumentsSet('validator_rules'));
+    expectedArguments(\ManaPHP\Validating\Validator::validateModel(), 2, argumentsSet('validator_rules'));
 
     expectedArguments(
         \json_stringify(), 1,

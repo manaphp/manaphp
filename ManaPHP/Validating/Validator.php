@@ -1,15 +1,17 @@
 <?php
 /** @noinspection PhpUnusedParameterInspection */
 
-namespace ManaPHP;
+namespace ManaPHP\Validating;
 
 use Closure;
+use ManaPHP\Component;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
-use ManaPHP\Validator\ValidateFailedException;
+use ManaPHP\Model;
+use ManaPHP\Validating\Validator\ValidateFailedException;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
 
@@ -23,9 +25,9 @@ class ValidatorContext
  *
  * @package ManaPHP
  *
- * @property-read \ManaPHP\Html\PurifierInterface $htmlPurifier
- * @property-read \ManaPHP\Http\RequestInterface  $request
- * @property-read \ManaPHP\ValidatorContext       $_context
+ * @property-read \ManaPHP\Html\PurifierInterface      $htmlPurifier
+ * @property-read \ManaPHP\Http\RequestInterface       $request
+ * @property-read \ManaPHP\Validating\ValidatorContext $_context
  */
 class Validator extends Component implements ValidatorInterface
 {
@@ -37,7 +39,7 @@ class Validator extends Component implements ValidatorInterface
     /**
      * @var array
      */
-    protected $_dir = '@manaphp/Validator/Templates';
+    protected $_dir = '@manaphp/Validating/Validator/Templates';
 
     /**
      * @var array
@@ -71,7 +73,7 @@ class Validator extends Component implements ValidatorInterface
 
     protected function _createContext()
     {
-        /** @var \ManaPHP\ValidatorContext $context */
+        /** @var \ManaPHP\Validating\ValidatorContext $context */
         $context = parent::_createContext();
 
         if ($this->_locale !== null) {
@@ -142,7 +144,7 @@ class Validator extends Component implements ValidatorInterface
      * @param array|string|\Closure $rules
      *
      * @return mixed
-     * @throws \ManaPHP\Validator\ValidateFailedException
+     * @throws \ManaPHP\Validating\Validator\ValidateFailedException
      */
     public function validate($field, $value, $rules)
     {
@@ -253,7 +255,7 @@ class Validator extends Component implements ValidatorInterface
      * @param array|string|\Closure $rules
      *
      * @return mixed
-     * @throws \ManaPHP\Validator\ValidateFailedException
+     * @throws \ManaPHP\Validating\Validator\ValidateFailedException
      */
     public function validateValue($field, $value, $rules)
     {

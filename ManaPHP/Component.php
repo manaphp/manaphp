@@ -36,7 +36,7 @@ use Swoole\Coroutine;
  * @property-read \ManaPHP\Ipc\CacheInterface              $ipcCache
  * @property-read \ManaPHP\Bos\ClientInterface             $bosClient
  * @property-read \ManaPHP\Pool\ManagerInterface           $poolManager
- * @property-read \ManaPHP\ValidatorInterface              $validator
+ * @property-read \ManaPHP\Validating\ValidatorInterface   $validator
  * @property-read \ManaPHP\I18n\TranslatorInterface        $translator
  * @property-read \ManaPHP\Ws\PusherInterface              $wsPusher
  * @property-read \ManaPHP\Coroutine\ManagerInterface      $coroutineManager

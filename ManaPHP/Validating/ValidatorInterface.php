@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Validating;
 
 interface ValidatorInterface
 {
@@ -40,7 +40,7 @@ interface ValidatorInterface
      * @param array|string|\Closure $rules
      *
      * @return mixed
-     * @throws \ManaPHP\Validator\ValidateFailedException
+     * @throws \ManaPHP\Validating\Validator\ValidateFailedException
      */
     public function validateModel($field, $model, $rules);
 

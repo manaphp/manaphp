@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Validator;
+namespace ManaPHP\Validating\Validator;
 
 use ManaPHP\Exception;
 

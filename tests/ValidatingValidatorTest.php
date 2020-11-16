@@ -4,14 +4,14 @@ namespace Tests;
 
 use ManaPHP\Db;
 use ManaPHP\Mvc\Factory;
-use ManaPHP\Validator;
-use ManaPHP\Validator\ValidateFailedException;
+use ManaPHP\Validating\Validator;
+use ManaPHP\Validating\Validator\ValidateFailedException;
 use PHPUnit\Framework\TestCase;
 use Tests\Models\City;
 use Tests\Models\Customer;
 use Tests\Models\Payment;
 
-class ValidatorTest extends TestCase
+class ValidatingValidatorTest extends TestCase
 {
     public function setUp()
     {

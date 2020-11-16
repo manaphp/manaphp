@@ -2,7 +2,7 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Validator\ValidateFailedException;
+use ManaPHP\Validating\Validator\ValidateFailedException;
 use ReflectionMethod;
 
 /**

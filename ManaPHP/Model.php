@@ -25,7 +25,7 @@ use ManaPHP\Model\Relation\HasManyOthers;
 use ManaPHP\Model\Relation\HasManyToMany;
 use ManaPHP\Model\Relation\HasOne;
 use ManaPHP\Model\SerializeNormalizable;
-use ManaPHP\Validator\ValidateFailedException;
+use ManaPHP\Validating\Validator\ValidateFailedException;
 use ReflectionClass;
 use Serializable;
 
@@ -762,7 +762,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             throw new MisuseException(['`%s` rules must be an associative array', static::class]);
         }
 
-        /** @var \ManaPHP\ValidatorInterface $validator */
+        /** @var \ManaPHP\Validating\ValidatorInterface $validator */
         $validator = $this->getShared('validator');
 
         $errors = [];
@@ -801,7 +801,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
             $rules = $rules[$field];
         }
 
-        /** @var \ManaPHP\ValidatorInterface $validator */
+        /** @var \ManaPHP\Validating\ValidatorInterface $validator */
         $validator = $this->getShared('validator');
 
         $this->$field = $validator->validateModel($field, $this, $rules);

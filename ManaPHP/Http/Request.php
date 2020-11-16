@@ -6,7 +6,7 @@ use ManaPHP\Component;
 use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Http\Request\File\Exception as FileException;
-use ManaPHP\Validator\ValidateFailedException;
+use ManaPHP\Validating\Validator\ValidateFailedException;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
 

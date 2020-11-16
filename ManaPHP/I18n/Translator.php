@@ -62,7 +62,7 @@ class Translator extends Component implements TranslatorInterface
 
     protected function _createContext()
     {
-        /** @var \ManaPHP\ValidatorContext $context */
+        /** @var \ManaPHP\Validating\ValidatorContext $context */
         $context = parent::_createContext();
 
         if ($this->_locale !== null) {
