@@ -37,7 +37,7 @@ class ViewContext
  *
  * @package view
  *
- * @property-read \ManaPHP\RendererInterface        $renderer
+ * @property-read \ManaPHP\Html\RendererInterface   $renderer
  * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
  * @property-read \ManaPHP\Mvc\ViewContext          $_context
  */

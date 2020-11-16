@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Html;
 
 /**
- * Interface ManaPHP\RendererInterface
+ * Interface ManaPHP\Html\RendererInterface
  *
  * @package renderer
  */

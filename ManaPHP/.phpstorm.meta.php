@@ -26,7 +26,7 @@ namespace PHPSTORM_META {
             'session' instanceof \ManaPHP\Http\SessionInterface,
             'view' instanceof \ManaPHP\Mvc\ViewInterface,
             'logger' instanceof \ManaPHP\Logging\LoggerInterface,
-            'renderer' instanceof \ManaPHP\RendererInterface,
+            'renderer' instanceof \ManaPHP\Html\RendererInterface,
             'cache' instanceof \ManaPHP\Caching\CacheInterface,
             'ipcCache' instanceof \ManaPHP\Ipc\CacheInterface,
             'httpClient' instanceof \ManaPHP\Http\ClientInterface,
@@ -37,7 +37,7 @@ namespace PHPSTORM_META {
             'identity' instanceof \ManaPHP\IdentityInterface,
             'random' instanceof \ManaPHP\Security\RandomInterface,
             'messageQueue' instanceof \ManaPHP\Messaging\QueueInterface,
-            'swordCompiler' instanceof \ManaPHP\Renderer\Engine\Sword\Compiler,
+            'swordCompiler' instanceof \ManaPHP\Html\Renderer\Engine\Sword\Compiler,
             'viewsCache' instanceof \ManaPHP\Caching\CacheInterface,
             'htmlPurifier' instanceof \ManaPHP\Html\PurifierInterface,
             'db' instanceof \ManaPHP\DbInterface,
@@ -53,7 +53,7 @@ namespace PHPSTORM_META {
             'app' instanceof \ManaPHP\ApplicationInterface,
             'mailer' instanceof \ManaPHP\Mailing\MailerInterface,
             'httpServer' instanceof \ManaPHP\Swoole\Http\ServerInterface,
-            'assetBundle' instanceof \ManaPHP\Renderer\AssetBundleInterface,
+            'assetBundle' instanceof \ManaPHP\Html\Renderer\AssetBundleInterface,
             'aclbuilder' instanceof \ManaPHP\Http\Authorization\AclBuilderInterface,
             'bosClient' instanceof \ManaPHP\Bos\ClientInterface,
             'wsPusher' instanceof \ManaPHP\Ws\PusherInterface,
@@ -83,7 +83,7 @@ namespace PHPSTORM_META {
             'session' instanceof \ManaPHP\Http\SessionInterface,
             'view' instanceof \ManaPHP\Mvc\ViewInterface,
             'logger' instanceof \ManaPHP\Logging\LoggerInterface,
-            'renderer' instanceof \ManaPHP\RendererInterface,
+            'renderer' instanceof \ManaPHP\Html\RendererInterface,
             'cache' instanceof \ManaPHP\Caching\CacheInterface,
             'ipcCache' instanceof \ManaPHP\Ipc\CacheInterface,
             'httpClient' instanceof \ManaPHP\Http\ClientInterface,
@@ -94,7 +94,7 @@ namespace PHPSTORM_META {
             'identity' instanceof \ManaPHP\IdentityInterface,
             'random' instanceof \ManaPHP\Security\RandomInterface,
             'messageQueue' instanceof \ManaPHP\Messaging\QueueInterface,
-            'swordCompiler' instanceof \ManaPHP\Renderer\Engine\Sword\Compiler,
+            'swordCompiler' instanceof \ManaPHP\Html\Renderer\Engine\Sword\Compiler,
             'viewsCache' instanceof \ManaPHP\Caching\CacheInterface,
             'htmlPurifier' instanceof \ManaPHP\Html\PurifierInterface,
             'db' instanceof \ManaPHP\DbInterface,
@@ -110,7 +110,7 @@ namespace PHPSTORM_META {
             'app' instanceof \ManaPHP\ApplicationInterface,
             'mailer' instanceof \ManaPHP\Mailing\MailerInterface,
             'httpServer' instanceof \ManaPHP\Swoole\Http\ServerInterface,
-            'assetBundle' instanceof \ManaPHP\Renderer\AssetBundleInterface,
+            'assetBundle' instanceof \ManaPHP\Html\Renderer\AssetBundleInterface,
             'aclbuilder' instanceof \ManaPHP\Http\Authorization\AclBuilderInterface,
             'bosClient' instanceof \ManaPHP\Bos\ClientInterface,
             'wsPusher' instanceof \ManaPHP\Ws\PusherInterface,
@@ -141,7 +141,7 @@ namespace PHPSTORM_META {
             'session' instanceof \ManaPHP\Http\SessionInterface,
             'view' instanceof \ManaPHP\Mvc\ViewInterface,
             'logger' instanceof \ManaPHP\Logging\LoggerInterface,
-            'renderer' instanceof \ManaPHP\RendererInterface,
+            'renderer' instanceof \ManaPHP\Html\RendererInterface,
             'cache' instanceof \ManaPHP\Caching\CacheInterface,
             'ipcCache' instanceof \ManaPHP\Ipc\CacheInterface,
             'httpClient' instanceof \ManaPHP\Http\ClientInterface,
@@ -152,7 +152,7 @@ namespace PHPSTORM_META {
             'identity' instanceof \ManaPHP\IdentityInterface,
             'random' instanceof \ManaPHP\Security\RandomInterface,
             'messageQueue' instanceof \ManaPHP\Messaging\QueueInterface,
-            'swordCompiler' instanceof \ManaPHP\Renderer\Engine\Sword\Compiler,
+            'swordCompiler' instanceof \ManaPHP\Html\Renderer\Engine\Sword\Compiler,
             'viewsCache' instanceof \ManaPHP\Caching\CacheInterface,
             'htmlPurifier' instanceof \ManaPHP\Html\PurifierInterface,
             'db' instanceof \ManaPHP\DbInterface,
@@ -168,7 +168,7 @@ namespace PHPSTORM_META {
             'app' instanceof \ManaPHP\ApplicationInterface,
             'mailer' instanceof \ManaPHP\Mailing\MailerInterface,
             'httpServer' instanceof \ManaPHP\Swoole\Http\ServerInterface,
-            'assetBundle' instanceof \ManaPHP\Renderer\AssetBundleInterface,
+            'assetBundle' instanceof \ManaPHP\Html\Renderer\AssetBundleInterface,
             'aclbuilder' instanceof \ManaPHP\Http\Authorization\AclBuilderInterface,
             'bosClient' instanceof \ManaPHP\Bos\ClientInterface,
             'wsPusher' instanceof \ManaPHP\Ws\PusherInterface,
@@ -330,9 +330,9 @@ namespace PHPSTORM_META {
  * @xglobal $view ManaPHP\Mvc\ViewInterface
  */
 /**
- * @var \ManaPHP\Mvc\ViewInterface $view
- * @var \ManaPHP\Di                $di
- * @var \ManaPHP\RendererInterface $renderer
+ * @var \ManaPHP\Mvc\ViewInterface      $view
+ * @var \ManaPHP\Di                     $di
+ * @var \ManaPHP\Html\RendererInterface $renderer
  */
 $view = null;
 $di = null;

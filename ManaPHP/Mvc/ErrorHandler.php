@@ -12,7 +12,7 @@ use ManaPHP\Exception;
  * @package ManaPHP\Mvc
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response
- * @property-read \ManaPHP\RendererInterface      $renderer
+ * @property-read \ManaPHP\Html\RendererInterface $renderer
  */
 class ErrorHandler extends Component implements ErrorHandlerInterface
 {

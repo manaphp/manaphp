@@ -1,16 +1,16 @@
 <?php
 
-namespace ManaPHP\Renderer\Engine;
+namespace ManaPHP\Html\Renderer\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Renderer\EngineInterface;
+use ManaPHP\Html\Renderer\EngineInterface;
 
 /**
- * Class ManaPHP\Renderer\Engine\Sword
+ * Class ManaPHP\Html\Renderer\Engine\Sword
  *
  * @package renderer\engine
  *
- * @property-read \ManaPHP\Renderer\Engine\Sword\Compiler $swordCompiler
+ * @property-read \ManaPHP\Html\Renderer\Engine\Sword\Compiler $swordCompiler
  */
 class Sword extends Component implements EngineInterface
 {

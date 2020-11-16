@@ -2,10 +2,10 @@
 
 namespace Tests;
 
-use ManaPHP\Renderer\Engine\Sword\Compiler;
+use ManaPHP\Html\Renderer\Engine\Sword\Compiler;
 use PHPUnit\Framework\TestCase;
 
-class RendererEngineSwordCompilerTest extends TestCase
+class HtmlRendererEngineSwordCompilerTest extends TestCase
 {
     /**
      * @var \ManaPHP\Renderer\Engine\Sword\Compiler

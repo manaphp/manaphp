@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Renderer\Engine\Sword;
+namespace ManaPHP\Html\Renderer\Engine\Sword;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\CreateDirectoryFailedException;
@@ -9,7 +9,7 @@ use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\Str;
 
 /**
- * Class ManaPHP\Renderer\Engine\Sword
+ * Class ManaPHP\Html\Renderer\Engine\Sword
  *
  * @package renderer\engine
  *

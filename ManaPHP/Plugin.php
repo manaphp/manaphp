@@ -20,7 +20,7 @@ use ManaPHP\Logging\Logger\LogCategorizable;
  * @property-read \ManaPHP\Http\AuthorizationInterface $authorization
  * @property-read \ManaPHP\Http\CookiesInterface       $cookies
  * @property-read \ManaPHP\Http\SessionInterface       $session
- * @property-read \ManaPHP\RendererInterface           $renderer
+ * @property-read \ManaPHP\Html\RendererInterface      $renderer
  */
 abstract class Plugin extends Component implements PluginInterface, LogCategorizable
 {

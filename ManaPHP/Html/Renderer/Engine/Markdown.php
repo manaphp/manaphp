@@ -7,7 +7,7 @@
 /** @noinspection NotOptimalIfConditionsInspection */
 /** @noinspection PhpInconsistentReturnPointsInspection */
 
-namespace ManaPHP\Renderer\Engine;
+namespace ManaPHP\Html\Renderer\Engine;
 
 #
 #
@@ -23,7 +23,7 @@ namespace ManaPHP\Renderer\Engine;
 #
 
 use ManaPHP\Component;
-use ManaPHP\Renderer\EngineInterface;
+use ManaPHP\Html\Renderer\EngineInterface;
 
 class Markdown extends Component implements EngineInterface
 {

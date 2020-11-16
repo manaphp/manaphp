@@ -1,7 +1,8 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Html;
 
+use ManaPHP\Component;
 use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\Coroutine\Mutex;
 use ManaPHP\Exception\FileNotFoundException;
@@ -29,15 +30,15 @@ class RendererContext implements Inseparable
 }
 
 /**
- * Class ManaPHP\Renderer
+ * Class ManaPHP\Html\Renderer
  *
  * @package renderer
- * @property-read \ManaPHP\RendererContext $_context
+ * @property-read \ManaPHP\Html\RendererContext $_context
  */
 class Renderer extends Component implements RendererInterface
 {
     /**
-     * @var \ManaPHP\Renderer\EngineInterface[]
+     * @var \ManaPHP\Html\Renderer\EngineInterface[]
      */
     protected $_resolved = [];
 
@@ -46,8 +47,8 @@ class Renderer extends Component implements RendererInterface
      */
     protected $_engines
         = [
-            '.phtml' => 'ManaPHP\Renderer\Engine\Php',
-            '.sword' => 'ManaPHP\Renderer\Engine\Sword'
+            '.phtml' => 'ManaPHP\Html\Renderer\Engine\Php',
+            '.sword' => 'ManaPHP\Html\Renderer\Engine\Sword'
         ];
 
     /**
@@ -68,10 +69,10 @@ class Renderer extends Component implements RendererInterface
     public function __construct($options = [])
     {
         if (isset($options['engines'])) {
-            $this->_engines = $options['engines'] ?: ['.phtml' => 'ManaPHP\Renderer\Engine\Php'];
+            $this->_engines = $options['engines'] ?: ['.phtml' => 'ManaPHP\Html\Renderer\Engine\Php'];
         }
 
-        $this->loader->registerFiles('@manaphp/Renderer/helpers.php');
+        $this->loader->registerFiles('@manaphp/Html/Renderer/helpers.php');
 
         $this->_mutex = new Mutex();
     }

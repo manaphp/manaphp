@@ -10,7 +10,7 @@ use ManaPHP\Helper\LocalFS;
  *
  * @package ManaPHP\Cli\Controllers
  *
- * @property-read \ManaPHP\Renderer\Engine\Sword\Compiler $swordCompiler
+ * @property-read \ManaPHP\Html\Renderer\Engine\Sword\Compiler $swordCompiler
  */
 class SwordController extends Controller
 {
