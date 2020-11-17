@@ -17,8 +17,8 @@ class Command extends \ManaPHP\Cli\Command
      */
     public function servicesAction($output = '@tmp/rpc_services')
     {
-        foreach (LocalFS::glob('@app/Commands/*Command.php') as $file) {
-            $className = 'App\\Commands\\' . basename($file, '.php');
+        foreach (LocalFS::glob('@app/Controllers/*Controller.php') as $file) {
+            $className = 'App\\Controllers\\' . basename($file, '.php');
 
             $methods = [];
             foreach (get_class_methods($className) as $method) {
@@ -29,10 +29,10 @@ class Command extends \ManaPHP\Cli\Command
 
             if ($methods !== []) {
                 $content = $this->_renderService($className, $methods);
-                $file = rtrim($output, '/') . '/' . basename($className, 'Command') . 'Services.php';
+                $file = rtrim($output, '/') . '/' . basename($className, 'Controller') . 'Service.php';
                 LocalFS::filePut($file, $content);
 
-                $serviceName = basename($className, 'Command') . 'Service';
+                $serviceName = basename($className, 'Controller') . 'Service';
                 $this->console->writeLn("`$serviceName` saved to `$file`");
             }
         }
@@ -46,7 +46,7 @@ class Command extends \ManaPHP\Cli\Command
      */
     protected function _renderService($class, $methods)
     {
-        $serviceName = basename($class, 'Command') . 'Service';
+        $serviceName = basename($class, 'Controller') . 'Service';
 
         $lines = file((new ReflectionClass($class))->getFileName());
         $content = <<<EOT
