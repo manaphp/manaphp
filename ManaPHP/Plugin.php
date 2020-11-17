@@ -22,7 +22,7 @@ use ManaPHP\Logging\Logger\LogCategorizable;
  * @property-read \ManaPHP\Http\SessionInterface           $session
  * @property-read \ManaPHP\Html\RendererInterface          $renderer
  */
-abstract class Plugin extends Component implements PluginInterface, LogCategorizable
+abstract class Plugin extends Component implements LogCategorizable
 {
     public function categorizeLog()
     {
