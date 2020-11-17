@@ -32,6 +32,7 @@ class Factory extends FactoryDefault
                 'dotenvCommand'         => 'ManaPHP\Configuration\Dotenv\Command',
                 'bosCommand'            => 'ManaPHP\Bos\Command',
                 'dbCommand'             => 'ManaPHP\Data\Db\Command',
+                'tracerCommand'         => 'ManaPHP\Event\Tracer\Command',
             ]
         );
     }
