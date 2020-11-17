@@ -9,6 +9,7 @@ if (is_file(__DIR__ . '/vendor/manaphp/framework/Loader.php')) {
 }
 
 $loader = new \ManaPHP\Loader();
+
 require __DIR__ . '/app/Application.php';
-$app = new \ManaPHP\Cli\Application($loader);
-$app->main();
+$app = new App\Application($loader);
+$app->cli();

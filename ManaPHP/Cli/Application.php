@@ -83,4 +83,9 @@ class Application extends \ManaPHP\Application implements LogCategorizable
 
         exit($this->_exit_code);
     }
+
+    public function cli()
+    {
+        $this->main();
+    }
 }

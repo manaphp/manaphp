@@ -61,6 +61,7 @@ class FactoryDefault extends Di
             'wsClient'         => 'ManaPHP\Ws\Client',
             'pubSub'           => 'ManaPHP\Messaging\PubSub\Adapter\Redis',
             'dataDump'         => 'ManaPHP\Debugging\DataDump',
+            'cliRunner'        => 'ManaPHP\Cli\Runner',
 
             'backtracePlugin' => 'ManaPHP\Debugging\BacktracePlugin',
             'debuggerPlugin'  => 'ManaPHP\Debugging\DebuggerPlugin',

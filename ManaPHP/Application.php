@@ -13,6 +13,7 @@ use ReflectionClass;
  *
  * @property-read \ManaPHP\Configuration\DotenvInterface $dotenv
  * @property-read \ManaPHP\ErrorHandlerInterface         $errorHandler
+ * @property-read \ManaPHP\Cli\RunnerInterface           $cliRunner
  */
 class Application extends Component implements ApplicationInterface, Unaspectable
 {
@@ -179,5 +180,10 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         if (!MANAPHP_CLI) {
             $this->fireEvent('request:begin');
         }
+    }
+
+    public function cli()
+    {
+        $this->cliRunner->run();
     }
 }
