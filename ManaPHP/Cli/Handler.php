@@ -115,10 +115,7 @@ class Handler extends Component implements HandlerInterface
             $actionName = null;
         }
 
-        if ($commandName === 'list') {
-            $commandName = 'help';
-            $actionName = $actionName ?: 'list';
-        } elseif ($commandName === null) {
+        if ($commandName === null) {
             $commandName = 'help';
         } elseif ($commandName === '--help' || $commandName === '-h') {
             $commandName = 'help';
