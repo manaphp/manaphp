@@ -47,7 +47,7 @@ class LoggerPlugin extends Plugin
     /**
      * @var string
      */
-    protected $_template = '@manaphp/Plugins/LoggerPlugin/Template.html';
+    protected $_template = '@manaphp/Logging/LoggerPlugin/Template.html';
 
     /**
      * @param array $options
