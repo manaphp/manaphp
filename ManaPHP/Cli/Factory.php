@@ -33,6 +33,7 @@ class Factory extends FactoryDefault
                 'bosCommand'            => 'ManaPHP\Bos\Command',
                 'dbCommand'             => 'ManaPHP\Data\Db\Command',
                 'listCommand'           => 'ManaPHP\Cli\Commands\ListCommand',
+                'debuggerCommand'       => 'ManaPHP\Debugging\DebuggerPlugin\Command',
             ]
         );
     }

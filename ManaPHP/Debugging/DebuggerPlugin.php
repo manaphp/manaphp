@@ -64,6 +64,11 @@ class DebuggerPlugin extends Plugin
     protected $_template = '@manaphp/Debugging/DebuggerPlugin/Template.html';
 
     /**
+     * @var bool
+     */
+    protected $_broadcast = true;
+
+    /**
      * @param array $options
      */
     public function __construct($options = [])
@@ -84,6 +89,10 @@ class DebuggerPlugin extends Plugin
 
         if (isset($options['template'])) {
             $this->_template = $options['template'];
+        }
+
+        if (isset($options['broadcast'])) {
+            $this->_broadcast = (bool)$options['broadcast'];
         }
 
         if ($this->_enabled !== false) {
@@ -129,6 +138,14 @@ class DebuggerPlugin extends Plugin
             $this->redisCache->set($this->_prefix . $key, $content, $this->_ttl);
         } else {
             LocalFS::filePut("@data/debuggerPlugin/{$key}.zip", $content);
+        }
+
+        if ($this->_broadcast) {
+            $key = implode(
+                ':',
+                ['__debuggerPlugin', $this->configure->id, $this->request->getClientIp(), $this->dispatcher->getPath()]
+            );
+            $this->redisCache->publish($key, $this->response->getHeader('X-Debugger-Link'));
         }
     }
 
