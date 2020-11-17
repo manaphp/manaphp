@@ -13,8 +13,6 @@ class Increment implements ExpressionInterface
     protected $_step;
 
     /**
-     * Increment constructor.
-     *
      * @param int|float $step
      */
     public function __construct($step = 1)

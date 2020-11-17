@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Caching;
 
-/**
- * Interface ManaPHP\Caching\CacheInterface
- *
- * @package cache
- */
 interface CacheInterface
 {
     /**

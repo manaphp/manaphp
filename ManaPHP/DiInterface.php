@@ -2,11 +2,6 @@
 
 namespace ManaPHP;
 
-/**
- * Interface ManaPHP\DiInterface
- *
- * @package di
- */
 interface DiInterface
 {
     /**

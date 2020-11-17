@@ -8,10 +8,6 @@ use ManaPHP\Rpc\Server\HandlerInterface;
 use Throwable;
 
 /**
- * Class Application
- *
- * @package ManaPHP\Rpc
- *
  * @property-read \ManaPHP\Rpc\ServerInterface     $rpcServer
  * @property-read \ManaPHP\Http\RouterInterface    $router
  * @property-read \ManaPHP\Http\ResponseInterface  $response

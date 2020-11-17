@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Http\Session;
 
-/**
- * Interface ManaPHP\Http\Session\BagInterface
- *
- * @package session
- */
 interface BagInterface
 {
     /**

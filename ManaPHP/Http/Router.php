@@ -39,10 +39,6 @@ class RouterContext
 }
 
 /**
- * Class ManaPHP\Http\Router
- *
- * @package router
- *
  * @property-read \ManaPHP\Http\RequestInterface    $request
  * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
  * @property-read \ManaPHP\Http\RouterContext       $_context
@@ -80,8 +76,6 @@ class Router extends Component implements RouterInterface
     protected $_regex_routes = [];
 
     /**
-     * Group constructor.
-     *
      * @param bool $useDefaultRoutes
      */
     public function __construct($useDefaultRoutes = true)

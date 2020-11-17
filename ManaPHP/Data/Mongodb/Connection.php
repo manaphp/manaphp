@@ -39,8 +39,6 @@ class Connection extends Component implements ConnectionInterface
     protected $_last_heartbeat;
 
     /**
-     * Connection constructor.
-     *
      * @param string $url
      */
     public function __construct($url)

@@ -33,8 +33,6 @@ class Dotenv extends Component implements DotenvInterface
     protected $_ttl = 1;
 
     /**
-     * DotEnv constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

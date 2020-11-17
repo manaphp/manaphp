@@ -19,8 +19,6 @@ class Redis extends Component implements SettingsInterface
     protected $_cache;
 
     /**
-     * Settings constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

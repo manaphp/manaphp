@@ -6,11 +6,6 @@ use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Request\File\Exception as FileException;
 
-/**
- * Class ManaPHP\Http\Request\File
- *
- * @package request
- */
 class File extends Component implements FileInterface
 {
     /**
@@ -19,8 +14,6 @@ class File extends Component implements FileInterface
     protected $_file;
 
     /**
-     * \ManaPHP\Http\Request\File constructor
-     *
      * @param array $file
      */
     public function __construct($file)

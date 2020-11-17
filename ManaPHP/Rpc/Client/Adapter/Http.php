@@ -19,8 +19,6 @@ class Http extends Client
     protected $_client;
 
     /**
-     * JsonRpc constructor.
-     *
      * @param array $options
      */
     public function __construct($options)

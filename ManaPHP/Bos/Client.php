@@ -15,8 +15,6 @@ class Client extends Component implements ClientInterface
     protected $_endpoint;
 
     /**
-     * Client constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

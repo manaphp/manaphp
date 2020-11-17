@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Http\Router;
 
-/**
- * Interface ManaPHP\Http\Router\RouteInterface
- *
- * @package router
- */
 interface RouteInterface
 {
     /**

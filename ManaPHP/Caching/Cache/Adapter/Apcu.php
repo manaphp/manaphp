@@ -5,11 +5,6 @@ namespace ManaPHP\Caching\Cache\Adapter;
 use ManaPHP\Caching\Cache;
 use ManaPHP\Exception\RuntimeException;
 
-/**
- * Class ManaPHP\Caching\Cache\Adapter\Apcu
- *
- * @package cache\adapter
- */
 class Apcu extends Cache
 {
     /**
@@ -18,8 +13,6 @@ class Apcu extends Cache
     protected $_prefix = 'cache:';
 
     /**
-     * Cache constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

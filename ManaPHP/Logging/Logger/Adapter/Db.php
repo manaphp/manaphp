@@ -5,11 +5,6 @@ namespace ManaPHP\Logging\Logger\Adapter;
 use Exception;
 use ManaPHP\Logging\Logger;
 
-/**
- * Class ManaPHP\Logging\Logger\Adapter\Db
- *
- * @package logger
- */
 class Db extends Logger
 {
     /**
@@ -23,8 +18,6 @@ class Db extends Logger
     protected $_table = 'manaphp_log';
 
     /**
-     * Db constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

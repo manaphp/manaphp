@@ -19,8 +19,6 @@ class Row implements ArrayAccess, Serializable, JsonSerializable
     protected $_row;
 
     /**
-     * Row constructor.
-     *
      * @param \ManaPHP\Data\Model\SerializeNormalizable $model
      * @param array                                     $row
      */

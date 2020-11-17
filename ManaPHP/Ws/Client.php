@@ -55,8 +55,6 @@ class Client extends Component implements ClientInterface
     protected $_pool_size = 4;
 
     /**
-     * Client constructor.
-     *
      * @param array $options
      */
     public function __construct($options)

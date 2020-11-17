@@ -7,8 +7,6 @@ use ManaPHP\Exception;
 class NonCloneableException extends Exception
 {
     /**
-     * NonCloneableException constructor.
-     *
      * @param object $object
      */
     public function __construct($object)

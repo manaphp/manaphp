@@ -13,8 +13,6 @@ class Decrement implements ExpressionInterface
     public $_step;
 
     /**
-     * Decrement constructor.
-     *
      * @param int|float $step
      */
     public function __construct($step = 1)

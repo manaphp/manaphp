@@ -45,8 +45,6 @@ class Request
     public $start_time;
 
     /**
-     * Request constructor.
-     *
      * @param string|array $url
      * @param callable     $callbacks
      * @param string       $method

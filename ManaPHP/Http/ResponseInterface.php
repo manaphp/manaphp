@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Http;
 
-/**
- * Interface ManaPHP\Http\ResponseInterface
- *
- * @package response
- */
 interface ResponseInterface
 {
     /**

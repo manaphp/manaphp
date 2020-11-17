@@ -12,8 +12,6 @@ class Redis extends Logger
     protected $_key;
 
     /**
-     * Redis constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

@@ -39,8 +39,6 @@ class DebuggerPluginContext
 }
 
 /**
- * Class DebuggerPlugin
- *
  * @property-read \ManaPHP\Debugging\DebuggerPluginContext $_context
  */
 class DebuggerPlugin extends Plugin
@@ -66,8 +64,6 @@ class DebuggerPlugin extends Plugin
     protected $_template = '@manaphp/Debugging/DebuggerPlugin/Template.html';
 
     /**
-     * DebuggerPlugin constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

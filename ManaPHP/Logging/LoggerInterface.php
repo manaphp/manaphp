@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Logging;
 
-/**
- * Interface ManaPHP\Logging\LoggerInterface
- *
- * @package logger
- */
 interface LoggerInterface
 {
     /**

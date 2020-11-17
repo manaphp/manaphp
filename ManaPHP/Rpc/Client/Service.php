@@ -25,8 +25,6 @@ class Service extends \ManaPHP\Service
     protected $_parameters;
 
     /**
-     * Service constructor.
-     *
      * @param string|array $options
      */
     public function __construct($options = [])

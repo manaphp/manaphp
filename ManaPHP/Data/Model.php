@@ -32,9 +32,6 @@ use ReflectionClass;
 use Serializable;
 
 /**
- * Class ManaPHP\Data\Model
- *
- * @package ManaPHP
  * @property-read \ManaPHP\Di $_di
  */
 abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonSerializable, Unaspectable
@@ -56,8 +53,6 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     protected $_last_refresh = 0;
 
     /**
-     * \ManaPHP\Data\Model constructor
-     *
      * @param array $data
      */
     public function __construct($data = [])

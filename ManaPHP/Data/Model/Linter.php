@@ -9,9 +9,6 @@ use ReflectionMethod;
 use ReflectionProperty;
 
 /**
- * Class Linter
- *
- * @package ManaPHP\Data\Model
  * @property-read \ManaPHP\Data\Db\Model\MetadataInterface $modelsMetadata
  */
 class Linter extends Component
@@ -35,8 +32,6 @@ class Linter extends Component
     protected $_model;
 
     /**
-     * Linter constructor.
-     *
      * @param string|\ManaPHP\Data\Model $model
      */
     public function __construct($model)
@@ -48,7 +43,6 @@ class Linter extends Component
     }
 
     /**
-     *
      * @return array
      */
     public function lintMethodFields()

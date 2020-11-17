@@ -7,10 +7,6 @@ use ManaPHP\Helper\LocalFS;
 use ReflectionClass;
 
 /**
- * Class ManaPHP\Application
- *
- * @package application
- *
  * @property-read \ManaPHP\Configuration\DotenvInterface $dotenv
  * @property-read \ManaPHP\ErrorHandlerInterface         $errorHandler
  * @property-read \ManaPHP\Cli\RunnerInterface           $cliRunner
@@ -23,8 +19,6 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
     protected $_class_file;
 
     /**
-     * Application constructor.
-     *
      * @param \ManaPHP\Loader $loader
      */
     public function __construct($loader = null)

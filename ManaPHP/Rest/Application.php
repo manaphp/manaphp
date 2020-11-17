@@ -6,11 +6,6 @@ use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\Response;
 use Throwable;
 
-/**
- * Class ManaPHP\Mvc\Application
- *
- * @package application
- */
 class Application extends \ManaPHP\Http\Application
 {
     public function getFactory()

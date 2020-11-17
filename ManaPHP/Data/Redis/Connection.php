@@ -66,8 +66,6 @@ class Connection extends Component
     protected $_multi = false;
 
     /**
-     * Connection constructor.
-     *
      * @param string|\ManaPHP\Data\Redis\Connection $url
      *
      * @throws \ManaPHP\Exception\DsnFormatException

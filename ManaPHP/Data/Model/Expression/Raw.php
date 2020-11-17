@@ -13,8 +13,6 @@ class Raw implements ExpressionInterface
     protected $_expression;
 
     /**
-     * Raw constructor.
-     *
      * @param string|array $expression
      */
     public function __construct($expression)

@@ -14,9 +14,6 @@ class ResponseContext
 }
 
 /**
- * Class Response
- *
- * @package ManaPHP\Socket
  * @property-read \ManaPHP\Socket\ResponseContext $_context
  */
 class Response extends Component implements ResponseInterface

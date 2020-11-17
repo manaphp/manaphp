@@ -3,10 +3,6 @@
 namespace ManaPHP\Http\Acl;
 
 /**
- * Class AclCommand
- *
- * @package ManaPHP\Cli\Commands
- *
  * @property-read \ManaPHP\Http\Acl\BuilderInterface $aclBuilder
  */
 class Command extends \ManaPHP\Cli\Command

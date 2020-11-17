@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Helper;
 
-/**
- * Class ManaPHP\Helper\Str
- *
- * @package text
- */
 class Str
 {
     /**

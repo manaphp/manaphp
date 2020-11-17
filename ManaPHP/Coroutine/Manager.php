@@ -13,8 +13,6 @@ class Manager extends Component implements ManagerInterface
     protected $_option;
 
     /**
-     * Manager constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

@@ -5,11 +5,6 @@ namespace ManaPHP\Data\Db\Model\Metadata\Adapter;
 use ManaPHP\Data\Db\Model\Metadata;
 use ManaPHP\Exception\ExtensionNotInstalledException;
 
-/**
- * Class ManaPHP\Mvc\Model\Metadata\Adapter\Apcu
- *
- * @package modelsMetadata\adapter
- */
 class Apcu extends Metadata
 {
     /**
@@ -23,8 +18,6 @@ class Apcu extends Metadata
     protected $_ttl = 86400;
 
     /**
-     * Apcu constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

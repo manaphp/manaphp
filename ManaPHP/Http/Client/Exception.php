@@ -10,8 +10,6 @@ class Exception extends \ManaPHP\Exception
     protected $_response;
 
     /**
-     * Exception constructor.
-     *
      * @param string|array                  $message
      * @param \ManaPHP\Http\Client\Response $response
      * @param \Exception|null               $previous

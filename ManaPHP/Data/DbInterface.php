@@ -4,11 +4,6 @@ namespace ManaPHP\Data;
 
 use PDO;
 
-/**
- * Interface ManaPHP\Data\DbInterface
- *
- * @package db
- */
 interface DbInterface
 {
     /**

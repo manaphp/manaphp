@@ -5,17 +5,11 @@ namespace ManaPHP\Rpc\Server\Adapter;
 use ManaPHP\Helper\Ip;
 
 /**
- * Class Php
- *
- * @package ManaPHP\Rpc\Server\Adapter
- *
  * @property-read \ManaPHP\Http\RouterInterface $router
  */
 class Php extends Fpm
 {
     /**
-     * Fpm constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

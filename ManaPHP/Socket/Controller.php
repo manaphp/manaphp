@@ -3,9 +3,6 @@
 namespace ManaPHP\Socket;
 
 /**
- * Class Controller
- *
- * @package ManaPHP\Socket
  * @property-read \ManaPHP\Socket\ServerInterface   $socketServer
  * @property-read \ManaPHP\Socket\ResponseInterface $response
  * @property-read \ManaPHP\Socket\RequestInterface  $request

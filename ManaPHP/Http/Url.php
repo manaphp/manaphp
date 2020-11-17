@@ -5,9 +5,6 @@ namespace ManaPHP\Http;
 use ManaPHP\Component;
 
 /**
- * Class ManaPHP\Http\Url
- *
- * @package url
  * @property-read \ManaPHP\Http\RequestInterface $request
  * @property-read \ManaPHP\Http\RouterInterface  $router
  *

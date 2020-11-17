@@ -4,16 +4,8 @@ namespace ManaPHP\Di;
 
 use ManaPHP\Di;
 
-/**
- * Class ManaPHP\Di\FactoryDefault
- *
- * @package di
- */
 class FactoryDefault extends Di
 {
-    /**
-     * \ManaPHP\Di\FactoryDefault constructor
-     */
     public function __construct()
     {
         parent::__construct();

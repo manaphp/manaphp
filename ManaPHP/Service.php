@@ -4,16 +4,9 @@ namespace ManaPHP;
 
 use ManaPHP\Logging\Logger\LogCategorizable;
 
-/**
- * Class Service
- *
- * @package ManaPHP
- */
 class Service extends Component implements LogCategorizable
 {
     /**
-     * Service constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

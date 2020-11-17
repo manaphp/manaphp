@@ -5,8 +5,6 @@ namespace ManaPHP\Http;
 use ManaPHP\Http\Server\HandlerInterface;
 
 /**
- * Class Application
- *
  * @property-read \ManaPHP\Http\ServerInterface        $httpServer
  * @property-read \ManaPHP\Http\RequestInterface       $request
  * @property-read \ManaPHP\Http\ResponseInterface      $response
@@ -15,7 +13,6 @@ use ManaPHP\Http\Server\HandlerInterface;
  * @property-read \ManaPHP\Http\SessionInterface       $session
  * @property-read \ManaPHP\Http\AuthorizationInterface $authorization
  *
- * @package ManaPHP\Http
  * @method void authorize()
  */
 abstract class Application extends \ManaPHP\Application implements HandlerInterface

@@ -9,10 +9,6 @@ use ManaPHP\Event\EventArgs;
 use Swoole\Coroutine;
 
 /**
- * Class ManaPHP\Component
- *
- * @package component
- *
  * @property-read \ManaPHP\AliasInterface                  $alias
  * @property-read \ManaPHP\Event\ManagerInterface          $eventsManager
  * @property-read \ManaPHP\Logging\LoggerInterface         $logger

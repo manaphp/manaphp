@@ -14,12 +14,6 @@ use ManaPHP\Logging\Logger;
 //$template myTemplate,"/var/log/test/%PROGRAMNAME%.log"
 //user.*  ?myTemplate
 
-/**
- * Class Syslog
- *
- * @package ManaPHP\Logging\Logger\Adapter
- *
- */
 class Syslog extends Logger
 {
     /**
@@ -57,8 +51,6 @@ class Syslog extends Logger
     protected $_socket;
 
     /**
-     * Syslog constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

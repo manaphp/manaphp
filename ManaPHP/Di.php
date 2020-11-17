@@ -9,10 +9,6 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 
 /**
- * Class ManaPHP\Di
- *
- * @package  di
- *
  * @property-read \ManaPHP\AliasInterface                      $alias
  * @property-read \ManaPHP\Http\DispatcherInterface            $dispatcher
  * @property-read \ManaPHP\Http\RouterInterface                $router

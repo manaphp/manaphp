@@ -4,11 +4,6 @@ namespace ManaPHP\Event;
 
 use ManaPHP\Component;
 
-/**
- * Class ManaPHP\Event\Manager
- *
- * @package eventsManager
- */
 class Manager extends Component implements ManagerInterface
 {
     /**

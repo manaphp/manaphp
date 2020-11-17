@@ -4,11 +4,6 @@ namespace ManaPHP\Logging\Logger\Adapter;
 
 use ManaPHP\Logging\Logger;
 
-/**
- * Class ManaPHP\Logging\Logger\Adapter\File
- *
- * @package logger
- */
 class File extends Logger
 {
     /**
@@ -27,8 +22,6 @@ class File extends Logger
     protected $_tail = PHP_EOL;
 
     /**
-     * \ManaPHP\Logging\Logger\Adapter\File constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

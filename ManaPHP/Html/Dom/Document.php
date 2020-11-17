@@ -7,11 +7,6 @@ use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Html\Dom\Document\Exception as DocumentException;
 
-/**
- * Class Document
- *
- * @package ManaPHP\Html\Dom
- */
 class Document extends Component
 {
     /**
@@ -45,8 +40,6 @@ class Document extends Component
     protected $_errors = [];
 
     /**
-     * Document constructor.
-     *
      * @param string $str
      * @param string $url
      */

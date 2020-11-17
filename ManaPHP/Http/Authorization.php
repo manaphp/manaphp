@@ -19,10 +19,6 @@ class AuthorizationContext
 }
 
 /**
- * Class Authorization
- *
- * @package ManaPHP
- *
  * @property-read \ManaPHP\Http\DispatcherInterface  $dispatcher
  * @property-read \ManaPHP\Http\RouterInterface      $router
  * @property-read \ManaPHP\Http\RequestInterface     $request
@@ -319,7 +315,6 @@ class Authorization extends Component implements AuthorizationInterface
     }
 
     /**
-     *
      * @throws \ManaPHP\Identity\NoCredentialException
      * @throws \ManaPHP\Exception\ForbiddenException
      */

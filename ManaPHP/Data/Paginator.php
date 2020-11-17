@@ -7,10 +7,6 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\PreconditionException;
 
 /**
- * Class ManaPHP\Data\Paginator
- *
- * @package paginator
- *
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class Paginator extends Component implements PaginatorInterface

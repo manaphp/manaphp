@@ -4,11 +4,6 @@ namespace ManaPHP\Http\Router;
 
 use ManaPHP\Exception\InvalidFormatException;
 
-/**
- * Class ManaPHP\Http\Router\Route
- *
- * @package router
- */
 class Route implements RouteInterface
 {
     /**
@@ -32,8 +27,6 @@ class Route implements RouteInterface
     protected $_method;
 
     /**
-     * \ManaPHP\Http\Router\Route constructor
-     *
      * @param string       $pattern
      * @param string|array $paths
      * @param string       $method

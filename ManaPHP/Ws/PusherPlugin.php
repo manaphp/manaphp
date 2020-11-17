@@ -6,10 +6,6 @@ use ManaPHP\Event\EventArgs;
 use ManaPHP\Plugin;
 
 /**
- * Class PusherPlugin
- *
- * @package ManaPHP\Ws
- *
  * @property-read \ManaPHP\Ws\ServerInterface $wsServer
  */
 class PusherPlugin extends Plugin
@@ -45,8 +41,6 @@ class PusherPlugin extends Plugin
     protected $_worker_id;
 
     /**
-     * PusherPlugin constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

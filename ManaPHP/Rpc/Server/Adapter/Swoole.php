@@ -26,9 +26,6 @@ class SwooleContext
 }
 
 /**
- * Class Server
- *
- * @package ManaPHP\Ws
  * @property-read \ManaPHP\Rpc\Server\Adapter\SwooleContext $_context
  */
 class Swoole extends \ManaPHP\Rpc\Server
@@ -59,8 +56,6 @@ class Swoole extends \ManaPHP\Rpc\Server
     protected $_closeCoroutine = [];
 
     /**
-     * Server constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

@@ -7,11 +7,6 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Exception\NotSupportedException;
 
-/**
- * Class Redis
- *
- * @package ManaPHP
- */
 class Redis extends Component implements RedisInterface
 {
     const TYPE_MASTER = 1;
@@ -53,8 +48,6 @@ class Redis extends Component implements RedisInterface
     protected $_connection;
 
     /**
-     * Redis constructor.
-     *
      * @param string $uri
      */
     public function __construct($uri = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0')

@@ -8,11 +8,6 @@ use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Imaging\Image;
 
-/**
- * Class ManaPHP\Imaging\Image\Adapter\Gd
- *
- * @package image\adapter
- */
 class Gd extends Image
 {
     /**

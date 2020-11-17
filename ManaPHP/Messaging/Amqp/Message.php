@@ -21,8 +21,6 @@ class Message implements JsonSerializable
     protected $_envelope;
 
     /**
-     * Message constructor.
-     *
      * @param \ManaPHP\Messaging\Amqp $amqp
      * @param string                  $queue
      * @param \AMQPEnvelope           $envelope

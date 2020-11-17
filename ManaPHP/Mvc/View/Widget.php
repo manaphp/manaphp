@@ -6,10 +6,6 @@ use ManaPHP\Component;
 use ManaPHP\Logging\Logger\LogCategorizable;
 
 /**
- * Class ManaPHP\Mvc\View\Widget
- *
- * @package widget
- *
  * @property-read \ManaPHP\Http\UrlInterface      $url
  * @property-read \ManaPHP\Caching\CacheInterface $cache
  * @property-read \ManaPHP\Html\RendererInterface $renderer

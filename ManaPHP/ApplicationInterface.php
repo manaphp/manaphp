@@ -2,11 +2,6 @@
 
 namespace ManaPHP;
 
-/**
- * Interface ManaPHP\ApplicationInterface
- *
- * @package application
- */
 interface ApplicationInterface
 {
     /**

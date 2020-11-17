@@ -27,8 +27,6 @@ class ArrCache implements MCacheInterface
     protected $_cache_m = [];
 
     /**
-     * SMCache constructor.
-     *
      * @param int    $ttl
      * @param string $prefix
      */

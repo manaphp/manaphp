@@ -24,8 +24,6 @@ class Channel
     protected $_queue;
 
     /**
-     * Channel constructor.
-     *
      * @param int $capacity
      */
     public function __construct($capacity)

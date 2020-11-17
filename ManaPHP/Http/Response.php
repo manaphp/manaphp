@@ -47,10 +47,6 @@ class ResponseContext
 }
 
 /**
- * Class ManaPHP\Http\Response
- *
- * @package response
- *
  * @property-read \ManaPHP\Http\RequestInterface $request
  * @property-read \ManaPHP\Http\UrlInterface     $url
  * @property-read \ManaPHP\Http\RouterInterface  $router

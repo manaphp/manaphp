@@ -6,11 +6,6 @@ use ManaPHP\Cli\Request\Exception as RequestException;
 use ManaPHP\Component;
 use ReflectionMethod;
 
-/**
- * Class ManaPHP\Cli\Request
- *
- * @package ManaPHP\Cli
- */
 class Request extends Component implements RequestInterface
 {
     /**

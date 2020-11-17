@@ -29,8 +29,6 @@ class Query extends \ManaPHP\Data\Query
     protected $_filters = [];
 
     /**
-     * Query constructor.
-     *
      * @param \ManaPHP\Data\MongodbInterface|string $db
      */
     public function __construct($db = 'mongodb')

@@ -14,8 +14,6 @@ class RequestIdPlugin extends Plugin
     protected $_enabled = true;
 
     /**
-     * RequestIdPlugin constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

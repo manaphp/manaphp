@@ -6,10 +6,6 @@ use ManaPHP\Validating\Validator\ValidateFailedException;
 use ReflectionMethod;
 
 /**
- * Class Invoker
- *
- * @package ManaPHP
- *
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class Invoker extends Component implements InvokerInterface

@@ -42,8 +42,6 @@ class Request implements JsonSerializable
     public $remote_ip;
 
     /**
-     * Request constructor.
-     *
      * @param string       $method
      * @param string|array $url
      * @param string|array $body

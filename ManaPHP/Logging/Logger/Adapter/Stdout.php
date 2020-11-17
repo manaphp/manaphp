@@ -4,11 +4,6 @@ namespace ManaPHP\Logging\Logger\Adapter;
 
 use ManaPHP\Logging\Logger;
 
-/**
- * Class ManaPHP\Logging\Logger\Adapter\Stdout
- *
- * @package logger
- */
 class Stdout extends Logger
 {
     /**
@@ -17,8 +12,6 @@ class Stdout extends Logger
     protected $_format = '[:date][:level][:category][:location] :message';
 
     /**
-     * Stdout constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

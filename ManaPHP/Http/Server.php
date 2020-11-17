@@ -6,10 +6,6 @@ use ManaPHP\Aop\Unaspectable;
 use ManaPHP\Component;
 
 /**
- * Class Server
- *
- * @package ManaPHP\Http
- *
  * @property-read \ManaPHP\Http\RequestInterface         $request
  * @property-read \ManaPHP\Http\Globals\ManagerInterface $globalsManager
  */
@@ -46,8 +42,6 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
     protected $_doc_root;
 
     /**
-     * Server constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

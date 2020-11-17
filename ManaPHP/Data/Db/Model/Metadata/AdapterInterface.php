@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Data\Db\Model\Metadata;
 
-/**
- * Interface ManaPHP\Mvc\Model\Metadata\AdapterInterface
- *
- * @package modelsMetadata
- */
 interface AdapterInterface
 {
     /**

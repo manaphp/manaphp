@@ -3,10 +3,6 @@
 namespace ManaPHP\Configuration\Dotenv;
 
 /**
- * Class DotenvCommand
- *
- * @package App\Cli\Commands
- *
  * @property-read \ManaPHP\Configuration\DotenvInterface $dotenv
  */
 class Command extends \ManaPHP\Cli\Command

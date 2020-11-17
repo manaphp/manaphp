@@ -2,11 +2,6 @@
 
 namespace ManaPHP;
 
-/**
- * Class ManaPHP\Loader
- *
- * @package loader
- */
 class Loader
 {
     /**
@@ -25,7 +20,6 @@ class Loader
     protected $_files = [];
 
     /**
-     * Loader constructor.
      */
     public function __construct()
     {

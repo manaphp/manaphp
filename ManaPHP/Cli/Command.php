@@ -6,10 +6,6 @@ use ManaPHP\Http\Dispatcher\NotFoundActionException;
 use ReflectionMethod;
 
 /**
- * Class ManaPHP\Cli\Command
- *
- * @package controller
- *
  * @property-read \ManaPHP\Caching\CacheInterface   $viewsCache
  * @property-read \ManaPHP\Messaging\QueueInterface $msgQueue
  * @property-read \ManaPHP\Cli\ConsoleInterface     $console

@@ -17,8 +17,6 @@ class BelongsTo extends Relation
     protected $_thatField;
 
     /**
-     * Relation constructor.
-     *
      * @param string $thisModel
      * @param string $thisField
      * @param string $thatModel

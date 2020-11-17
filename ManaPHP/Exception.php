@@ -2,11 +2,6 @@
 
 namespace ManaPHP;
 
-/**
- * Class ManaPHP\Exception
- *
- * @package exception
- */
 class Exception extends \Exception
 {
     /**
@@ -20,8 +15,6 @@ class Exception extends \Exception
     protected $_json;
 
     /**
-     * Exception constructor.
-     *
      * @param string|array $message
      * @param int          $code
      * @param \Exception   $previous

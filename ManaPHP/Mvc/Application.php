@@ -7,9 +7,6 @@ use ManaPHP\Http\Response;
 use Throwable;
 
 /**
- * Class ManaPHP\Mvc\Application
- *
- * @package application
  * @property-read \ManaPHP\Mvc\ViewInterface $view
  */
 class Application extends \ManaPHP\Http\Application

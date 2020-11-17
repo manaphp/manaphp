@@ -5,9 +5,6 @@ namespace ManaPHP\Identity\Adapter;
 use ManaPHP\Identity;
 
 /**
- * Class Session
- *
- * @package ManaPHP\Identity\Adapter
  * @property-read \ManaPHP\Http\SessionInterface $session
  */
 class Session extends Identity

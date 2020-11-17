@@ -53,8 +53,6 @@ class Engine extends Component implements EngineInterface
     protected $_owner;
 
     /**
-     * Client constructor.
-     *
      * @param array $options
      */
     public function __construct($options)

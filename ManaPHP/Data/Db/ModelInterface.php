@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Data\Db;
 
-/**
- * Interface ManaPHP\Mvc\ModelInterface
- *
- * @package model
- */
 interface ModelInterface extends \ManaPHP\Data\ModelInterface
 {
     /**

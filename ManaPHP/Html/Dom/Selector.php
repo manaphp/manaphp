@@ -17,8 +17,6 @@ class Selector
     protected $_node;
 
     /**
-     * Selector constructor.
-     *
      * @param string|\ManaPHP\Html\Dom\Document $document
      * @param \DOMNode                          $node
      */

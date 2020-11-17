@@ -5,9 +5,6 @@ namespace ManaPHP\Cli\Commands;
 use ManaPHP\Cli\Command;
 
 /**
- * Class FiddlerCommand
- *
- * @package ManaPHP\Cli\Commands
  * @property-read \ManaPHP\Debugging\FiddlerPlugin $fiddlerPlugin
  */
 class FiddlerCommand extends Command

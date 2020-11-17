@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Ws;
 
-/**
- * Class Dispatcher
- *
- * @package ManaPHP\Ws
- */
 class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
 {
     /**

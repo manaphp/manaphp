@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Http;
 
-/**
- * Interface ManaPHP\Http\RequestInterface
- *
- * @package request
- */
 interface RequestInterface
 {
     /**
@@ -134,7 +129,6 @@ interface RequestInterface
     public function isPost();
 
     /**
-     *
      * Checks whether HTTP method is GET.
      *
      * @return bool

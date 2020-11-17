@@ -5,8 +5,6 @@ namespace ManaPHP\Caching\Cache\Adapter;
 use ManaPHP\Caching\Cache;
 
 /**
- * Class ManaPHP\Caching\Cache\Adapter\Db
- *
  * CREATE TABLE `manaphp_cache` (
  * `hash` char(32) CHARACTER SET ascii NOT NULL,
  * `key` varchar(255) NOT NULL,
@@ -16,7 +14,6 @@ use ManaPHP\Caching\Cache;
  * PRIMARY KEY (`hash`)
  * ) ENGINE=InnoDB DEFAULT CHARSET=utf8
  *
- * @package cache\adapter
  */
 class Db extends Cache
 {
@@ -31,8 +28,6 @@ class Db extends Cache
     protected $_source = 'manaphp_cache';
 
     /**
-     * Db constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

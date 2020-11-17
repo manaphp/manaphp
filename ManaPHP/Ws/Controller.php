@@ -3,9 +3,6 @@
 namespace ManaPHP\Ws;
 
 /**
- * Class Controller
- *
- * @package ManaPHP\Ws
  * @property-read \ManaPHP\Ws\ServerInterface     $wsServer
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response

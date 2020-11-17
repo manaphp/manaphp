@@ -18,8 +18,6 @@ class Pusher extends Component implements PusherInterface
     protected $_endpoint;
 
     /**
-     * Pusher constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

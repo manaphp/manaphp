@@ -5,9 +5,6 @@ namespace ManaPHP\Identity\Adapter;
 use ManaPHP\Identity;
 
 /**
- * Class Jwt
- *
- * @package ManaPHP\Identity\Adapter
  * @property-read \ManaPHP\Http\RequestInterface    $request
  * @property-read \ManaPHP\Token\ScopedJwtInterface $scopedJwt
  */
@@ -19,8 +16,6 @@ class Jwt extends Identity
     protected $_scope;
 
     /**
-     * Jwt constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

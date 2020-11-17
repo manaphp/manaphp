@@ -5,11 +5,6 @@ namespace ManaPHP\Data\Db\Model;
 use ManaPHP\Component;
 use ManaPHP\Data\Db;
 
-/**
- * Class ManaPHP\Mvc\Model\Metadata
- *
- * @package modelsMetadata
- */
 abstract class Metadata extends Component implements MetadataInterface, Metadata\AdapterInterface
 {
     /**

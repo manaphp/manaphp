@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Data;
 
-/**
- * Interface ManaPHP\Data\PaginatorInterface
- *
- * @package paginator
- */
 interface PaginatorInterface
 {
     /**

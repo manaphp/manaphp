@@ -13,8 +13,6 @@ class Cookie extends Session
     protected $_key;
 
     /**
-     * Cookie constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

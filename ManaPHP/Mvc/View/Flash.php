@@ -15,9 +15,6 @@ class FlashContext
 }
 
 /**
- * Class ManaPHP\Mvc\View\Flash
- *
- * @package flash
  * @property-read \ManaPHP\Mvc\View\FlashContext $_context
  */
 abstract class Flash extends Component implements FlashInterface
@@ -28,8 +25,6 @@ abstract class Flash extends Component implements FlashInterface
     protected $_css;
 
     /**
-     * \ManaPHP\Flash constructor
-     *
      * @param array $css
      */
     public function __construct($css = [])

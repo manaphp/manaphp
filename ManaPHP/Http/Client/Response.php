@@ -43,8 +43,6 @@ class Response implements JsonSerializable
     public $body;
 
     /**
-     * Response constructor.
-     *
      * @param \ManaPHP\Http\Client\Request $request
      * @param array                        $headers
      * @param string                       $body

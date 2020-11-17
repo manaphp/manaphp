@@ -2,9 +2,6 @@
 
 namespace ManaPHP;
 
-/**
- * Interface ManaPHP\IdentityInterface
- */
 interface IdentityInterface
 {
     /**

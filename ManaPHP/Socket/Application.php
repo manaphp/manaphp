@@ -5,9 +5,6 @@ namespace ManaPHP\Socket;
 use ManaPHP\Socket\Server\HandlerInterface;
 
 /**
- * Class Application
- *
- * @package ManaPHP\Socket
  * @property-read \ManaPHP\Socket\ServerInterface   $socketServer
  * @property-read \ManaPHP\Socket\RequestInterface  $request
  * @property-read \ManaPHP\Socket\ResponseInterface $response

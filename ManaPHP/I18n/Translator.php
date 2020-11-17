@@ -13,8 +13,6 @@ class TranslatorContext
 }
 
 /**
- *
- * @package i18n
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\I18n\TranslatorContext $_context
  */
@@ -41,8 +39,6 @@ class Translator extends Component implements TranslatorInterface
     protected $_templates;
 
     /**
-     * translator constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

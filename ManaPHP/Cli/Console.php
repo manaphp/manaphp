@@ -9,11 +9,6 @@ use Serializable;
 use Throwable;
 use function getenv;
 
-/**
- * Class ManaPHP\Cli\Console
- *
- * @package ManaPHP\Cli
- */
 class Console extends Component implements ConsoleInterface
 {
     /**

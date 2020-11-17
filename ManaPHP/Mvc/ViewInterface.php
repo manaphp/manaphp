@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Mvc;
 
-/**
- * Interface ManaPHP\Mvc\ViewInterface
- *
- * @package view
- */
 interface ViewInterface
 {
     /**

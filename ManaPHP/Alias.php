@@ -5,11 +5,6 @@ namespace ManaPHP;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
 
-/**
- * Class ManaPHP\Alias
- *
- * @package alias
- */
 class Alias extends Component implements AliasInterface
 {
     /**
@@ -17,10 +12,6 @@ class Alias extends Component implements AliasInterface
      */
     protected $_aliases = [];
 
-    /**
-     * Alias constructor.
-     *
-     */
     public function __construct()
     {
         $this->set('@manaphp', __DIR__);

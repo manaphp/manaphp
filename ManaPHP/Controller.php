@@ -7,10 +7,6 @@ use ManaPHP\Logging\Logger\LogCategorizable;
 use Throwable;
 
 /**
- * Class Controller
- *
- * @package ManaPHP
- *
  * @property-read \ManaPHP\InvokerInterface $invoker
  */
 class Controller extends Component implements LogCategorizable

@@ -23,8 +23,6 @@ class HasManyOthers extends Relation
     protected $_thatField;
 
     /**
-     * Relation constructor.
-     *
      * @param string $thisModel
      * @param string $thisFilter
      * @param string $thisValue

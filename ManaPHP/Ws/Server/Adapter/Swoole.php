@@ -15,9 +15,6 @@ use Swoole\WebSocket\Server;
 use Throwable;
 
 /**
- * Class Server
- *
- * @package ManaPHP\Ws
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class Swoole extends Component implements ServerInterface, Unaspectable
@@ -63,8 +60,6 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     protected $_closeCoroutine = [];
 
     /**
-     * Server constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

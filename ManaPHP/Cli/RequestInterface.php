@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Cli;
 
-/**
- * Interface ManaPHP\Cli\RequestInterface
- *
- * @package ManaPHP\Cli
- */
 interface RequestInterface
 {
     /**

@@ -25,10 +25,6 @@ class RequestContext implements Stickyable
 }
 
 /**
- * Class ManaPHP\Http\Request
- *
- * @package request
- *
  * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
  * @property-read \ManaPHP\Http\RequestContext      $_context
  */

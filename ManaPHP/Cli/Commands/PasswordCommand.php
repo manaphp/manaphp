@@ -4,11 +4,6 @@ namespace ManaPHP\Cli\Commands;
 
 use ManaPHP\Cli\Command;
 
-/**
- * Class PasswordCommand
- *
- * @package ManaPHP\Cli\Commands
- */
 class PasswordCommand extends Command
 {
     /**

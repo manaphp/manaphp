@@ -13,8 +13,6 @@ class PostProxy implements ArrayAccess, JsonSerializable
     protected $_request;
 
     /**
-     * PostProxy constructor.
-     *
      * @param \ManaPHP\Http\Request $request
      */
     public function __construct($request)

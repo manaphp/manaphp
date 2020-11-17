@@ -20,11 +20,6 @@ use ManaPHP\Http\Client\ServiceUnavailableException;
 use ManaPHP\Http\Client\TooManyRequestsException;
 use ManaPHP\Http\Client\UnauthorizedException;
 
-/**
- * Class ManaPHP\Http\Client
- *
- * @package Curl
- */
 class Client extends Component implements ClientInterface
 {
     const USER_AGENT_IE = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
@@ -70,8 +65,6 @@ class Client extends Component implements ClientInterface
     protected $_pool_size = 4;
 
     /**
-     * Client constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

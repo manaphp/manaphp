@@ -5,10 +5,6 @@ namespace ManaPHP\Http;
 use ManaPHP\Component;
 
 /**
- * Class ManaPHP\Http\Cookies
- *
- * @package cookies
- *
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response
  */

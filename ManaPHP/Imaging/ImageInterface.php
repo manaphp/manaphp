@@ -2,16 +2,9 @@
 
 namespace ManaPHP\Imaging;
 
-/**
- * Interface ManaPHP\Imaging\ImageInterface
- *
- * @package image
- */
 interface ImageInterface
 {
     /**
-     * ImageInterface constructor.
-     *
      * @param string $file
      */
     public function __construct($file);

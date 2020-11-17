@@ -5,8 +5,6 @@ namespace ManaPHP\Http\Session\Adapter;
 use ManaPHP\Http\Session;
 
 /**
- * Class ManaPHP\Http\Session\Adapter\Db
- *
  * CREATE TABLE `manaphp_session` (
  * `session_id` char(32) CHARACTER SET ascii NOT NULL,
  * `user_id` int(11) NOT NULL,
@@ -17,7 +15,6 @@ use ManaPHP\Http\Session;
  * PRIMARY KEY (`session_id`)
  * ) ENGINE=InnoDB DEFAULT CHARSET=utf8
  *
- * @package session\adapter
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class Db extends Session
@@ -33,8 +30,6 @@ class Db extends Session
     protected $_source = 'manaphp_session';
 
     /**
-     * Db constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

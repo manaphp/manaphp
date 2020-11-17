@@ -2,11 +2,6 @@
 
 namespace ManaPHP;
 
-/**
- * Interface ManaPHP\AliasInterface
- *
- * @package alias
- */
 interface AliasInterface
 {
     /**

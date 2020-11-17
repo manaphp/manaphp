@@ -9,8 +9,6 @@ use PDO;
 class Sqlite extends Connection
 {
     /**
-     * Sqlite constructor.
-     *
      * @param string $file
      */
     public function __construct($file)

@@ -5,10 +5,6 @@ namespace ManaPHP\Mvc\View\Flash\Adapter;
 use ManaPHP\Mvc\View\Flash;
 
 /**
- * Class ManaPHP\Mvc\View\Flash\Adapter\Session
- *
- * @package flash\adapter
- *
  * @property-read \ManaPHP\Http\SessionInterface $session
  */
 class Session extends Flash
@@ -19,8 +15,6 @@ class Session extends Flash
     protected $_key = 'manaphp_flash';
 
     /**
-     * Session constructor.
-     *
      * @param array $css
      */
     public function __construct($css = [])

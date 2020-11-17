@@ -12,11 +12,6 @@ use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Imaging\Image;
 
-/**
- * Class ManaPHP\Imaging\Image\Adapter\Imagick
- *
- * @package image\adapter
- */
 class Imagick extends Image
 {
     /**

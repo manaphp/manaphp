@@ -7,8 +7,6 @@ use ManaPHP\Event\EventArgs;
 class Tracer extends \ManaPHP\Event\Tracer
 {
     /**
-     * Tracer constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

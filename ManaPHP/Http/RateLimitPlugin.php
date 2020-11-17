@@ -24,8 +24,6 @@ class RateLimitPlugin extends Plugin
     protected $_action_limit = '60/m';
 
     /**
-     * RateLimitPlugin constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

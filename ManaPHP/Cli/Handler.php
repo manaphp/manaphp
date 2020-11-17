@@ -6,10 +6,6 @@ use ManaPHP\Component;
 use ManaPHP\Helper\Str;
 
 /**
- * Class Handler
- *
- * @package ManaPHP\Cli
- *
  * @property-read \ManaPHP\Cli\ConsoleInterface $console
  * @property-read \ManaPHP\Cli\RequestInterface $request
  */

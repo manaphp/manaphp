@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Security;
 
-/**
- * Interface ManaPHP\Security\RandomInterface
- *
- * @package random
- */
 interface RandomInterface
 {
     /**

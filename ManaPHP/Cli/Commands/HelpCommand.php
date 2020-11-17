@@ -7,11 +7,6 @@ use ManaPHP\Cli\Console;
 use ManaPHP\Helper\Str;
 use ReflectionClass;
 
-/**
- * Class ManaPHP\Cli\Commands\HelpCommand
- *
- * @package ManaPHP\Cli\Commands
- */
 class HelpCommand extends Command
 {
     /**

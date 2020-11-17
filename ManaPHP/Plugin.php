@@ -5,10 +5,6 @@ namespace ManaPHP;
 use ManaPHP\Logging\Logger\LogCategorizable;
 
 /**
- * Class Plugin
- *
- * @package ManaPHP
- *
  * @property-read \ManaPHP\Http\CaptchaInterface           $captcha
  * @property-read \ManaPHP\Http\RequestInterface           $request
  * @property-read \ManaPHP\Http\ResponseInterface          $response

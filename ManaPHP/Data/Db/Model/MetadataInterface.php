@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Data\Db\Model;
 
-/**
- * Interface ManaPHP\Mvc\Model\MetadataInterface
- *
- * @package modelsMetadata
- */
 interface MetadataInterface
 {
 

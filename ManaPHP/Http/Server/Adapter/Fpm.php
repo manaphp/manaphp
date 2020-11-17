@@ -5,11 +5,6 @@ namespace ManaPHP\Http\Server\Adapter;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Http\Server;
 
-/**
- * Class Fpm
- *
- * @package ManaPHP\Http\Server\Adapter
- */
 class Fpm extends Server
 {
     protected function _prepareGlobals()

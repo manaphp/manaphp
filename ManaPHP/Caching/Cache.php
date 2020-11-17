@@ -5,11 +5,6 @@ namespace ManaPHP\Caching;
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
 
-/**
- * Class ManaPHP\Caching\Cache
- *
- * @package cache
- */
 abstract class Cache extends Component implements CacheInterface
 {
     abstract public function do_get($key);

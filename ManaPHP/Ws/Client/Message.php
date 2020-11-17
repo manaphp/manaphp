@@ -28,8 +28,6 @@ class Message implements JsonSerializable
     public $elapsed;
 
     /**
-     * Message constructor.
-     *
      * @param int    $op_code
      * @param string $payload
      * @param float  $elapsed

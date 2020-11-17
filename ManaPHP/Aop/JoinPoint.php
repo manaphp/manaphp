@@ -27,8 +27,6 @@ class JoinPoint implements Unaspectable
     protected static $_oid2obj;
 
     /**
-     * JoinPoint constructor.
-     *
      * @param string $class
      * @param string $method
      * @param string $signature

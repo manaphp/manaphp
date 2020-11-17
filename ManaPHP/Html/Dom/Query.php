@@ -23,8 +23,6 @@ class Query
     protected $_cssToXPath;
 
     /**
-     * Query constructor.
-     *
      * @param \DOMDocument $domDocument
      */
     public function __construct($domDocument)

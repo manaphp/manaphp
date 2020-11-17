@@ -9,10 +9,6 @@ use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\Str;
 
 /**
- * Class ManaPHP\Html\Renderer\Engine\Sword
- *
- * @package renderer\engine
- *
  * @property-read \ManaPHP\Http\UrlInterface    $url
  * @property-read \ManaPHP\Http\RouterInterface $router
  */
@@ -71,8 +67,6 @@ class Compiler extends Component
         ];
 
     /**
-     * Compiler constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])
@@ -980,7 +974,6 @@ class Compiler extends Component
     }
 
     /**
-     *
      * @return string
      */
     protected function _compile_js()
@@ -989,7 +982,6 @@ class Compiler extends Component
     }
 
     /**
-     *
      * @return string
      */
     protected function _compile_endjs()

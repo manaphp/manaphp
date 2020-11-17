@@ -44,8 +44,6 @@ class Amqp extends Component implements AmqpInterface
     const MESSAGE_METADATA = '_metadata_';
 
     /**
-     * Amqp constructor.
-     *
      * @param string $url
      */
     public function __construct($url = null)

@@ -8,12 +8,6 @@ use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\RuntimeException;
 use MongoDB\BSON\ObjectId;
 
-/**
- * Class ManaPHP\Data\Mongodb\Model
- *
- * @package model
- *
- */
 class Model extends \ManaPHP\Data\Model
 {
     /**

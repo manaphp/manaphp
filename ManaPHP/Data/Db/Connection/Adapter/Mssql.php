@@ -12,8 +12,6 @@ use PDO;
 class Mssql extends Connection
 {
     /**
-     * SqlSrv constructor.
-     *
      * @param string $url
      */
     public function __construct($url)

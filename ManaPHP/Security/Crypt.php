@@ -5,11 +5,6 @@ namespace ManaPHP\Security;
 use ManaPHP\Component;
 use ManaPHP\Security\Crypt\Exception as CryptException;
 
-/**
- * Class ManaPHP\Security\Crypt
- *
- * @package crypt
- */
 class Crypt extends Component implements CryptInterface
 {
     /**
@@ -23,8 +18,6 @@ class Crypt extends Component implements CryptInterface
     protected $_method = 'AES-128-CBC';
 
     /**
-     * Crypt constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

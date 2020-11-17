@@ -25,8 +25,6 @@ class LoggerPluginContext
 }
 
 /**
- * Class LoggerPlugin
- *
  * @property-read \ManaPHP\Logging\LoggerPluginContext $_context
  */
 class LoggerPlugin extends Plugin
@@ -52,8 +50,6 @@ class LoggerPlugin extends Plugin
     protected $_template = '@manaphp/Plugins/LoggerPlugin/Template.html';
 
     /**
-     * LoggerPlugin constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

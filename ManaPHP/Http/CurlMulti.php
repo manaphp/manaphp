@@ -44,8 +44,6 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
     protected $_tmp_files = [];
 
     /**
-     * CurlMulti constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

@@ -4,11 +4,6 @@ namespace ManaPHP\Imaging;
 
 use ManaPHP\Component;
 
-/**
- * Class ManaPHP\Imaging\Image
- *
- * @package image
- */
 abstract class Image extends Component implements ImageInterface
 {
     abstract public function do_getWidth();

@@ -25,8 +25,6 @@ class Task extends Component implements TaskInterface
     protected $_channel;
 
     /**
-     * Task constructor.
-     *
      * @param callable $fn
      * @param int      $count
      */

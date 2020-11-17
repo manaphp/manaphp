@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Cli;
 
-/**
- * Interface ManaPHP\Cli\ConsoleInterface
- *
- * @package ManaPHP\Cli
- */
 interface ConsoleInterface
 {
     /**

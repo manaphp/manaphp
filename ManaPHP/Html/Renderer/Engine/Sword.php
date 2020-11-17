@@ -6,10 +6,6 @@ use ManaPHP\Component;
 use ManaPHP\Html\Renderer\EngineInterface;
 
 /**
- * Class ManaPHP\Html\Renderer\Engine\Sword
- *
- * @package renderer\engine
- *
  * @property-read \ManaPHP\Html\Renderer\Engine\Sword\Compiler $swordCompiler
  */
 class Sword extends Component implements EngineInterface
@@ -25,8 +21,6 @@ class Sword extends Component implements EngineInterface
     protected $_compiled = [];
 
     /**
-     * Sword constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

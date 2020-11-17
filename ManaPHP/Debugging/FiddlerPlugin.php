@@ -22,9 +22,6 @@ class FiddlerPluginContext
 }
 
 /**
- * Class FiddlerPlugin
- *
- * @package ManaPHP\Plugins
  * @property-read \ManaPHP\Debugging\FiddlerPluginContext $_context
  */
 class FiddlerPlugin extends Plugin
@@ -45,8 +42,6 @@ class FiddlerPlugin extends Plugin
     protected $_last_checked;
 
     /**
-     * FiddlerPlugin constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

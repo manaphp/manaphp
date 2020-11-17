@@ -6,12 +6,6 @@ use ManaPHP\Data\Model\ExpressionInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 
-/**
- * Class ManaPHP\Data\Db\Model
- *
- * @package model
- *
- */
 class Model extends \ManaPHP\Data\Model implements ModelInterface
 {
     /**

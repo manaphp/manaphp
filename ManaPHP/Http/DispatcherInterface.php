@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Http;
 
-/**
- * Interface ManaPHP\Http\DispatcherInterface
- *
- * @package dispatcher
- */
 interface DispatcherInterface
 {
     /**

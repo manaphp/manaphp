@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Http;
 
-/**
- * Interface ManaPHP\Http\AuthorizationInterface
- *
- * @package authorization
- */
 interface AuthorizationInterface
 {
     /**
@@ -35,7 +30,6 @@ interface AuthorizationInterface
     public function isAllowed($permission = null, $role = null);
 
     /**
-     *
      * @throws \ManaPHP\Identity\NoCredentialException
      * @throws \ManaPHP\Exception\ForbiddenException
      */

@@ -45,8 +45,6 @@ class Swift extends Mailer
     protected $_password;
 
     /**
-     * Swift constructor.
-     *
      * @param string $url
      */
     public function __construct($url)

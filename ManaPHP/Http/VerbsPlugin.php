@@ -8,10 +8,6 @@ use ManaPHP\Mvc\Controller;
 use ManaPHP\Plugin;
 
 /**
- * Class VerbsPlugin
- *
- * @package ManaPHP\Plugins
- *
  * @property-read \ManaPHP\Mvc\ViewInterface $view
  */
 class VerbsPlugin extends Plugin
@@ -22,8 +18,6 @@ class VerbsPlugin extends Plugin
     protected $_enabled = true;
 
     /**
-     * VerbsPlugin constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

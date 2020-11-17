@@ -17,8 +17,6 @@ class Mysql extends Connection
     protected $_charset = 'UTF8';
 
     /**
-     * \ManaPHP\Data\Db\Adapter constructor
-     *
      * @param string $url
      */
     public function __construct($url = 'mysql://root@localhost/test?charset=utf8')

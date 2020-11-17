@@ -6,11 +6,6 @@ use ManaPHP\Caching\Cache;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\WriteFileFailedException;
 
-/**
- * Class ManaPHP\Caching\Cache\Adapter\File
- *
- * @package cache\adapter
- */
 class File extends Cache
 {
     /**
@@ -29,8 +24,6 @@ class File extends Cache
     protected $_ext = '.cache';
 
     /**
-     * File constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

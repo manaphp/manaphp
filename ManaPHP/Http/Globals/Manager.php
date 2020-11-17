@@ -12,9 +12,6 @@ use ManaPHP\Http\Globals\Proxies\ServerProxy;
 use ManaPHP\Http\Globals\Proxies\SessionProxy;
 
 /**
- * Class Manager
- *
- * @package ManaPHP\Http
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class Manager extends Component implements ManagerInterface

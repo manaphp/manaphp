@@ -32,9 +32,6 @@ class LoggerContext
 }
 
 /**
- * Class ManaPHP\Logging\Logger
- *
- * @package logger
  * @property-read \ManaPHP\Http\RequestInterface $request
  * @property-read \ManaPHP\Logging\LoggerContext $_context
  */
@@ -89,8 +86,6 @@ abstract class Logger extends Component implements LoggerInterface
     protected $_logs = [];
 
     /**
-     * Logger constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

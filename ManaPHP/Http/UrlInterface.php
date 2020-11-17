@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Http;
 
-/**
- * Interface ManaPHP\Http\UrlInterface
- *
- * @package url
- */
 interface UrlInterface
 {
     /**

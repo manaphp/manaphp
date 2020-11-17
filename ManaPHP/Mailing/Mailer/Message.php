@@ -84,8 +84,6 @@ class Message implements JsonSerializable
     protected $_embedded_files = [];
 
     /**
-     * Message constructor.
-     *
      * @param array $message
      */
     public function __construct($message = null)
@@ -320,7 +318,6 @@ class Message implements JsonSerializable
     }
 
     /**
-     *
      * @return string
      */
     public function getTextBody()

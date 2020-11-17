@@ -4,11 +4,6 @@ namespace ManaPHP\Mvc\View\Flash\Adapter;
 
 use ManaPHP\Mvc\View\Flash;
 
-/**
- * Class ManaPHP\Mvc\View\Flash\Adapter\Direct
- *
- * @package flash\adapter
- */
 class Direct extends Flash
 {
     /**

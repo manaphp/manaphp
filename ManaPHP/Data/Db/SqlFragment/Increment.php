@@ -27,8 +27,6 @@ class Increment implements SqlFragmentable
     protected $_field;
 
     /**
-     * Assignment constructor.
-     *
      * @param string|float|int $value
      * @param string           $operator
      * @param array            $bind

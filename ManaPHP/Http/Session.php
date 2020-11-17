@@ -42,9 +42,6 @@ class SessionContext
 }
 
 /**
- * Class ManaPHP\Http\Session
- *
- * @package session
  * @property-read \ManaPHP\Http\CookiesInterface $cookies
  * @property-read \ManaPHP\Http\RequestInterface $request
  * @property-read \ManaPHP\Http\SessionContext   $_context
@@ -77,8 +74,6 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
     protected $_params = ['expire' => 0, 'path' => null, 'domain' => null, 'secure' => false, 'httponly' => true];
 
     /**
-     * Session constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

@@ -5,11 +5,6 @@ namespace ManaPHP\Http\Acl;
 use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
 
-/**
- * Class Builder
- *
- * @package ManaPHP\Http\Acl
- */
 class Builder extends Component implements BuilderInterface
 {
     /**

@@ -9,10 +9,6 @@ use ManaPHP\Ws\Server\HandlerInterface;
 use Throwable;
 
 /**
- * Class Application
- *
- * @package ManaPHP\Ws
- *
  * @property-read \ManaPHP\Ws\ServerInterface     $wsServer
  * @property-read \ManaPHP\Http\RouterInterface   $router
  * @property-read \ManaPHP\Http\RequestInterface  $request

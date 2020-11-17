@@ -3,10 +3,6 @@
 namespace ManaPHP\Mvc;
 
 /**
- * Class ManaPHP\Mvc\Controller
- *
- * @package controller
- *
  * @property-read \ManaPHP\Mvc\ViewInterface           $view
  * @property-read \ManaPHP\Mvc\View\FlashInterface     $flash
  * @property-read \ManaPHP\Mvc\View\FlashInterface     $flashSession

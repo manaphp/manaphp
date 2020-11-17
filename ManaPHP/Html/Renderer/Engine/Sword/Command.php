@@ -5,10 +5,6 @@ namespace ManaPHP\Html\Renderer\Engine\Sword;
 use ManaPHP\Helper\LocalFS;
 
 /**
- * Class SwordCommand
- *
- * @package ManaPHP\Cli\Commands
- *
  * @property-read \ManaPHP\Html\Renderer\Engine\Sword\Compiler $swordCompiler
  */
 class Command extends \ManaPHP\Cli\Command

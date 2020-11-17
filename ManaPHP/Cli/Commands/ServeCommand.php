@@ -6,9 +6,6 @@ use ManaPHP\Cli\Command;
 use ManaPHP\Helper\LocalFS;
 
 /**
- * Class ServeCommand
- *
- * @package ManaPHP\Cli\Commands
  * @property-read \ManaPHP\Http\RouterInterface $router
  */
 class ServeCommand extends Command

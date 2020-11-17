@@ -18,8 +18,6 @@ class EtagPlugin extends Plugin
     protected $_algo = 'md5';
 
     /**
-     * EtagPlugin constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

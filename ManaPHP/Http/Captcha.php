@@ -10,10 +10,6 @@ use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Http\Captcha\InvalidCaptchaException;
 
 /**
- * Class ManaPHP\Http\Captcha
- *
- * @package captcha
- *
  * @property-read \ManaPHP\Http\ResponseInterface $response
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\SessionInterface  $session
@@ -62,8 +58,6 @@ class Captcha extends Component implements CaptchaInterface
     protected $_minInterval = 1;
 
     /**
-     * Captcha constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

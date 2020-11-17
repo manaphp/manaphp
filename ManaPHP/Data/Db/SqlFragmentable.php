@@ -12,7 +12,6 @@ interface SqlFragmentable
     public function setField($name);
 
     /**
-     *
      * @return string
      */
     public function getSql();

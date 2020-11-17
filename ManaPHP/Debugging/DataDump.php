@@ -16,8 +16,6 @@ class DataDump extends Component implements DataDumpInterface
     protected $_format = '[:time][:location] :message';
 
     /**
-     * DataDump constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

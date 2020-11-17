@@ -12,8 +12,6 @@ class ValidateFailedException extends Exception
     protected $_errors;
 
     /**
-     * ValidateFailedException constructor.
-     *
      * @param array           $errors
      * @param int             $code
      * @param \Exception|null $previous

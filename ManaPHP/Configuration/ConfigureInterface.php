@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Configuration;
 
-/**
- * Interface ManaPHP\Configuration\ConfigureInterface
- *
- * @package configure
- */
 interface ConfigureInterface
 {
     /**

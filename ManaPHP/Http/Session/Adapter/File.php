@@ -23,8 +23,6 @@ class File extends Session
     protected $_level = 1;
 
     /**
-     * File constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

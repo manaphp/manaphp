@@ -19,9 +19,6 @@ class SmtpContext implements Inseparable
 }
 
 /**
- * Class Smtp
- *
- * @package ManaPHP\Mailing\Mailer\Adapter
  * @property-read \ManaPHP\Mailing\Mailer\Adapter\SmtpContext $_context
  */
 class Smtp extends Mailer
@@ -62,8 +59,6 @@ class Smtp extends Mailer
     protected $_timeout = 3;
 
     /**
-     * Swift constructor.
-     *
      * @param string url
      */
     public function __construct($url)

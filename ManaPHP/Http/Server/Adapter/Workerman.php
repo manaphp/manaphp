@@ -22,10 +22,6 @@ class WorkermanContext
 }
 
 /**
- * Class Workerman
- *
- * @package ManaPHP\Http\Server\Adapter
- *
  * @property-read \ManaPHP\Http\RouterInterface                 $router
  * @property-read \ManaPHP\Http\Server\Adapter\WorkermanContext $_context
  */
@@ -62,8 +58,6 @@ class Workerman extends Server
     protected $_request_count;
 
     /**
-     * Swoole constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

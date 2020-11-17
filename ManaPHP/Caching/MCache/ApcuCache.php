@@ -19,8 +19,6 @@ class ApcuCache implements MCacheInterface
     protected $_prefix;
 
     /**
-     * SMCache constructor.
-     *
      * @param int    $ttl
      * @param string $prefix
      */

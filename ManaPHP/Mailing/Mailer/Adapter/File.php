@@ -18,8 +18,6 @@ class File extends Mailer
     protected $_pretty = false;
 
     /**
-     * File constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

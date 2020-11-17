@@ -6,9 +6,6 @@ use ManaPHP\Component;
 use ManaPHP\Exception\MisuseException;
 
 /**
- * Class ScopedJwt
- *
- * @package ManaPHP\Token\Jwt
  * @property-read \ManaPHP\Token\JwtInterface $jwt
  */
 class ScopedJwt extends Component implements ScopedJwtInterface
@@ -19,8 +16,6 @@ class ScopedJwt extends Component implements ScopedJwtInterface
     protected $_secrets = [];
 
     /**
-     * ScopedJwt constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

@@ -5,11 +5,6 @@ namespace ManaPHP\Html\Renderer\Engine;
 use ManaPHP\Component;
 use ManaPHP\Html\Renderer\EngineInterface;
 
-/**
- * Class ManaPHP\Html\Renderer\Engine\Php
- *
- * @package renderer\engine
- */
 class Php extends Component implements EngineInterface
 {
     /**

@@ -23,9 +23,6 @@ class SwooleContext
 }
 
 /**
- * Class Server
- *
- * @package ManaPHP\Http\Server
  * @property-read \ManaPHP\Http\RouterInterface              $router
  * @property-read \ManaPHP\Http\Server\Adapter\SwooleContext $_context
  */
@@ -52,8 +49,6 @@ class Swoole extends Server
     protected $_server;
 
     /**
-     * Swoole constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

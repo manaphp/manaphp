@@ -33,10 +33,6 @@ class ViewContext
 }
 
 /**
- * Class ManaPHP\Mvc\View
- *
- * @package view
- *
  * @property-read \ManaPHP\Html\RendererInterface   $renderer
  * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
  * @property-read \ManaPHP\Mvc\ViewContext          $_context
@@ -69,8 +65,6 @@ class View extends Component implements ViewInterface
     protected $_exists_cache;
 
     /**
-     * View constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

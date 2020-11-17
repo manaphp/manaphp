@@ -3,10 +3,6 @@
 namespace ManaPHP\Http;
 
 /**
- * Class Controller
- *
- * @package ManaPHP\Http
- *
  * @property-read \ManaPHP\InvokerInterface         $invoker
  * @property-read \ManaPHP\Http\RequestInterface    $request
  * @property-read \ManaPHP\Http\ResponseInterface   $response

@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Event;
 
-/**
- * Interface ManaPHP\Event\ManagerInterface
- *
- * @package eventsManager
- */
 interface ManagerInterface
 {
     /**

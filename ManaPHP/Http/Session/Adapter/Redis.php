@@ -4,11 +4,6 @@ namespace ManaPHP\Http\Session\Adapter;
 
 use ManaPHP\Http\Session;
 
-/**
- * Class ManaPHP\Http\Session\Adapter\Redis
- *
- * @package session\adapter
- */
 class Redis extends Session
 {
     /**
@@ -17,8 +12,6 @@ class Redis extends Session
     protected $_prefix;
 
     /**
-     * Redis constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

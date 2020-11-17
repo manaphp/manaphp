@@ -23,8 +23,6 @@ class Purifier extends Component implements PurifierInterface
     protected $_filter;
 
     /**
-     * Purifier constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

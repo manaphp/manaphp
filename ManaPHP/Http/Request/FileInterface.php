@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Http\Request;
 
-/**
- * Interface ManaPHP\Http\Request\FileInterface
- *
- * @package request
- */
 interface FileInterface
 {
 

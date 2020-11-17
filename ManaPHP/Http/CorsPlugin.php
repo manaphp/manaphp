@@ -23,8 +23,6 @@ class CorsPlugin extends Plugin
     protected $_credentials = true;
 
     /**
-     * CorsPlugin constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

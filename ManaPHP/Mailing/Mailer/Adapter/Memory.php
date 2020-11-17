@@ -12,8 +12,6 @@ class Memory extends Mailer
     protected $_message;
 
     /**
-     * Mailer constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

@@ -287,8 +287,6 @@ class Command extends \ManaPHP\Cli\Command
      * @param string $service   service name
      * @param string $namespace
      * @param bool   $optimized output as more methods as possible
-     *
-     * @throws \ManaPHP\Cli\Commands\Exception
      */
     public function modelAction($table, $service = '', $namespace = 'App\Models', $optimized = false)
     {

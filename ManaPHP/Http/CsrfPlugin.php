@@ -9,10 +9,6 @@ use ManaPHP\Plugin;
 use ManaPHP\Rest\Controller as RestController;
 
 /**
- * Class CsrfPlugin
- *
- * @package ManaPHP\Http
- *
  * @property-read \ManaPHP\Mvc\ViewInterface $view
  */
 class CsrfPlugin extends Plugin
@@ -33,8 +29,6 @@ class CsrfPlugin extends Plugin
     protected $_domains = [];
 
     /**
-     * CsrfPlugin constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

@@ -33,8 +33,6 @@ class HasManyToMany extends Relation
     protected $_thatPivot;
 
     /**
-     * Relation constructor.
-     *
      * @param string $thisModel
      * @param string $thisField
      * @param string $thatModel

@@ -27,8 +27,6 @@ class BacktracePlugin extends Plugin
     protected $_mem_delta = 1;
 
     /**
-     * BacktracePlugin constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

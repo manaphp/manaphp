@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Mvc\View;
 
-/**
- * Interface ManaPHP\Mvc\View\FlashInterface
- *
- * @package flash
- */
 interface FlashInterface
 {
     /**

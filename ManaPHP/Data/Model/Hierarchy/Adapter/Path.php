@@ -7,9 +7,6 @@ use ManaPHP\Data\QueryInterface;
 use ManaPHP\Helper\Str;
 
 /**
- * Class ManaPHP\Hierarchy
- *
- * @package ManaPHP
  * @method static QueryInterface query()
  */
 trait Path

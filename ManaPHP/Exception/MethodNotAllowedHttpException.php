@@ -7,8 +7,6 @@ use ManaPHP\Exception;
 class MethodNotAllowedHttpException extends Exception
 {
     /**
-     * MethodNotAllowedHttpException constructor.
-     *
      * @param array $verbs
      */
     public function __construct($verbs)

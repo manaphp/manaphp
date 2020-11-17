@@ -21,10 +21,6 @@ class ValidatorContext
 }
 
 /**
- * Class Validator
- *
- * @package ManaPHP
- *
  * @property-read \ManaPHP\Html\PurifierInterface      $htmlPurifier
  * @property-read \ManaPHP\Http\RequestInterface       $request
  * @property-read \ManaPHP\Validating\ValidatorContext $_context
@@ -52,8 +48,6 @@ class Validator extends Component implements ValidatorInterface
     protected $_templates;
 
     /**
-     * Validator constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

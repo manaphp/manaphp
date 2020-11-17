@@ -13,8 +13,6 @@ class SessionProxy implements ArrayAccess, JsonSerializable
     protected $_session;
 
     /**
-     * SessionProxy constructor.
-     *
      * @param \ManaPHP\Http\Request $request
      */
     public function __construct($request)

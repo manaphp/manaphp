@@ -7,9 +7,6 @@ use ManaPHP\ErrorHandlerInterface;
 use ManaPHP\Exception;
 
 /**
- * Class ErrorHandler
- *
- * @package ManaPHP\Rest
  * @property-read \ManaPHP\Http\ResponseInterface $response
  */
 class ErrorHandler extends Component implements ErrorHandlerInterface

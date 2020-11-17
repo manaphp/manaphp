@@ -10,10 +10,6 @@ use Swoole\Runtime;
 use Throwable;
 
 /**
- * Class ManaPHP\Cli\Application
- *
- * @package application
- *
  * @property-read \ManaPHP\Cli\HandlerInterface $cliHandler
  */
 class Application extends \ManaPHP\Application implements LogCategorizable
@@ -32,8 +28,6 @@ class Application extends \ManaPHP\Application implements LogCategorizable
     }
 
     /**
-     * Application constructor.
-     *
      * @param \ManaPHP\Loader $loader
      */
     public function __construct($loader = null)

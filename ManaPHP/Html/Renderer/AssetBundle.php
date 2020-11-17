@@ -14,8 +14,6 @@ class AssetBundle extends Component implements AssetBundleInterface
     protected $_length = 12;
 
     /**
-     * AssetBundle constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

@@ -5,10 +5,6 @@ namespace ManaPHP\Rpc;
 use ManaPHP\Exception\BadRequestException;
 
 /**
- * Class Dispatcher
- *
- * @package ManaPHP\Rpc
- *
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response
  * @property-read \ManaPHP\Http\RouterInterface   $router

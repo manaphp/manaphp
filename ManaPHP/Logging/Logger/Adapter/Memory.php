@@ -15,9 +15,6 @@ class MemoryContext
 }
 
 /**
- * Class ManaPHP\Logging\Logger\Adapter\Memory
- *
- * @package logger
  * @property-read \ManaPHP\Logging\Logger\Adapter\MemoryContext $_context
  */
 class Memory extends Logger

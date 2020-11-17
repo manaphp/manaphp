@@ -3,9 +3,6 @@
 namespace ManaPHP\Data;
 
 /**
- * Interface QueryInterface
- *
- * @package  ManaPHP
  * @template Model
  */
 interface QueryInterface

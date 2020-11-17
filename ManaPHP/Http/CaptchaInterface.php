@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Http;
 
-/**
- * Interface ManaPHP\Http\CaptchaInterface
- *
- * @package captcha
- */
 interface CaptchaInterface
 {
     /**

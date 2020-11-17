@@ -21,8 +21,6 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
     protected $_document;
 
     /**
-     * SelectorList constructor.
-     *
      * @param \ManaPHP\Html\Dom\Document|\ManaPHP\Html\Dom\SelectorList $document
      * @param \DOMNode[]                                                $nodes
      */
@@ -416,7 +414,6 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
     }
 
     /**
-     *
      * @return string[]|string
      */
     public function name()

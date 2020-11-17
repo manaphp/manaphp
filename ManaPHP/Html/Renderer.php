@@ -30,9 +30,6 @@ class RendererContext implements Inseparable
 }
 
 /**
- * Class ManaPHP\Html\Renderer
- *
- * @package renderer
  * @property-read \ManaPHP\Html\RendererContext $_context
  */
 class Renderer extends Component implements RendererInterface
@@ -62,8 +59,6 @@ class Renderer extends Component implements RendererInterface
     protected $_mutex;
 
     /**
-     * Renderer constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

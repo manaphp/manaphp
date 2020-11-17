@@ -10,9 +10,6 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
 
 /**
- * Class Merger
- *
- * @package ManaPHP\Data\Merger\Query
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class Query extends \ManaPHP\Data\Query
@@ -23,8 +20,6 @@ class Query extends \ManaPHP\Data\Query
     protected $_queries;
 
     /**
-     * Merger constructor.
-     *
      * @param array        $queries
      * @param string|array $fields
      */

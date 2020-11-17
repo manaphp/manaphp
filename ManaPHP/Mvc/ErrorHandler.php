@@ -7,9 +7,6 @@ use ManaPHP\ErrorHandlerInterface;
 use ManaPHP\Exception;
 
 /**
- * Class ManaPHP\Mvc\ErrorHandler
- *
- * @package ManaPHP\Mvc
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response
  * @property-read \ManaPHP\Html\RendererInterface $renderer

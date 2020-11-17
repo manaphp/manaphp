@@ -4,11 +4,6 @@ namespace ManaPHP\Token;
 
 use ManaPHP\Component;
 
-/**
- * Class Jwt
- *
- * @package ManaPHP\Token
- */
 class Jwt extends Component implements JwtInterface
 {
     /**
@@ -22,8 +17,6 @@ class Jwt extends Component implements JwtInterface
     protected $_secret;
 
     /**
-     * Jwt constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

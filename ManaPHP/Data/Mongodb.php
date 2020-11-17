@@ -7,11 +7,6 @@ use ManaPHP\Data\Mongodb\Exception as MongodbException;
 use ManaPHP\Exception\NonCloneableException;
 use MongoDB\Driver\Exception\RuntimeException;
 
-/**
- * Class Mongodb
- *
- * @package ManaPHP
- */
 class Mongodb extends Component implements MongodbInterface
 {
     /**
@@ -30,8 +25,6 @@ class Mongodb extends Component implements MongodbInterface
     protected $_default_db;
 
     /**
-     * Mongodb constructor.
-     *
      * @param string $dsn
      */
     public function __construct($dsn = 'mongodb://127.0.0.1:27017/')

@@ -45,7 +45,6 @@ class Scheduler extends Component implements SchedulerInterface
     }
 
     /**
-     *
      * @return array
      */
     public function start()

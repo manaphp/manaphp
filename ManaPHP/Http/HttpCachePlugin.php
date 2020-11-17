@@ -14,8 +14,6 @@ class HttpCachePlugin extends Plugin
     protected $_enabled = true;
 
     /**
-     * HttpCachePlugin constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

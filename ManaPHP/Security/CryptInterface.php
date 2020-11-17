@@ -2,11 +2,6 @@
 
 namespace ManaPHP\Security;
 
-/**
- * Interface ManaPHP\Security\CryptInterface
- *
- * @package crypt
- */
 interface CryptInterface
 {
 

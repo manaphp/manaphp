@@ -50,8 +50,6 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     protected $_coroutines = [];
 
     /**
-     * Swoole constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

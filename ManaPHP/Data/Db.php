@@ -63,9 +63,6 @@ class DbContext implements Inseparable
 }
 
 /**
- * Class ManaPHP\Data\Db
- *
- * @package db
  * @property-read \ManaPHP\Data\DbContext $_context
  */
 class Db extends Component implements DbInterface
@@ -101,8 +98,6 @@ class Db extends Component implements DbInterface
     protected $_pool_size = '4';
 
     /**
-     * Db constructor.
-     *
      * @param string $uri
      */
     public function __construct($uri)

@@ -8,12 +8,6 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
 
-/**
- * Class ManaPHP\Configuration\Configure
- *
- * @package configure
- *
- */
 class Configure extends Component implements ConfigureInterface
 {
     /**

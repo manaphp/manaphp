@@ -23,8 +23,6 @@ class SlowlogPlugin extends Plugin
     protected $_format = '[:date][:client_ip][:request_id][:elapsed] :message';
 
     /**
-     * SlowlogPlugin constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

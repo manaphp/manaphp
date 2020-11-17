@@ -2,11 +2,6 @@
 
 namespace ManaPHP;
 
-/**
- * Interface ManaPHP\ComponentInterface
- *
- * @package component
- */
 interface ComponentInterface
 {
     /**

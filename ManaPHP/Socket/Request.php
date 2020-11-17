@@ -31,9 +31,6 @@ class RequestContext
 }
 
 /**
- * Class Request
- *
- * @package ManaPHP\Socket
  * @property-read \ManaPHP\Socket\RequestContext $_context
  */
 class Request extends Component implements RequestInterface

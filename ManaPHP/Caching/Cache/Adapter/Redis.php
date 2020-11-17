@@ -4,11 +4,6 @@ namespace ManaPHP\Caching\Cache\Adapter;
 
 use ManaPHP\Caching\Cache;
 
-/**
- * Class ManaPHP\Caching\Cache\Adapter\Redis
- *
- * @package cache\adapter
- */
 class Redis extends Cache
 {
     /**
@@ -17,8 +12,6 @@ class Redis extends Cache
     protected $_prefix;
 
     /**
-     * Redis constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

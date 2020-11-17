@@ -20,9 +20,6 @@ class PageCachePluginContext
 }
 
 /**
- * Class PageCachePlugin
- *
- * @package ManaPHP\Plugins
  * @property-read \ManaPHP\Http\PageCachePluginContext $_context
  */
 class PageCachePlugin extends Plugin
@@ -38,8 +35,6 @@ class PageCachePlugin extends Plugin
     protected $_prefix;
 
     /**
-     * PageCachePlugin constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

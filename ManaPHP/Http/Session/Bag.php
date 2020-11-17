@@ -5,10 +5,6 @@ namespace ManaPHP\Http\Session;
 use ManaPHP\Component;
 
 /**
- * Class ManaPHP\Http\Session\Bag
- *
- * @package session
- *
  * @property-read \ManaPHP\Http\SessionInterface $session
  */
 class Bag extends Component implements BagInterface
@@ -19,8 +15,6 @@ class Bag extends Component implements BagInterface
     protected $_name;
 
     /**
-     * \ManaPHP\Session\Bag constructor
-     *
      * @param string $name
      */
     public function __construct($name)

@@ -47,9 +47,6 @@ class DispatcherContext
 }
 
 /**
- * Class ManaPHP\Http\Dispatcher
- *
- * @package dispatcher
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response
  * @property-read \ManaPHP\Http\DispatcherContext $_context

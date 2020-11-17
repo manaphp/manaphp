@@ -5,10 +5,6 @@ namespace ManaPHP\Messaging\Queue\Adapter;
 use ManaPHP\Messaging\Queue;
 
 /**
- * Class Db
- *
- * @package ManaPHP\Messaging\Queue\Adapter
- *
  *CREATE TABLE `manaphp_message_queue` (
  * `id` int(11) NOT NULL AUTO_INCREMENT,
  * `priority` tinyint(4) NOT NULL,
@@ -33,9 +29,6 @@ class Db extends Queue
     protected $_source = 'manaphp_message_queue';
 
     /**
-     *
-     * Db constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])

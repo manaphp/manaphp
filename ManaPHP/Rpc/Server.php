@@ -7,9 +7,6 @@ use ManaPHP\Component;
 use Throwable;
 
 /**
- * Class Server
- *
- * @package ManaPHP\Rpc
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response
  */
@@ -31,8 +28,6 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
     protected $_handler;
 
     /**
-     * Server constructor.
-     *
      * @param array $options
      */
     public function __construct($options = [])
