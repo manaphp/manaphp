@@ -136,16 +136,17 @@ class DebuggerPlugin extends Plugin
         $content = gzencode(json_stringify($data, JSON_PARTIAL_OUTPUT_ON_ERROR));
         if ($this->_ttl) {
             $this->redisCache->set($this->_prefix . $key, $content, $this->_ttl);
+
+            if ($this->_broadcast) {
+                $key = implode(
+                    ':',
+                    ['__debuggerPlugin', $this->configure->id, $this->request->getClientIp(),
+                     $this->dispatcher->getPath()]
+                );
+                $this->redisCache->publish($key, $this->response->getHeader('X-Debugger-Link'));
+            }
         } else {
             LocalFS::filePut("@data/debuggerPlugin/{$key}.zip", $content);
-        }
-
-        if ($this->_broadcast) {
-            $key = implode(
-                ':',
-                ['__debuggerPlugin', $this->configure->id, $this->request->getClientIp(), $this->dispatcher->getPath()]
-            );
-            $this->redisCache->publish($key, $this->response->getHeader('X-Debugger-Link'));
         }
     }
 
