@@ -28,7 +28,9 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
      */
     public function __construct($loader = null)
     {
-        defined('MANAPHP_CLI') or define('MANAPHP_CLI', false);
+        if (!defined('MANAPHP_CLI')) {
+            define('MANAPHP_CLI', basename($_SERVER['SCRIPT_FILENAME']) === 'manacli.php');
+        }
 
         $class = static::class;
         $this->_class_file = (new ReflectionClass($class))->getFileName();
