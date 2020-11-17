@@ -33,6 +33,7 @@ class Factory extends FactoryDefault
                 'bosCommand'            => 'ManaPHP\Bos\Command',
                 'dbCommand'             => 'ManaPHP\Data\Db\Command',
                 'tracerCommand'         => 'ManaPHP\Event\Tracer\Command',
+                'pluginCommand'         => 'ManaPHP\Plugin\Command',
             ]
         );
     }
