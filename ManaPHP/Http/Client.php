@@ -167,7 +167,7 @@ class Client extends Component implements ClientInterface
 
         try {
             $success = false;
-
+            $response_text = null;
             $engine_id = substr($request->url, 0, strpos($request->url, '/', 8));
 
             if (!$this->poolManager->exists($this, $engine_id)) {
