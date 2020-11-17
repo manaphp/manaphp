@@ -4,8 +4,8 @@ namespace Tests;
 
 use ManaPHP\Data\Db\Adapter\Mysql;
 use ManaPHP\Data\DbInterface;
-use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Data\Merger\Query;
+use ManaPHP\Di\FactoryDefault;
 use PHPUnit\Framework\TestCase;
 use Tests\Models\City;
 

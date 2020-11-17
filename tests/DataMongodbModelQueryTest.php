@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Data\Mongodb;
+use ManaPHP\Di\FactoryDefault;
 use PHPUnit\Framework\TestCase;
 use Tests\Mongodb\Models\Address;
 use Tests\Mongodb\Models\City;
