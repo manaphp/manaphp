@@ -22,7 +22,7 @@ class Command extends \ManaPHP\Cli\Command
 
         $this->redisCache->psubscribe(
             [$key], function ($redis, $pattern, $chan, $msg) use ($path, $ip) {
-            list($_, $__, $_ip, $_path) = explode(':', $chan);
+            list(, , $_ip, $_path) = explode(':', $chan);
             if ($path !== '' && !str_starts_with($_path, $path)) {
                 return;
             }
