@@ -5,8 +5,8 @@ namespace App\Areas\Rbac\Controllers;
 use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
 use App\Models\Admin;
-use ManaPHP\Mvc\Controller;
 use ManaPHP\Data\QueryInterface;
+use ManaPHP\Mvc\Controller;
 
 class AdminController extends Controller
 {

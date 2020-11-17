@@ -3,7 +3,6 @@
 namespace App\Commands;
 
 use ManaPHP\Cli\Command;
-use Swoole\Coroutine;
 
 class TestCommand extends Command
 {

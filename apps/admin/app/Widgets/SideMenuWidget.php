@@ -3,8 +3,8 @@
 namespace App\Widgets;
 
 use App\Areas\Menu\Models\Group;
-use ManaPHP\Mvc\View\Widget;
 use ManaPHP\Data\Query;
+use ManaPHP\Mvc\View\Widget;
 
 /**
  * Class SideMenuWidget
