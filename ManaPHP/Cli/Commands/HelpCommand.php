@@ -18,8 +18,8 @@ class HelpCommand extends Command
     {
         $builtin_commands = [];
         $app_commands = [];
-        foreach ($this->_di->getDefinitions() as $name => $definition) {
-            if (is_string($definition) && str_ends_with($name, 'Command')) {
+        foreach ($this->_di->getDefinitions('*Command') as $name => $definition) {
+            if (is_string($definition)) {
                 if (str_starts_with($definition, 'App\\')) {
                     $app_commands[$name] = $definition;
                 } else {

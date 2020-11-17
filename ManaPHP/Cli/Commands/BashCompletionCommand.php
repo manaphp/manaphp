@@ -17,10 +17,8 @@ class BashCompletionCommand extends Command
     {
         $commands = [];
 
-        foreach ($this->_di->getDefinitions() as $name => $_) {
-            if (str_ends_with($name, 'Command')) {
-                $commands[] = Str::underscore(basename($name, 'Command'));
-            }
+        foreach ($this->_di->getDefinitions('*Command') as $name => $_) {
+            $commands[] = Str::underscore(basename($name, 'Command'));
         }
 
         return $commands;

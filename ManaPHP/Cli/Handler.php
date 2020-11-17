@@ -24,10 +24,8 @@ class Handler extends Component implements HandlerInterface
     protected function _guessCommand($keyword)
     {
         $commands = [];
-        foreach ($this->_di->getDefinitions() as $name => $definition) {
-            if (str_ends_with($name, 'Command')) {
-                $commands[basename($name, 'Command')] = $definition;
-            }
+        foreach ($this->_di->getDefinitions("*Command") as $name => $definition) {
+            $commands[basename($name, 'Command')] = $definition;
         }
 
         $guessed = [];

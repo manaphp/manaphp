@@ -10,10 +10,8 @@ class Command extends \ManaPHP\Cli\Command
     public function defaultAction()
     {
         $tracers = [];
-        foreach ($this->_di->getDefinitions() as $name => $_) {
-            if (str_ends_with($name, 'Tracer')) {
-                $tracers[] = basename($name, 'Tracer');
-            }
+        foreach ($this->_di->getDefinitions('*Tracer') as $name => $_) {
+            $tracers[] = basename($name, 'Tracer');
         }
 
         $this->console->writeLn(json_stringify($tracers));

@@ -11,10 +11,8 @@ class Command extends \ManaPHP\Cli\Command
     {
         $plugins = [];
 
-        foreach ($this->_di->getDefinitions() as $name => $_) {
-            if (str_ends_with($name, 'Plugin')) {
-                $plugins[] = basename($name, 'Plugin');
-            }
+        foreach ($this->_di->getDefinitions('*Plugin') as $name => $_) {
+            $plugins[] = basename($name, 'Plugin');
         }
 
         $this->console->writeLn(json_stringify($plugins));

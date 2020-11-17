@@ -355,11 +355,23 @@ class Di implements DiInterface
     }
 
     /**
+     * @param string $pattern
+     *
      * @return array
      */
-    public function getDefinitions()
+    public function getDefinitions($pattern = null)
     {
-        return $this->_definitions;
+        if ($pattern === null) {
+            return $this->_definitions;
+        } else {
+            $definitions = [];
+            foreach ($this->_definitions as $name => $definition) {
+                if (fnmatch($pattern, $name)) {
+                    $definitions[$name] = $definition;
+                }
+            }
+            return $definitions;
+        }
     }
 
     /**

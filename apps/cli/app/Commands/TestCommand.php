@@ -11,6 +11,6 @@ class TestCommand extends Command
      */
     public function defaultAction()
     {
-
+        var_dump(fnmatch('*er','SControllers'));
     }
 }

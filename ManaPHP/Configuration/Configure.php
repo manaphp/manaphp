@@ -174,10 +174,8 @@ class Configure extends Component implements ConfigureInterface
         }
 
         if (in_array('*', $this->tracers, true)) {
-            foreach ($di->getDefinitions() as $name => $_) {
-                if (str_ends_with($name, 'Tracer')) {
-                    $di->getShared($name);
-                }
+            foreach ($di->getDefinitions('*Tracer') as $name => $_) {
+                $di->getShared($name);
             }
         } else {
             foreach ($this->tracers as $tracer) {

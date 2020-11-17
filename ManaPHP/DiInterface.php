@@ -25,9 +25,13 @@ interface DiInterface
     public function setShared($name, $definition);
 
     /**
+     * Match  against shell wildcard pattern.
+     *
+     * @param string $pattern
+     *
      * @return array
      */
-    public function getDefinitions();
+    public function getDefinitions($pattern = null);
 
     /**
      * @param string $name
