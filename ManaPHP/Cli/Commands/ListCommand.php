@@ -7,12 +7,19 @@ use ManaPHP\Cli\Command;
 class ListCommand extends Command
 {
     /**
+     * @param bool $all
      * list all components
      */
-    public function componentsAction()
+    public function componentsAction($all = false)
     {
         $components = [];
         foreach ($this->_di->getDefinitions() as $name => $definition) {
+            if (!$all) {
+                if (fnmatch('*Command', $name) || fnmatch('*Tracer', $name) || fnmatch('*Plugin', $name)) {
+                    continue;
+                }
+            }
+
             if (is_string($definition)) {
                 $className = $definition;
             } elseif (is_array($definition)) {
