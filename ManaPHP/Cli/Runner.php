@@ -4,6 +4,9 @@ namespace ManaPHP\Cli;
 
 class Runner extends Application implements RunnerInterface
 {
+    /** @noinspection MagicMethodsValidityInspection
+     * @noinspection PhpMissingParentConstructorInspection
+     */
     public function __construct($loader = null)
     {
 
