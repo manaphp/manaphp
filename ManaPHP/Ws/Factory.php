@@ -13,8 +13,7 @@ class Factory extends \ManaPHP\Http\Factory
                 'wsServer'     => 'ManaPHP\Ws\Server\Adapter\Swoole',
                 'dispatcher'   => 'ManaPHP\Ws\Dispatcher',
                 'identity'     => 'ManaPHP\Identity\Adapter\Jwt',
-
-                'wsPusherPlugin' => 'ManaPHP\Ws\PusherPlugin',
+                'wspServer'    => 'ManaPHP\Ws\Pushing\Server',
             ]
         );
     }

@@ -55,7 +55,7 @@ namespace PHPSTORM_META {
             'assetBundle' instanceof \ManaPHP\Html\Renderer\AssetBundleInterface,
             'aclbuilder' instanceof \ManaPHP\Http\Acl\BuilderInterface,
             'bosClient' instanceof \ManaPHP\Bos\ClientInterface,
-            'wsPusher' instanceof \ManaPHP\Ws\PusherInterface,
+            'wspClient' instanceof \ManaPHP\Ws\Pushing\ClientInterface,
             'coroutine' instanceof \ManaPHP\CoroutineInterface,
             'jwt' instanceof \ManaPHP\Token\JwtInterface,
             'scopedJwt' instanceof \ManaPHP\Token\ScopedJwtInterface,
@@ -111,7 +111,7 @@ namespace PHPSTORM_META {
             'assetBundle' instanceof \ManaPHP\Html\Renderer\AssetBundleInterface,
             'aclbuilder' instanceof \ManaPHP\Http\Acl\BuilderInterface,
             'bosClient' instanceof \ManaPHP\Bos\ClientInterface,
-            'wsPusher' instanceof \ManaPHP\Ws\PusherInterface,
+            'wspClient' instanceof \ManaPHP\Ws\Pushing\ClientInterface,
             'coroutineManager' instanceof \ManaPHP\Coroutine\ManagerInterface,
             'jwt' instanceof \ManaPHP\Token\JwtInterface,
             'scopedJwt' instanceof \ManaPHP\Token\ScopedJwtInterface,
@@ -168,7 +168,7 @@ namespace PHPSTORM_META {
             'assetBundle' instanceof \ManaPHP\Html\Renderer\AssetBundleInterface,
             'aclbuilder' instanceof \ManaPHP\Http\Acl\BuilderInterface,
             'bosClient' instanceof \ManaPHP\Bos\ClientInterface,
-            'wsPusher' instanceof \ManaPHP\Ws\PusherInterface,
+            'wspClient' instanceof \ManaPHP\Ws\Pushing\ClientInterface,
             'coroutineManager' instanceof \ManaPHP\Coroutine\ManagerInterface,
             'jwt' instanceof \ManaPHP\Token\JwtInterface,
             'scopedJwt' instanceof \ManaPHP\Token\ScopedJwtInterface,
@@ -220,12 +220,12 @@ namespace PHPSTORM_META {
          'create' => '@index', 'delete' => '@index', 'edit' => '@index']
     );
 
-    registerArgumentsSet('wsPusherEndpoint', 'admin', 'user');
-    expectedArguments(\ManaPHP\Ws\PusherInterface::pushToId(), 2, argumentsSet('wsPusherEndpoint'));
-    expectedArguments(\ManaPHP\Ws\PusherInterface::pushToName(), 2, argumentsSet('wsPusherEndpoint'));
-    expectedArguments(\ManaPHP\Ws\PusherInterface::pushToRole(), 2, argumentsSet('wsPusherEndpoint'));
-    expectedArguments(\ManaPHP\Ws\PusherInterface::pushToAll(), 1, argumentsSet('wsPusherEndpoint'));
-    expectedArguments(\ManaPHP\Ws\PusherInterface::broadcast(), 1, argumentsSet('wsPusherEndpoint'));
+    registerArgumentsSet('wspClientEndpoint', 'admin', 'user');
+    expectedArguments(\ManaPHP\Ws\Pushing\ClientInterface::pushToId(), 2, argumentsSet('wspClientEndpoint'));
+    expectedArguments(\ManaPHP\Ws\Pushing\ClientInterface::pushToName(), 2, argumentsSet('wspClientEndpoint'));
+    expectedArguments(\ManaPHP\Ws\Pushing\ClientInterface::pushToRole(), 2, argumentsSet('wspClientEndpoint'));
+    expectedArguments(\ManaPHP\Ws\Pushing\ClientInterface::pushToAll(), 1, argumentsSet('wspClientEndpoint'));
+    expectedArguments(\ManaPHP\Ws\Pushing\ClientInterface::broadcast(), 1, argumentsSet('wspClientEndpoint'));
 
     registerArgumentsSet(
         'validator_rules', [

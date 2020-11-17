@@ -1,14 +1,14 @@
 <?php
 
-namespace ManaPHP\Ws;
+namespace ManaPHP\Ws\Pushing;
 
+use ManaPHP\Component;
 use ManaPHP\Event\EventArgs;
-use ManaPHP\Plugin;
 
 /**
  * @property-read \ManaPHP\Ws\ServerInterface $wsServer
  */
-class PusherPlugin extends Plugin
+class Server extends Component implements ServerInterface
 {
     /**
      * @var array
@@ -18,7 +18,7 @@ class PusherPlugin extends Plugin
     /**
      * @var string
      */
-    protected $_prefix = 'broker:pusher:';
+    protected $_prefix = 'ws_pushing:';
 
     /**
      * @var bool
@@ -36,11 +36,6 @@ class PusherPlugin extends Plugin
     protected $_users = [];
 
     /**
-     * @var int
-     */
-    protected $_worker_id;
-
-    /**
      * @param array $options
      */
     public function __construct($options = [])
@@ -55,12 +50,11 @@ class PusherPlugin extends Plugin
             $this->_sso = (bool)$options['sso'];
         }
 
-        $this->attachEvent('wsServer:start', [$this, 'onWsServerStart']);
-        $this->attachEvent('wsServer:open', [$this, 'onWsServerOpen']);
-        $this->attachEvent('wsServer:close', [$this, 'onWsServerClose']);
+        $this->attachEvent('wsServer:open', [$this, 'onOpen']);
+        $this->attachEvent('wsServer:close', [$this, 'onClose']);
     }
 
-    public function onWsServerOpen(EventArgs $eventArgs)
+    public function onOpen(EventArgs $eventArgs)
     {
         $fd = $eventArgs->data;
 
@@ -83,7 +77,7 @@ class PusherPlugin extends Plugin
         }
     }
 
-    public function onWsServerClose(EventArgs $eventArgs)
+    public function onClose(EventArgs $eventArgs)
     {
         $fd = $eventArgs->data;
 
@@ -231,7 +225,7 @@ class PusherPlugin extends Plugin
 
     public function broadcast($message)
     {
-        if ($this->_worker_id === 0) {
+        if ($this->wsServer->getWorkerId() === 0) {
             $this->wsServer->broadcast($message);
         }
     }
@@ -256,15 +250,13 @@ class PusherPlugin extends Plugin
         } else {
             $this->logger->warn(
                 ['unknown `:type` type message: :message', 'type' => $type, 'message' => $message],
-                'wsPusher.bad_type'
+                'wspServer.bad_type'
             );
         }
     }
 
-    public function onWsServerStart(EventArgs $eventArgs)
+    public function start()
     {
-        $this->_worker_id = $eventArgs->data;
-
         $this->pubSub->psubscribe(
             [$this->_prefix . $this->_endpoint . ':*'], function ($channel, $data) {
             if (($pos = strrpos($channel, ':')) !== false) {
@@ -276,7 +268,7 @@ class PusherPlugin extends Plugin
                 $this->logger->debug(compact('type', 'receivers', 'message'));
                 $this->dispatch($type, $receivers, $message);
             } else {
-                $this->logger->warn($channel, 'wsPusher.bad_channel');
+                $this->logger->warn($channel, 'wspServer.bad_channel');
             }
         }
         );

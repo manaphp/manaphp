@@ -15,8 +15,6 @@ return [
         'db'        => [env('DB_URL')],
         'redis'     => [env('REDIS_URL')],
         'logger'    => ['level' => env('LOGGER_LEVEL', 'info')],
+        'wspServer' => ['endpoint' => 'admin']
     ],
-    'plugins'    => [
-        'wsPusher' => ['endpoint' => 'admin'],
-    ]
 ];

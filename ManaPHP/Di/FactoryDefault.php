@@ -44,7 +44,7 @@ class FactoryDefault extends Di
             'relationsManager' => 'ManaPHP\Data\Relation\Manager',
             'mailer'           => 'ManaPHP\Mailing\Mailer\Adapter\Smtp',
             'bosClient'        => 'ManaPHP\Bos\Client',
-            'wsPusher'         => 'ManaPHP\Ws\Pusher',
+            'wspClient'        => 'ManaPHP\Ws\Pushing\Client',
             'identity'         => 'ManaPHP\Identity',
             'coroutineManager' => 'ManaPHP\Coroutine\Manager',
             'jwt'              => 'ManaPHP\Token\Jwt',

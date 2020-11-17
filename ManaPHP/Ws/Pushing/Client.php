@@ -1,16 +1,16 @@
 <?php
 
-namespace ManaPHP\Ws;
+namespace ManaPHP\Ws\Pushing;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\MissingFieldException;
 
-class Pusher extends Component implements PusherInterface
+class Client extends Component implements ClientInterface
 {
     /**
      * @var string
      */
-    protected $_prefix = 'broker:pusher:';
+    protected $_prefix = 'ws_pushing:';
 
     /**
      * @var string

@@ -1,8 +1,8 @@
 <?php
 
-namespace ManaPHP\Ws;
+namespace ManaPHP\Ws\Pushing;
 
-interface PusherInterface
+interface ClientInterface
 {
     /**
      * @param int|int[]    $receivers

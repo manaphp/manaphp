@@ -33,7 +33,7 @@ use Swoole\Coroutine;
  * @property-read \ManaPHP\Pool\ManagerInterface           $poolManager
  * @property-read \ManaPHP\Validating\ValidatorInterface   $validator
  * @property-read \ManaPHP\I18n\TranslatorInterface        $translator
- * @property-read \ManaPHP\Ws\PusherInterface              $wsPusher
+ * @property-read \ManaPHP\Ws\Pushing\ClientInterface      $wspClient
  * @property-read \ManaPHP\Coroutine\ManagerInterface      $coroutineManager
  * @property-read \ManaPHP\Ws\ClientInterface              $wsClient
  * @property-read \ManaPHP\Messaging\PubSubInterface       $pubSub
