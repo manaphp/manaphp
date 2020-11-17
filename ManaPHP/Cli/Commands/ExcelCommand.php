@@ -8,6 +8,8 @@ use ManaPHP\Helper\LocalFS;
 class ExcelCommand extends Command
 {
     /**
+     * generate ods from content.xml file
+     *
      * @param string $file ods content file path
      */
     public function odsAction($file)

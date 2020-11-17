@@ -7,6 +7,9 @@ namespace ManaPHP\Configuration\Dotenv;
  */
 class Command extends \ManaPHP\Cli\Command
 {
+    /**
+     * dump parsed .env values
+     */
     public function defaultAction()
     {
         foreach ($this->dotenv->get() as $k => $v) {

@@ -8,6 +8,8 @@ namespace ManaPHP\Http\Acl;
 class Command extends \ManaPHP\Cli\Command
 {
     /**
+     * list acl of controllers
+     *
      * @param string $role
      */
     public function listAction($role = '')

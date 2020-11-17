@@ -10,6 +10,8 @@ use ManaPHP\Helper\LocalFS;
 class Command extends \ManaPHP\Cli\Command
 {
     /**
+     * precompile sword template
+     *
      * @param bool $replace
      */
     public function compileAction($replace = false)

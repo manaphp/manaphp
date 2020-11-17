@@ -7,6 +7,8 @@ use ManaPHP\Cli\Command;
 class PasswordCommand extends Command
 {
     /**
+     * generate a new password
+     *
      * @param int    $length
      * @param string $password
      * @param int    $base
@@ -32,6 +34,10 @@ class PasswordCommand extends Command
         }
     }
 
+
+    /**
+     * generate password with every kind of cost
+     */
     public function costAction()
     {
         for ($i = 7; $i < 14; $i++) {
