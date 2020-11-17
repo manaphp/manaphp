@@ -7,10 +7,12 @@ use ManaPHP\Cli\Command;
 class ListCommand extends Command
 {
     /**
-     * @param bool $all
      * list all components
+     *
+     * @param bool $verbose
+     * @param bool $all
      */
-    public function componentsAction($all = false)
+    public function componentsAction($verbose = false, $all = false)
     {
         $components = [];
         foreach ($this->_di->getDefinitions() as $name => $definition) {
@@ -39,35 +41,58 @@ class ListCommand extends Command
 
         ksort($components);
 
-        foreach ($components as $name => $component) {
-            $this->console->writeLn('  ' . str_pad($name, 24, ' ') . '=> ' . $component);
+        if ($verbose) {
+            foreach ($components as $name => $component) {
+                $this->console->writeLn('  ' . str_pad($name, 24, ' ') . '=> ' . $component);
+            }
+        } else {
+            $this->console->writeLn(json_stringify(array_keys($components)));
         }
     }
 
     /**
      * list all plugins
+     *
+     * @param bool $verbose
      */
-    public function pluginsAction()
+    public function pluginsAction($verbose = false)
     {
-        $plugins = [];
-
-        foreach ($this->_di->getDefinitions('*Plugin') as $name => $_) {
-            $plugins[] = basename($name, 'Plugin');
+        $tracers = [];
+        foreach ($this->_di->getDefinitions('*Plugin') as $name => $definition) {
+            $tracers[basename($name, 'Plugin')] = $definition;
         }
 
-        $this->console->writeLn(json_stringify($plugins));
+        ksort($tracers);
+
+        if ($verbose) {
+            foreach ($tracers as $name => $definition) {
+                $this->console->writeLn(str_pad($name, 16, ' ') . ' => ' . $definition);
+            }
+        } else {
+            $this->console->writeLn(json_stringify(array_keys($tracers)));
+        }
     }
 
     /**
      * list all tracers
+     *
+     * @param bool $verbose
      */
-    public function tracersAction()
+    public function tracersAction($verbose = false)
     {
         $tracers = [];
-        foreach ($this->_di->getDefinitions('*Tracer') as $name => $_) {
-            $tracers[] = basename($name, 'Tracer');
+        foreach ($this->_di->getDefinitions('*Tracer') as $name => $definition) {
+            $tracers[basename($name, 'Tracer')] = $definition;
         }
 
-        $this->console->writeLn(json_stringify($tracers));
+        ksort($tracers);
+
+        if ($verbose) {
+            foreach ($tracers as $name => $definition) {
+                $this->console->writeLn(str_pad($name, 16, ' ') . ' => ' . $definition);
+            }
+        } else {
+            $this->console->writeLn(json_stringify(array_keys($tracers)));
+        }
     }
 }
