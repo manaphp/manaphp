@@ -151,6 +151,8 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
             $configure->registerCommands();
         }
 
+        $configure->registerTracers();
+
         $configure->registerAspects();
         $configure->registerServices();
         $configure->registerPlugins();

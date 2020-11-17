@@ -18,6 +18,5 @@ return [
     ],
     'plugins'    => [
         'wsPusher' => ['endpoint' => 'admin'],
-        'tracer'
     ]
 ];

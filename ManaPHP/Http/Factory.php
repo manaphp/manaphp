@@ -34,6 +34,8 @@ class Factory extends FactoryDefault
                 'verbsPlugin'     => 'ManaPHP\Http\VerbsPlugin',
 
                 'aclCommand' => 'ManaPHP\Http\Acl\Command',
+
+                'httpClientTracer' => 'ManaPHP\Http\Client\Tracer',
             ]
         );
 

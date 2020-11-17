@@ -19,7 +19,6 @@ return [
     'listeners'  => [],
     'plugins'    => [
         'cors',
-        'tracer',
         //'slowlog',
         //'logger',
         //'debugger',

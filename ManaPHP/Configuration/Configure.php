@@ -87,6 +87,11 @@ class Configure extends Component implements ConfigureInterface
     public $plugins = [];
 
     /**
+     * @var array
+     */
+    public $tracers = [];
+
+    /**
      * @param string $file
      *
      * @return static
@@ -154,6 +159,35 @@ class Configure extends Component implements ConfigureInterface
                 $di->remove($component);
             } elseif ($component[0] !== '!' || $di->has($component = substr($component, 1))) {
                 $di->setShared($component, $definition);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function registerTracers()
+    {
+        $di = $this->_di;
+
+        if ($appDir = $this->alias->get('@app')) {
+            foreach (LocalFS::glob('@app/Tracers/*Tracer.php') as $file) {
+                $command = basename($file, '.php');
+                $di->setShared(lcfirst($command), "App\Tracers\\$command");
+            }
+        }
+
+        if (in_array('*', $this->tracers, true)) {
+            foreach ($di->getDefinitions() as $name => $_) {
+                if (str_ends_with($name, 'Tracer')) {
+                    $di->getShared($name);
+                }
+            }
+        } else {
+            foreach ($this->tracers as $tracer) {
+                $di->getShared(lcfirst($tracer) . 'Tracer');
             }
         }
 

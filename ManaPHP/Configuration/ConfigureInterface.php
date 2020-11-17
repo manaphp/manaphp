@@ -37,6 +37,11 @@ interface ConfigureInterface
     /**
      * @return static
      */
+    public function registerTracers();
+
+    /**
+     * @return static
+     */
     public function registerCommands();
 
     /**

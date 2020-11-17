@@ -28,7 +28,6 @@ return [
     'services'   => [],
     'listeners'  => [],
     'plugins'    => [
-        'tracer',
         //'slowlog',
         //'logger',
         //'debugger',
