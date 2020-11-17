@@ -1,14 +1,13 @@
 <?php
 
-namespace ManaPHP\Cli\Commands;
+namespace ManaPHP\Data\Db;
 
-use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
 use ManaPHP\Data\Db;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
-class DbCommand extends Command
+class Command extends \ManaPHP\Cli\Command
 {
     /**
      * @return array

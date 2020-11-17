@@ -1,8 +1,6 @@
 <?php
 
-namespace ManaPHP\Cli\Commands;
-
-use ManaPHP\Cli\Command;
+namespace ManaPHP\Http\Acl;
 
 /**
  * Class AclCommand
@@ -11,7 +9,7 @@ use ManaPHP\Cli\Command;
  *
  * @property-read \ManaPHP\Http\Authorization\AclBuilderInterface $aclBuilder
  */
-class AclCommand extends Command
+class Command extends \ManaPHP\Cli\Command
 {
     /**
      * @param string $role

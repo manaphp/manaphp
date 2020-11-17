@@ -32,6 +32,8 @@ class Factory extends FactoryDefault
                 'requestIdPlugin' => 'ManaPHP\Http\RequestIdPlugin',
                 'slowlogPlugin'   => 'ManaPHP\Http\SlowlogPlugin',
                 'verbsPlugin'     => 'ManaPHP\Http\VerbsPlugin',
+
+                'aclCommand' => 'ManaPHP\Http\Acl\Command',
             ]
         );
 

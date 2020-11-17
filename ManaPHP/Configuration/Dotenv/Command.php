@@ -1,8 +1,6 @@
 <?php
 
-namespace ManaPHP\Cli\Commands;
-
-use ManaPHP\Cli\Command;
+namespace ManaPHP\Configuration\Dotenv;
 
 /**
  * Class DotenvCommand
@@ -11,7 +9,7 @@ use ManaPHP\Cli\Command;
  *
  * @property-read \ManaPHP\Configuration\DotenvInterface $dotenv
  */
-class DotenvCommand extends Command
+class Command extends \ManaPHP\Cli\Command
 {
     public function defaultAction()
     {

@@ -1,12 +1,11 @@
 <?php
 
-namespace ManaPHP\Cli\Commands;
+namespace ManaPHP\Bos;
 
-use ManaPHP\Cli\Command;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
 
-class BosCommand extends Command
+class Command extends \ManaPHP\Cli\Command
 {
     /**
      * list buckets

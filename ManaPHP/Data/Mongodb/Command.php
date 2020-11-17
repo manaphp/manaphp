@@ -1,13 +1,12 @@
 <?php
 
-namespace ManaPHP\Cli\Commands;
+namespace ManaPHP\Data\Mongodb;
 
-use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
-class MongodbCommand extends Command
+class Command extends \ManaPHP\Cli\Command
 {
     /**
      * @param array $services

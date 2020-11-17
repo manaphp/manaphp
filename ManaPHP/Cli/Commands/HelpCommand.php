@@ -49,8 +49,6 @@ class HelpCommand extends Command
      */
     protected function _getActions($commandClassName)
     {
-        $command = Str::underscore(basename(strtr($commandClassName, '\\', '/'), 'Command'));
-
         $actions = [];
         $rc = new ReflectionClass($commandClassName);
         foreach (get_class_methods($commandClassName) as $method) {
@@ -61,7 +59,7 @@ class HelpCommand extends Command
                 continue;
             }
 
-            $action = $command . ($match[1] === 'default' ? '' : (' ' . $match[1]));
+            $action = ($match[1] === 'default' ? '' : (' ' . $match[1]));
 
             $description = '';
             foreach (preg_split('#[\r\n]+#', $rc->getMethod($match[0])->getDocComment()) as $line) {

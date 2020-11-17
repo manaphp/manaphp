@@ -1,11 +1,10 @@
 <?php
 
-namespace ManaPHP\Cli\Commands;
+namespace ManaPHP\Mvc\View;
 
-use ManaPHP\Cli\Command;
 use ManaPHP\Helper\LocalFS;
 
-class ViewCommand extends Command
+class Command extends \ManaPHP\Cli\Command
 {
     /**
      * @param \ManaPHP\Data\ModelInterface $model

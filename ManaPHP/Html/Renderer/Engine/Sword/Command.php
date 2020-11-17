@@ -1,8 +1,7 @@
 <?php
 
-namespace ManaPHP\Cli\Commands;
+namespace ManaPHP\Html\Renderer\Engine\Sword;
 
-use ManaPHP\Cli\Command;
 use ManaPHP\Helper\LocalFS;
 
 /**
@@ -12,7 +11,7 @@ use ManaPHP\Helper\LocalFS;
  *
  * @property-read \ManaPHP\Html\Renderer\Engine\Sword\Compiler $swordCompiler
  */
-class SwordCommand extends Command
+class Command extends \ManaPHP\Cli\Command
 {
     /**
      * @param bool $replace
