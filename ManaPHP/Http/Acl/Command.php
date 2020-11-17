@@ -7,7 +7,7 @@ namespace ManaPHP\Http\Acl;
  *
  * @package ManaPHP\Cli\Commands
  *
- * @property-read \ManaPHP\Http\Authorization\AclBuilderInterface $aclBuilder
+ * @property-read \ManaPHP\Http\Acl\BuilderInterface $aclBuilder
  */
 class Command extends \ManaPHP\Cli\Command
 {

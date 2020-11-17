@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Http\Authorization;
+namespace ManaPHP\Http\Acl;
 
 use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
@@ -8,9 +8,9 @@ use ManaPHP\Helper\LocalFS;
 /**
  * Class Builder
  *
- * @package ManaPHP\Http\Authorization
+ * @package ManaPHP\Http\Acl
  */
-class AclBuilder extends Component implements AclBuilderInterface
+class Builder extends Component implements BuilderInterface
 {
     /**
      * @var array

@@ -1,8 +1,8 @@
 <?php
 
-namespace ManaPHP\Http\Authorization;
+namespace ManaPHP\Http\Acl;
 
-interface AclBuilderInterface
+interface BuilderInterface
 {
     /**
      * @return array

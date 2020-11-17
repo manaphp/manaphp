@@ -22,6 +22,7 @@ class Factory extends FactoryDefault
                 'captcha'        => 'ManaPHP\Http\Captcha',
                 'authorization'  => 'ManaPHP\Http\Authorization',
                 'globalsManager' => 'ManaPHP\Http\Globals\Manager',
+                'aclBuilder'     => 'ManaPHP\Http\Acl\Builder',
 
                 'corsPlugin'      => 'ManaPHP\Http\CorsPlugin',
                 'csrfPlugin'      => 'ManaPHP\Http\CsrfPlugin',

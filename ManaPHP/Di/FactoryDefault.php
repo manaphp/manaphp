@@ -51,7 +51,6 @@ class FactoryDefault extends Di
             'rabbitmq'         => 'ManaPHP\Messaging\Amqp',
             'relationsManager' => 'ManaPHP\Data\Relation\Manager',
             'mailer'           => 'ManaPHP\Mailing\Mailer\Adapter\Smtp',
-            'aclBuilder'       => 'ManaPHP\Http\Authorization\AclBuilder',
             'bosClient'        => 'ManaPHP\Bos\Client',
             'wsPusher'         => 'ManaPHP\Ws\Pusher',
             'identity'         => 'ManaPHP\Identity',
