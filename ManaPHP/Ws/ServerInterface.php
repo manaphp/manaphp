@@ -44,4 +44,9 @@ interface ServerInterface
      * @return void
      */
     public function reload();
+
+    /**
+     * @return int
+     */
+    public function getWorkerId();
 }

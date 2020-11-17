@@ -50,6 +50,11 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     protected $_contexts = [];
 
     /**
+     * @var int
+     */
+    protected $_worker_id;
+
+    /**
      * @var array
      */
     protected $_messageCoroutines = [];
@@ -165,6 +170,8 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function onWorkerStart($server, $worker_id)
     {
+        $this->_worker_id = $worker_id;
+
         @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->configure->id, $worker_id));
 
         try {
@@ -356,5 +363,13 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     public function reload()
     {
         $this->_swoole->reload();
+    }
+
+    /**
+     * @return int
+     */
+    public function getWorkerId()
+    {
+        return $this->_worker_id;
     }
 }
