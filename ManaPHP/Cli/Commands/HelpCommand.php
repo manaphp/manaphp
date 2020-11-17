@@ -21,12 +21,21 @@ class HelpCommand extends Command
      */
     public function listAction()
     {
-        $this->console->writeLn('manaphp commands:', Console::FC_GREEN | Console::AT_BOLD);
+        $builtin_commands = [];
+        $app_commands = [];
         foreach ($this->_di->getDefinitions() as $name => $definition) {
-            if (!str_ends_with($name, 'Command')) {
-                continue;
+            if (is_string($definition) && str_ends_with($name, 'Command')) {
+                if (str_starts_with($definition, 'App\\')) {
+                    $app_commands[$name] = $definition;
+                } else {
+                    $builtin_commands[$name] = $definition;
+                }
             }
+        }
 
+        $this->console->writeLn('manaphp commands:', Console::FC_GREEN | Console::AT_BOLD);
+        ksort($builtin_commands);
+        foreach ($builtin_commands as $name => $definition) {
             $plainName = ucfirst($name);
             $command = Str::underscore(basename($plainName, 'Command'));
             $this->console->writeLn(' - ' . $this->console->colorize($command, Console::FC_YELLOW));
@@ -39,6 +48,20 @@ class HelpCommand extends Command
             }
         }
 
+        ksort($app_commands);
+        $this->console->writeLn('application commands:', Console::FC_GREEN | Console::AT_BOLD);
+        foreach ($app_commands as $name => $definition) {
+            $plainName = ucfirst($name);
+            $command = Str::underscore(basename($plainName, 'Command'));
+            $this->console->writeLn(' - ' . $this->console->colorize($command, Console::FC_YELLOW));
+            $actions = $this->_getActions($definition);
+
+            $width = max(max(array_map('strlen', array_keys($actions))), 18);
+            foreach ($actions as $action => $description) {
+                $colored_action = $this->console->colorize($action, Console::FC_CYAN, $width);
+                $this->console->writeLn('    ' . $colored_action . ' ' . $description);
+            }
+        }
         return 0;
     }
 
