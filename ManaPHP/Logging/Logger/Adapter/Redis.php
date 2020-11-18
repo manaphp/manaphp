@@ -16,6 +16,10 @@ class Redis extends Logger
      */
     public function __construct($options = [])
     {
+        if (isset($options['redisBroker'])) {
+            $this->_injections['redisBroker'] = $options['redisBroker'];
+        }
+
         parent::__construct($options);
 
         $this->_key = $options['key'] ?? "cache:{$this->configure->id}:logger";

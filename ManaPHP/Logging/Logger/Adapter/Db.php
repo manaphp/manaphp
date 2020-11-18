@@ -10,11 +10,6 @@ class Db extends Logger
     /**
      * @var string
      */
-    protected $_db = 'db';
-
-    /**
-     * @var string
-     */
     protected $_table = 'manaphp_log';
 
     /**
@@ -22,11 +17,11 @@ class Db extends Logger
      */
     public function __construct($options = [])
     {
-        parent::__construct($options);
-
         if (isset($options['db'])) {
-            $this->_db = $options['db'];
+            $this->_injections['db'] = $options['db'];
         }
+
+        parent::__construct($options);
 
         if (isset($options['table'])) {
             $this->_table = $options['table'];
@@ -42,15 +37,12 @@ class Db extends Logger
     {
         $context = $this->_context;
 
-        /** @var \ManaPHP\Data\DbInterface $db */
-        $db = $this->getShared($this->_db);
-
         $level = $context->level;
         $context->level = Logger::LEVEL_FATAL;
 
         foreach ($logs as $log) {
             try {
-                $db->insert(
+                $this->db->insert(
                     $this->_table, [
                         'host'         => $log->host,
                         'client_ip'    => $log->client_ip,

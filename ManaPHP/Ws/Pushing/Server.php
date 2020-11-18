@@ -51,6 +51,10 @@ class Server extends Component implements ServerInterface, LogCategorizable
      */
     public function __construct($options = [])
     {
+        if (isset($options['pubSub'])) {
+            $this->_injections['pubSub'] = $options['pubSub'];
+        }
+
         $this->_endpoint = $options['endpoint'];
 
         if (isset($options['prefix'])) {

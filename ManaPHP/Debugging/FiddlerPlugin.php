@@ -46,6 +46,10 @@ class FiddlerPlugin extends Plugin
      */
     public function __construct($options = [])
     {
+        if (isset($options['redisBroker'])) {
+            $this->_injections['redisBroker'] = $options['redisBroker'];
+        }
+
         $context = $this->_context;
 
         if (MANAPHP_CLI) {

@@ -23,6 +23,10 @@ class Redis extends Component implements SettingsInterface
      */
     public function __construct($options = [])
     {
+        if (isset($options['redisDb'])) {
+            $this->_injections['redisDb'] = $options['redisDb'];
+        }
+
         if (isset($options['key'])) {
             $this->_key = $options['key'];
         }

@@ -7,6 +7,16 @@ use ManaPHP\Messaging\PubSubInterface;
 
 class Redis extends Component implements PubSubInterface
 {
+    /**
+     * @param array $options
+     */
+    public function __construct($options = [])
+    {
+        if (isset($options['redisBroker'])) {
+            $this->_injections['redisBroker'] = $options['redisBroker'];
+        }
+    }
+
     /** @noinspection PhpUnusedParameterInspection */
     public function subscribe($channels, $callback)
     {

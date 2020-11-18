@@ -39,6 +39,10 @@ class PageCachePlugin extends Plugin
      */
     public function __construct($options = [])
     {
+        if (isset($options['redisCache'])) {
+            $this->_injections['redisCache'] = $options['redisCache'];
+        }
+
         if (isset($options['enabled'])) {
             $this->_enabled = (bool)$options['enabled'];
         }

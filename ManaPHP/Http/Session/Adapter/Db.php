@@ -22,11 +22,6 @@ class Db extends Session
     /**
      * @var string
      */
-    protected $_db = 'db';
-
-    /**
-     * @var string
-     */
     protected $_source = 'manaphp_session';
 
     /**
@@ -34,11 +29,11 @@ class Db extends Session
      */
     public function __construct($options = [])
     {
-        parent::__construct($options);
-
         if (isset($options['db'])) {
-            $this->_db = $options['db'];
+            $this->_injections['db'] = $options['db'];
         }
+
+        parent::__construct($options);
 
         if (isset($options['source'])) {
             $this->_source = $options['source'];
@@ -52,10 +47,7 @@ class Db extends Session
      */
     public function do_read($session_id)
     {
-        /** @var \ManaPHP\Data\DbInterface $db */
-        $db = $this->getShared($this->_db);
-
-        return $db->query($this->_source)->whereEq('session_id', $session_id)->value('data', '');
+        return $this->db->query($this->_source)->whereEq('session_id', $session_id)->value('data', '');
     }
 
     /**
@@ -67,9 +59,6 @@ class Db extends Session
      */
     public function do_write($session_id, $data, $ttl)
     {
-        /** @var \ManaPHP\Data\DbInterface $db */
-        $db = $this->getShared($this->_db);
-
         $field_values = [
             'user_id'      => $this->identity->getId(0),
             'client_ip'    => $this->request->getClientIp(),
@@ -78,11 +67,11 @@ class Db extends Session
             'expired_time' => $ttl + time()
         ];
 
-        if ($db->query($this->_source)->exists()) {
-            $db->update($this->_source, $field_values, ['session_id' => $session_id]);
+        if ($this->db->query($this->_source)->exists()) {
+            $this->db->update($this->_source, $field_values, ['session_id' => $session_id]);
         } else {
             $field_values['session_id'] = $session_id;
-            $db->insert($this->_source, $field_values);
+            $this->db->insert($this->_source, $field_values);
         }
 
         return true;
@@ -96,9 +85,6 @@ class Db extends Session
      */
     public function do_touch($session_id, $ttl)
     {
-        /** @var \ManaPHP\Data\DbInterface $db */
-        $db = $this->getShared($this->_db);
-
         $field_values = [
             'user_id'      => $this->identity->getId(0),
             'client_ip'    => $this->request->getClientIp(),
@@ -106,7 +92,7 @@ class Db extends Session
             'expired_time' => $ttl + time()
         ];
 
-        return $db->update($this->_source, $field_values, ['session_id' => $session_id]) > 0;
+        return $this->db->update($this->_source, $field_values, ['session_id' => $session_id]) > 0;
     }
 
     /**
@@ -116,10 +102,7 @@ class Db extends Session
      */
     public function do_destroy($session_id)
     {
-        /** @var \ManaPHP\Data\DbInterface $db */
-        $db = $this->getShared($this->_db);
-
-        $db->delete($this->_source, ['session_id' => $session_id]);
+        $this->db->delete($this->_source, ['session_id' => $session_id]);
 
         return true;
     }
@@ -131,10 +114,7 @@ class Db extends Session
      */
     public function do_gc($ttl)
     {
-        /** @var \ManaPHP\Data\DbInterface $db */
-        $db = $this->getShared($this->_db);
-
-        $db->query($this->_source)->whereCmp('expired_time', '<=', time())->delete();
+        $this->db->query($this->_source)->whereCmp('expired_time', '<=', time())->delete();
 
         return true;
     }

@@ -20,11 +20,6 @@ class Db extends Cache
     /**
      * @var string
      */
-    protected $_db = 'db';
-
-    /**
-     * @var string
-     */
     protected $_source = 'manaphp_cache';
 
     /**
@@ -33,7 +28,7 @@ class Db extends Cache
     public function __construct($options = [])
     {
         if (isset($options['db'])) {
-            $this->_db = $options['db'];
+            $this->_injections['db'] = $options['db'];
         }
 
         if (isset($options['source'])) {
@@ -48,10 +43,7 @@ class Db extends Cache
      */
     public function do_exists($key)
     {
-        /** @var \ManaPHP\Data\DbInterface $db */
-        $db = $this->getShared($this->_db);
-
-        return $db->query($this->_source)->whereEq('hash', md5($key))->value('expired_time') >= time();
+        return $this->db->query($this->_source)->whereEq('hash', md5($key))->value('expired_time') >= time();
     }
 
     /**
@@ -61,10 +53,7 @@ class Db extends Cache
      */
     public function do_get($key)
     {
-        /** @var \ManaPHP\Data\DbInterface $db */
-        $db = $this->getShared($this->_db);
-
-        $r = $db->query($this->_source)->whereEq('hash', md5($key))->first();
+        $r = $this->db->query($this->_source)->whereEq('hash', md5($key))->first();
         if ($r && $r['expired_time'] > time()) {
             return $r['value'];
         } else {
@@ -81,16 +70,13 @@ class Db extends Cache
      */
     public function do_set($key, $value, $ttl)
     {
-        /** @var \ManaPHP\Data\DbInterface $db */
-        $db = $this->getShared($this->_db);
-
         $hash = md5($key);
         $expired_time = time() + $ttl;
 
-        if ($db->query($this->_source)->whereEq('hash', $hash)->exists()) {
-            $db->update($this->_source, compact('value', 'ttl', 'expired_time'), ['hash' => $hash]);
+        if ($this->db->query($this->_source)->whereEq('hash', $hash)->exists()) {
+            $this->db->update($this->_source, compact('value', 'ttl', 'expired_time'), ['hash' => $hash]);
         } else {
-            $db->insert($this->_source, compact('hash', 'key', 'value', 'ttl', 'expired_time'));
+            $this->db->insert($this->_source, compact('hash', 'key', 'value', 'ttl', 'expired_time'));
         }
     }
 
@@ -101,8 +87,6 @@ class Db extends Cache
      */
     public function do_delete($key)
     {
-        /** @var \ManaPHP\Data\DbInterface $db */
-        $db = $this->getShared($this->_db);
-        $db->delete($this->_source, ['hash' => md5($key)]);
+        $this->db->delete($this->_source, ['hash' => md5($key)]);
     }
 }
