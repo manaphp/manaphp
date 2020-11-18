@@ -23,6 +23,11 @@ class Server extends Component implements ServerInterface, LogCategorizable
     /**
      * @var bool
      */
+    protected $_shared = true;
+
+    /**
+     * @var bool
+     */
     protected $_sso = false;
 
     /**
@@ -54,6 +59,10 @@ class Server extends Component implements ServerInterface, LogCategorizable
         if (isset($options['sso'])) {
             $this->_sso = (bool)$options['sso'];
         }
+
+        if (isset($options['shared'])) {
+            $this->_shared = (bool)$options['shared'];
+        }
     }
 
     public function categorizeLog()
@@ -63,7 +72,9 @@ class Server extends Component implements ServerInterface, LogCategorizable
 
     public function open($fd)
     {
-        $this->_fds[$fd] = true;
+        if ($this->_shared) {
+            $this->_fds[$fd] = true;
+        }
 
         if (!$id = $this->identity->getId('')) {
             return;
@@ -86,7 +97,9 @@ class Server extends Component implements ServerInterface, LogCategorizable
 
     public function close($fd)
     {
-        unset($this->_fds[$fd]);
+        if ($this->_shared) {
+            unset($this->_fds[$fd]);
+        }
 
         if (!$id = $this->identity->getId('')) {
             return;
@@ -232,8 +245,12 @@ class Server extends Component implements ServerInterface, LogCategorizable
 
     public function broadcast($message)
     {
-        foreach ($this->_fds as $fd => $_) {
-            $this->push($fd, $message);
+        if ($this->_shared) {
+            foreach ($this->_fds as $fd => $_) {
+                $this->push($fd, $message);
+            }
+        } else {
+            $this->wsServer->broadcast($message);
         }
     }
 
