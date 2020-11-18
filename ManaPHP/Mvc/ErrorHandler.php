@@ -38,6 +38,7 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
 
         if ($this->request->isAjax()) {
             if ($this->configure->debug) {
+                $json['message'] = get_class($throwable) . ": " . $throwable->getMessage();
                 $json['exception'] = explode("\n", $throwable);
             }
             $this->response->setStatus($code)->setJsonContent(json_stringify($json, JSON_INVALID_UTF8_SUBSTITUTE));

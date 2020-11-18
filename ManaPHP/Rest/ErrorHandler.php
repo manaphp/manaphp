@@ -35,6 +35,7 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
         }
 
         if ($this->configure->debug) {
+            $json['message'] = get_class($throwable) . ': ' . $throwable->getMessage();
             $json['exception'] = explode("\n", $throwable);
         }
 
