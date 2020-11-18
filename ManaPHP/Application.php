@@ -23,6 +23,10 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
      */
     public function __construct($loader = null)
     {
+        if ($loader === null) {
+            $loader = new Loader();
+        }
+
         if (!defined('MANAPHP_CLI')) {
             define('MANAPHP_CLI', basename($_SERVER['SCRIPT_FILENAME']) === 'manacli.php');
         }
@@ -40,7 +44,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
             define('MANAPHP_COROUTINE_ENABLED', PHP_SAPI === 'cli' && extension_loaded('swoole'));
         }
 
-        $this->setShared('loader', $loader ?: new Loader());
+        $this->setShared('loader', $loader);
         $this->setShared('app', $this);
 
         $rootDir = $this->getRootDir();
