@@ -16,7 +16,7 @@ interface Injectable
     /**
      * Returns the internal dependency injector
      *
-     * @return \ManaPHP\Di
+     * @return \ManaPHP\DiInterface
      */
     public function getDi();
 
