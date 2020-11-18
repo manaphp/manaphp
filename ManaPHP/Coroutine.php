@@ -16,4 +16,15 @@ class Coroutine
             return debug_backtrace($options, $limit);
         }
     }
+
+    /**
+     * @param callable $func
+     * @param mixed    $params
+     *
+     * @return mixed
+     */
+    public static function create(callable $func, ...$params)
+    {
+        return \Swoole\Coroutine::create($func, ...$params);
+    }
 }
