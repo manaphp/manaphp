@@ -3,6 +3,7 @@
 namespace ManaPHP\Ws\Pushing;
 
 use ManaPHP\Component;
+use ManaPHP\Coroutine;
 use ManaPHP\Logging\Logger\LogCategorizable;
 
 /**
@@ -281,20 +282,24 @@ class Server extends Component implements ServerInterface, LogCategorizable
 
     public function start()
     {
-        $this->pubSub->psubscribe(
-            [$this->_prefix . $this->_endpoint . ':*'], function ($channel, $data) {
-            if (($pos = strrpos($channel, ':')) !== false) {
-                $type = substr($channel, $pos + 1);
+        Coroutine::create(
+            function () {
+                $this->pubSub->psubscribe(
+                    [$this->_prefix . $this->_endpoint . ':*'], function ($channel, $data) {
+                    if (($pos = strrpos($channel, ':')) !== false) {
+                        $type = substr($channel, $pos + 1);
 
-                $pos = strpos($data, ':');
-                $receivers = substr($data, 0, $pos);
-                $message = substr($data, $pos + 1);
-                $this->logger->debug(compact('type', 'receivers', 'message'));
-                $this->dispatch($type, $receivers, $message);
-            } else {
-                $this->logger->warn($channel, 'wspServer.bad_channel');
+                        $pos = strpos($data, ':');
+                        $receivers = substr($data, 0, $pos);
+                        $message = substr($data, $pos + 1);
+                        $this->logger->debug(compact('type', 'receivers', 'message'));
+                        $this->dispatch($type, $receivers, $message);
+                    } else {
+                        $this->logger->warn($channel, 'wspServer.bad_channel');
+                    }
+                }
+                );
             }
-        }
         );
     }
 }
