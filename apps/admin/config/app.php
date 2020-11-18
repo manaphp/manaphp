@@ -14,7 +14,7 @@ return [
     'components' => [
         '!httpServer' => [
             'port'                  => 9501,
-            'worker_num'            => 1,
+            'worker_num'            => 4,
             'max_request'           => 1000000,
             'enable_static_handler' => env('APP_DEBUG', false)
         ],
@@ -28,9 +28,9 @@ return [
     'services'   => [],
     'listeners'  => [],
     'plugins'    => [
+        'debugger',
         //'slowlog',
         //'logger',
-        //'debugger',
         'adminActionLog',
     ]
 ];

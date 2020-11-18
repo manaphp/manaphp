@@ -18,9 +18,10 @@ return [
     'services'   => [],
     'listeners'  => [],
     'plugins'    => [
+        'debugger',
         'cors',
         //'slowlog',
         //'logger',
-        //'debugger',
-    ]
+    ],
+    'tracers'    => []
 ];
