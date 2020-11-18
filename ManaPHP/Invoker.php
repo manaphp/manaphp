@@ -54,9 +54,11 @@ class Invoker extends Component implements InvokerInterface
                     $missing[] = $name_of_id;
                     $name_of_id = '';
                 }
+            } elseif ($type === 'NULL') {
+                $value = null;
             }
 
-            if ($value === null) {
+            if ($value === null && $type !== 'NULL') {
                 $missing[] = $name;
                 continue;
             }
