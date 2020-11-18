@@ -256,6 +256,12 @@ subsplit_publish()
 
 		for TAG in $TAGS
 		do
+			if [ "${TAG}" \< "v1.7.0" ]
+			then
+				say " - skipping tag '${TAG}'"
+				continue
+			fi
+
 			if [ -n "$VERBOSE" ];
 			then
 				echo "${DEBUG} git show-ref --quiet --verify -- \"refs/tags/${TAG}\""
