@@ -12,7 +12,8 @@ use ManaPHP\Mvc\Controller;
  * Class RbacPermissionController
  *
  * @package App\Controllers
- * @property-read \ManaPHP\AuthorizationInterface $authorization
+ * @property-read \ManaPHP\Http\AuthorizationInterface $authorization
+ * @property-read \ManaPHP\Http\Acl\BuilderInterface   $aclBuilder
  *
  */
 class PermissionController extends Controller

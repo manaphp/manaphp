@@ -10,7 +10,7 @@ use ManaPHP\Mvc\View\Widget;
  * Class SideMenuWidget
  *
  * @package App\Widgets
- * @property-read \ManaPHP\AuthorizationInterface $authorization
+ * @property-read \ManaPHP\Http\AuthorizationInterface $authorization
  */
 class SideMenuWidget extends Widget
 {

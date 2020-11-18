@@ -3,8 +3,8 @@
 namespace App\Areas\Admin\Services;
 
 use App\Models\Admin;
-use ManaPHP\Identity\Adapter\Jwt;
 use ManaPHP\Service;
+use ManaPHP\Token\Jwt;
 
 class ResetPasswordTokenService extends Service
 {
@@ -25,7 +25,6 @@ class ResetPasswordTokenService extends Service
      * @param $admin_name
      *
      * @return string
-     * @throws \ManaPHP\Data\Model\NotFoundException
      */
     public function generate($admin_name)
     {

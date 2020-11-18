@@ -12,7 +12,7 @@ use ManaPHP\Mvc\Controller;
  *
  * @package App\Areas\Rbac\Models
  *
- * @property-read \ManaPHP\AuthorizationInterface $authorization
+ * @property-read \ManaPHP\Http\AuthorizationInterface $authorization
  */
 class RolePermissionController extends Controller
 {
