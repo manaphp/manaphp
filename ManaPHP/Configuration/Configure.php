@@ -299,23 +299,21 @@ class Configure extends Component implements ConfigureInterface
      */
     public function registerListeners()
     {
-        $eventsManager = $this->getShared('eventsManager');
-
         foreach ($this->listeners as $listener) {
             if ($listener === '*') {
                 foreach (LocalFS::glob('@app/Areas/*/Listeners/*Listener.php') as $item) {
                     $item = str_replace($this->alias->get('@app'), 'App', $item);
                     $item = substr(str_replace('/', '\\', $item), 0, -4);
-                    $eventsManager->addListener($item);
+                    $this->eventsManager->addListener($item);
                 }
 
                 foreach (LocalFS::glob('@app/Listeners/*Listener.php') as $item) {
                     $item = str_replace($this->alias->get('@app'), 'App', $item);
                     $item = substr(str_replace('/', '\\', $item), 0, -4);
-                    $eventsManager->addListener($item);
+                    $this->eventsManager->addListener($item);
                 }
             } else {
-                $eventsManager->addListener($listener);
+                $this->eventsManager->addListener($listener);
             }
         }
 
