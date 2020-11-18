@@ -12,18 +12,18 @@ return [
     'aliases'    => [
     ],
     'components' => [
-        '!httpServer' => [
+        'httpServer' => [
             'port'                  => 9501,
             'worker_num'            => 4,
             'max_request'           => 1000000,
             'enable_static_handler' => env('APP_DEBUG', false)
         ],
-        'db'          => env('DB_URL'),
-        'redis'       => env('REDIS_URL'),
-        'logger'      => ['level' => env('LOGGER_LEVEL', 'info')],
-        '!session'    => ['ttl' => seconds('1d')],
-        'restClient'  => ['proxy' => env('REST_CLIENT_PROXY', '')],
-        'bosClient'   => ['endpoint' => env('BOS_UPLOADER_ENDPOINT')],
+        'db'         => env('DB_URL'),
+        'redis'      => env('REDIS_URL'),
+        'logger'     => ['level' => env('LOGGER_LEVEL', 'info')],
+        'session'    => ['ttl' => seconds('1d')],
+        'restClient' => ['proxy' => env('REST_CLIENT_PROXY', '')],
+        'bosClient'  => ['endpoint' => env('BOS_UPLOADER_ENDPOINT')],
     ],
     'services'   => [],
     'listeners'  => [],
@@ -32,5 +32,6 @@ return [
         //'slowlog',
         //'logger',
         'adminActionLog',
-    ]
+    ],
+    'tracers'    => ['*'],
 ];

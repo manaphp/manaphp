@@ -10,10 +10,10 @@ return [
     'params'     => [],
     'aliases'    => [],
     'components' => [
-        '!rpcServer' => ['port' => 9501, 'worker_num' => 4, 'max_request' => 1000000],
-        'db'         => [env('DB_URL')],
-        'redis'      => [env('REDIS_URL')],
-        'logger'     => ['level' => env('LOGGER_LEVEL', 'info')],
+        'rpcServer' => ['port' => 9501, 'worker_num' => 4, 'max_request' => 1000000],
+        'db'        => [env('DB_URL')],
+        'redis'     => [env('REDIS_URL')],
+        'logger'    => ['level' => env('LOGGER_LEVEL', 'info')],
     ],
     'services'   => [],
     'listeners'  => [],
@@ -21,5 +21,6 @@ return [
         //'slowlog',
         //'logger',
         //'debugger',
-    ]
+    ],
+    'tracers'    => ['*'],
 ];

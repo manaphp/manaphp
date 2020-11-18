@@ -11,19 +11,19 @@ return [
     'aliases'    => [
     ],
     'components' => [
-        '!httpServer' => [
+        'httpServer' => [
             'port'                  => 9501,
             'worker_num'            => 2,
             'max_request'           => 1000000,
             'enable_static_handler' => env('APP_DEBUG', false)
         ],
-        'db'          => env('DB_URL'),
-        'redis'       => env('REDIS_URL'),
-        'logger'      => ['level' => env('LOGGER_LEVEL', 'info')],
+        'db'         => env('DB_URL'),
+        'redis'      => env('REDIS_URL'),
+        'logger'     => ['level' => env('LOGGER_LEVEL', 'info')],
     ],
     'services'   => [],
     'plugins'    => [
         'debugger',
     ],
-    'tracers'    => ['*']
+    'tracers'    => ['*'],
 ];

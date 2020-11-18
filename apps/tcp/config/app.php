@@ -11,13 +11,14 @@ return [
     'aliases'    => [
     ],
     'components' => [
-        '!socketServer' => ['open_length_check' => true, 'package_length_type' => "L", 'package_body_offset' => 4],
-        'db'            => env('DB_URL'),
-        'redis'         => env('REDIS_URL'),
-        'logger'        => ['level' => env('LOGGER_LEVEL', 'info')]
+        'socketServer' => ['open_length_check' => true, 'package_length_type' => "L", 'package_body_offset' => 4],
+        'db'           => env('DB_URL'),
+        'redis'        => env('REDIS_URL'),
+        'logger'       => ['level' => env('LOGGER_LEVEL', 'info')]
     ],
     'services'   => [
         'timeService' => ['endpoint' => 'http://localhost:85/time']
     ],
-    'plugins'    => []
+    'plugins'    => [],
+    'tracers'    => ['*'],
 ];

@@ -11,12 +11,13 @@ return [
     'aliases'    => [
     ],
     'components' => [
-        'wsServer' => ['port' => 9501],
+        'wsServer'  => ['port' => 9501],
         'db'        => [env('DB_URL')],
         'redis'     => [env('REDIS_URL')],
         'logger'    => ['level' => env('LOGGER_LEVEL', 'info')],
         'wspServer' => ['endpoint' => 'admin'],
         'wspClient' => ['endpoint' => 'admin'],
     ],
-    'tracers'    => []
+    'plugins'    => [],
+    'tracers'    => ['*'],
 ];

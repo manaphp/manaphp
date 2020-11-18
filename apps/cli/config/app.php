@@ -18,5 +18,6 @@ return [
     'services'   => [
         'timeService' => ['endpoint' => 'http://localhost:85/time']
     ],
-    'plugins'    => []
+    'plugins'    => [],
+    'tracers'    => ['*'],
 ];
