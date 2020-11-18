@@ -85,6 +85,10 @@ class DebuggerPlugin extends Plugin
             $this->_ttl = (int)$options['ttl'];
         }
 
+        if (!class_exists('Redis')) {
+            $this->_ttl = 0;
+        }
+
         $this->_prefix = $options['prefix'] ?? "cache:{$this->configure->id}:debuggerPlugin:";
 
         if (isset($options['template'])) {
