@@ -12,6 +12,6 @@ class Application extends \ManaPHP\Ws\Application
 //        $this->wspClient->pushToAll('abc', 'admin');
 //        $this->wspClient->broadcast(date('Y-m-d H:i:s'),'admin');
 //
-        $this->identity->setClaims(['user_id' => 1, 'user_name' => 'mark', 'role' => 'admin']);
+        $this->identity->setClaims(['user_id' => 1, 'user_name' => 'admin', 'role' => 'admin']);
     }
 }

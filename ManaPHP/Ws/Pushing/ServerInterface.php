@@ -10,6 +10,20 @@ interface ServerInterface
     public function start();
 
     /**
+     * @param int $fd
+     *
+     * @return void
+     */
+    public function open($fd);
+
+    /**
+     * @param int $fd
+     *
+     * @return void
+     */
+    public function close($fd);
+
+    /**
      * @param int    $fd
      * @param string $message
      *

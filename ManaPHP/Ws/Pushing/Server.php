@@ -3,7 +3,6 @@
 namespace ManaPHP\Ws\Pushing;
 
 use ManaPHP\Component;
-use ManaPHP\Event\EventArgs;
 use ManaPHP\Logging\Logger\LogCategorizable;
 
 /**
@@ -37,6 +36,11 @@ class Server extends Component implements ServerInterface, LogCategorizable
     protected $_users = [];
 
     /**
+     * @var array
+     */
+    protected $_fds = [];
+
+    /**
      * @param array $options
      */
     public function __construct($options = [])
@@ -50,9 +54,6 @@ class Server extends Component implements ServerInterface, LogCategorizable
         if (isset($options['sso'])) {
             $this->_sso = (bool)$options['sso'];
         }
-
-        $this->attachEvent('wsServer:open', [$this, 'onOpen']);
-        $this->attachEvent('wsServer:close', [$this, 'onClose']);
     }
 
     public function categorizeLog()
@@ -60,9 +61,9 @@ class Server extends Component implements ServerInterface, LogCategorizable
         return str_replace('\\', '.', get_class($this));
     }
 
-    public function onOpen(EventArgs $eventArgs)
+    public function open($fd)
     {
-        $fd = $eventArgs->data;
+        $this->_fds[$fd] = true;
 
         if (!$id = $this->identity->getId('')) {
             return;
@@ -83,9 +84,9 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
-    public function onClose(EventArgs $eventArgs)
+    public function close($fd)
     {
-        $fd = $eventArgs->data;
+        unset($this->_fds[$fd]);
 
         if (!$id = $this->identity->getId('')) {
             return;
@@ -231,8 +232,8 @@ class Server extends Component implements ServerInterface, LogCategorizable
 
     public function broadcast($message)
     {
-        if ($this->wsServer->getWorkerId() === 0) {
-            $this->wsServer->broadcast($message);
+        foreach ($this->_fds as $fd => $_) {
+            $this->push($fd, $message);
         }
     }
 

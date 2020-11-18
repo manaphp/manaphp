@@ -10,4 +10,14 @@ class PushController extends Controller
     {
         $this->wspServer->start();
     }
+
+    public function openAction($fd)
+    {
+        $this->wspServer->open($fd);
+    }
+
+    public function closeAction($fd)
+    {
+        $this->wspServer->close($fd);
+    }
 }
