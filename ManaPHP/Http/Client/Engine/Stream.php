@@ -221,6 +221,8 @@ class Stream extends Component implements EngineInterface
                         } else {
                             throw new TimeoutException($request->url);
                         }
+                    } elseif (feof($stream)) {
+                        break;
                     }
                     $body .= $r;
                 }
