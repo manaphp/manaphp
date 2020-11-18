@@ -4,11 +4,12 @@ namespace ManaPHP\Ws\Pushing;
 
 use ManaPHP\Component;
 use ManaPHP\Event\EventArgs;
+use ManaPHP\Logging\Logger\LogCategorizable;
 
 /**
  * @property-read \ManaPHP\Ws\ServerInterface $wsServer
  */
-class Server extends Component implements ServerInterface
+class Server extends Component implements ServerInterface, LogCategorizable
 {
     /**
      * @var array
@@ -52,6 +53,11 @@ class Server extends Component implements ServerInterface
 
         $this->attachEvent('wsServer:open', [$this, 'onOpen']);
         $this->attachEvent('wsServer:close', [$this, 'onClose']);
+    }
+
+    public function categorizeLog()
+    {
+        return str_replace('\\', '.', get_class($this));
     }
 
     public function onOpen(EventArgs $eventArgs)
