@@ -2,8 +2,8 @@
 
 namespace App\Controllers;
 
+use ManaPHP\Coroutine;
 use ManaPHP\Ws\Controller;
-use Swoole\Coroutine;
 
 class TimeController extends Controller
 {
@@ -24,7 +24,7 @@ class TimeController extends Controller
                             $this->_last_time[$fd] = $time;
                         }
                     }
-                    time_sleep_until($time + 1);
+                    @time_sleep_until($time + 1);
                 }
             }
         );
