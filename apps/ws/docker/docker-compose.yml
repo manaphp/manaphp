@@ -1,12 +1,12 @@
 version: "2"
 services:
-  websocket:
+  ws:
     image: manaphp/php74:3.1
     volumes:
       - /usr/share/zoneinfo/PRC:/etc/localtime
       - ../:/var/www/html
-      - /data/volumes/${COMPOSE_PROJECT_NAME}/websocket/data:/var/www/html/data
-      - /data/volumes/${COMPOSE_PROJECT_NAME}/websocket/tmp:/var/www/html/tmp
+      - /data/volumes/${COMPOSE_PROJECT_NAME}/ws/data:/var/www/html/data
+      - /data/volumes/${COMPOSE_PROJECT_NAME}/ws/tmp:/var/www/html/tmp
       - ../../../ManaPHP:/var/www/html/vendor/manaphp/framework
     command: php -d opcache.enable_cli=on /var/www/html/public/index.php
     ports:
