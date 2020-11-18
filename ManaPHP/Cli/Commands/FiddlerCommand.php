@@ -10,17 +10,6 @@ use ManaPHP\Cli\Command;
 class FiddlerCommand extends Command
 {
     /**
-     * @param \ManaPHP\DiInterface $di
-     */
-    public function setDi($di)
-    {
-        if (!$di->has('fiddlerPlugin')) {
-            $di->setShared('fiddlerPlugin', 'ManaPHP\Plugins\FiddlerPlugin');
-        }
-        parent::setDi($di);
-    }
-
-    /**
      * fiddler app
      *
      * @param string $id app id
