@@ -113,6 +113,19 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
     }
 
     /**
+     * @param string $old
+     * @param string $new
+     *
+     * @return static
+     */
+    public function inject($old, $new)
+    {
+        $this->_injections[$old] = $new;
+
+        return $this;
+    }
+
+    /**
      * @return object
      */
     protected function _createContext()

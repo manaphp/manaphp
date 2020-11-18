@@ -34,4 +34,12 @@ interface Injectable
      * @return mixed
      */
     public function getShared($name);
+
+    /**
+     * @param string $old
+     * @param string $new
+     *
+     * @return static
+     */
+    public function inject($old, $new);
 }
