@@ -1,7 +1,7 @@
 version: "2"
 services:
   api_fpm:
-    image: manaphp/php74:3.1
+    image: manaphp/php74:3.2
     volumes:
       - ../:/var/www/html
       - ./fpm/conf.d:/etc/php/conf.d

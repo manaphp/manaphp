@@ -1,4 +1,4 @@
-FROM manaphp/php74:3.1
+FROM manaphp/php74:3.2
 
 RUN  ln -f -s /usr/share/zoneinfo/PRC /etc/localtime
 COPY . /var/www/html
