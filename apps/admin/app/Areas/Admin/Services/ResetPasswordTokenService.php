@@ -3,7 +3,7 @@
 namespace App\Areas\Admin\Services;
 
 use App\Models\Admin;
-use ManaPHP\Service;
+use App\Services\Service;
 use ManaPHP\Token\Jwt;
 
 class ResetPasswordTokenService extends Service
