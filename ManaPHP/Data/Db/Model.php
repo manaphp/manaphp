@@ -31,6 +31,14 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
     }
 
     /**
+     * @return \ManaPHP\Data\Db\Model\MetadataInterface
+     */
+    public function getModelsMetadata()
+    {
+        return $this->getShared('modelsMetadata');
+    }
+
+    /**
      * @return string =key(get_object_vars(new static))
      */
     public function getPrimaryKey()
@@ -43,10 +51,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
             if ($primaryKey = $this->_inferPrimaryKey($class)) {
                 return $cached[$class] = $primaryKey;
             } else {
-                /** @var \ManaPHP\Data\Db\Model\MetadataInterface $modelsMetadata */
-                $modelsMetadata = $this->getShared('modelsMetadata');
-
-                $primaryKeys = $modelsMetadata->getPrimaryKeyAttributes($this);
+                $primaryKeys = $this->getModelsMetadata()->getPrimaryKeyAttributes($this);
                 if (count($primaryKeys) !== 1) {
                     throw new NotSupportedException('only support one primary key');
                 }
@@ -72,11 +77,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
                     $fields[] = $field;
                 }
             }
-
-            /** @var \ManaPHP\Data\Db\Model\MetadataInterface $modelsMetadata */
-            $modelsMetadata = $this->getShared('modelsMetadata');
-
-            $cached[$class] = $fields ?: $modelsMetadata->getAttributes($this);
+            $cached[$class] = $fields ?: $this->getModelsMetadata()->getAttributes($this);
         }
 
         return $cached[$class];
@@ -87,10 +88,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
      */
     public function getIntFields()
     {
-        /** @var \ManaPHP\Data\Db\Model\MetadataInterface $modelsMetadata */
-        $modelsMetadata = $this->getShared('modelsMetadata');
-
-        return $modelsMetadata->getIntTypeAttributes($this);
+        return $this->getModelsMetadata()->getIntTypeAttributes($this);
     }
 
     /**
@@ -383,12 +381,10 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
         $sample = static::sample();
 
         list($db, $table) = $sample->getUniqueShard($record);
-        /** @var \ManaPHP\Data\Db\Model\MetadataInterface $modelsMetadata */
         /** @var \ManaPHP\Logging\LoggerInterface $logger */
-        $modelsMetadata = $sample->getShared('modelsMetadata');
         $logger = $sample->getShared('logger');
 
-        if ($fields = array_diff(array_keys($record), $modelsMetadata->getAttributes($sample))) {
+        if ($fields = array_diff(array_keys($record), $sample->getModelsMetadata()->getAttributes($sample))) {
             $logger->debug(['insert `:1` table skip fields: :2', $table, array_values($fields)]);
 
             foreach ($fields as $field) {
