@@ -17,7 +17,7 @@ class Command extends \ManaPHP\Cli\Command
      */
     public function servicesAction($output = '@tmp/rpc_services')
     {
-        foreach (LocalFS::glob('@app/Controllers/*Controller.php') as $file) {
+        foreach (LocalFS::glob('@app/Controllers/?*Controller.php') as $file) {
             $className = 'App\\Controllers\\' . basename($file, '.php');
 
             $methods = [];
