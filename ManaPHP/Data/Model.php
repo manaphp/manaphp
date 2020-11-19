@@ -36,12 +36,6 @@ use Serializable;
  */
 abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonSerializable, Unaspectable
 {
-    const OP_NONE = 0;
-    const OP_CREATE = 1;
-    const OP_READ = 2;
-    const OP_UPDATE = 3;
-    const OP_DELETE = 4;
-
     /**
      * @var array
      */
@@ -797,47 +791,57 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
     }
 
     /**
-     * @param int $opMode
-     *
      * @return  array
      */
-    public function getAutoFilledData($opMode)
+    public function getAutoCreatedData()
     {
-        $data = [];
-
         $current_time = time();
 
         $identity = $this->getShared('identity');
         $user_id = $identity->getId(0);
         $user_name = $identity->getName('');
 
-        if ($opMode === self::OP_CREATE) {
-            foreach ($this->getFields() as $field) {
-                if ($this->$field !== null) {
-                    continue;
-                }
-
-                if (in_array($field, ['created_time', 'created_at', 'updated_time', 'updated_at'], true)) {
-                    $data[$field] = date($this->getDateFormat($field), $current_time);
-                } elseif (in_array($field, ['creator_id', 'created_id', 'updator_id', 'updated_id'], true)) {
-                    $data[$field] = $user_id;
-                } elseif (in_array($field, ['creator_name', 'created_name', 'updator_name', 'updated_name'], true)) {
-                    $data[$field] = $user_name;
-                } elseif (in_array($field, ['created_date', 'updated_date'], true)) {
-                    $data[$field] = (int)date('ymd', $current_time);
-                }
+        $data = [];
+        foreach ($this->getFields() as $field) {
+            if ($this->$field !== null) {
+                continue;
             }
-        } elseif ($opMode === self::OP_UPDATE) {
-            foreach ($this->getFields() as $field) {
-                if (in_array($field, ['updated_time', 'updated_at'], true)) {
-                    $data[$field] = date($this->getDateFormat($field), $current_time);
-                } elseif (in_array($field, ['updator_id', 'updated_id'], true)) {
-                    $data[$field] = $user_id;
-                } elseif (in_array($field, ['updator_name', 'updated_name'], true)) {
-                    $data[$field] = $user_name;
-                } elseif ($field === 'updated_date') {
-                    $data[$field] = (int)date('ymd', $current_time);
-                }
+
+            if (in_array($field, ['created_time', 'created_at', 'updated_time', 'updated_at'], true)) {
+                $data[$field] = date($this->getDateFormat($field), $current_time);
+            } elseif (in_array($field, ['creator_id', 'created_id', 'updator_id', 'updated_id'], true)) {
+                $data[$field] = $user_id;
+            } elseif (in_array($field, ['creator_name', 'created_name', 'updator_name', 'updated_name'], true)) {
+                $data[$field] = $user_name;
+            } elseif (in_array($field, ['created_date', 'updated_date'], true)) {
+                $data[$field] = (int)date('ymd', $current_time);
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @return  array
+     */
+    public function getAutoUpdatedData()
+    {
+        $current_time = time();
+
+        $identity = $this->getShared('identity');
+        $user_id = $identity->getId(0);
+        $user_name = $identity->getName('');
+
+        $data = [];
+        foreach ($this->getFields() as $field) {
+            if (in_array($field, ['updated_time', 'updated_at'], true)) {
+                $data[$field] = date($this->getDateFormat($field), $current_time);
+            } elseif (in_array($field, ['updator_id', 'updated_id'], true)) {
+                $data[$field] = $user_id;
+            } elseif (in_array($field, ['updator_name', 'updated_name'], true)) {
+                $data[$field] = $user_name;
+            } elseif ($field === 'updated_date') {
+                $data[$field] = (int)date('ymd', $current_time);
             }
         }
 

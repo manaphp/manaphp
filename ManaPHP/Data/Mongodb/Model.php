@@ -294,7 +294,7 @@ class Model extends \ManaPHP\Data\Model
         }
 
         $fields = $this->getFields();
-        foreach ($this->getAutoFilledData(self::OP_CREATE) as $field => $value) {
+        foreach ($this->getAutoCreatedData() as $field => $value) {
             if ($this->$field === null) {
                 $this->$field = $value;
             }
@@ -402,7 +402,7 @@ class Model extends \ManaPHP\Data\Model
             return $this;
         }
 
-        foreach ($this->getAutoFilledData(self::OP_UPDATE) as $field => $value) {
+        foreach ($this->getAutoUpdatedData() as $field => $value) {
             $this->$field = $value;
         }
 
