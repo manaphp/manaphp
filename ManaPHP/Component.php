@@ -38,6 +38,7 @@ use Swoole\Coroutine;
  * @property-read \ManaPHP\Ws\ClientInterface              $wsClient
  * @property-read \ManaPHP\Messaging\PubSubInterface       $pubSub
  * @property-read \object                                  $_context
+ * @property-read \ManaPHP\DiInterface                     $_di
  */
 class Component implements ComponentInterface, Injectable, JsonSerializable
 {
@@ -45,11 +46,6 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
      * @var int
      */
     protected $_object_id;
-
-    /**
-     * @var \ManaPHP\Di
-     */
-    protected $_di;
 
     /**
      * @var callable[]
@@ -91,10 +87,6 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
      */
     public function getInstance($class, $params = [])
     {
-        if ($this->_di === null) {
-            $this->_di = Di::getDefault();
-        }
-
         return $this->_di->get($class, $params);
     }
 
@@ -105,10 +97,6 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
      */
     public function getShared($name)
     {
-        if ($this->_di === null) {
-            $this->_di = Di::getDefault();
-        }
-
         return $this->_di->getShared($this->_injections[$name] ?? $name);
     }
 
@@ -201,6 +189,8 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
 
                 return $this->_context = $this->_createContext();
             }
+        } elseif ($name === '_di') {
+            return $this->_di = Di::getDefault();
         } else {
             return $this->{$name} = $this->getShared($name);
         }
@@ -224,10 +214,6 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
      */
     public function __isset($name)
     {
-        if ($this->_di === null) {
-            $this->_di = Di::getDefault();
-        }
-
         return $this->_di->has($name);
     }
 
