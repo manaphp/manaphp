@@ -4,7 +4,6 @@ namespace App\Plugins;
 
 use App\Models\AdminActionLog;
 use ManaPHP\Helper\Arr;
-use ManaPHP\Plugin;
 
 class AdminActionLogPluginContext
 {
