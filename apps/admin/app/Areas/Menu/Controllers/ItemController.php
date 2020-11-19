@@ -3,7 +3,7 @@
 namespace App\Areas\Menu\Controllers;
 
 use App\Areas\Menu\Models\Item;
-use ManaPHP\Mvc\Controller;
+use App\Controllers\Controller;
 
 class ItemController extends Controller
 {

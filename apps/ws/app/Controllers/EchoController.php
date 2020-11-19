@@ -2,8 +2,6 @@
 
 namespace App\Controllers;
 
-use ManaPHP\Ws\Controller;
-
 class EchoController extends Controller
 {
     public function messageAction($fd, $data)

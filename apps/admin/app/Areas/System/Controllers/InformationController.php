@@ -2,7 +2,7 @@
 
 namespace App\Areas\System\Controllers;
 
-use ManaPHP\Mvc\Controller;
+use App\Controllers\Controller;
 use ManaPHP\Version;
 
 class InformationController extends Controller

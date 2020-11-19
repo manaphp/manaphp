@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use ManaPHP\Coroutine;
-use ManaPHP\Ws\Controller;
 
 class TimeController extends Controller
 {

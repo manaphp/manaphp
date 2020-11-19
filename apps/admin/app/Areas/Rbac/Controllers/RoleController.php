@@ -4,7 +4,7 @@ namespace App\Areas\Rbac\Controllers;
 
 use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
-use ManaPHP\Mvc\Controller;
+use App\Controllers\Controller;
 
 class RoleController extends Controller
 {

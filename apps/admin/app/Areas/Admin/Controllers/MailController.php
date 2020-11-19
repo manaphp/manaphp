@@ -2,7 +2,7 @@
 
 namespace App\Areas\Admin\Controllers;
 
-use ManaPHP\Mvc\Controller;
+use App\Controllers\Controller;
 
 class MailController extends Controller
 {

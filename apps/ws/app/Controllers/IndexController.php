@@ -2,8 +2,6 @@
 
 namespace App\Controllers;
 
-use ManaPHP\Ws\Controller;
-
 class IndexController extends Controller
 {
     public function openAction($fd)

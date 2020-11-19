@@ -2,8 +2,6 @@
 
 namespace App\Controllers;
 
-use ManaPHP\Socket\Controller;
-
 /**
  * Class TestController
  *

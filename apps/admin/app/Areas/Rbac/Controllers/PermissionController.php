@@ -5,8 +5,8 @@ namespace App\Areas\Rbac\Controllers;
 use App\Areas\Rbac\Models\Permission;
 use App\Areas\Rbac\Models\Role;
 use App\Areas\Rbac\Models\RolePermission;
+use App\Controllers\Controller;
 use ManaPHP\Helper\Str;
-use ManaPHP\Mvc\Controller;
 
 /**
  * Class RbacPermissionController

@@ -2,7 +2,7 @@
 
 namespace App\Areas\Bos\Controllers;
 
-use ManaPHP\Mvc\Controller;
+use App\Controllers\Controller;
 
 class BucketController extends Controller
 {

@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Customer;
 
-class CustomerController extends ControllerBase
+class CustomerController extends Controller
 {
     public function indexAction()
     {

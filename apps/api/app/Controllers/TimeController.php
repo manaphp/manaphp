@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-class TimeController extends ControllerBase
+class TimeController extends Controller
 {
     public function getAcl()
     {

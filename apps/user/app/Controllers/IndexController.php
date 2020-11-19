@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use ManaPHP\Mvc\Controller;
 use ManaPHP\Version;
 
 class IndexController extends Controller

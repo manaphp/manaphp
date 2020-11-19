@@ -21,11 +21,17 @@ class Builder extends Component implements BuilderInterface
             $controllers = [];
 
             foreach (LocalFS::glob('@app/Controllers/*Controller.php') as $item) {
+                if (basename($item) === 'Controller.php') {
+                    continue;
+                }
                 $controller = str_replace($this->alias->resolve('@app'), 'App', $item);
                 $controllers[] = str_replace('/', '\\', substr($controller, 0, -4));
             }
 
             foreach (LocalFS::glob('@app/Areas/*/Controllers/*Controller.php') as $item) {
+                if (basename($item) === 'Controller.php') {
+                    continue;
+                }
                 $controller = str_replace($this->alias->resolve('@app'), 'App', $item);
                 $controllers[] = str_replace('/', '\\', substr($controller, 0, -4));
             }

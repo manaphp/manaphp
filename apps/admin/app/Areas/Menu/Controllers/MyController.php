@@ -3,8 +3,8 @@
 namespace App\Areas\Menu\Controllers;
 
 use App\Areas\Menu\Models\Group;
+use App\Controllers\Controller;
 use ManaPHP\Data\Query;
-use ManaPHP\Mvc\Controller;
 
 class MyController extends Controller
 {

@@ -3,7 +3,7 @@
 namespace App\Areas\System\Controllers;
 
 use App\Areas\System\Models\DotenvLog;
-use ManaPHP\Mvc\Controller;
+use App\Controllers\Controller;
 
 class DotenvController extends Controller
 {

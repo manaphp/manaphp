@@ -2,8 +2,8 @@
 
 namespace App\Areas\Admin\Controllers;
 
+use App\Controllers\Controller;
 use App\Models\Admin;
-use ManaPHP\Mvc\Controller;
 
 class AccountController extends Controller
 {

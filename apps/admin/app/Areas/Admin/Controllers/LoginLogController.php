@@ -2,8 +2,8 @@
 
 namespace App\Areas\Admin\Controllers;
 
+use App\Controllers\Controller;
 use App\Models\AdminLoginLog;
-use ManaPHP\Mvc\Controller;
 
 class LoginLogController extends Controller
 {

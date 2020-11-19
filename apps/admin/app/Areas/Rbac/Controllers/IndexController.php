@@ -2,7 +2,7 @@
 
 namespace App\Areas\Rbac\Controllers;
 
-use ManaPHP\Mvc\Controller;
+use App\Controllers\Controller;
 
 class IndexController extends Controller
 {
