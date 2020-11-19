@@ -17,7 +17,6 @@ use Swoole\Coroutine;
  * @property-read \ManaPHP\Security\CryptInterface         $crypt
  * @property-read \ManaPHP\IdentityInterface               $identity
  * @property-read \ManaPHP\Caching\CacheInterface          $cache
- * @property-read \ManaPHP\Security\RandomInterface        $random
  * @property-read \ManaPHP\Http\ClientInterface            $httpClient
  * @property-read \ManaPHP\Http\ClientInterface            $restClient
  * @property-read \ManaPHP\Data\DbInterface                $db
