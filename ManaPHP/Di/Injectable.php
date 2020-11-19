@@ -5,22 +5,6 @@ namespace ManaPHP\Di;
 interface Injectable
 {
     /**
-     * Sets the dependency injector
-     *
-     * @param \ManaPHP\DiInterface $di
-     *
-     * @return void
-     */
-    public function setDi($di);
-
-    /**
-     * Returns the internal dependency injector
-     *
-     * @return \ManaPHP\DiInterface
-     */
-    public function getDi();
-
-    /**
      * @param string $class
      * @param array  $params
      *
@@ -37,7 +21,7 @@ interface Injectable
 
     /**
      * @param string $old
-     * @param string $new
+     * @param mixed  $new
      *
      * @return static
      */

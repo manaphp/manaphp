@@ -58,28 +58,6 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
     protected $_injections;
 
     /**
-     * Sets the dependency injector
-     *
-     * @param \ManaPHP\DiInterface $di
-     *
-     * @return void
-     */
-    public function setDi($di)
-    {
-        $this->_di = $di;
-    }
-
-    /**
-     * Returns the internal dependency injector
-     *
-     * @return \ManaPHP\Di
-     */
-    public function getDi()
-    {
-        return $this->_di;
-    }
-
-    /**
      * @param string $class
      * @param array  $params
      *
@@ -102,13 +80,17 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
 
     /**
      * @param string $old
-     * @param string $new
+     * @param mixed  $new
      *
      * @return static
      */
     public function inject($old, $new)
     {
-        $this->_injections[$old] = $new;
+        if ($old === 'di') {
+            $this->_di = $new;
+        } else {
+            $this->_injections[$old] = $new;
+        }
 
         return $this;
     }

@@ -287,7 +287,7 @@ class Di implements DiInterface
         }
 
         if ($instance instanceof Injectable) {
-            $instance->setDi($this);
+            $instance->inject('di', $this);
         }
 
         return $instance;
@@ -348,7 +348,7 @@ class Di implements DiInterface
         }
 
         if ($instance instanceof Injectable) {
-            $instance->setDi($this);
+            $instance->inject('di', $this);
         }
 
         return $this->_instances[$name] = $instance;
