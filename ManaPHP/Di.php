@@ -233,8 +233,10 @@ class Di implements DiInterface
             } else {
                 $definition['class'] = $this->_inferClassName($name);
             }
+        } elseif ($definition instanceof Closure) {
+            null;
         } elseif (is_object($definition)) {
-            $definition = ['class' => $definition];
+            $this->_instances[$name] = $definition;
         } else {
             throw new NotSupportedException(['`:definition` definition is unknown', 'definition' => $name]);
         }
@@ -312,6 +314,8 @@ class Di implements DiInterface
                 return $this->_instances[$name] = $this->getShared(substr($definition, 1));
             }
             $parameters = [];
+        } elseif ($definition instanceof Closure) {
+            return $definition();
         } elseif (isset($definition['class'])) {
             $parameters = $definition;
             $definition = $definition['class'];
@@ -337,10 +341,6 @@ class Di implements DiInterface
                 );
             }
             $instance = new $definition(...$parameters);
-        } elseif ($definition instanceof Closure) {
-            $instance = $definition(...$parameters);
-        } elseif (is_object($definition)) {
-            $instance = $definition;
         } else {
             throw new NotSupportedException(['`%s` component implement type is not supported', $name]);
         }
