@@ -127,6 +127,27 @@ class Configure extends Component implements ConfigureInterface
     }
 
     /**
+     * @param string $name
+     * @param mixed  $definition
+     *
+     * @return \ManaPHP\DiInterface
+     */
+    public function setShared($name, $definition)
+    {
+        return $this->_di->setShared($name, $definition);
+    }
+
+    /**
+     * @param string $pattern
+     *
+     * @return array
+     */
+    public function getDefinitions($pattern = null)
+    {
+        return $this->_di->getDefinitions($pattern);
+    }
+
+    /**
      * @return static
      */
     public function registerAliases()
@@ -143,16 +164,12 @@ class Configure extends Component implements ConfigureInterface
      */
     public function registerComponents()
     {
-        $di = $this->_di;
-
         foreach ($this->components as $component => $definition) {
             if (is_int($component)) {
                 $component = lcfirst(($pos = strrpos($definition, '\\')) ? substr($definition, $pos + 1) : $definition);
-                $di->setShared($component, $definition);
-            } elseif ($definition === null) {
-                $di->remove($component);
-            } elseif ($component[0] !== '!' || $di->has($component = substr($component, 1))) {
-                $di->setShared($component, $definition);
+                $this->setShared($component, $definition);
+            } else {
+                $this->setShared($component, $definition);
             }
         }
 
@@ -164,22 +181,20 @@ class Configure extends Component implements ConfigureInterface
      */
     public function registerTracers()
     {
-        $di = $this->_di;
-
         if ($appDir = $this->alias->get('@app')) {
             foreach (LocalFS::glob('@app/Tracers/*Tracer.php') as $file) {
                 $command = basename($file, '.php');
-                $di->setShared(lcfirst($command), "App\Tracers\\$command");
+                $this->setShared(lcfirst($command), "App\Tracers\\$command");
             }
         }
 
         if (in_array('*', $this->tracers, true)) {
-            foreach ($di->getDefinitions('*Tracer') as $name => $_) {
-                $di->getShared($name);
+            foreach ($this->getDefinitions('*Tracer') as $name => $_) {
+                $this->getShared($name);
             }
         } else {
             foreach ($this->tracers as $tracer) {
-                $di->getShared(lcfirst($tracer) . 'Tracer');
+                $this->getShared(lcfirst($tracer) . 'Tracer');
             }
         }
 
@@ -191,12 +206,10 @@ class Configure extends Component implements ConfigureInterface
      */
     public function registerCommands()
     {
-        $di = $this->_di;
-
         if ($appDir = $this->alias->get('@app')) {
             foreach (LocalFS::glob('@app/Commands/*Command.php') as $file) {
                 $command = basename($file, '.php');
-                $di->setShared(lcfirst($command), "App\Commands\\$command");
+                $this->setShared(lcfirst($command), "App\Commands\\$command");
             }
         }
 
@@ -223,8 +236,6 @@ class Configure extends Component implements ConfigureInterface
      */
     public function registerServices()
     {
-        $di = $this->_di;
-
         foreach (@scandir($this->alias->resolve('@app/Services')) ?: [] as $file) {
             if (substr($file, -11) === 'Service.php') {
                 $service = lcfirst(basename($file, '.php'));
@@ -239,7 +250,7 @@ class Configure extends Component implements ConfigureInterface
                 $params = [$params];
             }
             $params['class'] = 'App\Services\\' . ucfirst($service);
-            $di->setShared($service, $params);
+            $this->setShared($service, $params);
         }
 
         return $this;
@@ -251,8 +262,6 @@ class Configure extends Component implements ConfigureInterface
      */
     public function registerPlugins()
     {
-        $di = $this->_di;
-
         $app_plugins = [];
         foreach (LocalFS::glob('@app/Plugins/*Plugin.php') as $item) {
             $app_plugins[basename($item, '.php')] = 1;
@@ -276,19 +285,19 @@ class Configure extends Component implements ConfigureInterface
                 unset($app_plugins[$plugin]);
                 $pluginClassName = "App\\Plugins\\$plugin";
                 $definition = is_int($k) ? $pluginClassName : array_merge($v, ['class' => $pluginClassName]);
-                $di->setShared($pluginName, $definition);
+                $this->setShared($pluginName, $definition);
             } else {
                 if (is_string($k)) {
-                    $di->setShared($pluginName, $v);
+                    $this->setShared($pluginName, $v);
                 }
             }
-            $di->getShared($pluginName);
+            $this->getShared($pluginName);
         }
 
         foreach ($app_plugins as $plugin => $_) {
             $pluginClassName = "App\\Plugins\\$plugin";
             $plugin = lcfirst($plugin);
-            $di->setShared($plugin, $pluginClassName)->getShared($plugin);
+            $this->setShared($plugin, $pluginClassName)->getShared($plugin);
         }
 
         return $this;
