@@ -37,6 +37,7 @@ class Factory extends FactoryDefault
                 'aclCommand' => 'ManaPHP\Http\Acl\Command',
 
                 'httpClientTracer' => 'ManaPHP\Http\Client\Tracer',
+                'requestTracer'    => 'ManaPHP\Http\Request\Tracer',
             ]
         );
 
