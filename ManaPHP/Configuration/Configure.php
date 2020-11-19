@@ -6,7 +6,6 @@ use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
-use ManaPHP\Helper\LocalFS;
 
 class Configure extends Component implements ConfigureInterface
 {
@@ -177,15 +176,27 @@ class Configure extends Component implements ConfigureInterface
     }
 
     /**
+     * @param string $glob
+     *
+     * @return array
+     */
+    public function appGlob($glob)
+    {
+        if ($appDir = $this->alias->get('@app')) {
+            return glob("$appDir/$glob") ?? [];
+        } else {
+            return [];
+        }
+    }
+
+    /**
      * @return static
      */
     public function registerTracers()
     {
-        if ($appDir = $this->alias->get('@app')) {
-            foreach (LocalFS::glob('@app/Tracers/*Tracer.php') as $file) {
-                $command = basename($file, '.php');
-                $this->setShared(lcfirst($command), "App\Tracers\\$command");
-            }
+        foreach ($this->appGlob('Tracers/*Tracer.php') as $file) {
+            $command = basename($file, '.php');
+            $this->setShared(lcfirst($command), "App\Tracers\\$command");
         }
 
         if (in_array('*', $this->tracers, true)) {
@@ -206,11 +217,9 @@ class Configure extends Component implements ConfigureInterface
      */
     public function registerCommands()
     {
-        if ($appDir = $this->alias->get('@app')) {
-            foreach (LocalFS::glob('@app/Commands/*Command.php') as $file) {
-                $command = basename($file, '.php');
-                $this->setShared(lcfirst($command), "App\Commands\\$command");
-            }
+        foreach ($this->appGlob('Commands/*Command.php') as $file) {
+            $command = basename($file, '.php');
+            $this->setShared(lcfirst($command), "App\Commands\\$command");
         }
 
         return $this;
@@ -221,7 +230,7 @@ class Configure extends Component implements ConfigureInterface
      */
     public function registerAspects()
     {
-        foreach (LocalFS::glob('@app/Aspects/*Aspect.php') as $item) {
+        foreach ($this->appGlob('Aspects/*Aspect.php') as $item) {
             $class = 'App\Aspects\\' . basename($item, '.php');
             /** @var \ManaPHP\Aop\Aspect $aspect */
             $aspect = new $class();
@@ -236,12 +245,10 @@ class Configure extends Component implements ConfigureInterface
      */
     public function registerServices()
     {
-        foreach (@scandir($this->alias->resolve('@app/Services')) ?: [] as $file) {
-            if (substr($file, -11) === 'Service.php') {
-                $service = lcfirst(basename($file, '.php'));
-                if (!isset($services[$service])) {
-                    $services[$service] = [];
-                }
+        foreach ($this->appGlob('Services/*Service.php') as $file) {
+            $service = lcfirst(basename($file, '.php'));
+            if (!isset($services[$service])) {
+                $services[$service] = [];
             }
         }
 
@@ -263,7 +270,7 @@ class Configure extends Component implements ConfigureInterface
     public function registerPlugins()
     {
         $app_plugins = [];
-        foreach (LocalFS::glob('@app/Plugins/*Plugin.php') as $item) {
+        foreach ($this->appGlob('Plugins/*Plugin.php') as $item) {
             $app_plugins[basename($item, '.php')] = 1;
         }
 
@@ -310,13 +317,13 @@ class Configure extends Component implements ConfigureInterface
     {
         foreach ($this->listeners as $listener) {
             if ($listener === '*') {
-                foreach (LocalFS::glob('@app/Areas/*/Listeners/*Listener.php') as $item) {
+                foreach ($this->appGlob('Areas/*/Listeners/*Listener.php') as $item) {
                     $item = str_replace($this->alias->get('@app'), 'App', $item);
                     $item = substr(str_replace('/', '\\', $item), 0, -4);
                     $this->eventsManager->addListener($item);
                 }
 
-                foreach (LocalFS::glob('@app/Listeners/*Listener.php') as $item) {
+                foreach ($this->appGlob('Listeners/*Listener.php') as $item) {
                     $item = str_replace($this->alias->get('@app'), 'App', $item);
                     $item = substr(str_replace('/', '\\', $item), 0, -4);
                     $this->eventsManager->addListener($item);
