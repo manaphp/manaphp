@@ -3,6 +3,7 @@
 namespace ManaPHP\Cli\Commands;
 
 use ManaPHP\Cli\Command;
+use ManaPHP\Helper\Str;
 
 class KeyCommand extends Command
 {
@@ -14,7 +15,7 @@ class KeyCommand extends Command
      */
     public function generateAction($length = 32, $lowercase = 0)
     {
-        $key = $this->random->getBase($length);
+        $key = Str::random($length);
         $this->console->writeLn($lowercase ? strtolower($key) : $key);
     }
 }

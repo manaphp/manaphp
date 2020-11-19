@@ -5,6 +5,7 @@ namespace ManaPHP\Http;
 use ArrayAccess;
 use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Helper\Str;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
 
@@ -347,7 +348,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
      */
     protected function _generateSessionId()
     {
-        return $this->random->getBase(32, 36);
+        return Str::random(32, 36);
     }
 
     /**

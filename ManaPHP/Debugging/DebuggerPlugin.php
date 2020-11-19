@@ -7,6 +7,7 @@ use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Helper\Str;
 use ManaPHP\Logging\Logger;
 use ManaPHP\Plugin;
 use ManaPHP\Version;
@@ -187,7 +188,7 @@ class DebuggerPlugin extends Plugin
             $context->enabled = false;
         } else {
             $context->enabled = true;
-            $context->key = date('/ymd/His_') . $this->random->getBase(32);
+            $context->key = date('/ymd/His_') . Str::random(32);
         }
 
         if ($context->enabled) {

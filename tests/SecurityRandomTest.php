@@ -15,14 +15,6 @@ class SecurityRandomTest extends TestCase
         $this->assertEquals(1024, strlen($random->getByte(1024)));
     }
 
-    public function test_getBase62()
-    {
-        $random = new Random();
-        $this->assertEquals(0, strlen($random->getBase(0)));
-        $this->assertEquals(1, strlen($random->getBase(1)));
-        $this->assertEquals(1024, strlen($random->getBase(1024)));
-    }
-
     public function test_getInt()
     {
         $random = new Random();

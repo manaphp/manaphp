@@ -5,6 +5,7 @@ namespace ManaPHP\Logging;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Helper\Str;
 use ManaPHP\Plugin;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
@@ -151,7 +152,7 @@ class LoggerPlugin extends Plugin
         } else {
             $context->enabled = true;
             $this->logger->info($this->request->get(), 'globals.request');
-            $context->key = date('/ymd/His_') . $this->random->getBase(32);
+            $context->key = date('/ymd/His_') . Str::random(32);
         }
 
         if ($context->enabled) {

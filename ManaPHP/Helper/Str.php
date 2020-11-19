@@ -2,6 +2,9 @@
 
 namespace ManaPHP\Helper;
 
+use ManaPHP\Exception\MisuseException;
+use ManaPHP\Exception\NotSupportedException;
+
 class Str
 {
     /**
@@ -83,6 +86,49 @@ class Str
             }
         } else {
             return ucfirst($str);
+        }
+    }
+
+    /**
+     * @param string $length
+     * @param int    $base
+     *
+     * @return string
+     */
+    public static function random($length, $base = 62)
+    {
+        if ($length < 0) {
+            throw new MisuseException('length(%d) is negative number');
+        } elseif ($length === 0) {
+            return '';
+        } elseif ($base === 32) {
+            if ($length % 2 === 0) {
+                return bin2hex(random_bytes($length / 2));
+            } else {
+                return substr(bin2hex(random_bytes(ceil($length / 2))), 0, -1);
+            }
+        } elseif ($base === 62) {
+            $str = base64_encode(random_bytes(ceil($length * 0.75)));
+            $str = strtr($str, ['+' => '0', '/' => '5', '=' => '9']);
+            return substr($str, 0, $length);
+        } elseif ($base < 62) {
+            $str = '';
+
+            $bytes = random_bytes($length);
+            for ($i = 0; $i < $length; $i++) {
+                $r = ord($bytes[$i]) % $base;
+
+                if ($r < 10) {
+                    $str .= chr(ord('0') + $r);
+                } elseif ($r < 36) {
+                    $str .= chr(ord('a') + $r - 10);
+                } else {
+                    $str .= chr(ord('A') + $r - 36);
+                }
+            }
+            return $str;
+        } else {
+            throw new NotSupportedException(['base(%d) is not supported', $base]);
         }
     }
 }

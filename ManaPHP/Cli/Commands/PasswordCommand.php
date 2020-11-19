@@ -3,6 +3,7 @@
 namespace ManaPHP\Cli\Commands;
 
 use ManaPHP\Cli\Command;
+use ManaPHP\Helper\Str;
 
 class PasswordCommand extends Command
 {
@@ -17,7 +18,7 @@ class PasswordCommand extends Command
     public function generateAction($length = 32, $password = '', $base = 62, $cost = 0)
     {
         if ($password === '') {
-            $password = $this->random->getBase($length, $base);
+            $password = Str::random($length, $base);
         }
 
         $this->console->writeLn('password: ' . $password);
