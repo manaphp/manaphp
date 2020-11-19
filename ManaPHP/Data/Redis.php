@@ -7,6 +7,9 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Exception\NotSupportedException;
 
+/**
+ * @property-read \ManaPHP\Pool\ManagerInterface $poolManager
+ */
 class Redis extends Component implements RedisInterface
 {
     const TYPE_MASTER = 1;

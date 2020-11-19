@@ -63,7 +63,8 @@ class DbContext implements Inseparable
 }
 
 /**
- * @property-read \ManaPHP\Data\DbContext $_context
+ * @property-read \ManaPHP\Pool\ManagerInterface $poolManager
+ * @property-read \ManaPHP\Data\DbContext        $_context
  */
 class Db extends Component implements DbInterface
 {

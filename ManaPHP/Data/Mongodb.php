@@ -7,6 +7,9 @@ use ManaPHP\Data\Mongodb\Exception as MongodbException;
 use ManaPHP\Exception\NonCloneableException;
 use MongoDB\Driver\Exception\RuntimeException;
 
+/**
+ * @property-read \ManaPHP\Pool\ManagerInterface $poolManager
+ */
 class Mongodb extends Component implements MongodbInterface
 {
     /**

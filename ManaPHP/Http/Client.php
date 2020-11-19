@@ -20,6 +20,9 @@ use ManaPHP\Http\Client\ServiceUnavailableException;
 use ManaPHP\Http\Client\TooManyRequestsException;
 use ManaPHP\Http\Client\UnauthorizedException;
 
+/**
+ * @property-read \ManaPHP\Pool\ManagerInterface $poolManager
+ */
 class Client extends Component implements ClientInterface
 {
     const USER_AGENT_IE = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';

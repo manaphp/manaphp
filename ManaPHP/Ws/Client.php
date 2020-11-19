@@ -7,6 +7,9 @@ use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Ws\Client\Message;
 use Throwable;
 
+/**
+ * @property-read \ManaPHP\Pool\ManagerInterface $poolManager
+ */
 class Client extends Component implements ClientInterface
 {
     /**

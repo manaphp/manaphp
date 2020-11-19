@@ -29,7 +29,6 @@ use Swoole\Coroutine;
  * @property-read \Elasticsearch\Client                    $elasticsearch
  * @property-read \ManaPHP\Mailing\MailerInterface         $mailer
  * @property-read \ManaPHP\Bos\ClientInterface             $bosClient
- * @property-read \ManaPHP\Pool\ManagerInterface           $poolManager
  * @property-read \ManaPHP\Ws\Pushing\ClientInterface      $wspClient
  * @property-read \ManaPHP\Coroutine\ManagerInterface      $coroutineManager
  * @property-read \ManaPHP\Ws\ClientInterface              $wsClient
