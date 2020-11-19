@@ -27,9 +27,9 @@ class Command extends \ManaPHP\Cli\Command
                     }
                 }
 
-                $this->console->writeLn($controller . ': ' . implode(',', $actions));
+                $this->console->writeLn($controller . ":\t " . implode(',', $actions));
             } else {
-                $this->console->writeLn($controller . ': ' . json_stringify($acl));
+                $this->console->writeLn($controller . ":\t " . json_stringify($acl));
             }
         }
     }
