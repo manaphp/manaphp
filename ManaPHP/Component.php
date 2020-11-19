@@ -16,7 +16,6 @@ use Swoole\Coroutine;
  * @property-read \ManaPHP\Configuration\SettingsInterface $settings
  * @property-read \ManaPHP\Security\CryptInterface         $crypt
  * @property-read \ManaPHP\IdentityInterface               $identity
- * @property-read \ManaPHP\Loader                          $loader
  * @property-read \ManaPHP\Caching\CacheInterface          $cache
  * @property-read \ManaPHP\Security\RandomInterface        $random
  * @property-read \ManaPHP\Http\ClientInterface            $httpClient
@@ -31,8 +30,6 @@ use Swoole\Coroutine;
  * @property-read \ManaPHP\Mailing\MailerInterface         $mailer
  * @property-read \ManaPHP\Bos\ClientInterface             $bosClient
  * @property-read \ManaPHP\Pool\ManagerInterface           $poolManager
- * @property-read \ManaPHP\Validating\ValidatorInterface   $validator
- * @property-read \ManaPHP\I18n\TranslatorInterface        $translator
  * @property-read \ManaPHP\Ws\Pushing\ClientInterface      $wspClient
  * @property-read \ManaPHP\Coroutine\ManagerInterface      $coroutineManager
  * @property-read \ManaPHP\Ws\ClientInterface              $wsClient

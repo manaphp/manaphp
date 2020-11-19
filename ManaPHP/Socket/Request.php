@@ -31,7 +31,8 @@ class RequestContext
 }
 
 /**
- * @property-read \ManaPHP\Socket\RequestContext $_context
+ * @property-read \ManaPHP\Validating\ValidatorInterface $validator
+ * @property-read \ManaPHP\Socket\RequestContext         $_context
  */
 class Request extends Component implements RequestInterface
 {

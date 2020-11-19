@@ -7,6 +7,7 @@ use ManaPHP\Helper\LocalFS;
 use ReflectionClass;
 
 /**
+ * @property-read \ManaPHP\LoaderInterface               $loader
  * @property-read \ManaPHP\Configuration\DotenvInterface $dotenv
  * @property-read \ManaPHP\ErrorHandlerInterface         $errorHandler
  * @property-read \ManaPHP\Cli\RunnerInterface           $cliRunner
