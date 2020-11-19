@@ -194,7 +194,7 @@ class Configure extends Component implements ConfigureInterface
      */
     public function registerTracers()
     {
-        foreach ($this->appGlob('Tracers/*Tracer.php') as $file) {
+        foreach ($this->appGlob('Tracers/?*Tracer.php') as $file) {
             $command = basename($file, '.php');
             $this->setShared(lcfirst($command), "App\Tracers\\$command");
         }
@@ -217,7 +217,7 @@ class Configure extends Component implements ConfigureInterface
      */
     public function registerCommands()
     {
-        foreach ($this->appGlob('Commands/*Command.php') as $file) {
+        foreach ($this->appGlob('Commands/?*Command.php') as $file) {
             $command = basename($file, '.php');
             $this->setShared(lcfirst($command), "App\Commands\\$command");
         }
@@ -230,7 +230,7 @@ class Configure extends Component implements ConfigureInterface
      */
     public function registerAspects()
     {
-        foreach ($this->appGlob('Aspects/*Aspect.php') as $item) {
+        foreach ($this->appGlob('Aspects/?*Aspect.php') as $item) {
             $class = 'App\Aspects\\' . basename($item, '.php');
             /** @var \ManaPHP\Aop\Aspect $aspect */
             $aspect = new $class();
@@ -245,7 +245,7 @@ class Configure extends Component implements ConfigureInterface
      */
     public function registerServices()
     {
-        foreach ($this->appGlob('Services/*Service.php') as $file) {
+        foreach ($this->appGlob('Services/?*Service.php') as $file) {
             $service = lcfirst(basename($file, '.php'));
             if (!isset($services[$service])) {
                 $services[$service] = [];
@@ -270,7 +270,7 @@ class Configure extends Component implements ConfigureInterface
     public function registerPlugins()
     {
         $app_plugins = [];
-        foreach ($this->appGlob('Plugins/*Plugin.php') as $item) {
+        foreach ($this->appGlob('Plugins/?*Plugin.php') as $item) {
             $app_plugins[basename($item, '.php')] = 1;
         }
 
@@ -317,13 +317,13 @@ class Configure extends Component implements ConfigureInterface
     {
         foreach ($this->listeners as $listener) {
             if ($listener === '*') {
-                foreach ($this->appGlob('Areas/*/Listeners/*Listener.php') as $item) {
+                foreach ($this->appGlob('Areas/*/Listeners/?*Listener.php') as $item) {
                     $item = str_replace($this->alias->get('@app'), 'App', $item);
                     $item = substr(str_replace('/', '\\', $item), 0, -4);
                     $this->eventsManager->addListener($item);
                 }
 
-                foreach ($this->appGlob('Listeners/*Listener.php') as $item) {
+                foreach ($this->appGlob('Listeners/?*Listener.php') as $item) {
                     $item = str_replace($this->alias->get('@app'), 'App', $item);
                     $item = substr(str_replace('/', '\\', $item), 0, -4);
                     $this->eventsManager->addListener($item);
