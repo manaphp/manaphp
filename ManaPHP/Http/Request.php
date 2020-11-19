@@ -242,6 +242,21 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * @param string $name
+     * @param string $value
+     *
+     * @return static
+     */
+    public function setServer($name, $value)
+    {
+        $context = $this->_context;
+
+        $context->_SERVER[$name] = $value;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getMethod()

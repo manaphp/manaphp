@@ -74,6 +74,14 @@ interface RequestInterface
     public function getServer($name = null, $default = '');
 
     /**
+     * @param string $name
+     * @param string $value
+     *
+     * @return static
+     */
+    public function setServer($name, $value);
+
+    /**
      * @return string
      */
     public function getMethod();
