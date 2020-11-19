@@ -7,7 +7,7 @@ namespace App\Models;
  *
  * @property-read \App\Models\Address $address
  */
-class Customer extends \ManaPHP\Data\Db\Model
+class Customer extends Model
 {
     public $customer_id;
     public $store_id;

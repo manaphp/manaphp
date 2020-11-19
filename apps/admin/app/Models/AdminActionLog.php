@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use ManaPHP\Data\Db\Model;
-
 /**
  * Class App\Models\AdminActionLog
  */

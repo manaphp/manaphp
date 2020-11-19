@@ -143,10 +143,8 @@ class Command extends \ManaPHP\Cli\Command
             $constants = '    ' . $constants;
         }
 
-        $str = '<?php' . PHP_EOL;
+        $str = '<?php' . PHP_EOL . PHP_EOL;
         $str .= 'namespace ' . substr($modelName, 0, strrpos($modelName, '\\')) . ';' . PHP_EOL;
-        $str .= PHP_EOL;
-        $str .= 'use ManaPHP\Data\Db\Model;' . PHP_EOL;
         $str .= PHP_EOL;
 
         $str .= '/**' . PHP_EOL;

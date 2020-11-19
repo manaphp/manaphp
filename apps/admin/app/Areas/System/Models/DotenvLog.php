@@ -2,7 +2,7 @@
 
 namespace App\Areas\System\Models;
 
-use ManaPHP\Data\Db\Model;
+use App\Models\Model;
 
 /**
  * Class App\Areas\System\Models\DotenvLog

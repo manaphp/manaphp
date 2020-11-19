@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
-use ManaPHP\Data\Db\Model;
 
 class Admin extends Model
 {

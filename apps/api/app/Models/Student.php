@@ -5,7 +5,7 @@ namespace App\Models;
 /**
  * Class Student
  */
-class Student extends \ManaPHP\Data\Db\Model
+class Student extends Model
 {
     public $id;
     public $age;

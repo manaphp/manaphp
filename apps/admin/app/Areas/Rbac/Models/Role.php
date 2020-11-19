@@ -2,7 +2,7 @@
 
 namespace App\Areas\Rbac\Models;
 
-use ManaPHP\Data\Db\Model;
+use App\Models\Model;
 
 class Role extends Model
 {
