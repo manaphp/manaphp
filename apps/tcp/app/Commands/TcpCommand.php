@@ -2,7 +2,6 @@
 
 namespace App\Commands;
 
-use ManaPHP\Cli\Command;
 use ManaPHP\Exception;
 
 class TcpCommand extends Command

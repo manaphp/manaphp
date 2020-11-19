@@ -2,8 +2,6 @@
 
 namespace App\Commands;
 
-use ManaPHP\Cli\Command;
-
 /**
  * Class TimeCommand
  *

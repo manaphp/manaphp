@@ -2,8 +2,6 @@
 
 namespace App\Commands;
 
-use ManaPHP\Cli\Command;
-
 class DbToJsonCommand extends Command
 {
     public function defaultAction()

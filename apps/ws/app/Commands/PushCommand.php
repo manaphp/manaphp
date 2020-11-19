@@ -2,8 +2,6 @@
 
 namespace App\Commands;
 
-use ManaPHP\Cli\Command;
-
 class PushCommand extends Command
 {
     /**
