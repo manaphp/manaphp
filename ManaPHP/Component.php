@@ -79,17 +79,17 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
     }
 
     /**
-     * @param string $old
-     * @param mixed  $new
+     * @param string $name
+     * @param mixed  $target
      *
      * @return static
      */
-    public function inject($old, $new)
+    public function inject($name, $target)
     {
-        if ($old === 'di') {
-            $this->_di = $new;
+        if ($name === 'di') {
+            $this->_di = $target;
         } else {
-            $this->_injections[$old] = $new;
+            $this->_injections[$name] = $target;
         }
 
         return $this;

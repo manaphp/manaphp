@@ -20,10 +20,10 @@ interface Injectable
     public function getShared($name);
 
     /**
-     * @param string $old
-     * @param mixed  $new
+     * @param string $name
+     * @param mixed  $target
      *
      * @return static
      */
-    public function inject($old, $new);
+    public function inject($name, $target);
 }
