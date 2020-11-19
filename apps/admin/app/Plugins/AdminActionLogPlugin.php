@@ -22,8 +22,8 @@ class AdminActionLogPlugin extends Plugin
 {
     public function __construct()
     {
-        $this->eventsManager->attachEvent('app:logAction', [$this, 'onAppLogAction']);
-        $this->eventsManager->attachEvent('db:executing', [$this, 'onDbExecuting']);
+        $this->attachEvent('app:logAction', [$this, 'onAppLogAction']);
+        $this->attachEvent('db:executing', [$this, 'onDbExecuting']);
     }
 
     public function onDbExecuting()
