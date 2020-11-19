@@ -32,6 +32,8 @@ class ListCommand extends Command
                 } else {
                     $className = '?';
                 }
+            } elseif (is_object($definition)) {
+                $className = get_class($definition);
             } else {
                 $className = '?';
             }
