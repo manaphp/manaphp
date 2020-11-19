@@ -306,6 +306,9 @@ HTML;
     public function defaultAction()
     {
         foreach (LocalFS::glob('@app/Models/*.php') as $model_file) {
+            if (basename($model_file) === 'Model.php') {
+                continue;
+            }
             $plain = basename($model_file, '.php');
             $view_file = "@tmp/view/Views/{$plain}.sword";
             $model = "App\Models\\$plain";
@@ -315,6 +318,9 @@ HTML;
         }
 
         foreach (LocalFS::glob('@app/Areas/*/Models/*.php') as $model_file) {
+            if (basename($model_file) === 'Model.php') {
+                continue;
+            }
             preg_match('#Areas/(\w+)/Models/(\w+).php$#', $model_file, $match);
             list(, $area, $plain) = $match;
 
