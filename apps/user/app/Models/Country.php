@@ -5,7 +5,7 @@ namespace App\Models;
 /**
  * Class Country
  *
- * @property-read \App\Models\City $cities
+ * @property-read City $cities
  */
 class Country extends Model
 {

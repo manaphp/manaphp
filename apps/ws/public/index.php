@@ -11,5 +11,5 @@ if (is_file(dirname(__DIR__) . '/vendor/manaphp/framework/Loader.php')) {
 
 $loader = new \ManaPHP\Loader();
 require dirname(__DIR__) . '/app/Application.php';
-$app = new \App\Application($loader);
+$app = new App\Application($loader);
 $app->main();

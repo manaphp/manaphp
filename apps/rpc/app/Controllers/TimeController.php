@@ -4,13 +4,26 @@ namespace App\Controllers;
 
 class TimeController extends Controller
 {
-    public function helloAction()
+    public function getAcl()
     {
-        return $this->response->setContent('hello world!');
+        return ['*' => '*'];
     }
 
+    /**
+     * @return int
+     */
     public function currentAction()
     {
         return time();
+    }
+
+    /**
+     * @param int $second
+     *
+     * @return int
+     */
+    public function afterAction($second = 0)
+    {
+        return time() + $second;
     }
 }

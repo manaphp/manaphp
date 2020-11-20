@@ -15,12 +15,14 @@ return [
         'redis'     => [env('REDIS_URL')],
         'logger'    => ['level' => env('LOGGER_LEVEL', 'info')],
     ],
-    'services'   => [],
+    'services'   => [
+        'timeService' => 'http://127.0.0.1:9501/time',
+    ],
     'listeners'  => [],
     'plugins'    => [
+        'debugger',
         //'slowlog',
         //'logger',
-        //'debugger',
     ],
     'tracers'    => ['*'],
 ];
