@@ -442,7 +442,8 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
      */
     public static function firstOrFail($filters, $fields = null)
     {
-        if (!$r = static::first($filters, $fields)) {
+        $r = static::first($filters, $fields);
+        if ($r === null) {
             throw new NotFoundException(static::class, $filters);
         }
 
