@@ -215,15 +215,14 @@ class Stream extends Component implements EngineInterface
                         }
                     }
 
-                    if (($r = fread($stream, 4096)) === false) {
-                        if (feof($stream)) {
-                            break;
-                        } else {
-                            throw new TimeoutException($request->url);
-                        }
-                    } elseif (feof($stream)) {
+                    if (feof($stream)) {
                         break;
                     }
+
+                    if (($r = fread($stream, 4096)) === false) {
+                        throw new TimeoutException($request->url);
+                    }
+
                     $body .= $r;
                 }
             }
