@@ -171,13 +171,13 @@ class FiddlerPlugin extends Plugin
 
         if ($ip = $options['ip'] ?? false) {
             $this->pubSub->subscribe(
-                ["{$this->_prefix}$id:$ip"], function ($chan, $packet) {
+                ["{$this->_prefix}$id:$ip"], function ($channel, $packet) {
                 $this->processMessage($packet);
             }
             );
         } else {
             $this->pubSub->psubscribe(
-                ["{$this->_prefix}$id:*"], function ($chan, $packet) {
+                ["{$this->_prefix}$id:*"], function ($channel, $packet) {
                 $this->processMessage($packet);
             }
             );

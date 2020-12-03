@@ -31,8 +31,8 @@ class Command extends \ManaPHP\Cli\Command
         $this->console->writeLn('subscribe to ' . $key);
 
         $this->redisCache->psubscribe(
-            [$key], function ($redis, $pattern, $chan, $msg) use ($path, $ip) {
-            list(, , $_ip, $_path) = explode(':', $chan);
+            [$key], function ($redis, $pattern, $channel, $msg) use ($path, $ip) {
+            list(, , $_ip, $_path) = explode(':', $channel);
             if ($path !== '' && !str_starts_with($_path, $path)) {
                 return;
             }

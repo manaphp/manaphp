@@ -21,8 +21,8 @@ class Redis extends Component implements PubSubInterface
     public function subscribe($channels, $callback)
     {
         $this->redisBroker->subscribe(
-            $channels, static function ($redis, $chan, $msg) use ($callback) {
-            $callback($chan, $msg);
+            $channels, static function ($redis, $channel, $msg) use ($callback) {
+            $callback($channel, $msg);
         }
         );
     }
@@ -31,8 +31,8 @@ class Redis extends Component implements PubSubInterface
     public function psubscribe($patterns, $callback)
     {
         $this->redisBroker->psubscribe(
-            $patterns, static function ($redis, $pattern, $chan, $msg) use ($callback) {
-            $callback($chan, $msg);
+            $patterns, static function ($redis, $pattern, $channel, $msg) use ($callback) {
+            $callback($channel, $msg);
         }
         );
     }
