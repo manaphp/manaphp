@@ -108,7 +108,7 @@ class Renderer extends Component implements RendererInterface
             $template = dirname(end($context->templates)) . '/' . $template;
         }
 
-        $template = $template[0] === '@' ? $this->alias->resolve($template) : $template;
+        $template = $this->alias->resolve($template);
 
         if (isset($this->_files[$template])) {
             list($file, $extension) = $this->_files[$template];
@@ -218,7 +218,7 @@ class Renderer extends Component implements RendererInterface
             $template = dirname(end($this->_context->templates)) . '/' . $template;
         }
 
-        $template = $template[0] === '@' ? $this->alias->resolve($template) : $template;
+        $template = $this->alias->resolve($template);
 
         if (isset($this->_files[$template])) {
             return true;
