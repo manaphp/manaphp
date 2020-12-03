@@ -50,6 +50,10 @@ class FiddlerPlugin extends Plugin
             $this->_injections['redisBroker'] = $options['redisBroker'];
         }
 
+        if (isset($options['pubSub'])) {
+            $this->_injections['pubSub'] = $options['pubSub'];
+        }
+
         $context = $this->_context;
 
         if (MANAPHP_CLI) {

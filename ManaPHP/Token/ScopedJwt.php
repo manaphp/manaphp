@@ -23,6 +23,14 @@ class ScopedJwt extends Component implements ScopedJwtInterface
         if (isset($options['secrets'])) {
             $this->_secrets = $options['secrets'];
         }
+
+        if (isset($options['crypt'])) {
+            $this->_injections['crypt'] = $options['crypt'];
+        }
+
+        if (isset($options['jwt'])) {
+            $this->_injections['jwt'] = $options['jwt'];
+        }
     }
 
     /**
