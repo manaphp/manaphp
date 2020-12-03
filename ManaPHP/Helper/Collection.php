@@ -285,6 +285,50 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
         return new static(array_values($this->_items));
     }
 
+    /**
+     * @param array $sorts
+     *
+     * @return static
+     */
+    public function sortBy($sorts)
+    {
+        $normalized_sorts = [];
+        foreach ($sorts as $key => $value) {
+            if (is_int($key)) {
+                $normalized_sorts[$value] = SORT_ASC;
+            } else {
+                if ($value === SORT_ASC || $value === SORT_DESC) {
+                    $normalized_sorts[$key] = $value;
+                } elseif ($value === 'ASC' || $value === 'asc') {
+                    $normalized_sorts[$key] = SORT_ASC;
+                } else {
+                    $normalized_sorts[$key] = SORT_DESC;
+                }
+            }
+        }
+
+        $items = $this->_items;
+        usort(
+            $items, function ($left, $right) use ($normalized_sorts) {
+            foreach ($normalized_sorts as $field => $sort) {
+                $left_value = $left[$field];
+                $right_value = $right[$field];
+
+                $cmp = is_string($left_value) ? strcmp($left_value, $right_value) : $left_value - $right_value;
+                if ($cmp > 0) {
+                    return $sort === SORT_ASC ? 1 : -1;
+                } elseif ($cmp < 0) {
+                    return $sort === SORT_ASC ? -1 : 1;
+                }
+            }
+
+            return 0;
+        }
+        );
+
+        return new static($items);
+    }
+
     public function jsonSerialize()
     {
         return $this->_items;
