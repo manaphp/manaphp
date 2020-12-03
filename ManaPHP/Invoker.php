@@ -12,6 +12,16 @@ use ReflectionMethod;
 class Invoker extends Component implements InvokerInterface
 {
     /**
+     * @param array $options
+     */
+    public function __construct($options = [])
+    {
+        if (isset($options['validator'])) {
+            $this->_injections['validator'] = $options['validator'];
+        }
+    }
+
+    /**
      * @param object $instance
      * @param string $method
      *

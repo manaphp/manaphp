@@ -37,6 +37,16 @@ class RequestContext
 class Request extends Component implements RequestInterface
 {
     /**
+     * @param array $options
+     */
+    public function __construct($options = [])
+    {
+        if (isset($options['validator'])) {
+            $this->_injections['validator'] = $options['validator'];
+        }
+    }
+
+    /**
      * @return \ManaPHP\Socket\RequestContext
      */
     public function getContext()

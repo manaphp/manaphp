@@ -32,6 +32,16 @@ class RequestContext implements Stickyable
 class Request extends Component implements RequestInterface
 {
     /**
+     * @param array $options
+     */
+    public function __construct($options = [])
+    {
+        if (isset($options['validator'])) {
+            $this->_injections['validator'] = $options['validator'];
+        }
+    }
+
+    /**
      * @return \ManaPHP\Http\RequestContext
      */
     public function getContext()
