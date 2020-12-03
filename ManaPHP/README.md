@@ -20,4 +20,4 @@ or add
 {"manaphp/framework": "dev-master"}
 ```
 
-to the require section of your composer.json.
+to `require` section of your composer.json.
