@@ -12,11 +12,6 @@ use Throwable;
 class SwooleContext
 {
     /**
-     * @var \Swoole\Http\Request
-     */
-    public $request;
-
-    /**
      * @var \Swoole\Http\Response
      */
     public $response;
@@ -188,7 +183,6 @@ class Swoole extends Server
         } else {
             $context = $this->_context;
 
-            $context->request = $request;
             $context->response = $response;
 
             try {
