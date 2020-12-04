@@ -245,6 +245,8 @@ class Configure extends Component implements ConfigureInterface
      */
     public function registerServices()
     {
+        $services = $this->services;
+
         foreach ($this->appGlob('Services/?*Service.php') as $file) {
             $service = lcfirst(basename($file, '.php'));
             if (!isset($services[$service])) {
@@ -252,7 +254,7 @@ class Configure extends Component implements ConfigureInterface
             }
         }
 
-        foreach ($this->services as $service => $params) {
+        foreach ($services as $service => $params) {
             if (is_string($params)) {
                 $params = [$params];
             }
