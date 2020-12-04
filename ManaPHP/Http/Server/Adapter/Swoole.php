@@ -46,7 +46,7 @@ class Swoole extends Server
     /**
      * @var array
      */
-    protected $_server;
+    protected $_SERVER;
 
     /**
      * @param array $options
@@ -54,7 +54,7 @@ class Swoole extends Server
     public function __construct($options = [])
     {
         $script_filename = get_included_files()[0];
-        $this->_server = [
+        $this->_SERVER = [
             'DOCUMENT_ROOT'   => dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,
             'SCRIPT_NAME'     => '/' . basename($script_filename),
@@ -80,7 +80,7 @@ class Swoole extends Server
         }
 
         if (!empty($options['enable_static_handler'])) {
-            $options['document_root'] = $this->_server['DOCUMENT_ROOT'];
+            $options['document_root'] = $this->_SERVER['DOCUMENT_ROOT'];
         }
 
         parent::__construct($options);
@@ -118,7 +118,7 @@ class Swoole extends Server
         }
 
         /** @noinspection AdditionOperationOnArraysInspection */
-        $_server += $this->_server;
+        $_server += $this->_SERVER;
 
         $_get = $request->get ?: [];
         $request_uri = $_server['REQUEST_URI'];
