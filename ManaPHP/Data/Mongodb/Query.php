@@ -485,7 +485,7 @@ class Query extends \ManaPHP\Data\Query
         if ($min === null || $min === '') {
             return $max === null || $max === '' ? $this : $this->whereCmp($field, '<=', $max);
         } elseif ($max === null || $max === '') {
-            return $min === null || $min === '' ? $this : $this->whereCmp($field, '>=', $min);
+            return $this->whereCmp($field, '>=', $min);
         }
 
         $this->_shard_context[$field] = ['~=', [$min, $max]];
@@ -509,7 +509,7 @@ class Query extends \ManaPHP\Data\Query
         if ($min === null || $min === '') {
             return $max === null || $max === '' ? $this : $this->whereCmp($field, '>', $max);
         } elseif ($max === null || $max === '') {
-            return $min === null || $min === '' ? $this : $this->whereCmp($field, '<', $min);
+            return $this->whereCmp($field, '<', $min);
         }
 
         $normalized_min = $this->normalizeValue($field, $min);
