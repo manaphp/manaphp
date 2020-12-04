@@ -265,7 +265,7 @@ class Model extends \ManaPHP\Data\Model
         } elseif ($type === 'float') {
             return is_float($value) ? $value : (float)$value;
         } elseif ($type === 'objectid') {
-            return is_scalar($type) ? new ObjectID($value) : $value;
+            return is_scalar($value) ? new ObjectID($value) : $value;
         } elseif ($type === 'bool') {
             return is_bool($value) ? $value : (bool)$value;
         } elseif ($type === 'array') {

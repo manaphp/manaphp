@@ -330,7 +330,7 @@ class Query extends \ManaPHP\Data\Query
         } elseif ($type === 'float') {
             return is_float($value) ? $value : (float)$value;
         } elseif ($type === 'objectid') {
-            return is_scalar($type) ? new ObjectId($value) : $value;
+            return is_scalar($value) ? new ObjectId($value) : $value;
         } elseif ($type === 'bool') {
             return is_bool($value) ? $value : (bool)$value;
         } elseif ($type === 'array') {
