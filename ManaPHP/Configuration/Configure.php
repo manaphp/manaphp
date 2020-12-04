@@ -245,21 +245,18 @@ class Configure extends Component implements ConfigureInterface
      */
     public function registerServices()
     {
-        $services = $this->services;
-
         foreach ($this->appGlob('Services/?*Service.php') as $file) {
             $service = lcfirst(basename($file, '.php'));
-            if (!isset($services[$service])) {
-                $services[$service] = [];
-            }
-        }
 
-        foreach ($services as $service => $params) {
-            if (is_string($params)) {
-                $params = [$params];
+            if (($params = $this->services[$service] ?? null) === null) {
+                $this->setShared($service, 'App\Services\\' . ucfirst($service));
+            } else {
+                if (!is_array($params)) {
+                    $params = [$params];
+                }
+                $params['class'] = 'App\Services\\' . ucfirst($service);
+                $this->setShared($service, $params);
             }
-            $params['class'] = 'App\Services\\' . ucfirst($service);
-            $this->setShared($service, $params);
         }
 
         return $this;
