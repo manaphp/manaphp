@@ -81,7 +81,7 @@ class Php extends Fpm
     protected function _getMimeTypes()
     {
         $mime_types = [];
-        foreach (file(__DIR__ . '/Server/mime.types', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+        foreach (file(__DIR__ . '/../mime.types', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
             if (!str_contains($line, ';')) {
                 continue;
             }
