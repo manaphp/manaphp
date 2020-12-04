@@ -309,7 +309,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
 
         $items = $this->_items;
         usort(
-            $items, function ($left, $right) use ($normalized_sorts) {
+            $items, static function ($left, $right) use ($normalized_sorts) {
             foreach ($normalized_sorts as $field => $sort) {
                 $left_value = $left[$field];
                 $right_value = $right[$field];
