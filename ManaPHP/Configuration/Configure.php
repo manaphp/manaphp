@@ -262,7 +262,6 @@ class Configure extends Component implements ConfigureInterface
         return $this;
     }
 
-
     /**
      * @return static
      */
