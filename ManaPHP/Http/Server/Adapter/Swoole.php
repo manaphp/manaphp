@@ -183,29 +183,29 @@ class Swoole extends Server
      */
     public function onRequest($request, $response)
     {
-        try {
-            if ($request->server['request_uri'] === '/favicon.ico') {
-                $response->status(404);
-                $response->end();
-                return;
-            }
+        if ($request->server['request_uri'] === '/favicon.ico') {
+            $response->status(404);
+            $response->end();
+        } else {
             $context = $this->_context;
 
             $context->request = $request;
             $context->response = $response;
 
-            $this->_prepareGlobals($request);
+            try {
+                $this->_prepareGlobals($request);
 
-            $this->_handler->handle();
-        } catch (Throwable $throwable) {
-            $str = date('c') . ' ' . get_class($throwable) . ': ' . $throwable->getMessage() . PHP_EOL;
-            $str .= '    at ' . $throwable->getFile() . ':' . $throwable->getLine() . PHP_EOL;
-            $str .= preg_replace('/#\d+\s/', '    at ', $throwable->getTraceAsString());
-            echo $str . PHP_EOL;
-        }
+                $this->_handler->handle();
+            } catch (Throwable $throwable) {
+                $str = date('c') . ' ' . get_class($throwable) . ': ' . $throwable->getMessage() . PHP_EOL;
+                $str .= '    at ' . $throwable->getFile() . ':' . $throwable->getLine() . PHP_EOL;
+                $str .= preg_replace('/#\d+\s/', '    at ', $throwable->getTraceAsString());
+                echo $str . PHP_EOL;
+            }
 
-        if (!MANAPHP_COROUTINE_ENABLED) {
-            $this->_releaseContexts();
+            if (!MANAPHP_COROUTINE_ENABLED) {
+                $this->_releaseContexts();
+            }
         }
     }
 
