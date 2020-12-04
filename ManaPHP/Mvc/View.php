@@ -316,7 +316,7 @@ class View extends Component implements ViewInterface
     /**
      * @param string $template
      *
-     * @return string|false
+     * @return bool
      */
     public function exists($template = null)
     {
