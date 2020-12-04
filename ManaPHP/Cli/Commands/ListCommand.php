@@ -11,6 +11,8 @@ class ListCommand extends Command
      *
      * @param bool $verbose
      * @param bool $all
+     *
+     * @return void
      */
     public function componentsAction($verbose = false, $all = false)
     {
@@ -56,6 +58,8 @@ class ListCommand extends Command
      * list all plugins
      *
      * @param bool $verbose
+     *
+     * @return void
      */
     public function pluginsAction($verbose = false)
     {
@@ -79,6 +83,8 @@ class ListCommand extends Command
      * list all tracers
      *
      * @param bool $verbose
+     *
+     * @return void
      */
     public function tracersAction($verbose = false)
     {

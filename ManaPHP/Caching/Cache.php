@@ -7,6 +7,11 @@ use ManaPHP\Exception\InvalidValueException;
 
 abstract class Cache extends Component implements CacheInterface
 {
+    /**
+     * @param string $key
+     *
+     * @return string|false
+     */
     abstract public function do_get($key);
 
     /**
@@ -52,6 +57,11 @@ abstract class Cache extends Component implements CacheInterface
         }
     }
 
+    /**
+     * @param string $key
+     *
+     * @return void
+     */
     abstract public function do_delete($key);
 
     /**
@@ -64,6 +74,11 @@ abstract class Cache extends Component implements CacheInterface
         $this->do_delete($key);
     }
 
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
     abstract public function do_exists($key);
 
     /**

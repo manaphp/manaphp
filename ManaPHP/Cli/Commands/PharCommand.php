@@ -11,6 +11,8 @@ class PharCommand extends Command
 {
     /**
      * create manacli.phar file
+     *
+     * @return void
      */
     public function manacliAction()
     {

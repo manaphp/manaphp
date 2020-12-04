@@ -32,6 +32,9 @@ class ValidateFailedException extends Exception
         return $this->_errors;
     }
 
+    /**
+     * @return int
+     */
     public function getStatusCode()
     {
         return 400;

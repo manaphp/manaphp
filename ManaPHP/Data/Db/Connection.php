@@ -114,6 +114,11 @@ abstract class Connection extends Component implements ConnectionInterface
         return $this->_pdo;
     }
 
+    /**
+     * @param string $identifier
+     *
+     * @return string
+     */
     protected function _escapeIdentifier($identifier)
     {
         $list = [];
@@ -255,6 +260,9 @@ abstract class Connection extends Component implements ConnectionInterface
         throw new DbException(["%s =>\r\n SQL: %s\r\n BIND: %s", $exception->getMessage(), $sql, $bind_str]);
     }
 
+    /**
+     * @return void
+     */
     public function close()
     {
         if ($this->_pdo) {

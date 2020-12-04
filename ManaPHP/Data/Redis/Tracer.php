@@ -15,11 +15,22 @@ class Tracer extends \ManaPHP\Event\Tracer
         $this->attachEvent('redis:called', [$this, 'onCalled']);
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onConnect(EventArgs $eventArgs)
     {
         $this->logger->debug(['connect to `:url`', 'url' => $eventArgs->data], 'redis.connect');
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     * @throws \ManaPHP\Exception\JsonException
+     */
     public function onCalling(EventArgs $eventArgs)
     {
         $method = $eventArgs->data['method'];
@@ -35,6 +46,12 @@ class Tracer extends \ManaPHP\Event\Tracer
         }
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     * @throws \ManaPHP\Exception\JsonException
+     */
     public function onCalled(EventArgs $eventArgs)
     {
         $method = $eventArgs->data['method'];

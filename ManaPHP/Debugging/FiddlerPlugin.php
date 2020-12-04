@@ -67,6 +67,9 @@ class FiddlerPlugin extends Plugin
         $this->attachEvent('response:sent', [$this, 'onResponseSent']);
     }
 
+    /**
+     * @return void
+     */
     public function onRequestBegin()
     {
         $context = $this->_context;
@@ -94,6 +97,11 @@ class FiddlerPlugin extends Plugin
         }
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onLoggerLog(EventArgs $eventArgs)
     {
         /** @var \ManaPHP\Logging\Logger\Log $log */
@@ -120,6 +128,11 @@ class FiddlerPlugin extends Plugin
         return $this->_watched;
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onResponseSent(EventArgs $eventArgs)
     {
         /** @var \ManaPHP\Http\ResponseContext $response */
@@ -164,6 +177,8 @@ class FiddlerPlugin extends Plugin
      * @param array $options
      *
      * @noinspection PhpUnusedParameterInspection
+     *
+     * @return void
      */
     public function subscribe($options = [])
     {
@@ -184,6 +199,13 @@ class FiddlerPlugin extends Plugin
         }
     }
 
+    /**
+     * @param string $packet
+     *
+     * @return void
+     * @throws \JsonException
+     * @throws \ManaPHP\Exception\JsonException
+     */
     public function processMessage($packet)
     {
         $message = json_parse($packet);

@@ -49,9 +49,9 @@ class Uuid
     }
 
     /**
-     * @param $uuid
+     * @param string $uuid
      *
-     * @return string
+     * @return int
      */
     public static function decode_int32($uuid)
     {

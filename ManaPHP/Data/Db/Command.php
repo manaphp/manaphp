@@ -255,6 +255,8 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @param array  $services      services name list
      * @param string $table_pattern match table against a pattern
+     *
+     * @return void
      */
     public function listAction($services = [], $table_pattern = '')
     {
@@ -285,6 +287,8 @@ class Command extends \ManaPHP\Cli\Command
      * @param string $service   service name
      * @param string $namespace
      * @param bool   $optimized output as more methods as possible
+     *
+     * @return void
      */
     public function modelAction($table, $service = '', $namespace = 'App\Models', $optimized = false)
     {
@@ -328,6 +332,8 @@ class Command extends \ManaPHP\Cli\Command
      * @param string $table_pattern match table against a pattern
      * @param string $namespace     namespace of models
      * @param bool   $optimized     output as more methods as possible
+     *
+     * @return void
      */
     public function modelsAction($services = [], $table_pattern = '', $namespace = 'App\Models', $optimized = false)
     {
@@ -354,6 +360,8 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @param array  $services      services name list
      * @param string $table_pattern match table against a pattern
+     *
+     * @return void
      */
     public function jsonAction($services = [], $table_pattern = '')
     {
@@ -388,6 +396,8 @@ class Command extends \ManaPHP\Cli\Command
      * @param array  $services      services name list
      * @param string $table_pattern match table against a pattern
      * @param bool   $bom           contains BOM or not
+     *
+     * @return void
      */
     public function csvAction($services = [], $table_pattern = '', $bom = false)
     {

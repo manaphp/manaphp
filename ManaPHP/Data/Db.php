@@ -915,6 +915,9 @@ class Db extends Component implements DbInterface
         return $meta;
     }
 
+    /**
+     * @return void
+     */
     public function close()
     {
         $context = $this->_context;

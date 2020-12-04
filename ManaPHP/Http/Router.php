@@ -480,11 +480,19 @@ class Router extends Component implements RouterInterface
         return $this->dispatcher->dispatch($router_context);
     }
 
+    /**
+     * @return string
+     */
     public function getArea()
     {
         return $this->_context->area;
     }
 
+    /**
+     * @param string $area
+     *
+     * @return static
+     */
     public function setArea($area)
     {
         $this->_context->area = $area;
@@ -502,6 +510,11 @@ class Router extends Component implements RouterInterface
         return $this->_context->controller;
     }
 
+    /**
+     * @param string $controller
+     *
+     * @return static
+     */
     public function setController($controller)
     {
         $this->_context->controller = $controller;
@@ -541,6 +554,11 @@ class Router extends Component implements RouterInterface
         return $this->_context->params;
     }
 
+    /**
+     * @param array $params
+     *
+     * @return static
+     */
     public function setParams($params)
     {
         $this->_context->params = $params;
@@ -558,6 +576,11 @@ class Router extends Component implements RouterInterface
         return $this->_context->matched;
     }
 
+    /**
+     * @param bool $matched
+     *
+     * @return void
+     */
     public function setMatched($matched)
     {
         $this->_context->matched = $matched;

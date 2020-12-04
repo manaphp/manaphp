@@ -1070,6 +1070,12 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         return false;
     }
 
+    /**
+     * @param string $event
+     * @param array  $data
+     *
+     * @return void
+     */
     public function fireEvent($event, $data = [])
     {
         /** @var \ManaPHP\Event\ManagerInterface $eventsManager */

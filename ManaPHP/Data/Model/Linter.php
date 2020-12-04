@@ -97,7 +97,7 @@ class Linter extends Component
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public function getPropertyFields()
     {
@@ -114,7 +114,7 @@ class Linter extends Component
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public function lintRealPropertyFields()
     {
@@ -133,7 +133,7 @@ class Linter extends Component
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public function getMagicFields()
     {

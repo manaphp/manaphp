@@ -11,6 +11,9 @@ class AttackDetectedException extends Exception
         parent::__construct($message);
     }
 
+    /**
+     * @return int
+     */
     public function getStatusCode()
     {
         return 400;

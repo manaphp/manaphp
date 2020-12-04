@@ -94,6 +94,9 @@ class Channel
         return $this->_length;
     }
 
+    /**
+     * @return int
+     */
     public function capacity()
     {
         return $this->_capacity;

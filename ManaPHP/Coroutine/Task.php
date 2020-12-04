@@ -42,6 +42,9 @@ class Task extends Component implements TaskInterface
         }
     }
 
+    /**
+     * @return void
+     */
     public function routine()
     {
         $fn = $this->_fn;

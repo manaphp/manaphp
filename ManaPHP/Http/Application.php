@@ -28,6 +28,9 @@ abstract class Application extends \ManaPHP\Application implements HandlerInterf
         }
     }
 
+    /**
+     * @return void
+     */
     public function authenticate()
     {
         $this->identity->authenticate();

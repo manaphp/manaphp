@@ -13,6 +13,8 @@ class Command extends \ManaPHP\Cli\Command
      * precompile sword template
      *
      * @param bool $replace
+     *
+     * @return void
      */
     public function compileAction($replace = false)
     {
@@ -41,6 +43,8 @@ class Command extends \ManaPHP\Cli\Command
     /**
      * @param string $file
      * @param bool   $replace
+     *
+     * @return void
      */
     protected function _compile($file, $replace)
     {

@@ -58,7 +58,7 @@ class Php extends Fpm
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     protected function _getRootFiles()
     {
@@ -76,7 +76,7 @@ class Php extends Fpm
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     protected function _getMimeTypes()
     {
@@ -105,7 +105,7 @@ class Php extends Fpm
     }
 
     /**
-     * @return bool|string
+     * @return false|string
      */
     protected function _isStaticFile()
     {

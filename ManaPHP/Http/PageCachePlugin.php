@@ -55,6 +55,13 @@ class PageCachePlugin extends Plugin
         }
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     * @throws AbortException
+     * @throws MissingFieldException
+     */
     public function onRequestReady(EventArgs $eventArgs)
     {
         if (!in_array($this->request->getMethod(), ['GET', 'POST', 'HEAD'])) {
@@ -165,6 +172,11 @@ class PageCachePlugin extends Plugin
         throw new AbortException();
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onResponseSending(EventArgs $eventArgs)
     {
         $context = $this->_context;

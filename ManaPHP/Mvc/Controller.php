@@ -15,7 +15,7 @@ namespace ManaPHP\Mvc;
 abstract class Controller extends \ManaPHP\Http\Controller
 {
     /**
-     * @return array
+     * @return string[]
      */
     public function getAcl()
     {

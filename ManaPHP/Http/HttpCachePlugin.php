@@ -27,6 +27,12 @@ class HttpCachePlugin extends Plugin
         }
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     * @throws MisuseException
+     */
     public function onResponseSending(EventArgs $eventArgs)
     {
         /** @var \ManaPHP\Http\ResponseContext $response */

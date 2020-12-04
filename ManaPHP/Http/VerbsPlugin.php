@@ -31,6 +31,12 @@ class VerbsPlugin extends Plugin
         }
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     * @throws MethodNotAllowedHttpException
+     */
     public function onRequestValidate(EventArgs $eventArgs)
     {
         /** @var \ManaPHP\Http\Controller $controller */

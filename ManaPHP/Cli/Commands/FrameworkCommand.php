@@ -33,6 +33,12 @@ class FrameworkCommand extends Command
         LocalFS::fileDelete($this->_tmp_lite_file);
     }
 
+    /**
+     * @param string $dir
+     *
+     * @return array
+     *
+     */
     protected function _getSourceFiles($dir)
     {
         $files = [];
@@ -57,6 +63,11 @@ class FrameworkCommand extends Command
         return $files;
     }
 
+    /**
+     * @param string $content
+     *
+     * @return string
+     */
     protected function _minify($content)
     {
         $content = preg_replace('#\s*/\*\*.*?\*/#ms', '', $content);//remove comments

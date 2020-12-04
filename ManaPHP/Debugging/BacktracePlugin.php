@@ -58,6 +58,9 @@ class BacktracePlugin extends Plugin
         }
     }
 
+    /**
+     * @return void
+     */
     public function onRequestBegin()
     {
         $file = $this->alias->resolve('@data/backtracePlugin/trace_{ymd_His}_{8}.log');
@@ -71,6 +74,9 @@ class BacktracePlugin extends Plugin
         xdebug_start_trace($file);
     }
 
+    /**
+     * @return void
+     */
     public function onRequestEnd()
     {
         /** @noinspection ForgottenDebugOutputInspection */

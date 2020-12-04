@@ -9,6 +9,8 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
 {
     /**
      * @param \Throwable $throwable
+     *
+     * @return void
      */
     public function handle($throwable)
     {

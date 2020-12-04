@@ -149,10 +149,10 @@ class Smtp extends Mailer
 
     /**
      * @param string $str
-     *
-     * @param array
+     * @param int[]  $expected
      *
      * @return array
+     *
      * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\BadResponseException
      * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
      */

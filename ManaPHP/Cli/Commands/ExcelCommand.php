@@ -11,6 +11,8 @@ class ExcelCommand extends Command
      * generate ods from content.xml file
      *
      * @param string $file ods content file path
+     *
+     * @return void
      */
     public function odsAction($file)
     {

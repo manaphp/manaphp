@@ -109,6 +109,8 @@ class Swoole extends \ManaPHP\Rpc\Server
 
     /**
      * @param \Swoole\Http\Request $request
+     *
+     * @return void
      */
     protected function _prepareGlobals($request)
     {
@@ -135,12 +137,17 @@ class Swoole extends \ManaPHP\Rpc\Server
      * @param \Swoole\WebSocket\Server $server
      *
      * @noinspection PhpUnusedParameterInspection
+     *
+     * @return void
      */
     public function onStart($server)
     {
         @cli_set_process_title(sprintf('manaphp %s: master', $this->configure->id));
     }
 
+    /**
+     * @return void
+     */
     public function onManagerStart()
     {
         @cli_set_process_title(sprintf('manaphp %s: manager', $this->configure->id));
@@ -151,6 +158,8 @@ class Swoole extends \ManaPHP\Rpc\Server
      * @param int                      $worker_id
      *
      * @noinspection PhpUnusedParameterInspection
+     *
+     * @return void
      */
     public function onWorkerStart($server, $worker_id)
     {
@@ -160,6 +169,8 @@ class Swoole extends \ManaPHP\Rpc\Server
     /**
      * @param \Swoole\Http\Request  $request
      * @param \Swoole\Http\Response $response
+     *
+     * @return void
      */
     public function onRequest($request, $response)
     {
@@ -190,6 +201,8 @@ class Swoole extends \ManaPHP\Rpc\Server
     /**
      * @param \Swoole\WebSocket\Server $server
      * @param \Swoole\Http\Request     $request
+     *
+     * @return void
      */
     public function onOpen($server, $request)
     {
@@ -234,6 +247,8 @@ class Swoole extends \ManaPHP\Rpc\Server
     /**
      * @param \Swoole\WebSocket\Server $server
      * @param int                      $fd
+     *
+     * @return void
      */
     public function onClose($server, $fd)
     {
@@ -251,6 +266,8 @@ class Swoole extends \ManaPHP\Rpc\Server
     /**
      * @param \Swoole\WebSocket\Server $server
      * @param \Swoole\WebSocket\Frame  $frame
+     *
+     * @return void
      */
     public function onMessage(/** @noinspection PhpUnusedParameterInspection */ $server, $frame)
     {
@@ -307,6 +324,8 @@ class Swoole extends \ManaPHP\Rpc\Server
 
     /**
      * @param \ManaPHP\Http\ResponseContext $response
+     *
+     * @return void
      */
     public function send($response)
     {

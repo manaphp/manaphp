@@ -49,7 +49,7 @@ class Handler extends Component implements HandlerInterface
     /**
      * @param string $commandName
      *
-     * @return array
+     * @return string[]
      */
     protected function _getActions($commandName)
     {

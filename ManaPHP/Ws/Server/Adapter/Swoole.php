@@ -120,6 +120,8 @@ class Swoole extends Component implements ServerInterface, Unaspectable
 
     /**
      * @param \Swoole\Http\Request $request
+     *
+     * @return void
      */
     protected function _prepareGlobals($request)
     {
@@ -146,12 +148,17 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      * @param \Swoole\WebSocket\Server $server
      *
      * @noinspection PhpUnusedParameterInspection
+     *
+     * @return void
      */
     public function onStart($server)
     {
         @cli_set_process_title(sprintf('manaphp %s: master', $this->configure->id));
     }
 
+    /**
+     * @return void
+     */
     public function onManagerStart()
     {
         @cli_set_process_title(sprintf('manaphp %s: manager', $this->configure->id));
@@ -162,6 +169,8 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      * @param int                      $worker_id
      *
      * @noinspection PhpUnusedParameterInspection
+     *
+     * @return void
      */
     public function onWorkerStart($server, $worker_id)
     {
@@ -181,6 +190,8 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      * @param int                      $worker_id
      *
      * @noinspection PhpUnusedParameterInspection
+     *
+     * @return void
      */
     public function onWorkerStop($server, $worker_id)
     {
@@ -194,6 +205,8 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     /**
      * @param \Swoole\WebSocket\Server $server
      * @param \Swoole\Http\Request     $request
+     *
+     * @return void
      */
     public function onOpen(/** @noinspection PhpUnusedParameterInspection */ $server, $request)
     {
@@ -231,6 +244,8 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     /**
      * @param \Swoole\WebSocket\Server $server
      * @param int                      $fd
+     *
+     * @return void
      */
     public function onClose($server, $fd)
     {
@@ -261,6 +276,8 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     /**
      * @param \Swoole\WebSocket\Server $server
      * @param Frame                    $frame
+     *
+     * @return void
      */
     public function onMessage(/** @noinspection PhpUnusedParameterInspection */ $server, $frame)
     {
@@ -323,6 +340,11 @@ class Swoole extends Component implements ServerInterface, Unaspectable
         return @$this->_swoole->push($fd, is_string($data) ? $data : json_stringify($data));
     }
 
+    /**
+     * @param string $data
+     *
+     * @return void
+     */
     public function broadcast($data)
     {
         $swoole = $this->_swoole;

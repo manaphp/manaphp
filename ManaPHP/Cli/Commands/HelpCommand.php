@@ -63,7 +63,7 @@ class HelpCommand extends Command
     /**
      * @param string $commandClassName
      *
-     * @return array
+     * @return string[]
      */
     protected function _getActions($commandClassName)
     {

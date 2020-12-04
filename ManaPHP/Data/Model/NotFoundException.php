@@ -22,11 +22,17 @@ class NotFoundException extends Exception
         $this->filters = $filters;
     }
 
+    /**
+     * @return int
+     */
     public function getStatusCode()
     {
         return 404;
     }
 
+    /**
+     * @return array
+     */
     public function getJson()
     {
         return ['code' => 404, 'message' => "Record of `$this->model` Model is not exists"];

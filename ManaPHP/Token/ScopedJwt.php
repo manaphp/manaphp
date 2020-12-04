@@ -54,6 +54,14 @@ class ScopedJwt extends Component implements ScopedJwtInterface
         return $secret;
     }
 
+    /**
+     * @param array  $claims
+     * @param int    $ttl
+     * @param string $scope
+     *
+     * @return string
+     * @throws MisuseException
+     */
     public function encode($claims, $ttl, $scope)
     {
         if (isset($claims['scope'])) {
@@ -65,6 +73,14 @@ class ScopedJwt extends Component implements ScopedJwtInterface
         return $this->jwt->encode($claims, $ttl, $this->getSecret($scope));
     }
 
+    /**
+     * @param string $token
+     * @param string $scope
+     * @param bool   $verify
+     *
+     * @return array
+     * @throws ScopeException
+     */
     public function decode($token, $scope, $verify = true)
     {
         $claims = $this->jwt->decode($token, false);
@@ -84,11 +100,20 @@ class ScopedJwt extends Component implements ScopedJwtInterface
         return $claims;
     }
 
+    /**
+     * @param string $token
+     * @param string $scope
+     *
+     * @return void
+     */
     public function verify($token, $scope)
     {
         $this->jwt->verify($token, $this->getSecret($scope));
     }
 
+    /**
+     * @return array
+     **/
     public function dump()
     {
         $data = parent::dump();

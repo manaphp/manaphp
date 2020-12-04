@@ -24,11 +24,21 @@ class Tracer extends \ManaPHP\Event\Tracer
         $this->attachEvent('db:abnormal', [$this, 'onAbnormal']);
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onConnect(EventArgs $eventArgs)
     {
         $this->logger->debug(['connect to `:dsn`', 'dsn' => $eventArgs->data], 'db.connect');
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onExecuted(EventArgs $eventArgs)
     {
         $data = $eventArgs->data;
@@ -36,6 +46,11 @@ class Tracer extends \ManaPHP\Event\Tracer
         $this->logger->info($data, 'db.' . $data['type']);
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onQueried(EventArgs $eventArgs)
     {
         $data = $eventArgs->data;
@@ -46,31 +61,53 @@ class Tracer extends \ManaPHP\Event\Tracer
         $this->logger->debug($data, 'db.query');
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onInserted(EventArgs $eventArgs)
     {
         $this->logger->info($eventArgs->data, 'db.insert');
     }
 
+    /**
+     * @return void
+     */
     public function onBegin()
     {
         $this->logger->info('transaction begin', 'db.begin');
     }
 
+    /**
+     * @return void
+     */
     public function onRollback()
     {
         $this->logger->info('transaction rollback', 'db.rollback');
     }
 
+    /**
+     * @return void
+     */
     public function onCommit()
     {
         $this->logger->info('transaction commit', 'db.commit');
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onMetadata(EventArgs $eventArgs)
     {
         $this->logger->debug($eventArgs->data, 'db.metadata');
     }
 
+    /**
+     * @return void
+     */
     public function onAbnormal()
     {
         $this->logger->error('transaction is not close correctly', 'db.abnormal');

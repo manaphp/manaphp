@@ -42,6 +42,9 @@ class Application extends \ManaPHP\Application implements LogCategorizable
         return 'ManaPHP\Cli\Factory';
     }
 
+    /**
+     * @return void
+     */
     public function handle()
     {
         $args = implode(' ', array_slice($GLOBALS['argv'], 1));

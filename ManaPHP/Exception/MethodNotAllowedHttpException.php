@@ -14,6 +14,9 @@ class MethodNotAllowedHttpException extends Exception
         parent::__construct('This URL can only handle the following request methods: ' . implode(', ', $verbs));
     }
 
+    /**
+     * @return int
+     */
     public function getStatusCode()
     {
         return 405;

@@ -177,6 +177,9 @@ class Connection extends Component
         }
     }
 
+    /**
+     * @return void
+     */
     public function close()
     {
         if ($this->_redis) {
@@ -187,6 +190,12 @@ class Connection extends Component
         }
     }
 
+    /**
+     * @param string $name
+     * @param array  $arguments
+     *
+     * @return mixed
+     */
     public function call($name, $arguments)
     {
         $redis = $this->getConnect();

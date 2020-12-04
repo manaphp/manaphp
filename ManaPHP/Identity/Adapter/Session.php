@@ -9,6 +9,9 @@ use ManaPHP\Identity;
  */
 class Session extends Identity
 {
+    /**
+     * @var string
+     */
     protected $_name = 'auth';
 
     /**
@@ -23,6 +26,11 @@ class Session extends Identity
         return $this;
     }
 
+    /**
+     * @param array $claims
+     *
+     * @return static
+     */
     public function setClaims($claims)
     {
         $this->session->set($this->_name, $claims);

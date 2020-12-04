@@ -78,6 +78,9 @@ class Gd extends Image
         return $this->_height;
     }
 
+    /**
+     * @return resource
+     */
     public function getInternalHandle()
     {
         return $this->_image;

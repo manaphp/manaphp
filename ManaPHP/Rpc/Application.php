@@ -16,6 +16,9 @@ use Throwable;
  */
 class Application extends \ManaPHP\Application implements HandlerInterface
 {
+    /**
+     * @return string
+     */
     public function getFactory()
     {
         return 'ManaPHP\Rpc\Factory';

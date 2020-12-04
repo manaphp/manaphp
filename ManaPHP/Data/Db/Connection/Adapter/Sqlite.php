@@ -85,6 +85,7 @@ class Sqlite extends Connection
      * @param string $schema
      *
      * @return array
+     *
      * @throws \ManaPHP\Data\Db\Exception
      */
     public function getTables($schema = null)

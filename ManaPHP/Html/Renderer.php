@@ -318,6 +318,9 @@ class Renderer extends Component implements RendererInterface
         }
     }
 
+    /**
+     * @return array
+     */
     public function dump()
     {
         $data = parent::dump();

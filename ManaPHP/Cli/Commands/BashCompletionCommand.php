@@ -11,7 +11,7 @@ use ReflectionMethod;
 class BashCompletionCommand extends Command
 {
     /**
-     * @return array
+     * @return string[]
      */
     protected function _getCommands()
     {
@@ -27,7 +27,7 @@ class BashCompletionCommand extends Command
     /**
      * @param string $command
      *
-     * @return array
+     * @return string[]
      */
     protected function _getActions($command)
     {
@@ -53,7 +53,7 @@ class BashCompletionCommand extends Command
      * @param string $command
      * @param string $action
      *
-     * @return array
+     * @return string[]
      */
     protected function _getArgumentNames($command, $action)
     {
@@ -166,6 +166,8 @@ class BashCompletionCommand extends Command
 
     /**
      * install bash completion script
+     *
+     * @return int
      */
     public function installAction()
     {

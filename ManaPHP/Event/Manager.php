@@ -136,6 +136,9 @@ class Manager extends Component implements ManagerInterface
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function __debugInfo()
     {
         $data = get_object_vars($this);
@@ -145,6 +148,9 @@ class Manager extends Component implements ManagerInterface
         return $data;
     }
 
+    /**
+     * @return array
+     */
     public function dump()
     {
         $dump = parent::dump();

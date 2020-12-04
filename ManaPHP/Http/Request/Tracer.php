@@ -14,6 +14,9 @@ class Tracer extends \ManaPHP\Event\Tracer
         $this->attachEvent('request:begin', [$this, 'onBegin']);
     }
 
+    /**
+     * @return void
+     */
     public function onBegin()
     {
         $this->logger->debug($this->request->get(), 'http.request');

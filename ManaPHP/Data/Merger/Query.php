@@ -473,6 +473,12 @@ class Query extends \ManaPHP\Data\Query
         return $this;
     }
 
+    /**
+     * @param string $id
+     * @param string $value
+     *
+     * @return static
+     */
     public function where1v1($id, $value)
     {
         foreach ($this->_queries as $query) {
@@ -482,6 +488,12 @@ class Query extends \ManaPHP\Data\Query
         return $this;
     }
 
+    /**
+     * @param string $filter
+     * @param array  $bind
+     *
+     * @return static
+     */
     public function whereRaw($filter, $bind = null)
     {
         foreach ($this->_queries as $query) {
@@ -521,6 +533,12 @@ class Query extends \ManaPHP\Data\Query
         return $this;
     }
 
+    /**
+     * @param string|array $having
+     * @param array        $bind
+     *
+     * @return static
+     */
     public function having($having, $bind = [])
     {
         foreach ($this->_queries as $query) {

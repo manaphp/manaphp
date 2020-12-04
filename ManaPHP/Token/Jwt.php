@@ -49,7 +49,7 @@ class Jwt extends Component implements JwtInterface
     /**
      * @param string $str
      *
-     * @return bool|string
+     * @return false|string
      */
     public function base64UrlDecode($str)
     {
@@ -166,6 +166,9 @@ class Jwt extends Component implements JwtInterface
         }
     }
 
+    /**
+     * @return array
+     */
     public function dump()
     {
         $data = parent::dump();

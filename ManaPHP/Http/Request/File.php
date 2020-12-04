@@ -102,7 +102,9 @@ class File extends Component implements FileInterface
      * @param string $allowedExtensions
      * @param bool   $overwrite
      *
+     * @return void
      * @throws \ManaPHP\Http\Request\File\Exception
+     *
      */
     public function moveTo($dst, $allowedExtensions = 'jpg,jpeg,png,gif,doc,xls,pdf,zip', $overwrite = false)
     {

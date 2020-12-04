@@ -73,7 +73,7 @@ class Ws extends Client
     }
 
     /**
-     * @param $response
+     * @param string $response
      *
      * @return mixed
      *
@@ -103,6 +103,8 @@ class Ws extends Client
 
     /**
      * @param \ManaPHP\Ws\Client\EngineInterface $engine
+     *
+     * @return void
      */
     public function authenticate($engine)
     {

@@ -11,6 +11,9 @@ class TooManyRequestsException extends Exception
         parent::__construct($message, $code, $previous);
     }
 
+    /**
+     * @return int
+     */
     public function getStatusCode()
     {
         /**
@@ -19,6 +22,9 @@ class TooManyRequestsException extends Exception
         return 429;
     }
 
+    /**
+     * @return array
+     */
     public function getJson()
     {
         return ['code' => 429, 'message' => 'Too Many Request'];

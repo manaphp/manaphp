@@ -24,7 +24,7 @@ class Raw implements ExpressionInterface
      * @param \ManaPHP\Data\ModelInterface $model
      * @param string                       $field
      *
-     * @return array
+     * @return array|string
      */
     public function compile($model, $field)
     {

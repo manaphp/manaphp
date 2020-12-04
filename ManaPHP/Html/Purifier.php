@@ -44,6 +44,8 @@ class Purifier extends Component implements PurifierInterface
      * @param \DOMNode[] $nodes
      * @param string     $allowedTags
      * @param string     $allowedAttributes
+     *
+     * @return void
      */
     protected function _purify($nodes, $allowedTags, $allowedAttributes)
     {

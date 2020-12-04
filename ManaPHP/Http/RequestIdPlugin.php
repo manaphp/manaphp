@@ -31,6 +31,11 @@ class RequestIdPlugin extends Plugin
         }
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onHttpClientRequesting(EventArgs $eventArgs)
     {
         /** @var Request $request */

@@ -184,7 +184,7 @@ class View extends Component implements ViewInterface
     }
 
     /**
-     * @return string
+     * @return false|string
      */
     protected function _findLayout()
     {
@@ -449,6 +449,9 @@ class View extends Component implements ViewInterface
         return $this->_context->content;
     }
 
+    /**
+     * @return array
+     */
     public function dump()
     {
         $data = parent::dump();

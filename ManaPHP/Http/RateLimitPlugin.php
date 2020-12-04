@@ -47,6 +47,13 @@ class RateLimitPlugin extends Plugin
         }
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     * @throws TooManyRequestsException
+     * @throws \ManaPHP\Exception\InvalidValueException
+     */
     public function onRequestValidate(EventArgs $eventArgs)
     {
         /** @var \ManaPHP\Http\DispatcherInterface $dispatcher */

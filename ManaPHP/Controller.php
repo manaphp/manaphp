@@ -19,7 +19,9 @@ class Controller extends Component implements LogCategorizable
     /**
      * @param string $action
      *
+     * @return void
      * @throws NotFoundActionException
+     *
      */
     public function validateInvokable($action)
     {

@@ -85,6 +85,9 @@ class Imagick extends Image
         return $this->_height;
     }
 
+    /**
+     * @return \Imagick
+     */
     public function getInternalHandle()
     {
         return $this->_image;

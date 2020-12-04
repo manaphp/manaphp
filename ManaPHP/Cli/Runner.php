@@ -15,6 +15,9 @@ class Runner extends Application implements RunnerInterface
 
     }
 
+    /**
+     * @return void
+     */
     public function run()
     {
         $factory = $this->getFactory();

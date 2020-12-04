@@ -44,6 +44,12 @@ class SlowlogPlugin extends Plugin
         $this->attachEvent('request:end', [$this, 'onRequestEnd']);
     }
 
+    /**
+     * @param float $elapsed
+     * @param mixed $message
+     *
+     * @return void
+     */
     protected function _write($elapsed, $message)
     {
         $elapsed = round($elapsed, 3);
@@ -87,6 +93,9 @@ class SlowlogPlugin extends Plugin
         return $id;
     }
 
+    /**
+     * @return void
+     */
     public function onRequestEnd()
     {
         if ($this->response->hasHeader('X-Response-Time')) {

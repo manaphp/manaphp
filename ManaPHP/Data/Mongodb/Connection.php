@@ -329,6 +329,9 @@ class Connection extends Component implements ConnectionInterface
         }
     }
 
+    /**
+     * @return void
+     */
     public function close()
     {
         $this->_manager = null;

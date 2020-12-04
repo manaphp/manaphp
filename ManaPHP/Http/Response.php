@@ -560,7 +560,7 @@ class Response extends Component implements ResponseInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getFile()
     {
@@ -635,6 +635,9 @@ class Response extends Component implements ResponseInterface
         return $this->_context->headers;
     }
 
+    /**
+     * @return array
+     */
     public function dump()
     {
         $data = parent::dump();

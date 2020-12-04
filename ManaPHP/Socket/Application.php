@@ -11,11 +11,19 @@ use ManaPHP\Socket\Server\HandlerInterface;
  */
 class Application extends \ManaPHP\Application implements HandlerInterface
 {
+    /**
+     * @return string
+     */
     public function getFactory()
     {
         return 'ManaPHP\Socket\Factory';
     }
 
+    /**
+     * @param string $action
+     *
+     * @return void
+     */
     public function invoke($action)
     {
         static $controller;
@@ -28,6 +36,11 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         }
     }
 
+    /**
+     * @param int $fd
+     *
+     * @return void
+     */
     public function onConnect($fd)
     {
         $request_context = $this->request->getContext();
@@ -45,6 +58,12 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         }
     }
 
+    /**
+     * @param int    $fd
+     * @param string $data
+     *
+     * @return void
+     */
     public function onReceive($fd, $data)
     {
         $event_data = compact('fd', 'data');

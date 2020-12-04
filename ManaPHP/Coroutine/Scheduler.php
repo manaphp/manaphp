@@ -31,6 +31,8 @@ class Scheduler extends Component implements SchedulerInterface
      * @param int                       $id
      * @param \Swoole\Coroutine\Channel $channel
      * @param array                     $task
+     *
+     * @return void
      */
     public function routine($id, $channel, $task)
     {

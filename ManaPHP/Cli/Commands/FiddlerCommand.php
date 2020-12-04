@@ -14,6 +14,8 @@ class FiddlerCommand extends Command
      *
      * @param string $id app id
      * @param string $ip client ip
+     *
+     * @return void
      */
     public function defaultAction($id = '', $ip = '')
     {

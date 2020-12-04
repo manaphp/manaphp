@@ -6,6 +6,12 @@ use Swoole\Coroutine as SwooleCoroutine;
 
 class Coroutine
 {
+    /**
+     * @param int $options
+     * @param int $limit
+     *
+     * @return array[]
+     */
     public static function getBacktrace($options, $limit = 0)
     {
         if (MANAPHP_COROUTINE_ENABLED) {

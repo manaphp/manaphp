@@ -15,16 +15,25 @@ class Mutex
         $this->_channel->push('');
     }
 
+    /**
+     * @return void
+     */
     public function lock()
     {
         $this->_channel->pop();
     }
 
+    /**
+     * @return void
+     */
     public function unlock()
     {
         $this->_channel->push('');
     }
 
+    /**
+     * @return bool
+     */
     public function isLocked()
     {
         return $this->_channel->isEmpty();

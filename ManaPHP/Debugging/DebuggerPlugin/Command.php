@@ -20,6 +20,8 @@ class Command extends \ManaPHP\Cli\Command
      * @param string $id
      * @param string $path
      * @param string $ip
+     *
+     * @return void
      */
     public function watchAction($id = '', $path = '', $ip = '')
     {

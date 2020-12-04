@@ -69,6 +69,8 @@ class Cutter implements CutterInterface, Unaspectable
 
     /**
      * @param callable $closure
+     *
+     * @return void
      */
     public function test($closure = null)
     {

@@ -56,6 +56,9 @@ class Row implements ArrayAccess, Serializable, JsonSerializable
         unset($this->_row[$offset]);
     }
 
+    /**
+     * @return string
+     */
     public function serialize()
     {
         return serialize($this->_row);

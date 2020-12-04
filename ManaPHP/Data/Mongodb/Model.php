@@ -32,6 +32,8 @@ class Model extends \ManaPHP\Data\Model
 
     /**
      * @param bool $allow
+     *
+     * @return void
      */
     public static function setDefaultAllowNullValue($allow)
     {

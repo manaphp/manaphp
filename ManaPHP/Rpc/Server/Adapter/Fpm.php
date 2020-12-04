@@ -7,6 +7,9 @@ use ManaPHP\Rpc\Server;
 
 class Fpm extends Server
 {
+    /**
+     * @return void
+     */
     protected function _prepareGlobals()
     {
         if (!isset($_GET['_url']) && ($pos = strpos($_SERVER['PHP_SELF'], '/index.php/')) !== false) {

@@ -7,15 +7,49 @@ use ReflectionMethod;
 
 class JoinPoint implements Unaspectable
 {
+    /**
+     * @var string
+     */
     public $class;
+
+    /**
+     * @var string
+     */
     public $method;
+
+    /**
+     * @var Advice
+     */
     public $advice;
+
+    /**
+     * @var string
+     */
     public $parent;
+
+    /**
+     * @var bool
+     */
     public $is_public;
 
+    /**
+     * @var object
+     */
     public $object;
+
+    /**
+     * @var array
+     */
     public $args;
-    public $invoked;
+
+    /**
+     * @var bool
+     */
+    public $invoked = false;
+
+    /**
+     * @var mixed
+     */
     public $return;
 
     const AOP_METHOD_CALL_PARENT = '__aopCallParent';

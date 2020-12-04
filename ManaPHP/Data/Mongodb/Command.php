@@ -49,6 +49,8 @@ class Command extends \ManaPHP\Cli\Command
      * @param string $input     the base64 encoded json string
      * @param string $modelName
      * @param bool   $optimized output as more methods as possible
+     *
+     * @return void
      */
     public function modelAction($input, $modelName, $optimized = false)
     {
@@ -73,6 +75,7 @@ class Command extends \ManaPHP\Cli\Command
      * @param int    $sample    sample size
      * @param array  $db        db name list
      *
+     * @return void
      * @throws \ManaPHP\Data\Mongodb\Exception
      */
     public function modelsAction(
@@ -148,7 +151,7 @@ class Command extends \ManaPHP\Cli\Command
     /**
      * @param array[] $docs
      *
-     * @return array
+     * @return string[]
      */
     protected function _inferFieldTypes($docs)
     {
@@ -355,7 +358,7 @@ class Command extends \ManaPHP\Cli\Command
      * @param array  $fieldTypes
      * @param string $modelName
      *
-     * @return bool|string
+     * @return false|string
      */
     protected function _inferPrimaryKey($fieldTypes, $modelName)
     {
@@ -388,6 +391,8 @@ class Command extends \ManaPHP\Cli\Command
      * @param array  $services           services list
      * @param string $collection_pattern match collection against a pattern
      * @param bool   $bom                contains BOM or not
+     *
+     * @return void
      */
     public function csvAction($services = [], $collection_pattern = '', $bom = false)
     {
@@ -471,6 +476,8 @@ class Command extends \ManaPHP\Cli\Command
      * @param string $collection_pattern match collection against a pattern
      * @param string $field              collection must contains one this field
      * @param array  $db
+     *
+     * @return void
      */
     public function listAction($services = [], $collection_pattern = '', $field = '', $db = [])
     {

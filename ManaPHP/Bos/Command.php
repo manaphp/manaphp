@@ -9,6 +9,8 @@ class Command extends \ManaPHP\Cli\Command
 {
     /**
      * list buckets
+     *
+     * @return void
      */
     public function listBucketsAction()
     {
@@ -22,6 +24,8 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @param string $bucket
      * @param string $base_url
+     *
+     * @return void
      */
     public function createBucketAction($bucket, $base_url = '')
     {
@@ -36,6 +40,8 @@ class Command extends \ManaPHP\Cli\Command
      * @param string $prefix    the prefix of keys
      * @param string $mime_type the mime-type of object
      * @param string $extension the extension of object
+     *
+     * @return void
      */
     public function listAction($bucket, $key = '', $prefix = '', $mime_type = '', $extension = '')
     {
@@ -76,6 +82,8 @@ class Command extends \ManaPHP\Cli\Command
      * @param string $dir
      * @param string $bucket
      * @param string $prefix
+     *
+     * @return void
      */
     protected function _recursiveImport($dir, $bucket, $prefix)
     {
@@ -100,6 +108,8 @@ class Command extends \ManaPHP\Cli\Command
      * @param string $dir
      * @param string $prefix
      * @param string $key
+     *
+     * @return void
      */
     public function exportAction($bucket, $dir = '', $prefix = '', $key = '')
     {

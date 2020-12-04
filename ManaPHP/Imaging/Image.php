@@ -30,6 +30,14 @@ abstract class Image extends Component implements ImageInterface
         return $this->do_getHeight();
     }
 
+    /**
+     * @param int $width
+     * @param int $height
+     * @param int $offsetX
+     * @param int $offsetY
+     *
+     * @return static
+     */
     abstract public function do_crop($width, $height, $offsetX = 0, $offsetY = 0);
 
     /**
@@ -47,6 +55,12 @@ abstract class Image extends Component implements ImageInterface
         return $this;
     }
 
+    /**
+     * @param int $width
+     * @param int $height
+     *
+     * @return static
+     */
     abstract public function do_resize($width, $height);
 
     /**
@@ -93,6 +107,13 @@ abstract class Image extends Component implements ImageInterface
         return $this;
     }
 
+    /**
+     * @param int   $degrees
+     * @param int   $background
+     * @param float $alpha
+     *
+     * @return static
+     */
     abstract public function do_rotate($degrees, $background = 0xffffff, $alpha = 1.0);
 
     /**
@@ -171,6 +192,17 @@ abstract class Image extends Component implements ImageInterface
         return $this;
     }
 
+    /**
+     * @param string $text
+     * @param int    $offsetX
+     * @param int    $offsetY
+     * @param float  $opacity
+     * @param int    $color
+     * @param int    $size
+     * @param string $font_file
+     *
+     * @return static
+     */
     abstract public function do_text(
         $text,
         $offsetX = 0,
@@ -206,6 +238,14 @@ abstract class Image extends Component implements ImageInterface
         return $this;
     }
 
+    /**
+     * @param string $file
+     * @param int    $offsetX
+     * @param int    $offsetY
+     * @param float  $opacity
+     *
+     * @return static
+     */
     abstract public function do_watermark($file, $offsetX = 0, $offsetY = 0, $opacity = 1.0);
 
     /**
@@ -223,6 +263,12 @@ abstract class Image extends Component implements ImageInterface
         return $this;
     }
 
+    /**
+     * @param string $file
+     * @param int    $quality
+     *
+     * @return static
+     */
     abstract public function do_save($file, $quality = 80);
 
     /**

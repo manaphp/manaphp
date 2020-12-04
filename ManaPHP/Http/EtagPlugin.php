@@ -35,6 +35,11 @@ class EtagPlugin extends Plugin
         }
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onResponseSending(EventArgs $eventArgs)
     {
         /** @var \ManaPHP\Http\ResponseContext $response */

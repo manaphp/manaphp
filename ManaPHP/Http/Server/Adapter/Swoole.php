@@ -94,6 +94,8 @@ class Swoole extends Server
 
     /**
      * @param \Swoole\Http\Request $request
+     *
+     * @return void
      */
     protected function _prepareGlobals($request)
     {
@@ -124,12 +126,17 @@ class Swoole extends Server
      * @param \Swoole\WebSocket\Server $server
      *
      * @noinspection PhpUnusedParameterInspection
+     *
+     * @return void
      */
     public function onStart($server)
     {
         @cli_set_process_title(sprintf('manaphp %s: master', $this->configure->id));
     }
 
+    /**
+     * @return void
+     */
     public function onManagerStart()
     {
         @cli_set_process_title(sprintf('manaphp %s: manager', $this->configure->id));
@@ -140,6 +147,8 @@ class Swoole extends Server
      * @param int                      $worker_id
      *
      * @noinspection PhpUnusedParameterInspection
+     *
+     * @return void
      */
     public function onWorkerStart($server, $worker_id)
     {
@@ -170,6 +179,8 @@ class Swoole extends Server
     /**
      * @param \Swoole\Http\Request  $request
      * @param \Swoole\Http\Response $response
+     *
+     * @return void
      */
     public function onRequest($request, $response)
     {
@@ -204,6 +215,8 @@ class Swoole extends Server
 
     /**
      * @param \ManaPHP\Http\ResponseContext $response
+     *
+     * @return void
      */
     public function send($response)
     {

@@ -28,6 +28,12 @@ class Arr
         return array_diff_key($ar, array_fill_keys($keys, null));
     }
 
+    /**
+     * @param array  $ar
+     * @param string $prepend
+     *
+     * @return array
+     */
     public static function dot($ar, $prepend = '')
     {
         $r = [];

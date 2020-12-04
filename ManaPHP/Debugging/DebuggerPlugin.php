@@ -26,16 +26,39 @@ class DebuggerPluginContext
      */
     public $key;
 
+    /**
+     * @var array
+     */
     public $view = [];
 
+    /**
+     * @var array
+     */
     public $log = [];
 
+    /**
+     * @var array
+     */
     public $sql_prepared = [];
+
+    /**
+     * @var array
+     */
     public $sql_executed = [];
+
+    /**
+     * @var int
+     */
     public $sql_count = 0;
 
+    /**
+     * @var array
+     */
     public $mongodb = [];
 
+    /**
+     * @var array
+     */
     public $events = [];
 }
 
@@ -138,6 +161,7 @@ class DebuggerPlugin extends Plugin
      * @param string $key
      * @param array  $data
      *
+     * @return void
      * @throws \ManaPHP\Exception\JsonException
      */
     protected function _writeData($key, $data)
@@ -159,6 +183,9 @@ class DebuggerPlugin extends Plugin
         }
     }
 
+    /**
+     * @return void
+     */
     public function onRequestBegin()
     {
         $context = $this->_context;
@@ -198,6 +225,9 @@ class DebuggerPlugin extends Plugin
         }
     }
 
+    /**
+     * @return void
+     */
     public function onRequestEnd()
     {
         $context = $this->_context;
@@ -207,11 +237,21 @@ class DebuggerPlugin extends Plugin
         }
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onEvent(EventArgs $eventArgs)
     {
         $this->_context->events[] = $eventArgs->event;
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onLoggerLog(EventArgs $eventArgs)
     {
         $context = $this->_context;
@@ -229,6 +269,11 @@ class DebuggerPlugin extends Plugin
         ];
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onDb(EventArgs $eventArgs)
     {
         $context = $this->_context;
@@ -277,6 +322,11 @@ class DebuggerPlugin extends Plugin
         }
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onRendererRendering(EventArgs $eventArgs)
     {
         $context = $this->_context;
@@ -294,6 +344,12 @@ class DebuggerPlugin extends Plugin
         $context->view[] = ['file' => $data['file'], 'vars' => $vars, 'base_name' => $base_name];
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     * @throws \ManaPHP\Exception\JsonException
+     */
     public function onMongodb(EventArgs $eventArgs)
     {
         $context = $this->_context;
@@ -402,6 +458,9 @@ class DebuggerPlugin extends Plugin
         return $data;
     }
 
+    /**
+     * @return array
+     */
     public function dump()
     {
         $data = parent::dump();

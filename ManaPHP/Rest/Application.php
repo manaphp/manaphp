@@ -8,11 +8,17 @@ use Throwable;
 
 class Application extends \ManaPHP\Http\Application
 {
+    /**
+     * @return string
+     */
     public function getFactory()
     {
         return 'ManaPHP\Rest\Factory';
     }
 
+    /**
+     * @return void
+     */
     public function handle()
     {
         try {

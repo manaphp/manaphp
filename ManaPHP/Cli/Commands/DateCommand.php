@@ -74,11 +74,11 @@ class DateCommand extends Command
     }
 
     /**
-     *  show local and remote diff
+     * show local and remote diff
      *
      * @param string $url the time original
      *
-     * @return string
+     * @return int
      */
     public function diffAction($url = 'http://www.baidu.com')
     {
@@ -180,6 +180,8 @@ class DateCommand extends Command
 
     /**
      * @param int $timestamp
+     *
+     * @return void
      */
     protected function _updateDate($timestamp)
     {

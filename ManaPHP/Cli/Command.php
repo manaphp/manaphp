@@ -17,7 +17,9 @@ abstract class Command extends \ManaPHP\Controller
     /**
      * @param string $action
      *
+     * @return void
      * @throws NotFoundActionException
+     *
      */
     public function validateInvokable($action)
     {
@@ -30,6 +32,8 @@ abstract class Command extends \ManaPHP\Controller
 
     /**
      * show this help information
+     *
+     * @return void
      */
     public function helpAction()
     {

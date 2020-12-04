@@ -302,6 +302,8 @@ HTML;
 
     /**
      * auto generate views file
+     *
+     * @return void
      */
     public function defaultAction()
     {

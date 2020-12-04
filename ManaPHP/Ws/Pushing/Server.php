@@ -172,6 +172,8 @@ class Server extends Component implements ServerInterface, LogCategorizable
     /**
      * @param string $receivers
      * @param string $message
+     *
+     * @return void
      */
     public function pushToName($receivers, $message)
     {
@@ -210,6 +212,8 @@ class Server extends Component implements ServerInterface, LogCategorizable
     /**
      * @param string $receivers
      * @param string $message
+     *
+     * @return void
      */
     public function pushToRole($receivers, $message)
     {
@@ -241,6 +245,11 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
+    /**
+     * @param string $message
+     *
+     * @return void
+     */
     public function pushToAll($message)
     {
         foreach ($this->_users as $user) {
@@ -248,6 +257,11 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
+    /**
+     * @param string $message
+     *
+     * @return void
+     */
     public function broadcast($message)
     {
         if ($this->_shared) {
@@ -263,6 +277,8 @@ class Server extends Component implements ServerInterface, LogCategorizable
      * @param string $type
      * @param string $receivers
      * @param string $message
+     *
+     * @return void
      */
     public function dispatch($type, $receivers, $message)
     {

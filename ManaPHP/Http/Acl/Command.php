@@ -11,6 +11,8 @@ class Command extends \ManaPHP\Cli\Command
      * list acl of controllers
      *
      * @param string $role
+     *
+     * @return void
      */
     public function listAction($role = '')
     {

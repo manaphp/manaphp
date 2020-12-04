@@ -14,11 +14,21 @@ class Tracer extends \ManaPHP\Event\Tracer
         $this->attachEvent('wsClient:recv', [$this, 'onRecv']);
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onSend(EventArgs $eventArgs)
     {
         $this->logger->debug($eventArgs->data, 'wsClient.send');
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onRecv(EventArgs $eventArgs)
     {
         $this->logger->debug($eventArgs->data, 'wsClient.recv');

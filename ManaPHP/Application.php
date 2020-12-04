@@ -127,6 +127,9 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         return $this;
     }
 
+    /**
+     * @return void
+     */
     public function registerConfigure()
     {
         $configure = $this->configure;
@@ -160,6 +163,8 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
 
     /**
      * @param \Throwable $exception
+     *
+     * @return void
      */
     public function handleException($exception)
     {

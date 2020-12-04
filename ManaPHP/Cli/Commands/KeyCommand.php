@@ -12,6 +12,8 @@ class KeyCommand extends Command
      *
      * @param int $length length of key(default is 32 characters)
      * @param int $lowercase
+     *
+     * @return void
      */
     public function generateAction($length = 32, $lowercase = 0)
     {

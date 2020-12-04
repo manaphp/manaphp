@@ -76,7 +76,7 @@ class LocalFS
     /**
      * @param string $file
      *
-     * @return string|false
+     * @return string
      */
     public static function fileGet($file)
     {
@@ -189,6 +189,8 @@ class LocalFS
 
     /**
      * @param string $dir
+     *
+     * @return void
      */
     protected static function _dirDelete($dir)
     {
@@ -337,7 +339,7 @@ class LocalFS
      * @param string $pattern
      * @param int    $flags
      *
-     * @return array
+     * @return string[]
      */
     public static function glob($pattern, $flags = 0)
     {
@@ -386,7 +388,7 @@ class LocalFS
      * @param string $dir
      * @param int    $sorting_order
      *
-     * @return array
+     * @return string[]
      */
     public static function scandir($dir, $sorting_order = SCANDIR_SORT_ASCENDING)
     {

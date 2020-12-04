@@ -14,6 +14,11 @@ class Tracer extends \ManaPHP\Event\Tracer
         $this->attachEvent('httpClient:requested', [$this, 'onRequested']);
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onRequesting(EventArgs $eventArgs)
     {
         /** @var \ManaPHP\Http\Client\Request $request */
@@ -24,6 +29,11 @@ class Tracer extends \ManaPHP\Event\Tracer
         }
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onRequested(EventArgs $eventArgs)
     {
         /** @var \ManaPHP\Http\Client\Response $response */

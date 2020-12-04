@@ -97,6 +97,12 @@ class CsrfPlugin extends Plugin
         return false;
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     * @throws AttackDetectedException
+     */
     public function onRequestValidate(EventArgs $eventArgs)
     {
         if ($this->_isOriginSafe()) {

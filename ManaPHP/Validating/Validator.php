@@ -65,6 +65,9 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
+    /**
+     * @return ValidatorContext
+     */
     protected function _createContext()
     {
         /** @var \ManaPHP\Validating\ValidatorContext $context */
@@ -604,7 +607,7 @@ class Validator extends Component implements ValidatorInterface
      * @param string       $field
      * @param string|array $value
      *
-     * @return string|array
+     * @return string|string[]
      */
     protected function _validate_trim($field, $value)
     {

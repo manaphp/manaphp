@@ -24,11 +24,17 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         $this->attachEvent('request:authenticate', [$this, 'authenticate']);
     }
 
+    /**
+     * @return string
+     */
     public function getFactory()
     {
         return 'ManaPHP\Ws\Factory';
     }
 
+    /**
+     * @return void
+     */
     public function authenticate()
     {
         $this->identity->authenticate();
@@ -95,6 +101,8 @@ class Application extends \ManaPHP\Application implements HandlerInterface
 
     /**
      * @param int $fd
+     *
+     * @return void
      */
     public function onOpen($fd)
     {
@@ -103,6 +111,8 @@ class Application extends \ManaPHP\Application implements HandlerInterface
 
     /**
      * @param int $fd
+     *
+     * @return void
      */
     public function onClose($fd)
     {
@@ -112,6 +122,8 @@ class Application extends \ManaPHP\Application implements HandlerInterface
     /**
      * @param int    $fd
      * @param string $data
+     *
+     * @return void
      */
     public function onMessage($fd, $data)
     {

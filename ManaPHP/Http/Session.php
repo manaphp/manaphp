@@ -141,6 +141,9 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
         $this->fireEvent('session:start', $context);
     }
 
+    /**
+     * @return void
+     */
     public function onResponseSending()
     {
         $context = $this->_context;
@@ -497,6 +500,9 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
         return $this->_name;
     }
 
+    /**
+     * @param string $session_id
+     */
     abstract public function do_destroy($session_id);
 
     /**

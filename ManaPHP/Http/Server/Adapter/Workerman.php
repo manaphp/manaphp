@@ -154,6 +154,8 @@ class Workerman extends Server
 
     /**
      * @param \Workerman\Connection\ConnectionInterface $connection
+     *
+     * @return void
      */
     public function onRequest($connection)
     {
@@ -183,6 +185,8 @@ class Workerman extends Server
 
     /**
      * @param \ManaPHP\Http\ResponseContext $response
+     *
+     * @return void
      */
     public function send($response)
     {

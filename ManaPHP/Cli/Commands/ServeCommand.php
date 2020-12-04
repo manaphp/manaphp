@@ -15,6 +15,8 @@ class ServeCommand extends Command
      *
      * @param string $ip
      * @param int    $port
+     *
+     * @return void
      */
     public function defaultAction($ip = '0.0.0.0', $port = 9501)
     {

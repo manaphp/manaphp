@@ -22,6 +22,8 @@ class Exception extends \ManaPHP\Exception
 
     /**
      * @param \ManaPHP\Http\Client\Response $response
+     *
+     * @return void
      */
     public function setResponse($response)
     {

@@ -138,6 +138,8 @@ class Message implements JsonSerializable
 
     /**
      * @param bool $multiple
+     *
+     * @return void
      */
     public function ack($multiple = false)
     {
@@ -146,6 +148,8 @@ class Message implements JsonSerializable
 
     /**
      * @param bool $multiple
+     *
+     * @return void
      */
     public function nack($multiple = false)
     {

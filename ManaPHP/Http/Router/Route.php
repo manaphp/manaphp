@@ -174,7 +174,7 @@ class Route implements RouteInterface
      * @param string $uri
      * @param string $method
      *
-     * @return bool|array
+     * @return array|false
      */
     public function match($uri, $method = 'GET')
     {

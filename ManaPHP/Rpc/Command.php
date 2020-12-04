@@ -13,6 +13,7 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @param string $output
      *
+     * @return void
      * @throws \ManaPHP\Exception\RuntimeException
      */
     public function servicesAction($output = '@tmp/rpc_services')

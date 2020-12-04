@@ -61,7 +61,7 @@ class Authorization extends Component implements AuthorizationInterface
     /**
      * @param string $permission
      *
-     * @return array
+     * @return string[]
      */
     public function inferControllerAction($permission)
     {
@@ -151,7 +151,7 @@ class Authorization extends Component implements AuthorizationInterface
      * @param string $role
      * @param array  $explicit_permissions
      *
-     * @return array
+     * @return string[]
      */
     public function buildAllowed($role, $explicit_permissions = [])
     {
@@ -315,8 +315,9 @@ class Authorization extends Component implements AuthorizationInterface
     }
 
     /**
-     * @throws \ManaPHP\Identity\NoCredentialException
+     * @return void
      * @throws \ManaPHP\Exception\ForbiddenException
+     * @throws \ManaPHP\Identity\NoCredentialException
      */
     public function authorize()
     {

@@ -42,6 +42,9 @@ class CorsPlugin extends Plugin
         $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
     }
 
+    /**
+     * @return void
+     */
     public function onRequestBegin()
     {
         $origin = $this->request->getServer('HTTP_ORIGIN');

@@ -22,6 +22,9 @@ class LoggerPluginContext
      */
     public $key;
 
+    /**
+     * @var array
+     */
     public $logs = [];
 }
 
@@ -119,6 +122,9 @@ class LoggerPlugin extends Plugin
         }
     }
 
+    /**
+     * @return void
+     */
     public function onRequestBegin()
     {
         $context = $this->_context;
@@ -161,6 +167,11 @@ class LoggerPlugin extends Plugin
         }
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onLoggerLog(EventArgs $eventArgs)
     {
         $context = $this->_context;
@@ -180,6 +191,9 @@ class LoggerPlugin extends Plugin
         }
     }
 
+    /**
+     * @return void
+     */
     public function onRequestEnd()
     {
         $context = $this->_context;
@@ -189,6 +203,9 @@ class LoggerPlugin extends Plugin
         }
     }
 
+    /**
+     * @return array
+     */
     public function dump()
     {
         $data = parent::dump();

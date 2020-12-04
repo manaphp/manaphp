@@ -13,6 +13,11 @@ class Tracer extends \ManaPHP\Event\Tracer
         $this->attachEvent('mailer:sending', [$this, 'onSending']);
     }
 
+    /**
+     * @param EventArgs $eventArgs
+     *
+     * @return void
+     */
     public function onSending(EventArgs $eventArgs)
     {
         /** @var \ManaPHP\Mailing\Mailer\Message $message */

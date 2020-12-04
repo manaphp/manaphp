@@ -11,6 +11,9 @@ use Throwable;
  */
 class Application extends \ManaPHP\Http\Application
 {
+    /**
+     * @return string
+     */
     public function getFactory()
     {
         return 'ManaPHP\Mvc\Factory';
@@ -21,6 +24,9 @@ class Application extends \ManaPHP\Http\Application
         $this->authorization->authorize();
     }
 
+    /**
+     * @return void
+     */
     public function handle()
     {
         try {

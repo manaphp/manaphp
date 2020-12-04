@@ -14,6 +14,8 @@ class PasswordCommand extends Command
      * @param string $password
      * @param int    $base
      * @param int    $cost
+     *
+     * @return void
      */
     public function generateAction($length = 32, $password = '', $base = 62, $cost = 0)
     {
@@ -38,6 +40,8 @@ class PasswordCommand extends Command
 
     /**
      * generate password with every kind of cost
+     *
+     * @return void
      */
     public function costAction()
     {

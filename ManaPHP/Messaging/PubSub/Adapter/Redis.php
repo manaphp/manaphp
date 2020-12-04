@@ -27,7 +27,14 @@ class Redis extends Component implements PubSubInterface
         );
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
+    /**
+     * @noinspection PhpUnusedParameterInspection
+     *
+     * @param array    $patterns
+     * @param callable $callback
+     *
+     * @return void
+     */
     public function psubscribe($patterns, $callback)
     {
         $this->redisBroker->psubscribe(
@@ -37,16 +44,32 @@ class Redis extends Component implements PubSubInterface
         );
     }
 
+    /**
+     * @param string $channel
+     * @param string $message
+     *
+     * @return int
+     */
     public function publish($channel, $message)
     {
         return $this->redisBroker->publish($channel, $message);
     }
 
+    /**
+     * @param array $channels
+     *
+     * @return void
+     */
     public function unsubscribe($channels = null)
     {
         $this->redisBroker->unsubscribe($channels);
     }
 
+    /**
+     * @param array $patterns
+     *
+     * @return void
+     */
     public function punsubscribe($patterns = null)
     {
         $this->redisBroker->punsubscribe($patterns);

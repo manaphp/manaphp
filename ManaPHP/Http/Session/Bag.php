@@ -24,6 +24,8 @@ class Bag extends Component implements BagInterface
 
     /**
      * Destroys the session bag
+     *
+     * @return void
      */
     public function destroy()
     {
@@ -36,6 +38,7 @@ class Bag extends Component implements BagInterface
      * @param string $property
      * @param mixed  $value
      *
+     * @return void
      */
     public function set($property, $value)
     {

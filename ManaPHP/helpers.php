@@ -472,6 +472,7 @@ if (!function_exists('abort')) {
      * @param string $message
      * @param int    $code
      *
+     * @return void
      * @throws \ManaPHP\Exception\AbortException
      */
     function abort($message = null, $code = 1)
@@ -565,6 +566,8 @@ if (!function_exists('console_log')) {
     /**
      * @param string $level
      * @param mixed  $message
+     *
+     * @return void
      */
     function console_log($level, $message)
     {

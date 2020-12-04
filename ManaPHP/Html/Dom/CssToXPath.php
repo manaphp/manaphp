@@ -4,6 +4,11 @@ namespace ManaPHP\Html\Dom;
 
 class CssToXPath
 {
+    /**
+     * @param string $path
+     *
+     * @return string
+     */
     public function transform($path)
     {
         $path = $this->_transform($path);

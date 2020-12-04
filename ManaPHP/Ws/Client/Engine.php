@@ -199,6 +199,8 @@ class Engine extends Component implements EngineInterface
      * @param resource $socket
      * @param string   $data
      * @param float    $timeout
+     *
+     * @return void
      */
     protected function _send($socket, $data, $timeout = null)
     {
@@ -405,6 +407,9 @@ class Engine extends Component implements EngineInterface
         return false;
     }
 
+    /**
+     * @return void
+     */
     public function close()
     {
         if ($this->_socket !== null) {

@@ -94,12 +94,17 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      * @param \Swoole\WebSocket\Server $server
      *
      * @noinspection PhpUnusedParameterInspection
+     *
+     * @return void
      */
     public function onStart($server)
     {
         @cli_set_process_title(sprintf('manaphp %s: master', $this->configure->id));
     }
 
+    /**
+     * @return void
+     */
     public function onManagerStart()
     {
         @cli_set_process_title(sprintf('manaphp %s: manager', $this->configure->id));
@@ -110,12 +115,20 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      * @param int                      $worker_id
      *
      * @noinspection PhpUnusedParameterInspection
+     *
+     * @return void
      */
     public function onWorkerStart($server, $worker_id)
     {
         @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->configure->id, $worker_id));
     }
 
+    /**
+     * @param \Swoole\Server $server
+     * @param int            $fd
+     *
+     * @return void
+     */
     public function onConnect($server, $fd)
     {
         try {
@@ -141,6 +154,8 @@ class Swoole extends Component implements ServerInterface, Unaspectable
 
     /**
      * @param int $fd
+     *
+     * @return void
      */
     protected function _saveContext($fd)
     {
@@ -154,6 +169,11 @@ class Swoole extends Component implements ServerInterface, Unaspectable
         }
     }
 
+    /**
+     * @param int $fd
+     *
+     * @return void
+     */
     protected function _restoreContext($fd)
     {
         if (!$old_context = $this->_contexts[$fd] ?? false) {
@@ -169,6 +189,14 @@ class Swoole extends Component implements ServerInterface, Unaspectable
         }
     }
 
+    /**
+     * @param \Swoole\Server $server
+     * @param int            $fd
+     * @param int            $from_id
+     * @param string         $data
+     *
+     * @return void
+     */
     public function onReceive($server, $fd, $from_id, $data)
     {
         $this->_restoreContext($fd);
@@ -181,6 +209,12 @@ class Swoole extends Component implements ServerInterface, Unaspectable
         $this->_saveContext($fd);
     }
 
+    /**
+     * @param \Swoole\Server $server
+     * @param int            $fd
+     *
+     * @return void
+     */
     public function onClose($server, $fd)
     {
         $this->_restoreContext($fd);
@@ -195,6 +229,8 @@ class Swoole extends Component implements ServerInterface, Unaspectable
 
     /**
      * @param \ManaPHP\Socket\Server\HandlerInterface $handler
+     *
+     * @return void
      */
     public function start($handler)
     {

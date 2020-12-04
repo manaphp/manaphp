@@ -104,6 +104,9 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     protected $_shard_strategy;
 
+    /**
+     * @return ArrayIterator
+     */
     public function getIterator()
     {
         return new ArrayIterator($this->all());

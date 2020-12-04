@@ -9,6 +9,8 @@ class Command extends \ManaPHP\Cli\Command
 {
     /**
      * dump parsed .env values
+     *
+     * @return void
      */
     public function defaultAction()
     {

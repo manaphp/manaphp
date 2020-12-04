@@ -117,6 +117,9 @@ abstract class Logger extends Component implements LoggerInterface
         $this->attachEvent('request:end', [$this, 'onRequestEnd']);
     }
 
+    /**
+     * @return LoggerContext
+     */
     protected function _createContext()
     {
         /** @var \ManaPHP\Logging\LoggerContext $context */
@@ -129,6 +132,9 @@ abstract class Logger extends Component implements LoggerInterface
         return $context;
     }
 
+    /**
+     * @return void
+     */
     public function onRequestEnd()
     {
         if ($this->_logs) {
