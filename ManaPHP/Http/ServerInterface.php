@@ -7,7 +7,7 @@ interface ServerInterface
     /**
      * @param \ManaPHP\Http\Server\HandlerInterface $handler
      *
-     * @return static
+     * @return void
      */
     public function start($handler);
 

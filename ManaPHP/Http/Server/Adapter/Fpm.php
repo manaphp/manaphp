@@ -24,15 +24,13 @@ class Fpm extends Server
     /**
      * @param \ManaPHP\Http\Server\HandlerInterface $handler
      *
-     * @return static
+     * @return void
      */
     public function start($handler)
     {
         $this->_prepareGlobals();
 
         $handler->handle();
-
-        return $this;
     }
 
     /**

@@ -158,7 +158,7 @@ class Swoole extends Server
     /**
      * @param \ManaPHP\Http\Server\HandlerInterface $handler
      *
-     * @return static
+     * @return void
      */
     public function start($handler)
     {
@@ -166,23 +166,15 @@ class Swoole extends Server
             Runtime::enableCoroutine(true);
         }
 
-        echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
-
         $this->_handler = $handler;
 
-        $host = $this->_host;
-        $port = $this->_port;
+        echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
+
         $settings = json_stringify($this->_settings);
-        $this->log('info', sprintf('starting listen on: %s:%d with setting: %s', $host, $port, $settings));
-
-        $server_addr = $this->_server['SERVER_ADDR'];
-        $server_port = $this->_server['SERVER_PORT'];
-        $this->log('info', "http://$server_addr:$server_port" . ($this->router->getPrefix() ?: '/'));
-
+        $this->log('info', sprintf('Listen on: %s:%d with setting: %s', $this->_host, $this->_port, $settings));
         $this->_swoole->start();
-        echo sprintf('[%s][info]: shutdown', date('c')), PHP_EOL;
 
-        return $this;
+        echo sprintf('[%s][info]: shutdown', date('c')), PHP_EOL;
     }
 
     /**
