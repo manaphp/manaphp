@@ -160,28 +160,9 @@ class Workerman extends Server
         $this->_prepareGlobals();
 
         try {
-            if ($this->_doc_root && $file = $this->_isStaticFile()) {
-                $file = "$this->_doc_root/$file";
-
-                $realpath = realpath($file);
-                if (DIRECTORY_SEPARATOR === '\\') {
-                    $realpath = str_replace('\\', '/', realpath($file));
-                }
-
-                if ($realpath === $file) {
-                    $ext = pathinfo($file, PATHINFO_EXTENSION);
-                    $mime_type = $this->_mime_types[$ext] ?? 'application/octet-stream';
-                    Http::header('Content-Type: ' . $mime_type);
-                    $connection->close(file_get_contents($file));
-                } else {
-                    Http::header('Http-Code:', true, 404);
-                    $connection->close('');
-                }
-            } else {
-                $context = $this->_context;
-                $context->connection = $connection;
-                $this->_handler->handle();
-            }
+            $context = $this->_context;
+            $context->connection = $connection;
+            $this->_handler->handle();
         } catch (Throwable $throwable) {
             $str = date('c') . ' ' . get_class($throwable) . ': ' . $throwable->getMessage() . PHP_EOL;
             $str .= '    at ' . $throwable->getFile() . ':' . $throwable->getLine() . PHP_EOL;

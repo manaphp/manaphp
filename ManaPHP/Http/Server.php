@@ -27,21 +27,6 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
     protected $_port = 9501;
 
     /**
-     * @var array
-     */
-    protected $_mime_types;
-
-    /**
-     * @var array
-     */
-    protected $_root_files;
-
-    /**
-     * @var string
-     */
-    protected $_doc_root;
-
-    /**
      * @param array $options
      */
     public function __construct($options = [])
@@ -61,85 +46,11 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
         if (isset($options['port'])) {
             $this->_port = (int)$options['port'];
         }
-
-        $this->_doc_root = $this->alias->resolve('@public');
-
-        if (isset($options['enable_static_handler'])) {
-            $this->_root_files = $this->_getRootFiles();
-            $this->_mime_types = $this->_getMimeTypes();
-        }
     }
 
     public function log($level, $message)
     {
         echo sprintf('[%s][%s]: ', date('c'), $level), $message, PHP_EOL;
-    }
-
-    /**
-     * @return array
-     */
-    protected function _getRootFiles()
-    {
-        $files = [];
-        foreach (glob($this->_doc_root . '/*') as $file) {
-            $file = basename($file);
-            if ($file[0] === '.' || pathinfo($file, PATHINFO_EXTENSION) === 'php') {
-                continue;
-            }
-
-            $files[] = basename($file);
-        }
-
-        return $files;
-    }
-
-    /**
-     * @return array
-     */
-    protected function _getMimeTypes()
-    {
-        $mime_types = [];
-        foreach (file(__DIR__ . '/Server/mime.types', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-            if (!str_contains($line, ';')) {
-                continue;
-            }
-
-            $line = trim($line);
-            $line = trim($line, ';');
-
-            $parts = preg_split('#\s+#', $line, -1, PREG_SPLIT_NO_EMPTY);
-            if (count($parts) < 2) {
-                continue;
-            }
-
-            foreach ($parts as $k => $part) {
-                if ($k !== 0) {
-                    $mime_types[$part] = $parts[0];
-                }
-            }
-        }
-
-        return $mime_types;
-    }
-
-    /**
-     * @return bool|string
-     */
-    protected function _isStaticFile()
-    {
-        $uri = $this->request->getServer('REQUEST_URI');
-        $file = ($pos = strpos($uri, '?')) === false ? substr($uri, 1) : substr($uri, 1, $pos - 1);
-
-        if ($file === 'favicon.ico') {
-            return '/favicon.ico';
-        } elseif (in_array($file, $this->_root_files, true)) {
-            return $file;
-        } elseif (($pos = strpos($file, '/')) === false) {
-            return false;
-        } else {
-            $level1 = substr($file, 0, $pos);
-            return in_array($level1, $this->_root_files, true) ? $file : false;
-        }
     }
 
     protected function _releaseContexts()
@@ -153,14 +64,5 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
 
             $__root_context = null;
         }
-    }
-
-    public function dump()
-    {
-        $data = parent::dump();
-
-        unset($data['_mime_types'], $data['_context']);
-
-        return $data;
     }
 }
