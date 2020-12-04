@@ -84,7 +84,7 @@ class Amqp extends Component implements AmqpInterface
 
             if (isset($parts['query'])) {
                 /** @noinspection NonSecureParseStrUsageInspection */
-                $query = parse_str($parts['query']);
+                parse_str($parts['query'], $query);
             }
         }
 

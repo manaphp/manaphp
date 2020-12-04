@@ -210,7 +210,6 @@ class Console extends Component implements ConsoleInterface
 
     /**
      * @return void
-     * @throws \ReflectionException
      */
     public function sampleColorizer()
     {

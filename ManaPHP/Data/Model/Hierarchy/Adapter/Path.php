@@ -270,7 +270,7 @@ trait Path
 
         $self_length = strlen($code) - $parent_length;
         $sub_node = substr($code, $parent_length, $self_length);
-        $next_node_int = base_convert($sub_node, $base, 10) + 1;
+        $next_node_int = (int)base_convert($sub_node, $base, 10) + 1;
         /** @noinspection PowerOperatorCanBeUsedInspection */
         if ($next_node_int >= pow($base, $self_length)) {
             return false;
