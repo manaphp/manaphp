@@ -118,11 +118,6 @@ class Swoole extends Component implements ServerInterface, Unaspectable
         $this->_swoole->on('message', [$this, 'onMessage']);
     }
 
-    public function log($level, $message)
-    {
-        echo sprintf('[%s][%s]: ', date('c'), $level), $message, PHP_EOL;
-    }
-
     /**
      * @param \Swoole\Http\Request $request
      */
@@ -312,10 +307,9 @@ class Swoole extends Component implements ServerInterface, Unaspectable
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 
         $settings = json_stringify($this->_settings);
-        $this->log('info', sprintf('Listen on: %s:%d with setting: %s', $this->_host, $this->_port, $settings));
+        console_log('info', ['listen on: %s:%d with setting: %s', $this->_host, $this->_port, $settings]);
         $this->_swoole->start();
-
-        echo sprintf('[%s][info]: shutdown', date('c')), PHP_EOL;
+        console_log('info', 'shutdown');
     }
 
     /**

@@ -128,7 +128,7 @@ class Workerman extends Server
         $this->_handler = $handler;
 
         $settings = json_stringify($this->_settings);
-        $this->log('info', sprintf('listen on: %s:%d with setting: %s', $this->_host, $this->_port, $settings));
+        console_log('info', ['listen on: %s:%d with setting: %s', $this->_host, $this->_port, $settings]);
         echo 'ab';
         $worker->onMessage = [$this, 'onRequest'];
 
@@ -147,7 +147,7 @@ class Workerman extends Server
 
         Worker::runAll();
 
-        echo sprintf('[%s][info]: shutdown', date('c')), PHP_EOL;
+        console_log('info', 'shutdown');
 
         return $this;
     }

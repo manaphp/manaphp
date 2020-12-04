@@ -48,11 +48,6 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
         }
     }
 
-    public function log($level, $message)
-    {
-        echo sprintf('[%s][%s]: ', date('c'), $level), $message, PHP_EOL;
-    }
-
     protected function _releaseContexts()
     {
         global $__root_context;

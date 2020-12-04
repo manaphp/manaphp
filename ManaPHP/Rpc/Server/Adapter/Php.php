@@ -26,8 +26,8 @@ class Php extends Fpm
             $_SERVER['REQUEST_SCHEME'] = 'http';
             $index = @get_included_files()[0];
             $cmd = "php -S $this->_host:$this->_port -t $public_dir  $index";
-            $this->log('info', $cmd);
-            $this->log('info', "http://$local_ip:$this->_port" . ($this->router->getPrefix() ?: '/'));
+            console_log('info', $cmd);
+            console_log('info', "http://$local_ip:$this->_port" . ($this->router->getPrefix() ?: '/'));
             shell_exec($cmd);
             exit(0);
         } else {

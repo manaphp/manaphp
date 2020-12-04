@@ -560,3 +560,17 @@ if (!function_exists('base_url')) {
         return di('alias')->get('@web');
     }
 }
+
+if (!function_exists('console_log')) {
+    /**
+     * @param string $level
+     * @param mixed  $message
+     */
+    function console_log($level, $message)
+    {
+        if (is_array($message)) {
+            $message = sprintf(...$message);
+        }
+        echo sprintf('[%s][%s]: ', date('c'), $level), $message, PHP_EOL;
+    }
+}
