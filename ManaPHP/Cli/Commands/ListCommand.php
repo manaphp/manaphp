@@ -45,7 +45,7 @@ class ListCommand extends Command
 
         if ($verbose) {
             foreach ($components as $name => $component) {
-                $this->console->writeLn('  ' . str_pad($name, 24, ' ') . '=> ' . $component);
+                $this->console->writeLn('  ' . str_pad($name, 24) . '=> ' . $component);
             }
         } else {
             $this->console->writeLn(json_stringify(array_keys($components)));
@@ -68,7 +68,7 @@ class ListCommand extends Command
 
         if ($verbose) {
             foreach ($tracers as $name => $definition) {
-                $this->console->writeLn(str_pad($name, 16, ' ') . ' => ' . $definition);
+                $this->console->writeLn(str_pad($name, 16) . ' => ' . $definition);
             }
         } else {
             $this->console->writeLn(json_stringify(array_keys($tracers)));
@@ -91,7 +91,7 @@ class ListCommand extends Command
 
         if ($verbose) {
             foreach ($tracers as $name => $definition) {
-                $this->console->writeLn(str_pad($name, 16, ' ') . ' => ' . $definition);
+                $this->console->writeLn(str_pad($name, 16) . ' => ' . $definition);
             }
         } else {
             $this->console->writeLn(json_stringify(array_keys($tracers)));
