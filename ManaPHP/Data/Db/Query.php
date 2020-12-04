@@ -739,6 +739,22 @@ class Query extends \ManaPHP\Data\Query
     }
 
     /**
+     * @param array $joins
+     *
+     * @return string|array
+     */
+    protected function _buildFields($joins)
+    {
+        if ($this->_fields !== null) {
+            return $this->_fields;
+        } elseif ($joins) {
+            return '*';
+        } else {
+            return $this->_model ? '[' . implode('], [', $this->_model->getFields()) . ']' : '*';
+        }
+    }
+
+    /**
      * Returns a SQL statement built based on the builder parameters
      *
      * @param \ManaPHP\Data\DbInterface $db
@@ -754,14 +770,7 @@ class Query extends \ManaPHP\Data\Query
             $params['distinct'] = true;
         }
 
-        if ($this->_fields !== null) {
-            $fields = $this->_fields;
-        } elseif ($joins) {
-            $fields = '*';
-        } else {
-            $fields = $this->_model ? '[' . implode('], [', $this->_model->getFields()) . ']' : '*';
-        }
-        $params['fields'] = $fields;
+        $params['fields'] = $this->_buildFields($joins);
 
         $table = $db->getPrefix() . $table;
         $table = '[' . str_replace('.', '].[', $table) . ']';
