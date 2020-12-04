@@ -31,12 +31,12 @@ interface ConnectionInterface
     public function query($sql, $bind, $mode);
 
     /**
-     * @param string $source
+     * @param string $table
      *
      * @return array
      * @throws \ManaPHP\Data\Db\Exception
      */
-    public function getMetadata($source);
+    public function getMetadata($table);
 
     /**
      * @return bool
@@ -54,20 +54,20 @@ interface ConnectionInterface
     public function rollback();
 
     /**
-     * @param string $source
+     * @param string $table
      *
      * @return static
      * @throws \ManaPHP\Data\Db\Exception
      */
-    public function truncate($source);
+    public function truncate($table);
 
     /**
-     * @param string $source
+     * @param string $table
      *
      * @return static
      * @throws \ManaPHP\Data\Db\Exception
      */
-    public function drop($source);
+    public function drop($table);
 
     /**
      * @param string $schema
@@ -78,12 +78,12 @@ interface ConnectionInterface
     public function getTables($schema = null);
 
     /**
-     * @param string $source
+     * @param string $table
      *
      * @return bool
      * @throws \ManaPHP\Data\Db\Exception
      */
-    public function tableExists($source);
+    public function tableExists($table);
 
     /**
      * @param array $params

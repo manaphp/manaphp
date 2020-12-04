@@ -97,14 +97,14 @@ class Mysql extends Connection
     }
 
     /**
-     * @param string $source
+     * @param string $table
      *
      * @return array
      * @throws \ManaPHP\Data\Db\Exception
      */
-    public function getMetadata($source)
+    public function getMetadata($table)
     {
-        $fields = $this->query('DESCRIBE ' . $this->_escapeIdentifier($source), [], PDO::FETCH_NUM);
+        $fields = $this->query('DESCRIBE ' . $this->_escapeIdentifier($table), [], PDO::FETCH_NUM);
 
         $attributes = [];
         $primaryKeys = [];
@@ -139,27 +139,27 @@ class Mysql extends Connection
     }
 
     /**
-     * @param string $source
+     * @param string $table
      *
      * @return static
      * @throws \ManaPHP\Data\Db\Exception
      */
-    public function truncate($source)
+    public function truncate($table)
     {
-        $this->execute('TRUNCATE' . ' TABLE ' . $this->_escapeIdentifier($source));
+        $this->execute('TRUNCATE' . ' TABLE ' . $this->_escapeIdentifier($table));
 
         return $this;
     }
 
     /**
-     * @param string $source
+     * @param string $table
      *
      * @return static
      * @throws \ManaPHP\Data\Db\Exception
      */
-    public function drop($source)
+    public function drop($table)
     {
-        $this->execute('DROP' . ' TABLE IF EXISTS ' . $this->_escapeIdentifier($source));
+        $this->execute('DROP' . ' TABLE IF EXISTS ' . $this->_escapeIdentifier($table));
 
         return $this;
     }
@@ -187,14 +187,14 @@ class Mysql extends Connection
     }
 
     /**
-     * @param string $source
+     * @param string $table
      *
      * @return bool
      * @throws \ManaPHP\Data\Db\Exception
      */
-    public function tableExists($source)
+    public function tableExists($table)
     {
-        $parts = explode('.', str_replace('[]`', '', $source));
+        $parts = explode('.', str_replace('[]`', '', $table));
 
         if (count($parts) === 2) {
             $sql

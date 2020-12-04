@@ -55,14 +55,14 @@ class Mssql extends Connection
     }
 
     /**
-     * @param string $source
+     * @param string $table
      *
      * @return array
      * @throws \ManaPHP\Data\Db\Exception
      */
-    public function getMetadata($source)
+    public function getMetadata($table)
     {
-        $parts = explode('.', $source);
+        $parts = explode('.', $table);
 
         if (count($parts) === 1) {
             $fields = $this->query("exec sp_pkeys '$parts[0]'");
@@ -113,24 +113,24 @@ class Mssql extends Connection
     }
 
     /**
-     * @param string $source
+     * @param string $table
      *
      * @return $this
      * @throws \ManaPHP\Data\Db\Exception
      */
-    public function truncate($source)
+    public function truncate($table)
     {
-        $this->execute('TRUNCATE TABLE ' . $this->_escapeIdentifier($source));
+        $this->execute('TRUNCATE TABLE ' . $this->_escapeIdentifier($table));
 
         return $this;
     }
 
     /**
-     * @param string $source
+     * @param string $table
      *
      * @return void|static
      */
-    public function drop($source)
+    public function drop($table)
     {
         throw new NotImplementedException(__METHOD__);
     }

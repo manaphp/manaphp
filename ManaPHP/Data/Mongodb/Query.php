@@ -621,87 +621,87 @@ class Query extends \ManaPHP\Data\Query
     }
 
     /**
-     * @param string|array $field
+     * @param string|array $fields
      * @param string       $value
      *
      * @return static
      */
-    public function whereContains($field, $value)
+    public function whereContains($fields, $value)
     {
-        return $value === '' ? $this : $this->_whereLike($field, $value);
+        return $value === '' ? $this : $this->_whereLike($fields, $value);
     }
 
     /**
-     * @param string|array $field
+     * @param string|array $fields
      * @param string       $value
      *
      * @return static
      */
-    public function whereNotContains($field, $value)
+    public function whereNotContains($fields, $value)
     {
-        return $value === '' ? $this : $this->_whereNotLike($field, $value);
+        return $value === '' ? $this : $this->_whereNotLike($fields, $value);
     }
 
     /**
-     * @param string|array $field
+     * @param string|array $fields
      * @param string       $value
      * @param int          $length
      *
      * @return static
      */
-    public function whereStartsWith($field, $value, $length = null)
+    public function whereStartsWith($fields, $value, $length = null)
     {
         if ($value === '') {
             return $this;
         }
 
         if ($length === null) {
-            return $this->_whereLike($field, '^' . $value);
+            return $this->_whereLike($fields, '^' . $value);
         } else {
-            return $this->_whereLike($field, '^' . str_pad($value, $length, '.') . '$');
+            return $this->_whereLike($fields, '^' . str_pad($value, $length, '.') . '$');
         }
     }
 
     /**
-     * @param string|array $field
+     * @param string|array $fields
      * @param string       $value
      * @param int          $length
      *
      * @return static
      */
-    public function whereNotStartsWith($field, $value, $length = null)
+    public function whereNotStartsWith($fields, $value, $length = null)
     {
         if ($value === '') {
             return $this;
         }
 
         if ($length === null) {
-            return $this->_whereNotLike($field, '^' . $value);
+            return $this->_whereNotLike($fields, '^' . $value);
         } else {
-            return $this->_whereNotLike($field, '^' . str_pad($value, $length, '.') . '$');
+            return $this->_whereNotLike($fields, '^' . str_pad($value, $length, '.') . '$');
         }
     }
 
     /**
-     * @param string|array $field
+     * @param string|array $fields
      * @param string       $value
      *
      * @return static
      */
-    public function whereEndsWith($field, $value)
+    public function whereEndsWith($fields, $value)
     {
-        return $value === '' ? $this : $this->_whereLike($field, $value . '$');
+        return $value === '' ? $this : $this->_whereLike($fields, $value . '$');
     }
 
     /**
-     * @param string|array $field
+     * @param string|array $fields
      * @param string       $value
      *
      * @return static
      */
-    public function whereNotEndsWith($field, $value)
+    public function whereNotEndsWith($fields, $value)
     {
-        return $value === '' ? $this : $this->_whereNotLike($field, $value . '$');
+        return $value === '' ? $this : $this->_whereNotLike($fields, $value . '$');
     }
 
     /**

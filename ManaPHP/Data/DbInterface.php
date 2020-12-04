@@ -203,11 +203,11 @@ interface DbInterface
     public function commit();
 
     /**
-     * @param string
+     * @param string $table
      *
      * @return array
      */
-    public function getMetadata($source);
+    public function getMetadata($table);
 
     /**
      * @param string $schema

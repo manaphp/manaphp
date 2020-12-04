@@ -32,12 +32,12 @@ interface ConsoleInterface
     public function write($message, $options = 0);
 
     /**
-     * @param string|array $str
+     * @param string|array $message
      * @param int          $options
      *
      * @return static
      */
-    public function writeLn($str = '', $options = 0);
+    public function writeLn($message = '', $options = 0);
 
     /**
      * @param string|array $message

@@ -226,19 +226,19 @@ interface QueryInterface
 
     /**
      * @param string|array $fields =get_object_vars(new Model) ?: key(get_object_vars(new Model))
-     * @param string       $like
+     * @param string       $value
      *
      * @return static
      */
-    public function whereLike($fields, $like);
+    public function whereLike($fields, $value);
 
     /**
      * @param string|array $fields =get_object_vars(new Model) ?: key(get_object_vars(new Model))
-     * @param string       $like
+     * @param string       $value
      *
      * @return static
      */
-    public function whereNotLike($fields, $like);
+    public function whereNotLike($fields, $value);
 
     /**
      * @param string $field =key(get_object_vars(new Model))

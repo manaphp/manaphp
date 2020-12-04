@@ -402,13 +402,13 @@ class Query extends \ManaPHP\Data\Query
 
     /**
      * @param string|array $fields
-     * @param string       $like
+     * @param string       $value
      *
      * @return static
      */
-    public function whereLike($fields, $like)
+    public function whereLike($fields, $value)
     {
-        if ($like === '') {
+        if ($value === '') {
             return $this;
         }
 
@@ -421,7 +421,7 @@ class Query extends \ManaPHP\Data\Query
             foreach ($fields as $field) {
                 $key = strtr($field, '.', '_');
                 $conditions[] = '[' . str_replace('.', '].[', $field) . ']' . ' LIKE :' . $key;
-                $this->_bind[$key] = $like;
+                $this->_bind[$key] = $value;
             }
 
             $this->_conditions[] = implode(' OR ', $conditions);
@@ -429,7 +429,7 @@ class Query extends \ManaPHP\Data\Query
             $key = strtr($fields, '.', '_');
             $fields = '[' . str_replace('.', '].[', $fields) . ']';
             $this->_conditions[] = $fields . ' LIKE :' . $key;
-            $this->_bind[$key] = $like;
+            $this->_bind[$key] = $value;
         }
 
         return $this;
@@ -437,13 +437,13 @@ class Query extends \ManaPHP\Data\Query
 
     /**
      * @param string|array $fields
-     * @param string       $like
+     * @param string       $value
      *
      * @return static
      */
-    public function whereNotLike($fields, $like)
+    public function whereNotLike($fields, $value)
     {
-        if ($like === '') {
+        if ($value === '') {
             return $this;
         }
 
@@ -456,7 +456,7 @@ class Query extends \ManaPHP\Data\Query
             foreach ($fields as $field) {
                 $key = strtr($field, '.', '_');
                 $conditions[] = '[' . str_replace('.', '].[', $field) . ']' . ' NOT LIKE :' . $key;
-                $this->_bind[$key] = $like;
+                $this->_bind[$key] = $value;
             }
 
             $this->_conditions[] = implode(' AND ', $conditions);
@@ -464,7 +464,7 @@ class Query extends \ManaPHP\Data\Query
             $key = strtr($fields, '.', '_');
             $fields = '[' . str_replace('.', '].[', $fields) . ']';
             $this->_conditions[] = $fields . ' NOT LIKE :' . $key;
-            $this->_bind[$key] = $like;
+            $this->_bind[$key] = $value;
         }
 
         return $this;

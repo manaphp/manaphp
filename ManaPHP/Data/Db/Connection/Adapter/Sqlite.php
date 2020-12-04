@@ -20,14 +20,14 @@ class Sqlite extends Connection
     }
 
     /**
-     * @param string $source
+     * @param string $table
      *
      * @return array
      * @throws \ManaPHP\Data\Db\Exception
      */
-    public function getMetadata($source)
+    public function getMetadata($table)
     {
-        $fields = $this->query('PRAGMA table_info(' . $this->_escapeIdentifier($source) . ')', null);
+        $fields = $this->query('PRAGMA table_info(' . $this->_escapeIdentifier($table) . ')', null);
 
         $attributes = [];
         $primaryKeys = [];
@@ -55,28 +55,28 @@ class Sqlite extends Connection
     }
 
     /**
-     * @param string $source
+     * @param string $table
      *
      * @return static
      * @throws \ManaPHP\Data\Db\Exception
      */
-    public function truncate($source)
+    public function truncate($table)
     {
-        $this->execute('DELETE' . ' FROM ' . $this->_escapeIdentifier($source));
-        $this->execute('DELETE' . ' FROM sqlite_sequence WHERE name=:name', ['name' => $source]);
+        $this->execute('DELETE' . ' FROM ' . $this->_escapeIdentifier($table));
+        $this->execute('DELETE' . ' FROM sqlite_sequence WHERE name=:name', ['name' => $table]);
 
         return $this;
     }
 
     /**
-     * @param string $source
+     * @param string $table
      *
      * @return static
      * @throws \ManaPHP\Data\Db\Exception
      */
-    public function drop($source)
+    public function drop($table)
     {
-        $this->execute('DROP' . ' TABLE IF EXISTS ' . $this->_escapeIdentifier($source));
+        $this->execute('DROP' . ' TABLE IF EXISTS ' . $this->_escapeIdentifier($table));
 
         return $this;
     }
@@ -99,14 +99,14 @@ class Sqlite extends Connection
     }
 
     /**
-     * @param string $source
+     * @param string $table
      *
      * @return bool
      * @throws \ManaPHP\Data\Db\Exception
      */
-    public function tableExists($source)
+    public function tableExists($table)
     {
-        $parts = explode('.', str_replace('[]`', '', $source));
+        $parts = explode('.', str_replace('[]`', '', $table));
 
         $sql
             = /** @lang text */

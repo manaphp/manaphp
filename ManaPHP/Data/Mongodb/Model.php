@@ -596,21 +596,21 @@ class Model extends \ManaPHP\Data\Model
     }
 
     /**
-     * @param array $document =get_object_vars(new static)
+     * @param array $record =get_object_vars(new static)
      *
      * @return int
      */
-    public static function insert($document)
+    public static function insert($record)
     {
         $sample = static::sample();
 
-        $document = $sample->normalizeDocument($document);
+        $record = $sample->normalizeDocument($record);
 
-        list($db, $collection) = $sample->getUniqueShard($document);
+        list($db, $collection) = $sample->getUniqueShard($record);
 
         /** @var \ManaPHP\Data\MongodbInterface $mongodb */
         $mongodb = static::sample()->getShared($db);
-        $mongodb->insert($collection, $document);
+        $mongodb->insert($collection, $record);
 
         return 1;
     }

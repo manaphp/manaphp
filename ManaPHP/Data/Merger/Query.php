@@ -292,92 +292,92 @@ class Query extends \ManaPHP\Data\Query
     }
 
     /**
-     * @param string|array $field
+     * @param string|array $fields
      * @param string       $value
      *
      * @return static
      */
-    public function whereContains($field, $value)
+    public function whereContains($fields, $value)
     {
         foreach ($this->_queries as $query) {
-            $query->whereContains($field, $value);
+            $query->whereContains($fields, $value);
         }
 
         return $this;
     }
 
     /**
-     * @param string|array $field
+     * @param string|array $fields
      * @param string       $value
      *
      * @return static
      */
-    public function whereNotContains($field, $value)
+    public function whereNotContains($fields, $value)
     {
         foreach ($this->_queries as $query) {
-            $query->whereNotContains($field, $value);
+            $query->whereNotContains($fields, $value);
         }
 
         return $this;
     }
 
     /**
-     * @param string|array $field
+     * @param string|array $fields
      * @param string       $value
      * @param int          $length
      *
      * @return static
      */
-    public function whereStartsWith($field, $value, $length = null)
+    public function whereStartsWith($fields, $value, $length = null)
     {
         foreach ($this->_queries as $query) {
-            $query->whereStartsWith($field, $value, $length);
+            $query->whereStartsWith($fields, $value, $length);
         }
 
         return $this;
     }
 
     /**
-     * @param string|array $field
+     * @param string|array $fields
      * @param string       $value
      * @param int          $length
      *
      * @return static
      */
-    public function whereNotStartsWith($field, $value, $length = null)
+    public function whereNotStartsWith($fields, $value, $length = null)
     {
         foreach ($this->_queries as $query) {
-            $query->whereNotStartsWith($field, $value, $length);
+            $query->whereNotStartsWith($fields, $value, $length);
         }
 
         return $this;
     }
 
     /**
-     * @param string|array $field
+     * @param string|array $fields
      * @param string       $value
      *
      * @return static
      */
-    public function whereEndsWith($field, $value)
+    public function whereEndsWith($fields, $value)
     {
         foreach ($this->_queries as $query) {
-            $query->whereEndsWith($field, $value);
+            $query->whereEndsWith($fields, $value);
         }
 
         return $this;
     }
 
     /**
-     * @param string|array $field
+     * @param string|array $fields
      * @param string       $value
      *
      * @return static
      */
-    public function whereNotEndsWith($field, $value)
+    public function whereNotEndsWith($fields, $value)
     {
         foreach ($this->_queries as $query) {
-            $query->whereNotEndsWith($field, $value);
+            $query->whereNotEndsWith($fields, $value);
         }
 
         return $this;
