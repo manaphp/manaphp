@@ -35,10 +35,6 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
             $this->_use_globals = (bool)$options['use_globals'];
         }
 
-        if (isset($options['max_request']) && $options['max_request'] < 1) {
-            $options['max_request'] = 1;
-        }
-
         if (isset($options['host'])) {
             $this->_host = $options['host'];
         }

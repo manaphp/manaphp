@@ -80,7 +80,7 @@ class Workerman extends Server
         $this->alias->set('@web', '');
         $this->alias->set('@asset', '');
 
-        if (DIRECTORY_SEPARATOR === '/' && isset($options['max_request'])) {
+        if (DIRECTORY_SEPARATOR === '/' && isset($options['max_request']) && $options['max_request'] > 0) {
             $this->_max_request = $options['max_request'];
         }
 
