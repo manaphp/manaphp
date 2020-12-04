@@ -193,7 +193,11 @@ class Swoole extends Server
             }
 
             if (!MANAPHP_COROUTINE_ENABLED) {
-                $this->_releaseContexts();
+                global $__root_context;
+                foreach ($__root_context as $owner) {
+                    unset($owner->_context);
+                }
+                $__root_context = null;
             }
         }
     }

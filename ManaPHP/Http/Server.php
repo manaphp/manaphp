@@ -47,17 +47,4 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
             $this->_port = (int)$options['port'];
         }
     }
-
-    protected function _releaseContexts()
-    {
-        global $__root_context;
-
-        if ($__root_context !== null) {
-            foreach ($__root_context as $owner) {
-                unset($owner->_context);
-            }
-
-            $__root_context = null;
-        }
-    }
 }
