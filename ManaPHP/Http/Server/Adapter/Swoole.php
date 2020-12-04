@@ -68,10 +68,6 @@ class Swoole extends Server
 
         if (isset($options['max_request']) && $options['max_request'] < 1) {
             $options['max_request'] = 1;
-
-            if (function_exists('opcache_reset')) {
-                opcache_reset();
-            }
         }
 
         if (!empty($options['enable_static_handler'])) {
