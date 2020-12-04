@@ -1354,7 +1354,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
         if ($thisFilter === null) {
             $keys = [];
             foreach ($this->getFields() as $field) {
-                if ($field === $foreingedKey || $field === 'id' || $field === '_id' || !str_contains($field, '_id')) {
+                if ($field === $foreingedKey || $field === 'id' || $field === '_id' || !str_ends_with($field, '_id')) {
                     continue;
                 }
 
@@ -1515,7 +1515,7 @@ abstract class Model implements ModelInterface, Serializable, ArrayAccess, JsonS
 
             $value = $this->$field;
 
-            if (is_int($value) && $value > 100000000 /**1973/3/3 17:46:40*/ && !str_contains($field, '_id')) {
+            if (is_int($value) && $value > 100000000 /**1973/3/3 17:46:40*/ && !str_ends_with($field, '_id')) {
                 $data['*human_time*'][$field] = date('Y-m-d H:i:s', $value);
             }
 
