@@ -173,8 +173,7 @@ class Swoole extends Server
         $settings = json_stringify($this->_settings);
         console_log('info', ['listen on: %s:%d with setting: %s', $this->_host, $this->_port, $settings]);
         $this->_swoole->start();
-
-        echo sprintf('[%s][info]: shutdown', date('c')), PHP_EOL;
+        console_log('info', 'shutdown');
     }
 
     /**
