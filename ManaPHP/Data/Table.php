@@ -2,10 +2,15 @@
 
 namespace ManaPHP\Data;
 
+use ManaPHP\Di;
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
 use ManaPHP\Helper\Str;
 
+/**
+ * @property-read \ManaPHP\Di $_di
+ */
 abstract class Table implements TableInterface
 {
     /**
@@ -95,5 +100,42 @@ abstract class Table implements TableInterface
         }
 
         return $cached[$class];
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function getShared($name)
+    {
+        return $this->_di->getShared($name);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        if ($name === '_di') {
+            return $this->_di = Di::getDefault();
+        }
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return void
+     */
+    public function __set($name, $value)
+    {
+        if (is_scalar($value)) {
+            throw new MisuseException(['`%s` Table does\'t contains `%s` field', static::class, $name]);
+        }
+
+        $this->$name = $value;
     }
 }

@@ -28,9 +28,6 @@ use ManaPHP\Validating\Validator\ValidateFailedException;
 use ReflectionClass;
 use Serializable;
 
-/**
- * @property-read \ManaPHP\Di $_di
- */
 abstract class Model extends Table implements ModelInterface, Serializable, ArrayAccess, JsonSerializable, Unaspectable
 {
     /**
@@ -1307,16 +1304,6 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     public function getInstance($class, $params = [])
     {
         return $this->_di->get($class, $params);
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return mixed
-     */
-    public function getShared($name)
-    {
-        return $this->_di->getShared($name);
     }
 
     /**

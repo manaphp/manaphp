@@ -251,6 +251,73 @@ class Command extends \ManaPHP\Cli\Command
     }
 
     /**
+     * @param string $service
+     * @param string $table
+     * @param string $rootNamespace
+     * @param bool   $optimized
+     *
+     * @return string
+     */
+    protected function _renderTable($service, $table, $rootNamespace = 'App\Models', $optimized = false)
+    {
+        /** @var Db $db */
+        $db = $this->getShared($service);
+        $metadata = $db->getMetadata($table);
+
+        $fields = (array)$metadata[Db::METADATA_ATTRIBUTES];
+
+        $plainClass = Str::camelize($table);
+        $modelName = $rootNamespace . '\\' . $plainClass;
+
+        if ($constants = $this->_getConstantsByDb($service, $table)) {
+            null;
+        } elseif ($constants = $this->_getConstantsByFile($plainClass)) {
+            $constants = '    ' . $constants;
+        }
+
+        $str = '<?php' . PHP_EOL . PHP_EOL;
+        $str .= 'namespace ' . substr($modelName, 0, strrpos($modelName, '\\')) . ';' . PHP_EOL;
+        $str .= PHP_EOL;
+
+        $str .= '/**' . PHP_EOL;
+        $str .= ' * Class ' . $modelName . PHP_EOL;
+        $str .= ' */' . PHP_EOL;
+
+        $str .= 'class ' . $plainClass . ' extends Table' . PHP_EOL;
+        $str .= '{';
+        if ($constants) {
+            $str .= PHP_EOL . $constants . PHP_EOL;
+        }
+
+        if ($service !== 'db') {
+            $str .= PHP_EOL;
+            $str .= '    /**' . PHP_EOL;
+            $str .= '     * @return string' . PHP_EOL;
+            $str .= '     */' . PHP_EOL;
+            $str .= '    public function getDb()' . PHP_EOL;
+            $str .= '    {' . PHP_EOL;
+            $str .= "        return '$service';" . PHP_EOL;
+            $str .= '    }' . PHP_EOL;
+        }
+
+        if (true) {
+            $str .= PHP_EOL;
+
+            $str .= '    /**' . PHP_EOL;
+            $str .= '     * @return string' . PHP_EOL;
+            $str .= '     */' . PHP_EOL;
+            $str .= '    public function getTable()' . PHP_EOL;
+            $str .= '    {' . PHP_EOL;
+            $str .= "        return '$table';" . PHP_EOL;
+            $str .= '    }' . PHP_EOL;
+        }
+
+        $str .= '}';
+
+        return $str;
+    }
+
+    /**
      * list databases and tables
      *
      * @param array  $services      services name list
@@ -348,6 +415,36 @@ class Command extends \ManaPHP\Cli\Command
                 $plainClass = Str::camelize($table);
                 $fileName = "@tmp/db_models/$plainClass.php";
                 $model_str = $this->_renderModel($service, $table, $namespace, $optimized);
+                LocalFS::filePut($fileName, $model_str);
+
+                $this->console->progress(['  `:table` table saved to `:file`', 'table' => $table, 'file' => $fileName]);
+            }
+        }
+    }
+
+    /**
+     * generate models file in online
+     *
+     * @param array  $services      services name list
+     * @param string $table_pattern match table against a pattern
+     * @param string $namespace     namespace of models
+     * @param bool   $optimized     output as more methods as possible
+     *
+     * @return void
+     */
+    public function tablesAction($services = [], $table_pattern = '', $namespace = 'App\Tables', $optimized = false)
+    {
+        if (!str_contains($namespace, '\\')) {
+            $namespace = 'App\\' . ucfirst($namespace) . '\\Tables';
+        }
+
+        foreach ($services ?: $this->_getDbServices() as $service) {
+            foreach ($this->_getTables($service, $table_pattern) as $table) {
+                $this->console->progress(['`:table` processing...', 'table' => $table], '');
+
+                $plainClass = Str::camelize($table);
+                $fileName = "@tmp/db_tables/$plainClass.php";
+                $model_str = $this->_renderTable($service, $table, $namespace, $optimized);
                 LocalFS::filePut($fileName, $model_str);
 
                 $this->console->progress(['  `:table` table saved to `:file`', 'table' => $table, 'file' => $fileName]);
