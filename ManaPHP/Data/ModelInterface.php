@@ -5,44 +5,6 @@ namespace ManaPHP\Data;
 interface ModelInterface extends TableInterface
 {
     /**
-     * Returns table name mapped in the model
-     *
-     * @return string
-     */
-    public function getTable();
-
-    /**
-     * Gets internal database connection
-     *
-     * @return string
-     */
-    public function getDb();
-
-    /**
-     * @return array
-     */
-    public function getAnyShard();
-
-    /**
-     * @param array|\ManaPHP\Data\Model $context
-     *
-     * @return array
-     */
-    public function getUniqueShard($context);
-
-    /**
-     * @param array|\ManaPHP\Data\Model $context
-     *
-     * @return array
-     */
-    public function getMultipleShards($context);
-
-    /**
-     * @return array
-     */
-    public function getAllShards();
-
-    /**
      * @return string
      */
     public function getPrimaryKey();
@@ -107,11 +69,6 @@ interface ModelInterface extends TableInterface
      * @return array
      */
     public function labels();
-
-    /**
-     * @return static
-     */
-    public static function sample();
 
     /**
      * @param string $alias
