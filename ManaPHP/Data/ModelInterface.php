@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Data;
 
-interface ModelInterface
+interface ModelInterface extends TableInterface
 {
     /**
      * Returns table name mapped in the model
