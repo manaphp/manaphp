@@ -12,23 +12,26 @@ interface ModelInterface extends \ManaPHP\Data\ModelInterface
     public static function query($alias = null);
 
     /**
-     * @param array|string $sql
+     * @param string $sql
+     * @param array  $bind
      *
      * @return int
      */
-    public static function insertBySql($sql);
+    public static function insertBySql($sql, $bind = []);
 
     /**
-     * @param array|string $sql
+     * @param string $sql
+     * @param array  $bind
      *
      * @return int
      */
-    public static function deleteBySql($sql);
+    public static function deleteBySql($sql, $bind = []);
 
     /**
-     * @param string|array $sql
+     * @param string $sql
+     * @param array  $bind
      *
      * @return int
      */
-    public static function updateBySql($sql);
+    public static function updateBySql($sql, $bind = []);
 }

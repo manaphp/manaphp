@@ -287,20 +287,13 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
     }
 
     /**
-     * @param array|string $sql
+     * @param string $sql
+     * @param array  $bind
      *
      * @return int
      */
-    public static function insertBySql($sql)
+    public static function insertBySql($sql, $bind = [])
     {
-        if (is_array($sql)) {
-            $bind = $sql;
-            unset($bind[0]);
-            $sql = $sql[0];
-        } else {
-            $bind = [];
-        }
-
         $sample = static::sample();
 
         list($db, $table) = $sample->getUniqueShard($bind);
@@ -312,20 +305,13 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
     }
 
     /**
-     * @param array|string $sql
+     * @param string $sql
+     * @param array  $bind
      *
      * @return int
      */
-    public static function deleteBySql($sql)
+    public static function deleteBySql($sql, $bind = [])
     {
-        if (is_array($sql)) {
-            $bind = $sql;
-            unset($bind[0]);
-            $sql = $sql[0];
-        } else {
-            $bind = [];
-        }
-
         $shards = static::sample()->getMultipleShards($bind);
 
         $affected_count = 0;
@@ -342,20 +328,13 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
     }
 
     /**
-     * @param array|string $sql
+     * @param string $sql
+     * @param array  $bind
      *
      * @return int
      */
-    public static function updateBySql($sql)
+    public static function updateBySql($sql, $bind = [])
     {
-        if (is_array($sql)) {
-            $bind = $sql;
-            unset($bind[0]);
-            $sql = $sql[0];
-        } else {
-            $bind = [];
-        }
-
         $shards = static::sample()->getMultipleShards($bind);
 
         $affected_count = 0;
