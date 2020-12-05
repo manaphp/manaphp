@@ -884,9 +884,9 @@ class Query extends \ManaPHP\Data\Query
             foreach ($this->_joins as $k => $join) {
                 $join_table = $join[0];
                 if (str_contains($join_table, '\\')) {
-                    /** @var \ManaPHP\Data\Db\ModelInterface $model */
-                    $model = $join_table::sample();
-                    $join_shards = $model->getMultipleShards($this->_shard_context);
+                    /** @var \ManaPHP\Data\TableInterface $iTable */
+                    $iTable = $join_table::sample();
+                    $join_shards = $iTable->getMultipleShards($this->_shard_context);
                 } else {
                     $db = is_object($this->_db) ? '' : (string)$this->_db;
                     if ($shard_strategy = $this->_shard_strategy) {
