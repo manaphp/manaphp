@@ -254,17 +254,13 @@ class Command extends \ManaPHP\Cli\Command
      * @param string $service
      * @param string $table
      * @param string $rootNamespace
-     * @param bool   $optimized
      *
      * @return string
      */
-    protected function _renderTable($service, $table, $rootNamespace = 'App\Models', $optimized = false)
+    protected function _renderTable($service, $table, $rootNamespace = 'App\Models')
     {
         /** @var Db $db */
         $db = $this->getShared($service);
-        $metadata = $db->getMetadata($table);
-
-        $fields = (array)$metadata[Db::METADATA_ATTRIBUTES];
 
         $plainClass = Str::camelize($table);
         $modelName = $rootNamespace . '\\' . $plainClass;
@@ -444,7 +440,7 @@ class Command extends \ManaPHP\Cli\Command
 
                 $plainClass = Str::camelize($table);
                 $fileName = "@tmp/db_tables/$plainClass.php";
-                $model_str = $this->_renderTable($service, $table, $namespace, $optimized);
+                $model_str = $this->_renderTable($service, $table, $namespace);
                 LocalFS::filePut($fileName, $model_str);
 
                 $this->console->progress(['  `:table` table saved to `:file`', 'table' => $table, 'file' => $fileName]);
