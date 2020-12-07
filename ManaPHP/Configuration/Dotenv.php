@@ -143,7 +143,7 @@ class Dotenv extends Component implements DotenvInterface
         if (isset($this->_env[$key])) {
             $value = $this->_env[$key];
         } elseif (!$this->_file) {
-            throw new PreconditionException('@root/.env file is not exists');
+            throw new PreconditionException('.env is not loaded');
         } elseif ($default !== null) {
             $value = $default;
         } else {
