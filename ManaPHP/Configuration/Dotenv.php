@@ -66,7 +66,9 @@ class Dotenv extends Component implements DotenvInterface
     public function load($file = null)
     {
         if ($file === null) {
-            if ($v = $_SERVER['DOTENV_URL'] ?? null) {
+            if (defined('DOTENV_URL')) {
+                $file = DOTENV_URL;
+            } elseif ($v = $_SERVER['DOTENV_URL'] ?? null) {
                 $file = $v;
             } elseif ($v = getenv('DOTENV_URL')) {
                 $file = (string)$v;
