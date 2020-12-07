@@ -1,0 +1,13 @@
+version: "2"
+services:
+  tcp:
+    image: manaphp/php74:3.2
+    volumes:
+      - ./:/var/www/html
+      - /data/volumes/${COMPOSE_PROJECT_NAME}/tcp/data:/var/www/html/data
+      - /data/volumes/${COMPOSE_PROJECT_NAME}/tcp/tmp:/var/www/html/tmp
+      - ../../ManaPHP:/var/www/html/vendor/manaphp/framework
+    command: php /var/www/html/public/index.php
+    ports:
+      - 9501:9501
+    restart: always
