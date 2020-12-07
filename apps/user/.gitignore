@@ -1,4 +1,4 @@
 /data
 /vendor
 /tmp
-/.env
+/config/.env

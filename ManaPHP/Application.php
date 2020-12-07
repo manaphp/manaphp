@@ -173,8 +173,8 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
 
     public function main()
     {
-        if (LocalFS::fileExists('@root/.env')) {
-            $this->dotenv->load('@root/.env');
+        if (LocalFS::fileExists('@config/.env')) {
+            $this->dotenv->load('@config/.env');
         }
 
         if (LocalFS::fileExists('@config/app.php')) {

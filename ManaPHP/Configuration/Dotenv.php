@@ -71,7 +71,7 @@ class Dotenv extends Component implements DotenvInterface
             } elseif ($v = getenv('DOTENV_URL')) {
                 $file = (string)$v;
             } else {
-                $file = '@root/.env';
+                $file = '@config/.env';
             }
         }
 
