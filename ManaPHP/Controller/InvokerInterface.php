@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Controller;
 
 interface InvokerInterface
 {

@@ -1,7 +1,8 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Controller;
 
+use ManaPHP\Component;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ReflectionMethod;
 
