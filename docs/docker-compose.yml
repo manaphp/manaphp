@@ -1,0 +1,11 @@
+version: "2"
+services:
+  nginx:
+    image: nginx:1.13.3
+    volumes:
+      - /usr/share/zoneinfo/PRC:/etc/localtime
+      - ../dist:/var/www/html
+      - ./conf/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 9001:80
+    restart: always
