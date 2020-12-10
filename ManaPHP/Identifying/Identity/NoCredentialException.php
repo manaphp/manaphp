@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Identity;
+namespace ManaPHP\Identifying\Identity;
 
 use ManaPHP\Exception\UnauthorizedException;
 

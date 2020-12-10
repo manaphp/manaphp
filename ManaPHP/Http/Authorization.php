@@ -6,7 +6,7 @@ use ManaPHP\Component;
 use ManaPHP\Exception\ForbiddenException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
-use ManaPHP\Identity\NoCredentialException;
+use ManaPHP\Identifying\Identity\NoCredentialException;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
 
@@ -317,7 +317,7 @@ class Authorization extends Component implements AuthorizationInterface
     /**
      * @return void
      * @throws \ManaPHP\Exception\ForbiddenException
-     * @throws \ManaPHP\Identity\NoCredentialException
+     * @throws \ManaPHP\Identifying\Identity\NoCredentialException
      */
     public function authorize()
     {

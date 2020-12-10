@@ -1,7 +1,8 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Identifying;
 
+use ManaPHP\Component;
 use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotImplementedException;
@@ -18,7 +19,7 @@ class IdentityContext implements Stickyable
 }
 
 /**
- * @property-read \ManaPHP\IdentityContext $_context
+ * @property-read \ManaPHP\Identifying\IdentityContext $_context
  */
 class Identity extends Component implements IdentityInterface
 {

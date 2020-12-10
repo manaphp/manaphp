@@ -38,7 +38,7 @@ use ManaPHP\Exception\NotSupportedException;
  * @property-read \ManaPHP\Http\ClientInterface                $restClient
  * @property-read \ManaPHP\Http\AuthorizationInterface         $authorization
  * @property-read \ManaPHP\Http\CaptchaInterface               $captcha
- * @property-read \ManaPHP\IdentityInterface                   $identity
+ * @property-read \ManaPHP\Identifying\IdentityInterface       $identity
  * @property-read \ManaPHP\Messaging\QueueInterface            $msgQueue
  * @property-read \ManaPHP\I18n\TranslatorInterface            $translation
  * @property-read \ManaPHP\Html\Renderer\Engine\Sword\Compiler $swordCompiler

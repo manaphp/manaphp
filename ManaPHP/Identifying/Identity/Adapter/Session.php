@@ -1,8 +1,8 @@
 <?php
 
-namespace ManaPHP\Identity\Adapter;
+namespace ManaPHP\Identifying\Identity\Adapter;
 
-use ManaPHP\Identity;
+use ManaPHP\Identifying\Identity;
 
 /**
  * @property-read \ManaPHP\Http\SessionInterface $session

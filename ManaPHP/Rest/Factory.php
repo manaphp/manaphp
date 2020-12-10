@@ -11,7 +11,7 @@ class Factory extends \ManaPHP\Http\Factory
         $this->_definitions = array_merge(
             $this->_definitions, [
                 'errorHandler' => 'ManaPHP\Rest\ErrorHandler',
-                'identity'     => 'ManaPHP\Identity\Adapter\Jwt'
+                'identity'     => 'ManaPHP\Identifying\Identity\Adapter\Jwt'
             ]
         );
     }

@@ -30,7 +30,7 @@ interface AuthorizationInterface
     public function isAllowed($permission = null, $role = null);
 
     /**
-     * @throws \ManaPHP\Identity\NoCredentialException
+     * @throws \ManaPHP\Identifying\Identity\NoCredentialException
      * @throws \ManaPHP\Exception\ForbiddenException
      */
     public function authorize();
