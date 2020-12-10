@@ -2,7 +2,8 @@
 
 This is the core framework code of ManaPHP.
 
-This repository is a read-only git subsplit of <https://github.com/manaphp/manaphp>. Please submit issue reports and pull requests to the main repository.
+This repository is a read-only git subsplit of <https://github.com/manaphp/manaphp>. Please submit issue reports and
+pull requests to the main repository.
 
 ## Installation
 
@@ -17,7 +18,9 @@ composer require manaphp/framework
 or add
 
 ```json
-{"manaphp/framework": "dev-master"}
+{
+    "manaphp/framework": "dev-master"
+}
 ```
 
 to `require` section of your composer.json.
