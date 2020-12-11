@@ -731,6 +731,17 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
+     * @param string $field
+     * @param string $value
+     *
+     * @return string
+     */
+    protected function _validate_uuid($field, $value)
+    {
+        return preg_match('#^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$#i', $value) === 1 ? $value : null;
+    }
+
+    /**
      * @param string     $field
      * @param string|int $value
      * @param string     $parameter

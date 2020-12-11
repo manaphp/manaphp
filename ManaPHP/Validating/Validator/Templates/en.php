@@ -28,4 +28,5 @@ return [
     'ip'        => 'The :field must be a valid IP address.',
     'unique'    => 'The :field must be unique',
     'readonly'  => 'The :field can not be modified',
+    'uuid'      => 'The :field is not a valid uuid'
 ];
