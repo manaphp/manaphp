@@ -175,7 +175,7 @@ interface QueryInterface
     public function whereNotInset($field, $value);
 
     /**
-     * @param string|array $fields =model_var(new Model) ?: model_field(new Model)
+     * @param string|array $fields =model_fields(new Model) ?: model_field(new Model)
      * @param string       $value
      *
      * @return static
@@ -183,7 +183,7 @@ interface QueryInterface
     public function whereContains($fields, $value);
 
     /**
-     * @param string|array $fields =model_var(new Model) ?: model_field(new Model)
+     * @param string|array $fields =model_fields(new Model) ?: model_field(new Model)
      * @param string       $value
      *
      * @return static
@@ -191,7 +191,7 @@ interface QueryInterface
     public function whereNotContains($fields, $value);
 
     /**
-     * @param string|array $fields =model_var(new Model) ?: model_field(new Model)
+     * @param string|array $fields =model_fields(new Model) ?: model_field(new Model)
      * @param string       $value
      * @param int          $length
      *
@@ -200,7 +200,7 @@ interface QueryInterface
     public function whereStartsWith($fields, $value, $length = null);
 
     /**
-     * @param string|array $fields =model_var(new Model) ?: model_field(new Model)
+     * @param string|array $fields =model_fields(new Model) ?: model_field(new Model)
      * @param string       $value
      * @param int          $length
      *
@@ -209,7 +209,7 @@ interface QueryInterface
     public function whereNotStartsWith($fields, $value, $length = null);
 
     /**
-     * @param string|array $fields =model_var(new Model)?: model_field(new Model)
+     * @param string|array $fields =model_fields(new Model)?: model_field(new Model)
      * @param string       $value
      *
      * @return static
@@ -217,7 +217,7 @@ interface QueryInterface
     public function whereEndsWith($fields, $value);
 
     /**
-     * @param string|array $fields =model_var(new Model) ?: model_field(new Model)
+     * @param string|array $fields =model_fields(new Model) ?: model_field(new Model)
      * @param string       $value
      *
      * @return static
@@ -225,7 +225,7 @@ interface QueryInterface
     public function whereNotEndsWith($fields, $value);
 
     /**
-     * @param string|array $fields =model_var(new Model) ?: model_field(new Model)
+     * @param string|array $fields =model_fields(new Model) ?: model_field(new Model)
      * @param string       $value
      *
      * @return static
@@ -233,7 +233,7 @@ interface QueryInterface
     public function whereLike($fields, $value);
 
     /**
-     * @param string|array $fields =model_var(new Model) ?: model_field(new Model)
+     * @param string|array $fields =model_fields(new Model) ?: model_field(new Model)
      * @param string       $value
      *
      * @return static
