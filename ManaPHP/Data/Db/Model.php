@@ -19,7 +19,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
     }
 
     /**
-     * @param mixed $context =get_object_vars(new static)
+     * @param mixed $context =model_var(new static)
      *
      * @return \ManaPHP\Data\DbInterface
      */
@@ -39,7 +39,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
     }
 
     /**
-     * @return string =key(get_object_vars(new static))
+     * @return string =model_field(new static)
      */
     public function getPrimaryKey()
     {
@@ -63,7 +63,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
     }
 
     /**
-     * @return array =array_keys(get_object_vars(new static))
+     * @return array =model_fields(new static)
      */
     public function getFields()
     {
@@ -84,7 +84,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
     }
 
     /**
-     * @return array =array_keys(get_object_vars(new static))
+     * @return array =model_fields(new static)
      */
     public function getIntFields()
     {
@@ -351,7 +351,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
     }
 
     /**
-     * @param array $record =get_object_vars(new static)
+     * @param array $record =model_var(new static)
      *
      * @return int
      */

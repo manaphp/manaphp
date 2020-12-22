@@ -120,7 +120,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @return string|null =key(get_object_vars(new static))
+     * @return string|null =model_field(new static)
      */
     public function getAutoIncrementField()
     {
@@ -129,7 +129,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param string $field =key(get_object_vars(new static))
+     * @param string $field =model_field(new static)
      *
      * @return bool
      */
@@ -139,7 +139,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param string $field =key(get_object_vars(new static))
+     * @param string $field =model_field(new static)
      *
      * @return string
      */
@@ -156,7 +156,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @return array =array_keys(get_object_vars(new static))
+     * @return array =model_fields(new static)
      */
     public function getSafeFields()
     {
@@ -164,7 +164,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @return array =array_keys(get_object_vars(new static))
+     * @return array =model_fields(new static)
      */
     public function getJsonFields()
     {
@@ -172,7 +172,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @return array =get_object_vars(new static) ?: [$field => \PHPSTORM_META\validator_rule()]
+     * @return array =model_var(new static) ?: [$field => \PHPSTORM_META\validator_rule()]
      */
     public function rules()
     {
@@ -180,7 +180,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @return array =get_object_vars(new static)
+     * @return array =model_var(new static)
      */
     public function labels()
     {
@@ -190,10 +190,10 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     /**
      * Allows to query a set of records that match the specified conditions
      *
-     * @param array $filters =get_object_vars(new static)
-     * @param array $options =['order'=>get_object_vars(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC],
-     *                       'index'=>get_object_vars(new static)]
-     * @param array $fields  =array_keys(get_object_vars(new static))
+     * @param array $filters =model_var(new static)
+     * @param array $options =['order'=>model_var(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC],
+     *                       'index'=>model_var(new static)]
+     * @param array $fields  =model_fields(new static)
      *
      * @return  static[]
      */
@@ -205,10 +205,10 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     /**
      * Allows to query a set of records that match the specified conditions
      *
-     * @param array $filters =get_object_vars(new static)
-     * @param array $options =['order'=>get_object_vars(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC],
-     *                       'index'=>get_object_vars(new static)]
-     * @param array $fields  =array_keys(get_object_vars(new static))
+     * @param array $filters =model_var(new static)
+     * @param array $options =['order'=>model_var(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC],
+     *                       'index'=>model_var(new static)]
+     * @param array $fields  =model_fields(new static)
      *
      * @return  \ManaPHP\Data\Paginator
      */
@@ -218,9 +218,9 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param string|array $fields  =get_object_vars(new static) ?: key(get_object_vars(new static)) ?:
-     *                              [$k=>key(get_object_vars(new static))]
-     * @param array        $filters =get_object_vars(new static)
+     * @param string|array $fields  =model_var(new static) ?: model_field(new static) ?:
+     *                              [$k=>model_field(new static)]
+     * @param array        $filters =model_var(new static)
      *
      * @return array
      */
@@ -271,7 +271,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
 
     /**
      * @param int|string $id
-     * @param int|array  $fieldsOrTtl =array_keys(get_object_vars(new static))
+     * @param int|array  $fieldsOrTtl =model_fields(new static)
      *
      * @return static
      */
@@ -309,7 +309,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param array|string $fields =array_keys(get_object_vars(new static))
+     * @param array|string $fields =model_fields(new static)
      * @param string       $alias
      *
      * @return \ManaPHP\Data\QueryInterface <static>
@@ -322,8 +322,8 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     /**
      * Allows to query the first record that match the specified conditions
      *
-     * @param int|string|array $filters =get_object_vars(new static)
-     * @param array            $fields  =array_keys(get_object_vars(new static))
+     * @param int|string|array $filters =model_var(new static)
+     * @param array            $fields  =model_fields(new static)
      *
      * @return static|null
      */
@@ -340,8 +340,8 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param int|string|array $filters =get_object_vars(new static)
-     * @param array            $fields  =array_keys(get_object_vars(new static))
+     * @param int|string|array $filters =model_var(new static)
+     * @param array            $fields  =model_fields(new static)
      *
      * @return static
      */
@@ -369,7 +369,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param array $fields =array_keys(get_object_vars(new static))
+     * @param array $fields =model_fields(new static)
      *
      * @return static
      */
@@ -381,8 +381,8 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     /**
      * Allows to query the last record that match the specified conditions
      *
-     * @param array $filters =get_object_vars(new static)
-     * @param array $fields  =array_keys(get_object_vars(new static))
+     * @param array $filters =model_var(new static)
+     * @param array $fields  =model_fields(new static)
      *
      * @return static|null
      */
@@ -396,8 +396,8 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param int|string|array $filters =get_object_vars(new static)
-     * @param string           $field   =key(get_object_vars(new static))
+     * @param int|string|array $filters =model_var(new static)
+     * @param string           $field   =model_field(new static)
      * @param int              $ttl
      *
      * @return int|float|string|null
@@ -444,8 +444,8 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param int|string|array $filters =get_object_vars(new static)
-     * @param string           $field   =key(get_object_vars(new static))
+     * @param int|string|array $filters =model_var(new static)
+     * @param string           $field   =model_field(new static)
      * @param int              $ttl
      *
      * @return int|float|string
@@ -461,8 +461,8 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param int|string|array $filters =get_object_vars(new static)
-     * @param string|float|int $field   =key(get_object_vars(new static))
+     * @param int|string|array $filters =model_var(new static)
+     * @param string|float|int $field   =model_field(new static)
      * @param mixed            $default
      *
      * @return float|int|string
@@ -473,8 +473,8 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param string $field   =key(get_object_vars(new static))
-     * @param array  $filters =get_object_vars(new static)
+     * @param string $field   =model_field(new static)
+     * @param array  $filters =model_var(new static)
      *
      * @return array
      */
@@ -487,7 +487,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param int|string|array $filters =get_object_vars(new static)
+     * @param int|string|array $filters =model_var(new static)
      *
      * @return bool
      */
@@ -499,7 +499,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param array        $filters =get_object_vars(new static)
+     * @param array        $filters =model_var(new static)
      * @param array        $aggregation
      * @param string|array $options
      *
@@ -520,8 +520,8 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     /**
      * Allows to count how many records match the specified conditions
      *
-     * @param array  $filters =get_object_vars(new static)
-     * @param string $field   =key(get_object_vars(new static))
+     * @param array  $filters =model_var(new static)
+     * @param string $field   =model_field(new static)
      *
      * @return int
      */
@@ -533,8 +533,8 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     /**
      * Allows to calculate a summary on a field that match the specified conditions
      *
-     * @param string $field   =key(get_object_vars(new static))
-     * @param array  $filters =get_object_vars(new static)
+     * @param string $field   =model_field(new static)
+     * @param array  $filters =model_var(new static)
      *
      * @return int|float|null
      */
@@ -546,8 +546,8 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     /**
      * Allows to get the max value of a column that match the specified conditions
      *
-     * @param string $field   =key(get_object_vars(new static))
-     * @param array  $filters =get_object_vars(new static)
+     * @param string $field   =model_field(new static)
+     * @param array  $filters =model_var(new static)
      *
      * @return int|float|null
      */
@@ -560,8 +560,8 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
      * Allows to get the min value of a column that match the specified conditions
      *
      *
-     * @param string $field   =key(get_object_vars(new static))
-     * @param array  $filters =get_object_vars(new static)
+     * @param string $field   =model_field(new static)
+     * @param array  $filters =model_var(new static)
      *
      * @return int|float|null
      */
@@ -573,8 +573,8 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     /**
      * Allows to calculate the average value on a column matching the specified conditions
      *
-     * @param string $field   =key(get_object_vars(new static))
-     * @param array  $filters =get_object_vars(new static)
+     * @param string $field   =model_field(new static)
+     * @param array  $filters =model_var(new static)
      *
      * @return float|null
      */
@@ -586,8 +586,8 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     /**
      * Assigns values to a model from an array
      *
-     * @param array|\ManaPHP\Data\Model $data   =get_object_vars(new static)
-     * @param array                     $fields =array_keys(get_object_vars(new static))
+     * @param array|\ManaPHP\Data\Model $data   =model_var(new static)
+     * @param array                     $fields =model_fields(static::class)
      *
      * @return static
      */
@@ -607,7 +607,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param array $fields =array_keys(get_object_vars(new static))
+     * @param array $fields =model_fields(new static)
      *
      * @return static
      */
@@ -637,7 +637,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param array $fields =array_keys(get_object_vars(new static))
+     * @param array $fields =model_fields(new static)
      *
      * @return void
      */
@@ -675,7 +675,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param string $field =key(get_object_vars(new static))
+     * @param string $field =model_field(new static)
      * @param array  $rules
      *
      * @return void
@@ -755,7 +755,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param array $fields =array_keys(get_object_vars(new static))
+     * @param array $fields =model_fields(new static)
      *
      * @return static
      */
@@ -765,7 +765,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param array $fields =array_keys(get_object_vars(new static))
+     * @param array $fields =model_fields(new static)
      *
      * @return static
      */
@@ -792,7 +792,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     /**
      * Inserts or updates a model instance. Returning true on success or false otherwise.
      *
-     * @param array $fields =array_keys(get_object_vars(new static))
+     * @param array $fields =model_fields(new static)
      *
      * @return static
      */
@@ -819,8 +819,8 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param array $fieldValues =get_object_vars(new static)
-     * @param array $filters     =get_object_vars(new static)
+     * @param array $fieldValues =model_var(new static)
+     * @param array $filters     =model_var(new static)
      *
      * @return int
      */
@@ -830,7 +830,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param array $filters =get_object_vars(new static)
+     * @param array $filters =model_var(new static)
      *
      * @return int
      */
@@ -856,7 +856,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     /**
      * Returns the instance as an array representation
      *
-     * @return array =get_object_vars(new static)
+     * @return array =model_var(new static)
      */
     public function toArray()
     {
@@ -888,7 +888,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param array $fields =array_keys(get_object_vars(new static))
+     * @param array $fields =model_fields(new static)
      *
      * @return static
      */
@@ -905,7 +905,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param array $fields =array_keys(get_object_vars(new static))
+     * @param array $fields =model_fields(new static)
      *
      * @return static
      */
@@ -924,7 +924,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     /**
      * Returns the internal snapshot data
      *
-     * @return array =get_object_vars(new static)
+     * @return array =model_var(new static)
      */
     public function getSnapshotData()
     {
@@ -934,7 +934,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     /**
      * Returns a list of changed values
      *
-     * @return array =array_keys(get_object_vars(new static))
+     * @return array =model_fields(new static)
      */
     public function getChangedFields()
     {
@@ -958,7 +958,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
      * Check if a specific attribute has changed
      * This only works if the model is keeping data snapshots
      *
-     * @param string|array $fields =array_keys(get_object_vars(new static))
+     * @param string|array $fields =model_fields(new static)
      *
      * @return bool
      */
@@ -991,7 +991,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
 
     /**
      * @param float $interval
-     * @param array $fields =array_keys(get_object_vars(new static))
+     * @param array $fields =model_fields(new static)
      *
      * @return static
      */
@@ -1096,7 +1096,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param string    $field =key(get_object_vars(new static))
+     * @param string    $field =model_field(new static)
      * @param int|float $step
      *
      * @return static
@@ -1113,7 +1113,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param string    $field =key(get_object_vars(new static))
+     * @param string    $field =model_field(new static)
      * @param int|float $step
      *
      * @return static
@@ -1142,7 +1142,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param int|string|array $filters =get_object_vars(new static)
+     * @param int|string|array $filters =model_var(new static)
      *
      * @return \ManaPHP\Data\QueryInterface <static>
      */
@@ -1154,7 +1154,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
-     * @param array $filters =get_object_vars(new static)
+     * @param array $filters =model_var(new static)
      *
      * @return \ManaPHP\Data\QueryInterface <static>
      */
@@ -1192,7 +1192,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
 
     /**
      * @param string $thatModel
-     * @param string $thisField =key(get_object_vars(new static))
+     * @param string $thisField =model_field(new static)
      *
      * @return \ManaPHP\Data\Relation\BelongsTo
      */
@@ -1206,7 +1206,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
 
     /**
      * @param string $thatModel
-     * @param string $thatField =key(get_object_vars(new static))
+     * @param string $thatField =model_field(new static)
      *
      * @return \ManaPHP\Data\Relation\HasOne
      */
@@ -1217,7 +1217,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
 
     /**
      * @param string $thatModel
-     * @param string $thatField =key(get_object_vars(new static))
+     * @param string $thatField =model_field(new static)
      *
      * @return \ManaPHP\Data\Relation\HasMany
      */
@@ -1245,7 +1245,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
 
     /**
      * @param string $thatModel
-     * @param string $thisFilter =key(get_object_vars(new static))
+     * @param string $thisFilter =model_field(new static)
      *
      * @return \ManaPHP\Data\Relation\HasManyOthers
      */

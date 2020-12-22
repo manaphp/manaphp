@@ -24,7 +24,7 @@ abstract class Table implements TableInterface
     }
 
     /**
-     * @param array|\ManaPHP\Data\Model $context =get_object_vars(new static)
+     * @param array|\ManaPHP\Data\Model $context =model_var(new static)
      *
      * @return array
      */
@@ -44,7 +44,7 @@ abstract class Table implements TableInterface
     }
 
     /**
-     * @param array|\ManaPHP\Data\Model $context =get_object_vars(new static)
+     * @param array|\ManaPHP\Data\Model $context =model_var(new static)
      *
      * @return array
      */

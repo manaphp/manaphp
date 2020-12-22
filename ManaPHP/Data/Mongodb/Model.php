@@ -41,7 +41,7 @@ class Model extends \ManaPHP\Data\Model
     }
 
     /**
-     * @param mixed $context =get_object_vars(new static)
+     * @param mixed $context =model_var(new static)
      *
      * @return \ManaPHP\Data\MongodbInterface
      */
@@ -52,7 +52,7 @@ class Model extends \ManaPHP\Data\Model
     }
 
     /**
-     * @return string =key(get_object_vars(new static))
+     * @return string =model_field(new static)
      */
     public function getPrimaryKey()
     {
@@ -72,7 +72,7 @@ class Model extends \ManaPHP\Data\Model
     }
 
     /**
-     * @return array =array_keys(get_object_vars(new static))
+     * @return array =model_fields(new static)
      */
     public function getFields()
     {
@@ -92,7 +92,7 @@ class Model extends \ManaPHP\Data\Model
     }
 
     /**
-     * @return array =array_keys(get_object_vars(new static))
+     * @return array =model_fields(new static)
      */
     public function getIntFields()
     {
@@ -117,7 +117,7 @@ class Model extends \ManaPHP\Data\Model
     /**
      * bool, int, float, string, array, objectid
      *
-     * @return array =get_object_vars(new static)
+     * @return array =model_var(new static)
      */
     public function getFieldTypes()
     {
@@ -598,7 +598,7 @@ class Model extends \ManaPHP\Data\Model
     }
 
     /**
-     * @param array $record =get_object_vars(new static)
+     * @param array $record =model_var(new static)
      *
      * @return int
      */

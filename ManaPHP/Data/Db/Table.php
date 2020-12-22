@@ -13,7 +13,7 @@ class Table extends \ManaPHP\Data\Table
     }
 
     /**
-     * @param mixed $context =get_object_vars(new static)
+     * @param mixed $context =model_var(new static)
      *
      * @return \ManaPHP\Data\DbInterface
      */

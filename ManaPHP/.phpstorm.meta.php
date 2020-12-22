@@ -333,3 +333,19 @@ $di = null;
 unset($view, $renderer);
 
 class_exists('\Elasticsearch\Client') || class_alias('\stdClass', '\Elasticsearch\Client');
+
+function model_fields($model)
+{
+    $vars = get_object_vars($model);
+    return array_keys(array_diff_assoc($vars, ['_snapshot' => 1, '_last_refresh' => 1]));
+}
+
+function model_field($model)
+{
+    return key(get_object_vars($model));
+}
+
+function model_var($model)
+{
+    return get_object_vars($model);
+}

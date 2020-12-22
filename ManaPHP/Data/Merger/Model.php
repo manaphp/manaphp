@@ -46,7 +46,7 @@ abstract class Model extends \ManaPHP\Data\Model
     }
 
     /**
-     * @return string =key(get_object_vars(new static))
+     * @return string =model_field(new static)
      */
     public function getPrimaryKey()
     {
@@ -54,7 +54,7 @@ abstract class Model extends \ManaPHP\Data\Model
     }
 
     /**
-     * @return array =array_keys(get_object_vars(new static))
+     * @return array =model_fields(new static)
      */
     public function getFields()
     {
@@ -76,7 +76,7 @@ abstract class Model extends \ManaPHP\Data\Model
     }
 
     /**
-     * @return array =array_keys(get_object_vars(new static))
+     * @return array =model_fields(new static)
      */
     public function getIntFields()
     {

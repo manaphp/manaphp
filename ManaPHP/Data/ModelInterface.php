@@ -507,7 +507,7 @@ interface ModelInterface extends TableInterface
 
     /**
      * @param string $thatModel
-     * @param string $thisFilter =key(get_object_vars(new static))
+     * @param string $thisFilter =model_field(new static)
      *
      * @return \ManaPHP\Data\Relation\HasManyOthers
      */
