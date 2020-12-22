@@ -31,9 +31,10 @@ class HelpCommand extends Command
         $this->console->writeLn('manaphp commands:', Console::FC_GREEN | Console::AT_BOLD);
         ksort($builtin_commands);
         foreach ($builtin_commands as $name => $definition) {
+            $description = $this->_getCommandDescription($definition);
             $plainName = ucfirst($name);
             $command = Str::underscore(basename($plainName, 'Command'));
-            $this->console->writeLn(' - ' . $this->console->colorize($command, Console::FC_YELLOW));
+            $this->console->writeLn(' - ' . $this->console->colorize($command, Console::FC_YELLOW) . $description);
             $actions = $this->_getActions($definition);
 
             $width = max(max(array_map('strlen', array_keys($actions))), 18);
@@ -46,9 +47,10 @@ class HelpCommand extends Command
         ksort($app_commands);
         $this->console->writeLn('application commands:', Console::FC_GREEN | Console::AT_BOLD);
         foreach ($app_commands as $name => $definition) {
+            $description = $this->_getCommandDescription($definition);
             $plainName = ucfirst($name);
             $command = Str::underscore(basename($plainName, 'Command'));
-            $this->console->writeLn(' - ' . $this->console->colorize($command, Console::FC_YELLOW));
+            $this->console->writeLn(' - ' . $this->console->colorize($command, Console::FC_YELLOW) . $description);
             $actions = $this->_getActions($definition);
 
             $width = max(max(array_map('strlen', array_keys($actions))), 18);
@@ -58,6 +60,30 @@ class HelpCommand extends Command
             }
         }
         return 0;
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return string
+     */
+    protected function _getCommandDescription($class)
+    {
+        $rc = new ReflectionClass($class);
+        if (($comment = $rc->getDocComment()) === false) {
+            return '';
+        }
+
+        $lines = preg_split('#[\r\n]+#', $comment, 3);
+        if (($description = $lines[1] ?? null) === null) {
+            return '';
+        }
+        $description = trim($description, " \t\n\r\0\x0B*");
+        if (str_starts_with($description, 'Class') || str_starts_with($description, '@')) {
+            return '';
+        }
+
+        return "\t\t" . $description;
     }
 
     /**
