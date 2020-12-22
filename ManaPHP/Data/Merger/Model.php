@@ -45,11 +45,17 @@ abstract class Model extends \ManaPHP\Data\Model
         throw new NotSupportedException(__METHOD__);
     }
 
+    /**
+     * @return string =key(get_object_vars(new static))
+     */
     public function getPrimaryKey()
     {
         return $this->getModel()->getPrimaryKey();
     }
 
+    /**
+     * @return array =array_keys(get_object_vars(new static))
+     */
     public function getFields()
     {
         static $cached = [];
@@ -69,6 +75,9 @@ abstract class Model extends \ManaPHP\Data\Model
         return $cached[$class];
     }
 
+    /**
+     * @return array =array_keys(get_object_vars(new static))
+     */
     public function getIntFields()
     {
         return $this->getModel()->getIntFields();

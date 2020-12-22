@@ -72,7 +72,7 @@ class Model extends \ManaPHP\Data\Model
     }
 
     /**
-     * @return array =get_object_vars(new static)
+     * @return array =array_keys(get_object_vars(new static))
      */
     public function getFields()
     {
@@ -92,7 +92,7 @@ class Model extends \ManaPHP\Data\Model
     }
 
     /**
-     * @return array =get_object_vars(new static)
+     * @return array =array_keys(get_object_vars(new static))
      */
     public function getIntFields()
     {
