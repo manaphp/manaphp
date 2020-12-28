@@ -138,8 +138,6 @@ class Swoole extends Component implements ServerInterface, Unaspectable
         $_server += $_SERVER;
 
         $_get = $request->get ?: [];
-        $request_uri = $_server['REQUEST_URI'];
-        $_get['_url'] = ($pos = strpos($request_uri, '?')) ? substr($request_uri, 0, $pos) : $request_uri;
 
         $this->request->prepare($_get, [], $_server, null, $request->cookie ?? []);
     }

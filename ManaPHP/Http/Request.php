@@ -102,8 +102,6 @@ class Request extends Component implements RequestInterface
             }
         }
 
-        unset($POST['_url']);
-
         $context->_GET = $GET;
         $context->_POST = $POST;
         $context->_REQUEST = $POST === [] ? $GET : array_merge($GET, $POST);

@@ -96,10 +96,6 @@ class Workerman extends Server
 
         /** @noinspection AdditionOperationOnArraysInspection */
         $_SERVER += $this->_SERVER;
-        if (!isset($_GET['_url'])) {
-            $uri = $_SERVER['REQUEST_URI'];
-            $_GET['_url'] = $_REQUEST['_url'] = ($pos = strpos($uri, '?')) === false ? $uri : substr($uri, 0, $pos);
-        }
 
         $raw_body = $GLOBALS['HTTP_RAW_POST_DATA'] ?? null;
         $this->request->prepare($_GET, $_POST, $_SERVER, $raw_body, $_COOKIE, $_FILES);

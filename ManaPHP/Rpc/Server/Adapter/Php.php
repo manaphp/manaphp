@@ -34,7 +34,6 @@ class Php extends Fpm
             $_SERVER['SERVER_ADDR'] = $local_ip;
             $_SERVER['SERVER_PORT'] = $this->_port;
             $_SERVER['REQUEST_SCHEME'] = 'http';
-            $_GET['_url'] = $_REQUEST['_url'] = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
         }
     }
 }

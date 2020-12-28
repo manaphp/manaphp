@@ -12,10 +12,6 @@ class Fpm extends Server
      */
     protected function _prepareGlobals()
     {
-        if (!isset($_GET['_url']) && ($pos = strpos($_SERVER['PHP_SELF'], '/index.php/')) !== false) {
-            $_GET['_url'] = $_REQUEST['_url'] = '/index' . substr($_SERVER['PHP_SELF'], $pos + 10);
-        }
-
         $rawBody = file_get_contents('php://input');
         $this->request->prepare($_GET, $_POST, $_SERVER, $rawBody, $_COOKIE, $_SERVER);
 

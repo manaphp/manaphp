@@ -114,9 +114,6 @@ class Swoole extends Server
         $_server += $this->_SERVER;
 
         $_get = $request->get ?: [];
-        $request_uri = $_server['REQUEST_URI'];
-        $_get['_url'] = ($pos = strpos($request_uri, '?')) ? substr($request_uri, 0, $pos) : $request_uri;
-
         $_post = $request->post ?: [];
         $raw_body = $request->rawContent();
         $this->request->prepare($_get, $_post, $_server, $raw_body, $request->cookie ?? [], $request->files ?? []);
