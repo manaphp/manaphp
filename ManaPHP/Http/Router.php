@@ -334,7 +334,8 @@ class Router extends Component implements RouterInterface
         if ($web === '') {
             return $url;
         } elseif (str_starts_with($url, $web)) {
-            return substr($url, strlen($web));
+            $url = substr($url, strlen($web));
+            return $url === '' ? '/' : $url;
         } else {
             return $url;
         }
