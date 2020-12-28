@@ -72,8 +72,8 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         $this->alias->set('@config', $rootDir . '/config');
 
         $web = '';
-        if (isset($_SERVER['SCRIPT_NAME']) && ($pos = strrpos($_SERVER['SCRIPT_NAME'], '/')) > 0) {
-            $web = substr($_SERVER['SCRIPT_NAME'], 0, $pos);
+        if ($_SERVER['DOCUMENT_ROOT'] !== '') {
+            $web = substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '/'));
             if (substr_compare($web, '/public', -7) === 0) {
                 $web = substr($web, 0, -7);
             }
