@@ -77,9 +77,6 @@ class Workerman extends Server
 
         unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
 
-        $this->alias->set('@web', '');
-        $this->alias->set('@asset', '');
-
         if (DIRECTORY_SEPARATOR === '/' && isset($options['max_request']) && $options['max_request'] > 0) {
             $this->_max_request = $options['max_request'];
         }
