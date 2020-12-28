@@ -53,7 +53,7 @@ ManaPHP 支持三种执行方式: 传统模式(Apache/FPM)、常驻内存模式�
 ## 开发文档
 
 ManaPHP开发指南:
-- https://github.com/manaphp/docs
+- [docs](docs/)
 
 ## 环境要求
 
