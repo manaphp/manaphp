@@ -45,14 +45,9 @@ class View extends Component implements ViewInterface
     protected $_max_age;
 
     /**
-     * @var string
-     */
-    protected $_base_url;
-
-    /**
      * @var bool
      */
-    protected $_autofix_url;
+    protected $_autofix_url = true;
 
     /**
      * @var array
@@ -73,8 +68,9 @@ class View extends Component implements ViewInterface
             $this->_max_age = (int)$options['max_age'];
         }
 
-        $this->_base_url = rtrim($options['base_url'] ?? $this->alias->resolve('@web'));
-        $this->_autofix_url = $options['autofix_url'] ?? $this->_base_url !== '';
+        if (isset($options['autofix_url'])) {
+            $this->_autofix_url = (bool)$options['autofix_url'];
+        }
     }
 
     /**
@@ -303,12 +299,16 @@ class View extends Component implements ViewInterface
      */
     public function fixUrl()
     {
+        if (($base_url = $this->alias->get('@web') ?? '') === '') {
+            return;
+        }
+
         $context = $this->_context;
 
         $context->content = preg_replace_callback(
             '#\b(href|src|action|data-src)=(["\'`]{1,2})/(?!/)#',
-            function ($match) {
-                return "$match[1]=$match[2]{$this->_base_url}/";
+            function ($match) use ($base_url) {
+                return "$match[1]=$match[2]{$base_url}/";
             }, $context->content
         );
     }
