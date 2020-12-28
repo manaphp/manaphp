@@ -47,10 +47,11 @@ class Php extends Fpm
             $_SERVER['SERVER_ADDR'] = $local_ip;
             $_SERVER['SERVER_PORT'] = $this->_port;
             $_SERVER['REQUEST_SCHEME'] = 'http';
-            $this->_root_files = $this->_getRootFiles();
-            $this->_mime_types = $this->_getMimeTypes();
 
             $this->_doc_root = $this->alias->resolve('@public');
+
+            $this->_root_files = $this->_getRootFiles();
+            $this->_mime_types = $this->_getMimeTypes();
         }
 
         parent::__construct($options);
