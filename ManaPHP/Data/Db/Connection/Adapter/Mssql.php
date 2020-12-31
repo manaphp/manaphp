@@ -12,16 +12,16 @@ use PDO;
 class Mssql extends Connection
 {
     /**
-     * @param string $url
+     * @param string $uri
      */
-    public function __construct($url)
+    public function __construct($uri)
     {
-        $this->_url = $url;
+        $this->_uri = $uri;
 
-        $parts = parse_url($url);
+        $parts = parse_url($uri);
 
         if ($parts['scheme'] !== 'mssql') {
-            throw new DsnFormatException(['`%s` is invalid, `%s` scheme is not recognized', $url, $parts['scheme']]);
+            throw new DsnFormatException(['`%s` is invalid, `%s` scheme is not recognized', $uri, $parts['scheme']]);
         }
 
         $this->_username = $parts['user'] ?? null;

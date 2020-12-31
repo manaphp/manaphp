@@ -22,7 +22,7 @@ class Tracer extends \ManaPHP\Event\Tracer
      */
     public function onConnect(EventArgs $eventArgs)
     {
-        $this->logger->debug(['connect to `:url`', 'url' => $eventArgs->data], 'redis.connect');
+        $this->logger->debug(['connect to `:uri`', 'uri' => $eventArgs->data], 'redis.connect');
     }
 
     /**

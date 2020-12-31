@@ -14,7 +14,7 @@ abstract class Connection extends Component implements ConnectionInterface
     /**
      * @var string
      */
-    protected $_url;
+    protected $_uri;
 
     /**
      * @var string
@@ -77,9 +77,9 @@ abstract class Connection extends Component implements ConnectionInterface
     /**
      * @return string
      */
-    public function getUrl()
+    public function getUri()
     {
-        return $this->_url;
+        return $this->_uri;
     }
 
     /**
@@ -196,7 +196,7 @@ abstract class Connection extends Component implements ConnectionInterface
     public function execute($sql, $bind = [], $has_insert_id = false)
     {
         if ($this->_readonly) {
-            throw new ReadonlyException(['`:url` is readonly: => :sql ', 'url' => $this->_url, 'sql' => $sql]);
+            throw new ReadonlyException(['`:uri` is readonly: => :sql ', 'uri' => $this->_uri, 'sql' => $sql]);
         }
 
         $sql = $this->replaceQuoteCharacters($sql);
@@ -278,7 +278,7 @@ abstract class Connection extends Component implements ConnectionInterface
     public function begin()
     {
         if ($this->_readonly) {
-            throw new ReadonlyException(['`:url` is readonly, transaction begin failed', 'url' => $this->_url]);
+            throw new ReadonlyException(['`:uri` is readonly, transaction begin failed', 'uri' => $this->_uri]);
         }
 
         try {

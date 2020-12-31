@@ -26,7 +26,7 @@ class Smtp extends Mailer
     /**
      * @var string
      */
-    protected $_url;
+    protected $_uri;
 
     /**
      * @var string
@@ -59,13 +59,13 @@ class Smtp extends Mailer
     protected $_timeout = 3;
 
     /**
-     * @param string url
+     * @param string $uri
      */
-    public function __construct($url)
+    public function __construct($uri)
     {
-        $this->_url = $url;
+        $this->_uri = $uri;
 
-        $parts = parse_url($this->_url);
+        $parts = parse_url($this->_uri);
 
         $this->_scheme = $parts['scheme'];
         $this->_host = $parts['host'];
@@ -128,9 +128,9 @@ class Smtp extends Mailer
             return $context->socket;
         }
 
-        $url = ($this->_scheme === 'smtp' ? '' : "$this->_scheme://") . $this->_host;
-        if (!$socket = fsockopen($url, $this->_port, $errno, $errstr, $this->_timeout)) {
-            throw new ConnectionException(['connect to `:1::2` mailer server failed: :3', $url, $this->_port, $errstr]);
+        $uri = ($this->_scheme === 'smtp' ? '' : "$this->_scheme://") . $this->_host;
+        if (!$socket = fsockopen($uri, $this->_port, $errno, $errstr, $this->_timeout)) {
+            throw new ConnectionException(['connect to `:1::2` mailer server failed: :3', $uri, $this->_port, $errstr]);
         }
 
         $response = fgets($socket);
@@ -191,7 +191,7 @@ class Smtp extends Mailer
 
         if ($data !== null) {
             if (fwrite($context->socket, $data) === false) {
-                throw new TransmitException(['send data failed: :url', 'url' => $this->_url]);
+                throw new TransmitException(['send data failed: :uri', 'uri' => $this->_uri]);
             }
             file_put_contents($context->file, $data, FILE_APPEND);
         }
@@ -199,7 +199,7 @@ class Smtp extends Mailer
         file_put_contents($context->file, PHP_EOL, FILE_APPEND);
 
         if (fwrite($context->socket, "\r\n") === false) {
-            throw new TransmitException(['send data failed: :url', 'url' => $this->_url]);
+            throw new TransmitException(['send data failed: :uri', 'uri' => $this->_uri]);
         }
 
         return $this;
@@ -214,7 +214,7 @@ class Smtp extends Mailer
         $context = $this->_context;
 
         if (($str = fgets($context->socket)) === false) {
-            throw new TransmitException(['receive data failed: :url', 'url' => $this->_url]);
+            throw new TransmitException(['receive data failed: :uri', 'uri' => $this->_uri]);
         }
 
         file_put_contents($context->file, str_replace("\r\n", PHP_EOL, $str), FILE_APPEND);
@@ -372,11 +372,11 @@ class Smtp extends Mailer
 
             list($code, $msg) = $this->_transmit(base64_encode($this->_username));
             if ($code !== 334) {
-                throw new AuthenticationException(['authenticate with `%s` failed: %d %s', $this->_url, $code, $msg]);
+                throw new AuthenticationException(['authenticate with `%s` failed: %d %s', $this->_uri, $code, $msg]);
             }
             list($code, $msg) = $this->_transmit(base64_encode($this->_password));
             if ($code !== 235) {
-                throw new AuthenticationException(['authenticate with `%s` failed: %d %s', $this->_url, $code, $msg]);
+                throw new AuthenticationException(['authenticate with `%s` failed: %d %s', $this->_uri, $code, $msg]);
             }
         }
 

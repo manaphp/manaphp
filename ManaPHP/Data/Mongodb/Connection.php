@@ -16,7 +16,7 @@ class Connection extends Component implements ConnectionInterface
     /**
      * @var string
      */
-    protected $_dsn;
+    protected $_uri;
 
     /**
      * @var \MongoDB\Driver\Manager
@@ -39,11 +39,11 @@ class Connection extends Component implements ConnectionInterface
     protected $_last_heartbeat;
 
     /**
-     * @param string $url
+     * @param string $uri
      */
-    public function __construct($url)
+    public function __construct($uri)
     {
-        $this->_dsn = $url;
+        $this->_uri = $uri;
     }
 
     /**
@@ -66,15 +66,15 @@ class Connection extends Component implements ConnectionInterface
     protected function _getManager()
     {
         if ($this->_manager === null) {
-            $this->fireEvent('mongodb:connect', $this->_dsn);
-            $this->_manager = new Manager($this->_dsn);
+            $this->fireEvent('mongodb:connect', $this->_uri);
+            $this->_manager = new Manager($this->_uri);
         }
 
         if (microtime(true) - $this->_last_heartbeat > $this->_heartbeat && !$this->_ping()) {
             $this->close();
-            $this->fireEvent('mongodb:connect', $this->_dsn);
+            $this->fireEvent('mongodb:connect', $this->_uri);
 
-            $this->_manager = new Manager($this->_dsn);
+            $this->_manager = new Manager($this->_uri);
         }
 
         $this->_last_heartbeat = microtime(true);

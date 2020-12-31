@@ -17,7 +17,7 @@ class Swift extends Mailer
     /**
      * @var string
      */
-    protected $_url;
+    protected $_uri;
 
     /**
      * @var string
@@ -45,13 +45,13 @@ class Swift extends Mailer
     protected $_password;
 
     /**
-     * @param string $url
+     * @param string $uri
      */
-    public function __construct($url)
+    public function __construct($uri)
     {
-        $this->_url = $url;
+        $this->_uri = $uri;
 
-        $parts = parse_url($url);
+        $parts = parse_url($uri);
 
         $scheme = $parts['scheme'];
 

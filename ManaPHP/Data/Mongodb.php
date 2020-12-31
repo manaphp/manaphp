@@ -15,7 +15,7 @@ class Mongodb extends Component implements MongodbInterface
     /**
      * @var string
      */
-    protected $_dsn;
+    protected $_uri;
 
     /**
      * @var string
@@ -28,20 +28,20 @@ class Mongodb extends Component implements MongodbInterface
     protected $_default_db;
 
     /**
-     * @param string $dsn
+     * @param string $uri
      */
-    public function __construct($dsn = 'mongodb://127.0.0.1:27017/')
+    public function __construct($uri = 'mongodb://127.0.0.1:27017/')
     {
-        $this->_dsn = $dsn;
+        $this->_uri = $uri;
 
-        if (preg_match('#[?&]prefix=(\w+)#', $dsn, $matches)) {
+        if (preg_match('#[?&]prefix=(\w+)#', $uri, $matches)) {
             $this->_prefix = $matches[1];
         }
 
-        $path = parse_url($dsn, PHP_URL_PATH);
+        $path = parse_url($uri, PHP_URL_PATH);
         $this->_default_db = ($path !== '/' && $path !== null) ? (string)substr($path, 1) : null;
 
-        $this->poolManager->add($this, $this->getInstance('ManaPHP\Data\Mongodb\Connection', [$this->_dsn]));
+        $this->poolManager->add($this, $this->getInstance('ManaPHP\Data\Mongodb\Connection', [$this->_uri]));
     }
 
     public function __destruct()

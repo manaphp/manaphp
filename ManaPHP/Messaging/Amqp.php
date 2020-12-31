@@ -20,7 +20,7 @@ class Amqp extends Component implements AmqpInterface
     /**
      * @var string
      */
-    protected $_url;
+    protected $_uri;
 
     /**
      * @var \AMQPConnection
@@ -45,21 +45,21 @@ class Amqp extends Component implements AmqpInterface
     const MESSAGE_METADATA = '_metadata_';
 
     /**
-     * @param string $url
+     * @param string $uri
      */
-    public function __construct($url = null)
+    public function __construct($uri = null)
     {
-        $this->_url = $url;
+        $this->_uri = $uri;
 
         $credentials = [];
 
         $query = [];
 
-        if ($url) {
-            $parts = parse_url($url);
+        if ($uri) {
+            $parts = parse_url($uri);
 
             if ($parts['scheme'] !== 'amqp') {
-                throw new DsnFormatException(['`%s` scheme is unknown: `%s`', $parts['scheme'], $url]);
+                throw new DsnFormatException(['`%s` scheme is unknown: `%s`', $parts['scheme'], $uri]);
             }
 
             if (isset($parts['host'])) {
@@ -98,16 +98,16 @@ class Amqp extends Component implements AmqpInterface
             }
 
             if (!$r) {
-                throw new ConnectionException(['connect to `:url` amqp broker failed', 'url' => $this->_url]);
+                throw new ConnectionException(['connect to `:uri` amqp broker failed', 'uri' => $this->_uri]);
             }
         } catch (Exception $e) {
-            throw new ConnectionException(['connect to `%s` amqp broker failed: %s', $this->_url, $e->getMessage()]);
+            throw new ConnectionException(['connect to `%s` amqp broker failed: %s', $this->_uri, $e->getMessage()]);
         }
 
         try {
             $this->_channel = new AMQPChannel($this->_connection);
         } catch (Exception $e) {
-            throw new ConnectionException(['create channel with `%s` url failed: %s', $this->_url, $e->getMessage()]);
+            throw new ConnectionException(['create channel with `%s` uri failed: %s', $this->_uri, $e->getMessage()]);
         }
         try {
             $this->_exchanges[''] = new AMQPExchange($this->_channel);

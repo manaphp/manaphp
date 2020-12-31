@@ -17,16 +17,16 @@ class Mysql extends Connection
     protected $_charset = 'UTF8';
 
     /**
-     * @param string $url
+     * @param string $uri
      */
-    public function __construct($url = 'mysql://root@localhost/test?charset=utf8')
+    public function __construct($uri = 'mysql://root@localhost/test?charset=utf8')
     {
-        $this->_url = $url;
+        $this->_uri = $uri;
 
-        $parts = parse_url($url);
+        $parts = parse_url($uri);
 
         if ($parts['scheme'] !== 'mysql') {
-            throw new DsnFormatException(['`%s` is invalid, `%s` scheme is not recognized', $url, $parts['scheme']]);
+            throw new DsnFormatException(['`%s` is invalid, `%s` scheme is not recognized', $uri, $parts['scheme']]);
         }
 
         $this->_username = $parts['user'] ?? 'root';

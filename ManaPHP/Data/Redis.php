@@ -73,47 +73,47 @@ class Redis extends Component implements RedisInterface
             $slave_pool_size = (int)substr($this->_pool_size, $pos + 1);
         }
 
-        $urls = [];
+        $uris = [];
         if (str_contains($uri, '{') && preg_match('#{[^}]+}#', $uri, $matches)) {
             $hosts = $matches[0];
             foreach (explode(',', substr($hosts, 1, -1)) as $value) {
                 $value = trim($value);
-                $urls[] = $value === '' ? $value : str_replace($hosts, $value, $uri);
+                $uris[] = $value === '' ? $value : str_replace($hosts, $value, $uri);
             }
         } elseif (str_contains($uri, ',')) {
             $hosts = parse_url($uri, PHP_URL_HOST);
             if (str_contains($hosts, ',')) {
                 foreach (explode(',', $hosts) as $value) {
                     $value = trim($value);
-                    $urls[] = $value === '' ? $value : str_replace($hosts, $value, $uri);
+                    $uris[] = $value === '' ? $value : str_replace($hosts, $value, $uri);
                 }
             } else {
                 foreach (explode(',', $uri) as $value) {
-                    $urls[] = trim($value);
+                    $uris[] = trim($value);
                 }
             }
         } else {
-            $urls[] = $uri;
+            $uris[] = $uri;
         }
 
-        if ($urls[0] !== '') {
-            $this->poolManager->add($this, ['class' => 'ManaPHP\Data\Redis\Connection', $urls[0]], $master_pool_size);
+        if ($uris[0] !== '') {
+            $this->poolManager->add($this, ['class' => 'ManaPHP\Data\Redis\Connection', $uris[0]], $master_pool_size);
         }
 
-        if (count($urls) > 1) {
-            array_shift($urls);
+        if (count($uris) > 1) {
+            array_shift($uris);
 
             if (MANAPHP_COROUTINE_ENABLED) {
-                shuffle($urls);
+                shuffle($uris);
 
-                $this->poolManager->create($this, count($urls) * $slave_pool_size, 'slave');
+                $this->poolManager->create($this, count($uris) * $slave_pool_size, 'slave');
                 for ($i = 0; $i <= $slave_pool_size; $i++) {
-                    foreach ($urls as $u) {
+                    foreach ($uris as $u) {
                         $this->poolManager->add($this, ['class' => 'ManaPHP\Data\Redis\Connection', $u], 1, 'slave');
                     }
                 }
             } else {
-                $u = $urls[random_int(0, count($urls) - 1)];
+                $u = $uris[random_int(0, count($uris) - 1)];
                 $this->poolManager->add($this, ['class' => 'ManaPHP\Data\Redis\Connection', $u], 1, 'slave');
             }
 
