@@ -212,8 +212,7 @@ class Connection extends Component
                 try {
                     $r = @$redis->$name(...$arguments);
                     $failed = false;
-                }
-                catch (\RedisException $exception) {
+                } catch (\RedisException $exception) {
                 }
             }
 
