@@ -240,22 +240,4 @@ class HelpCommand extends Command
             }
         }
     }
-
-    /**
-     * @return array
-     */
-    public function getActions()
-    {
-        $actions = [];
-        foreach (get_class_methods($this) as $method) {
-            if ($method === 'helpAction' || $method[0] === '_') {
-                continue;
-            }
-            if (preg_match('#^([a-z].*)Action$#', $method, $match)) {
-                $actions[] = $match[1];
-            }
-        }
-
-        return $actions;
-    }
 }
