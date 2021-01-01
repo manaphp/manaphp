@@ -37,8 +37,6 @@ class Application extends \ManaPHP\Application implements HandlerInterface
             $actionReturnValue = $this->router->dispatch();
             if ($actionReturnValue instanceof Response) {
                 null;
-            } elseif ($actionReturnValue instanceof Throwable) {
-                $this->response->setJsonContent($actionReturnValue);
             } else {
                 $this->response->setJsonData($actionReturnValue);
             }
