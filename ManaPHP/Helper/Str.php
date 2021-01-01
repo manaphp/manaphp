@@ -144,4 +144,14 @@ class Str
             $bytes['f']
         );
     }
+
+    /**
+     * @param string $str
+     *
+     * @return string
+     */
+    public static function variablize($str)
+    {
+        return lcfirst(self::camelize($str));
+    }
 }

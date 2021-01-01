@@ -33,7 +33,7 @@ class BashCompletionCommand extends Command
     {
         $actions = [];
         try {
-            if (!$commandClassName = $this->_di->getDefinition(lcfirst(Str::camelize($command)) . 'Command')) {
+            if (!$commandClassName = $this->_di->getDefinition(Str::variablize($command) . 'Command')) {
                 return [];
             }
 
@@ -57,7 +57,7 @@ class BashCompletionCommand extends Command
      */
     protected function _getArgumentNames($command, $action)
     {
-        if (!$commandClassName = $this->_di->getDefinition(lcfirst(Str::camelize($command)) . 'Command')) {
+        if (!$commandClassName = $this->_di->getDefinition(Str::variablize($command) . 'Command')) {
             return [];
         }
 
@@ -83,7 +83,7 @@ class BashCompletionCommand extends Command
      */
     protected function _getArgumentValues($command, $action, $argumentName)
     {
-        if (!$commandClassName = $this->_di->getDefinition(lcfirst(Str::camelize($command)) . 'Command')) {
+        if (!$commandClassName = $this->_di->getDefinition(Str::variablize($command) . 'Command')) {
             return [];
         }
 

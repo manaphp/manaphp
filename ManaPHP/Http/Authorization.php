@@ -96,7 +96,7 @@ class Authorization extends Component implements AuthorizationInterface
                 $action = 'index';
             } else {
                 $controller = Str::camelize(substr($permission, 0, $pos));
-                $action = lcfirst(Str::camelize(substr($permission, $pos + 1)));
+                $action = Str::variablize(substr($permission, $pos + 1));
             }
         } else {
             $controller = Str::camelize($permission);
@@ -282,7 +282,7 @@ class Authorization extends Component implements AuthorizationInterface
             /** @var \ManaPHP\Http\Controller $controllerInstance */
             $controllerInstance = $this->dispatcher->getControllerInstance();
             $controllerClassName = get_class($controllerInstance);
-            $action = $permission ? lcfirst(Str::camelize($permission)) : $this->dispatcher->getAction();
+            $action = $permission ? Str::variablize($permission) : $this->dispatcher->getAction();
             $acl = $controllerInstance->getAcl();
 
             if ($this->isAclAllowed($acl, $role, $action)) {

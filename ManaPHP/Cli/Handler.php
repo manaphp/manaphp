@@ -174,7 +174,7 @@ class Handler extends Component implements HandlerInterface
         $this->route($args);
 
         $command = Str::camelize($this->_command);
-        $action = lcfirst(Str::camelize($this->_action));
+        $action = Str::variablize($this->_action);
 
         if (!$definition = $this->_di->getDefinition(lcfirst($command) . 'Command')) {
             $guessed = $this->_guessCommand($command);

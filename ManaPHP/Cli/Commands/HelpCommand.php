@@ -134,7 +134,7 @@ class HelpCommand extends Command
      */
     public function commandAction($command, $action = '')
     {
-        $instance = $this->getShared(lcfirst(Str::camelize($command)) . 'Command');
+        $instance = $this->getShared(Str::variablize($command) . 'Command');
 
         foreach (get_class_methods($instance) as $method) {
             if (!preg_match('#^([a-z].*)Action$#', $method, $match)) {

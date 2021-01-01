@@ -120,7 +120,7 @@ class Dispatcher extends Component implements DispatcherInterface
     {
         $context = $this->_context;
 
-        $context->action = lcfirst(Str::camelize($action));
+        $context->action = Str::variablize($action);
 
         return $this;
     }
@@ -273,7 +273,7 @@ class Dispatcher extends Component implements DispatcherInterface
         $controller = str_contains($controller, '_') ? Str::camelize($controller) : ucfirst($controller);
         $context->controller = $controller;
 
-        $action = str_contains($action, '_') ? lcfirst(Str::camelize($action)) : $action;
+        $action = str_contains($action, '_') ? Str::variablize($action) : $action;
         $context->action = $action;
 
         $context->params = $params;
