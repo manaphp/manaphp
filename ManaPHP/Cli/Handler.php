@@ -114,38 +114,42 @@ class Handler extends Component implements HandlerInterface
      */
     public function route($args)
     {
-        $this->_args = $args ?? $GLOBALS['argv'];
-        $argc = count($this->_args);
+        if ($args === null) {
+            $args = (array)$GLOBALS['argv'];
+        }
+        $this->_args = $args;
+
+        $argc = count($args);
 
         if ($argc === 1) {
-            $commandName = 'help';
-            $actionName = 'commands';
+            $command = 'help';
+            $action = 'commands';
             $this->_params = [];
         } elseif ($argc <= 4 && in_array(end($this->_args), ['help', '-h', '--help'], true)) {
-            $commandName = 'help';
+            $command = 'help';
 
             if ($argc === 2) {
-                $actionName = 'commands';
+                $action = 'commands';
                 $this->_params = [];
             } elseif ($argc === 3) {
-                $actionName = 'command';
+                $action = 'command';
                 $this->_params = ['--command', $this->_args[1]];
             } elseif ($argc === 4) {
-                $actionName = 'command';
+                $action = 'command';
                 $this->_params = ['--command', $this->_args[1], '--action', $this->_args[2]];
             } else {
-                $actionName = null;
+                $action = null;
                 $this->_params = [];
             }
         } elseif (str_contains($arg1 = $this->_args[1] ?? '', ':')) {
-            list($commandName, $actionName) = explode(':', $arg1);
+            list($command, $action) = explode(':', $arg1);
             $this->_params = array_splice($this->_args, 2);
         } else {
-            list(, $commandName, $actionName) = array_pad($this->_args, 3, null);
+            list(, $command, $action) = array_pad($this->_args, 3, null);
 
-            if ($actionName === null) {
+            if ($action === null) {
                 $this->_params = [];
-            } elseif ($actionName[0] === '-') {
+            } elseif ($action[0] === '-') {
                 $this->_params = array_splice($this->_args, 2);
             } else {
                 $this->_params = array_splice($this->_args, 3);
@@ -154,8 +158,8 @@ class Handler extends Component implements HandlerInterface
 
         $this->request->parse($this->_params);
 
-        $this->_command = $commandName;
-        $this->_action = $actionName;
+        $this->_command = $command;
+        $this->_action = $action;
     }
 
     /**
@@ -167,28 +171,28 @@ class Handler extends Component implements HandlerInterface
     {
         $this->route($args);
 
-        $commandName = Str::camelize($this->_command);
-        $actionName = lcfirst(Str::camelize($this->_action));
+        $command = Str::camelize($this->_command);
+        $action = lcfirst(Str::camelize($this->_action));
 
-        if (!$command = $this->_di->getDefinition(lcfirst($commandName) . 'Command')) {
-            $guessed = $this->_guessCommand($commandName);
+        if (!$definition = $this->_di->getDefinition(lcfirst($command) . 'Command')) {
+            $guessed = $this->_guessCommand($command);
             if ($guessed) {
-                $command = $guessed;
-                $commandName = basename(substr($command, strrpos($command, '\\')), 'Command');
+                $definition = $guessed;
+                $command = basename(substr($definition, strrpos($definition, '\\')), 'Command');
             } else {
-                $action = lcfirst($commandName) . ':' . $actionName;
-                return $this->console->error(['`:action` action is not exists', 'action' => $action]);
+                $colored_action = lcfirst($command) . ':' . $action;
+                return $this->console->error(['`:action` action is not exists', 'action' => $colored_action]);
             }
         }
 
         /** @var \ManaPHP\Cli\Command $instance */
-        $instance = $this->getShared($command);
-        if ($actionName === '') {
-            $actions = $this->_getActions($command);
+        $instance = $this->getShared($definition);
+        if ($action === '') {
+            $actions = $this->_getActions($definition);
             if (count($actions) === 1) {
-                $actionName = $actions[0];
+                $action = $actions[0];
             } elseif (in_array('default', $actions, true)) {
-                $actionName = 'default';
+                $action = 'default';
             } else {
                 return $this->handle(
                     [$this->_args[0], 'help', 'command', '--command', $this->_command, '--action', $this->_action]
@@ -196,19 +200,19 @@ class Handler extends Component implements HandlerInterface
             }
         }
 
-        if (!$instance->isInvokable($actionName)) {
-            $guessed = $this->_guessAction($command, $actionName);
+        if (!$instance->isInvokable($action)) {
+            $guessed = $this->_guessAction($definition, $action);
             if (!$guessed) {
-                $action = lcfirst($commandName) . ':' . $actionName;
-                return $this->console->error(['`:action` sub action is not exists', 'action' => $action]);
+                $colored_action = lcfirst($command) . ':' . $action;
+                return $this->console->error(['`:action` sub action is not exists', 'action' => $colored_action]);
             } else {
-                $actionName = $guessed;
+                $action = $guessed;
             }
         }
 
-        $actionMethod = $actionName . 'Action';
+        $actionMethod = $action . 'Action';
         $this->request->completeShortNames($instance, $actionMethod);
-        $r = $instance->invoke($actionName);
+        $r = $instance->invoke($action);
 
         return is_int($r) ? $r : 0;
     }
