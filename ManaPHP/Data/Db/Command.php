@@ -259,9 +259,6 @@ class Command extends \ManaPHP\Cli\Command
      */
     protected function _renderTable($service, $table, $rootNamespace = 'App\Models')
     {
-        /** @var Db $db */
-        $db = $this->getShared($service);
-
         $plainClass = Str::camelize($table);
         $modelName = $rootNamespace . '\\' . $plainClass;
 
