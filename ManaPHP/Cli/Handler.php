@@ -115,9 +115,29 @@ class Handler extends Component implements HandlerInterface
     public function route($args)
     {
         $this->_args = $args ?? $GLOBALS['argv'];
+        $argc = count($this->_args);
 
-        $arg1 = $this->_args[1] ?? '';
-        if (str_contains($arg1, ':')) {
+        if ($argc === 1) {
+            $commandName = 'help';
+            $actionName = 'commands';
+            $this->_params = [];
+        } elseif ($argc <= 4 && in_array(end($this->_args), ['help', '-h', '--help'], true)) {
+            $commandName = 'help';
+
+            if ($argc === 2) {
+                $actionName = 'commands';
+                $this->_params = [];
+            } elseif ($argc === 3) {
+                $actionName = 'command';
+                $this->_params = ['--command', $this->_args[1]];
+            } elseif ($argc === 4) {
+                $actionName = 'command';
+                $this->_params = ['--command', $this->_args[1], '--action', $this->_args[2]];
+            } else {
+                $actionName = null;
+                $this->_params = [];
+            }
+        } elseif (str_contains($arg1 = $this->_args[1] ?? '', ':')) {
             list($commandName, $actionName) = explode(':', $arg1);
             $this->_params = array_splice($this->_args, 2);
         } else {
@@ -133,20 +153,6 @@ class Handler extends Component implements HandlerInterface
         }
 
         $this->request->parse($this->_params);
-
-        if ($actionName !== null && $actionName[0] === '-') {
-            $actionName = null;
-        }
-
-        if ($commandName === null) {
-            $commandName = 'help';
-        } elseif ($commandName === '--help' || $commandName === '-h') {
-            $commandName = 'help';
-            $actionName = 'list';
-        } elseif ($commandName === 'help' && $actionName !== null && $actionName !== 'list') {
-            $commandName = $actionName;
-            $actionName = 'help';
-        }
 
         $this->_command = $commandName;
         $this->_action = $actionName;
@@ -184,12 +190,10 @@ class Handler extends Component implements HandlerInterface
             } elseif (in_array('default', $actions, true)) {
                 $actionName = 'default';
             } else {
-                $actionName = 'help';
+                return $this->handle(
+                    [$this->_args[0], 'help', 'command', '--command', $this->_command, '--action', $this->_action]
+                );
             }
-        }
-
-        if ($actionName !== 'help' && $this->request->has('help')) {
-            $actionName = 'help';
         }
 
         if (!$instance->isInvokable($actionName)) {
