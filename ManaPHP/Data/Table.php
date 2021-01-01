@@ -121,6 +121,8 @@ abstract class Table implements TableInterface
     {
         if ($name === '_di') {
             return $this->_di = Di::getDefault();
+        } else {
+            return null;
         }
     }
 
@@ -137,5 +139,15 @@ abstract class Table implements TableInterface
         }
 
         $this->$name = $value;
+    }
+
+    /**
+     * @param $name
+     *
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return false;
     }
 }
