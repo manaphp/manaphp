@@ -81,4 +81,16 @@ interface ConsoleInterface
      * @param int|float|string $value
      */
     public function progress($message, $value = null);
+
+    /**
+     * @return string
+     */
+    public function read();
+
+    /**
+     * @param string $message
+     *
+     * @return string
+     */
+    public function ask($message);
 }

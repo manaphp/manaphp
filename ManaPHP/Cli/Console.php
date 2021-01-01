@@ -365,4 +365,30 @@ class Console extends Component implements ConsoleInterface
             $this->write(PHP_EOL);
         }
     }
+
+    /**
+     * @return string
+     */
+    public function read()
+    {
+        return trim(fgets(STDIN));
+    }
+
+    /**
+     * @param string $message
+     *
+     * @return string
+     */
+    public function ask($message)
+    {
+        if (str_ends_with($message, '?')) {
+            $this->writeLn($message);
+        } elseif (str_ends_with($message, ':')) {
+            $this->write($message . ' ');
+        } else {
+            $this->write($message . ': ');
+        }
+
+        return $this->read();
+    }
 }
