@@ -86,13 +86,13 @@ class Response implements JsonSerializable
                 if (($decoded = @gzdecode($body)) === false) {
                     throw new BadResponseException(['`:url`: `:ungzip failed`', 'url' => $request->url]);
                 } else {
-                    $body = $decoded;
+                    $body = (string)$decoded;
                 }
             } elseif ($content_encoding === 'deflate') {
                 if (($decoded = @gzinflate($body)) === false) {
                     throw new BadResponseException(['`:url`: deflate failed', 'url' => $request->url]);
                 } else {
-                    $body = $decoded;
+                    $body = (string)$decoded;
                 }
             }
         }

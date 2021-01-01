@@ -220,11 +220,11 @@ class Server extends Component implements ServerInterface, LogCategorizable
         $users = $this->_users;
 
         if (str_contains($receivers, ',')) {
-            $receivers = explode(',', $receivers);
+            $_receivers = explode(',', $receivers);
             foreach ($users as $user) {
                 $role = $user['role'];
 
-                foreach ($receivers as $receiver) {
+                foreach ($_receivers as $receiver) {
                     if ($role === $receiver
                         || (str_contains($role, $receiver) && preg_match("#\\b$receiver\\b#", $role) === 1)
                     ) {
