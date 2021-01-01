@@ -60,7 +60,6 @@ class Scheduler extends Component implements SchedulerInterface
 
             foreach ($this->_tasks as $id => $task) {
                 $returns[$id] = null;
-                /** @noinspection PhpMethodParametersCountMismatchInspection */
                 Coroutine::create([$this, 'routine'], $id, $channel, $task);
             }
 

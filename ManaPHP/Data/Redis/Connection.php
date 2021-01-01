@@ -212,7 +212,7 @@ class Connection extends Component
                 try {
                     $r = @$redis->$name(...$arguments);
                     $failed = false;
-                } /** @noinspection PhpRedundantCatchClauseInspection */
+                }
                 catch (\RedisException $exception) {
                 }
             }

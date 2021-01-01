@@ -1,7 +1,5 @@
 <?php
-/** @noinspection SubStrUsedAsStrPosInspection */
 
-/** @noinspection VariableFunctionsUsageInspection */
 /** @noinspection NotOptimalRegularExpressionsInspection */
 /** @noinspection SpellCheckingInspection */
 /** @noinspection NotOptimalIfConditionsInspection */

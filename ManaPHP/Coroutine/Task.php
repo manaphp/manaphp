@@ -66,7 +66,6 @@ class Task extends Component implements TaskInterface
     public function push($data, $timeout = -1)
     {
         if (MANAPHP_COROUTINE_ENABLED) {
-            /** @noinspection PhpMethodParametersCountMismatchInspection */
             return $this->_channel->push($data, $timeout);
         } else {
             $fn = $this->_fn;
