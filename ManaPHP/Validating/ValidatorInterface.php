@@ -27,12 +27,12 @@ interface ValidatorInterface
 
     /**
      * @param string                    $field
-     * @param \ManaPHP\Data\Model|mixed $model
+     * @param \ManaPHP\Data\Model|mixed $value
      * @param array|string|\Closure     $rules
      *
      * @return mixed
      */
-    public function validate($field, $model, $rules);
+    public function validate($field, $value, $rules);
 
     /**
      * @param string                $field
