@@ -110,9 +110,9 @@ class Handler extends Component implements HandlerInterface
     /**
      * @param array $args
      *
-     * @return int
+     * @return void
      */
-    public function handle($args = null)
+    public function route($args)
     {
         $this->_args = $args ?? $GLOBALS['argv'];
 
@@ -144,9 +144,19 @@ class Handler extends Component implements HandlerInterface
 
         $this->_command = $commandName;
         $this->_action = $actionName;
+    }
 
-        $commandName = Str::camelize($commandName);
-        $actionName = lcfirst(Str::camelize($actionName));
+    /**
+     * @param array $args
+     *
+     * @return int
+     */
+    public function handle($args = null)
+    {
+        $this->route($args);
+
+        $commandName = Str::camelize($this->_command);
+        $actionName = lcfirst(Str::camelize($this->_action));
 
         if (!$command = $this->_di->getDefinition(lcfirst($commandName) . 'Command')) {
             $guessed = $this->_guessCommand($commandName);
