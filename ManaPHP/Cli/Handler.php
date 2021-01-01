@@ -117,6 +117,10 @@ class Handler extends Component implements HandlerInterface
         if ($args === null) {
             $args = (array)$GLOBALS['argv'];
         }
+        if (str_contains($arg1 = $args[1] ?? '', ':')) {
+            $args = array_merge([$args[0]], explode(':', $arg1, 2), array_slice($args, 2));
+        }
+
         $this->_args = $args;
 
         $argc = count($args);
@@ -141,9 +145,6 @@ class Handler extends Component implements HandlerInterface
                 $action = null;
                 $this->_params = [];
             }
-        } elseif (str_contains($arg1 = $this->_args[1] ?? '', ':')) {
-            list($command, $action) = explode(':', $arg1);
-            $this->_params = array_splice($this->_args, 2);
         } else {
             list(, $command, $action) = array_pad($this->_args, 3, null);
 
