@@ -44,8 +44,7 @@ class Redis extends Component implements SettingsInterface
      */
     public function get($key, $default = null)
     {
-        return apcu_remember(
-            $this->_key . ':' . $key, $this->_ttl, function () use ($default, $key) {
+        if ($this->_ttl <= 0) {
             if (($value = $this->redisDb->hGet($this->_key, $key)) === false) {
                 if ($default === null) {
                     throw new InvalidArgumentException(['`%s` key is not exists', $key]);
@@ -54,8 +53,20 @@ class Redis extends Component implements SettingsInterface
                 }
             }
             return $value;
+        } else {
+            return apcu_remember(
+                $this->_key . ':' . $key, $this->_ttl, function () use ($default, $key) {
+                if (($value = $this->redisDb->hGet($this->_key, $key)) === false) {
+                    if ($default === null) {
+                        throw new InvalidArgumentException(['`%s` key is not exists', $key]);
+                    } else {
+                        $value = $default;
+                    }
+                }
+                return $value;
+            }
+            );
         }
-        );
     }
 
     /**
