@@ -17,6 +17,21 @@ class Handler extends Component implements HandlerInterface
     protected $_args;
 
     /**
+     * @var string
+     */
+    protected $_command;
+
+    /**
+     * @var string
+     */
+    protected $_action;
+
+    /**
+     * @var array
+     */
+    protected $_params;
+
+    /**
      * @param string $keyword
      *
      * @return string|false
@@ -104,12 +119,14 @@ class Handler extends Component implements HandlerInterface
         list(, $commandName, $actionName) = array_pad($this->_args, 3, null);
 
         if ($actionName === null) {
-            $this->request->parse([]);
+            $this->_params = [];
         } elseif ($actionName[0] === '-') {
-            $this->request->parse(array_splice($this->_args, 2));
+            $this->_params = array_splice($this->_args, 2);
         } else {
-            $this->request->parse(array_splice($this->_args, 3));
+            $this->_params = array_splice($this->_args, 3);
         }
+
+        $this->request->parse($this->_params);
 
         if ($actionName !== null && $actionName[0] === '-') {
             $actionName = null;
@@ -124,6 +141,9 @@ class Handler extends Component implements HandlerInterface
             $commandName = $actionName;
             $actionName = 'help';
         }
+
+        $this->_command = $commandName;
+        $this->_action = $actionName;
 
         $commandName = Str::camelize($commandName);
         $actionName = lcfirst(Str::camelize($actionName));
@@ -179,5 +199,29 @@ class Handler extends Component implements HandlerInterface
     public function getArgs()
     {
         return $this->_args;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCommand()
+    {
+        return $this->_command;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAction()
+    {
+        return $this->_action;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParams()
+    {
+        return $this->_params;
     }
 }

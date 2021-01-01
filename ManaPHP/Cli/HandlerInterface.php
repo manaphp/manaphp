@@ -17,4 +17,19 @@ interface HandlerInterface
      * @return array
      */
     public function getArgs();
+
+    /**
+     * @return string
+     */
+    public function getCommand();
+
+    /**
+     * @return string
+     */
+    public function getAction();
+
+    /**
+     * @return array
+     */
+    public function getParams();
 }

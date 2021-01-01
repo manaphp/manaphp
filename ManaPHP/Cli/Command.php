@@ -37,14 +37,7 @@ abstract class Command extends \ManaPHP\Controller
      */
     public function helpAction()
     {
-        $args = $this->cliHandler->getArgs();
-        if (isset($args[2]) && $args[2] !== 'help' && $args[2][0] !== '-') {
-            $actionName = $args[2];
-        } elseif (isset($args[3]) && $args[2] === 'help' && $args[3][0] !== '-') {
-            $actionName = $args[3];
-        } else {
-            $actionName = '';
-        }
+        $actionName = $this->cliHandler->getAction();
 
         foreach (get_class_methods($this) as $method) {
             if (!preg_match('#^([a-z].*)Action$#', $method, $match)) {
