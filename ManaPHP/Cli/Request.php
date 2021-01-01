@@ -84,6 +84,12 @@ class Request extends Component implements RequestInterface
                 continue;
             }
 
+            if (str_contains($o, '=')) {
+                $parts = explode('=', $o, 2);
+                $this->_options[ltrim($parts[0], '-')] = $parts[1];
+                continue;
+            }
+
             if (preg_match('#^-((\w)|-([\w\-]+))=(.*)$#', $o, $match)) {
                 $this->_options[$match[2]] = $match[4];
                 continue;
