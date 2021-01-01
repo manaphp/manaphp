@@ -18,18 +18,7 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
      */
     public function handle($throwable)
     {
-        if ($throwable instanceof Exception) {
-            $code = $throwable->getStatusCode();
-
-            if ($code !== 200) {
-                $this->response->setStatus($code);
-            } elseif ($this->response->getContent() !== '') {
-                return;
-            }
-        } else {
-            $code = 500;
-        }
-
+        $code = $throwable instanceof Exception ? $throwable->getCode() : 500;
         if ($code >= 500) {
             $this->logger->error($throwable);
         }
