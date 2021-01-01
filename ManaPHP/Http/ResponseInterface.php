@@ -201,7 +201,7 @@ interface ResponseInterface
     /**
      * Sets HTTP response body. The parameter is automatically converted to JSON
      *
-     * @param array|\JsonSerializable|string|\Exception $content
+     * @param array|\JsonSerializable|string $content
      *
      * @return static
      */

@@ -46,16 +46,12 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
      */
     public function authenticate()
     {
-        try {
-            if ($this->_handler->authenticate() !== false) {
-                return true;
-            }
+        if ($this->_handler->authenticate() !== false) {
+            return true;
+        }
 
-            if (!$this->response->getContent()) {
-                $this->response->setStatus(401)->setJsonError('Unauthorized', 401);
-            }
-        } catch (Throwable $throwable) {
-            $this->response->setJsonContent($throwable);
+        if (!$this->response->getContent()) {
+            $this->response->setStatus(401)->setJsonError('Unauthorized', 401);
         }
 
         return false;

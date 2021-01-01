@@ -9,7 +9,6 @@ use ManaPHP\Component;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Helper\LocalFS;
-use Throwable;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
 
@@ -494,7 +493,7 @@ class Response extends Component implements ResponseInterface
     /**
      * Sets HTTP response body. The parameter is automatically converted to JSON
      *
-     * @param array|\JsonSerializable|string|\Exception $content
+     * @param array|\JsonSerializable|string $content
      *
      * @return static
      */
@@ -508,12 +507,6 @@ class Response extends Component implements ResponseInterface
             null;
         } elseif ($content instanceof JsonSerializable) {
             $content = ['code' => 0, 'message' => '', 'data' => $content];
-        } elseif ($content instanceof \ManaPHP\Exception) {
-            $this->setStatus($content->getStatusCode());
-            $content = $content->getJson();
-        } elseif ($content instanceof Throwable) {
-            $this->setStatus(500);
-            $content = ['code' => 500, 'message' => 'Server Internal Error'];
         }
 
         $context->content = $content;
