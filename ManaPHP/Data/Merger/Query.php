@@ -72,7 +72,7 @@ class Query extends \ManaPHP\Data\Query
         throw new NotSupportedException(__METHOD__);
     }
 
-    public function shard($key = null, $strategy = null)
+    public function shard($strategy = null)
     {
         throw new NotSupportedException(__METHOD__);
     }
