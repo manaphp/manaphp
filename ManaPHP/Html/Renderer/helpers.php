@@ -34,29 +34,9 @@ if (!function_exists('attr_inv')) {
     }
 }
 
-if (!function_exists('csrf_token')) {
-    /**
-     * @return string
-     */
-    function csrf_token()
-    {
-        return di('csrfPlugin')->get();
-    }
-}
-
-if (!function_exists('csrf_field')) {
-    /**
-     * @return string
-     */
-    function csrf_field()
-    {
-        $csrfToken = di('csrfPlugin');
-        return sprintf('<input type="hidden" name="%s" value="%s" />', $csrfToken->getName(), $csrfToken->get());
-    }
-}
-
 if (!function_exists('bundle')) {
     /**
+     *
      * @param array  $files
      * @param string $name
      *
