@@ -3,7 +3,6 @@
 namespace ManaPHP\Cli;
 
 use ManaPHP\Http\Dispatcher\NotFoundActionException;
-use ReflectionMethod;
 
 /**
  * @property-read \ManaPHP\Caching\CacheInterface   $viewsCache
