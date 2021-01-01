@@ -151,9 +151,9 @@ class Handler extends Component implements HandlerInterface
             if ($action === null) {
                 $this->_params = [];
             } elseif ($action[0] === '-') {
-                $this->_params = array_splice($this->_args, 2);
+                $this->_params = array_slice($this->_args, 2);
             } else {
-                $this->_params = array_splice($this->_args, 3);
+                $this->_params = array_slice($this->_args, 3);
             }
         }
 
