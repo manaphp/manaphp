@@ -14,9 +14,9 @@ class Redis extends Component implements SettingsInterface
     protected $_key = 'settings';
 
     /**
-     * @var \ManaPHP\Caching\MemoryInterface
+     * @var int
      */
-    protected $_cache;
+    protected $_ttl = 1;
 
     /**
      * @param array $options
@@ -31,15 +31,9 @@ class Redis extends Component implements SettingsInterface
             $this->_key = $options['key'];
         }
 
-        if (isset($options['cache'])) {
-            $cacheClass = 'ManaPHP\Caching\MCache\\' . ucfirst($options['cache']) . 'Cache';
-        } elseif (function_exists('apcu_enabled') && apcu_enabled()) {
-            $cacheClass = 'ManaPHP\Caching\MCache\ApcuCache';
-        } else {
-            $cacheClass = 'ManaPHP\Caching\MCache\ArrCache';
+        if (isset($options['ttl'])) {
+            $this->_ttl = (int)$options['ttl'];
         }
-
-        $this->_cache = new $cacheClass();
     }
 
     /**
@@ -50,8 +44,8 @@ class Redis extends Component implements SettingsInterface
      */
     public function get($key, $default = null)
     {
-        return $this->_cache->get(
-            $key, function ($key) use ($default) {
+        return apcu_remember(
+            $this->_key . ':' . $key, $this->_ttl, function () use ($default, $key) {
             if (($value = $this->redisDb->hGet($this->_key, $key)) === false) {
                 if ($default === null) {
                     throw new InvalidArgumentException(['`%s` key is not exists', $key]);
@@ -127,13 +121,5 @@ class Redis extends Component implements SettingsInterface
         $this->redisDb->hDel($this->_key, $key);
 
         return $this;
-    }
-
-    public function dump()
-    {
-        $data = parent::dump();
-        unset($data['_cache']);
-
-        return $data;
     }
 }
