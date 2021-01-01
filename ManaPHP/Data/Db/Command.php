@@ -421,11 +421,10 @@ class Command extends \ManaPHP\Cli\Command
      * @param array  $services      services name list
      * @param string $table_pattern match table against a pattern
      * @param string $namespace     namespace of models
-     * @param bool   $optimized     output as more methods as possible
      *
      * @return void
      */
-    public function tablesAction($services = [], $table_pattern = '', $namespace = 'App\Tables', $optimized = false)
+    public function tablesAction($services = [], $table_pattern = '', $namespace = 'App\Tables')
     {
         if (!str_contains($namespace, '\\')) {
             $namespace = 'App\\' . ucfirst($namespace) . '\\Tables';

@@ -4,7 +4,6 @@ namespace ManaPHP\Rpc;
 
 use ManaPHP\Aop\Unaspectable;
 use ManaPHP\Component;
-use Throwable;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface  $request
