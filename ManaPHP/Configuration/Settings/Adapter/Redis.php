@@ -14,7 +14,7 @@ class Redis extends Component implements SettingsInterface
     protected $_key = 'settings';
 
     /**
-     * @var \ManaPHP\Caching\MCacheInterface
+     * @var \ManaPHP\Caching\MemoryInterface
      */
     protected $_cache;
 

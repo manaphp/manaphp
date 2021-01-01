@@ -7,7 +7,7 @@ pull requests to the main repository.
 
 ## Installation
 
-The preferred way to install the ManaPHP framework is through [composer](http://getcomposer.org/download/).
+The preferred way to install the ManaPHP framework is through [composer](http://getcomposer.org/download).
 
 Either run
 

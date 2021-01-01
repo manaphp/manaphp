@@ -577,3 +577,23 @@ if (!function_exists('console_log')) {
         echo sprintf('[%s][%s]: ', date('c'), $level), $message, PHP_EOL;
     }
 }
+
+if (!function_exists('apcu_remember')) {
+    /**
+     * @param string   $key
+     * @param int      $ttl
+     * @param callable $callback
+     *
+     * @return mixed
+     */
+    function apcu_remember($key, $ttl, $callback)
+    {
+        $value = apcu_fetch($key, $success);
+        if (!$success) {
+            $value = $callback();
+            apcu_store($key, $value, $ttl);
+        }
+
+        return $value;
+    }
+}
