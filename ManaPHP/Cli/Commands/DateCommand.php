@@ -3,6 +3,8 @@
 namespace ManaPHP\Cli\Commands;
 
 use ManaPHP\Cli\Command;
+use DateTime;
+use DateTimeZone;
 
 class DateCommand extends Command
 {
@@ -188,6 +190,11 @@ class DateCommand extends Command
         if (DIRECTORY_SEPARATOR === '\\') {
             system('date ' . date('Y-m-d', $timestamp));
             system('time ' . date('H:i:s', $timestamp));
+        } elseif (PHP_OS === 'Darwin') {
+            $dt = (new DateTime())->setTimestamp($timestamp)
+                ->setTimezone(new DateTimeZone('UTC'))
+                ->format('mdHiy');
+            system('date -u ' . $dt);
         } else {
             system('date --set "' . date('Y-m-d H:i:s', $timestamp) . '"');
         }
