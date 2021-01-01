@@ -135,7 +135,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
             }
         }
 
-        $_server += $_SERVER;
+        $_server = array_merge($_SERVER, $_server);
 
         $_get = $request->get ?: [];
 

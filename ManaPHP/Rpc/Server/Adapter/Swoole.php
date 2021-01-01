@@ -122,7 +122,7 @@ class Swoole extends \ManaPHP\Rpc\Server
                 $_server['HTTP_' . strtoupper(strtr($k, '-', '_'))] = $v;
             }
         }
-        $_server += $_SERVER;
+        $_server = array_merge($_SERVER, $_server);
 
         $_get = $request->get ?: [];
         $_server['WS_ENDPOINT'] = $_get['_url'] = rtrim($_server['REQUEST_URI'], '/');
