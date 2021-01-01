@@ -491,6 +491,29 @@ class Response extends Component implements ResponseInterface
     }
 
     /**
+     * @param \Throwable $throwable
+     *
+     * @return static
+     */
+    public function setJsonThrowable($throwable)
+    {
+        if ($throwable instanceof \ManaPHP\Exception) {
+            $code = $throwable->getStatusCode();
+            $json = $throwable->getJson();
+        } else {
+            $code = 500;
+            $json = ['code' => $code, 'message' => 'Internal Server Error'];
+        }
+
+        if ($this->configure->debug) {
+            $json['message'] = get_class($throwable) . ": " . $throwable->getMessage();
+            $json['exception'] = explode("\n", $throwable);
+        }
+
+        return $this->setStatus($code)->setJsonContent(json_stringify($json, JSON_INVALID_UTF8_SUBSTITUTE));
+    }
+
+    /**
      * Sets HTTP response body. The parameter is automatically converted to JSON
      *
      * @param array|\JsonSerializable|string $content

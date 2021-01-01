@@ -22,7 +22,6 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
     {
         if ($throwable instanceof Exception) {
             $code = $throwable->getStatusCode();
-            $json = $throwable->getJson();
 
             if ($code !== 200) {
                 $this->response->setStatus($code);
@@ -31,7 +30,6 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
             }
         } else {
             $code = 500;
-            $json = ['code' => $code, 'message' => 'Internal Server Error'];
         }
 
         if ($code >= 500) {
@@ -39,11 +37,7 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
         }
 
         if ($this->request->isAjax()) {
-            if ($this->configure->debug) {
-                $json['message'] = get_class($throwable) . ": " . $throwable->getMessage();
-                $json['exception'] = explode("\n", $throwable);
-            }
-            $this->response->setStatus($code)->setJsonContent(json_stringify($json, JSON_INVALID_UTF8_SUBSTITUTE));
+            $this->response->setJsonThrowable($throwable);
         } else {
             $this->response->setStatus($code)->setContent($this->render($throwable));
         }

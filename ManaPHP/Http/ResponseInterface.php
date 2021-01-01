@@ -199,6 +199,13 @@ interface ResponseInterface
     public function setJsonData($data, $message = '');
 
     /**
+     * @param \Throwable $throwable
+     *
+     * @return static
+     */
+    public function setJsonThrowable($throwable);
+
+    /**
      * Sets HTTP response body. The parameter is automatically converted to JSON
      *
      * @param array|\JsonSerializable|string $content
