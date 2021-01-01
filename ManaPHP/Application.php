@@ -42,7 +42,11 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         $GLOBALS['DI'] = $this->_di = new $factory();
 
         if (!defined('MANAPHP_COROUTINE_ENABLED')) {
-            define('MANAPHP_COROUTINE_ENABLED', PHP_SAPI === 'cli' && extension_loaded('swoole'));
+            define(
+                'MANAPHP_COROUTINE_ENABLED', PHP_SAPI === 'cli'
+                && extension_loaded('swoole')
+                && !extension_loaded('xdebug')
+            );
         }
 
         $this->setShared('loader', $loader);
