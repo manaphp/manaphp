@@ -697,6 +697,6 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
 
     public function __toString()
     {
-        return json_stringify($this->text());
+        return (string)json_stringify($this->text());
     }
 }
