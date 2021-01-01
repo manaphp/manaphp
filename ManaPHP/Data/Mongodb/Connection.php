@@ -146,13 +146,13 @@ class Connection extends Component implements ConnectionInterface
     }
 
     /**
-     * @param string $namespace
+     * @param string $source
      * @param array  $document
      * @param array  $filter
      *
      * @return int
      */
-    public function update($namespace, $document, $filter)
+    public function update($source, $document, $filter)
     {
         $bulk = new BulkWrite();
 
@@ -162,17 +162,17 @@ class Connection extends Component implements ConnectionInterface
             throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
-        return $this->bulkWrite($namespace, $bulk)->getModifiedCount();
+        return $this->bulkWrite($source, $bulk)->getModifiedCount();
     }
 
     /**
-     * @param string $namespace
+     * @param string $source
      * @param array  $documents
      * @param string $primaryKey
      *
      * @return int
      */
-    public function bulkUpdate($namespace, $documents, $primaryKey)
+    public function bulkUpdate($source, $documents, $primaryKey)
     {
         $bulk = new BulkWrite();
 
@@ -186,7 +186,7 @@ class Connection extends Component implements ConnectionInterface
             }
         }
 
-        return $this->bulkWrite($namespace, $bulk)->getModifiedCount();
+        return $this->bulkWrite($source, $bulk)->getModifiedCount();
     }
 
     /**
