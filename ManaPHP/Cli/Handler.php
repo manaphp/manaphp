@@ -116,14 +116,20 @@ class Handler extends Component implements HandlerInterface
     {
         $this->_args = $args ?? $GLOBALS['argv'];
 
-        list(, $commandName, $actionName) = array_pad($this->_args, 3, null);
-
-        if ($actionName === null) {
-            $this->_params = [];
-        } elseif ($actionName[0] === '-') {
+        $arg1 = $this->_args[1] ?? '';
+        if (str_contains($arg1, ':')) {
+            list($commandName, $actionName) = explode(':', $arg1);
             $this->_params = array_splice($this->_args, 2);
         } else {
-            $this->_params = array_splice($this->_args, 3);
+            list(, $commandName, $actionName) = array_pad($this->_args, 3, null);
+
+            if ($actionName === null) {
+                $this->_params = [];
+            } elseif ($actionName[0] === '-') {
+                $this->_params = array_splice($this->_args, 2);
+            } else {
+                $this->_params = array_splice($this->_args, 3);
+            }
         }
 
         $this->request->parse($this->_params);
