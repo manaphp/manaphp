@@ -157,9 +157,9 @@ class Db extends Component implements DbInterface
         if (count($uris) > 1) {
             array_shift($uris);
 
-            foreach ($uris as $i => $uri) {
-                if (preg_match('#[?&]readonly\b#', $uri) !== 1) {
-                    $uris[$i] .= (str_contains($uri, '?') ? '&' : '?') . 'readonly=1';
+            foreach ($uris as $i => $v) {
+                if (preg_match('#[?&]readonly\b#', $v) !== 1) {
+                    $uris[$i] .= (str_contains($v, '?') ? '&' : '?') . 'readonly=1';
                 }
             }
 
@@ -168,9 +168,9 @@ class Db extends Component implements DbInterface
 
                 $this->poolManager->create($this, count($uris) * $slave_pool_size, 'slave');
                 for ($i = 0; $i < $slave_pool_size; $i++) {
-                    foreach ($uris as $uri) {
-                        $adapter = 'ManaPHP\Data\Db\Connection\Adapter\\' . ucfirst(parse_url($uri, PHP_URL_SCHEME));
-                        $this->poolManager->add($this, ['class' => $adapter, $uri], 1, 'slave');
+                    foreach ($uris as $v) {
+                        $adapter = 'ManaPHP\Data\Db\Connection\Adapter\\' . ucfirst(parse_url($v, PHP_URL_SCHEME));
+                        $this->poolManager->add($this, ['class' => $adapter, $v], 1, 'slave');
                     }
                 }
             } else {
