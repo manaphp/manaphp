@@ -64,6 +64,7 @@ class Route implements RouteInterface
                 '{params}'     => '{params:.*}',
                 '{id}'         => '{id:[^/]+}',
                 ':int}'        => ':\d+}',
+                ':uuid}'       => ':[A-Fa-f0-9]{8}(-[A-Fa-f0-9]{4}){3}-[A-Fa-f0-9]{12}}',
             ];
             $pattern = strtr($pattern, $tr);
         }
