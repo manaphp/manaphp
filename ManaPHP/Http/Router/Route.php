@@ -112,6 +112,9 @@ class Route implements RouteInterface
             if (($pos = strpos($paths, '::')) !== false) {
                 $routePaths['controller'] = substr($paths, 0, $pos);
                 $routePaths['action'] = substr($paths, $pos + 2);
+            } elseif (($pos = strpos($paths, '@')) !== false) {
+                $routePaths['controller'] = basename(substr($paths, 0, $pos), 'Controller');
+                $routePaths['action'] = substr($paths, $pos + 1);
             } else {
                 $routePaths['controller'] = $paths;
                 $routePaths['action'] = 'index';
