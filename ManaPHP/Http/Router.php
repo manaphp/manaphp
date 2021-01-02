@@ -290,6 +290,10 @@ class Router extends Component implements RouterInterface
     public function addRest($pattern, $controller = null)
     {
         if ($controller === null) {
+            if (str_contains($pattern, '/:controller')) {
+                return $this->_addRoute($pattern, null, 'REST');
+            }
+
             if (!preg_match('#/(\w+)$#', $pattern, $match)) {
                 throw new MisuseException('must provide paths');
             }

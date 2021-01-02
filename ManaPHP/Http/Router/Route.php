@@ -3,6 +3,7 @@
 namespace ManaPHP\Http\Router;
 
 use ManaPHP\Exception\InvalidFormatException;
+use ManaPHP\Helper\Str;
 
 class Route implements RouteInterface
 {
@@ -211,6 +212,11 @@ class Route implements RouteInterface
                 }
 
                 if ($this->_method === 'REST') {
+                    $controller = $parts['controller'] ?? '';
+                    if ($controller !== '' && str_contains($this->_pattern, '/{controller}')) {
+                        $parts['controller'] = Str::singular($controller);
+                    }
+
                     if (isset($matches['params'])) {
                         $m2a = ['GET' => 'detail', 'POST' => 'update', 'PUT' => 'update', 'DELETE' => 'delete'];
                     } else {
