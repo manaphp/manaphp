@@ -35,7 +35,6 @@ class Invoker extends Component implements InvokerInterface
 
         $di = $this->_di;
 
-        $name_of_id = null;
         $parameters = (new ReflectionMethod($instance, $method))->getParameters();
         foreach ($parameters as $parameter) {
             $name = $parameter->getName();
@@ -56,16 +55,8 @@ class Invoker extends Component implements InvokerInterface
                 $value = $this->request->get($name, $type === 'array' ? [] : '');
             } elseif ($parameter->isDefaultValueAvailable()) {
                 $value = $parameter->getDefaultValue();
-            } elseif (count($parameters) === 1 && ($name === 'id' || str_ends_with($name, '_id'))) {
+            }elseif (count($parameters) === 1 && ($name === 'id' || str_ends_with($name, '_id'))) {
                 $value = $this->request->getId($name);
-            } elseif ($this->request->has('id')) {
-                if ($name_of_id === null) {
-                    $name_of_id = $name;
-                    $value = $this->request->get('id');
-                } elseif ($name_of_id !== '') {
-                    $missing[] = $name_of_id;
-                    $name_of_id = '';
-                }
             } elseif ($type === 'NULL') {
                 $value = null;
             }
