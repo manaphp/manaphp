@@ -63,7 +63,7 @@ class Router extends Component implements RouterInterface
     /**
      * @var \ManaPHP\Http\Router\RouteInterface[]
      */
-    protected $_default_routes;
+    protected $_default_routes = [];
 
     /**
      * @var \ManaPHP\Http\Router\RouteInterface[][]
