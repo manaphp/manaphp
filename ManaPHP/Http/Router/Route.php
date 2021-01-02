@@ -233,14 +233,6 @@ class Route implements RouteInterface
             }
         }
 
-        if (isset($parts['controller']) && $parts['controller'] === '') {
-            unset($parts['controller']);
-        }
-
-        if (isset($parts['action']) && $parts['action'] === '') {
-            unset($parts['action']);
-        }
-
         if (isset($parts['action']) && preg_match('#^\d#', $parts['action'])) {
             $parts['params'] = $parts['action'];
 
