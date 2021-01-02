@@ -63,7 +63,7 @@ class Route implements RouteInterface
                 '{action}'     => '{action:[a-zA-Z]\w*}',
                 '{params}'     => '{params:.*}',
                 '{id}'         => '{id:[^/]+}',
-                ':int'         => ':\d+',
+                ':int}'        => ':\d+}',
             ];
             $pattern = strtr($pattern, $tr);
         }
