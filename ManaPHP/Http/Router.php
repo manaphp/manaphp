@@ -293,25 +293,7 @@ class Router extends Component implements RouterInterface
             if (!preg_match('#/(\w+)$#', $pattern, $match)) {
                 throw new MisuseException('must provide paths');
             }
-
-            $str = $match[1];
-            if ($str[strlen($str) - 1] === 's') {
-                //https://github.com/UlvHare/PHPixie-demo/blob/d000d8f11e6ab7c522feeb4457da5a802ca3e0bc/vendor/phpixie/orm/src/PHPixie/ORM/Configs/Inflector.php
-                if (preg_match('#^(.*?us)$|(.*?[sxz])es$|(.*?[^aeioudgkprt]h)es$#', $str, $match)) {
-                    foreach ($match as $i => $word) {
-                        if ($i !== 0 && $word !== '') {
-                            $controller = $word;
-                            break;
-                        }
-                    }
-                } elseif (preg_match('#^(.*?[^aeiou])ies$#', $str, $match)) {
-                    $controller = $match[1] . 'y';
-                } else {
-                    $controller = substr($str, 0, -1);
-                }
-            } else {
-                $controller = $str;
-            }
+            $controller = Str::singular($match[1]);
         }
 
         return $this->_addRoute($pattern, $controller, 'REST');
