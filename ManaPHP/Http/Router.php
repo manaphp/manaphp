@@ -301,6 +301,7 @@ class Router extends Component implements RouterInterface
                     foreach ($match as $i => $word) {
                         if ($i !== 0 && $word !== '') {
                             $controller = $word;
+                            break;
                         }
                     }
                 } elseif (preg_match('#^(.*?[^aeiou])ies$#', $str, $match)) {
