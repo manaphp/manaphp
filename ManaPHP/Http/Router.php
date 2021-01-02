@@ -256,19 +256,6 @@ class Router extends Component implements RouterInterface
     }
 
     /**
-     * Add a route to the router that only match if the HTTP method is OPTIONS
-     *
-     * @param string       $pattern
-     * @param string|array $paths
-     *
-     * @return \ManaPHP\Http\Router\RouteInterface
-     */
-    public function addOptions($pattern = '{all:.*}', $paths = null)
-    {
-        return $this->_addRoute($pattern ?: '{all:.*}', $paths, 'OPTIONS');
-    }
-
-    /**
      * Adds a route to the router that only match if the HTTP method is HEAD
      *
      * @param string       $pattern

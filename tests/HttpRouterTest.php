@@ -297,13 +297,6 @@ class MvcRouterTest extends TestCase
                 'params'     => array()
             ),
             array(
-                'method'     => 'OPTIONS',
-                'uri'        => '/docs/index',
-                'controller' => 'documentation7',
-                'action'     => 'index',
-                'params'     => array()
-            ),
-            array(
                 'method'     => 'HEAD',
                 'uri'        => '/docs/index',
                 'controller' => 'documentation8',
@@ -322,8 +315,6 @@ class MvcRouterTest extends TestCase
         $router->addPut('/docs/index', 'documentation5::index');
 
         $router->addDelete('/docs/index', 'documentation6::index');
-
-        $router->addOptions('/docs/index', 'documentation7::index');
 
         $router->addHead('/docs/index', 'documentation8::index');
 
