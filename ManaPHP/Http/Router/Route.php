@@ -69,6 +69,10 @@ class Route implements RouteInterface
             $pattern = strtr($pattern, $tr);
         }
 
+        if (str_contains($pattern, '/:')) {
+            $pattern = preg_replace('#/:(\w+)#', '/{\1}', $pattern);
+        }
+
         if (str_contains($pattern, '{')) {
             $need_restore_token = false;
 

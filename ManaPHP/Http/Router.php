@@ -156,12 +156,8 @@ class Router extends Component implements RouterInterface
      */
     protected function _addRoute($pattern, $paths = null, $method = null)
     {
-        if (str_contains($pattern, '/:')) {
-            $pattern = preg_replace('#/:(\w+)#', '/{\1}', $pattern);
-        }
-
         $route = new Route($pattern, $paths, $method, $this->_case_sensitive);
-        if ($method !== 'REST' && !str_contains($pattern, '{')) {
+        if ($method !== 'REST' && !str_contains($pattern, ':') && !str_contains($pattern, '{')) {
             $this->_simple_routes[$method][$pattern] = $route;
         } else {
             $this->_regex_routes[] = $route;
