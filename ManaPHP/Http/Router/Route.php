@@ -23,22 +23,22 @@ class Route implements RouteInterface
     protected $_paths;
 
     /**
-     * @var string
+     * @var string|array
      */
-    protected $_method;
+    protected $_methods;
 
     /**
      * @param string       $pattern
      * @param string|array $paths
-     * @param string       $method
+     * @param string|array $methods
      * @param bool         $case_sensitive
      */
-    public function __construct($pattern, $paths = null, $method = null, $case_sensitive = true)
+    public function __construct($pattern, $paths = null, $methods = null, $case_sensitive = true)
     {
         $this->_pattern = $pattern;
         $this->_compiled = $this->_compilePattern($pattern, $case_sensitive);
         $this->_paths = $this->_normalizePaths($paths);
-        $this->_method = $method;
+        $this->_methods = $methods;
     }
 
     /**
@@ -187,7 +187,14 @@ class Route implements RouteInterface
     {
         $matches = [];
 
-        if ($this->_method !== null && $this->_method !== $method && $this->_method !== 'REST') {
+        $methods = $this->_methods;
+        if ($methods === null || $methods === 'REST') {
+            null;
+        } elseif (is_string($methods)) {
+            if ($methods !== $method) {
+                return false;
+            }
+        } elseif (!in_array($method, $methods, true)) {
             return false;
         }
 
@@ -217,7 +224,7 @@ class Route implements RouteInterface
                     }
                 }
 
-                if ($this->_method === 'REST') {
+                if ($this->_methods === 'REST') {
                     $controller = $parts['controller'] ?? '';
                     if ($controller !== '' && str_contains($this->_pattern, '/{controller}')) {
                         $parts['controller'] = Str::singular($controller);
