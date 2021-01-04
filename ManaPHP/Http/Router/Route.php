@@ -62,10 +62,15 @@ class Route implements RouteInterface
 
         $tr = [
             '{area}'       => '{area:[a-zA-Z]\w*}',
+            ':area'        => '{area:[a-zA-Z]\w*}',
             '{controller}' => '{controller:[a-zA-Z]\w*}',
+            ':controller'  => '{controller:[a-zA-Z]\w*}',
             '{action}'     => '{action:[a-zA-Z]\w*}',
+            ':action'      => '{action:[a-zA-Z]\w*}',
             '{params}'     => '{params:.*}',
+            ':params'      => '{params:.*}',
             '{id}'         => '{id:[^/]+}',
+            ':id'          => '{id:[^/]+}',
             ':int}'        => ':\d+}',
             ':uuid}'       => ':[A-Fa-f0-9]{8}(-[A-Fa-f0-9]{4}){3}-[A-Fa-f0-9]{12}}',
         ];
