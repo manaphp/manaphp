@@ -177,12 +177,6 @@ class Router extends Component implements RouterInterface
      */
     public function add($pattern, $paths = null, $method = null)
     {
-        if ($method === null && is_string($paths) && str_contains($paths, '\\')) {
-            if (!str_contains($pattern, '{action}') && !str_contains($pattern, '/:action')) {
-                $pattern = rtrim($pattern, '/') . '(?:/{action:\d[-\w]*$|[a-zA-Z]\w*}(?:/{params})?)?';
-            }
-        }
-
         return $this->_addRoute($pattern, $paths, $method);
     }
 
