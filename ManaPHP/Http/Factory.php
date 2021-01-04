@@ -38,6 +38,7 @@ class Factory extends FactoryDefault
 
                 'httpClientTracer' => 'ManaPHP\Http\Client\Tracer',
                 'requestTracer'    => 'ManaPHP\Http\Request\Tracer',
+                'dispatcherTracer' => 'ManaPHP\Http\Dispatcher\Tracer',
             ]
         );
 
