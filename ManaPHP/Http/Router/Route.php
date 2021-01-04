@@ -56,48 +56,46 @@ class Route implements RouteInterface
      */
     protected function _compilePattern($pattern, $case_sensitive)
     {
-        if (str_contains($pattern, '{')) {
-            $tr = [
-                '{area}'       => '{area:[a-zA-Z]\w*}',
-                '{controller}' => '{controller:[a-zA-Z]\w*}',
-                '{action}'     => '{action:[a-zA-Z]\w*}',
-                '{params}'     => '{params:.*}',
-                '{id}'         => '{id:[^/]+}',
-                ':int}'        => ':\d+}',
-                ':uuid}'       => ':[A-Fa-f0-9]{8}(-[A-Fa-f0-9]{4}){3}-[A-Fa-f0-9]{12}}',
-            ];
-            $pattern = strtr($pattern, $tr);
+        if (strpbrk($pattern, ':{') === false) {
+            return $pattern;
         }
+
+        $tr = [
+            '{area}'       => '{area:[a-zA-Z]\w*}',
+            '{controller}' => '{controller:[a-zA-Z]\w*}',
+            '{action}'     => '{action:[a-zA-Z]\w*}',
+            '{params}'     => '{params:.*}',
+            '{id}'         => '{id:[^/]+}',
+            ':int}'        => ':\d+}',
+            ':uuid}'       => ':[A-Fa-f0-9]{8}(-[A-Fa-f0-9]{4}){3}-[A-Fa-f0-9]{12}}',
+        ];
+        $pattern = strtr($pattern, $tr);
 
         if (str_contains($pattern, '/:')) {
             $pattern = preg_replace('#/:(\w+)#', '/{\1}', $pattern);
         }
 
-        if (str_contains($pattern, '{')) {
-            $need_restore_token = false;
+        $need_restore_token = false;
 
-            if (preg_match('#{\d#', $pattern) === 1) {
-                $need_restore_token = true;
-                $pattern = (string)preg_replace('#{([\d,]+)}#', '@\1@', $pattern);
-            }
-
-            $matches = [];
-            if (preg_match_all('#{([A-Z].*)}#Ui', $pattern, $matches, PREG_SET_ORDER) > 0) {
-                foreach ($matches as $match) {
-                    $parts = explode(':', $match[1], 2);
-                    $to = '(?<' . $parts[0] . '>' . ($parts[1] ?? '[\w\-]+') . ')';
-                    $pattern = (string)str_replace($match[0], $to, $pattern);
-                }
-            }
-
-            if ($need_restore_token) {
-                $pattern = (string)preg_replace('#@([\d,]+)@#', '{\1}', $pattern);
-            }
-
-            return '#^' . $pattern . '$#' . ($case_sensitive ? '' : 'i');
-        } else {
-            return $pattern;
+        if (preg_match('#{\d#', $pattern) === 1) {
+            $need_restore_token = true;
+            $pattern = (string)preg_replace('#{([\d,]+)}#', '@\1@', $pattern);
         }
+
+        $matches = [];
+        if (preg_match_all('#{([A-Z].*)}#Ui', $pattern, $matches, PREG_SET_ORDER) > 0) {
+            foreach ($matches as $match) {
+                $parts = explode(':', $match[1], 2);
+                $to = '(?<' . $parts[0] . '>' . ($parts[1] ?? '[\w\-]+') . ')';
+                $pattern = (string)str_replace($match[0], $to, $pattern);
+            }
+        }
+
+        if ($need_restore_token) {
+            $pattern = (string)preg_replace('#@([\d,]+)@#', '{\1}', $pattern);
+        }
+
+        return '#^' . $pattern . '$#' . ($case_sensitive ? '' : 'i');
     }
 
     /**
