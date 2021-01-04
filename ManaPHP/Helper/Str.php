@@ -170,6 +170,7 @@ class Str
                         return $word;
                     }
                 }
+                return $str;
             } elseif (preg_match('#^(.*?[^aeiou])ies$#', $str, $match)) {
                 return $match[1] . 'y';
             } else {
