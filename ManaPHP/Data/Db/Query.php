@@ -88,7 +88,7 @@ class Query extends \ManaPHP\Data\Query
 
         $r = '';
         foreach ($fields as $k => $v) {
-            if (!str_contains($v, '[') && !str_contains($v, '(')) {
+            if (strpbrk($v, '[(') === false) {
                 /** @noinspection NotOptimalIfConditionsInspection */
                 if (is_int($k)) {
                     $r .= preg_replace('#\w+#', '[\\0]', $v) . ', ';
@@ -116,7 +116,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function join($table, $condition = null, $alias = null, $type = null)
     {
-        if (!str_contains($condition, '[') && !str_contains($condition, '(')) {
+        if (strpbrk($condition, '[(') === false) {
             $condition = (string)preg_replace('#\w+#', '[\\0]', $condition);
         }
 
@@ -687,7 +687,7 @@ class Query extends \ManaPHP\Data\Query
     {
         $r = '';
         foreach ($group as $item) {
-            if (!str_contains($item, '[') && !str_contains($item, '(')) {
+            if (strpbrk($item, '[(') === false) {
                 $r .= preg_replace('#\w+#', '[\\0]', $item) . ', ';
             } else {
                 $r .= $item . ', ';
@@ -728,7 +728,7 @@ class Query extends \ManaPHP\Data\Query
         foreach ($order as $field => $v) {
             $type = $v === SORT_ASC ? 'ASC' : 'DESC';
 
-            if (!str_contains($field, '[') && !str_contains($field, '(')) {
+            if (strpbrk($field, '[(') === false) {
                 $r .= '[' . str_replace('.', '].[', $field) . '] ' . $type . ', ';
             } else {
                 $r .= "$field $type, ";
