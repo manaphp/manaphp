@@ -157,7 +157,7 @@ class Router extends Component implements RouterInterface
     protected function _addRoute($pattern, $paths = null, $method = null)
     {
         $route = new Route($pattern, $paths, $method, $this->_case_sensitive);
-        if ($method !== 'REST' && !str_contains($pattern, ':') && !str_contains($pattern, '{')) {
+        if (strpbrk($pattern, ':{') === false) {
             $this->_simple_routes[$method][$pattern] = $route;
         } else {
             $this->_regex_routes[] = $route;
@@ -272,6 +272,8 @@ class Router extends Component implements RouterInterface
      */
     public function addRest($pattern, $controller = null)
     {
+        $pattern .= '(/{params:[-\w]+})?';
+
         if ($controller === null) {
             if (str_contains($pattern, '/:controller')) {
                 return $this->_addRoute($pattern, null, 'REST');

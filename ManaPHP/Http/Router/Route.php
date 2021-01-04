@@ -36,12 +36,7 @@ class Route implements RouteInterface
     public function __construct($pattern, $paths = null, $method = null, $case_sensitive = true)
     {
         $this->_pattern = $pattern;
-        if ($method === 'REST') {
-            $this->_compiled = $this->_compilePattern(($pattern . '(/{params:[-\w]+})?'), $case_sensitive);
-        } else {
-            $this->_compiled = $this->_compilePattern($pattern, $case_sensitive);
-        }
-
+        $this->_compiled = $this->_compilePattern($pattern, $case_sensitive);
         $this->_paths = $this->_normalizePaths($paths);
         $this->_method = $method;
     }
