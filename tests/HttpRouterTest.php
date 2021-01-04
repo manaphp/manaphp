@@ -125,13 +125,11 @@ class MvcRouterTest extends TestCase
                 'uri'        => '',
                 'controller' => 'index',
                 'action'     => 'index',
-                'params'     => array()
             ),
             array(
                 'uri'        => '/',
                 'controller' => 'index',
                 'action'     => 'index',
-                'params'     => array()
             ),
             array(
                 'uri'        => '/documentation/index/hello/ñda/dld/cc-ccc',
@@ -143,25 +141,21 @@ class MvcRouterTest extends TestCase
                 'uri'        => '/documentation/index/',
                 'controller' => 'documentation',
                 'action'     => 'index',
-                'params'     => array()
             ),
             array(
                 'uri'        => '/documentation/index',
                 'controller' => 'documentation',
                 'action'     => 'index',
-                'params'     => array()
             ),
             array(
                 'uri'        => '/documentation/',
                 'controller' => 'documentation',
                 'action'     => 'index',
-                'params'     => array()
             ),
             array(
                 'uri'        => '/documentation',
                 'controller' => 'documentation',
                 'action'     => 'index',
-                'params'     => array()
             ),
             array(
                 'uri'        => '/system/admin/a/edit/hello/adp',
@@ -221,7 +215,6 @@ class MvcRouterTest extends TestCase
                 'uri'        => '/very/static/route',
                 'controller' => 'static',
                 'action'     => 'route',
-                'params'     => array()
             ),
         );
 
