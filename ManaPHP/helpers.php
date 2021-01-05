@@ -469,22 +469,11 @@ if (!function_exists('render_file')) {
 
 if (!function_exists('abort')) {
     /**
-     * @param string $message
-     * @param int    $code
-     *
      * @return void
      * @throws \ManaPHP\Exception\AbortException
      */
-    function abort($message = null, $code = 1)
+    function abort()
     {
-        if ($message === null) {
-            null;
-        } elseif ($code === null) {
-            di('response')->setContent($message);
-        } else {
-            di('response')->setJsonError($message, $code);
-        }
-
         throw new AbortException();
     }
 }
