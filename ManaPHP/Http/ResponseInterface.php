@@ -188,7 +188,7 @@ interface ResponseInterface
      *
      * @return static
      */
-    public function setJsonError($message, $code = 1);
+    public function setJsonError($message, $code = null);
 
     /**
      * @param mixed  $data

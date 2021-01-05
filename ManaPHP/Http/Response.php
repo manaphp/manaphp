@@ -474,9 +474,9 @@ class Response extends Component implements ResponseInterface
      *
      * @return static
      */
-    public function setJsonError($message, $code = 1)
+    public function setJsonError($message, $code = null)
     {
-        return $this->setJsonContent(['code' => $code, 'message' => $message]);
+        return $this->setJsonContent(['code' => $code ?? 1, 'message' => $message]);
     }
 
     /**
