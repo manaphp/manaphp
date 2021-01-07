@@ -34,6 +34,8 @@ class Factory extends FactoryDefault
                 'dbCommand'             => 'ManaPHP\Data\Db\Command',
                 'listCommand'           => 'ManaPHP\Cli\Commands\ListCommand',
                 'debuggerCommand'       => 'ManaPHP\Debugging\DebuggerPlugin\Command',
+
+                'httpClientTracer' => 'ManaPHP\Http\Client\Tracer',
             ]
         );
     }
