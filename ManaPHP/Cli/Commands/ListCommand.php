@@ -3,9 +3,83 @@
 namespace ManaPHP\Cli\Commands;
 
 use ManaPHP\Cli\Command;
+use ManaPHP\Component;
+use ReflectionClass;
+use ReflectionMethod;
 
 class ListCommand extends Command
 {
+    /**
+     * list component options
+     */
+    public function optionsAction()
+    {
+        $components = [];
+
+        foreach ((new ReflectionClass(Component::class))->getProperties() as $property) {
+            $component_options[$property->getName()] = 1;
+        }
+
+        foreach ($this->_di->getDefinitions() as $name => $definition) {
+            if (fnmatch('*Command', $name) || fnmatch('*Tracer', $name) || fnmatch('*Plugin', $name)) {
+                continue;
+            }
+
+            if (is_string($definition)) {
+                $className = $definition;
+            } elseif (is_array($definition)) {
+                if (isset($definition['class']) && is_string($definition['class'])) {
+                    $className = $definition['class'];
+                } elseif (isset($definition[0]) && is_string($definition[0])) {
+                    $className = $definition[0];
+                } else {
+                    $className = '?';
+                }
+            } elseif (is_object($definition)) {
+                $className = get_class($definition);
+            } else {
+                $className = '?';
+            }
+
+            $options = [];
+
+            if (class_exists($className)) {
+                if (method_exists($className, '__construct')) {
+                    $parameters = (new ReflectionMethod($className, '__construct'))->getParameters();
+                    if (count($parameters) === 1) {
+                        $parameter = $parameters[0];
+                        if ($parameter->getName() !== 'options') {
+                            $options = [$parameter->getName()];
+                        }
+                    }
+                }
+
+                if ($options === []) {
+                    $rc = new ReflectionClass($className);
+                    foreach ($rc->getProperties() as $rp) {
+                        $property = $rp->getName();
+
+                        if ($property[0] !== '_' || isset($component_options[$property])) {
+                            continue;
+                        }
+
+                        $options[] = substr($property, 1);
+                    }
+                }
+            } else {
+                $options[] = '?';
+            }
+
+            $components[$name] = $options;
+        }
+
+        ksort($components);
+
+        foreach ($components as $name => $component) {
+            $this->console->writeLn('  ' . str_pad($name, 24) . '=> ' . json_stringify($component));
+        }
+    }
+
     /**
      * list all components
      *
