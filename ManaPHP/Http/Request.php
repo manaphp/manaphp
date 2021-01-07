@@ -231,6 +231,36 @@ class Request extends Component implements RequestInterface
 
     /**
      * @param string $name
+     * @param mixed  $value
+     *
+     * @return static
+     */
+    public function set($name, $value)
+    {
+        $context = $this->_context;
+
+        $context->_GET[$name] = $value;
+        $context->_REQUEST[$name] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return static
+     */
+    public function delete($name)
+    {
+        $context = $this->_context;
+
+        unset($context->_GET[$name], $context->_POST[$name], $context->_REQUEST[$name]);
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
      *
      * @return int|string
      */

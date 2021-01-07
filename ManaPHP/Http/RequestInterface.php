@@ -60,6 +60,21 @@ interface RequestInterface
 
     /**
      * @param string $name
+     * @param mixed  $value
+     *
+     * @return static
+     */
+    public function set($name, $value);
+
+    /**
+     * @param string $name
+     *
+     * @return static
+     */
+    public function delete($name);
+
+    /**
+     * @param string $name
      *
      * @return int|string
      */
