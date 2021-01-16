@@ -153,6 +153,13 @@ class BashCompletionCommand extends Command
             $words = $this->_getCommands();
         } elseif ($current !== '' && $current[0] === '-') {
             $words = $this->_getArgumentNames($command, $action);
+            foreach ($words as $k => $word) {
+                if (in_array($word, $arguments, true)) {
+                    unset($words[$k]);
+                }
+            }
+
+            $words = array_values($words);
         } elseif ($position === 2) {
             $words = $this->_getActions($command);
         } else {
