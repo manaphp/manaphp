@@ -1,9 +1,8 @@
 version: "2"
 services:
   user_swoole:
-    image: manaphp/php74:3.2
+    image: manaphp/php74:4.1
     volumes:
-      - /usr/share/zoneinfo/PRC:/etc/localtime
       - ./:/var/www/html
       - /data/volumes/${COMPOSE_PROJECT_NAME}/user/data:/var/www/html/data
       - /data/volumes/${COMPOSE_PROJECT_NAME}/user/tmp:/var/www/html/tmp
