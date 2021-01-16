@@ -97,10 +97,16 @@ class BashCompletionCommand extends Command
             }
         }
 
-        if ($current !== '' && $argument_values === [] && str_contains($current, '/')) {
-            $dir = substr($current, 0, strrpos($current, '/'));
-            foreach (glob($dir . '/*') as $item) {
-                $argument_values[] = is_dir($item) ? $item . '/' : $item;
+        if ($current !== '' && $argument_values === []) {
+            if (str_contains($current, '/')) {
+                $dir = substr($current, 0, strrpos($current, '/'));
+                foreach (glob($dir . '/*') as $item) {
+                    $argument_values[] = is_dir($item) ? $item . '/' : $item;
+                }
+            } elseif (preg_match('#^\w+$#', $current)) {
+                foreach (glob('./*') as $item) {
+                    $argument_values[] = is_dir($item) ? basename($item) . '/' : basename($item);
+                }
             }
         }
 
