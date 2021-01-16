@@ -83,6 +83,7 @@
         <li><a href="#events" data-toggle="tab">Events</a></li>
         <li><a href="#sql" data-toggle="tab">SQL</a></li>
         <li><a href="#mongodb" data-toggle="tab">Mongodb</a></li>
+        <li><a href="#tracers" data-toggle="tab">Tracers</a></li>
         <li><a href="#files" data-toggle="tab">Files</a></li>
     </ul>
     <div class="debugger"><a :href="basic.request_url" :title="basic.request_url" target="_self">ReqSrc</a></div>
@@ -322,6 +323,29 @@
                     <td>{{item.raw|json 4}}</td>
                     <td>{{item.shell}}</td>
                     <td>{{item.elapsed}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="tracers">
+            <h4>Tracers</h4>
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                <tr>
+                    <td width="5%">#</td>
+                    <td width="10%">name</td>
+                    <td width="20%">class</td>
+                    <td>properties</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(item, name, index) in tracers">
+                    <td>{{index}}</td>
+                    <td :title="name">{{name}}</td>
+                    <td>{{item.class}}</td>
+                    <td :title="json_stringify(item.properties)">
+                        <pre>{{item.properties|json 4}}</pre>
+                    </td>
                 </tr>
                 </tbody>
             </table>

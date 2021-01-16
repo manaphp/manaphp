@@ -4,6 +4,7 @@ namespace ManaPHP\Debugging;
 
 use ManaPHP\Component;
 use ManaPHP\Event\EventArgs;
+use ManaPHP\Event\Tracer;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
@@ -441,6 +442,7 @@ class DebuggerPlugin extends Plugin
 
         $data['view'] = $context->view;
         $data['components'] = [];
+        $data['tracers'] = [];
         $data['events'] = $context->events;
 
         foreach ($this->_di->getInstances() as $name => $instance) {
@@ -449,7 +451,11 @@ class DebuggerPlugin extends Plugin
             }
 
             $properties = $instance instanceof Component ? $instance->dump() : array_keys(get_object_vars($instance));
-            $data['components'][$name] = ['class' => get_class($instance), 'properties' => $properties];
+            if ($instance instanceof Tracer) {
+                $data['tracers'][$name] = ['class' => get_class($instance), 'properties' => $properties];
+            } else {
+                $data['components'][$name] = ['class' => get_class($instance), 'properties' => $properties];
+            }
         }
 
         $data['included_files'] = @get_included_files() ?: [];
