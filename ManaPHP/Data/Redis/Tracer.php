@@ -93,6 +93,5 @@ class Tracer extends \ManaPHP\Event\Tracer
                 ], 'redis.' . $method
             );
         }
-
     }
 }
