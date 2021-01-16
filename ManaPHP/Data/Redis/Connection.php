@@ -190,6 +190,8 @@ class Connection extends Component
     public function close()
     {
         if ($this->_redis) {
+            $this->fireEvent('redis:close', ['uri' => $this->_uri, 'redis' => $this->_redis]);
+
             $this->_redis->close();
             $this->_redis = null;
             $this->_last_heartbeat = null;
