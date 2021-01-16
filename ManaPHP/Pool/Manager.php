@@ -118,6 +118,8 @@ class Manager extends Component implements ManagerInterface
 
         $queue->push($instance);
 
+        $this->fireEvent('poolManager:push', compact('owner', 'instance', 'type'));
+
         return $this;
     }
 
@@ -136,10 +138,15 @@ class Manager extends Component implements ManagerInterface
             throw new MisuseException(['`%s` pool of `%s` is not exists', $type, get_class($owner)]);
         }
 
+        $this->fireEvent('poolManager:popping', compact('owner', 'type'));
+
         if (!$instance = $timeout ? $queue->pop($timeout) : $queue->pop()) {
+            $this->fireEvent('poolManager:popped', compact('owner', 'type', 'instance'));
             $capacity = $queue->capacity();
             throw new BusyException(['`%s` pool of `%s` is busy: capacity[%d]', $type, get_class($owner), $capacity]);
         }
+
+        $this->fireEvent('poolManager:popped', compact('owner', 'type', 'instance'));
 
         return $instance;
     }
