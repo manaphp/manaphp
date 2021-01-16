@@ -78,10 +78,11 @@ class BashCompletionCommand extends Command
      * @param string $command
      * @param string $action
      * @param string $argumentName
+     * @param string $current
      *
      * @return array
      */
-    protected function _getArgumentValues($command, $action, $argumentName)
+    protected function _getArgumentValues($command, $action, $argumentName, $current)
     {
         if (!$commandClassName = $this->_di->getDefinition(Str::variablize($command) . 'Command')) {
             return [];
@@ -91,7 +92,7 @@ class BashCompletionCommand extends Command
         $action = Str::variablize($action) . 'Completion';
         if (method_exists($commandClassName, $action)) {
             try {
-                $argument_values = $this->getInstance($commandClassName)->$action($argumentName);
+                $argument_values = $this->getInstance($commandClassName)->$action($argumentName, $current);
             } catch (\Exception $e) {
             }
         }
@@ -151,8 +152,7 @@ class BashCompletionCommand extends Command
                 $filtered_words[] = $word;
             }
         }
-
-
+        
         return $filtered_words;
     }
 
@@ -192,7 +192,7 @@ class BashCompletionCommand extends Command
         } elseif ($position === 2) {
             $words = $this->_getActions($command);
         } elseif (str_starts_with($previous, '-') && !str_starts_with($current, '-')) {
-            $words = $this->_getArgumentValues($command, $action, $previous);
+            $words = $this->_getArgumentValues($command, $action, $previous, $current);
         } else {
             $words = $this->_getArgumentNames($command, $action);
             foreach ($words as $k => $word) {
