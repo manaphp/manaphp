@@ -152,7 +152,7 @@ class BashCompletionCommand extends Command
                 $filtered_words[] = $word;
             }
         }
-        
+
         return $filtered_words;
     }
 
