@@ -194,7 +194,7 @@ namespace PHPSTORM_META {
         'db:connecting', 'db:connected', 'db:executing', 'db:executed', 'db:querying', 'db:queried', 'db:close',
         'db:begin', 'db:rollback', 'db:commit',
         'mailer:sending', 'mailer:sent',
-        'redis:connect', 'redis:calling', 'redis:called',
+        'redis:connecting', 'redis:connected', 'redis:calling', 'redis:called',
         'httpClient:requesting', 'httpClient:requested',
         'httpClient:start', 'httpClient:complete', 'httpClient:error', 'httpClient:success',
         'wsClient:open', 'wsClient:close', 'wsClient:send', 'wsClient:recv', 'wsClient:message',

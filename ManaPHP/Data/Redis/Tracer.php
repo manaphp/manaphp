@@ -10,7 +10,7 @@ class Tracer extends \ManaPHP\Event\Tracer
     {
         parent::__construct($options);
 
-        $this->_verbose && $this->attachEvent('redis:connect', [$this, 'onConnect']);
+        $this->_verbose && $this->attachEvent('redis:connecting', [$this, 'onConnecting']);
         $this->attachEvent('redis:calling', [$this, 'onCalling']);
         $this->attachEvent('redis:called', [$this, 'onCalled']);
     }
@@ -20,9 +20,9 @@ class Tracer extends \ManaPHP\Event\Tracer
      *
      * @return void
      */
-    public function onConnect(EventArgs $eventArgs)
+    public function onConnecting(EventArgs $eventArgs)
     {
-        $this->logger->debug(['connect to `:uri`', 'uri' => $eventArgs->data], 'redis.connect');
+        $this->logger->debug(['connecting to `:uri`', 'uri' => $eventArgs->data['uri']], 'redis.connect');
     }
 
     /**

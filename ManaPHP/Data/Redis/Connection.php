@@ -7,6 +7,7 @@ use ManaPHP\Data\Redis\Exception as RedisException;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\RuntimeException;
 use Redis;
+use Throwable;
 
 class Connection extends Component
 {
@@ -137,24 +138,30 @@ class Connection extends Component
     public function getConnect()
     {
         if ($this->_redis === null) {
-            $this->fireEvent('redis:connect', $this->_uri);
+            $this->fireEvent('redis:connecting', ['uri' => $this->_uri]);
 
             $redis = $this->getInstance('Redis');
 
-            if ($this->_persistent) {
-                if (!@$redis->pconnect($this->_host, $this->_port, $this->_timeout, $this->_db)) {
+            try {
+                if ($this->_persistent) {
+                    if (!@$redis->pconnect($this->_host, $this->_port, $this->_timeout, $this->_db)) {
+                        throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->_uri]);
+                    }
+                } elseif (!@$redis->connect($this->_host, $this->_port, $this->_timeout)) {
                     throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->_uri]);
                 }
-            } elseif (!@$redis->connect($this->_host, $this->_port, $this->_timeout)) {
-                throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->_uri]);
-            }
 
-            if ($this->_auth && !$redis->auth($this->_auth)) {
-                throw new AuthException(['`:auth` auth is wrong.', 'auth' => $this->_auth]);
-            }
+                if ($this->_auth && !$redis->auth($this->_auth)) {
+                    throw new AuthException(['`:auth` auth is wrong.', 'auth' => $this->_auth]);
+                }
 
-            if ($this->_db !== 0 && !$redis->select($this->_db)) {
-                throw new RuntimeException(['select `:db` db failed', 'db' => $this->_db]);
+                if ($this->_db !== 0 && !$redis->select($this->_db)) {
+                    throw new RuntimeException(['select `:db` db failed', 'db' => $this->_db]);
+                }
+
+                $this->fireEvent('redis:connected', ['uri' => $this->_uri, 'redis' => $this->_redis]);
+            } catch (Throwable $throwable) {
+                $this->fireEvent('redis:connected', ['uri' => $this->_uri, 'exception' => $throwable]);
             }
 
             $redis->setOption(Redis::OPT_READ_TIMEOUT, -1);
