@@ -153,7 +153,9 @@ class BashCompletionCommand extends Command
             $words = $this->_getCommands();
         } elseif ($position === 2) {
             $words = $this->_getActions($command);
-        } elseif ($current !== '' && $current[0] === '-') {
+        } elseif (str_starts_with($previous, '-') && !str_starts_with($current, '-')) {
+            $words = $this->_getArgumentValues($command, $action, $previous);
+        } else {
             $words = $this->_getArgumentNames($command, $action);
             foreach ($words as $k => $word) {
                 if (in_array($word, $arguments, true)) {
@@ -162,8 +164,6 @@ class BashCompletionCommand extends Command
             }
 
             $words = array_values($words);
-        } else {
-            $words = $this->_getArgumentValues($command, $action, $previous);
         }
 
         $this->console->writeLn(implode(' ', $this->_filterWords($words, $current)));
