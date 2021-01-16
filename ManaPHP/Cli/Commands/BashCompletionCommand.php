@@ -88,7 +88,7 @@ class BashCompletionCommand extends Command
         }
 
         $argument_values = [];
-        $action = Str::camelize($action) . 'Completion';
+        $action = Str::variablize($action) . 'Completion';
         if (method_exists($commandClassName, $action)) {
             try {
                 $argument_values = $this->getInstance($commandClassName)->$action($argumentName);
