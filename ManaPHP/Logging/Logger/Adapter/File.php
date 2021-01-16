@@ -17,11 +17,6 @@ class File extends Logger
     protected $_format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
 
     /**
-     * @var string
-     */
-    protected $_tail = PHP_EOL;
-
-    /**
      * @param array $options
      */
     public function __construct($options = [])
@@ -36,19 +31,6 @@ class File extends Logger
 
         if (isset($options['format'])) {
             $this->_format = $options['format'];
-        }
-
-        if (isset($options['tail'])) {
-            $this->_tail = $options['tail'];
-        }
-    }
-
-    public function onRequestEnd()
-    {
-        parent::onRequestEnd();
-
-        if ($this->_tail !== '') {
-            $this->_write($this->_tail);
         }
     }
 
