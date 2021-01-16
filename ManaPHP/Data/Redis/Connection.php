@@ -237,6 +237,16 @@ class Connection extends Component
             $this->_multi = false;
         }
 
+        $this->_last_heartbeat = microtime(true);
+
         return $r;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getLastHeartbeat()
+    {
+        return $this->_last_heartbeat;
     }
 }
