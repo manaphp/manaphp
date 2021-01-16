@@ -111,6 +111,10 @@ class BashCompletionCommand extends Command
             return $words;
         }
 
+        if (in_array($current, $words, true)) {
+            return [$current];
+        }
+
         $filtered_words = [];
 
         foreach ($words as $word) {
@@ -118,6 +122,36 @@ class BashCompletionCommand extends Command
                 $filtered_words[] = $word;
             }
         }
+
+        if ($filtered_words !== []) {
+            return $filtered_words;
+        }
+
+        if (preg_match('#^\w#', $current)) {
+            $prefix = $current[0];
+        } else {
+            $prefix = preg_match('#^\W+\w#', $current, $match) ? $match[0] : '';
+        }
+
+        $chars = str_split($current, 1);
+
+        foreach ($words as $word) {
+            if (!str_starts_with($word, $prefix)) {
+                continue;
+            }
+
+            $pos = 0;
+            foreach ($chars as $char) {
+                if (($pos = stripos($word, $char, $pos)) === false) {
+                    break;
+                }
+            }
+
+            if ($pos !== false) {
+                $filtered_words[] = $word;
+            }
+        }
+
 
         return $filtered_words;
     }
