@@ -13,7 +13,7 @@ class Tracer extends \ManaPHP\Event\Tracer
     {
         parent::__construct($options);
 
-        $this->_verbose && $this->attachEvent('db:connect', [$this, 'onConnect']);
+        $this->_verbose && $this->attachEvent('db:connecting', [$this, 'onConnecting']);
         $this->attachEvent('db:queried', [$this, 'onQueried']);
         $this->attachEvent('db:executed', [$this, 'onExecuted']);
         $this->attachEvent('db:inserted', [$this, 'onInserted']);
@@ -29,9 +29,9 @@ class Tracer extends \ManaPHP\Event\Tracer
      *
      * @return void
      */
-    public function onConnect(EventArgs $eventArgs)
+    public function onConnecting(EventArgs $eventArgs)
     {
-        $this->logger->debug(['connect to `:dsn`', 'dsn' => $eventArgs->data], 'db.connect');
+        $this->logger->debug(['connecting to `:dsn`', 'dsn' => $eventArgs->data['dsn']], 'db.connect');
     }
 
     /**

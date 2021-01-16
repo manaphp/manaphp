@@ -191,7 +191,7 @@ namespace PHPSTORM_META {
         'response:sending', 'response:sent',
         'model:creating', 'model:created', 'model:saving', 'model:saved',
         'model:updating', 'model:updated', 'model:deleting', 'model:deleted',
-        'db:connect', 'db:executing', 'db:executed', 'db:querying', 'db:queried',
+        'db:connecting', 'db:connected', 'db:executing', 'db:executed', 'db:querying', 'db:queried',
         'db:begin', 'db:rollback', 'db:commit',
         'mailer:sending', 'mailer:sent',
         'redis:connect', 'redis:calling', 'redis:called',

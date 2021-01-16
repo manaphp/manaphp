@@ -101,14 +101,19 @@ abstract class Connection extends Component implements ConnectionInterface
     protected function _getPdo()
     {
         if ($this->_pdo === null) {
-            $this->fireEvent('db:connect', $this->_dsn);
+            $this->fireEvent('db:connecting', ['dsn' => $this->_dsn, 'uri' => $this->_uri]);
+
             try {
                 $params = [$this->_dsn, $this->_username, $this->_password, $this->_options];
                 $this->_pdo = $this->getInstance('PDO', $params);
             } catch (PDOException $e) {
+                $this->fireEvent('db:connected', ['dsn' => $this->_dsn, 'uri' => $this->_uri]);
+
                 $code = $e->getCode();
                 throw new ConnectionException(['connect `%s` failed: %s', $this->_dsn, $e->getMessage()], $code, $e);
             }
+
+            $this->fireEvent('db:connected', ['dsn' => $this->_dsn, 'uri' => $this->_uri, 'pdo' => $this->_pdo]);
         }
 
         return $this->_pdo;
