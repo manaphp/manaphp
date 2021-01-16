@@ -119,6 +119,16 @@ class BashCompletionCommand extends Command
         $filtered_words = [];
 
         foreach ($words as $word) {
+            if (str_contains($word, $current)) {
+                $filtered_words[] = $word;
+            }
+        }
+
+        if ($filtered_words !== []) {
+            return $filtered_words;
+        }
+
+        foreach ($words as $word) {
             if (stripos($word, $current) !== false) {
                 $filtered_words[] = $word;
             }
