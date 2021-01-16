@@ -271,6 +271,8 @@ abstract class Connection extends Component implements ConnectionInterface
     public function close()
     {
         if ($this->_pdo) {
+            $this->fireEvent('db:close', ['dsn' => $this->_dsn, 'uri' => $this->_uri, 'pdo' => $this->_pdo]);
+
             $this->_pdo = null;
             $this->_prepared = [];
             if ($this->_in_transaction) {
