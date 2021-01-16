@@ -107,10 +107,14 @@ class BashCompletionCommand extends Command
      */
     protected function _filterWords($words, $current)
     {
+        if ($current === '') {
+            return $words;
+        }
+
         $filtered_words = [];
 
         foreach ($words as $word) {
-            if ($current === '' || stripos($word, $current) !== false) {
+            if (stripos($word, $current) !== false) {
                 $filtered_words[] = $word;
             }
         }
