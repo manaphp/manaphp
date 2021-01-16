@@ -61,6 +61,11 @@ abstract class Connection extends Component implements ConnectionInterface
      */
     protected $_readonly = false;
 
+    /**
+     * @var float
+     */
+    protected $_last_heartbeat;
+
     public function __construct()
     {
         $this->_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
@@ -71,6 +76,7 @@ abstract class Connection extends Component implements ConnectionInterface
     {
         $this->_pdo = null;
         $this->_in_transaction = false;
+        $this->_last_heartbeat = null;
         $this->_prepared = [];
     }
 
@@ -186,6 +192,8 @@ abstract class Connection extends Component implements ConnectionInterface
 
         @$statement->execute($tr);
 
+        $this->_last_heartbeat = microtime(true);
+
         return $statement;
     }
 
@@ -274,12 +282,21 @@ abstract class Connection extends Component implements ConnectionInterface
             $this->fireEvent('db:close', ['dsn' => $this->_dsn, 'uri' => $this->_uri, 'pdo' => $this->_pdo]);
 
             $this->_pdo = null;
+            $this->_last_heartbeat = null;
             $this->_prepared = [];
             if ($this->_in_transaction) {
                 $this->_in_transaction = false;
                 $this->fireEvent('db:abnormal');
             }
         }
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getLastHeartbeat()
+    {
+        return $this->_last_heartbeat;
     }
 
     public function begin()
