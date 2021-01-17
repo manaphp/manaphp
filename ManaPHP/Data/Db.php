@@ -224,8 +224,8 @@ class Db extends Component implements DbInterface
 
         $context->affected_rows = 0;
 
-        $this->fireEvent('db:executing');
-        $event && $this->fireEvent('db:' . $event[0]);
+        $this->fireEvent('db:executing', compact('type', 'sql', 'bind'));
+        $event && $this->fireEvent('db:' . $event[0], compact('type', 'sql', 'bind'));
 
         if ($context->connection) {
             $connection = $context->connection;
@@ -244,10 +244,9 @@ class Db extends Component implements DbInterface
         }
 
         $count = $context->affected_rows;
-        $event_data = compact('type', 'count', 'sql', 'bind', 'elapsed');
 
-        $event && $this->fireEvent('db:' . $event[1], $event_data);
-        $this->fireEvent('db:executed', $event_data);
+        $event && $this->fireEvent('db:' . $event[1], compact('type', 'count', 'sql', 'bind', 'elapsed'));
+        $this->fireEvent('db:executed', compact('type', 'count', 'sql', 'bind', 'elapsed'));
 
         return $count;
     }
@@ -423,9 +422,7 @@ class Db extends Component implements DbInterface
             }
         }
 
-        $event_data = compact('sql', 'record', 'elapsed', 'insert_id', 'bind');
-
-        $this->fireEvent('db:inserted', $event_data);
+        $this->fireEvent('db:inserted', compact('sql', 'record', 'elapsed', 'insert_id', 'bind'));
 
         return $insert_id;
     }
