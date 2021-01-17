@@ -150,8 +150,7 @@ class Renderer extends Component implements RendererInterface
 
         $context->templates[] = $template;
 
-        $eventArguments = ['file' => $file, 'vars' => $vars];
-        $this->fireEvent('renderer:rendering', $eventArguments);
+        $this->fireEvent('renderer:rendering', compact('template', 'file', 'vars'));
 
         $vars['renderer'] = $this;
         $vars['di'] = $this->_di;
@@ -169,7 +168,7 @@ class Renderer extends Component implements RendererInterface
             }
         }
 
-        $this->fireEvent('renderer:rendered', $eventArguments);
+        $this->fireEvent('renderer:rendered', compact('template', 'file', 'vars'));
 
         array_pop($context->templates);
 
