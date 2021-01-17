@@ -47,10 +47,10 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         $request_context->_SERVER = $this->socketServer->getClientInfo($fd);
         $request_context->_REQUEST['fd'] = $fd;
 
-        $this->fireEvent('socketServer:connecting', $fd);
+        $this->fireEvent('socketServer:connecting', compact('fd'));
 
         $this->invoke('connect');
-        $this->fireEvent('socketServer:connected', $fd);
+        $this->fireEvent('socketServer:connected', compact('fd'));
 
         $response = $this->response->getContext();
         if ($response->content !== null) {
@@ -98,9 +98,9 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         $request_context->_SERVER = $this->socketServer->getClientInfo($fd);
         $request_context->_REQUEST['fd'] = $fd;
 
-        $this->fireEvent('socketServer:closing', $fd);
+        $this->fireEvent('socketServer:closing', compact('fd'));
         $this->invoke('close');
-        $this->fireEvent('socketServer:closed', $fd);
+        $this->fireEvent('socketServer:closed', compact('fd'));
     }
 
     public function main()
