@@ -66,16 +66,14 @@ class Application extends \ManaPHP\Application implements HandlerInterface
      */
     public function onReceive($fd, $data)
     {
-        $event_data = compact('fd', 'data');
-
         $request_context = $this->request->getContext();
         $request_context->_SERVER = $this->socketServer->getClientInfo($fd);
         $request_context->_REQUEST['fd'] = $fd;
         $request_context->_REQUEST['data'] = $data;
 
-        $this->fireEvent('socketServer:receiving', $event_data);
+        $this->fireEvent('socketServer:receiving', compact('fd', 'data'));
         $this->invoke('receive');
-        $this->fireEvent('socketServer:received', $event_data);
+        $this->fireEvent('socketServer:received', compact('fd', 'data'));
 
         $response = $this->response->getContext();
         if ($response->content !== null) {
