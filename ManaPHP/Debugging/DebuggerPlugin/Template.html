@@ -250,13 +250,17 @@
                 <thead>
                 <tr>
                     <td>#</td>
-                    <td>message</td>
+                    <td>event</td>
+                    <td>source</td>
+                    <td>data</td>
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(item, index) in events">
+                <tr v-for="(event, index) in events">
                     <td>{{index}}</td>
-                    <td>{{item}}</td>
+                    <td>{{event.event}}</td>
+                    <td>{{event.source}}</td>
+                    <td>{{event.data}}</td>
                 </tr>
                 </tbody>
             </table>

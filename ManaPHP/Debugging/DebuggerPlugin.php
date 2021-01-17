@@ -245,7 +245,21 @@ class DebuggerPlugin extends Plugin
      */
     public function onEvent(EventArgs $eventArgs)
     {
-        $this->_context->events[] = $eventArgs->event;
+        $event['event'] = $eventArgs->event;
+        $event['source'] = get_class($eventArgs->source);
+
+        $data = $eventArgs->data;
+        if (is_scalar($data) || $data === null) {
+            $event['data'] = gettype($data);
+        } elseif (is_array($data)) {
+            $event['data'] = array_keys($data);
+        } elseif (is_object($data)) {
+            $event['data'] = get_class($data);
+        } else {
+            $event['data'] = '???';
+        }
+
+        $this->_context->events[] = $event;
     }
 
     /**
