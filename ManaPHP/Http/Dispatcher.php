@@ -216,15 +216,13 @@ class Dispatcher extends Component implements DispatcherInterface
     {
         $controller->validateInvokable($action);
 
-        $event_data = ['controller' => $controller, 'action' => $action];
+        $this->fireEvent('request:authorize', compact('controller', 'action'));
 
-        $this->fireEvent('request:authorize', $event_data);
+        $this->fireEvent('request:validate', compact('controller', 'action'));
 
-        $this->fireEvent('request:validate', $event_data);
+        $this->fireEvent('request:ready', compact('controller', 'action'));
 
-        $this->fireEvent('request:ready', $event_data);
-
-        $this->fireEvent('request:invoking', $event_data);
+        $this->fireEvent('request:invoking', compact('controller', 'action'));
 
         try {
             $context = $this->_context;
