@@ -177,24 +177,24 @@ class Workerman extends Server
     }
 
     /**
-     * @param \ManaPHP\Http\ResponseContext $response
+     * @param \ManaPHP\Http\ResponseContext $context
      *
      * @return void
      */
-    public function send($response)
+    public function send($context)
     {
-        $this->fireEvent('response:sending', $response);
+        $this->fireEvent('response:sending', $context);
 
-        Http::header('HTTP', true, $response->status_code);
+        Http::header('HTTP', true, $context->status_code);
 
-        foreach ($response->headers as $name => $value) {
+        foreach ($context->headers as $name => $value) {
             Http::header("$name: $value");
         }
 
         Http::header('X-Request-Id: ' . $this->request->getRequestId());
         Http::header('X-Response-Time: ' . $this->request->getElapsedTime());
 
-        foreach ($response->cookies as $cookie) {
+        foreach ($context->cookies as $cookie) {
             Http::setcookie(
                 $cookie['name'],
                 $cookie['value'],
@@ -206,15 +206,15 @@ class Workerman extends Server
             );
         }
 
-        if ($response->status_code === 304) {
+        if ($context->status_code === 304) {
             $this->_context->connection->close('');
         } elseif ($this->request->isHead()) {
-            Http::header('Content-Length: ' . strlen($response->content));
+            Http::header('Content-Length: ' . strlen($context->content));
             $this->_context->connection->close('');
         } else {
-            $this->_context->connection->close($response->content);
+            $this->_context->connection->close($context->content);
         }
 
-        $this->fireEvent('response:sent', $response);
+        $this->fireEvent('response:sent', $context);
     }
 }

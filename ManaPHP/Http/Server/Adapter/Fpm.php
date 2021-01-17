@@ -33,21 +33,21 @@ class Fpm extends Server
     }
 
     /**
-     * @param \ManaPHP\Http\ResponseContext $response
+     * @param \ManaPHP\Http\ResponseContext $context
      *
      * @return static
      */
-    public function send($response)
+    public function send($context)
     {
         if (headers_sent($file, $line)) {
             throw new MisuseException("Headers has been sent in $file:$line");
         }
 
-        $this->fireEvent('response:sending', $response);
+        $this->fireEvent('response:sending', $context);
 
-        header('HTTP/1.1 ' . $response->status_code . ' ' . $response->status_text);
+        header('HTTP/1.1 ' . $context->status_code . ' ' . $context->status_text);
 
-        foreach ($response->headers as $header => $value) {
+        foreach ($context->headers as $header => $value) {
             if ($value !== null) {
                 header($header . ': ' . $value);
             } else {
@@ -55,7 +55,7 @@ class Fpm extends Server
             }
         }
 
-        foreach ($response->cookies as $cookie) {
+        foreach ($context->cookies as $cookie) {
             setcookie(
                 $cookie['name'],
                 $cookie['value'],
@@ -70,17 +70,17 @@ class Fpm extends Server
         header('X-Request-Id: ' . $this->request->getRequestId());
         header('X-Response-Time: ' . $this->request->getElapsedTime());
 
-        if ($response->status_code === 304) {
+        if ($context->status_code === 304) {
             null;
         } elseif ($this->request->isHead()) {
-            header('Content-Length: ' . strlen($response->content));
-        } elseif ($response->file) {
-            readfile($this->alias->resolve($response->file));
+            header('Content-Length: ' . strlen($context->content));
+        } elseif ($context->file) {
+            readfile($this->alias->resolve($context->file));
         } else {
-            echo $response->content;
+            echo $context->content;
         }
 
-        $this->fireEvent('response:sent', $response);
+        $this->fireEvent('response:sent', $context);
 
         return $this;
     }

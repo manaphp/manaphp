@@ -208,26 +208,26 @@ class Swoole extends Server
     }
 
     /**
-     * @param \ManaPHP\Http\ResponseContext $response
+     * @param \ManaPHP\Http\ResponseContext $context
      *
      * @return void
      */
-    public function send($response)
+    public function send($context)
     {
-        $this->fireEvent('response:sending', $response);
+        $this->fireEvent('response:sending', $context);
 
         $sw_response = $this->_context->response;
 
-        $sw_response->status($response->status_code);
+        $sw_response->status($context->status_code);
 
-        foreach ($response->headers as $name => $value) {
+        foreach ($context->headers as $name => $value) {
             $sw_response->header($name, $value, false);
         }
 
         $sw_response->header('X-Request-Id', $this->request->getRequestId(), false);
         $sw_response->header('X-Response-Time', $this->request->getElapsedTime(), false);
 
-        foreach ($response->cookies as $cookie) {
+        foreach ($context->cookies as $cookie) {
             $sw_response->cookie(
                 $cookie['name'],
                 $cookie['value'],
@@ -239,17 +239,17 @@ class Swoole extends Server
             );
         }
 
-        if ($response->status_code === 304) {
+        if ($context->status_code === 304) {
             $sw_response->end('');
         } elseif ($this->request->isHead()) {
-            $sw_response->header('Content-Length', strlen($response->content), false);
+            $sw_response->header('Content-Length', strlen($context->content), false);
             $sw_response->end('');
-        } elseif ($response->file) {
-            $sw_response->sendfile($this->alias->resolve($response->file));
+        } elseif ($context->file) {
+            $sw_response->sendfile($this->alias->resolve($context->file));
         } else {
-            $sw_response->end($response->content);
+            $sw_response->end($context->content);
         }
 
-        $this->fireEvent('response:sent', $response);
+        $this->fireEvent('response:sent', $context);
     }
 }
