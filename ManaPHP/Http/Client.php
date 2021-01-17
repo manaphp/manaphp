@@ -166,7 +166,7 @@ class Client extends Component implements ClientInterface
 
         $request = new Request($method, $url, $body, $headers, $options);
 
-        $this->fireEvent('httpClient:start', $request);
+        $this->fireEvent('httpClient:start', compact('method', 'url', 'request'));
 
         try {
             $success = false;
@@ -182,7 +182,7 @@ class Client extends Component implements ClientInterface
             $engine = $this->poolManager->pop($this, $options['timeout'], $engine_id);
 
             try {
-                $this->fireEvent('httpClient:requesting', $request);
+                $this->fireEvent('httpClient:requesting', compact('method', 'url', 'request'));
 
                 $response = $engine->request($request, $this->_keepalive);
 
@@ -199,15 +199,15 @@ class Client extends Component implements ClientInterface
                 $response->body = $response->body === '' ? [] : json_parse($response->body);
             }
 
-            $this->fireEvent('httpClient:requested', $response);
+            $this->fireEvent('httpClient:requested', compact('method', 'url', 'request', 'response'));
         } finally {
             if ($success) {
-                $this->fireEvent('httpClient:success', $response);
+                $this->fireEvent('httpClient:success', compact('method', 'url', 'request', 'response'));
             } else {
-                $this->fireEvent('httpClient:error', $request);
+                $this->fireEvent('httpClient:error', compact('method', 'url', 'request'));
             }
 
-            $this->fireEvent('httpClient:complete', $response);
+            $this->fireEvent('httpClient:complete', compact('method', 'url', 'request', 'response'));
         }
 
         $http_code = $response->http_code;

@@ -39,7 +39,7 @@ class RequestIdPlugin extends Plugin
     public function onHttpClientRequesting(EventArgs $eventArgs)
     {
         /** @var Request $request */
-        $request = $eventArgs->data;
+        $request = $eventArgs->data['request'];
 
         if (!isset($request->headers['X-Request-Id'])) {
             $request->headers['X-Request-Id'] = $this->request->getRequestId();

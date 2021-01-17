@@ -22,7 +22,7 @@ class Tracer extends \ManaPHP\Event\Tracer
     public function onRequesting(EventArgs $eventArgs)
     {
         /** @var \ManaPHP\Http\Client\Request $request */
-        $request = $eventArgs->data;
+        $request = $eventArgs->data['request'];
 
         if ($request->method === 'POST' && $request->body) {
             $this->logger->info($eventArgs->data, 'httpClient.request');
@@ -37,7 +37,7 @@ class Tracer extends \ManaPHP\Event\Tracer
     public function onRequested(EventArgs $eventArgs)
     {
         /** @var \ManaPHP\Http\Client\Response $response */
-        $response = clone $eventArgs->data;
+        $response = clone $eventArgs->data['response'];
 
         if (!$this->_verbose) {
             unset($response->stats, $response->headers);
