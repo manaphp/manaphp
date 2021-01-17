@@ -257,13 +257,13 @@ class Redis extends Component implements RedisInterface
      */
     public function __call($method, $arguments)
     {
-        $this->fireEvent('redis:calling', ['method' => $method, 'arguments' => $arguments]);
+        $this->fireEvent('redis:calling', compact('method', 'arguments'));
 
-        $r = $this->call($method, $arguments);
+        $return = $this->call($method, $arguments);
 
-        $this->fireEvent('redis:called', ['method' => $method, 'arguments' => $arguments, 'return' => $r]);
+        $this->fireEvent('redis:called', compact('method', 'arguments', 'return'));
 
-        return $r;
+        return $return;
     }
 
     /**
