@@ -177,7 +177,7 @@ class LoggerPlugin extends Plugin
         $context = $this->_context;
 
         /** @var \ManaPHP\Logging\Logger\Log $log */
-        $log = $eventArgs->data;
+        $log = $eventArgs->data['log'];
 
         if ($context->enabled) {
             $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);

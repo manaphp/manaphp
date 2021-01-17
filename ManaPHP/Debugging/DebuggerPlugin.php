@@ -258,7 +258,7 @@ class DebuggerPlugin extends Plugin
         $context = $this->_context;
 
         /** @var \ManaPHP\Logging\Logger\Log $log */
-        $log = $eventArgs->data;
+        $log = $eventArgs->data['log'];
         $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
         $context->log[] = [
             'time'     => date('H:i:s', $log->timestamp) . $ms,
