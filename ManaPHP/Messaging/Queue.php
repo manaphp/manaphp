@@ -22,7 +22,7 @@ abstract class Queue extends Component implements QueueInterface
      */
     public function push($topic, $body, $priority = self::PRIORITY_NORMAL)
     {
-        $this->fireEvent('msgQueue:push', ['topic' => $topic]);
+        $this->fireEvent('msgQueue:push', compact('topic', 'body', 'priority'));
 
         $this->do_push($topic, $body, $priority);
     }
@@ -44,7 +44,7 @@ abstract class Queue extends Component implements QueueInterface
     public function pop($topic, $timeout = PHP_INT_MAX)
     {
         if (($msg = $this->do_pop($topic, $timeout)) !== false) {
-            $this->fireEvent('msgQueue:pop', ['topic' => $topic, 'msg' => $msg]);
+            $this->fireEvent('msgQueue:pop', compact('topic', 'msg'));
         }
 
         return $msg;
@@ -64,7 +64,7 @@ abstract class Queue extends Component implements QueueInterface
      */
     public function delete($topic)
     {
-        $this->fireEvent('msgQueue:delete', ['topic' => $topic]);
+        $this->fireEvent('msgQueue:delete', compact('topic'));
         $this->do_delete($topic);
     }
 
