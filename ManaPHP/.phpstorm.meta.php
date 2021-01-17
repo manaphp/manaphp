@@ -202,6 +202,7 @@ namespace PHPSTORM_META {
         'view:rendering', 'view:rendered',
         'renderer:rendering', 'renderer:rendered',
         'poolManager:push', 'poolManager:popping', 'poolManager:popped',
+        'cache:miss', 'cache:hit',
     );
     expectedArguments(\ManaPHP\Event\ManagerInterface::attachEvent(), 0, argumentsSet('eventsManager'));
     expectedArguments(\ManaPHP\Component::attachEvent(), 0, argumentsSet('eventsManager'));
