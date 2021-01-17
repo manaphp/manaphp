@@ -78,9 +78,9 @@ class Application extends \ManaPHP\Application implements HandlerInterface
             }
 
             if ($event === 'open') {
-                $this->fireEvent('wsServer:open', $fd);
+                $this->fireEvent('wsServer:open', compact('fd'));
             } elseif ($event === 'close') {
-                $this->fireEvent('wsServer:close', $fd);
+                $this->fireEvent('wsServer:close', compact('fd'));
             }
         } catch (AbortException $exception) {
             null;
