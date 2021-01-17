@@ -138,7 +138,9 @@ class Connection extends Component
     public function getConnect()
     {
         if ($this->_redis === null) {
-            $this->fireEvent('redis:connecting', ['uri' => $this->_uri]);
+            $uri = $this->_uri;
+
+            $this->fireEvent('redis:connecting', compact('uri'));
 
             $redis = $this->getInstance('Redis');
 
@@ -159,9 +161,9 @@ class Connection extends Component
                     throw new RuntimeException(['select `:db` db failed', 'db' => $this->_db]);
                 }
 
-                $this->fireEvent('redis:connected', ['uri' => $this->_uri, 'redis' => $this->_redis]);
-            } catch (Throwable $throwable) {
-                $this->fireEvent('redis:connected', ['uri' => $this->_uri, 'exception' => $throwable]);
+                $this->fireEvent('redis:connected', compact('uri', 'redis'));
+            } catch (Throwable $exception) {
+                $this->fireEvent('redis:connected', compact('uri', 'exception'));
             }
 
             $redis->setOption(Redis::OPT_READ_TIMEOUT, -1);
@@ -190,7 +192,9 @@ class Connection extends Component
     public function close()
     {
         if ($this->_redis) {
-            $this->fireEvent('redis:close', ['uri' => $this->_uri, 'redis' => $this->_redis]);
+            $uri = $this->_uri;
+            $redis = $this->_redis;
+            $this->fireEvent('redis:close', compact('uri', 'redis'));
 
             $this->_redis->close();
             $this->_redis = null;
