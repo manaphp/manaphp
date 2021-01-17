@@ -76,7 +76,7 @@ class DebuggerPlugin extends Plugin
     /**
      * @var int
      */
-    protected $_ttl = 300;
+    protected $_ttl = 3600;
 
     /**
      * @var string
