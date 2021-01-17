@@ -229,14 +229,14 @@ class Dispatcher extends Component implements DispatcherInterface
         try {
             $context = $this->_context;
             $context->isInvoking = true;
-            $r = $controller->invoke($action);
+            $return = $controller->invoke($action);
         } finally {
             $context->isInvoking = false;
         }
 
-        $this->fireEvent('request:invoked', ['controller' => $controller, 'action' => $action, 'return' => $r]);
+        $this->fireEvent('request:invoked', compact('controller', 'action', 'return'));
 
-        return $r;
+        return $return;
     }
 
     /**
