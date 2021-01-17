@@ -1,8 +1,8 @@
-version: "2"
-services:
-  rpc_fpm:
-    image: manaphp/php74:4.1
-    volumes:
+version : "2"
+services :
+  rpc_fpm :
+    image : manaphp/php74:4.1
+    volumes :
       - ../:/var/www/html
       - ./fpm/conf.d:/etc/php/conf.d
       - /data/volumes/${COMPOSE_PROJECT_NAME}/rpc/data:/var/www/html/data
@@ -10,16 +10,16 @@ services:
       - /data/volumes/${COMPOSE_PROJECT_NAME}/rpc/fpm/:/var/log/php
       - ../../../ManaPHP:/var/www/html/vendor/manaphp/framework
     command : /usr/bin/bash -c "chown www-data:www-data data tmp &&exec php-fpm --nodaemonize"
-    restart: always
-  rpc_nginx:
-    image: nginx:1.19.6
-    volumes:
+    restart : always
+  rpc_nginx :
+    image : nginx:1.19.6
+    volumes :
       - /usr/share/zoneinfo/PRC:/etc/localtime
       - ../:/var/www/html
       - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/docker-entrypoint.sh:/docker-entrypoint.sh
       - /data/volumes/${COMPOSE_PROJECT_NAME}/rpc/nginx:/var/log/nginx
-    entrypoint: /docker-entrypoint.sh nginx -g "daemon off;"
-    ports:
+    entrypoint : /docker-entrypoint.sh nginx -g "daemon off;"
+    ports :
       - ${WEB_PORT}:80
-    restart: always
+    restart : always

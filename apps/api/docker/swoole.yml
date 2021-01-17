@@ -1,13 +1,13 @@
-version: "2"
-services:
-  api_swoole:
-    image: manaphp/php74:4.1
-    volumes:
+version : "2"
+services :
+  api_swoole :
+    image : manaphp/php74:4.1
+    volumes :
       - ../:/var/www/html
       - /data/volumes/${COMPOSE_PROJECT_NAME}/api/data:/var/www/html/data
       - /data/volumes/${COMPOSE_PROJECT_NAME}/api/tmp:/var/www/html/tmp
       - ../../../ManaPHP:/var/www/html/vendor/manaphp/framework
-    command: php /var/www/html/public/index.php
-    ports:
+    command : php /var/www/html/public/index.php
+    ports :
       - ${WEB_PORT}:9501
-    restart: always
+    restart : always
