@@ -107,19 +107,22 @@ abstract class Connection extends Component implements ConnectionInterface
     protected function _getPdo()
     {
         if ($this->_pdo === null) {
-            $this->fireEvent('db:connecting', ['dsn' => $this->_dsn, 'uri' => $this->_uri]);
+            $dsn = $this->_dsn;
+            $uri = $this->_uri;
+
+            $this->fireEvent('db:connecting', compact('dsn', 'uri'));
 
             try {
-                $params = [$this->_dsn, $this->_username, $this->_password, $this->_options];
-                $this->_pdo = $this->getInstance('PDO', $params);
+                $params = [$dsn, $this->_username, $this->_password, $this->_options];
+                $this->_pdo = $pdo = $this->getInstance('PDO', $params);
             } catch (PDOException $e) {
-                $this->fireEvent('db:connected', ['dsn' => $this->_dsn, 'uri' => $this->_uri]);
+                $this->fireEvent('db:connected', compact('dsn', 'uri'));
 
                 $code = $e->getCode();
-                throw new ConnectionException(['connect `%s` failed: %s', $this->_dsn, $e->getMessage()], $code, $e);
+                throw new ConnectionException(['connect `%s` failed: %s', $dsn, $e->getMessage()], $code, $e);
             }
 
-            $this->fireEvent('db:connected', ['dsn' => $this->_dsn, 'uri' => $this->_uri, 'pdo' => $this->_pdo]);
+            $this->fireEvent('db:connected', compact('dsn', 'uri', 'pdo'));
         }
 
         return $this->_pdo;
@@ -279,15 +282,19 @@ abstract class Connection extends Component implements ConnectionInterface
     public function close()
     {
         if ($this->_pdo) {
-            $this->fireEvent('db:close', ['dsn' => $this->_dsn, 'uri' => $this->_uri, 'pdo' => $this->_pdo]);
+            $dsn = $this->_dsn;
+            $uri = $this->_uri;
+            $pdo = $this->_pdo;
+            $this->fireEvent('db:close', compact('dsn', 'uri', 'pdo'));
+
+            if ($this->_in_transaction) {
+                $this->_in_transaction = false;
+                $this->fireEvent('db:abnormal', compact('dsn', 'uri', 'pdo'));
+            }
 
             $this->_pdo = null;
             $this->_last_heartbeat = null;
             $this->_prepared = [];
-            if ($this->_in_transaction) {
-                $this->_in_transaction = false;
-                $this->fireEvent('db:abnormal');
-            }
         }
     }
 
