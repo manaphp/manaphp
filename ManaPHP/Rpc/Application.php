@@ -42,10 +42,10 @@ class Application extends \ManaPHP\Application implements HandlerInterface
             }
         } catch (AbortException $exception) {
             null;
-        } catch (Throwable $throwable) {
-            $this->fireEvent('request:exception', $throwable);
+        } catch (Throwable $exception) {
+            $this->fireEvent('request:exception', compact('exception'));
 
-            $this->handleException($throwable);
+            $this->handleException($exception);
         }
 
         $this->rpcServer->send($this->response->getContext());
