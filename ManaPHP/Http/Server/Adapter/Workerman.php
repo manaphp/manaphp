@@ -183,7 +183,7 @@ class Workerman extends Server
      */
     public function send($context)
     {
-        $this->fireEvent('response:sending', $context);
+        $this->fireEvent('response:sending', compact('context'));
 
         Http::header('HTTP', true, $context->status_code);
 
@@ -215,6 +215,6 @@ class Workerman extends Server
             $this->_context->connection->close($context->content);
         }
 
-        $this->fireEvent('response:sent', $context);
+        $this->fireEvent('response:sent', compact('context'));
     }
 }

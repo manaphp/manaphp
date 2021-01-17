@@ -43,7 +43,7 @@ class Fpm extends Server
             throw new MisuseException("Headers has been sent in $file:$line");
         }
 
-        $this->fireEvent('response:sending', $context);
+        $this->fireEvent('response:sending', compact('context'));
 
         header('HTTP/1.1 ' . $context->status_code . ' ' . $context->status_text);
 
@@ -80,7 +80,7 @@ class Fpm extends Server
             echo $context->content;
         }
 
-        $this->fireEvent('response:sent', $context);
+        $this->fireEvent('response:sent', compact('context'));
 
         return $this;
     }

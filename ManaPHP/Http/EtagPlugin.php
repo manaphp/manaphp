@@ -43,7 +43,7 @@ class EtagPlugin extends Plugin
     public function onResponseSending(EventArgs $eventArgs)
     {
         /** @var \ManaPHP\Http\ResponseContext $responseContext */
-        $responseContext = $eventArgs->data;
+        $responseContext = $eventArgs->data['context'];
         if ($responseContext->status_code !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
             return;
         }

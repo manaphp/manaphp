@@ -186,7 +186,7 @@ class PageCachePlugin extends Plugin
         }
 
         /** @var \ManaPHP\Http\ResponseContext $responseContext */
-        $responseContext = $eventArgs->data;
+        $responseContext = $eventArgs->data['context'];
         if ($responseContext->status_code !== 200) {
             return;
         }

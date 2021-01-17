@@ -136,7 +136,7 @@ class FiddlerPlugin extends Plugin
     public function onResponseSent(EventArgs $eventArgs)
     {
         /** @var \ManaPHP\Http\ResponseContext $responseContext */
-        $responseContext = $eventArgs->data;
+        $responseContext = $eventArgs->data['context'];
 
         if ($this->watched()) {
             $data = [
