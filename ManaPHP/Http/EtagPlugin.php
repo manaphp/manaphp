@@ -42,25 +42,25 @@ class EtagPlugin extends Plugin
      */
     public function onResponseSending(EventArgs $eventArgs)
     {
-        /** @var \ManaPHP\Http\ResponseContext $response */
-        $response = $eventArgs->data;
-        if ($response->status_code !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
+        /** @var \ManaPHP\Http\ResponseContext $responseContext */
+        $responseContext = $eventArgs->data;
+        if ($responseContext->status_code !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
             return;
         }
 
-        if (isset($response->headers['ETag'])) {
-            $etag = $response->headers['ETag'];
+        if (isset($responseContext->headers['ETag'])) {
+            $etag = $responseContext->headers['ETag'];
         } else {
-            $etag = hash($this->_algo, $response->content);
-            $response->headers['ETag'] = $etag;
+            $etag = hash($this->_algo, $responseContext->content);
+            $responseContext->headers['ETag'] = $etag;
         }
 
         $if_none_match = $this->request->getIfNoneMatch();
         if ($if_none_match === $etag) {
-            unset($response->headers['ETag']);
+            unset($responseContext->headers['ETag']);
 
-            $response->status_code = 304;
-            $response->status_text = 'Not Modified';
+            $responseContext->status_code = 304;
+            $responseContext->status_text = 'Not Modified';
         }
     }
 }

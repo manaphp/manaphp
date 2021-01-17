@@ -135,14 +135,14 @@ class FiddlerPlugin extends Plugin
      */
     public function onResponseSent(EventArgs $eventArgs)
     {
-        /** @var \ManaPHP\Http\ResponseContext $response */
-        $response = $eventArgs->data;
+        /** @var \ManaPHP\Http\ResponseContext $responseContext */
+        $responseContext = $eventArgs->data;
 
         if ($this->watched()) {
             $data = [
-                'code'    => $response->status_code,
+                'code'    => $responseContext->status_code,
                 'path'    => $this->dispatcher->getPath(),
-                'body'    => $response->content,
+                'body'    => $responseContext->content,
                 'elapsed' => $this->request->getElapsedTime()
             ];
             $this->publish('response', $data);

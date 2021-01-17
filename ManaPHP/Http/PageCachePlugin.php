@@ -185,20 +185,20 @@ class PageCachePlugin extends Plugin
             return;
         }
 
-        /** @var \ManaPHP\Http\ResponseContext $response */
-        $response = $eventArgs->data;
-        if ($response->status_code !== 200) {
+        /** @var \ManaPHP\Http\ResponseContext $responseContext */
+        $responseContext = $eventArgs->data;
+        if ($responseContext->status_code !== 200) {
             return;
         }
 
-        $etag = md5($response->content);
+        $etag = md5($responseContext->content);
 
         $this->redisCache->hMSet(
             $context->key, [
                 'ttl'          => $context->ttl,
                 'etag'         => $etag,
-                'content-type' => $response->headers['Content-Type'] ?? null,
-                'content'      => gzencode($response->content)
+                'content-type' => $responseContext->headers['Content-Type'] ?? null,
+                'content'      => gzencode($responseContext->content)
             ]
         );
         $this->redisCache->expire($context->key, $context->ttl);

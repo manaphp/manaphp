@@ -35,9 +35,9 @@ class HttpCachePlugin extends Plugin
      */
     public function onResponseSending(EventArgs $eventArgs)
     {
-        /** @var \ManaPHP\Http\ResponseContext $response */
-        $response = $eventArgs->data;
-        if ($response->status_code !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
+        /** @var \ManaPHP\Http\ResponseContext $responseContext */
+        $responseContext = $eventArgs->data;
+        if ($responseContext->status_code !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
             return;
         }
 
@@ -53,26 +53,26 @@ class HttpCachePlugin extends Plugin
         foreach ((array)$httpCache as $k => $v) {
             if (is_int($k)) {
                 if ($v === 'etag' || $v === 'ETag') {
-                    if (isset($response->headers['ETag'])) {
-                        $etag = $response->headers['ETag'];
+                    if (isset($responseContext->headers['ETag'])) {
+                        $etag = $responseContext->headers['ETag'];
                     } else {
-                        $etag = md5($response->content);
-                        $response->headers['ETag'] = $etag;
+                        $etag = md5($responseContext->content);
+                        $responseContext->headers['ETag'] = $etag;
                     }
 
                     $if_none_match = $this->request->getIfNoneMatch();
                     if ($if_none_match === $etag) {
-                        $response->status_code = 304;
-                        $response->status_text = 'Not Modified';
+                        $responseContext->status_code = 304;
+                        $responseContext->status_text = 'Not Modified';
                         return;
                     }
                 } else {
-                    $response->headers['Cache-Control'] = $v;
+                    $responseContext->headers['Cache-Control'] = $v;
                 }
             } elseif ($k === 'max-age') {
-                $response->headers['Cache-Control'] = "max-age=$v";
+                $responseContext->headers['Cache-Control'] = "max-age=$v";
             } elseif ($k === 'Cache-Control' || $k === 'cache-control') {
-                $response->headers['Cache-Control'] = $v;
+                $responseContext->headers['Cache-Control'] = $v;
             } else {
                 throw new MisuseException(['not support `:key`', 'key' => $k]);
             }
