@@ -364,7 +364,7 @@ class Unpacker
      * @param string $str
      * @param int    $offset
      *
-     * @return array
+     * @return array|false
      */
     public function unpack($str, $offset = 0)
     {
