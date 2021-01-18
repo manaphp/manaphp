@@ -35,9 +35,9 @@ class Unpacker
      *
      * @return static
      */
-    public function s($name)
+    public function string($name)
     {
-        return $this->sn($name, '*');
+        return $this->stringNP($name, '*');
     }
 
     /**
@@ -48,7 +48,7 @@ class Unpacker
      *
      * @return static
      */
-    public function sn($name, $len)
+    public function stringNP($name, $len)
     {
         if ($this->_format !== null) {
             $this->_format .= '/';
@@ -66,7 +66,7 @@ class Unpacker
      *
      * @return static
      */
-    public function ss($name, $len)
+    public function stringSP($name, $len)
     {
         if ($this->_format !== null) {
             $this->_format .= '/';
@@ -83,7 +83,7 @@ class Unpacker
      *
      * @return static
      */
-    public function hl(...$args)
+    public function hexLNF(...$args)
     {
         return $this->_append('h', $args);
     }
@@ -95,9 +95,21 @@ class Unpacker
      *
      * @return static
      */
-    public function hh(...$args)
+    public function hexHNF(...$args)
     {
         return $this->_append('H', $args);
+    }
+
+    /**
+     * unsigned char
+     *
+     * @param string ...$args
+     *
+     * @return static
+     */
+    public function byte(...$args)
+    {
+        return $this->_append('C', $args);
     }
 
     /**
@@ -107,7 +119,7 @@ class Unpacker
      *
      * @return static
      */
-    public function sc(...$args)
+    public function int8(...$args)
     {
         return $this->_append('c', $args);
     }
@@ -119,7 +131,7 @@ class Unpacker
      *
      * @return static
      */
-    public function uc(...$args)
+    public function int8U(...$args)
     {
         return $this->_append('C', $args);
     }
@@ -131,7 +143,7 @@ class Unpacker
      *
      * @return static
      */
-    public function i16(...$args)
+    public function int16(...$args)
     {
         return $this->_append('s', $args);
     }
@@ -143,7 +155,7 @@ class Unpacker
      *
      * @return static
      */
-    public function u16(...$args)
+    public function int16U(...$args)
     {
         return $this->_append('S', $args);
     }
@@ -155,7 +167,7 @@ class Unpacker
      *
      * @return static
      */
-    public function u16b(...$args)
+    public function int16BE(...$args)
     {
         return $this->_append('n', $args);
     }
@@ -167,7 +179,7 @@ class Unpacker
      *
      * @return static
      */
-    public function u16l(...$args)
+    public function int16LE(...$args)
     {
         return $this->_append('v', $args);
     }
@@ -179,7 +191,7 @@ class Unpacker
      *
      * @return static
      */
-    public function i32(...$args)
+    public function int32(...$args)
     {
         return $this->_append('l', $args);
     }
@@ -191,7 +203,7 @@ class Unpacker
      *
      * @return static
      */
-    public function u32(...$args)
+    public function int32U(...$args)
     {
         return $this->_append('L', $args);
     }
@@ -203,7 +215,7 @@ class Unpacker
      *
      * @return static
      */
-    public function u32b(...$args)
+    public function int32BE(...$args)
     {
         return $this->_append('N', $args);
     }
@@ -215,7 +227,7 @@ class Unpacker
      *
      * @return static
      */
-    public function u32l(...$args)
+    public function int32LE(...$args)
     {
         return $this->_append('V', $args);
     }
@@ -227,7 +239,7 @@ class Unpacker
      *
      * @return static
      */
-    public function i64(...$args)
+    public function int64(...$args)
     {
         return $this->_append('q', $args);
     }
@@ -239,7 +251,7 @@ class Unpacker
      *
      * @return static
      */
-    public function u64(...$args)
+    public function int64U(...$args)
     {
         return $this->_append('Q', $args);
     }
@@ -251,7 +263,7 @@ class Unpacker
      *
      * @return static
      */
-    public function u64b(...$args)
+    public function int64BE(...$args)
     {
         return $this->_append('J', $args);
     }
@@ -263,7 +275,7 @@ class Unpacker
      *
      * @return static
      */
-    public function u64l(...$args)
+    public function int64LE(...$args)
     {
         return $this->_append('P', $args);
     }
@@ -275,7 +287,7 @@ class Unpacker
      *
      * @return static
      */
-    public function f(...$args)
+    public function float(...$args)
     {
         return $this->_append('f', $args);
     }
@@ -287,7 +299,7 @@ class Unpacker
      *
      * @return static
      */
-    public function fl(...$args)
+    public function floatLE(...$args)
     {
         return $this->_append('g', $args);
     }
@@ -299,7 +311,7 @@ class Unpacker
      *
      * @return static
      */
-    public function fb(...$args)
+    public function floatBE(...$args)
     {
         return $this->_append('G', $args);
     }
@@ -311,7 +323,7 @@ class Unpacker
      *
      * @return static
      */
-    public function d(...$args)
+    public function double(...$args)
     {
         return $this->_append('G', $args);
     }
@@ -323,7 +335,7 @@ class Unpacker
      *
      * @return static
      */
-    public function dl(...$args)
+    public function doubleLE(...$args)
     {
         return $this->_append('e', $args);
     }
@@ -335,7 +347,7 @@ class Unpacker
      *
      * @return static
      */
-    public function db(...$args)
+    public function doubleBE(...$args)
     {
         return $this->_append('E', $args);
     }
