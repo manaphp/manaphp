@@ -95,6 +95,11 @@ class DebuggerPlugin extends Plugin
     protected $_broadcast = true;
 
     /**
+     * @var bool
+     */
+    protected $tail = true;
+
+    /**
      * @param array $options
      */
     public function __construct($options = [])
@@ -129,6 +134,10 @@ class DebuggerPlugin extends Plugin
             $this->_broadcast = (bool)$options['broadcast'];
         }
 
+        if (isset($options['tail'])) {
+            $this->tail = (bool)$options['tail'];
+        }
+
         if ($this->_enabled !== false) {
             $this->peekEvent('*', [$this, 'onEvent']);
 
@@ -139,6 +148,10 @@ class DebuggerPlugin extends Plugin
             $this->attachEvent('logger:log', [$this, 'onLoggerLog']);
             $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
             $this->attachEvent('request:end', [$this, 'onRequestEnd']);
+
+            if ($this->tail) {
+                $this->attachEvent('response:stringify', [$this, 'onResponseStringify']);
+            }
         }
     }
 
@@ -236,6 +249,15 @@ class DebuggerPlugin extends Plugin
 
         if ($context->enabled) {
             $this->_writeData($context->key, $this->_getData());
+        }
+    }
+
+    public function onResponseStringify(EventArgs $eventArgs)
+    {
+        /** @var \ManaPHP\Http\ResponseContext $context */
+        $context = $eventArgs->data['context'];
+        if (is_array($context->content)) {
+            $context->content['debuggerPlugin'] = $this->response->getHeader('X-Debugger-Link');
         }
     }
 
