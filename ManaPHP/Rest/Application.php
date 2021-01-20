@@ -49,12 +49,7 @@ class Application extends \ManaPHP\Http\Application
             $this->handleException($exception);
         }
 
-        $response = $this->response->getContext();
-        if (!$response->file && !is_string($response->content)) {
-            $response->content = json_stringify($response->content);
-        }
-
-        $this->httpServer->send($response);
+        $this->httpServer->send();
 
         $this->fireEvent('request:end');
     }

@@ -188,7 +188,7 @@ namespace PHPSTORM_META {
         'request:authorize', 'request:authenticate',
         'request:validate', 'request:ready',
         'request:invoking', 'request:invoked',
-        'response:sending', 'response:sent',
+        'response:stringify', 'response:sending', 'response:sent',
         'model:creating', 'model:created', 'model:saving', 'model:saved',
         'model:updating', 'model:updated', 'model:deleting', 'model:deleted',
         'db:connecting', 'db:connected', 'db:executing', 'db:executed', 'db:querying', 'db:queried', 'db:close',

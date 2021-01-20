@@ -7,6 +7,7 @@ use ManaPHP\Component;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface         $request
+ * @property-read \ManaPHP\Http\ResponseInterface        $response
  * @property-read \ManaPHP\Http\Globals\ManagerInterface $globalsManager
  */
 abstract class Server extends Component implements ServerInterface, Unaspectable

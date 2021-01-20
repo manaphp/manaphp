@@ -208,12 +208,19 @@ class Swoole extends Server
     }
 
     /**
-     * @param \ManaPHP\Http\ResponseContext $context
-     *
      * @return void
      */
-    public function send($context)
+    public function send()
     {
+        $context = $this->response->getContext();
+
+        if (!is_string($context->content) && !$context->file) {
+            $this->fireEvent('response:stringify', compact('context'));
+            if (!is_string($context->content)) {
+                $context->content = json_stringify($context->content);
+            }
+        }
+
         $this->fireEvent('response:sending', compact('context'));
 
         $sw_response = $this->_context->response;
