@@ -53,7 +53,10 @@
                 </el-dropdown>
             </div>
         </el-header>
-        <el-main>@content()</el-main>
+        <el-main>
+            <my-menu-tabs></my-menu-tabs>
+            @content()
+        </el-main>
         <el-backtop :scrollmyself="true">
             <div><i class="el-icon-top el-backtop-icon"></i></div>
         </el-backtop>

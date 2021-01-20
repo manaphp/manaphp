@@ -164,3 +164,11 @@
 #server-time {
     font-size: 0.8em;
 }
+
+.my-menu-tabs .el-tabs__item {
+    padding: 0 15px;
+}
+
+.el-main {
+    padding-top: 1px;
+}

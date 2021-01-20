@@ -318,7 +318,7 @@ Vue.component('my-menu', {
                 <span>{{group.group_name}}</span>
             </template>
             <template v-for="item in group.items ">
-                <el-menu-item :index="baseURL+item.url"><i :class="item.icon"></i>
+                <el-menu-item :index="baseURL+item.url" @click="click(item)"><i :class="item.icon" ></i>
                     <el-link :href="baseURL+item.url">{{item.item_name}}</el-link>
                 </el-menu-item>
             </template>
@@ -344,6 +344,44 @@ Vue.component('my-menu', {
             baseURL: window.BASE_URL,
             active: location.pathname,
             groups: []
+        }
+    },
+    methods: {
+        click(item) {
+            let tabs = sessionStorage.getItem('.my-menu-tabs');
+            tabs = tabs ? JSON.parse(tabs) : {};
+
+            tabs[item.url] = {name: item.item_name, url: item.url};
+            sessionStorage.setItem('.my-menu-tabs', JSON.stringify(tabs));
+        }
+    }
+});
+
+Vue.component('my-menu-tabs', {
+    template: `
+<el-tabs  @tab-remove="remove" @tab-click="click" class="my-menu-tabs" v-model="tab">
+    <el-tab-pane v-for="tab in tabs" :label="tab.name" closable :name="tab.url"></el-tab-pane>     
+</el-tabs>`,
+    data() {
+        let tabs = sessionStorage.getItem('.my-menu-tabs');
+        tabs = tabs ? JSON.parse(tabs) : {};
+
+        return {
+            tabs: tabs,
+            tab: location.pathname.substr(window.BASE_URL.length)
+        }
+    },
+    methods: {
+        remove(name) {
+            let tabs = JSON.parse(sessionStorage.getItem('.my-menu-tabs'));
+            delete tabs[name];
+            this.$delete(this.tabs, name);
+            sessionStorage.setItem('.my-menu-tabs', JSON.stringify(tabs));
+        },
+
+        click(tab) {
+            let tabs = JSON.parse(sessionStorage.getItem('.my-menu-tabs'));
+            window.location.href = window.BASE_URL + tabs[tab.name].url;
         }
     }
 });
