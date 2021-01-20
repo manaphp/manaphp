@@ -243,7 +243,7 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
      * @param mixed  $data
      * @param mixed  $source
      *
-     * @return void
+     * @return \ManaPHP\Event\EventArgs
      */
     public function fireEvent($event, $data = [], $source = null)
     {
@@ -253,7 +253,7 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
             $this->emit($on, $data);
         }
 
-        $this->eventsManager->fireEvent($event, $data, $source ?? $this);
+        return $this->eventsManager->fireEvent($event, $data, $source ?? $this);
     }
 
     /**

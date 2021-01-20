@@ -71,7 +71,7 @@ class Manager extends Component implements ManagerInterface
      * @param mixed  $data
      * @param mixed  $source
      *
-     * @return void
+     * @return \ManaPHP\Event\EventArgs
      */
     public function fireEvent($event, $data = [], $source = null)
     {
@@ -103,6 +103,8 @@ class Manager extends Component implements ManagerInterface
         foreach ($this->_events[$event] ?? [] as $handler) {
             $handler($eventArgs);
         }
+
+        return $eventArgs;
     }
 
     /**
