@@ -12,6 +12,7 @@ use ManaPHP\Helper\Str;
 use ManaPHP\Logging\Logger;
 use ManaPHP\Plugin;
 use ManaPHP\Version;
+use ArrayObject;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
 
@@ -251,8 +252,8 @@ class DebuggerPlugin extends Plugin
         $data = $eventArgs->data;
         if (is_scalar($data) || $data === null) {
             $event['data'] = gettype($data);
-        } elseif (is_array($data)) {
-            $event['data'] = array_keys($data);
+        } elseif ($data instanceof ArrayObject) {
+            $event['data'] = array_keys(get_object_vars($data));
         } elseif (is_object($data)) {
             $event['data'] = get_class($data);
         } else {

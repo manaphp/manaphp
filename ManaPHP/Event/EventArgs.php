@@ -2,6 +2,8 @@
 
 namespace ManaPHP\Event;
 
+use ArrayObject;
+
 class EventArgs
 {
     /**
@@ -28,6 +30,6 @@ class EventArgs
     {
         $this->event = $event;
         $this->source = $source;
-        $this->data = $data;
+        $this->data = is_array($data) ? new ArrayObject($data) : $data;
     }
 }
