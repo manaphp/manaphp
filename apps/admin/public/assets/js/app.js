@@ -360,6 +360,7 @@ Vue.component('my-menu', {
 Vue.component('my-menu-tabs', {
     template: `
 <el-tabs  @tab-remove="remove" @tab-click="click" class="my-menu-tabs" v-model="tab">
+    <el-tab-pane label="首页" name="/"></el-tab-pane>
     <el-tab-pane v-for="tab in tabs" :label="tab.name" closable :name="tab.url"></el-tab-pane>     
 </el-tabs>`,
     data() {
@@ -380,8 +381,13 @@ Vue.component('my-menu-tabs', {
         },
 
         click(tab) {
-            let tabs = JSON.parse(sessionStorage.getItem('.my-menu-tabs'));
-            window.location.href = window.BASE_URL + tabs[tab.name].url;
+            let url = '';
+            if (tab.name !== '/') {
+                let tabs = JSON.parse(sessionStorage.getItem('.my-menu-tabs'));
+                url = tabs[tab.name].url;
+            }
+            console.log(url)
+            window.location.href = window.BASE_URL + url;
         }
     }
 });
