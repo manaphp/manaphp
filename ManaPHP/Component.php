@@ -245,7 +245,7 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
      *
      * @return \ManaPHP\Event\EventArgs
      */
-    public function fireEvent($event, $data = [], $source = null)
+    public function fireEvent($event, $data = null, $source = null)
     {
         $on = substr($event, strpos($event, ':') + 1);
 

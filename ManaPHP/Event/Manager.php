@@ -73,7 +73,7 @@ class Manager extends Component implements ManagerInterface
      *
      * @return \ManaPHP\Event\EventArgs
      */
-    public function fireEvent($event, $data = [], $source = null)
+    public function fireEvent($event, $data = null, $source = null)
     {
         $eventArgs = new EventArgs($event, $source, $data);
 
