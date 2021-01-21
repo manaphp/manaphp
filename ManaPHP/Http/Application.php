@@ -33,7 +33,7 @@ abstract class Application extends \ManaPHP\Application implements HandlerInterf
      */
     public function authenticate()
     {
-        $this->identity->authenticate();
+
     }
 
     abstract public function handle();

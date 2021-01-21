@@ -28,15 +28,14 @@ class Jwt extends Identity
     }
 
     /**
-     * @return static
+     * @return []
      */
     public function authenticate()
     {
         if ($token = $this->request->getToken()) {
-            $claims = $this->scopedJwt->decode($token, $this->_scope);
-            $this->setClaims($claims);
+            return $this->scopedJwt->decode($token, $this->_scope);
+        } else {
+            return [];
         }
-
-        return $this;
     }
 }

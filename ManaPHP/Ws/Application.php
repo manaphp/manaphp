@@ -37,7 +37,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
      */
     public function authenticate()
     {
-        $this->identity->authenticate();
+
     }
 
     /**

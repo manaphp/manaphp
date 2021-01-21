@@ -5,11 +5,6 @@ namespace ManaPHP\Identifying;
 interface IdentityInterface
 {
     /**
-     * @return static
-     */
-    public function authenticate();
-
-    /**
      * @return bool
      */
     public function isGuest();

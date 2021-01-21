@@ -15,15 +15,11 @@ class Session extends Identity
     protected $_name = 'auth';
 
     /**
-     * @return static
+     * @return array
      */
     public function authenticate()
     {
-        if ($claims = $this->session->get($this->_name, [])) {
-            parent::setClaims($claims);
-        }
-
-        return $this;
+        return $this->session->get($this->_name, []);
     }
 
     /**
