@@ -8,6 +8,7 @@ use ReflectionClass;
 use Serializable;
 use Throwable;
 use function getenv;
+use ArrayObject;
 
 class Console extends Component implements ConsoleInterface
 {
@@ -112,7 +113,7 @@ class Console extends Component implements ConsoleInterface
         if ($message instanceof Throwable) {
             echo $message;
             return $this;
-        } elseif ($message instanceof JsonSerializable) {
+        } elseif ($message instanceof JsonSerializable || $message instanceof ArrayObject) {
             echo json_stringify($message);
             return $this;
         } elseif ($message instanceof Serializable) {
@@ -138,7 +139,7 @@ class Console extends Component implements ConsoleInterface
                     $message[$k] = (string)$v;
                 } elseif (is_array($v)) {
                     $message[$k] = json_stringify($v);
-                } elseif ($v instanceof JsonSerializable) {
+                } elseif ($v instanceof JsonSerializable || $v instanceof ArrayObject) {
                     $message[$k] = json_stringify($v);
                 }
             }

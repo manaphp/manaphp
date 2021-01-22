@@ -7,6 +7,7 @@ use ManaPHP\Component;
 use ManaPHP\Coroutine;
 use Serializable;
 use Throwable;
+use  ArrayObject;
 
 class DataDump extends Component implements DataDumpInterface
 {
@@ -87,7 +88,7 @@ class DataDump extends Component implements DataDumpInterface
     {
         if ($message instanceof Throwable) {
             return $this->exceptionToString($message);
-        } elseif ($message instanceof JsonSerializable) {
+        } elseif ($message instanceof JsonSerializable || $message instanceof ArrayObject) {
             return json_stringify($message, JSON_PARTIAL_OUTPUT_ON_ERROR);
         } elseif ($message instanceof Serializable) {
             return serialize($message);
@@ -109,7 +110,7 @@ class DataDump extends Component implements DataDumpInterface
                     $message[$k] = $this->exceptionToString($v);
                 } elseif (is_array($v)) {
                     $message[$k] = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
-                } elseif ($v instanceof JsonSerializable) {
+                } elseif ($v instanceof JsonSerializable || $v instanceof ArrayObject) {
                     $message[$k] = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
                 }
             }
@@ -137,7 +138,7 @@ class DataDump extends Component implements DataDumpInterface
                 $v = $this->exceptionToString($v);
             } elseif (is_array($v)) {
                 $v = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
-            } elseif ($v instanceof JsonSerializable) {
+            } elseif ($v instanceof JsonSerializable || $v instanceof ArrayObject) {
                 $v = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
             } elseif ($v instanceof Serializable) {
                 $v = serialize($v);

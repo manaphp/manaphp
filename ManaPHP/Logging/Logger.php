@@ -10,6 +10,7 @@ use ManaPHP\Logging\Logger\Log;
 use ManaPHP\Logging\Logger\LogCategorizable;
 use Serializable;
 use Throwable;
+use \ArrayObject;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
 
@@ -288,7 +289,7 @@ abstract class Logger extends Component implements LoggerInterface
     {
         if ($message instanceof Throwable) {
             return $this->exceptionToString($message);
-        } elseif ($message instanceof JsonSerializable) {
+        } elseif ($message instanceof JsonSerializable || $message instanceof ArrayObject) {
             return json_stringify($message, JSON_PARTIAL_OUTPUT_ON_ERROR);
         } elseif ($message instanceof Serializable) {
             return serialize($message);
@@ -310,7 +311,7 @@ abstract class Logger extends Component implements LoggerInterface
                     $message[$k] = $this->exceptionToString($v);
                 } elseif (is_array($v)) {
                     $message[$k] = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
-                } elseif ($v instanceof JsonSerializable) {
+                } elseif ($v instanceof JsonSerializable || $v instanceof ArrayObject) {
                     $message[$k] = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
                 }
             }
