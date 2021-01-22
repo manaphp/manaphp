@@ -32,7 +32,7 @@ interface ServerInterface
     public function push($fd, $message);
 
     /**
-     * @param string $receivers
+     * @param array  $receivers
      * @param string $message
      *
      * @return void
@@ -40,13 +40,13 @@ interface ServerInterface
     public function pushToId($receivers, $message);
 
     /**
-     * @param string $receivers
+     * @param array  $receivers
      * @param string $message
      */
     public function pushToName($receivers, $message);
 
     /**
-     * @param string $receivers
+     * @param array  $receivers
      * @param string $message
      */
     public function pushToRole($receivers, $message);
