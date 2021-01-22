@@ -15,13 +15,13 @@ class PushCommand extends Command
     }
 
     /**
-     * @param string $name
+     * @param string $role
      * @param string $message
      * @param string $endpoint
      */
-    public function roleAction($name = 'admin', $message = 'role_msg', $endpoint = null)
+    public function roleAction($role = 'admin', $message = 'role_msg', $endpoint = null)
     {
-        $this->wspClient->pushToRole($name, $message, $endpoint);
+        $this->wspClient->pushToRole($role, $message, $endpoint);
     }
 
     /**
