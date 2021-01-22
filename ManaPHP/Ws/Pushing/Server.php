@@ -27,11 +27,6 @@ class Server extends Component implements ServerInterface, LogCategorizable
     protected $_shared = true;
 
     /**
-     * @var bool
-     */
-    protected $_sso = false;
-
-    /**
      * @var array
      */
     protected $_name2id = [];
@@ -61,10 +56,6 @@ class Server extends Component implements ServerInterface, LogCategorizable
             $this->_prefix = $options['prefix'];
         }
 
-        if (isset($options['sso'])) {
-            $this->_sso = (bool)$options['sso'];
-        }
-
         if (isset($options['shared'])) {
             $this->_shared = (bool)$options['shared'];
         }
@@ -85,19 +76,10 @@ class Server extends Component implements ServerInterface, LogCategorizable
             return;
         }
 
-        if ($this->_sso && $user = $this->_users[$id] ?? false) {
-            $this->wsServer->disconnect($user['fd']);
-        }
-
         $name = $this->identity->getName();
         $user = ['fd' => $fd, 'id' => $id, 'name' => $name, 'role' => $this->identity->getRole()];
 
-        if ($this->_sso) {
-            $this->_name2id[$name] = $id;
-            $this->_users[$id] = $user;
-        } else {
-            $this->_users[$fd] = $user;
-        }
+        $this->_users[$fd] = $user;
     }
 
     public function close($fd)
@@ -110,11 +92,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
             return;
         }
 
-        if ($this->_sso) {
-            unset($this->_users[$id], $this->_name2id[$this->identity->getName()]);
-        } else {
-            unset($this->_users[$fd]);
-        }
+        unset($this->_users[$fd]);
     }
 
     /**
@@ -138,32 +116,18 @@ class Server extends Component implements ServerInterface, LogCategorizable
     {
         $users = $this->_users;
 
-        if ($this->_sso) {
-            if (str_contains($receivers, ',')) {
-                foreach (explode(',', $receivers) as $id) {
-                    if ($user = $users[$id] ?? false) {
-                        $this->push($user['fd'], $message);
-                    }
-                }
-            } else {
-                if ($user = $users[$receivers] ?? false) {
+        if (str_contains($receivers, ',')) {
+            foreach ($users as $user) {
+                $id = (string)$user['id'];
+                if (str_contains($receivers, $id) && preg_match("#\\b$id\\b#", $receivers) === 1) {
                     $this->push($user['fd'], $message);
                 }
             }
         } else {
-            if (str_contains($receivers, ',')) {
-                foreach ($users as $user) {
-                    $id = (string)$user['id'];
-                    if (str_contains($receivers, $id) && preg_match("#\\b$id\\b#", $receivers) === 1) {
-                        $this->push($user['fd'], $message);
-                    }
-                }
-            } else {
-                $id = (int)$receivers;
-                foreach ($users as $user) {
-                    if ($user['id'] === $id) {
-                        $this->push($user['fd'], $message);
-                    }
+            $id = (int)$receivers;
+            foreach ($users as $user) {
+                if ($user['id'] === $id) {
+                    $this->push($user['fd'], $message);
                 }
             }
         }
@@ -179,31 +143,17 @@ class Server extends Component implements ServerInterface, LogCategorizable
     {
         $users = $this->_users;
 
-        if ($this->_sso) {
-            if (str_contains($receivers, ',')) {
-                foreach (explode(',', $receivers) as $name) {
-                    if ($id = $this->_name2id[$name] ?? false) {
-                        $this->push($users[$id]['fd'], $message);
-                    }
-                }
-            } else {
-                if ($id = $this->_name2id[$receivers] ?? false) {
-                    $this->push($users[$id]['fd'], $message);
+        if (str_contains($receivers, ',')) {
+            foreach ($users as $user) {
+                $name = $user['name'];
+                if (str_contains($receivers, $name) && preg_match("#\\b$name\\b#", $receivers) === 1) {
+                    $this->push($user['fd'], $message);
                 }
             }
         } else {
-            if (str_contains($receivers, ',')) {
-                foreach ($users as $user) {
-                    $name = $user['name'];
-                    if (str_contains($receivers, $name) && preg_match("#\\b$name\\b#", $receivers) === 1) {
-                        $this->push($user['fd'], $message);
-                    }
-                }
-            } else {
-                foreach ($users as $user) {
-                    if ($user['name'] === $receivers) {
-                        $this->push($user['fd'], $message);
-                    }
+            foreach ($users as $user) {
+                if ($user['name'] === $receivers) {
+                    $this->push($user['fd'], $message);
                 }
             }
         }
