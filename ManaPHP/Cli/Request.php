@@ -185,7 +185,7 @@ class Request extends Component implements RequestInterface
      */
     public function getValue($position)
     {
-        return isset($this->_values[$position]) ? $this->_values[0] : null;
+        return $this->_values[$position] ?? null;
     }
 
     public function getValues()
