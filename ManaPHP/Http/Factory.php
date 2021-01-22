@@ -34,7 +34,8 @@ class Factory extends FactoryDefault
                 'slowlogPlugin'   => 'ManaPHP\Http\SlowlogPlugin',
                 'verbsPlugin'     => 'ManaPHP\Http\VerbsPlugin',
 
-                'aclCommand' => 'ManaPHP\Http\Acl\Command',
+                'aclCommand'  => 'ManaPHP\Http\Acl\Command',
+                'areaCommand' => 'ManaPHP\Http\AreaCommand',
 
                 'httpClientTracer' => 'ManaPHP\Http\Client\Tracer',
                 'requestTracer'    => 'ManaPHP\Http\Request\Tracer',
