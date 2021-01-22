@@ -93,6 +93,18 @@ class Client extends Component implements ClientInterface
      *
      * @return void
      */
+    public function pushToRoom($receivers, $message, $endpoint = null)
+    {
+        $this->_push('room', $receivers, $message, $endpoint);
+    }
+
+    /**
+     * @param string|string[] $receivers
+     * @param string|array    $message
+     * @param string          $endpoint
+     *
+     * @return void
+     */
     public function pushToRole($receivers, $message, $endpoint = null)
     {
         $this->_push('role', $receivers, $message, $endpoint);

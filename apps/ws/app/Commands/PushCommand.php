@@ -15,6 +15,16 @@ class PushCommand extends Command
     }
 
     /**
+     * @param string $room
+     * @param string $message
+     * @param string $endpoint
+     */
+    public function roomAction($room = 'meeting', $message = 'room_msg', $endpoint = null)
+    {
+        $this->wspClient->pushToRoom($room, $message, $endpoint);
+    }
+
+    /**
      * @param string $role
      * @param string $message
      * @param string $endpoint

@@ -49,6 +49,12 @@ interface ServerInterface
      * @param array  $receivers
      * @param string $message
      */
+    public function pushToRoom($receivers, $message);
+
+    /**
+     * @param array  $receivers
+     * @param string $message
+     */
     public function pushToRole($receivers, $message);
 
     public function pushToAll($message);

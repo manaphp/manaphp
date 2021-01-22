@@ -7,7 +7,8 @@ use ManaPHP\Coroutine;
 use ManaPHP\Logging\Logger\LogCategorizable;
 
 /**
- * @property-read \ManaPHP\Ws\ServerInterface $wsServer
+ * @property-read \ManaPHP\Ws\ServerInterface    $wsServer
+ * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class Server extends Component implements ServerInterface, LogCategorizable
 {
@@ -35,6 +36,11 @@ class Server extends Component implements ServerInterface, LogCategorizable
      * @var true[][]
      */
     protected $_name_fds;
+
+    /**
+     * @var true[][]
+     */
+    protected $_room_fds;
 
     /**
      * @var true[][]
@@ -85,6 +91,10 @@ class Server extends Component implements ServerInterface, LogCategorizable
             $this->_name_fds[$name][$fd] = true;
         }
 
+        if (($room = $this->request->get('room_id', '')) !== '') {
+            $this->_room_fds[$room][$fd] = true;
+        }
+
         if (($role = $this->identity->getRole('')) !== '') {
             foreach (explode(',', $role) as $r) {
                 $this->_role_fds[$r][$fd] = true;
@@ -109,6 +119,13 @@ class Server extends Component implements ServerInterface, LogCategorizable
             unset($this->_name_fds[$name][$fd]);
             if (count($this->_name_fds[$name]) === 0) {
                 unset($this->_name_fds[$name]);
+            }
+        }
+
+        if (($room = $this->request->get('room_id', '')) !== '') {
+            unset($this->_room_fds[$room][$fd]);
+            if (count($this->_room_fds[$room]) === 0) {
+                unset($this->_room_fds[$room]);
             }
         }
 
@@ -158,6 +175,21 @@ class Server extends Component implements ServerInterface, LogCategorizable
     {
         foreach ($receivers as $name) {
             foreach ($this->_name_fds[$name] ?? [] as $fd => $_) {
+                $this->push($fd, $message);
+            }
+        }
+    }
+
+    /**
+     * @param array  $receivers
+     * @param string $message
+     *
+     * @return void
+     */
+    public function pushToRoom($receivers, $message)
+    {
+        foreach ($receivers as $room) {
+            foreach ($this->_room_fds[$room] ?? [] as $fd => $_) {
                 $this->push($fd, $message);
             }
         }
@@ -231,6 +263,8 @@ class Server extends Component implements ServerInterface, LogCategorizable
             $this->pushToName($receivers, $message);
         } elseif ($type === 'role') {
             $this->pushToRole($receivers, $message);
+        } elseif ($type === 'room') {
+            $this->pushToRoom($receivers, $message);
         } else {
             $this->logger->warn(
                 ['unknown `:type` type message: :message', 'type' => $type, 'message' => $message],

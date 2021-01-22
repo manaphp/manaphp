@@ -29,6 +29,15 @@ interface ClientInterface
      *
      * @return void
      */
+    public function pushToRoom($receivers, $message, $endpoint = null);
+
+    /**
+     * @param string|string[] $receivers
+     * @param string|array    $message
+     * @param string          $endpoint
+     *
+     * @return void
+     */
     public function pushToRole($receivers, $message, $endpoint = null);
 
     /**
