@@ -14,6 +14,9 @@ class Factory extends \ManaPHP\Http\Factory
                 'dispatcher'   => 'ManaPHP\Ws\Dispatcher',
                 'identity'     => 'ManaPHP\Identifying\Identity\Adapter\Jwt',
                 'wspServer'    => 'ManaPHP\Ws\Pushing\Server',
+
+                'wspServerTracer' => 'ManaPHP\Ws\Pushing\Server\Tracer',
+                'wspClientTracer' => 'ManaPHP\Ws\Pushing\Client\Tracer',
             ]
         );
     }

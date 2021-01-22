@@ -57,6 +57,8 @@ class Client extends Component implements ClientInterface
             throw new MissingFieldException($endpoint);
         }
 
+        $this->fireEvent('wspClient:push', compact('type', 'receivers', 'message', 'endpoint'));
+
         $this->pubSub->publish($this->_prefix . "$endpoint:$type:$receivers", $message);
     }
 

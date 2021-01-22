@@ -254,8 +254,10 @@ class Server extends Component implements ServerInterface, LogCategorizable
 
                     if ($type !== null && $receivers !== null) {
                         $receivers = explode(',', $receivers);
-                        $this->logger->debug(compact('type', 'receivers', 'message'));
+
+                        $this->fireEvent('wspServer:pushing', compact('type', 'receivers', 'message'));
                         $this->dispatch($type, $receivers, $message);
+                        $this->fireEvent('wspServer:pushed', compact('type', 'receivers', 'message'));
                     } else {
                         $this->logger->warn($channel, 'wspServer.bad_channel');
                     }
