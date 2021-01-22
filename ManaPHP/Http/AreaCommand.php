@@ -12,6 +12,8 @@ class AreaCommand extends Command
      * create area directory tree
      *
      * @param string $area
+     *
+     * @return int
      */
     public function createAction($area = '')
     {
@@ -47,6 +49,8 @@ class IndexController extends Controller
 }
 EOT;
         LocalFS::filePut("$dir/Controllers/IndexController.php", strtr($controller, ['{area}' => $area]));
+
+        return 0;
     }
 
     /**

@@ -28,7 +28,7 @@ class Jwt extends Identity
     }
 
     /**
-     * @return []
+     * @return array
      */
     public function authenticate()
     {
