@@ -77,11 +77,9 @@ class Server extends Component implements ServerInterface, LogCategorizable
             $this->_fds[$fd] = true;
         }
 
-        if (!$id = $this->identity->getId('')) {
-            return;
+        if (($id = $this->identity->getId('')) !== '') {
+            $this->_id_fds[$id][$fd] = true;
         }
-
-        $this->_id_fds[$id][$fd] = true;
 
         if (($name = $this->identity->getName('')) !== '') {
             $this->_name_fds[$name][$fd] = true;
@@ -100,13 +98,11 @@ class Server extends Component implements ServerInterface, LogCategorizable
             unset($this->_fds[$fd]);
         }
 
-        if (!$id = $this->identity->getId('')) {
-            return;
-        }
-
-        unset($this->_id_fds[$id][$fd]);
-        if (count($this->_id_fds[$id]) === 0) {
-            unset($this->_id_fds[$id]);
+        if (($id = $this->identity->getId('')) !== '') {
+            unset($this->_id_fds[$id][$fd]);
+            if (count($this->_id_fds[$id]) === 0) {
+                unset($this->_id_fds[$id]);
+            }
         }
 
         if (($name = $this->identity->getName('')) !== '') {
