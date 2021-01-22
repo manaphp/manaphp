@@ -179,13 +179,14 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * @param int $position
+     * @param int   $position
+     * @param mixed $default
      *
      * @return string
      */
-    public function getValue($position)
+    public function getValue($position, $default = null)
     {
-        return $this->_values[$position] ?? null;
+        return $this->_values[$position] ?? $default;
     }
 
     public function getValues()

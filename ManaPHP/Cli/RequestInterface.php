@@ -27,11 +27,12 @@ interface RequestInterface
     public function has($name);
 
     /**
-     * @param int $position
+     * @param int   $position
+     * @param mixed $default
      *
      * @return string
      */
-    public function getValue($position);
+    public function getValue($position, $default = null);
 
     /**
      * @return array
