@@ -3,8 +3,9 @@
 namespace ManaPHP\Event;
 
 use ManaPHP\Component;
+use ManaPHP\Logging\Logger\LogCategorizable;
 
-class Tracer extends Component
+class Tracer extends Component implements LogCategorizable
 {
     /**
      * @var bool
@@ -16,5 +17,10 @@ class Tracer extends Component
         if (isset($options['verbose'])) {
             $this->_verbose = (bool)$options['verbose'];
         }
+    }
+
+    public function categorizeLog()
+    {
+        return str_replace('\\', '.', static::class);
     }
 }
