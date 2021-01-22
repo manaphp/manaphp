@@ -16,7 +16,7 @@ interface ClientInterface
     /**
      * @param string|string[] $receivers
      * @param string|array    $message
-     * @param string|array    $endpoint
+     * @param string          $endpoint
      *
      * @return void
      */

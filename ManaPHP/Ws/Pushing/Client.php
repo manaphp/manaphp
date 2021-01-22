@@ -36,14 +36,28 @@ class Client extends Component implements ClientInterface
     }
 
     /**
-     * @param string $channel
-     * @param string $data
+     * @param string       $type
+     * @param string|array $receivers
+     * @param string|array $message
+     * @param string       $endpoint
      *
      * @return void
      */
-    protected function _push($channel, $data)
+    protected function _push($type, $receivers, $message, $endpoint)
     {
-        $this->pubSub->publish($this->_prefix . $channel, $data);
+        if (is_array($receivers)) {
+            $receivers = implode(',', $receivers);
+        }
+
+        if (!is_string($message)) {
+            $message = json_stringify($message);
+        }
+
+        if (($endpoint = $endpoint ?? $this->_endpoint) === null) {
+            throw new MissingFieldException($endpoint);
+        }
+
+        $this->pubSub->publish($this->_prefix . "$endpoint:$type:$receivers", $message);
     }
 
     /**
@@ -55,15 +69,7 @@ class Client extends Component implements ClientInterface
      */
     public function pushToId($receivers, $message, $endpoint = null)
     {
-        if (!is_string($message)) {
-            $message = json_stringify($message);
-        }
-
-        if (!$endpoint = $endpoint ?: $this->_endpoint) {
-            throw new MissingFieldException('endpoint');
-        }
-
-        $this->_push($endpoint . ':id', (is_array($receivers) ? implode(',', $receivers) : $receivers) . ":$message");
+        $this->_push('id', $receivers, $message, $endpoint);
     }
 
     /**
@@ -75,15 +81,7 @@ class Client extends Component implements ClientInterface
      */
     public function pushToName($receivers, $message, $endpoint = null)
     {
-        if (!is_string($message)) {
-            $message = json_stringify($message);
-        }
-
-        if (!$endpoint = $endpoint ?: $this->_endpoint) {
-            throw new MissingFieldException('endpoint');
-        }
-
-        $this->_push($endpoint . ':name', (is_array($receivers) ? implode(',', $receivers) : $receivers) . ":$message");
+        $this->_push('name', $receivers, $message, $endpoint);
     }
 
     /**
@@ -95,15 +93,7 @@ class Client extends Component implements ClientInterface
      */
     public function pushToRole($receivers, $message, $endpoint = null)
     {
-        if (!is_string($message)) {
-            $message = json_stringify($message);
-        }
-
-        if (!$endpoint = $endpoint ?: $this->_endpoint) {
-            throw new MissingFieldException('endpoint');
-        }
-
-        $this->_push($endpoint . ':role', (is_array($receivers) ? implode(',', $receivers) : $receivers) . ":$message");
+        $this->_push('role', $receivers, $message, $endpoint);
     }
 
     /**
@@ -114,15 +104,7 @@ class Client extends Component implements ClientInterface
      */
     public function pushToAll($message, $endpoint = null)
     {
-        if (!is_string($message)) {
-            $message = json_stringify($message);
-        }
-
-        if (!$endpoint = $endpoint ?: $this->_endpoint) {
-            throw new MissingFieldException('endpoint');
-        }
-
-        $this->_push($endpoint . ':all', "*:$message");
+        $this->_push('all', '*', $message, $endpoint);
     }
 
     /**
@@ -133,14 +115,6 @@ class Client extends Component implements ClientInterface
      */
     public function broadcast($message, $endpoint = null)
     {
-        if (!is_string($message)) {
-            $message = json_stringify($message);
-        }
-
-        if (!$endpoint = $endpoint ?: $this->_endpoint) {
-            throw new MissingFieldException('endpoint');
-        }
-
-        $this->_push($endpoint . ':broadcast', "*:$message");
+        $this->_push('broadcast', '*', $message, $endpoint);
     }
 }

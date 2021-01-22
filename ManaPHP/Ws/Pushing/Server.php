@@ -254,14 +254,12 @@ class Server extends Component implements ServerInterface, LogCategorizable
     {
         Coroutine::create(
             function () {
+                $prefix = $this->_prefix . $this->_endpoint;
                 $this->pubSub->psubscribe(
-                    [$this->_prefix . $this->_endpoint . ':*'], function ($channel, $data) {
-                    if (($pos = strrpos($channel, ':')) !== false) {
-                        $type = substr($channel, $pos + 1);
+                    ["$prefix:*"], function ($channel, $message) use ($prefix) {
+                    list($type, $receivers) = explode(':', substr($channel, strlen($prefix) + 1), 2);
 
-                        $pos = strpos($data, ':');
-                        $receivers = substr($data, 0, $pos);
-                        $message = substr($data, $pos + 1);
+                    if ($type !== null && $receivers !== null) {
                         $this->logger->debug(compact('type', 'receivers', 'message'));
                         $this->dispatch($type, $receivers, $message);
                     } else {
