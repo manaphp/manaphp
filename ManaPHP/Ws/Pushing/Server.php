@@ -27,14 +27,19 @@ class Server extends Component implements ServerInterface, LogCategorizable
     protected $_shared = true;
 
     /**
-     * @var array
+     * @var true[][]
      */
-    protected $_name2id = [];
+    protected $_id_fds;
 
     /**
-     * @var \ManaPHP\Ws\Pushing\User[]
+     * @var true[][]
      */
-    protected $_users = [];
+    protected $_name_fds;
+
+    /**
+     * @var true[][]
+     */
+    protected $_role_fds;
 
     /**
      * @var array
@@ -76,10 +81,17 @@ class Server extends Component implements ServerInterface, LogCategorizable
             return;
         }
 
-        $name = $this->identity->getName('');
-        $role = $this->identity->getRole('');
+        $this->_id_fds[$id][$fd] = true;
 
-        $this->_users[$fd] = new User($fd, $id, $name, $role);
+        if (($name = $this->identity->getName('')) !== '') {
+            $this->_name_fds[$name][$fd] = true;
+        }
+
+        if (($role = $this->identity->getRole('')) !== '') {
+            foreach (explode(',', $role) as $r) {
+                $this->_role_fds[$r][$fd] = true;
+            }
+        }
     }
 
     public function close($fd)
@@ -92,7 +104,26 @@ class Server extends Component implements ServerInterface, LogCategorizable
             return;
         }
 
-        unset($this->_users[$fd]);
+        unset($this->_id_fds[$id][$fd]);
+        if (count($this->_id_fds[$id]) === 0) {
+            unset($this->_id_fds[$id]);
+        }
+
+        if (($name = $this->identity->getName('')) !== '') {
+            unset($this->_name_fds[$name][$fd]);
+            if (count($this->_name_fds[$name]) === 0) {
+                unset($this->_name_fds[$name]);
+            }
+        }
+
+        if (($role = $this->identity->getRole('')) !== '') {
+            foreach (explode(',', $role) as $r) {
+                unset($this->_role_fds[$r][$fd]);
+                if (count($this->_role_fds[$r]) === 0) {
+                    unset($this->_role_fds[$r]);
+                }
+            }
+        }
     }
 
     /**
@@ -107,89 +138,49 @@ class Server extends Component implements ServerInterface, LogCategorizable
     }
 
     /**
-     * @param string $receivers
+     * @param array  $receivers
      * @param string $message
      *
      * @return void
      */
     public function pushToId($receivers, $message)
     {
-        $users = $this->_users;
-
-        if (str_contains($receivers, ',')) {
-            foreach ($users as $user) {
-                $id = $user->id;
-                if (str_contains($receivers, $id) && preg_match("#\\b$id\\b#", $receivers) === 1) {
-                    $this->push($user->fd, $message);
-                }
-            }
-        } else {
-            $id = (int)$receivers;
-            foreach ($users as $user) {
-                if ($user->id === $id) {
-                    $this->push($user->fd, $message);
-                }
+        foreach ($receivers as $id) {
+            foreach ($this->_id_fds[$id] ?? [] as $fd => $_) {
+                $this->push($fd, $message);
             }
         }
     }
 
     /**
-     * @param string $receivers
+     * @param array  $receivers
      * @param string $message
      *
      * @return void
      */
     public function pushToName($receivers, $message)
     {
-        $users = $this->_users;
-
-        if (str_contains($receivers, ',')) {
-            foreach ($users as $user) {
-                $name = $user->name;
-                if (str_contains($receivers, $name) && preg_match("#\\b$name\\b#", $receivers) === 1) {
-                    $this->push($user->fd, $message);
-                }
-            }
-        } else {
-            foreach ($users as $user) {
-                if ($user->name === $receivers) {
-                    $this->push($user->fd, $message);
-                }
+        foreach ($receivers as $name) {
+            foreach ($this->_name_fds[$name] ?? [] as $fd => $_) {
+                $this->push($fd, $message);
             }
         }
     }
 
     /**
-     * @param string $receivers
+     * @param array  $receivers
      * @param string $message
      *
      * @return void
      */
     public function pushToRole($receivers, $message)
     {
-        $users = $this->_users;
-
-        if (str_contains($receivers, ',')) {
-            $_receivers = explode(',', $receivers);
-            foreach ($users as $user) {
-                $role = $user->role;
-
-                foreach ($_receivers as $receiver) {
-                    if ($role === $receiver
-                        || (str_contains($role, $receiver) && preg_match("#\\b$receiver\\b#", $role) === 1)
-                    ) {
-                        $this->push($user->fd, $message);
-                        break;
-                    }
-                }
-            }
-        } else {
-            foreach ($users as $user) {
-                $role = $user->role;
-                if ($role === $receivers
-                    || (str_contains($role, $receivers) && preg_match("#\\b$receivers\\b#", $role) === 1)
-                ) {
-                    $this->push($user->fd, $message);
+        $fds = [];
+        foreach ($receivers as $role) {
+            foreach ($this->_role_fds[$role] ?? [] as $fd => $_) {
+                if (!isset($fds[$fd])) {
+                    $this->push($fd, $message);
+                    $fds[$fd] = true;
                 }
             }
         }
@@ -202,8 +193,10 @@ class Server extends Component implements ServerInterface, LogCategorizable
      */
     public function pushToAll($message)
     {
-        foreach ($this->_users as $user) {
-            $this->push($user->fd, $message);
+        foreach ($this->_id_fds as $fds) {
+            foreach ($fds as $fd => $_) {
+                $this->push($fd, $message);
+            }
         }
     }
 
@@ -225,7 +218,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
 
     /**
      * @param string $type
-     * @param string $receivers
+     * @param array  $receivers
      * @param string $message
      *
      * @return void
@@ -260,6 +253,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
                     list($type, $receivers) = explode(':', substr($channel, strlen($prefix) + 1), 2);
 
                     if ($type !== null && $receivers !== null) {
+                        $receivers = explode(',', $receivers);
                         $this->logger->debug(compact('type', 'receivers', 'message'));
                         $this->dispatch($type, $receivers, $message);
                     } else {
