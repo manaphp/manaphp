@@ -52,6 +52,7 @@ class FactoryDefault extends Di
             'pubSub'           => 'ManaPHP\Messaging\PubSub\Adapter\Redis',
             'dataDump'         => 'ManaPHP\Debugging\DataDump',
             'cliRunner'        => 'ManaPHP\Cli\Runner',
+            'chatClient'       => 'ManaPHP\Ws\Chatting\Client',
 
             'backtracePlugin' => 'ManaPHP\Debugging\BacktracePlugin',
             'debuggerPlugin'  => 'ManaPHP\Debugging\DebuggerPlugin',

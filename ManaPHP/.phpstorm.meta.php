@@ -205,6 +205,8 @@ namespace PHPSTORM_META {
         'cache:miss', 'cache:hit',
         'wspServer:pushing', 'wspServer:pushed',
         'wspClient:push',
+        'chatServer:come', 'chatServer:leave', 'chatServer:pushing', 'chatServer:pushed',
+        'chatClient:push',
     );
     expectedArguments(\ManaPHP\Event\ManagerInterface::attachEvent(), 0, argumentsSet('eventsManager'));
     expectedArguments(\ManaPHP\Component::attachEvent(), 0, argumentsSet('eventsManager'));
