@@ -174,7 +174,8 @@ class Command extends \ManaPHP\Cli\Command
             $str .= '    }' . PHP_EOL;
         }
 
-        if (true) {
+        $pos = strrpos($table, '_');
+        if ($optimized || ($pos !== false && strrpos($table, '_', $pos - 1) !== false)) {
             $str .= PHP_EOL;
             $str .= '    public function table()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
