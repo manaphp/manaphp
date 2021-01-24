@@ -54,7 +54,7 @@ class Model extends \ManaPHP\Data\Model
     /**
      * @return string =model_field(new static)
      */
-    public function getPrimaryKey()
+    public function primaryKey()
     {
         static $cached = [];
 
@@ -364,7 +364,7 @@ class Model extends \ManaPHP\Data\Model
      */
     public function update()
     {
-        $primaryKey = $this->getPrimaryKey();
+        $primaryKey = $this->primaryKey();
 
         if ($this->$primaryKey === null) {
             throw new MisuseException('missing primary key value');
@@ -551,7 +551,7 @@ class Model extends \ManaPHP\Data\Model
 
         $sample = static::sample();
 
-        $primaryKey = $sample->getPrimaryKey();
+        $primaryKey = $sample->primaryKey();
         foreach ($documents as $i => $document) {
             if (!isset($document[$primaryKey])) {
                 throw new MisuseException(['bulkUpdate `%s` model must set primary value', static::class]);
@@ -594,7 +594,7 @@ class Model extends \ManaPHP\Data\Model
 
         /** @var \ManaPHP\Data\MongodbInterface $mongodb */
         $mongodb = static::sample()->getShared($db);
-        return $mongodb->bulkUpsert($collection, $documents, $sample->getPrimaryKey());
+        return $mongodb->bulkUpsert($collection, $documents, $sample->primaryKey());
     }
 
     /**

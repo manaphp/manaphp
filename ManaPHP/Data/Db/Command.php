@@ -188,7 +188,7 @@ class Command extends \ManaPHP\Cli\Command
         $primaryKey = $metadata[Db::METADATA_PRIMARY_KEY];
         if ($primaryKey) {
             $str .= PHP_EOL;
-            $str .= '    public function getPrimaryKey()' . PHP_EOL;
+            $str .= '    public function primaryKey()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$primaryKey[0]';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;

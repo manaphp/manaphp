@@ -48,9 +48,9 @@ abstract class Model extends \ManaPHP\Data\Model
     /**
      * @return string =model_field(new static)
      */
-    public function getPrimaryKey()
+    public function primaryKey()
     {
-        return $this->getModel()->getPrimaryKey();
+        return $this->getModel()->primaryKey();
     }
 
     /**

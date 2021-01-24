@@ -41,7 +41,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
     /**
      * @return string =model_field(new static)
      */
-    public function getPrimaryKey()
+    public function primaryKey()
     {
         static $cached = [];
 
@@ -183,7 +183,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
         }
 
         if ($defaultValueFields) {
-            $primaryKey = $this->getPrimaryKey();
+            $primaryKey = $this->primaryKey();
             $query = $this->newQuery()->select($defaultValueFields)->whereEq($primaryKey, $this->$primaryKey);
             if ($r = $query->execute()) {
                 foreach ($r[0] as $field => $value) {
@@ -207,7 +207,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
      */
     public function update()
     {
-        $primaryKey = $this->getPrimaryKey();
+        $primaryKey = $this->primaryKey();
 
         if ($this->$primaryKey === null) {
             throw new MisuseException('missing primary key value');

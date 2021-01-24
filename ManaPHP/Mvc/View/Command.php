@@ -92,7 +92,7 @@ HTML;
         $content = PHP_EOL . <<<HTML
 <edit-form>
 HTML;
-        $primaryKey = $model->getPrimaryKey();
+        $primaryKey = $model->primaryKey();
         $content .= PHP_EOL . <<<HTML
     <edit-text prop="$primaryKey" disabled></edit-text>
 HTML;
@@ -238,7 +238,7 @@ HTML;
                 },
                 edit: {
 HTML;
-            $content .= PHP_EOL . '                    ' . $model->getPrimaryKey() . ': 0,';
+            $content .= PHP_EOL . '                    ' . $model->primaryKey() . ': 0,';
 
             foreach ($fields as $field) {
                 $rule = $rules[$field] ?? [];

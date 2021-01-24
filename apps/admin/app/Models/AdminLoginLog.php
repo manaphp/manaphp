@@ -26,7 +26,7 @@ class AdminLoginLog extends Model
     /**
      * @return string
      */
-    public function getPrimaryKey()
+    public function primaryKey()
     {
         return 'login_id';
     }

@@ -7,7 +7,7 @@ interface ModelInterface extends TableInterface
     /**
      * @return string
      */
-    public function getPrimaryKey();
+    public function primaryKey();
 
     /**
      * @return string

@@ -924,7 +924,7 @@ class Query extends \ManaPHP\Data\Query
 
             if (isset($options['projection']) && !isset($options['projection']['_id'])) {
                 if ($model !== null) {
-                    if ($model->getPrimaryKey() !== '_id') {
+                    if ($model->primaryKey() !== '_id') {
                         $options['projection']['_id'] = false;
                     }
                 } else {

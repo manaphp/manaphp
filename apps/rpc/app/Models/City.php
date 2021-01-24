@@ -25,7 +25,7 @@ class City extends Model
     /**
      * @return string
      */
-    public function getPrimaryKey()
+    public function primaryKey()
     {
         return 'city_id';
     }

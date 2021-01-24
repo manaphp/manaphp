@@ -30,7 +30,7 @@ class AdminActionLog extends Model
     /**
      * @return string
      */
-    public function getPrimaryKey()
+    public function primaryKey()
     {
         return 'id';
     }

@@ -276,7 +276,7 @@ class Command extends \ManaPHP\Cli\Command
         $primaryKey = null;
         if ($primaryKey = $this->_inferPrimaryKey($fieldTypes, $modelName)) {
             $str .= PHP_EOL;
-            $str .= '    public function getPrimaryKey()' . PHP_EOL;
+            $str .= '    public function primaryKey()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$primaryKey';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;

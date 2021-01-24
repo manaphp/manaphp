@@ -24,7 +24,7 @@ class Country extends Model
     /**
      * @return string
      */
-    public function getPrimaryKey()
+    public function primaryKey()
     {
         return 'country_id';
     }

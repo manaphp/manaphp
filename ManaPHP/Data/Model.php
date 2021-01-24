@@ -103,7 +103,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
      */
     public function foreignedKey()
     {
-        $primaryKey = $this->getPrimaryKey();
+        $primaryKey = $this->primaryKey();
         if ($primaryKey !== 'id') {
             return $primaryKey;
         }
@@ -128,7 +128,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
      */
     public function autoIncrementField()
     {
-        $primaryKey = $this->getPrimaryKey();
+        $primaryKey = $this->primaryKey();
         return is_string($primaryKey) ? $primaryKey : null;
     }
 
@@ -243,7 +243,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         $sample = static::sample();
 
         if (is_string($fields)) {
-            $keyField = $sample->getPrimaryKey();
+            $keyField = $sample->primaryKey();
 
             $query = static::select([$keyField, $fields])->where($filters);
             if ($sample->hasField('display_order')) {
@@ -252,7 +252,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
                 return $query->orderBy([$keyField => SORT_ASC])->execute();
             }
         } elseif (isset($fields[0])) {
-            $keyField = $sample->getPrimaryKey();
+            $keyField = $sample->primaryKey();
             array_unshift($fields, $keyField);
 
             if ($sample->hasField('display_order')) {
@@ -298,7 +298,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         $sample = static::sample();
 
         if (!is_int($fieldsOrTtl)) {
-            if (!$rs = static::select($fieldsOrTtl)->whereEq($sample->getPrimaryKey(), $id)->limit(1)->fetch()) {
+            if (!$rs = static::select($fieldsOrTtl)->whereEq($sample->primaryKey(), $id)->limit(1)->fetch()) {
                 throw new NotFoundException(static::class, $id);
             } else {
                 return $rs[0];
@@ -310,7 +310,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
 
         $r = apcu_fetch($key, $success);
         if (!$success) {
-            if (!$rs = static::select()->whereEq($sample->getPrimaryKey(), $id)->limit(1)->fetch()) {
+            if (!$rs = static::select()->whereEq($sample->primaryKey(), $id)->limit(1)->fetch()) {
                 throw new NotFoundException(static::class, $id);
             }
 
@@ -348,7 +348,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         }
 
         $rs = static::select($fields)
-            ->where(is_scalar($filters) ? [static::sample()->getPrimaryKey() => $filters] : $filters)
+            ->where(is_scalar($filters) ? [static::sample()->primaryKey() => $filters] : $filters)
             ->limit(1)->fetch();
         return $rs[0] ?? null;
     }
@@ -379,7 +379,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         /** @var \ManaPHP\Http\RequestInterface $request */
         $request = $sample->getShared('request');
 
-        return $request->getId($sample->getPrimaryKey());
+        return $request->getId($sample->primaryKey());
     }
 
     /**
@@ -404,7 +404,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     {
         $sample = static::sample();
 
-        $primaryKey = $sample->getPrimaryKey();
+        $primaryKey = $sample->primaryKey();
         $rs = static::select($fields)->where($filters)->orderBy([$primaryKey => SORT_DESC])->limit(1)->fetch();
         return $rs[0] ?? null;
     }
@@ -427,7 +427,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         }
 
         $sample = static::sample();
-        $pkName = $sample->getPrimaryKey();
+        $pkName = $sample->primaryKey();
 
         $pkValue = null;
         if (is_scalar($filters)) {
@@ -507,7 +507,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
      */
     public static function exists($filters)
     {
-        $primaryKey = static::sample()->getPrimaryKey();
+        $primaryKey = static::sample()->primaryKey();
 
         return static::select()->where(is_scalar($filters) ? [$primaryKey => $filters] : $filters)->exists();
     }
@@ -807,7 +807,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
      */
     protected function _exists()
     {
-        $primaryKey = $this->getPrimaryKey();
+        $primaryKey = $this->primaryKey();
         if ($this->$primaryKey === null) {
             return false;
         } else {
@@ -828,7 +828,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
             $this->load($fields);
         }
 
-        $primaryKey = $this->getPrimaryKey();
+        $primaryKey = $this->primaryKey();
         if ($this->_snapshot || $this->$primaryKey) {
             return $this->update();
         } else {
@@ -1030,7 +1030,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
             $this->_last_refresh = microtime(true);
         }
 
-        $primaryKey = $this->getPrimaryKey();
+        $primaryKey = $this->primaryKey();
         $r = $this->newQuery()->select($fields)->where([$primaryKey => $this->$primaryKey])->execute();
         if (!$r) {
             throw new NotFoundException(static::class, [$primaryKey => $this->$primaryKey]);
@@ -1174,7 +1174,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
      */
     public static function where($filters)
     {
-        $primaryKey = static::sample()->getPrimaryKey();
+        $primaryKey = static::sample()->primaryKey();
 
         return static::select()->where(is_scalar($filters) ? [$primaryKey => $filters] : $filters);
     }
@@ -1196,7 +1196,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
      */
     public function delete()
     {
-        $primaryKey = $this->getPrimaryKey();
+        $primaryKey = $this->primaryKey();
 
         if ($this->$primaryKey === null) {
             throw new MisuseException('missing primary key value');
@@ -1227,7 +1227,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         /** @var \ManaPHP\Data\Model $thatModel */
         $that = $thatModel::sample();
 
-        return new BelongsTo(static::class, $thisField ?? $that->foreignedKey(), $thatModel, $that->getPrimaryKey());
+        return new BelongsTo(static::class, $thisField ?? $that->foreignedKey(), $thatModel, $that->primaryKey());
     }
 
     /**
@@ -1238,7 +1238,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
      */
     public function hasOne($thatModel, $thatField = null)
     {
-        return new HasOne(static::class, $this->getPrimaryKey(), $thatModel, $thatField ?? $this->foreignedKey());
+        return new HasOne(static::class, $this->primaryKey(), $thatModel, $thatField ?? $this->foreignedKey());
     }
 
     /**
@@ -1249,7 +1249,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
      */
     public function hasMany($thatModel, $thatField = null)
     {
-        return new HasMany(static::class, $this->getPrimaryKey(), $thatModel, $thatField ?? $this->foreignedKey());
+        return new HasMany(static::class, $this->primaryKey(), $thatModel, $thatField ?? $this->foreignedKey());
     }
 
     /**
@@ -1264,7 +1264,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         $that = $thatModel::sample();
 
         return new HasManyToMany(
-            static::class, $this->getPrimaryKey(), $thatModel, $that->getPrimaryKey(),
+            static::class, $this->primaryKey(), $thatModel, $that->primaryKey(),
             $pivotModel, $this->foreignedKey(), $that->foreignedKey()
         );
     }
@@ -1308,7 +1308,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         }
 
         return new HasManyOthers(
-            static::class, $thisFilter, $that->foreignedKey(), $thatModel, $that->getPrimaryKey()
+            static::class, $thisFilter, $that->foreignedKey(), $thatModel, $that->primaryKey()
         );
     }
 
