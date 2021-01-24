@@ -39,7 +39,7 @@ class Service extends \ManaPHP\Service
                 $class_name = static::class;
                 $service = basename(substr($class_name, strrpos($class_name, '\\') + 1), 'Service');
 
-                $options['endpoint'] = rtrim($endpoint, '/') . '/' . Str::underscore($service);
+                $options['endpoint'] = rtrim($endpoint, '/') . '/' . Str::snakelize($service);
             }
         }
 

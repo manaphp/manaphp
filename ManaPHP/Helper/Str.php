@@ -56,21 +56,25 @@ class Str
     }
 
     /**
+     * snake_case
+     *
      * @param string $str
      *
      * @return string
      */
-    public static function underscore($str)
+    public static function snakelize($str)
     {
         return strtolower(preg_replace('/[A-Z]/', '_$0', lcfirst($str)));
     }
 
     /**
+     * PascalCase
+     *
      * @param string $str
      *
      * @return string
      */
-    public static function camelize($str)
+    public static function pascalize($str)
     {
         if (str_contains($str, '_')) {
             if (PHP_VERSION_ID >= 50516) {
@@ -146,13 +150,15 @@ class Str
     }
 
     /**
+     * camelCase
+     *
      * @param string $str
      *
      * @return string
      */
-    public static function variablize($str)
+    public static function camelize($str)
     {
-        return lcfirst(self::camelize($str));
+        return lcfirst(self::pascalize($str));
     }
 
     /**

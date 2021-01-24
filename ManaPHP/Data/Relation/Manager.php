@@ -56,7 +56,7 @@ class Manager extends Component implements ManagerInterface
      */
     protected function _inferClassName($model, $plainName)
     {
-        $plainName = Str::camelize($plainName);
+        $plainName = Str::pascalize($plainName);
 
         $modelName = get_class($model);
 

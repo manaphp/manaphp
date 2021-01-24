@@ -320,14 +320,14 @@ class Router extends Component implements RouterInterface
         $area = null;
         if ($handledUri !== '/' && $this->_areas) {
             if (($pos = strpos($handledUri, '/', 1)) !== false) {
-                $area = Str::camelize(substr($handledUri, 1, $pos - 1));
+                $area = Str::pascalize(substr($handledUri, 1, $pos - 1));
                 if (in_array($area, $this->_areas, true)) {
                     $handledUri = substr($handledUri, $pos);
                 } else {
                     $area = null;
                 }
             } else {
-                $area = Str::camelize(substr($handledUri, 1));
+                $area = Str::pascalize(substr($handledUri, 1));
                 if (in_array($area, $this->_areas, true)) {
                     $handledUri = '/';
                 } else {
@@ -403,9 +403,9 @@ class Router extends Component implements RouterInterface
                 if (($parts = $route->match($handledUri, $method)) !== false) {
                     if ($handledUri !== '/' && $this->_areas) {
                         if (($pos = strpos($handledUri, '/', 1)) === false) {
-                            $area = Str::camelize(substr($handledUri, 1));
+                            $area = Str::pascalize(substr($handledUri, 1));
                         } else {
-                            $area = Str::camelize(substr($handledUri, 1, $pos - 1));
+                            $area = Str::pascalize(substr($handledUri, 1, $pos - 1));
                         }
 
                         if (!in_array($area, $this->_areas, true)) {

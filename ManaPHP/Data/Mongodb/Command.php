@@ -102,7 +102,7 @@ class Command extends \ManaPHP\Cli\Command
                         continue;
                     }
 
-                    $plainClass = Str::camelize($collection);
+                    $plainClass = Str::pascalize($collection);
                     $fileName = "@tmp/mongodb_models/$plainClass.php";
 
                     $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
@@ -337,7 +337,7 @@ class Command extends \ManaPHP\Cli\Command
 
         $plainClass = substr($modelName, strrpos($modelName, '\\'));
 
-        $underscoreClass = Str::underscore($plainClass);
+        $underscoreClass = Str::snakelize($plainClass);
         $tryField = $underscoreClass . '_id';
         if (isset($fieldTypes[$tryField])) {
             return $tryField;

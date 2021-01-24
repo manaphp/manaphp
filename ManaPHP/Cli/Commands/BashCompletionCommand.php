@@ -18,7 +18,7 @@ class BashCompletionCommand extends Command
         $commands = [];
 
         foreach ($this->_di->getDefinitions('*Command') as $name => $_) {
-            $commands[] = Str::underscore(basename($name, 'Command'));
+            $commands[] = Str::snakelize(basename($name, 'Command'));
         }
 
         return $commands;
@@ -33,14 +33,14 @@ class BashCompletionCommand extends Command
     {
         $actions = [];
         try {
-            if (!$commandClassName = $this->_di->getDefinition(Str::variablize($command) . 'Command')) {
+            if (!$commandClassName = $this->_di->getDefinition(Str::camelize($command) . 'Command')) {
                 return [];
             }
 
             $rc = new ReflectionClass($commandClassName);
             foreach ($rc->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
                 if (!$method->isStatic() && preg_match('#^(.*)Action$#', $method->getShortName(), $matches) === 1) {
-                    $actions[] = Str::underscore($matches[1]);
+                    $actions[] = Str::snakelize($matches[1]);
                 }
             }
         } catch (\Exception $e) {
@@ -57,11 +57,11 @@ class BashCompletionCommand extends Command
      */
     protected function _getArgumentNames($command, $action)
     {
-        if (!$commandClassName = $this->_di->getDefinition(Str::variablize($command) . 'Command')) {
+        if (!$commandClassName = $this->_di->getDefinition(Str::camelize($command) . 'Command')) {
             return [];
         }
 
-        $action = Str::camelize($action) . 'Action';
+        $action = Str::pascalize($action) . 'Action';
         if (!method_exists($commandClassName, $action)) {
             return [];
         }
@@ -84,12 +84,12 @@ class BashCompletionCommand extends Command
      */
     protected function _getArgumentValues($command, $action, $argumentName, $current)
     {
-        if (!$commandClassName = $this->_di->getDefinition(Str::variablize($command) . 'Command')) {
+        if (!$commandClassName = $this->_di->getDefinition(Str::camelize($command) . 'Command')) {
             return [];
         }
 
         $argument_values = [];
-        $action = Str::variablize($action) . 'Completion';
+        $action = Str::camelize($action) . 'Completion';
         if (method_exists($commandClassName, $action)) {
             try {
                 $argument_values = $this->getInstance($commandClassName)->$action($argumentName, $current);

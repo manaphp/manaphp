@@ -34,7 +34,7 @@ class HelpCommand extends Command
         foreach ($builtin_commands as $name => $definition) {
             $description = $this->_getCommandDescription($definition);
             $plainName = ucfirst($name);
-            $command = Str::underscore(basename($plainName, 'Command'));
+            $command = Str::snakelize(basename($plainName, 'Command'));
             $this->console->writeLn(' - ' . $this->console->colorize($command, Console::FC_YELLOW) . $description);
             $actions = $this->_getActions($definition);
 
@@ -50,7 +50,7 @@ class HelpCommand extends Command
         foreach ($app_commands as $name => $definition) {
             $description = $this->_getCommandDescription($definition);
             $plainName = ucfirst($name);
-            $command = Str::underscore(basename($plainName, 'Command'));
+            $command = Str::snakelize(basename($plainName, 'Command'));
             $this->console->writeLn(' - ' . $this->console->colorize($command, Console::FC_YELLOW) . $description);
             $actions = $this->_getActions($definition);
 
@@ -232,7 +232,7 @@ class HelpCommand extends Command
      */
     public function commandAction($command, $action = '')
     {
-        $instance = $this->getShared(Str::variablize($command) . 'Command');
+        $instance = $this->getShared(Str::camelize($command) . 'Command');
 
         foreach (get_class_methods($instance) as $method) {
             if (!preg_match('#^([a-z].*)Action$#', $method, $match)) {

@@ -122,16 +122,16 @@ class Compiler extends Component
             return $str;
         }
 
-        $area = preg_match('#/Areas/([^/]+)#i', $file, $match) ? Str::underscore($match[1]) : null;
+        $area = preg_match('#/Areas/([^/]+)#i', $file, $match) ? Str::snakelize($match[1]) : null;
         if (($pos = strripos($file, '/views/')) === false || strrpos($file, '_layout')) {
             return $str;
         }
 
         $parts = explode('/', substr($file, $pos + 7));
         if (count($parts) === 1) {
-            $controller = Str::underscore(pathinfo($parts[0], PATHINFO_FILENAME));
+            $controller = Str::snakelize(pathinfo($parts[0], PATHINFO_FILENAME));
         } else {
-            $controller = Str::underscore($parts[0]);
+            $controller = Str::snakelize($parts[0]);
         }
         if (str_contains($str, '/')) {
             $absolute = $area ? "/$area/$str" : "/$str";

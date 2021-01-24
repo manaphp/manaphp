@@ -83,7 +83,7 @@ abstract class Table implements TableInterface
     public function table()
     {
         $class = static::class;
-        return Str::underscore(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1));
+        return Str::snakelize(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1));
     }
 
     /**

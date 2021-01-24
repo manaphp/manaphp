@@ -21,7 +21,7 @@ class AreaCommand extends Command
             return $this->console->error('area name is not provided');
         }
 
-        $area = Str::camelize($area);
+        $area = Str::pascalize($area);
 
         $dir = $this->alias->resolve("@app/Areas/$area");
         if (LocalFS::dirExists($dir)) {

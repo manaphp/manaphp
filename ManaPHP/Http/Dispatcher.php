@@ -72,7 +72,7 @@ class Dispatcher extends Component implements DispatcherInterface
     {
         $context = $this->_context;
 
-        $context->area = Str::camelize($area);
+        $context->area = Str::pascalize($area);
 
         return $this;
     }
@@ -96,7 +96,7 @@ class Dispatcher extends Component implements DispatcherInterface
     {
         $context = $this->_context;
 
-        $context->controller = Str::camelize($controller);
+        $context->controller = Str::pascalize($controller);
 
         return $this;
     }
@@ -120,7 +120,7 @@ class Dispatcher extends Component implements DispatcherInterface
     {
         $context = $this->_context;
 
-        $context->action = Str::variablize($action);
+        $context->action = Str::camelize($action);
 
         return $this;
     }
@@ -187,16 +187,16 @@ class Dispatcher extends Component implements DispatcherInterface
             $action = $context->action;
 
             if ($action === 'index') {
-                $path = $controller === 'Index' ? '/' : '/' . Str::underscore($controller);
+                $path = $controller === 'Index' ? '/' : '/' . Str::snakelize($controller);
             } else {
-                $path = '/' . Str::underscore($controller) . '/' . Str::underscore($action);
+                $path = '/' . Str::snakelize($controller) . '/' . Str::snakelize($action);
             }
 
             if ($area !== '' && $area !== null) {
                 if ($area === 'Index' && $path === '/') {
                     null;
                 } else {
-                    $path = '/' . Str::underscore($area) . $path;
+                    $path = '/' . Str::snakelize($area) . $path;
                 }
             }
 
@@ -264,14 +264,14 @@ class Dispatcher extends Component implements DispatcherInterface
         $this->request->setParams($params);
 
         if ($area) {
-            $area = str_contains($area, '_') ? Str::camelize($area) : ucfirst($area);
+            $area = str_contains($area, '_') ? Str::pascalize($area) : ucfirst($area);
             $context->area = $area;
         }
 
-        $controller = str_contains($controller, '_') ? Str::camelize($controller) : ucfirst($controller);
+        $controller = str_contains($controller, '_') ? Str::pascalize($controller) : ucfirst($controller);
         $context->controller = $controller;
 
-        $action = str_contains($action, '_') ? Str::variablize($action) : $action;
+        $action = str_contains($action, '_') ? Str::camelize($action) : $action;
         $context->action = $action;
 
         $context->params = $params;

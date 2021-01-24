@@ -836,9 +836,9 @@ class Validator extends Component implements ValidatorInterface
             $className = get_class($model);
         } elseif (preg_match('#^(.*)_id$#', $field, $match)) {
             $modelName = get_class($model);
-            $className = substr($modelName, 0, strrpos($modelName, '\\') + 1) . Str::camelize($match[1]);
+            $className = substr($modelName, 0, strrpos($modelName, '\\') + 1) . Str::pascalize($match[1]);
             if (!class_exists($className)) {
-                $className = 'App\\Models\\' . Str::camelize($match[1]);
+                $className = 'App\\Models\\' . Str::pascalize($match[1]);
             }
         } else {
             throw new InvalidValueException(['validate `%s` failed: related model class is not provided', $field]);

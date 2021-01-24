@@ -16,7 +16,7 @@ trait Path
      */
     public static function getHierarchyField()
     {
-        return Str::underscore(basename(strtr(static::class, '\\', '/'))) . '_code';
+        return Str::snakelize(basename(strtr(static::class, '\\', '/'))) . '_code';
     }
 
     /**

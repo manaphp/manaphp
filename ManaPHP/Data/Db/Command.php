@@ -162,7 +162,7 @@ class Command extends \ManaPHP\Cli\Command
 
         $str .= PHP_EOL;
         foreach ($fields as $field) {
-            $field = $camelized ? Str::variablize($field) : $field;
+            $field = $camelized ? Str::camelize($field) : $field;
             $str .= '    public $' . $field . ';' . PHP_EOL;
         }
 
@@ -189,7 +189,7 @@ class Command extends \ManaPHP\Cli\Command
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
             foreach ($fields as $field) {
-                $field = $camelized ? Str::variablize($field) : $field;
+                $field = $camelized ? Str::camelize($field) : $field;
                 $str .= "            '$field'," . PHP_EOL;
             }
             $str .= '        ];' . PHP_EOL;
@@ -202,7 +202,7 @@ class Command extends \ManaPHP\Cli\Command
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
             foreach ($fields as $field) {
-                $t = Str::variablize($field);
+                $t = Str::camelize($field);
                 if ($t !== $field) {
                     $str .= "            '$t' => '$field'," . PHP_EOL;
                 }
@@ -272,7 +272,7 @@ class Command extends \ManaPHP\Cli\Command
      */
     protected function _renderTable($service, $table, $rootNamespace = 'App\Models')
     {
-        $plainClass = Str::camelize($table);
+        $plainClass = Str::pascalize($table);
         $modelName = $rootNamespace . '\\' . $plainClass;
 
         if ($constants = $this->_getConstantsByDb($service, $table)) {
@@ -391,7 +391,7 @@ class Command extends \ManaPHP\Cli\Command
 
         $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
-        $plainClass = Str::camelize($table);
+        $plainClass = Str::pascalize($table);
         $fileName = "@tmp/db_model/$plainClass.php";
         $class = "App\Models\\$plainClass";
         $model_str = $this->_renderModel($service, $class, $table, $optimized, $camelized);
@@ -417,14 +417,14 @@ class Command extends \ManaPHP\Cli\Command
         foreach ($services ?: $this->_getDbServices() as $service) {
             foreach ($this->_getTables($service, $table_pattern) as $table) {
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
-                $plainClass = Str::camelize($table);
+                $plainClass = Str::pascalize($table);
                 $class = "App\Models\\$plainClass";
                 $fileName = "@tmp/db_models/$plainClass.php";
                 if (($pos = strpos($table, '_')) !== false) {
-                    $area = Str::camelize(substr($table, 0, $pos));
+                    $area = Str::pascalize(substr($table, 0, $pos));
                     if (in_array($area, $areas, true)) {
-                        $plainClass = Str::camelize(substr($table, $pos + 1));
-                        $class = 'App\\Areas\\Models\\' . Str::camelize(substr($table, $pos));
+                        $plainClass = Str::pascalize(substr($table, $pos + 1));
+                        $class = 'App\\Areas\\Models\\' . Str::pascalize(substr($table, $pos));
                         $fileName = "@tmp/db_models/Areas/$area/$plainClass.php";
                     }
                 }
@@ -456,7 +456,7 @@ class Command extends \ManaPHP\Cli\Command
             foreach ($this->_getTables($service, $table_pattern) as $table) {
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
-                $plainClass = Str::camelize($table);
+                $plainClass = Str::pascalize($table);
                 $fileName = "@tmp/db_tables/$plainClass.php";
                 $model_str = $this->_renderTable($service, $table, $namespace);
                 LocalFS::filePut($fileName, $model_str);

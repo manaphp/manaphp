@@ -74,8 +74,8 @@ class PermissionController extends Controller
                     continue;
                 }
 
-                $path = '/' . ($area ? Str::underscore($area) . '/' : '') . Str::underscore($controller_name) . '/'
-                    . Str::underscore($action);
+                $path = '/' . ($area ? Str::snakelize($area) . '/' : '') . Str::snakelize($controller_name) . '/'
+                    . Str::snakelize($action);
                 $path = preg_replace('#(/index)+$#', '', $path) ?: '/';
 
                 if (Permission::exists(['path' => $path])) {
