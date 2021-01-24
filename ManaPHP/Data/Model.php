@@ -713,13 +713,20 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
                 continue;
             }
 
-            if (in_array($field, ['created_time', 'created_at', 'updated_time', 'updated_at'], true)) {
+            $needle = ",$field,";
+            if (str_contains(',created_time,createdTime,created_at,createdAt,', $needle)) {
                 $data[$field] = date($this->getDateFormat($field), $current_time);
-            } elseif (in_array($field, ['creator_id', 'created_id', 'updator_id', 'updated_id'], true)) {
+            } elseif (str_contains(',updated_time,updatedTime,updated_at,updatedAt,', $needle)) {
+                $data[$field] = date($this->getDateFormat($field), $current_time);
+            } elseif (str_contains(',creator_id,creatorId,created_id,createdId,', $needle)) {
                 $data[$field] = $user_id;
-            } elseif (in_array($field, ['creator_name', 'created_name', 'updator_name', 'updated_name'], true)) {
+            } elseif (str_contains(',updator_id,updatorId,updated_id,updatedId,', $needle)) {
+                $data[$field] = $user_id;
+            } elseif (str_contains(',creator_name,creatorName,created_name,createdName,', $needle)) {
                 $data[$field] = $user_name;
-            } elseif (in_array($field, ['created_date', 'updated_date'], true)) {
+            } elseif (str_contains(',updator_name,updatorName,updated_name,updatedName,', $needle)) {
+                $data[$field] = $user_name;
+            } elseif (str_contains(',created_date,createdDate,updated_date,updatedDate,', $needle)) {
                 $data[$field] = (int)date('ymd', $current_time);
             }
         }
@@ -740,13 +747,14 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
 
         $data = [];
         foreach ($this->getFields() as $field) {
-            if (in_array($field, ['updated_time', 'updated_at'], true)) {
+            $needle = ",$field,";
+            if (str_contains(',updated_time,updatedTime,updated_at,updatedAt,', $needle)) {
                 $data[$field] = date($this->getDateFormat($field), $current_time);
-            } elseif (in_array($field, ['updator_id', 'updated_id'], true)) {
+            } elseif (str_contains(',updator_id,updatorId,updated_id,updatedId,', $needle)) {
                 $data[$field] = $user_id;
-            } elseif (in_array($field, ['updator_name', 'updated_name'], true)) {
+            } elseif (str_contains(',updator_name,updatorName,updated_name,updatedName,', $needle)) {
                 $data[$field] = $user_name;
-            } elseif ($field === 'updated_date') {
+            } elseif (str_contains(',updated_date,updatedDate,', $needle)) {
                 $data[$field] = (int)date('ymd', $current_time);
             }
         }
