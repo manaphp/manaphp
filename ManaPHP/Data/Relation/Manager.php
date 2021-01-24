@@ -104,7 +104,7 @@ class Manager extends Component implements ManagerInterface
 
             $thatInstance = $thatModel::sample();
 
-            $thisForeignedKey = $thisInstance->getForeignedKey();
+            $thisForeignedKey = $thisInstance->foreignedKey();
             if ($thatInstance->hasField($thisForeignedKey)) {
                 return $thisInstance->hasMany($thatModel, $thisForeignedKey);
             }
@@ -139,8 +139,8 @@ class Manager extends Component implements ManagerInterface
         } elseif ($thatModel = $this->_inferClassName($thisInstance, $name)) {
             /** @var \ManaPHP\Data\ModelInterface $thatInstance */
             $thatInstance = $thatModel::sample();
-            $thisForeignedKey = $thisInstance->getForeignedKey();
-            $thatForeignedKey = $thatInstance->getForeignedKey();
+            $thisForeignedKey = $thisInstance->foreignedKey();
+            $thatForeignedKey = $thatInstance->foreignedKey();
             if ($thatInstance->hasField($thisForeignedKey)) {
                 return $thisInstance->hasOne($thatModel, $thisForeignedKey);
             } elseif ($thisInstance->hasField($thatForeignedKey)) {

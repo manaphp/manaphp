@@ -12,7 +12,7 @@ interface ModelInterface extends TableInterface
     /**
      * @return string
      */
-    public function getForeignedKey();
+    public function foreignedKey();
 
     /**
      * @return array

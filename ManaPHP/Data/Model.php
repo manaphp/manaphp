@@ -101,7 +101,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     /**
      * @return string
      */
-    public function getForeignedKey()
+    public function foreignedKey()
     {
         $primaryKey = $this->getPrimaryKey();
         if ($primaryKey !== 'id') {
@@ -1227,7 +1227,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         /** @var \ManaPHP\Data\Model $thatModel */
         $that = $thatModel::sample();
 
-        return new BelongsTo(static::class, $thisField ?? $that->getForeignedKey(), $thatModel, $that->getPrimaryKey());
+        return new BelongsTo(static::class, $thisField ?? $that->foreignedKey(), $thatModel, $that->getPrimaryKey());
     }
 
     /**
@@ -1238,7 +1238,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
      */
     public function hasOne($thatModel, $thatField = null)
     {
-        return new HasOne(static::class, $this->getPrimaryKey(), $thatModel, $thatField ?? $this->getForeignedKey());
+        return new HasOne(static::class, $this->getPrimaryKey(), $thatModel, $thatField ?? $this->foreignedKey());
     }
 
     /**
@@ -1249,7 +1249,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
      */
     public function hasMany($thatModel, $thatField = null)
     {
-        return new HasMany(static::class, $this->getPrimaryKey(), $thatModel, $thatField ?? $this->getForeignedKey());
+        return new HasMany(static::class, $this->getPrimaryKey(), $thatModel, $thatField ?? $this->foreignedKey());
     }
 
     /**
@@ -1265,7 +1265,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
 
         return new HasManyToMany(
             static::class, $this->getPrimaryKey(), $thatModel, $that->getPrimaryKey(),
-            $pivotModel, $this->getForeignedKey(), $that->getForeignedKey()
+            $pivotModel, $this->foreignedKey(), $that->foreignedKey()
         );
     }
 
@@ -1280,7 +1280,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         /** @var \ManaPHP\Data\Model $thatModel */
         $that = $thatModel::sample();
 
-        $foreingedKey = $that->getForeignedKey();
+        $foreingedKey = $that->foreignedKey();
 
         if ($thisFilter === null) {
             $keys = [];
@@ -1308,7 +1308,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         }
 
         return new HasManyOthers(
-            static::class, $thisFilter, $that->getForeignedKey(), $thatModel, $that->getPrimaryKey()
+            static::class, $thisFilter, $that->foreignedKey(), $thatModel, $that->getPrimaryKey()
         );
     }
 
