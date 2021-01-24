@@ -185,12 +185,23 @@ class Command extends \ManaPHP\Cli\Command
             $str .= '    }' . PHP_EOL;
         }
 
-        $primaryKey = $metadata[Db::METADATA_PRIMARY_KEY];
-        if ($primaryKey) {
+        $primaryKeys = $metadata[Db::METADATA_PRIMARY_KEY];
+        if ($primaryKey = count($primaryKeys) === 1 ? $primaryKeys[0] : null) {
+            if ($optimized
+                || ($primaryKey !== 'id' && $primaryKey !== $table . '_id' && $primaryKey !== $table . 'Id')
+            ) {
+                $str .= PHP_EOL;
+                $str .= '    public function primaryKey()' . PHP_EOL;
+                $str .= '    {' . PHP_EOL;
+                $str .= "        return '$primaryKey';" . PHP_EOL;
+                $str .= '    }' . PHP_EOL;
+            }
+
+        } else {
             $str .= PHP_EOL;
             $str .= '    public function primaryKey()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
-            $str .= "        return '$primaryKey[0]';" . PHP_EOL;
+            $str .= "        return '???';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
         }
 
