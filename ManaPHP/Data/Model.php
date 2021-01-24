@@ -74,8 +74,10 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
             return 'id';
         }
 
-        $tryField = lcfirst(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1)) . '_id';
-        if (in_array($tryField, $fields, true)) {
+        $prefix = lcfirst(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1));
+        if (in_array($tryField = $prefix . '_id', $fields, true)) {
+            return $tryField;
+        } elseif (in_array($tryField = $prefix . 'Id', $fields, true)) {
             return $tryField;
         }
 
@@ -86,8 +88,10 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
             $table = substr($table, 0, $pos);
         }
 
-        $tryField = (($pos = strpos($table, '.')) ? substr($table, $pos + 1) : $table) . '_id';
-        if (in_array($tryField, $fields, true)) {
+        $prefix = (($pos = strpos($table, '.')) ? substr($table, $pos + 1) : $table);
+        if (in_array($tryField = $prefix . '_id', $fields, true)) {
+            return $tryField;
+        } elseif (in_array($tryField = $prefix . 'Id', $fields, true)) {
             return $tryField;
         }
 
