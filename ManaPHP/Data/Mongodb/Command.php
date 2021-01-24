@@ -229,10 +229,6 @@ class Command extends \ManaPHP\Cli\Command
         $str .= 'namespace ' . substr($modelName, 0, strrpos($modelName, '\\')) . ';' . PHP_EOL;
         $str .= PHP_EOL;
 
-        $str .= '/**' . PHP_EOL;
-        $str .= ' * Class ' . $modelName . PHP_EOL;
-        $str .= ' */' . PHP_EOL;
-
         $str .= 'class ' . substr(
                 $modelName,
                 strrpos($modelName, '\\') + 1
@@ -253,9 +249,6 @@ class Command extends \ManaPHP\Cli\Command
 
         if (true) {
             $str .= PHP_EOL;
-            $str .= '    /**' . PHP_EOL;
-            $str .= '     * @return array' . PHP_EOL;
-            $str .= '     */' . PHP_EOL;
             $str .= '    public function getFieldTypes()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
@@ -271,9 +264,6 @@ class Command extends \ManaPHP\Cli\Command
 
         if ($service !== 'mongodb') {
             $str .= PHP_EOL;
-            $str .= '    /**' . PHP_EOL;
-            $str .= '     * @return string' . PHP_EOL;
-            $str .= '     */' . PHP_EOL;
             $str .= '    public function getDb()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$service';" . PHP_EOL;
@@ -283,9 +273,6 @@ class Command extends \ManaPHP\Cli\Command
         if ($namespace) {
             $source = ($pos = strpos($namespace, '.')) ? substr($namespace, $pos + 1) : $namespace;
             $str .= PHP_EOL;
-            $str .= '    /**' . PHP_EOL;
-            $str .= '     * @return string' . PHP_EOL;
-            $str .= '     */' . PHP_EOL;
             $str .= '    public function getTable()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$source';" . PHP_EOL;
@@ -295,9 +282,6 @@ class Command extends \ManaPHP\Cli\Command
         $primaryKey = null;
         if ($primaryKey = $this->_inferPrimaryKey($fieldTypes, $modelName)) {
             $str .= PHP_EOL;
-            $str .= '    /**' . PHP_EOL;
-            $str .= '     * @return string' . PHP_EOL;
-            $str .= '     */' . PHP_EOL;
             $str .= '    public function getPrimaryKey()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$primaryKey';" . PHP_EOL;
@@ -306,9 +290,6 @@ class Command extends \ManaPHP\Cli\Command
 
         if ($optimized && $primaryKey && $fieldTypes[$primaryKey] === 'int') {
             $str .= PHP_EOL;
-            $str .= '    /**' . PHP_EOL;
-            $str .= '     * @return string' . PHP_EOL;
-            $str .= '     */' . PHP_EOL;
             $str .= '    public function autoIncrementField()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$primaryKey';" . PHP_EOL;
@@ -317,9 +298,6 @@ class Command extends \ManaPHP\Cli\Command
 
         if ($optimized) {
             $str .= PHP_EOL;
-            $str .= '    /**' . PHP_EOL;
-            $str .= '     * @return array' . PHP_EOL;
-            $str .= '     */' . PHP_EOL;
             $str .= '    public function fields()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
@@ -332,9 +310,6 @@ class Command extends \ManaPHP\Cli\Command
 
         if ($optimized && !$hasPendingType) {
             $str .= PHP_EOL;
-            $str .= '    /**' . PHP_EOL;
-            $str .= '     * @return array' . PHP_EOL;
-            $str .= '     */' . PHP_EOL;
             $str .= '    public function intFields()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;

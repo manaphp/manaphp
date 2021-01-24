@@ -147,10 +147,6 @@ class Command extends \ManaPHP\Cli\Command
         $str .= 'namespace ' . substr($modelName, 0, strrpos($modelName, '\\')) . ';' . PHP_EOL;
         $str .= PHP_EOL;
 
-        $str .= '/**' . PHP_EOL;
-        $str .= ' * Class ' . $modelName . PHP_EOL;
-        $str .= ' */' . PHP_EOL;
-
         $str .= 'class ' . $plainClass . ' extends Model' . PHP_EOL;
         $str .= '{';
         if ($constants) {
@@ -164,9 +160,6 @@ class Command extends \ManaPHP\Cli\Command
 
         if ($service !== 'db') {
             $str .= PHP_EOL;
-            $str .= '    /**' . PHP_EOL;
-            $str .= '     * @return string' . PHP_EOL;
-            $str .= '     */' . PHP_EOL;
             $str .= '    public function getDb()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$service';" . PHP_EOL;
@@ -175,10 +168,6 @@ class Command extends \ManaPHP\Cli\Command
 
         if (true) {
             $str .= PHP_EOL;
-
-            $str .= '    /**' . PHP_EOL;
-            $str .= '     * @return string' . PHP_EOL;
-            $str .= '     */' . PHP_EOL;
             $str .= '    public function getTable()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$table';" . PHP_EOL;
@@ -187,9 +176,6 @@ class Command extends \ManaPHP\Cli\Command
 
         if ($optimized) {
             $str .= PHP_EOL;
-            $str .= '    /**' . PHP_EOL;
-            $str .= '     * @return array' . PHP_EOL;
-            $str .= '     */' . PHP_EOL;
             $str .= '    public function fields()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
@@ -203,9 +189,6 @@ class Command extends \ManaPHP\Cli\Command
         $primaryKey = $metadata[Db::METADATA_PRIMARY_KEY];
         if ($primaryKey) {
             $str .= PHP_EOL;
-            $str .= '    /**' . PHP_EOL;
-            $str .= '     * @return string' . PHP_EOL;
-            $str .= '     */' . PHP_EOL;
             $str .= '    public function getPrimaryKey()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$primaryKey[0]';" . PHP_EOL;
@@ -215,9 +198,6 @@ class Command extends \ManaPHP\Cli\Command
         $autoIncField = $metadata[Db::METADATA_AUTO_INCREMENT_KEY];
         if ($optimized) {
             $str .= PHP_EOL;
-            $str .= '    /**' . PHP_EOL;
-            $str .= '     * @return string' . PHP_EOL;
-            $str .= '     */' . PHP_EOL;
             $str .= '    public function autoIncrementField()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             if ($autoIncField) {
@@ -232,9 +212,6 @@ class Command extends \ManaPHP\Cli\Command
             $intFields = (array)$metadata[Db::METADATA_INT_TYPE_ATTRIBUTES];
 
             $str .= PHP_EOL;
-            $str .= '    /**' . PHP_EOL;
-            $str .= '     * @return array' . PHP_EOL;
-            $str .= '     */' . PHP_EOL;
             $str .= '    public function intFields()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
