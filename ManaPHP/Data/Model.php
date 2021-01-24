@@ -126,7 +126,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     /**
      * @return string|null =model_field(new static)
      */
-    public function getAutoIncrementField()
+    public function autoIncrementField()
     {
         $primaryKey = $this->getPrimaryKey();
         return is_string($primaryKey) ? $primaryKey : null;

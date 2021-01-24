@@ -179,7 +179,7 @@ class Model extends \ManaPHP\Data\Model
      */
     protected function _createAutoIncrementIndex($mongodb, $source)
     {
-        $autoIncField = $this->getAutoIncrementField();
+        $autoIncField = $this->autoIncrementField();
 
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $pos);
@@ -290,7 +290,7 @@ class Model extends \ManaPHP\Data\Model
      */
     public function create()
     {
-        $autoIncrementField = $this->getAutoIncrementField();
+        $autoIncrementField = $this->autoIncrementField();
         if ($autoIncrementField && $this->$autoIncrementField === null) {
             $this->$autoIncrementField = $this->getNextAutoIncrementId();
         }
@@ -498,7 +498,7 @@ class Model extends \ManaPHP\Data\Model
 
         $allowNull = $sample->isAllowNullValue();
         $fieldTypes = $sample->getFieldTypes();
-        $autoIncrementField = $sample->getAutoIncrementField();
+        $autoIncrementField = $sample->autoIncrementField();
         if ($autoIncrementField && !isset($document[$autoIncrementField])) {
             $document[$autoIncrementField] = $sample->getNextAutoIncrementId();
         }

@@ -58,7 +58,7 @@ interface ModelInterface extends TableInterface
     /**
      * @return string|null
      */
-    public function getAutoIncrementField();
+    public function autoIncrementField();
 
     /**
      * @param int $step

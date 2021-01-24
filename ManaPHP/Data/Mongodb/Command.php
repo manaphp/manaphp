@@ -309,7 +309,7 @@ class Command extends \ManaPHP\Cli\Command
             $str .= '    /**' . PHP_EOL;
             $str .= '     * @return string' . PHP_EOL;
             $str .= '     */' . PHP_EOL;
-            $str .= '    public function getAutoIncrementField()' . PHP_EOL;
+            $str .= '    public function autoIncrementField()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$primaryKey';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
