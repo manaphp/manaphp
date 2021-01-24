@@ -755,6 +755,26 @@ class Query extends \ManaPHP\Data\Query
     }
 
     /**
+     * @param string $sql
+     *
+     * @return string
+     */
+    protected function _translateField2Columns($sql)
+    {
+        if (!($model = $this->_model) || !$map = $model->map()) {
+            return $sql;
+        }
+
+        $pattern = '#\[(' . implode('|', array_keys($map)) . ')]#';
+
+        return preg_replace_callback(
+            $pattern, static function ($matches) use ($map) {
+            return '[' . $map[$matches[1]] . ']';
+        }, $sql
+        );
+    }
+
+    /**
      * Returns a SQL statement built based on the builder parameters
      *
      * @param \ManaPHP\Data\DbInterface $db
@@ -833,6 +853,7 @@ class Query extends \ManaPHP\Data\Query
         }
 
         $sql = $db->buildSql($params);
+        $sql = $this->_translateField2Columns($sql);
         //compatible with other SQL syntax
         $replaces = [];
         foreach ($this->_bind as $key => $_) {
@@ -914,7 +935,20 @@ class Query extends \ManaPHP\Data\Query
 
         $this->_sql = $this->_buildSql($connection, $table, $joins);
 
-        return $connection->fetchAll($this->_sql, $this->_bind, PDO::FETCH_ASSOC, $this->_force_master);
+        $rows = $connection->fetchAll($this->_sql, $this->_bind, PDO::FETCH_ASSOC, $this->_force_master);
+
+        if ($map = $this->_model ? $this->_model->map() : []) {
+            foreach ($rows as &$row) {
+                foreach ($map as $propery => $column) {
+                    if (array_key_exists($column, $row)) {
+                        $row[$propery] = $row[$column];
+                        unset($row[$column]);
+                    }
+                }
+            }
+        }
+
+        return $rows;
     }
 
     /**

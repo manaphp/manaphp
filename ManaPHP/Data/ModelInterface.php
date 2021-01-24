@@ -20,6 +20,13 @@ interface ModelInterface extends TableInterface
     public function getFields();
 
     /**
+     * map model property to table column
+     *
+     * @return array
+     */
+    public function map();
+
+    /**
      * @param string $field
      *
      * @return bool

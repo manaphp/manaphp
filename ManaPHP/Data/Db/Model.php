@@ -56,8 +56,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
                     throw new NotSupportedException('only support one primary key');
                 }
                 $primaryKey = $primaryKeys[0];
-
-                return $cached[$class] = $primaryKey;
+                return $cached[$class] = array_search($primaryKey, $this->map(), true) ?: $primaryKey;
             }
         }
 
@@ -94,7 +93,15 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
 
         $class = static::class;
         if (($fields = $cached[$class] ?? null) === null) {
-            $fields = $cached[$class] = $this->getModelsMetadata()->getIntTypeAttributes($this);
+            if ($map = $this->map()) {
+                foreach ($this->getModelsMetadata()->getIntTypeAttributes($this) as $field) {
+                    $fields[] = array_search($field, $map, true) ?: $field;
+                }
+            } else {
+                $fields = $this->getModelsMetadata()->getIntTypeAttributes($this);
+            }
+
+            $cached[$class] = $fields;
         }
 
         return $fields;
@@ -157,6 +164,13 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
         foreach ($this->getJsonFields() as $field) {
             if (is_array($this->$field)) {
                 $fieldValues[$field] = json_stringify($this->$field);
+            }
+        }
+
+        foreach ($this->map() as $propery => $column) {
+            if (array_key_exists($propery, $fieldValues)) {
+                $fieldValues[$column] = $fieldValues[$propery];
+                unset($fieldValues[$propery]);
             }
         }
 
@@ -274,9 +288,17 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
             }
         }
 
+        $map = $this->map();
+        foreach ($map as $property => $column) {
+            if (array_key_exists($property, $fieldValues)) {
+                $fieldValues[$column] = $fieldValues[$property];
+                unset($fieldValues[$property]);
+            }
+        }
+
         /** @var \ManaPHP\Data\DbInterface $db */
         $db = $this->getShared($db);
-        $db->update($table, $fieldValues, [$primaryKey => $this->$primaryKey], $bind);
+        $db->update($table, $fieldValues, [$map[$primaryKey] ?? $primaryKey => $this->$primaryKey], $bind);
 
         if ($expressionFields) {
             $query = $this->newQuery()->select($expressionFields)->whereEq($primaryKey, $this->$primaryKey);

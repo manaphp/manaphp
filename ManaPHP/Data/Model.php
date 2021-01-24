@@ -176,6 +176,16 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     }
 
     /**
+     * map modle field to table column
+     *
+     * @return array =model_var(new static)
+     */
+    public function map()
+    {
+        return [];
+    }
+
+    /**
      * @return array =model_var(new static) ?: [$field => \PHPSTORM_META\validator_rule()]
      */
     public function rules()
