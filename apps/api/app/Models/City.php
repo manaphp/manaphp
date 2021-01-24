@@ -3,8 +3,6 @@
 namespace App\Models;
 
 /**
- * Class City
- *
  * @property Country $country
  */
 class City extends Model

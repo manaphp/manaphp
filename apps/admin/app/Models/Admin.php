@@ -28,14 +28,6 @@ class Admin extends Model
     public $created_time;
     public $updated_time;
 
-    /**
-     * @return string
-     */
-    public function table()
-    {
-        return 'admin';
-    }
-
     public function rules()
     {
         return [

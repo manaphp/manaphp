@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-/**
- * Class App\Models\AdminLoginLog
- */
 class AdminLoginLog extends Model
 {
     public $login_id;
@@ -15,17 +12,6 @@ class AdminLoginLog extends Model
     public $user_agent;
     public $created_time;
 
-    /**
-     * @return string
-     */
-    public function table()
-    {
-        return 'admin_login_log';
-    }
-
-    /**
-     * @return string
-     */
     public function primaryKey()
     {
         return 'login_id';

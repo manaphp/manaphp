@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-/**
- * Class App\Models\AdminActionLog
- */
 class AdminActionLog extends Model
 {
     public $id;
@@ -19,19 +16,8 @@ class AdminActionLog extends Model
     public $client_udid;
     public $created_time;
 
-    /**
-     * @return string
-     */
     public function table()
     {
         return 'admin_action_log';
-    }
-
-    /**
-     * @return string
-     */
-    public function primaryKey()
-    {
-        return 'id';
     }
 }
