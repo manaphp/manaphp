@@ -1430,7 +1430,11 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
 
             $value = $this->$field;
 
-            if (is_int($value) && $value > 100000000 /**1973/3/3 17:46:40*/ && !str_ends_with($field, '_id')) {
+            /**1973/3/3 17:46:40*/
+            if (is_int($value) && $value > 100000000
+                && !str_ends_with($field, '_id')
+                && !str_ends_with($field, 'Id')
+            ) {
                 $data['*human_time*'][$field] = date('Y-m-d H:i:s', $value);
             }
 
