@@ -31,7 +31,7 @@ class TestCity1 extends Model
 
 class TestCity2 extends Model
 {
-    public function getTable($context = null)
+    public function table($context = null)
     {
         return 'city';
     }
@@ -39,7 +39,7 @@ class TestCity2 extends Model
 
 class TestCity3 extends Model
 {
-    public function getTable($context = null)
+    public function table($context = null)
     {
         return 'the_city';
     }
@@ -200,7 +200,7 @@ class DbModelTest extends TestCase
      */
     protected function _truncateTable($model)
     {
-        $this->connection->truncate($model->getTable());
+        $this->connection->truncate($model->table());
     }
 
     public function test_create()
@@ -348,15 +348,15 @@ class DbModelTest extends TestCase
     {
         //infer the table name from table name
         $city = new TestCity1();
-        $this->assertEquals('test_city1', $city->getTable());
+        $this->assertEquals('test_city1', $city->table());
 
         //use getSource
         $city = new TestCity2();
-        $this->assertEquals('city', $city->getTable());
+        $this->assertEquals('city', $city->table());
 
         //use setSource
         $city = new TestCity3();
-        $this->assertEquals('the_city', $city->getTable());
+        $this->assertEquals('the_city', $city->table());
     }
 
     public function test_getSnapshotData()

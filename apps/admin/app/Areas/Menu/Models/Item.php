@@ -17,7 +17,7 @@ class Item extends Model
     public $created_time;
     public $updated_time;
 
-    public function getTable()
+    public function table()
     {
         return 'menu_item';
     }

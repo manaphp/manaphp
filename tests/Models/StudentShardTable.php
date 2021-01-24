@@ -11,7 +11,7 @@ class StudentShardTable extends Model
     public $age;
     public $name;
 
-    public function getTable($context = null)
+    public function table($context = null)
     {
         if ($context === true) {
             return '_student';

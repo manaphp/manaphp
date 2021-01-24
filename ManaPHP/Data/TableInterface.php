@@ -9,7 +9,7 @@ interface TableInterface
      *
      * @return string
      */
-    public function getTable();
+    public function table();
 
     /**
      * Gets internal database connection

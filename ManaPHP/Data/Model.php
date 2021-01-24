@@ -81,7 +81,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
             return $tryField;
         }
 
-        $table = $this->getTable();
+        $table = $this->table();
         if (($pos = strpos($table, ':')) !== false) {
             $table = substr($table, 0, $pos);
         } elseif (($pos = strpos($table, ',')) !== false) {
@@ -108,7 +108,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
             return $primaryKey;
         }
 
-        $table = $this->getTable();
+        $table = $this->table();
 
         if (($pos = strpos($table, '.')) !== false) {
             $table = substr($table, $pos + 1);

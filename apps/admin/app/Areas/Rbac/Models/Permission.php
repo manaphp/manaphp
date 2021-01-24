@@ -12,7 +12,7 @@ class Permission extends Model
     public $created_time;
     public $updated_time;
 
-    public function getTable()
+    public function table()
     {
         return 'rbac_permission';
     }

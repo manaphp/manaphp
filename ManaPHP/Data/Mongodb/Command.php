@@ -267,7 +267,7 @@ class Command extends \ManaPHP\Cli\Command
         if ($namespace) {
             $source = ($pos = strpos($namespace, '.')) ? substr($namespace, $pos + 1) : $namespace;
             $str .= PHP_EOL;
-            $str .= '    public function getTable()' . PHP_EOL;
+            $str .= '    public function table()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$source';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;

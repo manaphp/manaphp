@@ -201,7 +201,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
                 $sample = $table::sample();
 
                 $this->setModel($sample);
-                $table = $sample->getTable();
+                $table = $sample->table();
             }
 
             $this->_table = $table;

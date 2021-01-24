@@ -399,7 +399,7 @@ class Query extends \ManaPHP\Data\Query
             return $this->whereEq($field, $value);
         } elseif ($operator === '~=') {
             if ($this->_types && !isset($this->_types[$field])) {
-                $collection = $this->_model ? $this->_model->getTable() : $this->_table;
+                $collection = $this->_model ? $this->_model->table() : $this->_table;
                 throw new InvalidArgumentException(['`%s` field is not exist in `%s` collection', $field, $collection]);
             }
 

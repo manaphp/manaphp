@@ -31,7 +31,7 @@ class Admin extends Model
     /**
      * @return string
      */
-    public function getTable()
+    public function table()
     {
         return 'admin';
     }

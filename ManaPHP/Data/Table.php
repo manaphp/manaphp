@@ -51,7 +51,7 @@ abstract class Table implements TableInterface
     public function getMultipleShards($context)
     {
         $db = $this->getDb();
-        $table = $this->getTable();
+        $table = $this->table();
 
         if (strcspn($db, ':,') === strlen($db) && strcspn($table, ':,') === strlen($table)) {
             return [$db => [$table]];
@@ -66,7 +66,7 @@ abstract class Table implements TableInterface
     public function getAllShards()
     {
         $db = $this->getDb();
-        $table = $this->getTable();
+        $table = $this->table();
 
         if (strcspn($db, ':,') === strlen($db) && strcspn($table, ':,') === strlen($table)) {
             return [$db => [$table]];
@@ -80,7 +80,7 @@ abstract class Table implements TableInterface
      *
      * @return string
      */
-    public function getTable()
+    public function table()
     {
         $class = static::class;
         return Str::underscore(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1));

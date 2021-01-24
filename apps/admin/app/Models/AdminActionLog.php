@@ -22,7 +22,7 @@ class AdminActionLog extends Model
     /**
      * @return string
      */
-    public function getTable()
+    public function table()
     {
         return 'admin_action_log';
     }

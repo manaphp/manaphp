@@ -167,7 +167,7 @@ class Command extends \ManaPHP\Cli\Command
 
         if (true) {
             $str .= PHP_EOL;
-            $str .= '    public function getTable()' . PHP_EOL;
+            $str .= '    public function table()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$table';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
@@ -264,7 +264,7 @@ class Command extends \ManaPHP\Cli\Command
 
         if (true) {
             $str .= PHP_EOL;
-            $str .= '    public function getTable()' . PHP_EOL;
+            $str .= '    public function table()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$table';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;

@@ -14,7 +14,7 @@ class AdminRole extends Model
     public $creator_name;
     public $created_time;
 
-    public function getTable()
+    public function table()
     {
         return 'rbac_admin_role';
     }

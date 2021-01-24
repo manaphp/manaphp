@@ -16,7 +16,7 @@ class Country extends Model
     /**
      * @return string
      */
-    public function getTable()
+    public function table()
     {
         return 'country';
     }
