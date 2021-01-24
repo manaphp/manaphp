@@ -147,7 +147,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
      *
      * @return string
      */
-    public function getDateFormat($field)
+    public function dateFormat($field)
     {
         if (isset($this->_snapshot[$field])) {
             $ts = is_numeric($this->_snapshot[$field]);
@@ -729,9 +729,9 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
 
             $needle = ",$field,";
             if (str_contains(',created_time,createdTime,created_at,createdAt,', $needle)) {
-                $data[$field] = date($this->getDateFormat($field), $current_time);
+                $data[$field] = date($this->dateFormat($field), $current_time);
             } elseif (str_contains(',updated_time,updatedTime,updated_at,updatedAt,', $needle)) {
-                $data[$field] = date($this->getDateFormat($field), $current_time);
+                $data[$field] = date($this->dateFormat($field), $current_time);
             } elseif (str_contains(',creator_id,creatorId,created_id,createdId,', $needle)) {
                 $data[$field] = $user_id;
             } elseif (str_contains(',updator_id,updatorId,updated_id,updatedId,', $needle)) {
@@ -765,7 +765,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         foreach ($this->fields() as $field) {
             $needle = ",$field,";
             if (str_contains(',updated_time,updatedTime,updated_at,updatedAt,', $needle)) {
-                $data[$field] = date($this->getDateFormat($field), $current_time);
+                $data[$field] = date($this->dateFormat($field), $current_time);
             } elseif (str_contains(',updator_id,updatorId,updated_id,updatedId,', $needle)) {
                 $data[$field] = $user_id;
             } elseif (str_contains(',updator_name,updatorName,updated_name,updatedName,', $needle)) {

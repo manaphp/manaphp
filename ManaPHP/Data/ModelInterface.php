@@ -38,7 +38,7 @@ interface ModelInterface extends TableInterface
      *
      * @return string
      */
-    public function getDateFormat($field);
+    public function dateFormat($field);
 
     /**
      * @return array

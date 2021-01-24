@@ -363,7 +363,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
             $max = (int)(is_numeric($max) ? $max : strtotime($max . ' 23:59:59'));
         }
 
-        if ($format = $this->_model->getDateFormat(($pos = strpos($field, '.')) ? substr($field, $pos + 1) : $field)) {
+        if ($format = $this->_model->dateFormat(($pos = strpos($field, '.')) ? substr($field, $pos + 1) : $field)) {
             if (is_int($min)) {
                 $min = date($format, $min);
             }
@@ -772,7 +772,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     public function whereDate($field, $date)
     {
         if ($this->_model) {
-            $format = $this->_model->getDateFormat($field);
+            $format = $this->_model->dateFormat($field);
         } else {
             $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }
@@ -798,7 +798,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     public function whereMonth($field, $date)
     {
         if ($this->_model) {
-            $format = $this->_model->getDateFormat($field);
+            $format = $this->_model->dateFormat($field);
         } else {
             $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }
@@ -824,7 +824,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     public function whereYear($field, $date)
     {
         if ($this->_model) {
-            $format = $this->_model->getDateFormat($field);
+            $format = $this->_model->dateFormat($field);
         } else {
             $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }
