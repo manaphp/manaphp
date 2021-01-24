@@ -86,9 +86,12 @@ class Manager extends Component implements ManagerInterface
      */
     protected function _inferRelation($thisInstance, $name)
     {
-        if ($thisInstance->hasField($name . '_id')) {
+        if ($thisInstance->hasField($tryName = $name . '_id')) {
             $thatModel = $this->_inferClassName($thisInstance, $name);
-            return $thatModel ? $thisInstance->belongsTo($thatModel, $name . '_id') : false;
+            return $thatModel ? $thisInstance->belongsTo($thatModel, $tryName) : false;
+        } elseif ($thisInstance->hasField($tryName = $name . 'Id')) {
+            $thatModel = $this->_inferClassName($thisInstance, $name);
+            return $thatModel ? $thisInstance->belongsTo($thatModel, $tryName) : false;
         }
 
         /** @var \ManaPHP\Data\Model $thatInstance */
