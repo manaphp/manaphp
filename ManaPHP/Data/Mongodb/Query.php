@@ -67,7 +67,7 @@ class Query extends \ManaPHP\Data\Query
     {
         $this->_model = $model;
 
-        $this->setTypes($model->getFieldTypes());
+        $this->setTypes($model->fieldTypes());
 
         return $this;
     }

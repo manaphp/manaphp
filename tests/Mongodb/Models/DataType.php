@@ -6,7 +6,7 @@ use ManaPHP\Data\Mongodb\Model;
 
 class DataType extends Model
 {
-    public function getFieldTypes()
+    public function fieldTypes()
     {
         return [
             'v_string'   => 'string',

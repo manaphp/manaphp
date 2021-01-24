@@ -81,7 +81,7 @@ class Model extends \ManaPHP\Data\Model
         $class = static::class;
 
         if (!isset($cached[$class])) {
-            $fieldTypes = $this->getFieldTypes();
+            $fieldTypes = $this->fieldTypes();
             if (isset($fieldTypes['_id']) && $fieldTypes['_id'] === 'objectid') {
                 unset($fieldTypes['_id']);
             }
@@ -102,7 +102,7 @@ class Model extends \ManaPHP\Data\Model
 
         if (!isset($cached[$class])) {
             $fields = [];
-            foreach ($this->getFieldTypes() as $field => $type) {
+            foreach ($this->fieldTypes() as $field => $type) {
                 if ($type === 'int') {
                     $fields[] = $field;
                 }
@@ -119,7 +119,7 @@ class Model extends \ManaPHP\Data\Model
      *
      * @return array =model_var(new static)
      */
-    public function getFieldTypes()
+    public function fieldTypes()
     {
         static $cached = [];
 
@@ -313,7 +313,7 @@ class Model extends \ManaPHP\Data\Model
         }
 
         $allowNull = $this->isAllowNullValue();
-        foreach ($this->getFieldTypes() as $field => $type) {
+        foreach ($this->fieldTypes() as $field => $type) {
             if ($field === '_id') {
                 continue;
             }
@@ -381,7 +381,7 @@ class Model extends \ManaPHP\Data\Model
             throw new MisuseException('updating model primary key value is not support');
         }
 
-        $fieldTypes = $this->getFieldTypes();
+        $fieldTypes = $this->fieldTypes();
         $fields = $this->fields();
 
         foreach ($fields as $field) {
@@ -497,7 +497,7 @@ class Model extends \ManaPHP\Data\Model
         $sample = static::sample();
 
         $allowNull = $sample->isAllowNullValue();
-        $fieldTypes = $sample->getFieldTypes();
+        $fieldTypes = $sample->fieldTypes();
         $autoIncrementField = $sample->autoIncrementField();
         if ($autoIncrementField && !isset($document[$autoIncrementField])) {
             $document[$autoIncrementField] = $sample->getNextAutoIncrementId();

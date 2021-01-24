@@ -21,7 +21,7 @@ class Student extends Model
         return '_student';
     }
 
-    public function getFieldTypes()
+    public function fieldTypes()
     {
         return [
             '_id'  => 'objectid',

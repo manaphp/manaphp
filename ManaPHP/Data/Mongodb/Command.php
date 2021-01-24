@@ -243,7 +243,7 @@ class Command extends \ManaPHP\Cli\Command
 
         if (true) {
             $str .= PHP_EOL;
-            $str .= '    public function getFieldTypes()' . PHP_EOL;
+            $str .= '    public function fieldTypes()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
             foreach ($fieldTypes as $field => $type) {

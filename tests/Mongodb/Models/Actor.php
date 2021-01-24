@@ -22,7 +22,7 @@ class Actor extends Model
     public $last_name;
     public $last_update;
 
-    public function getFieldTypes()
+    public function fieldTypes()
     {
         return [
             '_id'         => 'integer',
