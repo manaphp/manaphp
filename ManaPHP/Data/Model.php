@@ -728,6 +728,8 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
                 $data[$field] = $user_name;
             } elseif (str_contains(',created_date,createdDate,updated_date,updatedDate,', $needle)) {
                 $data[$field] = (int)date('ymd', $current_time);
+            } elseif (str_contains(',created_by,createdBy,updated_by,updatedBy', $needle)) {
+                $data[$field] = in_array($field, $this->getIntFields(), true) ? $user_id : $user_name;
             }
         }
 
@@ -756,6 +758,8 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
                 $data[$field] = $user_name;
             } elseif (str_contains(',updated_date,updatedDate,', $needle)) {
                 $data[$field] = (int)date('ymd', $current_time);
+            } elseif (str_contains(',updated_by,updatedBy', $needle)) {
+                $data[$field] = in_array($field, $this->getIntFields(), true) ? $user_id : $user_name;
             }
         }
 
