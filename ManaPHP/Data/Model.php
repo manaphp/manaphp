@@ -1275,7 +1275,11 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         if ($thisFilter === null) {
             $keys = [];
             foreach ($this->getFields() as $field) {
-                if ($field === $foreingedKey || $field === 'id' || $field === '_id' || !str_ends_with($field, '_id')) {
+                if ($field === $foreingedKey || $field === 'id' || $field === '_id') {
+                    continue;
+                }
+
+                if (!str_ends_with($field, '_id') && !str_ends_with($field, 'Id')) {
                     continue;
                 }
 
