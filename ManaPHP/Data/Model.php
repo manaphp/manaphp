@@ -46,7 +46,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     public function __construct($data = [])
     {
         if ($data) {
-            foreach ($this->getJsonFields() as $field) {
+            foreach ($this->jsonFields() as $field) {
                 if (isset($data[$field]) && is_string($data[$field])) {
                     $value = $data[$field];
                     $data[$field] = $value === '' ? [] : json_parse($value);
@@ -170,7 +170,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     /**
      * @return array =model_fields(new static)
      */
-    public function getJsonFields()
+    public function jsonFields()
     {
         return [];
     }
@@ -1037,7 +1037,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         }
 
         $data = (array)$r[0];
-        foreach ($this->getJsonFields() as $field) {
+        foreach ($this->jsonFields() as $field) {
             if (isset($data[$field]) && is_string($data[$field])) {
                 if ($data[$field] === '') {
                     $data[$field] = [];

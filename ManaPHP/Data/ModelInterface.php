@@ -48,7 +48,7 @@ interface ModelInterface extends TableInterface
     /**
      * @return array
      */
-    public function getJsonFields();
+    public function jsonFields();
 
     /**
      * @return array|null
