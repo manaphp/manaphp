@@ -120,12 +120,13 @@ class Command extends \ManaPHP\Cli\Command
 
     /**
      * @param string $service
+     * @param string $class
      * @param string $table
      * @param bool   $optimized
      *
      * @return string
      */
-    protected function _renderModel($service, $table, $optimized = false)
+    protected function _renderModel($service, $class, $table, $optimized = false)
     {
         /** @var Db $db */
         $db = $this->getShared($service);
@@ -133,8 +134,9 @@ class Command extends \ManaPHP\Cli\Command
 
         $fields = (array)$metadata[Db::METADATA_ATTRIBUTES];
 
-        $plainClass = Str::camelize($table);
-        $modelName = 'App\Models\\' . $plainClass;
+        $pos = strrpos($class, '\\');
+        $plainClass = substr($class, $pos + 1);
+        $namespace = substr($class, 0, $pos);
 
         if ($constants = $this->_getConstantsByDb($service, $table)) {
             null;
@@ -143,8 +145,13 @@ class Command extends \ManaPHP\Cli\Command
         }
 
         $str = '<?php' . PHP_EOL . PHP_EOL;
-        $str .= 'namespace ' . substr($modelName, 0, strrpos($modelName, '\\')) . ';' . PHP_EOL;
+        $str .= "namespace $namespace;" . PHP_EOL;
         $str .= PHP_EOL;
+
+        if (strpos($class, '\\Areas\\')) {
+            $str .= 'use App\Models\Model;' . PHP_EOL;
+            $str .= PHP_EOL;
+        }
 
         $str .= 'class ' . $plainClass . ' extends Model' . PHP_EOL;
         $str .= '{';
@@ -317,6 +324,22 @@ class Command extends \ManaPHP\Cli\Command
     }
 
     /**
+     * @return array
+     */
+    protected function _getAreas()
+    {
+        $areas = [];
+        foreach (LocalFS::glob('@app/Areas/*', GLOB_ONLYDIR) as $item) {
+            $area = basename($item);
+            if (!in_array($area, ['Api', 'Admin', 'User'])) {
+                $areas[] = $area;
+            }
+        }
+
+        return $areas;
+    }
+
+    /**
      * generate model file in online
      *
      * @param string $table     table name
@@ -350,7 +373,8 @@ class Command extends \ManaPHP\Cli\Command
 
         $plainClass = Str::camelize($table);
         $fileName = "@tmp/db_model/$plainClass.php";
-        $model_str = $this->_renderModel($service, $table, $optimized);
+        $class = "App\Models\\$plainClass";
+        $model_str = $this->_renderModel($service, $class, $table, $optimized);
         LocalFS::filePut($fileName, $model_str);
 
         $this->console->progress(['`:table` table saved to `:file`', 'table' => $table, 'file' => $fileName]);
@@ -367,13 +391,24 @@ class Command extends \ManaPHP\Cli\Command
      */
     public function modelsAction($services = [], $table_pattern = '', $optimized = false)
     {
+        $areas = $this->_getAreas();
+
         foreach ($services ?: $this->_getDbServices() as $service) {
             foreach ($this->_getTables($service, $table_pattern) as $table) {
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
-
                 $plainClass = Str::camelize($table);
+                $class = "App\Models\\$plainClass";
                 $fileName = "@tmp/db_models/$plainClass.php";
-                $model_str = $this->_renderModel($service, $table, $optimized);
+                if (($pos = strpos($table, '_')) !== false) {
+                    $area = Str::camelize(substr($table, 0, $pos));
+                    if (in_array($area, $areas, true)) {
+                        $plainClass = Str::camelize(substr($table, $pos + 1));
+                        $class = 'App\\Areas\\Models\\' . Str::camelize(substr($table, $pos));
+                        $fileName = "@tmp/db_models/Areas/$area/$plainClass.php";
+                    }
+                }
+
+                $model_str = $this->_renderModel($service, $class, $table, $optimized);
                 LocalFS::filePut($fileName, $model_str);
 
                 $this->console->progress(['  `:table` table saved to `:file`', 'table' => $table, 'file' => $fileName]);
