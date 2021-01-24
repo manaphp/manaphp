@@ -26,7 +26,7 @@ abstract class Model extends \ManaPHP\Data\Model
             $queries = $this->getInstance('ManaPHP\Data\Merger\Query', [$queries]);
         }
 
-        return $queries->setModel($this->getModel())->select($this->getFields());
+        return $queries->setModel($this->getModel())->select($this->fields());
     }
 
     public function getDb()
@@ -56,7 +56,7 @@ abstract class Model extends \ManaPHP\Data\Model
     /**
      * @return array =model_fields(new static)
      */
-    public function getFields()
+    public function fields()
     {
         static $cached = [];
 
@@ -69,7 +69,7 @@ abstract class Model extends \ManaPHP\Data\Model
                 }
             }
 
-            $cached[$class] = $fields ?: $this->getModel()->getFields();
+            $cached[$class] = $fields ?: $this->getModel()->fields();
         }
 
         return $cached[$class];

@@ -74,7 +74,7 @@ class Model extends \ManaPHP\Data\Model
     /**
      * @return array =model_fields(new static)
      */
-    public function getFields()
+    public function fields()
     {
         static $cached = [];
 
@@ -295,7 +295,7 @@ class Model extends \ManaPHP\Data\Model
             $this->$autoIncrementField = $this->getNextAutoIncrementId();
         }
 
-        $fields = $this->getFields();
+        $fields = $this->fields();
         foreach ($this->getAutoCreatedData() as $field => $value) {
             if ($this->$field === null) {
                 $this->$field = $value;
@@ -382,7 +382,7 @@ class Model extends \ManaPHP\Data\Model
         }
 
         $fieldTypes = $this->getFieldTypes();
-        $fields = $this->getFields();
+        $fields = $this->fields();
 
         foreach ($fields as $field) {
             if ($this->$field === null) {

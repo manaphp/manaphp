@@ -33,7 +33,7 @@ HTML;
         $content .= PHP_EOL . <<<HTML
 <detail-form>
 HTML;
-        foreach ($model->getFields() as $field) {
+        foreach ($model->fields() as $field) {
             if ($this->isTimestampField($model, $field)) {
                 $content .= PHP_EOL . <<<HTML
     <detail-timestamp prop="$field"></detail-timestamp>
@@ -135,7 +135,7 @@ HTML;
 <result-table>
     <result-index></result-index>
 HTML;
-        foreach ($model->getFields() as $field) {
+        foreach ($model->fields() as $field) {
             if ($this->isTimestampField($model, $field)) {
                 $content .= PHP_EOL . <<<HTML
     <result-timestamp prop="$field"></result-timestamp>

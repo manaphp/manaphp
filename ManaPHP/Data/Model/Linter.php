@@ -56,8 +56,8 @@ class Linter extends Component
             }
 
             $methodName = $method->getName();
-            if ($methodName === 'getFields') {
-                $some = $model->getFields();
+            if ($methodName === 'fields') {
+                $some = $model->fields();
                 if ($model instanceof DbModel) {
                     $all = $this->getPropertyFields();
                     if (!$all) {
@@ -81,10 +81,10 @@ class Linter extends Component
                 }
             } elseif ($methodName === 'getSafeFields') {
                 $some = $model->getSafeFields();
-                $all = $model->getFields();
+                $all = $model->fields();
             } elseif ($methodName === 'rules') {
                 $some = array_keys($model->rules());
-                $all = $model->getFields();
+                $all = $model->fields();
             } else {
                 continue;
             }
@@ -129,7 +129,7 @@ class Linter extends Component
             $properties[] = $property->getName();
         }
 
-        return array_diff($properties, $model->getFields());
+        return array_diff($properties, $model->fields());
     }
 
     /**
@@ -169,6 +169,6 @@ class Linter extends Component
             $fields[] = $field;
         }
 
-        return array_diff($fields, $this->_model->getFields());
+        return array_diff($fields, $this->_model->fields());
     }
 }

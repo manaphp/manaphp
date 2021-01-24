@@ -919,7 +919,7 @@ class Query extends \ManaPHP\Data\Query
                     $options['projection'] = $this->_fields;
                 }
             } elseif ($model !== null) {
-                $options['projection'] = array_fill_keys($model->getFields(), 1);
+                $options['projection'] = array_fill_keys($model->fields(), 1);
             }
 
             if (isset($options['projection']) && !isset($options['projection']['_id'])) {

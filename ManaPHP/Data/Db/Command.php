@@ -190,7 +190,7 @@ class Command extends \ManaPHP\Cli\Command
             $str .= '    /**' . PHP_EOL;
             $str .= '     * @return array' . PHP_EOL;
             $str .= '     */' . PHP_EOL;
-            $str .= '    public function getFields()' . PHP_EOL;
+            $str .= '    public function fields()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
             foreach ($fields as $field) {

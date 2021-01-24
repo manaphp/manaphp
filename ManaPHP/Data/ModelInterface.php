@@ -17,7 +17,7 @@ interface ModelInterface extends TableInterface
     /**
      * @return array
      */
-    public function getFields();
+    public function fields();
 
     /**
      * map model property to table column

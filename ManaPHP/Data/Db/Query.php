@@ -750,7 +750,7 @@ class Query extends \ManaPHP\Data\Query
         } elseif ($joins) {
             return '*';
         } else {
-            return $this->_model ? '[' . implode('], [', $this->_model->getFields()) . ']' : '*';
+            return $this->_model ? '[' . implode('], [', $this->_model->fields()) . ']' : '*';
         }
     }
 

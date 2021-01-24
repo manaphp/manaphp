@@ -68,7 +68,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
      */
     protected function _inferPrimaryKey($class)
     {
-        $fields = $this->getFields();
+        $fields = $this->fields();
 
         if (in_array('id', $fields, true)) {
             return 'id';
@@ -139,7 +139,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
      */
     public function hasField($field)
     {
-        return in_array($field, $this->getFields(), true);
+        return in_array($field, $this->fields(), true);
     }
 
     /**
@@ -722,7 +722,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         $user_name = $identity->getName('');
 
         $data = [];
-        foreach ($this->getFields() as $field) {
+        foreach ($this->fields() as $field) {
             if ($this->$field !== null) {
                 continue;
             }
@@ -762,7 +762,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         $user_name = $identity->getName('');
 
         $data = [];
-        foreach ($this->getFields() as $field) {
+        foreach ($this->fields() as $field) {
             $needle = ",$field,";
             if (str_contains(',updated_time,updatedTime,updated_at,updatedAt,', $needle)) {
                 $data[$field] = date($this->getDateFormat($field), $current_time);
@@ -967,7 +967,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         $snapshot = $this->_snapshot;
 
         $changed = [];
-        foreach ($this->getFields() as $field) {
+        foreach ($this->fields() as $field) {
             if (isset($snapshot[$field])) {
                 if ($this->{$field} !== $snapshot[$field]) {
                     $changed[] = $field;
@@ -1284,7 +1284,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
 
         if ($thisFilter === null) {
             $keys = [];
-            foreach ($this->getFields() as $field) {
+            foreach ($this->fields() as $field) {
                 if ($field === $foreingedKey || $field === 'id' || $field === '_id') {
                     continue;
                 }
@@ -1433,7 +1433,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
             $data['*changed_fields*'] = $changedFields;
         }
 
-        foreach ($this->getFields() as $field) {
+        foreach ($this->fields() as $field) {
             if (!isset($this->$field)) {
                 continue;
             }

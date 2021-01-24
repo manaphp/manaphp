@@ -66,7 +66,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
     /**
      * @return array =model_fields(new static)
      */
-    public function getFields()
+    public function fields()
     {
         static $cached = [];
 
@@ -137,7 +137,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
             $this->$autoIncrementField = $this->getNextAutoIncrementId();
         }
 
-        $fields = $this->getFields();
+        $fields = $this->fields();
         foreach ($this->getAutoCreatedData() as $field => $value) {
             if ($this->$field === null) {
                 $this->$field = $value;
@@ -224,7 +224,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
             throw new MisuseException('updating model primary key value is not support');
         }
 
-        $fields = $this->getFields();
+        $fields = $this->fields();
 
         foreach ($fields as $field) {
             if ($this->$field === null) {
