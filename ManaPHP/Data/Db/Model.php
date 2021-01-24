@@ -55,7 +55,9 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
                 if (count($primaryKeys) !== 1) {
                     throw new NotSupportedException('only support one primary key');
                 }
-                return $cached[$class] = $primaryKeys[0];
+                $primaryKey = $primaryKeys[0];
+
+                return $cached[$class] = $primaryKey;
             }
         }
 
