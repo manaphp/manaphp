@@ -248,10 +248,6 @@ class Command extends \ManaPHP\Cli\Command
         $str .= 'namespace ' . substr($modelName, 0, strrpos($modelName, '\\')) . ';' . PHP_EOL;
         $str .= PHP_EOL;
 
-        $str .= '/**' . PHP_EOL;
-        $str .= ' * Class ' . $modelName . PHP_EOL;
-        $str .= ' */' . PHP_EOL;
-
         $str .= 'class ' . $plainClass . ' extends Table' . PHP_EOL;
         $str .= '{';
         if ($constants) {
@@ -260,9 +256,6 @@ class Command extends \ManaPHP\Cli\Command
 
         if ($service !== 'db') {
             $str .= PHP_EOL;
-            $str .= '    /**' . PHP_EOL;
-            $str .= '     * @return string' . PHP_EOL;
-            $str .= '     */' . PHP_EOL;
             $str .= '    public function getDb()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$service';" . PHP_EOL;
@@ -271,10 +264,6 @@ class Command extends \ManaPHP\Cli\Command
 
         if (true) {
             $str .= PHP_EOL;
-
-            $str .= '    /**' . PHP_EOL;
-            $str .= '     * @return string' . PHP_EOL;
-            $str .= '     */' . PHP_EOL;
             $str .= '    public function getTable()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$table';" . PHP_EOL;
