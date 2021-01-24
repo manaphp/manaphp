@@ -90,7 +90,14 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
      */
     public function getIntFields()
     {
-        return $this->getModelsMetadata()->getIntTypeAttributes($this);
+        static $cached;
+
+        $class = static::class;
+        if (($fields = $cached[$class] ?? null) === null) {
+            $fields = $cached[$class] = $this->getModelsMetadata()->getIntTypeAttributes($this);
+        }
+
+        return $fields;
     }
 
     /**
