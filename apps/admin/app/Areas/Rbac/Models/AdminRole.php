@@ -19,7 +19,7 @@ class AdminRole extends Model
         return 'rbac_admin_role';
     }
 
-    public function getSafeFields()
+    public function safeFields()
     {
         return [];
     }

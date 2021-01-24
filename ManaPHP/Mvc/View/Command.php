@@ -59,7 +59,7 @@ HTML;
      */
     public function renderCreateForm($model)
     {
-        if (!$fields = $model->getSafeFields()) {
+        if (!$fields = $model->safeFields()) {
             return '';
         }
 
@@ -85,7 +85,7 @@ HTML;
      */
     public function renderEditForm($model)
     {
-        if (!$fields = $model->getSafeFields()) {
+        if (!$fields = $model->safeFields()) {
             return '';
         }
 
@@ -201,7 +201,7 @@ HTML;
      */
     public function renderScript($model)
     {
-        $fields = $model->getSafeFields();
+        $fields = $model->safeFields();
 
         $content = PHP_EOL . <<<HTML
 @section('script')

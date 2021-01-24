@@ -43,7 +43,7 @@ interface ModelInterface extends TableInterface
     /**
      * @return array
      */
-    public function getSafeFields();
+    public function safeFields();
 
     /**
      * @return array

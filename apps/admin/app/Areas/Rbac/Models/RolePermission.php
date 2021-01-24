@@ -17,7 +17,7 @@ class RolePermission extends Model
         return 'rbac_role_permission';
     }
 
-    public function getSafeFields()
+    public function safeFields()
     {
         return [];
     }

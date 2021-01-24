@@ -162,7 +162,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
     /**
      * @return array =model_fields(new static)
      */
-    public function getSafeFields()
+    public function safeFields()
     {
         return array_keys($this->rules());
     }
@@ -627,7 +627,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
      */
     public function load($fields = null)
     {
-        $fields = $fields ?? $this->getSafeFields();
+        $fields = $fields ?? $this->safeFields();
 
         /** @var \ManaPHP\Http\RequestInterface $request */
         $request = $this->getShared('request');
