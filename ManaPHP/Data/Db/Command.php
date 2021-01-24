@@ -121,12 +121,11 @@ class Command extends \ManaPHP\Cli\Command
     /**
      * @param string $service
      * @param string $table
-     * @param string $rootNamespace
      * @param bool   $optimized
      *
      * @return string
      */
-    protected function _renderModel($service, $table, $rootNamespace = 'App\Models', $optimized = false)
+    protected function _renderModel($service, $table, $optimized = false)
     {
         /** @var Db $db */
         $db = $this->getShared($service);
@@ -135,7 +134,7 @@ class Command extends \ManaPHP\Cli\Command
         $fields = (array)$metadata[Db::METADATA_ATTRIBUTES];
 
         $plainClass = Str::camelize($table);
-        $modelName = $rootNamespace . '\\' . $plainClass;
+        $modelName = 'App\Models\\' . $plainClass;
 
         if ($constants = $this->_getConstantsByDb($service, $table)) {
             null;
@@ -322,17 +321,12 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @param string $table     table name
      * @param string $service   service name
-     * @param string $namespace
      * @param bool   $optimized output as more methods as possible
      *
      * @return void
      */
-    public function modelAction($table, $service = '', $namespace = 'App\Models', $optimized = false)
+    public function modelAction($table, $service = '', $optimized = false)
     {
-        if (!str_contains($namespace, '\\')) {
-            $namespace = 'App\\' . ucfirst($namespace) . '\\Models';
-        }
-
         /** @var \ManaPHP\Data\DbInterface $db */
         if ($service) {
             $db = $this->getShared($service);
@@ -356,7 +350,7 @@ class Command extends \ManaPHP\Cli\Command
 
         $plainClass = Str::camelize($table);
         $fileName = "@tmp/db_model/$plainClass.php";
-        $model_str = $this->_renderModel($service, $table, $namespace, $optimized);
+        $model_str = $this->_renderModel($service, $table, $optimized);
         LocalFS::filePut($fileName, $model_str);
 
         $this->console->progress(['`:table` table saved to `:file`', 'table' => $table, 'file' => $fileName]);
@@ -367,24 +361,19 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @param array  $services      services name list
      * @param string $table_pattern match table against a pattern
-     * @param string $namespace     namespace of models
      * @param bool   $optimized     output as more methods as possible
      *
      * @return void
      */
-    public function modelsAction($services = [], $table_pattern = '', $namespace = 'App\Models', $optimized = false)
+    public function modelsAction($services = [], $table_pattern = '', $optimized = false)
     {
-        if (!str_contains($namespace, '\\')) {
-            $namespace = 'App\\' . ucfirst($namespace) . '\\Models';
-        }
-
         foreach ($services ?: $this->_getDbServices() as $service) {
             foreach ($this->_getTables($service, $table_pattern) as $table) {
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
                 $plainClass = Str::camelize($table);
                 $fileName = "@tmp/db_models/$plainClass.php";
-                $model_str = $this->_renderModel($service, $table, $namespace, $optimized);
+                $model_str = $this->_renderModel($service, $table, $optimized);
                 LocalFS::filePut($fileName, $model_str);
 
                 $this->console->progress(['  `:table` table saved to `:file`', 'table' => $table, 'file' => $fileName]);

@@ -69,26 +69,20 @@ class Command extends \ManaPHP\Cli\Command
     /**
      * generate models file from data files or online data
      *
-     * @param array  $services  explicit the mongodb service name
-     * @param string $namespace namespaces of models
-     * @param bool   $optimized output as more methods as possible
-     * @param int    $sample    sample size
-     * @param array  $db        db name list
+     * @param array $services  explicit the mongodb service name
+     * @param bool  $optimized output as more methods as possible
+     * @param int   $sample    sample size
+     * @param array $db        db name list
      *
      * @return void
      * @throws \ManaPHP\Data\Mongodb\Exception
      */
     public function modelsAction(
         $services = [],
-        $namespace = 'App\Models',
         $optimized = false,
         $sample = 1000,
         $db = []
     ) {
-        if (!str_contains($namespace, '\\')) {
-            $namespace = 'App\\' . ucfirst($namespace) . '\\Models';
-        }
-
         foreach ($this->_getServices($services) as $service) {
             /** @var \ManaPHP\Data\Mongodb $mongodb */
             $mongodb = $this->getShared($service);
@@ -114,7 +108,7 @@ class Command extends \ManaPHP\Cli\Command
                     $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
 
                     $fieldTypes = $this->_inferFieldTypes($docs);
-                    $modelClass = $namespace . '\\' . $plainClass;
+                    $modelClass = 'App\Models\\' . $plainClass;
                     $ns = $defaultDb ? $collection : "$cdb.$collection";
                     $model = $this->_renderModel($fieldTypes, $modelClass, $service, $ns, $optimized);
                     LocalFS::filePut($fileName, $model);
