@@ -1328,7 +1328,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         } elseif (($relationsManager = $this->getShared('relationsManager'))->has($this, $name)) {
             return $this->$name = $relationsManager->lazyLoad($this, $name)->fetch();
         } else {
-            throw new UnknownPropertyException(['`%s` does not contain `%s` field.`', static::class, 'field' => $name]);
+            throw new UnknownPropertyException(['`%s` does not contain `%s` field.`', static::class, $name]);
         }
     }
 
