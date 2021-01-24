@@ -123,10 +123,11 @@ class Command extends \ManaPHP\Cli\Command
      * @param string $class
      * @param string $table
      * @param bool   $optimized
+     * @param bool   $camelized
      *
      * @return string
      */
-    protected function _renderModel($service, $class, $table, $optimized = false)
+    protected function _renderModel($service, $class, $table, $optimized = false, $camelized = false)
     {
         /** @var Db $db */
         $db = $this->getShared($service);
@@ -161,6 +162,7 @@ class Command extends \ManaPHP\Cli\Command
 
         $str .= PHP_EOL;
         foreach ($fields as $field) {
+            $field = $camelized ? Str::variablize($field) : $field;
             $str .= '    public $' . $field . ';' . PHP_EOL;
         }
 
@@ -186,7 +188,23 @@ class Command extends \ManaPHP\Cli\Command
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
             foreach ($fields as $field) {
+                $field = $camelized ? Str::variablize($field) : $field;
                 $str .= "            '$field'," . PHP_EOL;
+            }
+            $str .= '        ];' . PHP_EOL;
+            $str .= '    }' . PHP_EOL;
+        }
+
+        if ($camelized) {
+            $str .= PHP_EOL;
+            $str .= '    public function map()' . PHP_EOL;
+            $str .= '    {' . PHP_EOL;
+            $str .= '        return [' . PHP_EOL;
+            foreach ($fields as $field) {
+                $t = Str::variablize($field);
+                if ($t !== $field) {
+                    $str .= "            '$t' => '$field'," . PHP_EOL;
+                }
             }
             $str .= '        ];' . PHP_EOL;
             $str .= '    }' . PHP_EOL;
@@ -345,10 +363,11 @@ class Command extends \ManaPHP\Cli\Command
      * @param string $table     table name
      * @param string $service   service name
      * @param bool   $optimized output as more methods as possible
+     * @param bool   $camelized
      *
      * @return void
      */
-    public function modelAction($table, $service = '', $optimized = false)
+    public function modelAction($table, $service = '', $optimized = false, $camelized = false)
     {
         /** @var \ManaPHP\Data\DbInterface $db */
         if ($service) {
@@ -374,7 +393,7 @@ class Command extends \ManaPHP\Cli\Command
         $plainClass = Str::camelize($table);
         $fileName = "@tmp/db_model/$plainClass.php";
         $class = "App\Models\\$plainClass";
-        $model_str = $this->_renderModel($service, $class, $table, $optimized);
+        $model_str = $this->_renderModel($service, $class, $table, $optimized, $camelized);
         LocalFS::filePut($fileName, $model_str);
 
         $this->console->progress(['`:table` table saved to `:file`', 'table' => $table, 'file' => $fileName]);
@@ -386,10 +405,11 @@ class Command extends \ManaPHP\Cli\Command
      * @param array  $services      services name list
      * @param string $table_pattern match table against a pattern
      * @param bool   $optimized     output as more methods as possible
+     * @param bool   $camelized
      *
      * @return void
      */
-    public function modelsAction($services = [], $table_pattern = '', $optimized = false)
+    public function modelsAction($services = [], $table_pattern = '', $optimized = false, $camelized = false)
     {
         $areas = $this->_getAreas();
 
@@ -408,7 +428,7 @@ class Command extends \ManaPHP\Cli\Command
                     }
                 }
 
-                $model_str = $this->_renderModel($service, $class, $table, $optimized);
+                $model_str = $this->_renderModel($service, $class, $table, $optimized, $camelized);
                 LocalFS::filePut($fileName, $model_str);
 
                 $this->console->progress(['  `:table` table saved to `:file`', 'table' => $table, 'file' => $fileName]);
