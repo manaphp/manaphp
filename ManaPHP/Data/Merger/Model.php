@@ -78,9 +78,9 @@ abstract class Model extends \ManaPHP\Data\Model
     /**
      * @return array =model_fields(new static)
      */
-    public function getIntFields()
+    public function intFields()
     {
-        return $this->getModel()->getIntFields();
+        return $this->getModel()->intFields();
     }
 
     public function getNextAutoIncrementId($step = 1)

@@ -154,7 +154,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         } elseif (isset($this->$field)) {
             $ts = is_numeric($this->$field);
         } else {
-            $ts = in_array($field, $this->getIntFields(), true);
+            $ts = in_array($field, $this->intFields(), true);
         }
         return $ts ? 'U' : 'Y-m-d H:i:s';
     }
@@ -743,7 +743,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
             } elseif (str_contains(',created_date,createdDate,updated_date,updatedDate,', $needle)) {
                 $data[$field] = (int)date('ymd', $current_time);
             } elseif (str_contains(',created_by,createdBy,updated_by,updatedBy', $needle)) {
-                $data[$field] = in_array($field, $this->getIntFields(), true) ? $user_id : $user_name;
+                $data[$field] = in_array($field, $this->intFields(), true) ? $user_id : $user_name;
             }
         }
 
@@ -773,7 +773,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
             } elseif (str_contains(',updated_date,updatedDate,', $needle)) {
                 $data[$field] = (int)date('ymd', $current_time);
             } elseif (str_contains(',updated_by,updatedBy', $needle)) {
-                $data[$field] = in_array($field, $this->getIntFields(), true) ? $user_id : $user_name;
+                $data[$field] = in_array($field, $this->intFields(), true) ? $user_id : $user_name;
             }
         }
 

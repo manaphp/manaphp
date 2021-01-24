@@ -53,7 +53,7 @@ interface ModelInterface extends TableInterface
     /**
      * @return array|null
      */
-    public function getIntFields();
+    public function intFields();
 
     /**
      * @return string|null

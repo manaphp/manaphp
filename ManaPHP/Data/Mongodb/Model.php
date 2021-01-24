@@ -94,7 +94,7 @@ class Model extends \ManaPHP\Data\Model
     /**
      * @return array =model_fields(new static)
      */
-    public function getIntFields()
+    public function intFields()
     {
         static $cached = [];
 

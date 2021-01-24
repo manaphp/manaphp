@@ -335,7 +335,7 @@ class Command extends \ManaPHP\Cli\Command
             $str .= '    /**' . PHP_EOL;
             $str .= '     * @return array' . PHP_EOL;
             $str .= '     */' . PHP_EOL;
-            $str .= '    public function getIntFields()' . PHP_EOL;
+            $str .= '    public function intFields()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
             foreach ($fieldTypes as $field => $type) {

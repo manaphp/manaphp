@@ -211,7 +211,7 @@ class Validator extends Component implements ValidatorInterface
                     }
                     continue;
                 } elseif (str_contains($v, '-')) {
-                    $validate = in_array($field, $model->getIntFields(), true) ? 'range' : 'length';
+                    $validate = in_array($field, $model->intFields(), true) ? 'range' : 'length';
                     $parameter = $v;
                 } else {
                     $validate = $v;

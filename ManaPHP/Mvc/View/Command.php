@@ -117,7 +117,7 @@ HTML;
      */
     public function isTimestampField($model, $field)
     {
-        if (!in_array($field, $model->getIntFields(), true)) {
+        if (!in_array($field, $model->intFields(), true)) {
             return false;
         }
 
@@ -221,7 +221,7 @@ HTML;
                 create: {
 HTML;
             $rules = $model->rules();
-            $iniFields = $model->getIntFields();
+            $iniFields = $model->intFields();
             foreach ($fields as $field) {
                 $rule = $rules[$field] ?? [];
                 if (is_array($rule) && isset($rule['default'])) {
