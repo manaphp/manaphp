@@ -29,7 +29,7 @@ abstract class Model extends \ManaPHP\Data\Model
         return $queries->setModel($this->getModel())->select($this->fields());
     }
 
-    public function getDb()
+    public function db()
     {
         throw new NotSupportedException(__METHOD__);
     }

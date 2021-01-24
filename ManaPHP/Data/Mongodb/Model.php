@@ -25,7 +25,7 @@ class Model extends \ManaPHP\Data\Model
      *
      * @return string
      */
-    public function getDb()
+    public function db()
     {
         return 'mongodb';
     }

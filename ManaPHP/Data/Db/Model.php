@@ -13,7 +13,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
      *
      * @return string
      */
-    public function getDb()
+    public function db()
     {
         return 'db';
     }

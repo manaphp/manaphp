@@ -16,7 +16,7 @@ class StudentShardDb extends Model
         return '_student';
     }
 
-    public function getDb($context = null)
+    public function db($context = null)
     {
         if ($context === true) {
             return 'db';

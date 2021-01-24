@@ -7,7 +7,7 @@ class Table extends \ManaPHP\Data\Db\Table
     /**
      * @return string
      */
-    public function getDb()
+    public function db()
     {
         return 'mongodb';
     }

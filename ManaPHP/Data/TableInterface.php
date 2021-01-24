@@ -16,7 +16,7 @@ interface TableInterface
      *
      * @return string
      */
-    public function getDb();
+    public function db();
 
     /**
      * @return array

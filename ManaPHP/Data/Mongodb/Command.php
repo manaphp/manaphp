@@ -258,7 +258,7 @@ class Command extends \ManaPHP\Cli\Command
 
         if ($service !== 'mongodb') {
             $str .= PHP_EOL;
-            $str .= '    public function getDb()' . PHP_EOL;
+            $str .= '    public function db()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$service';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
