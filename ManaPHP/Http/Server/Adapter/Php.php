@@ -29,6 +29,10 @@ class Php extends Fpm
      */
     public function __construct($options = [])
     {
+        if (isset($options['port'])) {
+            $this->_port = (int)$options['port'];
+        }
+
         $public_dir = $this->alias->resolve('@public');
         $local_ip = $this->_host === '0.0.0.0' ? Ip::local() : $this->_host;
 
