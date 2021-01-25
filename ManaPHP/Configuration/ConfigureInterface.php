@@ -12,6 +12,11 @@ interface ConfigureInterface
     public function load($file = '@config/app.php');
 
     /**
+     * @return array
+     */
+    public function getConfig();
+
+    /**
      * @param string $name
      * @param mixed  $default
      *

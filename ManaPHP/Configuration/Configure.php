@@ -10,6 +10,11 @@ use ManaPHP\Helper\Arr;
 class Configure extends Component implements ConfigureInterface
 {
     /**
+     * @var array
+     */
+    protected $_config;
+
+    /**
      * @var string
      */
     public $id = 'app';
@@ -92,9 +97,9 @@ class Configure extends Component implements ConfigureInterface
     public function load($file = '@config/app.php')
     {
         /** @noinspection PhpIncludeInspection */
-        $data = require $this->alias->resolve($file);
+        $this->_config = require $this->alias->resolve($file);
 
-        foreach ((array)$data as $field => $value) {
+        foreach ((array)$this->_config as $field => $value) {
             if (!property_exists($this, $field)) {
                 throw new NotSupportedException(['`%s` must be a public property of `configure` component', $field]);
             }
@@ -103,6 +108,14 @@ class Configure extends Component implements ConfigureInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->_config;
     }
 
     /**
@@ -332,5 +345,13 @@ class Configure extends Component implements ConfigureInterface
         }
 
         return $this;
+    }
+
+    public function dump()
+    {
+        $data = parent::dump();
+        unset($data['_config']);
+
+        return $data;
     }
 }
