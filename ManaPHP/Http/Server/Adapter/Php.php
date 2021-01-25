@@ -33,6 +33,16 @@ class Php extends Fpm
             $this->_port = (int)$options['port'];
         }
 
+        $argv = $GLOBALS['argv'] ?? [];
+        foreach ($argv as $k => $v) {
+            if ($v === '--port' || $v === '-p') {
+                if (isset($argv[$k + 1])) {
+                    $this->_port = ($argv[$k + 1]);
+                    break;
+                }
+            }
+        }
+
         $public_dir = $this->alias->resolve('@public');
         $local_ip = $this->_host === '0.0.0.0' ? Ip::local() : $this->_host;
 
