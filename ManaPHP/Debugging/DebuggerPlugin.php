@@ -441,21 +441,23 @@ class DebuggerPlugin extends Plugin
         $memory_usage = (int)(memory_get_usage(true) / 1024) . 'k/' . (int)(memory_get_peak_usage(true) / 1024) . 'k';
 
         return [
-            'mvc'               => $this->router->getController() . '::' . $this->router->getAction(),
-            'request_method'    => $this->request->getMethod(),
-            'request_url'       => $this->request->getUrl(),
-            'query_count'       => $context->sql_count,
-            'execute_time'      => $this->request->getElapsedTime(),
-            'memory_usage'      => $memory_usage,
-            'system_time'       => date('Y-m-d H:i:s'),
-            'server_ip'         => $this->request->getServer('SERVER_ADDR'),
-            'client_ip'         => $this->request->getClientIp(),
-            'server_software'   => $this->request->getServer('SERVER_SOFTWARE'),
-            'manaphp_version'   => Version::get(),
-            'php_version'       => PHP_VERSION,
-            'sapi'              => PHP_SAPI,
-            'loaded_ini'        => php_ini_loaded_file(),
-            'loaded_extensions' => implode(', ', $loaded_extensions)
+            'mvc'                => $this->router->getController() . '::' . $this->router->getAction(),
+            'request_method'     => $this->request->getMethod(),
+            'request_url'        => $this->request->getUrl(),
+            'query_count'        => $context->sql_count,
+            'execute_time'       => $this->request->getElapsedTime(),
+            'memory_usage'       => $memory_usage,
+            'system_time'        => date('Y-m-d H:i:s'),
+            'server_ip'          => $this->request->getServer('SERVER_ADDR'),
+            'client_ip'          => $this->request->getClientIp(),
+            'server_software'    => $this->request->getServer('SERVER_SOFTWARE'),
+            'manaphp_version'    => Version::get(),
+            'php_version'        => PHP_VERSION,
+            'sapi'               => PHP_SAPI,
+            'loaded_ini'         => php_ini_loaded_file(),
+            'loaded_extensions'  => implode(', ', $loaded_extensions),
+            'opcache.enable'     => ini_get('opcache.enable'),
+            'opcache.enable_cli' => ini_get('opcache.enable_cli'),
         ];
     }
 
