@@ -59,6 +59,10 @@
             color: red;
             text-decoration: none;
         }
+
+        .warning {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -102,7 +106,7 @@
                 <tr v-for="(value, name, index) in basic">
                     <td>{{index}}</td>
                     <td>{{name}}</td>
-                    <td>{{value}}</td>
+                    <td><span :class="{warning:name.startsWith('opcache.') && value==='1'}">{{value}}</span></td>
                 </tr>
                 </tbody>
             </table>
