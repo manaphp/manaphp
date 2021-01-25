@@ -236,7 +236,7 @@ class DebuggerPlugin extends Plugin
         if ($context->enabled) {
             $url = $this->router->createUrl("/?__debuggerPlugin={$context->key}.html", true);
             $this->response->setHeader('X-Debugger-Link', $url);
-            $this->logger->info('debugger-link: `' . $url . '`', 'debugger.link');
+            $this->logger->info($url, 'debugger.link');
         }
     }
 
