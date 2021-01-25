@@ -18,7 +18,7 @@ class ServeCommand extends Command
      *
      * @return void
      */
-    public function defaultAction($ip = '0.0.0.0', $port = 9501)
+    public function defaultAction($ip = '0.0.0.0', $port = 0)
     {
         $router_str = <<<'STR'
 <?php
@@ -49,6 +49,17 @@ STR;
                 $ip = $value;
             }
         }
+
+        if (!$port) {
+            $port = 9501;
+            foreach ($this->configure->components as $name => $config) {
+                if (isset($config['port']) && str_ends_with($name, 'Server')) {
+                    $port = $config['port'];
+                    break;
+                }
+            }
+        }
+
         $router = 'builtin_server_router.php';
         LocalFS::filePut("@tmp/$router", strtr($router_str, [':ip' => $ip, ':port' => $port]));
 
