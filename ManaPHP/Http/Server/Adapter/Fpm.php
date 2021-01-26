@@ -13,7 +13,7 @@ class Fpm extends Server
     protected function _prepareGlobals()
     {
         $rawBody = file_get_contents('php://input');
-        $this->request->prepare($_GET, $_POST, $_SERVER, $rawBody, $_COOKIE, $_SERVER);
+        $this->request->prepare($_GET, $_POST, $_SERVER, $rawBody, $_COOKIE, $_FILES);
 
         if ($this->_use_globals) {
             $this->globalsManager->proxy();
