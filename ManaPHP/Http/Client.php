@@ -260,7 +260,7 @@ class Client extends Component implements ClientInterface
     public function rest($method, $url, $body = null, $headers = [], $options = [])
     {
         if (is_string($body)) {
-            if ($body !== '' && !isset($headers['Content-Type'])) {
+            if (!isset($headers['Content-Type'])) {
                 if (preg_match('#^\[|{#', $body)) {
                     $headers['Content-Type'] = 'application/json';
                 } else {
@@ -268,8 +268,12 @@ class Client extends Component implements ClientInterface
                 }
             }
         } else {
-            $headers['Content-Type'] = 'application/json';
-            if (is_array($body)) {
+            if (($headers['Content-Type'] ?? null) === 'application/x-www-form-urlencoded') {
+                $body = http_build_query($body);
+            } else {
+                if (!isset($headers['Content-Type'])) {
+                    $headers['Content-Type'] = 'application/json';
+                }
                 $body = json_stringify($body);
             }
         }
