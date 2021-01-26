@@ -510,7 +510,7 @@ class Response extends Component implements ResponseInterface
             $json['exception'] = explode("\n", $throwable);
         }
 
-        return $this->setStatus($code)->setJsonContent(json_stringify($json, JSON_INVALID_UTF8_SUBSTITUTE));
+        return $this->setStatus($code)->setJsonContent($json);
     }
 
     /**

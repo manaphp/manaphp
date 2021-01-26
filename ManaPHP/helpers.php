@@ -83,7 +83,7 @@ if (!function_exists('json_stringify')) {
      */
     function json_stringify($json, $options = 0)
     {
-        $options |= JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR;
+        $options |= JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE;
 
         if (($str = json_encode($json, $options, 16)) === false) {
             throw new JsonException('json_stringify failed');
