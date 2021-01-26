@@ -259,8 +259,8 @@ class Client extends Component implements ClientInterface
      */
     public function rest($method, $url, $body = null, $headers = [], $options = [])
     {
-        if (is_string($body) && $body !== '') {
-            if (!isset($headers['Content-Type'])) {
+        if (is_string($body)) {
+            if ($body !== '' && !isset($headers['Content-Type'])) {
                 if (preg_match('#^\[|{#', $body)) {
                     $headers['Content-Type'] = 'application/json';
                 } else {
