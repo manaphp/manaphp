@@ -584,6 +584,27 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function hasFile($key = null)
+    {
+        $files = $this->getFiles();
+
+        if ($key === null) {
+            return count($files) > 0;
+        } else {
+            foreach ($files as $file) {
+                if ($file->getKey() === $key) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    /**
      * Gets web page that refers active request. ie: http://www.google.com
      *
      * @param int $max_len

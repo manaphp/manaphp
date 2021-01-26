@@ -219,6 +219,13 @@ interface RequestInterface
     public function getFile($key = null);
 
     /**
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function hasFile($key = null);
+
+    /**
      * Gets web page that refers active request. ie: http://www.google.com
      *
      * @param int $max_len
