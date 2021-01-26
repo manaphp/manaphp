@@ -257,7 +257,7 @@ class Client extends Component implements ClientInterface
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    public function rest($method, $url, $body = null, $headers = [], $options = [])
+    public function rest($method, $url, $body = [], $headers = [], $options = [])
     {
         if (is_string($body)) {
             if (!isset($headers['Content-Type'])) {

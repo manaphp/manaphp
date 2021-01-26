@@ -13,7 +13,7 @@ interface ClientInterface
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    public function rest($method, $url, $body = null, $headers = [], $options = []);
+    public function rest($method, $url, $body = [], $headers = [], $options = []);
 
     /**
      * @param string          $method
