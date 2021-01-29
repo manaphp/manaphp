@@ -64,16 +64,15 @@ class RateLimitPlugin extends Plugin
         $rateLimit = $controller->getRateLimit();
 
         $limits = (array)($rateLimit[$action] ?? $rateLimit['*'] ?? $this->_limits);
-        $burst = $limits['burst'] ?? null;
+
+        if (($burst = $limits['burst'] ?? null) !== null) {
+            unset($burst['burst']);
+        }
 
         $uid = $this->identity->getName('') ?: $this->request->getClientIp();
         $prefix = $this->_prefix . $dispatcher->getPath() . ':' . $uid . ':';
 
         foreach ($limits as $k => $v) {
-            if (is_string($k)) {
-                continue;
-            }
-
             if ($pos = strpos($v, '/')) {
                 $limit = (int)substr($v, 0, $pos);
                 $right = substr($v, $pos + 1);
