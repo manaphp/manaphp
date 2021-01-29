@@ -58,7 +58,7 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
      *
      * @return mixed
      */
-    public function getInstance($class, $params = [])
+    public function getNew($class, $params = [])
     {
         return $this->_di->get($class, $params);
     }

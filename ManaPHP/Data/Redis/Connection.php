@@ -142,7 +142,7 @@ class Connection extends Component
 
             $this->fireEvent('redis:connecting', compact('uri'));
 
-            $redis = $this->getInstance('Redis');
+            $redis = $this->getNew('Redis');
 
             try {
                 if ($this->_persistent) {

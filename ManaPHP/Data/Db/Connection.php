@@ -114,7 +114,7 @@ abstract class Connection extends Component implements ConnectionInterface
 
             try {
                 $params = [$dsn, $this->_username, $this->_password, $this->_options];
-                $this->_pdo = $pdo = $this->getInstance('PDO', $params);
+                $this->_pdo = $pdo = $this->getNew('PDO', $params);
             } catch (PDOException $e) {
                 $this->fireEvent('db:connected', compact('dsn', 'uri'));
 

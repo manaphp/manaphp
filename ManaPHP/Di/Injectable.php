@@ -10,7 +10,7 @@ interface Injectable
      *
      * @return mixed
      */
-    public function getInstance($class, $params = []);
+    public function getNew($class, $params = []);
 
     /**
      * @param string $name

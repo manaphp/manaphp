@@ -73,9 +73,9 @@ class Manager extends Component implements ManagerInterface
                 unset($sample[0]);
             }
 
-            $sample = $this->getInstance($class, $sample);
+            $sample = $this->getNew($class, $sample);
         } elseif (is_string($sample)) {
-            $sample = $this->getInstance($sample);
+            $sample = $this->getNew($sample);
         }
 
         if (!$queue = $this->_pool[$owner_id][$type] ?? null) {

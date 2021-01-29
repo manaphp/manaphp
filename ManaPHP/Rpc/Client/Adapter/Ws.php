@@ -49,7 +49,7 @@ class Ws extends Client
             $this->_authentication = preg_match('#[?&]token=#', $options['endpoint']) === 1;
         }
 
-        $this->_client = $this->getInstance('ManaPHP\Ws\Client', $options);
+        $this->_client = $this->getNew('ManaPHP\Ws\Client', $options);
 
         if ($this->_authentication) {
             $this->_client->on(

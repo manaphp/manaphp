@@ -41,7 +41,7 @@ class Mongodb extends Component implements MongodbInterface
         $path = parse_url($uri, PHP_URL_PATH);
         $this->_default_db = ($path !== '/' && $path !== null) ? (string)substr($path, 1) : null;
 
-        $this->poolManager->add($this, $this->getInstance('ManaPHP\Data\Mongodb\Connection', [$this->_uri]));
+        $this->poolManager->add($this, $this->getNew('ManaPHP\Data\Mongodb\Connection', [$this->_uri]));
     }
 
     public function __destruct()
@@ -441,6 +441,6 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function query($collection = null)
     {
-        return $this->getInstance('ManaPHP\Data\Mongodb\Query', [$this])->from($collection);
+        return $this->getNew('ManaPHP\Data\Mongodb\Query', [$this])->from($collection);
     }
 }

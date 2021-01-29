@@ -58,7 +58,7 @@ class Service extends \ManaPHP\Service
             throw new NotSupportedException(['`:type` type rpc is not support', 'type' => $scheme]);
         }
 
-        $this->_rpcClient = $this->getInstance($class, $options);
+        $this->_rpcClient = $this->getNew($class, $options);
     }
 
     /**

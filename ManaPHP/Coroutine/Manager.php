@@ -29,7 +29,7 @@ class Manager extends Component implements ManagerInterface
      */
     public function createScheduler()
     {
-        return $this->getInstance('ManaPHP\Coroutine\Scheduler');
+        return $this->getNew('ManaPHP\Coroutine\Scheduler');
     }
 
     /**
@@ -40,6 +40,6 @@ class Manager extends Component implements ManagerInterface
      */
     public function createTask($fn, $count = 1)
     {
-        return $this->getInstance('ManaPHP\Coroutine\Task', [$fn, $count]);
+        return $this->getNew('ManaPHP\Coroutine\Task', [$fn, $count]);
     }
 }
