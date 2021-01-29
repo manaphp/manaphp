@@ -66,6 +66,9 @@ class RateLimitPlugin extends Plugin
         $limits = (array)($rateLimit[$action] ?? $rateLimit['*'] ?? $this->_limits);
         $burst = $limits['burst'] ?? null;
 
+        $uid = $this->identity->getName('') ?: $this->request->getClientIp();
+        $prefix = $this->_prefix . $dispatcher->getPath() . ':' . $uid . ':';
+
         foreach ($limits as $k => $v) {
             if (is_string($k)) {
                 continue;
@@ -80,8 +83,7 @@ class RateLimitPlugin extends Plugin
                 $period = 60;
             }
 
-            $uid = $this->identity->getName('') ?: $this->request->getClientIp();
-            $key = $this->_prefix . $dispatcher->getPath() . ':' . $uid . ':' . $period;
+            $key = $prefix . $period;
 
             if ($k === 0 && $burst !== null) {
                 if (($used = $this->redisCache->get($key)) === false) {
