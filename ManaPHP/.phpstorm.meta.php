@@ -172,7 +172,7 @@ namespace PHPSTORM_META {
             'pubSub' instanceof \ManaPHP\Messaging\PubSubInterface,
             'dataDump' instanceof \ManaPHP\Debugging\DataDumpInterface,
         ],
-        \ManaPHP\DiInterface::get('')         => [
+        \ManaPHP\DiInterface::getNew('') => [
             '' == '@',
         ],
         \ManaPHP\Component::getNew('') => [

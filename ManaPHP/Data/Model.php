@@ -1333,7 +1333,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
      */
     public function getNew($class, $params = [])
     {
-        return $this->_di->get($class, $params);
+        return $this->_di->getNew($class, $params);
     }
 
     /**

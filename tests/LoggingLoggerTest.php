@@ -22,7 +22,7 @@ class LoggingLoggerTest extends TestCase
 
     public function test_debug()
     {
-        $logger = $this->_di->get(Memory::class);
+        $logger = $this->_di->getNew(Memory::class);
         $logger->setLevel(Logger::LEVEL_DEBUG);
 
         $logger->debug('**debug**');
@@ -36,7 +36,7 @@ class LoggingLoggerTest extends TestCase
 
     public function test_info()
     {
-        $logger = $this->_di->get(Memory::class);
+        $logger = $this->_di->getNew(Memory::class);
         $logger->setLevel(Logger::LEVEL_DEBUG);
 
         $logger->info('**info**');
@@ -50,7 +50,7 @@ class LoggingLoggerTest extends TestCase
 
     public function test_warn()
     {
-        $logger = $this->_di->get(Memory::class);
+        $logger = $this->_di->getNew(Memory::class);
         $logger->setLevel(Logger::LEVEL_DEBUG);
 
         $logger->warn('**warning**');
@@ -64,7 +64,7 @@ class LoggingLoggerTest extends TestCase
 
     public function test_error()
     {
-        $logger = $this->_di->get(Memory::class);
+        $logger = $this->_di->getNew(Memory::class);
 
         $logger->error('**error**');
 
@@ -77,7 +77,7 @@ class LoggingLoggerTest extends TestCase
 
     public function test_fatal()
     {
-        $logger = $this->_di->get(Memory::class);
+        $logger = $this->_di->getNew(Memory::class);
 
         $logger->fatal('**fatal**');
 

@@ -268,7 +268,7 @@ class Di implements DiInterface
      *
      * @return mixed
      */
-    public function get($name, $parameters = [])
+    public function getNew($name, $parameters = [])
     {
         $definition = $this->_definitions[$name] ?? $name;
 

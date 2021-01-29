@@ -28,20 +28,20 @@ class DiTest extends TestCase
         //string
         $di = new Di();
         $di->set('request', 'ManaPHP\Http\Request');
-        $this->assertNotSame($di->get('request'), $di->get('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->get('request'));
+        $this->assertNotSame($di->getNew('request'), $di->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
 
         //string
         $di = new Di();
         $di->set('request', 'ManaPHP\Http\Request');
         $this->assertSame($di->getShared('request'), $di->getShared('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->get('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
 
         //array
         $di = new Di();
         $di->set('request', ['class' => 'ManaPHP\Http\Request']);
-        $this->assertNotSame($di->get('request'), $di->get('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->get('request'));
+        $this->assertNotSame($di->getNew('request'), $di->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
 
         //array
         $di = new Di();
@@ -52,8 +52,8 @@ class DiTest extends TestCase
         //array
         $di = new Di();
         $di->set('request', ['class' => 'ManaPHP\Http\Request', 'shared' => false]);
-        $this->assertNotSame($di->get('request'), $di->get('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->get('request'));
+        $this->assertNotSame($di->getNew('request'), $di->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
 
         //object
         $di = new Di();
@@ -63,8 +63,8 @@ class DiTest extends TestCase
 
         $di = new Di();
         $di->set('request', new \ManaPHP\Http\Request());
-        $this->assertSame($di->get('request'), $di->get('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->get('request'));
+        $this->assertSame($di->getNew('request'), $di->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
 
         //closure
         $di = new Di();
@@ -73,8 +73,8 @@ class DiTest extends TestCase
             return new Request();
         }
         );
-        $this->assertNotSame($di->get('request'), $di->get('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->get('request'));
+        $this->assertNotSame($di->getNew('request'), $di->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
 
         $di = new Di();
         $di->set(
@@ -96,8 +96,8 @@ class DiTest extends TestCase
 
         $di = new Di();
         $di->setShared('request', 'ManaPHP\Http\Request');
-        $this->assertSame($di->get('request'), $di->get('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->get('request'));
+        $this->assertSame($di->getNew('request'), $di->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
 
         //array
         $di = new Di();
@@ -107,8 +107,8 @@ class DiTest extends TestCase
 
         $di = new Di();
         $di->setShared('request', ['class' => 'ManaPHP\Http\Request']);
-        $this->assertSame($di->get('request'), $di->get('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->get('request'));
+        $this->assertSame($di->getNew('request'), $di->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
 
         //array
         $di = new Di();
@@ -119,8 +119,8 @@ class DiTest extends TestCase
         //array
         $di = new Di();
         $di->setShared('request', ['class' => 'ManaPHP\Http\Request', 'shared' => true]);
-        $this->assertSame($di->get('request'), $di->get('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->get('request'));
+        $this->assertSame($di->getNew('request'), $di->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
 
         //object
         $di = new Di();
@@ -130,8 +130,8 @@ class DiTest extends TestCase
 
         $di = new Di();
         $di->setShared('request', new \ManaPHP\Http\Request());
-        $this->assertSame($di->get('request'), $di->get('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->get('request'));
+        $this->assertSame($di->getNew('request'), $di->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
 
         //closure
         $di = new Di();
@@ -150,8 +150,8 @@ class DiTest extends TestCase
             return new \ManaPHP\Http\Request();
         }
         );
-        $this->assertSame($di->get('request'), $di->get('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->get('request'));
+        $this->assertSame($di->getNew('request'), $di->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
     }
 
     public function test_has()
@@ -170,7 +170,7 @@ class DiTest extends TestCase
 
         $di = new Di();
         $di->setShared('request', 'ManaPHP\Http\Request');
-        $this->assertSame($di->get('request'), $di->get('request'));
+        $this->assertSame($di->getNew('request'), $di->getNew('request'));
     }
 
     public function test_get()
@@ -184,8 +184,8 @@ class DiTest extends TestCase
 
         $di->set('getComponent2', 'Tests\SomeComponent');
 
-        $this->assertEquals(100, $di->get('getComponent1', [100])->value);
-        $this->assertEquals(50, $di->get('getComponent2', [50])->value);
+        $this->assertEquals(100, $di->getNew('getComponent1', [100])->value);
+        $this->assertEquals(50, $di->getNew('getComponent2', [50])->value);
     }
 
     public function test_remove()

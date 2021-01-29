@@ -60,7 +60,7 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
      */
     public function getNew($class, $params = [])
     {
-        return $this->_di->get($class, $params);
+        return $this->_di->getNew($class, $params);
     }
 
     /**

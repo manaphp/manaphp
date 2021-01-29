@@ -44,7 +44,7 @@ class Query extends \ManaPHP\Data\Query
     {
         foreach ($_queries as $id => $query) {
             if (is_string($query)) {
-                $query = Di::getDefault()->get($query);
+                $query = Di::getDefault()->getNew($query);
             }
 
             if ($query instanceof QueryInterface) {
