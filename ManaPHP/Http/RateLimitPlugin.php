@@ -21,7 +21,7 @@ class RateLimitPlugin extends Plugin
     /**
      * @var string
      */
-    protected $_action_limit = '60/m';
+    protected $_limits = '60/m';
 
     /**
      * @param array $options
@@ -38,8 +38,8 @@ class RateLimitPlugin extends Plugin
 
         $this->_prefix = $options['prefix'] ?? "cache:{$this->configure->id}:rateLimitPlugin:";
 
-        if (isset($options['action_limit'])) {
-            $this->_action_limit = $options['action_limit'];
+        if (isset($options['limits'])) {
+            $this->_limits = $options['limits'];
         }
 
         if ($this->_enabled) {
@@ -63,20 +63,20 @@ class RateLimitPlugin extends Plugin
         $action = $eventArgs->data['action'];
         $rateLimit = $controller->getRateLimit();
 
-        $arl_list = (array)($rateLimit[$action] ?? $rateLimit['*'] ?? $this->_action_limit);
-        $burst = $arl_list['burst'] ?? null;
+        $limits = (array)($rateLimit[$action] ?? $rateLimit['*'] ?? $this->_limits);
+        $burst = $limits['burst'] ?? null;
 
-        foreach ($arl_list as $k => $arl) {
+        foreach ($limits as $k => $v) {
             if (is_string($k)) {
                 continue;
             }
 
-            if ($pos = strpos($arl, '/')) {
-                $limit = (int)substr($arl, 0, $pos);
-                $right = substr($arl, $pos + 1);
+            if ($pos = strpos($v, '/')) {
+                $limit = (int)substr($v, 0, $pos);
+                $right = substr($v, $pos + 1);
                 $period = seconds(strlen($right) === 1 ? "1$right" : $right);
             } else {
-                $limit = (int)$arl;
+                $limit = (int)$v;
                 $period = 60;
             }
 
