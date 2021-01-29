@@ -21,7 +21,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
     /**
      * @var bool
      */
-    protected $_shared = true;
+    protected $_dedicated = false;
 
     /**
      * @var array
@@ -51,8 +51,8 @@ class Server extends Component implements ServerInterface, LogCategorizable
             $this->_prefix = $options['prefix'];
         }
 
-        if (isset($options['shared'])) {
-            $this->_shared = (bool)$options['shared'];
+        if (isset($options['dedicated'])) {
+            $this->_dedicated = (bool)$options['dedicated'];
         }
     }
 
@@ -69,7 +69,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
     {
         $room = $room ?? $this->identity->getClaim('room_id');
 
-        if ($this->_shared) {
+        if (!$this->_dedicated) {
             $this->_fds[$fd] = true;
         }
 
@@ -92,7 +92,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
     {
         $room = $room ?? $this->identity->getClaim('room_id');
 
-        if ($this->_shared) {
+        if (!$this->_dedicated) {
             unset($this->_fds[$fd]);
         }
 
@@ -182,12 +182,12 @@ class Server extends Component implements ServerInterface, LogCategorizable
      */
     public function broadcast($message)
     {
-        if ($this->_shared) {
+        if ($this->_dedicated) {
+            $this->wsServer->broadcast($message);
+        } else {
             foreach ($this->_fds as $fd => $_) {
                 $this->push($fd, $message);
             }
-        } else {
-            $this->wsServer->broadcast($message);
         }
     }
 
