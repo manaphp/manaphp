@@ -4,7 +4,6 @@ namespace ManaPHP\Data\Merger;
 
 use ManaPHP\Data\Model;
 use ManaPHP\Data\QueryInterface;
-use ManaPHP\Di;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
