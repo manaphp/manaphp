@@ -266,7 +266,7 @@ class Container implements ContainerInterface
             }
             $parameters = [];
         } elseif ($definition instanceof Closure) {
-            return $definition();
+            return $this->_instances[$name] = $definition();
         } elseif (isset($definition['class'])) {
             $parameters = $definition;
             $definition = $definition['class'];
