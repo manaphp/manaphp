@@ -3,6 +3,9 @@
 // Its AST serves IDE as DATA source to make advanced type inference decisions.
 
 namespace PHPSTORM_META {
+
+    exitPoint(\abort());
+
     override(
         \ManaPHP\DiInterface::getShared(), map(
             [
