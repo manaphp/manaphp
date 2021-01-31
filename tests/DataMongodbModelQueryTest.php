@@ -12,10 +12,10 @@ class DataMongodbModelQueryTest extends TestCase
 {
     public function setUp()
     {
-        $di = new FactoryDefault();
+        $container = new FactoryDefault();
 
         $config = require __DIR__ . '/config.database.php';
-        $di->setShared('mongodb', new Mongodb($config['mongodb']));
+        $container->setShared('mongodb', new Mongodb($config['mongodb']));
     }
 
     public function test_construct()
