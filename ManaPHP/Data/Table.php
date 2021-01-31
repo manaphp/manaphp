@@ -9,7 +9,7 @@ use ManaPHP\Helper\Sharding\ShardingTooManyException;
 use ManaPHP\Helper\Str;
 
 /**
- * @property-read \ManaPHP\Di\Container $_container
+ * @property-read \ManaPHP\Di\ContainerInterface $_container
  */
 abstract class Table implements TableInterface
 {
