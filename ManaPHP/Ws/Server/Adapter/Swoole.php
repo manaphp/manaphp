@@ -166,8 +166,6 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      * @param \Swoole\WebSocket\Server $server
      * @param int                      $worker_id
      *
-     * @noinspection PhpUnusedParameterInspection
-     *
      * @return void
      */
     public function onWorkerStart($server, $worker_id)
@@ -186,8 +184,6 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     /**
      * @param \Swoole\WebSocket\Server $server
      * @param int                      $worker_id
-     *
-     * @noinspection PhpUnusedParameterInspection
      *
      * @return void
      */
