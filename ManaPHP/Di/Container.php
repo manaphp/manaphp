@@ -6,6 +6,7 @@ use Closure;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
+use ReflectionClass;
 
 class Container implements ContainerInterface
 {
@@ -228,7 +229,7 @@ class Container implements ContainerInterface
         }
 
         if (is_string($definition)) {
-            $instance = new $definition(...$parameters);
+            return $this->_createNew($name, $definition, $parameters);
         } elseif ($definition instanceof Closure) {
             $instance = $definition(...$parameters);
         } elseif (is_object($definition)) {
@@ -239,6 +240,41 @@ class Container implements ContainerInterface
 
         if ($instance instanceof Injectable) {
             $instance->setContainer($this);
+        }
+
+        return $instance;
+    }
+
+    /**
+     * @param string $name
+     * @param string $class
+     * @param array  $parameters
+     *
+     * @return mixed
+     */
+    protected function _createNew($name, $class, $parameters)
+    {
+        if (!class_exists($class)) {
+            throw new InvalidValueException(
+                ['`%s` component cannot be resolved: `%s` class is not exists', $name, $class]
+            );
+        }
+
+        if (method_exists($class, '__construct')) {
+            $rc = new ReflectionClass($class);
+
+            $instance = $rc->newInstanceWithoutConstructor();
+            if ($instance instanceof Injectable) {
+                $instance->setContainer($this);
+            }
+            /** @noinspection PhpPossiblePolymorphicInvocationInspection */
+            $instance->__construct(...$parameters);
+        } else {
+            $instance = new $class(...$parameters);
+
+            if ($instance instanceof Injectable) {
+                $instance->setContainer($this);
+            }
         }
 
         return $instance;
@@ -294,19 +330,7 @@ class Container implements ContainerInterface
 
         $definition = $this->_definitions[$definition] ?? $definition;
 
-        if (!class_exists($definition)) {
-            throw new InvalidValueException(
-                ['`%s` component cannot be resolved: `%s` class is not exists', $name, $definition]
-            );
-        }
-
-        $instance = new $definition(...$parameters);
-
-        if ($instance instanceof Injectable) {
-            $instance->setContainer($this);
-        }
-
-        return $this->_instances[$name] = $instance;
+        return $this->_instances[$name] = $this->_createNew($name, $definition, $parameters);
     }
 
     /**
