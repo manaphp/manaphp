@@ -141,18 +141,6 @@ class Manager extends Component implements ManagerInterface
     /**
      * @return array
      */
-    public function __debugInfo()
-    {
-        $data = get_object_vars($this);
-
-        unset($data['_di']);
-
-        return $data;
-    }
-
-    /**
-     * @return array
-     */
     public function dump()
     {
         $dump = parent::dump();
