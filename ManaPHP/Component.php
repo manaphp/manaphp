@@ -74,6 +74,26 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
     }
 
     /**
+     * @param \ManaPHP\DiInterface $di
+     *
+     * @return static
+     */
+    public function setDi($di)
+    {
+        $this->_di = $di;
+
+        return $this;
+    }
+
+    /**
+     * @return \ManaPHP\DiInterface
+     */
+    public function getDi()
+    {
+        return $this->_di;
+    }
+
+    /**
      * @param string $name
      * @param mixed  $target
      *
@@ -81,11 +101,7 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
      */
     public function inject($name, $target)
     {
-        if ($name === 'di') {
-            $this->_di = $target;
-        } else {
-            $this->_injections[$name] = $target;
-        }
+        $this->_injections[$name] = $target;
 
         return $this;
     }

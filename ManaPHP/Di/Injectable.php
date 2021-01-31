@@ -20,6 +20,18 @@ interface Injectable
     public function getShared($name);
 
     /**
+     * @param \ManaPHP\DiInterface $di
+     *
+     * @return static
+     */
+    public function setDi($di);
+
+    /**
+     * @return \ManaPHP\DiInterface
+     */
+    public function getDi();
+
+    /**
      * @param string $name
      * @param mixed  $target
      *
