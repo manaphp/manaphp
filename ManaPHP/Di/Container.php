@@ -288,18 +288,19 @@ class Container implements ContainerInterface
             $parameters = [$parameters];
         }
 
-        if (is_string($definition)) {
-            $definition = $this->_definitions[$definition] ?? $definition;
-
-            if (!class_exists($definition)) {
-                throw new InvalidValueException(
-                    ['`%s` component cannot be resolved: `%s` class is not exists', $name, $definition]
-                );
-            }
-            $instance = new $definition(...$parameters);
-        } else {
+        if (!is_string($definition)) {
             throw new NotSupportedException(['`%s` component implement type is not supported', $name]);
         }
+
+        $definition = $this->_definitions[$definition] ?? $definition;
+
+        if (!class_exists($definition)) {
+            throw new InvalidValueException(
+                ['`%s` component cannot be resolved: `%s` class is not exists', $name, $definition]
+            );
+        }
+
+        $instance = new $definition(...$parameters);
 
         if ($instance instanceof Injectable) {
             $instance->setContainer($this);
