@@ -4,7 +4,6 @@ namespace ManaPHP;
 
 use JsonSerializable;
 use ManaPHP\Coroutine\Context\Inseparable;
-use ManaPHP\Di\Container;
 use ManaPHP\Di\Injectable;
 use ManaPHP\Event\EventArgs;
 use Swoole\Coroutine;
@@ -34,7 +33,6 @@ use Swoole\Coroutine;
  * @property-read \ManaPHP\Ws\ClientInterface              $wsClient
  * @property-read \ManaPHP\Messaging\PubSubInterface       $pubSub
  * @property-read \object                                  $_context
- * @property-read \ManaPHP\Di\ContainerInterface           $_container
  */
 class Component implements ComponentInterface, Injectable, JsonSerializable
 {
@@ -42,6 +40,11 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
      * @var int
      */
     protected $_object_id;
+
+    /**
+     * @var \ManaPHP\Di\ContainerInterface
+     */
+    protected $_container;
 
     /**
      * @var callable[]
@@ -183,8 +186,6 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
 
                 return $this->_context = $this->_createContext();
             }
-        } elseif ($name === '_container') {
-            return $this->_container = Container::getDefault();
         } else {
             return $this->{$name} = $this->getShared($name);
         }
