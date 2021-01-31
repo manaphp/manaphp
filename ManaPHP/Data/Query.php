@@ -565,13 +565,9 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
             }
 
             if ($model instanceof SerializeNormalizable) {
-                $rows = [];
                 foreach ($r as $k => $v) {
-                    $rows[$k] = new Row($model, $v);
+                    $r[$k] = new Row($model, $v);
                 }
-                return $rows;
-            } else {
-                return $r;
             }
         } else {
             $modelName = get_class($model);
@@ -583,12 +579,12 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
             if ($r && $this->_with) {
                 $r = $this->relationsManager->earlyLoad($model, $r, $this->_with, $asArray);
             }
+        }
 
-            if ($this->_multiple === false) {
-                return $r[0] ?? null;
-            } else {
-                return $r;
-            }
+        if ($this->_multiple === false) {
+            return $r[0] ?? null;
+        } else {
+            return $r;
         }
     }
 
