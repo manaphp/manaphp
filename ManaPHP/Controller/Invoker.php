@@ -33,7 +33,7 @@ class Invoker extends Component implements InvokerInterface
         $args = [];
         $missing = [];
 
-        $di = $this->_di;
+        $container = $this->_container;
 
         $parameters = (new ReflectionMethod($instance, $method))->getParameters();
         foreach ($parameters as $parameter) {
@@ -48,9 +48,9 @@ class Invoker extends Component implements InvokerInterface
             }
 
             if ($className = ($c = $parameter->getClass()) ? $c->getName() : null) {
-                $value = $di->has($name) ? $di->getShared($name) : $di->getShared($className);
+                $value = $container->has($name) ? $container->getShared($name) : $container->getShared($className);
             } elseif (str_ends_with($name, 'Service')) {
-                $value = $di->getShared($name);
+                $value = $container->getShared($name);
             } elseif ($this->request->has($name)) {
                 $value = $this->request->get($name, $type === 'array' ? [] : '');
             } elseif ($parameter->isDefaultValueAvailable()) {

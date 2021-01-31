@@ -7,7 +7,7 @@ use ManaPHP\Data\Db\Adapter\Proxy;
 use ManaPHP\Data\Db\Adapter\Sqlite;
 use ManaPHP\Data\Db\Query;
 use ManaPHP\Data\DbInterface;
-use ManaPHP\Di;
+use ManaPHP\Di\Container;
 use ManaPHP\Di\FactoryDefault;
 use PHPUnit\Framework\TestCase;
 use Tests\Models\Actor;
@@ -171,7 +171,7 @@ class DataDbModelQueryTest extends TestCase
 
     public function test_join()
     {
-        if (Di::getDefault()->getShared('db') instanceof Sqlite) {
+        if (Container::getDefault()->getShared('db') instanceof Sqlite) {
             return;
         }
 
@@ -247,7 +247,7 @@ class DataDbModelQueryTest extends TestCase
 
     public function test_rightJoin()
     {
-        if (Di::getDefault()->getShared('db') instanceof Sqlite) {
+        if (Container::getDefault()->getShared('db') instanceof Sqlite) {
             return;
         }
 
@@ -772,7 +772,7 @@ class DataDbModelQueryTest extends TestCase
 
     public function test_unionAll()
     {
-        if (Di::getDefault()->getShared('db') instanceof Sqlite) {
+        if (Container::getDefault()->getShared('db') instanceof Sqlite) {
             return;
         }
 

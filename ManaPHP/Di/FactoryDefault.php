@@ -2,9 +2,7 @@
 
 namespace ManaPHP\Di;
 
-use ManaPHP\Di;
-
-class FactoryDefault extends Di
+class FactoryDefault extends Container
 {
     public function __construct()
     {

@@ -1,14 +1,13 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Di;
 
 use Closure;
-use ManaPHP\Di\Injectable;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 
-class Di implements DiInterface
+class Container implements ContainerInterface
 {
     /**
      * @var array
@@ -21,9 +20,7 @@ class Di implements DiInterface
     protected $_instances = [];
 
     /**
-     * First DI build
-     *
-     * @var \ManaPHP\Di
+     * @var \ManaPHP\Di\ContainerInterface
      */
     protected static $_default;
 
@@ -35,8 +32,6 @@ class Di implements DiInterface
     }
 
     /**
-     * Return the First DI created
-     *
      * @return static
      */
     public static function getDefault()
@@ -243,7 +238,7 @@ class Di implements DiInterface
         }
 
         if ($instance instanceof Injectable) {
-            $instance->setDi($this);
+            $instance->setContainer($this);
         }
 
         return $instance;
@@ -302,7 +297,7 @@ class Di implements DiInterface
         }
 
         if ($instance instanceof Injectable) {
-            $instance->setDi($this);
+            $instance->setContainer($this);
         }
 
         return $this->_instances[$name] = $instance;

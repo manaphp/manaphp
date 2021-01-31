@@ -484,7 +484,7 @@ class DebuggerPlugin extends Plugin
         $data['tracers'] = [];
         $data['events'] = $context->events;
 
-        foreach ($this->_di->getInstances() as $name => $instance) {
+        foreach ($this->_container->getInstances() as $name => $instance) {
             if (str_contains($name, '\\')) {
                 continue;
             }

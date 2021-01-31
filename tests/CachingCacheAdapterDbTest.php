@@ -3,7 +3,7 @@
 namespace Tests;
 
 use ManaPHP\Data\Db\Adapter\Mysql;
-use ManaPHP\Di;
+use ManaPHP\Di\Container;
 use ManaPHP\Di\FactoryDefault;
 use PHPUnit\Framework\TestCase;
 
@@ -31,7 +31,7 @@ class CachingCacheAdapterDbTest extends TestCase
 
     public function test_exists()
     {
-        $cache = Di::getDefault()->getNew('ManaPHP\Caching\Cache\Adapter\Db');
+        $cache = Container::getDefault()->getNew('ManaPHP\Caching\Cache\Adapter\Db');
 
         $cache->delete('var');
         $this->assertFalse($cache->exists('var'));
@@ -41,7 +41,7 @@ class CachingCacheAdapterDbTest extends TestCase
 
     public function test_get()
     {
-        $cache = Di::getDefault()->getNew('ManaPHP\Caching\Cache\Adapter\Db');
+        $cache = Container::getDefault()->getNew('ManaPHP\Caching\Cache\Adapter\Db');
 
         $cache->delete('var');
 
@@ -52,7 +52,7 @@ class CachingCacheAdapterDbTest extends TestCase
 
     public function test_set()
     {
-        $cache = Di::getDefault()->getNew('ManaPHP\Caching\Cache\Adapter\Db');
+        $cache = Container::getDefault()->getNew('ManaPHP\Caching\Cache\Adapter\Db');
 
         $cache->set('var', '', 100);
         $this->assertSame('', $cache->get('var'));
@@ -72,7 +72,7 @@ class CachingCacheAdapterDbTest extends TestCase
 
     public function test_delete()
     {
-        $cache = Di::getDefault()->getNew('ManaPHP\Caching\Cache\Adapter\Db');
+        $cache = Container::getDefault()->getNew('ManaPHP\Caching\Cache\Adapter\Db');
 
         //exists and delete
         $cache->set('var', 'value', 100);

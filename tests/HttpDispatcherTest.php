@@ -35,24 +35,24 @@ class tDispatcher extends Dispatcher
 class MvcDispatcherTest extends TestCase
 {
     /**
-     * @var \ManaPHP\Di
+     * @var \ManaPHP\Di\ContainerInterface
      */
-    protected $_di;
+    protected $container;
 
     public function setUp()
     {
         parent::setUp();
 
-        $this->_di = new Factory();
+        $this->container = new Factory();
 
-        $this->_di->alias->set('@ns.module', 'App\\Test');
-        $this->_di->remove($this->_di->alias->resolve('@ns.module\\Controllers\\Test1Controller'));
-        $this->_di->remove($this->_di->alias->resolve('@ns.module\\Controllers\\Test2Controller'));
+        $this->container->getShared('alias')->set('@ns.module', 'App\\Test');
+        $this->container->remove($this->container->getShared('alias')->resolve('@ns.module\\Controllers\\Test1Controller'));
+        $this->container->remove($this->container->getShared('alias')->resolve('@ns.module\\Controllers\\Test2Controller'));
     }
 
     public function test_dispatch()
     {
-        $dispatcher = $this->_di->dispatcher;
+        $dispatcher = $this->container->dispatcher;
 
         //camelize the handler class:not require
         try {
@@ -121,7 +121,7 @@ class MvcDispatcherTest extends TestCase
 
     public function test_getReturnedValue()
     {
-        $dispatcher = $this->_di->dispatcher;
+        $dispatcher = $this->container->dispatcher;
         $dispatcher->dispatch('Test', 'test2', 'another5', ['param1' => 2, 'param2' => 3]);
         $this->assertEquals(5, $dispatcher->getReturnedValue());
     }

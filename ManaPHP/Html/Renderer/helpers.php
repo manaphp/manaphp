@@ -1,7 +1,5 @@
 <?php
 
-use ManaPHP\Di;
-
 if (!function_exists('attr_nv')) {
     /**
      * @param string $name
@@ -44,7 +42,7 @@ if (!function_exists('bundle')) {
      */
     function bundle($files, $name = 'app')
     {
-        return di('assetBundle')->bundle($files, $name);
+        return container('assetBundle')->bundle($files, $name);
     }
 }
 
@@ -57,12 +55,7 @@ if (!function_exists('action')) {
      */
     function action($args = [], $scheme = false)
     {
-        static $router;
-        if (!$router) {
-            $router = Di::getDefault()->getShared('router');
-        }
-
-        return $router->createUrl($args, $scheme);
+        return container('router')->createUrl($args, $scheme);
     }
 }
 
@@ -75,12 +68,7 @@ if (!function_exists('url')) {
      */
     function url($args, $scheme = false)
     {
-        static $url;
-        if (!$url) {
-            $url = Di::getDefault()->getShared('url');
-        }
-
-        return $url->get($args, $scheme);
+        return container('url')->get($args, $scheme);
     }
 }
 
@@ -94,7 +82,7 @@ if (!function_exists('asset')) {
     {
         static $alias;
         if (!$alias) {
-            $alias = di('alias');
+            $alias = container('alias');
         }
 
         static $paths = [];

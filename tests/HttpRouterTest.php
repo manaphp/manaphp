@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use ManaPHP\Di;
+use ManaPHP\Di\Container;
 use ManaPHP\Mvc\Factory;
 use ManaPHP\Http\Router;
 use ManaPHP\Http\Router\Route;
@@ -46,14 +46,14 @@ class MvcRouterTest extends TestCase
 
     public function test_getRewriteUri()
     {
-        di('request')->getContext()->_REQUEST['_url'] = '/some/route';
+        container('request')->getContext()->_REQUEST['_url'] = '/some/route';
 
         $router = new Router();
 
         //first try getting from url
         $this->assertEquals('/some/route', $router->getRewriteUri());
 
-        unset(di('request')->getContext()->_REQUEST['_url']);
+        unset(container('request')->getContext()->_REQUEST['_url']);
         $this->assertEquals('/', $router->getRewriteUri());
     }
 
@@ -63,7 +63,7 @@ class MvcRouterTest extends TestCase
 
         $router->match('/article/list', 'GET');
 
-        Di::getDefault()->alias->set('@web', '');
+        Container::getDefault()->getShared('alias')->set('@web', '');
 
         $this->assertEquals('/article/list', $router->createUrl(''));
         $this->assertEquals('/article/create', $router->createUrl('create'));

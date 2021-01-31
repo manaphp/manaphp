@@ -19,14 +19,14 @@ class DataMongodbModelTest extends TestCase
     /**
      * @var \ManaPHP\DiInterface
      */
-    protected $di;
+    protected $container;
 
     public function setUp()
     {
-        $this->di = new Factory();
-        $this->di->identity->setClaims([]);
+        $this->container = new Factory();
+        $this->container->identity->setClaims([]);
         $config = require __DIR__ . '/config.database.php';
-        $this->di->setShared('mongodb', new Mongodb($config['mongodb']));
+        $this->container->setShared('mongodb', new Mongodb($config['mongodb']));
     }
 
     public function test_getConsistentValue()
@@ -171,7 +171,7 @@ class DataMongodbModelTest extends TestCase
         /**
          * @var \ManaPHP\Data\Db $db
          */
-        $db = $this->di->getShared('mongodb');
+        $db = $this->container->getShared('mongodb');
         $db->truncate($model->table());
     }
 

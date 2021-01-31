@@ -12,13 +12,13 @@ class DataModeQueryTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \ManaPHP\DiInterface
      */
-    protected $di;
+    protected $container;
 
     public function setUp()
     {
-        $this->di = new FactoryDefault();
-        $this->di->alias->set('@data', __DIR__);
-        $this->di->set(
+        $this->container = new FactoryDefault();
+        $this->container->alias->set('@data', __DIR__);
+        $this->container->set(
             'db', function () {
             $config = require __DIR__ . '/config.database.php';
             $db = new Db($config['mysql']);

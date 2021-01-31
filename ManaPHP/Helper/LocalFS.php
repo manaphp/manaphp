@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Helper;
 
-use ManaPHP\Di;
+use ManaPHP\Di\Container;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\RuntimeException;
@@ -462,4 +462,4 @@ class LocalFS
     }
 }
 
-LocalFS::$alias = Di::getDefault()->getShared('alias');
+LocalFS::$alias = Container::getDefault()->getShared('alias');

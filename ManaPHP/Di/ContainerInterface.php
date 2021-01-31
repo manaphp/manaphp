@@ -1,8 +1,8 @@
 <?php
 
-namespace ManaPHP;
+namespace ManaPHP\Di;
 
-interface DiInterface
+interface ContainerInterface
 {
     /**
      * Registers a component in the component container

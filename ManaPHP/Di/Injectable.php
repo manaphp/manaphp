@@ -20,16 +20,16 @@ interface Injectable
     public function getShared($name);
 
     /**
-     * @param \ManaPHP\DiInterface $di
+     * @param \ManaPHP\Di\ContainerInterface $container
      *
      * @return static
      */
-    public function setDi($di);
+    public function setContainer($container);
 
     /**
-     * @return \ManaPHP\DiInterface
+     * @return \ManaPHP\Di\ContainerInterface
      */
-    public function getDi();
+    public function getContainer();
 
     /**
      * @param string $name

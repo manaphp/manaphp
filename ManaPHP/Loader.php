@@ -2,6 +2,8 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Di\Container;
+
 class Loader
 {
     /**
@@ -93,7 +95,7 @@ class Loader
             }
 
             if ($file[0] === '@') {
-                $file = Di::getDefault()->getShared('alias')->resolve($file);
+                $file = Container::getDefault()->getShared('alias')->resolve($file);
             }
             $this->_files[$file] = 1;
 

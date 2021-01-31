@@ -39,7 +39,7 @@ class Handler extends Component implements HandlerInterface
     protected function _guessCommand($keyword)
     {
         $commands = [];
-        foreach ($this->_di->getDefinitions("*Command") as $name => $definition) {
+        foreach ($this->_container->getDefinitions("*Command") as $name => $definition) {
             $commands[basename($name, 'Command')] = $definition;
         }
 
@@ -176,7 +176,7 @@ class Handler extends Component implements HandlerInterface
         $command = Str::pascalize($this->_command);
         $action = Str::camelize($this->_action);
 
-        if (!$definition = $this->_di->getDefinition(lcfirst($command) . 'Command')) {
+        if (!$definition = $this->_container->getDefinition(lcfirst($command) . 'Command')) {
             $guessed = $this->_guessCommand($command);
             if ($guessed) {
                 $definition = $guessed;

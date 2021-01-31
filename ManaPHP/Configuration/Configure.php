@@ -142,11 +142,11 @@ class Configure extends Component implements ConfigureInterface
      * @param string $name
      * @param mixed  $definition
      *
-     * @return \ManaPHP\DiInterface
+     * @return \ManaPHP\Di\ContainerInterface
      */
     public function setShared($name, $definition)
     {
-        return $this->_di->setShared($name, $definition);
+        return $this->_container->setShared($name, $definition);
     }
 
     /**
@@ -156,7 +156,7 @@ class Configure extends Component implements ConfigureInterface
      */
     public function getDefinitions($pattern = null)
     {
-        return $this->_di->getDefinitions($pattern);
+        return $this->_container->getDefinitions($pattern);
     }
 
     /**

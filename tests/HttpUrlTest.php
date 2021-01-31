@@ -9,18 +9,18 @@ use PHPUnit\Framework\TestCase;
 class HttpUrlTest extends TestCase
 {
     /**
-     * @var \ManaPHP\Di
+     * @var \ManaPHP\Di\ContainerInterface
      */
-    protected $_di;
+    protected $container;
 
     public function setup()
     {
-        $this->_di = new Factory();
+        $this->container = new Factory();
     }
 
     public function test_get()
     {
-        $this->_di->alias->set('@web', '');
+        $this->container->getShared('alias')->set('@web', '');
         $url = new Url();
 
         $this->assertEquals('/', $url->get('/'));
@@ -38,7 +38,7 @@ class HttpUrlTest extends TestCase
             '/article/10?from=google', $url->get(['/article/:article_id', 'article_id' => 10, 'from' => 'google'])
         );
 
-        $this->_di->alias->set('@web', 'http://www.manaphp.com/manaphp');
+        $this->container->getShared('alias')->set('@web', 'http://www.manaphp.com/manaphp');
         $url = new Url();
 
         $this->assertEquals('http://www.manaphp.com/manaphp/', $url->get('/'));

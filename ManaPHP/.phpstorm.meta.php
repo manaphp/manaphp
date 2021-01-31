@@ -7,7 +7,7 @@ namespace PHPSTORM_META {
     exitPoint(\abort());
 
     override(
-        \ManaPHP\DiInterface::getShared(), map(
+        \ManaPHP\Di\ContainerInterface::getShared(), map(
             [
                 'eventsManager'    => \ManaPHP\Event\ManagerInterface::class,
                 'alias'            => \ManaPHP\AliasInterface::class,
@@ -50,7 +50,7 @@ namespace PHPSTORM_META {
                 'translator'       => \ManaPHP\I18n\TranslatorInterface::class,
                 'rabbitmq'         => \ManaPHP\AmqpInterface::class,
                 'relationsManager' => \ManaPHP\Data\Relation\Manager::class,
-                'di'               => \ManaPHP\Di::class,
+                'container'        => \ManaPHP\Di\ContainerInterface::class,
                 'app'              => \ManaPHP\ApplicationInterface::class,
                 'mailer'           => \ManaPHP\Mailing\MailerInterface::class,
                 'httpServer'       => \ManaPHP\Swoole\Http\ServerInterface::class,
@@ -67,7 +67,7 @@ namespace PHPSTORM_META {
         )
     );
     override(
-        \di(), map(
+        \container(), map(
             [
                 'eventsManager'    => \ManaPHP\Event\ManagerInterface::class,
                 'alias'            => \ManaPHP\AliasInterface::class,
@@ -110,7 +110,7 @@ namespace PHPSTORM_META {
                 'translator'       => \ManaPHP\I18n\TranslatorInterface::class,
                 'rabbitmq'         => \ManaPHP\AmqpInterface::class,
                 'relationsManager' => \ManaPHP\Data\Relation\ManagerInterface::class,
-                'di'               => \ManaPHP\Di::class,
+                'container'        => \ManaPHP\Di\ContainerInterface::class,
                 'app'              => \ManaPHP\ApplicationInterface::class,
                 'mailer'           => \ManaPHP\Mailing\MailerInterface::class,
                 'httpServer'       => \ManaPHP\Swoole\Http\ServerInterface::class,
@@ -172,7 +172,7 @@ namespace PHPSTORM_META {
                 'translator'       => \ManaPHP\I18n\TranslatorInterface::class,
                 'rabbitmq'         => \ManaPHP\AmqpInterface::class,
                 'relationsManager' => \ManaPHP\Data\Relation\ManagerInterface::class,
-                'di'               => \ManaPHP\Di::class,
+                'container'        => \ManaPHP\Di\ContainerInterface::class,
                 'app'              => \ManaPHP\ApplicationInterface::class,
                 'mailer'           => \ManaPHP\Mailing\MailerInterface::class,
                 'httpServer'       => \ManaPHP\Swoole\Http\ServerInterface::class,
@@ -341,11 +341,9 @@ namespace PHPSTORM_META {
  */
 /**
  * @var \ManaPHP\Mvc\ViewInterface      $view
- * @var \ManaPHP\Di                     $di
  * @var \ManaPHP\Html\RendererInterface $renderer
  */
 $view = null;
-$di = null;
 unset($view, $renderer);
 
 class_exists('\Elasticsearch\Client') || class_alias('\stdClass', '\Elasticsearch\Client');

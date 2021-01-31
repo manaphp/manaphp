@@ -16,7 +16,7 @@ use ManaPHP\Data\Relation\HasMany;
 use ManaPHP\Data\Relation\HasManyOthers;
 use ManaPHP\Data\Relation\HasManyToMany;
 use ManaPHP\Data\Relation\HasOne;
-use ManaPHP\Di;
+use ManaPHP\Di\Container;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\InvalidValueException;
@@ -1333,7 +1333,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
      */
     public function getNew($class, $params = [])
     {
-        return $this->_di->getNew($class, $params);
+        return $this->_container->getNew($class, $params);
     }
 
     /**
@@ -1344,8 +1344,8 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
      */
     public function __get($name)
     {
-        if ($name === '_di') {
-            return $this->_di = Di::getDefault();
+        if ($name === '_container') {
+            return $this->_container = Container::getDefault();
         }
 
         /** @var \ManaPHP\Data\Relation\ManagerInterface $relationsManager */
@@ -1353,7 +1353,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         $method = 'get' . ucfirst($name);
         if (method_exists($this, $method)) {
             return $this->$name = $this->$method()->fetch();
-        } elseif ($this->_di->has($name)) {
+        } elseif ($this->_container->has($name)) {
             return $this->{$name} = $this->getShared($name);
         } elseif (($relationsManager = $this->getShared('relationsManager'))->has($this, $name)) {
             return $this->$name = $relationsManager->lazyLoad($this, $name)->fetch();
@@ -1418,7 +1418,7 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         $data = [];
 
         foreach (get_object_vars($this) as $field => $value) {
-            if (in_array($field, ['_di', '_snapshot', '_last_refresh'], true)) {
+            if (in_array($field, ['_container', '_snapshot', '_last_refresh'], true)) {
                 continue;
             }
 

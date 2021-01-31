@@ -15,13 +15,13 @@ class DataModelTest extends TestCase
     /**
      * @var \ManaPHP\DiInterface
      */
-    protected $di;
+    protected $container;
 
     public function setUp()
     {
-        $this->di = new FactoryDefault();
-        $this->di->alias->set('@data', __DIR__ . '/tmp/data');
-        $this->di->set(
+        $this->container = new FactoryDefault();
+        $this->container->getShared('alias')->set('@data', __DIR__ . '/tmp/data');
+        $this->container->set(
             'db', function () {
             $config = require __DIR__ . '/config.database.php';
             $db = new Db($config['mysql']);

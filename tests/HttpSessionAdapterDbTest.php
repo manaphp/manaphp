@@ -4,7 +4,7 @@ namespace Tests;
 
 use ManaPHP\Data\Db\Adapter\Mysql;
 use ManaPHP\Data\DbInterface;
-use ManaPHP\Di;
+use ManaPHP\Di\Container;
 use ManaPHP\Mvc\Factory;
 use PHPUnit\Framework\TestCase;
 
@@ -37,7 +37,7 @@ class HttpSessionAdapterDbTest extends TestCase
     public function test_read()
     {
         $session_id = md5(microtime(true) . mt_rand());
-        $adapter = Di::getDefault()->getNew('ManaPHP\Http\Session\Adapter\Db');
+        $adapter = Container::getDefault()->getNew('ManaPHP\Http\Session\Adapter\Db');
 
         $this->assertEquals('', $adapter->do_read($session_id));
 
@@ -48,7 +48,7 @@ class HttpSessionAdapterDbTest extends TestCase
     public function test_write()
     {
         $session_id = md5(microtime(true) . mt_rand());
-        $adapter = Di::getDefault()->getNew('ManaPHP\Http\Session\Adapter\Db');
+        $adapter = Container::getDefault()->getNew('ManaPHP\Http\Session\Adapter\Db');
 
         $adapter->do_write($session_id, '', 100);
         $this->assertEquals('', $adapter->do_read($session_id));
@@ -60,7 +60,7 @@ class HttpSessionAdapterDbTest extends TestCase
     public function test_destory()
     {
         $session_id = md5(microtime(true) . mt_rand());
-        $adapter = Di::getDefault()->getNew('ManaPHP\Http\Session\Adapter\Db');
+        $adapter = Container::getDefault()->getNew('ManaPHP\Http\Session\Adapter\Db');
         $this->assertTrue($adapter->do_destroy($session_id));
 
         $adapter->do_write($session_id, 'manaphp', 100);
@@ -73,7 +73,7 @@ class HttpSessionAdapterDbTest extends TestCase
     public function test_gc()
     {
         md5(microtime(true) . mt_rand());
-        $adapter = Di::getDefault()->getNew('ManaPHP\Http\Session\Adapter\Db');
+        $adapter = Container::getDefault()->getNew('ManaPHP\Http\Session\Adapter\Db');
         $this->assertTrue($adapter->do_gc(100));
     }
 }

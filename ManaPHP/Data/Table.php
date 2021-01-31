@@ -2,14 +2,14 @@
 
 namespace ManaPHP\Data;
 
-use ManaPHP\Di;
+use ManaPHP\Di\Container;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
 use ManaPHP\Helper\Str;
 
 /**
- * @property-read \ManaPHP\Di $_di
+ * @property-read \ManaPHP\Di\Container $_container
  */
 abstract class Table implements TableInterface
 {
@@ -109,7 +109,7 @@ abstract class Table implements TableInterface
      */
     public function getShared($name)
     {
-        return $this->_di->getShared($name);
+        return $this->_container->getShared($name);
     }
 
     /**
@@ -119,8 +119,8 @@ abstract class Table implements TableInterface
      */
     public function __get($name)
     {
-        if ($name === '_di') {
-            return $this->_di = Di::getDefault();
+        if ($name === '_container') {
+            return $this->_container = Container::getDefault();
         } else {
             return null;
         }

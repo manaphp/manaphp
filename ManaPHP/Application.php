@@ -39,7 +39,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         ini_set('default_socket_timeout', -1);
 
         $factory = $this->getFactory();
-        $GLOBALS['DI'] = $this->_di = new $factory();
+        $GLOBALS['CONTAINER'] = $this->_container = new $factory();
 
         if (!defined('MANAPHP_COROUTINE_ENABLED')) {
             define(
@@ -126,7 +126,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
      */
     public function setShared($name, $definition)
     {
-        $this->_di->setShared($name, $definition);
+        $this->_container->setShared($name, $definition);
 
         return $this;
     }

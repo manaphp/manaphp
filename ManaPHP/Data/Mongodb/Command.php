@@ -16,13 +16,13 @@ class Command extends \ManaPHP\Cli\Command
     protected function _getServices($services)
     {
         if ($services) {
-            $di = $this->_di;
+            $container = $this->_container;
 
             foreach ($services as $index => $service) {
-                if (!$di->has($service)) {
-                    if ($di->has($service . 'Mongodb')) {
+                if (!$container->has($service)) {
+                    if ($container->has($service . 'Mongodb')) {
                         $services[$index] = $service . 'Mongodb';
-                    } elseif ($di->has($service . '_mongodb')) {
+                    } elseif ($container->has($service . '_mongodb')) {
                         $services[$index] = $service . '_mongodb';
                     } else {
                         $this->console->warn(['`:service` service is not exists: ignoring', 'service' => $service]);

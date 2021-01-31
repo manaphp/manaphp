@@ -1,6 +1,6 @@
 <?php
 
-use ManaPHP\Di;
+use ManaPHP\Di\Container;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\JsonException;
@@ -117,20 +117,20 @@ if (!function_exists('xml_decode')) {
     }
 }
 
-if (!function_exists('di')) {
+if (!function_exists('container')) {
     /**
      * @param string $name
      *
      * @return mixed
      */
-    function di($name = null)
+    function container($name = null)
     {
-        static $di;
-        if (!$di) {
-            $di = Di::getDefault();
+        static $container;
+        if (!$container) {
+            $container = Container::getDefault();
         }
 
-        return $name === null ? $di : $di->getShared($name);
+        return $name === null ? $container : $container->getShared($name);
     }
 }
 
@@ -143,7 +143,7 @@ if (!function_exists('env')) {
      */
     function env($key = null, $default = null)
     {
-        return di('dotenv')->get($key, $default);
+        return container('dotenv')->get($key, $default);
     }
 }
 
@@ -156,7 +156,7 @@ if (!function_exists('param_get')) {
      */
     function param_get($name, $default = null)
     {
-        return di('configure')->getParam($name, $default);
+        return container('configure')->getParam($name, $default);
     }
 }
 
@@ -169,7 +169,7 @@ if (!function_exists('log_debug')) {
      */
     function log_debug($message, $category = null)
     {
-        di('logger')->debug($message, $category);
+        container('logger')->debug($message, $category);
     }
 }
 
@@ -182,7 +182,7 @@ if (!function_exists('log_info')) {
      */
     function log_info($message, $category = null)
     {
-        di('logger')->info($message, $category);
+        container('logger')->info($message, $category);
     }
 }
 
@@ -195,7 +195,7 @@ if (!function_exists('log_warn')) {
      */
     function log_warn($message, $category = null)
     {
-        di('logger')->warn($message, $category);
+        container('logger')->warn($message, $category);
     }
 }
 
@@ -208,7 +208,7 @@ if (!function_exists('log_error')) {
      */
     function log_error($message, $category = null)
     {
-        di('logger')->error($message, $category);
+        container('logger')->error($message, $category);
     }
 }
 
@@ -221,7 +221,7 @@ if (!function_exists('log_fatal')) {
      */
     function log_fatal($message, $category = null)
     {
-        di('logger')->fatal($message, $category);
+        container('logger')->fatal($message, $category);
     }
 }
 
@@ -233,7 +233,7 @@ if (!function_exists('dd')) {
      */
     function dd($message)
     {
-        di('dataDump')->output($message);
+        container('dataDump')->output($message);
     }
 }
 
@@ -245,7 +245,7 @@ if (!function_exists('path')) {
      */
     function path($path)
     {
-        return $path ? di('alias')->resolve($path) : di('alias')->get();
+        return $path ? container('alias')->resolve($path) : container('alias')->get();
     }
 }
 
@@ -259,7 +259,7 @@ if (!function_exists('jwt_encode')) {
      */
     function jwt_encode($claims, $ttl, $scope)
     {
-        return di('scopedJwt')->encode($claims, $ttl, $scope);
+        return container('scopedJwt')->encode($claims, $ttl, $scope);
     }
 }
 
@@ -273,7 +273,7 @@ if (!function_exists('jwt_decode')) {
      */
     function jwt_decode($token, $scope, $verify = true)
     {
-        return di('scopedJwt')->decode($token, $scope, $verify);
+        return container('scopedJwt')->decode($token, $scope, $verify);
     }
 }
 
@@ -286,7 +286,7 @@ if (!function_exists('jwt_verify')) {
      */
     function jwt_verify($token, $scope)
     {
-        di('scopedJwt')->verify($token, $scope);
+        container('scopedJwt')->verify($token, $scope);
     }
 }
 
@@ -301,7 +301,7 @@ if (!function_exists('input')) {
     {
         static $request;
         if (!$request) {
-            $request = di('request');
+            $request = container('request');
         }
 
         if ($defaultOrRules && is_array($defaultOrRules)) {
@@ -319,7 +319,7 @@ if (!function_exists('client_ip')) {
      */
     function client_ip()
     {
-        return di('request')->getClientIp();
+        return container('request')->getClientIp();
     }
 }
 
@@ -333,7 +333,7 @@ if (!function_exists('http_get')) {
      */
     function http_get($url, $headers = [], $options = [])
     {
-        return di('httpClient')->get($url, $headers, $options);
+        return container('httpClient')->get($url, $headers, $options);
     }
 }
 
@@ -348,7 +348,7 @@ if (!function_exists('http_post')) {
      */
     function http_post($url, $body = null, $headers = [], $options = [])
     {
-        return di('httpClient')->post($url, $body, $headers, $options);
+        return container('httpClient')->post($url, $body, $headers, $options);
     }
 }
 
@@ -361,7 +361,7 @@ if (!function_exists('http_download')) {
      */
     function http_download($files, $options = [])
     {
-        return di('httpClient')->download($files, $options);
+        return container('httpClient')->download($files, $options);
     }
 }
 
@@ -377,7 +377,7 @@ if (!function_exists('rest')) {
      */
     function rest($type, $url, $body = null, $headers = [], $options = [])
     {
-        return di('restClient')->rest($type, $url, $body, $headers, $options);
+        return container('restClient')->rest($type, $url, $body, $headers, $options);
     }
 }
 
@@ -391,7 +391,7 @@ if (!function_exists('rest_get')) {
      */
     function rest_get($url, $headers = [], $options = [])
     {
-        return di('restClient')->rest('GET', $url, null, $headers, $options);
+        return container('restClient')->rest('GET', $url, null, $headers, $options);
     }
 }
 
@@ -406,7 +406,7 @@ if (!function_exists('rest_post')) {
      */
     function rest_post($url, $body, $headers = [], $options = [])
     {
-        return di('restClient')->rest('POST', $url, $body, $headers, $options);
+        return container('restClient')->rest('POST', $url, $body, $headers, $options);
     }
 }
 
@@ -421,7 +421,7 @@ if (!function_exists('rest_put')) {
      */
     function rest_put($url, $body, $headers = [], $options = [])
     {
-        return di('restClient')->rest('PUT', $url, $body, $headers, $options);
+        return container('restClient')->rest('PUT', $url, $body, $headers, $options);
     }
 }
 
@@ -436,7 +436,7 @@ if (!function_exists('rest_patch')) {
      */
     function rest_patch($url, $body, $headers = [], $options = [])
     {
-        return di('restClient')->rest('PATCH', $url, $body, $headers, $options);
+        return container('restClient')->rest('PATCH', $url, $body, $headers, $options);
     }
 }
 
@@ -450,7 +450,7 @@ if (!function_exists('rest_delete')) {
      */
     function rest_delete($url, $headers = [], $options = [])
     {
-        return di('restClient')->rest('DELETE', $url, null, $headers, $options);
+        return container('restClient')->rest('DELETE', $url, null, $headers, $options);
     }
 }
 
@@ -463,7 +463,7 @@ if (!function_exists('render_file')) {
      */
     function render_file($file, $vars = [])
     {
-        return di('renderer')->renderFile($file, $vars);
+        return container('renderer')->renderFile($file, $vars);
     }
 }
 
@@ -519,7 +519,7 @@ if (!function_exists('t')) {
      */
     function t($id, $bind = [])
     {
-        return di('translator')->translate($id, $bind);
+        return container('translator')->translate($id, $bind);
     }
 }
 
@@ -532,9 +532,9 @@ if (!function_exists('image_create')) {
     function image_create($file)
     {
         if (extension_loaded('imagick')) {
-            return Di::getDefault()->getNew('ManaPHP\Imaging\Image\Adapter\Imagick', [$file]);
+            return Container::getDefault()->getNew('ManaPHP\Imaging\Image\Adapter\Imagick', [$file]);
         } elseif (extension_loaded('gd')) {
-            return Di::getDefault()->getNew('ManaPHP\Imaging\Image\Adapter\Gd', [$file]);
+            return Container::getDefault()->getNew('ManaPHP\Imaging\Image\Adapter\Gd', [$file]);
         } else {
             throw new NotSupportedException('neither `imagic` nor `gd` extension is loaded');
         }
@@ -547,7 +547,7 @@ if (!function_exists('base_url')) {
      */
     function base_url()
     {
-        return di('alias')->get('@web');
+        return container('alias')->get('@web');
     }
 }
 

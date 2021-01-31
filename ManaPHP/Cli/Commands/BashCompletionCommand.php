@@ -17,7 +17,7 @@ class BashCompletionCommand extends Command
     {
         $commands = [];
 
-        foreach ($this->_di->getDefinitions('*Command') as $name => $_) {
+        foreach ($this->_container->getDefinitions('*Command') as $name => $_) {
             $commands[] = Str::snakelize(basename($name, 'Command'));
         }
 
@@ -33,7 +33,7 @@ class BashCompletionCommand extends Command
     {
         $actions = [];
         try {
-            if (!$commandClassName = $this->_di->getDefinition(Str::camelize($command) . 'Command')) {
+            if (!$commandClassName = $this->_container->getDefinition(Str::camelize($command) . 'Command')) {
                 return [];
             }
 
@@ -57,7 +57,7 @@ class BashCompletionCommand extends Command
      */
     protected function _getArgumentNames($command, $action)
     {
-        if (!$commandClassName = $this->_di->getDefinition(Str::camelize($command) . 'Command')) {
+        if (!$commandClassName = $this->_container->getDefinition(Str::camelize($command) . 'Command')) {
             return [];
         }
 
@@ -84,7 +84,7 @@ class BashCompletionCommand extends Command
      */
     protected function _getArgumentValues($command, $action, $argumentName, $current)
     {
-        if (!$commandClassName = $this->_di->getDefinition(Str::camelize($command) . 'Command')) {
+        if (!$commandClassName = $this->_container->getDefinition(Str::camelize($command) . 'Command')) {
             return [];
         }
 

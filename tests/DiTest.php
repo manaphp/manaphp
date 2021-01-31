@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use ManaPHP\Di;
+use ManaPHP\Di\Container;
 use ManaPHP\Http\Request;
 use PHPUnit\Framework\TestCase;
 
@@ -26,180 +26,180 @@ class DiTest extends TestCase
     public function test_set()
     {
         //string
-        $di = new Di();
-        $di->set('request', 'ManaPHP\Http\Request');
-        $this->assertNotSame($di->getNew('request'), $di->getNew('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
+        $container = new Container();
+        $container->set('request', 'ManaPHP\Http\Request');
+        $this->assertNotSame($container->getNew('request'), $container->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getNew('request'));
 
         //string
-        $di = new Di();
-        $di->set('request', 'ManaPHP\Http\Request');
-        $this->assertSame($di->getShared('request'), $di->getShared('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
+        $container = new Container();
+        $container->set('request', 'ManaPHP\Http\Request');
+        $this->assertSame($container->getShared('request'), $container->getShared('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getNew('request'));
 
         //array
-        $di = new Di();
-        $di->set('request', ['class' => 'ManaPHP\Http\Request']);
-        $this->assertNotSame($di->getNew('request'), $di->getNew('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
+        $container = new Container();
+        $container->set('request', ['class' => 'ManaPHP\Http\Request']);
+        $this->assertNotSame($container->getNew('request'), $container->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getNew('request'));
 
         //array
-        $di = new Di();
-        $di->set('request', ['class' => 'ManaPHP\Http\Request']);
-        $this->assertSame($di->getShared('request'), $di->getShared('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getShared('request'));
+        $container = new Container();
+        $container->set('request', ['class' => 'ManaPHP\Http\Request']);
+        $this->assertSame($container->getShared('request'), $container->getShared('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getShared('request'));
 
         //array
-        $di = new Di();
-        $di->set('request', ['class' => 'ManaPHP\Http\Request', 'shared' => false]);
-        $this->assertNotSame($di->getNew('request'), $di->getNew('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
+        $container = new Container();
+        $container->set('request', ['class' => 'ManaPHP\Http\Request', 'shared' => false]);
+        $this->assertNotSame($container->getNew('request'), $container->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getNew('request'));
 
         //object
-        $di = new Di();
-        $di->set('request', new \ManaPHP\Http\Request());
-        $this->assertSame($di->getShared('request'), $di->getShared('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getShared('request'));
+        $container = new Container();
+        $container->set('request', new \ManaPHP\Http\Request());
+        $this->assertSame($container->getShared('request'), $container->getShared('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getShared('request'));
 
-        $di = new Di();
-        $di->set('request', new \ManaPHP\Http\Request());
-        $this->assertSame($di->getNew('request'), $di->getNew('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
+        $container = new Container();
+        $container->set('request', new \ManaPHP\Http\Request());
+        $this->assertSame($container->getNew('request'), $container->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getNew('request'));
 
         //closure
-        $di = new Di();
-        $di->set(
+        $container = new Container();
+        $container->set(
             'request', function () {
             return new Request();
         }
         );
-        $this->assertNotSame($di->getNew('request'), $di->getNew('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
+        $this->assertNotSame($container->getNew('request'), $container->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getNew('request'));
 
-        $di = new Di();
-        $di->set(
+        $container = new Container();
+        $container->set(
             'request', function () {
             return new Request();
         }
         );
-        $this->assertSame($di->getShared('request'), $di->getShared('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getShared('request'));
+        $this->assertSame($container->getShared('request'), $container->getShared('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getShared('request'));
     }
 
     public function test_setShared()
     {
         //string
-        $di = new Di();
-        $di->setShared('request', 'ManaPHP\Http\Request');
-        $this->assertSame($di->getShared('request'), $di->getShared('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getShared('request'));
+        $container = new Container();
+        $container->setShared('request', 'ManaPHP\Http\Request');
+        $this->assertSame($container->getShared('request'), $container->getShared('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getShared('request'));
 
-        $di = new Di();
-        $di->setShared('request', 'ManaPHP\Http\Request');
-        $this->assertSame($di->getNew('request'), $di->getNew('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
-
-        //array
-        $di = new Di();
-        $di->setShared('request', ['class' => 'ManaPHP\Http\Request']);
-        $this->assertSame($di->getShared('request'), $di->getShared('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getShared('request'));
-
-        $di = new Di();
-        $di->setShared('request', ['class' => 'ManaPHP\Http\Request']);
-        $this->assertSame($di->getNew('request'), $di->getNew('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
+        $container = new Container();
+        $container->setShared('request', 'ManaPHP\Http\Request');
+        $this->assertSame($container->getNew('request'), $container->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getNew('request'));
 
         //array
-        $di = new Di();
-        $di->setShared('request', ['class' => 'ManaPHP\Http\Request', 'shared' => true]);
-        $this->assertSame($di->getShared('request'), $di->getShared('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getShared('request'));
+        $container = new Container();
+        $container->setShared('request', ['class' => 'ManaPHP\Http\Request']);
+        $this->assertSame($container->getShared('request'), $container->getShared('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getShared('request'));
+
+        $container = new Container();
+        $container->setShared('request', ['class' => 'ManaPHP\Http\Request']);
+        $this->assertSame($container->getNew('request'), $container->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getNew('request'));
 
         //array
-        $di = new Di();
-        $di->setShared('request', ['class' => 'ManaPHP\Http\Request', 'shared' => true]);
-        $this->assertSame($di->getNew('request'), $di->getNew('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
+        $container = new Container();
+        $container->setShared('request', ['class' => 'ManaPHP\Http\Request', 'shared' => true]);
+        $this->assertSame($container->getShared('request'), $container->getShared('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getShared('request'));
+
+        //array
+        $container = new Container();
+        $container->setShared('request', ['class' => 'ManaPHP\Http\Request', 'shared' => true]);
+        $this->assertSame($container->getNew('request'), $container->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getNew('request'));
 
         //object
-        $di = new Di();
-        $di->setShared('request', new \ManaPHP\Http\Request());
-        $this->assertSame($di->getShared('request'), $di->getShared('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getShared('request'));
+        $container = new Container();
+        $container->setShared('request', new \ManaPHP\Http\Request());
+        $this->assertSame($container->getShared('request'), $container->getShared('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getShared('request'));
 
-        $di = new Di();
-        $di->setShared('request', new \ManaPHP\Http\Request());
-        $this->assertSame($di->getNew('request'), $di->getNew('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
+        $container = new Container();
+        $container->setShared('request', new \ManaPHP\Http\Request());
+        $this->assertSame($container->getNew('request'), $container->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getNew('request'));
 
         //closure
-        $di = new Di();
-        $di->setShared(
+        $container = new Container();
+        $container->setShared(
             'request', function () {
             return new \ManaPHP\Http\Request();
         }
         );
-        $this->assertSame($di->getShared('request'), $di->getShared('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getShared('request'));
+        $this->assertSame($container->getShared('request'), $container->getShared('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getShared('request'));
 
         //closure
-        $di = new Di();
-        $di->setShared(
+        $container = new Container();
+        $container->setShared(
             'request', function () {
             return new \ManaPHP\Http\Request();
         }
         );
-        $this->assertSame($di->getNew('request'), $di->getNew('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $di->getNew('request'));
+        $this->assertSame($container->getNew('request'), $container->getNew('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getNew('request'));
     }
 
     public function test_has()
     {
-        $di = new Di();
-        $di->set('request', 'ManaPHP\Http\Request');
-        $this->assertTrue($di->has('request'));
-        $this->assertFalse($di->has('request_missing'));
+        $container = new Container();
+        $container->set('request', 'ManaPHP\Http\Request');
+        $this->assertTrue($container->has('request'));
+        $this->assertFalse($container->has('request_missing'));
     }
 
     public function test_getShared()
     {
-        $di = new Di();
-        $di->setShared('request', 'ManaPHP\Http\Request');
-        $this->assertSame($di->getShared('request'), $di->getShared('request'));
+        $container = new Container();
+        $container->setShared('request', 'ManaPHP\Http\Request');
+        $this->assertSame($container->getShared('request'), $container->getShared('request'));
 
-        $di = new Di();
-        $di->setShared('request', 'ManaPHP\Http\Request');
-        $this->assertSame($di->getNew('request'), $di->getNew('request'));
+        $container = new Container();
+        $container->setShared('request', 'ManaPHP\Http\Request');
+        $this->assertSame($container->getNew('request'), $container->getNew('request'));
     }
 
     public function test_get()
     {
-        $di = new Di();
-        $di->set(
+        $container = new Container();
+        $container->set(
             'getComponent1', function ($v) {
             return new SomeComponent($v);
         }
         );
 
-        $di->set('getComponent2', 'Tests\SomeComponent');
+        $container->set('getComponent2', 'Tests\SomeComponent');
 
-        $this->assertEquals(100, $di->getNew('getComponent1', [100])->value);
-        $this->assertEquals(50, $di->getNew('getComponent2', [50])->value);
+        $this->assertEquals(100, $container->getNew('getComponent1', [100])->value);
+        $this->assertEquals(50, $container->getNew('getComponent2', [50])->value);
     }
 
     public function test_remove()
     {
-        $di = new Di();
-        $di->set(
+        $container = new Container();
+        $container->set(
             'removeService', function () {
             return new \stdClass();
         }
         );
 
-        $this->assertTrue($di->has('removeService'));
+        $this->assertTrue($container->has('removeService'));
 
-        $di->remove('removeService');
-        $this->assertFalse($di->has('removeService'));
+        $container->remove('removeService');
+        $this->assertFalse($container->has('removeService'));
     }
 }

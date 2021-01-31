@@ -4,6 +4,7 @@ namespace ManaPHP;
 
 use JsonSerializable;
 use ManaPHP\Coroutine\Context\Inseparable;
+use ManaPHP\Di\Container;
 use ManaPHP\Di\Injectable;
 use ManaPHP\Event\EventArgs;
 use Swoole\Coroutine;
@@ -33,7 +34,7 @@ use Swoole\Coroutine;
  * @property-read \ManaPHP\Ws\ClientInterface              $wsClient
  * @property-read \ManaPHP\Messaging\PubSubInterface       $pubSub
  * @property-read \object                                  $_context
- * @property-read \ManaPHP\DiInterface                     $_di
+ * @property-read \ManaPHP\Di\ContainerInterface           $_container
  */
 class Component implements ComponentInterface, Injectable, JsonSerializable
 {
@@ -60,7 +61,7 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
      */
     public function getNew($class, $params = [])
     {
-        return $this->_di->getNew($class, $params);
+        return $this->_container->getNew($class, $params);
     }
 
     /**
@@ -70,27 +71,27 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
      */
     public function getShared($name)
     {
-        return $this->_di->getShared($this->_injections[$name] ?? $name);
+        return $this->_container->getShared($this->_injections[$name] ?? $name);
     }
 
     /**
-     * @param \ManaPHP\DiInterface $di
+     * @param \ManaPHP\Di\ContainerInterface $container
      *
      * @return static
      */
-    public function setDi($di)
+    public function setContainer($container)
     {
-        $this->_di = $di;
+        $this->_container = $container;
 
         return $this;
     }
 
     /**
-     * @return \ManaPHP\DiInterface
+     * @return \ManaPHP\Di\ContainerInterface
      */
-    public function getDi()
+    public function getContainer()
     {
-        return $this->_di;
+        return $this->_container;
     }
 
     /**
@@ -182,8 +183,8 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
 
                 return $this->_context = $this->_createContext();
             }
-        } elseif ($name === '_di') {
-            return $this->_di = Di::getDefault();
+        } elseif ($name === '_container') {
+            return $this->_container = Container::getDefault();
         } else {
             return $this->{$name} = $this->getShared($name);
         }
@@ -207,7 +208,7 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
      */
     public function __isset($name)
     {
-        return $this->_di->has($name);
+        return $this->_container->has($name);
     }
 
     /**
@@ -331,7 +332,7 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
     {
         $data = [];
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k === '_object_id' || $k === '_di' || $k === '_on') {
+            if ($k === '_object_id' || $k === '_container' || $k === '_on') {
                 continue;
             }
 
