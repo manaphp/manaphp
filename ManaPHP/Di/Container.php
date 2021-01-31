@@ -266,7 +266,12 @@ class Container implements ContainerInterface
             }
             $parameters = [];
         } elseif ($definition instanceof Closure) {
-            return $this->_instances[$name] = $definition();
+            $instance = $definition();
+            if ($instance instanceof Injectable) {
+                $instance->setContainer($this);
+            }
+
+            return $this->_instances[$name] = $instance;
         } elseif (isset($definition['class'])) {
             $parameters = $definition;
             $definition = $definition['class'];
