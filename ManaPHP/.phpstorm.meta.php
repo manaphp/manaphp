@@ -59,7 +59,7 @@ namespace PHPSTORM_META {
                 'jwt'              => \ManaPHP\Token\JwtInterface::class,
                 'scopedJwt'        => \ManaPHP\Token\ScopedJwtInterface::class,
                 'pubSub'           => \ManaPHP\Messaging\PubSubInterface::class,
-                ''                 => '@'
+                ''                 => '@|App\Services\@',
             ]
         )
     );
@@ -120,7 +120,7 @@ namespace PHPSTORM_META {
                 'scopedJwt'        => \ManaPHP\Token\ScopedJwtInterface::class,
                 'pubSub'           => \ManaPHP\Messaging\PubSubInterface::class,
                 'dataDump'         => \ManaPHP\Debugging\DataDumpInterface::class,
-                ''                 => '@',
+                ''                 => '@|App\Services\@',
             ]
         )
     );
@@ -182,7 +182,7 @@ namespace PHPSTORM_META {
                 'scopedJwt'        => \ManaPHP\Token\ScopedJwtInterface::class,
                 'pubSub'           => \ManaPHP\Messaging\PubSubInterface::class,
                 'dataDump'         => \ManaPHP\Debugging\DataDumpInterface::class,
-                ''                 => '@',
+                ''                 => '@|App\Services\@',
             ]
         )
     );
