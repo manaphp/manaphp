@@ -528,7 +528,7 @@ class Compiler extends Component
      */
     protected function _compile_can($expression)
     {
-        return "<?php if (\$di->authorization->isAllowed{$expression}): ?>";
+        return "<?php if (di('authorization')->isAllowed{$expression}): ?>";
     }
 
     /**
@@ -542,7 +542,7 @@ class Compiler extends Component
     {
         $parts = explode(',', substr($expression, 1, -1));
         $expr = $this->compileString($parts[1]);
-        return "<?php if (\$di->authorization->isAllowed($parts[0])): ?>$expr<?php endif ?>";
+        return "<?php if (di('authorization')->isAllowed($parts[0])): ?>$expr<?php endif ?>";
     }
 
     /**
@@ -554,7 +554,7 @@ class Compiler extends Component
      */
     protected function _compile_cannot($expression)
     {
-        return "<?php if (!\$di->authorization->isAllowed{$expression}): ?>";
+        return "<?php if (!di('authorization')->isAllowed{$expression}): ?>";
     }
 
     /**
@@ -712,7 +712,7 @@ class Compiler extends Component
      */
     protected function _compile_block($expression)
     {
-        return "<?php \$di->view->block{$expression} ?>";
+        return "<?php di('view')->block{$expression} ?>";
     }
 
     /**
@@ -748,7 +748,7 @@ class Compiler extends Component
      */
     protected function _compile_maxAge($expression)
     {
-        return "<?php \$di->view->setMaxAge{$expression}; ?>";
+        return "<?php di('view')->setMaxAge{$expression}; ?>";
     }
 
     /**
@@ -760,7 +760,7 @@ class Compiler extends Component
      */
     protected function _compile_layout($expression)
     {
-        return "<?php \$di->view->setLayout{$expression}; ?>";
+        return "<?php di('view')->setLayout{$expression}; ?>";
     }
 
     /**
@@ -774,7 +774,7 @@ class Compiler extends Component
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
-        return '<?= $di->view->getContent(); ?>';
+        return "<?= di('view')->getContent(); ?>";
     }
 
     /**
@@ -816,7 +816,7 @@ class Compiler extends Component
      */
     protected function _compile_widget($expression)
     {
-        return "<?php \$di->view->widget{$expression}; ?>";
+        return "<?php di('view')->widget{$expression}; ?>";
     }
 
     /**
@@ -863,7 +863,7 @@ class Compiler extends Component
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
-        return '<?php $di->flash->output() ?>';
+        return "<?php di('flash')->output() ?>";
     }
 
     /**
@@ -890,8 +890,8 @@ class Compiler extends Component
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
-        return '<?php if($di->response->hasHeader("X-Debugger-Link")){?><div class="debugger"><a target="_self" href="'
-            . '<?= $di->response->getHeader("X-Debugger-Link") ?>">Debugger</a></div><?php }?> ';
+        return '<?php if(di("response")->hasHeader("X-Debugger-Link")){?><div class="debugger"><a target="_self" href="'
+            . '<?= di("response")->getHeader("X-Debugger-Link") ?>">Debugger</a></div><?php }?> ';
     }
 
     /**

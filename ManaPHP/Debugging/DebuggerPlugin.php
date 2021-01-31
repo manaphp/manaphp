@@ -377,7 +377,7 @@ class DebuggerPlugin extends Plugin
                 unset($vars[$k]);
             }
         }
-        unset($vars['di']);
+
         $base_name = basename(dirname($data['file'])) . '/' . basename($data['file']);
         $context->view[] = ['file' => $data['file'], 'vars' => $vars, 'base_name' => $base_name];
     }

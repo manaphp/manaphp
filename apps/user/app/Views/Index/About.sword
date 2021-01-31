@@ -32,7 +32,7 @@
     @if(param_get('manaphp_brand_show', true))
         <h1>ManaPHP <sub>v{{ $version }}</sub></h1>
         {{ $current_time }}
-        {{ $di->router->getController() . ':' . $di->router->getAction() }}
+        {{ di('router')->getController() . ':' . di('router')->getAction() }}
         @block('profiler')
     @endif
 </div>

@@ -8,50 +8,6 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 
-/**
- * @property-read \ManaPHP\AliasInterface                      $alias
- * @property-read \ManaPHP\Http\DispatcherInterface            $dispatcher
- * @property-read \ManaPHP\Http\RouterInterface                $router
- * @property-read \ManaPHP\Http\UrlInterface                   $url
- * @property-read \ManaPHP\Http\RequestInterface               $request
- * @property-read \ManaPHP\Http\ResponseInterface              $response
- * @property-read \ManaPHP\Http\CookiesInterface               $cookies
- * @property-read \ManaPHP\Mvc\View\FlashInterface             $flash
- * @property-read \ManaPHP\Mvc\View\FlashInterface             $flashSession
- * @property-read \ManaPHP\Http\SessionInterface               $session
- * @property-read \ManaPHP\Event\ManagerInterface              $eventsManager
- * @property-read \ManaPHP\Data\DbInterface                    $db
- * @property-read \ManaPHP\Security\CryptInterface             $crypt
- * @property-read \ManaPHP\Validating\ValidatorInterface       $validator
- * @property-read \ManaPHP\Mvc\ViewInterface                   $view
- * @property-read \ManaPHP\Loader                              $loader
- * @property-read \ManaPHP\Logging\LoggerInterface             $logger
- * @property-read \ManaPHP\Html\RendererInterface              $renderer
- * @property-read \ManaPHP\Configuration\Configure             $configure
- * @property-read \ManaPHP\Configuration\SettingsInterface     $settings
- * @property-read \Redis|\ManaPHP\Data\RedisInterface          $redisCache
- * @property-read \Redis|\ManaPHP\Data\RedisInterface          $redisDb
- * @property-read \Redis|\ManaPHP\Data\RedisInterface          $redisBroker
- * @property-read \ManaPHP\Caching\CacheInterface              $cache
- * @property-read \ManaPHP\Caching\CacheInterface              $viewsCache
- * @property-read \ManaPHP\Http\ClientInterface                $httpClient
- * @property-read \ManaPHP\Http\ClientInterface                $restClient
- * @property-read \ManaPHP\Http\AuthorizationInterface         $authorization
- * @property-read \ManaPHP\Http\CaptchaInterface               $captcha
- * @property-read \ManaPHP\Identifying\IdentityInterface       $identity
- * @property-read \ManaPHP\Messaging\QueueInterface            $msgQueue
- * @property-read \ManaPHP\I18n\TranslatorInterface            $translation
- * @property-read \ManaPHP\Html\Renderer\Engine\Sword\Compiler $swordCompiler
- * @property-read \ManaPHP\Html\PurifierInterface              $htmlPurifier
- * @property-read \ManaPHP\Messaging\AmqpInterface             $rabbitmq
- * @property-read \ManaPHP\Data\Relation\ManagerInterface      $relationsManager
- * @property-read \ManaPHP\Mailing\MailerInterface             $mailer
- * @property-read \ManaPHP\Data\MongodbInterface               $mongodb
- * @property-read \ManaPHP\I18n\TranslatorInterface            $translator
- * @property-read \ManaPHP\Bos\ClientInterface                 $bosClient
- * @property-read \ManaPHP\Ws\Pushing\ClientInterface          $wspClient
- * @property-read \ManaPHP\Messaging\PubSubInterface           $pubSub
- */
 class Di implements DiInterface
 {
     /**
