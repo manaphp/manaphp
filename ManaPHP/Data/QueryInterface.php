@@ -358,6 +358,13 @@ interface QueryInterface
     public function paginate($size = null, $page = null);
 
     /**
+     * @param callable $map
+     *
+     * @return static
+     */
+    public function map($map);
+
+    /**
      * @param bool $multiple
      *
      * @return static

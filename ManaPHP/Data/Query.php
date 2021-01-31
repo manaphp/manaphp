@@ -105,6 +105,11 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     protected $_shard_strategy;
 
     /**
+     * @var callable
+     */
+    protected $_map;
+
+    /**
      * @return ArrayIterator
      */
     public function getIterator()
@@ -537,6 +542,18 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     }
 
     /**
+     * @param callable $map
+     *
+     * @return static
+     */
+    public function map($map)
+    {
+        $this->_map = $map;
+
+        return $this;
+    }
+
+    /**
      * @param bool $multiple
      *
      * @return static
@@ -578,6 +595,12 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
 
             if ($r && $this->_with) {
                 $r = $this->relationsManager->earlyLoad($model, $r, $this->_with, $asArray);
+            }
+        }
+
+        if (($map = $this->_map) !== null) {
+            foreach ($r as $k => $v) {
+                $r[$k] = $map($v);
             }
         }
 
