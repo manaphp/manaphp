@@ -9,11 +9,11 @@ interface ManagerInterface
      *
      * @param string   $event
      * @param callable $handler
-     * @param bool     $appended
+     * @param int      $priority
      *
      * @return void
      */
-    public function attachEvent($event, $handler, $appended = true);
+    public function attachEvent($event, $handler, $priority = 0);
 
     /**
      * @param string   $event

@@ -3,11 +3,12 @@
 namespace ManaPHP\Event;
 
 use ManaPHP\Component;
+use SplDoublyLinkedList;
 
 class Manager extends Component implements ManagerInterface
 {
     /**
-     * @var array[]
+     * @var SplDoublyLinkedList[][]
      */
     protected $_events = [];
 
@@ -26,17 +27,18 @@ class Manager extends Component implements ManagerInterface
      *
      * @param string   $event
      * @param callable $handler
-     * @param bool     $appended
+     * @param int      $priority
      *
      * @return void
      */
-    public function attachEvent($event, $handler, $appended = true)
+    public function attachEvent($event, $handler, $priority = 0)
     {
-        if ($appended) {
-            $this->_events[$event][] = $handler;
-        } else {
-            array_unshift($this->_events[$event], $handler);
+        if (($handlers = $this->_events[$event][$priority] ?? null) === null) {
+            $handlers = $this->_events[$event][$priority] = new SplDoublyLinkedList();
+            ksort($this->_events[$event]);
         }
+
+        $handlers->push($handler);
     }
 
     /**
@@ -48,10 +50,11 @@ class Manager extends Component implements ManagerInterface
     public function detachEvent($event, $handler)
     {
         if (str_contains($event, ':')) {
-            foreach ($this->_events[$event] ?? [] as $k => $v) {
-                if ($v === $handler) {
-                    unset($this->_events[$event][$k]);
-                    break;
+            foreach ($this->_events[$event] ?? [] as $handlers) {
+                foreach ($handlers as $kk => $vv) {
+                    if ($vv === $handler) {
+                        unset($handlers[$kk]);
+                    }
                 }
             }
         } else {
@@ -100,8 +103,10 @@ class Manager extends Component implements ManagerInterface
             $handler($eventArgs);
         }
 
-        foreach ($this->_events[$event] ?? [] as $handler) {
-            $handler($eventArgs);
+        foreach ($this->_events[$event] ?? [] as $handlers) {
+            foreach ($handlers as $handler) {
+                $handler($eventArgs);
+            }
         }
 
         return $eventArgs;

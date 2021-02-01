@@ -247,13 +247,13 @@ class Component implements Injectable, JsonSerializable
      *
      * @param string   $event
      * @param callable $handler
-     * @param bool     $appended
+     * @param int      $priority
      *
      * @return static
      */
-    public function attachEvent($event, $handler, $appended = true)
+    public function attachEvent($event, $handler, $priority = 0)
     {
-        $this->eventsManager->attachEvent($event, $handler, $appended);
+        $this->eventsManager->attachEvent($event, $handler, $priority);
 
         return $this;
     }
