@@ -139,8 +139,51 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
     }
 
     /**
-     * Magic method __get
-     *
+     * @return object
+     */
+    protected function _getContext()
+    {
+        global $__root_context;
+
+        if (!$object_id = $this->_object_id) {
+            $object_id = $this->_object_id = spl_object_id($this);
+        }
+
+        if (MANAPHP_COROUTINE_ENABLED) {
+            if ($context = Coroutine::getContext()) {
+                if (!$object = $context[$object_id] ?? null) {
+                    if (($parent_cid = Coroutine::getPcid()) === -1) {
+                        return $context[$object_id] = $this->_createContext();
+                    }
+
+                    $parent_context = Coroutine::getContext($parent_cid);
+                    if ($object = $parent_context[$object_id] ?? null) {
+                        if ($object instanceof Inseparable) {
+                            return $context[$object_id] = $this->_createContext();
+                        } else {
+                            return $context[$object_id] = $object;
+                        }
+                    } else {
+                        $object = $context[$object_id] = $this->_createContext();
+                        if (!$object instanceof Inseparable) {
+                            $parent_context[$object_id] = $object;
+                        }
+                    }
+                }
+                return $object;
+            } elseif (!$object = $__root_context[$object_id] ?? null) {
+                return $__root_context[$object_id] = $this->_createContext();
+            } else {
+                return $object;
+            }
+        } else {
+            $__root_context[] = $this;
+
+            return $this->_context = $this->_createContext();
+        }
+    }
+
+    /**
      * @param string $name
      *
      * @return mixed
@@ -148,44 +191,7 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
     public function __get($name)
     {
         if ($name === '_context') {
-            global $__root_context;
-
-            if (!$object_id = $this->_object_id) {
-                $object_id = $this->_object_id = spl_object_id($this);
-            }
-
-            if (MANAPHP_COROUTINE_ENABLED) {
-                if ($context = Coroutine::getContext()) {
-                    if (!$object = $context[$object_id] ?? null) {
-                        if (($parent_cid = Coroutine::getPcid()) === -1) {
-                            return $context[$object_id] = $this->_createContext();
-                        }
-
-                        $parent_context = Coroutine::getContext($parent_cid);
-                        if ($object = $parent_context[$object_id] ?? null) {
-                            if ($object instanceof Inseparable) {
-                                return $context[$object_id] = $this->_createContext();
-                            } else {
-                                return $context[$object_id] = $object;
-                            }
-                        } else {
-                            $object = $context[$object_id] = $this->_createContext();
-                            if (!$object instanceof Inseparable) {
-                                $parent_context[$object_id] = $object;
-                            }
-                        }
-                    }
-                    return $object;
-                } elseif (!$object = $__root_context[$object_id] ?? null) {
-                    return $__root_context[$object_id] = $this->_createContext();
-                } else {
-                    return $object;
-                }
-            } else {
-                $__root_context[] = $this;
-
-                return $this->_context = $this->_createContext();
-            }
+            return $this->_getContext();
         } else {
             return $this->{$name} = $this->getShared($name);
         }
