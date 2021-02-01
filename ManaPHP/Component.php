@@ -184,6 +184,30 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
     }
 
     /**
+     * @return bool
+     */
+    protected function _hasContext()
+    {
+        static $cached = [];
+
+        $class = static::class;
+        if (($context = $cached[$class] ?? null) === null) {
+            $parent = $class;
+            do {
+                $try = $parent . 'Context';
+                if (class_exists($try, false)) {
+                    $context = $try;
+                    break;
+                }
+            } while ($parent = get_parent_class($parent));
+
+            $cached[$class] = $context !== null;
+        }
+
+        return $cached[$class];
+    }
+
+    /**
      * @param string $name
      *
      * @return mixed
@@ -352,8 +376,8 @@ class Component implements ComponentInterface, Injectable, JsonSerializable
 
         if (isset($data['_context'])) {
             $data['_context'] = (array)$data['_context'];
-        } elseif ($this->_object_id !== null) {
-            $data['_context'] = (array)$this->__get('_context');
+        } elseif ($this->_hasContext()) {
+            $data['_context'] = (array)$this->_getContext();
         }
 
         return $data;
