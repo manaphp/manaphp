@@ -34,7 +34,7 @@ use Swoole\Coroutine;
  * @property-read \ManaPHP\Messaging\PubSubInterface       $pubSub
  * @property-read \object                                  $_context
  */
-class Component implements ComponentInterface, Injectable, JsonSerializable
+class Component implements Injectable, JsonSerializable
 {
     /**
      * @var int
