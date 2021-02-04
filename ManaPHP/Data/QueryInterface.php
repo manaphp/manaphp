@@ -372,11 +372,9 @@ interface QueryInterface
     public function setFetchType($multiple);
 
     /**
-     * @param bool $asArray
-     *
-     * @return \ManaPHP\Data\Model[]|\ManaPHP\Data\Model|array|null|\ManaPHP\Data\Query\Row
+     * @return \ManaPHP\Data\Model[]|\ManaPHP\Data\Model|array|null
      */
-    public function fetch($asArray = false);
+    public function fetch();
 
     /**
      * @return array|null

@@ -29,11 +29,10 @@ abstract class Relation
      * @param array                        $r
      * @param \ManaPHP\Data\QueryInterface $query
      * @param string                       $name
-     * @param bool                         $asArray
      *
      * @return array
      */
-    abstract public function earlyLoad($r, $query, $name, $asArray);
+    abstract public function earlyLoad($r, $query, $name);
 
     /**
      * @param \ManaPHP\Data\Model $instance

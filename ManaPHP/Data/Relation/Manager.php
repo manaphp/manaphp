@@ -234,13 +234,12 @@ class Manager extends Component implements ManagerInterface
      * @param \ManaPHP\Data\Model $model
      * @param array               $r
      * @param array               $withs
-     * @param bool                $asArray
      *
      * @return array
      *
      * @throws \ManaPHP\Exception\InvalidValueException
      */
-    public function earlyLoad($model, $r, $withs, $asArray)
+    public function earlyLoad($model, $r, $withs)
     {
         foreach ($withs as $k => $v) {
             $name = is_string($k) ? $k : $v;
@@ -266,7 +265,7 @@ class Manager extends Component implements ManagerInterface
                 $query = $model->$method($query);
             }
 
-            $r = $relation->earlyLoad($r, $query, $name, $asArray);
+            $r = $relation->earlyLoad($r, $query, $name);
         }
 
         return $r;

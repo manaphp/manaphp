@@ -5,9 +5,7 @@ namespace ManaPHP\Data;
 use ArrayIterator;
 use IteratorAggregate;
 use ManaPHP\Component;
-use ManaPHP\Data\Model\SerializeNormalizable;
 use ManaPHP\Data\Query\NotFoundException;
-use ManaPHP\Data\Query\Row;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Sharding;
@@ -566,36 +564,21 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     }
 
     /**
-     * @param bool $asArray
-     *
-     * @return \ManaPHP\Data\Model[]|\ManaPHP\Data\Model|null|array|\ManaPHP\Data\Query\Row
+     * @return \ManaPHP\Data\Model[]|\ManaPHP\Data\Model|null|array
      */
-    public function fetch($asArray = false)
+    public function fetch()
     {
-        $model = $this->_model;
+        $r = $this->execute();
 
-        if ($asArray) {
-            $r = $this->execute();
-
-            if ($r && $this->_with) {
-                $r = $this->relationsManager->earlyLoad($model, $r, $this->_with, $asArray);
-            }
-
-            if ($model instanceof SerializeNormalizable) {
-                foreach ($r as $k => $v) {
-                    $r[$k] = new Row($model, $v);
-                }
-            }
-        } else {
+        if (($model = $this->_model) !== null) {
             $modelName = get_class($model);
-            $r = $this->execute();
             foreach ($r as $k => $v) {
                 $r[$k] = new $modelName($v);
             }
+        }
 
-            if ($r && $this->_with) {
-                $r = $this->relationsManager->earlyLoad($model, $r, $this->_with, $asArray);
-            }
+        if ($r && $this->_with) {
+            $r = $this->relationsManager->earlyLoad($model, $r, $this->_with);
         }
 
         if (($map = $this->_map) !== null) {
@@ -654,7 +637,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function first()
     {
-        $r = $this->limit(1)->fetch(true);
+        $r = $this->limit(1)->fetch();
         return $r ? $r[0] : null;
     }
 
@@ -675,7 +658,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function all()
     {
-        return $this->fetch(true);
+        return $this->fetch();
     }
 
     /**

@@ -56,11 +56,10 @@ class HasManyToMany extends Relation
      * @param array                        $r
      * @param \ManaPHP\Data\QueryInterface $query
      * @param string                       $name
-     * @param bool                         $asArray
      *
      * @return array
      */
-    public function earlyLoad($r, $query, $name, $asArray)
+    public function earlyLoad($r, $query, $name)
     {
         /** @var \ManaPHP\Data\ModelInterface $pivotModel */
         $pivotModel = $this->_pivotModel;
@@ -71,7 +70,7 @@ class HasManyToMany extends Relation
         $pivotQuery = $pivotModel::select([$this->_thisPivot, $this->_thatPivot])->whereIn($this->_thisPivot, $ids);
         $pivot_data = $pivotQuery->execute();
         $ids = Arr::unique_column($pivot_data, $this->_thatPivot);
-        $data = $query->whereIn($this->_thatField, $ids)->indexBy($this->_thatField)->fetch($asArray);
+        $data = $query->whereIn($this->_thatField, $ids)->indexBy($this->_thatField)->fetch();
 
         $rd = [];
         foreach ($pivot_data as $dv) {

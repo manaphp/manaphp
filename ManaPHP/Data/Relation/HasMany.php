@@ -35,11 +35,10 @@ class HasMany extends Relation
      * @param array                        $r
      * @param \ManaPHP\Data\QueryInterface $query
      * @param string                       $name
-     * @param bool                         $asArray
      *
      * @return array
      */
-    public function earlyLoad($r, $query, $name, $asArray)
+    public function earlyLoad($r, $query, $name)
     {
         $thisField = $this->_thisField;
         $thatField = $this->_thatField;
@@ -50,7 +49,7 @@ class HasMany extends Relation
         }
 
         $ids = array_column($r, $thisField);
-        $data = $query->whereIn($thatField, $ids)->fetch($asArray);
+        $data = $query->whereIn($thatField, $ids)->fetch();
 
         if (isset($data[0]) && !isset($data[0][$thatField])) {
             throw new MisuseException(['missing `%s` field in `%s` with', $thatField, $name]);

@@ -874,7 +874,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
         /** @var \ManaPHP\Data\Relation\ManagerInterface $relationsManager */
         $relationsManager = $this->getShared('relationsManager');
 
-        $relationsManager->earlyLoad($this, [$this], $withs, false);
+        $relationsManager->earlyLoad($this, [$this], $withs);
         return $this;
     }
 

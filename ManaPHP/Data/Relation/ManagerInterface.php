@@ -24,11 +24,10 @@ interface ManagerInterface
      * @param \ManaPHP\Data\Model $model
      * @param array               $r
      * @param array               $withs
-     * @param bool                $asArray
      *
      * @return array
      */
-    public function earlyLoad($model, $r, $withs, $asArray);
+    public function earlyLoad($model, $r, $withs);
 
     /**
      * @param \ManaPHP\Data\Model $instance

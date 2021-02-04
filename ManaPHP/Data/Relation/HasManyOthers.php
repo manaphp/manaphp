@@ -42,11 +42,10 @@ class HasManyOthers extends Relation
      * @param array                        $r
      * @param \ManaPHP\Data\QueryInterface $query
      * @param string                       $name
-     * @param bool                         $asArray
      *
      * @return array
      */
-    public function earlyLoad($r, $query, $name, $asArray)
+    public function earlyLoad($r, $query, $name)
     {
         /** @var \ManaPHP\Data\Model $thisModel */
         $thisModel = $this->_thisModel;
@@ -57,7 +56,7 @@ class HasManyOthers extends Relation
         $pivotQuery = $thisModel::select([$this->_thisFilter, $this->_thisValue])->whereIn($this->_thisFilter, $ids);
         $pivot_data = $pivotQuery->execute();
         $ids = Arr::unique_column($pivot_data, $this->_thisValue);
-        $data = $query->whereIn($this->_thatField, $ids)->indexBy($this->_thatField)->fetch($asArray);
+        $data = $query->whereIn($this->_thatField, $ids)->indexBy($this->_thatField)->fetch();
 
         $rd = [];
         foreach ($pivot_data as $dv) {

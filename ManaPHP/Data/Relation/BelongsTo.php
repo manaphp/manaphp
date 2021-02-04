@@ -34,17 +34,16 @@ class BelongsTo extends Relation
      * @param array                        $r
      * @param \ManaPHP\Data\QueryInterface $query
      * @param string                       $name
-     * @param bool                         $asArray
      *
      * @return array
      */
-    public function earlyLoad($r, $query, $name, $asArray)
+    public function earlyLoad($r, $query, $name)
     {
         $thisField = $this->_thisField;
         $thatField = $this->_thatField;
 
         $ids = array_values(array_unique(array_column($r, $thisField)));
-        $data = $query->whereIn($thatField, $ids)->indexBy($thatField)->fetch($asArray);
+        $data = $query->whereIn($thatField, $ids)->indexBy($thatField)->fetch();
 
         foreach ($r as $ri => $rv) {
             $key = $rv[$thisField];
