@@ -568,29 +568,29 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function fetch()
     {
-        $r = $this->execute();
+        $rows = $this->execute();
 
         if (($model = $this->_model) !== null) {
             $modelName = get_class($model);
-            foreach ($r as $k => $v) {
-                $r[$k] = new $modelName($v);
+            foreach ($rows as $k => $v) {
+                $rows[$k] = new $modelName($v);
             }
         }
 
-        if ($r && $this->_with) {
-            $r = $this->relationsManager->earlyLoad($model, $r, $this->_with);
+        if ($rows && $this->_with) {
+            $rows = $this->relationsManager->earlyLoad($model, $rows, $this->_with);
         }
 
         if (($map = $this->_map) !== null) {
-            foreach ($r as $k => $v) {
-                $r[$k] = $map($v);
+            foreach ($rows as $k => $v) {
+                $rows[$k] = $map($v);
             }
         }
 
         if ($this->_multiple === false) {
-            return $r[0] ?? null;
+            return $rows[0] ?? null;
         } else {
-            return $r;
+            return $rows;
         }
     }
 
