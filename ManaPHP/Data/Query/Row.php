@@ -4,9 +4,8 @@ namespace ManaPHP\Data\Query;
 
 use ArrayAccess;
 use JsonSerializable;
-use Serializable;
 
-class Row implements ArrayAccess, Serializable, JsonSerializable
+class Row implements ArrayAccess, JsonSerializable
 {
     /**
      * @var \ManaPHP\Data\Model\SerializeNormalizable
@@ -54,19 +53,6 @@ class Row implements ArrayAccess, Serializable, JsonSerializable
     public function offsetUnset($offset)
     {
         unset($this->_row[$offset]);
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize()
-    {
-        return serialize($this->_row);
-    }
-
-    public function unserialize($serialized)
-    {
-        $this->_row = unserialize($serialized, false);
     }
 
     public function jsonSerialize()

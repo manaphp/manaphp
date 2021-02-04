@@ -26,9 +26,8 @@ use ManaPHP\Exception\ParameterOrderException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ReflectionClass;
-use Serializable;
 
-abstract class Model extends Table implements ModelInterface, Serializable, ArrayAccess, JsonSerializable, Unaspectable
+abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonSerializable, Unaspectable
 {
     /**
      * @var array
@@ -1056,29 +1055,6 @@ abstract class Model extends Table implements ModelInterface, Serializable, Arra
         $this->_snapshot = array_merge($this->_snapshot, $data);
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize()
-    {
-        return serialize($this->toArray());
-    }
-
-    /**
-     * @param string $serialized
-     *
-     * @return void
-     */
-    public function unserialize($serialized)
-    {
-        $unserialized = unserialize($serialized, ['allowed_classes' => false]);
-        $this->_snapshot = $unserialized;
-
-        foreach ((array)$unserialized as $field => $value) {
-            $this->$field = $value;
-        }
     }
 
     /**
