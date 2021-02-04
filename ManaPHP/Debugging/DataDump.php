@@ -5,7 +5,6 @@ namespace ManaPHP\Debugging;
 use JsonSerializable;
 use ManaPHP\Component;
 use ManaPHP\Coroutine;
-use Serializable;
 use Throwable;
 use  ArrayObject;
 
@@ -80,7 +79,7 @@ class DataDump extends Component implements DataDumpInterface
     }
 
     /**
-     * @param \Throwable|array|\Serializable|\JsonSerializable $message
+     * @param \Throwable|array|\JsonSerializable $message
      *
      * @return string
      */
@@ -90,8 +89,6 @@ class DataDump extends Component implements DataDumpInterface
             return $this->exceptionToString($message);
         } elseif ($message instanceof JsonSerializable || $message instanceof ArrayObject) {
             return json_stringify($message, JSON_PARTIAL_OUTPUT_ON_ERROR);
-        } elseif ($message instanceof Serializable) {
-            return serialize($message);
         } elseif (!is_array($message)) {
             return (string)$message;
         }
@@ -140,8 +137,6 @@ class DataDump extends Component implements DataDumpInterface
                 $v = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
             } elseif ($v instanceof JsonSerializable || $v instanceof ArrayObject) {
                 $v = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
-            } elseif ($v instanceof Serializable) {
-                $v = serialize($v);
             } elseif (is_string($v)) {
                 null;
             } elseif ($v === null || is_scalar($v)) {

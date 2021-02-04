@@ -8,7 +8,6 @@ use ManaPHP\Coroutine;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Logging\Logger\Log;
 use ManaPHP\Logging\Logger\LogCategorizable;
-use Serializable;
 use Throwable;
 use \ArrayObject;
 
@@ -281,7 +280,7 @@ abstract class Logger extends Component implements LoggerInterface
     }
 
     /**
-     * @param \Throwable|array|\Serializable|\JsonSerializable $message
+     * @param \Throwable|array|\JsonSerializable $message
      *
      * @return string
      */
@@ -291,8 +290,6 @@ abstract class Logger extends Component implements LoggerInterface
             return $this->exceptionToString($message);
         } elseif ($message instanceof JsonSerializable || $message instanceof ArrayObject) {
             return json_stringify($message, JSON_PARTIAL_OUTPUT_ON_ERROR);
-        } elseif ($message instanceof Serializable) {
-            return serialize($message);
         } elseif (!is_array($message)) {
             return (string)$message;
         }
@@ -341,8 +338,6 @@ abstract class Logger extends Component implements LoggerInterface
                 $v = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
             } elseif ($v instanceof JsonSerializable) {
                 $v = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
-            } elseif ($v instanceof Serializable) {
-                $v = serialize($v);
             } elseif (is_string($v)) {
                 null;
             } elseif ($v === null || is_scalar($v)) {
