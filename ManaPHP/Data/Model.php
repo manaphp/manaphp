@@ -888,7 +888,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
         $data = [];
 
         foreach (get_object_vars($this) as $field => $value) {
-            if ($field[0] === '_') {
+            if ($value === null || $field[0] === '_') {
                 continue;
             }
 
@@ -904,9 +904,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
                 }
             }
 
-            if ($value !== null) {
-                $data[$field] = $value;
-            }
+            $data[$field] = $value;
         }
 
         return $data;
