@@ -621,7 +621,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     {
         $this->page($size, $page);
 
-        $items = $this->fetch(true);
+        $items = $this->fetch();
 
         if ($this->_limit === null) {
             $count = count($items);
