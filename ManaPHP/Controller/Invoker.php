@@ -23,19 +23,19 @@ class Invoker extends Component implements InvokerInterface
     }
 
     /**
-     * @param object $instance
-     * @param string $method
+     * @param \ManaPHP\Controller $controller
+     * @param string              $method
      *
      * @return array
      */
-    public function buildArgs($instance, $method)
+    public function buildArgs($controller, $method)
     {
         $args = [];
         $missing = [];
 
         $container = $this->_container;
 
-        $parameters = (new ReflectionMethod($instance, $method))->getParameters();
+        $parameters = (new ReflectionMethod($controller, $method))->getParameters();
         foreach ($parameters as $parameter) {
             $name = $parameter->getName();
             $value = null;
@@ -102,15 +102,15 @@ class Invoker extends Component implements InvokerInterface
     }
 
     /**
-     * @param object $instance
-     * @param string $method
+     * @param \ManaPHP\Controller $controller
+     * @param string              $method
      *
      * @return mixed
      */
-    public function invoke($instance, $method)
+    public function invoke($controller, $method)
     {
-        $args = $this->buildArgs($instance, $method);
+        $args = $this->buildArgs($controller, $method);
 
-        return $instance->$method(...$args);
+        return $controller->$method(...$args);
     }
 }

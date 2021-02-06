@@ -5,10 +5,10 @@ namespace ManaPHP\Controller;
 interface InvokerInterface
 {
     /**
-     * @param object $instance
-     * @param string $method
+     * @param \ManaPHP\Controller $controller
+     * @param string              $method
      *
      * @return mixed
      */
-    public function invoke($instance, $method);
+    public function invoke($controller, $method);
 }
