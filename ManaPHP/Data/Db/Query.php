@@ -9,6 +9,9 @@ use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
 use PDO;
 
+/**
+ * @property-read \ManaPHP\Logging\LoggerInterface $logger
+ */
 class Query extends \ManaPHP\Data\Query
 {
     /**

@@ -4,6 +4,10 @@ namespace ManaPHP\Http\Session\Adapter;
 
 use ManaPHP\Http\Session;
 
+/**
+ * @property-read \ManaPHP\Configuration\Configure $configure
+ * @property-read \Redis                           $redisCache
+ */
 class Redis extends Session
 {
     /**

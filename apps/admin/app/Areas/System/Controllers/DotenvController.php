@@ -5,6 +5,9 @@ namespace App\Areas\System\Controllers;
 use App\Areas\System\Models\DotenvLog;
 use App\Controllers\Controller;
 
+/**
+ * @property-read \Redis $redisDb
+ */
 class DotenvController extends Controller
 {
     const REDIS_KEY = '.env';

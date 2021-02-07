@@ -4,6 +4,9 @@ namespace ManaPHP\Ws\Pushing\Client;
 
 use ManaPHP\Event\EventArgs;
 
+/**
+ * @property-read \ManaPHP\Logging\LoggerInterface $logger
+ */
 class Tracer extends \ManaPHP\Event\Tracer
 {
     public function __construct($options = [])

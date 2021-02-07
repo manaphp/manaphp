@@ -14,6 +14,9 @@ use ManaPHP\Logging\Logger;
 //$template myTemplate,"/var/log/test/%PROGRAMNAME%.log"
 //user.*  ?myTemplate
 
+/**
+ * @property-read \ManaPHP\Configuration\Configure $configure
+ */
 class Syslog extends Logger
 {
     /**

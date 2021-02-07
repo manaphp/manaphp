@@ -4,6 +4,10 @@ namespace ManaPHP\Logging\Logger\Adapter;
 
 use ManaPHP\Logging\Logger;
 
+/**
+ * @property-read \ManaPHP\Configuration\Configure $configure
+ * @property-read \Redis                           $redisBroker
+ */
 class Redis extends Logger
 {
     /**

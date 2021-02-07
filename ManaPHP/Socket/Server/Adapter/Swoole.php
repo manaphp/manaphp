@@ -12,6 +12,11 @@ use Swoole\Runtime;
 use Swoole\Server;
 use Throwable;
 
+/**
+ * @property-read \ManaPHP\Configuration\Configure $configure
+ * @property-read \ManaPHP\AliasInterface          $alias
+ * @property-read \ManaPHP\Logging\LoggerInterface $logger
+ */
 class Swoole extends Component implements ServerInterface, Unaspectable
 {
     /**

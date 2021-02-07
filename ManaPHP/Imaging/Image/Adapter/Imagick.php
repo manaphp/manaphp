@@ -12,6 +12,9 @@ use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Imaging\Image;
 
+/**
+ * @property-read \ManaPHP\AliasInterface $alias
+ */
 class Imagick extends Image
 {
     /**

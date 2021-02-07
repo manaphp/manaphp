@@ -5,9 +5,9 @@ namespace ManaPHP\Http;
 use ManaPHP\Component;
 
 /**
+ * @property-read \ManaPHP\AliasInterface        $alias
  * @property-read \ManaPHP\Http\RequestInterface $request
  * @property-read \ManaPHP\Http\RouterInterface  $router
- *
  */
 class Url extends Component implements UrlInterface
 {

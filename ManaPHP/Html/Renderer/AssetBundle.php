@@ -6,6 +6,10 @@ use ManaPHP\Component;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Helper\LocalFS;
 
+/**
+ * @property-read \ManaPHP\Configuration\Configure $configure
+ * @property-read \ManaPHP\AliasInterface          $alias
+ */
 class AssetBundle extends Component implements AssetBundleInterface
 {
     /**

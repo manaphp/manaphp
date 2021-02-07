@@ -4,6 +4,9 @@ namespace ManaPHP\Ws\Chatting;
 
 use ManaPHP\Component;
 
+/**
+ * @property-read \ManaPHP\Messaging\PubSubInterface $pubSub
+ */
 class Client extends Component implements ClientInterface
 {
     /**

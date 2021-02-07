@@ -4,6 +4,10 @@ namespace ManaPHP\Caching\Cache\Adapter;
 
 use ManaPHP\Caching\Cache;
 
+/**
+ * @property-read \ManaPHP\Configuration\Configure $configure
+ * @property-read \Redis                           $redisCache
+ */
 class Redis extends Cache
 {
     /**

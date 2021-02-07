@@ -9,6 +9,9 @@ use ManaPHP\Http\Client\EngineInterface;
 use ManaPHP\Http\Client\Response;
 use ManaPHP\Http\Client\TimeoutException;
 
+/**
+ * @property-read \ManaPHP\AliasInterface $alias
+ */
 class Stream extends Component implements EngineInterface
 {
     /**

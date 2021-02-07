@@ -19,6 +19,8 @@ class SmtpContext implements Inseparable
 }
 
 /**
+ * @property-read \ManaPHP\AliasInterface                     $alias
+ * @property-read \ManaPHP\Logging\LoggerInterface            $logger
  * @property-read \ManaPHP\Mailing\Mailer\Adapter\SmtpContext $context
  */
 class Smtp extends Mailer

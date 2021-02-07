@@ -5,6 +5,9 @@ namespace ManaPHP\Cli\Commands;
 use ManaPHP\Cli\Command;
 use ManaPHP\Helper\LocalFS;
 
+/**
+ * @property-read \ManaPHP\AliasInterface $alias
+ */
 class FrameworkCommand extends Command
 {
     /**

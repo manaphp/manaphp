@@ -7,6 +7,9 @@ use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Html\Dom\Document\Exception as DocumentException;
 
+/**
+ * @property-read \ManaPHP\Http\ClientInterface $httpClient
+ */
 class Document extends Component
 {
     /**

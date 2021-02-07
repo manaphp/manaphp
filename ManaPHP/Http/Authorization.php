@@ -19,12 +19,13 @@ class AuthorizationContext
 }
 
 /**
- * @property-read \ManaPHP\Http\DispatcherInterface  $dispatcher
- * @property-read \ManaPHP\Http\RouterInterface      $router
- * @property-read \ManaPHP\Http\RequestInterface     $request
- * @property-read \ManaPHP\Http\ResponseInterface    $response
- * @property-read \ManaPHP\Http\Acl\BuilderInterface $aclBuilder
- * @property-read \ManaPHP\Http\AuthorizationContext $context
+ * @property-read \ManaPHP\Identifying\IdentityInterface $identity
+ * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher
+ * @property-read \ManaPHP\Http\RouterInterface          $router
+ * @property-read \ManaPHP\Http\RequestInterface         $request
+ * @property-read \ManaPHP\Http\ResponseInterface        $response
+ * @property-read \ManaPHP\Http\Acl\BuilderInterface     $aclBuilder
+ * @property-read \ManaPHP\Http\AuthorizationContext     $context
  */
 class Authorization extends Component implements AuthorizationInterface
 {

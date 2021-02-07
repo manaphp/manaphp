@@ -4,6 +4,10 @@ namespace ManaPHP\Data\Redis;
 
 use ManaPHP\Event\EventArgs;
 
+/**
+ * @property-read \ManaPHP\Configuration\Configure $configure
+ * @property-read \ManaPHP\Logging\LoggerInterface $logger
+ */
 class Tracer extends \ManaPHP\Event\Tracer
 {
     public function __construct($options = [])

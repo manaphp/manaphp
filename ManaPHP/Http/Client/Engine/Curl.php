@@ -9,6 +9,9 @@ use ManaPHP\Http\Client\ConnectionException;
 use ManaPHP\Http\Client\EngineInterface;
 use ManaPHP\Http\Client\Response;
 
+/**
+ * @property-read \ManaPHP\AliasInterface $alias
+ */
 class Curl extends Component implements EngineInterface
 {
     /**

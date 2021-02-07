@@ -5,6 +5,9 @@ namespace ManaPHP\Ws\Pushing;
 use ManaPHP\Component;
 use ManaPHP\Exception\MissingFieldException;
 
+/**
+ * @property-read \ManaPHP\Messaging\PubSubInterface $pubSub
+ */
 class Client extends Component implements ClientInterface
 {
     /**

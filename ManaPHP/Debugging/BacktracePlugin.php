@@ -4,6 +4,9 @@ namespace ManaPHP\Debugging;
 
 use ManaPHP\Plugin;
 
+/**
+ * @property-read \ManaPHP\AliasInterface $alias
+ */
 class BacktracePlugin extends Plugin
 {
     /**

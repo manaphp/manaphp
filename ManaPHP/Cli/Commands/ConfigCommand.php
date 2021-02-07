@@ -5,6 +5,9 @@ namespace ManaPHP\Cli\Commands;
 use ManaPHP\Cli\Command;
 use ManaPHP\Helper\Arr;
 
+/**
+ * @property-read \ManaPHP\Configuration\Configure $configure
+ */
 class ConfigCommand extends Command
 {
     /**

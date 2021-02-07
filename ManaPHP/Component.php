@@ -9,30 +9,8 @@ use ManaPHP\Event\EventArgs;
 use Swoole\Coroutine;
 
 /**
- * @property-read \ManaPHP\AliasInterface                  $alias
- * @property-read \ManaPHP\Event\ManagerInterface          $eventsManager
- * @property-read \ManaPHP\Logging\LoggerInterface         $logger
- * @property-read \ManaPHP\Configuration\Configure         $configure
- * @property-read \ManaPHP\Configuration\SettingsInterface $settings
- * @property-read \ManaPHP\Security\CryptInterface         $crypt
- * @property-read \ManaPHP\Identifying\IdentityInterface   $identity
- * @property-read \ManaPHP\Caching\CacheInterface          $cache
- * @property-read \ManaPHP\Http\ClientInterface            $httpClient
- * @property-read \ManaPHP\Http\ClientInterface            $restClient
- * @property-read \ManaPHP\Data\DbInterface                $db
- * @property-read \Redis|\ManaPHP\Data\RedisInterface      $redisCache
- * @property-read \Redis|\ManaPHP\Data\RedisInterface      $redisDb
- * @property-read \Redis|\ManaPHP\Data\RedisInterface      $redisBroker
- * @property-read \ManaPHP\Data\MongodbInterface           $mongodb
- * @property-read \ManaPHP\Messaging\AmqpInterface         $rabbitmq
- * @property-read \Elasticsearch\Client                    $elasticsearch
- * @property-read \ManaPHP\Mailing\MailerInterface         $mailer
- * @property-read \ManaPHP\Bos\ClientInterface             $bosClient
- * @property-read \ManaPHP\Ws\Pushing\ClientInterface      $wspClient
- * @property-read \ManaPHP\Coroutine\ManagerInterface      $coroutineManager
- * @property-read \ManaPHP\Ws\ClientInterface              $wsClient
- * @property-read \ManaPHP\Messaging\PubSubInterface       $pubSub
- * @property-read \object                                  $context
+ * @property-read \ManaPHP\Event\ManagerInterface $eventsManager
+ * @property-read \object                         $context
  */
 class Component implements Injectable, JsonSerializable
 {

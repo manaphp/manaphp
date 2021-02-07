@@ -8,6 +8,9 @@ use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Imaging\Image;
 
+/**
+ * @property-read \ManaPHP\AliasInterface $alias
+ */
 class Gd extends Image
 {
     /**

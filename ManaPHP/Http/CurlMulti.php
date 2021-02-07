@@ -6,6 +6,10 @@ use Countable;
 use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
 
+/**
+ * @property-read \ManaPHP\AliasInterface          $alias
+ * @property-read \ManaPHP\Logging\LoggerInterface $logger
+ */
 class CurlMulti extends Component implements CurlMultiInterface, Countable
 {
     /**

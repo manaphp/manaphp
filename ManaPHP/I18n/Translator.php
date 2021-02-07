@@ -13,8 +13,9 @@ class TranslatorContext
 }
 
 /**
- * @property-read \ManaPHP\Http\RequestInterface  $request
- * @property-read \ManaPHP\I18n\TranslatorContext $context
+ * @property-read \ManaPHP\Configuration\Configure $configure
+ * @property-read \ManaPHP\Http\RequestInterface   $request
+ * @property-read \ManaPHP\I18n\TranslatorContext  $context
  */
 class Translator extends Component implements TranslatorInterface
 {

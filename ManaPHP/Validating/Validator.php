@@ -21,8 +21,9 @@ class ValidatorContext
 }
 
 /**
- * @property-read \ManaPHP\Html\PurifierInterface      $htmlPurifier
+ * @property-read \ManaPHP\Configuration\Configure     $configure
  * @property-read \ManaPHP\Http\RequestInterface       $request
+ * @property-read \ManaPHP\Html\PurifierInterface      $htmlPurifier
  * @property-read \ManaPHP\Validating\ValidatorContext $context
  */
 class Validator extends Component implements ValidatorInterface

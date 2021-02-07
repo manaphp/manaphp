@@ -5,6 +5,9 @@ namespace ManaPHP\Http\Acl;
 use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
 
+/**
+ * @property-read \ManaPHP\AliasInterface $alias
+ */
 class Builder extends Component implements BuilderInterface
 {
     /**

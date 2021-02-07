@@ -30,6 +30,7 @@ class RendererContext implements Inseparable
 }
 
 /**
+ * @property-read \ManaPHP\AliasInterface       $alias
  * @property-read \ManaPHP\LoaderInterface      $loader
  * @property-read \ManaPHP\Html\RendererContext $context
  */

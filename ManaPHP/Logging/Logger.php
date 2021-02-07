@@ -32,6 +32,7 @@ class LoggerContext
 }
 
 /**
+ * @property-read \ManaPHP\AliasInterface        $alias
  * @property-read \ManaPHP\Http\RequestInterface $request
  * @property-read \ManaPHP\Logging\LoggerContext $context
  */

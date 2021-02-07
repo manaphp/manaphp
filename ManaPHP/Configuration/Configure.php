@@ -7,6 +7,9 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
 
+/**
+ * @property-read \ManaPHP\AliasInterface $alias
+ */
 class Configure extends Component implements ConfigureInterface
 {
     /**

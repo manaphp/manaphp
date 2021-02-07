@@ -2,6 +2,10 @@
 
 namespace ManaPHP\Debugging\DebuggerPlugin;
 
+/**
+ * @property-read \ManaPHP\Configuration\Configure $configure
+ * @property-read \Redis                           $redisCache
+ */
 class Command extends \ManaPHP\Cli\Command
 {
     /**

@@ -10,7 +10,8 @@ use Swoole\Runtime;
 use Throwable;
 
 /**
- * @property-read \ManaPHP\Cli\HandlerInterface $cliHandler
+ * @property-read \ManaPHP\Logging\LoggerInterface $logger
+ * @property-read \ManaPHP\Cli\HandlerInterface    $cliHandler
  */
 class Application extends \ManaPHP\Application implements LogCategorizable
 {

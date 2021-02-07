@@ -5,6 +5,9 @@ namespace App\Areas\Bos\Controllers;
 use App\Controllers\Controller;
 use Throwable;
 
+/**
+ * @property-read \ManaPHP\Bos\ClientInterface $bosClient
+ */
 class ObjectController extends Controller
 {
     public function bucketsAction()

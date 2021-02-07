@@ -5,6 +5,9 @@ namespace ManaPHP\Http;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Plugin;
 
+/**
+ * @property-read \ManaPHP\Configuration\Configure $configure
+ */
 class CorsPlugin extends Plugin
 {
     /**

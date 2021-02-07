@@ -6,6 +6,9 @@ use ManaPHP\Component;
 use ManaPHP\Configuration\SettingsInterface;
 use ManaPHP\Exception\InvalidArgumentException;
 
+/**
+ * @property-read \Redis $redisDb
+ */
 class Redis extends Component implements SettingsInterface
 {
     /**

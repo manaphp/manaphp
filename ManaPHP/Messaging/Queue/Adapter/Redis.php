@@ -5,6 +5,9 @@ namespace ManaPHP\Messaging\Queue\Adapter;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Messaging\Queue;
 
+/**
+ * @property-read \Redis $redisBroker
+ */
 class Redis extends Queue
 {
     /**

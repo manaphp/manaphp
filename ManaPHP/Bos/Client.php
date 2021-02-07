@@ -7,6 +7,10 @@ use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Arr;
 
+/**
+ * @property-read \ManaPHP\AliasInterface       $alias
+ * @property-read \ManaPHP\Http\ClientInterface $httpClient
+ */
 class Client extends Component implements ClientInterface
 {
     /**

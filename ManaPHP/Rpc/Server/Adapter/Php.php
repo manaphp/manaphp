@@ -5,6 +5,7 @@ namespace ManaPHP\Rpc\Server\Adapter;
 use ManaPHP\Helper\Ip;
 
 /**
+ * @property-read \ManaPHP\AliasInterface       $alias
  * @property-read \ManaPHP\Http\RouterInterface $router
  */
 class Php extends Fpm

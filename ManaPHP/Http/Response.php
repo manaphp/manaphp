@@ -46,10 +46,11 @@ class ResponseContext
 }
 
 /**
- * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\Http\UrlInterface     $url
- * @property-read \ManaPHP\Http\RouterInterface  $router
- * @property-read \ManaPHP\Http\ResponseContext  $context
+ * @property-read \ManaPHP\Configuration\Configure $configure
+ * @property-read \ManaPHP\Http\RequestInterface   $request
+ * @property-read \ManaPHP\Http\UrlInterface       $url
+ * @property-read \ManaPHP\Http\RouterInterface    $router
+ * @property-read \ManaPHP\Http\ResponseContext    $context
  */
 class Response extends Component implements ResponseInterface
 {

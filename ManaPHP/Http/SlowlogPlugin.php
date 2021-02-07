@@ -5,6 +5,9 @@ namespace ManaPHP\Http;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Plugin;
 
+/**
+ * @property-read \ManaPHP\Configuration\Configure $configure
+ */
 class SlowlogPlugin extends Plugin
 {
     /**

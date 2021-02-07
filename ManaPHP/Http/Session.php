@@ -43,9 +43,11 @@ class SessionContext
 }
 
 /**
- * @property-read \ManaPHP\Http\CookiesInterface $cookies
- * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\Http\SessionContext   $context
+ * @property-read \ManaPHP\AliasInterface          $alias
+ * @property-read \ManaPHP\Logging\LoggerInterface $logger
+ * @property-read \ManaPHP\Http\CookiesInterface   $cookies
+ * @property-read \ManaPHP\Http\RequestInterface   $request
+ * @property-read \ManaPHP\Http\SessionContext     $context
  */
 abstract class Session extends Component implements SessionInterface, ArrayAccess
 {

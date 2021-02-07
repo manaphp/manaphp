@@ -6,6 +6,9 @@ use ManaPHP\Data\Db;
 use ManaPHP\Data\Db\Connection;
 use PDO;
 
+/**
+ * @property-read \ManaPHP\AliasInterface $alias
+ */
 class Sqlite extends Connection
 {
     /**

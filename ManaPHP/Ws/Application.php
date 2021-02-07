@@ -9,11 +9,12 @@ use ManaPHP\Ws\Server\HandlerInterface;
 use Throwable;
 
 /**
- * @property-read \ManaPHP\Ws\ServerInterface     $wsServer
- * @property-read \ManaPHP\Http\RouterInterface   $router
- * @property-read \ManaPHP\Http\RequestInterface  $request
- * @property-read \ManaPHP\Http\ResponseInterface $response
- * @property-read \ManaPHP\Ws\DispatcherInterface $dispatcher
+ * @property-read \ManaPHP\Ws\ServerInterface            $wsServer
+ * @property-read \ManaPHP\Identifying\IdentityInterface $identity
+ * @property-read \ManaPHP\Http\RouterInterface          $router
+ * @property-read \ManaPHP\Http\RequestInterface         $request
+ * @property-read \ManaPHP\Http\ResponseInterface        $response
+ * @property-read \ManaPHP\Ws\DispatcherInterface        $dispatcher
  */
 class Application extends \ManaPHP\Application implements HandlerInterface
 {

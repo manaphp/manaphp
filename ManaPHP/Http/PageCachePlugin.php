@@ -20,6 +20,8 @@ class PageCachePluginContext
 }
 
 /**
+ * @property-read \ManaPHP\Configuration\Configure     $configure
+ * @property-read \Redis|\ManaPHP\Data\RedisInterface  $redisCache
  * @property-read \ManaPHP\Http\PageCachePluginContext $context
  */
 class PageCachePlugin extends Plugin

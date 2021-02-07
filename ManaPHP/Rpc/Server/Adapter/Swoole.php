@@ -26,6 +26,8 @@ class SwooleContext
 }
 
 /**
+ * @property-read \ManaPHP\Configuration\Configure          $configure
+ * @property-read \ManaPHP\Logging\LoggerInterface          $logger
  * @property-read \ManaPHP\Rpc\Server\Adapter\SwooleContext $context
  */
 class Swoole extends \ManaPHP\Rpc\Server

@@ -5,6 +5,9 @@ namespace ManaPHP\Http\Session\Adapter;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Http\Session;
 
+/**
+ * @property-read \ManaPHP\AliasInterface $alias
+ */
 class File extends Session
 {
     /**

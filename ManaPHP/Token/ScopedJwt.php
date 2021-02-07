@@ -6,7 +6,8 @@ use ManaPHP\Component;
 use ManaPHP\Exception\MisuseException;
 
 /**
- * @property-read \ManaPHP\Token\JwtInterface $jwt
+ * @property-read \ManaPHP\Token\JwtInterface      $jwt
+ * @property-read \ManaPHP\Security\CryptInterface $crypt
  */
 class ScopedJwt extends Component implements ScopedJwtInterface
 {

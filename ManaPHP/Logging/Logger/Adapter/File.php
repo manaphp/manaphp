@@ -4,6 +4,10 @@ namespace ManaPHP\Logging\Logger\Adapter;
 
 use ManaPHP\Logging\Logger;
 
+/**
+ * @property-read \ManaPHP\Configuration\Configure $configure
+ * @property-read \ManaPHP\AliasInterface          $alias
+ */
 class File extends Logger
 {
     /**

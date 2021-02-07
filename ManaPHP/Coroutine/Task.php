@@ -7,6 +7,9 @@ use Swoole\Coroutine;
 use Swoole\Coroutine\Channel;
 use Throwable;
 
+/**
+ * @property-read \ManaPHP\Logging\LoggerInterface $logger
+ */
 class Task extends Component implements TaskInterface
 {
     /**

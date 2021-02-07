@@ -15,7 +15,9 @@ use ManaPHP\Http\Session;
  * PRIMARY KEY (`session_id`)
  * ) ENGINE=InnoDB DEFAULT CHARSET=utf8
  *
- * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Http\RequestInterface         $request
+ * @property-read \ManaPHP\Data\DbInterface              $db
+ * @property-read \ManaPHP\Identifying\IdentityInterface $identity
  */
 class Db extends Session
 {

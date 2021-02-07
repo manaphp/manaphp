@@ -10,6 +10,9 @@ use App\Models\AdminLoginLog;
 use ManaPHP\Helper\Ip;
 use ManaPHP\Helper\Str;
 
+/**
+ * @property-read \ManaPHP\Configuration\Configure $configure
+ */
 class SessionController extends Controller
 {
     public function getAcl()

@@ -6,6 +6,9 @@ use ManaPHP\Cli\Command;
 use DateTime;
 use DateTimeZone;
 
+/**
+ * @property-read \ManaPHP\Http\ClientInterface $httpClient
+ */
 class DateCommand extends Command
 {
     /**

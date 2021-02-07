@@ -6,6 +6,11 @@ use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\TooManyRequestsException;
 use ManaPHP\Plugin;
 
+/**
+ * @property-read \ManaPHP\Configuration\Configure       $configure
+ * @property-read \ManaPHP\Identifying\IdentityInterface $identity
+ * @property-read \Redis|\ManaPHP\Data\RedisInterface    $redisCache
+ */
 class RateLimitPlugin extends Plugin
 {
     /**

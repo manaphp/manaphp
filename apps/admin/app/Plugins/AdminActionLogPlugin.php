@@ -11,10 +11,7 @@ class AdminActionLogPluginContext
 }
 
 /**
- * Class AdminActionLogPlugin
- *
- * @package App\Plugins
- *
+ * @property-read \ManaPHP\Identifying\IdentityInterface   $identity
  * @property-read \App\Plugins\AdminActionLogPluginContext $context
  */
 class AdminActionLogPlugin extends Plugin

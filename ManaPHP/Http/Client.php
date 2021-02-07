@@ -21,6 +21,7 @@ use ManaPHP\Http\Client\TooManyRequestsException;
 use ManaPHP\Http\Client\UnauthorizedException;
 
 /**
+ * @property-read \ManaPHP\AliasInterface        $alias
  * @property-read \ManaPHP\Pool\ManagerInterface $poolManager
  */
 class Client extends Component implements ClientInterface

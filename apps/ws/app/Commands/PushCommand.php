@@ -2,6 +2,9 @@
 
 namespace App\Commands;
 
+/**
+ * @property-read \ManaPHP\Ws\Pushing\ClientInterface $wspClient
+ */
 class PushCommand extends Command
 {
     /**

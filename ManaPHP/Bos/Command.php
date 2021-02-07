@@ -5,6 +5,10 @@ namespace ManaPHP\Bos;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
 
+/**
+ * @property-read \ManaPHP\Bos\ClientInterface  $bosClient
+ * @property-read \ManaPHP\Http\ClientInterface $httpClient
+ */
 class Command extends \ManaPHP\Cli\Command
 {
     /**

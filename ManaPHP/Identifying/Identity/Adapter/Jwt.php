@@ -5,6 +5,7 @@ namespace ManaPHP\Identifying\Identity\Adapter;
 use ManaPHP\Identifying\Identity;
 
 /**
+ * @property-read \ManaPHP\Configuration\Configure  $configure
  * @property-read \ManaPHP\Http\RequestInterface    $request
  * @property-read \ManaPHP\Token\ScopedJwtInterface $scopedJwt
  */

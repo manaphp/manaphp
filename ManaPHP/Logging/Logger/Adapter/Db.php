@@ -5,6 +5,9 @@ namespace ManaPHP\Logging\Logger\Adapter;
 use Exception;
 use ManaPHP\Logging\Logger;
 
+/**
+ * @property-read \ManaPHP\Data\DbInterface $db
+ */
 class Db extends Logger
 {
     /**

@@ -6,6 +6,8 @@ use ManaPHP\Component;
 use ManaPHP\Html\Renderer\EngineInterface;
 
 /**
+ * @property-read \ManaPHP\Configuration\Configure             $configure
+ * @property-read \ManaPHP\AliasInterface                      $alias
  * @property-read \ManaPHP\Html\Renderer\Engine\Sword\Compiler $swordCompiler
  */
 class Sword extends Component implements EngineInterface

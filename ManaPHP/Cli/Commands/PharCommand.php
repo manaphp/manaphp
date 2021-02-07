@@ -7,6 +7,9 @@ use ManaPHP\Cli\Command;
 use ManaPHP\Helper\LocalFS;
 use Phar;
 
+/**
+ * @property-read \ManaPHP\AliasInterface $alias
+ */
 class PharCommand extends Command
 {
     /**

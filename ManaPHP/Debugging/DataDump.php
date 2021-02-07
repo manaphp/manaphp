@@ -8,6 +8,9 @@ use ManaPHP\Coroutine;
 use Throwable;
 use  ArrayObject;
 
+/**
+ * @property-read \ManaPHP\AliasInterface $alias
+ */
 class DataDump extends Component implements DataDumpInterface
 {
     /**

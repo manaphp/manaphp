@@ -6,6 +6,9 @@ use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Request\File\Exception as FileException;
 
+/**
+ * @property-read \ManaPHP\AliasInterface $alias
+ */
 class File extends Component implements FileInterface
 {
     /**

@@ -6,6 +6,9 @@ use ManaPHP\Cli\Command;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
+/**
+ * @property-read \ManaPHP\AliasInterface $alias
+ */
 class AreaCommand extends Command
 {
     /**

@@ -2,6 +2,9 @@
 
 namespace App\Commands;
 
+/**
+ * @property-read \ManaPHP\Data\DbInterface $db
+ */
 class DbToJsonCommand extends Command
 {
     public function defaultAction()

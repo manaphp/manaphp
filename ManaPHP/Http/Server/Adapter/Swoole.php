@@ -18,6 +18,8 @@ class SwooleContext
 }
 
 /**
+ * @property-read \ManaPHP\Configuration\Configure           $configure
+ * @property-read \ManaPHP\AliasInterface                    $alias
  * @property-read \ManaPHP\Http\RouterInterface              $router
  * @property-read \ManaPHP\Http\Server\Adapter\SwooleContext $context
  */

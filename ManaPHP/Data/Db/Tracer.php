@@ -4,6 +4,9 @@ namespace ManaPHP\Data\Db;
 
 use ManaPHP\Event\EventArgs;
 
+/**
+ * @property-read \ManaPHP\Logging\LoggerInterface $logger
+ */
 class Tracer extends \ManaPHP\Event\Tracer
 {
     /**

@@ -14,6 +14,7 @@ use ManaPHP\Caching\Cache;
  * PRIMARY KEY (`hash`)
  * ) ENGINE=InnoDB DEFAULT CHARSET=utf8
  *
+ * @property-read \ManaPHP\Data\DbInterface $db
  */
 class Db extends Cache
 {

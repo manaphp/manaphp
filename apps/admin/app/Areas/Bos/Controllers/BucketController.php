@@ -4,6 +4,9 @@ namespace App\Areas\Bos\Controllers;
 
 use App\Controllers\Controller;
 
+/**
+ * @property-read \ManaPHP\Bos\ClientInterface $bosClient
+ */
 class BucketController extends Controller
 {
     public function indexAction()

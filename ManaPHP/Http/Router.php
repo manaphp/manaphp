@@ -39,6 +39,7 @@ class RouterContext
 }
 
 /**
+ * @property-read \ManaPHP\AliasInterface           $alias
  * @property-read \ManaPHP\Http\RequestInterface    $request
  * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
  * @property-read \ManaPHP\Http\RouterContext       $context

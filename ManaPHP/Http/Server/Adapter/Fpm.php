@@ -5,6 +5,9 @@ namespace ManaPHP\Http\Server\Adapter;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Http\Server;
 
+/**
+ * @property-read \ManaPHP\AliasInterface $alias
+ */
 class Fpm extends Server
 {
     /**

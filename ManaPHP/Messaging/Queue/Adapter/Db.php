@@ -15,6 +15,7 @@ use ManaPHP\Messaging\Queue;
  * PRIMARY KEY (`id`)
  * ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8
  *
+ * @property-read \ManaPHP\Data\DbInterface $db
  */
 class Db extends Queue
 {

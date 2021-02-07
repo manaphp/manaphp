@@ -22,6 +22,10 @@ class FiddlerPluginContext
 }
 
 /**
+ * @property-read \ManaPHP\Configuration\Configure        $configure
+ * @property-read \ManaPHP\Logging\LoggerInterface        $logger
+ * @property-read \ManaPHP\Messaging\PubSubInterface      $pubSub
+ * @property-read \Redis|\ManaPHP\Data\RedisInterface     $redisBroker
  * @property-read \ManaPHP\Debugging\FiddlerPluginContext $context
  */
 class FiddlerPlugin extends Plugin

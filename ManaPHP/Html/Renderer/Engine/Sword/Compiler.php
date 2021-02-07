@@ -9,6 +9,7 @@ use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\Str;
 
 /**
+ * @property-read \ManaPHP\AliasInterface       $alias
  * @property-read \ManaPHP\Http\UrlInterface    $url
  * @property-read \ManaPHP\Http\RouterInterface $router
  */

@@ -4,6 +4,10 @@ namespace ManaPHP\Token;
 
 use ManaPHP\Component;
 
+/**
+ * @property-read \ManaPHP\Configuration\Configure $configure
+ * @property-read \ManaPHP\Security\CryptInterface $crypt
+ */
 class Jwt extends Component implements JwtInterface
 {
     /**

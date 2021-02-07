@@ -7,6 +7,10 @@ use ManaPHP\Data\Db;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
+/**
+ * @property-read \ManaPHP\Configuration\Configure $configure
+ * @property-read \ManaPHP\AliasInterface          $alias
+ */
 class Command extends \ManaPHP\Cli\Command
 {
     /**

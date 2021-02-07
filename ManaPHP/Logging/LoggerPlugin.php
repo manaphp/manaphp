@@ -29,6 +29,9 @@ class LoggerPluginContext
 }
 
 /**
+ * @property-read \ManaPHP\Configuration\Configure     $configure
+ * @property-read \ManaPHP\Logging\LoggerInterface     $logger
+ * @property-read \Redis|\ManaPHP\Data\RedisInterface  $redisCache
  * @property-read \ManaPHP\Logging\LoggerPluginContext $context
  */
 class LoggerPlugin extends Plugin

@@ -3,9 +3,7 @@
 namespace App\Controllers;
 
 /**
- * Class TestController
- *
- * @package App\Controllers
+ * @property-read \ManaPHP\Logging\LoggerInterface $logger
  */
 class IndexController extends Controller
 {

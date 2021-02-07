@@ -33,6 +33,7 @@ class ViewContext
 }
 
 /**
+ * @property-read \ManaPHP\AliasInterface           $alias
  * @property-read \ManaPHP\Html\RendererInterface   $renderer
  * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
  * @property-read \ManaPHP\Mvc\ViewContext          $context

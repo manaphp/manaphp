@@ -65,6 +65,9 @@ class DebuggerPluginContext
 }
 
 /**
+ * @property-read \ManaPHP\Configuration\Configure         $configure
+ * @property-read \ManaPHP\Logging\LoggerInterface         $logger
+ * @property-read \Redis                                   $redisCache
  * @property-read \ManaPHP\Debugging\DebuggerPluginContext $context
  */
 class DebuggerPlugin extends Plugin

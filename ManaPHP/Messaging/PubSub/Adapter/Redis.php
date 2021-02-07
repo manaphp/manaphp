@@ -5,6 +5,9 @@ namespace ManaPHP\Messaging\PubSub\Adapter;
 use ManaPHP\Component;
 use ManaPHP\Messaging\PubSubInterface;
 
+/**
+ * @property-read \Redis $redisBroker
+ */
 class Redis extends Component implements PubSubInterface
 {
     /**

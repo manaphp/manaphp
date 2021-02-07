@@ -10,6 +10,9 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\RuntimeException;
 
+/**
+ * @property-read \ManaPHP\AliasInterface $alias
+ */
 class Dotenv extends Component implements DotenvInterface
 {
     /**
