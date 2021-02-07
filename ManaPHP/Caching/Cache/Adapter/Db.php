@@ -21,7 +21,7 @@ class Db extends Cache
     /**
      * @var string
      */
-    protected $source = 'manaphp_cache';
+    protected $table = 'manaphp_cache';
 
     /**
      * @param array $options
@@ -32,8 +32,8 @@ class Db extends Cache
             $this->injections['db'] = $options['db'];
         }
 
-        if (isset($options['source'])) {
-            $this->source = $options['source'];
+        if (isset($options['table'])) {
+            $this->table = $options['table'];
         }
     }
 
@@ -44,7 +44,7 @@ class Db extends Cache
      */
     public function do_exists($key)
     {
-        return $this->db->query($this->source)->whereEq('hash', md5($key))->value('expired_time') >= time();
+        return $this->db->query($this->table)->whereEq('hash', md5($key))->value('expired_time') >= time();
     }
 
     /**
@@ -54,7 +54,7 @@ class Db extends Cache
      */
     public function do_get($key)
     {
-        $r = $this->db->query($this->source)->whereEq('hash', md5($key))->first();
+        $r = $this->db->query($this->table)->whereEq('hash', md5($key))->first();
         if ($r && $r['expired_time'] > time()) {
             return $r['value'];
         } else {
@@ -74,10 +74,10 @@ class Db extends Cache
         $hash = md5($key);
         $expired_time = time() + $ttl;
 
-        if ($this->db->query($this->source)->whereEq('hash', $hash)->exists()) {
-            $this->db->update($this->source, compact('value', 'ttl', 'expired_time'), ['hash' => $hash]);
+        if ($this->db->query($this->table)->whereEq('hash', $hash)->exists()) {
+            $this->db->update($this->table, compact('value', 'ttl', 'expired_time'), ['hash' => $hash]);
         } else {
-            $this->db->insert($this->source, compact('hash', 'key', 'value', 'ttl', 'expired_time'));
+            $this->db->insert($this->table, compact('hash', 'key', 'value', 'ttl', 'expired_time'));
         }
     }
 
@@ -88,6 +88,6 @@ class Db extends Cache
      */
     public function do_delete($key)
     {
-        $this->db->delete($this->source, ['hash' => md5($key)]);
+        $this->db->delete($this->table, ['hash' => md5($key)]);
     }
 }

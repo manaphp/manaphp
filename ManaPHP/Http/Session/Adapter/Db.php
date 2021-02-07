@@ -24,7 +24,7 @@ class Db extends Session
     /**
      * @var string
      */
-    protected $source = 'manaphp_session';
+    protected $table = 'manaphp_session';
 
     /**
      * @param array $options
@@ -37,8 +37,8 @@ class Db extends Session
 
         parent::__construct($options);
 
-        if (isset($options['source'])) {
-            $this->source = $options['source'];
+        if (isset($options['table'])) {
+            $this->table = $options['table'];
         }
     }
 
@@ -49,7 +49,7 @@ class Db extends Session
      */
     public function do_read($session_id)
     {
-        return $this->db->query($this->source)->whereEq('session_id', $session_id)->value('data', '');
+        return $this->db->query($this->table)->whereEq('session_id', $session_id)->value('data', '');
     }
 
     /**
@@ -69,11 +69,11 @@ class Db extends Session
             'expired_time' => $ttl + time()
         ];
 
-        if ($this->db->query($this->source)->exists()) {
-            $this->db->update($this->source, $field_values, ['session_id' => $session_id]);
+        if ($this->db->query($this->table)->exists()) {
+            $this->db->update($this->table, $field_values, ['session_id' => $session_id]);
         } else {
             $field_values['session_id'] = $session_id;
-            $this->db->insert($this->source, $field_values);
+            $this->db->insert($this->table, $field_values);
         }
 
         return true;
@@ -94,7 +94,7 @@ class Db extends Session
             'expired_time' => $ttl + time()
         ];
 
-        return $this->db->update($this->source, $field_values, ['session_id' => $session_id]) > 0;
+        return $this->db->update($this->table, $field_values, ['session_id' => $session_id]) > 0;
     }
 
     /**
@@ -104,7 +104,7 @@ class Db extends Session
      */
     public function do_destroy($session_id)
     {
-        $this->db->delete($this->source, ['session_id' => $session_id]);
+        $this->db->delete($this->table, ['session_id' => $session_id]);
 
         return true;
     }
@@ -116,7 +116,7 @@ class Db extends Session
      */
     public function do_gc($ttl)
     {
-        $this->db->query($this->source)->whereCmp('expired_time', '<=', time())->delete();
+        $this->db->query($this->table)->whereCmp('expired_time', '<=', time())->delete();
 
         return true;
     }
