@@ -5,11 +5,7 @@ namespace ManaPHP\Cli;
 use ManaPHP\Http\Dispatcher\NotFoundActionException;
 
 /**
- * @property-read \ManaPHP\Caching\CacheInterface   $viewsCache
- * @property-read \ManaPHP\Messaging\QueueInterface $msgQueue
- * @property-read \ManaPHP\Cli\ConsoleInterface     $console
- * @property-read \ManaPHP\Cli\RequestInterface     $request
- * @property-read \ManaPHP\Cli\HandlerInterface     $cliHandler
+ * @property-read \ManaPHP\Cli\ConsoleInterface $console
  */
 abstract class Command extends \ManaPHP\Controller
 {

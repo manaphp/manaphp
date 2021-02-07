@@ -8,6 +8,7 @@ use DateTimeZone;
 
 /**
  * @property-read \ManaPHP\Http\ClientInterface $httpClient
+ * @property-read \ManaPHP\Cli\RequestInterface $request
  */
 class DateCommand extends Command
 {

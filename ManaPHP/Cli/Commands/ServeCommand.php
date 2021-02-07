@@ -8,6 +8,7 @@ use ManaPHP\Helper\LocalFS;
 /**
  * @property-read \ManaPHP\Configuration\Configure $configure
  * @property-read \ManaPHP\Http\RouterInterface    $router
+ * @property-read \ManaPHP\Cli\RequestInterface    $request
  */
 class ServeCommand extends Command
 {

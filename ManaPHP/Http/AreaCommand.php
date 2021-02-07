@@ -7,7 +7,8 @@ use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
 /**
- * @property-read \ManaPHP\AliasInterface $alias
+ * @property-read \ManaPHP\AliasInterface       $alias
+ * @property-read \ManaPHP\Cli\RequestInterface $request
  */
 class AreaCommand extends Command
 {

@@ -6,8 +6,7 @@
 
 ## ManaPHP 是什么
 
-ManaPHP 秉承 **"普及PHP协程, 促进PHP发展"** 的理念而创造，采用Swoole扩展作为底层引擎，围绕常驻内存的环境而设计，
-提供了 Console / Http 开发所需的众多开箱即用的组件。
+ManaPHP 秉承 **"普及PHP协程, 促进PHP发展"** 的理念而创造，采用Swoole扩展作为底层引擎，围绕常驻内存的环境而设计， 提供了 Console / Http 开发所需的众多开箱即用的组件。
 
 ManaPHP追求简单、试图让更多开发者以更低学习成本享受到Swoole带来的高性能与全新的编程体验。
 
@@ -53,6 +52,7 @@ ManaPHP 支持三种执行方式: 传统模式(Apache/FPM)、常驻内存模式�
 ## 开发文档
 
 ManaPHP开发指南:
+
 - [docs](docs/)
 
 ## 环境要求
@@ -71,6 +71,7 @@ composer create-project manaphp/app-api --prefer-dist
 启动服务器:
 
 接下来启用`http`服务器
+
 ```
 php /var/www/html/public/index.php
 ```
