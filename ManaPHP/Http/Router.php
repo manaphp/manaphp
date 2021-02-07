@@ -63,17 +63,17 @@ class Router extends Component implements RouterInterface
     /**
      * @var \ManaPHP\Http\Router\RouteInterface[]
      */
-    protected $default_routes = [];
+    protected $defaults = [];
 
     /**
      * @var \ManaPHP\Http\Router\RouteInterface[][]
      */
-    protected $simple_routes = [];
+    protected $simples = [];
 
     /**
      * @var \ManaPHP\Http\Router\RouteInterface[]
      */
-    protected $regex_routes = [];
+    protected $regexes = [];
 
     /**
      * @param bool $useDefaultRoutes
@@ -81,7 +81,7 @@ class Router extends Component implements RouterInterface
     public function __construct($useDefaultRoutes = true)
     {
         if ($useDefaultRoutes) {
-            $this->default_routes = [
+            $this->defaults = [
                 new Route('/(?:{controller}(?:/{action:\d[-\w]*$|[a-zA-Z]\w*}(?:/{params})?)?)?')
             ];
         }
@@ -158,9 +158,9 @@ class Router extends Component implements RouterInterface
     {
         $route = new Route($pattern, $paths, $methods, $this->case_sensitive);
         if (!is_array($methods) && strpbrk($pattern, ':{') === false) {
-            $this->simple_routes[$methods][$pattern] = $route;
+            $this->simples[$methods][$pattern] = $route;
         } else {
-            $this->regex_routes[] = $route;
+            $this->regexes[] = $route;
         }
 
         return $route;
@@ -338,8 +338,8 @@ class Router extends Component implements RouterInterface
 
         $handledUri = $handledUri === '/' ? '/' : rtrim($handledUri, '/');
 
-        for ($i = count($this->default_routes) - 1; $i >= 0; $i--) {
-            $route = $this->default_routes[$i];
+        for ($i = count($this->defaults) - 1; $i >= 0; $i--) {
+            $route = $this->defaults[$i];
             if (($parts = $route->match($handledUri, $method)) !== false) {
                 if ($area !== null) {
                     $parts['area'] = $area;
@@ -388,7 +388,7 @@ class Router extends Component implements RouterInterface
         }
 
         $area = null;
-        $routes = $this->simple_routes;
+        $routes = $this->simples;
         if ($handledUri === false) {
             $parts = false;
         } elseif (isset($routes[$method][$handledUri])) {
@@ -397,7 +397,7 @@ class Router extends Component implements RouterInterface
             $parts = $routes[''][$handledUri]->match($handledUri, $method);
         } else {
             $parts = false;
-            $routes = $this->regex_routes;
+            $routes = $this->regexes;
             for ($i = count($routes) - 1; $i >= 0; $i--) {
                 $route = $routes[$i];
                 if (($parts = $route->match($handledUri, $method)) !== false) {
