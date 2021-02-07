@@ -12,7 +12,7 @@ class Command extends \ManaPHP\Cli\Command
     /**
      * @return array
      */
-    protected function _getDbServices()
+    protected function getDbServices()
     {
         $services = [];
         foreach ($this->configure->components as $service => $config) {
@@ -30,7 +30,7 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @return array
      */
-    protected function _getTables($service, $pattern = null)
+    protected function getTables($service, $pattern = null)
     {
         /** @var \ManaPHP\Data\DbInterface $db */
         $db = $this->getShared($service);
@@ -52,7 +52,7 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @return string
      */
-    protected function _getConstantsByFile($modelName)
+    protected function getConstantsByFile($modelName)
     {
         $file = "@app/Models/$modelName.php";
         if (!LocalFS::fileExists($file)) {
@@ -77,7 +77,7 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @return string
      */
-    protected function _getConstantsByDb($service, $table)
+    protected function getConstantsByDb($service, $table)
     {
         static $cached;
 
@@ -127,7 +127,7 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @return string
      */
-    protected function _renderModel($service, $class, $table, $optimized = false, $camelized = false)
+    protected function renderModel($service, $class, $table, $optimized = false, $camelized = false)
     {
         /** @var Db $db */
         $db = $this->getShared($service);
@@ -139,9 +139,9 @@ class Command extends \ManaPHP\Cli\Command
         $plainClass = substr($class, $pos + 1);
         $namespace = substr($class, 0, $pos);
 
-        if ($constants = $this->_getConstantsByDb($service, $table)) {
+        if ($constants = $this->getConstantsByDb($service, $table)) {
             null;
-        } elseif ($constants = $this->_getConstantsByFile($plainClass)) {
+        } elseif ($constants = $this->getConstantsByFile($plainClass)) {
             $constants = '    ' . $constants;
         }
 
@@ -270,14 +270,14 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @return string
      */
-    protected function _renderTable($service, $table, $rootNamespace = 'App\Models')
+    protected function renderTable($service, $table, $rootNamespace = 'App\Models')
     {
         $plainClass = Str::pascalize($table);
         $modelName = $rootNamespace . '\\' . $plainClass;
 
-        if ($constants = $this->_getConstantsByDb($service, $table)) {
+        if ($constants = $this->getConstantsByDb($service, $table)) {
             null;
-        } elseif ($constants = $this->_getConstantsByFile($plainClass)) {
+        } elseif ($constants = $this->getConstantsByFile($plainClass)) {
             $constants = '    ' . $constants;
         }
 
@@ -322,12 +322,12 @@ class Command extends \ManaPHP\Cli\Command
      */
     public function listAction($services = [], $table_pattern = '')
     {
-        foreach ($services ?: $this->_getDbServices() as $service) {
+        foreach ($services ?: $this->getDbServices() as $service) {
             /** @var \ManaPHP\Data\DbInterface $db */
             $db = $this->getShared($service);
 
             $this->console->writeLn(['service: `:service`', 'service' => $service], Console::FC_CYAN);
-            foreach ($this->_getTables($service, $table_pattern) as $row => $table) {
+            foreach ($this->getTables($service, $table_pattern) as $row => $table) {
                 $columns = (array)$db->getMetadata($table)[Db::METADATA_ATTRIBUTES];
                 $primaryKey = $db->getMetadata($table)[Db::METADATA_PRIMARY_KEY];
                 foreach ($columns as $i => $column) {
@@ -345,7 +345,7 @@ class Command extends \ManaPHP\Cli\Command
     /**
      * @return array
      */
-    protected function _getAreas()
+    protected function getAreas()
     {
         $areas = [];
         foreach (LocalFS::glob('@app/Areas/*', GLOB_ONLYDIR) as $item) {
@@ -377,7 +377,7 @@ class Command extends \ManaPHP\Cli\Command
                 throw new Exception(['`:table` is not exists', 'table' => $table]);
             }
         } else {
-            foreach ($this->_getDbServices() as $s) {
+            foreach ($this->getDbServices() as $s) {
                 $db = $this->getShared($s);
                 if (in_array($table, $db->getTables(), true)) {
                     $service = $s;
@@ -394,7 +394,7 @@ class Command extends \ManaPHP\Cli\Command
         $plainClass = Str::pascalize($table);
         $fileName = "@tmp/db_model/$plainClass.php";
         $class = "App\Models\\$plainClass";
-        $model_str = $this->_renderModel($service, $class, $table, $optimized, $camelized);
+        $model_str = $this->renderModel($service, $class, $table, $optimized, $camelized);
         LocalFS::filePut($fileName, $model_str);
 
         $this->console->progress(['`:table` table saved to `:file`', 'table' => $table, 'file' => $fileName]);
@@ -412,10 +412,10 @@ class Command extends \ManaPHP\Cli\Command
      */
     public function modelsAction($services = [], $table_pattern = '', $optimized = false, $camelized = false)
     {
-        $areas = $this->_getAreas();
+        $areas = $this->getAreas();
 
-        foreach ($services ?: $this->_getDbServices() as $service) {
-            foreach ($this->_getTables($service, $table_pattern) as $table) {
+        foreach ($services ?: $this->getDbServices() as $service) {
+            foreach ($this->getTables($service, $table_pattern) as $table) {
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
                 $plainClass = Str::pascalize($table);
                 $class = "App\Models\\$plainClass";
@@ -429,7 +429,7 @@ class Command extends \ManaPHP\Cli\Command
                     }
                 }
 
-                $model_str = $this->_renderModel($service, $class, $table, $optimized, $camelized);
+                $model_str = $this->renderModel($service, $class, $table, $optimized, $camelized);
                 LocalFS::filePut($fileName, $model_str);
 
                 $this->console->progress(['  `:table` table saved to `:file`', 'table' => $table, 'file' => $fileName]);
@@ -452,13 +452,13 @@ class Command extends \ManaPHP\Cli\Command
             $namespace = 'App\\' . ucfirst($namespace) . '\\Tables';
         }
 
-        foreach ($services ?: $this->_getDbServices() as $service) {
-            foreach ($this->_getTables($service, $table_pattern) as $table) {
+        foreach ($services ?: $this->getDbServices() as $service) {
+            foreach ($this->getTables($service, $table_pattern) as $table) {
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
                 $plainClass = Str::pascalize($table);
                 $fileName = "@tmp/db_tables/$plainClass.php";
-                $model_str = $this->_renderTable($service, $table, $namespace);
+                $model_str = $this->renderTable($service, $table, $namespace);
                 LocalFS::filePut($fileName, $model_str);
 
                 $this->console->progress(['  `:table` table saved to `:file`', 'table' => $table, 'file' => $fileName]);
@@ -476,10 +476,10 @@ class Command extends \ManaPHP\Cli\Command
      */
     public function jsonAction($services = [], $table_pattern = '')
     {
-        foreach ($services ?: $this->_getDbServices() as $service) {
+        foreach ($services ?: $this->getDbServices() as $service) {
             /** @var \ManaPHP\Data\DbInterface $db */
             $db = $this->getShared($service);
-            foreach ($this->_getTables($service, $table_pattern) as $table) {
+            foreach ($this->getTables($service, $table_pattern) as $table) {
                 $fileName = "@tmp/db_json/$service/$table.json";
 
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
@@ -512,10 +512,10 @@ class Command extends \ManaPHP\Cli\Command
      */
     public function csvAction($services = [], $table_pattern = '', $bom = false)
     {
-        foreach ($services ?: $this->_getDbServices() as $service) {
+        foreach ($services ?: $this->getDbServices() as $service) {
             /** @var \ManaPHP\Data\Db $db */
             $db = $this->getShared($service);
-            foreach ($this->_getTables($service, $table_pattern) as $table) {
+            foreach ($this->getTables($service, $table_pattern) as $table) {
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
                 $fileName = "@tmp/db_csv/$service/$table.csv";

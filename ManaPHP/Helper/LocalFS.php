@@ -66,7 +66,7 @@ class LocalFS
      *
      * @return void
      */
-    protected static function _dirCreate($dir, $mode = 0755)
+    protected static function dirCreateInternal($dir, $mode = 0755)
     {
         if (!is_dir($dir) && !@mkdir($dir, $mode, true) && !is_dir($dir)) {
             throw new CreateDirectoryFailedException($dir);
@@ -97,7 +97,7 @@ class LocalFS
     {
         $file = self::$alias->resolve($file);
 
-        self::_dirCreate(dirname($file));
+        self::dirCreateInternal(dirname($file));
         if (file_put_contents($file, $data, LOCK_EX) === false) {
             $error = error_get_last()['message'] ?? '';
             throw new RuntimeException(['write `%s` file failed: %s', $file, $error]);
@@ -113,7 +113,7 @@ class LocalFS
     public static function fileAppend($file, $data)
     {
         $file = self::$alias->resolve($file);
-        self::_dirCreate(dirname($file));
+        self::dirCreateInternal(dirname($file));
 
         if (file_put_contents($file, $data, LOCK_EX | FILE_APPEND) === false) {
             $error = error_get_last()['message'] ?? '';
@@ -142,7 +142,7 @@ class LocalFS
         }
 
         if (!is_dir($dir = dirname($dst))) {
-            self::_dirCreate($dir);
+            self::dirCreateInternal($dir);
         }
 
         if (!rename($src, $dst)) {
@@ -168,7 +168,7 @@ class LocalFS
         $dst = self::$alias->resolve($dst);
 
         if ($overwrite || !is_file($dst)) {
-            self::_dirCreate(dirname($dst));
+            self::dirCreateInternal(dirname($dst));
 
             if (!copy($src, $dst)) {
                 $error = error_get_last()['message'] ?? '';
@@ -192,7 +192,7 @@ class LocalFS
      *
      * @return void
      */
-    protected static function _dirDelete($dir)
+    protected static function dirDeleteInternal($dir)
     {
         foreach (scandir($dir, SCANDIR_SORT_NONE) as $item) {
             if ($item === '.' || $item === '..') {
@@ -206,7 +206,7 @@ class LocalFS
                     throw new RuntimeException(['delete `%s` file failed: %s', $path, $error]);
                 }
             } elseif (is_dir($path)) {
-                self::_dirDelete($path);
+                self::dirDeleteInternal($path);
             } else {
                 break;
             }
@@ -231,7 +231,7 @@ class LocalFS
             return;
         }
 
-        self::_dirDelete($dir);
+        self::dirDeleteInternal($dir);
     }
 
     /**
@@ -242,7 +242,7 @@ class LocalFS
      */
     public static function dirCreate($dir, $mode = 0755)
     {
-        self::_dirCreate(self::$alias->resolve($dir), $mode);
+        self::dirCreateInternal(self::$alias->resolve($dir), $mode);
     }
 
     /**
@@ -275,7 +275,7 @@ class LocalFS
         }
 
         if (!is_dir($dir = dirname($dst))) {
-            self::_dirCreate($dir);
+            self::dirCreateInternal($dir);
         }
 
         if (!rename($src, $dst)) {
@@ -291,7 +291,7 @@ class LocalFS
      *
      * @return void
      */
-    protected static function _dirCopy($src, $dst, $overwrite)
+    protected static function dirCopyInternal($src, $dst, $overwrite)
     {
         foreach (scandir($src, SCANDIR_SORT_NONE) as $item) {
             if ($item === '.' || $item === '..') {
@@ -307,8 +307,8 @@ class LocalFS
                 }
             } elseif (is_dir($srcPath)) {
                 if ($overwrite || !is_dir($dstPath)) {
-                    self::_dirCreate($dstPath);
-                    self::_dirCopy($srcPath, $dstPath, $overwrite);
+                    self::dirCreateInternal($dstPath);
+                    self::dirCopyInternal($srcPath, $dstPath, $overwrite);
                 }
             } else {
                 break;
@@ -331,8 +331,8 @@ class LocalFS
         if (!is_dir($src)) {
             throw new RuntimeException(['copy `%s` to `%s` failed: source directory is not exists', $src, $dst]);
         }
-        self::_dirCreate($dst);
-        self::_dirCopy($src, $dst, $overwrite);
+        self::dirCreateInternal($dst);
+        self::dirCopyInternal($src, $dst, $overwrite);
     }
 
     /**

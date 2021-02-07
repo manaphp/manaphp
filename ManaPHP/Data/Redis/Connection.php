@@ -176,7 +176,7 @@ class Connection extends Component
     /**
      * @return bool
      */
-    protected function _ping()
+    protected function ping()
     {
         try {
             $this->_redis->echo('OK');
@@ -218,7 +218,7 @@ class Connection extends Component
         } catch (\Exception  $exception) {
             $r = null;
             $failed = true;
-            if (!$this->_multi && !$this->_ping()) {
+            if (!$this->_multi && !$this->ping()) {
                 $this->close();
                 $this->getConnect();
 

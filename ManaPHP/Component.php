@@ -113,7 +113,7 @@ class Component implements Injectable, JsonSerializable
     /**
      * @return object
      */
-    protected function _createContext()
+    protected function createContext()
     {
         static $cached = [];
 
@@ -153,18 +153,18 @@ class Component implements Injectable, JsonSerializable
             if ($context = Coroutine::getContext()) {
                 if (!$object = $context[$object_id] ?? null) {
                     if (($parent_cid = Coroutine::getPcid()) === -1) {
-                        return $context[$object_id] = $this->_createContext();
+                        return $context[$object_id] = $this->createContext();
                     }
 
                     $parent_context = Coroutine::getContext($parent_cid);
                     if ($object = $parent_context[$object_id] ?? null) {
                         if ($object instanceof Inseparable) {
-                            return $context[$object_id] = $this->_createContext();
+                            return $context[$object_id] = $this->createContext();
                         } else {
                             return $context[$object_id] = $object;
                         }
                     } else {
-                        $object = $context[$object_id] = $this->_createContext();
+                        $object = $context[$object_id] = $this->createContext();
                         if (!$object instanceof Inseparable) {
                             $parent_context[$object_id] = $object;
                         }
@@ -172,21 +172,21 @@ class Component implements Injectable, JsonSerializable
                 }
                 return $object;
             } elseif (!$object = $__root_context[$object_id] ?? null) {
-                return $__root_context[$object_id] = $this->_createContext();
+                return $__root_context[$object_id] = $this->createContext();
             } else {
                 return $object;
             }
         } else {
             $__root_context[] = $this;
 
-            return $this->_context = $this->_createContext();
+            return $this->_context = $this->createContext();
         }
     }
 
     /**
      * @return bool
      */
-    protected function _hasContext()
+    protected function hasContext()
     {
         static $cached = [];
 
@@ -376,7 +376,7 @@ class Component implements Injectable, JsonSerializable
 
         if (isset($data['_context'])) {
             $data['_context'] = (array)$data['_context'];
-        } elseif ($this->_hasContext()) {
+        } elseif ($this->hasContext()) {
             $data['_context'] = (array)$this->_getContext();
         }
 

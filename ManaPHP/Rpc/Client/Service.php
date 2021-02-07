@@ -68,7 +68,7 @@ class Service extends \ManaPHP\Service
      *
      * @return mixed
      */
-    protected function _rpcCall($method, $params = [], $options = [])
+    protected function rpcCall($method, $params = [], $options = [])
     {
         if ($pos = strpos($method, '::')) {
             $method = substr($method, $pos + 2);

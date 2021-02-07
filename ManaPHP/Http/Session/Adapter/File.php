@@ -47,7 +47,7 @@ class File extends Session
      *
      * @return string
      */
-    protected function _getFileName($sessionId)
+    protected function getFileName($sessionId)
     {
         $shard = '';
 
@@ -65,7 +65,7 @@ class File extends Session
      */
     public function do_read($session_id)
     {
-        $file = $this->_getFileName($session_id);
+        $file = $this->getFileName($session_id);
 
         if (file_exists($file) && filemtime($file) >= time()) {
             return file_get_contents($file);
@@ -83,7 +83,7 @@ class File extends Session
      */
     public function do_write($session_id, $data, $ttl)
     {
-        $file = $this->_getFileName($session_id);
+        $file = $this->getFileName($session_id);
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
             throw new CreateDirectoryFailedException($dir);
@@ -108,7 +108,7 @@ class File extends Session
      */
     public function do_touch($session_id, $ttl)
     {
-        $file = $this->_getFileName($session_id);
+        $file = $this->getFileName($session_id);
 
         @touch($file, time() + $ttl);
         clearstatcache(true, $file);
@@ -123,7 +123,7 @@ class File extends Session
      */
     public function do_destroy($session_id)
     {
-        $file = $this->_getFileName($session_id);
+        $file = $this->getFileName($session_id);
 
         if (file_exists($file)) {
             @unlink($file);
@@ -141,7 +141,7 @@ class File extends Session
     {
         $dir = $this->alias->resolve($this->_dir);
         if (is_dir($dir)) {
-            $this->_clean($dir);
+            $this->clean($dir);
         }
 
         return true;
@@ -152,7 +152,7 @@ class File extends Session
      *
      * @return void
      */
-    protected function _clean($dir)
+    protected function clean($dir)
     {
         foreach (scandir($dir, SCANDIR_SORT_ASCENDING) as $item) {
             if ($item === '.' || $item === '..') {
@@ -165,7 +165,7 @@ class File extends Session
                     @unlink($path);
                 }
             } else {
-                $this->_clean($path);
+                $this->clean($path);
             }
         }
     }

@@ -17,7 +17,7 @@ class FrameworkCommand extends Command
      *
      * @return string
      */
-    protected function _strip_whitespaces($str)
+    protected function stripWhitespaces($str)
     {
         LocalFS::filePut($this->_tmp_lite_file, $str);
         $str = php_strip_whitespace($this->alias->resolve($this->_tmp_lite_file));
@@ -39,7 +39,7 @@ class FrameworkCommand extends Command
      * @return array
      *
      */
-    protected function _getSourceFiles($dir)
+    protected function getSourceFiles($dir)
     {
         $files = [];
 
@@ -52,7 +52,7 @@ class FrameworkCommand extends Command
             $file = strtr($dir, '\\', '/') . '/' . $file;
             if (is_dir($file)) {
                 /** @noinspection SlowArrayOperationsInLoopInspection */
-                $files = array_merge($files, $this->_getSourceFiles($file));
+                $files = array_merge($files, $this->getSourceFiles($file));
             } elseif (fnmatch('*.php', $file)) {
                 $files[] = $file;
             }
@@ -68,7 +68,7 @@ class FrameworkCommand extends Command
      *
      * @return string
      */
-    protected function _minify($content)
+    protected function minify($content)
     {
         $content = preg_replace('#\s*/\*\*.*?\*/#ms', '', $content);//remove comments
         $content = preg_replace('#([\r\n]+)\s*\\1#', '\\1', $content);//remove blank lines
@@ -90,11 +90,11 @@ class FrameworkCommand extends Command
         $totalInterfaceLines = 0;
         $totalLines = 0;
         $fileLines = [];
-        $sourceFiles = $this->_getSourceFiles($ManaPHPSrcDir);
+        $sourceFiles = $this->getSourceFiles($ManaPHPSrcDir);
         foreach ($sourceFiles as $file) {
             $dstFile = str_replace($ManaPHPSrcDir, $ManaPHPDstDir, $file);
 
-            $content = $this->_minify(LocalFS::fileGet($file));
+            $content = $this->minify(LocalFS::fileGet($file));
             $lineCount = substr_count($content, str_contains($content, "\r") ? "\r" : "\n");
 
             if (str_ends_with($file, 'Interface.php')) {

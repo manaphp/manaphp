@@ -91,7 +91,7 @@ abstract class Logger extends Component implements LoggerInterface
     public function __construct($options = [])
     {
         if (isset($options['level'])) {
-            $this->_level = $this->_parseLevel($options['level']);
+            $this->_level = $this->parseLevel($options['level']);
         } else {
             $error_level = error_reporting();
 
@@ -120,10 +120,10 @@ abstract class Logger extends Component implements LoggerInterface
     /**
      * @return LoggerContext
      */
-    protected function _createContext()
+    protected function createContext()
     {
         /** @var \ManaPHP\Logging\LoggerContext $context */
-        $context = parent::_createContext();
+        $context = parent::createContext();
 
         $context->level = $this->_level;
         $context->client_ip = MANAPHP_CLI ? '' : $this->request->getClientIp();
@@ -148,7 +148,7 @@ abstract class Logger extends Component implements LoggerInterface
      *
      * @return int
      */
-    protected function _parseLevel($level)
+    protected function parseLevel($level)
     {
         $r = is_numeric($level) ? (int)$level : array_search($level, self::$_levels, true);
         if (!is_int($r) || !isset(self::$_levels[$r])) {
@@ -165,7 +165,7 @@ abstract class Logger extends Component implements LoggerInterface
      */
     public function setLevel($level)
     {
-        $this->_context->level = $this->_parseLevel($level);
+        $this->_context->level = $this->parseLevel($level);
 
         return $this;
     }
@@ -210,7 +210,7 @@ abstract class Logger extends Component implements LoggerInterface
      *
      * @return array
      */
-    protected function _getLocation($traces)
+    protected function getLocation($traces)
     {
         for ($i = count($traces) - 1; $i >= 0; $i--) {
             $trace = $traces[$i];
@@ -231,7 +231,7 @@ abstract class Logger extends Component implements LoggerInterface
      *
      * @return string
      */
-    protected function _inferCategory($traces)
+    protected function inferCategory($traces)
     {
         foreach ($traces as $trace) {
             if (isset($trace['object'])) {
@@ -390,12 +390,12 @@ abstract class Logger extends Component implements LoggerInterface
         } else {
             $traces = Coroutine::getBacktrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
             if ($category !== null && $category[0] === '.') {
-                $log->category = $this->_inferCategory($traces) . $category;
+                $log->category = $this->inferCategory($traces) . $category;
             } else {
-                $log->category = $category ?: $this->_inferCategory($traces);
+                $log->category = $category ?: $this->inferCategory($traces);
             }
 
-            $location = $this->_getLocation($traces);
+            $location = $this->getLocation($traces);
             if (isset($location['file'])) {
                 $log->file = basename($location['file']);
                 $log->line = $location['line'];

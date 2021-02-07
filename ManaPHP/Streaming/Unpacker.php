@@ -15,7 +15,7 @@ class Unpacker
      *
      * @return static
      */
-    public function _append($format, $names)
+    public function append($format, $names)
     {
         foreach ($names as $name) {
             if ($this->_format !== null) {
@@ -85,7 +85,7 @@ class Unpacker
      */
     public function hexLNF(...$args)
     {
-        return $this->_append('h', $args);
+        return $this->append('h', $args);
     }
 
     /**
@@ -97,7 +97,7 @@ class Unpacker
      */
     public function hexHNF(...$args)
     {
-        return $this->_append('H', $args);
+        return $this->append('H', $args);
     }
 
     /**
@@ -109,7 +109,7 @@ class Unpacker
      */
     public function byte(...$args)
     {
-        return $this->_append('C', $args);
+        return $this->append('C', $args);
     }
 
     /**
@@ -121,7 +121,7 @@ class Unpacker
      */
     public function int8(...$args)
     {
-        return $this->_append('c', $args);
+        return $this->append('c', $args);
     }
 
     /**
@@ -133,7 +133,7 @@ class Unpacker
      */
     public function int8U(...$args)
     {
-        return $this->_append('C', $args);
+        return $this->append('C', $args);
     }
 
     /**
@@ -145,7 +145,7 @@ class Unpacker
      */
     public function int16(...$args)
     {
-        return $this->_append('s', $args);
+        return $this->append('s', $args);
     }
 
     /**
@@ -157,7 +157,7 @@ class Unpacker
      */
     public function int16U(...$args)
     {
-        return $this->_append('S', $args);
+        return $this->append('S', $args);
     }
 
     /**
@@ -169,7 +169,7 @@ class Unpacker
      */
     public function int16BE(...$args)
     {
-        return $this->_append('n', $args);
+        return $this->append('n', $args);
     }
 
     /**
@@ -181,7 +181,7 @@ class Unpacker
      */
     public function int16LE(...$args)
     {
-        return $this->_append('v', $args);
+        return $this->append('v', $args);
     }
 
     /**
@@ -193,7 +193,7 @@ class Unpacker
      */
     public function int32(...$args)
     {
-        return $this->_append('l', $args);
+        return $this->append('l', $args);
     }
 
     /**
@@ -205,7 +205,7 @@ class Unpacker
      */
     public function int32U(...$args)
     {
-        return $this->_append('L', $args);
+        return $this->append('L', $args);
     }
 
     /**
@@ -217,7 +217,7 @@ class Unpacker
      */
     public function int32BE(...$args)
     {
-        return $this->_append('N', $args);
+        return $this->append('N', $args);
     }
 
     /**
@@ -229,7 +229,7 @@ class Unpacker
      */
     public function int32LE(...$args)
     {
-        return $this->_append('V', $args);
+        return $this->append('V', $args);
     }
 
     /**
@@ -241,7 +241,7 @@ class Unpacker
      */
     public function int64(...$args)
     {
-        return $this->_append('q', $args);
+        return $this->append('q', $args);
     }
 
     /**
@@ -253,7 +253,7 @@ class Unpacker
      */
     public function int64U(...$args)
     {
-        return $this->_append('Q', $args);
+        return $this->append('Q', $args);
     }
 
     /**
@@ -265,7 +265,7 @@ class Unpacker
      */
     public function int64BE(...$args)
     {
-        return $this->_append('J', $args);
+        return $this->append('J', $args);
     }
 
     /**
@@ -277,7 +277,7 @@ class Unpacker
      */
     public function int64LE(...$args)
     {
-        return $this->_append('P', $args);
+        return $this->append('P', $args);
     }
 
     /**
@@ -289,7 +289,7 @@ class Unpacker
      */
     public function float(...$args)
     {
-        return $this->_append('f', $args);
+        return $this->append('f', $args);
     }
 
     /**
@@ -301,7 +301,7 @@ class Unpacker
      */
     public function floatLE(...$args)
     {
-        return $this->_append('g', $args);
+        return $this->append('g', $args);
     }
 
     /**
@@ -313,7 +313,7 @@ class Unpacker
      */
     public function floatBE(...$args)
     {
-        return $this->_append('G', $args);
+        return $this->append('G', $args);
     }
 
     /**
@@ -325,7 +325,7 @@ class Unpacker
      */
     public function double(...$args)
     {
-        return $this->_append('G', $args);
+        return $this->append('G', $args);
     }
 
     /**
@@ -337,7 +337,7 @@ class Unpacker
      */
     public function doubleLE(...$args)
     {
-        return $this->_append('e', $args);
+        return $this->append('e', $args);
     }
 
     /**
@@ -349,7 +349,7 @@ class Unpacker
      */
     public function doubleBE(...$args)
     {
-        return $this->_append('E', $args);
+        return $this->append('E', $args);
     }
 
     /**

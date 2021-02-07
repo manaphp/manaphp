@@ -56,7 +56,7 @@ class Request extends Component implements RequestInterface
                 $this->_values[] = $fragment;
             }
         } else {
-            $this->_parse($arguments);
+            $this->parseInternal($arguments);
         }
 
         return $this;
@@ -68,7 +68,7 @@ class Request extends Component implements RequestInterface
      * @return static
      * @throws \ManaPHP\Cli\Request\Exception
      */
-    protected function _parse($args)
+    protected function parseInternal($args)
     {
         $this->_values = [];
         $this->_options = [];

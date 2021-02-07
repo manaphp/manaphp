@@ -123,7 +123,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      *
      * @return void
      */
-    protected function _prepareGlobals($request)
+    protected function prepareGlobals($request)
     {
         $_server = array_change_key_case($request->server, CASE_UPPER);
 
@@ -207,7 +207,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
         $fd = $request->fd;
 
         try {
-            $this->_prepareGlobals($request);
+            $this->prepareGlobals($request);
             $globals = $this->request->getContext();
             $globals->_REQUEST['fd'] = $fd;
 

@@ -60,7 +60,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
             $this->_tmp_dir = $options['tmp_dir'];
         }
 
-        $this->_template = $this->_createCurlTemplate();
+        $this->_template = $this->createCurlTemplate();
 
         $this->_mh = curl_multi_init();
 
@@ -72,7 +72,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
     /**
      * @return resource
      */
-    protected function _createCurlTemplate()
+    protected function createCurlTemplate()
     {
         $curl = curl_init();
 

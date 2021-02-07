@@ -32,7 +32,7 @@ class AdminActionLogPlugin extends Plugin
         }
     }
 
-    protected function _getTag()
+    protected function getTag()
     {
         foreach ($this->request->get() as $k => $v) {
             if (is_numeric($v)) {
@@ -67,7 +67,7 @@ class AdminActionLogPlugin extends Plugin
         $adminActionLog->client_ip = $this->request->getClientIp();
         $adminActionLog->method = $this->request->getMethod();
         $adminActionLog->url = parse_url($this->request->getUri(), PHP_URL_PATH);
-        $adminActionLog->tag = ((int)$this->_getTag()) & 0xFFFFFFFF;
+        $adminActionLog->tag = ((int)$this->getTag()) & 0xFFFFFFFF;
         $adminActionLog->data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $adminActionLog->path = $this->dispatcher->getPath();
         $adminActionLog->client_udid = $this->cookies->get('CLIENT_UDID');

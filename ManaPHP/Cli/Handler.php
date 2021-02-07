@@ -36,7 +36,7 @@ class Handler extends Component implements HandlerInterface
      *
      * @return string|false
      */
-    protected function _guessCommand($keyword)
+    protected function guessCommand($keyword)
     {
         $commands = [];
         foreach ($this->_container->getDefinitions("*Command") as $name => $definition) {
@@ -66,7 +66,7 @@ class Handler extends Component implements HandlerInterface
      *
      * @return string[]
      */
-    protected function _getActions($commandName)
+    protected function getActions($commandName)
     {
         $actions = [];
 
@@ -85,9 +85,9 @@ class Handler extends Component implements HandlerInterface
      *
      * @return string|false
      */
-    protected function _guessAction($commandName, $keyword)
+    protected function guessAction($commandName, $keyword)
     {
-        $actions = $this->_getActions($commandName);
+        $actions = $this->getActions($commandName);
 
         $guessed = [];
         foreach ($actions as $action) {
@@ -177,7 +177,7 @@ class Handler extends Component implements HandlerInterface
         $action = Str::camelize($this->_action);
 
         if (!$definition = $this->_container->getDefinition(lcfirst($command) . 'Command')) {
-            $guessed = $this->_guessCommand($command);
+            $guessed = $this->guessCommand($command);
             if ($guessed) {
                 $definition = $guessed;
                 $command = basename(substr($definition, strrpos($definition, '\\')), 'Command');
@@ -190,7 +190,7 @@ class Handler extends Component implements HandlerInterface
         /** @var \ManaPHP\Cli\Command $instance */
         $instance = $this->getShared($definition);
         if ($action === '') {
-            $actions = $this->_getActions($definition);
+            $actions = $this->getActions($definition);
             if (count($actions) === 1) {
                 $action = $actions[0];
             } elseif (in_array('default', $actions, true)) {
@@ -203,7 +203,7 @@ class Handler extends Component implements HandlerInterface
         }
 
         if (!$instance->isInvokable($action)) {
-            $guessed = $this->_guessAction($definition, $action);
+            $guessed = $this->guessAction($definition, $action);
             if (!$guessed) {
                 $colored_action = lcfirst($command) . ':' . $action;
                 return $this->console->error(['`:action` sub action is not exists', 'action' => $colored_action]);

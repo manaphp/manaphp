@@ -46,7 +46,7 @@ class Container implements ContainerInterface
      *
      * @return string
      */
-    protected function _completeClassName($name, $className)
+    protected function completeClassName($name, $className)
     {
         if (isset($this->_definitions[$name])) {
             $definition = $this->_definitions[$name];
@@ -76,7 +76,7 @@ class Container implements ContainerInterface
      *
      * @return string
      */
-    protected function _inferClassName($name)
+    protected function inferClassName($name)
     {
         $definition = null;
         if (isset($this->_definitions[$name])) {
@@ -101,7 +101,7 @@ class Container implements ContainerInterface
         if ($definition === null) {
             throw new InvalidValueException(['`%s` definition is invalid: missing class field', $name]);
         } elseif (is_string($definition)) {
-            return $definition[0] === '@' ? $this->_inferClassName(substr($definition, 1)) : $definition;
+            return $definition[0] === '@' ? $this->inferClassName(substr($definition, 1)) : $definition;
         } else {
             return $definition['class'];
         }
@@ -119,24 +119,24 @@ class Container implements ContainerInterface
     {
         if (is_string($definition)) {
             if (str_contains($definition, '/') || preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
-                $definition = ['class' => $this->_inferClassName($name), $definition, 'shared' => false];
+                $definition = ['class' => $this->inferClassName($name), $definition, 'shared' => false];
             } else {
                 if (!str_contains($definition, '\\')) {
-                    $definition = $this->_completeClassName($name, $definition);
+                    $definition = $this->completeClassName($name, $definition);
                 }
                 $definition = ['class' => $definition, 'shared' => false];
             }
         } elseif (is_array($definition)) {
             if (isset($definition['class'])) {
                 if (!str_contains($definition['class'], '\\')) {
-                    $definition['class'] = $this->_completeClassName($name, $definition['class']);
+                    $definition['class'] = $this->completeClassName($name, $definition['class']);
                 }
             } elseif (isset($definition[0]) && count($definition) !== 1) {
                 if (!str_contains($definition[0], '\\')) {
-                    $definition[0] = $this->_completeClassName($name, $definition[0]);
+                    $definition[0] = $this->completeClassName($name, $definition[0]);
                 }
             } else {
-                $definition['class'] = $this->_inferClassName($name);
+                $definition['class'] = $this->inferClassName($name);
             }
 
             $definition['shared'] = false;
@@ -169,21 +169,21 @@ class Container implements ContainerInterface
             if ($definition[0] === '@') {
                 null;
             } elseif (str_contains($definition, '/') || preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
-                $definition = ['class' => $this->_inferClassName($name), $definition];
+                $definition = ['class' => $this->inferClassName($name), $definition];
             } elseif (!str_contains($definition, '\\')) {
-                $definition = $this->_completeClassName($name, $definition);
+                $definition = $this->completeClassName($name, $definition);
             }
         } elseif (is_array($definition)) {
             if (isset($definition['class'])) {
                 if (!str_contains($definition['class'], '\\')) {
-                    $definition['class'] = $this->_completeClassName($name, $definition['class']);
+                    $definition['class'] = $this->completeClassName($name, $definition['class']);
                 }
             } elseif (isset($definition[0]) && count($definition) !== 1) {
                 if (!str_contains($definition[0], '\\')) {
-                    $definition[0] = $this->_completeClassName($name, $definition[0]);
+                    $definition[0] = $this->completeClassName($name, $definition[0]);
                 }
             } else {
-                $definition['class'] = $this->_inferClassName($name);
+                $definition['class'] = $this->inferClassName($name);
             }
         } elseif ($definition instanceof Closure) {
             null;
@@ -229,7 +229,7 @@ class Container implements ContainerInterface
         }
 
         if (is_string($definition)) {
-            return $this->_createNew($name, $definition, $parameters);
+            return $this->createNew($name, $definition, $parameters);
         } elseif ($definition instanceof Closure) {
             $instance = $definition(...$parameters);
         } elseif (is_object($definition)) {
@@ -252,7 +252,7 @@ class Container implements ContainerInterface
      *
      * @return mixed
      */
-    protected function _createNew($name, $class, $parameters)
+    protected function createNew($name, $class, $parameters)
     {
         if (!class_exists($class)) {
             throw new InvalidValueException(
@@ -330,7 +330,7 @@ class Container implements ContainerInterface
 
         $definition = $this->_definitions[$definition] ?? $definition;
 
-        return $this->_instances[$name] = $this->_createNew($name, $definition, $parameters);
+        return $this->_instances[$name] = $this->createNew($name, $definition, $parameters);
     }
 
     /**

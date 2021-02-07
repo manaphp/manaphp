@@ -50,7 +50,7 @@ class Response implements JsonSerializable
     public function __construct($request, $headers, $body)
     {
         if (preg_match('#\s(?:301|302)\s#', $headers[0], $match) === 1) {
-            $headers = $this->_getLastHeaders($headers);
+            $headers = $this->getLastHeaders($headers);
         }
 
         $this->url = $request->url;
@@ -105,7 +105,7 @@ class Response implements JsonSerializable
      *
      * @return array
      */
-    protected function _getLastHeaders($headers)
+    protected function getLastHeaders($headers)
     {
         for ($i = count($headers) - 1; $i >= 0; $i--) {
             $header = $headers[$i];

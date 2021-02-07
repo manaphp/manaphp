@@ -64,8 +64,8 @@ class Php extends Fpm
 
             $this->_doc_root = $this->alias->resolve('@public');
 
-            $this->_root_files = $this->_getRootFiles();
-            $this->_mime_types = $this->_getMimeTypes();
+            $this->_root_files = $this->getRootFiles();
+            $this->_mime_types = $this->getMimeTypes();
         }
 
         parent::__construct($options);
@@ -74,7 +74,7 @@ class Php extends Fpm
     /**
      * @return string[]
      */
-    protected function _getRootFiles()
+    protected function getRootFiles()
     {
         $files = [];
         foreach (glob($this->_doc_root . '/*') as $file) {
@@ -92,7 +92,7 @@ class Php extends Fpm
     /**
      * @return string[]
      */
-    protected function _getMimeTypes()
+    protected function getMimeTypes()
     {
         $mime_types = [];
         foreach (file(__DIR__ . '/../mime.types', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
@@ -121,7 +121,7 @@ class Php extends Fpm
     /**
      * @return false|string
      */
-    protected function _isStaticFile()
+    protected function isStaticFile()
     {
         $uri = $this->request->getServer('REQUEST_URI');
         $file = ($pos = strpos($uri, '?')) === false ? substr($uri, 1) : substr($uri, 1, $pos - 1);
@@ -145,9 +145,9 @@ class Php extends Fpm
      */
     public function start($handler)
     {
-        $this->_prepareGlobals();
+        $this->prepareGlobals();
 
-        if ($file = $this->_isStaticFile()) {
+        if ($file = $this->isStaticFile()) {
             $file = "$this->_doc_root/$file";
             if ((DIRECTORY_SEPARATOR === '/' ? realpath($file) : str_replace('\\', '/', realpath($file))) === $file) {
                 $ext = pathinfo($file, PATHINFO_EXTENSION);

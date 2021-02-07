@@ -46,7 +46,7 @@ class File extends Cache
      *
      * @return string
      */
-    protected function _getFileName($key)
+    protected function getFileName($key)
     {
         $key = strtr($key, ':', '/');
         $pos = strrpos($key, '/');
@@ -76,7 +76,7 @@ class File extends Cache
      */
     public function do_exists($key)
     {
-        $file = $this->_getFileName($key);
+        $file = $this->getFileName($key);
 
         return (@filemtime($file) >= time());
     }
@@ -88,7 +88,7 @@ class File extends Cache
      */
     public function do_get($key)
     {
-        $file = $this->_getFileName($key);
+        $file = $this->getFileName($key);
 
         if (@filemtime($file) >= time()) {
             return file_get_contents($file);
@@ -106,7 +106,7 @@ class File extends Cache
      */
     public function do_set($key, $value, $ttl)
     {
-        $file = $this->_getFileName($key);
+        $file = $this->getFileName($key);
 
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
@@ -129,7 +129,7 @@ class File extends Cache
      */
     public function do_delete($key)
     {
-        $file = $this->_getFileName($key);
+        $file = $this->getFileName($key);
 
         @unlink($file);
     }

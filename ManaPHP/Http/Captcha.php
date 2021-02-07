@@ -101,7 +101,7 @@ class Captcha extends Component implements CaptchaInterface
      *
      * @return float
      */
-    protected function _rand_amplitude($a)
+    protected function rand_amplitude($a)
     {
         return random_int((1 - $a) * 10000, (1 + $a) * 10000) / 10000;
     }
@@ -113,7 +113,7 @@ class Captcha extends Component implements CaptchaInterface
      *
      * @return string
      */
-    protected function _generateByGd($code, $width, $height)
+    protected function generateByGd($code, $width, $height)
     {
         $image = imagecreatetruecolor($width, $height);
 
@@ -143,7 +143,7 @@ class Captcha extends Component implements CaptchaInterface
                 $fgColor = imagecolorallocate($image, random_int(0, 240), random_int(0, 240), random_int(0, 240));
                 imagettftext(
                     $image,
-                    $fontSize * 0.4 * $this->_rand_amplitude(0.1),
+                    $fontSize * 0.4 * $this->rand_amplitude(0.1),
                     random_int(-40, 40),
                     round($x + random_int(-$fontSize * 1.5, $fontSize)),
                     $height / 2 + random_int(-$fontSize * 0.5, $fontSize * 0.5),
@@ -169,7 +169,7 @@ class Captcha extends Component implements CaptchaInterface
      *
      * @return \ManaPHP\Http\ResponseInterface
      */
-    protected function _generateByImagic($code, $width, $height)
+    protected function generateByImagic($code, $width, $height)
     {
         $image = new Imagick();
         $draw = new ImagickDraw();
@@ -199,7 +199,7 @@ class Captcha extends Component implements CaptchaInterface
                 $blue = random_int(0, 240);
                 $fgPixel->setColor("rgb($red,$green,$blue)");
                 $draw->setFillColor($fgPixel);
-                $draw->setFontSize($fontSize * 0.4 * $this->_rand_amplitude(0.1));
+                $draw->setFontSize($fontSize * 0.4 * $this->rand_amplitude(0.1));
                 $angle = random_int(-40, 40);
                 $noise_x = $x + random_int(-700, 700) / 1000 * $fontSize;
                 $noise_y = $fontSize / 2 + random_int(-$fontSize * 0.5, $fontSize * 0.5);
@@ -233,9 +233,9 @@ class Captcha extends Component implements CaptchaInterface
         }
 
         if (class_exists('Imagick')) {
-            $response = $this->_generateByImagic($code, $width, $height);
+            $response = $this->generateByImagic($code, $width, $height);
         } elseif (function_exists('gd_info')) {
-            $response = $this->_generateByGd($code, $width, $height);
+            $response = $this->generateByGd($code, $width, $height);
         } else {
             throw new ExtensionNotInstalledException('please install `gd` or `imagic` extension first');
         }

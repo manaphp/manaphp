@@ -84,7 +84,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _addFileHash($str)
+    protected function addFileHash($str)
     {
         return preg_replace_callback(
             '#="(/[-\w/.]+\.\w+)"#', function ($match) {
@@ -112,7 +112,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _completeRelativeLinks($file, $str)
+    protected function completeRelativeLinks($file, $str)
     {
         if ($str === '#' || str_contains($str, '://') || str_starts_with($str, '//')) {
             return $str;
@@ -148,12 +148,12 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _completeLinks($file, $str)
+    protected function completeLinks($file, $str)
     {
         $str = preg_replace_callback(
             '#\b((?:ajax|axios\.)\w*\\(["\'`])([^/][\w\-/:.]+)#',
             function ($match) use ($file) {
-                return $match[1] . $this->_completeRelativeLinks($file, $match[2]);
+                return $match[1] . $this->completeRelativeLinks($file, $match[2]);
             }, $str
         );
 
@@ -178,9 +178,9 @@ class Compiler extends Component
             if (is_array($token)) {
                 list($id, $content) = $token;
                 if ($id === T_INLINE_HTML) {
-                    $content = $this->_compileStatements($content);
-                    $content = $this->_compileComments($content);
-                    $content = $this->_compileEchos($content);
+                    $content = $this->compileStatements($content);
+                    $content = $this->compileComments($content);
+                    $content = $this->compileEchos($content);
                 }
             } else {
                 $content = $token;
@@ -190,7 +190,7 @@ class Compiler extends Component
         }
 
         if ($this->_hash_length) {
-            $result = $this->_addFileHash($result);
+            $result = $this->addFileHash($result);
         }
 
         return $result;
@@ -220,7 +220,7 @@ class Compiler extends Component
 
         $result = $this->compileString($str);
 
-        $result = $this->_completeLinks($source, $result);
+        $result = $this->completeLinks($source, $result);
 
         if (file_put_contents($compiled, $result, LOCK_EX) === false) {
             $error = error_get_last()['message'] ?? '';
@@ -237,7 +237,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compileComments($value)
+    protected function compileComments($value)
     {
         $pattern = sprintf('/%s--(.*?)--%s/s', $this->_escapedTags[0], $this->_escapedTags[1]);
 
@@ -251,9 +251,9 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compileEchos($value)
+    protected function compileEchos($value)
     {
-        foreach ($this->_getEchoMethods() as $method => $length) {
+        foreach ($this->getEchoMethods() as $method => $length) {
             $value = $this->$method($value);
         }
 
@@ -265,11 +265,11 @@ class Compiler extends Component
      *
      * @return array
      */
-    protected function _getEchoMethods()
+    protected function getEchoMethods()
     {
         $methods = [
-            '_compileRawEchos'     => strlen(stripcslashes($this->_rawTags[0])),
-            '_compileEscapedEchos' => strlen(stripcslashes($this->_escapedTags[0])),
+            'compileRawEchos'     => strlen(stripcslashes($this->_rawTags[0])),
+            'compileEscapedEchos' => strlen(stripcslashes($this->_escapedTags[0])),
         ];
 
         uksort(
@@ -283,17 +283,17 @@ class Compiler extends Component
             }
 
             // Otherwise give preference to raw tags (assuming they've overridden)
-            if ($method1 === '_compileRawEchos') {
+            if ($method1 === 'compileRawEchos') {
                 return -1;
             }
-            if ($method2 === '_compileRawEchos') {
+            if ($method2 === 'compileRawEchos') {
                 return 1;
             }
 
-            if ($method1 === '_compileEscapedEchos') {
+            if ($method1 === 'compileEscapedEchos') {
                 return -1;
             }
-            if ($method2 === '_compileEscapedEchos') {
+            if ($method2 === 'compileEscapedEchos') {
                 return 1;
             }
 
@@ -311,10 +311,10 @@ class Compiler extends Component
      *
      * @return mixed
      */
-    protected function _compileStatements($value)
+    protected function compileStatements($value)
     {
         $callback = function ($match) {
-            if (method_exists($this, $method = '_compile_' . $match[1])) {
+            if (method_exists($this, $method = 'compile_' . $match[1])) {
                 $match[0] = $this->$method($match[3] ?? null);
             } elseif (isset($this->_directives[$match[1]])) {
                 $func = $this->_directives[$match[1]];
@@ -337,7 +337,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compileRawEchos($value)
+    protected function compileRawEchos($value)
     {
         $pattern = sprintf('/(@)?%s\s*(.+?)\s*%s(\r?\n)?/s', $this->_rawTags[0], $this->_rawTags[1]);
 
@@ -346,7 +346,7 @@ class Compiler extends Component
 
             return $matches[1]
                 ? substr($matches[0], 1)
-                : '<?= ' . $this->_compileEchoDefaults($matches[2]) . '; ?>' . $whitespace;
+                : '<?= ' . $this->compileEchoDefaults($matches[2]) . '; ?>' . $whitespace;
         };
 
         return preg_replace_callback($pattern, $callback, $value);
@@ -359,7 +359,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compileEscapedEchos($value)
+    protected function compileEscapedEchos($value)
     {
         $pattern = sprintf('/(@)?%s\s*(.+?)\s*%s(\r?\n)?/s', $this->_escapedTags[0], $this->_escapedTags[1]);
 
@@ -370,10 +370,10 @@ class Compiler extends Component
 
             if (preg_match('#^[\w.\[\]"\']+$#', $matches[2]) || preg_match('#^\\$[\w]+\(#', $matches[2])) {
                 return $matches[0];
-            } elseif ($this->_isSafeEchos($matches[2])) {
+            } elseif ($this->isSafeEchos($matches[2])) {
                 return "<?= $matches[2] ?>" . (empty($matches[3]) ? '' : $matches[3]);
             } else {
-                return '<?= e(' . $this->_compileEchoDefaults($matches[2]) . '); ?>' . (empty($matches[3]) ? ''
+                return '<?= e(' . $this->compileEchoDefaults($matches[2]) . '); ?>' . (empty($matches[3]) ? ''
                         : $matches[3]);
             }
         };
@@ -386,7 +386,7 @@ class Compiler extends Component
      *
      * @return bool
      */
-    protected function _isSafeEchos($value)
+    protected function isSafeEchos($value)
     {
         return preg_match('#^([a-z\d_]+)\\(#', $value, $match) === 1
             && in_array($match[1], $this->_safe_functions, true);
@@ -399,7 +399,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compileEchoDefaults($value)
+    protected function compileEchoDefaults($value)
     {
         return preg_replace('/^(?=\\$)(.+?)(?:\s+or\s+)(.+?)$/s', 'isset($1) ? $1 : $2', $value);
     }
@@ -411,7 +411,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_yield($expression)
+    protected function compile_yield($expression)
     {
         return "<?= \$renderer->getSection{$expression}; ?>";
     }
@@ -423,7 +423,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_section($expression)
+    protected function compile_section($expression)
     {
         return "<?php \$renderer->startSection{$expression}; ?>";
     }
@@ -435,7 +435,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_append(
+    protected function compile_append(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
@@ -449,7 +449,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_endSection(
+    protected function compile_endSection(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
@@ -463,7 +463,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_stop(
+    protected function compile_stop(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
@@ -477,7 +477,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_else(
+    protected function compile_else(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
@@ -491,7 +491,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_for($expression)
+    protected function compile_for($expression)
     {
         return "<?php for{$expression}: ?>";
     }
@@ -503,7 +503,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_foreach($expression)
+    protected function compile_foreach($expression)
     {
         return "<?php \$index = -1; foreach{$expression}: \$index++; ?>";
     }
@@ -513,7 +513,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_foreachElse()
+    protected function compile_foreachElse()
     {
         $this->_foreachelse_used = true;
         return '<?php endforeach; ?> <?php if($index === -1): ?>';
@@ -526,7 +526,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_can($expression)
+    protected function compile_can($expression)
     {
         return "<?php if (container('authorization')->isAllowed{$expression}): ?>";
     }
@@ -538,7 +538,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_allow($expression)
+    protected function compile_allow($expression)
     {
         $parts = explode(',', substr($expression, 1, -1));
         $expr = $this->compileString($parts[1]);
@@ -552,7 +552,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_cannot($expression)
+    protected function compile_cannot($expression)
     {
         return "<?php if (!container('authorization')->isAllowed{$expression}): ?>";
     }
@@ -564,7 +564,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_if($expression)
+    protected function compile_if($expression)
     {
         return "<?php if{$expression}: ?>";
     }
@@ -576,7 +576,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_elseif($expression)
+    protected function compile_elseif($expression)
     {
         return "<?php elseif{$expression}: ?>";
     }
@@ -588,7 +588,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_while($expression)
+    protected function compile_while($expression)
     {
         return "<?php while{$expression}: ?>";
     }
@@ -600,7 +600,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_endWhile(
+    protected function compile_endWhile(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
@@ -614,7 +614,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_endFor(
+    protected function compile_endFor(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
@@ -628,7 +628,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_endForeach(
+    protected function compile_endForeach(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
@@ -644,7 +644,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_endCan(
+    protected function compile_endCan(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
@@ -658,7 +658,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_endCannot(
+    protected function compile_endCannot(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
@@ -672,7 +672,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_endIf(
+    protected function compile_endIf(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
@@ -686,7 +686,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_include($expression)
+    protected function compile_include($expression)
     {
         return "<?php \$renderer->partial{$expression} ?>";
     }
@@ -698,7 +698,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_partial($expression)
+    protected function compile_partial($expression)
     {
         return "<?php \$renderer->partial{$expression} ?>";
     }
@@ -710,7 +710,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_block($expression)
+    protected function compile_block($expression)
     {
         return "<?php container('view')->block{$expression} ?>";
     }
@@ -722,7 +722,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_break($expression)
+    protected function compile_break($expression)
     {
         return $expression ? "<?php if{$expression} break; ?>" : '<?php break; ?>';
     }
@@ -734,7 +734,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_continue($expression)
+    protected function compile_continue($expression)
     {
         return $expression ? "<?php if{$expression} continue; ?>" : '<?php continue; ?>';
     }
@@ -746,7 +746,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_maxAge($expression)
+    protected function compile_maxAge($expression)
     {
         return "<?php container('view')->setMaxAge{$expression}; ?>";
     }
@@ -758,7 +758,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_layout($expression)
+    protected function compile_layout($expression)
     {
         return "<?php container('view')->setLayout{$expression}; ?>";
     }
@@ -770,7 +770,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_content(
+    protected function compile_content(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
@@ -784,7 +784,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_php($expression)
+    protected function compile_php($expression)
     {
         if ($expression[0] === '(') {
             $expression = (string)substr($expression, 1, -1);
@@ -800,7 +800,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_endPhp(
+    protected function compile_endPhp(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
@@ -814,7 +814,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_widget($expression)
+    protected function compile_widget($expression)
     {
         return "<?php container('view')->widget{$expression}; ?>";
     }
@@ -826,7 +826,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_url($expression)
+    protected function compile_url($expression)
     {
         if (strcspn($expression, '$\'"') === strlen($expression)) {
             $expression = '(\'' . trim($expression, '()') . '\')';
@@ -842,7 +842,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_asset($expression)
+    protected function compile_asset($expression)
     {
         if (strcspn($expression, '$\'"') === strlen($expression)) {
             $expression = '(\'' . trim($expression, '()') . '\')';
@@ -859,7 +859,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_flash(
+    protected function compile_flash(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
@@ -873,7 +873,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_json($expression)
+    protected function compile_json($expression)
     {
         $expression = (string)substr($expression, 1, -1);
         return "<?= json_stringify({$expression}) ;?>";
@@ -886,7 +886,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_debugger(
+    protected function compile_debugger(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
@@ -901,7 +901,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_eol(
+    protected function compile_eol(
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
@@ -915,7 +915,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_date($expression)
+    protected function compile_date($expression)
     {
         $time = substr($expression, 1, -1);
         return "<?= date('Y-m-d H:i:s', $time) ?>";
@@ -928,7 +928,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_action($expression)
+    protected function compile_action($expression)
     {
         if (preg_match('#^\\(([\'"]?)([/_a-z\d]+)\1\\)$#i', $expression, $match)) {
             return action($match[2]);
@@ -942,7 +942,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_use($expression)
+    protected function compile_use($expression)
     {
         return '<?php use ' . substr($expression, 1, -1) . ';?>';
     }
@@ -952,7 +952,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function _compile_html($expression)
+    protected function compile_html($expression)
     {
         return "<?= html{$expression}; ?>";
     }
@@ -960,7 +960,7 @@ class Compiler extends Component
     /**
      * @return string
      */
-    protected function _compile_css()
+    protected function compile_css()
     {
         return "<?php \$renderer->startSection('css'); ?>";
     }
@@ -968,7 +968,7 @@ class Compiler extends Component
     /**
      * @return string
      */
-    protected function _compile_endcss()
+    protected function compile_endcss()
     {
         return '<?php $renderer->appendSection(); ?>';
     }
@@ -976,7 +976,7 @@ class Compiler extends Component
     /**
      * @return string
      */
-    protected function _compile_js()
+    protected function compile_js()
     {
         return "<?php \$renderer->startSection('js'); ?>";
     }
@@ -984,7 +984,7 @@ class Compiler extends Component
     /**
      * @return string
      */
-    protected function _compile_endjs()
+    protected function compile_endjs()
     {
         return '<?php $renderer->appendSection(); ?>';
     }

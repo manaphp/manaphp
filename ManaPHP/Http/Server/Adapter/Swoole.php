@@ -94,7 +94,7 @@ class Swoole extends Server
      *
      * @return void
      */
-    protected function _prepareGlobals($request)
+    protected function prepareGlobals($request)
     {
         $_server = array_change_key_case($request->server, CASE_UPPER);
         unset($_server['SERVER_SOFTWARE']);
@@ -187,7 +187,7 @@ class Swoole extends Server
             $context->response = $response;
 
             try {
-                $this->_prepareGlobals($request);
+                $this->prepareGlobals($request);
 
                 $this->_handler->handle();
             } catch (Throwable $throwable) {

@@ -148,7 +148,7 @@ class Redis extends Component implements RedisInterface
      *
      * @return string
      */
-    protected function _getConnectionType(string $method)
+    protected function getConnectionType(string $method)
     {
         static $map;
 
@@ -237,7 +237,7 @@ class Redis extends Component implements RedisInterface
         } elseif ($this->_connection !== null) {
             return $this->_connection->call($method, $arguments);
         } else {
-            $type = $this->_has_slave ? $this->_getConnectionType($method) : 'default';
+            $type = $this->_has_slave ? $this->getConnectionType($method) : 'default';
 
             $connection = $this->poolManager->pop($this, $this->_timeout, $type);
 

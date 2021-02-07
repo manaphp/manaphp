@@ -48,7 +48,7 @@ class File extends Mailer
      *
      * @return int
      */
-    protected function _send($message, &$failedRecipients = null)
+    protected function sendInternal($message, &$failedRecipients = null)
     {
         if ($this->_pretty) {
             $data = str_repeat('=', 20) . date('Y-m-d H:i:s') . str_repeat('=', 20)

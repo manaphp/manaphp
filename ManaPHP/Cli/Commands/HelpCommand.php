@@ -32,11 +32,11 @@ class HelpCommand extends Command
         $this->console->writeLn('manaphp commands:', Console::FC_GREEN | Console::AT_BOLD);
         ksort($builtin_commands);
         foreach ($builtin_commands as $name => $definition) {
-            $description = $this->_getCommandDescription($definition);
+            $description = $this->getCommandDescription($definition);
             $plainName = ucfirst($name);
             $command = Str::snakelize(basename($plainName, 'Command'));
             $this->console->writeLn(' - ' . $this->console->colorize($command, Console::FC_YELLOW) . $description);
-            $actions = $this->_getActions($definition);
+            $actions = $this->getActions($definition);
 
             $width = max(max(array_map('strlen', array_keys($actions))), 18);
             foreach ($actions as $action => $description) {
@@ -48,11 +48,11 @@ class HelpCommand extends Command
         ksort($app_commands);
         $this->console->writeLn('application commands:', Console::FC_GREEN | Console::AT_BOLD);
         foreach ($app_commands as $name => $definition) {
-            $description = $this->_getCommandDescription($definition);
+            $description = $this->getCommandDescription($definition);
             $plainName = ucfirst($name);
             $command = Str::snakelize(basename($plainName, 'Command'));
             $this->console->writeLn(' - ' . $this->console->colorize($command, Console::FC_YELLOW) . $description);
-            $actions = $this->_getActions($definition);
+            $actions = $this->getActions($definition);
 
             $width = max(max(array_map('strlen', array_keys($actions))), 18);
             foreach ($actions as $action => $description) {
@@ -68,7 +68,7 @@ class HelpCommand extends Command
      *
      * @return string
      */
-    protected function _getCommandDescription($class)
+    protected function getCommandDescription($class)
     {
         $rc = new ReflectionClass($class);
         if (($comment = $rc->getDocComment()) === false) {
@@ -92,7 +92,7 @@ class HelpCommand extends Command
      *
      * @return string[]
      */
-    protected function _getActions($commandClassName)
+    protected function getActions($commandClassName)
     {
         $actions = [];
         $rc = new ReflectionClass($commandClassName);
@@ -132,7 +132,7 @@ class HelpCommand extends Command
      *
      * @throws \ManaPHP\Exception\JsonException
      */
-    protected function _commandHelp($rm, $method)
+    protected function commandHelps($rm, $method)
     {
         $lines = [];
         foreach (preg_split('#[\r\n]+#', $rm->getDocComment()) as $line) {
@@ -252,7 +252,7 @@ class HelpCommand extends Command
             if (method_exists($instance, $helpMethod)) {
                 $instance->$helpMethod();
             } else {
-                $this->_commandHelp($rm, $method);
+                $this->commandHelps($rm, $method);
             }
         }
     }

@@ -29,7 +29,7 @@ class Command extends \ManaPHP\Cli\Command
             }
 
             if ($methods !== []) {
-                $content = $this->_renderService($className, $methods);
+                $content = $this->renderService($className, $methods);
                 $file = rtrim($output, '/') . '/' . basename($className, 'Controller') . 'Service.php';
                 LocalFS::filePut($file, $content);
 
@@ -45,7 +45,7 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @return string
      */
-    protected function _renderService($class, $methods)
+    protected function renderService($class, $methods)
     {
         $serviceName = basename($class, 'Controller') . 'Service';
 

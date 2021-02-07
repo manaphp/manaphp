@@ -47,7 +47,7 @@ class Purifier extends Component implements PurifierInterface
      *
      * @return void
      */
-    protected function _purify($nodes, $allowedTags, $allowedAttributes)
+    protected function purifyInternal($nodes, $allowedTags, $allowedAttributes)
     {
         $types = [XML_ELEMENT_NODE, XML_ATTRIBUTE_NODE, XML_DOCUMENT_NODE, XML_TEXT_NODE, XML_DOCUMENT_TYPE_NODE];
 
@@ -103,7 +103,7 @@ class Purifier extends Component implements PurifierInterface
             }
 
             if ($node->hasChildNodes()) {
-                $this->_purify(iterator_to_array($node->childNodes), $allowedTags, $allowedAttributes);
+                $this->purifyInternal(iterator_to_array($node->childNodes), $allowedTags, $allowedAttributes);
             }
         }
     }
@@ -143,7 +143,7 @@ class Purifier extends Component implements PurifierInterface
             $attributes = $this->_allowedAttributes;
         }
 
-        $this->_purify(iterator_to_array($body->item(0)->childNodes), $tags, $attributes);
+        $this->purifyInternal(iterator_to_array($body->item(0)->childNodes), $tags, $attributes);
         $body = $doc->getElementsByTagName('body');
         return substr($doc->saveHTML($body->item(0)), 6, -7);
     }

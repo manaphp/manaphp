@@ -80,7 +80,7 @@ class Ws extends Client
      * @throws \ManaPHP\Rpc\Client\Exception
      * @throws \ManaPHP\Rpc\Client\ProtocolException
      */
-    protected function _parseResponse($response)
+    protected function parseResponse($response)
     {
         $json = json_parse($response);
 
@@ -113,7 +113,7 @@ class Ws extends Client
         try {
             /** @noinspection PhpUnusedLocalVariableInspection */
             $success = false;
-            $this->_parseResponse($message->payload);
+            $this->parseResponse($message->payload);
             $success = true;
         } finally {
             if (!$success) {
@@ -137,7 +137,7 @@ class Ws extends Client
 
         $message = $this->_client->request($request, $timout);
 
-        $response = $this->_parseResponse($message->payload);
+        $response = $this->parseResponse($message->payload);
 
         if (!isset($response['code'], $response['message'])) {
             throw new ProtocolException('missing `code` or `message` field');

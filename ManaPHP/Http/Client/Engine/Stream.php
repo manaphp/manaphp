@@ -37,7 +37,7 @@ class Stream extends Component implements EngineInterface
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    protected function _request_with_keepalive($request)
+    protected function request_with_keepalive($request)
     {
         $host = parse_url($request->url, PHP_URL_HOST);
         $port = parse_url($request->url, PHP_URL_PORT);
@@ -268,18 +268,18 @@ class Stream extends Component implements EngineInterface
     {
         if ($keepalive) {
             if ($this->_stream === null) {
-                return $this->_request_with_keepalive($request);
+                return $this->request_with_keepalive($request);
             } else {
                 try {
-                    return $this->_request_with_keepalive($request);
+                    return $this->request_with_keepalive($request);
                 } catch (TimeoutException $exception) {
                     fclose($this->_stream);
                     $this->_stream = null;
-                    return $this->_request_with_keepalive($request);
+                    return $this->request_with_keepalive($request);
                 }
             }
         } else {
-            return $this->_request_without_keepalive($request);
+            return $this->request_without_keepalive($request);
         }
     }
 
@@ -288,7 +288,7 @@ class Stream extends Component implements EngineInterface
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    protected function _request_without_keepalive($request)
+    protected function request_without_keepalive($request)
     {
         $http = [];
 

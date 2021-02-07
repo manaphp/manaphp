@@ -22,10 +22,10 @@ class IdentityContext implements Stickyable
  */
 class Identity extends Component implements IdentityInterface
 {
-    protected function _createContext()
+    protected function createContext()
     {
         /** @var \ManaPHP\Identifying\IdentityContext $context */
-        $context = parent::_createContext();
+        $context = parent::createContext();
         $context->claims = $this->authenticate();
 
         return $context;

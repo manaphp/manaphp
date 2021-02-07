@@ -36,8 +36,8 @@ class Route implements RouteInterface
     public function __construct($pattern, $paths = null, $methods = null, $case_sensitive = true)
     {
         $this->_pattern = $pattern;
-        $this->_compiled = $this->_compilePattern($pattern, $case_sensitive);
-        $this->_paths = $this->_normalizePaths($paths);
+        $this->_compiled = $this->compilePattern($pattern, $case_sensitive);
+        $this->_paths = $this->normalizePaths($paths);
         $this->_methods = $methods;
     }
 
@@ -49,7 +49,7 @@ class Route implements RouteInterface
      *
      * @return string
      */
-    protected function _compilePattern($pattern, $case_sensitive)
+    protected function compilePattern($pattern, $case_sensitive)
     {
         if (strpbrk($pattern, ':{') === false) {
             return $pattern;
@@ -105,7 +105,7 @@ class Route implements RouteInterface
      *
      * @return array
      */
-    protected function _normalizePaths($paths = [])
+    protected function normalizePaths($paths = [])
     {
         $routePaths = [];
 

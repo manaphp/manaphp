@@ -160,7 +160,7 @@ class DebuggerPlugin extends Plugin
      *
      * @return string|false
      */
-    protected function _readData($key)
+    protected function readData($key)
     {
         if ($this->_ttl) {
             $content = $this->redisCache->get($this->_prefix . $key);
@@ -179,7 +179,7 @@ class DebuggerPlugin extends Plugin
      * @return void
      * @throws \ManaPHP\Exception\JsonException
      */
-    protected function _writeData($key, $data)
+    protected function writeData($key, $data)
     {
         $content = gzencode(json_stringify($data, JSON_PARTIAL_OUTPUT_ON_ERROR));
         if ($this->_ttl) {
@@ -209,7 +209,7 @@ class DebuggerPlugin extends Plugin
             && preg_match('#^([\w/]+)\.(html|json|txt|raw)$#', $debugger, $match)
         ) {
             $context->enabled = false;
-            if (($data = $this->_readData($match[1])) !== false) {
+            if (($data = $this->readData($match[1])) !== false) {
                 $ext = $match[2];
                 if ($ext === 'html') {
                     $this->response->setContent(strtr(LocalFS::fileGet($this->_template), ['DEBUGGER_DATA' => $data]));
@@ -248,7 +248,7 @@ class DebuggerPlugin extends Plugin
         $context = $this->_context;
 
         if ($context->enabled) {
-            $this->_writeData($context->key, $this->_getData());
+            $this->writeData($context->key, $this->getData());
         }
     }
 
@@ -432,7 +432,7 @@ class DebuggerPlugin extends Plugin
     /**
      * @return array
      */
-    protected function _getBasic()
+    protected function getBasic()
     {
         $context = $this->_context;
 
@@ -464,12 +464,12 @@ class DebuggerPlugin extends Plugin
     /**
      * @return array
      */
-    protected function _getData()
+    protected function getData()
     {
         $context = $this->_context;
 
         $data = [];
-        $data['basic'] = $this->_getBasic();
+        $data['basic'] = $this->getBasic();
         $levels = array_flip($this->logger->getLevels());
         $data['logger'] = ['log' => $context->log, 'levels' => $levels, 'level' => Logger::LEVEL_DEBUG];
         $data['sql'] = [

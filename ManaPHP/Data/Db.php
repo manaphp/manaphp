@@ -365,7 +365,7 @@ class Db extends Component implements DbInterface
      *
      * @return string
      */
-    protected function _completeTable($table)
+    protected function completeTable($table)
     {
         if (($pos = strpos($table, '.')) === false) {
             return '[' . $this->_prefix . $table . ']';
@@ -385,7 +385,7 @@ class Db extends Component implements DbInterface
     {
         $context = $this->_context;
 
-        $table = $this->_completeTable($table);
+        $table = $this->completeTable($table);
 
         if (!$record) {
             throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
@@ -436,7 +436,7 @@ class Db extends Component implements DbInterface
      */
     public function insertBySql($table, $sql, $bind = [])
     {
-        $table = $this->_completeTable($table);
+        $table = $this->completeTable($table);
 
         return $this->execute('insert', /**@lang text */ "INSERT INTO $table $sql", $bind);
     }
@@ -454,7 +454,7 @@ class Db extends Component implements DbInterface
      */
     public function update($table, $fieldValues, $conditions, $bind = [])
     {
-        $table = $this->_completeTable($table);
+        $table = $this->completeTable($table);
 
         if (!$fieldValues) {
             throw new InvalidArgumentException(['Unable to update :table table without data', 'table' => $table]);
@@ -511,7 +511,7 @@ class Db extends Component implements DbInterface
      */
     public function updateBySql($table, $sql, $bind = [])
     {
-        $table = $this->_completeTable($table);
+        $table = $this->completeTable($table);
 
         return $this->execute('update', /** @lang text */ "UPDATE $table SET $sql", $bind);
     }
@@ -571,7 +571,7 @@ class Db extends Component implements DbInterface
      */
     public function delete($table, $conditions, $bind = [])
     {
-        $table = $this->_completeTable($table);
+        $table = $this->completeTable($table);
 
         if (!$conditions) {
             throw new NotSupportedException(['delete must with a condition!']);
@@ -607,7 +607,7 @@ class Db extends Component implements DbInterface
      */
     public function deleteBySql($table, $sql, $bind = [])
     {
-        $table = $this->_completeTable($table);
+        $table = $this->completeTable($table);
 
         return $this->execute('delete', /**@lang text */ "DELETE FROM $table WHERE $sql", $bind);
     }
@@ -627,7 +627,7 @@ class Db extends Component implements DbInterface
      *
      * @return string
      */
-    protected function _quote($value)
+    protected function quote($value)
     {
         return "'" . str_replace($value, "'", "\\'") . "'";
     }
@@ -638,10 +638,10 @@ class Db extends Component implements DbInterface
      *
      * @return int|string
      */
-    protected function _parseBindValue($value, $preservedStrLength)
+    protected function parseBindValue($value, $preservedStrLength)
     {
         if (is_string($value)) {
-            $quoted = $this->_quote($value);
+            $quoted = $this->quote($value);
             if ($preservedStrLength > 0 && strlen($quoted) >= $preservedStrLength) {
                 return substr($quoted, 0, $preservedStrLength) . '...';
             } else {
@@ -679,7 +679,7 @@ class Db extends Component implements DbInterface
         } else {
             $replaces = [];
             foreach ($bind as $key => $value) {
-                $replaces[':' . $key] = $this->_parseBindValue($value, $preservedStrLength);
+                $replaces[':' . $key] = $this->parseBindValue($value, $preservedStrLength);
             }
 
             return strtr($context->sql, $replaces);
@@ -896,7 +896,7 @@ class Db extends Component implements DbInterface
             $connection = $this->poolManager->pop($this, $this->_timeout, $type);
         }
 
-        $table = $this->_completeTable($table);
+        $table = $this->completeTable($table);
         try {
             $start_time = microtime(true);
             $meta = $connection->getMetadata($table);

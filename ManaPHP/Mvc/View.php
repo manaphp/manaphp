@@ -182,7 +182,7 @@ class View extends Component implements ViewInterface
     /**
      * @return false|string
      */
-    protected function _findLayout()
+    protected function findLayout()
     {
         $context = $this->_context;
 
@@ -278,7 +278,7 @@ class View extends Component implements ViewInterface
             $context->content = $this->renderer->render($template, $context->vars, false);
 
             if ($context->layout !== false) {
-                $layout = $this->_findLayout();
+                $layout = $this->findLayout();
                 $context->content = $this->renderer->render($layout, $context->vars, false);
             }
         } finally {

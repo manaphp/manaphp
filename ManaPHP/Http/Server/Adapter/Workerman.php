@@ -87,7 +87,7 @@ class Workerman extends Server
     /**
      * @return void
      */
-    protected function _prepareGlobals()
+    protected function prepareGlobals()
     {
         $_SERVER['REQUEST_TIME_FLOAT'] = microtime(true);
 
@@ -152,7 +152,7 @@ class Workerman extends Server
      */
     public function onRequest($connection)
     {
-        $this->_prepareGlobals();
+        $this->prepareGlobals();
 
         try {
             $context = $this->_context;

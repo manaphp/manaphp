@@ -91,7 +91,7 @@ abstract class Connection extends Component implements ConnectionInterface
     /**
      * @return bool
      */
-    protected function _ping()
+    protected function ping()
     {
         try {
             @$this->_pdo->query("SELECT 'PING'")->fetchAll();
@@ -104,7 +104,7 @@ abstract class Connection extends Component implements ConnectionInterface
     /**
      * @return \PDO
      */
-    protected function _getPdo()
+    protected function getPdo()
     {
         if ($this->_pdo === null) {
             $dsn = $this->_dsn;
@@ -133,7 +133,7 @@ abstract class Connection extends Component implements ConnectionInterface
      *
      * @return string
      */
-    protected function _escapeIdentifier($identifier)
+    protected function escapeIdentifier($identifier)
     {
         $list = [];
         foreach (explode('.', $identifier) as $id) {
@@ -152,13 +152,13 @@ abstract class Connection extends Component implements ConnectionInterface
      *
      * @return \PDOStatement
      */
-    protected function _getPrepared($sql)
+    protected function getPrepared($sql)
     {
         if (!isset($this->_prepared[$sql])) {
             if (count($this->_prepared) > 8) {
                 array_shift($this->_prepared);
             }
-            return $this->_prepared[$sql] = @$this->_getPdo()->prepare($sql);
+            return $this->_prepared[$sql] = @$this->getPdo()->prepare($sql);
         }
         return $this->_prepared[$sql];
     }
@@ -169,9 +169,9 @@ abstract class Connection extends Component implements ConnectionInterface
      *
      * @return \PDOStatement
      */
-    protected function _execute($sql, $bind)
+    protected function executeInternal($sql, $bind)
     {
-        $statement = $this->_getPrepared($sql);
+        $statement = $this->getPrepared($sql);
 
         $tr = [];
         foreach ($bind as $parameter => $value) {
@@ -219,19 +219,19 @@ abstract class Connection extends Component implements ConnectionInterface
 
         if ($this->_in_transaction) {
             try {
-                $r = $bind ? $this->_execute($sql, $bind)->rowCount() : @$this->_getPdo()->exec($sql);
-                return $has_insert_id ? $this->_getPdo()->lastInsertId() : $r;
+                $r = $bind ? $this->executeInternal($sql, $bind)->rowCount() : @$this->getPdo()->exec($sql);
+                return $has_insert_id ? $this->getPdo()->lastInsertId() : $r;
             } catch (PDOException $exception) {
             }
         } else {
             try {
-                $r = $bind ? $this->_execute($sql, $bind)->rowCount() : @$this->_getPdo()->exec($sql);
-                return $has_insert_id ? $this->_getPdo()->lastInsertId() : $r;
+                $r = $bind ? $this->executeInternal($sql, $bind)->rowCount() : @$this->getPdo()->exec($sql);
+                return $has_insert_id ? $this->getPdo()->lastInsertId() : $r;
             } catch (PDOException $exception) {
                 try {
                     $this->close();
-                    $r = $bind ? $this->_execute($sql, $bind)->rowCount() : @$this->_getPdo()->exec($sql);
-                    return $has_insert_id ? $this->_getPdo()->lastInsertId() : $r;
+                    $r = $bind ? $this->executeInternal($sql, $bind)->rowCount() : @$this->getPdo()->exec($sql);
+                    return $has_insert_id ? $this->getPdo()->lastInsertId() : $r;
                 } catch (PDOException $exception) {
                 }
             }
@@ -254,18 +254,18 @@ abstract class Connection extends Component implements ConnectionInterface
 
         if ($this->_in_transaction) {
             try {
-                $statement = $bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql);
+                $statement = $bind ? $this->executeInternal($sql, $bind) : @$this->getPdo()->query($sql);
                 return $statement->fetchAll($mode);
             } catch (PDOException $exception) {
             }
         } else {
             try {
-                $statement = $bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql);
+                $statement = $bind ? $this->executeInternal($sql, $bind) : @$this->getPdo()->query($sql);
                 return $statement->fetchAll($mode);
             } catch (PDOException $exception) {
                 try {
                     $this->close();
-                    $statement = $bind ? $this->_execute($sql, $bind) : @$this->_getPdo()->query($sql);
+                    $statement = $bind ? $this->executeInternal($sql, $bind) : @$this->getPdo()->query($sql);
                     return $statement->fetchAll($mode);
                 } catch (PDOException $exception) {
                 }
@@ -313,11 +313,11 @@ abstract class Connection extends Component implements ConnectionInterface
         }
 
         try {
-            return $this->_in_transaction = $this->_getPdo()->beginTransaction();
+            return $this->_in_transaction = $this->getPdo()->beginTransaction();
         } catch (PDOException $exception) {
             try {
                 $this->close();
-                return $this->_in_transaction = $this->_getPdo()->beginTransaction();
+                return $this->_in_transaction = $this->getPdo()->beginTransaction();
             } catch (PDOException $exception) {
                 throw new DbException($exception->getMessage(), $exception->getCode(), $exception);
             }

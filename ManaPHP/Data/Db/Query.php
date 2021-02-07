@@ -66,7 +66,7 @@ class Query extends \ManaPHP\Data\Query
      *
      * @return \ManaPHP\Data\DbInterface
      */
-    protected function _getDb($db)
+    protected function getDb($db)
     {
         return $db === '' ? $this->_db : $this->getShared($db);
     }
@@ -683,7 +683,7 @@ class Query extends \ManaPHP\Data\Query
      *
      * @return string
      */
-    protected function _buildGroup($group)
+    protected function buildGroup($group)
     {
         $r = '';
         foreach ($group as $item) {
@@ -709,8 +709,8 @@ class Query extends \ManaPHP\Data\Query
             if (count($tables) !== 1) {
                 throw new ShardingTooManyException(__METHOD__);
             }
-            $db = $this->_getDb(key($shards));
-            $this->_sql = $this->_buildSql($db, $tables[0], $this->_joins);
+            $db = $this->getDb(key($shards));
+            $this->_sql = $this->buildSql($db, $tables[0], $this->_joins);
         }
 
         return $this->_sql;
@@ -721,7 +721,7 @@ class Query extends \ManaPHP\Data\Query
      *
      * @return string
      */
-    protected function _buildOrder($order)
+    protected function buildOrder($order)
     {
         $r = '';
 
@@ -743,7 +743,7 @@ class Query extends \ManaPHP\Data\Query
      *
      * @return string|array
      */
-    protected function _buildFields($joins)
+    protected function buildFields($joins)
     {
         if ($this->_fields !== null) {
             return $this->_fields;
@@ -759,7 +759,7 @@ class Query extends \ManaPHP\Data\Query
      *
      * @return string
      */
-    protected function _translateField2Columns($sql)
+    protected function translateField2Columns($sql)
     {
         if (!($model = $this->_model) || !$map = $model->map()) {
             return $sql;
@@ -783,14 +783,14 @@ class Query extends \ManaPHP\Data\Query
      *
      * @return string
      */
-    protected function _buildSql($db, $table, $joins)
+    protected function buildSql($db, $table, $joins)
     {
         $params = [];
         if ($this->_distinct) {
             $params['distinct'] = true;
         }
 
-        $params['fields'] = $this->_buildFields($joins);
+        $params['fields'] = $this->buildFields($joins);
 
         $table = $db->getPrefix() . $table;
         $table = '[' . str_replace('.', '].[', $table) . ']';
@@ -829,7 +829,7 @@ class Query extends \ManaPHP\Data\Query
         }
 
         if ($this->_group) {
-            $params['group'] = $this->_buildGroup($this->_group);
+            $params['group'] = $this->buildGroup($this->_group);
         }
 
         if ($this->_having !== null) {
@@ -837,7 +837,7 @@ class Query extends \ManaPHP\Data\Query
         }
 
         if ($this->_order) {
-            $params['order'] = $this->_buildOrder($this->_order);
+            $params['order'] = $this->buildOrder($this->_order);
         }
 
         if ($this->_limit !== null) {
@@ -853,7 +853,7 @@ class Query extends \ManaPHP\Data\Query
         }
 
         $sql = $db->buildSql($params);
-        $sql = $this->_translateField2Columns($sql);
+        $sql = $this->translateField2Columns($sql);
         //compatible with other SQL syntax
         $replaces = [];
         foreach ($this->_bind as $key => $_) {
@@ -896,9 +896,9 @@ class Query extends \ManaPHP\Data\Query
      *
      * @return array
      */
-    protected function _query($db, $table)
+    protected function query($db, $table)
     {
-        $connection = $this->_getDb($db);
+        $connection = $this->getDb($db);
 
         if ($this->_joins) {
             $joins = [];
@@ -933,7 +933,7 @@ class Query extends \ManaPHP\Data\Query
             $joins = [];
         }
 
-        $this->_sql = $this->_buildSql($connection, $table, $joins);
+        $this->_sql = $this->buildSql($connection, $table, $joins);
 
         $rows = $connection->fetchAll($this->_sql, $this->_bind, PDO::FETCH_ASSOC, $this->_force_master);
 
@@ -974,7 +974,7 @@ class Query extends \ManaPHP\Data\Query
 
         $result = [];
         if (count($shards) === 1 && count(current($shards)) === 1) {
-            $result = $this->_query(key($shards), current($shards)[0]);
+            $result = $this->query(key($shards), current($shards)[0]);
         } elseif ($this->_order) {
             $copy = clone $this;
 
@@ -986,7 +986,7 @@ class Query extends \ManaPHP\Data\Query
             $valid_times = 0;
             foreach ($shards as $db => $tables) {
                 foreach ($tables as $table) {
-                    if ($r = $copy->_query($db, $table)) {
+                    if ($r = $copy->query($db, $table)) {
                         $valid_times++;
                         $result = $result ? array_merge($result, $r) : $r;
                     }
@@ -1001,7 +1001,7 @@ class Query extends \ManaPHP\Data\Query
         } elseif ($this->_limit) {
             foreach ($shards as $db => $tables) {
                 foreach ($tables as $table) {
-                    if ($r = $this->_query($db, $table)) {
+                    if ($r = $this->query($db, $table)) {
                         $result = $result ? array_merge($result, $r) : $r;
                         if (count($result) >= $this->_offset + $this->_limit) {
                             $result = array_slice($result, (int)$this->_offset, $this->_limit);
@@ -1015,7 +1015,7 @@ class Query extends \ManaPHP\Data\Query
         } else {
             foreach ($shards as $db => $tables) {
                 foreach ($tables as $table) {
-                    if ($r = $this->_query($db, $table)) {
+                    if ($r = $this->query($db, $table)) {
                         $result = $result ? array_merge($result, $r) : $r;
                     }
                 }
@@ -1031,7 +1031,7 @@ class Query extends \ManaPHP\Data\Query
      *
      * @return string
      */
-    protected function _buildAggregate($expr, $group)
+    protected function buildAggregate($expr, $group)
     {
         $fields = '';
 
@@ -1070,9 +1070,9 @@ class Query extends \ManaPHP\Data\Query
         $shards = $this->getShards();
 
         if (count($shards) === 1 && count(current($shards)) === 1) {
-            $this->_fields = $this->_buildAggregate($expr, $this->_group);
+            $this->_fields = $this->buildAggregate($expr, $this->_group);
 
-            $result = $this->_query(key($shards), current($shards)[0]);
+            $result = $this->query(key($shards), current($shards)[0]);
         } else {
             if ($this->_having) {
                 throw new NotSupportedException('sharding not support having');
@@ -1103,12 +1103,12 @@ class Query extends \ManaPHP\Data\Query
                 }
             }
 
-            $this->_fields = $this->_buildAggregate($this->_aggregate, $this->_group);
+            $this->_fields = $this->buildAggregate($this->_aggregate, $this->_group);
 
             $rows = [];
             foreach ($shards as $db => $tables) {
                 foreach ($tables as $table) {
-                    if ($r = $this->_query($db, $table)) {
+                    if ($r = $this->query($db, $table)) {
                         $rows = $rows ? array_merge($rows, $r) : $r;
                     }
                 }
@@ -1143,7 +1143,7 @@ class Query extends \ManaPHP\Data\Query
         $shards = $this->getShards();
         foreach ($shards as $db => $tables) {
             foreach ($tables as $table) {
-                $result = $copy->_query($db, $table);
+                $result = $copy->query($db, $table);
                 $row_count += $this->_group ? count($result) : $result[0]['row_count'];
             }
         }
@@ -1193,13 +1193,13 @@ class Query extends \ManaPHP\Data\Query
         if (count($shards) === 1 && count(current($shards)) === 1) {
             $db = key($shards);
             $table = current($shards)[0];
-            foreach ($this->_query($db, $table) as $row) {
+            foreach ($this->query($db, $table) as $row) {
                 $values[] = $row[$field];
             }
         } else {
             foreach ($shards as $db => $tables) {
                 foreach ($tables as $table) {
-                    foreach ($this->_query($db, $table) as $row) {
+                    foreach ($this->query($db, $table) as $row) {
                         $value = $row[$field];
                         if (!in_array($value, $values, true)) {
                             $values[] = $value;
@@ -1231,7 +1231,7 @@ class Query extends \ManaPHP\Data\Query
 
         $affected_count = 0;
         foreach ($shards as $db => $tables) {
-            $db = $this->_getDb($db);
+            $db = $this->getDb($db);
             foreach ($tables as $table) {
                 $affected_count += $db->update($table, $fieldValues, $this->_conditions, $this->_bind);
             }
@@ -1249,7 +1249,7 @@ class Query extends \ManaPHP\Data\Query
 
         $affected_count = 0;
         foreach ($shards as $db => $tables) {
-            $db = $this->_getDb($db);
+            $db = $this->getDb($db);
             foreach ($tables as $table) {
                 $affected_count += $db->delete($table, $this->_conditions, $this->_bind);
             }

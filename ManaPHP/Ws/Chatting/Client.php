@@ -31,7 +31,7 @@ class Client extends Component implements ClientInterface
      * @param string|array $receivers
      * @param string|array $message
      */
-    protected function _push($type, $room, $receivers, $message)
+    protected function push($type, $room, $receivers, $message)
     {
         if (!is_string($message)) {
             $message = json_stringify($message);
@@ -54,7 +54,7 @@ class Client extends Component implements ClientInterface
      */
     public function pushToRoom($room, $message)
     {
-        $this->_push('message.room', $room, '*', $message);
+        $this->push('message.room', $room, '*', $message);
     }
 
     /**
@@ -66,7 +66,7 @@ class Client extends Component implements ClientInterface
      */
     public function pushToId($room, $id, $message)
     {
-        $this->_push("message.id", $room, $id, $message);
+        $this->push("message.id", $room, $id, $message);
     }
 
     /**
@@ -78,12 +78,12 @@ class Client extends Component implements ClientInterface
      */
     public function pushToName($room, $name, $message)
     {
-        $this->_push("message.name", $room, $name, $message);
+        $this->push("message.name", $room, $name, $message);
     }
 
     public function broadcast($message)
     {
-        $this->_push('message.broadcast', '*', '*', $message);
+        $this->push('message.broadcast', '*', '*', $message);
     }
 
     /**
@@ -94,7 +94,7 @@ class Client extends Component implements ClientInterface
      */
     public function closeRoom($room, $message)
     {
-        $this->_push('room.close', $room, '*', $message);
+        $this->push('room.close', $room, '*', $message);
     }
 
     /**
@@ -106,7 +106,7 @@ class Client extends Component implements ClientInterface
      */
     public function kickoutId($room, $id, $message)
     {
-        $this->_push("kickout.id", $room, $id, $message);
+        $this->push("kickout.id", $room, $id, $message);
     }
 
     /**
@@ -118,6 +118,6 @@ class Client extends Component implements ClientInterface
      */
     public function kickoutName($room, $name, $message)
     {
-        $this->_push('kickout.name', $room, $name, $message);
+        $this->push('kickout.name', $room, $name, $message);
     }
 }

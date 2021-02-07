@@ -259,7 +259,7 @@ trait Path
      *
      * @return string|false
      */
-    protected static function _calcHierarchyNextChild($code)
+    protected static function calcHierarchyNextChild($code)
     {
         $parent_length = static::getHierarchyParentLength($code);
         if ($parent_length < 0) {
@@ -298,7 +298,7 @@ trait Path
         if ($max === null) {
             return $code . str_pad('', $child_length - strlen($code) - 1, '0') . '1';
         } else {
-            return static::_calcHierarchyNextChild($max);
+            return static::calcHierarchyNextChild($max);
         }
     }
 }

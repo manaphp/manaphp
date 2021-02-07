@@ -11,7 +11,7 @@ class CssToXPath
      */
     public function transform($path)
     {
-        $path = $this->_transform($path);
+        $path = $this->transformInternal($path);
         if (str_contains($path, ':')) {
 
             $path = preg_replace_callback(
@@ -63,7 +63,7 @@ class CssToXPath
      *
      * @return string
      */
-    protected function _transform($path_src)
+    protected function transformInternal($path_src)
     {
         $path = (string)$path_src;
 
@@ -86,7 +86,7 @@ class CssToXPath
         $path = preg_replace('|\s+>\s+|', '>', $path);
         $segments = preg_split('/\s+/', $path);
         foreach ($segments as $key => $segment) {
-            $pathSegment = static::_tokenize($segment);
+            $pathSegment = static::tokenize($segment);
             if (0 === $key) {
                 if (str_starts_with($pathSegment, '[contains(')) {
                     $paths[0] .= '*' . ltrim($pathSegment, '*');
@@ -120,7 +120,7 @@ class CssToXPath
      *
      * @return string
      */
-    protected static function _tokenize($expression_src)
+    protected static function tokenize($expression_src)
     {
         // Child selectors
         $expression = str_replace('>', '/', $expression_src);

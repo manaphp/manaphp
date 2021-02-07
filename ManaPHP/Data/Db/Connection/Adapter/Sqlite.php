@@ -27,7 +27,7 @@ class Sqlite extends Connection
      */
     public function getMetadata($table)
     {
-        $fields = $this->query('PRAGMA table_info(' . $this->_escapeIdentifier($table) . ')', null);
+        $fields = $this->query('PRAGMA table_info(' . $this->escapeIdentifier($table) . ')', null);
 
         $attributes = [];
         $primaryKeys = [];
@@ -62,7 +62,7 @@ class Sqlite extends Connection
      */
     public function truncate($table)
     {
-        $this->execute('DELETE' . ' FROM ' . $this->_escapeIdentifier($table));
+        $this->execute('DELETE' . ' FROM ' . $this->escapeIdentifier($table));
         $this->execute('DELETE' . ' FROM sqlite_sequence WHERE name=:name', ['name' => $table]);
 
         return $this;
@@ -76,7 +76,7 @@ class Sqlite extends Connection
      */
     public function drop($table)
     {
-        $this->execute('DROP' . ' TABLE IF EXISTS ' . $this->_escapeIdentifier($table));
+        $this->execute('DROP' . ' TABLE IF EXISTS ' . $this->escapeIdentifier($table));
 
         return $this;
     }

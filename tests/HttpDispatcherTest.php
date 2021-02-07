@@ -11,12 +11,12 @@ require __DIR__ . '/Dispatcher/Controllers.php';
 
 class tDispatcher extends Dispatcher
 {
-    protected function _handleException($exception)
+    protected function handleException($exception)
     {
 
     }
 
-    protected function _throwDispatchException($message, $exceptionCode = 0)
+    protected function throwDispatchException($message, $exceptionCode = 0)
     {
 
     }

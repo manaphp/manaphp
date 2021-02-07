@@ -78,7 +78,7 @@ class JoinPoint implements Unaspectable
 
         $oid = spl_object_id($this);
         self::$_oid2obj[$oid] = $this;
-        $signature = $signature ?? self::_buildMethodSignature($parent, $method);
+        $signature = $signature ?? self::buildMethodSignature($parent, $method);
         $code = "return ManaPHP\Aop\JoinPoint::invokeAspect($oid, \$this, func_get_args());";
 
         $parents = class_parents($class);
@@ -111,7 +111,7 @@ class JoinPoint implements Unaspectable
      *
      * @return string
      */
-    protected static function _buildMethodSignature($class, $method)
+    protected static function buildMethodSignature($class, $method)
     {
         $signature = [];
         $rm = new ReflectionMethod($class, $method);

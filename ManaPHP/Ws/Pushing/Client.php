@@ -43,7 +43,7 @@ class Client extends Component implements ClientInterface
      *
      * @return void
      */
-    protected function _push($type, $receivers, $message, $endpoint)
+    protected function push($type, $receivers, $message, $endpoint)
     {
         if (is_array($receivers)) {
             $receivers = implode(',', $receivers);
@@ -71,7 +71,7 @@ class Client extends Component implements ClientInterface
      */
     public function pushToId($receivers, $message, $endpoint = null)
     {
-        $this->_push('id', $receivers, $message, $endpoint);
+        $this->push('id', $receivers, $message, $endpoint);
     }
 
     /**
@@ -83,7 +83,7 @@ class Client extends Component implements ClientInterface
      */
     public function pushToName($receivers, $message, $endpoint = null)
     {
-        $this->_push('name', $receivers, $message, $endpoint);
+        $this->push('name', $receivers, $message, $endpoint);
     }
 
     /**
@@ -95,7 +95,7 @@ class Client extends Component implements ClientInterface
      */
     public function pushToRoom($receivers, $message, $endpoint = null)
     {
-        $this->_push('room', $receivers, $message, $endpoint);
+        $this->push('room', $receivers, $message, $endpoint);
     }
 
     /**
@@ -107,7 +107,7 @@ class Client extends Component implements ClientInterface
      */
     public function pushToRole($receivers, $message, $endpoint = null)
     {
-        $this->_push('role', $receivers, $message, $endpoint);
+        $this->push('role', $receivers, $message, $endpoint);
     }
 
     /**
@@ -118,7 +118,7 @@ class Client extends Component implements ClientInterface
      */
     public function pushToAll($message, $endpoint = null)
     {
-        $this->_push('all', '*', $message, $endpoint);
+        $this->push('all', '*', $message, $endpoint);
     }
 
     /**
@@ -129,6 +129,6 @@ class Client extends Component implements ClientInterface
      */
     public function broadcast($message, $endpoint = null)
     {
-        $this->_push('broadcast', '*', $message, $endpoint);
+        $this->push('broadcast', '*', $message, $endpoint);
     }
 }

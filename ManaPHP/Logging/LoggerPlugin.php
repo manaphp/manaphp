@@ -92,7 +92,7 @@ class LoggerPlugin extends Plugin
      *
      * @return string|false
      */
-    protected function _readData($key)
+    protected function readData($key)
     {
         if ($this->_ttl) {
             $data = $this->redisCache->get($this->_prefix . $key);
@@ -112,7 +112,7 @@ class LoggerPlugin extends Plugin
      *
      * @throws \ManaPHP\Exception\JsonException
      */
-    protected function _writeData($key, $data)
+    protected function writeData($key, $data)
     {
         $content = gzencode(json_stringify($data, JSON_PARTIAL_OUTPUT_ON_ERROR));
         if ($this->_ttl) {
@@ -133,7 +133,7 @@ class LoggerPlugin extends Plugin
             && preg_match('#^([\w/]+)\.(html|json|txt|raw)$#', $logger, $match)
         ) {
             $context->enabled = false;
-            if (($data = $this->_readData($match[1])) !== false) {
+            if (($data = $this->readData($match[1])) !== false) {
                 $ext = $match[2];
                 if ($ext === 'html') {
                     $this->response->setContent(strtr(LocalFS::fileGet($this->_template), ['LOGGER_DATA' => $data]));
@@ -199,7 +199,7 @@ class LoggerPlugin extends Plugin
         $context = $this->_context;
 
         if ($context->enabled) {
-            $this->_writeData($context->key, $context->logs);
+            $this->writeData($context->key, $context->logs);
         }
     }
 

@@ -10,7 +10,7 @@ class Fpm extends Server
     /**
      * @return void
      */
-    protected function _prepareGlobals()
+    protected function prepareGlobals()
     {
         $raw_body = file_get_contents('php://input');
         $this->request->prepare($_GET, $_POST, $_SERVER, $raw_body);
@@ -25,7 +25,7 @@ class Fpm extends Server
     {
         $this->_handler = $handler;
 
-        $this->_prepareGlobals();
+        $this->prepareGlobals();
 
         if ($this->authenticate()) {
             $this->_handler->handle();

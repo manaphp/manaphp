@@ -120,7 +120,7 @@ class Mssql extends Connection
      */
     public function truncate($table)
     {
-        $this->execute('TRUNCATE TABLE ' . $this->_escapeIdentifier($table));
+        $this->execute('TRUNCATE TABLE ' . $this->escapeIdentifier($table));
 
         return $this;
     }

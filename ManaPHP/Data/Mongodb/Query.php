@@ -53,7 +53,7 @@ class Query extends \ManaPHP\Data\Query
      *
      * @return \ManaPHP\Data\MongodbInterface
      */
-    protected function _getDb($db)
+    protected function getDb($db)
     {
         return $db === '' ? $this->_db : $this->getShared($db);
     }
@@ -95,7 +95,7 @@ class Query extends \ManaPHP\Data\Query
     {
         list($db, $source) = $this->getUniqueShard();
 
-        $mongodb = $this->_getDb($db);
+        $mongodb = $this->getDb($db);
 
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $source);
@@ -108,7 +108,7 @@ class Query extends \ManaPHP\Data\Query
         $collection = $mongodb->getPrefix() . $collection;
         $cmd = ['distinct' => $collection, 'key' => $field];
         if ($this->_filters) {
-            $cmd['query'] = $this->_buildConditions();
+            $cmd['query'] = $this->buildConditions();
         }
 
         $r = $mongodb->command($cmd, $db)[0];
@@ -173,7 +173,7 @@ class Query extends \ManaPHP\Data\Query
      *
      * @return array
      */
-    protected function _compileCondExpression($expr)
+    protected function compileCondExpression($expr)
     {
         if (str_contains($expr, ',')) {
             $parts = explode(',', $expr);
@@ -255,19 +255,19 @@ class Query extends \ManaPHP\Data\Query
             if ($accumulator === 'count') {
                 $this->_aggregate[$k] = ['$sum' => 1];
             } elseif ($accumulator === 'count_if') {
-                if ($cond = $this->_compileCondExpression($operand)) {
+                if ($cond = $this->compileCondExpression($operand)) {
                     $this->_aggregate[$k] = ['$sum' => $cond];
                 } else {
                     throw new MisuseException(['unknown COUNT_IF expression: `:expression`', 'expression' => $operand]);
                 }
             } elseif ($accumulator === 'sum_if') {
-                if ($cond = $this->_compileCondExpression($operand)) {
+                if ($cond = $this->compileCondExpression($operand)) {
                     $this->_aggregate[$k] = ['$sum' => $cond];
                 } else {
                     throw new MisuseException(['unknown SUM_IF expression: `:expression`', 'expression' => $operand]);
                 }
             } elseif ($accumulator === 'avg_if') {
-                if ($cond = $this->_compileCondExpression($operand)) {
+                if ($cond = $this->compileCondExpression($operand)) {
                     $this->_aggregate[$k] = ['$avg' => $cond];
                 } else {
                     throw new MisuseException(['unknown AVG_IF expression: `:expression`', 'expression' => $operand]);
@@ -292,8 +292,8 @@ class Query extends \ManaPHP\Data\Query
                     $sub_operand1 = is_numeric($match2[1]) ? (float)$match2[1] : ('$' . $match2[1]);
                     $sub_operand2 = is_numeric($match2[3]) ? (float)$match2[3] : ('$' . $match2[3]);
                     $this->_aggregate[$k] = ['$' . $accumulator => [$sub_operand => [$sub_operand1, $sub_operand2]]];
-                } elseif ($cond = $this->_compileCondExpression($operand)) {
-                    $this->_aggregate[$k] = ['$' . $accumulator => $this->_compileCondExpression($operand)];
+                } elseif ($cond = $this->compileCondExpression($operand)) {
+                    $this->_aggregate[$k] = ['$' . $accumulator => $this->compileCondExpression($operand)];
                 } else {
                     throw new MisuseException(['unknown `%s` operand of `%s` aggregate', $operand, $v]);
                 }
@@ -576,7 +576,7 @@ class Query extends \ManaPHP\Data\Query
      *
      * @return static
      */
-    protected function _whereLike($fields, $regex)
+    protected function whereLikeInternal($fields, $regex)
     {
         if ($regex === '') {
             return $this;
@@ -601,7 +601,7 @@ class Query extends \ManaPHP\Data\Query
      *
      * @return static
      */
-    protected function _whereNotLike($fields, $regex)
+    protected function whereNotLikeInternal($fields, $regex)
     {
         if ($regex === '') {
             return $this;
@@ -628,7 +628,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereContains($fields, $value)
     {
-        return $value === '' ? $this : $this->_whereLike($fields, $value);
+        return $value === '' ? $this : $this->whereLikeInternal($fields, $value);
     }
 
     /**
@@ -639,7 +639,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereNotContains($fields, $value)
     {
-        return $value === '' ? $this : $this->_whereNotLike($fields, $value);
+        return $value === '' ? $this : $this->whereNotLikeInternal($fields, $value);
     }
 
     /**
@@ -656,9 +656,9 @@ class Query extends \ManaPHP\Data\Query
         }
 
         if ($length === null) {
-            return $this->_whereLike($fields, '^' . $value);
+            return $this->whereLikeInternal($fields, '^' . $value);
         } else {
-            return $this->_whereLike($fields, '^' . str_pad($value, $length, '.') . '$');
+            return $this->whereLikeInternal($fields, '^' . str_pad($value, $length, '.') . '$');
         }
     }
 
@@ -676,9 +676,9 @@ class Query extends \ManaPHP\Data\Query
         }
 
         if ($length === null) {
-            return $this->_whereNotLike($fields, '^' . $value);
+            return $this->whereNotLikeInternal($fields, '^' . $value);
         } else {
-            return $this->_whereNotLike($fields, '^' . str_pad($value, $length, '.') . '$');
+            return $this->whereNotLikeInternal($fields, '^' . str_pad($value, $length, '.') . '$');
         }
     }
 
@@ -690,7 +690,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereEndsWith($fields, $value)
     {
-        return $value === '' ? $this : $this->_whereLike($fields, $value . '$');
+        return $value === '' ? $this : $this->whereLikeInternal($fields, $value . '$');
     }
 
     /**
@@ -701,7 +701,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereNotEndsWith($fields, $value)
     {
-        return $value === '' ? $this : $this->_whereNotLike($fields, $value . '$');
+        return $value === '' ? $this : $this->whereNotLikeInternal($fields, $value . '$');
     }
 
     /**
@@ -709,7 +709,7 @@ class Query extends \ManaPHP\Data\Query
      *
      * @return string
      */
-    protected function _like2regex($like)
+    protected function like2regex($like)
     {
         if ($like === '') {
             return '';
@@ -734,7 +734,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereLike($fields, $value)
     {
-        return $this->_whereLike($fields, $this->_like2regex($value));
+        return $this->whereLikeInternal($fields, $this->like2regex($value));
     }
 
     /**
@@ -745,7 +745,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereNotLike($fields, $value)
     {
-        return $this->_whereNotLike($fields, $this->_like2regex($value));
+        return $this->whereNotLikeInternal($fields, $this->like2regex($value));
     }
 
     /**
@@ -869,7 +869,7 @@ class Query extends \ManaPHP\Data\Query
      *
      * @return array
      */
-    protected function _buildOrder($order)
+    protected function buildOrder($order)
     {
         $r = [];
 
@@ -883,7 +883,7 @@ class Query extends \ManaPHP\Data\Query
     /**
      * @return array
      */
-    protected function _buildConditions()
+    protected function buildConditions()
     {
         $filters = [];
         foreach ($this->_filters as $filter) {
@@ -905,7 +905,7 @@ class Query extends \ManaPHP\Data\Query
     public function execute()
     {
         list($db, $collection) = $this->getUniqueShard();
-        $mongodb = $this->_getDb($db);
+        $mongodb = $this->getDb($db);
 
         if (!$this->_aggregate) {
             $model = $this->_model;
@@ -933,7 +933,7 @@ class Query extends \ManaPHP\Data\Query
             }
 
             if ($this->_order) {
-                $options['sort'] = $this->_buildOrder($this->_order);
+                $options['sort'] = $this->buildOrder($this->_order);
             }
 
             if ($this->_offset !== null) {
@@ -944,7 +944,7 @@ class Query extends \ManaPHP\Data\Query
                 $options['limit'] = $this->_limit;
             }
 
-            $r = $mongodb->fetchAll($collection, $this->_buildConditions(), $options, !$this->_force_master);
+            $r = $mongodb->fetchAll($collection, $this->buildConditions(), $options, !$this->_force_master);
             if ($this->_aliases) {
                 foreach ($r as $k => $v) {
                     foreach ($this->_aliases as $ak => $av) {
@@ -965,7 +965,7 @@ class Query extends \ManaPHP\Data\Query
             $pipeline[] = ['$group' => ['_id' => $this->_group] + $this->_aggregate];
 
             if ($this->_order) {
-                $pipeline[] = ['$sort' => $this->_buildOrder($this->_order)];
+                $pipeline[] = ['$sort' => $this->buildOrder($this->_order)];
             }
 
             if ($this->_offset !== null) {
@@ -1027,9 +1027,9 @@ class Query extends \ManaPHP\Data\Query
 
         $affected_count = 0;
         foreach ($shards as $db => $collections) {
-            $mongodb = $this->_getDb($db);
+            $mongodb = $this->getDb($db);
             foreach ($collections as $collection) {
-                $affected_count += $mongodb->delete($collection, $this->_buildConditions());
+                $affected_count += $mongodb->delete($collection, $this->buildConditions());
             }
         }
 
@@ -1047,9 +1047,9 @@ class Query extends \ManaPHP\Data\Query
 
         $affected_count = 0;
         foreach ($shards as $db => $collections) {
-            $mongodb = $this->_getDb($db);
+            $mongodb = $this->getDb($db);
             foreach ($collections as $collection) {
-                $affected_count += $mongodb->update($collection, $fieldValues, $this->_buildConditions());
+                $affected_count += $mongodb->update($collection, $fieldValues, $this->buildConditions());
             }
         }
 

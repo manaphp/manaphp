@@ -157,7 +157,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      *
      * @return void
      */
-    protected function _saveContext($fd)
+    protected function saveContext($fd)
     {
         $old_context = $this->_contexts[$fd];
 
@@ -174,7 +174,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      *
      * @return void
      */
-    protected function _restoreContext($fd)
+    protected function restoreContext($fd)
     {
         if (!$old_context = $this->_contexts[$fd] ?? false) {
             $this->_coroutines[$fd][] = Coroutine::getCid();
@@ -199,14 +199,14 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function onReceive($server, $fd, $from_id, $data)
     {
-        $this->_restoreContext($fd);
+        $this->restoreContext($fd);
         try {
             $this->_handler->onReceive($fd, $data);
         } catch (Throwable $throwable) {
             $this->logger->warn($throwable);
         }
 
-        $this->_saveContext($fd);
+        $this->saveContext($fd);
     }
 
     /**
@@ -217,7 +217,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function onClose($server, $fd)
     {
-        $this->_restoreContext($fd);
+        $this->restoreContext($fd);
         try {
             $this->_handler->onClose($fd);
         } catch (Throwable $throwable) {

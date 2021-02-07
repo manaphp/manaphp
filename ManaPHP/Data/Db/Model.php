@@ -48,7 +48,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
         $class = static::class;
 
         if (!isset($cached[$class])) {
-            if ($primaryKey = $this->_inferPrimaryKey($class)) {
+            if ($primaryKey = $this->inferPrimaryKey($class)) {
                 return $cached[$class] = $primaryKey;
             } else {
                 $primaryKeys = $this->getModelsMetadata()->getPrimaryKeyAttributes($this);

@@ -14,7 +14,7 @@ class DateCommand extends Command
      *
      * @return int|false
      */
-    protected function _getRemoteTimestamp($url, $onlyOnce = false)
+    protected function getRemoteTimestamp($url, $onlyOnce = false)
     {
         if (!str_contains($url, '://')) {
             $url = 'http://' . $url;
@@ -47,11 +47,11 @@ class DateCommand extends Command
      */
     public function syncAction($url = 'http://www.baidu.com')
     {
-        $timestamp = $this->_getRemoteTimestamp($url);
+        $timestamp = $this->getRemoteTimestamp($url);
         if ($timestamp === false) {
             return $this->console->error(['fetch remote timestamp failed: `:url`', 'url' => $url]);
         } else {
-            $this->_updateDate($timestamp);
+            $this->updateDate($timestamp);
             $this->console->write(date('Y-m-d H:i:s'));
             return 0;
         }
@@ -66,7 +66,7 @@ class DateCommand extends Command
      */
     public function remoteAction($url = 'http://www.baidu.com')
     {
-        $timestamp = $this->_getRemoteTimestamp($url);
+        $timestamp = $this->getRemoteTimestamp($url);
         if ($timestamp === false) {
             return $this->console->error(['fetch remote timestamp failed: `:url`', 'url' => $url]);
         } else {
@@ -84,7 +84,7 @@ class DateCommand extends Command
      */
     public function diffAction($url = 'http://www.baidu.com')
     {
-        $remote_ts = $this->_getRemoteTimestamp($url);
+        $remote_ts = $this->getRemoteTimestamp($url);
         $local_ts = time();
         if ($remote_ts === false) {
             return $this->console->error(['fetch remote timestamp failed: `:url`', 'url' => $url]);
@@ -173,7 +173,7 @@ class DateCommand extends Command
         if ($timestamp === false || preg_match('#^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$#', $str) !== 1) {
             return $this->console->error(['`:time` time format is invalid', 'time' => $str]);
         } else {
-            $this->_updateDate($timestamp);
+            $this->updateDate($timestamp);
             $this->console->writeLn(date('Y-m-d H:i:s'));
 
             return 0;
@@ -185,7 +185,7 @@ class DateCommand extends Command
      *
      * @return void
      */
-    protected function _updateDate($timestamp)
+    protected function updateDate($timestamp)
     {
         if (DIRECTORY_SEPARATOR === '\\') {
             system('date ' . date('Y-m-d', $timestamp));

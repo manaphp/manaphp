@@ -13,7 +13,7 @@ class BashCompletionCommand extends Command
     /**
      * @return string[]
      */
-    protected function _getCommands()
+    protected function getCommands()
     {
         $commands = [];
 
@@ -29,7 +29,7 @@ class BashCompletionCommand extends Command
      *
      * @return string[]
      */
-    protected function _getActions($command)
+    protected function getActions($command)
     {
         $actions = [];
         try {
@@ -55,7 +55,7 @@ class BashCompletionCommand extends Command
      *
      * @return string[]
      */
-    protected function _getArgumentNames($command, $action)
+    protected function getArgumentNames($command, $action)
     {
         if (!$commandClassName = $this->_container->getDefinition(Str::camelize($command) . 'Command')) {
             return [];
@@ -82,7 +82,7 @@ class BashCompletionCommand extends Command
      *
      * @return array
      */
-    protected function _getArgumentValues($command, $action, $argumentName, $current)
+    protected function getArgumentValues($command, $action, $argumentName, $current)
     {
         if (!$commandClassName = $this->_container->getDefinition(Str::camelize($command) . 'Command')) {
             return [];
@@ -119,7 +119,7 @@ class BashCompletionCommand extends Command
      *
      * @return array
      */
-    protected function _filterWords($words, $current)
+    protected function filterWords($words, $current)
     {
         if ($current === '') {
             return $words;
@@ -211,13 +211,13 @@ class BashCompletionCommand extends Command
         $current = $arguments[$position] ?? '';
 
         if ($position === 1) {
-            $words = $this->_getCommands();
+            $words = $this->getCommands();
         } elseif ($position === 2) {
-            $words = $this->_getActions($command);
+            $words = $this->getActions($command);
         } elseif (str_starts_with($previous, '-') && !str_starts_with($current, '-')) {
-            $words = $this->_getArgumentValues($command, $action, $previous, $current);
+            $words = $this->getArgumentValues($command, $action, $previous, $current);
         } else {
-            $words = $this->_getArgumentNames($command, $action);
+            $words = $this->getArgumentNames($command, $action);
             foreach ($words as $k => $word) {
                 if (in_array($word, $arguments, true)) {
                     unset($words[$k]);
@@ -227,7 +227,7 @@ class BashCompletionCommand extends Command
             $words = array_values($words);
         }
 
-        $this->console->writeLn(implode(' ', $this->_filterWords($words, $current)));
+        $this->console->writeLn(implode(' ', $this->filterWords($words, $current)));
 
         return 0;
     }

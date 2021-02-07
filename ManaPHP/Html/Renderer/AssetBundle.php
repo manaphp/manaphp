@@ -29,7 +29,7 @@ class AssetBundle extends Component implements AssetBundleInterface
      *
      * @return string
      */
-    protected function _replaceCssUrl($file, $content)
+    protected function replaceCssUrl($file, $content)
     {
         $path = dirname(substr($this->alias->resolve($file), strlen($this->alias->get('@public'))));
 
@@ -90,7 +90,7 @@ class AssetBundle extends Component implements AssetBundleInterface
                 }
 
                 if ($extension === 'css') {
-                    $content = $this->_replaceCssUrl($file, $content);
+                    $content = $this->replaceCssUrl($file, $content);
                 }
 
                 $content = preg_replace('@/\*# sourceMappingURL=[^*]+\s+\*/@', '', $content);

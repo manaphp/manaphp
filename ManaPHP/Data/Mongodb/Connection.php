@@ -49,7 +49,7 @@ class Connection extends Component implements ConnectionInterface
     /**
      * @return bool
      */
-    protected function _ping()
+    protected function ping()
     {
         try {
             $command = new Command(['ping' => 1]);
@@ -63,7 +63,7 @@ class Connection extends Component implements ConnectionInterface
     /**
      * @return \MongoDB\Driver\Manager
      */
-    protected function _getManager()
+    protected function getManager()
     {
         if ($this->_manager === null) {
             $uri = $this->_uri;
@@ -72,7 +72,7 @@ class Connection extends Component implements ConnectionInterface
             $this->_manager = new Manager($uri);
         }
 
-        if (microtime(true) - $this->_last_heartbeat > $this->_heartbeat && !$this->_ping()) {
+        if (microtime(true) - $this->_last_heartbeat > $this->_heartbeat && !$this->ping()) {
             $this->close();
             $this->fireEvent('mongodb:connect', compact('uri'));
 
@@ -106,7 +106,7 @@ class Connection extends Component implements ConnectionInterface
             $this->_last_heartbeat = null;
         }
         try {
-            $result = $this->_getManager()->executeBulkWrite($namespace, $bulk, $this->_writeConcern);
+            $result = $this->getManager()->executeBulkWrite($namespace, $bulk, $this->_writeConcern);
         } catch (\Exception $exception) {
             throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -262,9 +262,9 @@ class Connection extends Component implements ConnectionInterface
      *
      * @return array
      */
-    protected function _fetchAll($namespace, $filter, $options, $readPreference)
+    protected function fetchAllInternal($namespace, $filter, $options, $readPreference)
     {
-        $cursor = $this->_getManager()->executeQuery($namespace, new MongodbQuery($filter, $options), $readPreference);
+        $cursor = $this->getManager()->executeQuery($namespace, new MongodbQuery($filter, $options), $readPreference);
         $cursor->setTypeMap(['root' => 'array']);
         return $cursor->toArray();
     }
@@ -289,14 +289,14 @@ class Connection extends Component implements ConnectionInterface
             $readPreference = new ReadPreference($secondaryPreferred);
         }
         try {
-            $result = $this->_fetchAll($namespace, $filter, $options, $readPreference);
+            $result = $this->fetchAllInternal($namespace, $filter, $options, $readPreference);
         } catch (\Exception $exception) {
             $result = null;
             $failed = true;
-            if (!$this->_ping()) {
+            if (!$this->ping()) {
                 try {
                     $this->close();
-                    $result = $this->_fetchAll($namespace, $filter, $options, $readPreference);
+                    $result = $this->fetchAllInternal($namespace, $filter, $options, $readPreference);
                     $failed = false;
                 } catch (\Exception $exception) {
                 }
@@ -323,7 +323,7 @@ class Connection extends Component implements ConnectionInterface
             $this->_last_heartbeat = null;
         }
         try {
-            $cursor = $this->_getManager()->executeCommand($db, new Command($command));
+            $cursor = $this->getManager()->executeCommand($db, new Command($command));
             $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
             return $cursor->toArray();
         } catch (\Exception $exception) {

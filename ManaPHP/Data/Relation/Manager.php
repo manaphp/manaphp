@@ -32,7 +32,7 @@ class Manager extends Component implements ManagerInterface
      *
      * @return string|false
      */
-    protected function _pluralToSingular($str)
+    protected function pluralToSingular($str)
     {
         if ($str[strlen($str) - 1] !== 's') {
             return false;
@@ -54,7 +54,7 @@ class Manager extends Component implements ManagerInterface
      *
      * @return string|false
      */
-    protected function _inferClassName($model, $plainName)
+    protected function inferClassName($model, $plainName)
     {
         $plainName = Str::pascalize($plainName);
 
@@ -84,21 +84,21 @@ class Manager extends Component implements ManagerInterface
      *
      * @return  Relation|false
      */
-    protected function _inferRelation($thisInstance, $name)
+    protected function inferRelation($thisInstance, $name)
     {
         if ($thisInstance->hasField($tryName = $name . '_id')) {
-            $thatModel = $this->_inferClassName($thisInstance, $name);
+            $thatModel = $this->inferClassName($thisInstance, $name);
             return $thatModel ? $thisInstance->belongsTo($thatModel, $tryName) : false;
         } elseif ($thisInstance->hasField($tryName = $name . 'Id')) {
-            $thatModel = $this->_inferClassName($thisInstance, $name);
+            $thatModel = $this->inferClassName($thisInstance, $name);
             return $thatModel ? $thisInstance->belongsTo($thatModel, $tryName) : false;
         }
 
         /** @var \ManaPHP\Data\Model $thatInstance */
         /** @var \ManaPHP\Data\Model $thatModel */
 
-        if ($singular = $this->_pluralToSingular($name)) {
-            if (!$thatModel = $this->_inferClassName($thisInstance, $singular)) {
+        if ($singular = $this->pluralToSingular($name)) {
+            if (!$thatModel = $this->inferClassName($thisInstance, $singular)) {
                 return false;
             }
 
@@ -136,7 +136,7 @@ class Manager extends Component implements ManagerInterface
             }
 
             throw new RuntimeException(['infer `:relation` relation failed', 'relation' => $name]);
-        } elseif ($thatModel = $this->_inferClassName($thisInstance, $name)) {
+        } elseif ($thatModel = $this->inferClassName($thisInstance, $name)) {
             /** @var \ManaPHP\Data\ModelInterface $thatInstance */
             $thatInstance = $thatModel::sample();
             $thisForeignedKey = $thisInstance->foreignedKey();
@@ -156,7 +156,7 @@ class Manager extends Component implements ManagerInterface
      *
      * @return bool
      */
-    protected function _isPlural($str)
+    protected function isPlural($str)
     {
         return $str[strlen($str) - 1] === 's';
     }
@@ -179,14 +179,14 @@ class Manager extends Component implements ManagerInterface
             if (is_object($relation = $this->_relations[$modelName][$name])) {
                 return $relation;
             } else {
-                if ($this->_isPlural($name)) {
+                if ($this->isPlural($name)) {
                     $relation = $model->hasMany($relation);
                 } else {
                     $relation = $model->hasOne($relation);
                 }
                 return $this->_relations[$modelName][$name] = $relation;
             }
-        } elseif ($relation = $this->_inferRelation($model, $name)) {
+        } elseif ($relation = $this->inferRelation($model, $name)) {
             return $this->_relations[$modelName][$name] = $relation;
         } else {
             return false;

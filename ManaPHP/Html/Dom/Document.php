@@ -118,7 +118,7 @@ class Document extends Component
         $this->_query = $this->getNew('ManaPHP\Html\Dom\Query', [$this->_dom]);
 
         $this->_source_url = $url;
-        $this->_base_url = $this->_getBaseUrl() ?: $this->_source_url;
+        $this->_base_url = $this->getBaseUrl() ?: $this->_source_url;
 
         return $this;
     }
@@ -164,7 +164,7 @@ class Document extends Component
     /**
      * @return string
      */
-    protected function _getBaseUrl()
+    protected function getBaseUrl()
     {
         foreach ($this->_dom->getElementsByTagName('base') as $node) {
             /** @var \DOMElement $node */

@@ -120,7 +120,7 @@ class Smtp extends Mailer
      * @return resource
      * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\ConnectionException
      */
-    protected function _connect()
+    protected function connect()
     {
         $context = $this->_context;
 
@@ -156,11 +156,11 @@ class Smtp extends Mailer
      * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\BadResponseException
      * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
      */
-    protected function _transmit($str, $expected = null)
+    protected function transmit($str, $expected = null)
     {
-        $this->_writeLine($str);
+        $this->writeLine($str);
 
-        $response = $this->_readLine();
+        $response = $this->readLine();
         $parts = explode(' ', $response, 2);
         if (count($parts) === 2) {
             list($code, $message) = $parts;
@@ -185,7 +185,7 @@ class Smtp extends Mailer
      * @return static
      * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
      */
-    protected function _writeLine($data = null)
+    protected function writeLine($data = null)
     {
         $context = $this->_context;
 
@@ -209,7 +209,7 @@ class Smtp extends Mailer
      * @return string
      * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
      */
-    protected function _readLine()
+    protected function readLine()
     {
         $context = $this->_context;
 
@@ -227,13 +227,13 @@ class Smtp extends Mailer
      * @return static
      * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
      */
-    protected function _sendTextBody($textBody)
+    protected function sendTextBody($textBody)
     {
-        $this->_writeLine('Content-Type: text/plain; charset=utf-8');
-        $this->_writeLine('Content-Length: ' . strlen($textBody));
-        $this->_writeLine('Content-Transfer-Encoding: base64');
-        $this->_writeLine();
-        $this->_writeLine(chunk_split(base64_encode($textBody), 983));
+        $this->writeLine('Content-Type: text/plain; charset=utf-8');
+        $this->writeLine('Content-Length: ' . strlen($textBody));
+        $this->writeLine('Content-Transfer-Encoding: base64');
+        $this->writeLine();
+        $this->writeLine(chunk_split(base64_encode($textBody), 983));
 
         return $this;
     }
@@ -245,7 +245,7 @@ class Smtp extends Mailer
      * @return static
      * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
      */
-    protected function _sendHtmlBody($htmlBody, $boundary = null)
+    protected function sendHtmlBody($htmlBody, $boundary = null)
     {
         if (preg_match('#<meta http-equiv="Content-Type" content="([^"]+)">#i', $htmlBody, $match)) {
             $contentType = $match[1];
@@ -254,14 +254,14 @@ class Smtp extends Mailer
         }
 
         if ($boundary) {
-            $this->_writeLine();
-            $this->_writeLine("--$boundary");
+            $this->writeLine();
+            $this->writeLine("--$boundary");
         }
-        $this->_writeLine('Content-Type: ' . $contentType);
-        $this->_writeLine('Content-Length: ' . strlen($htmlBody));
-        $this->_writeLine('Content-Transfer-Encoding: base64');
-        $this->_writeLine();
-        $this->_writeLine(chunk_split(base64_encode($htmlBody), 983));
+        $this->writeLine('Content-Type: ' . $contentType);
+        $this->writeLine('Content-Length: ' . strlen($htmlBody));
+        $this->writeLine('Content-Transfer-Encoding: base64');
+        $this->writeLine();
+        $this->writeLine(chunk_split(base64_encode($htmlBody), 983));
 
         return $this;
     }
@@ -274,7 +274,7 @@ class Smtp extends Mailer
      * @throws \ManaPHP\Exception\InvalidValueException
      * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
      */
-    protected function _sendAttachments($attachments, $boundary)
+    protected function sendAttachments($attachments, $boundary)
     {
         foreach ($attachments as $attachment) {
             $file = $this->alias->resolve($attachment['file']);
@@ -282,14 +282,14 @@ class Smtp extends Mailer
                 throw new InvalidValueException(['`:file` attachment file is not exists', 'file' => $file]);
             }
 
-            $this->_writeLine()
-                ->_writeLine("--$boundary")
-                ->_writeLine('Content-Type: ' . mime_content_type($file))
-                ->_writeLine('Content-Length: ' . filesize($file))
-                ->_writeLine('Content-Disposition: attachment; filename="' . $attachment['name'] . '"')
-                ->_writeLine('Content-Transfer-Encoding: base64')
-                ->_writeLine()
-                ->_writeLine(chunk_split(base64_encode(file_get_contents($file)), 983));
+            $this->writeLine()
+                ->writeLine("--$boundary")
+                ->writeLine('Content-Type: ' . mime_content_type($file))
+                ->writeLine('Content-Length: ' . filesize($file))
+                ->writeLine('Content-Disposition: attachment; filename="' . $attachment['name'] . '"')
+                ->writeLine('Content-Transfer-Encoding: base64')
+                ->writeLine()
+                ->writeLine(chunk_split(base64_encode(file_get_contents($file)), 983));
         }
 
         return $this;
@@ -303,21 +303,21 @@ class Smtp extends Mailer
      *
      * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
      */
-    protected function _sendEmbeddedFiles($embeddedFiles, $boundary)
+    protected function sendEmbeddedFiles($embeddedFiles, $boundary)
     {
         foreach ($embeddedFiles as $embeddedFile) {
             if (!is_file($file = $this->alias->resolve($embeddedFile['file']))) {
                 throw new InvalidValueException(['`:file` inline file is not exists', 'file' => $file]);
             }
-            $this->_writeLine()
-                ->_writeLine("--$boundary")
-                ->_writeLine('Content-Type: ' . mime_content_type($file))
-                ->_writeLine('Content-Length: ' . filesize($file))
-                ->_writeLine('Content-ID: <' . $embeddedFile['cid'] . '>')
-                ->_writeLine('Content-Disposition: inline; filename="' . $embeddedFile['name'] . '"')
-                ->_writeLine('Content-Transfer-Encoding: base64')
-                ->_writeLine()
-                ->_writeLine(chunk_split(base64_encode(file_get_contents($file)), 983));
+            $this->writeLine()
+                ->writeLine("--$boundary")
+                ->writeLine('Content-Type: ' . mime_content_type($file))
+                ->writeLine('Content-Length: ' . filesize($file))
+                ->writeLine('Content-ID: <' . $embeddedFile['cid'] . '>')
+                ->writeLine('Content-Disposition: inline; filename="' . $embeddedFile['name'] . '"')
+                ->writeLine('Content-Transfer-Encoding: base64')
+                ->writeLine()
+                ->writeLine(chunk_split(base64_encode(file_get_contents($file)), 983));
         }
 
         return $this;
@@ -328,7 +328,7 @@ class Smtp extends Mailer
      *
      * @return string
      */
-    protected function _encode($str)
+    protected function encode($str)
     {
         return '=?utf-8?B?' . base64_encode($str) . '?=';
     }
@@ -340,13 +340,13 @@ class Smtp extends Mailer
      * @return static
      * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
      */
-    protected function _sendAddresses($type, $addresses)
+    protected function sendAddresses($type, $addresses)
     {
         foreach ($addresses as $k => $v) {
             if (is_int($k)) {
-                $this->_writeLine("$type: <$v>");
+                $this->writeLine("$type: <$v>");
             } else {
-                $this->_writeLine("$type: " . $this->_encode($v) . " <$k>");
+                $this->writeLine("$type: " . $this->encode($v) . " <$k>");
             }
         }
         return $this;
@@ -362,26 +362,26 @@ class Smtp extends Mailer
      * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\ConnectionException
      * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\AuthenticationException
      */
-    protected function _send($message, &$failedRecipients = null)
+    protected function sendInternal($message, &$failedRecipients = null)
     {
-        $this->_connect();
+        $this->connect();
 
-        $this->_transmit('HELO localhost', [250]);
+        $this->transmit('HELO localhost', [250]);
         if ($this->_password) {
-            $this->_transmit('AUTH LOGIN', [334]);
+            $this->transmit('AUTH LOGIN', [334]);
 
-            list($code, $msg) = $this->_transmit(base64_encode($this->_username));
+            list($code, $msg) = $this->transmit(base64_encode($this->_username));
             if ($code !== 334) {
                 throw new AuthenticationException(['authenticate with `%s` failed: %d %s', $this->_uri, $code, $msg]);
             }
-            list($code, $msg) = $this->_transmit(base64_encode($this->_password));
+            list($code, $msg) = $this->transmit(base64_encode($this->_password));
             if ($code !== 235) {
                 throw new AuthenticationException(['authenticate with `%s` failed: %d %s', $this->_uri, $code, $msg]);
             }
         }
 
         $from = $message->getFrom();
-        $this->_transmit('MAIL FROM:<' . ($from[0] ?? key($from)) . '>', [250]);
+        $this->transmit('MAIL FROM:<' . ($from[0] ?? key($from)) . '>', [250]);
 
         $to = $message->getTo();
         $cc = $message->getCc();
@@ -390,7 +390,7 @@ class Smtp extends Mailer
         $success = 0;
         foreach (array_merge($to, $cc, $bcc) as $k => $v) {
             $address = is_string($k) ? $k : $v;
-            list($code, $msg) = $this->_transmit("RCPT TO:<$address>");
+            list($code, $msg) = $this->transmit("RCPT TO:<$address>");
             if ($code !== 250) {
                 if ($failedRecipients !== null) {
                     $failedRecipients[] = $address;
@@ -412,45 +412,45 @@ class Smtp extends Mailer
             return $success;
         }
 
-        $this->_transmit('DATA', [354]);
+        $this->transmit('DATA', [354]);
 
-        $this->_sendAddresses('From', $from);
-        $this->_sendAddresses('To', $to);
-        $this->_sendAddresses('Cc', $cc);
-        $this->_sendAddresses('Reply-To', $message->getReplyTo());
-        $this->_writeLine('Subject: ' . $this->_encode($message->getSubject()));
-        $this->_writeLine('MIME-Version: 1.0');
+        $this->sendAddresses('From', $from);
+        $this->sendAddresses('To', $to);
+        $this->sendAddresses('Cc', $cc);
+        $this->sendAddresses('Reply-To', $message->getReplyTo());
+        $this->writeLine('Subject: ' . $this->encode($message->getSubject()));
+        $this->writeLine('MIME-Version: 1.0');
 
         $htmlBody = $message->getHtmlBody();
         $boundary = bin2hex(random_bytes(16));
         if (!$htmlBody) {
             if ($textBody = $message->getTextBody()) {
-                $this->_sendTextBody($textBody);
+                $this->sendTextBody($textBody);
             } else {
                 throw new InvalidValueException('mail is invalid: neither html body nor text body is exist.');
             }
         } elseif ($attachments = $message->getAttachments()) {
-            $this->_writeLine('Content-Type: multipart/mixed;');
-            $this->_writeLine("\tboundary=$boundary");
-            $this->_sendHtmlBody($htmlBody, $boundary);
+            $this->writeLine('Content-Type: multipart/mixed;');
+            $this->writeLine("\tboundary=$boundary");
+            $this->sendHtmlBody($htmlBody, $boundary);
             /** @noinspection NotOptimalIfConditionsInspection */
             if ($embeddedFiles = $message->getEmbeddedFiles()) {
-                $this->_sendEmbeddedFiles($embeddedFiles, $boundary);
+                $this->sendEmbeddedFiles($embeddedFiles, $boundary);
             }
-            $this->_sendAttachments($attachments, $boundary);
-            $this->_writeLine("--$boundary--");
+            $this->sendAttachments($attachments, $boundary);
+            $this->writeLine("--$boundary--");
         } elseif ($embeddedFiles = $message->getEmbeddedFiles()) {
-            $this->_writeLine('Content-Type: multipart/related;');
-            $this->_writeLine("\tboundary=$boundary");
-            $this->_sendHtmlBody($htmlBody, $boundary);
-            $this->_sendEmbeddedFiles($embeddedFiles, $boundary);
-            $this->_writeLine("--$boundary--");
+            $this->writeLine('Content-Type: multipart/related;');
+            $this->writeLine("\tboundary=$boundary");
+            $this->sendHtmlBody($htmlBody, $boundary);
+            $this->sendEmbeddedFiles($embeddedFiles, $boundary);
+            $this->writeLine("--$boundary--");
         } else {
-            $this->_sendHtmlBody($htmlBody);
+            $this->sendHtmlBody($htmlBody);
         }
 
-        $this->_transmit("\r\n.\r\n", [250]);
-        $this->_transmit('QUIT', [221, 421]);
+        $this->transmit("\r\n.\r\n", [250]);
+        $this->transmit('QUIT', [221, 421]);
 
         return $success;
     }

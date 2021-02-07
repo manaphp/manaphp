@@ -24,19 +24,19 @@ class Command extends \ManaPHP\Cli\Command
         $ext = 'sword';
 
         foreach (LocalFS::glob("@app/Views/*.$ext") as $item) {
-            $this->_compile($item, $replace);
+            $this->compile($item, $replace);
         }
 
         foreach (LocalFS::glob("@app/Views/*/*.$ext") as $item) {
-            $this->_compile($item, $replace);
+            $this->compile($item, $replace);
         }
 
         foreach (LocalFS::glob("@app/Areas/*/Views/*/*.$ext") as $item) {
-            $this->_compile($item, $replace);
+            $this->compile($item, $replace);
         }
 
         foreach (LocalFS::glob("@app/Areas/*/Views/*.$ext") as $item) {
-            $this->_compile($item, $replace);
+            $this->compile($item, $replace);
         }
     }
 
@@ -46,7 +46,7 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    protected function _compile($file, $replace)
+    protected function compile($file, $replace)
     {
         if ($replace) {
             $compiled = str_replace('.sword', '.phtml', $file);

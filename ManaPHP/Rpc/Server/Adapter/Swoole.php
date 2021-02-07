@@ -112,7 +112,7 @@ class Swoole extends \ManaPHP\Rpc\Server
      *
      * @return void
      */
-    protected function _prepareGlobals($request)
+    protected function prepareGlobals($request)
     {
         $_server = array_change_key_case($request->server, CASE_UPPER);
         foreach ($request->header ?: [] as $k => $v) {
@@ -183,7 +183,7 @@ class Swoole extends \ManaPHP\Rpc\Server
         $this->_context->response = $response;
 
         try {
-            $this->_prepareGlobals($request);
+            $this->prepareGlobals($request);
 
             if ($this->authenticate()) {
                 $this->_handler->handle();
@@ -209,7 +209,7 @@ class Swoole extends \ManaPHP\Rpc\Server
         if (isset($request->header['upgrade'])) {
             $fd = $request->fd;
 
-            $this->_prepareGlobals($request);
+            $this->prepareGlobals($request);
 
             $this->request->setRequestId();
 

@@ -43,7 +43,7 @@ class Memory extends Mailer
      *
      * @return int
      */
-    protected function _send($message, &$failedRecipients = null)
+    protected function sendInternal($message, &$failedRecipients = null)
     {
         $this->_message = $message;
 

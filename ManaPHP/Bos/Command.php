@@ -73,7 +73,7 @@ class Command extends \ManaPHP\Cli\Command
             return $this->console->error(['`:dir` directory is not exists', 'dir' => $dir]);
         }
 
-        $this->_recursiveImport($dir, $bucket, $prefix);
+        $this->recursiveImport($dir, $bucket, $prefix);
 
         return 0;
     }
@@ -85,7 +85,7 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    protected function _recursiveImport($dir, $bucket, $prefix)
+    protected function recursiveImport($dir, $bucket, $prefix)
     {
         $dir = rtrim($dir, '\\/');
         $prefix = trim($prefix, '/');
@@ -96,7 +96,7 @@ class Command extends \ManaPHP\Cli\Command
                 $response = $this->bosClient->putObject($file, $bucket, "$prefix/$item");
                 $this->console->writeLn($response);
             } else {
-                $this->_recursiveImport($file, $bucket, "$prefix/$item");
+                $this->recursiveImport($file, $bucket, "$prefix/$item");
             }
         }
     }

@@ -166,7 +166,7 @@ class DataMongodbModelTest extends TestCase
     /**
      * @param \ManaPHP\Data\Mongodb\Model $model
      */
-    protected function _truncateTable($model)
+    protected function truncateTable($model)
     {
         /**
          * @var \ManaPHP\Data\Db $db
@@ -177,7 +177,7 @@ class DataMongodbModelTest extends TestCase
 
     public function test_create()
     {
-        $this->_truncateTable(new Student());
+        $this->truncateTable(new Student());
 
         $student = new Student();
         $student->id = 1;
@@ -202,7 +202,7 @@ class DataMongodbModelTest extends TestCase
 
     public function test_update()
     {
-        $this->_truncateTable(new Student());
+        $this->truncateTable(new Student());
 
         $student = new Student();
         $student->id = 1;
@@ -225,7 +225,7 @@ class DataMongodbModelTest extends TestCase
 
     public function test_updateAll()
     {
-        $this->_truncateTable(new Student());
+        $this->truncateTable(new Student());
 
         $student = new Student();
         $student->id = 1;
@@ -246,7 +246,7 @@ class DataMongodbModelTest extends TestCase
 
     public function test_deleteAll()
     {
-        $this->_truncateTable(new Student());
+        $this->truncateTable(new Student());
 
         $student = new Student();
         $student->id = 1;

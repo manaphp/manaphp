@@ -115,7 +115,7 @@ class Swift extends Mailer
      *
      * @return int
      */
-    protected function _send($message, &$failedRecipients = null)
+    protected function sendInternal($message, &$failedRecipients = null)
     {
         $swiftTransport = new Swift_SmtpTransport($this->_host, $this->_port, $this->_encryption);
         if ($this->_username) {

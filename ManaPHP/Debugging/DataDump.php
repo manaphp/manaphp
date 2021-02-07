@@ -30,7 +30,7 @@ class DataDump extends Component implements DataDumpInterface
      *
      * @return array
      */
-    protected function _getLocation($traces)
+    protected function getLocation($traces)
     {
         for ($i = count($traces) - 1; $i >= 0; $i--) {
             $trace = $traces[$i];
@@ -167,7 +167,7 @@ class DataDump extends Component implements DataDumpInterface
             $line = $message->getLine();
         } else {
             $traces = Coroutine::getBacktrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 5);
-            $location = $this->_getLocation($traces);
+            $location = $this->getLocation($traces);
             if (isset($location['file'])) {
                 $file = basename($location['file']);
                 $line = $location['line'];

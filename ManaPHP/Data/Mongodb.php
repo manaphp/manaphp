@@ -75,7 +75,7 @@ class Mongodb extends Component implements MongodbInterface
      *
      * @return string
      */
-    protected function _completeNamespace($source)
+    protected function completeNamespace($source)
     {
         if (str_contains($source, '.')) {
             return str_replace('.', '.' . $this->_prefix, $source);
@@ -92,7 +92,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function insert($source, $document)
     {
-        $namespace = $this->_completeNamespace($source);
+        $namespace = $this->completeNamespace($source);
 
         $this->fireEvent('mongodb:inserting', compact('namespace'));
 
@@ -116,7 +116,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function bulkInsert($source, $documents)
     {
-        $namespace = $this->_completeNamespace($source);
+        $namespace = $this->completeNamespace($source);
 
         $this->fireEvent('mongodb:bulkWriting', compact('namespace', 'documents'));
         $this->fireEvent('mongodb:bulkInserting', compact('namespace', 'documents'));
@@ -144,7 +144,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function update($source, $document, $filter)
     {
-        $namespace = $this->_completeNamespace($source);
+        $namespace = $this->completeNamespace($source);
 
         $this->fireEvent('mongodb:updating', compact('namespace', 'document', 'filter'));
 
@@ -169,7 +169,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function bulkUpdate($source, $documents, $primaryKey)
     {
-        $namespace = $this->_completeNamespace($source);
+        $namespace = $this->completeNamespace($source);
 
         $this->fireEvent('mongodb:bulkWriting', compact('namespace', 'documents'));
         $this->fireEvent('mongodb:bulkUpdating', compact('namespace', 'documents'));
@@ -198,7 +198,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function upsert($source, $document, $primaryKey)
     {
-        $namespace = $this->_completeNamespace($source);
+        $namespace = $this->completeNamespace($source);
 
         $this->fireEvent('mongodb:upserting', compact('namespace', 'document'));
 
@@ -224,7 +224,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function bulkUpsert($source, $documents, $primaryKey)
     {
-        $namespace = $this->_completeNamespace($source);
+        $namespace = $this->completeNamespace($source);
 
         $this->fireEvent('mongodb:bulkWriting', compact('namespace', 'documents'));
         $this->fireEvent('mongodb:bulkUpserting', compact('namespace', 'documents'));
@@ -251,7 +251,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function delete($source, $filter)
     {
-        $namespace = $this->_completeNamespace($source);
+        $namespace = $this->completeNamespace($source);
 
         $this->fireEvent('mongodb:deleting', compact('namespace', 'filter'));
 
@@ -277,7 +277,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function fetchAll($source, $filter = [], $options = [], $secondaryPreferred = true)
     {
-        $namespace = $this->_completeNamespace($source);
+        $namespace = $this->completeNamespace($source);
 
         $this->fireEvent('mongodb:querying', compact('namespace', 'filter', 'options'));
 

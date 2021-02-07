@@ -154,7 +154,7 @@ class Router extends Component implements RouterInterface
      *
      * @return \ManaPHP\Http\Router\RouteInterface
      */
-    protected function _addRoute($pattern, $paths = null, $methods = null)
+    protected function addRoute($pattern, $paths = null, $methods = null)
     {
         $route = new Route($pattern, $paths, $methods, $this->_case_sensitive);
         if (!is_array($methods) && strpbrk($pattern, ':{') === false) {
@@ -177,7 +177,7 @@ class Router extends Component implements RouterInterface
      */
     public function add($pattern, $paths = null, $methods = null)
     {
-        return $this->_addRoute($pattern, $paths, $methods);
+        return $this->addRoute($pattern, $paths, $methods);
     }
 
     /**
@@ -190,7 +190,7 @@ class Router extends Component implements RouterInterface
      */
     public function addGet($pattern, $paths = null)
     {
-        return $this->_addRoute($pattern, $paths, 'GET');
+        return $this->addRoute($pattern, $paths, 'GET');
     }
 
     /**
@@ -203,7 +203,7 @@ class Router extends Component implements RouterInterface
      */
     public function addPost($pattern, $paths = null)
     {
-        return $this->_addRoute($pattern, $paths, 'POST');
+        return $this->addRoute($pattern, $paths, 'POST');
     }
 
     /**
@@ -216,7 +216,7 @@ class Router extends Component implements RouterInterface
      */
     public function addPut($pattern, $paths = null)
     {
-        return $this->_addRoute($pattern, $paths, 'PUT');
+        return $this->addRoute($pattern, $paths, 'PUT');
     }
 
     /**
@@ -229,7 +229,7 @@ class Router extends Component implements RouterInterface
      */
     public function addPatch($pattern, $paths = null)
     {
-        return $this->_addRoute($pattern, $paths, 'PATCH');
+        return $this->addRoute($pattern, $paths, 'PATCH');
     }
 
     /**
@@ -242,7 +242,7 @@ class Router extends Component implements RouterInterface
      */
     public function addDelete($pattern, $paths = null)
     {
-        return $this->_addRoute($pattern, $paths, 'DELETE');
+        return $this->addRoute($pattern, $paths, 'DELETE');
     }
 
     /**
@@ -255,7 +255,7 @@ class Router extends Component implements RouterInterface
      */
     public function addHead($pattern, $paths = null)
     {
-        return $this->_addRoute($pattern, $paths, 'HEAD');
+        return $this->addRoute($pattern, $paths, 'HEAD');
     }
 
     /**
@@ -270,7 +270,7 @@ class Router extends Component implements RouterInterface
 
         if ($controller === null) {
             if (str_contains($pattern, '/:controller')) {
-                return $this->_addRoute($pattern, null, 'REST');
+                return $this->addRoute($pattern, null, 'REST');
             }
 
             if (!preg_match('#/(\w+)$#', $pattern, $match)) {
@@ -279,7 +279,7 @@ class Router extends Component implements RouterInterface
             $controller = Str::singular($match[1]);
         }
 
-        return $this->_addRoute($pattern, $controller, 'REST');
+        return $this->addRoute($pattern, $controller, 'REST');
     }
 
     /**
@@ -313,7 +313,7 @@ class Router extends Component implements RouterInterface
      *
      * @return array|false
      */
-    protected function _matchDefaultRoutes($uri, $method)
+    protected function matchDefaultRoutes($uri, $method)
     {
         $handledUri = $uri;
 
@@ -417,7 +417,7 @@ class Router extends Component implements RouterInterface
             }
 
             if ($parts === false) {
-                $parts = $this->_matchDefaultRoutes($handledUri, $method);
+                $parts = $this->matchDefaultRoutes($handledUri, $method);
             }
         }
 

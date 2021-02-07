@@ -13,7 +13,7 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @return array
      */
-    protected function _getServices($services)
+    protected function getServices($services)
     {
         if ($services) {
             $container = $this->_container;
@@ -58,8 +58,8 @@ class Command extends \ManaPHP\Cli\Command
             $modelName = 'App\\Models\\' . ucfirst($modelName);
         }
 
-        $fieldTypes = $this->_inferFieldTypes([json_parse($input)]);
-        $model = $this->_renderModel($fieldTypes, $modelName, 'mongodb', $optimized);
+        $fieldTypes = $this->inferFieldTypes([json_parse($input)]);
+        $model = $this->renderModel($fieldTypes, $modelName, 'mongodb', $optimized);
         $file = '@tmp/mongodb_model/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
         LocalFS::filePut($file, $model);
 
@@ -83,7 +83,7 @@ class Command extends \ManaPHP\Cli\Command
         $sample = 1000,
         $db = []
     ) {
-        foreach ($this->_getServices($services) as $service) {
+        foreach ($this->getServices($services) as $service) {
             /** @var \ManaPHP\Data\Mongodb $mongodb */
             $mongodb = $this->getShared($service);
 
@@ -107,10 +107,10 @@ class Command extends \ManaPHP\Cli\Command
 
                     $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
 
-                    $fieldTypes = $this->_inferFieldTypes($docs);
+                    $fieldTypes = $this->inferFieldTypes($docs);
                     $modelClass = 'App\Models\\' . $plainClass;
                     $ns = $defaultDb ? $collection : "$cdb.$collection";
-                    $model = $this->_renderModel($fieldTypes, $modelClass, $service, $ns, $optimized);
+                    $model = $this->renderModel($fieldTypes, $modelClass, $service, $ns, $optimized);
                     LocalFS::filePut($fileName, $model);
 
                     $this->console->progress(
@@ -147,7 +147,7 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @return string[]
      */
-    protected function _inferFieldTypes($docs)
+    protected function inferFieldTypes($docs)
     {
         $fieldTypes = [];
         foreach ($docs as $doc) {
@@ -177,7 +177,7 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @return string
      */
-    protected function _getConstants($modelName)
+    protected function getConstants($modelName)
     {
         $file = "@app/Models/$modelName.php";
         if (!LocalFS::fileExists($file)) {
@@ -205,7 +205,7 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @return string
      */
-    protected function _renderModel($fieldTypes, $modelName, $service, $namespace, $optimized = false)
+    protected function renderModel($fieldTypes, $modelName, $service, $namespace, $optimized = false)
     {
         $fields = array_keys($fieldTypes);
 
@@ -217,7 +217,7 @@ class Command extends \ManaPHP\Cli\Command
             }
         }
 
-        $constants = $this->_getConstants($modelName);
+        $constants = $this->getConstants($modelName);
 
         $str = '<?php' . PHP_EOL;
         $str .= 'namespace ' . substr($modelName, 0, strrpos($modelName, '\\')) . ';' . PHP_EOL;
@@ -274,7 +274,7 @@ class Command extends \ManaPHP\Cli\Command
         }
 
         $primaryKey = null;
-        if ($primaryKey = $this->_inferPrimaryKey($fieldTypes, $modelName)) {
+        if ($primaryKey = $this->inferPrimaryKey($fieldTypes, $modelName)) {
             $str .= PHP_EOL;
             $str .= '    public function primaryKey()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
@@ -329,7 +329,7 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @return false|string
      */
-    protected function _inferPrimaryKey($fieldTypes, $modelName)
+    protected function inferPrimaryKey($fieldTypes, $modelName)
     {
         if (isset($fieldTypes['id'])) {
             return 'id';
@@ -365,7 +365,7 @@ class Command extends \ManaPHP\Cli\Command
      */
     public function csvAction($services = [], $collection_pattern = '', $bom = false)
     {
-        foreach ($this->_getServices($services) as $service) {
+        foreach ($this->getServices($services) as $service) {
             /** @var \ManaPHP\Data\Mongodb $mongodb */
             $mongodb = $this->getShared($service);
             $defaultDb = $mongodb->getDefaultDb();
@@ -450,7 +450,7 @@ class Command extends \ManaPHP\Cli\Command
      */
     public function listAction($services = [], $collection_pattern = '', $field = '', $db = [])
     {
-        foreach ($this->_getServices($services) as $service) {
+        foreach ($this->getServices($services) as $service) {
             /** @var \ManaPHP\Data\Mongodb $mongodb */
             $mongodb = $this->getShared($service);
 

@@ -65,7 +65,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
      *
      * @return string|null
      */
-    protected function _inferPrimaryKey($class)
+    protected function inferPrimaryKey($class)
     {
         $fields = $this->fields();
 
@@ -804,7 +804,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
      *
      * @return bool
      */
-    protected function _exists()
+    protected function existsInternal()
     {
         $primaryKey = $this->primaryKey();
         if ($this->$primaryKey === null) {

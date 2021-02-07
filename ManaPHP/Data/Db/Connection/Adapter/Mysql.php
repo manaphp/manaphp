@@ -104,7 +104,7 @@ class Mysql extends Connection
      */
     public function getMetadata($table)
     {
-        $fields = $this->query('DESCRIBE ' . $this->_escapeIdentifier($table), [], PDO::FETCH_NUM);
+        $fields = $this->query('DESCRIBE ' . $this->escapeIdentifier($table), [], PDO::FETCH_NUM);
 
         $attributes = [];
         $primaryKeys = [];
@@ -146,7 +146,7 @@ class Mysql extends Connection
      */
     public function truncate($table)
     {
-        $this->execute('TRUNCATE' . ' TABLE ' . $this->_escapeIdentifier($table));
+        $this->execute('TRUNCATE' . ' TABLE ' . $this->escapeIdentifier($table));
 
         return $this;
     }
@@ -159,7 +159,7 @@ class Mysql extends Connection
      */
     public function drop($table)
     {
-        $this->execute('DROP' . ' TABLE IF EXISTS ' . $this->_escapeIdentifier($table));
+        $this->execute('DROP' . ' TABLE IF EXISTS ' . $this->escapeIdentifier($table));
 
         return $this;
     }
@@ -173,7 +173,7 @@ class Mysql extends Connection
     public function getTables($schema = null)
     {
         if ($schema) {
-            $sql = 'SHOW FULL TABLES FROM `' . $this->_escapeIdentifier($schema) . '` WHERE Table_Type != "VIEW"';
+            $sql = 'SHOW FULL TABLES FROM `' . $this->escapeIdentifier($schema) . '` WHERE Table_Type != "VIEW"';
         } else {
             $sql = 'SHOW FULL TABLES WHERE Table_Type != "VIEW"';
         }
@@ -292,7 +292,7 @@ class Mysql extends Connection
         $fields = array_keys($records[0]);
         $insertedFields = '[' . implode('],[', $fields) . ']';
 
-        $pdo = $this->_getPdo();
+        $pdo = $this->getPdo();
 
         $rows = [];
         foreach ($records as $record) {
@@ -306,7 +306,7 @@ class Mysql extends Connection
 
         $sql
             = /**@lang text */
-            "INSERT INTO {$this->_escapeIdentifier($table)} ($insertedFields) VALUES " . implode(', ', $rows);
+            "INSERT INTO {$this->escapeIdentifier($table)} ($insertedFields) VALUES " . implode(', ', $rows);
 
         return $this->execute($sql);
     }
@@ -361,7 +361,7 @@ class Mysql extends Connection
 
         $sql
             = /** @lang text */
-            "INSERT INTO {$this->_escapeIdentifier($table)}($insertFieldsSql)"
+            "INSERT INTO {$this->escapeIdentifier($table)}($insertFieldsSql)"
             . " VALUES($insertValuesSql) ON DUPLICATE KEY UPDATE $updateFieldsSql";
 
         return $this->execute('insert', $sql, $bind);

@@ -33,7 +33,7 @@ class Session extends Flash
      *
      * @return void
      */
-    protected function _message($type, $message)
+    protected function message($type, $message)
     {
         $css = $this->_css[$type] ?? '';
 

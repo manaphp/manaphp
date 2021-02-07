@@ -20,7 +20,7 @@ class Packer
      *
      * @return static
      */
-    protected function _append($format, $args)
+    protected function append($format, $args)
     {
         $count = count($args);
         if ($count === 1) {
@@ -92,7 +92,7 @@ class Packer
      */
     public function hexLNF(...$args)
     {
-        return $this->_append('h', $args);
+        return $this->append('h', $args);
     }
 
     /**
@@ -104,7 +104,7 @@ class Packer
      */
     public function hexHNF(...$args)
     {
-        return $this->_append('H', $args);
+        return $this->append('H', $args);
     }
 
     /**
@@ -116,7 +116,7 @@ class Packer
      */
     public function byte(...$args)
     {
-        return $this->_append('C', $args);
+        return $this->append('C', $args);
     }
 
     /**
@@ -128,7 +128,7 @@ class Packer
      */
     public function int8(...$args)
     {
-        return $this->_append('c', $args);
+        return $this->append('c', $args);
     }
 
     /**
@@ -140,7 +140,7 @@ class Packer
      */
     public function int8U(...$args)
     {
-        return $this->_append('C', $args);
+        return $this->append('C', $args);
     }
 
     /**
@@ -152,7 +152,7 @@ class Packer
      */
     public function int16(...$args)
     {
-        return $this->_append('s', $args);
+        return $this->append('s', $args);
     }
 
     /**
@@ -164,7 +164,7 @@ class Packer
      */
     public function int16U(...$args)
     {
-        return $this->_append('S', $args);
+        return $this->append('S', $args);
     }
 
     /**
@@ -176,7 +176,7 @@ class Packer
      */
     public function int16BE(...$args)
     {
-        return $this->_append('n', $args);
+        return $this->append('n', $args);
     }
 
     /**
@@ -188,7 +188,7 @@ class Packer
      */
     public function int16LE(...$args)
     {
-        return $this->_append('v', $args);
+        return $this->append('v', $args);
     }
 
     /**
@@ -200,7 +200,7 @@ class Packer
      */
     public function int32(...$args)
     {
-        return $this->_append('l', $args);
+        return $this->append('l', $args);
     }
 
     /**
@@ -212,7 +212,7 @@ class Packer
      */
     public function int32U(...$args)
     {
-        return $this->_append('L', $args);
+        return $this->append('L', $args);
     }
 
     /**
@@ -224,7 +224,7 @@ class Packer
      */
     public function int32BE(...$args)
     {
-        return $this->_append('N', $args);
+        return $this->append('N', $args);
     }
 
     /**
@@ -236,7 +236,7 @@ class Packer
      */
     public function int32LE(...$args)
     {
-        return $this->_append('V', $args);
+        return $this->append('V', $args);
     }
 
     /**
@@ -248,7 +248,7 @@ class Packer
      */
     public function int64(...$args)
     {
-        return $this->_append('q', $args);
+        return $this->append('q', $args);
     }
 
     /**
@@ -260,7 +260,7 @@ class Packer
      */
     public function int64U(...$args)
     {
-        return $this->_append('Q', $args);
+        return $this->append('Q', $args);
     }
 
     /**
@@ -272,7 +272,7 @@ class Packer
      */
     public function int64BE(...$args)
     {
-        return $this->_append('J', $args);
+        return $this->append('J', $args);
     }
 
     /**
@@ -284,7 +284,7 @@ class Packer
      */
     public function int64LE(...$args)
     {
-        return $this->_append('P', $args);
+        return $this->append('P', $args);
     }
 
     /**
@@ -296,7 +296,7 @@ class Packer
      */
     public function float(...$args)
     {
-        return $this->_append('f', $args);
+        return $this->append('f', $args);
     }
 
     /**
@@ -308,7 +308,7 @@ class Packer
      */
     public function floatLE(...$args)
     {
-        return $this->_append('g', $args);
+        return $this->append('g', $args);
     }
 
     /**
@@ -320,7 +320,7 @@ class Packer
      */
     public function floatBE(...$args)
     {
-        return $this->_append('G', $args);
+        return $this->append('G', $args);
     }
 
     /**
@@ -332,7 +332,7 @@ class Packer
      */
     public function double(...$args)
     {
-        return $this->_append('G', $args);
+        return $this->append('G', $args);
     }
 
     /**
@@ -344,7 +344,7 @@ class Packer
      */
     public function doubleLE(...$args)
     {
-        return $this->_append('e', $args);
+        return $this->append('e', $args);
     }
 
     /**
@@ -356,7 +356,7 @@ class Packer
      */
     public function doubleBE(...$args)
     {
-        return $this->_append('E', $args);
+        return $this->append('E', $args);
     }
 
     /**

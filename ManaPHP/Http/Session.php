@@ -111,7 +111,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
     /**
      * @return void
      */
-    protected function _start()
+    protected function start()
     {
         $context = $this->_context;
 
@@ -131,7 +131,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
                 $this->logger->error('unserialize failed', 'session.unserialize');
             }
         } else {
-            $session_id = $this->_generateSessionId();
+            $session_id = $this->generateSessionId();
             $context->is_new = true;
             $context->_SESSION = [];
         }
@@ -216,7 +216,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
             $context = $this->_context;
 
             if (!$context->started) {
-                $this->_start();
+                $this->start();
             }
 
             $session_id = $context->session_id;
@@ -352,7 +352,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
     /**
      * @return string
      */
-    protected function _generateSessionId()
+    protected function generateSessionId()
     {
         return Str::random(32, 36);
     }
@@ -370,7 +370,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
         $context = $this->_context;
 
         if (!$context->started) {
-            $this->_start();
+            $this->start();
         }
 
         if ($name === null) {
@@ -395,7 +395,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
         $context = $this->_context;
 
         if (!$context->started) {
-            $this->_start();
+            $this->start();
         }
 
         $context->is_dirty = true;
@@ -416,7 +416,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
         $context = $this->_context;
 
         if (!$context->started) {
-            $this->_start();
+            $this->start();
         }
 
         return isset($context->_SESSION[$name]);
@@ -434,7 +434,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
         $context = $this->_context;
 
         if (!$context->started) {
-            $this->_start();
+            $this->start();
         }
 
         $context->is_dirty = true;
@@ -451,7 +451,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
         $context = $this->_context;
 
         if (!$context->started) {
-            $this->_start();
+            $this->start();
         }
 
         return $context->session_id;
@@ -467,7 +467,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
         $context = $this->_context;
 
         if (!$context->started) {
-            $this->_start();
+            $this->start();
         }
 
         $context->session_id = $id;

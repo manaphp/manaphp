@@ -181,7 +181,7 @@ class Request extends Component implements RequestInterface
      *
      * @return mixed
      */
-    protected function _normalizeValue($field, $value, $default)
+    protected function normalizeValue($field, $value, $default)
     {
         $type = gettype($default);
 
@@ -221,7 +221,7 @@ class Request extends Component implements RequestInterface
                 throw new InvalidValueException(['the value of `:name` name is not scalar', 'name' => $name]);
             }
 
-            return $default === null ? $value : $this->_normalizeValue($name, $value, $default);
+            return $default === null ? $value : $this->normalizeValue($name, $value, $default);
         } elseif ($default === null) {
             return $this->validator->validateValue($name, null, ['required']);
         } else {

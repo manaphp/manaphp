@@ -39,7 +39,7 @@ class File extends Logger
      *
      * @return string
      */
-    protected function _format($log)
+    protected function format($log)
     {
         $replaced = [];
 
@@ -67,7 +67,7 @@ class File extends Logger
      *
      * @return void
      */
-    protected function _write($str)
+    protected function write($str)
     {
         $file = $this->alias->resolve($this->_file);
         if (!is_file($file)) {
@@ -92,10 +92,10 @@ class File extends Logger
     {
         $str = '';
         foreach ($logs as $log) {
-            $s = $this->_format($log);
+            $s = $this->format($log);
             $str = $str === '' ? $s : $str . $s;
         }
 
-        $this->_write($str);
+        $this->write($str);
     }
 }

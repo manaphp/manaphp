@@ -120,7 +120,7 @@ class Engine extends Component implements EngineInterface
     /**
      * @return resource
      */
-    protected function _open()
+    protected function open()
     {
         if ($this->_socket) {
             return $this->_socket;
@@ -165,7 +165,7 @@ class Engine extends Component implements EngineInterface
 
         $headers .= "Sec-WebSocket-Version: 13\r\n\r\n";
 
-        $this->_send($socket, $headers);
+        $this->sendInternal($socket, $headers);
 
         if (($first = fgets($socket)) !== "HTTP/1.1 101 Switching Protocols\r\n") {
             throw new SwitchingProtocolsException($first);
@@ -202,7 +202,7 @@ class Engine extends Component implements EngineInterface
      *
      * @return void
      */
-    protected function _send($socket, $data, $timeout = null)
+    protected function sendInternal($socket, $data, $timeout = null)
     {
         $send_length = 0;
         $data_length = strlen($data);
@@ -266,7 +266,7 @@ class Engine extends Component implements EngineInterface
             $str .= $data;
         }
 
-        $this->_send($this->_socket ?? $this->_open(), $str, $timeout);
+        $this->sendInternal($this->_socket ?? $this->open(), $str, $timeout);
     }
 
     /**
@@ -276,7 +276,7 @@ class Engine extends Component implements EngineInterface
      */
     public function recv($timeout = null)
     {
-        $socket = $this->_socket ?? $this->_open();
+        $socket = $this->_socket ?? $this->open();
 
         $buf = '';
         $end_time = microtime(true) + ($timeout ?: $this->_timeout);
@@ -391,7 +391,7 @@ class Engine extends Component implements EngineInterface
      */
     public function isRecvReady($timeout)
     {
-        $socket = $this->_socket ?? $this->_open();
+        $socket = $this->_socket ?? $this->open();
 
         $write = null;
         $except = null;

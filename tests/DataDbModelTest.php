@@ -198,14 +198,14 @@ class DbModelTest extends TestCase
     /**
      * @param Model $model
      */
-    protected function _truncateTable($model)
+    protected function truncateTable($model)
     {
         $this->connection->truncate($model->table());
     }
 
     public function test_create()
     {
-        $this->_truncateTable(new Student());
+        $this->truncateTable(new Student());
 
         $student = new Student();
         $student->age = 21;
@@ -229,7 +229,7 @@ class DbModelTest extends TestCase
 
     public function test_update()
     {
-        $this->_truncateTable(new Student());
+        $this->truncateTable(new Student());
 
         $student = new Student();
         $student->age = 21;
@@ -251,7 +251,7 @@ class DbModelTest extends TestCase
 
     public function test_updateAll()
     {
-        $this->_truncateTable(new Student());
+        $this->truncateTable(new Student());
 
         $student = new Student();
         $student->age = 21;
@@ -270,7 +270,7 @@ class DbModelTest extends TestCase
 
     public function test_save()
     {
-        $this->_truncateTable(new Student());
+        $this->truncateTable(new Student());
 
         $student = new Student();
 
@@ -298,7 +298,7 @@ class DbModelTest extends TestCase
 
     public function test_delete()
     {
-        $this->_truncateTable(new Student());
+        $this->truncateTable(new Student());
 
         $student = new Student();
         $student->age = 21;
@@ -312,7 +312,7 @@ class DbModelTest extends TestCase
 
     public function test_deleteAll()
     {
-        $this->_truncateTable(new Student());
+        $this->truncateTable(new Student());
 
         $student = new Student();
         $student->age = 21;

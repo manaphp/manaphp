@@ -47,7 +47,7 @@ abstract class Mailer extends Component implements MailerInterface
      *
      * @return int
      */
-    abstract protected function _send($message, &$failedRecipients = null);
+    abstract protected function sendInternal($message, &$failedRecipients = null);
 
     /**
      * @param \ManaPHP\Mailing\Mailer\Message $message
@@ -65,7 +65,7 @@ abstract class Mailer extends Component implements MailerInterface
 
         $message->setMailer($this);
         $this->fireEvent('mailer:sending', compact('message'));
-        $r = $this->_send($message, $failedRecipients);
+        $r = $this->sendInternal($message, $failedRecipients);
         $this->fireEvent('mailer:sent', compact('message', 'failedRecipients'));
 
         return $r;

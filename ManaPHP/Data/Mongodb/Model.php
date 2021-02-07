@@ -61,7 +61,7 @@ class Model extends \ManaPHP\Data\Model
         $class = static::class;
 
         if (!isset($cached[$class])) {
-            if ($primaryKey = $this->_inferPrimaryKey($class)) {
+            if ($primaryKey = $this->inferPrimaryKey($class)) {
                 return $cached[$class] = $primaryKey;
             } else {
                 throw new NotImplementedException(['Primary key of `%s` model can not be inferred', $class]);
@@ -177,7 +177,7 @@ class Model extends \ManaPHP\Data\Model
      *
      * @return bool
      */
-    protected function _createAutoIncrementIndex($mongodb, $source)
+    protected function createAutoIncrementIndex($mongodb, $source)
     {
         $autoIncField = $this->autoIncrementField();
 
@@ -242,7 +242,7 @@ class Model extends \ManaPHP\Data\Model
         $id = $mongodb->command($command, $db)[0]['value']['current_id'];
 
         if ($id === $step) {
-            $this->_createAutoIncrementIndex($mongodb, $source);
+            $this->createAutoIncrementIndex($mongodb, $source);
         }
 
         return $id;

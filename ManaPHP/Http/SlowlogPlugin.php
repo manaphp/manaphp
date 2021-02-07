@@ -50,7 +50,7 @@ class SlowlogPlugin extends Plugin
      *
      * @return void
      */
-    protected function _write($elapsed, $message)
+    protected function write($elapsed, $message)
     {
         $elapsed = round($elapsed, 3);
 
@@ -75,7 +75,7 @@ class SlowlogPlugin extends Plugin
      *
      * @return string
      */
-    protected function _getEid($elapsed, $precision = 0.1)
+    protected function getEid($elapsed, $precision = 0.1)
     {
         $id = '';
         for ($level = 0; $level < 3; $level++) {
@@ -116,9 +116,9 @@ class SlowlogPlugin extends Plugin
             'route'    => $route,
             'url'      => $this->request->getUrl(),
             '_REQUEST' => $this->request->get(),
-            'eid'      => $this->_getEid($elapsed)
+            'eid'      => $this->getEid($elapsed)
         ];
 
-        $this->_write($elapsed, $message);
+        $this->write($elapsed, $message);
     }
 }
