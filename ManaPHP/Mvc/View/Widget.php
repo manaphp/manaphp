@@ -5,13 +5,6 @@ namespace ManaPHP\Mvc\View;
 use ManaPHP\Component;
 use ManaPHP\Logging\Logger\LogCategorizable;
 
-/**
- * @property-read \ManaPHP\Identifying\IdentityInterface $identity
- * @property-read \ManaPHP\Http\UrlInterface             $url
- * @property-read \ManaPHP\Caching\CacheInterface        $cache
- * @property-read \ManaPHP\Html\RendererInterface        $renderer
- * @property-read \ManaPHP\Data\DbInterface              $db
- */
 abstract class Widget extends Component implements WidgetInterface, LogCategorizable
 {
     public function categorizeLog()

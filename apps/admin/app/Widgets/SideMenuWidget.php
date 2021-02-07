@@ -6,7 +6,8 @@ use App\Areas\Menu\Models\Group;
 use ManaPHP\Data\Query;
 
 /**
- * @property-read \ManaPHP\Http\AuthorizationInterface $authorization
+ * @property-read \ManaPHP\Identifying\IdentityInterface $identity
+ * @property-read \ManaPHP\Http\AuthorizationInterface   $authorization
  */
 class SideMenuWidget extends Widget
 {
