@@ -19,7 +19,7 @@ class Syslog extends Logger
     /**
      * @var string
      */
-    protected $receiver;
+    protected $uri;
 
     /**
      * @var int
@@ -33,17 +33,17 @@ class Syslog extends Logger
     /**
      * @var string
      */
-    protected $receiver_protocol = 'udp';
+    protected $scheme = 'udp';
 
     /**
      * @var int
      */
-    protected $receiver_host;
+    protected $host;
 
     /**
      * @var string
      */
-    protected $receiver_port = 514;
+    protected $port = 514;
 
     /**
      * @var resource
@@ -57,21 +57,21 @@ class Syslog extends Logger
     {
         parent::__construct($options);
 
-        if (!isset($options['receiver'])) {
-            throw new MisuseException('syslog receiver is not assign');
+        if (!isset($options['uri'])) {
+            throw new MisuseException('`uri` is not assign');
         }
 
-        $this->receiver = $options['receiver'];
-        $parts = parse_url($options['receiver']);
-        $this->receiver_host = $parts['host'];
+        $this->uri = $options['uri'];
+        $parts = parse_url($options['uri']);
+        $this->host = $parts['host'];
         if (isset($parts['scheme'])) {
-            $this->receiver_protocol = $parts['scheme'];
+            $this->scheme = $parts['scheme'];
         }
         if (isset($parts['port'])) {
-            $this->receiver_port = (int)$parts['port'];
+            $this->port = (int)$parts['port'];
         }
 
-        if ($this->receiver_protocol !== 'udp') {
+        if ($this->scheme !== 'udp') {
             throw new NotSupportedException('only support udp protocol');
         }
 
@@ -102,8 +102,8 @@ class Syslog extends Logger
             ];
         }
 
-        $host = $this->receiver_host;
-        $port = $this->receiver_port;
+        $host = $this->host;
+        $port = $this->port;
         $tag = $this->configure->id;
 
         foreach ($logs as $log) {
