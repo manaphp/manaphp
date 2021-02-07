@@ -1,7 +1,7 @@
 CREATE TABLE `manaphp_log`
 (
     `log_id`       int(11)                         NOT NULL AUTO_INCREMENT,
-    `host`         varchar(16)                     NOT NULL,
+    `hostname`     varchar(16)                     NOT NULL,
     `client_ip`    varchar(15) CHARACTER SET ascii NOT NULL,
     `request_id`   varchar(64) CHARACTER SET ascii NOT NULL,
     `category`     varchar(64) CHARACTER SET ascii NOT NULL,

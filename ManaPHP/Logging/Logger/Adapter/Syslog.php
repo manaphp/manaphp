@@ -128,7 +128,7 @@ class Syslog extends Logger
                     $content = strtr($this->format, $replaced);
 
                     // <PRI>TIMESTAMP HOST TAG:CONTENT
-                    $packet = "<$priority>$timestamp $log->host $tag:$content";
+                    $packet = "<$priority>$timestamp $log->hostname $tag:$content";
                     socket_sendto($this->socket, $packet, strlen($packet), 0, $host, $port);
                 }
             } else {
@@ -136,7 +136,7 @@ class Syslog extends Logger
                 $content = strtr($this->format, $replaced);
 
                 // <PRI>TIMESTAMP HOST TAG:CONTENT
-                $packet = "<$priority>$timestamp $log->host $tag:$content";
+                $packet = "<$priority>$timestamp $log->hostname $tag:$content";
                 socket_sendto($this->socket, $packet, strlen($packet), 0, $host, $port);
             }
         }

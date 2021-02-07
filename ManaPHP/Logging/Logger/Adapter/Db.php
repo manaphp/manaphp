@@ -44,7 +44,7 @@ class Db extends Logger
             try {
                 $this->db->insert(
                     $this->table, [
-                        'host'         => $log->host,
+                        'hostname'     => $log->hostname,
                         'client_ip'    => $log->client_ip,
                         'request_id'   => $log->request_id,
                         'category'     => $log->category,

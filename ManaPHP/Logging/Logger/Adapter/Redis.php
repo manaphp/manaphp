@@ -35,7 +35,7 @@ class Redis extends Logger
             $data = [
                 'date'       => date('Y-m-d\TH:i:s', $log->timestamp) . $ms,
                 '@timestamp' => $log->timestamp,
-                'host'       => $log->host,
+                'hostname'   => $log->hostname,
                 'category'   => $log->category,
                 'level'      => $log->level,
                 'location'   => "$log->file:$log->line",

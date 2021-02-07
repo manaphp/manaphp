@@ -5,7 +5,7 @@ namespace ManaPHP\Logging\Logger;
 class Log
 {
     public $timestamp;
-    public $host;
+    public $hostname;
     public $client_ip;
     public $request_id;
     public $category;

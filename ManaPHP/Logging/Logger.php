@@ -51,7 +51,7 @@ abstract class Logger extends Component implements LoggerInterface
     /**
      * @var string
      */
-    protected $host;
+    protected $hostname;
 
     /**
      * @var array
@@ -112,7 +112,7 @@ abstract class Logger extends Component implements LoggerInterface
             $this->buffer_size = (int)$options['buffer_size'];
         }
 
-        $this->host = $options['host'] ?? gethostname();
+        $this->hostname = $options['hostname'] ?? gethostname();
 
         $this->attachEvent('request:end', [$this, 'onRequestEnd']);
     }
@@ -378,7 +378,7 @@ abstract class Logger extends Component implements LoggerInterface
 
         $log = new Log();
 
-        $log->host = $this->host;
+        $log->hostname = $this->hostname;
         $log->client_ip = $context->client_ip;
         $log->level = self::$levels[$level];
         $log->request_id = $context->request_id ?: $this->request->getRequestId();
