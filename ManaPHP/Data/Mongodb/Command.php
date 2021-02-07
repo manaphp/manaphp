@@ -91,7 +91,8 @@ class Command extends \ManaPHP\Cli\Command
             /** @var \ManaPHP\Data\Mongodb $mongodb */
             $mongodb = $this->getShared($service);
 
-            $dbs = $mongodb->getDb() ? [$mongodb->getDb()] : $mongodb->listDatabases();
+            $defaultDb = $mongodb->getDb();
+            $dbs = $defaultDb ? [$defaultDb] : $mongodb->listDatabases();
             foreach ($dbs as $cdb) {
                 if (in_array($cdb, ['admin', 'local'], true) || ($db && !in_array($cdb, $db, true))) {
                     continue;
