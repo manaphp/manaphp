@@ -251,7 +251,7 @@ class Component implements Injectable, JsonSerializable
      *
      * @return static
      */
-    public function attachEvent($event, $handler, $priority = 0)
+    protected function attachEvent($event, $handler, $priority = 0)
     {
         $this->eventsManager->attachEvent($event, $handler, $priority);
 
@@ -264,7 +264,7 @@ class Component implements Injectable, JsonSerializable
      *
      * @return static
      */
-    public function detachEvent($event, $handler)
+    protected function detachEvent($event, $handler)
     {
         $this->eventsManager->detachEvent($event, $handler);
 
@@ -277,7 +277,7 @@ class Component implements Injectable, JsonSerializable
      *
      * @return static
      */
-    public function peekEvent($group, $handler)
+    protected function peekEvent($group, $handler)
     {
         $this->eventsManager->peekEvent($group, $handler);
 
@@ -293,7 +293,7 @@ class Component implements Injectable, JsonSerializable
      *
      * @return \ManaPHP\Event\EventArgs
      */
-    public function fireEvent($event, $data = null, $source = null)
+    protected function fireEvent($event, $data = null, $source = null)
     {
         $on = substr($event, strpos($event, ':') + 1);
 
