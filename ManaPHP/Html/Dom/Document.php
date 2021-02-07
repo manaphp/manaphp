@@ -67,7 +67,6 @@ class Document extends Component
      */
     public function loadFile($file, $url = null)
     {
-        $this->url = $file;
         $str = LocalFS::fileGet($file);
 
         return $this->loadString($str, $url);
