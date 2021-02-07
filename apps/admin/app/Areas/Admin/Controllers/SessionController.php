@@ -12,6 +12,7 @@ use ManaPHP\Helper\Str;
 
 /**
  * @property-read \ManaPHP\Configuration\Configure $configure
+ * @property-read \ManaPHP\Http\CaptchaInterface   $captcha
  */
 class SessionController extends Controller
 {

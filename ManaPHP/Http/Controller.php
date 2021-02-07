@@ -3,15 +3,11 @@
 namespace ManaPHP\Http;
 
 /**
- * @property-read \ManaPHP\Controller\InvokerInterface   $invoker
  * @property-read \ManaPHP\Http\RequestInterface         $request
  * @property-read \ManaPHP\Http\ResponseInterface        $response
  * @property-read \ManaPHP\Http\RouterInterface          $router
  * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher
- * @property-read \ManaPHP\Http\CaptchaInterface         $captcha
- * @property-read \ManaPHP\Messaging\QueueInterface      $msgQueue
  * @property-read \ManaPHP\Identifying\IdentityInterface $identity
- * @property-read \ManaPHP\Html\PurifierInterface        $htmlPurifier
  */
 abstract class Controller extends \ManaPHP\Controller
 {

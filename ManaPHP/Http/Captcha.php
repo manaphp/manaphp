@@ -10,6 +10,7 @@ use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Http\Captcha\InvalidCaptchaException;
 
 /**
+ * @property-read \ManaPHP\AliasInterface         $alias
  * @property-read \ManaPHP\Http\ResponseInterface $response
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\SessionInterface  $session

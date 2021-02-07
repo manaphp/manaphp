@@ -7,6 +7,7 @@ use App\Models\Admin;
 
 /**
  * @property-read \ManaPHP\Configuration\Configure $configure
+ * @property-read \ManaPHP\Http\CaptchaInterface   $captcha
  * @property-read \ManaPHP\Mailing\MailerInterface $mailer
  */
 class PasswordController extends Controller

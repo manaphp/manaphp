@@ -5,6 +5,9 @@ namespace App\Areas\Admin\Controllers;
 use App\Controllers\Controller;
 use App\Models\Admin;
 
+/**
+ * @property-read \ManaPHP\Http\CaptchaInterface $captcha
+ */
 class AccountController extends Controller
 {
     public function getAcl()
