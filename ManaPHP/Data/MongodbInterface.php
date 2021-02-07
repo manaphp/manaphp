@@ -12,7 +12,7 @@ interface MongodbInterface
     /**
      * @return string|null
      */
-    public function getDefaultDb();
+    public function getDb();
 
     /**
      * @param string $source

@@ -25,7 +25,7 @@ class Mongodb extends Component implements MongodbInterface
     /**
      * @var string
      */
-    protected $default_db;
+    protected $db;
 
     /**
      * @param string $uri
@@ -39,7 +39,7 @@ class Mongodb extends Component implements MongodbInterface
         }
 
         $path = parse_url($uri, PHP_URL_PATH);
-        $this->default_db = ($path !== '/' && $path !== null) ? (string)substr($path, 1) : null;
+        $this->db = ($path !== '/' && $path !== null) ? (string)substr($path, 1) : null;
 
         $this->poolManager->add($this, $this->getNew('ManaPHP\Data\Mongodb\Connection', [$this->uri]));
     }
@@ -65,9 +65,9 @@ class Mongodb extends Component implements MongodbInterface
     /**
      * @return string|null
      */
-    public function getDefaultDb()
+    public function getDb()
     {
-        return $this->default_db;
+        return $this->db;
     }
 
     /**
@@ -80,7 +80,7 @@ class Mongodb extends Component implements MongodbInterface
         if (str_contains($source, '.')) {
             return str_replace('.', '.' . $this->prefix, $source);
         } else {
-            return $this->default_db . '.' . $this->prefix . $source;
+            return $this->db . '.' . $this->prefix . $source;
         }
     }
 
@@ -305,7 +305,7 @@ class Mongodb extends Component implements MongodbInterface
     public function command($command, $db = null)
     {
         if (!$db) {
-            $db = $this->default_db;
+            $db = $this->db;
         }
 
         $this->fireEvent('mongodb:commanding', compact('db', 'command'));
@@ -340,7 +340,7 @@ class Mongodb extends Component implements MongodbInterface
             $db = substr($source, 0, $pos);
             $collection = substr($source, $pos + 1);
         } else {
-            $db = $this->default_db;
+            $db = $this->db;
             $collection = $source;
         }
 
@@ -372,7 +372,7 @@ class Mongodb extends Component implements MongodbInterface
             $db = substr($source, 0, $pos);
             $collection = substr($source, $pos + 1);
         } else {
-            $db = $this->default_db;
+            $db = $this->db;
             $collection = $source;
         }
 

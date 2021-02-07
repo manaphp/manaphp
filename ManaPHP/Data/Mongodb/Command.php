@@ -87,8 +87,8 @@ class Command extends \ManaPHP\Cli\Command
             /** @var \ManaPHP\Data\Mongodb $mongodb */
             $mongodb = $this->getShared($service);
 
-            $defaultDb = $mongodb->getDefaultDb();
-            foreach ($defaultDb ? [$defaultDb] : $mongodb->listDatabases() as $cdb) {
+            $dbs = $mongodb->getDb() ? [$mongodb->getDb()] : $mongodb->listDatabases();
+            foreach ($dbs as $cdb) {
                 if (in_array($cdb, ['admin', 'local'], true) || ($db && !in_array($cdb, $db, true))) {
                     continue;
                 }
@@ -368,9 +368,9 @@ class Command extends \ManaPHP\Cli\Command
         foreach ($this->getServices($services) as $service) {
             /** @var \ManaPHP\Data\Mongodb $mongodb */
             $mongodb = $this->getShared($service);
-            $defaultDb = $mongodb->getDefaultDb();
 
-            foreach ($defaultDb ? [$defaultDb] : $mongodb->listDatabases() as $db) {
+            $dbs = $mongodb->getDb() ? [$mongodb->getDb()] : $mongodb->listDatabases();
+            foreach ($dbs as $db) {
                 if (in_array($db, ['admin', 'local'], true)) {
                     continue;
                 }
@@ -454,8 +454,8 @@ class Command extends \ManaPHP\Cli\Command
             /** @var \ManaPHP\Data\Mongodb $mongodb */
             $mongodb = $this->getShared($service);
 
-            $defaultDb = $mongodb->getDefaultDb();
-            foreach ($defaultDb ? [$defaultDb] : $mongodb->listDatabases() as $cdb) {
+            $dbs = $mongodb->getDb() ? [$mongodb->getDb()] : $mongodb->listDatabases();
+            foreach ($dbs as $cdb) {
                 if ($db && !in_array($cdb, $db, true)) {
                     continue;
                 }
