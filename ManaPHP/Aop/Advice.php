@@ -7,17 +7,17 @@ class Advice implements Unaspectable
     /**
      * @var callable[]
      */
-    protected $_before = [];
+    protected $before = [];
 
     /**
      * @var callable[]
      */
-    protected $_around = [];
+    protected $around = [];
 
     /**
      * @var callable[]
      */
-    protected $_after = [];
+    protected $after = [];
 
     /**
      * @param callable $closure
@@ -27,7 +27,7 @@ class Advice implements Unaspectable
     public function addAround($closure = null)
     {
         if ($closure !== null) {
-            $this->_around[] = $closure;
+            $this->around[] = $closure;
         }
 
         return $this;
@@ -41,7 +41,7 @@ class Advice implements Unaspectable
     public function addBefore($closure = null)
     {
         if ($closure !== null) {
-            $this->_before[] = $closure;
+            $this->before[] = $closure;
         }
 
         return $this;
@@ -55,7 +55,7 @@ class Advice implements Unaspectable
     public function addAfter($closure = null)
     {
         if ($closure !== null) {
-            $this->_after[] = $closure;
+            $this->after[] = $closure;
         }
 
         return $this;
@@ -68,7 +68,7 @@ class Advice implements Unaspectable
      */
     public function adviseBefore($joinPoint)
     {
-        foreach ($this->_before as $closure) {
+        foreach ($this->before as $closure) {
             $closure($joinPoint);
         }
     }
@@ -80,7 +80,7 @@ class Advice implements Unaspectable
      */
     public function adviseAfter($joinPoint)
     {
-        foreach ($this->_after as $closure) {
+        foreach ($this->after as $closure) {
             $closure($joinPoint);
         }
     }
@@ -92,7 +92,7 @@ class Advice implements Unaspectable
      */
     public function adviseAround($joinPoint)
     {
-        foreach ($this->_around as $closure) {
+        foreach ($this->around as $closure) {
             $closure($joinPoint);
         }
     }

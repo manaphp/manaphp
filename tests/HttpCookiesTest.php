@@ -11,60 +11,60 @@ class HttpCookiesTest extends TestCase
     /**
      * @var Cookies
      */
-    protected $_cookies;
+    protected $cookies;
 
     public function setUp()
     {
-        $this->_cookies = new Cookies();
-        $this->_cookies->crypt = new Crypt('abc');
+        $this->cookies = new Cookies();
+        $this->cookies->crypt = new Crypt('abc');
     }
 
     public function test_set()
     {
-        $this->_cookies->delete('name');
+        $this->cookies->delete('name');
 
-        $this->assertFalse($this->_cookies->has('name'));
+        $this->assertFalse($this->cookies->has('name'));
 
-        $this->_cookies->set('name', 'mana');
-        $this->assertTrue($this->_cookies->has('name'));
-        $this->assertEquals('mana', $this->_cookies->get('name'));
+        $this->cookies->set('name', 'mana');
+        $this->assertTrue($this->cookies->has('name'));
+        $this->assertEquals('mana', $this->cookies->get('name'));
 
-        $this->_cookies->set('!name', 'mana');
-        $this->assertEquals('mana', $this->_cookies->get('!name'));
+        $this->cookies->set('!name', 'mana');
+        $this->assertEquals('mana', $this->cookies->get('!name'));
     }
 
     public function test_get()
     {
-        $this->_cookies->delete('name');
-        $this->assertEquals(null, $this->_cookies->get('name'));
+        $this->cookies->delete('name');
+        $this->assertEquals(null, $this->cookies->get('name'));
 
-        $this->_cookies->set('name', 'mana');
-        $this->assertEquals('mana', $this->_cookies->get('name'));
+        $this->cookies->set('name', 'mana');
+        $this->assertEquals('mana', $this->cookies->get('name'));
 
-        $this->_cookies->set('!name', 'mana');
-        $this->assertEquals('mana', $this->_cookies->get('!name'));
+        $this->cookies->set('!name', 'mana');
+        $this->assertEquals('mana', $this->cookies->get('!name'));
     }
 
     public function test_has()
     {
-        $this->_cookies->delete('name');
+        $this->cookies->delete('name');
 
-        $this->assertFalse($this->_cookies->has('name'));
+        $this->assertFalse($this->cookies->has('name'));
 
-        $this->_cookies->set('name', 'mana');
-        $this->assertTrue($this->_cookies->has('name'));
+        $this->cookies->set('name', 'mana');
+        $this->assertTrue($this->cookies->has('name'));
 
-        $this->_cookies->set('!name', 'mana');
-        $this->assertTrue($this->_cookies->has('!name'));
+        $this->cookies->set('!name', 'mana');
+        $this->assertTrue($this->cookies->has('!name'));
     }
 
     public function test_delete()
     {
-        $this->assertFalse($this->_cookies->has('missing'));
-        $this->_cookies->delete('missing');
+        $this->assertFalse($this->cookies->has('missing'));
+        $this->cookies->delete('missing');
 
-        $this->_cookies->set('name', 'mana');
-        $this->assertTrue($this->_cookies->has('name'));
-        $this->_cookies->delete('name');
+        $this->cookies->set('name', 'mana');
+        $this->assertTrue($this->cookies->has('name'));
+        $this->cookies->delete('name');
     }
 }

@@ -18,7 +18,7 @@ class IdentityContext implements Stickyable
 }
 
 /**
- * @property-read \ManaPHP\Identifying\IdentityContext $_context
+ * @property-read \ManaPHP\Identifying\IdentityContext $context
  */
 class Identity extends Component implements IdentityInterface
 {
@@ -36,7 +36,7 @@ class Identity extends Component implements IdentityInterface
      */
     public function isGuest()
     {
-        return !$this->_context->claims;
+        return !$this->context->claims;
     }
 
     /**
@@ -46,7 +46,7 @@ class Identity extends Component implements IdentityInterface
      */
     public function getId($default = null)
     {
-        $claims = $this->_context->claims;
+        $claims = $this->context->claims;
 
         if (!$claims) {
             if ($default === null) {
@@ -79,7 +79,7 @@ class Identity extends Component implements IdentityInterface
      */
     public function getName($default = null)
     {
-        $claims = $this->_context->claims;
+        $claims = $this->context->claims;
 
         if (!$claims) {
             if ($default === null) {
@@ -112,7 +112,7 @@ class Identity extends Component implements IdentityInterface
      */
     public function getRole($default = 'guest')
     {
-        $claims = $this->_context->claims;
+        $claims = $this->context->claims;
 
         if (!$claims) {
             return $default;
@@ -152,7 +152,7 @@ class Identity extends Component implements IdentityInterface
      */
     public function setRole($role)
     {
-        $this->_context->claims['role'] = $role;
+        $this->context->claims['role'] = $role;
 
         return $this;
     }
@@ -165,7 +165,7 @@ class Identity extends Component implements IdentityInterface
      */
     public function setClaim($name, $value)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $context->claims[$name] = $value;
 
@@ -179,7 +179,7 @@ class Identity extends Component implements IdentityInterface
      */
     public function setClaims($claims)
     {
-        $this->_context->claims = $claims;
+        $this->context->claims = $claims;
 
         return $this;
     }
@@ -192,7 +192,7 @@ class Identity extends Component implements IdentityInterface
      */
     public function getClaim($name, $default = null)
     {
-        $claims = $this->_context->claims;
+        $claims = $this->context->claims;
 
         if (!$claims) {
             if ($default === null) {
@@ -213,7 +213,7 @@ class Identity extends Component implements IdentityInterface
      */
     public function getClaims()
     {
-        return $this->_context->claims;
+        return $this->context->claims;
     }
 
     /**
@@ -223,7 +223,7 @@ class Identity extends Component implements IdentityInterface
      */
     public function hasClaim($name)
     {
-        return isset($this->_context->claims[$name]);
+        return isset($this->context->claims[$name]);
     }
 
     public function authenticate()

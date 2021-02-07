@@ -17,49 +17,49 @@ class Swift extends Mailer
     /**
      * @var string
      */
-    protected $_uri;
+    protected $uri;
 
     /**
      * @var string
      */
-    protected $_encryption;
+    protected $encryption;
 
     /**
      * @var string
      */
-    protected $_host;
+    protected $host;
 
     /**
      * @var int
      */
-    protected $_port;
+    protected $port;
 
     /**
      * @var string
      */
-    protected $_username;
+    protected $username;
 
     /**
      * @var string
      */
-    protected $_password;
+    protected $password;
 
     /**
      * @param string $uri
      */
     public function __construct($uri)
     {
-        $this->_uri = $uri;
+        $this->uri = $uri;
 
         $parts = parse_url($uri);
 
         $scheme = $parts['scheme'];
 
-        $this->_host = $parts['host'];
+        $this->host = $parts['host'];
         if (isset($parts['port'])) {
-            $this->_port = (int)$parts['port'];
+            $this->port = (int)$parts['port'];
         } else {
-            $this->_port = $scheme === 'smtp' ? 25 : 465;
+            $this->port = $scheme === 'smtp' ? 25 : 465;
         }
 
         if ($scheme === 'smtp') {
@@ -71,40 +71,40 @@ class Swift extends Mailer
         } else {
             throw new NotSupportedException('`:scheme` scheme is not known', ['scheme' => $scheme]);
         }
-        $this->_encryption = $encryption;
+        $this->encryption = $encryption;
 
         if (isset($parts['user'])) {
             if (str_contains($parts['user'], '@')) {
-                $this->_from = $parts['user'];
+                $this->from = $parts['user'];
             }
-            $this->_username = $parts['user'];
+            $this->username = $parts['user'];
         }
 
         if (isset($parts['pass'])) {
-            $this->_password = $parts['pass'];
+            $this->password = $parts['pass'];
         }
 
         if (isset($parts['query'])) {
             parse_str($parts['query'], $query);
 
             if (isset($query['log'])) {
-                $this->_log = $query['log'];
+                $this->log = $query['log'];
             }
 
             if (isset($query['from'])) {
-                $this->_from = $query['from'];
+                $this->from = $query['from'];
             }
 
             if (isset($query['to'])) {
-                $this->_to = $query['to'];
+                $this->to = $query['to'];
             }
 
             if (isset($query['user'])) {
-                $this->_username = $query['user'];
+                $this->username = $query['user'];
             }
 
             if (isset($query['password'])) {
-                $this->_password = $query['password'];
+                $this->password = $query['password'];
             }
         }
     }
@@ -117,13 +117,13 @@ class Swift extends Mailer
      */
     protected function sendInternal($message, &$failedRecipients = null)
     {
-        $swiftTransport = new Swift_SmtpTransport($this->_host, $this->_port, $this->_encryption);
-        if ($this->_username) {
-            $swiftTransport->setUsername($this->_username);
+        $swiftTransport = new Swift_SmtpTransport($this->host, $this->port, $this->encryption);
+        if ($this->username) {
+            $swiftTransport->setUsername($this->username);
         }
 
-        if ($this->_password) {
-            $swiftTransport->setPassword($this->_password);
+        if ($this->password) {
+            $swiftTransport->setPassword($this->password);
         }
 
         $swift = new Swift_Mailer($swiftTransport);
@@ -134,13 +134,13 @@ class Swift extends Mailer
             $swiftMessage->setCharset($charset);
         }
 
-        $swiftMessage->setFrom($message->getFrom() ?: $this->_from);
+        $swiftMessage->setFrom($message->getFrom() ?: $this->from);
 
         if ($replyTo = $message->getReplyTo()) {
             $swiftMessage->setReplyTo($replyTo);
         }
 
-        $swiftMessage->setTo($message->getTo() ?: $this->_to);
+        $swiftMessage->setTo($message->getTo() ?: $this->to);
 
         if ($cc = $message->getCc()) {
             $swiftMessage->setCc($cc);

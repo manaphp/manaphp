@@ -30,42 +30,42 @@ class Client extends Component implements ClientInterface
     /**
      * @var string|\ManaPHP\Http\Client\EngineInterface
      */
-    protected $_engine;
+    protected $engine;
 
     /**
      * @var string
      */
-    protected $_proxy = '';
+    protected $proxy = '';
 
     /**
      * @var string
      */
-    protected $_cafile = '';
+    protected $cafile = '';
 
     /**
      * @var int
      */
-    protected $_timeout = 10;
+    protected $timeout = 10;
 
     /**
      * @var bool
      */
-    protected $_verify_peer = true;
+    protected $verify_peer = true;
 
     /**
      * @var string
      */
-    protected $_user_agent;
+    protected $user_agent;
 
     /**
      * @var bool
      */
-    protected $_keepalive = false;
+    protected $keepalive = false;
 
     /**
      * @var int
      */
-    protected $_pool_size = 4;
+    protected $pool_size = 4;
 
     /**
      * @param array $options
@@ -73,35 +73,35 @@ class Client extends Component implements ClientInterface
     public function __construct($options = [])
     {
         if ($engine = $options['engine'] ?? null) {
-            $this->_engine = str_contains($engine, '\\') ? $engine : "ManaPHP\Http\Client\Engine\\" . ucfirst($engine);
+            $this->engine = str_contains($engine, '\\') ? $engine : "ManaPHP\Http\Client\Engine\\" . ucfirst($engine);
         } else {
-            $this->_engine = 'ManaPHP\Http\Client\Engine\Stream';
+            $this->engine = 'ManaPHP\Http\Client\Engine\Stream';
         }
 
         if (isset($options['proxy'])) {
-            $this->_proxy = $options['proxy'];
+            $this->proxy = $options['proxy'];
         }
 
         if (isset($options['cafile'])) {
-            $this->_cafile = $options['cafile'];
+            $this->cafile = $options['cafile'];
         }
 
         if (isset($options['timeout'])) {
-            $this->_timeout = (int)$options['timeout'];
+            $this->timeout = (int)$options['timeout'];
         }
 
         if (isset($options['verify_peer'])) {
-            $this->_verify_peer = (bool)$options['verify_peer'];
+            $this->verify_peer = (bool)$options['verify_peer'];
         }
 
-        $this->_user_agent = $options['user_agent'] ?? self::USER_AGENT_IE;
+        $this->user_agent = $options['user_agent'] ?? self::USER_AGENT_IE;
 
         if (isset($options['keepalive'])) {
-            $this->_keepalive = (bool)$options['keepalive'];
+            $this->keepalive = (bool)$options['keepalive'];
         }
 
         if (isset($options['pool_size'])) {
-            $this->_pool_size = (int)$options['pool_size'];
+            $this->pool_size = (int)$options['pool_size'];
         }
     }
 
@@ -131,7 +131,7 @@ class Client extends Component implements ClientInterface
         }
 
         if (!isset($headers['User-Agent'])) {
-            $headers['User-Agent'] = $this->_user_agent;
+            $headers['User-Agent'] = $this->user_agent;
         }
 
         if (isset($headers['X-Request-Id'])) {
@@ -149,19 +149,19 @@ class Client extends Component implements ClientInterface
         }
 
         if (!isset($options['timeout'])) {
-            $options['timeout'] = $this->_timeout;
+            $options['timeout'] = $this->timeout;
         }
 
         if (!isset($options['proxy'])) {
-            $options['proxy'] = $this->_proxy;
+            $options['proxy'] = $this->proxy;
         }
 
         if (!isset($options['cafile'])) {
-            $options['cafile'] = $this->_cafile;
+            $options['cafile'] = $this->cafile;
         }
 
         if (!isset($options['verify_peer'])) {
-            $options['verify_peer'] = $this->_verify_peer;
+            $options['verify_peer'] = $this->verify_peer;
         }
 
         $request = new Request($method, $url, $body, $headers, $options);
@@ -175,7 +175,7 @@ class Client extends Component implements ClientInterface
             $engine_id = substr($request->url, 0, strpos($request->url, '/', 8));
 
             if (!$this->poolManager->exists($this, $engine_id)) {
-                $this->poolManager->add($this, $this->_engine, $this->_pool_size, $engine_id);
+                $this->poolManager->add($this, $this->engine, $this->pool_size, $engine_id);
             }
 
             /** @var \ManaPHP\Http\Client\EngineInterface $engine */
@@ -184,7 +184,7 @@ class Client extends Component implements ClientInterface
             try {
                 $this->fireEvent('httpClient:requesting', compact('method', 'url', 'request'));
 
-                $response = $engine->request($request, $this->_keepalive);
+                $response = $engine->request($request, $this->keepalive);
 
                 $success = true;
             } finally {

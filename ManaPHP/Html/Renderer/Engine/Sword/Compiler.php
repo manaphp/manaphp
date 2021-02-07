@@ -17,38 +17,38 @@ class Compiler extends Component
     /**
      * @var int
      */
-    protected $_hash_length = 12;
+    protected $hash_length = 12;
 
     /**
      * All custom "directive" handlers.
      *
      * @var array
      */
-    protected $_directives = [];
+    protected $directives = [];
 
     /**
      * Array of opening and closing tags for raw echos.
      *
      * @var array
      */
-    protected $_rawTags = ['{!!', '!!}'];
+    protected $rawTags = ['{!!', '!!}'];
 
     /**
      * Array of opening and closing tags for escaped echos.
      *
      * @var array
      */
-    protected $_escapedTags = ['{{', '}}'];
+    protected $escapedTags = ['{{', '}}'];
 
     /**
      * @var bool
      */
-    protected $_foreachelse_used = false;
+    protected $foreachelse_used = false;
 
     /**
      * @var array
      */
-    protected $_safe_functions
+    protected $safe_functions
         = [
             'e',
             'url',
@@ -75,7 +75,7 @@ class Compiler extends Component
             if (is_string($options['safe_functions'])) {
                 $options['safe_functions'] = preg_split('#[\s,]+#', $options['safe_functions'], PREG_SPLIT_NO_EMPTY);
             }
-            $this->_safe_functions = array_merge($this->_safe_functions, $options['safe_functions']);
+            $this->safe_functions = array_merge($this->safe_functions, $options['safe_functions']);
         }
     }
 
@@ -99,7 +99,7 @@ class Compiler extends Component
             if (!is_file($file)) {
                 return $match[0];
             }
-            $hash = substr(md5_file($file), 0, $this->_hash_length);
+            $hash = substr(md5_file($file), 0, $this->hash_length);
 
             return "=\"$url?v=$hash\"";
         }, $str
@@ -189,7 +189,7 @@ class Compiler extends Component
             $result .= $content;
         }
 
-        if ($this->_hash_length) {
+        if ($this->hash_length) {
             $result = $this->addFileHash($result);
         }
 
@@ -239,7 +239,7 @@ class Compiler extends Component
      */
     protected function compileComments($value)
     {
-        $pattern = sprintf('/%s--(.*?)--%s/s', $this->_escapedTags[0], $this->_escapedTags[1]);
+        $pattern = sprintf('/%s--(.*?)--%s/s', $this->escapedTags[0], $this->escapedTags[1]);
 
         return preg_replace($pattern, '<?php /*$1*/ ?> ', $value);
     }
@@ -268,8 +268,8 @@ class Compiler extends Component
     protected function getEchoMethods()
     {
         $methods = [
-            'compileRawEchos'     => strlen(stripcslashes($this->_rawTags[0])),
-            'compileEscapedEchos' => strlen(stripcslashes($this->_escapedTags[0])),
+            'compileRawEchos'     => strlen(stripcslashes($this->rawTags[0])),
+            'compileEscapedEchos' => strlen(stripcslashes($this->escapedTags[0])),
         ];
 
         uksort(
@@ -316,8 +316,8 @@ class Compiler extends Component
         $callback = function ($match) {
             if (method_exists($this, $method = 'compile_' . $match[1])) {
                 $match[0] = $this->$method($match[3] ?? null);
-            } elseif (isset($this->_directives[$match[1]])) {
-                $func = $this->_directives[$match[1]];
+            } elseif (isset($this->directives[$match[1]])) {
+                $func = $this->directives[$match[1]];
                 $match[0] = $func($match[3] ?? null);
             }
 
@@ -339,7 +339,7 @@ class Compiler extends Component
      */
     protected function compileRawEchos($value)
     {
-        $pattern = sprintf('/(@)?%s\s*(.+?)\s*%s(\r?\n)?/s', $this->_rawTags[0], $this->_rawTags[1]);
+        $pattern = sprintf('/(@)?%s\s*(.+?)\s*%s(\r?\n)?/s', $this->rawTags[0], $this->rawTags[1]);
 
         $callback = function ($matches) {
             $whitespace = empty($matches[3]) ? '' : $matches[3];
@@ -361,7 +361,7 @@ class Compiler extends Component
      */
     protected function compileEscapedEchos($value)
     {
-        $pattern = sprintf('/(@)?%s\s*(.+?)\s*%s(\r?\n)?/s', $this->_escapedTags[0], $this->_escapedTags[1]);
+        $pattern = sprintf('/(@)?%s\s*(.+?)\s*%s(\r?\n)?/s', $this->escapedTags[0], $this->escapedTags[1]);
 
         $callback = function ($matches) {
             if ($matches[1]) {
@@ -389,7 +389,7 @@ class Compiler extends Component
     protected function isSafeEchos($value)
     {
         return preg_match('#^([a-z\d_]+)\\(#', $value, $match) === 1
-            && in_array($match[1], $this->_safe_functions, true);
+            && in_array($match[1], $this->safe_functions, true);
     }
 
     /**
@@ -515,7 +515,7 @@ class Compiler extends Component
      */
     protected function compile_foreachElse()
     {
-        $this->_foreachelse_used = true;
+        $this->foreachelse_used = true;
         return '<?php endforeach; ?> <?php if($index === -1): ?>';
     }
 
@@ -632,8 +632,8 @@ class Compiler extends Component
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
-        $r = $this->_foreachelse_used ? '<?php endif; ?>' : '<?php endforeach; ?>';
-        $this->_foreachelse_used = false;
+        $r = $this->foreachelse_used ? '<?php endif; ?>' : '<?php endforeach; ?>';
+        $this->foreachelse_used = false;
         return $r;
     }
 
@@ -999,7 +999,7 @@ class Compiler extends Component
      */
     public function directive($name, callable $handler)
     {
-        $this->_directives[$name] = $handler;
+        $this->directives[$name] = $handler;
 
         return $this;
     }

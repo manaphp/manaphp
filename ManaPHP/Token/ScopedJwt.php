@@ -13,7 +13,7 @@ class ScopedJwt extends Component implements ScopedJwtInterface
     /**
      * @var array
      */
-    protected $_secrets = [];
+    protected $secrets = [];
 
     /**
      * @param array $options
@@ -21,15 +21,15 @@ class ScopedJwt extends Component implements ScopedJwtInterface
     public function __construct($options = [])
     {
         if (isset($options['secrets'])) {
-            $this->_secrets = $options['secrets'];
+            $this->secrets = $options['secrets'];
         }
 
         if (isset($options['crypt'])) {
-            $this->_injections['crypt'] = $options['crypt'];
+            $this->injections['crypt'] = $options['crypt'];
         }
 
         if (isset($options['jwt'])) {
-            $this->_injections['jwt'] = $options['jwt'];
+            $this->injections['jwt'] = $options['jwt'];
         }
     }
 
@@ -41,14 +41,14 @@ class ScopedJwt extends Component implements ScopedJwtInterface
      */
     public function getSecret($scope, $cache = true)
     {
-        if (($secret = $this->_secrets[$scope] ?? null) !== null) {
+        if (($secret = $this->secrets[$scope] ?? null) !== null) {
             return $secret;
         }
 
         $secret = $this->crypt->getDerivedKey($scope === '' ? 'jwt' : "jwt:$scope");
 
         if ($cache) {
-            $this->_secrets[$scope] = $secret;
+            $this->secrets[$scope] = $secret;
         }
 
         return $secret;
@@ -117,7 +117,7 @@ class ScopedJwt extends Component implements ScopedJwtInterface
     public function dump()
     {
         $data = parent::dump();
-        $data['_secrets'] = '***';
+        $data['secrets'] = '***';
 
         return $data;
     }

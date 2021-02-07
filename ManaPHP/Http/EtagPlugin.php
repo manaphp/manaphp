@@ -10,12 +10,12 @@ class EtagPlugin extends Plugin
     /**
      * @var bool
      */
-    protected $_enabled = true;
+    protected $enabled = true;
 
     /**
      * @var string
      */
-    protected $_algo = 'md5';
+    protected $algo = 'md5';
 
     /**
      * @param array $options
@@ -23,14 +23,14 @@ class EtagPlugin extends Plugin
     public function __construct($options = [])
     {
         if (isset($options['enabled'])) {
-            $this->_enabled = (bool)$options['enabled'];
+            $this->enabled = (bool)$options['enabled'];
         }
 
         if (isset($options['algo'])) {
-            $this->_algo = $options['algo'];
+            $this->algo = $options['algo'];
         }
 
-        if ($this->_enabled) {
+        if ($this->enabled) {
             $this->attachEvent('response:sending', [$this, 'onResponseSending']);
         }
     }
@@ -51,7 +51,7 @@ class EtagPlugin extends Plugin
         if (isset($responseContext->headers['ETag'])) {
             $etag = $responseContext->headers['ETag'];
         } else {
-            $etag = hash($this->_algo, $responseContext->content);
+            $etag = hash($this->algo, $responseContext->content);
             $responseContext->headers['ETag'] = $etag;
         }
 

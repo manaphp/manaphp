@@ -9,23 +9,23 @@ class Loader
     /**
      * @var array
      */
-    protected $_classes = [];
+    protected $classes = [];
 
     /**
      * @var array
      */
-    protected $_namespaces = [];
+    protected $namespaces = [];
 
     /**
      * @var array
      */
-    protected $_files = [];
+    protected $files = [];
 
     /**
      */
     public function __construct()
     {
-        $this->_namespaces['ManaPHP'] = DIRECTORY_SEPARATOR === '\\' ? strtr(__DIR__, '\\', '/') : __DIR__;
+        $this->namespaces['ManaPHP'] = DIRECTORY_SEPARATOR === '\\' ? strtr(__DIR__, '\\', '/') : __DIR__;
         spl_autoload_register([$this, 'load'], true, true);
 
         $this->registerFiles(__DIR__ . '/helpers.php');
@@ -48,7 +48,7 @@ class Loader
             }
         }
 
-        $this->_namespaces = $merge ? array_merge($this->_namespaces, $namespaces) : $namespaces;
+        $this->namespaces = $merge ? array_merge($this->namespaces, $namespaces) : $namespaces;
 
         return $this;
     }
@@ -58,7 +58,7 @@ class Loader
      */
     public function getRegisteredNamespaces()
     {
-        return $this->_namespaces;
+        return $this->namespaces;
     }
 
     /**
@@ -77,7 +77,7 @@ class Loader
             }
         }
 
-        $this->_classes = $merge ? array_merge($this->_classes, $classes) : $classes;
+        $this->classes = $merge ? array_merge($this->classes, $classes) : $classes;
 
         return $this;
     }
@@ -90,14 +90,14 @@ class Loader
     public function registerFiles($files)
     {
         foreach ((array)$files as $file) {
-            if (isset($this->_files[$file])) {
+            if (isset($this->files[$file])) {
                 continue;
             }
 
             if ($file[0] === '@') {
                 $file = Container::getDefault()->getShared('alias')->resolve($file);
             }
-            $this->_files[$file] = 1;
+            $this->files[$file] = 1;
 
             /** @noinspection PhpIncludeInspection */
             require $file;
@@ -134,8 +134,8 @@ class Loader
      */
     public function load($className)
     {
-        if (isset($this->_classes[$className])) {
-            $file = $this->_classes[$className];
+        if (isset($this->classes[$className])) {
+            $file = $this->classes[$className];
             if (!is_file($file)) {
                 $error = sprintf('load `%s` class failed: `%s` is not exists.', $className, $file);
                 trigger_error($error, E_USER_ERROR);
@@ -152,7 +152,7 @@ class Loader
             return true;
         }
 
-        foreach ($this->_namespaces as $namespace => $path) {
+        foreach ($this->namespaces as $namespace => $path) {
             if (strpos($className, $namespace) !== 0) {
                 continue;
             }

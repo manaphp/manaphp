@@ -19,24 +19,24 @@ class SwooleContext
 
 /**
  * @property-read \ManaPHP\Http\RouterInterface              $router
- * @property-read \ManaPHP\Http\Server\Adapter\SwooleContext $_context
+ * @property-read \ManaPHP\Http\Server\Adapter\SwooleContext $context
  */
 class Swoole extends Server
 {
     /**
      * @var array
      */
-    protected $_settings = [];
+    protected $settings = [];
 
     /**
      * @var \Swoole\Http\Server
      */
-    protected $_swoole;
+    protected $swoole;
 
     /**
      * @var \ManaPHP\Http\Server\HandlerInterface
      */
-    protected $_handler;
+    protected $handler;
 
     /**
      * @var array
@@ -53,8 +53,8 @@ class Swoole extends Server
             'DOCUMENT_ROOT'   => dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,
             'SCRIPT_NAME'     => '/' . basename($script_filename),
-            'SERVER_ADDR'     => $this->_host === '0.0.0.0' ? Ip::local() : $this->_host,
-            'SERVER_PORT'     => $this->_port,
+            'SERVER_ADDR'     => $this->host === '0.0.0.0' ? Ip::local() : $this->host,
+            'SERVER_PORT'     => $this->port,
             'SERVER_SOFTWARE' => 'Swoole/' . SWOOLE_VERSION . ' (' . PHP_OS . ') PHP/' . PHP_VERSION,
             'PHP_SELF'        => '/' . basename($script_filename),
             'QUERY_STRING'    => '',
@@ -75,18 +75,18 @@ class Swoole extends Server
 
         unset($options['use_globals'], $options['host'], $options['port']);
 
-        $this->_settings = $options;
+        $this->settings = $options;
 
-        if ($this->_use_globals) {
+        if ($this->use_globals) {
             $this->globalsManager->proxy();
         }
 
-        $this->_swoole = new \Swoole\Http\Server($this->_host, $this->_port);
-        $this->_swoole->set($this->_settings);
-        $this->_swoole->on('Start', [$this, 'onStart']);
-        $this->_swoole->on('ManagerStart', [$this, 'onManagerStart']);
-        $this->_swoole->on('WorkerStart', [$this, 'onWorkerStart']);
-        $this->_swoole->on('request', [$this, 'onRequest']);
+        $this->swoole = new \Swoole\Http\Server($this->host, $this->port);
+        $this->swoole->set($this->settings);
+        $this->swoole->on('Start', [$this, 'onStart']);
+        $this->swoole->on('ManagerStart', [$this, 'onManagerStart']);
+        $this->swoole->on('WorkerStart', [$this, 'onWorkerStart']);
+        $this->swoole->on('request', [$this, 'onRequest']);
     }
 
     /**
@@ -160,13 +160,13 @@ class Swoole extends Server
             Runtime::enableCoroutine(true);
         }
 
-        $this->_handler = $handler;
+        $this->handler = $handler;
 
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 
-        $settings = json_stringify($this->_settings);
-        console_log('info', ['listen on: %s:%d with setting: %s', $this->_host, $this->_port, $settings]);
-        $this->_swoole->start();
+        $settings = json_stringify($this->settings);
+        console_log('info', ['listen on: %s:%d with setting: %s', $this->host, $this->port, $settings]);
+        $this->swoole->start();
         console_log('info', 'shutdown');
     }
 
@@ -182,14 +182,14 @@ class Swoole extends Server
             $response->status(404);
             $response->end();
         } else {
-            $context = $this->_context;
+            $context = $this->context;
 
             $context->response = $response;
 
             try {
                 $this->prepareGlobals($request);
 
-                $this->_handler->handle();
+                $this->handler->handle();
             } catch (Throwable $throwable) {
                 $str = date('c') . ' ' . get_class($throwable) . ': ' . $throwable->getMessage() . PHP_EOL;
                 $str .= '    at ' . $throwable->getFile() . ':' . $throwable->getLine() . PHP_EOL;
@@ -200,7 +200,7 @@ class Swoole extends Server
             if (!MANAPHP_COROUTINE_ENABLED) {
                 global $__root_context;
                 foreach ($__root_context as $owner) {
-                    unset($owner->_context);
+                    unset($owner->context);
                 }
                 $__root_context = null;
             }
@@ -223,7 +223,7 @@ class Swoole extends Server
 
         $this->fireEvent('response:sending', compact('context'));
 
-        $sw_response = $this->_context->response;
+        $sw_response = $this->context->response;
 
         $sw_response->status($context->status_code);
 

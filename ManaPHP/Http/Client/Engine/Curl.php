@@ -14,21 +14,21 @@ class Curl extends Component implements EngineInterface
     /**
      * @var resource
      */
-    protected $_curl;
+    protected $curl;
 
     public function __destruct()
     {
-        if ($this->_curl !== null) {
-            curl_close($this->_curl);
-            $this->_curl = null;
+        if ($this->curl !== null) {
+            curl_close($this->curl);
+            $this->curl = null;
         }
     }
 
     public function __clone()
     {
-        if ($this->_curl !== null) {
-            curl_close($this->_curl);
-            $this->_curl = null;
+        if ($this->curl !== null) {
+            curl_close($this->curl);
+            $this->curl = null;
         }
     }
 
@@ -65,10 +65,10 @@ class Curl extends Component implements EngineInterface
         $content = '';
         $header_length = 0;
 
-        if (($curl = $this->_curl) === null) {
+        if (($curl = $this->curl) === null) {
             $curl = curl_init();
             if ($keepalive) {
-                $this->_curl = $curl;
+                $this->curl = $curl;
             }
         }
 

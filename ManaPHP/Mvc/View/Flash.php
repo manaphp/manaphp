@@ -15,21 +15,21 @@ class FlashContext
 }
 
 /**
- * @property-read \ManaPHP\Mvc\View\FlashContext $_context
+ * @property-read \ManaPHP\Mvc\View\FlashContext $context
  */
 abstract class Flash extends Component implements FlashInterface
 {
     /**
      * @var array
      */
-    protected $_css;
+    protected $css;
 
     /**
      * @param array $css
      */
     public function __construct($css = [])
     {
-        $this->_css = $css
+        $this->css = $css
             ?: [
                 'error'   => 'flash-error',
                 'notice'  => 'flash-notice',
@@ -105,7 +105,7 @@ abstract class Flash extends Component implements FlashInterface
      */
     public function output($remove = true)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         foreach ($context->messages as $message) {
             echo $message;

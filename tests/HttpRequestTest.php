@@ -8,13 +8,13 @@ use PHPUnit\Framework\TestCase;
 
 class HttpRequestTest extends TestCase
 {
-    protected $_di;
+    protected $container;
 
     public function setUp()
     {
         parent::setUp();
 
-        $this->_di = new FactoryDefault();
+        $this->container = new FactoryDefault();
     }
 
     public function test_get()

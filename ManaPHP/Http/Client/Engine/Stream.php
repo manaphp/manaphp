@@ -14,21 +14,21 @@ class Stream extends Component implements EngineInterface
     /**
      * @var resource
      */
-    protected $_stream;
+    protected $stream;
 
     public function __destruct()
     {
-        if ($this->_stream !== null) {
-            fclose($this->_stream);
-            $this->_stream = null;
+        if ($this->stream !== null) {
+            fclose($this->stream);
+            $this->stream = null;
         }
     }
 
     public function __clone()
     {
-        if ($this->_stream !== null) {
-            fclose($this->_stream);
-            $this->_stream = null;
+        if ($this->stream !== null) {
+            fclose($this->stream);
+            $this->stream = null;
         }
     }
 
@@ -73,7 +73,7 @@ class Stream extends Component implements EngineInterface
         $timeout = $request->options['timeout'];
         $end_time = $start_time + $timeout;
 
-        if (($stream = $this->_stream) === null) {
+        if (($stream = $this->stream) === null) {
             if ($scheme === 'https') {
                 $stream = fsockopen("ssl://$host", $port ?? 443, $errno, $errstr, $timeout);
             } else {
@@ -86,7 +86,7 @@ class Stream extends Component implements EngineInterface
 
             stream_set_blocking($stream, false);
 
-            $this->_stream = $stream;
+            $this->stream = $stream;
         }
 
         $send_length = 0;
@@ -246,12 +246,12 @@ class Stream extends Component implements EngineInterface
                 }
 
                 if ($connection_value !== 'keep-alive') {
-                    fclose($this->_stream);
-                    $this->_stream = null;
+                    fclose($this->stream);
+                    $this->stream = null;
                 }
             } else {
-                fclose($this->_stream);
-                $this->_stream = null;
+                fclose($this->stream);
+                $this->stream = null;
             }
         }
 
@@ -267,14 +267,14 @@ class Stream extends Component implements EngineInterface
     public function request($request, $keepalive = false)
     {
         if ($keepalive) {
-            if ($this->_stream === null) {
+            if ($this->stream === null) {
                 return $this->request_with_keepalive($request);
             } else {
                 try {
                     return $this->request_with_keepalive($request);
                 } catch (TimeoutException $exception) {
-                    fclose($this->_stream);
-                    $this->_stream = null;
+                    fclose($this->stream);
+                    $this->stream = null;
                     return $this->request_with_keepalive($request);
                 }
             }

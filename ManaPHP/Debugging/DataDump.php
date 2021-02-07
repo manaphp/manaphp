@@ -13,7 +13,7 @@ class DataDump extends Component implements DataDumpInterface
     /**
      * @var string
      */
-    protected $_format = '[:time][:location] :message';
+    protected $format = '[:time][:location] :message';
 
     /**
      * @param array $options
@@ -21,7 +21,7 @@ class DataDump extends Component implements DataDumpInterface
     public function __construct($options = [])
     {
         if (isset($options['format'])) {
-            $this->_format = $options['format'];
+            $this->format = $options['format'];
         }
     }
 
@@ -187,6 +187,6 @@ class DataDump extends Component implements DataDumpInterface
         $replaced[':location'] = "$file:$line";
         $replaced[':message'] = $message;
 
-        echo strtr($this->_format, $replaced), PHP_EOL;
+        echo strtr($this->format, $replaced), PHP_EOL;
     }
 }

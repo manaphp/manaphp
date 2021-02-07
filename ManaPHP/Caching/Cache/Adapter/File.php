@@ -11,17 +11,17 @@ class File extends Cache
     /**
      * @var string
      */
-    protected $_dir = '@data/cache';
+    protected $dir = '@data/cache';
 
     /**
      * @var int
      */
-    protected $_level = 1;
+    protected $level = 1;
 
     /**
      * @var string
      */
-    protected $_ext = '.cache';
+    protected $ext = '.cache';
 
     /**
      * @param array $options
@@ -29,15 +29,15 @@ class File extends Cache
     public function __construct($options = [])
     {
         if (isset($options['dir'])) {
-            $this->_dir = rtrim($options['dir'], '\\/');
+            $this->dir = rtrim($options['dir'], '\\/');
         }
 
         if (isset($options['level'])) {
-            $this->_level = (int)$options['level'];
+            $this->level = (int)$options['level'];
         }
 
         if (isset($options['ext'])) {
-            $this->_ext = $options['ext'];
+            $this->ext = $options['ext'];
         }
     }
 
@@ -56,7 +56,7 @@ class File extends Cache
             $md5 = substr($key, $pos + 1);
             $shard = '';
 
-            for ($i = 0; $i < $this->_level; $i++) {
+            for ($i = 0; $i < $this->level; $i++) {
                 $shard .= '/' . substr($md5, $i + $i, 2);
             }
             $key = $prefix . $shard . '/' . $md5;
@@ -66,7 +66,7 @@ class File extends Cache
             $key = '/' . $key;
         }
 
-        return $this->alias->resolve($this->_dir . $key . $this->_ext);
+        return $this->alias->resolve($this->dir . $key . $this->ext);
     }
 
     /**

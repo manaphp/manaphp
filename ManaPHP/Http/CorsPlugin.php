@@ -10,17 +10,17 @@ class CorsPlugin extends Plugin
     /**
      * @var int
      */
-    protected $_max_age = 86400;
+    protected $max_age = 86400;
 
     /**
      * @var string
      */
-    protected $_origin;
+    protected $origin;
 
     /**
      * @var bool
      */
-    protected $_credentials = true;
+    protected $credentials = true;
 
     /**
      * @param array $options
@@ -28,15 +28,15 @@ class CorsPlugin extends Plugin
     public function __construct($options = [])
     {
         if (isset($options['max_age'])) {
-            $this->_max_age = $options['max_age'];
+            $this->max_age = $options['max_age'];
         }
 
         if (isset($options['origin'])) {
-            $this->_origin = $options['origin'];
+            $this->origin = $options['origin'];
         }
 
         if (isset($options['credentials'])) {
-            $this->_credentials = $options['credentials'];
+            $this->credentials = $options['credentials'];
         }
 
         $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
@@ -51,8 +51,8 @@ class CorsPlugin extends Plugin
         $host = $this->request->getServer('HTTP_HOST');
 
         if ($origin !== '' && $origin !== $host) {
-            if ($this->_origin) {
-                $allow_origin = $this->_origin;
+            if ($this->origin) {
+                $allow_origin = $this->origin;
             } elseif ($this->configure->env === 'prod') {
                 $origin_pos = strpos($origin, '.');
                 $host_pos = strpos($host, '.');
@@ -72,10 +72,10 @@ class CorsPlugin extends Plugin
             $allow_methods = 'HEAD,GET,POST,PUT,DELETE';
             $this->response
                 ->setHeader('Access-Control-Allow-Origin', $allow_origin)
-                ->setHeader('Access-Control-Allow-Credentials', $this->_credentials ? 'true' : 'false')
+                ->setHeader('Access-Control-Allow-Credentials', $this->credentials ? 'true' : 'false')
                 ->setHeader('Access-Control-Allow-Headers', $allow_headers)
                 ->setHeader('Access-Control-Allow-Methods', $allow_methods)
-                ->setHeader('Access-Control-Max-Age', $this->_max_age);
+                ->setHeader('Access-Control-Max-Age', $this->max_age);
         }
 
         if ($this->request->isOptions()) {

@@ -7,12 +7,12 @@ abstract class Relation
     /**
      * @var string
      */
-    protected $_thisModel;
+    protected $thisModel;
 
     /**
      * @var string
      */
-    protected $_thatModel;
+    protected $thatModel;
 
     /**
      * @return \ManaPHP\Data\QueryInterface
@@ -20,7 +20,7 @@ abstract class Relation
     public function getThatQuery()
     {
         /** @var \ManaPHP\Data\Model $referenceModel */
-        $referenceModel = $this->_thatModel;
+        $referenceModel = $this->thatModel;
 
         return $referenceModel::select();
     }

@@ -13,12 +13,12 @@ class MyRouter extends Router
 {
     public function setControllerName($controller)
     {
-        $this->_context->controller = $controller;
+        $this->context->controller = $controller;
     }
 
     public function setActionName($action)
     {
-        $this->_context->action = $action;
+        $this->context->action = $action;
     }
 }
 

@@ -10,17 +10,17 @@ class Manager extends Component implements ManagerInterface
     /**
      * @var SplDoublyLinkedList[][]
      */
-    protected $_events = [];
+    protected $events = [];
 
     /**
      * @var array
      */
-    protected $_peekers = [];
+    protected $peekers = [];
 
     /**
      * @var array
      */
-    protected $_listeners = [];
+    protected $listeners = [];
 
     /**
      * Attach a listener to the events manager
@@ -33,9 +33,9 @@ class Manager extends Component implements ManagerInterface
      */
     public function attachEvent($event, $handler, $priority = 0)
     {
-        if (($handlers = $this->_events[$event][$priority] ?? null) === null) {
-            $handlers = $this->_events[$event][$priority] = new SplDoublyLinkedList();
-            ksort($this->_events[$event]);
+        if (($handlers = $this->events[$event][$priority] ?? null) === null) {
+            $handlers = $this->events[$event][$priority] = new SplDoublyLinkedList();
+            ksort($this->events[$event]);
         }
 
         $handlers->push($handler);
@@ -50,7 +50,7 @@ class Manager extends Component implements ManagerInterface
     public function detachEvent($event, $handler)
     {
         if (str_contains($event, ':')) {
-            foreach ($this->_events[$event] ?? [] as $handlers) {
+            foreach ($this->events[$event] ?? [] as $handlers) {
                 foreach ($handlers as $kk => $vv) {
                     if ($vv === $handler) {
                         unset($handlers[$kk]);
@@ -58,9 +58,9 @@ class Manager extends Component implements ManagerInterface
                 }
             }
         } else {
-            foreach ($this->_peekers[$event] ?? [] as $k => $v) {
+            foreach ($this->peekers[$event] ?? [] as $k => $v) {
                 if ($v === $handler) {
-                    unset($this->_peekers[$event][$k]);
+                    unset($this->peekers[$event][$k]);
                     break;
                 }
             }
@@ -82,11 +82,11 @@ class Manager extends Component implements ManagerInterface
 
         list($group) = explode(':', $event, 2);
 
-        if ($this->_listeners && isset($this->_listeners[$group])) {
-            foreach ($this->_listeners[$group] as $k => $v) {
+        if ($this->listeners && isset($this->listeners[$group])) {
+            foreach ($this->listeners[$group] as $k => $v) {
                 /**@var \ManaPHP\Event\Listener $listener */
                 if (is_int($v)) {
-                    $this->_listeners[$group][$k] = $listener = $this->getShared($k);
+                    $this->listeners[$group][$k] = $listener = $this->getShared($k);
                 } else {
                     $listener = $v;
                 }
@@ -95,15 +95,15 @@ class Manager extends Component implements ManagerInterface
             }
         }
 
-        foreach ($this->_peekers['*'] ?? [] as $handler) {
+        foreach ($this->peekers['*'] ?? [] as $handler) {
             $handler($eventArgs);
         }
 
-        foreach ($this->_peekers[$group] ?? [] as $handler) {
+        foreach ($this->peekers[$group] ?? [] as $handler) {
             $handler($eventArgs);
         }
 
-        foreach ($this->_events[$event] ?? [] as $handlers) {
+        foreach ($this->events[$event] ?? [] as $handlers) {
             foreach ($handlers as $handler) {
                 $handler($eventArgs);
             }
@@ -120,7 +120,7 @@ class Manager extends Component implements ManagerInterface
      */
     public function peekEvent($group, $handler)
     {
-        $this->_peekers[$group][] = $handler;
+        $this->peekers[$group][] = $handler;
 
         return $this;
     }
@@ -138,7 +138,7 @@ class Manager extends Component implements ManagerInterface
             $group = lcfirst(rtrim($group, '0123456789'));
         }
 
-        $this->_listeners[$group][$listener] = 1;
+        $this->listeners[$group][$listener] = 1;
 
         return $this;
     }
@@ -150,11 +150,11 @@ class Manager extends Component implements ManagerInterface
     {
         $dump = parent::dump();
 
-        $dump['*_events'] = array_keys($dump['_events']);
-        $dump['*_peekers'] = array_keys($dump['_peekers']);
-        $dump['*_listeners'] = array_keys($dump['_listeners']);
+        $dump['*events'] = array_keys($dump['events']);
+        $dump['*peekers'] = array_keys($dump['peekers']);
+        $dump['*listeners'] = array_keys($dump['listeners']);
 
-        unset($dump['_events'], $dump['_peekers'], $dump['_listeners']);
+        unset($dump['events'], $dump['peekers'], $dump['listeners']);
 
         return $dump;
     }

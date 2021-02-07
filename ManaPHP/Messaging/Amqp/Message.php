@@ -9,16 +9,16 @@ class Message implements JsonSerializable
     /**
      * @var \ManaPHP\Messaging\Amqp
      */
-    protected $_amqp;
+    protected $amqp;
     /**
      * @var string
      */
-    protected $_queue;
+    protected $queue;
 
     /**
      * @var \AMQPEnvelope
      */
-    protected $_envelope;
+    protected $envelope;
 
     /**
      * @param \ManaPHP\Messaging\Amqp $amqp
@@ -27,9 +27,9 @@ class Message implements JsonSerializable
      */
     public function __construct($amqp, $queue, $envelope)
     {
-        $this->_amqp = $amqp;
-        $this->_queue = $queue;
-        $this->_envelope = $envelope;
+        $this->amqp = $amqp;
+        $this->queue = $queue;
+        $this->envelope = $envelope;
     }
 
     /**
@@ -37,7 +37,7 @@ class Message implements JsonSerializable
      */
     public function getAmqp()
     {
-        return $this->_amqp;
+        return $this->amqp;
     }
 
     /**
@@ -45,7 +45,7 @@ class Message implements JsonSerializable
      */
     public function getEnvelope()
     {
-        return $this->_envelope;
+        return $this->envelope;
     }
 
     /**
@@ -53,7 +53,7 @@ class Message implements JsonSerializable
      */
     public function getExchange()
     {
-        return $this->_envelope->getExchangeName();
+        return $this->envelope->getExchangeName();
     }
 
     /**
@@ -61,7 +61,7 @@ class Message implements JsonSerializable
      */
     public function getQueue()
     {
-        return $this->_queue;
+        return $this->queue;
     }
 
     /**
@@ -69,7 +69,7 @@ class Message implements JsonSerializable
      */
     public function getRoutingKey()
     {
-        return $this->_envelope->getRoutingKey();
+        return $this->envelope->getRoutingKey();
     }
 
     /**
@@ -77,7 +77,7 @@ class Message implements JsonSerializable
      */
     public function getBody()
     {
-        return $this->_envelope->getBody();
+        return $this->envelope->getBody();
     }
 
     /**
@@ -85,7 +85,7 @@ class Message implements JsonSerializable
      */
     public function getJsonBody()
     {
-        return json_parse($this->_envelope->getBody());
+        return json_parse($this->envelope->getBody());
     }
 
     /**
@@ -93,7 +93,7 @@ class Message implements JsonSerializable
      */
     public function getDeliveryTag()
     {
-        return $this->_envelope->getDeliveryTag();
+        return $this->envelope->getDeliveryTag();
     }
 
     /**
@@ -101,7 +101,7 @@ class Message implements JsonSerializable
      */
     public function getMessageId()
     {
-        return $this->_envelope->getMessageId();
+        return $this->envelope->getMessageId();
     }
 
     /**
@@ -109,7 +109,7 @@ class Message implements JsonSerializable
      */
     public function getReplyTo()
     {
-        return $this->_envelope->getReplyTo();
+        return $this->envelope->getReplyTo();
     }
 
     /**
@@ -117,7 +117,7 @@ class Message implements JsonSerializable
      */
     public function getType()
     {
-        return $this->_envelope->getType();
+        return $this->envelope->getType();
     }
 
     /**
@@ -125,7 +125,7 @@ class Message implements JsonSerializable
      */
     public function isRedelivery()
     {
-        return $this->_envelope->isRedelivery();
+        return $this->envelope->isRedelivery();
     }
 
     /**
@@ -133,7 +133,7 @@ class Message implements JsonSerializable
      */
     public function getHeaders()
     {
-        return $this->_envelope->getHeaders();
+        return $this->envelope->getHeaders();
     }
 
     /**
@@ -143,7 +143,7 @@ class Message implements JsonSerializable
      */
     public function ack($multiple = false)
     {
-        $this->_amqp->ackMessage($this, $multiple);
+        $this->amqp->ackMessage($this, $multiple);
     }
 
     /**
@@ -153,7 +153,7 @@ class Message implements JsonSerializable
      */
     public function nack($multiple = false)
     {
-        $this->_amqp->nackMessage($this, $multiple);
+        $this->amqp->nackMessage($this, $multiple);
     }
 
     /**
@@ -161,12 +161,12 @@ class Message implements JsonSerializable
      */
     public function toArray()
     {
-        $envelope = $this->_envelope;
+        $envelope = $this->envelope;
 
         $data = [];
         $data['exchange'] = $envelope->getExchangeName();
         $data['routing_key'] = $envelope->getRoutingKey();
-        $data['queue'] = $this->_queue;
+        $data['queue'] = $this->queue;
         $data['is_redelivery'] = $envelope->isRedelivery();
         $data['delivery_tag'] = $envelope->getDeliveryTag();
         $data['content_type'] = $envelope->getContentType();

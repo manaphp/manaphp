@@ -23,12 +23,12 @@ class Fpm extends Server
      */
     public function start($handler)
     {
-        $this->_handler = $handler;
+        $this->handler = $handler;
 
         $this->prepareGlobals();
 
         if ($this->authenticate()) {
-            $this->_handler->handle();
+            $this->handler->handle();
         } else {
             $this->send($this->response->getContext());
         }

@@ -19,36 +19,36 @@ class Syslog extends Logger
     /**
      * @var string
      */
-    protected $_receiver;
+    protected $receiver;
 
     /**
      * @var int
      */
-    protected $_facility = 1;
+    protected $facility = 1;
     /**
      * @var string
      */
-    protected $_format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
+    protected $format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
 
     /**
      * @var string
      */
-    protected $_receiver_protocol = 'udp';
+    protected $receiver_protocol = 'udp';
 
     /**
      * @var int
      */
-    protected $_receiver_host;
+    protected $receiver_host;
 
     /**
      * @var string
      */
-    protected $_receiver_port = 514;
+    protected $receiver_port = 514;
 
     /**
      * @var resource
      */
-    protected $_socket;
+    protected $socket;
 
     /**
      * @param array $options
@@ -61,31 +61,31 @@ class Syslog extends Logger
             throw new MisuseException('syslog receiver is not assign');
         }
 
-        $this->_receiver = $options['receiver'];
+        $this->receiver = $options['receiver'];
         $parts = parse_url($options['receiver']);
-        $this->_receiver_host = $parts['host'];
+        $this->receiver_host = $parts['host'];
         if (isset($parts['scheme'])) {
-            $this->_receiver_protocol = $parts['scheme'];
+            $this->receiver_protocol = $parts['scheme'];
         }
         if (isset($parts['port'])) {
-            $this->_receiver_port = (int)$parts['port'];
+            $this->receiver_port = (int)$parts['port'];
         }
 
-        if ($this->_receiver_protocol !== 'udp') {
+        if ($this->receiver_protocol !== 'udp') {
             throw new NotSupportedException('only support udp protocol');
         }
 
         if (isset($options['facility'])) {
-            $this->_facility = $options['facility'];
+            $this->facility = $options['facility'];
         }
 
-        $this->_socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+        $this->socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
     }
 
     public function __destruct()
     {
-        if ($this->_socket !== null) {
-            socket_close($this->_socket);
+        if ($this->socket !== null) {
+            socket_close($this->socket);
         }
     }
 
@@ -102,13 +102,13 @@ class Syslog extends Logger
             ];
         }
 
-        $host = $this->_receiver_host;
-        $port = $this->_receiver_port;
+        $host = $this->receiver_host;
+        $port = $this->receiver_port;
         $tag = $this->configure->id;
 
         foreach ($logs as $log) {
             $severity = $map[$log->level];
-            $priority = $this->_facility * 8 + $severity;
+            $priority = $this->facility * 8 + $severity;
             $timestamp = date('M d H:i:s', $log->timestamp);
 
             $replaced = [];
@@ -125,19 +125,19 @@ class Syslog extends Logger
             if ($log->category === 'exception') {
                 foreach (preg_split('#[\\r\\n]+#', $log->message) as $line) {
                     $replaced[':message'] = $line;
-                    $content = strtr($this->_format, $replaced);
+                    $content = strtr($this->format, $replaced);
 
                     // <PRI>TIMESTAMP HOST TAG:CONTENT
                     $packet = "<$priority>$timestamp $log->host $tag:$content";
-                    socket_sendto($this->_socket, $packet, strlen($packet), 0, $host, $port);
+                    socket_sendto($this->socket, $packet, strlen($packet), 0, $host, $port);
                 }
             } else {
                 $replaced[':message'] = $log->message;
-                $content = strtr($this->_format, $replaced);
+                $content = strtr($this->format, $replaced);
 
                 // <PRI>TIMESTAMP HOST TAG:CONTENT
                 $packet = "<$priority>$timestamp $log->host $tag:$content";
-                socket_sendto($this->_socket, $packet, strlen($packet), 0, $host, $port);
+                socket_sendto($this->socket, $packet, strlen($packet), 0, $host, $port);
             }
         }
     }

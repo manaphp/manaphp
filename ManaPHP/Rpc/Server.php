@@ -14,17 +14,17 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
     /**
      * @var string
      */
-    protected $_host = '0.0.0.0';
+    protected $host = '0.0.0.0';
 
     /**
      * @var int
      */
-    protected $_port = 9501;
+    protected $port = 9501;
 
     /**
      * @var \ManaPHP\Rpc\Server\HandlerInterface
      */
-    protected $_handler;
+    protected $handler;
 
     /**
      * @param array $options
@@ -32,11 +32,11 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
     public function __construct($options = [])
     {
         if (isset($options['host'])) {
-            $this->_host = $options['host'];
+            $this->host = $options['host'];
         }
 
         if (isset($options['port'])) {
-            $this->_port = (int)$options['port'];
+            $this->port = (int)$options['port'];
         }
     }
 
@@ -45,7 +45,7 @@ abstract class Server extends Component implements ServerInterface, Unaspectable
      */
     public function authenticate()
     {
-        if ($this->_handler->authenticate() !== false) {
+        if ($this->handler->authenticate() !== false) {
             return true;
         }
 

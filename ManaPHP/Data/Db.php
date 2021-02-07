@@ -64,7 +64,7 @@ class DbContext implements Inseparable
 
 /**
  * @property-read \ManaPHP\Pool\ManagerInterface $poolManager
- * @property-read \ManaPHP\Data\DbContext        $_context
+ * @property-read \ManaPHP\Data\DbContext        $context
  */
 class Db extends Component implements DbInterface
 {
@@ -76,45 +76,45 @@ class Db extends Component implements DbInterface
     /**
      * @var string
      */
-    protected $_uri;
+    protected $uri;
 
     /**
      * @var string
      */
-    protected $_prefix = '';
+    protected $prefix = '';
 
     /**
      * @var bool
      */
-    protected $_has_slave = false;
+    protected $has_slave = false;
 
     /**
      * @var float
      */
-    protected $_timeout = 3.0;
+    protected $timeout = 3.0;
 
     /**
      * @var string
      */
-    protected $_pool_size = '4';
+    protected $pool_size = '4';
 
     /**
      * @param string $uri
      */
     public function __construct($uri)
     {
-        $this->_uri = $uri;
+        $this->uri = $uri;
 
         if (str_contains($uri, 'timeout=') && preg_match('#timeout=([\d.]+)#', $uri, $matches) === 1) {
-            $this->_timeout = (float)$matches[1];
+            $this->timeout = (float)$matches[1];
         }
 
         if (preg_match('#pool_size=([\d/]+)#', $uri, $matches)) {
-            $this->_pool_size = $matches[1];
+            $this->pool_size = $matches[1];
         }
 
         if (preg_match('#[?&]prefix=(\w+)#', $uri, $matches)) {
-            $this->_prefix = $matches[1];
+            $this->prefix = $matches[1];
         }
 
         $uris = [];
@@ -140,12 +140,12 @@ class Db extends Component implements DbInterface
             $uris[] = $uri;
         }
 
-        if (($pos = strpos($this->_pool_size, '/')) === false) {
-            $master_pool_size = (int)$this->_pool_size;
-            $slave_pool_size = (int)$this->_pool_size;
+        if (($pos = strpos($this->pool_size, '/')) === false) {
+            $master_pool_size = (int)$this->pool_size;
+            $slave_pool_size = (int)$this->pool_size;
         } else {
-            $master_pool_size = (int)substr($this->_pool_size, 0, $pos);
-            $slave_pool_size = (int)substr($this->_pool_size, $pos + 1);
+            $master_pool_size = (int)substr($this->pool_size, 0, $pos);
+            $slave_pool_size = (int)substr($this->pool_size, $pos + 1);
         }
 
         if ($uris[0] !== '') {
@@ -179,7 +179,7 @@ class Db extends Component implements DbInterface
                 $this->poolManager->add($this, ['class' => $adapter, $uri], 1, 'slave');
             }
 
-            $this->_has_slave = true;
+            $this->has_slave = true;
         }
     }
 
@@ -198,7 +198,7 @@ class Db extends Component implements DbInterface
      */
     public function getPrefix()
     {
-        return $this->_prefix;
+        return $this->prefix;
     }
 
     /**
@@ -217,7 +217,7 @@ class Db extends Component implements DbInterface
                      'insert' => ['inserting', 'inserted']
                  ][$type] ?? null;
 
-        $context = $this->_context;
+        $context = $this->context;
 
         $context->sql = $sql;
         $context->bind = $bind;
@@ -230,7 +230,7 @@ class Db extends Component implements DbInterface
         if ($context->connection) {
             $connection = $context->connection;
         } else {
-            $connection = $this->poolManager->pop($this, $this->_timeout);
+            $connection = $this->poolManager->pop($this, $this->timeout);
         }
 
         try {
@@ -291,7 +291,7 @@ class Db extends Component implements DbInterface
      */
     public function affectedRows()
     {
-        return $this->_context->affected_rows;
+        return $this->context->affected_rows;
     }
 
     /**
@@ -321,7 +321,7 @@ class Db extends Component implements DbInterface
      */
     public function fetchAll($sql, $bind = [], $mode = PDO::FETCH_ASSOC, $useMaster = false)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $context->sql = $sql;
         $context->bind = $bind;
@@ -336,10 +336,10 @@ class Db extends Component implements DbInterface
             if ($useMaster) {
                 $type = 'default';
             } else {
-                $type = $this->_has_slave ? 'slave' : 'default';
+                $type = $this->has_slave ? 'slave' : 'default';
             }
 
-            $connection = $this->poolManager->pop($this, $this->_timeout, $type);
+            $connection = $this->poolManager->pop($this, $this->timeout, $type);
         }
 
         $sql = $connection->replaceQuoteCharacters($sql);
@@ -368,9 +368,9 @@ class Db extends Component implements DbInterface
     protected function completeTable($table)
     {
         if (($pos = strpos($table, '.')) === false) {
-            return '[' . $this->_prefix . $table . ']';
+            return '[' . $this->prefix . $table . ']';
         } else {
-            return '[' . substr($table, 0, $pos) . '].[' . $this->_prefix . substr($table, $pos + 1) . ']';
+            return '[' . substr($table, 0, $pos) . '].[' . $this->prefix . substr($table, $pos + 1) . ']';
         }
     }
 
@@ -383,7 +383,7 @@ class Db extends Component implements DbInterface
      */
     public function insert($table, $record, $fetchInsertId = false)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $table = $this->completeTable($table);
 
@@ -402,7 +402,7 @@ class Db extends Component implements DbInterface
 
         $context->affected_rows = 0;
 
-        $connection = $context->connection ?: $this->poolManager->pop($this, $this->_timeout);
+        $connection = $context->connection ?: $this->poolManager->pop($this, $this->timeout);
 
         $this->fireEvent('db:inserting');
 
@@ -619,7 +619,7 @@ class Db extends Component implements DbInterface
      */
     public function getSQL()
     {
-        return $this->_context->sql;
+        return $this->context->sql;
     }
 
     /**
@@ -667,7 +667,7 @@ class Db extends Component implements DbInterface
      */
     public function getEmulatedSQL($preservedStrLength = -1)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if (!$context->bind) {
             return (string)$context->sql;
@@ -693,7 +693,7 @@ class Db extends Component implements DbInterface
      */
     public function getBind()
     {
-        return $this->_context->bind;
+        return $this->context->bind;
     }
 
     /**
@@ -704,13 +704,13 @@ class Db extends Component implements DbInterface
      */
     public function begin()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($context->transaction_level === 0) {
             $this->fireEvent('db:begin');
 
             /** @var \ManaPHP\Data\Db\ConnectionInterface $connection */
-            $connection = $this->poolManager->pop($this, $this->_timeout);
+            $connection = $this->poolManager->pop($this, $this->timeout);
 
             try {
                 if (!$connection->begin()) {
@@ -738,7 +738,7 @@ class Db extends Component implements DbInterface
      */
     public function isUnderTransaction()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         return $context->transaction_level !== 0;
     }
@@ -751,7 +751,7 @@ class Db extends Component implements DbInterface
      */
     public function rollback()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($context->transaction_level > 0) {
             $context->transaction_level--;
@@ -782,7 +782,7 @@ class Db extends Component implements DbInterface
      */
     public function commit()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($context->transaction_level === 0) {
             throw new MisuseException('There is no active transaction');
@@ -810,7 +810,7 @@ class Db extends Component implements DbInterface
      */
     public function getLastSql()
     {
-        return $this->_context->sql;
+        return $this->context->sql;
     }
 
     /**
@@ -821,21 +821,21 @@ class Db extends Component implements DbInterface
      */
     public function getTables($schema = null)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($context->connection) {
             $type = null;
             $connection = $context->connection;
         } else {
-            $type = $this->_has_slave ? 'slave' : 'default';
-            $connection = $this->poolManager->pop($this, $this->_timeout, $type);
+            $type = $this->has_slave ? 'slave' : 'default';
+            $connection = $this->poolManager->pop($this, $this->timeout, $type);
         }
 
         try {
-            if ($this->_prefix === '') {
+            if ($this->prefix === '') {
                 return $connection->getTables($schema);
             } else {
-                $prefix = $this->_prefix;
+                $prefix = $this->prefix;
                 $prefix_len = strlen($prefix);
                 $tables = [];
                 foreach ($connection->getTables($schema) as $table) {
@@ -859,14 +859,14 @@ class Db extends Component implements DbInterface
      */
     public function buildSql($params)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($context->connection) {
             $type = null;
             $connection = $context->connection;
         } else {
-            $type = $this->_has_slave ? 'slave' : 'default';
-            $connection = $this->poolManager->pop($this, $this->_timeout, $type);
+            $type = $this->has_slave ? 'slave' : 'default';
+            $connection = $this->poolManager->pop($this, $this->timeout, $type);
         }
 
         try {
@@ -886,14 +886,14 @@ class Db extends Component implements DbInterface
      */
     public function getMetadata($table)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($context->connection) {
             $type = null;
             $connection = $context->connection;
         } else {
-            $type = $this->_has_slave ? 'slave' : 'default';
-            $connection = $this->poolManager->pop($this, $this->_timeout, $type);
+            $type = $this->has_slave ? 'slave' : 'default';
+            $connection = $this->poolManager->pop($this, $this->timeout, $type);
         }
 
         $table = $this->completeTable($table);
@@ -917,7 +917,7 @@ class Db extends Component implements DbInterface
      */
     public function close()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($context->connection) {
             if ($context->transaction_level !== 0) {

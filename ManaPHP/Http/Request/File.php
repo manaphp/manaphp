@@ -11,14 +11,14 @@ class File extends Component implements FileInterface
     /**
      * @var array
      */
-    protected $_file;
+    protected $file;
 
     /**
      * @param array $file
      */
     public function __construct($file)
     {
-        $this->_file = $file;
+        $this->file = $file;
     }
 
     /**
@@ -28,7 +28,7 @@ class File extends Component implements FileInterface
      */
     public function getSize()
     {
-        return $this->_file['size'];
+        return $this->file['size'];
     }
 
     /**
@@ -38,7 +38,7 @@ class File extends Component implements FileInterface
      */
     public function getName()
     {
-        return $this->_file['name'];
+        return $this->file['name'];
     }
 
     /**
@@ -48,7 +48,7 @@ class File extends Component implements FileInterface
      */
     public function getTempName()
     {
-        return $this->_file['tmp_name'];
+        return $this->file['tmp_name'];
     }
 
     /**
@@ -59,9 +59,9 @@ class File extends Component implements FileInterface
     public function getType($real = true)
     {
         if ($real) {
-            return mime_content_type($this->_file['tmp_name']) ?: '';
+            return mime_content_type($this->file['tmp_name']) ?: '';
         } else {
-            return $this->_file['type'];
+            return $this->file['type'];
         }
     }
 
@@ -72,7 +72,7 @@ class File extends Component implements FileInterface
      */
     public function getError()
     {
-        return $this->_file['error'];
+        return $this->file['error'];
     }
 
     /**
@@ -82,7 +82,7 @@ class File extends Component implements FileInterface
      */
     public function getKey()
     {
-        return $this->_file['key'];
+        return $this->file['key'];
     }
 
     /**
@@ -92,7 +92,7 @@ class File extends Component implements FileInterface
      */
     public function isUploadedFile()
     {
-        return is_uploaded_file($this->_file['tmp_name']);
+        return is_uploaded_file($this->file['tmp_name']);
     }
 
     /**
@@ -115,7 +115,7 @@ class File extends Component implements FileInterface
             }
         }
 
-        if (($error = $this->_file['error']) !== UPLOAD_ERR_OK) {
+        if (($error = $this->file['error']) !== UPLOAD_ERR_OK) {
             throw new FileException(['error code of upload file is not UPLOAD_ERR_OK: :error', 'error' => $error]);
         }
 
@@ -130,9 +130,9 @@ class File extends Component implements FileInterface
         LocalFS::dirCreate(dirname($dst));
 
         if (PHP_SAPI === 'cli') {
-            LocalFS::fileMove($this->_file['tmp_name'], $this->alias->resolve($dst));
+            LocalFS::fileMove($this->file['tmp_name'], $this->alias->resolve($dst));
         } else {
-            if (!move_uploaded_file($this->_file['tmp_name'], $this->alias->resolve($dst))) {
+            if (!move_uploaded_file($this->file['tmp_name'], $this->alias->resolve($dst))) {
                 $error = error_get_last()['message'] ?? '';
                 throw new FileException(['move_uploaded_file to `%s` failed: %s', $dst, $error]);
             }
@@ -151,7 +151,7 @@ class File extends Component implements FileInterface
      */
     public function getExtension()
     {
-        $name = $this->_file['name'];
+        $name = $this->file['name'];
         return ($extension = pathinfo($name, PATHINFO_EXTENSION)) === $name ? '' : $extension;
     }
 
@@ -160,11 +160,11 @@ class File extends Component implements FileInterface
      */
     public function delete()
     {
-        @unlink($this->_file['tmp_name']);
+        @unlink($this->file['tmp_name']);
     }
 
     public function jsonSerialize()
     {
-        return $this->_file;
+        return $this->file;
     }
 }

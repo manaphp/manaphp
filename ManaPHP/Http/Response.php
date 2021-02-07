@@ -49,7 +49,7 @@ class ResponseContext
  * @property-read \ManaPHP\Http\RequestInterface $request
  * @property-read \ManaPHP\Http\UrlInterface     $url
  * @property-read \ManaPHP\Http\RouterInterface  $router
- * @property-read \ManaPHP\Http\ResponseContext  $_context
+ * @property-read \ManaPHP\Http\ResponseContext  $context
  */
 class Response extends Component implements ResponseInterface
 {
@@ -58,7 +58,7 @@ class Response extends Component implements ResponseInterface
      */
     public function getContext()
     {
-        return $this->_context;
+        return $this->context;
     }
 
     /**
@@ -83,7 +83,7 @@ class Response extends Component implements ResponseInterface
         $secure = false,
         $httponly = true
     ) {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($expire > 0) {
             $current = time();
@@ -122,7 +122,7 @@ class Response extends Component implements ResponseInterface
      */
     public function deleteCookie($name, $path = null, $domain = null, $secure = false, $httponly = true)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $context->cookies[$name] = [
             'name'     => $name,
@@ -151,7 +151,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setStatus($code, $text = null)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $context->status_code = (int)$code;
         $context->status_text = $text ?: $this->getStatusText($code);
@@ -164,7 +164,7 @@ class Response extends Component implements ResponseInterface
      */
     public function getStatus()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         return $context->status_code . ' ' . $context->status_text;
     }
@@ -174,7 +174,7 @@ class Response extends Component implements ResponseInterface
      */
     public function getStatusCode()
     {
-        return $this->_context->status_code;
+        return $this->context->status_code;
     }
 
     /**
@@ -185,7 +185,7 @@ class Response extends Component implements ResponseInterface
     public function getStatusText($code = null)
     {
         if ($code === null) {
-            return $this->_context->status_text;
+            return $this->context->status_text;
         } else {
             $texts = [
                 200 => 'OK',
@@ -261,7 +261,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setHeader($name, $value)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $context->headers[$name] = $value;
 
@@ -276,7 +276,7 @@ class Response extends Component implements ResponseInterface
      */
     public function getHeader($name, $default = null)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         return $context->headers[$name] ?? $default;
     }
@@ -288,7 +288,7 @@ class Response extends Component implements ResponseInterface
      */
     public function hasHeader($name)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         return isset($context->headers[$name]);
     }
@@ -300,7 +300,7 @@ class Response extends Component implements ResponseInterface
      */
     public function removeHeader($name)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         unset($context->headers[$name]);
 
@@ -337,7 +337,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setNotModified()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $context->status_code = 304;
         $context->status_text = 'Not Modified';
@@ -413,7 +413,7 @@ class Response extends Component implements ResponseInterface
      */
     public function getContentType()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         return $context->headers['Content-Type'] ?? null;
     }
@@ -451,7 +451,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setContent($content)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $context->content = (string)$content;
 
@@ -522,7 +522,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setJsonContent($content)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $this->setHeader('Content-Type', 'application/json; charset=utf-8');
 
@@ -544,7 +544,7 @@ class Response extends Component implements ResponseInterface
      */
     public function getContent()
     {
-        return $this->_context->content;
+        return $this->context->content;
     }
 
     /**
@@ -557,7 +557,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setFile($file, $attachmentName = null)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($attachmentName === null) {
             $attachmentName = basename($file);
@@ -580,7 +580,7 @@ class Response extends Component implements ResponseInterface
      */
     public function getFile()
     {
-        return $this->_context->file;
+        return $this->context->file;
     }
 
     /**
@@ -648,7 +648,7 @@ class Response extends Component implements ResponseInterface
      */
     public function getHeaders()
     {
-        return $this->_context->headers;
+        return $this->context->headers;
     }
 
     /**
@@ -658,9 +658,9 @@ class Response extends Component implements ResponseInterface
     {
         $data = parent::dump();
 
-        $data['_context']['content'] = '***';
-        if (isset($data['_context']['headers']['X-Logger'])) {
-            $data['_context']['headers']['X-Logger'] = '***';
+        $data['context']['content'] = '***';
+        if (isset($data['context']['headers']['X-Logger'])) {
+            $data['context']['headers']['X-Logger'] = '***';
         }
 
         return $data;

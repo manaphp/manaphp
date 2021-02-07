@@ -45,34 +45,34 @@ class SessionContext
 /**
  * @property-read \ManaPHP\Http\CookiesInterface $cookies
  * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\Http\SessionContext   $_context
+ * @property-read \ManaPHP\Http\SessionContext   $context
  */
 abstract class Session extends Component implements SessionInterface, ArrayAccess
 {
     /**
      * @var int
      */
-    protected $_ttl = 3600;
+    protected $ttl = 3600;
 
     /**
      * @var int
      */
-    protected $_lazy;
+    protected $lazy;
 
     /**
      * @var string
      */
-    protected $_name = 'PHPSESSID';
+    protected $name = 'PHPSESSID';
 
     /**
      * @var string
      */
-    protected $_serializer = 'json';
+    protected $serializer = 'json';
 
     /**
      * @var array
      */
-    protected $_params = ['expire' => 0, 'path' => null, 'domain' => null, 'secure' => false, 'httponly' => true];
+    protected $params = ['expire' => 0, 'path' => null, 'domain' => null, 'secure' => false, 'httponly' => true];
 
     /**
      * @param array $options
@@ -80,29 +80,29 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
     public function __construct($options = [])
     {
         if (isset($options['ttl'])) {
-            $this->_ttl = (int)$options['ttl'];
+            $this->ttl = (int)$options['ttl'];
         }
 
         if (isset($options['lazy'])) {
-            $this->_lazy = (int)$options['lazy'];
+            $this->lazy = (int)$options['lazy'];
         } else {
-            $this->_lazy = (int)min($this->_ttl / 10, 600);
+            $this->lazy = (int)min($this->ttl / 10, 600);
         }
 
         if (isset($options['name'])) {
-            $this->_name = $options['name'];
+            $this->name = $options['name'];
         }
 
         if (isset($options['serializer'])) {
-            $this->_serializer = $options['serializer'];
+            $this->serializer = $options['serializer'];
         }
 
         if (isset($options['params'])) {
-            $this->_params = $options['params'] + $this->_params;
+            $this->params = $options['params'] + $this->params;
         }
 
-        if (!isset($this->_params['path'])) {
-            $this->_params['path'] = $this->alias->get('@web') ?: '/';
+        if (!isset($this->params['path'])) {
+            $this->params['path'] = $this->alias->get('@web') ?: '/';
         }
 
         $this->attachEvent('response:sending', [$this, 'onResponseSending']);
@@ -113,7 +113,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
      */
     protected function start()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($context->started) {
             return;
@@ -121,7 +121,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
 
         $context->started = true;
 
-        if (($session_id = $this->cookies->get($this->_name)) && ($str = $this->do_read($session_id))) {
+        if (($session_id = $this->cookies->get($this->name)) && ($str = $this->do_read($session_id))) {
             $context->is_new = false;
 
             if (is_array($data = $this->unserialize($str))) {
@@ -146,7 +146,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
      */
     public function onResponseSending()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if (!$context->started) {
             return;
@@ -161,11 +161,11 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
                 return;
             }
 
-            $params = $this->_params;
+            $params = $this->params;
             $expire = $params['expire'] ? time() + $params['expire'] : 0;
 
             $this->cookies->set(
-                $this->_name,
+                $this->name,
                 $context->session_id,
                 $expire,
                 $params['path'],
@@ -177,19 +177,19 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
             $this->fireEvent('session:create', compact('context', 'session_id'));
         } elseif ($context->is_dirty) {
             null;
-        } elseif ($this->_lazy) {
-            if (isset($context->_SESSION['__T']) && time() - $context->_SESSION['__T'] < $this->_lazy) {
+        } elseif ($this->lazy) {
+            if (isset($context->_SESSION['__T']) && time() - $context->_SESSION['__T'] < $this->lazy) {
                 return;
             }
         } else {
-            if ($this->do_touch($context->session_id, $context->ttl ?? $this->_ttl)) {
+            if ($this->do_touch($context->session_id, $context->ttl ?? $this->ttl)) {
                 return;
             }
         }
 
         $this->fireEvent('session:update', compact('context', 'session_id'));
 
-        if ($this->_lazy) {
+        if ($this->lazy) {
             $context->_SESSION['__T'] = time();
         }
 
@@ -197,7 +197,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
         if (!is_string($data)) {
             $this->logger->error('serialize data failed', 'session.serialize');
         }
-        $this->do_write($context->session_id, $data, $context->ttl ?? $this->_ttl);
+        $this->do_write($context->session_id, $data, $context->ttl ?? $this->ttl);
     }
 
     /**
@@ -213,7 +213,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
             $this->fireEvent('session:destroy', compact('session_id'));
             $this->do_destroy($session_id);
         } else {
-            $context = $this->_context;
+            $context = $this->context;
 
             if (!$context->started) {
                 $this->start();
@@ -228,8 +228,8 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
             $context->_SESSION = null;
             $this->do_destroy($context->session_id);
 
-            $name = $this->_name;
-            $params = $this->_params;
+            $name = $this->name;
+            $params = $this->params;
             $this->cookies->delete($name, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
         }
 
@@ -251,7 +251,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
      */
     public function serialize($data)
     {
-        $serializer = $this->_serializer;
+        $serializer = $this->serializer;
 
         //https://github.com/wikimedia/php-session-serializer/blob/master/src/Wikimedia/PhpSessionSerializer.php
         if ($serializer === 'php') {
@@ -287,7 +287,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
      */
     public function unserialize($data)
     {
-        $serializer = $this->_serializer;
+        $serializer = $this->serializer;
 
         if ($serializer === 'php') {
             $r = [];
@@ -367,7 +367,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
      */
     public function get($name = null, $default = null)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if (!$context->started) {
             $this->start();
@@ -392,7 +392,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
      */
     public function set($name, $value)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if (!$context->started) {
             $this->start();
@@ -413,7 +413,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
      */
     public function has($name)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if (!$context->started) {
             $this->start();
@@ -431,7 +431,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
      */
     public function remove($name)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if (!$context->started) {
             $this->start();
@@ -448,7 +448,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
      */
     public function getId()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if (!$context->started) {
             $this->start();
@@ -464,7 +464,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
      */
     public function setId($id)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if (!$context->started) {
             $this->start();
@@ -480,7 +480,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
      */
     public function getTtl()
     {
-        return $this->_context->ttl ?? $this->_ttl;
+        return $this->context->ttl ?? $this->ttl;
     }
 
     /**
@@ -490,7 +490,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
      */
     public function setTtl($ttl)
     {
-        $this->_context->ttl = $ttl;
+        $this->context->ttl = $ttl;
 
         return $this;
     }
@@ -500,7 +500,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -570,7 +570,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
     {
         $session = $this->serialize($data);
 
-        $this->do_write($session_id, $session, $this->_context->ttl ?? $this->_ttl);
+        $this->do_write($session_id, $session, $this->context->ttl ?? $this->ttl);
 
         return $this;
     }

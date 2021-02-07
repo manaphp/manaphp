@@ -12,17 +12,17 @@ class Php extends Fpm
     /**
      * @var array
      */
-    protected $_mime_types;
+    protected $mime_types;
 
     /**
      * @var array
      */
-    protected $_root_files;
+    protected $root_files;
 
     /**
      * @var string
      */
-    protected $_doc_root;
+    protected $doc_root;
 
     /**
      * @param array $options
@@ -30,42 +30,42 @@ class Php extends Fpm
     public function __construct($options = [])
     {
         if (isset($options['port'])) {
-            $this->_port = (int)$options['port'];
+            $this->port = (int)$options['port'];
         }
 
         $argv = $GLOBALS['argv'] ?? [];
         foreach ($argv as $k => $v) {
             if ($v === '--port' || $v === '-p') {
                 if (isset($argv[$k + 1])) {
-                    $this->_port = ($argv[$k + 1]);
+                    $this->port = ($argv[$k + 1]);
                     break;
                 }
             }
         }
 
         $public_dir = $this->alias->resolve('@public');
-        $local_ip = $this->_host === '0.0.0.0' ? Ip::local() : $this->_host;
+        $local_ip = $this->host === '0.0.0.0' ? Ip::local() : $this->host;
 
         if (PHP_SAPI === 'cli') {
             if (DIRECTORY_SEPARATOR === '\\') {
-                shell_exec("explorer.exe http://127.0.0.1:$this->_port" . ($this->router->getPrefix() ?: '/'));
+                shell_exec("explorer.exe http://127.0.0.1:$this->port" . ($this->router->getPrefix() ?: '/'));
             }
             $_SERVER['REQUEST_SCHEME'] = 'http';
             $index = @get_included_files()[0];
-            $cmd = "php -S $this->_host:$this->_port -t $public_dir  $index";
+            $cmd = "php -S $this->host:$this->port -t $public_dir  $index";
             console_log('info', $cmd);
-            console_log('info', "http://$local_ip:$this->_port" . ($this->router->getPrefix() ?: '/'));
+            console_log('info', "http://$local_ip:$this->port" . ($this->router->getPrefix() ?: '/'));
             shell_exec($cmd);
             exit(0);
         } else {
             $_SERVER['SERVER_ADDR'] = $local_ip;
-            $_SERVER['SERVER_PORT'] = $this->_port;
+            $_SERVER['SERVER_PORT'] = $this->port;
             $_SERVER['REQUEST_SCHEME'] = 'http';
 
-            $this->_doc_root = $this->alias->resolve('@public');
+            $this->doc_root = $this->alias->resolve('@public');
 
-            $this->_root_files = $this->getRootFiles();
-            $this->_mime_types = $this->getMimeTypes();
+            $this->root_files = $this->getRootFiles();
+            $this->mime_types = $this->getMimeTypes();
         }
 
         parent::__construct($options);
@@ -77,7 +77,7 @@ class Php extends Fpm
     protected function getRootFiles()
     {
         $files = [];
-        foreach (glob($this->_doc_root . '/*') as $file) {
+        foreach (glob($this->doc_root . '/*') as $file) {
             $file = basename($file);
             if ($file[0] === '.' || pathinfo($file, PATHINFO_EXTENSION) === 'php') {
                 continue;
@@ -128,13 +128,13 @@ class Php extends Fpm
 
         if ($file === 'favicon.ico') {
             return '/favicon.ico';
-        } elseif (in_array($file, $this->_root_files, true)) {
+        } elseif (in_array($file, $this->root_files, true)) {
             return $file;
         } elseif (($pos = strpos($file, '/')) === false) {
             return false;
         } else {
             $level1 = substr($file, 0, $pos);
-            return in_array($level1, $this->_root_files, true) ? $file : false;
+            return in_array($level1, $this->root_files, true) ? $file : false;
         }
     }
 
@@ -148,10 +148,10 @@ class Php extends Fpm
         $this->prepareGlobals();
 
         if ($file = $this->isStaticFile()) {
-            $file = "$this->_doc_root/$file";
+            $file = "$this->doc_root/$file";
             if ((DIRECTORY_SEPARATOR === '/' ? realpath($file) : str_replace('\\', '/', realpath($file))) === $file) {
                 $ext = pathinfo($file, PATHINFO_EXTENSION);
-                $mime_type = $this->_mime_types[$ext] ?? 'application/octet-stream';
+                $mime_type = $this->mime_types[$ext] ?? 'application/octet-stream';
                 header('Content-Type: ' . $mime_type);
                 readfile($file);
             } else {

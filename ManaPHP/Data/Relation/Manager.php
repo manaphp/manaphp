@@ -14,7 +14,7 @@ class Manager extends Component implements ManagerInterface
     /**
      * @var array[]
      */
-    protected $_relations;
+    protected $relations;
 
     /**
      * @param \ManaPHP\Data\Model $model
@@ -171,12 +171,12 @@ class Manager extends Component implements ManagerInterface
     {
         $modelName = get_class($model);
 
-        if (!isset($this->_relations[$modelName])) {
-            $this->_relations[$modelName] = $model->relations();
+        if (!isset($this->relations[$modelName])) {
+            $this->relations[$modelName] = $model->relations();
         }
 
-        if (isset($this->_relations[$modelName][$name])) {
-            if (is_object($relation = $this->_relations[$modelName][$name])) {
+        if (isset($this->relations[$modelName][$name])) {
+            if (is_object($relation = $this->relations[$modelName][$name])) {
                 return $relation;
             } else {
                 if ($this->isPlural($name)) {
@@ -184,10 +184,10 @@ class Manager extends Component implements ManagerInterface
                 } else {
                     $relation = $model->hasOne($relation);
                 }
-                return $this->_relations[$modelName][$name] = $relation;
+                return $this->relations[$modelName][$name] = $relation;
             }
         } elseif ($relation = $this->inferRelation($model, $name)) {
-            return $this->_relations[$modelName][$name] = $relation;
+            return $this->relations[$modelName][$name] = $relation;
         } else {
             return false;
         }

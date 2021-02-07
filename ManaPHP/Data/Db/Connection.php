@@ -14,70 +14,70 @@ abstract class Connection extends Component implements ConnectionInterface
     /**
      * @var string
      */
-    protected $_uri;
+    protected $uri;
 
     /**
      * @var string
      */
-    protected $_dsn;
+    protected $dsn;
 
     /**
      * @var string
      */
-    protected $_username;
+    protected $username;
 
     /**
      * @var string
      */
-    protected $_password;
+    protected $password;
 
     /**
      * @var bool
      */
-    protected $_emulate_prepares = false;
+    protected $emulate_prepares = false;
 
     /**
      * @var array
      */
-    protected $_options = [];
+    protected $options = [];
 
     /**
      * @var \PDO
      */
-    protected $_pdo;
+    protected $pdo;
 
     /**
      * @var bool
      */
-    protected $_in_transaction = false;
+    protected $in_transaction = false;
 
     /**
      * @var \PDOStatement[]
      */
-    protected $_prepared = [];
+    protected $prepared = [];
 
     /**
      * @var bool
      */
-    protected $_readonly = false;
+    protected $readonly = false;
 
     /**
      * @var float
      */
-    protected $_last_heartbeat;
+    protected $last_heartbeat;
 
     public function __construct()
     {
-        $this->_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
-        $this->_options[PDO::ATTR_EMULATE_PREPARES] = $this->_emulate_prepares;
+        $this->options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+        $this->options[PDO::ATTR_EMULATE_PREPARES] = $this->emulate_prepares;
     }
 
     public function __clone()
     {
-        $this->_pdo = null;
-        $this->_in_transaction = false;
-        $this->_last_heartbeat = null;
-        $this->_prepared = [];
+        $this->pdo = null;
+        $this->in_transaction = false;
+        $this->last_heartbeat = null;
+        $this->prepared = [];
     }
 
     /**
@@ -85,7 +85,7 @@ abstract class Connection extends Component implements ConnectionInterface
      */
     public function getUri()
     {
-        return $this->_uri;
+        return $this->uri;
     }
 
     /**
@@ -94,7 +94,7 @@ abstract class Connection extends Component implements ConnectionInterface
     protected function ping()
     {
         try {
-            @$this->_pdo->query("SELECT 'PING'")->fetchAll();
+            @$this->pdo->query("SELECT 'PING'")->fetchAll();
             return true;
         } catch (\Exception $exception) {
             return false;
@@ -106,15 +106,15 @@ abstract class Connection extends Component implements ConnectionInterface
      */
     protected function getPdo()
     {
-        if ($this->_pdo === null) {
-            $dsn = $this->_dsn;
-            $uri = $this->_uri;
+        if ($this->pdo === null) {
+            $dsn = $this->dsn;
+            $uri = $this->uri;
 
             $this->fireEvent('db:connecting', compact('dsn', 'uri'));
 
             try {
-                $params = [$dsn, $this->_username, $this->_password, $this->_options];
-                $this->_pdo = $pdo = $this->getNew('PDO', $params);
+                $params = [$dsn, $this->username, $this->password, $this->options];
+                $this->pdo = $pdo = $this->getNew('PDO', $params);
             } catch (PDOException $e) {
                 $this->fireEvent('db:connected', compact('dsn', 'uri'));
 
@@ -125,7 +125,7 @@ abstract class Connection extends Component implements ConnectionInterface
             $this->fireEvent('db:connected', compact('dsn', 'uri', 'pdo'));
         }
 
-        return $this->_pdo;
+        return $this->pdo;
     }
 
     /**
@@ -154,13 +154,13 @@ abstract class Connection extends Component implements ConnectionInterface
      */
     protected function getPrepared($sql)
     {
-        if (!isset($this->_prepared[$sql])) {
-            if (count($this->_prepared) > 8) {
-                array_shift($this->_prepared);
+        if (!isset($this->prepared[$sql])) {
+            if (count($this->prepared) > 8) {
+                array_shift($this->prepared);
             }
-            return $this->_prepared[$sql] = @$this->getPdo()->prepare($sql);
+            return $this->prepared[$sql] = @$this->getPdo()->prepare($sql);
         }
-        return $this->_prepared[$sql];
+        return $this->prepared[$sql];
     }
 
     /**
@@ -195,7 +195,7 @@ abstract class Connection extends Component implements ConnectionInterface
 
         @$statement->execute($tr);
 
-        $this->_last_heartbeat = microtime(true);
+        $this->last_heartbeat = microtime(true);
 
         return $statement;
     }
@@ -211,13 +211,13 @@ abstract class Connection extends Component implements ConnectionInterface
      */
     public function execute($sql, $bind = [], $has_insert_id = false)
     {
-        if ($this->_readonly) {
-            throw new ReadonlyException(['`:uri` is readonly: => :sql ', 'uri' => $this->_uri, 'sql' => $sql]);
+        if ($this->readonly) {
+            throw new ReadonlyException(['`:uri` is readonly: => :sql ', 'uri' => $this->uri, 'sql' => $sql]);
         }
 
         $sql = $this->replaceQuoteCharacters($sql);
 
-        if ($this->_in_transaction) {
+        if ($this->in_transaction) {
             try {
                 $r = $bind ? $this->executeInternal($sql, $bind)->rowCount() : @$this->getPdo()->exec($sql);
                 return $has_insert_id ? $this->getPdo()->lastInsertId() : $r;
@@ -252,7 +252,7 @@ abstract class Connection extends Component implements ConnectionInterface
     {
         $sql = $this->replaceQuoteCharacters($sql);
 
-        if ($this->_in_transaction) {
+        if ($this->in_transaction) {
             try {
                 $statement = $bind ? $this->executeInternal($sql, $bind) : @$this->getPdo()->query($sql);
                 return $statement->fetchAll($mode);
@@ -281,20 +281,20 @@ abstract class Connection extends Component implements ConnectionInterface
      */
     public function close()
     {
-        if ($this->_pdo) {
-            $dsn = $this->_dsn;
-            $uri = $this->_uri;
-            $pdo = $this->_pdo;
+        if ($this->pdo) {
+            $dsn = $this->dsn;
+            $uri = $this->uri;
+            $pdo = $this->pdo;
             $this->fireEvent('db:close', compact('dsn', 'uri', 'pdo'));
 
-            if ($this->_in_transaction) {
-                $this->_in_transaction = false;
+            if ($this->in_transaction) {
+                $this->in_transaction = false;
                 $this->fireEvent('db:abnormal', compact('dsn', 'uri', 'pdo'));
             }
 
-            $this->_pdo = null;
-            $this->_last_heartbeat = null;
-            $this->_prepared = [];
+            $this->pdo = null;
+            $this->last_heartbeat = null;
+            $this->prepared = [];
         }
     }
 
@@ -303,21 +303,21 @@ abstract class Connection extends Component implements ConnectionInterface
      */
     public function getLastHeartbeat()
     {
-        return $this->_last_heartbeat;
+        return $this->last_heartbeat;
     }
 
     public function begin()
     {
-        if ($this->_readonly) {
-            throw new ReadonlyException(['`:uri` is readonly, transaction begin failed', 'uri' => $this->_uri]);
+        if ($this->readonly) {
+            throw new ReadonlyException(['`:uri` is readonly, transaction begin failed', 'uri' => $this->uri]);
         }
 
         try {
-            return $this->_in_transaction = $this->getPdo()->beginTransaction();
+            return $this->in_transaction = $this->getPdo()->beginTransaction();
         } catch (PDOException $exception) {
             try {
                 $this->close();
-                return $this->_in_transaction = $this->getPdo()->beginTransaction();
+                return $this->in_transaction = $this->getPdo()->beginTransaction();
             } catch (PDOException $exception) {
                 throw new DbException($exception->getMessage(), $exception->getCode(), $exception);
             }
@@ -326,13 +326,13 @@ abstract class Connection extends Component implements ConnectionInterface
 
     public function rollback()
     {
-        $this->_in_transaction = false;
-        return @$this->_pdo->rollBack();
+        $this->in_transaction = false;
+        return @$this->pdo->rollBack();
     }
 
     public function commit()
     {
-        $this->_in_transaction = false;
-        return @$this->_pdo->commit();
+        $this->in_transaction = false;
+        return @$this->pdo->commit();
     }
 }

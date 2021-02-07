@@ -16,7 +16,7 @@ class Command extends \ManaPHP\Cli\Command
     protected function getServices($services)
     {
         if ($services) {
-            $container = $this->_container;
+            $container = $this->container;
 
             foreach ($services as $index => $service) {
                 if (!$container->has($service)) {

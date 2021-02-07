@@ -15,7 +15,7 @@ class MemoryContext
 }
 
 /**
- * @property-read \ManaPHP\Caching\Cache\Adapter\MemoryContext $_context
+ * @property-read \ManaPHP\Caching\Cache\Adapter\MemoryContext $context
  */
 class Memory extends Cache
 {
@@ -26,7 +26,7 @@ class Memory extends Cache
      */
     public function do_get($key)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if (isset($context->data[$key])) {
             if ($context->data[$key]['deadline'] >= time()) {
@@ -50,7 +50,7 @@ class Memory extends Cache
      */
     public function do_set($key, $value, $ttl)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $context->data[$key] = ['deadline' => time() + $ttl, 'data' => $value];
     }
@@ -62,7 +62,7 @@ class Memory extends Cache
      */
     public function do_delete($key)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         unset($context->data[$key]);
     }
@@ -74,7 +74,7 @@ class Memory extends Cache
      */
     public function do_exists($key)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         return isset($context->data[$key]) && $context->data[$key]['deadline'] >= time();
     }

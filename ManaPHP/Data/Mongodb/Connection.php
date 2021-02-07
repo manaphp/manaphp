@@ -16,34 +16,34 @@ class Connection extends Component implements ConnectionInterface
     /**
      * @var string
      */
-    protected $_uri;
+    protected $uri;
 
     /**
      * @var \MongoDB\Driver\Manager
      */
-    protected $_manager;
+    protected $manager;
 
     /**
      * @var \MongoDB\Driver\WriteConcern
      */
-    protected $_writeConcern;
+    protected $writeConcern;
 
     /**
      * @var int
      */
-    protected $_heartbeat = 60;
+    protected $heartbeat = 60;
 
     /**
      * @var float
      */
-    protected $_last_heartbeat;
+    protected $last_heartbeat;
 
     /**
      * @param string $uri
      */
     public function __construct($uri)
     {
-        $this->_uri = $uri;
+        $this->uri = $uri;
     }
 
     /**
@@ -53,7 +53,7 @@ class Connection extends Component implements ConnectionInterface
     {
         try {
             $command = new Command(['ping' => 1]);
-            $this->_manager->executeCommand('admin', $command);
+            $this->manager->executeCommand('admin', $command);
             return true;
         } catch (\Exception $exception) {
             return false;
@@ -65,23 +65,23 @@ class Connection extends Component implements ConnectionInterface
      */
     protected function getManager()
     {
-        if ($this->_manager === null) {
-            $uri = $this->_uri;
+        if ($this->manager === null) {
+            $uri = $this->uri;
 
             $this->fireEvent('mongodb:connect', compact('uri'));
-            $this->_manager = new Manager($uri);
+            $this->manager = new Manager($uri);
         }
 
-        if (microtime(true) - $this->_last_heartbeat > $this->_heartbeat && !$this->ping()) {
+        if (microtime(true) - $this->last_heartbeat > $this->heartbeat && !$this->ping()) {
             $this->close();
             $this->fireEvent('mongodb:connect', compact('uri'));
 
-            $this->_manager = new Manager($this->_uri);
+            $this->manager = new Manager($this->uri);
         }
 
-        $this->_last_heartbeat = microtime(true);
+        $this->last_heartbeat = microtime(true);
 
-        return $this->_manager;
+        return $this->manager;
     }
 
     /**
@@ -93,20 +93,20 @@ class Connection extends Component implements ConnectionInterface
      */
     public function bulkWrite($namespace, $bulk)
     {
-        if ($this->_writeConcern === null) {
+        if ($this->writeConcern === null) {
             try {
-                $this->_writeConcern = new WriteConcern(WriteConcern::MAJORITY, 10000);
+                $this->writeConcern = new WriteConcern(WriteConcern::MAJORITY, 10000);
             } catch (\Exception $exception) {
                 throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
             }
         }
 
         $start_time = microtime(true);
-        if ($start_time - $this->_last_heartbeat > 1.0) {
-            $this->_last_heartbeat = null;
+        if ($start_time - $this->last_heartbeat > 1.0) {
+            $this->last_heartbeat = null;
         }
         try {
-            $result = $this->getManager()->executeBulkWrite($namespace, $bulk, $this->_writeConcern);
+            $result = $this->getManager()->executeBulkWrite($namespace, $bulk, $this->writeConcern);
         } catch (\Exception $exception) {
             throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -319,8 +319,8 @@ class Connection extends Component implements ConnectionInterface
     public function command($command, $db)
     {
         $start_time = microtime(true);
-        if ($start_time - $this->_last_heartbeat > 1.0) {
-            $this->_last_heartbeat = null;
+        if ($start_time - $this->last_heartbeat > 1.0) {
+            $this->last_heartbeat = null;
         }
         try {
             $cursor = $this->getManager()->executeCommand($db, new Command($command));
@@ -336,7 +336,7 @@ class Connection extends Component implements ConnectionInterface
      */
     public function close()
     {
-        $this->_manager = null;
-        $this->_last_heartbeat = null;
+        $this->manager = null;
+        $this->last_heartbeat = null;
     }
 }

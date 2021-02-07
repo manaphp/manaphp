@@ -9,12 +9,12 @@ class Selector
     /**
      * @var \ManaPHP\Html\Dom\Document
      */
-    protected $_document;
+    protected $document;
 
     /**
      * @var \DOMElement
      */
-    protected $_node;
+    protected $node;
 
     /**
      * @param string|\ManaPHP\Html\Dom\Document $document
@@ -22,8 +22,8 @@ class Selector
      */
     public function __construct($document, $node = null)
     {
-        $this->_document = is_string($document) ? new Document($document) : $document;
-        $this->_node = $node;
+        $this->document = is_string($document) ? new Document($document) : $document;
+        $this->node = $node;
     }
 
     /**
@@ -31,7 +31,7 @@ class Selector
      */
     public function root()
     {
-        return new Selector($this->_document);
+        return new Selector($this->document);
     }
 
     /**
@@ -39,7 +39,7 @@ class Selector
      */
     public function document()
     {
-        return $this->_document;
+        return $this->document;
     }
 
     /**
@@ -51,10 +51,10 @@ class Selector
     {
         $nodes = [];
         /** @var \DOMNode $node */
-        foreach ($this->_document->getQuery()->xpath($query, $this->_node) as $node) {
+        foreach ($this->document->getQuery()->xpath($query, $this->node) as $node) {
             $nodes[$node->getNodePath()] = $node;
         }
-        return new SelectorList($this->_document, $nodes);
+        return new SelectorList($this->document, $nodes);
     }
 
     /**
@@ -66,10 +66,10 @@ class Selector
     {
         $nodes = [];
         /** @var \DOMNode $node */
-        foreach ($this->_document->getQuery()->css($css, $this->_node) as $node) {
+        foreach ($this->document->getQuery()->css($css, $this->node) as $node) {
             $nodes[$node->getNodePath()] = $node;
         }
-        return new SelectorList($this->_document, $nodes);
+        return new SelectorList($this->document, $nodes);
     }
 
     /**
@@ -100,7 +100,7 @@ class Selector
     public function remove($css)
     {
         /** @var \DOMNode $node */
-        foreach ($this->_document->getQuery()->css($css, $this->_node) as $node) {
+        foreach ($this->document->getQuery()->css($css, $this->node) as $node) {
             $node->parentNode->removeChild($node);
         }
 
@@ -120,7 +120,7 @@ class Selector
         }
 
         /** @var \DOMElement $node */
-        foreach ($this->_document->getQuery()->css($css, $this->_node) as $node) {
+        foreach ($this->document->getQuery()->css($css, $this->node) as $node) {
             foreach ($node->attributes as $attribute) {
                 if (!$attr || in_array($attribute->name, $attr, true)) {
                     $node->removeAttribute($attribute->name);
@@ -144,7 +144,7 @@ class Selector
         }
 
         /** @var \DOMElement $node */
-        foreach ($this->_document->getQuery()->css($css, $this->_node) as $node) {
+        foreach ($this->document->getQuery()->css($css, $this->node) as $node) {
             foreach ($node->attributes as $attribute) {
                 if (!in_array($attribute->name, $attr, true)) {
                     $node->removeAttribute($attribute->name);
@@ -163,7 +163,7 @@ class Selector
     public function strip($css)
     {
         /** @var \DOMNode $node */
-        foreach ($this->_document->getQuery()->css($css, $this->_node) as $node) {
+        foreach ($this->document->getQuery()->css($css, $this->node) as $node) {
             $node->parentNode->replaceChild(new DOMText($node->textContent), $node);
         }
 
@@ -177,7 +177,7 @@ class Selector
      */
     public function attr($attr)
     {
-        return $this->_node->getAttribute($attr);
+        return $this->node->getAttribute($attr);
     }
 
     /**
@@ -188,7 +188,7 @@ class Selector
      */
     public function attr_first($css, $attr)
     {
-        if ($nodes = $this->_document->getQuery()->css($css, $this->_node)) {
+        if ($nodes = $this->document->getQuery()->css($css, $this->node)) {
             /** @var \DOMElement $node */
             $node = $nodes->item(0);
             return $node->getAttribute($attr);
@@ -204,7 +204,7 @@ class Selector
      */
     public function url($attr)
     {
-        return $this->_document->absolutizeUrl($this->_node->getAttribute($attr));
+        return $this->document->absolutizeUrl($this->node->getAttribute($attr));
     }
 
     /**
@@ -215,10 +215,10 @@ class Selector
      */
     public function url_first($css, $attr)
     {
-        if ($nodes = $this->_document->getQuery()->css($css, $this->_node)) {
+        if ($nodes = $this->document->getQuery()->css($css, $this->node)) {
             /** @var \DOMElement $node */
             $node = $nodes->item(0);
-            return $this->_document->absolutizeUrl($node->getAttribute($attr));
+            return $this->document->absolutizeUrl($node->getAttribute($attr));
         } else {
             return null;
         }
@@ -231,7 +231,7 @@ class Selector
      */
     public function hasAttr($name)
     {
-        return $this->_node->hasAttribute($name);
+        return $this->node->hasAttribute($name);
     }
 
     /**
@@ -239,7 +239,7 @@ class Selector
      */
     public function text()
     {
-        return (string)$this->_node->textContent;
+        return (string)$this->node->textContent;
     }
 
     /**
@@ -249,7 +249,7 @@ class Selector
      */
     public function text_first($css)
     {
-        $nodes = $this->_document->getQuery()->css($css, $this->_node);
+        $nodes = $this->document->getQuery()->css($css, $this->node);
         return $nodes ? $nodes->item(0)->textContent : null;
     }
 
@@ -261,7 +261,7 @@ class Selector
     public function extract($rules)
     {
         /** @var \DOMElement $node */
-        $node = $this->_node;
+        $node = $this->node;
 
         $data = [];
         foreach ($rules as $name => $rule) {
@@ -274,10 +274,10 @@ class Selector
             } elseif ($rule === 'path()') {
                 $data[$name] = $node->getNodePath();
             } elseif (($pos = strpos($rule, '@')) === false) {
-                $nodes = $this->_document->getQuery()->css($rule, $node);
+                $nodes = $this->document->getQuery()->css($rule, $node);
                 $data[$name] = $nodes->length ? $nodes->item(0)->textContent : null;
             } else {
-                if ($nodes = $this->_document->getQuery()->css(substr($rule, 0, $pos), $node)) {
+                if ($nodes = $this->document->getQuery()->css(substr($rule, 0, $pos), $node)) {
                     /** @var \DOMElement $node_temp */
                     $node_temp = $nodes->item(0);
                     $data[$name] = $node_temp->getAttribute(substr($rule, $pos + 1));
@@ -298,10 +298,10 @@ class Selector
      */
     public function extract_first($css, $rules)
     {
-        $nodes = $this->_document->getQuery()->css($css);
+        $nodes = $this->document->getQuery()->css($css);
 
         if ($nodes) {
-            return (new static($this->_document, $nodes->item(0)))->extract($rules);
+            return (new static($this->document, $nodes->item(0)))->extract($rules);
         } else {
             return [];
         }
@@ -312,7 +312,7 @@ class Selector
      */
     public function name()
     {
-        return $this->_node->nodeName;
+        return $this->node->nodeName;
     }
 
     /**
@@ -320,7 +320,7 @@ class Selector
      */
     public function html()
     {
-        return $this->_document->saveHtml($this->_node);
+        return $this->document->saveHtml($this->node);
     }
 
     /**
@@ -330,7 +330,7 @@ class Selector
      */
     public function html_first($css)
     {
-        if ($nodes = $this->_document->getQuery()->css($css, $this->_node)) {
+        if ($nodes = $this->document->getQuery()->css($css, $this->node)) {
             /** @var \DOMElement $node */
             $node = $nodes->item(0);
             return $node->ownerDocument->saveHTML($node);
@@ -348,8 +348,8 @@ class Selector
     {
         /** @var \DOMElement $node */
         $data = [];
-        foreach ($this->_document->getQuery()->xpath('descendant::a[@href]', $this->_node) as $node) {
-            $href = $this->_document->absolutizeUrl($node->getAttribute('href'));
+        foreach ($this->document->getQuery()->xpath('descendant::a[@href]', $this->node) as $node) {
+            $href = $this->document->absolutizeUrl($node->getAttribute('href'));
 
             if ($regex && !preg_match($regex, $href)) {
                 continue;
@@ -370,9 +370,9 @@ class Selector
     public function images($regex = null, $attr = 'src')
     {
         /** @var \DOMElement $node */
-        $document = $this->_document;
+        $document = $this->document;
         $data = [];
-        foreach ($document->getQuery()->xpath("descendant::img[@$attr]", $this->_node) as $node) {
+        foreach ($document->getQuery()->xpath("descendant::img[@$attr]", $this->node) as $node) {
             $src = $document->absolutizeUrl($node->getAttribute($attr));
 
             if ($regex && !preg_match($regex, $src)) {
@@ -390,7 +390,7 @@ class Selector
      */
     public function path()
     {
-        return $this->_node->getNodePath();
+        return $this->node->getNodePath();
     }
 
     /**
@@ -398,7 +398,7 @@ class Selector
      */
     public function node()
     {
-        return $this->_node;
+        return $this->node;
     }
 
     /**
@@ -406,6 +406,6 @@ class Selector
      */
     public function __toString()
     {
-        return $this->_node->getNodePath() ?: '';
+        return $this->node->getNodePath() ?: '';
     }
 }

@@ -11,26 +11,26 @@ class Channel
     /**
      * @var int
      */
-    protected $_capacity;
+    protected $capacity;
 
     /**
      * @var int
      */
-    protected $_length;
+    protected $length;
 
     /**
      * @var \Swoole\Coroutine\Channel|\SplQueue
      */
-    protected $_queue;
+    protected $queue;
 
     /**
      * @param int $capacity
      */
     public function __construct($capacity)
     {
-        $this->_capacity = (int)$capacity;
-        $this->_length = 0;
-        $this->_queue = MANAPHP_COROUTINE_ENABLED ? new SwooleChannel($capacity) : new SplQueue();
+        $this->capacity = (int)$capacity;
+        $this->length = 0;
+        $this->queue = MANAPHP_COROUTINE_ENABLED ? new SwooleChannel($capacity) : new SplQueue();
     }
 
     /**
@@ -40,12 +40,12 @@ class Channel
      */
     public function push($data)
     {
-        if ($this->_length + 1 > $this->_capacity) {
+        if ($this->length + 1 > $this->capacity) {
             throw new MisuseException('channel is full');
         }
 
-        $this->_length++;
-        $this->_queue->push($data);
+        $this->length++;
+        $this->queue->push($data);
     }
 
     /**
@@ -56,16 +56,16 @@ class Channel
     public function pop($timeout = null)
     {
         if (MANAPHP_COROUTINE_ENABLED) {
-            $data = $this->_queue->pop($timeout);
+            $data = $this->queue->pop($timeout);
         } else {
-            if ($this->_length === 0) {
+            if ($this->length === 0) {
                 throw new MisuseException('channel is empty');
             }
 
-            $data = $this->_queue->pop();
+            $data = $this->queue->pop();
         }
 
-        $this->_length--;
+        $this->length--;
 
         return $data;
     }
@@ -75,7 +75,7 @@ class Channel
      */
     public function isEmpty()
     {
-        return $this->_length === 0;
+        return $this->length === 0;
     }
 
     /**
@@ -83,7 +83,7 @@ class Channel
      */
     public function isFull()
     {
-        return $this->_length === $this->_capacity;
+        return $this->length === $this->capacity;
     }
 
     /**
@@ -91,7 +91,7 @@ class Channel
      */
     public function length()
     {
-        return $this->_length;
+        return $this->length;
     }
 
     /**
@@ -99,6 +99,6 @@ class Channel
      */
     public function capacity()
     {
-        return $this->_capacity;
+        return $this->capacity;
     }
 }

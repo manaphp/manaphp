@@ -15,33 +15,33 @@ class Mongodb extends Component implements MongodbInterface
     /**
      * @var string
      */
-    protected $_uri;
+    protected $uri;
 
     /**
      * @var string
      */
-    protected $_prefix;
+    protected $prefix;
 
     /**
      * @var string
      */
-    protected $_default_db;
+    protected $default_db;
 
     /**
      * @param string $uri
      */
     public function __construct($uri = 'mongodb://127.0.0.1:27017/')
     {
-        $this->_uri = $uri;
+        $this->uri = $uri;
 
         if (preg_match('#[?&]prefix=(\w+)#', $uri, $matches)) {
-            $this->_prefix = $matches[1];
+            $this->prefix = $matches[1];
         }
 
         $path = parse_url($uri, PHP_URL_PATH);
-        $this->_default_db = ($path !== '/' && $path !== null) ? (string)substr($path, 1) : null;
+        $this->default_db = ($path !== '/' && $path !== null) ? (string)substr($path, 1) : null;
 
-        $this->poolManager->add($this, $this->getNew('ManaPHP\Data\Mongodb\Connection', [$this->_uri]));
+        $this->poolManager->add($this, $this->getNew('ManaPHP\Data\Mongodb\Connection', [$this->uri]));
     }
 
     public function __destruct()
@@ -59,7 +59,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function getPrefix()
     {
-        return $this->_prefix;
+        return $this->prefix;
     }
 
     /**
@@ -67,7 +67,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function getDefaultDb()
     {
-        return $this->_default_db;
+        return $this->default_db;
     }
 
     /**
@@ -78,9 +78,9 @@ class Mongodb extends Component implements MongodbInterface
     protected function completeNamespace($source)
     {
         if (str_contains($source, '.')) {
-            return str_replace('.', '.' . $this->_prefix, $source);
+            return str_replace('.', '.' . $this->prefix, $source);
         } else {
-            return $this->_default_db . '.' . $this->_prefix . $source;
+            return $this->default_db . '.' . $this->prefix . $source;
         }
     }
 
@@ -305,7 +305,7 @@ class Mongodb extends Component implements MongodbInterface
     public function command($command, $db = null)
     {
         if (!$db) {
-            $db = $this->_default_db;
+            $db = $this->default_db;
         }
 
         $this->fireEvent('mongodb:commanding', compact('db', 'command'));
@@ -340,11 +340,11 @@ class Mongodb extends Component implements MongodbInterface
             $db = substr($source, 0, $pos);
             $collection = substr($source, $pos + 1);
         } else {
-            $db = $this->_default_db;
+            $db = $this->default_db;
             $collection = $source;
         }
 
-        $collection = $this->_prefix . $collection;
+        $collection = $this->prefix . $collection;
         try {
             $command = ['aggregate' => $collection, 'pipeline' => $pipeline];
             if ($options) {
@@ -372,11 +372,11 @@ class Mongodb extends Component implements MongodbInterface
             $db = substr($source, 0, $pos);
             $collection = substr($source, $pos + 1);
         } else {
-            $db = $this->_default_db;
+            $db = $this->default_db;
             $collection = $source;
         }
 
-        $collection = $this->_prefix . $collection;
+        $collection = $this->prefix . $collection;
         try {
             $this->command(['drop' => $collection], $db);
             return true;
@@ -416,12 +416,12 @@ class Mongodb extends Component implements MongodbInterface
     {
         $collections = [];
         $result = $this->command(['listCollections' => 1], $db);
-        if ($this->_prefix === '') {
+        if ($this->prefix === '') {
             foreach ($result as $collection) {
                 $collections[] = $collection['name'];
             }
         } else {
-            $prefix = $this->_prefix;
+            $prefix = $this->prefix;
             $prefix_len = strlen($prefix);
             foreach ($result as $collection) {
                 $name = $collection['name'];

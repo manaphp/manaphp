@@ -7,12 +7,12 @@ class Packer
     /**
      * @var string
      */
-    protected $_format = '';
+    protected $format = '';
 
     /**
      * @var array
      */
-    protected $_values = [];
+    protected $values = [];
 
     /**
      * @param string $format
@@ -24,11 +24,11 @@ class Packer
     {
         $count = count($args);
         if ($count === 1) {
-            $this->_format .= $format;
-            $this->_values[] = $args[0];
+            $this->format .= $format;
+            $this->values[] = $args[0];
         } else {
-            $this->_format .= $format . count($args);
-            $this->_values = array_merge($this->_values, $args);
+            $this->format .= $format . count($args);
+            $this->values = array_merge($this->values, $args);
         }
 
         return $this;
@@ -44,8 +44,8 @@ class Packer
     public function string(...$args)
     {
         foreach ($args as $arg) {
-            $this->_format .= 'a' . strlen($arg);
-            $this->_values[] = $arg;
+            $this->format .= 'a' . strlen($arg);
+            $this->values[] = $arg;
         }
 
         return $this;
@@ -61,8 +61,8 @@ class Packer
      */
     public function stringNP($str, $len)
     {
-        $this->_format .= 'a' . $len;
-        $this->_values[] = $str;
+        $this->format .= 'a' . $len;
+        $this->values[] = $str;
 
         return $this;
     }
@@ -77,8 +77,8 @@ class Packer
      */
     public function stringSP($str, $len)
     {
-        $this->_format .= 'A' . $len;
-        $this->_values[] = $str;
+        $this->format .= 'A' . $len;
+        $this->values[] = $str;
 
         return $this;
     }
@@ -364,7 +364,7 @@ class Packer
      */
     public function format()
     {
-        return $this->_format;
+        return $this->format;
     }
 
     /**
@@ -372,7 +372,7 @@ class Packer
      */
     public function values()
     {
-        return $this->_values;
+        return $this->values;
     }
 
     /**
@@ -380,7 +380,7 @@ class Packer
      */
     public function pack()
     {
-        return pack($this->_format, ...$this->_values);
+        return pack($this->format, ...$this->values);
     }
 
     /**

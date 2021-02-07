@@ -32,7 +32,7 @@ class RequestContext
 
 /**
  * @property-read \ManaPHP\Validating\ValidatorInterface $validator
- * @property-read \ManaPHP\Socket\RequestContext         $_context
+ * @property-read \ManaPHP\Socket\RequestContext         $context
  */
 class Request extends Component implements RequestInterface
 {
@@ -42,7 +42,7 @@ class Request extends Component implements RequestInterface
     public function __construct($options = [])
     {
         if (isset($options['validator'])) {
-            $this->_injections['validator'] = $options['validator'];
+            $this->injections['validator'] = $options['validator'];
         }
     }
 
@@ -51,7 +51,7 @@ class Request extends Component implements RequestInterface
      */
     public function getContext()
     {
-        return $this->_context;
+        return $this->context;
     }
 
     /**
@@ -88,7 +88,7 @@ class Request extends Component implements RequestInterface
      */
     public function get($name = null, $default = null)
     {
-        $source = $this->_context->_REQUEST;
+        $source = $this->context->_REQUEST;
 
         if ($name === null) {
             return $source;
@@ -118,7 +118,7 @@ class Request extends Component implements RequestInterface
      */
     public function has($name)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         return isset($context->_REQUEST[$name]);
     }
@@ -128,7 +128,7 @@ class Request extends Component implements RequestInterface
      */
     public function getClientIp()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         return $context->_SERVER['remote_ip'] ?? '';
     }
@@ -138,7 +138,7 @@ class Request extends Component implements RequestInterface
      */
     public function getRequestId()
     {
-        return $this->_context->request_id;
+        return $this->context->request_id;
     }
 
     /**
@@ -152,6 +152,6 @@ class Request extends Component implements RequestInterface
             $request_id = preg_replace('#[^\-\w.]#', 'X', $request_id);
         }
 
-        $this->_context->request_id = $request_id ?: bin2hex(random_bytes(16));
+        $this->context->request_id = $request_id ?: bin2hex(random_bytes(16));
     }
 }

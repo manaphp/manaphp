@@ -14,39 +14,39 @@ class Query extends \ManaPHP\Data\Query
     /**
      * @var array
      */
-    protected $_joins = [];
+    protected $joins = [];
 
     /**
      * @var array
      */
-    protected $_conditions = [];
+    protected $conditions = [];
 
     /**
      * @var array
      */
-    protected $_having;
+    protected $having;
 
     /**
      * @var bool
      */
-    protected $_for_update;
+    protected $for_update;
 
     /**
      * @var array
      */
-    protected $_bind = [];
+    protected $bind = [];
 
     /**
      * @var string
      */
-    protected $_sql;
+    protected $sql;
 
     /**
      * @param \ManaPHP\Data\DbInterface|string $db
      */
     public function __construct($db = 'db')
     {
-        $this->_db = $db;
+        $this->db = $db;
     }
 
     /**
@@ -56,7 +56,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function setDb($db)
     {
-        $this->_db = $db;
+        $this->db = $db;
 
         return $this;
     }
@@ -68,7 +68,7 @@ class Query extends \ManaPHP\Data\Query
      */
     protected function getDb($db)
     {
-        return $db === '' ? $this->_db : $this->getShared($db);
+        return $db === '' ? $this->db : $this->getShared($db);
     }
 
     /**
@@ -101,7 +101,7 @@ class Query extends \ManaPHP\Data\Query
                 $r .= $v . ' AS [' . $k . '], ';
             }
         }
-        $this->_fields = substr($r, 0, -2);
+        $this->fields = substr($r, 0, -2);
 
         return $this;
     }
@@ -120,7 +120,7 @@ class Query extends \ManaPHP\Data\Query
             $condition = (string)preg_replace('#\w+#', '[\\0]', $condition);
         }
 
-        $this->_joins[] = [$table, $condition, $alias, $type];
+        $this->joins[] = [$table, $condition, $alias, $type];
 
         return $this;
     }
@@ -136,13 +136,13 @@ class Query extends \ManaPHP\Data\Query
         $normalizedField = preg_replace('#\w+#', '[\\0]', $field);
 
         if ($value === null) {
-            $this->_conditions[] = $normalizedField . ' IS NULL';
+            $this->conditions[] = $normalizedField . ' IS NULL';
         } else {
-            $this->_shard_context[$field] = $value;
+            $this->shard_context[$field] = $value;
 
             $bind_key = str_contains($field, '.') ? strtr($field, '.', '_') : $field;
-            $this->_conditions[] = "$normalizedField=:$bind_key";
-            $this->_bind[$bind_key] = $value;
+            $this->conditions[] = "$normalizedField=:$bind_key";
+            $this->bind[$bind_key] = $value;
         }
 
         return $this;
@@ -158,7 +158,7 @@ class Query extends \ManaPHP\Data\Query
     public function whereCmp($field, $operator, $value)
     {
         if (in_array($operator, ['>=', '>', '<', '<='], true)) {
-            $this->_shard_context[$field] = [$operator, $value];
+            $this->shard_context[$field] = [$operator, $value];
         }
 
         $bind_key = strpos($field, '.') ? strtr($field, '.', '_') : $field;
@@ -168,23 +168,23 @@ class Query extends \ManaPHP\Data\Query
             return $this->whereEq($field, $value);
         } elseif ($operator === '~=') {
             if ($value === 0 || $value === 0.0) {
-                $this->_conditions[] = "$normalizedField IS NULL OR $normalizedField=0";
+                $this->conditions[] = "$normalizedField IS NULL OR $normalizedField=0";
             } elseif ($value === '') {
-                $this->_conditions[] = "$normalizedField IS NULL OR $normalizedField=''";
+                $this->conditions[] = "$normalizedField IS NULL OR $normalizedField=''";
             } else {
-                $this->_conditions[] = $normalizedField . '=' . $bind_key;
-                $this->_bind[$bind_key] = $value;
+                $this->conditions[] = $normalizedField . '=' . $bind_key;
+                $this->bind[$bind_key] = $value;
             }
         } elseif ($operator === '!=' || $operator === '<>') {
             if ($value === null) {
-                $this->_conditions[] = $normalizedField . ' IS NOT NULL';
+                $this->conditions[] = $normalizedField . ' IS NOT NULL';
             } else {
-                $this->_conditions[] = $normalizedField . $operator . ':' . $bind_key;
-                $this->_bind[$bind_key] = $value;
+                $this->conditions[] = $normalizedField . $operator . ':' . $bind_key;
+                $this->bind[$bind_key] = $value;
             }
         } elseif (in_array($operator, ['>', '>=', '<', '<='], true)) {
-            $this->_conditions[] = $normalizedField . $operator . ':' . $bind_key;
-            $this->_bind[$bind_key] = $value;
+            $this->conditions[] = $normalizedField . $operator . ':' . $bind_key;
+            $this->bind[$bind_key] = $value;
         } else {
             throw new MisuseException(['unknown `:operator` operator', 'operator' => $operator]);
         }
@@ -209,7 +209,7 @@ class Query extends \ManaPHP\Data\Query
             throw new MisuseException('remainder must be an integer');
         }
 
-        $this->_conditions[] = "$field%$divisor=$remainder";
+        $this->conditions[] = "$field%$divisor=$remainder";
 
         return $this;
     }
@@ -222,10 +222,10 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereExpr($expr, $bind = null)
     {
-        $this->_conditions[] = $expr;
+        $this->conditions[] = $expr;
 
         if (is_array($bind)) {
-            $this->_bind = array_merge($this->_bind, $bind);
+            $this->bind = array_merge($this->bind, $bind);
         }
 
         return $this;
@@ -246,7 +246,7 @@ class Query extends \ManaPHP\Data\Query
             return $this->whereCmp($field, '>=', $min);
         }
 
-        $this->_shard_context[$field] = ['~=', [$min, $max]];
+        $this->shard_context[$field] = ['~=', [$min, $max]];
 
         $id = strtr($field, '.', '_');
         $field = '[' . str_replace('.', '].[', $field) . ']';
@@ -254,10 +254,10 @@ class Query extends \ManaPHP\Data\Query
         $min_key = $id . '_min';
         $max_key = $id . '_max';
 
-        $this->_conditions[] = "$field BETWEEN :$min_key AND :$max_key";
+        $this->conditions[] = "$field BETWEEN :$min_key AND :$max_key";
 
-        $this->_bind[$min_key] = $min;
-        $this->_bind[$max_key] = $max;
+        $this->bind[$min_key] = $min;
+        $this->bind[$max_key] = $max;
 
         return $this;
     }
@@ -283,10 +283,10 @@ class Query extends \ManaPHP\Data\Query
         $min_key = $id . '_min';
         $max_key = $id . '_max';
 
-        $this->_conditions[] = "$field NOT BETWEEN :$min_key AND :$max_key";
+        $this->conditions[] = "$field NOT BETWEEN :$min_key AND :$max_key";
 
-        $this->_bind[$min_key] = $min;
-        $this->_bind[$max_key] = $max;
+        $this->bind[$min_key] = $min;
+        $this->bind[$max_key] = $max;
 
         return $this;
     }
@@ -300,25 +300,25 @@ class Query extends \ManaPHP\Data\Query
     public function whereIn($field, $values)
     {
         if ($values) {
-            $this->_shard_context[$field] = $values;
+            $this->shard_context[$field] = $values;
 
             $id = str_replace('.', '_', $field);
             $field = '[' . str_replace('.', '].[', $field) . ']';
 
             if (is_int(current($values))) {
-                $this->_conditions[] = $field . ' IN (' . implode(', ', array_map('intval', $values)) . ')';
+                $this->conditions[] = $field . ' IN (' . implode(', ', array_map('intval', $values)) . ')';
             } else {
                 $bindKeys = [];
                 foreach ($values as $k => $value) {
                     $key = "{$id}_in_{$k}";
                     $bindKeys[] = ":$key";
-                    $this->_bind[$key] = $value;
+                    $this->bind[$key] = $value;
                 }
 
-                $this->_conditions[] = $field . ' IN (' . implode(', ', $bindKeys) . ')';
+                $this->conditions[] = $field . ' IN (' . implode(', ', $bindKeys) . ')';
             }
         } else {
-            $this->_conditions[] = 'FALSE';
+            $this->conditions[] = 'FALSE';
         }
 
         return $this;
@@ -332,10 +332,10 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereRaw($filter, $bind = null)
     {
-        $this->_conditions[] = $filter;
+        $this->conditions[] = $filter;
 
         if ($bind !== null) {
-            $this->_bind = array_merge($this->_bind, $bind);
+            $this->bind = array_merge($this->bind, $bind);
         }
 
         return $this;
@@ -354,16 +354,16 @@ class Query extends \ManaPHP\Data\Query
             $field = '[' . str_replace('.', '].[', $field) . ']';
 
             if (is_int(current($values))) {
-                $this->_conditions[] = $field . ' NOT IN (' . implode(', ', array_map('intval', $values)) . ')';
+                $this->conditions[] = $field . ' NOT IN (' . implode(', ', array_map('intval', $values)) . ')';
             } else {
                 $bindKeys = [];
                 foreach ($values as $k => $value) {
                     $key = "{$id}_not_in_{$k}";
                     $bindKeys[] = ':' . $key;
-                    $this->_bind[$key] = $value;
+                    $this->bind[$key] = $value;
                 }
 
-                $this->_conditions[] = $field . ' NOT IN (' . implode(', ', $bindKeys) . ')';
+                $this->conditions[] = $field . ' NOT IN (' . implode(', ', $bindKeys) . ')';
             }
         }
 
@@ -379,8 +379,8 @@ class Query extends \ManaPHP\Data\Query
     public function whereInset($field, $value)
     {
         $key = strtr($field, '.', '_');
-        $this->_conditions[] = 'FIND_IN_SET(:' . $key . ', ' . '[' . str_replace('.', '].[', $field) . '])>0';
-        $this->_bind[$key] = $value;
+        $this->conditions[] = 'FIND_IN_SET(:' . $key . ', ' . '[' . str_replace('.', '].[', $field) . '])>0';
+        $this->bind[$key] = $value;
 
         return $this;
     }
@@ -394,8 +394,8 @@ class Query extends \ManaPHP\Data\Query
     public function whereNotInset($field, $value)
     {
         $key = strtr($field, '.', '_');
-        $this->_conditions[] = 'FIND_IN_SET(:' . $key . ', ' . '[' . str_replace('.', '].[', $field) . '])=0';
-        $this->_bind[$key] = $value;
+        $this->conditions[] = 'FIND_IN_SET(:' . $key . ', ' . '[' . str_replace('.', '].[', $field) . '])=0';
+        $this->bind[$key] = $value;
 
         return $this;
     }
@@ -421,15 +421,15 @@ class Query extends \ManaPHP\Data\Query
             foreach ($fields as $field) {
                 $key = strtr($field, '.', '_');
                 $conditions[] = '[' . str_replace('.', '].[', $field) . ']' . ' LIKE :' . $key;
-                $this->_bind[$key] = $value;
+                $this->bind[$key] = $value;
             }
 
-            $this->_conditions[] = implode(' OR ', $conditions);
+            $this->conditions[] = implode(' OR ', $conditions);
         } else {
             $key = strtr($fields, '.', '_');
             $fields = '[' . str_replace('.', '].[', $fields) . ']';
-            $this->_conditions[] = $fields . ' LIKE :' . $key;
-            $this->_bind[$key] = $value;
+            $this->conditions[] = $fields . ' LIKE :' . $key;
+            $this->bind[$key] = $value;
         }
 
         return $this;
@@ -456,15 +456,15 @@ class Query extends \ManaPHP\Data\Query
             foreach ($fields as $field) {
                 $key = strtr($field, '.', '_');
                 $conditions[] = '[' . str_replace('.', '].[', $field) . ']' . ' NOT LIKE :' . $key;
-                $this->_bind[$key] = $value;
+                $this->bind[$key] = $value;
             }
 
-            $this->_conditions[] = implode(' AND ', $conditions);
+            $this->conditions[] = implode(' AND ', $conditions);
         } else {
             $key = strtr($fields, '.', '_');
             $fields = '[' . str_replace('.', '].[', $fields) . ']';
-            $this->_conditions[] = $fields . ' NOT LIKE :' . $key;
-            $this->_bind[$key] = $value;
+            $this->conditions[] = $fields . ' NOT LIKE :' . $key;
+            $this->bind[$key] = $value;
         }
 
         return $this;
@@ -557,8 +557,8 @@ class Query extends \ManaPHP\Data\Query
     {
         $key = strtr($field, '.', '_');
         $mode = (str_contains($flags, 'i') ? '' : 'BINARY ');
-        $this->_conditions[] = '[' . str_replace('.', '].[', $field) . '] REGEXP ' . $mode . ':' . $key;
-        $this->_bind[$key] = $regex;
+        $this->conditions[] = '[' . str_replace('.', '].[', $field) . '] REGEXP ' . $mode . ':' . $key;
+        $this->bind[$key] = $regex;
 
         return $this;
     }
@@ -574,8 +574,8 @@ class Query extends \ManaPHP\Data\Query
     {
         $key = strtr($field, '.', '_');
         $mode = (str_contains($flags, 'i') ? '' : 'BINARY ');
-        $this->_conditions[] = '[' . str_replace('.', '].[', $field) . '] NOT REGEXP ' . $mode . ':' . $key;
-        $this->_bind[$key] = $regex;
+        $this->conditions[] = '[' . str_replace('.', '].[', $field) . '] NOT REGEXP ' . $mode . ':' . $key;
+        $this->bind[$key] = $regex;
 
         return $this;
     }
@@ -587,7 +587,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereNull($field)
     {
-        $this->_conditions[] = '[' . str_replace('.', '].[', $field) . '] IS NULL';
+        $this->conditions[] = '[' . str_replace('.', '].[', $field) . '] IS NULL';
 
         return $this;
     }
@@ -599,7 +599,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereNotNull($field)
     {
-        $this->_conditions[] = '[' . str_replace('.', '].[', $field) . '] IS NOT NULL';
+        $this->conditions[] = '[' . str_replace('.', '].[', $field) . '] IS NOT NULL';
 
         return $this;
     }
@@ -618,20 +618,20 @@ class Query extends \ManaPHP\Data\Query
         $id_a = '[' . str_replace('.', '].[', $id_a) . ']';
         $id_b = '[' . str_replace('.', '].[', $id_b) . ']';
         if (($pos = strpos($value, ',')) === false) {
-            $this->_conditions[] = "$id_a=:$id_a OR $id_b=:$id_b";
-            $this->_bind[$id_a] = $value;
-            $this->_bind[$id_b] = $value;
+            $this->conditions[] = "$id_a=:$id_a OR $id_b=:$id_b";
+            $this->bind[$id_a] = $value;
+            $this->bind[$id_b] = $value;
         } else {
             $value_a = substr($value, 0, $pos);
             $value_b = substr($value, $pos + 1);
 
             $condition = "($id_a=:${key_a}_a AND $id_b=:${key_b}_b) OR ($id_a=:${key_a}_b AND $id_b=:${key_b}_a)";
-            $this->_conditions[] = $condition;
+            $this->conditions[] = $condition;
 
-            $this->_bind["${key_a}_a"] = $value_a;
-            $this->_bind["${key_b}_b"] = $value_b;
-            $this->_bind["${key_a}_b"] = $value_b;
-            $this->_bind["${key_b}_a"] = $value_a;
+            $this->bind["${key_a}_a"] = $value_a;
+            $this->bind["${key_b}_b"] = $value_b;
+            $this->bind["${key_a}_b"] = $value_b;
+            $this->bind["${key_b}_a"] = $value_a;
         }
 
         return $this;
@@ -647,20 +647,20 @@ class Query extends \ManaPHP\Data\Query
     {
         if (is_array($having)) {
             if (count($having) === 1) {
-                $this->_having = $having[0];
+                $this->having = $having[0];
             } else {
                 $items = [];
                 foreach ($having as $item) {
                     $items[] = '(' . $item . ')';
                 }
-                $this->_having = implode(' AND ', $items);
+                $this->having = implode(' AND ', $items);
             }
         } else {
-            $this->_having = $having;
+            $this->having = $having;
         }
 
         if ($bind) {
-            $this->_bind = array_merge($this->_bind, $bind);
+            $this->bind = array_merge($this->bind, $bind);
         }
 
         return $this;
@@ -673,7 +673,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function forUpdate($forUpdate = true)
     {
-        $this->_for_update = (bool)$forUpdate;
+        $this->for_update = (bool)$forUpdate;
 
         return $this;
     }
@@ -702,7 +702,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function getSql()
     {
-        if ($this->_sql === null) {
+        if ($this->sql === null) {
             $shards = $this->getShards();
 
             $tables = current($shards);
@@ -710,10 +710,10 @@ class Query extends \ManaPHP\Data\Query
                 throw new ShardingTooManyException(__METHOD__);
             }
             $db = $this->getDb(key($shards));
-            $this->_sql = $this->buildSql($db, $tables[0], $this->_joins);
+            $this->sql = $this->buildSql($db, $tables[0], $this->joins);
         }
 
-        return $this->_sql;
+        return $this->sql;
     }
 
     /**
@@ -745,12 +745,12 @@ class Query extends \ManaPHP\Data\Query
      */
     protected function buildFields($joins)
     {
-        if ($this->_fields !== null) {
-            return $this->_fields;
+        if ($this->fields !== null) {
+            return $this->fields;
         } elseif ($joins) {
             return '*';
         } else {
-            return $this->_model ? '[' . implode('], [', $this->_model->fields()) . ']' : '*';
+            return $this->model ? '[' . implode('], [', $this->model->fields()) . ']' : '*';
         }
     }
 
@@ -761,7 +761,7 @@ class Query extends \ManaPHP\Data\Query
      */
     protected function translateField2Columns($sql)
     {
-        if (!($model = $this->_model) || !$map = $model->map()) {
+        if (!($model = $this->model) || !$map = $model->map()) {
             return $sql;
         }
 
@@ -786,7 +786,7 @@ class Query extends \ManaPHP\Data\Query
     protected function buildSql($db, $table, $joins)
     {
         $params = [];
-        if ($this->_distinct) {
+        if ($this->distinct) {
             $params['distinct'] = true;
         }
 
@@ -794,7 +794,7 @@ class Query extends \ManaPHP\Data\Query
 
         $table = $db->getPrefix() . $table;
         $table = '[' . str_replace('.', '].[', $table) . ']';
-        $alias = $this->_alias;
+        $alias = $this->alias;
         $params['from'] = $alias ? "$table AS [$alias]" : $table;
 
         $joinSQL = '';
@@ -817,46 +817,46 @@ class Query extends \ManaPHP\Data\Query
         }
         $params['join'] = $joinSQL;
 
-        if (count($this->_conditions) === 1) {
-            $params['where'] = $this->_conditions[0];
-        } elseif ($this->_conditions) {
+        if (count($this->conditions) === 1) {
+            $params['where'] = $this->conditions[0];
+        } elseif ($this->conditions) {
             $wheres = [];
-            foreach ($this->_conditions as $v) {
+            foreach ($this->conditions as $v) {
                 $wheres[] = stripos($v, ' or ') ? "($v)" : $v;
             }
 
             $params['where'] = implode(' AND ', $wheres);
         }
 
-        if ($this->_group) {
-            $params['group'] = $this->buildGroup($this->_group);
+        if ($this->group) {
+            $params['group'] = $this->buildGroup($this->group);
         }
 
-        if ($this->_having !== null) {
-            $params['having'] = $this->_having;
+        if ($this->having !== null) {
+            $params['having'] = $this->having;
         }
 
-        if ($this->_order) {
-            $params['order'] = $this->buildOrder($this->_order);
+        if ($this->order) {
+            $params['order'] = $this->buildOrder($this->order);
         }
 
-        if ($this->_limit !== null) {
-            $params['limit'] = $this->_limit;
+        if ($this->limit !== null) {
+            $params['limit'] = $this->limit;
         }
 
-        if ($this->_offset !== null) {
-            $params['offset'] = $this->_offset;
+        if ($this->offset !== null) {
+            $params['offset'] = $this->offset;
         }
 
-        if ($this->_for_update) {
-            $params['forUpdate'] = $this->_for_update;
+        if ($this->for_update) {
+            $params['forUpdate'] = $this->for_update;
         }
 
         $sql = $db->buildSql($params);
         $sql = $this->translateField2Columns($sql);
         //compatible with other SQL syntax
         $replaces = [];
-        foreach ($this->_bind as $key => $_) {
+        foreach ($this->bind as $key => $_) {
             $replaces[':' . $key . ':'] = ':' . $key;
         }
 
@@ -871,9 +871,9 @@ class Query extends \ManaPHP\Data\Query
     public function getBind($key = null)
     {
         if ($key !== null) {
-            return $this->_bind[$key] ?? null;
+            return $this->bind[$key] ?? null;
         } else {
-            return $this->_bind;
+            return $this->bind;
         }
     }
 
@@ -885,7 +885,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function setBind($bind, $merge = true)
     {
-        $this->_bind = $merge ? array_merge($this->_bind, $bind) : $bind;
+        $this->bind = $merge ? array_merge($this->bind, $bind) : $bind;
 
         return $this;
     }
@@ -900,20 +900,20 @@ class Query extends \ManaPHP\Data\Query
     {
         $connection = $this->getDb($db);
 
-        if ($this->_joins) {
+        if ($this->joins) {
             $joins = [];
-            foreach ($this->_joins as $k => $join) {
+            foreach ($this->joins as $k => $join) {
                 $join_table = $join[0];
                 if (str_contains($join_table, '\\')) {
                     /** @var \ManaPHP\Data\TableInterface $iTable */
                     $iTable = $join_table::sample();
-                    $join_shards = $iTable->getMultipleShards($this->_shard_context);
+                    $join_shards = $iTable->getMultipleShards($this->shard_context);
                 } else {
-                    $db = is_object($this->_db) ? '' : (string)$this->_db;
-                    if ($shard_strategy = $this->_shard_strategy) {
-                        $join_shards = $shard_strategy($db, $join_table, $this->_shard_context);
+                    $db = is_object($this->db) ? '' : (string)$this->db;
+                    if ($shard_strategy = $this->shard_strategy) {
+                        $join_shards = $shard_strategy($db, $join_table, $this->shard_context);
                     } else {
-                        $join_shards = Sharding::multiple($db, $join_table, $this->_shard_context);
+                        $join_shards = Sharding::multiple($db, $join_table, $this->shard_context);
                     }
                 }
 
@@ -933,11 +933,11 @@ class Query extends \ManaPHP\Data\Query
             $joins = [];
         }
 
-        $this->_sql = $this->buildSql($connection, $table, $joins);
+        $this->sql = $this->buildSql($connection, $table, $joins);
 
-        $rows = $connection->fetchAll($this->_sql, $this->_bind, PDO::FETCH_ASSOC, $this->_force_master);
+        $rows = $connection->fetchAll($this->sql, $this->bind, PDO::FETCH_ASSOC, $this->force_master);
 
-        if ($map = $this->_model ? $this->_model->map() : []) {
+        if ($map = $this->model ? $this->model->map() : []) {
             foreach ($rows as &$row) {
                 foreach ($map as $propery => $column) {
                     if (array_key_exists($column, $row)) {
@@ -956,16 +956,16 @@ class Query extends \ManaPHP\Data\Query
      */
     public function execute()
     {
-        if (in_array('FALSE', $this->_conditions, true)) {
-            $this->logger->debug($this->_sql, 'db.query.skip');
+        if (in_array('FALSE', $this->conditions, true)) {
+            $this->logger->debug($this->sql, 'db.query.skip');
             return [];
         }
 
-        if ($this->_joins) {
-            foreach ($this->_shard_context as $k => $v) {
+        if ($this->joins) {
+            foreach ($this->shard_context as $k => $v) {
                 if (($pos = strpos($k, '.')) !== false) {
                     $nk = substr($k, $pos + 1);
-                    $this->_shard_context[$nk] = $v;
+                    $this->shard_context[$nk] = $v;
                 }
             }
         }
@@ -975,12 +975,12 @@ class Query extends \ManaPHP\Data\Query
         $result = [];
         if (count($shards) === 1 && count(current($shards)) === 1) {
             $result = $this->query(key($shards), current($shards)[0]);
-        } elseif ($this->_order) {
+        } elseif ($this->order) {
             $copy = clone $this;
 
-            if ($copy->_limit) {
-                $copy->_limit += $copy->_offset;
-                $copy->_offset = 0;
+            if ($copy->limit) {
+                $copy->limit += $copy->offset;
+                $copy->offset = 0;
             }
 
             $valid_times = 0;
@@ -994,24 +994,24 @@ class Query extends \ManaPHP\Data\Query
             }
 
             if ($valid_times > 1) {
-                $result = Arr::sort($result, $this->_order);
+                $result = Arr::sort($result, $this->order);
             }
 
-            $result = $this->_limit ? array_slice($result, $this->_offset, $this->_limit) : $result;
-        } elseif ($this->_limit) {
+            $result = $this->limit ? array_slice($result, $this->offset, $this->limit) : $result;
+        } elseif ($this->limit) {
             foreach ($shards as $db => $tables) {
                 foreach ($tables as $table) {
                     if ($r = $this->query($db, $table)) {
                         $result = $result ? array_merge($result, $r) : $r;
-                        if (count($result) >= $this->_offset + $this->_limit) {
-                            $result = array_slice($result, (int)$this->_offset, $this->_limit);
-                            return $this->_index ? Arr::indexby($result, $this->_index) : $result;
+                        if (count($result) >= $this->offset + $this->limit) {
+                            $result = array_slice($result, (int)$this->offset, $this->limit);
+                            return $this->index ? Arr::indexby($result, $this->index) : $result;
                         }
                     }
                 }
             }
 
-            $result = $result ? array_slice($result, (int)$this->_offset, $this->_limit) : [];
+            $result = $result ? array_slice($result, (int)$this->offset, $this->limit) : [];
         } else {
             foreach ($shards as $db => $tables) {
                 foreach ($tables as $table) {
@@ -1022,7 +1022,7 @@ class Query extends \ManaPHP\Data\Query
             }
         }
 
-        return $this->_index ? Arr::indexby($result, $this->_index) : $result;
+        return $this->index ? Arr::indexby($result, $this->index) : $result;
     }
 
     /**
@@ -1065,21 +1065,21 @@ class Query extends \ManaPHP\Data\Query
      */
     public function aggregate($expr)
     {
-        $this->_aggregate = $expr;
+        $this->aggregate = $expr;
 
         $shards = $this->getShards();
 
         if (count($shards) === 1 && count(current($shards)) === 1) {
-            $this->_fields = $this->buildAggregate($expr, $this->_group);
+            $this->fields = $this->buildAggregate($expr, $this->group);
 
             $result = $this->query(key($shards), current($shards)[0]);
         } else {
-            if ($this->_having) {
+            if ($this->having) {
                 throw new NotSupportedException('sharding not support having');
             }
 
             $aggs = [];
-            foreach ($this->_aggregate as $k => $v) {
+            foreach ($this->aggregate as $k => $v) {
                 if (preg_match('#^\w+#', $v, $match) !== 1) {
                     throw new NotSupportedException($v);
                 }
@@ -1090,20 +1090,20 @@ class Query extends \ManaPHP\Data\Query
                     null;
                 } elseif ($agg === 'AVG') {
                     $sum = $k . '_sum';
-                    if (!isset($this->_aggregate[$sum])) {
-                        $this->_aggregate[$sum] = 'SUM(' . substr($v, 4);
+                    if (!isset($this->aggregate[$sum])) {
+                        $this->aggregate[$sum] = 'SUM(' . substr($v, 4);
                     }
 
                     $count = $k . '_count';
-                    if (!isset($this->_aggregate[$count])) {
-                        $this->_aggregate[$count] = 'COUNT(*)';
+                    if (!isset($this->aggregate[$count])) {
+                        $this->aggregate[$count] = 'COUNT(*)';
                     }
                 } else {
                     throw new NotSupportedException($v);
                 }
             }
 
-            $this->_fields = $this->buildAggregate($this->_aggregate, $this->_group);
+            $this->fields = $this->buildAggregate($this->aggregate, $this->group);
 
             $rows = [];
             foreach ($shards as $db => $tables) {
@@ -1114,14 +1114,14 @@ class Query extends \ManaPHP\Data\Query
                 }
             }
 
-            $result = Arr::aggregate($rows, $aggs, $this->_group ?? []);
+            $result = Arr::aggregate($rows, $aggs, $this->group ?? []);
         }
 
-        if ($this->_order) {
-            $result = Arr::sort($result, $this->_order);
+        if ($this->order) {
+            $result = Arr::sort($result, $this->order);
         }
 
-        return $this->_index ? Arr::indexby($result, $this->_index) : $result;
+        return $this->index ? Arr::indexby($result, $this->index) : $result;
     }
 
     /**
@@ -1133,18 +1133,18 @@ class Query extends \ManaPHP\Data\Query
     {
         $copy = clone $this;
 
-        $copy->_fields = "COUNT($field) as [row_count]";
-        $copy->_limit = null;
-        $copy->_offset = null;
-        $copy->_order = null;
-        $copy->_index = null;
+        $copy->fields = "COUNT($field) as [row_count]";
+        $copy->limit = null;
+        $copy->offset = null;
+        $copy->order = null;
+        $copy->index = null;
 
         $row_count = 0;
         $shards = $this->getShards();
         foreach ($shards as $db => $tables) {
             foreach ($tables as $table) {
                 $result = $copy->query($db, $table);
-                $row_count += $this->_group ? count($result) : $result[0]['row_count'];
+                $row_count += $this->group ? count($result) : $result[0]['row_count'];
             }
         }
 
@@ -1157,9 +1157,9 @@ class Query extends \ManaPHP\Data\Query
      */
     public function exists()
     {
-        $this->_fields = '1 as [stub]';
-        $this->_limit = 1;
-        $this->_offset = 0;
+        $this->fields = '1 as [stub]';
+        $this->limit = 1;
+        $this->offset = 0;
 
         $rs = $this->execute();
 
@@ -1208,8 +1208,8 @@ class Query extends \ManaPHP\Data\Query
                 }
             }
 
-            if ($this->_order) {
-                if (current($this->_order) === SORT_ASC) {
+            if ($this->order) {
+                if (current($this->order) === SORT_ASC) {
                     sort($values);
                 } else {
                     rsort($values);
@@ -1233,7 +1233,7 @@ class Query extends \ManaPHP\Data\Query
         foreach ($shards as $db => $tables) {
             $db = $this->getDb($db);
             foreach ($tables as $table) {
-                $affected_count += $db->update($table, $fieldValues, $this->_conditions, $this->_bind);
+                $affected_count += $db->update($table, $fieldValues, $this->conditions, $this->bind);
             }
         }
 
@@ -1251,7 +1251,7 @@ class Query extends \ManaPHP\Data\Query
         foreach ($shards as $db => $tables) {
             $db = $this->getDb($db);
             foreach ($tables as $table) {
-                $affected_count += $db->delete($table, $this->_conditions, $this->_bind);
+                $affected_count += $db->delete($table, $this->conditions, $this->bind);
             }
         }
 

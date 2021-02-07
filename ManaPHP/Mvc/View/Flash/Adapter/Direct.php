@@ -16,9 +16,9 @@ class Direct extends Flash
      */
     protected function message($type, $message)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
-        $css = $this->_css[$type] ?? '';
+        $css = $this->css[$type] ?? '';
 
         $context->messages[] = '<div class="' . $css . '">' . $message . '</div>' . PHP_EOL;
     }

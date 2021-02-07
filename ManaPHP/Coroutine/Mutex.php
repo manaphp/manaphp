@@ -7,12 +7,12 @@ class Mutex
     /**
      * @var \ManaPHP\Coroutine\Channel
      */
-    protected $_channel;
+    protected $channel;
 
     public function __construct()
     {
-        $this->_channel = new Channel(1);
-        $this->_channel->push('');
+        $this->channel = new Channel(1);
+        $this->channel->push('');
     }
 
     /**
@@ -20,7 +20,7 @@ class Mutex
      */
     public function lock()
     {
-        $this->_channel->pop();
+        $this->channel->pop();
     }
 
     /**
@@ -28,7 +28,7 @@ class Mutex
      */
     public function unlock()
     {
-        $this->_channel->push('');
+        $this->channel->push('');
     }
 
     /**
@@ -36,6 +36,6 @@ class Mutex
      */
     public function isLocked()
     {
-        return $this->_channel->isEmpty();
+        return $this->channel->isEmpty();
     }
 }

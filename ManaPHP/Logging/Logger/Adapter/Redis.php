@@ -9,7 +9,7 @@ class Redis extends Logger
     /**
      * @var string
      */
-    protected $_key;
+    protected $key;
 
     /**
      * @param array $options
@@ -17,12 +17,12 @@ class Redis extends Logger
     public function __construct($options = [])
     {
         if (isset($options['redisBroker'])) {
-            $this->_injections['redisBroker'] = $options['redisBroker'];
+            $this->injections['redisBroker'] = $options['redisBroker'];
         }
 
         parent::__construct($options);
 
-        $this->_key = $options['key'] ?? "cache:{$this->configure->id}:logger";
+        $this->key = $options['key'] ?? "cache:{$this->configure->id}:logger";
     }
 
     /**
@@ -41,7 +41,7 @@ class Redis extends Logger
                 'location'   => "$log->file:$log->line",
                 'message'    => $log->message
             ];
-            $this->redisBroker->rPush($this->_key, json_stringify($data));
+            $this->redisBroker->rPush($this->key, json_stringify($data));
         }
     }
 }

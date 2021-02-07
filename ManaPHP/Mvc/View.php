@@ -35,29 +35,29 @@ class ViewContext
 /**
  * @property-read \ManaPHP\Html\RendererInterface   $renderer
  * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
- * @property-read \ManaPHP\Mvc\ViewContext          $_context
+ * @property-read \ManaPHP\Mvc\ViewContext          $context
  */
 class View extends Component implements ViewInterface
 {
     /**
      * @var int
      */
-    protected $_max_age;
+    protected $max_age;
 
     /**
      * @var bool
      */
-    protected $_autofix_url = true;
+    protected $autofix_url = true;
 
     /**
      * @var array
      */
-    protected $_dirs = [];
+    protected $dirs = [];
 
     /**
      * @var array
      */
-    protected $_exists_cache;
+    protected $exists_cache;
 
     /**
      * @param array $options
@@ -65,11 +65,11 @@ class View extends Component implements ViewInterface
     public function __construct($options = [])
     {
         if (isset($options['max_age'])) {
-            $this->_max_age = (int)$options['max_age'];
+            $this->max_age = (int)$options['max_age'];
         }
 
         if (isset($options['autofix_url'])) {
-            $this->_autofix_url = (bool)$options['autofix_url'];
+            $this->autofix_url = (bool)$options['autofix_url'];
         }
     }
 
@@ -80,7 +80,7 @@ class View extends Component implements ViewInterface
      */
     public function setMaxAge($max_age)
     {
-        $this->_context->max_age = (int)$max_age;
+        $this->context->max_age = (int)$max_age;
 
         return $this;
     }
@@ -90,10 +90,10 @@ class View extends Component implements ViewInterface
      */
     public function getMaxAge()
     {
-        if ($this->_max_age > 0) {
-            $context = $this->_context;
+        if ($this->max_age > 0) {
+            $context = $this->context;
             if ($context->max_age === null) {
-                return $this->_max_age;
+                return $this->max_age;
             } else {
                 return $context->max_age > 0 ? $context->max_age : 0;
             }
@@ -109,7 +109,7 @@ class View extends Component implements ViewInterface
      */
     public function setLayout($layout = 'Default')
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $context->layout = $layout;
 
@@ -126,7 +126,7 @@ class View extends Component implements ViewInterface
      */
     public function setVar($name, $value)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $context->vars[$name] = $value;
 
@@ -142,7 +142,7 @@ class View extends Component implements ViewInterface
      */
     public function setVars($vars)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $context->vars = array_merge($context->vars, $vars);
 
@@ -158,7 +158,7 @@ class View extends Component implements ViewInterface
      */
     public function getVar($name = null)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($name === null) {
             return $context->vars;
@@ -174,7 +174,7 @@ class View extends Component implements ViewInterface
      */
     public function hasVar($name)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         return isset($context->_vars[$name]);
     }
@@ -184,7 +184,7 @@ class View extends Component implements ViewInterface
      */
     protected function findLayout()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($context->layout === null) {
             $controller = $this->dispatcher->getController();
@@ -232,7 +232,7 @@ class View extends Component implements ViewInterface
      */
     public function render($template = null, $vars = [])
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($vars !== []) {
             $context->vars = $vars;
@@ -258,11 +258,11 @@ class View extends Component implements ViewInterface
                 $dir = "@views/$controller";
             }
 
-            if (!isset($this->_dirs[$dir])) {
-                $this->_dirs[$dir] = LocalFS::dirExists($dir);
+            if (!isset($this->dirs[$dir])) {
+                $this->dirs[$dir] = LocalFS::dirExists($dir);
             }
 
-            if ($this->_dirs[$dir]) {
+            if ($this->dirs[$dir]) {
                 $template = $dir . '/' . ucfirst($action);
             } elseif ($action === 'index') {
                 $template = $dir;
@@ -287,7 +287,7 @@ class View extends Component implements ViewInterface
 
         $this->fireEvent('view:rendered');
 
-        if ($this->_autofix_url) {
+        if ($this->autofix_url) {
             $this->fixUrl();
         }
 
@@ -303,7 +303,7 @@ class View extends Component implements ViewInterface
             return;
         }
 
-        $context = $this->_context;
+        $context = $this->context;
 
         $context->content = preg_replace_callback(
             '#\b(href|src|action|data-src)=(["\'`]{1,2})/(?!/)#',
@@ -339,11 +339,11 @@ class View extends Component implements ViewInterface
                 $dir = "@views/$controller";
             }
 
-            if (!isset($this->_dirs[$dir])) {
-                $this->_dirs[$dir] = LocalFS::dirExists($dir);
+            if (!isset($this->dirs[$dir])) {
+                $this->dirs[$dir] = LocalFS::dirExists($dir);
             }
 
-            if ($this->_dirs[$dir]) {
+            if ($this->dirs[$dir]) {
                 $template = $dir . '/' . ucfirst($action);
             } elseif ($action === 'index') {
                 $template = $dir;
@@ -352,8 +352,8 @@ class View extends Component implements ViewInterface
             }
         }
 
-        return $this->_exists_cache[$template] ??
-            ($this->_exists_cache[$template] = $this->renderer->exists($template));
+        return $this->exists_cache[$template] ??
+            ($this->exists_cache[$template] = $this->renderer->exists($template));
     }
 
     /**
@@ -432,7 +432,7 @@ class View extends Component implements ViewInterface
      */
     public function setContent($content)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $context->content = $content;
 
@@ -446,7 +446,7 @@ class View extends Component implements ViewInterface
      */
     public function getContent()
     {
-        return $this->_context->content;
+        return $this->context->content;
     }
 
     /**
@@ -456,8 +456,8 @@ class View extends Component implements ViewInterface
     {
         $data = parent::dump();
 
-        $data['_context']['content'] = '***';
-        unset($data['_exists_cache']);
+        $data['context']['content'] = '***';
+        unset($data['exists_cache']);
 
         return $data;
     }

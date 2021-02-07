@@ -15,7 +15,7 @@ class Fpm extends Server
         $rawBody = file_get_contents('php://input');
         $this->request->prepare($_GET, $_POST, $_SERVER, $rawBody, $_COOKIE, $_FILES);
 
-        if ($this->_use_globals) {
+        if ($this->use_globals) {
             $this->globalsManager->proxy();
         }
     }

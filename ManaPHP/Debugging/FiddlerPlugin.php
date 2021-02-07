@@ -22,24 +22,24 @@ class FiddlerPluginContext
 }
 
 /**
- * @property-read \ManaPHP\Debugging\FiddlerPluginContext $_context
+ * @property-read \ManaPHP\Debugging\FiddlerPluginContext $context
  */
 class FiddlerPlugin extends Plugin
 {
     /**
      * @var bool
      */
-    protected $_watched = true;
+    protected $watched = true;
 
     /**
      * @var string
      */
-    protected $_prefix;
+    protected $prefix;
 
     /**
      * @var float
      */
-    protected $_last_checked;
+    protected $last_checked;
 
     /**
      * @param array $options
@@ -47,20 +47,20 @@ class FiddlerPlugin extends Plugin
     public function __construct($options = [])
     {
         if (isset($options['redisBroker'])) {
-            $this->_injections['redisBroker'] = $options['redisBroker'];
+            $this->injections['redisBroker'] = $options['redisBroker'];
         }
 
         if (isset($options['pubSub'])) {
-            $this->_injections['pubSub'] = $options['pubSub'];
+            $this->injections['pubSub'] = $options['pubSub'];
         }
 
-        $context = $this->_context;
+        $context = $this->context;
 
         if (MANAPHP_CLI) {
-            $context->channel = $this->_prefix . $this->configure->id . ':-';
+            $context->channel = $this->prefix . $this->configure->id . ':-';
         }
 
-        $this->_prefix = $options['prefix'] ?? 'broker:fiddlerPlugin:';
+        $this->prefix = $options['prefix'] ?? 'broker:fiddlerPlugin:';
 
         $this->attachEvent('logger:log', [$this, 'onLoggerLog']);
         $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
@@ -72,17 +72,17 @@ class FiddlerPlugin extends Plugin
      */
     public function onRequestBegin()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
-        $context->channel = $this->_prefix . $this->configure->id . ':' . $this->request->getClientIp();
+        $context->channel = $this->prefix . $this->configure->id . ':' . $this->request->getClientIp();
 
         $current = microtime(true);
-        if ($current - $this->_last_checked >= 1.0) {
-            $this->_last_checked = $current;
-            $this->_watched = $this->publish('ping', ['timestamp' => round($current, 3)]) > 0;
+        if ($current - $this->last_checked >= 1.0) {
+            $this->last_checked = $current;
+            $this->watched = $this->publish('ping', ['timestamp' => round($current, 3)]) > 0;
         }
 
-        if ($this->_watched) {
+        if ($this->watched) {
             $this->logger->setLevel(Logger::LEVEL_DEBUG);
 
             $server = [];
@@ -119,13 +119,13 @@ class FiddlerPlugin extends Plugin
     {
         if (MANAPHP_CLI) {
             $current = microtime(true);
-            if ($this->_last_checked && $current - $this->_last_checked >= 1.0) {
-                $this->_last_checked = $current;
-                $this->_watched = $this->publish('ping', ['timestamp' => round($current, 3)]) > 0;
+            if ($this->last_checked && $current - $this->last_checked >= 1.0) {
+                $this->last_checked = $current;
+                $this->watched = $this->publish('ping', ['timestamp' => round($current, 3)]) > 0;
             }
         }
 
-        return $this->_watched;
+        return $this->watched;
     }
 
     /**
@@ -157,7 +157,7 @@ class FiddlerPlugin extends Plugin
      */
     public function publish($type, $data)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $packet = [];
 
@@ -166,8 +166,8 @@ class FiddlerPlugin extends Plugin
 
         $r = $this->redisBroker->call('publish', [$context->channel, json_stringify($packet)]);
         if ($r <= 0) {
-            $this->_watched = false;
-            $this->_last_checked = microtime(true);
+            $this->watched = false;
+            $this->last_checked = microtime(true);
         }
 
         return $r;
@@ -186,13 +186,13 @@ class FiddlerPlugin extends Plugin
 
         if ($ip = $options['ip'] ?? false) {
             $this->pubSub->subscribe(
-                ["{$this->_prefix}$id:$ip"], function ($channel, $packet) {
+                ["{$this->prefix}$id:$ip"], function ($channel, $packet) {
                 $this->processMessage($packet);
             }
             );
         } else {
             $this->pubSub->psubscribe(
-                ["{$this->_prefix}$id:*"], function ($channel, $packet) {
+                ["{$this->prefix}$id:*"], function ($channel, $packet) {
                 $this->processMessage($packet);
             }
             );

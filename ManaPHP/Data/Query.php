@@ -20,92 +20,92 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     /**
      * @var \ManaPHP\Data\DbInterface|string
      */
-    protected $_db;
+    protected $db;
 
     /**
      * @var string
      */
-    protected $_table;
+    protected $table;
 
     /**
      * @var string
      */
-    protected $_alias;
+    protected $alias;
 
     /**
      * @var array
      */
-    protected $_fields;
+    protected $fields;
 
     /**
      * @var int
      */
-    protected $_limit;
+    protected $limit;
 
     /**
      * @var int
      */
-    protected $_offset;
+    protected $offset;
 
     /**
      * @var bool
      */
-    protected $_distinct;
+    protected $distinct;
 
     /**
      * @var \ManaPHP\Data\Model
      */
-    protected $_model;
+    protected $model;
 
     /**
      * @var bool
      */
-    protected $_multiple;
+    protected $multiple;
 
     /**
      * @var array
      */
-    protected $_with = [];
+    protected $with = [];
 
     /**
      * @var array
      */
-    protected $_order;
+    protected $order;
 
     /**
      * @var array
      */
-    protected $_group;
+    protected $group;
 
     /**
      * @var string|array|callable
      */
-    protected $_index;
+    protected $index;
 
     /**
      * @var array
      */
-    protected $_aggregate;
+    protected $aggregate;
 
     /**
      * @var bool
      */
-    protected $_force_master = false;
+    protected $force_master = false;
 
     /**
      * @var array
      */
-    protected $_shard_context = [];
+    protected $shard_context = [];
 
     /**
      * @var callable
      */
-    protected $_shard_strategy;
+    protected $shard_strategy;
 
     /**
      * @var callable
      */
-    protected $_map;
+    protected $map;
 
     /**
      * @return ArrayIterator
@@ -127,7 +127,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function setModel($model)
     {
-        $this->_model = $model;
+        $this->model = $model;
 
         return $this;
     }
@@ -137,7 +137,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function getModel()
     {
-        return $this->_model;
+        return $this->model;
     }
 
     /**
@@ -147,7 +147,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function shard($strategy)
     {
-        $this->_shard_strategy = $strategy;
+        $this->shard_strategy = $strategy;
 
         return $this;
     }
@@ -157,16 +157,16 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function getShards()
     {
-        if ($model = $this->_model ?? null) {
-            return $model->getMultipleShards($this->_shard_context);
+        if ($model = $this->model ?? null) {
+            return $model->getMultipleShards($this->shard_context);
         } else {
-            $db = is_object($this->_db) ? '' : $this->_db;
-            $table = $this->_table;
+            $db = is_object($this->db) ? '' : $this->db;
+            $table = $this->table;
 
-            if ($shard_strategy = $this->_shard_strategy) {
-                return $shard_strategy($db, $table, $this->_shard_context);
+            if ($shard_strategy = $this->shard_strategy) {
+                return $shard_strategy($db, $table, $this->shard_context);
             } else {
-                return Sharding::multiple($db, $table, $this->_shard_context);
+                return Sharding::multiple($db, $table, $this->shard_context);
             }
         }
     }
@@ -207,8 +207,8 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
                 $table = $sample->table();
             }
 
-            $this->_table = $table;
-            $this->_alias = $alias;
+            $this->table = $table;
+            $this->alias = $alias;
         }
 
         return $this;
@@ -223,7 +223,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function distinct($distinct = true)
     {
-        $this->_distinct = $distinct;
+        $this->distinct = $distinct;
 
         return $this;
     }
@@ -355,7 +355,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function whereDateBetween($field, $min, $max)
     {
-        if (!$this->_model) {
+        if (!$this->model) {
             throw new MisuseException('use whereDateBetween must provide model');
         }
 
@@ -366,7 +366,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
             $max = (int)(is_numeric($max) ? $max : strtotime($max . ' 23:59:59'));
         }
 
-        if ($format = $this->_model->dateFormat(($pos = strpos($field, '.')) ? substr($field, $pos + 1) : $field)) {
+        if ($format = $this->model->dateFormat(($pos = strpos($field, '.')) ? substr($field, $pos + 1) : $field)) {
             if (is_int($min)) {
                 $min = date($format, $min);
             }
@@ -393,9 +393,9 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     public function groupBy($groupBy)
     {
         if (is_string($groupBy)) {
-            $this->_group = preg_split('#[\s,]+#', $groupBy, -1, PREG_SPLIT_NO_EMPTY);
+            $this->group = preg_split('#[\s,]+#', $groupBy, -1, PREG_SPLIT_NO_EMPTY);
         } else {
-            $this->_group = $groupBy;
+            $this->group = $groupBy;
         }
 
         return $this;
@@ -415,26 +415,26 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
                     $field = substr($order, 0, $pos);
                     $type = strtoupper(substr($order, $pos + 1));
                     if ($type === 'ASC') {
-                        $this->_order[$field] = SORT_ASC;
+                        $this->order[$field] = SORT_ASC;
                     } elseif ($type === 'DESC') {
-                        $this->_order[$field] = SORT_DESC;
+                        $this->order[$field] = SORT_DESC;
                     } else {
                         throw new NotSupportedException($orderBy);
                     }
                 } else {
-                    $this->_order[$order] = SORT_ASC;
+                    $this->order[$order] = SORT_ASC;
                 }
             }
         } else {
             foreach ($orderBy as $k => $v) {
                 if (is_int($k)) {
-                    $this->_order[$v] = SORT_ASC;
+                    $this->order[$v] = SORT_ASC;
                 } elseif ($v === SORT_ASC || $v === SORT_DESC) {
-                    $this->_order[$k] = $v;
+                    $this->order[$k] = $v;
                 } elseif ($v === 'ASC' || $v === 'asc') {
-                    $this->_order[$k] = SORT_ASC;
+                    $this->order[$k] = SORT_ASC;
                 } elseif ($v === 'DESC' || $v === 'desc') {
-                    $this->_order[$k] = SORT_DESC;
+                    $this->order[$k] = SORT_DESC;
                 } else {
                     throw new MisuseException(['unknown sort order: `:order`', 'order' => $v]);
                 }
@@ -455,7 +455,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
             $this->select([key($indexBy), current($indexBy)]);
         }
 
-        $this->_index = $indexBy;
+        $this->index = $indexBy;
 
         return $this;
     }
@@ -470,8 +470,8 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function limit($limit, $offset = null)
     {
-        $this->_limit = $limit > 0 ? (int)$limit : null;
-        $this->_offset = $offset > 0 ? (int)$offset : null;
+        $this->limit = $limit > 0 ? (int)$limit : null;
+        $this->offset = $offset > 0 ? (int)$offset : null;
 
         return $this;
     }
@@ -491,7 +491,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
             }
         }
 
-        $with = $this->_with ? array_merge($this->_with, $with) : $with;
+        $with = $this->with ? array_merge($this->with, $with) : $with;
 
         foreach ($with as $k => $v) {
             $name = is_string($k) ? $k : $v;
@@ -506,14 +506,14 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
 
             $parent_value = $with[$parent_name];
             if (!$parent_value instanceof QueryInterface) {
-                $with[$parent_name] = $this->relationsManager->getQuery($this->_model, $parent_name, $parent_value);
+                $with[$parent_name] = $this->relationsManager->getQuery($this->model, $parent_name, $parent_value);
             }
 
             $with[$parent_name]->with(is_int($k) ? [$child_name] : [$child_name => $v]);
             unset($with[$k]);
         }
 
-        $this->_with = $with;
+        $this->with = $with;
 
         return $this;
     }
@@ -546,7 +546,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function map($map)
     {
-        $this->_map = $map;
+        $this->map = $map;
 
         return $this;
     }
@@ -558,7 +558,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function setFetchType($multiple)
     {
-        $this->_multiple = $multiple;
+        $this->multiple = $multiple;
 
         return $this;
     }
@@ -570,24 +570,24 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     {
         $rows = $this->execute();
 
-        if (($model = $this->_model) !== null) {
+        if (($model = $this->model) !== null) {
             $modelName = get_class($model);
             foreach ($rows as $k => $v) {
                 $rows[$k] = new $modelName($v);
             }
         }
 
-        if ($rows && $this->_with) {
-            $rows = $this->relationsManager->earlyLoad($model, $rows, $this->_with);
+        if ($rows && $this->with) {
+            $rows = $this->relationsManager->earlyLoad($model, $rows, $this->with);
         }
 
-        if (($map = $this->_map) !== null) {
+        if (($map = $this->map) !== null) {
             foreach ($rows as $k => $v) {
                 $rows[$k] = $map($v);
             }
         }
 
-        if ($this->_multiple === false) {
+        if ($this->multiple === false) {
             return $rows[0] ?? null;
         } else {
             return $rows;
@@ -606,18 +606,18 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
 
         $items = $this->fetch();
 
-        if ($this->_limit === null) {
+        if ($this->limit === null) {
             $count = count($items);
-        } elseif (count($items) % $this->_limit === 0) {
+        } elseif (count($items) % $this->limit === 0) {
             $count = $this->count();
         } else {
-            $count = $this->_offset + count($items);
+            $count = $this->offset + count($items);
         }
 
         /** @var \ManaPHP\Data\Paginator $paginator */
         $paginator = $this->getNew('paginator');
         $paginator->items = $items;
-        return $paginator->paginate($count, $this->_limit, (int)($this->_offset / $this->_limit) + 1);
+        return $paginator->paginate($count, $this->limit, (int)($this->offset / $this->limit) + 1);
     }
 
     /**
@@ -627,7 +627,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function forceUseMaster($forceUseMaster = true)
     {
-        $this->_force_master = $forceUseMaster;
+        $this->force_master = $forceUseMaster;
 
         return $this;
     }
@@ -773,8 +773,8 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function whereDate($field, $date)
     {
-        if ($this->_model) {
-            $format = $this->_model->dateFormat($field);
+        if ($this->model) {
+            $format = $this->model->dateFormat($field);
         } else {
             $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }
@@ -799,8 +799,8 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function whereMonth($field, $date)
     {
-        if ($this->_model) {
-            $format = $this->_model->dateFormat($field);
+        if ($this->model) {
+            $format = $this->model->dateFormat($field);
         } else {
             $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }
@@ -825,8 +825,8 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      */
     public function whereYear($field, $date)
     {
-        if ($this->_model) {
-            $format = $this->_model->dateFormat($field);
+        if ($this->model) {
+            $format = $this->model->dateFormat($field);
         } else {
             $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }

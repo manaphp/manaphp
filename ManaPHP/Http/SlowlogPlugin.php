@@ -10,17 +10,17 @@ class SlowlogPlugin extends Plugin
     /**
      * @var float
      */
-    protected $_threshold = 1.0;
+    protected $threshold = 1.0;
 
     /**
      * @var string
      */
-    protected $_file = '@data/slowlogPlugin/{id}.log';
+    protected $file = '@data/slowlogPlugin/{id}.log';
 
     /**
      * @var string
      */
-    protected $_format = '[:date][:client_ip][:request_id][:elapsed] :message';
+    protected $format = '[:date][:client_ip][:request_id][:elapsed] :message';
 
     /**
      * @param array $options
@@ -28,17 +28,17 @@ class SlowlogPlugin extends Plugin
     public function __construct($options = [])
     {
         if (isset($options['threshold'])) {
-            $this->_threshold = (float)$options['threshold'];
+            $this->threshold = (float)$options['threshold'];
         }
 
         if (isset($options['file'])) {
-            $this->_file = $options['file'];
+            $this->file = $options['file'];
         }
 
-        $this->_file = strtr($this->_file, ['{id}' => $this->configure->id]);
+        $this->file = strtr($this->file, ['{id}' => $this->configure->id]);
 
         if (isset($options['format'])) {
-            $this->_format = $options['format'];
+            $this->format = $options['format'];
         }
 
         $this->attachEvent('request:end', [$this, 'onRequestEnd']);
@@ -66,7 +66,7 @@ class SlowlogPlugin extends Plugin
         $replaced[':elapsed'] = sprintf('%.03f', $elapsed);
         $replaced[':message'] = $message . PHP_EOL;
 
-        LocalFS::fileAppend($this->_file, strtr($this->_format, $replaced));
+        LocalFS::fileAppend($this->file, strtr($this->format, $replaced));
     }
 
     /**
@@ -104,7 +104,7 @@ class SlowlogPlugin extends Plugin
             $elapsed = $this->request->getElapsedTime();
         }
 
-        if ($this->_threshold > $elapsed) {
+        if ($this->threshold > $elapsed) {
             return;
         }
 

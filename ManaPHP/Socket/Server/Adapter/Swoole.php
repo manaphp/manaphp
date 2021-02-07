@@ -17,37 +17,37 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     /**
      * @var string
      */
-    protected $_host = '0.0.0.0';
+    protected $host = '0.0.0.0';
 
     /**
      * @var int
      */
-    protected $_port = 9501;
+    protected $port = 9501;
 
     /**
      * @var array
      */
-    protected $_settings = [];
+    protected $settings = [];
 
     /**
      * @var \Swoole\Server
      */
-    protected $_swoole;
+    protected $swoole;
 
     /**
      * @var \ManaPHP\Socket\Server\HandlerInterface
      */
-    protected $_handler;
+    protected $handler;
 
     /**
      * @var array
      */
-    protected $_contexts = [];
+    protected $contexts = [];
 
     /**
      * @var array
      */
-    protected $_coroutines = [];
+    protected $coroutines = [];
 
     /**
      * @param array $options
@@ -59,18 +59,18 @@ class Swoole extends Component implements ServerInterface, Unaspectable
             'DOCUMENT_ROOT'   => dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,
             'SCRIPT_NAME'     => '/' . basename($script_filename),
-            'SERVER_ADDR'     => $this->_host,
+            'SERVER_ADDR'     => $this->host,
             'SERVER_SOFTWARE' => 'Swoole/' . SWOOLE_VERSION . ' (' . PHP_OS . ') PHP/' . PHP_VERSION,
         ];
 
         unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
 
         if (isset($options['host'])) {
-            $this->_host = $options['host'];
+            $this->host = $options['host'];
         }
 
         if (isset($options['port'])) {
-            $this->_port = (int)$options['port'];
+            $this->port = (int)$options['port'];
         }
 
         if (!isset($options['dispatch_mode'])) {
@@ -78,16 +78,16 @@ class Swoole extends Component implements ServerInterface, Unaspectable
         }
 
         unset($options['host'], $options['port']);
-        $this->_settings = $options ?: [];
+        $this->settings = $options ?: [];
 
-        $this->_swoole = new Server($this->_host, $this->_port, $this->_settings['dispatch_mode']);
+        $this->swoole = new Server($this->host, $this->port, $this->settings['dispatch_mode']);
 
-        $this->_swoole->on('Start', [$this, 'onStart']);
-        $this->_swoole->on('ManagerStart', [$this, 'onManagerStart']);
-        $this->_swoole->on('WorkerStart', [$this, 'onWorkerStart']);
-        $this->_swoole->on('Connect', [$this, 'onConnect']);
-        $this->_swoole->on('Receive', [$this, 'onReceive']);
-        $this->_swoole->on('Close', [$this, 'onClose']);
+        $this->swoole->on('Start', [$this, 'onStart']);
+        $this->swoole->on('ManagerStart', [$this, 'onManagerStart']);
+        $this->swoole->on('WorkerStart', [$this, 'onWorkerStart']);
+        $this->swoole->on('Connect', [$this, 'onConnect']);
+        $this->swoole->on('Receive', [$this, 'onReceive']);
+        $this->swoole->on('Close', [$this, 'onClose']);
     }
 
     /**
@@ -132,7 +132,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     public function onConnect($server, $fd)
     {
         try {
-            $this->_handler->onConnect($fd);
+            $this->handler->onConnect($fd);
         } finally {
             null;
         }
@@ -144,12 +144,12 @@ class Swoole extends Component implements ServerInterface, Unaspectable
             }
         }
 
-        $this->_contexts[$fd] = $context;
+        $this->contexts[$fd] = $context;
 
-        foreach ($this->_coroutines[$fd] ?? [] as $cid) {
+        foreach ($this->coroutines[$fd] ?? [] as $cid) {
             Coroutine::resume($cid);
         }
-        unset($this->_coroutines[$fd]);
+        unset($this->coroutines[$fd]);
     }
 
     /**
@@ -159,7 +159,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     protected function saveContext($fd)
     {
-        $old_context = $this->_contexts[$fd];
+        $old_context = $this->contexts[$fd];
 
         $current_context = Coroutine::getContext();
         foreach ($current_context as $k => $v) {
@@ -176,10 +176,10 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     protected function restoreContext($fd)
     {
-        if (!$old_context = $this->_contexts[$fd] ?? false) {
-            $this->_coroutines[$fd][] = Coroutine::getCid();
+        if (!$old_context = $this->contexts[$fd] ?? false) {
+            $this->coroutines[$fd][] = Coroutine::getCid();
             Coroutine::suspend();
-            $old_context = $this->_contexts[$fd];
+            $old_context = $this->contexts[$fd];
         }
 
         /** @var \ArrayObject $current_context */
@@ -201,7 +201,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     {
         $this->restoreContext($fd);
         try {
-            $this->_handler->onReceive($fd, $data);
+            $this->handler->onReceive($fd, $data);
         } catch (Throwable $throwable) {
             $this->logger->warn($throwable);
         }
@@ -219,12 +219,12 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     {
         $this->restoreContext($fd);
         try {
-            $this->_handler->onClose($fd);
+            $this->handler->onClose($fd);
         } catch (Throwable $throwable) {
             $this->logger->warn($throwable);
         }
 
-        unset($this->_contexts[$fd]);
+        unset($this->contexts[$fd]);
     }
 
     /**
@@ -238,13 +238,13 @@ class Swoole extends Component implements ServerInterface, Unaspectable
             Runtime::enableCoroutine(true);
         }
 
-        $this->_handler = $handler;
+        $this->handler = $handler;
 
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 
-        $settings = json_stringify($this->_settings);
-        console_log('info', ['listen on: %s:%d with setting: %s', $this->_host, $this->_port, $settings]);
-        $this->_swoole->start();
+        $settings = json_stringify($this->settings);
+        console_log('info', ['listen on: %s:%d with setting: %s', $this->host, $this->port, $settings]);
+        $this->swoole->start();
         console_log('info', 'shutdown');
     }
 
@@ -255,7 +255,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function getClientInfo($fd)
     {
-        return $this->_swoole->getClientInfo($fd);
+        return $this->swoole->getClientInfo($fd);
     }
 
     /**
@@ -266,7 +266,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function send($fd, $data)
     {
-        return $this->_swoole->send($fd, $data);
+        return $this->swoole->send($fd, $data);
     }
 
     /**
@@ -279,7 +279,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function sendFile($fd, $filename, $offset = 0, $length = 0)
     {
-        return $this->_swoole->sendfile($fd, $filename, $offset, $length);
+        return $this->swoole->sendfile($fd, $filename, $offset, $length);
     }
 
     /**
@@ -290,6 +290,6 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function close($fd, $reset = false)
     {
-        return $this->_swoole->close($fd, $reset);
+        return $this->swoole->close($fd, $reset);
     }
 }

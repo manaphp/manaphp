@@ -9,12 +9,12 @@ class Jwt extends Component implements JwtInterface
     /**
      * @var string
      */
-    protected $_alg = 'HS256';
+    protected $alg = 'HS256';
 
     /**
      * @var string|array
      */
-    protected $_secret;
+    protected $secret;
 
     /**
      * @param array $options
@@ -22,17 +22,17 @@ class Jwt extends Component implements JwtInterface
     public function __construct($options = [])
     {
         if (isset($options['alg'])) {
-            $this->_alg = $options['alg'];
+            $this->alg = $options['alg'];
         }
 
         if (isset($options['crypt'])) {
-            $this->_injections['crypt'] = $options['crypt'];
+            $this->injections['crypt'] = $options['crypt'];
         }
 
         if (isset($options['secret'])) {
-            $this->_secret = $options['secret'];
+            $this->secret = $options['secret'];
         } else {
-            $this->_secret = $this->crypt->getDerivedKey('jwt:' . $this->configure->id);
+            $this->secret = $this->crypt->getDerivedKey('jwt:' . $this->configure->id);
         }
     }
 
@@ -68,9 +68,9 @@ class Jwt extends Component implements JwtInterface
         $claims['iat'] = time();
         $claims['exp'] = time() + $ttl;
 
-        $header = $this->base64UrlEncode(json_stringify(['alg' => $this->_alg, 'typ' => 'JWT']));
+        $header = $this->base64UrlEncode(json_stringify(['alg' => $this->alg, 'typ' => 'JWT']));
         $payload = $this->base64UrlEncode(json_stringify($claims));
-        $hmac = hash_hmac(strtr($this->_alg, ['HS' => 'sha']), "$header.$payload", $secret ?? $this->_secret, true);
+        $hmac = hash_hmac(strtr($this->alg, ['HS' => 'sha']), "$header.$payload", $secret ?? $this->secret, true);
         $signature = $this->base64UrlEncode($hmac);
 
         return "$header.$payload.$signature";
@@ -111,9 +111,9 @@ class Jwt extends Component implements JwtInterface
             throw new MalformedException('The JWT alg field is missing');
         }
 
-        if ($decoded_header['alg'] !== $this->_alg) {
+        if ($decoded_header['alg'] !== $this->alg) {
             $decoded_alg = $decoded_header['alg'];
-            throw new MalformedException(['The JWT alg `%s` is not same as %s', $decoded_alg, $this->_alg]);
+            throw new MalformedException(['The JWT alg `%s` is not same as %s', $decoded_alg, $this->alg]);
         }
 
         if (!$decoded_header['typ']) {
@@ -153,8 +153,8 @@ class Jwt extends Component implements JwtInterface
         $signature = substr($token, $pos + 1);
 
         $success = false;
-        foreach ((array)($secrets ?? $this->_secret) as $secret) {
-            $hmac = hash_hmac(strtr($this->_alg, ['HS' => 'sha']), $data, $secret, true);
+        foreach ((array)($secrets ?? $this->secret) as $secret) {
+            $hmac = hash_hmac(strtr($this->alg, ['HS' => 'sha']), $data, $secret, true);
             if ($this->base64UrlEncode($hmac) === $signature) {
                 $success = true;
                 break;
@@ -172,7 +172,7 @@ class Jwt extends Component implements JwtInterface
     public function dump()
     {
         $data = parent::dump();
-        $data['_secret'] = '***';
+        $data['secret'] = '***';
 
         return $data;
     }

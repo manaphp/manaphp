@@ -13,7 +13,7 @@ class Redis extends Component implements PubSubInterface
     public function __construct($options = [])
     {
         if (isset($options['redisBroker'])) {
-            $this->_injections['redisBroker'] = $options['redisBroker'];
+            $this->injections['redisBroker'] = $options['redisBroker'];
         }
     }
 

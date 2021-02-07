@@ -17,7 +17,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
     /**
      * @var string
      */
-    protected $_class_file;
+    protected $class_file;
 
     /**
      * @param \ManaPHP\Loader $loader
@@ -33,13 +33,13 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         }
 
         $class = static::class;
-        $this->_class_file = (new ReflectionClass($class))->getFileName();
+        $this->class_file = (new ReflectionClass($class))->getFileName();
 
         ini_set('html_errors', 'off');
         ini_set('default_socket_timeout', -1);
 
         $factory = $this->getFactory();
-        $GLOBALS['CONTAINER'] = $this->_container = new $factory();
+        $GLOBALS['CONTAINER'] = $this->container = new $factory();
 
         if (!defined('MANAPHP_COROUTINE_ENABLED')) {
             define(
@@ -58,7 +58,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
         $publicDir = $_SERVER['DOCUMENT_ROOT'] !== '' ? $_SERVER['DOCUMENT_ROOT'] : $rootDir . '/public';
 
         if (!str_starts_with($class, 'ManaPHP\\')) {
-            $appDir = dirname($this->_class_file);
+            $appDir = dirname($this->class_file);
             $appNamespace = substr($class, 0, strrpos($class, '\\'));
             $publicDir = $rootDir . '/public';
         }
@@ -96,7 +96,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
     public function getRootDir()
     {
         if (!str_starts_with(static::class, 'ManaPHP\\')) {
-            return dirname($this->_class_file, 2);
+            return dirname($this->class_file, 2);
         } elseif ($_SERVER['DOCUMENT_ROOT'] !== ''
             && $_SERVER['DOCUMENT_ROOT'] === dirname($_SERVER['SCRIPT_FILENAME'])
         ) {
@@ -126,7 +126,7 @@ class Application extends Component implements ApplicationInterface, Unaspectabl
      */
     public function setShared($name, $definition)
     {
-        $this->_container->setShared($name, $definition);
+        $this->container->setShared($name, $definition);
 
         return $this;
     }

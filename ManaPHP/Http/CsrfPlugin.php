@@ -16,17 +16,17 @@ class CsrfPlugin extends Plugin
     /**
      * @var bool
      */
-    protected $_enabled = true;
+    protected $enabled = true;
 
     /**
      * @var bool
      */
-    protected $_strict = true;
+    protected $strict = true;
 
     /**
      * @var array
      */
-    protected $_domains = [];
+    protected $domains = [];
 
     /**
      * @param array $options
@@ -34,22 +34,22 @@ class CsrfPlugin extends Plugin
     public function __construct($options = [])
     {
         if (isset($options['enabled'])) {
-            $this->_enabled = (bool)$options['enabled'];
+            $this->enabled = (bool)$options['enabled'];
         }
 
         if (isset($options['strict'])) {
-            $this->_strict = (bool)$options['strict'];
+            $this->strict = (bool)$options['strict'];
         }
 
         if ($domains = $options['domains'] ?? false) {
             if (is_string($domains)) {
-                $this->_domains = preg_split('#[\s,]+#', $domains, -1, PREG_SPLIT_NO_EMPTY);
+                $this->domains = preg_split('#[\s,]+#', $domains, -1, PREG_SPLIT_NO_EMPTY);
             } else {
-                $this->_domains = $domains;
+                $this->domains = $domains;
             }
         }
 
-        if ($this->_enabled) {
+        if ($this->enabled) {
             $this->attachEvent('request:validate', [$this, 'onRequestValidate']);
         }
     }
@@ -76,7 +76,7 @@ class CsrfPlugin extends Plugin
             return true;
         }
 
-        if ($domains = $this->_domains) {
+        if ($domains = $this->domains) {
             if (in_array($origin_domain, $domains, true)) {
                 return true;
             }
@@ -116,7 +116,7 @@ class CsrfPlugin extends Plugin
         }
 
         if ($this->request->isGet()) {
-            if (!$this->_strict) {
+            if (!$this->strict) {
                 return;
             }
 

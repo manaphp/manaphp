@@ -10,7 +10,7 @@ class FrameworkCommand extends Command
     /**
      * @var string
      */
-    protected $_tmp_lite_file = '@tmp/manaphp_lite.tmp';
+    protected $tmp_lite_file = '@tmp/manaphp_lite.tmp';
 
     /**
      * @param string $str
@@ -19,8 +19,8 @@ class FrameworkCommand extends Command
      */
     protected function stripWhitespaces($str)
     {
-        LocalFS::filePut($this->_tmp_lite_file, $str);
-        $str = php_strip_whitespace($this->alias->resolve($this->_tmp_lite_file));
+        LocalFS::filePut($this->tmp_lite_file, $str);
+        $str = php_strip_whitespace($this->alias->resolve($this->tmp_lite_file));
 //        $str = preg_replace('#\s*/\*\*.*?\*/#ms', '', $str);//remove comments
 //        $str = preg_replace('#([\r\n]+)\s*\\1#', '\\1', $str);//remove blank lines
 //        $str = preg_replace('#([\r\n]+)\s+{#', '{', $str);//repositionClose;
@@ -30,7 +30,7 @@ class FrameworkCommand extends Command
 
     public function __destruct()
     {
-        LocalFS::fileDelete($this->_tmp_lite_file);
+        LocalFS::fileDelete($this->tmp_lite_file);
     }
 
     /**

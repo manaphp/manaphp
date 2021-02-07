@@ -11,7 +11,7 @@ class AssetBundle extends Component implements AssetBundleInterface
     /**
      * @var int
      */
-    protected $_length = 12;
+    protected $length = 12;
 
     /**
      * @param array $options
@@ -19,7 +19,7 @@ class AssetBundle extends Component implements AssetBundleInterface
     public function __construct($options = [])
     {
         if (isset($options['length'])) {
-            $this->_length = $options['length'];
+            $this->length = $options['length'];
         }
     }
 
@@ -65,7 +65,7 @@ class AssetBundle extends Component implements AssetBundleInterface
             return '';
         }
 
-        $hash = substr(md5(implode('', $files)), 0, $this->_length);
+        $hash = substr(md5(implode('', $files)), 0, $this->length);
         $extension = pathinfo($files[0], PATHINFO_EXTENSION);
         if ($pos = strpos($extension, '?')) {
             $extension = substr($extension, 0, $pos);

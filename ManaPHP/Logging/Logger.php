@@ -33,7 +33,7 @@ class LoggerContext
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\Logging\LoggerContext $_context
+ * @property-read \ManaPHP\Logging\LoggerContext $context
  */
 abstract class Logger extends Component implements LoggerInterface
 {
@@ -46,17 +46,17 @@ abstract class Logger extends Component implements LoggerInterface
     /**
      * @var int
      */
-    protected $_level;
+    protected $level;
 
     /**
      * @var string
      */
-    protected $_host;
+    protected $host;
 
     /**
      * @var array
      */
-    protected static $_levels
+    protected static $levels
         = [
             self::LEVEL_FATAL => 'fatal',
             self::LEVEL_ERROR => 'error',
@@ -68,22 +68,22 @@ abstract class Logger extends Component implements LoggerInterface
     /**
      * @var float
      */
-    protected $_lazy;
+    protected $lazy;
 
     /**
      * @var int
      */
-    protected $_buffer_size = 1024;
+    protected $buffer_size = 1024;
 
     /**
      * @var float
      */
-    protected $_last_write;
+    protected $last_write;
 
     /**
      * @var \ManaPHP\Logging\Logger\Log[]
      */
-    protected $_logs = [];
+    protected $logs = [];
 
     /**
      * @param array $options
@@ -91,28 +91,28 @@ abstract class Logger extends Component implements LoggerInterface
     public function __construct($options = [])
     {
         if (isset($options['level'])) {
-            $this->_level = $this->parseLevel($options['level']);
+            $this->level = $this->parseLevel($options['level']);
         } else {
             $error_level = error_reporting();
 
             if ($error_level & E_ERROR) {
-                $this->_level = self::LEVEL_ERROR;
+                $this->level = self::LEVEL_ERROR;
             } elseif ($error_level & E_WARNING) {
-                $this->_level = self::LEVEL_WARN;
+                $this->level = self::LEVEL_WARN;
             } elseif ($error_level & E_NOTICE) {
-                $this->_level = self::LEVEL_INFO;
+                $this->level = self::LEVEL_INFO;
             } else {
-                $this->_level = self::LEVEL_DEBUG;
+                $this->level = self::LEVEL_DEBUG;
             }
         }
 
-        $this->_lazy = MANAPHP_CLI ? false : $options['lazy'] ?? true;
+        $this->lazy = MANAPHP_CLI ? false : $options['lazy'] ?? true;
 
         if (isset($options['buffer_size'])) {
-            $this->_buffer_size = (int)$options['buffer_size'];
+            $this->buffer_size = (int)$options['buffer_size'];
         }
 
-        $this->_host = $options['host'] ?? gethostname();
+        $this->host = $options['host'] ?? gethostname();
 
         $this->attachEvent('request:end', [$this, 'onRequestEnd']);
     }
@@ -125,7 +125,7 @@ abstract class Logger extends Component implements LoggerInterface
         /** @var \ManaPHP\Logging\LoggerContext $context */
         $context = parent::createContext();
 
-        $context->level = $this->_level;
+        $context->level = $this->level;
         $context->client_ip = MANAPHP_CLI ? '' : $this->request->getClientIp();
         $context->request_id = $this->request->getRequestId();
 
@@ -137,9 +137,9 @@ abstract class Logger extends Component implements LoggerInterface
      */
     public function onRequestEnd()
     {
-        if ($this->_logs) {
-            $this->append($this->_logs);
-            $this->_logs = [];
+        if ($this->logs) {
+            $this->append($this->logs);
+            $this->logs = [];
         }
     }
 
@@ -150,8 +150,8 @@ abstract class Logger extends Component implements LoggerInterface
      */
     protected function parseLevel($level)
     {
-        $r = is_numeric($level) ? (int)$level : array_search($level, self::$_levels, true);
-        if (!is_int($r) || !isset(self::$_levels[$r])) {
+        $r = is_numeric($level) ? (int)$level : array_search($level, self::$levels, true);
+        if (!is_int($r) || !isset(self::$levels[$r])) {
             throw new InvalidValueException('logger `:level` level is invalid', ['level' => $level]);
         }
 
@@ -165,7 +165,7 @@ abstract class Logger extends Component implements LoggerInterface
      */
     public function setLevel($level)
     {
-        $this->_context->level = $this->parseLevel($level);
+        $this->context->level = $this->parseLevel($level);
 
         return $this;
     }
@@ -175,7 +175,7 @@ abstract class Logger extends Component implements LoggerInterface
      */
     public function getLevel()
     {
-        return $this->_context->level;
+        return $this->context->level;
     }
 
     /**
@@ -183,7 +183,7 @@ abstract class Logger extends Component implements LoggerInterface
      */
     public function getLevels()
     {
-        return self::$_levels;
+        return self::$levels;
     }
 
     /**
@@ -193,7 +193,7 @@ abstract class Logger extends Component implements LoggerInterface
      */
     public function setLazy($lazy = true)
     {
-        $this->_lazy = $lazy;
+        $this->lazy = $lazy;
 
         return $this;
     }
@@ -216,9 +216,9 @@ abstract class Logger extends Component implements LoggerInterface
             $trace = $traces[$i];
             $function = $trace['function'];
 
-            if (in_array($function, self::$_levels, true)) {
+            if (in_array($function, self::$levels, true)) {
                 return $trace;
-            } elseif (str_starts_with($function, 'log_') && in_array(substr($function, 4), self::$_levels, true)) {
+            } elseif (str_starts_with($function, 'log_') && in_array(substr($function, 4), self::$levels, true)) {
                 return $trace;
             }
         }
@@ -361,7 +361,7 @@ abstract class Logger extends Component implements LoggerInterface
      */
     public function log($level, $message, $category = null)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($level > $context->level) {
             return $this;
@@ -378,9 +378,9 @@ abstract class Logger extends Component implements LoggerInterface
 
         $log = new Log();
 
-        $log->host = $this->_host;
+        $log->host = $this->host;
         $log->client_ip = $context->client_ip;
-        $log->level = self::$_levels[$level];
+        $log->level = self::$levels[$level];
         $log->request_id = $context->request_id ?: $this->request->getRequestId();
 
         if ($message instanceof Throwable) {
@@ -410,16 +410,16 @@ abstract class Logger extends Component implements LoggerInterface
 
         $this->fireEvent('logger:log', compact('level', 'message', 'category', 'log'));
 
-        if ($this->_lazy) {
-            $this->_logs[] = $log;
+        if ($this->lazy) {
+            $this->logs[] = $log;
 
-            if ($this->_last_write === null) {
-                $this->_last_write = $log->timestamp;
-            } elseif ($log->timestamp - $this->_last_write > 1 || count($this->_logs) > $this->_buffer_size) {
-                $this->_last_write = $log->timestamp;
+            if ($this->last_write === null) {
+                $this->last_write = $log->timestamp;
+            } elseif ($log->timestamp - $this->last_write > 1 || count($this->logs) > $this->buffer_size) {
+                $this->last_write = $log->timestamp;
 
-                $this->append($this->_logs);
-                $this->_logs = [];
+                $this->append($this->logs);
+                $this->logs = [];
             }
         } else {
             $this->append([$log]);
@@ -497,7 +497,7 @@ abstract class Logger extends Component implements LoggerInterface
     {
         $data = parent::dump();
 
-        unset($data['_logs'], $data['_last_write']);
+        unset($data['logs'], $data['last_write']);
 
         return $data;
     }

@@ -16,7 +16,7 @@ class Query extends \ManaPHP\Data\Query
     /**
      * @var \ManaPHP\Data\QueryInterface[]
      */
-    protected $_queries;
+    protected $queries;
 
     /**
      * @param array        $queries
@@ -29,27 +29,27 @@ class Query extends \ManaPHP\Data\Query
 
     public function __clone()
     {
-        foreach ($this->_queries as $k => $v) {
-            $this->_queries[$k] = clone $v;
+        foreach ($this->queries as $k => $v) {
+            $this->queries[$k] = clone $v;
         }
     }
 
     /**
-     * @param string[]|\ManaPHP\Data\ModelInterface[]|\ManaPHP\Data\QueryInterface[] $_queries
+     * @param string[]|\ManaPHP\Data\ModelInterface[]|\ManaPHP\Data\QueryInterface[] $queries
      *
      * @return static
      */
-    public function setQueries($_queries)
+    public function setQueries($queries)
     {
-        foreach ($_queries as $id => $query) {
+        foreach ($queries as $id => $query) {
             if (is_string($query)) {
                 $query = $this->getNew($query);
             }
 
             if ($query instanceof QueryInterface) {
-                $this->_queries[$id] = $query;
+                $this->queries[$id] = $query;
             } elseif ($query instanceof Model) {
-                $this->_queries[$id] = $query::query();
+                $this->queries[$id] = $query::query();
             } else {
                 throw new MisuseException('');
             }
@@ -63,7 +63,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function getQueries()
     {
-        return $this->_queries;
+        return $this->queries;
     }
 
     public function setDb($db)
@@ -98,9 +98,9 @@ class Query extends \ManaPHP\Data\Query
      */
     public function setModel($model)
     {
-        $this->_model = $model;
+        $this->model = $model;
 
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->setModel($model);
         }
 
@@ -114,7 +114,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function select($fields)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->select($fields);
         }
 
@@ -130,7 +130,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function distinct($distinct = true)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->distinct($distinct);
         }
 
@@ -145,7 +145,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereEq($field, $value)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereEq($field, $value);
         }
 
@@ -161,7 +161,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereCmp($field, $operator, $value)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereCmp($field, $operator, $value);
         }
 
@@ -177,7 +177,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereMod($field, $divisor, $remainder)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereMod($field, $divisor, $remainder);
         }
 
@@ -192,7 +192,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereExpr($expr, $bind = null)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereExpr($expr, $bind);
         }
 
@@ -208,7 +208,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereBetween($field, $min, $max)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereBetween($field, $min, $max);
         }
 
@@ -224,7 +224,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereNotBetween($field, $min, $max)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereNotBetween($field, $min, $max);
         }
 
@@ -239,7 +239,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereIn($field, $values)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereIn($field, $values);
         }
 
@@ -253,7 +253,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereNotIn($field, $values)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereNotIn($field, $values);
         }
 
@@ -268,7 +268,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereInset($field, $value)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereInset($field, $value);
         }
 
@@ -283,7 +283,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereNotInset($field, $value)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereNotInset($field, $value);
         }
 
@@ -298,7 +298,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereContains($fields, $value)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereContains($fields, $value);
         }
 
@@ -313,7 +313,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereNotContains($fields, $value)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereNotContains($fields, $value);
         }
 
@@ -329,7 +329,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereStartsWith($fields, $value, $length = null)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereStartsWith($fields, $value, $length);
         }
 
@@ -345,7 +345,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereNotStartsWith($fields, $value, $length = null)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereNotStartsWith($fields, $value, $length);
         }
 
@@ -360,7 +360,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereEndsWith($fields, $value)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereEndsWith($fields, $value);
         }
 
@@ -375,7 +375,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereNotEndsWith($fields, $value)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereNotEndsWith($fields, $value);
         }
 
@@ -390,7 +390,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereLike($fields, $value)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereLike($fields, $value);
         }
 
@@ -405,7 +405,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereNotLike($fields, $value)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereNotLike($fields, $value);
         }
 
@@ -421,7 +421,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereRegex($field, $regex, $flags = '')
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereRegex($field, $regex, $flags);
         }
 
@@ -437,7 +437,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereNotRegex($field, $regex, $flags = '')
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereNotRegex($field, $regex, $flags);
         }
 
@@ -451,7 +451,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereNull($field)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereNull($field);
         }
 
@@ -465,7 +465,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereNotNull($field)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereNotNull($field);
         }
 
@@ -480,7 +480,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function where1v1($id, $value)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->where1v1($id, $value);
         }
 
@@ -495,7 +495,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function whereRaw($filter, $bind = null)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->whereRaw($filter, $bind);
         }
 
@@ -511,8 +511,8 @@ class Query extends \ManaPHP\Data\Query
     {
         parent::orderBy($orderBy);
 
-        foreach ($this->_queries as $query) {
-            $query->orderBy($this->_order);
+        foreach ($this->queries as $query) {
+            $query->orderBy($this->order);
         }
 
         return $this;
@@ -525,7 +525,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function forceUseMaster($forceUseMaster = true)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->forceUseMaster($forceUseMaster);
         }
 
@@ -540,7 +540,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function having($having, $bind = [])
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->having($having, $bind);
         }
 
@@ -554,15 +554,15 @@ class Query extends \ManaPHP\Data\Query
     {
         $result = [];
 
-        if ($this->_order) {
-            if ($this->_limit) {
-                foreach ($this->_queries as $query) {
-                    $query->limit($this->_offset + $this->_limit, 0);
+        if ($this->order) {
+            if ($this->limit) {
+                foreach ($this->queries as $query) {
+                    $query->limit($this->offset + $this->limit, 0);
                 }
             }
 
             $valid_times = 0;
-            foreach ($this->_queries as $query) {
+            foreach ($this->queries as $query) {
                 if ($r = $query->execute()) {
                     $valid_times++;
                     $result = $result ? array_merge($result, $r) : $r;
@@ -570,31 +570,31 @@ class Query extends \ManaPHP\Data\Query
             }
 
             if ($valid_times > 1) {
-                $result = Arr::sort($result, $this->_order);
+                $result = Arr::sort($result, $this->order);
             }
 
-            $result = $this->_limit ? array_slice($result, (int)$this->_offset, $this->_limit) : $result;
-        } elseif ($this->_limit) {
-            foreach ($this->_queries as $query) {
+            $result = $this->limit ? array_slice($result, (int)$this->offset, $this->limit) : $result;
+        } elseif ($this->limit) {
+            foreach ($this->queries as $query) {
                 if ($r = $query->execute()) {
                     $result = $result ? array_merge($result, $r) : $r;
-                    if (count($result) >= $this->_offset + $this->_limit) {
-                        $result = array_slice($result, (int)$this->_offset, $this->_limit);
-                        return $this->_index ? Arr::indexby($result, $this->_index) : $result;
+                    if (count($result) >= $this->offset + $this->limit) {
+                        $result = array_slice($result, (int)$this->offset, $this->limit);
+                        return $this->index ? Arr::indexby($result, $this->index) : $result;
                     }
                 }
             }
 
-            $result = $result ? array_slice($result, (int)$this->_offset, $this->_limit) : [];
+            $result = $result ? array_slice($result, (int)$this->offset, $this->limit) : [];
         } else {
-            foreach ($this->_queries as $query) {
+            foreach ($this->queries as $query) {
                 if ($r = $query->execute()) {
                     $result = $result ? array_merge($result, $r) : $r;
                 }
             }
         }
 
-        return $this->_index ? Arr::indexby($result, $this->_index) : $result;
+        return $this->index ? Arr::indexby($result, $this->index) : $result;
     }
 
     /**
@@ -614,7 +614,7 @@ class Query extends \ManaPHP\Data\Query
     {
         $values = [];
         $valid_times = 0;
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             if ($t = $query->values($field)) {
                 $valid_times++;
                 $values = $values ? array_merge($values, $t) : $t;
@@ -623,8 +623,8 @@ class Query extends \ManaPHP\Data\Query
 
         if ($valid_times > 1) {
             $values = array_values(array_unique($values));
-            if ($this->_order) {
-                if (current($this->_order) === SORT_ASC) {
+            if ($this->order) {
+                if (current($this->order) === SORT_ASC) {
                     sort($values);
                 } else {
                     rsort($values);
@@ -643,7 +643,7 @@ class Query extends \ManaPHP\Data\Query
     public function count($field = '*')
     {
         $r = 0;
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $t = $query->count($field);
             $r += $t;
         }
@@ -656,7 +656,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function exists()
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             if ($query->exists()) {
                 return true;
             }
@@ -673,7 +673,7 @@ class Query extends \ManaPHP\Data\Query
     public function update($fieldValues)
     {
         $r = 0;
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $r += $query->update($fieldValues);
         }
 
@@ -686,7 +686,7 @@ class Query extends \ManaPHP\Data\Query
     public function delete()
     {
         $r = 0;
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $r += $query->delete();
         }
 
@@ -703,7 +703,7 @@ class Query extends \ManaPHP\Data\Query
      */
     public function join($table, $condition = null, $alias = null, $type = null)
     {
-        foreach ($this->_queries as $query) {
+        foreach ($this->queries as $query) {
             $query->join($table, $condition, $alias, $type);
         }
 

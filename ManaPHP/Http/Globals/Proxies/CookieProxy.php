@@ -11,24 +11,24 @@ class CookieProxy implements ArrayAccess, JsonSerializable
     /**
      * @var \ManaPHP\Http\Request
      */
-    protected $_request;
+    protected $request;
 
     /**
      * @param \ManaPHP\Http\Request $request
      */
     public function __construct($request)
     {
-        $this->_request = $request;
+        $this->request = $request;
     }
 
     public function offsetExists($offset)
     {
-        return isset($this->_request->_context->_COOKIE[$offset]);
+        return isset($this->request->context->_COOKIE[$offset]);
     }
 
     public function offsetGet($offset)
     {
-        return $this->_request->_context->_COOKIE[$offset];
+        return $this->request->context->_COOKIE[$offset];
     }
 
     public function offsetSet($offset, $value)
@@ -43,11 +43,11 @@ class CookieProxy implements ArrayAccess, JsonSerializable
 
     public function __debugInfo()
     {
-        return $this->_request->_context->_COOKIE;
+        return $this->request->context->_COOKIE;
     }
 
     public function jsonSerialize()
     {
-        return $this->_request->_context->_COOKIE;
+        return $this->request->context->_COOKIE;
     }
 }

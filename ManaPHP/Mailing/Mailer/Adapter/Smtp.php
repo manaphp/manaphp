@@ -19,99 +19,99 @@ class SmtpContext implements Inseparable
 }
 
 /**
- * @property-read \ManaPHP\Mailing\Mailer\Adapter\SmtpContext $_context
+ * @property-read \ManaPHP\Mailing\Mailer\Adapter\SmtpContext $context
  */
 class Smtp extends Mailer
 {
     /**
      * @var string
      */
-    protected $_uri;
+    protected $uri;
 
     /**
      * @var string
      */
-    protected $_scheme;
+    protected $scheme;
 
     /**
      * @var string
      */
-    protected $_host;
+    protected $host;
 
     /**
      * @var int
      */
-    protected $_port;
+    protected $port;
 
     /**
      * @var string
      */
-    protected $_username;
+    protected $username;
 
     /**
      * @var string
      */
-    protected $_password;
+    protected $password;
 
     /**
      * @var int
      */
-    protected $_timeout = 3;
+    protected $timeout = 3;
 
     /**
      * @param string $uri
      */
     public function __construct($uri)
     {
-        $this->_uri = $uri;
+        $this->uri = $uri;
 
-        $parts = parse_url($this->_uri);
+        $parts = parse_url($this->uri);
 
-        $this->_scheme = $parts['scheme'];
-        $this->_host = $parts['host'];
+        $this->scheme = $parts['scheme'];
+        $this->host = $parts['host'];
 
         if (isset($parts['port'])) {
-            $this->_port = (int)$parts['port'];
+            $this->port = (int)$parts['port'];
         } else {
-            $this->_port = $this->_scheme === 'smtp' ? 25 : 465;
+            $this->port = $this->scheme === 'smtp' ? 25 : 465;
         }
 
         if (isset($parts['user'])) {
             if (str_contains($parts['user'], '@')) {
-                $this->_from = $parts['user'];
+                $this->from = $parts['user'];
             }
-            $this->_username = $parts['user'];
+            $this->username = $parts['user'];
         }
 
         if (isset($parts['pass'])) {
-            $this->_password = $parts['pass'];
+            $this->password = $parts['pass'];
         }
 
         if (isset($parts['query'])) {
             parse_str($parts['query'], $query);
 
             if (isset($query['user'])) {
-                $this->_username = $query['user'];
+                $this->username = $query['user'];
             }
 
             if (isset($query['password'])) {
-                $this->_password = $query['password'];
+                $this->password = $query['password'];
             }
 
             if (isset($query['from'])) {
-                $this->_from = $query['from'];
+                $this->from = $query['from'];
             }
 
             if (isset($query['to'])) {
-                $this->_to = $query['to'];
+                $this->to = $query['to'];
             }
 
             if (isset($query['log'])) {
-                $this->_log = $query['log'];
+                $this->log = $query['log'];
             }
 
             if (isset($query['timeout'])) {
-                $this->_timeout = (int)$query['timeout'];
+                $this->timeout = (int)$query['timeout'];
             }
         }
     }
@@ -122,15 +122,15 @@ class Smtp extends Mailer
      */
     protected function connect()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($context->socket) {
             return $context->socket;
         }
 
-        $uri = ($this->_scheme === 'smtp' ? '' : "$this->_scheme://") . $this->_host;
-        if (!$socket = fsockopen($uri, $this->_port, $errno, $errstr, $this->_timeout)) {
-            throw new ConnectionException(['connect to `:1::2` mailer server failed: :3', $uri, $this->_port, $errstr]);
+        $uri = ($this->scheme === 'smtp' ? '' : "$this->scheme://") . $this->host;
+        if (!$socket = fsockopen($uri, $this->port, $errno, $errstr, $this->timeout)) {
+            throw new ConnectionException(['connect to `:1::2` mailer server failed: :3', $uri, $this->port, $errstr]);
         }
 
         $response = fgets($socket);
@@ -187,11 +187,11 @@ class Smtp extends Mailer
      */
     protected function writeLine($data = null)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($data !== null) {
             if (fwrite($context->socket, $data) === false) {
-                throw new TransmitException(['send data failed: :uri', 'uri' => $this->_uri]);
+                throw new TransmitException(['send data failed: :uri', 'uri' => $this->uri]);
             }
             file_put_contents($context->file, $data, FILE_APPEND);
         }
@@ -199,7 +199,7 @@ class Smtp extends Mailer
         file_put_contents($context->file, PHP_EOL, FILE_APPEND);
 
         if (fwrite($context->socket, "\r\n") === false) {
-            throw new TransmitException(['send data failed: :uri', 'uri' => $this->_uri]);
+            throw new TransmitException(['send data failed: :uri', 'uri' => $this->uri]);
         }
 
         return $this;
@@ -211,10 +211,10 @@ class Smtp extends Mailer
      */
     protected function readLine()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if (($str = fgets($context->socket)) === false) {
-            throw new TransmitException(['receive data failed: :uri', 'uri' => $this->_uri]);
+            throw new TransmitException(['receive data failed: :uri', 'uri' => $this->uri]);
         }
 
         file_put_contents($context->file, str_replace("\r\n", PHP_EOL, $str), FILE_APPEND);
@@ -367,16 +367,16 @@ class Smtp extends Mailer
         $this->connect();
 
         $this->transmit('HELO localhost', [250]);
-        if ($this->_password) {
+        if ($this->password) {
             $this->transmit('AUTH LOGIN', [334]);
 
-            list($code, $msg) = $this->transmit(base64_encode($this->_username));
+            list($code, $msg) = $this->transmit(base64_encode($this->username));
             if ($code !== 334) {
-                throw new AuthenticationException(['authenticate with `%s` failed: %d %s', $this->_uri, $code, $msg]);
+                throw new AuthenticationException(['authenticate with `%s` failed: %d %s', $this->uri, $code, $msg]);
             }
-            list($code, $msg) = $this->transmit(base64_encode($this->_password));
+            list($code, $msg) = $this->transmit(base64_encode($this->password));
             if ($code !== 235) {
-                throw new AuthenticationException(['authenticate with `%s` failed: %d %s', $this->_uri, $code, $msg]);
+                throw new AuthenticationException(['authenticate with `%s` failed: %d %s', $this->uri, $code, $msg]);
             }
         }
 

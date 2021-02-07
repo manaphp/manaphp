@@ -9,12 +9,12 @@ class HasOne extends Relation
     /**
      * @var string
      */
-    protected $_thisField;
+    protected $thisField;
 
     /**
      * @var string
      */
-    protected $_thatField;
+    protected $thatField;
 
     /**
      * @param string $thisModel
@@ -24,10 +24,10 @@ class HasOne extends Relation
      */
     public function __construct($thisModel, $thisField, $thatModel, $thatField)
     {
-        $this->_thisModel = $thisModel;
-        $this->_thisField = $thisField;
-        $this->_thatModel = $thatModel;
-        $this->_thatField = $thatField;
+        $this->thisModel = $thisModel;
+        $this->thisField = $thisField;
+        $this->thatModel = $thatModel;
+        $this->thatField = $thatField;
     }
 
     /**
@@ -39,8 +39,8 @@ class HasOne extends Relation
      */
     public function earlyLoad($r, $query, $name)
     {
-        $thisField = $this->_thisField;
-        $thatField = $this->_thatField;
+        $thisField = $this->thisField;
+        $thatField = $this->thatField;
 
         $ids = array_values(array_unique(array_column($r, $thisField)));
         $data = $query->whereIn($thatField, $ids)->indexBy($thatField)->fetch();
@@ -61,9 +61,9 @@ class HasOne extends Relation
     public function lazyLoad($instance)
     {
         /** @var \ManaPHP\Data\Model $thatModel */
-        $thatModel = $this->_thatModel;
-        $thisField = $this->_thisField;
-        $thatField = $this->_thatField;
+        $thatModel = $this->thatModel;
+        $thisField = $this->thisField;
+        $thatField = $this->thatField;
 
         return $thatModel::select()->whereEq($thatField, $instance->$thisField)->setFetchType(false);
     }

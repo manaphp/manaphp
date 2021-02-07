@@ -17,7 +17,7 @@ class Application extends \ManaPHP\Application implements LogCategorizable
     /**
      * @var int
      */
-    protected $_exit_code;
+    protected $exit_code;
 
     /**
      * @return string
@@ -51,14 +51,14 @@ class Application extends \ManaPHP\Application implements LogCategorizable
         $this->logger->info(['command line: :cmd', 'cmd' => basename($GLOBALS['argv'][0]) . ' ' . $args]);
 
         try {
-            $this->_exit_code = $this->cliHandler->handle();
+            $this->exit_code = $this->cliHandler->handle();
         } catch (AbortException $exception) {
-            $this->_exit_code = 0;
+            $this->exit_code = 0;
         } catch (\ManaPHP\Cli\Request\Exception $exception) {
-            $this->_exit_code = 254;
+            $this->exit_code = 254;
             $this->errorHandler->handle($exception);
         } catch (Throwable $throwable) {
-            $this->_exit_code = 255;
+            $this->exit_code = 255;
             $this->errorHandler->handle($throwable);
         }
     }
@@ -78,7 +78,7 @@ class Application extends \ManaPHP\Application implements LogCategorizable
             $this->handle();
         }
 
-        exit($this->_exit_code);
+        exit($this->exit_code);
     }
 
     public function cli()

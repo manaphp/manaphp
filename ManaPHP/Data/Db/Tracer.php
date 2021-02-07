@@ -13,14 +13,14 @@ class Tracer extends \ManaPHP\Event\Tracer
     {
         parent::__construct($options);
 
-        $this->_verbose && $this->attachEvent('db:connecting', [$this, 'onConnecting']);
+        $this->verbose && $this->attachEvent('db:connecting', [$this, 'onConnecting']);
         $this->attachEvent('db:queried', [$this, 'onQueried']);
         $this->attachEvent('db:executed', [$this, 'onExecuted']);
         $this->attachEvent('db:inserted', [$this, 'onInserted']);
         $this->attachEvent('db:begin', [$this, 'onBegin']);
         $this->attachEvent('db:rollback', [$this, 'onRollback']);
         $this->attachEvent('db:commit', [$this, 'onCommit']);
-        $this->_verbose && $this->attachEvent('db:metadata', [$this, 'onMetadata']);
+        $this->verbose && $this->attachEvent('db:metadata', [$this, 'onMetadata']);
         $this->attachEvent('db:abnormal', [$this, 'onAbnormal']);
     }
 
@@ -55,7 +55,7 @@ class Tracer extends \ManaPHP\Event\Tracer
     {
         $data = $eventArgs->data;
 
-        if (!$this->_verbose) {
+        if (!$this->verbose) {
             unset($data['result']);
         }
         $this->logger->debug($data, 'db.query');

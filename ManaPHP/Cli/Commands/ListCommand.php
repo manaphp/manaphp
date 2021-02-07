@@ -20,7 +20,7 @@ class ListCommand extends Command
             $component_options[$property->getName()] = 1;
         }
 
-        foreach ($this->_container->getDefinitions() as $name => $definition) {
+        foreach ($this->container->getDefinitions() as $name => $definition) {
             if (fnmatch('*Command', $name) || fnmatch('*Tracer', $name) || fnmatch('*Plugin', $name)) {
                 continue;
             }
@@ -91,7 +91,7 @@ class ListCommand extends Command
     public function componentsAction($verbose = false, $all = false)
     {
         $components = [];
-        foreach ($this->_container->getDefinitions() as $name => $definition) {
+        foreach ($this->container->getDefinitions() as $name => $definition) {
             if (!$all) {
                 if (fnmatch('*Command', $name) || fnmatch('*Tracer', $name) || fnmatch('*Plugin', $name)) {
                     continue;
@@ -138,7 +138,7 @@ class ListCommand extends Command
     public function pluginsAction($verbose = false)
     {
         $tracers = [];
-        foreach ($this->_container->getDefinitions('*Plugin') as $name => $definition) {
+        foreach ($this->container->getDefinitions('*Plugin') as $name => $definition) {
             $tracers[basename($name, 'Plugin')] = $definition;
         }
 
@@ -163,7 +163,7 @@ class ListCommand extends Command
     public function tracersAction($verbose = false)
     {
         $tracers = [];
-        foreach ($this->_container->getDefinitions('*Tracer') as $name => $definition) {
+        foreach ($this->container->getDefinitions('*Tracer') as $name => $definition) {
             $tracers[basename($name, 'Tracer')] = $definition;
         }
 

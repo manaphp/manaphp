@@ -16,7 +16,7 @@ class Mssql extends Connection
      */
     public function __construct($uri)
     {
-        $this->_uri = $uri;
+        $this->uri = $uri;
 
         $parts = parse_url($uri);
 
@@ -24,8 +24,8 @@ class Mssql extends Connection
             throw new DsnFormatException(['`%s` is invalid, `%s` scheme is not recognized', $uri, $parts['scheme']]);
         }
 
-        $this->_username = $parts['user'] ?? null;
-        $this->_password = $parts['pass'] ?? null;
+        $this->username = $parts['user'] ?? null;
+        $this->password = $parts['pass'] ?? null;
 
         $dsn = [];
         $use_dblib = DIRECTORY_SEPARATOR === '/';
@@ -42,14 +42,14 @@ class Mssql extends Connection
             }
         }
 
-        $this->_options[PDO::ATTR_STRINGIFY_FETCHES] = true;
+        $this->options[PDO::ATTR_STRINGIFY_FETCHES] = true;
 
         $dsn_parts = [];
         foreach ($dsn as $k => $v) {
             $dsn_parts[] = $k . '=' . $v;
         }
 
-        $this->_dsn = ($use_dblib ? 'dblib:' : 'sqlsrv:') . implode(';', $dsn_parts);
+        $this->dsn = ($use_dblib ? 'dblib:' : 'sqlsrv:') . implode(';', $dsn_parts);
 
         parent::__construct();
     }

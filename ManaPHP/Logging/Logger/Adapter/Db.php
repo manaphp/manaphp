@@ -10,7 +10,7 @@ class Db extends Logger
     /**
      * @var string
      */
-    protected $_table = 'manaphp_log';
+    protected $table = 'manaphp_log';
 
     /**
      * @param array $options
@@ -18,13 +18,13 @@ class Db extends Logger
     public function __construct($options = [])
     {
         if (isset($options['db'])) {
-            $this->_injections['db'] = $options['db'];
+            $this->injections['db'] = $options['db'];
         }
 
         parent::__construct($options);
 
         if (isset($options['table'])) {
-            $this->_table = $options['table'];
+            $this->table = $options['table'];
         }
     }
 
@@ -35,7 +35,7 @@ class Db extends Logger
      */
     public function append($logs)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $level = $context->level;
         $context->level = Logger::LEVEL_FATAL;
@@ -43,7 +43,7 @@ class Db extends Logger
         foreach ($logs as $log) {
             try {
                 $this->db->insert(
-                    $this->_table, [
+                    $this->table, [
                         'host'         => $log->host,
                         'client_ip'    => $log->client_ip,
                         'request_id'   => $log->request_id,

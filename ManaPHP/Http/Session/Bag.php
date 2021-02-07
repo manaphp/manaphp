@@ -12,14 +12,14 @@ class Bag extends Component implements BagInterface
     /**
      * @var string
      */
-    protected $_name;
+    protected $name;
 
     /**
      * @param string $name
      */
     public function __construct($name)
     {
-        $this->_name = $name;
+        $this->name = $name;
     }
 
     /**
@@ -29,7 +29,7 @@ class Bag extends Component implements BagInterface
      */
     public function destroy()
     {
-        $this->session->remove($this->_name);
+        $this->session->remove($this->name);
     }
 
     /**
@@ -43,10 +43,10 @@ class Bag extends Component implements BagInterface
     public function set($property, $value)
     {
         $defaultCurrentValue = [];
-        $data = $this->session->get($this->_name, $defaultCurrentValue);
+        $data = $this->session->get($this->name, $defaultCurrentValue);
         $data[$property] = $value;
 
-        $this->session->set($this->_name, $data);
+        $this->session->set($this->name, $data);
     }
 
     /**
@@ -60,7 +60,7 @@ class Bag extends Component implements BagInterface
     public function get($property = null, $default = null)
     {
         $defaultCurrentValue = [];
-        $data = $this->session->get($this->_name, $defaultCurrentValue);
+        $data = $this->session->get($this->name, $defaultCurrentValue);
 
         if ($property === null) {
             return $data;
@@ -79,7 +79,7 @@ class Bag extends Component implements BagInterface
     public function has($property)
     {
         $defaultCurrentValue = [];
-        $data = $this->session->get($this->_name, $defaultCurrentValue);
+        $data = $this->session->get($this->name, $defaultCurrentValue);
 
         return isset($data[$property]);
     }
@@ -94,9 +94,9 @@ class Bag extends Component implements BagInterface
     public function remove($property)
     {
         $defaultCurrentValue = [];
-        $data = $this->session->get($this->_name, $defaultCurrentValue);
+        $data = $this->session->get($this->name, $defaultCurrentValue);
         unset($data[$property]);
 
-        $this->session->set($this->_name, $data);
+        $this->session->set($this->name, $data);
     }
 }

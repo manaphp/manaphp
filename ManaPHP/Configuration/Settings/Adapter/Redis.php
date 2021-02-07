@@ -11,12 +11,12 @@ class Redis extends Component implements SettingsInterface
     /**
      * @var string
      */
-    protected $_key = 'settings';
+    protected $key = 'settings';
 
     /**
      * @var int
      */
-    protected $_ttl = 1;
+    protected $ttl = 1;
 
     /**
      * @param array $options
@@ -24,15 +24,15 @@ class Redis extends Component implements SettingsInterface
     public function __construct($options = [])
     {
         if (isset($options['redisDb'])) {
-            $this->_injections['redisDb'] = $options['redisDb'];
+            $this->injections['redisDb'] = $options['redisDb'];
         }
 
         if (isset($options['key'])) {
-            $this->_key = $options['key'];
+            $this->key = $options['key'];
         }
 
         if (isset($options['ttl'])) {
-            $this->_ttl = (int)$options['ttl'];
+            $this->ttl = (int)$options['ttl'];
         }
     }
 
@@ -44,8 +44,8 @@ class Redis extends Component implements SettingsInterface
      */
     public function get($key, $default = null)
     {
-        if ($this->_ttl <= 0) {
-            if (($value = $this->redisDb->hGet($this->_key, $key)) === false) {
+        if ($this->ttl <= 0) {
+            if (($value = $this->redisDb->hGet($this->key, $key)) === false) {
                 if ($default === null) {
                     throw new InvalidArgumentException(['`%s` key is not exists', $key]);
                 } else {
@@ -55,8 +55,8 @@ class Redis extends Component implements SettingsInterface
             return $value;
         } else {
             return apcu_remember(
-                $this->_key . ':' . $key, $this->_ttl, function () use ($default, $key) {
-                if (($value = $this->redisDb->hGet($this->_key, $key)) === false) {
+                $this->key . ':' . $key, $this->ttl, function () use ($default, $key) {
+                if (($value = $this->redisDb->hGet($this->key, $key)) === false) {
                     if ($default === null) {
                         throw new InvalidArgumentException(['`%s` key is not exists', $key]);
                     } else {
@@ -76,7 +76,7 @@ class Redis extends Component implements SettingsInterface
      */
     public function mGet($keys)
     {
-        $values = $this->redisDb->hMGet($this->_key, $keys);
+        $values = $this->redisDb->hMGet($this->key, $keys);
 
         foreach ($keys as $key) {
             if (!isset($values[$key])) {
@@ -95,7 +95,7 @@ class Redis extends Component implements SettingsInterface
      */
     public function set($key, $value)
     {
-        $this->redisDb->hSet($this->_key, $key, (string)$value);
+        $this->redisDb->hSet($this->key, $key, (string)$value);
 
         return $this;
     }
@@ -107,7 +107,7 @@ class Redis extends Component implements SettingsInterface
      */
     public function mSet($kvs)
     {
-        $this->redisDb->hMSet($this->_key, $kvs);
+        $this->redisDb->hMSet($this->key, $kvs);
 
         return $this;
     }
@@ -119,7 +119,7 @@ class Redis extends Component implements SettingsInterface
      */
     public function exists($key)
     {
-        return $this->redisDb->hExists($this->_key, $key);
+        return $this->redisDb->hExists($this->key, $key);
     }
 
     /**
@@ -129,7 +129,7 @@ class Redis extends Component implements SettingsInterface
      */
     public function delete($key)
     {
-        $this->redisDb->hDel($this->_key, $key);
+        $this->redisDb->hDel($this->key, $key);
 
         return $this;
     }

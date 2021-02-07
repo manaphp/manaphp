@@ -14,57 +14,57 @@ class Connection extends Component
     /**
      * @var string
      */
-    protected $_uri;
+    protected $uri;
 
     /**
      * @var string
      */
-    protected $_host;
+    protected $host;
 
     /**
      * @var int
      */
-    protected $_port;
+    protected $port;
 
     /**
      * @var float
      */
-    protected $_timeout = 0.0;
+    protected $timeout = 0.0;
 
     /**
      * @var string
      */
-    protected $_auth;
+    protected $auth;
 
     /**
      * @var int
      */
-    protected $_db = 0;
+    protected $db = 0;
 
     /**
      * @var bool
      */
-    protected $_persistent = false;
+    protected $persistent = false;
 
     /**
      * @var int
      */
-    protected $_heartbeat = 60;
+    protected $heartbeat = 60;
 
     /**
      * @var \Redis
      */
-    protected $_redis;
+    protected $redis;
 
     /**
      * @var float
      */
-    protected $_last_heartbeat;
+    protected $last_heartbeat;
 
     /**
      * @var bool
      */
-    protected $_multi = false;
+    protected $multi = false;
 
     /**
      * @param string|\ManaPHP\Data\Redis\Connection $uri
@@ -73,7 +73,7 @@ class Connection extends Component
      */
     public function __construct($uri)
     {
-        $this->_uri = $uri;
+        $this->uri = $uri;
 
         $parts = parse_url($uri);
 
@@ -81,47 +81,47 @@ class Connection extends Component
             throw new DsnFormatException(['`%s` is invalid, `%s` scheme is not recognized', $uri, $parts['scheme']]);
         }
 
-        $this->_host = $parts['host'] ?? '127.0.0.1';
-        $this->_port = isset($parts['port']) ? (int)$parts['port'] : 6379;
+        $this->host = $parts['host'] ?? '127.0.0.1';
+        $this->port = isset($parts['port']) ? (int)$parts['port'] : 6379;
 
         if (isset($parts['path'])) {
             $path = trim($parts['path'], '/');
             if ($path !== '' && !is_numeric($path)) {
                 throw new DsnFormatException(['`%s` is invalid, `%s` db is not integer', $uri, $path]);
             }
-            $this->_db = (int)$path;
+            $this->db = (int)$path;
         }
 
         if (isset($parts['query'])) {
             parse_str($parts['query'], $query);
 
             if (isset($query['db'])) {
-                $this->_db = (int)$query['db'];
+                $this->db = (int)$query['db'];
             }
 
             if (isset($query['auth'])) {
-                $this->_auth = $query['auth'];
+                $this->auth = $query['auth'];
             }
 
             if (isset($query['timeout'])) {
-                $this->_timeout = (float)$query['timeout'];
+                $this->timeout = (float)$query['timeout'];
             }
 
             if (isset($query['persistent'])) {
-                $this->_persistent = !MANAPHP_COROUTINE_ENABLED && $query['persistent'] === '1';
+                $this->persistent = !MANAPHP_COROUTINE_ENABLED && $query['persistent'] === '1';
             }
 
             if (isset($query['heartbeat'])) {
-                $this->_heartbeat = $query['heartbeat'];
+                $this->heartbeat = $query['heartbeat'];
             }
         }
     }
 
     public function __clone()
     {
-        $this->_redis = null;
-        $this->_last_heartbeat = null;
-        $this->_multi = false;
+        $this->redis = null;
+        $this->last_heartbeat = null;
+        $this->multi = false;
     }
 
     /**
@@ -129,7 +129,7 @@ class Connection extends Component
      */
     public function getUri()
     {
-        return $this->_uri;
+        return $this->uri;
     }
 
     /**
@@ -137,28 +137,28 @@ class Connection extends Component
      */
     public function getConnect()
     {
-        if ($this->_redis === null) {
-            $uri = $this->_uri;
+        if ($this->redis === null) {
+            $uri = $this->uri;
 
             $this->fireEvent('redis:connecting', compact('uri'));
 
             $redis = $this->getNew('Redis');
 
             try {
-                if ($this->_persistent) {
-                    if (!@$redis->pconnect($this->_host, $this->_port, $this->_timeout, $this->_db)) {
-                        throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->_uri]);
+                if ($this->persistent) {
+                    if (!@$redis->pconnect($this->host, $this->port, $this->timeout, $this->db)) {
+                        throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->uri]);
                     }
-                } elseif (!@$redis->connect($this->_host, $this->_port, $this->_timeout)) {
-                    throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->_uri]);
+                } elseif (!@$redis->connect($this->host, $this->port, $this->timeout)) {
+                    throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->uri]);
                 }
 
-                if ($this->_auth && !$redis->auth($this->_auth)) {
-                    throw new AuthException(['`:auth` auth is wrong.', 'auth' => $this->_auth]);
+                if ($this->auth && !$redis->auth($this->auth)) {
+                    throw new AuthException(['`:auth` auth is wrong.', 'auth' => $this->auth]);
                 }
 
-                if ($this->_db !== 0 && !$redis->select($this->_db)) {
-                    throw new RuntimeException(['select `:db` db failed', 'db' => $this->_db]);
+                if ($this->db !== 0 && !$redis->select($this->db)) {
+                    throw new RuntimeException(['select `:db` db failed', 'db' => $this->db]);
                 }
 
                 $this->fireEvent('redis:connected', compact('uri', 'redis'));
@@ -167,10 +167,10 @@ class Connection extends Component
             }
 
             $redis->setOption(Redis::OPT_READ_TIMEOUT, -1);
-            $this->_redis = $redis;
+            $this->redis = $redis;
         }
 
-        return $this->_redis;
+        return $this->redis;
     }
 
     /**
@@ -179,7 +179,7 @@ class Connection extends Component
     protected function ping()
     {
         try {
-            $this->_redis->echo('OK');
+            $this->redis->echo('OK');
             return true;
         } catch (\Exception  $exception) {
             return false;
@@ -191,15 +191,15 @@ class Connection extends Component
      */
     public function close()
     {
-        if ($this->_redis) {
-            $uri = $this->_uri;
-            $redis = $this->_redis;
+        if ($this->redis) {
+            $uri = $this->uri;
+            $redis = $this->redis;
             $this->fireEvent('redis:close', compact('uri', 'redis'));
 
-            $this->_redis->close();
-            $this->_redis = null;
-            $this->_last_heartbeat = null;
-            $this->_multi = false;
+            $this->redis->close();
+            $this->redis = null;
+            $this->last_heartbeat = null;
+            $this->multi = false;
         }
     }
 
@@ -218,7 +218,7 @@ class Connection extends Component
         } catch (\Exception  $exception) {
             $r = null;
             $failed = true;
-            if (!$this->_multi && !$this->ping()) {
+            if (!$this->multi && !$this->ping()) {
                 $this->close();
                 $this->getConnect();
 
@@ -230,18 +230,18 @@ class Connection extends Component
             }
 
             if ($failed) {
-                $this->_multi = false;
+                $this->multi = false;
                 throw new RedisException($exception->getMessage(), $exception->getCode(), $exception);
             }
         }
 
         if ($name === 'multi') {
-            $this->_multi = true;
+            $this->multi = true;
         } elseif ($name === 'exec' || $name === 'discard') {
-            $this->_multi = false;
+            $this->multi = false;
         }
 
-        $this->_last_heartbeat = microtime(true);
+        $this->last_heartbeat = microtime(true);
 
         return $r;
     }
@@ -251,6 +251,6 @@ class Connection extends Component
      */
     public function getLastHeartbeat()
     {
-        return $this->_last_heartbeat;
+        return $this->last_heartbeat;
     }
 }

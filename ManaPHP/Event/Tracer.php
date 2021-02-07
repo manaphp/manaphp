@@ -10,12 +10,12 @@ class Tracer extends Component implements LogCategorizable
     /**
      * @var bool
      */
-    protected $_verbose = false;
+    protected $verbose = false;
 
     public function __construct($options = [])
     {
         if (isset($options['verbose'])) {
-            $this->_verbose = (bool)$options['verbose'];
+            $this->verbose = (bool)$options['verbose'];
         }
     }
 

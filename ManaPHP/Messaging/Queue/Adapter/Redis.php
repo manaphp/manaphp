@@ -10,17 +10,17 @@ class Redis extends Queue
     /**
      * @var string
      */
-    protected $_prefix;
+    protected $prefix;
 
     /**
      * @var int[]
      */
-    protected $_priorities = [Queue::PRIORITY_HIGHEST, Queue::PRIORITY_NORMAL, Queue::PRIORITY_LOWEST];
+    protected $priorities = [Queue::PRIORITY_HIGHEST, Queue::PRIORITY_NORMAL, Queue::PRIORITY_LOWEST];
 
     /**
      * @var array[]
      */
-    protected $_topicKeys = [];
+    protected $topicKeys = [];
 
     /**
      * @param array $options
@@ -28,13 +28,13 @@ class Redis extends Queue
     public function __construct($options = [])
     {
         if (isset($options['redisBroker'])) {
-            $this->_injections['redisBroker'] = $options['redisBroker'];
+            $this->injections['redisBroker'] = $options['redisBroker'];
         }
 
-        $this->_prefix = $options['prefix'] ?? 'cache:msgQueue:';
+        $this->prefix = $options['prefix'] ?? 'cache:msgQueue:';
 
         if (isset($options['priorities'])) {
-            $this->_priorities = (array)$options['priorities'];
+            $this->priorities = (array)$options['priorities'];
         }
     }
 
@@ -45,11 +45,11 @@ class Redis extends Queue
      */
     public function do_push($topic, $body, $priority = Queue::PRIORITY_NORMAL)
     {
-        if (!in_array($priority, $this->_priorities, true)) {
+        if (!in_array($priority, $this->priorities, true)) {
             throw new MisuseException(['`%d` priority of `%s` is invalid', $priority, $topic]);
         }
 
-        $this->redisBroker->lPush($this->_prefix . $topic . ':' . $priority, $body);
+        $this->redisBroker->lPush($this->prefix . $topic . ':' . $priority, $body);
     }
 
     /**
@@ -60,18 +60,18 @@ class Redis extends Queue
      */
     public function do_pop($topic, $timeout = PHP_INT_MAX)
     {
-        if (!isset($this->_topicKeys[$topic])) {
+        if (!isset($this->topicKeys[$topic])) {
             $keys = [];
-            foreach ($this->_priorities as $priority) {
-                $keys[] = $this->_prefix . $topic . ':' . $priority;
+            foreach ($this->priorities as $priority) {
+                $keys[] = $this->prefix . $topic . ':' . $priority;
             }
 
-            $this->_topicKeys[$topic] = $keys;
+            $this->topicKeys[$topic] = $keys;
         }
 
 
         if ($timeout === 0) {
-            foreach ($this->_topicKeys[$topic] as $key) {
+            foreach ($this->topicKeys[$topic] as $key) {
                 $r = $this->redisBroker->rPop($key);
                 if ($r !== false) {
                     return $r;
@@ -80,7 +80,7 @@ class Redis extends Queue
 
             return false;
         } else {
-            $r = $this->redisBroker->brPop($this->_topicKeys[$topic], $timeout);
+            $r = $this->redisBroker->brPop($this->topicKeys[$topic], $timeout);
             return $r[1] ?? false;
         }
     }
@@ -92,8 +92,8 @@ class Redis extends Queue
      */
     public function do_delete($topic)
     {
-        foreach ($this->_priorities as $priority) {
-            $this->redisBroker->del($this->_prefix . $topic . ':' . $priority);
+        foreach ($this->priorities as $priority) {
+            $this->redisBroker->del($this->prefix . $topic . ':' . $priority);
         }
     }
 
@@ -107,13 +107,13 @@ class Redis extends Queue
     {
         if ($priority === null) {
             $length = 0;
-            foreach ($this->_priorities as $p) {
-                $length += $this->redisBroker->lLen($this->_prefix . $topic . ':' . $p);
+            foreach ($this->priorities as $p) {
+                $length += $this->redisBroker->lLen($this->prefix . $topic . ':' . $p);
             }
 
             return $length;
         } else {
-            return $this->redisBroker->lLen($this->_prefix . $topic . ':' . $priority);
+            return $this->redisBroker->lLen($this->prefix . $topic . ':' . $priority);
         }
     }
 }

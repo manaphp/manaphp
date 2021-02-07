@@ -18,7 +18,7 @@ class Invoker extends Component implements InvokerInterface
     public function __construct($options = [])
     {
         if (isset($options['validator'])) {
-            $this->_injections['validator'] = $options['validator'];
+            $this->injections['validator'] = $options['validator'];
         }
     }
 
@@ -33,7 +33,7 @@ class Invoker extends Component implements InvokerInterface
         $args = [];
         $missing = [];
 
-        $container = $this->_container;
+        $container = $this->container;
 
         $parameters = (new ReflectionMethod($controller, $method))->getParameters();
         foreach ($parameters as $parameter) {

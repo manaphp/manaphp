@@ -26,34 +26,34 @@ class SwooleContext
 }
 
 /**
- * @property-read \ManaPHP\Rpc\Server\Adapter\SwooleContext $_context
+ * @property-read \ManaPHP\Rpc\Server\Adapter\SwooleContext $context
  */
 class Swoole extends \ManaPHP\Rpc\Server
 {
     /**
      * @var array
      */
-    protected $_settings = [];
+    protected $settings = [];
 
     /**
      * @var \Swoole\WebSocket\Server
      */
-    protected $_swoole;
+    protected $swoole;
 
     /**
      * @var ArrayObject[]
      */
-    protected $_contexts = [];
+    protected $contexts = [];
 
     /**
      * @var array
      */
-    protected $_messageCoroutines = [];
+    protected $messageCoroutines = [];
 
     /**
      * @var array
      */
-    protected $_closeCoroutine = [];
+    protected $closeCoroutine = [];
 
     /**
      * @param array $options
@@ -67,7 +67,7 @@ class Swoole extends \ManaPHP\Rpc\Server
             'DOCUMENT_ROOT'   => dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,
             'SCRIPT_NAME'     => '/' . basename($script_filename),
-            'SERVER_ADDR'     => $this->_host,
+            'SERVER_ADDR'     => $this->host,
             'SERVER_SOFTWARE' => 'Swoole/' . SWOOLE_VERSION . ' (' . PHP_OS . ') PHP/' . PHP_VERSION,
             'PHP_SELF'        => '/' . basename($script_filename),
             'QUERY_STRING'    => '',
@@ -91,20 +91,20 @@ class Swoole extends \ManaPHP\Rpc\Server
         $options['enable_coroutine'] = MANAPHP_COROUTINE_ENABLED ? 1 : 0;
 
         unset($options['host'], $options['port']);
-        $this->_settings = $options ?: [];
+        $this->settings = $options ?: [];
 
-        $this->_swoole = new Server($this->_host, $this->_port);
-        $this->_swoole->set($this->_settings);
+        $this->swoole = new Server($this->host, $this->port);
+        $this->swoole->set($this->settings);
 
-        $this->_swoole->on('Start', [$this, 'onStart']);
-        $this->_swoole->on('ManagerStart', [$this, 'onManagerStart']);
-        $this->_swoole->on('WorkerStart', [$this, 'onWorkerStart']);
+        $this->swoole->on('Start', [$this, 'onStart']);
+        $this->swoole->on('ManagerStart', [$this, 'onManagerStart']);
+        $this->swoole->on('WorkerStart', [$this, 'onWorkerStart']);
 
-        $this->_swoole->on('request', [$this, 'onRequest']);
+        $this->swoole->on('request', [$this, 'onRequest']);
 
-        $this->_swoole->on('open', [$this, 'onOpen']);
-        $this->_swoole->on('close', [$this, 'onClose']);
-        $this->_swoole->on('message', [$this, 'onMessage']);
+        $this->swoole->on('open', [$this, 'onOpen']);
+        $this->swoole->on('close', [$this, 'onClose']);
+        $this->swoole->on('message', [$this, 'onMessage']);
     }
 
     /**
@@ -180,13 +180,13 @@ class Swoole extends \ManaPHP\Rpc\Server
             return;
         }
 
-        $this->_context->response = $response;
+        $this->context->response = $response;
 
         try {
             $this->prepareGlobals($request);
 
             if ($this->authenticate()) {
-                $this->_handler->handle();
+                $this->handler->handle();
             } else {
                 $this->send($this->response->getContext());
             }
@@ -215,11 +215,11 @@ class Swoole extends \ManaPHP\Rpc\Server
 
             $response = $this->response->getContext();
             if (!$this->authenticate()) {
-                $this->_context->fd = $fd;
+                $this->context->fd = $fd;
                 $this->send($response);
                 $server->close($fd);
             } elseif ($response->content) {
-                $this->_context->fd = $fd;
+                $this->context->fd = $fd;
                 $this->send($response);
             }
 
@@ -230,15 +230,15 @@ class Swoole extends \ManaPHP\Rpc\Server
                 }
             }
 
-            $this->_contexts[$fd] = $context;
+            $this->contexts[$fd] = $context;
 
-            foreach ($this->_messageCoroutines[$fd] ?? [] as $cid) {
+            foreach ($this->messageCoroutines[$fd] ?? [] as $cid) {
                 Coroutine::resume($cid);
             }
-            unset($this->_messageCoroutines[$fd]);
+            unset($this->messageCoroutines[$fd]);
 
-            if ($cid = $this->_closeCoroutine[$fd] ?? false) {
-                unset($this->_closeCoroutine[$fd]);
+            if ($cid = $this->closeCoroutine[$fd] ?? false) {
+                unset($this->closeCoroutine[$fd]);
                 Coroutine::resume($cid);
             }
         }
@@ -256,11 +256,11 @@ class Swoole extends \ManaPHP\Rpc\Server
             return;
         }
 
-        if (!isset($this->_contexts[$fd])) {
-            $this->_closeCoroutine[$fd] = Coroutine::getCid();
+        if (!isset($this->contexts[$fd])) {
+            $this->closeCoroutine[$fd] = Coroutine::getCid();
             Coroutine::suspend();
         }
-        unset($this->_contexts[$fd]);
+        unset($this->contexts[$fd]);
     }
 
     /**
@@ -273,10 +273,10 @@ class Swoole extends \ManaPHP\Rpc\Server
     {
         $fd = $frame->fd;
 
-        if (!$old_context = $this->_contexts[$fd] ?? false) {
-            $this->_messageCoroutines[$fd][] = Coroutine::getCid();
+        if (!$old_context = $this->contexts[$fd] ?? false) {
+            $this->messageCoroutines[$fd][] = Coroutine::getCid();
             Coroutine::suspend();
-            $old_context = $this->_contexts[$fd];
+            $old_context = $this->contexts[$fd];
         }
 
         /** @var \ArrayObject $current_context */
@@ -285,7 +285,7 @@ class Swoole extends \ManaPHP\Rpc\Server
             $current_context[$k] = $v;
         }
 
-        $this->_context->fd = $fd;
+        $this->context->fd = $fd;
 
         $this->request->setRequestId();
 
@@ -308,7 +308,7 @@ class Swoole extends \ManaPHP\Rpc\Server
             $globals->_SERVER['REQUEST_TIME_FLOAT'] = microtime(true);
             $globals->_SERVER['REQUEST_TIME'] = (int)$globals->_SERVER['REQUEST_TIME_FLOAT'];
             try {
-                $this->_handler->handle();
+                $this->handler->handle();
             } catch (Throwable $throwable) {
                 $response->content = ['code' => -32603, 'message' => 'Internal error'];
                 $this->logger->warn($throwable);
@@ -329,7 +329,7 @@ class Swoole extends \ManaPHP\Rpc\Server
      */
     public function send($response)
     {
-        $context = $this->_context;
+        $context = $this->context;
         if ($context->fd) {
             $headers = [
                 'X-Request-Id'    => $this->request->getRequestId(),
@@ -342,9 +342,9 @@ class Swoole extends \ManaPHP\Rpc\Server
             } else {
                 $content = ['jsonrpc' => '2.0', 'error' => $response->content, 'id' => $id, 'headers' => $headers];
             }
-            $this->_swoole->push($context->fd, json_stringify($content));
+            $this->swoole->push($context->fd, json_stringify($content));
         } else {
-            $sw_response = $this->_context->response;
+            $sw_response = $this->context->response;
 
             $sw_response->status($response->status_code);
 
@@ -379,13 +379,13 @@ class Swoole extends \ManaPHP\Rpc\Server
             Runtime::enableCoroutine(true);
         }
 
-        $this->_handler = $handler;
+        $this->handler = $handler;
 
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 
-        $settings = json_stringify($this->_settings);
-        console_log('info', ['listen on: %s:%d with setting: %s', $this->_host, $this->_port, $settings]);
-        $this->_swoole->start();
+        $settings = json_stringify($this->settings);
+        console_log('info', ['listen on: %s:%d with setting: %s', $this->host, $this->port, $settings]);
+        $this->swoole->start();
         console_log('info', 'shutdown');
     }
 }

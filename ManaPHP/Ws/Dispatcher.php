@@ -7,7 +7,7 @@ class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
     /**
      * @var array
      */
-    protected $_controllers;
+    protected $controllers;
 
     /**
      * @param \ManaPHP\Controller $controller
@@ -17,9 +17,9 @@ class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
      */
     public function invokeAction($controller, $action)
     {
-        $controller_oid = $controller->_object_id;
-        if (!isset($this->_controllers[$controller_oid])) {
-            $this->_controllers[$controller_oid] = true;
+        $controller_oid = $controller->object_id;
+        if (!isset($this->controllers[$controller_oid])) {
+            $this->controllers[$controller_oid] = true;
 
             if (method_exists($controller, 'startAction')) {
                 $controller->startAction();

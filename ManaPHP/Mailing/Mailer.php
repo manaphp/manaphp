@@ -10,17 +10,17 @@ abstract class Mailer extends Component implements MailerInterface
     /**
      * @var string
      */
-    protected $_log;
+    protected $log;
 
     /**
      * @var string
      */
-    protected $_from;
+    protected $from;
 
     /**
      * @var string
      */
-    protected $_to;
+    protected $to;
 
     /**
      * @return \ManaPHP\Mailing\Mailer\Message
@@ -31,11 +31,11 @@ abstract class Mailer extends Component implements MailerInterface
 
         $message->setMailer($this);
 
-        if ($this->_from) {
-            $message->setFrom($this->_from);
+        if ($this->from) {
+            $message->setFrom($this->from);
         }
-        if ($this->_to) {
-            $message->setFrom($this->_to);
+        if ($this->to) {
+            $message->setFrom($this->to);
         }
 
         return $message;
@@ -57,8 +57,8 @@ abstract class Mailer extends Component implements MailerInterface
      */
     public function send($message, &$failedRecipients = null)
     {
-        if ($this->_log) {
-            LocalFS::fileAppend($this->_log, json_stringify($message) . PHP_EOL);
+        if ($this->log) {
+            LocalFS::fileAppend($this->log, json_stringify($message) . PHP_EOL);
         }
 
         $failedRecipients = [];

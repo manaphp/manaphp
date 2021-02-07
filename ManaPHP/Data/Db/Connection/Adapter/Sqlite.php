@@ -13,9 +13,9 @@ class Sqlite extends Connection
      */
     public function __construct($file)
     {
-        $this->_uri = $file;
+        $this->uri = $file;
 
-        $this->_dsn = 'sqlite:' . ($file[0] === '@' ? $this->alias->resolve($file) : $file);
+        $this->dsn = 'sqlite:' . ($file[0] === '@' ? $this->alias->resolve($file) : $file);
         parent::__construct();
     }
 

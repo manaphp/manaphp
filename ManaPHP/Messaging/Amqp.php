@@ -20,27 +20,27 @@ class Amqp extends Component implements AmqpInterface
     /**
      * @var string
      */
-    protected $_uri;
+    protected $uri;
 
     /**
      * @var \AMQPConnection
      */
-    protected $_connection;
+    protected $connection;
 
     /**
      * @var \AMQPChannel
      */
-    protected $_channel;
+    protected $channel;
 
     /**
      * @var \AMQPExchange[]
      */
-    protected $_exchanges = [];
+    protected $exchanges = [];
 
     /**
      * @var \AMQPQueue[]
      */
-    protected $_queues = [];
+    protected $queues = [];
 
     const MESSAGE_METADATA = '_metadata_';
 
@@ -49,7 +49,7 @@ class Amqp extends Component implements AmqpInterface
      */
     public function __construct($uri = null)
     {
-        $this->_uri = $uri;
+        $this->uri = $uri;
 
         $credentials = [];
 
@@ -88,28 +88,28 @@ class Amqp extends Component implements AmqpInterface
         }
 
         try {
-            $this->_connection = new AMQPConnection($credentials);
+            $this->connection = new AMQPConnection($credentials);
 
             if (isset($query['persistent']) && $query['persistent']) {
-                $r = $this->_connection->pconnect();
+                $r = $this->connection->pconnect();
             } else {
-                $r = $this->_connection->connect();
+                $r = $this->connection->connect();
             }
 
             if (!$r) {
-                throw new ConnectionException(['connect to `:uri` amqp broker failed', 'uri' => $this->_uri]);
+                throw new ConnectionException(['connect to `:uri` amqp broker failed', 'uri' => $this->uri]);
             }
         } catch (Exception $e) {
-            throw new ConnectionException(['connect to `%s` amqp broker failed: %s', $this->_uri, $e->getMessage()]);
+            throw new ConnectionException(['connect to `%s` amqp broker failed: %s', $this->uri, $e->getMessage()]);
         }
 
         try {
-            $this->_channel = new AMQPChannel($this->_connection);
+            $this->channel = new AMQPChannel($this->connection);
         } catch (Exception $e) {
-            throw new ConnectionException(['create channel with `%s` uri failed: %s', $this->_uri, $e->getMessage()]);
+            throw new ConnectionException(['create channel with `%s` uri failed: %s', $this->uri, $e->getMessage()]);
         }
         try {
-            $this->_exchanges[''] = new AMQPExchange($this->_channel);
+            $this->exchanges[''] = new AMQPExchange($this->channel);
         } catch (Exception $e) {
             throw new AmqpException('create default exchange instance failed');
         }
@@ -124,7 +124,7 @@ class Amqp extends Component implements AmqpInterface
      */
     public function getChannel()
     {
-        return $this->_channel;
+        return $this->channel;
     }
 
     /**
@@ -136,7 +136,7 @@ class Amqp extends Component implements AmqpInterface
     public function qos($count, $size = 0)
     {
         try {
-            $this->_channel->qos($size, $count);
+            $this->channel->qos($size, $count);
         } catch (Exception $e) {
             throw new AmqpException('set the Quality Of Service settings for the channel failed');
         }
@@ -153,12 +153,12 @@ class Amqp extends Component implements AmqpInterface
      */
     public function declareExchange($name, $type = AMQP_EX_TYPE_DIRECT, $flags = AMQP_DURABLE)
     {
-        if (isset($this->_exchanges[$name])) {
+        if (isset($this->exchanges[$name])) {
             throw new InvalidKeyException(['declare `%s` exchange failed: it is exists already', $name]);
         }
 
         try {
-            $exchange = new AMQPExchange($this->_channel);
+            $exchange = new AMQPExchange($this->channel);
 
             $exchange->setName($name);
             $exchange->setType($type);
@@ -171,7 +171,7 @@ class Amqp extends Component implements AmqpInterface
             throw new AmqpException(['declare `%s` exchange failed: `%s`', $name, $e->getMessage()]);
         }
 
-        $this->_exchanges[$name] = $exchange;
+        $this->exchanges[$name] = $exchange;
 
         return $exchange;
     }
@@ -184,9 +184,9 @@ class Amqp extends Component implements AmqpInterface
     public function getExchanges($name_only = true)
     {
         if ($name_only) {
-            return array_keys($this->_exchanges);
+            return array_keys($this->exchanges);
         } else {
-            return $this->_exchanges;
+            return $this->exchanges;
         }
     }
 
@@ -199,17 +199,17 @@ class Amqp extends Component implements AmqpInterface
      */
     public function deleteExchange($name, $flags = AMQP_NOPARAM)
     {
-        if (!isset($this->_exchanges[$name])) {
+        if (!isset($this->exchanges[$name])) {
             throw new InvalidKeyException(['delete `%s` exchange failed: it is NOT exists', $name]);
         }
 
         try {
-            $this->_exchanges[$name]->delete($flags);
+            $this->exchanges[$name]->delete($flags);
         } catch (Exception $e) {
             throw new AmqpException(['delete `%s` exchange failed: %s', $name, $e->getMessage()]);
         }
 
-        unset($this->_exchanges[$name]);
+        unset($this->exchanges[$name]);
 
         return $this;
     }
@@ -227,7 +227,7 @@ class Amqp extends Component implements AmqpInterface
         }
 
         try {
-            $queue = new AMQPQueue($this->_channel);
+            $queue = new AMQPQueue($this->channel);
 
             $queue->setName($name);
             $queue->setFlags($flags);
@@ -237,7 +237,7 @@ class Amqp extends Component implements AmqpInterface
             throw new AmqpException(['declare `%s` queue failed: `%s`', $name, $e->getMessage()]);
         }
 
-        $this->_queues[$name] = $queue;
+        $this->queues[$name] = $queue;
 
         return $queue;
     }
@@ -250,9 +250,9 @@ class Amqp extends Component implements AmqpInterface
     public function getQueues($name_only = true)
     {
         if ($name_only) {
-            return array_keys($this->_queues);
+            return array_keys($this->queues);
         } else {
-            return $this->_queues;
+            return $this->queues;
         }
     }
 
@@ -265,7 +265,7 @@ class Amqp extends Component implements AmqpInterface
      */
     public function bindQueue($queue, $exchange, $binding_key = '')
     {
-        if (!isset($this->_queues[$queue])) {
+        if (!isset($this->queues[$queue])) {
             throw new InvalidKeyException(
                 [
                     'bind `:queue` queue to `:exchange` exchange with `:binding_key` binding key failed: queue is NOT exists',
@@ -276,7 +276,7 @@ class Amqp extends Component implements AmqpInterface
             );
         }
 
-        if (!isset($this->_exchanges[$exchange])) {
+        if (!isset($this->exchanges[$exchange])) {
             throw new AmqpException(
                 [
                     'bind `:queue` queue to `:exchange` exchange with `:binding_key` binding key failed: exchange is NOT exists',
@@ -288,7 +288,7 @@ class Amqp extends Component implements AmqpInterface
         }
 
         try {
-            $this->_queues[$queue]->bind($exchange, $binding_key);
+            $this->queues[$queue]->bind($exchange, $binding_key);
         } catch (Exception $e) {
             throw new AmqpException(
                 [
@@ -313,12 +313,12 @@ class Amqp extends Component implements AmqpInterface
      */
     public function purgeQueue($name)
     {
-        if (!isset($this->_queues[$name])) {
+        if (!isset($this->queues[$name])) {
             throw new InvalidKeyException(['purge `:queue` queue failed: it is NOT exists', 'queue' => $name]);
         }
 
         try {
-            $this->_queues[$name]->purge();
+            $this->queues[$name]->purge();
         } catch (Exception $e) {
             throw new AmqpException(['purge `%s` queue failed: %s', $name, $e->getMessage()]);
         }
@@ -338,12 +338,12 @@ class Amqp extends Component implements AmqpInterface
         }
 
         try {
-            $this->_queues[$name]->delete();
+            $this->queues[$name]->delete();
         } catch (Exception $e) {
             throw new AmqpException(['delete `%s` queue failed: %s', $name, $e->getMessage()]);
         }
 
-        unset($this->_queues[$name]);
+        unset($this->queues[$name]);
 
         return $this;
     }
@@ -359,7 +359,7 @@ class Amqp extends Component implements AmqpInterface
      */
     public function publishMessage($message, $exchange, $routing_key = '', $flags = AMQP_NOPARAM, $attributes = [])
     {
-        if (!isset($this->_exchanges[$exchange])) {
+        if (!isset($this->exchanges[$exchange])) {
             throw new InvalidKeyException(
                 ['publish message to `:1` exchange with `:2` routing_key failed: exchange is NOT exists', $exchange,
                  $routing_key]
@@ -367,7 +367,7 @@ class Amqp extends Component implements AmqpInterface
         }
 
         try {
-            $this->_exchanges[$exchange]->publish($message, $routing_key, $flags, $attributes);
+            $this->exchanges[$exchange]->publish($message, $routing_key, $flags, $attributes);
         } catch (Exception $e) {
             throw new AmqpException(
                 ['publish message to `:1` exchange with `:2` routing_key failed: `:3`', $exchange, $routing_key,
@@ -402,12 +402,12 @@ class Amqp extends Component implements AmqpInterface
      */
     public function getMessage($queue, $auto_ack = false)
     {
-        if (!isset($this->_queues[$queue])) {
+        if (!isset($this->queues[$queue])) {
             throw new InvalidKeyException(['retrieve message from queue failed: `%s` queue is NOT exists`', $queue]);
         }
 
         try {
-            $envelope = $this->_queues[$queue]->get($auto_ack ? AMQP_AUTOACK : AMQP_NOPARAM);
+            $envelope = $this->queues[$queue]->get($auto_ack ? AMQP_AUTOACK : AMQP_NOPARAM);
         } catch (Exception $e) {
             throw new AmqpException(['retrieve message from `%s` queue failed: %s', $queue, $e->getMessage()]);
         }
@@ -423,12 +423,12 @@ class Amqp extends Component implements AmqpInterface
      */
     public function getJsonMessage($queue, $auto_ack = false)
     {
-        if (!isset($this->_queues[$queue])) {
+        if (!isset($this->queues[$queue])) {
             throw new InvalidKeyException(['retrieve message from queue failed: `%s` queue is NOT exists', $queue]);
         }
 
         try {
-            $envelope = $this->_queues[$queue]->get($auto_ack ? AMQP_AUTOACK : AMQP_NOPARAM);
+            $envelope = $this->queues[$queue]->get($auto_ack ? AMQP_AUTOACK : AMQP_NOPARAM);
         } catch (Exception $e) {
             throw new AmqpException(['retrieve message from `%s` queue failed: %s', $queue, $e->getMessage()]);
         }
@@ -466,11 +466,11 @@ class Amqp extends Component implements AmqpInterface
             $delivery_tag = $message->getDeliveryTag();
         }
 
-        if (!$this->_queues[$queue]) {
+        if (!$this->queues[$queue]) {
             throw new InvalidKeyException(['ack message failed: `:queue` queue is NOT exists', 'queue' => $queue]);
         }
         try {
-            $this->_queues[$queue]->ack($delivery_tag, $multiple ? AMQP_MULTIPLE : AMQP_NOPARAM);
+            $this->queues[$queue]->ack($delivery_tag, $multiple ? AMQP_MULTIPLE : AMQP_NOPARAM);
         } catch (Exception $e) {
             throw new AmqpException(['ack `%s` queue message failed: %s', $queue, $e->getMessage()]);
         }
@@ -497,11 +497,11 @@ class Amqp extends Component implements AmqpInterface
             $delivery_tag = $message->getDeliveryTag();
         }
 
-        if (!$this->_queues[$queue]) {
+        if (!$this->queues[$queue]) {
             throw new InvalidKeyException(['nack message failed: `:queue` queue is NOT exists', 'queue' => $queue]);
         }
         try {
-            $this->_queues[$queue]->nack($delivery_tag, $multiple ? AMQP_MULTIPLE : AMQP_NOPARAM);
+            $this->queues[$queue]->nack($delivery_tag, $multiple ? AMQP_MULTIPLE : AMQP_NOPARAM);
         } catch (Exception $e) {
             throw new AmqpException(['nack `%s` queue message failed: %s', $queue, $e->getMessage()]);
         }
@@ -518,12 +518,12 @@ class Amqp extends Component implements AmqpInterface
      */
     public function consumeMessages($queue, $callback, $flags = AMQP_NOPARAM)
     {
-        if (!isset($this->_queues[$queue])) {
+        if (!isset($this->queues[$queue])) {
             throw new InvalidKeyException(['consume message from queue failed: `%s` queue is NOT exists', $queue]);
         }
 
         try {
-            $this->_queues[$queue]->consume(
+            $this->queues[$queue]->consume(
                 function (AMQPEnvelope $envelope) use ($callback, $queue) {
                     return $callback($this->getNew('ManaPHP\Amqp\Message', [$this, $queue, $envelope]));
                 }, $flags

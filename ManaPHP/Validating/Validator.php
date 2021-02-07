@@ -23,29 +23,29 @@ class ValidatorContext
 /**
  * @property-read \ManaPHP\Html\PurifierInterface      $htmlPurifier
  * @property-read \ManaPHP\Http\RequestInterface       $request
- * @property-read \ManaPHP\Validating\ValidatorContext $_context
+ * @property-read \ManaPHP\Validating\ValidatorContext $context
  */
 class Validator extends Component implements ValidatorInterface
 {
     /**
      * @var string
      */
-    protected $_locale;
+    protected $locale;
 
     /**
      * @var array
      */
-    protected $_dir = '@manaphp/Validating/Validator/Templates';
+    protected $dir = '@manaphp/Validating/Validator/Templates';
 
     /**
      * @var array
      */
-    protected $_files;
+    protected $files;
 
     /**
      * @var array
      */
-    protected $_templates;
+    protected $templates;
 
     /**
      * @param array $options
@@ -53,15 +53,15 @@ class Validator extends Component implements ValidatorInterface
     public function __construct($options = [])
     {
         if (isset($options['locale'])) {
-            $this->_locale = $options['locale'];
+            $this->locale = $options['locale'];
         }
 
         if (isset($options['dir'])) {
-            $this->_dir = $options['dir'];
+            $this->dir = $options['dir'];
         }
 
-        foreach (LocalFS::glob($this->_dir . '/*.php') as $file) {
-            $this->_files[strtolower(pathinfo($file, PATHINFO_FILENAME))] = $file;
+        foreach (LocalFS::glob($this->dir . '/*.php') as $file) {
+            $this->files[strtolower(pathinfo($file, PATHINFO_FILENAME))] = $file;
         }
     }
 
@@ -73,16 +73,16 @@ class Validator extends Component implements ValidatorInterface
         /** @var \ManaPHP\Validating\ValidatorContext $context */
         $context = parent::createContext();
 
-        if ($this->_locale !== null) {
-            $context->locale = $this->_locale;
+        if ($this->locale !== null) {
+            $context->locale = $this->locale;
         } elseif (!MANAPHP_CLI) {
             $locale = $this->configure->language;
-            if (($language = strtolower($this->request->get('lang', ''))) && isset($this->_files[$language])) {
+            if (($language = strtolower($this->request->get('lang', ''))) && isset($this->files[$language])) {
                 $locale = $language;
             } elseif ($language = $this->request->getAcceptLanguage()) {
                 if (preg_match_all('#[a-z\-]{2,}#', strtolower($language), $matches)) {
                     foreach ($matches[0] as $lang) {
-                        if (isset($this->_files[$lang])) {
+                        if (isset($this->files[$lang])) {
                             $locale = $lang;
                             break;
                         }
@@ -102,7 +102,7 @@ class Validator extends Component implements ValidatorInterface
      */
     public function getLocale()
     {
-        return $this->_context->locale;
+        return $this->context->locale;
     }
 
     /**
@@ -112,7 +112,7 @@ class Validator extends Component implements ValidatorInterface
      */
     public function setLocale($locale)
     {
-        $this->_context->locale = $locale;
+        $this->context->locale = $locale;
 
         return $this;
     }
@@ -124,14 +124,14 @@ class Validator extends Component implements ValidatorInterface
      */
     protected function getTemplate($validate)
     {
-        $locale = $this->_locale ?: $this->_context->locale;
+        $locale = $this->locale ?: $this->context->locale;
 
-        if (!isset($this->_templates[$locale])) {
+        if (!isset($this->templates[$locale])) {
             /** @noinspection PhpIncludeInspection */
-            $this->_templates[$locale] = require $this->_files[$locale];
+            $this->templates[$locale] = require $this->files[$locale];
         }
 
-        $templates = $this->_templates[$locale];
+        $templates = $this->templates[$locale];
         return $templates[$validate] ?? $templates['default'];
     }
 

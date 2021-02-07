@@ -12,7 +12,7 @@ class Client extends Component implements ClientInterface
     /**
      * @var string
      */
-    protected $_endpoint;
+    protected $endpoint;
 
     /**
      * @param array $options
@@ -20,11 +20,11 @@ class Client extends Component implements ClientInterface
     public function __construct($options = [])
     {
         if (isset($options['endpoint'])) {
-            $this->_endpoint = rtrim($options['endpoint'], '/');
+            $this->endpoint = rtrim($options['endpoint'], '/');
         }
 
         if (isset($options['httpClient'])) {
-            $this->_injections['httpClient'] = $options['httpClient'];
+            $this->injections['httpClient'] = $options['httpClient'];
         }
     }
 
@@ -40,10 +40,10 @@ class Client extends Component implements ClientInterface
         $params['bucket'] = $bucket;
         $params['base_url'] = $base_url;
 
-        $endpoint = preg_replace('#{bucket}[\-.]*#', '', $this->_endpoint);
+        $endpoint = preg_replace('#{bucket}[\-.]*#', '', $this->endpoint);
 
-        if (str_contains($this->_endpoint, '{bucket}')) {
-            $params['base_url'] = str_replace('{bucket}', $bucket, $this->_endpoint);
+        if (str_contains($this->endpoint, '{bucket}')) {
+            $params['base_url'] = str_replace('{bucket}', $bucket, $this->endpoint);
         }
 
         $body = rest_post($endpoint . '/api/buckets', $params)->body;
@@ -61,7 +61,7 @@ class Client extends Component implements ClientInterface
     public function listBuckets()
     {
         $token = jwt_encode([], 300, 'bos.bucket.list');
-        $endpoint = preg_replace('#{bucket}[\-.]*#', '', $this->_endpoint);
+        $endpoint = preg_replace('#{bucket}[\-.]*#', '', $this->endpoint);
         $body = rest_get([$endpoint . '/api/buckets', 'token' => $token])->body;
 
         if ($body['code'] !== 0) {
@@ -83,7 +83,7 @@ class Client extends Component implements ClientInterface
             return [];
         }
 
-        $endpoint = str_replace('{bucket}', $bucket, $this->_endpoint);
+        $endpoint = str_replace('{bucket}', $bucket, $this->endpoint);
 
         $filters[] = $endpoint . '/api/objects';
         $filters['bucket'] = $bucket;
@@ -115,7 +115,7 @@ class Client extends Component implements ClientInterface
         $policy['bucket'] = $bucket;
         $policy['key'] = $key;
 
-        return str_replace('{bucket}', $bucket, $this->_endpoint) . '/api/objects?token='
+        return str_replace('{bucket}', $bucket, $this->endpoint) . '/api/objects?token='
             . jwt_encode($policy, $ttl, 'bos.object.create.request');
     }
 

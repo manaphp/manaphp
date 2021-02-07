@@ -10,81 +10,81 @@ class Engine extends Component implements EngineInterface
     /**
      * @var string
      */
-    protected $_endpoint;
+    protected $endpoint;
 
     /**
      * @var string
      */
-    protected $_proxy;
+    protected $proxy;
 
     /**
      * @var float
      */
-    protected $_timeout = 3.0;
+    protected $timeout = 3.0;
 
     /**
      * @var string
      */
-    protected $_protocol;
+    protected $protocol;
 
     /**
      * @var bool
      */
-    protected $_masking = true;
+    protected $masking = true;
 
     /**
      * @var string
      */
-    protected $_origin;
+    protected $origin;
 
     /**
      * @var string
      */
-    protected $_user_agent = 'manaphp/client';
+    protected $user_agent = 'manaphp/client';
 
     /**
      * @var resource
      */
-    protected $_socket;
+    protected $socket;
 
     /**
      * @var \ManaPHP\Component
      */
-    protected $_owner;
+    protected $owner;
 
     /**
      * @param array $options
      */
     public function __construct($options)
     {
-        $this->_endpoint = $options['endpoint'];
+        $this->endpoint = $options['endpoint'];
 
         if (isset($options['proxy'])) {
-            $this->_proxy = $options['proxy'];
+            $this->proxy = $options['proxy'];
         }
 
         if (isset($options['timeout'])) {
-            $this->_timeout = $options['timeout'];
+            $this->timeout = $options['timeout'];
         }
 
         if (isset($options['protocol'])) {
-            $this->_protocol = $options['protocol'];
+            $this->protocol = $options['protocol'];
         }
 
         if (isset($options['masking'])) {
-            $this->_masking = (bool)$options['masking'];
+            $this->masking = (bool)$options['masking'];
         }
 
         if (isset($options['origin'])) {
-            $this->_origin = $options['origin'];
+            $this->origin = $options['origin'];
         }
 
         if (isset($options['user_agent'])) {
-            $this->_user_agent = $options['user_agent'];
+            $this->user_agent = $options['user_agent'];
         }
 
         if (isset($options['owner'])) {
-            $this->_owner = $options['owner'];
+            $this->owner = $options['owner'];
         }
     }
 
@@ -100,11 +100,11 @@ class Engine extends Component implements EngineInterface
      */
     public function setEndpoint($endpoint)
     {
-        if ($this->_socket !== null) {
+        if ($this->socket !== null) {
             $this->close();
         }
 
-        $this->_endpoint = $endpoint;
+        $this->endpoint = $endpoint;
 
         return $this;
     }
@@ -114,7 +114,7 @@ class Engine extends Component implements EngineInterface
      */
     public function getEndpoint()
     {
-        return $this->_endpoint;
+        return $this->endpoint;
     }
 
     /**
@@ -122,17 +122,17 @@ class Engine extends Component implements EngineInterface
      */
     protected function open()
     {
-        if ($this->_socket) {
-            return $this->_socket;
+        if ($this->socket) {
+            return $this->socket;
         }
 
-        $parts = parse_url($this->_endpoint);
+        $parts = parse_url($this->endpoint);
         $scheme = $parts['scheme'];
         $host = $parts['host'];
         $port = $parts['port'] ?? ($scheme === 'ws' ? 80 : 443);
 
-        if ($this->_proxy) {
-            $parts = parse_url($this->_proxy);
+        if ($this->proxy) {
+            $parts = parse_url($this->proxy);
 
             $proxy_scheme = $parts['scheme'];
             if ($proxy_scheme !== 'http' && $proxy_scheme !== 'https') {
@@ -145,23 +145,23 @@ class Engine extends Component implements EngineInterface
             $server_port = $port;
         }
 
-        if (!$socket = @fsockopen($server_host, $server_port, $errno, $errmsg, $this->_timeout)) {
-            throw new ConnectionException($errmsg . ': ' . $this->_endpoint, $errno);
+        if (!$socket = @fsockopen($server_host, $server_port, $errno, $errmsg, $this->timeout)) {
+            throw new ConnectionException($errmsg . ': ' . $this->endpoint, $errno);
         }
 
-        stream_set_timeout($socket, (int)$this->_timeout, ($this->_timeout - (int)$this->_timeout) * 1000);
-        $path = ($scheme === 'ws' ? 'http' : 'https') . substr($this->_endpoint, strpos($this->_endpoint, ':'));
+        stream_set_timeout($socket, (int)$this->timeout, ($this->timeout - (int)$this->timeout) * 1000);
+        $path = ($scheme === 'ws' ? 'http' : 'https') . substr($this->endpoint, strpos($this->endpoint, ':'));
 
         $key = base64_encode(random_bytes(16));
         $headers = "GET $path HTTP/1.1\r\n" .
             "Host: $host:$port\r\n" .
             "Sec-WebSocket-Key: $key\r\n" .
             "Connection: Upgrade\r\n" .
-            "User-Agent: $this->_user_agent\r\n" .
+            "User-Agent: $this->user_agent\r\n" .
             "Upgrade: Websocket\r\n";
 
-        $headers .= $this->_origin ? "Origin: $this->_origin\r\n" : '';
-        $headers .= $this->_protocol ? "Sec-WebSocket-Protocol: $this->_protocol\r\n" : '';
+        $headers .= $this->origin ? "Origin: $this->origin\r\n" : '';
+        $headers .= $this->protocol ? "Sec-WebSocket-Protocol: $this->protocol\r\n" : '';
 
         $headers .= "Sec-WebSocket-Version: 13\r\n\r\n";
 
@@ -177,8 +177,8 @@ class Engine extends Component implements EngineInterface
 
         $sec_key = base64_encode(sha1($key . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11', true));
         if (!str_contains($headers, $sec_key)) {
-            if ($this->_proxy) {
-                throw new ConnectionException('Connection by proxy timed out:  ' . $this->_endpoint, 10060);
+            if ($this->proxy) {
+                throw new ConnectionException('Connection by proxy timed out:  ' . $this->endpoint, 10060);
             } else {
                 throw new HandshakeException('handshake fail');
             }
@@ -186,13 +186,13 @@ class Engine extends Component implements EngineInterface
 
         stream_set_blocking($socket, false);
 
-        $this->_socket = $socket;
+        $this->socket = $socket;
 
-        if ($owner = $this->_owner) {
+        if ($owner = $this->owner) {
             $owner->emit('open', $this);
         }
 
-        return $this->_socket;
+        return $this->socket;
     }
 
     /**
@@ -206,7 +206,7 @@ class Engine extends Component implements EngineInterface
     {
         $send_length = 0;
         $data_length = strlen($data);
-        $end_time = microtime(true) + ($timeout ?: $this->_timeout);
+        $end_time = microtime(true) + ($timeout ?: $this->timeout);
 
         $read = null;
         $except = null;
@@ -245,7 +245,7 @@ class Engine extends Component implements EngineInterface
 
         $data_len = strlen($data);
 
-        $mask_bit = $this->_masking ? 0x80 : 0x00;
+        $mask_bit = $this->masking ? 0x80 : 0x00;
         if ($data_len <= 125) {
             $str .= pack('C', $data_len | $mask_bit);
         } elseif ($data_len <= 65535) {
@@ -254,7 +254,7 @@ class Engine extends Component implements EngineInterface
             $str .= pack('CJ', 127 | $mask_bit, $data_len);
         }
 
-        if ($this->_masking) {
+        if ($this->masking) {
             $key = random_bytes(4);
             $str .= $key;
 
@@ -266,7 +266,7 @@ class Engine extends Component implements EngineInterface
             $str .= $data;
         }
 
-        $this->sendInternal($this->_socket ?? $this->open(), $str, $timeout);
+        $this->sendInternal($this->socket ?? $this->open(), $str, $timeout);
     }
 
     /**
@@ -276,10 +276,10 @@ class Engine extends Component implements EngineInterface
      */
     public function recv($timeout = null)
     {
-        $socket = $this->_socket ?? $this->open();
+        $socket = $this->socket ?? $this->open();
 
         $buf = '';
-        $end_time = microtime(true) + ($timeout ?: $this->_timeout);
+        $end_time = microtime(true) + ($timeout ?: $this->timeout);
 
         $write = null;
         $except = null;
@@ -391,7 +391,7 @@ class Engine extends Component implements EngineInterface
      */
     public function isRecvReady($timeout)
     {
-        $socket = $this->_socket ?? $this->open();
+        $socket = $this->socket ?? $this->open();
 
         $write = null;
         $except = null;
@@ -412,9 +412,9 @@ class Engine extends Component implements EngineInterface
      */
     public function close()
     {
-        if ($this->_socket !== null) {
-            fclose($this->_socket);
-            $this->_socket = null;
+        if ($this->socket !== null) {
+            fclose($this->socket);
+            $this->socket = null;
         }
     }
 

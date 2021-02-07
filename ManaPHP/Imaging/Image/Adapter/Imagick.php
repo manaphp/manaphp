@@ -17,22 +17,22 @@ class Imagick extends Image
     /**
      * @var string
      */
-    protected $_file;
+    protected $file;
 
     /**
      * @var \Imagick
      */
-    protected $_image;
+    protected $image;
 
     /**
      * @var int
      */
-    protected $_width;
+    protected $width;
 
     /**
      * @var int
      */
-    protected $_height;
+    protected $height;
 
     /**
      * @param string $file
@@ -43,26 +43,26 @@ class Imagick extends Image
             throw new ExtensionNotInstalledException('Imagick');
         }
 
-        $this->_file = realpath($this->alias->resolve($file));
-        if (!$this->_file) {
+        $this->file = realpath($this->alias->resolve($file));
+        if (!$this->file) {
             throw new InvalidValueException(['`:file` file is not exists', 'file' => $file]);
         }
 
-        $this->_image = new \Imagick();
-        if (!$this->_image->readImage($this->_file)) {
+        $this->image = new \Imagick();
+        if (!$this->image->readImage($this->file)) {
             throw new InvalidFormatException(['Imagick::readImage `:file` failed', 'file' => $file]);
         }
 
-        if ($this->_image->getNumberImages() !== 1) {
+        if ($this->image->getNumberImages() !== 1) {
             throw new PreconditionException(['not support multiple iterations: `:file`', 'file' => $file]);
         }
 
-        if (!$this->_image->getImageAlphaChannel()) {
-            $this->_image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_SET);
+        if (!$this->image->getImageAlphaChannel()) {
+            $this->image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_SET);
         }
 
-        $this->_width = $this->_image->getImageWidth();
-        $this->_height = $this->_image->getImageHeight();
+        $this->width = $this->image->getImageWidth();
+        $this->height = $this->image->getImageHeight();
     }
 
     /**
@@ -72,7 +72,7 @@ class Imagick extends Image
      */
     public function do_getWidth()
     {
-        return $this->_width;
+        return $this->width;
     }
 
     /**
@@ -82,7 +82,7 @@ class Imagick extends Image
      */
     public function do_getHeight()
     {
-        return $this->_height;
+        return $this->height;
     }
 
     /**
@@ -90,7 +90,7 @@ class Imagick extends Image
      */
     public function getInternalHandle()
     {
-        return $this->_image;
+        return $this->image;
     }
 
     /**
@@ -101,10 +101,10 @@ class Imagick extends Image
      */
     public function do_resize($width, $height)
     {
-        $this->_image->scaleImage($width, $height);
+        $this->image->scaleImage($width, $height);
 
-        $this->_width = $this->_image->getImageWidth();
-        $this->_height = $this->_image->getImageHeight();
+        $this->width = $this->image->getImageWidth();
+        $this->height = $this->image->getImageHeight();
 
         return $this;
     }
@@ -124,11 +124,11 @@ class Imagick extends Image
         $green = ($background >> 8) & 0xFF;
         $blue = $background & 0xFF;
         $backgroundColor = sprintf('rgba(%u,%u,%u,%f)', $red, $green, $blue, $alpha);
-        $this->_image->rotateImage(new ImagickPixel($backgroundColor), $degrees);
-        $this->_image->setImagePage($this->_width, $this->_height, 0, 0);
+        $this->image->rotateImage(new ImagickPixel($backgroundColor), $degrees);
+        $this->image->setImagePage($this->width, $this->height, 0, 0);
 
-        $this->_width = $this->_image->getImageWidth();
-        $this->_height = $this->_image->getImageHeight();
+        $this->width = $this->image->getImageWidth();
+        $this->height = $this->image->getImageHeight();
 
         return $this;
     }
@@ -143,11 +143,11 @@ class Imagick extends Image
      */
     public function do_crop($width, $height, $offsetX = 0, $offsetY = 0)
     {
-        $this->_image->cropImage($width, $height, $offsetX, $offsetY);
-        $this->_image->setImagePage($width, $height, 0, 0);
+        $this->image->cropImage($width, $height, $offsetX, $offsetY);
+        $this->image->setImagePage($width, $height, 0, 0);
 
-        $this->_width = $this->_image->getImageWidth();
-        $this->_height = $this->_image->getImageHeight();
+        $this->width = $this->image->getImageWidth();
+        $this->height = $this->image->getImageHeight();
 
         return $this;
     }
@@ -183,7 +183,7 @@ class Imagick extends Image
         $draw->setFontSize($size);
         $draw->setFillOpacity($opacity);
         $draw->setGravity(\Imagick::GRAVITY_NORTHWEST);
-        $this->_image->annotateImage($draw, $offsetX, $offsetY, 0, $text);
+        $this->image->annotateImage($draw, $offsetX, $offsetY, 0, $text);
         $draw->destroy();
 
         return $this;
@@ -209,7 +209,7 @@ class Imagick extends Image
             throw new PreconditionException(['not support multiple iterations: `:file`', 'file' => $file]);
         }
 
-        if (!$this->_image->compositeImage($watermark, \Imagick::COMPOSITE_OVER, $offsetX, $offsetY)) {
+        if (!$this->image->compositeImage($watermark, \Imagick::COMPOSITE_OVER, $offsetX, $offsetY)) {
             throw new RuntimeException('Imagick::compositeImage Failed');
         }
 
@@ -231,13 +231,13 @@ class Imagick extends Image
 
         $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
 
-        $this->_image->setFormat($ext);
+        $this->image->setFormat($ext);
 
         if ($ext === 'gif') {
-            $this->_image->optimizeImageLayers();
+            $this->image->optimizeImageLayers();
         } elseif ($ext === 'jpg' || $ext === 'jpeg') {
-            $this->_image->setImageCompression(\Imagick::COMPRESSION_JPEG);
-            $this->_image->setImageCompressionQuality($quality);
+            $this->image->setImageCompression(\Imagick::COMPRESSION_JPEG);
+            $this->image->setImageCompressionQuality($quality);
         }
 
         $dir = dirname($file);
@@ -245,14 +245,14 @@ class Imagick extends Image
             throw new CreateDirectoryFailedException($dir);
         }
 
-        if (!$this->_image->writeImage($file)) {
+        if (!$this->image->writeImage($file)) {
             throw new RuntimeException(['save `:file` image file failed', 'file' => $file]);
         }
     }
 
     public function __destruct()
     {
-        $this->_image->clear();
-        $this->_image->destroy();
+        $this->image->clear();
+        $this->image->destroy();
     }
 }

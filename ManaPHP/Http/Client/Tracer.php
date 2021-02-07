@@ -39,7 +39,7 @@ class Tracer extends \ManaPHP\Event\Tracer
         /** @var \ManaPHP\Http\Client\Response $response */
         $response = clone $eventArgs->data['response'];
 
-        if (!$this->_verbose) {
+        if (!$this->verbose) {
             unset($response->stats, $response->headers);
         }
 

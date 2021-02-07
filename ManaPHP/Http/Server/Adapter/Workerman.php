@@ -23,24 +23,24 @@ class WorkermanContext
 
 /**
  * @property-read \ManaPHP\Http\RouterInterface                 $router
- * @property-read \ManaPHP\Http\Server\Adapter\WorkermanContext $_context
+ * @property-read \ManaPHP\Http\Server\Adapter\WorkermanContext $context
  */
 class Workerman extends Server
 {
     /**
      * @var array
      */
-    protected $_settings = [];
+    protected $settings = [];
 
     /**
      * @var \Workerman\Worker
      */
-    protected $_worker;
+    protected $worker;
 
     /**
      * @var \ManaPHP\Http\Server\HandlerInterface
      */
-    protected $_handler;
+    protected $handler;
 
     /**
      * @var array
@@ -50,12 +50,12 @@ class Workerman extends Server
     /**
      * @var int
      */
-    protected $_max_request;
+    protected $max_request;
 
     /**
      * @var int
      */
-    protected $_request_count;
+    protected $request_count;
 
     /**
      * @param array $options
@@ -69,7 +69,7 @@ class Workerman extends Server
             'DOCUMENT_ROOT'   => dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,
             'SCRIPT_NAME'     => '/' . basename($script_filename),
-            'SERVER_ADDR'     => $this->_host,
+            'SERVER_ADDR'     => $this->host,
             'PHP_SELF'        => '/' . basename($script_filename),
             'QUERY_STRING'    => '',
             'REQUEST_SCHEME'  => 'http',
@@ -78,10 +78,10 @@ class Workerman extends Server
         unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
 
         if (DIRECTORY_SEPARATOR === '/' && isset($options['max_request']) && $options['max_request'] > 0) {
-            $this->_max_request = $options['max_request'];
+            $this->max_request = $options['max_request'];
         }
 
-        $this->_settings = $options;
+        $this->settings = $options;
     }
 
     /**
@@ -97,7 +97,7 @@ class Workerman extends Server
         $raw_body = $GLOBALS['HTTP_RAW_POST_DATA'] ?? null;
         $this->request->prepare($_GET, $_POST, $_SERVER, $raw_body, $_COOKIE, $_FILES);
 
-        if (!$this->_use_globals) {
+        if (!$this->use_globals) {
             unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
             foreach ($_SERVER as $k => $v) {
                 if (!str_contains('DOCUMENT_ROOT,SERVER_SOFTWARE,SCRIPT_NAME,SCRIPT_FILENAME', $k)) {
@@ -116,17 +116,17 @@ class Workerman extends Server
     {
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 
-        $this->_worker = $worker = new Worker("http://{$this->_host}:{$this->_port}");
+        $this->worker = $worker = new Worker("http://{$this->host}:{$this->port}");
 
-        $this->_handler = $handler;
+        $this->handler = $handler;
 
-        $settings = json_stringify($this->_settings);
-        console_log('info', ['listen on: %s:%d with setting: %s', $this->_host, $this->_port, $settings]);
+        $settings = json_stringify($this->settings);
+        console_log('info', ['listen on: %s:%d with setting: %s', $this->host, $this->port, $settings]);
         echo 'ab';
         $worker->onMessage = [$this, 'onRequest'];
 
-        if (isset($this->_settings['worker_num'])) {
-            $worker->count = (int)$this->_settings['worker_num'];
+        if (isset($this->settings['worker_num'])) {
+            $worker->count = (int)$this->settings['worker_num'];
         }
 
         global $argv;
@@ -135,7 +135,7 @@ class Workerman extends Server
         }
 
         if (DIRECTORY_SEPARATOR === '\\') {
-            shell_exec("explorer.exe http://127.0.0.1:$this->_port/" . $this->router->getPrefix());
+            shell_exec("explorer.exe http://127.0.0.1:$this->port/" . $this->router->getPrefix());
         }
 
         Worker::runAll();
@@ -155,9 +155,9 @@ class Workerman extends Server
         $this->prepareGlobals();
 
         try {
-            $context = $this->_context;
+            $context = $this->context;
             $context->connection = $connection;
-            $this->_handler->handle();
+            $this->handler->handle();
         } catch (Throwable $throwable) {
             $str = date('c') . ' ' . get_class($throwable) . ': ' . $throwable->getMessage() . PHP_EOL;
             $str .= '    at ' . $throwable->getFile() . ':' . $throwable->getLine() . PHP_EOL;
@@ -167,11 +167,11 @@ class Workerman extends Server
 
         global $__root_context;
         foreach ($__root_context as $owner) {
-            unset($owner->_context);
+            unset($owner->context);
         }
         $__root_context = null;
 
-        if ($this->_max_request && ++$this->_request_count >= $this->_max_request) {
+        if ($this->max_request && ++$this->request_count >= $this->max_request) {
             Worker::stopAll();
         }
     }
@@ -214,12 +214,12 @@ class Workerman extends Server
         }
 
         if ($context->status_code === 304) {
-            $this->_context->connection->close('');
+            $this->context->connection->close('');
         } elseif ($this->request->isHead()) {
             Http::header('Content-Length: ' . strlen($context->content));
-            $this->_context->connection->close('');
+            $this->context->connection->close('');
         } else {
-            $this->_context->connection->close($context->content);
+            $this->context->connection->close($context->content);
         }
 
         $this->fireEvent('response:sent', compact('context'));

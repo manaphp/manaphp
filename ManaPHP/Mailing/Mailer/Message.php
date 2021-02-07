@@ -16,72 +16,72 @@ class Message implements JsonSerializable
     /**
      * @var \ManaPHP\Mailing\MailerInterface
      */
-    protected $_mailer;
+    protected $mailer;
 
     /**
      * @var string
      */
-    protected $_date;
+    protected $date;
 
     /**
      * @var string
      */
-    protected $_subject;
+    protected $subject;
 
     /**
      * @var string|array
      */
-    protected $_to = [];
+    protected $to = [];
 
     /**
      * @var int
      */
-    protected $_priority;
+    protected $priority;
 
     /**
      * @var string
      */
-    protected $_charset = 'utf-8';
+    protected $charset = 'utf-8';
 
     /**
      * @var array
      */
-    protected $_from = [];
+    protected $from = [];
 
     /**
      * @var array
      */
-    protected $_replay_to = [];
+    protected $replay_to = [];
 
     /**
      * @var array
      */
-    protected $_cc = [];
+    protected $cc = [];
 
     /**
      * @var array
      */
-    protected $_bcc = [];
+    protected $bcc = [];
 
     /**
      * @var string
      */
-    protected $_html_body;
+    protected $html_body;
 
     /**
      * @var string
      */
-    protected $_text_body;
+    protected $text_body;
 
     /**
      * @var array
      */
-    protected $_attachments = [];
+    protected $attachments = [];
 
     /**
      * @var array
      */
-    protected $_embedded_files = [];
+    protected $embedded_files = [];
 
     /**
      * @param array $message
@@ -94,7 +94,7 @@ class Message implements JsonSerializable
                 $this->$field = $v;
             }
         } else {
-            $this->_date = date(DATE_ATOM);
+            $this->date = date(DATE_ATOM);
         }
     }
 
@@ -105,7 +105,7 @@ class Message implements JsonSerializable
      */
     public function setMailer($mailer)
     {
-        $this->_mailer = $mailer;
+        $this->mailer = $mailer;
 
         return $this;
     }
@@ -115,7 +115,7 @@ class Message implements JsonSerializable
      */
     public function getMailer()
     {
-        return $this->_mailer;
+        return $this->mailer;
     }
 
     /**
@@ -125,7 +125,7 @@ class Message implements JsonSerializable
      */
     public function setCharset($charset)
     {
-        $this->_charset = $charset;
+        $this->charset = $charset;
 
         return $this;
     }
@@ -135,7 +135,7 @@ class Message implements JsonSerializable
      */
     public function getCharset()
     {
-        return $this->_charset;
+        return $this->charset;
     }
 
     /**
@@ -145,7 +145,7 @@ class Message implements JsonSerializable
      */
     public function setFrom($from)
     {
-        $this->_from = is_string($from) ? [$from] : $from;
+        $this->from = is_string($from) ? [$from] : $from;
 
         return $this;
     }
@@ -155,7 +155,7 @@ class Message implements JsonSerializable
      */
     public function getFrom()
     {
-        return $this->_from;
+        return $this->from;
     }
 
     /**
@@ -165,7 +165,7 @@ class Message implements JsonSerializable
      */
     public function setTo($to)
     {
-        $this->_to = is_string($to) ? [$to] : $to;
+        $this->to = is_string($to) ? [$to] : $to;
 
         return $this;
     }
@@ -175,7 +175,7 @@ class Message implements JsonSerializable
      */
     public function getTo()
     {
-        return $this->_to;
+        return $this->to;
     }
 
     /**
@@ -185,7 +185,7 @@ class Message implements JsonSerializable
      */
     public function setReplyTo($replyTo)
     {
-        $this->_replay_to = is_string($replyTo) ? [$replyTo] : $replyTo;
+        $this->replay_to = is_string($replyTo) ? [$replyTo] : $replyTo;
 
         return $this;
     }
@@ -195,7 +195,7 @@ class Message implements JsonSerializable
      */
     public function getReplyTo()
     {
-        return $this->_replay_to;
+        return $this->replay_to;
     }
 
     /**
@@ -205,7 +205,7 @@ class Message implements JsonSerializable
      */
     public function setCc($cc)
     {
-        $this->_cc = is_string($cc) ? [$cc] : $cc;
+        $this->cc = is_string($cc) ? [$cc] : $cc;
 
         return $this;
     }
@@ -215,7 +215,7 @@ class Message implements JsonSerializable
      */
     public function getCc()
     {
-        return $this->_cc;
+        return $this->cc;
     }
 
     /**
@@ -225,7 +225,7 @@ class Message implements JsonSerializable
      */
     public function setBcc($bcc)
     {
-        $this->_bcc = is_string($bcc) ? [$bcc] : $bcc;
+        $this->bcc = is_string($bcc) ? [$bcc] : $bcc;
 
         return $this;
     }
@@ -235,7 +235,7 @@ class Message implements JsonSerializable
      */
     public function getBcc()
     {
-        return $this->_bcc;
+        return $this->bcc;
     }
 
     /**
@@ -245,7 +245,7 @@ class Message implements JsonSerializable
      */
     public function setSubject($subject)
     {
-        $this->_subject = $subject;
+        $this->subject = $subject;
 
         return $this;
     }
@@ -255,7 +255,7 @@ class Message implements JsonSerializable
      */
     public function getSubject()
     {
-        return $this->_subject;
+        return $this->subject;
     }
 
     /**
@@ -266,8 +266,8 @@ class Message implements JsonSerializable
      */
     public function setBody($html, $text = null)
     {
-        $this->_html_body = $html;
-        $this->_text_body = $text;
+        $this->html_body = $html;
+        $this->text_body = $text;
 
         return $this;
     }
@@ -292,7 +292,7 @@ class Message implements JsonSerializable
             $body = Container::getDefault()->getShared('renderer')->renderFile($template, $vars);
         }
 
-        $this->_html_body = $body;
+        $this->html_body = $body;
 
         return $this;
     }
@@ -302,7 +302,7 @@ class Message implements JsonSerializable
      */
     public function getHtmlBody()
     {
-        return $this->_html_body;
+        return $this->html_body;
     }
 
     /**
@@ -312,7 +312,7 @@ class Message implements JsonSerializable
      */
     public function setTextBody($body)
     {
-        $this->_text_body = $body;
+        $this->text_body = $body;
 
         return $this;
     }
@@ -322,7 +322,7 @@ class Message implements JsonSerializable
      */
     public function getTextBody()
     {
-        return $this->_text_body;
+        return $this->text_body;
     }
 
     /**
@@ -332,7 +332,7 @@ class Message implements JsonSerializable
      */
     public function setPriority($priority)
     {
-        $this->_priority = $priority;
+        $this->priority = $priority;
 
         return $this;
     }
@@ -342,7 +342,7 @@ class Message implements JsonSerializable
      */
     public function getPriority()
     {
-        return $this->_priority;
+        return $this->priority;
     }
 
     /**
@@ -362,7 +362,7 @@ class Message implements JsonSerializable
      */
     public function addAttachment($file, $name = null)
     {
-        $this->_attachments[] = ['file' => $file, 'name' => $name ?: basename($file)];
+        $this->attachments[] = ['file' => $file, 'name' => $name ?: basename($file)];
         return $this;
     }
 
@@ -371,7 +371,7 @@ class Message implements JsonSerializable
      */
     public function getAttachments()
     {
-        return $this->_attachments;
+        return $this->attachments;
     }
 
     /**
@@ -392,7 +392,7 @@ class Message implements JsonSerializable
             $cid = md5($name) . '.' . pathinfo($name, PATHINFO_EXTENSION);
         }
 
-        $this->_embedded_files[] = ['file' => $file, 'name' => $name, 'cid' => $cid];
+        $this->embedded_files[] = ['file' => $file, 'name' => $name, 'cid' => $cid];
 
         return 'cid:' . $cid;
     }
@@ -413,7 +413,7 @@ class Message implements JsonSerializable
      */
     public function getEmbeddedFiles()
     {
-        return $this->_embedded_files;
+        return $this->embedded_files;
     }
 
     /**
@@ -423,7 +423,7 @@ class Message implements JsonSerializable
      */
     public function send(&$failedRecipients = null)
     {
-        return $this->_mailer->send($this, $failedRecipients);
+        return $this->mailer->send($this, $failedRecipients);
     }
 
     /**
@@ -433,7 +433,7 @@ class Message implements JsonSerializable
     {
         $data = [];
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k === '_mailer' || $v === null) {
+            if ($k === 'mailer' || $v === null) {
                 continue;
             }
             $data[substr($k, 1)] = $v;

@@ -23,7 +23,7 @@ class Tracer extends \ManaPHP\Event\Tracer
         /** @var \ManaPHP\Mailing\Mailer\Message $message */
         $message = $eventArgs->data['message'];
 
-        if ($this->_verbose) {
+        if ($this->verbose) {
             $this->logger->debug(['From: ', $message->getFrom()]);
             $this->logger->debug(['To: ', $message->getTo()]);
             $this->logger->debug(['Cc:', $message->getCc()]);

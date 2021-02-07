@@ -14,22 +14,22 @@ class Handler extends Component implements HandlerInterface
     /**
      * @var array
      */
-    protected $_args;
+    protected $args;
 
     /**
      * @var string
      */
-    protected $_command;
+    protected $command;
 
     /**
      * @var string
      */
-    protected $_action;
+    protected $action;
 
     /**
      * @var array
      */
-    protected $_params;
+    protected $params;
 
     /**
      * @param string $keyword
@@ -39,7 +39,7 @@ class Handler extends Component implements HandlerInterface
     protected function guessCommand($keyword)
     {
         $commands = [];
-        foreach ($this->_container->getDefinitions("*Command") as $name => $definition) {
+        foreach ($this->container->getDefinitions("*Command") as $name => $definition) {
             $commands[basename($name, 'Command')] = $definition;
         }
 
@@ -121,47 +121,47 @@ class Handler extends Component implements HandlerInterface
             $args = array_merge([$args[0]], explode(':', $arg1, 2), array_slice($args, 2));
         }
 
-        $this->_args = $args;
+        $this->args = $args;
 
         $argc = count($args);
 
         if ($argc === 1) {
             $command = 'help';
             $action = 'commands';
-            $this->_params = [];
-        } elseif ($argc <= 4 && in_array(end($this->_args), ['help', '-h', '--help'], true)) {
+            $this->params = [];
+        } elseif ($argc <= 4 && in_array(end($this->args), ['help', '-h', '--help'], true)) {
             $command = 'help';
 
             if ($argc === 2) {
                 $action = 'commands';
-                $this->_params = [];
+                $this->params = [];
             } elseif ($argc === 3) {
                 $action = 'command';
-                $this->_params = ['--command', $this->_args[1]];
+                $this->params = ['--command', $this->args[1]];
             } elseif ($argc === 4) {
                 $action = 'command';
-                $this->_params = ['--command', $this->_args[1], '--action', $this->_args[2]];
+                $this->params = ['--command', $this->args[1], '--action', $this->args[2]];
             } else {
                 $action = null;
-                $this->_params = [];
+                $this->params = [];
             }
         } else {
-            list(, $command, $action) = array_pad($this->_args, 3, null);
+            list(, $command, $action) = array_pad($this->args, 3, null);
 
             if ($action === null) {
-                $this->_params = [];
+                $this->params = [];
             } elseif ($action[0] === '-') {
                 $action = null;
-                $this->_params = array_slice($this->_args, 2);
+                $this->params = array_slice($this->args, 2);
             } else {
-                $this->_params = array_slice($this->_args, 3);
+                $this->params = array_slice($this->args, 3);
             }
         }
 
-        $this->request->parse($this->_params);
+        $this->request->parse($this->params);
 
-        $this->_command = $command;
-        $this->_action = $action;
+        $this->command = $command;
+        $this->action = $action;
     }
 
     /**
@@ -173,10 +173,10 @@ class Handler extends Component implements HandlerInterface
     {
         $this->route($args);
 
-        $command = Str::pascalize($this->_command);
-        $action = Str::camelize($this->_action);
+        $command = Str::pascalize($this->command);
+        $action = Str::camelize($this->action);
 
-        if (!$definition = $this->_container->getDefinition(lcfirst($command) . 'Command')) {
+        if (!$definition = $this->container->getDefinition(lcfirst($command) . 'Command')) {
             $guessed = $this->guessCommand($command);
             if ($guessed) {
                 $definition = $guessed;
@@ -197,7 +197,7 @@ class Handler extends Component implements HandlerInterface
                 $action = 'default';
             } else {
                 return $this->handle(
-                    [$this->_args[0], 'help', 'command', '--command', $this->_command, '--action', $this->_action]
+                    [$this->args[0], 'help', 'command', '--command', $this->command, '--action', $this->action]
                 );
             }
         }
@@ -224,7 +224,7 @@ class Handler extends Component implements HandlerInterface
      */
     public function getArgs()
     {
-        return $this->_args;
+        return $this->args;
     }
 
     /**
@@ -232,7 +232,7 @@ class Handler extends Component implements HandlerInterface
      */
     public function getCommand()
     {
-        return $this->_command;
+        return $this->command;
     }
 
     /**
@@ -240,7 +240,7 @@ class Handler extends Component implements HandlerInterface
      */
     public function getAction()
     {
-        return $this->_action;
+        return $this->action;
     }
 
     /**
@@ -248,6 +248,6 @@ class Handler extends Component implements HandlerInterface
      */
     public function getParams()
     {
-        return $this->_params;
+        return $this->params;
     }
 }

@@ -9,7 +9,7 @@ class Redis extends Session
     /**
      * @var string
      */
-    protected $_prefix;
+    protected $prefix;
 
     /**
      * @param array $options
@@ -17,12 +17,12 @@ class Redis extends Session
     public function __construct($options = [])
     {
         if (isset($options['redisCache'])) {
-            $this->_injections['redisCache'] = $options['redisCache'];
+            $this->injections['redisCache'] = $options['redisCache'];
         }
 
         parent::__construct($options);
 
-        $this->_prefix = $options['prefix'] ?? "cache:{$this->configure->id}:session:";
+        $this->prefix = $options['prefix'] ?? "cache:{$this->configure->id}:session:";
     }
 
     /**
@@ -32,7 +32,7 @@ class Redis extends Session
      */
     public function do_read($session_id)
     {
-        $data = $this->redisCache->get($this->_prefix . $session_id);
+        $data = $this->redisCache->get($this->prefix . $session_id);
         return is_string($data) ? $data : '';
     }
 
@@ -45,7 +45,7 @@ class Redis extends Session
      */
     public function do_write($session_id, $data, $ttl)
     {
-        return $this->redisCache->set($this->_prefix . $session_id, $data, $ttl);
+        return $this->redisCache->set($this->prefix . $session_id, $data, $ttl);
     }
 
     /**
@@ -56,7 +56,7 @@ class Redis extends Session
      */
     public function do_touch($session_id, $ttl)
     {
-        $this->redisCache->expire($this->_prefix . $session_id, $ttl);
+        $this->redisCache->expire($this->prefix . $session_id, $ttl);
 
         return true;
     }
@@ -68,7 +68,7 @@ class Redis extends Session
      */
     public function do_destroy($session_id)
     {
-        $this->redisCache->del($this->_prefix . $session_id);
+        $this->redisCache->del($this->prefix . $session_id);
 
         return true;
     }

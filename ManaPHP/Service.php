@@ -14,9 +14,8 @@ class Service extends Component implements LogCategorizable
         $class_vars = get_class_vars(static::class);
 
         foreach ($options as $option => $value) {
-            $property = "_$option";
-            if (array_key_exists($property, $class_vars)) {
-                $this->$property = $value;
+            if (array_key_exists($option, $class_vars)) {
+                $this->$option = $value;
             }
         }
     }

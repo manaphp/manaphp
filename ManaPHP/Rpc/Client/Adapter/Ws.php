@@ -12,22 +12,22 @@ class Ws extends Client
     /**
      * @var float
      */
-    protected $_timeout = 3.0;
+    protected $timeout = 3.0;
 
     /**
      * @var bool
      */
-    protected $_authentication;
+    protected $authentication;
 
     /**
      * @var int
      */
-    protected $_id = 0;
+    protected $id = 0;
 
     /**
      * @var client
      */
-    protected $_client;
+    protected $client;
 
     /**
      * @param array $options
@@ -36,23 +36,23 @@ class Ws extends Client
     {
         $options['protocol'] = 'jsonrpc';
 
-        $this->_endpoint = $options['endpoint'];
+        $this->endpoint = $options['endpoint'];
 
         if (isset($options['timeout'])) {
-            $this->_timeout = $options['timeout'];
+            $this->timeout = $options['timeout'];
         }
 
         if (isset($options['authentication'])) {
-            $this->_authentication = (bool)$options['authentication'];
+            $this->authentication = (bool)$options['authentication'];
             unset($options['authentication']);
         } else {
-            $this->_authentication = preg_match('#[?&]token=#', $options['endpoint']) === 1;
+            $this->authentication = preg_match('#[?&]token=#', $options['endpoint']) === 1;
         }
 
-        $this->_client = $this->getNew('ManaPHP\Ws\Client', $options);
+        $this->client = $this->getNew('ManaPHP\Ws\Client', $options);
 
-        if ($this->_authentication) {
-            $this->_client->on(
+        if ($this->authentication) {
+            $this->client->on(
                 'open', function (EventArgs $eventArgs) {
                 $this->authenticate($eventArgs->data);
             }
@@ -67,7 +67,7 @@ class Ws extends Client
      */
     public function setEndpoint($endpoint)
     {
-        $this->_client->setEndpoint($endpoint);
+        $this->client->setEndpoint($endpoint);
 
         return $this;
     }
@@ -131,11 +131,11 @@ class Ws extends Client
      */
     public function invoke($method, $params = [], $options = [])
     {
-        $request = json_stringify(['jsonrpc' => '2.0', 'method' => $method, 'params' => $params, 'id' => ++$this->_id]);
+        $request = json_stringify(['jsonrpc' => '2.0', 'method' => $method, 'params' => $params, 'id' => ++$this->id]);
 
-        $timout = $options['timeout'] ?? $this->_timeout;
+        $timout = $options['timeout'] ?? $this->timeout;
 
-        $message = $this->_client->request($request, $timout);
+        $message = $this->client->request($request, $timout);
 
         $response = $this->parseResponse($message->payload);
 

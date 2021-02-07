@@ -21,7 +21,7 @@ class Db extends Queue
     /**
      * @var string
      */
-    protected $_source = 'manaphp_message_queue';
+    protected $source = 'manaphp_message_queue';
 
     /**
      * @param array $options
@@ -29,11 +29,11 @@ class Db extends Queue
     public function __construct($options = [])
     {
         if (isset($options['db'])) {
-            $this->_injections['db'] = $options['db'];
+            $this->injections['db'] = $options['db'];
         }
 
         if (isset($options['source'])) {
-            $this->_source = $options['source'];
+            $this->source = $options['source'];
         }
     }
 
@@ -48,7 +48,7 @@ class Db extends Queue
     {
         $created_time = time();
         $deleted_time = 0;
-        $this->db->insert($this->_source, compact('topic', 'body', 'priority', 'created_time', 'deleted_time'));
+        $this->db->insert($this->source, compact('topic', 'body', 'priority', 'created_time', 'deleted_time'));
     }
 
     /**
@@ -63,16 +63,16 @@ class Db extends Queue
 
         $prev_max = null;
         do {
-            $max_id = $this->db->query($this->_source)->max('id');
+            $max_id = $this->db->query($this->source)->max('id');
             if ($prev_max !== $max_id) {
                 $prev_max = $max_id;
 
-                $r = $this->db->query($this->_source)
+                $r = $this->db->query($this->source)
                     ->where(['topic' => $topic, 'deleted_time' => 0])
                     ->orderBy(['priority' => SORT_ASC, 'id' => SORT_ASC])
                     ->first();
 
-                if ($r && $this->db->update($this->_source, ['deleted_time' => time()], ['id' => $r['id']])) {
+                if ($r && $this->db->update($this->source, ['deleted_time' => time()], ['id' => $r['id']])) {
                     return $r['body'];
                 }
             }
@@ -89,7 +89,7 @@ class Db extends Queue
      */
     public function do_delete($topic)
     {
-        $this->db->delete($this->_source, ['topic' => $topic]);
+        $this->db->delete($this->source, ['topic' => $topic]);
     }
 
     /**
@@ -100,7 +100,7 @@ class Db extends Queue
      */
     public function do_length($topic, $priority = null)
     {
-        $query = $this->db->query($this->_source)->where(['topic' => $topic, 'deleted_time' => 0]);
+        $query = $this->db->query($this->source)->where(['topic' => $topic, 'deleted_time' => 0]);
 
         if ($priority !== null) {
             $query->where(['priority' => $priority]);

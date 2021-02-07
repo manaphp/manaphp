@@ -12,7 +12,7 @@ class Session extends Flash
     /**
      * @var string
      */
-    protected $_key = 'manaphp_flash';
+    protected $key = 'manaphp_flash';
 
     /**
      * @param array $css
@@ -21,10 +21,10 @@ class Session extends Flash
     {
         parent::__construct($css);
 
-        $context = $this->_context;
+        $context = $this->context;
 
-        $context->messages = (array)$this->session->get($this->_key, []);
-        $this->session->remove($this->_key);
+        $context->messages = (array)$this->session->get($this->key, []);
+        $this->session->remove($this->key);
     }
 
     /**
@@ -35,10 +35,10 @@ class Session extends Flash
      */
     protected function message($type, $message)
     {
-        $css = $this->_css[$type] ?? '';
+        $css = $this->css[$type] ?? '';
 
-        $messages = $this->session->get($this->_key, []);
+        $messages = $this->session->get($this->key, []);
         $messages[] = '<div class="' . $css . '">' . $message . '</div>' . PHP_EOL;
-        $this->session->set($this->_key, $messages);
+        $this->session->set($this->key, $messages);
     }
 }

@@ -9,13 +9,13 @@ abstract class Client extends Component implements ClientInterface
     /**
      * @var string
      */
-    protected $_endpoint;
+    protected $endpoint;
 
     /**
      * @return string
      */
     public function getEndpoint()
     {
-        return $this->_endpoint;
+        return $this->endpoint;
     }
 }

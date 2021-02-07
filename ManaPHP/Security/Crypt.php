@@ -10,12 +10,12 @@ class Crypt extends Component implements CryptInterface
     /**
      * @var string
      */
-    protected $_master_key;
+    protected $master_key;
 
     /**
      * @var string
      */
-    protected $_method = 'AES-128-CBC';
+    protected $method = 'AES-128-CBC';
 
     /**
      * @param array $options
@@ -23,11 +23,11 @@ class Crypt extends Component implements CryptInterface
     public function __construct($options = [])
     {
         if (isset($options['master_key'])) {
-            $this->_master_key = $options['master_key'];
+            $this->master_key = $options['master_key'];
         }
 
         if (isset($options['method'])) {
-            $this->_method = $options['method'];
+            $this->method = $options['method'];
         }
     }
 
@@ -41,14 +41,14 @@ class Crypt extends Component implements CryptInterface
      */
     public function encrypt($text, $key)
     {
-        $iv_length = openssl_cipher_iv_length($this->_method);
+        $iv_length = openssl_cipher_iv_length($this->method);
         /** @noinspection CryptographicallySecureRandomnessInspection */
         if (!$iv = openssl_random_pseudo_bytes($iv_length)) {
             throw new CryptException('generate iv failed');
         }
 
         $data = pack('N', strlen($text)) . $text . md5($text, true);
-        return $iv . openssl_encrypt($data, $this->_method, md5($key, true), OPENSSL_RAW_DATA, $iv);
+        return $iv . openssl_encrypt($data, $this->method, md5($key, true), OPENSSL_RAW_DATA, $iv);
     }
 
     /**
@@ -62,7 +62,7 @@ class Crypt extends Component implements CryptInterface
      */
     public function decrypt($text, $key)
     {
-        $iv_length = openssl_cipher_iv_length($this->_method);
+        $iv_length = openssl_cipher_iv_length($this->method);
 
         if (strlen($text) < $iv_length * 2) {
             throw new CryptException('encrypted data is too short.');
@@ -70,7 +70,7 @@ class Crypt extends Component implements CryptInterface
 
         $data = substr($text, $iv_length);
         $iv = substr($text, 0, $iv_length);
-        $decrypted = openssl_decrypt($data, $this->_method, md5($key, true), OPENSSL_RAW_DATA, $iv);
+        $decrypted = openssl_decrypt($data, $this->method, md5($key, true), OPENSSL_RAW_DATA, $iv);
 
         $length = unpack('N', $decrypted)[1];
 
@@ -94,7 +94,7 @@ class Crypt extends Component implements CryptInterface
      */
     public function setMasterKey($key)
     {
-        $this->_master_key = $key;
+        $this->master_key = $key;
 
         return $this;
     }
@@ -107,10 +107,10 @@ class Crypt extends Component implements CryptInterface
      */
     public function getDerivedKey($type)
     {
-        if ($this->_master_key === null) {
+        if ($this->master_key === null) {
             throw new CryptException(['getDerivedKey for `:type` type Failed: master key is not set', 'type' => $type]);
         }
 
-        return md5($this->_master_key . ':' . $type);
+        return md5($this->master_key . ':' . $type);
     }
 }

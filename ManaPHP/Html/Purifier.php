@@ -10,17 +10,17 @@ class Purifier extends Component implements PurifierInterface
     /**
      * @var string
      */
-    protected $_allowedTags = ',a,b,br,code,div,i,img,s,strike,strong,samp,span,sub,sup,small,pre,p,q,div,em,h1,h2,h3,h4,h5,h6,table,u,ul,ol,tr,th,td,hr,li,';
+    protected $allowedTags = ',a,b,br,code,div,i,img,s,strike,strong,samp,span,sub,sup,small,pre,p,q,div,em,h1,h2,h3,h4,h5,h6,table,u,ul,ol,tr,th,td,hr,li,';
 
     /**
      * @var string
      */
-    protected $_allowedAttributes = ',title,src,href,width,height,alt,target,';
+    protected $allowedAttributes = ',title,src,href,width,height,alt,target,';
 
     /**
      * @var callable
      */
-    protected $_filter;
+    protected $filter;
 
     /**
      * @param array $options
@@ -28,15 +28,15 @@ class Purifier extends Component implements PurifierInterface
     public function __construct($options = [])
     {
         if (isset($options['allowedTags'])) {
-            $this->_allowedTags = ',' . implode(',', $options['allowedTags']) . ',';
+            $this->allowedTags = ',' . implode(',', $options['allowedTags']) . ',';
         }
 
         if (isset($options['allowedAttributes'])) {
-            $this->_allowedAttributes = ',' . implode(',', $options['allowedAttributes']) . ',';
+            $this->allowedAttributes = ',' . implode(',', $options['allowedAttributes']) . ',';
         }
 
         if (isset($options['filter'])) {
-            $this->_filter = $options['filter'];
+            $this->filter = $options['filter'];
         }
     }
 
@@ -89,8 +89,8 @@ class Purifier extends Component implements PurifierInterface
                         }
                     }
 
-                    if ($this->_filter !== null) {
-                        $filter = $this->_filter;
+                    if ($this->filter !== null) {
+                        $filter = $this->filter;
                         $r = $filter($tag, $attributeName, $attributeValue);
                         if ($r === false) {
                             $node->removeAttributeNode($attributeNode);
@@ -134,13 +134,13 @@ class Purifier extends Component implements PurifierInterface
         if ($allowedTags !== null) {
             $tags = ',' . implode(',', $allowedTags) . ',';
         } else {
-            $tags = $this->_allowedTags;
+            $tags = $this->allowedTags;
         }
 
         if ($allowedAttributes !== null) {
             $attributes = ',' . implode(',', $allowedAttributes) . ',';
         } else {
-            $attributes = $this->_allowedAttributes;
+            $attributes = $this->allowedAttributes;
         }
 
         $this->purifyInternal(iterator_to_array($body->item(0)->childNodes), $tags, $attributes);

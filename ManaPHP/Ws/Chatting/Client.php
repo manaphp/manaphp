@@ -9,7 +9,7 @@ class Client extends Component implements ClientInterface
     /**
      * @var string
      */
-    protected $_prefix = 'ws_chatting:';
+    protected $prefix = 'ws_chatting:';
 
     /**
      * @param array $options
@@ -17,11 +17,11 @@ class Client extends Component implements ClientInterface
     public function __construct($options = [])
     {
         if (isset($options['pubSub'])) {
-            $this->_injections['pubSub'] = $options['pubSub'];
+            $this->injections['pubSub'] = $options['pubSub'];
         }
 
         if (isset($options['prefix'])) {
-            $this->_prefix = $options['prefix'];
+            $this->prefix = $options['prefix'];
         }
     }
 
@@ -43,7 +43,7 @@ class Client extends Component implements ClientInterface
 
         $this->fireEvent('chatClient:push', compact('type', 'room', 'receivers', 'message'));
 
-        $this->pubSub->publish($this->_prefix . "$type:$room:" . $receivers, $message);
+        $this->pubSub->publish($this->prefix . "$type:$room:" . $receivers, $message);
     }
 
     /**

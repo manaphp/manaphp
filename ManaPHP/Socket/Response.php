@@ -14,13 +14,13 @@ class ResponseContext
 }
 
 /**
- * @property-read \ManaPHP\Socket\ResponseContext $_context
+ * @property-read \ManaPHP\Socket\ResponseContext $context
  */
 class Response extends Component implements ResponseInterface
 {
     public function getContext()
     {
-        return $this->_context;
+        return $this->context;
     }
 
     /**
@@ -32,7 +32,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setContent($content)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $context->content = (string)$content;
 
@@ -80,7 +80,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setJsonContent($content)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if (is_array($content) || is_string($content)) {
             null;
@@ -104,6 +104,6 @@ class Response extends Component implements ResponseInterface
      */
     public function getContent()
     {
-        return $this->_context->content;
+        return $this->context->content;
     }
 }

@@ -10,22 +10,22 @@ class Route implements RouteInterface
     /**
      * @var string
      */
-    protected $_pattern;
+    protected $pattern;
 
     /**
      * @var string
      */
-    protected $_compiled;
+    protected $compiled;
 
     /**
      * @var array
      */
-    protected $_paths;
+    protected $paths;
 
     /**
      * @var string|array
      */
-    protected $_methods;
+    protected $methods;
 
     /**
      * @param string       $pattern
@@ -35,10 +35,10 @@ class Route implements RouteInterface
      */
     public function __construct($pattern, $paths = null, $methods = null, $case_sensitive = true)
     {
-        $this->_pattern = $pattern;
-        $this->_compiled = $this->compilePattern($pattern, $case_sensitive);
-        $this->_paths = $this->normalizePaths($paths);
-        $this->_methods = $methods;
+        $this->pattern = $pattern;
+        $this->compiled = $this->compilePattern($pattern, $case_sensitive);
+        $this->paths = $this->normalizePaths($paths);
+        $this->methods = $methods;
     }
 
     /**
@@ -187,7 +187,7 @@ class Route implements RouteInterface
     {
         $matches = [];
 
-        $methods = $this->_methods;
+        $methods = $this->methods;
         if ($methods === null || $methods === 'REST') {
             null;
         } elseif (is_string($methods)) {
@@ -198,18 +198,18 @@ class Route implements RouteInterface
             return false;
         }
 
-        if ($this->_compiled[0] !== '#') {
-            if ($this->_compiled === $uri) {
-                return $this->_paths;
+        if ($this->compiled[0] !== '#') {
+            if ($this->compiled === $uri) {
+                return $this->paths;
             } else {
                 return false;
             }
         } else {
-            $r = preg_match($this->_compiled, $uri, $matches);
+            $r = preg_match($this->compiled, $uri, $matches);
             if ($r === false) {
-                throw new InvalidFormatException(['`%s` is invalid for `%s`', $this->_compiled, $this->_pattern]);
+                throw new InvalidFormatException(['`%s` is invalid for `%s`', $this->compiled, $this->pattern]);
             } elseif ($r === 1) {
-                $parts = $this->_paths;
+                $parts = $this->paths;
 
                 foreach ($matches as $k => $v) {
                     if (is_string($k)) {
@@ -224,9 +224,9 @@ class Route implements RouteInterface
                     }
                 }
 
-                if ($this->_methods === 'REST') {
+                if ($this->methods === 'REST') {
                     $controller = $parts['controller'] ?? '';
-                    if ($controller !== '' && str_contains($this->_pattern, '/{controller}')) {
+                    if ($controller !== '' && str_contains($this->pattern, '/{controller}')) {
                         $parts['controller'] = Str::singular($controller);
                     }
 

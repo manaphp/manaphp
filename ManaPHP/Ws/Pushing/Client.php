@@ -10,12 +10,12 @@ class Client extends Component implements ClientInterface
     /**
      * @var string
      */
-    protected $_prefix = 'ws_pushing:';
+    protected $prefix = 'ws_pushing:';
 
     /**
      * @var string
      */
-    protected $_endpoint;
+    protected $endpoint;
 
     /**
      * @param array $options
@@ -23,15 +23,15 @@ class Client extends Component implements ClientInterface
     public function __construct($options = [])
     {
         if (isset($options['pubSub'])) {
-            $this->_injections['pubSub'] = $options['pubSub'];
+            $this->injections['pubSub'] = $options['pubSub'];
         }
 
         if (isset($options['prefix'])) {
-            $this->_prefix = $options['prefix'];
+            $this->prefix = $options['prefix'];
         }
 
         if (isset($options['endpoint'])) {
-            $this->_endpoint = $options['endpoint'];
+            $this->endpoint = $options['endpoint'];
         }
     }
 
@@ -53,13 +53,13 @@ class Client extends Component implements ClientInterface
             $message = json_stringify($message);
         }
 
-        if (($endpoint = $endpoint ?? $this->_endpoint) === null) {
+        if (($endpoint = $endpoint ?? $this->endpoint) === null) {
             throw new MissingFieldException($endpoint);
         }
 
         $this->fireEvent('wspClient:push', compact('type', 'receivers', 'message', 'endpoint'));
 
-        $this->pubSub->publish($this->_prefix . "$endpoint:$type:$receivers", $message);
+        $this->pubSub->publish($this->prefix . "$endpoint:$type:$receivers", $message);
     }
 
     /**

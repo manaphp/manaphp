@@ -8,7 +8,7 @@ class FactoryDefault extends Container
     {
         parent::__construct();
 
-        $this->_definitions = [
+        $this->definitions = [
             'eventsManager'    => 'ManaPHP\Event\Manager',
             'poolManager'      => 'ManaPHP\Pool\Manager',
             'alias'            => 'ManaPHP\Alias',

@@ -9,7 +9,7 @@ class Stdout extends Logger
     /**
      * @var string
      */
-    protected $_format = '[:date][:level][:category][:location] :message';
+    protected $format = '[:date][:level][:category][:location] :message';
 
     /**
      * @param array $options
@@ -19,7 +19,7 @@ class Stdout extends Logger
         parent::__construct($options);
 
         if (isset($options['format'])) {
-            $this->_format = $options['format'];
+            $this->format = $options['format'];
         }
     }
 
@@ -40,7 +40,7 @@ class Stdout extends Logger
             $replaced[':location'] = "$log->file:$log->line";
             $replaced[':message'] = $log->message;
 
-            echo strtr($this->_format, $replaced), PHP_EOL;
+            echo strtr($this->format, $replaced), PHP_EOL;
         }
     }
 }

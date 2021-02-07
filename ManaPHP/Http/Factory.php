@@ -10,8 +10,8 @@ class Factory extends FactoryDefault
     {
         parent::__construct();
 
-        $this->_definitions = array_merge(
-            $this->_definitions, [
+        $this->definitions = array_merge(
+            $this->definitions, [
                 'router'         => 'ManaPHP\Http\Router',
                 'dispatcher'     => 'ManaPHP\Http\Dispatcher',
                 'url'            => 'ManaPHP\Http\Url',

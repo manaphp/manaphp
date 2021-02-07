@@ -9,22 +9,22 @@ class Increment implements SqlFragmentable
     /**
      * @var string|int|float
      */
-    protected $_value;
+    protected $value;
 
     /**
      * @var string
      */
-    protected $_operator;
+    protected $operator;
 
     /**
      * @var array
      */
-    protected $_bind;
+    protected $bind;
 
     /**
      * @var string
      */
-    protected $_field;
+    protected $field;
 
     /**
      * @param string|float|int $value
@@ -33,9 +33,9 @@ class Increment implements SqlFragmentable
      */
     public function __construct($value, $operator = '+', $bind = [])
     {
-        $this->_value = $value;
-        $this->_operator = $operator;
-        $this->_bind = $bind;
+        $this->value = $value;
+        $this->operator = $operator;
+        $this->bind = $bind;
     }
 
     /**
@@ -45,7 +45,7 @@ class Increment implements SqlFragmentable
      */
     public function setField($name)
     {
-        $this->_field = $name;
+        $this->field = $name;
 
         return $this;
     }
@@ -55,10 +55,10 @@ class Increment implements SqlFragmentable
      */
     public function getSql()
     {
-        if ($this->_operator !== null) {
-            return "$this->_field = $this->_field $this->_operator :$this->_field";
+        if ($this->operator !== null) {
+            return "$this->field = $this->field $this->operator :$this->field";
         } else {
-            return $this->_value;
+            return $this->value;
         }
     }
 
@@ -67,10 +67,10 @@ class Increment implements SqlFragmentable
      */
     public function getBind()
     {
-        if ($this->_operator !== null) {
-            return [$this->_field => $this->_value];
+        if ($this->operator !== null) {
+            return [$this->field => $this->value];
         } else {
-            return $this->_bind;
+            return $this->bind;
         }
     }
 }

@@ -7,7 +7,7 @@ class Exception extends \ManaPHP\Exception
     /**
      * @var \ManaPHP\Http\Client\Response
      */
-    protected $_response;
+    protected $response;
 
     /**
      * @param string|array                  $message
@@ -16,7 +16,7 @@ class Exception extends \ManaPHP\Exception
      */
     public function __construct($message = '', $response = null, \Exception $previous = null)
     {
-        $this->_response = $response;
+        $this->response = $response;
         parent::__construct($message, 0, $previous);
     }
 
@@ -27,7 +27,7 @@ class Exception extends \ManaPHP\Exception
      */
     public function setResponse($response)
     {
-        $this->_response = $response;
+        $this->response = $response;
     }
 
     /**
@@ -35,6 +35,6 @@ class Exception extends \ManaPHP\Exception
      */
     public function getResponse()
     {
-        return $this->_response;
+        return $this->response;
     }
 }

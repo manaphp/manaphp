@@ -19,27 +19,27 @@ class Linter extends Component
     /**
      * @var string
      */
-    protected $_class;
+    protected $class;
 
     /**
      * @var \ReflectionClass
      */
-    protected $_reflection;
+    protected $reflection;
 
     /**
      * @var \ManaPHP\Data\Db\Model|\ManaPHP\Data\Mongodb\Model
      */
-    protected $_model;
+    protected $model;
 
     /**
      * @param string|\ManaPHP\Data\Model $model
      */
     public function __construct($model)
     {
-        $this->_class = is_string($model) ? $model : get_class($model);
+        $this->class = is_string($model) ? $model : get_class($model);
         /** @noinspection PhpUndefinedMethodInspection */
-        $this->_model = is_string($model) ? $model::sample() : $model;
-        $this->_reflection = new ReflectionClass($model);
+        $this->model = is_string($model) ? $model::sample() : $model;
+        $this->reflection = new ReflectionClass($model);
     }
 
     /**
@@ -48,10 +48,10 @@ class Linter extends Component
     public function lintMethodFields()
     {
         $r = [];
-        $model = $this->_model;
+        $model = $this->model;
 
-        foreach ($this->_reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-            if ($method->getDeclaringClass()->getName() !== $this->_class) {
+        foreach ($this->reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+            if ($method->getDeclaringClass()->getName() !== $this->class) {
                 continue;
             }
 
@@ -102,7 +102,7 @@ class Linter extends Component
     public function getPropertyFields()
     {
         $fields = [];
-        foreach ($this->_reflection->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
+        foreach ($this->reflection->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
             if ($property->isStatic()) {
                 continue;
             }
@@ -118,10 +118,10 @@ class Linter extends Component
      */
     public function lintRealPropertyFields()
     {
-        $model = $this->_model;
+        $model = $this->model;
 
         $properties = [];
-        foreach ($this->_reflection->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
+        foreach ($this->reflection->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
             if ($property->isStatic()) {
                 continue;
             }
@@ -137,7 +137,7 @@ class Linter extends Component
      */
     public function getMagicFields()
     {
-        $comment = $this->_reflection->getDocComment();
+        $comment = $this->reflection->getDocComment();
 
         if (!$comment) {
             return [];
@@ -169,6 +169,6 @@ class Linter extends Component
             $fields[] = $field;
         }
 
-        return array_diff($fields, $this->_model->fields());
+        return array_diff($fields, $this->model->fields());
     }
 }

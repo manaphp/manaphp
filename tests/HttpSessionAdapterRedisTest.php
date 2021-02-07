@@ -15,26 +15,26 @@ class HttpSessionAdapterRedisTest extends TestCase
         //default
         $session = new Redis();
         $session->setContainer($di);
-        $this->assertAttributeSame('redis', '_redis', $session);
-        $this->assertAttributeSame('session:', '_prefix', $session);
+        $this->assertAttributeSame('redis', 'redis', $session);
+        $this->assertAttributeSame('session:', 'prefix', $session);
 
         //array redis
         $session = new Redis(['redis' => 'xxx']);
         $session->setContainer($di);
-        $this->assertAttributeSame('xxx', '_redis', $session);
-        $this->assertAttributeSame('session:', '_prefix', $session);
+        $this->assertAttributeSame('xxx', 'redis', $session);
+        $this->assertAttributeSame('session:', 'prefix', $session);
 
         //array prefix
         $session = new Redis(['prefix' => 'ppp:']);
         $session->setContainer($di);
-        $this->assertAttributeSame('redis', '_redis', $session);
-        $this->assertAttributeSame('ppp:', '_prefix', $session);
+        $this->assertAttributeSame('redis', 'redis', $session);
+        $this->assertAttributeSame('ppp:', 'prefix', $session);
 
         //array redis and prefix
         $session = new Redis(['redis' => 'xx', 'prefix' => 'yy:']);
         $session->setContainer($di);
-        $this->assertAttributeSame('xx', '_redis', $session);
-        $this->assertAttributeSame('yy:', '_prefix', $session);
+        $this->assertAttributeSame('xx', 'redis', $session);
+        $this->assertAttributeSame('yy:', 'prefix', $session);
     }
 
     public function test_read()

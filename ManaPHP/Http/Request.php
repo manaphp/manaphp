@@ -50,7 +50,7 @@ class RequestContext implements Stickyable
 /**
  * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher
  * @property-read \ManaPHP\Validating\ValidatorInterface $validator
- * @property-read \ManaPHP\Http\RequestContext           $_context
+ * @property-read \ManaPHP\Http\RequestContext           $context
  */
 class Request extends Component implements RequestInterface
 {
@@ -60,7 +60,7 @@ class Request extends Component implements RequestInterface
     public function __construct($options = [])
     {
         if (isset($options['validator'])) {
-            $this->_injections['validator'] = $options['validator'];
+            $this->injections['validator'] = $options['validator'];
         }
     }
 
@@ -69,7 +69,7 @@ class Request extends Component implements RequestInterface
      */
     public function getContext()
     {
-        return $this->_context;
+        return $this->context;
     }
 
     /**
@@ -84,7 +84,7 @@ class Request extends Component implements RequestInterface
      */
     public function prepare($GET, $POST, $SERVER, $RAW_BODY = null, $COOKIE = [], $FILES = [])
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if (!$POST
             && (isset($SERVER['REQUEST_METHOD']) && !in_array($SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true))
@@ -116,7 +116,7 @@ class Request extends Component implements RequestInterface
      */
     public function getRawBody()
     {
-        return $this->_context->rawBody;
+        return $this->context->rawBody;
     }
 
     /**
@@ -126,7 +126,7 @@ class Request extends Component implements RequestInterface
      */
     public function setParams($params)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         foreach ($params as $k => $v) {
             if (is_string($k)) {
@@ -151,7 +151,7 @@ class Request extends Component implements RequestInterface
      */
     public function getCookie($name = null, $default = '')
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($name === null) {
             return $context->_COOKIE;
@@ -169,7 +169,7 @@ class Request extends Component implements RequestInterface
      */
     public function hasCookie($name)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         return isset($context->_COOKIE[$name]);
     }
@@ -208,7 +208,7 @@ class Request extends Component implements RequestInterface
      */
     public function get($name = null, $default = null)
     {
-        $source = $this->_context->_REQUEST;
+        $source = $this->context->_REQUEST;
 
         if ($name === null) {
             return $source;
@@ -237,7 +237,7 @@ class Request extends Component implements RequestInterface
      */
     public function set($name, $value)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $context->_GET[$name] = $value;
         $context->_REQUEST[$name] = $value;
@@ -252,7 +252,7 @@ class Request extends Component implements RequestInterface
      */
     public function delete($name)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         unset($context->_GET[$name], $context->_POST[$name], $context->_REQUEST[$name]);
 
@@ -266,7 +266,7 @@ class Request extends Component implements RequestInterface
      */
     public function getId($name = 'id')
     {
-        $source = $this->_context->_REQUEST;
+        $source = $this->context->_REQUEST;
 
         if (isset($source[$name])) {
             $id = $source[$name];
@@ -293,7 +293,7 @@ class Request extends Component implements RequestInterface
      */
     public function getServer($name = null, $default = '')
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($name === null) {
             return $context->_SERVER;
@@ -310,7 +310,7 @@ class Request extends Component implements RequestInterface
      */
     public function setServer($name, $value)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $context->_SERVER[$name] = $value;
 
@@ -322,7 +322,7 @@ class Request extends Component implements RequestInterface
      */
     public function getMethod()
     {
-        return $this->_context->_SERVER['REQUEST_METHOD'];
+        return $this->context->_SERVER['REQUEST_METHOD'];
     }
 
     /**
@@ -334,7 +334,7 @@ class Request extends Component implements RequestInterface
      */
     public function has($name)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         return isset($context->_REQUEST[$name]);
     }
@@ -346,7 +346,7 @@ class Request extends Component implements RequestInterface
      */
     public function hasServer($name)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         return isset($context->_SERVER[$name]);
     }
@@ -485,7 +485,7 @@ class Request extends Component implements RequestInterface
      */
     public function hasFiles($onlySuccessful = true)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         /** @var array $_FILES */
         foreach ($context->_FILES as $file) {
@@ -516,7 +516,7 @@ class Request extends Component implements RequestInterface
      */
     public function getFiles($onlySuccessful = true)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $r = [];
 
@@ -625,7 +625,7 @@ class Request extends Component implements RequestInterface
      */
     public function getOrigin($strict = true)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($origin = $context->_SERVER['HTTP_ORIGIN'] ?? null) {
             return $origin;
@@ -650,7 +650,7 @@ class Request extends Component implements RequestInterface
      */
     public function getHost()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($host = $context->_SERVER['HTTP_HOST'] ?? null) {
             return $host;
@@ -696,7 +696,7 @@ class Request extends Component implements RequestInterface
 
     public function jsonSerialize()
     {
-        return $this->_context;
+        return $this->context;
     }
 
     /**
@@ -704,7 +704,7 @@ class Request extends Component implements RequestInterface
      */
     public function getRequestId()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($context->request_id === null) {
             $this->setRequestId($context->_SERVER['HTTP_X_REQUEST_ID'] ?? null);
@@ -724,7 +724,7 @@ class Request extends Component implements RequestInterface
             $request_id = preg_replace('#[^\-\w.]#', 'X', $request_id);
         }
 
-        $this->_context->request_id = $request_id ?: bin2hex(random_bytes(16));
+        $this->context->request_id = $request_id ?: bin2hex(random_bytes(16));
     }
 
     /**
@@ -732,7 +732,7 @@ class Request extends Component implements RequestInterface
      */
     public function getRequestTime()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         return $context->_SERVER['REQUEST_TIME_FLOAT'];
     }
@@ -752,7 +752,7 @@ class Request extends Component implements RequestInterface
      */
     public function getIfNoneMatch()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         return $context->_SERVER['HTTP_IF_NONE_MATCH'] ?? null;
     }
@@ -762,7 +762,7 @@ class Request extends Component implements RequestInterface
      */
     public function getAcceptLanguage()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         return $context->_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? null;
     }
@@ -773,7 +773,7 @@ class Request extends Component implements RequestInterface
 
         if (DIRECTORY_SEPARATOR === '\\') {
             foreach (['PATH', 'SystemRoot', 'COMSPEC', 'PATHEXT', 'WINDIR'] as $name) {
-                unset($data['_context']['_SERVER'][$name]);
+                unset($data['context']['_SERVER'][$name]);
             }
         }
 

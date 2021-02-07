@@ -10,7 +10,7 @@ class Listener extends Component implements LogCategorizable
     /**
      * @var array
      */
-    protected $_processors = [];
+    protected $processors = [];
 
     public function categorizeLog()
     {
@@ -30,7 +30,7 @@ class Listener extends Component implements LogCategorizable
             $event = lcfirst(substr($method, 2));
             $event = rtrim($event, '0123456789');
 
-            $this->_processors[$event][] = $method;
+            $this->processors[$event][] = $method;
         }
     }
 
@@ -43,8 +43,8 @@ class Listener extends Component implements LogCategorizable
             }
         }
 
-        if (isset($this->_processors[$type])) {
-            foreach ($this->_processors[$type] as $processor) {
+        if (isset($this->processors[$type])) {
+            foreach ($this->processors[$type] as $processor) {
                 if (($r = $this->$processor($eventArgs)) !== null) {
                     return $r;
                 }

@@ -14,14 +14,14 @@ class Mysql extends Connection
     /**
      * @var string
      */
-    protected $_charset = 'UTF8';
+    protected $charset = 'UTF8';
 
     /**
      * @param string $uri
      */
     public function __construct($uri = 'mysql://root@localhost/test?charset=utf8')
     {
-        $this->_uri = $uri;
+        $this->uri = $uri;
 
         $parts = parse_url($uri);
 
@@ -29,8 +29,8 @@ class Mysql extends Connection
             throw new DsnFormatException(['`%s` is invalid, `%s` scheme is not recognized', $uri, $parts['scheme']]);
         }
 
-        $this->_username = $parts['user'] ?? 'root';
-        $this->_password = $parts['pass'] ?? '';
+        $this->username = $parts['user'] ?? 'root';
+        $this->password = $parts['pass'] ?? '';
 
         $dsn = [];
 
@@ -53,23 +53,23 @@ class Mysql extends Connection
             parse_str($parts['query'], $query);
 
             if (isset($query['charset'])) {
-                $this->_charset = $query['charset'];
+                $this->charset = $query['charset'];
             }
 
             if (!MANAPHP_COROUTINE_ENABLED && isset($query['persistent'])) {
-                $this->_options[PDO::ATTR_PERSISTENT] = $query['persistent'] === '1';
+                $this->options[PDO::ATTR_PERSISTENT] = $query['persistent'] === '1';
             }
 
             if (isset($query['timeout'])) {
-                $this->_options[PDO::ATTR_TIMEOUT] = (int)$query['timeout'];
+                $this->options[PDO::ATTR_TIMEOUT] = (int)$query['timeout'];
             }
 
             if (isset($query['user'])) {
-                $this->_username = $query['user'];
+                $this->username = $query['user'];
             }
 
             if (isset($query['password'])) {
-                $this->_password = $query['password'];
+                $this->password = $query['password'];
             }
 
             if (isset($query['db'])) {
@@ -77,21 +77,21 @@ class Mysql extends Connection
             }
 
             if (isset($query['readonly']) && $query['readonly'] !== '0') {
-                $this->_readonly = true;
+                $this->readonly = true;
             }
 
             if (isset($query['emulate_prepares']) && $query['emulate_prepares'] !== '0') {
-                $this->_emulate_prepares = true;
+                $this->emulate_prepares = true;
             }
         }
 
-        $this->_options[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES '{$this->_charset}'";
+        $this->options[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES '{$this->charset}'";
 
         $dsn_parts = [];
         foreach ($dsn as $k => $v) {
             $dsn_parts[] = $k . '=' . $v;
         }
-        $this->_dsn = 'mysql:' . implode(';', $dsn_parts);
+        $this->dsn = 'mysql:' . implode(';', $dsn_parts);
 
         parent::__construct();
     }

@@ -29,29 +29,29 @@ class LoggerPluginContext
 }
 
 /**
- * @property-read \ManaPHP\Logging\LoggerPluginContext $_context
+ * @property-read \ManaPHP\Logging\LoggerPluginContext $context
  */
 class LoggerPlugin extends Plugin
 {
     /**
      * @var bool
      */
-    protected $_enabled;
+    protected $enabled;
 
     /**
      * @var int
      */
-    protected $_ttl = 300;
+    protected $ttl = 300;
 
     /**
      * @var string
      */
-    protected $_prefix;
+    protected $prefix;
 
     /**
      * @var string
      */
-    protected $_template = '@manaphp/Logging/LoggerPlugin/Template.html';
+    protected $template = '@manaphp/Logging/LoggerPlugin/Template.html';
 
     /**
      * @param array $options
@@ -59,28 +59,28 @@ class LoggerPlugin extends Plugin
     public function __construct($options = [])
     {
         if (isset($options['redisCache'])) {
-            $this->_injections['redisCache'] = $options['redisCache'];
+            $this->injections['redisCache'] = $options['redisCache'];
         }
 
         if (MANAPHP_CLI) {
-            $this->_enabled = false;
+            $this->enabled = false;
         } elseif (isset($options['enabled'])) {
-            $this->_enabled = (bool)$options['enabled'];
+            $this->enabled = (bool)$options['enabled'];
         } elseif (!in_array($this->configure->env, ['dev', 'test'], true)) {
-            $this->_enabled = false;
+            $this->enabled = false;
         }
 
         if (isset($options['ttl'])) {
-            $this->_ttl = (int)$options['ttl'];
+            $this->ttl = (int)$options['ttl'];
         }
 
-        $this->_prefix = $options['prefix'] ?? "cache:{$this->configure->id}:loggerPlugin:";
+        $this->prefix = $options['prefix'] ?? "cache:{$this->configure->id}:loggerPlugin:";
 
         if (isset($options['template'])) {
-            $this->_template = $options['template'];
+            $this->template = $options['template'];
         }
 
-        if ($this->_enabled !== false) {
+        if ($this->enabled !== false) {
             $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
             $this->attachEvent('logger:log', [$this, 'onLoggerLog']);
             $this->attachEvent('request:end', [$this, 'onRequestEnd']);
@@ -94,8 +94,8 @@ class LoggerPlugin extends Plugin
      */
     protected function readData($key)
     {
-        if ($this->_ttl) {
-            $data = $this->redisCache->get($this->_prefix . $key);
+        if ($this->ttl) {
+            $data = $this->redisCache->get($this->prefix . $key);
         } else {
             $file = "@data/loggerPlugin/{$key}.zip";
             $data = LocalFS::fileExists($file) ? LocalFS::fileGet($file) : false;
@@ -115,8 +115,8 @@ class LoggerPlugin extends Plugin
     protected function writeData($key, $data)
     {
         $content = gzencode(json_stringify($data, JSON_PARTIAL_OUTPUT_ON_ERROR));
-        if ($this->_ttl) {
-            $this->redisCache->set($this->_prefix . $key, $content, $this->_ttl);
+        if ($this->ttl) {
+            $this->redisCache->set($this->prefix . $key, $content, $this->ttl);
         } else {
             LocalFS::filePut("@data/loggerPlugin/{$key}.zip", $content);
         }
@@ -127,7 +127,7 @@ class LoggerPlugin extends Plugin
      */
     public function onRequestBegin()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if (($logger = $this->request->get('__loggerPlugin', ''))
             && preg_match('#^([\w/]+)\.(html|json|txt|raw)$#', $logger, $match)
@@ -136,7 +136,7 @@ class LoggerPlugin extends Plugin
             if (($data = $this->readData($match[1])) !== false) {
                 $ext = $match[2];
                 if ($ext === 'html') {
-                    $this->response->setContent(strtr(LocalFS::fileGet($this->_template), ['LOGGER_DATA' => $data]));
+                    $this->response->setContent(strtr(LocalFS::fileGet($this->template), ['LOGGER_DATA' => $data]));
                 } elseif ($ext === 'raw') {
                     $this->response->setContent($data)->setContentType('text/plain;charset=UTF-8');
                 } elseif ($ext === 'txt') {
@@ -174,7 +174,7 @@ class LoggerPlugin extends Plugin
      */
     public function onLoggerLog(EventArgs $eventArgs)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         /** @var \ManaPHP\Logging\Logger\Log $log */
         $log = $eventArgs->data['log'];
@@ -196,7 +196,7 @@ class LoggerPlugin extends Plugin
      */
     public function onRequestEnd()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($context->enabled) {
             $this->writeData($context->key, $context->logs);
@@ -210,7 +210,7 @@ class LoggerPlugin extends Plugin
     {
         $data = parent::dump();
 
-        $data['_context']['logs'] = '***';
+        $data['context']['logs'] = '***';
 
         return $data;
     }

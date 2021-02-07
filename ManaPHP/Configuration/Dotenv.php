@@ -15,22 +15,22 @@ class Dotenv extends Component implements DotenvInterface
     /**
      * @var bool
      */
-    protected $_to_env;
+    protected $to_env;
 
     /**
      * @var string
      */
-    protected $_file;
+    protected $file;
 
     /**
      * @var array
      */
-    protected $_env = [];
+    protected $env = [];
 
     /**
      * @var int
      */
-    protected $_ttl = 1;
+    protected $ttl = 1;
 
     /**
      * @param array $options
@@ -38,11 +38,11 @@ class Dotenv extends Component implements DotenvInterface
     public function __construct($options = [])
     {
         if (isset($options['to_env'])) {
-            $this->_to_env = $options['to_env'];
+            $this->to_env = $options['to_env'];
         }
 
         if (isset($options['ttl'])) {
-            $this->_ttl = (int)$options['ttl'];
+            $this->ttl = (int)$options['ttl'];
         }
 
         foreach ($_ENV as $k => $v) {
@@ -55,7 +55,7 @@ class Dotenv extends Component implements DotenvInterface
             }
         }
 
-        $this->_env = $_ENV;
+        $this->env = $_ENV;
     }
 
     /**
@@ -77,7 +77,7 @@ class Dotenv extends Component implements DotenvInterface
             }
         }
 
-        $this->_file = $file;
+        $this->file = $file;
 
         if (str_contains($file, '://')) {
             if (!is_file($config_file = $this->alias->resolve('@config/app.php'))) {
@@ -100,7 +100,7 @@ class Dotenv extends Component implements DotenvInterface
                 }
 
                 if (function_exists('apcu_store')) {
-                    apcu_store($key, $lines, $this->_ttl);
+                    apcu_store($key, $lines, $this->ttl);
                 }
             }
         } else {
@@ -120,9 +120,9 @@ class Dotenv extends Component implements DotenvInterface
         $env = $this->parse($lines);
 
         /** @noinspection AdditionOperationOnArraysInspection */
-        $this->_env += $env;
+        $this->env += $env;
 
-        if ($this->_to_env) {
+        if ($this->to_env) {
             /** @noinspection AdditionOperationOnArraysInspection */
             $_ENV += $env;
         }
@@ -139,12 +139,12 @@ class Dotenv extends Component implements DotenvInterface
     public function get($key = null, $default = null)
     {
         if ($key === null) {
-            return $this->_env;
+            return $this->env;
         }
 
-        if (isset($this->_env[$key])) {
-            $value = $this->_env[$key];
-        } elseif (!$this->_file) {
+        if (isset($this->env[$key])) {
+            $value = $this->env[$key];
+        } elseif (!$this->file) {
             throw new PreconditionException('.env is not loaded');
         } elseif ($default !== null) {
             $value = $default;

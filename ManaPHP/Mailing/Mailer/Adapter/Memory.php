@@ -9,7 +9,7 @@ class Memory extends Mailer
     /**
      * @var \ManaPHP\Mailing\Mailer\Message
      */
-    protected $_message;
+    protected $message;
 
     /**
      * @param array $options
@@ -17,15 +17,15 @@ class Memory extends Mailer
     public function __construct($options = [])
     {
         if (isset($options['log'])) {
-            $this->_log = $options['log'];
+            $this->log = $options['log'];
         }
 
         if (isset($options['from'])) {
-            $this->_from = $options['from'];
+            $this->from = $options['from'];
         }
 
         if (isset($options['to'])) {
-            $this->_to = $options['to'];
+            $this->to = $options['to'];
         }
     }
 
@@ -34,7 +34,7 @@ class Memory extends Mailer
      */
     public function getLastMessage()
     {
-        return $this->_message;
+        return $this->message;
     }
 
     /**
@@ -45,7 +45,7 @@ class Memory extends Mailer
      */
     protected function sendInternal($message, &$failedRecipients = null)
     {
-        $this->_message = $message;
+        $this->message = $message;
 
         return count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
     }

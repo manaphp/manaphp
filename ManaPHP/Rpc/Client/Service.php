@@ -12,17 +12,17 @@ class Service extends \ManaPHP\Service
     /**
      * @var string
      */
-    protected $_endpoint;
+    protected $endpoint;
 
     /**
      * @var \ManaPHP\Rpc\ClientInterface
      */
-    protected $_rpcClient;
+    protected $rpcClient;
 
     /**
      * @var array
      */
-    protected $_parameters;
+    protected $parameters;
 
     /**
      * @param string|array $options
@@ -45,7 +45,7 @@ class Service extends \ManaPHP\Service
 
         parent::__construct($options);
 
-        if (!$endpoint = $this->_endpoint) {
+        if (!$endpoint = $this->endpoint) {
             throw new MisuseException('missing endpoint config');
         }
 
@@ -58,7 +58,7 @@ class Service extends \ManaPHP\Service
             throw new NotSupportedException(['`:type` type rpc is not support', 'type' => $scheme]);
         }
 
-        $this->_rpcClient = $this->getNew($class, $options);
+        $this->rpcClient = $this->getNew($class, $options);
     }
 
     /**
@@ -75,12 +75,12 @@ class Service extends \ManaPHP\Service
         }
 
         if (count($params) !== 0 && key($params) === 0) {
-            if (!$parameters = $this->_parameters[$method] ?? []) {
+            if (!$parameters = $this->parameters[$method] ?? []) {
                 $rm = new ReflectionMethod($this, $method);
                 foreach ($rm->getParameters() as $parameter) {
                     $parameters[] = $parameter->getName();
                 }
-                $this->_parameters[$method] = $parameters;
+                $this->parameters[$method] = $parameters;
             }
 
             if (count($parameters) !== count($params)) {
@@ -90,6 +90,6 @@ class Service extends \ManaPHP\Service
             $params = array_combine($parameters, $params);
         }
 
-        return $this->_rpcClient->invoke($method, $params, $options);
+        return $this->rpcClient->invoke($method, $params, $options);
     }
 }

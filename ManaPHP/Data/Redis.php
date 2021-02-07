@@ -18,59 +18,59 @@ class Redis extends Component implements RedisInterface
     /**
      * @var string
      */
-    protected $_uri;
+    protected $uri;
 
     /**
      * @var float
      */
-    protected $_timeout = 1.0;
+    protected $timeout = 1.0;
 
     /**
      * @var bool
      */
-    protected $_has_slave = false;
+    protected $has_slave = false;
 
     /**
      * @var string
      */
-    protected $_pool_size = '4';
+    protected $pool_size = '4';
 
     /**
      * @var static
      */
-    protected $_owner;
+    protected $owner;
 
     /**
      * @var string
      */
-    protected $_type;
+    protected $type;
 
     /**
      * @var \ManaPHP\Data\Redis\Connection
      */
-    protected $_connection;
+    protected $connection;
 
     /**
      * @param string $uri
      */
     public function __construct($uri = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0')
     {
-        $this->_uri = $uri;
+        $this->uri = $uri;
 
         if (preg_match('#timeout=([\d.]+)#', $uri, $matches) === 1) {
-            $this->_timeout = (float)$matches[1];
+            $this->timeout = (float)$matches[1];
         }
 
         if (preg_match('#pool_size=([\d/]+)#', $uri, $matches)) {
-            $this->_pool_size = $matches[1];
+            $this->pool_size = $matches[1];
         }
 
-        if (($pos = strpos($this->_pool_size, '/')) === false) {
-            $master_pool_size = (int)$this->_pool_size;
-            $slave_pool_size = (int)$this->_pool_size;
+        if (($pos = strpos($this->pool_size, '/')) === false) {
+            $master_pool_size = (int)$this->pool_size;
+            $slave_pool_size = (int)$this->pool_size;
         } else {
-            $master_pool_size = (int)substr($this->_pool_size, 0, $pos);
-            $slave_pool_size = (int)substr($this->_pool_size, $pos + 1);
+            $master_pool_size = (int)substr($this->pool_size, 0, $pos);
+            $slave_pool_size = (int)substr($this->pool_size, $pos + 1);
         }
 
         $uris = [];
@@ -117,16 +117,16 @@ class Redis extends Component implements RedisInterface
                 $this->poolManager->add($this, ['class' => 'ManaPHP\Data\Redis\Connection', $u], 1, 'slave');
             }
 
-            $this->_has_slave = true;
+            $this->has_slave = true;
         }
     }
 
     public function __destruct()
     {
-        if ($this->_owner === null) {
+        if ($this->owner === null) {
             $this->poolManager->remove($this);
         } else {
-            $this->poolManager->push($this->_owner, $this->_connection, $this->_type);
+            $this->poolManager->push($this->owner, $this->connection, $this->type);
         }
     }
 
@@ -140,7 +140,7 @@ class Redis extends Component implements RedisInterface
      */
     public function getUri()
     {
-        return $this->_uri;
+        return $this->uri;
     }
 
     /**
@@ -210,36 +210,36 @@ class Redis extends Component implements RedisInterface
     public function call($method, $arguments)
     {
         if ($method === 'multi' || $method === 'pipeline') {
-            if ($this->_connection !== null) {
-                $this->_connection->call($method, $arguments);
+            if ($this->connection !== null) {
+                $this->connection->call($method, $arguments);
                 return $this;
             } else {
-                if ($this->_has_slave) {
+                if ($this->has_slave) {
                     throw new MisuseException(
                         "slave is exists, `$method` method only can be used on instance that created by calling getMaster or getSlave"
                     );
                 }
 
                 $master = $this->getMaster();
-                $master->_connection->call($method, $arguments);
+                $master->connection->call($method, $arguments);
 
                 return $master;
             }
         } elseif ($method === 'watch') {
-            if ($this->_connection !== null) {
-                $this->_connection->call($method, $arguments);
+            if ($this->connection !== null) {
+                $this->connection->call($method, $arguments);
                 return null;
             } else {
                 throw new MisuseException(
                     '`watch` method only can be used on instance that created by calling getMaster or getSlave'
                 );
             }
-        } elseif ($this->_connection !== null) {
-            return $this->_connection->call($method, $arguments);
+        } elseif ($this->connection !== null) {
+            return $this->connection->call($method, $arguments);
         } else {
-            $type = $this->_has_slave ? $this->getConnectionType($method) : 'default';
+            $type = $this->has_slave ? $this->getConnectionType($method) : 'default';
 
-            $connection = $this->poolManager->pop($this, $this->_timeout, $type);
+            $connection = $this->poolManager->pop($this, $this->timeout, $type);
 
             try {
                 return $connection->call($method, $arguments);
@@ -271,15 +271,15 @@ class Redis extends Component implements RedisInterface
      */
     public function getMaster()
     {
-        if ($this->_owner !== null) {
+        if ($this->owner !== null) {
             throw new MisuseException('getMaster does\'t support nesting.');
         }
 
         $clone = clone $this;
 
-        $clone->_owner = $this;
-        $clone->_type = 'default';
-        $clone->_connection = $this->poolManager->pop($this, $this->_timeout, $clone->_type);
+        $clone->owner = $this;
+        $clone->type = 'default';
+        $clone->connection = $this->poolManager->pop($this, $this->timeout, $clone->type);
 
         return $clone;
     }
@@ -289,15 +289,15 @@ class Redis extends Component implements RedisInterface
      */
     public function getSlave()
     {
-        if ($this->_owner !== null) {
+        if ($this->owner !== null) {
             throw new MisuseException('getSlave does\'t support nesting.');
         }
 
         $clone = clone $this;
 
-        $clone->_owner = $this;
-        $clone->_type = $this->_has_slave ? 'slave' : 'default';
-        $clone->_connection = $this->poolManager->pop($this, $this->_timeout, $clone->_type);
+        $clone->owner = $this;
+        $clone->type = $this->has_slave ? 'slave' : 'default';
+        $clone->connection = $this->poolManager->pop($this, $this->timeout, $clone->type);
 
         return $clone;
     }
@@ -306,7 +306,7 @@ class Redis extends Component implements RedisInterface
     {
         $data = parent::dump();
 
-        unset($data['_owner'], $data['_type'], $data['_connection']);
+        unset($data['owner'], $data['type'], $data['connection']);
 
         return $data;
     }

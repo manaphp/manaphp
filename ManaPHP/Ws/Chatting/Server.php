@@ -16,27 +16,27 @@ class Server extends Component implements ServerInterface, LogCategorizable
     /**
      * @var string
      */
-    protected $_prefix = 'ws_chatting:';
+    protected $prefix = 'ws_chatting:';
 
     /**
      * @var bool
      */
-    protected $_dedicated = false;
+    protected $dedicated = false;
 
     /**
      * @var array
      */
-    protected $_fds = [];
+    protected $fds = [];
 
     /**
      * @var array[][]
      */
-    protected $_id_fds;
+    protected $id_fds;
 
     /**
      * @var array[][]
      */
-    protected $_name_fds;
+    protected $name_fds;
 
     /**
      * @param array $options
@@ -44,15 +44,15 @@ class Server extends Component implements ServerInterface, LogCategorizable
     public function __construct($options = [])
     {
         if (isset($options['pubSub'])) {
-            $this->_injections['pubSub'] = $options['pubSub'];
+            $this->injections['pubSub'] = $options['pubSub'];
         }
 
         if (isset($options['prefix'])) {
-            $this->_prefix = $options['prefix'];
+            $this->prefix = $options['prefix'];
         }
 
         if (isset($options['dedicated'])) {
-            $this->_dedicated = (bool)$options['dedicated'];
+            $this->dedicated = (bool)$options['dedicated'];
         }
     }
 
@@ -69,16 +69,16 @@ class Server extends Component implements ServerInterface, LogCategorizable
     {
         $room = $room ?? $this->identity->getClaim('room_id');
 
-        if (!$this->_dedicated) {
-            $this->_fds[$fd] = true;
+        if (!$this->dedicated) {
+            $this->fds[$fd] = true;
         }
 
         if (($id = $this->identity->getId('')) !== '') {
-            $this->_id_fds[$room][$id][$fd] = true;
+            $this->id_fds[$room][$id][$fd] = true;
         }
 
         if (($name = $this->identity->getName('')) !== '') {
-            $this->_name_fds[$room][$name][$fd] = true;
+            $this->name_fds[$room][$name][$fd] = true;
         }
 
         $this->fireEvent('chatServer:come', compact('fd', 'id', 'name', 'room'));
@@ -92,21 +92,21 @@ class Server extends Component implements ServerInterface, LogCategorizable
     {
         $room = $room ?? $this->identity->getClaim('room_id');
 
-        if (!$this->_dedicated) {
-            unset($this->_fds[$fd]);
+        if (!$this->dedicated) {
+            unset($this->fds[$fd]);
         }
 
         if (($id = $this->identity->getId('')) !== '') {
-            unset($this->_id_fds[$room][$id][$fd]);
-            if (count($this->_id_fds[$room][$id]) === 0) {
-                unset($this->_id_fds[$room][$id]);
+            unset($this->id_fds[$room][$id][$fd]);
+            if (count($this->id_fds[$room][$id]) === 0) {
+                unset($this->id_fds[$room][$id]);
             }
         }
 
         if (($name = $this->identity->getName('')) !== '') {
-            unset($this->_name_fds[$room][$name][$fd]);
-            if (count($this->_name_fds[$room][$name]) === 0) {
-                unset($this->_name_fds[$room][$name]);
+            unset($this->name_fds[$room][$name][$fd]);
+            if (count($this->name_fds[$room][$name]) === 0) {
+                unset($this->name_fds[$room][$name]);
             }
         }
 
@@ -132,14 +132,14 @@ class Server extends Component implements ServerInterface, LogCategorizable
     {
         $sent_fds = [];
 
-        foreach ($this->_id_fds[$room] ?? [] as $fds) {
+        foreach ($this->id_fds[$room] ?? [] as $fds) {
             foreach ($fds as $fd => $_) {
                 $sent_fds[$fd] = true;
                 $this->push($fd, $message);
             }
         }
 
-        foreach ($this->_name_fds[$room] ?? [] as $fds) {
+        foreach ($this->name_fds[$room] ?? [] as $fds) {
             foreach ($fds as $fd => $_) {
                 if (!isset($sent_fds[$fd])) {
                     $sent_fds[$fd] = true;
@@ -157,7 +157,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
     public function pushToId($room, $receivers, $message)
     {
         foreach ($receivers as $id) {
-            foreach ($this->_id_fds[$room][$id] ?? [] as $fd => $_) {
+            foreach ($this->id_fds[$room][$id] ?? [] as $fd => $_) {
                 $this->push($fd, $message);
             }
         }
@@ -171,7 +171,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
     public function pushToName($room, $receivers, $message)
     {
         foreach ($receivers as $name) {
-            foreach ($this->_name_fds[$room][$name] ?? [] as $fd => $_) {
+            foreach ($this->name_fds[$room][$name] ?? [] as $fd => $_) {
                 $this->push($fd, $message);
             }
         }
@@ -182,10 +182,10 @@ class Server extends Component implements ServerInterface, LogCategorizable
      */
     public function broadcast($message)
     {
-        if ($this->_dedicated) {
+        if ($this->dedicated) {
             $this->wsServer->broadcast($message);
         } else {
-            foreach ($this->_fds as $fd => $_) {
+            foreach ($this->fds as $fd => $_) {
                 $this->push($fd, $message);
             }
         }
@@ -198,15 +198,15 @@ class Server extends Component implements ServerInterface, LogCategorizable
     public function closeRoom($room, $message)
     {
         $sent_fds = [];
-        foreach ($this->_id_fds[$room] ?? [] as $fds) {
+        foreach ($this->id_fds[$room] ?? [] as $fds) {
             foreach ($fds as $fd => $_) {
                 $sent_fds[$fd] = true;
                 $this->push($fd, $message);
             }
         }
-        unset($this->_id_fds[$room]);
+        unset($this->id_fds[$room]);
 
-        foreach ($this->_name_fds[$room] ?? [] as $fds) {
+        foreach ($this->name_fds[$room] ?? [] as $fds) {
             foreach ($fds as $fd => $_) {
                 if (!isset($sent_fds[$fd])) {
                     $sent_fds[$fd] = true;
@@ -214,7 +214,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
                 }
             }
         }
-        unset($this->_name_fds[$room]);
+        unset($this->name_fds[$room]);
     }
 
     /**
@@ -227,19 +227,19 @@ class Server extends Component implements ServerInterface, LogCategorizable
         $sent_fds = [];
 
         foreach ($receivers as $id) {
-            foreach ($this->_id_fds[$room][$id] ?? [] as $fds) {
+            foreach ($this->id_fds[$room][$id] ?? [] as $fds) {
                 foreach ($fds as $fd => $_) {
                     $sent_fds[$fd] = true;
                     $this->push($fd, $message);
                 }
             }
-            unset($this->_id_fds[$room][$id]);
+            unset($this->id_fds[$room][$id]);
         }
 
-        foreach ($this->_name_fds[$room] ?? [] as $name => $fds) {
+        foreach ($this->name_fds[$room] ?? [] as $name => $fds) {
             foreach ($fds as $fd => $_) {
                 if (isset($sent_fds[$fd])) {
-                    unset($this->_name_fds[$room][$name]);
+                    unset($this->name_fds[$room][$name]);
                 }
             }
         }
@@ -255,19 +255,19 @@ class Server extends Component implements ServerInterface, LogCategorizable
         $sent_fds = [];
 
         foreach ($receivers as $name) {
-            foreach ($this->_name_fds[$room][$name] ?? [] as $fds) {
+            foreach ($this->name_fds[$room][$name] ?? [] as $fds) {
                 foreach ($fds as $fd => $_) {
                     $sent_fds[$fd] = true;
                     $this->push($fd, $message);
                 }
             }
-            unset($this->_name_fds[$room][$name]);
+            unset($this->name_fds[$room][$name]);
         }
 
-        foreach ($this->_id_fds[$room] ?? [] as $id => $fds) {
+        foreach ($this->id_fds[$room] ?? [] as $id => $fds) {
             foreach ($fds as $fd => $_) {
                 if (isset($sent_fds[$fd])) {
-                    unset($this->_id_fds[$room][$id]);
+                    unset($this->id_fds[$room][$id]);
                 }
             }
         }
@@ -308,8 +308,8 @@ class Server extends Component implements ServerInterface, LogCategorizable
         Coroutine::create(
             function () {
                 $this->pubSub->psubscribe(
-                    [$this->_prefix . '*'], function ($channel, $message) {
-                    list($type, $room, $receivers) = explode(':', substr($channel, strlen($this->_prefix)), 4);
+                    [$this->prefix . '*'], function ($channel, $message) {
+                    list($type, $room, $receivers) = explode(':', substr($channel, strlen($this->prefix)), 4);
                     if ($type !== null && $room !== null && $receivers !== null) {
                         $receivers = explode(',', $receivers);
 

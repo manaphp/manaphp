@@ -10,17 +10,17 @@ class HasManyOthers extends Relation
     /**
      * @var string
      */
-    protected $_thisFilter;
+    protected $thisFilter;
 
     /**
      * @var string
      */
-    protected $_thisValue;
+    protected $thisValue;
 
     /**
      * @var string
      */
-    protected $_thatField;
+    protected $thatField;
 
     /**
      * @param string $thisModel
@@ -31,11 +31,11 @@ class HasManyOthers extends Relation
      */
     public function __construct($thisModel, $thisFilter, $thisValue, $thatModel, $thatField)
     {
-        $this->_thisModel = $thisModel;
-        $this->_thisFilter = $thisFilter;
-        $this->_thisValue = $thisValue;
-        $this->_thatModel = $thatModel;
-        $this->_thatField = $thatField;
+        $this->thisModel = $thisModel;
+        $this->thisFilter = $thisFilter;
+        $this->thisValue = $thisValue;
+        $this->thatModel = $thatModel;
+        $this->thatField = $thatField;
     }
 
     /**
@@ -48,15 +48,15 @@ class HasManyOthers extends Relation
     public function earlyLoad($r, $query, $name)
     {
         /** @var \ManaPHP\Data\Model $thisModel */
-        $thisModel = $this->_thisModel;
-        $thisFilter = $this->_thisFilter;
-        $thatField = $this->_thatField;
+        $thisModel = $this->thisModel;
+        $thisFilter = $this->thisFilter;
+        $thatField = $this->thatField;
 
-        $ids = Arr::unique_column($r, $this->_thisFilter);
-        $pivotQuery = $thisModel::select([$this->_thisFilter, $this->_thisValue])->whereIn($this->_thisFilter, $ids);
+        $ids = Arr::unique_column($r, $this->thisFilter);
+        $pivotQuery = $thisModel::select([$this->thisFilter, $this->thisValue])->whereIn($this->thisFilter, $ids);
         $pivot_data = $pivotQuery->execute();
-        $ids = Arr::unique_column($pivot_data, $this->_thisValue);
-        $data = $query->whereIn($this->_thatField, $ids)->indexBy($this->_thatField)->fetch();
+        $ids = Arr::unique_column($pivot_data, $this->thisValue);
+        $data = $query->whereIn($this->thatField, $ids)->indexBy($this->thatField)->fetch();
 
         $rd = [];
         foreach ($pivot_data as $dv) {
@@ -84,12 +84,12 @@ class HasManyOthers extends Relation
     {
         /** @var \ManaPHP\Data\Model $thatModel */
         /** @var \ManaPHP\Data\Model $thisModel */
-        $thatModel = $this->_thatModel;
-        $thisModel = $this->_thisModel;
-        $thisFilter = $this->_thisFilter;
+        $thatModel = $this->thatModel;
+        $thisModel = $this->thisModel;
+        $thisFilter = $this->thisFilter;
 
-        $ids = $thisModel::values($this->_thisValue, [$thisFilter => $instance->$thisFilter]);
+        $ids = $thisModel::values($this->thisValue, [$thisFilter => $instance->$thisFilter]);
 
-        return $thatModel::select()->whereIn($this->_thatField, $ids)->setFetchType(true);
+        return $thatModel::select()->whereIn($this->thatField, $ids)->setFetchType(true);
     }
 }

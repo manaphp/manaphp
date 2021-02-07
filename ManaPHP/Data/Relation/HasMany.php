@@ -10,12 +10,12 @@ class HasMany extends Relation
     /**
      * @var string
      */
-    protected $_thisField;
+    protected $thisField;
 
     /**
      * @var string
      */
-    protected $_thatField;
+    protected $thatField;
 
     /**
      * @param string $thisModel
@@ -25,10 +25,10 @@ class HasMany extends Relation
      */
     public function __construct($thisModel, $thisField, $thatModel, $thatField)
     {
-        $this->_thisModel = $thisModel;
-        $this->_thisField = $thisField;
-        $this->_thatModel = $thatModel;
-        $this->_thatField = $thatField;
+        $this->thisModel = $thisModel;
+        $this->thisField = $thisField;
+        $this->thatModel = $thatModel;
+        $this->thatField = $thatField;
     }
 
     /**
@@ -40,8 +40,8 @@ class HasMany extends Relation
      */
     public function earlyLoad($r, $query, $name)
     {
-        $thisField = $this->_thisField;
-        $thatField = $this->_thatField;
+        $thisField = $this->thisField;
+        $thatField = $this->thatField;
 
         $r_index = [];
         foreach ($r as $ri => $rv) {
@@ -75,9 +75,9 @@ class HasMany extends Relation
     public function lazyLoad($instance)
     {
         /** @var \ManaPHP\Data\Model $thatModel */
-        $thatModel = $this->_thatModel;
-        $thisField = $this->_thisField;
+        $thatModel = $this->thatModel;
+        $thisField = $this->thisField;
 
-        return $thatModel::select()->whereEq($this->_thatField, $instance->$thisField)->setFetchType(true);
+        return $thatModel::select()->whereEq($this->thatField, $instance->$thisField)->setFetchType(true);
     }
 }

@@ -75,7 +75,7 @@
         <li><a href="#configure" data-toggle="tab">Configure</a></li>
         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Global <b class="caret"></b></a>
             <ul class="dropdown-menu">
-                <li v-for="(value, name) in components.request.properties._context"
+                <li v-for="(value, name) in components.request.properties.context"
                     v-if="typeof value === 'object' && value !== null">
                     <a data-toggle="tab" @click="global_type=name" href="#global">{{name}}
                         <span v-if="!Object.keys(value).length">*</span>
@@ -147,12 +147,12 @@
                 </thead>
                 <tbody>
                 <tr v-for="(item, name, index) in components"
-                    v-if="item.properties._context && name!=='debuggerPlugin'">
+                    v-if="item.properties.context && name!=='debuggerPlugin'">
                     <td>{{index}}</td>
                     <td :title="name">{{name}}</td>
                     <td>{{item.class}}</td>
-                    <td :title="json_stringify(item.properties._context)">
-                        <pre>{{item.properties._context|json 4}}</pre>
+                    <td :title="json_stringify(item.properties.context)">
+                        <pre>{{item.properties.context|json 4}}</pre>
                     </td>
                 </tr>
                 </tbody>
@@ -211,7 +211,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(value, name, index) in components.request.properties._context[global_type]">
+                <tr v-for="(value, name, index) in components.request.properties.context[global_type]">
                     <td>{{ index }}</td>
                     <td>{{ name }}</td>
                     <td>{{ value }}</td>

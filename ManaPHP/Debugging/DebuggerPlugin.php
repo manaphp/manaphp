@@ -65,34 +65,34 @@ class DebuggerPluginContext
 }
 
 /**
- * @property-read \ManaPHP\Debugging\DebuggerPluginContext $_context
+ * @property-read \ManaPHP\Debugging\DebuggerPluginContext $context
  */
 class DebuggerPlugin extends Plugin
 {
     /**
      * @var bool
      */
-    protected $_enabled;
+    protected $enabled;
 
     /**
      * @var int
      */
-    protected $_ttl = 3600;
+    protected $ttl = 3600;
 
     /**
      * @var string
      */
-    protected $_prefix;
+    protected $prefix;
 
     /**
      * @var string
      */
-    protected $_template = '@manaphp/Debugging/DebuggerPlugin/Template.html';
+    protected $template = '@manaphp/Debugging/DebuggerPlugin/Template.html';
 
     /**
      * @var bool
      */
-    protected $_broadcast = true;
+    protected $broadcast = true;
 
     /**
      * @var bool
@@ -105,40 +105,40 @@ class DebuggerPlugin extends Plugin
     public function __construct($options = [])
     {
         if (isset($options['redisCache'])) {
-            $this->_injections['redisCache'] = $options['redisCache'];
+            $this->injections['redisCache'] = $options['redisCache'];
         }
 
         if (MANAPHP_CLI) {
-            $this->_enabled = false;
+            $this->enabled = false;
         } elseif (isset($options['enabled'])) {
-            $this->_enabled = (bool)$options['enabled'];
+            $this->enabled = (bool)$options['enabled'];
         } elseif (!in_array($this->configure->env, ['dev', 'test'], true)) {
-            $this->_enabled = false;
+            $this->enabled = false;
         }
 
         if (isset($options['ttl'])) {
-            $this->_ttl = (int)$options['ttl'];
+            $this->ttl = (int)$options['ttl'];
         }
 
         if (!class_exists('Redis')) {
-            $this->_ttl = 0;
+            $this->ttl = 0;
         }
 
-        $this->_prefix = $options['prefix'] ?? "cache:{$this->configure->id}:debuggerPlugin:";
+        $this->prefix = $options['prefix'] ?? "cache:{$this->configure->id}:debuggerPlugin:";
 
         if (isset($options['template'])) {
-            $this->_template = $options['template'];
+            $this->template = $options['template'];
         }
 
         if (isset($options['broadcast'])) {
-            $this->_broadcast = (bool)$options['broadcast'];
+            $this->broadcast = (bool)$options['broadcast'];
         }
 
         if (isset($options['tail'])) {
             $this->tail = (bool)$options['tail'];
         }
 
-        if ($this->_enabled !== false) {
+        if ($this->enabled !== false) {
             $this->peekEvent('*', [$this, 'onEvent']);
 
             $this->peekEvent('db', [$this, 'onDb']);
@@ -162,8 +162,8 @@ class DebuggerPlugin extends Plugin
      */
     protected function readData($key)
     {
-        if ($this->_ttl) {
-            $content = $this->redisCache->get($this->_prefix . $key);
+        if ($this->ttl) {
+            $content = $this->redisCache->get($this->prefix . $key);
         } else {
             $file = "@data/debuggerPlugin/{$key}.zip";
             $content = LocalFS::fileExists($file) ? LocalFS::fileGet($file) : false;
@@ -182,10 +182,10 @@ class DebuggerPlugin extends Plugin
     protected function writeData($key, $data)
     {
         $content = gzencode(json_stringify($data, JSON_PARTIAL_OUTPUT_ON_ERROR));
-        if ($this->_ttl) {
-            $this->redisCache->set($this->_prefix . $key, $content, $this->_ttl);
+        if ($this->ttl) {
+            $this->redisCache->set($this->prefix . $key, $content, $this->ttl);
 
-            if ($this->_broadcast) {
+            if ($this->broadcast) {
                 $key = implode(
                     ':',
                     ['__debuggerPlugin', $this->configure->id, $this->request->getClientIp(),
@@ -203,7 +203,7 @@ class DebuggerPlugin extends Plugin
      */
     public function onRequestBegin()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if (($debugger = $this->request->get('__debuggerPlugin', ''))
             && preg_match('#^([\w/]+)\.(html|json|txt|raw)$#', $debugger, $match)
@@ -212,7 +212,7 @@ class DebuggerPlugin extends Plugin
             if (($data = $this->readData($match[1])) !== false) {
                 $ext = $match[2];
                 if ($ext === 'html') {
-                    $this->response->setContent(strtr(LocalFS::fileGet($this->_template), ['DEBUGGER_DATA' => $data]));
+                    $this->response->setContent(strtr(LocalFS::fileGet($this->template), ['DEBUGGER_DATA' => $data]));
                 } elseif ($ext === 'txt') {
                     $this->response->setContent(json_stringify(json_parse($data), JSON_PRETTY_PRINT))
                         ->setContentType('text/plain;charset=UTF-8');
@@ -245,7 +245,7 @@ class DebuggerPlugin extends Plugin
      */
     public function onRequestEnd()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($context->enabled) {
             $this->writeData($context->key, $this->getData());
@@ -282,7 +282,7 @@ class DebuggerPlugin extends Plugin
             $event['data'] = '???';
         }
 
-        $this->_context->events[] = $event;
+        $this->context->events[] = $event;
     }
 
     /**
@@ -292,7 +292,7 @@ class DebuggerPlugin extends Plugin
      */
     public function onLoggerLog(EventArgs $eventArgs)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         /** @var \ManaPHP\Logging\Logger\Log $log */
         $log = $eventArgs->data['log'];
@@ -314,7 +314,7 @@ class DebuggerPlugin extends Plugin
      */
     public function onDb(EventArgs $eventArgs)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $event = $eventArgs->event;
         /** @var \ManaPHP\Data\DbInterface $db */
@@ -367,7 +367,7 @@ class DebuggerPlugin extends Plugin
      */
     public function onRendererRendering(EventArgs $eventArgs)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $data = $eventArgs->data;
 
@@ -390,7 +390,7 @@ class DebuggerPlugin extends Plugin
      */
     public function onMongodb(EventArgs $eventArgs)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $event = $eventArgs->event;
         $data = $eventArgs->data;
@@ -434,7 +434,7 @@ class DebuggerPlugin extends Plugin
      */
     protected function getBasic()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $loaded_extensions = get_loaded_extensions();
         sort($loaded_extensions, SORT_STRING | SORT_FLAG_CASE);
@@ -466,7 +466,7 @@ class DebuggerPlugin extends Plugin
      */
     protected function getData()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $data = [];
         $data['basic'] = $this->getBasic();
@@ -484,7 +484,7 @@ class DebuggerPlugin extends Plugin
         $data['tracers'] = [];
         $data['events'] = $context->events;
 
-        foreach ($this->_container->getInstances() as $name => $instance) {
+        foreach ($this->container->getInstances() as $name => $instance) {
             if (str_contains($name, '\\')) {
                 continue;
             }
@@ -510,7 +510,7 @@ class DebuggerPlugin extends Plugin
     {
         $data = parent::dump();
 
-        $data['_context'] = array_keys($data['_context']);
+        $data['context'] = array_keys($data['context']);
 
         return $data;
     }

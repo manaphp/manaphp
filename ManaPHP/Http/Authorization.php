@@ -24,7 +24,7 @@ class AuthorizationContext
  * @property-read \ManaPHP\Http\RequestInterface     $request
  * @property-read \ManaPHP\Http\ResponseInterface    $response
  * @property-read \ManaPHP\Http\Acl\BuilderInterface $aclBuilder
- * @property-read \ManaPHP\Http\AuthorizationContext $_context
+ * @property-read \ManaPHP\Http\AuthorizationContext $context
  */
 class Authorization extends Component implements AuthorizationInterface
 {
@@ -215,7 +215,7 @@ class Authorization extends Component implements AuthorizationInterface
             return $builtin[$role];
         }
 
-        $context = $this->_context;
+        $context = $this->context;
 
         if (!isset($context->role_permissions[$role])) {
             /** @var \ManaPHP\Data\ModelInterface $roleModel */

@@ -15,7 +15,7 @@ class MemoryContext
 }
 
 /**
- * @property-read \ManaPHP\Logging\Logger\Adapter\MemoryContext $_context
+ * @property-read \ManaPHP\Logging\Logger\Adapter\MemoryContext $context
  */
 class Memory extends Logger
 {
@@ -26,7 +26,7 @@ class Memory extends Logger
      */
     public function append($logs)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         $context->logs = array_merge($context->logs, $logs);
     }
@@ -36,6 +36,6 @@ class Memory extends Logger
      */
     public function getLogs()
     {
-        return $this->_context->logs;
+        return $this->context->logs;
     }
 }

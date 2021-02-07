@@ -10,14 +10,14 @@ class Builder extends Component implements BuilderInterface
     /**
      * @var array
      */
-    protected $_controllers;
+    protected $controllers;
 
     /**
      * @return array
      */
     public function getControllers()
     {
-        if ($this->_controllers === null) {
+        if ($this->controllers === null) {
             $controllers = [];
 
             foreach (LocalFS::glob('@app/Controllers/?*Controller.php') as $item) {
@@ -30,10 +30,10 @@ class Builder extends Component implements BuilderInterface
                 $controllers[] = str_replace('/', '\\', substr($controller, 0, -4));
             }
 
-            $this->_controllers = $controllers;
+            $this->controllers = $controllers;
         }
 
-        return $this->_controllers;
+        return $this->controllers;
     }
 
     /**

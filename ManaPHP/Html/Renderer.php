@@ -31,19 +31,19 @@ class RendererContext implements Inseparable
 
 /**
  * @property-read \ManaPHP\LoaderInterface      $loader
- * @property-read \ManaPHP\Html\RendererContext $_context
+ * @property-read \ManaPHP\Html\RendererContext $context
  */
 class Renderer extends Component implements RendererInterface
 {
     /**
      * @var \ManaPHP\Html\Renderer\EngineInterface[]
      */
-    protected $_resolved = [];
+    protected $resolved = [];
 
     /**
      * @var array
      */
-    protected $_engines
+    protected $engines
         = [
             '.phtml' => 'ManaPHP\Html\Renderer\Engine\Php',
             '.sword' => 'ManaPHP\Html\Renderer\Engine\Sword'
@@ -52,12 +52,12 @@ class Renderer extends Component implements RendererInterface
     /**
      * @var array array
      */
-    protected $_files = [];
+    protected $files = [];
 
     /**
      * @var \ManaPHP\Coroutine\Mutex
      */
-    protected $_mutex;
+    protected $mutex;
 
     /**
      * @param array $options
@@ -65,22 +65,22 @@ class Renderer extends Component implements RendererInterface
     public function __construct($options = [])
     {
         if (isset($options['engines'])) {
-            $this->_engines = $options['engines'] ?: ['.phtml' => 'ManaPHP\Html\Renderer\Engine\Php'];
+            $this->engines = $options['engines'] ?: ['.phtml' => 'ManaPHP\Html\Renderer\Engine\Php'];
         }
 
         $this->loader->registerFiles('@manaphp/Html/Renderer/helpers.php');
 
-        $this->_mutex = new Mutex();
+        $this->mutex = new Mutex();
     }
 
     public function lock()
     {
-        $this->_mutex->lock();
+        $this->mutex->lock();
     }
 
     public function unlock()
     {
-        $this->_mutex->unlock();
+        $this->mutex->unlock();
     }
 
     /**
@@ -94,9 +94,9 @@ class Renderer extends Component implements RendererInterface
      */
     public function render($template, $vars = [], $directOutput = false)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
-        if (!$this->_mutex->isLocked()) {
+        if (!$this->mutex->isLocked()) {
             throw new MisuseException('renderer is not locked');
         }
 
@@ -110,12 +110,12 @@ class Renderer extends Component implements RendererInterface
 
         $template = $this->alias->resolve($template);
 
-        if (isset($this->_files[$template])) {
-            list($file, $extension) = $this->_files[$template];
+        if (isset($this->files[$template])) {
+            list($file, $extension) = $this->files[$template];
         } else {
             $file = null;
             $extension = null;
-            foreach ($this->_engines as $extension => $engine) {
+            foreach ($this->engines as $extension => $engine) {
                 if (is_file($tmp = $template . $extension)) {
                     if (PHP_EOL !== "\n") {
                         $realPath = strtr(realpath($tmp), '\\', '/');
@@ -130,15 +130,15 @@ class Renderer extends Component implements RendererInterface
             }
 
             if (!$file) {
-                $extensions = implode(', or ', array_keys($this->_engines));
+                $extensions = implode(', or ', array_keys($this->engines));
                 throw new FileNotFoundException(['`%s` with `%s` extension was not found', $template, $extensions]);
             }
 
-            $this->_files[$template] = [$file, $extension];
+            $this->files[$template] = [$file, $extension];
         }
 
-        $engine = $this->_resolved[$extension] ??
-            ($this->_resolved[$extension] = $this->getShared($this->_engines[$extension]));
+        $engine = $this->resolved[$extension] ??
+            ($this->resolved[$extension] = $this->getShared($this->engines[$extension]));
 
         if (isset($vars['renderer'])) {
             throw new MisuseException('variable `renderer` is reserved for renderer');
@@ -209,16 +209,16 @@ class Renderer extends Component implements RendererInterface
         }
 
         if (!str_contains($template, '/')) {
-            $template = dirname(end($this->_context->templates)) . '/' . $template;
+            $template = dirname(end($this->context->templates)) . '/' . $template;
         }
 
         $template = $this->alias->resolve($template);
 
-        if (isset($this->_files[$template])) {
+        if (isset($this->files[$template])) {
             return true;
         }
 
-        foreach ($this->_engines as $extension => $_) {
+        foreach ($this->engines as $extension => $_) {
             if (is_file($file = $template . $extension)) {
                 if (PHP_EOL !== "\n") {
                     $realPath = strtr(realpath($file), '\\', '/');
@@ -226,7 +226,7 @@ class Renderer extends Component implements RendererInterface
                         trigger_error("File name ($realPath) case mismatch for $file", E_USER_ERROR);
                     }
                 }
-                $this->_files[$template] = [$file, $extension];
+                $this->files[$template] = [$file, $extension];
                 return $file;
             }
         }
@@ -244,7 +244,7 @@ class Renderer extends Component implements RendererInterface
      */
     public function getSection($section, $default = '')
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         return $context->sections[$section] ?? $default;
     }
@@ -259,7 +259,7 @@ class Renderer extends Component implements RendererInterface
      */
     public function startSection($section, $default = null)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($default === null) {
             ob_start();
@@ -279,7 +279,7 @@ class Renderer extends Component implements RendererInterface
      */
     public function stopSection($overwrite = false)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if (!$context->stack) {
             throw new PreconditionException('cannot stop a section without first starting session');
@@ -298,7 +298,7 @@ class Renderer extends Component implements RendererInterface
      */
     public function appendSection()
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if (!$context->stack) {
             throw new PreconditionException('Cannot append a section without first starting one:');
@@ -319,14 +319,14 @@ class Renderer extends Component implements RendererInterface
     {
         $data = parent::dump();
 
-        if (isset($data['_context'])) {
-            foreach ($data['_context']['sections'] as $k => $v) {
-                $data['_context']['sections'][$k] = '***';
+        if (isset($data['context'])) {
+            foreach ($data['context']['sections'] as $k => $v) {
+                $data['context']['sections'][$k] = '***';
             }
         }
 
-        $data['_files'] = ['***'];
-        unset($data['_mutex']);
+        $data['files'] = ['***'];
+        unset($data['mutex']);
 
         return $data;
     }

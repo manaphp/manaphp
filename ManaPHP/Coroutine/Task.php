@@ -12,17 +12,17 @@ class Task extends Component implements TaskInterface
     /**
      * @var callable
      */
-    protected $_fn;
+    protected $fn;
 
     /**
      * @var int
      */
-    protected $_count;
+    protected $count;
 
     /**
      * @var \Swoole\Coroutine\Channel
      */
-    protected $_channel;
+    protected $channel;
 
     /**
      * @param callable $fn
@@ -30,11 +30,11 @@ class Task extends Component implements TaskInterface
      */
     public function __construct($fn, $count = 1)
     {
-        $this->_fn = $fn;
-        $this->_count = $count;
+        $this->fn = $fn;
+        $this->count = $count;
 
         if (MANAPHP_COROUTINE_ENABLED) {
-            $this->_channel = new Channel($count);
+            $this->channel = new Channel($count);
 
             for ($i = 0; $i < $count; $i++) {
                 Coroutine::create([$this, 'routine']);
@@ -47,8 +47,8 @@ class Task extends Component implements TaskInterface
      */
     public function routine()
     {
-        $fn = $this->_fn;
-        while (($data = $this->_channel->pop()) !== false) {
+        $fn = $this->fn;
+        while (($data = $this->channel->pop()) !== false) {
             try {
                 $fn($data);
             } catch (Throwable $throwable) {
@@ -66,9 +66,9 @@ class Task extends Component implements TaskInterface
     public function push($data, $timeout = -1)
     {
         if (MANAPHP_COROUTINE_ENABLED) {
-            return $this->_channel->push($data, $timeout);
+            return $this->channel->push($data, $timeout);
         } else {
-            $fn = $this->_fn;
+            $fn = $this->fn;
 
             try {
                 $fn($data);
@@ -85,7 +85,7 @@ class Task extends Component implements TaskInterface
     public function close()
     {
         if (MANAPHP_COROUTINE_ENABLED) {
-            $this->_channel->close();
+            $this->channel->close();
         }
     }
 }

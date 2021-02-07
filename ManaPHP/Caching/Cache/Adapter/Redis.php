@@ -9,7 +9,7 @@ class Redis extends Cache
     /**
      * @var string
      */
-    protected $_prefix;
+    protected $prefix;
 
     /**
      * @param array $options
@@ -17,10 +17,10 @@ class Redis extends Cache
     public function __construct($options = [])
     {
         if (isset($options['redisCache'])) {
-            $this->_injections['redisCache'] = $options['redisCache'];
+            $this->injections['redisCache'] = $options['redisCache'];
         }
 
-        $this->_prefix = $options['prefix'] ?? "cache:{$this->configure->id}:";
+        $this->prefix = $options['prefix'] ?? "cache:{$this->configure->id}:";
     }
 
     /**
@@ -30,7 +30,7 @@ class Redis extends Cache
      */
     public function do_get($key)
     {
-        return $this->redisCache->get($this->_prefix . $key);
+        return $this->redisCache->get($this->prefix . $key);
     }
 
     /**
@@ -42,7 +42,7 @@ class Redis extends Cache
      */
     public function do_set($key, $value, $ttl)
     {
-        $this->redisCache->set($this->_prefix . $key, $value, $ttl);
+        $this->redisCache->set($this->prefix . $key, $value, $ttl);
     }
 
     /**
@@ -52,7 +52,7 @@ class Redis extends Cache
      */
     public function do_delete($key)
     {
-        $this->redisCache->del($this->_prefix . $key);
+        $this->redisCache->del($this->prefix . $key);
     }
 
     /**
@@ -62,6 +62,6 @@ class Redis extends Cache
      */
     public function do_exists($key)
     {
-        return (bool)$this->redisCache->exists($this->_prefix . $key);
+        return (bool)$this->redisCache->exists($this->prefix . $key);
     }
 }

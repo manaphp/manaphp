@@ -10,7 +10,7 @@ class Tracer extends \ManaPHP\Event\Tracer
     {
         parent::__construct($options);
 
-        $this->_verbose && $this->attachEvent('redis:connecting', [$this, 'onConnecting']);
+        $this->verbose && $this->attachEvent('redis:connecting', [$this, 'onConnecting']);
         $this->attachEvent('redis:calling', [$this, 'onCalling']);
         $this->attachEvent('redis:called', [$this, 'onCalled']);
     }
@@ -62,7 +62,7 @@ class Tracer extends \ManaPHP\Event\Tracer
             }
         }
 
-        if ($this->_verbose) {
+        if ($this->verbose) {
             $arguments = json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR);
             $return = json_stringify($eventArgs->data['return'], JSON_PARTIAL_OUTPUT_ON_ERROR);
             $this->logger->debug(

@@ -23,7 +23,7 @@ class Runner extends Application implements RunnerInterface
         $factory = $this->getFactory();
         /** @var \ManaPHP\Di\ContainerInterface $container */
         $container = new $factory();
-        $definitions = $this->_container->getDefinitions();
+        $definitions = $this->container->getDefinitions();
         foreach ($container->getDefinitions() as $name => $definition) {
             if (!isset($definitions[$name]) || $definitions[$name] !== $definition) {
                 $this->setShared($name, $definition);

@@ -11,7 +11,7 @@ class HttpCachePlugin extends Plugin
     /**
      * @var bool
      */
-    protected $_enabled = true;
+    protected $enabled = true;
 
     /**
      * @param array $options
@@ -19,10 +19,10 @@ class HttpCachePlugin extends Plugin
     public function __construct($options = [])
     {
         if (isset($options['enabled'])) {
-            $this->_enabled = (bool)$options['enabled'];
+            $this->enabled = (bool)$options['enabled'];
         }
 
-        if ($this->_enabled) {
+        if ($this->enabled) {
             $this->attachEvent('response:sending', [$this, 'onResponseSending']);
         }
     }

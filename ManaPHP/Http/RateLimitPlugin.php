@@ -11,17 +11,17 @@ class RateLimitPlugin extends Plugin
     /**
      * @var bool
      */
-    protected $_enabled = true;
+    protected $enabled = true;
 
     /**
      * @var string
      */
-    protected $_prefix;
+    protected $prefix;
 
     /**
      * @var string
      */
-    protected $_limits = '60/m';
+    protected $limits = '60/m';
 
     /**
      * @param array $options
@@ -29,20 +29,20 @@ class RateLimitPlugin extends Plugin
     public function __construct($options = [])
     {
         if (isset($options['redisCache'])) {
-            $this->_injections['redisCache'] = $options['redisCache'];
+            $this->injections['redisCache'] = $options['redisCache'];
         }
 
         if (isset($options['enabled'])) {
-            $this->_enabled = (bool)$options['enabled'];
+            $this->enabled = (bool)$options['enabled'];
         }
 
-        $this->_prefix = $options['prefix'] ?? "cache:{$this->configure->id}:rateLimitPlugin:";
+        $this->prefix = $options['prefix'] ?? "cache:{$this->configure->id}:rateLimitPlugin:";
 
         if (isset($options['limits'])) {
-            $this->_limits = $options['limits'];
+            $this->limits = $options['limits'];
         }
 
-        if ($this->_enabled) {
+        if ($this->enabled) {
             $this->attachEvent('request:validate', [$this, 'onRequestValidate'], true);
         }
     }
@@ -63,14 +63,14 @@ class RateLimitPlugin extends Plugin
         $action = $eventArgs->data['action'];
         $rateLimit = $controller->getRateLimit();
 
-        $limits = (array)($rateLimit[$action] ?? $rateLimit['*'] ?? $this->_limits);
+        $limits = (array)($rateLimit[$action] ?? $rateLimit['*'] ?? $this->limits);
 
         if (($burst = $limits['burst'] ?? null) !== null) {
             unset($burst['burst']);
         }
 
         $uid = $this->identity->getName('') ?: $this->request->getClientIp();
-        $prefix = $this->_prefix . $dispatcher->getPath() . ':' . $uid . ':';
+        $prefix = $this->prefix . $dispatcher->getPath() . ':' . $uid . ':';
 
         foreach ($limits as $k => $v) {
             if ($pos = strpos($v, '/')) {

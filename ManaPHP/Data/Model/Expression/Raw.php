@@ -10,14 +10,14 @@ class Raw implements ExpressionInterface
     /**
      * @var string|array
      */
-    protected $_expression;
+    protected $expression;
 
     /**
      * @param string|array $expression
      */
     public function __construct($expression)
     {
-        $this->_expression = $expression;
+        $this->expression = $expression;
     }
 
     /**
@@ -28,7 +28,7 @@ class Raw implements ExpressionInterface
      */
     public function compile($model, $field)
     {
-        $expression = $this->_expression;
+        $expression = $this->expression;
 
         if ($model instanceof DbModel) {
             return ["[$field]=$expression"];

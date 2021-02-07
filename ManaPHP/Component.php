@@ -32,29 +32,29 @@ use Swoole\Coroutine;
  * @property-read \ManaPHP\Coroutine\ManagerInterface      $coroutineManager
  * @property-read \ManaPHP\Ws\ClientInterface              $wsClient
  * @property-read \ManaPHP\Messaging\PubSubInterface       $pubSub
- * @property-read \object                                  $_context
+ * @property-read \object                                  $context
  */
 class Component implements Injectable, JsonSerializable
 {
     /**
      * @var int
      */
-    protected $_object_id;
+    protected $object_id;
 
     /**
      * @var \ManaPHP\Di\ContainerInterface
      */
-    protected $_container;
+    protected $container;
 
     /**
      * @var callable[]
      */
-    protected $_on;
+    protected $on;
 
     /**
      * @var array
      */
-    protected $_injections;
+    protected $injections;
 
     /**
      * @param string $class
@@ -64,7 +64,7 @@ class Component implements Injectable, JsonSerializable
      */
     public function getNew($class, $params = [])
     {
-        return $this->_container->getNew($class, $params);
+        return $this->container->getNew($class, $params);
     }
 
     /**
@@ -74,7 +74,7 @@ class Component implements Injectable, JsonSerializable
      */
     public function getShared($name)
     {
-        return $this->_container->getShared($this->_injections[$name] ?? $name);
+        return $this->container->getShared($this->injections[$name] ?? $name);
     }
 
     /**
@@ -84,7 +84,7 @@ class Component implements Injectable, JsonSerializable
      */
     public function setContainer($container)
     {
-        $this->_container = $container;
+        $this->container = $container;
 
         return $this;
     }
@@ -94,7 +94,7 @@ class Component implements Injectable, JsonSerializable
      */
     public function getContainer()
     {
-        return $this->_container;
+        return $this->container;
     }
 
     /**
@@ -105,7 +105,7 @@ class Component implements Injectable, JsonSerializable
      */
     public function inject($name, $target)
     {
-        $this->_injections[$name] = $target;
+        $this->injections[$name] = $target;
 
         return $this;
     }
@@ -145,8 +145,8 @@ class Component implements Injectable, JsonSerializable
     {
         global $__root_context;
 
-        if (!$object_id = $this->_object_id) {
-            $object_id = $this->_object_id = spl_object_id($this);
+        if (!$object_id = $this->object_id) {
+            $object_id = $this->object_id = spl_object_id($this);
         }
 
         if (MANAPHP_COROUTINE_ENABLED) {
@@ -179,7 +179,7 @@ class Component implements Injectable, JsonSerializable
         } else {
             $__root_context[] = $this;
 
-            return $this->_context = $this->createContext();
+            return $this->context = $this->createContext();
         }
     }
 
@@ -214,7 +214,7 @@ class Component implements Injectable, JsonSerializable
      */
     public function __get($name)
     {
-        if ($name === '_context') {
+        if ($name === 'context') {
             return $this->_getContext();
         } else {
             return $this->{$name} = $this->getShared($name);
@@ -239,7 +239,7 @@ class Component implements Injectable, JsonSerializable
      */
     public function __isset($name)
     {
-        return $this->_container->has($name);
+        return $this->container->has($name);
     }
 
     /**
@@ -297,7 +297,7 @@ class Component implements Injectable, JsonSerializable
     {
         $on = substr($event, strpos($event, ':') + 1);
 
-        if (isset($this->_on[$on])) {
+        if (isset($this->on[$on])) {
             $this->emit($on, $data);
         }
 
@@ -312,7 +312,7 @@ class Component implements Injectable, JsonSerializable
      */
     public function on($event, $handler)
     {
-        $this->_on[$event][] = $handler;
+        $this->on[$event][] = $handler;
 
         return $this;
     }
@@ -326,13 +326,13 @@ class Component implements Injectable, JsonSerializable
     public function off($event = null, $handler = null)
     {
         if ($event === null) {
-            $this->_on = null;
+            $this->on = null;
         } elseif ($handler === null) {
-            unset($this->_on[$event]);
+            unset($this->on[$event]);
         } else {
-            foreach ($this->_on[$event] as $i => $v) {
+            foreach ($this->on[$event] as $i => $v) {
                 if ($v === $handler) {
-                    unset($this->_on[$event[$i]]);
+                    unset($this->on[$event[$i]]);
                     break;
                 }
             }
@@ -351,7 +351,7 @@ class Component implements Injectable, JsonSerializable
     {
         $eventArgs = new EventArgs($event, $this, $data);
 
-        foreach ($this->_on[$event] ?? [] as $handler) {
+        foreach ($this->on[$event] ?? [] as $handler) {
             $handler($eventArgs);
         }
     }
@@ -363,7 +363,7 @@ class Component implements Injectable, JsonSerializable
     {
         $data = [];
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k === '_object_id' || $k === '_container' || $k === '_on') {
+            if ($k === 'object_id' || $k === 'container' || $k === 'on') {
                 continue;
             }
 
@@ -374,10 +374,10 @@ class Component implements Injectable, JsonSerializable
             $data[$k] = $v;
         }
 
-        if (isset($data['_context'])) {
-            $data['_context'] = (array)$data['_context'];
+        if (isset($data['context'])) {
+            $data['context'] = (array)$data['context'];
         } elseif ($this->hasContext()) {
-            $data['_context'] = (array)$this->_getContext();
+            $data['context'] = (array)$this->_getContext();
         }
 
         return $data;
@@ -390,21 +390,21 @@ class Component implements Injectable, JsonSerializable
     {
         $data = [];
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k === '_object_id' || $k === '_on' || (is_object($v) && $k !== '_context')) {
+            if ($k === 'object_id' || $k === 'on' || (is_object($v) && $k !== 'context')) {
                 continue;
             }
 
             $data[$k] = $v instanceof self ? $v->dump() : $v;
         }
 
-        if (isset($data['_context'])) {
-            $data['_context'] = (array)$data['_context'];
-        } elseif ($this->_object_id !== null) {
-            $data['_context'] = (array)$this->__get('_context');
+        if (isset($data['context'])) {
+            $data['context'] = (array)$data['context'];
+        } elseif ($this->object_id !== null) {
+            $data['context'] = (array)$this->__get('context');
         }
 
-        if ($data['_injections'] === null) {
-            unset($data['_injections']);
+        if ($data['injections'] === null) {
+            unset($data['injections']);
         }
 
         return $data;

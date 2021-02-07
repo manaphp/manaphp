@@ -7,7 +7,7 @@ class Unpacker
     /**
      * @var string
      */
-    protected $_format;
+    protected $format;
 
     /**
      * @param string $format
@@ -18,11 +18,11 @@ class Unpacker
     public function append($format, $names)
     {
         foreach ($names as $name) {
-            if ($this->_format !== null) {
-                $this->_format .= '/';
+            if ($this->format !== null) {
+                $this->format .= '/';
             }
 
-            $this->_format .= $format . $name;
+            $this->format .= $format . $name;
         }
 
         return $this;
@@ -50,10 +50,10 @@ class Unpacker
      */
     public function stringNP($name, $len)
     {
-        if ($this->_format !== null) {
-            $this->_format .= '/';
+        if ($this->format !== null) {
+            $this->format .= '/';
         }
-        $this->_format .= 'a' . $name . $len;
+        $this->format .= 'a' . $name . $len;
 
         return $this;
     }
@@ -68,10 +68,10 @@ class Unpacker
      */
     public function stringSP($name, $len)
     {
-        if ($this->_format !== null) {
-            $this->_format .= '/';
+        if ($this->format !== null) {
+            $this->format .= '/';
         }
-        $this->_format .= 'A' . $name . $len;
+        $this->format .= 'A' . $name . $len;
 
         return $this;
     }
@@ -357,7 +357,7 @@ class Unpacker
      */
     public function format()
     {
-        return $this->_format;
+        return $this->format;
     }
 
     /**
@@ -368,6 +368,6 @@ class Unpacker
      */
     public function unpack($str, $offset = 0)
     {
-        return unpack($this->_format, $str, $offset);
+        return unpack($this->format, $str, $offset);
     }
 }

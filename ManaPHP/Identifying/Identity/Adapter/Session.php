@@ -12,14 +12,14 @@ class Session extends Identity
     /**
      * @var string
      */
-    protected $_name = 'auth';
+    protected $name = 'auth';
 
     /**
      * @return array
      */
     public function authenticate()
     {
-        return $this->session->get($this->_name, []);
+        return $this->session->get($this->name, []);
     }
 
     /**
@@ -29,7 +29,7 @@ class Session extends Identity
      */
     public function setClaims($claims)
     {
-        $this->session->set($this->_name, $claims);
+        $this->session->set($this->name, $claims);
         return parent::setClaims($claims);
     }
 }

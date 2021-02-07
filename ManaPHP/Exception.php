@@ -7,12 +7,12 @@ class Exception extends \Exception
     /**
      * @var array
      */
-    protected $_bind = [];
+    protected $bind = [];
 
     /**
      * @var array
      */
-    protected $_json;
+    protected $json;
 
     /**
      * @param string|array $message
@@ -25,12 +25,12 @@ class Exception extends \Exception
             if (substr_count($message[0], '%') + 1 >= ($count = count($message)) && isset($message[$count - 1])) {
                 $message = sprintf(...$message);
             } else {
-                $this->_bind = $message;
+                $this->bind = $message;
                 $message = $message[0];
-                unset($this->_bind[0]);
+                unset($this->bind[0]);
 
                 $tr = [];
-                foreach ($this->_bind as $k => $v) {
+                foreach ($this->bind as $k => $v) {
                     if (is_array($v)) {
                         $v = implode(', ', $v);
                     } elseif ($v === null || is_bool($v)) {
@@ -63,13 +63,13 @@ class Exception extends \Exception
     public function setJson($data)
     {
         if (is_array($data)) {
-            $this->_json = $data;
+            $this->json = $data;
         } elseif (is_string($data)) {
-            $this->_json = ['code' => 1, 'message' => $data];
+            $this->json = ['code' => 1, 'message' => $data];
         } elseif (is_int($data)) {
-            $this->_json = ['code' => $data, 'message' => $this->getMessage()];
+            $this->json = ['code' => $data, 'message' => $this->getMessage()];
         } else {
-            $this->_json = $data;
+            $this->json = $data;
         }
 
         return $this;
@@ -80,8 +80,8 @@ class Exception extends \Exception
      */
     public function getJson()
     {
-        if ($this->_json) {
-            return $this->_json;
+        if ($this->json) {
+            return $this->json;
         } else {
             $code = $this->getStatusCode();
             $message = $code === 500 ? 'Server Internal Error' : $this->getMessage();
@@ -94,6 +94,6 @@ class Exception extends \Exception
      */
     public function getBind()
     {
-        return $this->_bind;
+        return $this->bind;
     }
 }

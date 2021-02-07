@@ -10,43 +10,43 @@ class FilesProxy implements ArrayAccess, JsonSerializable
     /**
      * @var \ManaPHP\Http\Request
      */
-    protected $_request;
+    protected $request;
 
     /**
      * @param \ManaPHP\Http\Request $request
      */
     public function __construct($request)
     {
-        $this->_request = $request;
+        $this->request = $request;
     }
 
     public function offsetExists($offset)
     {
-        return isset($this->_request->_context->_FILES[$offset]);
+        return isset($this->request->context->_FILES[$offset]);
     }
 
     public function offsetGet($offset)
     {
-        return $this->_request->_context->_FILES[$offset];
+        return $this->request->context->_FILES[$offset];
     }
 
     public function offsetSet($offset, $value)
     {
-        $this->_request->_context->_FILES[$offset] = $value;
+        $this->request->context->_FILES[$offset] = $value;
     }
 
     public function offsetUnset($offset)
     {
-        unset($this->_request->_context->_FILES[$offset]);
+        unset($this->request->context->_FILES[$offset]);
     }
 
     public function __debugInfo()
     {
-        return $this->_request->_context->_FILES;
+        return $this->request->context->_FILES;
     }
 
     public function jsonSerialize()
     {
-        return $this->_request->_context->_FILES;
+        return $this->request->context->_FILES;
     }
 }

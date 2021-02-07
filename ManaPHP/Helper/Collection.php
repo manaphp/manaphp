@@ -13,14 +13,14 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
     /**
      * @var array
      */
-    protected $_items;
+    protected $items;
 
     /**
      * @param array $items
      */
     public function __construct($items)
     {
-        $this->_items = $items;
+        $this->items = $items;
     }
 
     /**
@@ -31,7 +31,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
     public function filter($callback)
     {
         $items = [];
-        foreach ($this->_items as $key => $value) {
+        foreach ($this->items as $key => $value) {
             if ($callback($value, $key) === true) {
                 $items[$key] = $value;
             }
@@ -45,7 +45,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function flip()
     {
-        return new static(array_flip($this->_items));
+        return new static(array_flip($this->items));
     }
 
     /**
@@ -55,7 +55,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function merge($items)
     {
-        return new static(array_merge($this->_items, $items));
+        return new static(array_merge($this->items, $items));
     }
 
     /**
@@ -66,7 +66,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
     public function map($callback)
     {
         $items = [];
-        foreach ($this->_items as $key => $value) {
+        foreach ($this->items as $key => $value) {
             $items[$key] = $callback($value, $key);
         }
 
@@ -80,8 +80,8 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function transform($callback)
     {
-        foreach ($this->_items as $key => $value) {
-            $this->_items[$key] = $callback($value, $key);
+        foreach ($this->items as $key => $value) {
+            $this->items[$key] = $callback($value, $key);
         }
 
         return $this;
@@ -95,7 +95,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function reduce($callback, $initial = null)
     {
-        return array_reduce($this->_items, $callback, $initial);
+        return array_reduce($this->items, $callback, $initial);
     }
 
     /**
@@ -105,7 +105,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function diff($items)
     {
-        return new static(array_diff($this->_items, $items));
+        return new static(array_diff($this->items, $items));
     }
 
     /**
@@ -115,7 +115,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function diff_key($items)
     {
-        return new static(array_diff_key($this->_items, $items));
+        return new static(array_diff_key($this->items, $items));
     }
 
     /**
@@ -126,7 +126,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function udiff($items, $callback)
     {
-        return new static(array_udiff($this->_items, $items, $callback));
+        return new static(array_udiff($this->items, $items, $callback));
     }
 
     /**
@@ -136,7 +136,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function reverse($preserve_keys = false)
     {
-        return new static(array_reverse($this->_items, $preserve_keys));
+        return new static(array_reverse($this->items, $preserve_keys));
     }
 
     /**
@@ -146,7 +146,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function sort($sort_flags = SORT_REGULAR)
     {
-        $items = $this->_items;
+        $items = $this->items;
         sort($items, $sort_flags);
         return new static($items);
     }
@@ -158,7 +158,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function rsort($sort_flags = SORT_REGULAR)
     {
-        $items = $this->_items;
+        $items = $this->items;
         rsort($items, $sort_flags);
         return new static($items);
     }
@@ -170,7 +170,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function asort($sort_flags = SORT_REGULAR)
     {
-        $items = $this->_items;
+        $items = $this->items;
         asort($items, $sort_flags);
         return new static($items);
     }
@@ -182,7 +182,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function arsort($sort_flags = SORT_REGULAR)
     {
-        $items = $this->_items;
+        $items = $this->items;
         arsort($items, $sort_flags);
         return new static($items);
     }
@@ -194,7 +194,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function usort($callback)
     {
-        $items = $this->_items;
+        $items = $this->items;
         usort($items, $callback);
         return new static($items);
     }
@@ -206,7 +206,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function uasort($callback)
     {
-        $items = $this->_items;
+        $items = $this->items;
         uasort($items, $callback);
         return new static($items);
     }
@@ -216,7 +216,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function shuffle()
     {
-        $items = $this->_items;
+        $items = $this->items;
         shuffle($items);
         return new static($items);
     }
@@ -230,7 +230,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function slice($offset, $length = null, $preserve_keys = false)
     {
-        return new static(array_slice($this->_items, $offset, $length, $preserve_keys));
+        return new static(array_slice($this->items, $offset, $length, $preserve_keys));
     }
 
     /**
@@ -241,7 +241,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function skip($count, $preserve_keys = false)
     {
-        return new static(array_slice($this->_items, $count, null, $preserve_keys));
+        return new static(array_slice($this->items, $count, null, $preserve_keys));
     }
 
     /**
@@ -254,7 +254,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
     {
         $chunks = [];
 
-        foreach (array_chunk($this->_items, $size, $preserve_keys) as $chunk) {
+        foreach (array_chunk($this->items, $size, $preserve_keys) as $chunk) {
             $chunks[] = new static($chunk);
         }
 
@@ -266,7 +266,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function all()
     {
-        return $this->_items;
+        return $this->items;
     }
 
     /**
@@ -274,7 +274,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function keys()
     {
-        return new static(array_keys($this->_items));
+        return new static(array_keys($this->items));
     }
 
     /**
@@ -282,7 +282,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
      */
     public function values()
     {
-        return new static(array_values($this->_items));
+        return new static(array_values($this->items));
     }
 
     /**
@@ -307,7 +307,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
             }
         }
 
-        $items = $this->_items;
+        $items = $this->items;
         usort(
             $items, static function ($left, $right) use ($normalized_sorts) {
             foreach ($normalized_sorts as $field => $sort) {
@@ -331,40 +331,40 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
 
     public function jsonSerialize()
     {
-        return $this->_items;
+        return $this->items;
     }
 
     public function count()
     {
-        return count($this->_items);
+        return count($this->items);
     }
 
     public function getIterator()
     {
-        return new ArrayIterator($this->_items);
+        return new ArrayIterator($this->items);
     }
 
     public function offsetExists($offset)
     {
-        return isset($this->_items[$offset]);
+        return isset($this->items[$offset]);
     }
 
     public function offsetGet($offset)
     {
-        return $this->_items[$offset];
+        return $this->items[$offset];
     }
 
     public function offsetSet($offset, $value)
     {
         if ($offset === null) {
-            $this->_items[] = $value;
+            $this->items[] = $value;
         } else {
-            $this->_items[$offset] = $value;
+            $this->items[$offset] = $value;
         }
     }
 
     public function offsetUnset($offset)
     {
-        unset($this->_items[$offset]);
+        unset($this->items[$offset]);
     }
 }

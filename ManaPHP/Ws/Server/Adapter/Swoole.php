@@ -22,47 +22,47 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     /**
      * @var string
      */
-    protected $_host = '0.0.0.0';
+    protected $host = '0.0.0.0';
 
     /**
      * @var int
      */
-    protected $_port = 9501;
+    protected $port = 9501;
 
     /**
      * @var array
      */
-    protected $_settings = [];
+    protected $settings = [];
 
     /**
      * @var \Swoole\WebSocket\Server
      */
-    protected $_swoole;
+    protected $swoole;
 
     /**
      * @var \ManaPHP\Ws\Server\HandlerInterface
      */
-    protected $_handler;
+    protected $handler;
 
     /**
      * @var ArrayObject[]
      */
-    protected $_contexts = [];
+    protected $contexts = [];
 
     /**
      * @var int
      */
-    protected $_worker_id;
+    protected $worker_id;
 
     /**
      * @var array
      */
-    protected $_messageCoroutines = [];
+    protected $messageCoroutines = [];
 
     /**
      * @var array
      */
-    protected $_closeCoroutine = [];
+    protected $closeCoroutine = [];
 
     /**
      * @param array $options
@@ -74,7 +74,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
             'DOCUMENT_ROOT'   => dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,
             'SCRIPT_NAME'     => '/' . basename($script_filename),
-            'SERVER_ADDR'     => $this->_host,
+            'SERVER_ADDR'     => $this->host,
             'SERVER_SOFTWARE' => 'Swoole/' . SWOOLE_VERSION . ' (' . PHP_OS . ') PHP/' . PHP_VERSION,
             'PHP_SELF'        => '/' . basename($script_filename),
             'QUERY_STRING'    => '',
@@ -84,11 +84,11 @@ class Swoole extends Component implements ServerInterface, Unaspectable
         unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
 
         if (isset($options['host'])) {
-            $this->_host = $options['host'];
+            $this->host = $options['host'];
         }
 
         if (isset($options['port'])) {
-            $this->_port = (int)$options['port'];
+            $this->port = (int)$options['port'];
         }
 
         if (isset($options['max_request']) && $options['max_request'] < 1) {
@@ -104,18 +104,18 @@ class Swoole extends Component implements ServerInterface, Unaspectable
         }
 
         unset($options['host'], $options['port']);
-        $this->_settings = $options ?: [];
+        $this->settings = $options ?: [];
 
-        $this->_swoole = new Server($this->_host, $this->_port);
-        $this->_swoole->set($this->_settings);
+        $this->swoole = new Server($this->host, $this->port);
+        $this->swoole->set($this->settings);
 
-        $this->_swoole->on('Start', [$this, 'onStart']);
-        $this->_swoole->on('ManagerStart', [$this, 'onManagerStart']);
-        $this->_swoole->on('WorkerStart', [$this, 'onWorkerStart']);
-        $this->_swoole->on('WorkerStop', [$this, 'onWorkerStop']);
-        $this->_swoole->on('open', [$this, 'onOpen']);
-        $this->_swoole->on('close', [$this, 'onClose']);
-        $this->_swoole->on('message', [$this, 'onMessage']);
+        $this->swoole->on('Start', [$this, 'onStart']);
+        $this->swoole->on('ManagerStart', [$this, 'onManagerStart']);
+        $this->swoole->on('WorkerStart', [$this, 'onWorkerStart']);
+        $this->swoole->on('WorkerStop', [$this, 'onWorkerStop']);
+        $this->swoole->on('open', [$this, 'onOpen']);
+        $this->swoole->on('close', [$this, 'onClose']);
+        $this->swoole->on('message', [$this, 'onMessage']);
     }
 
     /**
@@ -170,7 +170,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function onWorkerStart($server, $worker_id)
     {
-        $this->_worker_id = $worker_id;
+        $this->worker_id = $worker_id;
 
         @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->configure->id, $worker_id));
 
@@ -211,7 +211,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
             $globals = $this->request->getContext();
             $globals->_REQUEST['fd'] = $fd;
 
-            $this->_handler->onOpen($fd);
+            $this->handler->onOpen($fd);
         } finally {
             null;
         }
@@ -222,15 +222,15 @@ class Swoole extends Component implements ServerInterface, Unaspectable
                 $context[$k] = $v;
             }
         }
-        $this->_contexts[$fd] = $context;
+        $this->contexts[$fd] = $context;
 
-        foreach ($this->_messageCoroutines[$fd] ?? [] as $cid) {
+        foreach ($this->messageCoroutines[$fd] ?? [] as $cid) {
             Coroutine::resume($cid);
         }
-        unset($this->_messageCoroutines[$fd]);
+        unset($this->messageCoroutines[$fd]);
 
-        if ($cid = $this->_closeCoroutine[$fd] ?? false) {
-            unset($this->_closeCoroutine[$fd]);
+        if ($cid = $this->closeCoroutine[$fd] ?? false) {
+            unset($this->closeCoroutine[$fd]);
             Coroutine::resume($cid);
         }
     }
@@ -247,12 +247,12 @@ class Swoole extends Component implements ServerInterface, Unaspectable
             return;
         }
 
-        if (!$old_context = $this->_contexts[$fd] ?? false) {
-            $this->_closeCoroutine[$fd] = Coroutine::getCid();
+        if (!$old_context = $this->contexts[$fd] ?? false) {
+            $this->closeCoroutine[$fd] = Coroutine::getCid();
             Coroutine::suspend();
-            $old_context = $this->_contexts[$fd];
+            $old_context = $this->contexts[$fd];
         }
-        unset($this->_contexts[$fd]);
+        unset($this->contexts[$fd]);
 
         /** @var \ArrayObject $current_context */
         $current_context = Coroutine::getContext();
@@ -261,7 +261,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
         }
 
         try {
-            $this->_handler->onClose($fd);
+            $this->handler->onClose($fd);
         } finally {
             null;
         }
@@ -277,10 +277,10 @@ class Swoole extends Component implements ServerInterface, Unaspectable
     {
         $fd = $frame->fd;
 
-        if (!$old_context = $this->_contexts[$fd] ?? false) {
-            $this->_messageCoroutines[$fd][] = Coroutine::getCid();
+        if (!$old_context = $this->contexts[$fd] ?? false) {
+            $this->messageCoroutines[$fd][] = Coroutine::getCid();
             Coroutine::suspend();
-            $old_context = $this->_contexts[$fd];
+            $old_context = $this->contexts[$fd];
         }
 
         /** @var \ArrayObject $current_context */
@@ -290,7 +290,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
         }
 
         try {
-            $this->_handler->onMessage($frame->fd, $frame->data);
+            $this->handler->onMessage($frame->fd, $frame->data);
         } catch (Throwable $throwable) {
             $this->logger->warn($throwable);
         }
@@ -313,13 +313,13 @@ class Swoole extends Component implements ServerInterface, Unaspectable
             Runtime::enableCoroutine(true);
         }
 
-        $this->_handler = $handler;
+        $this->handler = $handler;
 
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 
-        $settings = json_stringify($this->_settings);
-        console_log('info', ['listen on: %s:%d with setting: %s', $this->_host, $this->_port, $settings]);
-        $this->_swoole->start();
+        $settings = json_stringify($this->settings);
+        console_log('info', ['listen on: %s:%d with setting: %s', $this->host, $this->port, $settings]);
+        $this->swoole->start();
         console_log('info', 'shutdown');
     }
 
@@ -331,7 +331,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function push($fd, $data)
     {
-        return @$this->_swoole->push($fd, is_string($data) ? $data : json_stringify($data));
+        return @$this->swoole->push($fd, is_string($data) ? $data : json_stringify($data));
     }
 
     /**
@@ -341,7 +341,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function broadcast($data)
     {
-        $swoole = $this->_swoole;
+        $swoole = $this->swoole;
 
         foreach ($swoole->connections as $connection) {
             if ($swoole->isEstablished($connection)) {
@@ -357,7 +357,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function disconnect($fd)
     {
-        return $this->_swoole->disconnect($fd, 1000, '');
+        return $this->swoole->disconnect($fd, 1000, '');
     }
 
     /**
@@ -367,12 +367,12 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function exists($fd)
     {
-        return $this->_swoole->exist($fd);
+        return $this->swoole->exist($fd);
     }
 
     public function reload()
     {
-        $this->_swoole->reload();
+        $this->swoole->reload();
     }
 
     /**
@@ -380,6 +380,6 @@ class Swoole extends Component implements ServerInterface, Unaspectable
      */
     public function getWorkerId()
     {
-        return $this->_worker_id;
+        return $this->worker_id;
     }
 }

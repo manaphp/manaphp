@@ -60,7 +60,7 @@ class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
             return $this->response->setContent($message);
         }
 
-        $routerContext = $this->router->_context;
+        $routerContext = $this->router->context;
 
         $routerContext->action = $action;
 

@@ -10,7 +10,7 @@ class Command extends \ManaPHP\Cli\Command
     public function __construct($options = [])
     {
         if (isset($options['redisCache'])) {
-            $this->_injections['redisCache'] = $options['redisCache'];
+            $this->injections['redisCache'] = $options['redisCache'];
         }
     }
 

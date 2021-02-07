@@ -15,88 +15,88 @@ class Client extends Component implements ClientInterface
     /**
      * @var string
      */
-    protected $_endpoint;
+    protected $endpoint;
 
     /**
      * @var string
      */
-    protected $_proxy;
+    protected $proxy;
 
     /**
      * @var float
      */
-    protected $_timeout = 3.0;
+    protected $timeout = 3.0;
 
     /**
      * @var string
      */
-    protected $_protocol;
+    protected $protocol;
 
     /**
      * @var bool
      */
-    protected $_masking = true;
+    protected $masking = true;
 
     /**
      * @var string
      */
-    protected $_origin;
+    protected $origin;
 
     /**
      * @var string
      */
-    protected $_user_agent = 'manaphp/client';
+    protected $user_agent = 'manaphp/client';
 
     /**
      * @var \ManaPHP\Ws\Client\EngineInterface
      */
-    protected $_engine;
+    protected $engine;
 
     /**
      * @var int
      */
-    protected $_pool_size = 4;
+    protected $pool_size = 4;
 
     /**
      * @param array $options
      */
     public function __construct($options)
     {
-        $this->_endpoint = $options['endpoint'];
+        $this->endpoint = $options['endpoint'];
 
         if (isset($options['proxy'])) {
-            $this->_proxy = $options['proxy'];
+            $this->proxy = $options['proxy'];
         }
 
         if (isset($options['timeout'])) {
-            $this->_timeout = $options['timeout'];
+            $this->timeout = $options['timeout'];
         }
 
         if (isset($options['protocol'])) {
-            $this->_protocol = $options['protocol'];
+            $this->protocol = $options['protocol'];
         }
 
         if (isset($options['masking'])) {
-            $this->_masking = (bool)$options['masking'];
+            $this->masking = (bool)$options['masking'];
         }
 
         if (isset($options['origin'])) {
-            $this->_origin = $options['origin'];
+            $this->origin = $options['origin'];
         }
 
         if (isset($options['user_agent'])) {
-            $this->_user_agent = $options['user_agent'];
+            $this->user_agent = $options['user_agent'];
         }
 
         if (isset($options['pool_size'])) {
-            $this->_pool_size = (int)$options['pool_size'];
+            $this->pool_size = (int)$options['pool_size'];
         }
 
         $options['owner'] = $this;
 
         $options['class'] = 'ManaPHP\Ws\Client\Engine';
 
-        $this->poolManager->add($this, $options, $this->_pool_size);
+        $this->poolManager->add($this, $options, $this->pool_size);
     }
 
     public function __destruct()
@@ -114,7 +114,7 @@ class Client extends Component implements ClientInterface
      */
     public function getEndpoint()
     {
-        return $this->_endpoint;
+        return $this->endpoint;
     }
 
     /**
@@ -124,7 +124,7 @@ class Client extends Component implements ClientInterface
      */
     public function setEndpoint($endpoint)
     {
-        $this->_endpoint = $endpoint;
+        $this->endpoint = $endpoint;
 
         $size = $this->poolManager->size($this);
 
@@ -151,9 +151,9 @@ class Client extends Component implements ClientInterface
      */
     public function request($message, $timeout = null)
     {
-        $end_time = microtime(true) + ($timeout ?? $this->_timeout);
+        $end_time = microtime(true) + ($timeout ?? $this->timeout);
 
-        $engine = $this->poolManager->pop($this, $this->_timeout);
+        $engine = $this->poolManager->pop($this, $this->timeout);
 
         try {
             $engine->send(Message::TEXT_FRAME, $message, max($end_time - microtime(true), 0.01));
@@ -177,7 +177,7 @@ class Client extends Component implements ClientInterface
     {
         $last_time = null;
 
-        $engine = $this->poolManager->pop($this, $this->_timeout);
+        $engine = $this->poolManager->pop($this, $this->timeout);
 
         try {
             do {
@@ -187,12 +187,12 @@ class Client extends Component implements ClientInterface
                     }
 
                     if ($keepalive > 0 && microtime(true) - $last_time > $keepalive) {
-                        $engine->send(Message::PING_FRAME, '', $this->_timeout);
+                        $engine->send(Message::PING_FRAME, '', $this->timeout);
                         $last_time = microtime(true);
                     }
                 }
 
-                $message = $engine->recv($this->_timeout);
+                $message = $engine->recv($this->timeout);
                 $last_time = microtime(true);
                 $op_code = $message->op_code;
 
@@ -202,7 +202,7 @@ class Client extends Component implements ClientInterface
                 } elseif ($op_code === Message::CLOSE_FRAME) {
                     $r = false;
                 } elseif ($op_code === Message::PING_FRAME) {
-                    $engine->send(Message::PONG_FRAME, $message->payload, $this->_timeout);
+                    $engine->send(Message::PONG_FRAME, $message->payload, $this->timeout);
                 }
             } while ($r !== false);
         } finally {

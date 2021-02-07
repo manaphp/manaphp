@@ -13,7 +13,7 @@ class Jwt extends Identity
     /**
      * @var string
      */
-    protected $_scope;
+    protected $scope;
 
     /**
      * @param array $options
@@ -21,10 +21,10 @@ class Jwt extends Identity
     public function __construct($options = [])
     {
         if (isset($options['scopedJwt'])) {
-            $this->_injections['scopedJwt'] = $options['scopedJwt'];
+            $this->injections['scopedJwt'] = $options['scopedJwt'];
         }
 
-        $this->_scope = $options['scope'] ?? $this->configure->id;
+        $this->scope = $options['scope'] ?? $this->configure->id;
     }
 
     /**
@@ -33,7 +33,7 @@ class Jwt extends Identity
     public function authenticate()
     {
         if ($token = $this->request->getToken()) {
-            return $this->scopedJwt->decode($token, $this->_scope);
+            return $this->scopedJwt->decode($token, $this->scope);
         } else {
             return [];
         }

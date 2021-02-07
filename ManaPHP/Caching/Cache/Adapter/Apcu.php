@@ -10,7 +10,7 @@ class Apcu extends Cache
     /**
      * @var string
      */
-    protected $_prefix = 'cache:';
+    protected $prefix = 'cache:';
 
     /**
      * @param array $options
@@ -18,7 +18,7 @@ class Apcu extends Cache
     public function __construct($options = [])
     {
         if (isset($options['prefix'])) {
-            $this->_prefix = $options['prefix'];
+            $this->prefix = $options['prefix'];
         }
     }
 
@@ -29,7 +29,7 @@ class Apcu extends Cache
      */
     public function do_exists($key)
     {
-        return apcu_exists($this->_prefix . $key);
+        return apcu_exists($this->prefix . $key);
     }
 
     /**
@@ -39,7 +39,7 @@ class Apcu extends Cache
      */
     public function do_get($key)
     {
-        return apcu_fetch($this->_prefix . $key);
+        return apcu_fetch($this->prefix . $key);
     }
 
     /**
@@ -49,7 +49,7 @@ class Apcu extends Cache
      */
     public function do_set($key, $value, $ttl)
     {
-        $r = apcu_store($this->_prefix . $key, $value, $ttl);
+        $r = apcu_store($this->prefix . $key, $value, $ttl);
         if (!$r) {
             throw new RuntimeException(['apcu_store failed for `:key` key', 'key' => $key]);
         }
@@ -62,6 +62,6 @@ class Apcu extends Cache
      */
     public function do_delete($key)
     {
-        apcu_delete($this->_prefix . $key);
+        apcu_delete($this->prefix . $key);
     }
 }

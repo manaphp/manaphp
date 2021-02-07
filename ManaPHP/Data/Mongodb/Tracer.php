@@ -10,7 +10,7 @@ class Tracer extends \ManaPHP\Event\Tracer
     {
         parent::__construct($options);
 
-        $this->_verbose && $this->attachEvent('mongodb:connect', [$this, 'onConnect']);
+        $this->verbose && $this->attachEvent('mongodb:connect', [$this, 'onConnect']);
         $this->attachEvent('mongodb:queried', [$this, 'onQueried']);
         $this->attachEvent('mongodb:inserted', [$this, 'onInserted']);
         $this->attachEvent('mongodb:updated', [$this, 'onUpdated']);

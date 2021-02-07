@@ -15,26 +15,26 @@ class CachingCacheAdapterRedisTest extends TestCase
         //default
         $cache = new Redis();
         $cache->setContainer($di);
-        $this->assertAttributeSame('redis', '_redis', $cache);
-        $this->assertAttributeSame('cache:', '_prefix', $cache);
+        $this->assertAttributeSame('redis', 'redis', $cache);
+        $this->assertAttributeSame('cache:', 'prefix', $cache);
 
         //array redis
         $cache = new Redis(['redis' => 'xxx']);
         $cache->setContainer($di);
-        $this->assertAttributeSame('xxx', '_redis', $cache);
-        $this->assertAttributeSame('cache:', '_prefix', $cache);
+        $this->assertAttributeSame('xxx', 'redis', $cache);
+        $this->assertAttributeSame('cache:', 'prefix', $cache);
 
         //array prefix
         $cache = new Redis(['prefix' => 'ppp:']);
         $cache->setContainer($di);
-        $this->assertAttributeSame('redis', '_redis', $cache);
-        $this->assertAttributeSame('ppp:', '_prefix', $cache);
+        $this->assertAttributeSame('redis', 'redis', $cache);
+        $this->assertAttributeSame('ppp:', 'prefix', $cache);
 
         //array redis and prefix
         $cache = new Redis(['redis' => 'xx', 'prefix' => 'yy:']);
         $cache->setContainer($di);
-        $this->assertAttributeSame('xx', '_redis', $cache);
-        $this->assertAttributeSame('yy:', '_prefix', $cache);
+        $this->assertAttributeSame('xx', 'redis', $cache);
+        $this->assertAttributeSame('yy:', 'prefix', $cache);
     }
 
     public function test_exists()

@@ -11,37 +11,37 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
     /**
      * @var string
      */
-    protected $_proxy;
+    protected $proxy;
 
     /**
      * @var int
      */
-    protected $_timeout = 10;
+    protected $timeout = 10;
 
     /**
      * @var string
      */
-    protected $_tmp_dir;
+    protected $tmp_dir;
 
     /**
      * @var resource
      */
-    protected $_template;
+    protected $template;
 
     /**
      * @var resource
      */
-    protected $_mh;
+    protected $mh;
 
     /**
      * @var \ManaPHP\Http\CurlMulti\Request[]
      */
-    protected $_requests = [];
+    protected $requests = [];
 
     /**
      * @var array
      */
-    protected $_tmp_files = [];
+    protected $tmp_files = [];
 
     /**
      * @param array $options
@@ -49,24 +49,24 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
     public function __construct($options = [])
     {
         if (isset($options['proxy'])) {
-            $this->_proxy = $options['proxy'];
+            $this->proxy = $options['proxy'];
         }
 
         if (isset($options['timeout'])) {
-            $this->_timeout = $options['timeout'];
+            $this->timeout = $options['timeout'];
         }
 
         if (isset($options['tmp_dir'])) {
-            $this->_tmp_dir = $options['tmp_dir'];
+            $this->tmp_dir = $options['tmp_dir'];
         }
 
-        $this->_template = $this->createCurlTemplate();
+        $this->template = $this->createCurlTemplate();
 
-        $this->_mh = curl_multi_init();
+        $this->mh = curl_multi_init();
 
-        $this->_tmp_dir = $this->alias->resolve('@data/CurlMulti');
+        $this->tmp_dir = $this->alias->resolve('@data/CurlMulti');
 
-        LocalFS::dirCreate($this->_tmp_dir);
+        LocalFS::dirCreate($this->tmp_dir);
     }
 
     /**
@@ -80,13 +80,13 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
         curl_setopt($curl, CURLOPT_AUTOREFERER, true);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_MAXREDIRS, 8);
-        curl_setopt($curl, CURLOPT_TIMEOUT, $this->_timeout);
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->_timeout);
+        curl_setopt($curl, CURLOPT_TIMEOUT, $this->timeout);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
         curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko');
         curl_setopt($curl, CURLOPT_HEADER, 1);
 
-        if ($this->_proxy) {
-            $parts = parse_url($this->_proxy);
+        if ($this->proxy) {
+            $parts = parse_url($this->proxy);
             $scheme = $parts['scheme'];
             if ($scheme === 'http') {
                 curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
@@ -156,7 +156,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
             }
         }
 
-        $curl = curl_copy_handle($this->_template);
+        $curl = curl_copy_handle($this->template);
 
         if (isset($headers['Cookie'])) {
             curl_setopt($curl, CURLOPT_COOKIE, $headers['Cookie']);
@@ -189,7 +189,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
 
         if (isset($options['file'])) {
             if ($options['file'] === '') {
-                $request->options['file'] = tempnam($this->_tmp_dir, 'curl_');
+                $request->options['file'] = tempnam($this->tmp_dir, 'curl_');
             }
 
             $file = fopen($request->options['file'], 'wb');
@@ -198,7 +198,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
             curl_setopt($curl, CURLOPT_HEADER, 0);
             curl_setopt($curl, CURLOPT_FILE, $file);
             curl_setopt($curl, CURLOPT_BINARYTRANSFER, true);
-            $this->_tmp_files[(int)$curl] = $file;
+            $this->tmp_files[(int)$curl] = $file;
         }
 
         if (isset($options['proxy'])) {
@@ -226,11 +226,11 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
             }
         }
 
-        curl_multi_add_handle($this->_mh, $curl);
+        curl_multi_add_handle($this->mh, $curl);
 
         $request->start_time = microtime(true);
 
-        $this->_requests[(int)$curl] = $request;
+        $this->requests[(int)$curl] = $request;
 
         return $this;
     }
@@ -262,19 +262,19 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
      */
     public function start()
     {
-        while ($this->_requests) {
+        while ($this->requests) {
             $running = null;
-            while (curl_multi_exec($this->_mh, $running) === CURLM_CALL_MULTI_PERFORM) {
+            while (curl_multi_exec($this->mh, $running) === CURLM_CALL_MULTI_PERFORM) {
                 null;
             }
-            curl_multi_select($this->_mh);
+            curl_multi_select($this->mh);
 
-            while ($info = curl_multi_info_read($this->_mh)) {
+            while ($info = curl_multi_info_read($this->mh)) {
                 $curl = $info['handle'];
                 $id = (int)$curl;
 
-                $request = $this->_requests[$id];
-                unset($this->_requests[$id]);
+                $request = $this->requests[$id];
+                unset($this->requests[$id]);
 
                 if ($info['result'] === CURLE_OK) {
                     $response = $this->getNew('ManaPHP\Http\CurlMulti\Response');
@@ -283,10 +283,10 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
                     $response->http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
                     $response->stats = curl_getinfo($curl);
 
-                    if (isset($this->_tmp_files[$id])) {
+                    if (isset($this->tmp_files[$id])) {
                         $response->body = $request->options['file'];
-                        fclose($this->_tmp_files[$id]);
-                        unset($this->_tmp_files[$id]);
+                        fclose($this->tmp_files[$id]);
+                        unset($this->tmp_files[$id]);
                     } else {
                         $content = curl_multi_getcontent($curl);
                         $header_length = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
@@ -316,10 +316,10 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
                     $error->message = curl_error($curl);
                     $error->request = $request;
 
-                    if (isset($this->_tmp_files[$id])) {
-                        fclose($this->_tmp_files[$id]);
+                    if (isset($this->tmp_files[$id])) {
+                        fclose($this->tmp_files[$id]);
                         unlink($request->options['file']);
-                        unset($this->_tmp_files[$id]);
+                        unset($this->tmp_files[$id]);
                     }
 
                     $callbacks = $request->callbacks;
@@ -331,7 +331,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
                     }
                 }
 
-                curl_multi_remove_handle($this->_mh, $curl);
+                curl_multi_remove_handle($this->mh, $curl);
                 curl_close($curl);
 
                 unset($request, $response, $error, $callbacks, $info, $curl);
@@ -368,6 +368,6 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
      */
     public function count()
     {
-        return count($this->_requests);
+        return count($this->requests);
     }
 }

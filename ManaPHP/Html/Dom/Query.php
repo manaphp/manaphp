@@ -10,28 +10,28 @@ class Query
     /**
      * @var \DOMDocument
      */
-    protected $_dom;
+    protected $dom;
 
     /**
      * @var \DOMXPath
      */
-    protected $_xpath;
+    protected $xpath;
 
     /**
      * @var \ManaPHP\Html\Dom\CssToXPath
      */
-    protected $_cssToXPath;
+    protected $cssToXPath;
 
     /**
      * @param \DOMDocument $domDocument
      */
     public function __construct($domDocument)
     {
-        $this->_dom = $domDocument;
+        $this->dom = $domDocument;
 
-        $this->_xpath = new DOMXPath($domDocument);
+        $this->xpath = new DOMXPath($domDocument);
 
-        $this->_cssToXPath = new CssToXPath();
+        $this->cssToXPath = new CssToXPath();
     }
 
     /**
@@ -51,7 +51,7 @@ class Query
             $expression = strtr($expression[0], $tr);
         }
 
-        $r = @$this->_xpath->query($expression, $context);
+        $r = @$this->xpath->query($expression, $context);
         if ($r === false) {
             throw new MisuseException(['`:xpath` xpath is invalid expression', 'xpath' => $expression]);
         }
@@ -75,10 +75,10 @@ class Query
         }
 
         if ($pos = strpos($css, '::')) {
-            $xpath = $this->_cssToXPath->transform(substr($css, $pos + 2));
+            $xpath = $this->cssToXPath->transform(substr($css, $pos + 2));
             $xpath = substr($css, 0, $pos + 2) . substr($xpath, 2);
         } else {
-            $xpath = $this->_cssToXPath->transform($css);
+            $xpath = $this->cssToXPath->transform($css);
         }
 
         if ($context && $xpath[0] === '/') {

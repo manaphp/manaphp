@@ -19,17 +19,17 @@ class DummyListener
     /**
      * @var \PHPUnit_Framework_TestCase
      */
-    protected $_testCase;
+    protected $testCase;
 
     public function __construct($testCase)
     {
-        $this->_testCase = $testCase;
+        $this->testCase = $testCase;
     }
 
     public function doAction($component, $data)
     {
-        $this->_testCase->assertInstanceOf('Tests\DummyComponent', $component);
-        $this->_testCase->assertEquals($data, ['extra data']);
+        $this->testCase->assertInstanceOf('Tests\DummyComponent', $component);
+        $this->testCase->assertEquals($data, ['extra data']);
     }
 }
 

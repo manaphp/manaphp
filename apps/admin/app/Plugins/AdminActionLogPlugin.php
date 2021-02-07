@@ -15,7 +15,7 @@ class AdminActionLogPluginContext
  *
  * @package App\Plugins
  *
- * @property-read \App\Plugins\AdminActionLogPluginContext $_context
+ * @property-read \App\Plugins\AdminActionLogPluginContext $context
  */
 class AdminActionLogPlugin extends Plugin
 {
@@ -27,7 +27,7 @@ class AdminActionLogPlugin extends Plugin
 
     public function onDbExecuting()
     {
-        if (!$this->_context->logged && $this->dispatcher->isInvoking()) {
+        if (!$this->context->logged && $this->dispatcher->isInvoking()) {
             $this->onAppLogAction();
         }
     }
@@ -49,7 +49,7 @@ class AdminActionLogPlugin extends Plugin
 
     public function onAppLogAction()
     {
-        $context = $this->_context;
+        $context = $this->context;
         if ($context->logged) {
             return;
         }

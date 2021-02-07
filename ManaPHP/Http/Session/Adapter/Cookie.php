@@ -10,7 +10,7 @@ class Cookie extends Session
     /**
      * @var string
      */
-    protected $_key;
+    protected $key;
 
     /**
      * @param array $options
@@ -20,10 +20,10 @@ class Cookie extends Session
         parent::__construct($options);
 
         if (isset($options['crypt'])) {
-            $this->_injections['crypt'] = $options['crypt'];
+            $this->injections['crypt'] = $options['crypt'];
         }
 
-        $this->_key = $options['key'] ?? $this->crypt->getDerivedKey('cookieSession');
+        $this->key = $options['key'] ?? $this->crypt->getDerivedKey('cookieSession');
     }
 
     /**
@@ -45,7 +45,7 @@ class Cookie extends Session
             throw new CookieException(['format invalid: `:cookie`', 'cookie' => $data]);
         }
 
-        if (md5($parts[0] . $this->_key) !== $parts[1]) {
+        if (md5($parts[0] . $this->key) !== $parts[1]) {
             throw new CookieException(['hash invalid: `:cookie`', 'cookie' => $data]);
         }
 
@@ -75,7 +75,7 @@ class Cookie extends Session
         $payload = base64_encode(json_stringify(['exp' => time() + $ttl, 'data' => $data]));
         $this->cookies->set(
             $session_id,
-            $payload . '.' . md5($payload . $this->_key),
+            $payload . '.' . md5($payload . $this->key),
             $params['lifetime'],
             $params['path'],
             $params['domain'],

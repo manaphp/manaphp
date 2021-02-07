@@ -13,22 +13,22 @@ class Container implements ContainerInterface
     /**
      * @var array
      */
-    protected $_definitions = [];
+    protected $definitions = [];
 
     /**
      * @var array
      */
-    protected $_instances = [];
+    protected $instances = [];
 
     /**
      * @var \ManaPHP\Di\ContainerInterface
      */
-    protected static $_default;
+    protected static $default;
 
     public function __construct()
     {
-        if (self::$_default === null) {
-            self::$_default = $this;
+        if (self::$default === null) {
+            self::$default = $this;
         }
     }
 
@@ -37,7 +37,7 @@ class Container implements ContainerInterface
      */
     public static function getDefault()
     {
-        return self::$_default;
+        return self::$default;
     }
 
     /**
@@ -48,8 +48,8 @@ class Container implements ContainerInterface
      */
     protected function completeClassName($name, $className)
     {
-        if (isset($this->_definitions[$name])) {
-            $definition = $this->_definitions[$name];
+        if (isset($this->definitions[$name])) {
+            $definition = $this->definitions[$name];
         } else {
             return $className;
         }
@@ -79,23 +79,23 @@ class Container implements ContainerInterface
     protected function inferClassName($name)
     {
         $definition = null;
-        if (isset($this->_definitions[$name])) {
-            $definition = $this->_definitions[$name];
+        if (isset($this->definitions[$name])) {
+            $definition = $this->definitions[$name];
         } elseif (str_contains($name, '\\')) {
             $definition = $name;
         } elseif ($pos = strrpos($name, '_')) {
             $maybe = substr($name, $pos + 1);
-            if (isset($this->_definitions[$maybe])) {
-                $definition = $this->_definitions[$maybe];
+            if (isset($this->definitions[$maybe])) {
+                $definition = $this->definitions[$maybe];
             } elseif ($pos = strpos($name, '_')) {
                 $maybe = substr($name, 0, $pos);
-                if (isset($this->_definitions[$maybe])) {
-                    $definition = $this->_definitions[$maybe];
+                if (isset($this->definitions[$maybe])) {
+                    $definition = $this->definitions[$maybe];
                 }
             }
         } elseif (preg_match('#^(.+)([A-Z].+?)$#', $name, $match)) {
             $maybe = lcfirst($match[2]);
-            $definition = $this->_definitions[$maybe] ?? null;
+            $definition = $this->definitions[$maybe] ?? null;
         }
 
         if ($definition === null) {
@@ -146,7 +146,7 @@ class Container implements ContainerInterface
             throw new NotSupportedException(['`:definition` definition is unknown', 'definition' => $name]);
         }
 
-        $this->_definitions[$name] = $definition;
+        $this->definitions[$name] = $definition;
 
         return $this;
     }
@@ -161,7 +161,7 @@ class Container implements ContainerInterface
      */
     public function setShared($name, $definition)
     {
-        if (isset($this->_instances[$name])) {
+        if (isset($this->instances[$name])) {
             throw new MisuseException(['it\'s too late to setShared(): `%s` instance has been created', $name]);
         }
 
@@ -188,12 +188,12 @@ class Container implements ContainerInterface
         } elseif ($definition instanceof Closure) {
             null;
         } elseif (is_object($definition)) {
-            $this->_instances[$name] = $definition;
+            $this->instances[$name] = $definition;
         } else {
             throw new NotSupportedException(['`:definition` definition is unknown', 'definition' => $name]);
         }
 
-        $this->_definitions[$name] = $definition;
+        $this->definitions[$name] = $definition;
 
         return $this;
     }
@@ -207,7 +207,7 @@ class Container implements ContainerInterface
      */
     public function remove($name)
     {
-        unset($this->_definitions[$name], $this->_instances[$name], $this->{$name});
+        unset($this->definitions[$name], $this->instances[$name], $this->{$name});
 
         return $this;
     }
@@ -222,7 +222,7 @@ class Container implements ContainerInterface
      */
     public function getNew($name, $parameters = [])
     {
-        $definition = $this->_definitions[$name] ?? $name;
+        $definition = $this->definitions[$name] ?? $name;
 
         if ($parameters && !isset($parameters[0])) {
             $parameters = [$parameters];
@@ -290,15 +290,15 @@ class Container implements ContainerInterface
      */
     public function getShared($name)
     {
-        if ($instance = $this->_instances[$name] ?? null) {
+        if ($instance = $this->instances[$name] ?? null) {
             return $instance;
         }
 
-        $definition = $this->_definitions[$name] ?? $name;
+        $definition = $this->definitions[$name] ?? $name;
 
         if (is_string($definition)) {
             if ($definition[0] === '@') {
-                return $this->_instances[$name] = $this->getShared(substr($definition, 1));
+                return $this->instances[$name] = $this->getShared(substr($definition, 1));
             }
             $parameters = [];
         } elseif ($definition instanceof Closure) {
@@ -307,7 +307,7 @@ class Container implements ContainerInterface
                 $instance->setContainer($this);
             }
 
-            return $this->_instances[$name] = $instance;
+            return $this->instances[$name] = $instance;
         } elseif (isset($definition['class'])) {
             $parameters = $definition;
             $definition = $definition['class'];
@@ -328,9 +328,9 @@ class Container implements ContainerInterface
             throw new NotSupportedException(['`%s` component implement type is not supported', $name]);
         }
 
-        $definition = $this->_definitions[$definition] ?? $definition;
+        $definition = $this->definitions[$definition] ?? $definition;
 
-        return $this->_instances[$name] = $this->createNew($name, $definition, $parameters);
+        return $this->instances[$name] = $this->createNew($name, $definition, $parameters);
     }
 
     /**
@@ -341,10 +341,10 @@ class Container implements ContainerInterface
     public function getDefinitions($pattern = null)
     {
         if ($pattern === null) {
-            return $this->_definitions;
+            return $this->definitions;
         } else {
             $definitions = [];
-            foreach ($this->_definitions as $name => $definition) {
+            foreach ($this->definitions as $name => $definition) {
                 if (fnmatch($pattern, $name)) {
                     $definitions[$name] = $definition;
                 }
@@ -360,7 +360,7 @@ class Container implements ContainerInterface
      */
     public function getDefinition($name)
     {
-        return $this->_definitions[$name] ?? null;
+        return $this->definitions[$name] ?? null;
     }
 
     /**
@@ -368,7 +368,7 @@ class Container implements ContainerInterface
      */
     public function getInstances()
     {
-        return $this->_instances;
+        return $this->instances;
     }
 
     /**
@@ -415,6 +415,6 @@ class Container implements ContainerInterface
      */
     public function has($name)
     {
-        return isset($this->_definitions[$name]);
+        return isset($this->definitions[$name]);
     }
 }

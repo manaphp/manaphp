@@ -12,7 +12,7 @@ class Scheduler extends Component implements SchedulerInterface
     /**
      * @var array
      */
-    protected $_tasks = [];
+    protected $tasks = [];
 
     /**
      * @param callable $fn
@@ -22,7 +22,7 @@ class Scheduler extends Component implements SchedulerInterface
      */
     public function add($fn, ...$args)
     {
-        $this->_tasks[] = [$fn, $args];
+        $this->tasks[] = [$fn, $args];
 
         return $this;
     }
@@ -54,11 +54,11 @@ class Scheduler extends Component implements SchedulerInterface
         $returns = [];
 
         if (MANAPHP_COROUTINE_ENABLED) {
-            $tasks_count = count($this->_tasks);
+            $tasks_count = count($this->tasks);
 
             $channel = new Channel($tasks_count);
 
-            foreach ($this->_tasks as $id => $task) {
+            foreach ($this->tasks as $id => $task) {
                 $returns[$id] = null;
                 Coroutine::create([$this, 'routine'], $id, $channel, $task);
             }
@@ -68,7 +68,7 @@ class Scheduler extends Component implements SchedulerInterface
                 $returns[$id] = $return;
             }
         } else {
-            foreach ($this->_tasks as $id => list($fn, $args)) {
+            foreach ($this->tasks as $id => list($fn, $args)) {
                 try {
                     $return = $fn(...$args);
                 } catch (Throwable $throwable) {

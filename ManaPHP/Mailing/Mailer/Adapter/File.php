@@ -10,12 +10,12 @@ class File extends Mailer
     /**
      * @var string
      */
-    protected $_file;
+    protected $file;
 
     /**
      * @var bool
      */
-    protected $_pretty = false;
+    protected $pretty = false;
 
     /**
      * @param array $options
@@ -23,22 +23,22 @@ class File extends Mailer
     public function __construct($options = [])
     {
         if (isset($options['file'])) {
-            $this->_file = $options['file'];
+            $this->file = $options['file'];
         }
         if (isset($options['pretty'])) {
-            $this->_pretty = (bool)$options['pretty'];
+            $this->pretty = (bool)$options['pretty'];
         }
 
         if (isset($options['log'])) {
-            $this->_log = $options['log'];
+            $this->log = $options['log'];
         }
 
         if (isset($options['from'])) {
-            $this->_from = $options['from'];
+            $this->from = $options['from'];
         }
 
         if (isset($options['to'])) {
-            $this->_to = $options['to'];
+            $this->to = $options['to'];
         }
     }
 
@@ -50,7 +50,7 @@ class File extends Mailer
      */
     protected function sendInternal($message, &$failedRecipients = null)
     {
-        if ($this->_pretty) {
+        if ($this->pretty) {
             $data = str_repeat('=', 20) . date('Y-m-d H:i:s') . str_repeat('=', 20)
                 . PHP_EOL
                 . json_stringify($message, JSON_PRETTY_PRINT)
@@ -59,7 +59,7 @@ class File extends Mailer
             $data = json_stringify($message) . PHP_EOL;
         }
 
-        LocalFS::fileAppend($this->_file ?: '@data/fileMailer/mailer_' . date('ymd') . '.log', $data);
+        LocalFS::fileAppend($this->file ?: '@data/fileMailer/mailer_' . date('ymd') . '.log', $data);
 
         return count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
     }

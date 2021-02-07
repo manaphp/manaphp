@@ -10,7 +10,7 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
     /**
      * @var array
      */
-    protected $_metadata;
+    protected $metadata;
 
     /**
      * Reads the complete meta-data for certain model
@@ -23,10 +23,10 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
     {
         $modelName = is_string($model) ? $model : get_class($model);
 
-        if (!isset($this->_metadata[$modelName])) {
+        if (!isset($this->metadata[$modelName])) {
             $data = $this->read($modelName);
             if ($data !== false) {
-                $this->_metadata[$modelName] = $data;
+                $this->metadata[$modelName] = $data;
             } else {
                 $modelInstance = is_string($model) ? $this->getShared($model) : $model;
 
@@ -35,12 +35,12 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
                 $db = $this->getShared($db);
                 $data = $db->getMetadata($table);
 
-                $this->_metadata[$modelName] = $data;
+                $this->metadata[$modelName] = $data;
                 $this->write($modelName, $data);
             }
         }
 
-        return $this->_metadata[$modelName];
+        return $this->metadata[$modelName];
     }
 
     /**

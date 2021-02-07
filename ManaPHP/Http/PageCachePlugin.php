@@ -20,19 +20,19 @@ class PageCachePluginContext
 }
 
 /**
- * @property-read \ManaPHP\Http\PageCachePluginContext $_context
+ * @property-read \ManaPHP\Http\PageCachePluginContext $context
  */
 class PageCachePlugin extends Plugin
 {
     /**
      * @var bool
      */
-    protected $_enabled = true;
+    protected $enabled = true;
 
     /**
      * @var string
      */
-    protected $_prefix;
+    protected $prefix;
 
     /**
      * @param array $options
@@ -40,16 +40,16 @@ class PageCachePlugin extends Plugin
     public function __construct($options = [])
     {
         if (isset($options['redisCache'])) {
-            $this->_injections['redisCache'] = $options['redisCache'];
+            $this->injections['redisCache'] = $options['redisCache'];
         }
 
         if (isset($options['enabled'])) {
-            $this->_enabled = (bool)$options['enabled'];
+            $this->enabled = (bool)$options['enabled'];
         }
 
-        $this->_prefix = $options['prefix'] ?? "cache:{$this->configure->id}:pageCachePlugin:";
+        $this->prefix = $options['prefix'] ?? "cache:{$this->configure->id}:pageCachePlugin:";
 
-        if ($this->_enabled) {
+        if ($this->enabled) {
             $this->attachEvent('request:ready', [$this, 'onRequestReady']);
             $this->attachEvent('response:sending', [$this, 'onResponseSending']);
         }
@@ -79,7 +79,7 @@ class PageCachePlugin extends Plugin
             return;
         }
 
-        $context = $this->_context;
+        $context = $this->context;
 
         $key = null;
         if (is_int($pageCache)) {
@@ -130,9 +130,9 @@ class PageCachePlugin extends Plugin
         }
 
         if ($key === '') {
-            $context->key = $this->_prefix . $dispatcher->getPath();
+            $context->key = $this->prefix . $dispatcher->getPath();
         } else {
-            $context->key = $this->_prefix . $dispatcher->getPath() . ':' . $key;
+            $context->key = $this->prefix . $dispatcher->getPath() . ':' . $key;
         }
 
         if ($controller instanceof MvcController && $this->request->isAjax()) {
@@ -179,7 +179,7 @@ class PageCachePlugin extends Plugin
      */
     public function onResponseSending(EventArgs $eventArgs)
     {
-        $context = $this->_context;
+        $context = $this->context;
 
         if ($context->cache_used === true || $context->ttl === null || $context->ttl <= 0) {
             return;

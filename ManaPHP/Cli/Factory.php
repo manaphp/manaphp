@@ -10,8 +10,8 @@ class Factory extends FactoryDefault
     {
         parent::__construct();
 
-        $this->_definitions = array_merge(
-            $this->_definitions, [
+        $this->definitions = array_merge(
+            $this->definitions, [
                 'cliHandler'   => 'ManaPHP\Cli\Handler',
                 'console'      => 'ManaPHP\Cli\Console',
                 'request'      => 'ManaPHP\Cli\Request',

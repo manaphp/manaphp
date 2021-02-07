@@ -20,7 +20,7 @@ class Db extends Cache
     /**
      * @var string
      */
-    protected $_source = 'manaphp_cache';
+    protected $source = 'manaphp_cache';
 
     /**
      * @param array $options
@@ -28,11 +28,11 @@ class Db extends Cache
     public function __construct($options = [])
     {
         if (isset($options['db'])) {
-            $this->_injections['db'] = $options['db'];
+            $this->injections['db'] = $options['db'];
         }
 
         if (isset($options['source'])) {
-            $this->_source = $options['source'];
+            $this->source = $options['source'];
         }
     }
 
@@ -43,7 +43,7 @@ class Db extends Cache
      */
     public function do_exists($key)
     {
-        return $this->db->query($this->_source)->whereEq('hash', md5($key))->value('expired_time') >= time();
+        return $this->db->query($this->source)->whereEq('hash', md5($key))->value('expired_time') >= time();
     }
 
     /**
@@ -53,7 +53,7 @@ class Db extends Cache
      */
     public function do_get($key)
     {
-        $r = $this->db->query($this->_source)->whereEq('hash', md5($key))->first();
+        $r = $this->db->query($this->source)->whereEq('hash', md5($key))->first();
         if ($r && $r['expired_time'] > time()) {
             return $r['value'];
         } else {
@@ -73,10 +73,10 @@ class Db extends Cache
         $hash = md5($key);
         $expired_time = time() + $ttl;
 
-        if ($this->db->query($this->_source)->whereEq('hash', $hash)->exists()) {
-            $this->db->update($this->_source, compact('value', 'ttl', 'expired_time'), ['hash' => $hash]);
+        if ($this->db->query($this->source)->whereEq('hash', $hash)->exists()) {
+            $this->db->update($this->source, compact('value', 'ttl', 'expired_time'), ['hash' => $hash]);
         } else {
-            $this->db->insert($this->_source, compact('hash', 'key', 'value', 'ttl', 'expired_time'));
+            $this->db->insert($this->source, compact('hash', 'key', 'value', 'ttl', 'expired_time'));
         }
     }
 
@@ -87,6 +87,6 @@ class Db extends Cache
      */
     public function do_delete($key)
     {
-        $this->db->delete($this->_source, ['hash' => md5($key)]);
+        $this->db->delete($this->source, ['hash' => md5($key)]);
     }
 }

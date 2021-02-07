@@ -14,7 +14,7 @@ class Console extends Component implements ConsoleInterface
     /**
      * @var int
      */
-    protected $_width = 80;
+    protected $width = 80;
 
     const FC_BLACK = 0x01;
     const FC_RED = 0x02;
@@ -352,7 +352,7 @@ class Console extends Component implements ConsoleInterface
             }
         }
 
-        $this->write(str_pad("\r", $this->_width));
+        $this->write(str_pad("\r", $this->width));
         $this->write("\r");
         $this->write($message);
 

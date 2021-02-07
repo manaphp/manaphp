@@ -7,8 +7,8 @@ class Factory extends \ManaPHP\Http\Factory
     public function __construct()
     {
         parent::__construct();
-        $this->_definitions = array_merge(
-            $this->_definitions, [
+        $this->definitions = array_merge(
+            $this->definitions, [
                 'errorHandler' => 'ManaPHP\Rest\ErrorHandler',
                 'wsServer'     => 'ManaPHP\Ws\Server\Adapter\Swoole',
                 'dispatcher'   => 'ManaPHP\Ws\Dispatcher',

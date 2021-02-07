@@ -10,27 +10,27 @@ class HasManyToMany extends Relation
     /**
      * @var string
      */
-    protected $_thisField;
+    protected $thisField;
 
     /**
      * @var string
      */
-    protected $_thatField;
+    protected $thatField;
 
     /**
      * @var string
      */
-    protected $_pivotModel;
+    protected $pivotModel;
 
     /**
      * @var string
      */
-    protected $_thisPivot;
+    protected $thisPivot;
 
     /**
      * @var string
      */
-    protected $_thatPivot;
+    protected $thatPivot;
 
     /**
      * @param string $thisModel
@@ -43,13 +43,13 @@ class HasManyToMany extends Relation
      */
     public function __construct($thisModel, $thisField, $thatModel, $thatField, $pivotModel, $thisPivot, $thatPivot)
     {
-        $this->_thisModel = $thisModel;
-        $this->_thisField = $thisField;
-        $this->_thatModel = $thatModel;
-        $this->_thatField = $thatField;
-        $this->_pivotModel = $pivotModel;
-        $this->_thisPivot = $thisPivot;
-        $this->_thatPivot = $thatPivot;
+        $this->thisModel = $thisModel;
+        $this->thisField = $thisField;
+        $this->thatModel = $thatModel;
+        $this->thatField = $thatField;
+        $this->pivotModel = $pivotModel;
+        $this->thisPivot = $thisPivot;
+        $this->thatPivot = $thatPivot;
     }
 
     /**
@@ -62,15 +62,15 @@ class HasManyToMany extends Relation
     public function earlyLoad($r, $query, $name)
     {
         /** @var \ManaPHP\Data\ModelInterface $pivotModel */
-        $pivotModel = $this->_pivotModel;
-        $thisPivot = $this->_thisPivot;
-        $thatPivot = $this->_thatPivot;
+        $pivotModel = $this->pivotModel;
+        $thisPivot = $this->thisPivot;
+        $thatPivot = $this->thatPivot;
 
-        $ids = Arr::unique_column($r, $this->_thisField);
-        $pivotQuery = $pivotModel::select([$this->_thisPivot, $this->_thatPivot])->whereIn($this->_thisPivot, $ids);
+        $ids = Arr::unique_column($r, $this->thisField);
+        $pivotQuery = $pivotModel::select([$this->thisPivot, $this->thatPivot])->whereIn($this->thisPivot, $ids);
         $pivot_data = $pivotQuery->execute();
-        $ids = Arr::unique_column($pivot_data, $this->_thatPivot);
-        $data = $query->whereIn($this->_thatField, $ids)->indexBy($this->_thatField)->fetch();
+        $ids = Arr::unique_column($pivot_data, $this->thatPivot);
+        $data = $query->whereIn($this->thatField, $ids)->indexBy($this->thatField)->fetch();
 
         $rd = [];
         foreach ($pivot_data as $dv) {
@@ -98,11 +98,11 @@ class HasManyToMany extends Relation
     {
         /** @var \ManaPHP\Data\Model $pivotModel */
         /** @var \ManaPHP\Data\Model $thatModel */
-        $thatModel = $this->_thatModel;
-        $thisField = $this->_thisField;
-        $pivotModel = $this->_pivotModel;
+        $thatModel = $this->thatModel;
+        $thisField = $this->thisField;
+        $pivotModel = $this->pivotModel;
 
-        $ids = $pivotModel::values($this->_thatPivot, [$this->_thisPivot => $instance->$thisField]);
-        return $thatModel::select()->whereIn($this->_thatField, $ids)->setFetchType(true);
+        $ids = $pivotModel::values($this->thatPivot, [$this->thisPivot => $instance->$thisField]);
+        return $thatModel::select()->whereIn($this->thatField, $ids)->setFetchType(true);
     }
 }

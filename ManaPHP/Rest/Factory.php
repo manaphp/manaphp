@@ -8,8 +8,8 @@ class Factory extends \ManaPHP\Http\Factory
     {
         parent::__construct();
 
-        $this->_definitions = array_merge(
-            $this->_definitions, [
+        $this->definitions = array_merge(
+            $this->definitions, [
                 'errorHandler' => 'ManaPHP\Rest\ErrorHandler',
                 'identity'     => 'ManaPHP\Identifying\Identity\Adapter\Jwt'
             ]

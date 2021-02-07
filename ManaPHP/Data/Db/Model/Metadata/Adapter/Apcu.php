@@ -10,12 +10,12 @@ class Apcu extends Metadata
     /**
      * @var string
      */
-    protected $_prefix = 'models_metadata:';
+    protected $prefix = 'models_metadata:';
 
     /**
      * @var int
      */
-    protected $_ttl = 86400;
+    protected $ttl = 86400;
 
     /**
      * @param array $options
@@ -27,11 +27,11 @@ class Apcu extends Metadata
         }
 
         if (isset($options['prefix'])) {
-            $this->_prefix .= $options['prefix'];
+            $this->prefix .= $options['prefix'];
         }
 
         if (isset($options['ttl'])) {
-            $this->_ttl = $options['ttl'];
+            $this->ttl = $options['ttl'];
         }
     }
 
@@ -42,7 +42,7 @@ class Apcu extends Metadata
      */
     public function read($key)
     {
-        return apcu_fetch($this->_prefix . $key);
+        return apcu_fetch($this->prefix . $key);
     }
 
     /**
@@ -53,6 +53,6 @@ class Apcu extends Metadata
      */
     public function write($key, $data)
     {
-        apcu_store($this->_prefix . $key, $data, $this->_ttl);
+        apcu_store($this->prefix . $key, $data, $this->ttl);
     }
 }

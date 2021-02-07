@@ -10,17 +10,17 @@ class File extends Session
     /**
      * @var string
      */
-    protected $_dir = '@data/session';
+    protected $dir = '@data/session';
 
     /**
      * @var string
      */
-    protected $_extension = '.session';
+    protected $extension = '.session';
 
     /**
      * @var int
      */
-    protected $_level = 1;
+    protected $level = 1;
 
     /**
      * @param array $options
@@ -30,15 +30,15 @@ class File extends Session
         parent::__construct($options);
 
         if (isset($options['dir'])) {
-            $this->_dir = ltrim($options['dir'], '\\/');
+            $this->dir = ltrim($options['dir'], '\\/');
         }
 
         if (isset($options['extension'])) {
-            $this->_extension = $options['extension'];
+            $this->extension = $options['extension'];
         }
 
         if (isset($options['level'])) {
-            $this->_level = $options['level'];
+            $this->level = $options['level'];
         }
     }
 
@@ -51,11 +51,11 @@ class File extends Session
     {
         $shard = '';
 
-        for ($i = 0; $i < $this->_level; $i++) {
+        for ($i = 0; $i < $this->level; $i++) {
             $shard .= '/' . substr($sessionId, $i + $i, 2);
         }
 
-        return $this->alias->resolve($this->_dir . $shard . '/' . $sessionId . $this->_extension);
+        return $this->alias->resolve($this->dir . $shard . '/' . $sessionId . $this->extension);
     }
 
     /**
@@ -139,7 +139,7 @@ class File extends Session
      */
     public function do_gc($ttl)
     {
-        $dir = $this->alias->resolve($this->_dir);
+        $dir = $this->alias->resolve($this->dir);
         if (is_dir($dir)) {
             $this->clean($dir);
         }

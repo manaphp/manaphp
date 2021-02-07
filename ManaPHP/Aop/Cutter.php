@@ -9,7 +9,7 @@ class Cutter implements CutterInterface, Unaspectable
     /**
      * @var \ManaPHP\Aop\JoinPoint[][]
      */
-    protected $_joinPoints;
+    protected $joinPoints;
 
     /**
      * @param string $class
@@ -20,9 +20,9 @@ class Cutter implements CutterInterface, Unaspectable
      */
     public function pointcutMethod($class, $method, $signature = null)
     {
-        if (!$joinPoint = $this->_joinPoints[$class][$method] ?? null) {
+        if (!$joinPoint = $this->joinPoints[$class][$method] ?? null) {
             /** @noinspection PhpUnusedLocalVariableInspection */
-            $joinPoint = $this->_joinPoints[$class][$method] = new JoinPoint($class, $method, $signature);
+            $joinPoint = $this->joinPoints[$class][$method] = new JoinPoint($class, $method, $signature);
         }
 
         return $joinPoint->advice;

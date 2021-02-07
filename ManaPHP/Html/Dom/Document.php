@@ -12,32 +12,32 @@ class Document extends Component
     /**
      * @var string
      */
-    protected $_source_url;
+    protected $source_url;
 
     /**
      * @var string
      */
-    protected $_base_url;
+    protected $base_url;
 
     /**
      * @var string
      */
-    protected $_str;
+    protected $str;
 
     /**
      * @var \DOMDocument
      */
-    protected $_dom;
+    protected $dom;
 
     /**
      * @var \ManaPHP\Html\Dom\Query
      */
-    protected $_query;
+    protected $query;
 
     /**
      * @var array
      */
-    protected $_errors = [];
+    protected $errors = [];
 
     /**
      * @param string $str
@@ -64,7 +64,7 @@ class Document extends Component
      */
     public function loadFile($file, $url = null)
     {
-        $this->_source_url = $file;
+        $this->source_url = $file;
         $str = LocalFS::fileGet($file);
 
         return $this->loadString($str, $url);
@@ -89,10 +89,10 @@ class Document extends Component
      */
     public function loadString($str, $url = null)
     {
-        $this->_str = $str;
+        $this->str = $str;
 
-        $this->_dom = new DOMDocument();
-        $this->_dom->strictErrorChecking = false;
+        $this->dom = new DOMDocument();
+        $this->dom->strictErrorChecking = false;
 
         libxml_clear_errors();
         $old_use_internal_errors = libxml_use_internal_errors(true);
@@ -100,12 +100,12 @@ class Document extends Component
 
         /** @noinspection SubStrUsedAsStrPosInspection */
         if (substr($str, 0, 5) === '<?xml') {
-            $r = $this->_dom->loadXML($str);
+            $r = $this->dom->loadXML($str);
         } else {
-            $r = $this->_dom->loadHTML($str, LIBXML_HTML_NODEFDTD);
+            $r = $this->dom->loadHTML($str, LIBXML_HTML_NODEFDTD);
         }
 
-        $this->_errors = libxml_get_errors();
+        $this->errors = libxml_get_errors();
         libxml_clear_errors();
 
         libxml_disable_entity_loader($old_disable_entity_loader);
@@ -115,10 +115,10 @@ class Document extends Component
             throw new DocumentException('xx');
         }
 
-        $this->_query = $this->getNew('ManaPHP\Html\Dom\Query', [$this->_dom]);
+        $this->query = $this->getNew('ManaPHP\Html\Dom\Query', [$this->dom]);
 
-        $this->_source_url = $url;
-        $this->_base_url = $this->getBaseUrl() ?: $this->_source_url;
+        $this->source_url = $url;
+        $this->base_url = $this->getBaseUrl() ?: $this->source_url;
 
         return $this;
     }
@@ -130,7 +130,7 @@ class Document extends Component
      */
     public function getString($raw = true)
     {
-        return $raw ? $this->_str : $this->_dom->saveHTML($this->_dom->documentElement);
+        return $raw ? $this->str : $this->dom->saveHTML($this->dom->documentElement);
     }
 
     /**
@@ -138,7 +138,7 @@ class Document extends Component
      */
     public function getErrors()
     {
-        return $this->_errors;
+        return $this->errors;
     }
 
     /**
@@ -158,7 +158,7 @@ class Document extends Component
      */
     public function getQuery()
     {
-        return $this->_query;
+        return $this->query;
     }
 
     /**
@@ -166,7 +166,7 @@ class Document extends Component
      */
     protected function getBaseUrl()
     {
-        foreach ($this->_dom->getElementsByTagName('base') as $node) {
+        foreach ($this->dom->getElementsByTagName('base') as $node) {
             /** @var \DOMElement $node */
             if (!$node->hasAttribute('href')) {
                 continue;
@@ -177,9 +177,9 @@ class Document extends Component
             if (preg_match('#^https?://#', $href)) {
                 return $href;
             } elseif ($href[0] === '/') {
-                return substr($this->_source_url, 0, strpos($this->_source_url, '/', 10)) . $href;
+                return substr($this->source_url, 0, strpos($this->source_url, '/', 10)) . $href;
             } else {
-                return substr($this->_source_url, 0, strrpos($this->_source_url, '/', 10) + 1) . $href;
+                return substr($this->source_url, 0, strrpos($this->source_url, '/', 10) + 1) . $href;
             }
         }
 
@@ -193,7 +193,7 @@ class Document extends Component
      */
     public function setBaseUrl($url)
     {
-        $this->_base_url = rtrim($url, '/') . '/';
+        $this->base_url = rtrim($url, '/') . '/';
 
         return $this;
     }
@@ -208,7 +208,7 @@ class Document extends Component
         if ($node) {
             return $node->ownerDocument->saveHTML($node);
         } else {
-            return $this->_dom->saveHTML($this->_dom);
+            return $this->dom->saveHTML($this->dom);
         }
     }
 
@@ -219,22 +219,22 @@ class Document extends Component
      */
     public function absolutizeUrl($url)
     {
-        if (!$this->_base_url || preg_match('#^https?://#i', $url) || str_starts_with($url, 'javascript:')) {
+        if (!$this->base_url || preg_match('#^https?://#i', $url) || str_starts_with($url, 'javascript:')) {
             return $url;
         }
 
         if ($url === '') {
-            return $this->_base_url;
+            return $this->base_url;
         } elseif ($url[0] === '/') {
-            return substr($this->_base_url, 0, strpos($this->_base_url, '/', 10)) . $url;
+            return substr($this->base_url, 0, strpos($this->base_url, '/', 10)) . $url;
         } elseif ($url[0] === '#') {
-            if (($pos = strrpos($this->_source_url, '#')) === false) {
-                return $this->_source_url . $url;
+            if (($pos = strrpos($this->source_url, '#')) === false) {
+                return $this->source_url . $url;
             } else {
-                return substr($this->_source_url, 0, $pos) . $url;
+                return substr($this->source_url, 0, $pos) . $url;
             }
         } else {
-            return substr($this->_base_url, 0, strrpos($this->_base_url, '/', 10) + 1) . $url;
+            return substr($this->base_url, 0, strrpos($this->base_url, '/', 10) + 1) . $url;
         }
     }
 
@@ -248,7 +248,7 @@ class Document extends Component
     {
         /** @var \DOMElement $item */
         if ($selector) {
-            foreach ($this->_query->xpath($selector, $context) as $item) {
+            foreach ($this->query->xpath($selector, $context) as $item) {
                 if ($item->nodeName === 'a') {
                     $item->setAttribute('href', $this->absolutizeUrl($item->getAttribute('href')));
                 } else {
@@ -256,7 +256,7 @@ class Document extends Component
                 }
             }
         } else {
-            foreach ($this->_query->xpath("descendant:://a[not(starts-with(@href, 'http'))]", $context) as $item) {
+            foreach ($this->query->xpath("descendant:://a[not(starts-with(@href, 'http'))]", $context) as $item) {
                 $item->setAttribute('href', $this->absolutizeUrl($item->getAttribute('href')));
             }
         }
@@ -275,7 +275,7 @@ class Document extends Component
     {
         /** @var \DOMElement $item */
         if ($selector) {
-            foreach ($this->_query->xpath($selector, $context) as $item) {
+            foreach ($this->query->xpath($selector, $context) as $item) {
                 if ($item->nodeName === 'a') {
                     $item->setAttribute($attr, $this->absolutizeUrl($item->getAttribute($attr)));
                 } else {
@@ -283,7 +283,7 @@ class Document extends Component
                 }
             }
         } else {
-            foreach ($this->_query->xpath("descendant:://a[not(starts-with(@$attr, 'http'))]", $context) as $item) {
+            foreach ($this->query->xpath("descendant:://a[not(starts-with(@$attr, 'http'))]", $context) as $item) {
                 $item->setAttribute($attr, $this->absolutizeUrl($item->getAttribute($attr)));
             }
         }

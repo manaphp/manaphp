@@ -12,7 +12,7 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @var array
      */
-    protected $_config;
+    protected $config;
 
     /**
      * @var string
@@ -97,9 +97,9 @@ class Configure extends Component implements ConfigureInterface
     public function load($file = '@config/app.php')
     {
         /** @noinspection PhpIncludeInspection */
-        $this->_config = require $this->alias->resolve($file);
+        $this->config = require $this->alias->resolve($file);
 
-        foreach ((array)$this->_config as $field => $value) {
+        foreach ((array)$this->config as $field => $value) {
             if (!property_exists($this, $field)) {
                 throw new NotSupportedException(['`%s` must be a public property of `configure` component', $field]);
             }
@@ -115,7 +115,7 @@ class Configure extends Component implements ConfigureInterface
      */
     public function getConfig()
     {
-        return $this->_config;
+        return $this->config;
     }
 
     /**
@@ -146,7 +146,7 @@ class Configure extends Component implements ConfigureInterface
      */
     public function setShared($name, $definition)
     {
-        return $this->_container->setShared($name, $definition);
+        return $this->container->setShared($name, $definition);
     }
 
     /**
@@ -156,7 +156,7 @@ class Configure extends Component implements ConfigureInterface
      */
     public function getDefinitions($pattern = null)
     {
-        return $this->_container->getDefinitions($pattern);
+        return $this->container->getDefinitions($pattern);
     }
 
     /**
@@ -350,7 +350,7 @@ class Configure extends Component implements ConfigureInterface
     public function dump()
     {
         $data = parent::dump();
-        unset($data['_config']);
+        unset($data['config']);
 
         return $data;
     }

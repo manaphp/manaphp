@@ -10,7 +10,7 @@ class Alias extends Component implements AliasInterface
     /**
      * @var array
      */
-    protected $_aliases = [];
+    protected $aliases = [];
 
     public function __construct()
     {
@@ -30,18 +30,18 @@ class Alias extends Component implements AliasInterface
         }
 
         if ($path === '') {
-            $this->_aliases[$name] = $path;
+            $this->aliases[$name] = $path;
         } elseif ($path[0] !== '@') {
             if (DIRECTORY_SEPARATOR === '/' || str_starts_with($name, '@ns.')) {
-                $this->_aliases[$name] = $path;
+                $this->aliases[$name] = $path;
             } else {
-                $this->_aliases[$name] = strtr($path, '\\', '/');
+                $this->aliases[$name] = strtr($path, '\\', '/');
             }
         } else {
-            $this->_aliases[$name] = $this->resolve($path);
+            $this->aliases[$name] = $this->resolve($path);
         }
 
-        return $this->_aliases[$name];
+        return $this->aliases[$name];
     }
 
     /**
@@ -52,14 +52,14 @@ class Alias extends Component implements AliasInterface
     public function get($name = null)
     {
         if ($name === null) {
-            return $this->_aliases;
+            return $this->aliases;
         }
 
         if ($name[0] !== '@') {
             throw new MisuseException(['`:name` must start with `@`', 'name' => $name]);
         }
 
-        return $this->_aliases[$name] ?? null;
+        return $this->aliases[$name] ?? null;
     }
 
     /**
@@ -73,7 +73,7 @@ class Alias extends Component implements AliasInterface
             throw new MisuseException(['`:name` must start with `@`', 'name' => $name]);
         }
 
-        return isset($this->_aliases[$name]);
+        return isset($this->aliases[$name]);
     }
 
     /**
@@ -105,19 +105,19 @@ class Alias extends Component implements AliasInterface
         }
 
         if (($pos = strpos($path, '/')) === false) {
-            if (!isset($this->_aliases[$path])) {
+            if (!isset($this->aliases[$path])) {
                 throw new InvalidArgumentException(['`:alias` is not exists', 'alias' => $path]);
             }
-            return $this->_aliases[$path];
+            return $this->aliases[$path];
         }
 
         $alias = substr($path, 0, $pos);
 
-        if (!isset($this->_aliases[$alias])) {
+        if (!isset($this->aliases[$alias])) {
             throw new InvalidArgumentException(['`%s` is not exists for `%s`', $alias, $path]);
         }
 
-        return $this->_aliases[$alias] . substr($path, $pos);
+        return $this->aliases[$alias] . substr($path, $pos);
     }
 
     /**
@@ -134,10 +134,10 @@ class Alias extends Component implements AliasInterface
         $parts = explode('\\', $ns, 2);
 
         $alias = $parts[0];
-        if (!isset($this->_aliases[$alias])) {
+        if (!isset($this->aliases[$alias])) {
             throw new InvalidArgumentException(['`%s` is not exists for `%s`', $alias, $ns]);
         }
 
-        return $this->_aliases[$alias] . (isset($parts[1]) ? '\\' . $parts[1] : '');
+        return $this->aliases[$alias] . (isset($parts[1]) ? '\\' . $parts[1] : '');
     }
 }

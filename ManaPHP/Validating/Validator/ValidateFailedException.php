@@ -9,7 +9,7 @@ class ValidateFailedException extends Exception
     /**
      * @var array
      */
-    protected $_errors;
+    protected $errors;
 
     /**
      * @param array           $errors
@@ -18,8 +18,8 @@ class ValidateFailedException extends Exception
      */
     public function __construct($errors, $code = 0, $previous = null)
     {
-        $this->_errors = $errors;
-        $this->_json = ['code' => 'validator.errors', 'message' => json_stringify($errors, JSON_PRETTY_PRINT)];
+        $this->errors = $errors;
+        $this->json = ['code' => 'validator.errors', 'message' => json_stringify($errors, JSON_PRETTY_PRINT)];
 
         parent::__construct(json_stringify($errors), $code, $previous);
     }
@@ -29,7 +29,7 @@ class ValidateFailedException extends Exception
      */
     public function getErrors()
     {
-        return $this->_errors;
+        return $this->errors;
     }
 
     /**

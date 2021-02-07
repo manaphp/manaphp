@@ -13,19 +13,19 @@ class Sword extends Component implements EngineInterface
     /**
      * @var string
      */
-    protected $_doc_root;
+    protected $doc_root;
 
     /**
      * @var array
      */
-    protected $_compiled = [];
+    protected $compiled = [];
 
     /**
      * @param array $options
      */
     public function __construct($options = [])
     {
-        $this->_doc_root = $options['doc_root'] ?? $_SERVER['DOCUMENT_ROOT'];
+        $this->doc_root = $options['doc_root'] ?? $_SERVER['DOCUMENT_ROOT'];
     }
 
     /**
@@ -37,8 +37,8 @@ class Sword extends Component implements EngineInterface
     {
         if (str_starts_with($source, $root = $this->alias->get('@root'))) {
             $compiled = '@data/sword' . substr($source, strlen($root));
-        } elseif ($this->_doc_root !== '' && str_starts_with($source, $this->_doc_root)) {
-            $compiled = '@data/sword/' . substr($source, strlen($this->_doc_root));
+        } elseif ($this->doc_root !== '' && str_starts_with($source, $this->doc_root)) {
+            $compiled = '@data/sword/' . substr($source, strlen($this->doc_root));
         } else {
             $compiled = "@data/sword/$source";
             if (DIRECTORY_SEPARATOR === '\\') {
@@ -65,11 +65,11 @@ class Sword extends Component implements EngineInterface
     {
         extract($vars, EXTR_SKIP);
 
-        if (!isset($this->_compiled[$file])) {
-            $this->_compiled[$file] = $this->getCompiledFile($file);
+        if (!isset($this->compiled[$file])) {
+            $this->compiled[$file] = $this->getCompiledFile($file);
         }
 
         /** @noinspection PhpIncludeInspection */
-        require $this->_compiled[$file];
+        require $this->compiled[$file];
     }
 }

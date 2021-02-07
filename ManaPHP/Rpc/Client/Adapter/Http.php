@@ -11,12 +11,12 @@ class Http extends Client
     /**
      * @var float
      */
-    protected $_timeout = 3.0;
+    protected $timeout = 3.0;
 
     /**
      * @var \ManaPHP\Http\ClientInterface
      */
-    protected $_client;
+    protected $client;
 
     /**
      * @param array $options
@@ -24,7 +24,7 @@ class Http extends Client
     public function __construct($options)
     {
         if (isset($options['timeout'])) {
-            $this->_timeout = $options['timeout'];
+            $this->timeout = $options['timeout'];
         }
 
         if (!isset($options['keepalive'])) {
@@ -48,7 +48,7 @@ class Http extends Client
             $options['engine'] = 'ManaPHP\Http\Client\Engine\Stream';
         }
 
-        $this->_client = $this->getNew($client, $options);
+        $this->client = $this->getNew($client, $options);
     }
 
     /**
@@ -58,7 +58,7 @@ class Http extends Client
      */
     public function setEndpoint($endpoint)
     {
-        $this->_endpoint = str_contains($endpoint, '?') ? str_replace('/?', '?', $endpoint) : rtrim($endpoint, '/');
+        $this->endpoint = str_contains($endpoint, '?') ? str_replace('/?', '?', $endpoint) : rtrim($endpoint, '/');
 
         return $this;
     }
@@ -72,7 +72,7 @@ class Http extends Client
      */
     public function invoke($method, $params = [], $options = [])
     {
-        $endpoint = $this->_endpoint;
+        $endpoint = $this->endpoint;
         $url = str_contains($endpoint, '?') ? str_replace('?', "/$method?", $endpoint) : "$endpoint/$method";
 
         if (isset($options['method'])) {
@@ -82,7 +82,7 @@ class Http extends Client
             $method = 'POST';
         }
 
-        $response = $this->_client->rest($method, $url, $params, [], $options)->body;
+        $response = $this->client->rest($method, $url, $params, [], $options)->body;
 
         if (!isset($response['code'], $response['message'])) {
             throw new ProtocolException('missing `code` or `message` field');

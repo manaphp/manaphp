@@ -10,14 +10,14 @@ class Manager extends Component implements ManagerInterface
     /**
      * @var array
      */
-    protected $_option;
+    protected $option;
 
     /**
      * @param array $options
      */
     public function __construct($options = [])
     {
-        $this->_option = $options;
+        $this->option = $options;
 
         if (MANAPHP_COROUTINE_ENABLED) {
             Coroutine::set($options);
