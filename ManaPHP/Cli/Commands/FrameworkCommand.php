@@ -11,29 +11,20 @@ use ManaPHP\Helper\LocalFS;
 class FrameworkCommand extends Command
 {
     /**
-     * @var string
-     */
-    protected $tmp_lite_file = '@tmp/manaphp_lite.tmp';
-
-    /**
      * @param string $str
      *
      * @return string
      */
     protected function stripWhitespaces($str)
     {
-        LocalFS::filePut($this->tmp_lite_file, $str);
-        $str = php_strip_whitespace($this->alias->resolve($this->tmp_lite_file));
+        $tmp = '@tmp/framework/strip.tmp';
+        LocalFS::filePut($tmp, $str);
+        $str = php_strip_whitespace($this->alias->resolve($tmp));
 //        $str = preg_replace('#\s*/\*\*.*?\*/#ms', '', $str);//remove comments
 //        $str = preg_replace('#([\r\n]+)\s*\\1#', '\\1', $str);//remove blank lines
 //        $str = preg_replace('#([\r\n]+)\s+{#', '{', $str);//repositionClose;
 
         return $str;
-    }
-
-    public function __destruct()
-    {
-        LocalFS::fileDelete($this->tmp_lite_file);
     }
 
     /**
