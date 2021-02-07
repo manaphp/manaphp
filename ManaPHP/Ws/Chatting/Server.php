@@ -132,14 +132,14 @@ class Server extends Component implements ServerInterface, LogCategorizable
     {
         $sent = [];
 
-        foreach ($this->ids[$room] ?? [] as $fds) {
+        foreach ($this->ids[$room] ?? [] as $id => $fds) {
             foreach ($fds as $fd => $_) {
                 $sent[$fd] = true;
                 $this->push($fd, $message);
             }
         }
 
-        foreach ($this->names[$room] ?? [] as $fds) {
+        foreach ($this->names[$room] ?? [] as $name => $fds) {
             foreach ($fds as $fd => $_) {
                 if (!isset($sent[$fd])) {
                     $sent[$fd] = true;
@@ -198,7 +198,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
     public function closeRoom($room, $message)
     {
         $sent = [];
-        foreach ($this->ids[$room] ?? [] as $fds) {
+        foreach ($this->ids[$room] ?? [] as $id => $fds) {
             foreach ($fds as $fd => $_) {
                 $sent[$fd] = true;
                 $this->push($fd, $message);
@@ -206,7 +206,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
         unset($this->ids[$room]);
 
-        foreach ($this->names[$room] ?? [] as $fds) {
+        foreach ($this->names[$room] ?? [] as $name => $fds) {
             foreach ($fds as $fd => $_) {
                 if (!isset($sent[$fd])) {
                     $sent[$fd] = true;

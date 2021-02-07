@@ -221,7 +221,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
      */
     public function pushToAll($message)
     {
-        foreach ($this->ids as $fds) {
+        foreach ($this->ids as $id => $fds) {
             foreach ($fds as $fd => $_) {
                 $this->push($fd, $message);
             }
