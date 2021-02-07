@@ -9,7 +9,8 @@ use ManaPHP\Plugin;
 use ManaPHP\Rest\Controller as RestController;
 
 /**
- * @property-read \ManaPHP\Mvc\ViewInterface $view
+ * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Mvc\ViewInterface     $view
  */
 class CsrfPlugin extends Plugin
 {

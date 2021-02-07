@@ -6,6 +6,9 @@ use ManaPHP\Event\EventArgs;
 use ManaPHP\Http\Client\Request;
 use ManaPHP\Plugin;
 
+/**
+ * @property-read \ManaPHP\Http\RequestInterface $request
+ */
 class RequestIdPlugin extends Plugin
 {
     /**

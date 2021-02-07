@@ -8,7 +8,8 @@ use ManaPHP\Mvc\Controller;
 use ManaPHP\Plugin;
 
 /**
- * @property-read \ManaPHP\Mvc\ViewInterface $view
+ * @property-read \ManaPHP\Mvc\ViewInterface     $view
+ * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class VerbsPlugin extends Plugin
 {

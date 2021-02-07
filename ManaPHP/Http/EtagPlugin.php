@@ -5,6 +5,9 @@ namespace ManaPHP\Http;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Plugin;
 
+/**
+ * @property-read \ManaPHP\Http\RequestInterface $request
+ */
 class EtagPlugin extends Plugin
 {
     /**

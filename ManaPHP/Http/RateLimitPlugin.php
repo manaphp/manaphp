@@ -9,6 +9,7 @@ use ManaPHP\Plugin;
 /**
  * @property-read \ManaPHP\Configuration\Configure       $configure
  * @property-read \ManaPHP\Identifying\IdentityInterface $identity
+ * @property-read \ManaPHP\Http\RequestInterface         $request
  * @property-read \Redis|\ManaPHP\Data\RedisInterface    $redisCache
  */
 class RateLimitPlugin extends Plugin

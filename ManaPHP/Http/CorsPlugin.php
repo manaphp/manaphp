@@ -7,6 +7,8 @@ use ManaPHP\Plugin;
 
 /**
  * @property-read \ManaPHP\Configuration\Configure $configure
+ * @property-read \ManaPHP\Http\RequestInterface   $request
+ * @property-read \ManaPHP\Http\ResponseInterface  $response
  */
 class CorsPlugin extends Plugin
 {

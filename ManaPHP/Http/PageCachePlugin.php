@@ -21,6 +21,8 @@ class PageCachePluginContext
 
 /**
  * @property-read \ManaPHP\Configuration\Configure     $configure
+ * @property-read \ManaPHP\Http\RequestInterface       $request
+ * @property-read \ManaPHP\Http\ResponseInterface      $response
  * @property-read \Redis|\ManaPHP\Data\RedisInterface  $redisCache
  * @property-read \ManaPHP\Http\PageCachePluginContext $context
  */

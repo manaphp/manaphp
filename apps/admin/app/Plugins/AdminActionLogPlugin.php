@@ -12,6 +12,9 @@ class AdminActionLogPluginContext
 
 /**
  * @property-read \ManaPHP\Identifying\IdentityInterface   $identity
+ * @property-read \ManaPHP\Http\RequestInterface           $request
+ * @property-read \ManaPHP\Http\CookiesInterface           $cookies
+ * @property-read \ManaPHP\Http\DispatcherInterface        $dispatcher
  * @property-read \App\Plugins\AdminActionLogPluginContext $context
  */
 class AdminActionLogPlugin extends Plugin

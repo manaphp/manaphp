@@ -6,6 +6,10 @@ use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Plugin;
 
+/**
+ * @property-read \ManaPHP\Http\RequestInterface    $request
+ * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
+ */
 class HttpCachePlugin extends Plugin
 {
     /**
