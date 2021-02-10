@@ -164,6 +164,19 @@ class Request extends Component implements RequestInterface
 
     /**
      * @param string $name
+     * @param string $value
+     *
+     * @return static
+     */
+    public function setCookie($name, $value)
+    {
+        $this->context->_COOKIE[$name] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
      *
      * @return bool
      */
@@ -172,6 +185,18 @@ class Request extends Component implements RequestInterface
         $context = $this->context;
 
         return isset($context->_COOKIE[$name]);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return static
+     */
+    public function deleteCookie($name)
+    {
+        unset($this->context->_COOKIE[$name]);
+
+        return $this;
     }
 
     /**

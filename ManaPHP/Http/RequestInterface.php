@@ -45,10 +45,25 @@ interface RequestInterface
 
     /**
      * @param string $name
+     * @param string $value
+     *
+     * @return static
+     */
+    public function setCookie($name, $value);
+
+    /**
+     * @param string $name
      *
      * @return bool
      */
     public function hasCookie($name);
+
+    /**
+     * @param string $name
+     *
+     * @return static
+     */
+    public function deleteCookie($name);
 
     /**
      * @param string $name
