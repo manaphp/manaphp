@@ -128,11 +128,9 @@ class Application extends \ManaPHP\Application implements HandlerInterface
      */
     public function onMessage($fd, $data)
     {
-        $globals = $this->request->getContext();
-        $globals->_REQUEST['data'] = $data;
-
+        $this->request->set('data', $data);
         $this->handle($fd, 'message');
-        $globals->_REQUEST['data'] = null;
+        $this->request->delete('data');
     }
 
     public function main()

@@ -210,9 +210,7 @@ class Swoole extends Component implements ServerInterface, Unaspectable
 
         try {
             $this->prepareGlobals($request);
-            $globals = $this->request->getContext();
-            $globals->_REQUEST['fd'] = $fd;
-
+            $this->request->set('fd', $fd);
             $this->handler->onOpen($fd);
         } finally {
             null;
