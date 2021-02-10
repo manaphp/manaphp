@@ -110,6 +110,19 @@ class Request extends Component implements RequestInterface
     }
 
     /**
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return static
+     */
+    public function set($name, $value)
+    {
+        $this->context->_REQUEST[$name] = $value;
+
+        return $this;
+    }
+
+    /**
      * Checks whether $_REQUEST has certain index
      *
      * @param string $name
