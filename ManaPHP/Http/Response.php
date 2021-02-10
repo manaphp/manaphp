@@ -103,9 +103,7 @@ class Response extends Component implements ResponseInterface
             'httponly' => $httponly
         ];
 
-        $globals = $this->request->getContext();
-
-        $globals->_COOKIE[$name] = $value;
+        $this->request->setCookie($name, $value);
 
         return $this;
     }
@@ -135,9 +133,7 @@ class Response extends Component implements ResponseInterface
             'httponly' => $httponly
         ];
 
-        $globals = $this->request->getContext();
-
-        unset($globals->_COOKIE[$name]);
+        $this->request->deleteCookie($name);
 
         return $this;
     }
