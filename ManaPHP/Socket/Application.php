@@ -49,9 +49,8 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         $this->invoke('connect');
         $this->fireEvent('socketServer:connected', compact('fd'));
 
-        $response = $this->response->getContext();
-        if ($response->content !== null) {
-            $this->send($fd, $response->content);
+        if (($content = $this->response->getContent()) !== null) {
+            $this->send($fd, $content);
         }
     }
 
@@ -69,9 +68,8 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         $this->invoke('receive');
         $this->fireEvent('socketServer:received', compact('fd', 'data'));
 
-        $response = $this->response->getContext();
-        if ($response->content !== null) {
-            $this->send($fd, $response->content);
+        if (($content = $this->response->getContent()) !== null) {
+            $this->send($fd, $content);
         }
     }
 
