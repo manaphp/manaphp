@@ -43,10 +43,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
      */
     public function onConnect($fd)
     {
-        $request_context = $this->request->getContext();
-        $request_context->_SERVER = $this->socketServer->getClientInfo($fd);
-        $this->request->set('fd', $fd);
-
+        $this->request->prepare(compact('fd'), $this->socketServer->getClientInfo($fd));
         $this->fireEvent('socketServer:connecting', compact('fd'));
 
         $this->invoke('connect');
@@ -66,10 +63,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
      */
     public function onReceive($fd, $data)
     {
-        $request_context = $this->request->getContext();
-        $request_context->_SERVER = $this->socketServer->getClientInfo($fd);
-        $this->request->set('fd', $fd);
-        $this->request->set('data', $data);
+        $this->request->prepare(compact('fd', 'data'), $this->socketServer->getClientInfo($fd));
 
         $this->fireEvent('socketServer:receiving', compact('fd', 'data'));
         $this->invoke('receive');
@@ -94,9 +88,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
 
     public function onClose($fd)
     {
-        $request_context = $this->request->getContext();
-        $request_context->_SERVER = $this->socketServer->getClientInfo($fd);
-        $this->request->set('fd', $fd);
+        $this->request->prepare(compact('fd'), $this->socketServer->getClientInfo($fd));
 
         $this->fireEvent('socketServer:closing', compact('fd'));
         $this->invoke('close');

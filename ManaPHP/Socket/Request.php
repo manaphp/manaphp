@@ -47,11 +47,19 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * @return \ManaPHP\Socket\RequestContext
+     * @param array $GET
+     * @param array $SERVER
+     *
+     * @return static
      */
-    public function getContext()
+    public function prepare($GET, $SERVER)
     {
-        return $this->context;
+        $context = $this->context;
+
+        $context->_REQUEST = $GET;
+        $context->_SERVER = $SERVER;
+
+        return $this;
     }
 
     /**

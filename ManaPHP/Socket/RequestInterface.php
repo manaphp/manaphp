@@ -5,9 +5,12 @@ namespace ManaPHP\Socket;
 interface RequestInterface
 {
     /**
-     * @return \ManaPHP\Socket\RequestContext
+     * @param array $GET
+     * @param array $SERVER
+     *
+     * @return static
      */
-    public function getContext();
+    public function prepare($GET, $SERVER);
 
     /**
      * @param string $name
