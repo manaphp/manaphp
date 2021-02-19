@@ -7,7 +7,7 @@ interface RequestInterface
     /**
      * @return \ManaPHP\Http\RequestContext
      */
-    public function getContext();
+    public function getGlobals();
 
     /**
      * @param array  $GET

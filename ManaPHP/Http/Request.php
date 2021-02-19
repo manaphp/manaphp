@@ -67,7 +67,7 @@ class Request extends Component implements RequestInterface
     /**
      * @return \ManaPHP\Http\RequestContext
      */
-    public function getContext()
+    public function getGlobals()
     {
         return $this->context;
     }

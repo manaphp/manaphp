@@ -302,7 +302,7 @@ class Swoole extends \ManaPHP\Rpc\Server
             $response->content = ['code' => -32600, 'message' => 'Invalid Request'];
             $this->send($response);
         } else {
-            $globals = $this->request->getContext();
+            $globals = $this->request->getGlobals();
             $globals->_GET['_url'] = $globals->_SERVER['WS_ENDPOINT'] . '/' . $json['method'];
             $globals->_POST = $json['params'];
             /** @noinspection AdditionOperationOnArraysInspection */
