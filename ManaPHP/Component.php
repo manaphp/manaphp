@@ -340,22 +340,13 @@ class Component implements Injectable, JsonSerializable
     public function __debugInfo()
     {
         $data = [];
-        foreach (get_object_vars($this) as $k => $v) {
-            if ($k === 'object_id' || $k === 'container' || $k === 'on') {
-                continue;
-            }
 
-            if (PHP_SAPI !== 'apache2handler' && is_object($k)) {
+        foreach (get_object_vars($this) as $k => $v) {
+            if ($k === 'container' || $v === null || $v instanceof Injectable) {
                 continue;
             }
 
             $data[$k] = $v;
-        }
-
-        if (isset($data['context'])) {
-            $data['context'] = (array)$data['context'];
-        } elseif ($this->hasContext()) {
-            $data['context'] = (array)$this->_getContext();
         }
 
         return $data;
