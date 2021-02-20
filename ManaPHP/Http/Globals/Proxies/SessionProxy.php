@@ -13,11 +13,11 @@ class SessionProxy implements ArrayAccess, JsonSerializable
     protected $session;
 
     /**
-     * @param \ManaPHP\Http\Request $request
+     * @param \ManaPHP\Http\SessionInterface $session
      */
-    public function __construct($request)
+    public function __construct($session)
     {
-        $this->session = $request->getShared('session');
+        $this->session = $session;
     }
 
     public function offsetExists($offset)

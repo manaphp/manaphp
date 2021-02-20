@@ -30,7 +30,7 @@ class Manager extends Component implements ManagerInterface
         $_REQUEST = new RequestProxy($request);
         $_FILES = new FilesProxy($request);
         $_COOKIE = new CookieProxy($request);
-        $_SESSION = new SessionProxy($request);
+        $_SESSION = new SessionProxy($this->getShared('session'));
         $_SERVER = new ServerProxy($request);
     }
 }
