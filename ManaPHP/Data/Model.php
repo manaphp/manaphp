@@ -1004,7 +1004,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
      *
      * @return void
      */
-    public function fireEvent($event, $data = [])
+    public function fireEvent($event, $data = null)
     {
         /** @var \ManaPHP\Event\ManagerInterface $eventsManager */
         $eventsManager = $this->getShared('eventsManager');
