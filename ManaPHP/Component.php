@@ -242,11 +242,10 @@ class Component implements Injectable, JsonSerializable
      *
      * @param string $event
      * @param mixed  $data
-     * @param mixed  $source
      *
      * @return \ManaPHP\Event\EventArgs
      */
-    protected function fireEvent($event, $data = null, $source = null)
+    protected function fireEvent($event, $data = null)
     {
         $on = substr($event, strpos($event, ':') + 1);
 
@@ -254,7 +253,7 @@ class Component implements Injectable, JsonSerializable
             $this->emit($on, $data);
         }
 
-        return $this->eventsManager->fireEvent($event, $data, $source ?? $this);
+        return $this->eventsManager->fireEvent($event, $data, $this);
     }
 
     /**
