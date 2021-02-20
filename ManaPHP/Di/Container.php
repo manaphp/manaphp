@@ -229,7 +229,7 @@ class Container implements ContainerInterface
         }
 
         if (is_string($definition)) {
-            return $this->createNew($name, $definition, $parameters);
+            return $this->createNew($name, $definition, $parameters, false);
         } elseif ($definition instanceof Closure) {
             $instance = $definition(...$parameters);
         } elseif (is_object($definition)) {
@@ -249,10 +249,11 @@ class Container implements ContainerInterface
      * @param string $name
      * @param string $class
      * @param array  $parameters
+     * @param bool   $shared
      *
      * @return mixed
      */
-    protected function createNew($name, $class, $parameters)
+    protected function createNew($name, $class, $parameters, $shared)
     {
         if (!class_exists($class)) {
             throw new InvalidValueException(
@@ -264,13 +265,23 @@ class Container implements ContainerInterface
             $rc = new ReflectionClass($class);
 
             $instance = $rc->newInstanceWithoutConstructor();
+
+            if ($shared) {
+                $this->instances[$name] = $instance;
+            }
+
             if ($instance instanceof Injectable) {
                 $instance->setContainer($this);
             }
+
             /** @noinspection PhpPossiblePolymorphicInvocationInspection */
             $instance->__construct(...$parameters);
         } else {
             $instance = new $class(...$parameters);
+
+            if ($shared) {
+                $this->instances[$name] = $instance;
+            }
 
             if ($instance instanceof Injectable) {
                 $instance->setContainer($this);
@@ -330,7 +341,7 @@ class Container implements ContainerInterface
 
         $definition = $this->definitions[$definition] ?? $definition;
 
-        return $this->instances[$name] = $this->createNew($name, $definition, $parameters);
+        return $this->createNew($name, $definition, $parameters, true);
     }
 
     /**
