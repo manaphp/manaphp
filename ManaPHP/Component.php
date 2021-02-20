@@ -40,7 +40,7 @@ class Component implements Injectable, JsonSerializable
      *
      * @return mixed
      */
-    public function getNew($class, $params = [])
+    protected function getNew($class, $params = [])
     {
         return $this->container->getNew($class, $params);
     }
@@ -50,7 +50,7 @@ class Component implements Injectable, JsonSerializable
      *
      * @return mixed
      */
-    public function getShared($name)
+    protected function getShared($name)
     {
         return $this->container->getShared($this->injections[$name] ?? $name);
     }
@@ -63,27 +63,6 @@ class Component implements Injectable, JsonSerializable
     public function setContainer($container)
     {
         $this->container = $container;
-
-        return $this;
-    }
-
-    /**
-     * @return \ManaPHP\Di\ContainerInterface
-     */
-    public function getContainer()
-    {
-        return $this->container;
-    }
-
-    /**
-     * @param string $name
-     * @param mixed  $target
-     *
-     * @return static
-     */
-    public function inject($name, $target)
-    {
-        $this->injections[$name] = $target;
 
         return $this;
     }
