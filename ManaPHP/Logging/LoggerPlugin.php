@@ -42,7 +42,7 @@ class LoggerPlugin extends Plugin
     /**
      * @var bool
      */
-    protected $enabled;
+    protected $enabled = true;
 
     /**
      * @var int
@@ -86,7 +86,7 @@ class LoggerPlugin extends Plugin
             $this->template = $options['template'];
         }
 
-        if ($this->enabled !== false) {
+        if ($this->enabled) {
             $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
             $this->attachEvent('logger:log', [$this, 'onLoggerLog']);
             $this->attachEvent('request:end', [$this, 'onRequestEnd']);
