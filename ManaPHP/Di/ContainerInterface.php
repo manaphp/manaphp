@@ -5,6 +5,14 @@ namespace ManaPHP\Di;
 interface ContainerInterface
 {
     /**
+     * @param string   $event
+     * @param callable $handler
+     *
+     * @return static
+     */
+    public function on($event, $handler);
+
+    /**
      * Registers a component in the component container
      *
      * @param string $name

@@ -3,6 +3,7 @@
 namespace ManaPHP\Di;
 
 use Closure;
+use ManaPHP\Event\Emitter;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
@@ -21,6 +22,11 @@ class Container implements ContainerInterface
     protected $instances = [];
 
     /**
+     * @var \ManaPHP\Event\EmitterInterface
+     */
+    protected $emitter;
+
+    /**
      * @var \ManaPHP\Di\ContainerInterface
      */
     protected static $default;
@@ -30,6 +36,8 @@ class Container implements ContainerInterface
         if (self::$default === null) {
             self::$default = $this;
         }
+
+        $this->emitter = new Emitter();
     }
 
     /**
@@ -38,6 +46,19 @@ class Container implements ContainerInterface
     public static function getDefault()
     {
         return self::$default;
+    }
+
+    /**
+     * @param string   $event
+     * @param callable $handler
+     *
+     * @return static
+     */
+    public function on($event, $handler)
+    {
+        $this->emitter->on($event, $handler);
+
+        return $this;
     }
 
     /**
