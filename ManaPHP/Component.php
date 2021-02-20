@@ -89,14 +89,14 @@ class Component implements Injectable, JsonSerializable
     }
 
     /**
-     * @return object
+     * @return string|null
      */
-    protected function createContext()
+    protected function findContext()
     {
         static $cached = [];
 
         $class = static::class;
-        if (!$context = $cached[$class] ?? null) {
+        if (($context = $cached[$class] ?? null) === null) {
             $parent = $class;
             do {
                 $try = $parent . 'Context';
@@ -107,10 +107,22 @@ class Component implements Injectable, JsonSerializable
             } while ($parent = get_parent_class($parent));
 
             if ($context === null) {
-                throw new Exception(['`%s` context class is not exists', get_class($this) . 'Context']);
+                return null;
             }
 
             $cached[$class] = $context;
+        }
+
+        return $context;
+    }
+
+    /**
+     * @return object
+     */
+    protected function createContext()
+    {
+        if (($context = $this->findContext()) === null) {
+            throw new Exception(['`%s` context class is not exists', get_class($this) . 'Context']);
         }
 
         return new $context();
@@ -166,23 +178,7 @@ class Component implements Injectable, JsonSerializable
      */
     protected function hasContext()
     {
-        static $cached = [];
-
-        $class = static::class;
-        if (($context = $cached[$class] ?? null) === null) {
-            $parent = $class;
-            do {
-                $try = $parent . 'Context';
-                if (class_exists($try, false)) {
-                    $context = $try;
-                    break;
-                }
-            } while ($parent = get_parent_class($parent));
-
-            $cached[$class] = $context !== null;
-        }
-
-        return $cached[$class];
+        return $this->findContext() !== null;
     }
 
     /**
