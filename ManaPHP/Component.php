@@ -58,13 +58,11 @@ class Component implements Injectable, JsonSerializable
     /**
      * @param \ManaPHP\Di\ContainerInterface $container
      *
-     * @return static
+     * @return void
      */
     public function setContainer($container)
     {
         $this->container = $container;
-
-        return $this;
     }
 
     /**

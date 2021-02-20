@@ -7,7 +7,7 @@ interface Injectable
     /**
      * @param \ManaPHP\Di\ContainerInterface $container
      *
-     * @return static
+     * @return void
      */
     public function setContainer($container);
 }
