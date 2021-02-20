@@ -5,6 +5,14 @@ namespace ManaPHP\Ws;
 interface ClientInterface
 {
     /**
+     * @param string   $event
+     * @param callable $handler
+     *
+     * @return static
+     */
+    public function on($event, $handler);
+
+    /**
      * @return string
      */
     public function getEndpoint();

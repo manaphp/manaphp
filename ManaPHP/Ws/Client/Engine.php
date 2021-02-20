@@ -48,7 +48,7 @@ class Engine extends Component implements EngineInterface
     protected $socket;
 
     /**
-     * @var \ManaPHP\Component
+     * @var \ManaPHP\Ws\Client
      */
     protected $owner;
 

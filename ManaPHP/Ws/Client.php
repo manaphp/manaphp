@@ -3,6 +3,7 @@
 namespace ManaPHP\Ws;
 
 use ManaPHP\Component;
+use ManaPHP\Event\Emitter;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Ws\Client\Message;
 use Throwable;
@@ -58,6 +59,11 @@ class Client extends Component implements ClientInterface
     protected $pool_size = 4;
 
     /**
+     * @var \ManaPHP\Event\EmitterInterface
+     */
+    protected $emitter;
+
+    /**
      * @param array $options
      */
     public function __construct($options)
@@ -97,6 +103,9 @@ class Client extends Component implements ClientInterface
         $options['class'] = 'ManaPHP\Ws\Client\Engine';
 
         $this->poolManager->add($this, $options, $this->pool_size);
+
+        $this->emitter = new Emitter();
+
     }
 
     public function __destruct()
@@ -107,6 +116,18 @@ class Client extends Component implements ClientInterface
     public function __clone()
     {
         throw new NonCloneableException($this);
+    }
+
+    public function on($event, $handler)
+    {
+        $this->emitter->on($event, $handler);
+
+        return $this;
+    }
+
+    public function emit($event, $data = null)
+    {
+        return $this->emitter->emit($event, $data);
     }
 
     /**

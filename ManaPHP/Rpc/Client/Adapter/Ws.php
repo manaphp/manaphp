@@ -2,7 +2,6 @@
 
 namespace ManaPHP\Rpc\Client\Adapter;
 
-use ManaPHP\Event\EventArgs;
 use ManaPHP\Rpc\Client;
 use ManaPHP\Rpc\Client\Exception as ClientException;
 use ManaPHP\Rpc\Client\ProtocolException;
@@ -52,11 +51,7 @@ class Ws extends Client
         $this->client = $this->getNew('ManaPHP\Ws\Client', $options);
 
         if ($this->authentication) {
-            $this->client->on(
-                'open', function (EventArgs $eventArgs) {
-                $this->authenticate($eventArgs->data);
-            }
-            );
+            $this->client->on('open', [$this, 'authenticate']);
         }
     }
 
