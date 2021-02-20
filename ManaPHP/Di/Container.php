@@ -383,41 +383,6 @@ class Container implements ContainerInterface
     }
 
     /**
-     * Magic method __get
-     *
-     * @param string $propertyName
-     *
-     * @return mixed
-     */
-    public function __get($propertyName)
-    {
-        return $this->getShared($propertyName);
-    }
-
-    /**
-     * @param string $name
-     * @param mixed  $value
-     */
-    public function __set($name, $value)
-    {
-        if ($value === null) {
-            $this->remove($name);
-        } else {
-            $this->setShared($name, $value);
-        }
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function __isset($name)
-    {
-        return $this->has($name);
-    }
-
-    /**
      * Check whether the DI contains a component by a name
      *
      * @param string $name
