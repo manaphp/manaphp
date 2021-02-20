@@ -79,7 +79,7 @@ class DebuggerPlugin extends Plugin
     /**
      * @var bool
      */
-    protected $enabled;
+    protected $enabled = true;
 
     /**
      * @var int
@@ -145,7 +145,7 @@ class DebuggerPlugin extends Plugin
             $this->tail = (bool)$options['tail'];
         }
 
-        if ($this->enabled !== false) {
+        if ($this->enabled) {
             $this->peekEvent('*', [$this, 'onEvent']);
 
             $this->peekEvent('db', [$this, 'onDb']);
