@@ -5,7 +5,6 @@ namespace ManaPHP;
 use JsonSerializable;
 use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\Di\Injectable;
-use ManaPHP\Event\EventArgs;
 use Swoole\Coroutine;
 
 /**
@@ -23,11 +22,6 @@ class Component implements Injectable, JsonSerializable
      * @var \ManaPHP\Di\ContainerInterface
      */
     protected $container;
-
-    /**
-     * @var callable[]
-     */
-    protected $on;
 
     /**
      * @var array
@@ -245,65 +239,7 @@ class Component implements Injectable, JsonSerializable
      */
     protected function fireEvent($event, $data = null)
     {
-        $on = substr($event, strpos($event, ':') + 1);
-
-        if (isset($this->on[$on])) {
-            $this->emit($on, $data);
-        }
-
         return $this->eventsManager->fireEvent($event, $data, $this);
-    }
-
-    /**
-     * @param string   $event
-     * @param callable $handler
-     *
-     * @return static
-     */
-    public function on($event, $handler)
-    {
-        $this->on[$event][] = $handler;
-
-        return $this;
-    }
-
-    /**
-     * @param string   $event
-     * @param callable $handler
-     *
-     * @return static
-     */
-    public function off($event = null, $handler = null)
-    {
-        if ($event === null) {
-            $this->on = null;
-        } elseif ($handler === null) {
-            unset($this->on[$event]);
-        } else {
-            foreach ($this->on[$event] as $i => $v) {
-                if ($v === $handler) {
-                    unset($this->on[$event[$i]]);
-                    break;
-                }
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string $event
-     * @param array  $data
-     *
-     * @return void
-     */
-    protected function emit($event, $data = [])
-    {
-        $eventArgs = new EventArgs($event, $this, $data);
-
-        foreach ($this->on[$event] ?? [] as $handler) {
-            $handler($eventArgs);
-        }
     }
 
     /**
