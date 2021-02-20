@@ -358,22 +358,17 @@ class Component implements Injectable, JsonSerializable
     public function dump()
     {
         $data = [];
+
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k === 'object_id' || $k === 'on' || (is_object($v) && $k !== 'context')) {
+            if ($k === 'container' || $k === 'object_id' || $v === null || $v instanceof Injectable) {
                 continue;
             }
 
-            $data[$k] = $v instanceof self ? $v->dump() : $v;
-        }
-
-        if (isset($data['context'])) {
-            $data['context'] = (array)$data['context'];
-        } elseif ($this->object_id !== null) {
-            $data['context'] = (array)$this->__get('context');
-        }
-
-        if ($data['injections'] === null) {
-            unset($data['injections']);
+            if (is_object($v)) {
+                $data[$k] = method_exists($v, 'dump') ? $v->dump() : (array)$v;
+            } else {
+                $data[$k] = $v;
+            }
         }
 
         return $data;
