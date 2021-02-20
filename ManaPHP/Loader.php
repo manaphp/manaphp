@@ -173,4 +173,12 @@ class Loader
 
         return false;
     }
+
+    /**
+     * @return array
+     */
+    public function dump()
+    {
+        return get_object_vars($this);
+    }
 }
