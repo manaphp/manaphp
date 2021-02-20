@@ -268,6 +268,19 @@ class Container implements ContainerInterface
 
     /**
      * @param string $name
+     * @param mixed  $instance
+     *
+     * @return mixed
+     */
+    protected function setSharedInternal($name, $instance)
+    {
+        $this->instances[$name] = $instance;
+
+        return $instance;
+    }
+
+    /**
+     * @param string $name
      * @param string $class
      * @param array  $parameters
      * @param bool   $shared
@@ -288,7 +301,7 @@ class Container implements ContainerInterface
             $instance = $rc->newInstanceWithoutConstructor();
 
             if ($shared) {
-                $this->instances[$name] = $instance;
+                $resolved = $this->setSharedInternal($name, $instance);
             }
 
             if ($instance instanceof Injectable) {
@@ -301,7 +314,7 @@ class Container implements ContainerInterface
             $instance = new $class(...$parameters);
 
             if ($shared) {
-                $this->instances[$name] = $instance;
+                $resolved = $this->setSharedInternal($name, $instance);
             }
 
             if ($instance instanceof Injectable) {
@@ -309,7 +322,7 @@ class Container implements ContainerInterface
             }
         }
 
-        return $instance;
+        return $shared ? $resolved : $instance;
     }
 
     /**
@@ -330,7 +343,7 @@ class Container implements ContainerInterface
 
         if (is_string($definition)) {
             if ($definition[0] === '@') {
-                return $this->instances[$name] = $this->getShared(substr($definition, 1));
+                return $this->setSharedInternal($name, $this->getShared(substr($definition, 1)));
             }
             $parameters = [];
         } elseif ($definition instanceof Closure) {
@@ -339,7 +352,7 @@ class Container implements ContainerInterface
                 $instance->setContainer($this);
             }
 
-            return $this->instances[$name] = $instance;
+            return $this->setSharedInternal($name, $instance);
         } elseif (isset($definition['class'])) {
             $parameters = $definition;
             $definition = $definition['class'];
