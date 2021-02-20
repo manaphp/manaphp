@@ -379,24 +379,8 @@ class Component implements Injectable, JsonSerializable
         return $data;
     }
 
-    /**
-     * @return array
-     */
-    public function toArray()
-    {
-        $data = [];
-
-        foreach (get_object_vars($this) as $k => $v) {
-            if ($v === null || is_scalar($v)) {
-                $data[$k] = $v;
-            }
-        }
-
-        return $data;
-    }
-
     public function jsonSerialize()
     {
-        return $this->toArray();
+        return $this->__debugInfo();
     }
 }
