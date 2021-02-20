@@ -2,12 +2,13 @@
 
 namespace ManaPHP\Rpc\Client;
 
+use ManaPHP\Di\Injectable;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Str;
 use ReflectionMethod;
 
-class Service extends \ManaPHP\Service
+class Service implements Injectable
 {
     /**
      * @var string
@@ -23,6 +24,11 @@ class Service extends \ManaPHP\Service
      * @var array
      */
     protected $parameters;
+
+    /**
+     * @var \ManaPHP\Di\ContainerInterface
+     */
+    protected $container;
 
     /**
      * @param string|array $options
@@ -43,8 +49,6 @@ class Service extends \ManaPHP\Service
             }
         }
 
-        parent::__construct($options);
-
         if (!$endpoint = $this->endpoint) {
             throw new MisuseException('missing endpoint config');
         }
@@ -58,7 +62,12 @@ class Service extends \ManaPHP\Service
             throw new NotSupportedException(['`:type` type rpc is not support', 'type' => $scheme]);
         }
 
-        $this->rpcClient = $this->getNew($class, $options);
+        $this->rpcClient = $this->container->getNew($class, $options);
+    }
+
+    public function setContainer($container)
+    {
+        $this->container = $container;
     }
 
     /**
