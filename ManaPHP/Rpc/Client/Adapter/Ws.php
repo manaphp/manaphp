@@ -25,7 +25,7 @@ class Ws extends Client
     protected $id = 0;
 
     /**
-     * @var client
+     * @var \ManaPHP\Ws\ClientInterface
      */
     protected $client;
 
