@@ -300,7 +300,7 @@ class Component implements Injectable, JsonSerializable
      *
      * @return void
      */
-    public function emit($event, $data = [])
+    protected function emit($event, $data = [])
     {
         $eventArgs = new EventArgs($event, $this, $data);
 
