@@ -18,7 +18,7 @@ class Dotenv extends Component implements DotenvInterface
     /**
      * @var bool
      */
-    protected $to_env;
+    protected $to_env = false;
 
     /**
      * @var string
