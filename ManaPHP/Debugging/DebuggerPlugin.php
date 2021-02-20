@@ -279,7 +279,9 @@ class DebuggerPlugin extends Plugin
         $event['source'] = get_class($eventArgs->source);
 
         $data = $eventArgs->data;
-        if (is_scalar($data) || $data === null) {
+        if ($data === null) {
+            $event['data'] = null;
+        } elseif (is_scalar($data)) {
             $event['data'] = gettype($data);
         } elseif ($data instanceof ArrayObject) {
             $event['data'] = array_keys(get_object_vars($data));
