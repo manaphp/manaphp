@@ -26,4 +26,14 @@ class Reflection
     {
         return get_class($object instanceof ProxyInterface ? $object->getTargetObject() : $object);
     }
+
+    /**
+     * @param \object $object
+     *
+     * @return array
+     */
+    public static function getObjectVars($object)
+    {
+        return get_object_vars($object instanceof ProxyInterface ? $object->getTargetObject() : $object);
+    }
 }

@@ -501,7 +501,7 @@ class DebuggerPlugin extends Plugin
 
             $properties = Reflection::isInstanceOf($instance, Component::class)
                 ? $instance->dump()
-                : array_keys(get_object_vars($instance));
+                : array_keys(Reflection::getObjectVars($instance));
             if (Reflection::isInstanceOf($instance, Tracer::class)) {
                 $data['tracers'][$name] = ['class' => Reflection::getClass($instance), 'properties' => $properties];
             } else {
