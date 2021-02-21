@@ -2,6 +2,8 @@
 
 namespace ManaPHP\Helper;
 
+use ManaPHP\Aop\ProxyInterface;
+
 class Reflection
 {
     /**
@@ -12,7 +14,7 @@ class Reflection
      */
     public static function isInstanceOf($object, $class_name)
     {
-        return is_a($object, $class_name);
+        return is_a($object instanceof ProxyInterface ? $object->getTargetObject() : $object, $class_name);
     }
 
     /**
@@ -22,6 +24,6 @@ class Reflection
      */
     public static function getClass($object)
     {
-        return get_class($object);
+        return get_class($object instanceof ProxyInterface ? $object->getTargetObject() : $object);
     }
 }
