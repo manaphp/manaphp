@@ -199,7 +199,7 @@ class PageCachePlugin extends Plugin
             $context->key, [
                 'ttl'          => $context->ttl,
                 'etag'         => $etag,
-                'content-type' => $this->response->getHeader('Content-Type'),
+                'content-type' => $this->response->getContentType(),
                 'content'      => gzencode($content)
             ]
         );
