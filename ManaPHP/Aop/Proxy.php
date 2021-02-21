@@ -41,4 +41,23 @@ class Proxy implements ProxyInterface
     {
         return $this->targetObject->$name;
     }
+
+    /**
+     * @param mixed $name
+     * @param mixed $value
+     */
+    public function __set($name, $value)
+    {
+        $this->targetObject->$name = $value;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return isset($this->targetObject->$name);
+    }
 }
