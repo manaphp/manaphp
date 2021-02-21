@@ -7,6 +7,7 @@ use ManaPHP\Http\CsrfPlugin\AttackDetectedException;
 use ManaPHP\Mvc\Controller as MvcController;
 use ManaPHP\Plugin;
 use ManaPHP\Rest\Controller as RestController;
+use ManaPHP\Helper\Reflection;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface $request
@@ -112,7 +113,7 @@ class CsrfPlugin extends Plugin
 
         $controller = $eventArgs->data['controller'];
 
-        if ($controller instanceof RestController) {
+        if (Reflection::isInstanceOf($controller, RestController::class)) {
             return;
         }
 
@@ -121,7 +122,10 @@ class CsrfPlugin extends Plugin
                 return;
             }
 
-            if ($controller instanceof MvcController && !$this->request->isAjax() && $this->view->exists()) {
+            if (Reflection::isInstanceOf($controller, MvcController::class)
+                && !$this->request->isAjax()
+                && $this->view->exists()
+            ) {
                 return;
             }
 

@@ -7,6 +7,7 @@ use ManaPHP\Data\QueryInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
+use ManaPHP\Helper\Reflection;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface $request
@@ -46,7 +47,7 @@ class Query extends \ManaPHP\Data\Query
                 $query = $this->getNew($query);
             }
 
-            if ($query instanceof QueryInterface) {
+            if (Reflection::isInstanceOf($query, QueryInterface::class)) {
                 $this->queries[$id] = $query;
             } elseif ($query instanceof Model) {
                 $this->queries[$id] = $query::query();

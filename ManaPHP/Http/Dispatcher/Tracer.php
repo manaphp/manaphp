@@ -3,6 +3,7 @@
 namespace ManaPHP\Http\Dispatcher;
 
 use ManaPHP\Event\EventArgs;
+use ManaPHP\Helper\Reflection;
 
 /**
  * @property-read \ManaPHP\Http\ResponseInterface $response
@@ -21,6 +22,8 @@ class Tracer extends \ManaPHP\Event\Tracer
         $controller = $eventArgs->data['controller'];
         $action = $eventArgs->data['action'];
 
-        $this->response->setHeader('X-Dispatcher-Tracer', get_class($controller) . '::' . $action . 'Action');
+        $this->response->setHeader(
+            'X-Dispatcher-Tracer', Reflection::getClass($controller) . '::' . $action . 'Action'
+        );
     }
 }

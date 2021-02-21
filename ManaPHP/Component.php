@@ -5,6 +5,7 @@ namespace ManaPHP;
 use JsonSerializable;
 use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\Di\Injectable;
+use ManaPHP\Helper\Reflection;
 use Swoole\Coroutine;
 
 /**
@@ -250,7 +251,7 @@ class Component implements Injectable, JsonSerializable
         $data = [];
 
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k === 'container' || $v === null || $v instanceof Injectable) {
+            if ($k === 'container' || $v === null || Reflection::isInstanceOf($v, Injectable::class)) {
                 continue;
             }
 
@@ -268,7 +269,9 @@ class Component implements Injectable, JsonSerializable
         $data = [];
 
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k === 'container' || $k === 'object_id' || $v === null || $v instanceof Injectable) {
+            if ($k === 'container' || $k === 'object_id' || $v === null
+                || Reflection::isInstanceOf($v, Injectable::class)
+            ) {
                 continue;
             }
 

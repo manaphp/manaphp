@@ -6,6 +6,7 @@ use JsonSerializable;
 use ManaPHP\Component;
 use ManaPHP\Coroutine;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Helper\Reflection;
 use ManaPHP\Logging\Logger\Log;
 use ManaPHP\Logging\Logger\LogCategorizable;
 use Throwable;
@@ -237,7 +238,7 @@ abstract class Logger extends Component implements LoggerInterface
         foreach ($traces as $trace) {
             if (isset($trace['object'])) {
                 $object = $trace['object'];
-                if ($object instanceof LogCategorizable) {
+                if (Reflection::isInstanceOf($object, LogCategorizable::class)) {
                     return $object->categorizeLog();
                 }
             }

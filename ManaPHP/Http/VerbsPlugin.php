@@ -4,6 +4,7 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\MethodNotAllowedHttpException;
+use ManaPHP\Helper\Reflection;
 use ManaPHP\Mvc\Controller;
 use ManaPHP\Plugin;
 
@@ -55,7 +56,7 @@ class VerbsPlugin extends Plugin
         }
 
         if ($request_method === 'GET'
-            && $controller instanceof Controller
+            && Reflection::isInstanceOf($controller, Controller::class)
             && !$this->request->isAjax()
             && $this->view->exists()
         ) {

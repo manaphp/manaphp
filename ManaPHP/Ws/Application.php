@@ -3,6 +3,7 @@
 namespace ManaPHP\Ws;
 
 use ManaPHP\Exception\AbortException;
+use ManaPHP\Helper\Reflection;
 use ManaPHP\Http\Response;
 use ManaPHP\Http\Router\NotFoundRouteException;
 use ManaPHP\Ws\Server\HandlerInterface;
@@ -66,7 +67,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
 
             $returnValue = $this->dispatcher->dispatch($this->router);
 
-            if ($returnValue === null || $returnValue instanceof Response) {
+            if ($returnValue === null || Reflection::isInstanceOf($returnValue, Response::class)) {
                 null;
             } elseif (is_string($returnValue)) {
                 $this->response->setJsonError($returnValue);

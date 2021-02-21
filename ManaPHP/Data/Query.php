@@ -8,6 +8,7 @@ use ManaPHP\Component;
 use ManaPHP\Data\Query\NotFoundException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Helper\Reflection;
 use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
 
@@ -505,7 +506,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
             }
 
             $parent_value = $with[$parent_name];
-            if (!$parent_value instanceof QueryInterface) {
+            if (!Reflection::isInstanceOf($parent_value, QueryInterface::class)) {
                 $with[$parent_name] = $this->relationsManager->getQuery($this->model, $parent_name, $parent_value);
             }
 

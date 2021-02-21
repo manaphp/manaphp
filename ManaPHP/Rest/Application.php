@@ -3,6 +3,7 @@
 namespace ManaPHP\Rest;
 
 use ManaPHP\Exception\AbortException;
+use ManaPHP\Helper\Reflection;
 use ManaPHP\Http\Response;
 use Throwable;
 
@@ -32,7 +33,7 @@ class Application extends \ManaPHP\Http\Application
                 $this->response->setJsonOk();
             } elseif (is_array($actionReturnValue)) {
                 $this->response->setJsonData($actionReturnValue);
-            } elseif ($actionReturnValue instanceof Response) {
+            } elseif (Reflection::isInstanceOf($actionReturnValue, Response::class)) {
                 null;
             } elseif (is_string($actionReturnValue)) {
                 $this->response->setJsonError($actionReturnValue);

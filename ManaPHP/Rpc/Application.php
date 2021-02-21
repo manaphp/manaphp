@@ -3,6 +3,7 @@
 namespace ManaPHP\Rpc;
 
 use ManaPHP\Exception\AbortException;
+use ManaPHP\Helper\Reflection;
 use ManaPHP\Http\Response;
 use ManaPHP\Rpc\Server\HandlerInterface;
 use Throwable;
@@ -35,7 +36,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
             $this->fireEvent('request:begin');
 
             $actionReturnValue = $this->router->dispatch();
-            if ($actionReturnValue instanceof Response) {
+            if (Reflection::isInstanceOf($actionReturnValue, Response::class)) {
                 null;
             } else {
                 $this->response->setJsonData($actionReturnValue);

@@ -24,6 +24,7 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\ParameterOrderException;
 use ManaPHP\Exception\UnknownPropertyException;
+use ManaPHP\Helper\Reflection;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ReflectionClass;
 
@@ -1396,7 +1397,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
                 continue;
             }
 
-            if ($value instanceof Component && !$value instanceof self) {
+            if (!$value instanceof self && Reflection::isInstanceOf($value, Component::class)) {
                 continue;
             }
 

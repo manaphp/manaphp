@@ -3,6 +3,7 @@
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Exception\AbortException;
+use ManaPHP\Helper\Reflection;
 use ManaPHP\Http\Response;
 use Throwable;
 
@@ -40,9 +41,9 @@ class Application extends \ManaPHP\Http\Application
                 $this->response->setJsonOk();
             } elseif (is_array($actionReturnValue)) {
                 $this->response->setJsonData($actionReturnValue);
-            } elseif ($actionReturnValue instanceof Response) {
+            } elseif (Reflection::isInstanceOf($actionReturnValue, Response::class)) {
                 null;
-            } elseif ($actionReturnValue instanceof View) {
+            } elseif (Reflection::isInstanceOf($actionReturnValue, View::class)) {
                 $this->response->setContent($actionReturnValue->render());
                 if (($maxAge = $actionReturnValue->getMaxAge()) > 0) {
                     $this->response->setMaxAge($maxAge);

@@ -8,6 +8,7 @@ use ManaPHP\Event\Tracer;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Helper\Reflection;
 use ManaPHP\Helper\Str;
 use ManaPHP\Logging\Logger;
 use ManaPHP\Plugin;
@@ -276,7 +277,7 @@ class DebuggerPlugin extends Plugin
     public function onEvent(EventArgs $eventArgs)
     {
         $event['event'] = $eventArgs->event;
-        $event['source'] = get_class($eventArgs->source);
+        $event['source'] = Reflection::getClass($eventArgs->source);
 
         $data = $eventArgs->data;
         if ($data === null) {
@@ -286,7 +287,7 @@ class DebuggerPlugin extends Plugin
         } elseif ($data instanceof ArrayObject) {
             $event['data'] = array_keys(get_object_vars($data));
         } elseif (is_object($data)) {
-            $event['data'] = get_class($data);
+            $event['data'] = Reflection::getClass($data);
         } else {
             $event['data'] = '???';
         }
@@ -382,7 +383,7 @@ class DebuggerPlugin extends Plugin
 
         $vars = $data['vars'];
         foreach ((array)$vars as $k => $v) {
-            if ($v instanceof Component) {
+            if (Reflection::isInstanceOf($v, Component::class)) {
                 unset($vars[$k]);
             }
         }
@@ -498,11 +499,13 @@ class DebuggerPlugin extends Plugin
                 continue;
             }
 
-            $properties = $instance instanceof Component ? $instance->dump() : array_keys(get_object_vars($instance));
-            if ($instance instanceof Tracer) {
-                $data['tracers'][$name] = ['class' => get_class($instance), 'properties' => $properties];
+            $properties = Reflection::isInstanceOf($instance, Component::class)
+                ? $instance->dump()
+                : array_keys(get_object_vars($instance));
+            if (Reflection::isInstanceOf($instance, Tracer::class)) {
+                $data['tracers'][$name] = ['class' => Reflection::getClass($instance), 'properties' => $properties];
             } else {
-                $data['components'][$name] = ['class' => get_class($instance), 'properties' => $properties];
+                $data['components'][$name] = ['class' => Reflection::getClass($instance), 'properties' => $properties];
             }
         }
 

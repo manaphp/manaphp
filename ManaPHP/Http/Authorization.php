@@ -5,6 +5,7 @@ namespace ManaPHP\Http;
 use ManaPHP\Component;
 use ManaPHP\Exception\ForbiddenException;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Helper\Reflection;
 use ManaPHP\Helper\Str;
 use ManaPHP\Identifying\Identity\NoCredentialException;
 
@@ -282,7 +283,7 @@ class Authorization extends Component implements AuthorizationInterface
         } else {
             /** @var \ManaPHP\Http\Controller $controllerInstance */
             $controllerInstance = $this->dispatcher->getControllerInstance();
-            $controllerClassName = get_class($controllerInstance);
+            $controllerClassName = Reflection::getClass($controllerInstance);
             $action = $permission ? Str::camelize($permission) : $this->dispatcher->getAction();
             $acl = $controllerInstance->getAcl();
 
