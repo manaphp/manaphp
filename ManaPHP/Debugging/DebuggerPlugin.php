@@ -285,7 +285,7 @@ class DebuggerPlugin extends Plugin
         } elseif (is_scalar($data)) {
             $event['data'] = gettype($data);
         } elseif ($data instanceof ArrayObject) {
-            $event['data'] = array_keys(get_object_vars($data));
+            $event['data'] = array_keys($data->getArrayCopy());
         } elseif (is_object($data)) {
             $event['data'] = Reflection::getClass($data);
         } else {
