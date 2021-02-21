@@ -2,12 +2,12 @@
 
 namespace ManaPHP\Http;
 
-use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Plugin;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface    $request
+ * @property-read \ManaPHP\Http\ResponseInterface   $response
  * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
  */
 class HttpCachePlugin extends Plugin
@@ -32,16 +32,12 @@ class HttpCachePlugin extends Plugin
     }
 
     /**
-     * @param EventArgs $eventArgs
-     *
      * @return void
      * @throws MisuseException
      */
-    public function onResponseSending(EventArgs $eventArgs)
+    public function onResponseSending()
     {
-        /** @var \ManaPHP\Http\ResponseContext $responseContext */
-        $responseContext = $eventArgs->data['context'];
-        if ($responseContext->status_code !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
+        if ($this->response->getStatusCode() !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
             return;
         }
 
@@ -57,26 +53,23 @@ class HttpCachePlugin extends Plugin
         foreach ((array)$httpCache as $k => $v) {
             if (is_int($k)) {
                 if ($v === 'etag' || $v === 'ETag') {
-                    if (isset($responseContext->headers['ETag'])) {
-                        $etag = $responseContext->headers['ETag'];
-                    } else {
-                        $etag = md5($responseContext->content);
-                        $responseContext->headers['ETag'] = $etag;
+                    if (($etag = $this->response->getHeader('ETag', '')) === '') {
+                        $etag = md5($this->response->getContent());
+                        $this->response->setETag($etag);
                     }
 
                     $if_none_match = $this->request->getIfNoneMatch();
                     if ($if_none_match === $etag) {
-                        $responseContext->status_code = 304;
-                        $responseContext->status_text = 'Not Modified';
+                        $this->response->setNotModified();
                         return;
                     }
                 } else {
-                    $responseContext->headers['Cache-Control'] = $v;
+                    $this->response->setHeader('Cache-Control', $v);
                 }
             } elseif ($k === 'max-age') {
-                $responseContext->headers['Cache-Control'] = "max-age=$v";
+                $this->response->setCacheControl("max-age=$v");
             } elseif ($k === 'Cache-Control' || $k === 'cache-control') {
-                $responseContext->headers['Cache-Control'] = $v;
+                $this->response->setCacheControl($v);
             } else {
                 throw new MisuseException(['not support `:key`', 'key' => $k]);
             }

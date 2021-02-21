@@ -184,13 +184,13 @@ class Workerman extends Server
         $context = $this->response->getContext();
 
         if (!is_string($context->content) && !$context->file) {
-            $this->fireEvent('response:stringify', compact('context'));
+            $this->fireEvent('response:stringify');
             if (!is_string($context->content)) {
                 $context->content = json_stringify($context->content);
             }
         }
 
-        $this->fireEvent('response:sending', compact('context'));
+        $this->fireEvent('response:sending');
 
         Http::header('HTTP', true, $context->status_code);
 
@@ -222,6 +222,6 @@ class Workerman extends Server
             $this->context->connection->close($context->content);
         }
 
-        $this->fireEvent('response:sent', compact('context'));
+        $this->fireEvent('response:sent');
     }
 }

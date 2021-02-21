@@ -25,6 +25,7 @@ class FiddlerPluginContext
  * @property-read \ManaPHP\Configuration\Configure        $configure
  * @property-read \ManaPHP\Logging\LoggerInterface        $logger
  * @property-read \ManaPHP\Http\RequestInterface          $request
+ * @property-read \ManaPHP\Http\ResponseInterface         $response
  * @property-read \ManaPHP\Http\DispatcherInterface       $dispatcher
  * @property-read \ManaPHP\Messaging\PubSubInterface      $pubSub
  * @property-read \Redis|\ManaPHP\Data\RedisInterface     $redisBroker
@@ -135,20 +136,15 @@ class FiddlerPlugin extends Plugin
     }
 
     /**
-     * @param EventArgs $eventArgs
-     *
      * @return void
      */
-    public function onResponseSent(EventArgs $eventArgs)
+    public function onResponseSent()
     {
-        /** @var \ManaPHP\Http\ResponseContext $responseContext */
-        $responseContext = $eventArgs->data['context'];
-
         if ($this->watched()) {
             $data = [
-                'code'    => $responseContext->status_code,
+                'code'    => $this->response->getStatusCode(),
                 'path'    => $this->dispatcher->getPath(),
-                'body'    => $responseContext->content,
+                'body'    => $this->response->getContent(),
                 'elapsed' => $this->request->getElapsedTime()
             ];
             $this->publish('response', $data);

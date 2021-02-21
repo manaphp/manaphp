@@ -178,11 +178,9 @@ class PageCachePlugin extends Plugin
     }
 
     /**
-     * @param EventArgs $eventArgs
-     *
      * @return void
      */
-    public function onResponseSending(EventArgs $eventArgs)
+    public function onResponseSending()
     {
         $context = $this->context;
 
@@ -190,20 +188,19 @@ class PageCachePlugin extends Plugin
             return;
         }
 
-        /** @var \ManaPHP\Http\ResponseContext $responseContext */
-        $responseContext = $eventArgs->data['context'];
-        if ($responseContext->status_code !== 200) {
+        if ($this->response->getStatusCode() !== 200) {
             return;
         }
 
-        $etag = md5($responseContext->content);
+        $content = $this->response->getContent();
+        $etag = md5($context);
 
         $this->redisCache->hMSet(
             $context->key, [
                 'ttl'          => $context->ttl,
                 'etag'         => $etag,
-                'content-type' => $responseContext->headers['Content-Type'] ?? null,
-                'content'      => gzencode($responseContext->content)
+                'content-type' => $this->response->getHeader('Content-Type'),
+                'content'      => gzencode($content)
             ]
         );
         $this->redisCache->expire($context->key, $context->ttl);

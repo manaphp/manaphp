@@ -260,12 +260,11 @@ class DebuggerPlugin extends Plugin
         }
     }
 
-    public function onResponseStringify(EventArgs $eventArgs)
+    public function onResponseStringify()
     {
-        /** @var \ManaPHP\Http\ResponseContext $context */
-        $context = $eventArgs->data['context'];
-        if (is_array($context->content)) {
-            $context->content['debuggerPlugin'] = $this->response->getHeader('X-Debugger-Link');
+        if (is_array($content = $this->response->getContent())) {
+            $content['debuggerPlugin'] = $this->response->getHeader('X-Debugger-Link');
+            $this->response->setContent($content);
         }
     }
 

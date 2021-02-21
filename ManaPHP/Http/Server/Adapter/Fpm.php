@@ -47,13 +47,13 @@ class Fpm extends Server
         $context = $this->response->getContext();
 
         if (!is_string($context->content) && !$context->file) {
-            $this->fireEvent('response:stringify', compact('context'));
+            $this->fireEvent('response:stringify');
             if (!is_string($context->content)) {
                 $context->content = json_stringify($context->content);
             }
         }
 
-        $this->fireEvent('response:sending', compact('context'));
+        $this->fireEvent('response:sending');
 
         header('HTTP/1.1 ' . $context->status_code . ' ' . $context->status_text);
 
@@ -90,7 +90,7 @@ class Fpm extends Server
             echo $context->content;
         }
 
-        $this->fireEvent('response:sent', compact('context'));
+        $this->fireEvent('response:sent');
 
         return $this;
     }

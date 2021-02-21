@@ -2,11 +2,11 @@
 
 namespace ManaPHP\Http;
 
-use ManaPHP\Event\EventArgs;
 use ManaPHP\Plugin;
 
 /**
- * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Http\RequestInterface  $request
+ * @property-read \ManaPHP\Http\ResponseInterface $response
  */
 class EtagPlugin extends Plugin
 {
@@ -39,31 +39,23 @@ class EtagPlugin extends Plugin
     }
 
     /**
-     * @param EventArgs $eventArgs
-     *
      * @return void
      */
-    public function onResponseSending(EventArgs $eventArgs)
+    public function onResponseSending()
     {
-        /** @var \ManaPHP\Http\ResponseContext $responseContext */
-        $responseContext = $eventArgs->data['context'];
-        if ($responseContext->status_code !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
+        if ($this->response->getStatusCode() !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
             return;
         }
 
-        if (isset($responseContext->headers['ETag'])) {
-            $etag = $responseContext->headers['ETag'];
-        } else {
-            $etag = hash($this->algo, $responseContext->content);
-            $responseContext->headers['ETag'] = $etag;
+        if (($etag = $this->response->getHeader('ETag', '')) === '') {
+            $etag = hash($this->algo, $this->response->getContent());
+            $this->response->setETag($etag);
         }
 
         $if_none_match = $this->request->getIfNoneMatch();
         if ($if_none_match === $etag) {
-            unset($responseContext->headers['ETag']);
-
-            $responseContext->status_code = 304;
-            $responseContext->status_text = 'Not Modified';
+            $this->response->removeHeader('ETag');
+            $this->response->setNotModified();
         }
     }
 }
