@@ -12,7 +12,7 @@ interface ServerInterface
     public function start($handler);
 
     /**
-     * @param \ManaPHP\Http\ResponseContext $response
+     * @return void
      */
-    public function send($response);
+    public function send();
 }

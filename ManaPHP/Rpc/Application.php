@@ -49,7 +49,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
             $this->handleException($exception);
         }
 
-        $this->rpcServer->send($this->response->getContext());
+        $this->rpcServer->send();
 
         $this->fireEvent('request:end');
     }

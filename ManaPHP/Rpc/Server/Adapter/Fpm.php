@@ -30,18 +30,16 @@ class Fpm extends Server
         if ($this->authenticate()) {
             $this->handler->handle();
         } else {
-            $this->send($this->response->getContext());
+            $this->send();
         }
 
         return $this;
     }
 
     /**
-     * @param \ManaPHP\Http\ResponseContext $response
-     *
      * @return static
      */
-    public function send($response)
+    public function send()
     {
         header('HTTP/1.1 ' . $this->response->getStatus());
 

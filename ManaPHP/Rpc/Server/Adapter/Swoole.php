@@ -190,7 +190,7 @@ class Swoole extends \ManaPHP\Rpc\Server
             if ($this->authenticate()) {
                 $this->handler->handle();
             } else {
-                $this->send($this->response->getContext());
+                $this->send();
             }
         } catch (Throwable $throwable) {
             $str = date('c') . ' ' . get_class($throwable) . ': ' . $throwable->getMessage() . PHP_EOL;
@@ -215,14 +215,13 @@ class Swoole extends \ManaPHP\Rpc\Server
 
             $this->request->setRequestId();
 
-            $response = $this->response->getContext();
             if (!$this->authenticate()) {
                 $this->context->fd = $fd;
-                $this->send($response);
+                $this->send();
                 $server->close($fd);
-            } elseif ($response->content) {
+            } elseif ($this->response->hasContent()) {
                 $this->context->fd = $fd;
-                $this->send($response);
+                $this->send();
             }
 
             $context = new ArrayObject();
@@ -291,16 +290,15 @@ class Swoole extends \ManaPHP\Rpc\Server
 
         $this->request->setRequestId();
 
-        $response = $this->response->getContext();
         if (!$json = json_parse($frame->data)) {
-            $response->content = ['code' => -32700, 'message' => 'Parse error'];
-            $this->send($response);
+            $this->response->setContent(['code' => -32700, 'message' => 'Parse error']);
+            $this->send();
         } elseif (!isset($json['jsonrpc'], $json['method'], $json['params'], $json['id'])
             || $json['jsonrpc'] !== '2.0'
             || !is_array($json['params'])
         ) {
-            $response->content = ['code' => -32600, 'message' => 'Invalid Request'];
-            $this->send($response);
+            $this->response->setContent(['code' => -32600, 'message' => 'Invalid Request']);
+            $this->send();
         } else {
             $globals = $this->request->getGlobals();
             $globals->_GET['_url'] = $globals->_SERVER['WS_ENDPOINT'] . '/' . $json['method'];
@@ -312,7 +310,7 @@ class Swoole extends \ManaPHP\Rpc\Server
             try {
                 $this->handler->handle();
             } catch (Throwable $throwable) {
-                $response->content = ['code' => -32603, 'message' => 'Internal error'];
+                $this->response->setContent(['code' => -32603, 'message' => 'Internal error']);
                 $this->logger->warn($throwable);
             }
         }
@@ -325,11 +323,9 @@ class Swoole extends \ManaPHP\Rpc\Server
     }
 
     /**
-     * @param \ManaPHP\Http\ResponseContext $response
-     *
      * @return void
      */
-    public function send($response)
+    public function send()
     {
         $context = $this->context;
         if ($context->fd) {
@@ -339,12 +335,13 @@ class Swoole extends \ManaPHP\Rpc\Server
             ];
 
             $id = $json['id'] ?? null;
-            if ($response->content['code'] === 0) {
-                $content = ['jsonrpc' => '2.0', 'result' => $response->content, 'id' => $id, 'headers' => $headers];
+            $content = $this->response->getContent();
+            if ($content['code'] === 0) {
+                $data = ['jsonrpc' => '2.0', 'result' => $content, 'id' => $id, 'headers' => $headers];
             } else {
-                $content = ['jsonrpc' => '2.0', 'error' => $response->content, 'id' => $id, 'headers' => $headers];
+                $data = ['jsonrpc' => '2.0', 'error' => $content, 'id' => $id, 'headers' => $headers];
             }
-            $this->swoole->push($context->fd, json_stringify($content));
+            $this->swoole->push($context->fd, json_stringify($data));
         } else {
             $sw_response = $this->context->response;
 
@@ -365,8 +362,8 @@ class Swoole extends \ManaPHP\Rpc\Server
                 throw new NotSupportedException('rpc not support send file');
             }
 
-            $content = $response->content;
-            $sw_response->end(is_string($content) ? $content : json_stringify($content));
+            $data = $this->response->getContent();
+            $sw_response->end(is_string($data) ? $data : json_stringify($data));
         }
     }
 
