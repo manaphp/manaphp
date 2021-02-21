@@ -258,6 +258,10 @@ class Component implements Injectable, JsonSerializable
             $data[$k] = $v;
         }
 
+        if (!isset($data['context']) && $this->hasContext()) {
+            $data['context'] = $this->_getContext();
+        }
+
         return $data;
     }
 
@@ -280,6 +284,10 @@ class Component implements Injectable, JsonSerializable
             } else {
                 $data[$k] = $v;
             }
+        }
+
+        if (!isset($data['context']) && $this->hasContext()) {
+            $data['context'] = (array)$this->_getContext();
         }
 
         return $data;
