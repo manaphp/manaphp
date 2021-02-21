@@ -442,7 +442,7 @@ class Response extends Component implements ResponseInterface
     /**
      * Sets HTTP response body
      *
-     * @param string $content
+     * @param mixed $content
      *
      * @return static
      */
@@ -450,7 +450,7 @@ class Response extends Component implements ResponseInterface
     {
         $context = $this->context;
 
-        $context->content = (string)$content;
+        $context->content = $content;
 
         return $this;
     }
@@ -537,11 +537,21 @@ class Response extends Component implements ResponseInterface
     /**
      * Gets the HTTP response body
      *
-     * @return string
+     * @return mixed
      */
     public function getContent()
     {
         return $this->context->content;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasContent()
+    {
+        $content = $this->context->content;
+
+        return $content !== '' && $content !== null;
     }
 
     /**

@@ -169,7 +169,7 @@ interface ResponseInterface
     /**
      * Sets HTTP response body
      *
-     * @param string $content
+     * @param mixed $content
      *
      * @return static
      */
@@ -217,9 +217,14 @@ interface ResponseInterface
     /**
      * Gets the HTTP response body
      *
-     * @return string
+     * @return mixed
      */
     public function getContent();
+
+    /**
+     * @return bool
+     */
+    public function hasContent();
 
     /**
      * Sets an attached file to be sent at the end of the request
