@@ -4,7 +4,7 @@ namespace ManaPHP\Aop;
 
 use ReflectionClass;
 
-class Cutter implements CutterInterface, Unaspectable
+class Cutter implements CutterInterface
 {
     /**
      * @var \ManaPHP\Aop\JoinPoint[][]
@@ -46,7 +46,7 @@ class Cutter implements CutterInterface, Unaspectable
             }
 
             $rc = new ReflectionClass($class);
-            if ($rc->isInternal() || $rc->implementsInterface(Unaspectable::class)) {
+            if ($rc->isInternal()) {
                 continue;
             }
 

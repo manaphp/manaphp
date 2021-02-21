@@ -2,14 +2,13 @@
 
 namespace ManaPHP\Rpc;
 
-use ManaPHP\Aop\Unaspectable;
 use ManaPHP\Component;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response
  */
-abstract class Server extends Component implements ServerInterface, Unaspectable
+abstract class Server extends Component implements ServerInterface
 {
     /**
      * @var string

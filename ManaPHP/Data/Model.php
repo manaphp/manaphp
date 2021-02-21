@@ -4,7 +4,6 @@ namespace ManaPHP\Data;
 
 use ArrayAccess;
 use JsonSerializable;
-use ManaPHP\Aop\Unaspectable;
 use ManaPHP\Component;
 use ManaPHP\Data\Db\SqlFragmentable;
 use ManaPHP\Data\Model\Expression\Decrement;
@@ -28,7 +27,7 @@ use ManaPHP\Helper\Reflection;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ReflectionClass;
 
-abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonSerializable, Unaspectable
+abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonSerializable
 {
     /**
      * @var array

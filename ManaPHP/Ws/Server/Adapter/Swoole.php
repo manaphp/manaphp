@@ -3,7 +3,6 @@
 namespace ManaPHP\Ws\Server\Adapter;
 
 use ArrayObject;
-use ManaPHP\Aop\Unaspectable;
 use ManaPHP\Component;
 use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\NotSupportedException;
@@ -19,7 +18,7 @@ use Throwable;
  * @property-read \ManaPHP\Logging\LoggerInterface $logger
  * @property-read \ManaPHP\Http\RequestInterface   $request
  */
-class Swoole extends Component implements ServerInterface, Unaspectable
+class Swoole extends Component implements ServerInterface
 {
     /**
      * @var string

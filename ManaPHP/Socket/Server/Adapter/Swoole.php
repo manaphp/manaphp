@@ -3,7 +3,6 @@
 namespace ManaPHP\Socket\Server\Adapter;
 
 use ArrayObject;
-use ManaPHP\Aop\Unaspectable;
 use ManaPHP\Component;
 use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Socket\ServerInterface;
@@ -17,7 +16,7 @@ use Throwable;
  * @property-read \ManaPHP\AliasInterface          $alias
  * @property-read \ManaPHP\Logging\LoggerInterface $logger
  */
-class Swoole extends Component implements ServerInterface, Unaspectable
+class Swoole extends Component implements ServerInterface
 {
     /**
      * @var string

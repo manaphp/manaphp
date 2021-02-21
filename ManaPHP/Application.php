@@ -2,7 +2,6 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Aop\Unaspectable;
 use ManaPHP\Helper\LocalFS;
 use ReflectionClass;
 
@@ -14,7 +13,7 @@ use ReflectionClass;
  * @property-read \ManaPHP\ErrorHandlerInterface         $errorHandler
  * @property-read \ManaPHP\Cli\RunnerInterface           $cliRunner
  */
-class Application extends Component implements ApplicationInterface, Unaspectable
+class Application extends Component implements ApplicationInterface
 {
     /**
      * @var string

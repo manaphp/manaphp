@@ -5,7 +5,7 @@ namespace ManaPHP\Aop;
 use ManaPHP\Exception\MisuseException;
 use ReflectionMethod;
 
-class JoinPoint implements Unaspectable
+class JoinPoint
 {
     /**
      * @var string

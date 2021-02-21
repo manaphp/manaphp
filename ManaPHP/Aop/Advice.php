@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Aop;
 
-class Advice implements Unaspectable
+class Advice
 {
     /**
      * @var callable[]
