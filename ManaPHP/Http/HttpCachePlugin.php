@@ -64,7 +64,7 @@ class HttpCachePlugin extends Plugin
                         return;
                     }
                 } else {
-                    $this->response->setHeader('Cache-Control', $v);
+                    $this->response->setCacheControl($v);
                 }
             } elseif ($k === 'max-age') {
                 $this->response->setCacheControl("max-age=$v");
