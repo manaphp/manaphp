@@ -57,7 +57,7 @@ class Fpm extends Server
 
         header('HTTP/1.1 ' . $this->response->getStatus());
 
-        foreach ($context->headers as $header => $value) {
+        foreach ($this->response->getHeaders() as $header => $value) {
             if ($value !== null) {
                 header($header . ': ' . $value);
             } else {
@@ -65,7 +65,7 @@ class Fpm extends Server
             }
         }
 
-        foreach ($context->cookies as $cookie) {
+        foreach ($this->response->getCookies() as $cookie) {
             setcookie(
                 $cookie['name'],
                 $cookie['value'],

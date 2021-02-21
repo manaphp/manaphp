@@ -229,14 +229,14 @@ class Swoole extends Server
 
         $sw_response->status($this->response->getStatusCode());
 
-        foreach ($context->headers as $name => $value) {
+        foreach ($this->response->getHeaders() as $name => $value) {
             $sw_response->header($name, $value, false);
         }
 
         $sw_response->header('X-Request-Id', $this->request->getRequestId(), false);
         $sw_response->header('X-Response-Time', $this->request->getElapsedTime(), false);
 
-        foreach ($context->cookies as $cookie) {
+        foreach ($this->response->getCookies() as $cookie) {
             $sw_response->cookie(
                 $cookie['name'],
                 $cookie['value'],

@@ -194,14 +194,14 @@ class Workerman extends Server
 
         Http::header('HTTP', true, $this->response->getStatusCode());
 
-        foreach ($context->headers as $name => $value) {
+        foreach ($this->response->getHeaders() as $name => $value) {
             Http::header("$name: $value");
         }
 
         Http::header('X-Request-Id: ' . $this->request->getRequestId());
         Http::header('X-Response-Time: ' . $this->request->getElapsedTime());
 
-        foreach ($context->cookies as $cookie) {
+        foreach ($this->response->getCookies() as $cookie) {
             Http::setcookie(
                 $cookie['name'],
                 $cookie['value'],

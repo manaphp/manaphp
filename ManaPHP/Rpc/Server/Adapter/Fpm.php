@@ -45,18 +45,18 @@ class Fpm extends Server
     {
         header('HTTP/1.1 ' . $this->response->getStatus());
 
-        foreach ($response->headers as $header => $value) {
+        foreach ($this->response->getHeaders() as $header => $value) {
             header($value === null ? $header : "$header: $value");
         }
 
-        if ($response->cookies) {
+        if ($this->response->hasCookies()) {
             throw new NotSupportedException('rpc not support cookies');
         }
 
         header('X-Request-Id: ' . $this->request->getRequestId());
         header('X-Response-Time: ' . $this->request->getElapsedTime());
 
-        if ($response->file) {
+        if ($this->response->hasFile()) {
             throw new NotSupportedException('rpc not support send file');
         }
 

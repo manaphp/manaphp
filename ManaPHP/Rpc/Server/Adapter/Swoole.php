@@ -350,18 +350,18 @@ class Swoole extends \ManaPHP\Rpc\Server
 
             $sw_response->status($this->response->getStatusCode());
 
-            foreach ($response->headers as $name => $value) {
+            foreach ($this->response->getHeaders() as $name => $value) {
                 $sw_response->header($name, $value, false);
             }
 
             $sw_response->header('X-Request-Id', $this->request->getRequestId(), false);
             $sw_response->header('X-Response-Time', $this->request->getElapsedTime(), false);
 
-            if ($response->cookies) {
+            if ($this->response->hasCookies()) {
                 throw new NotSupportedException('rpc not support cookies');
             }
 
-            if ($response->file) {
+            if ($this->response->hasFile()) {
                 throw new NotSupportedException('rpc not support send file');
             }
 
