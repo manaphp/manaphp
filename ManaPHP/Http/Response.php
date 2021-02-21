@@ -55,14 +55,6 @@ class ResponseContext
 class Response extends Component implements ResponseInterface
 {
     /**
-     * @return \ManaPHP\Http\ResponseContext
-     */
-    public function getContext()
-    {
-        return $this->context;
-    }
-
-    /**
      * Sets a cookie to be sent at the end of the request
      *
      * @param string $name
