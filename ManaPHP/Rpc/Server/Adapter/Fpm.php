@@ -60,7 +60,7 @@ class Fpm extends Server
             throw new NotSupportedException('rpc not support send file');
         }
 
-        $content = $response->content;
+        $content = $this->response->getContent();
         echo is_string($content) ? $content : json_stringify($content);
 
         return $this;

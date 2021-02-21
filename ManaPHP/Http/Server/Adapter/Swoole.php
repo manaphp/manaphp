@@ -214,12 +214,10 @@ class Swoole extends Server
      */
     public function send()
     {
-        $context = $this->response->getContext();
-
-        if (!is_string($context->content) && !$context->file) {
+        if (!is_string($this->response->getContent()) && !$this->response->hasFile()) {
             $this->fireEvent('response:stringify');
-            if (!is_string($context->content)) {
-                $context->content = json_stringify($context->content);
+            if (!is_string($content = $this->response->getContent())) {
+                $this->response->setContent(json_stringify($content));
             }
         }
 
@@ -248,15 +246,16 @@ class Swoole extends Server
             );
         }
 
+        $content = $this->response->getContent();
         if ($this->response->getStatusCode() === 304) {
             $sw_response->end('');
         } elseif ($this->request->isHead()) {
-            $sw_response->header('Content-Length', strlen($context->content), false);
+            $sw_response->header('Content-Length', strlen($content), false);
             $sw_response->end('');
-        } elseif ($context->file) {
-            $sw_response->sendfile($this->alias->resolve($context->file));
+        } elseif ($file = $this->response->getFile()) {
+            $sw_response->sendfile($this->alias->resolve($file));
         } else {
-            $sw_response->end($context->content);
+            $sw_response->end($content);
         }
 
         $this->fireEvent('response:sent');

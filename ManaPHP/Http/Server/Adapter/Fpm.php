@@ -44,12 +44,10 @@ class Fpm extends Server
             throw new MisuseException("Headers has been sent in $file:$line");
         }
 
-        $context = $this->response->getContext();
-
-        if (!is_string($context->content) && !$context->file) {
+        if (!is_string($this->response->getContent()) && !$this->response->hasFile()) {
             $this->fireEvent('response:stringify');
-            if (!is_string($context->content)) {
-                $context->content = json_stringify($context->content);
+            if (!is_string($content = $this->response->getContent())) {
+                $this->response->setContent(json_stringify($content));
             }
         }
 
@@ -80,14 +78,15 @@ class Fpm extends Server
         header('X-Request-Id: ' . $this->request->getRequestId());
         header('X-Response-Time: ' . $this->request->getElapsedTime());
 
+        $content = $this->response->getContent();
         if ($this->response->getStatusCode() === 304) {
             null;
         } elseif ($this->request->isHead()) {
-            header('Content-Length: ' . strlen($context->content));
-        } elseif ($context->file) {
-            readfile($this->alias->resolve($context->file));
+            header('Content-Length: ' . strlen($content));
+        } elseif ($file = $this->response->getFile()) {
+            readfile($this->alias->resolve($file));
         } else {
-            echo $context->content;
+            echo $content;
         }
 
         $this->fireEvent('response:sent');

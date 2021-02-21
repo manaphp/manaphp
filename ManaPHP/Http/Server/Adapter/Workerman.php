@@ -181,12 +181,11 @@ class Workerman extends Server
      */
     public function send()
     {
-        $context = $this->response->getContext();
-
-        if (!is_string($context->content) && !$context->file) {
+        if (!is_string($this->response->getContent()) && !$this->response->hasFile()) {
             $this->fireEvent('response:stringify');
-            if (!is_string($context->content)) {
-                $context->content = json_stringify($context->content);
+
+            if (!is_string($content = $this->response->getContent())) {
+                $this->response->setContent(json_stringify($content));
             }
         }
 
@@ -213,13 +212,14 @@ class Workerman extends Server
             );
         }
 
+        $content = $this->response->getContent();
         if ($this->response->getStatusCode() === 304) {
             $this->context->connection->close('');
         } elseif ($this->request->isHead()) {
-            Http::header('Content-Length: ' . strlen($context->content));
+            Http::header('Content-Length: ' . strlen($content));
             $this->context->connection->close('');
         } else {
-            $this->context->connection->close($context->content);
+            $this->context->connection->close($content);
         }
 
         $this->fireEvent('response:sent');
