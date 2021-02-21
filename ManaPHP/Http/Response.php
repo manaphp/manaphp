@@ -139,6 +139,22 @@ class Response extends Component implements ResponseInterface
     }
 
     /**
+     * @return array
+     */
+    public function getCookies()
+    {
+        return $this->context->cookies;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasCookies()
+    {
+        return (bool)$this->context->cookies;
+    }
+
+    /**
      * Sets the HTTP response code
      *
      * @param int    $code
@@ -588,6 +604,14 @@ class Response extends Component implements ResponseInterface
     public function getFile()
     {
         return $this->context->file;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasFile()
+    {
+        return (bool)$this->context->file;
     }
 
     /**

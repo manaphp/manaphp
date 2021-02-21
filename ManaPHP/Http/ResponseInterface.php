@@ -46,6 +46,16 @@ interface ResponseInterface
     public function deleteCookie($name, $path = null, $domain = null, $secure = false, $httponly = true);
 
     /**
+     * @return array
+     */
+    public function getCookies();
+
+    /**
+     * @return bool
+     */
+    public function hasCookies();
+
+    /**
      * Sets the HTTP response code
      *
      * @param int    $code
@@ -240,6 +250,11 @@ interface ResponseInterface
      * @return string|null
      */
     public function getFile();
+
+    /**
+     * @return bool
+     */
+    public function hasFile();
 
     /**
      * @param string $attachmentName
