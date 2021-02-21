@@ -103,7 +103,7 @@ class Component implements Injectable, JsonSerializable
     /**
      * @return object
      */
-    protected function _getContext()
+    protected function getContext()
     {
         global $__root_context;
 
@@ -161,7 +161,7 @@ class Component implements Injectable, JsonSerializable
     public function __get($name)
     {
         if ($name === 'context') {
-            return $this->_getContext();
+            return $this->getContext();
         } else {
             return $this->{$name} = $this->getShared($name);
         }
@@ -259,7 +259,7 @@ class Component implements Injectable, JsonSerializable
         }
 
         if (!isset($data['context']) && $this->hasContext()) {
-            $data['context'] = $this->_getContext();
+            $data['context'] = $this->getContext();
         }
 
         return $data;
@@ -287,7 +287,7 @@ class Component implements Injectable, JsonSerializable
         }
 
         if (!isset($data['context']) && $this->hasContext()) {
-            $data['context'] = (array)$this->_getContext();
+            $data['context'] = (array)$this->getContext();
         }
 
         return $data;
