@@ -55,7 +55,7 @@ class Fpm extends Server
 
         $this->fireEvent('response:sending');
 
-        header('HTTP/1.1 ' . $context->status_code . ' ' . $context->status_text);
+        header('HTTP/1.1 ' . $this->response->getStatus());
 
         foreach ($context->headers as $header => $value) {
             if ($value !== null) {
@@ -80,7 +80,7 @@ class Fpm extends Server
         header('X-Request-Id: ' . $this->request->getRequestId());
         header('X-Response-Time: ' . $this->request->getElapsedTime());
 
-        if ($context->status_code === 304) {
+        if ($this->response->getStatusCode() === 304) {
             null;
         } elseif ($this->request->isHead()) {
             header('Content-Length: ' . strlen($context->content));

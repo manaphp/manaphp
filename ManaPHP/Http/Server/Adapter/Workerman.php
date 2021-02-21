@@ -192,7 +192,7 @@ class Workerman extends Server
 
         $this->fireEvent('response:sending');
 
-        Http::header('HTTP', true, $context->status_code);
+        Http::header('HTTP', true, $this->response->getStatusCode());
 
         foreach ($context->headers as $name => $value) {
             Http::header("$name: $value");
@@ -213,7 +213,7 @@ class Workerman extends Server
             );
         }
 
-        if ($context->status_code === 304) {
+        if ($this->response->getStatusCode() === 304) {
             $this->context->connection->close('');
         } elseif ($this->request->isHead()) {
             Http::header('Content-Length: ' . strlen($context->content));

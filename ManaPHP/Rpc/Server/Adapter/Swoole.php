@@ -348,7 +348,7 @@ class Swoole extends \ManaPHP\Rpc\Server
         } else {
             $sw_response = $this->context->response;
 
-            $sw_response->status($response->status_code);
+            $sw_response->status($this->response->getStatusCode());
 
             foreach ($response->headers as $name => $value) {
                 $sw_response->header($name, $value, false);

@@ -227,7 +227,7 @@ class Swoole extends Server
 
         $sw_response = $this->context->response;
 
-        $sw_response->status($context->status_code);
+        $sw_response->status($this->response->getStatusCode());
 
         foreach ($context->headers as $name => $value) {
             $sw_response->header($name, $value, false);
@@ -248,7 +248,7 @@ class Swoole extends Server
             );
         }
 
-        if ($context->status_code === 304) {
+        if ($this->response->getStatusCode() === 304) {
             $sw_response->end('');
         } elseif ($this->request->isHead()) {
             $sw_response->header('Content-Length', strlen($context->content), false);

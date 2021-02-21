@@ -43,7 +43,7 @@ class Fpm extends Server
      */
     public function send($response)
     {
-        header('HTTP/1.1 ' . $response->status_code . ' ' . $response->status_text);
+        header('HTTP/1.1 ' . $this->response->getStatus());
 
         foreach ($response->headers as $header => $value) {
             header($value === null ? $header : "$header: $value");
