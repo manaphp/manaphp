@@ -3,6 +3,7 @@
 namespace ManaPHP\Helper;
 
 use ManaPHP\Aop\ProxyInterface;
+use ReflectionMethod;
 
 class Reflection
 {
@@ -35,5 +36,16 @@ class Reflection
     public static function getObjectVars($object)
     {
         return get_object_vars($object instanceof ProxyInterface ? $object->getTargetObject() : $object);
+    }
+
+    /**
+     * @param string|\object $object
+     * @param string         $method
+     *
+     * @return \ReflectionMethod
+     */
+    public static function reflectMethod($object, $method)
+    {
+        return new ReflectionMethod($object instanceof ProxyInterface ? $object->getTargetObject() : $object, $method);
     }
 }
