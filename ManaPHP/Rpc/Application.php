@@ -5,6 +5,7 @@ namespace ManaPHP\Rpc;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Helper\Reflection;
 use ManaPHP\Http\Response;
+use ManaPHP\Http\Router\NotFoundRouteException;
 use ManaPHP\Rpc\Server\HandlerInterface;
 use Throwable;
 
@@ -35,7 +36,17 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         try {
             $this->fireEvent('request:begin');
 
-            $actionReturnValue = $this->router->dispatch();
+            if (!$this->router->match()) {
+                throw new NotFoundRouteException(
+                    ['router does not have matched route for `%s`', $this->router->getRewriteUri()]
+                );
+            }
+
+            $actionReturnValue = $this->dispatcher->dispatch(
+                $this->router->getArea(), $this->router->getController(), $this->router->getAction(),
+                $this->router->getParams()
+            );
+
             if (Reflection::isInstanceOf($actionReturnValue, Response::class)) {
                 null;
             } else {

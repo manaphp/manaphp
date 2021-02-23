@@ -65,7 +65,10 @@ class Application extends \ManaPHP\Application implements HandlerInterface
 
             $this->router->setAction($event);
 
-            $returnValue = $this->dispatcher->dispatch($this->router);
+            $returnValue = $this->dispatcher->dispatch(
+                $this->router->getArea(), $this->router->getController(), $this->router->getAction(),
+                $this->router->getParams()
+            );
 
             if ($returnValue === null || Reflection::isInstanceOf($returnValue, Response::class)) {
                 null;

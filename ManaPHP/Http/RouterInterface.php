@@ -118,20 +118,9 @@ interface RouterInterface
      * @param string $uri
      * @param string $method
      *
-     * @return \ManaPHP\Http\RouterContext|false
+     * @return bool
      */
     public function match($uri = null, $method = null);
-
-    /**
-     * Handles routing information received from the rewrite engine
-     *
-     * @param string $uri
-     * @param string $method
-     *
-     * @return mixed
-     * @throws \ManaPHP\Exception\AbortException
-     */
-    public function dispatch($uri = null, $method = null);
 
     /**
      * Get rewrite info.

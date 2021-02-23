@@ -6,7 +6,6 @@ use ManaPHP\Di\Container;
 use ManaPHP\Mvc\Factory;
 use ManaPHP\Http\Router;
 use ManaPHP\Http\Router\Route;
-use ManaPHP\Http\RouterContext;
 use PHPUnit\Framework\TestCase;
 
 class MyRouter extends Router
@@ -92,27 +91,27 @@ class MvcRouterTest extends TestCase
     {
         $router = new Router();
 
-        $this->assertInstanceOf(RouterContext::class, $router->match('/', 'GET'));
+        $this->assertTrue($router->match('/', 'GET'));
         $this->assertEquals('index', $router->getController());
         $this->assertEquals('index', $router->getAction());
         $this->assertEquals([], $router->getParams());
 
-        $this->assertInstanceOf(RouterContext::class, $router->match('/a', 'GET'));
+        $this->assertTrue($router->match('/a', 'GET'));
         $this->assertEquals('a', $router->getController());
         $this->assertEquals('index', $router->getAction());
         $this->assertEquals([], $router->getParams());
 
-        $this->assertInstanceOf(RouterContext::class, $router->match('/a/b', 'GET'));
+        $this->assertTrue($router->match('/a/b', 'GET'));
         $this->assertEquals('a', $router->getController());
         $this->assertEquals('b', $router->getAction());
         $this->assertEquals([], $router->getParams());
 
-        $this->assertInstanceOf(RouterContext::class, $router->match('/a/b/c', 'GET'));
+        $this->assertTrue($router->match('/a/b/c', 'GET'));
         $this->assertEquals('a', $router->getController());
         $this->assertEquals('b', $router->getAction());
         $this->assertEquals(['c'], $router->getParams());
 
-        $this->assertInstanceOf(RouterContext::class, $router->match('/a/b/c/d/e', 'GET'));
+        $this->assertTrue($router->match('/a/b/c/d/e', 'GET'));
         $this->assertEquals('a', $router->getController());
         $this->assertEquals('b', $router->getAction());
         $this->assertEquals(['c/d/e'], $router->getParams());
@@ -244,7 +243,7 @@ class MvcRouterTest extends TestCase
         $router->add('/show/{id:video([0-9]+)}/{title:[a-z\-]+}', 'videos::show');
 
         foreach ($tests as $n => $test) {
-            $this->assertInstanceOf(RouterContext::class, $router->match($test['uri'], 'GET'));
+            $this->assertTrue($router->match($test['uri'], 'GET'));
             $this->assertEquals($test['controller'], $router->getController(), 'Testing ' . $test['uri']);
             $this->assertEquals($test['action'], $router->getAction(), 'Testing ' . $test['uri']);
             $this->assertEquals($test['params'], $router->getParams(), 'Testing ' . $test['uri']);
@@ -312,7 +311,7 @@ class MvcRouterTest extends TestCase
         $router->addHead('/docs/index', 'documentation8::index');
 
         foreach ($tests as $n => $test) {
-            $this->assertInstanceOf(RouterContext::class, $router->match($test['uri'], $test['method'] ?: 'GET'));
+            $this->assertTrue($router->match($test['uri'], $test['method'] ?: 'GET'));
             $this->assertEquals($test['controller'], $router->getController(), 'Testing ' . $test['uri']);
             $this->assertEquals($test['action'], $router->getAction(), 'Testing ' . $test['uri']);
             $this->assertEquals($test['params'], $router->getParams(), 'Testing ' . $test['uri']);
@@ -325,7 +324,7 @@ class MvcRouterTest extends TestCase
 
         $router->add('/news/{year:[0-9]{4}}/{month:[0-9]{2}}/{day:[0-9]{2}}/{params}', 'posts::show');
 
-        $this->assertInstanceOf(RouterContext::class, $router->match('/news/2016/03/12/china', 'GET'));
+        $this->assertTrue($router->match('/news/2016/03/12/china', 'GET'));
         $this->assertEquals('posts', $router->getController());
         $this->assertEquals('show', $router->getAction());
         $this->assertEquals(['year' => '2016', 'month' => '03', 'day' => '12', 'china'], $router->getParams());
@@ -362,7 +361,7 @@ class MvcRouterTest extends TestCase
         $router->add('/some/{name}/{id:[0-9]+}/{date}', 'c::a');
 
         foreach ($tests as $n => $test) {
-            $this->assertInstanceOf(RouterContext::class, $router->match($test['uri'], $test['method'] ?: 'GET'));
+            $this->assertTrue($router->match($test['uri'], $test['method'] ?: 'GET'));
             $this->assertEquals($test['controller'], $router->getController(), 'Testing ' . $test['uri']);
             $this->assertEquals($test['action'], $router->getAction(), 'Testing ' . $test['uri']);
             $this->assertEquals($test['params'], $router->getParams(), 'Testing ' . $test['uri']);
@@ -387,7 +386,7 @@ class MvcRouterTest extends TestCase
         );
         $router = new Router();
         foreach ($routes as $route => $paths) {
-            $this->assertInstanceOf(RouterContext::class, $router->match($route, 'GET'));
+            $this->assertTrue($router->match($route, 'GET'));
             /** @noinspection DisconnectedForeachInstructionInspection */
             $this->assertEquals($paths['controller'], $router->getController());
             $this->assertEquals($paths['action'], $router->getAction());
@@ -399,19 +398,19 @@ class MvcRouterTest extends TestCase
         $router = new Router();
         $router->add('/', 'user::list');
 
-        $this->assertInstanceOf(RouterContext::class, $router->match('/', 'GET'));
+        $this->assertTrue($router->match('/', 'GET'));
         $this->assertEquals('user', $router->getController());
         $this->assertEquals('list', $router->getAction());
 
         $router = new Router();
         $router->add('/', 'user::list');
-        $this->assertInstanceOf(RouterContext::class, $router->match('/', 'GET'));
+        $this->assertTrue($router->match('/', 'GET'));
         $this->assertEquals('user', $router->getController());
         $this->assertEquals('list', $router->getAction());
 
         $router = new Router();
         $router->add('/', 'user');
-        $this->assertInstanceOf(RouterContext::class, $router->match('/', 'GET'));
+        $this->assertTrue($router->match('/', 'GET'));
 
         $this->assertEquals('user', $router->getController());
         $this->assertEquals('index', $router->getAction());

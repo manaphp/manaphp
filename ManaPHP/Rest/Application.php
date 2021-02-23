@@ -5,6 +5,7 @@ namespace ManaPHP\Rest;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Helper\Reflection;
 use ManaPHP\Http\Response;
+use ManaPHP\Http\Router\NotFoundRouteException;
 use Throwable;
 
 class Application extends \ManaPHP\Http\Application
@@ -27,7 +28,16 @@ class Application extends \ManaPHP\Http\Application
 
             $this->fireEvent('request:authenticate');
 
-            $actionReturnValue = $this->router->dispatch();
+            if (!$this->router->match()) {
+                throw new NotFoundRouteException(
+                    ['router does not have matched route for `%s`', $this->router->getRewriteUri()]
+                );
+            }
+
+            $actionReturnValue = $this->dispatcher->dispatch(
+                $this->router->getArea(), $this->router->getController(), $this->router->getAction(),
+                $this->router->getParams()
+            );
 
             if ($actionReturnValue === null) {
                 $this->response->setJsonOk();

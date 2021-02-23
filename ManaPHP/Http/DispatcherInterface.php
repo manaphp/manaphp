@@ -91,12 +91,16 @@ interface DispatcherInterface
     /**
      * Dispatches a handle action taking into account the routing parameters
      *
-     * @param \ManaPHP\Http\RouterInterface|\ManaPHP\Http\RouterContext $router
+     * @param string $area
+     * @param string $controller
+     * @param string $action
+     * @param array  $params
      *
      * @return mixed
+     * @throws \ManaPHP\Http\Dispatcher\NotFoundControllerException
      * @throws \ManaPHP\Exception\AbortException
      */
-    public function dispatch($router);
+    public function dispatch($area, $controller, $action, $params);
 
     /**
      * @return bool

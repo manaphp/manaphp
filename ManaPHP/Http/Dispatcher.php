@@ -240,26 +240,17 @@ class Dispatcher extends Component implements DispatcherInterface
     /**
      * Dispatches a handle action taking into account the routing parameters
      *
-     * @param \ManaPHP\Http\RouterInterface|\ManaPHP\Http\RouterContext $router
+     * @param string $area
+     * @param string $controller
+     * @param string $action
+     * @param array  $params
      *
      * @return mixed
      * @throws \ManaPHP\Http\Dispatcher\NotFoundControllerException
      */
-    public function dispatch($router)
+    public function dispatch($area, $controller, $action, $params)
     {
         $context = $this->context;
-
-        if ($router instanceof RouterContext) {
-            $area = $router->area;
-            $controller = $router->controller;
-            $action = $router->action;
-            $params = $router->params;
-        } else {
-            $area = $router->getArea();
-            $controller = $router->getController();
-            $action = $router->getAction();
-            $params = $router->getParams();
-        }
 
         $this->request->setParams($params);
 

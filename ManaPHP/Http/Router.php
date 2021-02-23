@@ -5,7 +5,6 @@ namespace ManaPHP\Http;
 use ManaPHP\Component;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
-use ManaPHP\Http\Router\NotFoundRouteException;
 use ManaPHP\Http\Router\Route;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
@@ -41,7 +40,6 @@ class RouterContext
 /**
  * @property-read \ManaPHP\AliasInterface           $alias
  * @property-read \ManaPHP\Http\RequestInterface    $request
- * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
  * @property-read \ManaPHP\Http\RouterContext       $context
  */
 class Router extends Component implements RouterInterface
@@ -358,7 +356,7 @@ class Router extends Component implements RouterInterface
      * @param string $uri
      * @param string $method
      *
-     * @return \ManaPHP\Http\RouterContext|false
+     * @return bool
      */
     public function match($uri = null, $method = null)
     {
@@ -442,24 +440,7 @@ class Router extends Component implements RouterInterface
 
         $this->fireEvent('request:routed');
 
-        return $context;
-    }
-
-    /**
-     * Handles routing information received from the rewrite engine
-     *
-     * @param string $uri
-     * @param string $method
-     *
-     * @return mixed
-     */
-    public function dispatch($uri = null, $method = null)
-    {
-        if (!$router_context = $this->match($uri, $method)) {
-            throw new NotFoundRouteException(['router does not have matched route for `%s`', $this->getRewriteUri()]);
-        }
-
-        return $this->dispatcher->dispatch($router_context);
+        return $context->matched;
     }
 
     /**
