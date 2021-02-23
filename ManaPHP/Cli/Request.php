@@ -100,7 +100,7 @@ class Request extends Component implements RequestInterface
                     throw new RequestException(['long `:option` option is too short', 'option' => $o]);
                 }
 
-                $this->options[substr($o, 2)] = !$args || $args[0] === '-' ? 1 : array_shift($args);
+                $this->options[substr($o, 2)] = !$args || $args[0][0] === '-' ? 1 : array_shift($args);
             } elseif (strlen($o) > 2) {
                 if (!$args || $args[0][0] === '-') {
                     foreach (str_split(substr($o, 1)) as $c) {
