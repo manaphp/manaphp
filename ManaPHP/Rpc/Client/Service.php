@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection MagicMethodsValidityInspection */
 
 namespace ManaPHP\Rpc\Client;
 
@@ -77,7 +77,7 @@ class Service implements Injectable
      *
      * @return mixed
      */
-    protected function rpcCall($method, $params = [], $options = [])
+    protected function __rpcCall($method, $params = [], $options = [])
     {
         if ($pos = strpos($method, '::')) {
             $method = substr($method, $pos + 2);
