@@ -5,7 +5,6 @@ namespace ManaPHP\Data\Redis;
 use ManaPHP\Event\EventArgs;
 
 /**
- * @property-read \ManaPHP\Configuration\Configure $configure
  * @property-read \ManaPHP\Logging\LoggerInterface $logger
  */
 class Tracer extends \ManaPHP\Event\Tracer
@@ -82,7 +81,7 @@ class Tracer extends \ManaPHP\Event\Tracer
             );
         } else {
             $key = $arguments[0] ?? false;
-            if (!$this->configure->debug && is_string($key) && str_starts_with($key, 'cache:')) {
+            if (!APP_DEBUG && is_string($key) && str_starts_with($key, 'cache:')) {
                 return;
             }
             $arguments = json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR);

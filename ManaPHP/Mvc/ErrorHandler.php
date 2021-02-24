@@ -7,7 +7,6 @@ use ManaPHP\ErrorHandlerInterface;
 use ManaPHP\Exception;
 
 /**
- * @property-read \ManaPHP\Configuration\Configure $configure
  * @property-read \ManaPHP\Logging\LoggerInterface $logger
  * @property-read \ManaPHP\Http\RequestInterface   $request
  * @property-read \ManaPHP\Http\ResponseInterface  $response
@@ -41,7 +40,7 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
      */
     public function render($exception)
     {
-        if ($this->configure->debug) {
+        if (APP_DEBUG) {
             if ($this->renderer->exists('@views/Errors/debug')) {
                 $template = '@views/Errors/debug';
             } else {

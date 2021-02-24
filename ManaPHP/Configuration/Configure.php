@@ -116,6 +116,12 @@ class Configure extends Component implements ConfigureInterface
             define('APP_ID', $this->id);
         }
 
+        if (defined('APP_DEBUG')) {
+            $this->debug = APP_DEBUG;
+        } else {
+            define('APP_DEBUG', $this->debug);
+        }
+
         return $this;
     }
 

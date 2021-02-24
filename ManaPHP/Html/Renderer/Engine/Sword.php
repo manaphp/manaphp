@@ -6,7 +6,6 @@ use ManaPHP\Component;
 use ManaPHP\Html\Renderer\EngineInterface;
 
 /**
- * @property-read \ManaPHP\Configuration\Configure             $configure
  * @property-read \ManaPHP\AliasInterface                      $alias
  * @property-read \ManaPHP\Html\Renderer\Engine\Sword\Compiler $swordCompiler
  */
@@ -50,7 +49,7 @@ class Sword extends Component implements EngineInterface
 
         $compiled = $this->alias->resolve($compiled);
 
-        if ($this->configure->debug || !file_exists($compiled) || filemtime($source) > filemtime($compiled)) {
+        if (APP_DEBUG || !file_exists($compiled) || filemtime($source) > filemtime($compiled)) {
             $this->swordCompiler->compileFile($source, $compiled);
         }
 

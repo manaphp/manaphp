@@ -46,11 +46,10 @@ class ResponseContext
 }
 
 /**
- * @property-read \ManaPHP\Configuration\Configure $configure
- * @property-read \ManaPHP\Http\RequestInterface   $request
- * @property-read \ManaPHP\Http\UrlInterface       $url
- * @property-read \ManaPHP\Http\RouterInterface    $router
- * @property-read \ManaPHP\Http\ResponseContext    $context
+ * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Http\UrlInterface     $url
+ * @property-read \ManaPHP\Http\RouterInterface  $router
+ * @property-read \ManaPHP\Http\ResponseContext  $context
  */
 class Response extends Component implements ResponseInterface
 {
@@ -510,7 +509,7 @@ class Response extends Component implements ResponseInterface
             $json = ['code' => $code, 'message' => 'Internal Server Error'];
         }
 
-        if ($this->configure->debug) {
+        if (APP_DEBUG) {
             $json['message'] = get_class($throwable) . ": " . $throwable->getMessage();
             $json['exception'] = explode("\n", $throwable);
         }
