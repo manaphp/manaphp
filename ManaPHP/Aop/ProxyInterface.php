@@ -4,5 +4,5 @@ namespace ManaPHP\Aop;
 
 interface ProxyInterface
 {
-    public function getTargetObject();
+    public function __getTarget();
 }

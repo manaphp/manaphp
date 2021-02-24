@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection MagicMethodsValidityInspection */
 
 namespace ManaPHP\Aop;
 
@@ -7,27 +7,27 @@ class Proxy implements ProxyInterface
     /**
      * @var mixed
      */
-    protected $targetObject;
+    protected $__target;
 
     /**
-     * @param mixed $targetObject
+     * @param mixed $target
      */
-    public function __construct($targetObject)
+    public function __construct($target)
     {
-        $this->targetObject = $targetObject;
+        $this->__target = $target;
     }
 
     /**
      * @return mixed
      */
-    public function getTargetObject()
+    public function __getTarget()
     {
-        return $this->targetObject;
+        return $this->__target;
     }
 
     public function __call($name, $arguments)
     {
-        $target = $this->targetObject;
+        $target = $this->__target;
 
         return $target->$name(...$arguments);
     }
@@ -39,7 +39,7 @@ class Proxy implements ProxyInterface
      */
     public function __get($name)
     {
-        return $this->targetObject->$name;
+        return $this->__target->$name;
     }
 
     /**
@@ -48,7 +48,7 @@ class Proxy implements ProxyInterface
      */
     public function __set($name, $value)
     {
-        $this->targetObject->$name = $value;
+        $this->__target->$name = $value;
     }
 
     /**
@@ -58,6 +58,6 @@ class Proxy implements ProxyInterface
      */
     public function __isset($name)
     {
-        return isset($this->targetObject->$name);
+        return isset($this->__target->$name);
     }
 }

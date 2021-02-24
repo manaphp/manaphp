@@ -15,7 +15,7 @@ class Reflection
      */
     public static function isInstanceOf($object, $class_name)
     {
-        return is_a($object instanceof ProxyInterface ? $object->getTargetObject() : $object, $class_name);
+        return is_a($object instanceof ProxyInterface ? $object->__getTarget() : $object, $class_name);
     }
 
     /**
@@ -25,7 +25,7 @@ class Reflection
      */
     public static function getClass($object)
     {
-        return get_class($object instanceof ProxyInterface ? $object->getTargetObject() : $object);
+        return get_class($object instanceof ProxyInterface ? $object->__getTarget() : $object);
     }
 
     /**
@@ -35,7 +35,7 @@ class Reflection
      */
     public static function getObjectVars($object)
     {
-        return get_object_vars($object instanceof ProxyInterface ? $object->getTargetObject() : $object);
+        return get_object_vars($object instanceof ProxyInterface ? $object->__getTarget() : $object);
     }
 
     /**
@@ -46,6 +46,6 @@ class Reflection
      */
     public static function reflectMethod($object, $method)
     {
-        return new ReflectionMethod($object instanceof ProxyInterface ? $object->getTargetObject() : $object, $method);
+        return new ReflectionMethod($object instanceof ProxyInterface ? $object->__getTarget() : $object, $method);
     }
 }
