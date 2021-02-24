@@ -80,7 +80,7 @@ class LoggerPlugin extends Plugin
             $this->ttl = (int)$options['ttl'];
         }
 
-        $this->prefix = $options['prefix'] ?? "cache:{$this->configure->id}:loggerPlugin:";
+        $this->prefix = $options['prefix'] ?? sprintf("cache:%s:loggerPlugin:", APP_ID);
 
         if (isset($options['template'])) {
             $this->template = $options['template'];

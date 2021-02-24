@@ -132,7 +132,7 @@ class DebuggerPlugin extends Plugin
             $this->ttl = 0;
         }
 
-        $this->prefix = $options['prefix'] ?? "cache:{$this->configure->id}:debuggerPlugin:";
+        $this->prefix = $options['prefix'] ?? sprintf("cache:%s:debuggerPlugin:", APP_ID);
 
         if (isset($options['template'])) {
             $this->template = $options['template'];
@@ -196,7 +196,7 @@ class DebuggerPlugin extends Plugin
             if ($this->broadcast) {
                 $key = implode(
                     ':',
-                    ['__debuggerPlugin', $this->configure->id, $this->request->getClientIp(),
+                    ['__debuggerPlugin', APP_ID, $this->request->getClientIp(),
                      $this->dispatcher->getPath()]
                 );
                 $this->redisCache->publish($key, $this->response->getHeader('X-Debugger-Link'));

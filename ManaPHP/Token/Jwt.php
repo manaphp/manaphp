@@ -5,7 +5,6 @@ namespace ManaPHP\Token;
 use ManaPHP\Component;
 
 /**
- * @property-read \ManaPHP\Configuration\Configure $configure
  * @property-read \ManaPHP\Security\CryptInterface $crypt
  */
 class Jwt extends Component implements JwtInterface
@@ -36,7 +35,7 @@ class Jwt extends Component implements JwtInterface
         if (isset($options['secret'])) {
             $this->secret = $options['secret'];
         } else {
-            $this->secret = $this->crypt->getDerivedKey('jwt:' . $this->configure->id);
+            $this->secret = $this->crypt->getDerivedKey('jwt:' . APP_ID);
         }
     }
 

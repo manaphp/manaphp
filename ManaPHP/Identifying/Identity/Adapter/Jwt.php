@@ -5,7 +5,6 @@ namespace ManaPHP\Identifying\Identity\Adapter;
 use ManaPHP\Identifying\Identity;
 
 /**
- * @property-read \ManaPHP\Configuration\Configure  $configure
  * @property-read \ManaPHP\Http\RequestInterface    $request
  * @property-read \ManaPHP\Token\ScopedJwtInterface $scopedJwt
  */
@@ -25,7 +24,7 @@ class Jwt extends Identity
             $this->injections['scopedJwt'] = $options['scopedJwt'];
         }
 
-        $this->scope = $options['scope'] ?? $this->configure->id;
+        $this->scope = $options['scope'] ?? APP_ID;
     }
 
     /**

@@ -12,7 +12,6 @@ use Swoole\Server;
 use Throwable;
 
 /**
- * @property-read \ManaPHP\Configuration\Configure $configure
  * @property-read \ManaPHP\AliasInterface          $alias
  * @property-read \ManaPHP\Logging\LoggerInterface $logger
  */
@@ -103,7 +102,7 @@ class Swoole extends Component implements ServerInterface
      */
     public function onStart($server)
     {
-        @cli_set_process_title(sprintf('manaphp %s: master', $this->configure->id));
+        @cli_set_process_title(sprintf('manaphp %s: master', APP_ID));
     }
 
     /**
@@ -111,7 +110,7 @@ class Swoole extends Component implements ServerInterface
      */
     public function onManagerStart()
     {
-        @cli_set_process_title(sprintf('manaphp %s: manager', $this->configure->id));
+        @cli_set_process_title(sprintf('manaphp %s: manager', APP_ID));
     }
 
     /**
@@ -124,7 +123,7 @@ class Swoole extends Component implements ServerInterface
      */
     public function onWorkerStart($server, $worker_id)
     {
-        @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->configure->id, $worker_id));
+        @cli_set_process_title(sprintf('manaphp %s: worker/%d', APP_ID, $worker_id));
     }
 
     /**

@@ -5,8 +5,7 @@ namespace ManaPHP\Http\Session\Adapter;
 use ManaPHP\Http\Session;
 
 /**
- * @property-read \ManaPHP\Configuration\Configure $configure
- * @property-read \Redis                           $redisCache
+ * @property-read \Redis $redisCache
  */
 class Redis extends Session
 {
@@ -26,7 +25,7 @@ class Redis extends Session
 
         parent::__construct($options);
 
-        $this->prefix = $options['prefix'] ?? "cache:{$this->configure->id}:session:";
+        $this->prefix = $options['prefix'] ?? sprintf("cache:%s:session:", APP_ID);
     }
 
     /**

@@ -7,7 +7,6 @@ use ManaPHP\Exception\TooManyRequestsException;
 use ManaPHP\Plugin;
 
 /**
- * @property-read \ManaPHP\Configuration\Configure       $configure
  * @property-read \ManaPHP\Identifying\IdentityInterface $identity
  * @property-read \ManaPHP\Http\RequestInterface         $request
  * @property-read \Redis|\ManaPHP\Data\RedisInterface    $redisCache
@@ -42,7 +41,7 @@ class RateLimitPlugin extends Plugin
             $this->enabled = (bool)$options['enabled'];
         }
 
-        $this->prefix = $options['prefix'] ?? "cache:{$this->configure->id}:rateLimitPlugin:";
+        $this->prefix = $options['prefix'] ?? sprintf("cache:%s:rateLimitPlugin:", APP_ID);
 
         if (isset($options['limits'])) {
             $this->limits = $options['limits'];

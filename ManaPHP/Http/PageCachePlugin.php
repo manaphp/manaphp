@@ -21,7 +21,6 @@ class PageCachePluginContext
 }
 
 /**
- * @property-read \ManaPHP\Configuration\Configure     $configure
  * @property-read \ManaPHP\Http\RequestInterface       $request
  * @property-read \ManaPHP\Http\ResponseInterface      $response
  * @property-read \Redis|\ManaPHP\Data\RedisInterface  $redisCache
@@ -52,7 +51,7 @@ class PageCachePlugin extends Plugin
             $this->enabled = (bool)$options['enabled'];
         }
 
-        $this->prefix = $options['prefix'] ?? "cache:{$this->configure->id}:pageCachePlugin:";
+        $this->prefix = $options['prefix'] ?? sprintf("cache:%s:pageCachePlugin:", APP_ID);
 
         if ($this->enabled) {
             $this->attachEvent('request:ready', [$this, 'onRequestReady']);

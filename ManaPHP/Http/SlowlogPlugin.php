@@ -6,7 +6,6 @@ use ManaPHP\Helper\LocalFS;
 use ManaPHP\Plugin;
 
 /**
- * @property-read \ManaPHP\Configuration\Configure  $configure
  * @property-read \ManaPHP\Http\RequestInterface    $request
  * @property-read \ManaPHP\Http\ResponseInterface   $response
  * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
@@ -41,7 +40,7 @@ class SlowlogPlugin extends Plugin
             $this->file = $options['file'];
         }
 
-        $this->file = strtr($this->file, ['{id}' => $this->configure->id]);
+        $this->file = strtr($this->file, ['{id}' => APP_ID]);
 
         if (isset($options['format'])) {
             $this->format = $options['format'];

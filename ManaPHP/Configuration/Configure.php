@@ -110,6 +110,12 @@ class Configure extends Component implements ConfigureInterface
             $this->$field = $value;
         }
 
+        if (defined('APP_ID')) {
+            $this->id = APP_ID;
+        } else {
+            define('APP_ID', $this->id);
+        }
+
         return $this;
     }
 

@@ -5,8 +5,7 @@ namespace ManaPHP\Logging\Logger\Adapter;
 use ManaPHP\Logging\Logger;
 
 /**
- * @property-read \ManaPHP\Configuration\Configure $configure
- * @property-read \ManaPHP\AliasInterface          $alias
+ * @property-read \ManaPHP\AliasInterface $alias
  */
 class File extends Logger
 {
@@ -31,7 +30,7 @@ class File extends Logger
             $this->file = $options['file'];
         }
 
-        $this->file = strtr($this->file, ['{id}' => $this->configure->id]);
+        $this->file = strtr($this->file, ['{id}' => APP_ID]);
 
         if (isset($options['format'])) {
             $this->format = $options['format'];
