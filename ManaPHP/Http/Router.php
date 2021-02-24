@@ -38,9 +38,9 @@ class RouterContext
 }
 
 /**
- * @property-read \ManaPHP\AliasInterface           $alias
- * @property-read \ManaPHP\Http\RequestInterface    $request
- * @property-read \ManaPHP\Http\RouterContext       $context
+ * @property-read \ManaPHP\AliasInterface        $alias
+ * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Http\RouterContext    $context
  */
 class Router extends Component implements RouterInterface
 {
