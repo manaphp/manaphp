@@ -342,16 +342,16 @@ class Swoole extends \ManaPHP\Rpc\Server
             }
             $this->swoole->push($context->fd, json_stringify($data));
         } else {
-            $sw_response = $this->context->response;
+            $response = $this->context->response;
 
-            $sw_response->status($this->response->getStatusCode());
+            $response->status($this->response->getStatusCode());
 
             foreach ($this->response->getHeaders() as $name => $value) {
-                $sw_response->header($name, $value, false);
+                $response->header($name, $value, false);
             }
 
-            $sw_response->header('X-Request-Id', $this->request->getRequestId(), false);
-            $sw_response->header('X-Response-Time', $this->request->getElapsedTime(), false);
+            $response->header('X-Request-Id', $this->request->getRequestId(), false);
+            $response->header('X-Response-Time', $this->request->getElapsedTime(), false);
 
             if ($this->response->hasCookies()) {
                 throw new NotSupportedException('rpc not support cookies');
@@ -362,7 +362,7 @@ class Swoole extends \ManaPHP\Rpc\Server
             }
 
             $data = $this->response->getContent();
-            $sw_response->end(is_string($data) ? $data : json_stringify($data));
+            $response->end(is_string($data) ? $data : json_stringify($data));
         }
     }
 

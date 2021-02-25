@@ -222,19 +222,19 @@ class Swoole extends Server
 
         $this->fireEvent('response:sending');
 
-        $sw_response = $this->context->response;
+        $response = $this->context->response;
 
-        $sw_response->status($this->response->getStatusCode());
+        $response->status($this->response->getStatusCode());
 
         foreach ($this->response->getHeaders() as $name => $value) {
-            $sw_response->header($name, $value, false);
+            $response->header($name, $value, false);
         }
 
-        $sw_response->header('X-Request-Id', $this->request->getRequestId(), false);
-        $sw_response->header('X-Response-Time', $this->request->getElapsedTime(), false);
+        $response->header('X-Request-Id', $this->request->getRequestId(), false);
+        $response->header('X-Response-Time', $this->request->getElapsedTime(), false);
 
         foreach ($this->response->getCookies() as $cookie) {
-            $sw_response->cookie(
+            $response->cookie(
                 $cookie['name'],
                 $cookie['value'],
                 $cookie['expire'],
@@ -247,14 +247,14 @@ class Swoole extends Server
 
         $content = $this->response->getContent();
         if ($this->response->getStatusCode() === 304) {
-            $sw_response->end('');
+            $response->end('');
         } elseif ($this->request->isHead()) {
-            $sw_response->header('Content-Length', strlen($content), false);
-            $sw_response->end('');
+            $response->header('Content-Length', strlen($content), false);
+            $response->end('');
         } elseif ($file = $this->response->getFile()) {
-            $sw_response->sendfile($this->alias->resolve($file));
+            $response->sendfile($this->alias->resolve($file));
         } else {
-            $sw_response->end($content);
+            $response->end($content);
         }
 
         $this->fireEvent('response:sent');
