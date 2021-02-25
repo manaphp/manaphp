@@ -10,6 +10,7 @@ namespace PHPSTORM_META {
         \ManaPHP\Di\ContainerInterface::getShared(), map(
             [
                 'eventManager'    => \ManaPHP\Event\ManagerInterface::class,
+                'aopManager'      => \ManaPHP\Aop\ManagerInterface::class,
                 'alias'           => \ManaPHP\AliasInterface::class,
                 'dotenv'          => \ManaPHP\Configuration\DotenvInterface::class,
                 'configure'       => \ManaPHP\Configuration\Configure::class,
@@ -70,6 +71,7 @@ namespace PHPSTORM_META {
         \container(), map(
             [
                 'eventManager'     => \ManaPHP\Event\ManagerInterface::class,
+                'aopManager'       => \ManaPHP\Aop\ManagerInterface::class,
                 'alias'            => \ManaPHP\AliasInterface::class,
                 'dotenv'           => \ManaPHP\Configuration\DotenvInterface::class,
                 'configure'        => \ManaPHP\Configuration\Configure::class,
@@ -132,6 +134,7 @@ namespace PHPSTORM_META {
         \ManaPHP\Component::getShared(), map(
             [
                 'eventManager'     => \ManaPHP\Event\ManagerInterface::class,
+                'aopManager'       => \ManaPHP\Aop\ManagerInterface::class,
                 'alias'            => \ManaPHP\AliasInterface::class,
                 'dotenv'           => \ManaPHP\Configuration\DotenvInterface::class,
                 'configure'        => \ManaPHP\Configuration\Configure::class,

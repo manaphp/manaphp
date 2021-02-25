@@ -10,11 +10,18 @@ class Proxy implements ProxyInterface
     protected $__target;
 
     /**
-     * @param mixed $target
+     * @var \ManaPHP\Aop\JoinPoint[]
      */
-    public function __construct($target)
+    protected $__joinPoints;
+
+    /**
+     * @param mixed                    $target
+     * @param \ManaPHP\Aop\JoinPoint[] $joinPoints
+     */
+    public function __construct($target, $joinPoints)
     {
         $this->__target = $target;
+        $this->__joinPoints = $joinPoints;
     }
 
     /**
@@ -28,8 +35,14 @@ class Proxy implements ProxyInterface
     public function __call($name, $arguments)
     {
         $target = $this->__target;
+        if (($joinPoint = $this->__joinPoints[$name] ?? null) === null) {
+            return $target->$name(...$arguments);
+        } else {
+            $joinPoint = clone $joinPoint;
+            $joinPoint->args = $arguments;
 
-        return $target->$name(...$arguments);
+            return $joinPoint->invoke();
+        }
     }
 
     /**

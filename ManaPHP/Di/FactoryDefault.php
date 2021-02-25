@@ -10,9 +10,9 @@ class FactoryDefault extends Container
 
         $this->definitions = [
             'eventManager'     => 'ManaPHP\Event\Manager',
+            'aopManager'       => 'ManaPHP\Aop\Manager',
             'poolManager'      => 'ManaPHP\Pool\Manager',
             'alias'            => 'ManaPHP\Alias',
-            'aopCutter'        => 'ManaPHP\Aop\Cutter',
             'dotenv'           => 'ManaPHP\Configuration\Dotenv',
             'configure'        => 'ManaPHP\Configuration\Configure',
             'settings'         => 'ManaPHP\Configuration\Settings\Adapter\Redis',

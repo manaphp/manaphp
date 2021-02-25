@@ -5,7 +5,7 @@ namespace ManaPHP\Aop;
 use ManaPHP\Component;
 
 /**
- * @property-read \ManaPHP\Aop\CutterInterface $aopCutter
+ * @property-read \ManaPHP\Aop\ManagerInterface $aopManger
  */
 abstract class Aspect extends Component
 {
