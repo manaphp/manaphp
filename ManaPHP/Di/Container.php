@@ -36,8 +36,6 @@ class Container implements ContainerInterface
         if (self::$default === null) {
             self::$default = $this;
         }
-
-        $this->emitter = new Emitter();
     }
 
     /**
@@ -56,6 +54,10 @@ class Container implements ContainerInterface
      */
     public function on($event, $handler)
     {
+        if ($this->emitter === null) {
+            $this->emitter = new Emitter();
+        }
+
         $this->emitter->on($event, $handler);
 
         return $this;
@@ -274,6 +276,10 @@ class Container implements ContainerInterface
      */
     protected function setSharedInternal($name, $instance)
     {
+        if ($this->emitter !== null) {
+            $instance = $this->emitter->emit('resolved', $instance) ?? $instance;
+        }
+
         $this->instances[$name] = $instance;
 
         return $instance;
