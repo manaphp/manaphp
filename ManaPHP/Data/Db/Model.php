@@ -33,9 +33,9 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
     /**
      * @return \ManaPHP\Data\Db\Model\MetadataInterface
      */
-    public function getModelsMetadata()
+    public function getModelMetadata()
     {
-        return $this->getShared('modelsMetadata');
+        return $this->getShared('modelMetadata');
     }
 
     /**
@@ -51,7 +51,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
             if ($primaryKey = $this->inferPrimaryKey($class)) {
                 return $cached[$class] = $primaryKey;
             } else {
-                $primaryKeys = $this->getModelsMetadata()->getPrimaryKeyAttributes($this);
+                $primaryKeys = $this->getModelMetadata()->getPrimaryKeyAttributes($this);
                 if (count($primaryKeys) !== 1) {
                     throw new NotSupportedException('only support one primary key');
                 }
@@ -78,7 +78,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
                     $fields[] = $field;
                 }
             }
-            $cached[$class] = $fields ?: $this->getModelsMetadata()->getAttributes($this);
+            $cached[$class] = $fields ?: $this->getModelMetadata()->getAttributes($this);
         }
 
         return $cached[$class];
@@ -94,11 +94,11 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
         $class = static::class;
         if (($fields = $cached[$class] ?? null) === null) {
             if ($map = $this->map()) {
-                foreach ($this->getModelsMetadata()->getIntTypeAttributes($this) as $field) {
+                foreach ($this->getModelMetadata()->getIntTypeAttributes($this) as $field) {
                     $fields[] = array_search($field, $map, true) ?: $field;
                 }
             } else {
-                $fields = $this->getModelsMetadata()->getIntTypeAttributes($this);
+                $fields = $this->getModelMetadata()->getIntTypeAttributes($this);
             }
 
             $cached[$class] = $fields;
@@ -394,7 +394,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
         /** @var \ManaPHP\Logging\LoggerInterface $logger */
         $logger = $sample->getShared('logger');
 
-        if ($fields = array_diff(array_keys($record), $sample->getModelsMetadata()->getAttributes($sample))) {
+        if ($fields = array_diff(array_keys($record), $sample->getModelMetadata()->getAttributes($sample))) {
             $logger->debug(['insert `:1` table skip fields: :2', $table, array_values($fields)]);
 
             foreach ($fields as $field) {

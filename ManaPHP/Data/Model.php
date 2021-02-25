@@ -871,10 +871,10 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
      */
     public function with($withs)
     {
-        /** @var \ManaPHP\Data\Relation\ManagerInterface $relationsManager */
-        $relationsManager = $this->getShared('relationsManager');
+        /** @var \ManaPHP\Data\Relation\ManagerInterface $relationManager */
+        $relationManager = $this->getShared('relationManager');
 
-        $relationsManager->earlyLoad($this, [$this], $withs);
+        $relationManager->earlyLoad($this, [$this], $withs);
         return $this;
     }
 
@@ -1006,10 +1006,10 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
      */
     public function fireEvent($event, $data = null)
     {
-        /** @var \ManaPHP\Event\ManagerInterface $eventsManager */
-        $eventsManager = $this->getShared('eventsManager');
+        /** @var \ManaPHP\Event\ManagerInterface $eventManager */
+        $eventManager = $this->getShared('eventManager');
 
-        $eventsManager->fireEvent($event, $data, $this);
+        $eventManager->fireEvent($event, $data, $this);
     }
 
     /**
@@ -1322,15 +1322,15 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
             return $this->_container = Container::getDefault();
         }
 
-        /** @var \ManaPHP\Data\Relation\ManagerInterface $relationsManager */
+        /** @var \ManaPHP\Data\Relation\ManagerInterface $relationManager */
 
         $method = 'get' . ucfirst($name);
         if (method_exists($this, $method)) {
             return $this->$name = $this->$method()->fetch();
         } elseif ($this->_container->has($name)) {
             return $this->{$name} = $this->getShared($name);
-        } elseif (($relationsManager = $this->getShared('relationsManager'))->has($this, $name)) {
-            return $this->$name = $relationsManager->lazyLoad($this, $name)->fetch();
+        } elseif (($relationManager = $this->getShared('relationManager'))->has($this, $name)) {
+            return $this->$name = $relationManager->lazyLoad($this, $name)->fetch();
         } else {
             throw new UnknownPropertyException(['`%s` does not contain `%s` field.`', static::class, $name]);
         }
@@ -1371,12 +1371,12 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
     public function __call($name, $arguments)
     {
         if (str_starts_with($name, 'get')) {
-            /** @var \ManaPHP\Data\Relation\ManagerInterface $relationsManager */
-            $relationsManager = $this->getShared('relationsManager');
+            /** @var \ManaPHP\Data\Relation\ManagerInterface $relationManager */
+            $relationManager = $this->getShared('relationManager');
 
             $relation = lcfirst(substr($name, 3));
-            if ($relationsManager->has($this, $relation)) {
-                return $relationsManager->lazyLoad($this, $relation);
+            if ($relationManager->has($this, $relation)) {
+                return $relationManager->lazyLoad($this, $relation);
             } else {
                 throw new NotSupportedException(['`%s` model does not define `%s` relation', static::class, $relation]);
             }

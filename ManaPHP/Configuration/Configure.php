@@ -346,16 +346,16 @@ class Configure extends Component implements ConfigureInterface
                 foreach ($this->appGlob('Areas/*/Listeners/?*Listener.php') as $item) {
                     $item = str_replace($this->alias->get('@app'), 'App', $item);
                     $item = substr(str_replace('/', '\\', $item), 0, -4);
-                    $this->eventsManager->addListener($item);
+                    $this->eventManager->addListener($item);
                 }
 
                 foreach ($this->appGlob('Listeners/?*Listener.php') as $item) {
                     $item = str_replace($this->alias->get('@app'), 'App', $item);
                     $item = substr(str_replace('/', '\\', $item), 0, -4);
-                    $this->eventsManager->addListener($item);
+                    $this->eventManager->addListener($item);
                 }
             } else {
-                $this->eventsManager->addListener($listener);
+                $this->eventManager->addListener($listener);
             }
         }
 

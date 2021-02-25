@@ -9,7 +9,7 @@ class FactoryDefault extends Container
         parent::__construct();
 
         $this->definitions = [
-            'eventsManager'    => 'ManaPHP\Event\Manager',
+            'eventManager'     => 'ManaPHP\Event\Manager',
             'poolManager'      => 'ManaPHP\Pool\Manager',
             'alias'            => 'ManaPHP\Alias',
             'aopCutter'        => 'ManaPHP\Aop\Cutter',
@@ -17,7 +17,7 @@ class FactoryDefault extends Container
             'configure'        => 'ManaPHP\Configuration\Configure',
             'settings'         => 'ManaPHP\Configuration\Settings\Adapter\Redis',
             'invoker'          => 'ManaPHP\Controller\Invoker',
-            'modelsMetadata'   => 'ManaPHP\Data\Db\Model\Metadata\Adapter\Memory',
+            'modelMetadata'    => 'ManaPHP\Data\Db\Model\Metadata\Adapter\Memory',
             'validator'        => 'ManaPHP\Validating\Validator',
             'crypt'            => 'ManaPHP\Security\Crypt',
             'logger'           => 'ManaPHP\Logging\Logger\Adapter\File',
@@ -38,7 +38,7 @@ class FactoryDefault extends Container
             'mongodb'          => 'ManaPHP\Data\Mongodb',
             'translator'       => 'ManaPHP\I18n\Translator',
             'rabbitmq'         => 'ManaPHP\Messaging\Amqp',
-            'relationsManager' => 'ManaPHP\Data\Relation\Manager',
+            'relationManager'  => 'ManaPHP\Data\Relation\Manager',
             'mailer'           => 'ManaPHP\Mailing\Mailer\Adapter\Smtp',
             'bosClient'        => 'ManaPHP\Bos\Client',
             'wspClient'        => 'ManaPHP\Ws\Pushing\Client',

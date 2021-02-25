@@ -14,7 +14,7 @@ use ManaPHP\Helper\Sharding\ShardingTooManyException;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface          $request
- * @property-read \ManaPHP\Data\Relation\ManagerInterface $relationsManager
+ * @property-read \ManaPHP\Data\Relation\ManagerInterface $relationManager
  */
 abstract class Query extends Component implements QueryInterface, IteratorAggregate
 {
@@ -507,7 +507,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
 
             $parent_value = $with[$parent_name];
             if (!Reflection::isInstanceOf($parent_value, QueryInterface::class)) {
-                $with[$parent_name] = $this->relationsManager->getQuery($this->model, $parent_name, $parent_value);
+                $with[$parent_name] = $this->relationManager->getQuery($this->model, $parent_name, $parent_value);
             }
 
             $with[$parent_name]->with(is_int($k) ? [$child_name] : [$child_name => $v]);
@@ -579,7 +579,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
         }
 
         if ($rows && $this->with) {
-            $rows = $this->relationsManager->earlyLoad($model, $rows, $this->with);
+            $rows = $this->relationManager->earlyLoad($model, $rows, $this->with);
         }
 
         if (($map = $this->map) !== null) {

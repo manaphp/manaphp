@@ -9,7 +9,7 @@ use ReflectionMethod;
 use ReflectionProperty;
 
 /**
- * @property-read \ManaPHP\Data\Db\Model\MetadataInterface $modelsMetadata
+ * @property-read \ManaPHP\Data\Db\Model\MetadataInterface $modelMetadata
  */
 class Linter extends Component
 {
@@ -61,7 +61,7 @@ class Linter extends Component
                 if ($model instanceof DbModel) {
                     $all = $this->getPropertyFields();
                     if (!$all) {
-                        $all = $this->modelsMetadata->getAttributes($model);
+                        $all = $this->modelMetadata->getAttributes($model);
                     }
                 } else {
                     $all = array_keys($model->fieldTypes());
@@ -69,7 +69,7 @@ class Linter extends Component
             } elseif ($methodName === 'intFields') {
                 $some = $model->intFields();
                 if ($model instanceof DbModel) {
-                    $all = $this->modelsMetadata->getIntTypeAttributes($model);
+                    $all = $this->modelMetadata->getIntTypeAttributes($model);
                 } else {
                     $all = array_keys(
                         array_filter(

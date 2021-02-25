@@ -9,7 +9,7 @@ use ManaPHP\Helper\Reflection;
 use Swoole\Coroutine;
 
 /**
- * @property-read \ManaPHP\Event\ManagerInterface $eventsManager
+ * @property-read \ManaPHP\Event\ManagerInterface $eventManager
  * @property-read \object                         $context
  */
 class Component implements Injectable, JsonSerializable
@@ -199,7 +199,7 @@ class Component implements Injectable, JsonSerializable
      */
     protected function attachEvent($event, $handler, $priority = 0)
     {
-        $this->eventsManager->attachEvent($event, $handler, $priority);
+        $this->eventManager->attachEvent($event, $handler, $priority);
 
         return $this;
     }
@@ -212,7 +212,7 @@ class Component implements Injectable, JsonSerializable
      */
     protected function detachEvent($event, $handler)
     {
-        $this->eventsManager->detachEvent($event, $handler);
+        $this->eventManager->detachEvent($event, $handler);
 
         return $this;
     }
@@ -225,7 +225,7 @@ class Component implements Injectable, JsonSerializable
      */
     protected function peekEvent($group, $handler)
     {
-        $this->eventsManager->peekEvent($group, $handler);
+        $this->eventManager->peekEvent($group, $handler);
 
         return $this;
     }
@@ -240,7 +240,7 @@ class Component implements Injectable, JsonSerializable
      */
     protected function fireEvent($event, $data = null)
     {
-        return $this->eventsManager->fireEvent($event, $data, $this);
+        return $this->eventManager->fireEvent($event, $data, $this);
     }
 
     /**
