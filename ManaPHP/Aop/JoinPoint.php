@@ -74,12 +74,20 @@ class JoinPoint
         $target = $this->target;
         if (isset($this->advisors[Advisor::ADVICE_AFTER_THROWING])) {
             try {
-                return $this->return = $target->{$this->method}(...$this->args);
+                if ($target instanceof Proxyable) {
+                    return $this->return = $target->__proxyCall($this->method, $this->args);
+                } else {
+                    return $this->return = $target->{$this->method}(...$this->args);
+                }
             } catch (Throwable $exception) {
                 return $this->exception = $exception;
             }
         } else {
-            return $this->return = $target->{$this->method}(...$this->args);
+            if ($target instanceof Proxyable) {
+                return $this->return = $target->__proxyCall($this->method, $this->args);
+            } else {
+                return $this->return = $target->{$this->method}(...$this->args);
+            }
         }
     }
 

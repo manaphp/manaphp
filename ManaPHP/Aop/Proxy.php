@@ -42,7 +42,11 @@ class Proxy implements ProxyInterface
     {
         if (($joinPoint = $this->__joinPoints[$name] ?? null) === null) {
             $target = $this->__target;
-            return $target->$name(...$arguments);
+            if ($target instanceof Proxyable) {
+                return $target->__proxyCall($name, $arguments);
+            } else {
+                return $target->$name(...$arguments);
+            }
         } else {
             $joinPoint = clone $joinPoint;
             return $joinPoint->invoke($arguments);

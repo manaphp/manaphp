@@ -33,8 +33,14 @@ class Manager extends Component implements ManagerInterface
 
         if ($advisorsOfClass) {
             $joinPoints = [];
+
+            $filter = ReflectionMethod::IS_PUBLIC;
+            if ($instance instanceof Proxyable) {
+                $filter |= ReflectionMethod::IS_PROTECTED;
+            }
+
             $rc = new ReflectionClass($instance);
-            foreach ($rc->getMethods(ReflectionMethod::IS_PUBLIC) as $rm) {
+            foreach ($rc->getMethods($filter) as $rm) {
                 $method = $rm->getName();
                 if (str_contains($method, '_')) {
                     continue;
