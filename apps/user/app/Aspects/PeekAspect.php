@@ -3,13 +3,18 @@
 namespace App\Aspects;
 
 use ManaPHP\Aop\Aspect;
+use ManaPHP\Aop\JoinPoint;
 
 class PeekAspect extends Aspect
 {
-    public function register()
+    public function __construct()
     {
-//        $this->aop::pointcutMethod(Db::class, 'fetchAll')->addAfter(function (JoinPoint $joinPoint){
-//            var_dump($joinPoint->args);
-//        });
+        return;
+
+        $this->aopManager->before(
+            '*::*', function (JoinPoint $joinPoint) {
+            var_dump(get_class($joinPoint->getTarget()) . '::' . $joinPoint->getMethod());
+        }
+        );
     }
 }

@@ -260,9 +260,7 @@ class Configure extends Component implements ConfigureInterface
     {
         foreach ($this->appGlob('Aspects/?*Aspect.php') as $item) {
             $class = 'App\Aspects\\' . basename($item, '.php');
-            /** @var \ManaPHP\Aop\Aspect $aspect */
-            $aspect = new $class();
-            $aspect->register();
+            $this->getShared($class);
         }
 
         return $this;

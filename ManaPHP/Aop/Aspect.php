@@ -3,11 +3,15 @@
 namespace ManaPHP\Aop;
 
 use ManaPHP\Component;
+use ManaPHP\Logging\Logger\LogCategorizable;
 
 /**
- * @property-read \ManaPHP\Aop\ManagerInterface $aopManger
+ * @property-read \ManaPHP\Aop\ManagerInterface $aopManager
  */
-abstract class Aspect extends Component
+abstract class Aspect extends Component implements LogCategorizable
 {
-    abstract public function register();
+    public function categorizeLog()
+    {
+        return basename(str_replace('\\', '.', static::class), 'Aspect');
+    }
 }
