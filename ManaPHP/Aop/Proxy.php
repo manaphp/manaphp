@@ -10,13 +10,13 @@ class Proxy implements ProxyInterface
     protected $__target;
 
     /**
-     * @var \ManaPHP\Aop\JoinPoint[]
+     * @var \ManaPHP\Aop\JoinPointInterface[]
      */
     protected $__joinPoints;
 
     /**
-     * @param mixed                    $target
-     * @param \ManaPHP\Aop\JoinPoint[] $joinPoints
+     * @param mixed                             $target
+     * @param \ManaPHP\Aop\JoinPointInterface[] $joinPoints
      */
     public function __construct($target, $joinPoints)
     {
@@ -32,16 +32,20 @@ class Proxy implements ProxyInterface
         return $this->__target;
     }
 
+    /**
+     * @param string $name
+     * @param array  $arguments
+     *
+     * @return mixed
+     */
     public function __call($name, $arguments)
     {
-        $target = $this->__target;
         if (($joinPoint = $this->__joinPoints[$name] ?? null) === null) {
+            $target = $this->__target;
             return $target->$name(...$arguments);
         } else {
             $joinPoint = clone $joinPoint;
-            $joinPoint->args = $arguments;
-
-            return $joinPoint->invoke();
+            return $joinPoint->invoke($arguments);
         }
     }
 
@@ -56,8 +60,8 @@ class Proxy implements ProxyInterface
     }
 
     /**
-     * @param mixed $name
-     * @param mixed $value
+     * @param string $name
+     * @param mixed  $value
      */
     public function __set($name, $value)
     {

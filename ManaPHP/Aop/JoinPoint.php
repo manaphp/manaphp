@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Aop;
 
-class JoinPoint
+class JoinPoint implements JoinPointInterface
 {
     /**
      * @var object
@@ -61,10 +61,14 @@ class JoinPoint
     }
 
     /**
+     * @param array $args
+     *
      * @return mixed
      */
-    public function invoke()
+    public function invoke($args)
     {
+        $this->args = $args;
+
         foreach ($this->advices as $advice) {
             $advice->adviseBefore($this);
         }
