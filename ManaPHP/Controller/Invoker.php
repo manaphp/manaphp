@@ -5,6 +5,7 @@ namespace ManaPHP\Controller;
 use ManaPHP\Component;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ReflectionMethod;
+use ManaPHP\Helper\Reflection;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface         $request
@@ -35,7 +36,7 @@ class Invoker extends Component implements InvokerInterface
 
         $container = $this->container;
 
-        $parameters = (new ReflectionMethod($controller, $method))->getParameters();
+        $parameters = Reflection::reflectMethod($controller, $method)->getParameters();
         foreach ($parameters as $parameter) {
             $name = $parameter->getName();
             $value = null;

@@ -54,6 +54,6 @@ class Controller extends Component implements LogCategorizable
      */
     public function invoke($action)
     {
-        return $this->invoker->invoke($this, $action . 'Action');
+        return $this->invoker->invoke($this->self, $action . 'Action');
     }
 }
