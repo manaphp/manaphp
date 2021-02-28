@@ -15,6 +15,11 @@ use Swoole\Coroutine;
 class Component implements Injectable, JsonSerializable
 {
     /**
+     * @var mixed
+     */
+    protected $self;
+
+    /**
      * @var int
      */
     protected $object_id;
@@ -52,12 +57,14 @@ class Component implements Injectable, JsonSerializable
 
     /**
      * @param \ManaPHP\Di\ContainerInterface $container
+     * @param mixed                          $self
      *
      * @return void
      */
-    public function setContainer($container)
+    public function setContainer($container, $self = null)
     {
         $this->container = $container;
+        $this->self = $self ?? $this;
     }
 
     /**

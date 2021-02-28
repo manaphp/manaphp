@@ -11,6 +11,11 @@ use ReflectionMethod;
 class Service implements Injectable
 {
     /**
+     * @var mixed
+     */
+    protected $self;
+
+    /**
      * @var string
      */
     protected $endpoint;
@@ -65,9 +70,10 @@ class Service implements Injectable
         $this->rpcClient = $this->container->getNew($class, $options);
     }
 
-    public function setContainer($container)
+    public function setContainer($container, $self = null)
     {
         $this->container = $container;
+        $this->self = $self ?? $this;
     }
 
     /**
