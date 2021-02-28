@@ -74,7 +74,7 @@ class Client extends Component implements ClientInterface
      */
     public function pushToId($receivers, $message, $endpoint = null)
     {
-        $this->push('id', $receivers, $message, $endpoint);
+        $this->self->push('id', $receivers, $message, $endpoint);
     }
 
     /**
@@ -86,7 +86,7 @@ class Client extends Component implements ClientInterface
      */
     public function pushToName($receivers, $message, $endpoint = null)
     {
-        $this->push('name', $receivers, $message, $endpoint);
+        $this->self->push('name', $receivers, $message, $endpoint);
     }
 
     /**
@@ -98,7 +98,7 @@ class Client extends Component implements ClientInterface
      */
     public function pushToRoom($receivers, $message, $endpoint = null)
     {
-        $this->push('room', $receivers, $message, $endpoint);
+        $this->self->push('room', $receivers, $message, $endpoint);
     }
 
     /**
@@ -110,7 +110,7 @@ class Client extends Component implements ClientInterface
      */
     public function pushToRole($receivers, $message, $endpoint = null)
     {
-        $this->push('role', $receivers, $message, $endpoint);
+        $this->self->push('role', $receivers, $message, $endpoint);
     }
 
     /**
@@ -121,7 +121,7 @@ class Client extends Component implements ClientInterface
      */
     public function pushToAll($message, $endpoint = null)
     {
-        $this->push('all', '*', $message, $endpoint);
+        $this->self->push('all', '*', $message, $endpoint);
     }
 
     /**
@@ -132,6 +132,6 @@ class Client extends Component implements ClientInterface
      */
     public function broadcast($message, $endpoint = null)
     {
-        $this->push('broadcast', '*', $message, $endpoint);
+        $this->self->push('broadcast', '*', $message, $endpoint);
     }
 }

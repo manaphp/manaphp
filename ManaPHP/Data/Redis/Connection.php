@@ -211,16 +211,16 @@ class Connection extends Component
      */
     public function call($name, $arguments)
     {
-        $redis = $this->getConnect();
+        $redis = $this->self->getConnect();
 
         try {
             $r = @$redis->$name(...$arguments);
         } catch (\Exception  $exception) {
             $r = null;
             $failed = true;
-            if (!$this->multi && !$this->ping()) {
-                $this->close();
-                $this->getConnect();
+            if (!$this->multi && !$this->self->ping()) {
+                $this->self->close();
+                $this->self->getConnect();
 
                 try {
                     $r = @$redis->$name(...$arguments);

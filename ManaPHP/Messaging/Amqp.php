@@ -115,7 +115,7 @@ class Amqp extends Component implements AmqpInterface
         }
 
         if (isset($query['prefetch_count'])) {
-            $this->qos($query['prefetch_count']);
+            $this->self->qos($query['prefetch_count']);
         }
     }
 
@@ -391,7 +391,7 @@ class Amqp extends Component implements AmqpInterface
     {
         $attributes['content_type'] = 'application/json';
 
-        return $this->publishMessage(json_stringify($message), $exchange, $routing_key, $flags, $attributes);
+        return $this->self->publishMessage(json_stringify($message), $exchange, $routing_key, $flags, $attributes);
     }
 
     /**

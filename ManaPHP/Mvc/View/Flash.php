@@ -57,7 +57,7 @@ abstract class Flash extends Component implements FlashInterface
      */
     public function error($message)
     {
-        $this->message('error', $message);
+        $this->self->message('error', $message);
     }
 
     /**
@@ -69,7 +69,7 @@ abstract class Flash extends Component implements FlashInterface
      */
     public function notice($message)
     {
-        $this->message('notice', $message);
+        $this->self->message('notice', $message);
     }
 
     /**
@@ -81,7 +81,7 @@ abstract class Flash extends Component implements FlashInterface
      */
     public function success($message)
     {
-        $this->message('notice', $message);
+        $this->self->message('notice', $message);
     }
 
     /**
@@ -93,7 +93,7 @@ abstract class Flash extends Component implements FlashInterface
      */
     public function warning($message)
     {
-        $this->message('warning', $message);
+        $this->self->message('warning', $message);
     }
 
     /**

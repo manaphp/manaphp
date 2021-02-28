@@ -72,8 +72,8 @@ class Connection extends Component implements ConnectionInterface
             $this->manager = new Manager($uri);
         }
 
-        if (microtime(true) - $this->last_heartbeat > $this->heartbeat && !$this->ping()) {
-            $this->close();
+        if (microtime(true) - $this->last_heartbeat > $this->heartbeat && !$this->self->ping()) {
+            $this->self->close();
             $this->fireEvent('mongodb:connect', compact('uri'));
 
             $this->manager = new Manager($this->uri);
@@ -106,7 +106,7 @@ class Connection extends Component implements ConnectionInterface
             $this->last_heartbeat = null;
         }
         try {
-            $result = $this->getManager()->executeBulkWrite($namespace, $bulk, $this->writeConcern);
+            $result = $this->self->getManager()->executeBulkWrite($namespace, $bulk, $this->writeConcern);
         } catch (\Exception $exception) {
             throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -126,7 +126,7 @@ class Connection extends Component implements ConnectionInterface
 
         $bulk->insert($document);
 
-        return $this->bulkWrite($namespace, $bulk)->getInsertedCount();
+        return $this->self->bulkWrite($namespace, $bulk)->getInsertedCount();
     }
 
     /**
@@ -144,7 +144,7 @@ class Connection extends Component implements ConnectionInterface
             $bulk->insert($document);
         }
 
-        return $this->bulkWrite($namespace, $bulk)->getInsertedCount();
+        return $this->self->bulkWrite($namespace, $bulk)->getInsertedCount();
     }
 
     /**
@@ -164,7 +164,7 @@ class Connection extends Component implements ConnectionInterface
             throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
-        return $this->bulkWrite($source, $bulk)->getModifiedCount();
+        return $this->self->bulkWrite($source, $bulk)->getModifiedCount();
     }
 
     /**
@@ -188,7 +188,7 @@ class Connection extends Component implements ConnectionInterface
             }
         }
 
-        return $this->bulkWrite($source, $bulk)->getModifiedCount();
+        return $this->self->bulkWrite($source, $bulk)->getModifiedCount();
     }
 
     /**
@@ -209,7 +209,7 @@ class Connection extends Component implements ConnectionInterface
             throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
-        return $this->bulkWrite($namespace, $bulk)->getUpsertedCount();
+        return $this->self->bulkWrite($namespace, $bulk)->getUpsertedCount();
     }
 
     /**
@@ -231,7 +231,7 @@ class Connection extends Component implements ConnectionInterface
             }
         }
 
-        return $this->bulkWrite($namespace, $bulk)->getUpsertedCount();
+        return $this->self->bulkWrite($namespace, $bulk)->getUpsertedCount();
     }
 
     /**
@@ -251,7 +251,7 @@ class Connection extends Component implements ConnectionInterface
             throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
-        return $this->bulkWrite($namespace, $bulk)->getDeletedCount();
+        return $this->self->bulkWrite($namespace, $bulk)->getDeletedCount();
     }
 
     /**
@@ -264,7 +264,9 @@ class Connection extends Component implements ConnectionInterface
      */
     protected function fetchAllInternal($namespace, $filter, $options, $readPreference)
     {
-        $cursor = $this->getManager()->executeQuery($namespace, new MongodbQuery($filter, $options), $readPreference);
+        $cursor = $this->self->getManager()->executeQuery(
+            $namespace, new MongodbQuery($filter, $options), $readPreference
+        );
         $cursor->setTypeMap(['root' => 'array']);
         return $cursor->toArray();
     }
@@ -293,9 +295,9 @@ class Connection extends Component implements ConnectionInterface
         } catch (\Exception $exception) {
             $result = null;
             $failed = true;
-            if (!$this->ping()) {
+            if (!$this->self->ping()) {
                 try {
-                    $this->close();
+                    $this->self->close();
                     $result = $this->fetchAllInternal($namespace, $filter, $options, $readPreference);
                     $failed = false;
                 } catch (\Exception $exception) {
@@ -323,7 +325,7 @@ class Connection extends Component implements ConnectionInterface
             $this->last_heartbeat = null;
         }
         try {
-            $cursor = $this->getManager()->executeCommand($db, new Command($command));
+            $cursor = $this->self->getManager()->executeCommand($db, new Command($command));
             $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
             return $cursor->toArray();
         } catch (\Exception $exception) {

@@ -121,9 +121,9 @@ class SlowlogPlugin extends Plugin
             'route'    => $route,
             'url'      => $this->request->getUrl(),
             '_REQUEST' => $this->request->get(),
-            'eid'      => $this->getEid($elapsed)
+            'eid'      => $this->self->getEid($elapsed)
         ];
 
-        $this->write($elapsed, $message);
+        $this->self->write($elapsed, $message);
     }
 }

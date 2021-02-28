@@ -246,7 +246,7 @@ class Request extends Component implements RequestInterface
                 throw new InvalidValueException(['the value of `:name` name is not scalar', 'name' => $name]);
             }
 
-            return $default === null ? $value : $this->normalizeValue($name, $value, $default);
+            return $default === null ? $value : $this->self->normalizeValue($name, $value, $default);
         } elseif ($default === null) {
             return $this->validator->validateValue($name, null, ['required']);
         } else {
@@ -383,10 +383,10 @@ class Request extends Component implements RequestInterface
      */
     public function getScheme()
     {
-        if ($scheme = $this->getServer('REQUEST_SCHEME')) {
+        if ($scheme = $this->self->getServer('REQUEST_SCHEME')) {
             return $scheme;
         } else {
-            return $this->getServer('HTTPS') === 'on' ? 'https' : 'http';
+            return $this->self->getServer('HTTPS') === 'on' ? 'https' : 'http';
         }
     }
 
@@ -397,7 +397,7 @@ class Request extends Component implements RequestInterface
      */
     public function isAjax()
     {
-        return $this->getServer('HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest';
+        return $this->self->getServer('HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest';
     }
 
     /**
@@ -405,7 +405,7 @@ class Request extends Component implements RequestInterface
      */
     public function isWebSocket()
     {
-        return $this->getServer('HTTP_UPGRADE') === 'websocket';
+        return $this->self->getServer('HTTP_UPGRADE') === 'websocket';
     }
 
     /**
@@ -413,7 +413,7 @@ class Request extends Component implements RequestInterface
      */
     public function getClientIp()
     {
-        return $this->getServer('HTTP_X_REAL_IP') ?: $this->getServer('REMOTE_ADDR');
+        return $this->self->getServer('HTTP_X_REAL_IP') ?: $this->self->getServer('REMOTE_ADDR');
     }
 
     /**
@@ -425,7 +425,7 @@ class Request extends Component implements RequestInterface
      */
     public function getUserAgent($max_len = -1)
     {
-        $user_agent = $this->getServer('HTTP_USER_AGENT');
+        $user_agent = $this->self->getServer('HTTP_USER_AGENT');
 
         return $max_len > 0 && strlen($user_agent) > $max_len ? substr($user_agent, 0, $max_len) : $user_agent;
     }
@@ -437,7 +437,7 @@ class Request extends Component implements RequestInterface
      */
     public function isPost()
     {
-        return $this->getMethod() === 'POST';
+        return $this->self->getMethod() === 'POST';
     }
 
     /**
@@ -447,7 +447,7 @@ class Request extends Component implements RequestInterface
      */
     public function isGet()
     {
-        return $this->getMethod() === 'GET';
+        return $this->self->getMethod() === 'GET';
     }
 
     /**
@@ -457,7 +457,7 @@ class Request extends Component implements RequestInterface
      */
     public function isPut()
     {
-        return $this->getMethod() === 'PUT';
+        return $this->self->getMethod() === 'PUT';
     }
 
     /**
@@ -467,7 +467,7 @@ class Request extends Component implements RequestInterface
      */
     public function isPatch()
     {
-        return $this->getMethod() === 'PATCH';
+        return $this->self->getMethod() === 'PATCH';
     }
 
     /**
@@ -477,7 +477,7 @@ class Request extends Component implements RequestInterface
      */
     public function isHead()
     {
-        return $this->getMethod() === 'HEAD';
+        return $this->self->getMethod() === 'HEAD';
     }
 
     /**
@@ -487,7 +487,7 @@ class Request extends Component implements RequestInterface
      */
     public function isDelete()
     {
-        return $this->getMethod() === 'DELETE';
+        return $this->self->getMethod() === 'DELETE';
     }
 
     /**
@@ -497,7 +497,7 @@ class Request extends Component implements RequestInterface
      */
     public function isOptions()
     {
-        return $this->getMethod() === 'OPTIONS';
+        return $this->self->getMethod() === 'OPTIONS';
     }
 
     /**
@@ -590,7 +590,7 @@ class Request extends Component implements RequestInterface
      */
     public function getFile($key = null)
     {
-        $files = $this->getFiles();
+        $files = $this->self->getFiles();
 
         if ($key === null) {
             if ($files) {
@@ -615,7 +615,7 @@ class Request extends Component implements RequestInterface
      */
     public function hasFile($key = null)
     {
-        $files = $this->getFiles();
+        $files = $this->self->getFiles();
 
         if ($key === null) {
             return count($files) > 0;
@@ -638,7 +638,7 @@ class Request extends Component implements RequestInterface
      */
     public function getReferer($max_len = -1)
     {
-        $referer = $this->getServer('HTTP_REFERER');
+        $referer = $this->self->getServer('HTTP_REFERER');
 
         return $max_len > 0 && strlen($referer) > $max_len ? substr($referer, 0, $max_len) : $referer;
     }
@@ -689,7 +689,11 @@ class Request extends Component implements RequestInterface
      */
     public function getUrl()
     {
-        return strip_tags($this->getScheme() . '://' . $this->getServer('HTTP_HOST') . $this->getServer('REQUEST_URI'));
+        return strip_tags(
+            $this->self->getScheme() . '://' . $this->self->getServer('HTTP_HOST') . $this->self->getServer(
+                'REQUEST_URI'
+            )
+        );
     }
 
     /**
@@ -697,7 +701,7 @@ class Request extends Component implements RequestInterface
      */
     public function getUri()
     {
-        return strip_tags($this->getServer('REQUEST_URI'));
+        return strip_tags($this->self->getServer('REQUEST_URI'));
     }
 
     /**
@@ -707,9 +711,9 @@ class Request extends Component implements RequestInterface
      */
     public function getToken($name = 'token')
     {
-        if ($token = $this->get($name, '')) {
+        if ($token = $this->self->get($name, '')) {
             return $token;
-        } elseif ($token = $this->getServer('HTTP_AUTHORIZATION')) {
+        } elseif ($token = $this->self->getServer('HTTP_AUTHORIZATION')) {
             $parts = explode(' ', $token, 2);
             if ($parts[0] === 'Bearer' && count($parts) === 2) {
                 return $parts[1];
@@ -732,7 +736,7 @@ class Request extends Component implements RequestInterface
         $context = $this->context;
 
         if ($context->request_id === null) {
-            $this->setRequestId($context->_SERVER['HTTP_X_REQUEST_ID'] ?? null);
+            $this->self->setRequestId($context->_SERVER['HTTP_X_REQUEST_ID'] ?? null);
         }
 
         return $context->request_id;
@@ -769,7 +773,7 @@ class Request extends Component implements RequestInterface
      */
     public function getElapsedTime($precision = 3)
     {
-        return round(microtime(true) - $this->getRequestTime(), $precision);
+        return round(microtime(true) - $this->self->getRequestTime(), $precision);
     }
 
     /**

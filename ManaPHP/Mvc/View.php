@@ -237,7 +237,7 @@ class View extends Component implements ViewInterface
 
         if ($vars !== []) {
             $context->vars = $vars;
-            $this->setMaxAge(0);
+            $this->self->setMaxAge(0);
         }
 
         if ($template === null) {
@@ -385,10 +385,10 @@ class View extends Component implements ViewInterface
     public function widget($widget, $options = [])
     {
         if ($options !== []) {
-            $this->setMaxAge(0);
+            $this->self->setMaxAge(0);
         }
 
-        if (!$widgetClassName = $this->getWidgetClassName($widget)) {
+        if (!$widgetClassName = $this->self->getWidgetClassName($widget)) {
             throw new InvalidValueException(['`%s` class is not exists', $widgetClassName]);
         }
 
@@ -399,7 +399,7 @@ class View extends Component implements ViewInterface
         }
 
         /** @var \ManaPHP\Mvc\View\WidgetInterface $widgetInstance */
-        $widgetInstance = $this->getShared($widgetClassName);
+        $widgetInstance = $this->self->getShared($widgetClassName);
         $vars = $widgetInstance->run($options);
 
         if (is_string($vars)) {

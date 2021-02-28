@@ -93,7 +93,7 @@ abstract class Logger extends Component implements LoggerInterface
     public function __construct($options = [])
     {
         if (isset($options['level'])) {
-            $this->level = $this->parseLevel($options['level']);
+            $this->level = $this->self->parseLevel($options['level']);
         } else {
             $error_level = error_reporting();
 
@@ -140,7 +140,7 @@ abstract class Logger extends Component implements LoggerInterface
     public function onRequestEnd()
     {
         if ($this->logs) {
-            $this->append($this->logs);
+            $this->self->append($this->logs);
             $this->logs = [];
         }
     }
@@ -167,7 +167,7 @@ abstract class Logger extends Component implements LoggerInterface
      */
     public function setLevel($level)
     {
-        $this->context->level = $this->parseLevel($level);
+        $this->context->level = $this->self->parseLevel($level);
 
         return $this;
     }
@@ -289,7 +289,7 @@ abstract class Logger extends Component implements LoggerInterface
     public function formatMessage($message)
     {
         if ($message instanceof Throwable) {
-            return $this->exceptionToString($message);
+            return $this->self->exceptionToString($message);
         } elseif ($message instanceof JsonSerializable || $message instanceof ArrayObject) {
             return json_stringify($message, JSON_PARTIAL_OUTPUT_ON_ERROR);
         } elseif (!is_array($message)) {
@@ -307,7 +307,7 @@ abstract class Logger extends Component implements LoggerInterface
                 }
 
                 if ($v instanceof Throwable) {
-                    $message[$k] = $this->exceptionToString($v);
+                    $message[$k] = $this->self->exceptionToString($v);
                 } elseif (is_array($v)) {
                     $message[$k] = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
                 } elseif ($v instanceof JsonSerializable || $v instanceof ArrayObject) {
@@ -335,7 +335,7 @@ abstract class Logger extends Component implements LoggerInterface
             }
 
             if ($v instanceof Throwable) {
-                $v = $this->exceptionToString($v);
+                $v = $this->self->exceptionToString($v);
             } elseif (is_array($v)) {
                 $v = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
             } elseif ($v instanceof JsonSerializable) {
@@ -392,12 +392,12 @@ abstract class Logger extends Component implements LoggerInterface
         } else {
             $traces = Coroutine::getBacktrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
             if ($category !== null && $category[0] === '.') {
-                $log->category = $this->inferCategory($traces) . $category;
+                $log->category = $this->self->inferCategory($traces) . $category;
             } else {
-                $log->category = $category ?: $this->inferCategory($traces);
+                $log->category = $category ?: $this->self->inferCategory($traces);
             }
 
-            $location = $this->getLocation($traces);
+            $location = $this->self->getLocation($traces);
             if (isset($location['file'])) {
                 $log->file = basename($location['file']);
                 $log->line = $location['line'];
@@ -420,11 +420,11 @@ abstract class Logger extends Component implements LoggerInterface
             } elseif ($log->timestamp - $this->last_write > 1 || count($this->logs) > $this->buffer_size) {
                 $this->last_write = $log->timestamp;
 
-                $this->append($this->logs);
+                $this->self->append($this->logs);
                 $this->logs = [];
             }
         } else {
-            $this->append([$log]);
+            $this->self->append([$log]);
         }
 
         return $this;
@@ -440,7 +440,7 @@ abstract class Logger extends Component implements LoggerInterface
      */
     public function debug($message, $category = null)
     {
-        return $this->log(self::LEVEL_DEBUG, $message, $category);
+        return $this->self->log(self::LEVEL_DEBUG, $message, $category);
     }
 
     /**
@@ -453,7 +453,7 @@ abstract class Logger extends Component implements LoggerInterface
      */
     public function info($message, $category = null)
     {
-        return $this->log(self::LEVEL_INFO, $message, $category);
+        return $this->self->log(self::LEVEL_INFO, $message, $category);
     }
 
     /**
@@ -466,7 +466,7 @@ abstract class Logger extends Component implements LoggerInterface
      */
     public function warn($message, $category = null)
     {
-        return $this->log(self::LEVEL_WARN, $message, $category);
+        return $this->self->log(self::LEVEL_WARN, $message, $category);
     }
 
     /**
@@ -479,7 +479,7 @@ abstract class Logger extends Component implements LoggerInterface
      */
     public function error($message, $category = null)
     {
-        return $this->log(self::LEVEL_ERROR, $message, $category);
+        return $this->self->log(self::LEVEL_ERROR, $message, $category);
     }
 
     /**
@@ -492,7 +492,7 @@ abstract class Logger extends Component implements LoggerInterface
      */
     public function fatal($message, $category = null)
     {
-        return $this->log(self::LEVEL_FATAL, $message, $category);
+        return $this->self->log(self::LEVEL_FATAL, $message, $category);
     }
 
     public function dump()

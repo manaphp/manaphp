@@ -85,7 +85,7 @@ class FiddlerPlugin extends Plugin
         $current = microtime(true);
         if ($current - $this->last_checked >= 1.0) {
             $this->last_checked = $current;
-            $this->watched = $this->publish('ping', ['timestamp' => round($current, 3)]) > 0;
+            $this->watched = $this->self->publish('ping', ['timestamp' => round($current, 3)]) > 0;
         }
 
         if ($this->watched) {
@@ -113,8 +113,8 @@ class FiddlerPlugin extends Plugin
         /** @var \ManaPHP\Logging\Logger\Log $log */
         $log = $eventArgs->data['log'];
 
-        if ($this->watched()) {
-            $this->publish('logger', (array)$log);
+        if ($this->self->watched()) {
+            $this->self->publish('logger', (array)$log);
         }
     }
 
@@ -127,7 +127,7 @@ class FiddlerPlugin extends Plugin
             $current = microtime(true);
             if ($this->last_checked && $current - $this->last_checked >= 1.0) {
                 $this->last_checked = $current;
-                $this->watched = $this->publish('ping', ['timestamp' => round($current, 3)]) > 0;
+                $this->watched = $this->self->publish('ping', ['timestamp' => round($current, 3)]) > 0;
             }
         }
 
@@ -139,14 +139,14 @@ class FiddlerPlugin extends Plugin
      */
     public function onResponseSent()
     {
-        if ($this->watched()) {
+        if ($this->self->watched()) {
             $data = [
                 'code'    => $this->response->getStatusCode(),
                 'path'    => $this->dispatcher->getPath(),
                 'body'    => $this->response->getContent(),
                 'elapsed' => $this->request->getElapsedTime()
             ];
-            $this->publish('response', $data);
+            $this->self->publish('response', $data);
         }
     }
 
@@ -188,13 +188,13 @@ class FiddlerPlugin extends Plugin
         if ($ip = $options['ip'] ?? false) {
             $this->pubSub->subscribe(
                 ["{$this->prefix}$id:$ip"], function ($channel, $packet) {
-                $this->processMessage($packet);
+                $this->self->processMessage($packet);
             }
             );
         } else {
             $this->pubSub->psubscribe(
                 ["{$this->prefix}$id:*"], function ($channel, $packet) {
-                $this->processMessage($packet);
+                $this->self->processMessage($packet);
             }
             );
         }
@@ -218,7 +218,7 @@ class FiddlerPlugin extends Plugin
         } elseif ($type === 'response') {
             echo strtr('[path][elapsed][code] body', $message['data']), PHP_EOL;
         } elseif ($type === 'logger') {
-            echo $this->process_logger($message['data']), PHP_EOL;
+            echo $this->self->process_logger($message['data']), PHP_EOL;
         } else {
             echo json_stringify($message['data']), PHP_EOL;
         }

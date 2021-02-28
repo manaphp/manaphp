@@ -139,7 +139,7 @@ class LoggerPlugin extends Plugin
             && preg_match('#^([\w/]+)\.(html|json|txt|raw)$#', $logger, $match)
         ) {
             $context->enabled = false;
-            if (($data = $this->readData($match[1])) !== false) {
+            if (($data = $this->self->readData($match[1])) !== false) {
                 $ext = $match[2];
                 if ($ext === 'html') {
                     $this->response->setContent(strtr(LocalFS::fileGet($this->template), ['LOGGER_DATA' => $data]));
@@ -205,7 +205,7 @@ class LoggerPlugin extends Plugin
         $context = $this->context;
 
         if ($context->enabled) {
-            $this->writeData($context->key, $context->logs);
+            $this->self->writeData($context->key, $context->logs);
         }
     }
 

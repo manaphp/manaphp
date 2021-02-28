@@ -14,7 +14,7 @@ class Alias extends Component implements AliasInterface
 
     public function __construct()
     {
-        $this->set('@manaphp', __DIR__);
+        $this->self->set('@manaphp', __DIR__);
     }
 
     /**
@@ -38,7 +38,7 @@ class Alias extends Component implements AliasInterface
                 $this->aliases[$name] = strtr($path, '\\', '/');
             }
         } else {
-            $this->aliases[$name] = $this->resolve($path);
+            $this->aliases[$name] = $this->self->resolve($path);
         }
 
         return $this->aliases[$name];

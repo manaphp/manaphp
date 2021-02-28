@@ -103,7 +103,7 @@ class Purifier extends Component implements PurifierInterface
             }
 
             if ($node->hasChildNodes()) {
-                $this->purifyInternal(iterator_to_array($node->childNodes), $allowedTags, $allowedAttributes);
+                $this->self->purifyInternal(iterator_to_array($node->childNodes), $allowedTags, $allowedAttributes);
             }
         }
     }
@@ -143,7 +143,7 @@ class Purifier extends Component implements PurifierInterface
             $attributes = $this->allowedAttributes;
         }
 
-        $this->purifyInternal(iterator_to_array($body->item(0)->childNodes), $tags, $attributes);
+        $this->self->purifyInternal(iterator_to_array($body->item(0)->childNodes), $tags, $attributes);
         $body = $doc->getElementsByTagName('body');
         return substr($doc->saveHTML($body->item(0)), 6, -7);
     }

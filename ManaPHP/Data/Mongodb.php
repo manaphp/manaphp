@@ -92,7 +92,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function insert($source, $document)
     {
-        $namespace = $this->completeNamespace($source);
+        $namespace = $this->self->completeNamespace($source);
 
         $this->fireEvent('mongodb:inserting', compact('namespace'));
 
@@ -116,7 +116,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function bulkInsert($source, $documents)
     {
-        $namespace = $this->completeNamespace($source);
+        $namespace = $this->self->completeNamespace($source);
 
         $this->fireEvent('mongodb:bulkWriting', compact('namespace', 'documents'));
         $this->fireEvent('mongodb:bulkInserting', compact('namespace', 'documents'));
@@ -144,7 +144,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function update($source, $document, $filter)
     {
-        $namespace = $this->completeNamespace($source);
+        $namespace = $this->self->completeNamespace($source);
 
         $this->fireEvent('mongodb:updating', compact('namespace', 'document', 'filter'));
 
@@ -169,7 +169,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function bulkUpdate($source, $documents, $primaryKey)
     {
-        $namespace = $this->completeNamespace($source);
+        $namespace = $this->self->completeNamespace($source);
 
         $this->fireEvent('mongodb:bulkWriting', compact('namespace', 'documents'));
         $this->fireEvent('mongodb:bulkUpdating', compact('namespace', 'documents'));
@@ -198,7 +198,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function upsert($source, $document, $primaryKey)
     {
-        $namespace = $this->completeNamespace($source);
+        $namespace = $this->self->completeNamespace($source);
 
         $this->fireEvent('mongodb:upserting', compact('namespace', 'document'));
 
@@ -224,7 +224,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function bulkUpsert($source, $documents, $primaryKey)
     {
-        $namespace = $this->completeNamespace($source);
+        $namespace = $this->self->completeNamespace($source);
 
         $this->fireEvent('mongodb:bulkWriting', compact('namespace', 'documents'));
         $this->fireEvent('mongodb:bulkUpserting', compact('namespace', 'documents'));
@@ -251,7 +251,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function delete($source, $filter)
     {
-        $namespace = $this->completeNamespace($source);
+        $namespace = $this->self->completeNamespace($source);
 
         $this->fireEvent('mongodb:deleting', compact('namespace', 'filter'));
 
@@ -277,7 +277,7 @@ class Mongodb extends Component implements MongodbInterface
      */
     public function fetchAll($source, $filter = [], $options = [], $secondaryPreferred = true)
     {
-        $namespace = $this->completeNamespace($source);
+        $namespace = $this->self->completeNamespace($source);
 
         $this->fireEvent('mongodb:querying', compact('namespace', 'filter', 'options'));
 
@@ -353,7 +353,7 @@ class Mongodb extends Component implements MongodbInterface
             if (!isset($command['cursor'])) {
                 $command['cursor'] = ['batchSize' => 1000];
             }
-            return $this->command($command, $db);
+            return $this->self->command($command, $db);
         } catch (RuntimeException $e) {
             throw new MongodbException(
                 ['`%s` aggregate for `%s` collection failed: %s', json_stringify($pipeline), $source, $e->getMessage()]
@@ -378,7 +378,7 @@ class Mongodb extends Component implements MongodbInterface
 
         $collection = $this->prefix . $collection;
         try {
-            $this->command(['drop' => $collection], $db);
+            $this->self->command(['drop' => $collection], $db);
             return true;
         } catch (RuntimeException $e) {
             /**
@@ -399,7 +399,7 @@ class Mongodb extends Component implements MongodbInterface
     public function listDatabases()
     {
         $databases = [];
-        $result = $this->command(['listDatabases' => 1], 'admin');
+        $result = $this->self->command(['listDatabases' => 1], 'admin');
         foreach ((array)$result[0]['databases'] as $database) {
             $databases[] = $database['name'];
         }
@@ -415,7 +415,7 @@ class Mongodb extends Component implements MongodbInterface
     public function listCollections($db = null)
     {
         $collections = [];
-        $result = $this->command(['listCollections' => 1], $db);
+        $result = $this->self->command(['listCollections' => 1], $db);
         if ($this->prefix === '') {
             foreach ($result as $collection) {
                 $collections[] = $collection['name'];

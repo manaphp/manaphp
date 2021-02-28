@@ -89,7 +89,7 @@ class DataDump extends Component implements DataDumpInterface
     public function formatMessage($message)
     {
         if ($message instanceof Throwable) {
-            return $this->exceptionToString($message);
+            return $this->self->exceptionToString($message);
         } elseif ($message instanceof JsonSerializable || $message instanceof ArrayObject) {
             return json_stringify($message, JSON_PARTIAL_OUTPUT_ON_ERROR);
         } elseif (!is_array($message)) {
@@ -107,7 +107,7 @@ class DataDump extends Component implements DataDumpInterface
                 }
 
                 if ($v instanceof Throwable) {
-                    $message[$k] = $this->exceptionToString($v);
+                    $message[$k] = $this->self->exceptionToString($v);
                 } elseif (is_array($v)) {
                     $message[$k] = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
                 } elseif ($v instanceof JsonSerializable || $v instanceof ArrayObject) {
@@ -135,7 +135,7 @@ class DataDump extends Component implements DataDumpInterface
             }
 
             if ($v instanceof Throwable) {
-                $v = $this->exceptionToString($v);
+                $v = $this->self->exceptionToString($v);
             } elseif (is_array($v)) {
                 $v = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
             } elseif ($v instanceof JsonSerializable || $v instanceof ArrayObject) {
@@ -170,7 +170,7 @@ class DataDump extends Component implements DataDumpInterface
             $line = $message->getLine();
         } else {
             $traces = Coroutine::getBacktrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 5);
-            $location = $this->getLocation($traces);
+            $location = $this->self->getLocation($traces);
             if (isset($location['file'])) {
                 $file = basename($location['file']);
                 $line = $location['line'];

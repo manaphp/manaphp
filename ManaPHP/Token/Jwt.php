@@ -71,10 +71,10 @@ class Jwt extends Component implements JwtInterface
         $claims['iat'] = time();
         $claims['exp'] = time() + $ttl;
 
-        $header = $this->base64UrlEncode(json_stringify(['alg' => $this->alg, 'typ' => 'JWT']));
-        $payload = $this->base64UrlEncode(json_stringify($claims));
+        $header = $this->self->base64UrlEncode(json_stringify(['alg' => $this->alg, 'typ' => 'JWT']));
+        $payload = $this->self->base64UrlEncode(json_stringify($claims));
         $hmac = hash_hmac(strtr($this->alg, ['HS' => 'sha']), "$header.$payload", $secret ?? $this->secret, true);
-        $signature = $this->base64UrlEncode($hmac);
+        $signature = $this->self->base64UrlEncode($hmac);
 
         return "$header.$payload.$signature";
     }
@@ -100,12 +100,12 @@ class Jwt extends Component implements JwtInterface
         list($header, $payload) = $parts;
 
         //DO NOT use json_parse, it maybe generates a lot of Exceptions
-        if (!is_array($claims = json_decode($this->base64UrlDecode($payload), true))) {
+        if (!is_array($claims = json_decode($this->self->base64UrlDecode($payload), true))) {
             throw new MalformedException('payload is not array.');
         }
 
         //DO NOT use json_parse, it maybe generates a lot of Exceptions
-        $decoded_header = json_decode($this->base64UrlDecode($header), true);
+        $decoded_header = json_decode($this->self->base64UrlDecode($header), true);
         if (!$decoded_header) {
             throw new MalformedException('The JWT header is not distinguished');
         }
@@ -136,7 +136,7 @@ class Jwt extends Component implements JwtInterface
         }
 
         if ($verify) {
-            $this->verify($token, $secrets);
+            $this->self->verify($token, $secrets);
         }
 
         return $claims;
@@ -158,7 +158,7 @@ class Jwt extends Component implements JwtInterface
         $success = false;
         foreach ((array)($secrets ?? $this->secret) as $secret) {
             $hmac = hash_hmac(strtr($this->alg, ['HS' => 'sha']), $data, $secret, true);
-            if ($this->base64UrlEncode($hmac) === $signature) {
+            if ($this->self->base64UrlEncode($hmac) === $signature) {
                 $success = true;
                 break;
             }

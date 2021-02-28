@@ -271,18 +271,18 @@ class Stream extends Component implements EngineInterface
     {
         if ($keepalive) {
             if ($this->stream === null) {
-                return $this->request_with_keepalive($request);
+                return $this->self->request_with_keepalive($request);
             } else {
                 try {
-                    return $this->request_with_keepalive($request);
+                    return $this->self->request_with_keepalive($request);
                 } catch (TimeoutException $exception) {
                     fclose($this->stream);
                     $this->stream = null;
-                    return $this->request_with_keepalive($request);
+                    return $this->self->request_with_keepalive($request);
                 }
             }
         } else {
-            return $this->request_without_keepalive($request);
+            return $this->self->request_without_keepalive($request);
         }
     }
 

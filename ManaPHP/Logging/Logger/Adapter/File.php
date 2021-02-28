@@ -99,6 +99,6 @@ class File extends Logger
             $str = $str === '' ? $s : $str . $s;
         }
 
-        $this->write($str);
+        $this->self->write($str);
     }
 }

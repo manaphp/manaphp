@@ -79,7 +79,7 @@ class File extends Cache
      */
     public function do_exists($key)
     {
-        $file = $this->getFileName($key);
+        $file = $this->self->getFileName($key);
 
         return (@filemtime($file) >= time());
     }
@@ -91,7 +91,7 @@ class File extends Cache
      */
     public function do_get($key)
     {
-        $file = $this->getFileName($key);
+        $file = $this->self->getFileName($key);
 
         if (@filemtime($file) >= time()) {
             return file_get_contents($file);
@@ -109,7 +109,7 @@ class File extends Cache
      */
     public function do_set($key, $value, $ttl)
     {
-        $file = $this->getFileName($key);
+        $file = $this->self->getFileName($key);
 
         $dir = dirname($file);
         if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
@@ -132,7 +132,7 @@ class File extends Cache
      */
     public function do_delete($key)
     {
-        $file = $this->getFileName($key);
+        $file = $this->self->getFileName($key);
 
         @unlink($file);
     }

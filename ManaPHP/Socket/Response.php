@@ -46,7 +46,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setJsonOk($message = '')
     {
-        return $this->setJsonContent(['code' => 0, 'message' => $message]);
+        return $this->self->setJsonContent(['code' => 0, 'message' => $message]);
     }
 
     /**
@@ -57,7 +57,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setJsonError($message, $code = 1)
     {
-        return $this->setJsonContent(['code' => $code, 'message' => $message]);
+        return $this->self->setJsonContent(['code' => $code, 'message' => $message]);
     }
 
     /**
@@ -68,7 +68,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setJsonData($data, $message = '')
     {
-        return $this->setJsonContent(['code' => 0, 'message' => $message, 'data' => $data]);
+        return $this->self->setJsonContent(['code' => 0, 'message' => $message, 'data' => $data]);
     }
 
     /**

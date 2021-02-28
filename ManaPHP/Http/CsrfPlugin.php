@@ -107,7 +107,7 @@ class CsrfPlugin extends Plugin
      */
     public function onRequestValidate(EventArgs $eventArgs)
     {
-        if ($this->isOriginSafe()) {
+        if ($this->self->isOriginSafe()) {
             return;
         }
 

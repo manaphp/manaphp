@@ -167,30 +167,34 @@ class Authorization extends Component implements AuthorizationInterface
             $acl = $controllerInstance->getAcl();
 
             foreach ($this->aclBuilder->getActions($controller) as $action) {
-                $path = $this->generatePath($controller, $action);
+                $path = $this->self->generatePath($controller, $action);
                 if ($role === 'guest') {
-                    if ($this->isAclAllowed($acl, 'guest', $action)) {
+                    if ($this->self->isAclAllowed($acl, 'guest', $action)) {
                         $paths[] = $path;
                     }
                 } elseif ($role === 'user') {
                     /** @noinspection NotOptimalIfConditionsInspection */
-                    if ($this->isAclAllowed($acl, 'user', $action) && !$this->isAclAllowed($acl, 'guest', $action)) {
+                    if ($this->self->isAclAllowed($acl, 'user', $action)
+                        && !$this->self->isAclAllowed(
+                            $acl, 'guest', $action
+                        )
+                    ) {
                         $paths[] = $path;
                     }
-                } elseif ($this->isAclAllowed($acl, 'user', $action)) {
+                } elseif ($this->self->isAclAllowed($acl, 'user', $action)) {
                     null;
                 } else {
-                    if ($this->isAclAllowed($acl, $role, $action)) {
+                    if ($this->self->isAclAllowed($acl, $role, $action)) {
                         $paths[] = $path;
                     } elseif (in_array($path, $explicit_permissions, true)) {
                         $paths[] = $path;
                     } elseif (isset($acl[$action]) && $acl[$action][0] === '@') {
-                        $real_path = $this->generatePath($controller, substr($acl[$action], 1));
+                        $real_path = $this->self->generatePath($controller, substr($acl[$action], 1));
                         if (in_array($real_path, $explicit_permissions, true)) {
                             $paths[] = $path;
                         }
                     } elseif (isset($acl['*']) && $acl['*'][0] === '@') {
-                        $real_path = $this->generatePath($controller, substr($acl['*'], 1));
+                        $real_path = $this->self->generatePath($controller, substr($acl['*'], 1));
                         if (in_array($real_path, $explicit_permissions, true)) {
                             $paths[] = $path;
                         }
@@ -242,7 +246,7 @@ class Authorization extends Component implements AuthorizationInterface
                 }
                 return $context->role_permissions[$role] = $permissions;
             } else {
-                return $builtin[$role] = ',' . implode(',', $this->buildAllowed($role)) . ',';
+                return $builtin[$role] = ',' . implode(',', $this->self->buildAllowed($role)) . ',';
             }
         } else {
             return $context->role_permissions[$role];
@@ -267,19 +271,19 @@ class Authorization extends Component implements AuthorizationInterface
         if ($role !== 'guest' && $permission && $permission[0] === '/') {
             if (str_contains($role, ',')) {
                 foreach (explode(',', $role) as $r) {
-                    if (str_contains($this->getAllowed($r), ",$permission,")) {
+                    if (str_contains($this->self->getAllowed($r), ",$permission,")) {
                         return true;
                     }
                 }
             } else {
-                if (str_contains($this->getAllowed($role), ",$permission,")) {
+                if (str_contains($this->self->getAllowed($role), ",$permission,")) {
                     return true;
                 }
             }
         }
 
         if ($permission && str_contains($permission, '/')) {
-            list($controllerClassName, $action) = $this->inferControllerAction($permission);
+            list($controllerClassName, $action) = $this->self->inferControllerAction($permission);
         } else {
             /** @var \ManaPHP\Http\Controller $controllerInstance */
             $controllerInstance = $this->dispatcher->getControllerInstance();
@@ -287,7 +291,7 @@ class Authorization extends Component implements AuthorizationInterface
             $action = $permission ? Str::camelize($permission) : $this->dispatcher->getAction();
             $acl = $controllerInstance->getAcl();
 
-            if ($this->isAclAllowed($acl, $role, $action)) {
+            if ($this->self->isAclAllowed($acl, $role, $action)) {
                 return true;
             }
 
@@ -300,15 +304,15 @@ class Authorization extends Component implements AuthorizationInterface
             }
         }
 
-        $permission = $this->generatePath($controllerClassName, $action);
+        $permission = $this->self->generatePath($controllerClassName, $action);
         if (str_contains($role, ',')) {
             foreach (explode(',', $role) as $r) {
-                if (str_contains($this->getAllowed($r), ",$permission,")) {
+                if (str_contains($this->self->getAllowed($r), ",$permission,")) {
                     return true;
                 }
             }
         } else {
-            if (str_contains($this->getAllowed($role), ",$permission,")) {
+            if (str_contains($this->self->getAllowed($role), ",$permission,")) {
                 return true;
             }
         }
@@ -323,7 +327,7 @@ class Authorization extends Component implements AuthorizationInterface
      */
     public function authorize()
     {
-        if ($this->isAllowed()) {
+        if ($this->self->isAllowed()) {
             return;
         }
 

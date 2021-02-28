@@ -56,7 +56,7 @@ class Request extends Component implements RequestInterface
                 $this->values[] = $fragment;
             }
         } else {
-            $this->parseInternal($arguments);
+            $this->self->parseInternal($arguments);
         }
 
         return $this;

@@ -220,7 +220,7 @@ class Redis extends Component implements RedisInterface
                     );
                 }
 
-                $master = $this->getMaster();
+                $master = $this->self->getMaster();
                 $master->connection->call($method, $arguments);
 
                 return $master;
@@ -237,7 +237,7 @@ class Redis extends Component implements RedisInterface
         } elseif ($this->connection !== null) {
             return $this->connection->call($method, $arguments);
         } else {
-            $type = $this->has_slave ? $this->getConnectionType($method) : 'default';
+            $type = $this->has_slave ? $this->self->getConnectionType($method) : 'default';
 
             $connection = $this->poolManager->pop($this, $this->timeout, $type);
 
@@ -259,7 +259,7 @@ class Redis extends Component implements RedisInterface
     {
         $this->fireEvent('redis:calling', compact('method', 'arguments'));
 
-        $return = $this->call($method, $arguments);
+        $return = $this->self->call($method, $arguments);
 
         $this->fireEvent('redis:called', compact('method', 'arguments', 'return'));
 

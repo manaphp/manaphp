@@ -40,7 +40,7 @@ class Controller extends Component implements LogCategorizable
     public function isInvokable($action)
     {
         try {
-            $this->validateInvokable($action);
+            $this->self->validateInvokable($action);
             return true;
         } catch (Throwable $throwable) {
             return false;

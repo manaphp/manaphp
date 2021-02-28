@@ -90,7 +90,7 @@ class Engine extends Component implements EngineInterface
 
     public function __clone()
     {
-        $this->close();
+        $this->self->close();
     }
 
     /**
@@ -101,7 +101,7 @@ class Engine extends Component implements EngineInterface
     public function setEndpoint($endpoint)
     {
         if ($this->socket !== null) {
-            $this->close();
+            $this->self->close();
         }
 
         $this->endpoint = $endpoint;
@@ -165,7 +165,7 @@ class Engine extends Component implements EngineInterface
 
         $headers .= "Sec-WebSocket-Version: 13\r\n\r\n";
 
-        $this->sendInternal($socket, $headers);
+        $this->self->sendInternal($socket, $headers);
 
         if (($first = fgets($socket)) !== "HTTP/1.1 101 Switching Protocols\r\n") {
             throw new SwitchingProtocolsException($first);
@@ -266,7 +266,7 @@ class Engine extends Component implements EngineInterface
             $str .= $data;
         }
 
-        $this->sendInternal($this->socket ?? $this->open(), $str, $timeout);
+        $this->self->sendInternal($this->socket ?? $this->self->open(), $str, $timeout);
     }
 
     /**
@@ -276,7 +276,7 @@ class Engine extends Component implements EngineInterface
      */
     public function recv($timeout = null)
     {
-        $socket = $this->socket ?? $this->open();
+        $socket = $this->socket ?? $this->self->open();
 
         $buf = '';
         $end_time = microtime(true) + ($timeout ?: $this->timeout);
@@ -391,7 +391,7 @@ class Engine extends Component implements EngineInterface
      */
     public function isRecvReady($timeout)
     {
-        $socket = $this->socket ?? $this->open();
+        $socket = $this->socket ?? $this->self->open();
 
         $write = null;
         $except = null;
@@ -420,6 +420,6 @@ class Engine extends Component implements EngineInterface
 
     public function __destruct()
     {
-        $this->close();
+        $this->self->close();
     }
 }

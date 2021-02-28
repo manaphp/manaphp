@@ -29,7 +29,7 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
         if ($this->request->isAjax()) {
             $this->response->setJsonThrowable($throwable);
         } else {
-            $this->response->setStatus($code)->setContent($this->render($throwable));
+            $this->response->setStatus($code)->setContent($this->self->render($throwable));
         }
     }
 

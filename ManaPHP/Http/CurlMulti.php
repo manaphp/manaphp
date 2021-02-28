@@ -55,7 +55,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
             $this->timeout = $options['timeout'];
         }
 
-        $this->template = $this->createCurlTemplate();
+        $this->template = $this->self->createCurlTemplate();
 
         $this->mh = curl_multi_init();
 
@@ -118,7 +118,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
         } elseif (is_array($request)) {
             if (isset($request[1])) {
                 foreach ($request as $r) {
-                    $this->add($r, $callbacks);
+                    $this->self->add($r, $callbacks);
                 }
                 return $this;
             } else {
@@ -244,7 +244,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
 
             $request->options['file'] = $target;
 
-            $this->add($request);
+            $this->self->add($request);
         }
 
         return $this;
@@ -292,14 +292,14 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
 
                     $callbacks = $request->callbacks;
                     if ($callbacks === null) {
-                        $this->onSuccess($response);
+                        $this->self->onSuccess($response);
                     } elseif (is_callable($callbacks)) {
                         $callbacks($response);
                     } elseif (is_array($callbacks)) {
                         if (isset($callbacks['success'])) {
                             $callbacks['success']($response);
                         } else {
-                            $this->onSuccess($response);
+                            $this->self->onSuccess($response);
                         }
                     }
                 } else {
@@ -320,7 +320,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
                     if (is_array($callbacks) && isset($callbacks['error'])) {
                         $callbacks['error']($error);
                     } else {
-                        $this->onError($error);
+                        $this->self->onError($error);
                     }
                 }
 
