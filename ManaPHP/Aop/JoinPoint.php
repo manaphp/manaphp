@@ -2,61 +2,84 @@
 
 namespace ManaPHP\Aop;
 
-class JoinPoint implements JoinPointInterface
+use Throwable;
+use ManaPHP\Aop\JoinPoint\MissingCallProcessException;
+use ManaPHP\Aop\JoinPoint\ProceedException;
+
+class JoinPoint
 {
     /**
      * @var object
      */
-    public $target;
+    protected $target;
 
     /**
      * @var string
      */
-    public $method;
+    protected $method;
 
     /**
-     * @var Advice[]
+     * @var \ManaPHP\Aop\Advisor[][]
      */
-    public $advices;
+    protected $advisors;
 
     /**
      * @var array
      */
-    public $args;
+    protected $args;
 
     /**
      * @var bool
      */
-    public $invoked = false;
+    protected $invoked = false;
 
     /**
      * @var mixed
      */
-    public $return;
+    protected $return;
 
     /**
-     * @param string                $target
-     * @param string                $method
-     * @param \ManaPHP\Aop\Advice[] $advices
+     * @var \Throwable
      */
-    public function __construct($target, $method, $advices)
+    protected $exception;
+
+    /**
+     * @param string                   $target
+     * @param string                   $method
+     * @param \ManaPHP\Aop\Advisor[][] $advisors
+     */
+    public function __construct($target, $method, $advisors)
     {
         $this->target = $target;
         $this->method = $method;
-        $this->advices = $advices;
+        $this->advisors = $advisors;
     }
 
     /**
-     * @param bool $force
-     *
-     * @return mixed
+     * @return mixed|\Throwable
      */
-    public function invokeTarget($force = false)
+    public function proceed()
     {
-        if (!$this->invoked || $force) {
-            $this->invoked = true;
-            $target = $this->target;
-            $this->return = $target->{$this->method}(...$this->args);
+        if (($advisors = $this->advisors[Advisor::ADVICE_BEFORE] ?? null) !== null) {
+            foreach ($advisors as $advisor) {
+                $advisor->advise($this);
+            }
+        }
+
+        if ($this->invoked) {
+            throw new ProceedException($this->method);
+        }
+
+        $this->invoked = true;
+        $target = $this->target;
+        if (isset($this->advisors[Advisor::ADVICE_AFTER_THROWING])) {
+            try {
+                return $this->return = $target->{$this->method}(...$this->args);
+            } catch (Throwable $exception) {
+                return $this->exception = $exception;
+            }
+        } else {
+            return $this->return = $target->{$this->method}(...$this->args);
         }
     }
 
@@ -69,22 +92,87 @@ class JoinPoint implements JoinPointInterface
     {
         $this->args = $args;
 
-        foreach ($this->advices as $advice) {
-            $advice->adviseBefore($this);
+        if (($advisors = $this->advisors[Advisor::ADVICE_AROUND] ?? null) !== null) {
+            foreach ($advisors as $advisor) {
+                $advisor->advise($this);
+            }
+
+            if (!$this->invoked) {
+                throw new MissingCallProcessException($this->method);
+            }
+        } else {
+            $this->proceed();
         }
 
-        foreach ($this->advices as $advice) {
-            $advice->adviseAround($this);
+        if (($advisors = $this->advisors[Advisor::ADVICE_AFTER] ?? null) !== null) {
+            foreach ($advisors as $advisor) {
+                $advisor->advise($this);
+            }
         }
 
-        if (!$this->invoked) {
-            $this->invokeTarget();
-        }
+        if ($this->exception === null) {
+            if (($advisors = $this->advisors[Advisor::ADVICE_AFTER_RETURNING] ?? null) !== null) {
+                foreach ($advisors as $advisor) {
+                    $advisor->advise($this);
+                }
+            }
+            return $this->return;
+        } else {
+            if (($advisors = $this->advisors[Advisor::ADVICE_AFTER_THROWING] ?? null) !== null) {
+                foreach ($advisors as $advisor) {
+                    $advisor->advise($this);
+                }
+            }
 
-        foreach ($this->advices as $advice) {
-            $advice->adviseAfter($this);
+            throw $this->exception;
         }
+    }
 
+    /**
+     * @return object
+     */
+    public function getTarget()
+    {
+        return $this->target;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
+    /**
+     * @return array
+     */
+    public function getArgs()
+    {
+        return $this->args;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReturn()
+    {
         return $this->return;
+    }
+
+    /**
+     * @param mixed $return
+     */
+    public function setReturn($return)
+    {
+        $this->return = $return;
+    }
+
+    /**
+     * @return \Throwable
+     */
+    public function getException()
+    {
+        return $this->exception;
     }
 }

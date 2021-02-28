@@ -9,58 +9,29 @@ use ReflectionMethod;
 class Manager extends Component implements ManagerInterface
 {
     /**
-     * @var \ManaPHP\Aop\Pointcut[]
+     * @var \ManaPHP\Aop\Advisor[][]
      */
-    protected $pointcuts = [];
+    protected $advisors = [];
 
     public function __construct()
     {
         $this->container->on('resolved', [$this, 'onContainerResolved']);
     }
 
-    /**
-     * @param string|array $pattern
-     * @param string       $str
-     *
-     * @return bool
-     */
-    protected function isMatch($patterns, $str)
-    {
-        if (is_string($patterns)) {
-            if (str_contains($patterns, '*')) {
-                if (fnmatch($patterns, $str)) {
-                    return true;
-                }
-            } elseif ($patterns === $str) {
-                return true;
-            }
-        } else {
-            foreach ($patterns as $pattern) {
-                if (str_contains($pattern, '*')) {
-                    if (fnmatch($pattern, $str)) {
-                        return true;
-                    }
-                } elseif ($pattern === $str) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     public function onContainerResolved($instance)
     {
         $class = get_class($instance);
 
-        $pointcuts = [];
-        foreach ($this->pointcuts as $pointcut) {
-            if ($this->isMatch($pointcut->class, $class)) {
-                $pointcuts[] = $pointcut;
+        $advisorsOfClass = [];
+        foreach ($this->advisors as $type => $_advisors) {
+            foreach ($_advisors as $advisor) {
+                if ($advisor->isClassMatch($class)) {
+                    $advisorsOfClass[$type][] = $advisor;
+                }
             }
         }
 
-        if ($pointcuts) {
+        if ($advisorsOfClass) {
             $joinPoints = [];
             $rc = new ReflectionClass($instance);
             foreach ($rc->getMethods(ReflectionMethod::IS_PUBLIC) as $rm) {
@@ -69,15 +40,24 @@ class Manager extends Component implements ManagerInterface
                     continue;
                 }
 
-                $advices = [];
-                foreach ($pointcuts as $pointcut) {
-                    if ($this->isMatch($pointcut->method, $method)) {
-                        $advices[] = $pointcut->advice;
+                $advisorsOfMethod = [];
+                foreach ($advisorsOfClass as $type => $advisors) {
+                    foreach ($advisors as $advisor) {
+                        if ($advisor->isMethodMatch($method)) {
+                            $advisorsOfMethod[$type][] = $advisor;
+                        }
                     }
                 }
 
-                if ($advices) {
-                    $joinPoints[$method] = new JoinPoint($instance, $method, $advices);
+                if ($advisorsOfMethod) {
+                    foreach ($advisorsOfMethod as $type => $advisors) {
+                        usort(
+                            $advisors, static function ($a, $b) {
+                            return $a->order - $b->order;
+                        }
+                        );
+                    }
+                    $joinPoints[$method] = new JoinPoint($instance, $method, $advisorsOfMethod);
                 }
             }
 
@@ -88,16 +68,72 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
-     * @param string|array $class
-     * @param string|array $method
+     * @param string|array $pointcut
+     * @param callable     $advice
+     * @param int          $order
      *
-     * @return \ManaPHP\Aop\Advice
+     * @return static
      */
-    public function pointcut($class, $method)
+    public function before($pointcut, $advice, $order = 0)
     {
-        $advice = new Advice();
-        $this->pointcuts[] = new Pointcut($class, $method, $advice);
+        $this->advisors[Advisor::ADVICE_BEFORE][] = new Advisor($pointcut, $advice, $order);
 
-        return $advice;
+        return $this;
+    }
+
+    /**
+     * @param string|array $pointcut
+     * @param callable     $advice
+     * @param int          $order
+     *
+     * @return static
+     */
+    public function after($pointcut, $advice, $order = 0)
+    {
+        $this->advisors[Advisor::ADVICE_AFTER][] = new Advisor($pointcut, $advice, $order);
+
+        return $this;
+    }
+
+    /**
+     * @param string|array $pointcut
+     * @param callable     $advice
+     * @param int          $order
+     *
+     * @return static
+     */
+    public function afterReturning($pointcut, $advice, $order = 0)
+    {
+        $this->advisors[Advisor::ADVICE_AFTER_RETURNING][] = new Advisor($pointcut, $advice, $order);
+
+        return $this;
+    }
+
+    /**
+     * @param string|array $pointcut
+     * @param callable     $advice
+     * @param int          $order
+     *
+     * @return static
+     */
+    public function afterThrowing($pointcut, $advice, $order = 0)
+    {
+        $this->advisors[Advisor::ADVICE_AFTER_THROWING][] = new Advisor($pointcut, $advice, $order);
+
+        return $this;
+    }
+
+    /**
+     * @param string|array $pointcut
+     * @param callable     $advice
+     * @param int          $order
+     *
+     * @return static
+     */
+    public function around($pointcut, $advice, $order = 0)
+    {
+        $this->advisors[Advisor::ADVICE_AROUND][] = new Advisor($pointcut, $advice, $order);
+
+        return $this;
     }
 }
