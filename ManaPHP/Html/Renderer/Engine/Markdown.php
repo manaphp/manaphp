@@ -1712,7 +1712,7 @@ class Markdown extends Component implements EngineInterface
 
     protected static function escape($text, $allowQuotes = false)
     {
-        return htmlspecialchars($text, $allowQuotes ? ENT_NOQUOTES : ENT_QUOTES, 'UTF-8');
+        return htmlspecialchars($text, $allowQuotes ? ENT_NOQUOTES : ENT_QUOTES);
     }
 
     protected static function striAtStart($string, $needle)

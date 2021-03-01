@@ -157,7 +157,7 @@ class BashCompletionCommand extends Command
             $prefix = preg_match('#^\W+\w#', $current, $match) ? $match[0] : '';
         }
 
-        $chars = str_split($current, 1);
+        $chars = str_split($current);
 
         foreach ($words as $word) {
             if (!str_starts_with($word, $prefix)) {
