@@ -446,7 +446,6 @@ class Client extends Component implements ClientInterface
         curl_setopt($template, CURLOPT_SSL_VERIFYHOST, false);
         /** @noinspection CurlSslServerSpoofingInspection */
         curl_setopt($template, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($template, CURLOPT_BINARYTRANSFER, true);
 
         foreach ($options as $k => $v) {
             if (is_int($k)) {

@@ -190,7 +190,6 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
 
             curl_setopt($curl, CURLOPT_HEADER, 0);
             curl_setopt($curl, CURLOPT_FILE, $file);
-            curl_setopt($curl, CURLOPT_BINARYTRANSFER, true);
             $this->files[(int)$curl] = $file;
         }
 
