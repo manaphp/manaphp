@@ -256,7 +256,7 @@ subsplit_publish()
 
 		for TAG in $TAGS
 		do
-			if [ "${TAG}" \< "v1.8.0" ]
+			if [ "${TAG}" \< "v2.0.0" ]
 			then
 				say " - skipping tag '${TAG}'"
 				continue
