@@ -544,6 +544,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
      * @param callable $map
      *
      * @return static
+     * @noinspection ClassMethodNameMatchesFieldNameInspection
      */
     public function map($map)
     {
