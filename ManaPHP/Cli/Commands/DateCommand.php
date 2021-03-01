@@ -49,7 +49,7 @@ class DateCommand extends Command
      *
      * @return  int
      */
-    public function syncAction($url = 'http://www.baidu.com')
+    public function syncAction($url = 'https://www.baidu.com')
     {
         $timestamp = $this->getRemoteTimestamp($url);
         if ($timestamp === false) {
@@ -68,7 +68,7 @@ class DateCommand extends Command
      *
      * @return int
      */
-    public function remoteAction($url = 'http://www.baidu.com')
+    public function remoteAction($url = 'https://www.baidu.com')
     {
         $timestamp = $this->getRemoteTimestamp($url);
         if ($timestamp === false) {
@@ -86,7 +86,7 @@ class DateCommand extends Command
      *
      * @return int
      */
-    public function diffAction($url = 'http://www.baidu.com')
+    public function diffAction($url = 'https://www.baidu.com')
     {
         $remote_ts = $this->getRemoteTimestamp($url);
         $local_ts = time();
