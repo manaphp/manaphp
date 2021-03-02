@@ -39,22 +39,22 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * @param array $args
+     * @param array $arguments
      *
      * @return static
      * @throws \ManaPHP\Cli\Request\Exception
      */
-    public function parse($args = null)
+    public function parse($arguments = null)
     {
         $this->values = [];
         $this->options = [];
 
-        if (in_array(end($args), ['', '-', '--'], true)) {
-            array_pop($args);
+        if (in_array(end($arguments), ['', '-', '--'], true)) {
+            array_pop($arguments);
         }
 
-        while ($args) {
-            $o = array_shift($args);
+        while ($arguments) {
+            $o = array_shift($arguments);
             if ($o[0] !== '-') {
                 $this->values[] = $o;
                 continue;
@@ -76,17 +76,17 @@ class Request extends Component implements RequestInterface
                     throw new RequestException(['long `:option` option is too short', 'option' => $o]);
                 }
 
-                $this->options[substr($o, 2)] = !$args || $args[0][0] === '-' ? 1 : array_shift($args);
+                $this->options[substr($o, 2)] = !$arguments || $arguments[0][0] === '-' ? 1 : array_shift($arguments);
             } elseif (strlen($o) > 2) {
-                if (!$args || $args[0][0] === '-') {
+                if (!$arguments || $arguments[0][0] === '-') {
                     foreach (str_split(substr($o, 1)) as $c) {
                         $this->options[$c] = 1;
                     }
                 } else {
-                    $this->options[substr($o, 1)] = array_shift($args);
+                    $this->options[substr($o, 1)] = array_shift($arguments);
                 }
             } else {
-                $this->options[substr($o, 1)] = !$args || $args[0][0] === '-' ? 1 : array_shift($args);
+                $this->options[substr($o, 1)] = !$arguments || $arguments[0][0] === '-' ? 1 : array_shift($arguments);
             }
         }
 
