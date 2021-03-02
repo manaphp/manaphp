@@ -39,36 +39,12 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * @param array|string $arguments
-     *
-     * @return static
-     * @throws \ManaPHP\Cli\Request\Exception
-     */
-    public function parse($arguments = null)
-    {
-        $this->options = [];
-        $this->values = [];
-
-        if (count($arguments) === 1 && $arguments[0][0] === '/') {
-            $query = parse_url($arguments[0], PHP_URL_QUERY);
-            parse_str($query, $this->options);
-            if (($fragment = parse_url($arguments[0], PHP_URL_FRAGMENT)) !== null) {
-                $this->values[] = $fragment;
-            }
-        } else {
-            $this->self->parseInternal($arguments);
-        }
-
-        return $this;
-    }
-
-    /**
      * @param array $args
      *
      * @return static
      * @throws \ManaPHP\Cli\Request\Exception
      */
-    protected function parseInternal($args)
+    public function parse($args = null)
     {
         $this->values = [];
         $this->options = [];

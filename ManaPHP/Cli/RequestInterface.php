@@ -5,7 +5,7 @@ namespace ManaPHP\Cli;
 interface RequestInterface
 {
     /**
-     * @param array|string $arguments
+     * @param array $arguments
      *
      * @return static
      */
