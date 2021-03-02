@@ -35,6 +35,7 @@ class Factory extends FactoryDefault
                 'listCommand'           => 'ManaPHP\Cli\Commands\ListCommand',
                 'debuggerCommand'       => 'ManaPHP\Debugging\DebuggerPlugin\Command',
                 'configCommand'         => 'ManaPHP\Cli\Commands\ConfigCommand',
+                'versionCommand'        => 'ManaPHP\Cli\Commands\VersionCommand',
 
                 'httpClientTracer' => 'ManaPHP\Http\Client\Tracer',
             ]
