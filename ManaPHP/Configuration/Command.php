@@ -1,14 +1,13 @@
 <?php
 
-namespace ManaPHP\Cli\Commands;
+namespace ManaPHP\Configuration;
 
-use ManaPHP\Cli\Command;
 use ManaPHP\Helper\Arr;
 
 /**
  * @property-read \ManaPHP\Configuration\Configure $configure
  */
-class ConfigCommand extends Command
+class Command extends \ManaPHP\Cli\Command
 {
     /**
      * @param string $path

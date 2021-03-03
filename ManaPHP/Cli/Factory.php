@@ -34,7 +34,7 @@ class Factory extends FactoryDefault
                 'dbCommand'             => 'ManaPHP\Data\Db\Command',
                 'listCommand'           => 'ManaPHP\Cli\Commands\ListCommand',
                 'debuggerCommand'       => 'ManaPHP\Debugging\DebuggerPlugin\Command',
-                'configCommand'         => 'ManaPHP\Cli\Commands\ConfigCommand',
+                'configCommand'         => 'ManaPHP\Configuration\Command',
                 'versionCommand'        => 'ManaPHP\Cli\Commands\VersionCommand',
                 'aopCommand'            => 'ManaPHP\Aop\Command',
 
