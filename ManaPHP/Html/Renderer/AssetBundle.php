@@ -93,7 +93,7 @@ class AssetBundle extends Component implements AssetBundleInterface
                 }
 
                 if ($extension === 'css') {
-                    $content = $this->replaceCssUrl($file, $content);
+                    $content = $this->self->replaceCssUrl($file, $content);
                 }
 
                 $content = preg_replace('@/\*# sourceMappingURL=[^*]+\s+\*/@', '', $content);

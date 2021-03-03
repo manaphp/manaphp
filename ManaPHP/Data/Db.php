@@ -306,7 +306,7 @@ class Db extends Component implements DbInterface
      */
     public function fetchOne($sql, $bind = [], $mode = PDO::FETCH_ASSOC, $useMaster = false)
     {
-        return ($rs = $this->fetchAll($sql, $bind, $mode, $useMaster)) ? $rs[0] : false;
+        return ($rs = $this->self->fetchAll($sql, $bind, $mode, $useMaster)) ? $rs[0] : false;
     }
 
     /**

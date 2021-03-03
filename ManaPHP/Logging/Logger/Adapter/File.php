@@ -95,7 +95,7 @@ class File extends Logger
     {
         $str = '';
         foreach ($logs as $log) {
-            $s = $this->format($log);
+            $s = $this->self->format($log);
             $str = $str === '' ? $s : $str . $s;
         }
 

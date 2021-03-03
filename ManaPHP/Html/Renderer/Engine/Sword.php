@@ -67,7 +67,7 @@ class Sword extends Component implements EngineInterface
         extract($vars, EXTR_SKIP);
 
         if (!isset($this->compiled[$file])) {
-            $this->compiled[$file] = $this->getCompiledFile($file);
+            $this->compiled[$file] = $this->self->getCompiledFile($file);
         }
 
         /** @noinspection PhpIncludeInspection */

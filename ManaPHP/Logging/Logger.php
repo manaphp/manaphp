@@ -407,7 +407,7 @@ abstract class Logger extends Component implements LoggerInterface
             }
         }
 
-        $log->message = is_string($message) ? $message : $this->formatMessage($message);
+        $log->message = is_string($message) ? $message : $this->self->formatMessage($message);
         $log->timestamp = microtime(true);
 
         $this->fireEvent('logger:log', compact('level', 'message', 'category', 'log'));

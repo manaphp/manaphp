@@ -291,14 +291,14 @@ class Connection extends Component implements ConnectionInterface
             $readPreference = new ReadPreference($secondaryPreferred);
         }
         try {
-            $result = $this->fetchAllInternal($namespace, $filter, $options, $readPreference);
+            $result = $this->self->fetchAllInternal($namespace, $filter, $options, $readPreference);
         } catch (\Exception $exception) {
             $result = null;
             $failed = true;
             if (!$this->self->ping()) {
                 try {
                     $this->self->close();
-                    $result = $this->fetchAllInternal($namespace, $filter, $options, $readPreference);
+                    $result = $this->self->fetchAllInternal($namespace, $filter, $options, $readPreference);
                     $failed = false;
                 } catch (\Exception $exception) {
                 }
