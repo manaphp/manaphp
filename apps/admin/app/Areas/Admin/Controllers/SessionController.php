@@ -39,10 +39,10 @@ class SessionController extends Controller
             $this->cookies->set('CLIENT_UDID', Str::random(16), strtotime('10 year'), '/');
         }
 
-        if ($this->configure->env !== 'prod') {
-            $this->session->remove('captcha');
-        } else {
+        if ($this->configure->env === 'prod') {
             $this->captcha->verify();
+        } else {
+            $this->session->remove('captcha');
         }
 
         $admin = Admin::first(['admin_name' => input('admin_name')]);
