@@ -92,7 +92,7 @@ class Dotenv extends Component implements DotenvInterface
             }
             $app_id = $match[1];
 
-            $key = ".env:$app_id";
+            $key = __FILE__ . ":load:$app_id";
             if (!function_exists('apcu_fetch') || !$lines = apcu_fetch($key)) {
                 $scheme = parse_url($file, PHP_URL_SCHEME);
                 if ($scheme === 'redis') {

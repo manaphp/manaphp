@@ -305,7 +305,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
         }
 
         $ttl = $fieldsOrTtl;
-        $key = '_mp:models:' . static::class . ":get:$id:$ttl";
+        $key = __FILE__ . ':' . static::class . ":get:$id:$ttl";
 
         $r = apcu_fetch($key, $success);
         if (!$success) {
@@ -443,7 +443,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
             return $rs ? $rs[0][$field] : null;
         }
 
-        $key = '_mp:models:' . static::class . ":value:$field:$pkValue:$ttl";
+        $key = __FILE__ . ':' . static::class . ":value:$field:$pkValue:$ttl";
 
         $value = apcu_fetch($key, $success);
         if (!$success) {
