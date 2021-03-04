@@ -33,7 +33,7 @@ class Metadata extends Component implements MetadataInterface
      *
      * @return array
      */
-    protected function readMetaData($model)
+    protected function getMetadata($model)
     {
         $modelName = is_string($model) ? $model : get_class($model);
         $key = __FILE__ . ':' . $modelName;
@@ -68,7 +68,7 @@ class Metadata extends Component implements MetadataInterface
      */
     public function getAttributes($model)
     {
-        return $this->readMetaData($model)[Db::METADATA_ATTRIBUTES];
+        return $this->getMetadata($model)[Db::METADATA_ATTRIBUTES];
     }
 
     /**
@@ -80,7 +80,7 @@ class Metadata extends Component implements MetadataInterface
      */
     public function getPrimaryKeyAttributes($model)
     {
-        return $this->readMetaData($model)[Db::METADATA_PRIMARY_KEY];
+        return $this->getMetadata($model)[Db::METADATA_PRIMARY_KEY];
     }
 
     /**
@@ -92,7 +92,7 @@ class Metadata extends Component implements MetadataInterface
      */
     public function getAutoIncrementAttribute($model)
     {
-        return $this->readMetaData($model)[Db::METADATA_AUTO_INCREMENT_KEY];
+        return $this->getMetadata($model)[Db::METADATA_AUTO_INCREMENT_KEY];
     }
 
     /**
@@ -102,6 +102,6 @@ class Metadata extends Component implements MetadataInterface
      */
     public function getIntTypeAttributes($model)
     {
-        return $this->readMetaData($model)[Db::METADATA_INT_TYPE_ATTRIBUTES];
+        return $this->getMetadata($model)[Db::METADATA_INT_TYPE_ATTRIBUTES];
     }
 }
