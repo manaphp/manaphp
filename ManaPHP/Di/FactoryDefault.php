@@ -17,7 +17,7 @@ class FactoryDefault extends Container
             'configure'        => 'ManaPHP\Configuration\Configure',
             'settings'         => 'ManaPHP\Configuration\Settings\Adapter\Redis',
             'invoker'          => 'ManaPHP\Controller\Invoker',
-            'modelMetadata'    => 'ManaPHP\Data\Db\Model\Metadata\Adapter\Memory',
+            'modelMetadata'    => 'ManaPHP\Data\Db\Model\Metadata',
             'validator'        => 'ManaPHP\Validating\Validator',
             'crypt'            => 'ManaPHP\Security\Crypt',
             'logger'           => 'ManaPHP\Logging\Logger\Adapter\File',

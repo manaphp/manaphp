@@ -5,12 +5,26 @@ namespace ManaPHP\Data\Db\Model;
 use ManaPHP\Component;
 use ManaPHP\Data\Db;
 
-abstract class Metadata extends Component implements MetadataInterface, Metadata\AdapterInterface
+class Metadata extends Component implements MetadataInterface
 {
     /**
-     * @var array
+     * @var int
      */
-    protected $metadata;
+    protected $ttl = 3600;
+
+    /**
+     * @param array $options
+     */
+    public function __construct($options = [])
+    {
+        if (isset($options['ttl'])) {
+            $this->ttl = (int)$options['ttl'];
+        }
+
+        if (APP_DEBUG || !function_exists('apcu_fetch')) {
+            $this->ttl = 0;
+        }
+    }
 
     /**
      * Reads the complete meta-data for certain model
@@ -22,25 +36,27 @@ abstract class Metadata extends Component implements MetadataInterface, Metadata
     protected function readMetaData($model)
     {
         $modelName = is_string($model) ? $model : get_class($model);
+        $key = __FILE__ . ':' . $modelName;
 
-        if (!isset($this->metadata[$modelName])) {
-            $data = $this->read($modelName);
-            if ($data !== false) {
-                $this->metadata[$modelName] = $data;
-            } else {
-                $modelInstance = is_string($model) ? $this->getShared($model) : $model;
-
-                list($db, $table) = $modelInstance->getAnyShard();
-                /** @var \ManaPHP\Data\DbInterface $db */
-                $db = $this->getShared($db);
-                $data = $db->getMetadata($table);
-
-                $this->metadata[$modelName] = $data;
-                $this->write($modelName, $data);
+        if ($this->ttl > 0) {
+            $r = apcu_fetch($key, $success);
+            if ($success) {
+                return $r;
             }
         }
 
-        return $this->metadata[$modelName];
+        $modelInstance = is_string($model) ? $this->getShared($model) : $model;
+
+        list($db, $table) = $modelInstance->getAnyShard();
+        /** @var \ManaPHP\Data\DbInterface $db */
+        $db = $this->getShared($db);
+        $data = $db->getMetadata($table);
+
+        if ($this->ttl > 0) {
+            apcu_store($key, $data);
+        }
+
+        return $data;
     }
 
     /**
