@@ -155,14 +155,22 @@ class HelpCommand extends Command
         $colored_action = $this->console->colorize($method_name, Console::FC_YELLOW) . ' ' . $description;
         $this->console->writeLn($colored_action);
 
+        $params = [];
+
         $defaultValues = [];
         foreach ($rm->getParameters() as $parameter) {
+            $name = $parameter->getName();
             if ($parameter->isDefaultValueAvailable()) {
-                $defaultValues[$parameter->getName()] = $parameter->getDefaultValue();
+                $defaultValues[$name] = $parameter->getDefaultValue();
+            }
+
+            if (!$parameter->hasType()) {
+                $params[$name] = '';
+            } elseif (preg_match('#^\w+$#', $parameter->getType())) {
+                $params[$name] = '';
             }
         }
 
-        $params = [];
         foreach ($lines as $line) {
             if (!str_contains($line, '@param')) {
                 continue;
@@ -174,6 +182,10 @@ class HelpCommand extends Command
             }
             $name = substr($parts[2], 1);
             $type = $parts[1];
+
+            if (!isset($params[$name])) {
+                continue;
+            }
 
             if (isset($defaultValues[$name])) {
                 if ($type === 'bool' || $type === 'boolean') {
