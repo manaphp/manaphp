@@ -37,6 +37,7 @@ class Factory extends FactoryDefault
                 'configCommand'         => 'ManaPHP\Configuration\Command',
                 'versionCommand'        => 'ManaPHP\Cli\Commands\VersionCommand',
                 'aopCommand'            => 'ManaPHP\Aop\Command',
+                'cryptCommand'          => 'ManaPHP\Security\Command',
 
                 'httpClientTracer' => 'ManaPHP\Http\Client\Tracer',
             ]
