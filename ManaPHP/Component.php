@@ -16,7 +16,7 @@ use Swoole\Coroutine;
 class Component implements Injectable, JsonSerializable, Proxyable
 {
     /**
-     * @var mixed
+     * @var static
      */
     protected $self;
 
