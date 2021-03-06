@@ -54,6 +54,30 @@ class ResponseContext
 class Response extends Component implements ResponseInterface
 {
     /**
+     * @var int|string
+     */
+    protected $ok_code = 0;
+
+    /**
+     * @var int|string
+     */
+    protected $error_code = 1;
+
+    /**
+     * @param array $options
+     */
+    public function __construct($options = [])
+    {
+        if (isset($options['ok_code'])) {
+            $this->ok_code = $options['ok_code'];
+        }
+
+        if (isset($options['error_code'])) {
+            $this->error_code = $options['error_code'];
+        }
+    }
+
+    /**
      * Sets a cookie to be sent at the end of the request
      *
      * @param string $name
@@ -469,7 +493,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setJsonOk($message = '')
     {
-        return $this->self->setJsonContent(['code' => 0, 'message' => $message]);
+        return $this->self->setJsonContent(['code' => $this->ok_code, 'message' => $message]);
     }
 
     /**
@@ -480,7 +504,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setJsonError($message, $code = null)
     {
-        return $this->self->setJsonContent(['code' => $code ?? 1, 'message' => $message]);
+        return $this->self->setJsonContent(['code' => $code ?? $this->error_code, 'message' => $message]);
     }
 
     /**
@@ -491,7 +515,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setJsonData($data, $message = '')
     {
-        return $this->self->setJsonContent(['code' => 0, 'message' => $message, 'data' => $data]);
+        return $this->self->setJsonContent(['code' => $this->ok_code, 'message' => $message, 'data' => $data]);
     }
 
     /**
@@ -533,7 +557,7 @@ class Response extends Component implements ResponseInterface
         if (is_array($content) || is_string($content)) {
             null;
         } elseif ($content instanceof JsonSerializable) {
-            $content = ['code' => 0, 'message' => '', 'data' => $content];
+            $content = ['code' => $this->ok_code, 'message' => '', 'data' => $content];
         }
 
         $context->content = $content;
