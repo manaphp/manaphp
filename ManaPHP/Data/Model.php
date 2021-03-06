@@ -495,9 +495,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
      */
     public static function exists($filters)
     {
-        $primaryKey = static::sample()->primaryKey();
-
-        return static::select()->where(is_scalar($filters) ? [$primaryKey => $filters] : $filters)->exists();
+        return static::where($filters)->exists();
     }
 
     /**
