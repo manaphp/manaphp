@@ -78,4 +78,11 @@ interface IdentityInterface
      * @return bool
      */
     public function hasClaim($name);
+
+    /**
+     * @param array $claims
+     *
+     * @return string
+     */
+    public function encode($claims);
 }

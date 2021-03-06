@@ -5,6 +5,7 @@ namespace ManaPHP\Identifying;
 use ManaPHP\Component;
 use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnauthorizedException;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
@@ -229,5 +230,15 @@ class Identity extends Component implements IdentityInterface
     public function authenticate()
     {
         return [];
+    }
+
+    /**
+     * @param array $claims
+     *
+     * @return string
+     */
+    public function encode($claims)
+    {
+        throw new NotSupportedException(__METHOD__);
     }
 }

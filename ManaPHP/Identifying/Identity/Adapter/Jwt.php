@@ -13,7 +13,12 @@ class Jwt extends Identity
     /**
      * @var string
      */
-    protected $scope;
+    protected $scope = APP_ID;
+
+    /**
+     * @var int
+     */
+    protected $ttl = 86400;
 
     /**
      * @param array $options
@@ -24,7 +29,13 @@ class Jwt extends Identity
             $this->injections['scopedJwt'] = $options['scopedJwt'];
         }
 
-        $this->scope = $options['scope'] ?? APP_ID;
+        if (isset($options['scope'])) {
+            $this->scope = $options['scope'];
+        }
+
+        if (isset($options['ttl'])) {
+            $this->ttl = (int)$options['ttl'];
+        }
     }
 
     /**
@@ -37,5 +48,15 @@ class Jwt extends Identity
         } else {
             return [];
         }
+    }
+
+    /**
+     * @param array $claims
+     *
+     * @return string
+     */
+    public function encode($claims)
+    {
+        return $this->scopedJwt->encode($claims, $this->ttl, $this->scope);
     }
 }
