@@ -41,10 +41,10 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
     public function render($exception)
     {
         if (APP_DEBUG) {
-            if ($this->renderer->exists('@views/Errors/debug')) {
-                $template = '@views/Errors/debug';
+            if ($this->renderer->exists('@views/Errors/Debug')) {
+                $template = '@views/Errors/Debug';
             } else {
-                $template = '@manaphp/Mvc/ErrorHandler/Views/debug';
+                $template = '@manaphp/Mvc/ErrorHandler/Views/Debug';
             }
             return $this->renderer->renderFile($template, ['exception' => $exception]);
         }
@@ -54,7 +54,7 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
         foreach (
             [
                 "@views/Errors/$statusCode",
-                '@views/Errors/error'
+                '@views/Errors/Error'
             ] as $template
         ) {
             if ($this->renderer->exists($template)) {
