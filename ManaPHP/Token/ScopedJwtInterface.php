@@ -10,7 +10,7 @@ interface ScopedJwtInterface
      *
      * @return string
      */
-    public function getSecret($scope, $cache = true);
+    public function getKey($scope, $cache = true);
 
     /**
      * @param array  $claims

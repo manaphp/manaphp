@@ -14,15 +14,15 @@ class ScopedJwt extends Component implements ScopedJwtInterface
     /**
      * @var array
      */
-    protected $secrets = [];
+    protected $keys = [];
 
     /**
      * @param array $options
      */
     public function __construct($options = [])
     {
-        if (isset($options['secrets'])) {
-            $this->secrets = $options['secrets'];
+        if (isset($options['keys'])) {
+            $this->keys = $options['keys'];
         }
 
         if (isset($options['crypt'])) {
@@ -40,19 +40,19 @@ class ScopedJwt extends Component implements ScopedJwtInterface
      *
      * @return string
      */
-    public function getSecret($scope, $cache = true)
+    public function getKey($scope, $cache = true)
     {
-        if (($secret = $this->secrets[$scope] ?? null) !== null) {
-            return $secret;
+        if (($key = $this->keys[$scope] ?? null) !== null) {
+            return $key;
         }
 
-        $secret = $this->crypt->getDerivedKey($scope === '' ? 'jwt' : "jwt:$scope");
+        $key = $this->crypt->getDerivedKey($scope === '' ? 'jwt' : "jwt:$scope");
 
         if ($cache) {
-            $this->secrets[$scope] = $secret;
+            $this->keys[$scope] = $key;
         }
 
-        return $secret;
+        return $key;
     }
 
     /**
@@ -71,7 +71,7 @@ class ScopedJwt extends Component implements ScopedJwtInterface
 
         $claims['scope'] = $scope;
 
-        return $this->jwt->encode($claims, $ttl, $this->self->getSecret($scope));
+        return $this->jwt->encode($claims, $ttl, $this->self->getKey($scope));
     }
 
     /**
@@ -109,7 +109,7 @@ class ScopedJwt extends Component implements ScopedJwtInterface
      */
     public function verify($token, $scope)
     {
-        $this->jwt->verify($token, $this->self->getSecret($scope));
+        $this->jwt->verify($token, $this->self->getKey($scope));
     }
 
     /**
@@ -118,7 +118,7 @@ class ScopedJwt extends Component implements ScopedJwtInterface
     public function dump()
     {
         $data = parent::dump();
-        $data['secrets'] = '***';
+        $data['keys'] = '***';
 
         return $data;
     }
