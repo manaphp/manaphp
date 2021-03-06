@@ -15,9 +15,9 @@ class Jwt extends Component implements JwtInterface
     protected $alg = 'HS256';
 
     /**
-     * @var string|array
+     * @var string
      */
-    protected $secret;
+    protected $key;
 
     /**
      * @param array $options
@@ -32,10 +32,10 @@ class Jwt extends Component implements JwtInterface
             $this->injections['crypt'] = $options['crypt'];
         }
 
-        if (isset($options['secret'])) {
-            $this->secret = $options['secret'];
+        if (isset($options['key'])) {
+            $this->key = $options['key'];
         } else {
-            $this->secret = $this->crypt->getDerivedKey('jwt:' . APP_ID);
+            $this->key = $this->crypt->getDerivedKey('jwt:' . APP_ID);
         }
     }
 
@@ -62,31 +62,31 @@ class Jwt extends Component implements JwtInterface
     /**
      * @param array  $claims
      * @param int    $ttl
-     * @param string $secret
+     * @param string $key
      *
      * @return string
      */
-    public function encode($claims, $ttl, $secret = null)
+    public function encode($claims, $ttl, $key = null)
     {
         $claims['iat'] = time();
         $claims['exp'] = time() + $ttl;
 
         $header = $this->self->base64UrlEncode(json_stringify(['alg' => $this->alg, 'typ' => 'JWT']));
         $payload = $this->self->base64UrlEncode(json_stringify($claims));
-        $hmac = hash_hmac(strtr($this->alg, ['HS' => 'sha']), "$header.$payload", $secret ?? $this->secret, true);
+        $hmac = hash_hmac(strtr($this->alg, ['HS' => 'sha']), "$header.$payload", $key ?? $this->key, true);
         $signature = $this->self->base64UrlEncode($hmac);
 
         return "$header.$payload.$signature";
     }
 
     /**
-     * @param string       $token
-     * @param bool         $verify
-     * @param string|array $secrets
+     * @param string $token
+     * @param bool   $verify
+     * @param string $key
      *
      * @return array
      */
-    public function decode($token, $verify = true, $secrets = null)
+    public function decode($token, $verify = true, $key = null)
     {
         if ($token === null || $token === '') {
             throw new NoCredentialException('No Credentials');
@@ -136,17 +136,17 @@ class Jwt extends Component implements JwtInterface
         }
 
         if ($verify) {
-            $this->self->verify($token, $secrets);
+            $this->self->verify($token, $key);
         }
 
         return $claims;
     }
 
     /**
-     * @param string       $token
-     * @param string|array $secrets
+     * @param string $token
+     * @param string $key
      */
-    public function verify($token, $secrets = null)
+    public function verify($token, $key = null)
     {
         if (($pos = strrpos($token, '.')) === false) {
             throw new MalformedException('The JWT must have three dots');
@@ -154,17 +154,9 @@ class Jwt extends Component implements JwtInterface
 
         $data = substr($token, 0, $pos);
         $signature = substr($token, $pos + 1);
+        $hmac = hash_hmac(strtr($this->alg, ['HS' => 'sha']), $data, $key, true);
 
-        $success = false;
-        foreach ((array)($secrets ?? $this->secret) as $secret) {
-            $hmac = hash_hmac(strtr($this->alg, ['HS' => 'sha']), $data, $secret, true);
-            if ($this->self->base64UrlEncode($hmac) === $signature) {
-                $success = true;
-                break;
-            }
-        }
-
-        if (!$success) {
+        if ($this->self->base64UrlEncode($hmac) !== $signature) {
             throw new SignatureException('signature is not corrected');
         }
     }
@@ -175,7 +167,7 @@ class Jwt extends Component implements JwtInterface
     public function dump()
     {
         $data = parent::dump();
-        $data['secret'] = '***';
+        $data['key'] = '***';
 
         return $data;
     }
