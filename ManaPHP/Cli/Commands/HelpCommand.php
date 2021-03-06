@@ -155,7 +155,7 @@ class HelpCommand extends Command
         $colored_action = $this->console->colorize($method_name, Console::FC_YELLOW) . ' ' . $description;
         $this->console->writeLn($colored_action);
 
-        $params = [];
+        $options = [];
 
         $defaultValues = [];
         foreach ($rm->getParameters() as $parameter) {
@@ -165,9 +165,9 @@ class HelpCommand extends Command
             }
 
             if (!$parameter->hasType()) {
-                $params[$name] = '';
+                $options[$name] = '';
             } elseif (preg_match('#^\w+$#', $parameter->getType())) {
-                $params[$name] = '';
+                $options[$name] = '';
             }
         }
 
@@ -183,7 +183,7 @@ class HelpCommand extends Command
             $name = substr($parts[2], 1);
             $type = $parts[1];
 
-            if (!isset($params[$name])) {
+            if (!isset($options[$name])) {
                 continue;
             }
 
@@ -201,12 +201,12 @@ class HelpCommand extends Command
                 }
             }
 
-            $params[$name] = isset($parts[3]) ? trim($parts[3]) : '';
+            $options[$name] = isset($parts[3]) ? trim($parts[3]) : '';
         }
 
-        if ($params) {
+        if ($options) {
             $shortNames = [];
-            foreach ($params as $name => $description) {
+            foreach ($options as $name => $description) {
                 $short = $name[0];
                 if (isset($shortNames[$short])) {
                     $shortNames[$short] = false;
@@ -217,12 +217,12 @@ class HelpCommand extends Command
             $shortNames = array_flip(array_filter($shortNames));
 
             $width = 1;
-            foreach ($params as $name => $description) {
+            foreach ($options as $name => $description) {
                 $width = max($width, strlen($name) + 2 + (isset($shortNames[$name]) ? 4 : 0));
             }
             $this->console->writeLn('  Options:');
 
-            foreach ($params as $name => $value) {
+            foreach ($options as $name => $value) {
                 $option = '--' . $name;
                 if (isset($shortNames[$name])) {
                     $option .= ', -' . $shortNames[$name];
