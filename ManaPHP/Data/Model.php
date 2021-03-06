@@ -294,14 +294,8 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
             throw new InvalidValueException('Model::get id is not scalar');
         }
 
-        $sample = static::sample();
-
         if (!is_int($fieldsOrTtl)) {
-            if (!$rs = static::select($fieldsOrTtl)->whereEq($sample->primaryKey(), $id)->limit(1)->fetch()) {
-                throw new NotFoundException(static::class, $id);
-            } else {
-                return $rs[0];
-            }
+            return static::firstOrFail($id);
         }
 
         $ttl = $fieldsOrTtl;
@@ -309,12 +303,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
 
         $r = apcu_fetch($key, $success);
         if (!$success) {
-            if (!$rs = static::select()->whereEq($sample->primaryKey(), $id)->limit(1)->fetch()) {
-                throw new NotFoundException(static::class, $id);
-            }
-
-            $r = $rs[0];
-
+            $r = static::firstOrFail($id);
             apcu_store($key, $r, $ttl);
         }
 
