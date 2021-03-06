@@ -98,7 +98,12 @@ class Document extends Component
 
         libxml_clear_errors();
         $old_use_internal_errors = libxml_use_internal_errors(true);
-        $old_disable_entity_loader = libxml_disable_entity_loader();
+
+        $old_disable_entity_loader = true;
+        if (PHP_VERSION_ID < 80000) {
+            /** @noinspection PhpDeprecationInspection */
+            $old_disable_entity_loader = libxml_disable_entity_loader();
+        }
 
         /** @noinspection SubStrUsedAsStrPosInspection */
         if (substr($str, 0, 5) === '<?xml') {
@@ -110,7 +115,11 @@ class Document extends Component
         $this->errors = libxml_get_errors();
         libxml_clear_errors();
 
-        libxml_disable_entity_loader($old_disable_entity_loader);
+        if (PHP_VERSION_ID < 80000) {
+            /** @noinspection PhpDeprecationInspection */
+            libxml_disable_entity_loader($old_disable_entity_loader);
+        }
+
         libxml_use_internal_errors($old_use_internal_errors);
 
         if (!$r) {
