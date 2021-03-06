@@ -36,20 +36,13 @@ class ScopedJwt extends Component implements ScopedJwtInterface
 
     /**
      * @param string $scope
-     * @param bool   $cache
      *
      * @return string
      */
-    public function getKey($scope, $cache = true)
+    public function getKey($scope)
     {
-        if (($key = $this->keys[$scope] ?? null) !== null) {
-            return $key;
-        }
-
-        $key = $this->crypt->getDerivedKey($scope === '' ? 'jwt' : "jwt:$scope");
-
-        if ($cache) {
-            $this->keys[$scope] = $key;
+        if (($key = $this->keys[$scope] ?? null) === null) {
+            $key = $this->keys[$scope] = $this->crypt->getDerivedKey($scope === '' ? 'jwt' : "jwt:$scope");
         }
 
         return $key;

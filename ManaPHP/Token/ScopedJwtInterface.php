@@ -6,11 +6,10 @@ interface ScopedJwtInterface
 {
     /**
      * @param string $scope
-     * @param bool   $cache
      *
      * @return string
      */
-    public function getKey($scope, $cache = true);
+    public function getKey($scope);
 
     /**
      * @param array  $claims
