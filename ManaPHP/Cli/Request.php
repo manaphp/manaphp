@@ -229,12 +229,8 @@ class Request extends Component implements RequestInterface
         foreach (Reflection::reflectMethod($instance, $action)->getParameters() as $parameter) {
             $name = $parameter->getName();
 
-            if ($parameter->hasType()) {
-                $type = $parameter->getType();
-
-                if ($type->isBuiltin()) {
-                    continue;
-                }
+            if ($parameter->hasType() && !preg_match('#^[a-z]+$#', $parameter->getType())) {
+                continue;
             }
 
             if (str_ends_with($name, 'Service')) {
