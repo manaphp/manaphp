@@ -35,7 +35,7 @@ class Jwt extends Component implements JwtInterface
         if (isset($options['key'])) {
             $this->key = $options['key'];
         } else {
-            $this->key = $this->crypt->getDerivedKey('jwt:' . APP_ID);
+            $this->key = $this->crypt->getDerivedKey('jwt');
         }
     }
 
