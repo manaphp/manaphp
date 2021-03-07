@@ -295,7 +295,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
         }
 
         if (!is_int($fieldsOrTtl)) {
-            return static::firstOrFail($id);
+            return static::firstOrFail($id, $fieldsOrTtl);
         }
 
         $ttl = $fieldsOrTtl;
@@ -303,7 +303,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
 
         $r = apcu_fetch($key, $success);
         if (!$success) {
-            $r = static::firstOrFail($id);
+            $r = static::firstOrFail($id, $fieldsOrTtl);
             apcu_store($key, $r, $ttl);
         }
 
