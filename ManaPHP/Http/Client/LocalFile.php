@@ -74,4 +74,12 @@ class LocalFile implements FileInterface, JsonSerializable
     {
         return ['fileName' => $this->fileName];
     }
+
+    /**
+     * @return string
+     */
+    public function getContent()
+    {
+        return file_get_contents($this->fileName);
+    }
 }

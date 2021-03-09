@@ -18,4 +18,9 @@ interface FileInterface
      * @return string
      */
     public function getPostName();
+
+    /**
+     * @return string
+     */
+    public function getContent();
 }

@@ -279,7 +279,7 @@ class Stream extends Component implements EngineInterface
                 $mimeType = $v->getMimeType();
                 $part .= "Content-Disposition: form-data; name=\"$k\"; filename=\"$postName\"\r\n";
                 $part .= "Content-Type: $mimeType\r\n\r\n";
-                $part .= file_get_contents($v->getFileName());
+                $part .= $v->getContent();
             } else {
                 $part .= "Content-Disposition: form-data; name=\"$k\"\r\n\r\n";
                 $part .= $v;
