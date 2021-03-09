@@ -4,7 +4,7 @@ namespace ManaPHP\Http\Client;
 
 use JsonSerializable;
 
-class File implements FileInterface, JsonSerializable
+class LocalFile implements FileInterface, JsonSerializable
 {
     /**
      * @var string

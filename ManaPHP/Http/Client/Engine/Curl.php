@@ -4,10 +4,8 @@ namespace ManaPHP\Http\Client\Engine;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Client\ConnectionException;
 use ManaPHP\Http\Client\EngineInterface;
-use ManaPHP\Http\Client\File;
 use ManaPHP\Http\Client\FileInterface;
 use ManaPHP\Http\Client\Response;
 
