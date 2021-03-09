@@ -185,7 +185,27 @@ class Client extends Component implements ClientInterface
             try {
                 $this->fireEvent('httpClient:requesting', compact('method', 'url', 'request'));
 
-                $response = $engine->request($request, $this->keepalive);
+                if ($request->hasFile()) {
+                    $boundary = '------------------------' . bin2hex(random_bytes(8));
+                    $request->headers['Content-Type'] = "multipart/form-data; boundary=$boundary";
+                    $body = $request->buildMultipart($boundary);
+                } else {
+                    $body = $request->body;
+                }
+
+                if (is_array($body)) {
+                    if (isset($request->headers['Content-Type'])
+                        && str_contains(
+                            $request->headers['Content-Type'], 'json'
+                        )
+                    ) {
+                        $body = json_stringify($body);
+                    } else {
+                        $body = http_build_query($body);
+                    }
+                }
+
+                $response = $engine->request($request, $body, $this->keepalive);
 
                 $success = true;
             } finally {

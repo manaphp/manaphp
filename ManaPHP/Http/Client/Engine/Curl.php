@@ -37,47 +37,13 @@ class Curl extends Component implements EngineInterface
 
     /**
      * @param \ManaPHP\Http\Client\Request $request
+     * @param string                       $body
      * @param bool                         $keepalive
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    public function request($request, $keepalive = false)
+    public function request($request, $body, $keepalive = false)
     {
-        if ($request->hasFile()) {
-            $hasNotLocalFile = false;
-            foreach ($request->body as $v) {
-                if ($v instanceof FileInterface && !$v->getFileName()) {
-                    $hasNotLocalFile = true;
-                    break;
-                }
-            }
-
-            if ($hasNotLocalFile) {
-                $boundary = '------------------------' . bin2hex(random_bytes(8));
-                $request->headers['Content-Type'] = "multipart/form-data; boundary=$boundary";
-                $body = $request->buildMultipart($boundary);
-            } else {
-                $body = [];
-                foreach ($request->body as $k => $v) {
-                    if ($v instanceof FileInterface) {
-                        $body[$k] = curl_file_create($v->getFileName(), $v->getMimeType(), $v->getPostName());
-                    } else {
-                        $body[$k] = $v;
-                    }
-                }
-            }
-        } else {
-            $body = $request->body;
-
-            if (is_array($body)) {
-                if (str_contains($request->headers['Content-Type'] ?? '', 'json')) {
-                    $body = json_stringify($body);
-                } else {
-                    $body = http_build_query($body);
-                }
-            }
-        }
-
         $content = '';
         $header_length = 0;
 

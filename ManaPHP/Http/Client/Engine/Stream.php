@@ -254,28 +254,13 @@ class Stream extends Component implements EngineInterface
 
     /**
      * @param \ManaPHP\Http\Client\Request $request
+     * @param string                       $body
      * @param bool                         $keepalive
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    public function request($request, $keepalive = false)
+    public function request($request, $body, $keepalive = false)
     {
-        if ($request->hasFile()) {
-            $boundary = '------------------------' . bin2hex(random_bytes(8));
-            $request->headers['Content-Type'] = "multipart/form-data; boundary=$boundary";
-            $body = $request->buildMultipart($boundary);
-        } else {
-            $body = $request->body;
-        }
-
-        if (is_array($body)) {
-            if (isset($request->headers['Content-Type']) && str_contains($request->headers['Content-Type'], 'json')) {
-                $body = json_stringify($body);
-            } else {
-                $body = http_build_query($body);
-            }
-        }
-
         if ($keepalive) {
             if ($this->stream === null) {
                 return $this->self->request_with_keepalive($request, $body);
