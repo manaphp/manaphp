@@ -50,7 +50,6 @@ class Stream extends Component implements EngineInterface
 
         $request->headers['Host'] = $port ? "$host:$port" : $host;
         $request->headers['Connection'] = 'keep-alive';
-        $request->headers['Content-Length'] = strlen($body);
 
         $data = strtoupper($request->method) . ' ' . $request->url . " HTTP/1.1\r\n";
         foreach ($request->headers as $name => $value) {

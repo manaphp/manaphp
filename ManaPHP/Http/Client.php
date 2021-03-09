@@ -205,6 +205,10 @@ class Client extends Component implements ClientInterface
                     }
                 }
 
+                if (is_string($body)) {
+                    $request->headers['Content-Length'] = strlen($body);
+                }
+
                 $response = $engine->request($request, $body, $this->keepalive);
 
                 $success = true;
