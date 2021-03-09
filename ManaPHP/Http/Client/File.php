@@ -30,6 +30,14 @@ class File implements FileInterface, JsonSerializable
     {
         $fileName = $fileName[0] === '@' ? container('alias')->resolve($fileName) : $fileName;
 
+        if (!file_exists($fileName)) {
+            throw new Exception(["`%s` is not exist", $fileName]);
+        }
+
+        if (!is_readable($fileName)) {
+            throw new Exception(["`%s` is not readable", $fileName]);
+        }
+
         $this->fileName = $fileName;
         $this->mimeType = $mimeType;
         $this->postName = $postName;
