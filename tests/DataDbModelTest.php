@@ -178,7 +178,7 @@ class DbModelTest extends TestCase
     public function test_lists()
     {
         $this->assertCount(600, City::lists('city'));
-        $this->assertCount(3, City::lists(['city_id' => 'city'], ['country_id' => 2]));
+        $this->assertCount(3, City::kvalues('city', ['country_id' => 2]));
     }
 
     public function test_values()

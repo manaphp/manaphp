@@ -198,6 +198,14 @@ interface ModelInterface extends TableInterface
     public static function values($field, $filters = null);
 
     /**
+     * @param string $field
+     * @param array  $filters
+     *
+     * @return array
+     */
+    public static function kvalues($field, $filters = null);
+
+    /**
      * @param string|array $filters
      *
      * @return bool
