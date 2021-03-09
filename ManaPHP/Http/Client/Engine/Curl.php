@@ -7,6 +7,8 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Client\ConnectionException;
 use ManaPHP\Http\Client\EngineInterface;
+use ManaPHP\Http\Client\File;
+use ManaPHP\Http\Client\FileInterface;
 use ManaPHP\Http\Client\Response;
 
 /**
@@ -50,12 +52,10 @@ class Curl extends Component implements EngineInterface
             } else {
                 $hasFiles = false;
                 foreach ($body as $k => $v) {
-                    if (is_string($v) && strlen($v) > 1 && $v[0] === '@' && LocalFS::fileExists($v)) {
+                    if ($v instanceof FileInterface) {
+                        $body[$k] = curl_file_create($v->getFileName(), $v->getMimeType(), $v->getPostName());
                         $hasFiles = true;
-                        $file = $this->alias->resolve($v);
-                        $body[$k] = curl_file_create($file, mime_content_type($file) ?: null, basename($file));
-                    } elseif (is_object($v)) {
-                        $hasFiles = true;
+                        break;
                     }
                 }
 
