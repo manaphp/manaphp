@@ -6,6 +6,7 @@ use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\Client\ConnectionException;
 use ManaPHP\Http\Client\EngineInterface;
+use ManaPHP\Http\Client\FileInterface;
 use ManaPHP\Http\Client\Response;
 use ManaPHP\Http\Client\TimeoutException;
 
@@ -262,6 +263,35 @@ class Stream extends Component implements EngineInterface
     }
 
     /**
+     * @param array  $body
+     * @param string $boundary
+     *
+     * @return string
+     */
+    protected function buildMultipart($body, $boundary)
+    {
+        $data = '';
+        foreach ($body as $k => $v) {
+            $part = "--$boundary\r\n";
+
+            if ($v instanceof FileInterface) {
+                $postName = $v->getPostName();
+                $mimeType = $v->getMimeType();
+                $part .= "Content-Disposition: form-data; name=\"$k\"; filename=\"$postName\"\r\n";
+                $part .= "Content-Type: $mimeType\r\n\r\n";
+                $part .= file_get_contents($v->getFileName());
+            } else {
+                $part .= "Content-Disposition: form-data; name=\"$k\"\r\n\r\n";
+                $part .= $v;
+            }
+
+            $data .= "$part\r\n";
+        }
+
+        return $data . "--$boundary--\r\n";
+    }
+
+    /**
      * @param \ManaPHP\Http\Client\Request $request
      * @param bool                         $keepalive
      *
@@ -269,6 +299,22 @@ class Stream extends Component implements EngineInterface
      */
     public function request($request, $keepalive = false)
     {
+        if (is_array($request->body) && !isset($request->headers['Content-Type'])) {
+            $hasFiles = false;
+            foreach ($request->body as $k => $v) {
+                if ($v instanceof FileInterface) {
+                    $hasFiles = true;
+                    break;
+                }
+            }
+
+            if ($hasFiles) {
+                $boundary = '------------------------' . bin2hex(random_bytes(8));
+                $request->headers['Content-Type'] = "multipart/form-data; boundary=$boundary";
+                $request->body = $this->buildMultipart($request->body, $boundary);
+            }
+        }
+
         if ($keepalive) {
             if ($this->stream === null) {
                 return $this->self->request_with_keepalive($request);
