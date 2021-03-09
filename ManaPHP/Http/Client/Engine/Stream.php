@@ -38,10 +38,11 @@ class Stream extends Component implements EngineInterface
 
     /**
      * @param \ManaPHP\Http\Client\Request $request
+     * @param string|array                 $body
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    protected function request_with_keepalive($request)
+    protected function request_with_keepalive($request, $body)
     {
         $host = parse_url($request->url, PHP_URL_HOST);
         $port = parse_url($request->url, PHP_URL_PORT);
@@ -50,14 +51,12 @@ class Stream extends Component implements EngineInterface
         $request->headers['Host'] = $port ? "$host:$port" : $host;
         $request->headers['Connection'] = 'keep-alive';
 
-        if (is_array($request->body)) {
+        if (is_array($body)) {
             if (isset($request->headers['Content-Type']) && str_contains($request->headers['Content-Type'], 'json')) {
-                $body = json_stringify($request->body);
+                $body = json_stringify($body);
             } else {
-                $body = http_build_query($request->body);
+                $body = http_build_query($body);
             }
-        } else {
-            $body = $request->body;
         }
 
         $request->headers['Content-Length'] = strlen($body);
@@ -299,9 +298,10 @@ class Stream extends Component implements EngineInterface
      */
     public function request($request, $keepalive = false)
     {
-        if (is_array($request->body) && !isset($request->headers['Content-Type'])) {
+        $body = $request->body;
+        if (is_array($body) && !isset($request->headers['Content-Type'])) {
             $hasFiles = false;
-            foreach ($request->body as $k => $v) {
+            foreach ($body as $k => $v) {
                 if ($v instanceof FileInterface) {
                     $hasFiles = true;
                     break;
@@ -311,33 +311,34 @@ class Stream extends Component implements EngineInterface
             if ($hasFiles) {
                 $boundary = '------------------------' . bin2hex(random_bytes(8));
                 $request->headers['Content-Type'] = "multipart/form-data; boundary=$boundary";
-                $request->body = $this->buildMultipart($request->body, $boundary);
+                $body = $this->buildMultipart($body, $boundary);
             }
         }
 
         if ($keepalive) {
             if ($this->stream === null) {
-                return $this->self->request_with_keepalive($request);
+                return $this->self->request_with_keepalive($request, $body);
             } else {
                 try {
-                    return $this->self->request_with_keepalive($request);
+                    return $this->self->request_with_keepalive($request, $body);
                 } catch (TimeoutException $exception) {
                     fclose($this->stream);
                     $this->stream = null;
-                    return $this->self->request_with_keepalive($request);
+                    return $this->self->request_with_keepalive($request, $body);
                 }
             }
         } else {
-            return $this->self->request_without_keepalive($request);
+            return $this->self->request_without_keepalive($request, $body);
         }
     }
 
     /**
      * @param \ManaPHP\Http\Client\Request $request
+     * @param string|array                 $body
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    protected function request_without_keepalive($request)
+    protected function request_without_keepalive($request, $body)
     {
         $http = [];
 
@@ -367,13 +368,13 @@ class Stream extends Component implements EngineInterface
         }
         $http['header'] = $headers;
 
-        if (is_string($request->body)) {
-            $http['content'] = $request->body;
-        } elseif (is_array($request->body)) {
+        if (is_string($body)) {
+            $http['content'] = $body;
+        } elseif (is_array($body)) {
             if (isset($request->headers['Content-Type']) && str_contains($request->headers['Content-Type'], 'json')) {
-                $http['content'] = json_stringify($request->body);
+                $http['content'] = json_stringify($body);
             } else {
-                $http['content'] = http_build_query($request->body);
+                $http['content'] = http_build_query($body);
             }
         }
 
