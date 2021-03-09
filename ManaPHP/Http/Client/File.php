@@ -2,7 +2,9 @@
 
 namespace ManaPHP\Http\Client;
 
-class File implements FileInterface
+use JsonSerializable;
+
+class File implements FileInterface, JsonSerializable
 {
     /**
      * @var string
@@ -55,5 +57,13 @@ class File implements FileInterface
     public function getPostName()
     {
         return $this->postName ?? basename($this->fileName);
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return ['fileName' => $this->fileName];
     }
 }
