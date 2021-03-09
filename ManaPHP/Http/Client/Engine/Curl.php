@@ -43,21 +43,36 @@ class Curl extends Component implements EngineInterface
      */
     public function request($request, $keepalive = false)
     {
-        $body = $request->body;
-        if (is_array($body)) {
-            if (isset($request->headers['Content-Type']) && str_contains($request->headers['Content-Type'], 'json')) {
-                $body = json_stringify($body);
+        if ($request->hasFile()) {
+            $hasNotLocalFile = false;
+            foreach ($request->body as $v) {
+                if ($v instanceof FileInterface && !$v->getFileName()) {
+                    $hasNotLocalFile = true;
+                    break;
+                }
+            }
+
+            if ($hasNotLocalFile) {
+                $boundary = '------------------------' . bin2hex(random_bytes(8));
+                $request->headers['Content-Type'] = "multipart/form-data; boundary=$boundary";
+                $body = $request->buildMultipart($boundary);
             } else {
-                $hasFiles = false;
-                foreach ($body as $k => $v) {
+                $body = [];
+                foreach ($request->body as $k => $v) {
                     if ($v instanceof FileInterface) {
                         $body[$k] = curl_file_create($v->getFileName(), $v->getMimeType(), $v->getPostName());
-                        $hasFiles = true;
-                        break;
+                    } else {
+                        $body[$k] = $v;
                     }
                 }
+            }
+        } else {
+            $body = $request->body;
 
-                if (!$hasFiles) {
+            if (is_array($body)) {
+                if (str_contains($request->headers['Content-Type'] ?? '', 'json')) {
+                    $body = json_stringify($body);
+                } else {
                     $body = http_build_query($body);
                 }
             }
