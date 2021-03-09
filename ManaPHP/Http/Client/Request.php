@@ -68,6 +68,55 @@ class Request implements JsonSerializable
         $this->options = $options;
     }
 
+    /**
+     * @param string $boundary
+     *
+     * @return string
+     */
+    public function buildMultipart($boundary)
+    {
+        $data = '';
+        foreach ($this->body as $k => $v) {
+            $part = "--$boundary\r\n";
+
+            if ($v instanceof FileInterface) {
+                $postName = $v->getPostName();
+                $mimeType = $v->getMimeType();
+                $part .= "Content-Disposition: form-data; name=\"$k\"; filename=\"$postName\"\r\n";
+                $part .= "Content-Type: $mimeType\r\n\r\n";
+                $part .= $v->getContent();
+            } else {
+                $part .= "Content-Disposition: form-data; name=\"$k\"\r\n\r\n";
+                $part .= $v;
+            }
+
+            $data .= "$part\r\n";
+        }
+
+        return $data . "--$boundary--\r\n";
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasFile()
+    {
+        if (!is_array($this->body) || isset($this->headers['Content-Type'])) {
+            return false;
+        }
+
+        foreach ($this->body as $v) {
+            if ($v instanceof FileInterface) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return array
+     */
     public function jsonSerialize()
     {
         return get_object_vars($this);

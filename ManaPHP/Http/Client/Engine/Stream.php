@@ -253,35 +253,6 @@ class Stream extends Component implements EngineInterface
     }
 
     /**
-     * @param array  $body
-     * @param string $boundary
-     *
-     * @return string
-     */
-    protected function buildMultipart($body, $boundary)
-    {
-        $data = '';
-        foreach ($body as $k => $v) {
-            $part = "--$boundary\r\n";
-
-            if ($v instanceof FileInterface) {
-                $postName = $v->getPostName();
-                $mimeType = $v->getMimeType();
-                $part .= "Content-Disposition: form-data; name=\"$k\"; filename=\"$postName\"\r\n";
-                $part .= "Content-Type: $mimeType\r\n\r\n";
-                $part .= $v->getContent();
-            } else {
-                $part .= "Content-Disposition: form-data; name=\"$k\"\r\n\r\n";
-                $part .= $v;
-            }
-
-            $data .= "$part\r\n";
-        }
-
-        return $data . "--$boundary--\r\n";
-    }
-
-    /**
      * @param \ManaPHP\Http\Client\Request $request
      * @param bool                         $keepalive
      *
@@ -289,23 +260,12 @@ class Stream extends Component implements EngineInterface
      */
     public function request($request, $keepalive = false)
     {
-        $body = $request->body;
-        if (is_array($body)) {
-            if (!isset($request->headers['Content-Type'])) {
-                $hasFiles = false;
-                foreach ($body as $k => $v) {
-                    if ($v instanceof FileInterface) {
-                        $hasFiles = true;
-                        break;
-                    }
-                }
-
-                if ($hasFiles) {
-                    $boundary = '------------------------' . bin2hex(random_bytes(8));
-                    $request->headers['Content-Type'] = "multipart/form-data; boundary=$boundary";
-                    $body = $this->buildMultipart($body, $boundary);
-                }
-            }
+        if ($request->hasFile()) {
+            $boundary = '------------------------' . bin2hex(random_bytes(8));
+            $request->headers['Content-Type'] = "multipart/form-data; boundary=$boundary";
+            $body = $request->buildMultipart($boundary);
+        } else {
+            $body = $request->body;
         }
 
         if (is_array($body)) {
