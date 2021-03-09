@@ -38,7 +38,7 @@ class Stream extends Component implements EngineInterface
 
     /**
      * @param \ManaPHP\Http\Client\Request $request
-     * @param string|array                 $body
+     * @param string                       $body
      *
      * @return \ManaPHP\Http\Client\Response
      */
@@ -50,15 +50,6 @@ class Stream extends Component implements EngineInterface
 
         $request->headers['Host'] = $port ? "$host:$port" : $host;
         $request->headers['Connection'] = 'keep-alive';
-
-        if (is_array($body)) {
-            if (isset($request->headers['Content-Type']) && str_contains($request->headers['Content-Type'], 'json')) {
-                $body = json_stringify($body);
-            } else {
-                $body = http_build_query($body);
-            }
-        }
-
         $request->headers['Content-Length'] = strlen($body);
 
         $data = strtoupper($request->method) . ' ' . $request->url . " HTTP/1.1\r\n";
@@ -299,19 +290,29 @@ class Stream extends Component implements EngineInterface
     public function request($request, $keepalive = false)
     {
         $body = $request->body;
-        if (is_array($body) && !isset($request->headers['Content-Type'])) {
-            $hasFiles = false;
-            foreach ($body as $k => $v) {
-                if ($v instanceof FileInterface) {
-                    $hasFiles = true;
-                    break;
+        if (is_array($body)) {
+            if (!isset($request->headers['Content-Type'])) {
+                $hasFiles = false;
+                foreach ($body as $k => $v) {
+                    if ($v instanceof FileInterface) {
+                        $hasFiles = true;
+                        break;
+                    }
+                }
+
+                if ($hasFiles) {
+                    $boundary = '------------------------' . bin2hex(random_bytes(8));
+                    $request->headers['Content-Type'] = "multipart/form-data; boundary=$boundary";
+                    $body = $this->buildMultipart($body, $boundary);
                 }
             }
+        }
 
-            if ($hasFiles) {
-                $boundary = '------------------------' . bin2hex(random_bytes(8));
-                $request->headers['Content-Type'] = "multipart/form-data; boundary=$boundary";
-                $body = $this->buildMultipart($body, $boundary);
+        if (is_array($body)) {
+            if (isset($request->headers['Content-Type']) && str_contains($request->headers['Content-Type'], 'json')) {
+                $body = json_stringify($body);
+            } else {
+                $body = http_build_query($body);
             }
         }
 
@@ -334,7 +335,7 @@ class Stream extends Component implements EngineInterface
 
     /**
      * @param \ManaPHP\Http\Client\Request $request
-     * @param string|array                 $body
+     * @param string                       $body
      *
      * @return \ManaPHP\Http\Client\Response
      */
@@ -370,12 +371,6 @@ class Stream extends Component implements EngineInterface
 
         if (is_string($body)) {
             $http['content'] = $body;
-        } elseif (is_array($body)) {
-            if (isset($request->headers['Content-Type']) && str_contains($request->headers['Content-Type'], 'json')) {
-                $http['content'] = json_stringify($body);
-            } else {
-                $http['content'] = http_build_query($body);
-            }
         }
 
         $http['timeout'] = $request->options['timeout'];
