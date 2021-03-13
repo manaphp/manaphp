@@ -161,6 +161,7 @@ class Curl extends Component implements EngineInterface
         } finally {
             if (!$success) {
                 curl_close($curl);
+                $this->curl = null;
             }
         }
 
