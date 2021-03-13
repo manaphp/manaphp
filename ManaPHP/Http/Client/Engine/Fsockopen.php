@@ -3,6 +3,7 @@
 namespace ManaPHP\Http\Client\Engine;
 
 use ManaPHP\Component;
+use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\Client\ConnectionException;
 use ManaPHP\Http\Client\EngineInterface;
 use ManaPHP\Http\Client\Response;
@@ -65,10 +66,23 @@ class Fsockopen extends Component implements EngineInterface
         $end_time = $start_time + $timeout;
 
         if (($stream = $this->stream) === null) {
-            if ($scheme === 'https') {
-                $stream = fsockopen("ssl://$host", $port ?? 443, $errno, $errstr, $timeout);
+            if (($proxy = $request->options['proxy']) !== '') {
+                $parts = parse_url($proxy);
+                if ($parts['scheme'] !== 'http') {
+                    throw new NotSupportedException('only support http proxy');
+                }
+
+                if (isset($parts['user']) || isset($parts['pass'])) {
+                    throw new NotSupportedException('not support Proxy-Authorization');
+                }
+
+                $stream = fsockopen($parts['host'], $parts['port'] ?? 80, $errno, $errstr, $timeout);
             } else {
-                $stream = fsockopen($host, $port ?? 80, $errno, $errstr, $timeout);
+                if ($scheme === 'https') {
+                    $stream = fsockopen("ssl://$host", $port ?? 443, $errno, $errstr, $timeout);
+                } else {
+                    $stream = fsockopen($host, $port ?? 80, $errno, $errstr, $timeout);
+                }
             }
 
             if ($stream === false) {
