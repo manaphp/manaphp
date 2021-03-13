@@ -110,17 +110,13 @@ class Client extends Component implements ClientInterface
      * @param string          $method
      * @param string|array    $url
      * @param string|array    $body
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
      */
     public function request($method, $url, $body = null, $headers = [], $options = [])
     {
-        if (is_string($headers)) {
-            $headers = [(str_contains($headers, '://') ? 'Referer' : 'User-Agent') => $headers];
-        }
-
         if (!isset($headers['User-Agent'])) {
             $headers['User-Agent'] = $this->user_agent;
         }
@@ -267,7 +263,7 @@ class Client extends Component implements ClientInterface
      * @param string          $method
      * @param string|array    $url
      * @param string|array    $body
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -325,7 +321,7 @@ class Client extends Component implements ClientInterface
 
     /**
      * @param array|string    $url
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -338,7 +334,7 @@ class Client extends Component implements ClientInterface
     /**
      * @param array|string    $url
      * @param string|array    $body
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -350,7 +346,7 @@ class Client extends Component implements ClientInterface
 
     /**
      * @param array|string    $url
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -363,7 +359,7 @@ class Client extends Component implements ClientInterface
     /**
      * @param array|string    $url
      * @param string|array    $body
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -376,7 +372,7 @@ class Client extends Component implements ClientInterface
     /**
      * @param array|string    $url
      * @param string|array    $body
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -389,7 +385,7 @@ class Client extends Component implements ClientInterface
     /**
      * @param array|string    $url
      * @param string|array    $body
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
