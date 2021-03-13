@@ -112,8 +112,7 @@ class Stream extends Component implements EngineInterface
             $this->stream = $stream;
         }
 
-        $send_length = 0;
-        $data_length = strlen($data);
+        $written = 0;
         $headers = null;
 
         try {
@@ -131,7 +130,7 @@ class Stream extends Component implements EngineInterface
                     }
                 }
 
-                if (($n = fwrite($stream, $send_length === 0 ? $data : substr($data, $send_length))) === false) {
+                if (($n = fwrite($stream, $written === 0 ? $data : substr($data, $written))) === false) {
                     $errno = socket_last_error($stream);
                     if ($errno === 11 || $errno === 4) {
                         continue;
@@ -139,8 +138,8 @@ class Stream extends Component implements EngineInterface
 
                     throw new TimeoutException($request->url);
                 }
-                $send_length += $n;
-            } while ($send_length !== $data_length);
+                $written += $n;
+            } while ($written !== strlen($data));
 
             $recv = '';
             $write = null;
