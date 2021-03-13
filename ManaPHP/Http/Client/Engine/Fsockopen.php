@@ -48,7 +48,10 @@ class Fsockopen extends Component implements EngineInterface
         $scheme = parse_url($request->url, PHP_URL_SCHEME);
 
         $request->headers['Host'] = $port ? "$host:$port" : $host;
-        $request->headers['Connection'] = 'keep-alive';
+
+        if (!isset($request->headers['Connection'])) {
+            $request->headers['Connection'] = 'keep-alive';
+        }
 
         $data = strtoupper($request->method) . ' ' . $request->url . " HTTP/1.1\r\n";
         foreach ($request->headers as $name => $value) {
