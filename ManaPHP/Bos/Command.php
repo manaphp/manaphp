@@ -6,8 +6,9 @@ use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
 
 /**
- * @property-read \ManaPHP\Bos\ClientInterface  $bosClient
- * @property-read \ManaPHP\Http\ClientInterface $httpClient
+ * @property-read \ManaPHP\Bos\ClientInterface      $bosClient
+ * @property-read \ManaPHP\Http\DownloaderInterface $downloader
+ *
  */
 class Command extends \ManaPHP\Cli\Command
 {
@@ -132,7 +133,7 @@ class Command extends \ManaPHP\Cli\Command
             $files[$object['url']] = $dir . '/' . $object['key'];
         }
 
-        $this->httpClient->download($files);
+        $this->downloader->download($files);
 
         $this->console->writeLn(['download files to `:dir` directory', 'dir' => $dir]);
     }
