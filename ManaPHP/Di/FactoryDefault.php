@@ -26,6 +26,7 @@ class FactoryDefault extends Container
             'cache'            => 'ManaPHP\Caching\Cache\Adapter\Redis',
             'httpClient'       => ['class' => 'ManaPHP\Http\Client', 'engine' => 'ManaPHP\Http\Client\Engine\Curl'],
             'restClient'       => ['class' => 'ManaPHP\Http\Client', 'engine' => 'ManaPHP\Http\Client\Engine\Stream'],
+            'downloader'       => 'ManaPHP\Http\Downloader',
             'paginator'        => 'ManaPHP\Data\Paginator',
             'msgQueue'         => 'ManaPHP\Messaging\Queue\Adapter\Redis',
             'swordCompiler'    => 'ManaPHP\Html\Renderer\Engine\Sword\Compiler',

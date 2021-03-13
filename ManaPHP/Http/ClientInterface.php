@@ -83,12 +83,4 @@ interface ClientInterface
      * @return \ManaPHP\Http\Client\Response
      */
     public function head($url, $body = [], $headers = [], $options = []);
-
-    /**
-     * @param string|array           $files
-     * @param string|int|float|array $options
-     *
-     * @return string|array
-     */
-    public function download($files, $options = []);
 }
