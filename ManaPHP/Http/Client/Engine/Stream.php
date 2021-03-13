@@ -189,12 +189,13 @@ class Stream extends Component implements EngineInterface
                     while (true) {
                         if (($pos = strpos($chunked, "\r\n")) !== false) {
                             $len = (int)base_convert(substr($chunked, 0, $pos), 16, 10);
+                            
+                            if ($len === 0) {
+                                goto READ_CHUNKED_COMPLETE;
+                            }
+
                             $chunk_package_len = $pos + 2 + $len + 2;
                             if (strlen($chunked) >= $chunk_package_len) {
-                                if ($len === 0) {
-                                    goto READ_CHUNKED_COMPLETE;
-                                }
-
                                 $body .= substr($chunked, $pos + 2, $len);
                                 $chunked = substr($chunked, $chunk_package_len);
                             } else {
