@@ -257,6 +257,10 @@ class Fsockopen extends Component implements EngineInterface
      */
     public function request($request, $body)
     {
+        if (!isset($request->headers['Accept-Encoding'])) {
+            $request->headers['Accept-Encoding'] = 'gzip, deflate';
+        }
+
         if ($this->stream === null) {
             return $this->self->requestInternal($request, $body);
         } else {
