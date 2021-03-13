@@ -175,11 +175,11 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
     }
 
     /**
-     * map modle field to table column
+     * map model fields to table column
      *
      * @return array =model_var(new static)
      */
-    public function map()
+    public function mapFields()
     {
         return [];
     }

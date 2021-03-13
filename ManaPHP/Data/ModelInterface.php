@@ -24,7 +24,7 @@ interface ModelInterface extends TableInterface
      *
      * @return array
      */
-    public function map();
+    public function mapFields();
 
     /**
      * @param string $field

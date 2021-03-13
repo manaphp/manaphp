@@ -764,15 +764,15 @@ class Query extends \ManaPHP\Data\Query
      */
     protected function translateField2Columns($sql)
     {
-        if (!($model = $this->model) || !$map = $model->map()) {
+        if (!($model = $this->model) || !$mapFields = $model->mapFields()) {
             return $sql;
         }
 
-        $pattern = '#\[(' . implode('|', array_keys($map)) . ')]#';
+        $pattern = '#\[(' . implode('|', array_keys($mapFields)) . ')]#';
 
         return preg_replace_callback(
-            $pattern, static function ($matches) use ($map) {
-            return '[' . $map[$matches[1]] . ']';
+            $pattern, static function ($matches) use ($mapFields) {
+            return '[' . $mapFields[$matches[1]] . ']';
         }, $sql
         );
     }
@@ -940,9 +940,9 @@ class Query extends \ManaPHP\Data\Query
 
         $rows = $connection->fetchAll($this->sql, $this->bind, PDO::FETCH_ASSOC, $this->force_master);
 
-        if ($map = $this->model ? $this->model->map() : []) {
+        if ($mapFields = $this->model ? $this->model->mapFields() : []) {
             foreach ($rows as &$row) {
-                foreach ($map as $propery => $column) {
+                foreach ($mapFields as $propery => $column) {
                     if (array_key_exists($column, $row)) {
                         $row[$propery] = $row[$column];
                         unset($row[$column]);

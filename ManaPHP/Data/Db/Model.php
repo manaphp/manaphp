@@ -56,7 +56,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
                     throw new NotSupportedException('only support one primary key');
                 }
                 $primaryKey = $primaryKeys[0];
-                return $cached[$class] = array_search($primaryKey, $this->map(), true) ?: $primaryKey;
+                return $cached[$class] = array_search($primaryKey, $this->mapFields(), true) ?: $primaryKey;
             }
         }
 
@@ -93,9 +93,9 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
 
         $class = static::class;
         if (($fields = $cached[$class] ?? null) === null) {
-            if ($map = $this->map()) {
+            if ($mapFields = $this->mapFields()) {
                 foreach ($this->getModelMetadata()->getIntTypeAttributes($this) as $field) {
-                    $fields[] = array_search($field, $map, true) ?: $field;
+                    $fields[] = array_search($field, $mapFields, true) ?: $field;
                 }
             } else {
                 $fields = $this->getModelMetadata()->getIntTypeAttributes($this);
@@ -167,7 +167,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
             }
         }
 
-        foreach ($this->map() as $propery => $column) {
+        foreach ($this->mapFields() as $propery => $column) {
             if (array_key_exists($propery, $fieldValues)) {
                 $fieldValues[$column] = $fieldValues[$propery];
                 unset($fieldValues[$propery]);
@@ -288,8 +288,8 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
             }
         }
 
-        $map = $this->map();
-        foreach ($map as $property => $column) {
+        $mapFields = $this->mapFields();
+        foreach ($mapFields as $property => $column) {
             if (array_key_exists($property, $fieldValues)) {
                 $fieldValues[$column] = $fieldValues[$property];
                 unset($fieldValues[$property]);
@@ -298,7 +298,7 @@ class Model extends \ManaPHP\Data\Model implements ModelInterface
 
         /** @var \ManaPHP\Data\DbInterface $db */
         $db = $this->getShared($db);
-        $db->update($table, $fieldValues, [$map[$primaryKey] ?? $primaryKey => $this->$primaryKey], $bind);
+        $db->update($table, $fieldValues, [$mapFields[$primaryKey] ?? $primaryKey => $this->$primaryKey], $bind);
 
         if ($expressionFields) {
             $query = $this->newQuery()->select($expressionFields)->whereEq($primaryKey, $this->$primaryKey);
