@@ -301,6 +301,10 @@ class Stream extends Component implements EngineInterface
             $request->headers['Connection'] = 'keep-alive';
         }
 
+        $start = strpos($request->url, '://') + 3;
+        $end = strpos($request->url, '/', $start);
+        $request->headers['Host'] = substr($request->url, $start, $end - $start);
+
         $start_time = microtime(true);
         $timeout = $request->options['timeout'];
         $end_time = $start_time + $timeout;
