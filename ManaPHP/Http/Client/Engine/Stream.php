@@ -364,7 +364,7 @@ class Stream extends Component implements EngineInterface
                     }
                 }
 
-                if ($connection_value !== 'keep-alive') {
+                if (strtolower($connection_value) !== 'keep-alive') {
                     fclose($this->stream);
                     $this->stream = null;
                 }
