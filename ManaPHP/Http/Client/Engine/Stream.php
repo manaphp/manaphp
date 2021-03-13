@@ -12,7 +12,7 @@ use ManaPHP\Http\Client\TimeoutException;
 /**
  * @property-read \ManaPHP\AliasInterface $alias
  */
-class Fsockopen extends Component implements EngineInterface
+class Stream extends Component implements EngineInterface
 {
     /**
      * @var resource
@@ -69,6 +69,8 @@ class Fsockopen extends Component implements EngineInterface
         $end_time = $start_time + $timeout;
 
         if (($stream = $this->stream) === null) {
+            $flags = STREAM_CLIENT_CONNECT;
+
             if (($proxy = $request->options['proxy']) !== '') {
                 $parts = parse_url($proxy);
                 if ($parts['scheme'] !== 'http') {
@@ -79,12 +81,25 @@ class Fsockopen extends Component implements EngineInterface
                     throw new NotSupportedException('not support Proxy-Authorization');
                 }
 
-                $stream = fsockopen($parts['host'], $parts['port'] ?? 80, $errno, $errstr, $timeout);
+                $host = $parts['host'];
+                $port = $parts['port'] ?? 80;
+                $stream = stream_socket_client("tcp://$host:$port", $errno, $errstr, $timeout, $flags);
             } else {
                 if ($scheme === 'https') {
-                    $stream = fsockopen("ssl://$host", $port ?? 443, $errno, $errstr, $timeout);
+                    $ssl = [];
+                    $ssl['verify_peer'] = $request->options['verify_peer'];
+                    $ssl['allow_self_signed'] = $request->options['allow_self_signed'] ??
+                        !$request->options['verify_peer'];
+
+                    if (($cafile = $request->options['cafile']) !== '') {
+                        $ssl['cafile'] = $this->alias->resolve($cafile);
+                    }
+                    $port = $port ?? 443;
+                    $ctx = stream_context_create(['ssl' => $ssl]);
+                    $stream = stream_socket_client("ssl://$host:$port", $errno, $errstr, $timeout, $flags, $ctx);
                 } else {
-                    $stream = fsockopen($host, $port ?? 80, $errno, $errstr, $timeout);
+                    $port = $port ?? 80;
+                    $stream = stream_socket_client("tcp://$host:$port", $errno, $errstr, $timeout, $flags);
                 }
             }
 
