@@ -52,8 +52,6 @@ class Stream extends Component implements EngineInterface
 
         $timeout = $request->options['timeout'];
 
-        $flags = STREAM_CLIENT_CONNECT;
-
         if (($proxy = $request->options['proxy']) !== '') {
             $parts = parse_url($proxy);
             if ($parts['scheme'] !== 'http') {
@@ -64,9 +62,8 @@ class Stream extends Component implements EngineInterface
                 throw new NotSupportedException('not support Proxy-Authorization');
             }
 
-            $host = $parts['host'];
-            $port = $parts['port'] ?? 80;
-            $stream = stream_socket_client("tcp://$host:$port", $errno, $errstr, $timeout, $flags);
+            $address = "tcp://$parts[host]:" . ($parts['port'] ?? 80);
+            $ctx = stream_context_create();
         } else {
             if ($scheme === 'https') {
                 $ssl = [];
@@ -77,16 +74,17 @@ class Stream extends Component implements EngineInterface
                 if (($cafile = $request->options['cafile']) !== '') {
                     $ssl['cafile'] = $this->alias->resolve($cafile);
                 }
-                $port = $port ?? 443;
+
                 $ctx = stream_context_create(['ssl' => $ssl]);
-                $stream = stream_socket_client("ssl://$host:$port", $errno, $errstr, $timeout, $flags, $ctx);
+                $address = "ssl://$host:" . ($port ?? 443);
             } else {
-                $port = $port ?? 80;
-                $stream = stream_socket_client("tcp://$host:$port", $errno, $errstr, $timeout, $flags);
+                $address = "tcp://$host:" . ($port ?? 80);
+                $ctx = stream_context_create();
             }
         }
 
-        if ($stream === false) {
+        $flags = STREAM_CLIENT_CONNECT;
+        if (($stream = stream_socket_client($address, $errno, $errstr, $timeout, $flags, $ctx)) === false) {
             throw new ConnectionException($errstr);
         }
 
