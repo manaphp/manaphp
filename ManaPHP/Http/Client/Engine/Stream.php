@@ -241,7 +241,7 @@ class Stream extends Component implements EngineInterface
             $chunked .= $r;
         }
 
-        return null;
+        return '';
     }
 
     /**
