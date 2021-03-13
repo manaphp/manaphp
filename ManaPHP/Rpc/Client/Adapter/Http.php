@@ -45,7 +45,7 @@ class Http extends Client
         }
 
         if (!isset($options['engine'])) {
-            $options['engine'] = 'ManaPHP\Http\Client\Engine\Stream';
+            $options['engine'] = 'ManaPHP\Http\Client\Engine\Fsockopen';
         }
 
         $this->client = $this->getNew($client, $options);

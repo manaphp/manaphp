@@ -4,7 +4,6 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\NonCloneableException;
-use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Client\BadGatewayException;
 use ManaPHP\Http\Client\BadRequestException;
 use ManaPHP\Http\Client\ClientErrorException;
@@ -59,11 +58,6 @@ class Client extends Component implements ClientInterface
     protected $user_agent;
 
     /**
-     * @var bool
-     */
-    protected $keepalive = false;
-
-    /**
      * @var int
      */
     protected $pool_size = 4;
@@ -76,7 +70,7 @@ class Client extends Component implements ClientInterface
         if ($engine = $options['engine'] ?? null) {
             $this->engine = str_contains($engine, '\\') ? $engine : "ManaPHP\Http\Client\Engine\\" . ucfirst($engine);
         } else {
-            $this->engine = 'ManaPHP\Http\Client\Engine\Stream';
+            $this->engine = 'ManaPHP\Http\Client\Engine\Fopen';
         }
 
         if (isset($options['proxy'])) {
@@ -96,10 +90,6 @@ class Client extends Component implements ClientInterface
         }
 
         $this->user_agent = $options['user_agent'] ?? self::USER_AGENT_IE;
-
-        if (isset($options['keepalive'])) {
-            $this->keepalive = (bool)$options['keepalive'];
-        }
 
         if (isset($options['pool_size'])) {
             $this->pool_size = (int)$options['pool_size'];
@@ -209,7 +199,7 @@ class Client extends Component implements ClientInterface
                     $request->headers['Content-Length'] = strlen($body);
                 }
 
-                $response = $engine->request($request, $body, $this->keepalive);
+                $response = $engine->request($request, $body);
 
                 $success = true;
             } finally {

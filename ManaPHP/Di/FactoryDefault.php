@@ -25,7 +25,7 @@ class FactoryDefault extends Container
             'assetBundle'      => 'ManaPHP\Html\Renderer\AssetBundle',
             'cache'            => 'ManaPHP\Caching\Cache\Adapter\Redis',
             'httpClient'       => ['class' => 'ManaPHP\Http\Client', 'engine' => 'ManaPHP\Http\Client\Engine\Curl'],
-            'restClient'       => ['class' => 'ManaPHP\Http\Client', 'engine' => 'ManaPHP\Http\Client\Engine\Stream'],
+            'restClient'       => ['class' => 'ManaPHP\Http\Client', 'engine' => 'ManaPHP\Http\Client\Engine\Fopen'],
             'downloader'       => 'ManaPHP\Http\Downloader',
             'paginator'        => 'ManaPHP\Data\Paginator',
             'msgQueue'         => 'ManaPHP\Messaging\Queue\Adapter\Redis',

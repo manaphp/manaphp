@@ -6,7 +6,6 @@ use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\Client\ConnectionException;
 use ManaPHP\Http\Client\EngineInterface;
-use ManaPHP\Http\Client\FileInterface;
 use ManaPHP\Http\Client\Response;
 
 /**
@@ -38,20 +37,17 @@ class Curl extends Component implements EngineInterface
     /**
      * @param \ManaPHP\Http\Client\Request $request
      * @param string                       $body
-     * @param bool                         $keepalive
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    public function request($request, $body, $keepalive = false)
+    public function request($request, $body)
     {
         $content = '';
         $header_length = 0;
 
         if (($curl = $this->curl) === null) {
             $curl = curl_init();
-            if ($keepalive) {
-                $this->curl = $curl;
-            }
+            $this->curl = $curl;
         }
 
         try {
@@ -159,7 +155,7 @@ class Curl extends Component implements EngineInterface
 
             $success = true;
         } finally {
-            if (!$success || !$keepalive) {
+            if (!$success) {
                 curl_close($curl);
             }
         }
