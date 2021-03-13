@@ -37,11 +37,12 @@ class Stream extends Component implements EngineInterface
 
     /**
      * @param \ManaPHP\Http\Client\Request $request
-     * @param string                       $body
      *
-     * @return \ManaPHP\Http\Client\Response
+     * @return resource
+     * @throws ConnectionException
+     * @throws NotSupportedException
      */
-    protected function requestInternal($request, $body)
+    protected function connect($request)
     {
         $host = parse_url($request->url, PHP_URL_HOST);
         $port = parse_url($request->url, PHP_URL_PORT);
@@ -49,124 +50,285 @@ class Stream extends Component implements EngineInterface
 
         $request->headers['Host'] = $port ? "$host:$port" : $host;
 
-        if (!isset($request->headers['Connection'])) {
-            $request->headers['Connection'] = 'keep-alive';
+        $timeout = $request->options['timeout'];
+
+        $flags = STREAM_CLIENT_CONNECT;
+
+        if (($proxy = $request->options['proxy']) !== '') {
+            $parts = parse_url($proxy);
+            if ($parts['scheme'] !== 'http') {
+                throw new NotSupportedException('only support http proxy');
+            }
+
+            if (isset($parts['user']) || isset($parts['pass'])) {
+                throw new NotSupportedException('not support Proxy-Authorization');
+            }
+
+            $host = $parts['host'];
+            $port = $parts['port'] ?? 80;
+            $stream = stream_socket_client("tcp://$host:$port", $errno, $errstr, $timeout, $flags);
+        } else {
+            if ($scheme === 'https') {
+                $ssl = [];
+                $ssl['verify_peer'] = $request->options['verify_peer'];
+                $ssl['allow_self_signed'] = $request->options['allow_self_signed'] ??
+                    !$request->options['verify_peer'];
+
+                if (($cafile = $request->options['cafile']) !== '') {
+                    $ssl['cafile'] = $this->alias->resolve($cafile);
+                }
+                $port = $port ?? 443;
+                $ctx = stream_context_create(['ssl' => $ssl]);
+                $stream = stream_socket_client("ssl://$host:$port", $errno, $errstr, $timeout, $flags, $ctx);
+            } else {
+                $port = $port ?? 80;
+                $stream = stream_socket_client("tcp://$host:$port", $errno, $errstr, $timeout, $flags);
+            }
         }
 
+        if ($stream === false) {
+            throw new ConnectionException($errstr);
+        }
+
+        stream_set_blocking($stream, false);
+
+        return $this->stream = $stream;
+    }
+
+    /**
+     * @param resource $stream
+     * @param string   $url
+     * @param string   $data
+     * @param float    $end_time
+     *
+     * @return void
+     * @throws TimeoutException
+     */
+    protected function send($stream, $url, $data, $end_time)
+    {
+        $written = 0;
+
+        $read = null;
+        $except = null;
+        do {
+            $write = [$stream];
+            if (stream_select($read, $write, $except, 0, 10000) <= 0) {
+                if (microtime(true) > $end_time) {
+                    throw new TimeoutException($url);
+                } else {
+                    continue;
+                }
+            }
+
+            if (($n = fwrite($stream, $written === 0 ? $data : substr($data, $written))) === false) {
+                $errno = socket_last_error($stream);
+                if ($errno === 11 || $errno === 4) {
+                    continue;
+                }
+
+                throw new TimeoutException($url);
+            }
+            $written += $n;
+        } while ($written !== strlen($data));
+    }
+
+    /**
+     * @param \ManaPHP\Http\Client\Request $request
+     *
+     * @return string
+     */
+    protected function buildHeader($request)
+    {
         $data = strtoupper($request->method) . ' ' . $request->url . " HTTP/1.1\r\n";
         foreach ($request->headers as $name => $value) {
             $data .= is_int($name) ? "$value\r\n" : "$name: $value\r\n";
         }
 
-        $data .= "\r\n";
+        return $data;
+    }
 
-        if ($body !== '') {
-            $data .= $body;
+    /**
+     * @param resource $stream
+     * @param string   $url
+     * @param float    $end_time
+     *
+     * @return array
+     */
+    protected function recvHeader($stream, $url, $end_time)
+    {
+        $recv = '';
+        $write = null;
+        $headers_end = null;
+        while (true) {
+            $read = [$stream];
+            if (stream_select($read, $write, $except, 0, 10000) <= 0) {
+                if (microtime(true) > $end_time) {
+                    throw new TimeoutException($url);
+                } else {
+                    continue;
+                }
+            }
+
+            if (($r = fread($stream, 4096)) === false) {
+                throw new TimeoutException($url);
+            }
+
+            $recv .= $r;
+
+            if (($headers_end = strpos($recv, "\r\n\r\n")) !== false) {
+                break;
+            }
+        }
+
+        $headers = explode("\r\n", substr($recv, 0, $headers_end));
+        $body = substr($recv, $headers_end + 4);
+
+        return [$headers, $body];
+    }
+
+    /**
+     * @param resource $stream
+     * @param string   $url
+     * @param string   $body
+     * @param float    $end_time
+     *
+     * @return string
+     */
+    protected function recvChunkedBody($stream, $url, $body, $end_time)
+    {
+        $chunked = $body;
+        $body = '';
+
+        $write = null;
+        $except = null;
+        while (true) {
+            $next_read_len = 1;
+            while (true) {
+                if (($pos = strpos($chunked, "\r\n")) !== false) {
+                    $len = (int)base_convert(substr($chunked, 0, $pos), 16, 10);
+
+                    if ($len === 0) {
+                        return $body;
+                    }
+
+                    $chunk_package_len = $pos + 2 + $len + 2;
+                    if (strlen($chunked) >= $chunk_package_len) {
+                        $body .= substr($chunked, $pos + 2, $len);
+                        $chunked = substr($chunked, $chunk_package_len);
+                    } else {
+                        $next_read_len = $chunk_package_len - strlen($chunked);
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            }
+
+            $read = [$stream];
+            if (stream_select($read, $write, $except, 0, 10000) <= 0) {
+                if (microtime(true) > $end_time) {
+                    throw new TimeoutException($url);
+                } else {
+                    continue;
+                }
+            }
+
+            if (($r = fread($stream, $next_read_len)) === false) {
+                if (feof($stream)) {
+                    break;
+                } else {
+                    throw new TimeoutException($url);
+                }
+            }
+            $chunked .= $r;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param resource $stream
+     * @param string   $url
+     * @param string   $body
+     * @param int      $length
+     * @param float    $end_time
+     *
+     * @return string
+     *
+     * @throws TimeoutException
+     */
+    protected function recvContentLengthBody($stream, $url, $body, $length, $end_time)
+    {
+        $write = null;
+        $except = null;
+        while ($length !== strlen($body)) {
+            $read = [$stream];
+            if (stream_select($read, $write, $except, 0, 10000) <= 0) {
+                if (microtime(true) > $end_time) {
+                    throw new TimeoutException($url);
+                } else {
+                    continue;
+                }
+            }
+
+            if (feof($stream)) {
+                break;
+            }
+
+            if (($r = fread($stream, 4096)) === false) {
+                throw new TimeoutException($url);
+            }
+
+            $body .= $r;
+        }
+
+        return $body;
+    }
+
+    /**
+     * @param \ManaPHP\Http\Client\Request $request
+     * @param string                       $body
+     *
+     * @return \ManaPHP\Http\Client\Response
+     */
+    public function request($request, $body)
+    {
+        if (!isset($request->headers['Accept-Encoding'])) {
+            $request->headers['Accept-Encoding'] = 'gzip, deflate';
+        }
+
+        if (!isset($request->headers['Connection'])) {
+            $request->headers['Connection'] = 'keep-alive';
         }
 
         $start_time = microtime(true);
         $timeout = $request->options['timeout'];
         $end_time = $start_time + $timeout;
 
+        $header = $this->buildHeader($request);
+
         if (($stream = $this->stream) === null) {
-            $flags = STREAM_CLIENT_CONNECT;
+            $stream = $this->connect($request);
+            $this->send($stream, $request->url, $header, $end_time);
+        } else {
+            try {
+                $this->send($stream, $request->url, $header, $end_time);
+            } finally {
+                fclose($stream);
+                $this->stream = null;
 
-            if (($proxy = $request->options['proxy']) !== '') {
-                $parts = parse_url($proxy);
-                if ($parts['scheme'] !== 'http') {
-                    throw new NotSupportedException('only support http proxy');
-                }
-
-                if (isset($parts['user']) || isset($parts['pass'])) {
-                    throw new NotSupportedException('not support Proxy-Authorization');
-                }
-
-                $host = $parts['host'];
-                $port = $parts['port'] ?? 80;
-                $stream = stream_socket_client("tcp://$host:$port", $errno, $errstr, $timeout, $flags);
-            } else {
-                if ($scheme === 'https') {
-                    $ssl = [];
-                    $ssl['verify_peer'] = $request->options['verify_peer'];
-                    $ssl['allow_self_signed'] = $request->options['allow_self_signed'] ??
-                        !$request->options['verify_peer'];
-
-                    if (($cafile = $request->options['cafile']) !== '') {
-                        $ssl['cafile'] = $this->alias->resolve($cafile);
-                    }
-                    $port = $port ?? 443;
-                    $ctx = stream_context_create(['ssl' => $ssl]);
-                    $stream = stream_socket_client("ssl://$host:$port", $errno, $errstr, $timeout, $flags, $ctx);
-                } else {
-                    $port = $port ?? 80;
-                    $stream = stream_socket_client("tcp://$host:$port", $errno, $errstr, $timeout, $flags);
-                }
+                $stream = $this->connect($request);
+                $this->send($stream, $request->url, $header, $end_time);
             }
-
-            if ($stream === false) {
-                throw new ConnectionException($errstr);
-            }
-
-            stream_set_blocking($stream, false);
-
-            $this->stream = $stream;
         }
 
-        $written = 0;
+        $this->send($stream, $request->url, $body === '' ? "\r\n" : "\r\n$body", $end_time);
         $headers = null;
 
         try {
             $success = false;
 
-            $read = null;
-            $except = null;
-            do {
-                $write = [$stream];
-                if (stream_select($read, $write, $except, 0, 10000) <= 0) {
-                    if (microtime(true) > $end_time) {
-                        throw new TimeoutException($request->url);
-                    } else {
-                        continue;
-                    }
-                }
-
-                if (($n = fwrite($stream, $written === 0 ? $data : substr($data, $written))) === false) {
-                    $errno = socket_last_error($stream);
-                    if ($errno === 11 || $errno === 4) {
-                        continue;
-                    }
-
-                    throw new TimeoutException($request->url);
-                }
-                $written += $n;
-            } while ($written !== strlen($data));
-
-            $recv = '';
-            $write = null;
-            $headers_end = null;
-            while (true) {
-                $read = [$stream];
-                if (stream_select($read, $write, $except, 0, 10000) <= 0) {
-                    if (microtime(true) > $end_time) {
-                        throw new TimeoutException($request->url);
-                    } else {
-                        continue;
-                    }
-                }
-
-                if (($r = fread($stream, 4096)) === false) {
-                    throw new TimeoutException($request->url);
-                }
-
-                $recv .= $r;
-
-                if (($headers_end = strpos($recv, "\r\n\r\n")) !== false) {
-                    break;
-                }
-            }
-
-            $headers = explode("\r\n", substr($recv, 0, $headers_end));
-            $body = substr($recv, $headers_end + 4);
+            list($headers, $body) = $this->recvHeader($stream, $request->url, $end_time);
 
             $content_length = null;
             $transfer_encoding = null;
@@ -179,75 +341,9 @@ class Stream extends Component implements EngineInterface
             }
 
             if ($transfer_encoding === 'chunked') {
-                $chunked = $body;
-                $body = '';
-
-                $write = null;
-
-                while (true) {
-                    $next_read_len = 1;
-                    while (true) {
-                        if (($pos = strpos($chunked, "\r\n")) !== false) {
-                            $len = (int)base_convert(substr($chunked, 0, $pos), 16, 10);
-                            
-                            if ($len === 0) {
-                                goto READ_CHUNKED_COMPLETE;
-                            }
-
-                            $chunk_package_len = $pos + 2 + $len + 2;
-                            if (strlen($chunked) >= $chunk_package_len) {
-                                $body .= substr($chunked, $pos + 2, $len);
-                                $chunked = substr($chunked, $chunk_package_len);
-                            } else {
-                                $next_read_len = $chunk_package_len - strlen($chunked);
-                                break;
-                            }
-                        } else {
-                            break;
-                        }
-                    }
-
-                    $read = [$stream];
-                    if (stream_select($read, $write, $except, 0, 10000) <= 0) {
-                        if (microtime(true) > $end_time) {
-                            throw new TimeoutException($request->url);
-                        } else {
-                            continue;
-                        }
-                    }
-
-                    if (($r = fread($stream, $next_read_len)) === false) {
-                        if (feof($stream)) {
-                            break;
-                        } else {
-                            throw new TimeoutException($request->url);
-                        }
-                    }
-                    $chunked .= $r;
-                }
-
-                READ_CHUNKED_COMPLETE:
+                $body = $this->recvChunkedBody($stream, $request->url, $body, $end_time);
             } else {
-                while ($content_length !== strlen($body)) {
-                    $read = [$stream];
-                    if (stream_select($read, $write, $except, 0, 10000) <= 0) {
-                        if (microtime(true) > $end_time) {
-                            throw new TimeoutException($request->url);
-                        } else {
-                            continue;
-                        }
-                    }
-
-                    if (feof($stream)) {
-                        break;
-                    }
-
-                    if (($r = fread($stream, 4096)) === false) {
-                        throw new TimeoutException($request->url);
-                    }
-
-                    $body .= $r;
-                }
+                $body = $this->recvContentLengthBody($stream, $request->url, $body, $content_length, $end_time);
             }
 
             $request->process_time = round(microtime(true) - $start_time, 3);
@@ -279,30 +375,5 @@ class Stream extends Component implements EngineInterface
         }
 
         return new Response($request, $headers, $body);
-    }
-
-    /**
-     * @param \ManaPHP\Http\Client\Request $request
-     * @param string                       $body
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function request($request, $body)
-    {
-        if (!isset($request->headers['Accept-Encoding'])) {
-            $request->headers['Accept-Encoding'] = 'gzip, deflate';
-        }
-
-        if ($this->stream === null) {
-            return $this->self->requestInternal($request, $body);
-        } else {
-            try {
-                return $this->self->requestInternal($request, $body);
-            } catch (TimeoutException $exception) {
-                fclose($this->stream);
-                $this->stream = null;
-                return $this->self->requestInternal($request, $body);
-            }
-        }
     }
 }
