@@ -3,6 +3,7 @@
 namespace ManaPHP\I18n;
 
 use ManaPHP\Component;
+use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\LocalFS;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
@@ -117,8 +118,12 @@ class Translator extends Component implements TranslatorInterface
         $locale = $this->locale ?: $this->context->locale;
 
         if (!isset($this->templates[$locale])) {
+            if (($file = $this->files[$locale] ?? null) === null) {
+                throw new RuntimeException(['`%s` locale file is not exists', $locale]);
+            }
+
             /** @noinspection PhpIncludeInspection */
-            $templates = require $this->files[$locale];
+            $templates = require $file;
             $this->templates[$locale] = $templates;
         } else {
             $templates = $this->templates[$locale];
