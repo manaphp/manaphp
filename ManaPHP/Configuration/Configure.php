@@ -50,11 +50,6 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @var string
      */
-    public $locale = 'en';
-
-    /**
-     * @var string
-     */
     public $master_key = '';
 
     /**

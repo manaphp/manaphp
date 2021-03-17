@@ -21,18 +21,13 @@ class ValidatorContext
 }
 
 /**
- * @property-read \ManaPHP\Configuration\Configure     $configure
+ * @property-read \ManaPHP\I18n\LocaleInterface        $locale
  * @property-read \ManaPHP\Http\RequestInterface       $request
  * @property-read \ManaPHP\Html\PurifierInterface      $htmlPurifier
  * @property-read \ManaPHP\Validating\ValidatorContext $context
  */
 class Validator extends Component implements ValidatorInterface
 {
-    /**
-     * @var string
-     */
-    protected $locale;
-
     /**
      * @var array
      */
@@ -53,10 +48,6 @@ class Validator extends Component implements ValidatorInterface
      */
     public function __construct($options = [])
     {
-        if (isset($options['locale'])) {
-            $this->locale = $options['locale'];
-        }
-
         if (isset($options['dir'])) {
             $this->dir = $options['dir'];
         }
@@ -67,65 +58,13 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @return ValidatorContext
-     */
-    protected function createContext()
-    {
-        /** @var \ManaPHP\Validating\ValidatorContext $context */
-        $context = parent::createContext();
-
-        if ($this->locale !== null) {
-            $context->locale = $this->locale;
-        } elseif (!MANAPHP_CLI) {
-            $locale = $this->configure->locale;
-            if (($language = strtolower($this->request->get('lang', ''))) && isset($this->files[$language])) {
-                $locale = $language;
-            } elseif ($language = $this->request->getAcceptLanguage()) {
-                if (preg_match_all('#[a-z\-]{2,}#', strtolower($language), $matches)) {
-                    foreach ($matches[0] as $lang) {
-                        if (isset($this->files[$lang])) {
-                            $locale = $lang;
-                            break;
-                        }
-                    }
-                }
-            }
-            $context->locale = $locale;
-        } else {
-            $context->locale = $this->configure->locale;
-        }
-
-        return $context;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLocale()
-    {
-        return $this->context->locale;
-    }
-
-    /**
-     * @param string $locale
-     *
-     * @return static
-     */
-    public function setLocale($locale)
-    {
-        $this->context->locale = $locale;
-
-        return $this;
-    }
-
-    /**
      * @param string $validate
      *
      * @return string|callable
      */
     protected function getTemplate($validate)
     {
-        $locale = $this->locale ?: $this->context->locale;
+        $locale = $this->locale->get();
 
         if (!isset($this->templates[$locale])) {
             /** @noinspection PhpIncludeInspection */

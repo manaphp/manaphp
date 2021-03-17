@@ -5,18 +5,6 @@ namespace ManaPHP\Validating;
 interface ValidatorInterface
 {
     /**
-     * @return string
-     */
-    public function getLocale();
-
-    /**
-     * @param string $locale
-     *
-     * @return static
-     */
-    public function setLocale($locale);
-
-    /**
      * @param string $validate
      * @param string $field
      * @param mixed  $parameter

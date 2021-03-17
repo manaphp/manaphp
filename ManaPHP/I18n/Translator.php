@@ -6,25 +6,12 @@ use ManaPHP\Component;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\LocalFS;
 
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class TranslatorContext
-{
-    public $locale;
-}
-
 /**
- * @property-read \ManaPHP\Configuration\Configure $configure
- * @property-read \ManaPHP\Http\RequestInterface   $request
- * @property-read \ManaPHP\I18n\TranslatorContext  $context
+ * @property-read \ManaPHP\I18n\LocaleInterface  $locale
+ * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class Translator extends Component implements TranslatorInterface
 {
-    /**
-     * @var string
-     */
-    protected $locale;
-
     /**
      * @var string
      */
@@ -45,10 +32,6 @@ class Translator extends Component implements TranslatorInterface
      */
     public function __construct($options = [])
     {
-        if (isset($options['locale'])) {
-            $this->locale = $options['locale'];
-        }
-
         if (isset($options['dir'])) {
             $this->dir = $options['dir'];
         }
@@ -56,55 +39,6 @@ class Translator extends Component implements TranslatorInterface
         foreach (LocalFS::glob($this->dir . '/*.php') as $file) {
             $this->files[strtolower(pathinfo($file, PATHINFO_FILENAME))] = $file;
         }
-    }
-
-    protected function createContext()
-    {
-        /** @var \ManaPHP\Validating\ValidatorContext $context */
-        $context = parent::createContext();
-
-        if ($this->locale !== null) {
-            $context->locale = $this->locale;
-        } elseif (!MANAPHP_CLI) {
-            $locale = $this->configure->locale;
-            if (($language = strtolower($this->request->get('lang', ''))) && isset($this->files[$language])) {
-                $locale = $language;
-            } elseif ($language = $this->request->getAcceptLanguage()) {
-                if (preg_match_all('#[a-z\-]{2,}#', strtolower($language), $matches)) {
-                    foreach ($matches[0] as $lang) {
-                        if (isset($this->files[$lang])) {
-                            $locale = $lang;
-                            break;
-                        }
-                    }
-                }
-            }
-            $context->locale = $locale;
-        } else {
-            $context->locale = $this->configure->locale;
-        }
-
-        return $context;
-    }
-
-    /**
-     * @param string $locale
-     *
-     * @return static
-     */
-    public function setLocale($locale)
-    {
-        $this->context->locale = $locale;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLocale()
-    {
-        return $this->context->locale;
     }
 
     /**
@@ -115,7 +49,7 @@ class Translator extends Component implements TranslatorInterface
      */
     public function translate($template, $placeholders = null)
     {
-        $locale = $this->locale ?: $this->context->locale;
+        $locale = $this->locale->get();
 
         if (!isset($this->templates[$locale])) {
             if (($file = $this->files[$locale] ?? null) === null) {
