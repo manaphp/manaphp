@@ -32,7 +32,9 @@ if (!function_exists('str_starts_with')) {
 if (!function_exists('str_ends_with')) {
     function str_ends_with($haystack, $needle)
     {
-        return substr_compare($haystack, $needle, -strlen($needle)) === 0;
+        $haystack_len = strlen($haystack);
+        $needle_len = strlen($needle);
+        return $haystack_len >= $needle_len && substr_compare($haystack, $needle, -$needle_len) === 0;
     }
 }
 
