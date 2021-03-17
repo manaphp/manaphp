@@ -50,7 +50,7 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @var string
      */
-    public $language = 'en';
+    public $locale = 'en';
 
     /**
      * @var string
