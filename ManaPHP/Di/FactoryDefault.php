@@ -9,6 +9,7 @@ class FactoryDefault extends Container
         parent::__construct();
 
         $this->definitions = [
+            'locale'           => 'ManaPHP\I18n\Locale',
             'eventManager'     => 'ManaPHP\Event\Manager',
             'aopManager'       => 'ManaPHP\Aop\Manager',
             'poolManager'      => 'ManaPHP\Pool\Manager',

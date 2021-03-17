@@ -9,6 +9,7 @@ namespace PHPSTORM_META {
     override(
         \ManaPHP\Di\ContainerInterface::getShared(), map(
             [
+                'locale'          => \ManaPHP\I18n\LocaleInterface::class,
                 'eventManager'    => \ManaPHP\Event\ManagerInterface::class,
                 'aopManager'      => \ManaPHP\Aop\ManagerInterface::class,
                 'alias'           => \ManaPHP\AliasInterface::class,
@@ -71,6 +72,7 @@ namespace PHPSTORM_META {
     override(
         \container(), map(
             [
+                'locale'           => \ManaPHP\I18n\LocaleInterface::class,
                 'eventManager'     => \ManaPHP\Event\ManagerInterface::class,
                 'aopManager'       => \ManaPHP\Aop\ManagerInterface::class,
                 'alias'            => \ManaPHP\AliasInterface::class,
@@ -136,6 +138,7 @@ namespace PHPSTORM_META {
     override(
         \ManaPHP\Component::getShared(), map(
             [
+                'locale'           => \ManaPHP\I18n\LocaleInterface::class,
                 'eventManager'     => \ManaPHP\Event\ManagerInterface::class,
                 'aopManager'       => \ManaPHP\Aop\ManagerInterface::class,
                 'alias'            => \ManaPHP\AliasInterface::class,
