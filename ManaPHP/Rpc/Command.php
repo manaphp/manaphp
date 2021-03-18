@@ -71,7 +71,7 @@ EOT;
             $content .= preg_replace('#(\s.*)Action#', '\\1', $signature);
             $content .= <<<EOT
     {
-        return \$this->_rpcCall(__METHOD__, func_get_args());
+        return \$this->__rpcCall(__METHOD__, func_get_args());
     }
 EOT;
             $content .= PHP_EOL;
