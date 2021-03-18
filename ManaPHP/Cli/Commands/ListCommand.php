@@ -177,4 +177,29 @@ class ListCommand extends Command
             $this->console->writeLn(json_stringify(array_keys($tracers)));
         }
     }
+
+    /**
+     * list all commands
+     *
+     * @param bool $verbose
+     *
+     * @return void
+     */
+    public function commandsAction($verbose = false)
+    {
+        $commands = [];
+        foreach ($this->container->getDefinitions('*Command') as $name => $definition) {
+            $commands[basename($name, 'Command')] = $definition;
+        }
+
+        ksort($commands);
+
+        if ($verbose) {
+            foreach ($commands as $name => $definition) {
+                $this->console->writeLn(str_pad($name, 16) . ' => ' . $definition);
+            }
+        } else {
+            $this->console->writeLn(json_stringify(array_keys($commands)));
+        }
+    }
 }
