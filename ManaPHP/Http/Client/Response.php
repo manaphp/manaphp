@@ -73,7 +73,7 @@ class Response implements JsonSerializable
         }
         $this->http_code = $http_code;
 
-        if (is_string($body)) {
+        if (is_string($body) && $body !== '') {
             $content_encoding = null;
             foreach ($headers as $header) {
                 if (stripos($header, 'Content-Encoding:') === 0) {
