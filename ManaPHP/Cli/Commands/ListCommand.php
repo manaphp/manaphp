@@ -88,7 +88,7 @@ class ListCommand extends Command
      *
      * @return void
      */
-    public function componentsAction($verbose = false, $all = false)
+    public function componentsAction($verbose = true, $all = false)
     {
         $components = [];
         foreach ($this->container->getDefinitions() as $name => $definition) {
@@ -135,7 +135,7 @@ class ListCommand extends Command
      *
      * @return void
      */
-    public function pluginsAction($verbose = false)
+    public function pluginsAction($verbose = true)
     {
         $tracers = [];
         foreach ($this->container->getDefinitions('*Plugin') as $name => $definition) {
@@ -160,7 +160,7 @@ class ListCommand extends Command
      *
      * @return void
      */
-    public function tracersAction($verbose = false)
+    public function tracersAction($verbose = true)
     {
         $tracers = [];
         foreach ($this->container->getDefinitions('*Tracer') as $name => $definition) {
@@ -185,7 +185,7 @@ class ListCommand extends Command
      *
      * @return void
      */
-    public function commandsAction($verbose = false)
+    public function commandsAction($verbose = true)
     {
         $commands = [];
         foreach ($this->container->getDefinitions('*Command') as $name => $definition) {
