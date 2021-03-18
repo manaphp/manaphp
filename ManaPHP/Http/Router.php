@@ -295,6 +295,11 @@ class Router extends Component implements RouterInterface
         }
 
         $url = rtrim($url, '/') ?: '/';
+
+        if ($url[0] !== '/') {
+            $url = parse_url($url, PHP_URL_PATH);
+        }
+
         $web = $this->alias->get('@web') ?? '';
         if ($web === '') {
             return $url;
