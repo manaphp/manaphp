@@ -11,7 +11,7 @@ class TimeService extends Service
      */
     public function current()
     {
-        return $this->rpcCall(__METHOD__, func_get_args());
+        return $this->__rpcCall(__METHOD__, func_get_args());
     }
 
     /**
@@ -21,6 +21,6 @@ class TimeService extends Service
      */
     public function after($second = 0)
     {
-        return $this->rpcCall(__METHOD__, func_get_args());
+        return $this->__rpcCall(__METHOD__, func_get_args());
     }
 }
