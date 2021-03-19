@@ -84,7 +84,7 @@ class Stream extends Component implements EngineInterface
         }
 
         $flags = STREAM_CLIENT_CONNECT;
-        if (($stream = stream_socket_client($address, $errno, $errstr, $timeout, $flags, $ctx)) === false) {
+        if (($stream = @stream_socket_client($address, $errno, $errstr, $timeout, $flags, $ctx)) === false) {
             throw new ConnectionException($errstr);
         }
 
