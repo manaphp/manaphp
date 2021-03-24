@@ -5,7 +5,6 @@ namespace ManaPHP\Rpc\Client;
 use ManaPHP\Di\Injectable;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Helper\Str;
 use ReflectionMethod;
 
 class Service implements Injectable
