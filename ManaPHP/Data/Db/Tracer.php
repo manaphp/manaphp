@@ -4,9 +4,6 @@ namespace ManaPHP\Data\Db;
 
 use ManaPHP\Event\EventArgs;
 
-/**
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
- */
 class Tracer extends \ManaPHP\Tracing\Tracer
 {
     /**
@@ -34,7 +31,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onConnecting(EventArgs $eventArgs)
     {
-        $this->logger->debug(['connecting to `:dsn`', 'dsn' => $eventArgs->data['dsn']], 'db.connect');
+        $this->debug(['connecting to `:dsn`', 'dsn' => $eventArgs->data['dsn']], 'db.connect');
     }
 
     /**
@@ -46,7 +43,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
     {
         $data = $eventArgs->data;
 
-        $this->logger->info($data, 'db.' . $data['type']);
+        $this->info($data, 'db.' . $data['type']);
     }
 
     /**
@@ -61,7 +58,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
         if (!$this->verbose) {
             unset($data['result']);
         }
-        $this->logger->debug($data, 'db.query');
+        $this->debug($data, 'db.query');
     }
 
     /**
@@ -71,7 +68,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onInserted(EventArgs $eventArgs)
     {
-        $this->logger->info($eventArgs->data, 'db.insert');
+        $this->info($eventArgs->data, 'db.insert');
     }
 
     /**
@@ -79,7 +76,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onBegin()
     {
-        $this->logger->info('transaction begin', 'db.begin');
+        $this->info('transaction begin', 'db.begin');
     }
 
     /**
@@ -87,7 +84,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onRollback()
     {
-        $this->logger->info('transaction rollback', 'db.rollback');
+        $this->info('transaction rollback', 'db.rollback');
     }
 
     /**
@@ -95,7 +92,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onCommit()
     {
-        $this->logger->info('transaction commit', 'db.commit');
+        $this->info('transaction commit', 'db.commit');
     }
 
     /**
@@ -105,7 +102,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onMetadata(EventArgs $eventArgs)
     {
-        $this->logger->debug($eventArgs->data, 'db.metadata');
+        $this->debug($eventArgs->data, 'db.metadata');
     }
 
     /**
@@ -113,6 +110,6 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onAbnormal()
     {
-        $this->logger->error('transaction is not close correctly', 'db.abnormal');
+        $this->error('transaction is not close correctly', 'db.abnormal');
     }
 }

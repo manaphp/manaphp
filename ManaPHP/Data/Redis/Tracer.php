@@ -4,9 +4,6 @@ namespace ManaPHP\Data\Redis;
 
 use ManaPHP\Event\EventArgs;
 
-/**
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
- */
 class Tracer extends \ManaPHP\Tracing\Tracer
 {
     public function __construct($options = [])
@@ -25,7 +22,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onConnecting(EventArgs $eventArgs)
     {
-        $this->logger->debug(['connecting to `:uri`', 'uri' => $eventArgs->data['uri']], 'redis.connect');
+        $this->debug(['connecting to `:uri`', 'uri' => $eventArgs->data['uri']], 'redis.connect');
     }
 
     /**
@@ -40,7 +37,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
         $arguments = $eventArgs->data['arguments'];
 
         if (stripos(',blPop,brPop,brpoplpush,subscribe,psubscribe,', ",$method,") !== false) {
-            $this->logger->debug(
+            $this->debug(
                 [
                     "\$redis->$method(:args) ... blocking",
                     'args' => substr(json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR), 1, -1),
@@ -68,7 +65,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
         if ($this->verbose) {
             $arguments = json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR);
             $return = json_stringify($eventArgs->data['return'], JSON_PARTIAL_OUTPUT_ON_ERROR);
-            $this->logger->debug(
+            $this->debug(
                 [
                     "\$redis->$method(:args) => :return",
                     'args'   => strlen($arguments) > 256
@@ -85,7 +82,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
                 return;
             }
             $arguments = json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR);
-            $this->logger->debug(
+            $this->debug(
                 [
                     "\$redis->$method(:args)",
                     'args' => strlen($arguments) > 256

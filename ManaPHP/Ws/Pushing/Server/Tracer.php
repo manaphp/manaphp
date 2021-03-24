@@ -4,9 +4,6 @@ namespace ManaPHP\Ws\Pushing\Server;
 
 use ManaPHP\Event\EventArgs;
 
-/**
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
- */
 class Tracer extends \ManaPHP\Tracing\Tracer
 {
     public function __construct($options = [])
@@ -18,6 +15,6 @@ class Tracer extends \ManaPHP\Tracing\Tracer
 
     public function onPushing(EventArgs $eventArgs)
     {
-        $this->logger->debug($eventArgs->data);
+        $this->debug($eventArgs->data);
     }
 }

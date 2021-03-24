@@ -3,8 +3,7 @@
 namespace ManaPHP\Http\Request;
 
 /**
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
- * @property-read \ManaPHP\Http\RequestInterface   $request
+ * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class Tracer extends \ManaPHP\Tracing\Tracer
 {
@@ -20,6 +19,6 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onBegin()
     {
-        $this->logger->debug($this->request->get(), 'http.request');
+        $this->debug($this->request->get(), 'http.request');
     }
 }

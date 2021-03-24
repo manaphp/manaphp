@@ -4,9 +4,6 @@ namespace ManaPHP\Ws\Client;
 
 use ManaPHP\Event\EventArgs;
 
-/**
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
- */
 class Tracer extends \ManaPHP\Tracing\Tracer
 {
     public function __construct($options = [])
@@ -24,7 +21,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onSend(EventArgs $eventArgs)
     {
-        $this->logger->debug($eventArgs->data, 'wsClient.send');
+        $this->debug($eventArgs->data, 'wsClient.send');
     }
 
     /**
@@ -34,6 +31,6 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onRecv(EventArgs $eventArgs)
     {
-        $this->logger->debug($eventArgs->data, 'wsClient.recv');
+        $this->debug($eventArgs->data, 'wsClient.recv');
     }
 }

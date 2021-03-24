@@ -4,9 +4,6 @@ namespace ManaPHP\Data\Mongodb;
 
 use ManaPHP\Event\EventArgs;
 
-/**
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
- */
 class Tracer extends \ManaPHP\Tracing\Tracer
 {
     public function __construct($options = [])
@@ -32,7 +29,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onConnect(EventArgs $eventArgs)
     {
-        $this->logger->debug(['connect to `:dsn`', 'dsn' => $eventArgs->data], 'mongodb.connect');
+        $this->debug(['connect to `:dsn`', 'dsn' => $eventArgs->data], 'mongodb.connect');
     }
 
     /**
@@ -42,7 +39,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onInserted(EventArgs $eventArgs)
     {
-        $this->logger->info($eventArgs->data, 'mongodb.insert');
+        $this->info($eventArgs->data, 'mongodb.insert');
     }
 
     /**
@@ -52,7 +49,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onBulkInserted(EventArgs $eventArgs)
     {
-        $this->logger->info($eventArgs->data, 'mongodb.bulk.insert');
+        $this->info($eventArgs->data, 'mongodb.bulk.insert');
     }
 
     /**
@@ -62,7 +59,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onUpdated(EventArgs $eventArgs)
     {
-        $this->logger->info($eventArgs->data, 'mongodb.update');
+        $this->info($eventArgs->data, 'mongodb.update');
     }
 
     /**
@@ -72,7 +69,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onUpserted(EventArgs $eventArgs)
     {
-        $this->logger->info($eventArgs->data, 'mongodb.upsert');
+        $this->info($eventArgs->data, 'mongodb.upsert');
     }
 
     /**
@@ -82,7 +79,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onBulkUpserted(EventArgs $eventArgs)
     {
-        $this->logger->info($eventArgs->data, 'mongodb.bulk.upsert');
+        $this->info($eventArgs->data, 'mongodb.bulk.upsert');
     }
 
     /**
@@ -92,7 +89,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onDeleted(EventArgs $eventArgs)
     {
-        $this->logger->info($eventArgs->data, 'mongodb.delete');
+        $this->info($eventArgs->data, 'mongodb.delete');
     }
 
     /**
@@ -102,7 +99,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onQueried(EventArgs $eventArgs)
     {
-        $this->logger->debug($eventArgs->data, 'mongodb.query');
+        $this->debug($eventArgs->data, 'mongodb.query');
     }
 
     /**
@@ -120,9 +117,9 @@ class Tracer extends \ManaPHP\Tracing\Tracer
             'authenticate,listDatabases,listCollections,listIndexes', $command_name
         )
         ) {
-            $this->logger->debug($data, 'mongodb.command.' . $command_name);
+            $this->debug($data, 'mongodb.command.' . $command_name);
         } else {
-            $this->logger->info($data, 'mongodb.command.' . $command_name);
+            $this->info($data, 'mongodb.command.' . $command_name);
         }
     }
 
@@ -133,6 +130,6 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onBulkUpdated(EventArgs $eventArgs)
     {
-        $this->logger->info($eventArgs->data, 'mongodb.bulk.update');
+        $this->info($eventArgs->data, 'mongodb.bulk.update');
     }
 }

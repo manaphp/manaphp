@@ -4,9 +4,6 @@ namespace ManaPHP\Http\Client;
 
 use ManaPHP\Event\EventArgs;
 
-/**
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
- */
 class Tracer extends \ManaPHP\Tracing\Tracer
 {
     public function __construct($options = [])
@@ -28,7 +25,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
         $request = $eventArgs->data['request'];
 
         if ($request->method === 'POST' && $request->body) {
-            $this->logger->info($eventArgs->data, 'httpClient.request');
+            $this->info($eventArgs->data, 'httpClient.request');
         }
     }
 
@@ -46,6 +43,6 @@ class Tracer extends \ManaPHP\Tracing\Tracer
             unset($response->stats, $response->headers);
         }
 
-        $this->logger->debug($response, 'httpClient.response');
+        $this->debug($response, 'httpClient.response');
     }
 }
