@@ -24,13 +24,13 @@ class Tracer extends \ManaPHP\Tracing\Tracer
         $message = $eventArgs->data['message'];
 
         if ($this->verbose) {
-            $this->debug(['From: ', $message->getFrom()]);
-            $this->debug(['To: ', $message->getTo()]);
-            $this->debug(['Cc:', $message->getCc()]);
-            $this->debug(['Bcc: ', $message->getBcc()]);
-            $this->debug(['Subject: ', $message->getSubject()]);
+            $this->debug(['From: ', $message->getFrom()], 'mailer.sending');
+            $this->debug(['To: ', $message->getTo()], 'mailer.sending');
+            $this->debug(['Cc:', $message->getCc()], 'mailer.sending');
+            $this->debug(['Bcc: ', $message->getBcc()], 'mailer.sending');
+            $this->debug(['Subject: ', $message->getSubject()], 'mailer.sending');
         } else {
-            $this->debug(['To: ', $message->getTo()]);
+            $this->debug(['To: ', $message->getTo()], 'mailer.sending');
         }
     }
 }

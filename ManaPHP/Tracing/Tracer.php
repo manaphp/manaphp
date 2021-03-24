@@ -27,7 +27,7 @@ class Tracer extends Component
      *
      * @return void
      */
-    public function debug($message, $category = null)
+    public function debug($message, $category)
     {
         $this->logger->debug($message, $category);
     }
@@ -40,7 +40,7 @@ class Tracer extends Component
      *
      * @return void
      */
-    public function info($message, $category = null)
+    public function info($message, $category)
     {
         $this->logger->info($message, $category);
     }
@@ -53,7 +53,7 @@ class Tracer extends Component
      *
      * @return void
      */
-    public function warn($message, $category = null)
+    public function warn($message, $category)
     {
         $this->logger->warn($message, $category);
     }
@@ -66,7 +66,7 @@ class Tracer extends Component
      *
      * @return void
      */
-    public function error($message, $category = null)
+    public function error($message, $category)
     {
         $this->logger->error($message, $category);
     }
@@ -79,7 +79,7 @@ class Tracer extends Component
      *
      * @return void
      */
-    public function fatal($message, $category = null)
+    public function fatal($message, $category)
     {
         $this->logger->fatal($message, $category);
     }

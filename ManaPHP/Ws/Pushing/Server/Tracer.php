@@ -15,6 +15,6 @@ class Tracer extends \ManaPHP\Tracing\Tracer
 
     public function onPushing(EventArgs $eventArgs)
     {
-        $this->debug($eventArgs->data);
+        $this->debug($eventArgs->data, 'wspServer.pushing');
     }
 }
