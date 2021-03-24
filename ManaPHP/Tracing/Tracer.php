@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Event;
+namespace ManaPHP\Tracing;
 
 use ManaPHP\Component;
 use ManaPHP\Logging\Logger\LogCategorizable;

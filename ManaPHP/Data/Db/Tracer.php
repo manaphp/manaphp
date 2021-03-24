@@ -7,7 +7,7 @@ use ManaPHP\Event\EventArgs;
 /**
  * @property-read \ManaPHP\Logging\LoggerInterface $logger
  */
-class Tracer extends \ManaPHP\Event\Tracer
+class Tracer extends \ManaPHP\Tracing\Tracer
 {
     /**
      * @param array $options

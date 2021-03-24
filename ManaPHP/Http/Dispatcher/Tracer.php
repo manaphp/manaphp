@@ -8,7 +8,7 @@ use ManaPHP\Helper\Reflection;
 /**
  * @property-read \ManaPHP\Http\ResponseInterface $response
  */
-class Tracer extends \ManaPHP\Event\Tracer
+class Tracer extends \ManaPHP\Tracing\Tracer
 {
     public function __construct($options = [])
     {

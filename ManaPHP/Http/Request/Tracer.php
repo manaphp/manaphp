@@ -6,7 +6,7 @@ namespace ManaPHP\Http\Request;
  * @property-read \ManaPHP\Logging\LoggerInterface $logger
  * @property-read \ManaPHP\Http\RequestInterface   $request
  */
-class Tracer extends \ManaPHP\Event\Tracer
+class Tracer extends \ManaPHP\Tracing\Tracer
 {
     public function __construct($options = [])
     {
