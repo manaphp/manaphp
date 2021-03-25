@@ -51,7 +51,6 @@ namespace PHPSTORM_META {
                 'redisBroker'     => \Redis::class,
                 'mongodb'         => \ManaPHP\Data\MongodbInterface::class,
                 'translator'      => \ManaPHP\I18n\TranslatorInterface::class,
-                'rabbitmq'        => \ManaPHP\AmqpInterface::class,
                 'relationManager' => \ManaPHP\Data\Relation\Manager::class,
                 'container'       => \ManaPHP\Di\ContainerInterface::class,
                 'app'             => \ManaPHP\ApplicationInterface::class,
@@ -65,6 +64,7 @@ namespace PHPSTORM_META {
                 'jwt'             => \ManaPHP\Token\JwtInterface::class,
                 'scopedJwt'       => \ManaPHP\Token\ScopedJwtInterface::class,
                 'pubSub'          => \ManaPHP\Messaging\PubSubInterface::class,
+                'amqpClient'      => \ManaPHP\Amqp\ClientInterface::class,
                 ''                => '@|App\Services\@',
             ]
         )
@@ -115,7 +115,6 @@ namespace PHPSTORM_META {
                 'redisBroker'      => \Redis::class,
                 'mongodb'          => \ManaPHP\Data\MongodbInterface::class,
                 'translator'       => \ManaPHP\I18n\TranslatorInterface::class,
-                'rabbitmq'         => \ManaPHP\AmqpInterface::class,
                 'relationManager'  => \ManaPHP\Data\Relation\ManagerInterface::class,
                 'container'        => \ManaPHP\Di\ContainerInterface::class,
                 'app'              => \ManaPHP\ApplicationInterface::class,
@@ -130,6 +129,7 @@ namespace PHPSTORM_META {
                 'scopedJwt'        => \ManaPHP\Token\ScopedJwtInterface::class,
                 'pubSub'           => \ManaPHP\Messaging\PubSubInterface::class,
                 'dataDump'         => \ManaPHP\Debugging\DataDumpInterface::class,
+                'amqpClient'       => \ManaPHP\Amqp\ClientInterface::class,
                 ''                 => '@|App\Services\@',
             ]
         )
@@ -179,7 +179,6 @@ namespace PHPSTORM_META {
                 'redisBroker'      => \Redis::class,
                 'mongodb'          => \ManaPHP\Data\MongodbInterface::class,
                 'translator'       => \ManaPHP\I18n\TranslatorInterface::class,
-                'rabbitmq'         => \ManaPHP\AmqpInterface::class,
                 'relationManager'  => \ManaPHP\Data\Relation\ManagerInterface::class,
                 'container'        => \ManaPHP\Di\ContainerInterface::class,
                 'app'              => \ManaPHP\ApplicationInterface::class,
@@ -194,6 +193,7 @@ namespace PHPSTORM_META {
                 'scopedJwt'        => \ManaPHP\Token\ScopedJwtInterface::class,
                 'pubSub'           => \ManaPHP\Messaging\PubSubInterface::class,
                 'dataDump'         => \ManaPHP\Debugging\DataDumpInterface::class,
+                'amqpClient'       => \ManaPHP\Amqp\ClientInterface::class,
                 ''                 => '@|App\Services\@',
             ]
         )
@@ -300,6 +300,29 @@ namespace PHPSTORM_META {
         | JSON_FORCE_OBJECT | JSON_PRESERVE_ZERO_FRACTION | JSON_PARTIAL_OUTPUT_ON_ERROR
         | JSON_UNESCAPED_LINE_TERMINATORS
     );
+
+    registerArgumentsSet('amqp_exchange_type', 'direct', 'topic', 'fanout', 'headers');
+    expectedArguments(\ManaPHP\Amqp\Exchange::__construct(), 1, argumentsSet('amqp_exchange_type'));
+
+    registerArgumentsSet(
+        'amqp_exchange_features',
+        ['passive'     => false, 'durable' => true,
+         'auto_delete' => false, 'internal' => false,
+         'nowait'      => false, 'arguments' => []]
+    );
+    expectedArguments(\ManaPHP\Amqp\Exchange::__construct(), 2, argumentsSet('amqp_exchange_features'));
+
+    registerArgumentsSet(
+        'amqp_queue_features', [
+            'passive'     => false,
+            'durable'     => true,
+            'exclusive'   => false,
+            'auto_delete' => false,
+            'nowait'      => false,
+            'arguments'   => [],
+        ]
+    );
+    expectedArguments(\ManaPHP\Amqp\Queue::__construct(), 1, argumentsSet('amqp_queue_features'));
 
     function validator_rule()
     {
