@@ -11,9 +11,10 @@ return [
     'aliases'    => [
     ],
     'components' => [
-        'db'     => env('DB_URL'),
-        'redis'  => env('REDIS_URL'),
-        'logger' => ['level' => env('LOGGER_LEVEL', 'info')]
+        'db'         => env('DB_URL'),
+        'redis'      => env('REDIS_URL'),
+        'logger'     => ['level' => env('LOGGER_LEVEL', 'info')],
+        'amqpClient' => 'amqp://192.168.0.8/'
     ],
     'services'   => [
         'timeService' => ['endpoint' => 'http://localhost:85/time']
