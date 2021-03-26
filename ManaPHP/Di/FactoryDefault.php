@@ -53,6 +53,7 @@ class FactoryDefault extends Container
             'cliRunner'        => 'ManaPHP\Cli\Runner',
             'chatClient'       => 'ManaPHP\Ws\Chatting\Client',
             'amqpClient'       => 'ManaPHP\Amqp\Client',
+            'amqpRpc'          => 'ManaPHP\Rpc\Amqp\Client',
 
             'backtracePlugin' => 'ManaPHP\Debugging\BacktracePlugin',
             'debuggerPlugin'  => 'ManaPHP\Debugging\DebuggerPlugin',
