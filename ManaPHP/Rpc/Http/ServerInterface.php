@@ -1,11 +1,11 @@
 <?php
 
-namespace ManaPHP\Rpc;
+namespace ManaPHP\Rpc\Http;
 
 interface ServerInterface
 {
     /**
-     * @param \ManaPHP\Rpc\Server\HandlerInterface $handler
+     * @param \ManaPHP\Rpc\Http\Server\HandlerInterface $handler
      *
      * @return static
      */

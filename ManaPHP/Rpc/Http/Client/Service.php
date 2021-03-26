@@ -1,6 +1,6 @@
 <?php /** @noinspection MagicMethodsValidityInspection */
 
-namespace ManaPHP\Rpc\Client;
+namespace ManaPHP\Rpc\Http\Client;
 
 use ManaPHP\Di\Injectable;
 use ManaPHP\Exception\MisuseException;
@@ -15,7 +15,7 @@ class Service implements Injectable
     protected $self;
 
     /**
-     * @var \ManaPHP\Rpc\ClientInterface
+     * @var \ManaPHP\Rpc\Http\ClientInterface
      */
     protected $rpcClient;
 
@@ -42,9 +42,9 @@ class Service implements Injectable
 
         $scheme = parse_url($options['endpoint'], PHP_URL_SCHEME);
         if ($scheme === 'ws' || $scheme === 'wss') {
-            $class = 'ManaPHP\\Rpc\\Client\\Adapter\\Ws';
+            $class = 'ManaPHP\Rpc\Http\Client\Adapter\Ws';
         } elseif ($scheme === 'http' || $scheme === 'https') {
-            $class = 'ManaPHP\\Rpc\\Client\\Adapter\\Http';
+            $class = 'ManaPHP\Rpc\Http\Client\Adapter\Http';
         } else {
             throw new NotSupportedException(['`:type` type rpc is not support', 'type' => $scheme]);
         }

@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Rpc;
+namespace ManaPHP\Rpc\Http;
 
 use ManaPHP\Component;
 
@@ -21,7 +21,7 @@ abstract class Server extends Component implements ServerInterface
     protected $port = 9501;
 
     /**
-     * @var \ManaPHP\Rpc\Server\HandlerInterface
+     * @var \ManaPHP\Rpc\Http\Server\HandlerInterface
      */
     protected $handler;
 

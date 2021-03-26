@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Rpc\Server\Adapter;
+namespace ManaPHP\Rpc\Http\Server\Adapter;
 
 use ArrayObject;
 use ManaPHP\Coroutine\Context\Stickyable;
@@ -26,10 +26,10 @@ class SwooleContext
 }
 
 /**
- * @property-read \ManaPHP\Logging\LoggerInterface          $logger
- * @property-read \ManaPHP\Rpc\Server\Adapter\SwooleContext $context
+ * @property-read \ManaPHP\Logging\LoggerInterface               $logger
+ * @property-read \ManaPHP\Rpc\Http\Server\Adapter\SwooleContext $context
  */
-class Swoole extends \ManaPHP\Rpc\Server
+class Swoole extends \ManaPHP\Rpc\Http\Server
 {
     /**
      * @var array
@@ -367,7 +367,7 @@ class Swoole extends \ManaPHP\Rpc\Server
     }
 
     /**
-     * @param \ManaPHP\Rpc\Server\HandlerInterface $handler
+     * @param \ManaPHP\Rpc\Http\Server\HandlerInterface $handler
      *
      * @return void
      */

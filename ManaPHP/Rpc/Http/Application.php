@@ -1,20 +1,20 @@
 <?php
 
-namespace ManaPHP\Rpc;
+namespace ManaPHP\Rpc\Http;
 
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Helper\Reflection;
 use ManaPHP\Http\Response;
 use ManaPHP\Http\Router\NotFoundRouteException;
-use ManaPHP\Rpc\Server\HandlerInterface;
+use ManaPHP\Rpc\Http\Server\HandlerInterface;
 use Throwable;
 
 /**
- * @property-read \ManaPHP\Rpc\ServerInterface     $rpcServer
- * @property-read \ManaPHP\Http\RouterInterface    $router
- * @property-read \ManaPHP\Http\ResponseInterface  $response
- * @property-read \ManaPHP\Rpc\DispatcherInterface $dispatcher
- * @property-read \ManaPHP\Http\RequestInterface   $request
+ * @property-read \ManaPHP\Rpc\Http\ServerInterface $rpcServer
+ * @property-read \ManaPHP\Http\RouterInterface     $router
+ * @property-read \ManaPHP\Http\ResponseInterface   $response
+ * @property-read \ManaPHP\Rpc\DispatcherInterface  $dispatcher
+ * @property-read \ManaPHP\Http\RequestInterface    $request
  */
 class Application extends \ManaPHP\Application implements HandlerInterface
 {
@@ -23,7 +23,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
      */
     public function getFactory()
     {
-        return 'ManaPHP\Rpc\Factory';
+        return 'ManaPHP\Rpc\Http\Factory';
     }
 
     public function authenticate()

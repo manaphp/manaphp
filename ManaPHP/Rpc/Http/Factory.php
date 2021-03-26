@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Rpc;
+namespace ManaPHP\Rpc\Http;
 
 class Factory extends \ManaPHP\Http\Factory
 {
@@ -12,20 +12,20 @@ class Factory extends \ManaPHP\Http\Factory
                 'errorHandler' => 'ManaPHP\Rest\ErrorHandler',
                 'dispatcher'   => 'ManaPHP\Rpc\Dispatcher',
 
-                'rpcCommand' => 'ManaPHP\Rpc\Command',
+                'rpcCommand' => 'ManaPHP\Rpc\Http\Command',
             ]
         );
 
         if (PHP_SAPI === 'cli') {
             if (extension_loaded('swoole')) {
-                $this->setShared('rpcServer', 'ManaPHP\Rpc\Server\Adapter\Swoole');
+                $this->setShared('rpcServer', 'ManaPHP\Rpc\Http\Server\Adapter\Swoole');
             } else {
-                $this->setShared('rpcServer', 'ManaPHP\Rpc\Server\Adapter\Php');
+                $this->setShared('rpcServer', 'ManaPHP\Rpc\Http\Server\Adapter\Php');
             }
         } elseif (PHP_SAPI === 'cli-server') {
-            $this->setShared('rpcServer', 'ManaPHP\Rpc\Server\Adapter\Php');
+            $this->setShared('rpcServer', 'ManaPHP\Rpc\Http\Server\Adapter\Php');
         } else {
-            $this->setShared('rpcServer', 'ManaPHP\Rpc\Server\Adapter\Fpm');
+            $this->setShared('rpcServer', 'ManaPHP\Rpc\Http\Server\Adapter\Fpm');
         }
     }
 }

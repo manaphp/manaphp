@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP\Rpc\Server\Adapter;
+namespace ManaPHP\Rpc\Http\Server\Adapter;
 
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Rpc\Server;
+use ManaPHP\Rpc\Http\Server;
 
 class Fpm extends Server
 {
@@ -17,7 +17,7 @@ class Fpm extends Server
     }
 
     /**
-     * @param \ManaPHP\Rpc\Server\HandlerInterface $handler
+     * @param \ManaPHP\Rpc\Http\Server\HandlerInterface $handler
      *
      * @return static
      */

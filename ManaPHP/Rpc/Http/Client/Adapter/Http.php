@@ -1,10 +1,10 @@
 <?php
 
-namespace ManaPHP\Rpc\Client\Adapter;
+namespace ManaPHP\Rpc\Http\Client\Adapter;
 
-use ManaPHP\Rpc\Client;
-use ManaPHP\Rpc\Client\Exception as ClientException;
-use ManaPHP\Rpc\Client\ProtocolException;
+use ManaPHP\Rpc\Http\Client;
+use ManaPHP\Rpc\Http\Client\Exception as ClientException;
+use ManaPHP\Rpc\Http\Client\ProtocolException;
 
 class Http extends Client
 {

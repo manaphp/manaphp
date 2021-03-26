@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Rpc;
+namespace ManaPHP\Rpc\Http;
 
 use ManaPHP\Component;
 

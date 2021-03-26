@@ -2,7 +2,7 @@
 
 namespace App;
 
-class Application extends \ManaPHP\Rpc\Application
+class Application extends \ManaPHP\Rpc\Http\Application
 {
 
 }

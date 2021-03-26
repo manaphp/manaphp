@@ -9,7 +9,7 @@ namespace App\Controllers;
  * @property-read \Redis                                 $redisCache
  * @property-read \Redis                                 $redisBroker
  */
-class Controller extends \ManaPHP\Rpc\Controller
+class Controller extends \ManaPHP\Rpc\Http\Controller
 {
 
 }

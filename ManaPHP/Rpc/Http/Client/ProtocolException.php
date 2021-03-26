@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Rpc\Client;
+namespace ManaPHP\Rpc\Http\Client;
 
 class ProtocolException extends Exception
 {

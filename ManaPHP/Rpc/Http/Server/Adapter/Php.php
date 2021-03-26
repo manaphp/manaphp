@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Rpc\Server\Adapter;
+namespace ManaPHP\Rpc\Http\Server\Adapter;
 
 use ManaPHP\Helper\Ip;
 
