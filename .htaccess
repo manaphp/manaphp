@@ -1,4 +1,4 @@
 <IfModule mod_rewrite.c>
 	RewriteEngine on
-	RewriteRule  .* apps/user/$0 [L]
+	RewriteRule  .* app-user/$0 [L]
 </IfModule>

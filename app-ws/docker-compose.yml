@@ -1,0 +1,13 @@
+version : "2"
+services :
+  ws :
+    image : manaphp/php74:4.1
+    volumes :
+      - ./:/var/www/html
+      - /data/volumes/${COMPOSE_PROJECT_NAME}/ws/data:/var/www/html/data
+      - /data/volumes/${COMPOSE_PROJECT_NAME}/ws/tmp:/var/www/html/tmp
+      - ../ManaPHP:/var/www/html/vendor/manaphp/framework
+    command : php -d opcache.enable_cli=on /var/www/html/public/index.php
+    ports :
+      - ${WS_PORT}:9501
+    restart : always
