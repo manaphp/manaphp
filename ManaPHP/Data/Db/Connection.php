@@ -327,7 +327,7 @@ abstract class Connection extends Component implements ConnectionInterface
                 $this->self->close();
                 return $this->in_transaction = $this->self->getPdo()->beginTransaction();
             } catch (PDOException $exception) {
-                throw new DbException($exception->getMessage(), $exception->getCode(), $exception);
+                throw new DbException($exception);
             }
         }
     }

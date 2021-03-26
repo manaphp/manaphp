@@ -97,7 +97,7 @@ class Connection extends Component implements ConnectionInterface
             try {
                 $this->writeConcern = new WriteConcern(WriteConcern::MAJORITY, 10000);
             } catch (\Exception $exception) {
-                throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+                throw new MongodbException($exception);
             }
         }
 
@@ -108,7 +108,7 @@ class Connection extends Component implements ConnectionInterface
         try {
             $result = $this->self->getManager()->executeBulkWrite($namespace, $bulk, $this->writeConcern);
         } catch (\Exception $exception) {
-            throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+            throw new MongodbException($exception);
         }
 
         return $result;
@@ -161,7 +161,7 @@ class Connection extends Component implements ConnectionInterface
         try {
             $bulk->update($filter, key($document)[0] === '$' ? $document : ['$set' => $document], ['multi' => true]);
         } catch (\Exception $exception) {
-            throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+            throw new MongodbException($exception);
         }
 
         return $this->self->bulkWrite($source, $bulk)->getModifiedCount();
@@ -184,7 +184,7 @@ class Connection extends Component implements ConnectionInterface
             try {
                 $bulk->update([$primaryKey => $pkValue], key($document)[0] === '$' ? $document : ['$set' => $document]);
             } catch (\Exception $exception) {
-                throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+                throw new MongodbException($exception);
             }
         }
 
@@ -206,7 +206,7 @@ class Connection extends Component implements ConnectionInterface
         try {
             $bulk->update([$primaryKey => $document[$primaryKey]], $document, ['upsert' => true]);
         } catch (\Exception $exception) {
-            throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+            throw new MongodbException($exception);
         }
 
         return $this->self->bulkWrite($namespace, $bulk)->getUpsertedCount();
@@ -227,7 +227,7 @@ class Connection extends Component implements ConnectionInterface
             try {
                 $bulk->update([$primaryKey => $document[$primaryKey]], $document, ['upsert' => true]);
             } catch (\Exception $exception) {
-                throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+                throw new MongodbException($exception);
             }
         }
 
@@ -248,7 +248,7 @@ class Connection extends Component implements ConnectionInterface
         try {
             $bulk->delete($filter);
         } catch (\Exception $exception) {
-            throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+            throw new MongodbException($exception);
         }
 
         return $this->self->bulkWrite($namespace, $bulk)->getDeletedCount();
@@ -305,7 +305,7 @@ class Connection extends Component implements ConnectionInterface
             }
 
             if ($failed) {
-                throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+                throw new MongodbException($exception);
             }
         }
 
@@ -329,7 +329,7 @@ class Connection extends Component implements ConnectionInterface
             $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
             return $cursor->toArray();
         } catch (\Exception $exception) {
-            throw new MongodbException($exception->getMessage(), $exception->getCode(), $exception);
+            throw new MongodbException($exception);
         }
     }
 

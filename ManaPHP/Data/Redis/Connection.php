@@ -231,7 +231,7 @@ class Connection extends Component
 
             if ($failed) {
                 $this->multi = false;
-                throw new RedisException($exception->getMessage(), $exception->getCode(), $exception);
+                throw new RedisException($exception);
             }
         }
 
