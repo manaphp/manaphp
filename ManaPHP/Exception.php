@@ -15,13 +15,17 @@ class Exception extends \Exception
     protected $json;
 
     /**
-     * @param string|array $message
-     * @param int          $code
-     * @param \Exception   $previous
+     * @param string|array|\Exception $message
+     * @param int                     $code
+     * @param \Exception              $previous
      */
     public function __construct($message = '', $code = 0, $previous = null)
     {
-        if (is_array($message)) {
+        if ($message instanceof \Exception) {
+            $code = $message->getCode();
+            $previous = $message;
+            $message = $message->getMessage();
+        } elseif (is_array($message)) {
             if (substr_count($message[0], '%') + 1 >= ($count = count($message)) && isset($message[$count - 1])) {
                 $message = sprintf(...$message);
             } else {
