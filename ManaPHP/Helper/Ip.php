@@ -97,7 +97,7 @@ class Ip
                 }
                 return current($ips);
             }
-        } elseif (DIRECTORY_SEPARATOR === '\\') {
+        } elseif (DIRECTORY_SEPARATOR === '\\' || PHP_EOL === "\r") {
             return '127.0.0.1';
         } else {
             if (!$ips = @exec('hostname --all-ip-addresses')) {
