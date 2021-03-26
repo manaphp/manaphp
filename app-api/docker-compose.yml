@@ -1,6 +1,6 @@
 version : "2"
 services :
-  api_swoole :
+  api :
     image : manaphp/php74:4.1
     volumes :
       - ./:/var/www/html
