@@ -1,11 +1,6 @@
 #!/usr/bin/env php
 <?php
+require __DIR__ . '/vendor/autoload.php';
 
-/** @noinspection PhpIncludeInspection */
-require __DIR__ . '/../ManaPHP/Loader.php';
-
-$loader = new \ManaPHP\Loader();
-
-require __DIR__ . '/app/Application.php';
-$app = new App\Application($loader);
+$app = new App\Application();
 $app->cli();

@@ -6,7 +6,7 @@ services :
       - ../:/var/www/html
       - /data/volumes/${COMPOSE_PROJECT_NAME}/rpc/data:/var/www/html/data
       - /data/volumes/${COMPOSE_PROJECT_NAME}/rpc/tmp:/var/www/html/tmp
-      - ../../ManaPHP:/var/www/html/vendor/manaphp/framework
+      - ../../ManaPHP:/var/www/ManaPHP
     command : php /var/www/html/public/index.php
     ports :
       - ${WEB_PORT}:9501

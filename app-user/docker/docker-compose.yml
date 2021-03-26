@@ -8,7 +8,7 @@ services :
       - /data/volumes/${COMPOSE_PROJECT_NAME}/user/data:/var/www/html/data
       - /data/volumes/${COMPOSE_PROJECT_NAME}/user/tmp:/var/www/html/tmp
       - /data/volumes/${COMPOSE_PROJECT_NAME}/user/fpm/:/var/log/php
-      - ../../ManaPHP:/var/www/html/vendor/manaphp/framework
+      - ../../ManaPHP:/var/www/ManaPHP
     command : /usr/bin/bash -c "chown www-data:www-data data tmp &&exec php-fpm --nodaemonize"
     restart : always
   user_nginx :

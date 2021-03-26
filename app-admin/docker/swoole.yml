@@ -6,7 +6,7 @@ services :
       - ../:/var/www/html
       - /data/volumes/${COMPOSE_PROJECT_NAME}/admin/data:/var/www/html/data
       - /data/volumes/${COMPOSE_PROJECT_NAME}/admin/tmp:/var/www/html/tmp
-      - ../../ManaPHP:/var/www/html/vendor/manaphp/framework
+      - ../../ManaPHP:/var/www/ManaPHP
     command : php -d opcache.enable_cli=on /var/www/html/public/index.php
     ports :
       - ${WEB_PORT}:9501

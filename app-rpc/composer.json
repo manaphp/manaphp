@@ -1,0 +1,26 @@
+{
+  "name": "manaphp/app-rpc",
+  "description": "The ManaPHP Framework",
+  "keywords": [
+    "manaphp",
+    "framework",
+    "di"
+  ],
+  "homepage": "https://github.com/manaphp/manaphp",
+  "authors": [
+    {
+      "name": "ManaPHP Mark",
+      "email": "manaphp@qq.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "ManaPHP\\": "../ManaPHP/",
+      "App\\": "app/"
+    }
+  },
+  "minimum-stability": "dev",
+  "require": {
+    "ext-json": "*"
+  }
+}
