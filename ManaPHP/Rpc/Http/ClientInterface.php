@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Rpc\Http;
 
-interface ClientInterface
+interface ClientInterface extends \ManaPHP\Rpc\ClientInterface
 {
     /**
      * @param string $endpoint

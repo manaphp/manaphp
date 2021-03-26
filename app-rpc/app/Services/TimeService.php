@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use ManaPHP\Rpc\Http\Client\Service;
+use ManaPHP\Rpc\Service;
 
 class TimeService extends Service
 {

@@ -55,7 +55,7 @@ class Command extends \ManaPHP\Cli\Command
 
 namespace App\Services;
 
-use ManaPHP\Rpc\Http\Client\Service;
+use ManaPHP\Rpc\Service;
 
 class $serviceName extends Service
 {

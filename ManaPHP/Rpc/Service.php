@@ -1,6 +1,6 @@
 <?php /** @noinspection MagicMethodsValidityInspection */
 
-namespace ManaPHP\Rpc\Http\Client;
+namespace ManaPHP\Rpc;
 
 use ManaPHP\Di\Injectable;
 use ManaPHP\Exception\MisuseException;
@@ -15,7 +15,7 @@ class Service implements Injectable
     protected $self;
 
     /**
-     * @var \ManaPHP\Rpc\Http\ClientInterface
+     * @var \ManaPHP\Rpc\ClientInterface
      */
     protected $rpcClient;
 
