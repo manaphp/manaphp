@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Amqp;
 
-class Bind
+class Binding
 {
     /**
      * @var string|Queue

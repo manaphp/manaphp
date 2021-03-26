@@ -43,4 +43,9 @@ interface MessageInterface
      * @return bool
      */
     public function isRedelivered();
+
+    /**
+     * @return string
+     */
+    public function getReplyTo();
 }

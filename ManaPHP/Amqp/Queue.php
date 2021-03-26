@@ -17,11 +17,6 @@ class Queue implements JsonSerializable
     public $features;
 
     /**
-     * @var Bind[]
-     */
-    public $binds = [];
-
-    /**
      * @param string $name
      * @param array  $features
      */
@@ -37,16 +32,6 @@ class Queue implements JsonSerializable
                 'nowait'      => false,
                 'arguments'   => [],
             ];
-    }
-
-    /**
-     * @param string|Exchange $exchange
-     * @param string          $binding_key
-     * @param array           $arguments
-     */
-    public function bind($exchange, $binding_key, $arguments = [])
-    {
-        $this->binds[] = new Bind($this->name, $exchange, $binding_key, $arguments);
     }
 
     /**

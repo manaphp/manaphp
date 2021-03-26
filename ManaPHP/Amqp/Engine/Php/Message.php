@@ -93,6 +93,14 @@ class Message implements MessageInterface, JsonSerializable
     }
 
     /**
+     * @return string
+     */
+    public function getReplyTo()
+    {
+        return $this->envelope->get('reply_to');
+    }
+
+    /**
      * @return array
      */
     public function jsonSerialize()

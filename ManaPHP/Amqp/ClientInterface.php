@@ -38,11 +38,18 @@ interface ClientInterface
     public function queueDelete($queue, $if_unused = false, $if_empty = false, $nowait = false);
 
     /**
-     * @param Bind $bind
+     * @param Binding $binding
      *
      * @return void
      */
-    public function queueBind($bind);
+    public function queueBind($binding);
+
+    /**
+     * @param Binding $binding
+     *
+     * @return void
+     */
+    public function queueUnbind($binding);
 
     /**
      * @param string|Exchange $exchange

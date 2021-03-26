@@ -2,7 +2,8 @@
 
 namespace ManaPHP\Amqp\Engine;
 
-use ManaPHP\Amqp\Bind;
+use ManaPHP\Amqp\Binding;
+use ManaPHP\Amqp\ChannelException;
 use ManaPHP\Component;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Amqp\EngineInterface;
@@ -10,6 +11,7 @@ use ManaPHP\Amqp\Exchange;
 use ManaPHP\Amqp\MessageInterface;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Channel\AMQPChannel;
+use PhpAmqpLib\Exception\AMQPProtocolChannelException;
 use PhpAmqpLib\Message\AMQPMessage;
 use ManaPHP\Amqp\Queue;
 use ManaPHP\Amqp\Engine\Php\Message as PhpMessage;
@@ -54,6 +56,12 @@ class Php extends Component implements EngineInterface
      */
     protected function getChannel()
     {
+        if ($this->channel !== null && !$this->channel->is_open()) {
+            $this->channel = null;
+            $this->exchanges = [];
+            $this->queues = [];
+        }
+
         if ($this->channel === null) {
             $parts = parse_url($this->uri);
             $scheme = $parts['scheme'];
@@ -85,11 +93,16 @@ class Php extends Component implements EngineInterface
         }
 
         $features = $exchange->features;
-        $channel->exchange_declare(
-            $name, $exchange->type,
-            $features['passive'], $features['durable'], $features['auto_delete'],
-            $features['internal'], $features['nowait'], $features['arguments']
-        );
+        try {
+            $channel->exchange_declare(
+                $name, $exchange->type,
+                $features['passive'], $features['durable'], $features['auto_delete'],
+                $features['internal'], $features['nowait'], $features['arguments']
+            );
+        } catch (AMQPProtocolChannelException $exception) {
+            throw new ChannelException($exception);
+        }
+
         $this->exchanges[$name] = 1;
     }
 
@@ -101,6 +114,21 @@ class Php extends Component implements EngineInterface
     public function exchangeDeclare($exchange)
     {
         $this->exchangeDeclareInternal($this->getChannel(), $exchange);
+    }
+
+    /**
+     * @param string $exchange
+     * @param bool   $if_unused
+     * @param bool   $nowait
+     *
+     * @return void
+     */
+    public function exchangeDelete($exchange, $if_unused = false, $nowait = false)
+    {
+        unset($this->exchanges[$exchange]);
+
+        $channel = $this->getChannel();
+        $channel->exchange_delete($exchange, $if_unused, $nowait);
     }
 
     /**
@@ -117,12 +145,16 @@ class Php extends Component implements EngineInterface
         }
 
         $features = $queue->features;
-        $channel->queue_declare(
-            $name,
-            $features['passive'], $features['durable'],
-            $features['exclusive'], $features['auto_delete'],
-            $features['nowait'], $features['arguments']
-        );
+        try {
+            $channel->queue_declare(
+                $name,
+                $features['passive'], $features['durable'],
+                $features['exclusive'], $features['auto_delete'],
+                $features['nowait'], $features['arguments']
+            );
+        } catch (AMQPProtocolChannelException $exception) {
+            throw new ChannelException($exception);
+        }
         $this->queues[$name] = 1;
     }
 
@@ -146,19 +178,21 @@ class Php extends Component implements EngineInterface
      */
     public function queueDelete($queue, $if_unused = false, $if_empty = false, $nowait = false)
     {
+        unset($this->queues[$queue]);
+
         $channel = $this->getChannel();
         $channel->queue_delete($queue, $if_unused, $if_empty, $nowait);
     }
 
     /**
-     * @param Bind $bind
+     * @param Binding $binding
      *
      * @return void
      */
-    public function queueBind($bind)
+    public function queueBind($binding)
     {
-        $queue = $bind->queue;
-        $exchange = $bind->exchange;
+        $queue = $binding->queue;
+        $exchange = $binding->exchange;
 
         $channel = $this->getChannel();
         if (is_object($queue)) {
@@ -169,50 +203,64 @@ class Php extends Component implements EngineInterface
             $this->exchangeDeclareInternal($channel, $exchange);
         }
 
-        $channel->queue_bind(
-            is_string($queue) ? $queue : $queue->name,
-            is_string($exchange) ? $exchange : $exchange->name,
-            $bind->binding_key, false, $bind->arguments
-        );
+        try {
+            $channel->queue_bind(
+                is_string($queue) ? $queue : $queue->name,
+                is_string($exchange) ? $exchange : $exchange->name,
+                $binding->binding_key, false, $binding->arguments
+            );
+        } catch (AMQPProtocolChannelException $exception) {
+            throw new ChannelException($exception);
+        }
     }
 
     /**
-     * @param string $exchange
-     * @param bool   $if_unused
-     * @param bool   $nowait
+     * @param Binding $binding
      *
      * @return void
      */
-    public function exchangeDelete($exchange, $if_unused = false, $nowait = false)
+    public function queueUnbind($binding)
     {
+        $queue = $binding->queue;
+        $exchange = $binding->exchange;
+
         $channel = $this->getChannel();
-        $channel->exchange_delete($exchange, $if_unused, $nowait);
+        try {
+            $channel->queue_unbind(
+                is_string($queue) ? $queue : $queue->name,
+                is_string($exchange) ? $exchange : $exchange->name,
+                $binding->binding_key, $binding->arguments
+            );
+        } catch (AMQPProtocolChannelException $exception) {
+            throw new ChannelException($exception);
+        }
+
     }
 
     /**
      * @param string|Exchange $exchange
-     * @param string|Queue    $routingKey
+     * @param string|Queue    $routing_key
      * @param string|array    $body
      * @param array           $properties
      * @param bool            $mandatory
      *
      * @return void
      */
-    public function basicPublish($exchange, $routingKey, $body, $properties, $mandatory)
+    public function basicPublish($exchange, $routing_key, $body, $properties, $mandatory)
     {
         $channel = $this->getChannel();
         if (is_object($exchange)) {
             $this->exchangeDeclareInternal($channel, $exchange);
         }
 
-        if (is_object($routingKey)) {
-            $this->queueDeclareInternal($channel, $routingKey);
-            $routingKey = $routingKey->name;
+        if (is_object($routing_key)) {
+            $this->queueDeclareInternal($channel, $routing_key);
+            $routing_key = $routing_key->name;
         }
 
         $message = new AMQPMessage($body, $properties);
         $exchangeName = is_string($exchange) ? $exchange : $exchange->name;
-        $channel->basic_publish($message, $exchangeName, $routingKey, $mandatory);
+        $channel->basic_publish($message, $exchangeName, $routing_key, $mandatory);
     }
 
     /**
@@ -261,4 +309,5 @@ class Php extends Component implements EngineInterface
     {
         return new PhpMessage($message, $queue);
     }
+
 }
