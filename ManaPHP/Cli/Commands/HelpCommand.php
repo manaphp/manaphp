@@ -5,9 +5,13 @@ namespace ManaPHP\Cli\Commands;
 use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
 use ManaPHP\Helper\Str;
+use ManaPHP\Version;
 use ReflectionClass;
 use ReflectionMethod;
 
+/**
+ * @property-read \ManaPHP\Configuration\Configure $configure
+ */
 class HelpCommand extends Command
 {
     /**
@@ -28,6 +32,19 @@ class HelpCommand extends Command
                 }
             }
         }
+
+        $this->console->writeLn(
+            sprintf(
+                'ManaPHP %s (id: %s, env: %s, debug: %s)',
+                $this->console->colorize(Version::get(), Console::FC_GREEN | Console::AT_BOLD),
+                $this->console->colorize($this->configure->id, Console::FC_YELLOW | Console::AT_BOLD),
+                $this->console->colorize($this->configure->env, Console::FC_YELLOW | Console::AT_BOLD),
+                $this->console->colorize(
+                    $this->configure->debug ? 'true' : 'false', Console::FC_YELLOW | Console::AT_BOLD
+                )
+            )
+        );
+        $this->console->writeLn();
 
         $this->console->writeLn('manaphp commands:', Console::FC_GREEN | Console::AT_BOLD);
         ksort($builtin_commands);
