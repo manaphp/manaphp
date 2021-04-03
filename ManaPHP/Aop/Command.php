@@ -9,6 +9,9 @@ use ManaPHP\Cli\Console;
  */
 class Command extends \ManaPHP\Cli\Command
 {
+    /**
+     * check function call on $this
+     */
     public function selfAction()
     {
         $manaphp = $this->alias->get('@manaphp');

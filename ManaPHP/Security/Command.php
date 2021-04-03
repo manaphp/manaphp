@@ -8,6 +8,8 @@ namespace ManaPHP\Security;
 class Command extends \ManaPHP\Cli\Command
 {
     /**
+     * get the derived key
+     *
      * @param string $type
      */
     public function derivedAction($type)
