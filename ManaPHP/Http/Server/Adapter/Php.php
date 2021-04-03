@@ -54,7 +54,8 @@ class Php extends Fpm
             $index = @get_included_files()[0];
             $cmd = "php -S $this->host:$this->port -t $public_dir  $index";
             console_log('info', $cmd);
-            console_log('info', "http://$local_ip:$this->port" . ($this->router->getPrefix() ?: '/'));
+            $prefix = $this->router->getPrefix();
+            console_log('info', "http://127.0.0.1:$this->port" . ($prefix ?: '/'));
             shell_exec($cmd);
             exit(0);
         } else {
