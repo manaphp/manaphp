@@ -49,6 +49,10 @@ class HelpCommand extends Command
         $this->console->writeLn('manaphp commands:', Console::FC_GREEN | Console::AT_BOLD);
         ksort($builtin_commands);
         foreach ($builtin_commands as $name => $definition) {
+            if ($name === 'helpCommand') {
+                continue;
+            }
+
             $description = $this->getCommandDescription($definition);
             $plainName = ucfirst($name);
             $command = Str::snakelize(basename($plainName, 'Command'));
