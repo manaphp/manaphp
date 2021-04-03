@@ -20,7 +20,7 @@ class ServeCommand extends Command
      *
      * @return void
      */
-    public function defaultAction($ip = '0.0.0.0', $port = 0)
+    public function runAction($ip = '0.0.0.0', $port = 0)
     {
         $router_str = <<<'STR'
 <?php
@@ -65,10 +65,10 @@ STR;
         $router = 'builtin_server_router.php';
         LocalFS::filePut("@tmp/$router", strtr($router_str, [':ip' => $ip, ':port' => $port]));
 
-        echo "server listen on: $ip:$port", PHP_EOL;
+        console_log('info', "server listen on: $ip:$port");
 
         $prefix = $this->router->getPrefix();
-        echo "http://127.0.0.1:$port" . ($prefix ?: '/');
+        console_log('info', "http://127.0.0.1:$port" . ($prefix ?: '/'));
         if (DIRECTORY_SEPARATOR === '\\') {
             shell_exec("explorer.exe http://127.0.0.1:$port" . $prefix);
         }

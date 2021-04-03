@@ -12,7 +12,7 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    public function defaultAction()
+    public function dumpAction()
     {
         foreach ($this->dotenv->get() as $k => $v) {
             echo sprintf('%s=%s', $k, $v), PHP_EOL;
