@@ -216,7 +216,7 @@ class Handler extends Component implements HandlerInterface
         $this->request->completeShortNames($instance, $actionMethod);
         $r = $instance->invoke($action);
 
-        return is_int($r) ? $r : 0;
+        return is_int($r) ? $r : $this->console->error($r);
     }
 
     /**
