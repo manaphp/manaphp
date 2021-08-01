@@ -226,6 +226,7 @@ namespace PHPSTORM_META {
         'wspClient:push',
         'chatServer:come', 'chatServer:leave', 'chatServer:pushing', 'chatServer:pushed',
         'chatClient:push',
+        'cli:invoking', 'cli:invoked',
     );
     expectedArguments(\ManaPHP\Event\ManagerInterface::attachEvent(), 0, argumentsSet('eventManager'));
     expectedArguments(\ManaPHP\Component::attachEvent(), 0, argumentsSet('eventManager'));
