@@ -19,5 +19,5 @@ return [
         'wspClient' => ['endpoint' => 'admin'],
     ],
     'plugins'    => [],
-    'tracers'    => ['*'],
+    'tracers'    => env('APP_TRACERS', []),
 ];
