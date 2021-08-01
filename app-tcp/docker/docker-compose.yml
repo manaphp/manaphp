@@ -1,7 +1,7 @@
 version : "2"
 services :
   tcp :
-    image : manaphp/php74:4.1
+    image : manaphp/php74:210801
     volumes :
       - ../:/var/www/html
       - /data/volumes/${COMPOSE_PROJECT_NAME}/tcp/data:/var/www/html/data
