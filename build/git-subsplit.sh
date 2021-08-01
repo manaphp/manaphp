@@ -124,7 +124,7 @@ subsplit_require_work_dir()
 
 subsplit_init()
 {
-    ssh -o StrictHostKeyChecking=no -o LogLevel=ERROR manaqhq@github.com
+    ssh -o StrictHostKeyChecking=no -o LogLevel=ERROR manaphp@github.com
 
 	if [ -e "$WORK_DIR" ]
 	then
