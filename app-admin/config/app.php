@@ -33,5 +33,5 @@ return [
         //'logger',
         'adminActionLog',
     ],
-    'tracers'    => ['*'],
+    'tracers'    => env('APP_TRACERS', []),
 ];
