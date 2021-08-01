@@ -13,9 +13,4 @@ class IndexController extends Controller
     {
 
     }
-
-    public function timeAction()
-    {
-        return ['timestamp' => round(microtime(true), 3), 'human' => date('Y-m-d H:i:s')];
-    }
 }
