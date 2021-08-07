@@ -247,7 +247,7 @@ class Container implements ContainerInterface
     {
         $definition = $this->definitions[$name] ?? $name;
 
-        if ($parameters && !isset($parameters[0])) {
+        if ($parameters && !array_key_exists(0, $parameters)) {
             $parameters = [$parameters];
         }
 
@@ -371,7 +371,7 @@ class Container implements ContainerInterface
             $parameters = [];
         }
 
-        if ($parameters && !isset($parameters[0])) {
+        if ($parameters && !array_key_exists(0, $parameters)) {
             $parameters = [$parameters];
         }
 
