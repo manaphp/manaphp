@@ -274,7 +274,7 @@ abstract class Logger extends Component implements LoggerInterface
         }
 
         $replaces = [];
-        if ($app = $this->alias->get('@root')) {
+        if ($this->alias->has('@root')) {
             $replaces[dirname(realpath($this->alias->get('@root'))) . DIRECTORY_SEPARATOR] = '';
         }
 

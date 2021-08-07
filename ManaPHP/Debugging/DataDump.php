@@ -74,7 +74,7 @@ class DataDump extends Component implements DataDumpInterface
         }
 
         $replaces = [];
-        if ($app = $this->alias->get('@root')) {
+        if ($this->alias->has('@root')) {
             $replaces[dirname(realpath($this->alias->get('@root'))) . DIRECTORY_SEPARATOR] = '';
         }
 

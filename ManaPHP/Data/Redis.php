@@ -5,7 +5,6 @@ namespace ManaPHP\Data;
 use ManaPHP\Component;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NonCloneableException;
-use ManaPHP\Exception\NotSupportedException;
 
 /**
  * @property-read \ManaPHP\Pool\ManagerInterface $poolManager
