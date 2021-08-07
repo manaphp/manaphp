@@ -95,7 +95,13 @@ class Redis extends Component implements RedisInterface
 
     public function transientCall($instance, $method, $arguments)
     {
-        return $this->call($method, $arguments, $instance);
+        $this->fireEvent('redis:calling', compact('method', 'arguments'));
+
+        $return = $this->self->call($method, $arguments, $instance);
+
+        $this->fireEvent('redis:called', compact('method', 'arguments', 'return'));
+
+        return $return;
     }
 
     /**
