@@ -152,6 +152,20 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
+     * @param \ManaPHP\Pool\Transientable $owner
+     * @param float                       $timeout
+     * @param string                      $type
+     *
+     * @return mixed
+     */
+    public function transient($owner, $timeout = null, $type = 'default')
+    {
+        $instance = $this->pop($owner, $timeout, $type);
+
+        return new Transient($this, $owner, $instance, $type);
+    }
+
+    /**
      * @param object $owner
      * @param string $type
      *
