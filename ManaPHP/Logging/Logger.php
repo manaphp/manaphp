@@ -10,7 +10,7 @@ use ManaPHP\Helper\Reflection;
 use ManaPHP\Logging\Logger\Log;
 use ManaPHP\Logging\Logger\LogCategorizable;
 use Throwable;
-use \ArrayObject;
+use ArrayObject;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
 
