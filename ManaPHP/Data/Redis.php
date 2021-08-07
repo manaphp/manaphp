@@ -27,21 +27,33 @@ class Redis extends Component implements RedisInterface
     protected $pool_size = '4';
 
     /**
-     * @param string $uri
+     * @param array|string $options
      */
-    public function __construct($uri = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0')
+    public function __construct($options = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0')
     {
-        $this->uri = $uri;
+        if (is_string($options)) {
+            $this->uri = $options;
 
-        if (preg_match('#timeout=([\d.]+)#', $uri, $matches) === 1) {
-            $this->timeout = (float)$matches[1];
+            if (preg_match('#timeout=([\d.]+)#', $options, $matches) === 1) {
+                $this->timeout = (float)$matches[1];
+            }
+
+            if (preg_match('#pool_size=([\d/]+)#', $options, $matches)) {
+                $this->pool_size = $matches[1];
+            }
+        } else {
+            $this->uri = $options['uri'];
+
+            if (isset($options['timeout'])) {
+                $this->timeout = (float)$options['timeout'];
+            }
+
+            if (isset($options['pool_size'])) {
+                $this->pool_size = (int)$options['pool_size'];
+            }
         }
 
-        if (preg_match('#pool_size=([\d/]+)#', $uri, $matches)) {
-            $this->pool_size = $matches[1];
-        }
-
-        $this->poolManager->add($this, ['class' => 'ManaPHP\Data\Redis\Connection', $uri], $this->pool_size);
+        $this->poolManager->add($this, ['class' => 'ManaPHP\Data\Redis\Connection', $this->uri], $this->pool_size);
     }
 
     /**
