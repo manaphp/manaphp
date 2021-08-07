@@ -144,29 +144,26 @@ class Connection extends Component
 
             $redis = $this->getNew('Redis');
 
-            try {
-                if ($this->persistent) {
-                    if (!@$redis->pconnect($this->host, $this->port, $this->timeout, $this->db)) {
-                        throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->uri]);
-                    }
-                } elseif (!@$redis->connect($this->host, $this->port, $this->timeout)) {
+            if ($this->persistent) {
+                if (!@$redis->pconnect($this->host, $this->port, $this->timeout, $this->db)) {
                     throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->uri]);
                 }
+            } elseif (!@$redis->connect($this->host, $this->port, $this->timeout)) {
+                throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->uri]);
+            }
 
-                if ($this->auth && !$redis->auth($this->auth)) {
-                    throw new AuthException(['`:auth` auth is wrong.', 'auth' => $this->auth]);
-                }
+            if ($this->auth && !$redis->auth($this->auth)) {
+                throw new AuthException(['`:auth` auth is wrong.', 'auth' => $this->auth]);
+            }
 
-                if ($this->db !== 0 && !$redis->select($this->db)) {
-                    throw new RuntimeException(['select `:db` db failed', 'db' => $this->db]);
-                }
-
-                $this->fireEvent('redis:connected', compact('uri', 'redis'));
-            } catch (Throwable $exception) {
-                $this->fireEvent('redis:connected', compact('uri', 'exception'));
+            if ($this->db !== 0 && !$redis->select($this->db)) {
+                throw new RuntimeException(['select `:db` db failed', 'db' => $this->db]);
             }
 
             $redis->setOption(Redis::OPT_READ_TIMEOUT, -1);
+
+            $this->fireEvent('redis:connected', compact('uri', 'redis'));
+            
             $this->redis = $redis;
         }
 
