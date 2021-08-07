@@ -32,6 +32,11 @@ class Connection extends Component
     protected $timeout = 0.0;
 
     /**
+     * @var int
+     */
+    protected $read_timeout = -1;
+
+    /**
      * @var string
      */
     protected $auth;
@@ -107,6 +112,10 @@ class Connection extends Component
                 $this->timeout = (float)$query['timeout'];
             }
 
+            if (isset($query['read_timeout'])) {
+                $this->read_timeout = $query['read_timeout'];
+            }
+
             if (isset($query['persistent'])) {
                 $this->persistent = !MANAPHP_COROUTINE_ENABLED && $query['persistent'] === '1';
             }
@@ -160,10 +169,10 @@ class Connection extends Component
                 throw new RuntimeException(['select `:db` db failed', 'db' => $this->db]);
             }
 
-            $redis->setOption(Redis::OPT_READ_TIMEOUT, -1);
+            $redis->setOption(Redis::OPT_READ_TIMEOUT, $this->read_timeout);
 
             $this->fireEvent('redis:connected', compact('uri', 'redis'));
-            
+
             $this->redis = $redis;
         }
 
