@@ -46,11 +46,13 @@ class Redis extends Component implements RedisInterface
     }
 
     /**
+     * @param string $type
+     *
      * @return static
      */
-    public function getTransientWrapper()
+    public function getTransientWrapper($type = 'default')
     {
-        return $this->poolManager->transient($this, $this->timeout);
+        return $this->poolManager->transient($this, $this->timeout, $type);
     }
 
     public function __clone()

@@ -5,9 +5,11 @@ namespace ManaPHP\Pool;
 interface Transientable
 {
     /**
+     * @param string $type
+     *
      * @return static
      */
-    public function getTransientWrapper();
+    public function getTransientWrapper($type = 'default');
 
     /**
      * @param mixed  $instance
