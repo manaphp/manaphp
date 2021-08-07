@@ -115,20 +115,17 @@ class Mssql extends Connection
     /**
      * @param string $table
      *
-     * @return $this
      * @throws \ManaPHP\Data\Db\Exception
      */
     public function truncate($table)
     {
         $this->self->execute('TRUNCATE TABLE ' . $this->self->escapeIdentifier($table));
-
-        return $this;
     }
 
     /**
      * @param string $table
      *
-     * @return void|static
+     * @return void
      */
     public function drop($table)
     {
@@ -138,7 +135,7 @@ class Mssql extends Connection
     /**
      * @param null $schema
      *
-     * @return array|void
+     * @return array
      */
     public function getTables($schema = null)
     {
@@ -149,7 +146,7 @@ class Mssql extends Connection
      * @param string $table
      * @param null   $schema
      *
-     * @return bool|void
+     * @return bool
      */
     public function tableExists($table, $schema = null)
     {

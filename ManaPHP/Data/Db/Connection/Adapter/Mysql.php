@@ -141,27 +141,21 @@ class Mysql extends Connection
     /**
      * @param string $table
      *
-     * @return static
      * @throws \ManaPHP\Data\Db\Exception
      */
     public function truncate($table)
     {
         $this->self->execute('TRUNCATE' . ' TABLE ' . $this->self->escapeIdentifier($table));
-
-        return $this;
     }
 
     /**
      * @param string $table
      *
-     * @return static
      * @throws \ManaPHP\Data\Db\Exception
      */
     public function drop($table)
     {
         $this->self->execute('DROP' . ' TABLE IF EXISTS ' . $this->self->escapeIdentifier($table));
-
-        return $this;
     }
 
     /**

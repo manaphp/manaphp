@@ -56,7 +56,7 @@ interface ConnectionInterface
     /**
      * @param string $table
      *
-     * @return static
+     * @return void
      * @throws \ManaPHP\Data\Db\Exception
      */
     public function truncate($table);
@@ -64,7 +64,6 @@ interface ConnectionInterface
     /**
      * @param string $table
      *
-     * @return static
      * @throws \ManaPHP\Data\Db\Exception
      */
     public function drop($table);

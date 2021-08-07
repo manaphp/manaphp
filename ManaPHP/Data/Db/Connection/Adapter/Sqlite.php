@@ -60,28 +60,22 @@ class Sqlite extends Connection
     /**
      * @param string $table
      *
-     * @return static
      * @throws \ManaPHP\Data\Db\Exception
      */
     public function truncate($table)
     {
         $this->self->execute('DELETE' . ' FROM ' . $this->self->escapeIdentifier($table));
         $this->self->execute('DELETE' . ' FROM sqlite_sequence WHERE name=:name', ['name' => $table]);
-
-        return $this;
     }
 
     /**
      * @param string $table
      *
-     * @return static
      * @throws \ManaPHP\Data\Db\Exception
      */
     public function drop($table)
     {
         $this->self->execute('DROP' . ' TABLE IF EXISTS ' . $this->self->escapeIdentifier($table));
-
-        return $this;
     }
 
     /**
