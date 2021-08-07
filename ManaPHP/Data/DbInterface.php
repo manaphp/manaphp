@@ -2,9 +2,10 @@
 
 namespace ManaPHP\Data;
 
+use ManaPHP\Pool\Transientable;
 use PDO;
 
-interface DbInterface
+interface DbInterface extends Transientable
 {
     /**
      * @return string

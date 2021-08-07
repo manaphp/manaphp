@@ -943,4 +943,25 @@ class Db extends Component implements DbInterface
     {
         return $this->self->getNew('ManaPHP\Data\Db\Query', [$this])->from($table, $alias);
     }
+
+    public function getTransientWrapper($type = 'default')
+    {
+        return $this->poolManager->transient($this, $this->timeout, $type);
+    }
+
+    public function transientCall($instance, $method, $arguments)
+    {
+        $context = $this->context;
+
+        if ($context->connection !== null) {
+            throw new MisuseException('');
+        }
+
+        $context->connection = $instance;
+        try {
+            return $this->{$method}(...$arguments);
+        } finally {
+            $context->connection = null;
+        }
+    }
 }
