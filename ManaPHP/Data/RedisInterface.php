@@ -2,23 +2,16 @@
 
 namespace ManaPHP\Data;
 
-interface RedisInterface
+use ManaPHP\Pool\Transientable;
+
+interface RedisInterface extends Transientable
 {
     /**
-     * @param string $method
-     * @param array  $arguments
+     * @param string                         $method
+     * @param array                          $arguments
+     * @param \ManaPHP\Data\Redis\Connection $connection
      *
      * @return mixed
      */
-    public function call($method, $arguments);
-
-    /**
-     * @return \Redis
-     */
-    public function getMaster();
-
-    /**
-     * @return \Redis
-     */
-    public function getSlave();
+    public function call($method, $arguments, $connection = null);
 }
