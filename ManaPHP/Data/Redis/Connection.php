@@ -17,6 +17,11 @@ class Connection extends Component
     protected $uri;
 
     /**
+     * @var bool
+     */
+    protected $cluster = false;
+
+    /**
      * @var string
      */
     protected $host;
@@ -34,7 +39,7 @@ class Connection extends Component
     /**
      * @var int
      */
-    protected $read_timeout = -1;
+    protected $read_timeout = 60;
 
     /**
      * @var string
@@ -82,7 +87,13 @@ class Connection extends Component
 
         $parts = parse_url($uri);
 
-        if ($parts['scheme'] !== 'redis') {
+        if ($parts['scheme'] === 'redis') {
+            $this->host = $parts['host'] ?? '127.0.0.1';
+            $this->port = isset($parts['port']) ? (int)$parts['port'] : 6379;
+        } elseif ($parts['scheme'] === 'cluster') {
+            $this->cluster = true;
+            $this->host = $parts['host'] . ':' . ($parts['port'] ?? '6379');
+        } else {
             throw new DsnFormatException(['`%s` is invalid, `%s` scheme is not recognized', $uri, $parts['scheme']]);
         }
 
@@ -151,25 +162,36 @@ class Connection extends Component
 
             $this->fireEvent('redis:connecting', compact('uri'));
 
-            $redis = $this->getNew('Redis');
+            if ($this->cluster) {
+                $seeds = [];
+                foreach (explode(',', $this->host) as $host) {
+                    $seeds[] = str_contains($host, ':') ? $host : "$host:6379";
+                }
+                $redis = $this->getNew(
+                    'RedisCluster',
+                    [null, $seeds, $this->timeout, $this->read_timeout, $this->persistent, $this->auth]
+                );
+            } else {
+                $redis = $this->getNew('Redis');
 
-            if ($this->persistent) {
-                if (!@$redis->pconnect($this->host, $this->port, $this->timeout, $this->db)) {
+                if ($this->persistent) {
+                    if (!@$redis->pconnect($this->host, $this->port, $this->timeout, $this->db)) {
+                        throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->uri]);
+                    }
+                } elseif (!@$redis->connect($this->host, $this->port, $this->timeout)) {
                     throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->uri]);
                 }
-            } elseif (!@$redis->connect($this->host, $this->port, $this->timeout)) {
-                throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->uri]);
-            }
 
-            if ($this->auth && !$redis->auth($this->auth)) {
-                throw new AuthException(['`:auth` auth is wrong.', 'auth' => $this->auth]);
-            }
+                if ($this->auth && !$redis->auth($this->auth)) {
+                    throw new AuthException(['`:auth` auth is wrong.', 'auth' => $this->auth]);
+                }
 
-            if ($this->db !== 0 && !$redis->select($this->db)) {
-                throw new RuntimeException(['select `:db` db failed', 'db' => $this->db]);
-            }
+                if ($this->db !== 0 && !$redis->select($this->db)) {
+                    throw new RuntimeException(['select `:db` db failed', 'db' => $this->db]);
+                }
 
-            $redis->setOption(Redis::OPT_READ_TIMEOUT, $this->read_timeout);
+                $redis->setOption(Redis::OPT_READ_TIMEOUT, $this->read_timeout);
+            }
 
             $this->fireEvent('redis:connected', compact('uri', 'redis'));
 
