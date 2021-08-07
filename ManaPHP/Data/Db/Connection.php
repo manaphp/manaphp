@@ -158,7 +158,7 @@ abstract class Connection extends Component implements ConnectionInterface
             if (count($this->prepared) > 8) {
                 array_shift($this->prepared);
             }
-            return $this->prepared[$sql] = @$this->self->getPdo()->prepare($sql);
+            return $this->prepared[$sql] = @$this->getPdo()->prepare($sql);
         }
         return $this->prepared[$sql];
     }
@@ -171,7 +171,7 @@ abstract class Connection extends Component implements ConnectionInterface
      */
     protected function executeInternal($sql, $bind)
     {
-        $statement = $this->self->getPrepared($sql);
+        $statement = $this->getPrepared($sql);
 
         $tr = [];
         foreach ($bind as $parameter => $value) {
@@ -215,27 +215,27 @@ abstract class Connection extends Component implements ConnectionInterface
             throw new ReadonlyException(['`:uri` is readonly: => :sql ', 'uri' => $this->uri, 'sql' => $sql]);
         }
 
-        $sql = $this->self->replaceQuoteCharacters($sql);
+        $sql = $this->replaceQuoteCharacters($sql);
 
         if ($this->in_transaction) {
             try {
-                $r = $bind ? $this->self->executeInternal($sql, $bind)->rowCount() : @$this->self->getPdo()->exec($sql);
-                return $has_insert_id ? $this->self->getPdo()->lastInsertId() : $r;
+                $r = $bind ? $this->executeInternal($sql, $bind)->rowCount() : @$this->getPdo()->exec($sql);
+                return $has_insert_id ? $this->getPdo()->lastInsertId() : $r;
             } catch (PDOException $exception) {
             }
         } else {
             try {
-                $r = $bind ? $this->self->executeInternal($sql, $bind)->rowCount() : @$this->self->getPdo()->exec($sql);
-                return $has_insert_id ? $this->self->getPdo()->lastInsertId() : $r;
+                $r = $bind ? $this->executeInternal($sql, $bind)->rowCount() : @$this->getPdo()->exec($sql);
+                return $has_insert_id ? $this->getPdo()->lastInsertId() : $r;
             } catch (PDOException $exception) {
                 try {
-                    $this->self->close();
+                    $this->close();
                     $r = $bind
-                        ? $this->self->executeInternal($sql, $bind)->rowCount()
-                        : @$this->self->getPdo()->exec(
+                        ? $this->executeInternal($sql, $bind)->rowCount()
+                        : @$this->getPdo()->exec(
                             $sql
                         );
-                    return $has_insert_id ? $this->self->getPdo()->lastInsertId() : $r;
+                    return $has_insert_id ? $this->getPdo()->lastInsertId() : $r;
                 } catch (PDOException $exception) {
                 }
             }
@@ -254,24 +254,24 @@ abstract class Connection extends Component implements ConnectionInterface
      */
     public function query($sql, $bind = [], $mode = PDO::FETCH_ASSOC)
     {
-        $sql = $this->self->replaceQuoteCharacters($sql);
+        $sql = $this->replaceQuoteCharacters($sql);
 
         if ($this->in_transaction) {
             try {
-                $statement = $bind ? $this->self->executeInternal($sql, $bind) : @$this->self->getPdo()->query($sql);
+                $statement = $bind ? $this->executeInternal($sql, $bind) : @$this->getPdo()->query($sql);
                 return $statement->fetchAll($mode);
             } catch (PDOException $exception) {
             }
         } else {
             try {
-                $statement = $bind ? $this->self->executeInternal($sql, $bind) : @$this->self->getPdo()->query($sql);
+                $statement = $bind ? $this->executeInternal($sql, $bind) : @$this->getPdo()->query($sql);
                 return $statement->fetchAll($mode);
             } catch (PDOException $exception) {
                 try {
-                    $this->self->close();
+                    $this->close();
                     $statement = $bind
-                        ? $this->self->executeInternal($sql, $bind)
-                        : @$this->self->getPdo()->query(
+                        ? $this->executeInternal($sql, $bind)
+                        : @$this->getPdo()->query(
                             $sql
                         );
                     return $statement->fetchAll($mode);
@@ -321,11 +321,11 @@ abstract class Connection extends Component implements ConnectionInterface
         }
 
         try {
-            return $this->in_transaction = $this->self->getPdo()->beginTransaction();
+            return $this->in_transaction = $this->getPdo()->beginTransaction();
         } catch (PDOException $exception) {
             try {
-                $this->self->close();
-                return $this->in_transaction = $this->self->getPdo()->beginTransaction();
+                $this->close();
+                return $this->in_transaction = $this->getPdo()->beginTransaction();
             } catch (PDOException $exception) {
                 throw new DbException($exception);
             }
