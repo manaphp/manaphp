@@ -310,6 +310,70 @@ CREATE TABLE `test` (
 
 /*Data for the table `test` */
 
+DROP TABLE IF EXISTS `user`;
+
+CREATE TABLE `user` (
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_name` varchar(32) CHARACTER SET ascii NOT NULL,
+  `status` tinyint(4) NOT NULL,
+  `email` varchar(64) CHARACTER SET ascii NOT NULL,
+  `salt` char(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  `password` char(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  `login_ip` char(15) CHARACTER SET ascii COLLATE ascii_bin NOT NULL DEFAULT '""',
+  `login_time` int(11) NOT NULL DEFAULT '0',
+  `session_id` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '""',
+  `creator_name` varchar(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  `updator_name` varchar(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  `created_time` int(11) NOT NULL,
+  `updated_time` int(11) NOT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `user_name` (`user_name`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+/*Data for the table `user` */
+
+insert  into `user`(`user_id`,`user_name`,`status`,`email`,`salt`,`password`,`login_ip`,`login_time`,`session_id`,`creator_name`,`updator_name`,`created_time`,`updated_time`) values 
+(1,'admin',1,'admin@qq.com','30264ae280d26ad5','7410ae35881a78933e6bfb1e544e01fa','127.0.0.1',0,'an60cqi8bd1razpmo3ftgtopzqzahygu','admin','admin',0,0),
+
+/*Table structure for table `user_action_log` */
+
+DROP TABLE IF EXISTS `user_action_log`;
+
+CREATE TABLE `user_action_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `user_name` varchar(32) CHARACTER SET ascii NOT NULL,
+  `method` varchar(15) CHARACTER SET ascii NOT NULL,
+  `path` varchar(64) CHARACTER SET ascii NOT NULL,
+  `tag` int(11) NOT NULL DEFAULT '0',
+  `url` varchar(128) NOT NULL,
+  `data` text NOT NULL,
+  `client_ip` char(15) CHARACTER SET ascii NOT NULL,
+  `client_udid` char(16) CHARACTER SET ascii NOT NULL DEFAULT '',
+  `created_time` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `path` (`path`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+/*Table structure for table `user_login_log` */
+
+DROP TABLE IF EXISTS `user_login_log`;
+
+CREATE TABLE `user_login_log` (
+  `login_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `user_name` char(16) CHARACTER SET ascii NOT NULL,
+  `client_ip` char(15) CHARACTER SET ascii NOT NULL,
+  `client_udid` char(16) CHARACTER SET ascii NOT NULL,
+  `user_agent` char(255) CHARACTER SET ascii NOT NULL,
+  `created_time` int(11) NOT NULL,
+  PRIMARY KEY (`login_id`),
+  KEY `admin_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
