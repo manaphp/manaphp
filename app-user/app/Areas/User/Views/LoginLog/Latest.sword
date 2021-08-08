@@ -1,0 +1,27 @@
+<request-form>
+    <span>登录时间: </span>
+    <request-date prop="created_time"></request-date>
+</request-form>
+
+<result-table>
+    <result-index></result-index>
+    <result-id prop="login_id"></result-id>
+    <result-ip prop="client_ip"></result-ip>
+    <result-column prop="client_udid" width="150" show-overflow-tooltip></result-column>
+    <result-column prop="user_agent" show-overflow-tooltip></result-column>
+    <result-timestamp prop="created_time"></result-timestamp>
+</result-table>
+@section('script')
+    <script>
+        vm = new App({
+            data: {
+                request: {
+                    size: 20,
+                    page: 1,
+                    created_time: []
+                },
+                response: {}
+            }
+        });
+    </script>
+@append

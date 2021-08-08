@@ -1,0 +1,174 @@
+[v-cloak] {
+    display: none;
+}
+
+.right {
+    float: right;
+}
+
+.left {
+    float: left;
+}
+
+.clearfix {
+    *zoom: 1;
+}
+
+.clearfix:before,
+.clearfix:after {
+    display: table;
+    line-height: 0;
+    content: "";
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+.el-pagination {
+    text-align: center;
+}
+
+.el-aside {
+    width: 210px !important;
+}
+
+.el-submenu .el-menu-item {
+    height: 30px;
+    line-height: 30px;
+}
+
+.el-menu-item, .el-submenu__title {
+    height: 35px;
+    line-height: 35px;
+}
+
+.el-submenu__title {
+    padding: 0 10px !important;
+}
+
+.el-submenu .el-menu-item {
+    padding: 0 25px 0 20px !important;
+}
+
+.el-table--small td, .el-table--small th {
+    padding: 2px 0;
+}
+
+.el-dialog {
+    width: 600px;
+}
+
+.el-dialog .el-form-item__label {
+    width: 30%;
+    font-weight: 700;
+}
+
+.el-dialog .el-input {
+    width: 70%;
+}
+
+.el-dialog .el-select {
+    width: 60%
+}
+
+/*[v-cloak] {*/
+/*display: none;*/
+/*}*/
+
+.product-name {
+    margin: 8px 30px;
+
+}
+
+.product-name span {
+    font-size: 1.1em;
+}
+
+.el-aside {
+    min-height: 800px;
+}
+
+.el-header {
+    height: 20px !important;
+}
+
+.el-link.operate {
+    margin-left: 10px;
+}
+
+.search-box .el-date-editor {
+    width: 220px;
+}
+
+.el-dialog .el-form-item {
+    margin-bottom: 3px;
+}
+
+.el-message-box.error-response {
+    width: 50%;
+}
+
+.el-menu-item.is-active {
+    background: lightgrey !important;
+    padding: 0 20px;
+}
+
+.el-backtop {
+    opacity: .6;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, .3);
+    background-color: rgb(130, 87, 213);
+}
+
+.el-backtop-icon {
+    transform: scale(1.1, 1.1);
+    background-color: rgb(130, 87, 213);
+    color: #ffffff;
+}
+
+.el-backtop:hover {
+    opacity: .5;
+    background-color: rgb(130, 87, 213);
+}
+
+.el-dialog .el-form-item {
+    margin-bottom: 30px;
+}
+
+.el-dialog .el-form-item--mini {
+    margin-bottom: 0;
+}
+
+.el-dialog .el-input {
+    width: 260px;
+}
+
+.el-dialog__body {
+    padding: 10px;
+}
+
+.el-form-item--small .el-form-item__error {
+    padding-top: 10px;
+    margin-left: 175px;
+}
+
+.el-menu-item .el-link {
+    display: inline-block;
+    min-width: 200px;
+}
+
+.el-menu-item .el-link.is-underline:hover:after {
+    border-bottom: none !important;
+}
+
+#server-time {
+    font-size: 0.8em;
+}
+
+.my-menu-tabs .el-tabs__item {
+    padding: 0 15px;
+}
+
+.el-main {
+    padding-top: 1px;
+}

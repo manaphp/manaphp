@@ -10,6 +10,10 @@ class Router extends \ManaPHP\Http\Router
     public function __construct()
     {
         parent::__construct();
+        $this->setAreas();
+
+        $this->add('/user/login', '/user/session/login');
+        $this->add('/admin/login', '/admin/session/login');
         $this->add('/about', 'Index::about');
         $this->addGet('/about1', 'Index::about');
         $this->addGet('/about2', [IndexController::class, 'about']);

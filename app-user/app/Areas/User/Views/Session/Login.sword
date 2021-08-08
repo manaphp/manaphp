@@ -1,0 +1,158 @@
+@layout(false)
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>ManaPHP User</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.7.2/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <style>
+        .login-box {
+            margin: 10% auto;
+            width: 270px;
+        }
+
+        .login-box > div {
+            margin-bottom: 10px;
+        }
+
+        .background {
+            position: absolute;
+            display: block;
+            top: 0;
+            left: 0;
+            z-index: -1000;
+        }
+    </style>
+</head>
+<body id="particles-js">
+<script>var BASE_URL = '{{base_url()}}';</script>
+<canvas class="background"></canvas>
+<div id="app" class="login-box">
+    <h1 align="center">登录</h1>
+    <el-input v-model.trim="request.user_name" placeholder="用户名" @keyup.enter.native="login" ref="user_name">
+        <template slot="prepend">账号</template>
+    </el-input>
+    <el-input v-model.trim="request.password" type="password" placeholder="密码" @keyup.enter.native="login"
+              ref="password">
+        <template slot="prepend">密码</template>
+    </el-input>
+    <el-row>
+        <el-col :span="16">
+            <el-input v-model.trim="request.code" placeholder="验证码" @keyup.enter.native="login">
+                <template slot="prepend">验证码</template>
+            </el-input>
+        </el-col>
+        <el-col :offset="1" :span="7">
+            <img :src="BASE_URL+'/user/session/captcha?t='+captcha_timestamp"
+                 @click="request.code=''; captcha_timestamp=Date.now()">
+        </el-col>
+    </el-row>
+    <el-row>
+        <el-col :span="16">
+            <el-checkbox v-model="request.remember_me">记住我</el-checkbox>
+        </el-col>
+    </el-row>
+    <el-button @click="login" style="width:100%" type="primary"
+               :disabled="request.user_name===''||request.password===''">登录
+    </el-button>
+    <div>
+        <a href="/user/password/forget">
+            <span style="font-size: 0.8em; margin-left: 218px; color: gray;">找回密码</span>
+        </a>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/element-ui@2.7.2/lib/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@0.18.0/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qs@6.7.0/dist/qs.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/particlesjs@2.2.3/dist/particles.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-cookies@1.7.0/vue-cookies.min.js"></script>
+<script>
+    Vue.prototype.$axios = axios;
+
+    axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            request: {
+                user_name: '',
+                password: '',
+                code: '',
+                remember_me: true
+            },
+            captcha_timestamp: Date.now()
+        },
+        mounted() {
+            this.$cookies.config('30d', document.location.pathname);
+
+            this.request.remember_me = this.$cookies.get('remember_me') !== '0';
+            this.request.user_name = this.$cookies.get('user_name');
+
+            if (this.request.user_name) {
+                this.$refs.password.focus();
+            } else {
+                this.$refs.user_name.focus();
+            }
+        },
+        methods: {
+            login() {
+                if (this.request.user_name === '' || this.request.password === '') {
+                    return;
+                }
+
+                this.$axios.post(document.location.href, Qs.stringify(this.request)).then((res) => {
+                    if (res.data.code === 0) {
+                        if (this.request.remember_me) {
+                            this.$cookies.set('user_name', this.request.user_name);
+                            this.$cookies.remove('remember_me');
+                        } else {
+                            this.$cookies.remove('user_name');
+                            this.$cookies.set('remember_me', '0');
+                        }
+
+                        window.location.href = "{{$redirect}}";
+                    } else {
+                        this.request.code = '';
+                        this.captcha_timestamp = Date.now();
+                        this.$alert(res.data.message ? res.data.message : res.data, '失败');
+                    }
+                }).catch((error) => {
+                    this.captcha_timestamp = Date.now();
+
+                    if (error.response.data.message) {
+                        this.$alert(error.response.data.message, '失败');
+                    } else {
+                        this.$alert(error.response.statusText, '失败');
+                    }
+                });
+            },
+        }
+    });
+    window.onload = function () {
+        Particles.init({
+            selector: '.background',
+            maxParticles: 150,
+            sizeVariations: 5,
+            speed: 0.5,
+            color: "#86C166",
+            connectParticles: false,
+        });
+    };
+
+    (function () {
+        let len = sessionStorage.length;
+        for (let i = 0; i < len; i++) {
+            let key = sessionStorage.key(i);
+            if (key && key.startsWith('axios.cache.') && key.match(/\bcache=2\b/)) {
+                sessionStorage.removeItem(key);
+            }
+        }
+    })();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+@layout(false)
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>ManaPHP User</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.7.2/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <style>
+        .login-box {
+            margin: 10% auto;
+            width: 270px;
+        }
+
+        .login-box > div {
+            margin-bottom: 10px;
+        }
+
+        input[readonly="readonly"] {
+            background-color: lightgray;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+<script>var BASE_URL = '{{base_url()}}';</script>
+<div id="app" class="login-box">
+    <h1 align="center">重置密码</h1>
+    @if($expired)
+        <h3>TOKEN已过期
+            <el-link href="/user/password/forget" size="mini">再次重置密码</el-link>
+        </h3>
+    @else
+        <el-input value="{{$user_name}}" placeholder="用户名" readonly="true">
+            <template slot="prepend">账号</template>
+        </el-input>
+        <el-input v-model.trim="request.password" placeholder="密码" show-password>
+            <template slot="prepend">密码</template>
+        </el-input>
+        <el-button @click="reset_pwd" style="width:100%" type="primary">重置</el-button>
+    @endif
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/element-ui@2.8.2/lib/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@0.18.0/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qs@6.7.0/dist/qs.js"></script>
+<script>
+    Vue.prototype.$axios = axios;
+
+    axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+    vm = new Vue({
+        el: '#app',
+        data: {
+            request: {
+                password: '',
+                token: '{{$token}}',
+            },
+        },
+        methods: {
+            reset_pwd() {
+                this.$axios.post(document.location.href, Qs.stringify(this.request)).then((res) => {
+                    if (res.data.code === 0) {
+                        window.location.href = "/";
+                    } else {
+                        this.$alert(res.data.message);
+                    }
+                }).catch((error) => {
+                    if (error.response.data.message) {
+                        this.$alert(error.response.data.message, '失败');
+                    } else {
+                        this.$alert(error.response.statusText, '失败');
+                    }
+                });
+            },
+        }
+    });
+</script>
+</body>
+</html>

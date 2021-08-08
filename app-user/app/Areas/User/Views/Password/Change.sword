@@ -1,0 +1,66 @@
+<el-row class="change-password-box">
+    <el-form :model="edit" size="small">
+        <h1 align="center">修改密码</h1>
+        <el-input v-model.trim="edit.user_name" disabled>
+            <template slot="prepend">账 &nbsp;&nbsp;号</template>
+        </el-input>
+        <el-input v-model.trim="edit.old_password" type="password" placeholder="旧密码" autofocus>
+            <template slot="prepend">旧密码</template>
+        </el-input>
+        <el-input v-model.trim="edit.new_password" type="password" placeholder="新密码">
+            <template slot="prepend">新密码</template>
+        </el-input>
+        <el-input v-model.trim="edit.new_password_confirm" type="password" placeholder="确认新密码">
+            <template slot="prepend">新密码</template>
+        </el-input>
+        <el-form-item>
+            <el-button @click="change" type="primary" class="change-password"
+                       :disabled="!edit.old_password||!edit.new_password||!edit.new_password_confirm">确认
+            </el-button>
+        </el-form-item>
+    </el-form>
+</el-row>
+@section('css')
+    <style type="text/css">
+        .el-form {
+            margin: 10% auto;
+            width: 300px;
+        }
+
+        .change-password {
+            display: block;
+            margin: 10px auto;
+        }
+    </style>
+@append
+@section('script')
+    <script>
+        vm = new App({
+            data: {
+                edit: {
+                    user_name: "<?=container('identity')->getName()?>",
+                    old_password: '',
+                    new_password: '',
+                    new_password_confirm: '',
+                },
+            },
+            methods: {
+                change() {
+                    this.$axios.post(document.location.href, Qs.stringify(this.edit)).then((res) => {
+                        if (res.data.code === 0) {
+                            window.location.href = BASE_URL;
+                        } else {
+                            this.$alert(res.data.message);
+                        }
+                    }).catch((error) => {
+                        if (error.response.data.message) {
+                            this.$alert(error.response.data.message, '失败');
+                        } else {
+                            this.$alert(error.response.statusText, '失败');
+                        }
+                    });
+                },
+            }
+        });
+    </script>
+@append
