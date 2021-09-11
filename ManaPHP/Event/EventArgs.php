@@ -30,6 +30,6 @@ class EventArgs
     {
         $this->event = $event;
         $this->source = $source;
-        $this->data = is_array($data) ? new ArrayObject($data) : $data;
+        $this->data = $data;
     }
 }
