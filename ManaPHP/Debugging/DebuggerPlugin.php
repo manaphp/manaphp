@@ -285,6 +285,8 @@ class DebuggerPlugin extends Plugin
             $event['data'] = gettype($data);
         } elseif ($data instanceof ArrayObject) {
             $event['data'] = array_keys($data->getArrayCopy());
+        } elseif (is_array($data)) {
+            $event['data'] = $data;
         } elseif (is_object($data)) {
             $event['data'] = Reflection::getClass($data);
         } else {
@@ -378,17 +380,16 @@ class DebuggerPlugin extends Plugin
     {
         $context = $this->context;
 
-        $data = $eventArgs->data;
-
-        $vars = $data['vars'];
+        $vars = $eventArgs->data['vars'];
         foreach ((array)$vars as $k => $v) {
             if (Reflection::isInstanceOf($v, Component::class)) {
                 unset($vars[$k]);
             }
         }
 
-        $base_name = basename(dirname($data['file'])) . '/' . basename($data['file']);
-        $context->view[] = ['file' => $data['file'], 'vars' => $vars, 'base_name' => $base_name];
+        $file = $eventArgs->data['file'];
+        $base_name = basename(dirname($file)) . '/' . basename($file);
+        $context->view[] = ['file' => $file, 'vars' => $vars, 'base_name' => $base_name];
     }
 
     /**

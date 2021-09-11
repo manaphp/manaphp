@@ -109,17 +109,16 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onCommanded(EventArgs $eventArgs)
     {
-        $data = $eventArgs->data;
+        $command_name = key($eventArgs->data['command']);
 
-        $command_name = key($data['command']);
         if (str_contains(
             'ping,aggregate,count,distinct,group,mapReduce,geoNear,geoSearch,find,' .
             'authenticate,listDatabases,listCollections,listIndexes', $command_name
         )
         ) {
-            $this->debug($data, 'mongodb.command.' . $command_name);
+            $this->debug($eventArgs->data, 'mongodb.command.' . $command_name);
         } else {
-            $this->info($data, 'mongodb.command.' . $command_name);
+            $this->info($eventArgs->data, 'mongodb.command.' . $command_name);
         }
     }
 

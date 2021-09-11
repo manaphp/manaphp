@@ -110,11 +110,8 @@ class FiddlerPlugin extends Plugin
      */
     public function onLoggerLog(EventArgs $eventArgs)
     {
-        /** @var \ManaPHP\Logging\Logger\Log $log */
-        $log = $eventArgs->data['log'];
-
         if ($this->self->watched()) {
-            $this->self->publish('logger', (array)$log);
+            $this->self->publish('logger', (array)$eventArgs->data['log']);
         }
     }
 

@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Data\Db;
 
+use ArrayObject;
 use ManaPHP\Event\EventArgs;
 
 class Tracer extends \ManaPHP\Tracing\Tracer
@@ -41,9 +42,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onExecuted(EventArgs $eventArgs)
     {
-        $data = $eventArgs->data;
-
-        $this->info($data, 'db.' . $data['type']);
+        $this->info($eventArgs->data, 'db.' . $eventArgs->data['type']);
     }
 
     /**
@@ -53,7 +52,7 @@ class Tracer extends \ManaPHP\Tracing\Tracer
      */
     public function onQueried(EventArgs $eventArgs)
     {
-        $data = $eventArgs->data;
+        $data = $eventArgs->data instanceof ArrayObject ? $eventArgs->data->getArrayCopy() : $eventArgs->data;
 
         if (!$this->verbose) {
             unset($data['result']);
