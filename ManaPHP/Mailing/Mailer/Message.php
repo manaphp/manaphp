@@ -145,7 +145,7 @@ class Message implements JsonSerializable
      */
     public function setFrom($from)
     {
-        $this->from = is_string($from) ? [$from] : $from;
+        $this->from = is_string($from) ? explode(',', $from) : $from;
 
         return $this;
     }
@@ -165,7 +165,7 @@ class Message implements JsonSerializable
      */
     public function setTo($to)
     {
-        $this->to = is_string($to) ? [$to] : $to;
+        $this->to = is_string($to) ? explode(',', $to) : $to;
 
         return $this;
     }
@@ -185,7 +185,7 @@ class Message implements JsonSerializable
      */
     public function setReplyTo($replyTo)
     {
-        $this->replay_to = is_string($replyTo) ? [$replyTo] : $replyTo;
+        $this->replay_to = is_string($replyTo) ? explode(',', $replyTo) : $replyTo;
 
         return $this;
     }
@@ -205,7 +205,7 @@ class Message implements JsonSerializable
      */
     public function setCc($cc)
     {
-        $this->cc = is_string($cc) ? [$cc] : $cc;
+        $this->cc = is_string($cc) ? explode(',', $cc) : $cc;
 
         return $this;
     }
@@ -225,7 +225,7 @@ class Message implements JsonSerializable
      */
     public function setBcc($bcc)
     {
-        $this->bcc = is_string($bcc) ? [$bcc] : $bcc;
+        $this->bcc = is_string($bcc) ? explode(',', $bcc) : $bcc;
 
         return $this;
     }
