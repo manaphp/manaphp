@@ -162,7 +162,10 @@ class Smtp extends Mailer
     {
         $this->self->writeLine($str);
 
-        $response = $this->self->readLine();
+        do {
+            $response = $this->self->readLine();
+        } while ($response[3] !== ' ');
+
         $parts = explode(' ', $response, 2);
         if (count($parts) === 2) {
             list($code, $message) = $parts;
