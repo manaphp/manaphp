@@ -93,6 +93,7 @@ class Smtp extends Mailer
             parse_str($parts['query'], $query);
 
             if (isset($query['user'])) {
+                $this->from = $query['user'];
                 $this->username = $query['user'];
             }
 
