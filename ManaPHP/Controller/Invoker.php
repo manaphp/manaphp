@@ -48,9 +48,9 @@ class Invoker extends Component implements InvokerInterface
             }
 
             if ($type !== null && str_contains($type, '\\')) {
-                $value = $container->has($name) ? $container->getShared($name) : $container->getShared($type);
+                $value = $container->has($name) ? $container->get($name) : $container->get($type);
             } elseif (str_ends_with($name, 'Service')) {
-                $value = $container->getShared($name);
+                $value = $container->get($name);
             } elseif ($this->request->has($name)) {
                 $value = $this->request->get($name, $type === 'array' ? [] : '');
             } elseif ($parameter->isDefaultValueAvailable()) {

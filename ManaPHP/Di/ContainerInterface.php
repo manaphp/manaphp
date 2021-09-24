@@ -69,7 +69,7 @@ interface ContainerInterface
      *
      * @return mixed
      */
-    public function getShared($name);
+    public function get($name);
 
     /**
      * Check whether the DI contains a component by a name

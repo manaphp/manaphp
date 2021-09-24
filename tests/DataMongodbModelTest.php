@@ -171,7 +171,7 @@ class DataMongodbModelTest extends TestCase
         /**
          * @var \ManaPHP\Data\Db $db
          */
-        $db = $this->container->getShared('mongodb');
+        $db = $this->container->get('mongodb');
         $db->truncate($model->table());
     }
 

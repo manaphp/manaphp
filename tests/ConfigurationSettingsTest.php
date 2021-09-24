@@ -10,7 +10,7 @@ class ConfigurationSettingsTest extends TestCase
     public function test_get()
     {
         $di = new FactoryDefault();
-        $settings = $di->getShared('settings');
+        $settings = $di->get('settings');
 
         $settings->delete('test');
         $this->assertEquals([], $settings->get('test'));
@@ -21,7 +21,7 @@ class ConfigurationSettingsTest extends TestCase
     public function test_set()
     {
         $di = new FactoryDefault();
-        $settings = $di->getShared('settings');
+        $settings = $di->get('settings');
         $settings->delete('test');
 
         $settings->set('test', ['a' => 2]);
@@ -34,7 +34,7 @@ class ConfigurationSettingsTest extends TestCase
     public function test_exists()
     {
         $di = new FactoryDefault();
-        $settings = $di->getShared('settings');
+        $settings = $di->get('settings');
         $settings->delete('test');
         $this->assertFalse($settings->exists('test'));
 
@@ -45,7 +45,7 @@ class ConfigurationSettingsTest extends TestCase
     public function test_delete()
     {
         $di = new FactoryDefault();
-        $settings = $di->getShared('settings');
+        $settings = $di->get('settings');
         $settings->delete('test');
         $this->assertFalse($settings->exists('test'));
 

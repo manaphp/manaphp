@@ -286,7 +286,7 @@ class Container implements ContainerInterface
      *
      * @return mixed
      */
-    public function getShared($name)
+    public function get($name)
     {
         if ($instance = $this->instances[$name] ?? null) {
             return $instance;
@@ -296,7 +296,7 @@ class Container implements ContainerInterface
 
         if (is_string($definition)) {
             if ($definition[0] === '@') {
-                return $this->setSharedInternal($name, $this->getShared(substr($definition, 1)));
+                return $this->setSharedInternal($name, $this->get(substr($definition, 1)));
             }
             $parameters = [];
         } elseif ($definition instanceof Closure) {

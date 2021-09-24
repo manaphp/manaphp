@@ -45,12 +45,12 @@ class MvcDispatcherTest extends TestCase
 
         $this->container = new Factory();
 
-        $this->container->getShared('alias')->set('@ns.module', 'App\\Test');
+        $this->container->get('alias')->set('@ns.module', 'App\\Test');
         $this->container->remove(
-            $this->container->getShared('alias')->resolve('@ns.module\\Controllers\\Test1Controller')
+            $this->container->get('alias')->resolve('@ns.module\\Controllers\\Test1Controller')
         );
         $this->container->remove(
-            $this->container->getShared('alias')->resolve('@ns.module\\Controllers\\Test2Controller')
+            $this->container->get('alias')->resolve('@ns.module\\Controllers\\Test2Controller')
         );
     }
 

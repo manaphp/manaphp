@@ -132,7 +132,7 @@ if (!function_exists('container')) {
             $container = Container::getDefault();
         }
 
-        return $name === null ? $container : $container->getShared($name);
+        return $name === null ? $container : $container->get($name);
     }
 }
 

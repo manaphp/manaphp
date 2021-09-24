@@ -109,7 +109,7 @@ abstract class Table implements TableInterface
      */
     public function getShared($name)
     {
-        return $this->_container->getShared($name);
+        return $this->_container->get($name);
     }
 
     /**

@@ -7,7 +7,7 @@ namespace PHPSTORM_META {
     exitPoint(\abort());
 
     override(
-        \ManaPHP\Di\ContainerInterface::getShared(), map(
+        \ManaPHP\Di\ContainerInterface::get(), map(
             [
                 'locale'          => \ManaPHP\I18n\LocaleInterface::class,
                 'eventManager'    => \ManaPHP\Event\ManagerInterface::class,

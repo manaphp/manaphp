@@ -323,7 +323,7 @@ class Configure extends Component implements ConfigureInterface
         foreach ($app_plugins as $plugin => $_) {
             $pluginClassName = "App\\Plugins\\$plugin";
             $plugin = lcfirst($plugin);
-            $this->setShared($plugin, $pluginClassName)->getShared($plugin);
+            $this->setShared($plugin, $pluginClassName)->get($plugin);
         }
 
         return $this;

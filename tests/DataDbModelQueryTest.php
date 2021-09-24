@@ -171,7 +171,7 @@ class DataDbModelQueryTest extends TestCase
 
     public function test_join()
     {
-        if (Container::getDefault()->getShared('db') instanceof Sqlite) {
+        if (Container::getDefault()->get('db') instanceof Sqlite) {
             return;
         }
 
@@ -247,7 +247,7 @@ class DataDbModelQueryTest extends TestCase
 
     public function test_rightJoin()
     {
-        if (Container::getDefault()->getShared('db') instanceof Sqlite) {
+        if (Container::getDefault()->get('db') instanceof Sqlite) {
             return;
         }
 
@@ -772,7 +772,7 @@ class DataDbModelQueryTest extends TestCase
 
     public function test_unionAll()
     {
-        if (Container::getDefault()->getShared('db') instanceof Sqlite) {
+        if (Container::getDefault()->get('db') instanceof Sqlite) {
             return;
         }
 

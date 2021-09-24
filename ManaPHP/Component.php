@@ -53,7 +53,7 @@ class Component implements Injectable, JsonSerializable, Proxyable
      */
     protected function getShared($name)
     {
-        return $this->container->getShared($this->injections[$name] ?? $name);
+        return $this->container->get($this->injections[$name] ?? $name);
     }
 
     /**

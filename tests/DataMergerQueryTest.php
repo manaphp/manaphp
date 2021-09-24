@@ -19,7 +19,7 @@ class DataMergerQueryTest extends TestCase
     public function setUp()
     {
         $this->container = new FactoryDefault();
-        $this->container->getShared('alias')->set('@data', __DIR__);
+        $this->container->get('alias')->set('@data', __DIR__);
         $this->container->setShared(
             'db', function () {
             $config = require __DIR__ . '/config.database.php';

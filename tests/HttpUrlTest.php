@@ -20,7 +20,7 @@ class HttpUrlTest extends TestCase
 
     public function test_get()
     {
-        $this->container->getShared('alias')->set('@web', '');
+        $this->container->get('alias')->set('@web', '');
         $url = new Url();
 
         $this->assertEquals('/', $url->get('/'));
@@ -38,7 +38,7 @@ class HttpUrlTest extends TestCase
             '/article/10?from=google', $url->get(['/article/:article_id', 'article_id' => 10, 'from' => 'google'])
         );
 
-        $this->container->getShared('alias')->set('@web', 'http://www.manaphp.com/manaphp');
+        $this->container->get('alias')->set('@web', 'http://www.manaphp.com/manaphp');
         $url = new Url();
 
         $this->assertEquals('http://www.manaphp.com/manaphp/', $url->get('/'));

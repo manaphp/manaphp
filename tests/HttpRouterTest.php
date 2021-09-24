@@ -62,7 +62,7 @@ class MvcRouterTest extends TestCase
 
         $router->match('/article/list', 'GET');
 
-        Container::getDefault()->getShared('alias')->set('@web', '');
+        Container::getDefault()->get('alias')->set('@web', '');
 
         $this->assertEquals('/article/list', $router->createUrl(''));
         $this->assertEquals('/article/create', $router->createUrl('create'));

@@ -462,4 +462,4 @@ class LocalFS
     }
 }
 
-LocalFS::$alias = Container::getDefault()->getShared('alias');
+LocalFS::$alias = Container::getDefault()->get('alias');

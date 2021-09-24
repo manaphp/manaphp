@@ -289,7 +289,7 @@ class Message implements JsonSerializable
                 $template = "@views/Mail/$template";
             }
 
-            $body = Container::getDefault()->getShared('renderer')->renderFile($template, $vars);
+            $body = Container::getDefault()->get('renderer')->renderFile($template, $vars);
         }
 
         $this->html_body = $body;
