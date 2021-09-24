@@ -131,50 +131,6 @@ class Container implements ContainerInterface
     }
 
     /**
-     * Registers a component in the components container
-     *
-     * @param string $name
-     * @param mixed  $definition
-     *
-     * @return static
-     */
-    public function set($name, $definition)
-    {
-        if (is_string($definition)) {
-            if (str_contains($definition, '/') || preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
-                $definition = ['class' => $this->inferClassName($name), $definition, 'shared' => false];
-            } else {
-                if (!str_contains($definition, '\\')) {
-                    $definition = $this->completeClassName($name, $definition);
-                }
-                $definition = ['class' => $definition, 'shared' => false];
-            }
-        } elseif (is_array($definition)) {
-            if (isset($definition['class'])) {
-                if (!str_contains($definition['class'], '\\')) {
-                    $definition['class'] = $this->completeClassName($name, $definition['class']);
-                }
-            } elseif (isset($definition[0]) && count($definition) !== 1) {
-                if (!str_contains($definition[0], '\\')) {
-                    $definition[0] = $this->completeClassName($name, $definition[0]);
-                }
-            } else {
-                $definition['class'] = $this->inferClassName($name);
-            }
-
-            $definition['shared'] = false;
-        } elseif (is_object($definition)) {
-            $definition = ['class' => $definition, 'shared' => !$definition instanceof Closure];
-        } else {
-            throw new NotSupportedException(['`:definition` definition is unknown', 'definition' => $name]);
-        }
-
-        $this->definitions[$name] = $definition;
-
-        return $this;
-    }
-
-    /**
      * Registers an "always shared" component in the components container
      *
      * @param string $name

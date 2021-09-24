@@ -13,16 +13,6 @@ interface ContainerInterface
     public function on($event, $handler);
 
     /**
-     * Registers a component in the component container
-     *
-     * @param string $name
-     * @param mixed  $definition
-     *
-     * @return static
-     */
-    public function set($name, $definition);
-
-    /**
      * Registers an "always shared" component in the components container
      *
      * @param string $name

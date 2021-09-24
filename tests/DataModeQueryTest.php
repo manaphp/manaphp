@@ -18,7 +18,7 @@ class DataModeQueryTest extends \PHPUnit_Framework_TestCase
     {
         $this->container = new FactoryDefault();
         $this->container->alias->set('@data', __DIR__);
-        $this->container->set(
+        $this->container->setShared(
             'db', function () {
             $config = require __DIR__ . '/config.database.php';
             $db = new Db($config['mysql']);
