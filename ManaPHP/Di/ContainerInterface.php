@@ -60,7 +60,7 @@ interface ContainerInterface
      *
      * @return mixed
      */
-    public function getNew($name, $parameters = []);
+    public function make($name, $parameters = []);
 
     /**
      * Resolves a shared component based on their configuration

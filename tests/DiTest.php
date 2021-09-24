@@ -31,11 +31,6 @@ class DiTest extends TestCase
         $this->assertSame($container->getShared('request'), $container->getShared('request'));
         $this->assertInstanceOf('ManaPHP\Http\Request', $container->getShared('request'));
 
-        $container = new Container();
-        $container->setShared('request', 'ManaPHP\Http\Request');
-        $this->assertSame($container->getNew('request'), $container->getNew('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getNew('request'));
-
         //array
         $container = new Container();
         $container->setShared('request', ['class' => 'ManaPHP\Http\Request']);
@@ -44,8 +39,8 @@ class DiTest extends TestCase
 
         $container = new Container();
         $container->setShared('request', ['class' => 'ManaPHP\Http\Request']);
-        $this->assertSame($container->getNew('request'), $container->getNew('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getNew('request'));
+        $this->assertSame($container->make('request'), $container->make('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->make('request'));
 
         //object
         $container = new Container();
@@ -55,8 +50,8 @@ class DiTest extends TestCase
 
         $container = new Container();
         $container->setShared('request', new \ManaPHP\Http\Request());
-        $this->assertSame($container->getNew('request'), $container->getNew('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getNew('request'));
+        $this->assertSame($container->make('request'), $container->make('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->make('request'));
 
         //closure
         $container = new Container();
@@ -75,8 +70,8 @@ class DiTest extends TestCase
             return new \ManaPHP\Http\Request();
         }
         );
-        $this->assertSame($container->getNew('request'), $container->getNew('request'));
-        $this->assertInstanceOf('ManaPHP\Http\Request', $container->getNew('request'));
+        $this->assertSame($container->make('request'), $container->make('request'));
+        $this->assertInstanceOf('ManaPHP\Http\Request', $container->make('request'));
     }
 
     public function test_has()
@@ -100,7 +95,7 @@ class DiTest extends TestCase
 
         $container->setShared('getComponent2', 'Tests\SomeComponent');
 
-        $this->assertEquals(50, $container->getNew('getComponent2', [50])->value);
+        $this->assertEquals(50, $container->make('getComponent2', [50])->value);
     }
 
     public function test_remove()

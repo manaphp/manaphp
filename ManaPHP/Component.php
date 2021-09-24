@@ -43,7 +43,7 @@ class Component implements Injectable, JsonSerializable, Proxyable
      */
     protected function getNew($class, $params = [])
     {
-        return $this->container->getNew($class, $params);
+        return $this->container->make($class, $params);
     }
 
     /**

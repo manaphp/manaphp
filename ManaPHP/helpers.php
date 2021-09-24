@@ -534,9 +534,9 @@ if (!function_exists('image_create')) {
     function image_create($file)
     {
         if (extension_loaded('imagick')) {
-            return Container::getDefault()->getNew('ManaPHP\Imaging\Image\Adapter\Imagick', [$file]);
+            return Container::getDefault()->make('ManaPHP\Imaging\Image\Adapter\Imagick', [$file]);
         } elseif (extension_loaded('gd')) {
-            return Container::getDefault()->getNew('ManaPHP\Imaging\Image\Adapter\Gd', [$file]);
+            return Container::getDefault()->make('ManaPHP\Imaging\Image\Adapter\Gd', [$file]);
         } else {
             throw new NotSupportedException('neither `imagic` nor `gd` extension is loaded');
         }

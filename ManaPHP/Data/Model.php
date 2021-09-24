@@ -1288,7 +1288,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
      */
     public function getNew($class, $params = [])
     {
-        return $this->_container->getNew($class, $params);
+        return $this->_container->make($class, $params);
     }
 
     /**

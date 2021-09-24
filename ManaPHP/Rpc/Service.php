@@ -49,7 +49,7 @@ class Service implements Injectable
             throw new NotSupportedException(['`:type` type rpc is not support', 'type' => $scheme]);
         }
 
-        $this->rpcClient = $this->container->getNew($class, $options);
+        $this->rpcClient = $this->container->make($class, $options);
     }
 
     public function setContainer($container, $self = null)

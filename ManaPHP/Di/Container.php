@@ -199,7 +199,7 @@ class Container implements ContainerInterface
      *
      * @return mixed
      */
-    public function getNew($name, $parameters = [])
+    public function make($name, $parameters = [])
     {
         $definition = $this->definitions[$name] ?? $name;
 
@@ -208,7 +208,7 @@ class Container implements ContainerInterface
         }
 
         if (is_string($definition)) {
-            return $this->createNew($name, $definition, $parameters, false);
+            return $this->makeInternal($name, $definition, $parameters);
         } elseif ($definition instanceof Closure) {
             $instance = $definition(...$parameters);
         } elseif (is_object($definition)) {
@@ -245,11 +245,10 @@ class Container implements ContainerInterface
      * @param string $name
      * @param string $class
      * @param array  $parameters
-     * @param bool   $shared
      *
      * @return mixed
      */
-    protected function createNew($name, $class, $parameters, $shared)
+    protected function makeInternal($name, $class, $parameters)
     {
         if (!class_exists($class)) {
             throw new InvalidValueException(
@@ -262,12 +261,8 @@ class Container implements ContainerInterface
 
             $instance = $rc->newInstanceWithoutConstructor();
 
-            if ($shared) {
-                $resolved = $this->setSharedInternal($name, $instance);
-            }
-
             if ($instance instanceof Injectable) {
-                $instance->setContainer($this, $resolved ?? $instance);
+                $instance->setContainer($this, $instance);
             }
 
             /** @noinspection PhpPossiblePolymorphicInvocationInspection */
@@ -275,16 +270,12 @@ class Container implements ContainerInterface
         } else {
             $instance = new $class(...$parameters);
 
-            if ($shared) {
-                $resolved = $this->setSharedInternal($name, $instance);
-            }
-
             if ($instance instanceof Injectable) {
-                $instance->setContainer($this, $resolved ?? $instance);
+                $instance->setContainer($this, $instance);
             }
         }
 
-        return $shared ? $resolved : $instance;
+        return $instance;
     }
 
     /**
@@ -337,7 +328,7 @@ class Container implements ContainerInterface
 
         $definition = $this->definitions[$definition] ?? $definition;
 
-        return $this->createNew($name, $definition, $parameters, true);
+        return $this->makeInternal($name, $definition, $parameters);
     }
 
     /**
