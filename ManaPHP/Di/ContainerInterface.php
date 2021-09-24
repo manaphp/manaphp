@@ -20,7 +20,7 @@ interface ContainerInterface
      *
      * @return static
      */
-    public function setShared($name, $definition);
+    public function set($name, $definition);
 
     /**
      * Match  against shell wildcard pattern.

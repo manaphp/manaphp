@@ -21,7 +21,7 @@ class DataModelTest extends TestCase
     {
         $this->container = new FactoryDefault();
         $this->container->get('alias')->set('@data', __DIR__ . '/tmp/data');
-        $this->container->setShared(
+        $this->container->set(
             'db', function () {
             $config = require __DIR__ . '/config.database.php';
             $db = new Db($config['mysql']);

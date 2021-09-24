@@ -45,16 +45,16 @@ class Factory extends FactoryDefault
 
         if (PHP_SAPI === 'cli') {
             if (class_exists('Workerman\Worker')) {
-                $this->setShared('httpServer', 'ManaPHP\Http\Server\Adapter\Workerman');
+                $this->set('httpServer', 'ManaPHP\Http\Server\Adapter\Workerman');
             } elseif (extension_loaded('swoole')) {
-                $this->setShared('httpServer', 'ManaPHP\Http\Server\Adapter\Swoole');
+                $this->set('httpServer', 'ManaPHP\Http\Server\Adapter\Swoole');
             } else {
-                $this->setShared('httpServer', 'ManaPHP\Http\Server\Adapter\Php');
+                $this->set('httpServer', 'ManaPHP\Http\Server\Adapter\Php');
             }
         } elseif (PHP_SAPI === 'cli-server') {
-            $this->setShared('httpServer', 'ManaPHP\Http\Server\Adapter\Php');
+            $this->set('httpServer', 'ManaPHP\Http\Server\Adapter\Php');
         } else {
-            $this->setShared('httpServer', 'ManaPHP\Http\Server\Adapter\Fpm');
+            $this->set('httpServer', 'ManaPHP\Http\Server\Adapter\Fpm');
         }
     }
 }

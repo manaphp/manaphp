@@ -156,7 +156,7 @@ class Configure extends Component implements ConfigureInterface
      */
     public function setShared($name, $definition)
     {
-        return $this->container->setShared($name, $definition);
+        return $this->container->set($name, $definition);
     }
 
     /**

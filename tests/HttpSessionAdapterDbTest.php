@@ -15,7 +15,7 @@ class HttpSessionAdapterDbTest extends TestCase
         parent::setUp();
 
         $di = new Factory();
-        $di->setShared(
+        $di->set(
             'db', function () {
             $config = require __DIR__ . '/config.database.php';
             $db = new Mysql($config['mysql']);

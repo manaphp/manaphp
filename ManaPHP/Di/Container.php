@@ -138,7 +138,7 @@ class Container implements ContainerInterface
      *
      * @return static
      */
-    public function setShared($name, $definition)
+    public function set($name, $definition)
     {
         if (isset($this->instances[$name])) {
             throw new MisuseException(['it\'s too late to setShared(): `%s` instance has been created', $name]);
@@ -230,7 +230,7 @@ class Container implements ContainerInterface
      *
      * @return mixed
      */
-    protected function setSharedInternal($name, $instance)
+    protected function setInternal($name, $instance)
     {
         if ($this->emitter !== null) {
             $instance = $this->emitter->emit('resolved', $instance) ?? $instance;
@@ -296,7 +296,7 @@ class Container implements ContainerInterface
 
         if (is_string($definition)) {
             if ($definition[0] === '@') {
-                return $this->setSharedInternal($name, $this->get(substr($definition, 1)));
+                return $this->setInternal($name, $this->get(substr($definition, 1)));
             }
             $parameters = [];
         } elseif ($definition instanceof Closure) {
@@ -305,7 +305,7 @@ class Container implements ContainerInterface
                 $instance->setContainer($this);
             }
 
-            return $this->setSharedInternal($name, $instance);
+            return $this->setInternal($name, $instance);
         } elseif (isset($definition['class'])) {
             $parameters = $definition;
             $definition = $definition['class'];

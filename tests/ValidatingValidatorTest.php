@@ -20,7 +20,7 @@ class ValidatingValidatorTest extends TestCase
 
         $di->alias->set('@data', __DIR__ . '/tmp/data');
         $config = require __DIR__ . '/config.database.php';
-        $di->setShared('db', new Db($config['mysql']));
+        $di->set('db', new Db($config['mysql']));
     }
 
     public function test_bool()

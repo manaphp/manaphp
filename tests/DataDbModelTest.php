@@ -60,8 +60,8 @@ class DbModelTest extends TestCase
         $config = require __DIR__ . '/config.database.php';
         $this->connection = new Db\Connection\Adapter\Mysql($config['mysql']);
         $db = new Db($this->connection);
-        $di->setShared('db', $db);
-        $di->setShared('identity', new Jwt(['key' => 'test']));
+        $di->set('db', $db);
+        $di->set('identity', new Jwt(['key' => 'test']));
         $db->attachEvent(
             'db:beforeQuery', function (DbInterface $source) {
             // var_dump(['sql'=>$source->getSQL(),'bind'=>$source->getBind()]);

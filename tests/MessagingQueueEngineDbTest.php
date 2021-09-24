@@ -14,7 +14,7 @@ class MessagingQueueEngineDbTest extends TestCase
     {
         parent::setUp();
         $di = new FactoryDefault();
-        $di->setShared(
+        $di->set(
             'redis', function () {
             $redis = new \Redis();
             $redis->connect('localhost');
@@ -32,7 +32,7 @@ class MessagingQueueEngineDbTest extends TestCase
 
         }
         );
-        $di->setShared('db', $db);
+        $di->set('db', $db);
     }
 
     public function test_push()

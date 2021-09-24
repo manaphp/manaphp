@@ -13,7 +13,7 @@ class CachingCacheAdapterDbTest extends TestCase
     {
         $di = new FactoryDefault();
         $di->alias->set('@data', __DIR__ . '/tmp/data');
-        $di->setShared(
+        $di->set(
             'db', function () {
             $config = require __DIR__ . '/config.database.php';
             $db = new Mysql($config['mysql']);

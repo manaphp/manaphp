@@ -18,14 +18,14 @@ class Factory extends \ManaPHP\Http\Factory
 
         if (PHP_SAPI === 'cli') {
             if (extension_loaded('swoole')) {
-                $this->setShared('rpcServer', 'ManaPHP\Rpc\Http\Server\Adapter\Swoole');
+                $this->set('rpcServer', 'ManaPHP\Rpc\Http\Server\Adapter\Swoole');
             } else {
-                $this->setShared('rpcServer', 'ManaPHP\Rpc\Http\Server\Adapter\Php');
+                $this->set('rpcServer', 'ManaPHP\Rpc\Http\Server\Adapter\Php');
             }
         } elseif (PHP_SAPI === 'cli-server') {
-            $this->setShared('rpcServer', 'ManaPHP\Rpc\Http\Server\Adapter\Php');
+            $this->set('rpcServer', 'ManaPHP\Rpc\Http\Server\Adapter\Php');
         } else {
-            $this->setShared('rpcServer', 'ManaPHP\Rpc\Http\Server\Adapter\Fpm');
+            $this->set('rpcServer', 'ManaPHP\Rpc\Http\Server\Adapter\Fpm');
         }
     }
 }

@@ -15,7 +15,7 @@ class DataMongodbModelQueryTest extends TestCase
         $container = new FactoryDefault();
 
         $config = require __DIR__ . '/config.database.php';
-        $container->setShared('mongodb', new Mongodb($config['mongodb']));
+        $container->set('mongodb', new Mongodb($config['mongodb']));
     }
 
     public function test_construct()

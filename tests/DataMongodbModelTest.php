@@ -26,7 +26,7 @@ class DataMongodbModelTest extends TestCase
         $this->container = new Factory();
         $this->container->identity->setClaims([]);
         $config = require __DIR__ . '/config.database.php';
-        $this->container->setShared('mongodb', new Mongodb($config['mongodb']));
+        $this->container->set('mongodb', new Mongodb($config['mongodb']));
     }
 
     public function test_getConsistentValue()
