@@ -2,8 +2,6 @@
 
 namespace ManaPHP\Event;
 
-use ArrayObject;
-
 class EventArgs
 {
     /**

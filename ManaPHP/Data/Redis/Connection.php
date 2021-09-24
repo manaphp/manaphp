@@ -7,7 +7,6 @@ use ManaPHP\Data\Redis\Exception as RedisException;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\RuntimeException;
 use Redis;
-use Throwable;
 
 class Connection extends Component
 {
