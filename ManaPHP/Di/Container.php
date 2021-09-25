@@ -153,7 +153,7 @@ class Container implements ContainerInterface
     public function set($name, $definition)
     {
         if (isset($this->instances[$name])) {
-            throw new MisuseException(['it\'s too late to setShared(): `%s` instance has been created', $name]);
+            throw new MisuseException(['it\'s too late to set(): `%s` instance has been created', $name]);
         }
 
         if (is_string($definition)) {
