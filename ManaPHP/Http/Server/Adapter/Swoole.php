@@ -259,4 +259,12 @@ class Swoole extends Server
 
         $this->fireEvent('response:sent');
     }
+
+    public function dump()
+    {
+        $data = parent::dump();
+        unset($data['swoole']);
+        return $data;
+    }
+
 }
