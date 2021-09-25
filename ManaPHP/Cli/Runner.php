@@ -28,7 +28,7 @@ class Runner extends Application implements RunnerInterface
         $definitions = $this->container->getDefinitions();
         foreach ($container->getDefinitions() as $name => $definition) {
             if (!isset($definitions[$name]) || $definitions[$name] !== $definition) {
-                $this->setShared($name, $definition);
+                $this->container->set($name, $definition);
             }
         }
 

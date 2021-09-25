@@ -52,8 +52,8 @@ class Application extends Component implements ApplicationInterface
             );
         }
 
-        $this->setShared('loader', $loader);
-        $this->setShared('app', $this);
+        $this->container->set('loader', $loader);
+        $this->container->set('app', $this);
 
         $rootDir = $this->getRootDir();
         $appDir = $rootDir . '/app';
@@ -122,19 +122,6 @@ class Application extends Component implements ApplicationInterface
     }
 
     /**
-     * @param string $name
-     * @param mixed  $definition
-     *
-     * @return static
-     */
-    public function setShared($name, $definition)
-    {
-        $this->container->set($name, $definition);
-
-        return $this;
-    }
-
-    /**
      * @return void
      */
     public function registerConfigure()
@@ -144,14 +131,14 @@ class Application extends Component implements ApplicationInterface
         if ($configure->timezone) {
             date_default_timezone_set($configure->timezone);
         }
-        $this->setShared('crypt', ['master_key' => $configure->master_key]);
+        $this->container->set('crypt', ['master_key' => $configure->master_key]);
 
         $configure->registerAliases();
 
         $app_dir = scandir($this->alias->resolve('@app'));
 
         if (in_array('Router.php', $app_dir, true)) {
-            $this->setShared('router', 'App\\Router');
+            $this->container->set('router', 'App\\Router');
         }
 
         $configure->registerComponents();
