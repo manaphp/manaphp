@@ -188,7 +188,7 @@ class Handler extends Component implements HandlerInterface
         }
 
         /** @var \ManaPHP\Cli\Command $instance */
-        $instance = $this->getShared($definition);
+        $instance = $this->container->get($definition);
         if ($action === '') {
             $actions = $this->getActions($definition);
             if (count($actions) === 1) {

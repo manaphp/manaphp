@@ -16,7 +16,7 @@ class Command extends \ManaPHP\Cli\Command
      */
     public function listAction($role = '')
     {
-        $authorization = $this->getShared('ManaPHP\Http\Authorization');
+        $authorization = $this->container->get('ManaPHP\Http\Authorization');
         foreach ($this->aclBuilder->getControllers() as $controller) {
             /** @var \ManaPHP\Http\Controller $controllerInstance */
             $controllerInstance = $this->container->make($controller);

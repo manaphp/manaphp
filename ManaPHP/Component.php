@@ -31,21 +31,6 @@ class Component implements Injectable, JsonSerializable, Proxyable
     protected $container;
 
     /**
-     * @var array
-     */
-    protected $injections;
-
-    /**
-     * @param string $name
-     *
-     * @return mixed
-     */
-    protected function getShared($name)
-    {
-        return $this->container->get($this->injections[$name] ?? $name);
-    }
-
-    /**
      * @param \ManaPHP\Di\ContainerInterface $container
      * @param mixed                          $self
      *
@@ -160,7 +145,7 @@ class Component implements Injectable, JsonSerializable, Proxyable
         if ($name === 'context') {
             return $this->getContext();
         } else {
-            return $this->{$name} = $this->getShared($name);
+            return $this->{$name} = $this->container->get($name);
         }
     }
 

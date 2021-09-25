@@ -89,7 +89,7 @@ class Command extends \ManaPHP\Cli\Command
     ) {
         foreach ($this->getServices($services) as $service) {
             /** @var \ManaPHP\Data\Mongodb $mongodb */
-            $mongodb = $this->getShared($service);
+            $mongodb = $this->container->get($service);
 
             $defaultDb = $mongodb->getDb();
             $dbs = $defaultDb ? [$defaultDb] : $mongodb->listDatabases();
@@ -371,7 +371,7 @@ class Command extends \ManaPHP\Cli\Command
     {
         foreach ($this->getServices($services) as $service) {
             /** @var \ManaPHP\Data\Mongodb $mongodb */
-            $mongodb = $this->getShared($service);
+            $mongodb = $this->container->get($service);
 
             $dbs = $mongodb->getDb() ? [$mongodb->getDb()] : $mongodb->listDatabases();
             foreach ($dbs as $db) {
@@ -456,7 +456,7 @@ class Command extends \ManaPHP\Cli\Command
     {
         foreach ($this->getServices($services) as $service) {
             /** @var \ManaPHP\Data\Mongodb $mongodb */
-            $mongodb = $this->getShared($service);
+            $mongodb = $this->container->get($service);
 
             $dbs = $mongodb->getDb() ? [$mongodb->getDb()] : $mongodb->listDatabases();
             foreach ($dbs as $cdb) {

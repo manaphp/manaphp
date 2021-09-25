@@ -34,7 +34,7 @@ class Command extends \ManaPHP\Cli\Command
         foreach (file($file) as $i => $line) {
             if (preg_match('#this->(\w+)\\(#', $line, $match) === 1) {
                 $method = $match[1];
-                if (in_array($method, ['fireEvent', 'attachEvent', 'setShared', 'getShared'], true)) {
+                if (in_array($method, ['fireEvent', 'attachEvent', 'setShared'], true)) {
                     continue;
                 }
 

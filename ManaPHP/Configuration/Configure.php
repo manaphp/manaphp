@@ -224,11 +224,11 @@ class Configure extends Component implements ConfigureInterface
 
         if (in_array('*', $this->tracers, true)) {
             foreach ($this->getDefinitions('*Tracer') as $name => $_) {
-                $this->getShared($name);
+                $this->container->get($name);
             }
         } else {
             foreach ($this->tracers as $tracer) {
-                $this->getShared(lcfirst($tracer) . 'Tracer');
+                $this->container->get(lcfirst($tracer) . 'Tracer');
             }
         }
 
@@ -255,7 +255,7 @@ class Configure extends Component implements ConfigureInterface
     {
         foreach ($this->appGlob('Aspects/?*Aspect.php') as $item) {
             $class = 'App\Aspects\\' . basename($item, '.php');
-            $this->getShared($class);
+            $this->container->get($class);
         }
 
         return $this;
@@ -317,7 +317,7 @@ class Configure extends Component implements ConfigureInterface
                     $this->setShared($pluginName, $v);
                 }
             }
-            $this->getShared($pluginName);
+            $this->container->get($pluginName);
         }
 
         foreach ($app_plugins as $plugin => $_) {
