@@ -28,6 +28,11 @@ abstract class Application extends \ManaPHP\Application implements HandlerInterf
         }
     }
 
+    public function getProviders()
+    {
+        return array_merge(parent::getProviders(), [Provider::class]);
+    }
+
     /**
      * @return void
      */

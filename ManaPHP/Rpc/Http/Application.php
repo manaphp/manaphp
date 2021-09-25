@@ -18,12 +18,9 @@ use Throwable;
  */
 class Application extends \ManaPHP\Application implements HandlerInterface
 {
-    /**
-     * @return string
-     */
-    public function getFactory()
+    public function getProviders()
     {
-        return 'ManaPHP\Rpc\Http\Factory';
+        return array_merge(parent::getProviders(), [Provider::class]);
     }
 
     public function authenticate()

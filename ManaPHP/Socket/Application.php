@@ -11,12 +11,9 @@ use ManaPHP\Socket\Server\HandlerInterface;
  */
 class Application extends \ManaPHP\Application implements HandlerInterface
 {
-    /**
-     * @return string
-     */
-    public function getFactory()
+    public function getProviders()
     {
-        return 'ManaPHP\Socket\Factory';
+        return array_merge(parent::getProviders(), [Provider::class]);
     }
 
     /**

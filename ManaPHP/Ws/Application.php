@@ -26,12 +26,9 @@ class Application extends \ManaPHP\Application implements HandlerInterface
         $this->attachEvent('request:authenticate', [$this, 'authenticate']);
     }
 
-    /**
-     * @return string
-     */
-    public function getFactory()
+    public function getProviders()
     {
-        return 'ManaPHP\Ws\Factory';
+        return array_merge(parent::getProviders(), [Provider::class]);
     }
 
     /**

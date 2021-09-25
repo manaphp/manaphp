@@ -1,14 +1,11 @@
 <?php
 
-namespace ManaPHP\Di;
+namespace ManaPHP\Application;
 
-class FactoryDefault extends Container
+class Provider extends \ManaPHP\Di\Provider
 {
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->definitions = [
+    protected $definitions
+        = [
             'locale'           => 'ManaPHP\I18n\Locale',
             'eventManager'     => 'ManaPHP\Event\Manager',
             'aopManager'       => 'ManaPHP\Aop\Manager',
@@ -68,5 +65,4 @@ class FactoryDefault extends Container
             'wsClientTracer' => 'ManaPHP\Ws\Client\Tracer',
             'amqpTracer'     => 'ManaPHP\Amqp\Tracer',
         ];
-    }
 }

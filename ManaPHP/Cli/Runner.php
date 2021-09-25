@@ -2,6 +2,8 @@
 
 namespace ManaPHP\Cli;
 
+use ManaPHP\Di\Container;
+
 class Runner extends Application implements RunnerInterface
 {
     /**
@@ -20,9 +22,9 @@ class Runner extends Application implements RunnerInterface
      */
     public function run()
     {
-        $factory = $this->getFactory();
+        $providers = $this->getProviders();
         /** @var \ManaPHP\Di\ContainerInterface $container */
-        $container = new $factory();
+        $container = new Container($providers);
         $definitions = $this->container->getDefinitions();
         foreach ($container->getDefinitions() as $name => $definition) {
             if (!isset($definitions[$name]) || $definitions[$name] !== $definition) {

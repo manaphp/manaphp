@@ -10,12 +10,9 @@ use Throwable;
 
 class Application extends \ManaPHP\Http\Application
 {
-    /**
-     * @return string
-     */
-    public function getFactory()
+    public function getProviders()
     {
-        return 'ManaPHP\Rest\Factory';
+        return array_merge(parent::getProviders(), [Provider::class]);
     }
 
     /**

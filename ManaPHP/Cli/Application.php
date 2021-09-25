@@ -38,9 +38,9 @@ class Application extends \ManaPHP\Application implements LogCategorizable
         parent::__construct($loader);
     }
 
-    public function getFactory()
+    public function getProviders()
     {
-        return 'ManaPHP\Cli\Factory';
+        return array_merge(parent::getProviders(), [Provider::class]);
     }
 
     /**

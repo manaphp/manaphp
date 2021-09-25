@@ -14,6 +14,11 @@ class Container implements ContainerInterface
     /**
      * @var array
      */
+    protected $providers = [];
+
+    /**
+     * @var array
+     */
     protected $definitions = [];
 
     /**
@@ -31,10 +36,17 @@ class Container implements ContainerInterface
      */
     protected static $default;
 
-    public function __construct()
+    /**
+     * @param array $providers
+     */
+    public function __construct($providers = [])
     {
         if (self::$default === null) {
             self::$default = $this;
+        }
+
+        foreach ($providers as $provider) {
+            $this->addProvider($provider);
         }
     }
 
@@ -47,7 +59,7 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string   $event
+     * @param string $event
      * @param callable $handler
      *
      * @return static
@@ -178,6 +190,27 @@ class Container implements ContainerInterface
     }
 
     /**
+     * @param string $providers
+     *
+     * @return static
+     */
+    public function addProvider($provider)
+    {
+        $this->providers[] = $provider;
+        /** @var \ManaPHP\Di\ProviderInterface $instance */
+        $instance = new $provider();
+        /** @noinspection AdditionOperationOnArraysInspection */
+        $this->definitions += $instance->getdefinitions();
+
+        return $this;
+    }
+
+    public function getProviders()
+    {
+        return $this->providers;
+    }
+
+    /**
      * Removes a component in the components container
      *
      * @param string $name
@@ -260,6 +293,7 @@ class Container implements ContainerInterface
             $rc = new ReflectionClass($class);
 
             $instance = $rc->newInstanceWithoutConstructor();
+            $resolved = $this->setInternal($name, $instance);
 
             if ($instance instanceof Injectable) {
                 $instance->setContainer($this, $instance);
@@ -269,13 +303,14 @@ class Container implements ContainerInterface
             $instance->__construct(...$parameters);
         } else {
             $instance = new $class(...$parameters);
+            $resolved = $this->setInternal($name, $instance);
 
             if ($instance instanceof Injectable) {
-                $instance->setContainer($this, $instance);
+                $instance->setContainer($this, $resolved ?? $instance);
             }
         }
 
-        return $instance;
+        return $resolved;
     }
 
     /**
@@ -328,7 +363,10 @@ class Container implements ContainerInterface
 
         $definition = $this->definitions[$definition] ?? $definition;
 
-        return $this->makeInternal($name, $definition, $parameters);
+        $instance = $this->makeInternal($name, $definition, $parameters);
+        $this->instances[$name] = $instance;
+
+        return $instance;
     }
 
     /**

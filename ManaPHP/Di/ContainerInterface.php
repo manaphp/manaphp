@@ -23,6 +23,18 @@ interface ContainerInterface
     public function set($name, $definition);
 
     /**
+     * @param string $providers
+     *
+     * @return static
+     */
+    public function addProvider($provider);
+
+    /**
+     * @return array
+     */
+    public function getProviders();
+
+    /**
      * Match  against shell wildcard pattern.
      *
      * @param string $pattern

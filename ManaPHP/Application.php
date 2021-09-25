@@ -2,6 +2,8 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Application\Provider;
+use ManaPHP\Di\Container;
 use ManaPHP\Helper\LocalFS;
 use ReflectionClass;
 
@@ -39,8 +41,8 @@ class Application extends Component implements ApplicationInterface
         ini_set('html_errors', 'off');
         ini_set('default_socket_timeout', -1);
 
-        $factory = $this->getFactory();
-        $GLOBALS['CONTAINER'] = $this->container = new $factory();
+        $providers = $this->getProviders();
+        $GLOBALS['CONTAINER'] = $this->container = new Container($providers);
 
         if (!defined('MANAPHP_COROUTINE_ENABLED')) {
             define(
@@ -112,11 +114,11 @@ class Application extends Component implements ApplicationInterface
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getFactory()
+    public function getProviders()
     {
-        return MANAPHP_CLI ? 'ManaPHP\Cli\Factory' : 'ManaPHP\Mvc\Factory';
+        return [Provider::class];
     }
 
     /**
@@ -127,7 +129,7 @@ class Application extends Component implements ApplicationInterface
      */
     public function setShared($name, $definition)
     {
-        $this->container->setShared($name, $definition);
+        $this->container->set($name, $definition);
 
         return $this;
     }
