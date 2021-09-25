@@ -189,7 +189,7 @@ class DebuggerPlugin extends Plugin
      */
     protected function writeData($key, $data)
     {
-        $content = gzencode(json_stringify($data, JSON_PARTIAL_OUTPUT_ON_ERROR));
+        $content = gzencode(json_stringify($data, JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_PRETTY_PRINT));
         if ($this->ttl) {
             $this->redisCache->set($this->prefix . $key, $content, $this->ttl);
 
@@ -286,7 +286,7 @@ class DebuggerPlugin extends Plugin
         } elseif ($data instanceof ArrayObject) {
             $event['data'] = array_keys($data->getArrayCopy());
         } elseif (is_array($data)) {
-            $event['data'] = $data;
+            $event['data'] = array_keys($data);
         } elseif (is_object($data)) {
             $event['data'] = Reflection::getClass($data);
         } else {
