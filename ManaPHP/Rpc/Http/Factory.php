@@ -13,19 +13,21 @@ class Factory extends \ManaPHP\Http\Factory
                 'dispatcher'   => 'ManaPHP\Rpc\Dispatcher',
 
                 'rpcCommand' => 'ManaPHP\Rpc\Http\Command',
+
+                'rpcServer' => (function () {
+                    if (PHP_SAPI === 'cli') {
+                        if (extension_loaded('swoole')) {
+                            return 'ManaPHP\Rpc\Http\Server\Adapter\Swoole';
+                        } else {
+                            return 'ManaPHP\Rpc\Http\Server\Adapter\Php';
+                        }
+                    } elseif (PHP_SAPI === 'cli-server') {
+                        return 'ManaPHP\Rpc\Http\Server\Adapter\Php';
+                    } else {
+                        return 'ManaPHP\Rpc\Http\Server\Adapter\Fpm';
+                    }
+                })()
             ]
         );
-
-        if (PHP_SAPI === 'cli') {
-            if (extension_loaded('swoole')) {
-                $this->set('rpcServer', 'ManaPHP\Rpc\Http\Server\Adapter\Swoole');
-            } else {
-                $this->set('rpcServer', 'ManaPHP\Rpc\Http\Server\Adapter\Php');
-            }
-        } elseif (PHP_SAPI === 'cli-server') {
-            $this->set('rpcServer', 'ManaPHP\Rpc\Http\Server\Adapter\Php');
-        } else {
-            $this->set('rpcServer', 'ManaPHP\Rpc\Http\Server\Adapter\Fpm');
-        }
     }
 }

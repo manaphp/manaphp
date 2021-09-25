@@ -40,21 +40,23 @@ class Factory extends FactoryDefault
                 'httpClientTracer' => 'ManaPHP\Http\Client\Tracer',
                 'requestTracer'    => 'ManaPHP\Http\Request\Tracer',
                 'dispatcherTracer' => 'ManaPHP\Http\Dispatcher\Tracer',
+
+                'httpServer' => (function () {
+                    if (PHP_SAPI === 'cli') {
+                        if (class_exists('Workerman\Worker')) {
+                            return 'ManaPHP\Http\Server\Adapter\Workerman';
+                        } elseif (extension_loaded('swoole')) {
+                            return 'ManaPHP\Http\Server\Adapter\Swoole';
+                        } else {
+                            return 'ManaPHP\Http\Server\Adapter\Php';
+                        }
+                    } elseif (PHP_SAPI === 'cli-server') {
+                        return 'ManaPHP\Http\Server\Adapter\Php';
+                    } else {
+                        return 'ManaPHP\Http\Server\Adapter\Fpm';
+                    }
+                })()
             ]
         );
-
-        if (PHP_SAPI === 'cli') {
-            if (class_exists('Workerman\Worker')) {
-                $this->set('httpServer', 'ManaPHP\Http\Server\Adapter\Workerman');
-            } elseif (extension_loaded('swoole')) {
-                $this->set('httpServer', 'ManaPHP\Http\Server\Adapter\Swoole');
-            } else {
-                $this->set('httpServer', 'ManaPHP\Http\Server\Adapter\Php');
-            }
-        } elseif (PHP_SAPI === 'cli-server') {
-            $this->set('httpServer', 'ManaPHP\Http\Server\Adapter\Php');
-        } else {
-            $this->set('httpServer', 'ManaPHP\Http\Server\Adapter\Fpm');
-        }
     }
 }
