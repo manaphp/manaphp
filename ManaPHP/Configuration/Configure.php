@@ -149,17 +149,6 @@ class Configure extends Component implements ConfigureInterface
     }
 
     /**
-     * @param string $name
-     * @param mixed  $definition
-     *
-     * @return \ManaPHP\Di\ContainerInterface
-     */
-    public function setShared($name, $definition)
-    {
-        return $this->container->set($name, $definition);
-    }
-
-    /**
      * @param string $pattern
      *
      * @return array
@@ -189,9 +178,9 @@ class Configure extends Component implements ConfigureInterface
         foreach ($this->components as $component => $definition) {
             if (is_int($component)) {
                 $component = lcfirst(($pos = strrpos($definition, '\\')) ? substr($definition, $pos + 1) : $definition);
-                $this->setShared($component, $definition);
+                $this->container->set($component, $definition);
             } else {
-                $this->setShared($component, $definition);
+                $this->container->set($component, $definition);
             }
         }
 
@@ -219,7 +208,7 @@ class Configure extends Component implements ConfigureInterface
     {
         foreach ($this->appGlob('Tracers/?*Tracer.php') as $file) {
             $command = basename($file, '.php');
-            $this->setShared(lcfirst($command), "App\Tracers\\$command");
+            $this->container->set(lcfirst($command), "App\Tracers\\$command");
         }
 
         if (in_array('*', $this->tracers, true)) {
@@ -242,7 +231,7 @@ class Configure extends Component implements ConfigureInterface
     {
         foreach ($this->appGlob('Commands/?*Command.php') as $file) {
             $command = basename($file, '.php');
-            $this->setShared(lcfirst($command), "App\Commands\\$command");
+            $this->container->set(lcfirst($command), "App\Commands\\$command");
         }
 
         return $this;
@@ -270,13 +259,13 @@ class Configure extends Component implements ConfigureInterface
             $service = lcfirst(basename($file, '.php'));
 
             if (($params = $this->services[$service] ?? null) === null) {
-                $this->setShared($service, 'App\Services\\' . ucfirst($service));
+                $this->container->set($service, 'App\Services\\' . ucfirst($service));
             } else {
                 if (!is_array($params)) {
                     $params = [$params];
                 }
                 $params['class'] = 'App\Services\\' . ucfirst($service);
-                $this->setShared($service, $params);
+                $this->container->set($service, $params);
             }
         }
 
@@ -311,10 +300,10 @@ class Configure extends Component implements ConfigureInterface
                 unset($app_plugins[$plugin]);
                 $pluginClassName = "App\\Plugins\\$plugin";
                 $definition = is_int($k) ? $pluginClassName : array_merge($v, ['class' => $pluginClassName]);
-                $this->setShared($pluginName, $definition);
+                $this->container->set($pluginName, $definition);
             } else {
                 if (is_string($k)) {
-                    $this->setShared($pluginName, $v);
+                    $this->container->set($pluginName, $v);
                 }
             }
             $this->container->get($pluginName);
@@ -323,7 +312,7 @@ class Configure extends Component implements ConfigureInterface
         foreach ($app_plugins as $plugin => $_) {
             $pluginClassName = "App\\Plugins\\$plugin";
             $plugin = lcfirst($plugin);
-            $this->setShared($plugin, $pluginClassName)->get($plugin);
+            $this->container->set($plugin, $pluginClassName)->get($plugin);
         }
 
         return $this;
