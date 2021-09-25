@@ -199,7 +199,7 @@ namespace PHPSTORM_META {
         )
     );
 
-    override(\ManaPHP\DiInterface::getNew(), map(['' => '@']));
+    override(\ManaPHP\Di\ContainerInterface::make(), map(['' => '@']));
     override(\ManaPHP\Component::getNew(), map(['' => '@']));
 
     registerArgumentsSet(
