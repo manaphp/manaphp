@@ -36,17 +36,6 @@ class Component implements Injectable, JsonSerializable, Proxyable
     protected $injections;
 
     /**
-     * @param string $class
-     * @param array  $params
-     *
-     * @return mixed
-     */
-    protected function getNew($class, $params = [])
-    {
-        return $this->container->make($class, $params);
-    }
-
-    /**
      * @param string $name
      *
      * @return mixed

@@ -48,7 +48,7 @@ class Ws extends Client
             $this->authentication = preg_match('#[?&]token=#', $options['endpoint']) === 1;
         }
 
-        $this->client = $this->getNew('ManaPHP\Ws\Client', $options);
+        $this->client = $this->container->make('ManaPHP\Ws\Client', $options);
 
         if ($this->authentication) {
             $this->client->on('open', [$this, 'authenticate']);

@@ -200,7 +200,6 @@ namespace PHPSTORM_META {
     );
 
     override(\ManaPHP\Di\ContainerInterface::make(), map(['' => '@']));
-    override(\ManaPHP\Component::getNew(), map(['' => '@']));
 
     registerArgumentsSet(
         'eventManager', 'request:begin', 'request:end',

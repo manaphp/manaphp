@@ -92,7 +92,7 @@ class BashCompletionCommand extends Command
         $action = Str::camelize($action) . 'Completion';
         if (method_exists($commandClassName, $action)) {
             try {
-                $argument_values = $this->getNew($commandClassName)->$action($argumentName, $current);
+                $argument_values = $this->container->make($commandClassName)->$action($argumentName, $current);
             } catch (\Exception $e) {
             }
         }

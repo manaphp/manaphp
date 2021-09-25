@@ -617,7 +617,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
         }
 
         /** @var \ManaPHP\Data\Paginator $paginator */
-        $paginator = $this->getNew('paginator');
+        $paginator = $this->container->make('paginator');
         $paginator->items = $items;
         return $paginator->paginate($count, $this->limit, (int)($this->offset / $this->limit) + 1);
     }

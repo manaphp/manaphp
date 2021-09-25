@@ -48,7 +48,7 @@ class Http extends Client
             $options['engine'] = 'ManaPHP\Http\Client\Engine\Stream';
         }
 
-        $this->client = $this->getNew($client, $options);
+        $this->client = $this->container->make($client, $options);
     }
 
     /**
