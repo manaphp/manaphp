@@ -16,10 +16,10 @@ class Command extends \ManaPHP\Cli\Command
      */
     public function listAction($role = '')
     {
-        $authorization = $this->container->get('ManaPHP\Http\Authorization');
+        $authorization = $this->injector->get('ManaPHP\Http\Authorization');
         foreach ($this->aclBuilder->getControllers() as $controller) {
             /** @var \ManaPHP\Http\Controller $controllerInstance */
-            $controllerInstance = $this->container->make($controller);
+            $controllerInstance = $this->injector->make($controller);
             $acl = $controllerInstance->getAcl();
             if ($role) {
                 $actions = [];

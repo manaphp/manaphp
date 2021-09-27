@@ -30,10 +30,6 @@ class Redis extends Queue
      */
     public function __construct($options = [])
     {
-        if (isset($options['redisBroker'])) {
-            $this->injections['redisBroker'] = $options['redisBroker'];
-        }
-
         $this->prefix = $options['prefix'] ?? 'cache:msgQueue:';
 
         if (isset($options['priorities'])) {

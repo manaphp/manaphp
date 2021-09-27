@@ -27,7 +27,7 @@ class Service implements Injectable
     /**
      * @var \ManaPHP\Di\ContainerInterface
      */
-    protected $container;
+    protected $injector;
 
     /**
      * @param string|array $options
@@ -49,12 +49,12 @@ class Service implements Injectable
             throw new NotSupportedException(['`:type` type rpc is not support', 'type' => $scheme]);
         }
 
-        $this->rpcClient = $this->container->make($class, $options);
+        $this->rpcClient = $this->injector->make($class, $options);
     }
 
-    public function setContainer($container, $self = null)
+    public function setInjector($injector, $self = null)
     {
-        $this->container = $container;
+        $this->injector = $injector;
         $this->self = $self ?? $this;
     }
 

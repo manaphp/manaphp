@@ -25,10 +25,6 @@ class Client extends Component implements ClientInterface
      */
     public function __construct($options = [])
     {
-        if (isset($options['pubSub'])) {
-            $this->injections['pubSub'] = $options['pubSub'];
-        }
-
         if (isset($options['prefix'])) {
             $this->prefix = $options['prefix'];
         }

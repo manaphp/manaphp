@@ -45,11 +45,11 @@ class Metadata extends Component implements MetadataInterface
             }
         }
 
-        $modelInstance = is_string($model) ? $this->container->get($model) : $model;
+        $modelInstance = is_string($model) ? $this->injector->get($model) : $model;
 
         list($db, $table) = $modelInstance->getAnyShard();
         /** @var \ManaPHP\Data\DbInterface $db */
-        $db = $this->container->get($db);
+        $db = $this->injector->get($db);
         $data = $db->getMetadata($table);
 
         if ($this->ttl > 0) {

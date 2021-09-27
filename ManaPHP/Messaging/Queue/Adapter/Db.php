@@ -29,10 +29,6 @@ class Db extends Queue
      */
     public function __construct($options = [])
     {
-        if (isset($options['db'])) {
-            $this->injections['db'] = $options['db'];
-        }
-
         if (isset($options['table'])) {
             $this->table = $options['table'];
         }

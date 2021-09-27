@@ -45,6 +45,8 @@ class Container implements ContainerInterface
             self::$default = $this;
         }
 
+        $this->definitions['container'] = $this;
+
         foreach ($providers as $provider) {
             $this->addProvider($provider);
         }
@@ -251,7 +253,7 @@ class Container implements ContainerInterface
         }
 
         if ($instance instanceof Injectable) {
-            $instance->setContainer($this);
+            $instance->setInjector($this);
         }
 
         return $instance;
@@ -296,7 +298,8 @@ class Container implements ContainerInterface
             $resolved = $this->setInternal($name, $instance);
 
             if ($instance instanceof Injectable) {
-                $instance->setContainer($this, $instance);
+                $injector = new Injector($this);
+                $instance->setInjector($injector, $instance);
             }
 
             /** @noinspection PhpPossiblePolymorphicInvocationInspection */
@@ -306,7 +309,8 @@ class Container implements ContainerInterface
             $resolved = $this->setInternal($name, $instance);
 
             if ($instance instanceof Injectable) {
-                $instance->setContainer($this, $resolved ?? $instance);
+                $injector = new Injector($this);
+                $instance->setInjector($injector, $resolved ?? $instance);
             }
         }
 
@@ -337,9 +341,15 @@ class Container implements ContainerInterface
         } elseif ($definition instanceof Closure) {
             $instance = $definition();
             if ($instance instanceof Injectable) {
-                $instance->setContainer($this);
+                $instance->setInjector($this);
             }
 
+            return $this->setInternal($name, $instance);
+        } elseif (is_object($definition)) {
+            $instance = $definition;
+            if ($instance instanceof Injectable) {
+                $instance->setInjector($this);
+            }
             return $this->setInternal($name, $instance);
         } elseif (isset($definition['class'])) {
             $parameters = $definition;

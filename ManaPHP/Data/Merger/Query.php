@@ -44,7 +44,7 @@ class Query extends \ManaPHP\Data\Query
     {
         foreach ($queries as $id => $query) {
             if (is_string($query)) {
-                $query = $this->container->make($query);
+                $query = $this->injector->make($query);
             }
 
             if (Reflection::isInstanceOf($query, QueryInterface::class)) {

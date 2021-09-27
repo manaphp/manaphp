@@ -8,7 +8,8 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
 
 /**
- * @property-read \ManaPHP\AliasInterface $alias
+ * @property-read \ManaPHP\Di\ContainerInterface $container
+ * @property-read \ManaPHP\AliasInterface        $alias
  */
 class Configure extends Component implements ConfigureInterface
 {

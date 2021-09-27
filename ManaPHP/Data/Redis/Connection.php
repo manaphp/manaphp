@@ -166,12 +166,12 @@ class Connection extends Component
                 foreach (explode(',', $this->host) as $host) {
                     $seeds[] = str_contains($host, ':') ? $host : "$host:6379";
                 }
-                $redis = $this->container->make(
+                $redis = $this->injector->make(
                     'RedisCluster',
                     [null, $seeds, $this->timeout, $this->read_timeout, $this->persistent, $this->auth]
                 );
             } else {
-                $redis = $this->container->make('Redis');
+                $redis = $this->injector->make('Redis');
 
                 if ($this->persistent) {
                     if (!@$redis->pconnect($this->host, $this->port, $this->timeout, $this->db)) {

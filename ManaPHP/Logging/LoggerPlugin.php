@@ -64,10 +64,6 @@ class LoggerPlugin extends Plugin
      */
     public function __construct($options = [])
     {
-        if (isset($options['redisCache'])) {
-            $this->injections['redisCache'] = $options['redisCache'];
-        }
-
         if (MANAPHP_CLI) {
             $this->enabled = false;
         } elseif (isset($options['enabled'])) {

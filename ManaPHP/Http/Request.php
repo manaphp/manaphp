@@ -55,16 +55,6 @@ class RequestContext implements Stickyable
 class Request extends Component implements RequestInterface
 {
     /**
-     * @param array $options
-     */
-    public function __construct($options = [])
-    {
-        if (isset($options['validator'])) {
-            $this->injections['validator'] = $options['validator'];
-        }
-    }
-
-    /**
      * @return \ManaPHP\Http\RequestContext
      */
     public function getGlobals()
@@ -552,7 +542,7 @@ class Request extends Component implements RequestInterface
                     if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {
                         $file['key'] = $key;
 
-                        $r[] = $this->container->make('ManaPHP\Http\Request\File', $file);
+                        $r[] = $this->injector->make('ManaPHP\Http\Request\File', $file);
                     }
                 }
             } elseif (is_int($files['error'])) {
@@ -560,7 +550,7 @@ class Request extends Component implements RequestInterface
                 if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {
                     $file['key'] = $key;
 
-                    $r[] = $this->container->make('ManaPHP\Http\Request\File', $file);
+                    $r[] = $this->injector->make('ManaPHP\Http\Request\File', $file);
                 }
             } else {
                 $countFiles = count($files['error']);
@@ -574,7 +564,7 @@ class Request extends Component implements RequestInterface
                             'error'    => $files['error'][$i],
                             'size'     => $files['size'][$i],
                         ];
-                        $r[] = $this->container->make('ManaPHP\Http\Request\File', $file);
+                        $r[] = $this->injector->make('ManaPHP\Http\Request\File', $file);
                     }
                 }
             }

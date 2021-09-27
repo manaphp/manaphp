@@ -941,7 +941,7 @@ class Db extends Component implements DbInterface
      */
     public function query($table = null, $alias = null)
     {
-        return $this->container->make('ManaPHP\Data\Db\Query', [$this])->from($table, $alias);
+        return $this->injector->make('ManaPHP\Data\Db\Query', [$this])->from($table, $alias);
     }
 
     public function getTransientWrapper($type = 'default')

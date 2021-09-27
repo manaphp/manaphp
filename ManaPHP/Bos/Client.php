@@ -26,10 +26,6 @@ class Client extends Component implements ClientInterface
         if (isset($options['endpoint'])) {
             $this->endpoint = rtrim($options['endpoint'], '/');
         }
-
-        if (isset($options['httpClient'])) {
-            $this->injections['httpClient'] = $options['httpClient'];
-        }
     }
 
     /**

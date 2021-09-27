@@ -37,16 +37,6 @@ class RequestContext
 class Request extends Component implements RequestInterface
 {
     /**
-     * @param array $options
-     */
-    public function __construct($options = [])
-    {
-        if (isset($options['validator'])) {
-            $this->injections['validator'] = $options['validator'];
-        }
-    }
-
-    /**
      * @param array $GET
      * @param array $SERVER
      *

@@ -26,19 +26,19 @@ class Component implements Injectable, JsonSerializable, Proxyable
     protected $object_id;
 
     /**
-     * @var \ManaPHP\Di\ContainerInterface
+     * @var \ManaPHP\Di\InjectorInterface
      */
-    protected $container;
+    protected $injector;
 
     /**
-     * @param \ManaPHP\Di\ContainerInterface $container
+     * @param \ManaPHP\Di\ContainerInterface $injector
      * @param mixed                          $self
      *
      * @return void
      */
-    public function setContainer($container, $self = null)
+    public function setInjector($injector, $self = null)
     {
-        $this->container = $container;
+        $this->injector = $injector;
         $this->self = $self ?? $this;
     }
 
@@ -145,7 +145,7 @@ class Component implements Injectable, JsonSerializable, Proxyable
         if ($name === 'context') {
             return $this->getContext();
         } else {
-            return $this->{$name} = $this->container->get($name);
+            return $this->{$name} = $this->injector->get($name);
         }
     }
 
@@ -167,7 +167,7 @@ class Component implements Injectable, JsonSerializable, Proxyable
      */
     public function __isset($name)
     {
-        return $this->container->has($name);
+        return $this->injector->has($name);
     }
 
     /**
@@ -255,7 +255,7 @@ class Component implements Injectable, JsonSerializable, Proxyable
         $data = [];
 
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k === 'container' || $k === 'object_id' || $v === null
+            if ($k === 'injector' || $k === 'container' || $k === 'object_id' || $v === null
                 || Reflection::isInstanceOf($v, Injectable::class)
             ) {
                 continue;

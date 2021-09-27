@@ -20,10 +20,6 @@ class Db extends Logger
      */
     public function __construct($options = [])
     {
-        if (isset($options['db'])) {
-            $this->injections['db'] = $options['db'];
-        }
-
         parent::__construct($options);
 
         if (isset($options['table'])) {

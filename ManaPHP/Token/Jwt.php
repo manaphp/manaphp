@@ -28,10 +28,6 @@ class Jwt extends Component implements JwtInterface
             $this->alg = $options['alg'];
         }
 
-        if (isset($options['crypt'])) {
-            $this->injections['crypt'] = $options['crypt'];
-        }
-
         if (isset($options['key'])) {
             $this->key = $options['key'];
         } else {

@@ -19,10 +19,6 @@ class Redis extends Session
      */
     public function __construct($options = [])
     {
-        if (isset($options['redisCache'])) {
-            $this->injections['redisCache'] = $options['redisCache'];
-        }
-
         parent::__construct($options);
 
         $this->prefix = $options['prefix'] ?? sprintf("cache:%s:session:", APP_ID);

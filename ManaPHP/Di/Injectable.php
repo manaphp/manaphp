@@ -5,10 +5,10 @@ namespace ManaPHP\Di;
 interface Injectable
 {
     /**
-     * @param \ManaPHP\Di\ContainerInterface $container
-     * @param mixed                          $self
+     * @param \ManaPHP\Di\InjectorInterface $injector
+     * @param mixed                         $self
      *
      * @return void
      */
-    public function setContainer($container, $self = null);
+    public function setInjector($injector, $self = null);
 }

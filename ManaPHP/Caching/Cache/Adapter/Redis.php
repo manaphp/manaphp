@@ -19,10 +19,6 @@ class Redis extends Cache
      */
     public function __construct($options = [])
     {
-        if (isset($options['redisCache'])) {
-            $this->injections['redisCache'] = $options['redisCache'];
-        }
-
         $this->prefix = $options['prefix'] ?? sprintf('cache:%s:', APP_ID);
     }
 

@@ -22,10 +22,6 @@ class Cookie extends Session
     {
         parent::__construct($options);
 
-        if (isset($options['crypt'])) {
-            $this->injections['crypt'] = $options['crypt'];
-        }
-
         $this->key = $options['key'] ?? $this->crypt->getDerivedKey('cookieSession');
     }
 

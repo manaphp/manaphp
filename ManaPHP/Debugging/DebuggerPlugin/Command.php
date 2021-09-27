@@ -8,16 +8,6 @@ namespace ManaPHP\Debugging\DebuggerPlugin;
 class Command extends \ManaPHP\Cli\Command
 {
     /**
-     * @param array $options
-     */
-    public function __construct($options = [])
-    {
-        if (isset($options['redisCache'])) {
-            $this->injections['redisCache'] = $options['redisCache'];
-        }
-    }
-
-    /**
      * monitor generated urls
      *
      * @param string $id

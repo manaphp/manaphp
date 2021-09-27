@@ -4,6 +4,9 @@ namespace ManaPHP\Cli;
 
 use ManaPHP\Di\Container;
 
+/**
+ * @property-read \ManaPHP\Di\ContainerInterface $container
+ */
 class Runner extends Application implements RunnerInterface
 {
     /**

@@ -13,16 +13,6 @@ use ManaPHP\Helper\Reflection;
 class Invoker extends Component implements InvokerInterface
 {
     /**
-     * @param array $options
-     */
-    public function __construct($options = [])
-    {
-        if (isset($options['validator'])) {
-            $this->injections['validator'] = $options['validator'];
-        }
-    }
-
-    /**
      * @param \ManaPHP\Controller $controller
      * @param string              $method
      *
@@ -33,7 +23,7 @@ class Invoker extends Component implements InvokerInterface
         $args = [];
         $missing = [];
 
-        $container = $this->container;
+        $injector = $this->injector;
 
         $parameters = Reflection::reflectMethod($controller, $method)->getParameters();
         foreach ($parameters as $parameter) {
@@ -48,9 +38,9 @@ class Invoker extends Component implements InvokerInterface
             }
 
             if ($type !== null && str_contains($type, '\\')) {
-                $value = $container->has($name) ? $container->get($name) : $container->get($type);
+                $value = $injector->has($name) ? $injector->get($name) : $injector->get($type);
             } elseif (str_ends_with($name, 'Service')) {
-                $value = $container->get($name);
+                $value = $injector->get($name);
             } elseif ($this->request->has($name)) {
                 $value = $this->request->get($name, $type === 'array' ? [] : '');
             } elseif ($parameter->isDefaultValueAvailable()) {

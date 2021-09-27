@@ -6,6 +6,9 @@ use ManaPHP\Component;
 use ReflectionClass;
 use ReflectionMethod;
 
+/**
+ * @property-read \ManaPHP\Di\ContainerInterface $container
+ */
 class Manager extends Component implements ManagerInterface
 {
     /**

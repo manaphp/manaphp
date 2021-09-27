@@ -139,7 +139,7 @@ class Renderer extends Component implements RendererInterface
         }
 
         $engine = $this->resolved[$extension] ??
-            ($this->resolved[$extension] = $this->container->get($this->engines[$extension]));
+            ($this->resolved[$extension] = $this->injector->get($this->engines[$extension]));
 
         if (isset($vars['renderer'])) {
             throw new MisuseException('variable `renderer` is reserved for renderer');

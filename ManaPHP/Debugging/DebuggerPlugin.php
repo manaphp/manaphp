@@ -66,6 +66,7 @@ class DebuggerPluginContext
 }
 
 /**
+ * @property-read \ManaPHP\Di\ContainerInterface           $container
  * @property-read \ManaPHP\Configuration\Configure         $configure
  * @property-read \ManaPHP\Logging\LoggerInterface         $logger
  * @property-read \ManaPHP\Http\RequestInterface           $request
@@ -112,10 +113,6 @@ class DebuggerPlugin extends Plugin
      */
     public function __construct($options = [])
     {
-        if (isset($options['redisCache'])) {
-            $this->injections['redisCache'] = $options['redisCache'];
-        }
-
         if (MANAPHP_CLI) {
             $this->enabled = false;
         } elseif (isset($options['enabled'])) {

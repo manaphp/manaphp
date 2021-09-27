@@ -10,6 +10,7 @@ use ReflectionClass;
 use ReflectionMethod;
 
 /**
+ * @property-read \ManaPHP\Di\ContainerInterface   $container
  * @property-read \ManaPHP\Configuration\Configure $configure
  */
 class HelpCommand extends Command

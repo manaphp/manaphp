@@ -25,10 +25,6 @@ class Jwt extends Identity
      */
     public function __construct($options = [])
     {
-        if (isset($options['scopedJwt'])) {
-            $this->injections['scopedJwt'] = $options['scopedJwt'];
-        }
-
         if (isset($options['scope'])) {
             $this->scope = $options['scope'];
         }

@@ -55,7 +55,7 @@ class Query extends \ManaPHP\Data\Query
      */
     protected function getDb($db)
     {
-        return $db === '' ? $this->db : $this->container->get($db);
+        return $db === '' ? $this->db : $this->injector->get($db);
     }
 
     /**

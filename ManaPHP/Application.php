@@ -4,6 +4,7 @@ namespace ManaPHP;
 
 use ManaPHP\Application\Provider;
 use ManaPHP\Di\Container;
+use ManaPHP\Di\Injector;
 use ManaPHP\Helper\LocalFS;
 use ReflectionClass;
 
@@ -17,6 +18,11 @@ use ReflectionClass;
  */
 class Application extends Component implements ApplicationInterface
 {
+    /**
+     * @var \ManaPHP\Di\ContainerInterface
+     */
+    protected $container;
+
     /**
      * @var string
      */
@@ -43,6 +49,7 @@ class Application extends Component implements ApplicationInterface
 
         $providers = $this->getProviders();
         $GLOBALS['CONTAINER'] = $this->container = new Container($providers);
+        $this->injector = new Injector($this->container);
 
         if (!defined('MANAPHP_COROUTINE_ENABLED')) {
             define(

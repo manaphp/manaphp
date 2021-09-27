@@ -25,7 +25,7 @@ class Application extends \ManaPHP\Application implements HandlerInterface
     {
         static $controller;
         if ($controller === null) {
-            $controller = $this->container->get('App\Controllers\IndexController');
+            $controller = $this->injector->get('App\Controllers\IndexController');
         }
 
         if (($r = $controller->invoke($action)) !== null) {

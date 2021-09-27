@@ -86,7 +86,7 @@ class Manager extends Component implements ManagerInterface
             foreach ($this->listeners[$group] as $k => $v) {
                 /**@var \ManaPHP\Event\Listener $listener */
                 if (is_int($v)) {
-                    $this->listeners[$group][$k] = $listener = $this->container->get($k);
+                    $this->listeners[$group][$k] = $listener = $this->injector->get($k);
                 } else {
                     $listener = $v;
                 }
