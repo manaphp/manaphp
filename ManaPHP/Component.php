@@ -255,17 +255,11 @@ class Component implements Injectable, JsonSerializable, Proxyable
         $data = [];
 
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k === 'injector' || $k === 'container' || $k === 'object_id' || $v === null
-                || Reflection::isInstanceOf($v, Injectable::class)
-            ) {
+            if (is_object($v) || in_array($k, ['object_id', 'self'])) {
                 continue;
             }
 
-            if (is_object($v)) {
-                $data[$k] = method_exists($v, 'dump') ? $v->dump() : (array)$v;
-            } else {
-                $data[$k] = $v;
-            }
+            $data[$k] = $v;
         }
 
         if (!isset($data['context']) && $this->hasContext()) {
