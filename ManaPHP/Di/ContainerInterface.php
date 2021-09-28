@@ -23,11 +23,11 @@ interface ContainerInterface
     public function set($name, $definition);
 
     /**
-     * @param string $providers
+     * @param array $providers
      *
      * @return static
      */
-    public function addProvider($provider);
+    public function addProviders($providers);
 
     /**
      * @return array

@@ -47,9 +47,7 @@ class Container implements ContainerInterface
 
         $this->definitions['container'] = $this;
 
-        foreach ($providers as $provider) {
-            $this->addProvider($provider);
-        }
+        $this->addProviders($providers);
     }
 
     /**
@@ -192,17 +190,20 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string $providers
+     * @param array $providers
      *
      * @return static
      */
-    public function addProvider($provider)
+    public function addProviders($providers)
     {
-        $this->providers[] = $provider;
-        /** @var \ManaPHP\Di\ProviderInterface $instance */
-        $instance = new $provider();
-        /** @noinspection AdditionOperationOnArraysInspection */
-        $this->definitions += $instance->getdefinitions();
+        $this->providers = array_merge($this->providers, $providers);
+
+        foreach ($this->providers as $provider) {
+            /** @var \ManaPHP\Di\ProviderInterface $instance */
+            $instance = new $provider();
+            /** @noinspection AdditionOperationOnArraysInspection */
+            $this->definitions += $instance->getdefinitions();
+        }
 
         return $this;
     }
