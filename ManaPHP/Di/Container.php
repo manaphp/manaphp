@@ -286,16 +286,20 @@ class Container implements ContainerInterface
      */
     protected function makeInternal($name, $class, $parameters)
     {
-        if (!class_exists($class)) {
-            if (str_ends_with($class, 'Interface') && interface_exists($class)
-                && class_exists($sub = substr($class, 0, -9))
-            ) {
+        $exists = false;
+        if (str_ends_with($class, 'Interface') && interface_exists($class)) {
+            if (class_exists($sub = substr($class, 0, -9))) {
+                $exists = true;
                 $class = (string)$sub;
-            } else {
-                throw new InvalidValueException(
-                    ['`%s` component cannot be resolved: `%s` class is not exists', $name, $class]
-                );
             }
+        } elseif (class_exists($class)) {
+            $exists = true;
+        }
+
+        if (!$exists) {
+            throw new InvalidValueException(
+                ['`%s` component cannot be resolved: `%s` class is not exists', $name, $class]
+            );
         }
 
         if (method_exists($class, '__construct')) {
@@ -334,7 +338,7 @@ class Container implements ContainerInterface
      */
     public function get($name)
     {
-        if ($instance = $this->instances[$name] ?? null) {
+        if (($instance = $this->instances[$name] ?? null) !== null) {
             return $instance;
         }
 
@@ -439,11 +443,9 @@ class Container implements ContainerInterface
             return true;
         } elseif (!str_contains($name, '\\')) {
             return false;
+        } elseif (str_ends_with($name, 'Interface') && interface_exists($name)) {
+            return class_exists(substr($name, 0, -9));
         } elseif (class_exists($name)) {
-            return true;
-        } elseif (str_ends_with($name, 'Interface') && interface_exists($name)
-            && class_exists(substr($name, 0, -9))
-        ) {
             return true;
         } else {
             return false;
