@@ -93,6 +93,14 @@ interface ContainerInterface
     public function has($name);
 
     /**
+     * @param callable $callable
+     * @param array    $parameters
+     *
+     * @return mixed
+     */
+    public function call($callable, $parameters = []);
+
+    /**
      *Return the First DI created
      *
      * @return static

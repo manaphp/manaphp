@@ -56,4 +56,15 @@ class Injector implements InjectorInterface
             return $this->container->make($name, $parameters);
         }
     }
+
+    /**
+     * @param callable $callable
+     * @param array    $parameters
+     *
+     * @return mixed
+     */
+    public function call($callable, $parameters = [])
+    {
+        return $this->container->call($callable, $parameters);
+    }
 }

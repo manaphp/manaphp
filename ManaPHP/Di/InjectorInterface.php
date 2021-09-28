@@ -25,4 +25,12 @@ interface InjectorInterface
      * @return mixed
      */
     public function make($name, $parameters = []);
+
+    /**
+     * @param callable $callable
+     * @param array    $parameters
+     *
+     * @return mixed
+     */
+    public function call($callable, $parameters = []);
 }

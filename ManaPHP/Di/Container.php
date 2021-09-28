@@ -221,7 +221,7 @@ class Container implements ContainerInterface
      */
     public function remove($name)
     {
-        unset($this->definitions[$name], $this->instances[$name], $this->{$name});
+        unset($this->definitions[$name], $this->instances[$name]);
 
         return $this;
     }
@@ -286,9 +286,15 @@ class Container implements ContainerInterface
     protected function makeInternal($name, $class, $parameters)
     {
         if (!class_exists($class)) {
-            throw new InvalidValueException(
-                ['`%s` component cannot be resolved: `%s` class is not exists', $name, $class]
-            );
+            if (str_ends_with($class, 'Interface') && interface_exists($class)
+                && class_exists($sub = substr($class, 0, -9))
+            ) {
+                $class = (string)$sub;
+            } else {
+                throw new InvalidValueException(
+                    ['`%s` component cannot be resolved: `%s` class is not exists', $name, $class]
+                );
+            }
         }
 
         if (method_exists($class, '__construct')) {
@@ -426,6 +432,32 @@ class Container implements ContainerInterface
      */
     public function has($name)
     {
-        return isset($this->definitions[$name]);
+        if (isset($this->instances[$name])) {
+            return true;
+        } elseif (isset($this->definitions[$name])) {
+            return true;
+        } elseif (!str_contains($name, '\\')) {
+            return false;
+        } elseif (class_exists($name)) {
+            return true;
+        } elseif (str_ends_with($name, 'Interface') && interface_exists($name)
+            && class_exists(substr($name, 0, -9))
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @param callable $callable
+     * @param array    $parameters
+     *
+     * @return mixed
+     */
+    public function call($callable, $parameters = [])
+    {
+        $invoker = $this->get(InvokerInterface::class);
+        return $invoker->call($this, $callable, $parameters);
     }
 }
