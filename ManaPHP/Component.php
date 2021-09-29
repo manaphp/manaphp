@@ -31,8 +31,8 @@ class Component implements Injectable, JsonSerializable, Proxyable
     protected $injector;
 
     /**
-     * @param \ManaPHP\Di\ContainerInterface $injector
-     * @param mixed                          $self
+     * @param \ManaPHP\Di\InjectorInterface $injector
+     * @param mixed                         $self
      *
      * @return void
      */
