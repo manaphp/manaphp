@@ -202,19 +202,6 @@ class Configure extends Component implements ConfigureInterface
         }
     }
 
-    /**
-     * @return static
-     */
-    public function registerAspects()
-    {
-        foreach ($this->appGlob('Aspects/?*Aspect.php') as $item) {
-            $class = 'App\Aspects\\' . basename($item, '.php');
-            $this->container->get($class);
-        }
-
-        return $this;
-    }
-
     public function dump()
     {
         $data = parent::dump();

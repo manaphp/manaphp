@@ -33,9 +33,4 @@ interface ConfigureInterface
      * @return static
      */
     public function registerComponents();
-
-    /**
-     * @return static
-     */
-    public function registerAspects();
 }

@@ -161,7 +161,6 @@ class Application extends Component implements ApplicationInterface
         }
 
         $configure->registerComponents();
-        $configure->registerAspects();
 
         foreach ($this->container->getProviders() as $provider) {
             /** @var \ManaPHP\Di\ProviderInterface $instance */
