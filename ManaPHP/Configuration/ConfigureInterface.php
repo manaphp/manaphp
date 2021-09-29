@@ -38,9 +38,4 @@ interface ConfigureInterface
      * @return static
      */
     public function registerAspects();
-
-    /**
-     * @return static
-     */
-    public function registerListeners();
 }

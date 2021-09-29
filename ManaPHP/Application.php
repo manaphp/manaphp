@@ -10,6 +10,7 @@ use ReflectionClass;
 use ManaPHP\Service\Provider as ServiceProvider;
 use ManaPHP\Tracing\Provider as TracingProvider;
 use ManaPHP\Plugin\Provider as PluginProvider;
+use ManaPHP\Event\Listener\Provider as ListenerProvider;
 
 /**
  * @property-read \ManaPHP\Configuration\Configure       $configure
@@ -135,6 +136,7 @@ class Application extends Component implements ApplicationInterface
             ServiceProvider::class,
             TracingProvider::class,
             PluginProvider::class,
+            ListenerProvider::class,
         ];
     }
 
@@ -159,9 +161,7 @@ class Application extends Component implements ApplicationInterface
         }
 
         $configure->registerComponents();
-
         $configure->registerAspects();
-        $configure->registerListeners();
 
         foreach ($this->container->getProviders() as $provider) {
             /** @var \ManaPHP\Di\ProviderInterface $instance */

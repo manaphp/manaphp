@@ -215,32 +215,6 @@ class Configure extends Component implements ConfigureInterface
         return $this;
     }
 
-    /**
-     * @return static
-     */
-    public function registerListeners()
-    {
-        foreach ($this->listeners as $listener) {
-            if ($listener === '*') {
-                foreach ($this->appGlob('Areas/*/Listeners/?*Listener.php') as $item) {
-                    $item = str_replace($this->alias->get('@app'), 'App', $item);
-                    $item = substr(str_replace('/', '\\', $item), 0, -4);
-                    $this->eventManager->addListener($item);
-                }
-
-                foreach ($this->appGlob('Listeners/?*Listener.php') as $item) {
-                    $item = str_replace($this->alias->get('@app'), 'App', $item);
-                    $item = substr(str_replace('/', '\\', $item), 0, -4);
-                    $this->eventManager->addListener($item);
-                }
-            } else {
-                $this->eventManager->addListener($listener);
-            }
-        }
-
-        return $this;
-    }
-
     public function dump()
     {
         $data = parent::dump();
