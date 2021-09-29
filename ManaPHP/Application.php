@@ -9,6 +9,7 @@ use ManaPHP\Helper\LocalFS;
 use ReflectionClass;
 use ManaPHP\Service\Provider as ServiceProvider;
 use ManaPHP\Tracing\Provider as TracingProvider;
+use ManaPHP\Plugin\Provider as PluginProvider;
 
 /**
  * @property-read \ManaPHP\Configuration\Configure       $configure
@@ -133,6 +134,7 @@ class Application extends Component implements ApplicationInterface
             Provider::class,
             ServiceProvider::class,
             TracingProvider::class,
+            PluginProvider::class,
         ];
     }
 
@@ -159,7 +161,6 @@ class Application extends Component implements ApplicationInterface
         $configure->registerComponents();
 
         $configure->registerAspects();
-        $configure->registerPlugins();
         $configure->registerListeners();
 
         foreach ($this->container->getProviders() as $provider) {

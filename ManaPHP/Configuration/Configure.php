@@ -218,52 +218,6 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @return static
      */
-    public function registerPlugins()
-    {
-        $app_plugins = [];
-        foreach ($this->appGlob('Plugins/?*Plugin.php') as $item) {
-            $app_plugins[basename($item, '.php')] = 1;
-        }
-
-        foreach ($this->plugins as $k => $v) {
-            $plugin = is_string($k) ? $k : $v;
-            if (($pos = strrpos($plugin, 'Plugin')) === false || $pos !== strlen($plugin) - 6) {
-                $plugin .= 'Plugin';
-            }
-
-            if ($plugin[0] === '!') {
-                unset($app_plugins[ucfirst(substr($plugin, 1))]);
-                continue;
-            }
-
-            $plugin = ucfirst($plugin);
-            $pluginName = lcfirst($plugin);
-
-            if (isset($app_plugins[$plugin])) {
-                unset($app_plugins[$plugin]);
-                $pluginClassName = "App\\Plugins\\$plugin";
-                $definition = is_int($k) ? $pluginClassName : array_merge($v, ['class' => $pluginClassName]);
-                $this->container->set($pluginName, $definition);
-            } else {
-                if (is_string($k)) {
-                    $this->container->set($pluginName, $v);
-                }
-            }
-            $this->container->get($pluginName);
-        }
-
-        foreach ($app_plugins as $plugin => $_) {
-            $pluginClassName = "App\\Plugins\\$plugin";
-            $plugin = lcfirst($plugin);
-            $this->container->set($plugin, $pluginClassName)->get($plugin);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return static
-     */
     public function registerListeners()
     {
         foreach ($this->listeners as $listener) {

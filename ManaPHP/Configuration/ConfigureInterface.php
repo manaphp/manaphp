@@ -42,10 +42,5 @@ interface ConfigureInterface
     /**
      * @return static
      */
-    public function registerPlugins();
-
-    /**
-     * @return static
-     */
     public function registerListeners();
 }
