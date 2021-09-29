@@ -205,29 +205,6 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @return static
      */
-    public function registerTracers()
-    {
-        foreach ($this->appGlob('Tracers/?*Tracer.php') as $file) {
-            $command = basename($file, '.php');
-            $this->container->set(lcfirst($command), "App\Tracers\\$command");
-        }
-
-        if (in_array('*', $this->tracers, true)) {
-            foreach ($this->getDefinitions('*Tracer') as $name => $_) {
-                $this->container->get($name);
-            }
-        } else {
-            foreach ($this->tracers as $tracer) {
-                $this->container->get(lcfirst($tracer) . 'Tracer');
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return static
-     */
     public function registerCommands()
     {
         foreach ($this->appGlob('Commands/?*Command.php') as $file) {
