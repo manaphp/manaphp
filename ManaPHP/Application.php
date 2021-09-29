@@ -47,9 +47,9 @@ class Application extends Component implements ApplicationInterface
         ini_set('html_errors', 'off');
         ini_set('default_socket_timeout', -1);
 
-        $providers = $this->getProviders();
-        $GLOBALS['CONTAINER'] = $this->container = new Container($providers);
-        $this->injector = new Injector($this->container);
+        $this->container = new Container(['alias' => Alias::class]);
+        $GLOBALS['CONTAINER'] = $this->container;
+        $this->setInjector(new Injector($this->container));
 
         if (!defined('MANAPHP_COROUTINE_ENABLED')) {
             define(
@@ -98,6 +98,8 @@ class Application extends Component implements ApplicationInterface
         if ($_SERVER['DOCUMENT_ROOT'] === '') {
             $_SERVER['DOCUMENT_ROOT'] = dirname($_SERVER['SCRIPT_FILENAME']);
         }
+
+        $this->container->addProviders($this->getProviders());
     }
 
     /**

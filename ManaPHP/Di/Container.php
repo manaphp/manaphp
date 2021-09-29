@@ -37,17 +37,16 @@ class Container implements ContainerInterface
     protected static $default;
 
     /**
-     * @param array $providers
+     * @param array $definitions
      */
-    public function __construct($providers = [])
+    public function __construct($definitions = [])
     {
         if (self::$default === null) {
             self::$default = $this;
         }
 
+        $this->definitions = $definitions;
         $this->definitions['container'] = $this;
-
-        $this->addProviders($providers);
     }
 
     /**
@@ -200,7 +199,7 @@ class Container implements ContainerInterface
 
         foreach ($this->providers as $provider) {
             /** @var \ManaPHP\Di\ProviderInterface $instance */
-            $instance = new $provider();
+            $instance = $this->get($provider);
             /** @noinspection AdditionOperationOnArraysInspection */
             $this->definitions += $instance->getdefinitions();
         }
