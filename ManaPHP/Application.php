@@ -7,6 +7,7 @@ use ManaPHP\Di\Container;
 use ManaPHP\Di\Injector;
 use ManaPHP\Helper\LocalFS;
 use ReflectionClass;
+use ManaPHP\Service\Provider as ServiceProvider;
 
 /**
  * @property-read \ManaPHP\Configuration\Configure       $configure
@@ -127,7 +128,7 @@ class Application extends Component implements ApplicationInterface
      */
     public function getProviders()
     {
-        return [Provider::class];
+        return [Provider::class, ServiceProvider::class];
     }
 
     /**
@@ -159,7 +160,6 @@ class Application extends Component implements ApplicationInterface
         $configure->registerTracers();
 
         $configure->registerAspects();
-        $configure->registerServices();
         $configure->registerPlugins();
         $configure->registerListeners();
     }

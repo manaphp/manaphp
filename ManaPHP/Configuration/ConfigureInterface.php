@@ -52,11 +52,6 @@ interface ConfigureInterface
     /**
      * @return static
      */
-    public function registerServices();
-
-    /**
-     * @return static
-     */
     public function registerPlugins();
 
     /**

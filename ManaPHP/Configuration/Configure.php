@@ -254,28 +254,6 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @return static
      */
-    public function registerServices()
-    {
-        foreach ($this->appGlob('Services/?*Service.php') as $file) {
-            $service = lcfirst(basename($file, '.php'));
-
-            if (($params = $this->services[$service] ?? null) === null) {
-                $this->container->set($service, 'App\Services\\' . ucfirst($service));
-            } else {
-                if (!is_array($params)) {
-                    $params = [$params];
-                }
-                $params['class'] = 'App\Services\\' . ucfirst($service);
-                $this->container->set($service, $params);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return static
-     */
     public function registerPlugins()
     {
         $app_plugins = [];
