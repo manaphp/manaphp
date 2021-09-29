@@ -8,6 +8,7 @@ use Swoole\Coroutine;
 use Swoole\Event;
 use Swoole\Runtime;
 use Throwable;
+use ManaPHP\Cli\Commands\Provider as CommandsProvider;
 
 /**
  * @property-read \ManaPHP\Logging\LoggerInterface $logger
@@ -40,7 +41,12 @@ class Application extends \ManaPHP\Application implements LogCategorizable
 
     public function getProviders()
     {
-        return array_merge(parent::getProviders(), [Provider::class]);
+        return array_merge(
+            parent::getProviders(),
+            [Provider::class,
+             CommandsProvider::class,
+            ]
+        );
     }
 
     /**

@@ -205,19 +205,6 @@ class Configure extends Component implements ConfigureInterface
     /**
      * @return static
      */
-    public function registerCommands()
-    {
-        foreach ($this->appGlob('Commands/?*Command.php') as $file) {
-            $command = basename($file, '.php');
-            $this->container->set(lcfirst($command), "App\Commands\\$command");
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return static
-     */
     public function registerAspects()
     {
         foreach ($this->appGlob('Aspects/?*Aspect.php') as $item) {

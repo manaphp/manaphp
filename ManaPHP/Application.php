@@ -158,10 +158,6 @@ class Application extends Component implements ApplicationInterface
 
         $configure->registerComponents();
 
-        if (MANAPHP_CLI) {
-            $configure->registerCommands();
-        }
-
         $configure->registerAspects();
         $configure->registerPlugins();
         $configure->registerListeners();
