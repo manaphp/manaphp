@@ -17,8 +17,10 @@ class Provider implements ProviderInterface
         return $this->definitions;
     }
 
-    public function boot()
+    /**
+     * @param \ManaPHP\Di\ContainerInterface $container
+     */
+    public function boot($container)
     {
-
     }
 }

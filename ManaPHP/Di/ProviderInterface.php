@@ -10,7 +10,10 @@ interface ProviderInterface
     public function getDefinitions();
 
     /**
+     *
+     * @param \ManaPHP\Di\ContainerInterface $container
+     *
      * @return void
      */
-    public function boot();
+    public function boot($container);
 }
