@@ -150,16 +150,6 @@ class Configure extends Component implements ConfigureInterface
     }
 
     /**
-     * @param string $pattern
-     *
-     * @return array
-     */
-    public function getDefinitions($pattern = null)
-    {
-        return $this->container->getDefinitions($pattern);
-    }
-
-    /**
      * @return static
      */
     public function registerAliases()
