@@ -188,20 +188,6 @@ class Configure extends Component implements ConfigureInterface
         return $this;
     }
 
-    /**
-     * @param string $glob
-     *
-     * @return array
-     */
-    public function appGlob($glob)
-    {
-        if ($appDir = $this->alias->get('@app')) {
-            return glob("$appDir/$glob") ?? [];
-        } else {
-            return [];
-        }
-    }
-
     public function dump()
     {
         $data = parent::dump();
