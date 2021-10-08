@@ -162,6 +162,19 @@ if (!function_exists('param_get')) {
     }
 }
 
+if (!function_exists('config_get')) {
+    /**
+     * @param string $name
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    function config_get($name, $default = null)
+    {
+        return container('config')->get($name, $default);
+    }
+}
+
 if (!function_exists('log_debug')) {
     /**
      * @param string|array $message
