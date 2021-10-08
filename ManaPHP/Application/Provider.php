@@ -12,7 +12,7 @@ class Provider extends \ManaPHP\Di\Provider
             'poolManager'      => 'ManaPHP\Pool\Manager',
             'alias'            => 'ManaPHP\Alias',
             'dotenv'           => 'ManaPHP\Configuration\Dotenv',
-            'configure'        => 'ManaPHP\Configuration\Configure',
+            'config'           => 'ManaPHP\Config',
             'settings'         => 'ManaPHP\Configuration\Settings\Adapter\Redis',
             'invoker'          => 'ManaPHP\Controller\Invoker',
             'modelMetadata'    => 'ManaPHP\Data\Db\Model\Metadata',

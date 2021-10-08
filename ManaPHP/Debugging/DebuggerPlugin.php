@@ -67,7 +67,7 @@ class DebuggerPluginContext
 
 /**
  * @property-read \ManaPHP\Di\ContainerInterface           $container
- * @property-read \ManaPHP\Configuration\Configure         $configure
+ * @property-read \ManaPHP\ConfigInterface                 $config
  * @property-read \ManaPHP\Logging\LoggerInterface         $logger
  * @property-read \ManaPHP\Http\RequestInterface           $request
  * @property-read \ManaPHP\Http\ResponseInterface          $response
@@ -117,7 +117,7 @@ class DebuggerPlugin extends Plugin
             $this->enabled = false;
         } elseif (isset($options['enabled'])) {
             $this->enabled = (bool)$options['enabled'];
-        } elseif (!in_array($this->configure->env, ['dev', 'test'], true)) {
+        } elseif (!in_array($this->config->get('env'), ['dev', 'test'], true)) {
             $this->enabled = false;
         }
 
@@ -129,7 +129,7 @@ class DebuggerPlugin extends Plugin
             $this->ttl = 0;
         }
 
-        $this->prefix = $options['prefix'] ?? sprintf("cache:%s:debuggerPlugin:", APP_ID);
+        $this->prefix = $options['prefix'] ?? sprintf("cache:%s:debuggerPlugin:", $this->config->get('id'));
 
         if (isset($options['template'])) {
             $this->template = $options['template'];
@@ -193,7 +193,7 @@ class DebuggerPlugin extends Plugin
             if ($this->broadcast) {
                 $key = implode(
                     ':',
-                    ['__debuggerPlugin', APP_ID, $this->request->getClientIp(),
+                    ['__debuggerPlugin', $this->config->get('id'), $this->request->getClientIp(),
                      $this->dispatcher->getPath()]
                 );
                 $this->redisCache->publish($key, $this->response->getHeader('X-Debugger-Link'));

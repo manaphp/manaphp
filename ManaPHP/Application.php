@@ -13,7 +13,7 @@ use ManaPHP\Plugin\Provider as PluginProvider;
 use ManaPHP\Event\Listener\Provider as ListenerProvider;
 
 /**
- * @property-read \ManaPHP\Configuration\Configure       $configure
+ * @property-read \ManaPHP\ConfigInterface               $config
  * @property-read \ManaPHP\AliasInterface                $alias
  * @property-read \ManaPHP\LoaderInterface               $loader
  * @property-read \ManaPHP\Configuration\DotenvInterface $dotenv
@@ -143,16 +143,16 @@ class Application extends Component implements ApplicationInterface
     /**
      * @return void
      */
-    public function registerConfigure()
+    public function configure()
     {
-        $configure = $this->configure;
-
-        if ($configure->timezone) {
-            date_default_timezone_set($configure->timezone);
+        if (($timezone = $this->config->get('timezone', '')) !== '') {
+            date_default_timezone_set($timezone);
         }
-        $this->container->set('crypt', ['master_key' => $configure->master_key]);
+        $this->container->set('crypt', ['master_key' => $this->config->get('master_key')]);
 
-        $configure->registerAliases();
+        foreach ($this->config->get('aliases', []) as $k => $v) {
+            $this->alias->set($k, $v);
+        }
 
         $app_dir = scandir($this->alias->resolve('@app'));
 
@@ -160,7 +160,9 @@ class Application extends Component implements ApplicationInterface
             $this->container->set('router', 'App\\Router');
         }
 
-        $configure->registerComponents();
+        foreach ($this->config->get('components') as $component => $definition) {
+            $this->container->set($component, $definition);
+        }
 
         foreach ($this->container->getProviders() as $provider) {
             /** @var \ManaPHP\Di\ProviderInterface $instance */
@@ -186,10 +188,10 @@ class Application extends Component implements ApplicationInterface
         }
 
         if (LocalFS::fileExists('@config/app.php')) {
-            $this->configure->load();
+            $this->config->load();
         }
 
-        $this->registerConfigure();
+        $this->configure();
 
         if (!MANAPHP_CLI) {
             $this->fireEvent('request:begin');

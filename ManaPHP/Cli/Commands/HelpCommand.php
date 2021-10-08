@@ -10,8 +10,8 @@ use ReflectionClass;
 use ReflectionMethod;
 
 /**
- * @property-read \ManaPHP\Di\ContainerInterface   $container
- * @property-read \ManaPHP\Configuration\Configure $configure
+ * @property-read \ManaPHP\Di\ContainerInterface $container
+ * @property-read \ManaPHP\ConfigInterface       $config
  */
 class HelpCommand extends Command
 {
@@ -38,10 +38,10 @@ class HelpCommand extends Command
             sprintf(
                 'ManaPHP %s (id: %s, env: %s, debug: %s)',
                 $this->console->colorize(Version::get(), Console::FC_GREEN | Console::AT_BOLD),
-                $this->console->colorize($this->configure->id, Console::FC_YELLOW | Console::AT_BOLD),
-                $this->console->colorize($this->configure->env, Console::FC_YELLOW | Console::AT_BOLD),
+                $this->console->colorize($this->config->get('id'), Console::FC_YELLOW | Console::AT_BOLD),
+                $this->console->colorize($this->config->get('env'), Console::FC_YELLOW | Console::AT_BOLD),
                 $this->console->colorize(
-                    $this->configure->debug ? 'true' : 'false', Console::FC_YELLOW | Console::AT_BOLD
+                    $this->config->get('debug') ? 'true' : 'false', Console::FC_YELLOW | Console::AT_BOLD
                 )
             )
         );

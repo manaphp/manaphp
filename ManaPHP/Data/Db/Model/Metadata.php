@@ -5,6 +5,9 @@ namespace ManaPHP\Data\Db\Model;
 use ManaPHP\Component;
 use ManaPHP\Data\Db;
 
+/**
+ * @property-read \ManaPHP\ConfigInterface $config
+ */
 class Metadata extends Component implements MetadataInterface
 {
     /**
@@ -21,7 +24,7 @@ class Metadata extends Component implements MetadataInterface
             $this->ttl = (int)$options['ttl'];
         }
 
-        if (APP_DEBUG || !function_exists('apcu_fetch')) {
+        if ($this->config->get('debug') || !function_exists('apcu_fetch')) {
             $this->ttl = 0;
         }
     }

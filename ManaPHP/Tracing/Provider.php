@@ -19,7 +19,7 @@ class Provider extends \ManaPHP\Di\Provider
      */
     public function boot($container)
     {
-        $tracers = $container->get('configure')->tracers;
+        $tracers = $container->get('config')->get('tracers');
 
         if (in_array('*', $tracers, true)) {
             foreach ($container->getDefinitions('*Tracer') as $name => $_) {

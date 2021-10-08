@@ -19,7 +19,7 @@ class Provider extends \ManaPHP\Di\Provider
      */
     public function boot($container)
     {
-        $plugins = $container->get('configure')->plugins;
+        $plugins = $container->get('config')->get('plugins');
 
         foreach ($plugins as $plugin) {
             if ($plugin[0] === '!') {

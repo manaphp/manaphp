@@ -6,9 +6,9 @@ use ManaPHP\Exception\AbortException;
 use ManaPHP\Plugin;
 
 /**
- * @property-read \ManaPHP\Configuration\Configure $configure
- * @property-read \ManaPHP\Http\RequestInterface   $request
- * @property-read \ManaPHP\Http\ResponseInterface  $response
+ * @property-read \ManaPHP\ConfigInterface        $config
+ * @property-read \ManaPHP\Http\RequestInterface  $request
+ * @property-read \ManaPHP\Http\ResponseInterface $response
  */
 class CorsPlugin extends Plugin
 {
@@ -58,7 +58,7 @@ class CorsPlugin extends Plugin
         if ($origin !== '' && $origin !== $host) {
             if ($this->origin) {
                 $allow_origin = $this->origin;
-            } elseif ($this->configure->env === 'prod') {
+            } elseif ($this->config->get('env') === 'prod') {
                 $origin_pos = strpos($origin, '.');
                 $host_pos = strpos($host, '.');
 

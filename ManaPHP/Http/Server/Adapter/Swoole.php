@@ -18,6 +18,7 @@ class SwooleContext
 }
 
 /**
+ * @property-read \ManaPHP\ConfigInterface                   $config
  * @property-read \ManaPHP\AliasInterface                    $alias
  * @property-read \ManaPHP\Http\RouterInterface              $router
  * @property-read \ManaPHP\Http\Server\Adapter\SwooleContext $context
@@ -126,7 +127,7 @@ class Swoole extends Server
      */
     public function onStart($server)
     {
-        @cli_set_process_title(sprintf('manaphp %s: master', APP_ID));
+        @cli_set_process_title(sprintf('manaphp %s: master', $this->config->get('id')));
     }
 
     /**
@@ -134,7 +135,7 @@ class Swoole extends Server
      */
     public function onManagerStart()
     {
-        @cli_set_process_title(sprintf('manaphp %s: manager', APP_ID));
+        @cli_set_process_title(sprintf('manaphp %s: manager', $this->config->get("id")));
     }
 
     /**
@@ -147,7 +148,7 @@ class Swoole extends Server
      */
     public function onWorkerStart($server, $worker_id)
     {
-        @cli_set_process_title(sprintf('manaphp %s: worker/%d', APP_ID, $worker_id));
+        @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->config->get("id"), $worker_id));
     }
 
     /**

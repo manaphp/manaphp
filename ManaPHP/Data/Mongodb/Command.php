@@ -7,8 +7,8 @@ use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
 /**
- * @property-read \ManaPHP\Configuration\Configure $configure
- * @property-read \ManaPHP\AliasInterface          $alias
+ * @property-read \ManaPHP\ConfigInterface $config
+ * @property-read \ManaPHP\AliasInterface  $alias
  */
 class Command extends \ManaPHP\Cli\Command
 {
@@ -36,7 +36,7 @@ class Command extends \ManaPHP\Cli\Command
             }
         } else {
             $services = [];
-            foreach ($this->configure->components as $service => $config) {
+            foreach ($this->config->get('components') as $service => $config) {
                 $config = json_stringify($config);
                 if (preg_match('#mongodb://#', $config)) {
                     $services[] = $service;

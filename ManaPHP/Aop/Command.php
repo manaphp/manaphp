@@ -58,7 +58,7 @@ class Command extends \ManaPHP\Cli\Command
                      '/ManaPHP/Html/Renderer/Engine/Sword/Compiler.php',
                      '/ManaPHP/Data/Table.php',
                      '/ManaPHP/Component.php',
-                     '/ManaPHP/Configuration/Configure.php',
+                     '/ManaPHP/Config.php',
                      '/ManaPHP/Cli/Commands/',
                      '/ManaPHP/Cli/Handler.php',
                      '/ManaPHP/Data/Db/Model/Metadata.php',

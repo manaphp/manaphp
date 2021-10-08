@@ -5,7 +5,8 @@ namespace ManaPHP\Caching\Cache\Adapter;
 use ManaPHP\Caching\Cache;
 
 /**
- * @property-read \Redis $redisCache
+ * @property-read \ManaPHP\ConfigInterface $config
+ * @property-read \Redis                   $redisCache
  */
 class Redis extends Cache
 {
@@ -19,7 +20,7 @@ class Redis extends Cache
      */
     public function __construct($options = [])
     {
-        $this->prefix = $options['prefix'] ?? sprintf('cache:%s:', APP_ID);
+        $this->prefix = $options['prefix'] ?? sprintf('cache:%s:', $this->config->get('id'));
     }
 
     /**

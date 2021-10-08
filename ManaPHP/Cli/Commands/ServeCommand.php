@@ -6,9 +6,9 @@ use ManaPHP\Cli\Command;
 use ManaPHP\Helper\LocalFS;
 
 /**
- * @property-read \ManaPHP\Configuration\Configure $configure
- * @property-read \ManaPHP\Http\RouterInterface    $router
- * @property-read \ManaPHP\Cli\RequestInterface    $request
+ * @property-read \ManaPHP\ConfigInterface      $config
+ * @property-read \ManaPHP\Http\RouterInterface $router
+ * @property-read \ManaPHP\Cli\RequestInterface $request
  */
 class ServeCommand extends Command
 {
@@ -54,7 +54,7 @@ STR;
 
         if (!$port) {
             $port = 9501;
-            foreach ($this->configure->components as $name => $config) {
+            foreach ($this->config->get('components') as $name => $config) {
                 if (isset($config['port']) && str_ends_with($name, 'Server')) {
                     $port = $config['port'];
                     break;

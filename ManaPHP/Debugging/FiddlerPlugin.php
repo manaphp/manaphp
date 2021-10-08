@@ -22,6 +22,7 @@ class FiddlerPluginContext
 }
 
 /**
+ * @property-read \ManaPHP\ConfigInterface                $config
  * @property-read \ManaPHP\Logging\LoggerInterface        $logger
  * @property-read \ManaPHP\Http\RequestInterface          $request
  * @property-read \ManaPHP\Http\ResponseInterface         $response
@@ -55,7 +56,7 @@ class FiddlerPlugin extends Plugin
         $context = $this->context;
 
         if (MANAPHP_CLI) {
-            $context->channel = $this->prefix . APP_ID . ':-';
+            $context->channel = $this->prefix . $this->config->get('id') . ':-';
         }
 
         $this->prefix = $options['prefix'] ?? 'broker:fiddlerPlugin:';
@@ -72,7 +73,7 @@ class FiddlerPlugin extends Plugin
     {
         $context = $this->context;
 
-        $context->channel = $this->prefix . APP_ID . ':' . $this->request->getClientIp();
+        $context->channel = $this->prefix . $this->config->get('id') . ':' . $this->request->getClientIp();
 
         $current = microtime(true);
         if ($current - $this->last_checked >= 1.0) {
@@ -172,7 +173,7 @@ class FiddlerPlugin extends Plugin
      */
     public function subscribe($options = [])
     {
-        $id = $options['id'] ?? APP_ID;
+        $id = $options['id'] ?? $this->config->get('id');
 
         if ($ip = $options['ip'] ?? false) {
             $this->pubSub->subscribe(

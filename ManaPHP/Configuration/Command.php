@@ -5,7 +5,7 @@ namespace ManaPHP\Configuration;
 use ManaPHP\Helper\Arr;
 
 /**
- * @property-read \ManaPHP\Configuration\Configure $configure
+ * @property-read \ManaPHP\ConfigInterface $config
  */
 class Command extends \ManaPHP\Cli\Command
 {
@@ -16,7 +16,7 @@ class Command extends \ManaPHP\Cli\Command
      */
     public function dumpAction($path = '')
     {
-        $config = $this->configure->getConfig();
+        $config = $this->config->get();
         $config = Arr::get($config, $path);
 
         $this->console->writeLn(json_stringify($config, JSON_PRETTY_PRINT));

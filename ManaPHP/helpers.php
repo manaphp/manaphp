@@ -158,7 +158,7 @@ if (!function_exists('param_get')) {
      */
     function param_get($name, $default = null)
     {
-        return container('configure')->getParam($name, $default);
+        return container('config')->get('params', $default)[$name] ?? $default;
     }
 }
 

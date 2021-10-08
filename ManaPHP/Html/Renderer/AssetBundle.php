@@ -7,7 +7,8 @@ use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Helper\LocalFS;
 
 /**
- * @property-read \ManaPHP\AliasInterface $alias
+ * @property-read \ManaPHP\ConfigInterface $config
+ * @property-read \ManaPHP\AliasInterface  $alias
  */
 class AssetBundle extends Component implements AssetBundleInterface
 {
@@ -76,7 +77,7 @@ class AssetBundle extends Component implements AssetBundleInterface
 
         $bundle = ($name[0] !== '/' ? "/assets/bundle/$name" : $name) . ".$hash.$extension";
 
-        if (APP_DEBUG || !is_file($target = $this->alias->get('@public') . "/$bundle")) {
+        if ($this->config->get('debug') || !is_file($target = $this->alias->get('@public') . "/$bundle")) {
             $r = '';
             foreach ($files as $file) {
                 if ($file[0] !== '@') {

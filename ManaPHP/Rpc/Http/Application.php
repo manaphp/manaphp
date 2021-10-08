@@ -65,9 +65,9 @@ class Application extends \ManaPHP\Application implements HandlerInterface
     public function main()
     {
         $this->dotenv->load();
-        $this->configure->load();
+        $this->config->load();
 
-        $this->registerConfigure();
+        $this->configure();
 
         $this->rpcServer->start($this);
     }

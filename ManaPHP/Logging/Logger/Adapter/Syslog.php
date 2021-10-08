@@ -14,6 +14,9 @@ use ManaPHP\Logging\Logger;
 //$template myTemplate,"/var/log/test/%PROGRAMNAME%.log"
 //user.*  ?myTemplate
 
+/**
+ * @property-read \ManaPHP\ConfigInterface $config
+ */
 class Syslog extends Logger
 {
     /**
@@ -104,7 +107,7 @@ class Syslog extends Logger
 
         $host = $this->host;
         $port = $this->port;
-        $tag = APP_ID;
+        $tag = $this->config->get('id');
 
         foreach ($logs as $log) {
             $severity = $map[$log->level];

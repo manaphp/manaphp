@@ -46,6 +46,7 @@ class ResponseContext
 }
 
 /**
+ * @property-read \ManaPHP\ConfigInterface       $config
  * @property-read \ManaPHP\Http\RequestInterface $request
  * @property-read \ManaPHP\Http\UrlInterface     $url
  * @property-read \ManaPHP\Http\RouterInterface  $router
@@ -533,7 +534,7 @@ class Response extends Component implements ResponseInterface
             $json = ['code' => $code, 'message' => 'Internal Server Error'];
         }
 
-        if (APP_DEBUG) {
+        if ($this->config->get('debug')) {
             $json['message'] = get_class($throwable) . ": " . $throwable->getMessage();
             $json['exception'] = explode("\n", $throwable);
         }

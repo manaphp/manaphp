@@ -3,7 +3,8 @@
 namespace ManaPHP\Debugging\DebuggerPlugin;
 
 /**
- * @property-read \Redis $redisCache
+ * @property-read \ManaPHP\ConfigInterface $config
+ * @property-read \Redis                   $redisCache
  */
 class Command extends \ManaPHP\Cli\Command
 {
@@ -16,8 +17,9 @@ class Command extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    public function watchAction($id = APP_ID, $path = '', $ip = '')
+    public function watchAction($id = null, $path = '', $ip = '')
     {
+        $id = $id ?? $this->config->get('id');
         $key = "__debuggerPlugin:$id:*";
         $this->console->writeLn('subscribe to ' . $key);
 

@@ -5,7 +5,8 @@ namespace ManaPHP\Logging\Logger\Adapter;
 use ManaPHP\Logging\Logger;
 
 /**
- * @property-read \Redis $redisBroker
+ * @property-read \ManaPHP\ConfigInterface $config
+ * @property-read \Redis                   $redisBroker
  */
 class Redis extends Logger
 {
@@ -21,7 +22,7 @@ class Redis extends Logger
     {
         parent::__construct($options);
 
-        $this->key = $options['key'] ?? sprintf("cache:%s:logger", APP_ID);
+        $this->key = $options['key'] ?? sprintf("cache:%s:logger", $this->config->get("id"));
     }
 
     /**

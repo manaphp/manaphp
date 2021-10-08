@@ -14,6 +14,7 @@ use Swoole\WebSocket\Server;
 use Throwable;
 
 /**
+ * @property-read \ManaPHP\ConfigInterface         $config
  * @property-read \ManaPHP\Logging\LoggerInterface $logger
  * @property-read \ManaPHP\Http\RequestInterface   $request
  */
@@ -151,7 +152,7 @@ class Swoole extends Component implements ServerInterface
      */
     public function onStart($server)
     {
-        @cli_set_process_title(sprintf('manaphp %s: master', APP_ID));
+        @cli_set_process_title(sprintf('manaphp %s: master', $this->config->get("id")));
     }
 
     /**
@@ -159,7 +160,7 @@ class Swoole extends Component implements ServerInterface
      */
     public function onManagerStart()
     {
-        @cli_set_process_title(sprintf('manaphp %s: manager', APP_ID));
+        @cli_set_process_title(sprintf('manaphp %s: manager', $this->config->get("id")));
     }
 
     /**
@@ -172,7 +173,7 @@ class Swoole extends Component implements ServerInterface
     {
         $this->worker_id = $worker_id;
 
-        @cli_set_process_title(sprintf('manaphp %s: worker/%d', APP_ID, $worker_id));
+        @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->config->get("id"), $worker_id));
 
         try {
             $this->fireEvent('wsServer:start', compact('server', 'worker_id'));
