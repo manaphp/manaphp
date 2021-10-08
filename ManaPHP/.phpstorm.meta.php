@@ -4,6 +4,8 @@
 
 namespace PHPSTORM_META {
 
+    use ManaPHP\ConfigInterface;
+
     exitPoint(\abort());
 
     override(
@@ -14,6 +16,7 @@ namespace PHPSTORM_META {
                 'aopManager'      => \ManaPHP\Aop\ManagerInterface::class,
                 'alias'           => \ManaPHP\AliasInterface::class,
                 'dotenv'          => \ManaPHP\Configuration\DotenvInterface::class,
+                'config'          => \ManaPHP\ConfigInterface::class,
                 'configure'       => \ManaPHP\Configuration\Configure::class,
                 'settings'        => \ManaPHP\Configuration\SettingsInterface::class,
                 'errorHandler'    => \ManaPHP\ErrorHandlerInterface::class,
@@ -77,6 +80,7 @@ namespace PHPSTORM_META {
                 'aopManager'       => \ManaPHP\Aop\ManagerInterface::class,
                 'alias'            => \ManaPHP\AliasInterface::class,
                 'dotenv'           => \ManaPHP\Configuration\DotenvInterface::class,
+                'config'           => \ManaPHP\ConfigInterface::class,
                 'configure'        => \ManaPHP\Configuration\Configure::class,
                 'settings'         => \ManaPHP\Configuration\SettingsInterface::class,
                 'errorHandler'     => \ManaPHP\ErrorHandlerInterface::class,
@@ -302,6 +306,11 @@ namespace PHPSTORM_META {
             'ext'       => 'jpg,jpeg',
         ];
     }
+
+    registerArgumentsSet('manaphp_config', 'id', 'name', 'env', 'debug', 'params');
+    expectedArguments(\ManaPHP\ConfigInterface::get(), 0, argumentsSet('manaphp_config'));
+    expectedArguments(\ManaPHP\ConfigInterface::has(), 0, argumentsSet('manaphp_config'));
+    expectedArguments(\ManaPHP\ConfigInterface::set(), 0, argumentsSet('manaphp_config'));
 }
 
 /**
