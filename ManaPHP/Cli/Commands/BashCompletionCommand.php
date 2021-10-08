@@ -8,6 +8,9 @@ use ManaPHP\Helper\Str;
 use ReflectionClass;
 use ReflectionMethod;
 
+/**
+ * @property-read \ManaPHP\Di\ContainerInterface $container
+ */
 class BashCompletionCommand extends Command
 {
     /**

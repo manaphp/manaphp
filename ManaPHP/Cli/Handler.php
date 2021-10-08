@@ -6,8 +6,9 @@ use ManaPHP\Component;
 use ManaPHP\Helper\Str;
 
 /**
- * @property-read \ManaPHP\Cli\ConsoleInterface $console
- * @property-read \ManaPHP\Cli\RequestInterface $request
+ * @property-read \ManaPHP\Di\ContainerInterface $container
+ * @property-read \ManaPHP\Cli\ConsoleInterface  $console
+ * @property-read \ManaPHP\Cli\RequestInterface  $request
  */
 class Handler extends Component implements HandlerInterface
 {
