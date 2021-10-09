@@ -15,6 +15,7 @@ use Throwable;
  * @property-read \ManaPHP\ConfigInterface         $config
  * @property-read \ManaPHP\AliasInterface          $alias
  * @property-read \ManaPHP\Logging\LoggerInterface $logger
+ * @property-read \ManaPHP\Socket\HandlerInterface $socketHandler
  */
 class Swoole extends Component implements ServerInterface
 {
@@ -37,11 +38,6 @@ class Swoole extends Component implements ServerInterface
      * @var \Swoole\Server
      */
     protected $swoole;
-
-    /**
-     * @var \ManaPHP\Socket\Server\HandlerInterface
-     */
-    protected $handler;
 
     /**
      * @var array
@@ -136,7 +132,7 @@ class Swoole extends Component implements ServerInterface
     public function onConnect($server, $fd)
     {
         try {
-            $this->handler->onConnect($fd);
+            $this->socketHandler->onConnect($fd);
         } finally {
             null;
         }
@@ -205,7 +201,7 @@ class Swoole extends Component implements ServerInterface
     {
         $this->restoreContext($fd);
         try {
-            $this->handler->onReceive($fd, $data);
+            $this->socketHandler->onReceive($fd, $data);
         } catch (Throwable $throwable) {
             $this->logger->warn($throwable);
         }
@@ -223,7 +219,7 @@ class Swoole extends Component implements ServerInterface
     {
         $this->restoreContext($fd);
         try {
-            $this->handler->onClose($fd);
+            $this->socketHandler->onClose($fd);
         } catch (Throwable $throwable) {
             $this->logger->warn($throwable);
         }
@@ -232,17 +228,13 @@ class Swoole extends Component implements ServerInterface
     }
 
     /**
-     * @param \ManaPHP\Socket\Server\HandlerInterface $handler
-     *
      * @return void
      */
-    public function start($handler)
+    public function start()
     {
         if (MANAPHP_COROUTINE_ENABLED) {
             Runtime::enableCoroutine(true);
         }
-
-        $this->handler = $handler;
 
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 

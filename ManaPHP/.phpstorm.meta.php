@@ -70,6 +70,7 @@ namespace PHPSTORM_META {
                 'httpHandler'     => \ManaPHP\Http\HandlerInterface::class,
                 'wsHandler'       => \ManaPHP\Ws\HandlerInterface::class,
                 'rpcHandler'      => \ManaPHP\Rpc\Http\HandlerInterface::class,
+                'socketHandler'   => \ManaPHP\Socket\HandlerInterface::class,
                 ''                => '@|App\Services\@',
             ]
         )
@@ -138,6 +139,7 @@ namespace PHPSTORM_META {
                 'httpHandler'      => \ManaPHP\Http\HandlerInterface::class,
                 'wsHandler'        => \ManaPHP\Ws\HandlerInterface::class,
                 'rpcHandler'       => \ManaPHP\Rpc\Http\HandlerInterface::class,
+                'socketHandler'    => \ManaPHP\Socket\HandlerInterface::class,
                 ''                 => '@|App\Services\@',
             ]
         )

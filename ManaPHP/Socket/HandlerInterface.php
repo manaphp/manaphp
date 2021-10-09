@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Socket\Server;
+namespace ManaPHP\Socket;
 
 interface HandlerInterface
 {

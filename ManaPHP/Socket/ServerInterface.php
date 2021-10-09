@@ -5,11 +5,9 @@ namespace ManaPHP\Socket;
 interface ServerInterface
 {
     /**
-     * @param \ManaPHP\Socket\Server\HandlerInterface $handler
-     *
      * @return mixed
      */
-    public function start($handler);
+    public function start();
 
     /**
      * @param int $fd
