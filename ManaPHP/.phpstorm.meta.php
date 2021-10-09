@@ -69,6 +69,7 @@ namespace PHPSTORM_META {
                 'amqpClient'      => \ManaPHP\Amqp\ClientInterface::class,
                 'httpHandler'     => \ManaPHP\Http\HandlerInterface::class,
                 'wsHandler'       => \ManaPHP\Ws\HandlerInterface::class,
+                'rpcHandler'      => \ManaPHP\Rpc\Http\HandlerInterface::class,
                 ''                => '@|App\Services\@',
             ]
         )
@@ -136,6 +137,7 @@ namespace PHPSTORM_META {
                 'amqpClient'       => \ManaPHP\Amqp\ClientInterface::class,
                 'httpHandler'      => \ManaPHP\Http\HandlerInterface::class,
                 'wsHandler'        => \ManaPHP\Ws\HandlerInterface::class,
+                'rpcHandler'       => \ManaPHP\Rpc\Http\HandlerInterface::class,
                 ''                 => '@|App\Services\@',
             ]
         )

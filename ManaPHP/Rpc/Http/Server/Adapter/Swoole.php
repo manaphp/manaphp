@@ -188,7 +188,7 @@ class Swoole extends \ManaPHP\Rpc\Http\Server
             $this->prepareGlobals($request);
 
             if ($this->authenticate()) {
-                $this->handler->handle();
+                $this->rpcHandler->handle();
             } else {
                 $this->send();
             }
@@ -308,7 +308,7 @@ class Swoole extends \ManaPHP\Rpc\Http\Server
             $globals->_SERVER['REQUEST_TIME_FLOAT'] = microtime(true);
             $globals->_SERVER['REQUEST_TIME'] = (int)$globals->_SERVER['REQUEST_TIME_FLOAT'];
             try {
-                $this->handler->handle();
+                $this->rpcHandler->handle();
             } catch (Throwable $throwable) {
                 $this->response->setContent(['code' => -32603, 'message' => 'Internal error']);
                 $this->logger->warn($throwable);
@@ -368,17 +368,13 @@ class Swoole extends \ManaPHP\Rpc\Http\Server
     }
 
     /**
-     * @param \ManaPHP\Rpc\Http\Server\HandlerInterface $handler
-     *
      * @return void
      */
-    public function start($handler)
+    public function start()
     {
         if (MANAPHP_COROUTINE_ENABLED) {
             Runtime::enableCoroutine(true);
         }
-
-        $this->handler = $handler;
 
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 

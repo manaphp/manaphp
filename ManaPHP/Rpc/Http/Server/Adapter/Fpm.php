@@ -17,18 +17,14 @@ class Fpm extends Server
     }
 
     /**
-     * @param \ManaPHP\Rpc\Http\Server\HandlerInterface $handler
-     *
      * @return static
      */
-    public function start($handler)
+    public function start()
     {
-        $this->handler = $handler;
-
         $this->prepareGlobals();
 
         if ($this->authenticate()) {
-            $this->handler->handle();
+            $this->rpcHandler->handle();
         } else {
             $this->send();
         }

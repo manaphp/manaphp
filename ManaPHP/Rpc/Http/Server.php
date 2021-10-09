@@ -5,8 +5,9 @@ namespace ManaPHP\Rpc\Http;
 use ManaPHP\Component;
 
 /**
- * @property-read \ManaPHP\Http\RequestInterface  $request
- * @property-read \ManaPHP\Http\ResponseInterface $response
+ * @property-read \ManaPHP\Http\RequestInterface     $request
+ * @property-read \ManaPHP\Http\ResponseInterface    $response
+ * @property-read \ManaPHP\Rpc\Http\HandlerInterface $rpcHandler
  */
 abstract class Server extends Component implements ServerInterface
 {
@@ -19,11 +20,6 @@ abstract class Server extends Component implements ServerInterface
      * @var int
      */
     protected $port = 9501;
-
-    /**
-     * @var \ManaPHP\Rpc\Http\Server\HandlerInterface
-     */
-    protected $handler;
 
     /**
      * @param array $options
@@ -44,7 +40,7 @@ abstract class Server extends Component implements ServerInterface
      */
     public function authenticate()
     {
-        if ($this->handler->authenticate() !== false) {
+        if ($this->rpcHandler->authenticate() !== false) {
             return true;
         }
 
