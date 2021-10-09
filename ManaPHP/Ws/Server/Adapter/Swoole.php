@@ -17,6 +17,7 @@ use Throwable;
  * @property-read \ManaPHP\ConfigInterface         $config
  * @property-read \ManaPHP\Logging\LoggerInterface $logger
  * @property-read \ManaPHP\Http\RequestInterface   $request
+ * @property-read \ManaPHP\Ws\HandlerInterface     $wsHandler
  */
 class Swoole extends Component implements ServerInterface
 {
@@ -39,11 +40,6 @@ class Swoole extends Component implements ServerInterface
      * @var \Swoole\WebSocket\Server
      */
     protected $swoole;
-
-    /**
-     * @var \ManaPHP\Ws\Server\HandlerInterface
-     */
-    protected $handler;
 
     /**
      * @var ArrayObject[]
@@ -210,7 +206,7 @@ class Swoole extends Component implements ServerInterface
         try {
             $this->prepareGlobals($request);
             $this->request->set('fd', $fd);
-            $this->handler->onOpen($fd);
+            $this->wsHandler->onOpen($fd);
         } finally {
             null;
         }
@@ -260,7 +256,7 @@ class Swoole extends Component implements ServerInterface
         }
 
         try {
-            $this->handler->onClose($fd);
+            $this->wsHandler->onClose($fd);
         } finally {
             null;
         }
@@ -289,7 +285,7 @@ class Swoole extends Component implements ServerInterface
         }
 
         try {
-            $this->handler->onMessage($frame->fd, $frame->data);
+            $this->wsHandler->onMessage($frame->fd, $frame->data);
         } catch (Throwable $throwable) {
             $this->logger->warn($throwable);
         }
@@ -302,17 +298,13 @@ class Swoole extends Component implements ServerInterface
     }
 
     /**
-     * @param \ManaPHP\Ws\Server\HandlerInterface $handler
-     *
      * @return void
      */
-    public function start($handler)
+    public function start()
     {
         if (MANAPHP_COROUTINE_ENABLED) {
             Runtime::enableCoroutine(true);
         }
-
-        $this->handler = $handler;
 
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 

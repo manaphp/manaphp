@@ -68,6 +68,7 @@ namespace PHPSTORM_META {
                 'pubSub'          => \ManaPHP\Messaging\PubSubInterface::class,
                 'amqpClient'      => \ManaPHP\Amqp\ClientInterface::class,
                 'httpHandler'     => \ManaPHP\Http\HandlerInterface::class,
+                'wsHandler'       => \ManaPHP\Ws\HandlerInterface::class,
                 ''                => '@|App\Services\@',
             ]
         )
@@ -134,6 +135,7 @@ namespace PHPSTORM_META {
                 'dataDump'         => \ManaPHP\Debugging\DataDumpInterface::class,
                 'amqpClient'       => \ManaPHP\Amqp\ClientInterface::class,
                 'httpHandler'      => \ManaPHP\Http\HandlerInterface::class,
+                'wsHandler'        => \ManaPHP\Ws\HandlerInterface::class,
                 ''                 => '@|App\Services\@',
             ]
         )

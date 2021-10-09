@@ -6,6 +6,7 @@ class Provider extends \ManaPHP\Di\Provider
 {
     protected $definitions
         = [
+            'wsHandler'    => 'ManaPHP\Ws\Handler',
             'errorHandler' => 'ManaPHP\Rest\ErrorHandler',
             'wsServer'     => 'ManaPHP\Ws\Server\Adapter\Swoole',
             'dispatcher'   => 'ManaPHP\Ws\Dispatcher',

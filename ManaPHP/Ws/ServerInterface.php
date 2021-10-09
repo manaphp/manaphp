@@ -5,11 +5,9 @@ namespace ManaPHP\Ws;
 interface ServerInterface
 {
     /**
-     * @param \ManaPHP\Ws\Server\HandlerInterface $handler
-     *
      * @return void
      */
-    public function start($handler);
+    public function start();
 
     /**
      * @param int   $fd
