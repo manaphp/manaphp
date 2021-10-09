@@ -5,9 +5,9 @@ namespace ManaPHP\Rpc\Http;
 use ManaPHP\Component;
 
 /**
- * @property-read \ManaPHP\Http\RequestInterface     $request
- * @property-read \ManaPHP\Http\ResponseInterface    $response
- * @property-read \ManaPHP\Rpc\Http\HandlerInterface $rpcHandler
+ * @property-read \ManaPHP\Http\RequestInterface  $request
+ * @property-read \ManaPHP\Http\ResponseInterface $response
+ * @property-read \ManaPHP\Rpc\HandlerInterface   $rpcHandler
  */
 abstract class Server extends Component implements ServerInterface
 {

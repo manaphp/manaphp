@@ -7,6 +7,7 @@ use ManaPHP\Exception\AbortException;
 use ManaPHP\Helper\Reflection;
 use ManaPHP\Http\Response;
 use ManaPHP\Http\Router\NotFoundRouteException;
+use ManaPHP\Rpc\HandlerInterface;
 use Throwable;
 
 /**
