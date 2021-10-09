@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Http\Server;
+namespace ManaPHP\Http;
 
 interface HandlerInterface
 {

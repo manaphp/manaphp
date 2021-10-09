@@ -6,6 +6,7 @@ class Provider extends \ManaPHP\Di\Provider
 {
     protected $definitions
         = [
+            'httpHandler'  => 'ManaPHP\Mvc\Handler',
             'errorHandler' => 'ManaPHP\Mvc\ErrorHandler',
             'view'         => 'ManaPHP\Mvc\View',
             'flash'        => 'ManaPHP\Mvc\View\Flash\Adapter\Direct',

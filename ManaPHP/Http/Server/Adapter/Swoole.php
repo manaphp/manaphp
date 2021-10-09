@@ -36,11 +36,6 @@ class Swoole extends Server
     protected $swoole;
 
     /**
-     * @var \ManaPHP\Http\Server\HandlerInterface
-     */
-    protected $handler;
-
-    /**
      * @var array
      */
     protected $_SERVER;
@@ -152,17 +147,13 @@ class Swoole extends Server
     }
 
     /**
-     * @param \ManaPHP\Http\Server\HandlerInterface $handler
-     *
      * @return void
      */
-    public function start($handler)
+    public function start()
     {
         if (MANAPHP_COROUTINE_ENABLED) {
             Runtime::enableCoroutine(true);
         }
-
-        $this->handler = $handler;
 
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 
@@ -191,7 +182,7 @@ class Swoole extends Server
             try {
                 $this->prepareGlobals($request);
 
-                $this->handler->handle();
+                $this->httpHandler->handle();
             } catch (Throwable $throwable) {
                 $str = date('c') . ' ' . get_class($throwable) . ': ' . $throwable->getMessage() . PHP_EOL;
                 $str .= '    at ' . $throwable->getFile() . ':' . $throwable->getLine() . PHP_EOL;

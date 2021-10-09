@@ -38,11 +38,6 @@ class Workerman extends Server
     protected $worker;
 
     /**
-     * @var \ManaPHP\Http\Server\HandlerInterface
-     */
-    protected $handler;
-
-    /**
      * @var array
      */
     protected $_SERVER = [];
@@ -108,17 +103,13 @@ class Workerman extends Server
     }
 
     /**
-     * @param \ManaPHP\Http\Server\HandlerInterface $handler
-     *
      * @return static
      */
-    public function start($handler)
+    public function start()
     {
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 
         $this->worker = $worker = new Worker("http://{$this->host}:{$this->port}");
-
-        $this->handler = $handler;
 
         $settings = json_stringify($this->settings);
         console_log('info', ['listen on: %s:%d with setting: %s', $this->host, $this->port, $settings]);
@@ -157,7 +148,7 @@ class Workerman extends Server
         try {
             $context = $this->context;
             $context->connection = $connection;
-            $this->handler->handle();
+            $this->httpHandler->handle();
         } catch (Throwable $throwable) {
             $str = date('c') . ' ' . get_class($throwable) . ': ' . $throwable->getMessage() . PHP_EOL;
             $str .= '    at ' . $throwable->getFile() . ':' . $throwable->getLine() . PHP_EOL;

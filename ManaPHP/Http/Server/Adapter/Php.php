@@ -140,11 +140,9 @@ class Php extends Fpm
     }
 
     /**
-     * @param \ManaPHP\Http\Server\HandlerInterface $handler
-     *
      * @return void
      */
-    public function start($handler)
+    public function start()
     {
         $this->prepareGlobals();
 
@@ -159,7 +157,7 @@ class Php extends Fpm
                 header('HTTP/1.1 404 Not Found');
             }
         } else {
-            $handler->handle();
+            $this->httpHandler->handle();
         }
     }
 }

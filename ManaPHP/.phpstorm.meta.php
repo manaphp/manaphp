@@ -67,6 +67,7 @@ namespace PHPSTORM_META {
                 'scopedJwt'       => \ManaPHP\Token\ScopedJwtInterface::class,
                 'pubSub'          => \ManaPHP\Messaging\PubSubInterface::class,
                 'amqpClient'      => \ManaPHP\Amqp\ClientInterface::class,
+                'httpHandler'     => \ManaPHP\Http\HandlerInterface::class,
                 ''                => '@|App\Services\@',
             ]
         )
@@ -132,6 +133,7 @@ namespace PHPSTORM_META {
                 'pubSub'           => \ManaPHP\Messaging\PubSubInterface::class,
                 'dataDump'         => \ManaPHP\Debugging\DataDumpInterface::class,
                 'amqpClient'       => \ManaPHP\Amqp\ClientInterface::class,
+                'httpHandler'      => \ManaPHP\Http\HandlerInterface::class,
                 ''                 => '@|App\Services\@',
             ]
         )

@@ -2,20 +2,12 @@
 
 namespace ManaPHP\Http;
 
-use ManaPHP\Http\Server\HandlerInterface;
-
 /**
- * @property-read \ManaPHP\Http\ServerInterface        $httpServer
- * @property-read \ManaPHP\Http\RequestInterface       $request
- * @property-read \ManaPHP\Http\ResponseInterface      $response
- * @property-read \ManaPHP\Http\RouterInterface        $router
- * @property-read \ManaPHP\Http\DispatcherInterface    $dispatcher
- * @property-read \ManaPHP\Http\SessionInterface       $session
- * @property-read \ManaPHP\Http\AuthorizationInterface $authorization
+ * @property-read \ManaPHP\Http\ServerInterface $httpServer
  *
  * @method void authorize()
  */
-abstract class Application extends \ManaPHP\Application implements HandlerInterface
+abstract class Application extends \ManaPHP\Application
 {
     public function __construct($loader = null)
     {
@@ -41,8 +33,6 @@ abstract class Application extends \ManaPHP\Application implements HandlerInterf
 
     }
 
-    abstract public function handle();
-
     public function main()
     {
         $this->dotenv->load();
@@ -50,6 +40,6 @@ abstract class Application extends \ManaPHP\Application implements HandlerInterf
 
         $this->configure();
 
-        $this->httpServer->start($this);
+        $this->httpServer->start();
     }
 }
