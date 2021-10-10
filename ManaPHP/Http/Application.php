@@ -9,17 +9,6 @@ namespace ManaPHP\Http;
  */
 abstract class Application extends \ManaPHP\Application
 {
-    public function __construct($loader = null)
-    {
-        parent::__construct($loader);
-
-        $this->attachEvent('request:authenticate', [$this, 'authenticate']);
-
-        if (method_exists($this, 'authorize')) {
-            $this->attachEvent('request:authorize', [$this, 'authorize']);
-        }
-    }
-
     public function getProviders()
     {
         return array_merge(parent::getProviders(), [Provider::class]);
@@ -35,6 +24,12 @@ abstract class Application extends \ManaPHP\Application
 
     public function main()
     {
+        $this->attachEvent('request:authenticate', [$this, 'authenticate']);
+
+        if (method_exists($this, 'authorize')) {
+            $this->attachEvent('request:authorize', [$this, 'authorize']);
+        }
+
         $this->dotenv->load();
         $this->config->load();
 
