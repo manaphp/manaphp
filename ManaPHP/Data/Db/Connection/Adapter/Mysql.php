@@ -104,7 +104,7 @@ class Mysql extends Connection
      */
     public function getMetadata($table)
     {
-        $fields = $this->self->query('DESCRIBE ' . $this->self->escapeIdentifier($table), [], PDO::FETCH_NUM);
+        $fields = $this->query('DESCRIBE ' . $this->escapeIdentifier($table), [], PDO::FETCH_NUM);
 
         $attributes = [];
         $primaryKeys = [];
@@ -145,7 +145,7 @@ class Mysql extends Connection
      */
     public function truncate($table)
     {
-        $this->self->execute('TRUNCATE' . ' TABLE ' . $this->self->escapeIdentifier($table));
+        $this->execute('TRUNCATE' . ' TABLE ' . $this->escapeIdentifier($table));
     }
 
     /**
@@ -155,7 +155,7 @@ class Mysql extends Connection
      */
     public function drop($table)
     {
-        $this->self->execute('DROP' . ' TABLE IF EXISTS ' . $this->self->escapeIdentifier($table));
+        $this->execute('DROP' . ' TABLE IF EXISTS ' . $this->escapeIdentifier($table));
     }
 
     /**
@@ -167,13 +167,13 @@ class Mysql extends Connection
     public function getTables($schema = null)
     {
         if ($schema) {
-            $sql = 'SHOW FULL TABLES FROM `' . $this->self->escapeIdentifier($schema) . '` WHERE Table_Type != "VIEW"';
+            $sql = 'SHOW FULL TABLES FROM `' . $this->escapeIdentifier($schema) . '` WHERE Table_Type != "VIEW"';
         } else {
             $sql = 'SHOW FULL TABLES WHERE Table_Type != "VIEW"';
         }
 
         $tables = [];
-        foreach ($this->self->query($sql, [], PDO::FETCH_NUM) as $row) {
+        foreach ($this->query($sql, [], PDO::FETCH_NUM) as $row) {
             $tables[] = $row[0];
         }
 
@@ -202,7 +202,7 @@ class Mysql extends Connection
                 . " WHERE `TABLE_NAME` = '$parts[0]' AND `TABLE_SCHEMA` = DATABASE()";
         }
 
-        $r = $this->self->query($sql, [], PDO::FETCH_NUM);
+        $r = $this->query($sql, [], PDO::FETCH_NUM);
 
         return $r && $r[0] === '1';
     }
@@ -286,7 +286,7 @@ class Mysql extends Connection
         $fields = array_keys($records[0]);
         $insertedFields = '[' . implode('],[', $fields) . ']';
 
-        $pdo = $this->self->getPdo();
+        $pdo = $this->getPdo();
 
         $rows = [];
         foreach ($records as $record) {
@@ -300,9 +300,9 @@ class Mysql extends Connection
 
         $sql
             = /**@lang text */
-            "INSERT INTO {$this->self->escapeIdentifier($table)} ($insertedFields) VALUES " . implode(', ', $rows);
+            "INSERT INTO {$this->escapeIdentifier($table)} ($insertedFields) VALUES " . implode(', ', $rows);
 
-        return $this->self->execute($sql);
+        return $this->execute($sql);
     }
 
     /**
@@ -355,9 +355,9 @@ class Mysql extends Connection
 
         $sql
             = /** @lang text */
-            "INSERT INTO {$this->self->escapeIdentifier($table)}($insertFieldsSql)"
+            "INSERT INTO {$this->escapeIdentifier($table)}($insertFieldsSql)"
             . " VALUES($insertValuesSql) ON DUPLICATE KEY UPDATE $updateFieldsSql";
 
-        return $this->self->execute('insert', $sql, $bind);
+        return $this->execute('insert', $sql, $bind);
     }
 }

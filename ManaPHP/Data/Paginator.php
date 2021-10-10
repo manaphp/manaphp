@@ -166,7 +166,7 @@ class Paginator extends Component implements PaginatorInterface
     public function __toString()
     {
         try {
-            return $this->self->renderAsHtml();
+            return $this->renderAsHtml();
         } catch (\Exception $e) {
             return '';
         }
@@ -177,7 +177,7 @@ class Paginator extends Component implements PaginatorInterface
      */
     public function jsonSerialize()
     {
-        return $this->self->renderAsArray();
+        return $this->renderAsArray();
     }
 
     /**
@@ -185,6 +185,6 @@ class Paginator extends Component implements PaginatorInterface
      */
     public function toArray()
     {
-        return $this->self->renderAsArray();
+        return $this->renderAsArray();
     }
 }

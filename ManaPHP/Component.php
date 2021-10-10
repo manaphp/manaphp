@@ -16,11 +16,6 @@ use Swoole\Coroutine;
 class Component implements Injectable, JsonSerializable, Proxyable
 {
     /**
-     * @var static
-     */
-    protected $self;
-
-    /**
      * @var int
      */
     protected $object_id;
@@ -32,14 +27,12 @@ class Component implements Injectable, JsonSerializable, Proxyable
 
     /**
      * @param \ManaPHP\Di\InjectorInterface $injector
-     * @param mixed                         $self
      *
      * @return void
      */
-    public function setInjector($injector, $self = null)
+    public function setInjector($injector)
     {
         $this->injector = $injector;
-        $this->self = $self ?? $this;
     }
 
     /**
@@ -255,7 +248,7 @@ class Component implements Injectable, JsonSerializable, Proxyable
         $data = [];
 
         foreach (get_object_vars($this) as $k => $v) {
-            if (is_object($v) || in_array($k, ['object_id', 'self'])) {
+            if (is_object($v) || $k === 'object_id') {
                 continue;
             }
 

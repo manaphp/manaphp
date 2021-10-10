@@ -27,7 +27,7 @@ class Identity extends Component implements IdentityInterface
     {
         /** @var \ManaPHP\Identifying\IdentityContext $context */
         $context = parent::createContext();
-        $context->claims = $this->self->authenticate();
+        $context->claims = $this->authenticate();
 
         return $context;
     }
@@ -137,7 +137,7 @@ class Identity extends Component implements IdentityInterface
      */
     public function isRole($name)
     {
-        $role = $this->self->getRole();
+        $role = $this->getRole();
 
         if ($name === $role) {
             return true;

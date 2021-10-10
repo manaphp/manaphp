@@ -99,7 +99,7 @@ class Invoker extends Component implements InvokerInterface
      */
     public function invoke($controller, $method)
     {
-        $args = $this->self->buildArgs($controller, $method);
+        $args = $this->buildArgs($controller, $method);
 
         return $controller->$method(...$args);
     }

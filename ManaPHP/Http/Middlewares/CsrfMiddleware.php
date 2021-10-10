@@ -96,7 +96,7 @@ class CsrfMiddleware extends Middleware
      */
     public function onValidate(EventArgs $eventArgs)
     {
-        if ($this->self->isOriginSafe()) {
+        if ($this->isOriginSafe()) {
             return;
         }
 

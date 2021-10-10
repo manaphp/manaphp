@@ -50,11 +50,11 @@ class Document extends Component
     {
         if ($str !== null) {
             if (preg_match('#^https?://#', $str)) {
-                $this->self->loadUrl($str);
+                $this->loadUrl($str);
             } elseif ($str[0] === '@' || $str[0] === '/' || $str[1] === ':') {
-                $this->self->loadFile($str, $url);
+                $this->loadFile($str, $url);
             } else {
-                $this->self->loadString($str, $url);
+                $this->loadString($str, $url);
             }
         }
     }
@@ -69,7 +69,7 @@ class Document extends Component
     {
         $str = LocalFS::fileGet($file);
 
-        return $this->self->loadString($str, $url);
+        return $this->loadString($str, $url);
     }
 
     /**
@@ -80,7 +80,7 @@ class Document extends Component
     public function loadUrl($url)
     {
         $str = $this->httpClient->get($url)->body;
-        return $this->self->loadString($str, $url);
+        return $this->loadString($str, $url);
     }
 
     /**
@@ -129,7 +129,7 @@ class Document extends Component
         $this->query = $this->injector->make('ManaPHP\Html\Dom\Query', [$this->dom]);
 
         $this->url = $url;
-        $this->base = $this->self->getBase() ?: $this->url;
+        $this->base = $this->getBase() ?: $this->url;
 
         return $this;
     }
@@ -159,7 +159,7 @@ class Document extends Component
      */
     public function save($file)
     {
-        LocalFS::filePut($file, $this->self->getString());
+        LocalFS::filePut($file, $this->getString());
 
         return $this;
     }
@@ -261,14 +261,14 @@ class Document extends Component
         if ($selector) {
             foreach ($this->query->xpath($selector, $context) as $item) {
                 if ($item->nodeName === 'a') {
-                    $item->setAttribute('href', $this->self->absolutizeUrl($item->getAttribute('href')));
+                    $item->setAttribute('href', $this->absolutizeUrl($item->getAttribute('href')));
                 } else {
-                    $this->self->absolutizeAHref(null, $item);
+                    $this->absolutizeAHref(null, $item);
                 }
             }
         } else {
             foreach ($this->query->xpath("descendant:://a[not(starts-with(@href, 'http'))]", $context) as $item) {
-                $item->setAttribute('href', $this->self->absolutizeUrl($item->getAttribute('href')));
+                $item->setAttribute('href', $this->absolutizeUrl($item->getAttribute('href')));
             }
         }
 
@@ -288,14 +288,14 @@ class Document extends Component
         if ($selector) {
             foreach ($this->query->xpath($selector, $context) as $item) {
                 if ($item->nodeName === 'a') {
-                    $item->setAttribute($attr, $this->self->absolutizeUrl($item->getAttribute($attr)));
+                    $item->setAttribute($attr, $this->absolutizeUrl($item->getAttribute($attr)));
                 } else {
-                    $this->self->absolutizeImgSrc(null, $item);
+                    $this->absolutizeImgSrc(null, $item);
                 }
             }
         } else {
             foreach ($this->query->xpath("descendant:://a[not(starts-with(@$attr, 'http'))]", $context) as $item) {
-                $item->setAttribute($attr, $this->self->absolutizeUrl($item->getAttribute($attr)));
+                $item->setAttribute($attr, $this->absolutizeUrl($item->getAttribute($attr)));
             }
         }
 
@@ -317,6 +317,6 @@ class Document extends Component
      */
     public function css($css)
     {
-        return $this->self->selector()->css($css);
+        return $this->selector()->css($css);
     }
 }

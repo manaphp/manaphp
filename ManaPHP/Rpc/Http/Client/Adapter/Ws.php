@@ -108,7 +108,7 @@ class Ws extends Client
         try {
             /** @noinspection PhpUnusedLocalVariableInspection */
             $success = false;
-            $this->self->parseResponse($message->payload);
+            $this->parseResponse($message->payload);
             $success = true;
         } finally {
             if (!$success) {
@@ -132,7 +132,7 @@ class Ws extends Client
 
         $message = $this->client->request($request, $timout);
 
-        $response = $this->self->parseResponse($message->payload);
+        $response = $this->parseResponse($message->payload);
 
         if (!isset($response['code'], $response['message'])) {
             throw new ProtocolException('missing `code` or `message` field');

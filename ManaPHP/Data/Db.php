@@ -259,7 +259,7 @@ class Db extends Component implements DbInterface
      */
     public function executeInsert($sql, $bind = [])
     {
-        return $this->self->execute('insert', $sql, $bind);
+        return $this->execute('insert', $sql, $bind);
     }
 
     /**
@@ -270,7 +270,7 @@ class Db extends Component implements DbInterface
      */
     public function executeUpdate($sql, $bind = [])
     {
-        return $this->self->execute('update', $sql, $bind);
+        return $this->execute('update', $sql, $bind);
     }
 
     /**
@@ -281,7 +281,7 @@ class Db extends Component implements DbInterface
      */
     public function executeDelete($sql, $bind = [])
     {
-        return $this->self->execute('delete', $sql, $bind);
+        return $this->execute('delete', $sql, $bind);
     }
 
     /**
@@ -306,7 +306,7 @@ class Db extends Component implements DbInterface
      */
     public function fetchOne($sql, $bind = [], $mode = PDO::FETCH_ASSOC, $useMaster = false)
     {
-        return ($rs = $this->self->fetchAll($sql, $bind, $mode, $useMaster)) ? $rs[0] : false;
+        return ($rs = $this->fetchAll($sql, $bind, $mode, $useMaster)) ? $rs[0] : false;
     }
 
     /**
@@ -385,7 +385,7 @@ class Db extends Component implements DbInterface
     {
         $context = $this->context;
 
-        $table = $this->self->completeTable($table);
+        $table = $this->completeTable($table);
 
         if (!$record) {
             throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
@@ -436,9 +436,9 @@ class Db extends Component implements DbInterface
      */
     public function insertBySql($table, $sql, $bind = [])
     {
-        $table = $this->self->completeTable($table);
+        $table = $this->completeTable($table);
 
-        return $this->self->execute('insert', /**@lang text */ "INSERT INTO $table $sql", $bind);
+        return $this->execute('insert', /**@lang text */ "INSERT INTO $table $sql", $bind);
     }
 
     /**
@@ -454,7 +454,7 @@ class Db extends Component implements DbInterface
      */
     public function update($table, $fieldValues, $conditions, $bind = [])
     {
-        $table = $this->self->completeTable($table);
+        $table = $this->completeTable($table);
 
         if (!$fieldValues) {
             throw new InvalidArgumentException(['Unable to update :table table without data', 'table' => $table]);
@@ -497,7 +497,7 @@ class Db extends Component implements DbInterface
             = /**@lang text */
             "UPDATE $table SET " . implode(',', $setFields) . ' WHERE ' . implode(' AND ', $wheres);
 
-        return $this->self->execute('update', $sql, $bind);
+        return $this->execute('update', $sql, $bind);
     }
 
     /**
@@ -511,9 +511,9 @@ class Db extends Component implements DbInterface
      */
     public function updateBySql($table, $sql, $bind = [])
     {
-        $table = $this->self->completeTable($table);
+        $table = $this->completeTable($table);
 
-        return $this->self->execute('update', /** @lang text */ "UPDATE $table SET $sql", $bind);
+        return $this->execute('update', /** @lang text */ "UPDATE $table SET $sql", $bind);
     }
 
     /**
@@ -532,7 +532,7 @@ class Db extends Component implements DbInterface
             $primaryKey = (string)key($insertFieldValues);
         }
 
-        if ($this->self->query($table)->whereEq($primaryKey, $insertFieldValues[$primaryKey])->exists()) {
+        if ($this->query($table)->whereEq($primaryKey, $insertFieldValues[$primaryKey])->exists()) {
             $bind = [];
             $updates = [];
             foreach ($updateFieldValues as $k => $v) {
@@ -553,9 +553,9 @@ class Db extends Component implements DbInterface
                     $updates[] = $v;
                 }
             }
-            return $this->self->update($table, $updates, [$primaryKey => $insertFieldValues[$primaryKey]], $bind);
+            return $this->update($table, $updates, [$primaryKey => $insertFieldValues[$primaryKey]], $bind);
         } else {
-            return $this->self->insert($table, $insertFieldValues);
+            return $this->insert($table, $insertFieldValues);
         }
     }
 
@@ -571,7 +571,7 @@ class Db extends Component implements DbInterface
      */
     public function delete($table, $conditions, $bind = [])
     {
-        $table = $this->self->completeTable($table);
+        $table = $this->completeTable($table);
 
         if (!$conditions) {
             throw new NotSupportedException(['delete must with a condition!']);
@@ -593,7 +593,7 @@ class Db extends Component implements DbInterface
         $sql
             = /** @lang text */
             "DELETE FROM $table WHERE " . implode(' AND ', $wheres);
-        return $this->self->execute('delete', $sql, $bind);
+        return $this->execute('delete', $sql, $bind);
     }
 
     /**
@@ -607,9 +607,9 @@ class Db extends Component implements DbInterface
      */
     public function deleteBySql($table, $sql, $bind = [])
     {
-        $table = $this->self->completeTable($table);
+        $table = $this->completeTable($table);
 
-        return $this->self->execute('delete', /**@lang text */ "DELETE FROM $table WHERE $sql", $bind);
+        return $this->execute('delete', /**@lang text */ "DELETE FROM $table WHERE $sql", $bind);
     }
 
     /**
@@ -641,7 +641,7 @@ class Db extends Component implements DbInterface
     protected function parseBindValue($value, $preservedStrLength)
     {
         if (is_string($value)) {
-            $quoted = $this->self->quote($value);
+            $quoted = $this->quote($value);
             if ($preservedStrLength > 0 && strlen($quoted) >= $preservedStrLength) {
                 return substr($quoted, 0, $preservedStrLength) . '...';
             } else {
@@ -679,7 +679,7 @@ class Db extends Component implements DbInterface
         } else {
             $replaces = [];
             foreach ($bind as $key => $value) {
-                $replaces[':' . $key] = $this->self->parseBindValue($value, $preservedStrLength);
+                $replaces[':' . $key] = $this->parseBindValue($value, $preservedStrLength);
             }
 
             return strtr($context->sql, $replaces);
@@ -896,7 +896,7 @@ class Db extends Component implements DbInterface
             $connection = $this->poolManager->pop($this, $this->timeout, $type);
         }
 
-        $table = $this->self->completeTable($table);
+        $table = $this->completeTable($table);
         try {
             $start_time = microtime(true);
             $meta = $connection->getMetadata($table);

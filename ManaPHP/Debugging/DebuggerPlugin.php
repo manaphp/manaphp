@@ -214,7 +214,7 @@ class DebuggerPlugin extends Plugin
             && preg_match('#^([\w/]+)\.(html|json|txt|raw)$#', $debugger, $match)
         ) {
             $context->enabled = false;
-            if (($data = $this->self->readData($match[1])) !== false) {
+            if (($data = $this->readData($match[1])) !== false) {
                 $ext = $match[2];
                 if ($ext === 'html') {
                     $this->response->setContent(strtr(LocalFS::fileGet($this->template), ['DEBUGGER_DATA' => $data]));
@@ -253,7 +253,7 @@ class DebuggerPlugin extends Plugin
         $context = $this->context;
 
         if ($context->enabled) {
-            $this->self->writeData($context->key, $this->self->getData());
+            $this->writeData($context->key, $this->getData());
         }
     }
 
@@ -476,7 +476,7 @@ class DebuggerPlugin extends Plugin
         $context = $this->context;
 
         $data = [];
-        $data['basic'] = $this->self->getBasic();
+        $data['basic'] = $this->getBasic();
         $levels = array_flip($this->logger->getLevels());
         $data['logger'] = ['log' => $context->log, 'levels' => $levels, 'level' => Logger::LEVEL_DEBUG];
         $data['sql'] = [

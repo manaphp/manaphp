@@ -31,7 +31,7 @@ class Http extends Client
             $options['keepalive'] = true;
         }
 
-        $this->self->setEndpoint($options['endpoint']);
+        $this->setEndpoint($options['endpoint']);
         unset($options['endpoint']);
 
         if (isset($options[0])) {

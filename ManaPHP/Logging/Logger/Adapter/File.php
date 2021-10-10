@@ -96,10 +96,10 @@ class File extends Logger
     {
         $str = '';
         foreach ($logs as $log) {
-            $s = $this->self->format($log);
+            $s = $this->format($log);
             $str = $str === '' ? $s : $str . $s;
         }
 
-        $this->self->write($str);
+        $this->write($str);
     }
 }

@@ -309,7 +309,7 @@ class Container implements ContainerInterface
 
             if ($instance instanceof Injectable) {
                 $injector = new Injector($this);
-                $instance->setInjector($injector, $instance);
+                $instance->setInjector($injector);
             }
 
             /** @noinspection PhpPossiblePolymorphicInvocationInspection */
@@ -320,7 +320,7 @@ class Container implements ContainerInterface
 
             if ($instance instanceof Injectable) {
                 $injector = new Injector($this);
-                $instance->setInjector($injector, $resolved ?? $instance);
+                $instance->setInjector($injector);
             }
         }
 

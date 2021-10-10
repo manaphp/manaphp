@@ -99,7 +99,7 @@ class Request extends Component implements RequestInterface
                 throw new InvalidValueException(['the value of `:name` name is not scalar', 'name' => $name]);
             }
 
-            return $default === null ? $value : $this->self->normalizeValue($name, $value, $default);
+            return $default === null ? $value : $this->normalizeValue($name, $value, $default);
         } elseif ($default === null) {
             return $this->validator->validateValue($name, null, ['required']);
         } else {

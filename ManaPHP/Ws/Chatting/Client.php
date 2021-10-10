@@ -53,7 +53,7 @@ class Client extends Component implements ClientInterface
      */
     public function pushToRoom($room, $message)
     {
-        $this->self->push('message.room', $room, '*', $message);
+        $this->push('message.room', $room, '*', $message);
     }
 
     /**
@@ -65,7 +65,7 @@ class Client extends Component implements ClientInterface
      */
     public function pushToId($room, $id, $message)
     {
-        $this->self->push("message.id", $room, $id, $message);
+        $this->push("message.id", $room, $id, $message);
     }
 
     /**
@@ -77,12 +77,12 @@ class Client extends Component implements ClientInterface
      */
     public function pushToName($room, $name, $message)
     {
-        $this->self->push("message.name", $room, $name, $message);
+        $this->push("message.name", $room, $name, $message);
     }
 
     public function broadcast($message)
     {
-        $this->self->push('message.broadcast', '*', '*', $message);
+        $this->push('message.broadcast', '*', '*', $message);
     }
 
     /**
@@ -93,7 +93,7 @@ class Client extends Component implements ClientInterface
      */
     public function closeRoom($room, $message)
     {
-        $this->self->push('room.close', $room, '*', $message);
+        $this->push('room.close', $room, '*', $message);
     }
 
     /**
@@ -105,7 +105,7 @@ class Client extends Component implements ClientInterface
      */
     public function kickoutId($room, $id, $message)
     {
-        $this->self->push("kickout.id", $room, $id, $message);
+        $this->push("kickout.id", $room, $id, $message);
     }
 
     /**
@@ -117,6 +117,6 @@ class Client extends Component implements ClientInterface
      */
     public function kickoutName($room, $name, $message)
     {
-        $this->self->push('kickout.name', $room, $name, $message);
+        $this->push('kickout.name', $room, $name, $message);
     }
 }

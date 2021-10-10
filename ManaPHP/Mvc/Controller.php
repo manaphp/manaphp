@@ -25,7 +25,7 @@ abstract class Controller extends \ManaPHP\Http\Controller
         if ($this->request->isGet() && !$this->request->isAjax()) {
             $view = $action . 'View';
             if (method_exists($this, $view)) {
-                if (is_array($r = $this->invoker->invoke($this->self, $view))) {
+                if (is_array($r = $this->invoker->invoke($this, $view))) {
                     return $this->view->setVars($r);
                 } elseif ($r === null) {
                     return $this->view;
@@ -35,10 +35,10 @@ abstract class Controller extends \ManaPHP\Http\Controller
             } elseif ($this->view->exists()) {
                 return $this->view;
             } else {
-                return $this->invoker->invoke($this->self, $action . 'Action');
+                return $this->invoker->invoke($this, $action . 'Action');
             }
         } else {
-            return $this->invoker->invoke($this->self, $action . 'Action');
+            return $this->invoker->invoke($this, $action . 'Action');
         }
     }
 }

@@ -305,7 +305,7 @@ class Client extends Component implements ClientInterface
             null;
         }
 
-        $response = $this->self->request($method, $url, $body, $headers, $options);
+        $response = $this->request($method, $url, $body, $headers, $options);
 
         if (is_string($response->body) && str_contains($response->content_type, '/html')) {
             $response->body = json_parse($response->body);
@@ -328,7 +328,7 @@ class Client extends Component implements ClientInterface
      */
     public function get($url, $headers = [], $options = [])
     {
-        return $this->self->request('GET', $url, null, $headers, $options);
+        return $this->request('GET', $url, null, $headers, $options);
     }
 
     /**
@@ -341,7 +341,7 @@ class Client extends Component implements ClientInterface
      */
     public function post($url, $body = [], $headers = [], $options = [])
     {
-        return $this->self->request('POST', $url, $body, $headers, $options);
+        return $this->request('POST', $url, $body, $headers, $options);
     }
 
     /**
@@ -353,7 +353,7 @@ class Client extends Component implements ClientInterface
      */
     public function delete($url, $headers = [], $options = [])
     {
-        return $this->self->request('DELETE', $url, null, $headers, $options);
+        return $this->request('DELETE', $url, null, $headers, $options);
     }
 
     /**
@@ -366,7 +366,7 @@ class Client extends Component implements ClientInterface
      */
     public function put($url, $body = [], $headers = [], $options = [])
     {
-        return $this->self->request('PUT', $url, $body, $headers, $options);
+        return $this->request('PUT', $url, $body, $headers, $options);
     }
 
     /**
@@ -379,7 +379,7 @@ class Client extends Component implements ClientInterface
      */
     public function patch($url, $body = [], $headers = [], $options = [])
     {
-        return $this->self->request('PATCH', $url, $body, $headers, $options);
+        return $this->request('PATCH', $url, $body, $headers, $options);
     }
 
     /**
@@ -392,6 +392,6 @@ class Client extends Component implements ClientInterface
      */
     public function head($url, $body = [], $headers = [], $options = [])
     {
-        return $this->self->request('HEAD', $url, $body, $headers, $options);
+        return $this->request('HEAD', $url, $body, $headers, $options);
     }
 }

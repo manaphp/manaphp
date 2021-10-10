@@ -133,7 +133,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         foreach ($this->ids[$room] ?? [] as $id => $fds) {
             foreach ($fds as $fd => $_) {
                 $sent[$fd] = true;
-                $this->self->push($fd, $message);
+                $this->push($fd, $message);
             }
         }
 
@@ -141,7 +141,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
             foreach ($fds as $fd => $_) {
                 if (!isset($sent[$fd])) {
                     $sent[$fd] = true;
-                    $this->self->push($fd, $message);
+                    $this->push($fd, $message);
                 }
             }
         }
@@ -156,7 +156,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
     {
         foreach ($receivers as $id) {
             foreach ($this->ids[$room][$id] ?? [] as $fd => $_) {
-                $this->self->push($fd, $message);
+                $this->push($fd, $message);
             }
         }
     }
@@ -170,7 +170,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
     {
         foreach ($receivers as $name) {
             foreach ($this->names[$room][$name] ?? [] as $fd => $_) {
-                $this->self->push($fd, $message);
+                $this->push($fd, $message);
             }
         }
     }
@@ -184,7 +184,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
             $this->wsServer->broadcast($message);
         } else {
             foreach ($this->fds as $fd => $_) {
-                $this->self->push($fd, $message);
+                $this->push($fd, $message);
             }
         }
     }
@@ -199,7 +199,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         foreach ($this->ids[$room] ?? [] as $id => $fds) {
             foreach ($fds as $fd => $_) {
                 $sent[$fd] = true;
-                $this->self->push($fd, $message);
+                $this->push($fd, $message);
             }
         }
         unset($this->ids[$room]);
@@ -208,7 +208,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
             foreach ($fds as $fd => $_) {
                 if (!isset($sent[$fd])) {
                     $sent[$fd] = true;
-                    $this->self->push($fd, $message);
+                    $this->push($fd, $message);
                 }
             }
         }
@@ -228,7 +228,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
             foreach ($this->ids[$room][$id] ?? [] as $fds) {
                 foreach ($fds as $fd => $_) {
                     $sent[$fd] = true;
-                    $this->self->push($fd, $message);
+                    $this->push($fd, $message);
                 }
             }
             unset($this->ids[$room][$id]);
@@ -256,7 +256,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
             foreach ($this->names[$room][$name] ?? [] as $fds) {
                 foreach ($fds as $fd => $_) {
                     $sent[$fd] = true;
-                    $this->self->push($fd, $message);
+                    $this->push($fd, $message);
                 }
             }
             unset($this->names[$room][$name]);
@@ -280,19 +280,19 @@ class Server extends Component implements ServerInterface, LogCategorizable
     public function dispatch($type, $room, $receivers, $message)
     {
         if ($type === 'message.room') {
-            $this->self->pushToRoom($room, $message);
+            $this->pushToRoom($room, $message);
         } elseif ($type === 'message.broadcast') {
-            $this->self->broadcast($message);
+            $this->broadcast($message);
         } elseif ($type === 'message.id') {
-            $this->self->pushToId($room, $receivers, $message);
+            $this->pushToId($room, $receivers, $message);
         } elseif ($type === 'message.name') {
-            $this->self->pushToName($room, $receivers, $message);
+            $this->pushToName($room, $receivers, $message);
         } elseif ($type === 'room.close') {
-            $this->self->closeRoom($room, $message);
+            $this->closeRoom($room, $message);
         } elseif ($type === 'kickout.id') {
-            $this->self->kickoutId($room, $receivers, $message);
+            $this->kickoutId($room, $receivers, $message);
         } elseif ($type === 'kickout.name') {
-            $this->self->kickoutName($room, $receivers, $message);
+            $this->kickoutName($room, $receivers, $message);
         } else {
             $this->logger->warn(
                 ['unknown `:type` type message: :message', 'type' => $type, 'message' => $message],
@@ -312,7 +312,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
                         $receivers = explode(',', $receivers);
 
                         $this->fireEvent('chatServer:pushing', compact('type', 'receivers', 'message'));
-                        $this->self->dispatch($type, $room, $receivers, $message);
+                        $this->dispatch($type, $room, $receivers, $message);
                         $this->fireEvent('chatServer:pushed', compact('type', 'receivers', 'message'));
                     } else {
                         $this->logger->warn($channel, 'chatServer.bad_channel');

@@ -122,9 +122,9 @@ class SlowlogMiddleware extends Middleware
             'route'    => $route,
             'url'      => $this->request->getUrl(),
             '_REQUEST' => $this->request->get(),
-            'eid'      => $this->self->getEid($elapsed)
+            'eid'      => $this->getEid($elapsed)
         ];
 
-        $this->self->write($elapsed, $message);
+        $this->write($elapsed, $message);
     }
 }

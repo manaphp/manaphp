@@ -21,7 +21,7 @@ abstract class Cache extends Component implements CacheInterface
      */
     public function get($key)
     {
-        if (($data = $this->self->do_get($key)) === false) {
+        if (($data = $this->do_get($key)) === false) {
             $this->fireEvent('cache:miss', compact('key'));
             return false;
         } else {
@@ -53,7 +53,7 @@ abstract class Cache extends Component implements CacheInterface
         } elseif ($value === 'false') {
             throw new InvalidValueException(['value of `:key` key must be NOT `false` string', 'key' => $key]);
         } else {
-            $this->self->do_set($key, $value, $ttl);
+            $this->do_set($key, $value, $ttl);
         }
     }
 
@@ -71,7 +71,7 @@ abstract class Cache extends Component implements CacheInterface
      */
     public function delete($key)
     {
-        $this->self->do_delete($key);
+        $this->do_delete($key);
     }
 
     /**
@@ -88,7 +88,7 @@ abstract class Cache extends Component implements CacheInterface
      */
     public function exists($key)
     {
-        return $this->self->do_exists($key);
+        return $this->do_exists($key);
     }
 
     /**
@@ -100,10 +100,10 @@ abstract class Cache extends Component implements CacheInterface
      */
     public function remember($key, $ttl, $callback)
     {
-        $r = $this->self->get($key);
+        $r = $this->get($key);
         if ($r === false) {
             $r = $callback();
-            $this->self->set($key, json_stringify($r), $ttl);
+            $this->set($key, json_stringify($r), $ttl);
         } else {
             $r = json_parse($r);
         }

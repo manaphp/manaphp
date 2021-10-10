@@ -6,9 +6,8 @@ interface Injectable
 {
     /**
      * @param \ManaPHP\Di\InjectorInterface $injector
-     * @param mixed                         $self
      *
      * @return void
      */
-    public function setInjector($injector, $self = null);
+    public function setInjector($injector);
 }

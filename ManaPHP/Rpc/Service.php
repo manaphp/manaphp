@@ -10,11 +10,6 @@ use ReflectionMethod;
 class Service implements Injectable
 {
     /**
-     * @var mixed
-     */
-    protected $self;
-
-    /**
      * @var \ManaPHP\Rpc\ClientInterface
      */
     protected $rpcClient;
@@ -52,10 +47,9 @@ class Service implements Injectable
         $this->rpcClient = $this->injector->make($class, $options);
     }
 
-    public function setInjector($injector, $self = null)
+    public function setInjector($injector)
     {
         $this->injector = $injector;
-        $this->self = $self ?? $this;
     }
 
     /**

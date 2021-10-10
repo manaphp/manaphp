@@ -30,7 +30,7 @@ class Sqlite extends Connection
      */
     public function getMetadata($table)
     {
-        $fields = $this->self->query('PRAGMA table_info(' . $this->self->escapeIdentifier($table) . ')', null);
+        $fields = $this->query('PRAGMA table_info(' . $this->escapeIdentifier($table) . ')', null);
 
         $attributes = [];
         $primaryKeys = [];
@@ -64,8 +64,8 @@ class Sqlite extends Connection
      */
     public function truncate($table)
     {
-        $this->self->execute('DELETE' . ' FROM ' . $this->self->escapeIdentifier($table));
-        $this->self->execute('DELETE' . ' FROM sqlite_sequence WHERE name=:name', ['name' => $table]);
+        $this->execute('DELETE' . ' FROM ' . $this->escapeIdentifier($table));
+        $this->execute('DELETE' . ' FROM sqlite_sequence WHERE name=:name', ['name' => $table]);
     }
 
     /**
@@ -75,7 +75,7 @@ class Sqlite extends Connection
      */
     public function drop($table)
     {
-        $this->self->execute('DROP' . ' TABLE IF EXISTS ' . $this->self->escapeIdentifier($table));
+        $this->execute('DROP' . ' TABLE IF EXISTS ' . $this->escapeIdentifier($table));
     }
 
     /**
@@ -89,7 +89,7 @@ class Sqlite extends Connection
     {
         $sql = 'SELECT' . " tbl_name FROM sqlite_master WHERE type = 'table' ORDER BY tbl_name";
         $tables = [];
-        foreach ($this->self->query($sql) as $row) {
+        foreach ($this->query($sql) as $row) {
             $tables[] = $row['tbl_name'];
         }
 
@@ -111,7 +111,7 @@ class Sqlite extends Connection
             "SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM sqlite_master"
             . " WHERE type='table' AND tbl_name='$parts[0]'";
 
-        $r = $this->self->query($sql, [], PDO::FETCH_NUM);
+        $r = $this->query($sql, [], PDO::FETCH_NUM);
 
         return $r && $r[0] === '1';
     }

@@ -183,7 +183,7 @@ class Response extends Component implements ResponseInterface
         $context = $this->context;
 
         $context->status_code = (int)$code;
-        $context->status_text = $text ?: $this->self->getStatusText($code);
+        $context->status_text = $text ?: $this->getStatusText($code);
 
         return $this;
     }
@@ -353,7 +353,7 @@ class Response extends Component implements ResponseInterface
             $date = new DateTime('now', new DateTimeZone('UTC'));
             $date->setTimestamp($timestamp);
 
-            $this->self->setHeader('Expires', $date->format('D, d M Y H:i:s') . ' GMT');
+            $this->setHeader('Expires', $date->format('D, d M Y H:i:s') . ' GMT');
         }
 
         return $this;
@@ -383,7 +383,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setETag($etag)
     {
-        $this->self->setHeader('ETag', $etag);
+        $this->setHeader('ETag', $etag);
 
         return $this;
     }
@@ -396,7 +396,7 @@ class Response extends Component implements ResponseInterface
     public function setCacheControl($control)
     {
         if (str_contains('GET,OPTIONS', $this->request->getMethod())) {
-            return $this->self->setHeader('Cache-Control', $control);
+            return $this->setHeader('Cache-Control', $control);
         }
 
         return $this;
@@ -411,8 +411,8 @@ class Response extends Component implements ResponseInterface
     public function setMaxAge($age, $extra = null)
     {
         if (str_contains('GET,OPTIONS', $this->request->getMethod())) {
-            $this->self->setHeader('Cache-Control', $extra ? "$extra, max-age=$age" : "max-age=$age");
-            $this->self->setExpires(time() + $age);
+            $this->setHeader('Cache-Control', $extra ? "$extra, max-age=$age" : "max-age=$age");
+            $this->setExpires(time() + $age);
         }
 
         return $this;
@@ -429,9 +429,9 @@ class Response extends Component implements ResponseInterface
     public function setContentType($contentType, $charset = null)
     {
         if ($charset === null) {
-            $this->self->setHeader('Content-Type', $contentType);
+            $this->setHeader('Content-Type', $contentType);
         } else {
-            $this->self->setHeader('Content-Type', $contentType . '; charset=' . $charset);
+            $this->setHeader('Content-Type', $contentType . '; charset=' . $charset);
         }
 
         return $this;
@@ -458,12 +458,12 @@ class Response extends Component implements ResponseInterface
     public function redirect($location, $temporarily = true)
     {
         if ($temporarily) {
-            $this->self->setStatus(302, 'Temporarily Moved');
+            $this->setStatus(302, 'Temporarily Moved');
         } else {
-            $this->self->setStatus(301, 'Permanently Moved');
+            $this->setStatus(301, 'Permanently Moved');
         }
 
-        $this->self->setHeader('Location', $this->url->get($location));
+        $this->setHeader('Location', $this->url->get($location));
 
         throw new AbortException();
 
@@ -494,7 +494,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setJsonOk($message = '')
     {
-        return $this->self->setJsonContent(['code' => $this->ok_code, 'message' => $message]);
+        return $this->setJsonContent(['code' => $this->ok_code, 'message' => $message]);
     }
 
     /**
@@ -505,7 +505,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setJsonError($message, $code = null)
     {
-        return $this->self->setJsonContent(['code' => $code ?? $this->error_code, 'message' => $message]);
+        return $this->setJsonContent(['code' => $code ?? $this->error_code, 'message' => $message]);
     }
 
     /**
@@ -516,7 +516,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setJsonData($data, $message = '')
     {
-        return $this->self->setJsonContent(['code' => $this->ok_code, 'message' => $message, 'data' => $data]);
+        return $this->setJsonContent(['code' => $this->ok_code, 'message' => $message, 'data' => $data]);
     }
 
     /**
@@ -539,7 +539,7 @@ class Response extends Component implements ResponseInterface
             $json['exception'] = explode("\n", $throwable);
         }
 
-        return $this->self->setStatus($code)->setJsonContent($json);
+        return $this->setStatus($code)->setJsonContent($json);
     }
 
     /**
@@ -553,7 +553,7 @@ class Response extends Component implements ResponseInterface
     {
         $context = $this->context;
 
-        $this->self->setHeader('Content-Type', 'application/json; charset=utf-8');
+        $this->setHeader('Content-Type', 'application/json; charset=utf-8');
 
         if (is_array($content) || is_string($content)) {
             null;
@@ -605,11 +605,11 @@ class Response extends Component implements ResponseInterface
         if (!LocalFS::fileExists($file)) {
             throw new FileNotFoundException(['Sent file is not exists: `:file`', 'file' => $file]);
         }
-        $this->self->setHeader('Content-Length', LocalFS::fileSize($file));
+        $this->setHeader('Content-Length', LocalFS::fileSize($file));
 
         $context->file = $file;
 
-        $this->self->setAttachment($attachmentName);
+        $this->setAttachment($attachmentName);
 
         return $this;
     }
@@ -643,11 +643,11 @@ class Response extends Component implements ResponseInterface
             }
         }
 
-        $this->self->setHeader('Content-Description', 'File Transfer');
-        $this->self->setHeader('Content-Type', 'application/octet-stream');
-        $this->self->setHeader('Content-Disposition', 'attachment; filename=' . $attachmentName);
-        $this->self->setHeader('Content-Transfer-Encoding', 'binary');
-        $this->self->setHeader('Cache-Control', 'must-revalidate');
+        $this->setHeader('Content-Description', 'File Transfer');
+        $this->setHeader('Content-Type', 'application/octet-stream');
+        $this->setHeader('Content-Disposition', 'attachment; filename=' . $attachmentName);
+        $this->setHeader('Content-Transfer-Encoding', 'binary');
+        $this->setHeader('Cache-Control', 'must-revalidate');
 
         return $this;
     }
@@ -661,7 +661,7 @@ class Response extends Component implements ResponseInterface
      */
     public function setCsvContent($rows, $name, $header = null)
     {
-        $this->self->setAttachment(pathinfo($name, PATHINFO_EXTENSION) === 'csv' ? $name : $name . '.csv');
+        $this->setAttachment(pathinfo($name, PATHINFO_EXTENSION) === 'csv' ? $name : $name . '.csv');
 
         $file = fopen('php://temp', 'rb+');
         fprintf($file, "\xEF\xBB\xBF");
@@ -684,8 +684,8 @@ class Response extends Component implements ResponseInterface
         $content = stream_get_contents($file);
         fclose($file);
 
-        $this->self->setContentType('text/csv');
-        $this->self->setContent($content);
+        $this->setContentType('text/csv');
+        $this->setContent($content);
 
         return $this;
     }

@@ -120,7 +120,7 @@ class Dotenv extends Component implements DotenvInterface
 
         $lines = preg_split('#[\r\n]+#', $lines, -1, PREG_SPLIT_NO_EMPTY);
 
-        $env = $this->self->parse($lines);
+        $env = $this->parse($lines);
 
         /** @noinspection AdditionOperationOnArraysInspection */
         $this->env += $env;

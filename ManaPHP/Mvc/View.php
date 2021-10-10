@@ -237,7 +237,7 @@ class View extends Component implements ViewInterface
 
         if ($vars !== []) {
             $context->vars = $vars;
-            $this->self->setMaxAge(0);
+            $this->setMaxAge(0);
         }
 
         if ($template === null) {
@@ -279,7 +279,7 @@ class View extends Component implements ViewInterface
             $context->content = $this->renderer->render($template, $context->vars, false);
 
             if ($context->layout !== false) {
-                $layout = $this->self->findLayout();
+                $layout = $this->findLayout();
                 $context->content = $this->renderer->render($layout, $context->vars, false);
             }
         } finally {
@@ -289,7 +289,7 @@ class View extends Component implements ViewInterface
         $this->fireEvent('view:rendered');
 
         if ($this->autofix_url) {
-            $this->self->fixUrl();
+            $this->fixUrl();
         }
 
         return $context->content;
@@ -385,10 +385,10 @@ class View extends Component implements ViewInterface
     public function widget($widget, $options = [])
     {
         if ($options !== []) {
-            $this->self->setMaxAge(0);
+            $this->setMaxAge(0);
         }
 
-        if (!$widgetClassName = $this->self->getWidgetClassName($widget)) {
+        if (!$widgetClassName = $this->getWidgetClassName($widget)) {
             throw new InvalidValueException(['`%s` class is not exists', $widgetClassName]);
         }
 

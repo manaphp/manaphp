@@ -15,7 +15,7 @@ abstract class Image extends Component implements ImageInterface
      */
     public function getWidth()
     {
-        return $this->self->do_getWidth();
+        return $this->do_getWidth();
     }
 
     abstract public function do_getHeight();
@@ -27,7 +27,7 @@ abstract class Image extends Component implements ImageInterface
      */
     public function getHeight()
     {
-        return $this->self->do_getHeight();
+        return $this->do_getHeight();
     }
 
     /**
@@ -50,7 +50,7 @@ abstract class Image extends Component implements ImageInterface
      */
     public function crop($width, $height, $offsetX = 0, $offsetY = 0)
     {
-        $this->self->do_crop($width, $height, $offsetX, $offsetY);
+        $this->do_crop($width, $height, $offsetX, $offsetY);
 
         return $this;
     }
@@ -71,7 +71,7 @@ abstract class Image extends Component implements ImageInterface
      */
     public function resize($width, $height)
     {
-        $this->self->do_resize($width, $height);
+        $this->do_resize($width, $height);
 
         return $this;
     }
@@ -86,8 +86,8 @@ abstract class Image extends Component implements ImageInterface
      */
     public function resizeCropCenter($width, $height)
     {
-        $_width = $this->self->do_getWidth();
-        $_height = $this->self->do_getHeight();
+        $_width = $this->do_getWidth();
+        $_height = $this->do_getHeight();
 
         if ($_width / $_height > $width / $height) {
             $crop_height = $_height;
@@ -101,8 +101,8 @@ abstract class Image extends Component implements ImageInterface
             $offsetX = 0;
         }
 
-        $this->self->crop($crop_width, $crop_height, $offsetX, $offsetY);
-        $this->self->scale($width / $crop_width);
+        $this->crop($crop_width, $crop_height, $offsetX, $offsetY);
+        $this->scale($width / $crop_width);
 
         return $this;
     }
@@ -125,8 +125,8 @@ abstract class Image extends Component implements ImageInterface
      */
     public function scale($ratio)
     {
-        $_width = (int)$this->self->do_getWidth();
-        $_height = (int)$this->self->do_getHeight();
+        $_width = (int)$this->do_getWidth();
+        $_height = (int)$this->do_getHeight();
 
         if ($ratio === 1) {
             return $this;
@@ -135,7 +135,7 @@ abstract class Image extends Component implements ImageInterface
         $width = (int)($_width * $ratio);
         $height = (int)($_height * $ratio);
 
-        $this->self->do_resize($width, $height);
+        $this->do_resize($width, $height);
 
         return $this;
     }
@@ -149,11 +149,11 @@ abstract class Image extends Component implements ImageInterface
      */
     public function scaleFixedWidth($width)
     {
-        $_width = $this->self->do_getWidth();
-        $_height = $this->self->do_getHeight();
+        $_width = $this->do_getWidth();
+        $_height = $this->do_getHeight();
 
         $height = (int)($_height * $width / $_width);
-        $this->self->do_resize($width, $height);
+        $this->do_resize($width, $height);
 
         return $this;
     }
@@ -167,11 +167,11 @@ abstract class Image extends Component implements ImageInterface
      */
     public function scaleFixedHeight($height)
     {
-        $_width = $this->self->do_getWidth();
-        $_height = $this->self->do_getHeight();
+        $_width = $this->do_getWidth();
+        $_height = $this->do_getHeight();
 
         $width = (int)($_width * $height / $_height);
-        $this->self->do_resize($width, $height);
+        $this->do_resize($width, $height);
 
         return $this;
     }
@@ -187,7 +187,7 @@ abstract class Image extends Component implements ImageInterface
      */
     public function rotate($degrees, $background = 0xffffff, $alpha = 1.0)
     {
-        $this->self->do_rotate($degrees, $background, $alpha);
+        $this->do_rotate($degrees, $background, $alpha);
 
         return $this;
     }
@@ -233,7 +233,7 @@ abstract class Image extends Component implements ImageInterface
         $size = 12,
         $font_file = null
     ) {
-        $this->self->do_text($text, $offsetX, $offsetY, $opacity, $color, $size, $font_file);
+        $this->do_text($text, $offsetX, $offsetY, $opacity, $color, $size, $font_file);
 
         return $this;
     }
@@ -258,7 +258,7 @@ abstract class Image extends Component implements ImageInterface
      */
     public function watermark($file, $offsetX = 0, $offsetY = 0, $opacity = 1.0)
     {
-        $this->self->do_watermark($file, $offsetX, $offsetY, $opacity);
+        $this->do_watermark($file, $offsetX, $offsetY, $opacity);
 
         return $this;
     }
@@ -279,6 +279,6 @@ abstract class Image extends Component implements ImageInterface
      */
     public function save($file, $quality = 80)
     {
-        $this->self->do_save($file, $quality);
+        $this->do_save($file, $quality);
     }
 }

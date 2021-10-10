@@ -179,11 +179,11 @@ class Renderer extends Component implements RendererInterface
      */
     public function renderFile($file, $vars = [])
     {
-        $this->self->lock();
+        $this->lock();
         try {
-            return $this->self->render($file, $vars);
+            return $this->render($file, $vars);
         } finally {
-            $this->self->unlock();
+            $this->unlock();
         }
     }
 
@@ -195,7 +195,7 @@ class Renderer extends Component implements RendererInterface
      */
     public function partial($path, $vars = [])
     {
-        $this->self->render($path, $vars, true);
+        $this->render($path, $vars, true);
     }
 
     /**

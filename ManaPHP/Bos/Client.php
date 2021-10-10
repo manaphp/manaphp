@@ -129,7 +129,7 @@ class Client extends Component implements ClientInterface
      */
     public function putObject($file, $bucket, $key, $policy = [])
     {
-        $url = $this->self->getPutObjectUrl($bucket, $key, $policy, 3600);
+        $url = $this->getPutObjectUrl($bucket, $key, $policy, 3600);
 
         $file = $this->alias->resolve($file);
 
@@ -145,7 +145,7 @@ class Client extends Component implements ClientInterface
             throw new MissingFieldException('token');
         }
 
-        return $this->self->parsePutObjectResponse($body['data']['token']);
+        return $this->parsePutObjectResponse($body['data']['token']);
     }
 
     /**

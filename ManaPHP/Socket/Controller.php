@@ -18,6 +18,6 @@ class Controller extends \ManaPHP\Controller
     {
         $method = $action . 'Action';
 
-        return method_exists($this, $method) ? $this->invoker->invoke($this->self, $method) : null;
+        return method_exists($this, $method) ? $this->invoker->invoke($this, $method) : null;
     }
 }

@@ -56,7 +56,7 @@ class ScopedJwt extends Component implements ScopedJwtInterface
 
         $claims['scope'] = $scope;
 
-        return $this->jwt->encode($claims, $ttl, $this->self->getKey($scope));
+        return $this->jwt->encode($claims, $ttl, $this->getKey($scope));
     }
 
     /**
@@ -80,7 +80,7 @@ class ScopedJwt extends Component implements ScopedJwtInterface
         }
 
         if ($verify) {
-            $this->self->verify($token, $scope);
+            $this->verify($token, $scope);
         }
 
         return $claims;
@@ -94,7 +94,7 @@ class ScopedJwt extends Component implements ScopedJwtInterface
      */
     public function verify($token, $scope)
     {
-        $this->jwt->verify($token, $this->self->getKey($scope));
+        $this->jwt->verify($token, $this->getKey($scope));
     }
 
     /**

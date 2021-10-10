@@ -281,7 +281,7 @@ class Dispatcher extends Component implements DispatcherInterface
         $controllerInstance = $this->injector->get($controllerClassName);
         $context->controllerInstance = $controllerInstance;
 
-        return $this->self->invokeAction($controllerInstance, $action);
+        return $this->invokeAction($controllerInstance, $action);
     }
 
     /**
