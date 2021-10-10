@@ -17,7 +17,6 @@ use ManaPHP\Event\Listener\Provider as ListenerProvider;
  * @property-read \ManaPHP\AliasInterface                $alias
  * @property-read \ManaPHP\LoaderInterface               $loader
  * @property-read \ManaPHP\Configuration\DotenvInterface $dotenv
- * @property-read \ManaPHP\ErrorHandlerInterface         $errorHandler
  * @property-read \ManaPHP\Cli\RunnerInterface           $cliRunner
  */
 class Application extends Component implements ApplicationInterface
@@ -169,16 +168,6 @@ class Application extends Component implements ApplicationInterface
             $instance = $this->container->get($provider);
             $instance->boot($this->container);
         }
-    }
-
-    /**
-     * @param \Throwable $exception
-     *
-     * @return void
-     */
-    public function handleException($exception)
-    {
-        $this->errorHandler->handle($exception);
     }
 
     public function main()
