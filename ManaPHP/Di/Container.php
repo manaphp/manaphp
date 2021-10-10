@@ -253,7 +253,7 @@ class Container implements ContainerInterface
         }
 
         if ($instance instanceof Injectable) {
-            $instance->setInjector($this);
+            $instance->setInjector(new Injector($this));
         }
 
         return $instance;
@@ -351,14 +351,14 @@ class Container implements ContainerInterface
         } elseif ($definition instanceof Closure) {
             $instance = $definition();
             if ($instance instanceof Injectable) {
-                $instance->setInjector($this);
+                $instance->setInjector(new Injector($this));
             }
 
             return $this->setInternal($name, $instance);
         } elseif (is_object($definition)) {
             $instance = $definition;
             if ($instance instanceof Injectable) {
-                $instance->setInjector($this);
+                $instance->setInjector(new Injector($this));
             }
             return $this->setInternal($name, $instance);
         } elseif (isset($definition['class'])) {
