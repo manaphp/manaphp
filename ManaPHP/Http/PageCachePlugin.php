@@ -189,7 +189,7 @@ class PageCachePlugin extends Plugin
         }
 
         $content = $this->response->getContent();
-        $etag = md5($context);
+        $etag = md5($content);
 
         $this->redisCache->hMSet(
             $context->key, [
