@@ -180,7 +180,7 @@ class Workerman extends Server
             }
         }
 
-        $this->fireEvent('response:sending');
+        $this->fireEvent('request:responding');
 
         Http::header('HTTP', true, $this->response->getStatusCode());
 
@@ -213,6 +213,6 @@ class Workerman extends Server
             $this->context->connection->close($content);
         }
 
-        $this->fireEvent('response:sent');
+        $this->fireEvent('request:responded');
     }
 }

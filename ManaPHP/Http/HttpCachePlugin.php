@@ -27,7 +27,7 @@ class HttpCachePlugin extends Plugin
         }
 
         if ($this->enabled) {
-            $this->attachEvent('response:sending', [$this, 'onResponseSending']);
+            $this->attachEvent('request:responding', [$this, 'onRequestResponding']);
         }
     }
 
@@ -35,7 +35,7 @@ class HttpCachePlugin extends Plugin
      * @return void
      * @throws MisuseException
      */
-    public function onResponseSending()
+    public function onRequestResponding()
     {
         if ($this->response->getStatusCode() !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
             return;

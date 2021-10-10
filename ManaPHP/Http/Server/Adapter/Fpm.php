@@ -49,7 +49,7 @@ class Fpm extends Server
             }
         }
 
-        $this->fireEvent('response:sending');
+        $this->fireEvent('request:responding');
 
         header('HTTP/1.1 ' . $this->response->getStatus());
 
@@ -87,7 +87,7 @@ class Fpm extends Server
             echo $content;
         }
 
-        $this->fireEvent('response:sent');
+        $this->fireEvent('request:responded');
 
         return $this;
     }

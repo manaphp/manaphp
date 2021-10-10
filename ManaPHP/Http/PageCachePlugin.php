@@ -52,7 +52,7 @@ class PageCachePlugin extends Plugin
 
         if ($this->enabled) {
             $this->attachEvent('request:ready', [$this, 'onRequestReady']);
-            $this->attachEvent('response:sending', [$this, 'onResponseSending']);
+            $this->attachEvent('request:responding', [$this, 'onRequestResponding']);
         }
     }
 
@@ -176,7 +176,7 @@ class PageCachePlugin extends Plugin
     /**
      * @return void
      */
-    public function onResponseSending()
+    public function onRequestResponding()
     {
         $context = $this->context;
 

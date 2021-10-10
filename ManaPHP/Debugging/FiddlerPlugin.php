@@ -63,7 +63,7 @@ class FiddlerPlugin extends Plugin
 
         $this->attachEvent('logger:log', [$this, 'onLoggerLog']);
         $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
-        $this->attachEvent('response:sent', [$this, 'onResponseSent']);
+        $this->attachEvent('request:responded', [$this, 'onRequestResponded']);
     }
 
     /**
@@ -127,7 +127,7 @@ class FiddlerPlugin extends Plugin
     /**
      * @return void
      */
-    public function onResponseSent()
+    public function onRequestResponded()
     {
         if ($this->self->watched()) {
             $data = [

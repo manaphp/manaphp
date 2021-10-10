@@ -107,7 +107,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
             $this->params['path'] = $this->alias->get('@web') ?: '/';
         }
 
-        $this->attachEvent('response:sending', [$this, 'onResponseSending']);
+        $this->attachEvent('request:responding', [$this, 'onRequestResponding']);
     }
 
     /**
@@ -146,7 +146,7 @@ abstract class Session extends Component implements SessionInterface, ArrayAcces
     /**
      * @return void
      */
-    public function onResponseSending()
+    public function onRequestResponding()
     {
         $context = $this->context;
 

@@ -34,14 +34,14 @@ class EtagPlugin extends Plugin
         }
 
         if ($this->enabled) {
-            $this->attachEvent('response:sending', [$this, 'onResponseSending']);
+            $this->attachEvent('request:responding', [$this, 'onRequestResponding']);
         }
     }
 
     /**
      * @return void
      */
-    public function onResponseSending()
+    public function onRequestResponding()
     {
         if ($this->response->getStatusCode() !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
             return;

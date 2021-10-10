@@ -212,7 +212,7 @@ class Swoole extends Server
             }
         }
 
-        $this->fireEvent('response:sending');
+        $this->fireEvent('request:responding');
 
         $response = $this->context->response;
 
@@ -249,7 +249,7 @@ class Swoole extends Server
             $response->end($content);
         }
 
-        $this->fireEvent('response:sent');
+        $this->fireEvent('request:responded');
     }
 
     public function dump()
