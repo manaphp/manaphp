@@ -1,9 +1,9 @@
 <?php
 
-namespace ManaPHP\Http;
+namespace ManaPHP\Http\Middlewares;
 
 use ManaPHP\Helper\LocalFS;
-use ManaPHP\Plugin;
+use ManaPHP\Http\Middleware;
 
 /**
  * @property-read \ManaPHP\ConfigInterface          $config
@@ -11,7 +11,7 @@ use ManaPHP\Plugin;
  * @property-read \ManaPHP\Http\ResponseInterface   $response
  * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
  */
-class SlowlogPlugin extends Plugin
+class SlowlogMiddleware extends Middleware
 {
     /**
      * @var float
@@ -33,6 +33,8 @@ class SlowlogPlugin extends Plugin
      */
     public function __construct($options = [])
     {
+        parent::__construct($options);
+
         if (isset($options['threshold'])) {
             $this->threshold = (float)$options['threshold'];
         }
@@ -46,8 +48,6 @@ class SlowlogPlugin extends Plugin
         if (isset($options['format'])) {
             $this->format = $options['format'];
         }
-
-        $this->attachEvent('request:end', [$this, 'onRequestEnd']);
     }
 
     /**
@@ -102,7 +102,7 @@ class SlowlogPlugin extends Plugin
     /**
      * @return void
      */
-    public function onRequestEnd()
+    public function onEnd()
     {
         if ($this->response->hasHeader('X-Response-Time')) {
             $elapsed = $this->response->getHeader('X-Response-Time');

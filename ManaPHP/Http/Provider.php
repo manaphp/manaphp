@@ -2,6 +2,8 @@
 
 namespace ManaPHP\Http;
 
+use ManaPHP\Helper\LocalFS;
+
 class Provider extends \ManaPHP\Di\Provider
 {
     protected $definitions
@@ -17,16 +19,6 @@ class Provider extends \ManaPHP\Di\Provider
             'authorization'  => 'ManaPHP\Http\Authorization',
             'globalsManager' => 'ManaPHP\Http\Globals\Manager',
             'aclBuilder'     => 'ManaPHP\Http\Acl\Builder',
-
-            'corsPlugin'      => 'ManaPHP\Http\CorsPlugin',
-            'csrfPlugin'      => 'ManaPHP\Http\CsrfPlugin',
-            'etagPlugin'      => 'ManaPHP\Http\EtagPlugin',
-            'httpCachePlugin' => 'ManaPHP\Http\HttpCachePlugin',
-            'pageCachePlugin' => 'ManaPHP\Http\PageCachePlugin',
-            'rateLimitPlugin' => 'ManaPHP\Http\RateLimitPlugin',
-            'requestIdPlugin' => 'ManaPHP\Http\RequestIdPlugin',
-            'slowlogPlugin'   => 'ManaPHP\Http\SlowlogPlugin',
-            'verbsPlugin'     => 'ManaPHP\Http\VerbsPlugin',
 
             'aclCommand'  => 'ManaPHP\Http\Acl\Command',
             'areaCommand' => 'ManaPHP\Http\AreaCommand',
@@ -53,5 +45,25 @@ class Provider extends \ManaPHP\Di\Provider
                 return 'ManaPHP\Http\Server\Adapter\Fpm';
             }
         })();
+    }
+
+    public function boot($container)
+    {
+        foreach (LocalFS::glob('@app/Middlewares/?*Middleware.php') as $file) {
+            $middleware = 'App\Middlewares\\' . basename($file, ".php");
+            $container->get($middleware);
+        }
+
+        $middlewares = $container->get('config')->get('middlewares', []);
+        foreach ($middlewares as $middleware) {
+            if (str_contains($middleware, '\\')) {
+                $class = $middleware;
+            } else {
+                $plain = ucfirst($middleware) . 'Middleware';
+                $class = "ManaPHP\Http\Middlewares\\$plain";
+            }
+
+            $container->get($class);
+        }
     }
 }

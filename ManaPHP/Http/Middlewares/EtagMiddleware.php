@@ -1,20 +1,15 @@
 <?php
 
-namespace ManaPHP\Http;
+namespace ManaPHP\Http\Middlewares;
 
-use ManaPHP\Plugin;
+use ManaPHP\Http\Middleware;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response
  */
-class EtagPlugin extends Plugin
+class EtagMiddleware extends Middleware
 {
-    /**
-     * @var bool
-     */
-    protected $enabled = true;
-
     /**
      * @var string
      */
@@ -25,23 +20,17 @@ class EtagPlugin extends Plugin
      */
     public function __construct($options = [])
     {
-        if (isset($options['enabled'])) {
-            $this->enabled = (bool)$options['enabled'];
-        }
+        parent::__construct($options);
 
         if (isset($options['algo'])) {
             $this->algo = $options['algo'];
-        }
-
-        if ($this->enabled) {
-            $this->attachEvent('request:responding', [$this, 'onRequestResponding']);
         }
     }
 
     /**
      * @return void
      */
-    public function onRequestResponding()
+    public function onResponding()
     {
         if ($this->response->getStatusCode() !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
             return;

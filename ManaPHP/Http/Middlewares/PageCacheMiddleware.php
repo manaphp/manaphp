@@ -1,18 +1,18 @@
 <?php
 
-namespace ManaPHP\Http;
+namespace ManaPHP\Http\Middlewares;
 
 use Closure;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Helper\Reflection;
+use ManaPHP\Http\Middleware;
 use ManaPHP\Mvc\Controller as MvcController;
-use ManaPHP\Plugin;
 
 /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
 
-class PageCachePluginContext
+class PageCacheMiddlewareContext
 {
     public $ttl;
     public $key;
@@ -21,19 +21,14 @@ class PageCachePluginContext
 }
 
 /**
- * @property-read \ManaPHP\ConfigInterface             $config
- * @property-read \ManaPHP\Http\RequestInterface       $request
- * @property-read \ManaPHP\Http\ResponseInterface      $response
- * @property-read \Redis|\ManaPHP\Data\RedisInterface  $redisCache
- * @property-read \ManaPHP\Http\PageCachePluginContext $context
+ * @property-read \ManaPHP\ConfigInterface                             $config
+ * @property-read \ManaPHP\Http\RequestInterface                       $request
+ * @property-read \ManaPHP\Http\ResponseInterface                      $response
+ * @property-read \Redis|\ManaPHP\Data\RedisInterface                  $redisCache
+ * @property-read \ManaPHP\Http\Middlewares\PageCacheMiddlewareContext $context
  */
-class PageCachePlugin extends Plugin
+class PageCacheMiddleware extends Middleware
 {
-    /**
-     * @var bool
-     */
-    protected $enabled = true;
-
     /**
      * @var string
      */
@@ -44,16 +39,8 @@ class PageCachePlugin extends Plugin
      */
     public function __construct($options = [])
     {
-        if (isset($options['enabled'])) {
-            $this->enabled = (bool)$options['enabled'];
-        }
-
+        parent::__construct($options);
         $this->prefix = $options['prefix'] ?? sprintf("cache:%s:pageCachePlugin:", $this->config->get('id'));
-
-        if ($this->enabled) {
-            $this->attachEvent('request:ready', [$this, 'onRequestReady']);
-            $this->attachEvent('request:responding', [$this, 'onRequestResponding']);
-        }
     }
 
     /**
@@ -63,7 +50,7 @@ class PageCachePlugin extends Plugin
      * @throws AbortException
      * @throws MissingFieldException
      */
-    public function onRequestReady(EventArgs $eventArgs)
+    public function onReady(EventArgs $eventArgs)
     {
         if (!in_array($this->request->getMethod(), ['GET', 'POST', 'HEAD'])) {
             return;
@@ -176,7 +163,7 @@ class PageCachePlugin extends Plugin
     /**
      * @return void
      */
-    public function onRequestResponding()
+    public function onResponding()
     {
         $context = $this->context;
 

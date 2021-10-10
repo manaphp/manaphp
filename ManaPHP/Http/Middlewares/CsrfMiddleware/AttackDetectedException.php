@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Http\CsrfPlugin;
+namespace ManaPHP\Http\Middlewares\CsrfMiddleware;
 
 use ManaPHP\Exception;
 

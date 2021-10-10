@@ -1,45 +1,26 @@
 <?php
 
-namespace ManaPHP\Http;
+namespace ManaPHP\Http\Middlewares;
 
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\MethodNotAllowedHttpException;
 use ManaPHP\Helper\Reflection;
+use ManaPHP\Http\Middleware;
 use ManaPHP\Mvc\Controller;
-use ManaPHP\Plugin;
 
 /**
  * @property-read \ManaPHP\Mvc\ViewInterface     $view
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
-class VerbsPlugin extends Plugin
+class VerbsMiddleware extends Middleware
 {
-    /**
-     * @var bool
-     */
-    protected $enabled = true;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
-    {
-        if (isset($options['enabled'])) {
-            $this->enabled = (bool)$options['enabled'];
-        }
-
-        if ($this->enabled) {
-            $this->attachEvent('request:validate', [$this, 'onRequestValidate']);
-        }
-    }
-
     /**
      * @param EventArgs $eventArgs
      *
      * @return void
      * @throws MethodNotAllowedHttpException
      */
-    public function onRequestValidate(EventArgs $eventArgs)
+    public function onValidate(EventArgs $eventArgs)
     {
         /** @var \ManaPHP\Http\Controller $controller */
         $controller = $eventArgs->data['controller'];

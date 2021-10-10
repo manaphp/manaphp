@@ -1,11 +1,11 @@
 <?php
 
-namespace ManaPHP\Http;
+namespace ManaPHP\Http\Middlewares;
 
 use ManaPHP\Event\EventArgs;
-use ManaPHP\Http\CsrfPlugin\AttackDetectedException;
+use ManaPHP\Http\Middlewares\CsrfMiddleware\AttackDetectedException;
+use ManaPHP\Http\Middleware;
 use ManaPHP\Mvc\Controller as MvcController;
-use ManaPHP\Plugin;
 use ManaPHP\Rest\Controller as RestController;
 use ManaPHP\Helper\Reflection;
 
@@ -13,13 +13,8 @@ use ManaPHP\Helper\Reflection;
  * @property-read \ManaPHP\Http\RequestInterface $request
  * @property-read \ManaPHP\Mvc\ViewInterface     $view
  */
-class CsrfPlugin extends Plugin
+class CsrfMiddleware extends Middleware
 {
-    /**
-     * @var bool
-     */
-    protected $enabled = true;
-
     /**
      * @var bool
      */
@@ -35,9 +30,7 @@ class CsrfPlugin extends Plugin
      */
     public function __construct($options = [])
     {
-        if (isset($options['enabled'])) {
-            $this->enabled = (bool)$options['enabled'];
-        }
+        parent::__construct($options);
 
         if (isset($options['strict'])) {
             $this->strict = (bool)$options['strict'];
@@ -49,10 +42,6 @@ class CsrfPlugin extends Plugin
             } else {
                 $this->domains = $domains;
             }
-        }
-
-        if ($this->enabled) {
-            $this->attachEvent('request:validate', [$this, 'onRequestValidate']);
         }
     }
 
@@ -105,7 +94,7 @@ class CsrfPlugin extends Plugin
      * @return void
      * @throws AttackDetectedException
      */
-    public function onRequestValidate(EventArgs $eventArgs)
+    public function onValidate(EventArgs $eventArgs)
     {
         if ($this->self->isOriginSafe()) {
             return;

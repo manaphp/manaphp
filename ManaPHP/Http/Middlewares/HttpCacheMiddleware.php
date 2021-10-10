@@ -1,41 +1,22 @@
 <?php
 
-namespace ManaPHP\Http;
+namespace ManaPHP\Http\Middlewares;
 
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Plugin;
+use ManaPHP\Http\Middleware;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface    $request
  * @property-read \ManaPHP\Http\ResponseInterface   $response
  * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
  */
-class HttpCachePlugin extends Plugin
+class HttpCacheMiddleware extends Middleware
 {
-    /**
-     * @var bool
-     */
-    protected $enabled = true;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
-    {
-        if (isset($options['enabled'])) {
-            $this->enabled = (bool)$options['enabled'];
-        }
-
-        if ($this->enabled) {
-            $this->attachEvent('request:responding', [$this, 'onRequestResponding']);
-        }
-    }
-
     /**
      * @return void
      * @throws MisuseException
      */
-    public function onRequestResponding()
+    public function onResponding()
     {
         if ($this->response->getStatusCode() !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
             return;

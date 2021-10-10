@@ -1,16 +1,16 @@
 <?php
 
-namespace ManaPHP\Http;
+namespace ManaPHP\Http\Middlewares;
 
 use ManaPHP\Exception\AbortException;
-use ManaPHP\Plugin;
+use ManaPHP\Http\Middleware;
 
 /**
  * @property-read \ManaPHP\ConfigInterface        $config
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response
  */
-class CorsPlugin extends Plugin
+class CorsMiddleware extends Middleware
 {
     /**
      * @var int
@@ -32,6 +32,8 @@ class CorsPlugin extends Plugin
      */
     public function __construct($options = [])
     {
+        parent::__construct($options);
+
         if (isset($options['max_age'])) {
             $this->max_age = $options['max_age'];
         }
@@ -43,14 +45,12 @@ class CorsPlugin extends Plugin
         if (isset($options['credentials'])) {
             $this->credentials = $options['credentials'];
         }
-
-        $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
     }
 
     /**
      * @return void
      */
-    public function onRequestBegin()
+    public function onBegin()
     {
         $origin = $this->request->getServer('HTTP_ORIGIN');
         $host = $this->request->getServer('HTTP_HOST');

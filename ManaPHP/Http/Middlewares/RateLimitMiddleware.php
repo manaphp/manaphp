@@ -1,10 +1,10 @@
 <?php
 
-namespace ManaPHP\Http;
+namespace ManaPHP\Http\Middlewares;
 
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\TooManyRequestsException;
-use ManaPHP\Plugin;
+use ManaPHP\Http\Middleware;
 
 /**
  * @property-read \ManaPHP\ConfigInterface               $config
@@ -12,13 +12,8 @@ use ManaPHP\Plugin;
  * @property-read \ManaPHP\Http\RequestInterface         $request
  * @property-read \Redis|\ManaPHP\Data\RedisInterface    $redisCache
  */
-class RateLimitPlugin extends Plugin
+class RateLimitMiddleware extends Middleware
 {
-    /**
-     * @var bool
-     */
-    protected $enabled = true;
-
     /**
      * @var string
      */
@@ -34,18 +29,12 @@ class RateLimitPlugin extends Plugin
      */
     public function __construct($options = [])
     {
-        if (isset($options['enabled'])) {
-            $this->enabled = (bool)$options['enabled'];
-        }
+        parent::__construct($options);
 
         $this->prefix = $options['prefix'] ?? sprintf("cache:%s:rateLimitPlugin:", $this->config->get('id'));
 
         if (isset($options['limits'])) {
             $this->limits = $options['limits'];
-        }
-
-        if ($this->enabled) {
-            $this->attachEvent('request:validate', [$this, 'onRequestValidate'], true);
         }
     }
 
@@ -56,7 +45,7 @@ class RateLimitPlugin extends Plugin
      * @throws TooManyRequestsException
      * @throws \ManaPHP\Exception\InvalidValueException
      */
-    public function onRequestValidate(EventArgs $eventArgs)
+    public function onValidate(EventArgs $eventArgs)
     {
         /** @var \ManaPHP\Http\DispatcherInterface $dispatcher */
         $dispatcher = $eventArgs->source;
