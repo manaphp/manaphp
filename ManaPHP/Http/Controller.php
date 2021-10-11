@@ -9,7 +9,7 @@ namespace ManaPHP\Http;
  * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher
  * @property-read \ManaPHP\Identifying\IdentityInterface $identity
  */
-abstract class Controller extends \ManaPHP\Controller
+class Controller extends \ManaPHP\Controller
 {
     /**
      * @return array

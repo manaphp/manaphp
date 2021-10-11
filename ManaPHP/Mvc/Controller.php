@@ -10,7 +10,7 @@ namespace ManaPHP\Mvc;
  * @property-read \ManaPHP\Http\SessionInterface       $session
  * @property-read \ManaPHP\Http\AuthorizationInterface $authorization
  */
-abstract class Controller extends \ManaPHP\Http\Controller
+class Controller extends \ManaPHP\Http\Controller
 {
     /**
      * @return string[]

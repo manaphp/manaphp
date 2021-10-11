@@ -5,7 +5,7 @@ namespace ManaPHP\Http;
 /**
  * @property-read \ManaPHP\Http\ServerInterface $httpServer
  */
-abstract class Application extends \ManaPHP\Application
+class Application extends \ManaPHP\Application
 {
     public function getProviders()
     {
