@@ -3,9 +3,9 @@
 namespace ManaPHP\Rpc\Http\Server\Adapter;
 
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Rpc\Http\Server;
+use ManaPHP\Rpc\Http\AbstractServer;
 
-class Fpm extends Server
+class Fpm extends AbstractServer
 {
     /**
      * @return void

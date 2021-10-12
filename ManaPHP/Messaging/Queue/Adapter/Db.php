@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Messaging\Queue\Adapter;
 
-use ManaPHP\Messaging\Queue;
+use ManaPHP\Messaging\AbstractQueue;
 
 /**
  *CREATE TABLE `manaphp_message_queue` (
@@ -17,7 +17,7 @@ use ManaPHP\Messaging\Queue;
  *
  * @property-read \ManaPHP\Data\DbInterface $db
  */
-class Db extends Queue
+class Db extends AbstractQueue
 {
     /**
      * @var string
@@ -41,7 +41,7 @@ class Db extends Queue
      *
      * @return void
      */
-    public function do_push($topic, $body, $priority = Queue::PRIORITY_NORMAL)
+    public function do_push($topic, $body, $priority = AbstractQueue::PRIORITY_NORMAL)
     {
         $created_time = time();
         $deleted_time = 0;

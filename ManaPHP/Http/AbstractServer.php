@@ -10,7 +10,7 @@ use ManaPHP\Component;
  * @property-read \ManaPHP\Http\HandlerInterface         $httpHandler
  * @property-read \ManaPHP\Http\Globals\ManagerInterface $globalsManager
  */
-abstract class Server extends Component implements ServerInterface
+abstract class AbstractServer extends Component implements ServerInterface
 {
     /**
      * @var bool

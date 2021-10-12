@@ -8,13 +8,13 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Str;
 
 /**
- * @property-read \ManaPHP\AliasInterface          $alias
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
- * @property-read \ManaPHP\Http\CookiesInterface   $cookies
- * @property-read \ManaPHP\Http\RequestInterface   $request
- * @property-read \ManaPHP\Http\SessionContext     $context
+ * @property-read \ManaPHP\AliasInterface              $alias
+ * @property-read \ManaPHP\Logging\LoggerInterface     $logger
+ * @property-read \ManaPHP\Http\CookiesInterface       $cookies
+ * @property-read \ManaPHP\Http\RequestInterface       $request
+ * @property-read \ManaPHP\Http\AbstractSessionContext $context
  */
-abstract class Session extends Component implements SessionInterface, ArrayAccess
+abstract class AbstractSession extends Component implements SessionInterface, ArrayAccess
 {
     /**
      * @var int

@@ -2,12 +2,12 @@
 
 namespace ManaPHP\Logging\Logger\Adapter;
 
-use ManaPHP\Logging\Logger;
+use ManaPHP\Logging\AbstractLogger;
 
 /**
  * @property-read \ManaPHP\Logging\Logger\Adapter\MemoryContext $context
  */
-class Memory extends Logger
+class Memory extends AbstractLogger
 {
     /**
      * @param \ManaPHP\Logging\Logger\Log[] $logs

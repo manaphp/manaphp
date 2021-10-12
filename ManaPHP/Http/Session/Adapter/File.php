@@ -3,12 +3,12 @@
 namespace ManaPHP\Http\Session\Adapter;
 
 use ManaPHP\Exception\CreateDirectoryFailedException;
-use ManaPHP\Http\Session;
+use ManaPHP\Http\AbstractSession;
 
 /**
  * @property-read \ManaPHP\AliasInterface $alias
  */
-class File extends Session
+class File extends AbstractSession
 {
     /**
      * @var string

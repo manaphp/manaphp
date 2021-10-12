@@ -3,7 +3,7 @@
 namespace ManaPHP\Http\Server\Adapter;
 
 use ManaPHP\Helper\Ip;
-use ManaPHP\Http\Server;
+use ManaPHP\Http\AbstractServer;
 use Swoole\Runtime;
 use Throwable;
 
@@ -13,7 +13,7 @@ use Throwable;
  * @property-read \ManaPHP\Http\RouterInterface              $router
  * @property-read \ManaPHP\Http\Server\Adapter\SwooleContext $context
  */
-class Swoole extends Server
+class Swoole extends AbstractServer
 {
     /**
      * @var array

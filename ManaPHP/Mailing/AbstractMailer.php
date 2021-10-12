@@ -5,7 +5,7 @@ namespace ManaPHP\Mailing;
 use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
 
-abstract class Mailer extends Component implements MailerInterface
+abstract class AbstractMailer extends Component implements MailerInterface
 {
     /**
      * @var string

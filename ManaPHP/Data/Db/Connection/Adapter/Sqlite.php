@@ -3,13 +3,13 @@
 namespace ManaPHP\Data\Db\Connection\Adapter;
 
 use ManaPHP\Data\Db;
-use ManaPHP\Data\Db\Connection;
+use ManaPHP\Data\Db\AbstractConnection;
 use PDO;
 
 /**
  * @property-read \ManaPHP\AliasInterface $alias
  */
-class Sqlite extends Connection
+class Sqlite extends AbstractConnection
 {
     /**
      * @param string $file

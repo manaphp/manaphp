@@ -3,7 +3,7 @@
 namespace ManaPHP\Debugging;
 
 use ManaPHP\Event\EventArgs;
-use ManaPHP\Logging\Logger;
+use ManaPHP\Logging\AbstractLogger;
 use ManaPHP\Plugin;
 
 /**
@@ -67,7 +67,7 @@ class FiddlerPlugin extends Plugin
         }
 
         if ($this->watched) {
-            $this->logger->setLevel(Logger::LEVEL_DEBUG);
+            $this->logger->setLevel(AbstractLogger::LEVEL_DEBUG);
 
             $server = [];
             foreach ($this->request->getServer() as $k => $v) {

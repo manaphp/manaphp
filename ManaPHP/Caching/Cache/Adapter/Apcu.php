@@ -2,10 +2,10 @@
 
 namespace ManaPHP\Caching\Cache\Adapter;
 
-use ManaPHP\Caching\Cache;
+use ManaPHP\Caching\AbstractCache;
 use ManaPHP\Exception\RuntimeException;
 
-class Apcu extends Cache
+class Apcu extends AbstractCache
 {
     /**
      * @var string

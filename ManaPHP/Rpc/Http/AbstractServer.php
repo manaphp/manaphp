@@ -9,7 +9,7 @@ use ManaPHP\Component;
  * @property-read \ManaPHP\Http\ResponseInterface $response
  * @property-read \ManaPHP\Rpc\HandlerInterface   $rpcHandler
  */
-abstract class Server extends Component implements ServerInterface
+abstract class AbstractServer extends Component implements ServerInterface
 {
     /**
      * @var string

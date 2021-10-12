@@ -10,7 +10,7 @@ use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Reflection;
 use ManaPHP\Helper\Str;
-use ManaPHP\Logging\Logger;
+use ManaPHP\Logging\AbstractLogger;
 use ManaPHP\Plugin;
 use ManaPHP\Version;
 use ArrayObject;
@@ -428,7 +428,7 @@ class DebuggerPlugin extends Plugin
         $data = [];
         $data['basic'] = $this->getBasic();
         $levels = array_flip($this->logger->getLevels());
-        $data['logger'] = ['log' => $context->log, 'levels' => $levels, 'level' => Logger::LEVEL_DEBUG];
+        $data['logger'] = ['log' => $context->log, 'levels' => $levels, 'level' => AbstractLogger::LEVEL_DEBUG];
         $data['sql'] = [
             'prepared' => $context->sql_prepared,
             'executed' => $context->sql_executed,

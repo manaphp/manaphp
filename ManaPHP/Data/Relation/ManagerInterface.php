@@ -16,7 +16,7 @@ interface ManagerInterface
      * @param \ManaPHP\Data\ModelInterface $model
      * @param string                       $name
      *
-     * @return \ManaPHP\Data\Relation|false
+     * @return \ManaPHP\Data\AbstractRelation|false
      */
     public function get($model, $name);
 

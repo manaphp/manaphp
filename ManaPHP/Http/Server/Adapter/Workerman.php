@@ -6,7 +6,7 @@
 
 namespace ManaPHP\Http\Server\Adapter;
 
-use ManaPHP\Http\Server;
+use ManaPHP\Http\AbstractServer;
 use Throwable;
 use Workerman\Protocols\Http;
 use Workerman\Worker;
@@ -15,7 +15,7 @@ use Workerman\Worker;
  * @property-read \ManaPHP\Http\RouterInterface                 $router
  * @property-read \ManaPHP\Http\Server\Adapter\WorkermanContext $context
  */
-class Workerman extends Server
+class Workerman extends AbstractServer
 {
     /**
      * @var array

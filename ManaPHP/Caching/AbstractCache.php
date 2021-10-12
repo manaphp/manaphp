@@ -5,7 +5,7 @@ namespace ManaPHP\Caching;
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
 
-abstract class Cache extends Component implements CacheInterface
+abstract class AbstractCache extends Component implements CacheInterface
 {
     /**
      * @param string $key

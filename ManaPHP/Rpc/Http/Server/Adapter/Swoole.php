@@ -15,7 +15,7 @@ use Throwable;
  * @property-read \ManaPHP\Logging\LoggerInterface               $logger
  * @property-read \ManaPHP\Rpc\Http\Server\Adapter\SwooleContext $context
  */
-class Swoole extends \ManaPHP\Rpc\Http\Server
+class Swoole extends \ManaPHP\Rpc\Http\AbstractServer
 {
     /**
      * @var array

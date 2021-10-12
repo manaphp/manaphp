@@ -4,7 +4,7 @@ namespace ManaPHP\Logging\Logger\Adapter;
 
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Logging\Logger;
+use ManaPHP\Logging\AbstractLogger;
 
 /** @noinspection SpellCheckingInspection */
 //#/etc/rsyslog.d/99-app.conf
@@ -17,7 +17,7 @@ use ManaPHP\Logging\Logger;
 /**
  * @property-read \ManaPHP\ConfigInterface $config
  */
-class Syslog extends Logger
+class Syslog extends AbstractLogger
 {
     /**
      * @var string

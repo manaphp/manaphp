@@ -3,13 +3,13 @@
 namespace ManaPHP\Data\Db\Connection\Adapter;
 
 use ManaPHP\Data\Db;
-use ManaPHP\Data\Db\Connection;
+use ManaPHP\Data\Db\AbstractConnection;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\PreconditionException;
 use PDO;
 
-class Mssql extends Connection
+class Mssql extends AbstractConnection
 {
     /**
      * @param string $uri

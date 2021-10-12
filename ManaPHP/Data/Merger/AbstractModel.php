@@ -4,7 +4,7 @@ namespace ManaPHP\Data\Merger;
 
 use ManaPHP\Exception\NotSupportedException;
 
-abstract class Model extends \ManaPHP\Data\Model
+abstract class AbstractModel extends \ManaPHP\Data\AbstractModel
 {
     /**
      * @return \ManaPHP\Data\ModelInterface

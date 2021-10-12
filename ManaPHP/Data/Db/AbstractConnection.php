@@ -9,7 +9,7 @@ use ManaPHP\Exception\NotSupportedException;
 use PDO;
 use PDOException;
 
-abstract class Connection extends Component implements ConnectionInterface
+abstract class AbstractConnection extends Component implements ConnectionInterface
 {
     /**
      * @var string

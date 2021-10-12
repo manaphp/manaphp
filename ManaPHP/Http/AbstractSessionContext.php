@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Http;
 
-class SessionContext
+class AbstractSessionContext
 {
     /**
      * @var int

@@ -10,12 +10,12 @@ use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\RuntimeException;
-use ManaPHP\Imaging\Image;
+use ManaPHP\Imaging\AbstractImage;
 
 /**
  * @property-read \ManaPHP\AliasInterface $alias
  */
-class Imagick extends Image
+class Imagick extends AbstractImage
 {
     /**
      * @var string

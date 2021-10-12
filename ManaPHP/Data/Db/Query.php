@@ -12,7 +12,7 @@ use PDO;
 /**
  * @property-read \ManaPHP\Logging\LoggerInterface $logger
  */
-class Query extends \ManaPHP\Data\Query
+class Query extends \ManaPHP\Data\AbstractQuery
 {
     /**
      * @var array

@@ -3,13 +3,13 @@
 namespace ManaPHP\Data\Db\Connection\Adapter;
 
 use ManaPHP\Data\Db;
-use ManaPHP\Data\Db\Connection;
+use ManaPHP\Data\Db\AbstractConnection;
 use ManaPHP\Data\Db\SqlFragmentable;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\InvalidArgumentException;
 use PDO;
 
-class Mysql extends Connection
+class Mysql extends AbstractConnection
 {
     /**
      * @var string

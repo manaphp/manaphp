@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Data;
 
-abstract class Relation
+abstract class AbstractRelation
 {
     /**
      * @var string

@@ -13,11 +13,11 @@ use Throwable;
 use ArrayObject;
 
 /**
- * @property-read \ManaPHP\AliasInterface        $alias
- * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\Logging\LoggerContext $context
+ * @property-read \ManaPHP\AliasInterface                $alias
+ * @property-read \ManaPHP\Http\RequestInterface         $request
+ * @property-read \ManaPHP\Logging\AbstractLoggerContext $context
  */
-abstract class Logger extends Component implements LoggerInterface
+abstract class AbstractLogger extends Component implements LoggerInterface
 {
     const LEVEL_FATAL = 10;
     const LEVEL_ERROR = 20;
@@ -100,11 +100,11 @@ abstract class Logger extends Component implements LoggerInterface
     }
 
     /**
-     * @return LoggerContext
+     * @return AbstractLoggerContext
      */
     protected function createContext()
     {
-        /** @var \ManaPHP\Logging\LoggerContext $context */
+        /** @var \ManaPHP\Logging\AbstractLoggerContext $context */
         $context = parent::createContext();
 
         $context->level = $this->level;

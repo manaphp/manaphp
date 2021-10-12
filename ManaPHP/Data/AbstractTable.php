@@ -11,7 +11,7 @@ use ManaPHP\Helper\Str;
 /**
  * @property-read \ManaPHP\Di\ContainerInterface $_container
  */
-abstract class Table implements TableInterface
+abstract class AbstractTable implements TableInterface
 {
     /**
      * @return array

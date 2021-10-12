@@ -3,12 +3,12 @@
 namespace ManaPHP\Logging\Logger\Adapter;
 
 use Exception;
-use ManaPHP\Logging\Logger;
+use ManaPHP\Logging\AbstractLogger;
 
 /**
  * @property-read \ManaPHP\Data\DbInterface $db
  */
-class Db extends Logger
+class Db extends AbstractLogger
 {
     /**
      * @var string
@@ -37,7 +37,7 @@ class Db extends Logger
         $context = $this->context;
 
         $level = $context->level;
-        $context->level = Logger::LEVEL_FATAL;
+        $context->level = AbstractLogger::LEVEL_FATAL;
 
         foreach ($logs as $log) {
             try {

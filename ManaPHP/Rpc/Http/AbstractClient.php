@@ -4,7 +4,7 @@ namespace ManaPHP\Rpc\Http;
 
 use ManaPHP\Component;
 
-abstract class Client extends Component implements ClientInterface
+abstract class AbstractClient extends Component implements ClientInterface
 {
     /**
      * @var string

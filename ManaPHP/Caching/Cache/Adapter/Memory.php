@@ -2,12 +2,12 @@
 
 namespace ManaPHP\Caching\Cache\Adapter;
 
-use ManaPHP\Caching\Cache;
+use ManaPHP\Caching\AbstractCache;
 
 /**
  * @property-read \ManaPHP\Caching\Cache\Adapter\MemoryContext $context
  */
-class Memory extends Cache
+class Memory extends AbstractCache
 {
     /**
      * @param string $key

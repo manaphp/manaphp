@@ -4,7 +4,7 @@ namespace ManaPHP\Messaging;
 
 use ManaPHP\Component;
 
-abstract class Queue extends Component implements QueueInterface
+abstract class AbstractQueue extends Component implements QueueInterface
 {
     /**
      * @param string $topic
@@ -13,7 +13,7 @@ abstract class Queue extends Component implements QueueInterface
      *
      * @return void
      */
-    abstract public function do_push($topic, $body, $priority = Queue::PRIORITY_NORMAL);
+    abstract public function do_push($topic, $body, $priority = AbstractQueue::PRIORITY_NORMAL);
 
     /**
      * @param string $topic

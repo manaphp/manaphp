@@ -2,11 +2,11 @@
 
 namespace ManaPHP\Rpc\Http\Client\Adapter;
 
-use ManaPHP\Rpc\Http\Client;
+use ManaPHP\Rpc\Http\AbstractClient;
 use ManaPHP\Rpc\Http\Client\Exception as ClientException;
 use ManaPHP\Rpc\Http\Client\ProtocolException;
 
-class Ws extends Client
+class Ws extends AbstractClient
 {
     /**
      * @var float

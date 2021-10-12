@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use ManaPHP\Logging\Logger;
+use ManaPHP\Logging\AbstractLogger;
 use ManaPHP\Logging\Logger\Adapter\Memory;
 use ManaPHP\Mvc\Factory;
 use PHPUnit\Framework\TestCase;
@@ -23,7 +23,7 @@ class LoggingLoggerTest extends TestCase
     public function test_debug()
     {
         $logger = $this->container->make(Memory::class);
-        $logger->setLevel(Logger::LEVEL_DEBUG);
+        $logger->setLevel(AbstractLogger::LEVEL_DEBUG);
 
         $logger->debug('**debug**');
 
@@ -37,7 +37,7 @@ class LoggingLoggerTest extends TestCase
     public function test_info()
     {
         $logger = $this->container->make(Memory::class);
-        $logger->setLevel(Logger::LEVEL_DEBUG);
+        $logger->setLevel(AbstractLogger::LEVEL_DEBUG);
 
         $logger->info('**info**');
 
@@ -51,7 +51,7 @@ class LoggingLoggerTest extends TestCase
     public function test_warn()
     {
         $logger = $this->container->make(Memory::class);
-        $logger->setLevel(Logger::LEVEL_DEBUG);
+        $logger->setLevel(AbstractLogger::LEVEL_DEBUG);
 
         $logger->warn('**warning**');
 

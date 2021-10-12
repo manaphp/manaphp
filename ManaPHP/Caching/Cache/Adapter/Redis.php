@@ -2,13 +2,13 @@
 
 namespace ManaPHP\Caching\Cache\Adapter;
 
-use ManaPHP\Caching\Cache;
+use ManaPHP\Caching\AbstractCache;
 
 /**
  * @property-read \ManaPHP\ConfigInterface $config
  * @property-read \Redis                   $redisCache
  */
-class Redis extends Cache
+class Redis extends AbstractCache
 {
     /**
      * @var string

@@ -6,7 +6,7 @@ use ManaPHP\Data\Model\ExpressionInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 
-class Model extends \ManaPHP\Data\Model implements ModelInterface
+class Model extends \ManaPHP\Data\AbstractModel implements ModelInterface
 {
     /**
      * Gets the connection used to crud data to the model

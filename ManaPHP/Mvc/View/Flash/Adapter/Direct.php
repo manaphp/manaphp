@@ -2,9 +2,9 @@
 
 namespace ManaPHP\Mvc\View\Flash\Adapter;
 
-use ManaPHP\Mvc\View\Flash;
+use ManaPHP\Mvc\View\AbstractFlash;
 
-class Direct extends Flash
+class Direct extends AbstractFlash
 {
     /**
      * Outputs a message

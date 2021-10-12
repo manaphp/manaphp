@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Http\Session\Adapter;
 
-use ManaPHP\Http\Session;
+use ManaPHP\Http\AbstractSession;
 
 /**
  * CREATE TABLE `manaphp_session` (
@@ -19,7 +19,7 @@ use ManaPHP\Http\Session;
  * @property-read \ManaPHP\Data\DbInterface              $db
  * @property-read \ManaPHP\Identifying\IdentityInterface $identity
  */
-class Db extends Session
+class Db extends AbstractSession
 {
     /**
      * @var string

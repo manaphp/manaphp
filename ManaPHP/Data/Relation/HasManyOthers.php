@@ -2,10 +2,10 @@
 
 namespace ManaPHP\Data\Relation;
 
-use ManaPHP\Data\Relation;
+use ManaPHP\Data\AbstractRelation;
 use ManaPHP\Helper\Arr;
 
-class HasManyOthers extends Relation
+class HasManyOthers extends AbstractRelation
 {
     /**
      * @var string

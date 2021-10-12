@@ -9,7 +9,7 @@
 namespace Tests\Models;
 
 use ManaPHP\Data\Db\Model;
-use ManaPHP\Data\Relation;
+use ManaPHP\Data\AbstractRelation;
 
 /**
  * Class City
@@ -39,6 +39,6 @@ class City extends Model
 
     public function relations()
     {
-        return ['countryExplicit' => [Country::class, Relation::TYPE_HAS_ONE]];
+        return ['countryExplicit' => [Country::class, AbstractRelation::TYPE_HAS_ONE]];
     }
 }

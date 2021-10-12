@@ -2,13 +2,13 @@
 
 namespace ManaPHP\Logging\Logger\Adapter;
 
-use ManaPHP\Logging\Logger;
+use ManaPHP\Logging\AbstractLogger;
 
 /**
  * @property-read \ManaPHP\ConfigInterface $config
  * @property-read \ManaPHP\AliasInterface  $alias
  */
-class File extends Logger
+class File extends AbstractLogger
 {
     /**
      * @var string

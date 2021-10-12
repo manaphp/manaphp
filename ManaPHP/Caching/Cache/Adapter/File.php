@@ -2,14 +2,14 @@
 
 namespace ManaPHP\Caching\Cache\Adapter;
 
-use ManaPHP\Caching\Cache;
+use ManaPHP\Caching\AbstractCache;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\WriteFileFailedException;
 
 /**
  * @property-read \ManaPHP\AliasInterface $alias
  */
-class File extends Cache
+class File extends AbstractCache
 {
     /**
      * @var string

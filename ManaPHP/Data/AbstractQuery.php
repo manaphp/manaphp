@@ -16,7 +16,7 @@ use ManaPHP\Helper\Sharding\ShardingTooManyException;
  * @property-read \ManaPHP\Http\RequestInterface          $request
  * @property-read \ManaPHP\Data\Relation\ManagerInterface $relationManager
  */
-abstract class Query extends Component implements QueryInterface, IteratorAggregate
+abstract class AbstractQuery extends Component implements QueryInterface, IteratorAggregate
 {
     /**
      * @var \ManaPHP\Data\DbInterface|string

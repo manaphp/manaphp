@@ -2,13 +2,13 @@
 
 namespace ManaPHP\Http\Session\Adapter;
 
-use ManaPHP\Http\Session;
+use ManaPHP\Http\AbstractSession;
 use ManaPHP\Http\Session\Adapter\Cookie\Exception as CookieException;
 
 /**
  * @property-read \ManaPHP\Security\CryptInterface $crypt
  */
-class Cookie extends Session
+class Cookie extends AbstractSession
 {
     /**
      * @var string

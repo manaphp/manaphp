@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Logging;
 
-class LoggerContext
+class AbstractLoggerContext
 {
     /**
      * @var int

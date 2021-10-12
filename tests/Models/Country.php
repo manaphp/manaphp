@@ -9,7 +9,7 @@
 namespace Tests\Models;
 
 use ManaPHP\Data\Db\Model;
-use ManaPHP\Data\Relation;
+use ManaPHP\Data\AbstractRelation;
 
 /**
  * Class Country
@@ -28,6 +28,6 @@ class Country extends Model
 
     public function relations()
     {
-        return ['citiesExplicit' => [City::class, Relation::TYPE_HAS_MANY]];
+        return ['citiesExplicit' => [City::class, AbstractRelation::TYPE_HAS_MANY]];
     }
 }

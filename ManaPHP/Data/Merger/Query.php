@@ -12,7 +12,7 @@ use ManaPHP\Helper\Reflection;
 /**
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
-class Query extends \ManaPHP\Data\Query
+class Query extends \ManaPHP\Data\AbstractQuery
 {
     /**
      * @var \ManaPHP\Data\QueryInterface[]

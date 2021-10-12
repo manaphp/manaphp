@@ -2,9 +2,9 @@
 
 namespace ManaPHP\Logging\Logger\Adapter;
 
-use ManaPHP\Logging\Logger;
+use ManaPHP\Logging\AbstractLogger;
 
-class Stdout extends Logger
+class Stdout extends AbstractLogger
 {
     /**
      * @var string

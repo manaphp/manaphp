@@ -27,7 +27,7 @@ use ManaPHP\Helper\Reflection;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ReflectionClass;
 
-abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonSerializable
+abstract class AbstractModel extends AbstractTable implements ModelInterface, ArrayAccess, JsonSerializable
 {
     /**
      * @var array

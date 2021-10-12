@@ -2,9 +2,9 @@
 
 namespace ManaPHP\Mailing\Mailer\Adapter;
 
-use ManaPHP\Mailing\Mailer;
+use ManaPHP\Mailing\AbstractMailer;
 
-class Memory extends Mailer
+class Memory extends AbstractMailer
 {
     /**
      * @var \ManaPHP\Mailing\Mailer\Message

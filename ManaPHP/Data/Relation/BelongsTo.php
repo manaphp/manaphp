@@ -2,9 +2,9 @@
 
 namespace ManaPHP\Data\Relation;
 
-use ManaPHP\Data\Relation;
+use ManaPHP\Data\AbstractRelation;
 
-class BelongsTo extends Relation
+class BelongsTo extends AbstractRelation
 {
     /**
      * @var string

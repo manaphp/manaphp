@@ -5,9 +5,9 @@ namespace ManaPHP\Mvc\View;
 use ManaPHP\Component;
 
 /**
- * @property-read \ManaPHP\Mvc\View\FlashContext $context
+ * @property-read \ManaPHP\Mvc\View\AbstractFlashContext $context
  */
-abstract class Flash extends Component implements FlashInterface
+abstract class AbstractFlash extends Component implements FlashInterface
 {
     /**
      * @var array

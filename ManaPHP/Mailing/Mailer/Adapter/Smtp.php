@@ -3,7 +3,7 @@
 namespace ManaPHP\Mailing\Mailer\Adapter;
 
 use ManaPHP\Exception\InvalidValueException;
-use ManaPHP\Mailing\Mailer;
+use ManaPHP\Mailing\AbstractMailer;
 use ManaPHP\Mailing\Mailer\Adapter\Exception\AuthenticationException;
 use ManaPHP\Mailing\Mailer\Adapter\Exception\BadResponseException;
 use ManaPHP\Mailing\Mailer\Adapter\Exception\ConnectionException;
@@ -14,7 +14,7 @@ use ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException;
  * @property-read \ManaPHP\Logging\LoggerInterface            $logger
  * @property-read \ManaPHP\Mailing\Mailer\Adapter\SmtpContext $context
  */
-class Smtp extends Mailer
+class Smtp extends AbstractMailer
 {
     /**
      * @var string

@@ -4,7 +4,7 @@ namespace ManaPHP\Data\Relation;
 
 use ManaPHP\Component;
 use ManaPHP\Data\QueryInterface;
-use ManaPHP\Data\Relation;
+use ManaPHP\Data\AbstractRelation;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\Reflection;
@@ -83,7 +83,7 @@ class Manager extends Component implements ManagerInterface
      * @param \ManaPHP\Data\ModelInterface $thisInstance
      * @param string                       $name
      *
-     * @return  Relation|false
+     * @return  AbstractRelation|false
      */
     protected function inferRelation($thisInstance, $name)
     {
@@ -166,7 +166,7 @@ class Manager extends Component implements ManagerInterface
      * @param \ManaPHP\Data\ModelInterface $model
      * @param string                       $name
      *
-     * @return \ManaPHP\Data\Relation|false
+     * @return \ManaPHP\Data\AbstractRelation|false
      */
     public function get($model, $name)
     {

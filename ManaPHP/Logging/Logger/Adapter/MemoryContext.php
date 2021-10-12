@@ -2,9 +2,9 @@
 
 namespace ManaPHP\Logging\Logger\Adapter;
 
-use ManaPHP\Logging\LoggerContext;
+use ManaPHP\Logging\AbstractLoggerContext;
 
-class MemoryContext extends LoggerContext
+class MemoryContext extends AbstractLoggerContext
 {
     /**
      * @var \ManaPHP\Logging\Logger\Log[]

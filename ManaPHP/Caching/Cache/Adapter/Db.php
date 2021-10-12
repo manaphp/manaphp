@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Caching\Cache\Adapter;
 
-use ManaPHP\Caching\Cache;
+use ManaPHP\Caching\AbstractCache;
 
 /**
  * CREATE TABLE `manaphp_cache` (
@@ -16,7 +16,7 @@ use ManaPHP\Caching\Cache;
  *
  * @property-read \ManaPHP\Data\DbInterface $db
  */
-class Db extends Cache
+class Db extends AbstractCache
 {
     /**
      * @var string

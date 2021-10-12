@@ -6,13 +6,13 @@
 namespace ManaPHP\Mailing\Mailer\Adapter;
 
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Mailing\Mailer;
+use ManaPHP\Mailing\AbstractMailer;
 use Swift_Attachment;
 use Swift_Mailer;
 use Swift_Message;
 use Swift_SmtpTransport;
 
-class Swift extends Mailer
+class Swift extends AbstractMailer
 {
     /**
      * @var string

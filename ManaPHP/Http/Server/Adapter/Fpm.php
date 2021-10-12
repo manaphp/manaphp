@@ -3,12 +3,12 @@
 namespace ManaPHP\Http\Server\Adapter;
 
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Http\Server;
+use ManaPHP\Http\AbstractServer;
 
 /**
  * @property-read \ManaPHP\AliasInterface $alias
  */
-class Fpm extends Server
+class Fpm extends AbstractServer
 {
     /**
      * @return void

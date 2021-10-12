@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Data\Db;
 
-class Table extends \ManaPHP\Data\Table
+class Table extends \ManaPHP\Data\AbstractTable
 {
     /**
      * @return string

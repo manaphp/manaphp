@@ -2,12 +2,12 @@
 
 namespace ManaPHP\Mvc\View\Flash\Adapter;
 
-use ManaPHP\Mvc\View\Flash;
+use ManaPHP\Mvc\View\AbstractFlash;
 
 /**
  * @property-read \ManaPHP\Http\SessionInterface $session
  */
-class Session extends Flash
+class Session extends AbstractFlash
 {
     /**
      * @var string

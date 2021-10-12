@@ -3,9 +3,9 @@
 namespace ManaPHP\Mailing\Mailer\Adapter;
 
 use ManaPHP\Helper\LocalFS;
-use ManaPHP\Mailing\Mailer;
+use ManaPHP\Mailing\AbstractMailer;
 
-class File extends Mailer
+class File extends AbstractMailer
 {
     /**
      * @var string

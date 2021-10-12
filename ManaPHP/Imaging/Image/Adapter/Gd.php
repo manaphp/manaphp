@@ -6,12 +6,12 @@ use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\PreconditionException;
-use ManaPHP\Imaging\Image;
+use ManaPHP\Imaging\AbstractImage;
 
 /**
  * @property-read \ManaPHP\AliasInterface $alias
  */
-class Gd extends Image
+class Gd extends AbstractImage
 {
     /**
      * @var string

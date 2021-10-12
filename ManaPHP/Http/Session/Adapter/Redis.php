@@ -2,13 +2,13 @@
 
 namespace ManaPHP\Http\Session\Adapter;
 
-use ManaPHP\Http\Session;
+use ManaPHP\Http\AbstractSession;
 
 /**
  * @property-read \ManaPHP\ConfigInterface $config
  * @property-read \Redis                   $redisCache
  */
-class Redis extends Session
+class Redis extends AbstractSession
 {
     /**
      * @var string

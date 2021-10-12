@@ -11,7 +11,7 @@ use ManaPHP\Helper\Arr;
 use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\Regex;
 
-class Query extends \ManaPHP\Data\Query
+class Query extends \ManaPHP\Data\AbstractQuery
 {
     /**
      * @var array

@@ -3,12 +3,12 @@
 namespace ManaPHP\Messaging\Queue\Adapter;
 
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Messaging\Queue;
+use ManaPHP\Messaging\AbstractQueue;
 
 /**
  * @property-read \Redis $redisBroker
  */
-class Redis extends Queue
+class Redis extends AbstractQueue
 {
     /**
      * @var string
@@ -18,7 +18,7 @@ class Redis extends Queue
     /**
      * @var int[]
      */
-    protected $priorities = [Queue::PRIORITY_HIGHEST, Queue::PRIORITY_NORMAL, Queue::PRIORITY_LOWEST];
+    protected $priorities = [AbstractQueue::PRIORITY_HIGHEST, AbstractQueue::PRIORITY_NORMAL, AbstractQueue::PRIORITY_LOWEST];
 
     /**
      * @var array[]
@@ -42,7 +42,7 @@ class Redis extends Queue
      * @param string $body
      * @param int    $priority
      */
-    public function do_push($topic, $body, $priority = Queue::PRIORITY_NORMAL)
+    public function do_push($topic, $body, $priority = AbstractQueue::PRIORITY_NORMAL)
     {
         if (!in_array($priority, $this->priorities, true)) {
             throw new MisuseException(['`%d` priority of `%s` is invalid', $priority, $topic]);

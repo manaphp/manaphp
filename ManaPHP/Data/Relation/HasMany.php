@@ -2,10 +2,10 @@
 
 namespace ManaPHP\Data\Relation;
 
-use ManaPHP\Data\Relation;
+use ManaPHP\Data\AbstractRelation;
 use ManaPHP\Exception\MisuseException;
 
-class HasMany extends Relation
+class HasMany extends AbstractRelation
 {
     /**
      * @var string
