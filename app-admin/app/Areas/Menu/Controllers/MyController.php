@@ -4,7 +4,7 @@ namespace App\Areas\Menu\Controllers;
 
 use App\Areas\Menu\Models\Group;
 use App\Controllers\Controller;
-use ManaPHP\Data\Query;
+use ManaPHP\Data\QueryInterface;
 
 class MyController extends Controller
 {
@@ -19,7 +19,7 @@ class MyController extends Controller
             ->orderBy(['display_order' => SORT_DESC, 'group_id' => SORT_ASC])
             ->with(
                 [
-                    'items' => static function (Query $query) {
+                    'items' => static function (QueryInterface $query) {
                         return $query
                             ->select(['item_id', 'item_name', 'url', 'icon', 'group_id'])
                             ->orderBy('display_order DESC, item_id ASC');

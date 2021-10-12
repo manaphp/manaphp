@@ -3,7 +3,7 @@
 namespace App\Widgets;
 
 use App\Areas\Menu\Models\Group;
-use ManaPHP\Data\Query;
+use ManaPHP\Data\QueryInterface;
 
 /**
  * @property-read \ManaPHP\Identifying\IdentityInterface $identity
@@ -17,7 +17,7 @@ class SideMenuWidget extends Widget
             ->orderBy('display_order DESC, group_id ASC')
             ->with(
                 [
-                    'items' => static function (Query $query) {
+                    'items' => static function (QueryInterface $query) {
                         return $query
                             ->select(['item_id', 'item_name', 'url', 'icon', 'group_id'])
                             ->orderBy('display_order DESC, item_id ASC');

@@ -17,8 +17,8 @@ use ManaPHP\Data\Relation;
  * @package Tests\Models
  * @property \Tests\Models\Country|false $country
  * @property \Tests\Models\Country|false $countryExplicit
- * @method \ManaPHP\Data\Query getCountry
- * @method \ManaPHP\Data\Query getCountryExplicit
+ * @method \ManaPHP\Data\QueryInterface getCountry
+ * @method \ManaPHP\Data\QueryInterface getCountryExplicit
  */
 class City extends Model
 {
