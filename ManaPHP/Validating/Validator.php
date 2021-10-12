@@ -13,13 +13,6 @@ use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class ValidatorContext
-{
-    public $locale;
-}
-
 /**
  * @property-read \ManaPHP\I18n\LocaleInterface        $locale
  * @property-read \ManaPHP\Http\RequestInterface       $request

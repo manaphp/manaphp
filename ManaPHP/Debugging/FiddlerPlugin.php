@@ -6,21 +6,6 @@ use ManaPHP\Event\EventArgs;
 use ManaPHP\Logging\Logger;
 use ManaPHP\Plugin;
 
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class FiddlerPluginContext
-{
-    /**
-     * @var string
-     */
-    public $channel;
-
-    /**
-     * @var array
-     */
-    public $header;
-}
-
 /**
  * @property-read \ManaPHP\ConfigInterface                $config
  * @property-read \ManaPHP\Logging\LoggerInterface        $logger

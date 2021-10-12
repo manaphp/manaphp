@@ -4,14 +4,6 @@ namespace ManaPHP\I18n;
 
 use ManaPHP\Component;
 
-class LocaleContext
-{
-    /**
-     * @var string
-     */
-    public $locale;
-}
-
 /**
  * @property-read \ManaPHP\I18n\LocaleContext $context
  */

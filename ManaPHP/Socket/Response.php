@@ -6,13 +6,6 @@ use JsonSerializable;
 use ManaPHP\Component;
 use Throwable;
 
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class ResponseContext
-{
-    public $content;
-}
-
 /**
  * @property-read \ManaPHP\Socket\ResponseContext $context
  */

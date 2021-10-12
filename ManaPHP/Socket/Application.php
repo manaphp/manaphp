@@ -3,7 +3,7 @@
 namespace ManaPHP\Socket;
 
 /**
- * @property-read \ManaPHP\Socket\ServerInterface   $socketServer
+ * @property-read \ManaPHP\Socket\ServerInterface $socketServer
  */
 class Application extends \ManaPHP\Application
 {

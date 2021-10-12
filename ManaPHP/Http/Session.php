@@ -7,41 +7,6 @@ use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Str;
 
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class SessionContext
-{
-    /**
-     * @var int
-     */
-    public $ttl;
-
-    /**
-     * @var bool
-     */
-    public $started = false;
-
-    /**
-     * @var bool
-     */
-    public $is_new;
-
-    /**
-     * @var bool
-     */
-    public $is_dirty = false;
-
-    /**
-     * @var string
-     */
-    public $session_id;
-
-    /**
-     * @var array
-     */
-    public $_SESSION;
-}
-
 /**
  * @property-read \ManaPHP\AliasInterface          $alias
  * @property-read \ManaPHP\Logging\LoggerInterface $logger

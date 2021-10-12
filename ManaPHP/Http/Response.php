@@ -10,41 +10,6 @@ use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Helper\LocalFS;
 
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class ResponseContext
-{
-    /**
-     * @var int
-     */
-    public $status_code = 200;
-
-    /**
-     * @var string
-     */
-    public $status_text = 'OK';
-
-    /**
-     * @var array
-     */
-    public $headers = [];
-
-    /**
-     * @var array
-     */
-    public $cookies = [];
-
-    /**
-     * @var mixed
-     */
-    public $content = '';
-
-    /**
-     * @var string
-     */
-    public $file;
-}
-
 /**
  * @property-read \ManaPHP\ConfigInterface       $config
  * @property-read \ManaPHP\Http\RequestInterface $request

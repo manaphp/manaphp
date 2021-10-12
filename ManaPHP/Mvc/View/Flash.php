@@ -4,16 +4,6 @@ namespace ManaPHP\Mvc\View;
 
 use ManaPHP\Component;
 
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class FlashContext
-{
-    /**
-     * @var string[]
-     */
-    public $messages = [];
-}
-
 /**
  * @property-read \ManaPHP\Mvc\View\FlashContext $context
  */

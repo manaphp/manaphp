@@ -7,36 +7,6 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\Router\Route;
 
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class RouterContext
-{
-    /**
-     * @var string
-     */
-    public $area;
-
-    /**
-     * @var string
-     */
-    public $controller;
-
-    /**
-     * @var string
-     */
-    public $action;
-
-    /**
-     * @var array
-     */
-    public $params = [];
-
-    /**
-     * @var bool
-     */
-    public $matched = false;
-}
-
 /**
  * @property-read \ManaPHP\AliasInterface        $alias
  * @property-read \ManaPHP\Http\RequestInterface $request

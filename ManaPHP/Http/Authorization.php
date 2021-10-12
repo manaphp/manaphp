@@ -9,16 +9,6 @@ use ManaPHP\Helper\Reflection;
 use ManaPHP\Helper\Str;
 use ManaPHP\Identifying\Identity\NoCredentialException;
 
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class AuthorizationContext
-{
-    /**
-     * @var array
-     */
-    public $role_permissions;
-}
-
 /**
  * @property-read \ManaPHP\Identifying\IdentityInterface $identity
  * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher

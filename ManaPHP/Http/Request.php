@@ -3,49 +3,9 @@
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
-use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Http\Request\File\Exception as FileException;
 use ManaPHP\Validating\Validator\ValidateFailedException;
-
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class RequestContext implements Stickyable
-{
-    public $request_id;
-
-    /**
-     * @var array
-     */
-    public $_GET = [];
-
-    /**
-     * @var array
-     */
-    public $_POST = [];
-
-    /**
-     * @var array
-     */
-    public $_REQUEST = [];
-
-    /**
-     * @var array
-     */
-    public $_SERVER = [];
-
-    /**
-     * @var array
-     */
-    public $_COOKIE = [];
-
-    /**
-     * @var array
-     */
-    public $_FILES = [];
-
-    public $rawBody;
-}
 
 /**
  * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher

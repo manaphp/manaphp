@@ -2,21 +2,12 @@
 
 namespace ManaPHP\Mailing\Mailer\Adapter;
 
-use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Mailing\Mailer;
 use ManaPHP\Mailing\Mailer\Adapter\Exception\AuthenticationException;
 use ManaPHP\Mailing\Mailer\Adapter\Exception\BadResponseException;
 use ManaPHP\Mailing\Mailer\Adapter\Exception\ConnectionException;
 use ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException;
-
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class SmtpContext implements Inseparable
-{
-    public $socket;
-    public $file;
-}
 
 /**
  * @property-read \ManaPHP\AliasInterface                     $alias

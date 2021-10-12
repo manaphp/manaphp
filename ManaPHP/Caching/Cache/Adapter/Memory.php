@@ -4,16 +4,6 @@ namespace ManaPHP\Caching\Cache\Adapter;
 
 use ManaPHP\Caching\Cache;
 
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class MemoryContext
-{
-    /**
-     * @var array
-     */
-    public $data = [];
-}
-
 /**
  * @property-read \ManaPHP\Caching\Cache\Adapter\MemoryContext $context
  */

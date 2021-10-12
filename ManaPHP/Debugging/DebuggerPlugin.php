@@ -15,56 +15,6 @@ use ManaPHP\Plugin;
 use ManaPHP\Version;
 use ArrayObject;
 
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class DebuggerPluginContext
-{
-    /**
-     * @var bool
-     */
-    public $enabled;
-
-    /**
-     * @var string
-     */
-    public $key;
-
-    /**
-     * @var array
-     */
-    public $view = [];
-
-    /**
-     * @var array
-     */
-    public $log = [];
-
-    /**
-     * @var array
-     */
-    public $sql_prepared = [];
-
-    /**
-     * @var array
-     */
-    public $sql_executed = [];
-
-    /**
-     * @var int
-     */
-    public $sql_count = 0;
-
-    /**
-     * @var array
-     */
-    public $mongodb = [];
-
-    /**
-     * @var array
-     */
-    public $events = [];
-}
-
 /**
  * @property-read \ManaPHP\Di\ContainerInterface           $container
  * @property-read \ManaPHP\ConfigInterface                 $config

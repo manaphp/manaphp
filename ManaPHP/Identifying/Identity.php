@@ -3,20 +3,9 @@
 namespace ManaPHP\Identifying;
 
 use ManaPHP\Component;
-use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnauthorizedException;
-
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class IdentityContext implements Stickyable
-{
-    /**
-     * @var array
-     */
-    public $claims = [];
-}
 
 /**
  * @property-read \ManaPHP\Identifying\IdentityContext $context

@@ -10,21 +10,6 @@ use Swoole\Runtime;
 use Swoole\WebSocket\Server;
 use Throwable;
 
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class SwooleContext
-{
-    /**
-     * @var int
-     */
-    public $fd;
-
-    /**
-     * @var \Swoole\Http\Response
-     */
-    public $response;
-}
-
 /**
  * @property-read \ManaPHP\ConfigInterface                       $config
  * @property-read \ManaPHP\Logging\LoggerInterface               $logger

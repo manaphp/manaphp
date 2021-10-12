@@ -6,46 +6,6 @@ use ManaPHP\Component;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\Dispatcher\NotFoundControllerException;
 
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class DispatcherContext
-{
-    /**
-     * @var string
-     */
-    public $path;
-
-    /**
-     * @var string
-     */
-    public $area;
-
-    /**
-     * @var string
-     */
-    public $controller;
-
-    /**
-     * @var string
-     */
-    public $action;
-
-    /**
-     * @var array
-     */
-    public $params = [];
-
-    /**
-     * @var \ManaPHP\Controller
-     */
-    public $controllerInstance;
-
-    /**
-     * @var bool
-     */
-    public $isInvoking = false;
-}
-
 /**
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response

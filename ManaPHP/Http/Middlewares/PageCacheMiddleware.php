@@ -10,16 +10,6 @@ use ManaPHP\Helper\Reflection;
 use ManaPHP\Http\Middleware;
 use ManaPHP\Mvc\Controller as MvcController;
 
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class PageCacheMiddlewareContext
-{
-    public $ttl;
-    public $key;
-    public $if_none_match;
-    public $cache_used;
-}
-
 /**
  * @property-read \ManaPHP\ConfigInterface                             $config
  * @property-read \ManaPHP\Http\RequestInterface                       $request

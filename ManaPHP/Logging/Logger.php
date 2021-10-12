@@ -12,26 +12,6 @@ use ManaPHP\Logging\Logger\LogCategorizable;
 use Throwable;
 use ArrayObject;
 
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class LoggerContext
-{
-    /**
-     * @var int
-     */
-    public $level;
-
-    /**
-     * @var string
-     */
-    public $client_ip;
-
-    /**
-     * @var string
-     */
-    public $request_id;
-}
-
 /**
  * @property-read \ManaPHP\AliasInterface        $alias
  * @property-read \ManaPHP\Http\RequestInterface $request

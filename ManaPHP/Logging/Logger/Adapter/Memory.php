@@ -3,17 +3,6 @@
 namespace ManaPHP\Logging\Logger\Adapter;
 
 use ManaPHP\Logging\Logger;
-use ManaPHP\Logging\LoggerContext;
-
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class MemoryContext extends LoggerContext
-{
-    /**
-     * @var \ManaPHP\Logging\Logger\Log[]
-     */
-    public $logs = [];
-}
 
 /**
  * @property-read \ManaPHP\Logging\Logger\Adapter\MemoryContext $context

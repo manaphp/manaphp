@@ -3,31 +3,10 @@
 namespace ManaPHP\Html;
 
 use ManaPHP\Component;
-use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\Coroutine\Mutex;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PreconditionException;
-
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class RendererContext implements Inseparable
-{
-    /**
-     * @var array
-     */
-    public $sections = [];
-
-    /**
-     * @var array
-     */
-    public $stack = [];
-
-    /**
-     * @var array
-     */
-    public $templates = [];
-}
 
 /**
  * @property-read \ManaPHP\AliasInterface       $alias

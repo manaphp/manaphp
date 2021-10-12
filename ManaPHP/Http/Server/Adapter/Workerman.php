@@ -11,16 +11,6 @@ use Throwable;
 use Workerman\Protocols\Http;
 use Workerman\Worker;
 
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class WorkermanContext
-{
-    /**
-     * @var \Workerman\Connection\ConnectionInterface
-     */
-    public $connection;
-}
-
 /**
  * @property-read \ManaPHP\Http\RouterInterface                 $router
  * @property-read \ManaPHP\Http\Server\Adapter\WorkermanContext $context

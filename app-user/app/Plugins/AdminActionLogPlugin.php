@@ -5,11 +5,6 @@ namespace App\Plugins;
 use App\Models\AdminActionLog;
 use ManaPHP\Helper\Arr;
 
-class AdminActionLogPluginContext
-{
-    public $logged = false;
-}
-
 /**
  * @property-read \ManaPHP\Identifying\IdentityInterface   $identity
  * @property-read \ManaPHP\Http\RequestInterface           $request

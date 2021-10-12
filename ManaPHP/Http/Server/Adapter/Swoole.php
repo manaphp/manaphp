@@ -7,16 +7,6 @@ use ManaPHP\Http\Server;
 use Swoole\Runtime;
 use Throwable;
 
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class SwooleContext
-{
-    /**
-     * @var \Swoole\Http\Response
-     */
-    public $response;
-}
-
 /**
  * @property-read \ManaPHP\ConfigInterface                   $config
  * @property-read \ManaPHP\AliasInterface                    $alias

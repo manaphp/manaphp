@@ -7,31 +7,6 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\LocalFS;
 
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class ViewContext
-{
-    /**
-     * @var int
-     */
-    public $max_age;
-
-    /**
-     * @var false|string|null
-     */
-    public $layout;
-
-    /**
-     * @var array
-     */
-    public $vars = [];
-
-    /**
-     * @var string
-     */
-    public $content;
-}
-
 /**
  * @property-read \ManaPHP\AliasInterface           $alias
  * @property-read \ManaPHP\Html\RendererInterface   $renderer

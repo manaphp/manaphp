@@ -8,26 +8,6 @@ use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use ManaPHP\Plugin;
 
-/** @noinspection PhpMultipleClassesDeclarationsInOneFile */
-
-class LoggerPluginContext
-{
-    /**
-     * @var bool
-     */
-    public $enabled = true;
-
-    /**
-     * @var string
-     */
-    public $key;
-
-    /**
-     * @var array
-     */
-    public $logs = [];
-}
-
 /**
  * @property-read \ManaPHP\ConfigInterface             $config
  * @property-read \ManaPHP\Logging\LoggerInterface     $logger

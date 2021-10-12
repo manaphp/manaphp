@@ -47,7 +47,7 @@ class Component implements Injectable, JsonSerializable, Proxyable
             $parent = $class;
             do {
                 $try = $parent . 'Context';
-                if (class_exists($try, false)) {
+                if (class_exists($try)) {
                     $context = $try;
                     break;
                 }
