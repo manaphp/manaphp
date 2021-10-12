@@ -8,11 +8,12 @@ use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
 use PDO;
+use ManaPHP\Data\AbstractQuery;
 
 /**
  * @property-read \ManaPHP\Logging\LoggerInterface $logger
  */
-class Query extends \ManaPHP\Data\AbstractQuery
+class Query extends AbstractQuery
 {
     /**
      * @var array

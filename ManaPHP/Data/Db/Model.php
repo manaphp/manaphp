@@ -5,8 +5,9 @@ namespace ManaPHP\Data\Db;
 use ManaPHP\Data\Model\ExpressionInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Data\AbstractModel;
 
-class Model extends \ManaPHP\Data\AbstractModel implements ModelInterface
+class Model extends AbstractModel implements ModelInterface
 {
     /**
      * Gets the connection used to crud data to the model

@@ -10,8 +10,9 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
 use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\Regex;
+use ManaPHP\Data\AbstractQuery;
 
-class Query extends \ManaPHP\Data\AbstractQuery
+class Query extends AbstractQuery
 {
     /**
      * @var array

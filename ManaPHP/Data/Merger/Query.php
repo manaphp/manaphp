@@ -8,11 +8,12 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\Reflection;
+use ManaPHP\Data\AbstractQuery;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
-class Query extends \ManaPHP\Data\AbstractQuery
+class Query extends AbstractQuery
 {
     /**
      * @var \ManaPHP\Data\QueryInterface[]

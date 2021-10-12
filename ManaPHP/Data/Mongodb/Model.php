@@ -7,8 +7,9 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\RuntimeException;
 use MongoDB\BSON\ObjectId;
+use ManaPHP\Data\AbstractModel;
 
-class Model extends \ManaPHP\Data\AbstractModel
+class Model extends AbstractModel
 {
     /**
      * @var bool
