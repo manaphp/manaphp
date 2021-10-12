@@ -14,18 +14,18 @@ interface ValidatorInterface
     public function createError($validate, $field, $parameter = null);
 
     /**
-     * @param string                    $field
-     * @param \ManaPHP\Data\Model|mixed $value
-     * @param array|string|\Closure     $rules
+     * @param string                             $field
+     * @param \ManaPHP\Data\ModelInterface|mixed $value
+     * @param array|string|\Closure              $rules
      *
      * @return mixed
      */
     public function validate($field, $value, $rules);
 
     /**
-     * @param string                $field
-     * @param \ManaPHP\Data\Model   $model
-     * @param array|string|\Closure $rules
+     * @param string                       $field
+     * @param \ManaPHP\Data\ModelInterface $model
+     * @param array|string|\Closure        $rules
      *
      * @return mixed
      * @throws \ManaPHP\Validating\Validator\ValidateFailedException

@@ -281,8 +281,8 @@ interface ModelInterface extends TableInterface
     /**
      * Assigns values to a model from an array
      *
-     * @param array|\ManaPHP\Data\Model $data
-     * @param array                     $fields
+     * @param array|\ManaPHP\Data\ModelInterface $data
+     * @param array                              $fields
      *
      * @return static
      */

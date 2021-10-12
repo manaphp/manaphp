@@ -47,7 +47,7 @@ class HasManyOthers extends Relation
      */
     public function earlyLoad($r, $query, $name)
     {
-        /** @var \ManaPHP\Data\Model $thisModel */
+        /** @var \ManaPHP\Data\ModelInterface $thisModel */
         $thisModel = $this->thisModel;
         $thisFilter = $this->thisFilter;
         $thatField = $this->thatField;
@@ -76,14 +76,14 @@ class HasManyOthers extends Relation
     }
 
     /**
-     * @param \ManaPHP\Data\Model $instance
+     * @param \ManaPHP\Data\ModelInterface $instance
      *
      * @return \ManaPHP\Data\QueryInterface
      */
     public function lazyLoad($instance)
     {
-        /** @var \ManaPHP\Data\Model $thatModel */
-        /** @var \ManaPHP\Data\Model $thisModel */
+        /** @var \ManaPHP\Data\ModelInterface $thatModel */
+        /** @var \ManaPHP\Data\ModelInterface $thisModel */
         $thatModel = $this->thatModel;
         $thisModel = $this->thisModel;
         $thisFilter = $this->thisFilter;

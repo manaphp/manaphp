@@ -7,7 +7,7 @@ use ManaPHP\Exception\NotSupportedException;
 abstract class Model extends \ManaPHP\Data\Model
 {
     /**
-     * @return \ManaPHP\Data\Model
+     * @return \ManaPHP\Data\ModelInterface
      */
     abstract public function getModel();
 

@@ -27,12 +27,12 @@ class Linter extends Component
     protected $reflection;
 
     /**
-     * @var \ManaPHP\Data\Db\Model|\ManaPHP\Data\Mongodb\Model
+     * @var \ManaPHP\Data\ModelInterface
      */
     protected $model;
 
     /**
-     * @param string|\ManaPHP\Data\Model $model
+     * @param string|\ManaPHP\Data\ModelInterface $model
      */
     public function __construct($model)
     {

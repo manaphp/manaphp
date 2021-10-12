@@ -18,8 +18,8 @@ class Manager extends Component implements ManagerInterface
     protected $relations;
 
     /**
-     * @param \ManaPHP\Data\Model $model
-     * @param string              $name
+     * @param \ManaPHP\Data\ModelInterface $model
+     * @param string                       $name
      *
      * @return bool
      */
@@ -50,8 +50,8 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
-     * @param \ManaPHP\Data\Model $model
-     * @param string              $plainName
+     * @param \ManaPHP\Data\ModelInterface $model
+     * @param string                       $plainName
      *
      * @return string|false
      */
@@ -80,8 +80,8 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
-     * @param \ManaPHP\Data\Model $thisInstance
-     * @param string              $name
+     * @param \ManaPHP\Data\ModelInterface $thisInstance
+     * @param string                       $name
      *
      * @return  Relation|false
      */
@@ -95,8 +95,8 @@ class Manager extends Component implements ManagerInterface
             return $thatModel ? $thisInstance->belongsTo($thatModel, $tryName) : false;
         }
 
-        /** @var \ManaPHP\Data\Model $thatInstance */
-        /** @var \ManaPHP\Data\Model $thatModel */
+        /** @var \ManaPHP\Data\ModelInterface $thatInstance */
+        /** @var \ManaPHP\Data\ModelInterface $thatModel */
 
         if ($singular = $this->pluralToSingular($name)) {
             if (!$thatModel = $this->inferClassName($thisInstance, $singular)) {
@@ -163,8 +163,8 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
-     * @param \ManaPHP\Data\Model $model
-     * @param string              $name
+     * @param \ManaPHP\Data\ModelInterface $model
+     * @param string                       $name
      *
      * @return \ManaPHP\Data\Relation|false
      */
@@ -195,9 +195,9 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
-     * @param \ManaPHP\Data\Model   $model
-     * @param string                $name
-     * @param string|array|callable $data
+     * @param \ManaPHP\Data\ModelInterface $model
+     * @param string                       $name
+     * @param string|array|callable        $data
      *
      * @return \ManaPHP\Data\QueryInterface
      */
@@ -232,9 +232,9 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
-     * @param \ManaPHP\Data\Model $model
-     * @param array               $r
-     * @param array               $withs
+     * @param \ManaPHP\Data\ModelInterface $model
+     * @param array                        $r
+     * @param array                        $withs
      *
      * @return array
      *
@@ -275,8 +275,8 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
-     * @param \ManaPHP\Data\Model $instance
-     * @param string              $relation_name
+     * @param \ManaPHP\Data\ModelInterface $instance
+     * @param string                       $relation_name
      *
      * @return \ManaPHP\Data\QueryInterface
      */

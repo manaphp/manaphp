@@ -90,14 +90,14 @@ class HasManyToMany extends Relation
     }
 
     /**
-     * @param \ManaPHP\Data\Model $instance
+     * @param \ManaPHP\Data\ModelInterface $instance
      *
      * @return \ManaPHP\Data\QueryInterface
      */
     public function lazyLoad($instance)
     {
-        /** @var \ManaPHP\Data\Model $pivotModel */
-        /** @var \ManaPHP\Data\Model $thatModel */
+        /** @var \ManaPHP\Data\ModelInterface $pivotModel */
+        /** @var \ManaPHP\Data\ModelInterface $thatModel */
         $thatModel = $this->thatModel;
         $thisField = $this->thisField;
         $pivotModel = $this->pivotModel;

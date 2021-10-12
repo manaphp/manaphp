@@ -580,8 +580,8 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
     /**
      * Assigns values to a model from an array
      *
-     * @param array|\ManaPHP\Data\Model $data   =model_var(new static)
-     * @param array                     $fields =model_fields(static::class)
+     * @param array|\ManaPHP\Data\ModelInterface $data   =model_var(new static)
+     * @param array                              $fields =model_fields(static::class)
      *
      * @return static
      */
@@ -1179,7 +1179,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
      */
     public function belongsTo($thatModel, $thisField = null)
     {
-        /** @var \ManaPHP\Data\Model $thatModel */
+        /** @var \ManaPHP\Data\ModelInterface $thatModel */
         $that = $thatModel::sample();
 
         return new BelongsTo(static::class, $thisField ?? $that->foreignedKey(), $thatModel, $that->primaryKey());
@@ -1215,7 +1215,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
      */
     public function hasManyToMany($thatModel, $pivotModel)
     {
-        /** @var \ManaPHP\Data\Model $thatModel */
+        /** @var \ManaPHP\Data\ModelInterface $thatModel */
         $that = $thatModel::sample();
 
         return new HasManyToMany(
@@ -1232,7 +1232,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
      */
     public function hasManyOthers($thatModel, $thisFilter = null)
     {
-        /** @var \ManaPHP\Data\Model $thatModel */
+        /** @var \ManaPHP\Data\ModelInterface $thatModel */
         $that = $thatModel::sample();
 
         $foreingedKey = $that->foreignedKey();
@@ -1294,7 +1294,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
     /**
      * @param string $name
      *
-     * @return \ManaPHP\Data\Model|\ManaPHP\Data\Model[]|mixed
+     * @return \ManaPHP\Data\ModelInterface|\ManaPHP\Data\ModelInterface[]|mixed
      * @throws \ManaPHP\Exception\UnknownPropertyException
      */
     public function __get($name)

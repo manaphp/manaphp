@@ -24,14 +24,14 @@ interface TableInterface
     public function getAnyShard();
 
     /**
-     * @param array|\ManaPHP\Data\Model $context
+     * @param array|\ManaPHP\Data\ModelInterface $context
      *
      * @return array
      */
     public function getUniqueShard($context);
 
     /**
-     * @param array|\ManaPHP\Data\Model $context
+     * @param array|\ManaPHP\Data\ModelInterface $context
      *
      * @return array
      */

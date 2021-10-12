@@ -5,7 +5,7 @@ namespace ManaPHP\Validating;
 
 use Closure;
 use ManaPHP\Component;
-use ManaPHP\Data\Model;
+use ManaPHP\Data\ModelInterface;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\NotSupportedException;
@@ -69,16 +69,16 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string                    $field
-     * @param \ManaPHP\Data\Model|mixed $value
-     * @param array|string|\Closure     $rules
+     * @param string                             $field
+     * @param \ManaPHP\Data\ModelInterface|mixed $value
+     * @param array|string|\Closure              $rules
      *
      * @return mixed
      * @throws \ManaPHP\Validating\Validator\ValidateFailedException
      */
     public function validate($field, $value, $rules)
     {
-        if ($value instanceof Model) {
+        if ($value instanceof ModelInterface) {
             return $this->validateModel($field, $value, $rules);
         } else {
             return $this->validateValue($field, $value, $rules);
@@ -106,9 +106,9 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string                $field
-     * @param \ManaPHP\Data\Model   $model
-     * @param array|string|\Closure $rules
+     * @param string                       $field
+     * @param \ManaPHP\Data\ModelInterface $model
+     * @param array|string|\Closure        $rules
      *
      * @return mixed
      */
@@ -620,9 +620,9 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string              $field
-     * @param \ManaPHP\Data\Model $model
-     * @param null|string         $parameter
+     * @param string                       $field
+     * @param \ManaPHP\Data\ModelInterface $model
+     * @param null|string                  $parameter
      *
      * @return string|int
      */
@@ -717,9 +717,9 @@ class Validator extends Component implements ValidatorInterface
 
 
     /**
-     * @param string|int          $field
-     * @param \ManaPHP\Data\Model $model
-     * @param string|array        $parameters
+     * @param string|int                   $field
+     * @param \ManaPHP\Data\ModelInterface $model
+     * @param string|array                 $parameters
      *
      * @return int|string|null
      */
@@ -749,9 +749,9 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string              $field
-     * @param \ManaPHP\Data\Model $model
-     * @param string              $parameter
+     * @param string                       $field
+     * @param \ManaPHP\Data\ModelInterface $model
+     * @param string                       $parameter
      *
      * @return string|null
      */
@@ -786,9 +786,9 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string              $field
-     * @param \ManaPHP\Data\Model $model
-     * @param string              $parameter
+     * @param string                       $field
+     * @param \ManaPHP\Data\ModelInterface $model
+     * @param string                       $parameter
      *
      * @return int|string|null
      */
@@ -804,9 +804,9 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string              $field
-     * @param \ManaPHP\Data\Model $model
-     * @param string              $parameter
+     * @param string                       $field
+     * @param \ManaPHP\Data\ModelInterface $model
+     * @param string                       $parameter
      *
      * @return int|string|null
      */
@@ -843,8 +843,8 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string              $field
-     * @param \ManaPHP\Data\Model $model
+     * @param string                       $field
+     * @param \ManaPHP\Data\ModelInterface $model
      *
      * @return int|string|null
      */
@@ -888,8 +888,8 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
-     * @param string              $field
-     * @param \ManaPHP\Data\Model $model
+     * @param string                       $field
+     * @param \ManaPHP\Data\ModelInterface $model
      *
      * @return mixed|null
      */

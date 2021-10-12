@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Data\Merger;
 
-use ManaPHP\Data\Model;
+use ManaPHP\Data\ModelInterface;
 use ManaPHP\Data\QueryInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
@@ -49,7 +49,7 @@ class Query extends \ManaPHP\Data\Query
 
             if (Reflection::isInstanceOf($query, QueryInterface::class)) {
                 $this->queries[$id] = $query;
-            } elseif ($query instanceof Model) {
+            } elseif ($query instanceof ModelInterface) {
                 $this->queries[$id] = $query::query();
             } else {
                 throw new MisuseException('');
@@ -93,7 +93,7 @@ class Query extends \ManaPHP\Data\Query
     }
 
     /**
-     * @param \ManaPHP\Data\Model $model
+     * @param \ManaPHP\Data\ModelInterface $model
      *
      * @return static
      */

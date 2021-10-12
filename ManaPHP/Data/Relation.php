@@ -19,7 +19,7 @@ abstract class Relation
      */
     public function getThatQuery()
     {
-        /** @var \ManaPHP\Data\Model $referenceModel */
+        /** @var \ManaPHP\Data\ModelInterface $referenceModel */
         $referenceModel = $this->thatModel;
 
         return $referenceModel::select();
@@ -35,7 +35,7 @@ abstract class Relation
     abstract public function earlyLoad($r, $query, $name);
 
     /**
-     * @param \ManaPHP\Data\Model $instance
+     * @param \ManaPHP\Data\ModelInterface $instance
      *
      * @return \ManaPHP\Data\QueryInterface
      */

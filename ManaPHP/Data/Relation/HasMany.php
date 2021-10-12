@@ -68,13 +68,13 @@ class HasMany extends Relation
     }
 
     /**
-     * @param \ManaPHP\Data\Model $instance
+     * @param \ManaPHP\Data\ModelInterface $instance
      *
      * @return \ManaPHP\Data\QueryInterface
      */
     public function lazyLoad($instance)
     {
-        /** @var \ManaPHP\Data\Model $thatModel */
+        /** @var \ManaPHP\Data\ModelInterface $thatModel */
         $thatModel = $this->thatModel;
         $thisField = $this->thisField;
 

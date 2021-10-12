@@ -54,7 +54,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     protected $distinct;
 
     /**
-     * @var \ManaPHP\Data\Model
+     * @var \ManaPHP\Data\ModelInterface
      */
     protected $model;
 
@@ -122,7 +122,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     }
 
     /**
-     * @param \ManaPHP\Data\Model $model
+     * @param \ManaPHP\Data\ModelInterface $model
      *
      * @return static
      */
@@ -134,7 +134,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     }
 
     /**
-     * @return \ManaPHP\Data\Model|null
+     * @return \ManaPHP\Data\ModelInterface|null
      */
     public function getModel()
     {
@@ -201,7 +201,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     {
         if ($table) {
             if (str_contains($table, '\\')) {
-                /** @var \ManaPHP\Data\Model $table */
+                /** @var \ManaPHP\Data\ModelInterface $table */
                 $sample = $table::sample();
 
                 $this->setModel($sample);
@@ -566,7 +566,7 @@ abstract class Query extends Component implements QueryInterface, IteratorAggreg
     }
 
     /**
-     * @return \ManaPHP\Data\Model[]|\ManaPHP\Data\Model|null|array
+     * @return \ManaPHP\Data\ModelInterface[]|\ManaPHP\Data\ModelInterface|null|array
      */
     public function fetch()
     {

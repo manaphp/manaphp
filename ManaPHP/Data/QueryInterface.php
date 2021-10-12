@@ -15,14 +15,14 @@ interface QueryInterface
     public function setDb($db);
 
     /**
-     * @param \ManaPHP\Data\Model $model
+     * @param \ManaPHP\Data\ModelInterface $model
      *
      * @return static
      */
     public function setModel($model);
 
     /**
-     * @return \ManaPHP\Data\Model
+     * @return \ManaPHP\Data\ModelInterface
      */
     public function getModel();
 
@@ -372,7 +372,7 @@ interface QueryInterface
     public function setFetchType($multiple);
 
     /**
-     * @return \ManaPHP\Data\Model[]|\ManaPHP\Data\Model|array|null
+     * @return \ManaPHP\Data\ModelInterface[]|\ManaPHP\Data\ModelInterface|array|null
      */
     public function fetch();
 
