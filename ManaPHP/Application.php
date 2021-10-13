@@ -9,7 +9,7 @@ use ManaPHP\Helper\LocalFS;
 use ReflectionClass;
 use ManaPHP\Service\Provider as ServiceProvider;
 use ManaPHP\Tracers\Provider as TracersProvider;
-use ManaPHP\Plugin\Provider as PluginProvider;
+use ManaPHP\Plugins\Provider as PluginsProvider;
 use ManaPHP\Event\Listener\Provider as ListenerProvider;
 
 /**
@@ -134,7 +134,7 @@ class Application extends Component implements ApplicationInterface
             Provider::class,
             ServiceProvider::class,
             TracersProvider::class,
-            PluginProvider::class,
+            PluginsProvider::class,
             ListenerProvider::class,
         ];
     }

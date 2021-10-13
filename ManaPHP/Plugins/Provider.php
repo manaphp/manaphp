@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Plugin;
+namespace ManaPHP\Plugins;
 
 use ManaPHP\Helper\LocalFS;
 
