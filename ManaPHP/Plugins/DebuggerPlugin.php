@@ -4,7 +4,7 @@ namespace ManaPHP\Plugins;
 
 use ManaPHP\Component;
 use ManaPHP\Event\EventArgs;
-use ManaPHP\Tracing\Tracer;
+use ManaPHP\Tracer;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
