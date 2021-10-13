@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Data\Mongodb;
 
-class Table extends \ManaPHP\Data\Db\AbstractTable
+class Table extends \ManaPHP\Data\Db\Table
 {
     /**
      * @return string
