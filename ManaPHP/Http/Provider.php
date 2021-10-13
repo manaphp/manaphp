@@ -23,9 +23,9 @@ class Provider extends \ManaPHP\Di\Provider
             'aclCommand'  => 'ManaPHP\Cli\Commands\AclCommand',
             'areaCommand' => 'ManaPHP\Cli\Commands\AreaCommand',
 
-            'httpClientTracer' => 'ManaPHP\Http\Client\Tracer',
-            'requestTracer'    => 'ManaPHP\Http\Request\Tracer',
-            'dispatcherTracer' => 'ManaPHP\Http\Dispatcher\Tracer',
+            'httpClientTracer' => 'ManaPHP\Tracers\HttpClientTracer',
+            'requestTracer'    => 'ManaPHP\Tracers\RequestTracer',
+            'dispatcherTracer' => 'ManaPHP\Tracers\DispatcherTracer',
         ];
 
     public function __construct()

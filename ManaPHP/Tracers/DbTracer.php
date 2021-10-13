@@ -1,11 +1,12 @@
 <?php
 
-namespace ManaPHP\Data\Db;
+namespace ManaPHP\Tracers;
 
 use ArrayObject;
 use ManaPHP\Event\EventArgs;
+use ManaPHP\Tracer;
 
-class Tracer extends \ManaPHP\Tracing\Tracer
+class DbTracer extends Tracer
 {
     /**
      * @param array $options

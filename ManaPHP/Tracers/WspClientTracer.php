@@ -1,10 +1,11 @@
 <?php
 
-namespace ManaPHP\Ws\Pushing\Client;
+namespace ManaPHP\Tracers;
 
 use ManaPHP\Event\EventArgs;
+use ManaPHP\Tracer;
 
-class Tracer extends \ManaPHP\Tracing\Tracer
+class WspClientTracer extends Tracer
 {
     public function __construct($options = [])
     {

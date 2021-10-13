@@ -1,13 +1,14 @@
 <?php
 
-namespace ManaPHP\Data\Redis;
+namespace ManaPHP\Tracers;
 
 use ManaPHP\Event\EventArgs;
+use \ManaPHP\Tracer;
 
 /**
  * @property-read \ManaPHP\ConfigInterface $config
  */
-class Tracer extends \ManaPHP\Tracing\Tracer
+class RedisTracer extends Tracer
 {
     public function __construct($options = [])
     {

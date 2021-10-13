@@ -1,10 +1,11 @@
 <?php
 
-namespace ManaPHP\Mailing\Mailer;
+namespace ManaPHP\Tracers;
 
 use ManaPHP\Event\EventArgs;
+use ManaPHP\Tracer;
 
-class Tracer extends \ManaPHP\Tracing\Tracer
+class MailerTracer extends Tracer
 {
     public function __construct($options = [])
     {

@@ -1,10 +1,11 @@
 <?php
 
-namespace ManaPHP\Amqp;
+namespace ManaPHP\Tracers;
 
 use ManaPHP\Event\EventArgs;
+use ManaPHP\Tracer;
 
-class Tracer extends \ManaPHP\Tracing\Tracer
+class AmqpClientTracer extends Tracer
 {
     /**
      * @param array $options

@@ -58,11 +58,11 @@ class Provider extends \ManaPHP\Di\Provider
             'tracerPlugin'    => 'ManaPHP\Debugging\TracerPlugin',
             'loggerPlugin'    => 'ManaPHP\Logging\LoggerPlugin',
 
-            'dbTracer'       => 'ManaPHP\Data\Db\Tracer',
-            'mongodbTracer'  => 'ManaPHP\Data\Mongodb\Tracer',
-            'redisTracer'    => 'ManaPHP\Data\Redis\Tracer',
-            'mailerTracer'   => 'ManaPHP\Mailing\Mailer\Tracer',
-            'wsClientTracer' => 'ManaPHP\Ws\Client\Tracer',
-            'amqpTracer'     => 'ManaPHP\Amqp\Tracer',
+            'dbTracer'         => 'ManaPHP\Tracers\DbTracer',
+            'mongodbTracer'    => 'ManaPHP\Tracers\MongodbTracer',
+            'redisTracer'      => 'ManaPHP\Tracers\RedisTracer',
+            'mailerTracer'     => 'ManaPHP\Tracers\MailerTracer',
+            'wsClientTracer'   => 'ManaPHP\Tracers\WsClientTracer',
+            'amqpClientTracer' => 'ManaPHP\Tracers\AmqpClientTracer',
         ];
 }

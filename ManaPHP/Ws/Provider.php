@@ -14,7 +14,7 @@ class Provider extends \ManaPHP\Di\Provider
             'wspServer'    => 'ManaPHP\Ws\Pushing\Server',
             'chatServer'   => 'ManaPHP\Ws\Chatting\Server',
 
-            'wspServerTracer' => 'ManaPHP\Ws\Pushing\Server\Tracer',
-            'wspClientTracer' => 'ManaPHP\Ws\Pushing\Client\Tracer',
+            'wspServerTracer' => 'ManaPHP\Tracers\WspServerTracer',
+            'wspClientTracer' => 'ManaPHP\Tracers\WspClientTracer',
         ];
 }

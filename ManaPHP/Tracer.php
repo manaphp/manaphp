@@ -1,8 +1,6 @@
 <?php
 
-namespace ManaPHP\Tracing;
-
-use ManaPHP\Component;
+namespace ManaPHP;
 
 /**
  * @property-read \ManaPHP\Logging\LoggerInterface $logger

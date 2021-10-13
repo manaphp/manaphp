@@ -34,6 +34,6 @@ class Provider extends \ManaPHP\Di\Provider
             'cryptCommand'          => 'ManaPHP\Cli\Commands\CryptCommand',
             'uuidCommand'           => 'ManaPHP\Cli\Commands\UuidCommand',
 
-            'httpClientTracer' => 'ManaPHP\Http\Client\Tracer',
+            'httpClientTracer' => 'ManaPHP\Tracers\HttpClientTracer',
         ];
 }

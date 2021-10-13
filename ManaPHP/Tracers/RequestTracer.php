@@ -1,11 +1,13 @@
 <?php
 
-namespace ManaPHP\Http\Request;
+namespace ManaPHP\Tracers;
+
+use ManaPHP\Tracer;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
-class Tracer extends \ManaPHP\Tracing\Tracer
+class RequestTracer extends Tracer
 {
     public function __construct($options = [])
     {

@@ -1,10 +1,11 @@
 <?php
 
-namespace ManaPHP\Http\Client;
+namespace ManaPHP\Tracers;
 
 use ManaPHP\Event\EventArgs;
+use ManaPHP\Tracer;
 
-class Tracer extends \ManaPHP\Tracing\Tracer
+class HttpClientTracer extends Tracer
 {
     public function __construct($options = [])
     {

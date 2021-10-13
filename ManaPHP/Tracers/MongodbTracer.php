@@ -1,10 +1,11 @@
 <?php
 
-namespace ManaPHP\Data\Mongodb;
+namespace ManaPHP\Tracers;
 
 use ManaPHP\Event\EventArgs;
+use ManaPHP\Tracer;
 
-class Tracer extends \ManaPHP\Tracing\Tracer
+class MongodbTracer extends Tracer
 {
     public function __construct($options = [])
     {

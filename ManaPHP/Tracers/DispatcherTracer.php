@@ -1,14 +1,15 @@
 <?php
 
-namespace ManaPHP\Http\Dispatcher;
+namespace ManaPHP\Tracers;
 
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Helper\Reflection;
+use ManaPHP\Tracer;
 
 /**
  * @property-read \ManaPHP\Http\ResponseInterface $response
  */
-class Tracer extends \ManaPHP\Tracing\Tracer
+class DispatcherTracer extends Tracer
 {
     public function __construct($options = [])
     {
