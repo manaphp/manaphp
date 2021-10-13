@@ -8,7 +8,7 @@ use ManaPHP\Di\Injector;
 use ManaPHP\Helper\LocalFS;
 use ReflectionClass;
 use ManaPHP\Service\Provider as ServiceProvider;
-use ManaPHP\Tracing\Provider as TracingProvider;
+use ManaPHP\Tracers\Provider as TracersProvider;
 use ManaPHP\Plugin\Provider as PluginProvider;
 use ManaPHP\Event\Listener\Provider as ListenerProvider;
 
@@ -133,7 +133,7 @@ class Application extends Component implements ApplicationInterface
         return [
             Provider::class,
             ServiceProvider::class,
-            TracingProvider::class,
+            TracersProvider::class,
             PluginProvider::class,
             ListenerProvider::class,
         ];

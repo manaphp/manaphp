@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Tracing;
+namespace ManaPHP\Tracers;
 
 use ManaPHP\Helper\LocalFS;
 
