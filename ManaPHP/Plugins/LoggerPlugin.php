@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Logging;
+namespace ManaPHP\Plugins;
 
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\AbortException;
@@ -15,7 +15,7 @@ use ManaPHP\Plugin;
  * @property-read \ManaPHP\Http\ResponseInterface      $response
  * @property-read \ManaPHP\Http\RouterInterface        $router
  * @property-read \Redis|\ManaPHP\Data\RedisInterface  $redisCache
- * @property-read \ManaPHP\Logging\LoggerPluginContext $context
+ * @property-read \ManaPHP\Plugins\LoggerPluginContext $context
  */
 class LoggerPlugin extends Plugin
 {

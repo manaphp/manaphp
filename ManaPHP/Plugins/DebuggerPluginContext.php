@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Debugging;
+namespace ManaPHP\Plugins;
 
 class DebuggerPluginContext
 {

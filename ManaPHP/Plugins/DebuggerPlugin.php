@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Debugging;
+namespace ManaPHP\Plugins;
 
 use ManaPHP\Component;
 use ManaPHP\Event\EventArgs;
@@ -16,15 +16,15 @@ use ManaPHP\Version;
 use ArrayObject;
 
 /**
- * @property-read \ManaPHP\Di\ContainerInterface           $container
- * @property-read \ManaPHP\ConfigInterface                 $config
- * @property-read \ManaPHP\Logging\LoggerInterface         $logger
- * @property-read \ManaPHP\Http\RequestInterface           $request
- * @property-read \ManaPHP\Http\ResponseInterface          $response
- * @property-read \ManaPHP\Http\DispatcherInterface        $dispatcher
- * @property-read \ManaPHP\Http\RouterInterface            $router
- * @property-read \Redis                                   $redisCache
- * @property-read \ManaPHP\Debugging\DebuggerPluginContext $context
+ * @property-read \ManaPHP\Di\ContainerInterface         $container
+ * @property-read \ManaPHP\ConfigInterface               $config
+ * @property-read \ManaPHP\Logging\LoggerInterface       $logger
+ * @property-read \ManaPHP\Http\RequestInterface         $request
+ * @property-read \ManaPHP\Http\ResponseInterface        $response
+ * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher
+ * @property-read \ManaPHP\Http\RouterInterface          $router
+ * @property-read \Redis                                 $redisCache
+ * @property-read \ManaPHP\Plugins\DebuggerPluginContext $context
  */
 class DebuggerPlugin extends Plugin
 {
@@ -46,7 +46,7 @@ class DebuggerPlugin extends Plugin
     /**
      * @var string
      */
-    protected $template = '@manaphp/Debugging/DebuggerPlugin/Template.html';
+    protected $template = '@manaphp/Plugins/DebuggerPlugin/Template.html';
 
     /**
      * @var bool

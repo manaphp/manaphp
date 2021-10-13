@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Logging;
+namespace ManaPHP\Plugins;
 
 class LoggerPluginContext
 {
