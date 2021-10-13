@@ -1,13 +1,13 @@
 <?php
 
-namespace ManaPHP\Aop;
+namespace ManaPHP\Cli\Commands;
 
 use ManaPHP\Cli\Console;
 
 /**
  * @property-read \ManaPHP\AliasInterface $alias
  */
-class Command extends \ManaPHP\Cli\Command
+class AopCommand extends \ManaPHP\Cli\Command
 {
     /**
      * check function call on $this

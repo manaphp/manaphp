@@ -1,12 +1,12 @@
 <?php
 
-namespace ManaPHP\Rpc;
+namespace ManaPHP\Cli\Commands;
 
 use ManaPHP\Helper\LocalFS;
 use ReflectionClass;
 use ReflectionMethod;
 
-class Command extends \ManaPHP\Cli\Command
+class RpcCommand extends \ManaPHP\Cli\Command
 {
     /**
      * generate services stub for client

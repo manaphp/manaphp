@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Html\Renderer\Engine\Sword;
+namespace ManaPHP\Cli\Commands;
 
 use ManaPHP\Helper\LocalFS;
 
@@ -8,7 +8,7 @@ use ManaPHP\Helper\LocalFS;
  * @property-read \ManaPHP\AliasInterface                      $alias
  * @property-read \ManaPHP\Html\Renderer\Engine\Sword\Compiler $swordCompiler
  */
-class Command extends \ManaPHP\Cli\Command
+class SwordCommand extends \ManaPHP\Cli\Command
 {
     /**
      * precompile sword template

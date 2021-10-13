@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Data\Mongodb;
+namespace ManaPHP\Cli\Commands;
 
 use ManaPHP\Cli\Console;
 use ManaPHP\Helper\LocalFS;
@@ -10,7 +10,7 @@ use ManaPHP\Helper\Str;
  * @property-read \ManaPHP\ConfigInterface $config
  * @property-read \ManaPHP\AliasInterface  $alias
  */
-class Command extends \ManaPHP\Cli\Command
+class MongodbCommand extends \ManaPHP\Cli\Command
 {
     /**
      * @param array $services

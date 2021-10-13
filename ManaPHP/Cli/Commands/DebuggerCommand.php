@@ -1,12 +1,12 @@
 <?php
 
-namespace ManaPHP\Debugging\DebuggerPlugin;
+namespace ManaPHP\Cli\Commands;
 
 /**
  * @property-read \ManaPHP\ConfigInterface $config
  * @property-read \Redis                   $redisCache
  */
-class Command extends \ManaPHP\Cli\Command
+class DebuggerCommand extends \ManaPHP\Cli\Command
 {
     /**
      * monitor generated urls

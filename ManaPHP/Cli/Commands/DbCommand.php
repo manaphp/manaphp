@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Data\Db;
+namespace ManaPHP\Cli\Commands;
 
 use ManaPHP\Cli\Console;
 use ManaPHP\Data\Db;
@@ -11,7 +11,7 @@ use ManaPHP\Helper\Str;
  * @property-read \ManaPHP\ConfigInterface $config
  * @property-read \ManaPHP\AliasInterface  $alias
  */
-class Command extends \ManaPHP\Cli\Command
+class DbCommand extends \ManaPHP\Cli\Command
 {
     /**
      * @return array

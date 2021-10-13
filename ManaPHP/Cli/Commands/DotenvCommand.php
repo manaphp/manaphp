@@ -1,11 +1,11 @@
 <?php
 
-namespace ManaPHP\Configuration\Dotenv;
+namespace ManaPHP\Cli\Commands;
 
 /**
  * @property-read \ManaPHP\Configuration\DotenvInterface $dotenv
  */
-class Command extends \ManaPHP\Cli\Command
+class DotenvCommand extends \ManaPHP\Cli\Command
 {
     /**
      * dump parsed .env values

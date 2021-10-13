@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Http;
+namespace ManaPHP\Cli\Commands;
 
 use ManaPHP\Cli\Command;
 use ManaPHP\Helper\LocalFS;

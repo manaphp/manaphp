@@ -1,11 +1,11 @@
 <?php
 
-namespace ManaPHP\Http\Acl;
+namespace ManaPHP\Cli\Commands;
 
 /**
  * @property-read \ManaPHP\Http\Acl\BuilderInterface $aclBuilder
  */
-class Command extends \ManaPHP\Cli\Command
+class AclCommand extends \ManaPHP\Cli\Command
 {
     /**
      * list acl of controllers
