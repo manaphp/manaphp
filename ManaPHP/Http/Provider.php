@@ -19,10 +19,6 @@ class Provider extends \ManaPHP\Di\Provider
             'authorization'  => 'ManaPHP\Http\Authorization',
             'globalsManager' => 'ManaPHP\Http\Globals\Manager',
             'aclBuilder'     => 'ManaPHP\Http\Acl\Builder',
-
-            'httpClientTracer' => 'ManaPHP\Tracers\HttpClientTracer',
-            'requestTracer'    => 'ManaPHP\Tracers\RequestTracer',
-            'dispatcherTracer' => 'ManaPHP\Tracers\DispatcherTracer',
         ];
 
     public function __construct()

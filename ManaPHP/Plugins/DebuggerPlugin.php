@@ -443,18 +443,21 @@ class DebuggerPlugin extends Plugin
         $data['providers'] = $this->container->getProviders();
 
         foreach ($this->container->getInstances() as $name => $instance) {
+            $properties = Reflection::isInstanceOf($instance, Component::class)
+                ? $instance->dump()
+                : array_keys(Reflection::getObjectVars($instance));
+
+            if (Reflection::isInstanceOf($instance, Tracer::class)) {
+                $name = str_replace('\\', '//', $name);
+                $data['tracers'][lcfirst(basename($name, 'Tracer'))] = ['class'      => Reflection::getClass($instance),
+                                                                        'properties' => $properties];
+            }
+
             if (str_contains($name, '\\')) {
                 continue;
             }
 
-            $properties = Reflection::isInstanceOf($instance, Component::class)
-                ? $instance->dump()
-                : array_keys(Reflection::getObjectVars($instance));
-            if (Reflection::isInstanceOf($instance, Tracer::class)) {
-                $data['tracers'][$name] = ['class' => Reflection::getClass($instance), 'properties' => $properties];
-            } else {
-                $data['components'][$name] = ['class' => Reflection::getClass($instance), 'properties' => $properties];
-            }
+            $data['components'][$name] = ['class' => Reflection::getClass($instance), 'properties' => $properties];
         }
 
         $data['included_files'] = @get_included_files() ?: [];

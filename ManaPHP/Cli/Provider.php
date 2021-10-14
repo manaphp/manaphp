@@ -11,7 +11,5 @@ class Provider extends \ManaPHP\Di\Provider
             'request'               => 'ManaPHP\Cli\Request',
             'errorHandler'          => 'ManaPHP\Cli\ErrorHandler',
             'commandManager'        => "ManaPHP\Cli\Command\Manager",
-
-            'httpClientTracer' => 'ManaPHP\Tracers\HttpClientTracer',
         ];
 }

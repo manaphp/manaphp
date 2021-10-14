@@ -13,8 +13,5 @@ class Provider extends \ManaPHP\Di\Provider
             'identity'     => 'ManaPHP\Identifying\Identity\Adapter\Jwt',
             'wspServer'    => 'ManaPHP\Ws\Pushing\Server',
             'chatServer'   => 'ManaPHP\Ws\Chatting\Server',
-
-            'wspServerTracer' => 'ManaPHP\Tracers\WspServerTracer',
-            'wspClientTracer' => 'ManaPHP\Tracers\WspClientTracer',
         ];
 }
