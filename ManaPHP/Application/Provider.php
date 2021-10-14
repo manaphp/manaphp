@@ -52,10 +52,6 @@ class Provider extends \ManaPHP\Di\Provider
             'amqpClient'       => 'ManaPHP\Amqp\Client',
             'amqpRpc'          => 'ManaPHP\Rpc\Amqp\Client',
             'tracerManager'    => 'ManaPHP\Tracer\Manager',
-
-            'backtracePlugin' => 'ManaPHP\Plugins\BacktracePlugin',
-            'debuggerPlugin'  => 'ManaPHP\Plugins\DebuggerPlugin',
-            'fiddlerPlugin'   => 'ManaPHP\Plugins\FiddlerPlugin',
-            'loggerPlugin'    => 'ManaPHP\Plugins\LoggerPlugin',
+            'pluginManager'    => 'ManaPHP\Plugin\Manager',
         ];
 }
