@@ -3,7 +3,7 @@
 namespace ManaPHP\Tracers;
 
 use ManaPHP\Event\EventArgs;
-use \ManaPHP\Tracer;
+use ManaPHP\Tracer;
 
 /**
  * @property-read \ManaPHP\ConfigInterface $config
