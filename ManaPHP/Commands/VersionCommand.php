@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Cli\Commands;
+namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
 use ManaPHP\Version;

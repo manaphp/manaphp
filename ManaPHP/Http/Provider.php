@@ -20,8 +20,8 @@ class Provider extends \ManaPHP\Di\Provider
             'globalsManager' => 'ManaPHP\Http\Globals\Manager',
             'aclBuilder'     => 'ManaPHP\Http\Acl\Builder',
 
-            'aclCommand'  => 'ManaPHP\Cli\Commands\AclCommand',
-            'areaCommand' => 'ManaPHP\Cli\Commands\AreaCommand',
+            'aclCommand'  => 'ManaPHP\Commands\AclCommand',
+            'areaCommand' => 'ManaPHP\Commands\AreaCommand',
 
             'httpClientTracer' => 'ManaPHP\Tracers\HttpClientTracer',
             'requestTracer'    => 'ManaPHP\Tracers\RequestTracer',

@@ -14,6 +14,6 @@ class Provider extends \ManaPHP\Di\Provider
             'viewsCache'   => ['ManaPHP\Caching\Cache\Adapter\Redis', 'prefix' => 'cache:views:'],
             'identity'     => 'ManaPHP\Identifying\Identity\Adapter\Session',
 
-            'viewCommand' => 'ManaPHP\Cli\Commands\ViewCommand',
+            'viewCommand' => 'ManaPHP\Commands\ViewCommand',
         ];
 }

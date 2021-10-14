@@ -10,7 +10,7 @@ class Provider extends \ManaPHP\Di\Provider
             'errorHandler' => 'ManaPHP\Rest\ErrorHandler',
             'dispatcher'   => 'ManaPHP\Rpc\Dispatcher',
 
-            'rpcCommand' => 'ManaPHP\Cli\Commands\RpcCommand'
+            'rpcCommand' => 'ManaPHP\Commands\RpcCommand'
         ];
 
     public function __construct()

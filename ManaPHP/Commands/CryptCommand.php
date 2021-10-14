@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Cli\Commands;
+namespace ManaPHP\Commands;
 
 /**
  * @property-read \ManaPHP\Security\CryptInterface $crypt

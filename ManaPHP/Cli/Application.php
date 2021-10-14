@@ -8,7 +8,7 @@ use Swoole\Coroutine;
 use Swoole\Event;
 use Swoole\Runtime;
 use Throwable;
-use ManaPHP\Cli\Commands\Provider as CommandsProvider;
+use ManaPHP\Commands\Provider as CommandsProvider;
 
 /**
  * @property-read \ManaPHP\Logging\LoggerInterface $logger
