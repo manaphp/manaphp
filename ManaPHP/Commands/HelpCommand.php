@@ -10,8 +10,9 @@ use ReflectionClass;
 use ReflectionMethod;
 
 /**
- * @property-read \ManaPHP\Di\ContainerInterface $container
- * @property-read \ManaPHP\ConfigInterface       $config
+ * @property-read \ManaPHP\Di\ContainerInterface        $container
+ * @property-read \ManaPHP\ConfigInterface              $config
+ * @property-read \ManaPHP\Cli\Command\ManagerInterface $commandManager
  */
 class HelpCommand extends Command
 {
@@ -24,7 +25,7 @@ class HelpCommand extends Command
     {
         $builtin_commands = [];
         $app_commands = [];
-        foreach ($this->container->getDefinitions('*Command') as $name => $definition) {
+        foreach ($this->commandManager->getCommands() as $name => $definition) {
             if (is_string($definition)) {
                 if (str_starts_with($definition, 'App\\')) {
                     $app_commands[$name] = $definition;
@@ -266,7 +267,11 @@ class HelpCommand extends Command
      */
     public function commandAction($command, $action = '')
     {
-        $instance = $this->container->get(Str::camelize($command) . 'Command');
+        $camelizedCommand=Str::camelize($command);
+        if (($definition = $this->commandManager->getCommands()[$camelizedCommand] ?? null) === null) {
+            return $this->console->error("$camelizedCommand Command not found");
+        }
+        $instance = $this->container->get($definition);
 
         foreach (get_class_methods($instance) as $method) {
             if (!preg_match('#^([a-z].*)Action$#', $method, $match)) {

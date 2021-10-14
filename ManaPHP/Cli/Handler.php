@@ -7,8 +7,9 @@ use ManaPHP\Helper\Str;
 
 /**
  * @property-read \ManaPHP\Di\ContainerInterface $container
- * @property-read \ManaPHP\Cli\ConsoleInterface  $console
- * @property-read \ManaPHP\Cli\RequestInterface  $request
+ * @property-read \ManaPHP\Cli\ConsoleInterface $console
+ * @property-read \ManaPHP\Cli\RequestInterface $request
+ * @property-read \ManaPHP\Cli\Command\ManagerInterface $commandManager
  */
 class Handler extends Component implements HandlerInterface
 {
@@ -39,10 +40,7 @@ class Handler extends Component implements HandlerInterface
      */
     protected function guessCommand($keyword)
     {
-        $commands = [];
-        foreach ($this->container->getDefinitions("*Command") as $name => $definition) {
-            $commands[basename($name, 'Command')] = $definition;
-        }
+        $commands = $this->commandManager->getCommands();
 
         $guessed = [];
         foreach ($commands as $name => $className) {
@@ -177,7 +175,8 @@ class Handler extends Component implements HandlerInterface
         $command = Str::pascalize($this->command);
         $action = Str::camelize($this->action);
 
-        if (!$definition = $this->container->getDefinition(lcfirst($command) . 'Command')) {
+        $commands = $this->commandManager->getCommands();
+        if (($definition = $commands[lcfirst($command)] ?? null) === null) {
             $guessed = $this->guessCommand($command);
             if ($guessed) {
                 $definition = $guessed;
@@ -197,9 +196,15 @@ class Handler extends Component implements HandlerInterface
             } elseif (in_array('default', $actions, true)) {
                 $action = 'default';
             } else {
-                return $this->handle(
-                    [$this->args[0], 'help', 'command', '--command', $this->command, '--action', $this->action]
-                );
+                if ($this->action === null) {
+                    return $this->handle(
+                        [$this->args[0], 'help', 'command', '--command', $this->command]
+                    );
+                } else {
+                    return $this->handle(
+                        [$this->args[0], 'help', 'command', '--command', $this->command, '--action', $this->action]
+                    );
+                }
             }
         }
 
