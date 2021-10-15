@@ -18,15 +18,21 @@ class Manager extends Component implements ManagerInterface
     public function getTracers()
     {
         if ($this->tracers === []) {
+            $tracers = [];
+
             foreach (LocalFS::glob('@manaphp/Tracers/?*Tracer.php') as $file) {
                 $name = basename($file, 'Tracer.php');
-                $this->tracers[lcfirst($name)] = "ManaPHP\Tracers\\{$name}Tracer";
+                $tracers[lcfirst($name)] = "ManaPHP\Tracers\\{$name}Tracer";
             }
 
             foreach (LocalFS::glob('@app/Tracers/?*Tracer.php') as $file) {
                 $name = basename($file, 'Tracer.php');
-                $this->tracers[lcfirst($name)] = "App\Tracers\\{$name}Tracer";
+                $tracers[lcfirst($name)] = "App\Tracers\\{$name}Tracer";
             }
+
+            ksort($tracers);
+
+            $this->tracers = $tracers;
         }
 
         return $this->tracers;

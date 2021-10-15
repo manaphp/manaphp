@@ -18,15 +18,22 @@ class Manager extends Component implements ManagerInterface
     public function getPlugins()
     {
         if ($this->plugins === []) {
+
+            $plugins = [];
+
             foreach (LocalFS::glob('@manaphp/Plugins/?*Plugin.php') as $file) {
                 $name = basename($file, 'Plugin.php');
-                $this->plugins[lcfirst($name)] = "ManaPHP\Plugins\\{$name}Plugin";
+                $plugins[lcfirst($name)] = "ManaPHP\Plugins\\{$name}Plugin";
             }
 
             foreach (LocalFS::glob('@app/Plugins/?*Plugin.php') as $file) {
                 $name = basename($file, 'Plugin.php');
-                $this->plugins[lcfirst($name)] = "App\Plugins\\{$name}Plugin";
+                $plugins[lcfirst($name)] = "App\Plugins\\{$name}Plugin";
             }
+
+            ksort($plugins);
+
+            $this->plugins = $plugins;
         }
 
         return $this->plugins;
