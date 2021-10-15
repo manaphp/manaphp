@@ -9,24 +9,11 @@ use ReflectionClass;
 use ReflectionMethod;
 
 /**
- * @property-read \ManaPHP\Di\ContainerInterface $container
+ * @property-read \ManaPHP\Di\ContainerInterface        $container
+ * @property-read \ManaPHP\Cli\Command\ManagerInterface $commandManager
  */
 class BashCompletionCommand extends Command
 {
-    /**
-     * @return string[]
-     */
-    protected function getCommands()
-    {
-        $commands = [];
-
-        foreach ($this->container->getDefinitions('*Command') as $name => $_) {
-            $commands[] = Str::snakelize(basename($name, 'Command'));
-        }
-
-        return $commands;
-    }
-
     /**
      * @param string $command
      *
@@ -36,7 +23,7 @@ class BashCompletionCommand extends Command
     {
         $actions = [];
         try {
-            if (!$commandClassName = $this->container->getDefinition(Str::camelize($command) . 'Command')) {
+            if (($commandClassName = $this->commandManager->getCommands()[$command] ?? null) === null) {
                 return [];
             }
 
@@ -214,7 +201,7 @@ class BashCompletionCommand extends Command
         $current = $arguments[$position] ?? '';
 
         if ($position === 1) {
-            $words = $this->getCommands();
+            $words = array_keys($this->commandManager->getCommands());
         } elseif ($position === 2) {
             $words = $this->getActions($command);
         } elseif (str_starts_with($previous, '-') && !str_starts_with($current, '-')) {

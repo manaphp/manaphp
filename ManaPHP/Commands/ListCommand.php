@@ -8,7 +8,10 @@ use ReflectionClass;
 use ReflectionMethod;
 
 /**
- * @property-read \ManaPHP\Di\ContainerInterface $container
+ * @property-read \ManaPHP\Di\ContainerInterface        $container
+ * @property-read \ManaPHP\Cli\Command\ManagerInterface $commandManager
+ * @property-read \ManaPHP\Plugin\ManagerInterface      $pluginManager
+ * @property-read \ManaPHP\Tracer\ManagerInterface      $tracerManager
  */
 class ListCommand extends Command
 {
@@ -24,10 +27,6 @@ class ListCommand extends Command
         }
 
         foreach ($this->container->getDefinitions() as $name => $definition) {
-            if (fnmatch('*Command', $name) || fnmatch('*Tracer', $name) || fnmatch('*Plugin', $name)) {
-                continue;
-            }
-
             if (is_string($definition)) {
                 $className = $definition;
             } elseif (is_array($definition)) {
@@ -87,20 +86,13 @@ class ListCommand extends Command
      * list all components
      *
      * @param bool $verbose
-     * @param bool $all
      *
      * @return void
      */
-    public function componentsAction($verbose = true, $all = false)
+    public function componentsAction($verbose = true)
     {
         $components = [];
         foreach ($this->container->getDefinitions() as $name => $definition) {
-            if (!$all) {
-                if (fnmatch('*Command', $name) || fnmatch('*Tracer', $name) || fnmatch('*Plugin', $name)) {
-                    continue;
-                }
-            }
-
             if (is_string($definition)) {
                 $className = $definition;
             } elseif (is_array($definition)) {
@@ -140,12 +132,7 @@ class ListCommand extends Command
      */
     public function pluginsAction($verbose = true)
     {
-        $tracers = [];
-        foreach ($this->container->getDefinitions('*Plugin') as $name => $definition) {
-            $tracers[basename($name, 'Plugin')] = $definition;
-        }
-
-        ksort($tracers);
+        $tracers = $this->pluginManager->getPlugins();
 
         if ($verbose) {
             foreach ($tracers as $name => $definition) {
@@ -165,12 +152,7 @@ class ListCommand extends Command
      */
     public function tracersAction($verbose = true)
     {
-        $tracers = [];
-        foreach ($this->container->getDefinitions('*Tracer') as $name => $definition) {
-            $tracers[basename($name, 'Tracer')] = $definition;
-        }
-
-        ksort($tracers);
+        $tracers = $this->tracerManager->getTracers();
 
         if ($verbose) {
             foreach ($tracers as $name => $definition) {
@@ -190,12 +172,7 @@ class ListCommand extends Command
      */
     public function commandsAction($verbose = true)
     {
-        $commands = [];
-        foreach ($this->container->getDefinitions('*Command') as $name => $definition) {
-            $commands[basename($name, 'Command')] = $definition;
-        }
-
-        ksort($commands);
+        $commands = $this->commandManager->getCommands();
 
         if ($verbose) {
             foreach ($commands as $name => $definition) {
