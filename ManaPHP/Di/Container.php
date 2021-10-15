@@ -390,23 +390,11 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string $pattern
-     *
      * @return array
      */
-    public function getDefinitions($pattern = null)
+    public function getDefinitions()
     {
-        if ($pattern === null) {
-            return $this->definitions;
-        } else {
-            $definitions = [];
-            foreach ($this->definitions as $name => $definition) {
-                if (fnmatch($pattern, $name)) {
-                    $definitions[$name] = $definition;
-                }
-            }
-            return $definitions;
-        }
+        return $this->definitions;
     }
 
     /**

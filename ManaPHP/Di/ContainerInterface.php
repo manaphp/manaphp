@@ -35,13 +35,9 @@ interface ContainerInterface
     public function getProviders();
 
     /**
-     * Match  against shell wildcard pattern.
-     *
-     * @param string $pattern
-     *
      * @return array
      */
-    public function getDefinitions($pattern = null);
+    public function getDefinitions();
 
     /**
      * @param string $name
