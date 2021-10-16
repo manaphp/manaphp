@@ -14,7 +14,7 @@ use Throwable;
  * @property-read \ManaPHP\Http\ResponseInterface $response
  * @property-read \ManaPHP\Http\RouterInterface $router
  * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
- * @property-read \ManaPHP\ErrorHandlerInterface $errorHandler
+ * @property-read \ManaPHP\Rest\ErrorHandlerInterface $errorHandler
  * @property-read \ManaPHP\Http\ServerInterface $httpServer
  */
 class Handler extends Component implements HandlerInterface

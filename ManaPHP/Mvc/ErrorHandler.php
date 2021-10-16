@@ -3,7 +3,6 @@
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
-use ManaPHP\ErrorHandlerInterface;
 use ManaPHP\Exception;
 
 /**

@@ -12,8 +12,8 @@ use ManaPHP\Commands\Provider as CommandsProvider;
 
 /**
  * @property-read \ManaPHP\Logging\LoggerInterface $logger
- * @property-read \ManaPHP\Cli\HandlerInterface    $cliHandler
- * @property-read \ManaPHP\ErrorHandlerInterface   $errorHandler
+ * @property-read \ManaPHP\Cli\HandlerInterface     $cliHandler
+ * @property-read \ManaPHP\Cli\ErrorHandlerInterface $errorHandler
  */
 class Application extends \ManaPHP\Application implements LogCategorizable
 {

@@ -3,7 +3,6 @@
 namespace ManaPHP\Cli;
 
 use ManaPHP\Component;
-use ManaPHP\ErrorHandlerInterface;
 
 /**
  * @property-read \ManaPHP\Logging\LoggerInterface $logger
