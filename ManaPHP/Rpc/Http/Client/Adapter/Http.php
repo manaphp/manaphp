@@ -48,7 +48,7 @@ class Http extends AbstractClient
             $options['engine'] = 'ManaPHP\Http\Client\Engine\Stream';
         }
 
-        $this->client = $this->injector->make($client, $options);
+        $this->client = $this->container->make($client, $options);
     }
 
     /**

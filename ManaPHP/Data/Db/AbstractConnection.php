@@ -114,7 +114,7 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
 
             try {
                 $params = [$dsn, $this->username, $this->password, $this->options];
-                $this->pdo = $pdo = $this->injector->make('PDO', $params);
+                $this->pdo = $pdo = $this->container->make('PDO', $params);
             } catch (PDOException $e) {
                 $this->fireEvent('db:connected', compact('dsn', 'uri'));
 

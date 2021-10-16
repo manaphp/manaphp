@@ -502,7 +502,7 @@ class Request extends Component implements RequestInterface
                     if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {
                         $file['key'] = $key;
 
-                        $r[] = $this->injector->make('ManaPHP\Http\Request\File', $file);
+                        $r[] = $this->container->make('ManaPHP\Http\Request\File', $file);
                     }
                 }
             } elseif (is_int($files['error'])) {
@@ -510,7 +510,7 @@ class Request extends Component implements RequestInterface
                 if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {
                     $file['key'] = $key;
 
-                    $r[] = $this->injector->make('ManaPHP\Http\Request\File', $file);
+                    $r[] = $this->container->make('ManaPHP\Http\Request\File', $file);
                 }
             } else {
                 $countFiles = count($files['error']);
@@ -524,7 +524,7 @@ class Request extends Component implements RequestInterface
                             'error'    => $files['error'][$i],
                             'size'     => $files['size'][$i],
                         ];
-                        $r[] = $this->injector->make('ManaPHP\Http\Request\File', $file);
+                        $r[] = $this->container->make('ManaPHP\Http\Request\File', $file);
                     }
                 }
             }

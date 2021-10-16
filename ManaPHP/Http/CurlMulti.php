@@ -114,7 +114,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
     public function add($request, $callbacks = null)
     {
         if (is_string($request)) {
-            $request = $this->injector->make('ManaPHP\Http\CurlMulti\Request', [$request, $callbacks]);
+            $request = $this->container->make('ManaPHP\Http\CurlMulti\Request', [$request, $callbacks]);
         } elseif (is_array($request)) {
             if (isset($request[1])) {
                 foreach ($request as $r) {
@@ -122,7 +122,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
                 }
                 return $this;
             } else {
-                $request = $this->injector->make('ManaPHP\Http\CurlMulti\Request', [$request, $callbacks]);
+                $request = $this->container->make('ManaPHP\Http\CurlMulti\Request', [$request, $callbacks]);
             }
         }
 
@@ -239,7 +239,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
         if (!LocalFS::fileExists($target)) {
             LocalFS::dirCreate(dir($target));
 
-            $request = $this->injector->make('ManaPHP\Http\CurlMulti\Request', [$url, $callback]);
+            $request = $this->container->make('ManaPHP\Http\CurlMulti\Request', [$url, $callback]);
 
             $request->options['file'] = $target;
 
@@ -269,7 +269,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
                 unset($this->requests[$id]);
 
                 if ($info['result'] === CURLE_OK) {
-                    $response = $this->injector->make('ManaPHP\Http\CurlMulti\Response');
+                    $response = $this->container->make('ManaPHP\Http\CurlMulti\Response');
 
                     $response->request = $request;
                     $response->http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
@@ -302,7 +302,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
                         }
                     }
                 } else {
-                    $error = $this->injector->make('ManaPHP\Http\CurlMulti\Error');
+                    $error = $this->container->make('ManaPHP\Http\CurlMulti\Error');
 
                     $error->code = $info['result'];
                     $error->message = curl_error($curl);

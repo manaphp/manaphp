@@ -72,7 +72,7 @@ class Query extends AbstractQuery
      */
     protected function getDb($db)
     {
-        return $db === '' ? $this->db : $this->injector->get($db);
+        return $db === '' ? $this->db : $this->container->get($db);
     }
 
     /**

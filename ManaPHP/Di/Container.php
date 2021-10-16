@@ -253,7 +253,7 @@ class Container implements ContainerInterface
         }
 
         if ($instance instanceof Injectable) {
-            $instance->setInjector(new Injector($this));
+            $instance->setContainer($this);
         }
 
         return $instance;
@@ -308,8 +308,7 @@ class Container implements ContainerInterface
             $resolved = $this->setInternal($name, $instance);
 
             if ($instance instanceof Injectable) {
-                $injector = new Injector($this);
-                $instance->setInjector($injector);
+                $instance->setContainer($this);
             }
 
             /** @noinspection PhpPossiblePolymorphicInvocationInspection */
@@ -319,8 +318,7 @@ class Container implements ContainerInterface
             $resolved = $this->setInternal($name, $instance);
 
             if ($instance instanceof Injectable) {
-                $injector = new Injector($this);
-                $instance->setInjector($injector);
+                $instance->setContainer($this);
             }
         }
 
@@ -351,14 +349,14 @@ class Container implements ContainerInterface
         } elseif ($definition instanceof Closure) {
             $instance = $definition();
             if ($instance instanceof Injectable) {
-                $instance->setInjector(new Injector($this));
+                $instance->setContainer($this);
             }
 
             return $this->setInternal($name, $instance);
         } elseif (is_object($definition)) {
             $instance = $definition;
             if ($instance instanceof Injectable) {
-                $instance->setInjector(new Injector($this));
+                $instance->setContainer($this);
             }
             return $this->setInternal($name, $instance);
         } elseif (isset($definition['class'])) {

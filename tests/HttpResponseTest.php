@@ -80,28 +80,28 @@ class HttpResponseTest extends TestCase
     public function test_redirect()
     {
         $response = new Response();
-        $response->setInjector(new Container());
+        $response->setContainer(new Container());
 
         $response->redirect('some/local/url');
         $this->assertEquals('302 Temporarily Moved', $response->getStatus());
         $this->assertEquals(['Location' => 'some/local/url'], $response->getHeaders());
 
         $response = new Response();
-        $response->setInjector(new Container());
+        $response->setContainer(new Container());
 
         $response->redirect('http://www.manaphp.com');
         $this->assertEquals('302 Temporarily Moved', $response->getStatus());
         $this->assertEquals(['Location' => 'http://www.manaphp.com'], $response->getHeaders());
 
         $response = new Response();
-        $response->setInjector(new Container());
+        $response->setContainer(new Container());
 
         $response->redirect('http://www.manaphp.com', false);
         $this->assertEquals('301 Permanently Moved', $response->getStatus());
         $this->assertEquals(['Location' => 'http://www.manaphp.com'], $response->getHeaders());
 
         $response = new Response();
-        $response->setInjector(new Container());
+        $response->setContainer(new Container());
 
         $response->redirect('http://www.manaphp.com', true);
         $this->assertEquals('302 Temporarily Moved', $response->getStatus());

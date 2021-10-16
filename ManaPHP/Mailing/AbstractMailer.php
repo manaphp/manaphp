@@ -27,7 +27,7 @@ abstract class AbstractMailer extends Component implements MailerInterface
      */
     public function compose()
     {
-        $message = $this->injector->make('ManaPHP\Mailing\Mailer\Message');
+        $message = $this->container->make('ManaPHP\Mailing\Mailer\Message');
 
         $message->setMailer($this);
 

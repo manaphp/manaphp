@@ -14,25 +14,25 @@ class CachingCacheAdapterRedisTest extends TestCase
 
         //default
         $cache = new Redis();
-        $cache->setInjector($di);
+        $cache->setContainer($di);
         $this->assertAttributeSame('redis', 'redis', $cache);
         $this->assertAttributeSame('cache:', 'prefix', $cache);
 
         //array redis
         $cache = new Redis(['redis' => 'xxx']);
-        $cache->setInjector($di);
+        $cache->setContainer($di);
         $this->assertAttributeSame('xxx', 'redis', $cache);
         $this->assertAttributeSame('cache:', 'prefix', $cache);
 
         //array prefix
         $cache = new Redis(['prefix' => 'ppp:']);
-        $cache->setInjector($di);
+        $cache->setContainer($di);
         $this->assertAttributeSame('redis', 'redis', $cache);
         $this->assertAttributeSame('ppp:', 'prefix', $cache);
 
         //array redis and prefix
         $cache = new Redis(['redis' => 'xx', 'prefix' => 'yy:']);
-        $cache->setInjector($di);
+        $cache->setContainer($di);
         $this->assertAttributeSame('xx', 'redis', $cache);
         $this->assertAttributeSame('yy:', 'prefix', $cache);
     }
@@ -42,7 +42,7 @@ class CachingCacheAdapterRedisTest extends TestCase
         $di = new FactoryDefault();
 
         $cache = new Redis();
-        $cache->setInjector($di);
+        $cache->setContainer($di);
 
         $cache->delete('var');
         $this->assertFalse($cache->exists('var'));
@@ -55,7 +55,7 @@ class CachingCacheAdapterRedisTest extends TestCase
         $di = new FactoryDefault();
 
         $cache = new Redis();
-        $cache->setInjector($di);
+        $cache->setContainer($di);
 
         $cache->delete('var');
 
@@ -69,7 +69,7 @@ class CachingCacheAdapterRedisTest extends TestCase
         $di = new FactoryDefault();
 
         $cache = new Redis();
-        $cache->setInjector($di);
+        $cache->setContainer($di);
 
         $cache->set('var', '', 100);
         $this->assertSame('', $cache->get('var'));
@@ -92,7 +92,7 @@ class CachingCacheAdapterRedisTest extends TestCase
         $di = new FactoryDefault();
 
         $cache = new Redis();
-        $cache->setInjector($di);
+        $cache->setContainer($di);
 
         //exists and delete
         $cache->set('var', 'value', 100);

@@ -20,7 +20,7 @@ class Handler extends Component implements HandlerInterface
     {
         static $controller;
         if ($controller === null) {
-            $controller = $this->injector->get('App\Controllers\IndexController');
+            $controller = $this->container->get('App\Controllers\IndexController');
         }
 
         if (($r = $controller->invoke($action)) !== null) {

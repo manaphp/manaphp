@@ -5,9 +5,9 @@ namespace ManaPHP\Di;
 interface Injectable
 {
     /**
-     * @param \ManaPHP\Di\InjectorInterface $injector
+     * @param \ManaPHP\Di\ContainerInterface $container
      *
      * @return void
      */
-    public function setInjector($injector);
+    public function setContainer($container);
 }

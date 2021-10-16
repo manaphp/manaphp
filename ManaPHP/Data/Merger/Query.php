@@ -45,7 +45,7 @@ class Query extends AbstractQuery
     {
         foreach ($queries as $id => $query) {
             if (is_string($query)) {
-                $query = $this->injector->make($query);
+                $query = $this->container->make($query);
             }
 
             if (Reflection::isInstanceOf($query, QueryInterface::class)) {

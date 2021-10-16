@@ -23,7 +23,7 @@ class Invoker extends Component implements InvokerInterface
         $args = [];
         $missing = [];
 
-        $injector = $this->injector;
+        $container = $this->container;
 
         $parameters = Reflection::reflectMethod($controller, $method)->getParameters();
         foreach ($parameters as $parameter) {
@@ -38,9 +38,9 @@ class Invoker extends Component implements InvokerInterface
             }
 
             if ($type !== null && str_contains($type, '\\')) {
-                $value = $injector->has($name) ? $injector->get($name) : $injector->get($type);
+                $value = $container->has($name) ? $container->get($name) : $container->get($type);
             } elseif (str_ends_with($name, 'Service')) {
-                $value = $injector->get($name);
+                $value = $container->get($name);
             } elseif ($this->request->has($name)) {
                 $value = $this->request->get($name, $type === 'array' ? [] : '');
             } elseif ($parameter->isDefaultValueAvailable()) {

@@ -21,18 +21,18 @@ class Component implements Injectable, JsonSerializable, Proxyable
     protected $object_id;
 
     /**
-     * @var \ManaPHP\Di\InjectorInterface
+     * @var \ManaPHP\Di\ContainerInterface
      */
-    protected $injector;
+    protected $container;
 
     /**
-     * @param \ManaPHP\Di\InjectorInterface $injector
+     * @param \ManaPHP\Di\ContainerInterface $container
      *
      * @return void
      */
-    public function setInjector($injector)
+    public function setContainer($container)
     {
-        $this->injector = $injector;
+        $this->container = $container;
     }
 
     /**
@@ -138,7 +138,7 @@ class Component implements Injectable, JsonSerializable, Proxyable
         if ($name === 'context') {
             return $this->getContext();
         } else {
-            return $this->{$name} = $this->injector->get($name);
+            return $this->{$name} = $this->container->get($name);
         }
     }
 
@@ -160,7 +160,7 @@ class Component implements Injectable, JsonSerializable, Proxyable
      */
     public function __isset($name)
     {
-        return $this->injector->has($name);
+        return $this->container->has($name);
     }
 
     /**

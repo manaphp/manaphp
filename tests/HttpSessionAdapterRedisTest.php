@@ -14,25 +14,25 @@ class HttpSessionAdapterRedisTest extends TestCase
 
         //default
         $session = new Redis();
-        $session->setInjector($di);
+        $session->setContainer($di);
         $this->assertAttributeSame('redis', 'redis', $session);
         $this->assertAttributeSame('session:', 'prefix', $session);
 
         //array redis
         $session = new Redis(['redis' => 'xxx']);
-        $session->setInjector($di);
+        $session->setContainer($di);
         $this->assertAttributeSame('xxx', 'redis', $session);
         $this->assertAttributeSame('session:', 'prefix', $session);
 
         //array prefix
         $session = new Redis(['prefix' => 'ppp:']);
-        $session->setInjector($di);
+        $session->setContainer($di);
         $this->assertAttributeSame('redis', 'redis', $session);
         $this->assertAttributeSame('ppp:', 'prefix', $session);
 
         //array redis and prefix
         $session = new Redis(['redis' => 'xx', 'prefix' => 'yy:']);
-        $session->setInjector($di);
+        $session->setContainer($di);
         $this->assertAttributeSame('xx', 'redis', $session);
         $this->assertAttributeSame('yy:', 'prefix', $session);
     }
@@ -43,7 +43,7 @@ class HttpSessionAdapterRedisTest extends TestCase
 
         $session_id = md5(microtime(true) . mt_rand());
         $redis = new Redis();
-        $redis->setInjector($di);
+        $redis->setContainer($di);
 
         $this->assertEquals('', $redis->do_read($session_id));
 
@@ -57,7 +57,7 @@ class HttpSessionAdapterRedisTest extends TestCase
 
         $session_id = md5(microtime(true) . mt_rand());
         $redis = new Redis();
-        $redis->setInjector($di);
+        $redis->setContainer($di);
 
         $redis->do_write($session_id, '', 100);
         $this->assertEquals('', $redis->do_read($session_id));
@@ -72,7 +72,7 @@ class HttpSessionAdapterRedisTest extends TestCase
 
         $session_id = md5(microtime(true) . mt_rand());
         $redis = new Redis();
-        $redis->setInjector($di);
+        $redis->setContainer($di);
 
         $this->assertTrue($redis->do_destroy($session_id));
 
@@ -89,7 +89,7 @@ class HttpSessionAdapterRedisTest extends TestCase
 
         md5(microtime(true) . mt_rand());
         $redis = new Redis();
-        $redis->setInjector($di);
+        $redis->setContainer($di);
 
         $this->assertTrue($redis->do_gc(100));
     }

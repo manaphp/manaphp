@@ -617,7 +617,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         }
 
         /** @var \ManaPHP\Data\Paginator $paginator */
-        $paginator = $this->injector->make('paginator');
+        $paginator = $this->container->make('paginator');
         $paginator->items = $items;
         return $paginator->paginate($count, $this->limit, (int)($this->offset / $this->limit) + 1);
     }

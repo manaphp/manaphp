@@ -20,13 +20,13 @@ class MongodbCommand extends \ManaPHP\Cli\Command
     protected function getServices($services)
     {
         if ($services) {
-            $injector = $this->injector;
+            $container = $this->container;
 
             foreach ($services as $index => $service) {
-                if (!$injector->has($service)) {
-                    if ($injector->has($service . 'Mongodb')) {
+                if (!$container->has($service)) {
+                    if ($container->has($service . 'Mongodb')) {
                         $services[$index] = $service . 'Mongodb';
-                    } elseif ($injector->has($service . '_mongodb')) {
+                    } elseif ($container->has($service . '_mongodb')) {
                         $services[$index] = $service . '_mongodb';
                     } else {
                         $this->console->warn(['`:service` service is not exists: ignoring', 'service' => $service]);
@@ -89,7 +89,7 @@ class MongodbCommand extends \ManaPHP\Cli\Command
     ) {
         foreach ($this->getServices($services) as $service) {
             /** @var \ManaPHP\Data\Mongodb $mongodb */
-            $mongodb = $this->injector->get($service);
+            $mongodb = $this->container->get($service);
 
             $defaultDb = $mongodb->getDb();
             $dbs = $defaultDb ? [$defaultDb] : $mongodb->listDatabases();
@@ -371,7 +371,7 @@ class MongodbCommand extends \ManaPHP\Cli\Command
     {
         foreach ($this->getServices($services) as $service) {
             /** @var \ManaPHP\Data\Mongodb $mongodb */
-            $mongodb = $this->injector->get($service);
+            $mongodb = $this->container->get($service);
 
             $dbs = $mongodb->getDb() ? [$mongodb->getDb()] : $mongodb->listDatabases();
             foreach ($dbs as $db) {
@@ -456,7 +456,7 @@ class MongodbCommand extends \ManaPHP\Cli\Command
     {
         foreach ($this->getServices($services) as $service) {
             /** @var \ManaPHP\Data\Mongodb $mongodb */
-            $mongodb = $this->injector->get($service);
+            $mongodb = $this->container->get($service);
 
             $dbs = $mongodb->getDb() ? [$mongodb->getDb()] : $mongodb->listDatabases();
             foreach ($dbs as $cdb) {

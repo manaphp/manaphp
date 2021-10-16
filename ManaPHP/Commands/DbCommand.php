@@ -37,7 +37,7 @@ class DbCommand extends \ManaPHP\Cli\Command
     protected function getTables($service, $pattern = null)
     {
         /** @var \ManaPHP\Data\DbInterface $db */
-        $db = $this->injector->get($service);
+        $db = $this->container->get($service);
         $tables = [];
         foreach ($db->getTables() as $table) {
             if ($pattern && !fnmatch($pattern, $table)) {
@@ -87,7 +87,7 @@ class DbCommand extends \ManaPHP\Cli\Command
 
         if (!isset($cached[$service])) {
             /** @var \ManaPHP\Data\DbInterface $db */
-            $db = $this->injector->get($service);
+            $db = $this->container->get($service);
             $metadata_table = 'metadata_constant';
             if (!in_array($metadata_table, $db->getTables(), true)) {
                 $cached[$service] = [];
@@ -134,7 +134,7 @@ class DbCommand extends \ManaPHP\Cli\Command
     protected function renderModel($service, $class, $table, $optimized = false, $camelized = false)
     {
         /** @var Db $db */
-        $db = $this->injector->get($service);
+        $db = $this->container->get($service);
         $metadata = $db->getMetadata($table);
 
         $fields = (array)$metadata[Db::METADATA_ATTRIBUTES];
@@ -328,7 +328,7 @@ class DbCommand extends \ManaPHP\Cli\Command
     {
         foreach ($services ?: $this->getDbServices() as $service) {
             /** @var \ManaPHP\Data\DbInterface $db */
-            $db = $this->injector->get($service);
+            $db = $this->container->get($service);
 
             $this->console->writeLn(['service: `:service`', 'service' => $service], Console::FC_CYAN);
             foreach ($this->getTables($service, $table_pattern) as $row => $table) {
@@ -376,13 +376,13 @@ class DbCommand extends \ManaPHP\Cli\Command
     {
         /** @var \ManaPHP\Data\DbInterface $db */
         if ($service) {
-            $db = $this->injector->get($service);
+            $db = $this->container->get($service);
             if (!in_array($table, $db->getTables(), true)) {
                 throw new Exception(['`:table` is not exists', 'table' => $table]);
             }
         } else {
             foreach ($this->getDbServices() as $s) {
-                $db = $this->injector->get($s);
+                $db = $this->container->get($s);
                 if (in_array($table, $db->getTables(), true)) {
                     $service = $s;
                     break;
@@ -482,7 +482,7 @@ class DbCommand extends \ManaPHP\Cli\Command
     {
         foreach ($services ?: $this->getDbServices() as $service) {
             /** @var \ManaPHP\Data\DbInterface $db */
-            $db = $this->injector->get($service);
+            $db = $this->container->get($service);
             foreach ($this->getTables($service, $table_pattern) as $table) {
                 $fileName = "@tmp/db_json/$service/$table.json";
 
@@ -518,7 +518,7 @@ class DbCommand extends \ManaPHP\Cli\Command
     {
         foreach ($services ?: $this->getDbServices() as $service) {
             /** @var \ManaPHP\Data\Db $db */
-            $db = $this->injector->get($service);
+            $db = $this->container->get($service);
             foreach ($this->getTables($service, $table_pattern) as $table) {
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
