@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Http;
 
+use ManaPHP\ConfigInterface;
 use ManaPHP\Helper\LocalFS;
 
 class Provider extends \ManaPHP\Di\Provider
@@ -13,7 +14,7 @@ class Provider extends \ManaPHP\Di\Provider
             'url'            => 'ManaPHP\Http\Url',
             'response'       => 'ManaPHP\Http\Response',
             'request'        => 'ManaPHP\Http\Request',
-            'session'        => 'ManaPHP\Http\Session\Adapter\File',
+            'session'        => 'ManaPHP\Http\Session',
             'cookies'        => 'ManaPHP\Http\Cookies',
             'captcha'        => 'ManaPHP\Http\Captcha',
             'authorization'  => 'ManaPHP\Http\Authorization',
