@@ -3,6 +3,7 @@
 namespace ManaPHP\Rpc\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Rpc\ServerInterface;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface  $request

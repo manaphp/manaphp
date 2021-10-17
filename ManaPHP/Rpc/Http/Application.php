@@ -3,7 +3,7 @@
 namespace ManaPHP\Rpc\Http;
 
 /**
- * @property-read \ManaPHP\Rpc\Http\ServerInterface $rpcServer
+ * @property-read \ManaPHP\Rpc\ServerInterface $rpcServer
  */
 class Application extends \ManaPHP\Application
 {

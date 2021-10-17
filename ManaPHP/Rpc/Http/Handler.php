@@ -11,11 +11,11 @@ use ManaPHP\Rpc\HandlerInterface;
 use Throwable;
 
 /**
- * @property-read \ManaPHP\Rpc\Http\ServerInterface $rpcServer
- * @property-read \ManaPHP\Http\RouterInterface     $router
- * @property-read \ManaPHP\Http\ResponseInterface   $response
- * @property-read \ManaPHP\Rpc\DispatcherInterface  $dispatcher
- * @property-read \ManaPHP\Http\RequestInterface    $request
+ * @property-read \ManaPHP\Rpc\ServerInterface       $rpcServer
+ * @property-read \ManaPHP\Http\RouterInterface      $router
+ * @property-read \ManaPHP\Http\ResponseInterface    $response
+ * @property-read \ManaPHP\Rpc\DispatcherInterface   $dispatcher
+ * @property-read \ManaPHP\Http\RequestInterface     $request
  * @property-read \ManaPHP\Rpc\ErrorHandlerInterface $errorHandler
  */
 class Handler extends Component implements HandlerInterface

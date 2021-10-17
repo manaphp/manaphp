@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Rpc\Http;
+namespace ManaPHP\Rpc;
 
 interface ServerInterface
 {
