@@ -13,7 +13,7 @@ class Provider extends \ManaPHP\Di\Provider
             'alias'            => 'ManaPHP\Alias',
             'dotenv'           => 'ManaPHP\Configuration\Dotenv',
             'config'           => 'ManaPHP\Config',
-            'settings'         => 'ManaPHP\Configuration\Settings\Adapter\Redis',
+            'settings'         => 'ManaPHP\Configuration\Settings',
             'invoker'          => 'ManaPHP\Controller\Invoker',
             'modelMetadata'    => 'ManaPHP\Data\Db\Model\Metadata',
             'validator'        => 'ManaPHP\Validating\Validator',

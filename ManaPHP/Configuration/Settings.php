@@ -1,15 +1,14 @@
 <?php
 
-namespace ManaPHP\Configuration\Settings\Adapter;
+namespace ManaPHP\Configuration;
 
 use ManaPHP\Component;
-use ManaPHP\Configuration\SettingsInterface;
 use ManaPHP\Exception\InvalidArgumentException;
 
 /**
  * @property-read \Redis $redisDb
  */
-class Redis extends Component implements SettingsInterface
+class Settings extends Component implements SettingsInterface
 {
     /**
      * @var string
