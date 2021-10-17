@@ -5,8 +5,8 @@ namespace ManaPHP\Logging\Logger\Adapter;
 use ManaPHP\Logging\AbstractLogger;
 
 /**
- * @property-read \ManaPHP\ConfigInterface $config
- * @property-read \Redis                   $redisBroker
+ * @property-read \ManaPHP\ConfigInterface           $config
+ * @property-read \ManaPHP\Data\RedisBrokerInterface $redisBroker
  */
 class Redis extends AbstractLogger
 {

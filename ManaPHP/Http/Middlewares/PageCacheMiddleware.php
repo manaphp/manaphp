@@ -14,7 +14,7 @@ use ManaPHP\Mvc\Controller as MvcController;
  * @property-read \ManaPHP\ConfigInterface                             $config
  * @property-read \ManaPHP\Http\RequestInterface                       $request
  * @property-read \ManaPHP\Http\ResponseInterface                      $response
- * @property-read \Redis|\ManaPHP\Data\RedisInterface                  $redisCache
+ * @property-read \ManaPHP\Data\RedisCacheInterface                    $redisCache
  * @property-read \ManaPHP\Http\Middlewares\PageCacheMiddlewareContext $context
  */
 class PageCacheMiddleware extends Middleware

@@ -13,7 +13,7 @@ use ManaPHP\Plugin;
  * @property-read \ManaPHP\Http\ResponseInterface       $response
  * @property-read \ManaPHP\Http\DispatcherInterface     $dispatcher
  * @property-read \ManaPHP\Messaging\PubSubInterface    $pubSub
- * @property-read \Redis|\ManaPHP\Data\RedisInterface   $redisBroker
+ * @property-read \ManaPHP\Data\RedisBrokerInterface    $redisBroker
  * @property-read \ManaPHP\Plugins\FiddlerPluginContext $context
  */
 class FiddlerPlugin extends Plugin

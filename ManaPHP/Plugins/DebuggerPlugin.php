@@ -23,7 +23,7 @@ use ArrayObject;
  * @property-read \ManaPHP\Http\ResponseInterface        $response
  * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher
  * @property-read \ManaPHP\Http\RouterInterface          $router
- * @property-read \Redis                                 $redisCache
+ * @property-read \ManaPHP\Data\RedisCacheInterface      $redisCache
  * @property-read \ManaPHP\Plugins\DebuggerPluginContext $context
  */
 class DebuggerPlugin extends Plugin
@@ -451,9 +451,6 @@ class DebuggerPlugin extends Plugin
                 $name = str_replace('\\', '//', $name);
                 $data['tracers'][lcfirst(basename($name, 'Tracer'))] = ['class'      => Reflection::getClass($instance),
                                                                         'properties' => $properties];
-            }
-
-            if (str_contains($name, '\\')) {
                 continue;
             }
 

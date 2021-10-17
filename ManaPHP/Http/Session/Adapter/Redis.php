@@ -5,8 +5,8 @@ namespace ManaPHP\Http\Session\Adapter;
 use ManaPHP\Http\AbstractSession;
 
 /**
- * @property-read \ManaPHP\ConfigInterface $config
- * @property-read \Redis                   $redisCache
+ * @property-read \ManaPHP\ConfigInterface          $config
+ * @property-read \ManaPHP\Data\RedisCacheInterface $redisCache
  */
 class Redis extends AbstractSession
 {

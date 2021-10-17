@@ -5,8 +5,8 @@ namespace ManaPHP\Caching\Cache\Adapter;
 use ManaPHP\Caching\AbstractCache;
 
 /**
- * @property-read \ManaPHP\ConfigInterface $config
- * @property-read \Redis                   $redisCache
+ * @property-read \ManaPHP\ConfigInterface          $config
+ * @property-read \ManaPHP\Data\RedisCacheInterface $redisCache
  */
 class Redis extends AbstractCache
 {

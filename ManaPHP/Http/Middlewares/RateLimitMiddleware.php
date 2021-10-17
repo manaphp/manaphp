@@ -10,7 +10,7 @@ use ManaPHP\Http\Middleware;
  * @property-read \ManaPHP\ConfigInterface               $config
  * @property-read \ManaPHP\Identifying\IdentityInterface $identity
  * @property-read \ManaPHP\Http\RequestInterface         $request
- * @property-read \Redis|\ManaPHP\Data\RedisInterface    $redisCache
+ * @property-read \ManaPHP\Data\RedisCacheInterface      $redisCache
  */
 class RateLimitMiddleware extends Middleware
 {
