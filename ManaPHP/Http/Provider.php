@@ -19,26 +19,8 @@ class Provider extends \ManaPHP\Di\Provider
             'authorization'  => 'ManaPHP\Http\Authorization',
             'globalsManager' => 'ManaPHP\Http\Globals\Manager',
             'aclBuilder'     => 'ManaPHP\Http\Acl\Builder',
+            'httpServer'     => 'ManaPHP\Http\Server',
         ];
-
-    public function __construct()
-    {
-        $this->definitions['httpServer'] = (function () {
-            if (PHP_SAPI === 'cli') {
-                if (class_exists('Workerman\Worker')) {
-                    return 'ManaPHP\Http\Server\Adapter\Workerman';
-                } elseif (extension_loaded('swoole')) {
-                    return 'ManaPHP\Http\Server\Adapter\Swoole';
-                } else {
-                    return 'ManaPHP\Http\Server\Adapter\Php';
-                }
-            } elseif (PHP_SAPI === 'cli-server') {
-                return 'ManaPHP\Http\Server\Adapter\Php';
-            } else {
-                return 'ManaPHP\Http\Server\Adapter\Fpm';
-            }
-        })();
-    }
 
     public function boot($container)
     {
