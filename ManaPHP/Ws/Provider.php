@@ -8,7 +8,7 @@ class Provider extends \ManaPHP\Di\Provider
         = [
             'wsHandler'    => 'ManaPHP\Ws\Handler',
             'errorHandler' => 'ManaPHP\Rest\ErrorHandler',
-            'wsServer'     => 'ManaPHP\Ws\Server\Adapter\Swoole',
+            'wsServer'     => 'ManaPHP\Ws\Server',
             'dispatcher'   => 'ManaPHP\Ws\Dispatcher',
             'identity'     => 'ManaPHP\Identifying\Identity\Adapter\Jwt',
             'wspServer'    => 'ManaPHP\Ws\Pushing\Server',
