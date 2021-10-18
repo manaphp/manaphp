@@ -3,7 +3,8 @@
 namespace ManaPHP\Commands;
 
 /**
- * @property-read \ManaPHP\Http\Acl\BuilderInterface $aclBuilder
+ * @property-read \ManaPHP\Http\Acl\BuilderInterface   $aclBuilder
+ * @property-read \ManaPHP\Http\AuthorizationInterface $authorization
  */
 class AclCommand extends \ManaPHP\Cli\Command
 {
@@ -16,7 +17,6 @@ class AclCommand extends \ManaPHP\Cli\Command
      */
     public function listAction($role = '')
     {
-        $authorization = $this->container->get('ManaPHP\Http\Authorization');
         foreach ($this->aclBuilder->getControllers() as $controller) {
             /** @var \ManaPHP\Http\Controller $controllerInstance */
             $controllerInstance = $this->container->make($controller);
@@ -24,7 +24,7 @@ class AclCommand extends \ManaPHP\Cli\Command
             if ($role) {
                 $actions = [];
                 foreach ($this->aclBuilder->getActions($controller) as $action) {
-                    if ($authorization->isAclAllowed($acl, $role, $action)) {
+                    if ($this->authorization->isAclAllowed($acl, $role, $action)) {
                         $actions[] = $action;
                     }
                 }

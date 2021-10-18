@@ -5,6 +5,8 @@ use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\JsonException;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\ConfigInterface;
+use ManaPHP\AliasInterface;
 
 if (!function_exists('spl_object_id')) {
     function spl_object_id($object)
@@ -145,7 +147,7 @@ if (!function_exists('env')) {
      */
     function env($key = null, $default = null)
     {
-        return container('dotenv')->get($key, $default);
+        return container(\ManaPHP\Configuration\DotenvInterface::class)->get($key, $default);
     }
 }
 
@@ -158,7 +160,7 @@ if (!function_exists('param_get')) {
      */
     function param_get($name, $default = null)
     {
-        return container('config')->get('params', $default)[$name] ?? $default;
+        return container(ConfigInterface::class)->get('params', $default)[$name] ?? $default;
     }
 }
 
@@ -171,7 +173,7 @@ if (!function_exists('config_get')) {
      */
     function config_get($name, $default = null)
     {
-        return container('config')->get($name, $default);
+        return container(ConfigInterface::class)->get($name, $default);
     }
 }
 
@@ -184,7 +186,7 @@ if (!function_exists('log_debug')) {
      */
     function log_debug($message, $category = null)
     {
-        container('logger')->debug($message, $category);
+        container(\ManaPHP\Logging\LoggerInterface::class)->debug($message, $category);
     }
 }
 
@@ -197,7 +199,7 @@ if (!function_exists('log_info')) {
      */
     function log_info($message, $category = null)
     {
-        container('logger')->info($message, $category);
+        container(\ManaPHP\Logging\LoggerInterface::class)->info($message, $category);
     }
 }
 
@@ -210,7 +212,7 @@ if (!function_exists('log_warn')) {
      */
     function log_warn($message, $category = null)
     {
-        container('logger')->warn($message, $category);
+        container(\ManaPHP\Logging\LoggerInterface::class)->warn($message, $category);
     }
 }
 
@@ -223,7 +225,7 @@ if (!function_exists('log_error')) {
      */
     function log_error($message, $category = null)
     {
-        container('logger')->error($message, $category);
+        container(\ManaPHP\Logging\LoggerInterface::class)->error($message, $category);
     }
 }
 
@@ -236,7 +238,7 @@ if (!function_exists('log_fatal')) {
      */
     function log_fatal($message, $category = null)
     {
-        container('logger')->fatal($message, $category);
+        container(\ManaPHP\Logging\LoggerInterface::class)->fatal($message, $category);
     }
 }
 
@@ -248,7 +250,7 @@ if (!function_exists('dd')) {
      */
     function dd($message)
     {
-        container('dataDump')->output($message);
+        container(\ManaPHP\Debugging\DataDumpInterface::class)->output($message);
     }
 }
 
@@ -260,7 +262,7 @@ if (!function_exists('path')) {
      */
     function path($path)
     {
-        return $path ? container('alias')->resolve($path) : container('alias')->get();
+        return $path ? container(AliasInterface::class)->resolve($path) : container(AliasInterface::class)->get();
     }
 }
 
@@ -274,7 +276,7 @@ if (!function_exists('jwt_encode')) {
      */
     function jwt_encode($claims, $ttl, $scope)
     {
-        return container('scopedJwt')->encode($claims, $ttl, $scope);
+        return container(\ManaPHP\Token\ScopedJwtInterface::class)->encode($claims, $ttl, $scope);
     }
 }
 
@@ -288,7 +290,7 @@ if (!function_exists('jwt_decode')) {
      */
     function jwt_decode($token, $scope, $verify = true)
     {
-        return container('scopedJwt')->decode($token, $scope, $verify);
+        return container(\ManaPHP\Token\ScopedJwtInterface::class)->decode($token, $scope, $verify);
     }
 }
 
@@ -301,7 +303,7 @@ if (!function_exists('jwt_verify')) {
      */
     function jwt_verify($token, $scope)
     {
-        container('scopedJwt')->verify($token, $scope);
+        container(\ManaPHP\Token\ScopedJwt::class)->verify($token, $scope);
     }
 }
 
@@ -316,7 +318,7 @@ if (!function_exists('input')) {
     {
         static $request;
         if (!$request) {
-            $request = container('request');
+            $request = container(\ManaPHP\Http\RequestInterface::class);
         }
 
         if ($defaultOrRules && is_array($defaultOrRules)) {
@@ -334,7 +336,7 @@ if (!function_exists('client_ip')) {
      */
     function client_ip()
     {
-        return container('request')->getClientIp();
+        return container(\ManaPHP\Http\RequestInterface::class)->getClientIp();
     }
 }
 
@@ -348,7 +350,7 @@ if (!function_exists('http_get')) {
      */
     function http_get($url, $headers = [], $options = [])
     {
-        return container('httpClient')->get($url, $headers, $options);
+        return container(\ManaPHP\Http\ClientInterface::class)->get($url, $headers, $options);
     }
 }
 
@@ -363,7 +365,7 @@ if (!function_exists('http_post')) {
      */
     function http_post($url, $body = null, $headers = [], $options = [])
     {
-        return container('httpClient')->post($url, $body, $headers, $options);
+        return container(\ManaPHP\Http\ClientInterface::class)->post($url, $body, $headers, $options);
     }
 }
 
@@ -376,7 +378,7 @@ if (!function_exists('http_download')) {
      */
     function http_download($files, $options = [])
     {
-        return container('httpClient')->download($files, $options);
+        return container(\ManaPHP\Http\ClientInterface::class)->download($files, $options);
     }
 }
 
@@ -392,7 +394,7 @@ if (!function_exists('rest')) {
      */
     function rest($type, $url, $body = null, $headers = [], $options = [])
     {
-        return container('restClient')->rest($type, $url, $body, $headers, $options);
+        return container(\ManaPHP\Rest\ClientInterface::class)->rest($type, $url, $body, $headers, $options);
     }
 }
 
@@ -406,7 +408,7 @@ if (!function_exists('rest_get')) {
      */
     function rest_get($url, $headers = [], $options = [])
     {
-        return container('restClient')->rest('GET', $url, null, $headers, $options);
+        return container(\ManaPHP\Rest\ClientInterface::class)->rest('GET', $url, null, $headers, $options);
     }
 }
 
@@ -421,7 +423,7 @@ if (!function_exists('rest_post')) {
      */
     function rest_post($url, $body, $headers = [], $options = [])
     {
-        return container('restClient')->rest('POST', $url, $body, $headers, $options);
+        return container(\ManaPHP\Rest\ClientInterface::class)->rest('POST', $url, $body, $headers, $options);
     }
 }
 
@@ -436,7 +438,7 @@ if (!function_exists('rest_put')) {
      */
     function rest_put($url, $body, $headers = [], $options = [])
     {
-        return container('restClient')->rest('PUT', $url, $body, $headers, $options);
+        return container(\ManaPHP\Rest\ClientInterface::class)->rest('PUT', $url, $body, $headers, $options);
     }
 }
 
@@ -451,7 +453,7 @@ if (!function_exists('rest_patch')) {
      */
     function rest_patch($url, $body, $headers = [], $options = [])
     {
-        return container('restClient')->rest('PATCH', $url, $body, $headers, $options);
+        return container(\ManaPHP\Rest\ClientInterface::class)->rest('PATCH', $url, $body, $headers, $options);
     }
 }
 
@@ -465,7 +467,7 @@ if (!function_exists('rest_delete')) {
      */
     function rest_delete($url, $headers = [], $options = [])
     {
-        return container('restClient')->rest('DELETE', $url, null, $headers, $options);
+        return container(\ManaPHP\Rest\ClientInterface::class)->rest('DELETE', $url, null, $headers, $options);
     }
 }
 
@@ -478,7 +480,7 @@ if (!function_exists('render_file')) {
      */
     function render_file($file, $vars = [])
     {
-        return container('renderer')->renderFile($file, $vars);
+        return container(\ManaPHP\Html\RendererInterface::class)->renderFile($file, $vars);
     }
 }
 
@@ -534,7 +536,7 @@ if (!function_exists('t')) {
      */
     function t($id, $bind = [])
     {
-        return container('translator')->translate($id, $bind);
+        return container(\ManaPHP\I18n\TranslatorInterface::class)->translate($id, $bind);
     }
 }
 
@@ -562,7 +564,7 @@ if (!function_exists('base_url')) {
      */
     function base_url()
     {
-        return container('alias')->get('@web');
+        return container(\ManaPHP\AliasInterface::class)->get('@web');
     }
 }
 

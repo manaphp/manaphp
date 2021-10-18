@@ -6,6 +6,7 @@ use ManaPHP\Di\Container;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\RuntimeException;
+use ManaPHP\AliasInterface;
 
 class LocalFS
 {
@@ -462,4 +463,4 @@ class LocalFS
     }
 }
 
-LocalFS::$alias = Container::getDefault()->get('alias');
+LocalFS::$alias = Container::getDefault()->get(AliasInterface::class);

@@ -138,7 +138,7 @@ class Component implements Injectable, JsonSerializable, Proxyable
         if ($name === 'context') {
             return $this->getContext();
         } else {
-            return $this->{$name} = $this->container->get($name);
+            return $this->container->inject($this, $name);
         }
     }
 

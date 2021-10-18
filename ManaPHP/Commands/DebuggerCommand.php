@@ -4,7 +4,7 @@ namespace ManaPHP\Commands;
 
 /**
  * @property-read \ManaPHP\ConfigInterface $config
- * @property-read \Redis                   $redisCache
+ * @property-read \ManaPHP\Data\RedisCacheInterface $redisCache
  */
 class DebuggerCommand extends \ManaPHP\Cli\Command
 {

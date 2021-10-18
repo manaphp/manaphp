@@ -42,7 +42,7 @@ if (!function_exists('bundle')) {
      */
     function bundle($files, $name = 'app')
     {
-        return container('assetBundle')->bundle($files, $name);
+        return container(\ManaPHP\Html\Renderer\AssetBundleInterface::class)->bundle($files, $name);
     }
 }
 
@@ -55,7 +55,7 @@ if (!function_exists('action')) {
      */
     function action($args = [], $scheme = false)
     {
-        return container('router')->createUrl($args, $scheme);
+        return container(\ManaPHP\Http\RouterInterface::class)->createUrl($args, $scheme);
     }
 }
 
@@ -68,7 +68,7 @@ if (!function_exists('url')) {
      */
     function url($args, $scheme = false)
     {
-        return container('url')->get($args, $scheme);
+        return container(\ManaPHP\Http\UrlInterface::class)->get($args, $scheme);
     }
 }
 
@@ -82,7 +82,7 @@ if (!function_exists('asset')) {
     {
         static $alias;
         if (!$alias) {
-            $alias = container('alias');
+            $alias = container(\ManaPHP\AliasInterface::class);
         }
 
         static $paths = [];

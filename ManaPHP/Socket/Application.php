@@ -7,11 +7,6 @@ namespace ManaPHP\Socket;
  */
 class Application extends \ManaPHP\Application
 {
-    public function getProviders()
-    {
-        return array_merge(parent::getProviders(), [Provider::class]);
-    }
-
     public function main()
     {
         $this->dotenv->load();

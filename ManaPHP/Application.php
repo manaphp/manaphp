@@ -2,21 +2,21 @@
 
 namespace ManaPHP;
 
-use ManaPHP\Application\Provider;
+use ManaPHP\Configurators\PluginConfigurator;
+use ManaPHP\Configurators\TracerConfigurator;
 use ManaPHP\Di\Container;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Http\RouterInterface;
+use ManaPHP\Security\Crypt;
 use ReflectionClass;
-use ManaPHP\Service\Provider as ServiceProvider;
-use ManaPHP\Tracers\Provider as TracersProvider;
-use ManaPHP\Plugins\Provider as PluginsProvider;
-use ManaPHP\Event\Listener\Provider as ListenerProvider;
+use ManaPHP\Security\CryptInterface;
 
 /**
- * @property-read \ManaPHP\ConfigInterface               $config
- * @property-read \ManaPHP\AliasInterface                $alias
- * @property-read \ManaPHP\LoaderInterface               $loader
+ * @property-read \ManaPHP\ConfigInterface $config
+ * @property-read \ManaPHP\AliasInterface $alias
+ * @property-read \ManaPHP\LoaderInterface $loader
  * @property-read \ManaPHP\Configuration\DotenvInterface $dotenv
- * @property-read \ManaPHP\Cli\RunnerInterface           $cliRunner
+ * @property-read \ManaPHP\Cli\RunnerInterface $cliRunner
  */
 class Application extends Component implements ApplicationInterface
 {
@@ -29,6 +29,14 @@ class Application extends Component implements ApplicationInterface
      * @var string
      */
     protected $class_file;
+
+    /**
+     * @var array
+     */
+    protected $configurators
+        = [TracerConfigurator::class,
+           PluginConfigurator::class,
+        ];
 
     /**
      * @param \ManaPHP\Loader $loader
@@ -49,7 +57,7 @@ class Application extends Component implements ApplicationInterface
         ini_set('html_errors', 'off');
         ini_set('default_socket_timeout', -1);
 
-        $this->container = new Container(['alias' => Alias::class]);
+        $this->container = new Container();
         $GLOBALS['CONTAINER'] = $this->container;
         $this->setContainer($this->container);
 
@@ -100,8 +108,6 @@ class Application extends Component implements ApplicationInterface
         if ($_SERVER['DOCUMENT_ROOT'] === '') {
             $_SERVER['DOCUMENT_ROOT'] = dirname($_SERVER['SCRIPT_FILENAME']);
         }
-
-        $this->container->addProviders($this->getProviders());
     }
 
     /**
@@ -125,20 +131,6 @@ class Application extends Component implements ApplicationInterface
     }
 
     /**
-     * @return array
-     */
-    public function getProviders()
-    {
-        return [
-            Provider::class,
-            ServiceProvider::class,
-            TracersProvider::class,
-            PluginsProvider::class,
-            ListenerProvider::class,
-        ];
-    }
-
-    /**
      * @return void
      */
     public function configure()
@@ -146,7 +138,9 @@ class Application extends Component implements ApplicationInterface
         if (($timezone = $this->config->get('timezone', '')) !== '') {
             date_default_timezone_set($timezone);
         }
-        $this->container->set('crypt', ['master_key' => $this->config->get('master_key')]);
+        $this->container->set(
+            CryptInterface::class, ['class' => Crypt::class, 'master_key' => $this->config->get('master_key')]
+        );
 
         foreach ($this->config->get('aliases', []) as $k => $v) {
             $this->alias->set($k, $v);
@@ -155,17 +149,17 @@ class Application extends Component implements ApplicationInterface
         $app_dir = scandir($this->alias->resolve('@app'));
 
         if (in_array('Router.php', $app_dir, true)) {
-            $this->container->set('router', 'App\\Router');
+            $this->container->set(RouterInterface::class, 'App\\Router');
         }
 
         foreach ($this->config->get('components') as $component => $definition) {
             $this->container->set($component, $definition);
         }
 
-        foreach ($this->container->getProviders() as $provider) {
-            /** @var \ManaPHP\Di\ProviderInterface $instance */
-            $instance = $this->container->get($provider);
-            $instance->boot($this->container);
+        foreach ($this->configurators as $definition) {
+            /** @var \ManaPHP\ConfiguratorInterface $configurator */
+            $configurator = $this->container->get($definition);
+            $configurator->configure();
         }
     }
 

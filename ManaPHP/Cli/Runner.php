@@ -25,9 +25,8 @@ class Runner extends Application implements RunnerInterface
      */
     public function run()
     {
-        $providers = $this->getProviders();
         /** @var \ManaPHP\Di\ContainerInterface $container */
-        $container = new Container($providers);
+        $container = new Container();
         $definitions = $this->container->getDefinitions();
         foreach ($container->getDefinitions() as $name => $definition) {
             if (!isset($definitions[$name]) || $definitions[$name] !== $definition) {

@@ -13,6 +13,7 @@ use ManaPHP\Http\Globals\Proxies\SessionProxy;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Http\SessionInterface $session
  */
 class Manager extends Component implements ManagerInterface
 {
@@ -30,7 +31,7 @@ class Manager extends Component implements ManagerInterface
         $_REQUEST = new RequestProxy($request);
         $_FILES = new FilesProxy($request);
         $_COOKIE = new CookieProxy($request);
-        $_SESSION = new SessionProxy($this->container->get('session'));
+        $_SESSION = new SessionProxy($this->session);
         $_SERVER = new ServerProxy($request);
     }
 }

@@ -14,11 +14,6 @@ class Container implements ContainerInterface
     /**
      * @var array
      */
-    protected $providers = [];
-
-    /**
-     * @var array
-     */
     protected $definitions = [];
 
     /**
@@ -189,30 +184,6 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param array $providers
-     *
-     * @return static
-     */
-    public function addProviders($providers)
-    {
-        $this->providers = array_merge($this->providers, $providers);
-
-        foreach ($this->providers as $provider) {
-            /** @var \ManaPHP\Di\ProviderInterface $instance */
-            $instance = $this->get($provider);
-            /** @noinspection AdditionOperationOnArraysInspection */
-            $this->definitions += $instance->getdefinitions();
-        }
-
-        return $this;
-    }
-
-    public function getProviders()
-    {
-        return $this->providers;
-    }
-
-    /**
      * Removes a component in the components container
      *
      * @param string $name
@@ -379,12 +350,27 @@ class Container implements ContainerInterface
             throw new NotSupportedException(['`%s` component implement type is not supported', $name]);
         }
 
-        $definition = $this->definitions[$definition] ?? $definition;
+        if ($name !== $definition) {
+            $definition = $this->definitions[$definition] ?? $definition;
+        }
 
         $instance = $this->makeInternal($name, $definition, $parameters);
         $this->instances[$name] = $instance;
 
         return $instance;
+    }
+
+    /**
+     * @param object $target
+     * @param string $property
+     *
+     * @return mixed
+     */
+    public function inject($target, $property)
+    {
+        $propertyResolver = $this->get(PropertyResolverInterface::class);
+        $resolved = $propertyResolver->resolve(get_class($target), $property);
+        return $this->get($resolved);
     }
 
     /**

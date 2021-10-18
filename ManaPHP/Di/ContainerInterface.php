@@ -23,18 +23,6 @@ interface ContainerInterface
     public function set($name, $definition);
 
     /**
-     * @param array $providers
-     *
-     * @return static
-     */
-    public function addProviders($providers);
-
-    /**
-     * @return array
-     */
-    public function getProviders();
-
-    /**
      * @return array
      */
     public function getDefinitions();
@@ -78,6 +66,14 @@ interface ContainerInterface
      * @return mixed
      */
     public function get($name);
+
+    /**
+     * @param object $target
+     * @param string $property
+     *
+     * @return mixed
+     */
+    public function inject($target, $property);
 
     /**
      * Check whether the DI contains a component by a name

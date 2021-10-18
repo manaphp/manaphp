@@ -95,7 +95,7 @@ class Loader
             }
 
             if ($file[0] === '@') {
-                $file = Container::getDefault()->get('alias')->resolve($file);
+                $file = Container::getDefault()->get(AliasInterface::class)->resolve($file);
             }
             $this->files[$file] = 1;
 

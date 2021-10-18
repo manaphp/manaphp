@@ -529,7 +529,7 @@ class Compiler extends Component
      */
     protected function compile_can($expression)
     {
-        return "<?php if (container('authorization')->isAllowed{$expression}): ?>";
+        return "<?php if (container('ManaPHP\Http\AuthorizationInterface')->isAllowed{$expression}): ?>";
     }
 
     /**
@@ -543,7 +543,7 @@ class Compiler extends Component
     {
         $parts = explode(',', substr($expression, 1, -1));
         $expr = $this->compileString($parts[1]);
-        return "<?php if (container('authorization')->isAllowed($parts[0])): ?>$expr<?php endif ?>";
+        return "<?php if (container('ManaPHP\Http\AuthorizationInterface')->isAllowed($parts[0])): ?>$expr<?php endif ?>";
     }
 
     /**
@@ -555,7 +555,7 @@ class Compiler extends Component
      */
     protected function compile_cannot($expression)
     {
-        return "<?php if (!container('authorization')->isAllowed{$expression}): ?>";
+        return "<?php if (!container('ManaPHP\Http\AuthorizationInterface')->isAllowed{$expression}): ?>";
     }
 
     /**
@@ -713,7 +713,7 @@ class Compiler extends Component
      */
     protected function compile_block($expression)
     {
-        return "<?php container('view')->block{$expression} ?>";
+        return "<?php container('ManaPHP\Mvc\ViewInterface')->block{$expression} ?>";
     }
 
     /**
@@ -749,7 +749,7 @@ class Compiler extends Component
      */
     protected function compile_maxAge($expression)
     {
-        return "<?php container('view')->setMaxAge{$expression}; ?>";
+        return "<?php container('ManaPHP\Mvc\ViewInterface')->setMaxAge{$expression}; ?>";
     }
 
     /**
@@ -761,7 +761,7 @@ class Compiler extends Component
      */
     protected function compile_layout($expression)
     {
-        return "<?php container('view')->setLayout{$expression}; ?>";
+        return "<?php container('ManaPHP\Mvc\ViewInterface')->setLayout{$expression}; ?>";
     }
 
     /**
@@ -775,7 +775,7 @@ class Compiler extends Component
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
-        return "<?= container('view')->getContent(); ?>";
+        return "<?= container('ManaPHP\Mvc\ViewInterface')->getContent(); ?>";
     }
 
     /**
@@ -817,7 +817,7 @@ class Compiler extends Component
      */
     protected function compile_widget($expression)
     {
-        return "<?php container('view')->widget{$expression}; ?>";
+        return "<?php container('ManaPHP\Mvc\ViewInterface')->widget{$expression}; ?>";
     }
 
     /**
@@ -864,7 +864,7 @@ class Compiler extends Component
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
-        return "<?php container('flash')->output() ?>";
+        return "<?php container('ManaPHP\Mvc\View\FlashInterface')->output() ?>";
     }
 
     /**
@@ -891,8 +891,8 @@ class Compiler extends Component
         /** @noinspection PhpUnusedParameterInspection */
         $expression
     ) {
-        return '<?php if(container("response")->hasHeader("X-Debugger-Link")){?><div class="debugger"><a target="_self" href="'
-            . '<?= container("response")->getHeader("X-Debugger-Link") ?>">Debugger</a></div><?php }?> ';
+        return '<?php if(container("ManaPHP\Http\ResponseInterface")->hasHeader("X-Debugger-Link")){?><div class="debugger"><a target="_self" href="'
+            . '<?= container("ManaPHP\Http\ResponseInterface")->getHeader("X-Debugger-Link") ?>">Debugger</a></div><?php }?> ';
     }
 
     /**

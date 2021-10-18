@@ -7,11 +7,6 @@ namespace ManaPHP\Ws;
  */
 class Application extends \ManaPHP\Application
 {
-    public function getProviders()
-    {
-        return array_merge(parent::getProviders(), [Provider::class]);
-    }
-
     /**
      * @return void
      */
