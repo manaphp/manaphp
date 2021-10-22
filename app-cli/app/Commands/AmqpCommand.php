@@ -3,7 +3,6 @@
 namespace App\Commands;
 
 use ManaPHP\Amqp\Engine\Php\Message;
-use ManaPHP\Amqp\Exchange;
 use ManaPHP\Amqp\Queue;
 
 /**

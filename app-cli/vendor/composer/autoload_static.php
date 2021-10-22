@@ -4,8 +4,12 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticIniteebc9c31b1a51dd8ba8a90051db6aad9
+class ComposerStaticInit06627979079642c2e57ff38c251d3783
 {
+    public static $files = array (
+        '71d7e558142f9ed64a4b66874a41547d' => __DIR__ . '/../..' . '/../ManaPHP/helpers.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'M' => 
         array (
@@ -28,11 +32,16 @@ class ComposerStaticIniteebc9c31b1a51dd8ba8a90051db6aad9
         ),
     );
 
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticIniteebc9c31b1a51dd8ba8a90051db6aad9::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticIniteebc9c31b1a51dd8ba8a90051db6aad9::$prefixDirsPsr4;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit06627979079642c2e57ff38c251d3783::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit06627979079642c2e57ff38c251d3783::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit06627979079642c2e57ff38c251d3783::$classMap;
 
         }, null, ClassLoader::class);
     }

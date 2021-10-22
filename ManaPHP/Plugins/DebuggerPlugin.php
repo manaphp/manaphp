@@ -63,7 +63,7 @@ class DebuggerPlugin extends Plugin
      */
     public function __construct($options = [])
     {
-        if (MANAPHP_CLI) {
+        if (defined('MANAPHP_CLI')) {
             $this->enabled = false;
         } elseif (isset($options['enabled'])) {
             $this->enabled = (bool)$options['enabled'];

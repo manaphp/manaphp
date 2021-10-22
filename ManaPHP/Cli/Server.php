@@ -2,8 +2,8 @@
 
 namespace ManaPHP\Cli;
 
+use ManaPHP\Component;
 use ManaPHP\Exception\AbortException;
-use ManaPHP\Logging\Logger\LogCategorizable;
 use Swoole\Coroutine;
 use Swoole\Event;
 use Swoole\Runtime;
@@ -11,33 +11,15 @@ use Throwable;
 
 /**
  * @property-read \ManaPHP\Logging\LoggerInterface   $logger
- * @property-read \ManaPHP\Cli\HandlerInterface      $cliHandler
  * @property-read \ManaPHP\Cli\ErrorHandlerInterface $errorHandler
+ * @property-read \ManaPHP\Cli\HandlerInterface      $cliHandler
  */
-class Application extends \ManaPHP\Application implements LogCategorizable
+class Server extends Component implements ServerInterface
 {
     /**
      * @var int
      */
     protected $exit_code;
-
-    /**
-     * @return string
-     */
-    public function categorizeLog()
-    {
-        return 'cli';
-    }
-
-    /**
-     * @param \ManaPHP\Loader $loader
-     */
-    public function __construct($loader = null)
-    {
-        define('MANAPHP_CLI', true);
-
-        parent::__construct($loader);
-    }
 
     /**
      * @return void
@@ -60,13 +42,8 @@ class Application extends \ManaPHP\Application implements LogCategorizable
         }
     }
 
-    public function main()
+    public function start()
     {
-        $this->dotenv->load();
-        $this->config->load();
-
-        $this->configure();
-
         if (MANAPHP_COROUTINE_ENABLED) {
             Runtime::enableCoroutine(true);
             Coroutine::create([$this, 'handle']);
@@ -76,10 +53,5 @@ class Application extends \ManaPHP\Application implements LogCategorizable
         }
 
         exit($this->exit_code);
-    }
-
-    public function cli()
-    {
-        $this->main();
     }
 }

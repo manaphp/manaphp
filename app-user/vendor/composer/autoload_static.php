@@ -6,6 +6,10 @@ namespace Composer\Autoload;
 
 class ComposerStaticIniteebc9c31b1a51dd8ba8a90051db6aad9
 {
+    public static $files = array (
+        '62d2b4a88ece27564e401aadb152406f' => __DIR__ . '/../..' . '/../ManaPHP/helpers.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'M' => 
         array (
@@ -28,11 +32,16 @@ class ComposerStaticIniteebc9c31b1a51dd8ba8a90051db6aad9
         ),
     );
 
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticIniteebc9c31b1a51dd8ba8a90051db6aad9::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticIniteebc9c31b1a51dd8ba8a90051db6aad9::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticIniteebc9c31b1a51dd8ba8a90051db6aad9::$classMap;
 
         }, null, ClassLoader::class);
     }

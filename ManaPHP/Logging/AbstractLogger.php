@@ -88,7 +88,7 @@ abstract class AbstractLogger extends Component implements LoggerInterface
             }
         }
 
-        $this->lazy = MANAPHP_CLI ? false : $options['lazy'] ?? true;
+        $this->lazy = defined('MANAPHP_CLI') ? false : $options['lazy'] ?? true;
 
         if (isset($options['buffer_size'])) {
             $this->buffer_size = (int)$options['buffer_size'];
@@ -108,7 +108,7 @@ abstract class AbstractLogger extends Component implements LoggerInterface
         $context = parent::createContext();
 
         $context->level = $this->level;
-        $context->client_ip = MANAPHP_CLI ? '' : $this->request->getClientIp();
+        $context->client_ip = defined('MANAPHP_CLI') ? '' : $this->request->getClientIp();
         $context->request_id = $this->request->getRequestId();
 
         return $context;
