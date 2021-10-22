@@ -69,7 +69,6 @@ class AopCommand extends \ManaPHP\Cli\Command
                      '/ManaPHP/Event/Listener.php',
                      '/ManaPHP/Mailing/Mailer/Message.php',
                      '/ManaPHP/Messaging/Amqp/Message.php',
-                     '/ManaPHP/Loader.php',
                      '/ManaPHP/Http/Router/Route.php',
                      '/ManaPHP/Http/Client/Response.php',
                      '/ManaPHP/Http/Captcha.php',

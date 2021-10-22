@@ -10,7 +10,6 @@ use ManaPHP\Exception\PreconditionException;
 
 /**
  * @property-read \ManaPHP\AliasInterface       $alias
- * @property-read \ManaPHP\LoaderInterface      $loader
  * @property-read \ManaPHP\Html\RendererContext $context
  */
 class Renderer extends Component implements RendererInterface
@@ -47,8 +46,6 @@ class Renderer extends Component implements RendererInterface
         if (isset($options['engines'])) {
             $this->engines = $options['engines'] ?: ['.phtml' => 'ManaPHP\Html\Renderer\Engine\Php'];
         }
-
-        $this->loader->registerFiles('@manaphp/Html/Renderer/helpers.php');
 
         $this->mutex = new Mutex();
     }

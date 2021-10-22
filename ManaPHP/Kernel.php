@@ -10,7 +10,6 @@ use ManaPHP\Security\CryptInterface;
  * @property-read \ManaPHP\Configuration\DotenvInterface $dotenv
  * @property-read \ManaPHP\ConfigInterface               $config
  * @property-read \ManaPHP\AliasInterface                $alias
- * @property-read \ManaPHP\Loader                        $loader
  */
 class Kernel extends Component
 {
