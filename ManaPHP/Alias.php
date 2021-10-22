@@ -119,25 +119,4 @@ class Alias extends Component implements AliasInterface
 
         return $this->aliases[$alias] . substr($path, $pos);
     }
-
-    /**
-     * @param string $ns
-     *
-     * @return string
-     */
-    public function resolveNS($ns)
-    {
-        if ($ns[0] !== '@') {
-            return $ns;
-        }
-
-        $parts = explode('\\', $ns, 2);
-
-        $alias = $parts[0];
-        if (!isset($this->aliases[$alias])) {
-            throw new InvalidArgumentException(['`%s` is not exists for `%s`', $alias, $ns]);
-        }
-
-        return $this->aliases[$alias] . (isset($parts[1]) ? '\\' . $parts[1] : '');
-    }
 }
