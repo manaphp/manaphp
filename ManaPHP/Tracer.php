@@ -2,10 +2,12 @@
 
 namespace ManaPHP;
 
+use ManaPHP\Event\Listener;
+
 /**
  * @property-read \ManaPHP\Logging\LoggerInterface $logger
  */
-class Tracer extends Component
+abstract class Tracer extends Listener
 {
     /**
      * @var bool

@@ -7,10 +7,8 @@ use ManaPHP\Tracer;
 
 class WsClientTracer extends Tracer
 {
-    public function __construct($options = [])
+    public function listen()
     {
-        parent::__construct($options);
-
         $this->attachEvent('wsClient:send', [$this, 'onSend']);
         $this->attachEvent('wsClient:recv', [$this, 'onRecv']);
     }

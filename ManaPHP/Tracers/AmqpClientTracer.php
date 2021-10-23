@@ -7,13 +7,8 @@ use ManaPHP\Tracer;
 
 class AmqpClientTracer extends Tracer
 {
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function listen()
     {
-        parent::__construct($options);
-
         $this->attachEvent('amqpClient:publish', [$this, 'onPublish']);
         $this->attachEvent('amqpClient:consuming', [$this, 'onConsuming']);
     }

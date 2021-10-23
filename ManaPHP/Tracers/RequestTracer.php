@@ -9,10 +9,8 @@ use ManaPHP\Tracer;
  */
 class RequestTracer extends Tracer
 {
-    public function __construct($options = [])
+    public function listen()
     {
-        parent::__construct($options);
-
         $this->attachEvent('request:begin', [$this, 'onBegin']);
     }
 

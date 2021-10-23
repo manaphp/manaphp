@@ -10,10 +10,8 @@ use ManaPHP\Tracer;
  */
 class RedisTracer extends Tracer
 {
-    public function __construct($options = [])
+    public function listen()
     {
-        parent::__construct($options);
-
         $this->verbose && $this->attachEvent('redis:connecting', [$this, 'onConnecting']);
         $this->attachEvent('redis:calling', [$this, 'onCalling']);
         $this->attachEvent('redis:called', [$this, 'onCalled']);

@@ -7,10 +7,8 @@ use ManaPHP\Tracer;
 
 class HttpClientTracer extends Tracer
 {
-    public function __construct($options = [])
+    public function listen()
     {
-        parent::__construct($options);
-
         $this->attachEvent('httpClient:requesting', [$this, 'onRequesting']);
         $this->attachEvent('httpClient:requested', [$this, 'onRequested']);
     }

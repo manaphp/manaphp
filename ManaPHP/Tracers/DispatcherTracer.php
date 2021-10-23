@@ -11,10 +11,8 @@ use ManaPHP\Tracer;
  */
 class DispatcherTracer extends Tracer
 {
-    public function __construct($options = [])
+    public function listen()
     {
-        parent::__construct($options);
-
         $this->attachEvent('request:authorize', [$this, 'onRequestAuthorize']);
     }
 

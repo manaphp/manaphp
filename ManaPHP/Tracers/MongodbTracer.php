@@ -7,10 +7,8 @@ use ManaPHP\Tracer;
 
 class MongodbTracer extends Tracer
 {
-    public function __construct($options = [])
+    public function listen()
     {
-        parent::__construct($options);
-
         $this->verbose && $this->attachEvent('mongodb:connect', [$this, 'onConnect']);
         $this->attachEvent('mongodb:queried', [$this, 'onQueried']);
         $this->attachEvent('mongodb:inserted', [$this, 'onInserted']);

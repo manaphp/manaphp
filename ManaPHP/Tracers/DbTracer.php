@@ -8,13 +8,8 @@ use ManaPHP\Tracer;
 
 class DbTracer extends Tracer
 {
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function listen()
     {
-        parent::__construct($options);
-
         $this->verbose && $this->attachEvent('db:connecting', [$this, 'onConnecting']);
         $this->attachEvent('db:queried', [$this, 'onQueried']);
         $this->attachEvent('db:executed', [$this, 'onExecuted']);

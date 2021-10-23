@@ -7,10 +7,8 @@ use ManaPHP\Tracer;
 
 class MailerTracer extends Tracer
 {
-    public function __construct($options = [])
+    public function listen()
     {
-        parent::__construct($options);
-
         $this->attachEvent('mailer:sending', [$this, 'onSending']);
     }
 

@@ -20,20 +20,23 @@ class TracerConfigurator extends Component implements ConfiguratorInterface
 
         if (in_array('*', $tracers, true)) {
             foreach ($this->tracerManager->getTracers() as $definition) {
-                $this->container->get($definition);
+                /** @var \ManaPHP\Tracer $tracer */
+                $tracer = $this->container->get($definition);
+                $tracer->listen();
             }
         } else {
             foreach ($tracers as $tracer) {
                 if (str_contains($tracer, '\\')) {
-                    $this->container->get($tracer);
+                    $tracer = $this->container->get($tracer);
                 } else {
                     $camelizedTracer = Str::camelize($tracer);
                     if (($definition = $this->tracerManager->getTracers()[$camelizedTracer] ?? null) === null) {
                         throw new InvalidArgumentException("$camelizedTracer Tracer is not exists");
                     } else {
-                        $this->container->get($definition);
+                        $tracer = $this->container->get($definition);
                     }
                 }
+                $tracer->listen();
             }
         }
     }

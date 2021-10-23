@@ -7,10 +7,8 @@ use ManaPHP\Tracer;
 
 class WspServerTracer extends Tracer
 {
-    public function __construct($options = [])
+    public function listen()
     {
-        parent::__construct($options);
-
         $this->attachEvent('wspServer:pushing', [$this, 'onPushing']);
     }
 
