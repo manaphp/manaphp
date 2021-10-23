@@ -2,7 +2,7 @@
 
 namespace ManaPHP\Mvc\View;
 
-class AbstractFlashContext
+class FlashContext
 {
     /**
      * @var string[]

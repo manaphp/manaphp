@@ -5,7 +5,6 @@ namespace ManaPHP\Mvc;
 /**
  * @property-read \ManaPHP\Mvc\ViewInterface           $view
  * @property-read \ManaPHP\Mvc\View\FlashInterface     $flash
- * @property-read \ManaPHP\Mvc\View\FlashInterface     $flashSession
  * @property-read \ManaPHP\Http\CookiesInterface       $cookies
  * @property-read \ManaPHP\Http\SessionInterface       $session
  * @property-read \ManaPHP\Http\AuthorizationInterface $authorization
