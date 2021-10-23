@@ -1,8 +1,7 @@
 <?php
 
-namespace ManaPHP\Configuration;
+namespace ManaPHP;
 
-use ManaPHP\Component;
 use ManaPHP\Data\Redis\Connection;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\InvalidArgumentException;

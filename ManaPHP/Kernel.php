@@ -7,9 +7,9 @@ use ManaPHP\Security\Crypt;
 use ManaPHP\Security\CryptInterface;
 
 /**
- * @property-read \ManaPHP\Configuration\DotenvInterface $dotenv
- * @property-read \ManaPHP\ConfigInterface               $config
- * @property-read \ManaPHP\AliasInterface                $alias
+ * @property-read \ManaPHP\DotenvInterface $dotenv
+ * @property-read \ManaPHP\ConfigInterface $config
+ * @property-read \ManaPHP\AliasInterface  $alias
  */
 class Kernel extends Component
 {

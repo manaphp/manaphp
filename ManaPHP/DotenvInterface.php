@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Configuration;
+namespace ManaPHP;
 
 interface DotenvInterface
 {
