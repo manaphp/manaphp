@@ -18,11 +18,6 @@ class Manager extends Component implements ManagerInterface
     protected $peekers = [];
 
     /**
-     * @var array
-     */
-    protected $listeners = [];
-
-    /**
      * Attach a listener to the events manager
      *
      * @param string   $event
@@ -82,19 +77,6 @@ class Manager extends Component implements ManagerInterface
 
         list($group) = explode(':', $event, 2);
 
-        if ($this->listeners && isset($this->listeners[$group])) {
-            foreach ($this->listeners[$group] as $k => $v) {
-                /**@var \ManaPHP\Event\Listener $listener */
-                if (is_int($v)) {
-                    $this->listeners[$group][$k] = $listener = $this->container->get($k);
-                } else {
-                    $listener = $v;
-                }
-
-                $listener->process($eventArgs);
-            }
-        }
-
         foreach ($this->peekers['*'] ?? [] as $handler) {
             $handler($eventArgs);
         }
@@ -126,24 +108,6 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
-     * @param string $listener
-     * @param string $group
-     *
-     * @return static
-     */
-    public function addListener($listener, $group = null)
-    {
-        if (!$group) {
-            $group = basename(substr($listener, strrpos($listener, '\\') + 1), 'Listener');
-            $group = lcfirst(rtrim($group, '0123456789'));
-        }
-
-        $this->listeners[$group][$listener] = 1;
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     public function dump()
@@ -152,9 +116,8 @@ class Manager extends Component implements ManagerInterface
 
         $dump['*events'] = array_keys($dump['events']);
         $dump['*peekers'] = array_keys($dump['peekers']);
-        $dump['*listeners'] = array_keys($dump['listeners']);
 
-        unset($dump['events'], $dump['peekers'], $dump['listeners']);
+        unset($dump['events'], $dump['peekers']);
 
         return $dump;
     }

@@ -41,12 +41,4 @@ interface ManagerInterface
      * @return static
      */
     public function peekEvent($group, $handler);
-
-    /**
-     * @param string $listener
-     * @param string $group
-     *
-     * @return static
-     */
-    public function addListener($listener, $group = null);
 }
