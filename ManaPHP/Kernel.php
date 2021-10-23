@@ -44,20 +44,6 @@ class Kernel extends Component
         $this->alias->set('@resources', "$rootDir/Resources");
         $this->alias->set('@config', "$rootDir/config");
 
-        $web = '';
-        if ($_SERVER['DOCUMENT_ROOT'] !== '') {
-            $web = substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '/'));
-            if (str_ends_with($web, '/public')) {
-                $web = substr($web, 0, -7);
-            }
-        }
-        $this->alias->set('@web', $web);
-        $this->alias->set('@asset', $web);
-
-        if ($_SERVER['DOCUMENT_ROOT'] === '') {
-            $_SERVER['DOCUMENT_ROOT'] = dirname($_SERVER['SCRIPT_FILENAME']);
-        }
-
         $this->boot();
     }
 
