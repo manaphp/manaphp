@@ -8,8 +8,8 @@ namespace PHPSTORM_META {
 
     exitPoint(\abort());
 
-    override(\ManaPHP\Di\ContainerInterface::get(), map(['' => '@|App\Services\@']));
-    override(\container(), map(['' => '@|App\Services\@']));
+    override(\ManaPHP\Di\ContainerInterface::get(), map(['' => '@']));
+    override(\container(), map(['' => '@']));
 
     override(\ManaPHP\Di\ContainerInterface::make(), map(['' => '@']));
 
