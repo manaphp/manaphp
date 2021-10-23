@@ -15,7 +15,7 @@ return [
         \ManaPHP\Configurators\TracerConfigurator::class,
         \ManaPHP\Configurators\MiddlewareConfigurator::class,
     ],
-    'components'    => [
+    'dependencies'    => [
         'ManaPHP\Http\ServerInterface'    => [
             'port'                  => 9501,
             'worker_num'            => 2,

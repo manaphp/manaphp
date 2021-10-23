@@ -33,7 +33,7 @@
             max-height: 80px;
         }
 
-        #components pre {
+        #dependencies pre {
             max-height: 200px;
         }
 
@@ -69,13 +69,13 @@
 <div class="container" id="app">
     <ul class="nav nav-tabs" id="tabs">
         <li><a href="#basic" data-toggle="tab">Basic</a></li>
-        <li><a href="#components" data-toggle="tab">Components</a></li>
+        <li><a href="#dependencies" data-toggle="tab">Dependencies</a></li>
         <li><a href="#contexts" data-toggle="tab">Contexts</a></li>
         <li><a href="#view" data-toggle="tab">View</a></li>
         <li><a href="#config" data-toggle="tab">Config</a></li>
         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Global <b class="caret"></b></a>
             <ul class="dropdown-menu">
-                <li v-for="(value, name) in components['ManaPHP\\Http\\RequestInterface'].properties.context"
+                <li v-for="(value, name) in dependencies['ManaPHP\\Http\\RequestInterface'].properties.context"
                     v-if="typeof value === 'object' && value !== null">
                     <a data-toggle="tab" @click="global_type=name" href="#global">{{name}}
                         <span v-if="!Object.keys(value).length">*</span>
@@ -111,8 +111,8 @@
                 </tbody>
             </table>
         </div>
-        <div class="tab-pane" id="components">
-            <h4>Components</h4>
+        <div class="tab-pane" id="dependencies">
+            <h4>Dependencies</h4>
             <table class="table table-striped table-bordered table-condensed">
                 <thead>
                 <tr>
@@ -123,7 +123,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(item, name, index) in components">
+                <tr v-for="(item, name, index) in dependencies">
                     <td>{{index}}</td>
                     <td :title="name">{{name}}</td>
                     <td>{{item.class}}</td>
@@ -146,7 +146,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(item, name, index) in components"
+                <tr v-for="(item, name, index) in dependencies"
                     v-if="item.properties.context && name!=='debuggerPlugin'">
                     <td>{{index}}</td>
                     <td :title="name">{{name}}</td>
@@ -190,7 +190,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(value,name, index) in components['ManaPHP\\ConfigInterface'].properties.config">
+                <tr v-for="(value,name, index) in dependencies['ManaPHP\\ConfigInterface'].properties.config">
                     <td>{{index}}</td>
                     <td>{{name}}</td>
                     <td :title="json_stringify(value)">
@@ -211,7 +211,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(value, name, index) in components['ManaPHP\\Http\\RequestInterface'].properties.context[global_type]">
+                <tr v-for="(value, name, index) in dependencies['ManaPHP\\Http\\RequestInterface'].properties.context[global_type]">
                     <td>{{ index }}</td>
                     <td>{{ name }}</td>
                     <td>{{ value }}</td>

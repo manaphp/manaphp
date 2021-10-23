@@ -63,8 +63,8 @@ class Kernel extends Component
             $this->alias->set($k, $v);
         }
 
-        foreach ($this->config->get('components') as $component => $definition) {
-            $this->container->set($component, $definition);
+        foreach ($this->config->get('dependencies') as $name => $definition) {
+            $this->container->set($name, $definition);
         }
 
         foreach ($this->config->get('configurators', []) as $definition) {

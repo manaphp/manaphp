@@ -10,7 +10,7 @@ return [
     'params'     => [],
     'aliases'    => [
     ],
-    'components' => [
+    'dependencies' => [
   //      'db'         => env('DB_URL'),
   //      'redis'      => env('REDIS_URL'),
   //      'logger'     => ['level' => env('LOGGER_LEVEL', 'info')],

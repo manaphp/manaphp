@@ -54,7 +54,7 @@ STR;
 
         if (!$port) {
             $port = 9501;
-            foreach ($this->config->get('components') as $name => $config) {
+            foreach ($this->config->get('dependencies') as $name => $config) {
                 if (isset($config['port']) && str_ends_with($name, 'Server')) {
                     $port = $config['port'];
                     break;

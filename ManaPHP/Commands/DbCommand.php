@@ -19,7 +19,7 @@ class DbCommand extends \ManaPHP\Cli\Command
     protected function getDbServices()
     {
         $services = [];
-        foreach ($this->config->get('components') as $service => $config) {
+        foreach ($this->config->get('dependencies') as $service => $config) {
             $config = json_stringify($config);
             if (preg_match('#(mysql|mssql|sqlite)://#', $config)) {
                 $services[] = $service;

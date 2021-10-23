@@ -437,7 +437,7 @@ class DebuggerPlugin extends Plugin
         $data['mongodb'] = $context->mongodb;
 
         $data['view'] = $context->view;
-        $data['components'] = [];
+        $data['dependencies'] = [];
         $data['tracers'] = [];
         $data['events'] = $context->events;
 
@@ -453,7 +453,7 @@ class DebuggerPlugin extends Plugin
                 continue;
             }
 
-            $data['components'][$name] = ['class' => Reflection::getClass($instance), 'properties' => $properties];
+            $data['dependencies'][$name] = ['class' => Reflection::getClass($instance), 'properties' => $properties];
         }
 
         $data['included_files'] = @get_included_files() ?: [];

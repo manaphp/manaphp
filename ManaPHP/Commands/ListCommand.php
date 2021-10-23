@@ -20,7 +20,7 @@ class ListCommand extends Command
      */
     public function optionsAction()
     {
-        $components = [];
+        $dependencies = [];
 
         foreach ((new ReflectionClass(Component::class))->getProperties() as $property) {
             $component_options[$property->getName()] = 1;
@@ -72,26 +72,26 @@ class ListCommand extends Command
                 $options[] = '?';
             }
 
-            $components[$name] = $options;
+            $dependencies[$name] = $options;
         }
 
-        ksort($components);
+        ksort($dependencies);
 
-        foreach ($components as $name => $component) {
+        foreach ($dependencies as $name => $component) {
             $this->console->writeLn('  ' . str_pad($name, 24) . '=> ' . json_stringify($component));
         }
     }
 
     /**
-     * list all components
+     * list all dependencies
      *
      * @param bool $verbose
      *
      * @return void
      */
-    public function componentsAction($verbose = true)
+    public function dependenciesAction($verbose = true)
     {
-        $components = [];
+        $dependencies = [];
         foreach ($this->container->getDefinitions() as $name => $definition) {
             if (is_string($definition)) {
                 $className = $definition;
@@ -109,17 +109,17 @@ class ListCommand extends Command
                 $className = '?';
             }
 
-            $components[$name] = $className;
+            $dependencies[$name] = $className;
         }
 
-        ksort($components);
+        ksort($dependencies);
 
         if ($verbose) {
-            foreach ($components as $name => $component) {
+            foreach ($dependencies as $name => $component) {
                 $this->console->writeLn('  ' . str_pad($name, 24) . '=> ' . $component);
             }
         } else {
-            $this->console->writeLn(json_stringify(array_keys($components)));
+            $this->console->writeLn(json_stringify(array_keys($dependencies)));
         }
     }
 
