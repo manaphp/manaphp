@@ -8,142 +8,8 @@ namespace PHPSTORM_META {
 
     exitPoint(\abort());
 
-    override(
-        \ManaPHP\Di\ContainerInterface::get(), map(
-            [
-                'locale'          => \ManaPHP\I18n\LocaleInterface::class,
-                'eventManager'    => \ManaPHP\Event\ManagerInterface::class,
-                'aopManager'      => \ManaPHP\Aop\ManagerInterface::class,
-                'alias'           => \ManaPHP\AliasInterface::class,
-                'dotenv'          => \ManaPHP\DotenvInterface::class,
-                'config'          => \ManaPHP\ConfigInterface::class,
-                'settings'        => \ManaPHP\SettingsInterface::class,
-                'errorHandler'    => \ManaPHP\ErrorHandlerInterface::class,
-                'router'          => \ManaPHP\Http\RouterInterface::class,
-                'dispatcher'      => \ManaPHP\Http\DispatcherInterface::class,
-                'url'             => \ManaPHP\Http\UrlInterface::class,
-                'modelMetadata'   => \ManaPHP\Mvc\Model\MetadataInterface::class,
-                'validator'       => \ManaPHP\Validating\ValidatorInterface::class,
-                'response'        => \ManaPHP\Http\ResponseInterface::class,
-                'cookies'         => \ManaPHP\Http\CookiesInterface::class,
-                'request'         => \ManaPHP\Http\RequestInterface::class,
-                'crypt'           => \ManaPHP\Security\CryptInterface::class,
-                'flash'           => \ManaPHP\Mvc\View\FlashInterface::class,
-                'flashSession'    => \ManaPHP\Mvc\View\FlashInterface::class,
-                'session'         => \ManaPHP\Http\SessionInterface::class,
-                'view'            => \ManaPHP\Mvc\ViewInterface::class,
-                'logger'          => \ManaPHP\Logging\LoggerInterface::class,
-                'renderer'        => \ManaPHP\Html\RendererInterface::class,
-                'cache'           => \ManaPHP\Caching\CacheInterface::class,
-                'httpClient'      => \ManaPHP\Http\ClientInterface::class,
-                'restClient'      => \ManaPHP\Http\ClientInterface::class,
-                'downloader'      => \ManaPHP\Http\DownloaderInterface::class,
-                'captcha'         => \ManaPHP\Http\CaptchaInterface::class,
-                'csrfPlugin'      => \ManaPHP\Plugins\CsrfPlugin::class,
-                'authorization'   => \ManaPHP\Http\AuthorizationInterface::class,
-                'identity'        => \ManaPHP\Identifying\IdentityInterface::class,
-                'msgQueue'        => \ManaPHP\Messaging\QueueInterface::class,
-                'swordCompiler'   => \ManaPHP\Html\Renderer\Engine\Sword\Compiler::class,
-                'viewsCache'      => \ManaPHP\Caching\CacheInterface::class,
-                'htmlPurifier'    => \ManaPHP\Html\PurifierInterface::class,
-                'db'              => \ManaPHP\Data\DbInterface::class,
-                'redis'           => \Redis::class,
-                'redisCache'      => \Redis::class,
-                'redisDb'         => \Redis::class,
-                'redisBroker'     => \Redis::class,
-                'mongodb'         => \ManaPHP\Data\MongodbInterface::class,
-                'translator'      => \ManaPHP\I18n\TranslatorInterface::class,
-                'relationManager' => \ManaPHP\Data\Relation\Manager::class,
-                'container'       => \ManaPHP\Di\ContainerInterface::class,
-                'app'             => \ManaPHP\ApplicationInterface::class,
-                'mailer'          => \ManaPHP\Mailing\MailerInterface::class,
-                'httpServer'      => \ManaPHP\Swoole\Http\ServerInterface::class,
-                'assetBundle'     => \ManaPHP\Html\Renderer\AssetBundleInterface::class,
-                'aclbuilder'      => \ManaPHP\Http\Acl\BuilderInterface::class,
-                'bosClient'       => \ManaPHP\Bos\ClientInterface::class,
-                'wspClient'       => \ManaPHP\Ws\Pushing\ClientInterface::class,
-                'coroutine'       => \ManaPHP\CoroutineInterface::class,
-                'jwt'             => \ManaPHP\Token\JwtInterface::class,
-                'scopedJwt'       => \ManaPHP\Token\ScopedJwtInterface::class,
-                'pubSub'          => \ManaPHP\Messaging\PubSubInterface::class,
-                'amqpClient'      => \ManaPHP\Amqp\ClientInterface::class,
-                'httpHandler'     => \ManaPHP\Http\HandlerInterface::class,
-                'wsHandler'       => \ManaPHP\Ws\HandlerInterface::class,
-                'rpcHandler'      => \ManaPHP\Rpc\HandlerInterface::class,
-                'socketHandler'   => \ManaPHP\Socket\HandlerInterface::class,
-                ''                => '@|App\Services\@',
-            ]
-        )
-    );
-    override(
-        \container(), map(
-            [
-                'locale'           => \ManaPHP\I18n\LocaleInterface::class,
-                'eventManager'     => \ManaPHP\Event\ManagerInterface::class,
-                'aopManager'       => \ManaPHP\Aop\ManagerInterface::class,
-                'alias'            => \ManaPHP\AliasInterface::class,
-                'dotenv'           => \ManaPHP\DotenvInterface::class,
-                'config'           => \ManaPHP\ConfigInterface::class,
-                'settings'         => \ManaPHP\SettingsInterface::class,
-                'errorHandler'     => \ManaPHP\ErrorHandlerInterface::class,
-                'router'           => \ManaPHP\Http\RouterInterface::class,
-                'dispatcher'       => \ManaPHP\Http\DispatcherInterface::class,
-                'url'              => \ManaPHP\Http\UrlInterface::class,
-                'modelMetadata'    => \ManaPHP\Mvc\Model\MetadataInterface::class,
-                'validator'        => \ManaPHP\Validating\ValidatorInterface::class,
-                'response'         => \ManaPHP\Http\ResponseInterface::class,
-                'cookies'          => \ManaPHP\Http\CookiesInterface::class,
-                'request'          => \ManaPHP\Http\RequestInterface::class,
-                'crypt'            => \ManaPHP\Security\CryptInterface::class,
-                'flash'            => \ManaPHP\Mvc\View\FlashInterface::class,
-                'flashSession'     => \ManaPHP\Mvc\View\FlashInterface::class,
-                'session'          => \ManaPHP\Http\SessionInterface::class,
-                'view'             => \ManaPHP\Mvc\ViewInterface::class,
-                'logger'           => \ManaPHP\Logging\LoggerInterface::class,
-                'renderer'         => \ManaPHP\Html\RendererInterface::class,
-                'cache'            => \ManaPHP\Caching\CacheInterface::class,
-                'httpClient'       => \ManaPHP\Http\ClientInterface::class,
-                'restClient'       => \ManaPHP\Http\ClientInterface::class,
-                'downloader'       => \ManaPHP\Http\DownloaderInterface::class,
-                'downloader'       => \ManaPHP\Http\DownloaderInterface::class,
-                'captcha'          => \ManaPHP\Http\CaptchaInterface::class,
-                'csrfPlugin'       => \ManaPHP\Http\CsrfPlugin::class,
-                'authorization'    => \ManaPHP\Http\AuthorizationInterface::class,
-                'identity'         => \ManaPHP\Identifying\IdentityInterface::class,
-                'msgQueue'         => \ManaPHP\Messaging\QueueInterface::class,
-                'swordCompiler'    => \ManaPHP\Html\Renderer\Engine\Sword\Compiler::class,
-                'viewsCache'       => \ManaPHP\Caching\CacheInterface::class,
-                'htmlPurifier'     => \ManaPHP\Html\PurifierInterface::class,
-                'db'               => \ManaPHP\Data\DbInterface::class,
-                'redis'            => \Redis::class,
-                'redisCache'       => \Redis::class,
-                'redisDb'          => \Redis::class,
-                'redisBroker'      => \Redis::class,
-                'mongodb'          => \ManaPHP\Data\MongodbInterface::class,
-                'translator'       => \ManaPHP\I18n\TranslatorInterface::class,
-                'relationManager'  => \ManaPHP\Data\Relation\ManagerInterface::class,
-                'container'        => \ManaPHP\Di\ContainerInterface::class,
-                'app'              => \ManaPHP\ApplicationInterface::class,
-                'mailer'           => \ManaPHP\Mailing\MailerInterface::class,
-                'httpServer'       => \ManaPHP\Swoole\Http\ServerInterface::class,
-                'assetBundle'      => \ManaPHP\Html\Renderer\AssetBundleInterface::class,
-                'aclbuilder'       => \ManaPHP\Http\Acl\BuilderInterface::class,
-                'bosClient'        => \ManaPHP\Bos\ClientInterface::class,
-                'wspClient'        => \ManaPHP\Ws\Pushing\ClientInterface::class,
-                'coroutineManager' => \ManaPHP\Coroutine\ManagerInterface::class,
-                'jwt'              => \ManaPHP\Token\JwtInterface::class,
-                'scopedJwt'        => \ManaPHP\Token\ScopedJwtInterface::class,
-                'pubSub'           => \ManaPHP\Messaging\PubSubInterface::class,
-                'dataDump'         => \ManaPHP\Debugging\DataDumpInterface::class,
-                'amqpClient'       => \ManaPHP\Amqp\ClientInterface::class,
-                'httpHandler'      => \ManaPHP\Http\HandlerInterface::class,
-                'wsHandler'        => \ManaPHP\Ws\HandlerInterface::class,
-                'rpcHandler'       => \ManaPHP\Rpc\HandlerInterface::class,
-                'socketHandler'    => \ManaPHP\Socket\HandlerInterface::class,
-                ''                 => '@|App\Services\@',
-            ]
-        )
-    );
+    override(\ManaPHP\Di\ContainerInterface::get(), map(['' => '@|App\Services\@']));
+    override(\container(), map(['' => '@|App\Services\@']));
 
     override(\ManaPHP\Di\ContainerInterface::make(), map(['' => '@']));
 
@@ -352,10 +218,12 @@ namespace ManaPHP\Data {
     {
 
     }
+
     class RedisDbInterface extends \Redis implements RedisInterface
     {
 
     }
+
     class RedisBrokerInterface extends \Redis implements RedisInterface
     {
 
