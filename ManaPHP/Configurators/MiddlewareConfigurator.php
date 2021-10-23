@@ -14,20 +14,22 @@ class MiddlewareConfigurator extends Component implements ConfiguratorInterface
     public function configure()
     {
         foreach (LocalFS::glob('@app/Middlewares/?*Middleware.php') as $file) {
-            $middleware = 'App\Middlewares\\' . basename($file, ".php");
-            $this->container->get($middleware);
+            /** @var \ManaPHP\Http\Middleware $middleware */
+            $middleware = $this->container->get('App\Middlewares\\' . basename($file, ".php"));
+            $middleware->listen();
         }
 
         $middlewares = $this->config->get('middlewares', []);
-        foreach ($middlewares as $middleware) {
-            if (str_contains($middleware, '\\')) {
-                $class = $middleware;
+        foreach ($middlewares as $definition) {
+            if (str_contains($definition, '\\')) {
+                $class = $definition;
             } else {
-                $plain = ucfirst($middleware) . 'Middleware';
+                $plain = ucfirst($definition) . 'Middleware';
                 $class = "ManaPHP\Http\Middlewares\\$plain";
             }
 
-            $this->container->get($class);
+            $middleware = $this->container->get($class);
+            $middleware->listen();
         }
     }
 }

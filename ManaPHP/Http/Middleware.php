@@ -2,10 +2,9 @@
 
 namespace ManaPHP\Http;
 
-use ManaPHP\Component;
-use ManaPHP\Logging\Logger\LogCategorizable;
+use ManaPHP\Event\Listener;
 
-class Middleware extends Component implements LogCategorizable
+class Middleware extends Listener
 {
     /**
      * @var bool
@@ -20,7 +19,15 @@ class Middleware extends Component implements LogCategorizable
         if (isset($options['enabled'])) {
             $this->enabled = $options['enabled'];
         }
+    }
 
+    public function categorizeLog()
+    {
+        return basename(str_replace('\\', '.', static::class), 'Middleware');
+    }
+
+    public function listen()
+    {
         if ($this->enabled) {
             foreach (get_class_methods($this) as $method) {
                 if (str_starts_with($method, 'on')) {
@@ -29,10 +36,5 @@ class Middleware extends Component implements LogCategorizable
                 }
             }
         }
-    }
-
-    public function categorizeLog()
-    {
-        return basename(str_replace('\\', '.', static::class), 'Middleware');
     }
 }
