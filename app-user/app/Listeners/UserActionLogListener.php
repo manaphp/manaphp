@@ -1,20 +1,21 @@
 <?php
 
-namespace App\Plugins;
+namespace App\Listeners;
 
 use App\Models\UserActionLog;
+use ManaPHP\Event\Listener;
 use ManaPHP\Helper\Arr;
 
 /**
- * @property-read \ManaPHP\Identifying\IdentityInterface  $identity
- * @property-read \ManaPHP\Http\RequestInterface          $request
- * @property-read \ManaPHP\Http\CookiesInterface          $cookies
- * @property-read \ManaPHP\Http\DispatcherInterface       $dispatcher
- * @property-read \App\Plugins\UserActionLogPluginContext $context
+ * @property-read \ManaPHP\Identifying\IdentityInterface    $identity
+ * @property-read \ManaPHP\Http\RequestInterface            $request
+ * @property-read \ManaPHP\Http\CookiesInterface            $cookies
+ * @property-read \ManaPHP\Http\DispatcherInterface         $dispatcher
+ * @property-read \App\Plugins\UserActionLogListenerContext $context
  */
-class UserActionLogPlugin extends Plugin
+class UserActionLogListener extends Listener
 {
-    public function __construct()
+    public function listen()
     {
         $this->attachEvent('app:userActionLogAction', [$this, 'onUserActionLogAction']);
         $this->attachEvent('db:executing', [$this, 'onDbExecuting']);

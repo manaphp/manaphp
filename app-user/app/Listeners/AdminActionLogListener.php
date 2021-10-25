@@ -1,20 +1,22 @@
 <?php
 
-namespace App\Plugins;
+namespace App\Listeners;
+
+use ManaPHP\Event\Listener;
 
 use App\Models\AdminActionLog;
 use ManaPHP\Helper\Arr;
 
 /**
- * @property-read \ManaPHP\Identifying\IdentityInterface   $identity
- * @property-read \ManaPHP\Http\RequestInterface           $request
- * @property-read \ManaPHP\Http\CookiesInterface           $cookies
- * @property-read \ManaPHP\Http\DispatcherInterface        $dispatcher
- * @property-read \App\Plugins\AdminActionLogPluginContext $context
+ * @property-read \ManaPHP\Identifying\IdentityInterface       $identity
+ * @property-read \ManaPHP\Http\RequestInterface               $request
+ * @property-read \ManaPHP\Http\CookiesInterface               $cookies
+ * @property-read \ManaPHP\Http\DispatcherInterface            $dispatcher
+ * @property-read \App\Listeners\AdminActionLogListenerContext $context
  */
-class AdminActionLogPlugin extends Plugin
+class AdminActionLogListener extends Listener
 {
-    public function __construct()
+    public function listen()
     {
         $this->attachEvent('app:adminActionLogAction', [$this, 'onAdminActionLogAction']);
         $this->attachEvent('db:executing', [$this, 'onDbExecuting']);
