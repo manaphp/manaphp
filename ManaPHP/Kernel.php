@@ -67,10 +67,10 @@ class Kernel extends Component
             $this->container->set($name, $definition);
         }
 
-        foreach ($this->config->get('configurators', []) as $definition) {
-            /** @var \ManaPHP\ConfiguratorInterface $configurator */
-            $configurator = $this->container->get($definition);
-            $configurator->configure();
+        foreach ($this->config->get('providers', []) as $definition) {
+            /** @var \ManaPHP\ProviderInterface $provider */
+            $provider = $this->container->get($definition);
+            $provider->boot();
         }
     }
 

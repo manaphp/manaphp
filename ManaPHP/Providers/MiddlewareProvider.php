@@ -1,17 +1,16 @@
 <?php
 
-namespace ManaPHP\Configurators;
+namespace ManaPHP\Providers;
 
-use ManaPHP\Component;
-use ManaPHP\ConfiguratorInterface;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Provider;
 
 /**
  * @property-read \ManaPHP\ConfigInterface $config
  */
-class MiddlewareConfigurator extends Component implements ConfiguratorInterface
+class MiddlewareProvider extends Provider
 {
-    public function configure()
+    public function boot()
     {
         foreach (LocalFS::glob('@app/Middlewares/?*Middleware.php') as $file) {
             /** @var \ManaPHP\Http\Middleware $middleware */

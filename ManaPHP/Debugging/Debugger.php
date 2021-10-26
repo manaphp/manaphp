@@ -1,6 +1,6 @@
 <?php
 
-namespace ManaPHP\Plugins;
+namespace ManaPHP\Debugging;
 
 use ManaPHP\Component;
 use ManaPHP\Event\EventArgs;
@@ -11,22 +11,21 @@ use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Reflection;
 use ManaPHP\Helper\Str;
 use ManaPHP\Logging\AbstractLogger;
-use ManaPHP\Plugin;
 use ManaPHP\Version;
 use ArrayObject;
 
 /**
- * @property-read \ManaPHP\Di\ContainerInterface         $container
- * @property-read \ManaPHP\ConfigInterface               $config
- * @property-read \ManaPHP\Logging\LoggerInterface       $logger
- * @property-read \ManaPHP\Http\RequestInterface         $request
- * @property-read \ManaPHP\Http\ResponseInterface        $response
- * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher
- * @property-read \ManaPHP\Http\RouterInterface          $router
- * @property-read \ManaPHP\Data\RedisCacheInterface      $redisCache
- * @property-read \ManaPHP\Plugins\DebuggerPluginContext $context
+ * @property-read \ManaPHP\Di\ContainerInterface     $container
+ * @property-read \ManaPHP\ConfigInterface           $config
+ * @property-read \ManaPHP\Logging\LoggerInterface   $logger
+ * @property-read \ManaPHP\Http\RequestInterface     $request
+ * @property-read \ManaPHP\Http\ResponseInterface    $response
+ * @property-read \ManaPHP\Http\DispatcherInterface  $dispatcher
+ * @property-read \ManaPHP\Http\RouterInterface      $router
+ * @property-read \ManaPHP\Data\RedisCacheInterface  $redisCache
+ * @property-read \ManaPHP\Debugging\DebuggerContext $context
  */
-class DebuggerPlugin extends Plugin
+class Debugger extends Component implements DebuggerInterface
 {
     /**
      * @var bool
@@ -46,7 +45,7 @@ class DebuggerPlugin extends Plugin
     /**
      * @var string
      */
-    protected $template = '@manaphp/Plugins/DebuggerPlugin/Template.html';
+    protected $template = '@manaphp/Debugging/Debugger/Template.html';
 
     /**
      * @var bool
@@ -79,7 +78,7 @@ class DebuggerPlugin extends Plugin
             $this->ttl = 0;
         }
 
-        $this->prefix = $options['prefix'] ?? sprintf("cache:%s:debuggerPlugin:", $this->config->get('id'));
+        $this->prefix = $options['prefix'] ?? sprintf("cache:%s:debugger:", $this->config->get('id'));
 
         if (isset($options['template'])) {
             $this->template = $options['template'];
@@ -92,7 +91,10 @@ class DebuggerPlugin extends Plugin
         if (isset($options['tail'])) {
             $this->tail = (bool)$options['tail'];
         }
+    }
 
+    public function start()
+    {
         if ($this->enabled) {
             $this->peekEvent('*', [$this, 'onEvent']);
 
@@ -120,7 +122,7 @@ class DebuggerPlugin extends Plugin
         if ($this->ttl) {
             $content = $this->redisCache->get($this->prefix . $key);
         } else {
-            $file = "@data/debuggerPlugin/{$key}.zip";
+            $file = "@data/debugger/{$key}.zip";
             $content = LocalFS::fileExists($file) ? LocalFS::fileGet($file) : false;
         }
 
@@ -143,13 +145,13 @@ class DebuggerPlugin extends Plugin
             if ($this->broadcast) {
                 $key = implode(
                     ':',
-                    ['__debuggerPlugin', $this->config->get('id'), $this->request->getClientIp(),
+                    ['__debugger', $this->config->get('id'), $this->request->getClientIp(),
                      $this->dispatcher->getPath()]
                 );
                 $this->redisCache->publish($key, $this->response->getHeader('X-Debugger-Link'));
             }
         } else {
-            LocalFS::filePut("@data/debuggerPlugin/{$key}.zip", $content);
+            LocalFS::filePut("@data/debugger/{$key}.zip", $content);
         }
     }
 
@@ -160,7 +162,7 @@ class DebuggerPlugin extends Plugin
     {
         $context = $this->context;
 
-        if (($debugger = $this->request->get('__debuggerPlugin', ''))
+        if (($debugger = $this->request->get('__debugger', ''))
             && preg_match('#^([\w/]+)\.(html|json|txt|raw)$#', $debugger, $match)
         ) {
             $context->enabled = false;
@@ -189,7 +191,7 @@ class DebuggerPlugin extends Plugin
         }
 
         if ($context->enabled) {
-            $url = $this->router->createUrl("/?__debuggerPlugin={$context->key}.html", true);
+            $url = $this->router->createUrl("/?__debugger={$context->key}.html", true);
             $this->response->setHeader('X-Debugger-Link', $url);
             $this->logger->info($url, 'debugger.link');
         }
@@ -210,7 +212,7 @@ class DebuggerPlugin extends Plugin
     public function onResponseStringify()
     {
         if (is_array($content = $this->response->getContent())) {
-            $content['debuggerPlugin'] = $this->response->getHeader('X-Debugger-Link');
+            $content['debugger'] = $this->response->getHeader('X-Debugger-Link');
             $this->response->setContent($content);
         }
     }

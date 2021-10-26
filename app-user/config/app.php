@@ -1,21 +1,22 @@
 <?php
 
 return [
-    'id'            => 'user',
-    'env'           => env('APP_ENV', 'prod'),
-    'debug'         => env('APP_DEBUG', false),
-    'version'       => '1.1.1',
-    'timezone'      => 'PRC',
-    'master_key'    => '',
-    'params'        => ['manaphp_brand_show' => 1],
-    'aliases'       => [
+    'id'           => 'user',
+    'env'          => env('APP_ENV', 'prod'),
+    'debug'        => env('APP_DEBUG', false),
+    'version'      => '1.1.1',
+    'timezone'     => 'PRC',
+    'master_key'   => '',
+    'params'       => ['manaphp_brand_show' => 1],
+    'aliases'      => [
     ],
-    'configurators' => [
-        \ManaPHP\Configurators\PluginConfigurator::class,
-        \ManaPHP\Configurators\TracerConfigurator::class,
-        \ManaPHP\Configurators\MiddlewareConfigurator::class,
+    'providers'    => [
+        ManaPHP\Providers\ListenerProvider::class,
+        ManaPHP\Providers\TracerProvider::class,
+        ManaPHP\Providers\DebuggerProvider::class,
+        ManaPHP\Providers\MiddlewareProvider::class,
     ],
-    'dependencies'    => [
+    'dependencies' => [
         'ManaPHP\Http\ServerInterface'    => [
             'port'                  => 9501,
             'worker_num'            => 2,
@@ -30,8 +31,8 @@ return [
         'ManaPHP\Http\HandlerInterface'   => 'ManaPHP\Mvc\Handler',
         'ManaPHP\Http\RouterInterface'    => 'App\Router',
     ],
-    'plugins'       => [
+    'plugins'      => [
         'debugger',
     ],
-    'tracers'       => [],
+    'tracers'      => [],
 ];

@@ -1,20 +1,18 @@
 <?php
 
-namespace ManaPHP\Configurators;
+namespace ManaPHP\Providers;
 
-
-use ManaPHP\Component;
-use ManaPHP\ConfiguratorInterface;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Helper\Str;
+use ManaPHP\Provider;
 
 /**
  * @property-read \ManaPHP\ConfigInterface         $config
  * @property-read \ManaPHP\Tracer\ManagerInterface $tracerManager
  */
-class TracerConfigurator extends Component implements ConfiguratorInterface
+class TracerProvider extends Provider
 {
-    public function configure()
+    public function boot()
     {
         $tracers = $this->config->get('tracers');
 

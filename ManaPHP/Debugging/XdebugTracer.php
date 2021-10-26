@@ -1,13 +1,13 @@
 <?php
 
-namespace ManaPHP\Plugins;
+namespace ManaPHP\Debugging;
 
-use ManaPHP\Plugin;
+use ManaPHP\Component;
 
 /**
  * @property-read \ManaPHP\AliasInterface $alias
  */
-class BacktracePlugin extends Plugin
+class XdebugTracer extends Component implements XdebugTracerInterface
 {
     /**
      * @var int
@@ -49,16 +49,17 @@ class BacktracePlugin extends Plugin
         if (isset($options['mem_delta'])) {
             $this->mem_delta = $options['mem_delta'];
         }
+    }
 
-        if (!MANAPHP_CLI && function_exists('xdebug_start_trace')) {
-            ini_set('xdebug.collect_return', $this->return);
-            ini_set('xdebug.collect_params', $this->params);
-            ini_set('xdebug.var_display_max_depth', $this->max_depth);
-            ini_set('xdebug.show_mem_delta', $this->mem_delta);
+    public function start()
+    {
+        ini_set('xdebug.collect_return', $this->return);
+        ini_set('xdebug.collect_params', $this->params);
+        ini_set('xdebug.var_display_max_depth', $this->max_depth);
+        ini_set('xdebug.show_mem_delta', $this->mem_delta);
 
-            $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
-            $this->attachEvent('request:end', [$this, 'onRequestEnd']);
-        }
+        $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
+        $this->attachEvent('request:end', [$this, 'onRequestEnd']);
     }
 
     /**

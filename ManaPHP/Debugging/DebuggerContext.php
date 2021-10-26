@@ -1,8 +1,8 @@
 <?php
 
-namespace ManaPHP\Plugins;
+namespace ManaPHP\Debugging;
 
-class DebuggerPluginContext
+class DebuggerContext
 {
     /**
      * @var bool
