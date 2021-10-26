@@ -9,7 +9,8 @@ use ManaPHP\Security\CryptInterface;
 /**
  * @property-read \ManaPHP\DotenvInterface $dotenv
  * @property-read \ManaPHP\ConfigInterface $config
- * @property-read \ManaPHP\AliasInterface  $alias
+ * @property-read \ManaPHP\AliasInterface $alias
+ * @property-read \ManaPHP\Event\Listener\ManagerInterface $listenerManager
  */
 class Kernel extends Component
 {
@@ -67,11 +68,7 @@ class Kernel extends Component
             $this->container->set($name, $definition);
         }
 
-        foreach ($this->config->get('providers', []) as $definition) {
-            /** @var \ManaPHP\ProviderInterface $provider */
-            $provider = $this->container->get($definition);
-            $provider->boot();
-        }
+        $this->listenerManager->listen();
     }
 
     /**

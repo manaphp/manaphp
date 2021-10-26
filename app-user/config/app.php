@@ -10,12 +10,6 @@ return [
     'params'       => ['manaphp_brand_show' => 1],
     'aliases'      => [
     ],
-    'providers'    => [
-        ManaPHP\Providers\ListenerProvider::class,
-        ManaPHP\Providers\TracerProvider::class,
-        ManaPHP\Providers\DebuggerProvider::class,
-        ManaPHP\Providers\MiddlewareProvider::class,
-    ],
     'dependencies' => [
         'ManaPHP\Http\ServerInterface'    => [
             'port'                  => 9501,
