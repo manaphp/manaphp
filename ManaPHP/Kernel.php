@@ -3,8 +3,6 @@
 namespace ManaPHP;
 
 use ManaPHP\Di\Container;
-use ManaPHP\Security\Crypt;
-use ManaPHP\Security\CryptInterface;
 
 /**
  * @property-read \ManaPHP\DotenvInterface $dotenv
@@ -56,9 +54,6 @@ class Kernel extends Component
         if (($timezone = $this->config->get('timezone', '')) !== '') {
             date_default_timezone_set($timezone);
         }
-        $this->container->set(
-            CryptInterface::class, ['class' => Crypt::class, 'master_key' => $this->config->get('master_key')]
-        );
 
         foreach ($this->config->get('aliases', []) as $k => $v) {
             $this->alias->set($k, $v);

@@ -6,11 +6,11 @@ return [
     'debug'        => env('APP_DEBUG', false),
     'version'      => '1.1.1',
     'timezone'     => 'PRC',
-    'master_key'   => '',
     'params'       => ['manaphp_brand_show' => 1],
     'aliases'      => [
     ],
     'dependencies' => [
+        'ManaPHP\Security\CryptInterface' => ['master_key' => env('MASTER_KEY')],
         'ManaPHP\Http\ServerInterface'    => [
             'port'                  => 9501,
             'worker_num'            => 2,
