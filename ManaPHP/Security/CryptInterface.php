@@ -4,7 +4,6 @@ namespace ManaPHP\Security;
 
 interface CryptInterface
 {
-
     /**
      * Encrypts a text
      *
@@ -24,13 +23,6 @@ interface CryptInterface
      * @return string
      */
     public function decrypt($text, $key);
-
-    /**
-     * @param string $key
-     *
-     * @return static
-     */
-    public function setMasterKey($key);
 
     /**
      * @param string $type

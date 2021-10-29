@@ -4,6 +4,7 @@ namespace ManaPHP\Security;
 
 use ManaPHP\Component;
 use ManaPHP\Security\Crypt\Exception as CryptException;
+use ManaPHP\Exception\MisuseException;
 
 class Crypt extends Component implements CryptInterface
 {
@@ -22,9 +23,10 @@ class Crypt extends Component implements CryptInterface
      */
     public function __construct($options = [])
     {
-        if (isset($options['master_key'])) {
-            $this->master_key = $options['master_key'];
+        if (!isset($options['master_key'])) {
+            throw new MisuseException('master_key is not provided');
         }
+        $this->master_key = $options['master_key'];
 
         if (isset($options['method'])) {
             $this->method = $options['method'];
@@ -88,18 +90,6 @@ class Crypt extends Component implements CryptInterface
     }
 
     /**
-     * @param string $key
-     *
-     * @return static
-     */
-    public function setMasterKey($key)
-    {
-        $this->master_key = $key;
-
-        return $this;
-    }
-
-    /**
      * @param string $type
      *
      * @return string
@@ -107,10 +97,6 @@ class Crypt extends Component implements CryptInterface
      */
     public function getDerivedKey($type)
     {
-        if ($this->master_key === null) {
-            throw new CryptException(['getDerivedKey for `:type` type Failed: master key is not set', 'type' => $type]);
-        }
-
         return md5($this->master_key . ':' . $type);
     }
 }
