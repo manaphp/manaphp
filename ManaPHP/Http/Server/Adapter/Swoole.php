@@ -149,6 +149,7 @@ class Swoole extends AbstractServer
 
         $settings = json_stringify($this->settings);
         console_log('info', ['listen on: %s:%d with setting: %s', $this->host, $this->port, $settings]);
+        $this->fireEvent('httpServer:start', ['server' => $this->swoole]);
         $this->swoole->start();
         console_log('info', 'shutdown');
     }

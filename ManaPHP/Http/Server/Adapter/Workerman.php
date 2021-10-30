@@ -119,6 +119,8 @@ class Workerman extends AbstractServer
             shell_exec("explorer.exe http://127.0.0.1:$this->port/" . $this->router->getPrefix());
         }
 
+        $this->fireEvent('httpServer:start');
+
         Worker::runAll();
 
         console_log('info', 'shutdown');

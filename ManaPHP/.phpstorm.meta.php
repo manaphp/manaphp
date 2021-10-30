@@ -14,7 +14,9 @@ namespace PHPSTORM_META {
     override(\ManaPHP\Di\ContainerInterface::make(), map(['' => '@']));
 
     registerArgumentsSet(
-        'eventManager', 'request:begin', 'request:end',
+        'eventManager',
+        'httpServer:start',
+        'request:begin', 'request:end',
         'request:authorize', 'request:authenticate',
         'request:validate', 'request:ready',
         'request:invoking', 'request:invoked',

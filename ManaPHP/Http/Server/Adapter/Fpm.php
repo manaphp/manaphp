@@ -30,6 +30,8 @@ class Fpm extends AbstractServer
     {
         $this->prepareGlobals();
 
+        $this->fireEvent('httpServer:start');
+
         $this->httpHandler->handle();
     }
 

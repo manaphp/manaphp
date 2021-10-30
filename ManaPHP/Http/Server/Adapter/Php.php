@@ -157,6 +157,8 @@ class Php extends Fpm
                 header('HTTP/1.1 404 Not Found');
             }
         } else {
+            $this->fireEvent('httpServer:start');
+
             $this->httpHandler->handle();
         }
     }
