@@ -7,11 +7,11 @@ use ManaPHP\Event\Listener;
 use ManaPHP\Helper\Arr;
 
 /**
- * @property-read \ManaPHP\Identifying\IdentityInterface    $identity
- * @property-read \ManaPHP\Http\RequestInterface            $request
- * @property-read \ManaPHP\Http\CookiesInterface            $cookies
- * @property-read \ManaPHP\Http\DispatcherInterface         $dispatcher
- * @property-read \App\Plugins\UserActionLogListenerContext $context
+ * @property-read \ManaPHP\Identifying\IdentityInterface      $identity
+ * @property-read \ManaPHP\Http\RequestInterface              $request
+ * @property-read \ManaPHP\Http\CookiesInterface              $cookies
+ * @property-read \ManaPHP\Http\DispatcherInterface           $dispatcher
+ * @property-read \App\Listeners\UserActionLogListenerContext $context
  */
 class UserActionLogListener extends Listener
 {

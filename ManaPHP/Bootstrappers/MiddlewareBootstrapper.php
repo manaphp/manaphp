@@ -1,16 +1,17 @@
 <?php
 
-namespace ManaPHP\Http\Middleware;
+namespace ManaPHP\Bootstrappers;
 
+use ManaPHP\BootstrapperInterface;
 use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
 
 /**
  * @property-read \ManaPHP\ConfigInterface $config
  */
-class Manager extends Component implements ManagerInterface
+class MiddlewareBootstrapper extends Component implements BootstrapperInterface
 {
-    public function listen()
+    public function bootstrap()
     {
         foreach (LocalFS::glob('@app/Middlewares/?*Middleware.php') as $file) {
             /** @var \ManaPHP\Http\Middleware $middleware */

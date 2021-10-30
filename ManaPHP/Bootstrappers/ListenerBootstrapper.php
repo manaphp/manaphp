@@ -1,13 +1,14 @@
 <?php
 
-namespace ManaPHP\Event\Listener;
+namespace ManaPHP\Bootstrappers;
 
+use ManaPHP\BootstrapperInterface;
 use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
 
-class Manager extends Component implements ManagerInterface
+class ListenerBootstrapper extends Component implements BootstrapperInterface
 {
-    public function listen()
+    public function bootstrap()
     {
         foreach (LocalFS::glob('@app/Listeners/?*Listener.php') as $file) {
             /** @var \ManaPHP\Event\ListenInterface $listener */

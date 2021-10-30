@@ -7,8 +7,7 @@ use ManaPHP\Di\Container;
 /**
  * @property-read \ManaPHP\DotenvInterface $dotenv
  * @property-read \ManaPHP\ConfigInterface $config
- * @property-read \ManaPHP\AliasInterface $alias
- * @property-read \ManaPHP\Event\Listener\ManagerInterface $listenerManager
+ * @property-read \ManaPHP\AliasInterface  $alias
  */
 class Kernel extends Component
 {
@@ -63,7 +62,11 @@ class Kernel extends Component
             $this->container->set($name, $definition);
         }
 
-        $this->listenerManager->listen();
+        foreach ($this->config->get('bootstrappers') as $name) {
+            /** @var \ManaPHP\BootstrapperInterface $bootstrapper */
+            $bootstrapper = $this->container->get($name);
+            $bootstrapper->bootstrap();
+        }
     }
 
     /**
