@@ -93,7 +93,6 @@ class Crypt extends Component implements CryptInterface
      * @param string $type
      *
      * @return string
-     * @throws \ManaPHP\Security\Crypt\Exception
      */
     public function getDerivedKey($type)
     {

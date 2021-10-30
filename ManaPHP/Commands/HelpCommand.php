@@ -267,7 +267,7 @@ class HelpCommand extends Command
      */
     public function commandAction($command, $action = '')
     {
-        $camelizedCommand=Str::camelize($command);
+        $camelizedCommand = Str::camelize($command);
         if (($definition = $this->commandManager->getCommands()[$camelizedCommand] ?? null) === null) {
             return $this->console->error("$camelizedCommand Command not found");
         }
