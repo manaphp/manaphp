@@ -53,7 +53,8 @@ class Redis extends Component implements RedisInterface
             }
         }
 
-        $this->poolManager->add($this, ['class' => 'ManaPHP\Data\Redis\Connection', $this->uri], $this->pool_size);
+        $sample = $this->container->make('ManaPHP\Data\Redis\Connection', [$this->uri]);
+        $this->poolManager->add($this, $sample, $this->pool_size);
     }
 
     /**

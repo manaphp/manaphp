@@ -101,7 +101,8 @@ class Db extends Component implements DbInterface
         if ($uris[0] !== '') {
             $uri = (string)$uris[0];
             $adapter = 'ManaPHP\Data\Db\Connection\Adapter\\' . ucfirst(parse_url($uri, PHP_URL_SCHEME));
-            $this->poolManager->add($this, ['class' => $adapter, $uri], $master_pool_size);
+            $sample = $this->container->make($adapter, [$uri]);
+            $this->poolManager->add($this, $sample, $master_pool_size);
         }
 
         if (count($uris) > 1) {
@@ -120,13 +121,15 @@ class Db extends Component implements DbInterface
                 for ($i = 0; $i < $slave_pool_size; $i++) {
                     foreach ($uris as $v) {
                         $adapter = 'ManaPHP\Data\Db\Connection\Adapter\\' . ucfirst(parse_url($v, PHP_URL_SCHEME));
-                        $this->poolManager->add($this, ['class' => $adapter, $v], 1, 'slave');
+                        $sample = $this->container->make($adapter, [$v]);
+                        $this->poolManager->add($this, $sample, 1, 'slave');
                     }
                 }
             } else {
                 $uri = (string)$uris[random_int(0, count($uris) - 1)];
                 $adapter = 'ManaPHP\Data\Db\Connection\Adapter\\' . ucfirst(parse_url($uri, PHP_URL_SCHEME));
-                $this->poolManager->add($this, ['class' => $adapter, $uri], 1, 'slave');
+                $sample = $this->container->make($adapter, [$uri]);
+                $this->poolManager->add($this, $sample, 1, 'slave');
             }
 
             $this->has_slave = true;

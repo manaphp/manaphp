@@ -41,7 +41,8 @@ class Mongodb extends Component implements MongodbInterface
         $path = parse_url($uri, PHP_URL_PATH);
         $this->db = ($path !== '/' && $path !== null) ? (string)substr($path, 1) : null;
 
-        $this->poolManager->add($this, $this->container->make('ManaPHP\Data\Mongodb\Connection', [$this->uri]));
+        $sample = $this->container->make('ManaPHP\Data\Mongodb\Connection', [$this->uri]);
+        $this->poolManager->add($this, $sample);
     }
 
     public function __destruct()

@@ -162,7 +162,8 @@ class Client extends Component implements ClientInterface
             $engine_id = substr($request->url, 0, strpos($request->url, '/', 8));
 
             if (!$this->poolManager->exists($this, $engine_id)) {
-                $this->poolManager->add($this, $this->engine, $this->pool_size, $engine_id);
+                $sample = is_string($this->engine) ? $this->container->make($this->engine) : $this->engine;
+                $this->poolManager->add($this, $sample, $this->pool_size, $engine_id);
             }
 
             /** @var \ManaPHP\Http\Client\EngineInterface $engine */

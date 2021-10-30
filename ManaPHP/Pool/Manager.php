@@ -53,30 +53,16 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
-     * @param object       $owner
-     * @param object|array $sample
-     * @param int          $size
-     * @param string       $type
+     * @param object $owner
+     * @param object $sample
+     * @param int    $size
+     * @param string $type
      *
      * @return static
      */
     public function add($owner, $sample, $size = 1, $type = 'default')
     {
         $owner_id = spl_object_id($owner);
-
-        if (is_array($sample)) {
-            if (isset($sample['class'])) {
-                $class = $sample['class'];
-                unset($sample['class']);
-            } else {
-                $class = $sample[0];
-                unset($sample[0]);
-            }
-
-            $sample = $this->container->make($class, $sample);
-        } elseif (is_string($sample)) {
-            $sample = $this->container->make($sample);
-        }
 
         if (!$queue = $this->pool[$owner_id][$type] ?? null) {
             $this->pool[$owner_id][$type] = $queue = new Channel($size);

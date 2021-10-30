@@ -100,9 +100,8 @@ class Client extends Component implements ClientInterface
 
         $options['owner'] = $this;
 
-        $options['class'] = 'ManaPHP\Ws\Client\Engine';
-
-        $this->poolManager->add($this, $options, $this->pool_size);
+        $sample = $this->container->make('ManaPHP\Ws\Client\Engine', [$options]);
+        $this->poolManager->add($this, $sample, $this->pool_size);
 
         $this->emitter = new Emitter();
 

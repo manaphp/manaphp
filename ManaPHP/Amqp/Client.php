@@ -41,9 +41,8 @@ class Client extends Component implements ClientInterface
             $this->pool_size = (int)$match[1];
         }
 
-        $definition = ['class' => 'ManaPHP\Amqp\Engine\Php', $uri];
-
-        $this->poolManager->add($this, $definition, $this->pool_size);
+        $sample = $this->container->make('ManaPHP\Amqp\Engine\Php', [$uri]);
+        $this->poolManager->add($this, $sample, $this->pool_size);
     }
 
     /**
