@@ -10,8 +10,8 @@ return [
     'aliases'       => [
     ],
     'dependencies'  => [
-        'ManaPHP\Security\CryptInterface' => ['master_key' => env('MASTER_KEY')],
-        'ManaPHP\Http\ServerInterface'    => [
+        'ManaPHP\Security\CryptInterface'          => ['master_key' => env('MASTER_KEY')],
+        'ManaPHP\Http\ServerInterface'             => [
             'port'                  => 9501,
             'worker_num'            => 2,
             'max_request'           => 1000000,
@@ -19,11 +19,12 @@ return [
         ],
         //        'db'                                   => env('DB_URL'),
         //        'redis'                                => env('REDIS_URL'),
-        'ManaPHP\Logging\LoggerInterface' => [
+        'ManaPHP\Logging\LoggerInterface'          => [
             'class' => 'ManaPHP\Logging\Logger\Adapter\File',
             'level' => env('LOGGER_LEVEL', 'info')],
-        'ManaPHP\Http\HandlerInterface'   => 'ManaPHP\Mvc\Handler',
-        'ManaPHP\Http\RouterInterface'    => 'App\Router',
+        'ManaPHP\Http\HandlerInterface'            => 'ManaPHP\Mvc\Handler',
+        'ManaPHP\Http\RouterInterface'             => 'App\Router',
+        'ManaPHP\Bootstrappers\TracerBootstrapper' => ['tracers' => env('APP_TRACERS', [])]
     ],
     'bootstrappers' => [
         ManaPHP\Bootstrappers\TracerBootstrapper::class,

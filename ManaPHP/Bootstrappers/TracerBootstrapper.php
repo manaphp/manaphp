@@ -39,13 +39,21 @@ class TracerBootstrapper extends Component implements BootstrapperInterface
             }
         } else {
             foreach ($this->tracers as $name) {
-                if (str_contains($name, '\\')) {
-                    $tracer = $this->container->get($name);
-                } else {
-                    $name = Str::camelize($name);
-                    $tracer = $this->container->get("ManaPHP\Tracers\\{$name}Tracer");
-                }
+                $name = Str::camelize($name);
+                $tracer = $this->container->get("ManaPHP\Tracers\\{$name}Tracer");
+                $tracer->listen();
+            }
+        }
 
+        foreach (LocalFS::glob('@app/Tracers/?*Tracer.php') as $file) {
+            $tracer = $this->container->get('App\Tracers\\' . basename($file, '.php'));
+            $tracer->listen();
+        }
+
+        foreach (LocalFS::glob('@app/Areas/*', GLOB_ONLYDIR) as $item) {
+            $area = basename($item);
+            foreach (LocalFS::glob("$item/Tracers/?*Tracer.php") as $file) {
+                $tracer = $this->container->get("App\\Areas\\$area\\Tracers\\" . basename($file, '.php'));
                 $tracer->listen();
             }
         }
