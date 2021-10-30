@@ -151,19 +151,6 @@ if (!function_exists('env')) {
     }
 }
 
-if (!function_exists('param_get')) {
-    /**
-     * @param string $name
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    function param_get($name, $default = null)
-    {
-        return container(ConfigInterface::class)->get('params', $default)[$name] ?? $default;
-    }
-}
-
 if (!function_exists('config_get')) {
     /**
      * @param string $name

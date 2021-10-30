@@ -6,7 +6,6 @@ return [
     'debug'         => env('APP_DEBUG', false),
     'version'       => '1.1.1',
     'timezone'      => 'PRC',
-    'params'        => ['manaphp_brand_show' => 1],
     'aliases'       => [
     ],
     'dependencies'  => [
@@ -32,4 +31,6 @@ return [
         ManaPHP\Bootstrappers\ListenerBootstrapper::class,
         ManaPHP\Bootstrappers\MiddlewareBootstrapper::class,
     ],
+
+    'manaphp_brand_show' => true,
 ];

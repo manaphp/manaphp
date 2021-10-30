@@ -29,7 +29,7 @@
 
 <div class="copyright"> @widget('Copyright')</div>
 <div class="mana_container">
-    @if(param_get('manaphp_brand_show', true))
+    @if(config_get('manaphp_brand_show', true))
         <h1>ManaPHP <sub>v{{ $version }}</sub></h1>
         {{ $current_time }}
         {{ container("ManaPHP\Http\RouterInterface")->getController() . ':' . container('ManaPHP\Http\RouterInterface')->getAction() }}
