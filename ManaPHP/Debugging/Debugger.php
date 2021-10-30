@@ -28,11 +28,6 @@ use ArrayObject;
 class Debugger extends Component implements DebuggerInterface
 {
     /**
-     * @var bool
-     */
-    protected $enabled = true;
-
-    /**
      * @var int
      */
     protected $ttl = 3600;
@@ -62,14 +57,6 @@ class Debugger extends Component implements DebuggerInterface
      */
     public function __construct($options = [])
     {
-        if (defined('MANAPHP_CLI')) {
-            $this->enabled = false;
-        } elseif (isset($options['enabled'])) {
-            $this->enabled = (bool)$options['enabled'];
-        } elseif (!in_array($this->config->get('env'), ['dev', 'test'], true)) {
-            $this->enabled = false;
-        }
-
         if (isset($options['ttl'])) {
             $this->ttl = (int)$options['ttl'];
         }
@@ -95,20 +82,18 @@ class Debugger extends Component implements DebuggerInterface
 
     public function start()
     {
-        if ($this->enabled) {
-            $this->peekEvent('*', [$this, 'onEvent']);
+        $this->peekEvent('*', [$this, 'onEvent']);
 
-            $this->peekEvent('db', [$this, 'onDb']);
-            $this->peekEvent('mongodb', [$this, 'onMongodb']);
+        $this->peekEvent('db', [$this, 'onDb']);
+        $this->peekEvent('mongodb', [$this, 'onMongodb']);
 
-            $this->attachEvent('renderer:rendering', [$this, 'onRendererRendering']);
-            $this->attachEvent('logger:log', [$this, 'onLoggerLog']);
-            $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
-            $this->attachEvent('request:end', [$this, 'onRequestEnd']);
+        $this->attachEvent('renderer:rendering', [$this, 'onRendererRendering']);
+        $this->attachEvent('logger:log', [$this, 'onLoggerLog']);
+        $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
+        $this->attachEvent('request:end', [$this, 'onRequestEnd']);
 
-            if ($this->tail) {
-                $this->attachEvent('response:stringify', [$this, 'onResponseStringify']);
-            }
+        if ($this->tail) {
+            $this->attachEvent('response:stringify', [$this, 'onResponseStringify']);
         }
     }
 
