@@ -31,7 +31,12 @@ class DebuggerBootstrapper extends Component implements BootstrapperInterface
     public function bootstrap()
     {
         if ($this->enabled) {
-            $this->debugger->start();
+            $this->attachEvent('httpServer:start', [$this, 'onHttpServerStart']);
         }
+    }
+
+    public function onHttpServerStart()
+    {
+        $this->debugger->start();
     }
 }
