@@ -47,7 +47,7 @@ class Config extends Component implements ConfigInterface
         $value = $this->config[$key] ?? $default;
 
         if ($value === null) {
-            throw new InvalidKeyException('key');
+            throw new InvalidKeyException("invalid key `$key`");
         } else {
             return $value;
         }
