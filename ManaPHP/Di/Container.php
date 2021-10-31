@@ -40,7 +40,7 @@ class Container implements ContainerInterface
         }
 
         $this->definitions = $definitions;
-        $this->definitions['container'] = $this;
+        $this->definitions['ManaPHP\Di\ContainerInterface'] = $this;
     }
 
     /**
@@ -134,7 +134,6 @@ class Container implements ContainerInterface
                 $instance->setContainer($this);
             }
 
-            /** @noinspection PhpPossiblePolymorphicInvocationInspection */
             $this->call([$instance, '__construct'], $parameters);
         } else {
             $instance = new $class();
