@@ -31,7 +31,7 @@ class CachingCacheAdapterDbTest extends TestCase
 
     public function test_exists()
     {
-        $cache = Container::getDefault()->make('ManaPHP\Caching\Cache\Adapter\Db');
+        $cache = container()->make('ManaPHP\Caching\Cache\Adapter\Db');
 
         $cache->delete('var');
         $this->assertFalse($cache->exists('var'));
@@ -41,7 +41,7 @@ class CachingCacheAdapterDbTest extends TestCase
 
     public function test_get()
     {
-        $cache = Container::getDefault()->make('ManaPHP\Caching\Cache\Adapter\Db');
+        $cache = container()->make('ManaPHP\Caching\Cache\Adapter\Db');
 
         $cache->delete('var');
 
@@ -52,7 +52,7 @@ class CachingCacheAdapterDbTest extends TestCase
 
     public function test_set()
     {
-        $cache = Container::getDefault()->make('ManaPHP\Caching\Cache\Adapter\Db');
+        $cache = container()->make('ManaPHP\Caching\Cache\Adapter\Db');
 
         $cache->set('var', '', 100);
         $this->assertSame('', $cache->get('var'));
@@ -72,7 +72,7 @@ class CachingCacheAdapterDbTest extends TestCase
 
     public function test_delete()
     {
-        $cache = Container::getDefault()->make('ManaPHP\Caching\Cache\Adapter\Db');
+        $cache = container()->make('ManaPHP\Caching\Cache\Adapter\Db');
 
         //exists and delete
         $cache->set('var', 'value', 100);

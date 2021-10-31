@@ -81,9 +81,4 @@ interface ContainerInterface
      * @return mixed
      */
     public function call($callable, $parameters = []);
-
-    /**
-     * @return static
-     */
-    public static function getDefault();
 }

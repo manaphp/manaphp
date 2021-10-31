@@ -35,29 +35,12 @@ class Container implements ContainerInterface
     protected $emitter;
 
     /**
-     * @var \ManaPHP\Di\ContainerInterface
-     */
-    protected static $default;
-
-    /**
      * @param array $definitions
      */
     public function __construct($definitions = [])
     {
-        if (self::$default === null) {
-            self::$default = $this;
-        }
-
         $this->definitions = $definitions;
         $this->definitions['ManaPHP\Di\ContainerInterface'] = $this;
-    }
-
-    /**
-     * @return static
-     */
-    public static function getDefault()
-    {
-        return self::$default;
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-use ManaPHP\Di\Container;
+use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\JsonException;
@@ -129,11 +129,8 @@ if (!function_exists('container')) {
      */
     function container($name = null)
     {
-        static $container;
-        if (!$container) {
-            $container = Container::getDefault();
-        }
-
+        /** @var ContainerInterface $container */
+        $container = $GLOBALS['ManaPHP\Di\ContainerInterface'];
         return $name === null ? $container : $container->get($name);
     }
 }
@@ -536,9 +533,9 @@ if (!function_exists('image_create')) {
     function image_create($file)
     {
         if (extension_loaded('imagick')) {
-            return Container::getDefault()->make('ManaPHP\Imaging\Image\Adapter\Imagick', [$file]);
+            return container('ManaPHP\Di\ContainerInterface')->make('ManaPHP\Imaging\Image\Adapter\Imagick', [$file]);
         } elseif (extension_loaded('gd')) {
-            return Container::getDefault()->make('ManaPHP\Imaging\Image\Adapter\Gd', [$file]);
+            return container()->make('ManaPHP\Imaging\Image\Adapter\Gd', [$file]);
         } else {
             throw new NotSupportedException('neither `imagic` nor `gd` extension is loaded');
         }

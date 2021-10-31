@@ -2,7 +2,6 @@
 
 namespace ManaPHP\Data;
 
-use ManaPHP\Di\Container;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
@@ -120,7 +119,7 @@ abstract class AbstractTable implements TableInterface
     public function __get($name)
     {
         if ($name === '_container') {
-            return $this->_container = Container::getDefault();
+            return $this->_container = container();
         } else {
             return null;
         }

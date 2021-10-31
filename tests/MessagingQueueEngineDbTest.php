@@ -38,7 +38,7 @@ class MessagingQueueEngineDbTest extends TestCase
     public function test_push()
     {
         $messageQueue = new Db();
-        $messageQueue->setContainer(Container::getDefault());
+        $messageQueue->setContainer(container());
 
         $messageQueue->do_delete('test');
         $messageQueue->do_push('test', 'manaphp');
@@ -48,7 +48,7 @@ class MessagingQueueEngineDbTest extends TestCase
     public function test_pop()
     {
         $messageQueue = new Db();
-        $messageQueue->setContainer(Container::getDefault());
+        $messageQueue->setContainer(container());
 
         $messageQueue->do_delete('test');
 
@@ -65,7 +65,7 @@ class MessagingQueueEngineDbTest extends TestCase
     public function test_delete()
     {
         $messageQueue = new Db();
-        $messageQueue->setContainer(Container::getDefault());
+        $messageQueue->setContainer(container());
 
         $this->assertEquals(0, $messageQueue->do_length('test'));
         $messageQueue->do_delete('test');
@@ -79,7 +79,7 @@ class MessagingQueueEngineDbTest extends TestCase
     public function test_length()
     {
         $messageQueue = new Db();
-        $messageQueue->setContainer(Container::getDefault());
+        $messageQueue->setContainer(container());
 
         $messageQueue->do_delete('test');
 

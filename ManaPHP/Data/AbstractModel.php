@@ -15,7 +15,6 @@ use ManaPHP\Data\Relation\HasMany;
 use ManaPHP\Data\Relation\HasManyOthers;
 use ManaPHP\Data\Relation\HasManyToMany;
 use ManaPHP\Data\Relation\HasOne;
-use ManaPHP\Di\Container;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\InvalidValueException;
@@ -1300,7 +1299,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     public function __get($name)
     {
         if ($name === '_container') {
-            return $this->_container = Container::getDefault();
+            return $this->_container = container();
         }
 
         /** @var \ManaPHP\Data\Relation\ManagerInterface $relationManager */

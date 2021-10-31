@@ -23,7 +23,10 @@ class Kernel extends Component
     {
         $this->rootDir = $rootDir;
 
-        $this->setContainer(new Container());
+        $container = new Container();
+        $this->setContainer($container);
+
+        $GLOBALS['ManaPHP\Di\ContainerInterface'] = $container;
 
         if (!defined('MANAPHP_COROUTINE_ENABLED')) {
             define(
