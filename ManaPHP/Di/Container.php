@@ -202,8 +202,11 @@ class Container implements ContainerInterface
             if (preg_match_all('#@property-read\s+\\\\?([\w\\\\]+)\s+\\$(\w+)#m', $comment, $matches, PREG_SET_ORDER)
                 > 0
             ) {
-                foreach ($matches as $match) {
-                    $resolved[$match[2]] = $match[1];
+                foreach ($matches as list(, $type, $name)) {
+                    if ($type === 'object') {
+                        continue;
+                    }
+                    $resolved[$name] = $type;
                 }
             }
         }
