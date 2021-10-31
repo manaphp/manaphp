@@ -70,73 +70,6 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string $name
-     * @param string $className
-     *
-     * @return string
-     */
-    protected function completeClassName($name, $className)
-    {
-        if (isset($this->definitions[$name])) {
-            $definition = $this->definitions[$name];
-        } else {
-            return $className;
-        }
-
-        if (is_string($definition)) {
-            if ($pos = strrpos($definition, '\\')) {
-                return substr($definition, 0, $pos + 1) . ucfirst($className);
-            } else {
-                return $className;
-            }
-        } elseif (is_array($definition) && isset($definition['class'])) {
-            if ($pos = strrpos($definition['class'], '\\')) {
-                return substr($definition['class'], 0, $pos + 1) . ucfirst($className);
-            } else {
-                return $className;
-            }
-        } else {
-            return $className;
-        }
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return string
-     */
-    protected function inferClassName($name)
-    {
-        $definition = null;
-        if (isset($this->definitions[$name])) {
-            $definition = $this->definitions[$name];
-        } elseif (str_contains($name, '\\')) {
-            $definition = $name;
-        } elseif ($pos = strrpos($name, '_')) {
-            $maybe = substr($name, $pos + 1);
-            if (isset($this->definitions[$maybe])) {
-                $definition = $this->definitions[$maybe];
-            } elseif ($pos = strpos($name, '_')) {
-                $maybe = substr($name, 0, $pos);
-                if (isset($this->definitions[$maybe])) {
-                    $definition = $this->definitions[$maybe];
-                }
-            }
-        } elseif (preg_match('#^(.+)([A-Z].+?)$#', $name, $match)) {
-            $maybe = lcfirst($match[2]);
-            $definition = $this->definitions[$maybe] ?? null;
-        }
-
-        if ($definition === null) {
-            throw new InvalidValueException(['`%s` definition is invalid: missing class field', $name]);
-        } elseif (is_string($definition)) {
-            return $definition[0] === '@' ? $this->inferClassName(substr($definition, 1)) : $definition;
-        } else {
-            return $definition['class'];
-        }
-    }
-
-    /**
      * Registers an "always shared" component in the components container
      *
      * @param string $name
@@ -148,24 +81,6 @@ class Container implements ContainerInterface
     {
         if (isset($this->instances[$name])) {
             throw new MisuseException(['it\'s too late to set(): `%s` instance has been created', $name]);
-        }
-
-        if (is_string($definition)) {
-            if ($definition[0] === '@') {
-                null;
-            } elseif (str_contains($definition, '/') || preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
-                $definition = ['class' => $this->inferClassName($name), $definition];
-            } elseif (!str_contains($definition, '\\')) {
-                $definition = $this->completeClassName($name, $definition);
-            }
-        } elseif (is_array($definition)) {
-            null;
-        } elseif ($definition instanceof Closure) {
-            null;
-        } elseif (is_object($definition)) {
-            $this->instances[$name] = $definition;
-        } else {
-            throw new NotSupportedException(['`:definition` definition is unknown', 'definition' => $name]);
         }
 
         $this->definitions[$name] = $definition;
