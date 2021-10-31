@@ -4,6 +4,7 @@ namespace ManaPHP\Di;
 
 use Closure;
 use ManaPHP\Event\Emitter;
+use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MisuseException;
@@ -22,6 +23,11 @@ class Container implements ContainerInterface
      * @var array
      */
     protected $instances = [];
+
+    /**
+     * @var array
+     */
+    protected $properties = [];
 
     /**
      * @var \ManaPHP\Event\EmitterInterface
@@ -182,6 +188,34 @@ class Container implements ContainerInterface
     }
 
     /**
+     * @param string $class
+     *
+     * @return array
+     */
+    protected function resolveProperties($class)
+    {
+        $rc = new ReflectionClass($class);
+        $comment = $rc->getDocComment();
+
+        $resolved = [];
+        if (is_string($comment)) {
+            if (preg_match_all('#@property-read\s+\\\\?([\w\\\\]+)\s+\\$(\w+)#m', $comment, $matches, PREG_SET_ORDER)
+                > 0
+            ) {
+                foreach ($matches as $match) {
+                    $resolved[$match[2]] = $match[1];
+                }
+            }
+        }
+
+        $parent = get_parent_class($class);
+        if ($parent !== false) {
+            $resolved += $this->properties[$parent] ?? $this->resolveProperties($parent);
+        }
+        return $this->properties[$class] = $resolved;
+    }
+
+    /**
      * @param object $target
      * @param string $property
      *
@@ -189,9 +223,14 @@ class Container implements ContainerInterface
      */
     public function inject($target, $property)
     {
-        $propertyResolver = $this->get(PropertyResolverInterface::class);
-        $resolved = $propertyResolver->resolve(get_class($target), $property);
-        return $this->get($resolved);
+        $class = get_class($target);
+        $resolved = $this->properties[$class] ?? $this->resolveProperties($class);
+
+        if (($type = $resolved[$property] ?? null) === null) {
+            throw new InvalidArgumentException('sss');
+        }
+
+        return $this->get($type);
     }
 
     /**
