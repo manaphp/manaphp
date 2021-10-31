@@ -271,7 +271,7 @@ class Container implements ContainerInterface
             /** @noinspection PhpPossiblePolymorphicInvocationInspection */
             $this->call([$instance, '__construct'], $parameters);
         } else {
-            $instance = new $class(...$parameters);
+            $instance = new $class();
             $resolved = $this->setInternal($name, $instance);
 
             if ($instance instanceof Injectable) {
