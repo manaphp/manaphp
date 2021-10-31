@@ -59,6 +59,14 @@ class Kernel extends Component
         }
 
         foreach ($this->config->get('dependencies') as $name => $definition) {
+            if (is_array($definition) && !isset($definition['#class']) && !isset($definition['#parameters'])) {
+                if (($class = $definition['class'] ?? null) === null) {
+                    $definition = ['#parameters' => ['options' => $definition]];
+                } else {
+                    unset($definition['class']);
+                    $definition = ['#class' => $class, '#parameters' => ['options' => $definition]];
+                }
+            }
             $this->container->set($name, $definition);
         }
 

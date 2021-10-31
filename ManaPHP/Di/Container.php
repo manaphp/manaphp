@@ -159,17 +159,7 @@ class Container implements ContainerInterface
                 $definition = $this->completeClassName($name, $definition);
             }
         } elseif (is_array($definition)) {
-            if (isset($definition['class'])) {
-                if (!str_contains($definition['class'], '\\')) {
-                    $definition['class'] = $this->completeClassName($name, $definition['class']);
-                }
-            } elseif (isset($definition[0]) && count($definition) !== 1) {
-                if (!str_contains($definition[0], '\\')) {
-                    $definition[0] = $this->completeClassName($name, $definition[0]);
-                }
-            } else {
-                $definition['class'] = $this->inferClassName($name);
-            }
+            null;
         } elseif ($definition instanceof Closure) {
             null;
         } elseif (is_object($definition)) {
@@ -208,10 +198,6 @@ class Container implements ContainerInterface
     public function make($name, $parameters = [])
     {
         $definition = $this->definitions[$name] ?? $name;
-
-        if ($parameters && !array_key_exists(0, $parameters)) {
-            $parameters = [$parameters];
-        }
 
         if (is_string($definition)) {
             return $this->makeInternal($name, $definition, $parameters);
@@ -283,7 +269,7 @@ class Container implements ContainerInterface
             }
 
             /** @noinspection PhpPossiblePolymorphicInvocationInspection */
-            $instance->__construct(...$parameters);
+            $this->call([$instance, '__construct'], $parameters);
         } else {
             $instance = new $class(...$parameters);
             $resolved = $this->setInternal($name, $instance);
@@ -330,20 +316,11 @@ class Container implements ContainerInterface
                 $instance->setContainer($this);
             }
             return $this->setInternal($name, $instance);
-        } elseif (isset($definition['class'])) {
-            $parameters = $definition;
-            $definition = $definition['class'];
-            unset($parameters['class']);
-        } elseif (isset($definition[0])) {
-            $parameters = $definition;
-            $definition = $definition[0];
-            unset($parameters[0]);
+        } elseif (is_array($definition)) {
+            $parameters = $definition['#parameters'] ?? [];
+            $definition = $definition['#class'] ?? $name;
         } else {
-            $parameters = [];
-        }
-
-        if ($parameters && !array_key_exists(0, $parameters)) {
-            $parameters = [$parameters];
+            throw new MisuseException('not supported definition');
         }
 
         if (!is_string($definition)) {

@@ -23,7 +23,12 @@ class Invoker implements InvokerInterface
         }
         $missing = [];
         $args = [];
-        foreach ($reflectionFunction->getParameters() as $reflectionParameter) {
+        foreach ($reflectionFunction->getParameters() as $position => $reflectionParameter) {
+            if (array_key_exists($position, $parameters)) {
+                $args[] = $parameters[$position];
+                continue;
+            }
+
             $name = $reflectionParameter->getName();
             $reflectionType = $reflectionParameter->getType();
 

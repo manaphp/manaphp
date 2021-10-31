@@ -1,14 +1,14 @@
 <?php
 
 return [
-    'id'            => 'user',
-    'env'           => env('APP_ENV', 'prod'),
-    'debug'         => env('APP_DEBUG', false),
-    'version'       => '1.1.1',
-    'timezone'      => 'PRC',
-    'aliases'       => [
+    'id'                 => 'user',
+    'env'                => env('APP_ENV', 'prod'),
+    'debug'              => env('APP_DEBUG', false),
+    'version'            => '1.1.1',
+    'timezone'           => 'PRC',
+    'aliases'            => [
     ],
-    'dependencies'  => [
+    'dependencies'       => [
         'ManaPHP\Security\CryptInterface'          => ['master_key' => env('MASTER_KEY')],
         'ManaPHP\Http\ServerInterface'             => [
             'port'                  => 9501,
@@ -25,12 +25,11 @@ return [
         'ManaPHP\Http\RouterInterface'             => 'App\Router',
         'ManaPHP\Bootstrappers\TracerBootstrapper' => ['tracers' => env('APP_TRACERS', [])]
     ],
-    'bootstrappers' => [
+    'bootstrappers'      => [
         ManaPHP\Bootstrappers\TracerBootstrapper::class,
         ManaPHP\Bootstrappers\DebuggerBootstrapper::class,
         ManaPHP\Bootstrappers\ListenerBootstrapper::class,
         ManaPHP\Bootstrappers\MiddlewareBootstrapper::class,
     ],
-
     'manaphp_brand_show' => true,
 ];
