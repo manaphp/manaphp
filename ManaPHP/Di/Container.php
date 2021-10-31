@@ -6,7 +6,6 @@ use Closure;
 use ManaPHP\Event\Emitter;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Exception\NotSupportedException;
 use ReflectionClass;
 
 class Container implements ContainerInterface
@@ -70,8 +69,6 @@ class Container implements ContainerInterface
     }
 
     /**
-     * Registers an "always shared" component in the components container
-     *
      * @param string $name
      * @param mixed  $definition
      *
@@ -89,8 +86,6 @@ class Container implements ContainerInterface
     }
 
     /**
-     * Removes a component in the components container
-     *
      * @param string $name
      *
      * @return static
@@ -103,60 +98,17 @@ class Container implements ContainerInterface
     }
 
     /**
-     * Resolves the component based on its configuration
-     *
-     * @param string $name
-     * @param array  $parameters
-     *
-     * @return mixed
-     */
-    public function make($name, $parameters = [])
-    {
-        $definition = $this->definitions[$name] ?? $name;
-
-        if (is_string($definition)) {
-            return $this->makeInternal($name, $definition, $parameters);
-        } elseif ($definition instanceof Closure) {
-            $instance = $definition(...$parameters);
-        } elseif (is_object($definition)) {
-            $instance = $definition;
-        } else {
-            throw new NotSupportedException(['`%s` component cannot be resolved', $name]);
-        }
-
-        if ($instance instanceof Injectable) {
-            $instance->setContainer($this);
-        }
-
-        return $instance;
-    }
-
-    /**
-     * @param string $name
-     * @param mixed  $instance
-     *
-     * @return mixed
-     */
-    protected function setInternal($name, $instance)
-    {
-        if ($this->emitter !== null) {
-            $instance = $this->emitter->emit('resolved', $instance) ?? $instance;
-        }
-
-        $this->instances[$name] = $instance;
-
-        return $instance;
-    }
-
-    /**
-     * @param string $name
      * @param string $class
      * @param array  $parameters
      *
      * @return mixed
      */
-    protected function makeInternal($name, $class, $parameters)
+    public function make($class, $parameters = [])
     {
+        if (is_string(($alias = $this->definition[$class] ?? null))) {
+            return $this->make($alias, $parameters);
+        }
+
         $exists = false;
         if (str_ends_with($class, 'Interface') && interface_exists($class)) {
             if (class_exists($sub = substr($class, 0, -9))) {
@@ -169,7 +121,7 @@ class Container implements ContainerInterface
 
         if (!$exists) {
             throw new InvalidValueException(
-                ['`%s` component cannot be resolved: `%s` class is not exists', $name, $class]
+                ['`%s` component cannot be resolved: `%s` class is not exists', $class, $class]
             );
         }
 
@@ -177,7 +129,6 @@ class Container implements ContainerInterface
             $rc = new ReflectionClass($class);
 
             $instance = $rc->newInstanceWithoutConstructor();
-            $resolved = $this->setInternal($name, $instance);
 
             if ($instance instanceof Injectable) {
                 $instance->setContainer($this);
@@ -187,20 +138,16 @@ class Container implements ContainerInterface
             $this->call([$instance, '__construct'], $parameters);
         } else {
             $instance = new $class();
-            $resolved = $this->setInternal($name, $instance);
 
             if ($instance instanceof Injectable) {
                 $instance->setContainer($this);
             }
         }
 
-        return $resolved;
+        return $instance;
     }
 
     /**
-     * Resolves a component, the resolved component is stored in the DI, subsequent requests for this component will
-     * return the same instance
-     *
      * @param string $name
      *
      * @return mixed
@@ -215,41 +162,21 @@ class Container implements ContainerInterface
 
         if (is_string($definition)) {
             if ($definition[0] === '@') {
-                return $this->setInternal($name, $this->get(substr($definition, 1)));
+                return $this->get(substr($definition, 1));
+            } else {
+                return $this->instances[$name] = $this->make($definition);
             }
-            $parameters = [];
         } elseif ($definition instanceof Closure) {
-            $instance = $definition();
-            if ($instance instanceof Injectable) {
-                $instance->setContainer($this);
-            }
-
-            return $this->setInternal($name, $instance);
+            return $this->instances[$name] = $this->call($definition);
         } elseif (is_object($definition)) {
-            $instance = $definition;
-            if ($instance instanceof Injectable) {
-                $instance->setContainer($this);
-            }
-            return $this->setInternal($name, $instance);
+            return $this->instances[$name] = $definition;
         } elseif (is_array($definition)) {
             $parameters = $definition['#parameters'] ?? [];
             $definition = $definition['#class'] ?? $name;
+            return $this->instances[$name] = $this->make($definition, $parameters);
         } else {
             throw new MisuseException('not supported definition');
         }
-
-        if (!is_string($definition)) {
-            throw new NotSupportedException(['`%s` component implement type is not supported', $name]);
-        }
-
-        if ($name !== $definition) {
-            $definition = $this->definitions[$definition] ?? $definition;
-        }
-
-        $instance = $this->makeInternal($name, $definition, $parameters);
-        $this->instances[$name] = $instance;
-
-        return $instance;
     }
 
     /**
@@ -292,8 +219,6 @@ class Container implements ContainerInterface
     }
 
     /**
-     * Check whether the DI contains a component by a name
-     *
      * @param string $name
      *
      * @return bool

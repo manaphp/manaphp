@@ -13,8 +13,6 @@ interface ContainerInterface
     public function on($event, $handler);
 
     /**
-     * Registers an "always shared" component in the components container
-     *
      * @param string $name
      * @param mixed  $definition
      *
@@ -40,8 +38,6 @@ interface ContainerInterface
     public function getInstances();
 
     /**
-     * Removes a component from the components container
-     *
      * @param string $name
      *
      * @return static
@@ -49,18 +45,14 @@ interface ContainerInterface
     public function remove($name);
 
     /**
-     * Resolves the component based on its configuration
-     *
-     * @param string $name
+     * @param string $class
      * @param array  $parameters
      *
      * @return mixed
      */
-    public function make($name, $parameters = []);
+    public function make($class, $parameters = []);
 
     /**
-     * Resolves a shared component based on their configuration
-     *
      * @param string $name
      *
      * @return mixed
@@ -76,8 +68,6 @@ interface ContainerInterface
     public function inject($target, $property);
 
     /**
-     * Check whether the DI contains a component by a name
-     *
      * @param string $name
      *
      * @return bool
@@ -93,8 +83,6 @@ interface ContainerInterface
     public function call($callable, $parameters = []);
 
     /**
-     *Return the First DI created
-     *
      * @return static
      */
     public static function getDefault();
