@@ -35,6 +35,11 @@ class Container implements ContainerInterface
     protected $emitter;
 
     /**
+     * @var array
+     */
+    protected $dependencies = [];
+
+    /**
      * @param array $definitions
      */
     public function __construct($definitions = [])
@@ -132,6 +137,19 @@ class Container implements ContainerInterface
 
             if ($instance instanceof Injectable) {
                 $instance->setContainer($this);
+            }
+        }
+
+        if ($parameters !== []) {
+            $dependencies = [];
+            foreach ($parameters as $key => $value) {
+                if (is_string($key) && str_contains($key, '\\')) {
+                    $dependencies[$key] = $value;
+                }
+            }
+
+            if ($dependencies !== []) {
+                $this->dependencies[spl_object_id($instance)] = $dependencies;
             }
         }
 
@@ -239,7 +257,7 @@ class Container implements ContainerInterface
             throw new InvalidArgumentException('sss');
         }
 
-        return $this->get($type);
+        return $this->get($this->dependencies[spl_object_id($target)][$type] ?? $type);
     }
 
     /**
@@ -319,7 +337,12 @@ class Container implements ContainerInterface
                 $rType = $rParameter->getType();
                 $type = $rType->getName();
                 if (!$rType->isBuiltin() && $this->has($type)) {
-                    $value = $this->get($type);
+                    if (is_array($callable)) {
+                        $object = $callable[0];
+                        $value = $this->get($this->dependencies[spl_object_id($object)][$type] ?? $type);
+                    } else {
+                        $value = $this->get($type);
+                    }
                 } else {
                     $missing[] = $name;
                     continue;
