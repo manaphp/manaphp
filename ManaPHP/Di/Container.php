@@ -122,6 +122,13 @@ class Container implements ContainerInterface
             );
         }
 
+        $dependencies = [];
+        foreach ($parameters as $key => $value) {
+            if (is_string($key) && str_contains($key, '\\')) {
+                $dependencies[$key] = $value;
+            }
+        }
+
         if (method_exists($class, '__construct')) {
             $rc = new ReflectionClass($class);
 
@@ -129,6 +136,21 @@ class Container implements ContainerInterface
 
             if ($instance instanceof Injectable) {
                 $instance->setContainer($this);
+            }
+
+            if ($dependencies !== []) {
+                $rMethod = new ReflectionMethod($instance, '__construct');
+                foreach ($rMethod->getParameters() as $rParameter) {
+                    if ($rParameter->hasType() && !($rType = $rParameter->getType())->isBuiltin()) {
+                        $type = $rType->getName();
+                        if (isset($dependencies[$type])) {
+                            unset($parameters[$type]);
+                            $parameters[$rParameter->getName()] = $this->get($dependencies[$type]);
+                        } else {
+                            $parameters[$rParameter->getName()] = $this->get($type);
+                        }
+                    }
+                }
             }
 
             $this->call([$instance, '__construct'], $parameters);
@@ -140,17 +162,8 @@ class Container implements ContainerInterface
             }
         }
 
-        if ($parameters !== []) {
-            $dependencies = [];
-            foreach ($parameters as $key => $value) {
-                if (is_string($key) && str_contains($key, '\\')) {
-                    $dependencies[$key] = $value;
-                }
-            }
-
-            if ($dependencies !== []) {
-                $this->dependencies[spl_object_id($instance)] = $dependencies;
-            }
+        if ($dependencies !== []) {
+            $this->dependencies[spl_object_id($instance)] = $dependencies;
         }
 
         return $instance;
