@@ -162,9 +162,32 @@ class Container implements ContainerInterface
         } elseif (is_object($definition)) {
             return $this->instances[$name] = $definition;
         } elseif (is_array($definition)) {
-            $parameters = $definition['#parameters'] ?? [];
-            $definition = $definition['#class'] ?? $name;
-            return $this->instances[$name] = $this->make($definition, $parameters);
+            if (isset($definition['#class']) || isset($definition['#parameters'])) {
+                $class = $definition['#class'] ?? $name;
+                $parameters = $definition['#parameters'] ?? [];
+            } else {
+                if (($class = $definition['class'] ?? null) !== null) {
+                    unset($definition['class']);
+                } else {
+                    $class = $name;
+                }
+
+                $parameters = [];
+                $options = [];
+                foreach ($definition as $k => $v) {
+                    if (is_int($k) || str_contains($k, '\\')) {
+                        $parameters[$k] = $v;
+                    } else {
+                        $options[$k] = $v;
+                    }
+                }
+
+                if ($options !== []) {
+                    $parameters['options'] = $options;
+                }
+            }
+
+            return $this->instances[$name] = $this->make($class, $parameters);
         } else {
             throw new MisuseException('not supported definition');
         }
