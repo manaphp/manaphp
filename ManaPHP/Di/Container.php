@@ -324,7 +324,8 @@ class Container implements ContainerInterface
         } elseif (!str_contains($name, '\\')) {
             return false;
         } elseif (str_ends_with($name, 'Interface') && interface_exists($name)) {
-            return class_exists(substr($name, 0, -9));
+            $prefix = substr($name, 0, -9);
+            return class_exists($prefix) || class_exists($prefix . 'Factory');
         } elseif (class_exists($name)) {
             return true;
         } else {
