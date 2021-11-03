@@ -108,9 +108,13 @@ class Container implements ContainerInterface
 
         $exists = false;
         if (str_ends_with($class, 'Interface') && interface_exists($class)) {
-            if (class_exists($sub = substr($class, 0, -9))) {
+            $prefix = substr($class, 0, -9);
+            if (class_exists($prefix)) {
                 $exists = true;
-                $class = (string)$sub;
+                $class = (string)$prefix;
+            } elseif (class_exists($factory = $prefix . 'Factory')) {
+                $exists = true;
+                $class = $factory;
             }
         } elseif (class_exists($class)) {
             $exists = true;
@@ -120,6 +124,11 @@ class Container implements ContainerInterface
             throw new InvalidValueException(
                 ['`%s` component cannot be resolved: `%s` class is not exists', $class, $class]
             );
+        }
+
+        if (is_subclass_of($class, FactoryInterface::class)) {
+            $factory = new $class();
+            return $factory->make($this, $class, $parameters);
         }
 
         $dependencies = [];

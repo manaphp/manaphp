@@ -10,7 +10,7 @@ return [
     ],
     'dependencies'       => [
         'ManaPHP\Security\CryptInterface'          => ['master_key' => env('MASTER_KEY')],
-        'ManaPHP\Http\ServerInterface'             => [
+        'ManaPHP\Http\Server\Adapter\Swoole'      => [
             'port'                  => 9501,
             'worker_num'            => 2,
             'max_request'           => 1000000,
