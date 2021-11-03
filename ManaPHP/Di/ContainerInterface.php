@@ -47,10 +47,11 @@ interface ContainerInterface
     /**
      * @param string $class
      * @param array  $parameters
+     * @param string $name
      *
      * @return mixed
      */
-    public function make($class, $parameters = []);
+    public function make($class, $parameters = [], $name = null);
 
     /**
      * @param string $name

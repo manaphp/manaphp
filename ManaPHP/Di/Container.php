@@ -97,13 +97,14 @@ class Container implements ContainerInterface
     /**
      * @param string $class
      * @param array  $parameters
+     * @param string $name
      *
      * @return mixed
      */
-    public function make($class, $parameters = [])
+    public function make($class, $parameters = [], $name = null)
     {
         if (is_string(($alias = $this->definition[$class] ?? null))) {
-            return $this->make($alias, $parameters);
+            return $this->make($alias, $parameters, $name);
         }
 
         $exists = false;
@@ -127,8 +128,9 @@ class Container implements ContainerInterface
         }
 
         if (is_subclass_of($class, FactoryInterface::class)) {
+            /** @var \ManaPHP\Di\FactoryInterface $factory */
             $factory = new $class();
-            return $factory->make($this, $class, $parameters);
+            return $factory->make($this, $name, $parameters);
         }
 
         $dependencies = [];
@@ -195,7 +197,7 @@ class Container implements ContainerInterface
             if ($definition[0] === '@') {
                 return $this->get(substr($definition, 1));
             } else {
-                return $this->instances[$name] = $this->make($definition);
+                return $this->instances[$name] = $this->make($definition, [], $name);
             }
         } elseif ($definition instanceof Closure) {
             return $this->instances[$name] = $this->call($definition);
@@ -227,7 +229,7 @@ class Container implements ContainerInterface
                 }
             }
 
-            return $this->instances[$name] = $this->make($class, $parameters);
+            return $this->instances[$name] = $this->make($class, $parameters, $name);
         } else {
             throw new MisuseException('not supported definition');
         }
