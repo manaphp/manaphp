@@ -196,6 +196,19 @@ class Container implements ContainerInterface
         if (is_string($definition)) {
             if ($definition[0] === '@') {
                 return $this->get(substr($definition, 1));
+            } elseif (str_contains($definition, '.')) {
+                $glob = substr($definition, 0, strrpos($definition, '.')) . '.*';
+                if (($definition2 = $this->definitions[$glob] ?? null) !== null) {
+                    if (is_string($definition2) && is_subclass_of($definition2, FactoryInterface::class)) {
+                        /** @var \ManaPHP\Di\FactoryInterface $factory */
+                        $factory = new $definition2();
+                        return $this->instances[$name] = $factory->make($this, $name);
+                    } else {
+                        return $this->get($glob);
+                    }
+                } else {
+                    throw new MisuseException("`$name` is not found");
+                }
             } else {
                 return $this->instances[$name] = $this->make($definition, [], $name);
             }
@@ -321,6 +334,9 @@ class Container implements ContainerInterface
             return true;
         } elseif (isset($this->definitions[$name])) {
             return true;
+        } elseif (str_contains($name, '.')) {
+            $glob = substr($name, 0, strrpos($name, '.')) . '.*';
+            return isset($this->definitions[$glob]);
         } elseif (!str_contains($name, '\\')) {
             return false;
         } elseif (str_ends_with($name, 'Interface') && interface_exists($name)) {
