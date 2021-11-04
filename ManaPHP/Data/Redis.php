@@ -9,7 +9,7 @@ use ManaPHP\Exception\NonCloneableException;
 /**
  * @property-read \ManaPHP\Pool\ManagerInterface $poolManager
  */
-class Redis extends Component implements RedisInterface
+class Redis extends Component implements RedisInterface, RedisDbInterface, RedisCacheInterface, RedisBrokerInterface
 {
     /**
      * @var string
