@@ -25,16 +25,16 @@ class Invoker extends Component implements InvokerInterface
 
         $container = $this->container;
 
-        $parameters = Reflection::reflectMethod($controller, $method)->getParameters();
-        foreach ($parameters as $parameter) {
-            $name = $parameter->getName();
+        $rParameters = Reflection::reflectMethod($controller, $method)->getParameters();
+        foreach ($rParameters as $rParameter) {
+            $name = $rParameter->getName();
             $value = null;
 
-            $type = $parameter->getType();
+            $type = $rParameter->getType();
             if ($type !== null) {
-                $type = (string)$type;
-            } elseif ($parameter->isDefaultValueAvailable()) {
-                $type = gettype($parameter->getDefaultValue());
+                $type = (string)$type->getName();
+            } elseif ($rParameter->isDefaultValueAvailable()) {
+                $type = gettype($rParameter->getDefaultValue());
             }
 
             if ($type !== null && str_contains($type, '\\')) {
@@ -43,9 +43,9 @@ class Invoker extends Component implements InvokerInterface
                 $value = $container->get($name);
             } elseif ($this->request->has($name)) {
                 $value = $this->request->get($name, $type === 'array' ? [] : '');
-            } elseif ($parameter->isDefaultValueAvailable()) {
-                $value = $parameter->getDefaultValue();
-            } elseif (count($parameters) === 1 && ($name === 'id' || str_ends_with($name, '_id'))) {
+            } elseif ($rParameter->isDefaultValueAvailable()) {
+                $value = $rParameter->getDefaultValue();
+            } elseif (count($rParameters) === 1 && ($name === 'id' || str_ends_with($name, '_id'))) {
                 $value = $this->request->getId($name);
             } elseif ($type === 'NULL') {
                 $value = null;

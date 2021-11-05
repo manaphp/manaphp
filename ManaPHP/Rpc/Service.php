@@ -67,9 +67,9 @@ class Service implements Injectable
 
         if (count($params) !== 0 && key($params) === 0) {
             if (!$parameters = $this->parameters[$method] ?? []) {
-                $rm = new ReflectionMethod($this, $method);
-                foreach ($rm->getParameters() as $parameter) {
-                    $parameters[] = $parameter->getName();
+                $rMethod = new ReflectionMethod($this, $method);
+                foreach ($rMethod->getParameters() as $rParameter) {
+                    $parameters[] = $rParameter->getName();
                 }
                 $this->parameters[$method] = $parameters;
             }

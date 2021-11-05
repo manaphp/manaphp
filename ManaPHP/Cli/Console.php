@@ -211,11 +211,11 @@ class Console extends Component implements ConsoleInterface
      */
     public function sampleColorizer()
     {
-        $rc = new ReflectionClass($this);
+        $rClass = new ReflectionClass($this);
         $bc_list = [0 => 0];
         $fc_list = [0 => 0];
 
-        foreach ($rc->getConstants() as $name => $value) {
+        foreach ($rClass->getConstants() as $name => $value) {
             if (str_starts_with($name, 'BC_')) {
                 $bc_list[$name] = $value;
             } elseif (str_starts_with($name, 'FC_')) {

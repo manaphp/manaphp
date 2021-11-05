@@ -27,9 +27,9 @@ class BashCompletionCommand extends Command
                 return [];
             }
 
-            $rc = new ReflectionClass($commandClassName);
-            foreach ($rc->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-                if (!$method->isStatic() && preg_match('#^(.*)Action$#', $method->getShortName(), $matches) === 1) {
+            $rClass = new ReflectionClass($commandClassName);
+            foreach ($rClass->getMethods(ReflectionMethod::IS_PUBLIC) as $rMethod) {
+                if (!$rMethod->isStatic() && preg_match('#^(.*)Action$#', $rMethod->getShortName(), $matches) === 1) {
                     $actions[] = Str::snakelize($matches[1]);
                 }
             }
@@ -57,8 +57,8 @@ class BashCompletionCommand extends Command
         }
 
         $arguments = [];
-        foreach ((new ReflectionMethod($commandClassName, $action))->getParameters() as $parameter) {
-            $arguments[] = '--' . strtr($parameter->name, '_', '-');
+        foreach ((new ReflectionMethod($commandClassName, $action))->getParameters() as $rParameter) {
+            $arguments[] = '--' . strtr($rParameter->name, '_', '-');
         }
 
         return $arguments;

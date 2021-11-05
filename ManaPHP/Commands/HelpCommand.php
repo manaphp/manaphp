@@ -93,8 +93,8 @@ class HelpCommand extends Command
      */
     protected function getCommandDescription($class)
     {
-        $rc = new ReflectionClass($class);
-        if (($comment = $rc->getDocComment()) === false) {
+        $rClass = new ReflectionClass($class);
+        if (($comment = $rClass->getDocComment()) === false) {
             return '';
         }
 
@@ -118,7 +118,7 @@ class HelpCommand extends Command
     protected function getActions($commandClassName)
     {
         $actions = [];
-        $rc = new ReflectionClass($commandClassName);
+        $rClass = new ReflectionClass($commandClassName);
         foreach (get_class_methods($commandClassName) as $method) {
             if (preg_match('#^(.*)Action$#', $method, $match) !== 1) {
                 continue;
@@ -130,7 +130,7 @@ class HelpCommand extends Command
             $action = $match[1];
 
             $description = '';
-            foreach (preg_split('#[\r\n]+#', $rc->getMethod($match[0])->getDocComment()) as $line) {
+            foreach (preg_split('#[\r\n]+#', $rClass->getMethod($match[0])->getDocComment()) as $line) {
                 $line = trim($line, "\t /*\r\n");
                 if (!$line) {
                     continue;
@@ -150,15 +150,15 @@ class HelpCommand extends Command
     }
 
     /**
-     * @param ReflectionMethod $rm
+     * @param ReflectionMethod $rMethod
      * @param string           $method
      *
      * @throws \ManaPHP\Exception\JsonException
      */
-    protected function commandHelps($rm, $method)
+    protected function commandHelps($rMethod, $method)
     {
         $lines = [];
-        foreach (preg_split('#[\r\n]+#', $rm->getDocComment()) as $line) {
+        foreach (preg_split('#[\r\n]+#', $rMethod->getDocComment()) as $line) {
             $lines[] = trim($line, "\t /*\r\n");
         }
 
@@ -181,15 +181,15 @@ class HelpCommand extends Command
         $options = [];
 
         $defaultValues = [];
-        foreach ($rm->getParameters() as $parameter) {
-            $name = $parameter->getName();
-            if ($parameter->isDefaultValueAvailable()) {
-                $defaultValues[$name] = $parameter->getDefaultValue();
+        foreach ($rMethod->getParameters() as $rParameter) {
+            $name = $rParameter->getName();
+            if ($rParameter->isDefaultValueAvailable()) {
+                $defaultValues[$name] = $rParameter->getDefaultValue();
             }
 
-            if (!$parameter->hasType()) {
+            if (!$rParameter->hasType()) {
                 $options[$name] = '';
-            } elseif (preg_match('#^\w+$#', $parameter->getType())) {
+            } elseif (preg_match('#^\w+$#', $rParameter->getType())) {
                 $options[$name] = '';
             }
         }
@@ -282,8 +282,8 @@ class HelpCommand extends Command
                 continue;
             }
 
-            $rm = new ReflectionMethod($instance, $method);
-            if (!$rm->isPublic()) {
+            $rMethod = new ReflectionMethod($instance, $method);
+            if (!$rMethod->isPublic()) {
                 continue;
             }
 
@@ -291,7 +291,7 @@ class HelpCommand extends Command
             if (method_exists($instance, $helpMethod)) {
                 $instance->$helpMethod();
             } else {
-                $this->commandHelps($rm, $method);
+                $this->commandHelps($rMethod, $method);
             }
         }
     }

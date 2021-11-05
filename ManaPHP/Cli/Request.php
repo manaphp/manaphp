@@ -226,10 +226,10 @@ class Request extends Component implements RequestInterface
     public function completeShortNames($instance, $action)
     {
         $shorts = [];
-        foreach (Reflection::reflectMethod($instance, $action)->getParameters() as $parameter) {
-            $name = $parameter->getName();
+        foreach (Reflection::reflectMethod($instance, $action)->getParameters() as $rParameter) {
+            $name = $rParameter->getName();
 
-            if ($parameter->hasType() && !preg_match('#^[a-z]+$#', $parameter->getType())) {
+            if ($rParameter->hasType() && !preg_match('#^[a-z]+$#', $rParameter->getType()->getName())) {
                 continue;
             }
 

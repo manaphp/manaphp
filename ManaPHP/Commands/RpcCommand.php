@@ -62,12 +62,12 @@ class $serviceName extends Service
 EOT;
         foreach ($methods as $method) {
             $content .= PHP_EOL;
-            $rm = new ReflectionMethod($class, $method);
-            if ($doc = $rm->getDocComment()) {
+            $rMethod = new ReflectionMethod($class, $method);
+            if ($doc = $rMethod->getDocComment()) {
                 $content .= "\t" . $doc . PHP_EOL;
             }
 
-            $signature = $lines[$rm->getStartLine() - 1];
+            $signature = $lines[$rMethod->getStartLine() - 1];
             $content .= preg_replace('#(\s.*)Action#', '\\1', $signature);
             $content .= <<<EOT
     {

@@ -1054,9 +1054,9 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         $name = strtoupper($name) . '_';
         $constants = [];
 
-        $rc = new ReflectionClass(static::class);
-        $file = $comment ? file_get_contents($rc->getFileName()) : '';
-        foreach ($rc->getConstants() as $cName => $cValue) {
+        $rClass = new ReflectionClass(static::class);
+        $file = $comment ? file_get_contents($rClass->getFileName()) : '';
+        foreach ($rClass->getConstants() as $cName => $cValue) {
             if (str_starts_with($cName, $name)) {
                 if ($comment
                     && preg_match('#\s+const\s+' . $cName . '\s*=[^/]+//(<([^>\r\n]+)>|[^\s]+)#', $file, $match)

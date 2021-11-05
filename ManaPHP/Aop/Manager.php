@@ -42,9 +42,9 @@ class Manager extends Component implements ManagerInterface
                 $filter |= ReflectionMethod::IS_PROTECTED;
             }
 
-            $rc = new ReflectionClass($instance);
-            foreach ($rc->getMethods($filter) as $rm) {
-                $method = $rm->getName();
+            $rClass = new ReflectionClass($instance);
+            foreach ($rClass->getMethods($filter) as $rMethod) {
+                $method = $rMethod->getName();
                 if (str_contains($method, '_')) {
                     continue;
                 }

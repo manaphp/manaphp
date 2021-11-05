@@ -115,9 +115,9 @@ class Container implements ContainerInterface
         }
 
         if (method_exists($class, '__construct')) {
-            $rc = new ReflectionClass($class);
+            $rClass = new ReflectionClass($class);
 
-            $instance = $rc->newInstanceWithoutConstructor();
+            $instance = $rClass->newInstanceWithoutConstructor();
 
             if ($instance instanceof Injectable) {
                 $instance->setContainer($this);
@@ -229,8 +229,8 @@ class Container implements ContainerInterface
      */
     protected function resolveProperties($class)
     {
-        $rc = new ReflectionClass($class);
-        $comment = $rc->getDocComment();
+        $rClass = new ReflectionClass($class);
+        $comment = $rClass->getDocComment();
 
         $resolved = [];
         if (is_string($comment)) {

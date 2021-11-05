@@ -50,12 +50,12 @@ class Linter extends Component
         $r = [];
         $model = $this->model;
 
-        foreach ($this->reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-            if ($method->getDeclaringClass()->getName() !== $this->class) {
+        foreach ($this->reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $rMethod) {
+            if ($rMethod->getDeclaringClass()->getName() !== $this->class) {
                 continue;
             }
 
-            $methodName = $method->getName();
+            $methodName = $rMethod->getName();
             if ($methodName === 'fields') {
                 $some = $model->fields();
                 if ($model instanceof DbModel) {
@@ -102,12 +102,12 @@ class Linter extends Component
     public function getPropertyFields()
     {
         $fields = [];
-        foreach ($this->reflection->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
-            if ($property->isStatic()) {
+        foreach ($this->reflection->getProperties(ReflectionProperty::IS_PUBLIC) as $rProperty) {
+            if ($rProperty->isStatic()) {
                 continue;
             }
 
-            $fields[] = $property->getName();
+            $fields[] = $rProperty->getName();
         }
 
         return $fields;
@@ -121,12 +121,12 @@ class Linter extends Component
         $model = $this->model;
 
         $properties = [];
-        foreach ($this->reflection->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
-            if ($property->isStatic()) {
+        foreach ($this->reflection->getProperties(ReflectionProperty::IS_PUBLIC) as $rProperty) {
+            if ($rProperty->isStatic()) {
                 continue;
             }
 
-            $properties[] = $property->getName();
+            $properties[] = $rProperty->getName();
         }
 
         return array_diff($properties, $model->fields());
