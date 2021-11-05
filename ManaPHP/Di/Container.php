@@ -138,6 +138,10 @@ class Container implements ContainerInterface
                 }
             }
 
+            if ($name !== null) {
+                $this->instances[$name] = $name;
+            }
+
             $this->call([$instance, '__construct'], $parameters);
         } else {
             $instance = new $class();
