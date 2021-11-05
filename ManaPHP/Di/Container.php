@@ -3,7 +3,6 @@
 namespace ManaPHP\Di;
 
 use Closure;
-use ManaPHP\Event\Emitter;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MissingFieldException;
@@ -30,11 +29,6 @@ class Container implements ContainerInterface
     protected $properties = [];
 
     /**
-     * @var \ManaPHP\Event\EmitterInterface
-     */
-    protected $emitter;
-
-    /**
      * @var array
      */
     protected $dependencies = [];
@@ -46,23 +40,6 @@ class Container implements ContainerInterface
     {
         $this->definitions = $definitions;
         $this->definitions['ManaPHP\Di\ContainerInterface'] = $this;
-    }
-
-    /**
-     * @param string $event
-     * @param callable $handler
-     *
-     * @return static
-     */
-    public function on($event, $handler)
-    {
-        if ($this->emitter === null) {
-            $this->emitter = new Emitter();
-        }
-
-        $this->emitter->on($event, $handler);
-
-        return $this;
     }
 
     /**
