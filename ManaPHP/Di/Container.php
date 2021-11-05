@@ -265,7 +265,7 @@ class Container implements ContainerInterface
         $types = $this->types[$class] ?? $this->getTypes($class);
 
         if (($type = $types[$property] ?? null) === null) {
-            throw new InvalidArgumentException('sss');
+            throw new MisuseException(['can\'t type-hint for `%s`', $property]);
         }
 
         return $this->get($this->dependencies[spl_object_id($target)][$type] ?? $type);
@@ -344,7 +344,7 @@ class Container implements ContainerInterface
             } elseif ($rParameter->hasType()) {
                 $rType = $rParameter->getType();
                 $type = $rType->getName();
-                if (!$rType->isBuiltin() && $this->has($type)) {
+                if (!$rType->isBuiltin()) {
                     if (is_array($callable)) {
                         $object = $callable[0];
                         $value = $this->get($this->dependencies[spl_object_id($object)][$type] ?? $type);
