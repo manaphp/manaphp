@@ -4,7 +4,6 @@ namespace ManaPHP\Di;
 
 use Closure;
 use ManaPHP\Exception\InvalidArgumentException;
-use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MisuseException;
 use ReflectionClass;
@@ -99,9 +98,7 @@ class Container implements ContainerInterface
         }
 
         if (!$exists) {
-            throw new InvalidValueException(
-                ['`%s` component cannot be resolved: `%s` class is not exists', $class, $class]
-            );
+            throw new NotFoundException(['`%s` class is not exists', $class]);
         }
 
         if (is_subclass_of($class, FactoryInterface::class)) {
