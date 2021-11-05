@@ -25,7 +25,7 @@ class Container implements ContainerInterface
     /**
      * @var array
      */
-    protected $properties = [];
+    protected $types = [];
 
     /**
      * @var array
@@ -124,7 +124,7 @@ class Container implements ContainerInterface
             }
 
             if ($dependencies !== []) {
-                $rMethod = new ReflectionMethod($instance, '__construct');
+                $rMethod = $rClass->getMethod('__construct');
                 foreach ($rMethod->getParameters() as $rParameter) {
                     if ($rParameter->hasType() && !($rType = $rParameter->getType())->isBuiltin()) {
                         $type = $rType->getName();
@@ -181,7 +181,7 @@ class Container implements ContainerInterface
                         return $this->get($glob);
                     }
                 } else {
-                    throw new MisuseException("`$name` is not found");
+                    throw new NotFoundException("`$name` is not found");
                 }
             } else {
                 return $this->instances[$name] = $this->make($definition, [], $name);
@@ -227,12 +227,12 @@ class Container implements ContainerInterface
      *
      * @return array
      */
-    protected function resolveProperties($class)
+    protected function getTypes($class)
     {
         $rClass = new ReflectionClass($class);
         $comment = $rClass->getDocComment();
 
-        $resolved = [];
+        $types = [];
         if (is_string($comment)) {
             if (preg_match_all('#@property-read\s+\\\\?([\w\\\\]+)\s+\\$(\w+)#m', $comment, $matches, PREG_SET_ORDER)
                 > 0
@@ -241,16 +241,16 @@ class Container implements ContainerInterface
                     if ($type === 'object') {
                         continue;
                     }
-                    $resolved[$name] = $type;
+                    $types[$name] = $type;
                 }
             }
         }
 
         $parent = get_parent_class($class);
         if ($parent !== false) {
-            $resolved += $this->properties[$parent] ?? $this->resolveProperties($parent);
+            $types += $this->types[$parent] ?? $this->getTypes($parent);
         }
-        return $this->properties[$class] = $resolved;
+        return $this->types[$class] = $types;
     }
 
     /**
@@ -262,9 +262,9 @@ class Container implements ContainerInterface
     public function inject($target, $property)
     {
         $class = get_class($target);
-        $resolved = $this->properties[$class] ?? $this->resolveProperties($class);
+        $types = $this->types[$class] ?? $this->getTypes($class);
 
-        if (($type = $resolved[$property] ?? null) === null) {
+        if (($type = $types[$property] ?? null) === null) {
             throw new InvalidArgumentException('sss');
         }
 
