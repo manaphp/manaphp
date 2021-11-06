@@ -324,48 +324,6 @@ if (!function_exists('client_ip')) {
     }
 }
 
-if (!function_exists('http_get')) {
-    /**
-     * @param string|array    $url
-     * @param array|string    $headers
-     * @param array|int|float $options
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    function http_get($url, $headers = [], $options = [])
-    {
-        return container(\ManaPHP\Http\ClientInterface::class)->get($url, $headers, $options);
-    }
-}
-
-if (!function_exists('http_post')) {
-    /**
-     * @param string|array    $url
-     * @param string|array    $body
-     * @param array|string    $headers
-     * @param array|int|float $options
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    function http_post($url, $body = null, $headers = [], $options = [])
-    {
-        return container(\ManaPHP\Http\ClientInterface::class)->post($url, $body, $headers, $options);
-    }
-}
-
-if (!function_exists('http_download')) {
-    /**
-     * @param string|array     $files
-     * @param string|int|array $options
-     *
-     * @return string|array
-     */
-    function http_download($files, $options = [])
-    {
-        return container(\ManaPHP\Http\ClientInterface::class)->download($files, $options);
-    }
-}
-
 if (!function_exists('rest')) {
     /**
      * @param string          $type
