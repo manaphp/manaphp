@@ -4,7 +4,6 @@ namespace ManaPHP\Http\Middlewares;
 
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\MethodNotAllowedHttpException;
-use ManaPHP\Helper\Reflection;
 use ManaPHP\Http\Middleware;
 use ManaPHP\Mvc\Controller;
 
@@ -37,7 +36,7 @@ class VerbsMiddleware extends Middleware
         }
 
         if ($request_method === 'GET'
-            && Reflection::isInstanceOf($controller, Controller::class)
+            && $controller instanceof Controller
             && !$this->request->isAjax()
             && $this->view->exists()
         ) {

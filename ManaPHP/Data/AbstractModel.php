@@ -22,7 +22,6 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\ParameterOrderException;
 use ManaPHP\Exception\UnknownPropertyException;
-use ManaPHP\Helper\Reflection;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ReflectionClass;
 
@@ -1376,7 +1375,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
                 continue;
             }
 
-            if (!$value instanceof self && Reflection::isInstanceOf($value, Component::class)) {
+            if (!$value instanceof self && $value instanceof Component) {
                 continue;
             }
 

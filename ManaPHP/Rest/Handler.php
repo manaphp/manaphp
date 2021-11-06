@@ -4,18 +4,17 @@ namespace ManaPHP\Rest;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\AbortException;
-use ManaPHP\Helper\Reflection;
 use ManaPHP\Http\HandlerInterface;
 use ManaPHP\Http\Response;
 use ManaPHP\Http\Router\NotFoundRouteException;
 use Throwable;
 
 /**
- * @property-read \ManaPHP\Http\ResponseInterface $response
- * @property-read \ManaPHP\Http\RouterInterface $router
- * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
+ * @property-read \ManaPHP\Http\ResponseInterface     $response
+ * @property-read \ManaPHP\Http\RouterInterface       $router
+ * @property-read \ManaPHP\Http\DispatcherInterface   $dispatcher
  * @property-read \ManaPHP\Rest\ErrorHandlerInterface $errorHandler
- * @property-read \ManaPHP\Http\ServerInterface $httpServer
+ * @property-read \ManaPHP\Http\ServerInterface       $httpServer
  */
 class Handler extends Component implements HandlerInterface
 {
@@ -44,7 +43,7 @@ class Handler extends Component implements HandlerInterface
                 $this->response->setJsonOk();
             } elseif (is_array($actionReturnValue)) {
                 $this->response->setJsonData($actionReturnValue);
-            } elseif (Reflection::isInstanceOf($actionReturnValue, Response::class)) {
+            } elseif ($actionReturnValue instanceof Response) {
                 null;
             } elseif (is_string($actionReturnValue)) {
                 $this->response->setJsonError($actionReturnValue);

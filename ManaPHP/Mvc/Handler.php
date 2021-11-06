@@ -4,7 +4,6 @@ namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\AbortException;
-use ManaPHP\Helper\Reflection;
 use ManaPHP\Http\HandlerInterface;
 use ManaPHP\Http\Response;
 use ManaPHP\Http\Router\NotFoundRouteException;
@@ -44,9 +43,9 @@ class Handler extends Component implements HandlerInterface
                 $this->response->setJsonOk();
             } elseif (is_array($actionReturnValue)) {
                 $this->response->setJsonData($actionReturnValue);
-            } elseif (Reflection::isInstanceOf($actionReturnValue, Response::class)) {
+            } elseif ($actionReturnValue instanceof Response) {
                 null;
-            } elseif (Reflection::isInstanceOf($actionReturnValue, View::class)) {
+            } elseif ($actionReturnValue instanceof View) {
                 $this->response->setContent($actionReturnValue->render());
                 if (($maxAge = $actionReturnValue->getMaxAge()) > 0) {
                     $this->response->setMaxAge($maxAge);

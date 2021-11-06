@@ -4,7 +4,7 @@ namespace ManaPHP\Cli;
 
 use ManaPHP\Cli\Request\Exception as RequestException;
 use ManaPHP\Component;
-use ManaPHP\Helper\Reflection;
+use ReflectionMethod;
 
 class Request extends Component implements RequestInterface
 {
@@ -226,7 +226,8 @@ class Request extends Component implements RequestInterface
     public function completeShortNames($instance, $action)
     {
         $shorts = [];
-        foreach (Reflection::reflectMethod($instance, $action)->getParameters() as $rParameter) {
+        $rMethod = new ReflectionMethod($instance, $action);
+        foreach ($rMethod->getParameters() as $rParameter) {
             $name = $rParameter->getName();
 
             if ($rParameter->hasType() && !preg_match('#^[a-z]+$#', $rParameter->getType()->getName())) {

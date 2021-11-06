@@ -8,7 +8,6 @@ use ManaPHP\Tracer;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
-use ManaPHP\Helper\Reflection;
 use ManaPHP\Helper\Str;
 use ManaPHP\Logging\AbstractLogger;
 use ManaPHP\Version;
@@ -210,7 +209,7 @@ class Debugger extends Component implements DebuggerInterface
     public function onEvent(EventArgs $eventArgs)
     {
         $event['event'] = $eventArgs->event;
-        $event['source'] = Reflection::getClass($eventArgs->source);
+        $event['source'] = get_class($eventArgs->source);
 
         $data = $eventArgs->data;
         if ($data === null) {
@@ -222,7 +221,7 @@ class Debugger extends Component implements DebuggerInterface
         } elseif (is_array($data)) {
             $event['data'] = array_keys($data);
         } elseif (is_object($data)) {
-            $event['data'] = Reflection::getClass($data);
+            $event['data'] = get_class($data);
         } else {
             $event['data'] = '???';
         }
@@ -316,7 +315,7 @@ class Debugger extends Component implements DebuggerInterface
 
         $vars = $eventArgs->data['vars'];
         foreach ((array)$vars as $k => $v) {
-            if (Reflection::isInstanceOf($v, Component::class)) {
+            if ($v instanceof Component) {
                 unset($vars[$k]);
             }
         }
@@ -429,18 +428,18 @@ class Debugger extends Component implements DebuggerInterface
         $data['events'] = $context->events;
 
         foreach ($this->container->getInstances() as $name => $instance) {
-            $properties = Reflection::isInstanceOf($instance, Component::class)
+            $properties = $instance instanceof Component
                 ? $instance->dump()
-                : array_keys(Reflection::getObjectVars($instance));
+                : array_keys(get_object_vars($instance));
 
-            if (Reflection::isInstanceOf($instance, Tracer::class)) {
+            if ($instance instanceof Tracer) {
                 $name = str_replace('\\', '//', $name);
-                $data['tracers'][lcfirst(basename($name, 'Tracer'))] = ['class'      => Reflection::getClass($instance),
+                $data['tracers'][lcfirst(basename($name, 'Tracer'))] = ['class'      => get_class($instance),
                                                                         'properties' => $properties];
                 continue;
             }
 
-            $data['dependencies'][$name] = ['class' => Reflection::getClass($instance), 'properties' => $properties];
+            $data['dependencies'][$name] = ['class' => get_class($instance), 'properties' => $properties];
         }
 
         $data['included_files'] = @get_included_files() ?: [];

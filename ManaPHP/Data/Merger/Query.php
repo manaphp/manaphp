@@ -7,7 +7,6 @@ use ManaPHP\Data\QueryInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
-use ManaPHP\Helper\Reflection;
 use ManaPHP\Data\AbstractQuery;
 
 /**
@@ -48,7 +47,7 @@ class Query extends AbstractQuery
                 $query = $this->container->make($query);
             }
 
-            if (Reflection::isInstanceOf($query, QueryInterface::class)) {
+            if ($query instanceof QueryInterface) {
                 $this->queries[$id] = $query;
             } elseif ($query instanceof ModelInterface) {
                 $this->queries[$id] = $query::query();

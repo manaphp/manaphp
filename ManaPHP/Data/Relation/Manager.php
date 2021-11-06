@@ -7,7 +7,6 @@ use ManaPHP\Data\QueryInterface;
 use ManaPHP\Data\AbstractRelation;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\RuntimeException;
-use ManaPHP\Helper\Reflection;
 use ManaPHP\Helper\Str;
 
 class Manager extends Component implements ManagerInterface
@@ -255,7 +254,7 @@ class Manager extends Component implements ManagerInterface
                 throw new InvalidValueException(['unknown `:relation` relation', 'relation' => $name]);
             }
 
-            $query = Reflection::isInstanceOf($v, QueryInterface::class)
+            $query = $v instanceof QueryInterface
                 ? $v
                 : $this->getQuery($model, $name, is_string($k) ? $v : null);
 

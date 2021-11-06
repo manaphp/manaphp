@@ -8,7 +8,6 @@ use ManaPHP\Component;
 use ManaPHP\Data\Query\NotFoundException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Helper\Reflection;
 use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
 
@@ -506,7 +505,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
             }
 
             $parent_value = $with[$parent_name];
-            if (!Reflection::isInstanceOf($parent_value, QueryInterface::class)) {
+            if (!$parent_value instanceof QueryInterface) {
                 $with[$parent_name] = $this->relationManager->getQuery($this->model, $parent_name, $parent_value);
             }
 

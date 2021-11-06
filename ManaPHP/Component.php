@@ -3,17 +3,15 @@
 namespace ManaPHP;
 
 use JsonSerializable;
-use ManaPHP\Aop\Proxyable;
 use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\Di\Injectable;
-use ManaPHP\Helper\Reflection;
 use Swoole\Coroutine;
 
 /**
  * @property-read \ManaPHP\Event\ManagerInterface $eventManager
  * @property-read \object                         $context
  */
-class Component implements Injectable, JsonSerializable, Proxyable
+class Component implements Injectable, JsonSerializable
 {
     /**
      * @var int
@@ -226,7 +224,7 @@ class Component implements Injectable, JsonSerializable, Proxyable
         $data = [];
 
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k === 'container' || $v === null || Reflection::isInstanceOf($v, Injectable::class)) {
+            if ($k === 'container' || $v === null || $v instanceof Injectable) {
                 continue;
             }
 
@@ -265,16 +263,5 @@ class Component implements Injectable, JsonSerializable, Proxyable
     public function jsonSerialize()
     {
         return $this->__debugInfo();
-    }
-
-    /**
-     * @param string $method
-     * @param array  $arguments
-     *
-     * @return mixed
-     */
-    public function __proxyCall($method, $arguments)
-    {
-        return $this->$method(...$arguments);
     }
 }

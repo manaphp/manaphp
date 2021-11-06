@@ -4,7 +4,6 @@ namespace ManaPHP\Rpc\Http;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\AbortException;
-use ManaPHP\Helper\Reflection;
 use ManaPHP\Http\Response;
 use ManaPHP\Http\Router\NotFoundRouteException;
 use ManaPHP\Rpc\HandlerInterface;
@@ -41,7 +40,7 @@ class Handler extends Component implements HandlerInterface
                 $this->router->getParams()
             );
 
-            if (Reflection::isInstanceOf($actionReturnValue, Response::class)) {
+            if ($actionReturnValue instanceof Response) {
                 null;
             } else {
                 $this->response->setJsonData($actionReturnValue);
