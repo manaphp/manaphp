@@ -2,15 +2,34 @@
 
 namespace ManaPHP\Http;
 
+use ManaPHP\Component;
+use ManaPHP\Logging\Logger\LogCategorizable;
+
 /**
  * @property-read \ManaPHP\Http\RequestInterface         $request
  * @property-read \ManaPHP\Http\ResponseInterface        $response
  * @property-read \ManaPHP\Http\RouterInterface          $router
  * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher
  * @property-read \ManaPHP\Identifying\IdentityInterface $identity
+ * @property-read \ManaPHP\Http\InvokerInterface         $invoker
  */
-class Controller extends \ManaPHP\Controller
+class Controller extends Component implements LogCategorizable
 {
+    public function categorizeLog()
+    {
+        return basename(str_replace('\\', '.', static::class), 'Controller');
+    }
+
+    /**
+     * @param string $action
+     *
+     * @return mixed
+     */
+    public function invoke($action)
+    {
+        return $this->invoker->invoke($this, $action . 'Action');
+    }
+
     /**
      * @return array
      */
