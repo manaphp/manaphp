@@ -3,7 +3,6 @@
 namespace ManaPHP\Di;
 
 use Closure;
-use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MisuseException;
 use ReflectionClass;
