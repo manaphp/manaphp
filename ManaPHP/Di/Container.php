@@ -347,17 +347,19 @@ class Container implements ContainerInterface
                 $value = $rParameter->getDefaultValue();
             } elseif ($rParameter->hasType()) {
                 $rType = $rParameter->getType();
-                $type = $rType->getName();
-                if (!$rType->isBuiltin()) {
+
+                if ($rType->isBuiltin()) {
+                    $missing[] = $name;
+                    continue;
+                } else {
+                    $type = $rType->getName();
+
                     if (is_array($callable)) {
                         $object = $callable[0];
                         $value = $this->get($this->dependencies[spl_object_id($object)][$type] ?? $type);
                     } else {
                         $value = $this->get($type);
                     }
-                } else {
-                    $missing[] = $name;
-                    continue;
                 }
             } else {
                 $missing[] = $name;
