@@ -413,19 +413,6 @@ if (!function_exists('rest_delete')) {
     }
 }
 
-if (!function_exists('render_file')) {
-    /**
-     * @param string $file
-     * @param array  $vars
-     *
-     * @return string
-     */
-    function render_file($file, $vars = [])
-    {
-        return container(\ManaPHP\Html\RendererInterface::class)->renderFile($file, $vars);
-    }
-}
-
 if (!function_exists('abort')) {
     /**
      * @return void
@@ -479,34 +466,6 @@ if (!function_exists('t')) {
     function t($id, $bind = [])
     {
         return container(\ManaPHP\I18n\TranslatorInterface::class)->translate($id, $bind);
-    }
-}
-
-if (!function_exists('image_create')) {
-    /**
-     * @param string $file
-     *
-     * @return \ManaPHP\Imaging\ImageInterface
-     */
-    function image_create($file)
-    {
-        if (extension_loaded('imagick')) {
-            return container('ManaPHP\Di\ContainerInterface')->make('ManaPHP\Imaging\Image\Adapter\Imagick', [$file]);
-        } elseif (extension_loaded('gd')) {
-            return container()->make('ManaPHP\Imaging\Image\Adapter\Gd', [$file]);
-        } else {
-            throw new NotSupportedException('neither `imagic` nor `gd` extension is loaded');
-        }
-    }
-}
-
-if (!function_exists('base_url')) {
-    /**
-     * @return string
-     */
-    function base_url()
-    {
-        return container(\ManaPHP\AliasInterface::class)->get('@web');
     }
 }
 
