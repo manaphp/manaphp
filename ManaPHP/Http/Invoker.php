@@ -13,71 +13,48 @@ use ManaPHP\Helper\Reflection;
 class Invoker extends Component implements InvokerInterface
 {
     /**
-     * @param \ManaPHP\Controller $controller
-     * @param string              $method
+     * @param \ManaPHP\Http\Controller $controller
+     * @param string                   $method
      *
-     * @return array
+     * @return mixed
      */
-    public function buildArgs($controller, $method)
+    public function invoke($controller, $method)
     {
         $args = [];
         $missing = [];
 
-        $container = $this->container;
-
         $rParameters = Reflection::reflectMethod($controller, $method)->getParameters();
         foreach ($rParameters as $rParameter) {
-            $name = $rParameter->getName();
-            $value = null;
-
-            $type = $rParameter->getType();
-            if ($type !== null) {
-                $type = (string)$type->getName();
-            } elseif ($rParameter->isDefaultValueAvailable()) {
-                $type = gettype($rParameter->getDefaultValue());
-            }
-
-            if ($type !== null && str_contains($type, '\\')) {
-                $value = $container->has($name) ? $container->get($name) : $container->get($type);
-            } elseif (str_ends_with($name, 'Service')) {
-                $value = $container->get($name);
-            } elseif ($this->request->has($name)) {
-                $value = $this->request->get($name, $type === 'array' ? [] : '');
-            } elseif ($rParameter->isDefaultValueAvailable()) {
-                $value = $rParameter->getDefaultValue();
-            } elseif (count($rParameters) === 1 && ($name === 'id' || str_ends_with($name, '_id'))) {
-                $value = $this->request->getId($name);
-            } elseif ($type === 'NULL') {
-                $value = null;
-            }
-
-            if ($value === null && $type !== 'NULL') {
-                $missing[] = $name;
+            if ($rParameter->hasType() && !$rParameter->getType()->isBuiltin()) {
                 continue;
             }
 
-            switch ($type) {
-                case 'boolean':
-                case 'bool':
-                    $value = $this->validator->validateValue($name, $value, ['bool']);
-                    break;
-                case 'integer':
-                case 'int':
-                    $value = $this->validator->validateValue($name, $value, ['int']);
-                    break;
-                case 'double':
-                case 'float':
-                    $value = $this->validator->validateValue($name, $value, ['float']);
-                    break;
-                case 'string':
-                    $value = (string)$value;
-                    break;
-                case 'array':
-                    $value = is_string($value) ? explode(',', $value) : (array)$value;
-                    break;
+            $name = $rParameter->getName();
+
+            if (!$this->request->has($name)) {
+                if ($rParameter->isDefaultValueAvailable()) {
+                    continue;
+                } else {
+                    $missing[] = $name;
+                    continue;
+                }
             }
 
-            $args[] = $value;
+            $value = $this->request->get($name);
+
+            if ($rParameter->hasType()) {
+                $type = $rParameter->getType()->getName();
+            } elseif ($rParameter->isDefaultValueAvailable()) {
+                $type = gettype($rParameter->getDefaultValue());
+            } else {
+                $type = 'NULL';
+            }
+
+            if ($type !== 'NULL') {
+                $value = $this->validator->validateValue($name, $value, [$type]);
+            }
+
+            $args[$name] = $value;
         }
 
         if ($missing) {
@@ -88,19 +65,6 @@ class Invoker extends Component implements InvokerInterface
             throw new ValidateFailedException($errors);
         }
 
-        return $args;
-    }
-
-    /**
-     * @param \ManaPHP\Controller $controller
-     * @param string              $method
-     *
-     * @return mixed
-     */
-    public function invoke($controller, $method)
-    {
-        $args = $this->buildArgs($controller, $method);
-
-        return $controller->$method(...$args);
+        return $this->container->call([$controller, $method], $args);
     }
 }
