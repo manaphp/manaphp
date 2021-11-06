@@ -10,6 +10,7 @@ use ManaPHP\Helper\Arr;
 /**
  * @property-read \ManaPHP\AliasInterface       $alias
  * @property-read \ManaPHP\Http\ClientInterface $httpClient
+ * @property-read \ManaPHP\Rest\ClientInterface $restClient
  */
 class Client extends Component implements ClientInterface
 {
@@ -46,7 +47,7 @@ class Client extends Component implements ClientInterface
             $params['base_url'] = str_replace('{bucket}', $bucket, $this->endpoint);
         }
 
-        $body = rest_post($endpoint . '/api/buckets', $params)->body;
+        $body = $this->restClient->post($endpoint . '/api/buckets', $params)->body;
 
         if ($body['code'] !== 0) {
             throw new Exception($body['message'], $body['code']);
@@ -62,7 +63,7 @@ class Client extends Component implements ClientInterface
     {
         $token = jwt_encode([], 300, 'bos.bucket.list');
         $endpoint = preg_replace('#{bucket}[\-.]*#', '', $this->endpoint);
-        $body = rest_get([$endpoint . '/api/buckets', 'token' => $token])->body;
+        $body = $this->restClient->get([$endpoint . '/api/buckets', 'token' => $token])->body;
 
         if ($body['code'] !== 0) {
             throw new Exception($body['message'], $body['code']);
@@ -89,7 +90,7 @@ class Client extends Component implements ClientInterface
         $filters['bucket'] = $bucket;
         $filters['token'] = jwt_encode(['bucket' => $bucket], 300, 'bos.object.list');
 
-        $body = rest_get($filters)->body;
+        $body = $this->restClient->get($filters)->body;
 
         if ($body['code'] !== 0) {
             throw new Exception($body['message'], $body['code']);
