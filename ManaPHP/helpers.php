@@ -4,7 +4,6 @@ use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\JsonException;
-use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\ConfigInterface;
 use ManaPHP\AliasInterface;
 
@@ -158,71 +157,6 @@ if (!function_exists('config_get')) {
     function config_get($name, $default = null)
     {
         return container(ConfigInterface::class)->get($name, $default);
-    }
-}
-
-if (!function_exists('log_debug')) {
-    /**
-     * @param string|array $message
-     * @param string       $category
-     *
-     * @return void
-     */
-    function log_debug($message, $category = null)
-    {
-        container(\ManaPHP\Logging\LoggerInterface::class)->debug($message, $category);
-    }
-}
-
-if (!function_exists('log_info')) {
-    /**
-     * @param string|array $message
-     * @param string       $category
-     *
-     * @return void
-     */
-    function log_info($message, $category = null)
-    {
-        container(\ManaPHP\Logging\LoggerInterface::class)->info($message, $category);
-    }
-}
-
-if (!function_exists('log_warn')) {
-    /**
-     * @param string|array $message
-     * @param string       $category
-     *
-     * @return void
-     */
-    function log_warn($message, $category = null)
-    {
-        container(\ManaPHP\Logging\LoggerInterface::class)->warn($message, $category);
-    }
-}
-
-if (!function_exists('log_error')) {
-    /**
-     * @param string|array $message
-     * @param string       $category
-     *
-     * @return void
-     */
-    function log_error($message, $category = null)
-    {
-        container(\ManaPHP\Logging\LoggerInterface::class)->error($message, $category);
-    }
-}
-
-if (!function_exists('log_fatal')) {
-    /**
-     * @param string|array $message
-     * @param string       $category
-     *
-     * @return void
-     */
-    function log_fatal($message, $category = null)
-    {
-        container(\ManaPHP\Logging\LoggerInterface::class)->fatal($message, $category);
     }
 }
 
