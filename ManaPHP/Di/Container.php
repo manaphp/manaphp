@@ -41,30 +41,30 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string $name
+     * @param string $id
      * @param mixed  $definition
      *
      * @return static
      */
-    public function set($name, $definition)
+    public function set($id, $definition)
     {
-        if (isset($this->instances[$name])) {
-            throw new MisuseException(['it\'s too late to set(): `%s` instance has been created', $name]);
+        if (isset($this->instances[$id])) {
+            throw new MisuseException(['it\'s too late to set(): `%s` instance has been created', $id]);
         }
 
-        $this->definitions[$name] = $definition;
+        $this->definitions[$id] = $definition;
 
         return $this;
     }
 
     /**
-     * @param string $name
+     * @param string $id
      *
      * @return static
      */
-    public function remove($name)
+    public function remove($id)
     {
-        unset($this->definitions[$name], $this->instances[$name]);
+        unset($this->definitions[$id], $this->instances[$id]);
 
         return $this;
     }
@@ -72,14 +72,14 @@ class Container implements ContainerInterface
     /**
      * @param string $class
      * @param array  $parameters
-     * @param string $name
+     * @param string $id
      *
      * @return mixed
      */
-    public function make($class, $parameters = [], $name = null)
+    public function make($class, $parameters = [], $id = null)
     {
         if (is_string(($alias = $this->definition[$class] ?? null))) {
-            return $this->make($alias, $parameters, $name);
+            return $this->make($alias, $parameters, $id);
         }
 
         $exists = false;
@@ -103,7 +103,7 @@ class Container implements ContainerInterface
         if (is_subclass_of($class, FactoryInterface::class)) {
             /** @var \ManaPHP\Di\FactoryInterface $factory */
             $factory = new $class();
-            return $factory->make($this, $name, $parameters);
+            return $factory->make($this, $id, $parameters);
         }
 
         $dependencies = [];
@@ -134,8 +134,8 @@ class Container implements ContainerInterface
                 }
             }
 
-            if ($name !== null) {
-                $this->instances[$name] = $name;
+            if ($id !== null) {
+                $this->instances[$id] = $id;
             }
 
             $this->call([$instance, '__construct'], $parameters);
@@ -155,17 +155,17 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string $name
+     * @param string $id
      *
      * @return mixed
      */
-    public function get($name)
+    public function get($id)
     {
-        if (($instance = $this->instances[$name] ?? null) !== null) {
+        if (($instance = $this->instances[$id] ?? null) !== null) {
             return $instance;
         }
 
-        $definition = $this->definitions[$name] ?? $name;
+        $definition = $this->definitions[$id] ?? $id;
 
         if (is_string($definition)) {
             if ($definition[0] === '@') {
@@ -176,29 +176,29 @@ class Container implements ContainerInterface
                     if (is_string($definition2) && is_subclass_of($definition2, FactoryInterface::class)) {
                         /** @var \ManaPHP\Di\FactoryInterface $factory */
                         $factory = new $definition2();
-                        return $this->instances[$name] = $factory->make($this, $name);
+                        return $this->instances[$id] = $factory->make($this, $id);
                     } else {
                         return $this->get($glob);
                     }
                 } else {
-                    throw new NotFoundException("`$name` is not found");
+                    throw new NotFoundException("`$id` is not found");
                 }
             } else {
-                return $this->instances[$name] = $this->make($definition, [], $name);
+                return $this->instances[$id] = $this->make($definition, [], $id);
             }
         } elseif ($definition instanceof Closure) {
-            return $this->instances[$name] = $this->call($definition);
+            return $this->instances[$id] = $this->call($definition);
         } elseif (is_object($definition)) {
-            return $this->instances[$name] = $definition;
+            return $this->instances[$id] = $definition;
         } elseif (is_array($definition)) {
             if (isset($definition['#class']) || isset($definition['#parameters'])) {
-                $class = $definition['#class'] ?? $name;
+                $class = $definition['#class'] ?? $id;
                 $parameters = $definition['#parameters'] ?? [];
             } else {
                 if (($class = $definition['class'] ?? null) !== null) {
                     unset($definition['class']);
                 } else {
-                    $class = $name;
+                    $class = $id;
                 }
 
                 $parameters = [];
@@ -216,7 +216,7 @@ class Container implements ContainerInterface
                 }
             }
 
-            return $this->instances[$name] = $this->make($class, $parameters, $name);
+            return $this->instances[$id] = $this->make($class, $parameters, $id);
         } else {
             throw new MisuseException('not supported definition');
         }
@@ -280,13 +280,13 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string $name
+     * @param string $id
      *
      * @return mixed
      */
-    public function getDefinition($name)
+    public function getDefinition($id)
     {
-        return $this->definitions[$name] ?? null;
+        return $this->definitions[$id] ?? null;
     }
 
     /**
@@ -298,21 +298,21 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string $name
+     * @param string $id
      *
      * @return bool
      */
-    public function has($name)
+    public function has($id)
     {
-        if (isset($this->instances[$name])) {
+        if (isset($this->instances[$id])) {
             return true;
-        } elseif (isset($this->definitions[$name])) {
+        } elseif (isset($this->definitions[$id])) {
             return true;
-        } elseif (str_contains($name, '.')) {
-            $glob = substr($name, 0, strrpos($name, '.')) . '.*';
+        } elseif (str_contains($id, '.')) {
+            $glob = substr($id, 0, strrpos($id, '.')) . '.*';
             return isset($this->definitions[$glob]);
         } else {
-            return interface_exists($name) || class_exists($name);
+            return interface_exists($id) || class_exists($id);
         }
     }
 

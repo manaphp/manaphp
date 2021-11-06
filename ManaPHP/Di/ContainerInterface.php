@@ -5,12 +5,12 @@ namespace ManaPHP\Di;
 interface ContainerInterface
 {
     /**
-     * @param string $name
+     * @param string $id
      * @param mixed  $definition
      *
      * @return static
      */
-    public function set($name, $definition);
+    public function set($id, $definition);
 
     /**
      * @return array
@@ -18,11 +18,11 @@ interface ContainerInterface
     public function getDefinitions();
 
     /**
-     * @param string $name
+     * @param string $id
      *
      * @return mixed
      */
-    public function getDefinition($name);
+    public function getDefinition($id);
 
     /**
      * @return array
@@ -30,27 +30,27 @@ interface ContainerInterface
     public function getInstances();
 
     /**
-     * @param string $name
+     * @param string $id
      *
      * @return static
      */
-    public function remove($name);
+    public function remove($id);
 
     /**
      * @param string $class
      * @param array  $parameters
-     * @param string $name
+     * @param string $id
      *
      * @return mixed
      */
-    public function make($class, $parameters = [], $name = null);
+    public function make($class, $parameters = [], $id = null);
 
     /**
-     * @param string $name
+     * @param string $id
      *
      * @return mixed
      */
-    public function get($name);
+    public function get($id);
 
     /**
      * @param object $target
@@ -61,11 +61,11 @@ interface ContainerInterface
     public function inject($target, $property);
 
     /**
-     * @param string $name
+     * @param string $id
      *
      * @return bool
      */
-    public function has($name);
+    public function has($id);
 
     /**
      * @param callable $callable
