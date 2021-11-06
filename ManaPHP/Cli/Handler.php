@@ -208,7 +208,7 @@ class Handler extends Component implements HandlerInterface
             }
         }
 
-        if (!$instance->isInvokable($action)) {
+        if (!method_exists($instance, $action . 'Action')) {
             $guessed = $this->guessAction($definition, $action);
             if (!$guessed) {
                 $colored_action = lcfirst($command) . ':' . $action;

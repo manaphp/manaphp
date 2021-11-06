@@ -4,6 +4,7 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Component;
 use ManaPHP\Helper\Str;
+use ManaPHP\Http\Dispatcher\NotFoundActionException;
 use ManaPHP\Http\Dispatcher\NotFoundControllerException;
 
 /**
@@ -174,7 +175,11 @@ class Dispatcher extends Component implements DispatcherInterface
      */
     public function invokeAction($controller, $action)
     {
-        $controller->validateInvokable($action);
+        $method = $action . 'Action';
+
+        if (!method_exists($controller, $method)) {
+            throw new NotFoundActionException(['`%s::%s` method does not exist', static::class, $method]);
+        }
 
         $this->fireEvent('request:authorize', compact('controller', 'action'));
 
