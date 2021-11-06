@@ -299,6 +299,17 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
+     * @param string      $field
+     * @param string|bool $value
+     *
+     * @return int|null
+     */
+    protected function validate_boolean($field, $value)
+    {
+        return $this->validate_bool($field, $value);
+    }
+
+    /**
      * @param string          $field
      * @param string|int|null $value
      *
@@ -311,6 +322,17 @@ class Validator extends Component implements ValidatorInterface
         }
 
         return preg_match('#^[+\-]?\d+$#', $value) ? (int)$value : null;
+    }
+
+    /**
+     * @param string          $field
+     * @param string|int|null $value
+     *
+     * @return int|null
+     */
+    protected function validate_integer($field, $value)
+    {
+        return $this->validate_int($field, $value);
     }
 
     /**
@@ -335,6 +357,17 @@ class Validator extends Component implements ValidatorInterface
     }
 
     /**
+     * @param string           $field
+     * @param string|float|int $value
+     *
+     * @return float|null
+     */
+    protected function validate_double($field, $value)
+    {
+        return $this->validate_float($field, $value);
+    }
+
+    /**
      * @param string $field
      * @param mixed  $value
      *
@@ -343,6 +376,17 @@ class Validator extends Component implements ValidatorInterface
     protected function validate_string($field, $value)
     {
         return (string)$value;
+    }
+
+    /**
+     * @param string $field
+     * @param mixed  $value
+     *
+     * @return array
+     */
+    protected function validate_array($field, $value)
+    {
+        return is_string($value) ? preg_split('#,#', $value, -1, PREG_SPLIT_NO_EMPTY) : (array)$value;
     }
 
     /**
