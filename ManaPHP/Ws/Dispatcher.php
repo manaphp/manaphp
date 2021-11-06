@@ -10,8 +10,8 @@ class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
     protected $controllers;
 
     /**
-     * @param \ManaPHP\Controller $controller
-     * @param string              $action
+     * @param \ManaPHP\Ws\Controller $controller
+     * @param string                 $action
      *
      * @return mixed
      */

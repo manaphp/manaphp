@@ -30,7 +30,7 @@ class DispatcherContext
     public $params = [];
 
     /**
-     * @var \ManaPHP\Controller
+     * @var \ManaPHP\Http\Controller
      */
     public $controllerInstance;
 

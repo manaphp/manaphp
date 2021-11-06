@@ -167,8 +167,8 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
-     * @param \ManaPHP\Controller $controller
-     * @param string              $action
+     * @param \ManaPHP\Http\Controller $controller
+     * @param string                   $action
      *
      * @return mixed
      */
@@ -237,7 +237,7 @@ class Dispatcher extends Component implements DispatcherInterface
             throw new NotFoundControllerException(['`%s` class cannot be loaded', $controllerClassName]);
         }
 
-        /** @var \ManaPHP\Controller $controllerInstance */
+        /** @var \ManaPHP\Http\Controller $controllerInstance */
         $controllerInstance = $this->container->get($controllerClassName);
         $context->controllerInstance = $controllerInstance;
 
@@ -245,7 +245,7 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
-     * @return \ManaPHP\Controller
+     * @return \ManaPHP\Http\Controller
      */
     public function getControllerInstance()
     {
