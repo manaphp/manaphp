@@ -128,11 +128,8 @@ class Container implements ContainerInterface
                 foreach ($rMethod->getParameters() as $rParameter) {
                     if ($rParameter->hasType() && !($rType = $rParameter->getType())->isBuiltin()) {
                         $type = $rType->getName();
-                        if (isset($dependencies[$type])) {
-                            unset($parameters[$type]);
-                            $parameters[$rParameter->getName()] = $this->get($dependencies[$type]);
-                        } else {
-                            $parameters[$rParameter->getName()] = $this->get($type);
+                        if (array_key_exists($type, $parameters)) {
+                            unset($dependencies[$type]);
                         }
                     }
                 }
@@ -354,7 +351,12 @@ class Container implements ContainerInterface
                 } else {
                     $type = $rType->getName();
 
-                    if (is_array($callable)) {
+                    if (array_key_exists($type, $parameters)) {
+                        $value = $parameters[$type];
+                        if (is_string($value)) {
+                            $value = $this->get($value);
+                        }
+                    } elseif (is_array($callable)) {
                         $object = $callable[0];
                         $value = $this->get($this->dependencies[spl_object_id($object)][$type] ?? $type);
                     } else {
