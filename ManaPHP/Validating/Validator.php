@@ -281,18 +281,18 @@ class Validator extends Component implements ValidatorInterface
      * @param string      $field
      * @param string|bool $value
      *
-     * @return int|null
+     * @return bool|null
      */
     protected function validate_bool($field, $value)
     {
         if (is_bool($value)) {
-            return (int)$value;
+            return $value;
         }
 
         if (str_contains(',1,true,on,yes,', ",$value,")) {
-            return 1;
+            return true;
         } elseif (str_contains(',0,false,off,no,', ",$value,")) {
-            return 0;
+            return false;
         } else {
             return null;
         }
@@ -302,7 +302,7 @@ class Validator extends Component implements ValidatorInterface
      * @param string      $field
      * @param string|bool $value
      *
-     * @return int|null
+     * @return bool|null
      */
     protected function validate_boolean($field, $value)
     {
