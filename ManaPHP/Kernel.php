@@ -61,13 +61,13 @@ class Kernel extends Component
             $this->alias->set($k, $v);
         }
 
-        foreach ($this->config->get('dependencies') as $name => $definition) {
-            $this->container->set($name, $definition);
+        foreach ($this->config->get('dependencies') as $id => $definition) {
+            $this->container->set($id, $definition);
         }
 
-        foreach ($this->config->get('bootstrappers') as $name) {
+        foreach ($this->config->get('bootstrappers') as $item) {
             /** @var \ManaPHP\BootstrapperInterface $bootstrapper */
-            $bootstrapper = $this->container->get($name);
+            $bootstrapper = $this->container->get($item);
             $bootstrapper->bootstrap();
         }
     }
