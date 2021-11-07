@@ -43,7 +43,7 @@ class Redis extends AbstractQueue
      * @param string $body
      * @param int    $priority
      */
-    public function do_push($topic, $body, $priority = AbstractQueue::PRIORITY_NORMAL)
+    public function do_push($topic, $body, $priority = self::PRIORITY_NORMAL)
     {
         if (!in_array($priority, $this->priorities, true)) {
             throw new MisuseException(['`%d` priority of `%s` is invalid', $priority, $topic]);
