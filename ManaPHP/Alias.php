@@ -10,12 +10,7 @@ class Alias extends Component implements AliasInterface
     /**
      * @var array
      */
-    protected $aliases = [];
-
-    public function __construct()
-    {
-        $this->set('@manaphp', __DIR__);
-    }
+    protected $aliases = ['@manaphp' => __DIR__];
 
     /**
      * @param string $name
