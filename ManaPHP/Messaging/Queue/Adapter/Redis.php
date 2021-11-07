@@ -4,7 +4,6 @@ namespace ManaPHP\Messaging\Queue\Adapter;
 
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Messaging\AbstractQueue;
-use ManaPHP\Messaging\QueueInterface;
 
 /**
  * @property-read \ManaPHP\Data\RedisBrokerInterface $redisBroker
