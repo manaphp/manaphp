@@ -28,9 +28,7 @@ HTML;
      */
     public function renderDetailForm($model)
     {
-        $content = '';
-
-        $content .= PHP_EOL . <<<HTML
+        $content = PHP_EOL . <<<HTML
 <detail-form>
 HTML;
         foreach ($model->fields() as $field) {
@@ -287,9 +285,7 @@ HTML;
      */
     public function render($model)
     {
-        $content = '';
-
-        $content .= $this->renderRequestForm($model);
+        $content = $this->renderRequestForm($model);
         $content .= $this->renderDetailForm($model);
         $content .= $this->renderCreateForm($model);
         $content .= $this->renderEditForm($model);
