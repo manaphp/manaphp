@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '6bf6fc698c0e17a82eeccc09bf2e87eb420df581',
+    'reference' => '669964bb174703b6d642854269ea947c1641d02f',
     'name' => 'manaphp/app-admin',
   ),
   'versions' => 
@@ -41,7 +41,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '6bf6fc698c0e17a82eeccc09bf2e87eb420df581',
+      'reference' => '669964bb174703b6d642854269ea947c1641d02f',
     ),
   ),
 );
