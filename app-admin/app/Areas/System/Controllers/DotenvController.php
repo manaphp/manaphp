@@ -6,7 +6,7 @@ use App\Areas\System\Models\DotenvLog;
 use App\Controllers\Controller;
 
 /**
- * @property-read \Redis $redisDb
+ * @property-read \ManaPHP\Data\RedisDbInterface $redisDb
  */
 class DotenvController extends Controller
 {
