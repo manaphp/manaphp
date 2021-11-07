@@ -249,16 +249,6 @@ if (!function_exists('input')) {
     }
 }
 
-if (!function_exists('client_ip')) {
-    /**
-     * @return string
-     */
-    function client_ip()
-    {
-        return container(\ManaPHP\Http\RequestInterface::class)->getClientIp();
-    }
-}
-
 if (!function_exists('abort')) {
     /**
      * @return void

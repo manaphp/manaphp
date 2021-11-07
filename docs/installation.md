@@ -127,7 +127,7 @@ server {
     }
 }
 ```
-> 在ManaPHP中通过`client_ip()`或`$this->request->getClientIp()`来获取客户端的真实IP。
+> 在ManaPHP中通过$this->request->getClientIp()`来获取客户端的真实IP。
 
 ### Swoole IDE 自动补全 (非必须)
 
