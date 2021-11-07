@@ -22,7 +22,6 @@ class HttpCacheMiddleware extends Middleware
             return;
         }
 
-        /** @var \ManaPHP\Http\Controller $controller */
         $controller = $this->dispatcher->getControllerInstance();
         $action = $this->dispatcher->getAction();
 

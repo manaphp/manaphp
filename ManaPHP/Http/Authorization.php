@@ -274,7 +274,6 @@ class Authorization extends Component implements AuthorizationInterface
         if ($permission && str_contains($permission, '/')) {
             list($controllerClassName, $action) = $this->inferControllerAction($permission);
         } else {
-            /** @var \ManaPHP\Http\Controller $controllerInstance */
             $controllerInstance = $this->dispatcher->getControllerInstance();
             $controllerClassName = get_class($controllerInstance);
             $action = $permission ? Str::camelize($permission) : $this->dispatcher->getAction();

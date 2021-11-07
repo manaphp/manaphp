@@ -137,7 +137,6 @@ class Manager extends Component implements ManagerInterface
 
             throw new RuntimeException(['infer `:relation` relation failed', 'relation' => $name]);
         } elseif ($thatModel = $this->inferClassName($thisInstance, $name)) {
-            /** @var \ManaPHP\Data\ModelInterface $thatInstance */
             $thatInstance = $thatModel::sample();
             $thisForeignedKey = $thisInstance->foreignedKey();
             $thatForeignedKey = $thatInstance->foreignedKey();
