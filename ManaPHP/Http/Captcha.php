@@ -112,7 +112,7 @@ class Captcha extends Component implements CaptchaInterface
      * @param int    $width
      * @param int    $height
      *
-     * @return string
+     * @return \ManaPHP\Http\ResponseInterface
      */
     protected function generateByGd($code, $width, $height)
     {
