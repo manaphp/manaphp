@@ -239,7 +239,7 @@ class Selector
      */
     public function text()
     {
-        return (string)$this->node->textContent;
+        return $this->node->textContent;
     }
 
     /**

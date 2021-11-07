@@ -623,12 +623,12 @@ class Db extends Component implements DbInterface
         $context = $this->context;
 
         if (!$context->bind) {
-            return (string)$context->sql;
+            return $context->sql;
         }
 
         $bind = $context->bind;
         if (isset($bind[0])) {
-            return (string)$context->sql;
+            return $context->sql;
         } else {
             $replaces = [];
             foreach ($bind as $key => $value) {

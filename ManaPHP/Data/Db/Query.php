@@ -1008,14 +1008,14 @@ class Query extends AbstractQuery
                     if ($r = $this->query($db, $table)) {
                         $result = $result ? array_merge($result, $r) : $r;
                         if (count($result) >= $this->offset + $this->limit) {
-                            $result = array_slice($result, (int)$this->offset, $this->limit);
+                            $result = array_slice($result, $this->offset ?? 0, $this->limit);
                             return $this->index ? Arr::indexby($result, $this->index) : $result;
                         }
                     }
                 }
             }
 
-            $result = $result ? array_slice($result, (int)$this->offset, $this->limit) : [];
+            $result = $result ? array_slice($result, $this->offset ?? 0, $this->limit) : [];
         } else {
             foreach ($shards as $db => $tables) {
                 foreach ($tables as $table) {
