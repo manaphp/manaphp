@@ -4,6 +4,7 @@ namespace ManaPHP\Messaging\Queue\Adapter;
 
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Messaging\AbstractQueue;
+use ManaPHP\Messaging\QueueInterface;
 
 /**
  * @property-read \ManaPHP\Data\RedisBrokerInterface $redisBroker
@@ -19,7 +20,7 @@ class Redis extends AbstractQueue
      * @var int[]
      */
     protected $priorities
-        = [AbstractQueue::PRIORITY_HIGHEST, AbstractQueue::PRIORITY_NORMAL, AbstractQueue::PRIORITY_LOWEST];
+        = [self::PRIORITY_HIGHEST, self::PRIORITY_NORMAL, self::PRIORITY_LOWEST];
 
     /**
      * @var array[]

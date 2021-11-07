@@ -13,7 +13,7 @@ abstract class AbstractQueue extends Component implements QueueInterface
      *
      * @return void
      */
-    abstract public function do_push($topic, $body, $priority = AbstractQueue::PRIORITY_NORMAL);
+    abstract public function do_push($topic, $body, $priority = self::PRIORITY_NORMAL);
 
     /**
      * @param string $topic

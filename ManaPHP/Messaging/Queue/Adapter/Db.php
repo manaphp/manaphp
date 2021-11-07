@@ -41,7 +41,7 @@ class Db extends AbstractQueue
      *
      * @return void
      */
-    public function do_push($topic, $body, $priority = AbstractQueue::PRIORITY_NORMAL)
+    public function do_push($topic, $body, $priority = self::PRIORITY_NORMAL)
     {
         $created_time = time();
         $deleted_time = 0;
