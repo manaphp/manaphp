@@ -1371,7 +1371,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
                 continue;
             }
 
-            if (!$value instanceof self && $value instanceof Component) {
+            if ($value instanceof Component) {
                 continue;
             }
 
