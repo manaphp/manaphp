@@ -203,7 +203,7 @@ trait Path
     /**
      * @param string $code
      *
-     * @return array|false
+     * @return array
      */
     public static function getHierarchySiblings($code)
     {

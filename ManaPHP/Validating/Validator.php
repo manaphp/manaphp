@@ -639,7 +639,7 @@ class Validator extends Component implements ValidatorInterface
      * @param string      $value
      * @param null|string $parameter
      *
-     * @return string|int
+     * @return string|int|null
      */
     protected function validate_date($field, $value, $parameter = null)
     {
@@ -648,14 +648,14 @@ class Validator extends Component implements ValidatorInterface
             return null;
         }
 
-        return $parameter ? date($parameter, $ts) : $value;
+        return $parameter ? (string)date($parameter, $ts) : $value;
     }
 
     /**
      * @param string $field
      * @param string $value
      *
-     * @return string|int
+     * @return int|null
      */
     protected function validate_timestamp($field, $value)
     {
@@ -668,7 +668,7 @@ class Validator extends Component implements ValidatorInterface
      * @param \ManaPHP\Data\ModelInterface $model
      * @param null|string                  $parameter
      *
-     * @return string|int
+     * @return string|int|null
      */
     protected function validate_model_date($field, $model, $parameter)
     {

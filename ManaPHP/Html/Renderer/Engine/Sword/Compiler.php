@@ -310,7 +310,7 @@ class Compiler extends Component
      *
      * @param string $value
      *
-     * @return mixed
+     * @return string
      */
     protected function compileStatements($value)
     {

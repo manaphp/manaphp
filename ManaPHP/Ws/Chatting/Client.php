@@ -61,7 +61,7 @@ class Client extends Component implements ClientInterface
      * @param array|string $id
      * @param array|string $message
      *
-     * @return mixed|void
+     * @return void
      */
     public function pushToId($room, $id, $message)
     {
@@ -73,7 +73,7 @@ class Client extends Component implements ClientInterface
      * @param array|string $name
      * @param array|string $message
      *
-     * @return mixed|void
+     * @return void
      */
     public function pushToName($room, $name, $message)
     {

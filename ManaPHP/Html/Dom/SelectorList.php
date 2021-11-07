@@ -414,7 +414,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
     }
 
     /**
-     * @return string[]|string
+     * @return string[]
      */
     public function name()
     {

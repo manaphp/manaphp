@@ -142,7 +142,7 @@ class Manager extends Component implements ManagerInterface
      * @param float                       $timeout
      * @param string                      $type
      *
-     * @return mixed
+     * @return Transient
      */
     public function transient($owner, $timeout = null, $type = 'default')
     {
