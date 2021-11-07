@@ -241,7 +241,8 @@ if (!function_exists('input')) {
 
         if ($defaultOrRules && is_array($defaultOrRules)) {
             $value = $request->get($name, $defaultOrRules['default'] ?? null);
-            return $request->validator->validateValue($name, $value, $defaultOrRules);
+
+            return container(\ManaPHP\Validating\ValidatorInterface::class)->validateValue($name, $value, $defaultOrRules);
         } else {
             return $request->get($name, $defaultOrRules);
         }
@@ -311,6 +312,16 @@ if (!function_exists('t')) {
     function t($id, $bind = [])
     {
         return container(\ManaPHP\I18n\TranslatorInterface::class)->translate($id, $bind);
+    }
+}
+
+if (!function_exists('base_url')) {
+    /**
+     * @return string
+     */
+    function base_url()
+    {
+        return container(\ManaPHP\AliasInterface::class)->get('@web');
     }
 }
 

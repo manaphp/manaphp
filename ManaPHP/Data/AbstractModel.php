@@ -15,6 +15,7 @@ use ManaPHP\Data\Relation\HasMany;
 use ManaPHP\Data\Relation\HasManyOthers;
 use ManaPHP\Data\Relation\HasManyToMany;
 use ManaPHP\Data\Relation\HasOne;
+use ManaPHP\Event\ManagerInterface as EventManager;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\InvalidValueException;
@@ -22,8 +23,12 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\ParameterOrderException;
 use ManaPHP\Exception\UnknownPropertyException;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
+use ManaPHP\Validating\ValidatorInterface;
 use ReflectionClass;
+use ManaPHP\Data\Relation\ManagerInterface as RelationManager;
 
 abstract class AbstractModel extends AbstractTable implements ModelInterface, ArrayAccess, JsonSerializable
 {
@@ -337,8 +342,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     {
         $sample = static::sample();
 
-        /** @var \ManaPHP\Http\RequestInterface $request */
-        $request = $sample->getShared('request');
+        $request = $sample->getShared(RequestInterface::class);
 
         return $request->getId($sample->primaryKey());
     }
@@ -607,8 +611,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     {
         $fields = $fields ?? $this->safeFields();
 
-        /** @var \ManaPHP\Http\RequestInterface $request */
-        $request = $this->getShared('request');
+        $request = $this->getShared(RequestInterface::class);
 
         $data = $request->get();
 
@@ -643,8 +646,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
             throw new MisuseException(['`%s` rules must be an associative array', static::class]);
         }
 
-        /** @var \ManaPHP\Validating\ValidatorInterface $validator */
-        $validator = $this->getShared('validator');
+        $validator = $this->getShared(ValidatorInterface::class);
 
         $errors = [];
 
@@ -682,8 +684,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
             $rules = $rules[$field];
         }
 
-        /** @var \ManaPHP\Validating\ValidatorInterface $validator */
-        $validator = $this->getShared('validator');
+        $validator = $this->getShared(ValidatorInterface::class);
 
         $this->$field = $validator->validateModel($field, $this, $rules);
     }
@@ -695,7 +696,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     {
         $current_time = time();
 
-        $identity = $this->getShared('identity');
+        $identity = $this->getShared(IdentityInterface::class);
         $user_id = $identity->getId(0);
         $user_name = $identity->getName('');
 
@@ -735,7 +736,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     {
         $current_time = time();
 
-        $identity = $this->getShared('identity');
+        $identity = $this->getShared(IdentityInterface::class);
         $user_id = $identity->getId(0);
         $user_name = $identity->getName('');
 
@@ -850,8 +851,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      */
     public function with($withs)
     {
-        /** @var \ManaPHP\Data\Relation\ManagerInterface $relationManager */
-        $relationManager = $this->getShared('relationManager');
+        $relationManager = $this->getShared(RelationManager::class);
 
         $relationManager->earlyLoad($this, [$this], $withs);
         return $this;
@@ -985,8 +985,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      */
     public function fireEvent($event, $data = null)
     {
-        /** @var \ManaPHP\Event\ManagerInterface $eventManager */
-        $eventManager = $this->getShared('eventManager');
+        $eventManager = $this->getShared(EventManager::class);
 
         $eventManager->fireEvent($event, $data, $this);
     }
@@ -1301,14 +1300,12 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
             return $this->_container = container();
         }
 
-        /** @var \ManaPHP\Data\Relation\ManagerInterface $relationManager */
-
         $method = 'get' . ucfirst($name);
         if (method_exists($this, $method)) {
             return $this->$name = $this->$method()->fetch();
         } elseif ($this->_container->has($name)) {
             return $this->{$name} = $this->getShared($name);
-        } elseif (($relationManager = $this->getShared('relationManager'))->has($this, $name)) {
+        } elseif (($relationManager = $this->getShared(RelationManager::class))->has($this, $name)) {
             return $this->$name = $relationManager->lazyLoad($this, $name)->fetch();
         } else {
             throw new UnknownPropertyException(['`%s` does not contain `%s` field.`', static::class, $name]);
@@ -1350,8 +1347,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     public function __call($name, $arguments)
     {
         if (str_starts_with($name, 'get')) {
-            /** @var \ManaPHP\Data\Relation\ManagerInterface $relationManager */
-            $relationManager = $this->getShared('relationManager');
+            $relationManager = $this->getShared(RelationManager::class);
 
             $relation = lcfirst(substr($name, 3));
             if ($relationManager->has($this, $relation)) {

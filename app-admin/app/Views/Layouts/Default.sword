@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{{$this->configure->name}}</title>
+    <title>{{config_get('name')}}</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="/static/css/manaphp.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.13.0/lib/theme-chalk/index.css">
@@ -17,7 +17,7 @@
     {{--    <el-aside style="overflow: hidden">@widget('SideMenu')</el-aside>--}}
     <el-aside style="overflow: hidden">
         <div class="product-name">
-            <el-link href="/">{{$this->configure->name}}</el-link>
+            <el-link href="/">{{config_get('name')}}</el-link>
         </div>
         <my-menu></my-menu>
     </el-aside>
@@ -30,7 +30,7 @@
             <div class="right">
                 <el-dropdown size="small">
                     <span class="el-dropdown-link">
-                    <i class="fa fa-user-circle"></i> {{container('identity')->getName('')}}<i
+                    <i class="fa fa-user-circle"></i> {{container('ManaPHP\Identifying\IdentityInterface')->getName('')}}<i
                                 class="el-icon-arrow-down el-icon--left"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown" trigger="click">

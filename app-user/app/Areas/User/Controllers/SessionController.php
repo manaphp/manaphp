@@ -8,8 +8,8 @@ use ManaPHP\Helper\Str;
 use App\Models\UserLoginLog;
 
 /**
- * @property-read \ManaPHP\Configuration\Configure       $configure
- * @property-read \ManaPHP\Http\CaptchaInterface         $captcha
+ * @property-read \ManaPHP\ConfigInterface       $config
+ * @property-read \ManaPHP\Http\CaptchaInterface $captcha
  */
 class SessionController extends Controller
 {
@@ -36,7 +36,7 @@ class SessionController extends Controller
             $this->cookies->set('CLIENT_UDID', Str::random(16), strtotime('10 year'), '/');
         }
 
-        if ($this->configure->env === 'prod') {
+        if ($this->config->get('env') === 'prod') {
             $this->captcha->verify();
         } else {
             $this->session->remove('captcha');
@@ -59,7 +59,7 @@ class SessionController extends Controller
         $session_id = $this->session->getId();
         if ($user->session_id && $session_id !== $user->session_id) {
             //同一个账号互踢
-             $this->session->destroy($user->session_id);
+            $this->session->destroy($user->session_id);
         }
 
         $user->login_ip = $this->request->getClientIp();

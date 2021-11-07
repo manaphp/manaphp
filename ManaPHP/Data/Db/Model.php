@@ -2,10 +2,12 @@
 
 namespace ManaPHP\Data\Db;
 
+use ManaPHP\Data\Db\Model\MetadataInterface;
 use ManaPHP\Data\Model\ExpressionInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Data\AbstractModel;
+use ManaPHP\Logging\LoggerInterface;
 
 class Model extends AbstractModel implements ModelInterface
 {
@@ -36,7 +38,7 @@ class Model extends AbstractModel implements ModelInterface
      */
     public function getModelMetadata()
     {
-        return $this->getShared('modelMetadata');
+        return $this->getShared(MetadataInterface::class);
     }
 
     /**
@@ -392,8 +394,7 @@ class Model extends AbstractModel implements ModelInterface
         $sample = static::sample();
 
         list($db, $table) = $sample->getUniqueShard($record);
-        /** @var \ManaPHP\Logging\LoggerInterface $logger */
-        $logger = $sample->getShared('logger');
+        $logger = $sample->getShared(LoggerInterface::class);
 
         if ($fields = array_diff(array_keys($record), $sample->getModelMetadata()->getAttributes($sample))) {
             $logger->debug(['insert `:1` table skip fields: :2', $table, array_values($fields)]);

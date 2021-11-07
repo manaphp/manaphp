@@ -6,7 +6,7 @@ use App\Controllers\Controller;
 use App\Models\Admin;
 
 /**
- * @property-read \ManaPHP\Configuration\Configure $configure
+ * @property-read \ManaPHP\ConfigInterface         $config
  * @property-read \ManaPHP\Http\CaptchaInterface   $captcha
  * @property-read \ManaPHP\Mailing\MailerInterface $mailer
  */
@@ -42,7 +42,7 @@ class PasswordController extends Controller
         $token = jwt_encode(['admin_name' => $admin_name], 600, 'admin.password.forget');
 
         $this->mailer->compose()
-            ->setSubject($this->configure->name . '-重置密码邮件')
+            ->setSubject($this->config->get('name') . '-重置密码邮件')
             ->setTo($email)
             ->setHtmlBody(
                 ['@app/Areas/Admin/Views/Mail/ResetPassword', 'email' => $email, 'admin_name' => $admin_name,

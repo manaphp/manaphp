@@ -6,7 +6,7 @@ use App\Controllers\Controller;
 use App\Models\User;
 
 /**
- * @property-read \ManaPHP\Configuration\Configure $configure
+ * @property-read \ManaPHP\ConfigInterface         $config
  * @property-read \ManaPHP\Http\CaptchaInterface   $captcha
  * @property-read \ManaPHP\Mailing\MailerInterface $mailer
  */
@@ -42,11 +42,11 @@ class PasswordController extends Controller
         $token = jwt_encode(['user_name' => $user_name], 600, 'user.password.forget');
 
         $this->mailer->compose()
-            ->setSubject($this->configure->name . '-重置密码邮件')
+            ->setSubject($this->config->get('name') . '-重置密码邮件')
             ->setTo($email)
             ->setHtmlBody(
                 ['@app/Areas/User/Views/Mail/ResetPassword', 'email' => $email, 'user_name' => $user_name,
-                 'token'                                              => $token]
+                 'token'                                             => $token]
             )
             ->send();
         return $this->response->setJsonOk('重置密码连接已经发送到您的邮箱');
@@ -64,9 +64,9 @@ class PasswordController extends Controller
 
         return $this->view->setVars(
             [
-                'expired'    => false,
+                'expired'   => false,
                 'user_name' => $claims['user_name'],
-                'token'      => $token,
+                'token'     => $token,
             ]
         );
     }

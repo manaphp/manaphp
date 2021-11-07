@@ -1,5 +1,5 @@
 <div class="product-name">
-    <el-link href="/">{{$this->configure->name}}</el-link>
+    <el-link href="/">{{config_get('name')}}</el-link>
 </div>
 <el-menu
         default-active="<?=action('')?>"
