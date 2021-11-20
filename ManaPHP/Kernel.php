@@ -5,7 +5,7 @@ namespace ManaPHP;
 use ManaPHP\Di\Container;
 
 /**
- * @property-read \ManaPHP\DotenvInterface $dotenv
+ * @property-read \ManaPHP\EnvInterface    $env
  * @property-read \ManaPHP\ConfigInterface $config
  * @property-read \ManaPHP\AliasInterface  $alias
  */
@@ -51,7 +51,7 @@ class Kernel extends Component
      */
     public function start($server)
     {
-        $this->dotenv->load('@config/.env');
+        $this->env->load();
         $this->config->load();
 
         if (($timezone = $this->config->get('timezone', '')) !== '') {

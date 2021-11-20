@@ -143,7 +143,7 @@ if (!function_exists('env')) {
      */
     function env($key = null, $default = null)
     {
-        return container(\ManaPHP\DotenvInterface::class)->get($key, $default);
+        return container(\ManaPHP\EnvInterface::class)->get($key, $default);
     }
 }
 

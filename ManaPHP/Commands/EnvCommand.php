@@ -3,9 +3,9 @@
 namespace ManaPHP\Commands;
 
 /**
- * @property-read \ManaPHP\DotenvInterface $dotenv
+ * @property-read \ManaPHP\EnvInterface $env
  */
-class DotenvCommand extends \ManaPHP\Cli\Command
+class EnvCommand extends \ManaPHP\Cli\Command
 {
     /**
      * dump parsed .env values
@@ -14,7 +14,7 @@ class DotenvCommand extends \ManaPHP\Cli\Command
      */
     public function dumpAction()
     {
-        foreach ($this->dotenv->get() as $k => $v) {
+        foreach ($this->env->get(null) as $k => $v) {
             echo sprintf('%s=%s', $k, $v), PHP_EOL;
         }
     }

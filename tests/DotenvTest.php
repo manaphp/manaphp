@@ -2,13 +2,13 @@
 
 namespace Tests;
 
-use ManaPHP\Dotenv;
+use ManaPHP\Env;
 
 class DotenvTest extends \PHPUnit_Framework_TestCase
 {
     public function test_parse()
     {
-        $dotenv = new Dotenv();
+        $dotenv = new Env();
 
         $this->assertEquals([], $dotenv->parse([]));
         $this->assertEquals([], $dotenv->parse(['#comment']));
