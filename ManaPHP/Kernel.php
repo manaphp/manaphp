@@ -47,6 +47,14 @@ class Kernel extends Component
     }
 
     /**
+     * @return \ManaPHP\Di\ContainerInterface
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
      * @param string $server
      */
     public function start($server)
