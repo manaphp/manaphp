@@ -70,7 +70,7 @@ class Swoole extends AbstractServer
 
         $this->swoole = new \Swoole\Http\Server($this->host, $this->port);
         $this->swoole->set($this->settings);
-        $this->swoole->on('Start', [$this, 'onStart']);
+        $this->swoole->on('Start', [$this, 'onMasterStart']);
         $this->swoole->on('ManagerStart', [$this, 'onManagerStart']);
         $this->swoole->on('WorkerStart', [$this, 'onWorkerStart']);
         $this->swoole->on('request', [$this, 'onRequest']);
@@ -104,15 +104,15 @@ class Swoole extends AbstractServer
     }
 
     /**
-     * @param \Swoole\WebSocket\Server $server
-     *
-     * @noinspection PhpUnusedParameterInspection
+     * @param \Swoole\Http\Server $server
      *
      * @return void
      */
-    public function onStart($server)
+    public function onMasterStart($server)
     {
         @cli_set_process_title(sprintf('manaphp %s: master', $this->config->get('id')));
+
+        $this->fireEvent('httpServer:masterStart', compact('server'));
     }
 
     /**
@@ -121,19 +121,21 @@ class Swoole extends AbstractServer
     public function onManagerStart()
     {
         @cli_set_process_title(sprintf('manaphp %s: manager', $this->config->get("id")));
+
+        $this->fireEvent('httpServer:managerStart', ['server' => $this->swoole]);
     }
 
     /**
      * @param \Swoole\WebSocket\Server $server
      * @param int                      $worker_id
      *
-     * @noinspection PhpUnusedParameterInspection
-     *
      * @return void
      */
     public function onWorkerStart($server, $worker_id)
     {
         @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->config->get("id"), $worker_id));
+
+        $this->fireEvent('httpServer::workerStart', compact('server', 'worker_id'));
     }
 
     /**

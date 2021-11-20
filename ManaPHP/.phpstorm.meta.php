@@ -16,6 +16,7 @@ namespace PHPSTORM_META {
     registerArgumentsSet(
         'eventManager',
         'httpServer:start',
+        'httpServer:masterStart', 'httpServer:managerStart', 'httpServer:workerStart',
         'request:begin', 'request:end',
         'request:authorize', 'request:authenticate',
         'request:validate', 'request:ready',
