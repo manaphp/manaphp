@@ -34,33 +34,6 @@ class Handler extends Component implements HandlerInterface
     protected $params;
 
     /**
-     * @param string $keyword
-     *
-     * @return string|false
-     */
-    protected function guessCommand($keyword)
-    {
-        $commands = $this->commandManager->getCommands();
-
-        $guessed = [];
-        foreach ($commands as $name => $className) {
-            if (stripos($name, $keyword) === 0) {
-                $guessed[] = $className;
-            }
-        }
-
-        if (!$guessed) {
-            foreach ($commands as $name => $className) {
-                if (stripos($name, $keyword) !== false) {
-                    $guessed[] = $className;
-                }
-            }
-        }
-
-        return count($guessed) === 1 ? $guessed[0] : false;
-    }
-
-    /**
      * @param string $commandName
      *
      * @return string[]
@@ -76,34 +49,6 @@ class Handler extends Component implements HandlerInterface
         }
 
         return $actions;
-    }
-
-    /**
-     * @param string $commandName
-     * @param string $keyword
-     *
-     * @return string|false
-     */
-    protected function guessAction($commandName, $keyword)
-    {
-        $actions = $this->getActions($commandName);
-
-        $guessed = [];
-        foreach ($actions as $action) {
-            if (stripos($action, $keyword) === 0) {
-                $guessed[] = $action;
-            }
-        }
-
-        if (!$guessed) {
-            foreach ($actions as $action) {
-                if (stripos($action, $keyword) !== false) {
-                    $guessed[] = $action;
-                }
-            }
-        }
-
-        return count($guessed) === 1 ? $guessed[0] : false;
     }
 
     /**
@@ -177,14 +122,8 @@ class Handler extends Component implements HandlerInterface
 
         $commands = $this->commandManager->getCommands();
         if (($definition = $commands[lcfirst($command)] ?? null) === null) {
-            $guessed = $this->guessCommand($command);
-            if ($guessed) {
-                $definition = $guessed;
-                $command = basename(substr($definition, strrpos($definition, '\\')), 'Command');
-            } else {
-                $colored_action = lcfirst($command) . ':' . $action;
-                return $this->console->error(['`:action` action is not exists', 'action' => $colored_action]);
-            }
+            $colored_action = lcfirst($command) . ':' . $action;
+            return $this->console->error(['`:action` action is not exists', 'action' => $colored_action]);
         }
 
         /** @var \ManaPHP\Cli\Command $instance */
@@ -209,13 +148,8 @@ class Handler extends Component implements HandlerInterface
         }
 
         if (!method_exists($instance, $action . 'Action')) {
-            $guessed = $this->guessAction($definition, $action);
-            if (!$guessed) {
-                $colored_action = lcfirst($command) . ':' . $action;
-                return $this->console->error(['`:action` sub action is not exists', 'action' => $colored_action]);
-            } else {
-                $action = $guessed;
-            }
+            $colored_action = lcfirst($command) . ':' . $action;
+            return $this->console->error(['`:action` sub action is not exists', 'action' => $colored_action]);
         }
 
         $method = $action . 'Action';
