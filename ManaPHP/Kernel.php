@@ -44,11 +44,12 @@ class Kernel extends Component
         $this->alias->set('@tmp', "$rootDir/tmp");
         $this->alias->set('@resources', "$rootDir/Resources");
         $this->alias->set('@config', "$rootDir/config");
-
-        $this->boot();
     }
 
-    protected function boot()
+    /**
+     * @param string $server
+     */
+    public function start($server)
     {
         $this->dotenv->load('@config/.env');
         $this->config->load();
@@ -70,13 +71,7 @@ class Kernel extends Component
             $bootstrapper = $this->container->get($item);
             $bootstrapper->bootstrap();
         }
-    }
 
-    /**
-     * @param string $server
-     */
-    public function start($server)
-    {
         $this->container->get($server)->start();
     }
 }
