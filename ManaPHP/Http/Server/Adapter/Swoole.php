@@ -64,10 +64,6 @@ class Swoole extends AbstractServer
 
         $this->settings = $options;
 
-        if ($this->use_globals) {
-            $this->globalsManager->proxy();
-        }
-
         $this->swoole = new \Swoole\Http\Server($this->host, $this->port);
         $this->swoole->set($this->settings);
         $this->swoole->on('Start', [$this, 'onMasterStart']);
@@ -100,7 +96,7 @@ class Swoole extends AbstractServer
         $_get = $request->get ?: [];
         $_post = $request->post ?: [];
         $raw_body = $request->rawContent();
-        $this->request->prepare($_get, $_post, $_server, $raw_body, $request->cookie ?? [], $request->files ?? []);
+        $this->globals->prepare($_get, $_post, $_server, $raw_body, $request->cookie ?? [], $request->files ?? []);
     }
 
     /**

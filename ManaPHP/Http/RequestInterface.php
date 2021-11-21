@@ -5,23 +5,6 @@ namespace ManaPHP\Http;
 interface RequestInterface
 {
     /**
-     * @return \ManaPHP\Http\RequestContext
-     */
-    public function getGlobals();
-
-    /**
-     * @param array  $GET
-     * @param array  $POST
-     * @param array  $SERVER
-     * @param string $RAW_BODY
-     * @param array  $COOKIE
-     * @param array  $FILES
-     *
-     * @return void
-     */
-    public function prepare($GET, $POST, $SERVER, $RAW_BODY = null, $COOKIE = [], $FILES = []);
-
-    /**
      * @return string
      */
     public function getRawBody();
@@ -41,7 +24,7 @@ interface RequestInterface
      *
      * @return mixed|null
      */
-    public function getCookie($name = null, $default = '');
+    public function getCookie($name, $default = '');
 
     /**
      * @param string $name
@@ -101,15 +84,7 @@ interface RequestInterface
      *
      * @return mixed
      */
-    public function getServer($name = null, $default = '');
-
-    /**
-     * @param string $name
-     * @param string $value
-     *
-     * @return static
-     */
-    public function setServer($name, $value);
+    public function getServer($name, $default = '');
 
     /**
      * @return string
@@ -280,7 +255,7 @@ interface RequestInterface
     /**
      * @param string $name
      *
-     * @return string|null
+     * @return string
      */
     public function getToken($name = 'token');
 
@@ -309,12 +284,12 @@ interface RequestInterface
     public function getElapsedTime($precision = 3);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getIfNoneMatch();
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getAcceptLanguage();
 }

@@ -4,10 +4,8 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Coroutine\Context\Stickyable;
 
-class RequestContext implements Stickyable
+class GlobalsContext implements Stickyable
 {
-    public $request_id;
-
     /**
      * @var array
      */
@@ -38,5 +36,8 @@ class RequestContext implements Stickyable
      */
     public $_FILES = [];
 
+    /**
+     * @var string
+     */
     public $rawBody;
 }

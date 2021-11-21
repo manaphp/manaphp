@@ -117,7 +117,7 @@ class Swoole extends \ManaPHP\Rpc\Http\AbstractServer
         $_post = $request->post ?: [];
 
         $raw_body = $request->rawContent();
-        $this->request->prepare($_get, $_post, $_server, $raw_body);
+        $this->globals->prepare($_get, $_post, $_server, $raw_body);
     }
 
     /**
@@ -285,7 +285,7 @@ class Swoole extends \ManaPHP\Rpc\Http\AbstractServer
             $this->response->setContent(['code' => -32600, 'message' => 'Invalid Request']);
             $this->send();
         } else {
-            $globals = $this->request->getGlobals();
+            $globals = $this->globals->get();
             $globals->_GET['_url'] = $globals->_SERVER['WS_ENDPOINT'] . '/' . $json['method'];
             $globals->_POST = $json['params'];
             /** @noinspection AdditionOperationOnArraysInspection */

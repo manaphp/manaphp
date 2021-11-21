@@ -38,7 +38,7 @@ class Cookies extends Component implements CookiesInterface
      *
      * @return string|array
      */
-    public function get($name = null, $default = '')
+    public function get($name, $default = '')
     {
         return $this->request->getCookie($name, $default);
     }

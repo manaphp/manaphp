@@ -17,6 +17,7 @@ use Throwable;
  * @property-read \ManaPHP\ConfigInterface         $config
  * @property-read \ManaPHP\Logging\LoggerInterface $logger
  * @property-read \ManaPHP\Http\RequestInterface   $request
+ * @property-read \ManaPHP\Http\GlobalsInterface   $globals
  * @property-read \ManaPHP\Ws\HandlerInterface     $wsHandler
  */
 class Swoole extends Component implements ServerInterface
@@ -136,7 +137,7 @@ class Swoole extends Component implements ServerInterface
 
         $_get = $request->get ?: [];
 
-        $this->request->prepare($_get, [], $_server, null, $request->cookie ?? []);
+        $this->globals->prepare($_get, [], $_server, null, $request->cookie ?? []);
     }
 
     /**

@@ -80,14 +80,12 @@ class Workerman extends AbstractServer
         $_SERVER += $this->_SERVER;
 
         $raw_body = $GLOBALS['HTTP_RAW_POST_DATA'] ?? null;
-        $this->request->prepare($_GET, $_POST, $_SERVER, $raw_body, $_COOKIE, $_FILES);
+        $this->globals->prepare($_GET, $_POST, $_SERVER, $raw_body, $_COOKIE, $_FILES);
 
-        if (!$this->use_globals) {
-            unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
-            foreach ($_SERVER as $k => $v) {
-                if (!str_contains('DOCUMENT_ROOT,SERVER_SOFTWARE,SCRIPT_NAME,SCRIPT_FILENAME', $k)) {
-                    unset($_SERVER[$k]);
-                }
+        unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
+        foreach ($_SERVER as $k => $v) {
+            if (!str_contains('DOCUMENT_ROOT,SERVER_SOFTWARE,SCRIPT_NAME,SCRIPT_FILENAME', $k)) {
+                unset($_SERVER[$k]);
             }
         }
     }

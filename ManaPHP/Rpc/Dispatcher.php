@@ -6,6 +6,7 @@ use ManaPHP\Exception\BadRequestException;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface  $request
+ * @property-read \ManaPHP\Http\GlobalsInterface  $globals
  * @property-read \ManaPHP\Http\ResponseInterface $response
  * @property-read \ManaPHP\Http\RouterInterface   $router
  */
@@ -39,7 +40,7 @@ class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
                 unset($body['action']);
             }
 
-            $globals = $this->request->getGlobals();
+            $globals = $this->globals->get();
             $globals->_POST = $body;
             /** @noinspection AdditionOperationOnArraysInspection */
             $globals->_REQUEST = $globals->_POST + $globals->_GET;
@@ -52,7 +53,7 @@ class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
                     throw new BadRequestException('invalid body');
                 }
 
-                $globals = $this->request->getGlobals();
+                $globals = $this->globals->get();
                 /** @noinspection AdditionOperationOnArraysInspection */
                 $globals->_REQUEST = $globals->_GET = $body + $globals->_GET;
             }

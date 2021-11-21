@@ -16,11 +16,7 @@ class Fpm extends AbstractServer
     protected function prepareGlobals()
     {
         $rawBody = file_get_contents('php://input');
-        $this->request->prepare($_GET, $_POST, $_SERVER, $rawBody, $_COOKIE, $_FILES);
-
-        if ($this->use_globals) {
-            $this->globalsManager->proxy();
-        }
+        $this->globals->prepare($_GET, $_POST, $_SERVER, $rawBody, $_COOKIE, $_FILES);
     }
 
     /**

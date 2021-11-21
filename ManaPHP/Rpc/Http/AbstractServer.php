@@ -9,6 +9,7 @@ use ManaPHP\Rpc\ServerInterface;
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response
  * @property-read \ManaPHP\Rpc\HandlerInterface   $rpcHandler
+ * @property-read \ManaPHP\Http\GlobalsInterface  $globals
  */
 abstract class AbstractServer extends Component implements ServerInterface
 {
