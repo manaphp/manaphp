@@ -54,15 +54,13 @@ class Cookies extends Component implements CookiesInterface
      * @param string $name
      * @param string $path
      * @param string $domain
-     * @param bool   $secure
-     * @param bool   $httponly
      *
      * @return static
      */
-    public function delete($name, $path = null, $domain = null, $secure = false, $httponly = true)
+    public function delete($name, $path = null, $domain = null)
     {
         $this->globals->unsetCookie($name);
-        $this->response->setCookie($name, 'deleted', 1, $path, $domain, $secure, $httponly);
+        $this->response->setCookie($name, 'deleted', 1, $path, $domain);
 
         return $this;
     }

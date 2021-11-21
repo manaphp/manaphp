@@ -36,10 +36,8 @@ interface CookiesInterface
      * @param string $name
      * @param string $path
      * @param string $domain
-     * @param bool   $secure
-     * @param bool   $httponly
      *
      * @return bool
      */
-    public function delete($name, $path = null, $domain = null, $secure = false, $httponly = true);
+    public function delete($name, $path = null, $domain = null);
 }
