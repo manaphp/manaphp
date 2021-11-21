@@ -17,38 +17,6 @@ interface RequestInterface
     public function setParams($params);
 
     /**
-     * Gets a cookie
-     *
-     * @param string $name
-     * @param string $default
-     *
-     * @return mixed|null
-     */
-    public function getCookie($name, $default = '');
-
-    /**
-     * @param string $name
-     * @param string $value
-     *
-     * @return static
-     */
-    public function setCookie($name, $value);
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasCookie($name);
-
-    /**
-     * @param string $name
-     *
-     * @return static
-     */
-    public function deleteCookie($name);
-
-    /**
      * @param string $name
      * @param mixed  $default
      *

@@ -53,4 +53,19 @@ interface GlobalsInterface
      * @return array
      */
     public function getCookie();
+
+    /**
+     * @param string $name
+     *
+     * @return static
+     */
+    public function unsetCookie($name);
+
+    /**
+     * @param string $name
+     * @param string $value
+     *
+     * @return static
+     */
+    public function setCookie($name, $value);
 }

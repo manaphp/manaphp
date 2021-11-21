@@ -134,6 +134,31 @@ class Globals extends Component implements GlobalsInterface
         return $this->context->_COOKIE;
     }
 
+    /**
+     * @param string $name
+     * @param string $value
+     *
+     * @return static
+     */
+    public function setCookie($name, $value)
+    {
+        $this->context->_COOKIE[$name] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return static
+     */
+    public function unsetCookie($name)
+    {
+        unset($this->context->_COOKIE[$name]);
+
+        return $this;
+    }
+
     public function dump()
     {
         $data = parent::dump();

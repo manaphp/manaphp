@@ -44,8 +44,6 @@ class Response extends Component implements ResponseInterface
     }
 
     /**
-     * Sets a cookie to be sent at the end of the request
-     *
      * @param string $name
      * @param mixed  $value
      * @param int    $expire
@@ -84,38 +82,6 @@ class Response extends Component implements ResponseInterface
             'httponly' => $httponly
         ];
 
-        $this->request->setCookie($name, $value);
-
-        return $this;
-    }
-
-    /**
-     * Deletes a cookie by its name
-     *
-     * @param string $name
-     * @param string $path
-     * @param string $domain
-     * @param bool   $secure
-     * @param bool   $httponly
-     *
-     * @return static
-     */
-    public function deleteCookie($name, $path = null, $domain = null, $secure = false, $httponly = true)
-    {
-        $context = $this->context;
-
-        $context->cookies[$name] = [
-            'name'     => $name,
-            'value'    => 'deleted',
-            'expire'   => 1,
-            'path'     => $path,
-            'domain'   => $domain,
-            'secure'   => $secure,
-            'httponly' => $httponly
-        ];
-
-        $this->request->deleteCookie($name);
-
         return $this;
     }
 
@@ -125,14 +91,6 @@ class Response extends Component implements ResponseInterface
     public function getCookies()
     {
         return $this->context->cookies;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasCookies()
-    {
-        return (bool)$this->context->cookies;
     }
 
     /**

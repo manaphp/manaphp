@@ -45,58 +45,6 @@ class Request extends Component implements RequestInterface
     }
 
     /**
-     * Gets a cookie
-     *
-     * @param string $name
-     * @param string $default
-     *
-     * @return string|array
-     */
-    public function getCookie($name, $default = '')
-    {
-        return $this->globals->getCookie()[$name] ?? $default;
-    }
-
-    /**
-     * @param string $name
-     * @param string $value
-     *
-     * @return static
-     */
-    public function setCookie($name, $value)
-    {
-        $globals = $this->globals->get();
-
-        $globals->_COOKIE[$name] = $value;
-
-        return $this;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasCookie($name)
-    {
-        return isset($this->globals->getCookie()[$name]);
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return static
-     */
-    public function deleteCookie($name)
-    {
-        $globals = $this->globals->get();
-
-        unset($globals->_COOKIE[$name]);
-
-        return $this;
-    }
-
-    /**
      * @param string $field
      * @param mixed  $value
      * @param mixed  $default

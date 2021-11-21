@@ -5,14 +5,12 @@ namespace ManaPHP\Http;
 use ManaPHP\Component;
 
 /**
- * @property-read \ManaPHP\Http\RequestInterface  $request
+ * @property-read \ManaPHP\Http\GlobalsInterface  $globals
  * @property-read \ManaPHP\Http\ResponseInterface $response
  */
 class Cookies extends Component implements CookiesInterface
 {
     /**
-     * Sets a cookie to be sent at the end of the request
-     *
      * @param string $name
      * @param mixed  $value
      * @param int    $expire
@@ -25,22 +23,21 @@ class Cookies extends Component implements CookiesInterface
      */
     public function set($name, $value, $expire = 0, $path = null, $domain = null, $secure = false, $httponly = true)
     {
+        $this->globals->setCookie($name, $value);
         $this->response->setCookie($name, $value, $expire, $path, $domain, $secure, $httponly);
 
         return $this;
     }
 
     /**
-     * Gets a cookie
-     *
      * @param string $name
      * @param string $default
      *
-     * @return string|array
+     * @return string
      */
     public function get($name, $default = '')
     {
-        return $this->request->getCookie($name, $default);
+        return $this->globals->getCookie()[$name] ?? $default;
     }
 
     /**
@@ -50,12 +47,10 @@ class Cookies extends Component implements CookiesInterface
      */
     public function has($name)
     {
-        return $this->request->hasCookie($name);
+        return isset($this->globals->getCookie()[$name]);
     }
 
     /**
-     * Deletes a cookie by its name
-     *
      * @param string $name
      * @param string $path
      * @param string $domain
@@ -66,7 +61,8 @@ class Cookies extends Component implements CookiesInterface
      */
     public function delete($name, $path = null, $domain = null, $secure = false, $httponly = true)
     {
-        $this->response->deleteCookie($name, $path, $domain, $secure, $httponly);
+        $this->globals->unsetCookie($name);
+        $this->response->setCookie($name, 'deleted', 1, $path, $domain, $secure, $httponly);
 
         return $this;
     }
