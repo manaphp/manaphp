@@ -2,10 +2,9 @@
 
 namespace ManaPHP\Event;
 
-use ManaPHP\Component;
 use SplDoublyLinkedList;
 
-class Manager extends Component implements ManagerInterface
+class Manager implements ManagerInterface
 {
     /**
      * @var SplDoublyLinkedList[][]
@@ -112,13 +111,11 @@ class Manager extends Component implements ManagerInterface
      */
     public function dump()
     {
-        $dump = parent::dump();
+        $data = [];
 
-        $dump['*events'] = array_keys($dump['events']);
-        $dump['*peekers'] = array_keys($dump['peekers']);
+        $data['*events'] = array_keys($this->events);
+        $data['*peekers'] = array_keys($this->peekers);
 
-        unset($dump['events'], $dump['peekers']);
-
-        return $dump;
+        return $data;
     }
 }
