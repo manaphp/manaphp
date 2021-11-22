@@ -134,27 +134,6 @@ class Component implements Injectable, JsonSerializable
     }
 
     /**
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return void
-     */
-    public function __set($name, $value)
-    {
-        $this->$name = $value;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function __isset($name)
-    {
-        return $this->container->has($name);
-    }
-
-    /**
      * Attach a listener to the events manager
      *
      * @param string   $event
