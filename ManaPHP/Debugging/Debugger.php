@@ -81,10 +81,10 @@ class Debugger extends Component implements DebuggerInterface
 
     public function start()
     {
-        $this->peekEvent('*', [$this, 'onEvent']);
+        $this->eventManager->peekEvent('*', [$this, 'onEvent']);
 
-        $this->peekEvent('db', [$this, 'onDb']);
-        $this->peekEvent('mongodb', [$this, 'onMongodb']);
+        $this->eventManager->peekEvent('db', [$this, 'onDb']);
+        $this->eventManager->peekEvent('mongodb', [$this, 'onMongodb']);
 
         $this->attachEvent('renderer:rendering', [$this, 'onRendererRendering']);
         $this->attachEvent('logger:log', [$this, 'onLoggerLog']);

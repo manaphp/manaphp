@@ -163,19 +163,6 @@ class Component implements Injectable, JsonSerializable
     }
 
     /**
-     * @param string   $group
-     * @param callable $handler
-     *
-     * @return static
-     */
-    protected function peekEvent($group, $handler)
-    {
-        $this->eventManager->peekEvent($group, $handler);
-
-        return $this;
-    }
-
-    /**
      * Fires an event in the events manager causing that the active listeners will be notified about it
      *
      * @param string $event
