@@ -14,11 +14,6 @@ use Swoole\Coroutine;
 class Component implements Injectable, JsonSerializable
 {
     /**
-     * @var int
-     */
-    protected $object_id;
-
-    /**
      * @var \ManaPHP\Di\ContainerInterface
      */
     protected $container;
@@ -80,11 +75,9 @@ class Component implements Injectable, JsonSerializable
     {
         global $__root_context;
 
-        if (!$object_id = $this->object_id) {
-            $object_id = $this->object_id = spl_object_id($this);
-        }
-
         if (MANAPHP_COROUTINE_ENABLED) {
+            $object_id = spl_object_id($this);
+
             if ($context = Coroutine::getContext()) {
                 if (!$object = $context[$object_id] ?? null) {
                     if (($parent_cid = Coroutine::getPcid()) === -1) {
@@ -246,7 +239,7 @@ class Component implements Injectable, JsonSerializable
         $data = [];
 
         foreach (get_object_vars($this) as $k => $v) {
-            if (is_object($v) || $k === 'object_id') {
+            if (is_object($v)) {
                 continue;
             }
 

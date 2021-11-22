@@ -17,7 +17,7 @@ class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
      */
     public function invokeAction($controller, $action)
     {
-        $controller_oid = $controller->object_id;
+        $controller_oid = spl_object_id($controller);
         if (!isset($this->controllers[$controller_oid])) {
             $this->controllers[$controller_oid] = true;
 
