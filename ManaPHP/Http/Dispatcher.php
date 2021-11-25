@@ -14,8 +14,6 @@ use ManaPHP\Http\Dispatcher\NotFoundControllerException;
 class Dispatcher extends Component implements DispatcherInterface
 {
     /**
-     * Gets last dispatched area name
-     *
      * @return string
      */
     public function getArea()
@@ -24,22 +22,6 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
-     * @param string $area
-     *
-     * @return static
-     */
-    public function setArea($area)
-    {
-        $context = $this->context;
-
-        $context->area = Str::pascalize($area);
-
-        return $this;
-    }
-
-    /**
-     * Gets last dispatched controller name
-     *
      * @return string
      */
     public function getController()
@@ -48,22 +30,6 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
-     * @param string $controller
-     *
-     * @return static
-     */
-    public function setController($controller)
-    {
-        $context = $this->context;
-
-        $context->controller = Str::pascalize($controller);
-
-        return $this;
-    }
-
-    /**
-     * Gets the latest dispatched action name
-     *
      * @return string
      */
     public function getAction()
@@ -72,37 +38,6 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
-     * @param string $action
-     *
-     * @return static
-     */
-    public function setAction($action)
-    {
-        $context = $this->context;
-
-        $context->action = Str::camelize($action);
-
-        return $this;
-    }
-
-    /**
-     * @param array $params
-     * @param bool  $merge
-     *
-     * @return static
-     */
-    public function setParams($params, $merge = true)
-    {
-        $context = $this->context;
-
-        $context->params = $merge ? array_merge($context->params, $params) : $params;
-
-        return $this;
-    }
-
-    /**
-     * Gets action params
-     *
      * @return array
      */
     public function getParams()
@@ -111,8 +46,6 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
-     * Gets a param by its name or numeric index
-     *
      * @param string|int $name
      * @param mixed     default
      *
@@ -202,8 +135,6 @@ class Dispatcher extends Component implements DispatcherInterface
     }
 
     /**
-     * Dispatches a handle action taking into account the routing parameters
-     *
      * @param string $area
      * @param string $controller
      * @param string $action
