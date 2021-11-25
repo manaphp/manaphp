@@ -50,6 +50,15 @@ interface ManagerInterface
     public function pop($owner, $timeout = null, $type = 'default');
 
     /**
+     * @param object $owner
+     * @param float  $timeout
+     * @param string $type
+     *
+     * @return \ManaPHP\Pool\Proxy
+     */
+    public function get($owner, $timeout = null, $type = 'default');
+
+    /**
      * @param \ManaPHP\Pool\Transientable $owner
      * @param float                       $timeout
      * @param string                      $type

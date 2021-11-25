@@ -138,6 +138,21 @@ class Manager extends Component implements ManagerInterface
     }
 
     /**
+     * @param object $owner
+     * @param float  $timeout
+     * @param string $type
+     *
+     * @return \ManaPHP\Pool\Proxy
+     */
+    public function get($owner, $timeout = null, $type = 'default')
+    {
+        $instance = $this->pop($owner, $timeout, $type);
+
+        return new Proxy($this, $owner, $instance, $type);
+    }
+
+
+    /**
      * @param \ManaPHP\Pool\Transientable $owner
      * @param float                       $timeout
      * @param string                      $type
