@@ -8,8 +8,7 @@ use ManaPHP\Http\Dispatcher\NotFoundActionException;
 use ManaPHP\Http\Dispatcher\NotFoundControllerException;
 
 /**
- * @property-read \ManaPHP\Http\RequestInterface  $request
- * @property-read \ManaPHP\Http\ResponseInterface $response
+ * @property-read \ManaPHP\Http\GlobalsInterface  $globals
  * @property-read \ManaPHP\Http\DispatcherContext $context
  */
 class Dispatcher extends Component implements DispatcherInterface
@@ -217,7 +216,17 @@ class Dispatcher extends Component implements DispatcherInterface
     {
         $context = $this->context;
 
-        $this->request->setParams($params);
+        $globals = $this->globals->get();
+
+        foreach ($params as $k => $v) {
+            if (is_string($k)) {
+                $globals->_REQUEST[$k] = $v;
+            }
+        }
+
+        if (isset($params[0])) {
+            $globals->_REQUEST['id'] = $params[0];
+        }
 
         if ($area) {
             $area = str_contains($area, '_') ? Str::pascalize($area) : ucfirst($area);

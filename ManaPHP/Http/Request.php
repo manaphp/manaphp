@@ -9,7 +9,6 @@ use ManaPHP\Validating\Validator\ValidateFailedException;
 
 /**
  * @property-read \ManaPHP\Http\GlobalsInterface         $globals
- * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher
  * @property-read \ManaPHP\Validating\ValidatorInterface $validator
  */
 class Request extends Component implements RequestInterface
@@ -20,28 +19,6 @@ class Request extends Component implements RequestInterface
     public function getRawBody()
     {
         return $this->globals->getRawBody();
-    }
-
-    /**
-     * @param array $params
-     *
-     * @return static
-     */
-    public function setParams($params)
-    {
-        $globals = $this->globals->get();
-
-        foreach ($params as $k => $v) {
-            if (is_string($k)) {
-                $globals->_REQUEST[$k] = $v;
-            }
-        }
-
-        if (isset($params[0])) {
-            $globals->_REQUEST['id'] = $params[0];
-        }
-
-        return $this;
     }
 
     /**

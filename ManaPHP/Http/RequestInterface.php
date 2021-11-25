@@ -10,13 +10,6 @@ interface RequestInterface
     public function getRawBody();
 
     /**
-     * @param array $params
-     *
-     * @return static
-     */
-    public function setParams($params);
-
-    /**
      * @param string $name
      * @param mixed  $default
      *
