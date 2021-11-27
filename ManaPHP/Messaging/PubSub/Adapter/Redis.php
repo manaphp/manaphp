@@ -10,7 +10,6 @@ use ManaPHP\Messaging\PubSubInterface;
  */
 class Redis extends Component implements PubSubInterface
 {
-    /** @noinspection PhpUnusedParameterInspection */
     public function subscribe($channels, $callback)
     {
         $this->redisBroker->subscribe(
@@ -21,8 +20,6 @@ class Redis extends Component implements PubSubInterface
     }
 
     /**
-     * @noinspection PhpUnusedParameterInspection
-     *
      * @param array    $patterns
      * @param callable $callback
      *

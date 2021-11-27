@@ -1,4 +1,4 @@
-<?php /** @noinspection PhpMultipleClassesDeclarationsInOneFile */
+<?php
 
 namespace ManaPHP\I18n;
 

@@ -106,7 +106,6 @@ class Ws extends AbstractClient
         $message = $engine->recv();
 
         try {
-            /** @noinspection PhpUnusedLocalVariableInspection */
             $success = false;
             $this->parseResponse($message->payload);
             $success = true;
