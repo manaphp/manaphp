@@ -197,7 +197,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
 
             $name = $this->name;
             $params = $this->params;
-            $this->cookies->delete($name, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+            $this->cookies->delete($name, $params['path'], $params['domain']);
         }
 
         return $this;
