@@ -51,15 +51,7 @@ class Settings extends Component implements SettingsInterface
 
     public function mGet(array $keys): array
     {
-        $values = $this->redisDb->hMGet($this->key, $keys);
-
-        foreach ($keys as $key) {
-            if (!isset($values[$key])) {
-                throw new InvalidArgumentException(['`%s` key is not exists', $key]);
-            }
-        }
-
-        return $values;
+        return $this->redisDb->hMGet($this->key, $keys);
     }
 
     public function set(string $key, string $value): static
