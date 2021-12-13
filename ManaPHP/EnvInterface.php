@@ -1,19 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP;
 
 interface EnvInterface
 {
-    /**
-     * @return static
-     */
-    public function load();
+    public function load(): static;
 
-    /**
-     * @param string $key
-     * @param mixed  $default
-     *
-     * @return mixed|array
-     */
-    public function get($key, $default = null);
+    public function get(?string $key, mixed $default = null): mixed;
 }

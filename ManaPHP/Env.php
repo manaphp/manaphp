@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP;
 
@@ -11,25 +12,16 @@ use ManaPHP\Exception\InvalidValueException;
  */
 class Env extends Component implements EnvInterface
 {
-    /**
-     * @var string
-     */
-    protected $file = '@config/.env';
+    protected string $file = '@config/.env';
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['file'])) {
             $this->file = $options['file'];
         }
     }
 
-    /**
-     * @return static
-     */
-    public function load()
+    public function load(): static
     {
         $file = $this->alias->resolve($this->file);
 
@@ -100,13 +92,7 @@ class Env extends Component implements EnvInterface
         return $this;
     }
 
-    /**
-     * @param string $key
-     * @param mixed  $default
-     *
-     * @return mixed|array
-     */
-    public function get($key, $default = null)
+    public function get(?string $key, mixed $default = null): mixed
     {
         if (($value = getenv($key)) === false) {
             if ($default === null) {
