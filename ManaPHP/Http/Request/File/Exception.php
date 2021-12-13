@@ -1,13 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Request\File;
 
 class Exception extends \ManaPHP\Http\Request\Exception
 {
-    /**
-     * @return int
-     */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return 400;
     }

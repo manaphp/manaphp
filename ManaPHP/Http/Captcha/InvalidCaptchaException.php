@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Captcha;
 
@@ -6,18 +7,12 @@ use ManaPHP\Exception;
 
 class InvalidCaptchaException extends Exception
 {
-    /**
-     * @return int
-     */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return 200;
     }
 
-    /**
-     * @return array
-     */
-    public function getJson()
+    public function getJson(): array
     {
         return ['code' => 1, 'message' => '验证码错误', 'field' => 'captcha'];
     }

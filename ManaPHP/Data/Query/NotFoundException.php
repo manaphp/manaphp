@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Query;
 
@@ -6,18 +7,12 @@ use ManaPHP\Exception;
 
 class NotFoundException extends Exception
 {
-    /**
-     * @return int
-     */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return 404;
     }
 
-    /**
-     * @return array
-     */
-    public function getJson()
+    public function getJson(): array
     {
         return ['code' => 404, 'message' => 'record is not exists'];
     }

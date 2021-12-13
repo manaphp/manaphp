@@ -1,20 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Model;
 
 class NotFoundException extends Exception
 {
-    /**
-     * @var string
-     */
-    public $model;
+    public string $model;
+    public mixed $filters;
 
-    /**
-     * @var int|string|array
-     */
-    public $filters;
-
-    public function __construct($model, $filters)
+    public function __construct(string $model, mixed $filters)
     {
         parent::__construct(['No record for `%s` model of `%s`', $model, json_stringify($filters)]);
 
@@ -22,18 +16,12 @@ class NotFoundException extends Exception
         $this->filters = $filters;
     }
 
-    /**
-     * @return int
-     */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return 404;
     }
 
-    /**
-     * @return array
-     */
-    public function getJson()
+    public function getJson(): array
     {
         return ['code' => 404, 'message' => "Record of `$this->model` Model is not exists"];
     }

@@ -1,11 +1,8 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Exception;
 
-/**
- *This runtime exception is thrown to indicate that a method parameter which was expected to be
- * an item name of a composite data or a row index of a tabular data is not valid.
- */
 class InvalidKeyException extends InvalidArgumentException
 {
 

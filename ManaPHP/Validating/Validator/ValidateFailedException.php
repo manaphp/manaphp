@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Validating\Validator;
 
@@ -6,17 +7,9 @@ use ManaPHP\Exception;
 
 class ValidateFailedException extends Exception
 {
-    /**
-     * @var array
-     */
-    protected $errors;
+    protected array $errors;
 
-    /**
-     * @param array           $errors
-     * @param int             $code
-     * @param \Exception|null $previous
-     */
-    public function __construct($errors, $code = 0, $previous = null)
+    public function __construct(array $errors, int $code = 0, ?\Exception $previous = null)
     {
         $this->errors = $errors;
         $this->json = ['code' => 'validator.errors', 'message' => json_stringify($errors, JSON_PRETTY_PRINT)];
@@ -24,18 +17,12 @@ class ValidateFailedException extends Exception
         parent::__construct(json_stringify($errors), $code, $previous);
     }
 
-    /**
-     * @return array
-     */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }
 
-    /**
-     * @return int
-     */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return 400;
     }

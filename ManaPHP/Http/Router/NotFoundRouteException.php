@@ -4,10 +4,7 @@ namespace ManaPHP\Http\Router;
 
 class NotFoundRouteException extends Exception
 {
-    /**
-     * @return int
-     */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return 404;
     }

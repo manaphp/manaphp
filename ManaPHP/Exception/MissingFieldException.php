@@ -1,11 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Exception;
 
 
 class MissingFieldException extends RuntimeException
 {
-    public function __construct($message = '', $code = 0, $previous = null)
+    public function __construct(string $message = '', int $code = 0, ?\Exception $previous = null)
     {
         if (!str_contains($message, ' ')) {
             $message = "missing $message field";

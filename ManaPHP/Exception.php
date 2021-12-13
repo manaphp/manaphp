@@ -4,22 +4,10 @@ namespace ManaPHP;
 
 class Exception extends \Exception
 {
-    /**
-     * @var array
-     */
-    protected $bind = [];
+    protected array $bind = [];
+    protected array $json = [];
 
-    /**
-     * @var array
-     */
-    protected $json;
-
-    /**
-     * @param string|array|\Exception $message
-     * @param int                     $code
-     * @param \Exception              $previous
-     */
-    public function __construct($message = '', $code = 0, $previous = null)
+    public function __construct(string|array|\Exception $message = '', int $code = 0, \Exception $previous = null)
     {
         if ($message instanceof \Exception) {
             $code = $message->getCode();
@@ -51,20 +39,12 @@ class Exception extends \Exception
         parent::__construct($message, $code, $previous);
     }
 
-    /**
-     * @return int
-     */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return 500;
     }
 
-    /**
-     * @param array|string|int $data
-     *
-     * @return static
-     */
-    public function setJson($data)
+    public function setJson(mixed $data): static
     {
         if (is_array($data)) {
             $this->json = $data;
@@ -79,10 +59,7 @@ class Exception extends \Exception
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getJson()
+    public function getJson(): array
     {
         if ($this->json) {
             return $this->json;
@@ -93,10 +70,7 @@ class Exception extends \Exception
         }
     }
 
-    /**
-     * @return array
-     */
-    public function getBind()
+    public function getBind(): array
     {
         return $this->bind;
     }
