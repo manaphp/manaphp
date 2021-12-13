@@ -7,59 +7,6 @@ use ManaPHP\Exception\JsonException;
 use ManaPHP\ConfigInterface;
 use ManaPHP\AliasInterface;
 
-if (!function_exists('spl_object_id')) {
-    function spl_object_id($object)
-    {
-        // https://github.com/akihiromukae/sample1/blob/1dc7b6e49684c882ef39476071179421fbd1e18e/vendor/phan/phan/src/spl_object_id.php
-        $hash = spl_object_hash($object);
-        return intval(PHP_INT_SIZE === 8 ? substr($hash, 1, 15) : substr($hash, 9, 7), 16);
-    }
-}
-
-if (!function_exists('str_contains')) {
-    function str_contains($haystack, $needle)
-    {
-        return strpos($haystack, $needle) !== false;
-    }
-}
-
-if (!function_exists('str_starts_with')) {
-    function str_starts_with($haystack, $needle)
-    {
-        return strncmp($haystack, $needle, strlen($needle)) === 0;
-    }
-}
-
-if (!function_exists('str_ends_with')) {
-    function str_ends_with($haystack, $needle)
-    {
-        $haystack_len = strlen($haystack);
-        $needle_len = strlen($needle);
-        return $haystack_len >= $needle_len && substr_compare($haystack, $needle, -$needle_len) === 0;
-    }
-}
-
-if (!function_exists('array_key_first')) {
-    function array_key_first($ar)
-    {
-        /** @noinspection LoopWhichDoesNotLoopInspection */
-        foreach ($ar as $key => $unused) {
-            return $key;
-        }
-        return null;
-    }
-}
-
-if (!function_exists('array_key_last')) {
-    function array_key_last($ar)
-    {
-        return count($ar) === 0 ? null : key(array_slice($ar, -1, 1, true));
-    }
-}
-
-defined('JSON_THROW_ON_ERROR') or define('JSON_THROW_ON_ERROR', 0);
-defined('JSON_INVALID_UTF8_SUBSTITUTE') or define('JSON_INVALID_UTF8_SUBSTITUTE', 0);
-
 if (!function_exists('json_parse')) {
     /**
      * @param string $str
