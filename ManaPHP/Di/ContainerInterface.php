@@ -1,77 +1,27 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Di;
 
 interface ContainerInterface
 {
-    /**
-     * @param string $id
-     * @param mixed  $definition
-     *
-     * @return static
-     */
-    public function set($id, $definition);
+    public function set(string $id, mixed $definition): static;
 
-    /**
-     * @return array
-     */
-    public function getDefinitions();
+    public function getDefinitions(): array;
 
-    /**
-     * @param string $id
-     *
-     * @return mixed
-     */
-    public function getDefinition($id);
+    public function getDefinition(string $id): mixed;
 
-    /**
-     * @return array
-     */
-    public function getInstances();
+    public function getInstances(): array;
 
-    /**
-     * @param string $id
-     *
-     * @return static
-     */
-    public function remove($id);
+    public function remove(string $id): static;
 
-    /**
-     * @param string $class
-     * @param array  $parameters
-     * @param string $id
-     *
-     * @return mixed
-     */
-    public function make($class, $parameters = [], $id = null);
+    public function make(string $class, array $parameters = [], ?string $id = null): mixed;
 
-    /**
-     * @param string $id
-     *
-     * @return mixed
-     */
-    public function get($id);
+    public function get(string $id): mixed;
 
-    /**
-     * @param object $target
-     * @param string $property
-     *
-     * @return mixed
-     */
-    public function inject($target, $property);
+    public function inject(object $target, string $property): mixed;
 
-    /**
-     * @param string $id
-     *
-     * @return bool
-     */
-    public function has($id);
+    public function has(string $id): bool;
 
-    /**
-     * @param callable $callable
-     * @param array    $parameters
-     *
-     * @return mixed
-     */
-    public function call($callable, $parameters = []);
+    public function call(callable $callable, array $parameters = []): mixed;
 }

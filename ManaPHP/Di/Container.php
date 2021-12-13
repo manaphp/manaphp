@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Di;
 
@@ -11,42 +12,18 @@ use ReflectionFunction;
 
 class Container implements ContainerInterface
 {
-    /**
-     * @var array
-     */
-    protected $definitions = [];
+    protected array $definitions = [];
+    protected array $instances = [];
+    protected array $types = [];
+    protected array $dependencies = [];
 
-    /**
-     * @var array
-     */
-    protected $instances = [];
-
-    /**
-     * @var array
-     */
-    protected $types = [];
-
-    /**
-     * @var array
-     */
-    protected $dependencies = [];
-
-    /**
-     * @param array $definitions
-     */
-    public function __construct($definitions = [])
+    public function __construct(array $definitions = [])
     {
         $this->definitions = $definitions;
         $this->definitions['ManaPHP\Di\ContainerInterface'] = $this;
     }
 
-    /**
-     * @param string $id
-     * @param mixed  $definition
-     *
-     * @return static
-     */
-    public function set($id, $definition)
+    public function set(string $id, mixed $definition): static
     {
         if (isset($this->instances[$id])) {
             throw new MisuseException(['it\'s too late to set(): `%s` instance has been created', $id]);
@@ -57,26 +34,14 @@ class Container implements ContainerInterface
         return $this;
     }
 
-    /**
-     * @param string $id
-     *
-     * @return static
-     */
-    public function remove($id)
+    public function remove(string $id): static
     {
         unset($this->definitions[$id], $this->instances[$id]);
 
         return $this;
     }
 
-    /**
-     * @param string $class
-     * @param array  $parameters
-     * @param string $id
-     *
-     * @return mixed
-     */
-    public function make($class, $parameters = [], $id = null)
+    public function make(string $class, array $parameters = [], ?string $id = null): mixed
     {
         if (is_string(($alias = $this->definition[$class] ?? null))) {
             return $this->make($alias, $parameters, $id);
@@ -154,12 +119,7 @@ class Container implements ContainerInterface
         return $instance;
     }
 
-    /**
-     * @param string $id
-     *
-     * @return mixed
-     */
-    public function get($id)
+    public function get(string $id): mixed
     {
         if (($instance = $this->instances[$id] ?? null) !== null) {
             return $instance;
@@ -222,12 +182,7 @@ class Container implements ContainerInterface
         }
     }
 
-    /**
-     * @param string $class
-     *
-     * @return array
-     */
-    protected function getTypes($class)
+    protected function getTypes(string $class): array
     {
         $rClass = new ReflectionClass($class);
         $comment = $rClass->getDocComment();
@@ -253,13 +208,7 @@ class Container implements ContainerInterface
         return $this->types[$class] = $types;
     }
 
-    /**
-     * @param object $target
-     * @param string $property
-     *
-     * @return mixed
-     */
-    public function inject($target, $property)
+    public function inject(object $target, string $property): mixed
     {
         $class = get_class($target);
         $types = $this->types[$class] ?? $this->getTypes($class);
@@ -271,38 +220,22 @@ class Container implements ContainerInterface
         return $this->get($this->dependencies[spl_object_id($target)][$type] ?? $type);
     }
 
-    /**
-     * @return array
-     */
-    public function getDefinitions()
+    public function getDefinitions(): array
     {
         return $this->definitions;
     }
 
-    /**
-     * @param string $id
-     *
-     * @return mixed
-     */
-    public function getDefinition($id)
+    public function getDefinition(string $id): mixed
     {
         return $this->definitions[$id] ?? null;
     }
 
-    /**
-     * @return array
-     */
-    public function getInstances()
+    public function getInstances(): array
     {
         return $this->instances;
     }
 
-    /**
-     * @param string $id
-     *
-     * @return bool
-     */
-    public function has($id)
+    public function has(string $id): bool
     {
         if (isset($this->instances[$id])) {
             return true;
@@ -316,13 +249,7 @@ class Container implements ContainerInterface
         }
     }
 
-    /**
-     * @param callable $callable
-     * @param array    $parameters
-     *
-     * @return mixed
-     */
-    public function call($callable, $parameters = [])
+    public function call(callable $callable, array $parameters = []): mixed
     {
         if (is_array($callable)) {
             $rFunction = new ReflectionMethod($callable[0], $callable[1]);
