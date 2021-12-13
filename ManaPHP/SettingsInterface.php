@@ -1,50 +1,19 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP;
 
 interface SettingsInterface
 {
-    /**
-     * @param string $key
-     * @param string $default
-     *
-     * @return string
-     */
-    public function get($key, $default = null);
+    public function get(string $key, ?string $default = null): ?string;
 
-    /**
-     * @param array $keys
-     *
-     * @return array
-     */
-    public function mGet($keys);
+    public function mGet(array $keys): array;
 
-    /**
-     * @param string           $key
-     * @param string|int|float $value
-     *
-     * @return static
-     */
-    public function set($key, $value);
+    public function set(string $key, string $value): static;
 
-    /**
-     * @param array $kvs
-     *
-     * @return static
-     */
-    public function mSet($kvs);
+    public function mSet(array $kvs): static;
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function exists($key);
+    public function exists(string $key): bool;
 
-    /**
-     * @param string $key
-     *
-     * @return static
-     */
-    public function delete($key);
+    public function delete(string $key): static;
 }

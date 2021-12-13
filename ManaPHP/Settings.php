@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP;
 
@@ -9,20 +10,10 @@ use ManaPHP\Exception\InvalidArgumentException;
  */
 class Settings extends Component implements SettingsInterface
 {
-    /**
-     * @var string
-     */
-    protected $key = 'settings';
+    protected string $key = 'settings';
+    protected int $ttl = 1;
 
-    /**
-     * @var int
-     */
-    protected $ttl = 1;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['key'])) {
             $this->key = $options['key'];
@@ -33,13 +24,7 @@ class Settings extends Component implements SettingsInterface
         }
     }
 
-    /**
-     * @param string $key
-     * @param string $default
-     *
-     * @return string
-     */
-    public function get($key, $default = null)
+    public function get(string $key, ?string $default = null): ?string
     {
         if ($this->ttl <= 0) {
             if (($value = $this->redisDb->hGet($this->key, $key)) === false) {
@@ -66,12 +51,7 @@ class Settings extends Component implements SettingsInterface
         }
     }
 
-    /**
-     * @param array $keys
-     *
-     * @return array
-     */
-    public function mGet($keys)
+    public function mGet(array $keys): array
     {
         $values = $this->redisDb->hMGet($this->key, $keys);
 
@@ -84,47 +64,26 @@ class Settings extends Component implements SettingsInterface
         return $values;
     }
 
-    /**
-     * @param string           $key
-     * @param string|int|float $value
-     *
-     * @return static
-     */
-    public function set($key, $value)
+    public function set(string $key, string $value): static
     {
         $this->redisDb->hSet($this->key, $key, (string)$value);
 
         return $this;
     }
 
-    /**
-     * @param array $kvs
-     *
-     * @return static
-     */
-    public function mSet($kvs)
+    public function mSet(array $kvs): static
     {
         $this->redisDb->hMSet($this->key, $kvs);
 
         return $this;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function exists($key)
+    public function exists(string $key): bool
     {
         return $this->redisDb->hExists($this->key, $key);
     }
 
-    /**
-     * @param string $key
-     *
-     * @return static
-     */
-    public function delete($key)
+    public function delete(string $key): static
     {
         $this->redisDb->hDel($this->key, $key);
 
