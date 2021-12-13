@@ -24,28 +24,26 @@ class Settings extends Component implements SettingsInterface
         }
     }
 
+    public function getInternal(string $key, ?string $default = null): ?string
+    {
+        if (($value = $this->redisDb->hGet($this->key, $key)) === false) {
+            if ($default === null) {
+                throw new InvalidArgumentException(['`%s` key is not exists', $key]);
+            } else {
+                $value = $default;
+            }
+        }
+        return $value;
+    }
+
     public function get(string $key, ?string $default = null): ?string
     {
         if ($this->ttl <= 0) {
-            if (($value = $this->redisDb->hGet($this->key, $key)) === false) {
-                if ($default === null) {
-                    throw new InvalidArgumentException(['`%s` key is not exists', $key]);
-                } else {
-                    $value = $default;
-                }
-            }
-            return $value;
+            return $this->getInternal($key, $default);
         } else {
             return apcu_remember(
                 $this->key . ':' . $key, $this->ttl, function () use ($default, $key) {
-                if (($value = $this->redisDb->hGet($this->key, $key)) === false) {
-                    if ($default === null) {
-                        throw new InvalidArgumentException(['`%s` key is not exists', $key]);
-                    } else {
-                        $value = $default;
-                    }
-                }
-                return $value;
+                return $this->getInternal($key, $default);
             }
             );
         }
@@ -66,7 +64,7 @@ class Settings extends Component implements SettingsInterface
 
     public function set(string $key, string $value): static
     {
-        $this->redisDb->hSet($this->key, $key, (string)$value);
+        $this->redisDb->hSet($this->key, $key, $value);
 
         return $this;
     }
