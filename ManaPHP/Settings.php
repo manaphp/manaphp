@@ -49,21 +49,9 @@ class Settings extends Component implements SettingsInterface
         }
     }
 
-    public function mGet(array $keys): array
-    {
-        return $this->redisDb->hMGet($this->key, $keys);
-    }
-
     public function set(string $key, string $value): static
     {
         $this->redisDb->hSet($this->key, $key, $value);
-
-        return $this;
-    }
-
-    public function mSet(array $kvs): static
-    {
-        $this->redisDb->hMSet($this->key, $kvs);
 
         return $this;
     }
