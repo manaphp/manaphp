@@ -7,7 +7,7 @@ use ManaPHP\Logging\Logger\LogCategorizable;
 
 abstract class Widget extends Component implements WidgetInterface, LogCategorizable
 {
-    public function categorizeLog()
+    public function categorizeLog(): string
     {
         return basename(str_replace('\\', '.', static::class), 'Widget');
     }

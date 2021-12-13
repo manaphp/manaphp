@@ -9,7 +9,7 @@ use ManaPHP\Logging\Logger\LogCategorizable;
  */
 class Controller extends Component implements LogCategorizable
 {
-    public function categorizeLog()
+    public function categorizeLog(): string
     {
         return basename(str_replace('\\', '.', static::class), 'Controller');
     }

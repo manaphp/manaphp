@@ -71,7 +71,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
-    public function categorizeLog()
+    public function categorizeLog(): string
     {
         return str_replace('\\', '.', get_class($this));
     }

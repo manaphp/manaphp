@@ -1,11 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Logging\Logger;
 
 interface LogCategorizable
 {
-    /**
-     * @return string
-     */
-    public function categorizeLog();
+    public function categorizeLog(): string;
 }

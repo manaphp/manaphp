@@ -20,7 +20,7 @@ class Service extends Component implements LogCategorizable
         }
     }
 
-    public function categorizeLog()
+    public function categorizeLog(): string
     {
         return basename(str_replace('\\', '.', static::class), 'Service');
     }
