@@ -356,7 +356,7 @@ class Router extends Component implements RouterInterface
         return $this;
     }
 
-    public function createUrl(string|array $args, false|string $scheme = false): string
+    public function createUrl(string|array $args, bool|string $scheme = false): string
     {
         $context = $this->context;
 

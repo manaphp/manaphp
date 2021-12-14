@@ -57,5 +57,5 @@ interface RouterInterface
 
     public function setMatched(bool $matched): static;
 
-    public function createUrl(string|array $args, false|string $scheme = false): string;
+    public function createUrl(string|array $args, bool|string $scheme = false): string;
 }
