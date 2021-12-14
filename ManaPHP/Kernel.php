@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP;
 
 use ManaPHP\Di\Container;
+use ManaPHP\Di\ContainerInterface;
 
 /**
  * @property-read \ManaPHP\EnvInterface    $env
@@ -11,15 +13,9 @@ use ManaPHP\Di\Container;
  */
 class Kernel extends Component
 {
-    /**
-     * @var string
-     */
-    protected $rootDir;
+    protected string $rootDir;
 
-    /**
-     * @param string $rootDir
-     */
-    public function __construct($rootDir)
+    public function __construct(string $rootDir)
     {
         $this->rootDir = $rootDir;
 
@@ -46,18 +42,12 @@ class Kernel extends Component
         $this->alias->set('@config', "$rootDir/config");
     }
 
-    /**
-     * @return \ManaPHP\Di\ContainerInterface
-     */
-    public function getContainer()
+    public function getContainer(): ContainerInterface
     {
         return $this->container;
     }
 
-    /**
-     * @param string $server
-     */
-    public function start($server)
+    public function start(string $server): void
     {
         $this->env->load();
         $this->config->load();
