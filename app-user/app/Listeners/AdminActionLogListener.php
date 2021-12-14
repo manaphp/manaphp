@@ -16,7 +16,7 @@ use ManaPHP\Helper\Arr;
  */
 class AdminActionLogListener extends Listener
 {
-    public function listen()
+    public function listen(): void
     {
         $this->attachEvent('app:adminActionLogAction', [$this, 'onAdminActionLogAction']);
         $this->attachEvent('db:executing', [$this, 'onDbExecuting']);

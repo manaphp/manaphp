@@ -26,7 +26,7 @@ class Middleware extends Listener
         return basename(str_replace('\\', '.', static::class), 'Middleware');
     }
 
-    public function listen()
+    public function listen(): void
     {
         if ($this->enabled) {
             foreach (get_class_methods($this) as $method) {
