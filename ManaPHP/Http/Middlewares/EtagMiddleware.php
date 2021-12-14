@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Middlewares;
 
@@ -10,15 +11,9 @@ use ManaPHP\Http\Middleware;
  */
 class EtagMiddleware extends Middleware
 {
-    /**
-     * @var string
-     */
-    protected $algo = 'md5';
+    protected string $algo = 'md5';
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
 
@@ -27,10 +22,7 @@ class EtagMiddleware extends Middleware
         }
     }
 
-    /**
-     * @return void
-     */
-    public function onResponding()
+    public function onResponding(): void
     {
         if ($this->response->getStatusCode() !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
             return;

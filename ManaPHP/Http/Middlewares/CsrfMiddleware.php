@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Middlewares;
 
@@ -14,20 +15,10 @@ use ManaPHP\Rest\Controller as RestController;
  */
 class CsrfMiddleware extends Middleware
 {
-    /**
-     * @var bool
-     */
-    protected $strict = true;
+    protected bool $strict = true;
+    protected array $domains = [];
 
-    /**
-     * @var array
-     */
-    protected $domains = [];
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
 
@@ -44,10 +35,7 @@ class CsrfMiddleware extends Middleware
         }
     }
 
-    /**
-     * @return bool
-     */
-    protected function isOriginSafe()
+    protected function isOriginSafe(): bool
     {
         if (($origin = $this->request->getOrigin(false)) === '') {
             return false;
@@ -87,13 +75,7 @@ class CsrfMiddleware extends Middleware
         return false;
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     * @throws AttackDetectedException
-     */
-    public function onValidate(EventArgs $eventArgs)
+    public function onValidate(EventArgs $eventArgs): void
     {
         if ($this->isOriginSafe()) {
             return;

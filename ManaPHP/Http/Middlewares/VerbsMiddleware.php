@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Middlewares;
 
@@ -13,13 +14,7 @@ use ManaPHP\Mvc\Controller;
  */
 class VerbsMiddleware extends Middleware
 {
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     * @throws MethodNotAllowedHttpException
-     */
-    public function onValidate(EventArgs $eventArgs)
+    public function onValidate(EventArgs $eventArgs): void
     {
         /** @var \ManaPHP\Http\Controller $controller */
         $controller = $eventArgs->data['controller'];

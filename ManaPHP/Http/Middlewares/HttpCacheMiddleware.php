@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Middlewares;
 
@@ -12,11 +13,7 @@ use ManaPHP\Http\Middleware;
  */
 class HttpCacheMiddleware extends Middleware
 {
-    /**
-     * @return void
-     * @throws MisuseException
-     */
-    public function onResponding()
+    public function onResponding(): void
     {
         if ($this->response->getStatusCode() !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
             return;

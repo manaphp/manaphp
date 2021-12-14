@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Middlewares;
 
@@ -12,25 +13,11 @@ use ManaPHP\Http\Middleware;
  */
 class CorsMiddleware extends Middleware
 {
-    /**
-     * @var int
-     */
-    protected $max_age = 86400;
+    protected int $max_age = 86400;
+    protected ?string $origin = null;
+    protected bool $credentials = true;
 
-    /**
-     * @var string
-     */
-    protected $origin;
-
-    /**
-     * @var bool
-     */
-    protected $credentials = true;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
 
@@ -47,10 +34,7 @@ class CorsMiddleware extends Middleware
         }
     }
 
-    /**
-     * @return void
-     */
-    public function onBegin()
+    public function onBegin(): void
     {
         $origin = $this->request->getServer('HTTP_ORIGIN');
         $host = $this->request->getServer('HTTP_HOST');

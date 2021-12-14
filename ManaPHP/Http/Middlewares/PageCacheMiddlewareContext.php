@@ -1,11 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Middlewares;
 
 class PageCacheMiddlewareContext
 {
-    public $ttl;
-    public $key;
-    public $if_none_match;
-    public $cache_used;
+    public ?int $ttl = null;
+    public string $key;
+    public string $if_none_match;
+    public bool $cache_used = false;
 }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Middlewares;
 
@@ -18,28 +19,15 @@ use ManaPHP\Mvc\Controller as MvcController;
  */
 class PageCacheMiddleware extends Middleware
 {
-    /**
-     * @var string
-     */
-    protected $prefix;
+    protected string $prefix;
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
         $this->prefix = $options['prefix'] ?? sprintf("cache:%s:pageCachePlugin:", $this->config->get('id'));
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     * @throws AbortException
-     * @throws MissingFieldException
-     */
-    public function onReady(EventArgs $eventArgs)
+    public function onReady(EventArgs $eventArgs): void
     {
         if (!in_array($this->request->getMethod(), ['GET', 'POST', 'HEAD'])) {
             return;
@@ -149,10 +137,7 @@ class PageCacheMiddleware extends Middleware
         throw new AbortException();
     }
 
-    /**
-     * @return void
-     */
-    public function onResponding()
+    public function onResponding(): void
     {
         $context = $this->context;
 

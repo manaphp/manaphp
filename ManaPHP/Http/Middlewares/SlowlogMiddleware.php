@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Middlewares;
 
@@ -13,25 +14,11 @@ use ManaPHP\Http\Middleware;
  */
 class SlowlogMiddleware extends Middleware
 {
-    /**
-     * @var float
-     */
-    protected $threshold = 1.0;
+    protected float $threshold = 1.0;
+    protected string $file = '@data/slowlogPlugin/{id}.log';
+    protected string $format = '[:date][:client_ip][:request_id][:elapsed] :message';
 
-    /**
-     * @var string
-     */
-    protected $file = '@data/slowlogPlugin/{id}.log';
-
-    /**
-     * @var string
-     */
-    protected $format = '[:date][:client_ip][:request_id][:elapsed] :message';
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
 
@@ -50,13 +37,7 @@ class SlowlogMiddleware extends Middleware
         }
     }
 
-    /**
-     * @param float $elapsed
-     * @param mixed $message
-     *
-     * @return void
-     */
-    protected function write($elapsed, $message)
+    protected function write(float $elapsed, mixed $message): void
     {
         $elapsed = round($elapsed, 3);
 
@@ -75,13 +56,7 @@ class SlowlogMiddleware extends Middleware
         LocalFS::fileAppend($this->file, strtr($this->format, $replaced));
     }
 
-    /**
-     * @param float $elapsed
-     * @param float $precision
-     *
-     * @return string
-     */
-    protected function getEid($elapsed, $precision = 0.1)
+    protected function getEid(float $elapsed, float $precision = 0.1): string
     {
         $id = '';
         for ($level = 0; $level < 3; $level++) {
@@ -99,10 +74,7 @@ class SlowlogMiddleware extends Middleware
         return $id;
     }
 
-    /**
-     * @return void
-     */
-    public function onEnd()
+    public function onEnd(): void
     {
         if ($this->response->hasHeader('X-Response-Time')) {
             $elapsed = $this->response->getHeader('X-Response-Time');

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Middlewares;
 
@@ -14,20 +15,10 @@ use ManaPHP\Http\Middleware;
  */
 class RateLimitMiddleware extends Middleware
 {
-    /**
-     * @var string
-     */
-    protected $prefix;
+    protected string $prefix;
+    protected string $limits = '60/m';
 
-    /**
-     * @var string
-     */
-    protected $limits = '60/m';
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
 
@@ -38,14 +29,7 @@ class RateLimitMiddleware extends Middleware
         }
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     * @throws TooManyRequestsException
-     * @throws \ManaPHP\Exception\InvalidValueException
-     */
-    public function onValidate(EventArgs $eventArgs)
+    public function onValidate(EventArgs $eventArgs): void
     {
         /** @var \ManaPHP\Http\DispatcherInterface $dispatcher */
         $dispatcher = $eventArgs->source;

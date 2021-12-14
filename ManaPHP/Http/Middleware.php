@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
@@ -6,15 +7,9 @@ use ManaPHP\Event\Listener;
 
 class Middleware extends Listener
 {
-    /**
-     * @var bool
-     */
-    protected $enabled = true;
+    protected bool $enabled = true;
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['enabled'])) {
             $this->enabled = $options['enabled'];
