@@ -123,7 +123,7 @@ class Router extends Component implements RouterInterface
      *
      * @return \ManaPHP\Http\Router\RouteInterface
      */
-    protected function addRoute($pattern, $paths = null, $methods = null)
+    protected function addRoute($pattern, $paths = [], $methods = null)
     {
         $route = new Route($pattern, $paths, $methods, $this->case_sensitive);
         if (!is_array($methods) && strpbrk($pattern, ':{') === false) {
@@ -144,7 +144,7 @@ class Router extends Component implements RouterInterface
      *
      * @return \ManaPHP\Http\Router\RouteInterface
      */
-    public function add($pattern, $paths = null, $methods = null)
+    public function add($pattern, $paths = [], $methods = null)
     {
         return $this->addRoute($pattern, $paths, $methods);
     }
@@ -157,7 +157,7 @@ class Router extends Component implements RouterInterface
      *
      * @return \ManaPHP\Http\Router\RouteInterface
      */
-    public function addGet($pattern, $paths = null)
+    public function addGet($pattern, $paths = [])
     {
         return $this->addRoute($pattern, $paths, 'GET');
     }
@@ -170,7 +170,7 @@ class Router extends Component implements RouterInterface
      *
      * @return \ManaPHP\Http\Router\RouteInterface
      */
-    public function addPost($pattern, $paths = null)
+    public function addPost($pattern, $paths = [])
     {
         return $this->addRoute($pattern, $paths, 'POST');
     }
@@ -183,7 +183,7 @@ class Router extends Component implements RouterInterface
      *
      * @return \ManaPHP\Http\Router\RouteInterface
      */
-    public function addPut($pattern, $paths = null)
+    public function addPut($pattern, $paths = [])
     {
         return $this->addRoute($pattern, $paths, 'PUT');
     }
@@ -196,7 +196,7 @@ class Router extends Component implements RouterInterface
      *
      * @return \ManaPHP\Http\Router\RouteInterface
      */
-    public function addPatch($pattern, $paths = null)
+    public function addPatch($pattern, $paths = [])
     {
         return $this->addRoute($pattern, $paths, 'PATCH');
     }
@@ -209,7 +209,7 @@ class Router extends Component implements RouterInterface
      *
      * @return \ManaPHP\Http\Router\RouteInterface
      */
-    public function addDelete($pattern, $paths = null)
+    public function addDelete($pattern, $paths = [])
     {
         return $this->addRoute($pattern, $paths, 'DELETE');
     }
@@ -222,7 +222,7 @@ class Router extends Component implements RouterInterface
      *
      * @return \ManaPHP\Http\Router\RouteInterface
      */
-    public function addHead($pattern, $paths = null)
+    public function addHead($pattern, $paths = [])
     {
         return $this->addRoute($pattern, $paths, 'HEAD');
     }
@@ -239,7 +239,7 @@ class Router extends Component implements RouterInterface
 
         if ($controller === null) {
             if (str_contains($pattern, '/:controller')) {
-                return $this->addRoute($pattern, null, 'REST');
+                return $this->addRoute($pattern, [], 'REST');
             }
 
             if (!preg_match('#/(\w+)$#', $pattern, $match)) {

@@ -42,7 +42,7 @@ interface RouterInterface
      *
      * @return \ManaPHP\Http\Router\RouteInterface
      */
-    public function add($pattern, $paths = null, $methods = null);
+    public function add($pattern, $paths = [], $methods = null);
 
     /**
      * Adds a route to the router that only match if the HTTP method is GET
@@ -52,7 +52,7 @@ interface RouterInterface
      *
      * @return \ManaPHP\Http\Router\RouteInterface
      */
-    public function addGet($pattern, $paths = null);
+    public function addGet($pattern, $paths = []);
 
     /**
      * Adds a route to the router that only match if the HTTP method is POST
@@ -62,7 +62,7 @@ interface RouterInterface
      *
      * @return \ManaPHP\Http\Router\RouteInterface
      */
-    public function addPost($pattern, $paths = null);
+    public function addPost($pattern, $paths = []);
 
     /**
      * Adds a route to the router that only match if the HTTP method is PUT
@@ -72,7 +72,7 @@ interface RouterInterface
      *
      * @return \ManaPHP\Http\Router\RouteInterface
      */
-    public function addPut($pattern, $paths = null);
+    public function addPut($pattern, $paths = []);
 
     /**
      * Adds a route to the router that only match if the HTTP method is PATCH
@@ -82,7 +82,7 @@ interface RouterInterface
      *
      * @return \ManaPHP\Http\Router\RouteInterface
      */
-    public function addPatch($pattern, $paths = null);
+    public function addPatch($pattern, $paths = []);
 
     /**
      * Adds a route to the router that only match if the HTTP method is DELETE
@@ -92,7 +92,7 @@ interface RouterInterface
      *
      * @return \ManaPHP\Http\Router\RouteInterface
      */
-    public function addDelete($pattern, $paths = null);
+    public function addDelete($pattern, $paths = []);
 
     /**
      * Adds a route to the router that only match if the HTTP method is HEAD
@@ -102,7 +102,7 @@ interface RouterInterface
      *
      * @return \ManaPHP\Http\Router\RouteInterface
      */
-    public function addHead($pattern, $paths = null);
+    public function addHead($pattern, $paths = []);
 
     /**
      * @param string $pattern

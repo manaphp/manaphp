@@ -33,7 +33,7 @@ class Route implements RouteInterface
      * @param string|array $methods
      * @param bool         $case_sensitive
      */
-    public function __construct($pattern, $paths = null, $methods = null, $case_sensitive = true)
+    public function __construct($pattern, $paths = [], $methods = null, $case_sensitive = true)
     {
         $this->pattern = $pattern;
         $this->compiled = $this->compilePattern($pattern, $case_sensitive);
@@ -105,13 +105,11 @@ class Route implements RouteInterface
      *
      * @return array
      */
-    protected function normalizePaths($paths = [])
+    protected function normalizePaths($paths)
     {
         $routePaths = [];
 
-        if ($paths === null) {
-            return ['controller' => 'index', 'action' => 'index'];
-        } elseif (is_string($paths)) {
+        if (is_string($paths)) {
             if (($pos = strpos($paths, '::')) !== false) {
                 $routePaths['controller'] = substr($paths, 0, $pos);
                 $routePaths['action'] = substr($paths, $pos + 2);
