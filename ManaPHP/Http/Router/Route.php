@@ -33,7 +33,7 @@ class Route implements RouteInterface
      * @param string|array $methods
      * @param bool         $case_sensitive
      */
-    public function __construct($pattern, $paths = [], $methods = null, $case_sensitive = true)
+    public function __construct($pattern, $paths = [], $methods = [], $case_sensitive = true)
     {
         $this->pattern = $pattern;
         $this->compiled = $this->compilePattern($pattern, $case_sensitive);
@@ -196,7 +196,7 @@ class Route implements RouteInterface
         $matches = [];
 
         $methods = $this->methods;
-        if ($methods === null || $methods === 'REST') {
+        if ($methods === [] || $methods === 'REST') {
             null;
         } elseif (is_string($methods)) {
             if ($methods !== $method) {

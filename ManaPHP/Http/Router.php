@@ -123,7 +123,7 @@ class Router extends Component implements RouterInterface
      *
      * @return \ManaPHP\Http\Router\RouteInterface
      */
-    protected function addRoute($pattern, $paths = [], $methods = null)
+    protected function addRoute($pattern, $paths = [], $methods = [])
     {
         $route = new Route($pattern, $paths, $methods, $this->case_sensitive);
         if (!is_array($methods) && strpbrk($pattern, ':{') === false) {
@@ -144,7 +144,7 @@ class Router extends Component implements RouterInterface
      *
      * @return \ManaPHP\Http\Router\RouteInterface
      */
-    public function add($pattern, $paths = [], $methods = null)
+    public function add($pattern, $paths = [], $methods = [])
     {
         return $this->addRoute($pattern, $paths, $methods);
     }

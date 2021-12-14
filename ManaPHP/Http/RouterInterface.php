@@ -42,7 +42,7 @@ interface RouterInterface
      *
      * @return \ManaPHP\Http\Router\RouteInterface
      */
-    public function add($pattern, $paths = [], $methods = null);
+    public function add($pattern, $paths = [], $methods = []);
 
     /**
      * Adds a route to the router that only match if the HTTP method is GET
