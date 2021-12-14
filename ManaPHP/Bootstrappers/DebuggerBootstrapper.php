@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Bootstrappers;
 
@@ -11,15 +12,9 @@ use ManaPHP\Component;
  */
 class DebuggerBootstrapper extends Component implements BootstrapperInterface
 {
-    /**
-     * @var bool
-     */
-    protected $enabled;
+    protected bool $enabled;
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['enabled'])) {
             $this->enabled = (bool)$options['enabled'];
@@ -28,14 +23,14 @@ class DebuggerBootstrapper extends Component implements BootstrapperInterface
         }
     }
 
-    public function bootstrap()
+    public function bootstrap(): void
     {
         if ($this->enabled) {
             $this->attachEvent('httpServer:start', [$this, 'onHttpServerStart']);
         }
     }
 
-    public function onHttpServerStart()
+    public function onHttpServerStart(): void
     {
         $this->debugger->start();
     }

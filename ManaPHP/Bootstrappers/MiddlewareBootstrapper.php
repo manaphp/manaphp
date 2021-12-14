@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Bootstrappers;
 
@@ -8,22 +9,16 @@ use ManaPHP\Helper\LocalFS;
 
 class MiddlewareBootstrapper extends Component implements BootstrapperInterface
 {
-    /**
-     * @var array
-     */
-    protected $middlewares = [];
+    protected array $middlewares = [];
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['middlewares'])) {
             $this->middlewares = $options['middlewares'];
         }
     }
 
-    public function bootstrap()
+    public function bootstrap(): void
     {
         /** @var \ManaPHP\Http\Middleware $middleware */
 

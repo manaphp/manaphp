@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Bootstrappers;
 
@@ -12,22 +13,16 @@ use ManaPHP\Helper\Str;
  */
 class TracerBootstrapper extends Component implements BootstrapperInterface
 {
-    /**
-     * @var array
-     */
-    protected $tracers = ['*'];
+    protected array $tracers = ['*'];
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['tracers'])) {
             $this->tracers = $options['tracers'];
         }
     }
 
-    public function bootstrap()
+    public function bootstrap(): void
     {
         /** @var \ManaPHP\Tracer $tracer */
 

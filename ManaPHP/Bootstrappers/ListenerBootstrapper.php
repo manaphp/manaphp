@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Bootstrappers;
 
@@ -8,7 +9,7 @@ use ManaPHP\Helper\LocalFS;
 
 class ListenerBootstrapper extends Component implements BootstrapperInterface
 {
-    public function bootstrap()
+    public function bootstrap(): void
     {
         /** @var \ManaPHP\Event\ListenInterface $listener */
 
