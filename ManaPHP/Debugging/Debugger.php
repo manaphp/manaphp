@@ -448,10 +448,7 @@ class Debugger extends Component implements DebuggerInterface
         return $data;
     }
 
-    /**
-     * @return array
-     */
-    public function dump()
+    public function dump(): array
     {
         $data = parent::dump();
 

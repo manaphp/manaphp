@@ -24,7 +24,7 @@ class Locale extends Component implements LocaleInterface
         }
     }
 
-    protected function createContext()
+    protected function createContext(): LocaleContext
     {
         /** @var \ManaPHP\I18n\LocaleContext $context */
         $context = parent::createContext();

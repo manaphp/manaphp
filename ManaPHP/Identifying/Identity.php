@@ -12,7 +12,7 @@ use ManaPHP\Exception\UnauthorizedException;
  */
 class Identity extends Component implements IdentityInterface
 {
-    protected function createContext()
+    protected function createContext(): IdentityContext
     {
         /** @var \ManaPHP\Identifying\IdentityContext $context */
         $context = parent::createContext();

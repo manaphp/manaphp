@@ -166,7 +166,7 @@ class File extends Component implements FileInterface
         @unlink($this->file['tmp_name']);
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->file;
     }

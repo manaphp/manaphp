@@ -98,10 +98,7 @@ abstract class AbstractLogger extends Component implements LoggerInterface
         $this->attachEvent('request:end', [$this, 'onRequestEnd']);
     }
 
-    /**
-     * @return AbstractLoggerContext
-     */
-    protected function createContext()
+    protected function createContext(): AbstractLoggerContext
     {
         /** @var \ManaPHP\Logging\AbstractLoggerContext $context */
         $context = parent::createContext();
@@ -474,7 +471,7 @@ abstract class AbstractLogger extends Component implements LoggerInterface
         return $this->log(self::LEVEL_FATAL, $message, $category);
     }
 
-    public function dump()
+    public function dump(): array
     {
         $data = parent::dump();
 

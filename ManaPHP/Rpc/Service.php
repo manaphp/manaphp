@@ -2,6 +2,7 @@
 
 namespace ManaPHP\Rpc;
 
+use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Di\Injectable;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
@@ -47,7 +48,7 @@ class Service implements Injectable
         $this->rpcClient = $this->container->make($class, $options);
     }
 
-    public function setContainer($container)
+    public function setContainer(ContainerInterface $container): void
     {
         $this->container = $container;
     }

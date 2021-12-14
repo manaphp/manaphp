@@ -1,10 +1,13 @@
-<?php /** @noinspection MagicMethodsValidityInspection */
+<?php
+declare(strict_types=1);
 
 namespace ManaPHP;
 
 use JsonSerializable;
 use ManaPHP\Coroutine\Context\Inseparable;
+use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Di\Injectable;
+use ManaPHP\Event\EventArgs;
 use Swoole\Coroutine;
 
 /**
@@ -13,25 +16,14 @@ use Swoole\Coroutine;
  */
 class Component implements Injectable, JsonSerializable
 {
-    /**
-     * @var \ManaPHP\Di\ContainerInterface
-     */
-    protected $container;
+    protected ContainerInterface $container;
 
-    /**
-     * @param \ManaPHP\Di\ContainerInterface $container
-     *
-     * @return void
-     */
-    public function setContainer($container)
+    public function setContainer(ContainerInterface $container): void
     {
         $this->container = $container;
     }
 
-    /**
-     * @return string|null
-     */
-    protected function findContext()
+    protected function findContext(): ?string
     {
         static $cached = [];
 
@@ -56,10 +48,7 @@ class Component implements Injectable, JsonSerializable
         return $context;
     }
 
-    /**
-     * @return object
-     */
-    protected function createContext()
+    protected function createContext(): object
     {
         if (($context = $this->findContext()) === null) {
             throw new Exception(['`%s` context class is not exists', get_class($this) . 'Context']);
@@ -68,10 +57,7 @@ class Component implements Injectable, JsonSerializable
         return new $context();
     }
 
-    /**
-     * @return object
-     */
-    protected function getContext()
+    protected function getContext(): object
     {
         global $__root_context;
 
@@ -111,20 +97,12 @@ class Component implements Injectable, JsonSerializable
         }
     }
 
-    /**
-     * @return bool
-     */
-    protected function hasContext()
+    protected function hasContext(): bool
     {
         return $this->findContext() !== null;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return mixed
-     */
-    public function __get($name)
+    public function __get(string $name): mixed
     {
         if ($name === 'context') {
             return $this->getContext();
@@ -133,52 +111,26 @@ class Component implements Injectable, JsonSerializable
         }
     }
 
-    /**
-     * Attach a listener to the events manager
-     *
-     * @param string   $event
-     * @param callable $handler
-     * @param int      $priority
-     *
-     * @return static
-     */
-    protected function attachEvent($event, $handler, $priority = 0)
+    protected function attachEvent(string $event, callable $handler, int $priority = 0): static
     {
         $this->eventManager->attachEvent($event, $handler, $priority);
 
         return $this;
     }
 
-    /**
-     * @param string   $event
-     * @param callable $handler
-     *
-     * @return static
-     */
-    protected function detachEvent($event, $handler)
+    protected function detachEvent(string $event, callable $handler): static
     {
         $this->eventManager->detachEvent($event, $handler);
 
         return $this;
     }
 
-    /**
-     * Fires an event in the events manager causing that the active listeners will be notified about it
-     *
-     * @param string $event
-     * @param mixed  $data
-     *
-     * @return \ManaPHP\Event\EventArgs
-     */
-    protected function fireEvent($event, $data = null)
+    protected function fireEvent(string $event, mixed $data = null): EventArgs
     {
         return $this->eventManager->fireEvent($event, $data, $this);
     }
 
-    /**
-     * @return array
-     */
-    public function __debugInfo()
+    public function __debugInfo(): array
     {
         $data = [];
 
@@ -197,10 +149,7 @@ class Component implements Injectable, JsonSerializable
         return $data;
     }
 
-    /**
-     * @return array
-     */
-    public function dump()
+    public function dump(): array
     {
         $data = [];
 
@@ -219,7 +168,7 @@ class Component implements Injectable, JsonSerializable
         return $data;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->__debugInfo();
     }

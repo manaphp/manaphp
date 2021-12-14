@@ -172,10 +172,7 @@ class Paginator extends Component implements PaginatorInterface
         }
     }
 
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->renderAsArray();
     }

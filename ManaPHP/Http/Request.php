@@ -506,9 +506,9 @@ class Request extends Component implements RequestInterface
         return '';
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
-        return $this->globals->get();
+        return (array)$this->globals->get();
     }
 
     /**

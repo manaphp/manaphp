@@ -115,7 +115,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         return new ArrayIterator($this->all());
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->all();
     }

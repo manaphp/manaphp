@@ -159,7 +159,7 @@ class Globals extends Component implements GlobalsInterface
         return $this;
     }
 
-    public function dump()
+    public function dump(): array
     {
         $data = parent::dump();
 

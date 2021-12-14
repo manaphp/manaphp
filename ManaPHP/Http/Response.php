@@ -621,10 +621,7 @@ class Response extends Component implements ResponseInterface
         return $this->context->headers;
     }
 
-    /**
-     * @return array
-     */
-    public function dump()
+    public function dump(): array
     {
         $data = parent::dump();
 

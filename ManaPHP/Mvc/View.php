@@ -425,10 +425,7 @@ class View extends Component implements ViewInterface
         return $this->context->content;
     }
 
-    /**
-     * @return array
-     */
-    public function dump()
+    public function dump(): array
     {
         $data = parent::dump();
 

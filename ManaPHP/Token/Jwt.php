@@ -157,10 +157,7 @@ class Jwt extends Component implements JwtInterface
         }
     }
 
-    /**
-     * @return array
-     */
-    public function dump()
+    public function dump(): array
     {
         $data = parent::dump();
         $data['key'] = '***';
