@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP;
 
@@ -7,18 +8,9 @@ use ManaPHP\Exception\MisuseException;
 
 class Alias extends Component implements AliasInterface
 {
-    /**
-     * @var array
-     */
-    protected $aliases = ['@manaphp' => __DIR__];
+    protected array $aliases = ['@manaphp' => __DIR__];
 
-    /**
-     * @param string $name
-     * @param string $path
-     *
-     * @return string
-     */
-    public function set($name, $path)
+    public function set(string $name, string $path): string
     {
         if ($name[0] !== '@') {
             throw new MisuseException(['`:name` must start with `@`', 'name' => $name]);
@@ -39,17 +31,8 @@ class Alias extends Component implements AliasInterface
         return $this->aliases[$name];
     }
 
-    /**
-     * @param string $name
-     *
-     * @return string|array|null
-     */
-    public function get($name = null)
+    public function get(string $name): ?string
     {
-        if ($name === null) {
-            return $this->aliases;
-        }
-
         if ($name[0] !== '@') {
             throw new MisuseException(['`:name` must start with `@`', 'name' => $name]);
         }
@@ -57,12 +40,7 @@ class Alias extends Component implements AliasInterface
         return $this->aliases[$name] ?? null;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function has($name)
+    public function has(string $name): bool
     {
         if ($name[0] !== '@') {
             throw new MisuseException(['`:name` must start with `@`', 'name' => $name]);
@@ -71,12 +49,7 @@ class Alias extends Component implements AliasInterface
         return isset($this->aliases[$name]);
     }
 
-    /**
-     * @param string $path
-     *
-     * @return string
-     */
-    public function resolve($path)
+    public function resolve(string $path): string
     {
         if ($path[0] !== '@') {
             return DIRECTORY_SEPARATOR === '/' ? $path : strtr($path, '\\', '/');

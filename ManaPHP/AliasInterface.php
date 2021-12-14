@@ -1,35 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP;
 
 interface AliasInterface
 {
-    /**
-     * @param string $name
-     * @param string $path
-     *
-     * @return string
-     */
-    public function set($name, $path);
+    public function set(string $name, string $path): string;
 
-    /**
-     * @param string $name
-     *
-     * @return array|string|null
-     */
-    public function get($name = null);
+    public function get(string $name): ?string;
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function has($name);
+    public function has(string $name): bool;
 
-    /**
-     * @param string $path
-     *
-     * @return string
-     */
-    public function resolve($path);
+    public function resolve(string $path): string;
 }
