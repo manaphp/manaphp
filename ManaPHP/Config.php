@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP;
 
@@ -9,36 +10,19 @@ use ManaPHP\Exception\InvalidKeyException;
  */
 class Config extends Component implements ConfigInterface
 {
-    /**
-     * @var array
-     */
-    protected $config = [];
+    protected array $config = [];
 
-    /**
-     * @param array $config
-     */
-    public function __construct($config = [])
+    public function __construct(array $config = [])
     {
         $this->config = $config;
     }
 
-    /**
-     * @param string $file
-     *
-     * @return array
-     */
-    public function load($file = '@config/app.php')
+    public function load(string $file = '@config/app.php'): array
     {
         return $this->config = require $this->alias->resolve($file);
     }
 
-    /**
-     * @param string $key
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function get($key = null, $default = null)
+    public function get(?string $key = null, $default = null): mixed
     {
         if ($key === null) {
             return $this->config;
@@ -53,27 +37,14 @@ class Config extends Component implements ConfigInterface
         }
     }
 
-    /**
-     * @param string $key
-     * @param mixed  $value
-     *
-     * @return mixed
-     */
-    public function set($key, $value)
+    public function set(string $key, mixed $value): static
     {
-        $old = $this->config[$key] ?? null;
-
         $this->config[$key] = $value;
 
-        return $old;
+        return $this;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function has($key)
+    public function has(string $key): bool
     {
         return isset($this->config[$key]);
     }

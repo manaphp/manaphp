@@ -1,36 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP;
 
 interface ConfigInterface
 {
-    /**
-     * @param string $file
-     *
-     * @return array
-     */
-    public function load($file = '@config/app.php');
+    public function load(string $file = '@config/app.php'): array;
 
-    /**
-     * @param string $key
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function get($key = null, $default = null);
+    public function get(?string $key = null, mixed $default = null): mixed;
 
-    /**
-     * @param string $key
-     * @param mixed value
-     *
-     * @return mixed
-     */
-    public function set($key, $value);
+    public function set(string $key, mixed $value): static;
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function has($key);
+    public function has(string $key): bool;
 }
