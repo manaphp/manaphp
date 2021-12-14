@@ -1,14 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Router;
 
 interface RouteInterface
 {
-    /**
-     * @param string $uri
-     * @param string $method
-     *
-     * @return false|array
-     */
-    public function match($uri, $method = 'GET');
+    public function match(string $uri, string $method = 'GET'): false|array;
 }

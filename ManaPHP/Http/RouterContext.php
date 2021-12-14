@@ -1,31 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
 class RouterContext
 {
-    /**
-     * @var string
-     */
-    public $area;
-
-    /**
-     * @var string
-     */
-    public $controller;
-
-    /**
-     * @var string
-     */
-    public $action;
-
-    /**
-     * @var array
-     */
-    public $params = [];
-
-    /**
-     * @var bool
-     */
-    public $matched = false;
+    public ?string $area = null;
+    public ?string $controller = null;
+    public ?string $action = null;
+    public array $params = [];
+    public bool $matched = false;
 }

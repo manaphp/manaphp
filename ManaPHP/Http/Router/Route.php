@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Router;
 
@@ -7,49 +8,21 @@ use ManaPHP\Helper\Str;
 
 class Route implements RouteInterface
 {
-    /**
-     * @var string
-     */
-    protected $pattern;
+    protected string $pattern;
+    protected string $compiled;
+    protected array $paths;
+    protected string|array $methods;
 
-    /**
-     * @var string
-     */
-    protected $compiled;
-
-    /**
-     * @var array
-     */
-    protected $paths;
-
-    /**
-     * @var string|array
-     */
-    protected $methods;
-
-    /**
-     * @param string       $pattern
-     * @param string|array $paths
-     * @param string|array $methods
-     * @param bool         $case_sensitive
-     */
-    public function __construct($pattern, $paths = [], $methods = [], $case_sensitive = true)
-    {
+    public function __construct(string $pattern, string|array $paths = [], string|array $methods = [],
+        bool $case_sensitive = true
+    ) {
         $this->pattern = $pattern;
         $this->compiled = $this->compilePattern($pattern, $case_sensitive);
         $this->paths = $this->normalizePaths($paths);
         $this->methods = $methods;
     }
 
-    /**
-     * Replaces placeholders from pattern returning a valid PCRE regular expression
-     *
-     * @param string $pattern
-     * @param bool   $case_sensitive
-     *
-     * @return string
-     */
-    protected function compilePattern($pattern, $case_sensitive)
+    protected function compilePattern(string $pattern, bool $case_sensitive): string
     {
         if (strpbrk($pattern, ':{') === false) {
             return $pattern;
@@ -98,14 +71,7 @@ class Route implements RouteInterface
         return '#^' . $pattern . '$#' . ($case_sensitive ? '' : 'i');
     }
 
-    /**
-     * Returns routePaths
-     *
-     * @param string|array $paths
-     *
-     * @return array
-     */
-    protected function normalizePaths($paths)
+    protected function normalizePaths(string|array $paths): array
     {
         $routePaths = [];
 
@@ -185,13 +151,7 @@ class Route implements RouteInterface
         return $routePaths;
     }
 
-    /**
-     * @param string $uri
-     * @param string $method
-     *
-     * @return array|false
-     */
-    public function match($uri, $method = 'GET')
+    public function match(string $uri, string $method = 'GET'): false|array
     {
         $matches = [];
 

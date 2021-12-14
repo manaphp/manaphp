@@ -1,209 +1,61 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
+use ManaPHP\Http\Router\RouteInterface;
+
 interface RouterInterface
 {
-    /**
-     * @return bool
-     */
-    public function isCaseSensitive();
+    public function isCaseSensitive(): bool;
 
-    /**
-     * @param string $prefix
-     *
-     * @return static
-     */
-    public function setPrefix($prefix);
+    public function setPrefix(string $prefix): static;
 
-    /**
-     * @return string
-     */
-    public function getPrefix();
+    public function getPrefix(): string;
 
-    /**
-     * @param array $areas
-     *
-     * @return static
-     */
-    public function setAreas($areas = null);
+    public function setAreas(?array $areas = null): static;
 
-    /**
-     * @return array
-     */
-    public function getAreas();
+    public function getAreas(): array;
 
-    /**
-     * Adds a route to the router on any HTTP method
-     *
-     * @param string       $pattern
-     * @param string|array $paths
-     * @param string|array $methods
-     *
-     * @return \ManaPHP\Http\Router\RouteInterface
-     */
-    public function add($pattern, $paths = [], $methods = []);
+    public function add(string $pattern, string|array $paths = [], string|array $methods = []): RouteInterface;
 
-    /**
-     * Adds a route to the router that only match if the HTTP method is GET
-     *
-     * @param string       $pattern
-     * @param string|array $paths
-     *
-     * @return \ManaPHP\Http\Router\RouteInterface
-     */
-    public function addGet($pattern, $paths = []);
+    public function addGet(string $pattern, string|array $paths = []): RouteInterface;
 
-    /**
-     * Adds a route to the router that only match if the HTTP method is POST
-     *
-     * @param string       $pattern
-     * @param string|array $paths
-     *
-     * @return \ManaPHP\Http\Router\RouteInterface
-     */
-    public function addPost($pattern, $paths = []);
+    public function addPost(string $pattern, string|array $paths = []): RouteInterface;
 
-    /**
-     * Adds a route to the router that only match if the HTTP method is PUT
-     *
-     * @param string       $pattern
-     * @param string|array $paths
-     *
-     * @return \ManaPHP\Http\Router\RouteInterface
-     */
-    public function addPut($pattern, $paths = []);
+    public function addPut(string $pattern, string|array $paths = []): RouteInterface;
 
-    /**
-     * Adds a route to the router that only match if the HTTP method is PATCH
-     *
-     * @param string       $pattern
-     * @param string|array $paths
-     *
-     * @return \ManaPHP\Http\Router\RouteInterface
-     */
-    public function addPatch($pattern, $paths = []);
+    public function addPatch(string $pattern, string|array $paths = []): RouteInterface;
 
-    /**
-     * Adds a route to the router that only match if the HTTP method is DELETE
-     *
-     * @param string       $pattern
-     * @param string|array $paths
-     *
-     * @return \ManaPHP\Http\Router\RouteInterface
-     */
-    public function addDelete($pattern, $paths = []);
+    public function addDelete(string $pattern, string|array $paths = []): RouteInterface;
 
-    /**
-     * Adds a route to the router that only match if the HTTP method is HEAD
-     *
-     * @param string       $pattern
-     * @param string|array $paths
-     *
-     * @return \ManaPHP\Http\Router\RouteInterface
-     */
-    public function addHead($pattern, $paths = []);
+    public function addHead(string $pattern, string|array $paths = []): RouteInterface;
 
-    /**
-     * @param string $pattern
-     * @param string $controller
-     *
-     * @return \ManaPHP\Http\Router\RouteInterface
-     */
-    public function addRest($pattern, $controller = null);
+    public function addRest(string $pattern, ?string $controller = null): RouteInterface;
 
-    /**
-     * Handles routing information received from the rewrite engine
-     *
-     * @param string $uri
-     * @param string $method
-     *
-     * @return bool
-     */
-    public function match($uri = null, $method = null);
+    public function match(?string $uri = null, ?string $method = null): bool;
 
-    /**
-     * Get rewrite info.
-     *
-     * @return string
-     */
-    public function getRewriteUri();
+    public function getRewriteUri(): string;
 
-    /**
-     * Returns processed area name
-     *
-     * @return string
-     */
-    public function getArea();
+    public function getArea(): ?string;
 
-    /**
-     * @param string $area
-     *
-     * @return static
-     */
-    public function setArea($area);
+    public function setArea(string $area): static;
 
-    /**
-     * Returns processed controller name
-     *
-     * @return string
-     */
-    public function getController();
+    public function getController(): string;
 
-    /**
-     * @param string $controller
-     *
-     * @return static
-     */
-    public function setController($controller);
+    public function setController(string $controller): static;
 
-    /**
-     * Returns processed action name
-     *
-     * @return string
-     */
-    public function getAction();
+    public function getAction(): string;
 
-    /**
-     * @param string $action
-     *
-     * @return static
-     */
-    public function setAction($action);
+    public function setAction(string $action): static;
 
-    /**
-     * Returns processed extra params
-     *
-     * @return array
-     */
-    public function getParams();
+    public function getParams(): array;
 
-    /**
-     * @param array $params
-     *
-     * @return static
-     */
-    public function setParams($params);
+    public function setParams(array $params): static;
 
-    /**
-     * Check if the router matches any of the defined routes
-     *
-     * @return bool
-     */
-    public function wasMatched();
+    public function wasMatched(): bool;
 
-    /**
-     * @param bool $matched
-     *
-     * @return static
-     */
-    public function setMatched($matched);
+    public function setMatched(bool $matched): static;
 
-    /**
-     * @param array|string $args
-     * @param string|bool  $scheme
-     *
-     * @return string
-     */
-    public function createUrl($args, $scheme = false);
+    public function createUrl(string|array $args, false|string $scheme = false): string;
 }

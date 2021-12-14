@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
@@ -6,6 +7,7 @@ use ManaPHP\Component;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\Router\Route;
+use ManaPHP\Http\Router\RouteInterface;
 
 /**
  * @property-read \ManaPHP\AliasInterface        $alias
@@ -14,40 +16,26 @@ use ManaPHP\Http\Router\Route;
  */
 class Router extends Component implements RouterInterface
 {
-    /**
-     * @var bool
-     */
-    protected $case_sensitive = true;
-
-    /**
-     * @var string
-     */
-    protected $prefix = '';
-
-    /**
-     * @var array
-     */
-    protected $areas = [];
+    protected bool $case_sensitive = true;
+    protected string $prefix = '';
+    protected array $areas = [];
 
     /**
      * @var \ManaPHP\Http\Router\RouteInterface[]
      */
-    protected $defaults = [];
+    protected array $defaults = [];
 
     /**
      * @var \ManaPHP\Http\Router\RouteInterface[][]
      */
-    protected $simples = [];
+    protected array $simples = [];
 
     /**
      * @var \ManaPHP\Http\Router\RouteInterface[]
      */
-    protected $regexes = [];
+    protected array $regexes = [];
 
-    /**
-     * @param bool $useDefaultRoutes
-     */
-    public function __construct($useDefaultRoutes = true)
+    public function __construct(bool $useDefaultRoutes = true)
     {
         if ($useDefaultRoutes) {
             $this->defaults = [
@@ -56,40 +44,24 @@ class Router extends Component implements RouterInterface
         }
     }
 
-    /**
-     * @return bool
-     */
-    public function isCaseSensitive()
+    public function isCaseSensitive(): bool
     {
         return $this->case_sensitive;
     }
 
-    /**
-     * @param string $prefix
-     *
-     * @return static
-     */
-    public function setPrefix($prefix)
+    public function setPrefix(string $prefix): static
     {
         $this->prefix = $prefix;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getPrefix()
+    public function getPrefix(): string
     {
         return $this->prefix;
     }
 
-    /**
-     * @param array $areas
-     *
-     * @return static
-     */
-    public function setAreas($areas = null)
+    public function setAreas(?array $areas = null): static
     {
         if ($areas === null) {
             $areas = [];
@@ -106,24 +78,12 @@ class Router extends Component implements RouterInterface
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getAreas()
+    public function getAreas(): array
     {
         return $this->areas;
     }
 
-    /**
-     * Adds a route applying the common attributes
-     *
-     * @param string       $pattern
-     * @param string|array $paths
-     * @param string|array $methods
-     *
-     * @return \ManaPHP\Http\Router\RouteInterface
-     */
-    protected function addRoute($pattern, $paths = [], $methods = [])
+    protected function addRoute(string $pattern, string|array $paths = [], string|array $methods = []): RouteInterface
     {
         $route = new Route($pattern, $paths, $methods, $this->case_sensitive);
         if (!is_array($methods) && strpbrk($pattern, ':{') === false) {
@@ -135,105 +95,42 @@ class Router extends Component implements RouterInterface
         return $route;
     }
 
-    /**
-     * Adds a route to the router on any HTTP method
-     *
-     * @param string       $pattern
-     * @param string|array $paths
-     * @param string|array $methods
-     *
-     * @return \ManaPHP\Http\Router\RouteInterface
-     */
-    public function add($pattern, $paths = [], $methods = [])
+    public function add(string $pattern, string|array $paths = [], string|array $methods = []): RouteInterface
     {
         return $this->addRoute($pattern, $paths, $methods);
     }
 
-    /**
-     * Adds a route to the router that only match if the HTTP method is GET
-     *
-     * @param string       $pattern
-     * @param string|array $paths
-     *
-     * @return \ManaPHP\Http\Router\RouteInterface
-     */
-    public function addGet($pattern, $paths = [])
+    public function addGet(string $pattern, string|array $paths = []): RouteInterface
     {
         return $this->addRoute($pattern, $paths, 'GET');
     }
 
-    /**
-     * Adds a route to the router that only match if the HTTP method is POST
-     *
-     * @param string       $pattern
-     * @param string|array $paths
-     *
-     * @return \ManaPHP\Http\Router\RouteInterface
-     */
-    public function addPost($pattern, $paths = [])
+    public function addPost(string $pattern, string|array $paths = []): RouteInterface
     {
         return $this->addRoute($pattern, $paths, 'POST');
     }
 
-    /**
-     * Adds a route to the router that only match if the HTTP method is PUT
-     *
-     * @param string       $pattern
-     * @param string|array $paths
-     *
-     * @return \ManaPHP\Http\Router\RouteInterface
-     */
-    public function addPut($pattern, $paths = [])
+    public function addPut(string $pattern, string|array $paths = []): RouteInterface
     {
         return $this->addRoute($pattern, $paths, 'PUT');
     }
 
-    /**
-     * Adds a route to the router that only match if the HTTP method is PATCH
-     *
-     * @param string       $pattern
-     * @param string|array $paths
-     *
-     * @return \ManaPHP\Http\Router\RouteInterface
-     */
-    public function addPatch($pattern, $paths = [])
+    public function addPatch(string $pattern, string|array $paths = []): RouteInterface
     {
         return $this->addRoute($pattern, $paths, 'PATCH');
     }
 
-    /**
-     * Adds a route to the router that only match if the HTTP method is DELETE
-     *
-     * @param string       $pattern
-     * @param string|array $paths
-     *
-     * @return \ManaPHP\Http\Router\RouteInterface
-     */
-    public function addDelete($pattern, $paths = [])
+    public function addDelete(string $pattern, string|array $paths = []): RouteInterface
     {
         return $this->addRoute($pattern, $paths, 'DELETE');
     }
 
-    /**
-     * Adds a route to the router that only match if the HTTP method is HEAD
-     *
-     * @param string       $pattern
-     * @param string|array $paths
-     *
-     * @return \ManaPHP\Http\Router\RouteInterface
-     */
-    public function addHead($pattern, $paths = [])
+    public function addHead(string $pattern, string|array $paths = []): RouteInterface
     {
         return $this->addRoute($pattern, $paths, 'HEAD');
     }
 
-    /**
-     * @param string $pattern
-     * @param string $controller
-     *
-     * @return \ManaPHP\Http\Router\RouteInterface
-     */
-    public function addRest($pattern, $controller = null)
+    public function addRest(string $pattern, ?string $controller = null): RouteInterface
     {
         $pattern .= '(/{params:[-\w]+})?';
 
@@ -251,12 +148,7 @@ class Router extends Component implements RouterInterface
         return $this->addRoute($pattern, $controller, 'REST');
     }
 
-    /**
-     * Get rewrite info.
-     *
-     * @return string
-     */
-    public function getRewriteUri()
+    public function getRewriteUri(): string
     {
         if (($url = $this->request->get('_url', '')) === '') {
             $request_uri = $this->request->getServer('REQUEST_URI', '/');
@@ -281,13 +173,7 @@ class Router extends Component implements RouterInterface
         }
     }
 
-    /**
-     * @param string $uri
-     * @param string $method
-     *
-     * @return array|false
-     */
-    protected function matchDefaultRoutes($uri, $method)
+    protected function matchDefaultRoutes(string $uri, string $method): false|array
     {
         $handledUri = $uri;
 
@@ -325,15 +211,7 @@ class Router extends Component implements RouterInterface
         return false;
     }
 
-    /**
-     * Handles routing information received from the rewrite engine
-     *
-     * @param string $uri
-     * @param string $method
-     *
-     * @return bool
-     */
-    public function match($uri = null, $method = null)
+    public function match(?string $uri = null, ?string $method = null): bool
     {
         $context = $this->context;
 
@@ -418,119 +296,67 @@ class Router extends Component implements RouterInterface
         return $context->matched;
     }
 
-    /**
-     * @return string
-     */
-    public function getArea()
+    public function getArea(): ?string
     {
         return $this->context->area;
     }
 
-    /**
-     * @param string $area
-     *
-     * @return static
-     */
-    public function setArea($area)
+    public function setArea(string $area): static
     {
         $this->context->area = $area;
 
         return $this;
     }
 
-    /**
-     * Returns the processed controller name
-     *
-     * @return string
-     */
-    public function getController()
+    public function getController(): string
     {
         return $this->context->controller;
     }
 
-    /**
-     * @param string $controller
-     *
-     * @return static
-     */
-    public function setController($controller)
+    public function setController(string $controller): static
     {
         $this->context->controller = $controller;
 
         return $this;
     }
 
-    /**
-     * Returns the processed action name
-     *
-     * @return string
-     */
-    public function getAction()
+    public function getAction(): string
     {
         return $this->context->action;
     }
 
-    /**
-     * @param string $action
-     *
-     * @return static
-     */
-    public function setAction($action)
+    public function setAction(string $action): static
     {
         $this->context->action = $action;
 
         return $this;
     }
 
-    /**
-     * Returns the processed parameters
-     *
-     * @return array
-     */
-    public function getParams()
+    public function getParams(): array
     {
         return $this->context->params;
     }
 
-    /**
-     * @param array $params
-     *
-     * @return static
-     */
-    public function setParams($params)
+    public function setParams(array $params): static
     {
         $this->context->params = $params;
 
         return $this;
     }
 
-    /**
-     * Checks if the router matches any of the defined routes
-     *
-     * @return bool
-     */
-    public function wasMatched()
+    public function wasMatched(): bool
     {
         return $this->context->matched;
     }
 
-    /**
-     * @param bool $matched
-     *
-     * @return void
-     */
-    public function setMatched($matched)
+    public function setMatched(bool $matched): static
     {
         $this->context->matched = $matched;
+
+        return $this;
     }
 
-    /**
-     * @param array|string $args
-     * @param bool|string  $scheme
-     *
-     * @return string
-     */
-    public function createUrl($args, $scheme = false)
+    public function createUrl(string|array $args, false|string $scheme = false): string
     {
         $context = $this->context;
 
