@@ -1,30 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Event;
 
 class EventArgs
 {
-    /**
-     * @var string
-     */
-    public $event;
+    public string $event;
+    public ?object $source;
+    public mixed $data;
 
-    /**
-     * @var \ManaPHP\Component
-     */
-    public $source;
-
-    /**
-     * @var mixed
-     */
-    public $data;
-
-    /**
-     * @param string $event
-     * @param object $source
-     * @param mixed  $data
-     */
-    public function __construct($event, $source, $data)
+    public function __construct(string $event, ?object $source, mixed $data)
     {
         $this->event = $event;
         $this->source = $source;

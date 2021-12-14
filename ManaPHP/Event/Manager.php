@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Event;
 
@@ -9,23 +10,10 @@ class Manager implements ManagerInterface
     /**
      * @var SplDoublyLinkedList[][]
      */
-    protected $events = [];
+    protected array $events = [];
+    protected array $peekers = [];
 
-    /**
-     * @var array
-     */
-    protected $peekers = [];
-
-    /**
-     * Attach a listener to the events manager
-     *
-     * @param string   $event
-     * @param callable $handler
-     * @param int      $priority
-     *
-     * @return void
-     */
-    public function attachEvent($event, $handler, $priority = 0)
+    public function attachEvent(string $event, callable $handler, int $priority = 0): void
     {
         if (($handlers = $this->events[$event][$priority] ?? null) === null) {
             $handlers = $this->events[$event][$priority] = new SplDoublyLinkedList();
@@ -35,13 +23,7 @@ class Manager implements ManagerInterface
         $handlers->push($handler);
     }
 
-    /**
-     * @param string   $event
-     * @param callable $handler
-     *
-     * @return void
-     */
-    public function detachEvent($event, $handler)
+    public function detachEvent(string $event, callable $handler): void
     {
         if (str_contains($event, ':')) {
             foreach ($this->events[$event] ?? [] as $handlers) {
@@ -61,16 +43,7 @@ class Manager implements ManagerInterface
         }
     }
 
-    /**
-     * Fires an event in the events manager causing that active listeners be notified about it
-     *
-     * @param string $event
-     * @param mixed  $data
-     * @param mixed  $source
-     *
-     * @return \ManaPHP\Event\EventArgs
-     */
-    public function fireEvent($event, $data = null, $source = null)
+    public function fireEvent(string $event, mixed $data = null, ?object $source = null): EventArgs
     {
         $eventArgs = new EventArgs($event, $source, $data);
 
@@ -93,23 +66,12 @@ class Manager implements ManagerInterface
         return $eventArgs;
     }
 
-    /**
-     * @param string   $group
-     * @param callable $handler
-     *
-     * @return static
-     */
-    public function peekEvent($group, $handler)
+    public function peekEvent(string $group, callable $handler): void
     {
         $this->peekers[$group][] = $handler;
-
-        return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function dump()
+    public function dump(): array
     {
         $data = [];
 
