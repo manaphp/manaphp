@@ -21,7 +21,7 @@ class Middleware extends Listener
         }
     }
 
-    public function categorizeLog()
+    public function categorizeLog(): string
     {
         return basename(str_replace('\\', '.', static::class), 'Middleware');
     }
