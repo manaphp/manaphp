@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Server\Adapter;
 
@@ -10,10 +11,7 @@ use ManaPHP\Http\AbstractServer;
  */
 class Fpm extends AbstractServer
 {
-    /**
-     * @return void
-     */
-    protected function prepareGlobals()
+    protected function prepareGlobals(): void
     {
         $rawBody = file_get_contents('php://input');
         $this->globals->prepare($_GET, $_POST, $_SERVER, $rawBody, $_COOKIE, $_FILES);

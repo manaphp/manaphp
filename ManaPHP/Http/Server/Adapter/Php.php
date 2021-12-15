@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Server\Adapter;
 
@@ -9,30 +10,12 @@ use ManaPHP\Helper\Ip;
  */
 class Php extends Fpm
 {
-    /**
-     * @var array
-     */
-    protected $mime_types;
+    protected array $mime_types;
+    protected array $root_files;
+    protected string $doc_root;
 
-    /**
-     * @var array
-     */
-    protected $root_files;
-
-    /**
-     * @var string
-     */
-    protected $doc_root;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
-        if (isset($options['port'])) {
-            $this->port = (int)$options['port'];
-        }
-
         $argv = $GLOBALS['argv'] ?? [];
         foreach ($argv as $k => $v) {
             if ($v === '--port' || $v === '-p') {
@@ -72,10 +55,7 @@ class Php extends Fpm
         parent::__construct($options);
     }
 
-    /**
-     * @return string[]
-     */
-    protected function getRootFiles()
+    protected function getRootFiles(): array
     {
         $files = [];
         foreach (glob($this->doc_root . '/*') as $file) {
@@ -90,10 +70,7 @@ class Php extends Fpm
         return $files;
     }
 
-    /**
-     * @return string[]
-     */
-    protected function getMimeTypes()
+    protected function getMimeTypes(): array
     {
         $mime_types = [];
         foreach (file(__DIR__ . '/../mime.types', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
@@ -119,10 +96,7 @@ class Php extends Fpm
         return $mime_types;
     }
 
-    /**
-     * @return false|string
-     */
-    protected function isStaticFile()
+    protected function isStaticFile(): false|string
     {
         $uri = $this->request->getServer('REQUEST_URI');
         $file = ($pos = strpos($uri, '?')) === false ? substr($uri, 1) : substr($uri, 1, $pos - 1);

@@ -1,9 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Server\Adapter;
 
 use ManaPHP\Helper\Ip;
 use ManaPHP\Http\AbstractServer;
+use Swoole\Http\Request;
+use Swoole\Http\Response;
+use Swoole\Http\Server;
 use Swoole\Runtime;
 use Throwable;
 
@@ -15,25 +19,11 @@ use Throwable;
  */
 class Swoole extends AbstractServer
 {
-    /**
-     * @var array
-     */
-    protected $settings = [];
+    protected array $settings = [];
+    protected Server $swoole;
+    protected array $_SERVER;
 
-    /**
-     * @var \Swoole\Http\Server
-     */
-    protected $swoole;
-
-    /**
-     * @var array
-     */
-    protected $_SERVER;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         $script_filename = get_included_files()[0];
         $this->_SERVER = [
@@ -64,7 +54,7 @@ class Swoole extends AbstractServer
 
         $this->settings = $options;
 
-        $this->swoole = new \Swoole\Http\Server($this->host, $this->port);
+        $this->swoole = new Server($this->host, $this->port);
         $this->swoole->set($this->settings);
         $this->swoole->on('Start', [$this, 'onMasterStart']);
         $this->swoole->on('ManagerStart', [$this, 'onManagerStart']);
@@ -72,12 +62,7 @@ class Swoole extends AbstractServer
         $this->swoole->on('request', [$this, 'onRequest']);
     }
 
-    /**
-     * @param \Swoole\Http\Request $request
-     *
-     * @return void
-     */
-    protected function prepareGlobals($request)
+    protected function prepareGlobals(Request $request): void
     {
         $_server = array_change_key_case($request->server, CASE_UPPER);
         unset($_server['SERVER_SOFTWARE']);
@@ -99,35 +84,21 @@ class Swoole extends AbstractServer
         $this->globals->prepare($_get, $_post, $_server, $raw_body, $request->cookie ?? [], $request->files ?? []);
     }
 
-    /**
-     * @param \Swoole\Http\Server $server
-     *
-     * @return void
-     */
-    public function onMasterStart($server)
+    public function onMasterStart(Server $server): void
     {
         @cli_set_process_title(sprintf('manaphp %s: master', $this->config->get('id')));
 
         $this->fireEvent('httpServer:masterStart', compact('server'));
     }
 
-    /**
-     * @return void
-     */
-    public function onManagerStart()
+    public function onManagerStart(): void
     {
         @cli_set_process_title(sprintf('manaphp %s: manager', $this->config->get("id")));
 
         $this->fireEvent('httpServer:managerStart', ['server' => $this->swoole]);
     }
 
-    /**
-     * @param \Swoole\WebSocket\Server $server
-     * @param int                      $worker_id
-     *
-     * @return void
-     */
-    public function onWorkerStart($server, $worker_id)
+    public function onWorkerStart(Server $server, int $worker_id): void
     {
         @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->config->get("id"), $worker_id));
 
@@ -149,13 +120,7 @@ class Swoole extends AbstractServer
         console_log('info', 'shutdown');
     }
 
-    /**
-     * @param \Swoole\Http\Request  $request
-     * @param \Swoole\Http\Response $response
-     *
-     * @return void
-     */
-    public function onRequest($request, $response)
+    public function onRequest(Request $request, Response $response): void
     {
         if ($request->server['request_uri'] === '/favicon.ico') {
             $response->status(404);

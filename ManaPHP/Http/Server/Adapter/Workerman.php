@@ -3,6 +3,7 @@
 /** @noinspection PhpUndefinedMethodInspection */
 /** @noinspection PhpUndefinedNamespaceInspection */
 /** @noinspection PhpUndefinedClassInspection */
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Server\Adapter;
 
@@ -10,6 +11,7 @@ use ManaPHP\Http\AbstractServer;
 use Throwable;
 use Workerman\Protocols\Http;
 use Workerman\Worker;
+use Workerman\Connection\ConnectionInterface;
 
 /**
  * @property-read \ManaPHP\Http\RouterInterface                 $router
@@ -17,35 +19,13 @@ use Workerman\Worker;
  */
 class Workerman extends AbstractServer
 {
-    /**
-     * @var array
-     */
-    protected $settings = [];
+    protected array $settings = [];
+    protected Worker $worker;
+    protected array $_SERVER = [];
+    protected int $max_request;
+    protected int $request_count;
 
-    /**
-     * @var \Workerman\Worker
-     */
-    protected $worker;
-
-    /**
-     * @var array
-     */
-    protected $_SERVER = [];
-
-    /**
-     * @var int
-     */
-    protected $max_request;
-
-    /**
-     * @var int
-     */
-    protected $request_count;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
 
@@ -69,10 +49,7 @@ class Workerman extends AbstractServer
         $this->settings = $options;
     }
 
-    /**
-     * @return void
-     */
-    protected function prepareGlobals()
+    protected function prepareGlobals(): void
     {
         $_SERVER['REQUEST_TIME_FLOAT'] = microtime(true);
 
@@ -121,12 +98,7 @@ class Workerman extends AbstractServer
         console_log('info', 'shutdown');
     }
 
-    /**
-     * @param \Workerman\Connection\ConnectionInterface $connection
-     *
-     * @return void
-     */
-    public function onRequest($connection)
+    public function onRequest(ConnectionInterface $connection): void
     {
         $this->prepareGlobals();
 
