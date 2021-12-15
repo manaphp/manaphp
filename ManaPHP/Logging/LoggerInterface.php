@@ -1,80 +1,25 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Logging;
 
 interface LoggerInterface
 {
-    /**
-     * @param int|string $level
-     *
-     * @return static
-     */
-    public function setLevel($level);
+    public function setLevel(int|string $level): static;
 
-    /**
-     * @return int
-     */
-    public function getLevel();
+    public function getLevel(): int;
 
-    /**
-     * @return array
-     */
-    public function getLevels();
+    public function getLevels(): array;
 
-    /**
-     * @param bool $lazy
-     *
-     * @return static
-     */
-    public function setLazy($lazy = true);
+    public function setLazy(bool $lazy = true): static;
 
-    /**
-     * Sends/Writes a debug message to the log
-     *
-     * @param string|array $message
-     * @param string       $category
-     *
-     * @return static
-     */
-    public function debug($message, $category = null);
+    public function debug(mixed $message, ?string $category = null): static;
 
-    /**
-     * Sends/Writes an info message to the log
-     *
-     * @param string|array $message
-     * @param string       $category
-     *
-     * @return static
-     */
-    public function info($message, $category = null);
+    public function info(mixed $message, ?string $category = null): static;
 
-    /**
-     * Sends/Writes a warning message to the log
-     *
-     * @param string|array $message
-     * @param string       $category
-     *
-     * @return static
-     */
-    public function warn($message, $category = null);
+    public function warn(mixed $message, ?string $category = null): static;
 
-    /**
-     * Sends/Writes an error message to the log
-     *
-     * @param string|array $message
-     * @param string       $category
-     *
-     * @return static
-     */
-    public function error($message, $category = null);
+    public function error(mixed $message, ?string $category = null): static;
 
-    /**
-     * Sends/Writes a critical message to the log
-     *
-     * @param string|array $message
-     * @param string       $category
-     *
-     * @return static
-     */
-    public function fatal($message, $category = null);
+    public function fatal(mixed $message, ?string $category = null): static;
 }

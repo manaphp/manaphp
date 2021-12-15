@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Logging\Logger\Adapter;
 
 use ManaPHP\Logging\AbstractLogger;
+use ManaPHP\Logging\Logger\Log;
 
 /**
  * @property-read \ManaPHP\ConfigInterface $config
@@ -10,20 +12,10 @@ use ManaPHP\Logging\AbstractLogger;
  */
 class File extends AbstractLogger
 {
-    /**
-     * @var string
-     */
-    protected $file = '@data/logger/{id}.log';
+    protected string $file = '@data/logger/{id}.log';
+    protected string $format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
 
-    /**
-     * @var string
-     */
-    protected $format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
 
@@ -38,17 +30,12 @@ class File extends AbstractLogger
         }
     }
 
-    /**
-     * @param \ManaPHP\Logging\Logger\Log $log
-     *
-     * @return string
-     */
-    protected function format($log)
+    protected function format(Log $log): string
     {
         $replaced = [];
 
         $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
-        $replaced[':date'] = date('Y-m-d\TH:i:s', $log->timestamp) . $ms;
+        $replaced[':date'] = date('Y-m-d\TH:i:s', (int)$log->timestamp) . $ms;
         $replaced[':client_ip'] = $log->client_ip ?: '-';
         $replaced[':request_id'] = $log->request_id ?: '-';
         $replaced[':request_id16'] = $log->request_id ? substr($log->request_id, 0, 16) : '-';
@@ -66,12 +53,7 @@ class File extends AbstractLogger
         return strtr($this->format, $replaced);
     }
 
-    /**
-     * @param string $str
-     *
-     * @return void
-     */
-    protected function write($str)
+    protected function write(string $str): void
     {
         $file = $this->alias->resolve($this->file);
         if (!is_file($file)) {
@@ -92,7 +74,7 @@ class File extends AbstractLogger
      *
      * @return void
      */
-    public function append($logs)
+    public function append(array $logs): void
     {
         $str = '';
         foreach ($logs as $log) {

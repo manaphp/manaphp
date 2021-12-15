@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Logging\Logger\Adapter;
 
@@ -19,44 +20,15 @@ use ManaPHP\Logging\AbstractLogger;
  */
 class Syslog extends AbstractLogger
 {
-    /**
-     * @var string
-     */
-    protected $uri;
+    protected string $uri;
+    protected int $facility = 1;
+    protected string $format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
+    protected string $scheme = 'udp';
+    protected string $host;
+    protected int $port = 514;
+    protected mixed $socket;
 
-    /**
-     * @var int
-     */
-    protected $facility = 1;
-    /**
-     * @var string
-     */
-    protected $format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
-
-    /**
-     * @var string
-     */
-    protected $scheme = 'udp';
-
-    /**
-     * @var int
-     */
-    protected $host;
-
-    /**
-     * @var string
-     */
-    protected $port = 514;
-
-    /**
-     * @var resource
-     */
-    protected $socket;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
 
@@ -92,7 +64,7 @@ class Syslog extends AbstractLogger
         }
     }
 
-    public function append($logs)
+    public function append(array $logs): void
     {
         static $map;
         if ($map === null) {

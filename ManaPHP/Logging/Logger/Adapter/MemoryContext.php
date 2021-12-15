@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Logging\Logger\Adapter;
 
@@ -9,5 +10,5 @@ class MemoryContext extends AbstractLoggerContext
     /**
      * @var \ManaPHP\Logging\Logger\Log[]
      */
-    public $logs = [];
+    public array $logs = [];
 }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Logging\Logger\Adapter;
 
@@ -10,15 +11,9 @@ use ManaPHP\Logging\AbstractLogger;
  */
 class Redis extends AbstractLogger
 {
-    /**
-     * @var string
-     */
-    protected $key;
+    protected string $key;
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
 
@@ -28,12 +23,12 @@ class Redis extends AbstractLogger
     /**
      * @param \ManaPHP\Logging\Logger\Log[] $logs
      */
-    public function append($logs)
+    public function append(array $logs): void
     {
         foreach ($logs as $log) {
             $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
             $data = [
-                'date'       => date('Y-m-d\TH:i:s', $log->timestamp) . $ms,
+                'date'       => date('Y-m-d\TH:i:s', (int)$log->timestamp) . $ms,
                 '@timestamp' => $log->timestamp,
                 'hostname'   => $log->hostname,
                 'category'   => $log->category,

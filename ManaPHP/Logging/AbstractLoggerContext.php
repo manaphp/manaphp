@@ -1,21 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Logging;
 
 class AbstractLoggerContext
 {
-    /**
-     * @var int
-     */
-    public $level;
-
-    /**
-     * @var string
-     */
-    public $client_ip;
-
-    /**
-     * @var string
-     */
-    public $request_id;
+    public int $level;
+    public string $client_ip;
+    public string $request_id;
 }

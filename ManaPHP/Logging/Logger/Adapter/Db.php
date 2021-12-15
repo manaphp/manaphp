@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Logging\Logger\Adapter;
 
@@ -10,15 +11,9 @@ use ManaPHP\Logging\AbstractLogger;
  */
 class Db extends AbstractLogger
 {
-    /**
-     * @var string
-     */
-    protected $table = 'manaphp_log';
+    protected string $table = 'manaphp_log';
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
 
@@ -32,7 +27,7 @@ class Db extends AbstractLogger
      *
      * @return void
      */
-    public function append($logs)
+    public function append(array $logs): void
     {
         $context = $this->context;
 

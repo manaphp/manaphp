@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Logging\Logger\Adapter;
 
@@ -14,7 +15,7 @@ class Memory extends AbstractLogger
      *
      * @return void
      */
-    public function append($logs)
+    public function append(array $logs): void
     {
         $context = $this->context;
 
@@ -24,7 +25,7 @@ class Memory extends AbstractLogger
     /**
      * @return \ManaPHP\Logging\Logger\Log[]
      */
-    public function getLogs()
+    public function getLogs(): array
     {
         return $this->context->logs;
     }
