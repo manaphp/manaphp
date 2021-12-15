@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Helper;
 
@@ -7,26 +8,12 @@ use ManaPHP\Exception\NotSupportedException;
 
 class Str
 {
-    /**
-     * snake_case
-     *
-     * @param string $str
-     *
-     * @return string
-     */
-    public static function snakelize($str)
+    public static function snakelize(string $str): string
     {
         return strtolower(preg_replace('/[A-Z]/', '_$0', lcfirst($str)));
     }
 
-    /**
-     * PascalCase
-     *
-     * @param string $str
-     *
-     * @return string
-     */
-    public static function pascalize($str)
+    public static function pascalize(string $str): string
     {
         if (str_contains($str, '_')) {
             if (PHP_VERSION_ID >= 50516) {
@@ -45,13 +32,7 @@ class Str
         }
     }
 
-    /**
-     * @param string $length
-     * @param int    $base
-     *
-     * @return string
-     */
-    public static function random($length, $base = 62)
+    public static function random(int $length, int $base = 62): string
     {
         if ($length < 0) {
             throw new MisuseException('length(%d) is negative number');
@@ -61,10 +42,10 @@ class Str
             if ($length % 2 === 0) {
                 return bin2hex(random_bytes($length / 2));
             } else {
-                return substr(bin2hex(random_bytes(ceil($length / 2))), 0, -1);
+                return substr(bin2hex(random_bytes((int)ceil($length / 2))), 0, -1);
             }
         } elseif ($base === 62) {
-            $str = base64_encode(random_bytes(ceil($length * 0.75)));
+            $str = base64_encode(random_bytes((int)ceil($length * 0.75)));
             $str = strtr($str, ['+' => '0', '/' => '5', '=' => '9']);
             return substr($str, 0, $length);
         } elseif ($base < 62) {
@@ -88,10 +69,7 @@ class Str
         }
     }
 
-    /**
-     * @return string
-     */
-    public static function uuid()
+    public static function uuid(): string
     {
         $bytes = unpack('N1a/n1b/n1c/n1d/n1e/N1f', random_bytes(16));
         return sprintf(
@@ -101,24 +79,12 @@ class Str
         );
     }
 
-    /**
-     * camelCase
-     *
-     * @param string $str
-     *
-     * @return string
-     */
-    public static function camelize($str)
+    public static function camelize(string $str): string
     {
         return lcfirst(self::pascalize($str));
     }
 
-    /**
-     * @param string $str
-     *
-     * @return string
-     */
-    public static function singular($str)
+    public static function singular(string $str): string
     {
         if ($str[strlen($str) - 1] === 's') {
             //https://github.com/UlvHare/PHPixie-demo/blob/d000d8f11e6ab7c522feeb4457da5a802ca3e0bc/vendor/phpixie/orm/src/PHPixie/ORM/Configs/Inflector.php
