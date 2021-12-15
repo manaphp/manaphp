@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Rest;
 
@@ -18,10 +19,7 @@ use Throwable;
  */
 class Handler extends Component implements HandlerInterface
 {
-    /**
-     * @return void
-     */
-    public function handle()
+    public function handle(): void
     {
         try {
             $this->fireEvent('request:begin');
