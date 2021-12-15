@@ -139,10 +139,7 @@ class Php extends Fpm
         }
     }
 
-    /**
-     * @return void
-     */
-    public function start()
+    public function start(): void
     {
         $this->prepareGlobals();
 

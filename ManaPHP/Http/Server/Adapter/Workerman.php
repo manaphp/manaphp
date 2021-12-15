@@ -90,10 +90,7 @@ class Workerman extends AbstractServer
         }
     }
 
-    /**
-     * @return static
-     */
-    public function start()
+    public function start(): void
     {
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
 
@@ -122,8 +119,6 @@ class Workerman extends AbstractServer
         Worker::runAll();
 
         console_log('info', 'shutdown');
-
-        return $this;
     }
 
     /**
@@ -157,10 +152,7 @@ class Workerman extends AbstractServer
         }
     }
 
-    /**
-     * @return void
-     */
-    public function send()
+    public function send(): void
     {
         if (!is_string($this->response->getContent()) && !$this->response->hasFile()) {
             $this->fireEvent('response:stringify');

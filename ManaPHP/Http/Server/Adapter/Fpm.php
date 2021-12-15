@@ -19,10 +19,7 @@ class Fpm extends AbstractServer
         $this->globals->prepare($_GET, $_POST, $_SERVER, $rawBody, $_COOKIE, $_FILES);
     }
 
-    /**
-     * @return void
-     */
-    public function start()
+    public function start(): void
     {
         $this->prepareGlobals();
 
@@ -31,10 +28,7 @@ class Fpm extends AbstractServer
         $this->httpHandler->handle();
     }
 
-    /**
-     * @return static
-     */
-    public function send()
+    public function send(): void
     {
         if (headers_sent($file, $line)) {
             throw new MisuseException("Headers has been sent in $file:$line");
@@ -86,7 +80,5 @@ class Fpm extends AbstractServer
         }
 
         $this->fireEvent('request:responded');
-
-        return $this;
     }
 }

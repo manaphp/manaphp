@@ -134,10 +134,7 @@ class Swoole extends AbstractServer
         $this->fireEvent('httpServer::workerStart', compact('server', 'worker_id'));
     }
 
-    /**
-     * @return void
-     */
-    public function start()
+    public function start(): void
     {
         if (MANAPHP_COROUTINE_ENABLED) {
             Runtime::enableCoroutine(true);
@@ -189,10 +186,7 @@ class Swoole extends AbstractServer
         }
     }
 
-    /**
-     * @return void
-     */
-    public function send()
+    public function send(): void
     {
         if (!is_string($this->response->getContent()) && !$this->response->hasFile()) {
             $this->fireEvent('response:stringify');

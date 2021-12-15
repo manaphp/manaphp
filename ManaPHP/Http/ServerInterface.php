@@ -1,13 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
 interface ServerInterface
 {
-    /**
-     * @return void
-     */
-    public function start();
+    public function start(): void;
 
-    public function send();
+    public function send(): void;
 }
