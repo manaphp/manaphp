@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
@@ -9,6 +10,7 @@ use ManaPHP\Component;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Helper\LocalFS;
+use Throwable;
 
 /**
  * @property-read \ManaPHP\ConfigInterface       $config
@@ -19,20 +21,10 @@ use ManaPHP\Helper\LocalFS;
  */
 class Response extends Component implements ResponseInterface
 {
-    /**
-     * @var int|string
-     */
-    protected $ok_code = 0;
+    protected int|string $ok_code = 0;
+    protected int|string $error_code = 1;
 
-    /**
-     * @var int|string
-     */
-    protected $error_code = 1;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['ok_code'])) {
             $this->ok_code = $options['ok_code'];
@@ -43,26 +35,15 @@ class Response extends Component implements ResponseInterface
         }
     }
 
-    /**
-     * @param string $name
-     * @param mixed  $value
-     * @param int    $expire
-     * @param string $path
-     * @param string $domain
-     * @param bool   $secure
-     * @param bool   $httponly
-     *
-     * @return static
-     */
     public function setCookie(
-        $name,
-        $value,
-        $expire = 0,
-        $path = null,
-        $domain = null,
-        $secure = false,
-        $httponly = true
-    ) {
+        string $name,
+        mixed $value,
+        int $expire = 0,
+        ?string $path = null,
+        ?string $domain = null,
+        bool $secure = false,
+        bool $httponly = true
+    ): static {
         $context = $this->context;
 
         if ($expire > 0) {
@@ -85,23 +66,12 @@ class Response extends Component implements ResponseInterface
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getCookies()
+    public function getCookies(): array
     {
         return $this->context->cookies;
     }
 
-    /**
-     * Sets the HTTP response code
-     *
-     * @param int    $code
-     * @param string $text
-     *
-     * @return static
-     */
-    public function setStatus($code, $text = null)
+    public function setStatus(int $code, ?string $text = null): static
     {
         $context = $this->context;
 
@@ -111,30 +81,19 @@ class Response extends Component implements ResponseInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getStatus()
+    public function getStatus(): string
     {
         $context = $this->context;
 
         return $context->status_code . ' ' . $context->status_text;
     }
 
-    /**
-     * @return int
-     */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->context->status_code;
     }
 
-    /**
-     * @param int $code
-     *
-     * @return string
-     */
-    public function getStatusText($code = null)
+    public function getStatusText(?int $code = null): string
     {
         if ($code === null) {
             return $this->context->status_text;
@@ -203,15 +162,7 @@ class Response extends Component implements ResponseInterface
         }
     }
 
-    /**
-     * Overwrites a header in the response
-     *
-     * @param string $name
-     * @param string $value
-     *
-     * @return static
-     */
-    public function setHeader($name, $value)
+    public function setHeader(string $name, string $value): static
     {
         $context = $this->context;
 
@@ -220,37 +171,21 @@ class Response extends Component implements ResponseInterface
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @param string $default
-     *
-     * @return string
-     */
-    public function getHeader($name, $default = null)
+    public function getHeader(string $name, ?string $default = null): ?string
     {
         $context = $this->context;
 
         return $context->headers[$name] ?? $default;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasHeader($name)
+    public function hasHeader(string $name): bool
     {
         $context = $this->context;
 
         return isset($context->headers[$name]);
     }
 
-    /**
-     * @param string $name
-     *
-     * @return static
-     */
-    public function removeHeader($name)
+    public function removeHeader(string $name): static
     {
         $context = $this->context;
 
@@ -259,14 +194,7 @@ class Response extends Component implements ResponseInterface
         return $this;
     }
 
-    /**
-     * Sets a Expires header to use HTTP cache
-     *
-     * @param int $timestamp
-     *
-     * @return static
-     */
-    public function setExpires($timestamp)
+    public function setExpires(int $timestamp): static
     {
         if (str_contains('GET,OPTIONS', $this->request->getMethod())) {
             if ($timestamp <= 2592000) {
@@ -282,12 +210,7 @@ class Response extends Component implements ResponseInterface
         return $this;
     }
 
-    /**
-     * Sets a Not-Modified response
-     *
-     * @return static
-     */
-    public function setNotModified()
+    public function setNotModified(): static
     {
         $context = $this->context;
 
@@ -297,26 +220,14 @@ class Response extends Component implements ResponseInterface
         return $this;
     }
 
-    /**
-     * Set a custom ETag
-     *
-     * @param string $etag
-     *
-     * @return static
-     */
-    public function setETag($etag)
+    public function setETag(string $etag): static
     {
         $this->setHeader('ETag', $etag);
 
         return $this;
     }
 
-    /**
-     * @param string $control
-     *
-     * @return static
-     */
-    public function setCacheControl($control)
+    public function setCacheControl(string $control): static
     {
         if (str_contains('GET,OPTIONS', $this->request->getMethod())) {
             return $this->setHeader('Cache-Control', $control);
@@ -325,13 +236,7 @@ class Response extends Component implements ResponseInterface
         return $this;
     }
 
-    /**
-     * @param int    $age
-     * @param string $extra
-     *
-     * @return static
-     */
-    public function setMaxAge($age, $extra = null)
+    public function setMaxAge(int $age, ?string $extra = null): static
     {
         if (str_contains('GET,OPTIONS', $this->request->getMethod())) {
             $this->setHeader('Cache-Control', $extra ? "$extra, max-age=$age" : "max-age=$age");
@@ -341,15 +246,7 @@ class Response extends Component implements ResponseInterface
         return $this;
     }
 
-    /**
-     * Sets the response content-type mime, optionally the charset
-     *
-     * @param string $contentType
-     * @param string $charset
-     *
-     * @return static
-     */
-    public function setContentType($contentType, $charset = null)
+    public function setContentType(string $contentType, ?string $charset = null): static
     {
         if ($charset === null) {
             $this->setHeader('Content-Type', $contentType);
@@ -360,25 +257,14 @@ class Response extends Component implements ResponseInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getContentType()
+    public function getContentType(): ?string
     {
         $context = $this->context;
 
         return $context->headers['Content-Type'] ?? null;
     }
 
-    /**
-     * Redirect by HTTP to another action or URL
-     *
-     * @param string|array $location
-     * @param bool         $temporarily
-     *
-     * @return static
-     */
-    public function redirect($location, $temporarily = true)
+    public function redirect(string|array $location, bool $temporarily = true): static
     {
         if ($temporarily) {
             $this->setStatus(302, 'Temporarily Moved');
@@ -394,14 +280,7 @@ class Response extends Component implements ResponseInterface
         return $this;
     }
 
-    /**
-     * Sets HTTP response body
-     *
-     * @param mixed $content
-     *
-     * @return static
-     */
-    public function setContent($content)
+    public function setContent(mixed $content): static
     {
         $context = $this->context;
 
@@ -410,44 +289,22 @@ class Response extends Component implements ResponseInterface
         return $this;
     }
 
-    /**
-     * @param string $message
-     *
-     * @return static
-     */
-    public function setJsonOk($message = '')
+    public function setJsonOk(string $message = ''): static
     {
         return $this->setJsonContent(['code' => $this->ok_code, 'message' => $message]);
     }
 
-    /**
-     * @param string $message
-     * @param int    $code
-     *
-     * @return static
-     */
-    public function setJsonError($message, $code = null)
+    public function setJsonError(string $message, ?int $code = null): static
     {
         return $this->setJsonContent(['code' => $code ?? $this->error_code, 'message' => $message]);
     }
 
-    /**
-     * @param mixed  $data
-     * @param string $message
-     *
-     * @return static
-     */
-    public function setJsonData($data, $message = '')
+    public function setJsonData(mixed $data, string $message = ''): static
     {
         return $this->setJsonContent(['code' => $this->ok_code, 'message' => $message, 'data' => $data]);
     }
 
-    /**
-     * @param \Throwable $throwable
-     *
-     * @return static
-     */
-    public function setJsonThrowable($throwable)
+    public function setJsonThrowable(Throwable $throwable): static
     {
         if ($throwable instanceof \ManaPHP\Exception) {
             $code = $throwable->getStatusCode();
@@ -459,20 +316,13 @@ class Response extends Component implements ResponseInterface
 
         if ($this->config->get('debug')) {
             $json['message'] = get_class($throwable) . ": " . $throwable->getMessage();
-            $json['exception'] = explode("\n", $throwable);
+            $json['exception'] = explode("\n", (string)$throwable);
         }
 
         return $this->setStatus($code)->setJsonContent($json);
     }
 
-    /**
-     * Sets HTTP response body. The parameter is automatically converted to JSON
-     *
-     * @param array|\JsonSerializable|string $content
-     *
-     * @return static
-     */
-    public function setJsonContent($content)
+    public function setJsonContent(mixed $content): static
     {
         $context = $this->context;
 
@@ -489,35 +339,19 @@ class Response extends Component implements ResponseInterface
         return $this;
     }
 
-    /**
-     * Gets the HTTP response body
-     *
-     * @return mixed
-     */
-    public function getContent()
+    public function getContent(): mixed
     {
         return $this->context->content;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasContent()
+    public function hasContent(): bool
     {
         $content = $this->context->content;
 
         return $content !== '' && $content !== null;
     }
 
-    /**
-     * Sets an attached file to be sent at the end of the request
-     *
-     * @param string $file
-     * @param string $attachmentName
-     *
-     * @return static
-     */
-    public function setFile($file, $attachmentName = null)
+    public function setFile(string $file, ?string $attachmentName = null): static
     {
         $context = $this->context;
 
@@ -528,7 +362,7 @@ class Response extends Component implements ResponseInterface
         if (!LocalFS::fileExists($file)) {
             throw new FileNotFoundException(['Sent file is not exists: `:file`', 'file' => $file]);
         }
-        $this->setHeader('Content-Length', LocalFS::fileSize($file));
+        $this->setHeader('Content-Length', (string)LocalFS::fileSize($file));
 
         $context->file = $file;
 
@@ -537,28 +371,17 @@ class Response extends Component implements ResponseInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getFile()
+    public function getFile(): ?string
     {
         return $this->context->file;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasFile()
+    public function hasFile(): bool
     {
         return (bool)$this->context->file;
     }
 
-    /**
-     * @param string $attachmentName
-     *
-     * @return static
-     */
-    public function setAttachment($attachmentName)
+    public function setAttachment(string $attachmentName): static
     {
         if ($userAgent = $this->request->getUserAgent()) {
             if (str_contains($userAgent, 'Trident') || str_contains($userAgent, 'MSIE')) {
@@ -575,14 +398,7 @@ class Response extends Component implements ResponseInterface
         return $this;
     }
 
-    /**
-     * @param array        $rows
-     * @param string       $name
-     * @param array|string $header
-     *
-     * @return static
-     */
-    public function setCsvContent($rows, $name, $header = null)
+    public function setCsvContent(array $rows, string $name, null|string|array $header = null): static
     {
         $this->setAttachment(pathinfo($name, PATHINFO_EXTENSION) === 'csv' ? $name : $name . '.csv');
 
@@ -613,10 +429,7 @@ class Response extends Component implements ResponseInterface
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->context->headers;
     }

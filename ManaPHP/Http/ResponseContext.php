@@ -1,36 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
 class ResponseContext
 {
-    /**
-     * @var int
-     */
-    public $status_code = 200;
-
-    /**
-     * @var string
-     */
-    public $status_text = 'OK';
-
-    /**
-     * @var array
-     */
-    public $headers = [];
-
-    /**
-     * @var array
-     */
-    public $cookies = [];
-
-    /**
-     * @var mixed
-     */
-    public $content = '';
-
-    /**
-     * @var string
-     */
-    public $file;
+    public int $status_code = 200;
+    public string $status_text = 'OK';
+    public array $headers = [];
+    public array $cookies = [];
+    public mixed $content = '';
+    public ?string $file = null;
 }

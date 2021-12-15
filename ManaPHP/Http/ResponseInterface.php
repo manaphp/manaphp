@@ -1,254 +1,81 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
+use Throwable;
+
 interface ResponseInterface
 {
-    /**
-     * @param string $name
-     * @param mixed  $value
-     * @param int    $expire
-     * @param string $path
-     * @param string $domain
-     * @param bool   $secure
-     * @param bool   $httponly
-     *
-     * @return static
-     */
     public function setCookie(
-        $name,
-        $value,
-        $expire = 0,
-        $path = null,
-        $domain = null,
-        $secure = false,
-        $httponly = true
-    );
+        string $name,
+        mixed $value,
+        int $expire = 0,
+        ?string $path = null,
+        ?string $domain = null,
+        bool $secure = false,
+        bool $httponly = true
+    ): static;
 
-    /**
-     * @return array
-     */
-    public function getCookies();
+    public function getCookies(): array;
 
-    /**
-     * Sets the HTTP response code
-     *
-     * @param int    $code
-     * @param string $text
-     *
-     * @return static
-     */
-    public function setStatus($code, $text = null);
+    public function setStatus(int $code, ?string $text = null): static;
 
-    /**
-     * @return string
-     */
-    public function getStatus();
+    public function getStatus(): string;
 
-    /**
-     * @return int
-     */
-    public function getStatusCode();
+    public function getStatusCode(): int;
 
-    /**
-     * @param int $code
-     *
-     * @return string
-     */
-    public function getStatusText($code = null);
+    public function getStatusText(?int $code = null): string;
 
-    /**
-     * send a header in the response
-     *
-     * @param string $name
-     * @param string $value
-     *
-     * @return static
-     */
-    public function setHeader($name, $value);
+    public function setHeader(string $name, string $value): static;
 
-    /**
-     * @param string $name
-     * @param string $default
-     *
-     * @return string
-     */
-    public function getHeader($name, $default = null);
+    public function getHeader(string $name, ?string $default = null): ?string;
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasHeader($name);
+    public function hasHeader(string $name): bool;
 
-    /**
-     * @param string $name
-     *
-     * @return static
-     */
-    public function removeHeader($name);
+    public function removeHeader(string $name): static;
 
-    /**
-     * Sets output expire time header
-     *
-     * @param int $timestamp
-     *
-     * @return static
-     */
-    public function setExpires($timestamp);
+    public function setExpires(int $timestamp): static;
 
-    /**
-     * Sends a Not-Modified response
-     *
-     * @return static
-     */
-    public function setNotModified();
+    public function setNotModified(): static;
 
-    /* @param string $etag
-     *
-     * @return static
-     */
-    public function setETag($etag);
+    public function setETag(string $etag): static;
 
-    /**
-     * @param string $control
-     *
-     * @return static
-     */
-    public function setCacheControl($control);
+    public function setCacheControl(string $control): static;
 
-    /**
-     * @param int    $age
-     * @param string $extra
-     *
-     * @return static
-     */
-    public function setMaxAge($age, $extra = null);
+    public function setMaxAge(int $age, ?string $extra = null): static;
 
-    /**
-     * Sets the response content-type mime, optionally the charset
-     *
-     * @param string $contentType
-     * @param string $charset
-     *
-     * @return static
-     */
-    public function setContentType($contentType, $charset = null);
+    public function setContentType(string $contentType, ?string $charset = null): static;
 
-    /**
-     * @return string
-     */
-    public function getContentType();
+    public function getContentType(): ?string;
 
-    /**
-     * Redirect by HTTP to another action or URL
-     *
-     * @param string|array $location
-     * @param bool         $temporarily
-     *
-     * @return static
-     */
-    public function redirect($location, $temporarily = true);
+    public function redirect(string|array $location, bool $temporarily = true): static;
 
-    /**
-     * Sets HTTP response body
-     *
-     * @param mixed $content
-     *
-     * @return static
-     */
-    public function setContent($content);
+    public function setContent(mixed $content): static;
 
-    /**
-     * @param string $message
-     *
-     * @return static
-     */
-    public function setJsonOk($message = '');
+    public function setJsonOk(string $message = ''): static;
 
-    /**
-     * @param string $message
-     * @param int    $code
-     *
-     * @return static
-     */
-    public function setJsonError($message, $code = null);
+    public function setJsonError(string $message, ?int $code = null): static;
 
-    /**
-     * @param mixed  $data
-     * @param string $message
-     *
-     * @return static
-     */
-    public function setJsonData($data, $message = '');
+    public function setJsonData(mixed $data, string $message = ''): static;
 
-    /**
-     * @param \Throwable $throwable
-     *
-     * @return static
-     */
-    public function setJsonThrowable($throwable);
+    public function setJsonThrowable(Throwable $throwable): static;
 
-    /**
-     * Sets HTTP response body. The parameter is automatically converted to JSON
-     *
-     * @param array|\JsonSerializable|string $content
-     *
-     * @return static
-     */
-    public function setJsonContent($content);
+    public function setJsonContent(mixed $content): static;
 
-    /**
-     * Gets the HTTP response body
-     *
-     * @return mixed
-     */
-    public function getContent();
+    public function getContent(): mixed;
 
-    /**
-     * @return bool
-     */
-    public function hasContent();
+    public function hasContent(): bool;
 
-    /**
-     * Sets an attached file to be sent at the end of the request
-     *
-     * @param string $file
-     * @param string $attachmentName
-     *
-     * @return static
-     */
-    public function setFile($file, $attachmentName = null);
+    public function setFile(string $file, ?string $attachmentName = null): static;
 
-    /**
-     * @return string|null
-     */
-    public function getFile();
+    public function getFile(): ?string;
 
-    /**
-     * @return bool
-     */
-    public function hasFile();
+    public function hasFile(): bool;
 
-    /**
-     * @param string $attachmentName
-     *
-     * @return static
-     */
-    public function setAttachment($attachmentName);
+    public function setAttachment(string $attachmentName): static;
 
-    /**
-     * @param array        $rows
-     * @param string       $name
-     * @param array|string $header
-     *
-     * @return static
-     */
-    public function setCsvContent($rows, $name, $header = null);
+    public function setCsvContent(array $rows, string $name, null|string|array $header = null): static;
 
-    /**
-     * @return array
-     */
-    public function getHeaders();
+    public function getHeaders(): array;
 }
