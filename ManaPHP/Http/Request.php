@@ -1,10 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Http\Request\File\Exception as FileException;
+use ManaPHP\Http\Request\FileInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 
 /**
@@ -13,22 +15,12 @@ use ManaPHP\Validating\Validator\ValidateFailedException;
  */
 class Request extends Component implements RequestInterface
 {
-    /**
-     * @return string
-     */
-    public function getRawBody()
+    public function getRawBody(): string
     {
         return $this->globals->getRawBody();
     }
 
-    /**
-     * @param string $field
-     * @param mixed  $value
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    protected function normalizeValue($field, $value, $default)
+    protected function normalizeValue(string $field, mixed $value, mixed $default): mixed
     {
         $type = gettype($default);
 
@@ -45,15 +37,7 @@ class Request extends Component implements RequestInterface
         }
     }
 
-    /**
-     * Gets a variable from the $_REQUEST
-     *
-     * @param string $name
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function get($name = null, $default = null)
+    public function get(?string $name = null, mixed $default = null): mixed
     {
         $source = $this->globals->getRequest();
 
@@ -76,13 +60,7 @@ class Request extends Component implements RequestInterface
         }
     }
 
-    /**
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return static
-     */
-    public function set($name, $value)
+    public function set(string $name, mixed $value): static
     {
         $globals = $this->globals->get();
 
@@ -92,12 +70,7 @@ class Request extends Component implements RequestInterface
         return $this;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return static
-     */
-    public function delete($name)
+    public function delete(string $name): static
     {
         $globals = $this->globals->get();
 
@@ -106,12 +79,7 @@ class Request extends Component implements RequestInterface
         return $this;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return int|string
-     */
-    public function getId($name = 'id')
+    public function getId(string $name = 'id'): int|string
     {
         $source = $this->globals->getRequest();
 
@@ -130,55 +98,27 @@ class Request extends Component implements RequestInterface
         return $id;
     }
 
-    /**
-     * Gets variable from $_SERVER
-     *
-     * @param string $name
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getServer($name = null, $default = '')
+    public function getServer(?string $name = null, mixed $default = ''): mixed
     {
         return $this->globals->getServer()[$name] ?? $default;
     }
 
-    /**
-     * @return string
-     */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->getServer('REQUEST_METHOD');
     }
 
-    /**
-     * Checks whether $_REQUEST has certain index
-     *
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function has($name)
+    public function has(string $name): bool
     {
         return isset($this->globals->getRequest()[$name]);
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasServer($name)
+    public function hasServer(string $name): bool
     {
         return isset($this->globals->getServer()[$name]);
     }
 
-    /**
-     * Gets HTTP schema (http/https)
-     *
-     * @return string
-     */
-    public function getScheme()
+    public function getScheme(): string
     {
         if ($scheme = $this->getServer('REQUEST_SCHEME')) {
             return $scheme;
@@ -187,125 +127,64 @@ class Request extends Component implements RequestInterface
         }
     }
 
-    /**
-     * Checks whether request has been made using ajax
-     *
-     * @return bool
-     */
-    public function isAjax()
+    public function isAjax(): bool
     {
         return $this->getServer('HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest';
     }
 
-    /**
-     * @return bool
-     */
-    public function isWebSocket()
+    public function isWebSocket(): bool
     {
         return $this->getServer('HTTP_UPGRADE') === 'websocket';
     }
 
-    /**
-     * @return string
-     */
-    public function getClientIp()
+    public function getClientIp(): string
     {
         return $this->getServer('HTTP_X_REAL_IP') ?: $this->getServer('REMOTE_ADDR');
     }
 
-    /**
-     * Gets HTTP user agent used to made the request
-     *
-     * @param int $max_len
-     *
-     * @return string
-     */
-    public function getUserAgent($max_len = -1)
+    public function getUserAgent(int $max_len = -1): string
     {
         $user_agent = $this->getServer('HTTP_USER_AGENT');
 
         return $max_len > 0 && strlen($user_agent) > $max_len ? substr($user_agent, 0, $max_len) : $user_agent;
     }
 
-    /**
-     * Checks whether HTTP method is POST.
-     *
-     * @return bool
-     */
-    public function isPost()
+    public function isPost(): bool
     {
         return $this->getMethod() === 'POST';
     }
 
-    /**
-     * Checks whether HTTP method is GET.
-     *
-     * @return bool
-     */
-    public function isGet()
+    public function isGet(): bool
     {
         return $this->getMethod() === 'GET';
     }
 
-    /**
-     * Checks whether HTTP method is PUT.
-     *
-     * @return bool
-     */
-    public function isPut()
+    public function isPut(): bool
     {
         return $this->getMethod() === 'PUT';
     }
 
-    /**
-     * Checks whether HTTP method is PATCH.
-     *
-     * @return bool
-     */
-    public function isPatch()
+    public function isPatch(): bool
     {
         return $this->getMethod() === 'PATCH';
     }
 
-    /**
-     * Checks whether HTTP method is HEAD.
-     *
-     * @return bool
-     */
-    public function isHead()
+    public function isHead(): bool
     {
         return $this->getMethod() === 'HEAD';
     }
 
-    /**
-     * Checks whether HTTP method is DELETE.
-     *
-     * @return bool
-     */
-    public function isDelete()
+    public function isDelete(): bool
     {
         return $this->getMethod() === 'DELETE';
     }
 
-    /**
-     * Checks whether HTTP method is OPTIONS.
-     *
-     * @return bool
-     */
-    public function isOptions()
+    public function isOptions(): bool
     {
         return $this->getMethod() === 'OPTIONS';
     }
 
-    /**
-     * Checks whether request includes attached files
-     * http://php.net/manual/en/features.file-upload.multiple.php
-     *
-     * @param bool $onlySuccessful
-     *
-     * @return bool
-     */
-    public function hasFiles($onlySuccessful = true)
+    public function hasFiles(bool $onlySuccessful = true): bool
     {
         foreach ($this->globals->getFiles() as $file) {
             if (is_int($file['error'])) {
@@ -326,14 +205,7 @@ class Request extends Component implements RequestInterface
         return false;
     }
 
-    /**
-     * Gets attached files as \ManaPHP\Http\Request\File instances
-     *
-     * @param bool $onlySuccessful
-     *
-     * @return \ManaPHP\Http\Request\File[]
-     */
-    public function getFiles($onlySuccessful = true)
+    public function getFiles(bool $onlySuccessful = true): array
     {
         $r = [];
 
@@ -374,12 +246,7 @@ class Request extends Component implements RequestInterface
         return $r;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return \ManaPHP\Http\Request\FileInterface
-     */
-    public function getFile($key = null)
+    public function getFile(?string $key = null): FileInterface
     {
         $files = $this->getFiles();
 
@@ -399,12 +266,7 @@ class Request extends Component implements RequestInterface
         }
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function hasFile($key = null)
+    public function hasFile(?string $key = null): bool
     {
         $files = $this->getFiles();
 
@@ -420,26 +282,14 @@ class Request extends Component implements RequestInterface
         }
     }
 
-    /**
-     * Gets web page that refers active request. ie: http://www.google.com
-     *
-     * @param int $max_len
-     *
-     * @return string
-     */
-    public function getReferer($max_len = -1)
+    public function getReferer(int $max_len = -1): string
     {
         $referer = $this->getServer('HTTP_REFERER');
 
         return $max_len > 0 && strlen($referer) > $max_len ? substr($referer, 0, $max_len) : $referer;
     }
 
-    /**
-     * @param bool $strict
-     *
-     * @return string
-     */
-    public function getOrigin($strict = true)
+    public function getOrigin(bool $strict = true): string
     {
         if ($origin = $this->getServer('HTTP_ORIGIN')) {
             return $origin;
@@ -459,18 +309,12 @@ class Request extends Component implements RequestInterface
         return '';
     }
 
-    /**
-     * @return string
-     */
-    public function getHost()
+    public function getHost(): string
     {
         return $this->getServer('HTTP_HOST');
     }
 
-    /**
-     * @return string
-     */
-    public function getUrl()
+    public function getUrl(): string
     {
         return strip_tags(
             $this->getScheme() . '://' . $this->getServer('HTTP_HOST') . $this->getServer(
@@ -479,20 +323,12 @@ class Request extends Component implements RequestInterface
         );
     }
 
-    /**
-     * @return string
-     */
-    public function getUri()
+    public function getUri(): string
     {
         return strip_tags($this->getServer('REQUEST_URI'));
     }
 
-    /**
-     * @param string $name
-     *
-     * @return string
-     */
-    public function getToken($name = 'token')
+    public function getToken(string $name = 'token'): string
     {
         if ($token = $this->get($name, '')) {
             return $token;
@@ -511,20 +347,12 @@ class Request extends Component implements RequestInterface
         return (array)$this->globals->get();
     }
 
-    /**
-     * @return string
-     */
-    public function getRequestId()
+    public function getRequestId(): string
     {
         return $this->getServer('HTTP_X_REQUEST_ID') ?: $this->setRequestId();
     }
 
-    /**
-     * @param string $request_id
-     *
-     * @return string
-     */
-    public function setRequestId($request_id = null)
+    public function setRequestId(?string $request_id = null): string
     {
         if ($request_id !== null) {
             $request_id = preg_replace('#[^\-\w.]#', 'X', $request_id);
@@ -539,36 +367,22 @@ class Request extends Component implements RequestInterface
         return $request_id;
     }
 
-    /**
-     * @return float
-     */
-    public function getRequestTime()
+    public function getRequestTime(): float
     {
         return $this->getServer('REQUEST_TIME_FLOAT');
     }
 
-    /**
-     * @param int $precision
-     *
-     * @return float
-     */
-    public function getElapsedTime($precision = 3)
+    public function getElapsedTime(int $precision = 3): float
     {
         return round(microtime(true) - $this->getRequestTime(), $precision);
     }
 
-    /**
-     * @return string
-     */
-    public function getIfNoneMatch()
+    public function getIfNoneMatch(): string
     {
         return $this->getServer('HTTP_IF_NONE_MATCH');
     }
 
-    /**
-     * @return string
-     */
-    public function getAcceptLanguage()
+    public function getAcceptLanguage(): string
     {
         return $this->getServer('HTTP_ACCEPT_LANGUAGE');
     }

@@ -1,157 +1,55 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
+use ManaPHP\Http\Request\FileInterface;
+
 interface RequestInterface
 {
-    /**
-     * @return string
-     */
-    public function getRawBody();
+    public function getRawBody(): string;
 
-    /**
-     * @param string $name
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function get($name = null, $default = null);
+    public function get(?string $name = null, mixed $default = null): mixed;
 
-    /**
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return static
-     */
-    public function set($name, $value);
+    public function set(string $name, mixed $value): static;
 
-    /**
-     * @param string $name
-     *
-     * @return static
-     */
-    public function delete($name);
+    public function delete(string $name): static;
 
-    /**
-     * @param string $name
-     *
-     * @return int|string
-     */
-    public function getId($name = 'id');
+    public function getId(string $name = 'id'): int|string;
 
-    /**
-     * @param string $name
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getServer($name, $default = '');
+    public function getServer(string $name, mixed $default = ''): mixed;
 
-    /**
-     * @return string
-     */
-    public function getMethod();
+    public function getMethod(): string;
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function has($name);
+    public function has(string $name): bool;
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasServer($name);
+    public function hasServer(string $name): bool;
 
-    /**
-     * Gets HTTP schema (http/https)
-     *
-     * @return string
-     */
-    public function getScheme();
+    public function getScheme(): string;
 
-    /**
-     * @return bool
-     */
-    public function isAjax();
+    public function isAjax(): bool;
 
-    /**
-     * @return bool
-     */
-    public function isWebSocket();
+    public function isWebSocket(): bool;
 
-    /**
-     * @return string
-     */
-    public function getClientIp();
+    public function getClientIp(): string;
 
-    /**
-     * @param int $max_len
-     *
-     * @return string
-     */
-    public function getUserAgent($max_len = -1);
+    public function getUserAgent(int $max_len = -1): string;
 
-    /**
-     * Checks whether HTTP method is POST.
-     *
-     * @return bool
-     */
-    public function isPost();
+    public function isPost(): bool;
 
-    /**
-     * Checks whether HTTP method is GET.
-     *
-     * @return bool
-     */
-    public function isGet();
+    public function isGet(): bool;
 
-    /**
-     * Checks whether HTTP method is PUT.
-     *
-     * @return bool
-     */
-    public function isPut();
+    public function isPut(): bool;
 
-    /**
-     * Checks whether HTTP method is HEAD.
-     *
-     * @return bool
-     */
-    public function isHead();
+    public function isHead(): bool;
 
-    /**
-     * Checks whether HTTP method is DELETE.
-     *
-     * @return bool
-     */
-    public function isDelete();
+    public function isDelete(): bool;
 
-    /**
-     * Checks whether HTTP method is OPTIONS.
-     *
-     * @return bool
-     */
-    public function isOptions();
+    public function isOptions(): bool;
 
-    /**
-     * Checks whether HTTP method is PATCH.
-     *
-     * @return bool
-     */
-    public function isPatch();
+    public function isPatch(): bool;
 
-    /**
-     * Checks whether request include attached files
-     *
-     * @param bool $onlySuccessful
-     *
-     * @return bool
-     */
-    public function hasFiles($onlySuccessful = true);
+    public function hasFiles(bool $onlySuccessful = true): bool;
 
     /**
      * Gets attached files as \ManaPHP\Http\Request\FileInterface compatible instances
@@ -160,97 +58,33 @@ interface RequestInterface
      *
      * @return \ManaPHP\Http\Request\FileInterface[]
      */
-    public function getFiles($onlySuccessful = true);
+    public function getFiles(bool $onlySuccessful = true): array;
 
-    /**
-     * @param string $key
-     *
-     * @return \ManaPHP\Http\Request\FileInterface
-     */
-    public function getFile($key = null);
+    public function getFile(?string $key = null): FileInterface;
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function hasFile($key = null);
+    public function hasFile(?string $key = null): bool;
 
-    /**
-     * Gets web page that refers active request. ie: http://www.google.com
-     *
-     * @param int $max_len
-     *
-     * @return string
-     */
-    public function getReferer($max_len = -1);
+    public function getReferer(int $max_len = -1): string;
 
-    /**
-     * @param bool $strict
-     *
-     * @return string
-     */
-    public function getOrigin($strict = true);
+    public function getOrigin(bool $strict = true): string;
 
-    /**
-     * @return string
-     */
-    public function getHost();
+    public function getHost(): string;
 
-    /**
-     * http://localhost:8080/test/test.jsp
-     *
-     *
-     * @return string
-     */
-    public function getUrl();
+    public function getUrl(): string;
 
-    /**
-     *  /test/test.jsp
-     *
-     *
-     * @return string
-     */
-    public function getUri();
+    public function getUri(): string;
 
-    /**
-     * @param string $name
-     *
-     * @return string
-     */
-    public function getToken($name = 'token');
+    public function getToken(string $name = 'token'): string;
 
-    /**
-     * @return string
-     */
-    public function getRequestId();
+    public function getRequestId(): string;
 
-    /**
-     * @param string $request_id
-     *
-     * @return void
-     */
-    public function setRequestId($request_id = null);
+    public function setRequestId(?string $request_id = null): string;
 
-    /**
-     * @return float
-     */
-    public function getRequestTime();
+    public function getRequestTime(): float;
 
-    /**
-     * @param int $precision
-     *
-     * @return float
-     */
-    public function getElapsedTime($precision = 3);
+    public function getElapsedTime(int $precision = 3): float;
 
-    /**
-     * @return string
-     */
-    public function getIfNoneMatch();
+    public function getIfNoneMatch(): string;
 
-    /**
-     * @return string
-     */
-    public function getAcceptLanguage();
+    public function getAcceptLanguage(): string;
 }
