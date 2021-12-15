@@ -1,15 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Di;
 
 interface FactoryInterface
 {
-    /**
-     * @param \ManaPHP\Di\ContainerInterface $container
-     * @param string                         $name
-     * @param array                          $parameters
-     *
-     * @return mixed
-     */
-    public function make($container, $name, $parameters = []);
+    public function make(ContainerInterface $container, string $name, array $parameters = []): object;
 }

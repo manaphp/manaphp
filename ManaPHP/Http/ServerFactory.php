@@ -1,12 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
+use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Di\FactoryInterface;
 
 class ServerFactory implements FactoryInterface
 {
-    public function make($container, $name, $parameters = [])
+    public function make(ContainerInterface $container, string $name, array $parameters = []): object
     {
         if (PHP_SAPI === 'cli') {
             if (class_exists('Workerman\Worker')) {
