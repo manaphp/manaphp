@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Helper;
 
@@ -6,35 +7,17 @@ use ManaPHP\Exception\MisuseException;
 
 class Arr
 {
-    /**
-     * @param array $ar
-     * @param array $keys
-     *
-     * @return array
-     */
-    public static function only($ar, $keys)
+    public static function only(array $ar, array $keys): array
     {
         return array_intersect_key($ar, array_fill_keys($keys, null));
     }
 
-    /**
-     * @param array $ar
-     * @param array $keys
-     *
-     * @return array
-     */
-    public static function except($ar, $keys)
+    public static function except(array $ar, array $keys): array
     {
         return array_diff_key($ar, array_fill_keys($keys, null));
     }
 
-    /**
-     * @param array  $ar
-     * @param string $prepend
-     *
-     * @return array
-     */
-    public static function dot($ar, $prepend = '')
+    public static function dot(array $ar, string $prepend = ''): array
     {
         $r = [];
 
@@ -49,14 +32,7 @@ class Arr
         return $r;
     }
 
-    /**
-     * @param array  $ar
-     * @param string $key
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public static function get($ar, $key, $default = null)
+    public static function get(array $ar, string $key, mixed $default = null): mixed
     {
         if (!$key) {
             return $ar;
@@ -78,13 +54,7 @@ class Arr
         return $t[$last] ?? $default;
     }
 
-    /**
-     * @param array $ar
-     * @param bool  $removeEmpty
-     *
-     * @return array
-     */
-    public static function trim($ar, $removeEmpty = true)
+    public static function trim(array $ar, bool $removeEmpty = true): array
     {
         foreach ($ar as $k => $v) {
             if (is_string($v)) {
@@ -108,14 +78,7 @@ class Arr
         return $ar;
     }
 
-    /**
-     * @param array  $input
-     * @param string $field_key
-     * @param int    $sort
-     *
-     * @return array
-     */
-    public static function unique_column($input, $field_key, $sort = SORT_REGULAR)
+    public static function unique_column(array $input, string $field_key, int $sort = SORT_REGULAR): array
     {
         $values = [];
         foreach ($input as $item) {
@@ -132,13 +95,7 @@ class Arr
         return $values;
     }
 
-    /**
-     * @param array                 $ar
-     * @param string|array|callable $index
-     *
-     * @return array
-     */
-    public static function indexby($ar, $index)
+    public static function indexby(array $ar, mixed $index): array
     {
         $rows = [];
         if (is_scalar($index)) {
@@ -160,13 +117,7 @@ class Arr
         return $rows;
     }
 
-    /**
-     * @param array  $ar
-     * @param string $key
-     *
-     * @return array
-     */
-    public static function groupby($ar, $key)
+    public static function groupby(array $ar, string $key): array
     {
         $r = [];
 
@@ -178,13 +129,7 @@ class Arr
         return $r;
     }
 
-    /**
-     * @param array $ar
-     * @param array $sort
-     *
-     * @return array
-     */
-    public static function sort(&$ar, $sort)
+    public static function sort(array &$ar, array $sort): array
     {
         usort(
             $ar, static function ($a, $b) use ($sort) {
@@ -208,14 +153,7 @@ class Arr
         return $ar;
     }
 
-    /**
-     * @param array $rows
-     * @param array $aggs
-     * @param array $group
-     *
-     * @return array
-     */
-    public static function aggregate($rows, $aggs, $group = [])
+    public static function aggregate(array $rows, array $aggs, array $group = []): array
     {
         if (!$rows) {
             return [];
