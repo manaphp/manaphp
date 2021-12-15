@@ -1,68 +1,27 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
 interface DispatcherInterface
 {
-    /**
-     * @return string
-     */
-    public function getArea();
+    public function getArea(): ?string;
 
-    /**
-     * @return string
-     */
-    public function getController();
+    public function getController(): string;
 
-    /**
-     * @return string
-     */
-    public function getAction();
+    public function getAction(): string;
 
-    /**
-     * @return array
-     */
-    public function getParams();
+    public function getParams(): array;
 
-    /**
-     * @param string|int $name
-     * @param mixed      $default
-     *
-     * @return mixed
-     */
-    public function getParam($name, $default = null);
+    public function getParam(int|string $name, mixed $default = null): mixed;
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasParam($name);
+    public function hasParam(string $name): bool;
 
-    /**
-     * @return string
-     */
-    public function getPath();
+    public function getPath(): string;
 
-    /**
-     * @return \ManaPHP\Http\Controller
-     */
-    public function getControllerInstance();
+    public function getControllerInstance(): Controller;
 
-    /**
-     * @param string $area
-     * @param string $controller
-     * @param string $action
-     * @param array  $params
-     *
-     * @return mixed
-     * @throws \ManaPHP\Http\Dispatcher\NotFoundControllerException
-     * @throws \ManaPHP\Exception\AbortException
-     */
-    public function dispatch($area, $controller, $action, $params);
+    public function dispatch(?string $area, string $controller, string $action, array $params): mixed;
 
-    /**
-     * @return bool
-     */
-    public function isInvoking();
+    public function isInvoking(): bool;
 }

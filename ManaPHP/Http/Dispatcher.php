@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
@@ -13,64 +14,38 @@ use ManaPHP\Http\Dispatcher\NotFoundControllerException;
  */
 class Dispatcher extends Component implements DispatcherInterface
 {
-    /**
-     * @return string
-     */
-    public function getArea()
+    public function getArea(): ?string
     {
         return $this->context->area;
     }
 
-    /**
-     * @return string
-     */
-    public function getController()
+    public function getController(): string
     {
         return $this->context->controller;
     }
 
-    /**
-     * @return string
-     */
-    public function getAction()
+    public function getAction(): string
     {
         return $this->context->action;
     }
 
-    /**
-     * @return array
-     */
-    public function getParams()
+    public function getParams(): array
     {
         return $this->context->params;
     }
 
-    /**
-     * @param string|int $name
-     * @param mixed     default
-     *
-     * @return mixed
-     */
-    public function getParam($name, $default = null)
+    public function getParam(int|string $name, mixed $default = null): mixed
     {
         $params = $this->context->params;
         return $params[$name] ?? $default;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasParam($name)
+    public function hasParam(string $name): bool
     {
         return isset($this->context->params[$name]);
     }
 
-    /**
-     * @return string
-     */
-    public function getPath()
+    public function getPath(): string
     {
         $context = $this->context;
 
@@ -99,13 +74,7 @@ class Dispatcher extends Component implements DispatcherInterface
         return $context->path;
     }
 
-    /**
-     * @param \ManaPHP\Http\Controller $controller
-     * @param string                   $action
-     *
-     * @return mixed
-     */
-    public function invokeAction($controller, $action)
+    public function invokeAction(Controller $controller, string $action): mixed
     {
         $method = $action . 'Action';
 
@@ -134,16 +103,7 @@ class Dispatcher extends Component implements DispatcherInterface
         return $return;
     }
 
-    /**
-     * @param string $area
-     * @param string $controller
-     * @param string $action
-     * @param array  $params
-     *
-     * @return mixed
-     * @throws \ManaPHP\Http\Dispatcher\NotFoundControllerException
-     */
-    public function dispatch($area, $controller, $action, $params)
+    public function dispatch(?string $area, string $controller, string $action, array $params): mixed
     {
         $context = $this->context;
 
@@ -189,18 +149,12 @@ class Dispatcher extends Component implements DispatcherInterface
         return $this->invokeAction($controllerInstance, $action);
     }
 
-    /**
-     * @return \ManaPHP\Http\Controller
-     */
-    public function getControllerInstance()
+    public function getControllerInstance(): Controller
     {
         return $this->context->controllerInstance;
     }
 
-    /**
-     * @return bool
-     */
-    public function isInvoking()
+    public function isInvoking(): bool
     {
         return $this->context->isInvoking;
     }
