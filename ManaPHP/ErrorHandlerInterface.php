@@ -1,11 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP;
 
+use Throwable;
+
 interface ErrorHandlerInterface
 {
-    /**
-     * @param \Throwable $throwable
-     */
-    public function handle($throwable);
+    public function handle(Throwable $throwable);
 }

@@ -1,9 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Rest;
 
 use ManaPHP\Component;
 use ManaPHP\Exception;
+use Throwable;
 
 /**
  * @property-read \ManaPHP\Logging\LoggerInterface $logger
@@ -11,12 +13,7 @@ use ManaPHP\Exception;
  */
 class ErrorHandler extends Component implements ErrorHandlerInterface
 {
-    /**
-     * @param \Throwable $throwable
-     *
-     * @return void
-     */
-    public function handle($throwable)
+    public function handle(Throwable $throwable): void
     {
         $code = $throwable instanceof Exception ? $throwable->getCode() : 500;
         if ($code >= 500) {
