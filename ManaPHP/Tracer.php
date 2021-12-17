@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP;
 
@@ -9,77 +10,36 @@ use ManaPHP\Event\Listener;
  */
 abstract class Tracer extends Listener
 {
-    /**
-     * @var bool
-     */
-    protected $verbose = false;
+    protected bool $verbose = false;
 
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['verbose'])) {
             $this->verbose = (bool)$options['verbose'];
         }
     }
 
-    /**
-     * @param string|array $message
-     * @param string       $category
-     *
-     * @return void
-     */
-    public function debug($message, $category)
+    public function debug(mixed $message, string $category): void
     {
         $this->logger->debug($message, $category);
     }
 
-    /**
-     * Sends/Writes an info message to the log
-     *
-     * @param string|array $message
-     * @param string       $category
-     *
-     * @return void
-     */
-    public function info($message, $category)
+    public function info(mixed $message, string $category): void
     {
         $this->logger->info($message, $category);
     }
 
-    /**
-     * Sends/Writes a warning message to the log
-     *
-     * @param string|array $message
-     * @param string       $category
-     *
-     * @return void
-     */
-    public function warn($message, $category)
+    public function warn(mixed $message, string $category): void
     {
         $this->logger->warn($message, $category);
     }
 
-    /**
-     * Sends/Writes an error message to the log
-     *
-     * @param string|array $message
-     * @param string       $category
-     *
-     * @return void
-     */
-    public function error($message, $category)
+    public function error(mixed $message, string $category): void
     {
         $this->logger->error($message, $category);
     }
 
-    /**
-     * Sends/Writes a critical message to the log
-     *
-     * @param string|array $message
-     * @param string       $category
-     *
-     * @return void
-     */
-    public function fatal($message, $category)
+    public function fatal(mixed $message, string $category): void
     {
         $this->logger->fatal($message, $category);
     }

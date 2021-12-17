@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Tracers;
 
@@ -9,15 +10,12 @@ use ManaPHP\Tracer;
  */
 class RequestTracer extends Tracer
 {
-    public function listen()
+    public function listen(): void
     {
         $this->attachEvent('request:begin', [$this, 'onBegin']);
     }
 
-    /**
-     * @return void
-     */
-    public function onBegin()
+    public function onBegin(): void
     {
         $this->debug($this->request->get(), 'http.request');
     }

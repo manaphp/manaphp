@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Tracers;
 
@@ -10,30 +11,19 @@ use ManaPHP\Tracer;
  */
 class RedisTracer extends Tracer
 {
-    public function listen()
+    public function listen(): void
     {
         $this->verbose && $this->attachEvent('redis:connecting', [$this, 'onConnecting']);
         $this->attachEvent('redis:calling', [$this, 'onCalling']);
         $this->attachEvent('redis:called', [$this, 'onCalled']);
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     */
-    public function onConnecting(EventArgs $eventArgs)
+    public function onConnecting(EventArgs $eventArgs): void
     {
         $this->debug(['connecting to `:uri`', 'uri' => $eventArgs->data['uri']], 'redis.connect');
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     * @throws \ManaPHP\Exception\JsonException
-     */
-    public function onCalling(EventArgs $eventArgs)
+    public function onCalling(EventArgs $eventArgs): void
     {
         $method = $eventArgs->data['method'];
         $arguments = $eventArgs->data['arguments'];
@@ -48,13 +38,7 @@ class RedisTracer extends Tracer
         }
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     * @throws \ManaPHP\Exception\JsonException
-     */
-    public function onCalled(EventArgs $eventArgs)
+    public function onCalled(EventArgs $eventArgs): void
     {
         $method = $eventArgs->data['method'];
         $arguments = $eventArgs->data['arguments'];

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Tracers;
 
@@ -7,12 +8,12 @@ use ManaPHP\Tracer;
 
 class WspClientTracer extends Tracer
 {
-    public function listen()
+    public function listen(): void
     {
         $this->attachEvent('wspClient:push', [$this, 'onPush']);
     }
 
-    public function onPush(EventArgs $eventArgs)
+    public function onPush(EventArgs $eventArgs):void
     {
         $this->debug($eventArgs->data, 'wspClient.push');
     }

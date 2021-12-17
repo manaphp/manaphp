@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Tracers;
 
@@ -7,18 +8,13 @@ use ManaPHP\Tracer;
 
 class HttpClientTracer extends Tracer
 {
-    public function listen()
+    public function listen(): void
     {
         $this->attachEvent('httpClient:requesting', [$this, 'onRequesting']);
         $this->attachEvent('httpClient:requested', [$this, 'onRequested']);
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     */
-    public function onRequesting(EventArgs $eventArgs)
+    public function onRequesting(EventArgs $eventArgs): void
     {
         /** @var \ManaPHP\Http\Client\Request $request */
         $request = $eventArgs->data['request'];
@@ -28,12 +24,7 @@ class HttpClientTracer extends Tracer
         }
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     */
-    public function onRequested(EventArgs $eventArgs)
+    public function onRequested(EventArgs $eventArgs): void
     {
         /** @var \ManaPHP\Http\Client\Response $response */
         $response = clone $eventArgs->data['response'];

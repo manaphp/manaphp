@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Tracers;
 
@@ -7,7 +8,7 @@ use ManaPHP\Tracer;
 
 class MongodbTracer extends Tracer
 {
-    public function listen()
+    public function listen(): void
     {
         $this->verbose && $this->attachEvent('mongodb:connect', [$this, 'onConnect']);
         $this->attachEvent('mongodb:queried', [$this, 'onQueried']);
@@ -21,92 +22,47 @@ class MongodbTracer extends Tracer
         $this->attachEvent('mongodb:bulkUpserted', [$this, 'onBulkUpserted']);
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     */
-    public function onConnect(EventArgs $eventArgs)
+    public function onConnect(EventArgs $eventArgs): void
     {
         $this->debug(['connect to `:dsn`', 'dsn' => $eventArgs->data], 'mongodb.connect');
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     */
-    public function onInserted(EventArgs $eventArgs)
+    public function onInserted(EventArgs $eventArgs): void
     {
         $this->info($eventArgs->data, 'mongodb.insert');
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     */
-    public function onBulkInserted(EventArgs $eventArgs)
+    public function onBulkInserted(EventArgs $eventArgs): void
     {
         $this->info($eventArgs->data, 'mongodb.bulk.insert');
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     */
-    public function onUpdated(EventArgs $eventArgs)
+    public function onUpdated(EventArgs $eventArgs): void
     {
         $this->info($eventArgs->data, 'mongodb.update');
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     */
-    public function onUpserted(EventArgs $eventArgs)
+    public function onUpserted(EventArgs $eventArgs): void
     {
         $this->info($eventArgs->data, 'mongodb.upsert');
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     */
-    public function onBulkUpserted(EventArgs $eventArgs)
+    public function onBulkUpserted(EventArgs $eventArgs): void
     {
         $this->info($eventArgs->data, 'mongodb.bulk.upsert');
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     */
-    public function onDeleted(EventArgs $eventArgs)
+    public function onDeleted(EventArgs $eventArgs): void
     {
         $this->info($eventArgs->data, 'mongodb.delete');
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     */
-    public function onQueried(EventArgs $eventArgs)
+    public function onQueried(EventArgs $eventArgs): void
     {
         $this->debug($eventArgs->data, 'mongodb.query');
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     */
-    public function onCommanded(EventArgs $eventArgs)
+    public function onCommanded(EventArgs $eventArgs): void
     {
         $command_name = key($eventArgs->data['command']);
 
@@ -121,12 +77,7 @@ class MongodbTracer extends Tracer
         }
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     */
-    public function onBulkUpdated(EventArgs $eventArgs)
+    public function onBulkUpdated(EventArgs $eventArgs): void
     {
         $this->info($eventArgs->data, 'mongodb.bulk.update');
     }

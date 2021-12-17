@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Tracers;
 
@@ -10,12 +11,12 @@ use ManaPHP\Tracer;
  */
 class DispatcherTracer extends Tracer
 {
-    public function listen()
+    public function listen(): void
     {
         $this->attachEvent('request:authorize', [$this, 'onRequestAuthorize']);
     }
 
-    public function onRequestAuthorize(EventArgs $eventArgs)
+    public function onRequestAuthorize(EventArgs $eventArgs): void
     {
         $controller = $eventArgs->data['controller'];
         $action = $eventArgs->data['action'];

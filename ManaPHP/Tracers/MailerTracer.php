@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Tracers;
 
@@ -7,17 +8,12 @@ use ManaPHP\Tracer;
 
 class MailerTracer extends Tracer
 {
-    public function listen()
+    public function listen(): void
     {
         $this->attachEvent('mailer:sending', [$this, 'onSending']);
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     */
-    public function onSending(EventArgs $eventArgs)
+    public function onSending(EventArgs $eventArgs): void
     {
         /** @var \ManaPHP\Mailing\Mailer\Message $message */
         $message = $eventArgs->data['message'];
