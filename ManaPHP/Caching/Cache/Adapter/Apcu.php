@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Caching\Cache\Adapter;
 
@@ -7,47 +8,26 @@ use ManaPHP\Exception\RuntimeException;
 
 class Apcu extends AbstractCache
 {
-    /**
-     * @var string
-     */
-    protected $prefix = 'cache:';
+    protected string $prefix = 'cache:';
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['prefix'])) {
             $this->prefix = $options['prefix'];
         }
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function do_exists($key)
+    public function do_exists(string $key): bool
     {
         return apcu_exists($this->prefix . $key);
     }
 
-    /**
-     * @param string $key
-     *
-     * @return mixed
-     */
-    public function do_get($key)
+    public function do_get(string $key): false|string
     {
         return apcu_fetch($this->prefix . $key);
     }
 
-    /**
-     * @param string $key
-     * @param string $value
-     * @param int    $ttl
-     */
-    public function do_set($key, $value, $ttl)
+    public function do_set(string $key, string $value, int $ttl): void
     {
         $r = apcu_store($this->prefix . $key, $value, $ttl);
         if (!$r) {
@@ -55,12 +35,7 @@ class Apcu extends AbstractCache
         }
     }
 
-    /**
-     * @param string $key
-     *
-     * @return void
-     */
-    public function do_delete($key)
+    public function do_delete(string $key): void
     {
         apcu_delete($this->prefix . $key);
     }

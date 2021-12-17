@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Caching\Cache\Adapter;
 
@@ -9,12 +10,7 @@ use ManaPHP\Caching\AbstractCache;
  */
 class Memory extends AbstractCache
 {
-    /**
-     * @param string $key
-     *
-     * @return string|false
-     */
-    public function do_get($key)
+    public function do_get(string $key): false|string
     {
         $context = $this->context;
 
@@ -31,38 +27,21 @@ class Memory extends AbstractCache
         }
     }
 
-    /**
-     * @param string $key
-     * @param string $value
-     * @param int    $ttl
-     *
-     * @return void
-     */
-    public function do_set($key, $value, $ttl)
+    public function do_set(string $key, string $value, int $ttl): void
     {
         $context = $this->context;
 
         $context->data[$key] = ['deadline' => time() + $ttl, 'data' => $value];
     }
 
-    /**
-     * @param string $key
-     *
-     * @return void
-     */
-    public function do_delete($key)
+    public function do_delete(string $key): void
     {
         $context = $this->context;
 
         unset($context->data[$key]);
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function do_exists($key)
+    public function do_exists(string $key): bool
     {
         $context = $this->context;
 

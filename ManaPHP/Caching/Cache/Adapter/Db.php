@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Caching\Cache\Adapter;
 
@@ -18,37 +19,21 @@ use ManaPHP\Caching\AbstractCache;
  */
 class Db extends AbstractCache
 {
-    /**
-     * @var string
-     */
-    protected $table = 'manaphp_cache';
+    protected string $table = 'manaphp_cache';
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['table'])) {
             $this->table = $options['table'];
         }
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function do_exists($key)
+    public function do_exists(string $key): bool
     {
         return $this->db->query($this->table)->whereEq('hash', md5($key))->value('expired_time') >= time();
     }
 
-    /**
-     * @param string $key
-     *
-     * @return string|false
-     */
-    public function do_get($key)
+    public function do_get(string $key): false|string
     {
         $r = $this->db->query($this->table)->whereEq('hash', md5($key))->first();
         if ($r && $r['expired_time'] > time()) {
@@ -58,14 +43,7 @@ class Db extends AbstractCache
         }
     }
 
-    /**
-     * @param string $key
-     * @param string $value
-     * @param int    $ttl
-     *
-     * @return void
-     */
-    public function do_set($key, $value, $ttl)
+    public function do_set(string $key, string $value, int $ttl): void
     {
         $hash = md5($key);
         $expired_time = time() + $ttl;
@@ -77,12 +55,7 @@ class Db extends AbstractCache
         }
     }
 
-    /**
-     * @param string $key
-     *
-     * @return void
-     */
-    public function do_delete($key)
+    public function do_delete(string $key): void
     {
         $this->db->delete($this->table, ['hash' => md5($key)]);
     }

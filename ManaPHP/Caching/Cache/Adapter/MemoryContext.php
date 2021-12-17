@@ -1,11 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Caching\Cache\Adapter;
 
 class MemoryContext
 {
-    /**
-     * @var array
-     */
-    public $data = [];
+    public array $data = [];
 }

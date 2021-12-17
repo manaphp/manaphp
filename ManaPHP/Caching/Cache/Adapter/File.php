@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Caching\Cache\Adapter;
 
@@ -11,25 +12,11 @@ use ManaPHP\Exception\WriteFileFailedException;
  */
 class File extends AbstractCache
 {
-    /**
-     * @var string
-     */
-    protected $dir = '@data/cache';
+    protected string $dir = '@data/cache';
+    protected int $level = 1;
+    protected string $ext = '.cache';
 
-    /**
-     * @var int
-     */
-    protected $level = 1;
-
-    /**
-     * @var string
-     */
-    protected $ext = '.cache';
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['dir'])) {
             $this->dir = rtrim($options['dir'], '\\/');
@@ -44,12 +31,7 @@ class File extends AbstractCache
         }
     }
 
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
-    protected function getFileName($key)
+    protected function getFileName(string $key): string
     {
         $key = strtr($key, ':', '/');
         $pos = strrpos($key, '/');
@@ -72,24 +54,14 @@ class File extends AbstractCache
         return $this->alias->resolve($this->dir . $key . $this->ext);
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function do_exists($key)
+    public function do_exists(string $key): bool
     {
         $file = $this->getFileName($key);
 
         return (@filemtime($file) >= time());
     }
 
-    /**
-     * @param string $key
-     *
-     * @return string|false
-     */
-    public function do_get($key)
+    public function do_get(string $key): false|string
     {
         $file = $this->getFileName($key);
 
@@ -100,14 +72,7 @@ class File extends AbstractCache
         }
     }
 
-    /**
-     * @param string $key
-     * @param string $value
-     * @param int    $ttl
-     *
-     * @return void
-     */
-    public function do_set($key, $value, $ttl)
+    public function do_set(string $key, string $value, int $ttl): void
     {
         $file = $this->getFileName($key);
 
@@ -130,7 +95,7 @@ class File extends AbstractCache
      *
      * @return void
      */
-    public function do_delete($key)
+    public function do_delete(string $key): void
     {
         $file = $this->getFileName($key);
 

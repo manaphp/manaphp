@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Caching\Cache\Adapter;
 
@@ -10,57 +11,29 @@ use ManaPHP\Caching\AbstractCache;
  */
 class Redis extends AbstractCache
 {
-    /**
-     * @var string
-     */
-    protected $prefix;
+    protected string $prefix;
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         $this->prefix = $options['prefix'] ?? sprintf('cache:%s:', $this->config->get('id'));
     }
 
-    /**
-     * @param string $key
-     *
-     * @return string|false
-     */
-    public function do_get($key)
+    public function do_get(string $key): false|string
     {
         return $this->redisCache->get($this->prefix . $key);
     }
 
-    /**
-     * @param string $key
-     * @param string $value
-     * @param int    $ttl
-     *
-     * @return void
-     */
-    public function do_set($key, $value, $ttl)
+    public function do_set(string $key, string $value, int $ttl): void
     {
         $this->redisCache->set($this->prefix . $key, $value, $ttl);
     }
 
-    /**
-     * @param string $key
-     *
-     * @return void
-     */
-    public function do_delete($key)
+    public function do_delete(string $key): void
     {
         $this->redisCache->del($this->prefix . $key);
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function do_exists($key)
+    public function do_exists(string $key): bool
     {
         return (bool)$this->redisCache->exists($this->prefix . $key);
     }
