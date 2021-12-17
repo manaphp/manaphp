@@ -1,54 +1,19 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Bos;
 
 interface ClientInterface
 {
-    /**
-     * @param string $bucket
-     * @param string $base_url
-     *
-     * @return array
-     */
-    public function createBucket($bucket, $base_url = null);
+    public function createBucket(string $bucket, ?string $base_url = null): array;
 
-    /**
-     * @return array
-     */
-    public function listBuckets();
+    public function listBuckets(): array;
 
-    /**
-     * @param string $bucket
-     * @param array  $filters
-     *
-     * @return array
-     */
-    public function listObjects($bucket, $filters = []);
+    public function listObjects(string $bucket, array $filters = []): array;
 
-    /**
-     * @param string $file
-     * @param string $bucket
-     * @param string $key
-     * @param array  $policy
-     *
-     * @return array
-     */
-    public function putObject($file, $bucket, $key, $policy = []);
+    public function putObject(string $file, string $bucket, string $key, array $policy = []): array;
 
-    /**
-     * @param string $bucket
-     * @param string $key
-     * @param array  $policy
-     * @param int    $ttl
-     *
-     * @return string
-     */
-    public function getPutObjectUrl($bucket, $key, $policy = [], $ttl = 3600);
+    public function getPutObjectUrl(string $bucket, string $key, array $policy = [], int $ttl = 3600): string;
 
-    /**
-     * @param string $token
-     *
-     * @return array
-     */
-    public function parsePutObjectResponse($token);
+    public function parsePutObjectResponse(string $token): array;
 }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Bos;
 
@@ -14,28 +15,16 @@ use ManaPHP\Helper\Arr;
  */
 class Client extends Component implements ClientInterface
 {
-    /**
-     * @var string
-     */
-    protected $endpoint;
+    protected string $endpoint;
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['endpoint'])) {
             $this->endpoint = rtrim($options['endpoint'], '/');
         }
     }
 
-    /**
-     * @param string $bucket
-     * @param string $base_url
-     *
-     * @return array
-     */
-    public function createBucket($bucket, $base_url = null)
+    public function createBucket(string $bucket, ?string $base_url = null): array
     {
         $params['token'] = jwt_encode([], 300, 'bos.bucket.create');
         $params['bucket'] = $bucket;
@@ -56,10 +45,7 @@ class Client extends Component implements ClientInterface
         return $body['data'];
     }
 
-    /**
-     * @return array
-     */
-    public function listBuckets()
+    public function listBuckets(): array
     {
         $token = jwt_encode([], 300, 'bos.bucket.list');
         $endpoint = preg_replace('#{bucket}[\-.]*#', '', $this->endpoint);
@@ -72,13 +58,7 @@ class Client extends Component implements ClientInterface
         return $body['data'];
     }
 
-    /**
-     * @param string $bucket
-     * @param array  $filters
-     *
-     * @return array
-     */
-    public function listObjects($bucket, $filters = [])
+    public function listObjects(string $bucket, array $filters = []): array
     {
         if ($bucket === '') {
             return [];
@@ -99,15 +79,7 @@ class Client extends Component implements ClientInterface
         return $body['data'];
     }
 
-    /**
-     * @param string $bucket
-     * @param string $key
-     * @param array  $policy
-     * @param int    $ttl
-     *
-     * @return string
-     */
-    public function getPutObjectUrl($bucket, $key, $policy = [], $ttl = 3600)
+    public function getPutObjectUrl(string $bucket, string $key, array $policy = [], int $ttl = 3600): string
     {
         if ($key[0] === '/') {
             throw new MisuseException('key can NOT start with /');
@@ -120,15 +92,7 @@ class Client extends Component implements ClientInterface
             . jwt_encode($policy, $ttl, 'bos.object.create.request');
     }
 
-    /**
-     * @param string $file
-     * @param string $bucket
-     * @param string $key
-     * @param array  $policy
-     *
-     * @return array
-     */
-    public function putObject($file, $bucket, $key, $policy = [])
+    public function putObject(string $file, string $bucket, string $key, array $policy = []): array
     {
         $url = $this->getPutObjectUrl($bucket, $key, $policy, 3600);
 
@@ -149,12 +113,7 @@ class Client extends Component implements ClientInterface
         return $this->parsePutObjectResponse($body['data']['token']);
     }
 
-    /**
-     * @param string $token
-     *
-     * @return array
-     */
-    public function parsePutObjectResponse($token)
+    public function parsePutObjectResponse(string $token): array
     {
         $claims = jwt_decode($token, 'bos.object.create.response');
 
