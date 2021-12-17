@@ -1,36 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
 class AbstractSessionContext
 {
-    /**
-     * @var int
-     */
-    public $ttl;
-
-    /**
-     * @var bool
-     */
-    public $started = false;
-
-    /**
-     * @var bool
-     */
-    public $is_new;
-
-    /**
-     * @var bool
-     */
-    public $is_dirty = false;
-
-    /**
-     * @var string
-     */
-    public $session_id;
-
-    /**
-     * @var array
-     */
-    public $_SESSION;
+    public ?int $ttl = null;
+    public bool $started = false;
+    public bool $is_new;
+    public bool $is_dirty = false;
+    public ?string $session_id = null;
+    public ?array $_SESSION = null;
 }

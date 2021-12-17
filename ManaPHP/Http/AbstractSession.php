@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
@@ -16,35 +17,13 @@ use ManaPHP\Helper\Str;
  */
 abstract class AbstractSession extends Component implements SessionInterface, ArrayAccess
 {
-    /**
-     * @var int
-     */
-    protected $ttl = 3600;
+    protected int $ttl = 3600;
+    protected int $lazy;
+    protected string $name = 'PHPSESSID';
+    protected string $serializer = 'json';
+    protected array $params = ['expire' => 0, 'path' => null, 'domain' => null, 'secure' => false, 'httponly' => true];
 
-    /**
-     * @var int
-     */
-    protected $lazy;
-
-    /**
-     * @var string
-     */
-    protected $name = 'PHPSESSID';
-
-    /**
-     * @var string
-     */
-    protected $serializer = 'json';
-
-    /**
-     * @var array
-     */
-    protected $params = ['expire' => 0, 'path' => null, 'domain' => null, 'secure' => false, 'httponly' => true];
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['ttl'])) {
             $this->ttl = (int)$options['ttl'];
@@ -75,10 +54,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         $this->attachEvent('request:responding', [$this, 'onRequestResponding']);
     }
 
-    /**
-     * @return void
-     */
-    protected function start()
+    protected function start(): void
     {
         $context = $this->context;
 
@@ -108,10 +84,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         $this->fireEvent('session:start', compact('context', 'session_id'));
     }
 
-    /**
-     * @return void
-     */
-    public function onRequestResponding()
+    public function onRequestResponding(): void
     {
         $context = $this->context;
 
@@ -167,14 +140,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         $this->do_write($context->session_id, $data, $context->ttl ?? $this->ttl);
     }
 
-    /**
-     * Destroys the active session or assigned session
-     *
-     * @param string $session_id
-     *
-     * @return static
-     */
-    public function destroy($session_id = null)
+    public function destroy(?string $session_id = null): static
     {
         if ($session_id) {
             $this->fireEvent('session:destroy', compact('session_id'));
@@ -203,20 +169,9 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         return $this;
     }
 
-    /**
-     * @param string $session_id
-     * @param int    $ttl
-     *
-     * @return bool
-     */
-    abstract public function do_touch($session_id, $ttl);
+    abstract public function do_touch(string $session_id, int $ttl): bool;
 
-    /**
-     * @param array $data
-     *
-     * @return string
-     */
-    public function serialize($data)
+    public function serialize(array $data): string
     {
         $serializer = $this->serializer;
 
@@ -247,12 +202,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         }
     }
 
-    /**
-     * @param string $data
-     *
-     * @return array|false
-     */
-    public function unserialize($data)
+    public function unserialize(string $data): false|array
     {
         $serializer = $this->serializer;
 
@@ -298,41 +248,18 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         }
     }
 
-    /**
-     * @param string $session_id
-     *
-     * @return string
-     */
-    abstract public function do_read($session_id);
+    abstract public function do_read(string $session_id): string;
 
-    /**
-     * @param string $session_id
-     * @param string $data
-     * @param int    $ttl
-     *
-     * @return bool
-     */
-    abstract public function do_write($session_id, $data, $ttl);
+    abstract public function do_write(string $session_id, string $data, int $ttl): bool;
 
-    abstract public function do_gc($ttl);
+    abstract public function do_gc(int $ttl): void;
 
-    /**
-     * @return string
-     */
-    protected function generateSessionId()
+    protected function generateSessionId(): string
     {
         return Str::random(32, 36);
     }
 
-    /**
-     * Gets a session variable from an application context
-     *
-     * @param string $name
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function get($name = null, $default = null)
+    public function get(?string $name = null, mixed $default = null): mixed
     {
         $context = $this->context;
 
@@ -349,15 +276,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         }
     }
 
-    /**
-     * Sets a session variable in an application context
-     *
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return static
-     */
-    public function set($name, $value)
+    public function set(string $name, mixed $value): static
     {
         $context = $this->context;
 
@@ -371,14 +290,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         return $this;
     }
 
-    /**
-     * Check whether a session variable is set in an application context
-     *
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function has($name)
+    public function has(string $name): bool
     {
         $context = $this->context;
 
@@ -389,14 +301,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         return isset($context->_SESSION[$name]);
     }
 
-    /**
-     * Removes a session variable from an application context
-     *
-     * @param string $name
-     *
-     * @return static
-     */
-    public function remove($name)
+    public function remove(string $name): static
     {
         $context = $this->context;
 
@@ -410,10 +315,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId(): string
     {
         $context = $this->context;
 
@@ -424,12 +326,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         return $context->session_id;
     }
 
-    /**
-     * @param string $id
-     *
-     * @return static
-     */
-    public function setId($id)
+    public function setId(string $id): static
     {
         $context = $this->context;
 
@@ -442,82 +339,46 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getTtl()
+    public function getTtl(): int
     {
         return $this->context->ttl ?? $this->ttl;
     }
 
-    /**
-     * @param int $ttl
-     *
-     * @return static
-     */
-    public function setTtl($ttl)
+    public function setTtl(int $ttl): static
     {
         $this->context->ttl = $ttl;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $session_id
-     */
-    abstract public function do_destroy($session_id);
+    abstract public function do_destroy(string $session_id): void;
 
-    /**
-     * @param mixed $offset
-     *
-     * @return bool
-     */
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return $this->has($offset);
     }
 
-    /**
-     * @param mixed $offset
-     *
-     * @return mixed
-     */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->get($offset);
     }
 
-    /**
-     * @param mixed $offset
-     * @param mixed $value
-     */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->set($offset, $value);
     }
 
-    /**
-     * @param mixed $offset
-     */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         $this->remove($offset);
     }
 
-    /**
-     * @param string $session_id
-     *
-     * @return array
-     */
-    public function read($session_id)
+    public function read(string $session_id): array
     {
         $session = $this->do_read($session_id);
         if (!$session) {
@@ -527,13 +388,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         return $this->unserialize($session);
     }
 
-    /**
-     * @param string $session_id
-     * @param array  $data
-     *
-     * @return static
-     */
-    public function write($session_id, $data)
+    public function write(string $session_id, array $data): static
     {
         $session = $this->serialize($data);
 

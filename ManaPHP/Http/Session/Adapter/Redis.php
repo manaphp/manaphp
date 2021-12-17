@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Session\Adapter;
 
@@ -10,76 +11,39 @@ use ManaPHP\Http\AbstractSession;
  */
 class Redis extends AbstractSession
 {
-    /**
-     * @var string
-     */
-    protected $prefix;
+    protected string $prefix;
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
 
         $this->prefix = $options['prefix'] ?? sprintf("cache:%s:session:", $this->config->get("id"));
     }
 
-    /**
-     * @param string $session_id
-     *
-     * @return string
-     */
-    public function do_read($session_id)
+    public function do_read(string $session_id): string
     {
         $data = $this->redisCache->get($this->prefix . $session_id);
         return is_string($data) ? $data : '';
     }
 
-    /**
-     * @param string $session_id
-     * @param string $data
-     * @param int    $ttl
-     *
-     * @return bool
-     */
-    public function do_write($session_id, $data, $ttl)
+    public function do_write(string $session_id, string $data, int $ttl): bool
     {
         return $this->redisCache->set($this->prefix . $session_id, $data, $ttl);
     }
 
-    /**
-     * @param string $session_id
-     * @param int    $ttl
-     *
-     * @return bool
-     */
-    public function do_touch($session_id, $ttl)
+    public function do_touch(string $session_id, int $ttl): bool
     {
         $this->redisCache->expire($this->prefix . $session_id, $ttl);
 
         return true;
     }
 
-    /**
-     * @param string $session_id
-     *
-     * @return bool
-     */
-    public function do_destroy($session_id)
+    public function do_destroy(string $session_id): void
     {
         $this->redisCache->del($this->prefix . $session_id);
-
-        return true;
     }
 
-    /**
-     * @param int $ttl
-     *
-     * @return bool
-     */
-    public function do_gc($ttl)
+    public function do_gc(int $ttl): void
     {
-        return true;
     }
 }

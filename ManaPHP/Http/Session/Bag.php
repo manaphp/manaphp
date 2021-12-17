@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Session;
 
@@ -9,55 +10,30 @@ use ManaPHP\Component;
  */
 class Bag extends Component implements BagInterface
 {
-    /**
-     * @var string
-     */
-    protected $name;
+    protected string $name;
 
-    /**
-     * @param string $name
-     */
-    public function __construct($name)
+    public function __construct(string $name)
     {
         $this->name = $name;
     }
 
-    /**
-     * Destroys the session bag
-     *
-     * @return void
-     */
-    public function destroy()
+    public function destroy(): void
     {
         $this->session->remove($this->name);
     }
 
-    /**
-     * Sets a value in the session bag
-     *
-     * @param string $property
-     * @param mixed  $value
-     *
-     * @return void
-     */
-    public function set($property, $value)
+    public function set(string $property, mixed $value): static
     {
         $defaultCurrentValue = [];
         $data = $this->session->get($this->name, $defaultCurrentValue);
         $data[$property] = $value;
 
         $this->session->set($this->name, $data);
+
+        return $this;
     }
 
-    /**
-     * Obtains a value from the session bag optionally setting a default value
-     *
-     * @param string $property
-     * @param string $default
-     *
-     * @return mixed
-     */
-    public function get($property = null, $default = null)
+    public function get(?string $property = null, mixed $default = null): mixed
     {
         $defaultCurrentValue = [];
         $data = $this->session->get($this->name, $defaultCurrentValue);
@@ -69,14 +45,7 @@ class Bag extends Component implements BagInterface
         }
     }
 
-    /**
-     * Check whether a property is defined in the internal bag
-     *
-     * @param string $property
-     *
-     * @return bool
-     */
-    public function has($property)
+    public function has(string $property): bool
     {
         $defaultCurrentValue = [];
         $data = $this->session->get($this->name, $defaultCurrentValue);
@@ -84,14 +53,7 @@ class Bag extends Component implements BagInterface
         return isset($data[$property]);
     }
 
-    /**
-     * Removes a property from the internal bag
-     *
-     * @param string $property
-     *
-     * @return void
-     */
-    public function remove($property)
+    public function remove(string $property): void
     {
         $defaultCurrentValue = [];
         $data = $this->session->get($this->name, $defaultCurrentValue);

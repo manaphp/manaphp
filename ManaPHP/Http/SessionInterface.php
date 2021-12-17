@@ -1,97 +1,31 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
 interface SessionInterface
 {
-    /**
-     * Gets a session variable from an application context
-     *
-     * @param string $name
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function get($name = null, $default = null);
+    public function get(?string $name = null, mixed $default = null): mixed;
 
-    /**
-     * Sets a session variable in an application context
-     *
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return static
-     */
-    public function set($name, $value);
+    public function set(string $name, mixed $value): static;
 
-    /**
-     * Check whether a session variable is set in an application context
-     *
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function has($name);
+    public function has(string $name): bool;
 
-    /**
-     * Removes a session variable from an application context
-     *
-     * @param string $name
-     *
-     * @return static
-     */
-    public function remove($name);
+    public function remove(string $name): static;
 
-    /**
-     * Destroys the active session or assigned session
-     *
-     * @param string $session_id
-     *
-     * @return static
-     */
-    public function destroy($session_id = null);
+    public function destroy(?string $session_id = null): static;
 
-    /**
-     * @return string
-     */
-    public function getId();
+    public function getId(): string;
 
-    /**
-     * @param string $id
-     *
-     * @return static
-     */
-    public function setId($id);
+    public function setId(string $id): static;
 
-    /**
-     * @return string
-     */
-    public function getName();
+    public function getName(): string;
 
-    /**
-     * @return int
-     */
-    public function getTtl();
+    public function getTtl(): int;
 
-    /**
-     * @param int $ttl
-     *
-     * @return static
-     */
-    public function setTtl($ttl);
+    public function setTtl(int $ttl): static;
 
-    /**
-     * @param string $session_id
-     *
-     * @return array
-     */
-    public function read($session_id);
+    public function read(string $session_id): array;
 
-    /**
-     * @param string $session_id
-     * @param array  $data
-     *
-     * @return static
-     */
-    public function write($session_id, $data);
+    public function write(string $session_id, array $data): static;
 }

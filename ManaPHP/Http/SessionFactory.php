@@ -9,7 +9,7 @@ use ManaPHP\Http\Session\Adapter\File;
 
 class SessionFactory implements FactoryInterface
 {
-    public function make(ContainerInterface $container, string $name, array $parameters = []): object
+    public function make(ContainerInterface $container, string $name, array $parameters = []): mixed
     {
         return $container->get(File::class);
     }

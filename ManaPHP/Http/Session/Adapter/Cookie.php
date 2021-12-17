@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Session\Adapter;
 
@@ -10,28 +11,16 @@ use ManaPHP\Http\Session\Adapter\Cookie\Exception as CookieException;
  */
 class Cookie extends AbstractSession
 {
-    /**
-     * @var string
-     */
-    protected $key;
+    protected string $key;
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
 
         $this->key = $options['key'] ?? $this->crypt->getDerivedKey('cookieSession');
     }
 
-    /**
-     * @param string $session_id
-     *
-     * @return string
-     * @throws \ManaPHP\Http\Session\Adapter\Cookie\Exception
-     */
-    public function do_read($session_id)
+    public function do_read(string $session_id): string
     {
         $data = $this->cookies->get($session_id) ?: '';
         if ($data === '') {
@@ -60,14 +49,7 @@ class Cookie extends AbstractSession
         return $payload['data'];
     }
 
-    /**
-     * @param string $session_id
-     * @param string $data
-     * @param int    $ttl
-     *
-     * @return bool
-     */
-    public function do_write($session_id, $data, $ttl)
+    public function do_write(string $session_id, string $data, int $ttl): bool
     {
         $params = session_get_cookie_params();
 
@@ -84,36 +66,17 @@ class Cookie extends AbstractSession
         return true;
     }
 
-    /**
-     * @param string $session_id
-     * @param int    $ttl
-     *
-     * @return bool
-     */
-    public function do_touch($session_id, $ttl)
+    public function do_touch(string $session_id, int $ttl): bool
     {
         return false;
     }
 
-    /**
-     * @param string $session_id
-     *
-     * @return bool
-     */
-    public function do_destroy($session_id)
+    public function do_destroy(string $session_id): void
     {
         $this->cookies->delete($session_id);
-
-        return true;
     }
 
-    /**
-     * @param int $ttl
-     *
-     * @return bool
-     */
-    public function do_gc($ttl)
+    public function do_gc(int $ttl): void
     {
-        return true;
     }
 }

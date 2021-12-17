@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Session\Adapter;
 
@@ -21,15 +22,9 @@ use ManaPHP\Http\AbstractSession;
  */
 class Db extends AbstractSession
 {
-    /**
-     * @var string
-     */
-    protected $table = 'manaphp_session';
+    protected string $table = 'manaphp_session';
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
 
@@ -38,24 +33,12 @@ class Db extends AbstractSession
         }
     }
 
-    /**
-     * @param string $session_id
-     *
-     * @return string
-     */
-    public function do_read($session_id)
+    public function do_read(string $session_id): string
     {
         return $this->db->query($this->table)->whereEq('session_id', $session_id)->value('data', '');
     }
 
-    /**
-     * @param string $session_id
-     * @param string $data
-     * @param int    $ttl
-     *
-     * @return bool
-     */
-    public function do_write($session_id, $data, $ttl)
+    public function do_write(string $session_id, string $data, int $ttl): bool
     {
         $field_values = [
             'user_id'      => $this->identity->getId(0),
@@ -75,13 +58,7 @@ class Db extends AbstractSession
         return true;
     }
 
-    /**
-     * @param string $session_id
-     * @param int    $ttl
-     *
-     * @return bool
-     */
-    public function do_touch($session_id, $ttl)
+    public function do_touch(string $session_id, int $ttl): bool
     {
         $field_values = [
             'user_id'      => $this->identity->getId(0),
@@ -93,27 +70,13 @@ class Db extends AbstractSession
         return $this->db->update($this->table, $field_values, ['session_id' => $session_id]) > 0;
     }
 
-    /**
-     * @param string $session_id
-     *
-     * @return bool
-     */
-    public function do_destroy($session_id)
+    public function do_destroy(string $session_id): void
     {
         $this->db->delete($this->table, ['session_id' => $session_id]);
-
-        return true;
     }
 
-    /**
-     * @param int $ttl
-     *
-     * @return bool
-     */
-    public function do_gc($ttl)
+    public function do_gc(int $ttl): void
     {
         $this->db->query($this->table)->whereCmp('expired_time', '<=', time())->delete();
-
-        return true;
     }
 }
