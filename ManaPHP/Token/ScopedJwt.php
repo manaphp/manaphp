@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Token;
 
@@ -11,27 +12,16 @@ use ManaPHP\Exception\MisuseException;
  */
 class ScopedJwt extends Component implements ScopedJwtInterface
 {
-    /**
-     * @var array
-     */
-    protected $keys = [];
+    protected array $keys = [];
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['keys'])) {
             $this->keys = $options['keys'];
         }
     }
 
-    /**
-     * @param string $scope
-     *
-     * @return string
-     */
-    public function getKey($scope)
+    public function getKey(string $scope): string
     {
         if (($key = $this->keys[$scope] ?? null) === null) {
             $key = $this->keys[$scope] = $this->crypt->getDerivedKey("jwt:$scope");
@@ -40,15 +30,7 @@ class ScopedJwt extends Component implements ScopedJwtInterface
         return $key;
     }
 
-    /**
-     * @param array  $claims
-     * @param int    $ttl
-     * @param string $scope
-     *
-     * @return string
-     * @throws MisuseException
-     */
-    public function encode($claims, $ttl, $scope)
+    public function encode(array $claims, int $ttl, string $scope): string
     {
         if (isset($claims['scope'])) {
             throw new MisuseException('scope field is exists');
@@ -59,15 +41,7 @@ class ScopedJwt extends Component implements ScopedJwtInterface
         return $this->jwt->encode($claims, $ttl, $this->getKey($scope));
     }
 
-    /**
-     * @param string $token
-     * @param string $scope
-     * @param bool   $verify
-     *
-     * @return array
-     * @throws ScopeException
-     */
-    public function decode($token, $scope, $verify = true)
+    public function decode(string $token, string $scope, bool $verify = true): array
     {
         $claims = $this->jwt->decode($token, false);
 
@@ -86,13 +60,7 @@ class ScopedJwt extends Component implements ScopedJwtInterface
         return $claims;
     }
 
-    /**
-     * @param string $token
-     * @param string $scope
-     *
-     * @return void
-     */
-    public function verify($token, $scope)
+    public function verify(string $token, string $scope): void
     {
         $this->jwt->verify($token, $this->getKey($scope));
     }

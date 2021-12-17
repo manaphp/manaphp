@@ -1,32 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Token;
 
 interface JwtInterface
 {
-    /**
-     * @param array  $claims
-     * @param int    $ttl
-     * @param string $key
-     *
-     * @return string
-     */
-    public function encode($claims, $ttl, $key = null);
+    public function encode(array $claims, int $ttl, ?string $key = null): string;
 
-    /**
-     * @param string $token
-     * @param bool   $verify
-     * @param string $key
-     *
-     * @return array
-     */
-    public function decode($token, $verify = true, $key = null);
+    public function decode(string $token, bool $verify = true, ?string $key = null): array;
 
-    /**
-     * @param string $token
-     * @param string $key
-     *
-     * @return void
-     */
-    public function verify($token, $key = null);
+    public function verify(string $token, ?string $key = null): void;
 }

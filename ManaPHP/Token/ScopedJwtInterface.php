@@ -1,39 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Token;
 
 interface ScopedJwtInterface
 {
-    /**
-     * @param string $scope
-     *
-     * @return string
-     */
-    public function getKey($scope);
+    public function getKey(string $scope): string;
 
-    /**
-     * @param array  $claims
-     * @param int    $ttl
-     * @param string $scope
-     *
-     * @return string
-     */
-    public function encode($claims, $ttl, $scope);
+    public function encode(array $claims, int $ttl, string $scope): string;
 
-    /**
-     * @param string $token
-     * @param string $scope
-     * @param bool   $verify
-     *
-     * @return array
-     */
-    public function decode($token, $scope, $verify = true);
+    public function decode(string $token, string $scope, bool $verify = true): array;
 
-    /**
-     * @param string $token
-     * @param string $scope
-     *
-     * @return void
-     */
-    public function verify($token, $scope);
+    public function verify(string $token, string $scope): void;
 }

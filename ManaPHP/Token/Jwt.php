@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Token;
 
@@ -9,20 +10,10 @@ use ManaPHP\Component;
  */
 class Jwt extends Component implements JwtInterface
 {
-    /**
-     * @var string
-     */
-    protected $alg = 'HS256';
+    protected string $alg = 'HS256';
+    protected string $key;
 
-    /**
-     * @var string
-     */
-    protected $key;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['alg'])) {
             $this->alg = $options['alg'];
@@ -35,34 +26,17 @@ class Jwt extends Component implements JwtInterface
         }
     }
 
-    /**
-     * @param string $str
-     *
-     * @return string
-     */
-    public function base64UrlEncode($str)
+    public function base64UrlEncode(string $str): string
     {
         return strtr(rtrim(base64_encode($str), '='), '+/', '-_');
     }
 
-    /**
-     * @param string $str
-     *
-     * @return false|string
-     */
-    public function base64UrlDecode($str)
+    public function base64UrlDecode(string $str): false|string
     {
         return base64_decode(strtr($str, '-_', '+/'));
     }
 
-    /**
-     * @param array  $claims
-     * @param int    $ttl
-     * @param string $key
-     *
-     * @return string
-     */
-    public function encode($claims, $ttl, $key = null)
+    public function encode(array $claims, int $ttl, ?string $key = null): string
     {
         $claims['iat'] = time();
         $claims['exp'] = time() + $ttl;
@@ -75,16 +49,9 @@ class Jwt extends Component implements JwtInterface
         return "$header.$payload.$signature";
     }
 
-    /**
-     * @param string $token
-     * @param bool   $verify
-     * @param string $key
-     *
-     * @return array
-     */
-    public function decode($token, $verify = true, $key = null)
+    public function decode(string $token, bool $verify = true, ?string $key = null): array
     {
-        if ($token === null || $token === '') {
+        if ($token === '') {
             throw new NoCredentialException('No Credentials');
         }
 
@@ -138,11 +105,7 @@ class Jwt extends Component implements JwtInterface
         return $claims;
     }
 
-    /**
-     * @param string $token
-     * @param string $key
-     */
-    public function verify($token, $key = null)
+    public function verify(string $token, ?string $key = null): void
     {
         if (($pos = strrpos($token, '.')) === false) {
             throw new MalformedException('The JWT must have three dots');
