@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Security;
 
@@ -8,20 +9,10 @@ use ManaPHP\Exception\MisuseException;
 
 class Crypt extends Component implements CryptInterface
 {
-    /**
-     * @var string
-     */
-    protected $master_key;
+    protected string $master_key;
+    protected string $method = 'AES-128-CBC';
 
-    /**
-     * @var string
-     */
-    protected $method = 'AES-128-CBC';
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (!isset($options['master_key'])) {
             throw new MisuseException('master_key is not provided');
@@ -33,15 +24,7 @@ class Crypt extends Component implements CryptInterface
         }
     }
 
-    /**
-     * Encrypts a text
-     *
-     * @param string $text
-     * @param string $key
-     *
-     * @return string
-     */
-    public function encrypt($text, $key)
+    public function encrypt(string $text, string $key): string
     {
         $iv_length = openssl_cipher_iv_length($this->method);
         /** @noinspection CryptographicallySecureRandomnessInspection */
@@ -53,16 +36,7 @@ class Crypt extends Component implements CryptInterface
         return $iv . openssl_encrypt($data, $this->method, md5($key, true), OPENSSL_RAW_DATA, $iv);
     }
 
-    /**
-     * Decrypts an encrypted text
-     *
-     * @param string $text
-     * @param string $key
-     *
-     * @return string
-     * @throws \ManaPHP\Security\Crypt\Exception
-     */
-    public function decrypt($text, $key)
+    public function decrypt(string $text, string $key): string
     {
         $iv_length = openssl_cipher_iv_length($this->method);
 
@@ -89,12 +63,7 @@ class Crypt extends Component implements CryptInterface
         return $plainText;
     }
 
-    /**
-     * @param string $type
-     *
-     * @return string
-     */
-    public function getDerivedKey($type)
+    public function getDerivedKey(string $type): string
     {
         return md5($this->master_key . ':' . $type);
     }

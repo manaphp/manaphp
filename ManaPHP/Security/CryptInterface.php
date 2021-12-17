@@ -1,33 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Security;
 
 interface CryptInterface
 {
-    /**
-     * Encrypts a text
-     *
-     * @param string $text
-     * @param string $key
-     *
-     * @return string
-     */
-    public function encrypt($text, $key);
+    public function encrypt(string $text, string $key): string;
 
-    /**
-     * Decrypts a text
-     *
-     * @param string $text
-     * @param string $key
-     *
-     * @return string
-     */
-    public function decrypt($text, $key);
+    public function decrypt(string $text, string $key): string;
 
-    /**
-     * @param string $type
-     *
-     * @return string
-     */
-    public function getDerivedKey($type);
+    public function getDerivedKey(string $type): string;
 }
