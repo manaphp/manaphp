@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Imaging\Image\Adapter;
 
@@ -13,30 +14,12 @@ use ManaPHP\Imaging\AbstractImage;
  */
 class Gd extends AbstractImage
 {
-    /**
-     * @var string
-     */
-    protected $file;
+    protected string $file;
+    protected mixed $image;
+    protected int $width;
+    protected int $height;
 
-    /**
-     * @var resource
-     */
-    protected $image;
-
-    /**
-     * @var int
-     */
-    protected $width;
-
-    /**
-     * @var int
-     */
-    protected $height;
-
-    /**
-     * @param string $file
-     */
-    public function __construct($file)
+    public function __construct(string $file)
     {
         if (!extension_loaded('gd')) {
             throw new ExtensionNotInstalledException('gd');
@@ -61,41 +44,22 @@ class Gd extends AbstractImage
         imagesavealpha($this->image, true);
     }
 
-    /**
-     * Image width
-     *
-     * @return int
-     */
-    public function do_getWidth()
+    public function do_getWidth(): int
     {
         return $this->width;
     }
 
-    /**
-     * Image height
-     *
-     * @return int
-     */
-    public function do_getHeight()
+    public function do_getHeight(): int
     {
         return $this->height;
     }
 
-    /**
-     * @return resource
-     */
-    public function getInternalHandle()
+    public function getInternalHandle(): mixed
     {
         return $this->image;
     }
 
-    /**
-     * @param int $width
-     * @param int $height
-     *
-     * @return static
-     */
-    public function do_resize($width, $height)
+    public function do_resize(int $width, int $height): static
     {
         if (version_compare(PHP_VERSION, '5.5.0') < 0) {
             $image = imagecreatetruecolor($width, $height);
@@ -115,16 +79,7 @@ class Gd extends AbstractImage
         return $this;
     }
 
-    /**
-     * Rotate the image by a given degrees
-     *
-     * @param int   $degrees
-     * @param int   $background
-     * @param float $alpha
-     *
-     * @return static
-     */
-    public function do_rotate($degrees, $background = 0xffffff, $alpha = 1.0)
+    public function do_rotate(int $degrees, int $background = 0xffffff, float $alpha = 1.0): static
     {
         $red = ($background >> 16) & 0xFF;
         $green = ($background >> 8) & 0xFF;
@@ -142,15 +97,7 @@ class Gd extends AbstractImage
         return $this;
     }
 
-    /**
-     * @param int $width
-     * @param int $height
-     * @param int $offsetX
-     * @param int $offsetY
-     *
-     * @return static
-     */
-    public function do_crop($width, $height, $offsetX = 0, $offsetY = 0)
+    public function do_crop(int $width, int $height, int $offsetX = 0, int $offsetY = 0): static
     {
         if (version_compare(PHP_VERSION, '5.5.0') < 0) {
             $image = imagecreatetruecolor($width, $height);
@@ -170,28 +117,15 @@ class Gd extends AbstractImage
         return $this;
     }
 
-    /**
-     * Execute a text
-     *
-     * @param string $text
-     * @param int    $offsetX
-     * @param int    $offsetY
-     * @param float  $opacity
-     * @param int    $color
-     * @param int    $size
-     * @param string $font_file
-     *
-     * @return static
-     */
     public function do_text(
-        $text,
-        $offsetX = 0,
-        $offsetY = 0,
-        $opacity = 1.0,
-        $color = 0x000000,
-        $size = 12,
-        $font_file = null
-    ) {
+        string $text,
+        int $offsetX = 0,
+        int $offsetY = 0,
+        float $opacity = 1.0,
+        int $color = 0x000000,
+        int $size = 12,
+        ?string $font_file = null
+    ): static {
         $red = ($color >> 16) & 0xFF;
         $green = ($color >> 8) & 0xFF;
         $blue = $color & 0xFF;
@@ -206,15 +140,7 @@ class Gd extends AbstractImage
         return $this;
     }
 
-    /**
-     * @param string $file
-     * @param int    $offsetX
-     * @param int    $offsetY
-     * @param float  $opacity
-     *
-     * @return static
-     */
-    public function do_watermark($file, $offsetX = 0, $offsetY = 0, $opacity = 1.0)
+    public function do_watermark(string $file, int $offsetX = 0, int $offsetY = 0, float $opacity = 1.0): static
     {
         $file = $this->alias->resolve($file);
 
@@ -249,13 +175,7 @@ class Gd extends AbstractImage
         return $this;
     }
 
-    /**
-     * @param string $file
-     * @param int    $quality
-     *
-     * @return void
-     */
-    public function do_save($file, $quality = 80)
+    public function do_save(string $file, int $quality = 80): void
     {
         $file = $this->alias->resolve($file);
 

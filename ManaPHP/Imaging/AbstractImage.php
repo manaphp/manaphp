@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Imaging;
 
@@ -6,85 +7,39 @@ use ManaPHP\Component;
 
 abstract class AbstractImage extends Component implements ImageInterface
 {
-    abstract public function do_getWidth();
+    abstract public function do_getWidth(): int;
 
-    /**
-     * Image width
-     *
-     * @return int
-     */
-    public function getWidth()
+    public function getWidth(): int
     {
         return $this->do_getWidth();
     }
 
-    abstract public function do_getHeight();
+    abstract public function do_getHeight(): int;
 
-    /**
-     * Image height
-     *
-     * @return int
-     */
-    public function getHeight()
+    public function getHeight(): int
     {
         return $this->do_getHeight();
     }
 
-    /**
-     * @param int $width
-     * @param int $height
-     * @param int $offsetX
-     * @param int $offsetY
-     *
-     * @return static
-     */
-    abstract public function do_crop($width, $height, $offsetX = 0, $offsetY = 0);
+    abstract public function do_crop(int $width, int $height, int $offsetX = 0, int $offsetY = 0): static;
 
-    /**
-     * @param int $width
-     * @param int $height
-     * @param int $offsetX
-     * @param int $offsetY
-     *
-     * @return static
-     */
-    public function crop($width, $height, $offsetX = 0, $offsetY = 0)
+    public function crop(int $width, int $height, int $offsetX = 0, int $offsetY = 0): static
     {
         $this->do_crop($width, $height, $offsetX, $offsetY);
 
         return $this;
     }
 
-    /**
-     * @param int $width
-     * @param int $height
-     *
-     * @return static
-     */
-    abstract public function do_resize($width, $height);
+    abstract public function do_resize(int $width, int $height): static;
 
-    /**
-     * @param int $width
-     * @param int $height
-     *
-     * @return static
-     */
-    public function resize($width, $height)
+    public function resize(int $width, int $height): static
     {
         $this->do_resize($width, $height);
 
         return $this;
     }
 
-    /**
-     * Resize the image by a given width and height
-     *
-     * @param int $width
-     * @param int $height
-     *
-     * @return static
-     */
-    public function resizeCropCenter($width, $height)
+    public function resizeCropCenter(int $width, int $height): static
     {
         $_width = $this->do_getWidth();
         $_height = $this->do_getHeight();
@@ -107,14 +62,7 @@ abstract class AbstractImage extends Component implements ImageInterface
         return $this;
     }
 
-    /**
-     * @param int   $degrees
-     * @param int   $background
-     * @param float $alpha
-     *
-     * @return static
-     */
-    abstract public function do_rotate($degrees, $background = 0xffffff, $alpha = 1.0);
+    abstract public function do_rotate(int $degrees, int $background = 0xffffff, float $alpha = 1.0): static;
 
     /**
      * Scale the image by a given ratio
@@ -123,14 +71,10 @@ abstract class AbstractImage extends Component implements ImageInterface
      *
      * @return static
      */
-    public function scale($ratio)
+    public function scale(float $ratio): static
     {
-        $_width = (int)$this->do_getWidth();
-        $_height = (int)$this->do_getHeight();
-
-        if ($ratio === 1) {
-            return $this;
-        }
+        $_width = $this->do_getWidth();
+        $_height = $this->do_getHeight();
 
         $width = (int)($_width * $ratio);
         $height = (int)($_height * $ratio);
@@ -140,14 +84,7 @@ abstract class AbstractImage extends Component implements ImageInterface
         return $this;
     }
 
-    /**
-     * Scale the image by a given width
-     *
-     * @param int $width
-     *
-     * @return static
-     */
-    public function scaleFixedWidth($width)
+    public function scaleFixedWidth(int $width): static
     {
         $_width = $this->do_getWidth();
         $_height = $this->do_getHeight();
@@ -158,14 +95,7 @@ abstract class AbstractImage extends Component implements ImageInterface
         return $this;
     }
 
-    /**
-     * Scale the image by a given height
-     *
-     * @param int $height
-     *
-     * @return static
-     */
-    public function scaleFixedHeight($height)
+    public function scaleFixedHeight(int $height): static
     {
         $_width = $this->do_getWidth();
         $_height = $this->do_getHeight();
@@ -176,108 +106,50 @@ abstract class AbstractImage extends Component implements ImageInterface
         return $this;
     }
 
-    /**
-     * Rotate the image by a given degrees
-     *
-     * @param int   $degrees
-     * @param int   $background
-     * @param float $alpha
-     *
-     * @return static
-     */
-    public function rotate($degrees, $background = 0xffffff, $alpha = 1.0)
+    public function rotate(int $degrees, int $background = 0xffffff, float $alpha = 1.0): static
     {
         $this->do_rotate($degrees, $background, $alpha);
 
         return $this;
     }
 
-    /**
-     * @param string $text
-     * @param int    $offsetX
-     * @param int    $offsetY
-     * @param float  $opacity
-     * @param int    $color
-     * @param int    $size
-     * @param string $font_file
-     *
-     * @return static
-     */
     abstract public function do_text(
-        $text,
-        $offsetX = 0,
-        $offsetY = 0,
-        $opacity = 1.0,
-        $color = 0x000000,
-        $size = 12,
-        $font_file = null
-    );
+        string $text,
+        int $offsetX = 0,
+        int $offsetY = 0,
+        float $opacity = 1.0,
+        int $color = 0x000000,
+        int $size = 12,
+        ?string $font_file = null
+    ): static;
 
-    /**
-     * @param string $text
-     * @param int    $offsetX
-     * @param int    $offsetY
-     * @param float  $opacity
-     * @param int    $color
-     * @param int    $size
-     * @param string $font_file
-     *
-     * @return static
-     */
     public function text(
-        $text,
-        $offsetX = 0,
-        $offsetY = 0,
-        $opacity = 1.0,
-        $color = 0x000000,
-        $size = 12,
-        $font_file = null
-    ) {
+        string $text,
+        int $offsetX = 0,
+        int $offsetY = 0,
+        float $opacity = 1.0,
+        int $color = 0x000000,
+        int $size = 12,
+        ?string $font_file = null
+    ): static {
         $this->do_text($text, $offsetX, $offsetY, $opacity, $color, $size, $font_file);
 
         return $this;
     }
 
-    /**
-     * @param string $file
-     * @param int    $offsetX
-     * @param int    $offsetY
-     * @param float  $opacity
-     *
-     * @return static
-     */
-    abstract public function do_watermark($file, $offsetX = 0, $offsetY = 0, $opacity = 1.0);
+    abstract public function do_watermark(string $file, int $offsetX = 0, int $offsetY = 0, float $opacity = 1.0
+    ): static;
 
-    /**
-     * @param string $file
-     * @param int    $offsetX
-     * @param int    $offsetY
-     * @param float  $opacity
-     *
-     * @return static
-     */
-    public function watermark($file, $offsetX = 0, $offsetY = 0, $opacity = 1.0)
+    public function watermark(string $file, int $offsetX = 0, int $offsetY = 0, float $opacity = 1.0): static
     {
         $this->do_watermark($file, $offsetX, $offsetY, $opacity);
 
         return $this;
     }
 
-    /**
-     * @param string $file
-     * @param int    $quality
-     *
-     * @return static
-     */
-    abstract public function do_save($file, $quality = 80);
+    abstract public function do_save(string $file, int $quality = 80): void;
 
-    /**
-     * @param string $file
-     * @param int    $quality
-     *
-     * @return void
-     */
-    public function save($file, $quality = 80)
+    public function save(string $file, int $quality = 80): void
     {
         $this->do_save($file, $quality);
     }
