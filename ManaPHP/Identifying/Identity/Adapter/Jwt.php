@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Identifying\Identity\Adapter;
 
@@ -11,20 +12,10 @@ use ManaPHP\Identifying\Identity;
  */
 class Jwt extends Identity
 {
-    /**
-     * @var string
-     */
-    protected $scope;
+    protected string $scope;
+    protected int $ttl = 86400;
 
-    /**
-     * @var int
-     */
-    protected $ttl = 86400;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['scope'])) {
             $this->scope = $options['scope'];
@@ -37,10 +28,7 @@ class Jwt extends Identity
         }
     }
 
-    /**
-     * @return array
-     */
-    public function authenticate()
+    public function authenticate(): array
     {
         if ($token = $this->request->getToken()) {
             return $this->scopedJwt->decode($token, $this->scope);
@@ -49,12 +37,7 @@ class Jwt extends Identity
         }
     }
 
-    /**
-     * @param array $claims
-     *
-     * @return string
-     */
-    public function encode($claims)
+    public function encode(array $claims): string
     {
         return $this->scopedJwt->encode($claims, $this->ttl, $this->scope);
     }

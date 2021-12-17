@@ -1,88 +1,31 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Identifying;
 
 interface IdentityInterface
 {
-    /**
-     * @return bool
-     */
-    public function isGuest();
+    public function isGuest(): bool;
 
-    /**
-     * @param int $default
-     *
-     * @return int
-     */
-    public function getId($default = null);
+    public function getId(?int $default = null): ?int;
 
-    /**
-     * @param string $default
-     *
-     * @return string
-     */
-    public function getName($default = null);
+    public function getName(?string $default = null): ?string;
 
-    /**
-     * @param string $default
-     *
-     * @return string
-     */
-    public function getRole($default = 'guest');
+    public function getRole(string $default = 'guest'): string;
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function isRole($name);
+    public function isRole(string $name): bool;
 
-    /**
-     * @param string $role
-     *
-     * @return static
-     */
-    public function setRole($role);
+    public function setRole(string $role): static;
 
-    /**
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return static
-     */
-    public function setClaim($name, $value);
+    public function setClaim(string $name, mixed $value): static;
 
-    /**
-     * @param array $claims
-     *
-     * @return static
-     */
-    public function setClaims($claims);
+    public function setClaims(array $claims): static;
 
-    /**
-     * @param string $name
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getClaim($name, $default = null);
+    public function getClaim(string $name, mixed $default = null): mixed;
 
-    /**
-     * @return array
-     */
-    public function getClaims();
+    public function getClaims(): array;
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasClaim($name);
+    public function hasClaim(string $name): bool;
 
-    /**
-     * @param array $claims
-     *
-     * @return string
-     */
-    public function encode($claims);
+    public function encode(array $claims): string;
 }

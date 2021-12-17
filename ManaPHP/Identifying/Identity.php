@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Identifying;
 
@@ -21,20 +22,12 @@ class Identity extends Component implements IdentityInterface
         return $context;
     }
 
-    /**
-     * @return bool
-     */
-    public function isGuest()
+    public function isGuest(): bool
     {
         return !$this->context->claims;
     }
 
-    /**
-     * @param int $default
-     *
-     * @return int
-     */
-    public function getId($default = null)
+    public function getId(?int $default = null): ?int
     {
         $claims = $this->context->claims;
 
@@ -62,12 +55,7 @@ class Identity extends Component implements IdentityInterface
         throw new MisuseException('missing id in claims');
     }
 
-    /**
-     * @param string $default
-     *
-     * @return string
-     */
-    public function getName($default = null)
+    public function getName(string $default = null): string
     {
         $claims = $this->context->claims;
 
@@ -95,12 +83,7 @@ class Identity extends Component implements IdentityInterface
         throw new MisuseException('missing name in claims');
     }
 
-    /**
-     * @param string $default
-     *
-     * @return string
-     */
-    public function getRole($default = 'guest')
+    public function getRole(string $default = 'guest'): string
     {
         $claims = $this->context->claims;
 
@@ -119,12 +102,7 @@ class Identity extends Component implements IdentityInterface
         throw new MisuseException('missing role in claims');
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function isRole($name)
+    public function isRole(string $name): bool
     {
         $role = $this->getRole();
 
@@ -135,25 +113,14 @@ class Identity extends Component implements IdentityInterface
         return str_contains($role, ',') ? str_contains(",$role,", ",$name,") : false;
     }
 
-    /**
-     * @param string $role
-     *
-     * @return static
-     */
-    public function setRole($role)
+    public function setRole(string $role): static
     {
         $this->context->claims['role'] = $role;
 
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return static
-     */
-    public function setClaim($name, $value)
+    public function setClaim(string $name, mixed $value): static
     {
         $context = $this->context;
 
@@ -162,25 +129,14 @@ class Identity extends Component implements IdentityInterface
         return $this;
     }
 
-    /**
-     * @param array $claims
-     *
-     * @return static
-     */
-    public function setClaims($claims)
+    public function setClaims(array $claims): static
     {
         $this->context->claims = $claims;
 
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getClaim($name, $default = null)
+    public function getClaim(string $name, mixed $default = null): mixed
     {
         $claims = $this->context->claims;
 
@@ -198,35 +154,22 @@ class Identity extends Component implements IdentityInterface
         throw new MisuseException("missing $name in claims");
     }
 
-    /**
-     * @return array
-     */
-    public function getClaims()
+    public function getClaims(): array
     {
         return $this->context->claims;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasClaim($name)
+    public function hasClaim(string $name): bool
     {
         return isset($this->context->claims[$name]);
     }
 
-    public function authenticate()
+    public function authenticate(): array
     {
         return [];
     }
 
-    /**
-     * @param array $claims
-     *
-     * @return string
-     */
-    public function encode($claims)
+    public function encode(array $claims): string
     {
         throw new NotSupportedException(__METHOD__);
     }
