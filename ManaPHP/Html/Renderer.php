@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Html;
 
@@ -17,31 +18,18 @@ class Renderer extends Component implements RendererInterface
     /**
      * @var \ManaPHP\Html\Renderer\EngineInterface[]
      */
-    protected $resolved = [];
+    protected array $resolved = [];
 
-    /**
-     * @var array
-     */
-    protected $engines
+    protected array $engines
         = [
             '.phtml' => 'ManaPHP\Html\Renderer\Engine\Php',
             '.sword' => 'ManaPHP\Html\Renderer\Engine\Sword'
         ];
 
-    /**
-     * @var array array
-     */
-    protected $files = [];
+    protected array $files = [];
+    protected Mutex $mutex;
 
-    /**
-     * @var \ManaPHP\Coroutine\Mutex
-     */
-    protected $mutex;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['engines'])) {
             $this->engines = $options['engines'] ?: ['.phtml' => 'ManaPHP\Html\Renderer\Engine\Php'];
@@ -50,26 +38,17 @@ class Renderer extends Component implements RendererInterface
         $this->mutex = new Mutex();
     }
 
-    public function lock()
+    public function lock(): void
     {
         $this->mutex->lock();
     }
 
-    public function unlock()
+    public function unlock(): void
     {
         $this->mutex->unlock();
     }
 
-    /**
-     * Checks whether $template exists on registered extensions and render it
-     *
-     * @param string $template
-     * @param array  $vars
-     * @param bool   $directOutput
-     *
-     * @return string
-     */
-    public function render($template, $vars = [], $directOutput = false)
+    public function render(string $template, array $vars = [], bool $directOutput = false): ?string
     {
         $context = $this->context;
 
@@ -147,13 +126,7 @@ class Renderer extends Component implements RendererInterface
         return $content;
     }
 
-    /**
-     * @param string $file
-     * @param array  $vars
-     *
-     * @return string
-     */
-    public function renderFile($file, $vars = [])
+    public function renderFile(string $file, array $vars = []): string
     {
         $this->lock();
         try {
@@ -163,23 +136,12 @@ class Renderer extends Component implements RendererInterface
         }
     }
 
-    /**
-     * @param string $path
-     * @param array  $vars
-     *
-     * @return void
-     */
-    public function partial($path, $vars = [])
+    public function partial(string $path, array $vars = []): void
     {
         $this->render($path, $vars, true);
     }
 
-    /**
-     * @param string $template
-     *
-     * @return bool
-     */
-    public function exists($template)
+    public function exists(string $template): bool
     {
         if (DIRECTORY_SEPARATOR === '\\' && str_contains($template, '\\')) {
             $template = str_replace('\\', '/', $template);
@@ -204,7 +166,7 @@ class Renderer extends Component implements RendererInterface
                     }
                 }
                 $this->files[$template] = [$file, $extension];
-                return $file;
+                return true;
             }
         }
 
@@ -219,22 +181,14 @@ class Renderer extends Component implements RendererInterface
      *
      * @return string
      */
-    public function getSection($section, $default = '')
+    public function getSection(string $section, string $default = ''): string
     {
         $context = $this->context;
 
         return $context->sections[$section] ?? $default;
     }
 
-    /**
-     * Start injecting content into a section.
-     *
-     * @param string $section
-     * @param string $default
-     *
-     * @return void
-     */
-    public function startSection($section, $default = null)
+    public function startSection(string $section, ?string $default = null): void
     {
         $context = $this->context;
 
@@ -247,14 +201,7 @@ class Renderer extends Component implements RendererInterface
         }
     }
 
-    /**
-     * Stop injecting content into a section.
-     *
-     * @param bool $overwrite
-     *
-     * @return void
-     */
-    public function stopSection($overwrite = false)
+    public function stopSection(bool $overwrite = false): void
     {
         $context = $this->context;
 
@@ -270,10 +217,7 @@ class Renderer extends Component implements RendererInterface
         }
     }
 
-    /**
-     * @return void
-     */
-    public function appendSection()
+    public function appendSection(): void
     {
         $context = $this->context;
 

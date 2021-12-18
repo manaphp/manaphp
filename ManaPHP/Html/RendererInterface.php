@@ -1,84 +1,27 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Html;
 
 interface RendererInterface
 {
-    /**
-     * @return void
-     */
-    public function lock();
+    public function lock(): void;
 
-    /**
-     * @return void
-     */
-    public function unlock();
+    public function unlock(): void;
 
-    /**
-     * Checks whether view exists on registered extensions and render it
-     *
-     * @param string $template
-     * @param array  $vars
-     * @param bool   $directOutput
-     *
-     * @return string
-     */
-    public function render($template, $vars = [], $directOutput = false);
+    public function render(string $template, array $vars = [], bool $directOutput = false): ?string;
 
-    /**
-     * @param string $file
-     * @param array  $vars
-     *
-     * @return string
-     */
-    public function renderFile($file, $vars = []);
+    public function renderFile(string $file, array $vars = []): string;
 
-    /**
-     * @param string $path
-     * @param array  $vars
-     *
-     * @return void
-     */
-    public function partial($path, $vars = []);
+    public function partial(string $path, array $vars = []): void;
 
-    /**
-     * @param string $template
-     *
-     * @return bool
-     */
-    public function exists($template);
+    public function exists(string $template): bool;
 
-    /**
-     * Get the string contents of a section.
-     *
-     * @param string $section
-     * @param string $default
-     *
-     * @return string
-     */
-    public function getSection($section, $default = '');
+    public function getSection(string $section, string $default = ''): string;
 
-    /**
-     * Start injecting content into a section.
-     *
-     * @param string $section
-     * @param string $default
-     *
-     * @return void
-     */
-    public function startSection($section, $default = null);
+    public function startSection(string $section, ?string $default = null): void;
 
-    /**
-     * Stop injecting content into a section.
-     *
-     * @param bool $overwrite
-     *
-     * @return void
-     */
-    public function stopSection($overwrite = false);
+    public function stopSection(bool $overwrite = false): void;
 
-    /**
-     * @return void
-     */
-    public function appendSection();
+    public function appendSection(): void;
 }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Html;
 
@@ -6,18 +7,7 @@ use ManaPHP\Coroutine\Context\Inseparable;
 
 class RendererContext implements Inseparable
 {
-    /**
-     * @var array
-     */
-    public $sections = [];
-
-    /**
-     * @var array
-     */
-    public $stack = [];
-
-    /**
-     * @var array
-     */
-    public $templates = [];
+    public array $sections = [];
+    public array $stack = [];
+    public array $templates = [];
 }
