@@ -1,86 +1,32 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
+use ManaPHP\Http\Client\Response;
+
 interface ClientInterface
 {
-    /**
-     * @param string          $method
-     * @param string|array    $url
-     * @param string|array    $body
-     * @param array           $headers
-     * @param array|int|float $options
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function rest($method, $url, $body = [], $headers = [], $options = []);
+    public function rest(string $method, string|array $url, string|array $body = [], array $headers = [],
+        mixed $options = []
+    ): Response;
 
-    /**
-     * @param string          $method
-     * @param string|array    $url
-     * @param string|array    $body
-     * @param array           $headers
-     * @param array|int|float $options
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function request($method, $url, $body = null, $headers = [], $options = []);
+    public function request(string $method, string|array $url, null|string|array $body = null, array $headers = [],
+        array $options = []
+    ): Response;
 
-    /**
-     * @param string|array    $url
-     * @param array           $headers
-     * @param array|int|float $options
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function get($url, $headers = [], $options = []);
+    public function get(string|array $url, array $headers = [], mixed $options = []): Response;
 
-    /**
-     * @param string|array    $url
-     * @param string|array    $body
-     * @param array           $headers
-     * @param array|int|float $options
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function post($url, $body = [], $headers = [], $options = []);
+    public function post(string|array $url, string|array $body = [], array $headers = [], mixed $options = []
+    ): Response;
 
-    /**
-     * @param string|array    $url
-     * @param array           $headers
-     * @param array|int|float $options
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function delete($url, $headers = [], $options = []);
+    public function delete(string|array $url, array $headers = [], mixed $options = []): Response;
 
-    /**
-     * @param string|array    $url
-     * @param string|array    $body
-     * @param array           $headers
-     * @param array|int|float $options
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function put($url, $body = [], $headers = [], $options = []);
+    public function put(string|array $url, string|array $body = [], array $headers = [], mixed $options = []): Response;
 
-    /**
-     * @param string|array    $url
-     * @param string|array    $body
-     * @param array           $headers
-     * @param array|int|float $options
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function patch($url, $body = [], $headers = [], $options = []);
+    public function patch(string|array $url, string|array $body = [], array $headers = [], mixed $options = []
+    ): Response;
 
-    /**
-     * @param string|array    $url
-     * @param string|array    $body
-     * @param array           $headers
-     * @param array|int|float $options
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function head($url, $body = [], $headers = [], $options = []);
+    public function head(string|array $url, string|array $body = [], array $headers = [], mixed $options = []
+    ): Response;
 }

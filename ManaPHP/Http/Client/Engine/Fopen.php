@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Client\Engine;
 
@@ -6,6 +7,7 @@ use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\Client\ConnectionException;
 use ManaPHP\Http\Client\EngineInterface;
+use ManaPHP\Http\Client\Request;
 use ManaPHP\Http\Client\Response;
 
 /**
@@ -13,13 +15,7 @@ use ManaPHP\Http\Client\Response;
  */
 class Fopen extends Component implements EngineInterface
 {
-    /**
-     * @param \ManaPHP\Http\Client\Request $request
-     * @param string                       $body
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function request($request, $body)
+    public function request(Request $request, string $body): Response
     {
         $http = [];
 

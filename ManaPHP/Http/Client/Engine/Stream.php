@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Client\Engine;
 
@@ -6,6 +7,7 @@ use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\Client\ConnectionException;
 use ManaPHP\Http\Client\EngineInterface;
+use ManaPHP\Http\Client\Request;
 use ManaPHP\Http\Client\Response;
 use ManaPHP\Http\Client\TimeoutException;
 
@@ -14,10 +16,7 @@ use ManaPHP\Http\Client\TimeoutException;
  */
 class Stream extends Component implements EngineInterface
 {
-    /**
-     * @var resource
-     */
-    protected $stream;
+    protected mixed $stream;
 
     public function __destruct()
     {
@@ -35,14 +34,7 @@ class Stream extends Component implements EngineInterface
         }
     }
 
-    /**
-     * @param \ManaPHP\Http\Client\Request $request
-     *
-     * @return resource
-     * @throws ConnectionException
-     * @throws NotSupportedException
-     */
-    protected function connect($request)
+    protected function connect(Request $request): mixed
     {
         $host = parse_url($request->url, PHP_URL_HOST);
         $port = parse_url($request->url, PHP_URL_PORT);
@@ -93,16 +85,7 @@ class Stream extends Component implements EngineInterface
         return $this->stream = $stream;
     }
 
-    /**
-     * @param resource $stream
-     * @param string   $url
-     * @param string   $data
-     * @param float    $end_time
-     *
-     * @return void
-     * @throws TimeoutException
-     */
-    protected function send($stream, $url, $data, $end_time)
+    protected function send(mixed $stream, string $url, string $data, float $end_time): void
     {
         $written = 0;
 
@@ -130,12 +113,7 @@ class Stream extends Component implements EngineInterface
         } while ($written !== strlen($data));
     }
 
-    /**
-     * @param \ManaPHP\Http\Client\Request $request
-     *
-     * @return string
-     */
-    protected function buildHeader($request)
+    protected function buildHeader(Request $request): string
     {
         $data = strtoupper($request->method) . ' ' . $request->url . " HTTP/1.1\r\n";
         foreach ($request->headers as $name => $value) {
@@ -145,14 +123,7 @@ class Stream extends Component implements EngineInterface
         return $data;
     }
 
-    /**
-     * @param resource $stream
-     * @param string   $url
-     * @param float    $end_time
-     *
-     * @return array
-     */
-    protected function recvHeader($stream, $url, $end_time)
+    protected function recvHeader(mixed $stream, string $url, float $end_time): array
     {
         $recv = '';
         $write = null;
@@ -184,15 +155,7 @@ class Stream extends Component implements EngineInterface
         return [$headers, $body];
     }
 
-    /**
-     * @param resource $stream
-     * @param string   $url
-     * @param string   $body
-     * @param float    $end_time
-     *
-     * @return string
-     */
-    protected function recvChunkedBody($stream, $url, $body, $end_time)
+    protected function recvChunkedBody(mixed $stream, string $url, string $body, float $end_time): string
     {
         $chunked = $body;
         $body = '';
@@ -244,19 +207,8 @@ class Stream extends Component implements EngineInterface
         return '';
     }
 
-    /**
-     * @param resource $stream
-     * @param string   $url
-     * @param string   $body
-     * @param int      $length
-     * @param float    $end_time
-     *
-     * @return string
-     *
-     * @throws TimeoutException
-     */
-    protected function recvContentLengthBody($stream, $url, $body, $length, $end_time)
-    {
+    protected function recvContentLengthBody(mixed $stream, string $url, string $body, int $length, float $end_time
+    ): string {
         $write = null;
         $except = null;
         while ($length !== strlen($body)) {
@@ -283,13 +235,7 @@ class Stream extends Component implements EngineInterface
         return $body;
     }
 
-    /**
-     * @param \ManaPHP\Http\Client\Request $request
-     * @param string                       $body
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function request($request, $body)
+    public function request(Request $request, string $body): Response
     {
         if (!isset($request->headers['Accept-Encoding'])) {
             $request->headers['Accept-Encoding'] = 'gzip, deflate';

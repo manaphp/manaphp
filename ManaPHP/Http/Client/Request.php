@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Client;
 
@@ -6,50 +7,17 @@ use JsonSerializable;
 
 class Request implements JsonSerializable
 {
-    /**
-     * @var string
-     */
-    public $method;
+    public string $method;
+    public string $url;
+    public array $headers;
+    public null|string|array $body;
+    public array $options;
+    public float $process_time;
+    public string $remote_ip;
 
-    /**
-     * @var string
-     */
-    public $url;
-
-    /**
-     * @var array
-     */
-    public $headers;
-
-    /**
-     * @var string|array
-     */
-    public $body;
-
-    /**
-     * @var array
-     */
-    public $options;
-
-    /**
-     * @var float
-     */
-    public $process_time;
-
-    /**
-     * @var string
-     */
-    public $remote_ip;
-
-    /**
-     * @param string       $method
-     * @param string|array $url
-     * @param string|array $body
-     * @param array        $headers
-     * @param array        $options
-     */
-    public function __construct($method, $url, $body, $headers, $options)
-    {
+    public function __construct(string $method, string|array $url, null|string|array $body, array $headers,
+        array $options
+    ) {
         $this->method = $method;
 
         if (is_array($url)) {
@@ -68,12 +36,7 @@ class Request implements JsonSerializable
         $this->options = $options;
     }
 
-    /**
-     * @param string $boundary
-     *
-     * @return string
-     */
-    public function buildMultipart($boundary)
+    public function buildMultipart(string $boundary): string
     {
         $data = '';
         foreach ($this->body as $k => $v) {
@@ -96,10 +59,7 @@ class Request implements JsonSerializable
         return $data . "--$boundary--\r\n";
     }
 
-    /**
-     * @return bool
-     */
-    public function hasFile()
+    public function hasFile(): bool
     {
         if (!is_array($this->body) || isset($this->headers['Content-Type'])) {
             return false;
@@ -114,10 +74,7 @@ class Request implements JsonSerializable
         return false;
     }
 
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return get_object_vars($this);
     }

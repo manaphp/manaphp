@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
@@ -8,6 +9,7 @@ use ManaPHP\Http\Client\BadGatewayException;
 use ManaPHP\Http\Client\BadRequestException;
 use ManaPHP\Http\Client\ClientErrorException;
 use ManaPHP\Http\Client\ContentTypeException;
+use ManaPHP\Http\Client\EngineInterface;
 use ManaPHP\Http\Client\ForbiddenException;
 use ManaPHP\Http\Client\GatewayTimeoutException;
 use ManaPHP\Http\Client\InternalServerErrorException;
@@ -18,6 +20,7 @@ use ManaPHP\Http\Client\ServerErrorException;
 use ManaPHP\Http\Client\ServiceUnavailableException;
 use ManaPHP\Http\Client\TooManyRequestsException;
 use ManaPHP\Http\Client\UnauthorizedException;
+use ManaPHP\Http\Client\Response;
 
 /**
  * @property-read \ManaPHP\AliasInterface        $alias
@@ -25,47 +28,16 @@ use ManaPHP\Http\Client\UnauthorizedException;
  */
 class Client extends Component implements ClientInterface
 {
-    const USER_AGENT_IE = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
+    public const USER_AGENT_IE = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
+    protected string|EngineInterface $engine;
+    protected string $proxy = '';
+    protected string $cafile = '';
+    protected int $timeout = 10;
+    protected bool $verify_peer = true;
+    protected string $user_agent;
+    protected int $pool_size = 4;
 
-    /**
-     * @var string|\ManaPHP\Http\Client\EngineInterface
-     */
-    protected $engine;
-
-    /**
-     * @var string
-     */
-    protected $proxy = '';
-
-    /**
-     * @var string
-     */
-    protected $cafile = '';
-
-    /**
-     * @var int
-     */
-    protected $timeout = 10;
-
-    /**
-     * @var bool
-     */
-    protected $verify_peer = true;
-
-    /**
-     * @var string
-     */
-    protected $user_agent;
-
-    /**
-     * @var int
-     */
-    protected $pool_size = 4;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if ($engine = $options['engine'] ?? null) {
             $this->engine = str_contains($engine, '\\') ? $engine : "ManaPHP\Http\Client\Engine\\" . ucfirst($engine);
@@ -106,17 +78,9 @@ class Client extends Component implements ClientInterface
         throw new NonCloneableException($this);
     }
 
-    /**
-     * @param string          $method
-     * @param string|array    $url
-     * @param string|array    $body
-     * @param array           $headers
-     * @param array|int|float $options
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function request($method, $url, $body = null, $headers = [], $options = [])
-    {
+    public function request(string $method, string|array $url, null|string|array $body = null, array $headers = [],
+        mixed $options = []
+    ): Response {
         if (!isset($headers['User-Agent'])) {
             $headers['User-Agent'] = $this->user_agent;
         }
@@ -223,7 +187,7 @@ class Client extends Component implements ClientInterface
         }
 
         $http_code = $response->http_code;
-        $http_code_class = substr($http_code, 0, -2) * 100;
+        $http_code_class = substr((string)$http_code, 0, -2) * 100;
 
         if ($http_code_class === 200) {
             null;
@@ -260,17 +224,9 @@ class Client extends Component implements ClientInterface
         return $response;
     }
 
-    /**
-     * @param string          $method
-     * @param string|array    $url
-     * @param string|array    $body
-     * @param array           $headers
-     * @param array|int|float $options
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function rest($method, $url, $body = [], $headers = [], $options = [])
-    {
+    public function rest(string $method, string|array $url, string|array $body = [], array $headers = [],
+        mixed $options = []
+    ): Response {
         if (is_string($body)) {
             if (!isset($headers['Content-Type'])) {
                 if (preg_match('#^\[|{#', $body)) {
@@ -320,78 +276,32 @@ class Client extends Component implements ClientInterface
         return $response;
     }
 
-    /**
-     * @param array|string    $url
-     * @param array           $headers
-     * @param array|int|float $options
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function get($url, $headers = [], $options = [])
+    public function get(string|array $url, array $headers = [], mixed $options = []): Response
     {
         return $this->request('GET', $url, null, $headers, $options);
     }
 
-    /**
-     * @param array|string    $url
-     * @param string|array    $body
-     * @param array           $headers
-     * @param array|int|float $options
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function post($url, $body = [], $headers = [], $options = [])
+    public function post(string|array $url, string|array $body = [], array $headers = [], mixed $options = []): Response
     {
         return $this->request('POST', $url, $body, $headers, $options);
     }
 
-    /**
-     * @param array|string    $url
-     * @param array           $headers
-     * @param array|int|float $options
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function delete($url, $headers = [], $options = [])
+    public function delete(string|array $url, array $headers = [], mixed $options = []): Response
     {
         return $this->request('DELETE', $url, null, $headers, $options);
     }
 
-    /**
-     * @param array|string    $url
-     * @param string|array    $body
-     * @param array           $headers
-     * @param array|int|float $options
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function put($url, $body = [], $headers = [], $options = [])
+    public function put(string|array $url, string|array $body = [], array $headers = [], mixed $options = []): Response
     {
         return $this->request('PUT', $url, $body, $headers, $options);
     }
 
-    /**
-     * @param array|string    $url
-     * @param string|array    $body
-     * @param array           $headers
-     * @param array|int|float $options
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function patch($url, $body = [], $headers = [], $options = [])
-    {
+    public function patch(string|array $url, string|array $body = [], array $headers = [], mixed $options = []
+    ): Response {
         return $this->request('PATCH', $url, $body, $headers, $options);
     }
 
-    /**
-     * @param array|string    $url
-     * @param string|array    $body
-     * @param array           $headers
-     * @param array|int|float $options
-     *
-     * @return \ManaPHP\Http\Client\Response
-     */
-    public function head($url, $body = [], $headers = [], $options = [])
+    public function head(string|array $url, string|array $body = [], array $headers = [], mixed $options = []): Response
     {
         return $this->request('HEAD', $url, $body, $headers, $options);
     }

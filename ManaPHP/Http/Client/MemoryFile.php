@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Client;
 
@@ -6,69 +7,38 @@ use JsonSerializable;
 
 class MemoryFile implements FileInterface, JsonSerializable
 {
-    /**
-     * @var string
-     */
-    protected $content;
+    protected string $content;
+    protected string $mimeType;
+    protected string $postName;
 
-    /**
-     * @var string
-     */
-    protected $mimeType;
-
-    /**
-     * @var string
-     */
-    protected $postName;
-
-    /**
-     * @param string $content
-     * @param string $mimeType
-     * @param string $postName
-     */
-    public function __construct($content, $mimeType, $postName)
+    public function __construct(string $content, string $mimeType, string $postName)
     {
         $this->content = $content;
         $this->mimeType = $mimeType;
         $this->postName = $postName;
     }
 
-    /**
-     * @return null
-     */
-    public function getFileName()
+    public function getFileName(): ?string
     {
         return null;
     }
 
-    /**
-     * @return string
-     */
-    public function getMimeType()
+    public function getMimeType(): string
     {
         return $this->mimeType;
     }
 
-    /**
-     * @return string
-     */
-    public function getPostName()
+    public function getPostName(): string
     {
         return $this->postName;
     }
 
-    /**
-     * @return string
-     */
-    public function getContent()
+    public function getContent(): string
     {
         return $this->content;
     }
 
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return ['mimeType' => $this->mimeType, 'postName' => $this->postName];
     }

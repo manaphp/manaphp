@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Client;
 
@@ -7,27 +8,11 @@ use ManaPHP\AliasInterface;
 
 class LocalFile implements FileInterface, JsonSerializable
 {
-    /**
-     * @var string
-     */
-    protected $fileName;
+    protected string $fileName;
+    protected ?string $mimeType;
+    protected string $postName;
 
-    /**
-     * @var string
-     */
-    protected $mimeType;
-
-    /**
-     * @var string
-     */
-    protected $postName;
-
-    /**
-     * @param string $fileName
-     * @param string $mimeType
-     * @param string $postName
-     */
-    public function __construct($fileName, $mimeType = null, $postName = null)
+    public function __construct(string $fileName, ?string $mimeType = null, ?string $postName = null)
     {
         $fileName = $fileName[0] === '@' ? container(AliasInterface::class)->resolve($fileName) : $fileName;
 
@@ -44,42 +29,27 @@ class LocalFile implements FileInterface, JsonSerializable
         $this->postName = $postName;
     }
 
-    /**
-     * @return string
-     */
-    public function getFileName()
+    public function getFileName(): string
     {
         return $this->fileName;
     }
 
-    /**
-     * @return string
-     */
-    public function getMimeType()
+    public function getMimeType(): string
     {
         return $this->mimeType ?? mime_content_type($this->fileName);
     }
 
-    /**
-     * @return string
-     */
-    public function getPostName()
+    public function getPostName(): string
     {
         return $this->postName ?? basename($this->fileName);
     }
 
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return ['fileName' => $this->fileName];
     }
 
-    /**
-     * @return string
-     */
-    public function getContent()
+    public function getContent(): string
     {
         return file_get_contents($this->fileName);
     }

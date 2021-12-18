@@ -1,26 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Client;
 
 interface FileInterface
 {
-    /**
-     * @return string
-     */
-    public function getFileName();
+    public function getFileName(): ?string;
 
-    /**
-     * @return string
-     */
-    public function getMimeType();
+    public function getMimeType(): string;
 
-    /**
-     * @return string
-     */
-    public function getPostName();
+    public function getPostName(): string;
 
-    /**
-     * @return string
-     */
-    public function getContent();
+    public function getContent(): string;
 }

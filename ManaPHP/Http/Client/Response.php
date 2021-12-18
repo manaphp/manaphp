@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Client;
 
@@ -7,47 +8,15 @@ use ManaPHP\Exception\InvalidJsonException;
 
 class Response implements JsonSerializable
 {
-    /**
-     * @var string
-     */
-    public $url;
+    public string $url;
+    public float $process_time;
+    public string $remote_ip;
+    public int $http_code;
+    public array $headers = [];
+    public string $content_type;
+    public string|array $body;
 
-    /**
-     * @var float
-     */
-    public $process_time;
-
-    /**
-     * @var string
-     */
-    public $remote_ip;
-
-    /**
-     * @var int
-     */
-    public $http_code;
-
-    /**
-     * @var array
-     */
-    public $headers = [];
-
-    /**
-     * @var string
-     */
-    public $content_type;
-
-    /**
-     * @var string|array
-     */
-    public $body;
-
-    /**
-     * @param \ManaPHP\Http\Client\Request $request
-     * @param array                        $headers
-     * @param string                       $body
-     */
-    public function __construct($request, $headers, $body)
+    public function __construct(Request $request, array $headers, string $body)
     {
         if (preg_match('#\s(?:301|302)\s#', $headers[0], $match) === 1) {
             $headers = $this->getLastHeaders($headers);
@@ -100,12 +69,7 @@ class Response implements JsonSerializable
         $this->body = $body;
     }
 
-    /**
-     * @param array $headers
-     *
-     * @return array
-     */
-    protected function getLastHeaders($headers)
+    protected function getLastHeaders(array $headers): array
     {
         for ($i = count($headers) - 1; $i >= 0; $i--) {
             $header = $headers[$i];
@@ -117,10 +81,7 @@ class Response implements JsonSerializable
         return [];
     }
 
-    /**
-     * @return array
-     */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         $headers = [];
         foreach ($this->headers as $i => $header) {
@@ -144,11 +105,7 @@ class Response implements JsonSerializable
         return $headers;
     }
 
-    /**
-     * @return array
-     * @throws \ManaPHP\Exception\InvalidJsonException
-     */
-    public function getJsonBody()
+    public function getJsonBody(): array
     {
         $data = json_parse($this->body);
         if (!is_array($data)) {
@@ -159,10 +116,7 @@ class Response implements JsonSerializable
         return $data;
     }
 
-    /**
-     * @return string
-     */
-    public function getUtf8Body()
+    public function getUtf8Body(): string
     {
         $body = $this->body;
         if (preg_match('#charset=([\w\-]+)#i', $this->content_type, $match) === 1) {
@@ -175,7 +129,7 @@ class Response implements JsonSerializable
         return $body;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return get_object_vars($this);
     }
