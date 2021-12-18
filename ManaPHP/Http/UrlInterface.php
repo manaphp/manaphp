@@ -1,14 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
 interface UrlInterface
 {
-    /**
-     * @param string|array $args
-     * @param string|bool  $scheme
-     *
-     * @return string
-     */
-    public function get($args, $scheme = false);
+    public function get(string|array $args, bool|string $scheme = false): string;
 }
