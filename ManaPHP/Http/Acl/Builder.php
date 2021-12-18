@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Acl;
 
@@ -10,15 +11,9 @@ use ManaPHP\Helper\LocalFS;
  */
 class Builder extends Component implements BuilderInterface
 {
-    /**
-     * @var array
-     */
-    protected $controllers;
+    protected ?array $controllers = null;
 
-    /**
-     * @return array
-     */
-    public function getControllers()
+    public function getControllers(): array
     {
         if ($this->controllers === null) {
             $controllers = [];
@@ -39,12 +34,7 @@ class Builder extends Component implements BuilderInterface
         return $this->controllers;
     }
 
-    /**
-     * @param string $controller
-     *
-     * @return array
-     */
-    public function getActions($controller)
+    public function getActions(string $controller): array
     {
         $actions = [];
         foreach (get_class_methods($controller) as $method) {

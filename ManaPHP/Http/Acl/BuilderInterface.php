@@ -1,18 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Acl;
 
 interface BuilderInterface
 {
-    /**
-     * @return array
-     */
-    public function getControllers();
+    public function getControllers(): array;
 
-    /**
-     * @param string $controller
-     *
-     * @return array
-     */
-    public function getActions($controller);
+    public function getActions(string $controller): array;
 }
