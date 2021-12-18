@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Html\Renderer\Engine;
 
@@ -12,30 +13,15 @@ use ManaPHP\Html\Renderer\EngineInterface;
  */
 class Sword extends Component implements EngineInterface
 {
-    /**
-     * @var string
-     */
-    protected $doc_root;
+    protected string $doc_root;
+    protected array $compiled = [];
 
-    /**
-     * @var array
-     */
-    protected $compiled = [];
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         $this->doc_root = $options['doc_root'] ?? $_SERVER['DOCUMENT_ROOT'];
     }
 
-    /**
-     * @param string $source
-     *
-     * @return string
-     */
-    public function getCompiledFile($source)
+    public function getCompiledFile(string $source): string
     {
         if (str_starts_with($source, $root = $this->alias->get('@root'))) {
             $compiled = '@data/sword' . substr($source, strlen($root));
@@ -57,13 +43,7 @@ class Sword extends Component implements EngineInterface
         return $compiled;
     }
 
-    /**
-     * @param string $file
-     * @param array  $vars
-     *
-     * @return void
-     */
-    public function render($file, $vars = [])
+    public function render(string $file, array $vars = []): void
     {
         extract($vars, EXTR_SKIP);
 

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Html\Renderer\Engine\Sword;
 
@@ -15,41 +16,12 @@ use ManaPHP\Helper\Str;
  */
 class Compiler extends Component
 {
-    /**
-     * @var int
-     */
-    protected $hash_length = 12;
-
-    /**
-     * All custom "directive" handlers.
-     *
-     * @var array
-     */
-    protected $directives = [];
-
-    /**
-     * Array of opening and closing tags for raw echos.
-     *
-     * @var array
-     */
-    protected $rawTags = ['{!!', '!!}'];
-
-    /**
-     * Array of opening and closing tags for escaped echos.
-     *
-     * @var array
-     */
-    protected $escapedTags = ['{{', '}}'];
-
-    /**
-     * @var bool
-     */
-    protected $foreachelse_used = false;
-
-    /**
-     * @var array
-     */
-    protected $safe_functions
+    protected int $hash_length = 12;
+    protected array $directives = [];
+    protected array $rawTags = ['{!!', '!!}'];
+    protected array $escapedTags = ['{{', '}}'];
+    protected bool $foreachelse_used = false;
+    protected array $safe_functions
         = [
             'e',
             'url',
@@ -67,10 +39,7 @@ class Compiler extends Component
             'base_url'
         ];
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['safe_functions'])) {
             if (is_string($options['safe_functions'])) {
@@ -80,12 +49,7 @@ class Compiler extends Component
         }
     }
 
-    /**
-     * @param string $str
-     *
-     * @return string
-     */
-    protected function addFileHash($str)
+    protected function addFileHash(string $str): string
     {
         return preg_replace_callback(
             '#="(/[-\w/.]+\.\w+)"#', function ($match) {
@@ -107,13 +71,7 @@ class Compiler extends Component
         );
     }
 
-    /**
-     * @param string $file
-     * @param string $str
-     *
-     * @return string
-     */
-    protected function completeRelativeLinks($file, $str)
+    protected function completeRelativeLinks(string $file, string $str): string
     {
         if ($str === '#' || str_contains($str, '://') || str_starts_with($str, '//')) {
             return $str;
@@ -143,13 +101,7 @@ class Compiler extends Component
         return $absolute;
     }
 
-    /**
-     * @param string $file
-     * @param string $str
-     *
-     * @return string
-     */
-    protected function completeLinks($file, $str)
+    protected function completeLinks(string $file, string $str): string
     {
         $str = preg_replace_callback(
             '#\b((?:ajax|axios\.)\w*\\(["\'`])([^/][\w\-/:.]+)#',
@@ -161,14 +113,7 @@ class Compiler extends Component
         return $str;
     }
 
-    /**
-     * Compile the given Sword template contents.
-     *
-     * @param string $value
-     *
-     * @return string
-     */
-    public function compileString($value)
+    public function compileString(string $value): string
     {
         $result = '';
 
@@ -197,13 +142,7 @@ class Compiler extends Component
         return $result;
     }
 
-    /**
-     * @param string $source
-     * @param string $compiled
-     *
-     * @return static
-     */
-    public function compileFile($source, $compiled)
+    public function compileFile(string $source, string $compiled): static
     {
         $source = $this->alias->resolve($source);
         $compiled = $this->alias->resolve($compiled);
@@ -231,28 +170,14 @@ class Compiler extends Component
         return $this;
     }
 
-    /**
-     * Compile Sword comments into valid PHP.
-     *
-     * @param string $value
-     *
-     * @return string
-     */
-    protected function compileComments($value)
+    protected function compileComments(string $value): string
     {
         $pattern = sprintf('/%s--(.*?)--%s/s', $this->escapedTags[0], $this->escapedTags[1]);
 
         return preg_replace($pattern, '<?php /*$1*/ ?> ', $value);
     }
 
-    /**
-     * Compile Sword echos into valid PHP.
-     *
-     * @param string $value
-     *
-     * @return string
-     */
-    protected function compileEchos($value)
+    protected function compileEchos(string $value): string
     {
         foreach ($this->getEchoMethods() as $method => $length) {
             $value = $this->$method($value);
@@ -261,12 +186,7 @@ class Compiler extends Component
         return $value;
     }
 
-    /**
-     * Get the echo methods in the proper order for compilation.
-     *
-     * @return array
-     */
-    protected function getEchoMethods()
+    protected function getEchoMethods(): array
     {
         $methods = [
             'compileRawEchos'     => strlen(stripcslashes($this->rawTags[0])),
@@ -312,7 +232,7 @@ class Compiler extends Component
      *
      * @return string
      */
-    protected function compileStatements($value)
+    protected function compileStatements(string $value): string
     {
         $callback = function ($match) {
             if (method_exists($this, $method = 'compile_' . $match[1])) {
@@ -331,14 +251,7 @@ class Compiler extends Component
         );
     }
 
-    /**
-     * Compile the "raw" echo statements.
-     *
-     * @param string $value
-     *
-     * @return string
-     */
-    protected function compileRawEchos($value)
+    protected function compileRawEchos(string $value): string
     {
         $pattern = sprintf('/(@)?%s\s*(.+?)\s*%s(\r?\n)?/s', $this->rawTags[0], $this->rawTags[1]);
 
@@ -353,14 +266,7 @@ class Compiler extends Component
         return preg_replace_callback($pattern, $callback, $value);
     }
 
-    /**
-     * Compile the escaped echo statements.
-     *
-     * @param string $value
-     *
-     * @return string
-     */
-    protected function compileEscapedEchos($value)
+    protected function compileEscapedEchos(string $value): string
     {
         $pattern = sprintf('/(@)?%s\s*(.+?)\s*%s(\r?\n)?/s', $this->escapedTags[0], $this->escapedTags[1]);
 
@@ -382,410 +288,168 @@ class Compiler extends Component
         return preg_replace_callback($pattern, $callback, $value);
     }
 
-    /**
-     * @param string $value
-     *
-     * @return bool
-     */
-    protected function isSafeEchos($value)
+    protected function isSafeEchos(string $value): bool
     {
         return preg_match('#^([a-z\d_]+)\\(#', $value, $match) === 1
             && in_array($match[1], $this->safe_functions, true);
     }
 
-    /**
-     * Compile the default values for the echo statement.
-     *
-     * @param string $value
-     *
-     * @return string
-     */
-    protected function compileEchoDefaults($value)
+    protected function compileEchoDefaults(string $value): string
     {
         return preg_replace('/^(?=\\$)(.+?)(?:\s+or\s+)(.+?)$/s', 'isset($1) ? $1 : $2', $value);
     }
 
-    /**
-     * Compile the yield statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_yield($expression)
+    protected function compile_yield(string $expression): string
     {
         return "<?= \$renderer->getSection{$expression}; ?>";
     }
 
-    /**
-     * Compile the section statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_section($expression)
+    protected function compile_section(string $expression): string
     {
         return "<?php \$renderer->startSection{$expression}; ?>";
     }
 
-    /**
-     * Compile the append statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_append(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
+    protected function compile_append(string $expression): string
+    {
         return '<?php $renderer->appendSection(); ?>';
     }
 
-    /**
-     * Compile the end-section statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_endSection(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
+    protected function compile_endSection(string $expression): string
+    {
         return '<?php $renderer->stopSection(); ?>';
     }
 
-    /**
-     * Compile the stop statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_stop(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
+    protected function compile_stop(string $expression): string
+    {
         return '<?php $renderer->stopSection(); ?>';
     }
 
-    /**
-     * Compile the else statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_else(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
+    protected function compile_else(string $expression): string
+    {
         return '<?php else: ?>';
     }
 
-    /**
-     * Compile the for statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_for($expression)
+    protected function compile_for(string $expression): string
     {
         return "<?php for{$expression}: ?>";
     }
 
-    /**
-     * Compile the foreach statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_foreach($expression)
+    protected function compile_foreach(string $expression): string
     {
         return "<?php \$index = -1; foreach{$expression}: \$index++; ?>";
     }
 
-    /**
-     * Compile the foreachelse statements into valid PHP.
-     *
-     * @return string
-     */
-    protected function compile_foreachElse()
+    protected function compile_foreachElse(): string
     {
         $this->foreachelse_used = true;
         return '<?php endforeach; ?> <?php if($index === -1): ?>';
     }
 
-    /**
-     * Compile the can statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_can($expression)
+    protected function compile_can(string $expression): string
     {
         return "<?php if (container('ManaPHP\Http\AuthorizationInterface')->isAllowed{$expression}): ?>";
     }
 
-    /**
-     * Compile the allow statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_allow($expression)
+    protected function compile_allow(string $expression): string
     {
         $parts = explode(',', substr($expression, 1, -1));
         $expr = $this->compileString($parts[1]);
         return "<?php if (container('ManaPHP\Http\AuthorizationInterface')->isAllowed($parts[0])): ?>$expr<?php endif ?>";
     }
 
-    /**
-     * Compile the cannot statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_cannot($expression)
+    protected function compile_cannot(string $expression): string
     {
         return "<?php if (!container('ManaPHP\Http\AuthorizationInterface')->isAllowed{$expression}): ?>";
     }
 
-    /**
-     * Compile the if statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_if($expression)
+    protected function compile_if(string $expression): string
     {
         return "<?php if{$expression}: ?>";
     }
 
-    /**
-     * Compile the else-if statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_elseif($expression)
+    protected function compile_elseif(string $expression): string
     {
         return "<?php elseif{$expression}: ?>";
     }
 
-    /**
-     * Compile the while statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_while($expression)
+    protected function compile_while(string $expression): string
     {
         return "<?php while{$expression}: ?>";
     }
 
-    /**
-     * Compile the end-while statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_endWhile(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
+    protected function compile_endWhile(string $expression): string
+    {
         return '<?php endwhile; ?>';
     }
 
-    /**
-     * Compile the end-for statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_endFor(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
+    protected function compile_endFor(string $expression): string
+    {
         return '<?php endfor; ?>';
     }
 
-    /**
-     * Compile the end-for-each statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_endForeach(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
+    protected function compile_endForeach(string $expression): string
+    {
         $r = $this->foreachelse_used ? '<?php endif; ?>' : '<?php endforeach; ?>';
         $this->foreachelse_used = false;
         return $r;
     }
 
-    /**
-     * Compile the end-can statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_endCan(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
+    protected function compile_endCan(string $expression): string
+    {
         return '<?php endif; ?>';
     }
 
-    /**
-     * Compile the end-cannot statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_endCannot(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
+    protected function compile_endCannot(string $expression): string
+    {
         return '<?php endif; ?>';
     }
 
-    /**
-     * Compile the end-if statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_endIf(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
+    protected function compile_endIf(string $expression): string
+    {
         return '<?php endif; ?>';
     }
 
-    /**
-     * Compile the include statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_include($expression)
+    protected function compile_include(string $expression): string
     {
         return "<?php \$renderer->partial{$expression} ?>";
     }
 
-    /**
-     * Compile the partial statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_partial($expression)
+    protected function compile_partial(string $expression): string
     {
         return "<?php \$renderer->partial{$expression} ?>";
     }
 
-    /**
-     * Compile the block statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_block($expression)
+    protected function compile_block(string $expression): string
     {
         return "<?php container('ManaPHP\Mvc\ViewInterface')->block{$expression} ?>";
     }
 
-    /**
-     * Compile the break statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_break($expression)
+    protected function compile_break(string $expression): string
     {
         return $expression ? "<?php if{$expression} break; ?>" : '<?php break; ?>';
     }
 
-    /**
-     * Compile the break statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_continue($expression)
+    protected function compile_continue(string $expression): string
     {
         return $expression ? "<?php if{$expression} continue; ?>" : '<?php continue; ?>';
     }
 
-    /**
-     * Compile the maxAge statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_maxAge($expression)
+    protected function compile_maxAge(string $expression): string
     {
         return "<?php container('ManaPHP\Mvc\ViewInterface')->setMaxAge{$expression}; ?>";
     }
 
-    /**
-     * Compile the break statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_layout($expression)
+    protected function compile_layout(string $expression): string
     {
         return "<?php container('ManaPHP\Mvc\ViewInterface')->setLayout{$expression}; ?>";
     }
 
-    /**
-     * Compile the break statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_content(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
+    protected function compile_content(string $expression): string
+    {
         return "<?= container('ManaPHP\Mvc\ViewInterface')->getContent(); ?>";
     }
 
-    /**
-     * Compile the break statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_php($expression)
+    protected function compile_php(string $expression): string
     {
         if ($expression[0] === '(') {
             $expression = (string)substr($expression, 1, -1);
@@ -794,40 +458,17 @@ class Compiler extends Component
         return $expression ? "<?php {$expression}; ?>" : '<?php ';
     }
 
-    /**
-     * Compile the break statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_endPhp(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
+    protected function compile_endPhp(string $expression): string
+    {
         return ' ?>';
     }
 
-    /**
-     * Compile the widget statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_widget($expression)
+    protected function compile_widget(string $expression): string
     {
         return "<?php container('ManaPHP\Mvc\ViewInterface')->widget{$expression}; ?>";
     }
 
-    /**
-     * Compile the Url statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_url($expression)
+    protected function compile_url(string $expression): string
     {
         if (strcspn($expression, '$\'"') === strlen($expression)) {
             $expression = '(\'' . trim($expression, '()') . '\')';
@@ -836,14 +477,7 @@ class Compiler extends Component
         return "<?= url{$expression}; ?>";
     }
 
-    /**
-     * Compile the Asset statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_asset($expression)
+    protected function compile_asset(string $expression): string
     {
         if (strcspn($expression, '$\'"') === strlen($expression)) {
             $expression = '(\'' . trim($expression, '()') . '\')';
@@ -853,83 +487,35 @@ class Compiler extends Component
         /*return "<?= asset{$expression}; ?>";*/
     }
 
-    /**
-     * Compile the flash statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_flash(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
+    protected function compile_flash(string $expression): string
+    {
         return "<?php container('ManaPHP\Mvc\View\FlashInterface')->output() ?>";
     }
 
-    /**
-     * Compile the json statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_json($expression)
+    protected function compile_json(string $expression): string
     {
         $expression = (string)substr($expression, 1, -1);
         return "<?= json_stringify({$expression}) ;?>";
     }
 
-    /**
-     * Compile the json statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_debugger(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
+    protected function compile_debugger(string $expression): string
+    {
         return '<?php if(container("ManaPHP\Http\ResponseInterface")->hasHeader("X-Debugger-Link")){?><div class="debugger"><a target="_self" href="'
             . '<?= container("ManaPHP\Http\ResponseInterface")->getHeader("X-Debugger-Link") ?>">Debugger</a></div><?php }?> ';
     }
 
-    /**
-     * Compile the eol statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_eol(
-        /** @noinspection PhpUnusedParameterInspection */
-        $expression
-    ) {
+    protected function compile_eol(string $expression): string
+    {
         return '<?= PHP_EOL ?>';
     }
 
-    /**
-     * Compile the eol statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_date($expression)
+    protected function compile_date(string $expression): string
     {
         $time = substr($expression, 1, -1);
         return "<?= date('Y-m-d H:i:s', $time) ?>";
     }
 
-    /**
-     * Compile the action statements into valid PHP.
-     *
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_action($expression)
+    protected function compile_action(string $expression): string
     {
         if (preg_match('#^\\(([\'"]?)([/_a-z\d]+)\1\\)$#i', $expression, $match)) {
             return action($match[2]);
@@ -938,67 +524,37 @@ class Compiler extends Component
         }
     }
 
-    /**
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_use($expression)
+    protected function compile_use(string $expression): string
     {
         return '<?php use ' . substr($expression, 1, -1) . ';?>';
     }
 
-    /**
-     * @param string $expression
-     *
-     * @return string
-     */
-    protected function compile_html($expression)
+    protected function compile_html(string $expression): string
     {
         return "<?= html{$expression}; ?>";
     }
 
-    /**
-     * @return string
-     */
-    protected function compile_css()
+    protected function compile_css(): string
     {
         return "<?php \$renderer->startSection('css'); ?>";
     }
 
-    /**
-     * @return string
-     */
-    protected function compile_endcss()
+    protected function compile_endcss(): string
     {
         return '<?php $renderer->appendSection(); ?>';
     }
 
-    /**
-     * @return string
-     */
-    protected function compile_js()
+    protected function compile_js(): string
     {
         return "<?php \$renderer->startSection('js'); ?>";
     }
 
-    /**
-     * @return string
-     */
-    protected function compile_endjs()
+    protected function compile_endjs(): string
     {
         return '<?php $renderer->appendSection(); ?>';
     }
 
-    /**
-     * Register a handler for custom directives.
-     *
-     * @param string   $name
-     * @param callable $handler
-     *
-     * @return static
-     */
-    public function directive($name, callable $handler)
+    public function directive(string $name, callable $handler): static
     {
         $this->directives[$name] = $handler;
 

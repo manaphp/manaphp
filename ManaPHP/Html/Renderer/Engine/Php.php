@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Html\Renderer\Engine;
 
@@ -7,15 +8,7 @@ use ManaPHP\Html\Renderer\EngineInterface;
 
 class Php extends Component implements EngineInterface
 {
-    /**
-     * Renders a view using the template engine
-     *
-     * @param string $file
-     * @param array  $vars
-     *
-     * @return void
-     */
-    public function render($file, $vars = [])
+    public function render(string $file, array $vars = []): void
     {
         extract($vars, EXTR_SKIP);
 

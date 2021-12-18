@@ -1,16 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Html\Renderer;
 
 interface EngineInterface
 {
-    /**
-     * Renders a view using the template engine
-     *
-     * @param string $file
-     * @param array  $vars
-     *
-     * @return void
-     */
-    public function render($file, $vars = []);
+    public function render(string $file, array $vars = []): void;
 }

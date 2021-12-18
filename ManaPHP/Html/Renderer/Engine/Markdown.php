@@ -1,9 +1,9 @@
 <?php
-
 /** @noinspection NotOptimalRegularExpressionsInspection */
 /** @noinspection SpellCheckingInspection */
 /** @noinspection NotOptimalIfConditionsInspection */
 /** @noinspection PhpInconsistentReturnPointsInspection */
+declare(strict_types=1);
 
 namespace ManaPHP\Html\Renderer\Engine;
 
@@ -27,13 +27,7 @@ class Markdown extends Component implements EngineInterface
 {
     const version = '1.8.0-beta-7'; //bfaa76d370ecfae6fac85b30c15b90cc23cce895
 
-    /**
-     * @param string $file
-     * @param array  $vars
-     *
-     * @return void
-     */
-    public function render($file, $vars = [])
+    public function render(string $file, array $vars = []): void
     {
         echo $this->text(file_get_contents($file));
     }
@@ -76,7 +70,7 @@ class Markdown extends Component implements EngineInterface
         return $this;
     }
 
-    protected $breaksEnabled;
+    protected bool $breaksEnabled;
 
     public function setMarkupEscaped($markupEscaped)
     {
@@ -85,7 +79,7 @@ class Markdown extends Component implements EngineInterface
         return $this;
     }
 
-    protected $markupEscaped;
+    protected bool $markupEscaped;
 
     public function setUrlsLinked($urlsLinked)
     {
@@ -94,7 +88,7 @@ class Markdown extends Component implements EngineInterface
         return $this;
     }
 
-    protected $urlsLinked = true;
+    protected bool $urlsLinked = true;
 
     public function setSafeMode($safeMode)
     {
@@ -103,7 +97,7 @@ class Markdown extends Component implements EngineInterface
         return $this;
     }
 
-    protected $safeMode;
+    protected bool $safeMode;
 
     public function setStrictMode($strictMode)
     {
@@ -112,9 +106,9 @@ class Markdown extends Component implements EngineInterface
         return $this;
     }
 
-    protected $strictMode;
+    protected bool $strictMode;
 
-    protected $safeLinksWhitelist
+    protected array $safeLinksWhitelist
         = [
             'http://',
             'https://',
@@ -133,7 +127,7 @@ class Markdown extends Component implements EngineInterface
             'steam:',
         ];
 
-    protected $BlockTypes
+    protected array $BlockTypes
         = [
             '#' => ['Header'],
             '*' => ['Rule', 'List'],
@@ -160,7 +154,7 @@ class Markdown extends Component implements EngineInterface
             '~' => ['FencedCode'],
         ];
 
-    protected $unmarkedBlockTypes
+    protected array $unmarkedBlockTypes
         = [
             'Code',
         ];
@@ -1010,7 +1004,7 @@ class Markdown extends Component implements EngineInterface
         return $Block;
     }
 
-    protected $InlineTypes
+    protected array $InlineTypes
         = [
             '!'  => ['Image'],
             '&'  => ['SpecialCharacter'],
@@ -1024,7 +1018,7 @@ class Markdown extends Component implements EngineInterface
             '\\' => ['EscapeSequence'],
         ];
 
-    protected $inlineMarkerList = '!*_&[:<`~\\';
+    protected string $inlineMarkerList = '!*_&[:<`~\\';
 
     public function line($text, $nonNestables = [])
     {
@@ -1728,9 +1722,9 @@ class Markdown extends Component implements EngineInterface
 
     protected $DefinitionData;
 
-    protected $regexHtmlAttribute = '[a-zA-Z_:][\w:.-]*+(?:\s*+=\s*+(?:[^"\'=<>`\s]+|"[^"]*+"|\'[^\']*+\'))?+';
+    protected string $regexHtmlAttribute = '[a-zA-Z_:][\w:.-]*+(?:\s*+=\s*+(?:[^"\'=<>`\s]+|"[^"]*+"|\'[^\']*+\'))?+';
 
-    protected $voidElements
+    protected array $voidElements
         = [
             'area',
             'base',
