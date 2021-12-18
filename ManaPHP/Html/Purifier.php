@@ -1,31 +1,23 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Html;
 
 use DOMDocument;
+use DOMNode;
 use ManaPHP\Component;
 
 class Purifier extends Component implements PurifierInterface
 {
-    /**
-     * @var string
-     */
-    protected $allowedTags = ',a,b,br,code,div,i,img,s,strike,strong,samp,span,sub,sup,small,pre,p,q,div,em,h1,h2,h3,h4,h5,h6,table,u,ul,ol,tr,th,td,hr,li,';
-
-    /**
-     * @var string
-     */
-    protected $allowedAttributes = ',title,src,href,width,height,alt,target,';
+    protected string $allowedTags = ',a,b,br,code,div,i,img,s,strike,strong,samp,span,sub,sup,small,pre,p,q,div,em,h1,h2,h3,h4,h5,h6,table,u,ul,ol,tr,th,td,hr,li,';
+    protected string $allowedAttributes = ',title,src,href,width,height,alt,target,';
 
     /**
      * @var callable
      */
-    protected $filter;
+    protected mixed $filter;
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['allowedTags'])) {
             $this->allowedTags = ',' . implode(',', $options['allowedTags']) . ',';
@@ -40,14 +32,7 @@ class Purifier extends Component implements PurifierInterface
         }
     }
 
-    /**
-     * @param \DOMNode[] $nodes
-     * @param string     $allowedTags
-     * @param string     $allowedAttributes
-     *
-     * @return void
-     */
-    protected function purifyInternal($nodes, $allowedTags, $allowedAttributes)
+    protected function purifyInternal(array $nodes, string $allowedTags, string $allowedAttributes): void
     {
         $types = [XML_ELEMENT_NODE, XML_ATTRIBUTE_NODE, XML_DOCUMENT_NODE, XML_TEXT_NODE, XML_DOCUMENT_TYPE_NODE];
 
@@ -108,14 +93,7 @@ class Purifier extends Component implements PurifierInterface
         }
     }
 
-    /**
-     * @param string $html
-     * @param array  $allowedTags
-     * @param array  $allowedAttributes
-     *
-     * @return string
-     */
-    public function purify($html, $allowedTags = null, $allowedAttributes = null)
+    public function purify(string $html, ?array $allowedTags = null, ?array $allowedAttributes = null): string
     {
         if (!str_contains($html, '<body>')) {
             $html

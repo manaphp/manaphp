@@ -1,15 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Html;
 
 interface PurifierInterface
 {
-    /**
-     * @param string $html
-     * @param array  $allowedTags
-     * @param array  $allowedAttributes
-     *
-     * @return string
-     */
-    public function purify($html, $allowedTags = null, $allowedAttributes = null);
+    public function purify(string $html, ?array $allowedTags = null, ?array $allowedAttributes = null): string;
 }
