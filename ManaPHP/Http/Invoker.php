@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
@@ -12,13 +13,7 @@ use ReflectionMethod;
  */
 class Invoker extends Component implements InvokerInterface
 {
-    /**
-     * @param \ManaPHP\Http\Controller $controller
-     * @param string                   $method
-     *
-     * @return mixed
-     */
-    public function invoke($controller, $method)
+    public function invoke(Controller $controller, string $method): mixed
     {
         $args = [];
         $missing = [];
