@@ -1,14 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
 interface DownloaderInterface
 {
-    /**
-     * @param string|array           $files
-     * @param string|int|array|float $options
-     *
-     * @return string|array
-     */
-    public function download($files, $options = []);
+    public function download(string|array $files, mixed $options = []): false|string|array;
 }

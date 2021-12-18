@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
@@ -10,15 +11,9 @@ use ManaPHP\Helper\LocalFS;
  */
 class Download extends Component implements DownloaderInterface
 {
-    const USER_AGENT_IE = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
+    public const USER_AGENT_IE = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
 
-    /**
-     * @param string|array           $files
-     * @param string|int|array|float $options
-     *
-     * @return string|array
-     */
-    public function download($files, $options = [])
+    public function download(string|array $files, mixed $options = []): false|string|array
     {
         if (is_string($files)) {
             if (is_string($options) && !str_contains($options, '://')) {
