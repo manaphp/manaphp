@@ -1,46 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\CurlMulti;
 
 class Response
 {
-    /**
-     * @var int
-     */
-    public $http_code;
-
-    /**
-     * @var string
-     */
-    public $body;
-
-    /**
-     * @var array
-     */
-    public $headers = [];
-
-    /**
-     * @var string
-     */
-    public $file;
-
-    /**
-     * @var float
-     */
-    public $process_time;
-
-    /**
-     * @var string
-     */
-    public $content_type;
-
-    /**
-     * @var array
-     */
-    public $stats;
-
-    /**
-     * @var \ManaPHP\Http\CurlMulti\Request
-     */
-    public $request;
+    public int $http_code;
+    public string $body;
+    public array $headers = [];
+    public string $file;
+    public float $process_time;
+    public string $content_type;
+    public array $stats;
+    public Request $request;
 }

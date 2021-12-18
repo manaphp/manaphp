@@ -1,42 +1,21 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
+use ManaPHP\Http\CurlMulti\Request;
+use ManaPHP\Http\CurlMulti\Error;
+use ManaPHP\Http\CurlMulti\Response;
+
 interface CurlMultiInterface
 {
-    /**
-     * @param string|array|\ManaPHP\Http\CurlMulti\Request $request
-     * @param callable|array                               $callbacks
-     *
-     * @return static
-     */
-    public function add($request, $callbacks = null);
+    public function add(string|array|Request $request, ?callable $callbacks = null): static;
 
-    /**
-     * @param string|array $url
-     * @param string       $target
-     * @param callable     $callback
-     *
-     * @return static
-     */
-    public function download($url, $target, $callback = null);
+    public function download(string|array $url, string $target, ?callable $callback = null): static;
 
-    /**
-     * @return static
-     */
-    public function start();
+    public function start(): static;
 
-    /**
-     * @param \ManaPHP\Http\CurlMulti\Response $response
-     *
-     * @return false|null
-     */
-    public function onSuccess($response);
+    public function onSuccess(Response $response): void;
 
-    /**
-     * @param \ManaPHP\Http\CurlMulti\Error $error
-     *
-     * @return false|null
-     */
-    public function onError($error);
+    public function onError(Error $error): void;
 }

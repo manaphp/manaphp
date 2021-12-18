@@ -1,10 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
 use Countable;
 use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Http\CurlMulti\Request;
+use ManaPHP\Http\CurlMulti\Response;
+use ManaPHP\Http\CurlMulti\Error;
 
 /**
  * @property-read \ManaPHP\AliasInterface          $alias
@@ -12,40 +16,14 @@ use ManaPHP\Helper\LocalFS;
  */
 class CurlMulti extends Component implements CurlMultiInterface, Countable
 {
-    /**
-     * @var string
-     */
-    protected $proxy;
+    protected string $proxy;
+    protected int $timeout = 10;
+    protected mixed $template;
+    protected mixed $mh;
+    protected array $requests = [];
+    protected array $files = [];
 
-    /**
-     * @var int
-     */
-    protected $timeout = 10;
-
-    /**
-     * @var resource
-     */
-    protected $template;
-
-    /**
-     * @var resource
-     */
-    protected $mh;
-
-    /**
-     * @var \ManaPHP\Http\CurlMulti\Request[]
-     */
-    protected $requests = [];
-
-    /**
-     * @var array
-     */
-    protected $files = [];
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['proxy'])) {
             $this->proxy = $options['proxy'];
@@ -62,10 +40,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
         LocalFS::dirCreate('@data/curlMulti');
     }
 
-    /**
-     * @return resource
-     */
-    protected function createCurlTemplate()
+    protected function createCurlTemplate(): mixed
     {
         $curl = curl_init();
 
@@ -105,13 +80,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
         return $curl;
     }
 
-    /**
-     * @param string|array|\ManaPHP\Http\CurlMulti\Request|\ManaPHP\Component $request
-     * @param callable|array                                                  $callbacks
-     *
-     * @return static
-     */
-    public function add($request, $callbacks = null)
+    public function add(string|array|Request $request, ?callable $callbacks = null): static
     {
         if (is_string($request)) {
             $request = $this->container->make('ManaPHP\Http\CurlMulti\Request', [$request, $callbacks]);
@@ -227,17 +196,10 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
         return $this;
     }
 
-    /**
-     * @param string|array $url
-     * @param string       $target
-     * @param callable     $callback
-     *
-     * @return static
-     */
-    public function download($url, $target, $callback = null)
+    public function download(string|array $url, string $target, ?callable $callback = null): static
     {
         if (!LocalFS::fileExists($target)) {
-            LocalFS::dirCreate(dir($target));
+            LocalFS::dirCreate(dirname($target));
 
             $request = $this->container->make('ManaPHP\Http\CurlMulti\Request', [$url, $callback]);
 
@@ -249,10 +211,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
         return $this;
     }
 
-    /**
-     * @return static
-     */
-    public function start()
+    public function start(): static
     {
         while ($this->requests) {
             $running = null;
@@ -333,32 +292,16 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
         return $this;
     }
 
-    /**
-     * @param \ManaPHP\Http\CurlMulti\Response $response
-     *
-     * @return false|null
-     */
-    public function onSuccess($response)
+    public function onSuccess(Response $response): void
     {
-        return null;
     }
 
-    /**
-     * @param \ManaPHP\Http\CurlMulti\Error $error
-     *
-     * @return false|null
-     */
-    public function onError($error)
+    public function onError(Error $error): void
     {
         $this->logger->error($error->message, 'curl_multi');
-
-        return null;
     }
 
-    /**
-     * @return int
-     */
-    public function count()
+    public function count(): int
     {
         return count($this->requests);
     }

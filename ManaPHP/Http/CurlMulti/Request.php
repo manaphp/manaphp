@@ -1,56 +1,20 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\CurlMulti;
 
 class Request
 {
-    /**
-     * @var string
-     */
-    public $method = 'GET';
+    public string $method = 'GET';
+    public string|array $url;
+    public string|array $body = [];
+    public array $headers = [];
+    public array $options = [];
+    public array $meta = [];
+    public mixed $callbacks;
+    public float $start_time;
 
-    /**
-     * @var string|array
-     */
-    public $url;
-
-    /**
-     * @var array|string
-     */
-    public $body = [];
-
-    /**
-     * @var array
-     */
-    public $headers = [];
-
-    /**
-     * @var array
-     */
-    public $options = [];
-
-    /**
-     * @var array
-     */
-    public $meta = [];
-
-    /**
-     * @var array
-     */
-    public $callbacks;
-
-    /**
-     * @var float
-     */
-    public $start_time;
-
-    /**
-     * @param string|array $url
-     * @param callable     $callbacks
-     * @param string       $method
-     * @param string|array $body
-     */
-    public function __construct($url, $callbacks = null, $method = 'GET', $body = null)
+    public function __construct(string|array $url, ?callable $callbacks = null, string $method = 'GET', string|array $body = null)
     {
         $this->url = $url;
         $this->callbacks = $callbacks;
