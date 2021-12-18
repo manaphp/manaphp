@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Helper;
 
@@ -9,39 +10,19 @@ use ManaPHP\AliasInterface;
 
 class LocalFS
 {
-    /**
-     * @var \ManaPHP\AliasInterface
-     */
-    public static $alias;
+    public static AliasInterface $alias;
 
-    /**
-     * Determine if a file exists.
-     *
-     * @param string $file
-     *
-     * @return bool
-     */
-    public static function fileExists($file)
+    public static function fileExists(string $file): bool
     {
         return is_file(self::$alias->resolve($file));
     }
 
-    /**
-     * @param string $file
-     *
-     * @return int|false
-     */
-    public static function fileSize($file)
+    public static function fileSize(string $file): false|int
     {
         return @filesize(self::$alias->resolve($file));
     }
 
-    /**
-     * @param string $file
-     *
-     * @return void
-     */
-    public static function fileDelete($file)
+    public static function fileDelete(string $file): void
     {
         if (str_contains($file, '*')) {
             foreach (self::files($file) as $f) {
@@ -60,25 +41,14 @@ class LocalFS
         }
     }
 
-    /**
-     * @param string $dir
-     * @param int    $mode
-     *
-     * @return void
-     */
-    protected static function dirCreateInternal($dir, $mode = 0755)
+    protected static function dirCreateInternal(string $dir, int $mode = 0755): void
     {
         if (!is_dir($dir) && !@mkdir($dir, $mode, true) && !is_dir($dir)) {
             throw new CreateDirectoryFailedException($dir);
         }
     }
 
-    /**
-     * @param string $file
-     *
-     * @return string
-     */
-    public static function fileGet($file)
+    public static function fileGet(string $file): string
     {
         if (($r = @file_get_contents(self::$alias->resolve($file))) === false) {
             throw new FileNotFoundException($file);
@@ -87,13 +57,7 @@ class LocalFS
         return $r;
     }
 
-    /**
-     * @param string $file
-     * @param string $data
-     *
-     * @return void
-     */
-    public static function filePut($file, $data)
+    public static function filePut(string $file, string $data): void
     {
         $file = self::$alias->resolve($file);
 
@@ -104,13 +68,7 @@ class LocalFS
         }
     }
 
-    /**
-     * @param string $file
-     * @param string $data
-     *
-     * @return void
-     */
-    public static function fileAppend($file, $data)
+    public static function fileAppend(string $file, string $data): void
     {
         $file = self::$alias->resolve($file);
         self::dirCreateInternal(dirname($file));
@@ -121,14 +79,7 @@ class LocalFS
         }
     }
 
-    /**
-     * @param string $src
-     * @param string $dst
-     * @param bool   $overwrite
-     *
-     * @return void
-     */
-    public static function fileMove($src, $dst, $overwrite = false)
+    public static function fileMove(string $src, string $dst, bool $overwrite = false): void
     {
         $src = self::$alias->resolve($src);
         $dst = self::$alias->resolve($dst);
@@ -151,14 +102,7 @@ class LocalFS
         }
     }
 
-    /**
-     * @param string $src
-     * @param string $dst
-     * @param bool   $overwrite
-     *
-     * @return void
-     */
-    public static function fileCopy($src, $dst, $overwrite = false)
+    public static function fileCopy(string $src, string $dst, bool $overwrite = false): void
     {
         if (rtrim($dst, '\\/') !== $dst) {
             $dst .= basename($src);
@@ -177,22 +121,12 @@ class LocalFS
         }
     }
 
-    /**
-     * @param string $dir
-     *
-     * @return bool
-     */
-    public static function dirExists($dir)
+    public static function dirExists(string $dir): bool
     {
         return is_dir(self::$alias->resolve($dir));
     }
 
-    /**
-     * @param string $dir
-     *
-     * @return void
-     */
-    protected static function dirDeleteInternal($dir)
+    protected static function dirDeleteInternal(string $dir): void
     {
         foreach (scandir($dir, SCANDIR_SORT_NONE) as $item) {
             if ($item === '.' || $item === '..') {
@@ -218,12 +152,7 @@ class LocalFS
         }
     }
 
-    /**
-     * @param string $dir
-     *
-     * @return void
-     */
-    public static function dirDelete($dir)
+    public static function dirDelete(string $dir): void
     {
         $dir = self::$alias->resolve($dir);
 
@@ -234,38 +163,19 @@ class LocalFS
         self::dirDeleteInternal($dir);
     }
 
-    /**
-     * @param string $dir
-     * @param int    $mode
-     *
-     * @return void
-     */
-    public static function dirCreate($dir, $mode = 0755)
+    public static function dirCreate(string $dir, int $mode = 0755): void
     {
         self::dirCreateInternal(self::$alias->resolve($dir), $mode);
     }
 
-    /**
-     * @param string $dir
-     * @param int    $mode
-     *
-     * @return void
-     */
-    public static function dirReCreate($dir, $mode = 0755)
+    public static function dirReCreate(string $dir, int $mode = 0755): void
     {
         self::dirDelete($dir);
 
         self::dirCreate($dir, $mode);
     }
 
-    /**
-     * @param string $src
-     * @param string $dst
-     * @param bool   $overwrite
-     *
-     * @return void
-     */
-    public static function dirMove($src, $dst, $overwrite = false)
+    public static function dirMove(string $src, string $dst, bool $overwrite = false): void
     {
         $src = self::$alias->resolve($src);
         $dst = self::$alias->resolve($dst);
@@ -284,14 +194,7 @@ class LocalFS
         }
     }
 
-    /**
-     * @param string $src
-     * @param string $dst
-     * @param bool   $overwrite
-     *
-     * @return void
-     */
-    protected static function dirCopyInternal($src, $dst, $overwrite)
+    protected static function dirCopyInternal(string $src, string $dst, bool $overwrite): void
     {
         foreach (scandir($src, SCANDIR_SORT_NONE) as $item) {
             if ($item === '.' || $item === '..') {
@@ -316,14 +219,7 @@ class LocalFS
         }
     }
 
-    /**
-     * @param string $src
-     * @param string $dst
-     * @param bool   $overwrite
-     *
-     * @return void
-     */
-    public static function dirCopy($src, $dst, $overwrite = false)
+    public static function dirCopy(string $src, string $dst, bool $overwrite = false): void
     {
         $src = self::$alias->resolve($src);
         $dst = self::$alias->resolve($dst);
@@ -335,13 +231,7 @@ class LocalFS
         self::dirCopyInternal($src, $dst, $overwrite);
     }
 
-    /**
-     * @param string $pattern
-     * @param int    $flags
-     *
-     * @return string[]
-     */
-    public static function glob($pattern, $flags = 0)
+    public static function glob(string $pattern, int $flags = 0): array
     {
         $pattern = self::$alias->resolve($pattern);
 
@@ -384,13 +274,7 @@ class LocalFS
         return $r;
     }
 
-    /**
-     * @param string $dir
-     * @param int    $sorting_order
-     *
-     * @return string[]
-     */
-    public static function scandir($dir, $sorting_order = SCANDIR_SORT_ASCENDING)
+    public static function scandir(string $dir, int $sorting_order = SCANDIR_SORT_ASCENDING): array
     {
         $r = @scandir(self::$alias->resolve($dir), $sorting_order);
         if ($r === false) {
@@ -408,12 +292,7 @@ class LocalFS
         return $items;
     }
 
-    /**
-     * @param string $dir
-     *
-     * @return array
-     */
-    public static function files($dir)
+    public static function files(string $dir): array
     {
         $dir = self::$alias->resolve($dir);
 
@@ -427,33 +306,17 @@ class LocalFS
         return $files;
     }
 
-    /**
-     * @param string $dir
-     *
-     * @return array
-     */
-    public static function directories($dir)
+    public static function directories(string $dir): array
     {
         return self::glob($dir . (str_contains($dir, '*') ? '' : '/*'), GLOB_ONLYDIR);
     }
 
-    /**
-     * @param string $path
-     *
-     * @return int|false
-     */
-    public static function getModifiedTime($path)
+    public static function getModifiedTime(string $path): false|int
     {
         return filemtime(self::$alias->resolve($path));
     }
 
-    /**
-     * @param string $file
-     * @param int    $mode
-     *
-     * @return void
-     */
-    public static function chmod($file, $mode)
+    public static function chmod(string $file, int $mode): void
     {
         if (!chmod(self::$alias->resolve($file), $mode)) {
             $error = error_get_last()['message'] ?? '';
