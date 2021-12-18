@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Helper;
 
@@ -21,7 +22,7 @@ class Uuid
      *v
      * @return string
      */
-    public static function v4()
+    public static function v4(): string
     {
         $bytes = unpack('N1a/n1b/n1c/n1d/n1e/N1f', random_bytes(16));
         return sprintf(
@@ -31,12 +32,7 @@ class Uuid
         );
     }
 
-    /**
-     * @param int $n
-     *
-     * @return string
-     */
-    public static function encode_int32($n)
+    public static function encode_int32(int $n): string
     {
         $bytes = unpack('n1a/n1g/n1b/n1c/n1d/n1e/N1f', random_bytes(16));
         $bytes['b'] = (~$bytes['a'] ^ ($n >> 16)) & 0xFFFF;
@@ -48,12 +44,7 @@ class Uuid
         );
     }
 
-    /**
-     * @param string $uuid
-     *
-     * @return int
-     */
-    public static function decode_int32($uuid)
+    public static function decode_int32(string $uuid): int
     {
         $xd = '[\da-fA-F]';
         if (!preg_match("#($xd{4})($xd{4})-($xd{4})-($xd{4})-($xd{4})-($xd{12})#", $uuid, $match)) {
