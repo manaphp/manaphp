@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Helper;
 
@@ -7,12 +8,7 @@ use ManaPHP\Helper\Sharding\ShardingTooManyException;
 
 class Sharding
 {
-    /**
-     * @param string $divisor
-     *
-     * @return array
-     */
-    public static function divisorToFD($divisor)
+    public static function divisorToFD(string $divisor): array
     {
         if ($divisor[0] === '0') {
             $divisor = substr($divisor, 1);
@@ -22,12 +18,7 @@ class Sharding
         }
     }
 
-    /**
-     * @param string $str
-     *
-     * @return array
-     */
-    public static function explode($str)
+    public static function explode(string $str): array
     {
         if (str_contains($str, ',')) {
             return preg_split('#[\s,]+#', $str, -1, PREG_SPLIT_NO_EMPTY);
@@ -52,13 +43,7 @@ class Sharding
         }
     }
 
-    /**
-     * @param string $strategy
-     * @param array  $context
-     *
-     * @return array
-     */
-    public static function modulo($strategy, $context)
+    public static function modulo(string $strategy, array $context): array
     {
         if (preg_match('#^([\w.]+):(\w+)%(\d+)$#', $strategy, $match) !== 1) {
             throw new MisuseException($strategy);
@@ -81,13 +66,7 @@ class Sharding
         return $r;
     }
 
-    /**
-     * @param string $db
-     * @param string $table
-     *
-     * @return array
-     */
-    public static function all($db, $table)
+    public static function all(string $db, string $table): array
     {
         $dbs = self::explode($db);
         $tables = self::explode($table);
@@ -95,14 +74,7 @@ class Sharding
         return array_fill_keys($dbs, $tables);
     }
 
-    /**
-     * @param string $db
-     * @param string $table
-     * @param mixed  $context
-     *
-     * @return array
-     */
-    public static function multiple($db, $table, $context)
+    public static function multiple(string $db, string $table, mixed $context): array
     {
         if ($context === null || $context === []) {
             return self::all($db, $table);
@@ -176,14 +148,7 @@ class Sharding
         return $tables ? array_fill_keys($dbs, $tables) : [];
     }
 
-    /**
-     * @param string $db
-     * @param string $source
-     * @param mixed  $context
-     *
-     * @return array
-     */
-    public static function unique($db, $source, $context)
+    public static function unique(string $db, string $source, mixed $context): array
     {
         $shards = self::multiple($db, $source, $context);
         if (count($shards) !== 1) {
