@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
@@ -17,51 +18,16 @@ use ManaPHP\Http\Captcha\InvalidCaptchaException;
  */
 class Captcha extends Component implements CaptchaInterface
 {
-    /**
-     * @var string
-     */
-    protected /** @noinspection SpellCheckingInspection */
-        $charset = '23456789abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY';
+    protected string $charset = '23456789abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY';
+    protected array $fonts = [];
+    protected string $sessionVar = 'captcha';
+    protected int $angleAmplitude = 30;
+    protected int $noiseCharCount = 1;
+    protected string $bgRGB = '255,255,255';
+    protected int $length = 4;
+    protected int $minInterval = 1;
 
-    /**
-     * @var array
-     */
-    protected $fonts = [];
-
-    /**
-     * @var string
-     */
-    protected $sessionVar = 'captcha';
-
-    /**
-     * @var int
-     */
-    protected $angleAmplitude = 30;
-
-    /**
-     * @var int
-     */
-    protected $noiseCharCount = 1;
-
-    /**
-     * @var string
-     */
-    protected $bgRGB = '255,255,255';
-
-    /**
-     * @var int
-     */
-    protected $length = 4;
-
-    /**
-     * @var int
-     */
-    protected $minInterval = 1;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['charset'])) {
             $this->charset = $options['charset'];
@@ -85,36 +51,19 @@ class Captcha extends Component implements CaptchaInterface
         }
     }
 
-    /**
-     * @param int $count
-     *
-     * @return static
-     */
-    public function setNoiseCharCount($count)
+    public function setNoiseCharCount(int $count): static
     {
         $this->noiseCharCount = $count;
 
         return $this;
     }
 
-    /**
-     * @param float $a
-     *
-     * @return float
-     */
-    protected function rand_amplitude($a)
+    protected function rand_amplitude(float $a): float
     {
         return random_int((1 - $a) * 10000, (1 + $a) * 10000) / 10000;
     }
 
-    /**
-     * @param string $code
-     * @param int    $width
-     * @param int    $height
-     *
-     * @return \ManaPHP\Http\ResponseInterface
-     */
-    protected function generateByGd($code, $width, $height)
+    protected function generateByGd(string $code, int $width, int $height): ResponseInterface
     {
         $image = imagecreatetruecolor($width, $height);
 
@@ -128,12 +77,12 @@ class Captcha extends Component implements CaptchaInterface
         $referenceFontSize = min($height, $width / $this->length);
 
         $x = 0;
-        $points[2] = random_int($referenceFontSize * 0.1, $referenceFontSize * 0.3);
+        $points[2] = random_int((int)($referenceFontSize * 0.1), (int)($referenceFontSize * 0.3));
         $length = strlen($code);
         for ($i = 0; $i < $length; $i++) {
             $fontSize = $referenceFontSize * random_int(800, 1000) / 1000;
             $angle = random_int(-$this->angleAmplitude, $this->angleAmplitude);
-            $x += ($points[2] - $x) - round(random_int($fontSize * 0.1, $fontSize * 0.2));
+            $x += ($points[2] - $x) - round(random_int((int)($fontSize * 0.1), (int)($fontSize * 0.2)));
             $y = $height - (($height - $referenceFontSize) * random_int(0, 1000) / 1000);
             $fgColor = imagecolorallocate($image, random_int(0, 240), random_int(0, 240), random_int(0, 240));
 
@@ -146,8 +95,8 @@ class Captcha extends Component implements CaptchaInterface
                     $image,
                     $fontSize * 0.4 * $this->rand_amplitude(0.1),
                     random_int(-40, 40),
-                    round($x + random_int(-$fontSize * 1.5, $fontSize)),
-                    $height / 2 + random_int(-$fontSize * 0.5, $fontSize * 0.5),
+                    round($x + random_int((int)(-$fontSize * 1.5), $fontSize)),
+                    $height / 2 + random_int((int)(-$fontSize * 0.5), (int)($fontSize * 0.5)),
                     $fgColor, $fontFile, $letter
                 );
             }
@@ -163,14 +112,7 @@ class Captcha extends Component implements CaptchaInterface
         return $this->response;
     }
 
-    /**
-     * @param string $code
-     * @param int    $width
-     * @param int    $height
-     *
-     * @return \ManaPHP\Http\ResponseInterface
-     */
-    protected function generateByImagic($code, $width, $height)
+    protected function generateByImagic(string $code, int $width, int $height): ResponseInterface
     {
         $image = new Imagick();
         $draw = new ImagickDraw();
@@ -180,7 +122,7 @@ class Captcha extends Component implements CaptchaInterface
 
         $referenceFontSize = min($height, $width / $this->length);
 
-        $x = random_int($referenceFontSize * 0.1, $referenceFontSize * 0.3);
+        $x = random_int((int)($referenceFontSize * 0.1), (int)($referenceFontSize * 0.3));
         $length = strlen($code);
         $fgPixel = new ImagickPixel();
         for ($i = 0; $i < $length; $i++) {
@@ -203,7 +145,7 @@ class Captcha extends Component implements CaptchaInterface
                 $draw->setFontSize($fontSize * 0.4 * $this->rand_amplitude(0.1));
                 $angle = random_int(-40, 40);
                 $noise_x = $x + random_int(-700, 700) / 1000 * $fontSize;
-                $noise_y = $fontSize / 2 + random_int(-$fontSize * 0.5, $fontSize * 0.5);
+                $noise_y = $fontSize / 2 + random_int((int)(-$fontSize * 0.5), (int)($fontSize * 0.5));
                 $image->annotateImage($draw, $noise_x, $noise_y, $angle, $letter);
             }
         }
@@ -218,14 +160,7 @@ class Captcha extends Component implements CaptchaInterface
         return $this->response;
     }
 
-    /**
-     * @param int $width
-     * @param int $height
-     * @param int $ttl
-     *
-     * @return \ManaPHP\Http\ResponseInterface
-     */
-    public function generate($width = 100, $height = 30, $ttl = 300)
+    public function generate(int $width = 100, int $height = 30, int $ttl = 300): ResponseInterface
     {
         $code = '';
         $charsetCount = strlen($this->charset);
@@ -246,14 +181,7 @@ class Captcha extends Component implements CaptchaInterface
         return $response;
     }
 
-    /**
-     * @param string $code
-     * @param bool   $isTry
-     *
-     * @return void
-     * @throws \ManaPHP\Http\Captcha\InvalidCaptchaException
-     */
-    public function verify($code = null, $isTry = false)
+    public function verify(?string $code = null, bool $isTry = false): void
     {
         if ($code === null) {
             $code = $this->request->get('code');

@@ -1,24 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
 interface CaptchaInterface
 {
-    /**
-     * @param int $width
-     * @param int $height
-     * @param int $ttl
-     *
-     * @return \ManaPHP\Http\ResponseInterface
-     */
-    public function generate($width = 100, $height = 30, $ttl = 300);
+    public function generate(int $width = 100, int $height = 30, int $ttl = 300): ResponseInterface;
 
-    /**
-     * @param string $code
-     * @param bool   $isTry
-     *
-     * @return void
-     * @throws \ManaPHP\Http\Captcha\InvalidCaptchaException
-     */
-    public function verify($code = null, $isTry = false);
+    public function verify(?string $code = null, bool $isTry = false): void;
 }
