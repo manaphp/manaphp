@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Request;
 
@@ -11,55 +12,29 @@ use ManaPHP\Http\Request\File\Exception as FileException;
  */
 class File extends Component implements FileInterface
 {
-    /**
-     * @var array
-     */
-    protected $file;
+    protected array $file;
 
-    /**
-     * @param array $file
-     */
-    public function __construct($file)
+    public function __construct(array $file)
     {
         $this->file = $file;
     }
 
-    /**
-     * Returns the file size of the uploaded file
-     *
-     * @return int
-     */
-    public function getSize()
+    public function getSize(): int
     {
         return $this->file['size'];
     }
 
-    /**
-     * Returns the real name of the uploaded file
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->file['name'];
     }
 
-    /**
-     * Returns the temporary name of the uploaded file
-     *
-     * @return string
-     */
-    public function getTempName()
+    public function getTempName(): string
     {
         return $this->file['tmp_name'];
     }
 
-    /**
-     * @param bool $real
-     *
-     * @return string
-     */
-    public function getType($real = true)
+    public function getType(bool $real = true): string
     {
         if ($real) {
             return mime_content_type($this->file['tmp_name']) ?: '';
@@ -68,49 +43,24 @@ class File extends Component implements FileInterface
         }
     }
 
-    /**
-     * Returns the error code
-     *
-     * @return string
-     */
-    public function getError()
+    public function getError(): string
     {
         return $this->file['error'];
     }
 
-    /**
-     * Returns the file key
-     *
-     * @return string
-     */
-    public function getKey()
+    public function getKey(): string
     {
         return $this->file['key'];
     }
 
-    /**
-     * Checks whether the file has been uploaded via Post.
-     *
-     * @return bool
-     */
-    public function isUploadedFile()
+    public function isUploadedFile(): bool
     {
         return is_uploaded_file($this->file['tmp_name']);
     }
 
-    /**
-     * Moves the temporary file to a destination within the application
-     *
-     * @param string $dst
-     * @param string $allowedExtensions
-     * @param bool   $overwrite
-     *
-     * @return void
-     * @throws \ManaPHP\Http\Request\File\Exception
-     *
-     */
-    public function moveTo($dst, $allowedExtensions = 'jpg,jpeg,png,gif,doc,xls,pdf,zip', $overwrite = false)
-    {
+    public function moveTo(string $dst, string $allowedExtensions = 'jpg,jpeg,png,gif,doc,xls,pdf,zip',
+        bool $overwrite = false
+    ): void {
         if ($allowedExtensions !== '*') {
             $extension = pathinfo($dst, PATHINFO_EXTENSION);
             if (!$extension || preg_match("#\b$extension\b#", $allowedExtensions) !== 1) {
@@ -147,21 +97,13 @@ class File extends Component implements FileInterface
         }
     }
 
-    /**
-     * Returns the file extension
-     *
-     * @return string
-     */
-    public function getExtension()
+    public function getExtension(): string
     {
         $name = $this->file['name'];
         return ($extension = pathinfo($name, PATHINFO_EXTENSION)) === $name ? '' : $extension;
     }
 
-    /**
-     * @return void
-     */
-    public function delete()
+    public function delete(): void
     {
         @unlink($this->file['tmp_name']);
     }

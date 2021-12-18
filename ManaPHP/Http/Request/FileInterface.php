@@ -1,63 +1,25 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Request;
 
 interface FileInterface
 {
+    public function getKey(): string;
 
-    /**
-     * Returns the file key
-     *
-     * @return string
-     */
-    public function getKey();
+    public function getSize(): int;
 
-    /**
-     * Returns the file size of the uploaded file
-     *
-     * @return int
-     */
-    public function getSize();
+    public function getName(): string;
 
-    /**
-     * Returns the real name of the uploaded file
-     *
-     * @return string
-     */
-    public function getName();
+    public function getTempName(): string;
 
-    /**
-     * Returns the temporal name of the uploaded file
-     *
-     * @return string
-     */
-    public function getTempName();
+    public function getType(bool $real = true): string;
 
-    /**
-     * @param bool $real
-     *
-     * @return string
-     */
-    public function getType($real = true);
+    public function moveTo(string $dst, string $allowedExtensions = 'jpg,jpeg,png,gif,doc,xls,pdf,zip',
+        bool $overwrite = false
+    ): void;
 
-    /**
-     * Move the temporary file to a destination
-     *
-     * @param string $dst
-     * @param string $allowedExtensions
-     * @param bool   $overwrite
-     */
-    public function moveTo($dst, $allowedExtensions = 'jpg,jpeg,png,gif,doc,xls,pdf,zip', $overwrite = false);
+    public function getExtension(): string;
 
-    /**
-     * Returns the file extension
-     *
-     * @return string
-     */
-    public function getExtension();
-
-    /**
-     * @return void
-     */
-    public function delete();
+    public function delete(): void;
 }
