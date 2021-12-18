@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
@@ -6,38 +7,11 @@ use ManaPHP\Coroutine\Context\Stickyable;
 
 class GlobalsContext implements Stickyable
 {
-    /**
-     * @var array
-     */
-    public $_GET = [];
-
-    /**
-     * @var array
-     */
-    public $_POST = [];
-
-    /**
-     * @var array
-     */
-    public $_REQUEST = [];
-
-    /**
-     * @var array
-     */
-    public $_SERVER = [];
-
-    /**
-     * @var array
-     */
-    public $_COOKIE = [];
-
-    /**
-     * @var array
-     */
-    public $_FILES = [];
-
-    /**
-     * @var string
-     */
-    public $rawBody;
+    public array $_GET = [];
+    public array $_POST = [];
+    public array $_REQUEST = [];
+    public array $_SERVER = [];
+    public array $_COOKIE = [];
+    public array $_FILES = [];
+    public ?string $rawBody;
 }

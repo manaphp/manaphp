@@ -1,71 +1,29 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
 interface GlobalsInterface
 {
-    /**
-     * @param array  $GET
-     * @param array  $POST
-     * @param array  $SERVER
-     * @param string $RAW_BODY
-     * @param array  $COOKIE
-     * @param array  $FILES
-     *
-     * @return void
-     */
-    public function prepare($GET, $POST, $SERVER, $RAW_BODY = null, $COOKIE = [], $FILES = []);
+    public function prepare(array $GET, array $POST, array $SERVER, ?string $RAW_BODY = null, array $COOKIE = [],
+        array $FILES = []
+    ): void;
 
-    /**
-     * @return \ManaPHP\Http\GlobalsContext
-     */
-    public function get();
+    public function get(): GlobalsContext;
 
-    /**
-     * @return array
-     */
-    public function getServer();
+    public function getServer(): array;
 
-    /**
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return static
-     */
-    public function setServer($name, $value);
+    public function setServer(string $name, mixed $value): static;
 
-    /**
-     * @return array
-     */
-    public function getFiles();
+    public function getFiles(): array;
 
-    /**
-     * @return array
-     */
-    public function getRequest();
+    public function getRequest(): array;
 
-    /**
-     * @return string
-     */
-    public function getRawBody();
+    public function getRawBody(): ?string;
 
-    /**
-     * @return array
-     */
-    public function getCookie();
+    public function getCookie(): array;
 
-    /**
-     * @param string $name
-     *
-     * @return static
-     */
-    public function unsetCookie($name);
+    public function unsetCookie(string $name): static;
 
-    /**
-     * @param string $name
-     * @param string $value
-     *
-     * @return static
-     */
-    public function setCookie($name, $value);
+    public function setCookie(string $name, string $value): static;
 }

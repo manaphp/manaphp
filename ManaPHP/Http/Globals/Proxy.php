@@ -1,33 +1,24 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http\Globals;
 
 use ArrayAccess;
 use JsonSerializable;
+use ManaPHP\Http\GlobalsInterface;
 
 class Proxy implements ArrayAccess, JsonSerializable
 {
-    /**
-     * @var \ManaPHP\Http\GlobalsInterface
-     */
-    protected $globals;
+    protected GlobalsInterface $globals;
+    protected string $type;
 
-    /**
-     * @var string
-     */
-    protected $type;
-
-    /**
-     * @param \ManaPHP\Http\GlobalsInterface $globals
-     * @param string                         $type
-     */
-    public function __construct($globals, $type)
+    public function __construct(GlobalsInterface $globals, string $type)
     {
         $this->globals = $globals;
         $this->type = $type;
     }
 
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         $context = $this->globals->get();
         $type = $this->type;
@@ -36,7 +27,7 @@ class Proxy implements ArrayAccess, JsonSerializable
         return isset($global[$offset]);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         $context = $this->globals->get();
         $type = $this->type;
@@ -45,7 +36,7 @@ class Proxy implements ArrayAccess, JsonSerializable
         return $global[$offset] ?? null;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $context = $this->globals->get();
         $type = $this->type;
@@ -54,7 +45,7 @@ class Proxy implements ArrayAccess, JsonSerializable
         $global[$offset] = $value;
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         $context = $this->globals->get();
         $type = $this->type;
@@ -63,7 +54,7 @@ class Proxy implements ArrayAccess, JsonSerializable
         unset($global[$offset]);
     }
 
-    public function __debugInfo()
+    public function __debugInfo(): array
     {
         $context = $this->globals->get();
         $type = $this->type;
@@ -71,7 +62,7 @@ class Proxy implements ArrayAccess, JsonSerializable
         return $context->$type;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $context = $this->globals->get();
         $type = $this->type;

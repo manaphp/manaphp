@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
@@ -10,15 +11,9 @@ use ManaPHP\Http\Globals\Proxy;
  */
 class Globals extends Component implements GlobalsInterface
 {
-    /**
-     * @var bool
-     */
-    protected $proxy = false;
+    protected bool $proxy = false;
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['proxy'])) {
             $this->proxy = $options['proxy'];
@@ -34,18 +29,9 @@ class Globals extends Component implements GlobalsInterface
         }
     }
 
-    /**
-     * @param array  $GET
-     * @param array  $POST
-     * @param array  $SERVER
-     * @param string $RAW_BODY
-     * @param array  $COOKIE
-     * @param array  $FILES
-     *
-     * @return void
-     */
-    public function prepare($GET, $POST, $SERVER, $RAW_BODY = null, $COOKIE = [], $FILES = [])
-    {
+    public function prepare(array $GET, array $POST, array $SERVER, ?string $RAW_BODY = null, array $COOKIE = [],
+        array $FILES = []
+    ): void {
         $context = $this->context;
 
         if (!$POST
@@ -73,86 +59,51 @@ class Globals extends Component implements GlobalsInterface
         $context->_FILES = $FILES;
     }
 
-    /**
-     * @return \ManaPHP\Http\GlobalsContext
-     */
-    public function get()
+    public function get(): GlobalsContext
     {
         return $this->context;
     }
 
-    /**
-     * @return array
-     */
-    public function getServer()
+    public function getServer(): array
     {
         return $this->context->_SERVER;
     }
 
-    /**
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return static
-     */
-    public function setServer($name, $value)
+    public function setServer(string $name, mixed $value): static
     {
         $this->context->_SERVER[$name] = $value;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getFiles()
+    public function getFiles(): array
     {
         return $this->context->_FILES;
     }
 
-    /**
-     * @return array
-     */
-    public function getRequest()
+    public function getRequest(): array
     {
         return $this->context->_REQUEST;
     }
 
-    /**
-     * @return string
-     */
-    public function getRawBody()
+    public function getRawBody(): ?string
     {
         return $this->context->rawBody;
     }
 
-    /**
-     * @return array
-     */
-    public function getCookie()
+    public function getCookie(): array
     {
         return $this->context->_COOKIE;
     }
 
-    /**
-     * @param string $name
-     * @param string $value
-     *
-     * @return static
-     */
-    public function setCookie($name, $value)
+    public function setCookie(string $name, string $value): static
     {
         $this->context->_COOKIE[$name] = $value;
 
         return $this;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return static
-     */
-    public function unsetCookie($name)
+    public function unsetCookie(string $name): static
     {
         unset($this->context->_COOKIE[$name]);
 
