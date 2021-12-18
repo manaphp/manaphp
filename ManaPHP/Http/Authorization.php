@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
@@ -19,14 +20,7 @@ use ManaPHP\Identifying\Identity\NoCredentialException;
  */
 class Authorization extends Component implements AuthorizationInterface
 {
-    /**
-     * @param array  $acl
-     * @param string $role
-     * @param string $action
-     *
-     * @return bool
-     */
-    public function isAclAllowed($acl, $role, $action)
+    public function isAclAllowed(array $acl, string $role, string $action): bool
     {
         if (($roles = $acl[$action] ?? null) && $roles[0] === '@') {
             $original_action = substr($roles, 1);
@@ -49,12 +43,7 @@ class Authorization extends Component implements AuthorizationInterface
         }
     }
 
-    /**
-     * @param string $permission
-     *
-     * @return string[]
-     */
-    public function inferControllerAction($permission)
+    public function inferControllerAction(string $permission): array
     {
         $area = null;
         if ($permission[0] === '/') {
@@ -107,7 +96,7 @@ class Authorization extends Component implements AuthorizationInterface
      *
      * @return string
      */
-    public function generatePath($controllerClassName, $action)
+    public function generatePath(string $controllerClassName, string $action): string
     {
         $controllerClassName = str_replace('\\', '/', $controllerClassName);
         $action = Str::snakelize($action);
@@ -138,13 +127,7 @@ class Authorization extends Component implements AuthorizationInterface
         }
     }
 
-    /**
-     * @param string $role
-     * @param array  $explicit_permissions
-     *
-     * @return string[]
-     */
-    public function buildAllowed($role, $explicit_permissions = [])
+    public function buildAllowed(string $role, array $explicit_permissions = []): array
     {
         $paths = [];
 
@@ -197,12 +180,7 @@ class Authorization extends Component implements AuthorizationInterface
         return $paths;
     }
 
-    /**
-     * @param string $role
-     *
-     * @return string
-     */
-    public function getAllowed($role)
+    public function getAllowed(string $role): string
     {
         static $builtin;
 
@@ -242,15 +220,7 @@ class Authorization extends Component implements AuthorizationInterface
         }
     }
 
-    /**
-     * Check whether a user is allowed to access a permission
-     *
-     * @param string $permission
-     * @param string $role
-     *
-     * @return bool
-     */
-    public function isAllowed($permission = null, $role = null)
+    public function isAllowed(?string $permission = null, ?string $role = null): bool
     {
         $role = $role ?: $this->identity->getRole();
         if ($role === 'admin') {
@@ -308,12 +278,7 @@ class Authorization extends Component implements AuthorizationInterface
         return false;
     }
 
-    /**
-     * @return void
-     * @throws \ManaPHP\Exception\ForbiddenException
-     * @throws \ManaPHP\Identifying\Identity\NoCredentialException
-     */
-    public function authorize()
+    public function authorize(): void
     {
         if ($this->isAllowed()) {
             return;

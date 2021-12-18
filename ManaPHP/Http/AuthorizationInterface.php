@@ -1,37 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
 interface AuthorizationInterface
 {
-    /**
-     * @param string $role
-     * @param array  $explicit_permissions
-     *
-     * @return array
-     */
-    public function buildAllowed($role, $explicit_permissions = []);
+    public function buildAllowed(string $role, array $explicit_permissions = []): array;
 
-    /**
-     * @param string $role
-     *
-     * @return string
-     */
-    public function getAllowed($role);
+    public function getAllowed(string $role): string;
 
-    /**
-     * Check whether a user is allowed to access a permission
-     *
-     * @param string $permission
-     * @param string $role
-     *
-     * @return bool
-     */
-    public function isAllowed($permission = null, $role = null);
+    public function isAllowed(?string $permission = null, ?string $role = null): bool;
 
-    /**
-     * @throws \ManaPHP\Identifying\Identity\NoCredentialException
-     * @throws \ManaPHP\Exception\ForbiddenException
-     */
-    public function authorize();
+    public function authorize(): void;
 }
