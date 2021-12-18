@@ -1,14 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Html\Renderer;
 
 interface AssetBundleInterface
 {
-    /**
-     * @param array  $files
-     * @param string $name
-     *
-     * @return string
-     */
-    public function bundle($files, $name = 'app');
+    public function bundle(array $files, string $name = 'app'): string;
 }

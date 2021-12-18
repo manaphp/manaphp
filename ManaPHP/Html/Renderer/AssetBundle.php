@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Html\Renderer;
 
@@ -12,28 +13,16 @@ use ManaPHP\Helper\LocalFS;
  */
 class AssetBundle extends Component implements AssetBundleInterface
 {
-    /**
-     * @var int
-     */
-    protected $length = 12;
+    protected int $length = 12;
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['length'])) {
-            $this->length = $options['length'];
+            $this->length = (int)$options['length'];
         }
     }
 
-    /**
-     * @param string $file
-     * @param string $content
-     *
-     * @return string
-     */
-    protected function replaceCssUrl($file, $content)
+    protected function replaceCssUrl(string $file, string $content): string
     {
         $path = dirname(substr($this->alias->resolve($file), strlen($this->alias->get('@public'))));
 
@@ -57,13 +46,7 @@ class AssetBundle extends Component implements AssetBundleInterface
         );
     }
 
-    /**
-     * @param array  $files
-     * @param string $name
-     *
-     * @return string
-     */
-    public function bundle($files, $name = 'app')
+    public function bundle(array $files, string $name = 'app'): string
     {
         if (!$files) {
             return '';
