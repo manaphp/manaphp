@@ -1,11 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\I18n;
 
 class LocaleContext
 {
-    /**
-     * @var string
-     */
-    public $locale;
+    public string $locale;
 }

@@ -1,18 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\I18n;
 
 interface LocaleInterface
 {
-    /**
-     * @return string
-     */
-    public function get();
+    public function get(): string;
 
-    /**
-     * @param string $locale
-     *
-     * @return static
-     */
-    public function set($locale);
+    public function set(string $locale): static;
 }

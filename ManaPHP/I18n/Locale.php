@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\I18n;
 
@@ -9,15 +10,9 @@ use ManaPHP\Component;
  */
 class Locale extends Component implements LocaleInterface
 {
-    /**
-     * @var string
-     */
-    protected $default = 'en';
+    protected string $default = 'en';
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['default'])) {
             $this->default = $options['default'];
@@ -34,20 +29,12 @@ class Locale extends Component implements LocaleInterface
         return $context;
     }
 
-    /**
-     * @return string
-     */
-    public function get()
+    public function get(): string
     {
         return $this->context->locale;
     }
 
-    /**
-     * @param string $locale
-     *
-     * @return static
-     */
-    public function set($locale)
+    public function set(string $locale): static
     {
         $this->context->locale = $locale;
 
