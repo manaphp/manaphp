@@ -1,17 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Helper;
 
 class Ip
 {
-    /**
-     * @param string|array $haystack
-     * @param string       $needle
-     * @param bool         $cidr_only
-     *
-     * @return bool
-     */
-    public static function contains($haystack, $needle, $cidr_only = false)
+    public static function contains(string|array $haystack, string $needle, bool $cidr_only = false): bool
     {
         if (is_string($haystack)) {
             if ($needle === $haystack || $haystack === '*') {
@@ -72,10 +66,7 @@ class Ip
         return false;
     }
 
-    /**
-     * @return string
-     */
-    public static function local()
+    public static function local(): string
     {
         if (function_exists('swoole_get_local_ip')) {
             $ips = swoole_get_local_ip();
