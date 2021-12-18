@@ -22,11 +22,6 @@ class Db extends AbstractLogger
         }
     }
 
-    /**
-     * @param \ManaPHP\Logging\Logger\Log[] $logs
-     *
-     * @return void
-     */
     public function append(array $logs): void
     {
         $context = $this->context;

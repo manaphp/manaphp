@@ -84,12 +84,12 @@ class Syslog extends AbstractLogger
         foreach ($logs as $log) {
             $severity = $map[$log->level];
             $priority = $this->facility * 8 + $severity;
-            $timestamp = date('M d H:i:s', $log->timestamp);
+            $timestamp = date('M d H:i:s', (int)$log->timestamp);
 
             $replaced = [];
 
             $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
-            $replaced[':date'] = date('Y-m-d\TH:i:s', $log->timestamp) . $ms;
+            $replaced[':date'] = date('Y-m-d\TH:i:s', (int)$log->timestamp) . $ms;
             $replaced[':client_ip'] = $log->client_ip ?: '-';
             $replaced[':request_id'] = $log->request_id ?: '-';
             $replaced[':request_id16'] = $log->request_id ? substr($log->request_id, 0, 16) : '-';

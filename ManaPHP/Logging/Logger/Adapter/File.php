@@ -53,6 +53,11 @@ class File extends AbstractLogger
         return strtr($this->format, $replaced);
     }
 
+    /**
+     * @param string $str
+     *
+     * @return void
+     */
     protected function write(string $str): void
     {
         $file = $this->alias->resolve($this->file);

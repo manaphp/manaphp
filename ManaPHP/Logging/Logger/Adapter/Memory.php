@@ -10,11 +10,6 @@ use ManaPHP\Logging\AbstractLogger;
  */
 class Memory extends AbstractLogger
 {
-    /**
-     * @param \ManaPHP\Logging\Logger\Log[] $logs
-     *
-     * @return void
-     */
     public function append(array $logs): void
     {
         $context = $this->context;
@@ -22,9 +17,6 @@ class Memory extends AbstractLogger
         $context->logs = array_merge($context->logs, $logs);
     }
 
-    /**
-     * @return \ManaPHP\Logging\Logger\Log[]
-     */
     public function getLogs(): array
     {
         return $this->context->logs;
