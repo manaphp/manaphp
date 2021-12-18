@@ -1,14 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\I18n;
 
 interface TranslatorInterface
 {
-    /**
-     * @param string $template
-     * @param array  $placeholders
-     *
-     * @return string
-     */
-    public function translate($template, $placeholders = null);
+    public function translate(string $template, array $placeholders = []): string;
 }

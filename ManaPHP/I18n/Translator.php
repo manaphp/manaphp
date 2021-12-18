@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\I18n;
 
@@ -12,25 +13,11 @@ use ManaPHP\Helper\LocalFS;
  */
 class Translator extends Component implements TranslatorInterface
 {
-    /**
-     * @var string
-     */
-    protected $dir = '@resources/Translator';
+    protected string $dir = '@resources/Translator';
+    protected array $files = [];
+    protected array $templates = [];
 
-    /**
-     * @var array
-     */
-    protected $files = [];
-
-    /**
-     * @var array
-     */
-    protected $templates;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['dir'])) {
             $this->dir = $options['dir'];
@@ -41,13 +28,7 @@ class Translator extends Component implements TranslatorInterface
         }
     }
 
-    /**
-     * @param string $template
-     * @param array  $placeholders
-     *
-     * @return string
-     */
-    public function translate($template, $placeholders = null)
+    public function translate(string $template, array $placeholders = []): string
     {
         $locale = $this->locale->get();
 
