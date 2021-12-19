@@ -1,43 +1,17 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Validating;
 
+use ManaPHP\Data\ModelInterface;
+
 interface ValidatorInterface
 {
-    /**
-     * @param string $validate
-     * @param string $field
-     * @param mixed  $parameter
-     *
-     * @return string
-     */
-    public function createError($validate, $field, $parameter = null);
+    public function createError(string $validate, string $field, mixed $parameter = null): string;
 
-    /**
-     * @param string                             $field
-     * @param \ManaPHP\Data\ModelInterface|mixed $value
-     * @param array|string|\Closure              $rules
-     *
-     * @return mixed
-     */
-    public function validate($field, $value, $rules);
+    public function validate(string $field, mixed $value, mixed $rules): mixed;
 
-    /**
-     * @param string                       $field
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param array|string|\Closure        $rules
-     *
-     * @return mixed
-     * @throws \ManaPHP\Validating\Validator\ValidateFailedException
-     */
-    public function validateModel($field, $model, $rules);
+    public function validateModel(string $field, ModelInterface $model, mixed $rules): mixed;
 
-    /**
-     * @param string                $field
-     * @param mixed                 $value
-     * @param array|string|\Closure $rules
-     *
-     * @return mixed
-     */
-    public function validateValue($field, $value, $rules);
+    public function validateValue(string $field, mixed $value, mixed $rules): mixed;
 }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /** @noinspection PhpUnusedParameterInspection */
 
 namespace ManaPHP\Validating;
@@ -21,25 +22,11 @@ use ManaPHP\Validating\Validator\ValidateFailedException;
  */
 class Validator extends Component implements ValidatorInterface
 {
-    /**
-     * @var array
-     */
-    protected $dir = '@manaphp/Validating/Validator/Templates';
+    protected string $dir = '@manaphp/Validating/Validator/Templates';
+    protected array $files;
+    protected array $templates;
 
-    /**
-     * @var array
-     */
-    protected $files;
-
-    /**
-     * @var array
-     */
-    protected $templates;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['dir'])) {
             $this->dir = $options['dir'];
@@ -50,12 +37,7 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
-    /**
-     * @param string $validate
-     *
-     * @return string|callable
-     */
-    protected function getTemplate($validate)
+    protected function getTemplate(string $validate): string|callable
     {
         $locale = $this->locale->get();
 
@@ -68,15 +50,7 @@ class Validator extends Component implements ValidatorInterface
         return $templates[$validate] ?? $templates['default'];
     }
 
-    /**
-     * @param string                             $field
-     * @param \ManaPHP\Data\ModelInterface|mixed $value
-     * @param array|string|\Closure              $rules
-     *
-     * @return mixed
-     * @throws \ManaPHP\Validating\Validator\ValidateFailedException
-     */
-    public function validate($field, $value, $rules)
+    public function validate(string $field, mixed $value, mixed $rules): mixed
     {
         if ($value instanceof ModelInterface) {
             return $this->validateModel($field, $value, $rules);
@@ -85,14 +59,7 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
-    /**
-     * @param string $validate
-     * @param string $field
-     * @param mixed  $parameter
-     *
-     * @return string
-     */
-    public function createError($validate, $field, $parameter = null)
+    public function createError(string $validate, string $field, mixed $parameter = null): string
     {
         $template = $this->getTemplate($validate);
         $tr = [':field' => $field];
@@ -105,14 +72,7 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
-    /**
-     * @param string                       $field
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param array|string|\Closure        $rules
-     *
-     * @return mixed
-     */
-    public function validateModel($field, $model, $rules)
+    public function validateModel(string $field, ModelInterface $model, mixed $rules): mixed
     {
         $value = $model->$field;
 
@@ -179,15 +139,7 @@ class Validator extends Component implements ValidatorInterface
         return $model->$field = $value;
     }
 
-    /**
-     * @param string                $field
-     * @param mixed                 $value
-     * @param array|string|\Closure $rules
-     *
-     * @return mixed
-     * @throws \ManaPHP\Validating\Validator\ValidateFailedException
-     */
-    public function validateValue($field, $value, $rules)
+    public function validateValue(string $field, mixed $value, mixed $rules): mixed
     {
         if ($value === '' || $value === null) {
             if (is_array($rules)) {
@@ -255,35 +207,17 @@ class Validator extends Component implements ValidatorInterface
         return $value;
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return null|string
-     */
-    protected function validate_required($field, $value)
+    protected function validate_required(string $field, ?string $value): ?string
     {
         return $value !== null && $value !== '' ? $value : null;
     }
 
-    /**
-     * @param string $field
-     * @param mixed  $value
-     *
-     * @return mixed
-     */
-    protected function validate_default($field, $value)
+    protected function validate_default(string $field, mixed $value): mixed
     {
         return $value;
     }
 
-    /**
-     * @param string      $field
-     * @param string|bool $value
-     *
-     * @return bool|null
-     */
-    protected function validate_bool($field, $value)
+    protected function validate_bool(string $field, mixed $value): ?bool
     {
         if (is_bool($value)) {
             return $value;
@@ -298,24 +232,12 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
-    /**
-     * @param string      $field
-     * @param string|bool $value
-     *
-     * @return bool|null
-     */
-    protected function validate_boolean($field, $value)
+    protected function validate_boolean(string $field, mixed $value): ?bool
     {
         return $this->validate_bool($field, $value);
     }
 
-    /**
-     * @param string          $field
-     * @param string|int|null $value
-     *
-     * @return int|null
-     */
-    protected function validate_int($field, $value)
+    protected function validate_int(string $field, mixed $value): ?int
     {
         if (is_int($value)) {
             return $value;
@@ -324,24 +246,12 @@ class Validator extends Component implements ValidatorInterface
         return preg_match('#^[+\-]?\d+$#', $value) ? (int)$value : null;
     }
 
-    /**
-     * @param string          $field
-     * @param string|int|null $value
-     *
-     * @return int|null
-     */
-    protected function validate_integer($field, $value)
+    protected function validate_integer(string $field, mixed $value): ?int
     {
         return $this->validate_int($field, $value);
     }
 
-    /**
-     * @param string           $field
-     * @param string|float|int $value
-     *
-     * @return float|null
-     */
-    protected function validate_float($field, $value)
+    protected function validate_float(string $field, mixed $value): ?float
     {
         if (is_int($value) || is_float($value)) {
             return $value;
@@ -356,47 +266,22 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
-    /**
-     * @param string           $field
-     * @param string|float|int $value
-     *
-     * @return float|null
-     */
-    protected function validate_double($field, $value)
+    protected function validate_double(string $field, mixed $value): ?float
     {
         return $this->validate_float($field, $value);
     }
 
-    /**
-     * @param string $field
-     * @param mixed  $value
-     *
-     * @return string
-     */
-    protected function validate_string($field, $value)
+    protected function validate_string(string $field, mixed $value): string
     {
         return (string)$value;
     }
 
-    /**
-     * @param string $field
-     * @param mixed  $value
-     *
-     * @return array
-     */
-    protected function validate_array($field, $value)
+    protected function validate_array(string $field, mixed $value): array
     {
         return is_string($value) ? preg_split('#,#', $value, -1, PREG_SPLIT_NO_EMPTY) : (array)$value;
     }
 
-    /**
-     * @param string $field
-     * @param mixed  $value
-     * @param mixed  $parameter
-     *
-     * @return int|float
-     */
-    protected function normalizeNumber($field, $value, $parameter)
+    protected function normalizeNumber(string $field, mixed $value, mixed $parameter): int|float
     {
         if (!is_int($value) && !is_float($value)) {
             if (str_contains($parameter, '.')) {
@@ -413,42 +298,21 @@ class Validator extends Component implements ValidatorInterface
         return $value;
     }
 
-    /**
-     * @param string         $field
-     * @param int|float|null $value
-     * @param int|float      $parameter
-     *
-     * @return int|float|null
-     */
-    protected function validate_min($field, $value, $parameter)
+    protected function validate_min(string $field, mixed $value, mixed $parameter): mixed
     {
         $number = $this->normalizeNumber($field, $value, $parameter);
 
         return $number < $parameter ? null : $number;
     }
 
-    /**
-     * @param string         $field
-     * @param int|float|null $value
-     * @param int|float      $parameter
-     *
-     * @return int|float|null
-     */
-    protected function validate_max($field, $value, $parameter)
+    protected function validate_max(string $field, mixed $value, mixed $parameter): mixed
     {
         $number = $this->normalizeNumber($field, $value, $parameter);
 
         return $number > $parameter ? null : $number;
     }
 
-    /**
-     * @param string    $field
-     * @param int|float $value
-     * @param string    $parameter
-     *
-     * @return int|float|null
-     */
-    protected function validate_length($field, $value, $parameter)
+    protected function validate_length(string $field, string $value, string $parameter): ?string
     {
         $len = mb_strlen($value);
         if (preg_match('#^(\d+)-(\d+)$#', $parameter, $match)) {
@@ -460,38 +324,17 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     * @param int    $parameter
-     *
-     * @return string|null
-     */
-    protected function validate_minLength($field, $value, $parameter)
+    protected function validate_minLength(string $field, string $value, int $parameter): ?string
     {
         return mb_strlen($value) >= $parameter ? $value : null;
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     * @param string $parameter
-     *
-     * @return string|null
-     */
-    protected function validate_maxLength($field, $value, $parameter)
+    protected function validate_maxLength(string $field, string $value, string $parameter): ?string
     {
         return mb_strlen($value) <= $parameter ? $value : null;
     }
 
-    /**
-     * @param string         $field
-     * @param int|float|null $value
-     * @param string         $parameter
-     *
-     * @return int|float|null
-     */
-    protected function validate_range($field, $value, $parameter)
+    protected function validate_range(string $field, mixed $value, string $parameter): mixed
     {
         if (!preg_match('#^(-?[.\d]+)-(-?[\d.]+)$#', $parameter, $match)) {
             throw new InvalidValueException(['range validator `%s` parameter is not {min}-{max} format', $parameter]);
@@ -502,91 +345,42 @@ class Validator extends Component implements ValidatorInterface
         return $number >= $match[1] && $number <= $match[2] ? $number : null;
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     * @param string $parameter
-     *
-     * @return string|null
-     */
-    protected function validate_regex($field, $value, $parameter)
+    protected function validate_regex(string $field, string $value, string $parameter): ?string
     {
         return preg_match($parameter, $value) ? $value : null;
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return string|null
-     */
-    protected function validate_alpha($field, $value)
+    protected function validate_alpha(string $field, string $value): ?string
     {
         return preg_match('#^[a-zA-Z]+$#', $value) ? $value : null;
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return string|null
-     */
-    protected function validate_digit($field, $value)
+    protected function validate_digit(string $field, string $value): ?string
     {
         return preg_match('#^\d+$#', $value) ? $value : null;
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return string|null
-     */
-    protected function validate_xdigit($field, $value)
+    protected function validate_xdigit(string $field, string $value): ?string
     {
         return preg_match('#^[0-9a-fA-F]+$#', $value) ? $value : null;
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return string|null
-     */
-    protected function validate_alnum($field, $value)
+    protected function validate_alnum(string $field, string $value): ?string
     {
         return preg_match('#^[a-zA-Z0-9]+$#', $value) ? $value : null;
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return string
-     */
-    protected function validate_lower($field, $value)
+    protected function validate_lower(string $field, string $value): string
     {
         return strtolower($value);
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return string
-     */
-    protected function validate_upper($field, $value)
+    protected function validate_upper(string $field, string $value): string
     {
         return strtoupper($value);
     }
 
-    /**
-     * @param string       $field
-     * @param string|array $value
-     *
-     * @return string|string[]
-     */
-    protected function validate_trim($field, $value)
+    protected function validate_trim(string $field, mixed $value): mixed
     {
         if (is_array($value)) {
             $r = [];
@@ -601,47 +395,22 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return null|string
-     */
-    protected function validate_email($field, $value)
+    protected function validate_email(string $field, string $value): ?string
     {
         return filter_var($value, FILTER_VALIDATE_EMAIL) !== false ? strtolower($value) : null;
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return null|string
-     */
-    protected function validate_url($field, $value)
+    protected function validate_url(string $field, string $value): ?string
     {
         return filter_var($value, FILTER_VALIDATE_URL) !== false ? $value : null;
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return null|string
-     */
-    protected function validate_ip($field, $value)
+    protected function validate_ip(string $field, string $value): ?string
     {
         return filter_var($value, FILTER_VALIDATE_IP) !== false ? $value : null;
     }
 
-    /**
-     * @param string      $field
-     * @param string      $value
-     * @param null|string $parameter
-     *
-     * @return string|int|null
-     */
-    protected function validate_date($field, $value, $parameter = null)
+    protected function validate_date(string $field, string $value, ?string $parameter = null): mixed
     {
         $ts = is_numeric($value) ? (int)$value : strtotime($value);
         if ($ts === false) {
@@ -651,26 +420,13 @@ class Validator extends Component implements ValidatorInterface
         return $parameter ? (string)date($parameter, $ts) : $value;
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return int|null
-     */
-    protected function validate_timestamp($field, $value)
+    protected function validate_timestamp(string $field, mixed $value): ?int
     {
         $ts = is_numeric($value) ? (int)$value : strtotime($value);
         return $ts === false ? null : $ts;
     }
 
-    /**
-     * @param string                       $field
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param null|string                  $parameter
-     *
-     * @return string|int|null
-     */
-    protected function validate_model_date($field, $model, $parameter)
+    protected function validate_model_date(string $field, ModelInterface $model, ?string $parameter): mixed
     {
         $value = $model->$field;
 
@@ -681,24 +437,12 @@ class Validator extends Component implements ValidatorInterface
         return date($parameter ?: $model->dateFormat($field), $ts);
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return string
-     */
-    protected function validate_escape($field, $value)
+    protected function validate_escape(string $field, string $value): string
     {
         return htmlspecialchars($value);
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return string
-     */
-    protected function validate_xss($field, $value)
+    protected function validate_xss(string $field, string $value): string
     {
         if ($value === '') {
             return $value;
@@ -707,49 +451,22 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return string
-     */
-    protected function validate_uuid($field, $value)
+    protected function validate_uuid(string $field, string $value): ?string
     {
         return preg_match('#^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$#i', $value) === 1 ? $value : null;
     }
 
-    /**
-     * @param string     $field
-     * @param string|int $value
-     * @param string     $parameter
-     *
-     * @return string|int
-     */
-    protected function validate_in($field, $value, $parameter)
+    protected function validate_in(string $field, mixed $value, string $parameter): mixed
     {
         return in_array($value, preg_split('#[\s,]+#', $parameter, -1, PREG_SPLIT_NO_EMPTY), false) ? $value : null;
     }
 
-    /**
-     * @param string     $field
-     * @param string|int $value
-     * @param string     $parameter
-     *
-     * @return string|int
-     */
-    protected function validate_not_in($field, $value, $parameter)
+    protected function validate_not_in(string $field, mixed $value, string $parameter): mixed
     {
         return !in_array($value, preg_split('#[\s,]+#', $parameter, -1, PREG_SPLIT_NO_EMPTY), false) ? $value : null;
     }
 
-    /**
-     * @param string       $field
-     * @param string       $value
-     * @param string|array $parameter
-     *
-     * @return null|string
-     */
-    protected function validate_ext($field, $value, $parameter)
+    protected function validate_ext(string $field, string $value, mixed $parameter): ?string
     {
         $ext = strtolower(pathinfo($value, PATHINFO_EXTENSION));
         if (is_array($parameter)) {
@@ -759,15 +476,7 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
-
-    /**
-     * @param string|int                   $field
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param string|array                 $parameters
-     *
-     * @return int|string|null
-     */
-    protected function validate_model_unique($field, $model, $parameters = null)
+    protected function validate_model_unique(string $field, ModelInterface $model, mixed $parameters = null): mixed
     {
         $value = $model->$field;
 
@@ -792,14 +501,7 @@ class Validator extends Component implements ValidatorInterface
         return $model::exists($filters) ? null : $value;
     }
 
-    /**
-     * @param string                       $field
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param string                       $parameter
-     *
-     * @return string|null
-     */
-    protected function validate_model_exists($field, $model, $parameter = null)
+    protected function validate_model_exists(string $field, ModelInterface $model, ?string $parameter = null): mixed
     {
         $value = $model->$field;
 
@@ -829,14 +531,7 @@ class Validator extends Component implements ValidatorInterface
         return $className::exists($value) ? $value : null;
     }
 
-    /**
-     * @param string                       $field
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param string                       $parameter
-     *
-     * @return int|string|null
-     */
-    protected function validate_model_level($field, $model, $parameter = null)
+    protected function validate_model_level(string $field, ModelInterface $model, ?string $parameter = null): mixed
     {
         $value = $model->$field;
 
@@ -847,14 +542,7 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
-    /**
-     * @param string                       $field
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param string                       $parameter
-     *
-     * @return int|string|null
-     */
-    protected function validate_model_const($field, $model, $parameter = null)
+    protected function validate_model_const(string $field, ModelInterface $model, ?string $parameter = null): mixed
     {
         $value = $model->$field;
         $constants = $model::constants($parameter ?: $field);
@@ -865,13 +553,7 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return string|null
-     */
-    protected function validate_account($field, $value)
+    protected function validate_account(string $field, string $value): ?string
     {
         $value = strtolower($value);
 
@@ -886,13 +568,7 @@ class Validator extends Component implements ValidatorInterface
         return $value;
     }
 
-    /**
-     * @param string                       $field
-     * @param \ManaPHP\Data\ModelInterface $model
-     *
-     * @return int|string|null
-     */
-    protected function validate_model_account($field, $model)
+    protected function validate_model_account(string $field, ModelInterface $model): ?string
     {
         $value = $model->$field;
 
@@ -907,37 +583,19 @@ class Validator extends Component implements ValidatorInterface
         return $value;
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return string|null
-     */
-    protected function validate_mobile($field, $value)
+    protected function validate_mobile(string $field, string $value): ?string
     {
         $value = trim($value);
 
         return ($value === '' || preg_match('#^1[3-8]\d{9}$#', $value)) ? $value : null;
     }
 
-    /**
-     * @param static $field
-     * @param string $value
-     *
-     * @return string
-     */
-    protected function validate_safe($field, $value)
+    protected function validate_safe(string $field, mixed $value): mixed
     {
         return $value;
     }
 
-    /**
-     * @param string                       $field
-     * @param \ManaPHP\Data\ModelInterface $model
-     *
-     * @return mixed|null
-     */
-    protected function validate_model_readonly($field, $model)
+    protected function validate_model_readonly(string $field, ModelInterface $model): mixed
     {
         $value = $model->$field;
 
