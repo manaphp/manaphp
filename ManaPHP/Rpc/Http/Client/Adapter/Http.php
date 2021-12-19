@@ -1,27 +1,19 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Rpc\Http\Client\Adapter;
 
+use ManaPHP\Http\ClientInterface;
 use ManaPHP\Rpc\Http\AbstractClient;
 use ManaPHP\Rpc\Http\Client\Exception as ClientException;
 use ManaPHP\Rpc\Http\Client\ProtocolException;
 
 class Http extends AbstractClient
 {
-    /**
-     * @var float
-     */
-    protected $timeout = 3.0;
+    protected float $timeout = 3.0;
+    protected ClientInterface $client;
 
-    /**
-     * @var \ManaPHP\Http\ClientInterface
-     */
-    protected $client;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options)
+    public function __construct(array $options)
     {
         if (isset($options['timeout'])) {
             $this->timeout = $options['timeout'];
@@ -51,26 +43,14 @@ class Http extends AbstractClient
         $this->client = $this->container->make($client, $options);
     }
 
-    /**
-     * @param string $endpoint
-     *
-     * @return static
-     */
-    public function setEndpoint($endpoint)
+    public function setEndpoint(string $endpoint): static
     {
         $this->endpoint = str_contains($endpoint, '?') ? str_replace('/?', '?', $endpoint) : rtrim($endpoint, '/');
 
         return $this;
     }
 
-    /**
-     * @param string $method
-     * @param array  $params
-     * @param array  $options
-     *
-     * @return mixed
-     */
-    public function invoke($method, $params = [], $options = [])
+    public function invoke(string $method, array $params = [], array $options = []): mixed
     {
         $endpoint = $this->endpoint;
         $url = str_contains($endpoint, '?') ? str_replace('?', "/$method?", $endpoint) : "$endpoint/$method";

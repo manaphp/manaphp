@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Rpc\Amqp;
 
@@ -11,30 +12,12 @@ use ManaPHP\Rpc\ClientInterface;
  */
 class Client extends Component implements ClientInterface
 {
-    /**
-     * @var string
-     */
-    protected $uri;
+    protected string $uri;
+    protected EngineInterface $engine;
+    protected string $exchange = 'rpc';
+    protected string $routing_key = 'call';
 
-    /**
-     * @var EngineInterface
-     */
-    protected $engine;
-
-    /**
-     * @var string
-     */
-    protected $exchange = 'rpc';
-
-    /**
-     * @var string
-     */
-    protected $routing_key = 'call';
-
-    /**
-     * @param string $uri
-     */
-    public function __construct($uri)
+    public function __construct(string $uri)
     {
         $this->uri = $uri;
 
@@ -49,17 +32,9 @@ class Client extends Component implements ClientInterface
         }
     }
 
-    /**
-     * @param string       $exchange
-     * @param string       $routing_key
-     * @param string|array $body
-     * @param array        $properties
-     * @param array        $options
-     *
-     * @return mixed
-     */
-    public function call($exchange, $routing_key, $body, $properties = [], $options = [])
-    {
+    public function call(string $exchange, string $routing_key, string|array $body, array $properties = [],
+        array $options = []
+    ): mixed {
         $engine = $this->engine;
         if (is_array($body)) {
             $body = json_stringify($body);
@@ -71,14 +46,7 @@ class Client extends Component implements ClientInterface
         return $engine->call($exchange, $routing_key, $body, $properties, $options);
     }
 
-    /**
-     * @param string $method
-     * @param array  $params
-     * @param array  $options
-     *
-     * @return mixed
-     */
-    public function invoke($method, $params = [], $options = [])
+    public function invoke(string $method, array $params = [], array $options = []): mixed
     {
         $body = ['method' => $method, 'params' => $params];
 

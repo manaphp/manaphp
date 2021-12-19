@@ -1,37 +1,22 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Rpc\Http\Client\Adapter;
 
 use ManaPHP\Rpc\Http\AbstractClient;
 use ManaPHP\Rpc\Http\Client\Exception as ClientException;
 use ManaPHP\Rpc\Http\Client\ProtocolException;
+use ManaPHP\Ws\Client\EngineInterface;
+use ManaPHP\Ws\ClientInterface;
 
 class Ws extends AbstractClient
 {
-    /**
-     * @var float
-     */
-    protected $timeout = 3.0;
+    protected float $timeout = 3.0;
+    protected bool $authentication;
+    protected int $id = 0;
+    protected ClientInterface $client;
 
-    /**
-     * @var bool
-     */
-    protected $authentication;
-
-    /**
-     * @var int
-     */
-    protected $id = 0;
-
-    /**
-     * @var \ManaPHP\Ws\ClientInterface
-     */
-    protected $client;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options)
+    public function __construct(array $options)
     {
         $options['protocol'] = 'jsonrpc';
 
@@ -55,27 +40,14 @@ class Ws extends AbstractClient
         }
     }
 
-    /**
-     * @param string $endpoint
-     *
-     * @return static
-     */
-    public function setEndpoint($endpoint)
+    public function setEndpoint(string $endpoint): static
     {
         $this->client->setEndpoint($endpoint);
 
         return $this;
     }
 
-    /**
-     * @param string $response
-     *
-     * @return mixed
-     *
-     * @throws \ManaPHP\Rpc\Http\Client\Exception
-     * @throws \ManaPHP\Rpc\Http\Client\ProtocolException
-     */
-    protected function parseResponse($response)
+    protected function parseResponse(string $response): mixed
     {
         $json = json_parse($response);
 
@@ -96,12 +68,7 @@ class Ws extends AbstractClient
         }
     }
 
-    /**
-     * @param \ManaPHP\Ws\Client\EngineInterface $engine
-     *
-     * @return void
-     */
-    public function authenticate($engine)
+    public function authenticate(EngineInterface $engine): void
     {
         $message = $engine->recv();
 
@@ -116,14 +83,7 @@ class Ws extends AbstractClient
         }
     }
 
-    /**
-     * @param string $method
-     * @param array  $params
-     * @param array  $options
-     *
-     * @return mixed
-     */
-    public function invoke($method, $params = [], $options = [])
+    public function invoke(string $method, array $params = [], array $options = []): mixed
     {
         $request = json_stringify(['jsonrpc' => '2.0', 'method' => $method, 'params' => $params, 'id' => ++$this->id]);
 

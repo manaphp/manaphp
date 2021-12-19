@@ -1,27 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Rpc\Http;
 
 interface ClientInterface extends \ManaPHP\Rpc\ClientInterface
 {
-    /**
-     * @param string $endpoint
-     *
-     * @return static
-     */
-    public function setEndpoint($endpoint);
+    public function setEndpoint(string $endpoint): static;
 
-    /**
-     * @return string
-     */
-    public function getEndpoint();
+    public function getEndpoint(): string;
 
-    /**
-     * @param string $method
-     * @param array  $params
-     * @param array  $options
-     *
-     * @return mixed
-     */
-    public function invoke($method, $params = [], $options = []);
+    public function invoke(string $method, array $params = [], array $options = []): mixed;
 }
