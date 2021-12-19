@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Cli\Command;
 
@@ -7,15 +8,12 @@ use ManaPHP\Helper\LocalFS;
 
 class Manager extends Component implements ManagerInterface
 {
-    /**
-     * @var array
-     */
-    protected $commands = [];
+    protected array $commands = [];
 
     /**
      * @return array
      */
-    public function getCommands()
+    public function getCommands(): array
     {
         if ($this->commands === []) {
             $commands = [];
