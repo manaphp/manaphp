@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Areas\Admin\Controllers;
 
@@ -16,7 +17,7 @@ use ManaPHP\Helper\Str;
  */
 class SessionController extends Controller
 {
-    public function getAcl()
+    public function getAcl(): array
     {
         return ['*' => '*'];
     }

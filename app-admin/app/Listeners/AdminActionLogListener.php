@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Listeners;
 
@@ -21,7 +22,7 @@ class AdminActionLogListener extends Listener
         $this->attachEvent('db:executing', [$this, 'onDbExecuting']);
     }
 
-    public function onDbExecuting()
+    public function onDbExecuting(): void
     {
         if (!$this->context->logged && $this->dispatcher->isInvoking()) {
             $this->onAppLogAction();
@@ -43,7 +44,7 @@ class AdminActionLogListener extends Listener
         return 0;
     }
 
-    public function onAppLogAction()
+    public function onAppLogAction(): void
     {
         $context = $this->context;
         if ($context->logged) {

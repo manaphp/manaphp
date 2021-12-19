@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Listeners;
 
@@ -22,21 +23,21 @@ class AdminActionLogListener extends Listener
         $this->attachEvent('db:executing', [$this, 'onDbExecuting']);
     }
 
-    public function onDbExecuting()
+    public function onDbExecuting(): void
     {
         if (!$this->context->logged && $this->dispatcher->isInvoking() && $this->dispatcher->getArea() === 'Admin') {
             $this->onAdminActionLogAction();
         }
     }
 
-    protected function getTag()
+    protected function getTag(): int
     {
         foreach ($this->request->get() as $k => $v) {
             if (is_numeric($v)) {
                 if ($k === 'id') {
-                    return $v;
+                    return (int)$v;
                 } elseif (str_ends_with($k, '_id')) {
-                    return $v;
+                    return (int)$v;
                 }
             }
         }
@@ -44,7 +45,7 @@ class AdminActionLogListener extends Listener
         return 0;
     }
 
-    public function onAdminActionLogAction()
+    public function onAdminActionLogAction(): void
     {
         $context = $this->context;
         if ($context->logged) {
