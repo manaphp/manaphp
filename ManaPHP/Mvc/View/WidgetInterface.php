@@ -1,13 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Mvc\View;
 
 interface WidgetInterface
 {
-    /**
-     * @param array $vars
-     *
-     * @return string|array
-     */
-    public function run($vars = []);
+    public function run(array $vars = []): string|array;
 }
