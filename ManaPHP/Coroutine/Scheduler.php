@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Coroutine;
 
@@ -12,32 +13,16 @@ use Throwable;
  */
 class Scheduler extends Component implements SchedulerInterface
 {
-    /**
-     * @var array
-     */
-    protected $tasks = [];
+    protected array $tasks = [];
 
-    /**
-     * @param callable $fn
-     * @param mixed    ...$args
-     *
-     * @return static
-     */
-    public function add($fn, ...$args)
+    public function add(callable $fn, ...$args): static
     {
         $this->tasks[] = [$fn, $args];
 
         return $this;
     }
 
-    /**
-     * @param int                       $id
-     * @param \Swoole\Coroutine\Channel $channel
-     * @param array                     $task
-     *
-     * @return void
-     */
-    public function routine($id, $channel, $task)
+    public function routine(int $id, Channel $channel, array $task): void
     {
         list($fn, $args) = $task;
         try {
@@ -49,10 +34,7 @@ class Scheduler extends Component implements SchedulerInterface
         $channel->push([$id, $return]);
     }
 
-    /**
-     * @return array
-     */
-    public function start()
+    public function start(): array
     {
         $returns = [];
 

@@ -1,19 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Coroutine;
 
 interface SchedulerInterface
 {
-    /**
-     * @param callable $fn
-     * @param mixed    ...$args
-     *
-     * @return static
-     */
-    public function add($fn, ...$args);
+    public function add(callable $fn, ...$args): static;
 
-    /**
-     * @return array
-     */
-    public function start();
+    public function start(): array;
 }
