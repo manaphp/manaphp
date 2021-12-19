@@ -1,96 +1,33 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
 interface ConsoleInterface
 {
-    /**
-     * @return bool
-     */
-    public function isSupportColor();
+    public function isSupportColor(): bool;
 
-    /**
-     * @param string $text
-     * @param int    $options
-     * @param int    $width
-     *
-     * @return string
-     */
-    public function colorize($text, $options = 0, $width = 0);
+    public function colorize(string $text, int $options = 0, int $width = 0): string;
 
-    /**
-     * @return void
-     */
-    public function sampleColorizer();
+    public function sampleColorizer(): void;
 
-    /**
-     * @param string|array $message
-     * @param int          $options
-     *
-     * @return static
-     */
-    public function write($message, $options = 0);
+    public function write(mixed $message, int $options = 0): static;
 
-    /**
-     * @param string|array $message
-     * @param int          $options
-     *
-     * @return static
-     */
-    public function writeLn($message = '', $options = 0);
+    public function writeLn(mixed $message = '', int $options = 0): static;
 
-    /**
-     * @param string|array $message
-     * @param int          $options
-     *
-     * @return static
-     */
-    public function debug($message = '', $options = 0);
+    public function debug(mixed $message = '', int $options = 0): static;
 
-    /**
-     * @param string|array $message
-     *
-     * @return void
-     */
-    public function info($message);
+    public function info(mixed $message): void;
 
-    /**
-     * @param string|array $message
-     *
-     * @return void
-     */
-    public function warn($message);
+    public function warn(mixed $message): void;
 
-    /**
-     * @param string|array $message
-     *
-     * @return void
-     */
-    public function success($message);
+    public function success(mixed $message): void;
 
-    /**
-     * @param string|array $message
-     * @param int          $code
-     *
-     * @return int
-     */
-    public function error($message, $code = 1);
+    public function error(mixed $message, int $code = 1): int;
 
-    /**
-     * @param string|array     $message
-     * @param int|float|string $value
-     */
-    public function progress($message, $value = null);
+    public function progress(mixed $message, mixed $value = null): void;
 
-    /**
-     * @return string
-     */
-    public function read();
+    public function read(): string;
 
-    /**
-     * @param string $message
-     *
-     * @return string
-     */
-    public function ask($message);
+    public function ask(string $message): string;
 }

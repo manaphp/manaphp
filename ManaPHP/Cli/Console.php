@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
@@ -14,39 +15,33 @@ use ArrayObject;
  */
 class Console extends Component implements ConsoleInterface
 {
-    /**
-     * @var int
-     */
-    protected $width = 80;
+    protected int $width = 80;
 
-    const FC_BLACK = 0x01;
-    const FC_RED = 0x02;
-    const FC_GREEN = 0x04;
-    const FC_YELLOW = 0x08;
-    const FC_BLUE = 0x10;
-    const FC_MAGENTA = 0x20;
-    const FC_CYAN = 0x40;
-    const FC_WHITE = 0x80;
+    public const FC_BLACK = 0x01;
+    public const FC_RED = 0x02;
+    public const FC_GREEN = 0x04;
+    public const FC_YELLOW = 0x08;
+    public const FC_BLUE = 0x10;
+    public const FC_MAGENTA = 0x20;
+    public const FC_CYAN = 0x40;
+    public const FC_WHITE = 0x80;
 
-    const BC_BLACK = 0x0100;
-    const BC_RED = 0x0200;
-    const BC_GREEN = 0x0400;
-    const BC_YELLOW = 0x0800;
-    const BC_BLUE = 0x1000;
-    const BC_MAGENTA = 0x2000;
-    const BC_CYAN = 0x4000;
-    const BC_WHITE = 0x8000;
+    public const BC_BLACK = 0x0100;
+    public const BC_RED = 0x0200;
+    public const BC_GREEN = 0x0400;
+    public const BC_YELLOW = 0x0800;
+    public const BC_BLUE = 0x1000;
+    public const BC_MAGENTA = 0x2000;
+    public const BC_CYAN = 0x4000;
+    public const BC_WHITE = 0x8000;
 
-    const AT_BOLD = 0x010000;
-    const AT_ITALICS = 0x020000;
-    const AT_UNDERLINE = 0x040000;
-    const AT_BLINK = 0x080000;
-    const AT_INVERSE = 0x100000;
+    public const AT_BOLD = 0x010000;
+    public const AT_ITALICS = 0x020000;
+    public const AT_UNDERLINE = 0x040000;
+    public const AT_BLINK = 0x080000;
+    public const AT_INVERSE = 0x100000;
 
-    /**
-     * @return bool
-     */
-    public function isSupportColor()
+    public function isSupportColor(): bool
     {
         if (DIRECTORY_SEPARATOR === '/') {
             return true;
@@ -55,14 +50,7 @@ class Console extends Component implements ConsoleInterface
         return false !== getenv('ANSICON') || 'ON' === getenv('ConEmuANSI') || 'xterm' === getenv('TERM');
     }
 
-    /**
-     * @param string $text
-     * @param int    $options
-     * @param int    $width
-     *
-     * @return string
-     */
-    public function colorize($text, $options = 0, $width = 0)
+    public function colorize(string $text, int $options = 0, int $width = 0): string
     {
         $map = [
             self::AT_BOLD      => "\033[1m",
@@ -104,13 +92,7 @@ class Console extends Component implements ConsoleInterface
         return $c . $text . "\033[0m" . str_repeat(' ', max($width - strlen($text), 0));
     }
 
-    /**
-     * @param string|array $message
-     * @param int          $options
-     *
-     * @return static
-     */
-    public function write($message, $options = 0)
+    public function write(mixed $message, int $options = 0): static
     {
         if ($message instanceof Throwable) {
             echo $message;
@@ -176,8 +158,8 @@ class Console extends Component implements ConsoleInterface
                 }
 
                 if (is_int($v)) {
-                    if (!$options && !str_contains($v, "\033[")) {
-                        $v = $this->colorize($v, self::FC_GREEN);
+                    if (!$options) {
+                        $v = $this->colorize((string)$v, self::FC_GREEN);
                     }
                 } elseif (is_string($v)) {
                     if (!$options && !str_contains($v, "\033[")) {
@@ -206,10 +188,7 @@ class Console extends Component implements ConsoleInterface
         return $this;
     }
 
-    /**
-     * @return void
-     */
-    public function sampleColorizer()
+    public function sampleColorizer(): void
     {
         $rClass = new ReflectionClass($this);
         $bc_list = [0 => 0];
@@ -254,13 +233,7 @@ class Console extends Component implements ConsoleInterface
         }
     }
 
-    /**
-     * @param string|array $message
-     * @param int          $options
-     *
-     * @return static
-     */
-    public function writeLn($message = '', $options = 0)
+    public function writeLn(mixed $message = '', int $options = 0): static
     {
         $this->write($message, $options);
         $this->write(PHP_EOL);
@@ -268,13 +241,7 @@ class Console extends Component implements ConsoleInterface
         return $this;
     }
 
-    /**
-     * @param string|array $message
-     * @param int          $options
-     *
-     * @return static
-     */
-    public function debug($message = '', $options = 0)
+    public function debug(mixed $message = '', int $options = 0): static
     {
         $this->logger->debug($message);
 
@@ -284,10 +251,7 @@ class Console extends Component implements ConsoleInterface
         return $this;
     }
 
-    /**
-     * @param array|string $message
-     */
-    public function info($message)
+    public function info(mixed $message): void
     {
         $this->logger->info($message);
 
@@ -295,10 +259,7 @@ class Console extends Component implements ConsoleInterface
         $this->write(PHP_EOL);
     }
 
-    /**
-     * @param array|string $message
-     */
-    public function warn($message)
+    public function warn(mixed $message): void
     {
         $this->logger->warn($message);
 
@@ -306,10 +267,7 @@ class Console extends Component implements ConsoleInterface
         $this->write(PHP_EOL);
     }
 
-    /**
-     * @param array|string $message
-     */
-    public function success($message)
+    public function success(mixed $message): void
     {
         $this->logger->info($message);
 
@@ -317,13 +275,7 @@ class Console extends Component implements ConsoleInterface
         $this->write(PHP_EOL);
     }
 
-    /**
-     * @param array|string $message
-     * @param int          $code
-     *
-     * @return int
-     */
-    public function error($message, $code = 1)
+    public function error(mixed $message, int $code = 1): int
     {
         $this->logger->error($message);
 
@@ -333,13 +285,7 @@ class Console extends Component implements ConsoleInterface
         return $code;
     }
 
-    /**
-     * @param string|array     $message
-     * @param int|float|string $value
-     *
-     * @return void
-     */
-    public function progress($message, $value = null)
+    public function progress(mixed $message, mixed $value = null): void
     {
         if ($value !== null) {
             if (is_int($value) || is_float($value)) {
@@ -364,20 +310,12 @@ class Console extends Component implements ConsoleInterface
         }
     }
 
-    /**
-     * @return string
-     */
-    public function read()
+    public function read(): string
     {
         return trim(fgets(STDIN));
     }
 
-    /**
-     * @param string $message
-     *
-     * @return string
-     */
-    public function ask($message)
+    public function ask(string $message): string
     {
         if (str_ends_with($message, '?')) {
             $this->writeLn($message);
