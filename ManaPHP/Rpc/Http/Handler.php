@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Rpc\Http;
 
@@ -19,12 +20,12 @@ use Throwable;
  */
 class Handler extends Component implements HandlerInterface
 {
-    public function authenticate()
+    public function authenticate(): bool
     {
         return true;
     }
 
-    public function handle()
+    public function handle(): void
     {
         try {
             $this->fireEvent('request:begin');

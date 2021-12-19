@@ -1,16 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Rpc;
 
 interface HandlerInterface
 {
-    /**
-     * @return bool
-     */
-    public function authenticate();
+    public function authenticate(): bool;
 
-    /**
-     * @return void
-     */
-    public function handle();
+    public function handle(): void;
 }
