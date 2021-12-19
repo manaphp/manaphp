@@ -1,53 +1,34 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Html\Dom;
 
 use DOMText;
+use DOMElement;
+use DOMNode;
 
 class Selector
 {
-    /**
-     * @var \ManaPHP\Html\Dom\Document
-     */
-    protected $document;
+    protected Document $document;
+    protected DOMElement $node;
 
-    /**
-     * @var \DOMElement
-     */
-    protected $node;
-
-    /**
-     * @param string|\ManaPHP\Html\Dom\Document $document
-     * @param \DOMNode                          $node
-     */
-    public function __construct($document, $node = null)
+    public function __construct(string|Document $document, ?DOMElement $node = null)
     {
         $this->document = is_string($document) ? new Document($document) : $document;
         $this->node = $node;
     }
 
-    /**
-     * @return static
-     */
-    public function root()
+    public function root(): static
     {
         return new Selector($this->document);
     }
 
-    /**
-     * @return \ManaPHP\Html\Dom\Document
-     */
-    public function document()
+    public function document(): Document
     {
         return $this->document;
     }
 
-    /**
-     * @param string|array $query
-     *
-     * @return \ManaPHP\Html\Dom\SelectorList
-     */
-    public function xpath($query)
+    public function xpath(string|array $query): SelectorList
     {
         $nodes = [];
         /** @var \DOMNode $node */
@@ -57,12 +38,7 @@ class Selector
         return new SelectorList($this->document, $nodes);
     }
 
-    /**
-     * @param string|array $css
-     *
-     * @return \ManaPHP\Html\Dom\SelectorList
-     */
-    public function css($css)
+    public function css(string|array $css): SelectorList
     {
         $nodes = [];
         /** @var \DOMNode $node */
@@ -72,32 +48,17 @@ class Selector
         return new SelectorList($this->document, $nodes);
     }
 
-    /**
-     * @param string $css
-     *
-     * @return \ManaPHP\Html\Dom\SelectorList
-     */
-    public function find($css = null)
+    public function find(?string $css = null): SelectorList
     {
         return $this->css('descendant::' . ($css ?? '*'));
     }
 
-    /**
-     * @param string $css
-     *
-     * @return \ManaPHP\Html\Dom\SelectorList
-     */
-    public function has($css)
+    public function has(string $css): SelectorList
     {
         return $this->css('child::' . ($css ?? '*'));
     }
 
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function remove($css)
+    public function remove(string $css): static
     {
         /** @var \DOMNode $node */
         foreach ($this->document->getQuery()->css($css, $this->node) as $node) {
@@ -107,13 +68,7 @@ class Selector
         return $this;
     }
 
-    /**
-     * @param string       $css
-     * @param string|array $attr
-     *
-     * @return static
-     */
-    public function removeAttr($css, $attr = null)
+    public function removeAttr(string $css, mixed $attr = null): static
     {
         if (is_string($attr)) {
             $attr = (array)preg_split('#[\s,]+#', $attr, -1, PREG_SPLIT_NO_EMPTY);
@@ -131,13 +86,7 @@ class Selector
         return $this;
     }
 
-    /**
-     * @param string       $css
-     * @param string|array $attr
-     *
-     * @return static
-     */
-    public function retainAttr($css, $attr)
+    public function retainAttr(string $css, string|array $attr): static
     {
         if (is_string($attr)) {
             $attr = (array)preg_split('#[\s,]+#', $attr, -1, PREG_SPLIT_NO_EMPTY);
@@ -155,12 +104,7 @@ class Selector
         return $this;
     }
 
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function strip($css)
+    public function strip(string $css): static
     {
         /** @var \DOMNode $node */
         foreach ($this->document->getQuery()->css($css, $this->node) as $node) {
@@ -170,23 +114,12 @@ class Selector
         return $this;
     }
 
-    /**
-     * @param string $attr
-     *
-     * @return string
-     */
-    public function attr($attr)
+    public function attr(string $attr): string
     {
         return $this->node->getAttribute($attr);
     }
 
-    /**
-     * @param string $css
-     * @param string $attr
-     *
-     * @return string|null
-     */
-    public function attr_first($css, $attr)
+    public function attr_first(string $css, string $attr): ?string
     {
         if ($nodes = $this->document->getQuery()->css($css, $this->node)) {
             /** @var \DOMElement $node */
@@ -197,23 +130,12 @@ class Selector
         }
     }
 
-    /**
-     * @param string $attr
-     *
-     * @return string
-     */
-    public function url($attr)
+    public function url(string $attr): string
     {
         return $this->document->absolutizeUrl($this->node->getAttribute($attr));
     }
 
-    /**
-     * @param string $css
-     * @param string $attr
-     *
-     * @return string|null
-     */
-    public function url_first($css, $attr)
+    public function url_first(string $css, string $attr): ?string
     {
         if ($nodes = $this->document->getQuery()->css($css, $this->node)) {
             /** @var \DOMElement $node */
@@ -224,41 +146,23 @@ class Selector
         }
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasAttr($name)
+    public function hasAttr(string $name): bool
     {
         return $this->node->hasAttribute($name);
     }
 
-    /**
-     * @return string
-     */
-    public function text()
+    public function text(): string
     {
         return $this->node->textContent;
     }
 
-    /**
-     * @param string $css
-     *
-     * @return string|null
-     */
-    public function text_first($css)
+    public function text_first(string $css): ?string
     {
         $nodes = $this->document->getQuery()->css($css, $this->node);
         return $nodes ? $nodes->item(0)->textContent : null;
     }
 
-    /**
-     * @param array $rules
-     *
-     * @return array
-     */
-    public function extract($rules)
+    public function extract(array $rules): array
     {
         /** @var \DOMElement $node */
         $node = $this->node;
@@ -290,13 +194,7 @@ class Selector
         return $data;
     }
 
-    /**
-     * @param string $css
-     * @param array  $rules
-     *
-     * @return array
-     */
-    public function extract_first($css, $rules)
+    public function extract_first(string $css, array $rules): array
     {
         $nodes = $this->document->getQuery()->css($css);
 
@@ -307,28 +205,17 @@ class Selector
         }
     }
 
-    /**
-     * @return string
-     */
-    public function name()
+    public function name(): string
     {
         return $this->node->nodeName;
     }
 
-    /**
-     * @return string
-     */
-    public function html()
+    public function html(): string
     {
         return $this->document->saveHtml($this->node);
     }
 
-    /**
-     * @param string $css
-     *
-     * @return string|null
-     */
-    public function html_first($css)
+    public function html_first(string $css): ?string
     {
         if ($nodes = $this->document->getQuery()->css($css, $this->node)) {
             /** @var \DOMElement $node */
@@ -339,12 +226,7 @@ class Selector
         }
     }
 
-    /**
-     * @param string $regex
-     *
-     * @return array
-     */
-    public function links($regex = null)
+    public function links(?string $regex = null): array
     {
         /** @var \DOMElement $node */
         $data = [];
@@ -361,13 +243,7 @@ class Selector
         return $data;
     }
 
-    /**
-     * @param string $regex
-     * @param string attr
-     *
-     * @return array
-     */
-    public function images($regex = null, $attr = 'src')
+    public function images(?string $regex = null, string $attr = 'src'): array
     {
         /** @var \DOMElement $node */
         $document = $this->document;
@@ -385,26 +261,17 @@ class Selector
         return $data;
     }
 
-    /**
-     * @return string
-     */
-    public function path()
+    public function path(): string
     {
         return $this->node->getNodePath();
     }
 
-    /**
-     * @return \DOMNode
-     */
-    public function node()
+    public function node(): DOMNode
     {
         return $this->node;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->node->getNodePath() ?: '';
     }

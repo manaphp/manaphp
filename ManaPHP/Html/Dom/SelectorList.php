@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Html\Dom;
 
@@ -7,35 +8,23 @@ use ArrayIterator;
 use Countable;
 use DOMText;
 use IteratorAggregate;
+use Traversable;
 
 class SelectorList implements IteratorAggregate, Countable, ArrayAccess
 {
     /**
      * @var \DOMElement[]
      */
-    protected $nodes;
+    protected array $nodes;
+    protected Document $document;
 
-    /**
-     * @var \ManaPHP\Html\Dom\Document
-     */
-    protected $document;
-
-    /**
-     * @param \ManaPHP\Html\Dom\Document|\ManaPHP\Html\Dom\SelectorList $document
-     * @param \DOMNode[]                                                $nodes
-     */
-    public function __construct($document, $nodes)
+    public function __construct(Document|SelectorList $document, array $nodes)
     {
         $this->document = $document instanceof self ? $document->document : $document;
         $this->nodes = $nodes;
     }
 
-    /**
-     * @param string $path
-     *
-     * @return static
-     */
-    public function xpath($path)
+    public function xpath(string $path): static
     {
         if ($path === '') {
             return clone $this;
@@ -53,12 +42,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return new SelectorList($this, array_values($nodes));
     }
 
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function css($css)
+    public function css(string $css): static
     {
         if ($css === '') {
             return clone $this;
@@ -76,12 +60,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return new SelectorList($this, array_values($nodes));
     }
 
-    /**
-     * @param string|\ManaPHP\Html\Dom\SelectorList $selectors
-     *
-     * @return static
-     */
-    public function add($selectors)
+    public function add(string|SelectorList $selectors): static
     {
         if (is_string($selectors)) {
             $selectors = (new Selector($this->document))->find($selectors);
@@ -99,31 +78,17 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return new SelectorList($this, $this->nodes + $selectors->nodes);
     }
 
-    /**@param string $css
-     *
-     * @return static
-     */
-    public function children($css = null)
+    public function children(?string $css = null): static
     {
         return $this->css('child::' . ($css ?? '*'));
     }
 
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function closest($css = null)
+    public function closest(?string $css = null): static
     {
         return $this->css('ancestor-or-self::' . ($css ?? '*'));
     }
 
-    /**
-     * @param callable $func
-     *
-     * @return array
-     */
-    public function each($func)
+    public function each(callable $func): array
     {
         $data = [];
         foreach ($this->nodes as $index => $selector) {
@@ -133,12 +98,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return $data;
     }
 
-    /**
-     * @param int $index
-     *
-     * @return static
-     */
-    public function eq($index)
+    public function eq(int $index): static
     {
         if ($index === 0) {
             return new SelectorList($this, $this->nodes ? [current($this->nodes)] : []);
@@ -156,12 +116,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         }
     }
 
-    /**
-     * @param callable $func
-     *
-     * @return static
-     */
-    public function filter($func)
+    public function filter(callable $func): static
     {
         $index = 0;
         $nodes = [];
@@ -175,81 +130,43 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return new SelectorList($this, $nodes);
     }
 
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function find($css = null)
+    public function find(?string $css = null): static
     {
         return $this->css('descendant::' . ($css ?? '*'));
     }
 
-    /**
-     * @return \ManaPHP\Html\Dom\Selector|null
-     */
-    public function first()
+    public function first(): ?Selector
     {
         return count($this->nodes) > 0 ? new Selector($this->document, current($this->nodes)) : null;
     }
 
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function has($css)
+    public function has(string $css): static
     {
         return $this->css('child::' . ($css ?? '*'));
     }
 
-    /**
-     * @param string $css
-     *
-     * @return bool
-     */
-    public function is($css)
+    public function is(string $css): bool
     {
         $r = $this->css('self::' . ($css ?? '*') . '[1]');
         return (bool)$r->nodes;
     }
 
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function next($css = null)
+    public function next(?string $css = null): static
     {
         return $this->css('following-sibling::' . ($css ?? '*') . '[1]');
     }
 
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function nextAll($css = null)
+    public function nextAll(?string $css = null): static
     {
         return $this->css('following-sibling::' . ($css ?? '*'));
     }
 
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function not($css)
+    public function not(string $css): static
     {
         return $this->css('!self::' . ($css ?? '*'));
     }
 
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function parent($css = null)
+    public function parent(?string $css = null): static
     {
         if ($css === '') {
             return clone $this;
@@ -258,42 +175,22 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return $this->css('parent::' . ($css ?? '*'));
     }
 
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function parents($css = null)
+    public function parents(?string $css = null): static
     {
         return $this->css('ancestor::' . ($css ?? '*'));
     }
 
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function prev($css = null)
+    public function prev(?string $css = null): static
     {
         return $this->css('preceding-sibling::' . ($css ?? '*') . '[1]');
     }
 
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function prevAll($css = null)
+    public function prevAll(?string $css = null): static
     {
         return $this->css('preceding-sibling::' . ($css ?? '*'));
     }
 
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function siblings($css = null)
+    public function siblings(?string $css = null): static
     {
         $query = $this->document->getQuery();
 
@@ -311,24 +208,13 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return new SelectorList($this, array_values($nodes));
     }
 
-    /**
-     * @param int $offset
-     * @param int $length
-     *
-     * @return static
-     */
-    public function slice($offset, $length = null)
+    public function slice(int $offset, ?int $length = null): static
     {
         $nodes = array_slice($this->nodes, $offset, $length);
         return new SelectorList($this, $nodes);
     }
 
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function remove($css)
+    public function remove(string $css): static
     {
         /** @var \DOMNode $node */
         $query = $this->document->getQuery();
@@ -341,13 +227,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return $this;
     }
 
-    /**
-     * @param string       $css
-     * @param string|array $attr
-     *
-     * @return static
-     */
-    public function removeAttr($css, $attr = null)
+    public function removeAttr(string $css, null|string|array $attr = null): static
     {
         if ($attr) {
             $attr = (array)preg_split('#[\s,]+#', $attr, -1, PREG_SPLIT_NO_EMPTY);
@@ -368,13 +248,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return $this;
     }
 
-    /**
-     * @param string       $css
-     * @param string|array $attr
-     *
-     * @return static
-     */
-    public function retainAttr($css, $attr)
+    public function retainAttr(string $css, string|array $attr): static
     {
         if (is_string($attr)) {
             $attr = (array)preg_split('#[\s,]+#', $attr, -1, PREG_SPLIT_NO_EMPTY);
@@ -395,12 +269,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return $this;
     }
 
-    /**
-     * @param string $css
-     *
-     * @return static
-     */
-    public function strip($css)
+    public function strip(string $css): static
     {
         /** @var \DOMNode $node */
         $query = $this->document->getQuery();
@@ -413,10 +282,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return $this;
     }
 
-    /**
-     * @return string[]
-     */
-    public function name()
+    public function name(): array
     {
         $data = [];
 
@@ -427,12 +293,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return $data;
     }
 
-    /**
-     * @param string $attr
-     *
-     * @return string[]
-     */
-    public function attr($attr)
+    public function attr(string $attr): array
     {
         $data = [];
 
@@ -443,20 +304,12 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return $data;
     }
 
-    /**
-     * @param string $attr
-     *
-     * @return string|null
-     */
-    public function attr_first($attr)
+    public function attr_first(string $attr): ?string
     {
         return $this->nodes ? current($this->nodes)->getAttribute($attr) : null;
     }
 
-    /**
-     * @return string[]
-     */
-    public function text()
+    public function text(): array
     {
         $data = [];
         foreach ($this->nodes as $node) {
@@ -466,20 +319,12 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return $data;
     }
 
-    /**
-     * @return string|null
-     */
-    public function text_first()
+    public function text_first(): ?string
     {
         return $this->nodes ? current($this->nodes)->textContent : null;
     }
 
-    /**
-     * @param string $attr
-     *
-     * @return array
-     */
-    public function url($attr)
+    public function url(string $attr): array
     {
         $data = [];
 
@@ -490,20 +335,12 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return $data;
     }
 
-    /**
-     * @param string $attr
-     *
-     * @return string|null
-     */
-    public function url_first($attr)
+    public function url_first(string $attr): ?string
     {
         return $this->nodes ? $this->document->absolutizeUrl(current($this->nodes)->getAttribute($attr)) : null;
     }
 
-    /**
-     * @return string[]
-     */
-    public function html()
+    public function html(): array
     {
         $data = [];
         foreach ($this->nodes as $node) {
@@ -513,10 +350,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return $data;
     }
 
-    /**
-     * @return string|null
-     */
-    public function html_first()
+    public function html_first(): ?string
     {
         if ($this->nodes) {
             $node = current($this->nodes);
@@ -526,12 +360,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         }
     }
 
-    /**
-     * @param string $regex
-     *
-     * @return array
-     */
-    public function links($regex = null)
+    public function links(?string $regex = null): array
     {
         /** @var \DOMElement $node */
         /** @var \DOMElement $node2 */
@@ -564,13 +393,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return array_values($data);
     }
 
-    /**
-     * @param string $regex
-     * @param string $attr
-     *
-     * @return array
-     */
-    public function images($regex = null, $attr = 'src')
+    public function images(?string $regex = null, string $attr = 'src'): array
     {
         /** @var \DOMElement $node */
         /** @var \DOMElement $node2 */
@@ -603,12 +426,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return array_values($data);
     }
 
-    /**
-     * @param array $rules
-     *
-     * @return array[]
-     */
-    public function extract($rules)
+    public function extract(array $rules): array
     {
         $data = [];
 
@@ -620,12 +438,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return $data;
     }
 
-    /**
-     * @param array $rules
-     *
-     * @return array
-     */
-    public function extract_first($rules)
+    public function extract_first(array $rules): array
     {
         if ($this->nodes) {
             $selector = new Selector($this->document, current($this->nodes));
@@ -635,10 +448,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         }
     }
 
-    /**
-     * @return array
-     */
-    public function path()
+    public function path(): array
     {
         $data = [];
 
@@ -649,18 +459,12 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return $data;
     }
 
-    /**
-     * @return \DOMNode[]
-     */
-    public function node()
+    public function node(): array
     {
         return $this->nodes;
     }
 
-    /**
-     * @return \ArrayIterator|\Traversable
-     */
-    public function getIterator()
+    public function getIterator(): ArrayIterator|Traversable
     {
         $selectors = [];
         foreach ($this->nodes as $node) {
@@ -669,10 +473,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return new ArrayIterator($selectors);
     }
 
-    /**
-     * @return int
-     */
-    public function count()
+    public function count(): int
     {
         return count($this->nodes);
     }
@@ -681,12 +482,12 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
     {
     }
 
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): Selector
     {
         return new Selector($this->document, $this->nodes[$offset]);
     }
 
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return isset($this->nodes[$offset]);
     }
