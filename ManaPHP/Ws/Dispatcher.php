@@ -1,21 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Ws;
 
+use ManaPHP\Http\Controller;
+
 class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
 {
-    /**
-     * @var array
-     */
-    protected $controllers;
+    protected array $controllers;
 
-    /**
-     * @param \ManaPHP\Ws\Controller $controller
-     * @param string                 $action
-     *
-     * @return mixed
-     */
-    public function invokeAction($controller, $action)
+    public function invokeAction(Controller $controller, string $action): mixed
     {
         $controller_oid = spl_object_id($controller);
         if (!isset($this->controllers[$controller_oid])) {
