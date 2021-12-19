@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Messaging\PubSub\Adapter;
 
@@ -10,7 +11,7 @@ use ManaPHP\Messaging\PubSubInterface;
  */
 class Redis extends Component implements PubSubInterface
 {
-    public function subscribe($channels, $callback)
+    public function subscribe(array $channels, callable $callback): void
     {
         $this->redisBroker->subscribe(
             $channels, static function ($redis, $channel, $msg) use ($callback) {
@@ -19,13 +20,7 @@ class Redis extends Component implements PubSubInterface
         );
     }
 
-    /**
-     * @param array    $patterns
-     * @param callable $callback
-     *
-     * @return void
-     */
-    public function psubscribe($patterns, $callback)
+    public function psubscribe(array $patterns, callable $callback): void
     {
         $this->redisBroker->psubscribe(
             $patterns, static function ($redis, $pattern, $channel, $msg) use ($callback) {
@@ -34,33 +29,17 @@ class Redis extends Component implements PubSubInterface
         );
     }
 
-    /**
-     * @param string $channel
-     * @param string $message
-     *
-     * @return int
-     */
-    public function publish($channel, $message)
+    public function publish(string $channel, string $message): int
     {
         return $this->redisBroker->publish($channel, $message);
     }
 
-    /**
-     * @param array $channels
-     *
-     * @return void
-     */
-    public function unsubscribe($channels = null)
+    public function unsubscribe(?array $channels = null): void
     {
         $this->redisBroker->unsubscribe($channels);
     }
 
-    /**
-     * @param array $patterns
-     *
-     * @return void
-     */
-    public function punsubscribe($patterns = null)
+    public function punsubscribe(?array $patterns = null): void
     {
         $this->redisBroker->punsubscribe($patterns);
     }

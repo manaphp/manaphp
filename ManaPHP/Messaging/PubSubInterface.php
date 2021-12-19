@@ -1,40 +1,17 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Messaging;
 
 interface PubSubInterface
 {
-    /**
-     * @param string[] $channels
-     * @param callable $callback The callback will get two arguments ($channel, $message)
-     *
-     * @return void
-     */
-    public function subscribe($channels, $callback);
+    public function subscribe(array $channels, callable $callback): void;
 
-    /**
-     * @param array    $patterns
-     * @param callable $callback The callback will get two arguments ($channel, $message)
-     *
-     * @param void
-     */
-    public function psubscribe($patterns, $callback);
+    public function psubscribe(array $patterns, callable $callback): void;
 
-    /**
-     * @param string $channel
-     * @param string $message
-     *
-     * @return int Number of clients that received the message
-     */
-    public function publish($channel, $message);
+    public function publish(string $channel, string $message): int;
 
-    /**
-     * @param array $channels
-     */
-    public function unsubscribe($channels = null);
+    public function unsubscribe(?array $channels = null): void;
 
-    /**
-     * @param array $patterns
-     */
-    public function punsubscribe($patterns = null);
+    public function punsubscribe(?array $patterns = null): void;
 }
