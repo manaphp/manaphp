@@ -1,15 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Html\Dom;
 
 class CssToXPath
 {
-    /**
-     * @param string $path
-     *
-     * @return string
-     */
-    public function transform($path)
+    public function transform(string $path): string
     {
         $path = $this->transformInternal($path);
         if (str_contains($path, ':')) {
@@ -56,14 +52,7 @@ class CssToXPath
         return $path;
     }
 
-    /**
-     * Transform CSS expression to XPath
-     *
-     * @param string $path_src
-     *
-     * @return string
-     */
-    protected function transformInternal($path_src)
+    protected function transformInternal(string $path_src): string
     {
         $path = (string)$path_src;
 
@@ -113,14 +102,7 @@ class CssToXPath
         return implode('|', $paths);
     }
 
-    /**
-     * Tokenize CSS expressions to XPath
-     *
-     * @param string $expression_src
-     *
-     * @return string
-     */
-    protected static function tokenize($expression_src)
+    protected static function tokenize(string $expression_src): string
     {
         // Child selectors
         $expression = str_replace('>', '/', $expression_src);
