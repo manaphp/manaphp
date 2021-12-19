@@ -1,31 +1,21 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Html\Dom;
 
+use DOMDocument;
+use DOMNode;
+use DOMNodeList;
 use DOMXPath;
 use ManaPHP\Exception\MisuseException;
 
 class Query
 {
-    /**
-     * @var \DOMDocument
-     */
-    protected $dom;
+    protected DOMDocument $dom;
+    protected DOMXPath $xpath;
+    protected CssToXPath $cssToXPath;
 
-    /**
-     * @var \DOMXPath
-     */
-    protected $xpath;
-
-    /**
-     * @var \ManaPHP\Html\Dom\CssToXPath
-     */
-    protected $cssToXPath;
-
-    /**
-     * @param \DOMDocument $domDocument
-     */
-    public function __construct($domDocument)
+    public function __construct(DOMDocument $domDocument)
     {
         $this->dom = $domDocument;
 
@@ -34,13 +24,7 @@ class Query
         $this->cssToXPath = new CssToXPath();
     }
 
-    /**
-     * @param string|array $expression
-     * @param \DOMNode     $context
-     *
-     * @return \DOMNodeList
-     */
-    public function xpath($expression, $context = null)
+    public function xpath(string|array $expression, ?DOMNode $context = null): DomNodeList
     {
         if (is_array($expression)) {
             $tr = [];
@@ -59,13 +43,7 @@ class Query
         return $r;
     }
 
-    /**
-     * @param string|array $css
-     * @param \DOMNode     $context
-     *
-     * @return \DOMNodeList
-     */
-    public function css($css, $context = null)
+    public function css(string|array $css, ?DOMNode $context = null): DomNodeList
     {
         if ($css !== '' && $css[0] === '!') {
             $is_not = true;
