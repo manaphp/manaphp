@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Ws\Chatting;
 
@@ -9,28 +10,16 @@ use ManaPHP\Component;
  */
 class Client extends Component implements ClientInterface
 {
-    /**
-     * @var string
-     */
-    protected $prefix = 'ws_chatting:';
+    protected string $prefix = 'ws_chatting:';
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['prefix'])) {
             $this->prefix = $options['prefix'];
         }
     }
 
-    /**
-     * @param string       $type
-     * @param string       $room
-     * @param string|array $receivers
-     * @param string|array $message
-     */
-    protected function push($type, $room, $receivers, $message)
+    protected function push(string $type, string $room, string|array $receivers, string|array $message): void
     {
         if (!is_string($message)) {
             $message = json_stringify($message);
@@ -45,77 +34,37 @@ class Client extends Component implements ClientInterface
         $this->pubSub->publish($this->prefix . "$type:$room:" . $receivers, $message);
     }
 
-    /**
-     * @param string       $room
-     * @param string|array $message
-     *
-     * @return void
-     */
-    public function pushToRoom($room, $message)
+    public function pushToRoom(string $room, string|array $message): void
     {
         $this->push('message.room', $room, '*', $message);
     }
 
-    /**
-     * @param string       $room
-     * @param array|string $id
-     * @param array|string $message
-     *
-     * @return void
-     */
-    public function pushToId($room, $id, $message)
+    public function pushToId(string $room, int|array $id, string|array $message): void
     {
         $this->push("message.id", $room, $id, $message);
     }
 
-    /**
-     * @param string       $room
-     * @param array|string $name
-     * @param array|string $message
-     *
-     * @return void
-     */
-    public function pushToName($room, $name, $message)
+    public function pushToName(string $room, string|array $name, string|array $message): void
     {
         $this->push("message.name", $room, $name, $message);
     }
 
-    public function broadcast($message)
+    public function broadcast(string|array $message): void
     {
         $this->push('message.broadcast', '*', '*', $message);
     }
 
-    /**
-     * @param string|array $room
-     * @param string|array $message
-     *
-     * @return void
-     */
-    public function closeRoom($room, $message)
+    public function closeRoom(string $room, string|array $message): void
     {
         $this->push('room.close', $room, '*', $message);
     }
 
-    /**
-     * @param string       $room
-     * @param string|array $id
-     * @param string|array $message
-     *
-     * @return void
-     */
-    public function kickoutId($room, $id, $message)
+    public function kickoutId(string $room, string|array $id, string|array $message): void
     {
         $this->push("kickout.id", $room, $id, $message);
     }
 
-    /**
-     * @param string       $room
-     * @param string|array $name
-     * @param string|array $message
-     *
-     * @return void
-     */
-    public function kickoutName($room, $name, $message)
+    public function kickoutName(string $room, string|array $name, string|array $message): void
     {
         $this->push('kickout.name', $room, $name, $message);
     }

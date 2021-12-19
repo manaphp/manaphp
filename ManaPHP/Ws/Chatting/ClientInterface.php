@@ -1,65 +1,21 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Ws\Chatting;
 
 interface ClientInterface
 {
-    /**
-     * @param string       $room
-     * @param string|array $message
-     *
-     * @return void
-     */
-    public function pushToRoom($room, $message);
+    public function pushToRoom(string $room, string|array $message): void;
 
-    /**
-     * @param string       $room
-     * @param string|array $id
-     * @param string|array $message
-     *
-     * @return mixed
-     */
-    public function pushToId($room, $id, $message);
+    public function pushToId(string $room, int|array $id, string|array $message): void;
 
-    /**
-     * @param string       $room
-     * @param string|array $name
-     * @param string|array $message
-     *
-     * @return mixed
-     */
-    public function pushToName($room, $name, $message);
+    public function pushToName(string $room, string|array $name, array $message): void;
 
-    /**
-     * @param string|array $message
-     *
-     * @return void
-     */
-    public function broadcast($message);
+    public function broadcast(string|array $message): void;
 
-    /**
-     * @param string       $room
-     * @param string|array $message
-     *
-     * @return void
-     */
-    public function closeRoom($room, $message);
+    public function closeRoom(string $room, string|array $message): void;
 
-    /**
-     * @param string       $room
-     * @param string|array $id
-     * @param string|array $message
-     *
-     * @return void
-     */
-    public function kickoutId($room, $id, $message);
+    public function kickoutId(string $room, string|array $id, string|array $message): void;
 
-    /**
-     * @param string       $room
-     * @param string|array $name
-     * @param string|array $message
-     *
-     * @return void
-     */
-    public function kickoutName($room, $name, $message);
+    public function kickoutName(string $room, string|array $name, array $message): void;
 }
