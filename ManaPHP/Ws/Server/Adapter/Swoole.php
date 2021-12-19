@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Ws\Server\Adapter;
 
@@ -8,6 +9,7 @@ use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Ws\ServerInterface;
 use Swoole\Coroutine;
+use Swoole\Http\Request;
 use Swoole\Runtime;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
@@ -22,50 +24,20 @@ use Throwable;
  */
 class Swoole extends Component implements ServerInterface
 {
-    /**
-     * @var string
-     */
-    protected $host = '0.0.0.0';
-
-    /**
-     * @var int
-     */
-    protected $port = 9501;
-
-    /**
-     * @var array
-     */
-    protected $settings = [];
-
-    /**
-     * @var \Swoole\WebSocket\Server
-     */
-    protected $swoole;
+    protected string $host = '0.0.0.0';
+    protected int $port = 9501;
+    protected array $settings = [];
+    protected Server $swoole;
 
     /**
      * @var ArrayObject[]
      */
-    protected $contexts = [];
+    protected array $contexts = [];
+    protected int $worker_id;
+    protected array $messageCoroutines = [];
+    protected array $closeCoroutine = [];
 
-    /**
-     * @var int
-     */
-    protected $worker_id;
-
-    /**
-     * @var array
-     */
-    protected $messageCoroutines = [];
-
-    /**
-     * @var array
-     */
-    protected $closeCoroutine = [];
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         $script_filename = get_included_files()[0];
         $_SERVER = [
@@ -116,12 +88,7 @@ class Swoole extends Component implements ServerInterface
         $this->swoole->on('message', [$this, 'onMessage']);
     }
 
-    /**
-     * @param \Swoole\Http\Request $request
-     *
-     * @return void
-     */
-    protected function prepareGlobals($request)
+    protected function prepareGlobals(Request $request): void
     {
         $_server = array_change_key_case($request->server, CASE_UPPER);
 
@@ -140,33 +107,17 @@ class Swoole extends Component implements ServerInterface
         $this->globals->prepare($_get, [], $_server, null, $request->cookie ?? []);
     }
 
-    /**
-     * @param \Swoole\WebSocket\Server $server
-     *
-     * @noinspection PhpUnusedParameterInspection
-     *
-     * @return void
-     */
-    public function onStart($server)
+    public function onStart(Server $server): void
     {
         @cli_set_process_title(sprintf('manaphp %s: master', $this->config->get("id")));
     }
 
-    /**
-     * @return void
-     */
-    public function onManagerStart()
+    public function onManagerStart(): void
     {
         @cli_set_process_title(sprintf('manaphp %s: manager', $this->config->get("id")));
     }
 
-    /**
-     * @param \Swoole\WebSocket\Server $server
-     * @param int                      $worker_id
-     *
-     * @return void
-     */
-    public function onWorkerStart($server, $worker_id)
+    public function onWorkerStart(Server $server, int $worker_id): void
     {
         $this->worker_id = $worker_id;
 
@@ -179,13 +130,7 @@ class Swoole extends Component implements ServerInterface
         }
     }
 
-    /**
-     * @param \Swoole\WebSocket\Server $server
-     * @param int                      $worker_id
-     *
-     * @return void
-     */
-    public function onWorkerStop($server, $worker_id)
+    public function onWorkerStop(Server $server, int $worker_id): void
     {
         try {
             $this->fireEvent('wsServer:stop', compact('server', 'worker_id'));
@@ -194,13 +139,7 @@ class Swoole extends Component implements ServerInterface
         }
     }
 
-    /**
-     * @param \Swoole\WebSocket\Server $server
-     * @param \Swoole\Http\Request     $request
-     *
-     * @return void
-     */
-    public function onOpen(/** @noinspection PhpUnusedParameterInspection */ $server, $request)
+    public function onOpen(Server $server, Request $request): void
     {
         $fd = $request->fd;
 
@@ -231,13 +170,7 @@ class Swoole extends Component implements ServerInterface
         }
     }
 
-    /**
-     * @param \Swoole\WebSocket\Server $server
-     * @param int                      $fd
-     *
-     * @return void
-     */
-    public function onClose($server, $fd)
+    public function onClose(Server $server, int $fd): void
     {
         if (!$server->isEstablished($fd)) {
             return;
@@ -263,13 +196,7 @@ class Swoole extends Component implements ServerInterface
         }
     }
 
-    /**
-     * @param \Swoole\WebSocket\Server $server
-     * @param Frame                    $frame
-     *
-     * @return void
-     */
-    public function onMessage(/** @noinspection PhpUnusedParameterInspection */ $server, $frame)
+    public function onMessage(Server $server, Frame $frame): void
     {
         $fd = $frame->fd;
 
@@ -298,10 +225,7 @@ class Swoole extends Component implements ServerInterface
         }
     }
 
-    /**
-     * @return void
-     */
-    public function start()
+    public function start(): void
     {
         if (MANAPHP_COROUTINE_ENABLED) {
             Runtime::enableCoroutine(true);
@@ -321,7 +245,7 @@ class Swoole extends Component implements ServerInterface
      *
      * @return bool
      */
-    public function push($fd, $data)
+    public function push(int $fd, mixed $data): bool
     {
         return @$this->swoole->push($fd, is_string($data) ? $data : json_stringify($data));
     }
@@ -331,7 +255,7 @@ class Swoole extends Component implements ServerInterface
      *
      * @return void
      */
-    public function broadcast($data)
+    public function broadcast(string $data): void
     {
         $swoole = $this->swoole;
 
@@ -342,35 +266,22 @@ class Swoole extends Component implements ServerInterface
         }
     }
 
-    /**
-     * @param int $fd
-     *
-     * @return bool
-     */
-    public function disconnect($fd)
+    public function disconnect(int $fd): bool
     {
         return $this->swoole->disconnect($fd, 1000, '');
     }
 
-    /**
-     * @param int $fd
-     *
-     * @return bool
-     */
-    public function exists($fd)
+    public function exists(int $fd): bool
     {
         return $this->swoole->exist($fd);
     }
 
-    public function reload()
+    public function reload(): void
     {
         $this->swoole->reload();
     }
 
-    /**
-     * @return int
-     */
-    public function getWorkerId()
+    public function getWorkerId(): int
     {
         return $this->worker_id;
     }

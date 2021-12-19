@@ -1,50 +1,21 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Ws;
 
 interface ServerInterface
 {
-    /**
-     * @return void
-     */
-    public function start();
+    public function start(): void;
 
-    /**
-     * @param int   $fd
-     * @param mixed $data
-     *
-     * @return bool
-     */
-    public function push($fd, $data);
+    public function push(int $fd, mixed $data): bool;
 
-    /**
-     * @param string $data
-     *
-     * @return int
-     */
-    public function broadcast($data);
+    public function broadcast(string $data): void;
 
-    /**
-     * @param int $fd
-     *
-     * @return bool
-     */
-    public function disconnect($fd);
+    public function disconnect(int $fd): bool;
 
-    /**
-     * @param int $fd
-     *
-     * @return bool
-     */
-    public function exists($fd);
+    public function exists(int $fd): bool;
 
-    /**
-     * @return void
-     */
-    public function reload();
+    public function reload(): void;
 
-    /**
-     * @return int
-     */
-    public function getWorkerId();
+    public function getWorkerId(): int;
 }
