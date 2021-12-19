@@ -1,10 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Ws;
 
 use ManaPHP\Component;
 use ManaPHP\Event\Emitter;
+use ManaPHP\Event\EmitterInterface;
 use ManaPHP\Exception\NonCloneableException;
+use ManaPHP\Ws\Client\EngineInterface;
 use ManaPHP\Ws\Client\Message;
 use Throwable;
 
@@ -13,60 +16,18 @@ use Throwable;
  */
 class Client extends Component implements ClientInterface
 {
-    /**
-     * @var string
-     */
-    protected $endpoint;
+    protected string $endpoint;
+    protected string $proxy;
+    protected float $timeout = 3.0;
+    protected string $protocol;
+    protected bool $masking = true;
+    protected string $origin;
+    protected string $user_agent = 'manaphp/client';
+    protected EngineInterface $engine;
+    protected int $pool_size = 4;
+    protected EmitterInterface $emitter;
 
-    /**
-     * @var string
-     */
-    protected $proxy;
-
-    /**
-     * @var float
-     */
-    protected $timeout = 3.0;
-
-    /**
-     * @var string
-     */
-    protected $protocol;
-
-    /**
-     * @var bool
-     */
-    protected $masking = true;
-
-    /**
-     * @var string
-     */
-    protected $origin;
-
-    /**
-     * @var string
-     */
-    protected $user_agent = 'manaphp/client';
-
-    /**
-     * @var \ManaPHP\Ws\Client\EngineInterface
-     */
-    protected $engine;
-
-    /**
-     * @var int
-     */
-    protected $pool_size = 4;
-
-    /**
-     * @var \ManaPHP\Event\EmitterInterface
-     */
-    protected $emitter;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options)
+    public function __construct(array $options)
     {
         $this->endpoint = $options['endpoint'];
 
@@ -117,32 +78,24 @@ class Client extends Component implements ClientInterface
         throw new NonCloneableException($this);
     }
 
-    public function on($event, $handler)
+    public function on(string $event, callable $handler): static
     {
         $this->emitter->on($event, $handler);
 
         return $this;
     }
 
-    public function emit($event, $data = null)
+    public function emit(string $event, mixed $data = null): mixed
     {
         return $this->emitter->emit($event, $data);
     }
 
-    /**
-     * @return string
-     */
-    public function getEndpoint()
+    public function getEndpoint(): string
     {
         return $this->endpoint;
     }
 
-    /**
-     * @param string $endpoint
-     *
-     * @return static
-     */
-    public function setEndpoint($endpoint)
+    public function setEndpoint(string $endpoint): static
     {
         $this->endpoint = $endpoint;
 
@@ -163,13 +116,7 @@ class Client extends Component implements ClientInterface
         return $this;
     }
 
-    /**
-     * @param string $message
-     * @param float  $timeout
-     *
-     * @return \ManaPHP\Ws\Client\Message
-     */
-    public function request($message, $timeout = null)
+    public function request(string $message, ?float $timeout = null): Message
     {
         $end_time = microtime(true) + ($timeout ?? $this->timeout);
 
@@ -187,13 +134,7 @@ class Client extends Component implements ClientInterface
         }
     }
 
-    /**
-     * @param callable $handler
-     * @param int      $keepalive
-     *
-     * @return void
-     */
-    public function subscribe($handler, $keepalive = 60)
+    public function subscribe(callable $handler, int $keepalive = 60): void
     {
         $last_time = null;
 

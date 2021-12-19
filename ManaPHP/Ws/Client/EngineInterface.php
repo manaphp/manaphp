@@ -1,44 +1,19 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Ws\Client;
 
 interface EngineInterface
 {
-    /**
-     * @param string $endpoint
-     *
-     * @return static
-     */
-    public function setEndpoint($endpoint);
+    public function setEndpoint(string $endpoint): static;
 
-    /**
-     * @return string
-     */
-    public function getEndpoint();
+    public function getEndpoint(): string;
 
-    /**
-     * @param int    $op_code
-     * @param string $data
-     * @param float  $timeout
-     *
-     * @return mixed
-     */
-    public function send($op_code, $data, $timeout);
+    public function send(int $op_code, string $data, float $timeout): void;
 
-    /**
-     * @param float $timeout
-     *
-     * @return bool
-     */
-    public function isRecvReady($timeout);
+    public function isRecvReady(float $timeout): bool;
 
-    /**
-     * @param float $timeout
-     *
-     * @return \ManaPHP\Ws\Client\Message
-     */
-    public function recv($timeout = null);
+    public function recv(?float $timeout = null): Message;
 
-
-    public function close();
+    public function close(): void;
 }

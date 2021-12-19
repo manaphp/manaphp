@@ -1,61 +1,25 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Ws\Client;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Ws\ClientInterface;
 
 class Engine extends Component implements EngineInterface
 {
-    /**
-     * @var string
-     */
-    protected $endpoint;
+    protected string $endpoint;
+    protected string $proxy;
+    protected float $timeout = 3.0;
+    protected string $protocol;
+    protected bool $masking = true;
+    protected string $origin;
+    protected string $user_agent = 'manaphp/client';
+    protected mixed $socket;
+    protected ClientInterface $owner;
 
-    /**
-     * @var string
-     */
-    protected $proxy;
-
-    /**
-     * @var float
-     */
-    protected $timeout = 3.0;
-
-    /**
-     * @var string
-     */
-    protected $protocol;
-
-    /**
-     * @var bool
-     */
-    protected $masking = true;
-
-    /**
-     * @var string
-     */
-    protected $origin;
-
-    /**
-     * @var string
-     */
-    protected $user_agent = 'manaphp/client';
-
-    /**
-     * @var resource
-     */
-    protected $socket;
-
-    /**
-     * @var \ManaPHP\Ws\Client
-     */
-    protected $owner;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options)
+    public function __construct(array $options)
     {
         $this->endpoint = $options['endpoint'];
 
@@ -93,12 +57,7 @@ class Engine extends Component implements EngineInterface
         $this->close();
     }
 
-    /**
-     * @param string $endpoint
-     *
-     * @return static
-     */
-    public function setEndpoint($endpoint)
+    public function setEndpoint(string $endpoint): static
     {
         if ($this->socket !== null) {
             $this->close();
@@ -109,18 +68,12 @@ class Engine extends Component implements EngineInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getEndpoint()
+    public function getEndpoint(): string
     {
         return $this->endpoint;
     }
 
-    /**
-     * @return resource
-     */
-    protected function open()
+    protected function open(): mixed
     {
         if ($this->socket) {
             return $this->socket;
@@ -195,14 +148,7 @@ class Engine extends Component implements EngineInterface
         return $this->socket;
     }
 
-    /**
-     * @param resource $socket
-     * @param string   $data
-     * @param float    $timeout
-     *
-     * @return void
-     */
-    protected function sendInternal($socket, $data, $timeout = null)
+    protected function sendInternal(mixed $socket, string $data, ?float $timeout = null): void
     {
         $send_length = 0;
         $data_length = strlen($data);
@@ -234,12 +180,7 @@ class Engine extends Component implements EngineInterface
         } while ($send_length !== $data_length);
     }
 
-    /**
-     * @param int    $op_code
-     * @param string $data
-     * @param float  $timeout
-     */
-    public function send($op_code, $data, $timeout = null)
+    public function send(int $op_code, string $data, ?float $timeout = null): void
     {
         $str = chr(0x80 | $op_code);
 
@@ -269,12 +210,7 @@ class Engine extends Component implements EngineInterface
         $this->sendInternal($this->socket ?? $this->open(), $str, $timeout);
     }
 
-    /**
-     * @param float $timeout
-     *
-     * @return \ManaPHP\Ws\Client\Message
-     */
-    public function recv($timeout = null)
+    public function recv(?float $timeout = null): Message
     {
         $socket = $this->socket ?? $this->open();
 
@@ -384,12 +320,7 @@ class Engine extends Component implements EngineInterface
         return new Message($op_code, $payload, round(microtime(true) - $start_time, 3));
     }
 
-    /**
-     * @param float $timeout
-     *
-     * @return bool
-     */
-    public function isRecvReady($timeout)
+    public function isRecvReady(float $timeout): bool
     {
         $socket = $this->socket ?? $this->open();
 
@@ -407,10 +338,7 @@ class Engine extends Component implements EngineInterface
         return false;
     }
 
-    /**
-     * @return void
-     */
-    public function close()
+    public function close(): void
     {
         if ($this->socket !== null) {
             fclose($this->socket);

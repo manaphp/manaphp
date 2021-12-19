@@ -1,42 +1,19 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Ws;
 
+use ManaPHP\Ws\Client\Message;
+
 interface ClientInterface
 {
-    /**
-     * @param string   $event
-     * @param callable $handler
-     *
-     * @return static
-     */
-    public function on($event, $handler);
+    public function on(string $event, callable $handler): static;
 
-    /**
-     * @return string
-     */
-    public function getEndpoint();
+    public function getEndpoint(): string;
 
-    /**
-     * @param string $endpoint
-     *
-     * @return static
-     */
-    public function setEndpoint($endpoint);
+    public function setEndpoint(string $endpoint): static;
 
-    /**
-     * @param string $message
-     * @param float  $timeout
-     *
-     * @return \ManaPHP\Ws\Client\Message
-     */
-    public function request($message, $timeout = null);
+    public function request(string $message, ?float $timeout = null): Message;
 
-    /**
-     * @param callable $handler
-     * @param int      $keepalive
-     *
-     * @return void
-     */
-    public function subscribe($handler, $keepalive = 60);
+    public function subscribe(callable $handler, int $keepalive = 60): void;
 }
