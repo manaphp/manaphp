@@ -1,26 +1,15 @@
 <?php
+declare(strict_types=1);
 
 if (!function_exists('attr_nv')) {
-    /**
-     * @param string $name
-     * @param string $default
-     *
-     * @return string
-     */
-    function attr_nv($name, $default = '')
+    function attr_nv(string $name, string $default = ''): string
     {
         return sprintf('name="%s" value="%s"', $name, e(input($name, $default)));
     }
 }
 
 if (!function_exists('attr_inv')) {
-    /**
-     * @param string $name
-     * @param string $default
-     *
-     * @return string
-     */
-    function attr_inv($name, $default = '')
+    function attr_inv(string $name, string $default = ''): string
     {
         if ($pos = strpos($name, '[')) {
             $id = substr($name, $pos + 1, -1);
@@ -33,52 +22,28 @@ if (!function_exists('attr_inv')) {
 }
 
 if (!function_exists('bundle')) {
-    /**
-     *
-     * @param array  $files
-     * @param string $name
-     *
-     * @return string
-     */
-    function bundle($files, $name = 'app')
+    function bundle(array $files, string $name = 'app'): string
     {
         return container(\ManaPHP\Html\Renderer\AssetBundleInterface::class)->bundle($files, $name);
     }
 }
 
 if (!function_exists('action')) {
-    /**
-     * @param array|string $args
-     * @param bool|string  $scheme
-     *
-     * @return string
-     */
-    function action($args = [], $scheme = false)
+    function action(string|array $args = [], bool|string $scheme = false): string
     {
         return container(\ManaPHP\Http\RouterInterface::class)->createUrl($args, $scheme);
     }
 }
 
 if (!function_exists('url')) {
-    /**
-     * @param string|array $args
-     * @param bool|string  $scheme
-     *
-     * @return string
-     */
-    function url($args, $scheme = false)
+    function url(string|array $args, bool|string $scheme = false): string
     {
         return container(\ManaPHP\Http\UrlInterface::class)->get($args, $scheme);
     }
 }
 
 if (!function_exists('asset')) {
-    /**
-     * @param string $path
-     *
-     * @return string
-     */
-    function asset($path)
+    function asset(string $path): string
     {
         static $alias;
         if (!$alias) {
