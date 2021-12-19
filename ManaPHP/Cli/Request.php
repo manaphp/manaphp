@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
@@ -8,43 +9,18 @@ use ReflectionMethod;
 
 class Request extends Component implements RequestInterface
 {
-    /**
-     * @var array
-     */
-    protected $options = [];
-
-    /**
-     * @var array
-     */
-    protected $values = [];
-
-    /**
-     * @var string
-     */
-    protected $prefix;
-
-    /**
-     * @var int
-     */
-    protected $count = 0;
-
-    /**
-     * @var string
-     */
-    protected $request_id;
+    protected array $options = [];
+    protected array $values = [];
+    protected string $prefix;
+    protected int $count = 0;
+    protected string $request_id;
 
     public function __construct()
     {
         $this->prefix = bin2hex(random_bytes(4));
     }
 
-    /**
-     * @param array $arguments
-     *
-     * @return static
-     * @throws \ManaPHP\Cli\Request\Exception
-     */
-    public function parse($arguments = null)
+    public function parse(?array $arguments = null): static
     {
         $this->values = [];
         $this->options = [];
@@ -93,14 +69,7 @@ class Request extends Component implements RequestInterface
         return $this;
     }
 
-    /**
-     * @param string|int $name
-     * @param mixed      $default
-     *
-     * @return mixed
-     * @throws \ManaPHP\Cli\Request\Exception
-     */
-    public function get($name = null, $default = null)
+    public function get(null|string|int $name = null, mixed $default = null): mixed
     {
         if ($name === null) {
             return $this->options;
@@ -133,12 +102,7 @@ class Request extends Component implements RequestInterface
         return $default;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function has($name)
+    public function has(string $name): bool
     {
         foreach (preg_split('#[|,:]+#', $name) as $p) {
             if (isset($this->options[$p])) {
@@ -154,29 +118,17 @@ class Request extends Component implements RequestInterface
         return false;
     }
 
-    /**
-     * @param int   $position
-     * @param mixed $default
-     *
-     * @return string
-     */
-    public function getValue($position, $default = null)
+    public function getValue(int $position, mixed $default = null): mixed
     {
         return $this->values[$position] ?? $default;
     }
 
-    public function getValues()
+    public function getValues(): array
     {
         return $this->values;
     }
 
-    /**
-     * @param string $name
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getServer($name = null, $default = '')
+    public function getServer(?string $name = null, mixed $default = ''): mixed
     {
         if ($name === null) {
             return $_SERVER;
@@ -185,30 +137,17 @@ class Request extends Component implements RequestInterface
         }
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasServer($name)
+    public function hasServer(string $name): bool
     {
         return isset($_SERVER[$name]);
     }
 
-    /**
-     * @return string
-     */
-    public function getRequestId()
+    public function getRequestId(): string
     {
         return $this->request_id;
     }
 
-    /**
-     * @param string $request_id
-     *
-     * @return void
-     */
-    public function setRequestId($request_id = null)
+    public function setRequestId(?string $request_id = null): void
     {
         if ($request_id) {
             $this->request_id = $request_id;
@@ -217,13 +156,7 @@ class Request extends Component implements RequestInterface
         }
     }
 
-    /**
-     * @param object $instance
-     * @param string $action
-     *
-     * @return void
-     */
-    public function completeShortNames($instance, $action)
+    public function completeShortNames(object $instance, string $action): void
     {
         $shorts = [];
         $rMethod = new ReflectionMethod($instance, $action);

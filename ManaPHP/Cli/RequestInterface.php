@@ -1,76 +1,27 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
 interface RequestInterface
 {
-    /**
-     * @param array $arguments
-     *
-     * @return static
-     */
-    public function parse($arguments = null);
+    public function parse(?array $arguments = null): static;
 
-    /**
-     * @param string|int $name
-     * @param mixed      $default
-     *
-     * @return mixed
-     */
-    public function get($name = null, $default = null);
+    public function get(null|string|int $name = null, mixed $default = null): mixed;
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function has($name);
+    public function has(string $name): bool;
 
-    /**
-     * @param int   $position
-     * @param mixed $default
-     *
-     * @return string
-     */
-    public function getValue($position, $default = null);
+    public function getValue(int $position, mixed $default = null): mixed;
 
-    /**
-     * @return array
-     */
-    public function getValues();
+    public function getValues(): array;
 
-    /**
-     * @param string $name
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getServer($name = null, $default = '');
+    public function getServer(?string $name = null, mixed $default = ''): mixed;
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasServer($name);
+    public function hasServer(string $name): bool;
 
-    /**
-     * @return string
-     */
-    public function getRequestId();
+    public function getRequestId(): string;
 
-    /**
-     * @param string $request_id
-     *
-     * @return void
-     */
-    public function setRequestId($request_id = null);
+    public function setRequestId(?string $request_id = null): void;
 
-    /**
-     * @param object $instance
-     * @param string $action
-     *
-     * @return void
-     */
-    public function completeShortNames($instance, $action);
+    public function completeShortNames(object $instance, string $action):void;
 }
