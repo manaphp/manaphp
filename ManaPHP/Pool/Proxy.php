@@ -1,36 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Pool;
 
 class Proxy
 {
-    /**
-     * @var \ManaPHP\Pool\ManagerInterface
-     */
-    protected $manager;
+    protected ManagerInterface $manager;
+    protected object $owner;
+    protected object $instance;
+    protected string $type;
 
-    /**
-     * @var object
-     */
-    protected $owner;
-
-    /**
-     * @var mixed
-     */
-    protected $instance;
-
-    /**
-     * @var string
-     */
-    protected $type;
-
-    /**
-     * @param \ManaPHP\Pool\ManagerInterface $manager
-     * @param object                         $owner
-     * @param mixed                          $instance
-     * @param string                         $type
-     */
-    public function __construct($manager, $owner, $instance, $type)
+    public function __construct(ManagerInterface $manager, object $owner, object $instance, string $type)
     {
         $this->manager = $manager;
         $this->owner = $owner;
@@ -43,13 +23,7 @@ class Proxy
         $this->manager->push($this->owner, $this->instance, $this->type);
     }
 
-    /**
-     * @param string $method
-     * @param array  $arguments
-     *
-     * @return mixed
-     */
-    public function __call($method, $arguments)
+    public function __call(string $method, array $arguments): mixed
     {
         $instance = $this->instance;
         return $instance->$method(...$arguments);
