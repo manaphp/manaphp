@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Rpc\Http;
 
@@ -13,20 +14,10 @@ use ManaPHP\Rpc\ServerInterface;
  */
 abstract class AbstractServer extends Component implements ServerInterface
 {
-    /**
-     * @var string
-     */
-    protected $host = '0.0.0.0';
+    protected string $host = '0.0.0.0';
+    protected int $port = 9501;
 
-    /**
-     * @var int
-     */
-    protected $port = 9501;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['host'])) {
             $this->host = $options['host'];
@@ -37,10 +28,7 @@ abstract class AbstractServer extends Component implements ServerInterface
         }
     }
 
-    /**
-     * @return bool
-     */
-    public function authenticate()
+    public function authenticate(): bool
     {
         if ($this->rpcHandler->authenticate() !== false) {
             return true;

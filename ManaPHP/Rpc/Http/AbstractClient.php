@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Rpc\Http;
 
@@ -6,15 +7,9 @@ use ManaPHP\Component;
 
 abstract class AbstractClient extends Component implements ClientInterface
 {
-    /**
-     * @var string
-     */
-    protected $endpoint;
+    protected string $endpoint;
 
-    /**
-     * @return string
-     */
-    public function getEndpoint()
+    public function getEndpoint(): string
     {
         return $this->endpoint;
     }
