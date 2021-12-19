@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Coroutine;
 
@@ -7,15 +8,9 @@ use Swoole\Coroutine;
 
 class Manager extends Component implements ManagerInterface
 {
-    /**
-     * @var array
-     */
-    protected $option;
+    protected array $option;
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         $this->option = $options;
 
@@ -24,21 +19,12 @@ class Manager extends Component implements ManagerInterface
         }
     }
 
-    /**
-     * @return \ManaPHP\Coroutine\Scheduler|\ManaPHP\Coroutine\SchedulerInterface
-     */
-    public function createScheduler()
+    public function createScheduler(): SchedulerInterface
     {
         return $this->container->make('ManaPHP\Coroutine\Scheduler');
     }
 
-    /**
-     * @param callable $fn
-     * @param int      $count
-     *
-     * @return \ManaPHP\Coroutine\TaskInterface
-     */
-    public function createTask($fn, $count = 1)
+    public function createTask(callable $fn, int $count = 1): TaskInterface
     {
         return $this->container->make('ManaPHP\Coroutine\Task', [$fn, $count]);
     }

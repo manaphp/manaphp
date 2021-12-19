@@ -1,19 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Coroutine;
 
 interface ManagerInterface
 {
-    /**
-     * @return \ManaPHP\Coroutine\SchedulerInterface
-     */
-    public function createScheduler();
+    public function createScheduler(): SchedulerInterface;
 
-    /**
-     * @param callable $fn
-     * @param int      $count
-     *
-     * @return \ManaPHP\Coroutine\TaskInterface
-     */
-    public function createTask($fn, $count = 1);
+    public function createTask(callable $fn, int $count = 1): TaskInterface;
 }
