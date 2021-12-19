@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP;
 
@@ -14,12 +15,7 @@ class Controller extends Component implements LogCategorizable
         return basename(str_replace('\\', '.', static::class), 'Controller');
     }
 
-    /**
-     * @param string $action
-     *
-     * @return mixed
-     */
-    public function invoke($action)
+    public function invoke(string $action): mixed
     {
         return $this->invoker->invoke($this, $action . 'Action');
     }
