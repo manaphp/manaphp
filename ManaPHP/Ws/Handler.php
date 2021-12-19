@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Ws;
 
@@ -19,13 +20,7 @@ use Throwable;
  */
 class Handler extends Component implements HandlerInterface
 {
-    /**
-     * @param int    $fd
-     * @param string $event
-     *
-     * @return void
-     */
-    public function handle($fd, $event)
+    public function handle(int $fd, string $event): void
     {
         try {
             $throwable = null;
@@ -81,33 +76,17 @@ class Handler extends Component implements HandlerInterface
         }
     }
 
-    /**
-     * @param int $fd
-     *
-     * @return void
-     */
-    public function onOpen($fd)
+    public function onOpen(int $fd): void
     {
         $this->handle($fd, 'open');
     }
 
-    /**
-     * @param int $fd
-     *
-     * @return void
-     */
-    public function onClose($fd)
+    public function onClose(int $fd): void
     {
         $this->handle($fd, 'close');
     }
 
-    /**
-     * @param int    $fd
-     * @param string $data
-     *
-     * @return void
-     */
-    public function onMessage($fd, $data)
+    public function onMessage(int $fd, string $data): void
     {
         $this->request->set('data', $data);
         $this->handle($fd, 'message');

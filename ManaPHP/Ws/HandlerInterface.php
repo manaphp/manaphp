@@ -1,22 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Ws;
 
 interface HandlerInterface
 {
-    /**
-     * @param int $fd
-     */
-    public function onOpen($fd);
+    public function onOpen(int $fd): void;
 
-    /**
-     * @param int $fd
-     */
-    public function onClose($fd);
+    public function onClose(int $fd): void;
 
-    /**
-     * @param int    $fd
-     * @param string $data
-     */
-    public function onMessage($fd, $data);
+    public function onMessage(int $fd, string $data): void;
 }
