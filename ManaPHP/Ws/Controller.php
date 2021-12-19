@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Ws;
 
@@ -15,7 +16,7 @@ namespace ManaPHP\Ws;
  * @method messageAction($fd, $data)
  *
  */
-class Controller extends \ManaPHP\Controller
+class Controller extends \ManaPHP\Http\Controller
 {
 
 }
