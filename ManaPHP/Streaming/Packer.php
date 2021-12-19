@@ -1,26 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Streaming;
 
 class Packer
 {
-    /**
-     * @var string
-     */
-    protected $format = '';
+    protected string $format = '';
+    protected array $values = [];
 
-    /**
-     * @var array
-     */
-    protected $values = [];
-
-    /**
-     * @param string $format
-     * @param array  $args
-     *
-     * @return static
-     */
-    protected function append($format, $args)
+    protected function append(string $format, array $args): static
     {
         $count = count($args);
         if ($count === 1) {
@@ -34,14 +22,7 @@ class Packer
         return $this;
     }
 
-    /**
-     * string
-     *
-     * @param string ...$args
-     *
-     * @return static
-     */
-    public function string(...$args)
+    public function string(...$args): static
     {
         foreach ($args as $arg) {
             $this->format .= 'a' . strlen($arg);
@@ -51,15 +32,7 @@ class Packer
         return $this;
     }
 
-    /**
-     * NUL-padded string
-     *
-     * @param string $str
-     * @param int    $len
-     *
-     * @return static
-     */
-    public function stringNP($str, $len)
+    public function stringNP(string $str, int $len): static
     {
         $this->format .= 'a' . $len;
         $this->values[] = $str;
@@ -67,15 +40,7 @@ class Packer
         return $this;
     }
 
-    /**
-     * SPACE-padded string
-     *
-     * @param string $str
-     * @param int    $len
-     *
-     * @return static
-     */
-    public function stringSP($str, $len)
+    public function stringSP(string $str, int $len): static
     {
         $this->format .= 'A' . $len;
         $this->values[] = $str;
@@ -83,310 +48,137 @@ class Packer
         return $this;
     }
 
-    /**
-     * Hex string, low nibble first
-     *
-     * @param string ...$args
-     *
-     * @return static
-     */
-    public function hexLNF(...$args)
+    public function hexLNF(...$args): static
     {
         return $this->append('h', $args);
     }
 
-    /**
-     * Hex string, high nibble first
-     *
-     * @param string ...$args
-     *
-     * @return static
-     */
-    public function hexHNF(...$args)
+    public function hexHNF(...$args): static
     {
         return $this->append('H', $args);
     }
 
-    /**
-     * unsigned char
-     *
-     * @param string ...$args
-     *
-     * @return static
-     */
-    public function byte(...$args)
+    public function byte(...$args): static
     {
         return $this->append('C', $args);
     }
 
-    /**
-     * signed char
-     *
-     * @param string ...$args
-     *
-     * @return static
-     */
-    public function int8(...$args)
+    public function int8(...$args): static
     {
         return $this->append('c', $args);
     }
 
-    /**
-     * unsigned char
-     *
-     * @param string ...$args
-     *
-     * @return static
-     */
-    public function int8U(...$args)
+    public function int8U(...$args): static
     {
         return $this->append('C', $args);
     }
 
-    /**
-     * signed short (always 16 bit, machine byte order)
-     *
-     * @param int ...$args
-     *
-     * @return static
-     */
-    public function int16(...$args)
+    public function int16(...$args): static
     {
         return $this->append('s', $args);
     }
 
-    /**
-     * unsigned short (always 16 bit, machine byte order)
-     *
-     * @param int ...$args
-     *
-     * @return static
-     */
-    public function int16U(...$args)
+    public function int16U(...$args): static
     {
         return $this->append('S', $args);
     }
 
-    /**
-     * unsigned short (always 16 bit, big endian byte order)
-     *
-     * @param int ...$args
-     *
-     * @return static
-     */
-    public function int16BE(...$args)
+    public function int16BE(...$args): static
     {
         return $this->append('n', $args);
     }
 
-    /**
-     * unsigned short (always 16 bit, little endian byte order)
-     *
-     * @param int ...$args
-     *
-     * @return static
-     */
-    public function int16LE(...$args)
+    public function int16LE(...$args): static
     {
         return $this->append('v', $args);
     }
 
-    /**
-     * signed long (always 32 bit, machine byte order)
-     *
-     * @param int ...$args
-     *
-     * @return static
-     */
-    public function int32(...$args)
+    public function int32(...$args): static
     {
         return $this->append('l', $args);
     }
 
-    /**
-     * unsigned long (always 32 bit, machine byte order)
-     *
-     * @param int ...$args
-     *
-     * @return static
-     */
-    public function int32U(...$args)
+    public function int32U(...$args): static
     {
         return $this->append('L', $args);
     }
 
-    /**
-     * unsigned long (always 32 bit, big endian byte order)
-     *
-     * @param int ...$args
-     *
-     * @return static
-     */
-    public function int32BE(...$args)
+    public function int32BE(...$args): static
     {
         return $this->append('N', $args);
     }
 
-    /**
-     * unsigned long (always 32 bit, little endian byte order)
-     *
-     * @param int ...$args
-     *
-     * @return static
-     */
-    public function int32LE(...$args)
+    public function int32LE(...$args): static
     {
         return $this->append('V', $args);
     }
 
-    /**
-     * signed long long (always 64 bit, machine byte order)
-     *
-     * @param int ...$args
-     *
-     * @return static
-     */
-    public function int64(...$args)
+    public function int64(...$args): static
     {
         return $this->append('q', $args);
     }
 
-    /**
-     * unsigned long long (always 64 bit, machine byte order)
-     *
-     * @param int ...$args
-     *
-     * @return static
-     */
-    public function int64U(...$args)
+    public function int64U(...$args): static
     {
         return $this->append('Q', $args);
     }
 
-    /**
-     * unsigned long long (always 64 bit, big endian byte order)
-     *
-     * @param int ...$args
-     *
-     * @return static
-     */
-    public function int64BE(...$args)
+    public function int64BE(...$args): static
     {
         return $this->append('J', $args);
     }
 
-    /**
-     * unsigned long long (always 64 bit, little endian byte order)
-     *
-     * @param int ...$args
-     *
-     * @return static
-     */
-    public function int64LE(...$args)
+    public function int64LE(...$args): static
     {
         return $this->append('P', $args);
     }
 
-    /**
-     * float (machine dependent size and representation)
-     *
-     * @param float ...$args
-     *
-     * @return static
-     */
-    public function float(...$args)
+    public function float(...$args): static
     {
         return $this->append('f', $args);
     }
 
-    /**
-     * float (machine dependent size, little endian byte order)
-     *
-     * @param float ...$args
-     *
-     * @return static
-     */
-    public function floatLE(...$args)
+    public function floatLE(...$args): static
     {
         return $this->append('g', $args);
     }
 
-    /**
-     * float (machine dependent size, big endian byte order)
-     *
-     * @param float ...$args
-     *
-     * @return static
-     */
-    public function floatBE(...$args)
+    public function floatBE(...$args): static
     {
         return $this->append('G', $args);
     }
 
-    /**
-     * double (machine dependent size and representation)
-     *
-     * @param double ...$args
-     *
-     * @return static
-     */
-    public function double(...$args)
+    public function double(...$args): static
     {
         return $this->append('G', $args);
     }
 
-    /**
-     * double (machine dependent size, little endian byte order)
-     *
-     * @param double ...$args
-     *
-     * @return static
-     */
-    public function doubleLE(...$args)
+    public function doubleLE(...$args): static
     {
         return $this->append('e', $args);
     }
 
-    /**
-     * double (machine dependent size, big endian byte order)
-     *
-     * @param double ...$args
-     *
-     * @return static
-     */
-    public function doubleBE(...$args)
+    public function doubleBE(...$args): static
     {
         return $this->append('E', $args);
     }
 
-    /**
-     * @return string
-     */
-    public function format()
+    public function format(): string
     {
         return $this->format;
     }
 
-    /**
-     * @return array
-     */
-    public function values()
+    public function values(): array
     {
         return $this->values;
     }
 
-    /**
-     * @return string
-     */
-    public function pack()
+    public function pack(): string
     {
         return pack($this->format, ...$this->values);
     }
 
-    /**
-     * @return string
-     */
-    public function dump()
+    public function dump(): string
     {
         return bin2hex($this->pack());
     }
