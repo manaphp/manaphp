@@ -1,13 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Coroutine;
 
 class Mutex
 {
-    /**
-     * @var \ManaPHP\Coroutine\Channel
-     */
-    protected $channel;
+    protected Channel $channel;
 
     public function __construct()
     {
@@ -15,26 +13,17 @@ class Mutex
         $this->channel->push('');
     }
 
-    /**
-     * @return void
-     */
-    public function lock()
+    public function lock(): void
     {
         $this->channel->pop();
     }
 
-    /**
-     * @return void
-     */
-    public function unlock()
+    public function unlock(): void
     {
         $this->channel->push('');
     }
 
-    /**
-     * @return bool
-     */
-    public function isLocked()
+    public function isLocked(): bool
     {
         return $this->channel->isEmpty();
     }
