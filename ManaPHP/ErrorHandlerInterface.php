@@ -7,5 +7,5 @@ use Throwable;
 
 interface ErrorHandlerInterface
 {
-    public function handle(Throwable $throwable);
+    public function handle(Throwable $throwable): void;
 }
