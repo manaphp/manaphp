@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Messaging\Queue\Adapter;
 
@@ -19,42 +20,23 @@ use ManaPHP\Messaging\AbstractQueue;
  */
 class Db extends AbstractQueue
 {
-    /**
-     * @var string
-     */
-    protected $table = 'manaphp_message_queue';
+    protected string $table = 'manaphp_message_queue';
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['table'])) {
             $this->table = $options['table'];
         }
     }
 
-    /**
-     * @param string $topic
-     * @param string $body
-     * @param int    $priority
-     *
-     * @return void
-     */
-    public function do_push($topic, $body, $priority = self::PRIORITY_NORMAL)
+    public function do_push(string $topic, string $body, int $priority = self::PRIORITY_NORMAL): void
     {
         $created_time = time();
         $deleted_time = 0;
         $this->db->insert($this->table, compact('topic', 'body', 'priority', 'created_time', 'deleted_time'));
     }
 
-    /**
-     * @param string $topic
-     * @param int    $timeout
-     *
-     * @return string|false
-     */
-    public function do_pop($topic, $timeout = PHP_INT_MAX)
+    public function do_pop(string $topic, int $timeout = PHP_INT_MAX): false|string
     {
         $startTime = time();
 
@@ -79,23 +61,12 @@ class Db extends AbstractQueue
         return false;
     }
 
-    /**
-     * @param string $topic
-     *
-     * @return void
-     */
-    public function do_delete($topic)
+    public function do_delete(string $topic): void
     {
         $this->db->delete($this->table, ['topic' => $topic]);
     }
 
-    /**
-     * @param string $topic
-     * @param int    $priority
-     *
-     * @return int
-     */
-    public function do_length($topic, $priority = null)
+    public function do_length(string $topic, ?int $priority = null): int
     {
         $query = $this->db->query($this->table)->where(['topic' => $topic, 'deleted_time' => 0]);
 

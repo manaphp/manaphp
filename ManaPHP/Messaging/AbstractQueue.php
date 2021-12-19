@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Messaging;
 
@@ -6,21 +7,9 @@ use ManaPHP\Component;
 
 abstract class AbstractQueue extends Component implements QueueInterface
 {
-    /**
-     * @param string $topic
-     * @param string $body
-     * @param int    $priority
-     *
-     * @return void
-     */
-    abstract public function do_push($topic, $body, $priority = self::PRIORITY_NORMAL);
+    abstract public function do_push(string $topic, string $body, int $priority = self::PRIORITY_NORMAL): void;
 
-    /**
-     * @param string $topic
-     * @param string $body
-     * @param int    $priority
-     */
-    public function push($topic, $body, $priority = self::PRIORITY_NORMAL)
+    public function push(string $topic, string $body, int $priority = self::PRIORITY_NORMAL): void
     {
         $this->fireEvent('msgQueue:push', compact('topic', 'body', 'priority'));
 
@@ -33,15 +22,9 @@ abstract class AbstractQueue extends Component implements QueueInterface
      *
      * @return string|false
      */
-    abstract public function do_pop($topic, $timeout = PHP_INT_MAX);
+    abstract public function do_pop(string $topic, int $timeout = PHP_INT_MAX): false|string;
 
-    /**
-     * @param string $topic
-     * @param int    $timeout
-     *
-     * @return string|false
-     */
-    public function pop($topic, $timeout = PHP_INT_MAX)
+    public function pop(string $topic, int $timeout = PHP_INT_MAX): false|string
     {
         if (($msg = $this->do_pop($topic, $timeout)) !== false) {
             $this->fireEvent('msgQueue:pop', compact('topic', 'msg'));
@@ -50,39 +33,17 @@ abstract class AbstractQueue extends Component implements QueueInterface
         return $msg;
     }
 
-    /**
-     * @param string $topic
-     *
-     * @return void
-     */
-    abstract public function do_delete($topic);
+    abstract public function do_delete(string $topic): void;
 
-    /**
-     * @param string $topic
-     *
-     * @return void
-     */
-    public function delete($topic)
+    public function delete(string $topic): void
     {
         $this->fireEvent('msgQueue:delete', compact('topic'));
         $this->do_delete($topic);
     }
 
-    /**
-     * @param string $topic
-     * @param int    $priority
-     *
-     * @return int
-     */
-    abstract public function do_length($topic, $priority = null);
+    abstract public function do_length(string $topic, ?int $priority = null): int;
 
-    /**
-     * @param string $topic
-     * @param int    $priority
-     *
-     * @return         int
-     */
-    public function length($topic, $priority = null)
+    public function length(string $topic, ?int $priority = null): int
     {
         return $this->do_length($topic, $priority);
     }

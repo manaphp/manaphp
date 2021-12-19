@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Messaging\Queue\Adapter;
 
@@ -10,26 +11,11 @@ use ManaPHP\Messaging\AbstractQueue;
  */
 class Redis extends AbstractQueue
 {
-    /**
-     * @var string
-     */
-    protected $prefix;
+    protected string $prefix;
+    protected array $priorities = [self::PRIORITY_HIGHEST, self::PRIORITY_NORMAL, self::PRIORITY_LOWEST];
+    protected array $topicKeys = [];
 
-    /**
-     * @var int[]
-     */
-    protected $priorities
-        = [self::PRIORITY_HIGHEST, self::PRIORITY_NORMAL, self::PRIORITY_LOWEST];
-
-    /**
-     * @var array[]
-     */
-    protected $topicKeys = [];
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         $this->prefix = $options['prefix'] ?? 'cache:msgQueue:';
 
@@ -38,12 +24,7 @@ class Redis extends AbstractQueue
         }
     }
 
-    /**
-     * @param string $topic
-     * @param string $body
-     * @param int    $priority
-     */
-    public function do_push($topic, $body, $priority = self::PRIORITY_NORMAL)
+    public function do_push(string $topic, string $body, int $priority = self::PRIORITY_NORMAL): void
     {
         if (!in_array($priority, $this->priorities, true)) {
             throw new MisuseException(['`%d` priority of `%s` is invalid', $priority, $topic]);
@@ -52,13 +33,7 @@ class Redis extends AbstractQueue
         $this->redisBroker->lPush($this->prefix . $topic . ':' . $priority, $body);
     }
 
-    /**
-     * @param string $topic
-     * @param int    $timeout
-     *
-     * @return string|false
-     */
-    public function do_pop($topic, $timeout = PHP_INT_MAX)
+    public function do_pop(string $topic, int $timeout = PHP_INT_MAX): false|string
     {
         if (!isset($this->topicKeys[$topic])) {
             $keys = [];
@@ -85,25 +60,14 @@ class Redis extends AbstractQueue
         }
     }
 
-    /**
-     * @param string $topic
-     *
-     * @return void
-     */
-    public function do_delete($topic)
+    public function do_delete(string $topic): void
     {
         foreach ($this->priorities as $priority) {
             $this->redisBroker->del($this->prefix . $topic . ':' . $priority);
         }
     }
 
-    /**
-     * @param string $topic
-     * @param int    $priority
-     *
-     * @return int
-     */
-    public function do_length($topic, $priority = null)
+    public function do_length(string $topic, ?int $priority = null): int
     {
         if ($priority === null) {
             $length = 0;

@@ -1,42 +1,19 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Messaging;
 
 interface QueueInterface
 {
-    const PRIORITY_HIGHEST = 1;
-    const PRIORITY_NORMAL = 5;
-    const PRIORITY_LOWEST = 9;
+    public const PRIORITY_HIGHEST = 1;
+    public const PRIORITY_NORMAL = 5;
+    public const PRIORITY_LOWEST = 9;
 
-    /**
-     * @param string $topic
-     * @param string $body
-     * @param int    $priority
-     *
-     * @return void
-     */
-    public function push($topic, $body, $priority = self::PRIORITY_NORMAL);
+    public function push(string $topic, string $body, int $priority = self::PRIORITY_NORMAL): void;
 
-    /**
-     * @param string $topic
-     * @param int    $timeout
-     *
-     * @return string|false
-     */
-    public function pop($topic, $timeout = PHP_INT_MAX);
+    public function pop(string $topic, int $timeout = PHP_INT_MAX): false|string;
 
-    /**
-     * @param string $topic
-     *
-     * @return void
-     */
-    public function delete($topic);
+    public function delete(string $topic): void;
 
-    /**
-     * @param string $topic
-     * @param int    $priority
-     *
-     * @return int
-     */
-    public function length($topic, $priority = null);
+    public function length(string $topic, ?int $priority = null):int;
 }
