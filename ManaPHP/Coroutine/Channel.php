@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Coroutine;
 
@@ -8,37 +9,22 @@ use Swoole\Coroutine\Channel as SwooleChannel;
 
 class Channel
 {
-    /**
-     * @var int
-     */
-    protected $capacity;
-
-    /**
-     * @var int
-     */
-    protected $length;
+    protected int $capacity;
+    protected int $length;
 
     /**
      * @var \Swoole\Coroutine\Channel|\SplQueue
      */
-    protected $queue;
+    protected mixed $queue;
 
-    /**
-     * @param int $capacity
-     */
-    public function __construct($capacity)
+    public function __construct(int $capacity)
     {
-        $this->capacity = (int)$capacity;
+        $this->capacity = $capacity;
         $this->length = 0;
         $this->queue = MANAPHP_COROUTINE_ENABLED ? new SwooleChannel($capacity) : new SplQueue();
     }
 
-    /**
-     * @param mixed $data
-     *
-     * @return void
-     */
-    public function push($data)
+    public function push(mixed $data): void
     {
         if ($this->length + 1 > $this->capacity) {
             throw new MisuseException('channel is full');
@@ -48,12 +34,7 @@ class Channel
         $this->queue->push($data);
     }
 
-    /**
-     * @param float $timeout
-     *
-     * @return mixed
-     */
-    public function pop($timeout = null)
+    public function pop(?float $timeout = null): mixed
     {
         if (MANAPHP_COROUTINE_ENABLED) {
             $data = $this->queue->pop($timeout);
@@ -70,34 +51,22 @@ class Channel
         return $data;
     }
 
-    /**
-     * @return bool
-     */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return $this->length === 0;
     }
 
-    /**
-     * @return bool
-     */
-    public function isFull()
+    public function isFull(): bool
     {
         return $this->length === $this->capacity;
     }
 
-    /**
-     * @return int
-     */
-    public function length()
+    public function length(): int
     {
         return $this->length;
     }
 
-    /**
-     * @return int
-     */
-    public function capacity()
+    public function capacity(): int
     {
         return $this->capacity;
     }
