@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Debugging;
 
@@ -26,35 +27,13 @@ use ArrayObject;
  */
 class Debugger extends Component implements DebuggerInterface
 {
-    /**
-     * @var int
-     */
-    protected $ttl = 3600;
+    protected int $ttl = 3600;
+    protected string $prefix;
+    protected string $template = '@manaphp/Debugging/Debugger/Template.html';
+    protected bool $broadcast = true;
+    protected bool $tail = true;
 
-    /**
-     * @var string
-     */
-    protected $prefix;
-
-    /**
-     * @var string
-     */
-    protected $template = '@manaphp/Debugging/Debugger/Template.html';
-
-    /**
-     * @var bool
-     */
-    protected $broadcast = true;
-
-    /**
-     * @var bool
-     */
-    protected $tail = true;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['ttl'])) {
             $this->ttl = (int)$options['ttl'];
@@ -79,7 +58,7 @@ class Debugger extends Component implements DebuggerInterface
         }
     }
 
-    public function start()
+    public function start(): void
     {
         $this->eventManager->peekEvent('*', [$this, 'onEvent']);
 
@@ -96,12 +75,7 @@ class Debugger extends Component implements DebuggerInterface
         }
     }
 
-    /**
-     * @param string $key
-     *
-     * @return string|false
-     */
-    protected function readData($key)
+    protected function readData(string $key): false|string
     {
         if ($this->ttl) {
             $content = $this->redisCache->get($this->prefix . $key);
@@ -113,14 +87,7 @@ class Debugger extends Component implements DebuggerInterface
         return is_string($content) ? gzdecode($content) : $content;
     }
 
-    /**
-     * @param string $key
-     * @param array  $data
-     *
-     * @return void
-     * @throws \ManaPHP\Exception\JsonException
-     */
-    protected function writeData($key, $data)
+    protected function writeData(string $key, array $data): void
     {
         $content = gzencode(json_stringify($data, JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_PRETTY_PRINT));
         if ($this->ttl) {
@@ -139,10 +106,7 @@ class Debugger extends Component implements DebuggerInterface
         }
     }
 
-    /**
-     * @return void
-     */
-    public function onRequestBegin()
+    public function onRequestBegin(): void
     {
         $context = $this->context;
 
@@ -181,10 +145,7 @@ class Debugger extends Component implements DebuggerInterface
         }
     }
 
-    /**
-     * @return void
-     */
-    public function onRequestEnd()
+    public function onRequestEnd(): void
     {
         $context = $this->context;
 
@@ -193,7 +154,7 @@ class Debugger extends Component implements DebuggerInterface
         }
     }
 
-    public function onResponseStringify()
+    public function onResponseStringify(): void
     {
         if (is_array($content = $this->response->getContent())) {
             $content['debugger'] = $this->response->getHeader('X-Debugger-Link');
@@ -201,12 +162,7 @@ class Debugger extends Component implements DebuggerInterface
         }
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     */
-    public function onEvent(EventArgs $eventArgs)
+    public function onEvent(EventArgs $eventArgs): void
     {
         $event['event'] = $eventArgs->event;
         $event['source'] = get_class($eventArgs->source);
@@ -229,12 +185,7 @@ class Debugger extends Component implements DebuggerInterface
         $this->context->events[] = $event;
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     */
-    public function onLoggerLog(EventArgs $eventArgs)
+    public function onLoggerLog(EventArgs $eventArgs): void
     {
         $context = $this->context;
 
@@ -242,7 +193,7 @@ class Debugger extends Component implements DebuggerInterface
         $log = $eventArgs->data['log'];
         $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
         $context->log[] = [
-            'time'     => date('H:i:s', $log->timestamp) . $ms,
+            'time'     => date('H:i:s', (int)$log->timestamp) . $ms,
             'level'    => $log->level,
             'category' => $log->category,
             'file'     => $log->file,
@@ -251,12 +202,7 @@ class Debugger extends Component implements DebuggerInterface
         ];
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     */
-    public function onDb(EventArgs $eventArgs)
+    public function onDb(EventArgs $eventArgs): void
     {
         $context = $this->context;
 
@@ -304,12 +250,7 @@ class Debugger extends Component implements DebuggerInterface
         }
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     */
-    public function onRendererRendering(EventArgs $eventArgs)
+    public function onRendererRendering(EventArgs $eventArgs): void
     {
         $context = $this->context;
 
@@ -325,13 +266,7 @@ class Debugger extends Component implements DebuggerInterface
         $context->view[] = ['file' => $file, 'vars' => $vars, 'base_name' => $base_name];
     }
 
-    /**
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     * @throws \ManaPHP\Exception\JsonException
-     */
-    public function onMongodb(EventArgs $eventArgs)
+    public function onMongodb(EventArgs $eventArgs): void
     {
         $context = $this->context;
 
@@ -372,10 +307,7 @@ class Debugger extends Component implements DebuggerInterface
         }
     }
 
-    /**
-     * @return array
-     */
-    protected function getBasic()
+    protected function getBasic(): array
     {
         $context = $this->context;
 
@@ -404,10 +336,7 @@ class Debugger extends Component implements DebuggerInterface
         ];
     }
 
-    /**
-     * @return array
-     */
-    protected function getData()
+    protected function getData(): array
     {
         $context = $this->context;
 

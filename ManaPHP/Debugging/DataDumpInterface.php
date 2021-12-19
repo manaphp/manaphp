@@ -1,13 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Debugging;
 
 interface DataDumpInterface
 {
-    /**
-     * @param string|array $message
-     *
-     * @return void
-     */
-    public function output($message);
+    public function output(mixed $message): void;
 }

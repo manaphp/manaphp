@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Debugging;
 
@@ -9,30 +10,12 @@ use ManaPHP\Component;
  */
 class XdebugTracer extends Component implements XdebugTracerInterface
 {
-    /**
-     * @var int
-     */
-    protected $params = 3;
+    protected int $params = 3;
+    protected int $return = 0;
+    protected int $max_depth = 2;
+    protected int $mem_delta = 1;
 
-    /**
-     * @var int
-     */
-    protected $return = 0;
-
-    /**
-     * @var int
-     */
-    protected $max_depth = 2;
-
-    /**
-     * @var int
-     */
-    protected $mem_delta = 1;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['params'])) {
             $this->params = $options['params'];
@@ -51,7 +34,7 @@ class XdebugTracer extends Component implements XdebugTracerInterface
         }
     }
 
-    public function start()
+    public function start(): void
     {
         ini_set('xdebug.collect_return', $this->return);
         ini_set('xdebug.collect_params', $this->params);
@@ -62,10 +45,7 @@ class XdebugTracer extends Component implements XdebugTracerInterface
         $this->attachEvent('request:end', [$this, 'onRequestEnd']);
     }
 
-    /**
-     * @return void
-     */
-    public function onRequestBegin()
+    public function onRequestBegin(): void
     {
         $file = $this->alias->resolve('@data/backtracePlugin/trace_{ymd_His}_{8}.log');
         $dir = dirname($file);
@@ -78,10 +58,7 @@ class XdebugTracer extends Component implements XdebugTracerInterface
         xdebug_start_trace($file);
     }
 
-    /**
-     * @return void
-     */
-    public function onRequestEnd()
+    public function onRequestEnd(): void
     {
         /** @noinspection ForgottenDebugOutputInspection */
         @xdebug_stop_trace();

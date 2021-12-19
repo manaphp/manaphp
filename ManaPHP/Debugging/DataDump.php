@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Debugging;
 
@@ -13,27 +14,16 @@ use  ArrayObject;
  */
 class DataDump extends Component implements DataDumpInterface
 {
-    /**
-     * @var string
-     */
-    protected $format = '[:time][:location] :message';
+    protected string $format = '[:time][:location] :message';
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['format'])) {
             $this->format = $options['format'];
         }
     }
 
-    /**
-     * @param array $traces
-     *
-     * @return array
-     */
-    protected function getLocation($traces)
+    protected function getLocation(array $traces): array
     {
         for ($i = count($traces) - 1; $i >= 0; $i--) {
             $trace = $traces[$i];
@@ -46,12 +36,7 @@ class DataDump extends Component implements DataDumpInterface
         return [];
     }
 
-    /**
-     * @param \Throwable $exception
-     *
-     * @return string
-     */
-    public function exceptionToString($exception)
+    public function exceptionToString(Throwable $exception): string
     {
         $str = get_class($exception) . ': ' . $exception->getMessage() . PHP_EOL;
         $str .= '    at ' . $exception->getFile() . ':' . $exception->getLine() . PHP_EOL;
@@ -81,12 +66,7 @@ class DataDump extends Component implements DataDumpInterface
         return strtr($str, $replaces);
     }
 
-    /**
-     * @param \Throwable|array|\JsonSerializable $message
-     *
-     * @return string
-     */
-    public function formatMessage($message)
+    public function formatMessage(mixed $message): string
     {
         if ($message instanceof Throwable) {
             return $this->exceptionToString($message);
@@ -154,12 +134,7 @@ class DataDump extends Component implements DataDumpInterface
         return strtr($message[0], $replaces);
     }
 
-    /**
-     * @param mixed $message
-     *
-     * @return void
-     */
-    public function output($message)
+    public function output(mixed $message): void
     {
         if (is_array($message) && count($message) === 1 && isset($message[0])) {
             $message = $message[0];
