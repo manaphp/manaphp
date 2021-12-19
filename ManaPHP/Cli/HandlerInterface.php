@@ -1,35 +1,17 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
 interface HandlerInterface
 {
-    /**
-     * @param array $args
-     *
-     * @return int
-     * @throws \ManaPHP\Exception\AbortException
-     * @throws \ManaPHP\Cli\Request\Exception
-     */
-    public function handle($args = null);
+    public function handle(?array $args = null): int;
 
-    /**
-     * @return array
-     */
-    public function getArgs();
+    public function getArgs(): array;
 
-    /**
-     * @return string
-     */
-    public function getCommand();
+    public function getCommand(): string;
 
-    /**
-     * @return string
-     */
-    public function getAction();
+    public function getAction(): string;
 
-    /**
-     * @return array
-     */
-    public function getParams();
+    public function getParams(): array;
 }

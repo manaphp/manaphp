@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
@@ -13,32 +14,12 @@ use ManaPHP\Helper\Str;
  */
 class Handler extends Component implements HandlerInterface
 {
-    /**
-     * @var array
-     */
-    protected $args;
+    protected array $args;
+    protected string $command;
+    protected string $action;
+    protected array $params;
 
-    /**
-     * @var string
-     */
-    protected $command;
-
-    /**
-     * @var string
-     */
-    protected $action;
-
-    /**
-     * @var array
-     */
-    protected $params;
-
-    /**
-     * @param string $commandName
-     *
-     * @return string[]
-     */
-    protected function getActions($commandName)
+    protected function getActions(string $commandName): array
     {
         $actions = [];
 
@@ -51,12 +32,7 @@ class Handler extends Component implements HandlerInterface
         return $actions;
     }
 
-    /**
-     * @param array $args
-     *
-     * @return void
-     */
-    public function route($args)
+    public function route(?array $args): void
     {
         if ($args === null) {
             $args = (array)$GLOBALS['argv'];
@@ -108,12 +84,7 @@ class Handler extends Component implements HandlerInterface
         $this->action = $action;
     }
 
-    /**
-     * @param array $args
-     *
-     * @return int
-     */
-    public function handle($args = null)
+    public function handle(?array $args = null): int
     {
         $this->route($args);
 
@@ -160,34 +131,22 @@ class Handler extends Component implements HandlerInterface
         return is_int($r) ? $r : $this->console->error($r);
     }
 
-    /**
-     * @return array
-     */
-    public function getArgs()
+    public function getArgs(): array
     {
         return $this->args;
     }
 
-    /**
-     * @return string
-     */
-    public function getCommand()
+    public function getCommand(): string
     {
         return $this->command;
     }
 
-    /**
-     * @return string
-     */
-    public function getAction()
+    public function getAction(): string
     {
         return $this->action;
     }
 
-    /**
-     * @return array
-     */
-    public function getParams()
+    public function getParams(): array
     {
         return $this->params;
     }
