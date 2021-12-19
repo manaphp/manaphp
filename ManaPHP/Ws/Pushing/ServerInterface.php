@@ -1,63 +1,27 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Ws\Pushing;
 
 interface ServerInterface
 {
-    /**
-     * @return void
-     */
-    public function start();
+    public function start(): void;
 
-    /**
-     * @param int $fd
-     *
-     * @return void
-     */
-    public function open($fd);
+    public function open(int $fd): void;
 
-    /**
-     * @param int $fd
-     *
-     * @return void
-     */
-    public function close($fd);
+    public function close(int $fd): void;
 
-    /**
-     * @param int    $fd
-     * @param string $message
-     *
-     * @return void
-     */
-    public function push($fd, $message);
+    public function push(int $fd, string $message): void;
 
-    /**
-     * @param array  $receivers
-     * @param string $message
-     *
-     * @return void
-     */
-    public function pushToId($receivers, $message);
+    public function pushToId(array $receivers, string $message): void;
 
-    /**
-     * @param array  $receivers
-     * @param string $message
-     */
-    public function pushToName($receivers, $message);
+    public function pushToName(array $receivers, string $message): void;
 
-    /**
-     * @param array  $receivers
-     * @param string $message
-     */
-    public function pushToRoom($receivers, $message);
+    public function pushToRoom(array $receivers, string $message): void;
 
-    /**
-     * @param array  $receivers
-     * @param string $message
-     */
-    public function pushToRole($receivers, $message);
+    public function pushToRole(array $receivers, string $message): void;
 
-    public function pushToAll($message);
+    public function pushToAll(string $message): void;
 
-    public function broadcast($message);
+    public function broadcast(string $message): void;
 }

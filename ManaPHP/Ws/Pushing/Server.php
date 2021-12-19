@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Ws\Pushing;
 
@@ -7,58 +8,24 @@ use ManaPHP\Coroutine;
 use ManaPHP\Logging\Logger\LogCategorizable;
 
 /**
- * @property-read \ManaPHP\Logging\LoggerInterface       $logger
+ * @property-read \ManaPHP\Logging\LoggerInterface $logger
  * @property-read \ManaPHP\Identifying\IdentityInterface $identity
- * @property-read \ManaPHP\Ws\ServerInterface            $wsServer
- * @property-read \ManaPHP\Http\RequestInterface         $request
- * @property-read \ManaPHP\Messaging\PubSubInterface     $pubSub
+ * @property-read \ManaPHP\Ws\ServerInterface $wsServer
+ * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Messaging\PubSubInterface $pubSub
  */
 class Server extends Component implements ServerInterface, LogCategorizable
 {
-    /**
-     * @var array
-     */
-    protected $endpoint;
+    protected string $endpoint;
+    protected string $prefix = 'ws_pushing:';
+    protected bool $dedicated = false;
+    protected array $ids;
+    protected array $names;
+    protected array $rooms;
+    protected array $roles;
+    protected array $fds = [];
 
-    /**
-     * @var string
-     */
-    protected $prefix = 'ws_pushing:';
-
-    /**
-     * @var bool
-     */
-    protected $dedicated = false;
-
-    /**
-     * @var true[][]
-     */
-    protected $ids;
-
-    /**
-     * @var true[][]
-     */
-    protected $names;
-
-    /**
-     * @var true[][]
-     */
-    protected $rooms;
-
-    /**
-     * @var true[][]
-     */
-    protected $roles;
-
-    /**
-     * @var array
-     */
-    protected $fds = [];
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         $this->endpoint = $options['endpoint'];
 
@@ -76,13 +43,13 @@ class Server extends Component implements ServerInterface, LogCategorizable
         return str_replace('\\', '.', get_class($this));
     }
 
-    public function open($fd)
+    public function open(int $fd): void
     {
         if (!$this->dedicated) {
             $this->fds[$fd] = true;
         }
 
-        if (($id = $this->identity->getId('')) !== '') {
+        if (($id = $this->identity->getId(0)) !== 0) {
             $this->ids[$id][$fd] = true;
         }
 
@@ -101,13 +68,13 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
-    public function close($fd)
+    public function close(int $fd): void
     {
         if (!$this->dedicated) {
             unset($this->fds[$fd]);
         }
 
-        if (($id = $this->identity->getId('')) !== '') {
+        if (($id = $this->identity->getId(0)) !== 0) {
             unset($this->ids[$id][$fd]);
             if (count($this->ids[$id]) === 0) {
                 unset($this->ids[$id]);
@@ -138,24 +105,12 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
-    /**
-     * @param int    $fd
-     * @param string $message
-     *
-     * @return void
-     */
-    public function push($fd, $message)
+    public function push(int $fd, string $message): void
     {
         $this->wsServer->push($fd, $message);
     }
 
-    /**
-     * @param array  $receivers
-     * @param string $message
-     *
-     * @return void
-     */
-    public function pushToId($receivers, $message)
+    public function pushToId(array $receivers, string $message): void
     {
         foreach ($receivers as $id) {
             foreach ($this->ids[$id] ?? [] as $fd => $_) {
@@ -164,13 +119,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
-    /**
-     * @param array  $receivers
-     * @param string $message
-     *
-     * @return void
-     */
-    public function pushToName($receivers, $message)
+    public function pushToName(array $receivers, string $message): void
     {
         foreach ($receivers as $name) {
             foreach ($this->names[$name] ?? [] as $fd => $_) {
@@ -179,13 +128,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
-    /**
-     * @param array  $receivers
-     * @param string $message
-     *
-     * @return void
-     */
-    public function pushToRoom($receivers, $message)
+    public function pushToRoom(array $receivers, string $message): void
     {
         foreach ($receivers as $room) {
             foreach ($this->rooms[$room] ?? [] as $fd => $_) {
@@ -194,13 +137,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
-    /**
-     * @param array  $receivers
-     * @param string $message
-     *
-     * @return void
-     */
-    public function pushToRole($receivers, $message)
+    public function pushToRole(array $receivers, string $message): void
     {
         $sent = [];
         foreach ($receivers as $role) {
@@ -213,12 +150,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
-    /**
-     * @param string $message
-     *
-     * @return void
-     */
-    public function pushToAll($message)
+    public function pushToAll(string $message): void
     {
         foreach ($this->ids as $id => $fds) {
             foreach ($fds as $fd => $_) {
@@ -227,12 +159,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
-    /**
-     * @param string $message
-     *
-     * @return void
-     */
-    public function broadcast($message)
+    public function broadcast(string $message): void
     {
         if ($this->dedicated) {
             $this->wsServer->broadcast($message);
@@ -243,14 +170,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
-    /**
-     * @param string $type
-     * @param array  $receivers
-     * @param string $message
-     *
-     * @return void
-     */
-    public function dispatch($type, $receivers, $message)
+    public function dispatch(string $type, array $receivers, string $message): void
     {
         if ($type === 'broadcast') {
             $this->broadcast($message);
@@ -272,7 +192,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
-    public function start()
+    public function start(): void
     {
         Coroutine::create(
             function () {
