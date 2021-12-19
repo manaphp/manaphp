@@ -1,19 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Coroutine;
 
 interface TaskInterface
 {
-    /**
-     * @param mixed $data
-     * @param int   $timeout
-     *
-     * @return bool
-     */
-    public function push($data, $timeout = -1);
+    public function push(mixed $data, int $timeout = -1): bool;
 
-    /**
-     * @return void
-     */
-    public function close();
+    public function close(): void;
 }

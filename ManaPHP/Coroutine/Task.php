@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Coroutine;
 
@@ -16,22 +17,10 @@ class Task extends Component implements TaskInterface
      * @var callable
      */
     protected $fn;
+    protected int $count;
+    protected Channel $channel;
 
-    /**
-     * @var int
-     */
-    protected $count;
-
-    /**
-     * @var \Swoole\Coroutine\Channel
-     */
-    protected $channel;
-
-    /**
-     * @param callable $fn
-     * @param int      $count
-     */
-    public function __construct($fn, $count = 1)
+    public function __construct(callable $fn, int $count = 1)
     {
         $this->fn = $fn;
         $this->count = $count;
@@ -45,10 +34,7 @@ class Task extends Component implements TaskInterface
         }
     }
 
-    /**
-     * @return void
-     */
-    public function routine()
+    public function routine(): void
     {
         $fn = $this->fn;
         while (($data = $this->channel->pop()) !== false) {
@@ -60,13 +46,7 @@ class Task extends Component implements TaskInterface
         }
     }
 
-    /**
-     * @param mixed $data
-     * @param int   $timeout
-     *
-     * @return bool
-     */
-    public function push($data, $timeout = -1)
+    public function push(mixed $data, int $timeout = -1): bool
     {
         if (MANAPHP_COROUTINE_ENABLED) {
             return $this->channel->push($data, $timeout);
@@ -82,10 +62,7 @@ class Task extends Component implements TaskInterface
         }
     }
 
-    /**
-     * @return void
-     */
-    public function close()
+    public function close(): void
     {
         if (MANAPHP_COROUTINE_ENABLED) {
             $this->channel->close();
