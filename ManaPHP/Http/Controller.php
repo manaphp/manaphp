@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
@@ -21,28 +22,17 @@ class Controller extends Component implements LogCategorizable
         return basename(str_replace('\\', '.', static::class), 'Controller');
     }
 
-    /**
-     * @param string $action
-     *
-     * @return mixed
-     */
-    public function invoke($action)
+    public function invoke(string $action): mixed
     {
         return $this->invoker->invoke($this, $action . 'Action');
     }
 
-    /**
-     * @return array
-     */
-    public function getAcl()
+    public function getAcl(): array
     {
         return [];
     }
 
-    /**
-     * @return array
-     */
-    public function getVerbs()
+    public function getVerbs(): array
     {
         return [
             'index'    => 'GET',
@@ -65,7 +55,7 @@ class Controller extends Component implements LogCategorizable
      * @return array =[$field=>[60,'burst'=>3],'*'=>'','index'=>'','list'=>'','detail'=>'','captcha'=>'',
      *               'create'=>'','update'=>'','edit'=>'', 'save'=>'','delete'=>'']
      */
-    public function getRateLimit()
+    public function getRateLimit(): array
     {
         return [];
     }
@@ -74,7 +64,7 @@ class Controller extends Component implements LogCategorizable
      * @return array =[$field => ["etag", "max-age"=>1, "Cache-Control"=>"private, max-age=0, no-store, no-cache,
      *               must-revalidate"]]
      */
-    public function getHttpCache()
+    public function getHttpCache(): array
     {
         return [];
     }
@@ -83,7 +73,7 @@ class Controller extends Component implements LogCategorizable
      * @return array =['*'=>'', 'index'=>'','list'=>'','detail'=>'','captcha'=>'',
      *               'create'=>'','update'=>'','edit'=>'', 'save'=>'','delete'=>'']
      */
-    public function getPageCache()
+    public function getPageCache(): array
     {
         return [];
     }
