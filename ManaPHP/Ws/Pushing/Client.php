@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Ws\Pushing;
 
@@ -10,20 +11,10 @@ use ManaPHP\Exception\MissingFieldException;
  */
 class Client extends Component implements ClientInterface
 {
-    /**
-     * @var string
-     */
-    protected $prefix = 'ws_pushing:';
+    protected string $prefix = 'ws_pushing:';
+    protected string $endpoint;
 
-    /**
-     * @var string
-     */
-    protected $endpoint;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['prefix'])) {
             $this->prefix = $options['prefix'];
@@ -34,15 +25,7 @@ class Client extends Component implements ClientInterface
         }
     }
 
-    /**
-     * @param string       $type
-     * @param string|array $receivers
-     * @param string|array $message
-     * @param string       $endpoint
-     *
-     * @return void
-     */
-    protected function push($type, $receivers, $message, $endpoint)
+    protected function push(string $type, int|string|array $receivers, string|array $message, ?string $endpoint): void
     {
         if (is_array($receivers)) {
             $receivers = implode(',', $receivers);
@@ -61,72 +44,32 @@ class Client extends Component implements ClientInterface
         $this->pubSub->publish($this->prefix . "$endpoint:$type:$receivers", $message);
     }
 
-    /**
-     * @param int|int[]    $receivers
-     * @param string|array $message
-     * @param string       $endpoint
-     *
-     * @return void
-     */
-    public function pushToId($receivers, $message, $endpoint = null)
+    public function pushToId(int|array $receivers, string|array $message, ?string $endpoint = null): void
     {
         $this->push('id', $receivers, $message, $endpoint);
     }
 
-    /**
-     * @param string|string[] $receivers
-     * @param string|array    $message
-     * @param string          $endpoint
-     *
-     * @return void
-     */
-    public function pushToName($receivers, $message, $endpoint = null)
+    public function pushToName(string|array $receivers, string|array $message, ?string $endpoint = null): void
     {
         $this->push('name', $receivers, $message, $endpoint);
     }
 
-    /**
-     * @param string|string[] $receivers
-     * @param string|array    $message
-     * @param string          $endpoint
-     *
-     * @return void
-     */
-    public function pushToRoom($receivers, $message, $endpoint = null)
+    public function pushToRoom(string|array $receivers, string|array $message, ?string $endpoint = null): void
     {
         $this->push('room', $receivers, $message, $endpoint);
     }
 
-    /**
-     * @param string|string[] $receivers
-     * @param string|array    $message
-     * @param string          $endpoint
-     *
-     * @return void
-     */
-    public function pushToRole($receivers, $message, $endpoint = null)
+    public function pushToRole(string|array $receivers, string|array $message, ?string $endpoint = null): void
     {
         $this->push('role', $receivers, $message, $endpoint);
     }
 
-    /**
-     * @param string|array $message
-     * @param string       $endpoint
-     *
-     * @return void
-     */
-    public function pushToAll($message, $endpoint = null)
+    public function pushToAll(string|array $message, ?string $endpoint = null): void
     {
         $this->push('all', '*', $message, $endpoint);
     }
 
-    /**
-     * @param string|array $message
-     * @param string       $endpoint
-     *
-     * @return void
-     */
-    public function broadcast($message, $endpoint = null)
+    public function broadcast(string|array $message, ?string $endpoint = null): void
     {
         $this->push('broadcast', '*', $message, $endpoint);
     }

@@ -1,58 +1,19 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Ws\Pushing;
 
 interface ClientInterface
 {
-    /**
-     * @param int|int[]    $receivers
-     * @param string|array $message
-     * @param string       $endpoint
-     *
-     * @return void
-     */
-    public function pushToId($receivers, $message, $endpoint = null);
+    public function pushToId(int|array $receivers, string|array $message, ?string $endpoint = null): void;
 
-    /**
-     * @param string|string[] $receivers
-     * @param string|array    $message
-     * @param string          $endpoint
-     *
-     * @return void
-     */
-    public function pushToName($receivers, $message, $endpoint = null);
+    public function pushToName(string|array $receivers, string|array $message, ?string $endpoint = null): void;
 
-    /**
-     * @param string|string[] $receivers
-     * @param string|array    $message
-     * @param string          $endpoint
-     *
-     * @return void
-     */
-    public function pushToRoom($receivers, $message, $endpoint = null);
+    public function pushToRoom(string|array $receivers, string|array $message, ?string $endpoint = null): void;
 
-    /**
-     * @param string|string[] $receivers
-     * @param string|array    $message
-     * @param string          $endpoint
-     *
-     * @return void
-     */
-    public function pushToRole($receivers, $message, $endpoint = null);
+    public function pushToRole(string|array $receivers, string|array $message, ?string $endpoint = null): void;
 
-    /**
-     * @param string|array $message
-     * @param string       $endpoint
-     *
-     * @return void
-     */
-    public function pushToAll($message, $endpoint = null);
+    public function pushToAll(string|array $message, ?string $endpoint = null): void;
 
-    /**
-     * @param string|array $message
-     * @param string       $endpoint
-     *
-     * @return void
-     */
-    public function broadcast($message, $endpoint = null);
+    public function broadcast(string|array $message, ?string $endpoint = null): void;
 }
