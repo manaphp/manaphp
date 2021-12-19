@@ -1,9 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
 use ManaPHP\Exception;
+use Throwable;
 
 /**
  * @property-read \ManaPHP\ConfigInterface         $config
@@ -14,12 +16,7 @@ use ManaPHP\Exception;
  */
 class ErrorHandler extends Component implements ErrorHandlerInterface
 {
-    /**
-     * @param \Throwable $throwable
-     *
-     * @return void
-     */
-    public function handle($throwable)
+    public function handle(Throwable $throwable): void
     {
         $code = $throwable instanceof Exception ? $throwable->getCode() : 500;
         if ($code >= 500) {
@@ -33,12 +30,7 @@ class ErrorHandler extends Component implements ErrorHandlerInterface
         }
     }
 
-    /**
-     * @param \Exception|\ManaPHP\Exception $exception
-     *
-     * @return string
-     */
-    public function render($exception)
+    public function render(Throwable $exception): string
     {
         if ($this->config->get('debug')) {
             if ($this->renderer->exists('@views/Errors/Debug')) {
