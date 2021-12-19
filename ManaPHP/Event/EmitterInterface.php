@@ -1,22 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Event;
 
 interface EmitterInterface
 {
-    /**
-     * @param string   $event
-     * @param callable $handler
-     *
-     * @return void
-     */
-    public function on($event, $handler);
+    public function on(string $event, callable $handler): void;
 
-    /**
-     * @param string $event
-     * @param mixed  $data
-     *
-     * @return mixed
-     */
-    public function emit($event, $data = null);
+    public function emit(string $event, mixed $data = null): mixed;
 }

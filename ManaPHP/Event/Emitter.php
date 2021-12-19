@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Event;
 
@@ -7,15 +8,9 @@ class Emitter implements EmitterInterface
     /**
      * @var callable[]
      */
-    protected $on;
+    protected array $on = [];
 
-    /**
-     * @param string   $event
-     * @param callable $handler
-     *
-     * @return void
-     */
-    public function on($event, $handler)
+    public function on(string $event, callable $handler): void
     {
         $this->on[$event] = $handler;
     }
@@ -26,7 +21,7 @@ class Emitter implements EmitterInterface
      *
      * @return mixed
      */
-    public function emit($event, $data = null)
+    public function emit(string $event, mixed $data = null): mixed
     {
         if (($handler = $this->on[$event] ?? null) !== null) {
             return $handler($data);
