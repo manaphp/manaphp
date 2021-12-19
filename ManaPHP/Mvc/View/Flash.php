@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Mvc\View;
 
@@ -9,15 +10,9 @@ use ManaPHP\Component;
  */
 class Flash extends Component implements FlashInterface
 {
-    /**
-     * @var array
-     */
-    protected $css;
+    protected array $css;
 
-    /**
-     * @param array $css
-     */
-    public function __construct($css = [])
+    public function __construct(array $css = [])
     {
         $this->css = $css
             ?: [
@@ -28,62 +23,27 @@ class Flash extends Component implements FlashInterface
             ];
     }
 
-    /**
-     * Shows a HTML error message
-     *
-     * @param string $message
-     *
-     * @return void
-     */
-    public function error($message)
+    public function error(string $message): void
     {
         $this->message('error', $message);
     }
 
-    /**
-     * Shows a HTML notice/information message
-     *
-     * @param string $message
-     *
-     * @return void
-     */
-    public function notice($message)
+    public function notice(string $message): void
     {
         $this->message('notice', $message);
     }
 
-    /**
-     * Shows a HTML success message
-     *
-     * @param string $message
-     *
-     * @return void
-     */
-    public function success($message)
+    public function success(string $message): void
     {
         $this->message('notice', $message);
     }
 
-    /**
-     * Shows a HTML warning message
-     *
-     * @param string $message
-     *
-     * @return void
-     */
-    public function warning($message)
+    public function warning(string $message): void
     {
         $this->message('warning', $message);
     }
 
-    /**
-     * Prints the messages in the session flasher
-     *
-     * @param bool $remove
-     *
-     * @return void
-     */
-    public function output($remove = true)
+    public function output(bool $remove = true): void
     {
         $context = $this->context;
 
@@ -96,15 +56,7 @@ class Flash extends Component implements FlashInterface
         }
     }
 
-    /**
-     * Outputs a message
-     *
-     * @param string $type
-     * @param string $message
-     *
-     * @return void
-     */
-    protected function message($type, $message)
+    protected function message(string $type, string $message): void
     {
         $context = $this->context;
 

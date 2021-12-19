@@ -1,11 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Mvc\View;
 
 class FlashContext
 {
-    /**
-     * @var string[]
-     */
-    public $messages = [];
+    public array $messages = [];
 }

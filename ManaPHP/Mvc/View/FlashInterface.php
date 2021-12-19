@@ -1,51 +1,17 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Mvc\View;
 
 interface FlashInterface
 {
-    /**
-     * Shows a HTML error message
-     *
-     * @param string $message
-     *
-     * @return void
-     */
-    public function error($message);
+    public function error(string $message): void;
 
-    /**
-     * Shows a HTML notice/information message
-     *
-     * @param string $message
-     *
-     * @return void
-     */
-    public function notice($message);
+    public function notice(string $message): void;
 
-    /**
-     * Shows a HTML success message
-     *
-     * @param string $message
-     *
-     * @return void
-     */
-    public function success($message);
+    public function success(string $message): void;
 
-    /**
-     * Shows a HTML warning message
-     *
-     * @param string $message
-     *
-     * @return void
-     */
-    public function warning($message);
+    public function warning(string $message): void;
 
-    /**
-     * Prints the messages in the session flasher
-     *
-     * @param bool $remove
-     *
-     * @return void
-     */
-    public function output($remove = true);
+    public function output(bool $remove = true): void;
 }
