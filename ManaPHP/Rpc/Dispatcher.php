@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Rpc;
 
 use ManaPHP\Exception\BadRequestException;
+use ManaPHP\Http\ResponseInterface;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface  $request
@@ -12,12 +14,7 @@ use ManaPHP\Exception\BadRequestException;
  */
 class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
 {
-    /**
-     * @param string $message
-     *
-     * @return \ManaPHP\Http\ResponseInterface
-     */
-    public function dispatchMessage($message)
+    public function dispatchMessage(string $message): ?ResponseInterface
     {
         if ($message === '') {
             return null;
