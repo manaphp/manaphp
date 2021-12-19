@@ -1,112 +1,33 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Mvc;
 
 interface ViewInterface
 {
-    /**
-     * @param int $max_age
-     *
-     * @return static
-     */
-    public function setMaxAge($max_age);
+    public function setMaxAge(int $max_age): static;
 
-    /**
-     * @return int
-     */
-    public function getMaxAge();
+    public function getMaxAge(): int;
 
-    /**
-     * @param false|string $layout
-     *
-     * @return static
-     */
+    public function setLayout(false|string $layout = 'Default'): static;
 
-    public function setLayout($layout = 'Default');
+    public function setVar(string $name, mixed $value): static;
 
-    /**
-     * Adds parameter to view
-     *
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return static
-     */
-    public function setVar($name, $value);
+    public function setVars(array $vars): static;
 
-    /**
-     * Adds parameters to view
-     *
-     * @param array $vars
-     *
-     * @return static
-     */
-    public function setVars($vars);
+    public function getVar(?string $name = null): mixed;
 
-    /**
-     * Returns a parameter previously set in the view
-     *
-     * @param string $name
-     *
-     * @return mixed
-     */
-    public function getVar($name = null);
+    public function hasVar(string $name): bool;
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasVar($name);
+    public function exists(?string $template = null): bool;
 
-    /**
-     * @param string $template
-     *
-     * @return bool
-     */
-    public function exists($template = null);
+    public function render(?string $template = null, array $vars = []): string;
 
-    /**
-     * Executes render process from dispatching data
-     *
-     * @param string $template
-     * @param array  $vars
-     *
-     * @return  string
-     */
-    public function render($template = null, $vars = []);
+    public function widget(string $widget, array $options = []): void;
 
-    /**
-     * Renders a widget
-     *
-     * @param string $widget
-     * @param array  $options
-     *
-     * @return void
-     */
-    public function widget($widget, $options = []);
+    public function block(string $path, array $vars = []): void;
 
-    /**
-     * @param string $path
-     * @param array  $vars
-     *
-     * @return void
-     */
-    public function block($path, $vars = []);
+    public function setContent(string $content): static;
 
-    /**
-     * Externally sets the view content
-     *
-     * @param string $content
-     *
-     * @return static
-     */
-    public function setContent($content);
-
-    /**
-     * Returns cached output from another view stage
-     *
-     * @return string
-     */
-    public function getContent();
+    public function getContent(): string;
 }

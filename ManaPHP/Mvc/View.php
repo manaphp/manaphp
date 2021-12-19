@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Mvc;
 
@@ -15,30 +16,12 @@ use ManaPHP\Helper\LocalFS;
  */
 class View extends Component implements ViewInterface
 {
-    /**
-     * @var int
-     */
-    protected $max_age;
+    protected int $max_age = 0;
+    protected bool $autofix_url = true;
+    protected array $dirs = [];
+    protected array $exists_cache;
 
-    /**
-     * @var bool
-     */
-    protected $autofix_url = true;
-
-    /**
-     * @var array
-     */
-    protected $dirs = [];
-
-    /**
-     * @var array
-     */
-    protected $exists_cache;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['max_age'])) {
             $this->max_age = (int)$options['max_age'];
@@ -49,22 +32,14 @@ class View extends Component implements ViewInterface
         }
     }
 
-    /**
-     * @param int $max_age
-     *
-     * @return static
-     */
-    public function setMaxAge($max_age)
+    public function setMaxAge(int $max_age): static
     {
-        $this->context->max_age = (int)$max_age;
+        $this->context->max_age = $max_age;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getMaxAge()
+    public function getMaxAge(): int
     {
         if ($this->max_age > 0) {
             $context = $this->context;
@@ -78,12 +53,7 @@ class View extends Component implements ViewInterface
         }
     }
 
-    /**
-     * @param false|string $layout
-     *
-     * @return static
-     */
-    public function setLayout($layout = 'Default')
+    public function setLayout(false|string $layout = 'Default'): static
     {
         $context = $this->context;
 
@@ -92,15 +62,7 @@ class View extends Component implements ViewInterface
         return $this;
     }
 
-    /**
-     * Set a single view parameter
-     *
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return static
-     */
-    public function setVar($name, $value)
+    public function setVar(string $name, mixed $value): static
     {
         $context = $this->context;
 
@@ -109,14 +71,7 @@ class View extends Component implements ViewInterface
         return $this;
     }
 
-    /**
-     * Adds parameters to view
-     *
-     * @param array $vars
-     *
-     * @return static
-     */
-    public function setVars($vars)
+    public function setVars(array $vars): static
     {
         $context = $this->context;
 
@@ -125,14 +80,7 @@ class View extends Component implements ViewInterface
         return $this;
     }
 
-    /**
-     * Returns a parameter previously set in the view
-     *
-     * @param string $name
-     *
-     * @return mixed
-     */
-    public function getVar($name = null)
+    public function getVar(?string $name = null): mixed
     {
         $context = $this->context;
 
@@ -143,22 +91,14 @@ class View extends Component implements ViewInterface
         }
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasVar($name)
+    public function hasVar(string $name): bool
     {
         $context = $this->context;
 
         return isset($context->_vars[$name]);
     }
 
-    /**
-     * @return false|string
-     */
-    protected function findLayout()
+    protected function findLayout(): false|string
     {
         $context = $this->context;
 
@@ -198,15 +138,7 @@ class View extends Component implements ViewInterface
         return $layout;
     }
 
-    /**
-     * Executes render process from dispatching data
-     *
-     * @param string $template
-     * @param array  $vars
-     *
-     * @return string
-     */
-    public function render($template = null, $vars = [])
+    public function render(?string $template = null, array $vars = []): string
     {
         $context = $this->context;
 
@@ -270,10 +202,7 @@ class View extends Component implements ViewInterface
         return $context->content;
     }
 
-    /**
-     * @return void
-     */
-    public function fixUrl()
+    public function fixUrl(): void
     {
         if (($base_url = $this->alias->get('@web') ?? '') === '') {
             return;
@@ -289,12 +218,7 @@ class View extends Component implements ViewInterface
         );
     }
 
-    /**
-     * @param string $template
-     *
-     * @return bool
-     */
-    public function exists($template = null)
+    public function exists(?string $template = null): bool
     {
         if ($template === null) {
             $action = $this->dispatcher->getAction();
@@ -332,12 +256,7 @@ class View extends Component implements ViewInterface
             ($this->exists_cache[$template] = $this->renderer->exists($template));
     }
 
-    /**
-     * @param string $widget
-     *
-     * @return string|false
-     */
-    public function getWidgetClassName($widget)
+    public function getWidgetClassName(string $widget): false|string
     {
         if (str_contains($widget, '/')) {
             throw new MisuseException(['it is not allowed to access other area `:widget` widget', 'widget' => $widget]);
@@ -351,13 +270,7 @@ class View extends Component implements ViewInterface
         return class_exists($widgetClassName = "App\\Widgets\\{$widget}Widget") ? $widgetClassName : false;
     }
 
-    /**
-     * @param string $widget
-     * @param array  $options
-     *
-     * @return void
-     */
-    public function widget($widget, $options = [])
+    public function widget(string $widget, array $options = []): void
     {
         if ($options !== []) {
             $this->setMaxAge(0);
@@ -384,13 +297,7 @@ class View extends Component implements ViewInterface
         }
     }
 
-    /**
-     * @param string $path
-     * @param array  $vars
-     *
-     * @return void
-     */
-    public function block($path, $vars = [])
+    public function block(string $path, array $vars = []): void
     {
         if ($path[0] !== '@' && !str_contains($path, '/')) {
             $path = "@views/Blocks/$path";
@@ -399,14 +306,7 @@ class View extends Component implements ViewInterface
         $this->renderer->render($path, $vars, true);
     }
 
-    /**
-     * Externally sets the view content
-     *
-     * @param string $content
-     *
-     * @return static
-     */
-    public function setContent($content)
+    public function setContent(string $content): static
     {
         $context = $this->context;
 
@@ -415,12 +315,7 @@ class View extends Component implements ViewInterface
         return $this;
     }
 
-    /**
-     * Returns cached output from another view stage
-     *
-     * @return string
-     */
-    public function getContent()
+    public function getContent(): string
     {
         return $this->context->content;
     }
