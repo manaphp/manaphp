@@ -1,85 +1,25 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Pool;
 
 interface ManagerInterface
 {
-    /**
-     * @param object $owner
-     * @param string $type
-     *
-     * @return static
-     */
-    public function remove($owner, $type = null);
+    public function remove(object $owner, ?string $type = null): static;
 
-    /**
-     * @param object $owner
-     * @param int    $capacity
-     * @param string $type
-     *
-     * @return static
-     */
-    public function create($owner, $capacity, $type = 'default');
+    public function create(object $owner, int $capacity, string $type = 'default'): static;
 
-    /**
-     * @param object $owner
-     * @param object $sample
-     * @param int    $size
-     * @param string $type
-     *
-     * @return static
-     */
-    public function add($owner, $sample, $size = 1, $type = 'default');
+    public function add(object $owner, object $sample, int $size = 1, string $type = 'default'): static;
 
-    /**
-     * @param object $owner
-     * @param object $instance
-     * @param string $type
-     *
-     * @return static
-     */
-    public function push($owner, $instance, $type = 'default');
+    public function push(object $owner, object $instance, string $type = 'default'): static;
 
-    /**
-     * @param object $owner
-     * @param float  $timeout
-     * @param string $type
-     *
-     * @return mixed
-     */
-    public function pop($owner, $timeout = null, $type = 'default');
+    public function pop(object $owner, ?float $timeout = null, string $type = 'default'): mixed;
 
-    /**
-     * @param object $owner
-     * @param float  $timeout
-     * @param string $type
-     *
-     * @return \ManaPHP\Pool\Proxy
-     */
-    public function get($owner, $timeout = null, $type = 'default');
+    public function get(object $owner, ?float $timeout = null, string $type = 'default'): Proxy;
 
-    /**
-     * @param \ManaPHP\Pool\Transientable $owner
-     * @param float                       $timeout
-     * @param string                      $type
-     *
-     * @return mixed
-     */
-    public function transient($owner, $timeout = null, $type = 'default');
+    public function transient(Transientable $owner, ?float $timeout = null, string $type = 'default'): Transient;
 
-    /**
-     * @param object $owner
-     * @param string $type
-     *
-     * @return bool
-     */
-    public function exists($owner, $type = 'default');
+    public function exists(object $owner, string $type = 'default'): bool;
 
-    /**
-     * @param object $owner
-     * @param string $type
-     *
-     * @return int
-     */
-    public function size($owner, $type = 'default');
+    public function size(object $owner, string $type = 'default'): int;
 }

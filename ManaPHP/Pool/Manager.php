@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Pool;
 
@@ -11,15 +12,9 @@ class Manager extends Component implements ManagerInterface
     /**
      * @var \ManaPHP\Coroutine\Channel[][]
      */
-    protected $pool = [];
+    protected array $pool = [];
 
-    /**
-     * @param object $owner
-     * @param string $type
-     *
-     * @return static
-     */
-    public function remove($owner, $type = null)
+    public function remove(object $owner, ?string $type = null): static
     {
         $owner_id = get_class($owner) . ':' . spl_object_id($owner);
 
@@ -32,14 +27,7 @@ class Manager extends Component implements ManagerInterface
         return $this;
     }
 
-    /**
-     * @param object $owner
-     * @param int    $capacity
-     * @param string $type
-     *
-     * @return static
-     */
-    public function create($owner, $capacity, $type = 'default')
+    public function create(object $owner, int $capacity, string $type = 'default'): static
     {
         $owner_id = get_class($owner) . ':' . spl_object_id($owner);
 
@@ -52,15 +40,7 @@ class Manager extends Component implements ManagerInterface
         return $this;
     }
 
-    /**
-     * @param object $owner
-     * @param object $sample
-     * @param int    $size
-     * @param string $type
-     *
-     * @return static
-     */
-    public function add($owner, $sample, $size = 1, $type = 'default')
+    public function add(object $owner, object $sample, int $size = 1, string $type = 'default'): static
     {
         $owner_id = get_class($owner) . ':' . spl_object_id($owner);
 
@@ -83,14 +63,7 @@ class Manager extends Component implements ManagerInterface
         return $this;
     }
 
-    /**
-     * @param object $owner
-     * @param object $instance
-     * @param string $type
-     *
-     * @return static
-     */
-    public function push($owner, $instance, $type = 'default')
+    public function push(object $owner, object $instance, string $type = 'default'): static
     {
         if ($instance === null) {
             return $this;
@@ -109,14 +82,7 @@ class Manager extends Component implements ManagerInterface
         return $this;
     }
 
-    /**
-     * @param object $owner
-     * @param float  $timeout
-     * @param string $type
-     *
-     * @return object
-     */
-    public function pop($owner, $timeout = null, $type = 'default')
+    public function pop(object $owner, ?float $timeout = null, string $type = 'default'): object
     {
         $owner_id = get_class($owner) . ':' . spl_object_id($owner);
 
@@ -137,42 +103,21 @@ class Manager extends Component implements ManagerInterface
         return $instance;
     }
 
-    /**
-     * @param object $owner
-     * @param float  $timeout
-     * @param string $type
-     *
-     * @return \ManaPHP\Pool\Proxy
-     */
-    public function get($owner, $timeout = null, $type = 'default')
+    public function get(object $owner, ?float $timeout = null, string $type = 'default'): Proxy
     {
         $instance = $this->pop($owner, $timeout, $type);
 
         return new Proxy($this, $owner, $instance, $type);
     }
 
-
-    /**
-     * @param \ManaPHP\Pool\Transientable $owner
-     * @param float                       $timeout
-     * @param string                      $type
-     *
-     * @return Transient
-     */
-    public function transient($owner, $timeout = null, $type = 'default')
+    public function transient(Transientable $owner, ?float $timeout = null, string $type = 'default'): Transient
     {
         $instance = $this->pop($owner, $timeout, $type);
 
         return new Transient($this, $owner, $instance, $type);
     }
 
-    /**
-     * @param object $owner
-     * @param string $type
-     *
-     * @return bool
-     */
-    public function isEmpty($owner, $type = 'default')
+    public function isEmpty(object $owner, string $type = 'default'): bool
     {
         $owner_id = get_class($owner) . ':' . spl_object_id($owner);
 
@@ -183,26 +128,14 @@ class Manager extends Component implements ManagerInterface
         return $queue->isEmpty();
     }
 
-    /**
-     * @param object $owner
-     * @param string $type
-     *
-     * @return bool
-     */
-    public function exists($owner, $type = 'default')
+    public function exists(object $owner, string $type = 'default'): bool
     {
         $owner_id = get_class($owner) . ':' . spl_object_id($owner);
 
         return isset($this->pool[$owner_id][$type]);
     }
 
-    /**
-     * @param object $owner
-     * @param string $type
-     *
-     * @return int
-     */
-    public function size($owner, $type = 'default')
+    public function size(object $owner, string $type = 'default'): int
     {
         $owner_id = get_class($owner) . ':' . spl_object_id($owner);
 
