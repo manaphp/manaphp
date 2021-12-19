@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Rpc\Http\Server\Adapter;
 
@@ -7,19 +8,13 @@ use ManaPHP\Rpc\Http\AbstractServer;
 
 class Fpm extends AbstractServer
 {
-    /**
-     * @return void
-     */
-    protected function prepareGlobals()
+    protected function prepareGlobals(): void
     {
         $raw_body = file_get_contents('php://input');
         $this->globals->prepare($_GET, $_POST, $_SERVER, $raw_body);
     }
 
-    /**
-     * @return static
-     */
-    public function start()
+    public function start(): void
     {
         $this->prepareGlobals();
 
@@ -28,14 +23,9 @@ class Fpm extends AbstractServer
         } else {
             $this->send();
         }
-
-        return $this;
     }
 
-    /**
-     * @return static
-     */
-    public function send()
+    public function send(): void
     {
         header('HTTP/1.1 ' . $this->response->getStatus());
 
@@ -56,7 +46,5 @@ class Fpm extends AbstractServer
 
         $content = $this->response->getContent();
         echo is_string($content) ? $content : json_stringify($content);
-
-        return $this;
     }
 }

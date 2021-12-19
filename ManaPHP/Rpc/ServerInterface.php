@@ -1,16 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Rpc;
 
 interface ServerInterface
 {
-    /**
-     * @return static
-     */
-    public function start();
+    public function start(): void;
 
-    /**
-     * @return void
-     */
-    public function send();
+    public function send(): void;
 }

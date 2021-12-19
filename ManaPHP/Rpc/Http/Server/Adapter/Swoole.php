@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Rpc\Http\Server\Adapter;
 
@@ -6,7 +7,10 @@ use ArrayObject;
 use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\NotSupportedException;
 use Swoole\Coroutine;
+use Swoole\Http\Request;
+use Swoole\Http\Response;
 use Swoole\Runtime;
+use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
 use Throwable;
 
@@ -17,35 +21,18 @@ use Throwable;
  */
 class Swoole extends \ManaPHP\Rpc\Http\AbstractServer
 {
-    /**
-     * @var array
-     */
-    protected $settings = [];
-
-    /**
-     * @var \Swoole\WebSocket\Server
-     */
-    protected $swoole;
+    protected array $settings = [];
+    protected Server $swoole;
 
     /**
      * @var ArrayObject[]
      */
-    protected $contexts = [];
+    protected array $contexts = [];
 
-    /**
-     * @var array
-     */
-    protected $messageCoroutines = [];
+    protected array $messageCoroutines = [];
+    protected array $closeCoroutine = [];
 
-    /**
-     * @var array
-     */
-    protected $closeCoroutine = [];
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
 
@@ -94,12 +81,7 @@ class Swoole extends \ManaPHP\Rpc\Http\AbstractServer
         $this->swoole->on('message', [$this, 'onMessage']);
     }
 
-    /**
-     * @param \Swoole\Http\Request $request
-     *
-     * @return void
-     */
-    protected function prepareGlobals($request)
+    protected function prepareGlobals(Request $request): void
     {
         $_server = array_change_key_case($request->server, CASE_UPPER);
         foreach ($request->header ?: [] as $k => $v) {
@@ -120,46 +102,22 @@ class Swoole extends \ManaPHP\Rpc\Http\AbstractServer
         $this->globals->prepare($_get, $_post, $_server, $raw_body);
     }
 
-    /**
-     * @param \Swoole\WebSocket\Server $server
-     *
-     * @noinspection PhpUnusedParameterInspection
-     *
-     * @return void
-     */
-    public function onStart($server)
+    public function onStart(Server $server): void
     {
         @cli_set_process_title(sprintf('manaphp %s: master', $this->config->get("id")));
     }
 
-    /**
-     * @return void
-     */
-    public function onManagerStart()
+    public function onManagerStart(): void
     {
         @cli_set_process_title(sprintf('manaphp %s: manager', $this->config->get("id")));
     }
 
-    /**
-     * @param \Swoole\WebSocket\Server $server
-     * @param int                      $worker_id
-     *
-     * @noinspection PhpUnusedParameterInspection
-     *
-     * @return void
-     */
-    public function onWorkerStart($server, $worker_id)
+    public function onWorkerStart(Server $server, int $worker_id): void
     {
         @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->config->get("id"), $worker_id));
     }
 
-    /**
-     * @param \Swoole\Http\Request  $request
-     * @param \Swoole\Http\Response $response
-     *
-     * @return void
-     */
-    public function onRequest($request, $response)
+    public function onRequest(Request $request, Response $response): void
     {
         if ($request->server['request_uri'] === '/favicon.ico') {
             $response->status(404);
@@ -185,13 +143,7 @@ class Swoole extends \ManaPHP\Rpc\Http\AbstractServer
         }
     }
 
-    /**
-     * @param \Swoole\WebSocket\Server $server
-     * @param \Swoole\Http\Request     $request
-     *
-     * @return void
-     */
-    public function onOpen($server, $request)
+    public function onOpen(Server $server, Request $request): void
     {
         if (isset($request->header['upgrade'])) {
             $fd = $request->fd;
@@ -230,13 +182,7 @@ class Swoole extends \ManaPHP\Rpc\Http\AbstractServer
         }
     }
 
-    /**
-     * @param \Swoole\WebSocket\Server $server
-     * @param int                      $fd
-     *
-     * @return void
-     */
-    public function onClose($server, $fd)
+    public function onClose(Server $server, int $fd): void
     {
         if (!$server->isEstablished($fd)) {
             return;
@@ -249,13 +195,7 @@ class Swoole extends \ManaPHP\Rpc\Http\AbstractServer
         unset($this->contexts[$fd]);
     }
 
-    /**
-     * @param \Swoole\WebSocket\Server $server
-     * @param \Swoole\WebSocket\Frame  $frame
-     *
-     * @return void
-     */
-    public function onMessage(/** @noinspection PhpUnusedParameterInspection */ $server, $frame)
+    public function onMessage(Server $server, Frame $frame): void
     {
         $fd = $frame->fd;
 
@@ -307,10 +247,7 @@ class Swoole extends \ManaPHP\Rpc\Http\AbstractServer
         }
     }
 
-    /**
-     * @return void
-     */
-    public function send()
+    public function send(): void
     {
         $context = $this->context;
         if ($context->fd) {
@@ -352,10 +289,7 @@ class Swoole extends \ManaPHP\Rpc\Http\AbstractServer
         }
     }
 
-    /**
-     * @return void
-     */
-    public function start()
+    public function start(): void
     {
         if (MANAPHP_COROUTINE_ENABLED) {
             Runtime::enableCoroutine(true);

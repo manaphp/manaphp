@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Rpc\Http\Server\Adapter;
 
@@ -10,10 +11,7 @@ use ManaPHP\Helper\Ip;
  */
 class Php extends Fpm
 {
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
 
