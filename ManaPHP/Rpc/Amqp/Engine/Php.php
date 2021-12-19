@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Rpc\Amqp\Engine;
 
@@ -13,48 +14,19 @@ use Swoole\Coroutine;
 
 class Php extends Component implements EngineInterface
 {
-    /**
-     * @var string
-     */
-    protected $uri;
+    protected string $uri;
+    protected AMQPStreamConnection $connection;
+    protected ?AMQPChannel $channel = null;
+    protected string $reply_to;
+    protected array $callings;
+    protected ?array $replies = null;
 
-    /**
-     * @var AMQPStreamConnection
-     */
-    protected $connection;
-
-    /**
-     * @var AMQPChannel
-     */
-    protected $channel;
-
-    /**
-     * @var string
-     */
-    protected $reply_to;
-
-    /**
-     * @var array
-     */
-    protected $callings;
-
-    /**
-     * @var array
-     */
-    protected $replies;
-
-    /**
-     * @param string $uri
-     */
-    public function __construct($uri)
+    public function __construct(string $uri)
     {
         $this->uri = $uri;
     }
 
-    /**
-     * @return AMQPChannel
-     */
-    protected function getChannel()
+    protected function getChannel(): AMQPChannel
     {
         if ($this->channel !== null && !$this->channel->is_open()) {
             $this->channel = null;
@@ -115,17 +87,8 @@ class Php extends Component implements EngineInterface
         return $this->channel;
     }
 
-    /**
-     * @param string $exchange
-     * @param string $routing_key
-     * @param string $body
-     * @param array  $properties
-     * @param array  $options
-     *
-     * @return mixed
-     */
-    public function call($exchange, $routing_key, $body, $properties, $options)
-    {
+    public function call(string $exchange, string $routing_key, string|array $body, array $properties, array $options
+    ): mixed {
         $channel = $this->getChannel();
 
         $properties['reply_to'] = $this->reply_to;
