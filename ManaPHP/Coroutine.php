@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP;
 
@@ -6,13 +7,7 @@ use Swoole\Coroutine as SwooleCoroutine;
 
 class Coroutine
 {
-    /**
-     * @param int $options
-     * @param int $limit
-     *
-     * @return array[]
-     */
-    public static function getBacktrace($options, $limit = 0)
+    public static function getBacktrace(int $options, int $limit = 0): array
     {
         if (MANAPHP_COROUTINE_ENABLED) {
             $traces = SwooleCoroutine::getBackTrace(0, $options, $limit > 0 ? $limit + 1 : 0);
@@ -23,13 +18,7 @@ class Coroutine
         }
     }
 
-    /**
-     * @param callable $func
-     * @param mixed    $params
-     *
-     * @return mixed
-     */
-    public static function create(callable $func, ...$params)
+    public static function create(callable $func, ...$params): mixed
     {
         return \Swoole\Coroutine::create($func, ...$params);
     }
