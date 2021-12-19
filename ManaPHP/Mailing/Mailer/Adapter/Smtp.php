@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Mailing\Mailer\Adapter;
 
@@ -8,6 +9,7 @@ use ManaPHP\Mailing\Mailer\Adapter\Exception\AuthenticationException;
 use ManaPHP\Mailing\Mailer\Adapter\Exception\BadResponseException;
 use ManaPHP\Mailing\Mailer\Adapter\Exception\ConnectionException;
 use ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException;
+use ManaPHP\Mailing\Mailer\Message;
 
 /**
  * @property-read \ManaPHP\AliasInterface                     $alias
@@ -16,45 +18,15 @@ use ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException;
  */
 class Smtp extends AbstractMailer
 {
-    /**
-     * @var string
-     */
-    protected $uri;
+    protected string $uri;
+    protected string $scheme;
+    protected string $host;
+    protected int $port;
+    protected string $username;
+    protected string $password;
+    protected int $timeout = 3;
 
-    /**
-     * @var string
-     */
-    protected $scheme;
-
-    /**
-     * @var string
-     */
-    protected $host;
-
-    /**
-     * @var int
-     */
-    protected $port;
-
-    /**
-     * @var string
-     */
-    protected $username;
-
-    /**
-     * @var string
-     */
-    protected $password;
-
-    /**
-     * @var int
-     */
-    protected $timeout = 3;
-
-    /**
-     * @param string $uri
-     */
-    public function __construct($uri)
+    public function __construct(string $uri)
     {
         $this->uri = $uri;
 
@@ -110,11 +82,7 @@ class Smtp extends AbstractMailer
         }
     }
 
-    /**
-     * @return resource
-     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\ConnectionException
-     */
-    protected function connect()
+    protected function connect(): mixed
     {
         $context = $this->context;
 
@@ -141,16 +109,7 @@ class Smtp extends AbstractMailer
         return $context->socket = $socket;
     }
 
-    /**
-     * @param string $str
-     * @param int[]  $expected
-     *
-     * @return array
-     *
-     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\BadResponseException
-     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
-     */
-    protected function transmit($str, $expected = null)
+    protected function transmit(string $str, ?array $expected = null): array
     {
         $this->writeLine($str);
 
@@ -175,14 +134,7 @@ class Smtp extends AbstractMailer
         return [$code, $message];
     }
 
-
-    /**
-     * @param string $data
-     *
-     * @return static
-     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
-     */
-    protected function writeLine($data = null)
+    protected function writeLine(?string $data = null): static
     {
         $context = $this->context;
 
@@ -202,11 +154,7 @@ class Smtp extends AbstractMailer
         return $this;
     }
 
-    /**
-     * @return string
-     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
-     */
-    protected function readLine()
+    protected function readLine(): string
     {
         $context = $this->context;
 
@@ -218,13 +166,7 @@ class Smtp extends AbstractMailer
         return $str;
     }
 
-    /**
-     * @param string $textBody
-     *
-     * @return static
-     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
-     */
-    protected function sendTextBody($textBody)
+    protected function sendTextBody(string $textBody): static
     {
         $this->writeLine('Content-Type: text/plain; charset=utf-8');
         $this->writeLine('Content-Length: ' . strlen($textBody));
@@ -235,14 +177,7 @@ class Smtp extends AbstractMailer
         return $this;
     }
 
-    /**
-     * @param string $htmlBody
-     * @param string $boundary
-     *
-     * @return static
-     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
-     */
-    protected function sendHtmlBody($htmlBody, $boundary = null)
+    protected function sendHtmlBody(string $htmlBody, ?string $boundary = null): static
     {
         if (preg_match('#<meta http-equiv="Content-Type" content="([^"]+)">#i', $htmlBody, $match)) {
             $contentType = $match[1];
@@ -263,15 +198,7 @@ class Smtp extends AbstractMailer
         return $this;
     }
 
-    /**
-     * @param array  $attachments
-     * @param string $boundary
-     *
-     * @return static
-     * @throws \ManaPHP\Exception\InvalidValueException
-     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
-     */
-    protected function sendAttachments($attachments, $boundary)
+    protected function sendAttachments(array $attachments, string $boundary): static
     {
         foreach ($attachments as $attachment) {
             $file = $this->alias->resolve($attachment['file']);
@@ -292,15 +219,7 @@ class Smtp extends AbstractMailer
         return $this;
     }
 
-    /**
-     * @param array[] $embeddedFiles
-     * @param string  $boundary
-     *
-     * @return static
-     *
-     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
-     */
-    protected function sendEmbeddedFiles($embeddedFiles, $boundary)
+    protected function sendEmbeddedFiles(array $embeddedFiles, string $boundary): static
     {
         foreach ($embeddedFiles as $embeddedFile) {
             if (!is_file($file = $this->alias->resolve($embeddedFile['file']))) {
@@ -320,24 +239,12 @@ class Smtp extends AbstractMailer
         return $this;
     }
 
-    /**
-     * @param string $str
-     *
-     * @return string
-     */
-    protected function encode($str)
+    protected function encode(string $str): string
     {
         return '=?utf-8?B?' . base64_encode($str) . '?=';
     }
 
-    /**
-     * @param string $type
-     * @param array  $addresses
-     *
-     * @return static
-     * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
-     */
-    protected function sendAddresses($type, $addresses)
+    protected function sendAddresses(string $type, array $addresses): static
     {
         foreach ($addresses as $k => $v) {
             if (is_int($k)) {
@@ -350,16 +257,12 @@ class Smtp extends AbstractMailer
     }
 
     /**
-     * @param \ManaPHP\Mailing\Mailer\Message $message
-     * @param array                           $failedRecipients
-     *
-     * @return int
      * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\BadResponseException
      * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException
      * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\ConnectionException
      * @throws \ManaPHP\Mailing\Mailer\Adapter\Exception\AuthenticationException
      */
-    protected function sendInternal($message, &$failedRecipients = null)
+    protected function sendInternal(Message $message, ?array &$failedRecipients = null): int
     {
         $this->connect();
 

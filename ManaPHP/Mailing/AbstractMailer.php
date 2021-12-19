@@ -1,31 +1,20 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Mailing;
 
 use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Mailing\Mailer\Message;
 
 abstract class AbstractMailer extends Component implements MailerInterface
 {
-    /**
-     * @var string
-     */
-    protected $log;
+    protected string $log;
 
-    /**
-     * @var string
-     */
-    protected $from;
+    protected string $from;
+    protected string $to;
 
-    /**
-     * @var string
-     */
-    protected $to;
-
-    /**
-     * @return \ManaPHP\Mailing\Mailer\Message
-     */
-    public function compose()
+    public function compose(): Message
     {
         $message = $this->container->make('ManaPHP\Mailing\Mailer\Message');
 
@@ -41,21 +30,9 @@ abstract class AbstractMailer extends Component implements MailerInterface
         return $message;
     }
 
-    /**
-     * @param \ManaPHP\Mailing\Mailer\Message $message
-     * @param array                           $failedRecipients
-     *
-     * @return int
-     */
-    abstract protected function sendInternal($message, &$failedRecipients = null);
+    abstract protected function sendInternal(Message $message, ?array &$failedRecipients = null): int;
 
-    /**
-     * @param \ManaPHP\Mailing\Mailer\Message $message
-     * @param array                           $failedRecipients
-     *
-     * @return int
-     */
-    public function send($message, &$failedRecipients = null)
+    public function send(Message $message, ?array &$failedRecipients = null): int
     {
         if ($this->log) {
             LocalFS::fileAppend($this->log, json_stringify($message) . PHP_EOL);

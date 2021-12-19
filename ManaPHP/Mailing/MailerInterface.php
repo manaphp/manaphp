@@ -1,19 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Mailing;
 
+use ManaPHP\Mailing\Mailer\Message;
+
 interface MailerInterface
 {
-    /**
-     * @return \ManaPHP\Mailing\Mailer\Message
-     */
-    public function compose();
+    public function compose(): Message;
 
-    /**
-     * @param \ManaPHP\Mailing\Mailer\Message $message
-     * @param array                           $failedRecipients
-     *
-     * @return int
-     */
-    public function send($message, &$failedRecipients = null);
+    public function send(Message $message, ?array &$failedRecipients = null): int;
 }

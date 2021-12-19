@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /** @noinspection PhpUndefinedClassInspection */
 
 /** @noinspection PhpUndefinedMethodInspection */
@@ -7,6 +8,7 @@ namespace ManaPHP\Mailing\Mailer\Adapter;
 
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Mailing\AbstractMailer;
+use ManaPHP\Mailing\Mailer\Message;
 use Swift_Attachment;
 use Swift_Mailer;
 use Swift_Message;
@@ -14,40 +16,14 @@ use Swift_SmtpTransport;
 
 class Swift extends AbstractMailer
 {
-    /**
-     * @var string
-     */
-    protected $uri;
+    protected string $uri;
+    protected string $encryption;
+    protected string $host;
+    protected int $port;
+    protected string $username;
+    protected string $password;
 
-    /**
-     * @var string
-     */
-    protected $encryption;
-
-    /**
-     * @var string
-     */
-    protected $host;
-
-    /**
-     * @var int
-     */
-    protected $port;
-
-    /**
-     * @var string
-     */
-    protected $username;
-
-    /**
-     * @var string
-     */
-    protected $password;
-
-    /**
-     * @param string $uri
-     */
-    public function __construct($uri)
+    public function __construct(string $uri)
     {
         $this->uri = $uri;
 
@@ -69,7 +45,7 @@ class Swift extends AbstractMailer
         } elseif ($scheme === 'ssl') {
             $encryption = 'ssl';
         } else {
-            throw new NotSupportedException('`:scheme` scheme is not known', ['scheme' => $scheme]);
+            throw new NotSupportedException(['`:scheme` scheme is not known', 'scheme' => $scheme]);
         }
         $this->encryption = $encryption;
 
@@ -109,13 +85,7 @@ class Swift extends AbstractMailer
         }
     }
 
-    /**
-     * @param \ManaPHP\Mailing\Mailer\Message $message
-     * @param array                           $failedRecipients
-     *
-     * @return int
-     */
-    protected function sendInternal($message, &$failedRecipients = null)
+    protected function sendInternal(Message $message, ?array &$failedRecipients = null): int
     {
         $swiftTransport = new Swift_SmtpTransport($this->host, $this->port, $this->encryption);
         if ($this->username) {

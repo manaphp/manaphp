@@ -9,7 +9,7 @@ use ManaPHP\Mailing\Mailer\Adapter\Smtp;
 
 class MailerFactory implements FactoryInterface
 {
-    public function make(ContainerInterface $container, string $name, $parameters = []): object
+    public function make(ContainerInterface $container, string $name, array $parameters = []): object
     {
         return $container->get(Smtp::class);
     }

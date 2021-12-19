@@ -1,239 +1,126 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Mailing\Mailer;
 
 use JsonSerializable;
 use ManaPHP\Html\RendererInterface;
+use ManaPHP\Mailing\MailerInterface;
 
 class Message implements JsonSerializable
 {
-    const PRIORITY_HIGHEST = 1;
-    const PRIORITY_HIGH = 2;
-    const PRIORITY_NORMAL = 3;
-    const PRIORITY_LOW = 4;
-    const PRIORITY_LOWEST = 5;
+    public const PRIORITY_HIGHEST = 1;
+    public const PRIORITY_HIGH = 2;
+    public const PRIORITY_NORMAL = 3;
+    public const PRIORITY_LOW = 4;
+    public const PRIORITY_LOWEST = 5;
 
-    /**
-     * @var \ManaPHP\Mailing\MailerInterface
-     */
-    protected $mailer;
+    protected MailerInterface $mailer;
+    protected string $date;
+    protected string $subject;
+    protected string|array $to = [];
+    protected int $priority;
+    protected string $charset = 'utf-8';
+    protected array $from = [];
+    protected array $replay_to = [];
+    protected array $cc = [];
+    protected array $bcc = [];
+    protected string $html_body;
+    protected string $text_body;
+    protected array $attachments = [];
+    protected array $embedded_files = [];
 
-    /**
-     * @var string
-     */
-    protected $date;
-
-    /**
-     * @var string
-     */
-    protected $subject;
-
-    /**
-     * @var string|array
-     */
-    protected $to = [];
-
-    /**
-     * @var int
-     */
-    protected $priority;
-
-    /**
-     * @var string
-     */
-    protected $charset = 'utf-8';
-
-    /**
-     * @var array
-     */
-    protected $from = [];
-
-    /**
-     * @var array
-     */
-    protected $replay_to = [];
-
-    /**
-     * @var array
-     */
-    protected $cc = [];
-
-    /**
-     * @var array
-     */
-    protected $bcc = [];
-
-    /**
-     * @var string
-     */
-    protected $html_body;
-
-    /**
-     * @var string
-     */
-    protected $text_body;
-
-    /**
-     * @var array
-     */
-    protected $attachments = [];
-
-    /**
-     * @var array
-     */
-    protected $embedded_files = [];
-
-    /**
-     * @param array $message
-     */
-    public function __construct($message = null)
+    public function __construct(?array $message = null)
     {
         if ($message) {
-            foreach ($message as $k => $v) {
-                $field = "_$k";
-                $this->$field = $v;
+            foreach ($message as $field => $value) {
+                $this->$field = $value;
             }
         } else {
             $this->date = date(DATE_ATOM);
         }
     }
 
-    /**
-     * @param \ManaPHP\Mailing\MailerInterface $mailer
-     *
-     * @return static
-     */
-    public function setMailer($mailer)
+    public function setMailer(MailerInterface $mailer): static
     {
         $this->mailer = $mailer;
 
         return $this;
     }
 
-    /**
-     * @return \ManaPHP\Mailing\MailerInterface
-     */
-    public function getMailer()
+    public function getMailer(): MailerInterface
     {
         return $this->mailer;
     }
 
-    /**
-     * @param string $charset
-     *
-     * @return static
-     */
-    public function setCharset($charset)
+    public function setCharset(string $charset): static
     {
         $this->charset = $charset;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCharset()
+    public function getCharset(): string
     {
         return $this->charset;
     }
 
-    /**
-     * @param string|array $from
-     *
-     * @return static
-     */
-    public function setFrom($from)
+    public function setFrom(string|array $from): static
     {
         $this->from = is_string($from) ? explode(',', $from) : $from;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getFrom()
+    public function getFrom(): array
     {
         return $this->from;
     }
 
-    /**
-     * @param string|array $to
-     *
-     * @return static
-     */
-    public function setTo($to)
+    public function setTo(string|array $to): static
     {
         $this->to = is_string($to) ? explode(',', $to) : $to;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getTo()
+    public function getTo(): array
     {
         return $this->to;
     }
 
-    /**
-     * @param string|array $replyTo
-     *
-     * @return static
-     */
-    public function setReplyTo($replyTo)
+    public function setReplyTo(string|array $replyTo): static
     {
         $this->replay_to = is_string($replyTo) ? explode(',', $replyTo) : $replyTo;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getReplyTo()
+    public function getReplyTo(): array
     {
         return $this->replay_to;
     }
 
-    /**
-     * @param string|array $cc
-     *
-     * @return static
-     */
-    public function setCc($cc)
+    public function setCc(string|array $cc): static
     {
         $this->cc = is_string($cc) ? explode(',', $cc) : $cc;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getCc()
+    public function getCc(): array
     {
         return $this->cc;
     }
 
-    /**
-     * @param array|string $bcc
-     *
-     * @return static
-     */
-    public function setBcc($bcc)
+    public function setBcc(string|array $bcc): static
     {
         $this->bcc = is_string($bcc) ? explode(',', $bcc) : $bcc;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getBcc()
+    public function getBcc(): array
     {
         return $this->bcc;
     }
@@ -243,7 +130,7 @@ class Message implements JsonSerializable
      *
      * @return static
      */
-    public function setSubject($subject)
+    public function setSubject(string $subject): static
     {
         $this->subject = $subject;
 
@@ -253,18 +140,18 @@ class Message implements JsonSerializable
     /**
      * @return string
      */
-    public function getSubject()
+    public function getSubject(): string
     {
         return $this->subject;
     }
 
     /**
      * @param string $html
-     * @param string $text
+     * @param ?string $text
      *
      * @return static
      */
-    public function setBody($html, $text = null)
+    public function setBody(string $html, ?string $text = null): static
     {
         $this->html_body = $html;
         $this->text_body = $text;
@@ -272,12 +159,7 @@ class Message implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @param string|array $body
-     *
-     * @return static
-     */
-    public function setHtmlBody($body)
+    public function setHtmlBody(string|array $body): static
     {
         if (is_array($body)) {
             $template = $body[0];
@@ -297,10 +179,7 @@ class Message implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getHtmlBody()
+    public function getHtmlBody(): string
     {
         return $this->html_body;
     }
@@ -310,7 +189,7 @@ class Message implements JsonSerializable
      *
      * @return static
      */
-    public function setTextBody($body)
+    public function setTextBody(string $body): static
     {
         $this->text_body = $body;
 
@@ -320,67 +199,40 @@ class Message implements JsonSerializable
     /**
      * @return string
      */
-    public function getTextBody()
+    public function getTextBody(): string
     {
         return $this->text_body;
     }
 
-    /**
-     * @param int $priority
-     *
-     * @return static
-     */
-    public function setPriority($priority)
+    public function setPriority(int $priority): static
     {
         $this->priority = $priority;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getPriority()
+    public function getPriority(): int
     {
         return $this->priority;
     }
 
-    /**
-     * @return string
-     */
-    public function getRandomId()
+    public function getRandomId(): string
     {
         return bin2hex(random_bytes(16));
     }
 
-    /**
-     * @param string $file
-     * @param string $name
-     *
-     *
-     * @return static
-     */
-    public function addAttachment($file, $name = null)
+    public function addAttachment(string $file, ?string $name = null): static
     {
         $this->attachments[] = ['file' => $file, 'name' => $name ?: basename($file)];
         return $this;
     }
 
-    /**
-     * @return array[]
-     */
-    public function getAttachments()
+    public function getAttachments(): array
     {
         return $this->attachments;
     }
 
-    /**
-     * @param string $file
-     * @param string $name
-     *
-     * @return string
-     */
-    public function addEmbeddedFile($file = null, $name = null)
+    public function addEmbeddedFile(string $file, ?string $name = null): string
     {
         if (!$name) {
             $name = basename($file);
@@ -397,39 +249,22 @@ class Message implements JsonSerializable
         return 'cid:' . $cid;
     }
 
-    /**
-     * @param string $file
-     * @param string $name
-     *
-     * @return string
-     */
-    public function embed($file, $name = null)
+    public function embed(string $file, ?string $name = null): string
     {
         return $this->addEmbeddedFile($file, $name);
     }
 
-    /**
-     * @return array[]
-     */
-    public function getEmbeddedFiles()
+    public function getEmbeddedFiles(): array
     {
         return $this->embedded_files;
     }
 
-    /**
-     * @param array $failedRecipients
-     *
-     * @return int
-     */
-    public function send(&$failedRecipients = null)
+    public function send(?array &$failedRecipients = null): int
     {
         return $this->mailer->send($this, $failedRecipients);
     }
 
-    /**
-     * @return array
-     */
-    public function toArray()
+    public function toArray(): array
     {
         $data = [];
         foreach (get_object_vars($this) as $k => $v) {
@@ -442,7 +277,7 @@ class Message implements JsonSerializable
         return $data;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }

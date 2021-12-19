@@ -1,26 +1,18 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Mailing\Mailer\Adapter;
 
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Mailing\AbstractMailer;
+use ManaPHP\Mailing\Mailer\Message;
 
 class File extends AbstractMailer
 {
-    /**
-     * @var string
-     */
-    protected $file;
+    protected ?string $file = null;
+    protected bool $pretty = false;
 
-    /**
-     * @var bool
-     */
-    protected $pretty = false;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['file'])) {
             $this->file = $options['file'];
@@ -42,13 +34,7 @@ class File extends AbstractMailer
         }
     }
 
-    /**
-     * @param \ManaPHP\Mailing\Mailer\Message $message
-     * @param array                           $failedRecipients
-     *
-     * @return int
-     */
-    protected function sendInternal($message, &$failedRecipients = null)
+    protected function sendInternal(Message $message, ?array &$failedRecipients = null): int
     {
         if ($this->pretty) {
             $data = str_repeat('=', 20) . date('Y-m-d H:i:s') . str_repeat('=', 20)
@@ -59,7 +45,7 @@ class File extends AbstractMailer
             $data = json_stringify($message) . PHP_EOL;
         }
 
-        LocalFS::fileAppend($this->file ?: '@data/fileMailer/mailer_' . date('ymd') . '.log', $data);
+        LocalFS::fileAppend($this->file ?? '@data/fileMailer/mailer_' . date('ymd') . '.log', $data);
 
         return count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
     }

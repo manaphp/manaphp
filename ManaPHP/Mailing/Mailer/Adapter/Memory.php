@@ -1,20 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Mailing\Mailer\Adapter;
 
 use ManaPHP\Mailing\AbstractMailer;
+use ManaPHP\Mailing\Mailer\Message;
 
 class Memory extends AbstractMailer
 {
-    /**
-     * @var \ManaPHP\Mailing\Mailer\Message
-     */
-    protected $message;
+    protected Message $message;
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['log'])) {
             $this->log = $options['log'];
@@ -29,21 +25,12 @@ class Memory extends AbstractMailer
         }
     }
 
-    /**
-     * @return \ManaPHP\Mailing\Mailer\Message
-     */
-    public function getLastMessage()
+    public function getLastMessage(): Message
     {
         return $this->message;
     }
 
-    /**
-     * @param \ManaPHP\Mailing\Mailer\Message $message
-     * @param array                           $failedRecipients
-     *
-     * @return int
-     */
-    protected function sendInternal($message, &$failedRecipients = null)
+    protected function sendInternal(Message $message, ?array &$failedRecipients = null): int
     {
         $this->message = $message;
 
