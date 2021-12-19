@@ -5,6 +5,7 @@ namespace ManaPHP\Data;
 use ManaPHP\Component;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NonCloneableException;
+use ManaPHP\Pool\Transient;
 
 /**
  * @property-read \ManaPHP\Pool\ManagerInterface $poolManager
@@ -57,12 +58,7 @@ class Redis extends Component implements RedisInterface, RedisDbInterface, Redis
         $this->poolManager->add($this, $sample, $this->pool_size);
     }
 
-    /**
-     * @param string $type
-     *
-     * @return static
-     */
-    public function getTransientWrapper($type = 'default')
+    public function getTransientWrapper(string $type = 'default'): Transient
     {
         return $this->poolManager->transient($this, $this->timeout, $type);
     }
@@ -107,7 +103,7 @@ class Redis extends Component implements RedisInterface, RedisDbInterface, Redis
         }
     }
 
-    public function transientCall($instance, $method, $arguments)
+    public function transientCall(object $instance, string $method, array $arguments): mixed
     {
         $this->fireEvent('redis:calling', compact('method', 'arguments'));
 

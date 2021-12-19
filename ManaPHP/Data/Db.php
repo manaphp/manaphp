@@ -9,6 +9,7 @@ use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Pool\Transient;
 use PDO;
 use PDOException;
 
@@ -897,12 +898,12 @@ class Db extends Component implements DbInterface
         return $this->container->make('ManaPHP\Data\Db\Query', [$this])->from($table, $alias);
     }
 
-    public function getTransientWrapper($type = 'default')
+    public function getTransientWrapper(string $type = 'default'): Transient
     {
         return $this->poolManager->transient($this, $this->timeout, $type);
     }
 
-    public function transientCall($instance, $method, $arguments)
+    public function transientCall(object $instance, string $method, array $arguments): mixed
     {
         $context = $this->context;
 
