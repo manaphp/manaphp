@@ -1,4 +1,5 @@
 <?php /** @noinspection MagicMethodsValidityInspection */
+declare(strict_types=1);
 
 namespace ManaPHP\Rpc;
 
@@ -10,25 +11,11 @@ use ReflectionMethod;
 
 class Service implements Injectable
 {
-    /**
-     * @var \ManaPHP\Rpc\ClientInterface
-     */
-    protected $rpcClient;
+    protected ClientInterface $rpcClient;
+    protected array $parameters;
+    protected ContainerInterface $container;
 
-    /**
-     * @var array
-     */
-    protected $parameters;
-
-    /**
-     * @var \ManaPHP\Di\ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * @param string|array $options
-     */
-    public function __construct($options = [])
+    public function __construct(string|array $options = [])
     {
         if (is_string($options)) {
             $options = ['endpoint' => $options];
@@ -53,14 +40,7 @@ class Service implements Injectable
         $this->container = $container;
     }
 
-    /**
-     * @param string $method
-     * @param array  $params
-     * @param array  $options
-     *
-     * @return mixed
-     */
-    protected function __rpcCall($method, $params = [], $options = [])
+    protected function __rpcCall(string $method, array $params = [], array $options = []): mixed
     {
         if ($pos = strpos($method, '::')) {
             $method = substr($method, $pos + 2);
