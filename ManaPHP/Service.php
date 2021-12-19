@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP;
 
@@ -6,10 +7,7 @@ use ManaPHP\Logging\Logger\LogCategorizable;
 
 class Service extends Component implements LogCategorizable
 {
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         $class_vars = get_class_vars(static::class);
 
