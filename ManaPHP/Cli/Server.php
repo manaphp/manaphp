@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
@@ -16,15 +17,9 @@ use Throwable;
  */
 class Server extends Component implements ServerInterface
 {
-    /**
-     * @var int
-     */
-    protected $exit_code;
+    protected int $exit_code;
 
-    /**
-     * @return void
-     */
-    public function handle()
+    public function handle(): void
     {
         $args = implode(' ', array_slice($GLOBALS['argv'], 1));
         $this->logger->info(['command line: :cmd', 'cmd' => basename($GLOBALS['argv'][0]) . ' ' . $args]);
@@ -42,7 +37,7 @@ class Server extends Component implements ServerInterface
         }
     }
 
-    public function start()
+    public function start(): void
     {
         if (MANAPHP_COROUTINE_ENABLED) {
             Runtime::enableCoroutine(true);
