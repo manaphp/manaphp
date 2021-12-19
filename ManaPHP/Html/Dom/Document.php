@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Html\Dom;
 
 use DOMDocument;
+use DOMElement;
 use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Html\Dom\Document\Exception as DocumentException;
@@ -12,41 +14,14 @@ use ManaPHP\Html\Dom\Document\Exception as DocumentException;
  */
 class Document extends Component
 {
-    /**
-     * @var string
-     */
-    protected $url;
+    protected string $url;
+    protected string $base;
+    protected string $str;
+    protected DomDocument $dom;
+    protected Query $query;
+    protected array $errors = [];
 
-    /**
-     * @var string
-     */
-    protected $base;
-
-    /**
-     * @var string
-     */
-    protected $str;
-
-    /**
-     * @var \DOMDocument
-     */
-    protected $dom;
-
-    /**
-     * @var \ManaPHP\Html\Dom\Query
-     */
-    protected $query;
-
-    /**
-     * @var array
-     */
-    protected $errors = [];
-
-    /**
-     * @param string $str
-     * @param string $url
-     */
-    public function __construct($str = null, $url = null)
+    public function __construct(?string $str = null, ?string $url = null)
     {
         if ($str !== null) {
             if (preg_match('#^https?://#', $str)) {
@@ -59,37 +34,20 @@ class Document extends Component
         }
     }
 
-    /**
-     * @param string $file
-     * @param string $url
-     *
-     * @return static
-     */
-    public function loadFile($file, $url = null)
+    public function loadFile(string $file, ?string $url = null): static
     {
         $str = LocalFS::fileGet($file);
 
         return $this->loadString($str, $url);
     }
 
-    /**
-     * @param string $url
-     *
-     * @return static
-     */
-    public function loadUrl($url)
+    public function loadUrl(string $url): static
     {
         $str = $this->httpClient->get($url)->body;
         return $this->loadString($str, $url);
     }
 
-    /**
-     * @param string $str
-     * @param string $url
-     *
-     * @return static
-     */
-    public function loadString($str, $url = null)
+    public function loadString(string $str, ?string $url = null): static
     {
         $this->str = $str;
 
@@ -134,48 +92,29 @@ class Document extends Component
         return $this;
     }
 
-    /**
-     * @param bool $raw
-     *
-     * @return string
-     */
-    public function getString($raw = true)
+    public function getString(bool $raw = true): string
     {
         return $raw ? $this->str : $this->dom->saveHTML($this->dom->documentElement);
     }
 
-    /**
-     * @return array
-     */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }
 
-    /**
-     * @param string $file
-     *
-     * @return static
-     */
-    public function save($file)
+    public function save(string $file): static
     {
         LocalFS::filePut($file, $this->getString());
 
         return $this;
     }
 
-    /**
-     * @return \ManaPHP\Html\Dom\Query
-     */
-    public function getQuery()
+    public function getQuery(): Query
     {
         return $this->query;
     }
 
-    /**
-     * @return string
-     */
-    protected function getBase()
+    protected function getBase(): ?string
     {
         foreach ($this->dom->getElementsByTagName('base') as $node) {
             /** @var \DOMElement $node */
@@ -197,24 +136,14 @@ class Document extends Component
         return null;
     }
 
-    /**
-     * @param string $url
-     *
-     * @return static
-     */
-    public function setBase($url)
+    public function setBase(string $url): static
     {
         $this->base = rtrim($url, '/') . '/';
 
         return $this;
     }
 
-    /**
-     * @param \DOMElement $node
-     *
-     * @return string
-     */
-    public function saveHtml($node = null)
+    public function saveHtml(?DOMElement $node = null): string
     {
         if ($node) {
             return $node->ownerDocument->saveHTML($node);
@@ -223,12 +152,7 @@ class Document extends Component
         }
     }
 
-    /**
-     * @param string $url
-     *
-     * @return string
-     */
-    public function absolutizeUrl($url)
+    public function absolutizeUrl(string $url): string
     {
         if (!$this->base || preg_match('#^https?://#i', $url) || str_starts_with($url, 'javascript:')) {
             return $url;
@@ -249,13 +173,7 @@ class Document extends Component
         }
     }
 
-    /**
-     * @param string      $selector
-     * @param \DOMElement $context
-     *
-     * @return static
-     */
-    public function absolutizeAHref($selector = null, $context = null)
+    public function absolutizeAHref(?string $selector = null, ?DomDocument $context = null): static
     {
         /** @var \DOMElement $item */
         if ($selector) {
@@ -275,15 +193,8 @@ class Document extends Component
         return $this;
     }
 
-    /**
-     * @param string      $selector
-     * @param \DOMElement $context
-     * @param string      $attr
-     *
-     * @return static
-     */
-    public function absolutizeImgSrc($selector = null, $context = null, $attr = 'src')
-    {
+    public function absolutizeImgSrc(?string $selector = null, ?DOMElement $context = null, string $attr = 'src'
+    ): static {
         /** @var \DOMElement $item */
         if ($selector) {
             foreach ($this->query->xpath($selector, $context) as $item) {
@@ -302,20 +213,12 @@ class Document extends Component
         return $this;
     }
 
-    /**
-     * @return \ManaPHP\Html\Dom\Selector
-     */
-    public function selector()
+    public function selector(): Selector
     {
         return new Selector($this);
     }
 
-    /**
-     * @param string|array $css
-     *
-     * @return \ManaPHP\Html\Dom\SelectorList
-     */
-    public function css($css)
+    public function css(string|array $css): SelectorList
     {
         return $this->selector()->css($css);
     }
