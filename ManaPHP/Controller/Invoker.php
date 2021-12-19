@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Controller;
 
 use ManaPHP\Component;
+use ManaPHP\Controller;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ReflectionMethod;
 
@@ -12,13 +14,7 @@ use ReflectionMethod;
  */
 class Invoker extends Component implements InvokerInterface
 {
-    /**
-     * @param \ManaPHP\Controller $controller
-     * @param string              $method
-     *
-     * @return array
-     */
-    public function buildArgs($controller, $method)
+    public function buildArgs(Controller $controller, string $method): array
     {
         $args = [];
         $missing = [];
@@ -92,13 +88,7 @@ class Invoker extends Component implements InvokerInterface
         return $args;
     }
 
-    /**
-     * @param \ManaPHP\Controller $controller
-     * @param string              $method
-     *
-     * @return mixed
-     */
-    public function invoke($controller, $method)
+    public function invoke(Controller $controller, string $method): mixed
     {
         $args = $this->buildArgs($controller, $method);
 
