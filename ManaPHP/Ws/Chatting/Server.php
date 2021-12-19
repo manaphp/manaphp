@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Ws\Chatting;
 
@@ -7,43 +8,21 @@ use ManaPHP\Coroutine;
 use ManaPHP\Logging\Logger\LogCategorizable;
 
 /**
- * @property-read \ManaPHP\Logging\LoggerInterface       $logger
- * @property-read \ManaPHP\Http\RequestInterface         $request
+ * @property-read \ManaPHP\Logging\LoggerInterface $logger
+ * @property-read \ManaPHP\Http\RequestInterface $request
  * @property-read \ManaPHP\Identifying\IdentityInterface $identity
- * @property-read \ManaPHP\Ws\ServerInterface            $wsServer
- * @property-read \ManaPHP\Messaging\PubSubInterface     $pubSub
+ * @property-read \ManaPHP\Ws\ServerInterface $wsServer
+ * @property-read \ManaPHP\Messaging\PubSubInterface $pubSub
  */
 class Server extends Component implements ServerInterface, LogCategorizable
 {
-    /**
-     * @var string
-     */
-    protected $prefix = 'ws_chatting:';
+    protected string $prefix = 'ws_chatting:';
+    protected bool $dedicated = false;
+    protected array $fds = [];
+    protected array $ids;
+    protected array $names;
 
-    /**
-     * @var bool
-     */
-    protected $dedicated = false;
-
-    /**
-     * @var array
-     */
-    protected $fds = [];
-
-    /**
-     * @var array[][]
-     */
-    protected $ids;
-
-    /**
-     * @var array[][]
-     */
-    protected $names;
-
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['prefix'])) {
             $this->prefix = $options['prefix'];
@@ -59,11 +38,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         return str_replace('\\', '.', get_class($this));
     }
 
-    /**
-     * @param int    $fd
-     * @param string $room
-     */
-    public function open($fd, $room = null)
+    public function open(int $fd, ?string $room = null): void
     {
         $room = $room ?? $this->identity->getClaim('room_id');
 
@@ -71,7 +46,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
             $this->fds[$fd] = true;
         }
 
-        if (($id = $this->identity->getId('')) !== '') {
+        if (($id = $this->identity->getId(0)) !== 0) {
             $this->ids[$room][$id][$fd] = true;
         }
 
@@ -82,11 +57,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         $this->fireEvent('chatServer:come', compact('fd', 'id', 'name', 'room'));
     }
 
-    /**
-     * @param int    $fd
-     * @param string $room
-     */
-    public function close($fd, $room = null)
+    public function close(int $fd, ?string $room = null): void
     {
         $room = $room ?? $this->identity->getClaim('room_id');
 
@@ -94,7 +65,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
             unset($this->fds[$fd]);
         }
 
-        if (($id = $this->identity->getId('')) !== '') {
+        if (($id = $this->identity->getId(0)) !== 0) {
             unset($this->ids[$room][$id][$fd]);
             if (count($this->ids[$room][$id]) === 0) {
                 unset($this->ids[$room][$id]);
@@ -111,22 +82,12 @@ class Server extends Component implements ServerInterface, LogCategorizable
         $this->fireEvent('chatServer:leave', compact('fd', 'id', 'name', 'room'));
     }
 
-    /**
-     * @param int    $fd
-     * @param string $message
-     *
-     * @return void
-     */
-    public function push($fd, $message)
+    public function push(int $fd, string $message): void
     {
         $this->wsServer->push($fd, $message);
     }
 
-    /**
-     * @param string $room
-     * @param string $message
-     */
-    public function pushToRoom($room, $message)
+    public function pushToRoom(string $room, string $message): void
     {
         $sent = [];
 
@@ -147,12 +108,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
-    /**
-     * @param string $room
-     * @param array  $receivers
-     * @param string $message
-     */
-    public function pushToId($room, $receivers, $message)
+    public function pushToId(string $room, array $receivers, string $message): void
     {
         foreach ($receivers as $id) {
             foreach ($this->ids[$room][$id] ?? [] as $fd => $_) {
@@ -161,12 +117,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
-    /**
-     * @param string $room
-     * @param array  $receivers
-     * @param string $message
-     */
-    public function pushToName($room, $receivers, $message)
+    public function pushToName(string $room, array $receivers, string $message): void
     {
         foreach ($receivers as $name) {
             foreach ($this->names[$room][$name] ?? [] as $fd => $_) {
@@ -175,10 +126,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
-    /**
-     * @param string $message
-     */
-    public function broadcast($message)
+    public function broadcast(string $message): void
     {
         if ($this->dedicated) {
             $this->wsServer->broadcast($message);
@@ -189,11 +137,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
-    /**
-     * @param string $room
-     * @param string $message
-     */
-    public function closeRoom($room, $message)
+    public function closeRoom(string $room, string $message): void
     {
         $sent = [];
         foreach ($this->ids[$room] ?? [] as $id => $fds) {
@@ -215,12 +159,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         unset($this->names[$room]);
     }
 
-    /**
-     * @param string $room
-     * @param array  $receivers
-     * @param string $message
-     */
-    public function kickoutId($room, $receivers, $message)
+    public function kickoutId(string $room, array $receivers, string $message): void
     {
         $sent = [];
 
@@ -243,12 +182,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
-    /**
-     * @param string $room
-     * @param array  $receivers
-     * @param string $message
-     */
-    public function kickoutName($room, $receivers, $message)
+    public function kickoutName(string $room, array $receivers, string $message): void
     {
         $sent = [];
 
@@ -271,13 +205,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
-    /**
-     * @param string $type
-     * @param string $room
-     * @param array  $receivers
-     * @param string $message
-     */
-    public function dispatch($type, $room, $receivers, $message)
+    public function dispatch(string $type, string $room, array $receivers, string $message): void
     {
         if ($type === 'message.room') {
             $this->pushToRoom($room, $message);
@@ -301,7 +229,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         }
     }
 
-    public function start()
+    public function start(): void
     {
         Coroutine::create(
             function () {

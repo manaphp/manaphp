@@ -1,27 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Ws\Chatting;
 
 interface ServerInterface
 {
-    /**
-     * @return void
-     */
-    public function start();
+    public function start(): void;
 
-    /**
-     * @param int    $fd
-     * @param string $room
-     *
-     * @return void
-     */
-    public function open($fd, $room = null);
+    public function open(int $fd, ?string $room = null): void;
 
-    /**
-     * @param int    $fd
-     * @param string $room
-     *
-     * @return void
-     */
-    public function close($fd, $room = null);
+    public function close(int $fd, ?string $room = null): void;
 }
