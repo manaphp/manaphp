@@ -181,9 +181,9 @@ interface ModelInterface extends TableInterface
     public static function valueOrFail($filters, $field, $ttl = null);
 
     /**
-     * @param array            $filters
-     * @param string|float|int $field
-     * @param mixed            $default
+     * @param array  $filters
+     * @param string $field
+     * @param mixed  $default
      *
      * @return float|int|string
      */
