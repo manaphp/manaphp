@@ -144,8 +144,8 @@ class DbModelTest extends TestCase
 
     public function test_exists()
     {
-        $this->assertFalse(Actor::exists(-1));
-        $this->assertTrue(Actor::exists(1));
+        $this->assertFalse(Actor::exists(['actor_id' => -1]));
+        $this->assertTrue(Actor::exists(['actor_id' => 1]));
     }
 
     public function test_first_usage()

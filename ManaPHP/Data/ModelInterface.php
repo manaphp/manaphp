@@ -206,7 +206,7 @@ interface ModelInterface extends TableInterface
     public static function kvalues($field, $filters = null);
 
     /**
-     * @param string|array $filters
+     * @param array $filters
      *
      * @return bool
      */

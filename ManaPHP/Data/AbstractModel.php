@@ -475,7 +475,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * @param int|string|array $filters =model_var(new static)
+     * @param array $filters =model_var(new static)
      *
      * @return bool
      */

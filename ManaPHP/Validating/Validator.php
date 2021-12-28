@@ -528,7 +528,7 @@ class Validator extends Component implements ValidatorInterface
         }
 
         /** @var \ManaPHP\Data\ModelInterface $className */
-        return $className::exists($value) ? $value : null;
+        return $className::exists([$model->primaryKey() => $value]) ? $value : null;
     }
 
     protected function validate_model_level(string $field, ModelInterface $model, ?string $parameter = null): mixed
