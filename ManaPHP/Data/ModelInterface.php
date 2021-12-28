@@ -470,7 +470,7 @@ interface ModelInterface extends TableInterface
     public static function select($fields = [], $alias = null);
 
     /**
-     * @param int|string|array $filters
+     * @param array $filters
      *
      * @return \ManaPHP\Data\QueryInterface
      */

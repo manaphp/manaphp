@@ -1110,15 +1110,13 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * @param int|string|array $filters =model_var(new static)
+     * @param array $filters =model_var(new static)
      *
      * @return \ManaPHP\Data\QueryInterface <static>
      */
     public static function where($filters)
     {
-        $primaryKey = static::sample()->primaryKey();
-
-        return static::select()->where(is_scalar($filters) ? [$primaryKey => $filters] : $filters);
+        return static::select()->where($filters);
     }
 
     /**
