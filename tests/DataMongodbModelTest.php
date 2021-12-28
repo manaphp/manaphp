@@ -318,7 +318,6 @@ class DataMongodbModelTest extends TestCase
         $actor = Actor::get(1);
 
         $actor->first_name = 'abc';
-        $this->assertTrue($actor->hasChanged('first_name'));
         $this->assertTrue($actor->hasChanged(['first_name']));
     }
 }

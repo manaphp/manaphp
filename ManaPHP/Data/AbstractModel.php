@@ -950,7 +950,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      * Check if a specific attribute has changed
      * This only works if the model is keeping data snapshots
      *
-     * @param string|array $fields =model_fields(new static)
+     * @param array $fields =model_fields(new static)
      *
      * @return bool
      */
@@ -958,7 +958,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     {
         $snapshot = $this->_snapshot;
 
-        foreach ((array)$fields as $field) {
+        foreach ($fields as $field) {
             if (!isset($snapshot[$field]) || $this->{$field} !== $snapshot[$field]) {
                 return true;
             }

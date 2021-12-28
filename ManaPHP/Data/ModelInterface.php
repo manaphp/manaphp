@@ -422,7 +422,7 @@ interface ModelInterface extends TableInterface
      * Check if a specific attribute has changed
      * This only works if the model is keeping data snapshots
      *
-     * @param string|array $fields
+     * @param array $fields
      *
      * @return bool
      */
