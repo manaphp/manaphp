@@ -163,25 +163,25 @@ interface ModelInterface extends TableInterface
     public static function last($filters = null, $fields = null);
 
     /**
-     * @param int|string|array $filters
-     * @param string           $field
-     * @param int              $ttl
+     * @param array  $filters
+     * @param string $field
+     * @param int    $ttl
      *
      * @return int|float|string|null
      */
     public static function value($filters, $field, $ttl = null);
 
     /**
-     * @param int|string|array $filters
-     * @param string           $field
-     * @param int              $ttl
+     * @param array  $filters
+     * @param string $field
+     * @param int    $ttl
      *
      * @return int|float|string
      */
     public static function valueOrFail($filters, $field, $ttl = null);
 
     /**
-     * @param int|string|array $filters
+     * @param array            $filters
      * @param string|float|int $field
      * @param mixed            $default
      *

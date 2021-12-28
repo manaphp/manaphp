@@ -37,7 +37,7 @@ class AdminRoleController extends Controller
             $adminRole->admin_id = $admin->admin_id;
             $adminRole->admin_name = $admin->admin_name;
             $adminRole->role_id = $role_id;
-            $adminRole->role_name = Role::value($role_id, 'role_name');
+            $adminRole->role_name = Role::value(['role_id' => $role_id], 'role_name');
 
             $adminRole->create();
         }

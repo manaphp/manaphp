@@ -369,9 +369,9 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * @param int|string|array $filters =model_var(new static)
-     * @param string           $field   =model_field(new static)
-     * @param int              $ttl
+     * @param array  $filters =model_var(new static)
+     * @param string $field   =model_field(new static)
+     * @param int    $ttl
      *
      * @return int|float|string|null
      */
@@ -389,13 +389,9 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         $pkName = $sample->primaryKey();
 
         $pkValue = null;
-        if (is_scalar($filters)) {
-            $pkValue = $filters;
-            $filters = [$pkName => $pkValue];
-        } elseif (is_array($filters)) {
-            if (count($filters) === 1 && isset($filters[$pkName])) {
-                $pkValue = $filters[$pkName];
-            }
+
+        if (count($filters) === 1 && isset($filters[$pkName])) {
+            $pkValue = $filters[$pkName];
         }
 
         if ($ttl === null || $pkValue === null) {
@@ -417,9 +413,9 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * @param int|string|array $filters =model_var(new static)
-     * @param string           $field   =model_field(new static)
-     * @param int              $ttl
+     * @param array  $filters =model_var(new static)
+     * @param string $field   =model_field(new static)
+     * @param int    $ttl
      *
      * @return int|float|string
      */
@@ -434,7 +430,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * @param int|string|array $filters =model_var(new static)
+     * @param array            $filters =model_var(new static)
      * @param string|float|int $field   =model_field(new static)
      * @param mixed            $default
      *
