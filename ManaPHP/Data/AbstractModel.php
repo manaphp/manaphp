@@ -289,8 +289,8 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * @param array|string $fields =model_fields(new static)
-     * @param string       $alias
+     * @param array  $fields =model_fields(new static)
+     * @param string $alias
      *
      * @return \ManaPHP\Data\QueryInterface <static>
      */

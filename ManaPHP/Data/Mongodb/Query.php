@@ -129,7 +129,7 @@ class Query extends AbstractQuery
     }
 
     /**
-     * @param string|array $fields
+     * @param array $fields
      *
      * @return static
      */
@@ -139,31 +139,25 @@ class Query extends AbstractQuery
             return $this;
         }
 
-        if (is_string($fields)) {
-            $fields = (array)preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY);
+        $this->aliases = [];
+
+        if (isset($fields[count($fields) - 1])) {
+            $this->fields = array_fill_keys($fields, 1);
+        } else {
+            $projection = [];
+            foreach ($fields as $k => $v) {
+                if (is_int($k)) {
+                    $projection[$v] = 1;
+                } else {
+                    $this->aliases[$k] = $v;
+                    $projection[$v] = 1;
+                }
+            }
+            $this->fields = $projection;
         }
 
-        if ($fields) {
-            $this->aliases = [];
-
-            if (isset($fields[count($fields) - 1])) {
-                $this->fields = array_fill_keys($fields, 1);
-            } else {
-                $projection = [];
-                foreach ($fields as $k => $v) {
-                    if (is_int($k)) {
-                        $projection[$v] = 1;
-                    } else {
-                        $this->aliases[$k] = $v;
-                        $projection[$v] = 1;
-                    }
-                }
-                $this->fields = $projection;
-            }
-
-            if (!isset($this->fields['_id'])) {
-                $this->fields['_id'] = false;
-            }
+        if (!isset($this->fields['_id'])) {
+            $this->fields['_id'] = false;
         }
 
         return $this;

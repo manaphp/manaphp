@@ -76,7 +76,7 @@ class Query extends AbstractQuery
     }
 
     /**
-     * @param string|array $fields
+     * @param array $fields
      *
      * @return static
      */
@@ -85,11 +85,7 @@ class Query extends AbstractQuery
         if (!$fields) {
             return $this;
         }
-
-        if (is_string($fields)) {
-            $fields = (array)preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY);
-        }
-
+        
         $r = '';
         foreach ($fields as $k => $v) {
             if (strpbrk($v, '[(') === false) {

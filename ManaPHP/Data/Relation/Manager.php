@@ -207,13 +207,16 @@ class Manager extends Component implements ManagerInterface
         if ($data === null) {
             null;
         } elseif (is_string($data)) {
-            $query->select($data);
+            $query->select(preg_split('#[\s,]+#', $data, -1, PREG_SPLIT_NO_EMPTY));
         } elseif (is_array($data)) {
             if ($data) {
                 if (isset($data[count($data) - 1])) {
-                    $query->select(count($data) > 1 ? $data : $data[0]);
+                    $query->select($data);
                 } elseif (isset($data[0])) {
-                    $query->select($data[0]);
+                    $fields = $data[0];
+                    $query->select(
+                        is_string($fields) ? preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY) : $fields
+                    );
                     unset($data[0]);
                     $query->where($data);
                 } else {

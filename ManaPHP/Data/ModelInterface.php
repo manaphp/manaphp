@@ -462,8 +462,8 @@ interface ModelInterface extends TableInterface
     public function decrement($field, $step = 1);
 
     /**
-     * @param array|string $fields
-     * @param string       $alias
+     * @param array  $fields
+     * @param string $alias
      *
      * @return \ManaPHP\Data\QueryInterface
      */

@@ -42,7 +42,7 @@ interface QueryInterface
     public function from($table, $alias = null);
 
     /**
-     * @param string|array $fields =model_fields(new Model)
+     * @param array $fields =model_fields(new Model)
      *
      * @return static
      */

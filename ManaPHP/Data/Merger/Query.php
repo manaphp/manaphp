@@ -20,8 +20,8 @@ class Query extends AbstractQuery
     protected $queries;
 
     /**
-     * @param array        $queries
-     * @param string|array $fields
+     * @param array $queries
+     * @param array $fields
      */
     public function __construct($queries, $fields = null)
     {
@@ -109,7 +109,7 @@ class Query extends AbstractQuery
     }
 
     /**
-     * @param string|array $fields
+     * @param array $fields
      *
      * @return static
      */
