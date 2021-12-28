@@ -131,7 +131,7 @@ class DbModelTest extends TestCase
 
         $this->assertTrue(is_object(Actor::first(['actor_id' => '1'])));
 
-        $actor = Actor::first(10);
+        $actor = Actor::first(['actor_id' => 10]);
         $this->assertInstanceOf(get_class(new Actor()), $actor);
         $this->assertEquals('10', $actor->actor_id);
 
@@ -150,7 +150,6 @@ class DbModelTest extends TestCase
 
     public function test_first_usage()
     {
-        $this->assertEquals(10, City::first(10)->city_id);
         $this->assertEquals(10, City::first(['city_id' => 10])->city_id);
     }
 
@@ -214,7 +213,7 @@ class DbModelTest extends TestCase
 
         $this->assertEquals(1, $student->id);
 
-        $student = Student::first(1);
+        $student = Student::get(1);
         $this->assertEquals(1, $student->id);
         $this->assertEquals(21, $student->age);
         $this->assertEquals('mana', $student->name);
@@ -236,12 +235,12 @@ class DbModelTest extends TestCase
         $student->name = 'mana';
         $student->create();
 
-        $student = Student::first(1);
+        $student = Student::get(1);
         $student->age = 22;
         $student->name = 'mana2';
         $student->update();
 
-        $student = Student::first(1);
+        $student = Student::get(1);
         $this->assertEquals(1, $student->id);
         $this->assertEquals(22, $student->age);
         $this->assertEquals('mana2', $student->name);
@@ -279,7 +278,7 @@ class DbModelTest extends TestCase
         $student->name = 'manaphp';
         $student->save();
 
-        $student = Student::first(1);
+        $student = Student::get(1);
         $this->assertInstanceOf(Student::class, $student);
         $this->assertEquals('1', $student->id);
         $this->assertEquals('30', $student->age);
@@ -305,9 +304,9 @@ class DbModelTest extends TestCase
         $student->name = 'mana';
         $student->create();
 
-        $this->assertNotFalse(Student::first(1));
+        $this->assertNotFalse(Student::get(1));
         $student->delete();
-        $this->assertNull(Student::first(1));
+        $this->assertNull(Student::get(1));
     }
 
     public function test_deleteAll()
@@ -319,10 +318,10 @@ class DbModelTest extends TestCase
         $student->name = 'mana';
         $student->create();
 
-        $this->assertNotFalse(Student::first(1));
+        $this->assertNotFalse(Student::get(1));
 
         Student::deleteAll(['id>' => 0]);
-        $this->assertNull(Student::first(1));
+        $this->assertNull(Student::get(1));
     }
 
     public function test_assign()
@@ -361,7 +360,7 @@ class DbModelTest extends TestCase
 
     public function test_getSnapshotData()
     {
-        $actor = Actor::first(1);
+        $actor = Actor::get(1);
         $snapshot = $actor->getSnapshotData();
 
         $this->assertEquals($snapshot, $actor->toArray());
@@ -369,7 +368,7 @@ class DbModelTest extends TestCase
 
     public function test_getChangedFields()
     {
-        $actor = Actor::first(1);
+        $actor = Actor::get(1);
 
         $actor->first_name = 'abc';
         $actor->last_name = 'mark';
@@ -378,7 +377,7 @@ class DbModelTest extends TestCase
 
     public function test_hasChanged()
     {
-        $actor = Actor::first(1);
+        $actor = Actor::get(1);
 
         $actor->first_name = 'abc';
         $this->assertTrue($actor->hasChanged('first_name'));
@@ -387,17 +386,17 @@ class DbModelTest extends TestCase
 
     public function test_assignment()
     {
-        $payment = Payment::first(1);
+        $payment = Payment::get(1);
         $this->assertEquals(2.99, round($payment->amount, 2));
 
         $payment->amount = new Increment(0.01, '+');
         $payment->save();
-        $this->assertEquals(3, round(Payment::first(1)->amount, 2));
+        $this->assertEquals(3, round(Payment::get(1)->amount, 2));
 
-        $payment = Payment::first(1);
+        $payment = Payment::get(1);
         $payment->amount = new Increment(0.01, '-');
         $payment->save();
-        $this->assertEquals(2.99, round(Payment::first(1)->amount, 2));
+        $this->assertEquals(2.99, round(Payment::get(1)->amount, 2));
     }
 
 //    public function test_findFirstBy()

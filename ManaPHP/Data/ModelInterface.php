@@ -125,16 +125,16 @@ interface ModelInterface extends TableInterface
     /**
      * Allows to query the first record that match the specified conditions
      *
-     * @param int|string|array $filters
-     * @param array            $fields
+     * @param array $filters
+     * @param array $fields
      *
      * @return static|null
      */
     public static function first($filters, $fields = null);
 
     /**
-     * @param int|string|array $filters
-     * @param array            $fields
+     * @param array $filters
+     * @param array $fields
      *
      * @return static
      */

@@ -104,7 +104,7 @@ class DataMongodbModelTest extends TestCase
 
         $this->assertTrue(is_object(Actor::first(['actor_id' => 1])));
 
-        $actor = Actor::first(10);
+        $actor = Actor::get(10);
         $this->assertInstanceOf(get_class(new Actor()), $actor);
         $this->assertEquals('10', $actor->actor_id);
 
@@ -127,7 +127,7 @@ class DataMongodbModelTest extends TestCase
 
     public function test_first_usage()
     {
-        $this->assertEquals(10, City::first(10)->city_id);
+        $this->assertEquals(10, City::get(10)->city_id);
         $this->assertEquals(10, City::first(['city_id' => 10])->city_id);
     }
 
@@ -298,7 +298,7 @@ class DataMongodbModelTest extends TestCase
 
     public function test_getSnapshotData()
     {
-        $actor = Actor::first(1);
+        $actor = Actor::get(1);
         $snapshot = $actor->getSnapshotData();
         unset($snapshot['_id']);
         $this->assertSame($snapshot, $actor->toArray());
@@ -306,7 +306,7 @@ class DataMongodbModelTest extends TestCase
 
     public function test_getChangedFields()
     {
-        $actor = Actor::first(1);
+        $actor = Actor::get(1);
 
         $actor->first_name = 'abc';
         $actor->last_name = 'mark';
@@ -315,7 +315,7 @@ class DataMongodbModelTest extends TestCase
 
     public function test_hasChanged()
     {
-        $actor = Actor::first(1);
+        $actor = Actor::get(1);
 
         $actor->first_name = 'abc';
         $this->assertTrue($actor->hasChanged('first_name'));

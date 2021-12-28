@@ -302,26 +302,20 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     /**
      * Allows to query the first record that match the specified conditions
      *
-     * @param int|string|array $filters =model_var(new static)
-     * @param array            $fields  =model_fields(new static)
+     * @param array $filters =model_var(new static)
+     * @param array $fields  =model_fields(new static)
      *
      * @return static|null
      */
     public static function first($filters, $fields = null)
     {
-        if ($filters === null) {
-            throw new MisuseException('Model:first is not support null value filters');
-        }
-
-        $rs = static::select($fields)
-            ->where(is_scalar($filters) ? [static::sample()->primaryKey() => $filters] : $filters)
-            ->limit(1)->fetch();
+        $rs = static::select($fields)->where($filters)->limit(1)->fetch();
         return $rs[0] ?? null;
     }
 
     /**
-     * @param int|string|array $filters =model_var(new static)
-     * @param array            $fields  =model_fields(new static)
+     * @param array $filters =model_var(new static)
+     * @param array $fields  =model_fields(new static)
      *
      * @return static
      */
