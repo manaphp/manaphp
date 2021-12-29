@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+namespace ManaPHP\Messaging;
+
 use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Di\FactoryInterface;
 use ManaPHP\Messaging\Queue\Adapter\Redis;
