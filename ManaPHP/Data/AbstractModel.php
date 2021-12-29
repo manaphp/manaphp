@@ -192,9 +192,9 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     /**
      * Allows to query a set of records that match the specified conditions
      *
-     * @param array $filters =model_var(new static)
+     * @param array  $filters =model_var(new static)
      * @param ?array $options =['order'=>model_var(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC],
-     *                       'index'=>model_var(new static)]
+     *                        'index'=>model_var(new static)]
      * @param ?array $fields  =model_fields(new static)
      *
      * @return  static[]
@@ -207,9 +207,9 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     /**
      * Allows to query a set of records that match the specified conditions
      *
-     * @param array $filters =model_var(new static)
+     * @param array  $filters =model_var(new static)
      * @param ?array $options =['order'=>model_var(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC],
-     *                       'index'=>model_var(new static)]
+     *                        'index'=>model_var(new static)]
      * @param ?array $fields  =model_fields(new static)
      *
      * @return  \ManaPHP\Data\Paginator
@@ -221,7 +221,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
 
     /**
      * @param string|array $fields  =model_fields(new static) ?? model_field(new static)
-     * @param array        $filters =model_var(new static)
+     * @param array|null   $filters =model_var(new static)
      *
      * @return array
      */
@@ -252,14 +252,15 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return static
      */
-    public static function get(int|string $id, int|array $fieldsOrTtl = null): static
+    public static function get(int|string $id, null|int|array $fieldsOrTtl = null): static
     {
         if (!is_scalar($id)) {
             throw new InvalidValueException('Model::get id is not scalar');
         }
 
+        $sample = static::sample();
         if (!is_int($fieldsOrTtl)) {
-            return static::firstOrFail($id, $fieldsOrTtl);
+            return static::firstOrFail([$sample->primaryKey() => $id], $fieldsOrTtl);
         }
 
         $ttl = $fieldsOrTtl;
@@ -267,7 +268,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
 
         $r = apcu_fetch($key, $success);
         if (!$success) {
-            $r = static::firstOrFail($id, $fieldsOrTtl);
+            $r = static::firstOrFail([$sample->primaryKey() => $id], $fieldsOrTtl);
             apcu_store($key, $r, $ttl);
         }
 
