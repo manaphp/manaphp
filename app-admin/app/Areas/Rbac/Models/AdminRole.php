@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Areas\Rbac\Models;
 
@@ -14,17 +15,17 @@ class AdminRole extends Model
     public $creator_name;
     public $created_time;
 
-    public function table()
+    public function table(): string
     {
         return 'rbac_admin_role';
     }
 
-    public function safeFields()
+    public function safeFields(): array
     {
         return [];
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             'admin_id' => ['unique' => 'role_id']

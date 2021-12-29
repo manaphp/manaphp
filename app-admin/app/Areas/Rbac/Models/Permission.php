@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Areas\Rbac\Models;
 
@@ -12,12 +13,12 @@ class Permission extends Model
     public $created_time;
     public $updated_time;
 
-    public function table()
+    public function table(): string
     {
         return 'rbac_permission';
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             'display_name' => ['length' => '0-128']

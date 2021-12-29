@@ -26,7 +26,7 @@ class Country extends Model
     public $country;
     public $last_update;
 
-    public function relations()
+    public function relations(): array
     {
         return ['citiesExplicit' => [City::class, AbstractRelation::TYPE_HAS_MANY]];
     }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models;
 
@@ -12,7 +13,7 @@ class UserLoginLog extends Model
     public $user_agent;
     public $created_time;
 
-    public function primaryKey()
+    public function primaryKey(): string
     {
         return 'login_id';
     }

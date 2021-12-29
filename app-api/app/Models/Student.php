@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models;
 
@@ -8,7 +9,7 @@ class Student extends Model
     public $age;
     public $name;
 
-    public function table()
+    public function table(): string
     {
         return '_student';
     }

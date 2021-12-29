@@ -31,7 +31,7 @@ class Rental extends Model
     public $staff_id;
     public $last_update;
 
-    public function getForeignKeys()
+    public function getForeignKeys(): array
     {
         return ['inventory_id', 'customer_id'];
     }

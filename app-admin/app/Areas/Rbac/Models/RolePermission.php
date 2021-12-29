@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Areas\Rbac\Models;
 
@@ -12,12 +13,12 @@ class RolePermission extends Model
     public $creator_name;
     public $created_time;
 
-    public function table()
+    public function table(): string
     {
         return 'rbac_role_permission';
     }
 
-    public function safeFields()
+    public function safeFields(): array
     {
         return [];
     }

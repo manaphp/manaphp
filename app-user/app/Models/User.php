@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models;
 
@@ -24,35 +25,26 @@ class User extends Model
     public $created_time;
     public $updated_time;
 
-    public function rules()
+    public function rules(): array
     {
         return [
             'user_name' => ['length' => '4-16', 'account', 'readonly'],
-            'email'      => ['lower', 'email', 'unique'],
-            'status'     => 'const',
+            'email'     => ['lower', 'email', 'unique'],
+            'status'    => 'const',
         ];
     }
-    /**
-     * @param string $password
-     *
-     * @return string
-     */
-    public function hashPassword($password)
+
+    public function hashPassword(string $password): string
     {
         return md5(md5($password) . $this->salt);
     }
 
-    /**
-     * @param string $password
-     *
-     * @return bool
-     */
-    public function verifyPassword($password)
+    public function verifyPassword(string $password): bool
     {
         return $this->hashPassword($password) === $this->password;
     }
 
-    public function create()
+    public function create(): static
     {
         $this->salt = bin2hex(random_bytes(8));
 
@@ -61,7 +53,7 @@ class User extends Model
         return parent::create();
     }
 
-    public function update()
+    public function update(): static
     {
         if ($this->hasChanged(['password'])) {
             $this->salt = bin2hex(random_bytes(8));

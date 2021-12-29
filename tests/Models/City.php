@@ -27,7 +27,7 @@ class City extends Model
     public $country_id;
     public $last_update;
 
-    public function rules()
+    public function rules(): array
     {
         return [
             'city'        => ['required', 'unique'],
@@ -37,7 +37,7 @@ class City extends Model
         ];
     }
 
-    public function relations()
+    public function relations(): array
     {
         return ['countryExplicit' => [Country::class, AbstractRelation::TYPE_HAS_ONE]];
     }

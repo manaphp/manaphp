@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Areas\Menu\Models;
 
@@ -15,12 +16,12 @@ class Group extends Model
     public $created_time;
     public $updated_time;
 
-    public function table()
+    public function table(): string
     {
         return 'menu_group';
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             'group_name'    => 'unique',

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Areas\Rbac\Models;
 
@@ -16,12 +17,12 @@ class Role extends Model
     public $created_time;
     public $updated_time;
 
-    public function table()
+    public function table(): string
     {
         return 'rbac_role';
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             'role_name'    => ['lower', 'length' => '3-15', 'unique'],
