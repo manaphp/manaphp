@@ -2,6 +2,12 @@
 
 namespace ManaPHP\Data;
 
+use ManaPHP\Data\Relation\BelongsTo;
+use ManaPHP\Data\Relation\HasMany;
+use ManaPHP\Data\Relation\HasManyOthers;
+use ManaPHP\Data\Relation\HasManyToMany;
+use ManaPHP\Data\Relation\HasOne;
+
 interface ModelInterface extends TableInterface
 {
     /**
@@ -488,37 +494,13 @@ interface ModelInterface extends TableInterface
      */
     public function newQuery();
 
-    /**
-     * @param string $thatModel
-     * @param string $thisField
-     *
-     * @return \ManaPHP\Data\Relation\BelongsTo
-     */
-    public function belongsTo($thatModel, $thisField = null);
+    public function belongsTo(string $thatModel, ?string $thisField = null): BelongsTo;
 
-    /**
-     * @param string $thatModel
-     * @param string $thatField
-     *
-     * @return \ManaPHP\Data\Relation\HasOne
-     */
-    public function hasOne($thatModel, $thatField = null);
+    public function hasOne(string $thatModel, ?string $thatField = null): HasOne;
 
-    /**
-     * @param string $thatModel
-     * @param string $thatField
-     *
-     * @return \ManaPHP\Data\Relation\HasMany
-     */
-    public function hasMany($thatModel, $thatField = null);
+    public function hasMany(string $thatModel, ?string $thatField = null): HasMany;
 
-    /**
-     * @param string $thatModel
-     * @param string $pivotModel
-     *
-     * @return \ManaPHP\Data\Relation\HasManyToMany
-     */
-    public function hasManyToMany($thatModel, $pivotModel);
+    public function hasManyToMany(string $thatModel, string $pivotModel): HasManyToMany;
 
     /**
      * @param string $thatModel
@@ -526,15 +508,7 @@ interface ModelInterface extends TableInterface
      *
      * @return \ManaPHP\Data\Relation\HasManyOthers
      */
-    public function hasManyOthers($thatModel, $thisFilter = null);
+    public function hasManyOthers(string $thatModel, ?string $thisFilter = null): HasManyOthers;
 
-    /**
-     * alias of hasManyToMany
-     *
-     * @param string $thatModel
-     * @param string $pivotModel
-     *
-     * @return \ManaPHP\Data\Relation\HasManyToMany
-     */
-    public function belongsToMany($thatModel, $pivotModel);
+    public function belongsToMany(string $thatModel, string $pivotModel): HasManyToMany;
 }

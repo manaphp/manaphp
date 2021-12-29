@@ -1162,7 +1162,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return \ManaPHP\Data\Relation\BelongsTo
      */
-    public function belongsTo($thatModel, $thisField = null)
+    public function belongsTo(string $thatModel, ?string $thisField = null): BelongsTo
     {
         /** @var \ManaPHP\Data\ModelInterface $thatModel */
         $that = $thatModel::sample();
@@ -1176,7 +1176,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return \ManaPHP\Data\Relation\HasOne
      */
-    public function hasOne($thatModel, $thatField = null)
+    public function hasOne(string $thatModel, ?string $thatField = null): HasOne
     {
         return new HasOne(static::class, $this->primaryKey(), $thatModel, $thatField ?? $this->foreignedKey());
     }
@@ -1187,18 +1187,12 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return \ManaPHP\Data\Relation\HasMany
      */
-    public function hasMany($thatModel, $thatField = null)
+    public function hasMany(string $thatModel, ?string $thatField = null): HasMany
     {
         return new HasMany(static::class, $this->primaryKey(), $thatModel, $thatField ?? $this->foreignedKey());
     }
 
-    /**
-     * @param string $thatModel
-     * @param string $pivotModel
-     *
-     * @return \ManaPHP\Data\Relation\HasManyToMany
-     */
-    public function hasManyToMany($thatModel, $pivotModel)
+    public function hasManyToMany(string $thatModel, string $pivotModel): HasManyToMany
     {
         /** @var \ManaPHP\Data\ModelInterface $thatModel */
         $that = $thatModel::sample();
@@ -1215,7 +1209,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return \ManaPHP\Data\Relation\HasManyOthers
      */
-    public function hasManyOthers($thatModel, $thisFilter = null)
+    public function hasManyOthers(string $thatModel, ?string $thisFilter = null): HasManyOthers
     {
         /** @var \ManaPHP\Data\ModelInterface $thatModel */
         $that = $thatModel::sample();
@@ -1252,15 +1246,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         );
     }
 
-    /**
-     * alias of hasManyToMany
-     *
-     * @param string $thatModel
-     * @param string $pivotModel
-     *
-     * @return \ManaPHP\Data\Relation\HasManyToMany
-     */
-    public function belongsToMany($thatModel, $pivotModel)
+    public function belongsToMany(string $thatModel, string $pivotModel): HasManyToMany
     {
         return $this->hasManyToMany($thatModel, $pivotModel);
     }
