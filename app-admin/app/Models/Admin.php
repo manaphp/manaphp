@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models;
 
@@ -28,7 +29,7 @@ class Admin extends Model
     public $created_time;
     public $updated_time;
 
-    public function rules()
+    public function rules(): array
     {
         return [
             'admin_name' => ['length' => '4-16', 'account', 'readonly'],
@@ -38,32 +39,22 @@ class Admin extends Model
         ];
     }
 
-    public function relations()
+    public function relations(): array
     {
         return ['roles' => $this->hasManyToMany(Role::class, AdminRole::class)];
     }
 
-    /**
-     * @param string $password
-     *
-     * @return string
-     */
-    public function hashPassword($password)
+    public function hashPassword(string $password): string
     {
         return md5(md5($password) . $this->salt);
     }
 
-    /**
-     * @param string $password
-     *
-     * @return bool
-     */
-    public function verifyPassword($password)
+    public function verifyPassword(string $password): bool
     {
         return $this->hashPassword($password) === $this->password;
     }
 
-    public function create()
+    public function create(): static
     {
         $this->salt = bin2hex(random_bytes(8));
 
@@ -72,7 +63,7 @@ class Admin extends Model
         return parent::create();
     }
 
-    public function update()
+    public function update(): static
     {
         if ($this->hasChanged(['password'])) {
             $this->salt = bin2hex(random_bytes(8));

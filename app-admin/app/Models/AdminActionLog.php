@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models;
 
@@ -16,7 +17,7 @@ class AdminActionLog extends Model
     public $client_udid;
     public $created_time;
 
-    public function table()
+    public function table(): string
     {
         return 'admin_action_log';
     }
