@@ -2,24 +2,17 @@
 
 namespace ManaPHP\Data\Merger;
 
+use ManaPHP\Data\QueryInterface;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Data\ModelInterface;
 
 abstract class AbstractModel extends \ManaPHP\Data\AbstractModel
 {
-    /**
-     * @return \ManaPHP\Data\ModelInterface
-     */
-    abstract public function getModel();
+    abstract public function getModel(): ModelInterface;
 
-    /**
-     * @return array|\ManaPHP\Data\Merger\Query
-     */
-    abstract public function getQueries();
+    abstract public function getQueries(): array;
 
-    /**
-     * @return \ManaPHP\Data\Merger\Query
-     */
-    public function newQuery()
+    public function newQuery(): QueryInterface
     {
         $queries = $this->getQueries();
         if (is_array($queries)) {
@@ -29,18 +22,12 @@ abstract class AbstractModel extends \ManaPHP\Data\AbstractModel
         return $queries->setModel($this->getModel())->select($this->fields());
     }
 
-    public function db()
+    public function db(): string
     {
         throw new NotSupportedException(__METHOD__);
     }
 
-    /**
-     * @param mixed $context
-     *
-     * @return void
-     * @throws NotSupportedException
-     */
-    public static function connection(/** @noinspection PhpUnusedParameterInspection */ $context = null)
+    public static function connection(mixed $context = null): void
     {
         throw new NotSupportedException(__METHOD__);
     }
@@ -48,7 +35,7 @@ abstract class AbstractModel extends \ManaPHP\Data\AbstractModel
     /**
      * @return string =model_field(new static)
      */
-    public function primaryKey()
+    public function primaryKey(): string
     {
         return $this->getModel()->primaryKey();
     }
@@ -56,7 +43,7 @@ abstract class AbstractModel extends \ManaPHP\Data\AbstractModel
     /**
      * @return array =model_fields(new static)
      */
-    public function fields()
+    public function fields(): array
     {
         static $cached = [];
 
@@ -78,32 +65,32 @@ abstract class AbstractModel extends \ManaPHP\Data\AbstractModel
     /**
      * @return array =model_fields(new static)
      */
-    public function intFields()
+    public function intFields(): array
     {
         return $this->getModel()->intFields();
     }
 
-    public function getNextAutoIncrementId($step = 1)
+    public function getNextAutoIncrementId(int $step = 1): int
     {
         throw new NotSupportedException(__METHOD__);
     }
 
-    public function create()
+    public function create(): static
     {
         throw new NotSupportedException(__METHOD__);
     }
 
-    public static function insert($record)
+    public static function insert(array $record): int
     {
         throw new NotSupportedException(__METHOD__);
     }
 
-    public function update()
+    public function update(): static
     {
         throw new NotSupportedException(__METHOD__);
     }
 
-    public function delete()
+    public function delete(): static
     {
         throw new NotSupportedException(__METHOD__);
     }

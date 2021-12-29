@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
@@ -10,489 +11,142 @@ use ManaPHP\Data\Relation\HasOne;
 
 interface ModelInterface extends TableInterface
 {
-    /**
-     * @return string
-     */
-    public function primaryKey();
+    public function primaryKey(): string;
 
-    /**
-     * @return string
-     */
-    public function foreignedKey();
+    public function foreignedKey(): string;
 
-    /**
-     * @return array
-     */
-    public function fields();
+    public function fields(): array;
 
-    /**
-     * map model property to table column
-     *
-     * @return array
-     */
-    public function mapFields();
+    public function mapFields(): array;
 
-    /**
-     * @param string $field
-     *
-     * @return bool
-     */
-    public function hasField($field);
+    public function hasField(string $field): bool;
 
-    /**
-     * @param string $field
-     *
-     * @return string
-     */
-    public function dateFormat($field);
+    public function dateFormat(string $field): string;
 
-    /**
-     * @return array
-     */
-    public function safeFields();
+    public function safeFields(): array;
 
-    /**
-     * @return array
-     */
-    public function jsonFields();
+    public function jsonFields(): array;
 
-    /**
-     * @return array|null
-     */
-    public function intFields();
+    public function intFields(): ?array;
 
-    /**
-     * @return string|null
-     */
-    public function autoIncrementField();
+    public function autoIncrementField(): ?string;
 
-    /**
-     * @param int $step
-     *
-     * @return int
-     */
-    public function getNextAutoIncrementId($step = 1);
+    public function getNextAutoIncrementId(int $step = 1): ?int;
 
-    /**
-     * @return array
-     */
-    public function rules();
+    public function rules(): array;
 
-    /**
-     * @return array
-     */
-    public function labels();
+    public function labels(): array;
 
-    /**
-     * @param string $alias
-     *
-     * @return \ManaPHP\Data\QueryInterface
-     */
-    public static function query($alias = null);
+    public static function query(?string $alias = null): QueryInterface;
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
-     * @param array $filters
-     * @param array $options
-     * @param array $fields
+     * @param array  $filters
+     * @param ?array $options
+     * @param ?array $fields
      *
      * @return  static[]
      */
-    public static function all($filters = [], $options = null, $fields = null);
+    public static function all(array $filters = [], ?array $options = null, ?array $fields = null): array;
 
-    /**
-     * Allows to query a set of records that match the specified conditions
-     *
-     * @param array $filters
-     * @param array $options
-     * @param array $fields
-     *
-     * @return  \ManaPHP\Data\Paginator
-     */
-    public static function paginate($filters = [], $options = null, $fields = null);
+    public static function paginate(array $filters = [], ?array $options = null, ?array $fields = null): Paginator;
 
-    /**
-     * @param string|array $fields
-     * @param array        $filters
-     *
-     * @return array
-     */
-    public static function lists($fields, $filters = null);
+    public static function lists(string|array $fields, ?array $filters = null): array;
 
-    /**
-     * @param int|string $id
-     * @param int|array  $fieldsOrTtl
-     *
-     * @return static
-     */
-    public static function get($id, $fieldsOrTtl = null);
+    public static function get(int|string $id, null|int|array $fieldsOrTtl = null): static;
 
-    /**
-     * Allows to query the first record that match the specified conditions
-     *
-     * @param array $filters
-     * @param array $fields
-     *
-     * @return static|null
-     */
-    public static function first($filters, $fields = null);
+    public static function first(array $filters, ?array $fields = null): ?static;
 
-    /**
-     * @param array $filters
-     * @param array $fields
-     *
-     * @return static
-     */
-    public static function firstOrFail($filters, $fields = null);
+    public static function firstOrFail(array $filters, ?array $fields = null): static;
 
-    /**
-     * @return int|string
-     */
-    public static function rId();
+    public static function rId(): int|string;
 
-    /**
-     * @param array $fields
-     *
-     * @return static
-     */
-    public static function rGet($fields = null);
+    public static function rGet(?array $fields = null): static;
 
-    /**
-     * Allows to query the last record that match the specified conditions
-     *
-     * @param array $filters
-     * @param array $fields
-     *
-     * @return static|null
-     */
-    public static function last($filters = null, $fields = null);
+    public static function last(?array $filters = null, ?array $fields = null): ?static;
 
-    /**
-     * @param array  $filters
-     * @param string $field
-     * @param int    $ttl
-     *
-     * @return int|float|string|null
-     */
-    public static function value($filters, $field, $ttl = null);
+    public static function value(array $filters, string $field, ?int $ttl = null): mixed;
 
-    /**
-     * @param array  $filters
-     * @param string $field
-     * @param int    $ttl
-     *
-     * @return int|float|string
-     */
-    public static function valueOrFail($filters, $field, $ttl = null);
+    public static function valueOrFail(array $filters, string $field, ?int $ttl = null): mixed;
 
-    /**
-     * @param array  $filters
-     * @param string $field
-     * @param mixed  $default
-     *
-     * @return float|int|string
-     */
-    public static function valueOrDefault($filters, $field, $default);
+    public static function valueOrDefault(array $filters, string $field, mixed $default): mixed;
 
-    /**
-     * @param string $field
-     * @param array  $filters
-     *
-     * @return array
-     */
-    public static function values($field, $filters = null);
+    public static function values(string $field, ?array $filters = null): array;
 
-    /**
-     * @param string $field
-     * @param array  $filters
-     *
-     * @return array
-     */
-    public static function kvalues($field, $filters = null);
+    public static function kvalues(string $field, ?array $filters = null): array;
 
-    /**
-     * @param array $filters
-     *
-     * @return bool
-     */
-    public static function exists($filters);
+    public static function exists(array $filters): bool;
 
-    /**
-     * @param array        $filters
-     * @param array        $aggregation
-     * @param string|array $options
-     *
-     * @return array
-     */
-    public static function aggregate($filters, $aggregation, $options = null);
+    public static function aggregate(array $filters, array $aggregation, null|string|array $options = null): array;
 
-    /**
-     * Allows to count how many records match the specified conditions
-     *
-     * @param array  $filters
-     * @param string $field
-     *
-     * @return int
-     */
-    public static function count($filters = null, $field = '*');
+    public static function count(?array $filters = null, string $field = '*'): int;
 
-    /**
-     * Allows to calculate a summary on a column that match the specified conditions
-     *
-     * @param string $field
-     * @param array  $filters
-     *
-     * @return int|float|null
-     */
-    public static function sum($field, $filters = null);
+    public static function sum(string $field, ?array $filters = null): mixed;
 
-    /**
-     * Allows to get the max value of a column that match the specified conditions
-     *
-     * @param string $field
-     * @param array  $filters
-     *
-     * @return int|float|null
-     */
-    public static function max($field, $filters = null);
+    public static function max(string $field, ?array $filters = null): mixed;
 
-    /**
-     * Allows to get the min value of a column that match the specified conditions
-     *
-     * @param string $field
-     * @param array  $filters
-     *
-     * @return int|float|null
-     */
-    public static function min($field, $filters = null);
+    public static function min(string $field, ?array $filters = null): mixed;
 
-    /**
-     * Allows to calculate the average value on a column matching the specified conditions
-     *
-     * @param string $field
-     * @param array  $filters
-     *
-     * @return float|null
-     */
-    public static function avg($field, $filters = null);
+    public static function avg(string $field, ?array $filters = null): ?float;
 
-    /**
-     * @param array $fields
-     *
-     * @return static
-     */
-    public function load($fields = null);
+    public function load(?array $fields = null): static;
 
-    /**
-     * Assigns values to a model from an array
-     *
-     * @param array|\ManaPHP\Data\ModelInterface $data
-     * @param array                              $fields
-     *
-     * @return static
-     */
-    public function assign($data, $fields);
+    public function assign(array|ModelInterface $data, array $fields): static;
 
-    /**
-     * @param array $fields
-     *
-     * @return void
-     */
-    public function validate($fields = null);
+    public function validate(?array $fields = null): void;
 
-    /**
-     * @param string $field
-     * @param array  $rules
-     *
-     * @return void
-     */
-    public function validateField($field, $rules = null);
+    public function validateField(string $field, ?array $rules = null): void;
 
-    /**
-     * Inserts or updates a model instance. Returning true on success or false otherwise.
-     *
-     * @param array $fields
-     *
-     * @return static
-     */
-    public function save($fields = null);
+    public function save(?array $fields = null): static;
 
-    /**
-     * Inserts a model instance. If the instance already exists in the persistence it will throw an exception
-     * Returning true on success or false otherwise.
-     *
-     * @return static
-     */
-    public function create();
+    public function create(): static;
 
-    /**
-     * @param array $fields
-     *
-     * @return static
-     */
-    public static function rCreate($fields = null);
+    public static function rCreate(?array $fields = null): static;
 
-    /**
-     * Updates a model instance. If the instance does n't exist in the persistence it will throw an exception
-     * Returning true on success or false otherwise.
-     *
-     * @return static
-     */
-    public function update();
+    public function update(): static;
 
-    /**
-     * @param array $fields
-     *
-     * @return static
-     */
-    public static function rUpdate($fields = null);
+    public static function rUpdate(?array $fields = null): static;
 
-    /**
-     * @param array $fieldValues
-     * @param array $filters
-     *
-     * @return int
-     */
-    public static function updateAll($fieldValues, $filters);
+    public static function updateAll(array $fieldValues, array $filters): int;
 
-    /**
-     * Deletes a model instance. Returning true on success or false otherwise.
-     *
-     * @return static
-     */
-    public function delete();
+    public function delete(): static;
 
-    /**
-     * @return static|null
-     */
-    public static function rDelete();
+    public static function rDelete(): ?static;
 
-    /**
-     * @param array $filters
-     *
-     * @return int
-     */
-    public static function deleteAll($filters);
+    public static function deleteAll(array $filters): int;
 
-    /**
-     * @param array $record
-     *
-     * @return int
-     */
-    public static function insert($record);
+    public static function insert(array $record): int;
 
-    /**
-     * @param string|array $withs
-     *
-     * @return static
-     */
-    public function with($withs);
+    public function with(string|array $withs): static;
 
-    /**
-     * Returns the instance as an array representation
-     *
-     * @return array
-     */
-    public function toArray();
+    public function toArray(): array;
 
-    /**
-     * @param array $fields
-     *
-     * @return static
-     */
-    public function only($fields);
+    public function only(array $fields): static;
 
-    /**
-     * @param array $fields
-     *
-     * @return static
-     */
-    public function except($fields);
+    public function except(array $fields): static;
 
-    /**
-     * Returns the internal snapshot data
-     *
-     * @return array
-     */
-    public function getSnapshotData();
+    public function getSnapshotData(): array;
 
-    /**
-     * Returns a list of changed values
-     *
-     * @return array
-     */
-    public function getChangedFields();
+    public function getChangedFields(): array;
 
-    /**
-     * Check if a specific attribute has changed
-     * This only works if the model is keeping data snapshots
-     *
-     * @param array $fields
-     *
-     * @return bool
-     */
-    public function hasChanged($fields);
+    public function hasChanged(array $fields): bool;
 
-    /**
-     * @param float $interval
-     * @param array $fields
-     *
-     * @return static
-     */
-    public function refresh($interval, $fields = null);
+    public function refresh(float $interval, ?array $fields = null): static;
 
-    /**
-     * @param string $name
-     * @param bool   $comment
-     *
-     * @return array
-     * @throws \ReflectionException
-     */
-    public static function constants($name, $comment = false);
+    public static function constants(string $name, bool $comment = false): array;
 
-    /**
-     * @param string    $field
-     * @param int|float $step
-     *
-     * @return static
-     */
-    public function increment($field, $step = 1);
+    public function increment(string $field, int|float $step = 1): static;
 
-    /**
-     * @param string    $field
-     * @param int|float $step
-     *
-     * @return static
-     */
-    public function decrement($field, $step = 1);
+    public function decrement(string $field, int|float $step = 1): static;
 
-    /**
-     * @param array  $fields
-     * @param string $alias
-     *
-     * @return \ManaPHP\Data\QueryInterface
-     */
-    public static function select($fields = [], $alias = null);
+    public static function select(array $fields = [], ?string $alias = null): QueryInterface;
 
-    /**
-     * @param array $filters
-     *
-     * @return \ManaPHP\Data\QueryInterface
-     */
-    public static function where($filters);
+    public static function where(array $filters): QueryInterface;
 
-    /**
-     * @param array $filters
-     *
-     * @return \ManaPHP\Data\QueryInterface
-     */
-    public static function search($filters);
+    public static function search(array $filters): QueryInterface;
 
-    /**
-     * @return \ManaPHP\Data\QueryInterface
-     */
-    public function newQuery();
+    public function newQuery(): QueryInterface;
 
     public function belongsTo(string $thatModel, ?string $thisField = null): BelongsTo;
 

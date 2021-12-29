@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Mongodb;
 
 use ManaPHP\Data\Model\ExpressionInterface;
+use ManaPHP\Data\MongodbInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\RuntimeException;
@@ -11,32 +13,15 @@ use ManaPHP\Data\AbstractModel;
 
 class Model extends AbstractModel
 {
-    /**
-     * @var bool
-     */
-    protected static $_defaultAllowNullValue = false;
+    protected static bool $_defaultAllowNullValue = false;
+    public mixed $_id;
 
-    /**
-     * @var \MongoDB\BSON\ObjectId
-     */
-    public $_id;
-
-    /**
-     * Gets the connection used to crud data to the model
-     *
-     * @return string
-     */
-    public function db()
+    public function db(): string
     {
         return 'mongodb';
     }
 
-    /**
-     * @param bool $allow
-     *
-     * @return void
-     */
-    public static function setDefaultAllowNullValue($allow)
+    public static function setDefaultAllowNullValue(bool $allow): void
     {
         self::$_defaultAllowNullValue = $allow;
     }
@@ -46,7 +31,7 @@ class Model extends AbstractModel
      *
      * @return \ManaPHP\Data\MongodbInterface
      */
-    public static function connection($context = null)
+    public static function connection(mixed $context = null): MongodbInterface
     {
         list($db) = static::sample()->getUniqueShard($context);
         return static::sample()->getShared($db);
@@ -55,7 +40,7 @@ class Model extends AbstractModel
     /**
      * @return string =model_field(new static)
      */
-    public function primaryKey()
+    public function primaryKey(): string
     {
         static $cached = [];
 
@@ -75,7 +60,7 @@ class Model extends AbstractModel
     /**
      * @return array =model_fields(new static)
      */
-    public function fields()
+    public function fields(): array
     {
         static $cached = [];
 
@@ -95,7 +80,7 @@ class Model extends AbstractModel
     /**
      * @return array =model_fields(new static)
      */
-    public function intFields()
+    public function intFields(): array
     {
         static $cached = [];
 
@@ -120,7 +105,7 @@ class Model extends AbstractModel
      *
      * @return array =model_var(new static)
      */
-    public function fieldTypes()
+    public function fieldTypes(): array
     {
         static $cached = [];
 
@@ -164,21 +149,12 @@ class Model extends AbstractModel
         return $cached[$class];
     }
 
-    /**
-     * @return bool
-     */
-    public function isAllowNullValue()
+    public function isAllowNullValue(): bool
     {
         return self::$_defaultAllowNullValue;
     }
 
-    /**
-     * @param \ManaPHP\Data\MongodbInterface $mongodb
-     * @param string                         $source
-     *
-     * @return bool
-     */
-    protected function createAutoIncrementIndex($mongodb, $source)
+    protected function createAutoIncrementIndex(MongodbInterface $mongodb, string $source): bool
     {
         $autoIncField = $this->autoIncrementField();
 
@@ -210,12 +186,7 @@ class Model extends AbstractModel
         return true;
     }
 
-    /**
-     * @param int $step
-     *
-     * @return int
-     */
-    public function getNextAutoIncrementId($step = 1)
+    public function getNextAutoIncrementId(int $step = 1): int
     {
         list($db, $source) = $this->getUniqueShard($this);
 
@@ -249,13 +220,7 @@ class Model extends AbstractModel
         return $id;
     }
 
-    /**
-     * @param string $type
-     * @param mixed  $value
-     *
-     * @return bool|float|int|string|array|\MongoDB\BSON\ObjectID|\MongoDB\BSON\UTCDateTime
-     */
-    public function normalizeValue($type, $value)
+    public function normalizeValue(string $type, mixed $value): mixed
     {
         if ($value === null) {
             return null;
@@ -281,15 +246,12 @@ class Model extends AbstractModel
     /**
      * @return \ManaPHP\Data\Mongodb\Query <static>
      */
-    public function newQuery()
+    public function newQuery(): Query
     {
         return $this->getNew('ManaPHP\Data\Mongodb\Query')->setModel($this);
     }
 
-    /**
-     * @return static
-     */
-    public function create()
+    public function create(): static
     {
         $autoIncrementField = $this->autoIncrementField();
         if ($autoIncrementField && $this->$autoIncrementField === null) {
@@ -358,12 +320,7 @@ class Model extends AbstractModel
         return $this;
     }
 
-    /**
-     * Updates a model instance. If the instance does n't exist in the persistence it will throw an exception
-     *
-     * @return static
-     */
-    public function update()
+    public function update(): static
     {
         $primaryKey = $this->primaryKey();
 
@@ -471,13 +428,7 @@ class Model extends AbstractModel
         return $this;
     }
 
-    /**
-     * @param array $pipeline
-     * @param array $options
-     *
-     * @return array
-     */
-    public static function aggregateEx($pipeline, $options = [])
+    public static function aggregateEx(array $pipeline, array $options = []): array
     {
         $sample = static::sample();
 
@@ -488,12 +439,7 @@ class Model extends AbstractModel
         return $mongodb->aggregate($collection, $pipeline, $options);
     }
 
-    /**
-     * @param array $document
-     *
-     * @return array
-     */
-    public function normalizeDocument($document)
+    public function normalizeDocument(array $document): array
     {
         $sample = static::sample();
 
@@ -515,12 +461,7 @@ class Model extends AbstractModel
         return $document;
     }
 
-    /**
-     * @param array[] $documents
-     *
-     * @return int
-     */
-    public static function bulkInsert($documents)
+    public static function bulkInsert(array $documents): int
     {
         if (!$documents) {
             return 0;
@@ -539,12 +480,7 @@ class Model extends AbstractModel
         return $mongodb->bulkInsert($collection, $documents);
     }
 
-    /**
-     * @param array $documents
-     *
-     * @return int
-     */
-    public static function bulkUpdate($documents)
+    public static function bulkUpdate(array $documents): int
     {
         if (!$documents) {
             return 0;
@@ -574,12 +510,7 @@ class Model extends AbstractModel
         return $affected_count;
     }
 
-    /**
-     * @param array[] $documents
-     *
-     * @return int
-     */
-    public static function bulkUpsert($documents)
+    public static function bulkUpsert(array $documents): int
     {
         if (!$documents) {
             return 0;
@@ -603,7 +534,7 @@ class Model extends AbstractModel
      *
      * @return int
      */
-    public static function insert($record)
+    public static function insert(array $record): int
     {
         $sample = static::sample();
 

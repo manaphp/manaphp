@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
@@ -32,20 +33,10 @@ use ManaPHP\Data\Relation\ManagerInterface as RelationManager;
 
 abstract class AbstractModel extends AbstractTable implements ModelInterface, ArrayAccess, JsonSerializable
 {
-    /**
-     * @var array
-     */
-    protected $_snapshot = [];
+    protected false|array $_snapshot = [];
+    protected float $_last_refresh = 0;
 
-    /**
-     * @var float
-     */
-    protected $_last_refresh = 0;
-
-    /**
-     * @param array $data
-     */
-    public function __construct($data = [])
+    public function __construct(array $data = [])
     {
         if ($data) {
             foreach ($this->jsonFields() as $field) {
@@ -63,12 +54,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         }
     }
 
-    /**
-     * @param string $class
-     *
-     * @return string|null
-     */
-    protected function inferPrimaryKey($class)
+    protected function inferPrimaryKey(string $class): ?string
     {
         $fields = $this->fields();
 
@@ -103,7 +89,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     /**
      * @return string
      */
-    public function foreignedKey()
+    public function foreignedKey(): string
     {
         $primaryKey = $this->primaryKey();
         if ($primaryKey !== 'id') {
@@ -128,7 +114,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     /**
      * @return string|null =model_field(new static)
      */
-    public function autoIncrementField()
+    public function autoIncrementField(): ?string
     {
         $primaryKey = $this->primaryKey();
         return is_string($primaryKey) ? $primaryKey : null;
@@ -139,7 +125,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return bool
      */
-    public function hasField($field)
+    public function hasField(string $field): bool
     {
         return in_array($field, $this->fields(), true);
     }
@@ -149,7 +135,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return string
      */
-    public function dateFormat($field)
+    public function dateFormat(string $field): string
     {
         if (isset($this->_snapshot[$field])) {
             $ts = is_numeric($this->_snapshot[$field]);
@@ -164,7 +150,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     /**
      * @return array =model_fields(new static)
      */
-    public function safeFields()
+    public function safeFields(): array
     {
         return array_keys($this->rules());
     }
@@ -172,7 +158,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     /**
      * @return array =model_fields(new static)
      */
-    public function jsonFields()
+    public function jsonFields(): array
     {
         return [];
     }
@@ -182,7 +168,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return array =model_var(new static)
      */
-    public function mapFields()
+    public function mapFields(): array
     {
         return [];
     }
@@ -190,7 +176,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     /**
      * @return array =model_var(new static) ?: [$field => \PHPSTORM_META\validator_rule()]
      */
-    public function rules()
+    public function rules(): array
     {
         return [];
     }
@@ -198,7 +184,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     /**
      * @return array =model_var(new static)
      */
-    public function labels()
+    public function labels(): array
     {
         return [];
     }
@@ -207,13 +193,13 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      * Allows to query a set of records that match the specified conditions
      *
      * @param array $filters =model_var(new static)
-     * @param array $options =['order'=>model_var(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC],
+     * @param ?array $options =['order'=>model_var(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC],
      *                       'index'=>model_var(new static)]
-     * @param array $fields  =model_fields(new static)
+     * @param ?array $fields  =model_fields(new static)
      *
      * @return  static[]
      */
-    public static function all($filters = [], $options = null, $fields = null)
+    public static function all(array $filters = [], ?array $options = null, ?array $fields = null): array
     {
         return static::select($fields)->where($filters)->options($options)->fetch();
     }
@@ -222,14 +208,14 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      * Allows to query a set of records that match the specified conditions
      *
      * @param array $filters =model_var(new static)
-     * @param array $options =['order'=>model_var(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC],
+     * @param ?array $options =['order'=>model_var(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC],
      *                       'index'=>model_var(new static)]
-     * @param array $fields  =model_fields(new static)
+     * @param ?array $fields  =model_fields(new static)
      *
      * @return  \ManaPHP\Data\Paginator
      */
-    public static function paginate($filters = [], $options = null, $fields = null)
-    {
+    public static function paginate(array $filters = [], ?array $options = null, ?array $fields = null
+    ): Paginator {
         return static::select($fields)->search($filters)->options($options)->paginate();
     }
 
@@ -239,7 +225,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return array
      */
-    public static function lists($fields, $filters = null)
+    public static function lists(string|array $fields, ?array $filters = null): array
     {
         if (is_string($fields)) {
             $fields = [$fields];
@@ -266,7 +252,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return static
      */
-    public static function get($id, $fieldsOrTtl = null)
+    public static function get(int|string $id, int|array $fieldsOrTtl = null): static
     {
         if (!is_scalar($id)) {
             throw new InvalidValueException('Model::get id is not scalar');
@@ -294,7 +280,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return \ManaPHP\Data\QueryInterface <static>
      */
-    public static function select($fields = [], $alias = null)
+    public static function select(array $fields = [], ?string $alias = null): QueryInterface
     {
         return static::query($alias)->select($fields);
     }
@@ -307,7 +293,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return static|null
      */
-    public static function first($filters, $fields = null)
+    public static function first(array $filters, ?array $fields = null): ?static
     {
         $rs = static::select($fields)->where($filters)->limit(1)->fetch();
         return $rs[0] ?? null;
@@ -319,7 +305,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return static
      */
-    public static function firstOrFail($filters, $fields = null)
+    public static function firstOrFail(array $filters, ?array $fields = null): static
     {
         $r = static::first($filters, $fields);
         if ($r === null) {
@@ -329,10 +315,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         return $r;
     }
 
-    /**
-     * @return int|string
-     */
-    public static function rId()
+    public static function rId(): int|string
     {
         $sample = static::sample();
 
@@ -346,7 +329,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return static
      */
-    public static function rGet($fields = null)
+    public static function rGet(?array $fields = null): static
     {
         return static::get(static::rId(), $fields);
     }
@@ -359,7 +342,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return static|null
      */
-    public static function last($filters = null, $fields = null)
+    public static function last(?array $filters = null, ?array $fields = null): ?static
     {
         $sample = static::sample();
 
@@ -375,7 +358,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return int|float|string|null
      */
-    public static function value($filters, $field, $ttl = null)
+    public static function value(array $filters, string $field, ?int $ttl = null): mixed
     {
         if (!is_string($field)) {
             throw new ParameterOrderException(__METHOD__ . ' field');
@@ -419,7 +402,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return int|float|string
      */
-    public static function valueOrFail($filters, $field, $ttl = null)
+    public static function valueOrFail(array $filters, string $field, ?int $ttl = null): mixed
     {
         $value = static::value($filters, $field, $ttl);
         if ($value === null) {
@@ -436,7 +419,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return float|int|string
      */
-    public static function valueOrDefault($filters, $field, $default)
+    public static function valueOrDefault(array $filters, mixed $field, mixed $default): mixed
     {
         return ($value = static::value($filters, $field)) === null ? $default : $value;
     }
@@ -447,7 +430,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return array
      */
-    public static function values($field, $filters = null)
+    public static function values(string $field, ?array $filters = null): array
     {
         if (!is_string($field)) {
             throw new ParameterOrderException(__METHOD__ . ' field');
@@ -461,7 +444,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return array
      */
-    public static function kvalues($field, $filters = null)
+    public static function kvalues(string $field, ?array $filters = null): array
     {
         $keyField = static::sample()->primaryKey();
         $valueField = $field;
@@ -479,7 +462,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return bool
      */
-    public static function exists($filters)
+    public static function exists(array $filters): bool
     {
         return static::where($filters)->exists();
     }
@@ -491,7 +474,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return array
      */
-    public static function aggregate($filters, $aggregation, $options = null)
+    public static function aggregate(array $filters, array $aggregation, mixed $options = null): array
     {
         if (is_string($options)) {
             if (str_contains($options, ',')) {
@@ -511,7 +494,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return int
      */
-    public static function count($filters = null, $field = '*')
+    public static function count(?array $filters = null, string $field = '*'): int
     {
         return static::where($filters)->count($field);
     }
@@ -524,7 +507,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return int|float|null
      */
-    public static function sum($field, $filters = null)
+    public static function sum(string $field, array $filters = null): mixed
     {
         return static::where($filters)->sum($field);
     }
@@ -537,7 +520,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return int|float|null
      */
-    public static function max($field, $filters = null)
+    public static function max(string $field, ?array $filters = null): mixed
     {
         return static::where($filters)->max($field);
     }
@@ -551,7 +534,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return int|float|null
      */
-    public static function min($field, $filters = null)
+    public static function min(string $field, array $filters = null): mixed
     {
         return static::where($filters)->min($field);
     }
@@ -564,7 +547,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return float|null
      */
-    public static function avg($field, $filters = null)
+    public static function avg(string $field, ?array $filters = null): ?float
     {
         return (float)static::where($filters)->avg($field);
     }
@@ -577,7 +560,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return static
      */
-    public function assign($data, $fields)
+    public function assign(array|ModelInterface $data, array $fields): static
     {
         if ($data instanceof self) {
             foreach ($fields as $field) {
@@ -597,7 +580,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return static
      */
-    public function load($fields = null)
+    public function load(?array $fields = null): static
     {
         $fields = $fields ?? $this->safeFields();
 
@@ -626,7 +609,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return void
      */
-    public function validate($fields = null)
+    public function validate(?array $fields = null): void
     {
         if (!$rules = $this->rules()) {
             return;
@@ -664,7 +647,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return void
      */
-    public function validateField($field, $rules = null)
+    public function validateField(string $field, array $rules = null): void
     {
         if ($rules === null) {
             if (!isset($rules[$field])) {
@@ -679,10 +662,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         $this->$field = $validator->validateModel($field, $this, $rules);
     }
 
-    /**
-     * @return  array
-     */
-    public function getAutoCreatedData()
+    public function getAutoCreatedData(): array
     {
         $current_time = time();
 
@@ -719,10 +699,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         return $data;
     }
 
-    /**
-     * @return  array
-     */
-    public function getAutoUpdatedData()
+    public function getAutoUpdatedData(): array
     {
         $current_time = time();
 
@@ -754,7 +731,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return static
      */
-    public static function rCreate($fields = null)
+    public static function rCreate(?array $fields = null): static
     {
         return (new static())->load($fields)->create();
     }
@@ -764,17 +741,12 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return static
      */
-    public static function rUpdate($fields = null)
+    public static function rUpdate(?array $fields = null): static
     {
         return static::rGet()->load($fields)->update();
     }
 
-    /**
-     * Checks if the current record already exists or not
-     *
-     * @return bool
-     */
-    protected function existsInternal()
+    protected function existsInternal(): bool
     {
         $primaryKey = $this->primaryKey();
         if ($this->$primaryKey === null) {
@@ -791,7 +763,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return static
      */
-    public function save($fields = null)
+    public function save(?array $fields = null): static
     {
         if ($fields) {
             $this->load($fields);
@@ -805,10 +777,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         }
     }
 
-    /**
-     * @return static
-     */
-    public static function rDelete()
+    public static function rDelete(): static
     {
         return static::rGet()->delete();
     }
@@ -819,7 +788,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return int
      */
-    public static function updateAll($fieldValues, $filters)
+    public static function updateAll(array $fieldValues, array $filters): int
     {
         return static::where($filters)->update($fieldValues);
     }
@@ -829,17 +798,12 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return int
      */
-    public static function deleteAll($filters)
+    public static function deleteAll(array $filters): int
     {
         return static::where($filters)->delete();
     }
 
-    /**
-     * @param string|array $withs
-     *
-     * @return static
-     */
-    public function with($withs)
+    public function with(string|array $withs): static
     {
         $relationManager = $this->getShared(RelationManager::class);
 
@@ -852,7 +816,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return array =model_var(new static)
      */
-    public function toArray()
+    public function toArray(): array
     {
         $data = [];
 
@@ -884,7 +848,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return static
      */
-    public function only($fields)
+    public function only(array $fields): static
     {
         $model = new static();
         $model->_snapshot = false;
@@ -901,7 +865,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return static
      */
-    public function except($fields)
+    public function except(array $fields): static
     {
         $model = clone $this;
         $model->_snapshot = false;
@@ -918,7 +882,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return array =model_var(new static)
      */
-    public function getSnapshotData()
+    public function getSnapshotData(): array
     {
         return $this->_snapshot;
     }
@@ -928,7 +892,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return array =model_fields(new static)
      */
-    public function getChangedFields()
+    public function getChangedFields(): array
     {
         $snapshot = $this->_snapshot;
 
@@ -954,7 +918,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return bool
      */
-    public function hasChanged($fields)
+    public function hasChanged(array $fields): bool
     {
         $snapshot = $this->_snapshot;
 
@@ -967,13 +931,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         return false;
     }
 
-    /**
-     * @param string $event
-     * @param array  $data
-     *
-     * @return void
-     */
-    public function fireEvent($event, $data = null)
+    public function fireEvent(string $event, mixed $data = null): void
     {
         $eventManager = $this->getShared(EventManager::class);
 
@@ -986,7 +944,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return static
      */
-    public function refresh($interval, $fields = null)
+    public function refresh(float $interval, ?array $fields = null): static
     {
         if ($interval > 0) {
             if ($this->_last_refresh && microtime(true) - $this->_last_refresh < $interval) {
@@ -1023,21 +981,12 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function relations()
+    public function relations(): array
     {
         return [];
     }
 
-    /**
-     * @param string $name
-     * @param bool   $comment
-     *
-     * @return array
-     */
-    public static function constants($name, $comment = false)
+    public static function constants(string $name, ?bool $comment = false): array
     {
         $name = strtoupper($name) . '_';
         $constants = [];
@@ -1069,7 +1018,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return static
      */
-    public function increment($field, $step = 1)
+    public function increment(string $field, int|float $step = 1): static
     {
         if (!$this->hasField($field)) {
             throw new InvalidArgumentException([':field field is invalid.', 'field' => $field]);
@@ -1086,7 +1035,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return static
      */
-    public function decrement($field, $step = 1)
+    public function decrement(string $field, int|float $step = 1): static
     {
         if (!$this->hasField($field)) {
             throw new InvalidArgumentException([':field field is invalid.', 'field' => $field]);
@@ -1102,7 +1051,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return \ManaPHP\Data\QueryInterface <static>
      */
-    public static function query($alias = null)
+    public static function query(?string $alias = null): QueryInterface
     {
         $query = static::sample()->newQuery();
 
@@ -1114,7 +1063,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return \ManaPHP\Data\QueryInterface <static>
      */
-    public static function where($filters)
+    public static function where(array $filters): QueryInterface
     {
         return static::select()->where($filters);
     }
@@ -1124,17 +1073,12 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return \ManaPHP\Data\QueryInterface <static>
      */
-    public static function search($filters)
+    public static function search(array $filters): QueryInterface
     {
         return static::select()->search($filters);
     }
 
-    /**
-     * Deletes a model instance.
-     *
-     * @return static
-     */
-    public function delete()
+    public function delete(): static
     {
         $primaryKey = $this->primaryKey();
 
@@ -1146,10 +1090,10 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
 
         $this->fireEvent('model:deleting');
 
-        /** @var DbInterface $db */
-        $db = $this->getShared($db);
+        /** @var DbInterface $dbInstance */
+        $dbInstance = $this->getShared($db);
 
-        $db->delete($table, [$primaryKey => $this->$primaryKey]);
+        $dbInstance->delete($table, [$primaryKey => $this->$primaryKey]);
 
         $this->fireEvent('model:deleted');
 
@@ -1251,13 +1195,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         return $this->hasManyToMany($thatModel, $pivotModel);
     }
 
-    /**
-     * @param string $class
-     * @param array  $params
-     *
-     * @return mixed
-     */
-    public function getNew($class, $params = [])
+    public function getNew(string $class, array $params = []): mixed
     {
         return $this->_container->make($class, $params);
     }
@@ -1268,7 +1206,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      * @return \ManaPHP\Data\ModelInterface|\ManaPHP\Data\ModelInterface[]|mixed
      * @throws \ManaPHP\Exception\UnknownPropertyException
      */
-    public function __get($name)
+    public function __get(mixed $name): mixed
     {
         if ($name === '_container') {
             return $this->_container = container();
@@ -1286,13 +1224,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         }
     }
 
-    /**
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return void
-     */
-    public function __set($name, $value)
+    public function __set(mixed $name, mixed $value): void
     {
         if (is_scalar($value)) {
             throw new MisuseException(['`%s` Model does\'t contains `%s` field', static::class, $name]);
@@ -1301,24 +1233,12 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         $this->$name = $value;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function __isset($name)
+    public function __isset(mixed $name): bool
     {
         return isset($this->$name);
     }
 
-    /**
-     * @param string $name
-     * @param array  $arguments
-     *
-     * @return \ManaPHP\Data\QueryInterface
-     * @throws \ManaPHP\Exception\NotSupportedException
-     */
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments): mixed
     {
         if (str_starts_with($name, 'get')) {
             $relationManager = $this->getShared(RelationManager::class);
@@ -1384,12 +1304,12 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         return $data;
     }
 
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return isset($this->$offset);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->$offset;
     }

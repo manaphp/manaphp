@@ -1,37 +1,17 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Db;
 
+use ManaPHP\Data\QueryInterface;
+
 interface ModelInterface extends \ManaPHP\Data\ModelInterface
 {
-    /**
-     * @param string $alias
-     *
-     * @return \ManaPHP\Data\Db\Query
-     */
-    public static function query($alias = null);
+    public static function query(?string $alias = null): QueryInterface;
 
-    /**
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return int
-     */
-    public static function insertBySql($sql, $bind = []);
+    public static function insertBySql(string $sql, array $bind = []): int;
 
-    /**
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return int
-     */
-    public static function deleteBySql($sql, $bind = []);
+    public static function deleteBySql(string $sql, array $bind = []): int;
 
-    /**
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return int
-     */
-    public static function updateBySql($sql, $bind = []);
+    public static function updateBySql(string $sql, array $bind = []): int;
 }
