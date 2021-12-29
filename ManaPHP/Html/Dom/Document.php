@@ -63,8 +63,7 @@ class Document extends Component
             $old_disable_entity_loader = libxml_disable_entity_loader();
         }
 
-        /** @noinspection SubStrUsedAsStrPosInspection */
-        if (substr($str, 0, 5) === '<?xml') {
+        if (str_starts_with($str, '<?xml')) {
             $r = $this->dom->loadXML($str);
         } else {
             $r = $this->dom->loadHTML($str, LIBXML_HTML_NODEFDTD);
