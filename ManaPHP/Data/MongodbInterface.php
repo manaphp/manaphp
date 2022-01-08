@@ -1,129 +1,42 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
+use ManaPHP\Data\Mongodb\Query;
+
 interface MongodbInterface
 {
-    /**
-     * @return string
-     */
-    public function getPrefix();
+    public function getPrefix(): string;
 
-    /**
-     * @return string|null
-     */
-    public function getDb();
+    public function getDb(): string;
 
-    /**
-     * @param string $source
-     * @param array  $document
-     *
-     * @return int
-     */
-    public function insert($source, $document);
+    public function insert(string $source, array $document): int;
 
-    /**
-     * @param string  $source
-     * @param array[] $documents
-     *
-     * @return int
-     */
-    public function bulkInsert($source, $documents);
+    public function bulkInsert(string $source, array $documents): int;
 
-    /**
-     * @param string $source
-     * @param array  $document
-     * @param array  $filter
-     *
-     * @return int
-     */
-    public function update($source, $document, $filter);
+    public function update(string $source, array $document, array $filter): int;
 
-    /**
-     * @param string $source
-     * @param array  $documents
-     * @param string $primaryKey
-     *
-     * @return int
-     */
-    public function bulkUpdate($source, $documents, $primaryKey);
+    public function bulkUpdate(string $source, array $documents, string $primaryKey): int;
 
-    /**
-     * @param string $source
-     * @param array  $document
-     * @param string $primaryKey
-     *
-     * @return int
-     */
-    public function upsert($source, $document, $primaryKey);
+    public function upsert(string $source, array $document, string $primaryKey): int;
 
-    /**
-     * @param string $source
-     * @param array  $documents
-     * @param string $primaryKey
-     *
-     * @return int
-     */
-    public function bulkUpsert($source, $documents, $primaryKey);
+    public function bulkUpsert(string $source, array $documents, string $primaryKey): int;
 
-    /**
-     * @param string $source
-     * @param array  $filter
-     *
-     * @return int
-     */
-    public function delete($source, $filter);
+    public function delete(string $source, array $filter): int;
 
-    /**
-     * @param string   $source
-     * @param array    $filter
-     * @param array    $options
-     * @param bool|int $secondaryPreferred
-     *
-     * @return array
-     */
-    public function fetchAll($source, $filter = [], $options = [], $secondaryPreferred = true);
+    public function fetchAll(string $source, array $filter = [], array $options = [], bool $secondaryPreferred = true
+    ): array;
 
-    /**
-     * @param array  $command
-     * @param string $db
-     *
-     * @return array[]
-     */
-    public function command($command, $db = null);
+    public function command(array $command, ?string $db = null): array;
 
-    /**
-     * @param string $source
-     * @param array  $pipeline
-     * @param array  $options
-     *
-     * @return array
-     */
-    public function aggregate($source, $pipeline, $options = []);
+    public function aggregate(string $source, array $pipeline, array $options = []): array;
 
-    /**
-     * @param string $source
-     *
-     * @return bool
-     */
-    public function truncate($source);
+    public function truncate(string $source): bool;
 
-    /**
-     * @return array
-     */
-    public function listDatabases();
+    public function listDatabases(): array;
 
-    /**
-     * @param string $db
-     *
-     * @return array
-     */
-    public function listCollections($db = null);
+    public function listCollections(?string $db = null): array;
 
-    /**
-     * @param string $collection
-     *
-     * @return \ManaPHP\Data\Mongodb\Query
-     */
-    public function query($collection = null);
+    public function query(?string $collection = null): Query;
 }

@@ -1,9 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
 use ManaPHP\Component;
 use ManaPHP\Data\Mongodb\Exception as MongodbException;
+use ManaPHP\Data\Mongodb\Query;
 use ManaPHP\Exception\NonCloneableException;
 use MongoDB\Driver\Exception\RuntimeException;
 
@@ -12,25 +14,11 @@ use MongoDB\Driver\Exception\RuntimeException;
  */
 class Mongodb extends Component implements MongodbInterface
 {
-    /**
-     * @var string
-     */
-    protected $uri;
+    protected string $uri;
+    protected string $prefix;
+    protected string $db;
 
-    /**
-     * @var string
-     */
-    protected $prefix;
-
-    /**
-     * @var string
-     */
-    protected $db;
-
-    /**
-     * @param string $uri
-     */
-    public function __construct($uri = 'mongodb://127.0.0.1:27017/')
+    public function __construct(string $uri = 'mongodb://127.0.0.1:27017/')
     {
         $this->uri = $uri;
 
@@ -55,28 +43,17 @@ class Mongodb extends Component implements MongodbInterface
         throw new NonCloneableException($this);
     }
 
-    /**
-     * @return string
-     */
-    public function getPrefix()
+    public function getPrefix(): string
     {
         return $this->prefix;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getDb()
+    public function getDb(): string
     {
         return $this->db;
     }
 
-    /**
-     * @param string $source
-     *
-     * @return string
-     */
-    protected function completeNamespace($source)
+    protected function completeNamespace(string $source): string
     {
         if (str_contains($source, '.')) {
             return str_replace('.', '.' . $this->prefix, $source);
@@ -85,13 +62,7 @@ class Mongodb extends Component implements MongodbInterface
         }
     }
 
-    /**
-     * @param string $source
-     * @param array  $document
-     *
-     * @return int
-     */
-    public function insert($source, $document)
+    public function insert(string $source, array $document): int
     {
         $namespace = $this->completeNamespace($source);
 
@@ -109,13 +80,7 @@ class Mongodb extends Component implements MongodbInterface
         return $count;
     }
 
-    /**
-     * @param string  $source
-     * @param array[] $documents
-     *
-     * @return int
-     */
-    public function bulkInsert($source, $documents)
+    public function bulkInsert(string $source, array $documents): int
     {
         $namespace = $this->completeNamespace($source);
 
@@ -136,14 +101,7 @@ class Mongodb extends Component implements MongodbInterface
         return $count;
     }
 
-    /**
-     * @param string $source
-     * @param array  $document
-     * @param array  $filter
-     *
-     * @return int
-     */
-    public function update($source, $document, $filter)
+    public function update(string $source, array $document, array $filter): int
     {
         $namespace = $this->completeNamespace($source);
 
@@ -160,15 +118,7 @@ class Mongodb extends Component implements MongodbInterface
         return $count;
     }
 
-    /**
-     * @param string $source
-     * @param array  $documents
-     * @param string $primaryKey
-     *
-     * @return int
-     * @throws \ManaPHP\Data\Mongodb\Exception
-     */
-    public function bulkUpdate($source, $documents, $primaryKey)
+    public function bulkUpdate(string $source, array $documents, string $primaryKey): int
     {
         $namespace = $this->completeNamespace($source);
 
@@ -189,15 +139,7 @@ class Mongodb extends Component implements MongodbInterface
         return $count;
     }
 
-    /**
-     * @param string $source
-     * @param array  $document
-     * @param string $primaryKey
-     *
-     * @return int
-     * @throws \ManaPHP\Data\Mongodb\Exception
-     */
-    public function upsert($source, $document, $primaryKey)
+    public function upsert(string $source, array $document, string $primaryKey): int
     {
         $namespace = $this->completeNamespace($source);
 
@@ -215,15 +157,7 @@ class Mongodb extends Component implements MongodbInterface
         return $count;
     }
 
-    /**
-     * @param string $source
-     * @param array  $documents
-     * @param string $primaryKey
-     *
-     * @return int
-     * @throws \ManaPHP\Data\Mongodb\Exception
-     */
-    public function bulkUpsert($source, $documents, $primaryKey)
+    public function bulkUpsert(string $source, array $documents, string $primaryKey): int
     {
         $namespace = $this->completeNamespace($source);
 
@@ -243,14 +177,7 @@ class Mongodb extends Component implements MongodbInterface
         return $count;
     }
 
-    /**
-     * @param string $source
-     * @param array  $filter
-     *
-     * @return int
-     * @throws \ManaPHP\Data\Mongodb\Exception
-     */
-    public function delete($source, $filter)
+    public function delete(string $source, array $filter): int
     {
         $namespace = $this->completeNamespace($source);
 
@@ -268,16 +195,8 @@ class Mongodb extends Component implements MongodbInterface
         return $count;
     }
 
-    /**
-     * @param string   $source
-     * @param array    $filter
-     * @param array    $options
-     * @param bool|int $secondaryPreferred
-     *
-     * @return array[]
-     */
-    public function fetchAll($source, $filter = [], $options = [], $secondaryPreferred = true)
-    {
+    public function fetchAll(string $source, array $filter = [], array $options = [], bool $secondaryPreferred = true
+    ): array {
         $namespace = $this->completeNamespace($source);
 
         $this->fireEvent('mongodb:querying', compact('namespace', 'filter', 'options'));
@@ -297,13 +216,7 @@ class Mongodb extends Component implements MongodbInterface
         return $result;
     }
 
-    /**
-     * @param array  $command
-     * @param string $db
-     *
-     * @return array[]
-     */
-    public function command($command, $db = null)
+    public function command(array $command, ?string $db = null): array
     {
         if (!$db) {
             $db = $this->db;
@@ -327,15 +240,7 @@ class Mongodb extends Component implements MongodbInterface
         return $result;
     }
 
-    /**
-     * @param string $source
-     * @param array  $pipeline
-     * @param array  $options
-     *
-     * @return array
-     * @throws \ManaPHP\Data\Mongodb\Exception
-     */
-    public function aggregate($source, $pipeline, $options = [])
+    public function aggregate(string $source, array $pipeline, array $options = []): array
     {
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $pos);
@@ -362,12 +267,7 @@ class Mongodb extends Component implements MongodbInterface
         }
     }
 
-    /**
-     * @param string $source
-     *
-     * @return bool
-     */
-    public function truncate($source)
+    public function truncate(string $source): bool
     {
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $pos);
@@ -394,10 +294,7 @@ class Mongodb extends Component implements MongodbInterface
         }
     }
 
-    /**
-     * @return array
-     */
-    public function listDatabases()
+    public function listDatabases(): array
     {
         $databases = [];
         $result = $this->command(['listDatabases' => 1], 'admin');
@@ -408,12 +305,7 @@ class Mongodb extends Component implements MongodbInterface
         return $databases;
     }
 
-    /**
-     * @param string $db
-     *
-     * @return array
-     */
-    public function listCollections($db = null)
+    public function listCollections(?string $db = null): array
     {
         $collections = [];
         $result = $this->command(['listCollections' => 1], $db);
@@ -435,12 +327,7 @@ class Mongodb extends Component implements MongodbInterface
         return $collections;
     }
 
-    /**
-     * @param string $collection
-     *
-     * @return \ManaPHP\Data\Mongodb\Query
-     */
-    public function query($collection = null)
+    public function query(?string $collection = null): Query
     {
         return $this->container->make('ManaPHP\Data\Mongodb\Query', [$this])->from($collection);
     }
