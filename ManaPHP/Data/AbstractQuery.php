@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
@@ -17,100 +18,26 @@ use ManaPHP\Helper\Sharding\ShardingTooManyException;
  */
 abstract class AbstractQuery extends Component implements QueryInterface, IteratorAggregate
 {
-    /**
-     * @var \ManaPHP\Data\DbInterface|string
-     */
-    protected $db;
+    protected mixed $db;
+    protected string $table;
+    protected string $alias;
+    protected string|array $fields;
+    protected ?int $limit = null;
+    protected ?int $offset = null;
+    protected bool $distinct;
+    protected ?ModelInterface $model = null;
+    protected bool $multiple;
+    protected array $with = [];
+    protected ?array $order = null;
+    protected array $group;
+    protected mixed $index;
+    protected array $aggregate;
+    protected bool $force_master = false;
+    protected array $shard_context = [];
+    protected mixed $shard_strategy;
+    protected mixed $map;
 
-    /**
-     * @var string
-     */
-    protected $table;
-
-    /**
-     * @var string
-     */
-    protected $alias;
-
-    /**
-     * @var array
-     */
-    protected $fields;
-
-    /**
-     * @var int
-     */
-    protected $limit;
-
-    /**
-     * @var int
-     */
-    protected $offset;
-
-    /**
-     * @var bool
-     */
-    protected $distinct;
-
-    /**
-     * @var \ManaPHP\Data\ModelInterface
-     */
-    protected $model;
-
-    /**
-     * @var bool
-     */
-    protected $multiple;
-
-    /**
-     * @var array
-     */
-    protected $with = [];
-
-    /**
-     * @var array
-     */
-    protected $order;
-
-    /**
-     * @var array
-     */
-    protected $group;
-
-    /**
-     * @var string|array|callable
-     */
-    protected $index;
-
-    /**
-     * @var array
-     */
-    protected $aggregate;
-
-    /**
-     * @var bool
-     */
-    protected $force_master = false;
-
-    /**
-     * @var array
-     */
-    protected $shard_context = [];
-
-    /**
-     * @var callable
-     */
-    protected $shard_strategy;
-
-    /**
-     * @var callable
-     */
-    protected $map;
-
-    /**
-     * @return ArrayIterator
-     */
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->all());
     }
@@ -120,42 +47,26 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         return $this->all();
     }
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $model
-     *
-     * @return static
-     */
-    public function setModel($model)
+    public function setModel(ModelInterface $model): static
     {
         $this->model = $model;
 
         return $this;
     }
 
-    /**
-     * @return \ManaPHP\Data\ModelInterface|null
-     */
-    public function getModel()
+    public function getModel(): ?ModelInterface
     {
         return $this->model;
     }
 
-    /**
-     * @param callable $strategy
-     *
-     * @return static
-     */
-    public function shard($strategy)
+    public function shard(callable $strategy): static
     {
         $this->shard_strategy = $strategy;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getShards()
+    public function getShards(): array
     {
         if ($model = $this->model ?? null) {
             return $model->getMultipleShards($this->shard_context);
@@ -171,10 +82,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         }
     }
 
-    /**
-     * @return array
-     */
-    public function getUniqueShard()
+    public function getUniqueShard(): array
     {
         $shards = $this->getShards();
 
@@ -190,13 +98,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         return [key($shards), $tables[0]];
     }
 
-    /**
-     * @param string $table
-     * @param string $alias
-     *
-     * @return static
-     */
-    public function from($table, $alias = null)
+    public function from(string $table, ?string $alias = null): static
     {
         if ($table) {
             if (str_contains($table, '\\')) {
@@ -214,26 +116,14 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         return $this;
     }
 
-    /**
-     * Sets SELECT DISTINCT / SELECT ALL flag
-     *
-     * @param bool $distinct
-     *
-     * @return static
-     */
-    public function distinct($distinct = true)
+    public function distinct(bool $distinct = true): static
     {
         $this->distinct = $distinct;
 
         return $this;
     }
 
-    /**
-     * @param array $filters
-     *
-     * @return static
-     */
-    public function search($filters)
+    public function search(array $filters): static
     {
         $data = $this->request->get();
 
@@ -261,12 +151,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         return $this;
     }
 
-    /**
-     * @param array $filters
-     *
-     * @return static
-     */
-    public function where($filters)
+    public function where(?array $filters): static
     {
         if ($filters === null) {
             return $this;
@@ -346,14 +231,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         return $this;
     }
 
-    /**
-     * @param string     $field
-     * @param int|string $min
-     * @param int|string $max
-     *
-     * @return static
-     */
-    public function whereDateBetween($field, $min, $max)
+    public function whereDateBetween(string $field, mixed $min, mixed $max): static
     {
         if (!$this->model) {
             throw new MisuseException('use whereDateBetween must provide model');
@@ -385,12 +263,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         return $this->whereBetween($field, $min ?: null, $max ?: null);
     }
 
-    /**
-     * @param string|array $groupBy
-     *
-     * @return static
-     */
-    public function groupBy($groupBy)
+    public function groupBy(string|array $groupBy): static
     {
         if (is_string($groupBy)) {
             $this->group = preg_split('#[\s,]+#', $groupBy, -1, PREG_SPLIT_NO_EMPTY);
@@ -401,12 +274,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         return $this;
     }
 
-    /**
-     * @param string|array $orderBy
-     *
-     * @return static
-     */
-    public function orderBy($orderBy)
+    public function orderBy(string|array $orderBy): static
     {
         if (is_string($orderBy)) {
             foreach (explode(',', $orderBy) as $order) {
@@ -444,12 +312,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         return $this;
     }
 
-    /**
-     * @param callable|string|array $indexBy
-     *
-     * @return static
-     */
-    public function indexBy($indexBy)
+    public function indexBy(string|array|callable $indexBy): static
     {
         if (is_array($indexBy)) {
             $this->select([key($indexBy), current($indexBy)]);
@@ -460,15 +323,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         return $this;
     }
 
-    /**
-     * Sets a LIMIT clause, optionally a offset clause
-     *
-     * @param int $limit
-     * @param int $offset
-     *
-     * @return static
-     */
-    public function limit($limit, $offset = null)
+    public function limit(int $limit, ?int $offset = null): static
     {
         $this->limit = $limit > 0 ? (int)$limit : null;
         $this->offset = $offset > 0 ? (int)$offset : null;
@@ -476,21 +331,8 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         return $this;
     }
 
-    /**
-     * @param string|array $with
-     *
-     * @return static
-     */
-    public function with($with)
+    public function with(array $with): static
     {
-        if (is_string($with)) {
-            if (str_contains($with, ',')) {
-                $with = (array)preg_split('#[\s,]+#', $with, -1, PREG_SPLIT_NO_EMPTY);
-            } else {
-                $with = [$with];
-            }
-        }
-
         $with = $this->with ? array_merge($this->with, $with) : $with;
 
         foreach ($with as $k => $v) {
@@ -518,13 +360,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         return $this;
     }
 
-    /**
-     * @param int $size
-     * @param int $page
-     *
-     * @return static
-     */
-    public function page($size = null, $page = null)
+    public function page(?int $size = null, ?int $page = null): static
     {
         if ($size === null) {
             $size = (int)$this->request->get('size', 10);
@@ -539,25 +375,14 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         return $this;
     }
 
-    /**
-     * @param callable $map
-     *
-     * @return static
-     * @noinspection ClassMethodNameMatchesFieldNameInspection
-     */
-    public function map($map)
+    public function map(callable $map): static
     {
         $this->map = $map;
 
         return $this;
     }
 
-    /**
-     * @param bool $multiple
-     *
-     * @return static
-     */
-    public function setFetchType($multiple)
+    public function setFetchType(bool $multiple): static
     {
         $this->multiple = $multiple;
 
@@ -567,7 +392,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
     /**
      * @return \ManaPHP\Data\ModelInterface[]|\ManaPHP\Data\ModelInterface|null|array
      */
-    public function fetch()
+    public function fetch(): mixed
     {
         $rows = $this->execute();
 
@@ -595,13 +420,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         }
     }
 
-    /**
-     * @param int $size
-     * @param int $page
-     *
-     * @return \ManaPHP\Data\Paginator
-     */
-    public function paginate($size = null, $page = null)
+    public function paginate(?int $size = null, ?int $page = null): Paginator
     {
         $this->page($size, $page);
 
@@ -620,31 +439,20 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         return $paginator->paginate($count, $this->limit, (int)($this->offset / $this->limit) + 1);
     }
 
-    /**
-     * @param bool $forceUseMaster
-     *
-     * @return static
-     */
-    public function forceUseMaster($forceUseMaster = true)
+    public function forceUseMaster(bool $forceUseMaster = true): static
     {
         $this->force_master = $forceUseMaster;
 
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
-    public function first()
+    public function first(): ?array
     {
         $r = $this->limit(1)->fetch();
         return $r ? $r[0] : null;
     }
 
-    /**
-     * @return array
-     */
-    public function get()
+    public function get(): array
     {
         if (!$r = $this->first()) {
             throw new NotFoundException('record is not exists');
@@ -653,72 +461,38 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         return $r;
     }
 
-    /**
-     * @return array
-     */
-    public function all()
+    public function all(): array
     {
         return $this->fetch();
     }
 
-    /**
-     * @param string $field
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function value($field, $default = null)
+    public function value(string $field, mixed $default = null): mixed
     {
         $rs = $this->select([$field])->limit(1)->execute();
         return $rs[0][$field] ?? $default;
     }
 
-    /**
-     * @param string $field
-     *
-     * @return int|float|null
-     */
-    public function sum($field)
+    public function sum(string $field): mixed
     {
         return $this->aggregate(['r' => "SUM($field)"])[0]['r'];
     }
 
-    /**
-     * @param string $field
-     *
-     * @return int|float|null
-     */
-    public function max($field)
+    public function max(string $field): mixed
     {
         return $this->aggregate(['r' => "MAX($field)"])[0]['r'];
     }
 
-    /**
-     * @param string $field
-     *
-     * @return int|float|null
-     */
-    public function min($field)
+    public function min(string $field): mixed
     {
         return $this->aggregate(['r' => "MIN($field)"])[0]['r'];
     }
 
-    /**
-     * @param string $field
-     *
-     * @return float|null
-     */
-    public function avg($field)
+    public function avg(string $field): ?float
     {
         return (float)$this->aggregate(['r' => "AVG($field)"])[0]['r'];
     }
 
-    /**
-     * @param array $options
-     *
-     * @return static
-     */
-    public function options($options)
+    public function options(array $options): static
     {
         if (!$options) {
             return $this;
@@ -753,25 +527,14 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         return $this;
     }
 
-    /**
-     * @param callable $call
-     *
-     * @return static
-     */
-    public function when($call)
+    public function when(callable $call): static
     {
         $call($this);
 
         return $this;
     }
 
-    /**
-     * @param string     $field
-     * @param string|int $date
-     *
-     * @return static
-     */
-    public function whereDate($field, $date)
+    public function whereDate(string $field, int|string $date): static
     {
         if ($this->model) {
             $format = $this->model->dateFormat($field);
@@ -797,7 +560,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
      *
      * @return static
      */
-    public function whereMonth($field, $date)
+    public function whereMonth(string $field, int|string $date): static
     {
         if ($this->model) {
             $format = $this->model->dateFormat($field);
@@ -823,7 +586,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
      *
      * @return static
      */
-    public function whereYear($field, $date)
+    public function whereYear(string $field, int|string $date): static
     {
         if ($this->model) {
             $format = $this->model->dateFormat($field);
@@ -843,38 +606,17 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         }
     }
 
-    /**
-     * @param string $table
-     * @param string $condition
-     * @param string $alias
-     *
-     * @return static
-     */
-    public function innerJoin($table, $condition = null, $alias = null)
+    public function innerJoin(string $table, ?string $condition = null, ?string $alias = null): static
     {
         return $this->join($table, $condition, $alias, 'INNER');
     }
 
-    /**
-     * @param string $table
-     * @param string $condition
-     * @param string $alias
-     *
-     * @return static
-     */
-    public function leftJoin($table, $condition = null, $alias = null)
+    public function leftJoin(string $table, ?string $condition = null, ?string $alias = null): static
     {
         return $this->join($table, $condition, $alias, 'LEFT');
     }
 
-    /**
-     * @param string $table
-     * @param string $condition
-     * @param string $alias
-     *
-     * @return static
-     */
-    public function rightJoin($table, $condition = null, $alias = null)
+    public function rightJoin(string $table, ?string $condition = null, ?string $alias = null): static
     {
         return $this->join($table, $condition, $alias, 'RIGHT');
     }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
@@ -7,55 +8,24 @@ namespace ManaPHP\Data;
  */
 interface QueryInterface
 {
-    /**
-     * @param mixed|string $db
-     *
-     * @return static
-     */
-    public function setDb($db);
+    public function setDb(mixed $db): static;
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $model
-     *
-     * @return static
-     */
-    public function setModel($model);
+    public function setModel(ModelInterface $model): static;
 
-    /**
-     * @return \ManaPHP\Data\ModelInterface
-     */
-    public function getModel();
+    public function getModel(): ?ModelInterface;
 
-    /**
-     * @param callable $strategy
-     *
-     * @return static
-     */
-    public function shard($strategy);
+    public function shard(callable $strategy): static;
 
-    /**
-     * @param string $table
-     * @param string $alias
-     *
-     * @return static
-     */
-    public function from($table, $alias = null);
+    public function from(string $table, ?string $alias = null): static;
 
     /**
      * @param array $fields =model_fields(new Model)
      *
      * @return static
      */
-    public function select($fields);
+    public function select(array $fields): static;
 
-    /**
-     * Sets SELECT DISTINCT / SELECT ALL flag
-     *
-     * @param bool $distinct
-     *
-     * @return static
-     */
-    public function distinct($distinct = true);
+    public function distinct(bool $distinct = true): static;
 
     /**
      * Appends a condition to the current conditions using a AND operator
@@ -64,7 +34,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function where($filters);
+    public function where(array $filters): static;
 
     /**
      * @param string $field =model_field(new Model)
@@ -72,7 +42,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereEq($field, $value);
+    public function whereEq(string $field, mixed $value): static;
 
     /**
      * @param string $field =model_field(new Model)
@@ -81,7 +51,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereCmp($field, $operator, $value);
+    public function whereCmp(string $field, string $operator, mixed $value): static;
 
     /**
      * @param string $field =model_field(new Model)
@@ -90,22 +60,16 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereMod($field, $divisor, $remainder);
+    public function whereMod(string $field, int $divisor, int $remainder): static;
 
-    /**
-     * @param string $expr
-     * @param array  $bind
-     *
-     * @return static
-     */
-    public function whereExpr($expr, $bind = null);
+    public function whereExpr(string $expr, ?array $bind = null): static;
 
     /**
      * @param array $filters =model_var(new Model)
      *
      * @return static
      */
-    public function search($filters);
+    public function search(array $filters): static;
 
     /**
      * Appends a BETWEEN condition to the current conditions
@@ -116,7 +80,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereBetween($field, $min, $max);
+    public function whereBetween(string $field, mixed $min, mixed $max): static;
 
     /**
      * Appends a NOT BETWEEN condition to the current conditions
@@ -127,7 +91,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereNotBetween($field, $min, $max);
+    public function whereNotBetween(string $field, mixed $min, mixed $max): static;
 
     /**
      * @param string     $field =model_field(new Model)
@@ -136,7 +100,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereDateBetween($field, $min, $max);
+    public function whereDateBetween(string $field, mixed $min, mixed $max): static;
 
     /**
      * Appends an IN condition to the current conditions
@@ -146,7 +110,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereIn($field, $values);
+    public function whereIn(string $field, array $values): static;
 
     /**
      * Appends a NOT IN condition to the current conditions
@@ -156,7 +120,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereNotIn($field, $values);
+    public function whereNotIn(string $field, array $values): static;
 
     /**
      * @param string $field =model_field(new Model)
@@ -164,7 +128,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereInset($field, $value);
+    public function whereInset(string $field, string $value): static;
 
     /**
      * @param string $field =model_field(new Model)
@@ -172,7 +136,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereNotInset($field, $value);
+    public function whereNotInset(string $field, string $value): static;
 
     /**
      * @param string|array $fields =model_fields(new Model) ?: model_field(new Model)
@@ -180,7 +144,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereContains($fields, $value);
+    public function whereContains(string|array $fields, string $value): static;
 
     /**
      * @param string|array $fields =model_fields(new Model) ?: model_field(new Model)
@@ -188,25 +152,25 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereNotContains($fields, $value);
+    public function whereNotContains(string|array $fields, string $value): static;
 
     /**
      * @param string|array $fields =model_fields(new Model) ?: model_field(new Model)
      * @param string       $value
-     * @param int          $length
+     * @param ?int         $length
      *
      * @return static
      */
-    public function whereStartsWith($fields, $value, $length = null);
+    public function whereStartsWith(string|array $fields, string $value, ?int $length = null): static;
 
     /**
      * @param string|array $fields =model_fields(new Model) ?: model_field(new Model)
      * @param string       $value
-     * @param int          $length
+     * @param ?int         $length
      *
      * @return static
      */
-    public function whereNotStartsWith($fields, $value, $length = null);
+    public function whereNotStartsWith(string|array $fields, string $value, ?int $length = null): static;
 
     /**
      * @param string|array $fields =model_fields(new Model)?: model_field(new Model)
@@ -214,7 +178,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereEndsWith($fields, $value);
+    public function whereEndsWith(string|array $fields, string $value): static;
 
     /**
      * @param string|array $fields =model_fields(new Model) ?: model_field(new Model)
@@ -222,7 +186,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereNotEndsWith($fields, $value);
+    public function whereNotEndsWith(string|array $fields, string $value): static;
 
     /**
      * @param string|array $fields =model_fields(new Model) ?: model_field(new Model)
@@ -230,7 +194,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereLike($fields, $value);
+    public function whereLike(string|array $fields, string $value): static;
 
     /**
      * @param string|array $fields =model_fields(new Model) ?: model_field(new Model)
@@ -238,7 +202,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereNotLike($fields, $value);
+    public function whereNotLike(string|array $fields, string $value): static;
 
     /**
      * @param string $field =model_field(new Model)
@@ -247,7 +211,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereRegex($field, $regex, $flags = '');
+    public function whereRegex(string $field, string $regex, string $flags = ''): static;
 
     /**
      * @param string $field =model_field(new Model)
@@ -256,21 +220,21 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereNotRegex($field, $regex, $flags = '');
+    public function whereNotRegex(string $field, string $regex, string $flags = ''): static;
 
     /**
      * @param string $field =model_field(new Model)
      *
      * @return static
      */
-    public function whereNull($field);
+    public function whereNull(string $field): static;
 
     /**
      * @param string $field =model_field(new Model)
      *
      * @return static
      */
-    public function whereNotNull($field);
+    public function whereNotNull(string $field): static;
 
     /**
      * Sets a ORDER BY condition clause
@@ -280,14 +244,14 @@ interface QueryInterface
      *
      * @return static
      */
-    public function orderBy($orderBy);
+    public function orderBy(string|array $orderBy): static;
 
     /**
      * @param callable|string|array $indexBy =model_field(new Model)
      *
      * @return static
      */
-    public function indexBy($indexBy);
+    public function indexBy(callable|string|array $indexBy): static;
 
     /**
      * Sets a GROUP BY clause
@@ -296,100 +260,38 @@ interface QueryInterface
      *
      * @return static
      */
-    public function groupBy($groupBy);
+    public function groupBy(string|array $groupBy): static;
 
-    /**
-     * @param array $options
-     *
-     * @return static
-     */
-    public function options($options);
+    public function options(array $options): static;
 
-    /**
-     * @param string|array $with
-     *
-     * @return static
-     */
-    public function with($with);
+    public function with(array $with): static;
 
-    /**
-     * Sets a LIMIT clause, optionally a offset clause
-     *
-     * @param int $limit
-     * @param int $offset
-     *
-     * @return static
-     */
-    public function limit($limit, $offset = null);
+    public function limit(int $limit, ?int $offset = null): static;
 
-    /**
-     * @param int $size
-     * @param int $page
-     *
-     * @return static
-     */
-    public function page($size = null, $page = null);
+    public function page(?int $size = null, ?int $page = null): static;
 
-    /**
-     * @param bool $forceUseMaster
-     *
-     * @return static
-     */
-    public function forceUseMaster($forceUseMaster = true);
+    public function forceUseMaster(bool $forceUseMaster = true): static;
 
-    /**
-     * @return array
-     */
-    public function execute();
+    public function execute(): array;
 
-    /**
-     * @param array $expr
-     *
-     * @return array
-     */
-    public function aggregate($expr);
+    public function aggregate(array $expr): array;
 
-    /**
-     * @param int $size
-     * @param int $page
-     *
-     * @return \ManaPHP\Data\Paginator
-     */
-    public function paginate($size = null, $page = null);
+    public function paginate(?int $size = null, ?int $page = null): Paginator;
 
-    /**
-     * @param callable $map
-     *
-     * @return static
-     */
-    public function map($map);
+    public function map(callable $map): static;
 
-    /**
-     * @param bool $multiple
-     *
-     * @return static
-     */
-    public function setFetchType($multiple);
+    public function setFetchType(bool $multiple): static;
 
     /**
      * @return \ManaPHP\Data\ModelInterface[]|\ManaPHP\Data\ModelInterface|array|null
      */
-    public function fetch();
+    public function fetch(): mixed;
 
-    /**
-     * @return array|null
-     */
-    public function first();
+    public function first(): ?array;
 
-    /**
-     * @return array
-     */
-    public function get();
+    public function get(): array;
 
-    /**
-     * @return array
-     */
-    public function all();
+    public function all(): array;
 
     /**
      * @param string $field =model_field(new Model)
@@ -397,73 +299,65 @@ interface QueryInterface
      *
      * @return mixed
      */
-    public function value($field, $default = null);
+    public function value(string $field, mixed $default = null): mixed;
 
     /**
      * @param string $field =model_field(new Model)
      *
      * @return array
      */
-    public function values($field);
+    public function values(string $field): array;
 
-    /**
-     * @return bool
-     */
-    public function exists();
+    public function exists(): bool;
 
     /**
      * @param string $field =model_field(new Model)
      *
      * @return int
      */
-    public function count($field = '*');
+    public function count(string $field = '*'): int;
 
     /**
      * @param string $field =model_field(new Model)
      *
      * @return int|float|null
      */
-    public function sum($field);
+    public function sum(string $field): mixed;
 
     /**
      * @param string $field =model_field(new Model)
      *
      * @return int|float|null
      */
-    public function max($field);
+    public function max(string $field): mixed;
 
     /**
      * @param string $field =model_field(new Model)
      *
      * @return int|float|null
      */
-    public function min($field);
+    public function min(string $field): mixed;
 
     /**
      * @param string $field =model_field(new Model)
      *
      * @return float|null
      */
-    public function avg($field);
+    public function avg(string $field): ?float;
 
     /**
      * @return int
      */
-    public function delete();
+    public function delete(): int;
 
     /**
      * @param array $fieldValues =model_var(new Model)
      *
      * @return int
      */
-    public function update($fieldValues);
+    public function update(array $fieldValues): int;
 
-    /**
-     * @param callable $call
-     *
-     * @return static
-     */
-    public function when($call);
+    public function when(callable $call): static;
 
     /**
      * @param string     $field =model_field(new Model)
@@ -471,7 +365,7 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereDate($field, $date);
+    public function whereDate(string $field, int|string $date): static;
 
     /**
      * @param string     $field =model_field(new Model)
@@ -479,79 +373,29 @@ interface QueryInterface
      *
      * @return static
      */
-    public function whereMonth($field, $date);
+    public function whereMonth(string $field, int|string $date): static;
 
     /**
-     * @param string     $field
+     * @param string     $field =model_field(new Model)
      * @param string|int $date
      *
      * @return static
      */
-    public function whereYear($field, $date);
+    public function whereYear(string $field, int|string $date): static;
 
-    /**
-     * @param string $id
-     * @param string $value
-     *
-     * @return static
-     */
-    public function where1v1($id, $value);
+    public function where1v1(string $id, string $value): static;
 
-    /**
-     * @param string $table
-     * @param string $condition
-     * @param string $alias
-     * @param string $type
-     *
-     * @return static
-     */
-    public function join($table, $condition = null, $alias = null, $type = null);
+    public function join(string $table, ?string $condition = null, ?string $alias = null, ?string $type = null): static;
 
-    /**
-     * @param string $table
-     * @param string $condition
-     * @param string $alias
-     *
-     * @return static
-     */
-    public function innerJoin($table, $condition = null, $alias = null);
+    public function innerJoin(string $table, ?string $condition = null, ?string $alias = null): static;
 
-    /**
-     * @param string $table
-     * @param string $condition
-     * @param string $alias
-     *
-     * @return static
-     */
-    public function leftJoin($table, $condition = null, $alias = null);
+    public function leftJoin(string $table, ?string $condition = null, ?string $alias = null): static;
 
-    /**
-     * @param string $table
-     * @param string $condition
-     * @param string $alias
-     *
-     * @return static
-     */
-    public function rightJoin($table, $condition = null, $alias = null);
+    public function rightJoin(string $table, ?string $condition = null, ?string $alias = null): static;
 
-    /**
-     * @param string $filter
-     * @param array  $bind
-     *
-     * @return static
-     */
-    public function whereRaw($filter, $bind = null);
+    public function whereRaw(string $filter, ?array $bind = null): static;
 
-    /**
-     * @param string|array $having
-     * @param array        $bind
-     *
-     * @return static
-     */
-    public function having($having, $bind = []);
+    public function having(string|array $having, array $bind = []): static;
 
-    /**
-     * @return string
-     */
-    public function getSql();
+    public function getSql(): string;
 }

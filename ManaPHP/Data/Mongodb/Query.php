@@ -1,7 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Mongodb;
 
+use ManaPHP\Data\ModelInterface;
+use ManaPHP\Data\MongodbInterface;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
@@ -14,57 +17,28 @@ use ManaPHP\Data\AbstractQuery;
 
 class Query extends AbstractQuery
 {
-    /**
-     * @var array
-     */
-    protected $types;
+    protected array $types;
+    protected array $aliases;
+    protected array $filters = [];
 
-    /**
-     * @var array
-     */
-    protected $aliases;
-
-    /**
-     * @var array
-     */
-    protected $filters = [];
-
-    /**
-     * @param \ManaPHP\Data\MongodbInterface|string $db
-     */
-    public function __construct($db = 'mongodb')
+    public function __construct(string|MongodbInterface $db = 'mongodb')
     {
         $this->db = $db;
     }
 
-    /**
-     * @param \ManaPHP\Data\MongodbInterface|string $db
-     *
-     * @return static
-     */
-    public function setDb($db)
+    public function setDb(mixed $db): static
     {
         $this->db = $db;
 
         return $this;
     }
 
-    /**
-     * @param string $db
-     *
-     * @return \ManaPHP\Data\MongodbInterface
-     */
-    protected function getDb($db)
+    protected function getDb(string $db): MongodbInterface
     {
         return $db === '' ? $this->db : $this->container->get($db);
     }
 
-    /**
-     * @param \ManaPHP\Data\Mongodb\Model $model
-     *
-     * @return static
-     */
-    public function setModel($model)
+    public function setModel(ModelInterface $model): static
     {
         $this->model = $model;
 
@@ -73,26 +47,14 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param array $types
-     *
-     * @return static
-     */
-    public function setTypes($types)
+    public function setTypes(array $types): static
     {
         $this->types = $types;
 
         return $this;
     }
 
-    /**
-     * Sets SELECT DISTINCT / SELECT ALL flag
-     *
-     * @param string $field
-     *
-     * @return array
-     */
-    public function values($field)
+    public function values(string $field): array
     {
         list($db, $source) = $this->getUniqueShard();
 
@@ -128,12 +90,7 @@ class Query extends AbstractQuery
         return $this->limit ? array_slice($r['values'], $this->offset, $this->limit) : $r['values'];
     }
 
-    /**
-     * @param array $fields
-     *
-     * @return static
-     */
-    public function select($fields)
+    public function select(array $fields): static
     {
         if (!$fields) {
             return $this;
@@ -163,12 +120,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string $expr
-     *
-     * @return array
-     */
-    protected function compileCondExpression($expr)
+    protected function compileCondExpression(string $expr): ?array
     {
         if (str_contains($expr, ',')) {
             $parts = explode(',', $expr);
@@ -203,12 +155,7 @@ class Query extends AbstractQuery
         }
     }
 
-    /**
-     * @param array $expr
-     *
-     * @return array
-     */
-    public function aggregate($expr)
+    public function aggregate(array $expr): array
     {
         foreach ($expr as $k => $v) {
             if (is_array($v)) {
@@ -300,13 +247,7 @@ class Query extends AbstractQuery
         return $this->execute();
     }
 
-    /**
-     * @param string $field
-     * @param mixed  $value
-     *
-     * @return bool|float|int|string|array|\MongoDB\BSON\ObjectID|\MongoDB\BSON\UTCDateTime
-     */
-    public function normalizeValue($field, $value)
+    public function normalizeValue(string $field, mixed $value): mixed
     {
         if ($value === null || !$this->types) {
             return $value;
@@ -335,13 +276,7 @@ class Query extends AbstractQuery
         }
     }
 
-    /**
-     * @param string $field
-     * @param array  $values
-     *
-     * @return array
-     */
-    public function normalizeValues($field, $values)
+    public function normalizeValues(string $field, array $values): array
     {
         if (!$this->types) {
             return $values;
@@ -361,13 +296,7 @@ class Query extends AbstractQuery
         return $values;
     }
 
-    /**
-     * @param string $field
-     * @param mixed  $value
-     *
-     * @return static
-     */
-    public function whereEq($field, $value)
+    public function whereEq(string $field, mixed $value): static
     {
         $normalizedValue = $this->normalizeValue($field, $value);
         $this->shard_context[$field] = $normalizedValue;
@@ -377,14 +306,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string $field
-     * @param string $operator
-     * @param mixed  $value
-     *
-     * @return static
-     */
-    public function whereCmp($field, $operator, $value)
+    public function whereCmp(string $field, string $operator, mixed $value): static
     {
         if (in_array($operator, ['>=', '>', '<', '<='], true)) {
             $this->shard_context[$field] = [$operator, $value];
@@ -420,14 +342,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string $field
-     * @param int    $divisor
-     * @param int    $remainder
-     *
-     * @return static
-     */
-    public function whereMod($field, $divisor, $remainder)
+    public function whereMod(string $field, int $divisor, int $remainder): static
     {
         if (!is_int($divisor)) {
             throw new MisuseException('divisor must be an integer');
@@ -442,40 +357,21 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string $expr
-     * @param array  $bind
-     *
-     * @return static
-     */
-    public function whereExpr($expr, $bind = null)
+    public function whereExpr(string $expr, ?array $bind = null): static
     {
         $this->filters[] = ['$where' => $expr];
 
         return $this;
     }
 
-    /**
-     * @param array $filter
-     * @param array $bind
-     *
-     * @return static
-     */
-    public function whereRaw($filter, $bind = null)
+    public function whereRaw(string $filter, ?array $bind = null): static
     {
         $this->filters[] = $filter;
 
         return $this;
     }
 
-    /**
-     * @param string           $field
-     * @param int|float|string $min
-     * @param int|float|string $max
-     *
-     * @return static
-     */
-    public function whereBetween($field, $min, $max)
+    public function whereBetween(string $field, mixed $min, mixed $max): static
     {
         if ($min === null || $min === '') {
             return $max === null || $max === '' ? $this : $this->whereCmp($field, '<=', $max);
@@ -492,14 +388,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string           $field
-     * @param int|float|string $min
-     * @param int|float|string $max
-     *
-     * @return static
-     */
-    public function whereNotBetween($field, $min, $max)
+    public function whereNotBetween(string $field, mixed $min, mixed $max): static
     {
         if ($min === null || $min === '') {
             return $max === null || $max === '' ? $this : $this->whereCmp($field, '>', $max);
@@ -514,13 +403,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string $field
-     * @param array  $values
-     *
-     * @return static
-     */
-    public function whereIn($field, $values)
+    public function whereIn(string $field, array $values): static
     {
         $normalizedValues = $this->normalizeValues($field, $values);
         $this->shard_context[$field] = $normalizedValues;
@@ -530,48 +413,24 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string $field
-     * @param array  $values
-     *
-     * @return static
-     */
-    public function whereNotIn($field, $values)
+    public function whereNotIn(string $field, array $values): static
     {
         $this->filters[] = [$field => ['$nin' => $this->normalizeValues($field, $values)]];
 
         return $this;
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return static
-     */
-    public function whereInset($field, $value)
+    public function whereInset(string $field, string $value): static
     {
         return $this->whereRegex($field, '\b' . $value . '\b');
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return static
-     */
-    public function whereNotInset($field, $value)
+    public function whereNotInset(string $field, string $value): static
     {
         return $this->whereNotRegex($field, '\b' . $value . '\b');
     }
 
-    /**
-     * @param string|array $fields
-     * @param string       $regex
-     *
-     * @return static
-     */
-    protected function whereLikeInternal($fields, $regex)
+    protected function whereLikeInternal(string|array $fields, string $regex): static
     {
         if ($regex === '') {
             return $this;
@@ -590,13 +449,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string|array $fields
-     * @param string       $regex
-     *
-     * @return static
-     */
-    protected function whereNotLikeInternal($fields, $regex)
+    protected function whereNotLikeInternal(string|array $fields, string $regex): static
     {
         if ($regex === '') {
             return $this;
@@ -615,36 +468,17 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string|array $fields
-     * @param string       $value
-     *
-     * @return static
-     */
-    public function whereContains($fields, $value)
+    public function whereContains(string|array $fields, string $value): static
     {
         return $value === '' ? $this : $this->whereLikeInternal($fields, $value);
     }
 
-    /**
-     * @param string|array $fields
-     * @param string       $value
-     *
-     * @return static
-     */
-    public function whereNotContains($fields, $value)
+    public function whereNotContains(string|array $fields, string $value): static
     {
         return $value === '' ? $this : $this->whereNotLikeInternal($fields, $value);
     }
 
-    /**
-     * @param string|array $fields
-     * @param string       $value
-     * @param int          $length
-     *
-     * @return static
-     */
-    public function whereStartsWith($fields, $value, $length = null)
+    public function whereStartsWith(string|array $fields, string $value, ?int $length = null): static
     {
         if ($value === '') {
             return $this;
@@ -657,14 +491,7 @@ class Query extends AbstractQuery
         }
     }
 
-    /**
-     * @param string|array $fields
-     * @param string       $value
-     * @param int          $length
-     *
-     * @return static
-     */
-    public function whereNotStartsWith($fields, $value, $length = null)
+    public function whereNotStartsWith(string|array $fields, string $value, ?int $length = null): static
     {
         if ($value === '') {
             return $this;
@@ -677,34 +504,17 @@ class Query extends AbstractQuery
         }
     }
 
-    /**
-     * @param string|array $fields
-     * @param string       $value
-     *
-     * @return static
-     */
-    public function whereEndsWith($fields, $value)
+    public function whereEndsWith(string|array $fields, string $value): static
     {
         return $value === '' ? $this : $this->whereLikeInternal($fields, $value . '$');
     }
 
-    /**
-     * @param string|array $fields
-     * @param string       $value
-     *
-     * @return static
-     */
-    public function whereNotEndsWith($fields, $value)
+    public function whereNotEndsWith(string|array $fields, string $value): static
     {
         return $value === '' ? $this : $this->whereNotLikeInternal($fields, $value . '$');
     }
 
-    /**
-     * @param string $like
-     *
-     * @return string
-     */
-    protected function like2regex($like)
+    protected function like2regex(string $like): string
     {
         if ($like === '') {
             return '';
@@ -721,87 +531,45 @@ class Query extends AbstractQuery
         return strtr($like, ['%' => '.*', '_' => '.']);
     }
 
-    /**
-     * @param string|array $fields
-     * @param string       $value
-     *
-     * @return static
-     */
-    public function whereLike($fields, $value)
+    public function whereLike(string|array $fields, string $value): static
     {
         return $this->whereLikeInternal($fields, $this->like2regex($value));
     }
 
-    /**
-     * @param string|array $fields
-     * @param string       $value
-     *
-     * @return static
-     */
-    public function whereNotLike($fields, $value)
+    public function whereNotLike(string|array $fields, string $value): static
     {
         return $this->whereNotLikeInternal($fields, $this->like2regex($value));
     }
 
-    /**
-     * @param string $field
-     * @param string $regex
-     * @param string $flags
-     *
-     * @return static
-     */
-    public function whereRegex($field, $regex, $flags = '')
+    public function whereRegex(string $field, string $regex, string $flags = ''): static
     {
         $this->filters[] = [$field => ['$regex' => $regex, '$options' => $flags]];
 
         return $this;
     }
 
-    /**
-     * @param string $field
-     * @param string $regex
-     * @param string $flags
-     *
-     * @return static
-     */
-    public function whereNotRegex($field, $regex, $flags = '')
+    public function whereNotRegex(string $field, string $regex, string $flags = ''): static
     {
         $this->filters[] = [$field => ['$not' => new Regex($regex, $flags)]];
 
         return $this;
     }
 
-    /**
-     * @param string $field
-     *
-     * @return static
-     */
-    public function whereNull($field)
+    public function whereNull(string $field): static
     {
         $this->filters[] = [$field => ['$type' => 10]];
 
         return $this;
     }
 
-    /**
-     * @param string $field
-     *
-     * @return static
-     */
-    public function whereNotNull($field)
+    public function whereNotNull(string $field): static
     {
         $this->filters[] = [$field => ['$ne' => null]];
 
         return $this;
     }
 
-    /**
-     * @param string $id
-     * @param string $value
-     *
-     * @return static
-     */
-    public function where1v1($id, $value)
+    public function where1v1(string $id, string $value): static
     {
         list($id_a, $id_b) = explode(',', $id);
 
@@ -819,12 +587,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string|array $groupBy
-     *
-     * @return static
-     */
-    public function groupBy($groupBy)
+    public function groupBy(string|array $groupBy): static
     {
         if (is_string($groupBy)) {
             if (str_contains($groupBy, '(')) {
@@ -859,12 +622,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param array $order
-     *
-     * @return array
-     */
-    protected function buildOrder($order)
+    protected function buildOrder(array $order): array
     {
         $r = [];
 
@@ -875,10 +633,7 @@ class Query extends AbstractQuery
         return $r;
     }
 
-    /**
-     * @return array
-     */
-    protected function buildConditions()
+    protected function buildConditions(): array
     {
         $filters = [];
         foreach ($this->filters as $filter) {
@@ -894,10 +649,7 @@ class Query extends AbstractQuery
         return $filters;
     }
 
-    /**
-     * @return array
-     */
-    public function execute()
+    public function execute(): array
     {
         list($db, $collection) = $this->getUniqueShard();
         $mongodb = $this->getDb($db);
@@ -987,12 +739,7 @@ class Query extends AbstractQuery
         return $this->index ? Arr::indexby($r, $this->index) : $r;
     }
 
-    /**
-     * @param string $field
-     *
-     * @return int
-     */
-    public function count($field = '*')
+    public function count(string $field = '*'): int
     {
         $copy = clone $this;
 
@@ -1005,18 +752,12 @@ class Query extends AbstractQuery
         return $r ? $r[0]['count'] : 0;
     }
 
-    /**
-     * @return bool
-     */
-    public function exists()
+    public function exists(): bool
     {
         return (bool)$this->select(['_id'])->limit(1)->execute();
     }
 
-    /**
-     * @return int
-     */
-    public function delete()
+    public function delete(): int
     {
         $shards = $this->getShards();
 
@@ -1031,12 +772,7 @@ class Query extends AbstractQuery
         return $affected_count;
     }
 
-    /**
-     * @param array $fieldValues
-     *
-     * @return int
-     */
-    public function update($fieldValues)
+    public function update(array $fieldValues): int
     {
         $shards = $this->getShards();
 
@@ -1051,17 +787,17 @@ class Query extends AbstractQuery
         return $affected_count;
     }
 
-    public function join($table, $condition = null, $alias = null, $type = null)
+    public function join(string $table, ?string $condition = null, ?string $alias = null, ?string $type = null): static
     {
         throw new NotSupportedException(__METHOD__);
     }
 
-    public function getSql()
+    public function getSql(): string
     {
         throw new NotSupportedException(__METHOD__);
     }
 
-    public function having($having, $bind = [])
+    public function having(string|array $having, array $bind = []): static
     {
         throw new NotSupportedException(__METHOD__);
     }

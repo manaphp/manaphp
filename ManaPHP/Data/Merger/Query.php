@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Merger;
 
@@ -14,16 +15,9 @@ use ManaPHP\Data\AbstractQuery;
  */
 class Query extends AbstractQuery
 {
-    /**
-     * @var \ManaPHP\Data\QueryInterface[]
-     */
-    protected $queries;
+    protected array $queries;
 
-    /**
-     * @param array $queries
-     * @param array $fields
-     */
-    public function __construct($queries, $fields = null)
+    public function __construct(array $queries, null|string|array $fields = null)
     {
         $this->setQueries($queries)->select($fields);
     }
@@ -40,7 +34,7 @@ class Query extends AbstractQuery
      *
      * @return static
      */
-    public function setQueries($queries)
+    public function setQueries(mixed $queries): static
     {
         foreach ($queries as $id => $query) {
             if (is_string($query)) {
@@ -62,42 +56,37 @@ class Query extends AbstractQuery
     /**
      * @return \ManaPHP\Data\QueryInterface[]
      */
-    public function getQueries()
+    public function getQueries(): array
     {
         return $this->queries;
     }
 
-    public function setDb($db)
+    public function setDb(mixed $db): static
     {
         throw new NotSupportedException(__METHOD__);
     }
 
-    public function shard($strategy = null)
+    public function shard(?callable $strategy = null): static
     {
         throw new NotSupportedException(__METHOD__);
     }
 
-    public function from($table, $alias = null)
+    public function from(string $table, ?string $alias = null): static
     {
         throw new NotSupportedException(__METHOD__);
     }
 
-    public function getShards()
+    public function getShards(): array
     {
         throw new NotSupportedException(__METHOD__);
     }
 
-    public function getUniqueShard()
+    public function getUniqueShard(): array
     {
         throw new NotSupportedException(__METHOD__);
     }
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $model
-     *
-     * @return static
-     */
-    public function setModel($model)
+    public function setModel(ModelInterface $model): static
     {
         $this->model = $model;
 
@@ -108,12 +97,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param array $fields
-     *
-     * @return static
-     */
-    public function select($fields)
+    public function select(string|array $fields): static
     {
         foreach ($this->queries as $query) {
             $query->select($fields);
@@ -122,14 +106,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * Sets SELECT DISTINCT / SELECT ALL flag
-     *
-     * @param bool $distinct
-     *
-     * @return static
-     */
-    public function distinct($distinct = true)
+    public function distinct(bool $distinct = true): static
     {
         foreach ($this->queries as $query) {
             $query->distinct($distinct);
@@ -138,13 +115,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string $field
-     * @param mixed  $value
-     *
-     * @return static
-     */
-    public function whereEq($field, $value)
+    public function whereEq(string $field, mixed $value): static
     {
         foreach ($this->queries as $query) {
             $query->whereEq($field, $value);
@@ -153,14 +124,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string $field
-     * @param string $operator
-     * @param mixed  $value
-     *
-     * @return static
-     */
-    public function whereCmp($field, $operator, $value)
+    public function whereCmp(string $field, string $operator, mixed $value): static
     {
         foreach ($this->queries as $query) {
             $query->whereCmp($field, $operator, $value);
@@ -169,14 +133,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string $field
-     * @param int    $divisor
-     * @param int    $remainder
-     *
-     * @return static
-     */
-    public function whereMod($field, $divisor, $remainder)
+    public function whereMod(string $field, int $divisor, int $remainder): static
     {
         foreach ($this->queries as $query) {
             $query->whereMod($field, $divisor, $remainder);
@@ -185,13 +142,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string $expr
-     * @param array  $bind
-     *
-     * @return static
-     */
-    public function whereExpr($expr, $bind = null)
+    public function whereExpr(string $expr, ?array $bind = null): static
     {
         foreach ($this->queries as $query) {
             $query->whereExpr($expr, $bind);
@@ -200,14 +151,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string           $field
-     * @param int|float|string $min
-     * @param int|float|string $max
-     *
-     * @return static
-     */
-    public function whereBetween($field, $min, $max)
+    public function whereBetween(string $field, mixed $min, mixed $max): static
     {
         foreach ($this->queries as $query) {
             $query->whereBetween($field, $min, $max);
@@ -216,14 +160,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string           $field
-     * @param int|float|string $min
-     * @param int|float|string $max
-     *
-     * @return static
-     */
-    public function whereNotBetween($field, $min, $max)
+    public function whereNotBetween(string $field, mixed $min, mixed $max): static
     {
         foreach ($this->queries as $query) {
             $query->whereNotBetween($field, $min, $max);
@@ -232,13 +169,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string $field
-     * @param array  $values
-     *
-     * @return static
-     */
-    public function whereIn($field, $values)
+    public function whereIn(string $field, array $values): static
     {
         foreach ($this->queries as $query) {
             $query->whereIn($field, $values);
@@ -247,12 +178,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**   * @param string $field
-     * @param array $values
-     *
-     * @return static
-     */
-    public function whereNotIn($field, $values)
+    public function whereNotIn(string $field, array $values): static
     {
         foreach ($this->queries as $query) {
             $query->whereNotIn($field, $values);
@@ -261,13 +187,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return static
-     */
-    public function whereInset($field, $value)
+    public function whereInset(string $field, string $value): static
     {
         foreach ($this->queries as $query) {
             $query->whereInset($field, $value);
@@ -276,13 +196,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string $field
-     * @param string $value
-     *
-     * @return static
-     */
-    public function whereNotInset($field, $value)
+    public function whereNotInset(string $field, string $value): static
     {
         foreach ($this->queries as $query) {
             $query->whereNotInset($field, $value);
@@ -291,13 +205,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string|array $fields
-     * @param string       $value
-     *
-     * @return static
-     */
-    public function whereContains($fields, $value)
+    public function whereContains(string|array $fields, string $value): static
     {
         foreach ($this->queries as $query) {
             $query->whereContains($fields, $value);
@@ -306,13 +214,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string|array $fields
-     * @param string       $value
-     *
-     * @return static
-     */
-    public function whereNotContains($fields, $value)
+    public function whereNotContains(string|array $fields, string $value): static
     {
         foreach ($this->queries as $query) {
             $query->whereNotContains($fields, $value);
@@ -321,14 +223,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string|array $fields
-     * @param string       $value
-     * @param int          $length
-     *
-     * @return static
-     */
-    public function whereStartsWith($fields, $value, $length = null)
+    public function whereStartsWith(string|array $fields, string $value, ?int $length = null): static
     {
         foreach ($this->queries as $query) {
             $query->whereStartsWith($fields, $value, $length);
@@ -337,14 +232,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string|array $fields
-     * @param string       $value
-     * @param int          $length
-     *
-     * @return static
-     */
-    public function whereNotStartsWith($fields, $value, $length = null)
+    public function whereNotStartsWith(string|array $fields, string $value, ?int $length = null): static
     {
         foreach ($this->queries as $query) {
             $query->whereNotStartsWith($fields, $value, $length);
@@ -353,13 +241,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string|array $fields
-     * @param string       $value
-     *
-     * @return static
-     */
-    public function whereEndsWith($fields, $value)
+    public function whereEndsWith(string|array $fields, string $value): static
     {
         foreach ($this->queries as $query) {
             $query->whereEndsWith($fields, $value);
@@ -368,13 +250,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string|array $fields
-     * @param string       $value
-     *
-     * @return static
-     */
-    public function whereNotEndsWith($fields, $value)
+    public function whereNotEndsWith(string|array $fields, string $value): static
     {
         foreach ($this->queries as $query) {
             $query->whereNotEndsWith($fields, $value);
@@ -383,13 +259,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string|array $fields
-     * @param string       $value
-     *
-     * @return static
-     */
-    public function whereLike($fields, $value)
+    public function whereLike(string|array $fields, string $value): static
     {
         foreach ($this->queries as $query) {
             $query->whereLike($fields, $value);
@@ -398,13 +268,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string|array $fields
-     * @param string       $value
-     *
-     * @return static
-     */
-    public function whereNotLike($fields, $value)
+    public function whereNotLike(string|array $fields, string $value): static
     {
         foreach ($this->queries as $query) {
             $query->whereNotLike($fields, $value);
@@ -413,14 +277,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string $field
-     * @param string $regex
-     * @param string $flags
-     *
-     * @return static
-     */
-    public function whereRegex($field, $regex, $flags = '')
+    public function whereRegex(string $field, string $regex, string $flags = ''): static
     {
         foreach ($this->queries as $query) {
             $query->whereRegex($field, $regex, $flags);
@@ -429,14 +286,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string $field
-     * @param string $regex
-     * @param string $flags
-     *
-     * @return static
-     */
-    public function whereNotRegex($field, $regex, $flags = '')
+    public function whereNotRegex(string $field, string $regex, string $flags = ''): static
     {
         foreach ($this->queries as $query) {
             $query->whereNotRegex($field, $regex, $flags);
@@ -445,12 +295,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string $field
-     *
-     * @return static
-     */
-    public function whereNull($field)
+    public function whereNull(string $field): static
     {
         foreach ($this->queries as $query) {
             $query->whereNull($field);
@@ -459,12 +304,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string $field
-     *
-     * @return static
-     */
-    public function whereNotNull($field)
+    public function whereNotNull(string $field): static
     {
         foreach ($this->queries as $query) {
             $query->whereNotNull($field);
@@ -473,13 +313,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string $id
-     * @param string $value
-     *
-     * @return static
-     */
-    public function where1v1($id, $value)
+    public function where1v1(string $id, string $value): static
     {
         foreach ($this->queries as $query) {
             $query->where1v1($id, $value);
@@ -488,13 +322,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string $filter
-     * @param array  $bind
-     *
-     * @return static
-     */
-    public function whereRaw($filter, $bind = null)
+    public function whereRaw(string $filter, ?array $bind = null): static
     {
         foreach ($this->queries as $query) {
             $query->whereRaw($filter, $bind);
@@ -503,12 +331,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string|array $orderBy
-     *
-     * @return static
-     */
-    public function orderBy($orderBy)
+    public function orderBy(string|array $orderBy): static
     {
         parent::orderBy($orderBy);
 
@@ -519,12 +342,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param bool $forceUseMaster
-     *
-     * @return static
-     */
-    public function forceUseMaster($forceUseMaster = true)
+    public function forceUseMaster(bool $forceUseMaster = true): static
     {
         foreach ($this->queries as $query) {
             $query->forceUseMaster($forceUseMaster);
@@ -533,13 +351,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @param string|array $having
-     * @param array        $bind
-     *
-     * @return static
-     */
-    public function having($having, $bind = [])
+    public function having(string|array $having, array $bind = []): static
     {
         foreach ($this->queries as $query) {
             $query->having($having, $bind);
@@ -548,10 +360,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function execute()
+    public function execute(): array
     {
         $result = [];
 
@@ -598,20 +407,12 @@ class Query extends AbstractQuery
         return $this->index ? Arr::indexby($result, $this->index) : $result;
     }
 
-    /**
-     * @param array $expr
-     */
-    public function aggregate($expr)
+    public function aggregate(array $expr): array
     {
         throw new NotSupportedException(__METHOD__);
     }
 
-    /**
-     * @param string $field
-     *
-     * @return array
-     */
-    public function values($field)
+    public function values(string $field): array
     {
         $values = [];
         $valid_times = 0;
@@ -641,7 +442,7 @@ class Query extends AbstractQuery
      *
      * @return int
      */
-    public function count($field = '*')
+    public function count(string $field = '*'): int
     {
         $r = 0;
         foreach ($this->queries as $query) {
@@ -652,10 +453,7 @@ class Query extends AbstractQuery
         return $r;
     }
 
-    /**
-     * @return bool
-     */
-    public function exists()
+    public function exists(): bool
     {
         foreach ($this->queries as $query) {
             if ($query->exists()) {
@@ -666,12 +464,7 @@ class Query extends AbstractQuery
         return false;
     }
 
-    /**
-     * @param array $fieldValues
-     *
-     * @return int
-     */
-    public function update($fieldValues)
+    public function update(array $fieldValues): int
     {
         $r = 0;
         foreach ($this->queries as $query) {
@@ -681,10 +474,7 @@ class Query extends AbstractQuery
         return $r;
     }
 
-    /**
-     * @return int
-     */
-    public function delete()
+    public function delete(): int
     {
         $r = 0;
         foreach ($this->queries as $query) {
@@ -694,15 +484,7 @@ class Query extends AbstractQuery
         return $r;
     }
 
-    /**
-     * @param string $table
-     * @param string $condition
-     * @param string $alias
-     * @param string $type
-     *
-     * @return static
-     */
-    public function join($table, $condition = null, $alias = null, $type = null)
+    public function join(string $table, ?string $condition = null, ?string $alias = null, ?string $type = null): static
     {
         foreach ($this->queries as $query) {
             $query->join($table, $condition, $alias, $type);
@@ -711,7 +493,7 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    public function getSql()
+    public function getSql(): string
     {
         throw new NotSupportedException(__METHOD__);
     }
