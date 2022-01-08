@@ -1,32 +1,22 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Model\Expression;
 
 use ManaPHP\Data\Db\Model as DbModel;
 use ManaPHP\Data\Model\ExpressionInterface;
+use ManaPHP\Data\ModelInterface;
 
 class Raw implements ExpressionInterface
 {
-    /**
-     * @var string|array
-     */
-    protected $expression;
+    protected string|array $expression;
 
-    /**
-     * @param string|array $expression
-     */
-    public function __construct($expression)
+    public function __construct(string|array $expression)
     {
         $this->expression = $expression;
     }
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param string                       $field
-     *
-     * @return array|string
-     */
-    public function compile($model, $field)
+    public function compile(ModelInterface $model, string $field): array
     {
         $expression = $this->expression;
 

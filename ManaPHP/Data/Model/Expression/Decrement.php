@@ -1,32 +1,22 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Model\Expression;
 
 use ManaPHP\Data\Db\Model as DbModel;
 use ManaPHP\Data\Model\ExpressionInterface;
+use ManaPHP\Data\ModelInterface;
 
 class Decrement implements ExpressionInterface
 {
-    /**
-     * @var float|int
-     */
-    public $_step;
+    public int|float $_step;
 
-    /**
-     * @param int|float $step
-     */
-    public function __construct($step = 1)
+    public function __construct(int|float $step = 1)
     {
         $this->_step = $step;
     }
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param string                       $field
-     *
-     * @return array
-     */
-    public function compile($model, $field)
+    public function compile(ModelInterface $model, string $field): array
     {
         $step = $this->_step;
 

@@ -1,32 +1,22 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Model\Expression;
 
 use ManaPHP\Data\Db\Model as DbModel;
 use ManaPHP\Data\Model\ExpressionInterface;
+use ManaPHP\Data\ModelInterface;
 
 class Increment implements ExpressionInterface
 {
-    /**
-     * @var float|int
-     */
-    protected $step;
+    protected float|int $step;
 
-    /**
-     * @param int|float $step
-     */
-    public function __construct($step = 1)
+    public function __construct(int|float $step = 1)
     {
         $this->step = $step;
     }
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param string                       $field
-     *
-     * @return array
-     */
-    public function compile($model, $field)
+    public function compile(ModelInterface $model, string $field): array
     {
         $step = $this->step;
 
