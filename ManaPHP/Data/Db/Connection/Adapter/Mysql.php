@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Db\Connection\Adapter;
 
@@ -11,15 +12,9 @@ use PDO;
 
 class Mysql extends AbstractConnection
 {
-    /**
-     * @var string
-     */
-    protected $charset = 'UTF8';
+    protected string $charset = 'UTF8';
 
-    /**
-     * @param string $uri
-     */
-    public function __construct($uri = 'mysql://root@localhost/test?charset=utf8')
+    public function __construct(string $uri = 'mysql://root@localhost/test?charset=utf8')
     {
         $this->uri = $uri;
 
@@ -96,13 +91,7 @@ class Mysql extends AbstractConnection
         parent::__construct();
     }
 
-    /**
-     * @param string $table
-     *
-     * @return array
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function getMetadata($table)
+    public function getMetadata(string $table): array
     {
         $fields = $this->query('DESCRIBE ' . $this->escapeIdentifier($table), [], PDO::FETCH_NUM);
 
@@ -138,33 +127,17 @@ class Mysql extends AbstractConnection
         ];
     }
 
-    /**
-     * @param string $table
-     *
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function truncate($table)
+    public function truncate(string $table): void
     {
         $this->execute('TRUNCATE' . ' TABLE ' . $this->escapeIdentifier($table));
     }
 
-    /**
-     * @param string $table
-     *
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function drop($table)
+    public function drop(string $table): void
     {
         $this->execute('DROP' . ' TABLE IF EXISTS ' . $this->escapeIdentifier($table));
     }
 
-    /**
-     * @param string $schema
-     *
-     * @return array
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function getTables($schema = null)
+    public function getTables(?string $schema = null): array
     {
         if ($schema) {
             $sql = 'SHOW FULL TABLES FROM `' . $this->escapeIdentifier($schema) . '` WHERE Table_Type != "VIEW"';
@@ -180,13 +153,7 @@ class Mysql extends AbstractConnection
         return $tables;
     }
 
-    /**
-     * @param string $table
-     *
-     * @return bool
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function tableExists($table)
+    public function tableExists(string $table): bool
     {
         $parts = explode('.', str_replace('[]`', '', $table));
 
@@ -207,7 +174,7 @@ class Mysql extends AbstractConnection
         return $r && $r[0] === '1';
     }
 
-    public function buildSql($params)
+    public function buildSql(array $params): string
     {
         $sql = '';
 
@@ -260,24 +227,12 @@ class Mysql extends AbstractConnection
         return $sql;
     }
 
-    /**
-     * @param string $sql
-     *
-     * @return string
-     */
-    public function replaceQuoteCharacters($sql)
+    public function replaceQuoteCharacters(string $sql): string
     {
         return str_contains($sql, '[') ? preg_replace(/**@lang text */ '#\[([a-z_]\w*)\]#i', '`\\1`', $sql) : $sql;
     }
 
-    /**
-     * @param string  $table
-     * @param array[] $records
-     *
-     * @return int
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function bulkInsert($table, $records)
+    public function bulkInsert(string $table, array $records): int
     {
         if (!$records) {
             throw new InvalidArgumentException(['Unable to insert into :table table without data', 'table' => $table]);
@@ -305,18 +260,9 @@ class Mysql extends AbstractConnection
         return $this->execute($sql);
     }
 
-    /**
-     * Updates data on a table using custom SQL syntax
-     *
-     * @param string $table
-     * @param array  $insertFieldValues
-     * @param array  $updateFieldValues
-     * @param string $primaryKey
-     *
-     * @return    int
-     */
-    public function upsert($table, $insertFieldValues, $updateFieldValues = [], $primaryKey = null)
-    {
+    public function upsert(string $table, array $insertFieldValues, array $updateFieldValues = [],
+        ?string $primaryKey = null
+    ): int {
         if (!$primaryKey) {
             $primaryKey = (string)key($insertFieldValues);
         }
@@ -358,6 +304,6 @@ class Mysql extends AbstractConnection
             "INSERT INTO {$this->escapeIdentifier($table)}($insertFieldsSql)"
             . " VALUES($insertValuesSql) ON DUPLICATE KEY UPDATE $updateFieldsSql";
 
-        return $this->execute('insert', $sql, $bind);
+        return $this->executeInternal('insert', $sql, $bind);
     }
 }

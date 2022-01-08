@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Db;
 
@@ -8,63 +9,21 @@ use ManaPHP\Data\Db\Exception as DbException;
 use ManaPHP\Exception\NotSupportedException;
 use PDO;
 use PDOException;
+use PDOStatement;
 
 abstract class AbstractConnection extends Component implements ConnectionInterface
 {
-    /**
-     * @var string
-     */
-    protected $uri;
-
-    /**
-     * @var string
-     */
-    protected $dsn;
-
-    /**
-     * @var string
-     */
-    protected $username;
-
-    /**
-     * @var string
-     */
-    protected $password;
-
-    /**
-     * @var bool
-     */
-    protected $emulate_prepares = false;
-
-    /**
-     * @var array
-     */
-    protected $options = [];
-
-    /**
-     * @var \PDO
-     */
-    protected $pdo;
-
-    /**
-     * @var bool
-     */
-    protected $in_transaction = false;
-
-    /**
-     * @var \PDOStatement[]
-     */
-    protected $prepared = [];
-
-    /**
-     * @var bool
-     */
-    protected $readonly = false;
-
-    /**
-     * @var float
-     */
-    protected $last_heartbeat;
+    protected string $uri;
+    protected string $dsn;
+    protected string $username;
+    protected string $password;
+    protected bool $emulate_prepares = false;
+    protected array $options = [];
+    protected ?PDO $pdo = null;
+    protected bool $in_transaction = false;
+    protected array $prepared = [];
+    protected bool $readonly = false;
+    protected ?float $last_heartbeat = null;
 
     public function __construct()
     {
@@ -80,18 +39,12 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
         $this->prepared = [];
     }
 
-    /**
-     * @return string
-     */
-    public function getUri()
+    public function getUri(): string
     {
         return $this->uri;
     }
 
-    /**
-     * @return bool
-     */
-    protected function ping()
+    protected function ping(): bool
     {
         try {
             @$this->pdo->query("SELECT 'PING'")->fetchAll();
@@ -101,10 +54,7 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
         }
     }
 
-    /**
-     * @return \PDO
-     */
-    protected function getPdo()
+    protected function getPdo(): PDO
     {
         if ($this->pdo === null) {
             $dsn = $this->dsn;
@@ -128,12 +78,7 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
         return $this->pdo;
     }
 
-    /**
-     * @param string $identifier
-     *
-     * @return string
-     */
-    protected function escapeIdentifier($identifier)
+    protected function escapeIdentifier(string $identifier): string
     {
         $list = [];
         foreach (explode('.', $identifier) as $id) {
@@ -147,12 +92,7 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
         return implode('.', $list);
     }
 
-    /**
-     * @param string $sql
-     *
-     * @return \PDOStatement
-     */
-    protected function getPrepared($sql)
+    protected function getPrepared(string $sql): PDOStatement
     {
         if (!isset($this->prepared[$sql])) {
             if (count($this->prepared) > 8) {
@@ -163,13 +103,7 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
         return $this->prepared[$sql];
     }
 
-    /**
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return \PDOStatement
-     */
-    protected function executeInternal($sql, $bind)
+    protected function executeInternal(string $sql, array $bind): PDOStatement
     {
         $statement = $this->getPrepared($sql);
 
@@ -200,16 +134,7 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
         return $statement;
     }
 
-    /**
-     * @param string $sql
-     * @param array  $bind
-     * @param bool   $has_insert_id
-     *
-     * @return int
-     * @throws \ManaPHP\Data\Db\ConnectionException
-     * @throws \ManaPHP\Exception\NotSupportedException
-     */
-    public function execute($sql, $bind = [], $has_insert_id = false)
+    public function execute(string $sql, array $bind = [], bool $has_insert_id = false): int
     {
         if ($this->readonly) {
             throw new ReadonlyException(['`:uri` is readonly: => :sql ', 'uri' => $this->uri, 'sql' => $sql]);
@@ -220,13 +145,13 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
         if ($this->in_transaction) {
             try {
                 $r = $bind ? $this->executeInternal($sql, $bind)->rowCount() : @$this->getPdo()->exec($sql);
-                return $has_insert_id ? $this->getPdo()->lastInsertId() : $r;
+                return $has_insert_id ? (int)$this->getPdo()->lastInsertId() : $r;
             } catch (PDOException $exception) {
             }
         } else {
             try {
                 $r = $bind ? $this->executeInternal($sql, $bind)->rowCount() : @$this->getPdo()->exec($sql);
-                return $has_insert_id ? $this->getPdo()->lastInsertId() : $r;
+                return $has_insert_id ? (int)$this->getPdo()->lastInsertId() : $r;
             } catch (PDOException $exception) {
                 try {
                     $this->close();
@@ -235,7 +160,7 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
                         : @$this->getPdo()->exec(
                             $sql
                         );
-                    return $has_insert_id ? $this->getPdo()->lastInsertId() : $r;
+                    return $has_insert_id ? (int)$this->getPdo()->lastInsertId() : $r;
                 } catch (PDOException $exception) {
                 }
             }
@@ -245,14 +170,7 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
         throw new DbException(["%s =>\r\n SQL: %s\r\n BIND: %s", $exception->getMessage(), $sql, $bind_str]);
     }
 
-    /**
-     * @param string $sql
-     * @param array  $bind
-     * @param int    $mode
-     *
-     * @return array
-     */
-    public function query($sql, $bind = [], $mode = PDO::FETCH_ASSOC)
+    public function query(string $sql, array $bind = [], int $mode = PDO::FETCH_ASSOC): array
     {
         $sql = $this->replaceQuoteCharacters($sql);
 
@@ -284,10 +202,7 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
         throw new DbException(["%s =>\r\n SQL: %s\r\n BIND: %s", $exception->getMessage(), $sql, $bind_str]);
     }
 
-    /**
-     * @return void
-     */
-    public function close()
+    public function close(): void
     {
         if ($this->pdo) {
             $dsn = $this->dsn;
@@ -306,41 +221,38 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
         }
     }
 
-    /**
-     * @return float|null
-     */
-    public function getLastHeartbeat()
+    public function getLastHeartbeat(): ?float
     {
         return $this->last_heartbeat;
     }
 
-    public function begin()
+    public function begin(): void
     {
         if ($this->readonly) {
             throw new ReadonlyException(['`:uri` is readonly, transaction begin failed', 'uri' => $this->uri]);
         }
 
         try {
-            return $this->in_transaction = $this->getPdo()->beginTransaction();
+            $this->in_transaction = $this->getPdo()->beginTransaction();
         } catch (PDOException $exception) {
             try {
                 $this->close();
-                return $this->in_transaction = $this->getPdo()->beginTransaction();
+                $this->in_transaction = $this->getPdo()->beginTransaction();
             } catch (PDOException $exception) {
                 throw new DbException($exception);
             }
         }
     }
 
-    public function rollback()
+    public function rollback(): void
     {
         $this->in_transaction = false;
-        return @$this->pdo->rollBack();
+        @$this->pdo->rollBack();
     }
 
-    public function commit()
+    public function commit(): void
     {
         $this->in_transaction = false;
-        return @$this->pdo->commit();
+        @$this->pdo->commit();
     }
 }

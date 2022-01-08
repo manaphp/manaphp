@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Db\Connection\Adapter;
 
@@ -11,10 +12,7 @@ use PDO;
 
 class Mssql extends AbstractConnection
 {
-    /**
-     * @param string $uri
-     */
-    public function __construct($uri)
+    public function __construct(string $uri)
     {
         $this->uri = $uri;
 
@@ -54,13 +52,7 @@ class Mssql extends AbstractConnection
         parent::__construct();
     }
 
-    /**
-     * @param string $table
-     *
-     * @return array
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function getMetadata($table)
+    public function getMetadata(string $table): array
     {
         $parts = explode('.', $table);
 
@@ -102,63 +94,33 @@ class Mssql extends AbstractConnection
         ];
     }
 
-    /**
-     * @return int
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function lastInsertId()
+    public function lastInsertId(): int
     {
         $row = $this->query('SELECT @@IDENTITY AS lid');
         return $row[0]['lid'];
     }
 
-    /**
-     * @param string $table
-     *
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function truncate($table)
+    public function truncate(string $table): void
     {
         $this->execute('TRUNCATE TABLE ' . $this->escapeIdentifier($table));
     }
 
-    /**
-     * @param string $table
-     *
-     * @return void
-     */
-    public function drop($table)
+    public function drop(string $table): void
     {
         throw new NotImplementedException(__METHOD__);
     }
 
-    /**
-     * @param null $schema
-     *
-     * @return array
-     */
-    public function getTables($schema = null)
+    public function getTables(?string $schema = null): array
     {
         throw new NotImplementedException(__METHOD__);
     }
 
-    /**
-     * @param string $table
-     * @param null   $schema
-     *
-     * @return bool
-     */
-    public function tableExists($table, $schema = null)
+    public function tableExists(string $table, ?string $schema = null): bool
     {
         throw new NotImplementedException(__METHOD__);
     }
 
-    /**
-     * @param array $params
-     *
-     * @return string
-     */
-    public function buildSql($params)
+    public function buildSql(array $params): string
     {
         $sql = '';
 
@@ -218,12 +180,7 @@ class Mssql extends AbstractConnection
         return $sql;
     }
 
-    /**
-     * @param string $sql
-     *
-     * @return string
-     */
-    public function replaceQuoteCharacters($sql)
+    public function replaceQuoteCharacters(string $sql): string
     {
         return $sql;
     }

@@ -1,100 +1,33 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Db;
 
 interface ConnectionInterface
 {
-    /**
-     * @return string
-     */
-    public function getUri();
+    public function getUri(): string;
 
-    /**
-     * @param string $sql
-     * @param array  $bind
-     * @param bool   $has_insert_id
-     *
-     * @return int
-     * @throws \ManaPHP\Data\Db\ConnectionException
-     * @throws \ManaPHP\Exception\InvalidValueException
-     * @throws \ManaPHP\Exception\NotSupportedException
-     */
-    public function execute($sql, $bind = [], $has_insert_id = false);
+    public function execute(string $sql, array $bind = [], bool $has_insert_id = false): int;
 
-    /**
-     * @param string $sql
-     * @param array  $bind
-     * @param int    $mode
-     *
-     * @return array
-     */
-    public function query($sql, $bind, $mode);
+    public function query(string $sql, array $bind, int $mode): array;
 
-    /**
-     * @param string $table
-     *
-     * @return array
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function getMetadata($table);
+    public function getMetadata(string $table): array;
 
-    /**
-     * @return bool
-     */
-    public function begin();
+    public function begin(): void;
 
-    /**
-     * @return bool
-     */
-    public function commit();
+    public function commit(): void;
 
-    /**
-     * @return bool
-     */
-    public function rollback();
+    public function rollback(): void;
 
-    /**
-     * @param string $table
-     *
-     * @return void
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function truncate($table);
+    public function truncate(string $table): void;
 
-    /**
-     * @param string $table
-     *
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function drop($table);
+    public function drop(string $table): void;
 
-    /**
-     * @param string $schema
-     *
-     * @return array
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function getTables($schema = null);
+    public function getTables(?string $schema = null): array;
 
-    /**
-     * @param string $table
-     *
-     * @return bool
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function tableExists($table);
+    public function tableExists(string $table): bool;
 
-    /**
-     * @param array $params
-     *
-     * @return string
-     */
-    public function buildSql($params);
+    public function buildSql(array $params): string;
 
-    /**
-     * @param string $sql
-     *
-     * @return string
-     */
-    public function replaceQuoteCharacters($sql);
+    public function replaceQuoteCharacters(string $sql): string;
 }
