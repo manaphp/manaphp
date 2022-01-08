@@ -1,13 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Model;
 
 interface SerializeNormalizable
 {
-    /**
-     * @param array $data
-     *
-     * @return array
-     */
-    public function serializeNormalize($data);
+    public function serializeNormalize(array $data): array;
 }
