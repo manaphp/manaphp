@@ -1,39 +1,17 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
 interface PaginatorInterface
 {
-    /**
-     * @param int $number
-     *
-     * @return static
-     */
-    public function setLinks($number);
+    public function setLinks(int $number): static;
 
-    /**
-     * @param int $count
-     * @param int $size
-     * @param int $page
-     *
-     * @return static
-     */
-    public function paginate($count, $size = null, $page = null);
+    public function paginate(int $count, ?int $size = null, ?int $page = null): static;
 
-    /**
-     * @return array
-     */
-    public function renderAsArray();
+    public function renderAsArray(): array;
 
-    /**
-     * @param string $urlTemplate
-     *
-     * @return string
-     */
-    public function renderAsHtml($urlTemplate = null);
+    public function renderAsHtml(?string $urlTemplate = null): string;
 
-    /**
-     * @return array
-     */
-    public function toArray();
+    public function toArray(): array;
 }

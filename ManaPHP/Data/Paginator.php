@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
@@ -11,68 +12,25 @@ use ManaPHP\Exception\PreconditionException;
  */
 class Paginator extends Component implements PaginatorInterface
 {
-    /**
-     * @var int
-     */
-    public $count;
+    public int $count;
+    public int $size;
+    public int $page;
+    public int $pages;
+    public int $prev;
+    public int $next;
+    public array $items;
+    protected int $links = 11;
 
-    /**
-     * @var int
-     */
-    public $size;
-
-    /**
-     * @var int
-     */
-    public $page;
-
-    /**
-     * @var int
-     */
-    public $pages;
-
-    /**
-     * @var int
-     */
-    public $prev;
-
-    /**
-     * @var int
-     */
-    public $next;
-
-    /**
-     * @var array
-     */
-    public $items;
-
-    /**
-     * @var int
-     */
-    protected $links = 11;
-
-    /**
-     * @param int $number
-     *
-     * @return static
-     */
-    public function setLinks($number)
+    public function setLinks(int $number): static
     {
         $this->links = $number;
 
         return $this;
     }
 
-    /**
-     * @param int $count
-     * @param int $size
-     * @param int $page
-     *
-     * @return static
-     */
-    public function paginate($count, $size = null, $page = null)
+    public function paginate(int $count, ?int $size = null, ?int $page = null): static
     {
-        $this->count = (int)$count;
+        $this->count = $count;
         $this->size = (int)($size ?: $this->request->get('size', 10));
         $this->page = (int)($page ?: $this->request->get('page', 1));
         $this->pages = (int)ceil($this->count / $this->size);
@@ -82,10 +40,7 @@ class Paginator extends Component implements PaginatorInterface
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function renderAsArray()
+    public function renderAsArray(): array
     {
         return [
             'page'  => $this->page,
@@ -96,12 +51,7 @@ class Paginator extends Component implements PaginatorInterface
         ];
     }
 
-    /**
-     * @param string $urlTemplate
-     *
-     * @return string
-     */
-    public function renderAsHtml($urlTemplate = null)
+    public function renderAsHtml(?string $urlTemplate = null): string
     {
         if ($urlTemplate === null) {
             if (!$this->request->hasServer('REQUEST_URI')) {
@@ -122,13 +72,13 @@ class Paginator extends Component implements PaginatorInterface
         }
 
         $str = PHP_EOL . '<ul class="pagination">' . PHP_EOL;
-        $first_url = str_replace('{page}', 1, $urlTemplate);
+        $first_url = str_replace('{page}', '1', $urlTemplate);
         $str .= '  <li class="first"><a href="' . $first_url . '">&lt;&lt;</a></li>' . PHP_EOL;
 
         if ($this->prev < 0) {
             $str .= '  <li class="prev disabled"><span>&lt;</span></li>' . PHP_EOL;
         } else {
-            $prev_url = str_replace('{page}', $this->prev, $urlTemplate);
+            $prev_url = str_replace('{page}', (string)$this->prev, $urlTemplate);
             $str .= '  <li class="prev"><a href="' . $prev_url . '">&lt;</a></li>' . PHP_EOL;
         }
 
@@ -149,21 +99,18 @@ class Paginator extends Component implements PaginatorInterface
         if ($this->next < 0) {
             $str .= '  <li class="next disabled"><span>&gt;</span></li>' . PHP_EOL;
         } else {
-            $next_url = str_replace('{page}', $this->next, $urlTemplate);
+            $next_url = str_replace('{page}', (string)$this->next, $urlTemplate);
             $str .= '  <li class="next"><a href="' . $next_url . '">&gt;</a></li>' . PHP_EOL;
         }
 
-        $last_url = str_replace('{page}', $this->pages, $urlTemplate);
+        $last_url = str_replace('{page}', (string)$this->pages, $urlTemplate);
         $str .= '  <li class="last"><a href="' . $last_url . '">&gt;&gt;</a></li>' . PHP_EOL;
         $str .= '</ul>' . PHP_EOL;
 
         return $str;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         try {
             return $this->renderAsHtml();
@@ -177,10 +124,7 @@ class Paginator extends Component implements PaginatorInterface
         return $this->renderAsArray();
     }
 
-    /**
-     * @return array
-     */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->renderAsArray();
     }
