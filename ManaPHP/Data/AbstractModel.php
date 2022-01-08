@@ -246,29 +246,18 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         return static::select($fields)->where($filters)->orderBy($order)->execute();
     }
 
-    /**
-     * @param int|string $id
-     * @param int|array  $fieldsOrTtl =model_fields(new static)
-     *
-     * @return static
-     */
-    public static function get(int|string $id, null|int|array $fieldsOrTtl = null): static
+    public static function get(int|string $id, ?int $ttl = null): static
     {
-        if (!is_scalar($id)) {
-            throw new InvalidValueException('Model::get id is not scalar');
-        }
-
         $sample = static::sample();
-        if (!is_int($fieldsOrTtl)) {
-            return static::firstOrFail([$sample->primaryKey() => $id], $fieldsOrTtl);
+        if ($ttl <= 0) {
+            return static::firstOrFail([$sample->primaryKey() => $id]);
         }
 
-        $ttl = $fieldsOrTtl;
         $key = __FILE__ . ':' . static::class . ":get:$id:$ttl";
 
         $r = apcu_fetch($key, $success);
         if (!$success) {
-            $r = static::firstOrFail([$sample->primaryKey() => $id], $fieldsOrTtl);
+            $r = static::firstOrFail([$sample->primaryKey() => $id]);
             apcu_store($key, $r, $ttl);
         }
 
@@ -332,7 +321,8 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      */
     public static function rGet(?array $fields = null): static
     {
-        return static::get(static::rId(), $fields);
+        $sample = static::sample();
+        return static::firstOrFail([$sample->primaryKey() => static::rId()], $fields);
     }
 
     /**

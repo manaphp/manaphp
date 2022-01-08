@@ -54,7 +54,7 @@ interface ModelInterface extends TableInterface
 
     public static function lists(string|array $fields, ?array $filters = null): array;
 
-    public static function get(int|string $id, null|int|array $fieldsOrTtl = null): static;
+    public static function get(int|string $id, ?int $ttl = null): static;
 
     public static function first(array $filters, ?array $fields = null): ?static;
 
