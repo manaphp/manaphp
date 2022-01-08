@@ -1720,7 +1720,7 @@ class Markdown extends Component implements EngineInterface
         }
     }
 
-    protected $DefinitionData;
+    protected array $DefinitionData = [];
 
     protected string $regexHtmlAttribute = '[a-zA-Z_:][\w:.-]*+(?:\s*+=\s*+(?:[^"\'=<>`\s]+|"[^"]*+"|\'[^\']*+\'))?+';
 
