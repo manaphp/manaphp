@@ -304,6 +304,6 @@ class Mysql extends AbstractConnection
             "INSERT INTO {$this->escapeIdentifier($table)}($insertFieldsSql)"
             . " VALUES($insertValuesSql) ON DUPLICATE KEY UPDATE $updateFieldsSql";
 
-        return $this->executeInternal('insert', $sql, $bind);
+        return $this->execute($sql, $bind);
     }
 }
