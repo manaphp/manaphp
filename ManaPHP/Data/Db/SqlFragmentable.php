@@ -1,23 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Db;
 
 interface SqlFragmentable
 {
-    /**
-     * @param string $name
-     *
-     * @return static
-     */
-    public function setField($name);
+    public function setField(string $name): static;
 
-    /**
-     * @return string
-     */
-    public function getSql();
+    public function getSql(): string;
 
-    /**
-     * @return array
-     */
-    public function getBind();
+    public function getBind(): array;
 }
