@@ -1,105 +1,37 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Model;
 
 interface HierarchyInterface
 {
-    /**
-     * @param string $node
-     *
-     * @return bool
-     */
-    public static function isHierarchyRoot($node);
+    public static function isHierarchyRoot(string $node): bool;
 
-    /**
-     * @param string $node
-     *
-     * @return int
-     */
-    public static function getHierarchyLevel($node);
+    public static function getHierarchyLevel(string $node): int;
 
-    /**
-     * @return int
-     */
-    public static function getHierarchyMaxLevel();
+    public static function getHierarchyMaxLevel(): int;
 
-    /**
-     * @return int
-     */
-    public static function getHierarchyMaxLength();
+    public static function getHierarchyMaxLength(): int;
 
-    /**
-     * @param int $level
-     *
-     * @return int
-     */
-    public static function getHierarchyCapacity($level);
+    public static function getHierarchyCapacity(int $level): int;
 
-    /**
-     * @return int[]
-     */
-    public static function getHierarchyCapacities();
+    public static function getHierarchyCapacities(): array;
 
-    /**
-     * @param string $node
-     *
-     * @return int
-     */
-    public static function getHierarchyParentLength($node);
+    public static function getHierarchyParentLength(string $node): int;
 
-    /**
-     * @param string $node
-     *
-     * @return string|false
-     */
-    public static function getHierarchyParent($node);
+    public static function getHierarchyParent(string $node): false|string;
 
-    /**
-     * @param string $node
-     *
-     * @return array|false
-     */
-    public static function getHierarchyParents($node);
+    public static function getHierarchyParents(string $node): false|array;
 
-    /**
-     * @param string $node
-     *
-     * @return string[]
-     */
-    public static function getHierarchyChildren($node);
+    public static function getHierarchyChildren(string $node): array;
 
-    /**
-     * @param string $node
-     *
-     * @return int|-1
-     */
-    public static function getHierarchyChildLength($node);
+    public static function getHierarchyChildLength(string $node): int;
 
-    /**
-     * @param string $node
-     *
-     * @return array|false
-     */
-    public static function getHierarchySiblings($node);
+    public static function getHierarchySiblings(string $node): false|array;
 
-    /**
-     * @param string $node
-     *
-     * @return bool
-     */
-    public static function hierarchyHasChild($node);
+    public static function hierarchyHasChild(string $node): bool;
 
-    /**
-     * @param string $node
-     *
-     * @return string
-     */
-    public static function getHierarchyMaxSibling($node);
+    public static function getHierarchyMaxSibling(string $node): string;
 
-    /**
-     * @param string $node
-     *
-     * @return string|false
-     */
-    public static function getHierarchyNextSibling($node);
+    public static function getHierarchyNextSibling(string $node): false|string;
 }

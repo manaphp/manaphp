@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Model\Hierarchy\Adapter;
 
@@ -11,36 +12,22 @@ use ManaPHP\Helper\Str;
  */
 trait Path
 {
-    /**
-     * @return string
-     */
-    public static function getHierarchyField()
+    public static function getHierarchyField(): string
     {
         return Str::snakelize(basename(strtr(static::class, '\\', '/'))) . '_code';
     }
 
-    /**
-     * @return int[]
-     */
-    public static function getHierarchyLengths()
+    public static function getHierarchyLengths(): array
     {
         return [1, 1, 1];
     }
 
-    /**
-     * @return int
-     */
-    public static function getHierarchyBase()
+    public static function getHierarchyBase(): int
     {
         return 36;
     }
 
-    /**
-     * @param string $code
-     *
-     * @return int
-     */
-    public static function getHierarchyLevel($code)
+    public static function getHierarchyLevel(string $code): int
     {
         if ($code === '') {
             return 0;
@@ -58,28 +45,17 @@ trait Path
         return -1;
     }
 
-    /**
-     * @return int
-     */
-    public static function getHierarchyMaxLevel()
+    public static function getHierarchyMaxLevel(): int
     {
         return count(static::getHierarchyLengths());
     }
 
-    /**
-     * @return int
-     */
-    public static function getHierarchyMaxLength()
+    public static function getHierarchyMaxLength(): int
     {
         return array_sum(static::getHierarchyLengths());
     }
 
-    /**
-     * @param int $level
-     *
-     * @return int
-     */
-    public static function getHierarchyCapacity($level)
+    public static function getHierarchyCapacity(int $level): int
     {
         if ($level === 0) {
             return 1;
@@ -89,10 +65,7 @@ trait Path
         }
     }
 
-    /**
-     * @return int[]
-     */
-    public static function getHierarchyCapacities()
+    public static function getHierarchyCapacities(): array
     {
         $base = static::getHierarchyBase();
 
@@ -104,12 +77,7 @@ trait Path
         return $capacities;
     }
 
-    /**
-     * @param int $level
-     *
-     * @return int
-     */
-    public static function getHierarchyLength($level)
+    public static function getHierarchyLength(int $level): int
     {
         if ($level === 0) {
             return 0;
@@ -118,12 +86,7 @@ trait Path
         }
     }
 
-    /**
-     * @param string $code
-     *
-     * @return int
-     */
-    public static function getHierarchyParentLength($code)
+    public static function getHierarchyParentLength(string $code): int
     {
         if ($code === '') {
             return -1;
@@ -142,12 +105,7 @@ trait Path
         return -1;
     }
 
-    /**
-     * @param string $code
-     *
-     * @return string|false
-     */
-    public static function getHierarchyParent($code)
+    public static function getHierarchyParent(string $code): false|string
     {
         $parent_length = static::getHierarchyParentLength($code);
         if ($parent_length < 0) {
@@ -157,12 +115,7 @@ trait Path
         return substr($code, 0, $parent_length);
     }
 
-    /**
-     * @param string $code
-     *
-     * @return array|false
-     */
-    public static function getHierarchyParents($code)
+    public static function getHierarchyParents(string $code): false|array
     {
         $parents = [''];
 
@@ -183,13 +136,7 @@ trait Path
         return false;
     }
 
-    /**
-     * @param string $code
-     *
-     * @return string[]
-     * @throws \ManaPHP\Data\Model\Hierarchy\Exception
-     */
-    public static function getHierarchyChildren($code)
+    public static function getHierarchyChildren(string $code): array
     {
         $length = static::getHierarchyChildLength($code);
         if ($length < -1) {
@@ -200,12 +147,7 @@ trait Path
         return static::query()->whereStartsWith($hierarchyField, $code, $length)->values($hierarchyField);
     }
 
-    /**
-     * @param string $code
-     *
-     * @return array
-     */
-    public static function getHierarchySiblings($code)
+    public static function getHierarchySiblings(string $code): array
     {
         if ($code === '') {
             return [];
@@ -216,12 +158,7 @@ trait Path
         return static::query()->whereStartsWith($hierarchyField, $parent, strlen($code))->values($hierarchyField);
     }
 
-    /**
-     * @param string $code
-     *
-     * @return int|-1
-     */
-    public static function getHierarchyChildLength($code)
+    public static function getHierarchyChildLength(string $code): int
     {
         $lengths = static::getHierarchyLengths();
         if ($code === '') {
@@ -244,22 +181,12 @@ trait Path
         return -1;
     }
 
-    /**
-     * @param string $code
-     *
-     * @return bool
-     */
-    public static function hierarchyExists($code)
+    public static function hierarchyExists(string $code): bool
     {
         return static::query()->whereEq(static::getHierarchyField(), $code)->exists();
     }
 
-    /**
-     * @param string $code
-     *
-     * @return string|false
-     */
-    protected static function calcHierarchyNextChild($code)
+    protected static function calcHierarchyNextChild(string $code): false|string
     {
         $parent_length = static::getHierarchyParentLength($code);
         if ($parent_length < 0) {
@@ -276,17 +203,12 @@ trait Path
             return false;
         } else {
             $parent_code = substr($code, 0, $parent_length);
-            $child_code = str_pad(base_convert($next_node_int, 10, $base), $self_length, '0', STR_PAD_LEFT);
+            $child_code = str_pad(base_convert((string)$next_node_int, 10, $base), $self_length, '0', STR_PAD_LEFT);
             return $parent_code . $child_code;
         }
     }
 
-    /**
-     * @param string $code
-     *
-     * @return string|false
-     */
-    public static function getHierarchyNextChild($code)
+    public static function getHierarchyNextChild(string $code): false|string
     {
         $hierarchyField = static::getHierarchyField();
         $child_length = static::getHierarchyChildLength($code);
