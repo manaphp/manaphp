@@ -1,17 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
+use ManaPHP\Data\Redis\Connection;
 use ManaPHP\Pool\Transientable;
 
 interface RedisInterface extends Transientable
 {
-    /**
-     * @param string                         $method
-     * @param array                          $arguments
-     * @param \ManaPHP\Data\Redis\Connection $connection
-     *
-     * @return mixed
-     */
-    public function call($method, $arguments, $connection = null);
+    public function call(string $method, array $arguments, ?Connection $connection = null): mixed;
 }

@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
 use ManaPHP\Component;
+use ManaPHP\Data\Redis\Connection;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Pool\Transient;
@@ -12,26 +14,12 @@ use ManaPHP\Pool\Transient;
  */
 class Redis extends Component implements RedisInterface, RedisDbInterface, RedisCacheInterface, RedisBrokerInterface
 {
-    /**
-     * @var string
-     */
-    protected $uri;
+    protected string $uri;
+    protected float $timeout = 1.0;
+    protected int $pool_size = 4;
 
-    /**
-     * @var float
-     */
-    protected $timeout = 1.0;
-
-    /**
-     * @var string
-     */
-    protected $pool_size = '4';
-
-    /**
-     * @param array|string $options
-     */
-    public function __construct($options = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0')
-    {
+    public function __construct(string|array $options = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0'
+    ) {
         if (is_string($options)) {
             $this->uri = $options;
 
@@ -40,7 +28,7 @@ class Redis extends Component implements RedisInterface, RedisDbInterface, Redis
             }
 
             if (preg_match('#pool_size=([\d/]+)#', $options, $matches)) {
-                $this->pool_size = $matches[1];
+                $this->pool_size = (int)$matches[1];
             }
         } else {
             $this->uri = $options['uri'];
@@ -68,22 +56,12 @@ class Redis extends Component implements RedisInterface, RedisDbInterface, Redis
         throw new NonCloneableException($this);
     }
 
-    /**
-     * @return string
-     */
-    public function getUri()
+    public function getUri(): string
     {
         return $this->uri;
     }
 
-    /**
-     * @param string                         $method
-     * @param array                          $arguments
-     * @param \ManaPHP\Data\Redis\Connection $connection
-     *
-     * @return mixed
-     */
-    public function call($method, $arguments, $connection = null)
+    public function call(string $method, array $arguments, ?Connection $connection = null): mixed
     {
         if (str_contains(',watch,unwatch,multi,pipeline,', ",$method,")) {
             if ($connection === null) {
@@ -114,13 +92,7 @@ class Redis extends Component implements RedisInterface, RedisDbInterface, Redis
         return $return;
     }
 
-    /**
-     * @param string $method
-     * @param array  $arguments
-     *
-     * @return bool|mixed
-     */
-    public function __call($method, $arguments)
+    public function __call(string $method, array $arguments): mixed
     {
         $this->fireEvent('redis:calling', compact('method', 'arguments'));
 

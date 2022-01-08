@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Redis;
 
@@ -10,77 +11,21 @@ use Redis;
 
 class Connection extends Component
 {
-    /**
-     * @var string
-     */
-    protected $uri;
+    protected string $uri;
+    protected bool $cluster = false;
+    protected string $host;
+    protected int $port;
+    protected float $timeout = 0.0;
+    protected int $read_timeout = 60;
+    protected string $auth;
+    protected int $db = 0;
+    protected bool $persistent = false;
+    protected int $heartbeat = 60;
+    protected ?Redis $redis = null;
+    protected ?float $last_heartbeat = null;
+    protected bool $multi = false;
 
-    /**
-     * @var bool
-     */
-    protected $cluster = false;
-
-    /**
-     * @var string
-     */
-    protected $host;
-
-    /**
-     * @var int
-     */
-    protected $port;
-
-    /**
-     * @var float
-     */
-    protected $timeout = 0.0;
-
-    /**
-     * @var int
-     */
-    protected $read_timeout = 60;
-
-    /**
-     * @var string
-     */
-    protected $auth;
-
-    /**
-     * @var int
-     */
-    protected $db = 0;
-
-    /**
-     * @var bool
-     */
-    protected $persistent = false;
-
-    /**
-     * @var int
-     */
-    protected $heartbeat = 60;
-
-    /**
-     * @var \Redis
-     */
-    protected $redis;
-
-    /**
-     * @var float
-     */
-    protected $last_heartbeat;
-
-    /**
-     * @var bool
-     */
-    protected $multi = false;
-
-    /**
-     * @param string|\ManaPHP\Data\Redis\Connection $uri
-     *
-     * @throws \ManaPHP\Exception\DsnFormatException
-     */
-    public function __construct($uri)
+    public function __construct(string $uri)
     {
         $this->uri = $uri;
 
@@ -143,18 +88,12 @@ class Connection extends Component
         $this->multi = false;
     }
 
-    /**
-     * @return string
-     */
-    public function getUri()
+    public function getUri(): string
     {
         return $this->uri;
     }
 
-    /**
-     * @return \Redis
-     */
-    public function getConnect()
+    public function getConnect(): Redis
     {
         if ($this->redis === null) {
             $uri = $this->uri;
@@ -200,10 +139,7 @@ class Connection extends Component
         return $this->redis;
     }
 
-    /**
-     * @return bool
-     */
-    protected function ping()
+    protected function ping(): bool
     {
         try {
             $this->redis->echo('OK');
@@ -213,10 +149,7 @@ class Connection extends Component
         }
     }
 
-    /**
-     * @return void
-     */
-    public function close()
+    public function close(): void
     {
         if ($this->redis) {
             $uri = $this->uri;
@@ -230,13 +163,7 @@ class Connection extends Component
         }
     }
 
-    /**
-     * @param string $name
-     * @param array  $arguments
-     *
-     * @return mixed
-     */
-    public function call($name, $arguments)
+    public function call(string $name, array $arguments): mixed
     {
         $redis = $this->getConnect();
 
@@ -273,10 +200,7 @@ class Connection extends Component
         return $r;
     }
 
-    /**
-     * @return float|null
-     */
-    public function getLastHeartbeat()
+    public function getLastHeartbeat(): ?float
     {
         return $this->last_heartbeat;
     }
