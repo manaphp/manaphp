@@ -1,9 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Model;
 
 use ManaPHP\Component;
 use ManaPHP\Data\Db\Model as DbModel;
+use ManaPHP\Data\ModelInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -13,28 +15,13 @@ use ReflectionProperty;
  */
 class Linter extends Component
 {
-    const METHOD_FIELDS_BAD = 'bad';
-    const METHOD_FIELDS_GOOD = 'good';
+    public const METHOD_FIELDS_BAD = 'bad';
+    public const METHOD_FIELDS_GOOD = 'good';
+    protected string $class;
+    protected ReflectionClass $reflection;
+    protected ModelInterface $model;
 
-    /**
-     * @var string
-     */
-    protected $class;
-
-    /**
-     * @var \ReflectionClass
-     */
-    protected $reflection;
-
-    /**
-     * @var \ManaPHP\Data\ModelInterface
-     */
-    protected $model;
-
-    /**
-     * @param string|\ManaPHP\Data\ModelInterface $model
-     */
-    public function __construct($model)
+    public function __construct(string|ModelInterface $model)
     {
         $this->class = is_string($model) ? $model : get_class($model);
         /** @noinspection PhpUndefinedMethodInspection */
@@ -42,10 +29,7 @@ class Linter extends Component
         $this->reflection = new ReflectionClass($model);
     }
 
-    /**
-     * @return array
-     */
-    public function lintMethodFields()
+    public function lintMethodFields(): array
     {
         $r = [];
         $model = $this->model;
@@ -96,10 +80,7 @@ class Linter extends Component
         return $r;
     }
 
-    /**
-     * @return string[]
-     */
-    public function getPropertyFields()
+    public function getPropertyFields(): array
     {
         $fields = [];
         foreach ($this->reflection->getProperties(ReflectionProperty::IS_PUBLIC) as $rProperty) {
@@ -113,10 +94,7 @@ class Linter extends Component
         return $fields;
     }
 
-    /**
-     * @return string[]
-     */
-    public function lintRealPropertyFields()
+    public function lintRealPropertyFields(): array
     {
         $model = $this->model;
 
@@ -132,10 +110,7 @@ class Linter extends Component
         return array_diff($properties, $model->fields());
     }
 
-    /**
-     * @return string[]
-     */
-    public function getMagicFields()
+    public function getMagicFields(): array
     {
         $comment = $this->reflection->getDocComment();
 
@@ -155,10 +130,7 @@ class Linter extends Component
         return $fields;
     }
 
-    /**
-     * @return array
-     */
-    public function lintMagicPropertyFields()
+    public function lintMagicPropertyFields(): array
     {
         $fields = [];
         foreach ($this->getMagicFields() as $field => $type) {
