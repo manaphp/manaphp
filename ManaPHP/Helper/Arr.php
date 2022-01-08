@@ -211,6 +211,7 @@ class Arr
 
                     $row[$field] = $count ? $sum / $count : null;
                 } else {
+                    /** @noinspection PhpExpressionResultUnusedInspection */
                     null;
                 }
             }

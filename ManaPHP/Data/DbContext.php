@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Data;
 
 use ManaPHP\Coroutine\Context\Inseparable;
-use ManaPHP\Data\Db\ConnectionException;
 use ManaPHP\Data\Db\ConnectionInterface;
 use ManaPHP\Exception\MisuseException;
 

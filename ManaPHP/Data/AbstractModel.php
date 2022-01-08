@@ -19,7 +19,6 @@ use ManaPHP\Data\Relation\HasOne;
 use ManaPHP\Event\ManagerInterface as EventManager;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidJsonException;
-use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\ParameterOrderException;

@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Html;
 
 use DOMDocument;
-use DOMNode;
 use ManaPHP\Component;
 
 class Purifier extends Component implements PurifierInterface
