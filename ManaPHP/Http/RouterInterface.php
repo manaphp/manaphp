@@ -41,11 +41,11 @@ interface RouterInterface
 
     public function setArea(string $area): static;
 
-    public function getController(): string;
+    public function getController(): ?string;
 
     public function setController(string $controller): static;
 
-    public function getAction(): string;
+    public function getAction(): ?string;
 
     public function setAction(string $action): static;
 

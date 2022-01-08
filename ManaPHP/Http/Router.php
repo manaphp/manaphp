@@ -308,7 +308,7 @@ class Router extends Component implements RouterInterface
         return $this;
     }
 
-    public function getController(): string
+    public function getController(): ?string
     {
         return $this->context->controller;
     }
@@ -320,7 +320,7 @@ class Router extends Component implements RouterInterface
         return $this;
     }
 
-    public function getAction(): string
+    public function getAction(): ?string
     {
         return $this->context->action;
     }
