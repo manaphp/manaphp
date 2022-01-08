@@ -1,38 +1,26 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Relation;
 
 use ManaPHP\Component;
+use ManaPHP\Data\ModelInterface;
 use ManaPHP\Data\QueryInterface;
-use ManaPHP\Data\AbstractRelation;
+use ManaPHP\Data\RelationInterface;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\Str;
 
 class Manager extends Component implements ManagerInterface
 {
-    /**
-     * @var array[]
-     */
-    protected $relations;
+    protected array $relations;
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param string                       $name
-     *
-     * @return bool
-     */
-    public function has($model, $name)
+    public function has(ModelInterface $model, string $name): bool
     {
         return $this->get($model, $name) !== false;
     }
 
-    /**
-     * @param string $str
-     *
-     * @return string|false
-     */
-    protected function pluralToSingular($str)
+    protected function pluralToSingular(string $str): false|string
     {
         if ($str[strlen($str) - 1] !== 's') {
             return false;
@@ -48,13 +36,7 @@ class Manager extends Component implements ManagerInterface
         }
     }
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param string                       $plainName
-     *
-     * @return string|false
-     */
-    protected function inferClassName($model, $plainName)
+    protected function inferClassName(ModelInterface $model, string $plainName): false|string
     {
         $plainName = Str::pascalize($plainName);
 
@@ -78,13 +60,7 @@ class Manager extends Component implements ManagerInterface
         }
     }
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $thisInstance
-     * @param string                       $name
-     *
-     * @return  AbstractRelation|false
-     */
-    protected function inferRelation($thisInstance, $name)
+    protected function inferRelation(ModelInterface $thisInstance, string $name): false|RelationInterface
     {
         if ($thisInstance->hasField($tryName = $name . '_id')) {
             $thatModel = $this->inferClassName($thisInstance, $name);
@@ -150,23 +126,12 @@ class Manager extends Component implements ManagerInterface
         return false;
     }
 
-    /**
-     * @param string $str
-     *
-     * @return bool
-     */
-    protected function isPlural($str)
+    protected function isPlural(string $str): bool
     {
         return $str[strlen($str) - 1] === 's';
     }
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param string                       $name
-     *
-     * @return \ManaPHP\Data\AbstractRelation|false
-     */
-    public function get($model, $name)
+    public function get(ModelInterface $model, string $name): false|RelationInterface
     {
         $modelName = get_class($model);
 
@@ -192,14 +157,7 @@ class Manager extends Component implements ManagerInterface
         }
     }
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param string                       $name
-     * @param string|array|callable        $data
-     *
-     * @return \ManaPHP\Data\QueryInterface
-     */
-    public function getQuery($model, $name, $data)
+    public function getQuery(ModelInterface $model, string $name, mixed $data): QueryInterface
     {
         $relation = $this->get($model, $name);
         $query = $relation->getThatQuery();
@@ -207,16 +165,13 @@ class Manager extends Component implements ManagerInterface
         if ($data === null) {
             null;
         } elseif (is_string($data)) {
-            $query->select(preg_split('#[\s,]+#', $data, -1, PREG_SPLIT_NO_EMPTY));
+            $query->select($data);
         } elseif (is_array($data)) {
             if ($data) {
                 if (isset($data[count($data) - 1])) {
-                    $query->select($data);
+                    $query->select(count($data) > 1 ? $data : $data[0]);
                 } elseif (isset($data[0])) {
-                    $fields = $data[0];
-                    $query->select(
-                        is_string($fields) ? preg_split('#[\s,]+#', $fields, -1, PREG_SPLIT_NO_EMPTY) : $fields
-                    );
+                    $query->select($data[0]);
                     unset($data[0]);
                     $query->where($data);
                 } else {
@@ -232,16 +187,7 @@ class Manager extends Component implements ManagerInterface
         return $query;
     }
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param array                        $r
-     * @param array                        $withs
-     *
-     * @return array
-     *
-     * @throws \ManaPHP\Exception\InvalidValueException
-     */
-    public function earlyLoad($model, $r, $withs)
+    public function earlyLoad(ModelInterface $model, array $r, array $withs): array
     {
         foreach ($withs as $k => $v) {
             $name = is_string($k) ? $k : $v;
@@ -275,13 +221,7 @@ class Manager extends Component implements ManagerInterface
         return $r;
     }
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $instance
-     * @param string                       $relation_name
-     *
-     * @return \ManaPHP\Data\QueryInterface
-     */
-    public function lazyLoad($instance, $relation_name)
+    public function lazyLoad(ModelInterface $instance, string $relation_name): QueryInterface
     {
         if (($relation = $this->get($instance, $relation_name)) === false) {
             throw new InvalidValueException($relation);

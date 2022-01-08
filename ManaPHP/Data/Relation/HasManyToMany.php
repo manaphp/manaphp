@@ -1,48 +1,24 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Relation;
 
 use ManaPHP\Data\AbstractRelation;
+use ManaPHP\Data\ModelInterface;
+use ManaPHP\Data\QueryInterface;
 use ManaPHP\Helper\Arr;
 
 class HasManyToMany extends AbstractRelation
 {
-    /**
-     * @var string
-     */
-    protected $thisField;
+    protected string $thisField;
+    protected string $thatField;
+    protected string $pivotModel;
+    protected string $thisPivot;
+    protected string $thatPivot;
 
-    /**
-     * @var string
-     */
-    protected $thatField;
-
-    /**
-     * @var string
-     */
-    protected $pivotModel;
-
-    /**
-     * @var string
-     */
-    protected $thisPivot;
-
-    /**
-     * @var string
-     */
-    protected $thatPivot;
-
-    /**
-     * @param string $thisModel
-     * @param string $thisField
-     * @param string $thatModel
-     * @param string $thatField
-     * @param string $pivotModel
-     * @param string $thisPivot
-     * @param string $thatPivot
-     */
-    public function __construct($thisModel, $thisField, $thatModel, $thatField, $pivotModel, $thisPivot, $thatPivot)
-    {
+    public function __construct(string $thisModel, string $thisField, string $thatModel, string $thatField,
+        string $pivotModel, string $thisPivot, string $thatPivot
+    ) {
         $this->thisModel = $thisModel;
         $this->thisField = $thisField;
         $this->thatModel = $thatModel;
@@ -52,14 +28,7 @@ class HasManyToMany extends AbstractRelation
         $this->thatPivot = $thatPivot;
     }
 
-    /**
-     * @param array                        $r
-     * @param \ManaPHP\Data\QueryInterface $query
-     * @param string                       $name
-     *
-     * @return array
-     */
-    public function earlyLoad($r, $query, $name)
+    public function earlyLoad(array $r, QueryInterface $query, string $name): array
     {
         /** @var \ManaPHP\Data\ModelInterface $pivotModel */
         $pivotModel = $this->pivotModel;
@@ -89,12 +58,7 @@ class HasManyToMany extends AbstractRelation
         return $r;
     }
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $instance
-     *
-     * @return \ManaPHP\Data\QueryInterface
-     */
-    public function lazyLoad($instance)
+    public function lazyLoad(ModelInterface $instance): QueryInterface
     {
         /** @var \ManaPHP\Data\ModelInterface $pivotModel */
         /** @var \ManaPHP\Data\ModelInterface $thatModel */

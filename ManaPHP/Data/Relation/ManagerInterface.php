@@ -1,48 +1,21 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Relation;
 
+use ManaPHP\Data\ModelInterface;
+use ManaPHP\Data\QueryInterface;
+use ManaPHP\Data\RelationInterface;
+
 interface ManagerInterface
 {
-    /**
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param string                       $name
-     *
-     * @return bool
-     */
-    public function has($model, $name);
+    public function has(ModelInterface $model, string $name): bool;
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param string                       $name
-     *
-     * @return \ManaPHP\Data\AbstractRelation|false
-     */
-    public function get($model, $name);
+    public function get(ModelInterface $model, string $name): false|RelationInterface;
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param array                        $r
-     * @param array                        $withs
-     *
-     * @return array
-     */
-    public function earlyLoad($model, $r, $withs);
+    public function earlyLoad(ModelInterface $model, array $r, array $withs): array;
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $instance
-     * @param string                       $relation_name
-     *
-     * @return \ManaPHP\Data\QueryInterface
-     */
-    public function lazyLoad($instance, $relation_name);
+    public function lazyLoad(ModelInterface $instance, string $relation_name): QueryInterface;
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param                              $name
-     * @param                              $data
-     *
-     * @return \ManaPHP\Data\QueryInterface
-     */
-    public function getQuery($model, $name, $data);
+    public function getQuery(ModelInterface $model, string $name, array $data): QueryInterface;
 }

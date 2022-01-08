@@ -1,36 +1,22 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Relation;
 
 use ManaPHP\Data\AbstractRelation;
+use ManaPHP\Data\ModelInterface;
+use ManaPHP\Data\QueryInterface;
 use ManaPHP\Helper\Arr;
 
 class HasManyOthers extends AbstractRelation
 {
-    /**
-     * @var string
-     */
-    protected $thisFilter;
+    protected string $thisFilter;
+    protected string $thisValue;
+    protected string $thatField;
 
-    /**
-     * @var string
-     */
-    protected $thisValue;
-
-    /**
-     * @var string
-     */
-    protected $thatField;
-
-    /**
-     * @param string $thisModel
-     * @param string $thisFilter
-     * @param string $thisValue
-     * @param string $thatModel
-     * @param string $thatField
-     */
-    public function __construct($thisModel, $thisFilter, $thisValue, $thatModel, $thatField)
-    {
+    public function __construct(string $thisModel, string $thisFilter, string $thisValue, string $thatModel,
+        string $thatField
+    ) {
         $this->thisModel = $thisModel;
         $this->thisFilter = $thisFilter;
         $this->thisValue = $thisValue;
@@ -38,14 +24,7 @@ class HasManyOthers extends AbstractRelation
         $this->thatField = $thatField;
     }
 
-    /**
-     * @param array                        $r
-     * @param \ManaPHP\Data\QueryInterface $query
-     * @param string                       $name
-     *
-     * @return array
-     */
-    public function earlyLoad($r, $query, $name)
+    public function earlyLoad(array $r, QueryInterface $query, string $name): array
     {
         /** @var \ManaPHP\Data\ModelInterface $thisModel */
         $thisModel = $this->thisModel;
@@ -75,12 +54,7 @@ class HasManyOthers extends AbstractRelation
         return $r;
     }
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $instance
-     *
-     * @return \ManaPHP\Data\QueryInterface
-     */
-    public function lazyLoad($instance)
+    public function lazyLoad(ModelInterface $instance): QueryInterface
     {
         /** @var \ManaPHP\Data\ModelInterface $thatModel */
         /** @var \ManaPHP\Data\ModelInterface $thisModel */

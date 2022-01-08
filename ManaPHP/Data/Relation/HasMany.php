@@ -1,29 +1,19 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Relation;
 
 use ManaPHP\Data\AbstractRelation;
+use ManaPHP\Data\ModelInterface;
+use ManaPHP\Data\QueryInterface;
 use ManaPHP\Exception\MisuseException;
 
 class HasMany extends AbstractRelation
 {
-    /**
-     * @var string
-     */
-    protected $thisField;
+    protected string $thisField;
+    protected string $thatField;
 
-    /**
-     * @var string
-     */
-    protected $thatField;
-
-    /**
-     * @param string $thisModel
-     * @param string $thisField
-     * @param string $thatModel
-     * @param string $thatField
-     */
-    public function __construct($thisModel, $thisField, $thatModel, $thatField)
+    public function __construct(string $thisModel, string $thisField, string $thatModel, string $thatField)
     {
         $this->thisModel = $thisModel;
         $this->thisField = $thisField;
@@ -31,14 +21,7 @@ class HasMany extends AbstractRelation
         $this->thatField = $thatField;
     }
 
-    /**
-     * @param array                        $r
-     * @param \ManaPHP\Data\QueryInterface $query
-     * @param string                       $name
-     *
-     * @return array
-     */
-    public function earlyLoad($r, $query, $name)
+    public function earlyLoad(array $r, QueryInterface $query, string $name): array
     {
         $thisField = $this->thisField;
         $thatField = $this->thatField;
@@ -67,12 +50,7 @@ class HasMany extends AbstractRelation
         return $r;
     }
 
-    /**
-     * @param \ManaPHP\Data\ModelInterface $instance
-     *
-     * @return \ManaPHP\Data\QueryInterface
-     */
-    public function lazyLoad($instance)
+    public function lazyLoad(ModelInterface $instance): QueryInterface
     {
         /** @var \ManaPHP\Data\ModelInterface $thatModel */
         $thatModel = $this->thatModel;
