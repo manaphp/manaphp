@@ -1,9 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
 use ManaPHP\Component;
 use ManaPHP\Data\Db\Exception as DbException;
+use ManaPHP\Data\Db\Query;
 use ManaPHP\Data\Db\SqlFragmentable;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
@@ -19,40 +21,18 @@ use PDOException;
  */
 class Db extends Component implements DbInterface
 {
-    const METADATA_ATTRIBUTES = 0;
-    const METADATA_PRIMARY_KEY = 1;
-    const METADATA_AUTO_INCREMENT_KEY = 3;
-    const METADATA_INT_TYPE_ATTRIBUTES = 5;
+    public const METADATA_ATTRIBUTES = 0;
+    public const METADATA_PRIMARY_KEY = 1;
+    public const METADATA_AUTO_INCREMENT_KEY = 3;
+    public const METADATA_INT_TYPE_ATTRIBUTES = 5;
 
-    /**
-     * @var string
-     */
-    protected $uri;
+    protected string $uri;
+    protected string $prefix = '';
+    protected bool $has_slave = false;
+    protected float $timeout = 3.0;
+    protected string $pool_size = '4';
 
-    /**
-     * @var string
-     */
-    protected $prefix = '';
-
-    /**
-     * @var bool
-     */
-    protected $has_slave = false;
-
-    /**
-     * @var float
-     */
-    protected $timeout = 3.0;
-
-    /**
-     * @var string
-     */
-    protected $pool_size = '4';
-
-    /**
-     * @param string $uri
-     */
-    public function __construct($uri)
+    public function __construct(string $uri)
     {
         $this->uri = $uri;
 
@@ -147,23 +127,12 @@ class Db extends Component implements DbInterface
         throw new NonCloneableException($this);
     }
 
-    /**
-     * @return string
-     */
-    public function getPrefix()
+    public function getPrefix(): string
     {
         return $this->prefix;
     }
 
-    /**
-     * @param string $type
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return int
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function execute($type, $sql, $bind = [])
+    public function execute(string $type, string $sql, array $bind = []): int
     {
         $event = [
                      'delete' => ['deleting', 'deleted'],
@@ -205,76 +174,33 @@ class Db extends Component implements DbInterface
         return $count;
     }
 
-    /**
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return int
-     */
-    public function executeInsert($sql, $bind = [])
+    public function executeInsert(string $sql, array $bind = []): int
     {
         return $this->execute('insert', $sql, $bind);
     }
 
-    /**
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return int
-     */
-    public function executeUpdate($sql, $bind = [])
+    public function executeUpdate(string $sql, array $bind = []): int
     {
         return $this->execute('update', $sql, $bind);
     }
 
-    /**
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return int
-     */
-    public function executeDelete($sql, $bind = [])
+    public function executeDelete(string $sql, array $bind = []): int
     {
         return $this->execute('delete', $sql, $bind);
     }
 
-    /**
-     * Returns the number of affected rows by the last INSERT/UPDATE/DELETE reported by the database system
-     *
-     * @return int
-     */
-    public function affectedRows()
+    public function affectedRows(): int
     {
         return $this->context->affected_rows;
     }
 
-    /**
-     * Returns the first row in a SQL query result
-     *
-     * @param string $sql
-     * @param array  $bind
-     * @param int    $mode
-     * @param bool   $useMaster
-     *
-     * @return array|false
-     */
-    public function fetchOne($sql, $bind = [], $mode = PDO::FETCH_ASSOC, $useMaster = false)
-    {
+    public function fetchOne(string $sql, array $bind = [], int $mode = PDO::FETCH_ASSOC, bool $useMaster = false
+    ): false|array {
         return ($rs = $this->fetchAll($sql, $bind, $mode, $useMaster)) ? $rs[0] : false;
     }
 
-    /**
-     * Dumps the complete result of a query into an array
-     *
-     * @param string $sql
-     * @param array  $bind
-     * @param int    $mode
-     * @param bool   $useMaster
-     *
-     * @return array
-     */
-    public function fetchAll($sql, $bind = [], $mode = PDO::FETCH_ASSOC, $useMaster = false)
-    {
+    public function fetchAll(string $sql, array $bind = [], int $mode = PDO::FETCH_ASSOC, bool $useMaster = false
+    ): array {
         $context = $this->context;
 
         $context->sql = $sql;
@@ -314,12 +240,7 @@ class Db extends Component implements DbInterface
         return $result;
     }
 
-    /**
-     * @param string $table
-     *
-     * @return string
-     */
-    protected function completeTable($table)
+    protected function completeTable(string $table): string
     {
         if (($pos = strpos($table, '.')) === false) {
             return '[' . $this->prefix . $table . ']';
@@ -328,14 +249,7 @@ class Db extends Component implements DbInterface
         }
     }
 
-    /**
-     * @param string $table
-     * @param array  $record
-     * @param bool   $fetchInsertId
-     *
-     * @return int|string|null
-     */
-    public function insert($table, $record, $fetchInsertId = false)
+    public function insert(string $table, array $record, bool $fetchInsertId = false): mixed
     {
         $context = $this->context;
 
@@ -381,32 +295,14 @@ class Db extends Component implements DbInterface
         return $insert_id;
     }
 
-    /**
-     * @param string $table
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return int
-     */
-    public function insertBySql($table, $sql, $bind = [])
+    public function insertBySql(string $table, string $sql, array $bind = []): int
     {
         $table = $this->completeTable($table);
 
         return $this->execute('insert', /**@lang text */ "INSERT INTO $table $sql", $bind);
     }
 
-    /**
-     * Updates data on a table using custom SQL syntax
-     *
-     * @param string       $table
-     * @param array        $fieldValues
-     * @param string|array $conditions
-     * @param array        $bind
-     *
-     * @return    int
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function update($table, $fieldValues, $conditions, $bind = [])
+    public function update(string $table, array $fieldValues, string|array $conditions, array $bind = []): int
     {
         $table = $this->completeTable($table);
 
@@ -454,34 +350,16 @@ class Db extends Component implements DbInterface
         return $this->execute('update', $sql, $bind);
     }
 
-    /**
-     * Updates data on a table using custom SQL syntax
-     *
-     * @param string $table
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return    int
-     */
-    public function updateBySql($table, $sql, $bind = [])
+    public function updateBySql(string $table, string $sql, array $bind = []): int
     {
         $table = $this->completeTable($table);
 
         return $this->execute('update', /** @lang text */ "UPDATE $table SET $sql", $bind);
     }
 
-    /**
-     * Updates data on a table using custom SQL syntax
-     *
-     * @param string $table
-     * @param array  $insertFieldValues
-     * @param array  $updateFieldValues
-     * @param string $primaryKey
-     *
-     * @return    int
-     */
-    public function upsert($table, $insertFieldValues, $updateFieldValues = [], $primaryKey = null)
-    {
+    public function upsert(string $table, array $insertFieldValues, array $updateFieldValues = [],
+        ?string $primaryKey = null
+    ): int {
         if (!$primaryKey) {
             $primaryKey = (string)key($insertFieldValues);
         }
@@ -513,17 +391,7 @@ class Db extends Component implements DbInterface
         }
     }
 
-    /**
-     * Deletes data from a table using custom SQL syntax
-     *
-     * @param string       $table
-     * @param string|array $conditions
-     * @param array        $bind
-     *
-     * @return int
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function delete($table, $conditions, $bind = [])
+    public function delete(string $table, string|array $conditions, array $bind = []): int
     {
         $table = $this->completeTable($table);
 
@@ -550,49 +418,24 @@ class Db extends Component implements DbInterface
         return $this->execute('delete', $sql, $bind);
     }
 
-    /**
-     * Deletes data from a table using custom SQL syntax
-     *
-     * @param string $table
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return int
-     */
-    public function deleteBySql($table, $sql, $bind = [])
+    public function deleteBySql(string $table, string $sql, array $bind = []): int
     {
         $table = $this->completeTable($table);
 
         return $this->execute('delete', /**@lang text */ "DELETE FROM $table WHERE $sql", $bind);
     }
 
-    /**
-     * Active SQL statement in the object
-     *
-     * @return string
-     */
-    public function getSQL()
+    public function getSQL(): string
     {
         return $this->context->sql;
     }
 
-    /**
-     * @param string $value
-     *
-     * @return string
-     */
-    protected function quote($value)
+    protected function quote(string $value): string
     {
         return "'" . str_replace($value, "'", "\\'") . "'";
     }
 
-    /**
-     * @param mixed $value
-     * @param int   $preservedStrLength
-     *
-     * @return int|string
-     */
-    protected function parseBindValue($value, $preservedStrLength)
+    protected function parseBindValue(mixed $value, int $preservedStrLength): int|string
     {
         if (is_string($value)) {
             $quoted = $this->quote($value);
@@ -612,14 +455,7 @@ class Db extends Component implements DbInterface
         }
     }
 
-    /**
-     * Active SQL statement in the object with replace the bind with value
-     *
-     * @param int $preservedStrLength
-     *
-     * @return string
-     */
-    public function getEmulatedSQL($preservedStrLength = -1)
+    public function getEmulatedSQL(int $preservedStrLength = -1): string
     {
         $context = $this->context;
 
@@ -640,23 +476,12 @@ class Db extends Component implements DbInterface
         }
     }
 
-    /**
-     * Active SQL statement in the object
-     *
-     * @return array
-     */
-    public function getBind()
+    public function getBind(): array
     {
         return $this->context->bind;
     }
 
-    /**
-     * Starts a transaction in the connection
-     *
-     * @return void
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function begin()
+    public function begin(): void
     {
         $context = $this->context;
 
@@ -685,25 +510,14 @@ class Db extends Component implements DbInterface
         }
     }
 
-    /**
-     * Checks whether the connection is under a transaction
-     *
-     * @return bool
-     */
-    public function isUnderTransaction()
+    public function isUnderTransaction(): bool
     {
         $context = $this->context;
 
         return $context->transaction_level !== 0;
     }
 
-    /**
-     * Rollbacks the active transaction in the connection
-     *
-     * @return void
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function rollback()
+    public function rollback(): void
     {
         $context = $this->context;
 
@@ -728,13 +542,7 @@ class Db extends Component implements DbInterface
         }
     }
 
-    /**
-     * Commits the active transaction in the connection
-     *
-     * @return void
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function commit()
+    public function commit(): void
     {
         $context = $this->context;
 
@@ -759,21 +567,12 @@ class Db extends Component implements DbInterface
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getLastSql()
+    public function getLastSql(): string
     {
         return $this->context->sql;
     }
 
-    /**
-     * @param string $schema
-     *
-     * @return array
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function getTables($schema = null)
+    public function getTables(?string $schema = null): array
     {
         $context = $this->context;
 
@@ -806,12 +605,7 @@ class Db extends Component implements DbInterface
         }
     }
 
-    /**
-     * @param array $params
-     *
-     * @return string
-     */
-    public function buildSql($params)
+    public function buildSql(array $params): string
     {
         $context = $this->context;
 
@@ -832,13 +626,7 @@ class Db extends Component implements DbInterface
         }
     }
 
-    /**
-     * @param string $table
-     *
-     * @return array
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function getMetadata($table)
+    public function getMetadata(string $table): array
     {
         $context = $this->context;
 
@@ -866,10 +654,7 @@ class Db extends Component implements DbInterface
         return $meta;
     }
 
-    /**
-     * @return void
-     */
-    public function close()
+    public function close(): void
     {
         $context = $this->context;
 
@@ -887,13 +672,7 @@ class Db extends Component implements DbInterface
         }
     }
 
-    /**
-     * @param string $table
-     * @param string $alias
-     *
-     * @return \ManaPHP\Data\Db\Query
-     */
-    public function query($table = null, $alias = null)
+    public function query(?string $table = null, ?string $alias = null): Query
     {
         return $this->container->make('ManaPHP\Data\Db\Query', [$this])->from($table, $alias);
     }

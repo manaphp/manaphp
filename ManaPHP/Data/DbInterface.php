@@ -1,239 +1,69 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
+use ManaPHP\Data\Db\Query;
 use ManaPHP\Pool\Transientable;
 use PDO;
 
 interface DbInterface extends Transientable
 {
-    /**
-     * @return string
-     */
-    public function getPrefix();
+    public function getPrefix(): string;
 
-    /**
-     * @param string $type
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return int
-     */
-    public function execute($type, $sql, $bind = []);
+    public function execute(string $type, string $sql, array $bind = []): int;
 
-    /**
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return int
-     */
-    public function executeInsert($sql, $bind = []);
+    public function executeInsert(string $sql, array $bind = []): int;
 
-    /**
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return int
-     */
-    public function executeUpdate($sql, $bind = []);
+    public function executeUpdate(string $sql, array $bind = []): int;
 
-    /**
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return int
-     */
-    public function executeDelete($sql, $bind = []);
+    public function executeDelete(string $sql, array $bind = []): int;
 
-    /**
-     * Returns the first row in a SQL query result
-     *
-     * @param string $sql
-     * @param array  $bind
-     * @param int    $mode
-     * @param bool   $useMaster
-     *
-     * @return array|false
-     */
-    public function fetchOne($sql, $bind = [], $mode = PDO::FETCH_ASSOC, $useMaster = false);
+    public function fetchOne(string $sql, array $bind = [], int $mode = PDO::FETCH_ASSOC, bool $useMaster = false
+    ): false|array;
 
-    /**
-     * Dumps the complete result of a query into an array
-     *
-     * @param string $sql
-     * @param array  $bind
-     * @param int    $mode
-     * @param bool   $useMaster
-     *
-     * @return array
-     */
-    public function fetchAll($sql, $bind = [], $mode = PDO::FETCH_ASSOC, $useMaster = false);
+    public function fetchAll(string $sql, array $bind = [], int $mode = PDO::FETCH_ASSOC, bool $useMaster = false
+    ): array;
 
-    /**
-     * @param string $table
-     * @param array  $record
-     * @param bool   $fetchInsertId
-     *
-     * @return int|string|null
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public function insert($table, $record, $fetchInsertId = false);
+    public function insert(string $table, array $record, bool $fetchInsertId = false): mixed;
 
-    /**
-     * @param string $table
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return int
-     */
-    public function insertBySql($table, $sql, $bind = []);
+    public function insertBySql(string $table, string $sql, array $bind = []): int;
 
-    /**
-     * Updates data on a table using custom SQL syntax
-     *
-     * @param string       $table
-     * @param array        $fieldValues
-     * @param string|array $conditions
-     * @param array        $bind
-     *
-     * @return    int
-     */
-    public function update($table, $fieldValues, $conditions, $bind = []);
+    public function update(string $table, array $fieldValues, string|array $conditions, array $bind = []): int;
 
-    /**
-     * Updates data on a table using custom SQL syntax
-     *
-     * @param string $table
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return    int
-     */
-    public function updateBySql($table, $sql, $bind = []);
+    public function updateBySql(string $table, string $sql, array $bind = []): int;
 
-    /**
-     * Updates data on a table using custom SQL syntax
-     *
-     * @param string $table
-     * @param array  $insertFieldValues
-     * @param array  $updateFieldValues
-     * @param string $primaryKey
-     *
-     * @return    int
-     */
-    public function upsert($table, $insertFieldValues, $updateFieldValues = [], $primaryKey = null);
+    public function upsert(string $table, array $insertFieldValues, array $updateFieldValues = [],
+        ?string $primaryKey = null
+    ): int;
 
-    /**
-     * Deletes data from a table using custom SQL syntax
-     *
-     * @param string       $table
-     * @param string|array $conditions
-     * @param array        $bind
-     *
-     * @return int
-     */
-    public function delete($table, $conditions, $bind = []);
+    public function delete(string $table, string|array $conditions, array $bind = []): int;
 
-    /**
-     * Deletes data from a table using custom SQL syntax
-     *
-     * @param string $table
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return int
-     */
-    public function deleteBySql($table, $sql, $bind = []);
+    public function deleteBySql(string $table, string $sql, array $bind = []): int;
 
-    /**
-     * Active SQL statement in the object
-     *
-     * @return string
-     */
-    public function getSQL();
+    public function getSQL(): string;
 
-    /**
-     * Active SQL statement in the object with replace the bind with value
-     *
-     * @param int $preservedStrLength
-     *
-     * @return string
-     */
-    public function getEmulatedSQL($preservedStrLength = -1);
+    public function getEmulatedSQL(int $preservedStrLength = -1): string;
 
-    /**
-     * Active SQL statement in the object
-     *
-     * @return array
-     */
-    public function getBind();
+    public function getBind(): array;
 
-    /**
-     * Returns the number of affected rows by the last INSERT/UPDATE/DELETE reported by the database system
-     *
-     * @return int
-     */
-    public function affectedRows();
+    public function affectedRows(): int;
 
-    /**
-     * Starts a transaction in the connection
-     *
-     * @return void
-     */
-    public function begin();
+    public function begin(): void;
 
-    /**
-     * Checks whether the connection is under a transaction
-     *
-     * @return bool
-     */
-    public function isUnderTransaction();
+    public function isUnderTransaction(): bool;
 
-    /**
-     * Rollbacks the active transaction in the connection
-     *
-     * @return void
-     */
-    public function rollback();
+    public function rollback(): void;
 
-    /**
-     * Commits the active transaction in the connection
-     *
-     * @return void
-     */
-    public function commit();
+    public function commit(): void;
 
-    /**
-     * @param string $table
-     *
-     * @return array
-     */
-    public function getMetadata($table);
+    public function getMetadata(string $table): array;
 
-    /**
-     * @param string $schema
-     *
-     * @return array
-     */
-    public function getTables($schema = null);
+    public function getTables(?string $schema = null): array;
 
-    /**
-     * @param array $params
-     *
-     * @return string
-     */
-    public function buildSql($params);
+    public function buildSql(array $params): string;
 
-    /**
-     * @return string
-     */
-    public function getLastSql();
+    public function getLastSql(): string;
 
-    /**
-     * @param string $table
-     * @param string $alias
-     *
-     * @return \ManaPHP\Data\Db\Query
-     */
-    public function query($table = null, $alias = null);
+    public function query(?string $table = null, ?string $alias = null): Query;
 }

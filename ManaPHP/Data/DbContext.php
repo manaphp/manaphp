@@ -1,44 +1,20 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
 use ManaPHP\Coroutine\Context\Inseparable;
+use ManaPHP\Data\Db\ConnectionException;
+use ManaPHP\Data\Db\ConnectionInterface;
 use ManaPHP\Exception\MisuseException;
 
 class DbContext implements Inseparable
 {
-    /**
-     * @var \ManaPHP\Data\Db\ConnectionInterface
-     */
-    public $connection;
-
-    /**
-     * Active SQL Statement
-     *
-     * @var string
-     */
-    public $sql;
-
-    /**
-     * Active SQL bound parameter variables
-     *
-     * @var array
-     */
-    public $bind = [];
-
-    /**
-     * Current transaction level
-     *
-     * @var int
-     */
-    public $transaction_level = 0;
-
-    /**
-     * Last affected rows
-     *
-     * @var int
-     */
-    public $affected_rows;
+    public ?ConnectionInterface $connection = null;
+    public string $sql;
+    public array $bind = [];
+    public int $transaction_level = 0;
+    public int $affected_rows;
 
     public function __destruct()
     {
