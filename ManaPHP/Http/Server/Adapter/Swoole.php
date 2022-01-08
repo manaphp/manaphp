@@ -75,7 +75,6 @@ class Swoole extends AbstractServer
             }
         }
 
-        /** @noinspection AdditionOperationOnArraysInspection */
         $_server += $this->_SERVER;
 
         $_get = $request->get ?: [];

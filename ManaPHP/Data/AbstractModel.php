@@ -622,7 +622,6 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
             try {
                 $this->$field = $validator->validateModel($field, $this, $rules[$field]);
             } catch (ValidateFailedException $exception) {
-                /** @noinspection AdditionOperationOnArraysInspection */
                 $errors += $exception->getErrors();
             }
         }

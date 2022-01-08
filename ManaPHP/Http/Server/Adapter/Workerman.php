@@ -53,7 +53,6 @@ class Workerman extends AbstractServer
     {
         $_SERVER['REQUEST_TIME_FLOAT'] = microtime(true);
 
-        /** @noinspection AdditionOperationOnArraysInspection */
         $_SERVER += $this->_SERVER;
 
         $raw_body = $GLOBALS['HTTP_RAW_POST_DATA'] ?? null;

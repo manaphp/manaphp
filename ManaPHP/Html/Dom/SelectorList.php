@@ -74,7 +74,6 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
             return clone $selectors;
         }
 
-        /** @noinspection AdditionOperationOnArraysInspection */
         return new SelectorList($this, $this->nodes + $selectors->nodes);
     }
 

@@ -39,7 +39,6 @@ class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
 
             $globals = $this->globals->get();
             $globals->_POST = $body;
-            /** @noinspection AdditionOperationOnArraysInspection */
             $globals->_REQUEST = $globals->_POST + $globals->_GET;
         } elseif (preg_match('#^([a-z]\w*)[?]?#i', $message, $match) === 1) {
             $action = $match[1];
@@ -51,7 +50,6 @@ class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
                 }
 
                 $globals = $this->globals->get();
-                /** @noinspection AdditionOperationOnArraysInspection */
                 $globals->_REQUEST = $globals->_GET = $body + $globals->_GET;
             }
         } else {
