@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Amqp\Engine;
 
+use AMQPChannel;
 use ManaPHP\Amqp\Binding;
 use ManaPHP\Amqp\ChannelException;
 use ManaPHP\Component;
@@ -18,43 +20,18 @@ use ManaPHP\Amqp\Engine\Php\Message as PhpMessage;
 
 class Php extends Component implements EngineInterface
 {
-    /**
-     * @var string
-     */
-    protected $uri;
+    protected string $uri;
+    protected AMQPStreamConnection $connection;
+    protected ?AMQPChannel $channel = null;
+    protected array $exchanges;
+    protected array $queues;
 
-    /**
-     * @var AMQPStreamConnection
-     */
-    protected $connection;
-
-    /**
-     * @var AMQPChannel
-     */
-    protected $channel;
-
-    /**
-     * @var array
-     */
-    protected $exchanges;
-
-    /**
-     * @var array
-     */
-    protected $queues;
-
-    /**
-     * @param string $uri
-     */
-    public function __construct($uri)
+    public function __construct(string $uri)
     {
         $this->uri = $uri;
     }
 
-    /**
-     * @return AMQPChannel
-     */
-    protected function getChannel()
+    protected function getChannel(): AMQPChannel
     {
         if ($this->channel !== null && !$this->channel->is_open()) {
             $this->channel = null;
@@ -81,11 +58,7 @@ class Php extends Component implements EngineInterface
         return $this->channel;
     }
 
-    /**
-     * @param AMQPChannel $channel
-     * @param Exchange    $exchange
-     */
-    protected function exchangeDeclareInternal($channel, $exchange)
+    protected function exchangeDeclareInternal(AMQPChannel $channel, Exchange $exchange): void
     {
         $name = $exchange->name;
         if (isset($this->exchanges[$name])) {
@@ -106,24 +79,12 @@ class Php extends Component implements EngineInterface
         $this->exchanges[$name] = 1;
     }
 
-    /**
-     * @param Exchange $exchange
-     *
-     * @return void
-     */
-    public function exchangeDeclare($exchange)
+    public function exchangeDeclare(Exchange $exchange): void
     {
         $this->exchangeDeclareInternal($this->getChannel(), $exchange);
     }
 
-    /**
-     * @param string $exchange
-     * @param bool   $if_unused
-     * @param bool   $nowait
-     *
-     * @return void
-     */
-    public function exchangeDelete($exchange, $if_unused = false, $nowait = false)
+    public function exchangeDelete(string $exchange, bool $if_unused = false, bool $nowait = false): void
     {
         unset($this->exchanges[$exchange]);
 
@@ -131,13 +92,7 @@ class Php extends Component implements EngineInterface
         $channel->exchange_delete($exchange, $if_unused, $nowait);
     }
 
-    /**
-     * @param AMQPChannel $channel
-     * @param Queue       $queue
-     *
-     * @return void
-     */
-    protected function queueDeclareInternal($channel, $queue)
+    protected function queueDeclareInternal(AMQPChannel $channel, Queue $queue): void
     {
         $name = $queue->name;
         if (isset($this->queues[$queue->name])) {
@@ -158,38 +113,20 @@ class Php extends Component implements EngineInterface
         $this->queues[$name] = 1;
     }
 
-    /**
-     * @param Queue $queue
-     *
-     * @return void
-     */
-    public function queueDeclare($queue)
+    public function queueDeclare(Queue $queue): void
     {
         $this->queueDeclareInternal($this->getChannel(), $queue);
     }
 
-    /**
-     * @param string $queue
-     * @param bool   $if_unused
-     * @param bool   $if_empty
-     * @param bool   $nowait
-     *
-     * @return void
-     */
-    public function queueDelete($queue, $if_unused = false, $if_empty = false, $nowait = false)
-    {
+    public function queueDelete(string $queue, bool $if_unused = false, bool $if_empty = false, bool $nowait = false
+    ): void {
         unset($this->queues[$queue]);
 
         $channel = $this->getChannel();
         $channel->queue_delete($queue, $if_unused, $if_empty, $nowait);
     }
 
-    /**
-     * @param Binding $binding
-     *
-     * @return void
-     */
-    public function queueBind($binding)
+    public function queueBind(Binding $binding): void
     {
         $queue = $binding->queue;
         $exchange = $binding->exchange;
@@ -214,12 +151,7 @@ class Php extends Component implements EngineInterface
         }
     }
 
-    /**
-     * @param Binding $binding
-     *
-     * @return void
-     */
-    public function queueUnbind($binding)
+    public function queueUnbind(Binding $binding): void
     {
         $queue = $binding->queue;
         $exchange = $binding->exchange;
@@ -237,17 +169,9 @@ class Php extends Component implements EngineInterface
 
     }
 
-    /**
-     * @param string|Exchange $exchange
-     * @param string|Queue    $routing_key
-     * @param string|array    $body
-     * @param array           $properties
-     * @param bool            $mandatory
-     *
-     * @return void
-     */
-    public function basicPublish($exchange, $routing_key, $body, $properties, $mandatory)
-    {
+    public function basicPublish(string|Exchange $exchange, string|Queue $routing_key, string|array $body,
+        array $properties, bool $mandatory
+    ): void {
         $channel = $this->getChannel();
         if (is_object($exchange)) {
             $this->exchangeDeclareInternal($channel, $exchange);
@@ -263,17 +187,8 @@ class Php extends Component implements EngineInterface
         $channel->basic_publish($message, $exchangeName, $routing_key, $mandatory);
     }
 
-    /**
-     * @param string|Queue $queue
-     * @param callable     $callback
-     * @param bool         $no_ack
-     * @param bool         $exclusive
-     * @param string       $tag
-     *
-     * @return string
-     */
-    public function basicConsume($queue, $callback, $no_ack, $exclusive, $tag)
-    {
+    public function basicConsume(string|Queue $queue, callable $callback, bool $no_ack, bool $exclusive, string $tag
+    ): string {
         $channel = $this->getChannel();
 
         if (is_object($queue)) {
@@ -284,13 +199,7 @@ class Php extends Component implements EngineInterface
         return $channel->basic_consume($queueName, $tag, false, $no_ack, $exclusive, false, $callback);
     }
 
-    /**
-     * @param int $prefetchSize
-     * @param int $prefetchCount
-     *
-     * @return void
-     */
-    public function wait($prefetchSize, $prefetchCount)
+    public function wait(int $prefetchSize, int $prefetchCount): void
     {
         $channel = $this->getChannel();
         $channel->basic_qos($prefetchSize, $prefetchCount, true);
@@ -299,13 +208,7 @@ class Php extends Component implements EngineInterface
         }
     }
 
-    /**
-     * @param mixed  $message
-     * @param string $queue
-     *
-     * @return MessageInterface
-     */
-    public function wrapMessage($message, $queue)
+    public function wrapMessage(mixed $message, string $queue): MessageInterface
     {
         return new PhpMessage($message, $queue);
     }

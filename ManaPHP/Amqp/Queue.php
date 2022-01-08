@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Amqp;
 
@@ -6,21 +7,14 @@ use JsonSerializable;
 
 class Queue implements JsonSerializable
 {
-    /**
-     * @var string
-     */
-    public $name;
-
-    /**
-     * @var array
-     */
-    public $features;
+    public string $name;
+    public array $features;
 
     /**
      * @param string $name
      * @param array  $features
      */
-    public function __construct($name, $features = [])
+    public function __construct(string $name, array $features = [])
     {
         $this->name = $name;
 
@@ -34,10 +28,7 @@ class Queue implements JsonSerializable
             ];
     }
 
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return get_object_vars($this);
     }

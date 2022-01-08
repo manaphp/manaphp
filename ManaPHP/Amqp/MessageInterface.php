@@ -1,51 +1,25 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Amqp;
 
 interface MessageInterface
 {
-    /**
-     * @return string
-     */
-    public function getQueue();
+    public function getQueue(): string;
 
-    /**
-     * @return array
-     */
-    public function getProperties();
+    public function getProperties(): array;
 
-    /**
-     * @return string
-     */
-    public function getBody();
+    public function getBody(): string;
 
-    /**
-     * @return array
-     */
-    public function getJsonBody();
+    public function getJsonBody(): array;
 
-    /**
-     * @return string
-     */
-    public function getExchange();
+    public function getExchange(): string;
 
-    /**
-     * @return string
-     */
-    public function getRoutingKey();
+    public function getRoutingKey(): string;
 
-    /**
-     * @return int
-     */
-    public function getDeliveryTag();
+    public function getDeliveryTag(): int;
 
-    /**
-     * @return bool
-     */
-    public function isRedelivered();
+    public function isRedelivered(): bool;
 
-    /**
-     * @return string
-     */
-    public function getReplyTo();
+    public function getReplyTo(): string;
 }

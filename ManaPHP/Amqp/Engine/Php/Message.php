@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Amqp\Engine\Php;
 
@@ -8,102 +9,61 @@ use JsonSerializable;
 
 class Message implements MessageInterface, JsonSerializable
 {
-    /**
-     * @var AMQPMessage
-     */
-    protected $envelope;
+    protected AMQPMessage $envelope;
+    protected string $queue;
 
-    /**
-     * @var string
-     */
-    protected $queue;
-
-    /**
-     * @param AMQPMessage $envelope
-     * @param string      $queue
-     */
-    public function __construct($envelope, $queue)
+    public function __construct(AMQPMessage $envelope, string $queue)
     {
         $this->envelope = $envelope;
         $this->queue = $queue;
     }
 
-    /**
-     * @return string
-     */
-    public function getBody()
+    public function getBody(): string
     {
         return $this->envelope->getBody();
     }
 
-    /**
-     * @return array
-     */
-    public function getJsonBody()
+    public function getJsonBody(): array
     {
         return json_parse($this->envelope->getBody());
     }
 
-    /**
-     * @return string
-     */
-    public function getQueue()
+    public function getQueue(): string
     {
         return $this->queue;
     }
 
-    /**
-     * @return string
-     */
-    public function getExchange()
+    public function getExchange(): string
     {
         return $this->envelope->getExchange();
     }
 
-    /**
-     * @return string
-     */
-    public function getRoutingKey()
+    public function getRoutingKey(): string
     {
         return $this->envelope->getRoutingKey();
     }
 
-    /**
-     * @return int
-     */
-    public function getDeliveryTag()
+    public function getDeliveryTag(): int
     {
         return $this->envelope->getDeliveryTag();
     }
 
-    /**
-     * @return bool
-     */
-    public function isRedelivered()
+    public function isRedelivered(): bool
     {
         return $this->envelope->isRedelivered();
     }
 
-    /**
-     * @return array
-     */
-    public function getProperties()
+    public function getProperties(): array
     {
         return $this->envelope->get_properties();
     }
 
-    /**
-     * @return string
-     */
-    public function getReplyTo()
+    public function getReplyTo(): string
     {
         return $this->envelope->get('reply_to');
     }
 
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'queue'         => $this->queue,

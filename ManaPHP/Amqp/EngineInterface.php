@@ -4,88 +4,26 @@ namespace ManaPHP\Amqp;
 
 interface EngineInterface
 {
-    /**
-     * @param Exchange $exchange
-     *
-     * @return void
-     */
-    public function exchangeDeclare($exchange);
+    public function exchangeDeclare(Exchange $exchange): void;
 
-    /**
-     * @param string $exchange
-     * @param bool   $if_unused
-     * @param bool   $nowait
-     *
-     * @return void
-     */
-    public function exchangeDelete($exchange, $if_unused = false, $nowait = false);
+    public function exchangeDelete(string $exchange, bool $if_unused = false, bool $nowait = false)：void;
 
-    /**
-     * @param Queue $queue
-     *
-     * @return void
-     */
-    public function queueDeclare($queue);
+    public function queueDeclare(Queue $queue): void;
 
-    /**
-     * @param string $queue
-     * @param bool   $if_unused
-     * @param bool   $if_empty
-     * @param bool   $nowait
-     *
-     * @return void
-     */
-    public function queueDelete($queue, $if_unused, $if_empty, $nowait);
+    public function queueDelete(string $queue, bool $if_unused, bool $if_empty, bool $nowait): void;
 
-    /**
-     * @param Binding $binding
-     *
-     * @return void
-     */
-    public function queueBind($binding);
+    public function queueBind(Binding $binding): void;
 
-    /**
-     * @param Binding $binding
-     *
-     * @return void
-     */
-    public function queueUnbind($binding);
+    public function queueUnbind(Binding $binding): void;
 
-    /**
-     * @param string|Exchange $exchange
-     * @param string|Queue    $routing_key
-     * @param string|array    $body
-     * @param array           $properties
-     * @param bool            $mandatory
-     *
-     * @return void
-     */
-    public function basicPublish($exchange, $routing_key, $body, $properties, $mandatory);
+    public function basicPublish(string|Exchange $exchange, string|Queue $routing_key, string|array $body,
+        array $properties, bool $mandatory
+    ): void;
 
-    /**
-     * @param string|Queue $queue
-     * @param callable     $callback
-     * @param bool         $no_ack
-     * @param bool         $exclusive
-     * @param string       $tag
-     *
-     * @return string
-     */
-    public function basicConsume($queue, $callback, $no_ack, $exclusive, $tag);
+    public function basicConsume(string|Queue $queue, callable $callback, bool $no_ack, bool $exclusive, string $tag
+    ): string;
 
-    /**
-     * @param int $prefetchSize
-     * @param int $prefetchCount
-     *
-     * @return void
-     */
-    public function wait($prefetchSize, $prefetchCount);
+    public function wait(int $prefetchSize, int $prefetchCount): void;
 
-    /**
-     * @param mixed  $message
-     * @param string $queue
-     *
-     * @return MessageInterface
-     */
-    public function wrapMessage($message, $queue);
+    public function wrapMessage(mixed $message, string $queue): MessageInterface;
 }
