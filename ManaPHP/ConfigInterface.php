@@ -9,7 +9,7 @@ interface ConfigInterface
 
     public function get(?string $key = null, mixed $default = null): mixed;
 
-    public function set(string $key, mixed $value): static;
+    public function set(string $key, mixed $value): mixed;
 
     public function has(string $key): bool;
 }
