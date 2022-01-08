@@ -25,7 +25,7 @@ use ManaPHP\Html\Renderer\EngineInterface;
 
 class Markdown extends Component implements EngineInterface
 {
-    const version = '1.8.0-beta-7'; //bfaa76d370ecfae6fac85b30c15b90cc23cce895
+    public const version = '1.8.0-beta-7'; //bfaa76d370ecfae6fac85b30c15b90cc23cce895
 
     public function render(string $file, array $vars = []): void
     {
