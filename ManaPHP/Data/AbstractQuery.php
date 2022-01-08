@@ -325,7 +325,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
 
     public function limit(int $limit, ?int $offset = null): static
     {
-        $this->limit = $limit > 0 ? (int)$limit : null;
+        $this->limit = $limit > 0 ? $limit : null;
         $this->offset = $offset > 0 ? (int)$offset : null;
 
         return $this;

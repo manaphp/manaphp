@@ -52,7 +52,7 @@ class Container implements ContainerInterface
             $prefix = substr($class, 0, -9);
             if (class_exists($prefix)) {
                 $exists = true;
-                $class = (string)$prefix;
+                $class = $prefix;
             } elseif (class_exists($factory = $prefix . 'Factory')) {
                 $exists = true;
                 $class = $factory;

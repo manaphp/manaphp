@@ -54,7 +54,7 @@ class CssToXPath
 
     protected function transformInternal(string $path_src): string
     {
-        $path = (string)$path_src;
+        $path = $path_src;
 
         if (str_contains($path, ',')) {
             $paths = explode(',', $path);

@@ -322,9 +322,9 @@ class Query extends AbstractQuery
 
             if (is_scalar($value)) {
                 if (is_int($value)) {
-                    $this->filters[] = [$field => ['$in' => [(string)$value, (int)$value]]];
+                    $this->filters[] = [$field => ['$in' => [(string)$value, $value]]];
                 } elseif (is_float($value)) {
-                    $this->filters[] = [$field => ['$in' => [(string)$value, (float)$value]]];
+                    $this->filters[] = [$field => ['$in' => [(string)$value, $value]]];
                 } else {
                     $this->filters[] = [$field => ['$in' => [(string)$value, (int)$value, (float)$value]]];
                 }

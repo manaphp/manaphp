@@ -81,7 +81,7 @@ class DataDump extends Component implements DataDumpInterface
         }
 
         if (substr_count($message[0], '%') + 1 >= ($count = count($message)) && isset($message[$count - 1])) {
-            foreach ((array)$message as $k => $v) {
+            foreach ($message as $k => $v) {
                 if ($k === 0 || is_scalar($v) || $v === null) {
                     continue;
                 }

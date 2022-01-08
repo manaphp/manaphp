@@ -75,7 +75,7 @@ class Response extends Component implements ResponseInterface
     {
         $context = $this->context;
 
-        $context->status_code = (int)$code;
+        $context->status_code = $code;
         $context->status_text = $text ?: $this->getStatusText($code);
 
         return $this;

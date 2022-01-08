@@ -465,7 +465,7 @@ class Query extends AbstractQuery
 
     public function forUpdate(bool $forUpdate = true): static
     {
-        $this->for_update = (bool)$forUpdate;
+        $this->for_update = $forUpdate;
 
         return $this;
     }
