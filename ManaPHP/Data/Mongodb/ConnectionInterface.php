@@ -1,88 +1,26 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Mongodb;
 
 interface ConnectionInterface
 {
-    /**
-     * @param string $namespace
-     * @param array  $document
-     *
-     * @return int
-     */
-    public function insert($namespace, $document);
+    public function insert(string $namespace, array $document): int;
 
-    /**
-     * @param string  $namespace
-     * @param array[] $documents
-     *
-     * @return int
-     */
-    public function bulkInsert($namespace, $documents);
+    public function bulkInsert(string $namespace, array $documents): int;
 
-    /**
-     * @param string $source
-     * @param array  $document
-     * @param array  $filter
-     *
-     * @return int
-     */
-    public function update($source, $document, $filter);
+    public function update(string $source, array $document, array $filter): int;
 
-    /**
-     * @param string $source
-     * @param array  $documents
-     * @param string $primaryKey
-     *
-     * @return int
-     * @throws \ManaPHP\Data\Mongodb\Exception
-     */
-    public function bulkUpdate($source, $documents, $primaryKey);
+    public function bulkUpdate(string $source, array $documents, string $primaryKey): int;
 
-    /**
-     * @param string $namespace
-     * @param array  $document
-     * @param string $primaryKey
-     *
-     * @return int
-     * @throws \ManaPHP\Data\Mongodb\Exception
-     */
-    public function upsert($namespace, $document, $primaryKey);
+    public function upsert(string $namespace, array $document, string $primaryKey): int;
 
-    /**
-     * @param string $namespace
-     * @param array  $documents
-     * @param string $primaryKey
-     *
-     * @return int
-     * @throws \ManaPHP\Data\Mongodb\Exception
-     */
-    public function bulkUpsert($namespace, $documents, $primaryKey);
+    public function bulkUpsert(string $namespace, array $documents, string $primaryKey): int;
 
-    /**
-     * @param string $namespace
-     * @param array  $filter
-     *
-     * @return int
-     * @throws \ManaPHP\Data\Mongodb\Exception
-     */
-    public function delete($namespace, $filter);
+    public function delete(string $namespace, array $filter): int;
 
-    /**
-     * @param string   $namespace
-     * @param array    $filter
-     * @param array    $options
-     * @param bool|int $secondaryPreferred
-     *
-     * @return array[]
-     */
-    public function fetchAll($namespace, $filter = [], $options = [], $secondaryPreferred = true);
+    public function fetchAll(string $namespace, array $filter = [], array $options = [], bool $secondaryPreferred = true
+    ): array;
 
-    /**
-     * @param array  $command
-     * @param string $db
-     *
-     * @return array[]
-     */
-    public function command($command, $db);
+    public function command(array $command, string $db): array;
 }

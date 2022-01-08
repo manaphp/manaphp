@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Mongodb;
 
@@ -10,46 +11,22 @@ use MongoDB\Driver\Manager;
 use MongoDB\Driver\Query as MongodbQuery;
 use MongoDB\Driver\ReadPreference;
 use MongoDB\Driver\WriteConcern;
+use MongoDB\Driver\WriteResult;
 
 class Connection extends Component implements ConnectionInterface
 {
-    /**
-     * @var string
-     */
-    protected $uri;
+    protected string $uri;
+    protected ?Manager $manager = null;
+    protected WriteConcern $writeConcern;
+    protected int $heartbeat = 60;
+    protected ?float $last_heartbeat = null;
 
-    /**
-     * @var \MongoDB\Driver\Manager
-     */
-    protected $manager;
-
-    /**
-     * @var \MongoDB\Driver\WriteConcern
-     */
-    protected $writeConcern;
-
-    /**
-     * @var int
-     */
-    protected $heartbeat = 60;
-
-    /**
-     * @var float
-     */
-    protected $last_heartbeat;
-
-    /**
-     * @param string $uri
-     */
-    public function __construct($uri)
+    public function __construct(string $uri)
     {
         $this->uri = $uri;
     }
 
-    /**
-     * @return bool
-     */
-    protected function ping()
+    protected function ping(): bool
     {
         try {
             $command = new Command(['ping' => 1]);
@@ -60,10 +37,7 @@ class Connection extends Component implements ConnectionInterface
         }
     }
 
-    /**
-     * @return \MongoDB\Driver\Manager
-     */
-    protected function getManager()
+    protected function getManager(): Manager
     {
         $uri = $this->uri;
 
@@ -84,14 +58,7 @@ class Connection extends Component implements ConnectionInterface
         return $this->manager;
     }
 
-    /**
-     * @param string                    $namespace
-     * @param \MongoDB\Driver\BulkWrite $bulk
-     *
-     * @return \MongoDB\Driver\WriteResult
-     * @throws \ManaPHP\Data\Mongodb\Exception
-     */
-    public function bulkWrite($namespace, $bulk)
+    public function bulkWrite(string $namespace, BulkWrite $bulk): WriteResult
     {
         if ($this->writeConcern === null) {
             try {
@@ -114,13 +81,7 @@ class Connection extends Component implements ConnectionInterface
         return $result;
     }
 
-    /**
-     * @param string $namespace
-     * @param array  $document
-     *
-     * @return int
-     */
-    public function insert($namespace, $document)
+    public function insert(string $namespace, array $document): int
     {
         $bulk = new BulkWrite();
 
@@ -129,14 +90,7 @@ class Connection extends Component implements ConnectionInterface
         return $this->bulkWrite($namespace, $bulk)->getInsertedCount();
     }
 
-    /**
-     * @param string  $namespace
-     * @param array[] $documents
-     *
-     * @return int
-     * @throws \ManaPHP\Data\Mongodb\Exception
-     */
-    public function bulkInsert($namespace, $documents)
+    public function bulkInsert(string $namespace, array $documents): int
     {
         $bulk = new BulkWrite();
 
@@ -147,14 +101,7 @@ class Connection extends Component implements ConnectionInterface
         return $this->bulkWrite($namespace, $bulk)->getInsertedCount();
     }
 
-    /**
-     * @param string $source
-     * @param array  $document
-     * @param array  $filter
-     *
-     * @return int
-     */
-    public function update($source, $document, $filter)
+    public function update(string $source, array $document, array $filter): int
     {
         $bulk = new BulkWrite();
 
@@ -167,14 +114,7 @@ class Connection extends Component implements ConnectionInterface
         return $this->bulkWrite($source, $bulk)->getModifiedCount();
     }
 
-    /**
-     * @param string $source
-     * @param array  $documents
-     * @param string $primaryKey
-     *
-     * @return int
-     */
-    public function bulkUpdate($source, $documents, $primaryKey)
+    public function bulkUpdate(string $source, array $documents, string $primaryKey): int
     {
         $bulk = new BulkWrite();
 
@@ -191,15 +131,7 @@ class Connection extends Component implements ConnectionInterface
         return $this->bulkWrite($source, $bulk)->getModifiedCount();
     }
 
-    /**
-     * @param string $namespace
-     * @param array  $document
-     * @param string $primaryKey
-     *
-     * @return int
-     * @throws \ManaPHP\Data\Mongodb\Exception
-     */
-    public function upsert($namespace, $document, $primaryKey)
+    public function upsert(string $namespace, array $document, string $primaryKey): int
     {
         $bulk = new BulkWrite();
 
@@ -212,14 +144,7 @@ class Connection extends Component implements ConnectionInterface
         return $this->bulkWrite($namespace, $bulk)->getUpsertedCount();
     }
 
-    /**
-     * @param string $namespace
-     * @param array  $documents
-     * @param string $primaryKey
-     *
-     * @return int
-     */
-    public function bulkUpsert($namespace, $documents, $primaryKey)
+    public function bulkUpsert(string $namespace, array $documents, string $primaryKey): int
     {
         $bulk = new BulkWrite();
 
@@ -234,14 +159,7 @@ class Connection extends Component implements ConnectionInterface
         return $this->bulkWrite($namespace, $bulk)->getUpsertedCount();
     }
 
-    /**
-     * @param string $namespace
-     * @param array  $filter
-     *
-     * @return int
-     * @throws \ManaPHP\Data\Mongodb\Exception
-     */
-    public function delete($namespace, $filter)
+    public function delete(string $namespace, array $filter): int
     {
         $bulk = new BulkWrite();
 
@@ -254,16 +172,8 @@ class Connection extends Component implements ConnectionInterface
         return $this->bulkWrite($namespace, $bulk)->getDeletedCount();
     }
 
-    /**
-     * @param string         $namespace
-     * @param array          $filter
-     * @param array          $options
-     * @param ReadPreference $readPreference
-     *
-     * @return array
-     */
-    protected function fetchAllInternal($namespace, $filter, $options, $readPreference)
-    {
+    protected function fetchAllInternal(string $namespace, array $filter, array $options, ReadPreference $readPreference
+    ): array {
         $cursor = $this->getManager()->executeQuery(
             $namespace, new MongodbQuery($filter, $options), $readPreference
         );
@@ -271,16 +181,8 @@ class Connection extends Component implements ConnectionInterface
         return $cursor->toArray();
     }
 
-    /**
-     * @param string   $namespace
-     * @param array    $filter
-     * @param array    $options
-     * @param bool|int $secondaryPreferred
-     *
-     * @return array[]
-     */
-    public function fetchAll($namespace, $filter = [], $options = [], $secondaryPreferred = true)
-    {
+    public function fetchAll(string $namespace, array $filter = [], array $options = [], bool $secondaryPreferred = true
+    ): array {
         if (is_bool($secondaryPreferred)) {
             if ($secondaryPreferred) {
                 $readPreference = new ReadPreference(ReadPreference::RP_SECONDARY_PREFERRED);
@@ -312,13 +214,7 @@ class Connection extends Component implements ConnectionInterface
         return $result;
     }
 
-    /**
-     * @param array  $command
-     * @param string $db
-     *
-     * @return array[]
-     */
-    public function command($command, $db)
+    public function command(array $command, string $db): array
     {
         $start_time = microtime(true);
         if ($start_time - $this->last_heartbeat > 1.0) {
@@ -333,10 +229,7 @@ class Connection extends Component implements ConnectionInterface
         }
     }
 
-    /**
-     * @return void
-     */
-    public function close()
+    public function close(): void
     {
         $this->manager = null;
         $this->last_heartbeat = null;
