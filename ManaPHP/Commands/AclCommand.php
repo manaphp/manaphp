@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
@@ -15,7 +16,7 @@ class AclCommand extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    public function listAction($role = '')
+    public function listAction(string $role = ''): void
     {
         foreach ($this->aclBuilder->getControllers() as $controller) {
             /** @var \ManaPHP\Http\Controller $controllerInstance */

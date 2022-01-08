@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
@@ -12,7 +13,7 @@ class UuidCommand extends Command
      *
      * @param int $count
      */
-    public function defaultAction($count = 5)
+    public function defaultAction(int $count = 5): void
     {
         for ($i = 0; $i < $count; $i++) {
             $this->console->writeLn(Str::uuid());

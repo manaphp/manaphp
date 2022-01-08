@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
@@ -16,7 +17,7 @@ class RpcCommand extends \ManaPHP\Cli\Command
      * @return void
      * @throws \ManaPHP\Exception\RuntimeException
      */
-    public function servicesAction($output = '@tmp/rpc_services')
+    public function servicesAction(string $output = '@tmp/rpc_services'): void
     {
         foreach (LocalFS::glob('@app/Controllers/?*Controller.php') as $file) {
             $className = 'App\\Controllers\\' . basename($file, '.php');
@@ -45,7 +46,7 @@ class RpcCommand extends \ManaPHP\Cli\Command
      *
      * @return string
      */
-    protected function renderService($class, $methods)
+    protected function renderService(string $class, array $methods): string
     {
         $serviceName = basename($class, 'Controller') . 'Service';
 

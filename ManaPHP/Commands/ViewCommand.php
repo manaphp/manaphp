@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Data\ModelInterface;
 
 class ViewCommand extends \ManaPHP\Cli\Command
 {
@@ -12,7 +14,7 @@ class ViewCommand extends \ManaPHP\Cli\Command
      * @return string
      * @noinspection PhpUnusedParameterInspection
      */
-    public function renderRequestForm($model)
+    public function renderRequestForm(ModelInterface $model): string
     {
         $content = <<<HTML
 <request-form>
@@ -26,7 +28,7 @@ HTML;
      *
      * @return string
      */
-    public function renderDetailForm($model)
+    public function renderDetailForm(ModelInterface $model): string
     {
         $content = PHP_EOL . <<<HTML
 <detail-form>
@@ -55,7 +57,7 @@ HTML;
      *
      * @return string
      */
-    public function renderCreateForm($model)
+    public function renderCreateForm(ModelInterface $model): string
     {
         if (!$fields = $model->safeFields()) {
             return '';
@@ -81,7 +83,7 @@ HTML;
      *
      * @return string
      */
-    public function renderEditForm($model)
+    public function renderEditForm(ModelInterface $model): string
     {
         if (!$fields = $model->safeFields()) {
             return '';
@@ -113,7 +115,7 @@ HTML;
      *
      * @return bool
      */
-    public function isTimestampField($model, $field)
+    public function isTimestampField(ModelInterface $model, string $field): bool
     {
         if (!in_array($field, $model->intFields(), true)) {
             return false;
@@ -127,7 +129,7 @@ HTML;
      *
      * @return string
      */
-    public function renderResultTable($model)
+    public function renderResultTable(ModelInterface $model): string
     {
         $content = PHP_EOL . <<<HTML
 <result-table>
@@ -180,7 +182,7 @@ HTML;
      * @return string
      * @noinspection PhpUnusedParameterInspection
      */
-    public function renderCss($model)
+    public function renderCss(ModelInterface $model): string
     {
         $content = PHP_EOL . <<<HTML
 @section('css')
@@ -197,7 +199,7 @@ HTML;
      *
      * @return string
      */
-    public function renderScript($model)
+    public function renderScript(ModelInterface $model): string
     {
         $fields = $model->safeFields();
 
@@ -283,7 +285,7 @@ HTML;
      *
      * @return string
      */
-    public function render($model)
+    public function render(ModelInterface $model): string
     {
         $content = $this->renderRequestForm($model);
         $content .= $this->renderDetailForm($model);
@@ -301,7 +303,7 @@ HTML;
      *
      * @return void
      */
-    public function defaultAction()
+    public function defaultAction(): void
     {
         foreach (LocalFS::glob('@app/Models/*.php') as $model_file) {
             if (basename($model_file) === 'Model.php') {

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
@@ -32,7 +33,7 @@ class BosCommand extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    public function createBucketAction($bucket, $base_url = '')
+    public function createBucketAction(string $bucket, string $base_url = ''): void
     {
         $this->console->writeLn($this->bosClient->createBucket($bucket, $base_url));
     }
@@ -48,8 +49,9 @@ class BosCommand extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    public function listAction($bucket, $key = '', $prefix = '', $mime_type = '', $extension = '')
-    {
+    public function listAction(string $bucket, string $key = '', string $prefix = '', string $mime_type = '',
+        string $extension = ''
+    ): void {
         $filters = [];
 
         $filters['key'] = $key;
@@ -72,7 +74,7 @@ class BosCommand extends \ManaPHP\Cli\Command
      *
      * @return int
      */
-    public function importAction($bucket, $dir, $prefix)
+    public function importAction(string $bucket, string $dir, string $prefix): int
     {
         if (!LocalFS::dirExists($dir)) {
             return $this->console->error(['`:dir` directory is not exists', 'dir' => $dir]);
@@ -90,7 +92,7 @@ class BosCommand extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    protected function recursiveImport($dir, $bucket, $prefix)
+    protected function recursiveImport(string $dir, string $bucket, string $prefix): void
     {
         $dir = rtrim($dir, '\\/');
         $prefix = trim($prefix, '/');
@@ -116,7 +118,7 @@ class BosCommand extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    public function exportAction($bucket, $dir = '', $prefix = '', $key = '')
+    public function exportAction(string $bucket, string $dir = '', string $prefix = '', string $key = ''): void
     {
         $filters = [];
         $filters['prefix'] = $prefix;

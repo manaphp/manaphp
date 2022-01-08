@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
@@ -20,7 +21,7 @@ class ServeCommand extends Command
      *
      * @return void
      */
-    public function runAction($ip = '0.0.0.0', $port = 0)
+    public function runAction(string $ip = '0.0.0.0', int $port = 0): void
     {
         $router_str = <<<'STR'
 <?php

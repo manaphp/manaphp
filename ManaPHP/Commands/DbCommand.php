@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
@@ -16,7 +17,7 @@ class DbCommand extends \ManaPHP\Cli\Command
     /**
      * @return array
      */
-    protected function getDbServices()
+    protected function getDbServices(): array
     {
         $services = [];
         foreach ($this->config->get('dependencies') as $service => $config) {
@@ -34,7 +35,7 @@ class DbCommand extends \ManaPHP\Cli\Command
      *
      * @return array
      */
-    protected function getTables($service, $pattern = null)
+    protected function getTables(string $service, ?string $pattern = null): array
     {
         /** @var \ManaPHP\Data\DbInterface $db */
         $db = $this->container->get($service);
@@ -56,7 +57,7 @@ class DbCommand extends \ManaPHP\Cli\Command
      *
      * @return string
      */
-    protected function getConstantsByFile($modelName)
+    protected function getConstantsByFile(string $modelName): string
     {
         $file = "@app/Models/$modelName.php";
         if (!LocalFS::fileExists($file)) {
@@ -81,7 +82,7 @@ class DbCommand extends \ManaPHP\Cli\Command
      *
      * @return string
      */
-    protected function getConstantsByDb($service, $table)
+    protected function getConstantsByDb(string $service, string $table): string
     {
         static $cached;
 
@@ -131,8 +132,9 @@ class DbCommand extends \ManaPHP\Cli\Command
      *
      * @return string
      */
-    protected function renderModel($service, $class, $table, $optimized = false, $camelized = false)
-    {
+    protected function renderModel(string $service, string $class, string $table, bool $optimized = false,
+        bool $camelized = false
+    ): string {
         /** @var Db $db */
         $db = $this->container->get($service);
         $metadata = $db->getMetadata($table);
@@ -274,7 +276,7 @@ class DbCommand extends \ManaPHP\Cli\Command
      *
      * @return string
      */
-    protected function renderTable($service, $table, $rootNamespace = 'App\Models')
+    protected function renderTable(string $service, string $table, string $rootNamespace = 'App\Models'): string
     {
         $plainClass = Str::pascalize($table);
         $modelName = $rootNamespace . '\\' . $plainClass;
@@ -324,7 +326,7 @@ class DbCommand extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    public function listAction($services = [], $table_pattern = '')
+    public function listAction(array $services = [], string $table_pattern = ''): void
     {
         foreach ($services ?: $this->getDbServices() as $service) {
             /** @var \ManaPHP\Data\DbInterface $db */
@@ -349,7 +351,7 @@ class DbCommand extends \ManaPHP\Cli\Command
     /**
      * @return array
      */
-    protected function getAreas()
+    protected function getAreas(): array
     {
         $areas = [];
         foreach (LocalFS::glob('@app/Areas/*', GLOB_ONLYDIR) as $item) {
@@ -372,8 +374,8 @@ class DbCommand extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    public function modelAction($table, $service = '', $optimized = false, $camelized = false)
-    {
+    public function modelAction(string $table, string $service = '', bool $optimized = false, bool $camelized = false
+    ): void {
         /** @var \ManaPHP\Data\DbInterface $db */
         if ($service) {
             $db = $this->container->get($service);
@@ -414,8 +416,9 @@ class DbCommand extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    public function modelsAction($services = [], $table_pattern = '', $optimized = false, $camelized = false)
-    {
+    public function modelsAction(array $services = [], string $table_pattern = '', bool $optimized = false,
+        bool $camelized = false
+    ): void {
         $areas = $this->getAreas();
 
         foreach ($services ?: $this->getDbServices() as $service) {
@@ -450,8 +453,8 @@ class DbCommand extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    public function tablesAction($services = [], $table_pattern = '', $namespace = 'App\Tables')
-    {
+    public function tablesAction(array $services = [], string $table_pattern = '', string $namespace = 'App\Tables'
+    ): void {
         if (!str_contains($namespace, '\\')) {
             $namespace = 'App\\' . ucfirst($namespace) . '\\Tables';
         }
@@ -478,7 +481,7 @@ class DbCommand extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    public function jsonAction($services = [], $table_pattern = '')
+    public function jsonAction(array $services = [], string $table_pattern = ''): void
     {
         foreach ($services ?: $this->getDbServices() as $service) {
             /** @var \ManaPHP\Data\DbInterface $db */
@@ -514,7 +517,7 @@ class DbCommand extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    public function csvAction($services = [], $table_pattern = '', $bom = false)
+    public function csvAction(array $services = [], string $table_pattern = '', bool $bom = false): void
     {
         foreach ($services ?: $this->getDbServices() as $service) {
             /** @var \ManaPHP\Data\Db $db */

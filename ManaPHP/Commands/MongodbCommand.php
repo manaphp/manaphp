@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
@@ -17,7 +18,7 @@ class MongodbCommand extends \ManaPHP\Cli\Command
      *
      * @return array
      */
-    protected function getServices($services)
+    protected function getServices(array $services): array
     {
         if ($services) {
             $container = $this->container;
@@ -56,7 +57,7 @@ class MongodbCommand extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    public function modelAction($input, $modelName, $optimized = false)
+    public function modelAction(string $input, string $modelName, bool $optimized = false): void
     {
         if (!str_contains($modelName, '\\')) {
             $modelName = 'App\\Models\\' . ucfirst($modelName);
@@ -82,11 +83,11 @@ class MongodbCommand extends \ManaPHP\Cli\Command
      * @throws \ManaPHP\Data\Mongodb\Exception
      */
     public function modelsAction(
-        $services = [],
-        $optimized = false,
-        $sample = 1000,
-        $db = []
-    ) {
+        array $services = [],
+        bool $optimized = false,
+        int $sample = 1000,
+        array $db = []
+    ): void {
         foreach ($this->getServices($services) as $service) {
             /** @var \ManaPHP\Data\Mongodb $mongodb */
             $mongodb = $this->container->get($service);
@@ -152,7 +153,7 @@ class MongodbCommand extends \ManaPHP\Cli\Command
      *
      * @return string[]
      */
-    protected function inferFieldTypes($docs)
+    protected function inferFieldTypes(array $docs): array
     {
         $fieldTypes = [];
         foreach ($docs as $doc) {
@@ -182,7 +183,7 @@ class MongodbCommand extends \ManaPHP\Cli\Command
      *
      * @return string
      */
-    protected function getConstants($modelName)
+    protected function getConstants(string $modelName): string
     {
         $file = "@app/Models/$modelName.php";
         if (!LocalFS::fileExists($file)) {
@@ -210,8 +211,9 @@ class MongodbCommand extends \ManaPHP\Cli\Command
      *
      * @return string
      */
-    protected function renderModel($fieldTypes, $modelName, $service, $namespace, $optimized = false)
-    {
+    protected function renderModel(array $fieldTypes, string $modelName, string $service, string $namespace,
+        bool $optimized = false
+    ): string {
         $fields = array_keys($fieldTypes);
 
         $hasPendingType = false;
@@ -333,7 +335,7 @@ class MongodbCommand extends \ManaPHP\Cli\Command
      *
      * @return false|string
      */
-    protected function inferPrimaryKey($fieldTypes, $modelName)
+    protected function inferPrimaryKey(array $fieldTypes, string $modelName): false|string
     {
         if (isset($fieldTypes['id'])) {
             return 'id';
@@ -367,7 +369,7 @@ class MongodbCommand extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    public function csvAction($services = [], $collection_pattern = '', $bom = false)
+    public function csvAction(array $services = [], string $collection_pattern = '', bool $bom = false): void
     {
         foreach ($this->getServices($services) as $service) {
             /** @var \ManaPHP\Data\Mongodb $mongodb */
@@ -452,8 +454,8 @@ class MongodbCommand extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    public function listAction($services = [], $collection_pattern = '', $field = '', $db = [])
-    {
+    public function listAction(array $services = [], string $collection_pattern = '', string $field = '', array $db = []
+    ): void {
         foreach ($this->getServices($services) as $service) {
             /** @var \ManaPHP\Data\Mongodb $mongodb */
             $mongodb = $this->container->get($service);

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
@@ -19,7 +20,7 @@ class AreaCommand extends Command
      *
      * @return int
      */
-    public function createAction($area = '')
+    public function createAction(string $area = ''): int
     {
         if ($area === '' && !$area = $this->request->getValue(0)) {
             return $this->console->error('area name is not provided');

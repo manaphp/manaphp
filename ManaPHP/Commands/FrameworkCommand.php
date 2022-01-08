@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
@@ -15,7 +16,7 @@ class FrameworkCommand extends Command
      *
      * @return string
      */
-    protected function stripWhitespaces($str)
+    protected function stripWhitespaces(string $str): string
     {
         $tmp = '@tmp/framework/strip.tmp';
         LocalFS::filePut($tmp, $str);
@@ -33,7 +34,7 @@ class FrameworkCommand extends Command
      * @return array
      *
      */
-    protected function getSourceFiles($dir)
+    protected function getSourceFiles(string $dir): array
     {
         $files = [];
 
@@ -62,7 +63,7 @@ class FrameworkCommand extends Command
      *
      * @return string
      */
-    protected function minify($content)
+    protected function minify(string $content): string
     {
         $content = preg_replace('#\s*/\*\*.*?\*/#ms', '', $content);//remove comments
         $content = preg_replace('#([\r\n]+)\s*\\1#', '\\1', $content);//remove blank lines
@@ -76,7 +77,7 @@ class FrameworkCommand extends Command
      *
      * @return int
      */
-    public function minifyAction()
+    public function minifyAction(): int
     {
         $ManaPHPSrcDir = $this->alias->get('@manaphp');
         $ManaPHPDstDir = $ManaPHPSrcDir . '_' . date('ymd');

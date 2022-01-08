@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
@@ -17,7 +18,7 @@ class DebuggerCommand extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    public function watchAction($id = null, $path = '', $ip = '')
+    public function watchAction(?string $id = null, string $path = '', string $ip = ''): void
     {
         $id = $id ?? $this->config->get('id');
         $key = "__debuggerPlugin:$id:*";

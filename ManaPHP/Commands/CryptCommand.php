@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
@@ -12,7 +13,7 @@ class CryptCommand extends \ManaPHP\Cli\Command
      *
      * @param string $type
      */
-    public function derivedAction($type)
+    public function derivedAction(string $type): void
     {
         $this->console->writeLn($this->crypt->getDerivedKey($type));
     }

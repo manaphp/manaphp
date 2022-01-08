@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
@@ -17,7 +18,7 @@ class SwordCommand extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    public function compileAction($replace = false)
+    public function compileAction(bool $replace = false): void
     {
         LocalFS::dirDelete('@data/sword');
         $this->console->writeLn('delete `@data/sword` directory success');
@@ -47,7 +48,7 @@ class SwordCommand extends \ManaPHP\Cli\Command
      *
      * @return void
      */
-    protected function compile($file, $replace)
+    protected function compile(string $file, bool $replace): void
     {
         if ($replace) {
             $compiled = str_replace('.sword', '.phtml', $file);

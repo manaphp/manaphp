@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
@@ -14,7 +15,7 @@ class ExcelCommand extends Command
      *
      * @return void
      */
-    public function odsAction($file)
+    public function odsAction(string $file): void
     {
         if (LocalFS::dirExists($file)) {
             $file .= '/content.xml';

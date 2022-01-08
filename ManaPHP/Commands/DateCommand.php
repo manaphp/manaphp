@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
@@ -18,7 +19,7 @@ class DateCommand extends Command
      *
      * @return int|false
      */
-    protected function getRemoteTimestamp($url, $onlyOnce = false)
+    protected function getRemoteTimestamp(string $url, bool $onlyOnce = false): int|false
     {
         if (!str_contains($url, '://')) {
             $url = 'http://' . $url;
@@ -49,7 +50,7 @@ class DateCommand extends Command
      *
      * @return  int
      */
-    public function syncAction($url = 'https://www.baidu.com')
+    public function syncAction(string $url = 'https://www.baidu.com'): int
     {
         $timestamp = $this->getRemoteTimestamp($url);
         if ($timestamp === false) {
@@ -68,7 +69,7 @@ class DateCommand extends Command
      *
      * @return int
      */
-    public function remoteAction($url = 'https://www.baidu.com')
+    public function remoteAction(string $url = 'https://www.baidu.com'): int
     {
         $timestamp = $this->getRemoteTimestamp($url);
         if ($timestamp === false) {
@@ -86,7 +87,7 @@ class DateCommand extends Command
      *
      * @return int
      */
-    public function diffAction($url = 'https://www.baidu.com')
+    public function diffAction(string $url = 'https://www.baidu.com'): int
     {
         $remote_ts = $this->getRemoteTimestamp($url);
         $local_ts = time();
@@ -108,7 +109,7 @@ class DateCommand extends Command
      *
      * @return int
      */
-    public function setAction($date = '', $time = '')
+    public function setAction(string $date = '', string $time = ''): int
     {
         $arguments = $this->request->getValues();
         if (count($arguments) === 1) {
@@ -189,7 +190,7 @@ class DateCommand extends Command
      *
      * @return void
      */
-    protected function updateDate($timestamp)
+    protected function updateDate(int $timestamp): void
     {
         if (DIRECTORY_SEPARATOR === '\\') {
             system('date ' . date('Y-m-d', $timestamp));

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
@@ -19,7 +20,7 @@ class BashCompletionCommand extends Command
      *
      * @return string[]
      */
-    protected function getActions($command)
+    protected function getActions(string $command): array
     {
         $actions = [];
         try {
@@ -45,7 +46,7 @@ class BashCompletionCommand extends Command
      *
      * @return string[]
      */
-    protected function getArgumentNames($command, $action)
+    protected function getArgumentNames(string $command, string $action): array
     {
         if (!$commandClassName = $this->container->getDefinition(Str::camelize($command) . 'Command')) {
             return [];
@@ -72,7 +73,7 @@ class BashCompletionCommand extends Command
      *
      * @return array
      */
-    protected function getArgumentValues($command, $action, $argumentName, $current)
+    protected function getArgumentValues(string $command, string $action, string $argumentName, string $current): array
     {
         if (!$commandClassName = $this->container->getDefinition(Str::camelize($command) . 'Command')) {
             return [];
@@ -109,7 +110,7 @@ class BashCompletionCommand extends Command
      *
      * @return array
      */
-    protected function filterWords($words, $current)
+    protected function filterWords(array $words, string $current): array
     {
         if ($current === '') {
             return $words;
@@ -174,7 +175,7 @@ class BashCompletionCommand extends Command
      *
      * @return int
      */
-    public function completeAction()
+    public function completeAction(): int
     {
         $arguments = array_slice($GLOBALS['argv'], 3);
         $position = (int)$arguments[0];
@@ -227,7 +228,7 @@ class BashCompletionCommand extends Command
      *
      * @return int
      */
-    public function installAction()
+    public function installAction(): int
     {
         $content = <<<'EOT'
 #!/bin/bash

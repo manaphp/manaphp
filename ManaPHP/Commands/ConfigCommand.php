@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
@@ -14,7 +15,7 @@ class ConfigCommand extends \ManaPHP\Cli\Command
      *
      * @param string $path
      */
-    public function dumpAction($path = '')
+    public function dumpAction(string $path = ''): void
     {
         $config = $this->config->get();
         $config = Arr::get($config, $path);

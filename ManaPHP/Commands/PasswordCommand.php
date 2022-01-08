@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
@@ -17,7 +18,7 @@ class PasswordCommand extends Command
      *
      * @return void
      */
-    public function generateAction($length = 32, $password = '', $base = 62, $cost = 0)
+    public function generateAction(int $length = 32, string $password = '', int $base = 62, int $cost = 0): void
     {
         if ($password === '') {
             $password = Str::random($length, $base);

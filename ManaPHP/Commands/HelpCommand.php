@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
@@ -21,7 +22,7 @@ class HelpCommand extends Command
      *
      * @return int
      */
-    public function commandsAction()
+    public function commandsAction(): int
     {
         $builtin_commands = [];
         $app_commands = [];
@@ -91,7 +92,7 @@ class HelpCommand extends Command
      *
      * @return string
      */
-    protected function getCommandDescription($class)
+    protected function getCommandDescription(string $class): string
     {
         $rClass = new ReflectionClass($class);
         if (($comment = $rClass->getDocComment()) === false) {
@@ -115,7 +116,7 @@ class HelpCommand extends Command
      *
      * @return string[]
      */
-    protected function getActions($commandClassName)
+    protected function getActions(string $commandClassName): array
     {
         $actions = [];
         $rClass = new ReflectionClass($commandClassName);
@@ -155,7 +156,7 @@ class HelpCommand extends Command
      *
      * @throws \ManaPHP\Exception\JsonException
      */
-    protected function commandHelps($rMethod, $method)
+    protected function commandHelps(ReflectionMethod $rMethod, string $method): void
     {
         $lines = [];
         foreach (preg_split('#[\r\n]+#', $rMethod->getDocComment()) as $line) {
@@ -265,7 +266,7 @@ class HelpCommand extends Command
      * @param string $command
      * @param string $action
      */
-    public function commandAction($command, $action = '')
+    public function commandAction(string $command, string $action = ''): int
     {
         $camelizedCommand = Str::camelize($command);
         if (($definition = $this->commandManager->getCommands()[$camelizedCommand] ?? null) === null) {
@@ -294,5 +295,7 @@ class HelpCommand extends Command
                 $this->commandHelps($rMethod, $method);
             }
         }
+
+        return 0;
     }
 }

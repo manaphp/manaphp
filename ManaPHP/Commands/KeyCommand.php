@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
@@ -15,7 +16,7 @@ class KeyCommand extends Command
      *
      * @return void
      */
-    public function generateAction($length = 32, $lowercase = 0)
+    public function generateAction(int $length = 32, int $lowercase = 0): void
     {
         $key = Str::random($length);
         $this->console->writeLn($lowercase ? strtolower($key) : $key);
