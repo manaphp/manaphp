@@ -1,49 +1,21 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
 interface TableInterface
 {
-    /**
-     * Returns table name mapped in the model
-     *
-     * @return string
-     */
-    public function table();
+    public function table(): string;
 
-    /**
-     * Gets internal database connection
-     *
-     * @return string
-     */
-    public function db();
+    public function db(): string;
 
-    /**
-     * @return array
-     */
-    public function getAnyShard();
+    public function getAnyShard(): array;
 
-    /**
-     * @param array|\ManaPHP\Data\ModelInterface $context
-     *
-     * @return array
-     */
-    public function getUniqueShard($context);
+    public function getUniqueShard(array|ModelInterface $context): array;
 
-    /**
-     * @param array|\ManaPHP\Data\ModelInterface $context
-     *
-     * @return array
-     */
-    public function getMultipleShards($context);
+    public function getMultipleShards(array|ModelInterface $context): array;
 
-    /**
-     * @return array
-     */
-    public function getAllShards();
+    public function getAllShards(): array;
 
-    /**
-     * @return static
-     */
-    public static function sample();
+    public static function sample(): static;
 }

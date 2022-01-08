@@ -204,6 +204,7 @@
         </list>
       </option>
     </inspection_tool>
+    <inspection_tool class="ShortListSyntaxCanBeUsedInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="StrTrUsageAsStrReplaceInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
   </profile>
 </component>

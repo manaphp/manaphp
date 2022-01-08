@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
@@ -12,10 +13,7 @@ use ManaPHP\Helper\Str;
  */
 abstract class AbstractTable implements TableInterface
 {
-    /**
-     * @return array
-     */
-    public function getAnyShard()
+    public function getAnyShard(): array
     {
         $shards = $this->getAllShards();
 
@@ -27,7 +25,7 @@ abstract class AbstractTable implements TableInterface
      *
      * @return array
      */
-    public function getUniqueShard($context)
+    public function getUniqueShard(array|ModelInterface $context): array
     {
         $shards = $this->getMultipleShards($context);
         if (count($shards) !== 1) {
@@ -47,7 +45,7 @@ abstract class AbstractTable implements TableInterface
      *
      * @return array
      */
-    public function getMultipleShards($context)
+    public function getMultipleShards(array|ModelInterface $context): array
     {
         $db = $this->db();
         $table = $this->table();
@@ -59,10 +57,7 @@ abstract class AbstractTable implements TableInterface
         }
     }
 
-    /**
-     * @return array
-     */
-    public function getAllShards()
+    public function getAllShards(): array
     {
         $db = $this->db();
         $table = $this->table();
@@ -74,21 +69,13 @@ abstract class AbstractTable implements TableInterface
         }
     }
 
-    /**
-     * Returns table name mapped in the model
-     *
-     * @return string
-     */
-    public function table()
+    public function table(): string
     {
         $class = static::class;
         return Str::snakelize(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1));
     }
 
-    /**
-     * @return static
-     */
-    public static function sample()
+    public static function sample(): static
     {
         static $cached;
 
@@ -101,22 +88,12 @@ abstract class AbstractTable implements TableInterface
         return $cached[$class];
     }
 
-    /**
-     * @param string $name
-     *
-     * @return mixed
-     */
-    public function getShared($name)
+    public function getShared(string $name): mixed
     {
         return $this->_container->get($name);
     }
 
-    /**
-     * @param string $name
-     *
-     * @return mixed
-     */
-    public function __get($name)
+    public function __get(string $name): mixed
     {
         if ($name === '_container') {
             return $this->_container = container();
@@ -125,13 +102,7 @@ abstract class AbstractTable implements TableInterface
         }
     }
 
-    /**
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return void
-     */
-    public function __set($name, $value)
+    public function __set(string $name, mixed $value): void
     {
         if (is_scalar($value)) {
             throw new MisuseException(['`%s` Table does\'t contains `%s` field', static::class, $name]);
@@ -140,12 +111,7 @@ abstract class AbstractTable implements TableInterface
         $this->$name = $value;
     }
 
-    /**
-     * @param $name
-     *
-     * @return bool
-     */
-    public function __isset($name)
+    public function __isset(string $name): bool
     {
         return false;
     }

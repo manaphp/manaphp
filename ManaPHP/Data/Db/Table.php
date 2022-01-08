@@ -1,13 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Db;
 
+use ManaPHP\Data\DbInterface;
+
 class Table extends \ManaPHP\Data\AbstractTable
 {
-    /**
-     * @return string
-     */
-    public function db()
+    public function db(): string
     {
         return 'db';
     }
@@ -17,138 +17,96 @@ class Table extends \ManaPHP\Data\AbstractTable
      *
      * @return \ManaPHP\Data\DbInterface
      */
-    public static function connection($context = null)
+    public static function connection(mixed $context = null): DbInterface
     {
         list($db) = static::sample()->getUniqueShard($context);
 
         return static::sample()->getShared($db);
     }
 
-    /**
-     * @param array $record
-     * @param bool  $fetchInsertId
-     *
-     * @return int|string|null
-     * @throws \ManaPHP\Data\Db\Exception
-     */
-    public static function insert($record, $fetchInsertId = false)
+    public static function insert(array $record, bool $fetchInsertId = false): mixed
     {
         $sample = static::sample();
 
-        list($db, $table) = $sample->getUniqueShard($record);
+        list($db_id, $table) = $sample->getUniqueShard($record);
 
         /** @var \ManaPHP\Data\DbInterface $db */
-        $db = static::sample()->getShared($db);
+        $db = static::sample()->getShared($db_id);
 
         return $db->insert($table, $record, $fetchInsertId);
     }
 
-    /**
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return int
-     */
-    public static function insertBySql($sql, $bind = [])
+    public static function insertBySql(string $sql, array $bind = []): int
     {
         $sample = static::sample();
 
         list($db, $table) = $sample->getUniqueShard($bind);
 
-        /** @var \ManaPHP\Data\DbInterface $db */
-        $db = static::sample()->getShared($db);
+        /** @var \ManaPHP\Data\DbInterface $dbInstance */
+        $dbInstance = static::sample()->getShared($db);
 
-        return $db->insertBySql($table, $sql, $bind);
+        return $dbInstance->insertBySql($table, $sql, $bind);
     }
 
-    /**
-     * Deletes data from a table using custom SQL syntax
-     *
-     * @param string|array $conditions
-     * @param array        $bind
-     *
-     * @return int
-     */
-    public static function delete($conditions, $bind = [])
+    public static function delete(string|array $conditions, array $bind = []): int
     {
         $shards = static::sample()->getMultipleShards($bind);
 
         $affected_count = 0;
         foreach ($shards as $db => $tables) {
-            /** @var \ManaPHP\Data\DbInterface $db */
-            $db = static::sample()->getShared($db);
+            /** @var \ManaPHP\Data\DbInterface $dbInstance */
+            $dbInstance = static::sample()->getShared($db);
 
             foreach ($tables as $table) {
-                $affected_count += $db->delete($table, $conditions, $bind);
+                $affected_count += $dbInstance->delete($table, $conditions, $bind);
             }
         }
 
         return $affected_count;
     }
 
-    /**
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return int
-     */
-    public static function deleteBySql($sql, $bind = [])
+    public static function deleteBySql(string $sql, array $bind = []): int
     {
         $shards = static::sample()->getMultipleShards($bind);
 
         $affected_count = 0;
         foreach ($shards as $db => $tables) {
-            /** @var \ManaPHP\Data\DbInterface $db */
-            $db = static::sample()->getShared($db);
+            /** @var \ManaPHP\Data\DbInterface $dbInstance */
+            $dbInstance = static::sample()->getShared($db);
 
             foreach ($tables as $table) {
-                $affected_count += $db->deleteBySql($table, $sql, $bind);
+                $affected_count += $dbInstance->deleteBySql($table, $sql, $bind);
             }
         }
 
         return $affected_count;
     }
 
-    /**
-     * Updates data on a table using custom SQL syntax
-     *
-     * @param array        $fieldValues
-     * @param string|array $conditions
-     * @param array        $bind
-     *
-     * @return    int
-     */
-    public static function update($fieldValues, $conditions, $bind = [])
+    public static function update(array $fieldValues, string|array $conditions, array $bind = []): int
     {
         $shards = static::sample()->getMultipleShards($bind);
 
         $affected_count = 0;
         foreach ($shards as $db => $tables) {
-            /** @var \ManaPHP\Data\DbInterface $db */
-            $db = static::sample()->getShared($db);
+            /** @var \ManaPHP\Data\DbInterface $dbInstance */
+            $dbInstance = static::sample()->getShared($db);
 
             foreach ($tables as $table) {
-                $affected_count += $db->update($table, $fieldValues, $conditions, $bind);
+                $affected_count += $dbInstance->update($table, $fieldValues, $conditions, $bind);
             }
         }
 
         return $affected_count;
     }
 
-    /**
-     * @param string $sql
-     * @param array  $bind
-     *
-     * @return int
-     */
-    public static function updateBySql($sql, $bind = [])
+    public static function updateBySql(string $sql, array $bind = []): int
     {
         $shards = static::sample()->getMultipleShards($bind);
 
         $affected_count = 0;
-        foreach ($shards as $db => $tables) {
+        foreach ($shards as $id => $tables) {
             /** @var \ManaPHP\Data\DbInterface $db */
-            $db = static::sample()->getShared($db);
+            $db = static::sample()->getShared($id);
 
             foreach ($tables as $table) {
                 $affected_count += $db->updateBySql($table, $sql, $bind);
