@@ -1,41 +1,17 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Db\Model;
 
+use ManaPHP\Data\Db\ModelInterface;
+
 interface MetadataInterface
 {
+    public function getAttributes(string|ModelInterface $model): array;
 
-    /**
-     * Returns table attributes names (fields)
-     *
-     * @param string|\ManaPHP\Data\Db\ModelInterface $model
-     *
-     * @return    array
-     */
-    public function getAttributes($model);
+    public function getPrimaryKeyAttributes(string|ModelInterface $model): array;
 
-    /**
-     * Returns an array of fields which are part of the primary key
-     *
-     * @param string|\ManaPHP\Data\Db\ModelInterface $model
-     *
-     * @return array
-     */
-    public function getPrimaryKeyAttributes($model);
+    public function getAutoIncrementAttribute(string|ModelInterface $model): ?string;
 
-    /**
-     * Returns attribute which is auto increment or null
-     *
-     * @param string|\ManaPHP\Data\Db\ModelInterface $model
-     *
-     * @return string |null
-     */
-    public function getAutoIncrementAttribute($model);
-
-    /**
-     * @param string $model
-     *
-     * @return array
-     */
-    public function getIntTypeAttributes($model);
+    public function getIntTypeAttributes(string|ModelInterface $model): array;
 }

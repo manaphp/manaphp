@@ -1,24 +1,20 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Data\Db\Model;
 
 use ManaPHP\Component;
 use ManaPHP\Data\Db;
+use ManaPHP\Data\Db\ModelInterface;
 
 /**
  * @property-read \ManaPHP\ConfigInterface $config
  */
 class Metadata extends Component implements MetadataInterface
 {
-    /**
-     * @var int
-     */
-    protected $ttl = 3600;
+    protected int $ttl = 3600;
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         if (isset($options['ttl'])) {
             $this->ttl = (int)$options['ttl'];
@@ -29,14 +25,7 @@ class Metadata extends Component implements MetadataInterface
         }
     }
 
-    /**
-     * Reads the complete meta-data for certain model
-     *
-     * @param string|\ManaPHP\Data\Db\ModelInterface $model
-     *
-     * @return array
-     */
-    protected function getMetadata($model)
+    protected function getMetadata(string|Db\ModelInterface $model): array
     {
         $modelName = is_string($model) ? $model : get_class($model);
         $key = __FILE__ . ':' . $modelName;
@@ -51,9 +40,9 @@ class Metadata extends Component implements MetadataInterface
         $modelInstance = is_string($model) ? $this->container->get($model) : $model;
 
         list($db, $table) = $modelInstance->getAnyShard();
-        /** @var \ManaPHP\Data\DbInterface $db */
-        $db = $this->container->get($db);
-        $data = $db->getMetadata($table);
+        /** @var \ManaPHP\Data\DbInterface $dbInstance */
+        $dbInstance = $this->container->get($db);
+        $data = $dbInstance->getMetadata($table);
 
         if ($this->ttl > 0) {
             apcu_store($key, $data);
@@ -62,48 +51,22 @@ class Metadata extends Component implements MetadataInterface
         return $data;
     }
 
-    /**
-     * Returns table attributes names (fields)
-     *
-     * @param string|\ManaPHP\Data\Db\ModelInterface $model
-     *
-     * @return array
-     */
-    public function getAttributes($model)
+    public function getAttributes(string|ModelInterface $model): array
     {
         return $this->getMetadata($model)[Db::METADATA_ATTRIBUTES];
     }
 
-    /**
-     * Returns an array of fields which are part of the primary key
-     *
-     * @param string|\ManaPHP\Data\Db\ModelInterface $model
-     *
-     * @return array
-     */
-    public function getPrimaryKeyAttributes($model)
+    public function getPrimaryKeyAttributes(string|ModelInterface $model): array
     {
         return $this->getMetadata($model)[Db::METADATA_PRIMARY_KEY];
     }
 
-    /**
-     * Returns attribute which is auto increment or null
-     *
-     * @param string|\ManaPHP\Data\Db\ModelInterface $model
-     *
-     * @return string |null
-     */
-    public function getAutoIncrementAttribute($model)
+    public function getAutoIncrementAttribute(string|ModelInterface $model): ?string
     {
         return $this->getMetadata($model)[Db::METADATA_AUTO_INCREMENT_KEY];
     }
 
-    /**
-     * @param string $model
-     *
-     * @return array
-     */
-    public function getIntTypeAttributes($model)
+    public function getIntTypeAttributes(string|ModelInterface $model): array
     {
         return $this->getMetadata($model)[Db::METADATA_INT_TYPE_ATTRIBUTES];
     }
