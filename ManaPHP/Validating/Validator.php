@@ -297,14 +297,14 @@ class Validator extends Component implements ValidatorInterface
         return $value;
     }
 
-    protected function validate_min(string $field, mixed $value, mixed $parameter): mixed
+    protected function validate_min(string $field, mixed $value, mixed $parameter): int|null|float
     {
         $number = $this->normalizeNumber($field, $value, $parameter);
 
         return $number < $parameter ? null : $number;
     }
 
-    protected function validate_max(string $field, mixed $value, mixed $parameter): mixed
+    protected function validate_max(string $field, mixed $value, mixed $parameter): int|null|float
     {
         $number = $this->normalizeNumber($field, $value, $parameter);
 
@@ -333,7 +333,7 @@ class Validator extends Component implements ValidatorInterface
         return mb_strlen($value) <= $parameter ? $value : null;
     }
 
-    protected function validate_range(string $field, mixed $value, string $parameter): mixed
+    protected function validate_range(string $field, mixed $value, string $parameter): int|null|float
     {
         if (!preg_match('#^(-?[.\d]+)-(-?[\d.]+)$#', $parameter, $match)) {
             throw new InvalidValueException(['range validator `%s` parameter is not {min}-{max} format', $parameter]);
@@ -379,7 +379,7 @@ class Validator extends Component implements ValidatorInterface
         return strtoupper($value);
     }
 
-    protected function validate_trim(string $field, mixed $value): mixed
+    protected function validate_trim(string $field, mixed $value): string|array
     {
         if (is_array($value)) {
             $r = [];
