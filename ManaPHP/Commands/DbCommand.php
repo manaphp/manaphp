@@ -30,8 +30,8 @@ class DbCommand extends \ManaPHP\Cli\Command
     }
 
     /**
-     * @param string $service
-     * @param string $pattern
+     * @param string  $service
+     * @param ?string $pattern
      *
      * @return array
      */

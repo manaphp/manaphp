@@ -157,8 +157,8 @@ interface ModelInterface extends TableInterface
     public function hasManyToMany(string $thatModel, string $pivotModel): HasManyToMany;
 
     /**
-     * @param string $thatModel
-     * @param string $thisFilter =model_field(new static)
+     * @param string  $thatModel
+     * @param ?string $thisFilter =model_field(new static)
      *
      * @return \ManaPHP\Data\Relation\HasManyOthers
      */

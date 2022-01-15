@@ -263,8 +263,8 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * @param array  $fields =model_fields(new static)
-     * @param string $alias
+     * @param array   $fields =model_fields(new static)
+     * @param ?string $alias
      *
      * @return \ManaPHP\Data\QueryInterface <static>
      */
@@ -276,8 +276,8 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     /**
      * Allows to query the first record that match the specified conditions
      *
-     * @param array $filters =model_var(new static)
-     * @param array $fields  =model_fields(new static)
+     * @param array  $filters =model_var(new static)
+     * @param ?array $fields  =model_fields(new static)
      *
      * @return static|null
      */
@@ -288,8 +288,8 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * @param array $filters =model_var(new static)
-     * @param array $fields  =model_fields(new static)
+     * @param array  $filters =model_var(new static)
+     * @param ?array $fields  =model_fields(new static)
      *
      * @return static
      */
@@ -313,7 +313,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * @param array $fields =model_fields(new static)
+     * @param ?array $fields =model_fields(new static)
      *
      * @return static
      */
@@ -326,8 +326,8 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     /**
      * Allows to query the last record that match the specified conditions
      *
-     * @param array $filters =model_var(new static)
-     * @param array $fields  =model_fields(new static)
+     * @param ?array $filters =model_var(new static)
+     * @param ?array $fields  =model_fields(new static)
      *
      * @return static|null
      */
@@ -343,7 +343,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     /**
      * @param array  $filters =model_var(new static)
      * @param string $field   =model_field(new static)
-     * @param int    $ttl
+     * @param ?int   $ttl
      *
      * @return int|float|string|null
      */
@@ -383,7 +383,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     /**
      * @param array  $filters =model_var(new static)
      * @param string $field   =model_field(new static)
-     * @param int    $ttl
+     * @param ?int   $ttl
      *
      * @return int|float|string
      */
@@ -411,7 +411,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
 
     /**
      * @param string $field   =model_field(new static)
-     * @param array  $filters =model_var(new static)
+     * @param ?array $filters =model_var(new static)
      *
      * @return array
      */
@@ -422,7 +422,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
 
     /**
      * @param string $field   =model_field(new static)
-     * @param array  $filters =model_var(new static)
+     * @param ?array $filters =model_var(new static)
      *
      * @return array
      */
@@ -471,7 +471,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     /**
      * Allows to count how many records match the specified conditions
      *
-     * @param array  $filters =model_var(new static)
+     * @param ?array $filters =model_var(new static)
      * @param string $field   =model_field(new static)
      *
      * @return int
@@ -485,7 +485,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      * Allows to calculate a summary on a field that match the specified conditions
      *
      * @param string $field   =model_field(new static)
-     * @param array  $filters =model_var(new static)
+     * @param ?array $filters =model_var(new static)
      *
      * @return int|float|null
      */
@@ -498,7 +498,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      * Allows to get the max value of a column that match the specified conditions
      *
      * @param string $field   =model_field(new static)
-     * @param array  $filters =model_var(new static)
+     * @param ?array $filters =model_var(new static)
      *
      * @return int|float|null
      */
@@ -512,7 +512,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      *
      * @param string $field   =model_field(new static)
-     * @param array  $filters =model_var(new static)
+     * @param ?array $filters =model_var(new static)
      *
      * @return int|float|null
      */
@@ -525,7 +525,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      * Allows to calculate the average value on a column matching the specified conditions
      *
      * @param string $field   =model_field(new static)
-     * @param array  $filters =model_var(new static)
+     * @param ?array $filters =model_var(new static)
      *
      * @return float|null
      */
@@ -558,7 +558,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * @param array $fields =model_fields(new static)
+     * @param ?array $fields =model_fields(new static)
      *
      * @return static
      */
@@ -587,7 +587,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * @param array $fields =model_fields(new static)
+     * @param ?array $fields =model_fields(new static)
      *
      * @return void
      */
@@ -624,7 +624,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
 
     /**
      * @param string $field =model_field(new static)
-     * @param array  $rules
+     * @param ?array $rules
      *
      * @return void
      */
@@ -708,7 +708,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * @param array $fields =model_fields(new static)
+     * @param ?array $fields =model_fields(new static)
      *
      * @return static
      */
@@ -718,7 +718,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * @param array $fields =model_fields(new static)
+     * @param ?array $fields =model_fields(new static)
      *
      * @return static
      */
@@ -740,7 +740,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     /**
      * Inserts or updates a model instance. Returning true on success or false otherwise.
      *
-     * @param array $fields =model_fields(new static)
+     * @param ?array $fields =model_fields(new static)
      *
      * @return static
      */
@@ -920,8 +920,8 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * @param float $interval
-     * @param array $fields =model_fields(new static)
+     * @param float  $interval
+     * @param ?array $fields =model_fields(new static)
      *
      * @return static
      */
@@ -1028,7 +1028,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * @param string $alias
+     * @param ?string $alias
      *
      * @return \ManaPHP\Data\QueryInterface <static>
      */
@@ -1082,8 +1082,8 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * @param string $thatModel
-     * @param string $thisField =model_field(new static)
+     * @param string  $thatModel
+     * @param ?string $thisField =model_field(new static)
      *
      * @return \ManaPHP\Data\Relation\BelongsTo
      */
@@ -1097,8 +1097,8 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * @param string $thatModel
-     * @param string $thatField =model_field(new static)
+     * @param string  $thatModel
+     * @param ?string $thatField =model_field(new static)
      *
      * @return \ManaPHP\Data\Relation\HasOne
      */
@@ -1108,8 +1108,8 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * @param string $thatModel
-     * @param string $thatField =model_field(new static)
+     * @param string  $thatModel
+     * @param ?string $thatField =model_field(new static)
      *
      * @return \ManaPHP\Data\Relation\HasMany
      */
@@ -1131,8 +1131,8 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * @param string $thatModel
-     * @param string $thisFilter =model_field(new static)
+     * @param string  $thatModel
+     * @param ?string $thisFilter =model_field(new static)
      *
      * @return \ManaPHP\Data\Relation\HasManyOthers
      */

@@ -12,9 +12,9 @@ class DebuggerCommand extends \ManaPHP\Cli\Command
     /**
      * monitor generated urls
      *
-     * @param string $id
-     * @param string $path
-     * @param string $ip
+     * @param ?string $id
+     * @param string  $path
+     * @param string  $ip
      *
      * @return void
      */
