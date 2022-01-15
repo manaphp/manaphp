@@ -65,10 +65,6 @@ class Manager extends Component implements ManagerInterface
 
     public function push(object $owner, object $instance, string $type = 'default'): static
     {
-        if ($instance === null) {
-            return $this;
-        }
-
         $owner_id = get_class($owner) . ':' . spl_object_id($owner);
 
         if (!$queue = $this->pool[$owner_id][$type] ?? null) {
