@@ -235,7 +235,7 @@ class Stream extends Component implements EngineInterface
         return $body;
     }
 
-    public function request(Request $request, string $body): Response
+    public function request(Request $request, ?string $body): Response
     {
         if (!isset($request->headers['Accept-Encoding'])) {
             $request->headers['Accept-Encoding'] = 'gzip, deflate';

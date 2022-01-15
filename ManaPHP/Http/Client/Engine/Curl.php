@@ -33,7 +33,7 @@ class Curl extends Component implements EngineInterface
         }
     }
 
-    public function request(Request $request, string $body): Response
+    public function request(Request $request, ?string $body): Response
     {
         $content = '';
         $header_length = 0;

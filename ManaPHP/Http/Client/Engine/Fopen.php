@@ -15,7 +15,7 @@ use ManaPHP\Http\Client\Response;
  */
 class Fopen extends Component implements EngineInterface
 {
-    public function request(Request $request, string $body): Response
+    public function request(Request $request, ?string $body): Response
     {
         $http = [];
 

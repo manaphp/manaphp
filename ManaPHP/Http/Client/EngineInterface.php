@@ -5,5 +5,5 @@ namespace ManaPHP\Http\Client;
 
 interface EngineInterface
 {
-    public function request(Request $request, string $body): Response;
+    public function request(Request $request, ?string $body): Response;
 }
