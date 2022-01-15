@@ -21,7 +21,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
     protected mixed $db;
     protected string $table;
     protected string $alias;
-    protected string|array $fields;
+    protected null|string|array $fields = null;
     protected ?int $limit = null;
     protected ?int $offset = null;
     protected bool $distinct;

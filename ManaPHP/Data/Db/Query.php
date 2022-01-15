@@ -19,10 +19,10 @@ class Query extends AbstractQuery
 {
     protected array $joins = [];
     protected array $conditions = [];
-    protected string $having;
+    protected ?string $having = null;
     protected bool $for_update;
     protected array $bind = [];
-    protected string $sql;
+    protected ?string $sql = null;
 
     public function __construct(string|DbInterface $db = 'db')
     {
