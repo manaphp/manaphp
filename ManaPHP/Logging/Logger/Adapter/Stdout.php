@@ -24,7 +24,7 @@ class Stdout extends AbstractLogger
             $replaced = [];
 
             $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
-            $replaced[':date'] = date('Y-m-d\TH:i:s', $log->timestamp) . $ms;
+            $replaced[':date'] = date('Y-m-d\TH:i:s', (int)$log->timestamp) . $ms;
             $replaced[':level'] = $log->level;
             $replaced[':category'] = $log->category;
             $replaced[':location'] = "$log->file:$log->line";
