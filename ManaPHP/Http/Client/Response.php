@@ -84,7 +84,7 @@ class Response implements JsonSerializable
     public function getHeaders(): array
     {
         $headers = [];
-        foreach ($this->headers as $i => $header) {
+        foreach ($this->headers as $header) {
             if (($pos = strpos($header, ': ')) === false) {
                 continue;
             }

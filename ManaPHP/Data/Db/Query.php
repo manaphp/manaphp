@@ -644,7 +644,7 @@ class Query extends AbstractQuery
 
         if ($this->joins) {
             $joins = [];
-            foreach ($this->joins as $k => $join) {
+            foreach ($this->joins as $join) {
                 $join_table = $join[0];
                 if (str_contains($join_table, '\\')) {
                     /** @var \ManaPHP\Data\TableInterface $iTable */

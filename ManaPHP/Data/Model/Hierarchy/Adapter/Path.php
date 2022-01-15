@@ -94,7 +94,7 @@ trait Path
 
         $current_length = 0;
         $code_length = strlen($code);
-        foreach (static::getHierarchyLengths() as $i => $length) {
+        foreach (static::getHierarchyLengths() as $length) {
             if ($current_length + $length === $code_length) {
                 return $current_length;
             } else {

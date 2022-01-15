@@ -246,7 +246,7 @@ class Mysql extends AbstractConnection
         $rows = [];
         foreach ($records as $record) {
             $row = [];
-            foreach ($record as $field => $value) {
+            foreach ($record as $value) {
                 $row[] = is_string($value) ? $pdo->quote($value) : $value;
             }
 

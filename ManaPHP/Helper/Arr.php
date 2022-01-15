@@ -173,7 +173,7 @@ class Arr
         }
 
         $result = [];
-        foreach ($grouped_rows as $k => $v) {
+        foreach ($grouped_rows as $v) {
             $row = [];
 
             foreach ($group as $gk => $gv) {
