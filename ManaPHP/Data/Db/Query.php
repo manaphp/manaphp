@@ -133,14 +133,6 @@ class Query extends AbstractQuery
 
     public function whereMod(string $field, int $divisor, int $remainder): static
     {
-        if (!is_int($divisor)) {
-            throw new MisuseException('divisor must be an integer');
-        }
-
-        if (!is_int($remainder)) {
-            throw new MisuseException('remainder must be an integer');
-        }
-
         $this->conditions[] = "$field%$divisor=$remainder";
 
         return $this;
