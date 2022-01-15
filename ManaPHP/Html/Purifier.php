@@ -78,7 +78,6 @@ class Purifier extends Component implements PurifierInterface
                         $r = $filter($tag, $attributeName, $attributeValue);
                         if ($r === false) {
                             $node->removeAttributeNode($attributeNode);
-                            continue;
                         } elseif (is_string($r)) {
                             $node->setAttribute($attributeName, $r);
                         }
