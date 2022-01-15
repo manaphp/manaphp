@@ -8,7 +8,7 @@ use ManaPHP\Data\Db\SqlFragmentable;
 class Increment implements SqlFragmentable
 {
     protected mixed $value;
-    protected string $operator;
+    protected ?string $operator = null;
     protected array $bind;
     protected string $field;
 
