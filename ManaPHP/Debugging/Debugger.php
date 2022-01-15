@@ -165,7 +165,7 @@ class Debugger extends Component implements DebuggerInterface
     public function onEvent(EventArgs $eventArgs): void
     {
         $event['event'] = $eventArgs->event;
-        $event['source'] = get_class($eventArgs->source);
+        $event['source'] = $eventArgs->source ? get_class($eventArgs->source) : null;
 
         $data = $eventArgs->data;
         if ($data === null) {
