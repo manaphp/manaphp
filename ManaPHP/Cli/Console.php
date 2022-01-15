@@ -213,7 +213,7 @@ class Console extends Component implements ConsoleInterface
                     $headers[] = 'Console::' . $fc_name;
                 }
 
-                $www = $this->colorize('ManaPHP http://www.manaphp.com/', $bc_value | $fc_value);
+                $www = $this->colorize('ManaPHP https://www.manaphp.com/', $bc_value | $fc_value);
                 echo str_pad(implode('|', $headers), 40), $www, PHP_EOL;
             }
         }

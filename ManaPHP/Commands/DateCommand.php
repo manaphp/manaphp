@@ -22,7 +22,7 @@ class DateCommand extends Command
     protected function getRemoteTimestamp(string $url, bool $onlyOnce = false): int|false
     {
         if (!str_contains($url, '://')) {
-            $url = 'http://' . $url;
+            $url = 'https://' . $url;
         }
 
         $prev_timestamp = 0;
