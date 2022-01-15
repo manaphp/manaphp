@@ -134,9 +134,6 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         }
 
         $data = $this->serialize($context->_SESSION);
-        if (!is_string($data)) {
-            $this->logger->error('serialize data failed', 'session.serialize');
-        }
         $this->do_write($context->session_id, $data, $context->ttl ?? $this->ttl);
     }
 
