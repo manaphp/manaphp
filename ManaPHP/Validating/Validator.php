@@ -571,7 +571,7 @@ class Validator extends Component implements ValidatorInterface
     {
         $value = $model->$field;
 
-        if (($value = $this->validate_account($field, $value)) === null) {
+        if ($this->validate_account($field, $value) === null) {
             return null;
         }
 
