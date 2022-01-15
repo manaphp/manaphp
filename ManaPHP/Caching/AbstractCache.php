@@ -25,13 +25,7 @@ abstract class AbstractCache extends Component implements CacheInterface
 
     public function set(string $key, string $value, int $ttl): void
     {
-        if (!is_string($value)) {
-            throw new InvalidValueException(['value of `:key` key must be a string', 'key' => $key]);
-        } elseif ($value === 'false') {
-            throw new InvalidValueException(['value of `:key` key must be NOT `false` string', 'key' => $key]);
-        } else {
-            $this->do_set($key, $value, $ttl);
-        }
+        $this->do_set($key, $value, $ttl);
     }
 
     abstract public function do_delete(string $key): void;
