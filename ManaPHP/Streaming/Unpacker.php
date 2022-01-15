@@ -5,7 +5,7 @@ namespace ManaPHP\Streaming;
 
 class Unpacker
 {
-    protected string $format;
+    protected ?string $format = null;
 
     public function append(string $format, array $names): static
     {
