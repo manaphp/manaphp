@@ -14,7 +14,7 @@ class Response implements JsonSerializable
     public int $http_code;
     public array $headers = [];
     public string $content_type;
-    public string|array $body;
+    public string $body;
 
     public function __construct(Request $request, array $headers, string $body)
     {
@@ -42,7 +42,7 @@ class Response implements JsonSerializable
         }
         $this->http_code = $http_code;
 
-        if (is_string($body) && $body !== '') {
+        if ($body !== '') {
             $content_encoding = null;
             foreach ($headers as $header) {
                 if (stripos($header, 'Content-Encoding:') === 0) {
