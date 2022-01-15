@@ -56,24 +56,6 @@ class SlowlogMiddleware extends Middleware
         LocalFS::fileAppend($this->file, strtr($this->format, $replaced));
     }
 
-    protected function getEid(float $elapsed, float $precision = 0.1): string
-    {
-        $id = '';
-        for ($level = 0; $level < 3; $level++) {
-            /** @noinspection PowerOperatorCanBeUsedInspection */
-            $current = $precision * pow(10, $level);
-            if ($current >= 10) {
-                break;
-            }
-            $count = min($elapsed / $current, 10);
-            for ($i = 1; $i < $count; $i++) {
-                $id .= 't' . (($current >= 1) ? $current * $i : substr(1 / $current, 1) . $i);
-            }
-        }
-
-        return $id;
-    }
-
     public function onEnd(): void
     {
         if ($this->response->hasHeader('X-Response-Time')) {
@@ -94,7 +76,7 @@ class SlowlogMiddleware extends Middleware
             'route'    => $route,
             'url'      => $this->request->getUrl(),
             '_REQUEST' => $this->request->get(),
-            'eid'      => $this->getEid($elapsed)
+            'elapsed'  => $elapsed,
         ];
 
         $this->write($elapsed, $message);
