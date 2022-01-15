@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Caching;
 
 use ManaPHP\Component;
-use ManaPHP\Exception\InvalidValueException;
 
 abstract class AbstractCache extends Component implements CacheInterface
 {
