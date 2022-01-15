@@ -235,7 +235,7 @@ class Query extends AbstractQuery
                     $sub_operand2 = is_numeric($match2[3]) ? (float)$match2[3] : ('$' . $match2[3]);
                     $this->aggregate[$k] = ['$' . $accumulator => [$sub_operand => [$sub_operand1, $sub_operand2]]];
                 } elseif ($cond = $this->compileCondExpression($operand)) {
-                    $this->aggregate[$k] = ['$' . $accumulator => $this->compileCondExpression($operand)];
+                    $this->aggregate[$k] = ['$' . $accumulator => $cond];
                 } else {
                     throw new MisuseException(['unknown `%s` operand of `%s` aggregate', $operand, $v]);
                 }
