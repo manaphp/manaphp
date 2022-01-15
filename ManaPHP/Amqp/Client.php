@@ -14,7 +14,7 @@ class Client extends Component implements ClientInterface
     protected string $uri;
     protected int $pool_size = 4;
     protected int $timeout = 3;
-    protected EngineInterface $engine;
+    protected ?EngineInterface $engine = null;
 
     public function __construct(string $uri)
     {
