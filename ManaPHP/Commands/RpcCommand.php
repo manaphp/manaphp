@@ -24,7 +24,7 @@ class RpcCommand extends \ManaPHP\Cli\Command
 
             $methods = [];
             foreach (get_class_methods($className) as $method) {
-                if (preg_match('#^(.*)Action$#', $method, $match)) {
+                if (str_ends_with('Action', $method)) {
                     $methods[] = $method;
                 }
             }
