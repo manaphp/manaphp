@@ -21,7 +21,7 @@ class Invoker extends Component implements InvokerInterface
         $rMethod = new ReflectionMethod($controller, $method);
         $rParameters = $rMethod->getParameters();
         foreach ($rParameters as $rParameter) {
-            if ($rParameter->hasType() && !$rParameter->getType()->isBuiltin()) {
+            if (($rType = $rParameter->getType()) !== null && !$rType->isBuiltin()) {
                 continue;
             }
 
@@ -38,8 +38,8 @@ class Invoker extends Component implements InvokerInterface
 
             $value = $this->request->get($name);
 
-            if ($rParameter->hasType()) {
-                $type = $rParameter->getType()->getName();
+            if (($rType = $rParameter->getType()) !== null) {
+                $type = $rType->getName();
             } elseif ($rParameter->isDefaultValueAvailable()) {
                 $type = gettype($rParameter->getDefaultValue());
             } else {

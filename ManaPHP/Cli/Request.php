@@ -163,7 +163,7 @@ class Request extends Component implements RequestInterface
         foreach ($rMethod->getParameters() as $rParameter) {
             $name = $rParameter->getName();
 
-            if ($rParameter->hasType() && !preg_match('#^[a-z]+$#', $rParameter->getType()->getName())) {
+            if (($rType = $rParameter->getType()) !== null && !preg_match('#^[a-z]+$#', $rType->getName())) {
                 continue;
             }
 
