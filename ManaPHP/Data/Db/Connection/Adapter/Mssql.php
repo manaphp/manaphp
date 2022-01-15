@@ -78,10 +78,6 @@ class Mssql extends AbstractConnection
 
             $attributes[] = $fieldName;
 
-            if (!in_array($fieldName, $primaryKeys, true)) {
-                $nonPrimaryKeys[] = $fieldName;
-            }
-
             if ($field['TYPE_NAME'] === 'int identity') {
                 $autoIncrementAttribute = $fieldName;
             }
