@@ -21,7 +21,6 @@ use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Exception\ParameterOrderException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
@@ -350,10 +349,6 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      */
     public static function value(array $filters, string $field, ?int $ttl = null): mixed
     {
-        if (!is_string($field)) {
-            throw new ParameterOrderException(__METHOD__ . ' field');
-        }
-
         if ($ttl !== null && !is_int($ttl)) {
             throw new MisuseException('ttl must be a integer');
         }
@@ -422,9 +417,6 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      */
     public static function values(string $field, ?array $filters = null): array
     {
-        if (!is_string($field)) {
-            throw new ParameterOrderException(__METHOD__ . ' field');
-        }
         return static::where($filters)->orderBy([$field => SORT_ASC])->values($field);
     }
 
