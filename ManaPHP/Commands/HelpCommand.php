@@ -188,9 +188,9 @@ class HelpCommand extends Command
                 $defaultValues[$name] = $rParameter->getDefaultValue();
             }
 
-            if (!$rParameter->hasType()) {
+            if (($rType = $rParameter->getType()) === null) {
                 $options[$name] = '';
-            } elseif (preg_match('#^\w+$#', $rParameter->getType())) {
+            } elseif (preg_match('#^\w+$#', $rType->getName())) {
                 $options[$name] = '';
             }
         }
