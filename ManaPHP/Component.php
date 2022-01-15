@@ -102,6 +102,7 @@ class Component implements Injectable, JsonSerializable
         return $this->findContext() !== null;
     }
 
+    /** @noinspection MagicMethodsValidityInspection */
     public function __get(string $name): mixed
     {
         if ($name === 'context') {
