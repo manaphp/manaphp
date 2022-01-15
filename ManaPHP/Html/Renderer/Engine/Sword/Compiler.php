@@ -117,7 +117,7 @@ class Compiler extends Component
     {
         $result = '';
 
-        // Here we will loop through all of the tokens returned by the Zend lexer and
+        // Here we will loop through all the tokens returned by the Zend lexer and
         // parse each one into the corresponding valid PHP. We will then have this
         // template as the correctly rendered PHP that can be rendered natively.
         foreach (token_get_all($value) as $token) {
@@ -203,7 +203,7 @@ class Compiler extends Component
                 return 1;
             }
 
-            // Otherwise give preference to raw tags (assuming they've overridden)
+            // give preference to raw tags (assuming they've overridden)
             if ($method1 === 'compileRawEchos') {
                 return -1;
             }

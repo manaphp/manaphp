@@ -450,7 +450,7 @@ class MongodbCommand extends \ManaPHP\Cli\Command
      *
      * @param array  $services           services list
      * @param string $collection_pattern match collection against a pattern
-     * @param string $field              collection must contains one this field
+     * @param string $field              collection must contain one this field
      * @param array  $db
      *
      * @return void

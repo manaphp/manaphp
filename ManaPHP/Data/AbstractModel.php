@@ -191,8 +191,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      * Allows to query a set of records that match the specified conditions
      *
      * @param array  $filters =model_var(new static)
-     * @param ?array $options =['order'=>model_var(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC],
-     *                        'index'=>model_var(new static)]
+     * @param ?array $options =['order'=>model_var(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC], 'index'=>model_var(new static)]
      * @param ?array $fields  =model_fields(new static)
      *
      * @return  static[]
@@ -206,8 +205,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      * Allows to query a set of records that match the specified conditions
      *
      * @param array  $filters =model_var(new static)
-     * @param ?array $options =['order'=>model_var(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC],
-     *                        'index'=>model_var(new static)]
+     * @param ?array $options =['order'=>model_var(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC], 'index'=>model_var(new static)]
      * @param ?array $fields  =model_fields(new static)
      *
      * @return  \ManaPHP\Data\Paginator
@@ -469,8 +467,6 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     }
 
     /**
-     * Allows to count how many records match the specified conditions
-     *
      * @param ?array $filters =model_var(new static)
      * @param string $field   =model_field(new static)
      *

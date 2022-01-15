@@ -239,8 +239,7 @@ interface QueryInterface
     /**
      * Sets a ORDER BY condition clause
      *
-     * @param string|array $orderBy =model_var(new Model) ?: model_field(new Model) ?: [$k=>SORT_ASC,
-     *                              $k=>SORT_DESC]
+     * @param string|array $orderBy =model_var(new Model) ?: model_field(new Model) ?: [$k=>SORT_ASC, $k=>SORT_DESC]
      *
      * @return static
      */
