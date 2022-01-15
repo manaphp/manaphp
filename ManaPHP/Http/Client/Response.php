@@ -14,7 +14,7 @@ class Response implements JsonSerializable
     public int $http_code;
     public array $headers = [];
     public string $content_type;
-    public string $body;
+    public string|array $body;
 
     public function __construct(Request $request, array $headers, string $body)
     {
