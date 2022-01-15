@@ -60,13 +60,7 @@ class CssToXPath
             $paths = explode(',', $path);
             $expressions = [];
             foreach ($paths as $path) {
-                $xpath = $this->transform(trim($path));
-                if (is_string($xpath)) {
-                    $expressions[] = $xpath;
-                } elseif (is_array($xpath)) {
-                    /** @noinspection SlowArrayOperationsInLoopInspection */
-                    $expressions = array_merge($expressions, $xpath);
-                }
+                $expressions[] = $this->transform(trim($path));
             }
             return implode('|', $expressions);
         }
