@@ -409,7 +409,7 @@ class Validator extends Component implements ValidatorInterface
         return filter_var($value, FILTER_VALIDATE_IP) !== false ? $value : null;
     }
 
-    protected function validate_date(string $field, string $value, ?string $parameter = null): mixed
+    protected function validate_date(string $field, string $value, ?string $parameter = null): ?string
     {
         $ts = is_numeric($value) ? (int)$value : strtotime($value);
         if ($ts === false) {
@@ -425,7 +425,7 @@ class Validator extends Component implements ValidatorInterface
         return $ts === false ? null : $ts;
     }
 
-    protected function validate_model_date(string $field, ModelInterface $model, ?string $parameter): mixed
+    protected function validate_model_date(string $field, ModelInterface $model, ?string $parameter): ?string
     {
         $value = $model->$field;
 
