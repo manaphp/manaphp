@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ManaPHP\Amqp;
 
@@ -6,7 +7,7 @@ interface EngineInterface
 {
     public function exchangeDeclare(Exchange $exchange): void;
 
-    public function exchangeDelete(string $exchange, bool $if_unused = false, bool $nowait = false)：void;
+    public function exchangeDelete(string $exchange, bool $if_unused = false, bool $nowait = false): void;
 
     public function queueDeclare(Queue $queue): void;
 
