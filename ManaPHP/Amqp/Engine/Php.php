@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Amqp\Engine;
 
-use AMQPChannel;
 use ManaPHP\Amqp\Binding;
 use ManaPHP\Amqp\ChannelException;
 use ManaPHP\Component;
