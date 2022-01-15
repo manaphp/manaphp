@@ -159,7 +159,7 @@ class Selector
     public function text_first(string $css): ?string
     {
         $nodes = $this->document->getQuery()->css($css, $this->node);
-        return $nodes ? $nodes->item(0)->textContent : null;
+        return $nodes?->item(0)->textContent;
     }
 
     public function extract(array $rules): array
