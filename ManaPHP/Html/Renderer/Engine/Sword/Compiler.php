@@ -453,7 +453,7 @@ class Compiler extends Component
     protected function compile_php(string $expression): string
     {
         if ($expression[0] === '(') {
-            $expression = (string)substr($expression, 1, -1);
+            $expression = substr($expression, 1, -1);
         }
 
         return $expression ? "<?php {$expression}; ?>" : '<?php ';
@@ -495,7 +495,7 @@ class Compiler extends Component
 
     protected function compile_json(string $expression): string
     {
-        $expression = (string)substr($expression, 1, -1);
+        $expression = substr($expression, 1, -1);
         return "<?= json_stringify({$expression}) ;?>";
     }
 

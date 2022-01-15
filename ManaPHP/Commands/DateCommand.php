@@ -133,7 +133,7 @@ class DateCommand extends Command
             }
         }
 
-        $date = $date ? strtr($date, '/', '-') : (string)date('Y-m-d');
+        $date = $date ? strtr($date, '/', '-') : date('Y-m-d');
         $date = trim(trim($date), '-');
 
         switch (substr_count($date, '-')) {
@@ -153,7 +153,7 @@ class DateCommand extends Command
 
         $date = $year . '-' . $month . '-' . $day;
 
-        $time = $time ? trim($time) : (string)date('H:i:s');
+        $time = $time ? trim($time) : date('H:i:s');
         if ($time[0] === ':') {
             $time = date('H') . $time;
         }

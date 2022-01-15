@@ -416,7 +416,7 @@ class Validator extends Component implements ValidatorInterface
             return null;
         }
 
-        return $parameter ? (string)date($parameter, $ts) : $value;
+        return $parameter ? date($parameter, $ts) : $value;
     }
 
     protected function validate_timestamp(string $field, mixed $value): ?int
