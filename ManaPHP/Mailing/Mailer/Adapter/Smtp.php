@@ -333,7 +333,6 @@ class Smtp extends AbstractMailer
             $this->writeLine('Content-Type: multipart/mixed;');
             $this->writeLine("\tboundary=$boundary");
             $this->sendHtmlBody($htmlBody, $boundary);
-            /** @noinspection NotOptimalIfConditionsInspection */
             if ($embeddedFiles = $message->getEmbeddedFiles()) {
                 $this->sendEmbeddedFiles($embeddedFiles, $boundary);
             }

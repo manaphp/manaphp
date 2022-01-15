@@ -2,7 +2,6 @@
 declare(strict_types=1);
 /** @noinspection PhpUndefinedClassInspection */
 
-/** @noinspection PhpUndefinedMethodInspection */
 
 namespace ManaPHP\Mailing\Mailer\Adapter;
 

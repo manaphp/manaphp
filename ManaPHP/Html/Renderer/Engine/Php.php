@@ -12,7 +12,6 @@ class Php extends Component implements EngineInterface
     {
         extract($vars, EXTR_SKIP);
 
-        /** @noinspection PhpIncludeInspection */
         require $file;
     }
 }

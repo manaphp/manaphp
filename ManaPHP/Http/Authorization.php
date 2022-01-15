@@ -24,7 +24,6 @@ class Authorization extends Component implements AuthorizationInterface
     {
         if (($roles = $acl[$action] ?? null) && $roles[0] === '@') {
             $original_action = substr($roles, 1);
-            /** @noinspection NotOptimalIfConditionsInspection */
             if (($roles = $acl[$original_action] ?? null) && $roles[0] === '@') {
                 throw new MisuseException(['`%s` original action is not allow indirect.', $original_action]);
             }
@@ -145,7 +144,6 @@ class Authorization extends Component implements AuthorizationInterface
                         $paths[] = $path;
                     }
                 } elseif ($role === 'user') {
-                    /** @noinspection NotOptimalIfConditionsInspection */
                     if ($this->isAclAllowed($acl, 'user', $action)
                         && !$this->isAclAllowed(
                             $acl, 'guest', $action

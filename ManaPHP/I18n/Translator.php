@@ -37,7 +37,6 @@ class Translator extends Component implements TranslatorInterface
                 throw new RuntimeException(['`%s` locale file is not exists', $locale]);
             }
 
-            /** @noinspection PhpIncludeInspection */
             $templates = require $file;
             $this->templates[$locale] = $templates;
         } else {

@@ -407,7 +407,6 @@ class Router extends Component implements RouterInterface
                 unset($params['#']);
             }
 
-            /** @noinspection NotOptimalIfConditionsInspection */
             if ($params !== []) {
                 $url .= '?' . http_build_query($params);
             }

@@ -50,7 +50,6 @@ class Query extends AbstractQuery
         $r = '';
         foreach ($fields as $k => $v) {
             if (strpbrk($v, '[(') === false) {
-                /** @noinspection NotOptimalIfConditionsInspection */
                 if (is_int($k)) {
                     $r .= preg_replace('#\w+#', '[\\0]', $v) . ', ';
                 } else {

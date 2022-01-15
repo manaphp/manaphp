@@ -51,7 +51,6 @@ class Sword extends Component implements EngineInterface
             $this->compiled[$file] = $this->getCompiledFile($file);
         }
 
-        /** @noinspection PhpIncludeInspection */
         require $this->compiled[$file];
     }
 }

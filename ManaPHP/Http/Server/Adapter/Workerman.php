@@ -1,6 +1,4 @@
 <?php
-/** @noinspection PhpUndefinedFieldInspection */
-/** @noinspection PhpUndefinedMethodInspection */
 /** @noinspection PhpUndefinedNamespaceInspection */
 /** @noinspection PhpUndefinedClassInspection */
 declare(strict_types=1);

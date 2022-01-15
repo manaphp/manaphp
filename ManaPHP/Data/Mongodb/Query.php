@@ -574,7 +574,6 @@ class Query extends AbstractQuery
         list($id_a, $id_b) = explode(',', $id);
 
         if (($pos = strpos($value, ',')) === false) {
-            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
             $value = $this->normalizeValue($id_a, $value);
             $or = [[$id_a => $value], [$id_b => $value]];
         } else {
