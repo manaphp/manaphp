@@ -20,12 +20,10 @@ class FrameworkCommand extends Command
     {
         $tmp = '@tmp/framework/strip.tmp';
         LocalFS::filePut($tmp, $str);
-        $str = php_strip_whitespace($this->alias->resolve($tmp));
+        return php_strip_whitespace($this->alias->resolve($tmp));
 //        $str = preg_replace('#\s*/\*\*.*?\*/#ms', '', $str);//remove comments
 //        $str = preg_replace('#([\r\n]+)\s*\\1#', '\\1', $str);//remove blank lines
 //        $str = preg_replace('#([\r\n]+)\s+{#', '{', $str);//repositionClose;
-
-        return $str;
     }
 
     /**
@@ -67,9 +65,7 @@ class FrameworkCommand extends Command
     {
         $content = preg_replace('#\s*/\*\*.*?\*/#ms', '', $content);//remove comments
         $content = preg_replace('#([\r\n]+)\s*\\1#', '\\1', $content);//remove blank lines
-        $content = preg_replace('#([\r\n]+)\s+{#', '{', $content);//repositionClose;
-
-        return $content;
+        return preg_replace('#([\r\n]+)\s+{#', '{', $content);//repositionClose;
     }
 
     /**

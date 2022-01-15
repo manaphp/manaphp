@@ -103,14 +103,12 @@ class Compiler extends Component
 
     protected function completeLinks(string $file, string $str): string
     {
-        $str = preg_replace_callback(
+        return preg_replace_callback(
             '#\b((?:ajax|axios\.)\w*\\(["\'`])([^/][\w\-/:.]+)#',
             function ($match) use ($file) {
                 return $match[1] . $this->completeRelativeLinks($file, $match[2]);
             }, $str
         );
-
-        return $str;
     }
 
     public function compileString(string $value): string

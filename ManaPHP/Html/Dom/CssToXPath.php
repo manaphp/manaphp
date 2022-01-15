@@ -164,8 +164,6 @@ class CssToXPath
         }
 
         /** ZF-9764 -- remove double asterisk */
-        $expression = str_replace('**', '*', $expression);
-
-        return $expression;
+        return str_replace('**', '*', $expression);
     }
 }
