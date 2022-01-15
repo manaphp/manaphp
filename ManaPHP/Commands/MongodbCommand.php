@@ -39,7 +39,7 @@ class MongodbCommand extends \ManaPHP\Cli\Command
             $services = [];
             foreach ($this->config->get('dependencies') as $service => $config) {
                 $config = json_stringify($config);
-                if (preg_match('#mongodb://#', $config)) {
+                if (str_contains($config, 'mongodb://')) {
                     $services[] = $service;
                 }
             }
