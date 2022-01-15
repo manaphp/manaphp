@@ -29,7 +29,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
     protected bool $multiple;
     protected array $with = [];
     protected ?array $order = null;
-    protected array $group;
+    protected ?array $group = null;
     protected mixed $index;
     protected array $aggregate;
     protected bool $force_master = false;
