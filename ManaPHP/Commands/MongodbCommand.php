@@ -64,7 +64,8 @@ class MongodbCommand extends \ManaPHP\Cli\Command
         }
 
         $fieldTypes = $this->inferFieldTypes([json_parse($input)]);
-        $model = $this->renderModel($fieldTypes, $modelName, 'mongodb', $optimized);
+
+        $model = $this->renderModel($fieldTypes, $modelName, 'mongodb', '', $optimized);
         $file = '@tmp/mongodb_model/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
         LocalFS::filePut($file, $model);
 
