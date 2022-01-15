@@ -9,6 +9,7 @@ use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\CurlMulti\Request;
 use ManaPHP\Http\CurlMulti\Response;
 use ManaPHP\Http\CurlMulti\Error;
+use CurlHandle;
 
 /**
  * @property-read \ManaPHP\AliasInterface          $alias
@@ -40,7 +41,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
         LocalFS::dirCreate('@data/curlMulti');
     }
 
-    protected function createCurlTemplate(): mixed
+    protected function createCurlTemplate(): CurlHandle
     {
         $curl = curl_init();
 
