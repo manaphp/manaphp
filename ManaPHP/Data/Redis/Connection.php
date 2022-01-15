@@ -31,13 +31,7 @@ class Connection extends Component
 
         $parts = parse_url($uri);
 
-        if ($parts['scheme'] === 'redis') {
-            $this->host = $parts['host'] ?? '127.0.0.1';
-            $this->port = isset($parts['port']) ? (int)$parts['port'] : 6379;
-        } elseif ($parts['scheme'] === 'cluster') {
-            $this->cluster = true;
-            $this->host = $parts['host'] . ':' . ($parts['port'] ?? '6379');
-        } else {
+        if (!in_array($parts['scheme'], ['redis', 'cluster'], true)) {
             throw new DsnFormatException(['`%s` is invalid, `%s` scheme is not recognized', $uri, $parts['scheme']]);
         }
 
