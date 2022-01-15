@@ -17,7 +17,7 @@ class Connection extends Component implements ConnectionInterface
 {
     protected string $uri;
     protected ?Manager $manager = null;
-    protected WriteConcern $writeConcern;
+    protected ?WriteConcern $writeConcern = null;
     protected int $heartbeat = 60;
     protected ?float $last_heartbeat = null;
 
