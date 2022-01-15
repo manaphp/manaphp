@@ -33,10 +33,6 @@ class Fpm extends AbstractServer
             header($value === null ? $header : "$header: $value");
         }
 
-        if ($this->response->hasCookies()) {
-            throw new NotSupportedException('rpc not support cookies');
-        }
-
         header('X-Request-Id: ' . $this->request->getRequestId());
         header('X-Response-Time: ' . $this->request->getElapsedTime());
 

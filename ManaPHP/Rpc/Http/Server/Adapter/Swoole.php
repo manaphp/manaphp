@@ -275,10 +275,6 @@ class Swoole extends \ManaPHP\Rpc\Http\AbstractServer
             $response->header('X-Request-Id', $this->request->getRequestId(), false);
             $response->header('X-Response-Time', $this->request->getElapsedTime(), false);
 
-            if ($this->response->hasCookies()) {
-                throw new NotSupportedException('rpc not support cookies');
-            }
-
             if ($this->response->hasFile()) {
                 throw new NotSupportedException('rpc not support send file');
             }
