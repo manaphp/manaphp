@@ -296,6 +296,7 @@ class Compiler extends Component
 
     protected function compileEchoDefaults(string $value): string
     {
+        /** @noinspection RegExpUnnecessaryNonCapturingGroup */
         return preg_replace('/^(?=\\$)(.+?)(?:\s+or\s+)(.+?)$/s', 'isset($1) ? $1 : $2', $value);
     }
 

@@ -131,6 +131,7 @@ class Route implements RouteInterface
 
         if (isset($routePaths['controller']) && str_contains($routePaths['controller'], '\\')) {
             $controller = strtr($routePaths['controller'], '\\', '/');
+            /** @noinspection RegExpUnnecessaryNonCapturingGroup */
             $pattern = '#(?:/Controllers/([^/]+)/(\w+)Controller)|(?:/Areas/([^/]+)/Controllers/(\w+)Controller)$#';
 
             if (substr_count($controller, '/') === 2) {
