@@ -101,7 +101,7 @@ class Console extends Component implements ConsoleInterface
             echo json_stringify($message);
             return $this;
         } elseif (!is_array($message)) {
-            echo (string)$message;
+            echo $message;
             return $this;
         }
 
