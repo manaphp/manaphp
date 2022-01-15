@@ -492,16 +492,14 @@ class Db extends Component implements DbInterface
             $connection = $this->poolManager->pop($this, $this->timeout);
 
             try {
-                if (!$connection->begin()) {
-                    throw new DbException('beginTransaction failed.');
-                }
+                $connection->begin();
                 $context->connection = $connection;
                 $context->transaction_level++;
             } catch (PDOException $exception) {
                 $message = 'beginTransaction failed: ' . $exception->getMessage();
                 throw new DbException($message, $exception->getCode(), $exception);
             } finally {
-                if (!$context->connection) {
+                if ($context->connection !== null) {
                     $this->poolManager->push($this, $connection);
                 }
             }
@@ -526,9 +524,7 @@ class Db extends Component implements DbInterface
 
             if ($context->transaction_level === 0) {
                 try {
-                    if (!$context->connection->rollback()) {
-                        throw new DbException('rollBack failed.');
-                    }
+                    $context->connection->rollback();
                 } catch (PDOException $exception) {
                     $message = 'rollBack failed: ' . $exception->getMessage();
                     throw new DbException($message, $exception->getCode(), $exception);
@@ -554,9 +550,7 @@ class Db extends Component implements DbInterface
 
         if ($context->transaction_level === 0) {
             try {
-                if (!$context->connection->commit()) {
-                    throw new DbException('commit failed.');
-                }
+                $context->connection->commit();
             } catch (PDOException $exception) {
                 throw new DbException('commit failed: ' . $exception->getMessage(), $exception->getCode(), $exception);
             } finally {
