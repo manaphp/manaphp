@@ -265,6 +265,8 @@ class HelpCommand extends Command
      *
      * @param string $command
      * @param string $action
+     *
+     * @return int
      */
     public function commandAction(string $command, string $action = ''): int
     {
