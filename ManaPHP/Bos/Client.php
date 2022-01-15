@@ -94,7 +94,7 @@ class Client extends Component implements ClientInterface
 
     public function putObject(string $file, string $bucket, string $key, array $policy = []): array
     {
-        $url = $this->getPutObjectUrl($bucket, $key, $policy, 3600);
+        $url = $this->getPutObjectUrl($bucket, $key, $policy);
 
         $file = $this->alias->resolve($file);
 
