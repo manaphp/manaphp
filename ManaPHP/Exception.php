@@ -26,6 +26,7 @@ class Exception extends \Exception
                     if (is_array($v)) {
                         $v = implode(', ', $v);
                     } elseif ($v === null || is_bool($v)) {
+                        /** @noinspection JsonEncodingApiUsageInspection */
                         $v = json_encode($v);
                     }
 

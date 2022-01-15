@@ -25,6 +25,7 @@ if (!function_exists('json_stringify')) {
     {
         $options |= JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE;
 
+        /** @noinspection JsonEncodingApiUsageInspection */
         if (($str = json_encode($json, $options, 16)) === false) {
             throw new JsonException('json_stringify failed');
         }
@@ -44,6 +45,7 @@ if (!function_exists('xml_decode')) {
 
         foreach ($ret as $value) {
             if (!is_scalar($value) && $value !== null) {
+                /** @noinspection JsonEncodingApiUsageInspection */
                 return json_decode(json_encode($ret), true);
             }
         }

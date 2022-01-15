@@ -63,11 +63,13 @@ class Jwt extends Component implements JwtInterface
         list($header, $payload) = $parts;
 
         //DO NOT use json_parse, it maybe generates a lot of Exceptions
+        /** @noinspection JsonEncodingApiUsageInspection */
         if (!is_array($claims = json_decode($this->base64UrlDecode($payload), true))) {
             throw new MalformedException('payload is not array.');
         }
 
         //DO NOT use json_parse, it maybe generates a lot of Exceptions
+        /** @noinspection JsonEncodingApiUsageInspection */
         $decoded_header = json_decode($this->base64UrlDecode($header), true);
         if (!$decoded_header) {
             throw new MalformedException('The JWT header is not distinguished');
