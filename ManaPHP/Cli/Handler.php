@@ -16,7 +16,7 @@ class Handler extends Component implements HandlerInterface
 {
     protected array $args;
     protected string $command;
-    protected string $action;
+    protected ?string $action = null;
     protected array $params;
 
     protected function getActions(string $commandName): array
