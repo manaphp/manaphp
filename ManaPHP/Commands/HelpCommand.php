@@ -62,6 +62,7 @@ class HelpCommand extends Command
             $this->console->writeLn(' - ' . $this->console->colorize($command, Console::FC_YELLOW) . $description);
             $actions = $this->getActions($definition);
 
+            /** @noinspection PhpNestedMinMaxCallInspection */
             $width = max(max(array_map('strlen', array_keys($actions))), 18);
             foreach ($actions as $action => $description) {
                 $colored_action = $this->console->colorize($action, Console::FC_CYAN, $width);
@@ -78,6 +79,7 @@ class HelpCommand extends Command
             $this->console->writeLn(' - ' . $this->console->colorize($command, Console::FC_YELLOW) . $description);
             $actions = $this->getActions($definition);
 
+            /** @noinspection PhpNestedMinMaxCallInspection */
             $width = max(max(array_map('strlen', array_keys($actions))), 18);
             foreach ($actions as $action => $description) {
                 $colored_action = $this->console->colorize($action, Console::FC_CYAN, $width);
