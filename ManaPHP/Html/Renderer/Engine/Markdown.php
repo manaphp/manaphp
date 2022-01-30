@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpMissingReturnTypeInspection */
 /** @noinspection NotOptimalRegularExpressionsInspection */
 /** @noinspection SpellCheckingInspection */
 /** @noinspection NotOptimalIfConditionsInspection */
