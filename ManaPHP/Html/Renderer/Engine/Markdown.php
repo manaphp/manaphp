@@ -40,9 +40,7 @@ class Markdown extends Component implements EngineInterface
         $markup = $this->elements($Elements);
 
         # trim line breaks
-        $markup = trim($markup, "\n");
-
-        return $markup;
+        return trim($markup, "\n");
     }
 
     protected function textElements($text)
@@ -310,7 +308,7 @@ class Markdown extends Component implements EngineInterface
         if ($Line['indent'] >= 4) {
             $text = substr($Line['body'], 4);
 
-            $Block = [
+            return [
                 'element' => [
                     'name'    => 'pre',
                     'element' => [
@@ -319,8 +317,6 @@ class Markdown extends Component implements EngineInterface
                     ],
                 ],
             ];
-
-            return $Block;
         }
     }
 
@@ -1515,9 +1511,7 @@ class Markdown extends Component implements EngineInterface
             $Element['element'] = $this->elementsApplyRecursiveDepthFirst($closure, $Element['element']);
         }
 
-        $Element = $closure($Element);
-
-        return $Element;
+        return $closure($Element);
     }
 
     protected function elementsApplyRecursive($closure, array $Elements)
