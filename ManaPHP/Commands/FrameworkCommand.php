@@ -90,11 +90,10 @@ class FrameworkCommand extends Command
 
             if (str_ends_with($file, 'Interface.php')) {
                 $totalInterfaceLines += $lineCount;
-                $totalLines += $lineCount;
             } else {
                 $totalClassLines += $lineCount;
-                $totalLines += $lineCount;
             }
+            $totalLines += $lineCount;
 
             $this->console->writeLn($content);
             LocalFS::filePut($dstFile, $content);

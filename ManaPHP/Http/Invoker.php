@@ -28,12 +28,10 @@ class Invoker extends Component implements InvokerInterface
             $name = $rParameter->getName();
 
             if (!$this->request->has($name)) {
-                if ($rParameter->isDefaultValueAvailable()) {
-                    continue;
-                } else {
+                if (!$rParameter->isDefaultValueAvailable()) {
                     $missing[] = $name;
-                    continue;
                 }
+                continue;
             }
 
             $value = $this->request->get($name);

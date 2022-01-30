@@ -634,8 +634,8 @@ class Query extends AbstractQuery
     {
         $connection = $this->getDb($db);
 
+        $joins = [];
         if ($this->joins) {
-            $joins = [];
             foreach ($this->joins as $join) {
                 $join_table = $join[0];
                 if (str_contains($join_table, '\\')) {
@@ -663,8 +663,6 @@ class Query extends AbstractQuery
                 $join[0] = $join_tables[0];
                 $joins[] = $join;
             }
-        } else {
-            $joins = [];
         }
 
         $this->sql = $this->buildSql($connection, $table, $joins);

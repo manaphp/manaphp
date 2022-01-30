@@ -53,11 +53,10 @@ class Manager extends Component implements ManagerInterface
                 }
             }
             $className = $modelName . $plainName;
-            return class_exists($className) ? $className : false;
         } else {
             $className = $plainName;
-            return class_exists($className) ? $className : false;
         }
+        return class_exists($className) ? $className : false;
     }
 
     protected function inferRelation(ModelInterface $thisInstance, string $name): false|RelationInterface

@@ -103,12 +103,10 @@ class Query extends AbstractQuery
         } else {
             $projection = [];
             foreach ($fields as $k => $v) {
-                if (is_int($k)) {
-                    $projection[$v] = 1;
-                } else {
+                if (!is_int($k)) {
                     $this->aliases[$k] = $v;
-                    $projection[$v] = 1;
                 }
+                $projection[$v] = 1;
             }
             $this->fields = $projection;
         }
