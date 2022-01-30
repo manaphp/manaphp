@@ -303,6 +303,7 @@ class Model extends AbstractModel implements ModelInterface
 
     public static function insertBySql(string $sql, array $bind = []): int
     {
+        /** @noinspection OneTimeUseVariablesInspection */
         $sample = static::sample();
 
         list($db, $table) = $sample->getUniqueShard($bind);

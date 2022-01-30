@@ -430,6 +430,7 @@ class Model extends AbstractModel
 
     public static function aggregateEx(array $pipeline, array $options = []): array
     {
+        /** @noinspection OneTimeUseVariablesInspection */
         $sample = static::sample();
 
         list($db, $collection) = $sample->getUniqueShard([]);

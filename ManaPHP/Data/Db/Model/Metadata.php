@@ -38,6 +38,7 @@ class Metadata extends Component implements MetadataInterface
             }
         }
 
+        /** @noinspection OneTimeUseVariablesInspection */
         $modelInstance = is_string($model) ? $this->container->get($model) : $model;
 
         list($db, $table) = $modelInstance->getAnyShard();

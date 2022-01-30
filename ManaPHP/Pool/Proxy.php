@@ -25,6 +25,7 @@ class Proxy
 
     public function __call(string $method, array $arguments): mixed
     {
+        /** @noinspection OneTimeUseVariablesInspection */
         $instance = $this->instance;
         return $instance->$method(...$arguments);
     }

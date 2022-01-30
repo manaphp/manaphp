@@ -440,6 +440,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
     public function extract_first(array $rules): array
     {
         if ($this->nodes) {
+            /** @noinspection OneTimeUseVariablesInspection */
             $selector = new Selector($this->document, current($this->nodes));
             return $selector->extract($rules);
         } else {

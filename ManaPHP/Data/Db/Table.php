@@ -26,6 +26,7 @@ class Table extends \ManaPHP\Data\AbstractTable
 
     public static function insert(array $record, bool $fetchInsertId = false): mixed
     {
+        /** @noinspection OneTimeUseVariablesInspection */
         $sample = static::sample();
 
         list($db_id, $table) = $sample->getUniqueShard($record);
@@ -38,6 +39,7 @@ class Table extends \ManaPHP\Data\AbstractTable
 
     public static function insertBySql(string $sql, array $bind = []): int
     {
+        /** @noinspection OneTimeUseVariablesInspection */
         $sample = static::sample();
 
         list($db, $table) = $sample->getUniqueShard($bind);

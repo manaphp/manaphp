@@ -305,6 +305,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     {
         $sample = static::sample();
 
+        /** @noinspection OneTimeUseVariablesInspection */
         $request = $sample->getShared(RequestInterface::class);
 
         return $request->getId($sample->primaryKey());
