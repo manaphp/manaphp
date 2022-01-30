@@ -25,7 +25,10 @@ class Handler extends Component implements HandlerInterface
         return true;
     }
 
-    /** @noinspection PhpRedundantCatchClauseInspection */
+    /**
+     * @noinspection PhpRedundantCatchClauseInspection
+     * @noinspection PhpUnusedLocalVariableInspection
+     */
     public function handle(): void
     {
         try {

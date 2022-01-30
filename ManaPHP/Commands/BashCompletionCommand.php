@@ -19,6 +19,7 @@ class BashCompletionCommand extends Command
      * @param string $command
      *
      * @return string[]
+     * @noinspection PhpUnusedLocalVariableInspection
      */
     protected function getActions(string $command): array
     {
@@ -72,6 +73,7 @@ class BashCompletionCommand extends Command
      * @param string $current
      *
      * @return array
+     * @noinspection PhpUnusedLocalVariableInspection
      */
     protected function getArgumentValues(string $command, string $action, string $argumentName, string $current): array
     {

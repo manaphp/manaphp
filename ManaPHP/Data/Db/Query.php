@@ -877,6 +877,7 @@ class Query extends AbstractQuery
 
     /**
      * @return string
+     * @noinspection PhpUnusedLocalVariableInspection
      */
     public function __toString()
     {

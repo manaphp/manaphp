@@ -18,6 +18,7 @@ class DateCommand extends Command
      * @param bool   $onlyOnce
      *
      * @return int|false
+     * @noinspection PhpUnusedLocalVariableInspection
      */
     protected function getRemoteTimestamp(string $url, bool $onlyOnce = false): int|false
     {

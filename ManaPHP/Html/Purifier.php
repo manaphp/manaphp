@@ -91,6 +91,7 @@ class Purifier extends Component implements PurifierInterface
         }
     }
 
+    /** @noinspection PhpUnusedLocalVariableInspection */
     public function purify(string $html, ?array $allowedTags = null, ?array $allowedAttributes = null): string
     {
         if (!str_contains($html, '<body>')) {

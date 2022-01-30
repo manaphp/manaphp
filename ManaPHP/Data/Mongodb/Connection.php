@@ -26,6 +26,7 @@ class Connection extends Component implements ConnectionInterface
         $this->uri = $uri;
     }
 
+    /** @noinspection PhpUnusedLocalVariableInspection */
     protected function ping(): bool
     {
         try {

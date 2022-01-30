@@ -124,6 +124,7 @@ class Stream extends Component implements EngineInterface
         return $data;
     }
 
+    /** @noinspection PhpUnusedLocalVariableInspection */
     protected function recvHeader(mixed $stream, string $url, float $end_time): array
     {
         $recv = '';

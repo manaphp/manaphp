@@ -110,6 +110,7 @@ class Paginator extends Component implements PaginatorInterface
         return $str;
     }
 
+    /** @noinspection PhpUnusedLocalVariableInspection */
     public function __toString(): string
     {
         try {

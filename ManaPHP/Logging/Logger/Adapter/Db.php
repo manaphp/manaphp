@@ -22,6 +22,7 @@ class Db extends AbstractLogger
         }
     }
 
+    /** @noinspection PhpUnusedLocalVariableInspection */
     public function append(array $logs): void
     {
         $context = $this->context;

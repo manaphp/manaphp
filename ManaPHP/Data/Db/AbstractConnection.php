@@ -44,6 +44,7 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
         return $this->uri;
     }
 
+    /** @noinspection PhpUnusedLocalVariableInspection */
     protected function ping(): bool
     {
         try {
@@ -134,6 +135,7 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
         return $statement;
     }
 
+    /** @noinspection PhpUnusedLocalVariableInspection */
     public function execute(string $sql, array $bind = [], bool $has_insert_id = false): int
     {
         if ($this->readonly) {
@@ -170,6 +172,7 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
         throw new DbException(["%s =>\r\n SQL: %s\r\n BIND: %s", $exception->getMessage(), $sql, $bind_str]);
     }
 
+    /** @noinspection PhpUnusedLocalVariableInspection */
     public function query(string $sql, array $bind = [], int $mode = PDO::FETCH_ASSOC): array
     {
         $sql = $this->replaceQuoteCharacters($sql);
@@ -226,6 +229,7 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
         return $this->last_heartbeat;
     }
 
+    /** @noinspection PhpUnusedLocalVariableInspection */
     public function begin(): void
     {
         if ($this->readonly) {

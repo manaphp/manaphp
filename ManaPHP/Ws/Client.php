@@ -116,6 +116,7 @@ class Client extends Component implements ClientInterface
         return $this;
     }
 
+    /** @noinspection PhpUnusedLocalVariableInspection */
     public function request(string $message, ?float $timeout = null): Message
     {
         $end_time = microtime(true) + ($timeout ?? $this->timeout);

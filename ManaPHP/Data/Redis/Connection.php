@@ -133,6 +133,7 @@ class Connection extends Component
         return $this->redis;
     }
 
+    /** @noinspection PhpUnusedLocalVariableInspection */
     protected function ping(): bool
     {
         try {
