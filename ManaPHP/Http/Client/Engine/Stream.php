@@ -34,6 +34,7 @@ class Stream extends Component implements EngineInterface
         }
     }
 
+    /** @noinspection PhpMixedReturnTypeCanBeReducedInspection */
     protected function connect(Request $request): mixed
     {
         $host = parse_url($request->url, PHP_URL_HOST);
