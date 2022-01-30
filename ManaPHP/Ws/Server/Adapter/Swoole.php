@@ -40,6 +40,7 @@ class Swoole extends Component implements ServerInterface
     public function __construct(array $options = [])
     {
         $script_filename = get_included_files()[0];
+        /** @noinspection PhpArrayWriteIsNotUsedInspection */
         $_SERVER = [
             'DOCUMENT_ROOT'   => dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,

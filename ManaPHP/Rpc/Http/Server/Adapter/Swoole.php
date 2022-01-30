@@ -37,6 +37,7 @@ class Swoole extends \ManaPHP\Rpc\Http\AbstractServer
         parent::__construct($options);
 
         $script_filename = get_included_files()[0];
+        /** @noinspection PhpArrayWriteIsNotUsedInspection */
         $_SERVER = [
             'DOCUMENT_ROOT'   => dirname($script_filename),
             'SCRIPT_FILENAME' => $script_filename,
