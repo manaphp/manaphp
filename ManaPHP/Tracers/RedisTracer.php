@@ -64,6 +64,7 @@ class RedisTracer extends Tracer
             );
         } else {
             $key = $arguments[0] ?? false;
+            /** @noinspection NotOptimalIfConditionsInspection */
             if (!$this->config->get('debug') && is_string($key) && str_starts_with($key, 'cache:')) {
                 return;
             }

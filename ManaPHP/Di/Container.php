@@ -48,6 +48,7 @@ class Container implements ContainerInterface
         }
 
         $exists = false;
+        /** @noinspection NotOptimalIfConditionsInspection */
         if (str_ends_with($class, 'Interface') && interface_exists($class)) {
             $prefix = substr($class, 0, -9);
             if (class_exists($prefix)) {

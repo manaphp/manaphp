@@ -20,6 +20,7 @@ class Metadata extends Component implements MetadataInterface
             $this->ttl = (int)$options['ttl'];
         }
 
+        /** @noinspection NotOptimalIfConditionsInspection */
         if ($this->config->get('debug') || !function_exists('apcu_fetch')) {
             $this->ttl = 0;
         }
