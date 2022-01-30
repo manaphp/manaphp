@@ -19,6 +19,7 @@ use Throwable;
  */
 class Handler extends Component implements HandlerInterface
 {
+    /** @noinspection PhpRedundantCatchClauseInspection */
     public function handle(): void
     {
         try {

@@ -19,6 +19,7 @@ class Server extends Component implements ServerInterface
 {
     protected int $exit_code;
 
+    /** @noinspection PhpRedundantCatchClauseInspection */
     public function handle(): void
     {
         $args = implode(' ', array_slice($GLOBALS['argv'], 1));
