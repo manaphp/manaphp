@@ -108,6 +108,7 @@ class Swoole extends Component implements ServerInterface
         $this->globals->prepare($_get, [], $_server, null, $request->cookie ?? []);
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     public function onStart(Server $server): void
     {
         @cli_set_process_title(sprintf('manaphp %s: master', $this->config->get("id")));
@@ -140,6 +141,7 @@ class Swoole extends Component implements ServerInterface
         }
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     public function onOpen(Server $server, Request $request): void
     {
         $fd = $request->fd;
@@ -197,6 +199,7 @@ class Swoole extends Component implements ServerInterface
         }
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     public function onMessage(Server $server, Frame $frame): void
     {
         $fd = $frame->fd;

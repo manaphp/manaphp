@@ -206,16 +206,19 @@ class Validator extends Component implements ValidatorInterface
         return $value;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_required(string $field, ?string $value): ?string
     {
         return $value !== null && $value !== '' ? $value : null;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_default(string $field, mixed $value): mixed
     {
         return $value;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_bool(string $field, mixed $value): ?bool
     {
         if (is_bool($value)) {
@@ -236,6 +239,7 @@ class Validator extends Component implements ValidatorInterface
         return $this->validate_bool($field, $value);
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_int(string $field, mixed $value): ?int
     {
         if (is_int($value)) {
@@ -250,6 +254,7 @@ class Validator extends Component implements ValidatorInterface
         return $this->validate_int($field, $value);
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_float(string $field, mixed $value): ?float
     {
         if (is_int($value) || is_float($value)) {
@@ -270,11 +275,13 @@ class Validator extends Component implements ValidatorInterface
         return $this->validate_float($field, $value);
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_string(string $field, mixed $value): string
     {
         return (string)$value;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_array(string $field, mixed $value): array
     {
         return is_string($value) ? preg_split('#,#', $value, -1, PREG_SPLIT_NO_EMPTY) : (array)$value;
@@ -311,6 +318,7 @@ class Validator extends Component implements ValidatorInterface
         return $number > $parameter ? null : $number;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_length(string $field, string $value, string $parameter): ?string
     {
         $len = mb_strlen($value);
@@ -323,11 +331,13 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_minLength(string $field, string $value, int $parameter): ?string
     {
         return mb_strlen($value) >= $parameter ? $value : null;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_maxLength(string $field, string $value, string $parameter): ?string
     {
         return mb_strlen($value) <= $parameter ? $value : null;
@@ -344,41 +354,49 @@ class Validator extends Component implements ValidatorInterface
         return $number >= $match[1] && $number <= $match[2] ? $number : null;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_regex(string $field, string $value, string $parameter): ?string
     {
         return preg_match($parameter, $value) ? $value : null;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_alpha(string $field, string $value): ?string
     {
         return preg_match('#^[a-zA-Z]+$#', $value) ? $value : null;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_digit(string $field, string $value): ?string
     {
         return preg_match('#^\d+$#', $value) ? $value : null;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_xdigit(string $field, string $value): ?string
     {
         return preg_match('#^[0-9a-fA-F]+$#', $value) ? $value : null;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_alnum(string $field, string $value): ?string
     {
         return preg_match('#^[a-zA-Z0-9]+$#', $value) ? $value : null;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_lower(string $field, string $value): string
     {
         return strtolower($value);
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_upper(string $field, string $value): string
     {
         return strtoupper($value);
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_trim(string $field, mixed $value): string|array
     {
         if (is_array($value)) {
@@ -394,21 +412,25 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_email(string $field, string $value): ?string
     {
         return filter_var($value, FILTER_VALIDATE_EMAIL) !== false ? strtolower($value) : null;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_url(string $field, string $value): ?string
     {
         return filter_var($value, FILTER_VALIDATE_URL) !== false ? $value : null;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_ip(string $field, string $value): ?string
     {
         return filter_var($value, FILTER_VALIDATE_IP) !== false ? $value : null;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_date(string $field, string $value, ?string $parameter = null): ?string
     {
         $ts = is_numeric($value) ? (int)$value : strtotime($value);
@@ -419,6 +441,7 @@ class Validator extends Component implements ValidatorInterface
         return $parameter ? date($parameter, $ts) : $value;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_timestamp(string $field, mixed $value): ?int
     {
         $ts = is_numeric($value) ? (int)$value : strtotime($value);
@@ -436,11 +459,13 @@ class Validator extends Component implements ValidatorInterface
         return date($parameter ?: $model->dateFormat($field), $ts);
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_escape(string $field, string $value): string
     {
         return htmlspecialchars($value);
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_xss(string $field, string $value): string
     {
         if ($value === '') {
@@ -450,21 +475,25 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_uuid(string $field, string $value): ?string
     {
         return preg_match('#^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$#i', $value) === 1 ? $value : null;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_in(string $field, mixed $value, string $parameter): mixed
     {
         return in_array($value, preg_split('#[\s,]+#', $parameter, -1, PREG_SPLIT_NO_EMPTY), false) ? $value : null;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_not_in(string $field, mixed $value, string $parameter): mixed
     {
         return !in_array($value, preg_split('#[\s,]+#', $parameter, -1, PREG_SPLIT_NO_EMPTY), false) ? $value : null;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_ext(string $field, string $value, mixed $parameter): ?string
     {
         $ext = strtolower(pathinfo($value, PATHINFO_EXTENSION));
@@ -552,6 +581,7 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_account(string $field, string $value): ?string
     {
         $value = strtolower($value);
@@ -582,6 +612,7 @@ class Validator extends Component implements ValidatorInterface
         return $value;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_mobile(string $field, string $value): ?string
     {
         $value = trim($value);
@@ -589,6 +620,7 @@ class Validator extends Component implements ValidatorInterface
         return ($value === '' || preg_match('#^1[3-8]\d{9}$#', $value)) ? $value : null;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function validate_safe(string $field, mixed $value): mixed
     {
         return $value;

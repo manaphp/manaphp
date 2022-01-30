@@ -103,6 +103,7 @@ class Swoole extends \ManaPHP\Rpc\Http\AbstractServer
         $this->globals->prepare($_get, $_post, $_server, $raw_body);
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     public function onStart(Server $server): void
     {
         @cli_set_process_title(sprintf('manaphp %s: master', $this->config->get("id")));
@@ -113,6 +114,7 @@ class Swoole extends \ManaPHP\Rpc\Http\AbstractServer
         @cli_set_process_title(sprintf('manaphp %s: manager', $this->config->get("id")));
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     public function onWorkerStart(Server $server, int $worker_id): void
     {
         @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->config->get("id"), $worker_id));
@@ -196,6 +198,7 @@ class Swoole extends \ManaPHP\Rpc\Http\AbstractServer
         unset($this->contexts[$fd]);
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     public function onMessage(Server $server, Frame $frame): void
     {
         $fd = $frame->fd;

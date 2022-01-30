@@ -23,6 +23,7 @@ abstract class AbstractModel extends \ManaPHP\Data\AbstractModel
         throw new NotSupportedException(__METHOD__);
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     public static function connection(mixed $context = null): void
     {
         throw new NotSupportedException(__METHOD__);
