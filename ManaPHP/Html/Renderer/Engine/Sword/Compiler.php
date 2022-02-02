@@ -308,26 +308,22 @@ class Compiler extends Component
         return "<?php \$renderer->startSection{$expression}; ?>";
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
-    protected function compile_append(string $expression): string
+    protected function compile_append(): string
     {
         return '<?php $renderer->appendSection(); ?>';
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
-    protected function compile_endSection(string $expression): string
+    protected function compile_endSection(): string
     {
         return '<?php $renderer->stopSection(); ?>';
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
-    protected function compile_stop(string $expression): string
+    protected function compile_stop(): string
     {
         return '<?php $renderer->stopSection(); ?>';
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
-    protected function compile_else(string $expression): string
+    protected function compile_else(): string
     {
         return '<?php else: ?>';
     }
@@ -380,40 +376,34 @@ class Compiler extends Component
         return "<?php while{$expression}: ?>";
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
-    protected function compile_endWhile(string $expression): string
+    protected function compile_endWhile(): string
     {
         return '<?php endwhile; ?>';
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
-    protected function compile_endFor(string $expression): string
+    protected function compile_endFor(): string
     {
         return '<?php endfor; ?>';
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
-    protected function compile_endForeach(string $expression): string
+    protected function compile_endForeach(): string
     {
         $r = $this->foreachelse_used ? '<?php endif; ?>' : '<?php endforeach; ?>';
         $this->foreachelse_used = false;
         return $r;
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
-    protected function compile_endCan(string $expression): string
+    protected function compile_endCan(): string
     {
         return '<?php endif; ?>';
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
-    protected function compile_endCannot(string $expression): string
+    protected function compile_endCannot(): string
     {
         return '<?php endif; ?>';
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
-    protected function compile_endIf(string $expression): string
+    protected function compile_endIf(): string
     {
         return '<?php endif; ?>';
     }
@@ -453,8 +443,7 @@ class Compiler extends Component
         return "<?php container('ManaPHP\Mvc\ViewInterface')->setLayout{$expression}; ?>";
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
-    protected function compile_content(string $expression): string
+    protected function compile_content(): string
     {
         return "<?= container('ManaPHP\Mvc\ViewInterface')->getContent(); ?>";
     }
@@ -468,8 +457,7 @@ class Compiler extends Component
         return $expression ? "<?php {$expression}; ?>" : '<?php ';
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
-    protected function compile_endPhp(string $expression): string
+    protected function compile_endPhp(): string
     {
         return ' ?>';
     }
@@ -498,8 +486,7 @@ class Compiler extends Component
         /*return "<?= asset{$expression}; ?>";*/
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
-    protected function compile_flash(string $expression): string
+    protected function compile_flash(): string
     {
         return "<?php container('ManaPHP\Mvc\View\FlashInterface')->output() ?>";
     }
@@ -510,15 +497,13 @@ class Compiler extends Component
         return "<?= json_stringify({$expression}) ;?>";
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
-    protected function compile_debugger(string $expression): string
+    protected function compile_debugger(): string
     {
         return '<?php if(container("ManaPHP\Http\ResponseInterface")->hasHeader("X-Debugger-Link")){?><div class="debugger"><a target="_self" href="'
             . '<?= container("ManaPHP\Http\ResponseInterface")->getHeader("X-Debugger-Link") ?>">Debugger</a></div><?php }?> ';
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
-    protected function compile_eol(string $expression): string
+    protected function compile_eol(): string
     {
         return '<?= PHP_EOL ?>';
     }
