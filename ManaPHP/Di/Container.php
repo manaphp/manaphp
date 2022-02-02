@@ -10,7 +10,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionFunction;
 
-class Container implements ContainerInterface
+class Container implements ContainerInterface, \Psr\Container\ContainerInterface
 {
     protected array $definitions = [];
     protected array $instances = [];
@@ -21,6 +21,7 @@ class Container implements ContainerInterface
     {
         $this->definitions = $definitions;
         $this->definitions['ManaPHP\Di\ContainerInterface'] = $this;
+        $this->definitions['Psr\Container\ContainerInterface'] = $this;
     }
 
     public function set(string $id, mixed $definition): static
@@ -179,7 +180,7 @@ class Container implements ContainerInterface
 
             return $this->instances[$id] = $this->make($class, $parameters, $id);
         } else {
-            throw new MisuseException('not supported definition');
+            throw new NotSupportedException('not supported definition');
         }
     }
 

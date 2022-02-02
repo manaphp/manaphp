@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Di;
 
-class Exception extends \ManaPHP\Exception
+use Psr\Container\ContainerExceptionInterface;
+
+class Exception extends \ManaPHP\Exception implements ContainerExceptionInterface
 {
 
 }
