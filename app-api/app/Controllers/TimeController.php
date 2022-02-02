@@ -2,9 +2,17 @@
 
 namespace App\Controllers;
 
+use ManaPHP\Logging\LoggerInterface;
+use Psr\Container\ContainerInterface;
+
 class TimeController extends Controller
 {
-    public function getAcl()
+    public function __construct(ContainerInterface $container)
+    {
+        $x=$container->get(LoggerInterface::class);
+    }
+
+    public function getAcl(): array
     {
         return ['*' => '*'];
     }

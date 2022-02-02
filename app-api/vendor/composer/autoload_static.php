@@ -11,6 +11,10 @@ class ComposerStaticIniteebc9c31b1a51dd8ba8a90051db6aad9
     );
 
     public static $prefixLengthsPsr4 = array (
+        'P' => 
+        array (
+            'Psr\\Container\\' => 14,
+        ),
         'M' => 
         array (
             'ManaPHP\\' => 8,
@@ -22,6 +26,10 @@ class ComposerStaticIniteebc9c31b1a51dd8ba8a90051db6aad9
     );
 
     public static $prefixDirsPsr4 = array (
+        'Psr\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
         'ManaPHP\\' => 
         array (
             0 => __DIR__ . '/../..' . '/../ManaPHP',

@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
     'ManaPHP\\' => array($baseDir . '/../ManaPHP'),
     'App\\' => array($baseDir . '/app'),
 );

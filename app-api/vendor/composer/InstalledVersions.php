@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '600ffeb03993c34b089d8c3cd39a29ae7177f631',
+    'reference' => 'adab982221ca2592b71cecfc04ac496eff3a7788',
     'name' => 'manaphp/app-api',
   ),
   'versions' => 
@@ -41,7 +41,16 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '600ffeb03993c34b089d8c3cd39a29ae7177f631',
+      'reference' => 'adab982221ca2592b71cecfc04ac496eff3a7788',
+    ),
+    'psr/container' => 
+    array (
+      'pretty_version' => '2.0.2',
+      'version' => '2.0.2.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'c71ecc56dfe541dbd90c5360474fbc405f8d5963',
     ),
   ),
 );

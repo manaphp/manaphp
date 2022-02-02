@@ -24,6 +24,7 @@
   },
   "minimum-stability": "dev",
   "require": {
-    "ext-json": "*"
+    "ext-json": "*",
+    "psr/container": "2.0.2"
   }
 }
