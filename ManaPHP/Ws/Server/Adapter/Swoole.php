@@ -219,7 +219,7 @@ class Swoole extends Component implements ServerInterface
         try {
             $this->wsHandler->onMessage($frame->fd, $frame->data);
         } catch (Throwable $throwable) {
-            $this->logger->warn($throwable);
+            $this->logger->warning($throwable);
         }
 
         foreach ($current_context as $k => $v) {

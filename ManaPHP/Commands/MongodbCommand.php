@@ -30,7 +30,7 @@ class MongodbCommand extends \ManaPHP\Cli\Command
                     } elseif ($container->has($service . '_mongodb')) {
                         $services[$index] = $service . '_mongodb';
                     } else {
-                        $this->console->warn(['`:service` service is not exists: ignoring', 'service' => $service]);
+                        $this->console->warning(['`:service` service is not exists: ignoring', 'service' => $service]);
                         unset($services[$index]);
                     }
                 }
@@ -136,7 +136,7 @@ class MongodbCommand extends \ManaPHP\Cli\Command
                     }
 
                     if ($pending_fields) {
-                        $this->console->warn(
+                        $this->console->warning(
                             [
                                 '`:collection` has pending fields: :fields',
                                 'collection' => $collection,

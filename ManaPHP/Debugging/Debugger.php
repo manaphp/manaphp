@@ -5,12 +5,12 @@ namespace ManaPHP\Debugging;
 
 use ManaPHP\Component;
 use ManaPHP\Event\EventArgs;
+use ManaPHP\Logging\Level;
 use ManaPHP\Tracer;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
-use ManaPHP\Logging\AbstractLogger;
 use ManaPHP\Version;
 use ArrayObject;
 
@@ -342,8 +342,8 @@ class Debugger extends Component implements DebuggerInterface
 
         $data = [];
         $data['basic'] = $this->getBasic();
-        $levels = array_flip($this->logger->getLevels());
-        $data['logger'] = ['log' => $context->log, 'levels' => $levels, 'level' => AbstractLogger::LEVEL_DEBUG];
+        $levels = Level::map();
+        $data['logger'] = ['log' => $context->log, 'levels' => $levels, 'level' => $levels[Level::DEBUG]];
         $data['sql'] = [
             'prepared' => $context->sql_prepared,
             'executed' => $context->sql_executed,

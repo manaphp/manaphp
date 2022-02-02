@@ -185,7 +185,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         } elseif ($type === 'room') {
             $this->pushToRoom($receivers, $message);
         } else {
-            $this->logger->warn(
+            $this->logger->warning(
                 ['unknown `:type` type message: :message', 'type' => $type, 'message' => $message],
                 'wspServer.bad_type'
             );
@@ -208,7 +208,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
                         $this->dispatch($type, $receivers, $message);
                         $this->fireEvent('wspServer:pushed', compact('type', 'receivers', 'message'));
                     } else {
-                        $this->logger->warn($channel, 'wspServer.bad_channel');
+                        $this->logger->warning($channel, 'wspServer.bad_channel');
                     }
                 }
                 );

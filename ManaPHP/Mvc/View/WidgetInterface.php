@@ -5,5 +5,5 @@ namespace ManaPHP\Mvc\View;
 
 interface WidgetInterface
 {
-    public function run(array $vars = []): string|array;
+    public function run($vars = []);
 }

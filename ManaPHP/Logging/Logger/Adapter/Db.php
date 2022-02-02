@@ -5,6 +5,7 @@ namespace ManaPHP\Logging\Logger\Adapter;
 
 use Exception;
 use ManaPHP\Logging\AbstractLogger;
+use ManaPHP\Logging\Level;
 
 /**
  * @property-read \ManaPHP\Data\DbInterface $db
@@ -28,7 +29,7 @@ class Db extends AbstractLogger
         $context = $this->context;
 
         $level = $context->level;
-        $context->level = AbstractLogger::LEVEL_FATAL;
+        $context->level = Level::CRITICAL;
 
         foreach ($logs as $log) {
             try {

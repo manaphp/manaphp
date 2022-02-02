@@ -222,7 +222,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
         } elseif ($type === 'kickout.name') {
             $this->kickoutName($room, $receivers, $message);
         } else {
-            $this->logger->warn(
+            $this->logger->warning(
                 ['unknown `:type` type message: :message', 'type' => $type, 'message' => $message],
                 'chatServer.bad_type'
             );
@@ -243,7 +243,7 @@ class Server extends Component implements ServerInterface, LogCategorizable
                         $this->dispatch($type, $room, $receivers, $message);
                         $this->fireEvent('chatServer:pushed', compact('type', 'receivers', 'message'));
                     } else {
-                        $this->logger->warn($channel, 'chatServer.bad_channel');
+                        $this->logger->warning($channel, 'chatServer.bad_channel');
                     }
                 }
                 );

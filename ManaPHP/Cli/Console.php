@@ -220,7 +220,7 @@ class Console extends Component implements ConsoleInterface
 
         $this->write('');
         $this->info('This is info text');
-        $this->warn('This is warn text');
+        $this->warning('This is warn text');
         $this->success('This is success text');
         sleep(1);
         $this->error('This is error text');
@@ -259,9 +259,9 @@ class Console extends Component implements ConsoleInterface
         $this->write(PHP_EOL);
     }
 
-    public function warn(mixed $message): void
+    public function warning(mixed $message): void
     {
-        $this->logger->warn($message);
+        $this->logger->warning($message);
 
         $this->write($message, self::FC_MAGENTA);
         $this->write(PHP_EOL);

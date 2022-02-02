@@ -19,7 +19,7 @@ interface ConsoleInterface
 
     public function info(mixed $message): void;
 
-    public function warn(mixed $message): void;
+    public function warning(mixed $message): void;
 
     public function success(mixed $message): void;
 

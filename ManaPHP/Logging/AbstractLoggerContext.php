@@ -5,7 +5,7 @@ namespace ManaPHP\Logging;
 
 class AbstractLoggerContext
 {
-    public int $level;
+    public string $level;
     public string $client_ip;
     public string $request_id;
 }

@@ -423,11 +423,14 @@
         methods: {
             logLevelClass: function (level) {
                 let map = {
-                    debug: '',
-                    info: 'bg-info',
-                    warn: 'bg-warning',
+                    emergency: 'bg-danger',
+                    alert: 'bg-danger',
+                    critical: 'bg-danger',
                     error: 'bg-danger',
-                    fatal: 'bg-danger',
+                    warning: 'bg-warning',
+                    notice: 'bg-warning',
+                    info: 'bg-info',
+                    debug: '',
                 };
 
                 return map[level];

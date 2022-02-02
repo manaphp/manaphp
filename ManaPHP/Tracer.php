@@ -29,9 +29,9 @@ abstract class Tracer extends Listener
         $this->logger->info($message, $category);
     }
 
-    public function warn(mixed $message, string $category): void
+    public function warning(mixed $message, string $category): void
     {
-        $this->logger->warn($message, $category);
+        $this->logger->warning($message, $category);
     }
 
     public function error(mixed $message, string $category): void
@@ -39,8 +39,8 @@ abstract class Tracer extends Listener
         $this->logger->error($message, $category);
     }
 
-    public function fatal(mixed $message, string $category): void
+    public function critical(mixed $message, string $category): void
     {
-        $this->logger->fatal($message, $category);
+        $this->logger->critical($message, $category);
     }
 }

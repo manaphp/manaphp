@@ -239,7 +239,7 @@ class Swoole extends \ManaPHP\Rpc\Http\AbstractServer
                 $this->rpcHandler->handle();
             } catch (Throwable $throwable) {
                 $this->response->setContent(['code' => -32603, 'message' => 'Internal error']);
-                $this->logger->warn($throwable);
+                $this->logger->warning($throwable);
             }
         }
 
