@@ -311,6 +311,11 @@ abstract class AbstractLogger extends Component implements LoggerInterface
         return $this->log(Level::INFO, $message, $category);
     }
 
+    public function notice(mixed $message, ?string $category = null): static
+    {
+        return $this->log(Level::NOTICE, $message, $category);
+    }
+
     public function warning(mixed $message, ?string $category = null): static
     {
         return $this->log(Level::WARNING, $message, $category);
@@ -324,6 +329,16 @@ abstract class AbstractLogger extends Component implements LoggerInterface
     public function critical(mixed $message, ?string $category = null): static
     {
         return $this->log(Level::CRITICAL, $message, $category);
+    }
+
+    public function alert(mixed $message, ?string $category = null): static
+    {
+        return $this->log(Level::ALERT, $message, $category);
+    }
+
+    public function emergency(mixed $message, ?string $category = null): static
+    {
+        return $this->log(Level::EMERGENCY, $message, $category);
     }
 
     public function dump(): array
