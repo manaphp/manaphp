@@ -37,7 +37,7 @@ class Channel
     public function pop(?float $timeout = null): mixed
     {
         if (MANAPHP_COROUTINE_ENABLED) {
-            $data = $this->queue->pop($timeout);
+            $data = $timeout === null ? $this->queue->pop() : $this->queue->pop($timeout);
         } else {
             if ($this->length === 0) {
                 throw new MisuseException('channel is empty');
