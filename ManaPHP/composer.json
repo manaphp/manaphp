@@ -12,7 +12,8 @@
   "homepage": "https://github.com/manaphp/framework",
   "require": {
     "php": ">=8.0.2",
-    "psr/container": "~2.0.2"
+    "psr/container": "~2.0.2",
+    "psr/log": "^2.0"
   },
   "authors": [
     {
