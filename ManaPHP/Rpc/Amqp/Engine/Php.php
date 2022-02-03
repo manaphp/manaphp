@@ -49,8 +49,8 @@ class Php extends Component implements EngineInterface
 
             list($this->reply_to) = $channel->queue_declare('', false, false, true);
 
+            $channel->basic_qos(0, 1, false);
             if (MANAPHP_COROUTINE_ENABLED) {
-                $channel->basic_qos(0, 1, false);
                 $channel->basic_consume(
                     $this->reply_to, '', false, true, false, false, function (AMQPMessage $message) {
                     $cid = $message->get('correlation_id');
@@ -75,7 +75,6 @@ class Php extends Component implements EngineInterface
                     }
                 );
             } else {
-                $channel->basic_qos(0, 1, false);
                 $channel->basic_consume(
                     $this->reply_to, '', false, true, false, false, function (AMQPMessage $message) {
                     $this->replies[] = $message->body;
