@@ -1,5 +1,5 @@
 {
-  "name": "manaphp/app-ws",
+  "name": "manaphp/app-user",
   "description": "The ManaPHP Framework",
   "keywords": [
     "manaphp",
@@ -17,10 +17,15 @@
     "psr-4": {
       "ManaPHP\\": "../framework/",
       "App\\": "app/"
-    }
+    },
+    "files": [
+      "../framework/helpers.php"
+    ]
   },
   "minimum-stability": "dev",
   "require": {
-    "ext-json": "*"
+    "ext-json": "*",
+    "psr/container": "2.0.2",
+    "psr/log": "2.0.0"
   }
 }
