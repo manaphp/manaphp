@@ -7,7 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticIniteebc9c31b1a51dd8ba8a90051db6aad9
 {
     public static $files = array (
-        'd1c56384b7922fb7b7f2644892c4fef7' => __DIR__ . '/../..' . '/../ManaPHP/helpers.php',
+        'd1c56384b7922fb7b7f2644892c4fef7' => __DIR__ . '/../..' . '/../framework/helpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -32,7 +32,7 @@ class ComposerStaticIniteebc9c31b1a51dd8ba8a90051db6aad9
         ),
         'ManaPHP\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/../ManaPHP',
+            0 => __DIR__ . '/../..' . '/../framework',
         ),
         'App\\' => 
         array (

@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    '62d2b4a88ece27564e401aadb152406f' => $baseDir . '/../ManaPHP/helpers.php',
+    '62d2b4a88ece27564e401aadb152406f' => $baseDir . '/../framework/helpers.php',
 );

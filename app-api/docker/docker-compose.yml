@@ -9,7 +9,7 @@ services :
       - /data/volumes/${COMPOSE_PROJECT_NAME}/api/data:/var/www/html/data
       - /data/volumes/${COMPOSE_PROJECT_NAME}/api/tmp:/var/www/html/tmp
       - /data/volumes/${COMPOSE_PROJECT_NAME}/api/fpm/:/var/log/php
-      - ../../ManaPHP:/var/www/ManaPHP
+      - ../../framework:/var/www/framework
     command : bash /var/www/html/docker/fpm/bootstrap.sh
     restart : always
   api-nginx :

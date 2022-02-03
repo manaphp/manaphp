@@ -6,6 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'ManaPHP\\' => array($baseDir . '/../ManaPHP'),
+    'ManaPHP\\' => array($baseDir . '/../framework'),
     'App\\' => array($baseDir . '/app'),
 );

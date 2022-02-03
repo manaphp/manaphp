@@ -7,6 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
-    'ManaPHP\\' => array($baseDir . '/../ManaPHP'),
+    'ManaPHP\\' => array($baseDir . '/../framework'),
     'App\\' => array($baseDir . '/app'),
 );

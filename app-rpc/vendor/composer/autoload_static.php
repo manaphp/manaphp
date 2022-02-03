@@ -20,7 +20,7 @@ class ComposerStaticIniteebc9c31b1a51dd8ba8a90051db6aad9
     public static $prefixDirsPsr4 = array (
         'ManaPHP\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/../ManaPHP',
+            0 => __DIR__ . '/../..' . '/../framework',
         ),
         'App\\' => 
         array (

@@ -15,11 +15,11 @@
   ],
   "autoload": {
     "psr-4": {
-      "ManaPHP\\": "../ManaPHP/",
+      "ManaPHP\\": "../framework/",
       "App\\": "app/"
     },
     "files": [
-      "../ManaPHP/helpers.php"
+      "../framework/helpers.php"
     ]
   },
   "minimum-stability": "dev",
