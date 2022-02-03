@@ -133,7 +133,7 @@ class HelpCommand extends Command
             $action = $match[1];
 
             $description = '';
-            foreach (preg_split('#[\r\n]+#', $rClass->getMethod($match[0])->getDocComment()) as $line) {
+            foreach (preg_split('#[\r\n]+#', $rClass->getMethod($match[0])->getDocComment() ?: '') as $line) {
                 $line = trim($line, "\t /*\r\n");
                 if (!$line) {
                     continue;

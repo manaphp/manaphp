@@ -5,7 +5,7 @@ namespace ManaPHP\Http\Client;
 
 class Exception extends \ManaPHP\Exception
 {
-    protected Response $response;
+    protected ?Response $response = null;
 
     public function __construct(string|array $message = '', ?Response $response = null, ?\Exception $previous = null)
     {

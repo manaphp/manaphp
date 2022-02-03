@@ -89,7 +89,7 @@ class Handler extends Component implements HandlerInterface
         $this->route($args);
 
         $command = Str::pascalize($this->command);
-        $action = Str::camelize($this->action);
+        $action = $this->action ? Str::camelize($this->action) : '';
 
         $commands = $this->commandManager->getCommands();
         if (($definition = $commands[lcfirst($command)] ?? null) === null) {

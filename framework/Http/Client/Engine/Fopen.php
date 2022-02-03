@@ -57,7 +57,7 @@ class Fopen extends Component implements EngineInterface
 
         $http['timeout'] = $request->options['timeout'];
         $http['ignore_errors'] = true;
-        $http['protocol_version'] = 1.1;
+        $http['protocol_version'] = '1.1';
 
         $ssl = [];
         $ssl['verify_peer'] = $request->options['verify_peer'];

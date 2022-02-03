@@ -123,7 +123,7 @@ class Client extends Component implements ClientInterface
             $success = false;
             $response_text = null;
             $response = null;
-            $engine_id = substr($request->url, 0, strpos($request->url, '/', 8));
+            $engine_id = substr($request->url, 0, strpos($request->url, '/', 8) ?: 0);
 
             if (!$this->poolManager->exists($this, $engine_id)) {
                 $sample = is_string($this->engine) ? $this->container->make($this->engine) : $this->engine;
