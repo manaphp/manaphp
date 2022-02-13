@@ -7,10 +7,11 @@ use ManaPHP\Component;
 use ManaPHP\Helper\Str;
 
 /**
- * @property-read \ManaPHP\Di\ContainerInterface $container
- * @property-read \ManaPHP\Cli\ConsoleInterface $console
- * @property-read \ManaPHP\Cli\RequestInterface $request
- * @property-read \ManaPHP\Cli\Command\ManagerInterface $commandManager
+ * @property-read \ManaPHP\Di\ContainerInterface                  $container
+ * @property-read \ManaPHP\Cli\ConsoleInterface                   $console
+ * @property-read \ManaPHP\Cli\RequestInterface                   $request
+ * @property-read \ManaPHP\Cli\Command\ManagerInterface           $commandManager
+ * @property-read \ManaPHP\Cli\Command\ArgumentsResolverInterface $argumentsResolver
  */
 class Handler extends Component implements HandlerInterface
 {
@@ -126,7 +127,8 @@ class Handler extends Component implements HandlerInterface
         $method = $action . 'Action';
         $this->request->completeShortNames($instance, $method);
         $this->fireEvent('cli:invoking', compact('instance', 'method', 'action'));
-        $r = $instance->invoke($action);
+        $arguments = $this->argumentsResolver->resolve($instance, $method);
+        $r = $instance->$method(...$arguments);
         $this->fireEvent('cli:invoked', compact('instance', 'method', 'action'));
         return is_int($r) ? $r : $this->console->error($r);
     }
