@@ -13,7 +13,7 @@ class WspClientTracer extends Tracer
         $this->attachEvent('wspClient:push', [$this, 'onPush']);
     }
 
-    public function onPush(EventArgs $eventArgs):void
+    public function onPush(EventArgs $eventArgs): void
     {
         $this->debug($eventArgs->data, 'wspClient.push');
     }

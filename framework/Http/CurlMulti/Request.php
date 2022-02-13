@@ -14,8 +14,9 @@ class Request
     public mixed $callbacks;
     public float $start_time;
 
-    public function __construct(string|array $url, ?callable $callbacks = null, string $method = 'GET', string|array $body = null)
-    {
+    public function __construct(string|array $url, ?callable $callbacks = null, string $method = 'GET',
+        string|array $body = null
+    ) {
         $this->url = $url;
         $this->callbacks = $callbacks;
         $this->method = $method;

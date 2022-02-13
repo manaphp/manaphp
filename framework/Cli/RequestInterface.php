@@ -23,5 +23,5 @@ interface RequestInterface
 
     public function setRequestId(?string $request_id = null): void;
 
-    public function completeShortNames(object $instance, string $action):void;
+    public function completeShortNames(object $instance, string $action): void;
 }

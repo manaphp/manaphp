@@ -146,7 +146,7 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @param string $html
+     * @param string  $html
      * @param ?string $text
      *
      * @return static

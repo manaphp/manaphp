@@ -15,5 +15,5 @@ interface QueueInterface
 
     public function delete(string $topic): void;
 
-    public function length(string $topic, ?int $priority = null):int;
+    public function length(string $topic, ?int $priority = null): int;
 }
