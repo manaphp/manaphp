@@ -15,7 +15,7 @@ class Service implements Injectable
     protected array $parameters;
     protected ContainerInterface $container;
 
-    public function __construct(string|array $options = [])
+    public function __construct(ContainerInterface $container, string|array $options = [])
     {
         if (is_string($options)) {
             $options = ['endpoint' => $options];
@@ -32,7 +32,7 @@ class Service implements Injectable
             throw new NotSupportedException(['`:type` type rpc is not support', 'type' => $scheme]);
         }
 
-        $this->rpcClient = $this->container->make($class, $options);
+        $this->rpcClient = $container->make($class, $options);
     }
 
     public function setContainer(ContainerInterface $container): void
