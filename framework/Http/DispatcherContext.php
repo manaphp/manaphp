@@ -7,9 +7,9 @@ class DispatcherContext
 {
     public ?string $path = null;
     public ?string $area = null;
-    public string $controller;
-    public string $action;
+    public ?string $controller = null;
+    public ?string $action = null;
     public array $params = [];
-    public Controller $controllerInstance;
+    public ?Controller $controllerInstance = null;
     public bool $isInvoking = false;
 }

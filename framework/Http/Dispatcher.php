@@ -19,12 +19,12 @@ class Dispatcher extends Component implements DispatcherInterface
         return $this->context->area;
     }
 
-    public function getController(): string
+    public function getController(): ?string
     {
         return $this->context->controller;
     }
 
-    public function getAction(): string
+    public function getAction(): ?string
     {
         return $this->context->action;
     }
@@ -45,7 +45,7 @@ class Dispatcher extends Component implements DispatcherInterface
         return isset($this->context->params[$name]);
     }
 
-    public function getPath(): string
+    public function getPath(): ?string
     {
         $context = $this->context;
 
@@ -53,6 +53,10 @@ class Dispatcher extends Component implements DispatcherInterface
             $area = $context->area;
             $controller = $context->controller;
             $action = $context->action;
+
+            if ($controller === null || $action === null) {
+                return null;
+            }
 
             if ($action === 'index') {
                 $path = $controller === 'Index' ? '/' : '/' . Str::snakelize($controller);
@@ -149,7 +153,7 @@ class Dispatcher extends Component implements DispatcherInterface
         return $this->invokeAction($controllerInstance, $action);
     }
 
-    public function getControllerInstance(): Controller
+    public function getControllerInstance(): ?Controller
     {
         return $this->context->controllerInstance;
     }
