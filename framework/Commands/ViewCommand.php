@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
-use ManaPHP\Helper\LocalFS;
 use ManaPHP\Data\ModelInterface;
+use ManaPHP\Helper\LocalFS;
 
 class ViewCommand extends \ManaPHP\Cli\Command
 {

@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Db;
 
+use ManaPHP\Data\AbstractModel;
 use ManaPHP\Data\Db\Model\MetadataInterface;
 use ManaPHP\Data\DbInterface;
 use ManaPHP\Data\Model\ExpressionInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Data\AbstractModel;
 use ManaPHP\Logging\LoggerInterface;
 
 class Model extends AbstractModel implements ModelInterface

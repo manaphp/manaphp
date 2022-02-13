@@ -3,16 +3,16 @@ declare(strict_types=1);
 
 namespace ManaPHP\Debugging;
 
+use ArrayObject;
 use ManaPHP\Component;
 use ManaPHP\Event\EventArgs;
-use ManaPHP\Logging\Level;
-use ManaPHP\Tracer;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
+use ManaPHP\Logging\Level;
+use ManaPHP\Tracer;
 use ManaPHP\Version;
-use ArrayObject;
 
 /**
  * @property-read \ManaPHP\Di\ContainerInterface     $container

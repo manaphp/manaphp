@@ -7,8 +7,8 @@ use Closure;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MisuseException;
 use ReflectionClass;
-use ReflectionMethod;
 use ReflectionFunction;
+use ReflectionMethod;
 
 class Container implements ContainerInterface, \Psr\Container\ContainerInterface
 {

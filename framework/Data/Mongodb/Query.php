@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Mongodb;
 
+use ManaPHP\Data\AbstractQuery;
 use ManaPHP\Data\ModelInterface;
 use ManaPHP\Data\MongodbInterface;
 use ManaPHP\Exception\InvalidArgumentException;
@@ -13,7 +14,6 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
 use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\Regex;
-use ManaPHP\Data\AbstractQuery;
 
 class Query extends AbstractQuery
 {

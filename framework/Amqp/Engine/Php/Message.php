@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Amqp\Engine\Php;
 
+use JsonSerializable;
 use ManaPHP\Amqp\MessageInterface;
 use PhpAmqpLib\Message\AMQPMessage;
-use JsonSerializable;
 
 class Message implements MessageInterface, JsonSerializable
 {

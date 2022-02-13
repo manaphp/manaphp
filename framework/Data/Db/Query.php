@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Db;
 
+use ManaPHP\Data\AbstractQuery;
 use ManaPHP\Data\DbInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
@@ -10,7 +11,6 @@ use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
 use PDO;
-use ManaPHP\Data\AbstractQuery;
 
 /**
  * @property-read \ManaPHP\Logging\LoggerInterface $logger

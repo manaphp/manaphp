@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Middlewares;
 
 use ManaPHP\Event\EventArgs;
-use ManaPHP\Http\Middlewares\CsrfMiddleware\AttackDetectedException;
 use ManaPHP\Http\Middleware;
+use ManaPHP\Http\Middlewares\CsrfMiddleware\AttackDetectedException;
 use ManaPHP\Mvc\Controller as MvcController;
 use ManaPHP\Rest\Controller as RestController;
 

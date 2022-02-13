@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Merger;
 
+use ManaPHP\Data\AbstractQuery;
 use ManaPHP\Data\ModelInterface;
 use ManaPHP\Data\QueryInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
-use ManaPHP\Data\AbstractQuery;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface $request

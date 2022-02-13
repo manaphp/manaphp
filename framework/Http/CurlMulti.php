@@ -4,12 +4,12 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use Countable;
+use CurlHandle;
 use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Http\CurlMulti\Error;
 use ManaPHP\Http\CurlMulti\Request;
 use ManaPHP\Http\CurlMulti\Response;
-use ManaPHP\Http\CurlMulti\Error;
-use CurlHandle;
 
 /**
  * @property-read \ManaPHP\AliasInterface          $alias

@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Logging;
 
+use ArrayObject;
 use JsonSerializable;
 use ManaPHP\Component;
 use ManaPHP\Coroutine;
 use ManaPHP\Logging\Logger\Log;
 use ManaPHP\Logging\Logger\LogCategorizable;
 use Throwable;
-use ArrayObject;
 
 /**
  * @property-read \ManaPHP\AliasInterface                $alias

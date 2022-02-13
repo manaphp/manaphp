@@ -2,9 +2,9 @@
 
 namespace ManaPHP\Data\Merger;
 
+use ManaPHP\Data\ModelInterface;
 use ManaPHP\Data\QueryInterface;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Data\ModelInterface;
 
 abstract class AbstractModel extends \ManaPHP\Data\AbstractModel
 {

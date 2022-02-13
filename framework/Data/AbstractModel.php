@@ -16,6 +16,7 @@ use ManaPHP\Data\Relation\HasMany;
 use ManaPHP\Data\Relation\HasManyOthers;
 use ManaPHP\Data\Relation\HasManyToMany;
 use ManaPHP\Data\Relation\HasOne;
+use ManaPHP\Data\Relation\ManagerInterface as RelationManager;
 use ManaPHP\Event\ManagerInterface as EventManager;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidJsonException;
@@ -27,7 +28,6 @@ use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ManaPHP\Validating\ValidatorInterface;
 use ReflectionClass;
-use ManaPHP\Data\Relation\ManagerInterface as RelationManager;
 
 abstract class AbstractModel extends AbstractTable implements ModelInterface, ArrayAccess, JsonSerializable
 {

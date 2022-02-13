@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Mongodb;
 
+use ManaPHP\Data\AbstractModel;
 use ManaPHP\Data\Model\ExpressionInterface;
 use ManaPHP\Data\MongodbInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\RuntimeException;
 use MongoDB\BSON\ObjectId;
-use ManaPHP\Data\AbstractModel;
 
 class Model extends AbstractModel
 {

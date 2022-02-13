@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Security;
 
 use ManaPHP\Component;
-use ManaPHP\Security\Crypt\Exception as CryptException;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Security\Crypt\Exception as CryptException;
 
 class Crypt extends Component implements CryptInterface
 {

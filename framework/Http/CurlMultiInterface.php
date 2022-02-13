@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-use ManaPHP\Http\CurlMulti\Request;
 use ManaPHP\Http\CurlMulti\Error;
+use ManaPHP\Http\CurlMulti\Request;
 use ManaPHP\Http\CurlMulti\Response;
 
 interface CurlMultiInterface

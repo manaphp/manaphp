@@ -16,11 +16,11 @@ use ManaPHP\Http\Client\InternalServerErrorException;
 use ManaPHP\Http\Client\NotFoundException;
 use ManaPHP\Http\Client\RedirectionException;
 use ManaPHP\Http\Client\Request;
+use ManaPHP\Http\Client\Response;
 use ManaPHP\Http\Client\ServerErrorException;
 use ManaPHP\Http\Client\ServiceUnavailableException;
 use ManaPHP\Http\Client\TooManyRequestsException;
 use ManaPHP\Http\Client\UnauthorizedException;
-use ManaPHP\Http\Client\Response;
 
 /**
  * @property-read \ManaPHP\AliasInterface        $alias

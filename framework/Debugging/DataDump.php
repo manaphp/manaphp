@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace ManaPHP\Debugging;
 
+use ArrayObject;
 use JsonSerializable;
 use ManaPHP\Component;
 use ManaPHP\Coroutine;
 use Throwable;
-use  ArrayObject;
 
 /**
  * @property-read \ManaPHP\AliasInterface $alias

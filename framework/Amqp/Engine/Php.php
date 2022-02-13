@@ -5,17 +5,17 @@ namespace ManaPHP\Amqp\Engine;
 
 use ManaPHP\Amqp\Binding;
 use ManaPHP\Amqp\ChannelException;
-use ManaPHP\Component;
-use ManaPHP\Exception\MisuseException;
+use ManaPHP\Amqp\Engine\Php\Message as PhpMessage;
 use ManaPHP\Amqp\EngineInterface;
 use ManaPHP\Amqp\Exchange;
 use ManaPHP\Amqp\MessageInterface;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
+use ManaPHP\Amqp\Queue;
+use ManaPHP\Component;
+use ManaPHP\Exception\MisuseException;
 use PhpAmqpLib\Channel\AMQPChannel;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Exception\AMQPProtocolChannelException;
 use PhpAmqpLib\Message\AMQPMessage;
-use ManaPHP\Amqp\Queue;
-use ManaPHP\Amqp\Engine\Php\Message as PhpMessage;
 
 class Php extends Component implements EngineInterface
 {

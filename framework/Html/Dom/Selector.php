@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Html\Dom;
 
-use DOMText;
 use DOMElement;
 use DOMNode;
+use DOMText;
 
 class Selector
 {

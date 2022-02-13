@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
-use ManaPHP\Cli\Command;
 use DateTime;
 use DateTimeZone;
+use ManaPHP\Cli\Command;
 
 /**
  * @property-read \ManaPHP\Http\ClientInterface $httpClient

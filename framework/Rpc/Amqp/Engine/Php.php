@@ -7,8 +7,8 @@ use ManaPHP\Component;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Rpc\Amqp\EngineInterface;
 use ManaPHP\Rpc\Amqp\TimeoutException;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Channel\AMQPChannel;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use Swoole\Coroutine;
 

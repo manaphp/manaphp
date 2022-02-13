@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace ManaPHP\Helper;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\RuntimeException;
-use ManaPHP\AliasInterface;
 
 class LocalFS
 {

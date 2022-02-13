@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
+use ArrayObject;
 use JsonSerializable;
 use ManaPHP\Component;
 use ReflectionClass;
 use Throwable;
 use function getenv;
-use ArrayObject;
 
 /**
  * @property-read \ManaPHP\Logging\LoggerInterface $logger

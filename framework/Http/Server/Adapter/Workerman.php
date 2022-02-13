@@ -7,9 +7,9 @@ namespace ManaPHP\Http\Server\Adapter;
 
 use ManaPHP\Http\AbstractServer;
 use Throwable;
+use Workerman\Connection\ConnectionInterface;
 use Workerman\Protocols\Http;
 use Workerman\Worker;
-use Workerman\Connection\ConnectionInterface;
 
 /**
  * @property-read \ManaPHP\Http\RouterInterface                 $router

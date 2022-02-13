@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
+use ManaPHP\AliasInterface;
+use ManaPHP\ConfigInterface;
 use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\JsonException;
-use ManaPHP\ConfigInterface;
-use ManaPHP\AliasInterface;
 
 if (!function_exists('json_parse')) {
     function json_parse(string $str): mixed
