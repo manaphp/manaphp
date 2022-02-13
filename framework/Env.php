@@ -49,13 +49,9 @@ class Env extends Component implements EnvInterface
             }
 
             if (count($parts) !== 2) {
-                throw new InvalidValueException(['invalid line: :line, has no = character', 'line' => $line]);
+                throw new InvalidValueException(['has no = character, invalid line: `:line`', 'line' => $line]);
             }
             list($name, $value) = $parts;
-
-            if (getenv($name) !== false) {
-                continue;
-            }
 
             if ($value !== '') {
                 $char = $value[0];
@@ -86,7 +82,9 @@ class Env extends Component implements EnvInterface
                 }
             }
 
-            putenv("$name=$value");
+            if (getenv($name) === false) {
+                putenv("$name=$value");
+            }
         }
 
         return $this;
