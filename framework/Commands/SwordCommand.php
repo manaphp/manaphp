@@ -3,13 +3,14 @@ declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
+use ManaPHP\Cli\Command;
 use ManaPHP\Helper\LocalFS;
 
 /**
  * @property-read \ManaPHP\AliasInterface                      $alias
  * @property-read \ManaPHP\Html\Renderer\Engine\Sword\Compiler $swordCompiler
  */
-class SwordCommand extends \ManaPHP\Cli\Command
+class SwordCommand extends Command
 {
     /**
      * precompile sword template

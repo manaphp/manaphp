@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
+use ManaPHP\Cli\Command;
+
 /**
  * @property-read \ManaPHP\Http\Acl\BuilderInterface   $aclBuilder
  * @property-read \ManaPHP\Http\AuthorizationInterface $authorization
  */
-class AclCommand extends \ManaPHP\Cli\Command
+class AclCommand extends Command
 {
     /**
      * list acl of controllers

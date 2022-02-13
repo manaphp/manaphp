@@ -2,10 +2,12 @@
 
 namespace ManaPHP\Commands;
 
+use ManaPHP\Cli\Command;
+
 /**
  * @property-read \ManaPHP\EnvInterface $env
  */
-class EnvCommand extends \ManaPHP\Cli\Command
+class EnvCommand extends Command
 {
     /**
      * dump parsed .env values

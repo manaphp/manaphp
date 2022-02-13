@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
+use ManaPHP\Cli\Command;
 use ManaPHP\Helper\Arr;
 
 /**
  * @property-read \ManaPHP\ConfigInterface $config
  */
-class ConfigCommand extends \ManaPHP\Cli\Command
+class ConfigCommand extends Command
 {
     /**
      * dump of the app.php

@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Db;
 
+use ManaPHP\Data\AbstractTable;
 use ManaPHP\Data\DbInterface;
 
-class Table extends \ManaPHP\Data\AbstractTable
+class Table extends AbstractTable
 {
     public function db(): string
     {

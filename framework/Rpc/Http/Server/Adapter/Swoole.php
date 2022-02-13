@@ -6,6 +6,7 @@ namespace ManaPHP\Rpc\Http\Server\Adapter;
 use ArrayObject;
 use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Rpc\Http\AbstractServer;
 use Swoole\Coroutine;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
@@ -19,7 +20,7 @@ use Throwable;
  * @property-read \ManaPHP\Logging\LoggerInterface               $logger
  * @property-read \ManaPHP\Rpc\Http\Server\Adapter\SwooleContext $context
  */
-class Swoole extends \ManaPHP\Rpc\Http\AbstractServer
+class Swoole extends AbstractServer
 {
     protected array $settings = [];
     protected Server $swoole;

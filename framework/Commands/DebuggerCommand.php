@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
+use ManaPHP\Cli\Command;
+
 /**
  * @property-read \ManaPHP\ConfigInterface $config
  * @property-read \ManaPHP\Data\RedisCacheInterface $redisCache
  */
-class DebuggerCommand extends \ManaPHP\Cli\Command
+class DebuggerCommand extends Command
 {
     /**
      * monitor generated urls

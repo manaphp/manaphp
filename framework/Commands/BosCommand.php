@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
+use ManaPHP\Cli\Command;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
 
@@ -11,7 +12,7 @@ use ManaPHP\Helper\LocalFS;
  * @property-read \ManaPHP\Http\DownloaderInterface $downloader
  *
  */
-class BosCommand extends \ManaPHP\Cli\Command
+class BosCommand extends Command
 {
     /**
      * list buckets

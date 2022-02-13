@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
+use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
@@ -11,7 +12,7 @@ use ManaPHP\Helper\Str;
  * @property-read \ManaPHP\ConfigInterface $config
  * @property-read \ManaPHP\AliasInterface  $alias
  */
-class MongodbCommand extends \ManaPHP\Cli\Command
+class MongodbCommand extends Command
 {
     /**
      * @param array $services
