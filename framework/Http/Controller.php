@@ -7,13 +7,13 @@ use ManaPHP\Component;
 use ManaPHP\Logging\Logger\LogCategorizable;
 
 /**
- * @property-read \ManaPHP\Http\RequestInterface         $request
- * @property-read \ManaPHP\Http\ResponseInterface        $response
- * @property-read \ManaPHP\Http\CookiesInterface         $cookies
- * @property-read \ManaPHP\Http\RouterInterface          $router
- * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher
- * @property-read \ManaPHP\Identifying\IdentityInterface $identity
- * @property-read \ManaPHP\Http\InvokerInterface         $invoker
+ * @property-read \ManaPHP\Http\RequestInterface                      $request
+ * @property-read \ManaPHP\Http\ResponseInterface                     $response
+ * @property-read \ManaPHP\Http\CookiesInterface                      $cookies
+ * @property-read \ManaPHP\Http\RouterInterface                       $router
+ * @property-read \ManaPHP\Http\DispatcherInterface                   $dispatcher
+ * @property-read \ManaPHP\Http\Controller\ArgumentsResolverInterface $argumentsResolver
+ * @property-read \ManaPHP\Identifying\IdentityInterface              $identity
  */
 class Controller extends Component implements LogCategorizable
 {
@@ -24,7 +24,10 @@ class Controller extends Component implements LogCategorizable
 
     public function invoke(string $action): mixed
     {
-        return $this->invoker->invoke($this, $action . 'Action');
+        $method = $action . 'Action';
+        $arguments = $this->argumentsResolver->resolve($this, $method);
+
+        return $this->$method(...$arguments);
     }
 
     public function getAcl(): array
