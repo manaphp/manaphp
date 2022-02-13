@@ -20,9 +20,10 @@ class Controller extends \ManaPHP\Http\Controller
     public function invoke(string $action): mixed
     {
         if ($this->request->isGet() && !$this->request->isAjax()) {
-            $view = $action . 'View';
-            if (method_exists($this, $view)) {
-                if (is_array($r = $this->invoker->invoke($this, $view))) {
+            $method = $action . 'View';
+            if (method_exists($this, $method)) {
+                $arguments = $this->argumentsResolver->resolve($this, $method);
+                if (is_array($r = $this->$method(...$arguments))) {
                     return $this->view->setVars($r);
                 } elseif ($r === null) {
                     return $this->view;
@@ -31,11 +32,12 @@ class Controller extends \ManaPHP\Http\Controller
                 }
             } elseif ($this->view->exists()) {
                 return $this->view;
-            } else {
-                return $this->invoker->invoke($this, $action . 'Action');
             }
-        } else {
-            return $this->invoker->invoke($this, $action . 'Action');
         }
+
+        $method = $action . 'Action';
+        $arguments = $this->argumentsResolver->resolve($this, $method);
+
+        return $this->$method(...$arguments);
     }
 }
