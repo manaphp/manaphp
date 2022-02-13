@@ -3,9 +3,6 @@
 // Its AST serves IDE as DATA source to make advanced type inference decisions.
 
 namespace PHPSTORM_META {
-
-    use ManaPHP\ConfigInterface;
-
     exitPoint(\abort());
 
     override(\ManaPHP\Di\ContainerInterface::get(), map(['' => '@']));
