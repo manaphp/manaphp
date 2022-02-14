@@ -145,7 +145,7 @@ class Component implements Injectable, JsonSerializable
             $data[$k] = $v;
         }
 
-        if (!isset($data['context']) && $this->hasContext()) {
+        if ($this->hasContext()) {
             $data['context'] = $this->getContext();
         }
 
@@ -164,7 +164,7 @@ class Component implements Injectable, JsonSerializable
             $data[$k] = $v;
         }
 
-        if (!isset($data['context']) && $this->hasContext()) {
+        if ($this->hasContext()) {
             $data['context'] = (array)$this->getContext();
         }
 
