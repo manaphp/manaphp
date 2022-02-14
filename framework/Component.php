@@ -90,6 +90,8 @@ class Component implements Injectable, JsonSerializable
             } else {
                 return $object;
             }
+        } elseif (isset($this->context)) {
+            return $this->context;
         } else {
             $__root_context[] = $this;
 
