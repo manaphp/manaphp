@@ -22,6 +22,10 @@ class HttpCacheMiddleware extends Middleware
         $controller = $this->dispatcher->getControllerInstance();
         $action = $this->dispatcher->getAction();
 
+        if ($controller === null || $action === null) {
+            return;
+        }
+
         $httpCache = $controller->getHttpCache();
         if ($httpCache === [] || ($httpCache = $httpCache[$action] ?? $httpCache['*'] ?? false) === false) {
             return;
