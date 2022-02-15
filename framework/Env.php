@@ -32,6 +32,7 @@ class Env extends Component implements EnvInterface
         $lines = file($file, FILE_IGNORE_NEW_LINES);
 
         $count = count($lines);
+        /** @noinspection ForeachInvariantsInspection */
         for ($i = 0; $i < $count; $i++) {
             $line = trim($lines[$i]);
 
