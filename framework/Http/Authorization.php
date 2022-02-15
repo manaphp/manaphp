@@ -243,6 +243,10 @@ class Authorization extends Component implements AuthorizationInterface
             list($controllerClassName, $action) = $this->inferControllerAction($permission);
         } else {
             $controllerInstance = $this->dispatcher->getControllerInstance();
+            if ($controllerInstance === null) {
+                return false;
+            }
+
             $controllerClassName = get_class($controllerInstance);
             $action = $permission ? Str::camelize($permission) : $this->dispatcher->getAction();
             $acl = $controllerInstance->getAcl();
