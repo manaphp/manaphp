@@ -45,6 +45,7 @@ class ArgumentsResolver extends Component implements ArgumentsResolverInterface
             } elseif (count($rParameters) === 1 && ($name === 'id' || str_ends_with($name, '_id'))) {
                 $value = $this->request->getId($name);
             } elseif ($type === 'NULL') {
+                /** @noinspection PhpConditionAlreadyCheckedInspection */
                 $value = null;
             }
 
