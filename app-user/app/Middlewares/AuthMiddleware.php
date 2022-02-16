@@ -15,7 +15,7 @@ use ManaPHP\Identifying\Identity\NoCredentialException;
  */
 class AuthMiddleware extends Middleware
 {
-    public function onAuthorize()
+    public function onAuthorizing()
     {
         if ($this->authorization->isAllowed()) {
             return;

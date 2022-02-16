@@ -14,7 +14,7 @@ use ManaPHP\Mvc\Controller;
  */
 class VerbsMiddleware extends Middleware
 {
-    public function onValidate(EventArgs $eventArgs): void
+    public function onValidating(EventArgs $eventArgs): void
     {
         /** @var \ManaPHP\Http\Controller $controller */
         $controller = $eventArgs->data['controller'];

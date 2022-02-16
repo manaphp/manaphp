@@ -13,10 +13,10 @@ class DispatcherTracer extends Tracer
 {
     public function listen(): void
     {
-        $this->attachEvent('request:authorize', [$this, 'onRequestAuthorize']);
+        $this->attachEvent('request:authorized', [$this, 'onRequestAuthorized']);
     }
 
-    public function onRequestAuthorize(EventArgs $eventArgs): void
+    public function onRequestAuthorized(EventArgs $eventArgs): void
     {
         $controller = $eventArgs->data['controller'];
         $action = $eventArgs->data['action'];

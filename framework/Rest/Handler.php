@@ -28,7 +28,8 @@ class Handler extends Component implements HandlerInterface
         try {
             $this->fireEvent('request:begin');
 
-            $this->fireEvent('request:authenticate');
+            $this->fireEvent('request:authenticating');
+            $this->fireEvent('request:authenticated');
 
             if (!$this->router->match()) {
                 throw new NotFoundRouteException(

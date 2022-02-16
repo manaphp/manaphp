@@ -86,9 +86,11 @@ class Dispatcher extends Component implements DispatcherInterface
             throw new NotFoundActionException(['`%s::%s` method does not exist', static::class, $method]);
         }
 
-        $this->fireEvent('request:authorize', compact('controller', 'action'));
+        $this->fireEvent('request:authorizing', compact('controller', 'action'));
+        $this->fireEvent('request:authorized', compact('controller', 'action'));
 
-        $this->fireEvent('request:validate', compact('controller', 'action'));
+        $this->fireEvent('request:validating', compact('controller', 'action'));
+        $this->fireEvent('request:validated', compact('controller', 'action'));
 
         $this->fireEvent('request:ready', compact('controller', 'action'));
 

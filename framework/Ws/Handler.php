@@ -32,7 +32,8 @@ class Handler extends Component implements HandlerInterface
             $this->fireEvent('request:begin');
 
             if ($event === 'open') {
-                $this->fireEvent('request:authenticate');
+                $this->fireEvent('request:authenticating');
+                $this->fireEvent('request:authenticated');
             }
 
             if (!$this->router->match()) {

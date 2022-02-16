@@ -9,7 +9,7 @@ use ManaPHP\Http\Middleware;
  */
 class AuthMiddleware extends Middleware
 {
-    public function onAuthorize()
+    public function onAuthorizing()
     {
         $this->authorization->authorize();
     }

@@ -29,7 +29,7 @@ class RateLimitMiddleware extends Middleware
         }
     }
 
-    public function onValidate(EventArgs $eventArgs): void
+    public function onValidating(EventArgs $eventArgs): void
     {
         /** @var \ManaPHP\Http\DispatcherInterface $dispatcher */
         $dispatcher = $eventArgs->source;
