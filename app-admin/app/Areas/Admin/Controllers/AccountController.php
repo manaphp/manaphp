@@ -10,7 +10,7 @@ use App\Models\Admin;
  */
 class AccountController extends Controller
 {
-    public function getAcl()
+    public function getAcl(): array
     {
         return ['*' => 'admin'];
     }

@@ -12,12 +12,12 @@ class DotenvLog extends Model
     public $created_date;
     public $created_time;
 
-    public function table()
+    public function table(): string
     {
         return 'dotenv_log';
     }
 
-    public function primaryKey()
+    public function primaryKey(): string
     {
         return 'id';
     }

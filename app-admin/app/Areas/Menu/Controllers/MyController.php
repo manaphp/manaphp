@@ -8,7 +8,7 @@ use ManaPHP\Data\QueryInterface;
 
 class MyController extends Controller
 {
-    public function getAcl()
+    public function getAcl(): array
     {
         return ['*' => 'user'];
     }

@@ -6,7 +6,7 @@ use App\Controllers\Controller;
 
 class MailController extends Controller
 {
-    public function getAcl()
+    public function getAcl(): array
     {
         return ['*' => 'admin'];
     }

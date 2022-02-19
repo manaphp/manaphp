@@ -12,7 +12,7 @@ use App\Models\Admin;
  */
 class PasswordController extends Controller
 {
-    public function getAcl()
+    public function getAcl(): array
     {
         return ['*' => 'user', 'reset' => '*', 'forget' => '*', 'captcha' => '*'];
     }

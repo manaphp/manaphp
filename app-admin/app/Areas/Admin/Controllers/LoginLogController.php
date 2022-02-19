@@ -7,12 +7,12 @@ use App\Models\AdminLoginLog;
 
 class LoginLogController extends Controller
 {
-    public function getAcl()
+    public function getAcl(): array
     {
         return ['*' => '@index', 'latest' => 'user'];
     }
 
-    public function getVerbs()
+    public function getVerbs(): array
     {
         return array_merge(
             parent::getVerbs(), [

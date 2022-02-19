@@ -6,7 +6,7 @@ use App\Controllers\Controller;
 
 class IndexController extends Controller
 {
-    public function getAcl()
+    public function getAcl(): array
     {
         return ['index' => 'user'];
     }

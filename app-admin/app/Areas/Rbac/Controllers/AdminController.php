@@ -10,7 +10,7 @@ use ManaPHP\Data\QueryInterface;
 
 class AdminController extends Controller
 {
-    public function getVerbs()
+    public function getVerbs(): array
     {
         return array_merge(
             parent::getVerbs(), [
