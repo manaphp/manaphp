@@ -20,22 +20,22 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
 {
     protected mixed $db;
     protected string $table;
-    protected string $alias;
+    protected ?string $alias = null;
     protected null|string|array $fields = null;
     protected ?int $limit = null;
     protected ?int $offset = null;
-    protected bool $distinct;
+    protected bool $distinct = false;
     protected ?ModelInterface $model = null;
-    protected bool $multiple;
+    protected ?bool $multiple = null;
     protected array $with = [];
     protected ?array $order = null;
     protected ?array $group = null;
-    protected mixed $index;
-    protected array $aggregate;
+    protected mixed $index = null;
+    protected ?array $aggregate = null;
     protected bool $force_master = false;
     protected array $shard_context = [];
-    protected mixed $shard_strategy;
-    protected mixed $map;
+    protected mixed $shard_strategy = null;
+    protected mixed $map = null;
 
     public function getIterator(): ArrayIterator
     {
