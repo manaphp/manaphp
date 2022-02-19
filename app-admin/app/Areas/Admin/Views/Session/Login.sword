@@ -132,16 +132,6 @@
             },
         }
     });
-    window.onload = function () {
-        Particles.init({
-            selector: '.background',
-            maxParticles: 150,
-            sizeVariations: 5,
-            speed: 0.5,
-            color: "#86C166",
-            connectParticles: false,
-        });
-    };
 
     (function () {
         let len = sessionStorage.length;
