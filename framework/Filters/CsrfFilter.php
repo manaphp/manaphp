@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace ManaPHP\Filters;
 
 use ManaPHP\Event\EventArgs;
+use ManaPHP\Filters\CsrfFilter\AttackDetectedException;
 use ManaPHP\Http\Filter;
 use ManaPHP\Http\Filter\ValidatingFilterInterface;
-use ManaPHP\Filters\CsrfFilter\AttackDetectedException;
 use ManaPHP\Mvc\Controller as MvcController;
 use ManaPHP\Rest\Controller as RestController;
 
