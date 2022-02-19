@@ -20,7 +20,7 @@ class Query extends AbstractQuery
     protected array $joins = [];
     protected array $conditions = [];
     protected ?string $having = null;
-    protected bool $for_update;
+    protected bool $for_update = false;
     protected array $bind = [];
     protected ?string $sql = null;
 
