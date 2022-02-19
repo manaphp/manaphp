@@ -156,7 +156,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
             $context->is_dirty = false;
             $context->session_id = null;
             $context->_SESSION = null;
-            $this->do_destroy($context->session_id);
+            $this->do_destroy($session_id);
 
             $name = $this->name;
             $params = $this->params;
