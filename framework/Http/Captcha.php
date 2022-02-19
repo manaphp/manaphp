@@ -60,7 +60,7 @@ class Captcha extends Component implements CaptchaInterface
 
     protected function rand_amplitude(float $a): float
     {
-        return random_int((1 - $a) * 10000, (1 + $a) * 10000) / 10000;
+        return random_int((int)((1 - $a) * 10000), (int)((1 + $a) * 10000)) / 10000;
     }
 
     protected function generateByGd(string $code, int $width, int $height): ResponseInterface
@@ -68,7 +68,7 @@ class Captcha extends Component implements CaptchaInterface
         $image = imagecreatetruecolor($width, $height);
 
         $parts = explode(',', $this->bgRGB);
-        $bgColor = imagecolorallocate($image, $parts[0], $parts[1], $parts[2]);
+        $bgColor = imagecolorallocate($image, (int)$parts[0], (int)$parts[1], (int)$parts[2]);
 
         imagefilledrectangle($image, 0, 0, $width, $height, $bgColor);
 
@@ -86,7 +86,7 @@ class Captcha extends Component implements CaptchaInterface
             $y = $height - (($height - $referenceFontSize) * random_int(0, 1000) / 1000);
             $fgColor = imagecolorallocate($image, random_int(0, 240), random_int(0, 240), random_int(0, 240));
 
-            $points = imagettftext($image, $fontSize, $angle, $x, $y, $fgColor, $fontFile, $code[$i]);
+            $points = imagettftext($image, $fontSize, $angle, (int)$x, (int)$y, $fgColor, $fontFile, $code[$i]);
 
             for ($k = 0; $k < $this->noiseCharCount; $k++) {
                 $letter = $this->charset[random_int(0, strlen($this->charset) - 1)];
@@ -95,7 +95,7 @@ class Captcha extends Component implements CaptchaInterface
                     $image,
                     $fontSize * 0.4 * $this->rand_amplitude(0.1),
                     random_int(-40, 40),
-                    round($x + random_int((int)(-$fontSize * 1.5), $fontSize)),
+                    (int)round($x + random_int((int)(-$fontSize * 1.5), (int)$fontSize)),
                     $height / 2 + random_int((int)(-$fontSize * 0.5), (int)($fontSize * 0.5)),
                     $fgColor, $fontFile, $letter
                 );
