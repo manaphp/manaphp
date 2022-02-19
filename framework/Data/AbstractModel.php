@@ -281,7 +281,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      */
     public static function first(array $filters, ?array $fields = null): ?static
     {
-        $rs = static::select($fields)->where($filters)->limit(1)->fetch();
+        $rs = static::select($fields ?? [])->where($filters)->limit(1)->fetch();
         return $rs[0] ?? null;
     }
 
