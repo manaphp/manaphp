@@ -1,29 +1,29 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Middlewares;
+namespace ManaPHP\Filters;
 
 use Closure;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\MissingFieldException;
-use ManaPHP\Http\Middleware;
+use ManaPHP\Http\Filter;
+use ManaPHP\Http\Filter\ReadyFilterInterface;
 use ManaPHP\Mvc\Controller as MvcController;
 
 /**
- * @property-read \ManaPHP\ConfigInterface                             $config
- * @property-read \ManaPHP\Http\RequestInterface                       $request
- * @property-read \ManaPHP\Http\ResponseInterface                      $response
- * @property-read \ManaPHP\Data\RedisCacheInterface                    $redisCache
- * @property-read \ManaPHP\Http\Middlewares\PageCacheMiddlewareContext $context
+ * @property-read \ManaPHP\ConfigInterface                $config
+ * @property-read \ManaPHP\Http\RequestInterface          $request
+ * @property-read \ManaPHP\Http\ResponseInterface         $response
+ * @property-read \ManaPHP\Data\RedisCacheInterface       $redisCache
+ * @property-read \ManaPHP\Filters\PageCacheFilterContext $context
  */
-class PageCacheMiddleware extends Middleware
+class PageCacheFilter extends Filter implements ReadyFilterInterface
 {
     protected string $prefix;
 
     public function __construct(array $options = [])
     {
-        parent::__construct($options);
         $this->prefix = $options['prefix'] ?? sprintf("cache:%s:pageCachePlugin:", $this->config->get('id'));
     }
 

@@ -1,22 +1,21 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Middlewares;
+namespace ManaPHP\Filters;
 
-use ManaPHP\Http\Middleware;
+use ManaPHP\Http\Filter;
+use ManaPHP\Http\Filter\RespondingFilterInterface;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response
  */
-class EtagMiddleware extends Middleware
+class EtagFilter extends Filter implements RespondingFilterInterface
 {
     protected string $algo = 'md5';
 
     public function __construct(array $options = [])
     {
-        parent::__construct($options);
-
         if (isset($options['algo'])) {
             $this->algo = $options['algo'];
         }

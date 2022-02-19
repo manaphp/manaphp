@@ -1,18 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Middlewares;
+namespace ManaPHP\Filters;
 
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\MethodNotAllowedHttpException;
-use ManaPHP\Http\Middleware;
+use ManaPHP\Http\Filter;
+use ManaPHP\Http\Filter\ValidatingFilterInterface;
 use ManaPHP\Mvc\Controller;
 
 /**
  * @property-read \ManaPHP\Mvc\ViewInterface     $view
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
-class VerbsMiddleware extends Middleware
+class VerbsFilter extends Filter implements ValidatingFilterInterface
 {
     public function onValidating(EventArgs $eventArgs): void
     {

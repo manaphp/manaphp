@@ -10,7 +10,7 @@ return [
     ],
     'dependencies'       => [
         'ManaPHP\Security\CryptInterface'          => ['master_key' => env('MASTER_KEY')],
-        'ManaPHP\Http\Server\Adapter\Swoole'      => [
+        'ManaPHP\Http\Server\Adapter\Swoole'       => [
             'port'                  => 9501,
             'worker_num'            => 2,
             'max_request'           => 1000000,
@@ -29,7 +29,9 @@ return [
         ManaPHP\Bootstrappers\TracerBootstrapper::class,
         ManaPHP\Bootstrappers\DebuggerBootstrapper::class,
         ManaPHP\Bootstrappers\ListenerBootstrapper::class,
-        ManaPHP\Bootstrappers\MiddlewareBootstrapper::class,
     ],
     'manaphp_brand_show' => true,
+    'filters'            => [
+        App\Filters\AuthorizationFilter::class,
+    ]
 ];

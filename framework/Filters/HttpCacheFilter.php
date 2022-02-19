@@ -1,17 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Middlewares;
+namespace ManaPHP\Filters;
 
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Http\Middleware;
+use ManaPHP\Http\Filter;
+use ManaPHP\Http\Filter\RespondingFilterInterface;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface    $request
  * @property-read \ManaPHP\Http\ResponseInterface   $response
  * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
  */
-class HttpCacheMiddleware extends Middleware
+class HttpCacheFilter extends Filter implements RespondingFilterInterface
 {
     public function onResponding(): void
     {

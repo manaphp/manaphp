@@ -1,11 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Middlewares;
+namespace ManaPHP\Filters;
 
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\TooManyRequestsException;
-use ManaPHP\Http\Middleware;
+use ManaPHP\Http\Filter;
+use ManaPHP\Http\Filter\ValidatingFilterInterface;
 
 /**
  * @property-read \ManaPHP\ConfigInterface               $config
@@ -13,15 +14,13 @@ use ManaPHP\Http\Middleware;
  * @property-read \ManaPHP\Http\RequestInterface         $request
  * @property-read \ManaPHP\Data\RedisCacheInterface      $redisCache
  */
-class RateLimitMiddleware extends Middleware
+class RateLimitFilter extends Filter implements ValidatingFilterInterface
 {
     protected string $prefix;
     protected string $limits = '60/m';
 
     public function __construct(array $options = [])
     {
-        parent::__construct($options);
-
         $this->prefix = $options['prefix'] ?? sprintf("cache:%s:rateLimitPlugin:", $this->config->get('id'));
 
         if (isset($options['limits'])) {

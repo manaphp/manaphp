@@ -1,17 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Middlewares;
+namespace ManaPHP\Filters;
 
 use ManaPHP\Exception\AbortException;
-use ManaPHP\Http\Middleware;
+use ManaPHP\Http\Filter;
+use ManaPHP\Http\Filter\BeginFilterInterface;
 
 /**
  * @property-read \ManaPHP\ConfigInterface        $config
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response
  */
-class CorsMiddleware extends Middleware
+class CorsFilter extends Filter implements BeginFilterInterface
 {
     protected int $max_age = 86400;
     protected ?string $origin = null;
@@ -19,8 +20,6 @@ class CorsMiddleware extends Middleware
 
     public function __construct(array $options = [])
     {
-        parent::__construct($options);
-
         if (isset($options['max_age'])) {
             $this->max_age = $options['max_age'];
         }

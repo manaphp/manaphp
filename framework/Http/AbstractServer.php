@@ -6,10 +6,11 @@ namespace ManaPHP\Http;
 use ManaPHP\Component;
 
 /**
- * @property-read \ManaPHP\Http\RequestInterface  $request
- * @property-read \ManaPHP\Http\ResponseInterface $response
- * @property-read \ManaPHP\Http\HandlerInterface  $httpHandler
- * @property-read \ManaPHP\Http\GlobalsInterface  $globals
+ * @property-read \ManaPHP\Http\RequestInterface        $request
+ * @property-read \ManaPHP\Http\ResponseInterface       $response
+ * @property-read \ManaPHP\Http\HandlerInterface        $httpHandler
+ * @property-read \ManaPHP\Http\GlobalsInterface        $globals
+ * @property-read \ManaPHP\Http\Filter\ManagerInterface $filterManager
  */
 abstract class AbstractServer extends Component implements ServerInterface
 {
@@ -25,5 +26,7 @@ abstract class AbstractServer extends Component implements ServerInterface
         if (isset($options['port'])) {
             $this->port = (int)$options['port'];
         }
+
+        $this->filterManager->register();
     }
 }

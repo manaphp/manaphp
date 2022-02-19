@@ -8,6 +8,7 @@ return [
     'version'       => '1.1.1',
     'timezone'      => 'PRC',
     'aliases'       => [
+        '@web' => ''
     ],
     'dependencies'  => [
         'ManaPHP\Http\HandlerInterface'         => 'ManaPHP\Mvc\Handler',
@@ -29,6 +30,8 @@ return [
     ],
     'bootstrappers' => [
         ManaPHP\Bootstrappers\ListenerBootstrapper::class,
-        ManaPHP\Bootstrappers\MiddlewareBootstrapper::class,
     ],
+    'filters'       => [
+        ManaPHP\Filters\AuthorizationFilter::class
+    ]
 ];

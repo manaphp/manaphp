@@ -1,9 +1,11 @@
 <?php
+declare(strict_types=1);
 
-namespace App\Middlewares;
+namespace App\Filters;
 
 use ManaPHP\Exception\ForbiddenException;
-use ManaPHP\Http\Middleware;
+use ManaPHP\Http\Filter;
+use ManaPHP\Http\Filter\AuthorizingFilterInterface;
 use ManaPHP\Identifying\Identity\NoCredentialException;
 
 /**
@@ -13,9 +15,9 @@ use ManaPHP\Identifying\Identity\NoCredentialException;
  * @property-read \ManaPHP\Http\ResponseInterface        $response
  * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher
  */
-class AuthMiddleware extends Middleware
+class AuthorizationFilter extends Filter implements AuthorizingFilterInterface
 {
-    public function onAuthorizing()
+    public function onAuthorizing(): void
     {
         if ($this->authorization->isAllowed()) {
             return;

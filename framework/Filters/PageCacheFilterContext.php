@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Middlewares;
+namespace ManaPHP\Filters;
 
-class PageCacheMiddlewareContext
+class PageCacheFilterContext
 {
     public ?int $ttl = null;
     public string $key;

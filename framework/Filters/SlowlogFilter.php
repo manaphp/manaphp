@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Middlewares;
+namespace ManaPHP\Filters;
 
 use ManaPHP\Helper\LocalFS;
-use ManaPHP\Http\Middleware;
+use ManaPHP\Http\Filter;
+use ManaPHP\Http\Filter\EndFilterInterface;
 
 /**
  * @property-read \ManaPHP\ConfigInterface          $config
@@ -12,7 +13,7 @@ use ManaPHP\Http\Middleware;
  * @property-read \ManaPHP\Http\ResponseInterface   $response
  * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
  */
-class SlowlogMiddleware extends Middleware
+class SlowlogFilter extends Filter implements EndFilterInterface
 {
     protected float $threshold = 1.0;
     protected string $file = '@data/slowlogPlugin/{id}.log';
@@ -20,8 +21,6 @@ class SlowlogMiddleware extends Middleware
 
     public function __construct(array $options = [])
     {
-        parent::__construct($options);
-
         if (isset($options['threshold'])) {
             $this->threshold = (float)$options['threshold'];
         }

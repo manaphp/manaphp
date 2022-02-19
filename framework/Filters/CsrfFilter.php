@@ -1,11 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Middlewares;
+namespace ManaPHP\Filters;
 
 use ManaPHP\Event\EventArgs;
-use ManaPHP\Http\Middleware;
-use ManaPHP\Http\Middlewares\CsrfMiddleware\AttackDetectedException;
+use ManaPHP\Http\Filter;
+use ManaPHP\Http\Filter\ValidatingFilterInterface;
+use ManaPHP\Filters\CsrfFilter\AttackDetectedException;
 use ManaPHP\Mvc\Controller as MvcController;
 use ManaPHP\Rest\Controller as RestController;
 
@@ -13,15 +14,13 @@ use ManaPHP\Rest\Controller as RestController;
  * @property-read \ManaPHP\Http\RequestInterface $request
  * @property-read \ManaPHP\Mvc\ViewInterface     $view
  */
-class CsrfMiddleware extends Middleware
+class CsrfFilter extends Filter implements ValidatingFilterInterface
 {
     protected bool $strict = true;
     protected array $domains = [];
 
     public function __construct(array $options = [])
     {
-        parent::__construct($options);
-
         if (isset($options['strict'])) {
             $this->strict = (bool)$options['strict'];
         }
