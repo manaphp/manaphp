@@ -4,21 +4,13 @@ namespace App\Areas\Admin\Controllers;
 
 use App\Controllers\Controller;
 use App\Models\AdminLoginLog;
+use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
 
 class LoginLogController extends Controller
 {
     public function getAcl(): array
     {
         return ['*' => '@index', 'latest' => 'user'];
-    }
-
-    public function getVerbs(): array
-    {
-        return array_merge(
-            parent::getVerbs(), [
-                'latest' => 'GET'
-            ]
-        );
     }
 
     public function indexAction()
@@ -31,6 +23,7 @@ class LoginLogController extends Controller
             ->paginate();
     }
 
+    #[AcceptVerbs(['GET'])]
     public function latestAction()
     {
         return AdminLoginLog::select(['login_id', 'client_udid', 'user_agent', 'client_ip', 'created_time'])

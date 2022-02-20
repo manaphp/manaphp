@@ -7,18 +7,10 @@ use App\Areas\Rbac\Models\Role;
 use App\Controllers\Controller;
 use App\Models\Admin;
 use ManaPHP\Data\QueryInterface;
+use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
 
 class AdminController extends Controller
 {
-    public function getVerbs(): array
-    {
-        return array_merge(
-            parent::getVerbs(), [
-                'roles' => 'GET'
-            ]
-        );
-    }
-
     public function indexAction()
     {
         return Admin::select(
@@ -107,6 +99,7 @@ class AdminController extends Controller
         return $admin;
     }
 
+    #[AcceptVerbs(['GET'])]
     public function rolesAction()
     {
         return Role::lists(['display_name', 'role_name'], ['role_name!=' => ['guest', 'user']]);

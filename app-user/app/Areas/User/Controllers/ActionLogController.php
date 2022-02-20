@@ -4,21 +4,13 @@ namespace App\Areas\User\Controllers;
 
 use App\Controllers\Controller;
 use App\Models\UserActionLog;
+use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
 
 class ActionLogController extends Controller
 {
     public function getAcl()
     {
         return ['*' => '@index', 'latest' => 'user', 'detail' => 'user'];
-    }
-
-    public function getVerbs()
-    {
-        return array_merge(
-            parent::getVerbs(), [
-                'latest' => 'GET'
-            ]
-        );
     }
 
     public function detailAction()
@@ -32,6 +24,7 @@ class ActionLogController extends Controller
         }
     }
 
+    #[AcceptVerbs(['GET'])]
     public function latestAction()
     {
         return UserActionLog::select()

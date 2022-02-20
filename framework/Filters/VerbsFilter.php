@@ -5,9 +5,10 @@ namespace ManaPHP\Filters;
 
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\MethodNotAllowedHttpException;
+use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
 use ManaPHP\Http\Filter;
 use ManaPHP\Http\Filter\ValidatingFilterInterface;
-use ManaPHP\Mvc\Controller;
+use ReflectionMethod;
 
 /**
  * @property-read \ManaPHP\Mvc\ViewInterface     $view
@@ -21,24 +22,13 @@ class VerbsFilter extends Filter implements ValidatingFilterInterface
         $controller = $eventArgs->data['controller'];
         $action = $eventArgs->data['action'];
 
-        if (!$verbs = $controller->getVerbs()[$action] ?? false) {
-            return;
+        $rm = new ReflectionMethod($controller, $action . 'Action');
+        if (($attribute = $rm->getAttributes(AcceptVerbs::class)[0] ?? null) !== null) {
+            $request_method = $this->request->getMethod();
+            $acceptVerbs = $attribute->newInstance();
+            if (!in_array($request_method, $acceptVerbs->verbs, true)) {
+                throw new MethodNotAllowedHttpException($acceptVerbs->verbs);
+            }
         }
-
-        $request_method = $this->request->getMethod();
-
-        if (is_string($verbs) ? $request_method === $verbs : in_array($request_method, $verbs, true)) {
-            return;
-        }
-
-        if ($request_method === 'GET'
-            && $controller instanceof Controller
-            && !$this->request->isAjax()
-            && $this->view->exists()
-        ) {
-            return;
-        }
-
-        throw new MethodNotAllowedHttpException(is_string($verbs) ? [$verbs] : $verbs);
     }
 }
