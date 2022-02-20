@@ -97,12 +97,6 @@ class CsrfFilter extends Filter implements ValidatingFilterInterface
             ) {
                 return;
             }
-
-            $action = $eventArgs->data['action'];
-            $verbs = $controller->getVerbs()[$action] ?? [];
-            if (is_string($verbs) ? 'GET' === $verbs : in_array('GET', $verbs, true)) {
-                return;
-            }
         }
 
         throw new AttackDetectedException();
