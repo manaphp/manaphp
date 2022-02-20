@@ -114,8 +114,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      */
     public function autoIncrementField(): ?string
     {
-        $primaryKey = $this->primaryKey();
-        return is_string($primaryKey) ? $primaryKey : null;
+        return $this->primaryKey();
     }
 
     /**
