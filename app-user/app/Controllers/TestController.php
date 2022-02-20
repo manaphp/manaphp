@@ -2,13 +2,11 @@
 
 namespace App\Controllers;
 
+use ManaPHP\Http\Controller\Attribute\Authorize;
+
+#[Authorize('*')]
 class TestController extends Controller
 {
-    public function getAcl()
-    {
-        return ['*' => '*'];
-    }
-
     public function indexAction()
     {
         return 0;

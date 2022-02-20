@@ -30,11 +30,6 @@ class Controller extends Component implements LogCategorizable
         return $this->$method(...$arguments);
     }
 
-    public function getAcl(): array
-    {
-        return [];
-    }
-
     /**
      * @return array =[$field=>[60,'burst'=>3],'*'=>'','index'=>'','list'=>'','detail'=>'','captcha'=>'',
      *               'create'=>'','update'=>'','edit'=>'', 'save'=>'','delete'=>'']

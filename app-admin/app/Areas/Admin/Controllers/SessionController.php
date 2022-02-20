@@ -10,18 +10,15 @@ use App\Models\Admin;
 use App\Models\AdminLoginLog;
 use ManaPHP\Helper\Ip;
 use ManaPHP\Helper\Str;
+use ManaPHP\Http\Controller\Attribute\Authorize;
 
 /**
  * @property-read \ManaPHP\ConfigInterface       $config
  * @property-read \ManaPHP\Http\CaptchaInterface $captcha
  */
+#[Authorize('*')]
 class SessionController extends Controller
 {
-    public function getAcl(): array
-    {
-        return ['*' => '*'];
-    }
-
     public function captchaAction()
     {
         return $this->captcha->generate();
@@ -95,6 +92,7 @@ class SessionController extends Controller
         $adminLoginLog->create();
     }
 
+    #[Authorize('user')]
     public function logoutAction()
     {
         $this->session->destroy();

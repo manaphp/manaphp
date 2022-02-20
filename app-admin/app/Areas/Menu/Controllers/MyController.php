@@ -5,14 +5,11 @@ namespace App\Areas\Menu\Controllers;
 use App\Areas\Menu\Models\Group;
 use App\Controllers\Controller;
 use ManaPHP\Data\QueryInterface;
+use ManaPHP\Http\Controller\Attribute\Authorize;
 
+#[Authorize('user')]
 class MyController extends Controller
 {
-    public function getAcl(): array
-    {
-        return ['*' => 'user'];
-    }
-
     public function indexAction()
     {
         $groups = Group::select(['group_id', 'group_name', 'icon'])

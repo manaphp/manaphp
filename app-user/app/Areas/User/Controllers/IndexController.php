@@ -3,14 +3,11 @@
 namespace App\Areas\User\Controllers;
 
 use App\Controllers\Controller;
+use ManaPHP\Http\Controller\Attribute\Authorize;
 
+#[Authorize('user')]
 class IndexController extends Controller
 {
-    public function getAcl()
-    {
-        return ['*' => 'user'];
-    }
-
     public function indexAction()
     {
 

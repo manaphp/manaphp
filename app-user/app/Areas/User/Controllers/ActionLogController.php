@@ -5,14 +5,12 @@ namespace App\Areas\User\Controllers;
 use App\Controllers\Controller;
 use App\Models\UserActionLog;
 use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
+use ManaPHP\Http\Controller\Attribute\Authorize;
 
+#[Authorize('user')]
 class ActionLogController extends Controller
 {
-    public function getAcl()
-    {
-        return ['*' => '@index', 'latest' => 'user', 'detail' => 'user'];
-    }
-
+    #[Authorize('user')]
     public function detailAction()
     {
         $log = UserActionLog::rGet();

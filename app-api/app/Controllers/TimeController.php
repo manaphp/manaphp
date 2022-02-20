@@ -2,19 +2,16 @@
 
 namespace App\Controllers;
 
+use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Logging\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
+#[Authorize('*')]
 class TimeController extends Controller
 {
     public function __construct(ContainerInterface $container)
     {
         $x=$container->get(LoggerInterface::class);
-    }
-
-    public function getAcl(): array
-    {
-        return ['*' => '*'];
     }
 
     public function helloAction()

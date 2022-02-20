@@ -4,17 +4,14 @@ namespace App\Areas\Admin\Controllers;
 
 use App\Controllers\Controller;
 use App\Models\Admin;
+use ManaPHP\Http\Controller\Attribute\Authorize;
 
 /**
  * @property-read \ManaPHP\Http\CaptchaInterface $captcha
  */
+#[Authorize('admin')]
 class AccountController extends Controller
 {
-    public function getAcl(): array
-    {
-        return ['*' => 'admin'];
-    }
-
     public function captchaAction()
     {
         return $this->captcha->generate();

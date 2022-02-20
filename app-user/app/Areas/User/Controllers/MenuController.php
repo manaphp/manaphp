@@ -2,15 +2,12 @@
 
 namespace App\Areas\User\Controllers;
 
+use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Mvc\Controller;
 
+#[Authorize('user')]
 class MenuController extends Controller
 {
-    public function getAcl()
-    {
-        return ['*' => 'user'];
-    }
-
     public function indexAction()
     {
         $menu = [

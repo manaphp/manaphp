@@ -4,19 +4,16 @@ namespace App\Areas\User\Controllers;
 
 use App\Controllers\Controller;
 use App\Models\User;
+use ManaPHP\Http\Controller\Attribute\Authorize;
 
 /**
  * @property-read \ManaPHP\ConfigInterface         $config
  * @property-read \ManaPHP\Http\CaptchaInterface   $captcha
  * @property-read \ManaPHP\Mailing\MailerInterface $mailer
  */
+#[Authorize('*')]
 class PasswordController extends Controller
 {
-    public function getAcl()
-    {
-        return ['*' => 'user', 'reset' => '*', 'forget' => '*', 'captcha' => '*'];
-    }
-
     public function captchaAction()
     {
         return $this->captcha->generate();
@@ -88,6 +85,7 @@ class PasswordController extends Controller
         return $this->response->setJsonOk('重置密码成功');
     }
 
+    #[Authorize('user')]
     public function changeAction()
     {
         $user = User::get($this->identity->getId());

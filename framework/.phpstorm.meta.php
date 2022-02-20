@@ -51,11 +51,6 @@ namespace PHPSTORM_META {
     expectedArguments(
         \ManaPHP\Http\ResponseInterface::setJsonContent(), 0, ['code' => 0, 'message' => '', 'data' => []]
     );
-    expectedReturnValues(
-        \ManaPHP\Mvc\Controller::getAcl(),
-        ['*'      => '@index', '*' => 'user', '*' => '*', 'list' => '@index', 'detail' => '@index',
-         'create' => '@index', 'delete' => '@index', 'edit' => '@index']
-    );
 
     registerArgumentsSet('wspClientEndpoint', 'admin', 'user');
     expectedArguments(\ManaPHP\Ws\Pushing\ClientInterface::pushToId(), 2, argumentsSet('wspClientEndpoint'));

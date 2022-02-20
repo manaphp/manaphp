@@ -3,15 +3,12 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Version;
 
+#[Authorize('*')]
 class IndexController extends Controller
 {
-    public function getAcl(): array
-    {
-        return ['*' => '*'];
-    }
-
     public function indexAction()
     {
         return $this->response->redirect('about');

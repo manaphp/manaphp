@@ -5,14 +5,11 @@ namespace App\Areas\Admin\Controllers;
 use App\Controllers\Controller;
 use App\Models\AdminActionLog;
 use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
+use ManaPHP\Http\Controller\Attribute\Authorize;
 
+#[Authorize('@index')]
 class ActionLogController extends Controller
 {
-    public function getAcl(): array
-    {
-        return ['*' => '@index', 'latest' => 'user', 'detailSelf' => 'user'];
-    }
-
     public function indexAction()
     {
         return AdminActionLog::select()
@@ -21,6 +18,7 @@ class ActionLogController extends Controller
             ->paginate();
     }
 
+    #[Authorize('user')]
     public function detailAction()
     {
         $log = AdminActionLog::rGet();
@@ -33,6 +31,7 @@ class ActionLogController extends Controller
     }
 
     #[AcceptVerbs(['GET'])]
+    #[Authorize('user')]
     public function latestAction()
     {
         return AdminActionLog::select()

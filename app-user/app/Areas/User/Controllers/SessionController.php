@@ -6,18 +6,15 @@ use App\Controllers\Controller;
 use App\Models\User;
 use ManaPHP\Helper\Str;
 use App\Models\UserLoginLog;
+use ManaPHP\Http\Controller\Attribute\Authorize;
 
 /**
  * @property-read \ManaPHP\ConfigInterface       $config
  * @property-read \ManaPHP\Http\CaptchaInterface $captcha
  */
+#[Authorize('*')]
 class SessionController extends Controller
 {
-    public function getAcl()
-    {
-        return ['*' => '*'];
-    }
-
     public function captchaAction()
     {
         return $this->captcha->generate();

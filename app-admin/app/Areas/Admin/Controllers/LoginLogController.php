@@ -5,14 +5,11 @@ namespace App\Areas\Admin\Controllers;
 use App\Controllers\Controller;
 use App\Models\AdminLoginLog;
 use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
+use ManaPHP\Http\Controller\Attribute\Authorize;
 
+#[Authorize('@index')]
 class LoginLogController extends Controller
 {
-    public function getAcl(): array
-    {
-        return ['*' => '@index', 'latest' => 'user'];
-    }
-
     public function indexAction()
     {
         return AdminLoginLog::select(
@@ -24,6 +21,7 @@ class LoginLogController extends Controller
     }
 
     #[AcceptVerbs(['GET'])]
+    #[Authorize('user')]
     public function latestAction()
     {
         return AdminLoginLog::select(['login_id', 'client_udid', 'user_agent', 'client_ip', 'created_time'])

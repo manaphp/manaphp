@@ -12,11 +12,6 @@ namespace ManaPHP\Mvc;
  */
 class Controller extends \ManaPHP\Http\Controller
 {
-    public function getAcl(): array
-    {
-        return ['*' => '@index'];
-    }
-
     public function invoke(string $action): mixed
     {
         if ($this->request->isGet() && !$this->request->isAjax()) {
