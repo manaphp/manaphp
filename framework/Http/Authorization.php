@@ -218,22 +218,24 @@ class Authorization extends Component implements AuthorizationInterface
         }
     }
 
-    public function isAllowed(?string $permission = null): bool
+    public function isAllowed(string $permission): bool
     {
         $roles = $this->identity->getRoles();
         if (in_array('admin', $roles, true)) {
             return true;
         }
 
-        if ($roles !== [] && $permission && $permission[0] === '/') {
+        if (str_starts_with($permission, '/')) {
             foreach ($roles as $role) {
                 if (str_contains($this->getAllowed($role), ",$permission,")) {
                     return true;
                 }
             }
+
+            return false;
         }
 
-        if ($permission && str_contains($permission, '/')) {
+        if (str_contains($permission, '/')) {
             list($controllerClassName, $action) = $this->inferControllerAction($permission);
         } else {
             $controllerInstance = $this->dispatcher->getControllerInstance();
@@ -272,7 +274,7 @@ class Authorization extends Component implements AuthorizationInterface
 
     public function authorize(): void
     {
-        if ($this->isAllowed()) {
+        if ($this->isAllowed($this->dispatcher->getAction())) {
             return;
         }
 

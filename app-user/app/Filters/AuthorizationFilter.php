@@ -19,7 +19,7 @@ class AuthorizationFilter extends Filter implements AuthorizingFilterInterface
 {
     public function onAuthorizing(): void
     {
-        if ($this->authorization->isAllowed()) {
+        if ($this->authorization->isAllowed($this->dispatcher->getAction())) {
             return;
         }
 

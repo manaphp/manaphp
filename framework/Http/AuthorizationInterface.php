@@ -9,7 +9,7 @@ interface AuthorizationInterface
 
     public function getAllowed(string $role): string;
 
-    public function isAllowed(?string $permission = null): bool;
+    public function isAllowed(string $permission): bool;
 
     public function authorize(): void;
 }
