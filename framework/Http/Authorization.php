@@ -218,9 +218,9 @@ class Authorization extends Component implements AuthorizationInterface
         }
     }
 
-    public function isAllowed(?string $permission = null, ?array $roles = null): bool
+    public function isAllowed(?string $permission = null): bool
     {
-        $roles = $roles ?? $this->identity->getRoles();
+        $roles = $this->identity->getRoles();
         if (in_array('admin', $roles, true)) {
             return true;
         }
