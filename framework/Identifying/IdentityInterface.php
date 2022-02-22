@@ -11,7 +11,7 @@ interface IdentityInterface
 
     public function getName(?string $default = null): ?string;
 
-    public function getRole(string $default = 'guest'): string;
+    public function getRoles(): array;
 
     public function isRole(string $name): bool;
 

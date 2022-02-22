@@ -61,10 +61,8 @@ class Server extends Component implements ServerInterface, LogCategorizable
             $this->rooms[$room][$fd] = true;
         }
 
-        if (($role = $this->identity->getRole('')) !== '') {
-            foreach (explode(',', $role) as $r) {
-                $this->roles[$r][$fd] = true;
-            }
+        foreach ($this->identity->getRoles() as $role) {
+            $this->roles[$role][$fd] = true;
         }
     }
 
@@ -95,12 +93,10 @@ class Server extends Component implements ServerInterface, LogCategorizable
             }
         }
 
-        if (($role = $this->identity->getRole('')) !== '') {
-            foreach (explode(',', $role) as $r) {
-                unset($this->roles[$r][$fd]);
-                if (count($this->roles[$r]) === 0) {
-                    unset($this->roles[$r]);
-                }
+        foreach ($this->identity->getRoles() as $role) {
+            unset($this->roles[$role][$fd]);
+            if (count($this->roles[$role]) === 0) {
+                unset($this->roles[$role]);
             }
         }
     }

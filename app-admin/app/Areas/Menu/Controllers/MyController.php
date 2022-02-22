@@ -25,7 +25,7 @@ class MyController extends Controller
             )
             ->all();
 
-        $role = $this->identity->getRole();
+        $roles = $this->identity->getRoles();
         $menu = [];
         foreach ($groups as $group) {
             $items = $group['items'];
@@ -40,7 +40,7 @@ class MyController extends Controller
                     $url = substr($url, 0, $pos);
                 }
 
-                if (!$this->authorization->isAllowed($url, $role)) {
+                if (!$this->authorization->isAllowed($url, $roles)) {
                     unset($items[$k]);
                 }
             }

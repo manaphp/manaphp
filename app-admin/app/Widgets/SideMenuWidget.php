@@ -26,7 +26,7 @@ class SideMenuWidget extends Widget
             )
             ->all();
 
-        $role = $this->identity->getRole();
+        $roles = $this->identity->getRoles();
         $menu = [];
         foreach ($groups as $group) {
             $items = $group['items'];
@@ -41,7 +41,7 @@ class SideMenuWidget extends Widget
                     $url = substr($url, 0, $pos);
                 }
 
-                if (!$this->authorization->isAllowed($url, $role)) {
+                if (!$this->authorization->isAllowed($url, $roles)) {
                     unset($items[$k]);
                 }
             }

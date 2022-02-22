@@ -218,21 +218,15 @@ class Authorization extends Component implements AuthorizationInterface
         }
     }
 
-    public function isAllowed(?string $permission = null, ?string $role = null): bool
+    public function isAllowed(?string $permission = null, ?array $roles = null): bool
     {
-        $role = $role ?: $this->identity->getRole();
-        if ($role === 'admin') {
+        $roles = $roles ?? $this->identity->getRoles();
+        if (in_array('admin', $roles, true)) {
             return true;
         }
 
-        if ($role !== 'guest' && $permission && $permission[0] === '/') {
-            if (str_contains($role, ',')) {
-                foreach (explode(',', $role) as $r) {
-                    if (str_contains($this->getAllowed($r), ",$permission,")) {
-                        return true;
-                    }
-                }
-            } else {
+        if ($roles !== [] && $permission && $permission[0] === '/') {
+            foreach ($roles as $role) {
                 if (str_contains($this->getAllowed($role), ",$permission,")) {
                     return true;
                 }
@@ -251,11 +245,13 @@ class Authorization extends Component implements AuthorizationInterface
             $action = $permission ? Str::camelize($permission) : $this->dispatcher->getAction();
             $acl = $controllerInstance->getAcl();
 
-            if ($this->isAclAllowed($acl, $role, $action)) {
-                return true;
+            foreach ($roles as $role) {
+                if ($this->isAclAllowed($acl, $role, $action)) {
+                    return true;
+                }
             }
 
-            if ($role === 'guest') {
+            if ($roles === []) {
                 return false;
             }
 
@@ -265,13 +261,7 @@ class Authorization extends Component implements AuthorizationInterface
         }
 
         $permission = $this->generatePath($controllerClassName, $action);
-        if (str_contains($role, ',')) {
-            foreach (explode(',', $role) as $r) {
-                if (str_contains($this->getAllowed($r), ",$permission,")) {
-                    return true;
-                }
-            }
-        } else {
+        foreach ($roles as $role) {
             if (str_contains($this->getAllowed($role), ",$permission,")) {
                 return true;
             }

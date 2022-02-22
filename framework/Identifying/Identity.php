@@ -102,15 +102,14 @@ class Identity extends Component implements IdentityInterface
         throw new MisuseException('missing role in claims');
     }
 
+    public function getRoles(): array
+    {
+        return explode(',', $this->getRole());
+    }
+
     public function isRole(string $name): bool
     {
-        $role = $this->getRole();
-
-        if ($name === $role) {
-            return true;
-        }
-
-        return str_contains($role, ',') && str_contains(",$role,", ",$name,");
+        return in_array($name, $this->getRoles(), true);
     }
 
     public function setRole(string $role): static
