@@ -164,7 +164,7 @@ class Manager extends Component implements ManagerInterface
         if ($data === null) {
             null;
         } elseif (is_string($data)) {
-            $query->select($data);
+            $query->select([$data]);
         } elseif (is_array($data)) {
             if ($data) {
                 if (isset($data[count($data) - 1])) {
