@@ -478,7 +478,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return count($this->nodes);
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
     }
 
@@ -492,7 +492,7 @@ class SelectorList implements IteratorAggregate, Countable, ArrayAccess
         return isset($this->nodes[$offset]);
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
     }
 

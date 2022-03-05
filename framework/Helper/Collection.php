@@ -233,7 +233,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
         return $this->items[$offset];
     }
 
-    public function offsetSet(mixed $offset, mixed $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         if ($offset === null) {
             $this->items[] = $value;
@@ -242,7 +242,7 @@ class Collection implements JsonSerializable, Countable, IteratorAggregate, Arra
         }
     }
 
-    public function offsetUnset(mixed $offset)
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->items[$offset]);
     }
