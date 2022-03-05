@@ -140,7 +140,7 @@ interface ModelInterface extends TableInterface
 
     public function decrement(string $field, int|float $step = 1): static;
 
-    public static function select(array $fields = [], ?string $alias = null): QueryInterface;
+    public static function select(?array $fields = null, ?string $alias = null): QueryInterface;
 
     public static function where(array $filters): QueryInterface;
 

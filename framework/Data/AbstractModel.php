@@ -265,9 +265,9 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      *
      * @return \ManaPHP\Data\QueryInterface <static>
      */
-    public static function select(array $fields = [], ?string $alias = null): QueryInterface
+    public static function select(?array $fields = null, ?string $alias = null): QueryInterface
     {
-        return static::query($alias)->select($fields);
+        return static::query($alias)->select($fields ?? []);
     }
 
     /**
@@ -931,7 +931,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         }
 
         $primaryKey = $this->primaryKey();
-        $r = $this->newQuery()->select($fields)->where([$primaryKey => $this->$primaryKey])->execute();
+        $r = $this->newQuery()->select($fields ?? [])->where([$primaryKey => $this->$primaryKey])->execute();
         if (!$r) {
             throw new NotFoundException(static::class, [$primaryKey => $this->$primaryKey]);
         }
@@ -1294,17 +1294,17 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         return $this->$offset;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->$offset = $value;
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         $this->$offset = null;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $data = $this->toArray();
 
