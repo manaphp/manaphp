@@ -178,7 +178,7 @@ class Swoole extends AbstractServer
                 $cookie['value'],
                 $cookie['expire'],
                 $cookie['path'],
-                $cookie['domain'],
+                $cookie['domain'] ?? '',
                 $cookie['secure'],
                 $cookie['httponly']
             );

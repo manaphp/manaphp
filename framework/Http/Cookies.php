@@ -19,7 +19,7 @@ class Cookies extends Component implements CookiesInterface
         $this->response->setCookie(
             $name, $value, $expire,
             $path ?? $this->request->getUri(),
-            $domain ?? $this->request->getHost(),
+            $domain,
             $secure, $httponly
         );
 
