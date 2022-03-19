@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Imaging\Image\Adapter;
 
+use GdImage;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Exception\FileNotFoundException;
@@ -15,7 +16,7 @@ use ManaPHP\Imaging\AbstractImage;
 class Gd extends AbstractImage
 {
     protected string $file;
-    protected mixed $image;
+    protected GdImage $image;
     protected int $width;
     protected int $height;
 

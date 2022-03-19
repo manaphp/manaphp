@@ -12,10 +12,7 @@ class Channel
     protected int $capacity;
     protected int $length;
 
-    /**
-     * @var \Swoole\Coroutine\Channel|\SplQueue
-     */
-    protected mixed $queue;
+    protected SwooleChannel|SplQueue $queue;
 
     public function __construct(int $capacity)
     {
