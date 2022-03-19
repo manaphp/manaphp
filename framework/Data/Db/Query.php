@@ -36,11 +36,6 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    protected function getDb(string $db): DbInterface
-    {
-        return $db === '' ? $this->db : $this->container->get($db);
-    }
-
     public function select(array $fields): static
     {
         if (!$fields) {
@@ -484,8 +479,10 @@ class Query extends AbstractQuery
             if (count($tables) !== 1) {
                 throw new ShardingTooManyException(__METHOD__);
             }
-            $db = $this->getDb(key($shards));
-            $this->sql = $this->buildSql($db, $tables[0], $this->joins);
+            /** @var DbInterface $connection */
+            $connection = $this->container->get(key($shards));
+
+            $this->sql = $this->buildSql($connection, $tables[0], $this->joins);
         }
 
         return $this->sql;
@@ -632,7 +629,7 @@ class Query extends AbstractQuery
 
     protected function query(string $db, string $table): array
     {
-        $connection = $this->getDb($db);
+        $connection = $this->container->get($db);
 
         $joins = [];
         if ($this->joins) {
@@ -931,9 +928,11 @@ class Query extends AbstractQuery
 
         $affected_count = 0;
         foreach ($shards as $db => $tables) {
-            $db = $this->getDb($db);
+            /** @var DbInterface $connection */
+            $connection = $this->container->get($db);
+
             foreach ($tables as $table) {
-                $affected_count += $db->update($table, $fieldValues, $this->conditions, $this->bind);
+                $affected_count += $connection->update($table, $fieldValues, $this->conditions, $this->bind);
             }
         }
 
@@ -946,9 +945,11 @@ class Query extends AbstractQuery
 
         $affected_count = 0;
         foreach ($shards as $db => $tables) {
-            $db = $this->getDb($db);
+            /** @var DbInterface $connection */
+            $connection = $this->container->get($db);
+
             foreach ($tables as $table) {
-                $affected_count += $db->delete($table, $this->conditions, $this->bind);
+                $affected_count += $connection->delete($table, $this->conditions, $this->bind);
             }
         }
 
