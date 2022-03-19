@@ -6,6 +6,7 @@ use App\Areas\Rbac\Models\Permission;
 use App\Areas\Rbac\Models\Role;
 use App\Areas\Rbac\Models\RolePermission;
 use App\Controllers\Controller;
+use ManaPHP\Http\Controller\Attribute\Authorize;
 
 /**
  * Class RolePermission
@@ -14,6 +15,7 @@ use App\Controllers\Controller;
  *
  * @property-read \ManaPHP\Http\AuthorizationInterface $authorization
  */
+#[Authorize('@index')]
 class RolePermissionController extends Controller
 {
     public function indexAction()
@@ -54,6 +56,6 @@ class RolePermissionController extends Controller
 
     public function editAction()
     {
-        return $this->saveAction();
+        $this->saveAction();
     }
 }

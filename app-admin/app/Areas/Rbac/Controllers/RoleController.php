@@ -5,7 +5,9 @@ namespace App\Areas\Rbac\Controllers;
 use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
 use App\Controllers\Controller;
+use ManaPHP\Http\Controller\Attribute\Authorize;
 
+#[Authorize('@index')]
 class RoleController extends Controller
 {
     public function indexAction()

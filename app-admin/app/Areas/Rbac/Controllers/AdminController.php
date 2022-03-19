@@ -8,7 +8,9 @@ use App\Controllers\Controller;
 use App\Models\Admin;
 use ManaPHP\Data\QueryInterface;
 use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
+use ManaPHP\Http\Controller\Attribute\Authorize;
 
+#[Authorize('@index')]
 class AdminController extends Controller
 {
     public function indexAction()

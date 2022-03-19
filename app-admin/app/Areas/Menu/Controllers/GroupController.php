@@ -4,7 +4,9 @@ namespace App\Areas\Menu\Controllers;
 
 use App\Areas\Menu\Models\Group;
 use App\Controllers\Controller;
+use ManaPHP\Http\Controller\Attribute\Authorize;
 
+#[Authorize('@index')]
 class GroupController extends Controller
 {
     public function indexAction()

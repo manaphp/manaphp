@@ -3,8 +3,10 @@
 namespace App\Areas\System\Controllers;
 
 use App\Controllers\Controller;
+use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Version;
 
+#[Authorize('@index')]
 class InformationController extends Controller
 {
     public function indexView()

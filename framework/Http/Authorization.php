@@ -7,185 +7,116 @@ use ManaPHP\Component;
 use ManaPHP\Exception\ForbiddenException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
+use ManaPHP\Http\Controller\Attribute\Authorize;
 use ManaPHP\Identifying\Identity\NoCredentialException;
+use ReflectionClass;
+use ReflectionMethod;
 
 /**
- * @property-read \ManaPHP\Identifying\IdentityInterface $identity
- * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher
- * @property-read \ManaPHP\Http\RouterInterface          $router
- * @property-read \ManaPHP\Http\RequestInterface         $request
- * @property-read \ManaPHP\Http\ResponseInterface        $response
- * @property-read \ManaPHP\Http\Acl\BuilderInterface     $aclBuilder
- * @property-read \ManaPHP\Http\AuthorizationContext     $context
+ * @property-read \ManaPHP\Identifying\IdentityInterface    $identity
+ * @property-read \ManaPHP\Http\DispatcherInterface         $dispatcher
+ * @property-read \ManaPHP\Http\RouterInterface             $router
+ * @property-read \ManaPHP\Http\RequestInterface            $request
+ * @property-read \ManaPHP\Http\ResponseInterface           $response
+ * @property-read \ManaPHP\Http\Controller\ManagerInterface $controllerManager
+ * @property-read \ManaPHP\Http\AuthorizationContext        $context
  */
 class Authorization extends Component implements AuthorizationInterface
 {
-    public function isAclAllowed(array $acl, string $role, string $action): bool
+    public function getPermissions(string $controller): array
     {
-        if (($roles = $acl[$action] ?? null) && $roles[0] === '@') {
-            $original_action = substr($roles, 1);
-            if (($roles = $acl[$original_action] ?? null) && $roles[0] === '@') {
-                throw new MisuseException(['`%s` original action is not allow indirect.', $original_action]);
+        $permissions = [];
+
+        $rClass = new ReflectionClass($controller);
+        if (($attribute = $rClass->getAttributes(Authorize::class)[0] ?? null) !== null) {
+            $controllerAuthorize = $attribute->newInstance();
+        } else {
+            /** @var Authorize $controllerAuthorize */
+            $controllerAuthorize = null;
+        }
+
+        foreach ($this->controllerManager->getActions($controller) as $action) {
+            $rMethod = new ReflectionMethod($controller, $action . 'Action');
+            if (($attribute = $rMethod->getAttributes(Authorize::class)[0] ?? null) !== null) {
+                $actionAuthorize = $attribute->newInstance();
+            } else {
+                /** @var Authorize $actionAuthorize */
+                $actionAuthorize = $controllerAuthorize;
+            }
+
+            if ($actionAuthorize === null || $actionAuthorize->role === null) {
+                $permissions[] = $this->controllerManager->getPath($controller, $action);
             }
         }
 
-        if ($roles === null && isset($acl['*'])) {
-            $roles = $acl['*'];
-        }
-
-        if ($role === 'admin' || $roles === '*' || $roles === 'guest') {
-            return true;
-        } elseif ($role === 'guest') {
-            return false;
-        } else {
-            return $roles === 'user' || $roles === $role || preg_match("#\b$role\b#", $roles) === 1;
-        }
-    }
-
-    public function inferControllerAction(string $permission): array
-    {
-        $area = null;
-        if ($permission[0] === '/') {
-            if ($areas = $this->router->getAreas()) {
-                $pos = strpos($permission, '/', 1);
-                $area = Str::pascalize($pos === false ? substr($permission, 1) : substr($permission, 1, $pos - 1));
-                if (in_array($area, $areas, true)) {
-                    if ($pos === false || $pos === strlen($permission) - 1) {
-                        $permission = '';
-                    } else {
-                        $permission = substr($permission, $pos + 1);
-                    }
-                } else {
-                    $area = null;
-                    $permission = $permission === '/' ? '' : substr($permission, 1);
+        if ($controllerAuthorize?->role !== null && str_starts_with($controllerAuthorize->role, '@')) {
+            $refer = substr($controllerAuthorize->role, 1);
+            $method = Str::camelize($refer) . 'Action';
+            if (method_exists($controller, $method)) {
+                $rMethod = new ReflectionMethod($controller, $method);
+                if (!isset($rMethod->getAttributes(Authorize::class)[0])) {
+                    $permissions[] = $this->controllerManager->getPath($controller, $refer);
                 }
             } else {
-                $permission = $permission === '/' ? '' : substr($permission, 1);
+                $permissions[] = $this->controllerManager->getPath($controller, $refer);
             }
-        } else {
-            $area = $this->dispatcher->getArea();
         }
 
-        if ($permission === '') {
-            $controller = 'Index';
-            $action = 'index';
-        } elseif ($pos = strpos($permission, '/')) {
-            if ($pos === false || $pos === strlen($permission) - 1) {
-                $controller = Str::pascalize($pos === false ? $permission : substr($permission, 0, -1));
-                $action = 'index';
-            } else {
-                $controller = Str::pascalize(substr($permission, 0, $pos));
-                $action = Str::camelize(substr($permission, $pos + 1));
-            }
-        } else {
-            $controller = Str::pascalize($permission);
-            $action = 'index';
-        }
-
-        if ($area) {
-            return ["App\\Areas\\$area\\Controllers\\{$controller}Controller", $action];
-        } else {
-            return ["App\\Controllers\\{$controller}Controller", $action];
-        }
+        return $permissions;
     }
 
-    /**
-     * @param string $controllerClassName
-     * @param string $action
-     *
-     * @return string
-     */
-    public function generatePath(string $controllerClassName, string $action): string
+    public function buildAllowed(string $role, array $granted = []): array
     {
-        $controllerClassName = str_replace('\\', '/', $controllerClassName);
-        $action = Str::snakelize($action);
+        $permissions = [];
+        foreach ($this->controllerManager->getControllers() as $controller) {
+            foreach ($this->controllerManager->getActions($controller) as $action) {
+                $permission = $this->controllerManager->getPath($controller, $action);
 
-        if (preg_match('#Areas/([^/]+)/Controllers/(.*)Controller$#', $controllerClassName, $match)) {
-            $area = Str::snakelize($match[1]);
-            $controller = Str::snakelize($match[2]);
-
-            if ($action === 'index') {
-                if ($controller === 'index') {
-                    return $area === 'index' ? '/' : "/$area";
+                if (in_array($permission, $granted, true)) {
+                    $permissions[] = $permission;
                 } else {
-                    return "/$area/$controller";
-                }
-            } else {
-                return "/$area/$controller/$action";
-            }
-        } elseif (preg_match('#/Controllers/(.*)Controller#', $controllerClassName, $match)) {
-            $controller = Str::snakelize($match[1]);
-
-            if ($action === 'index') {
-                return $controller === 'index' ? '/' : "/$controller";
-            } else {
-                return "/$controller/$action";
-            }
-        } else {
-            throw new MisuseException(['invalid controller `:controller`', 'controller' => $controllerClassName]);
-        }
-    }
-
-    public function buildAllowed(string $role, array $explicit_permissions = []): array
-    {
-        $paths = [];
-
-        $controllers = $this->aclBuilder->getControllers();
-
-        foreach ($controllers as $controller) {
-            /** @var \ManaPHP\Http\Controller $controllerInstance */
-            $controllerInstance = $this->container->make($controller);
-            $acl = $controllerInstance->getAcl();
-
-            foreach ($this->aclBuilder->getActions($controller) as $action) {
-                $path = $this->generatePath($controller, $action);
-                if ($role === 'guest') {
-                    if ($this->isAclAllowed($acl, 'guest', $action)) {
-                        $paths[] = $path;
+                    $rMethod = new ReflectionMethod($controller, $action . 'Action');
+                    if (($attribute = $rMethod->getAttributes(Authorize::class)[0] ?? null) === null) {
+                        $rClass = new ReflectionClass($controller);
+                        $attribute = $rClass->getAttributes(Authorize::class)[0] ?? null;
                     }
-                } elseif ($role === 'user') {
-                    if ($this->isAclAllowed($acl, 'user', $action)
-                        && !$this->isAclAllowed(
-                            $acl, 'guest', $action
-                        )
-                    ) {
-                        $paths[] = $path;
-                    }
-                } elseif ($this->isAclAllowed($acl, 'user', $action)) {
-                    null;
-                } else {
-                    if ($this->isAclAllowed($acl, $role, $action)) {
-                        $paths[] = $path;
-                    } elseif (in_array($path, $explicit_permissions, true)) {
-                        $paths[] = $path;
-                    } elseif (isset($acl[$action]) && $acl[$action][0] === '@') {
-                        $real_path = $this->generatePath($controller, substr($acl[$action], 1));
-                        if (in_array($real_path, $explicit_permissions, true)) {
-                            $paths[] = $path;
-                        }
-                    } elseif (isset($acl['*']) && $acl['*'][0] === '@') {
-                        $real_path = $this->generatePath($controller, substr($acl['*'], 1));
-                        if (in_array($real_path, $explicit_permissions, true)) {
-                            $paths[] = $path;
+
+                    if ($attribute !== null) {
+                        $authorize = $attribute->newInstance();
+                        if ($authorize->role === null) {
+                            null;
+                        } elseif (str_starts_with($authorize->role, '@')) {
+                            $refer = substr($authorize->role, 1);
+                            $refer_permission = $this->controllerManager->getPath($controller, $refer);
+                            if (in_array($refer_permission, $granted, true)) {
+                                $permissions[] = $permission;
+                            } else {
+                                $method = Str::camelize($refer) . 'Action';
+                                if (method_exists($controller, $method)) {
+                                    $rMethod = new ReflectionMethod($controller, $method);
+                                    if (($attribute = $rMethod->getAttributes(Authorize::class)[0] ?? null) !== null) {
+                                        $authorize = $attribute->newInstance();
+                                        if ($authorize->role === $role) {
+                                            $permissions[] = $permission;
+                                        }
+                                    }
+                                }
+                            }
+                        } elseif ($role === $authorize->role) {
+                            $permissions[] = $permission;
                         }
                     }
                 }
             }
         }
 
-        sort($paths);
+        sort($permissions);
 
-        return $paths;
+        return $permissions;
     }
 
     public function getAllowed(string $role): string
     {
-        static $builtin;
-
-        if (isset($builtin[$role])) {
-            return $builtin[$role];
-        }
-
         $context = $this->context;
 
         if (!isset($context->role_permissions[$role])) {
@@ -199,77 +130,113 @@ class Authorization extends Component implements AuthorizationInterface
 
             if ($roleModel) {
                 $permissions = $roleModel::value(['role_name' => $role], 'permissions');
-                if ($role === 'guest') {
-                    null;
-                } elseif ($role === 'user') {
-                    $guest_permissions = $roleModel::valueOrDefault(['role_name' => 'guest'], 'permissions', '');
-                    $permissions = $guest_permissions . $permissions;
-                } else {
-                    $guest_permissions = $roleModel::valueOrDefault(['role_name' => 'guest'], 'permissions', '');
-                    $user_permissions = $roleModel::valueOrDefault(['role_name' => 'user'], 'permissions', '');
-                    $permissions = $guest_permissions . $user_permissions . $permissions;
-                }
-                return $context->role_permissions[$role] = $permissions;
             } else {
-                return $builtin[$role] = ',' . implode(',', $this->buildAllowed($role)) . ',';
+                $permissions = ',' . implode(',', $this->buildAllowed($role)) . ',';
             }
+
+            return $context->role_permissions[$role] = $permissions;
         } else {
             return $context->role_permissions[$role];
         }
     }
 
-    public function isAllowed(string $permission): bool
+    protected function getAuthorize(string $controller, string $action): ?Authorize
     {
-        $roles = $this->identity->getRoles();
+        $rMethod = new ReflectionMethod($controller, $action . 'Action');
+
+        if (($attribute = $rMethod->getAttributes(Authorize::class)[0] ?? null) === null) {
+            $rClass = new ReflectionClass($controller);
+            if (($attribute = $rClass->getAttributes(Authorize::class)[0] ?? null) === null) {
+                return null;
+            }
+        }
+
+        /** @var Authorize $authorize */
+        $authorize = $attribute->newInstance();
+
+        if ($authorize->role !== null && str_starts_with($authorize->role, '@')) {
+            $refer = substr($authorize->role, 1);
+            $referMethod = Str::camelize($refer) . 'Action';
+
+            if (!method_exists($controller, $referMethod)) {
+                return null;
+            }
+
+            $rMethod = new ReflectionMethod($controller, $referMethod);
+            if (($attribute = $rMethod->getAttributes(Authorize::class)[0] ?? null) === null) {
+                return null;
+            }
+
+            /** @var Authorize $authorize */
+            $authorize = $attribute->newInstance();
+
+            if ($authorize->role !== null && str_starts_with($authorize->role, '@')) {
+                throw new MisuseException(['Too many indirect refer: %sAction', $action]);
+            }
+        }
+
+        return $authorize;
+    }
+
+    public function isAllowed(string $permission, ?array $roles = null): bool
+    {
+        $roles = $roles ?? $this->identity->getRoles();
+
         if (in_array('admin', $roles, true)) {
             return true;
         }
 
-        if (str_starts_with($permission, '/')) {
-            foreach ($roles as $role) {
-                if (str_contains($this->getAllowed($role), ",$permission,")) {
-                    return true;
+        if (str_contains($permission, '/')) {
+            if (!str_starts_with($permission, '/')) {
+                if (($area = $this->dispatcher->getArea()) === null) {
+                    throw new MisuseException(['permission is not start with /: %s', $permission]);
+                } else {
+                    $permission = Str::snakelize($area) . "/$permission";
                 }
             }
-
-            return false;
-        }
-
-        if (str_contains($permission, '/')) {
-            list($controllerClassName, $action) = $this->inferControllerAction($permission);
         } else {
             $controllerInstance = $this->dispatcher->getControllerInstance();
             if ($controllerInstance === null) {
                 return false;
             }
 
-            $controllerClassName = get_class($controllerInstance);
-            $action = $permission ? Str::camelize($permission) : $this->dispatcher->getAction();
-            $acl = $controllerInstance->getAcl();
+            $controller = get_class($controllerInstance);
+            $action = str::camelize($permission);
+            if (($authorize = $this->getAuthorize($controller, $action)) !== null) {
+                if (($allowed = $authorize->isAllowed($roles)) !== null) {
+                    return $allowed;
+                }
+            }
+
+            $permission = $this->controllerManager->getPath($controller, $action);
+        }
+
+        $checked = ",$permission,";
+
+        if ($roles === [] || $roles === ['guest']) {
+            return str_contains($this->getAllowed('guest'), $checked);
+        } elseif ($roles === ['user']) {
+            if (str_contains($this->getAllowed('guest'), $checked)) {
+                return true;
+            }
+            return str_contains($this->getAllowed('user'), $checked);
+        } else {
+            if (str_contains($this->getAllowed('guest'), $checked)) {
+                return true;
+            }
+
+            if (str_contains($this->getAllowed('user'), $checked)) {
+                return true;
+            }
 
             foreach ($roles as $role) {
-                if ($this->isAclAllowed($acl, $role, $action)) {
+                if (str_contains($this->getAllowed($role), $checked)) {
                     return true;
                 }
             }
 
-            if ($roles === []) {
-                return false;
-            }
-
-            if (isset($acl[$action]) && $acl[$action][0] === '@') {
-                $action = substr($acl[$action], 1);
-            }
+            return false;
         }
-
-        $permission = $this->generatePath($controllerClassName, $action);
-        foreach ($roles as $role) {
-            if (str_contains($this->getAllowed($role), ",$permission,")) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public function authorize(): void

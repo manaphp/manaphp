@@ -8,10 +8,29 @@ use Attribute;
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 class Authorize
 {
-    public string|array $roles;
+    public ?string $role;
 
-    public function __construct(string|array $roles)
+    public function __construct(string $role = null)
     {
-        $this->roles = $roles;
+        $this->role = $role === '*' ? 'guest' : $role;
+    }
+
+    public function isAllowed(array $roles): ?bool
+    {
+        if (in_array('admin', $roles, true)) {
+            return true;
+        } elseif ($this->role === null) {
+            return null;
+        } elseif ($this->role === 'guest') {
+            return true;
+        } elseif ($roles) {
+            if ($this->role === 'user') {
+                return true;
+            } else {
+                return in_array($this->role, $roles, true);
+            }
+        }
+
+        return null;
     }
 }

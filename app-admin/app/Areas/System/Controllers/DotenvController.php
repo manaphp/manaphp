@@ -4,10 +4,12 @@ namespace App\Areas\System\Controllers;
 
 use App\Areas\System\Models\DotenvLog;
 use App\Controllers\Controller;
+use ManaPHP\Http\Controller\Attribute\Authorize;
 
 /**
  * @property-read \ManaPHP\Data\RedisDbInterface $redisDb
  */
+#[Authorize('@index')]
 class DotenvController extends Controller
 {
     const REDIS_KEY = '.env';

@@ -7,9 +7,9 @@ use App\Models\AdminLoginLog;
 use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 
-#[Authorize('@index')]
 class LoginLogController extends Controller
 {
+    #[Authorize]
     public function indexAction()
     {
         return AdminLoginLog::select(
