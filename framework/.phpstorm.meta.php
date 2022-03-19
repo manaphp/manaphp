@@ -209,20 +209,3 @@ function model_var($model)
 {
     return get_object_vars($model);
 }
-
-namespace ManaPHP\Data {
-    class RedisCacheInterface extends \Redis implements RedisInterface
-    {
-
-    }
-
-    class RedisDbInterface extends \Redis implements RedisInterface
-    {
-
-    }
-
-    class RedisBrokerInterface extends \Redis implements RedisInterface
-    {
-
-    }
-}
