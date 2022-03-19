@@ -33,11 +33,6 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    protected function getDb(string $db): MongodbInterface
-    {
-        return $db === '' ? $this->db : $this->container->get($db);
-    }
-
     public function setModel(ModelInterface $model): static
     {
         $this->model = $model;
@@ -58,7 +53,8 @@ class Query extends AbstractQuery
     {
         list($db, $source) = $this->getUniqueShard();
 
-        $mongodb = $this->getDb($db);
+        /** @var MongodbInterface $mongodb */
+        $mongodb = $this->container->get($db);
 
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $source);
@@ -641,7 +637,9 @@ class Query extends AbstractQuery
     public function execute(): array
     {
         list($db, $collection) = $this->getUniqueShard();
-        $mongodb = $this->getDb($db);
+
+        /** @var MongodbInterface $mongodb */
+        $mongodb = $this->container->get($db);
 
         if (!$this->aggregate) {
             $model = $this->model;
@@ -752,7 +750,9 @@ class Query extends AbstractQuery
 
         $affected_count = 0;
         foreach ($shards as $db => $collections) {
-            $mongodb = $this->getDb($db);
+            /** @var MongodbInterface $mongodb */
+            $mongodb = $this->container->get($db);
+
             foreach ($collections as $collection) {
                 $affected_count += $mongodb->delete($collection, $this->buildConditions());
             }
@@ -767,7 +767,9 @@ class Query extends AbstractQuery
 
         $affected_count = 0;
         foreach ($shards as $db => $collections) {
-            $mongodb = $this->getDb($db);
+            /** @var MongodbInterface $mongodb */
+            $mongodb = $this->container->get($db);
+
             foreach ($collections as $collection) {
                 $affected_count += $mongodb->update($collection, $fieldValues, $this->buildConditions());
             }
