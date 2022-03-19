@@ -21,7 +21,7 @@ class Query extends AbstractQuery
     protected array $aliases;
     protected array $filters = [];
 
-    public function __construct(string|MongodbInterface $db = 'mongodb')
+    public function __construct(string $db = 'mongodb')
     {
         $this->db = $db;
     }

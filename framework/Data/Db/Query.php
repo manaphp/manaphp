@@ -24,7 +24,7 @@ class Query extends AbstractQuery
     protected array $bind = [];
     protected ?string $sql = null;
 
-    public function __construct(string|DbInterface $db = 'db')
+    public function __construct(string $db = 'db')
     {
         $this->db = $db;
     }
@@ -633,7 +633,7 @@ class Query extends AbstractQuery
                     $iTable = $join_table::sample();
                     $join_shards = $iTable->getMultipleShards($this->shard_context);
                 } else {
-                    $db = is_object($this->db) ? '' : (string)$this->db;
+                    $db = $this->db;
                     if ($shard_strategy = $this->shard_strategy) {
                         $join_shards = $shard_strategy($db, $join_table, $this->shard_context);
                     } else {

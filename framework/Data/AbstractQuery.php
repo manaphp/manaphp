@@ -18,7 +18,7 @@ use ManaPHP\Helper\Sharding\ShardingTooManyException;
  */
 abstract class AbstractQuery extends Component implements QueryInterface, IteratorAggregate
 {
-    protected mixed $db;
+    protected string $db;
     protected string $table;
     protected ?string $alias = null;
     protected null|string|array $fields = null;
@@ -71,7 +71,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         if ($model = $this->model ?? null) {
             return $model->getMultipleShards($this->shard_context);
         } else {
-            $db = is_object($this->db) ? '' : $this->db;
+            $db = $this->db;
             $table = $this->table;
 
             if ($shard_strategy = $this->shard_strategy) {
