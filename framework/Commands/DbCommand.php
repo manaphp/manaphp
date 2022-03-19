@@ -152,7 +152,8 @@ class DbCommand extends Command
             $constants = '    ' . $constants;
         }
 
-        $str = '<?php' . PHP_EOL . PHP_EOL;
+        $str = '<?php' . PHP_EOL;
+        $str .= 'declare(strict_types=1);' . PHP_EOL . PHP_EOL;
         $str .= "namespace $namespace;" . PHP_EOL;
         $str .= PHP_EOL;
 
@@ -175,7 +176,7 @@ class DbCommand extends Command
 
         if ($service !== 'db') {
             $str .= PHP_EOL;
-            $str .= '    public function db()' . PHP_EOL;
+            $str .= '    public function db(): string' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$service';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
@@ -184,7 +185,7 @@ class DbCommand extends Command
         $pos = strrpos($table, '_');
         if ($optimized || ($pos !== false && strrpos($table, '_', $pos - 1) !== false)) {
             $str .= PHP_EOL;
-            $str .= '    public function table()' . PHP_EOL;
+            $str .= '    public function table(): string' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$table';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
@@ -192,7 +193,7 @@ class DbCommand extends Command
 
         if ($optimized) {
             $str .= PHP_EOL;
-            $str .= '    public function fields()' . PHP_EOL;
+            $str .= '    public function fields(): array' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
             foreach ($fields as $field) {
@@ -205,7 +206,7 @@ class DbCommand extends Command
 
         if ($camelized) {
             $str .= PHP_EOL;
-            $str .= '    public function map()' . PHP_EOL;
+            $str .= '    public function map(): array' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
             foreach ($fields as $field) {
@@ -224,7 +225,7 @@ class DbCommand extends Command
                 || ($primaryKey !== 'id' && $primaryKey !== $table . '_id' && $primaryKey !== $table . 'Id')
             ) {
                 $str .= PHP_EOL;
-                $str .= '    public function primaryKey()' . PHP_EOL;
+                $str .= '    public function primaryKey(): string' . PHP_EOL;
                 $str .= '    {' . PHP_EOL;
                 $str .= "        return '$primaryKey';" . PHP_EOL;
                 $str .= '    }' . PHP_EOL;
@@ -232,7 +233,7 @@ class DbCommand extends Command
 
         } else {
             $str .= PHP_EOL;
-            $str .= '    public function primaryKey()' . PHP_EOL;
+            $str .= '    public function primaryKey(): string' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '???';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
@@ -241,7 +242,7 @@ class DbCommand extends Command
         $autoIncField = $metadata[Db::METADATA_AUTO_INCREMENT_KEY];
         if ($optimized) {
             $str .= PHP_EOL;
-            $str .= '    public function autoIncrementField()' . PHP_EOL;
+            $str .= '    public function autoIncrementField(): ?string' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             if ($autoIncField) {
                 $str .= "        return '$autoIncField';" . PHP_EOL;
@@ -255,7 +256,7 @@ class DbCommand extends Command
             $intFields = (array)$metadata[Db::METADATA_INT_TYPE_ATTRIBUTES];
 
             $str .= PHP_EOL;
-            $str .= '    public function intFields()' . PHP_EOL;
+            $str .= '    public function intFields(): array' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= '        return [' . PHP_EOL;
             foreach ($intFields as $field) {
