@@ -492,7 +492,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         return (float)$this->aggregate(['r' => "AVG($field)"])[0]['r'];
     }
 
-    public function options(array $options): static
+    public function options(?array $options): static
     {
         if (!$options) {
             return $this;
