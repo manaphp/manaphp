@@ -104,7 +104,7 @@ class Identity extends Component implements IdentityInterface
 
     public function getRoles(): array
     {
-        return explode(',', $this->getRole());
+        return preg_split('#[\s,]+#', $this->getRole(''), -1, PREG_SPLIT_NO_EMPTY);
     }
 
     public function isRole(string $name): bool
