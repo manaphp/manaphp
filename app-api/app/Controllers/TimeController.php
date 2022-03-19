@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controllers;
 
@@ -11,7 +12,7 @@ class TimeController extends Controller
 {
     public function __construct(ContainerInterface $container)
     {
-        $x=$container->get(LoggerInterface::class);
+        $x = $container->get(LoggerInterface::class);
     }
 
     public function helloAction()
