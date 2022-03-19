@@ -8,8 +8,6 @@ namespace ManaPHP\Data;
  */
 interface QueryInterface
 {
-    public function setDb(mixed $db): static;
-
     public function setModel(ModelInterface $model): static;
 
     public function getModel(): ?ModelInterface;

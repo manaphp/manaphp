@@ -61,11 +61,6 @@ class Query extends AbstractQuery
         return $this->queries;
     }
 
-    public function setDb(mixed $db): static
-    {
-        throw new NotSupportedException(__METHOD__);
-    }
-
     public function shard(?callable $strategy = null): static
     {
         throw new NotSupportedException(__METHOD__);

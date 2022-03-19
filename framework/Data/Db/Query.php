@@ -29,13 +29,6 @@ class Query extends AbstractQuery
         $this->db = $db;
     }
 
-    public function setDb(mixed $db): static
-    {
-        $this->db = $db;
-
-        return $this;
-    }
-
     public function select(array $fields): static
     {
         if (!$fields) {
