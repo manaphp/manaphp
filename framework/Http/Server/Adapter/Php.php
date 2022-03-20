@@ -16,6 +16,8 @@ class Php extends Fpm
 
     public function __construct(array $options = [])
     {
+        parent::__construct($options);
+
         $argv = $GLOBALS['argv'] ?? [];
         foreach ($argv as $k => $v) {
             if ($v === '--port' || $v === '-p') {
@@ -51,8 +53,6 @@ class Php extends Fpm
             $this->root_files = $this->getRootFiles();
             $this->mime_types = $this->getMimeTypes();
         }
-
-        parent::__construct($options);
     }
 
     protected function getRootFiles(): array
