@@ -67,7 +67,7 @@ class MongodbCommand extends Command
         $fieldTypes = $this->inferFieldTypes([json_parse($input)]);
 
         $model = $this->renderModel($fieldTypes, $modelName, 'mongodb', '', $optimized);
-        $file = '@tmp/mongodb_model/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
+        $file = '@runtime/mongodb_model/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
         LocalFS::filePut($file, $model);
 
         $this->console->writeLn(['write model to :file', 'file' => $file]);
@@ -111,7 +111,7 @@ class MongodbCommand extends Command
                     }
 
                     $plainClass = Str::pascalize($collection);
-                    $fileName = "@tmp/mongodb_models/$plainClass.php";
+                    $fileName = "@runtime/mongodb_models/$plainClass.php";
 
                     $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
 
@@ -388,7 +388,7 @@ class MongodbCommand extends Command
                         continue;
                     }
 
-                    $fileName = "@tmp/mongodb_csv/$db/$collection.csv";
+                    $fileName = "@runtime/mongodb_csv/$db/$collection.csv";
 
                     $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
 

@@ -28,7 +28,7 @@ class Download extends Component implements DownloaderInterface
                 } else {
                     $ext = '.tmp';
                 }
-                $return_file = $this->alias->resolve('@tmp/download/' . md5($files . gethostname()) . $ext);
+                $return_file = $this->alias->resolve('@runtime/download/' . md5($files . gethostname()) . $ext);
             }
             $files = [$files => $return_file];
         } else {

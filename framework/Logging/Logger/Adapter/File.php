@@ -12,7 +12,7 @@ use ManaPHP\Logging\Logger\Log;
  */
 class File extends AbstractLogger
 {
-    protected string $file = '@data/logger/{id}.log';
+    protected string $file = '@runtime/logger/{id}.log';
     protected string $format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
 
     public function __construct(array $options = [])

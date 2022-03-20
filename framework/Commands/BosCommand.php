@@ -126,7 +126,7 @@ class BosCommand extends Command
         $filters['key'] = $key;
 
         if (!$dir) {
-            $dir = "@tmp/bos_export/$bucket";
+            $dir = "@runtime/bos_export/$bucket";
         }
 
         $dir = rtrim($dir, '/');

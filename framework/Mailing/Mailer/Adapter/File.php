@@ -45,7 +45,7 @@ class File extends AbstractMailer
             $data = json_stringify($message) . PHP_EOL;
         }
 
-        LocalFS::fileAppend($this->file ?? '@data/fileMailer/mailer_' . date('ymd') . '.log', $data);
+        LocalFS::fileAppend($this->file ?? '@runtime/fileMailer/mailer_' . date('ymd') . '.log', $data);
 
         return count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
     }

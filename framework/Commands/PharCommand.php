@@ -20,7 +20,7 @@ class PharCommand extends Command
      */
     public function manacliAction()
     {
-        $this->alias->set('@phar', '@data/manacli_phar');
+        $this->alias->set('@phar', '@runtime/manacli_phar');
         $pharFile = $this->alias->resolve('@root/manacli.phar');
 
         $this->console->writeLn(['cleaning `:dir` dir', 'dir' => $this->alias->resolve('@phar')]);

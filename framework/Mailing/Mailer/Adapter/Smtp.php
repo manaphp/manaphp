@@ -101,7 +101,7 @@ class Smtp extends AbstractMailer
             throw new ConnectionException(['connection protocol is not be recognized: %s', $response]);
         }
 
-        $context->file = $this->alias->resolve('@data/mail/{ymd}/{ymd_His_}{16}.log');
+        $context->file = $this->alias->resolve('@runtime/mail/{ymd}/{ymd_His_}{16}.log');
 
         /** @noinspection MkdirRaceConditionInspection */
         @mkdir(dirname($context->file), 0777, true);

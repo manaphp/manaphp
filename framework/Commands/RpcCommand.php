@@ -18,7 +18,7 @@ class RpcCommand extends Command
      * @return void
      * @throws \ManaPHP\Exception\RuntimeException
      */
-    public function servicesAction(string $output = '@tmp/rpc_services'): void
+    public function servicesAction(string $output = '@runtime/rpc_services'): void
     {
         foreach (LocalFS::glob('@app/Controllers/?*Controller.php') as $file) {
             $className = 'App\\Controllers\\' . basename($file, '.php');

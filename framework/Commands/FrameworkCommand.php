@@ -18,7 +18,7 @@ class FrameworkCommand extends Command
      */
     protected function stripWhitespaces(string $str): string
     {
-        $tmp = '@tmp/framework/strip.tmp';
+        $tmp = '@runtime/framework/strip.tmp';
         LocalFS::filePut($tmp, $str);
         return php_strip_whitespace($this->alias->resolve($tmp));
 //        $str = preg_replace('#\s*/\*\*.*?\*/#ms', '', $str);//remove comments

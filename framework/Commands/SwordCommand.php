@@ -21,8 +21,8 @@ class SwordCommand extends Command
      */
     public function compileAction(bool $replace = false): void
     {
-        LocalFS::dirDelete('@data/sword');
-        $this->console->writeLn('delete `@data/sword` directory success');
+        LocalFS::dirDelete('@runtime/sword');
+        $this->console->writeLn('delete `@runtime/sword` directory success');
 
         $ext = 'sword';
 
@@ -54,7 +54,7 @@ class SwordCommand extends Command
         if ($replace) {
             $compiled = str_replace('.sword', '.phtml', $file);
         } else {
-            $compiled = str_replace($this->alias->get('@root'), $this->alias->resolve('@data/sword'), $file);
+            $compiled = str_replace($this->alias->get('@root'), $this->alias->resolve('@runtime/sword'), $file);
         }
 
         $this->swordCompiler->compileFile($file, $compiled);

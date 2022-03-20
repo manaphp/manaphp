@@ -80,7 +80,7 @@ class Debugger extends Component implements DebuggerInterface
         if ($this->ttl) {
             $content = $this->redisCache->get($this->prefix . $key);
         } else {
-            $file = "@data/debugger/{$key}.zip";
+            $file = "@runtime/debugger/{$key}.zip";
             $content = LocalFS::fileExists($file) ? LocalFS::fileGet($file) : false;
         }
 
@@ -102,7 +102,7 @@ class Debugger extends Component implements DebuggerInterface
                 $this->redisCache->publish($key, $this->response->getHeader('X-Debugger-Link'));
             }
         } else {
-            LocalFS::filePut("@data/debugger/{$key}.zip", $content);
+            LocalFS::filePut("@runtime/debugger/{$key}.zip", $content);
         }
     }
 

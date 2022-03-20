@@ -11,7 +11,7 @@ use ManaPHP\Http\AbstractSession;
  */
 class File extends AbstractSession
 {
-    protected string $dir = '@data/session';
+    protected string $dir = '@runtime/session';
     protected string $extension = '.session';
     protected int $level = 1;
 

@@ -18,7 +18,7 @@ class ValidatingValidatorTest extends TestCase
         parent::setUp();
         $di = new Factory();
 
-        $di->alias->set('@data', __DIR__ . '/tmp/data');
+        $di->alias->set('@runtime', __DIR__ . '/runtime/tmp/');
         $config = require __DIR__ . '/config.database.php';
         $di->set('db', new Db($config['mysql']));
     }

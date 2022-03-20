@@ -12,7 +12,7 @@ use ManaPHP\Exception\WriteFileFailedException;
  */
 class File extends AbstractCache
 {
-    protected string $dir = '@data/cache';
+    protected string $dir = '@runtime/cache';
     protected int $level = 1;
     protected string $ext = '.cache';
 

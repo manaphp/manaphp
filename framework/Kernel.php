@@ -36,8 +36,7 @@ class Kernel extends Component
         $this->alias->set('@app', "$rootDir/app");
         $this->alias->set('@views', "$rootDir/app/Views");
         $this->alias->set('@root', $rootDir);
-        $this->alias->set('@data', "$rootDir/data");
-        $this->alias->set('@tmp', "$rootDir/tmp");
+        $this->alias->set('@runtime', "$rootDir/runtime");
         $this->alias->set('@resources', "$rootDir/Resources");
         $this->alias->set('@config', "$rootDir/config");
     }

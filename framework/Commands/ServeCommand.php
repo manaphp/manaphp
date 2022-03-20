@@ -64,7 +64,7 @@ STR;
         }
 
         $router = 'builtin_server_router.php';
-        LocalFS::filePut("@tmp/$router", strtr($router_str, [':ip' => $ip, ':port' => $port]));
+        LocalFS::filePut("@runtime/$router", strtr($router_str, [':ip' => $ip, ':port' => $port]));
 
         console_log('info', "server listen on: $ip:$port");
 

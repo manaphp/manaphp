@@ -8,7 +8,7 @@ services :
     environment :
       DOTENV_URL : __DOTENV_URL
     volumes :
-      - logger:/var/www/html/data/logger/
+      - logger:/var/www/html/runtime/logger/
     ports :
       - 8181:9501
     deploy :

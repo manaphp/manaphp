@@ -1,13 +1,12 @@
 /.idea
 *.bak
 *.log
-/tmp
 /*.phar
 /tests/Image/Result
 /tests/Image/Adapter
 
 /vendor/
-/data/
+/runtime/
 /public/test.php
 /tests/FileSystem
 /manaphp_lite.tmp

@@ -39,7 +39,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
 
         $this->mh = curl_multi_init();
 
-        LocalFS::dirCreate('@data/curlMulti');
+        LocalFS::dirCreate('@runtime/curlMulti');
     }
 
     protected function createCurlTemplate(): CurlHandle
@@ -153,7 +153,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
 
         if (isset($options['file'])) {
             if ($options['file'] === '') {
-                $request->options['file'] = tempnam($this->alias->resolve('@data/curlMulti'), 'curl_');
+                $request->options['file'] = tempnam($this->alias->resolve('@runtime/curlMulti'), 'curl_');
             }
 
             $file = fopen($request->options['file'], 'wb');

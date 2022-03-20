@@ -400,7 +400,7 @@ class DbCommand extends Command
         $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
         $plainClass = Str::pascalize($table);
-        $fileName = "@tmp/db_model/$plainClass.php";
+        $fileName = "@runtime/db_model/$plainClass.php";
         $class = "App\Models\\$plainClass";
         $model_str = $this->renderModel($service, $class, $table, $optimized, $camelized);
         LocalFS::filePut($fileName, $model_str);
@@ -428,13 +428,13 @@ class DbCommand extends Command
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
                 $plainClass = Str::pascalize($table);
                 $class = "App\Models\\$plainClass";
-                $fileName = "@tmp/db_models/$plainClass.php";
+                $fileName = "@runtime/db_models/$plainClass.php";
                 if (($pos = strpos($table, '_')) !== false) {
                     $area = Str::pascalize(substr($table, 0, $pos));
                     if (in_array($area, $areas, true)) {
                         $plainClass = Str::pascalize(substr($table, $pos + 1));
                         $class = 'App\\Areas\\Models\\' . Str::pascalize(substr($table, $pos));
-                        $fileName = "@tmp/db_models/Areas/$area/$plainClass.php";
+                        $fileName = "@runtime/db_models/Areas/$area/$plainClass.php";
                     }
                 }
 
@@ -466,7 +466,7 @@ class DbCommand extends Command
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
                 $plainClass = Str::pascalize($table);
-                $fileName = "@tmp/db_tables/$plainClass.php";
+                $fileName = "@runtime/db_tables/$plainClass.php";
                 $model_str = $this->renderTable($service, $table, $namespace);
                 LocalFS::filePut($fileName, $model_str);
 
@@ -489,7 +489,7 @@ class DbCommand extends Command
             /** @var \ManaPHP\Data\DbInterface $db */
             $db = $this->container->get($service);
             foreach ($this->getTables($service, $table_pattern) as $table) {
-                $fileName = "@tmp/db_json/$service/$table.json";
+                $fileName = "@runtime/db_json/$service/$table.json";
 
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
@@ -527,7 +527,7 @@ class DbCommand extends Command
             foreach ($this->getTables($service, $table_pattern) as $table) {
                 $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
-                $fileName = "@tmp/db_csv/$service/$table.csv";
+                $fileName = "@runtime/db_csv/$service/$table.csv";
                 LocalFS::dirCreate(dirname($fileName));
                 $table = $db->getPrefix() . $table;
                 $rows = $db->fetchAll("SELECT * FROM [$table]");

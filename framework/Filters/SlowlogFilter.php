@@ -16,7 +16,7 @@ use ManaPHP\Http\Filter\EndFilterInterface;
 class SlowlogFilter extends Filter implements EndFilterInterface
 {
     protected float $threshold = 1.0;
-    protected string $file = '@data/slowlogPlugin/{id}.log';
+    protected string $file = '@runtime/slowlogPlugin/{id}.log';
     protected string $format = '[:date][:client_ip][:request_id][:elapsed] :message';
 
     public function __construct(array $options = [])

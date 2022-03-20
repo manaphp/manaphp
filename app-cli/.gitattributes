@@ -1,5 +1,4 @@
 *.sword linguist-language=Blade
 *.sh text eol=lf
 
-/data export-ignore
-/tmp export-ignore
+/runtime export-ignore

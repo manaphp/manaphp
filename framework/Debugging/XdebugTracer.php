@@ -47,7 +47,7 @@ class XdebugTracer extends Component implements XdebugTracerInterface
 
     public function onRequestBegin(): void
     {
-        $file = $this->alias->resolve('@data/backtracePlugin/trace_{ymd_His}_{8}.log');
+        $file = $this->alias->resolve('@runtime/backtracePlugin/trace_{ymd_His}_{8}.log');
         $dir = dirname($file);
         if (!is_dir($dir)) {
             /** @noinspection MkdirRaceConditionInspection */

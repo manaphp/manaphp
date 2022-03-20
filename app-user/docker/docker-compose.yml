@@ -6,8 +6,7 @@ services :
       - ../:/var/www/html
       - ./fpm/etc/fpm.conf:/etc/php/fpm.conf
       - ./fpm/etc/php.ini:/etc/php/php.ini
-      - /data/volumes/${COMPOSE_PROJECT_NAME}/user/data:/var/www/html/data
-      - /data/volumes/${COMPOSE_PROJECT_NAME}/user/tmp:/var/www/html/tmp
+      - /data/volumes/${COMPOSE_PROJECT_NAME}/user/runtime:/var/www/html/runtime
       - /data/volumes/${COMPOSE_PROJECT_NAME}/user/fpm/:/var/log/php
       - ../../framework:/var/www/framework
     command : bash /var/www/html/docker/fpm/bootstrap.sh

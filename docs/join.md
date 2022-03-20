@@ -30,8 +30,7 @@ services:
     volumes:
       - /usr/share/zoneinfo/PRC:/etc/localtime
       - ../:/var/www/html
-      - /data/volumes/${COMPOSE_PROJECT_NAME}/api/data:/var/www/html/data
-      - /data/volumes/${COMPOSE_PROJECT_NAME}/api/tmp:/var/www/html/tmp
+      - /data/volumes/${COMPOSE_PROJECT_NAME}/api/runtime:/var/www/html/runtime
     command: php /var/www/html/public/index.php
     ports:
       - ${WEB_PORT}:9501
