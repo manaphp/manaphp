@@ -24,6 +24,9 @@ class ServerFactory implements FactoryInterface
             $class = 'ManaPHP\Http\Server\Adapter\Fpm';
         }
 
-        return $container->get($class);
+        $type = lcfirst(substr($class, strrpos($class, '\\') + 1));
+        $id = "ManaPHP\Http\ServerInterface#$type";
+
+        return $container->get($container->has($id) ? $id : $class);
     }
 }

@@ -23,7 +23,7 @@ return [
             'class' => 'ManaPHP\Http\Server\Adapter\Php',
             'port'  => 9501,
         ],
-        'ManaPHP\Http\ServerInterface'             => '@ManaPHP\Http\ServerInterface#swoole',
+        #'ManaPHP\Http\ServerInterface'             => '@ManaPHP\Http\ServerInterface#swoole',
         'ManaPHP\Http\HandlerInterface'            => 'ManaPHP\Mvc\Handler',
         'ManaPHP\Security\CryptInterface'          => ['master_key' => env('MASTER_KEY')],
         'db'                                       => env('DB_URL'),

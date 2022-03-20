@@ -25,7 +25,7 @@ return [
             'class' => 'ManaPHP\Http\Server\Adapter\Php',
             'port'  => 9501,
         ],
-        'ManaPHP\Http\ServerInterface'          => '@ManaPHP\Http\ServerInterface#fpm',
+        #'ManaPHP\Http\ServerInterface'          => '@ManaPHP\Http\ServerInterface#fpm',
         'ManaPHP\Http\HandlerInterface'         => 'ManaPHP\Mvc\Handler',
         'db'                                    => ['class' => 'ManaPHP\Data\Db', env('DB_URL')],
         'ManaPHP\Data\RedisInterface'           => [env('REDIS_URL')],
