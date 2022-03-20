@@ -3,20 +3,20 @@ services :
   admin-fpm :
     image : manaphp/php80:220320
     volumes :
-      - ../:/var/www/html
-      - ./fpm/etc/fpm.conf:/etc/php/fpm.conf
-      - ./fpm/etc/php.ini:/etc/php/php.ini
-      - ../runtime/fpm:/var/log/php
-      - ../../framework:/var/www/framework
+      - .:/var/www/html
+      - ./docker/fpm/etc/fpm.conf:/etc/php/fpm.conf
+      - ./docker/fpm/etc/php.ini:/etc/php/php.ini
+      - ./runtime/fpm:/var/log/php
+      - ../framework:/var/www/framework
     command : bash /var/www/html/docker/fpm/bootstrap.sh
     restart : always
   admin-nginx :
     image : nginx:1.19.6
     volumes :
       - /usr/share/zoneinfo/PRC:/etc/localtime
-      - ../:/var/www/html
-      - ./nginx/etc/nginx.conf:/etc/nginx/nginx.conf
-      - ../runtime/nginx:/var/log/nginx
+      - .:/var/www/html
+      - ./docker/nginx/etc/nginx.conf:/etc/nginx/nginx.conf
+      - ./runtime/nginx:/var/log/nginx
     ports :
       - ${WEB_PORT}:80
     restart : always

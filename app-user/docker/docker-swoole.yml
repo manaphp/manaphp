@@ -3,8 +3,8 @@ services :
   user :
     image : manaphp/php80:220320
     volumes :
-      - ../:/var/www/html
-      - ../../framework:/var/www/html/vendor/manaphp/framework
+      - .:/var/www/html
+      - ../framework:/var/www/html/vendor/manaphp/framework
     command : php -d opcache.enable_cli=on /var/www/html/public/index.php
     ports :
       - ${WEB_PORT}:9501

@@ -3,6 +3,6 @@ services :
   cli :
     image : manaphp/php80:220320
     volumes :
-      - ../:/var/www/html
-      - ../../framework:/var/www/framework
+      - ./:/var/www/html
+      - ../framework:/var/www/framework
     restart : always
