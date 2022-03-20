@@ -55,7 +55,7 @@ class Gd extends AbstractImage
         return $this->height;
     }
 
-    public function getInternalHandle(): mixed
+    public function getInternalHandle(): GdImage
     {
         return $this->image;
     }
