@@ -76,6 +76,11 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
         $dependencies = [];
         foreach ($parameters as $key => $value) {
             if (is_string($key) && str_contains($key, '\\')) {
+                if (!is_string($value)) {
+                    $dependencyId = "$class.dependencies.$key" . ($id === null || $id === $class ? '' : ".$id");
+                    $this->set($dependencyId, $value);
+                    $value = "@$dependencyId";
+                }
                 $dependencies[$key] = $value;
             }
         }
