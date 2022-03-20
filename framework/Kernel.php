@@ -63,9 +63,15 @@ class Kernel extends Component
             $this->container->set($id, $definition);
         }
 
-        foreach ($this->config->get('bootstrappers') as $item) {
+        foreach ($this->config->get('bootstrappers') as $key => $value) {
             /** @var \ManaPHP\BootstrapperInterface $bootstrapper */
-            $bootstrapper = $this->container->get($item);
+            if (is_int($key)) {
+                $bootstrapper = $this->container->get($value);
+            } else {
+                $this->container->set($key, $value);
+                $bootstrapper = $this->container->get($key);
+            }
+
             $bootstrapper->bootstrap();
         }
 

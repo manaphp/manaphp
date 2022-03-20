@@ -30,6 +30,7 @@ return [
     ],
     'bootstrappers' => [
         ManaPHP\Bootstrappers\DebuggerBootstrapper::class,
+        ManaPHP\Bootstrappers\TracerBootstrapper::class => ['tracers' => env('APP_TRACERS', ['*'])],
     ],
     'filters'       => [
         ManaPHP\Filters\EtagFilter::class,
