@@ -17,7 +17,7 @@ class Connection extends Component
     protected int $port;
     protected float $timeout = 0.0;
     protected int $read_timeout = 60;
-    protected string $auth;
+    protected string $auth = '';
     protected int $db = 0;
     protected bool $persistent = false;
     protected int $heartbeat = 60;
