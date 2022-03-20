@@ -2,5 +2,5 @@
 
 set -xe
 
-chown www-data:www-data data tmp
+chown www-data:www-data /var/www/html/runtime
 exec php-fpm --nodaemonize

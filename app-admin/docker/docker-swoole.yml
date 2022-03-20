@@ -1,11 +1,11 @@
 version : "3.8"
 services :
-  ws :
+  admin :
     image : manaphp/php80:220320
     volumes :
       - ../:/var/www/html
       - ../../framework:/var/www/framework
     command : php -d opcache.enable_cli=on /var/www/html/public/index.php
     ports :
-      - ${WS_PORT}:9501
+      - ${WEB_PORT}:9501
     restart : always

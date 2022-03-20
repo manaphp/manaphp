@@ -1,10 +1,9 @@
-version : "2"
+version : "3.8"
 services :
   ws :
-    image : manaphp/php74:210801
+    image : manaphp/php80:220320
     volumes :
       - ./:/var/www/html
-      - /data/volumes/${COMPOSE_PROJECT_NAME}/ws/runtime:/var/www/html/runtime
       - ../framework:/var/www/framework
     command : php -d opcache.enable_cli=on /var/www/html/public/index.php
     ports :

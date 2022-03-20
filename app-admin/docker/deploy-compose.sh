@@ -18,7 +18,7 @@ rm -rf docker/*.tar.gz
 cp  -f .env.${type} .env
 cp  -f docker/.env-${type} docker/.env
 
-(cd docker;mv docker-compose.yml fpm.yml;cp swoole.yml docker-compose.yml)
+(cd docker && cp docker-swoole.yml docker-compose.yml)
 
 echo $BUILD_ID>"build_id.txt"
 echo $GIT_COMMIT>"git_commit.txt"

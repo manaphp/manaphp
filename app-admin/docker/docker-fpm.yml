@@ -1,13 +1,12 @@
-version : "2"
+version : "3.8"
 services :
   admin-fpm :
-    image : manaphp/php74:210801
+    image : manaphp/php80:220320
     volumes :
       - ../:/var/www/html
       - ./fpm/etc/fpm.conf:/etc/php/fpm.conf
       - ./fpm/etc/php.ini:/etc/php/php.ini
-      - /data/volumes/${COMPOSE_PROJECT_NAME}/admin/fpm:/var/log/php
-      - /data/volumes/${COMPOSE_PROJECT_NAME}/admin/runtime:/var/www/html/runtime
+      - ../runtime/fpm:/var/log/php
       - ../../framework:/var/www/framework
     command : bash /var/www/html/docker/fpm/bootstrap.sh
     restart : always
@@ -17,7 +16,7 @@ services :
       - /usr/share/zoneinfo/PRC:/etc/localtime
       - ../:/var/www/html
       - ./nginx/etc/nginx.conf:/etc/nginx/nginx.conf
-      - /data/volumes/${COMPOSE_PROJECT_NAME}/admin/nginx:/var/log/nginx
+      - ../runtime/nginx:/var/log/nginx
     ports :
       - ${WEB_PORT}:80
     restart : always

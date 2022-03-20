@@ -1,4 +1,4 @@
-FROM manaphp/php74:4.1
+FROM manaphp/php80:220320
 
 COPY . /var/www/html
 

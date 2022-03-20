@@ -19,18 +19,17 @@ ManaPHP 开源框架，非商业项目，由开源组织开发与维护，这意
 
 ### 使用 docker
 
-推荐使用docker解决开发环境的困扰，开发组维护了[最新的镜像 manaphp/php72](https://hub.docker/manaphp/php72), 简单示例：
+推荐使用docker解决开发环境的困扰，开发组维护了[最新的镜像 manaphp/php80](https://hub.docker/manaphp/php80), 简单示例：
 - 使用 docker-compose 进行服务编排
 
 ```yml
-version: "2"
+version: "3.8"
 services:
-  api_swoole:
-    image: manaphp/php72:1.2
+  api:
+    image: manaphp/php80:220320
     volumes:
       - /usr/share/zoneinfo/PRC:/etc/localtime
       - ../:/var/www/html
-      - /data/volumes/${COMPOSE_PROJECT_NAME}/api/runtime:/var/www/html/runtime
     command: php /var/www/html/public/index.php
     ports:
       - ${WEB_PORT}:9501

@@ -5,10 +5,10 @@
 ## 运行环境要求
 
 需要保证运行环境满足以下要求：
-* PHP >= 7.0
-* Swoole >= 4.3.0
+* PHP >= 8.0
+* Swoole >= 4.6.7
 
-当然，[manaphp/php73](https://hub.docker.com/r/manaphp/php73)已满足所有这些要求，所以我们强烈推荐使用[docker](https://www.docker.com/)作为ManaPHP运行环境。
+当然，[manaphp/php80](https://hub.docker.com/r/manaphp/php80)已满足所有这些要求，所以我们强烈推荐使用[docker](https://www.docker.com/)作为ManaPHP运行环境。
 
 ## 安装ManaPHP
 
