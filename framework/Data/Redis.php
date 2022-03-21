@@ -6,8 +6,6 @@ namespace ManaPHP\Data;
 use ManaPHP\Component;
 use ManaPHP\Data\Redis\Connection;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Exception\NonCloneableException;
-use ManaPHP\Pool\Transient;
 
 /**
  * @property-read \ManaPHP\Pool\ManagerInterface $poolManager
@@ -18,8 +16,13 @@ class Redis extends Component implements RedisInterface, RedisDbInterface, Redis
     protected float $timeout = 1.0;
     protected int $pool_size = 4;
 
+    protected Redis $owner;
+    protected ?Connection $connection = null;
+
     public function __construct(string|array $options = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0'
     ) {
+        $this->owner = $this;
+
         if (is_string($options)) {
             $this->uri = $options;
 
@@ -46,14 +49,20 @@ class Redis extends Component implements RedisInterface, RedisDbInterface, Redis
         $this->poolManager->add($this, $sample, $this->pool_size);
     }
 
-    public function getTransientWrapper(string $type = 'default'): Transient
-    {
-        return $this->poolManager->transient($this, $this->timeout, $type);
-    }
-
     public function __clone()
     {
-        throw new NonCloneableException($this);
+        if ($this->connection !== null) {
+            throw new MisuseException('this is a cloned already.');
+        }
+
+        $this->connection = $this->poolManager->pop($this->owner, $this->timeout);
+    }
+
+    public function __destruct()
+    {
+        if ($this->connection !== null) {
+            $this->poolManager->push($this->owner, $this->connection);
+        }
     }
 
     public function getUri(): string
@@ -61,35 +70,24 @@ class Redis extends Component implements RedisInterface, RedisDbInterface, Redis
         return $this->uri;
     }
 
-    public function call(string $method, array $arguments, ?Connection $connection = null): mixed
+    public function call(string $method, array $arguments): mixed
     {
-        if (str_contains(',watch,unwatch,multi,pipeline,', ",$method,")) {
-            if ($connection === null) {
-                throw new MisuseException(["`%s` method can only be called in a transient wrapper", $method]);
-            }
-        }
-
-        if ($connection) {
-            return $connection->call($method, $arguments);
+        if (str_contains(',watch,multi,pipeline,', ",$method,")) {
+            $that = $this->connection === null ? clone $this : $this;
+            $r = $that->connection->call($method, $arguments);
+            return is_object($r) ? $that : $r;
+        } elseif ($this->connection !== null) {
+            $r = $this->connection->call($method, $arguments);
         } else {
             $connection = $this->poolManager->pop($this, $this->timeout);
             try {
-                return $connection->call($method, $arguments);
+                $r = $connection->call($method, $arguments);
             } finally {
                 $this->poolManager->push($this, $connection);
             }
         }
-    }
 
-    public function transientCall(object $instance, string $method, array $arguments): mixed
-    {
-        $this->fireEvent('redis:calling', compact('method', 'arguments'));
-
-        $return = $this->call($method, $arguments, $instance);
-
-        $this->fireEvent('redis:called', compact('method', 'arguments', 'return'));
-
-        return $return;
+        return is_object($r) ? $this : $r;
     }
 
     public function __call(string $method, array $arguments): mixed
