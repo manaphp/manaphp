@@ -9,10 +9,12 @@ return [
     'aliases'       => [
     ],
     'dependencies'  => [
-        //      'db'         => env('DB_URL'),
-        //      'redis'      => env('REDIS_URL'),
-        //      'logger'     => ['level' => env('LOGGER_LEVEL', 'info')],
-        //      'amqpClient' => 'amqp://192.168.0.8/'
+        'db'                              => ['class' => 'ManaPHP\Data\Db', env('DB_URL')],
+        'ManaPHP\Data\RedisInterface'     => [env('REDIS_URL')],
+        'ManaPHP\Logging\LoggerInterface' => ['class' => 'ManaPHP\Logging\Logger\Adapter\File',
+                                              'level' => env('LOGGER_LEVEL', 'info')],
     ],
-    'bootstrappers' => []
+    'bootstrappers' => [
+        \ManaPHP\Bootstrappers\TracerBootstrapper::class
+    ]
 ];
