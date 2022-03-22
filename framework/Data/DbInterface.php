@@ -43,8 +43,6 @@ interface DbInterface extends Transientable
 
     public function getSQL(): string;
 
-    public function getEmulatedSQL(int $preservedStrLength = -1): string;
-
     public function getBind(): array;
 
     public function affectedRows(): int;

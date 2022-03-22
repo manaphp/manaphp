@@ -430,52 +430,6 @@ class Db extends Component implements DbInterface
         return $this->context->sql;
     }
 
-    protected function quote(string $value): string
-    {
-        return "'" . str_replace($value, "'", "\\'") . "'";
-    }
-
-    protected function parseBindValue(mixed $value, int $preservedStrLength): int|string
-    {
-        if (is_string($value)) {
-            $quoted = $this->quote($value);
-            if ($preservedStrLength > 0 && strlen($quoted) >= $preservedStrLength) {
-                return substr($quoted, 0, $preservedStrLength) . '...';
-            } else {
-                return $quoted;
-            }
-        } elseif (is_int($value)) {
-            return $value;
-        } elseif ($value === null) {
-            return 'NULL';
-        } elseif (is_bool($value)) {
-            return (int)$value;
-        } else {
-            return $value;
-        }
-    }
-
-    public function getEmulatedSQL(int $preservedStrLength = -1): string
-    {
-        $context = $this->context;
-
-        if (!$context->bind) {
-            return $context->sql;
-        }
-
-        $bind = $context->bind;
-        if (isset($bind[0])) {
-            return $context->sql;
-        } else {
-            $replaces = [];
-            foreach ($bind as $key => $value) {
-                $replaces[':' . $key] = $this->parseBindValue($value, $preservedStrLength);
-            }
-
-            return strtr($context->sql, $replaces);
-        }
-    }
-
     public function getBind(): array
     {
         return $this->context->bind;

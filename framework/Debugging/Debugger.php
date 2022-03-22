@@ -15,15 +15,16 @@ use ManaPHP\Tracer;
 use ManaPHP\Version;
 
 /**
- * @property-read \ManaPHP\Di\ContainerInterface     $container
- * @property-read \ManaPHP\ConfigInterface           $config
- * @property-read \ManaPHP\Logging\LoggerInterface   $logger
- * @property-read \ManaPHP\Http\RequestInterface     $request
- * @property-read \ManaPHP\Http\ResponseInterface    $response
- * @property-read \ManaPHP\Http\DispatcherInterface  $dispatcher
- * @property-read \ManaPHP\Http\RouterInterface      $router
- * @property-read \ManaPHP\Data\RedisCacheInterface  $redisCache
- * @property-read \ManaPHP\Debugging\DebuggerContext $context
+ * @property-read \ManaPHP\Di\ContainerInterface             $container
+ * @property-read \ManaPHP\ConfigInterface                   $config
+ * @property-read \ManaPHP\Logging\LoggerInterface           $logger
+ * @property-read \ManaPHP\Http\RequestInterface             $request
+ * @property-read \ManaPHP\Http\ResponseInterface            $response
+ * @property-read \ManaPHP\Http\DispatcherInterface          $dispatcher
+ * @property-read \ManaPHP\Http\RouterInterface              $router
+ * @property-read \ManaPHP\Data\RedisCacheInterface          $redisCache
+ * @property-read \ManaPHP\Data\Db\PreparedEmulatorInterface $preparedEmulator
+ * @property-read \ManaPHP\Debugging\DebuggerContext         $context
  */
 class Debugger extends Component implements DebuggerInterface
 {
@@ -219,10 +220,13 @@ class Debugger extends Component implements DebuggerInterface
             }
 
             $context->sql_count++;
+
+            $sql = $db->getSQL();
+            $bind = $db->getBind();
             $context->sql_executed[] = [
-                'prepared' => $db->getSQL(),
-                'bind'     => $db->getBind(),
-                'emulated' => $db->getEmulatedSQL()
+                'prepared' => $sql,
+                'bind'     => $bind,
+                'emulated' => $this->preparedEmulator->emulate($sql, $bind, 128)
             ];
         } elseif ($event === 'db:queried' || $event === 'db:executed') {
             $context->sql_executed[$context->sql_count - 1]['elapsed'] = $eventArgs->data['elapsed'];
