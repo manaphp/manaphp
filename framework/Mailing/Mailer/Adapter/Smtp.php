@@ -295,20 +295,15 @@ class Smtp extends AbstractMailer
                 if ($failedRecipients !== null) {
                     $failedRecipients[] = $address;
                 }
-                $this->logger->info(
-                    ['Failed Recipient To <:address>: :msg', 'address' => $address, 'msg' => $msg],
-                    'mailer.send'
-                );
+                $this->logger->info(sprintf('Failed Recipient To <%s>: %s', $address, $msg), 'mailer.send');
             } else {
                 $success++;
             }
         }
 
         if (!$success) {
-            $this->logger->info(
-                ['Send Failed:', array_merge($message->getTo(), $message->getCc(), $message->getBcc())],
-                'mailer.send'
-            );
+            $addresses = array_merge($message->getTo(), $message->getCc(), $message->getBcc());
+            $this->logger->info(sprintf('Send Failed: %s', json_stringify($addresses)), 'mailer.send');
             return $success;
         }
 

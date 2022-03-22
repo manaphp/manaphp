@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Logging;
 
-use ArrayObject;
-use JsonSerializable;
 use ManaPHP\Component;
 use ManaPHP\Coroutine;
 use ManaPHP\Logging\Logger\Log;
@@ -166,70 +164,13 @@ abstract class AbstractLogger extends Component implements LoggerInterface
 
     public function formatMessage(mixed $message): string
     {
-        if ($message instanceof Throwable) {
+        if (is_string($message)) {
+            return $message;
+        } elseif ($message instanceof Throwable) {
             return $this->exceptionToString($message);
-        } elseif ($message instanceof JsonSerializable || $message instanceof ArrayObject) {
-            return json_stringify($message, JSON_PARTIAL_OUTPUT_ON_ERROR);
-        } elseif (!is_array($message)) {
-            return (string)$message;
-        }
-
-        if (!isset($message[0]) || !is_string($message[0])) {
+        } else {
             return json_stringify($message, JSON_PARTIAL_OUTPUT_ON_ERROR);
         }
-
-        if (substr_count($message[0], '%') + 1 >= ($count = count($message)) && isset($message[$count - 1])) {
-            foreach ($message as $k => $v) {
-                if ($k === 0 || is_scalar($v) || $v === null) {
-                    continue;
-                }
-
-                if ($v instanceof Throwable) {
-                    $message[$k] = $this->exceptionToString($v);
-                } elseif (is_array($v)) {
-                    $message[$k] = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
-                } elseif ($v instanceof JsonSerializable || $v instanceof ArrayObject) {
-                    $message[$k] = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
-                }
-            }
-            return sprintf(...$message);
-        }
-
-        if (count($message) === 2) {
-            if (isset($message[1]) && !str_contains($message[0], ':1')) {
-                $message[0] = rtrim($message[0], ': ') . ': :1';
-            }
-        } elseif (count($message) === 3) {
-            /** @noinspection NotOptimalIfConditionsInspection */
-            if (isset($message[1], $message[2]) && !str_contains($message[0], ':1') && is_scalar($message[1])) {
-                $message[0] = rtrim($message[0], ': ') . ': :1 => :2';
-            }
-        }
-
-        $replaces = [];
-        foreach ($message as $k => $v) {
-            if ($k === 0) {
-                continue;
-            }
-
-            if ($v instanceof Throwable) {
-                $v = $this->exceptionToString($v);
-            } elseif (is_array($v)) {
-                $v = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
-            } elseif ($v instanceof JsonSerializable) {
-                $v = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
-            } elseif (is_string($v)) {
-                null;
-            } elseif ($v === null || is_scalar($v)) {
-                $v = json_stringify($v, JSON_PARTIAL_OUTPUT_ON_ERROR);
-            } else {
-                $v = (string)$v;
-            }
-
-            $replaces[":$k"] = $v;
-        }
-
-        return strtr($message[0], $replaces);
     }
 
     public function log(string $level, mixed $message, ?string $category = null): static

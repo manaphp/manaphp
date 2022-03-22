@@ -26,7 +26,7 @@ class Server extends Component implements ServerInterface
     public function handle(): void
     {
         $args = implode(' ', array_slice($GLOBALS['argv'], 1));
-        $this->logger->info(['command line: :cmd', 'cmd' => basename($GLOBALS['argv'][0]) . ' ' . $args]);
+        $this->logger->info(sprintf('command line: %s', basename($GLOBALS['argv'][0])) . ' ' . $args);
 
         try {
             $this->exit_code = $this->cliHandler->handle();
