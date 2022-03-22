@@ -128,9 +128,15 @@ class Handler extends Component implements HandlerInterface
         $this->request->completeShortNames($instance, $method);
         $this->fireEvent('cli:invoking', compact('instance', 'method', 'action'));
         $arguments = $this->argumentsResolver->resolve($instance, $method);
-        $r = $instance->$method(...$arguments);
-        $this->fireEvent('cli:invoked', compact('instance', 'method', 'action'));
-        return is_int($r) ? $r : $this->console->error($r);
+        $return = $instance->$method(...$arguments);
+        $this->fireEvent('cli:invoked', compact('instance', 'method', 'action', 'return'));
+        if ($return === null) {
+            return 0;
+        } elseif (is_int($return)) {
+            return $return;
+        } else {
+            return $this->console->error($return);
+        }
     }
 
     public function getArgs(): array
