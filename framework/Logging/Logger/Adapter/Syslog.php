@@ -6,6 +6,7 @@ namespace ManaPHP\Logging\Logger\Adapter;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Logging\AbstractLogger;
+use ManaPHP\Logging\Logger\Log;
 
 /** @noinspection SpellCheckingInspection */
 //#/etc/rsyslog.d/99-app.conf
@@ -64,7 +65,7 @@ class Syslog extends AbstractLogger
         }
     }
 
-    public function append(array $logs): void
+    public function append(Log $log): void
     {
         static $map;
         if ($map === null) {
@@ -81,39 +82,37 @@ class Syslog extends AbstractLogger
         $port = $this->port;
         $tag = $this->config->get('id');
 
-        foreach ($logs as $log) {
-            $severity = $map[$log->level];
-            $priority = $this->facility * 8 + $severity;
-            $timestamp = date('M d H:i:s', (int)$log->timestamp);
+        $severity = $map[$log->level];
+        $priority = $this->facility * 8 + $severity;
+        $timestamp = date('M d H:i:s', (int)$log->timestamp);
 
-            $replaced = [];
+        $replaced = [];
 
-            $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
-            $replaced[':date'] = date('Y-m-d\TH:i:s', (int)$log->timestamp) . $ms;
-            $replaced[':client_ip'] = $log->client_ip ?: '-';
-            $replaced[':request_id'] = $log->request_id ?: '-';
-            $replaced[':request_id16'] = $log->request_id ? substr($log->request_id, 0, 16) : '-';
-            $replaced[':category'] = $log->category;
-            $replaced[':location'] = "$log->file:$log->line";
-            $replaced[':level'] = strtoupper($log->level);
+        $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
+        $replaced[':date'] = date('Y-m-d\TH:i:s', (int)$log->timestamp) . $ms;
+        $replaced[':client_ip'] = $log->client_ip ?: '-';
+        $replaced[':request_id'] = $log->request_id ?: '-';
+        $replaced[':request_id16'] = $log->request_id ? substr($log->request_id, 0, 16) : '-';
+        $replaced[':category'] = $log->category;
+        $replaced[':location'] = "$log->file:$log->line";
+        $replaced[':level'] = strtoupper($log->level);
 
-            if ($log->category === 'exception') {
-                foreach (preg_split('#[\\r\\n]+#', $log->message) as $line) {
-                    $replaced[':message'] = $line;
-                    $content = strtr($this->format, $replaced);
-
-                    // <PRI>TIMESTAMP HOST TAG:CONTENT
-                    $packet = "<$priority>$timestamp $log->hostname $tag:$content";
-                    socket_sendto($this->socket, $packet, strlen($packet), 0, $host, $port);
-                }
-            } else {
-                $replaced[':message'] = $log->message;
+        if ($log->category === 'exception') {
+            foreach (preg_split('#[\\r\\n]+#', $log->message) as $line) {
+                $replaced[':message'] = $line;
                 $content = strtr($this->format, $replaced);
 
                 // <PRI>TIMESTAMP HOST TAG:CONTENT
                 $packet = "<$priority>$timestamp $log->hostname $tag:$content";
                 socket_sendto($this->socket, $packet, strlen($packet), 0, $host, $port);
             }
+        } else {
+            $replaced[':message'] = $log->message;
+            $content = strtr($this->format, $replaced);
+
+            // <PRI>TIMESTAMP HOST TAG:CONTENT
+            $packet = "<$priority>$timestamp $log->hostname $tag:$content";
+            socket_sendto($this->socket, $packet, strlen($packet), 0, $host, $port);
         }
     }
 }

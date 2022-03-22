@@ -9,8 +9,6 @@ interface LoggerInterface
 
     public function getLevel(): string;
 
-    public function setLazy(bool $lazy = true): static;
-
     public function debug(mixed $message, ?string $category = null): static;
 
     public function info(mixed $message, ?string $category = null): static;

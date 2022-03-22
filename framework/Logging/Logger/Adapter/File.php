@@ -74,19 +74,8 @@ class File extends AbstractLogger
         }
     }
 
-    /**
-     * @param \ManaPHP\Logging\Logger\Log[] $logs
-     *
-     * @return void
-     */
-    public function append(array $logs): void
+    public function append(Log $log): void
     {
-        $str = '';
-        foreach ($logs as $log) {
-            $s = $this->format($log);
-            $str = $str === '' ? $s : $str . $s;
-        }
-
-        $this->write($str);
+        $this->write($this->format($log));
     }
 }

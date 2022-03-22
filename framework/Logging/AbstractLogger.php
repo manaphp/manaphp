@@ -19,15 +19,6 @@ abstract class AbstractLogger extends Component implements LoggerInterface
     protected string $level;
     protected string $hostname;
 
-    protected bool $lazy;
-    protected int $buffer_size = 1024;
-    protected ?float $last_write = null;
-
-    /**
-     * @var \ManaPHP\Logging\Logger\Log[]
-     */
-    protected array $logs = [];
-
     public function __construct(array $options = [])
     {
         if (isset($options['level'])) {
@@ -46,15 +37,7 @@ abstract class AbstractLogger extends Component implements LoggerInterface
             }
         }
 
-        $this->lazy = defined('MANAPHP_CLI') ? false : $options['lazy'] ?? true;
-
-        if (isset($options['buffer_size'])) {
-            $this->buffer_size = (int)$options['buffer_size'];
-        }
-
         $this->hostname = $options['hostname'] ?? gethostname();
-
-        $this->attachEvent('request:end', [$this, 'onRequestEnd']);
     }
 
     protected function createContext(): AbstractLoggerContext
@@ -69,14 +52,6 @@ abstract class AbstractLogger extends Component implements LoggerInterface
         return $context;
     }
 
-    public function onRequestEnd(): void
-    {
-        if ($this->logs) {
-            $this->append($this->logs);
-            $this->logs = [];
-        }
-    }
-
     public function setLevel(string $level): static
     {
         $this->context->level = $level;
@@ -89,19 +64,7 @@ abstract class AbstractLogger extends Component implements LoggerInterface
         return $this->context->level;
     }
 
-    public function setLazy(bool $lazy = true): static
-    {
-        $this->lazy = $lazy;
-
-        return $this;
-    }
-
-    /**
-     * @param \ManaPHP\Logging\Logger\Log[] $logs
-     *
-     * @return void
-     */
-    abstract public function append(array $logs): void;
+    abstract public function append(Log $log): void;
 
     protected function getLocation(array $traces): array
     {
@@ -224,20 +187,7 @@ abstract class AbstractLogger extends Component implements LoggerInterface
 
         $this->fireEvent('logger:log', compact('level', 'message', 'category', 'log'));
 
-        if ($this->lazy) {
-            $this->logs[] = $log;
-
-            if ($this->last_write === null) {
-                $this->last_write = $log->timestamp;
-            } elseif ($log->timestamp - $this->last_write > 1 || count($this->logs) > $this->buffer_size) {
-                $this->last_write = $log->timestamp;
-
-                $this->append($this->logs);
-                $this->logs = [];
-            }
-        } else {
-            $this->append([$log]);
-        }
+        $this->append($log);
 
         return $this;
     }

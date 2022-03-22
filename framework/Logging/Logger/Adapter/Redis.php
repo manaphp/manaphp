@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Logging\Logger\Adapter;
 
 use ManaPHP\Logging\AbstractLogger;
+use ManaPHP\Logging\Logger\Log;
 
 /**
  * @property-read \ManaPHP\ConfigInterface           $config
@@ -20,23 +21,18 @@ class Redis extends AbstractLogger
         $this->key = $options['key'] ?? sprintf("cache:%s:logger", $this->config->get("id"));
     }
 
-    /**
-     * @param \ManaPHP\Logging\Logger\Log[] $logs
-     */
-    public function append(array $logs): void
+    public function append(Log $log): void
     {
-        foreach ($logs as $log) {
-            $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
-            $data = [
-                'date'       => date('Y-m-d\TH:i:s', (int)$log->timestamp) . $ms,
-                '@timestamp' => $log->timestamp,
-                'hostname'   => $log->hostname,
-                'category'   => $log->category,
-                'level'      => $log->level,
-                'location'   => "$log->file:$log->line",
-                'message'    => $log->message
-            ];
-            $this->redisBroker->rPush($this->key, json_stringify($data));
-        }
+        $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
+        $data = [
+            'date'       => date('Y-m-d\TH:i:s', (int)$log->timestamp) . $ms,
+            '@timestamp' => $log->timestamp,
+            'hostname'   => $log->hostname,
+            'category'   => $log->category,
+            'level'      => $log->level,
+            'location'   => "$log->file:$log->line",
+            'message'    => $log->message
+        ];
+        $this->redisBroker->rPush($this->key, json_stringify($data));
     }
 }
