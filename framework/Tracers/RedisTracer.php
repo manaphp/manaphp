@@ -30,10 +30,11 @@ class RedisTracer extends Tracer
 
         if (stripos(',blPop,brPop,brpoplpush,subscribe,psubscribe,', ",$method,") !== false) {
             $this->debug(
-                [
-                    "\$redis->$method(:args) ... blocking",
-                    'args' => substr(json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR), 1, -1),
-                ], 'redis.' . $method
+                sprintf(
+                    "\$redis->$method(%s) ... blocking",
+                    substr(json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR), 1, -1)
+                ),
+                'redis.' . $method
             );
         }
     }
@@ -52,15 +53,12 @@ class RedisTracer extends Tracer
             $arguments = json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR);
             $return = json_stringify($eventArgs->data['return'], JSON_PARTIAL_OUTPUT_ON_ERROR);
             $this->debug(
-                [
-                    "\$redis->$method(:args) => :return",
-                    'args'   => strlen($arguments) > 256
-                        ? substr($arguments, 1, 256) . '...)'
-                        : substr(
-                            $arguments, 1, -1
-                        ),
-                    'return' => strlen($return) > 64 ? substr($return, 0, 64) . '...' : $return
-                ], 'redis.' . $method
+                sprintf(
+                    "\$redis->$method(%s) => %s",
+                    strlen($arguments) > 256 ? substr($arguments, 1, 256) . '...)' : substr($arguments, 1, -1),
+                    strlen($return) > 64 ? substr($return, 0, 64) . '...' : $return
+                ),
+                'redis.' . $method
             );
         } else {
             $key = $arguments[0] ?? false;
@@ -70,14 +68,11 @@ class RedisTracer extends Tracer
             }
             $arguments = json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR);
             $this->debug(
-                [
-                    "\$redis->$method(:args)",
-                    'args' => strlen($arguments) > 256
-                        ? substr($arguments, 1, 256) . '...)'
-                        : substr(
-                            $arguments, 1, -1
-                        ),
-                ], 'redis.' . $method
+                sprintf(
+                    "\$redis->$method(%s)",
+                    strlen($arguments) > 256 ? substr($arguments, 1, 256) . '...)' : substr($arguments, 1, -1)
+                ),
+                'redis.' . $method
             );
         }
     }
