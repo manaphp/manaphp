@@ -93,18 +93,17 @@ class Console extends Component implements ConsoleInterface
     public function write(mixed $message, int $options = 0): static
     {
         if (is_string($message)) {
-            echo preg_replace_callback('#`([^`]+)`#', function ($match) {
-                return '`' . $this->colorize($match[1], self::FC_CYAN) . '`';
+            $message = preg_replace_callback('#`([^`]+)`#', function ($match) {
+                return '`' . $this->colorize($match[1], self::FC_BLUE) . '`';
             }, $message);
-
-            return $this;
+            echo $this->colorize($message, $options);
         } elseif ($message instanceof Throwable) {
             echo $message;
-            return $this;
         } else {
-            echo json_stringify($message);
-            return $this;
+            echo $this->colorize(json_stringify($message), $options);
         }
+
+        return $this;
     }
 
     public function sampleColorizer(): void
