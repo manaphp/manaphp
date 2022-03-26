@@ -13,18 +13,6 @@ class Table extends AbstractTable
         return 'db';
     }
 
-    /**
-     * @param mixed $context =model_var(new static)
-     *
-     * @return \ManaPHP\Data\DbInterface
-     */
-    public static function connection(mixed $context = null): DbInterface
-    {
-        list($db) = static::sample()->getUniqueShard($context);
-
-        return static::sample()->getShared($db);
-    }
-
     public static function insert(array $record, bool $fetchInsertId = false): mixed
     {
         /** @noinspection OneTimeUseVariablesInspection */

@@ -18,18 +18,6 @@ class Model extends AbstractModel implements ModelInterface
         return 'db';
     }
 
-    /**
-     * @param mixed $context =model_var(new static)
-     *
-     * @return \ManaPHP\Data\DbInterface
-     */
-    public static function connection(mixed $context = null): DbInterface
-    {
-        list($db) = static::sample()->getUniqueShard($context);
-
-        return static::sample()->getShared($db);
-    }
-
     public function getModelMetadata(): MetadataInterface
     {
         return $this->getShared(MetadataInterface::class);

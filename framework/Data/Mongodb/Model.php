@@ -27,17 +27,6 @@ class Model extends AbstractModel
     }
 
     /**
-     * @param mixed $context =model_var(new static)
-     *
-     * @return \ManaPHP\Data\MongodbInterface
-     */
-    public static function connection(mixed $context = null): MongodbInterface
-    {
-        list($db) = static::sample()->getUniqueShard($context);
-        return static::sample()->getShared($db);
-    }
-
-    /**
      * @return string =model_field(new static)
      */
     public function primaryKey(): string
