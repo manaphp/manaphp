@@ -59,6 +59,6 @@ class SwordCommand extends Command
 
         $this->swordCompiler->compileFile($file, $compiled);
 
-        $this->console->writeLn(['compiled `:file` file generated', 'file' => $compiled]);
+        $this->console->writeLn("compiled `$compiled` file generated");
     }
 }

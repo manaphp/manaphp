@@ -23,7 +23,7 @@ class PharCommand extends Command
         $this->alias->set('@phar', '@runtime/manacli_phar');
         $pharFile = $this->alias->resolve('@root/manacli.phar');
 
-        $this->console->writeLn(['cleaning `:dir` dir', 'dir' => $this->alias->resolve('@phar')]);
+        $this->console->writeLn(sprintf('cleaning `%s` dir', $this->alias->resolve('@phar')));
         LocalFS::dirReCreate('@phar');
 
         $this->console->writeLn('copying manaphp framework files.');
@@ -38,6 +38,6 @@ class PharCommand extends Command
         $this->console->writeLn('compressing files');
         $phar->compressFiles(Phar::BZ2);
 
-        $this->console->writeLn(['`:phar` created successfully', 'phar' => $this->alias->resolve($pharFile)]);
+        $this->console->writeLn(sprintf('`%s` created successfully', $this->alias->resolve($pharFile)));
     }
 }

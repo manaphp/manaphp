@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
-use ArrayObject;
-use JsonSerializable;
 use ManaPHP\Component;
 use ReflectionClass;
 use Throwable;
@@ -94,98 +92,19 @@ class Console extends Component implements ConsoleInterface
 
     public function write(mixed $message, int $options = 0): static
     {
-        if ($message instanceof Throwable) {
+        if (is_string($message)) {
+            echo preg_replace_callback('#`([^`]+)`#', function ($match) {
+                return '`' . $this->colorize($match[1], self::FC_CYAN) . '`';
+            }, $message);
+
+            return $this;
+        } elseif ($message instanceof Throwable) {
             echo $message;
             return $this;
-        } elseif ($message instanceof JsonSerializable || $message instanceof ArrayObject) {
-            echo json_stringify($message);
-            return $this;
-        } elseif (!is_array($message)) {
-            echo $message;
-            return $this;
-        }
-
-        if (!isset($message[0]) || !is_string($message[0])) {
-            echo json_stringify($message);
-            return $this;
-        }
-
-        if (substr_count($message[0], '%') + 1 >= ($count = count($message)) && isset($message[$count - 1])) {
-            foreach ($message as $k => $v) {
-                if ($k === 0 || is_scalar($v) || $v === null) {
-                    continue;
-                }
-
-                if ($v instanceof Throwable) {
-                    $message[$k] = (string)$v;
-                } elseif (is_array($v)) {
-                    $message[$k] = json_stringify($v);
-                } elseif ($v instanceof JsonSerializable || $v instanceof ArrayObject) {
-                    $message[$k] = json_stringify($v);
-                }
-            }
-            echo sprintf(...$message);
-
-            return $this;
-        }
-
-        if (count($message) === 2) {
-            if (isset($message[1]) && !str_contains($message[0], ':1')) {
-                if (is_scalar($message[1])) {
-                    echo json_stringify($message);
-                    return $this;
-                } else {
-                    $message[0] = rtrim($message[0], ': ') . ': :1';
-                }
-            }
-        } elseif (count($message) === 3) {
-            if (isset($message[1], $message[2]) && !str_contains($message[0], ':1')) {
-                if (is_scalar($message[1]) && !is_scalar($message[2])) {
-                    $message[0] = rtrim($message[0], ': ') . ': :1 => :2';
-                } else {
-                    echo json_stringify($message);
-                    return $this;
-                }
-            }
-        }
-
-        if (str_contains($message[0], ':')) {
-            $replaces = [];
-
-            foreach ($message as $k => $v) {
-                if ($k === 0) {
-                    continue;
-                }
-
-                if (is_int($v)) {
-                    if (!$options) {
-                        $v = $this->colorize((string)$v, self::FC_GREEN);
-                    }
-                } elseif (is_string($v)) {
-                    if (!$options && !str_contains($v, "\033[")) {
-                        $v = $this->colorize($v, self::FC_CYAN);
-                    }
-                } elseif ($v instanceof Throwable) {
-                    $v = (string)$v;
-                } elseif (is_array($v)) {
-                    $v = json_stringify($v);
-                } elseif ($v instanceof JsonSerializable) {
-                    $v = json_stringify($v);
-                } elseif ($v === null || is_scalar($v)) {
-                    $v = json_stringify($v);
-                } else {
-                    $v = (string)$v;
-                }
-
-                $replaces[':' . $k] = $v;
-            }
-
-            echo $this->colorize(strtr($message[0], $replaces), $options);
         } else {
-            echo $this->colorize($message[0], $options);
+            echo json_stringify($message);
+            return $this;
         }
-
-        return $this;
     }
 
     public function sampleColorizer(): void

@@ -63,7 +63,7 @@ class BosCommand extends Command
         $filters = Arr::trim($filters);
 
         $response = $this->bosClient->listObjects($bucket, $filters);
-        $this->console->write($response);
+        $this->console->writeLn($response);
     }
 
     /**
@@ -78,7 +78,7 @@ class BosCommand extends Command
     public function importAction(string $bucket, string $dir, string $prefix): int
     {
         if (!LocalFS::dirExists($dir)) {
-            return $this->console->error(['`:dir` directory is not exists', 'dir' => $dir]);
+            return $this->console->error("`$dir` directory is not exists");
         }
 
         $this->recursiveImport($dir, $bucket, $prefix);
@@ -138,6 +138,6 @@ class BosCommand extends Command
 
         $this->downloader->download($files);
 
-        $this->console->writeLn(['download files to `:dir` directory', 'dir' => $dir]);
+        $this->console->writeLn("download files to `$dir` directory");
     }
 }

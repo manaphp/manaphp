@@ -334,7 +334,7 @@ class DbCommand extends Command
             /** @var \ManaPHP\Data\DbInterface $db */
             $db = $this->container->get($service);
 
-            $this->console->writeLn(['service: `:service`', 'service' => $service], Console::FC_CYAN);
+            $this->console->writeLn("service: `$service`");
             foreach ($this->getTables($service, $table_pattern) as $row => $table) {
                 $columns = (array)$db->getMetadata($table)[Db::METADATA_ATTRIBUTES];
                 $primaryKey = $db->getMetadata($table)[Db::METADATA_PRIMARY_KEY];
@@ -345,7 +345,7 @@ class DbCommand extends Command
                 }
 
                 $colored_table = $this->console->colorize($table, Console::FC_GREEN);
-                $this->console->writeLn(['%2d %s(%s)', $row + 1, $colored_table, implode(', ', $columns)]);
+                $this->console->writeLn(sprintf('%2d %s(%s)', $row + 1, $colored_table, implode(', ', $columns)));
             }
         }
     }
@@ -397,15 +397,13 @@ class DbCommand extends Command
             }
         }
 
-        $this->console->progress(['`:table` processing...', 'table' => $table], '');
-
         $plainClass = Str::pascalize($table);
         $fileName = "@runtime/db_model/$plainClass.php";
         $class = "App\Models\\$plainClass";
         $model_str = $this->renderModel($service, $class, $table, $optimized, $camelized);
         LocalFS::filePut($fileName, $model_str);
 
-        $this->console->progress(['`:table` table saved to `:file`', 'table' => $table, 'file' => $fileName]);
+        $this->console->writeLn("`$table` table saved to `$fileName`");
     }
 
     /**
@@ -425,7 +423,6 @@ class DbCommand extends Command
 
         foreach ($services ?: $this->getDbServices() as $service) {
             foreach ($this->getTables($service, $table_pattern) as $table) {
-                $this->console->progress(['`:table` processing...', 'table' => $table], '');
                 $plainClass = Str::pascalize($table);
                 $class = "App\Models\\$plainClass";
                 $fileName = "@runtime/db_models/$plainClass.php";
@@ -441,7 +438,7 @@ class DbCommand extends Command
                 $model_str = $this->renderModel($service, $class, $table, $optimized, $camelized);
                 LocalFS::filePut($fileName, $model_str);
 
-                $this->console->progress(['  `:table` table saved to `:file`', 'table' => $table, 'file' => $fileName]);
+                $this->console->writeLn(" `$table` table saved to `$fileName`");
             }
         }
     }
@@ -463,14 +460,13 @@ class DbCommand extends Command
 
         foreach ($services ?: $this->getDbServices() as $service) {
             foreach ($this->getTables($service, $table_pattern) as $table) {
-                $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
                 $plainClass = Str::pascalize($table);
                 $fileName = "@runtime/db_tables/$plainClass.php";
                 $model_str = $this->renderTable($service, $table, $namespace);
                 LocalFS::filePut($fileName, $model_str);
 
-                $this->console->progress(['  `:table` table saved to `:file`', 'table' => $table, 'file' => $fileName]);
+                $this->console->writeLn(" `$table` table saved to `$fileName`");
             }
         }
     }
@@ -491,8 +487,6 @@ class DbCommand extends Command
             foreach ($this->getTables($service, $table_pattern) as $table) {
                 $fileName = "@runtime/db_json/$service/$table.json";
 
-                $this->console->progress(['`:table` processing...', 'table' => $table], '');
-
                 LocalFS::dirCreate(dirname($fileName));
                 $table = $db->getPrefix() . $table;
                 $rows = $db->fetchAll("SELECT * FROM [$table]");
@@ -505,7 +499,9 @@ class DbCommand extends Command
                 fclose($file);
 
                 $elapsed = microtime(true) - $startTime;
-                $this->console->progress(['write to `%s` success: %d [%.3f]', $fileName, count($rows), $elapsed]);
+                $this->console->writeLn(
+                    sprintf('write to `%s` success: `%d` `[%.3f]`', $fileName, count($rows), $elapsed)
+                );
             }
         }
     }
@@ -525,7 +521,6 @@ class DbCommand extends Command
             /** @var \ManaPHP\Data\Db $db */
             $db = $this->container->get($service);
             foreach ($this->getTables($service, $table_pattern) as $table) {
-                $this->console->progress(['`:table` processing...', 'table' => $table], '');
 
                 $fileName = "@runtime/db_csv/$service/$table.csv";
                 LocalFS::dirCreate(dirname($fileName));
@@ -550,7 +545,9 @@ class DbCommand extends Command
 
                 $count = count($rows);
                 $elapsed = microtime(true) - $startTime;
-                $this->console->progress([' `%s` imported to `%s`:%d [%.3f]', $table, $fileName, $count, $elapsed]);
+                $this->console->writeLn(
+                    sprintf(' `%s` imported to `%s`:%d [%.3f]', $table, $fileName, $count, $elapsed)
+                );
             }
         }
     }

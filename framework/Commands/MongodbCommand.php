@@ -31,7 +31,7 @@ class MongodbCommand extends Command
                     } elseif ($container->has($service . '_mongodb')) {
                         $services[$index] = $service . '_mongodb';
                     } else {
-                        $this->console->warning(['`:service` service is not exists: ignoring', 'service' => $service]);
+                        $this->console->warning("`$service` service is not exists: ignoring");
                         unset($services[$index]);
                     }
                 }
@@ -70,7 +70,7 @@ class MongodbCommand extends Command
         $file = '@runtime/mongodb_model/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
         LocalFS::filePut($file, $model);
 
-        $this->console->writeLn(['write model to :file', 'file' => $file]);
+        $this->console->writeLn("write model to `:$file`");
     }
 
     /**
@@ -113,21 +113,13 @@ class MongodbCommand extends Command
                     $plainClass = Str::pascalize($collection);
                     $fileName = "@runtime/mongodb_models/$plainClass.php";
 
-                    $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
-
                     $fieldTypes = $this->inferFieldTypes($docs);
                     $modelClass = 'App\Models\\' . $plainClass;
                     $ns = $defaultDb ? $collection : "$cdb.$collection";
                     $model = $this->renderModel($fieldTypes, $modelClass, $service, $ns, $optimized);
                     LocalFS::filePut($fileName, $model);
 
-                    $this->console->progress(
-                        [
-                            ' `:namespace` collection saved to `:file`',
-                            'namespace' => "$cdb.$collection",
-                            'file'      => $fileName
-                        ]
-                    );
+                    $this->console->writeLn(sprintf(' `%s` collection saved to `%s`', "$cdb.$collection", $fileName));
 
                     $pending_fields = [];
                     foreach ($fieldTypes as $field => $type) {
@@ -138,11 +130,7 @@ class MongodbCommand extends Command
 
                     if ($pending_fields) {
                         $this->console->warning(
-                            [
-                                '`:collection` has pending fields: :fields',
-                                'collection' => $collection,
-                                'fields'     => implode(', ', $pending_fields)
-                            ]
+                            sprintf('`%s` has pending fields: `%s`', $collection, implode(', ', $pending_fields))
                         );
                     }
                 }
@@ -390,8 +378,6 @@ class MongodbCommand extends Command
 
                     $fileName = "@runtime/mongodb_csv/$db/$collection.csv";
 
-                    $this->console->progress(['`:collection` processing...', 'collection' => $collection], '');
-
                     LocalFS::dirCreate(dirname($fileName));
 
                     $file = fopen($this->alias->resolve($fileName), 'wb');
@@ -433,13 +419,11 @@ class MongodbCommand extends Command
 
                     fclose($file);
 
-                    $this->console->progress(
-                        [
-                            'write to `:file` success: :count [:time]',
-                            'file'  => $fileName,
-                            'count' => $linesCount,
-                            'time'  => round(microtime(true) - $startTime, 4)
-                        ]
+                    $this->console->writeLn(
+                        sprintf(
+                            'write to `%s` success: %d [%f]', $fileName, $linesCount,
+                            round(microtime(true) - $startTime, 4)
+                        )
                     );
                 }
             }
@@ -468,10 +452,7 @@ class MongodbCommand extends Command
                     continue;
                 }
 
-                $this->console->writeLn(
-                    ['---`:db` db of `:service` service---', 'db' => $cdb, 'service' => $service],
-                    Console::BC_CYAN
-                );
+                $this->console->writeLn("---`$cdb` db of `$service` service---", Console::BC_CYAN);
                 foreach ($mongodb->listCollections($cdb) as $row => $collection) {
                     if ($collection_pattern && !fnmatch($collection_pattern, $collection)) {
                         continue;
@@ -490,12 +471,12 @@ class MongodbCommand extends Command
                     $columns = $docs ? array_keys($docs[0]) : [];
 
                     $this->console->writeLn(
-                        [
-                            ' :row :namespace(:columns)',
-                            'row'       => sprintf('%2d ', $row + 1),
-                            'namespace' => $this->console->colorize("$cdb.$collection", Console::FC_GREEN),
-                            'columns'   => implode(', ', $columns)
-                        ]
+                        sprintf(
+                            ' %2d %s(%s)',
+                            $row + 1,
+                            $this->console->colorize("$cdb.$collection", Console::FC_GREEN),
+                            implode(', ', $columns)
+                        )
                     );
                 }
             }

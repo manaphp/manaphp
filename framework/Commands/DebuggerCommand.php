@@ -41,7 +41,7 @@ class DebuggerCommand extends Command
                 }
             }
 
-            $this->console->writeLn(['[%s][%s]: %s', $_ip, $_path, $msg]);
+            $this->console->writeLn(sprintf('[%s][%s]: %s', $_ip, $_path, $msg));
         }
         );
     }

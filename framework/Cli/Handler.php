@@ -95,7 +95,7 @@ class Handler extends Component implements HandlerInterface
         $commands = $this->commandManager->getCommands();
         if (($definition = $commands[lcfirst($command)] ?? null) === null) {
             $colored_action = lcfirst($command) . ':' . $action;
-            return $this->console->error(['`:action` action is not exists', 'action' => $colored_action]);
+            return $this->console->error("`$colored_action` action is not exists");
         }
 
         /** @var \ManaPHP\Cli\Command $instance */
@@ -121,7 +121,7 @@ class Handler extends Component implements HandlerInterface
 
         if (!method_exists($instance, $action . 'Action')) {
             $colored_action = lcfirst($command) . ':' . $action;
-            return $this->console->error(['`:action` sub action is not exists', 'action' => $colored_action]);
+            return $this->console->error("`$colored_action` sub action is not exists");
         }
 
         $method = $action . 'Action';

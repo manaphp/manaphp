@@ -33,7 +33,7 @@ class PasswordCommand extends Command
                 $start = microtime(true);
                 $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => $i]);
                 $elapsed = microtime(true) - $start;
-                $this->console->writeLn([':time: :hash', 'time' => sprintf('%.3f', $elapsed), 'hash' => $hash]);
+                $this->console->writeLn(sprintf('%.3f: %s', $elapsed, $hash));
             }
         }
     }

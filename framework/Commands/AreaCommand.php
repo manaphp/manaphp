@@ -30,7 +30,7 @@ class AreaCommand extends Command
 
         $dir = $this->alias->resolve("@app/Areas/$area");
         if (LocalFS::dirExists($dir)) {
-            return $this->console->error("$area is exists already");
+            return $this->console->error("`$area` is exists already");
         }
 
         LocalFS::dirCreate("$dir/Controllers");
@@ -68,6 +68,6 @@ EOT;
             $areas[] = basename($item);
         }
 
-        $this->console->writeLn(json_stringify($areas));
+        $this->console->writeLn($areas);
     }
 }
