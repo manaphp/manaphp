@@ -21,9 +21,9 @@ class Query extends AbstractQuery
     protected array $aliases;
     protected array $filters = [];
 
-    public function __construct(string $db = 'mongodb')
+    public function __construct(string $connection = 'mongodb')
     {
-        $this->db = $db;
+        $this->connection = $connection;
     }
 
     public function setModel(ModelInterface $model): static
@@ -44,10 +44,10 @@ class Query extends AbstractQuery
 
     public function values(string $field): array
     {
-        list($db, $source) = $this->getUniqueShard();
+        list($connection, $source) = $this->getUniqueShard();
 
         /** @var MongodbInterface $mongodb */
-        $mongodb = $this->container->get($db);
+        $mongodb = $this->container->get($connection);
 
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $source);
@@ -629,10 +629,10 @@ class Query extends AbstractQuery
 
     public function execute(): array
     {
-        list($db, $collection) = $this->getUniqueShard();
+        list($connection, $collection) = $this->getUniqueShard();
 
         /** @var MongodbInterface $mongodb */
-        $mongodb = $this->container->get($db);
+        $mongodb = $this->container->get($connection);
 
         if (!$this->aggregate) {
             $model = $this->model;
@@ -742,9 +742,9 @@ class Query extends AbstractQuery
         $shards = $this->getShards();
 
         $affected_count = 0;
-        foreach ($shards as $db => $collections) {
+        foreach ($shards as $connection => $collections) {
             /** @var MongodbInterface $mongodb */
-            $mongodb = $this->container->get($db);
+            $mongodb = $this->container->get($connection);
 
             foreach ($collections as $collection) {
                 $affected_count += $mongodb->delete($collection, $this->buildConditions());
@@ -759,9 +759,9 @@ class Query extends AbstractQuery
         $shards = $this->getShards();
 
         $affected_count = 0;
-        foreach ($shards as $db => $collections) {
+        foreach ($shards as $connection => $collections) {
             /** @var MongodbInterface $mongodb */
-            $mongodb = $this->container->get($db);
+            $mongodb = $this->container->get($connection);
 
             foreach ($collections as $collection) {
                 $affected_count += $mongodb->update($collection, $fieldValues, $this->buildConditions());

@@ -24,9 +24,9 @@ class Query extends AbstractQuery
     protected array $bind = [];
     protected ?string $sql = null;
 
-    public function __construct(string $db = 'db')
+    public function __construct(string $connection = 'db')
     {
-        $this->db = $db;
+        $this->connection = $connection;
     }
 
     public function select(array $fields): static
@@ -620,9 +620,9 @@ class Query extends AbstractQuery
         return $this;
     }
 
-    protected function query(string $db, string $table): array
+    protected function query(string $connection, string $table): array
     {
-        $connection = $this->container->get($db);
+        $db = $this->container->get($connection);
 
         $joins = [];
         if ($this->joins) {
@@ -633,19 +633,19 @@ class Query extends AbstractQuery
                     $iTable = $join_table::sample();
                     $join_shards = $iTable->getMultipleShards($this->shard_context);
                 } else {
-                    $db = $this->db;
+                    $connection = $this->connection;
                     if ($shard_strategy = $this->shard_strategy) {
-                        $join_shards = $shard_strategy($db, $join_table, $this->shard_context);
+                        $join_shards = $shard_strategy($connection, $join_table, $this->shard_context);
                     } else {
-                        $join_shards = Sharding::multiple($db, $join_table, $this->shard_context);
+                        $join_shards = Sharding::multiple($connection, $join_table, $this->shard_context);
                     }
                 }
 
-                if (!isset($join_shards[$db])) {
+                if (!isset($join_shards[$connection])) {
                     throw new NotSupportedException('');
                 }
 
-                $join_tables = $join_shards[$db];
+                $join_tables = $join_shards[$connection];
                 if (count($join_tables) > 1) {
                     throw new NotSupportedException('');
                 }
@@ -655,9 +655,9 @@ class Query extends AbstractQuery
             }
         }
 
-        $this->sql = $this->buildSql($connection, $table, $joins);
+        $this->sql = $this->buildSql($db, $table, $joins);
 
-        $rows = $connection->fetchAll($this->sql, $this->bind, PDO::FETCH_ASSOC, $this->force_master);
+        $rows = $db->fetchAll($this->sql, $this->bind, PDO::FETCH_ASSOC, $this->force_master);
 
         if ($mapFields = $this->model ? $this->model->mapFields() : []) {
             foreach ($rows as &$row) {
@@ -703,9 +703,9 @@ class Query extends AbstractQuery
             }
 
             $valid_times = 0;
-            foreach ($shards as $db => $tables) {
+            foreach ($shards as $connection => $tables) {
                 foreach ($tables as $table) {
-                    if ($r = $copy->query($db, $table)) {
+                    if ($r = $copy->query($connection, $table)) {
                         $valid_times++;
                         $result = $result ? array_merge($result, $r) : $r;
                     }
@@ -718,9 +718,9 @@ class Query extends AbstractQuery
 
             $result = $this->limit ? array_slice($result, $this->offset, $this->limit) : $result;
         } elseif ($this->limit) {
-            foreach ($shards as $db => $tables) {
+            foreach ($shards as $connection => $tables) {
                 foreach ($tables as $table) {
-                    if ($r = $this->query($db, $table)) {
+                    if ($r = $this->query($connection, $table)) {
                         $result = $result ? array_merge($result, $r) : $r;
                         if (count($result) >= $this->offset + $this->limit) {
                             $result = array_slice($result, $this->offset ?? 0, $this->limit);
@@ -732,9 +732,9 @@ class Query extends AbstractQuery
 
             $result = $result ? array_slice($result, $this->offset ?? 0, $this->limit) : [];
         } else {
-            foreach ($shards as $db => $tables) {
+            foreach ($shards as $connection => $tables) {
                 foreach ($tables as $table) {
-                    if ($r = $this->query($db, $table)) {
+                    if ($r = $this->query($connection, $table)) {
                         $result = $result ? array_merge($result, $r) : $r;
                     }
                 }
@@ -844,9 +844,9 @@ class Query extends AbstractQuery
 
         $row_count = 0;
         $shards = $this->getShards();
-        foreach ($shards as $db => $tables) {
+        foreach ($shards as $connection => $tables) {
             foreach ($tables as $table) {
-                $result = $copy->query($db, $table);
+                $result = $copy->query($connection, $table);
                 $row_count += $this->group ? count($result) : $result[0]['row_count'];
             }
         }
@@ -886,15 +886,15 @@ class Query extends AbstractQuery
 
         $shards = $this->getShards();
         if (count($shards) === 1 && count(current($shards)) === 1) {
-            $db = key($shards);
+            $connection = key($shards);
             $table = current($shards)[0];
-            foreach ($this->query($db, $table) as $row) {
+            foreach ($this->query($connection, $table) as $row) {
                 $values[] = $row[$field];
             }
         } else {
-            foreach ($shards as $db => $tables) {
+            foreach ($shards as $connection => $tables) {
                 foreach ($tables as $table) {
-                    foreach ($this->query($db, $table) as $row) {
+                    foreach ($this->query($connection, $table) as $row) {
                         $value = $row[$field];
                         if (!in_array($value, $values, true)) {
                             $values[] = $value;
@@ -920,12 +920,12 @@ class Query extends AbstractQuery
         $shards = $this->getShards();
 
         $affected_count = 0;
-        foreach ($shards as $db => $tables) {
-            /** @var DbInterface $connection */
-            $connection = $this->container->get($db);
+        foreach ($shards as $connection => $tables) {
+            /** @var DbInterface $db */
+            $db = $this->container->get($connection);
 
             foreach ($tables as $table) {
-                $affected_count += $connection->update($table, $fieldValues, $this->conditions, $this->bind);
+                $affected_count += $db->update($table, $fieldValues, $this->conditions, $this->bind);
             }
         }
 
@@ -937,12 +937,12 @@ class Query extends AbstractQuery
         $shards = $this->getShards();
 
         $affected_count = 0;
-        foreach ($shards as $db => $tables) {
-            /** @var DbInterface $connection */
-            $connection = $this->container->get($db);
+        foreach ($shards as $connection => $tables) {
+            /** @var DbInterface $db */
+            $db = $this->container->get($connection);
 
             foreach ($tables as $table) {
-                $affected_count += $connection->delete($table, $this->conditions, $this->bind);
+                $affected_count += $db->delete($table, $this->conditions, $this->bind);
             }
         }
 
