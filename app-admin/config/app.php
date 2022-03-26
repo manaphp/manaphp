@@ -10,22 +10,26 @@ return [
     'aliases'       => [
         '@web' => ''
     ],
+    'factories'     => [
+        'ManaPHP\Http\ServerInterface' => [
+            'swoole' => [
+                'class'                 => 'ManaPHP\Http\Server\Adapter\Swoole',
+                'port'                  => 9501,
+                'worker_num'            => 4,
+                'max_request'           => 1000000,
+                'enable_static_handler' => env('APP_DEBUG', true)
+            ],
+            'fpm'    => [
+                'class' => 'ManaPHP\Http\Server\Adapter\Fpm',
+            ],
+            'php'    => [
+                'class' => 'ManaPHP\Http\Server\Adapter\Php',
+                'port'  => 9501,
+            ],
+        ]
+    ],
     'dependencies'  => [
-        'ManaPHP\Http\ServerInterface#swoole'   => [
-            'class'                 => 'ManaPHP\Http\Server\Adapter\Swoole',
-            'port'                  => 9501,
-            'worker_num'            => 4,
-            'max_request'           => 1000000,
-            'enable_static_handler' => env('APP_DEBUG', true)
-        ],
-        'ManaPHP\Http\ServerInterface#fpm'      => [
-            'class' => 'ManaPHP\Http\Server\Adapter\Fpm',
-        ],
-        'ManaPHP\Http\ServerInterface#php'      => [
-            'class' => 'ManaPHP\Http\Server\Adapter\Php',
-            'port'  => 9501,
-        ],
-        #'ManaPHP\Http\ServerInterface'          => '@ManaPHP\Http\ServerInterface#fpm',
+        //'ManaPHP\Http\ServerInterface'          => '#swoole',
         'ManaPHP\Http\HandlerInterface'         => 'ManaPHP\Mvc\Handler',
         'db'                                    => ['class' => 'ManaPHP\Data\Db', env('DB_URL')],
         'ManaPHP\Data\RedisInterface'           => [env('REDIS_URL')],

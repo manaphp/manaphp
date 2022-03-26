@@ -59,6 +59,12 @@ class Kernel extends Component
             $this->alias->set($k, $v);
         }
 
+        foreach ($this->config->get('factories', []) as $interface => $definitions) {
+            foreach ($definitions as $name => $definition) {
+                $this->container->set("$interface#$name", $definition);
+            }
+        }
+
         foreach ($this->config->get('dependencies') as $id => $definition) {
             $this->container->set($id, $definition);
         }
