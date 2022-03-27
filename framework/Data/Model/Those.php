@@ -11,7 +11,7 @@ class Those implements ThoseInterface
 
     public function get(string $class): ModelInterface
     {
-        if (($that = $this->those[$class]) !== null) {
+        if (($that = $this->those[$class] ?? null) !== null) {
             return $that;
         } else {
             return $this->those[$class] = new $class();
