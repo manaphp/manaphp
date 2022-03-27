@@ -6,11 +6,9 @@ namespace ManaPHP\Data\Db;
 use ManaPHP\Data\AbstractModel;
 use ManaPHP\Data\Db\Model\MetadataInterface;
 use ManaPHP\Data\Model\ExpressionInterface;
-use ManaPHP\Data\Model\ThoseInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Container;
-use ManaPHP\Logging\LoggerInterface;
 
 class Model extends AbstractModel implements ModelInterface
 {
@@ -302,75 +300,5 @@ class Model extends AbstractModel implements ModelInterface
         $this->fireEvent('model:deleted');
 
         return $this;
-    }
-
-    public static function insertBySql(string $sql, array $bind = []): int
-    {
-        /** @noinspection OneTimeUseVariablesInspection */
-        $that = Container::get(ThoseInterface::class)->get(static::class);
-
-        list($connection, $table) = $that->getUniqueShard($bind);
-
-        $db = Container::get(FactoryInterface::class)->get($connection);
-
-        return $db->insertBySql($table, $sql, $bind);
-    }
-
-    public static function deleteBySql(string $sql, array $bind = []): int
-    {
-        $shards = Container::get(ThoseInterface::class)->get(static::class)->getMultipleShards($bind);
-
-        $affected_count = 0;
-        foreach ($shards as $connection => $tables) {
-            $db = Container::get(FactoryInterface::class)->get($connection);
-
-            foreach ($tables as $table) {
-                $affected_count += $db->deleteBySql($table, $sql, $bind);
-            }
-        }
-
-        return $affected_count;
-    }
-
-    public static function updateBySql(string $sql, array $bind = []): int
-    {
-        $shards = Container::get(ThoseInterface::class)->get(static::class)->getMultipleShards($bind);
-
-        $affected_count = 0;
-        foreach ($shards as $connection => $tables) {
-            $db = Container::get(FactoryInterface::class)->get($connection);
-
-            foreach ($tables as $table) {
-                $affected_count += $db->updateBySql($table, $sql, $bind);
-            }
-        }
-
-        return $affected_count;
-    }
-
-    /**
-     * @param array $record =model_var(new static)
-     *
-     * @return int
-     */
-    public static function insert(array $record): int
-    {
-        $that = Container::get(ThoseInterface::class)->get(static::class);
-
-        list($connection, $table) = $that->getUniqueShard($record);
-        $logger = Container::get(LoggerInterface::class);
-
-        if ($fields = array_diff(array_keys($record), $that->getModelMetadata()->getAttributes($that))) {
-            $logger->debug(['insert `:1` table skip fields: :2', $table, array_values($fields)]);
-
-            foreach ($fields as $field) {
-                unset($record[$field]);
-            }
-        }
-
-        $db = Container::get(FactoryInterface::class)->get($connection);
-        $db->insert($table, $record);
-
-        return 1;
     }
 }

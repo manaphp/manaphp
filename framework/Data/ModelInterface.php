@@ -128,8 +128,6 @@ interface ModelInterface
 
     public static function deleteAll(array $filters): int;
 
-    public static function insert(array $record): int;
-
     public function with(string|array $withs): static;
 
     public function toArray(): array;
