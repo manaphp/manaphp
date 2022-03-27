@@ -19,11 +19,6 @@ class Model extends AbstractModel implements ModelInterface
         return 'default';
     }
 
-    public function getDb(string $connection): DbInterface
-    {
-        return Container::get(FactoryInterface::class)->get($connection);
-    }
-
     public function getModelMetadata(): MetadataInterface
     {
         return Container::get(MetadataInterface::class);
@@ -155,7 +150,7 @@ class Model extends AbstractModel implements ModelInterface
             }
         }
 
-        $db = $this->getDb($connection);
+        $db = Container::get(FactoryInterface::class)->get($connection);
         if ($autoIncrementField && $this->$autoIncrementField === null) {
             $this->$autoIncrementField = (int)$db->insert($table, $fieldValues, true);
         } else {
@@ -271,7 +266,7 @@ class Model extends AbstractModel implements ModelInterface
             }
         }
 
-        $db = $this->getDb($connection);
+        $db = Container::get(FactoryInterface::class)->get($connection);
         $db->update(
             $table, $fieldValues, [$mapFields[$primaryKey] ?? $primaryKey => $this->$primaryKey], $bind
         );
@@ -305,7 +300,7 @@ class Model extends AbstractModel implements ModelInterface
 
         $this->fireEvent('model:deleting');
 
-        $db = $this->getDb($connection);
+        $db = Container::get(FactoryInterface::class)->get($connection);
 
         $db->delete($table, [$primaryKey => $this->$primaryKey]);
 
@@ -321,7 +316,7 @@ class Model extends AbstractModel implements ModelInterface
 
         list($connection, $table) = $sample->getUniqueShard($bind);
 
-        $db = static::sample()->getDb($connection);
+        $db = Container::get(FactoryInterface::class)->get($connection);
 
         return $db->insertBySql($table, $sql, $bind);
     }
@@ -332,7 +327,7 @@ class Model extends AbstractModel implements ModelInterface
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
-            $db = static::sample()->getDb($connection);
+            $db = Container::get(FactoryInterface::class)->get($connection);
 
             foreach ($tables as $table) {
                 $affected_count += $db->deleteBySql($table, $sql, $bind);
@@ -348,7 +343,7 @@ class Model extends AbstractModel implements ModelInterface
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
-            $db = static::sample()->getDb($connection);
+            $db = Container::get(FactoryInterface::class)->get($connection);
 
             foreach ($tables as $table) {
                 $affected_count += $db->updateBySql($table, $sql, $bind);
@@ -378,7 +373,7 @@ class Model extends AbstractModel implements ModelInterface
             }
         }
 
-        $db = static::sample()->getDb($connection);
+        $db = Container::get(FactoryInterface::class)->get($connection);
         $db->insert($table, $record);
 
         return 1;

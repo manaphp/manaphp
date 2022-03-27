@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Db;
 
 use ManaPHP\Data\AbstractTable;
-use ManaPHP\Data\DbInterface;
 use ManaPHP\Helper\Container;
 
 class Table extends AbstractTable
@@ -14,11 +13,6 @@ class Table extends AbstractTable
         return 'default';
     }
 
-    public function getDb(string $connection): DbInterface
-    {
-        return Container::get(FactoryInterface::class)->get($connection);
-    }
-
     public static function insert(array $record, bool $fetchInsertId = false): mixed
     {
         /** @noinspection OneTimeUseVariablesInspection */
@@ -26,7 +20,7 @@ class Table extends AbstractTable
 
         list($connection, $table) = $sample->getUniqueShard($record);
 
-        $db = static::sample()->getDb($connection);
+        $db = Container::get(FactoryInterface::class)->get($connection);
 
         return $db->insert($table, $record, $fetchInsertId);
     }
@@ -38,7 +32,7 @@ class Table extends AbstractTable
 
         list($connection, $table) = $sample->getUniqueShard($bind);
 
-        $db = static::sample()->getDb($connection);
+        $db = Container::get(FactoryInterface::class)->get($connection);
 
         return $db->insertBySql($table, $sql, $bind);
     }
@@ -49,7 +43,7 @@ class Table extends AbstractTable
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
-            $db = static::sample()->getDb($connection);
+            $db = Container::get(FactoryInterface::class)->get($connection);
 
             foreach ($tables as $table) {
                 $affected_count += $db->delete($table, $conditions, $bind);
@@ -65,7 +59,7 @@ class Table extends AbstractTable
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
-            $db = static::sample()->getDb($connection);
+            $db = Container::get(FactoryInterface::class)->get($connection);
 
             foreach ($tables as $table) {
                 $affected_count += $db->deleteBySql($table, $sql, $bind);
@@ -81,7 +75,7 @@ class Table extends AbstractTable
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
-            $db = static::sample()->getDb($connection);
+            $db = Container::get(FactoryInterface::class)->get($connection);
 
             foreach ($tables as $table) {
                 $affected_count += $db->update($table, $fieldValues, $conditions, $bind);
@@ -97,7 +91,7 @@ class Table extends AbstractTable
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
-            $db = static::sample()->getDb($connection);
+            $db = Container::get(FactoryInterface::class)->get($connection);
 
             foreach ($tables as $table) {
                 $affected_count += $db->updateBySql($table, $sql, $bind);

@@ -22,11 +22,6 @@ class Model extends AbstractModel
         return 'default';
     }
 
-    public function getMongodb($connection): MongodbInterface
-    {
-        return Container::get(FactoryInterface::class)->get($connection);
-    }
-
     public static function setDefaultAllowNullValue(bool $allow): void
     {
         self::$_defaultAllowNullValue = $allow;
@@ -109,7 +104,7 @@ class Model extends AbstractModel
         if (!isset($cached[$class])) {
             list($connection, $collection) = $this->getAnyShard();
 
-            $mongodb = $this->getMongodb($connection);
+            $mongodb = Container::get(FactoryInterface::class)->get($connection);
             if (!$docs = $mongodb->fetchAll($collection, [], ['limit' => 1])) {
                 throw new RuntimeException(['`:collection` collection has none record', 'collection' => $collection]);
             }
@@ -184,7 +179,7 @@ class Model extends AbstractModel
     {
         list($connection, $source) = $this->getUniqueShard($this);
 
-        $mongodb = $this->getMongodb($connection);
+        $mongodb = Container::get(FactoryInterface::class)->get($connection);
 
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $pos);
@@ -301,7 +296,7 @@ class Model extends AbstractModel
             }
         }
 
-        $mongodb = $this->getMongodb($connection);
+        $mongodb = Container::get(FactoryInterface::class)->get($connection);
         $mongodb->insert($collection, $fieldValues);
 
         $this->fireEvent('model:created');
@@ -398,7 +393,7 @@ class Model extends AbstractModel
             }
         }
 
-        $mongodb = $this->getMongodb($connection);
+        $mongodb = Container::get(FactoryInterface::class)->get($connection);
         $mongodb->update($collection, $fieldValues, [$primaryKey => $this->$primaryKey]);
 
         if ($expressionFields) {
@@ -431,7 +426,7 @@ class Model extends AbstractModel
 
         $this->fireEvent('model:deleting');
 
-        $mongodb = $this->getMongodb($connection);
+        $mongodb = Container::get(FactoryInterface::class)->get($connection);
 
         $mongodb->delete($table, [$primaryKey => $this->$primaryKey]);
 
@@ -447,7 +442,7 @@ class Model extends AbstractModel
 
         list($connection, $collection) = $sample->getUniqueShard([]);
 
-        $mongodb = static::sample()->getMongodb($connection);
+        $mongodb = Container::get(FactoryInterface::class)->get($connection);
         return $mongodb->aggregate($collection, $pipeline, $options);
     }
 
@@ -487,7 +482,7 @@ class Model extends AbstractModel
 
         list($connection, $collection) = $sample->getUniqueShard([]);
 
-        $mongodb = static::sample()->getMongodb($connection);
+        $mongodb = Container::get(FactoryInterface::class)->get($connection);
         return $mongodb->bulkInsert($collection, $documents);
     }
 
@@ -511,7 +506,7 @@ class Model extends AbstractModel
 
         $affected_count = 0;
         foreach ($shards as $connection => $collections) {
-            $mongodb = static::sample()->getMongodb($connection);
+            $mongodb = Container::get(FactoryInterface::class)->get($connection);
             foreach ($collections as $collection) {
                 $affected_count += $mongodb->bulkUpdate($collection, $documents, $primaryKey);
             }
@@ -534,7 +529,7 @@ class Model extends AbstractModel
 
         list($connection, $collection) = $sample->getUniqueShard([]);
 
-        $mongodb = static::sample()->getMongodb($connection);
+        $mongodb = Container::get(FactoryInterface::class)->get($connection);
         return $mongodb->bulkUpsert($collection, $documents, $sample->primaryKey());
     }
 
@@ -551,7 +546,7 @@ class Model extends AbstractModel
 
         list($connection, $collection) = $sample->getUniqueShard($record);
 
-        $mongodb = static::sample()->getMongodb($connection);
+        $mongodb = Container::get(FactoryInterface::class)->get($connection);
         $mongodb->insert($collection, $record);
 
         return 1;
