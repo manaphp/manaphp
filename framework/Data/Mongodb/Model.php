@@ -6,10 +6,9 @@ namespace ManaPHP\Data\Mongodb;
 use ManaPHP\Data\AbstractModel;
 use ManaPHP\Data\Model\ExpressionInterface;
 use ManaPHP\Data\Model\ThoseInterface;
+use ManaPHP\Data\Mongodb\Model\InfererInterface;
 use ManaPHP\Data\MongodbInterface;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Exception\NotImplementedException;
-use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\Container;
 use MongoDB\BSON\ObjectId;
 
@@ -28,19 +27,7 @@ class Model extends AbstractModel
      */
     public function primaryKey(): string
     {
-        static $cached = [];
-
-        $class = static::class;
-
-        if (!isset($cached[$class])) {
-            if ($primaryKey = $this->inferPrimaryKey($class)) {
-                return $cached[$class] = $primaryKey;
-            } else {
-                throw new NotImplementedException(['Primary key of `%s` model can not be inferred', $class]);
-            }
-        }
-
-        return $cached[$class];
+        return Container::get(InfererInterface::class)->primaryKey(static::class);
     }
 
     /**
@@ -48,19 +35,7 @@ class Model extends AbstractModel
      */
     public function fields(): array
     {
-        static $cached = [];
-
-        $class = static::class;
-
-        if (!isset($cached[$class])) {
-            $fieldTypes = $this->fieldTypes();
-            if (isset($fieldTypes['_id']) && $fieldTypes['_id'] === 'objectid') {
-                unset($fieldTypes['_id']);
-            }
-            return $cached[$class] = array_keys($fieldTypes);
-        }
-
-        return $cached[$class];
+        return Container::get(InfererInterface::class)->fields(static::class);
     }
 
     /**
@@ -68,22 +43,7 @@ class Model extends AbstractModel
      */
     public function intFields(): array
     {
-        static $cached = [];
-
-        $class = static::class;
-
-        if (!isset($cached[$class])) {
-            $fields = [];
-            foreach ($this->fieldTypes() as $field => $type) {
-                if ($type === 'int') {
-                    $fields[] = $field;
-                }
-            }
-
-            return $cached[$class] = $fields;
-        }
-
-        return $cached[$class];
+        return Container::get(InfererInterface::class)->intFields(static::class);
     }
 
     /**
@@ -93,45 +53,7 @@ class Model extends AbstractModel
      */
     public function fieldTypes(): array
     {
-        static $cached = [];
-
-        $class = static::class;
-
-        if (!isset($cached[$class])) {
-            list($connection, $collection) = $this->getAnyShard();
-
-            $mongodb = Container::get(FactoryInterface::class)->get($connection);
-            if (!$docs = $mongodb->fetchAll($collection, [], ['limit' => 1])) {
-                throw new RuntimeException(['`:collection` collection has none record', 'collection' => $collection]);
-            }
-
-            $types = [];
-            foreach ($docs[0] as $field => $value) {
-                $type = gettype($value);
-                if ($type === 'integer') {
-                    $types[$field] = 'int';
-                } elseif ($type === 'string') {
-                    $types[$field] = 'string';
-                } elseif ($type === 'double') {
-                    $types[$field] = 'float';
-                } elseif ($type === 'boolean') {
-                    $types[$field] = 'bool';
-                } elseif ($type === 'array') {
-                    $types[$field] = 'array';
-                } elseif ($value instanceof ObjectId) {
-                    if ($field === '_id') {
-                        continue;
-                    }
-                    $types[$field] = 'objectid';
-                } else {
-                    throw new RuntimeException(['`:field` field value type can not be infer.', 'field' => $field]);
-                }
-            }
-
-            $cached[$class] = $types;
-        }
-
-        return $cached[$class];
+        return Container::get(InfererInterface::class)->fieldTypes(static::class);
     }
 
     public function isAllowNullValue(): bool
