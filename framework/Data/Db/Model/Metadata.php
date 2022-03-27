@@ -8,7 +8,8 @@ use ManaPHP\Data\Db;
 use ManaPHP\Data\Db\ModelInterface;
 
 /**
- * @property-read \ManaPHP\ConfigInterface $config
+ * @property-read \ManaPHP\ConfigInterface          $config
+ * @property-read \ManaPHP\Data\Db\FactoryInterface $dbFactory
  */
 class Metadata extends Component implements MetadataInterface
 {
@@ -41,10 +42,9 @@ class Metadata extends Component implements MetadataInterface
         /** @noinspection OneTimeUseVariablesInspection */
         $modelInstance = is_string($model) ? $this->container->get($model) : $model;
 
-        list($db, $table) = $modelInstance->getAnyShard();
-        /** @var \ManaPHP\Data\DbInterface $dbInstance */
-        $dbInstance = $this->container->get($db);
-        $data = $dbInstance->getMetadata($table);
+        list($connection, $table) = $modelInstance->getAnyShard();
+        $db = $this->dbFactory->get($connection);
+        $data = $db->getMetadata($table);
 
         if ($this->ttl > 0) {
             apcu_store($key, $data);

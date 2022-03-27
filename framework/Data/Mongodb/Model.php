@@ -16,9 +16,14 @@ class Model extends AbstractModel
     protected static bool $_defaultAllowNullValue = false;
     public mixed $_id;
 
-    public function db(): string
+    public function connection(): string
     {
-        return 'mongodb';
+        return 'default';
+    }
+
+    public function getMongodb($connection): MongodbInterface
+    {
+        return $this->getShared(FactoryInterface::class)->get($connection);
     }
 
     public static function setDefaultAllowNullValue(bool $allow): void
@@ -101,10 +106,9 @@ class Model extends AbstractModel
         $class = static::class;
 
         if (!isset($cached[$class])) {
-            list($db, $collection) = $this->getAnyShard();
+            list($connection, $collection) = $this->getAnyShard();
 
-            /** @var \ManaPHP\Data\MongodbInterface $mongodb */
-            $mongodb = $this->getShared($db);
+            $mongodb = $this->getMongodb($connection);
             if (!$docs = $mongodb->fetchAll($collection, [], ['limit' => 1])) {
                 throw new RuntimeException(['`:collection` collection has none record', 'collection' => $collection]);
             }
@@ -177,10 +181,9 @@ class Model extends AbstractModel
 
     public function getNextAutoIncrementId(int $step = 1): int
     {
-        list($db, $source) = $this->getUniqueShard($this);
+        list($connection, $source) = $this->getUniqueShard($this);
 
-        /** @var \ManaPHP\Data\MongodbInterface $mongodb */
-        $mongodb = $this->getShared($db);
+        $mongodb = $this->getMongodb($connection);
 
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $pos);
@@ -279,7 +282,7 @@ class Model extends AbstractModel
             }
         }
 
-        list($db, $collection) = $this->getUniqueShard($this);
+        list($connection, $collection) = $this->getUniqueShard($this);
 
         $this->fireEvent('model:saving');
         $this->fireEvent('model:creating');
@@ -297,8 +300,7 @@ class Model extends AbstractModel
             }
         }
 
-        /** @var \ManaPHP\Data\MongodbInterface $mongodb */
-        $mongodb = $this->getShared($db);
+        $mongodb = $this->getMongodb($connection);
         $mongodb->insert($collection, $fieldValues);
 
         $this->fireEvent('model:created');
@@ -355,7 +357,7 @@ class Model extends AbstractModel
             $this->$field = $value;
         }
 
-        list($db, $collection) = $this->getUniqueShard($this);
+        list($connection, $collection) = $this->getUniqueShard($this);
 
         $this->fireEvent('model:saving');
         $this->fireEvent('model:updating');
@@ -395,8 +397,7 @@ class Model extends AbstractModel
             }
         }
 
-        /** @var \ManaPHP\Data\MongodbInterface $mongodb */
-        $mongodb = $this->getShared($db);
+        $mongodb = $this->getMongodb($connection);
         $mongodb->update($collection, $fieldValues, [$primaryKey => $this->$primaryKey]);
 
         if ($expressionFields) {
@@ -417,15 +418,35 @@ class Model extends AbstractModel
         return $this;
     }
 
+    public function delete(): static
+    {
+        $primaryKey = $this->primaryKey();
+
+        if ($this->$primaryKey === null) {
+            throw new MisuseException('missing primary key value');
+        }
+
+        list($connection, $table) = $this->getUniqueShard($this);
+
+        $this->fireEvent('model:deleting');
+
+        $mongodb = $this->getMongodb($connection);
+
+        $mongodb->delete($table, [$primaryKey => $this->$primaryKey]);
+
+        $this->fireEvent('model:deleted');
+
+        return $this;
+    }
+
     public static function aggregateEx(array $pipeline, array $options = []): array
     {
         /** @noinspection OneTimeUseVariablesInspection */
         $sample = static::sample();
 
-        list($db, $collection) = $sample->getUniqueShard([]);
+        list($connection, $collection) = $sample->getUniqueShard([]);
 
-        /** @var \ManaPHP\Data\MongodbInterface $mongodb */
-        $mongodb = static::sample()->getShared($db);
+        $mongodb = static::sample()->getMongodb($connection);
         return $mongodb->aggregate($collection, $pipeline, $options);
     }
 
@@ -463,10 +484,9 @@ class Model extends AbstractModel
             $documents[$i] = $sample->normalizeDocument($document);
         }
 
-        list($db, $collection) = $sample->getUniqueShard([]);
+        list($connection, $collection) = $sample->getUniqueShard([]);
 
-        /** @var \ManaPHP\Data\MongodbInterface $mongodb */
-        $mongodb = static::sample()->getShared($db);
+        $mongodb = static::sample()->getMongodb($connection);
         return $mongodb->bulkInsert($collection, $documents);
     }
 
@@ -489,9 +509,8 @@ class Model extends AbstractModel
         $shards = $sample->getAllShards();
 
         $affected_count = 0;
-        foreach ($shards as $db => $collections) {
-            /** @var \ManaPHP\Data\MongodbInterface $mongodb */
-            $mongodb = static::sample()->getShared($db);
+        foreach ($shards as $connection => $collections) {
+            $mongodb = static::sample()->getMongodb($connection);
             foreach ($collections as $collection) {
                 $affected_count += $mongodb->bulkUpdate($collection, $documents, $primaryKey);
             }
@@ -512,10 +531,9 @@ class Model extends AbstractModel
             $documents[$i] = $sample->normalizeDocument($document);
         }
 
-        list($db, $collection) = $sample->getUniqueShard([]);
+        list($connection, $collection) = $sample->getUniqueShard([]);
 
-        /** @var \ManaPHP\Data\MongodbInterface $mongodb */
-        $mongodb = static::sample()->getShared($db);
+        $mongodb = static::sample()->getMongodb($connection);
         return $mongodb->bulkUpsert($collection, $documents, $sample->primaryKey());
     }
 
@@ -530,10 +548,9 @@ class Model extends AbstractModel
 
         $record = $sample->normalizeDocument($record);
 
-        list($db, $collection) = $sample->getUniqueShard($record);
+        list($connection, $collection) = $sample->getUniqueShard($record);
 
-        /** @var \ManaPHP\Data\MongodbInterface $mongodb */
-        $mongodb = static::sample()->getShared($db);
+        $mongodb = static::sample()->getMongodb($connection);
         $mongodb->insert($collection, $record);
 
         return 1;

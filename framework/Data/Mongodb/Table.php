@@ -5,8 +5,8 @@ namespace ManaPHP\Data\Mongodb;
 
 class Table extends \ManaPHP\Data\Db\Table
 {
-    public function db(): string
+    public function connection(): string
     {
-        return 'mongodb';
+        return 'default';
     }
 }

@@ -5,7 +5,6 @@ namespace ManaPHP\Data\Mongodb;
 
 use ManaPHP\Data\AbstractQuery;
 use ManaPHP\Data\ModelInterface;
-use ManaPHP\Data\MongodbInterface;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
@@ -15,6 +14,9 @@ use ManaPHP\Helper\Arr;
 use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\Regex;
 
+/**
+ * @property-read \ManaPHP\Data\Mongodb\FactoryInterface $mongodbFactory
+ */
 class Query extends AbstractQuery
 {
     protected array $types;
@@ -46,8 +48,7 @@ class Query extends AbstractQuery
     {
         list($connection, $source) = $this->getUniqueShard();
 
-        /** @var MongodbInterface $mongodb */
-        $mongodb = $this->container->get($connection);
+        $mongodb = $this->mongodbFactory->get($connection);
 
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $source);
@@ -631,8 +632,7 @@ class Query extends AbstractQuery
     {
         list($connection, $collection) = $this->getUniqueShard();
 
-        /** @var MongodbInterface $mongodb */
-        $mongodb = $this->container->get($connection);
+        $mongodb = $this->mongodbFactory->get($connection);
 
         if (!$this->aggregate) {
             $model = $this->model;
@@ -743,8 +743,7 @@ class Query extends AbstractQuery
 
         $affected_count = 0;
         foreach ($shards as $connection => $collections) {
-            /** @var MongodbInterface $mongodb */
-            $mongodb = $this->container->get($connection);
+            $mongodb = $this->mongodbFactory->get($connection);
 
             foreach ($collections as $collection) {
                 $affected_count += $mongodb->delete($collection, $this->buildConditions());
@@ -760,8 +759,7 @@ class Query extends AbstractQuery
 
         $affected_count = 0;
         foreach ($shards as $connection => $collections) {
-            /** @var MongodbInterface $mongodb */
-            $mongodb = $this->container->get($connection);
+            $mongodb = $this->mongodbFactory->get($connection);
 
             foreach ($collections as $collection) {
                 $affected_count += $mongodb->update($collection, $fieldValues, $this->buildConditions());

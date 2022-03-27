@@ -47,25 +47,25 @@ abstract class AbstractTable implements TableInterface
      */
     public function getMultipleShards(array|ModelInterface $context): array
     {
-        $db = $this->db();
+        $connection = $this->connection();
         $table = $this->table();
 
-        if (strcspn($db, ':,') === strlen($db) && strcspn($table, ':,') === strlen($table)) {
-            return [$db => [$table]];
+        if (strcspn($connection, ':,') === strlen($connection) && strcspn($table, ':,') === strlen($table)) {
+            return [$connection => [$table]];
         } else {
-            return Sharding::multiple($db, $table, $context);
+            return Sharding::multiple($connection, $table, $context);
         }
     }
 
     public function getAllShards(): array
     {
-        $db = $this->db();
+        $connection = $this->connection();
         $table = $this->table();
 
-        if (strcspn($db, ':,') === strlen($db) && strcspn($table, ':,') === strlen($table)) {
-            return [$db => [$table]];
+        if (strcspn($connection, ':,') === strlen($connection) && strcspn($table, ':,') === strlen($table)) {
+            return [$connection => [$table]];
         } else {
-            return Sharding::all($db, $table);
+            return Sharding::all($connection, $table);
         }
     }
 

@@ -6,40 +6,34 @@ namespace ManaPHP\Commands;
 use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
 use ManaPHP\Data\Db;
+use ManaPHP\Data\DbInterface;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
 /**
- * @property-read \ManaPHP\ConfigInterface $config
- * @property-read \ManaPHP\AliasInterface  $alias
+ * @property-read \ManaPHP\ConfigInterface          $config
+ * @property-read \ManaPHP\AliasInterface           $alias
+ * @property-read \ManaPHP\Data\Db\FactoryInterface $dbFactory
  */
 class DbCommand extends Command
 {
     /**
      * @return array
      */
-    protected function getDbServices(): array
+    protected function getConnections(): array
     {
-        $services = [];
-        foreach ($this->config->get('dependencies') as $service => $config) {
-            $config = json_stringify($config);
-            if (preg_match('#(mysql|mssql|sqlite)://#', $config)) {
-                $services[] = $service;
-            }
-        }
-        return $services;
+        return array_keys($this->config->get('factories', [])[DbInterface::class] ?? []);
     }
 
     /**
-     * @param string  $service
+     * @param string  $connection
      * @param ?string $pattern
      *
      * @return array
      */
-    protected function getTables(string $service, ?string $pattern = null): array
+    protected function getTables(string $connection, ?string $pattern = null): array
     {
-        /** @var \ManaPHP\Data\DbInterface $db */
-        $db = $this->container->get($service);
+        $db = $this->dbFactory->get($connection);
         $tables = [];
         foreach ($db->getTables() as $table) {
             if ($pattern && !fnmatch($pattern, $table)) {
@@ -78,36 +72,35 @@ class DbCommand extends Command
     }
 
     /**
-     * @param string $service
+     * @param string $connection
      * @param string $table
      *
      * @return string
      */
-    protected function getConstantsByDb(string $service, string $table): string
+    protected function getConstantsByDb(string $connection, string $table): string
     {
         static $cached;
 
-        if (!isset($cached[$service])) {
-            /** @var \ManaPHP\Data\DbInterface $db */
-            $db = $this->container->get($service);
+        if (!isset($cached[$connection])) {
+            $db = $this->dbFactory->get($connection);
             $metadata_table = 'metadata_constant';
             if (!in_array($metadata_table, $db->getTables(), true)) {
-                $cached[$service] = [];
+                $cached[$connection] = [];
             } else {
                 $metadata_table = $db->getPrefix() . $metadata_table;
                 $rows = $db->fetchAll(/**@lang text */ "SELECT `id`, `constants` FROM $metadata_table");
                 foreach ($rows as $row) {
-                    $cached[$service][$row['id']] = $row['constants'];
+                    $cached[$connection][$row['id']] = $row['constants'];
                 }
             }
         }
 
-        if (!isset($cached[$service][$table])) {
+        if (!isset($cached[$connection][$table])) {
             return '';
         }
 
         $lines = [];
-        $constants = preg_split('#[\r\n]{1,2}#m', trim($cached[$service][$table]));
+        $constants = preg_split('#[\r\n]{1,2}#m', trim($cached[$connection][$table]));
         foreach ($constants as $constant) {
             $constant = trim($constant);
             if ($constant === '') {
@@ -125,7 +118,7 @@ class DbCommand extends Command
     }
 
     /**
-     * @param string $service
+     * @param string $connection
      * @param string $class
      * @param string $table
      * @param bool   $optimized
@@ -133,11 +126,10 @@ class DbCommand extends Command
      *
      * @return string
      */
-    protected function renderModel(string $service, string $class, string $table, bool $optimized = false,
+    protected function renderModel(string $connection, string $class, string $table, bool $optimized = false,
         bool $camelized = false
     ): string {
-        /** @var Db $db */
-        $db = $this->container->get($service);
+        $db = $this->dbFactory->get($connection);
         $metadata = $db->getMetadata($table);
 
         $fields = (array)$metadata[Db::METADATA_ATTRIBUTES];
@@ -146,7 +138,7 @@ class DbCommand extends Command
         $plainClass = substr($class, $pos + 1);
         $namespace = substr($class, 0, $pos);
 
-        if ($constants = $this->getConstantsByDb($service, $table)) {
+        if ($constants = $this->getConstantsByDb($connection, $table)) {
             null;
         } elseif ($constants = $this->getConstantsByFile($plainClass)) {
             $constants = '    ' . $constants;
@@ -174,11 +166,11 @@ class DbCommand extends Command
             $str .= '    public $' . $field . ';' . PHP_EOL;
         }
 
-        if ($service !== 'db') {
+        if ($connection !== 'default') {
             $str .= PHP_EOL;
-            $str .= '    public function db(): string' . PHP_EOL;
+            $str .= '    public function connection(): string' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
-            $str .= "        return '$service';" . PHP_EOL;
+            $str .= "        return '$connection';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
         }
 
@@ -272,18 +264,18 @@ class DbCommand extends Command
     }
 
     /**
-     * @param string $service
+     * @param string $connection
      * @param string $table
      * @param string $rootNamespace
      *
      * @return string
      */
-    protected function renderTable(string $service, string $table, string $rootNamespace = 'App\Models'): string
+    protected function renderTable(string $connection, string $table, string $rootNamespace = 'App\Models'): string
     {
         $plainClass = Str::pascalize($table);
         $modelName = $rootNamespace . '\\' . $plainClass;
 
-        if ($constants = $this->getConstantsByDb($service, $table)) {
+        if ($constants = $this->getConstantsByDb($connection, $table)) {
             null;
         } elseif ($constants = $this->getConstantsByFile($plainClass)) {
             $constants = '    ' . $constants;
@@ -299,11 +291,11 @@ class DbCommand extends Command
             $str .= PHP_EOL . $constants . PHP_EOL;
         }
 
-        if ($service !== 'db') {
+        if ($connection !== 'default') {
             $str .= PHP_EOL;
-            $str .= '    public function db()' . PHP_EOL;
+            $str .= '    public function connection()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
-            $str .= "        return '$service';" . PHP_EOL;
+            $str .= "        return '$connection';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
         }
 
@@ -323,19 +315,18 @@ class DbCommand extends Command
     /**
      * list databases and tables
      *
-     * @param array  $services      services name list
+     * @param array  $connections   connections name list
      * @param string $table_pattern match table against a pattern
      *
      * @return void
      */
-    public function listAction(array $services = [], string $table_pattern = ''): void
+    public function listAction(array $connections = [], string $table_pattern = ''): void
     {
-        foreach ($services ?: $this->getDbServices() as $service) {
-            /** @var \ManaPHP\Data\DbInterface $db */
-            $db = $this->container->get($service);
+        foreach ($connections ?: $this->getConnections() as $connection) {
+            $db = $this->dbFactory->get($connection);
 
-            $this->console->writeLn("service: `$service`");
-            foreach ($this->getTables($service, $table_pattern) as $row => $table) {
+            $this->console->writeLn("connection: `$connection`");
+            foreach ($this->getTables($connection, $table_pattern) as $row => $table) {
                 $columns = (array)$db->getMetadata($table)[Db::METADATA_ATTRIBUTES];
                 $primaryKey = $db->getMetadata($table)[Db::METADATA_PRIMARY_KEY];
                 foreach ($columns as $i => $column) {
@@ -369,38 +360,37 @@ class DbCommand extends Command
     /**
      * generate model file in online
      *
-     * @param string $table     table name
-     * @param string $service   service name
-     * @param bool   $optimized output as more methods as possible
+     * @param string $table      table name
+     * @param string $connection connection name
+     * @param bool   $optimized  output as more methods as possible
      * @param bool   $camelized
      *
      * @return void
      */
-    public function modelAction(string $table, string $service = '', bool $optimized = false, bool $camelized = false
+    public function modelAction(string $table, string $connection = '', bool $optimized = false, bool $camelized = false
     ): void {
-        /** @var \ManaPHP\Data\DbInterface $db */
-        if ($service) {
-            $db = $this->container->get($service);
+        if ($connection) {
+            $db = $this->dbFactory->get($connection);
             if (!in_array($table, $db->getTables(), true)) {
                 throw new Exception(['`:table` is not exists', 'table' => $table]);
             }
         } else {
-            foreach ($this->getDbServices() as $s) {
-                $db = $this->container->get($s);
+            foreach ($this->getConnections() as $s) {
+                $db = $this->dbFactory->get($s);
                 if (in_array($table, $db->getTables(), true)) {
-                    $service = $s;
+                    $connection = $s;
                     break;
                 }
             }
-            if (!$service) {
-                throw new Exception(['`:table` is not found in services`', 'table' => $table]);
+            if (!$connection) {
+                throw new Exception(['`:table` is not found in connections`', 'table' => $table]);
             }
         }
 
         $plainClass = Str::pascalize($table);
         $fileName = "@runtime/db_model/$plainClass.php";
         $class = "App\Models\\$plainClass";
-        $model_str = $this->renderModel($service, $class, $table, $optimized, $camelized);
+        $model_str = $this->renderModel($connection, $class, $table, $optimized, $camelized);
         LocalFS::filePut($fileName, $model_str);
 
         $this->console->writeLn("`$table` table saved to `$fileName`");
@@ -409,20 +399,20 @@ class DbCommand extends Command
     /**
      * generate models file in online
      *
-     * @param array  $services      services name list
+     * @param array  $connections   connections name list
      * @param string $table_pattern match table against a pattern
      * @param bool   $optimized     output as more methods as possible
      * @param bool   $camelized
      *
      * @return void
      */
-    public function modelsAction(array $services = [], string $table_pattern = '', bool $optimized = false,
+    public function modelsAction(array $connections = [], string $table_pattern = '', bool $optimized = false,
         bool $camelized = false
     ): void {
         $areas = $this->getAreas();
 
-        foreach ($services ?: $this->getDbServices() as $service) {
-            foreach ($this->getTables($service, $table_pattern) as $table) {
+        foreach ($connections ?: $this->getConnections() as $connection) {
+            foreach ($this->getTables($connection, $table_pattern) as $table) {
                 $plainClass = Str::pascalize($table);
                 $class = "App\Models\\$plainClass";
                 $fileName = "@runtime/db_models/$plainClass.php";
@@ -435,7 +425,7 @@ class DbCommand extends Command
                     }
                 }
 
-                $model_str = $this->renderModel($service, $class, $table, $optimized, $camelized);
+                $model_str = $this->renderModel($connection, $class, $table, $optimized, $camelized);
                 LocalFS::filePut($fileName, $model_str);
 
                 $this->console->writeLn(" `$table` table saved to `$fileName`");
@@ -446,24 +436,24 @@ class DbCommand extends Command
     /**
      * generate models file in online
      *
-     * @param array  $services      services name list
+     * @param array  $connections   connections name list
      * @param string $table_pattern match table against a pattern
      * @param string $namespace     namespace of models
      *
      * @return void
      */
-    public function tablesAction(array $services = [], string $table_pattern = '', string $namespace = 'App\Tables'
+    public function tablesAction(array $connections = [], string $table_pattern = '', string $namespace = 'App\Tables'
     ): void {
         if (!str_contains($namespace, '\\')) {
             $namespace = 'App\\' . ucfirst($namespace) . '\\Tables';
         }
 
-        foreach ($services ?: $this->getDbServices() as $service) {
-            foreach ($this->getTables($service, $table_pattern) as $table) {
+        foreach ($connections ?: $this->getConnections() as $connection) {
+            foreach ($this->getTables($connection, $table_pattern) as $table) {
 
                 $plainClass = Str::pascalize($table);
                 $fileName = "@runtime/db_tables/$plainClass.php";
-                $model_str = $this->renderTable($service, $table, $namespace);
+                $model_str = $this->renderTable($connection, $table, $namespace);
                 LocalFS::filePut($fileName, $model_str);
 
                 $this->console->writeLn(" `$table` table saved to `$fileName`");
@@ -474,18 +464,17 @@ class DbCommand extends Command
     /**
      * export db data to csv files
      *
-     * @param array  $services      services name list
+     * @param array  $connections   connections name list
      * @param string $table_pattern match table against a pattern
      *
      * @return void
      */
-    public function jsonAction(array $services = [], string $table_pattern = ''): void
+    public function jsonAction(array $connections = [], string $table_pattern = ''): void
     {
-        foreach ($services ?: $this->getDbServices() as $service) {
-            /** @var \ManaPHP\Data\DbInterface $db */
-            $db = $this->container->get($service);
-            foreach ($this->getTables($service, $table_pattern) as $table) {
-                $fileName = "@runtime/db_json/$service/$table.json";
+        foreach ($connections ?: $this->getConnections() as $connection) {
+            $db = $this->dbFactory->get($connection);
+            foreach ($this->getTables($connection, $table_pattern) as $table) {
+                $fileName = "@runtime/db_json/$connection/$table.json";
 
                 LocalFS::dirCreate(dirname($fileName));
                 $table = $db->getPrefix() . $table;
@@ -509,20 +498,19 @@ class DbCommand extends Command
     /**
      * export db data to csv files
      *
-     * @param array  $services      services name list
+     * @param array  $connections   connections name list
      * @param string $table_pattern match table against a pattern
      * @param bool   $bom           contains BOM or not
      *
      * @return void
      */
-    public function csvAction(array $services = [], string $table_pattern = '', bool $bom = false): void
+    public function csvAction(array $connections = [], string $table_pattern = '', bool $bom = false): void
     {
-        foreach ($services ?: $this->getDbServices() as $service) {
-            /** @var \ManaPHP\Data\Db $db */
-            $db = $this->container->get($service);
-            foreach ($this->getTables($service, $table_pattern) as $table) {
+        foreach ($connections ?: $this->getConnections() as $connection) {
+            $db = $this->dbFactory->get($connection);
+            foreach ($this->getTables($connection, $table_pattern) as $table) {
 
-                $fileName = "@runtime/db_csv/$service/$table.csv";
+                $fileName = "@runtime/db_csv/$connection/$table.csv";
                 LocalFS::dirCreate(dirname($fileName));
                 $table = $db->getPrefix() . $table;
                 $rows = $db->fetchAll("SELECT * FROM [$table]");

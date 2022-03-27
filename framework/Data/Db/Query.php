@@ -13,7 +13,8 @@ use ManaPHP\Helper\Sharding\ShardingTooManyException;
 use PDO;
 
 /**
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
+ * @property-read \ManaPHP\Logging\LoggerInterface  $logger
+ * @property-read \ManaPHP\Data\Db\FactoryInterface $dbFactory
  */
 class Query extends AbstractQuery
 {
@@ -24,7 +25,7 @@ class Query extends AbstractQuery
     protected array $bind = [];
     protected ?string $sql = null;
 
-    public function __construct(string $connection = 'db')
+    public function __construct(string $connection = 'default')
     {
         $this->connection = $connection;
     }
@@ -472,10 +473,11 @@ class Query extends AbstractQuery
             if (count($tables) !== 1) {
                 throw new ShardingTooManyException(__METHOD__);
             }
-            /** @var DbInterface $connection */
-            $connection = $this->container->get(key($shards));
 
-            $this->sql = $this->buildSql($connection, $tables[0], $this->joins);
+            $connection = key($shards);
+            $db = $this->dbFactory->get($connection);
+
+            $this->sql = $this->buildSql($db, $tables[0], $this->joins);
         }
 
         return $this->sql;
@@ -622,7 +624,7 @@ class Query extends AbstractQuery
 
     protected function query(string $connection, string $table): array
     {
-        $db = $this->container->get($connection);
+        $db = $this->dbFactory->get($connection);
 
         $joins = [];
         if ($this->joins) {
@@ -921,8 +923,7 @@ class Query extends AbstractQuery
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
-            /** @var DbInterface $db */
-            $db = $this->container->get($connection);
+            $db = $this->dbFactory->get($connection);
 
             foreach ($tables as $table) {
                 $affected_count += $db->update($table, $fieldValues, $this->conditions, $this->bind);
@@ -938,8 +939,7 @@ class Query extends AbstractQuery
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
-            /** @var DbInterface $db */
-            $db = $this->container->get($connection);
+            $db = $this->dbFactory->get($connection);
 
             foreach ($tables as $table) {
                 $affected_count += $db->delete($table, $this->conditions, $this->bind);

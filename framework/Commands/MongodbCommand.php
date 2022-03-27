@@ -5,48 +5,50 @@ namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
+use ManaPHP\Data\MongodbInterface;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
 /**
- * @property-read \ManaPHP\ConfigInterface $config
- * @property-read \ManaPHP\AliasInterface  $alias
+ * @property-read \ManaPHP\ConfigInterface               $config
+ * @property-read \ManaPHP\AliasInterface                $alias
+ * @property-read \ManaPHP\Data\Mongodb\FactoryInterface $mongodbFactory
  */
 class MongodbCommand extends Command
 {
     /**
-     * @param array $services
+     * @param array $connections
      *
      * @return array
      */
-    protected function getServices(array $services): array
+    protected function getConnections(array $connections): array
     {
-        if ($services) {
+        if ($connections) {
             $container = $this->container;
 
-            foreach ($services as $index => $service) {
-                if (!$container->has($service)) {
-                    if ($container->has($service . 'Mongodb')) {
-                        $services[$index] = $service . 'Mongodb';
-                    } elseif ($container->has($service . '_mongodb')) {
-                        $services[$index] = $service . '_mongodb';
+            foreach ($connections as $index => $connection) {
+                if (!$container->has($connection)) {
+                    if ($container->has($connection . 'Mongodb')) {
+                        $connections[$index] = $connection . 'Mongodb';
+                    } elseif ($container->has($connection . '_mongodb')) {
+                        $connections[$index] = $connection . '_mongodb';
                     } else {
-                        $this->console->warning("`$service` service is not exists: ignoring");
-                        unset($services[$index]);
+                        $this->console->warning("`$connection` connection is not exists: ignoring");
+                        unset($connections[$index]);
                     }
                 }
             }
         } else {
-            $services = [];
-            foreach ($this->config->get('dependencies') as $service => $config) {
+            $connections = [];
+            foreach ($this->config->get('factories', [])[MongodbInterface::class] ?? [] as $connection => $config) {
                 $config = json_stringify($config);
                 if (str_contains($config, 'mongodb://')) {
-                    $services[] = $service;
+                    $connections[] = $connection;
                 }
             }
         }
 
-        return $services;
+        return $connections;
     }
 
     /**
@@ -76,23 +78,21 @@ class MongodbCommand extends Command
     /**
      * generate models file from data files or online data
      *
-     * @param array $services  explicit the mongodb service name
-     * @param bool  $optimized output as more methods as possible
-     * @param int   $sample    sample size
-     * @param array $db        db name list
+     * @param array $connections explicit the mongodb connections name
+     * @param bool  $optimized   output as more methods as possible
+     * @param int   $sample      sample size
+     * @param array $db          db name list
      *
      * @return void
-     * @throws \ManaPHP\Data\Mongodb\Exception
      */
     public function modelsAction(
-        array $services = [],
+        array $connections = [],
         bool $optimized = false,
         int $sample = 1000,
         array $db = []
     ): void {
-        foreach ($this->getServices($services) as $service) {
-            /** @var \ManaPHP\Data\Mongodb $mongodb */
-            $mongodb = $this->container->get($service);
+        foreach ($this->getConnections($connections) as $connection) {
+            $mongodb = $this->mongodbFactory->get($connection);
 
             $defaultDb = $mongodb->getDb();
             $dbs = $defaultDb ? [$defaultDb] : $mongodb->listDatabases();
@@ -116,7 +116,7 @@ class MongodbCommand extends Command
                     $fieldTypes = $this->inferFieldTypes($docs);
                     $modelClass = 'App\Models\\' . $plainClass;
                     $ns = $defaultDb ? $collection : "$cdb.$collection";
-                    $model = $this->renderModel($fieldTypes, $modelClass, $service, $ns, $optimized);
+                    $model = $this->renderModel($fieldTypes, $modelClass, $connection, $ns, $optimized);
                     LocalFS::filePut($fileName, $model);
 
                     $this->console->writeLn(sprintf(' `%s` collection saved to `%s`', "$cdb.$collection", $fileName));
@@ -195,13 +195,13 @@ class MongodbCommand extends Command
     /**
      * @param array  $fieldTypes
      * @param string $modelName
-     * @param string $service
+     * @param string $connection
      * @param string $namespace
      * @param bool   $optimized
      *
      * @return string
      */
-    protected function renderModel(array $fieldTypes, string $modelName, string $service, string $namespace,
+    protected function renderModel(array $fieldTypes, string $modelName, string $connection, string $namespace,
         bool $optimized = false
     ): string {
         $fields = array_keys($fieldTypes);
@@ -253,11 +253,11 @@ class MongodbCommand extends Command
             $str .= '    }' . PHP_EOL;
         }
 
-        if ($service !== 'mongodb') {
+        if ($connection !== 'mongodb') {
             $str .= PHP_EOL;
-            $str .= '    public function db()' . PHP_EOL;
+            $str .= '    public function connection()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
-            $str .= "        return '$service';" . PHP_EOL;
+            $str .= "        return '$connection';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
         }
 
@@ -353,17 +353,16 @@ class MongodbCommand extends Command
     /**
      * export mongodb data to csv files
      *
-     * @param array  $services           services list
+     * @param array  $connections        connections list
      * @param string $collection_pattern match collection against a pattern
      * @param bool   $bom                contains BOM or not
      *
      * @return void
      */
-    public function csvAction(array $services = [], string $collection_pattern = '', bool $bom = false): void
+    public function csvAction(array $connections = [], string $collection_pattern = '', bool $bom = false): void
     {
-        foreach ($this->getServices($services) as $service) {
-            /** @var \ManaPHP\Data\Mongodb $mongodb */
-            $mongodb = $this->container->get($service);
+        foreach ($this->getConnections($connections) as $connection) {
+            $mongodb = $this->mongodbFactory->get($connection);
 
             $dbs = $mongodb->getDb() ? [$mongodb->getDb()] : $mongodb->listDatabases();
             foreach ($dbs as $db) {
@@ -433,18 +432,17 @@ class MongodbCommand extends Command
     /**
      * list databases and collections
      *
-     * @param array  $services           services list
+     * @param array  $connections        connections list
      * @param string $collection_pattern match collection against a pattern
      * @param string $field              collection must contain one this field
      * @param array  $db
      *
      * @return void
      */
-    public function listAction(array $services = [], string $collection_pattern = '', string $field = '', array $db = []
+    public function listAction(array $connections = [], string $collection_pattern = '', string $field = '', array $db = []
     ): void {
-        foreach ($this->getServices($services) as $service) {
-            /** @var \ManaPHP\Data\Mongodb $mongodb */
-            $mongodb = $this->container->get($service);
+        foreach ($this->getConnections($connections) as $connection) {
+            $mongodb = $this->mongodbFactory->get($connection);
 
             $dbs = $mongodb->getDb() ? [$mongodb->getDb()] : $mongodb->listDatabases();
             foreach ($dbs as $cdb) {
@@ -452,7 +450,7 @@ class MongodbCommand extends Command
                     continue;
                 }
 
-                $this->console->writeLn("---`$cdb` db of `$service` service---", Console::BC_CYAN);
+                $this->console->writeLn("---`$cdb` db of `$connection` connection---", Console::BC_CYAN);
                 foreach ($mongodb->listCollections($cdb) as $row => $collection) {
                     if ($collection_pattern && !fnmatch($collection_pattern, $collection)) {
                         continue;

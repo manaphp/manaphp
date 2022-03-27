@@ -7,7 +7,7 @@ interface TableInterface
 {
     public function table(): string;
 
-    public function db(): string;
+    public function connection(): string;
 
     public function getAnyShard(): array;
 

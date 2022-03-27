@@ -16,10 +16,10 @@ class StudentShardDb extends Model
         return '_student';
     }
 
-    public function db($context = null): string
+    public function connection($context = null): string
     {
         if ($context === true) {
-            return 'db';
+            return 'default';
         }
 
         if ($context instanceof StudentShardDb) {

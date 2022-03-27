@@ -8,9 +8,14 @@ use ManaPHP\Data\DbInterface;
 
 class Table extends AbstractTable
 {
-    public function db(): string
+    public function connection(): string
     {
-        return 'db';
+        return 'default';
+    }
+
+    public function getDb(string $connection): DbInterface
+    {
+        return $this->getShared(FactoryInterface::class)->get($connection);
     }
 
     public static function insert(array $record, bool $fetchInsertId = false): mixed
@@ -18,10 +23,9 @@ class Table extends AbstractTable
         /** @noinspection OneTimeUseVariablesInspection */
         $sample = static::sample();
 
-        list($db_id, $table) = $sample->getUniqueShard($record);
+        list($connection, $table) = $sample->getUniqueShard($record);
 
-        /** @var \ManaPHP\Data\DbInterface $db */
-        $db = static::sample()->getShared($db_id);
+        $db = static::sample()->getDb($connection);
 
         return $db->insert($table, $record, $fetchInsertId);
     }
@@ -31,12 +35,11 @@ class Table extends AbstractTable
         /** @noinspection OneTimeUseVariablesInspection */
         $sample = static::sample();
 
-        list($db, $table) = $sample->getUniqueShard($bind);
+        list($connection, $table) = $sample->getUniqueShard($bind);
 
-        /** @var \ManaPHP\Data\DbInterface $dbInstance */
-        $dbInstance = static::sample()->getShared($db);
+        $db = static::sample()->getDb($connection);
 
-        return $dbInstance->insertBySql($table, $sql, $bind);
+        return $db->insertBySql($table, $sql, $bind);
     }
 
     public static function delete(string|array $conditions, array $bind = []): int
@@ -44,12 +47,11 @@ class Table extends AbstractTable
         $shards = static::sample()->getMultipleShards($bind);
 
         $affected_count = 0;
-        foreach ($shards as $db => $tables) {
-            /** @var \ManaPHP\Data\DbInterface $dbInstance */
-            $dbInstance = static::sample()->getShared($db);
+        foreach ($shards as $connection => $tables) {
+            $db = static::sample()->getDb($connection);
 
             foreach ($tables as $table) {
-                $affected_count += $dbInstance->delete($table, $conditions, $bind);
+                $affected_count += $db->delete($table, $conditions, $bind);
             }
         }
 
@@ -61,12 +63,11 @@ class Table extends AbstractTable
         $shards = static::sample()->getMultipleShards($bind);
 
         $affected_count = 0;
-        foreach ($shards as $db => $tables) {
-            /** @var \ManaPHP\Data\DbInterface $dbInstance */
-            $dbInstance = static::sample()->getShared($db);
+        foreach ($shards as $connection => $tables) {
+            $db = static::sample()->getDb($connection);
 
             foreach ($tables as $table) {
-                $affected_count += $dbInstance->deleteBySql($table, $sql, $bind);
+                $affected_count += $db->deleteBySql($table, $sql, $bind);
             }
         }
 
@@ -78,12 +79,11 @@ class Table extends AbstractTable
         $shards = static::sample()->getMultipleShards($bind);
 
         $affected_count = 0;
-        foreach ($shards as $db => $tables) {
-            /** @var \ManaPHP\Data\DbInterface $dbInstance */
-            $dbInstance = static::sample()->getShared($db);
+        foreach ($shards as $connection => $tables) {
+            $db = static::sample()->getDb($connection);
 
             foreach ($tables as $table) {
-                $affected_count += $dbInstance->update($table, $fieldValues, $conditions, $bind);
+                $affected_count += $db->update($table, $fieldValues, $conditions, $bind);
             }
         }
 
@@ -95,9 +95,8 @@ class Table extends AbstractTable
         $shards = static::sample()->getMultipleShards($bind);
 
         $affected_count = 0;
-        foreach ($shards as $id => $tables) {
-            /** @var \ManaPHP\Data\DbInterface $db */
-            $db = static::sample()->getShared($id);
+        foreach ($shards as $connection => $tables) {
+            $db = static::sample()->getDb($connection);
 
             foreach ($tables as $table) {
                 $affected_count += $db->updateBySql($table, $sql, $bind);

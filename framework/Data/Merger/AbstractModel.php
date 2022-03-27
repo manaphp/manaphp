@@ -19,13 +19,7 @@ abstract class AbstractModel extends \ManaPHP\Data\AbstractModel
         return $queries->setModel($this->getModel())->select($this->fields());
     }
 
-    public function db(): string
-    {
-        throw new NotSupportedException(__METHOD__);
-    }
-
-    /** @noinspection PhpUnusedParameterInspection */
-    public static function connection(mixed $context = null): void
+    public function connection(): string
     {
         throw new NotSupportedException(__METHOD__);
     }

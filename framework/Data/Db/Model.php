@@ -13,9 +13,14 @@ use ManaPHP\Logging\LoggerInterface;
 
 class Model extends AbstractModel implements ModelInterface
 {
-    public function db(): string
+    public function connection(): string
     {
-        return 'db';
+        return 'default';
+    }
+
+    public function getDb(string $connection): DbInterface
+    {
+        return $this->getShared(FactoryInterface::class)->get($connection);
     }
 
     public function getModelMetadata(): MetadataInterface
@@ -121,7 +126,7 @@ class Model extends AbstractModel implements ModelInterface
 
         $this->validate($fields);
 
-        list($db, $table) = $this->getUniqueShard($this);
+        list($connection, $table) = $this->getUniqueShard($this);
 
         $this->fireEvent('model:saving');
         $this->fireEvent('model:creating');
@@ -149,12 +154,11 @@ class Model extends AbstractModel implements ModelInterface
             }
         }
 
-        /** @var \ManaPHP\Data\DbInterface $dbInstance */
-        $dbInstance = $this->getShared($db);
+        $db = $this->getDb($connection);
         if ($autoIncrementField && $this->$autoIncrementField === null) {
-            $this->$autoIncrementField = (int)$dbInstance->insert($table, $fieldValues, true);
+            $this->$autoIncrementField = (int)$db->insert($table, $fieldValues, true);
         } else {
-            $dbInstance->insert($table, $fieldValues);
+            $db->insert($table, $fieldValues);
         }
 
         if ($defaultValueFields) {
@@ -220,7 +224,7 @@ class Model extends AbstractModel implements ModelInterface
             $this->$field = $value;
         }
 
-        list($db, $table) = $this->getUniqueShard($this);
+        list($connection, $table) = $this->getUniqueShard($this);
 
         $this->fireEvent('model:saving');
         $this->fireEvent('model:updating');
@@ -266,9 +270,8 @@ class Model extends AbstractModel implements ModelInterface
             }
         }
 
-        /** @var \ManaPHP\Data\DbInterface $dbInstance */
-        $dbInstance = $this->getShared($db);
-        $dbInstance->update(
+        $db = $this->getDb($connection);
+        $db->update(
             $table, $fieldValues, [$mapFields[$primaryKey] ?? $primaryKey => $this->$primaryKey], $bind
         );
 
@@ -289,17 +292,37 @@ class Model extends AbstractModel implements ModelInterface
         return $this;
     }
 
+    public function delete(): static
+    {
+        $primaryKey = $this->primaryKey();
+
+        if ($this->$primaryKey === null) {
+            throw new MisuseException('missing primary key value');
+        }
+
+        list($connection, $table) = $this->getUniqueShard($this);
+
+        $this->fireEvent('model:deleting');
+
+        $db = $this->getDb($connection);
+
+        $db->delete($table, [$primaryKey => $this->$primaryKey]);
+
+        $this->fireEvent('model:deleted');
+
+        return $this;
+    }
+
     public static function insertBySql(string $sql, array $bind = []): int
     {
         /** @noinspection OneTimeUseVariablesInspection */
         $sample = static::sample();
 
-        list($db, $table) = $sample->getUniqueShard($bind);
+        list($connection, $table) = $sample->getUniqueShard($bind);
 
-        /** @var \ManaPHP\Data\DbInterface $dbInstance */
-        $dbInstance = static::sample()->getShared($db);
+        $db = static::sample()->getDb($connection);
 
-        return $dbInstance->insertBySql($table, $sql, $bind);
+        return $db->insertBySql($table, $sql, $bind);
     }
 
     public static function deleteBySql(string $sql, array $bind = []): int
@@ -307,12 +330,11 @@ class Model extends AbstractModel implements ModelInterface
         $shards = static::sample()->getMultipleShards($bind);
 
         $affected_count = 0;
-        foreach ($shards as $db => $tables) {
-            /** @var \ManaPHP\Data\DbInterface $dbInstance */
-            $dbInstance = static::sample()->getShared($db);
+        foreach ($shards as $connection => $tables) {
+            $db = static::sample()->getDb($connection);
 
             foreach ($tables as $table) {
-                $affected_count += $dbInstance->deleteBySql($table, $sql, $bind);
+                $affected_count += $db->deleteBySql($table, $sql, $bind);
             }
         }
 
@@ -324,12 +346,11 @@ class Model extends AbstractModel implements ModelInterface
         $shards = static::sample()->getMultipleShards($bind);
 
         $affected_count = 0;
-        foreach ($shards as $db => $tables) {
-            /** @var \ManaPHP\Data\DbInterface $dbInstance */
-            $dbInstance = static::sample()->getShared($db);
+        foreach ($shards as $connection => $tables) {
+            $db = static::sample()->getDb($connection);
 
             foreach ($tables as $table) {
-                $affected_count += $dbInstance->updateBySql($table, $sql, $bind);
+                $affected_count += $db->updateBySql($table, $sql, $bind);
             }
         }
 
@@ -345,7 +366,7 @@ class Model extends AbstractModel implements ModelInterface
     {
         $sample = static::sample();
 
-        list($db, $table) = $sample->getUniqueShard($record);
+        list($connection, $table) = $sample->getUniqueShard($record);
         $logger = $sample->getShared(LoggerInterface::class);
 
         if ($fields = array_diff(array_keys($record), $sample->getModelMetadata()->getAttributes($sample))) {
@@ -356,9 +377,8 @@ class Model extends AbstractModel implements ModelInterface
             }
         }
 
-        /** @var \ManaPHP\Data\DbInterface $dbInstance */
-        $dbInstance = static::sample()->getShared($db);
-        $dbInstance->insert($table, $record);
+        $db = static::sample()->getDb($connection);
+        $db->insert($table, $record);
 
         return 1;
     }

@@ -1055,28 +1055,6 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         return static::select()->search($filters);
     }
 
-    public function delete(): static
-    {
-        $primaryKey = $this->primaryKey();
-
-        if ($this->$primaryKey === null) {
-            throw new MisuseException('missing primary key value');
-        }
-
-        list($db, $table) = $this->getUniqueShard($this);
-
-        $this->fireEvent('model:deleting');
-
-        /** @var DbInterface $dbInstance */
-        $dbInstance = $this->getShared($db);
-
-        $dbInstance->delete($table, [$primaryKey => $this->$primaryKey]);
-
-        $this->fireEvent('model:deleted');
-
-        return $this;
-    }
-
     /**
      * @param string  $thatModel
      * @param ?string $thisField =model_field(new static)
