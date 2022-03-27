@@ -4,42 +4,19 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Db;
 
 use ManaPHP\Data\AbstractModel;
-use ManaPHP\Data\Db\Model\MetadataInterface;
+use ManaPHP\Data\Db\Model\InfererInterface;
 use ManaPHP\Data\Model\ExpressionInterface;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Container;
 
 class Model extends AbstractModel implements ModelInterface
 {
-    public function getModelMetadata(): MetadataInterface
-    {
-        return Container::get(MetadataInterface::class);
-    }
-
     /**
      * @return string =model_field(new static)
      */
     public function primaryKey(): string
     {
-        static $cached = [];
-
-        $class = static::class;
-
-        if (!isset($cached[$class])) {
-            if ($primaryKey = $this->inferPrimaryKey($class)) {
-                return $cached[$class] = $primaryKey;
-            } else {
-                $primaryKeys = $this->getModelMetadata()->getPrimaryKeyAttributes($this);
-                if (count($primaryKeys) !== 1) {
-                    throw new NotSupportedException('only support one primary key');
-                }
-                $primaryKey = $primaryKeys[0];
-                return $cached[$class] = array_search($primaryKey, $this->mapFields(), true) ?: $primaryKey;
-            }
-        }
-
-        return $cached[$class];
+        return Container::get(InfererInterface::class)->primaryKey(static::class);
     }
 
     /**
@@ -47,20 +24,7 @@ class Model extends AbstractModel implements ModelInterface
      */
     public function fields(): array
     {
-        static $cached = [];
-
-        $class = static::class;
-        if (!isset($cached[$class])) {
-            $fields = [];
-            foreach (get_class_vars($class) as $field => $value) {
-                if ($value === null && $field[0] !== '_') {
-                    $fields[] = $field;
-                }
-            }
-            $cached[$class] = $fields ?: $this->getModelMetadata()->getAttributes($this);
-        }
-
-        return $cached[$class];
+        return Container::get(InfererInterface::class)->fields(static::class);
     }
 
     /**
@@ -68,22 +32,7 @@ class Model extends AbstractModel implements ModelInterface
      */
     public function intFields(): array
     {
-        static $cached;
-
-        $class = static::class;
-        if (($fields = $cached[$class] ?? null) === null) {
-            if ($mapFields = $this->mapFields()) {
-                foreach ($this->getModelMetadata()->getIntTypeAttributes($this) as $field) {
-                    $fields[] = array_search($field, $mapFields, true) ?: $field;
-                }
-            } else {
-                $fields = $this->getModelMetadata()->getIntTypeAttributes($this);
-            }
-
-            $cached[$class] = $fields;
-        }
-
-        return $fields;
+        return Container::get(InfererInterface::class)->intFields(static::class);
     }
 
     public function getNextAutoIncrementId(int $step = 1): ?int
