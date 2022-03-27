@@ -5,6 +5,7 @@ namespace ManaPHP\Data\Db;
 
 use ManaPHP\Data\AbstractTable;
 use ManaPHP\Data\DbInterface;
+use ManaPHP\Helper\Container;
 
 class Table extends AbstractTable
 {
@@ -15,7 +16,7 @@ class Table extends AbstractTable
 
     public function getDb(string $connection): DbInterface
     {
-        return $this->getShared(FactoryInterface::class)->get($connection);
+        return Container::get(FactoryInterface::class)->get($connection);
     }
 
     public static function insert(array $record, bool $fetchInsertId = false): mixed

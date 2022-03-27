@@ -23,6 +23,7 @@ use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;
+use ManaPHP\Helper\Container;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
@@ -305,7 +306,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         $sample = static::sample();
 
         /** @noinspection OneTimeUseVariablesInspection */
-        $request = $sample->getShared(RequestInterface::class);
+        $request = Container::get(RequestInterface::class);
 
         return $request->getId($sample->primaryKey());
     }
@@ -562,7 +563,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     {
         $fields = $fields ?? $this->safeFields();
 
-        $request = $this->getShared(RequestInterface::class);
+        $request = Container::get(RequestInterface::class);
 
         $data = $request->get();
 
@@ -597,7 +598,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
             throw new MisuseException(['`%s` rules must be an associative array', static::class]);
         }
 
-        $validator = $this->getShared(ValidatorInterface::class);
+        $validator = Container::get(ValidatorInterface::class);
 
         $errors = [];
 
@@ -634,7 +635,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
             $rules = $rules[$field];
         }
 
-        $validator = $this->getShared(ValidatorInterface::class);
+        $validator = Container::get(ValidatorInterface::class);
 
         $this->$field = $validator->validateModel($field, $this, $rules);
     }
@@ -643,7 +644,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     {
         $current_time = time();
 
-        $identity = $this->getShared(IdentityInterface::class);
+        $identity = Container::get(IdentityInterface::class);
         $user_id = $identity->getId(0);
         $user_name = $identity->getName('');
 
@@ -680,7 +681,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     {
         $current_time = time();
 
-        $identity = $this->getShared(IdentityInterface::class);
+        $identity = Container::get(IdentityInterface::class);
         $user_id = $identity->getId(0);
         $user_name = $identity->getName('');
 
@@ -782,7 +783,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
 
     public function with(string|array $withs): static
     {
-        $relationManager = $this->getShared(RelationManager::class);
+        $relationManager = Container::get(RelationManager::class);
 
         $relationManager->earlyLoad($this, [$this], $withs);
         return $this;
@@ -910,7 +911,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
 
     public function fireEvent(string $event, mixed $data = null): void
     {
-        $eventManager = $this->getShared(EventManager::class);
+        $eventManager = Container::get(EventManager::class);
 
         $eventManager->fireEvent($event, $data, $this);
     }
@@ -1153,11 +1154,6 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         return $this->hasManyToMany($thatModel, $pivotModel);
     }
 
-    public function getNew(string $class, array $params = []): mixed
-    {
-        return $this->_container->make($class, $params);
-    }
-
     /**
      * @param string $name
      *
@@ -1166,16 +1162,12 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      */
     public function __get(mixed $name): mixed
     {
-        if ($name === '_container') {
-            return $this->_container = container();
-        }
-
         $method = 'get' . ucfirst($name);
         if (method_exists($this, $method)) {
             return $this->$name = $this->$method()->fetch();
-        } elseif ($this->_container->has($name)) {
-            return $this->{$name} = $this->getShared($name);
-        } elseif (($relationManager = $this->getShared(RelationManager::class))->has($this, $name)) {
+        } elseif (Container::has($name)) {
+            return $this->{$name} = Container::get($name);
+        } elseif (($relationManager = Container::get(RelationManager::class))->has($this, $name)) {
             return $this->$name = $relationManager->lazyLoad($this, $name)->fetch();
         } else {
             throw new UnknownPropertyException(['`%s` does not contain `%s` field.`', static::class, $name]);
@@ -1199,7 +1191,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
     public function __call(string $name, array $arguments): mixed
     {
         if (str_starts_with($name, 'get')) {
-            $relationManager = $this->getShared(RelationManager::class);
+            $relationManager = Container::get(RelationManager::class);
 
             $relation = lcfirst(substr($name, 3));
             if ($relationManager->has($this, $relation)) {
@@ -1219,7 +1211,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
         $data = [];
 
         foreach (get_object_vars($this) as $field => $value) {
-            if (in_array($field, ['_container', '_snapshot', '_last_refresh'], true)) {
+            if (in_array($field, ['_snapshot', '_last_refresh'], true)) {
                 continue;
             }
 

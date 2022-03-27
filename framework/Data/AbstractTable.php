@@ -8,9 +8,6 @@ use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
 use ManaPHP\Helper\Str;
 
-/**
- * @property-read \ManaPHP\Di\ContainerInterface $_container
- */
 abstract class AbstractTable implements TableInterface
 {
     public function getAnyShard(): array
@@ -88,20 +85,7 @@ abstract class AbstractTable implements TableInterface
         return $cached[$class];
     }
 
-    public function getShared(string $name): mixed
-    {
-        return $this->_container->get($name);
-    }
-
-    public function __get(string $name): mixed
-    {
-        if ($name === '_container') {
-            return $this->_container = container();
-        } else {
-            return null;
-        }
-    }
-
+    /** @noinspection MagicMethodsValidityInspection */
     public function __set(string $name, mixed $value): void
     {
         if (is_scalar($value)) {

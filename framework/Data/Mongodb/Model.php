@@ -9,6 +9,7 @@ use ManaPHP\Data\MongodbInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\RuntimeException;
+use ManaPHP\Helper\Container;
 use MongoDB\BSON\ObjectId;
 
 class Model extends AbstractModel
@@ -23,7 +24,7 @@ class Model extends AbstractModel
 
     public function getMongodb($connection): MongodbInterface
     {
-        return $this->getShared(FactoryInterface::class)->get($connection);
+        return Container::get(FactoryInterface::class)->get($connection);
     }
 
     public static function setDefaultAllowNullValue(bool $allow): void
@@ -240,7 +241,7 @@ class Model extends AbstractModel
      */
     public function newQuery(): Query
     {
-        return $this->getNew('ManaPHP\Data\Mongodb\Query')->setModel($this);
+        return Container::make('ManaPHP\Data\Mongodb\Query')->setModel($this);
     }
 
     public function create(): static

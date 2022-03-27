@@ -9,6 +9,7 @@ use ManaPHP\Data\DbInterface;
 use ManaPHP\Data\Model\ExpressionInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Helper\Container;
 use ManaPHP\Logging\LoggerInterface;
 
 class Model extends AbstractModel implements ModelInterface
@@ -20,12 +21,12 @@ class Model extends AbstractModel implements ModelInterface
 
     public function getDb(string $connection): DbInterface
     {
-        return $this->getShared(FactoryInterface::class)->get($connection);
+        return Container::get(FactoryInterface::class)->get($connection);
     }
 
     public function getModelMetadata(): MetadataInterface
     {
-        return $this->getShared(MetadataInterface::class);
+        return Container::get(MetadataInterface::class);
     }
 
     /**
@@ -107,7 +108,7 @@ class Model extends AbstractModel implements ModelInterface
      */
     public function newQuery(): Query
     {
-        return $this->getNew('ManaPHP\Data\Db\Query')->setModel($this);
+        return Container::make('ManaPHP\Data\Db\Query')->setModel($this);
     }
 
     public function create(): static
@@ -367,7 +368,7 @@ class Model extends AbstractModel implements ModelInterface
         $sample = static::sample();
 
         list($connection, $table) = $sample->getUniqueShard($record);
-        $logger = $sample->getShared(LoggerInterface::class);
+        $logger = Container::get(LoggerInterface::class);
 
         if ($fields = array_diff(array_keys($record), $sample->getModelMetadata()->getAttributes($sample))) {
             $logger->debug(['insert `:1` table skip fields: :2', $table, array_values($fields)]);
