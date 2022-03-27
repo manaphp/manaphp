@@ -64,7 +64,7 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
         }
 
         if (!$exists) {
-            throw new NotFoundException(['`%s` class is not exists', $class]);
+            throw new NotFoundException(['`%s` is not exists', $class]);
         }
 
         if (is_subclass_of($class, FactoryInterface::class)) {
