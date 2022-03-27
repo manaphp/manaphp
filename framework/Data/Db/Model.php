@@ -14,11 +14,6 @@ use ManaPHP\Logging\LoggerInterface;
 
 class Model extends AbstractModel implements ModelInterface
 {
-    public function connection(): string
-    {
-        return 'default';
-    }
-
     public function getModelMetadata(): MetadataInterface
     {
         return Container::get(MetadataInterface::class);

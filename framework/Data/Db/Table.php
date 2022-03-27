@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Db;
 
-use ManaPHP\Data\AbstractTable;
 use ManaPHP\Data\Model\ThoseInterface;
 use ManaPHP\Helper\Container;
 
-class Table extends AbstractTable
+class Table
 {
     public function connection(): string
     {

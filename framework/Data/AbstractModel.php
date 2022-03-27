@@ -25,13 +25,16 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Helper\Container;
+use ManaPHP\Helper\Sharding;
+use ManaPHP\Helper\Sharding\ShardingTooManyException;
+use ManaPHP\Helper\Str;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ManaPHP\Validating\ValidatorInterface;
 use ReflectionClass;
 
-abstract class AbstractModel extends AbstractTable implements ModelInterface, ArrayAccess, JsonSerializable
+abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSerializable
 {
     protected false|array $_snapshot = [];
     protected float $_last_refresh = 0;
@@ -52,6 +55,73 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
                 $this->{$field} = $value;
             }
         }
+    }
+
+    public function getAnyShard(): array
+    {
+        $shards = $this->getAllShards();
+
+        return [key($shards), current($shards)[0]];
+    }
+
+    /**
+     * @param array|\ManaPHP\Data\ModelInterface $context =model_var(new static)
+     *
+     * @return array
+     */
+    public function getUniqueShard(array|ModelInterface $context): array
+    {
+        $shards = $this->getMultipleShards($context);
+        if (count($shards) !== 1) {
+            throw new ShardingTooManyException(['too many dbs: `:dbs`', 'dbs' => array_keys($shards)]);
+        }
+
+        $tables = current($shards);
+        if (count($tables) !== 1) {
+            throw new ShardingTooManyException(['too many tables: `:tables`', 'tables' => $tables]);
+        }
+
+        return [key($shards), $tables[0]];
+    }
+
+    /**
+     * @param array|\ManaPHP\Data\ModelInterface $context =model_var(new static)
+     *
+     * @return array
+     */
+    public function getMultipleShards(array|ModelInterface $context): array
+    {
+        $connection = $this->connection();
+        $table = $this->table();
+
+        if (strcspn($connection, ':,') === strlen($connection) && strcspn($table, ':,') === strlen($table)) {
+            return [$connection => [$table]];
+        } else {
+            return Sharding::multiple($connection, $table, $context);
+        }
+    }
+
+    public function getAllShards(): array
+    {
+        $connection = $this->connection();
+        $table = $this->table();
+
+        if (strcspn($connection, ':,') === strlen($connection) && strcspn($table, ':,') === strlen($table)) {
+            return [$connection => [$table]];
+        } else {
+            return Sharding::all($connection, $table);
+        }
+    }
+
+    public function connection(): string
+    {
+        return 'default';
+    }
+
+    public function table(): string
+    {
+        $class = static::class;
+        return Str::snakelize(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1));
     }
 
     protected function inferPrimaryKey(string $class): ?string
