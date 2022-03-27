@@ -18,11 +18,6 @@ class Model extends AbstractModel
     protected static bool $_defaultAllowNullValue = false;
     public mixed $_id;
 
-    public function connection(): string
-    {
-        return 'default';
-    }
-
     public static function setDefaultAllowNullValue(bool $allow): void
     {
         self::$_defaultAllowNullValue = $allow;
