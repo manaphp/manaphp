@@ -62,6 +62,10 @@ class Kernel extends Component
         foreach ($this->config->get('factories', []) as $interface => $definitions) {
             foreach ($definitions as $name => $definition) {
                 $this->container->set("$interface#$name", $definition);
+
+                if ($name === 'default') {
+                    $this->container->set($interface, "#$name");
+                }
             }
         }
 
