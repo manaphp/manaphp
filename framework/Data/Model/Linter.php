@@ -12,6 +12,7 @@ use ReflectionProperty;
 
 /**
  * @property-read \ManaPHP\Data\Db\Model\MetadataInterface $modelMetadata
+ * @property-read \ManaPHP\Data\Model\ThoseInterface       $those
  */
 class Linter extends Component
 {
@@ -24,8 +25,7 @@ class Linter extends Component
     public function __construct(string|ModelInterface $model)
     {
         $this->class = is_string($model) ? $model : get_class($model);
-        /** @noinspection PhpUndefinedMethodInspection */
-        $this->model = is_string($model) ? $model::sample() : $model;
+        $this->model = is_string($model) ? $this->those->get($model) : $model;
         $this->reflection = new ReflectionClass($model);
     }
 

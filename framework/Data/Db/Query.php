@@ -631,9 +631,8 @@ class Query extends AbstractQuery
             foreach ($this->joins as $join) {
                 $join_table = $join[0];
                 if (str_contains($join_table, '\\')) {
-                    /** @var \ManaPHP\Data\TableInterface $iTable */
-                    $iTable = $join_table::sample();
-                    $join_shards = $iTable->getMultipleShards($this->shard_context);
+                    $model = $this->those->get($join_table);
+                    $join_shards = $model->getMultipleShards($this->shard_context);
                 } else {
                     $connection = $this->connection;
                     if ($shard_strategy = $this->shard_strategy) {

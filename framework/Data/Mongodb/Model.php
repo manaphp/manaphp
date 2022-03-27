@@ -5,6 +5,7 @@ namespace ManaPHP\Data\Mongodb;
 
 use ManaPHP\Data\AbstractModel;
 use ManaPHP\Data\Model\ExpressionInterface;
+use ManaPHP\Data\Model\ThoseInterface;
 use ManaPHP\Data\MongodbInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotImplementedException;
@@ -438,9 +439,9 @@ class Model extends AbstractModel
     public static function aggregateEx(array $pipeline, array $options = []): array
     {
         /** @noinspection OneTimeUseVariablesInspection */
-        $sample = static::sample();
+        $that = Container::get(ThoseInterface::class)->get(static::class);
 
-        list($connection, $collection) = $sample->getUniqueShard([]);
+        list($connection, $collection) = $that->getUniqueShard([]);
 
         $mongodb = Container::get(FactoryInterface::class)->get($connection);
         return $mongodb->aggregate($collection, $pipeline, $options);
@@ -448,20 +449,20 @@ class Model extends AbstractModel
 
     public function normalizeDocument(array $document): array
     {
-        $sample = static::sample();
+        $that = Container::get(ThoseInterface::class)->get(static::class);
 
-        $allowNull = $sample->isAllowNullValue();
-        $fieldTypes = $sample->fieldTypes();
-        $autoIncrementField = $sample->autoIncrementField();
+        $allowNull = $that->isAllowNullValue();
+        $fieldTypes = $that->fieldTypes();
+        $autoIncrementField = $that->autoIncrementField();
         if ($autoIncrementField && !isset($document[$autoIncrementField])) {
-            $document[$autoIncrementField] = $sample->getNextAutoIncrementId();
+            $document[$autoIncrementField] = $that->getNextAutoIncrementId();
         }
 
         foreach ($fieldTypes as $field => $type) {
             if (isset($document[$field])) {
-                $document[$field] = $sample->normalizeValue($type, $document[$field]);
+                $document[$field] = $that->normalizeValue($type, $document[$field]);
             } elseif ($field !== '_id') {
-                $document[$field] = $allowNull ? null : $sample->normalizeValue($type, '');
+                $document[$field] = $allowNull ? null : $that->normalizeValue($type, '');
             }
         }
 
@@ -474,13 +475,13 @@ class Model extends AbstractModel
             return 0;
         }
 
-        $sample = static::sample();
+        $that = Container::get(ThoseInterface::class)->get(static::class);
 
         foreach ($documents as $i => $document) {
-            $documents[$i] = $sample->normalizeDocument($document);
+            $documents[$i] = $that->normalizeDocument($document);
         }
 
-        list($connection, $collection) = $sample->getUniqueShard([]);
+        list($connection, $collection) = $that->getUniqueShard([]);
 
         $mongodb = Container::get(FactoryInterface::class)->get($connection);
         return $mongodb->bulkInsert($collection, $documents);
@@ -492,17 +493,17 @@ class Model extends AbstractModel
             return 0;
         }
 
-        $sample = static::sample();
+        $that = Container::get(ThoseInterface::class)->get(static::class);
 
-        $primaryKey = $sample->primaryKey();
+        $primaryKey = $that->primaryKey();
         foreach ($documents as $i => $document) {
             if (!isset($document[$primaryKey])) {
                 throw new MisuseException(['bulkUpdate `%s` model must set primary value', static::class]);
             }
-            $documents[$i] = $sample->normalizeDocument($document);
+            $documents[$i] = $that->normalizeDocument($document);
         }
 
-        $shards = $sample->getAllShards();
+        $shards = $that->getAllShards();
 
         $affected_count = 0;
         foreach ($shards as $connection => $collections) {
@@ -521,16 +522,16 @@ class Model extends AbstractModel
             return 0;
         }
 
-        $sample = static::sample();
+        $that = Container::get(ThoseInterface::class)->get(static::class);
 
         foreach ($documents as $i => $document) {
-            $documents[$i] = $sample->normalizeDocument($document);
+            $documents[$i] = $that->normalizeDocument($document);
         }
 
-        list($connection, $collection) = $sample->getUniqueShard([]);
+        list($connection, $collection) = $that->getUniqueShard([]);
 
         $mongodb = Container::get(FactoryInterface::class)->get($connection);
-        return $mongodb->bulkUpsert($collection, $documents, $sample->primaryKey());
+        return $mongodb->bulkUpsert($collection, $documents, $that->primaryKey());
     }
 
     /**
@@ -540,11 +541,11 @@ class Model extends AbstractModel
      */
     public static function insert(array $record): int
     {
-        $sample = static::sample();
+        $that = Container::get(ThoseInterface::class)->get(static::class);
 
-        $record = $sample->normalizeDocument($record);
+        $record = $that->normalizeDocument($record);
 
-        list($connection, $collection) = $sample->getUniqueShard($record);
+        list($connection, $collection) = $that->getUniqueShard($record);
 
         $mongodb = Container::get(FactoryInterface::class)->get($connection);
         $mongodb->insert($collection, $record);

@@ -11,6 +11,7 @@ use ManaPHP\Data\Model\Expression\Decrement;
 use ManaPHP\Data\Model\Expression\Increment;
 use ManaPHP\Data\Model\NotFoundException;
 use ManaPHP\Data\Model\SerializeNormalizable;
+use ManaPHP\Data\Model\ThoseInterface;
 use ManaPHP\Data\Relation\BelongsTo;
 use ManaPHP\Data\Relation\HasMany;
 use ManaPHP\Data\Relation\HasManyOthers;
@@ -227,14 +228,14 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
             $fields = [$fields];
         }
 
-        $sample = static::sample();
+        $that = Container::get(ThoseInterface::class)->get(static::class);
 
-        $keyField = $sample->primaryKey();
+        $keyField = $that->primaryKey();
         if (!in_array($keyField, $fields, true)) {
             array_unshift($fields, $keyField);
         }
 
-        if ($sample->hasField('display_order')) {
+        if ($that->hasField('display_order')) {
             $order = ['display_order' => SORT_DESC, $keyField => SORT_ASC];
         } else {
             $order = [$keyField => SORT_ASC];
@@ -244,16 +245,16 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
 
     public static function get(int|string $id, ?int $ttl = null): static
     {
-        $sample = static::sample();
+        $that = Container::get(ThoseInterface::class)->get(static::class);
         if ($ttl <= 0) {
-            return static::firstOrFail([$sample->primaryKey() => $id]);
+            return static::firstOrFail([$that->primaryKey() => $id]);
         }
 
         $key = __FILE__ . ':' . static::class . ":get:$id:$ttl";
 
         $r = apcu_fetch($key, $success);
         if (!$success) {
-            $r = static::firstOrFail([$sample->primaryKey() => $id]);
+            $r = static::firstOrFail([$that->primaryKey() => $id]);
             apcu_store($key, $r, $ttl);
         }
 
@@ -303,12 +304,12 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
 
     public static function rId(): int|string
     {
-        $sample = static::sample();
+        $that = Container::get(ThoseInterface::class)->get(static::class);
 
         /** @noinspection OneTimeUseVariablesInspection */
         $request = Container::get(RequestInterface::class);
 
-        return $request->getId($sample->primaryKey());
+        return $request->getId($that->primaryKey());
     }
 
     /**
@@ -318,8 +319,8 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      */
     public static function rGet(?array $fields = null): static
     {
-        $sample = static::sample();
-        return static::firstOrFail([$sample->primaryKey() => static::rId()], $fields);
+        $that = Container::get(ThoseInterface::class)->get(static::class);
+        return static::firstOrFail([$that->primaryKey() => static::rId()], $fields);
     }
 
     /**
@@ -332,9 +333,9 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      */
     public static function last(?array $filters = null, ?array $fields = null): ?static
     {
-        $sample = static::sample();
+        $that = Container::get(ThoseInterface::class)->get(static::class);
 
-        $primaryKey = $sample->primaryKey();
+        $primaryKey = $that->primaryKey();
         $rs = static::select($fields)->where($filters)->orderBy([$primaryKey => SORT_DESC])->limit(1)->fetch();
         return $rs[0] ?? null;
     }
@@ -352,8 +353,8 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
             throw new MisuseException('ttl must be a integer');
         }
 
-        $sample = static::sample();
-        $pkName = $sample->primaryKey();
+        $that = Container::get(ThoseInterface::class)->get(static::class);
+        $pkName = $that->primaryKey();
 
         $pkValue = null;
 
@@ -427,7 +428,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      */
     public static function kvalues(string $field, ?array $filters = null): array
     {
-        $keyField = static::sample()->primaryKey();
+        $keyField = Container::get(ThoseInterface::class)->get(static::class)->primaryKey();
         $valueField = $field;
 
         $kvalues = [];
@@ -1031,7 +1032,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      */
     public static function query(?string $alias = null): QueryInterface
     {
-        $query = static::sample()->newQuery();
+        $query = Container::get(ThoseInterface::class)->get(static::class)->newQuery();
 
         return $alias ? $query->from(static::class, $alias) : $query;
     }
@@ -1064,9 +1065,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      */
     public function belongsTo(string $thatModel, ?string $thisField = null): BelongsTo
     {
-        /** @var \ManaPHP\Data\ModelInterface $thatClass */
-        $thatClass = $thatModel;
-        $that = $thatClass::sample();
+        $that = Container::get(ThoseInterface::class)->get($thatModel);
 
         return new BelongsTo(static::class, $thisField ?? $that->foreignedKey(), $thatModel, $that->primaryKey());
     }
@@ -1095,9 +1094,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
 
     public function hasManyToMany(string $thatModel, string $pivotModel): HasManyToMany
     {
-        /** @var \ManaPHP\Data\ModelInterface $thatClass */
-        $thatClass = $thatModel;
-        $that = $thatClass::sample();
+        $that = Container::get(ThoseInterface::class)->get($thatModel);
 
         return new HasManyToMany(
             static::class, $this->primaryKey(), $thatModel, $that->primaryKey(),
@@ -1113,9 +1110,7 @@ abstract class AbstractModel extends AbstractTable implements ModelInterface, Ar
      */
     public function hasManyOthers(string $thatModel, ?string $thisFilter = null): HasManyOthers
     {
-        /** @var \ManaPHP\Data\ModelInterface $thatClass */
-        $thatClass = $thatModel;
-        $that = $thatClass::sample();
+        $that = Container::get(ThoseInterface::class)->get($thatModel);
 
         $foreingedKey = $that->foreignedKey();
 

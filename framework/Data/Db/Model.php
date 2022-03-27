@@ -5,8 +5,8 @@ namespace ManaPHP\Data\Db;
 
 use ManaPHP\Data\AbstractModel;
 use ManaPHP\Data\Db\Model\MetadataInterface;
-use ManaPHP\Data\DbInterface;
 use ManaPHP\Data\Model\ExpressionInterface;
+use ManaPHP\Data\Model\ThoseInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Container;
@@ -312,9 +312,9 @@ class Model extends AbstractModel implements ModelInterface
     public static function insertBySql(string $sql, array $bind = []): int
     {
         /** @noinspection OneTimeUseVariablesInspection */
-        $sample = static::sample();
+        $that = Container::get(ThoseInterface::class)->get(static::class);
 
-        list($connection, $table) = $sample->getUniqueShard($bind);
+        list($connection, $table) = $that->getUniqueShard($bind);
 
         $db = Container::get(FactoryInterface::class)->get($connection);
 
@@ -323,7 +323,7 @@ class Model extends AbstractModel implements ModelInterface
 
     public static function deleteBySql(string $sql, array $bind = []): int
     {
-        $shards = static::sample()->getMultipleShards($bind);
+        $shards = Container::get(ThoseInterface::class)->get(static::class)->getMultipleShards($bind);
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
@@ -339,7 +339,7 @@ class Model extends AbstractModel implements ModelInterface
 
     public static function updateBySql(string $sql, array $bind = []): int
     {
-        $shards = static::sample()->getMultipleShards($bind);
+        $shards = Container::get(ThoseInterface::class)->get(static::class)->getMultipleShards($bind);
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
@@ -360,12 +360,12 @@ class Model extends AbstractModel implements ModelInterface
      */
     public static function insert(array $record): int
     {
-        $sample = static::sample();
+        $that = Container::get(ThoseInterface::class)->get(static::class);
 
-        list($connection, $table) = $sample->getUniqueShard($record);
+        list($connection, $table) = $that->getUniqueShard($record);
         $logger = Container::get(LoggerInterface::class);
 
-        if ($fields = array_diff(array_keys($record), $sample->getModelMetadata()->getAttributes($sample))) {
+        if ($fields = array_diff(array_keys($record), $that->getModelMetadata()->getAttributes($that))) {
             $logger->debug(['insert `:1` table skip fields: :2', $table, array_values($fields)]);
 
             foreach ($fields as $field) {

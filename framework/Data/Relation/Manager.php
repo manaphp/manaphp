@@ -11,6 +11,9 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\Str;
 
+/**
+ * @property-read \ManaPHP\Data\Model\ThoseInterface $those
+ */
 class Manager extends Component implements ManagerInterface
 {
     protected array $relations;
@@ -77,7 +80,7 @@ class Manager extends Component implements ManagerInterface
                 return false;
             }
 
-            $thatInstance = $thatModel::sample();
+            $thatInstance = $this->those->get($thatModel);
 
             $thisForeignedKey = $thisInstance->foreignedKey();
             if ($thatInstance->hasField($thisForeignedKey)) {
@@ -112,7 +115,7 @@ class Manager extends Component implements ManagerInterface
 
             throw new RuntimeException(['infer `:relation` relation failed', 'relation' => $name]);
         } elseif ($thatModel = $this->inferClassName($thisInstance, $name)) {
-            $thatInstance = $thatModel::sample();
+            $thatInstance = $this->those->get($thatModel);
             $thisForeignedKey = $thisInstance->foreignedKey();
             $thatForeignedKey = $thatInstance->foreignedKey();
             if ($thatInstance->hasField($thisForeignedKey)) {

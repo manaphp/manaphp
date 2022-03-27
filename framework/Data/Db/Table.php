@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Db;
 
 use ManaPHP\Data\AbstractTable;
+use ManaPHP\Data\Model\ThoseInterface;
 use ManaPHP\Helper\Container;
 
 class Table extends AbstractTable
@@ -16,9 +17,9 @@ class Table extends AbstractTable
     public static function insert(array $record, bool $fetchInsertId = false): mixed
     {
         /** @noinspection OneTimeUseVariablesInspection */
-        $sample = static::sample();
+        $that = Container::get(ThoseInterface::class)->get(static::class);
 
-        list($connection, $table) = $sample->getUniqueShard($record);
+        list($connection, $table) = $that->getUniqueShard($record);
 
         $db = Container::get(FactoryInterface::class)->get($connection);
 
@@ -28,9 +29,9 @@ class Table extends AbstractTable
     public static function insertBySql(string $sql, array $bind = []): int
     {
         /** @noinspection OneTimeUseVariablesInspection */
-        $sample = static::sample();
+        $that = Container::get(ThoseInterface::class)->get(static::class);
 
-        list($connection, $table) = $sample->getUniqueShard($bind);
+        list($connection, $table) = $that->getUniqueShard($bind);
 
         $db = Container::get(FactoryInterface::class)->get($connection);
 
@@ -39,7 +40,7 @@ class Table extends AbstractTable
 
     public static function delete(string|array $conditions, array $bind = []): int
     {
-        $shards = static::sample()->getMultipleShards($bind);
+        $shards = Container::get(ThoseInterface::class)->get(static::class)->getMultipleShards($bind);
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
@@ -55,7 +56,7 @@ class Table extends AbstractTable
 
     public static function deleteBySql(string $sql, array $bind = []): int
     {
-        $shards = static::sample()->getMultipleShards($bind);
+        $shards = Container::get(ThoseInterface::class)->get(static::class)->getMultipleShards($bind);
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
@@ -71,7 +72,7 @@ class Table extends AbstractTable
 
     public static function update(array $fieldValues, string|array $conditions, array $bind = []): int
     {
-        $shards = static::sample()->getMultipleShards($bind);
+        $shards = Container::get(ThoseInterface::class)->get(static::class)->getMultipleShards($bind);
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
@@ -87,7 +88,7 @@ class Table extends AbstractTable
 
     public static function updateBySql(string $sql, array $bind = []): int
     {
-        $shards = static::sample()->getMultipleShards($bind);
+        $shards = Container::get(ThoseInterface::class)->get(static::class)->getMultipleShards($bind);
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {

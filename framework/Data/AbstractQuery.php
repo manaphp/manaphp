@@ -15,6 +15,7 @@ use ManaPHP\Helper\Sharding\ShardingTooManyException;
 /**
  * @property-read \ManaPHP\Http\RequestInterface          $request
  * @property-read \ManaPHP\Data\Relation\ManagerInterface $relationManager
+ * @property-read \ManaPHP\Data\Model\ThoseInterface      $those
  */
 abstract class AbstractQuery extends Component implements QueryInterface, IteratorAggregate
 {
@@ -102,11 +103,10 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
     {
         if ($table) {
             if (str_contains($table, '\\')) {
-                /** @var \ManaPHP\Data\ModelInterface $table */
-                $sample = $table::sample();
+                $that = $this->those->get($table);
 
-                $this->setModel($sample);
-                $table = $sample->table();
+                $this->setModel($that);
+                $table = $that->table();
             }
 
             $this->table = $table;

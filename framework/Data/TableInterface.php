@@ -16,6 +16,4 @@ interface TableInterface
     public function getMultipleShards(array|ModelInterface $context): array;
 
     public function getAllShards(): array;
-
-    public static function sample(): static;
 }

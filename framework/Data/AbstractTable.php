@@ -72,19 +72,6 @@ abstract class AbstractTable implements TableInterface
         return Str::snakelize(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1));
     }
 
-    public static function sample(): static
-    {
-        static $cached;
-
-        $class = static::class;
-
-        if (!isset($cached[$class])) {
-            $cached[$class] = new $class;
-        }
-
-        return $cached[$class];
-    }
-
     /** @noinspection MagicMethodsValidityInspection */
     public function __set(string $name, mixed $value): void
     {
