@@ -3,10 +3,16 @@ declare(strict_types=1);
 
 use ManaPHP\AliasInterface;
 use ManaPHP\ConfigInterface;
-use ManaPHP\Di\ContainerInterface;
+use ManaPHP\Debugging\DataDumpInterface;
+use ManaPHP\EnvInterface;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\JsonException;
+use ManaPHP\Helper\Container;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\I18n\TranslatorInterface;
+use ManaPHP\Token\ScopedJwtInterface;
+use ManaPHP\Validating\ValidatorInterface;
 
 if (!function_exists('json_parse')) {
     function json_parse(string $str): mixed
@@ -55,60 +61,58 @@ if (!function_exists('xml_decode')) {
 }
 
 if (!function_exists('container')) {
-    function container(?string $name = null): mixed
+    function container(string $id): mixed
     {
-        /** @var ContainerInterface $container */
-        $container = $GLOBALS['ManaPHP\Di\ContainerInterface'];
-        return $name === null ? $container : $container->get($name);
+        return Container::get($id);
     }
 }
 
 if (!function_exists('env')) {
     function env(?string $key = null, mixed $default = null): mixed
     {
-        return container(\ManaPHP\EnvInterface::class)->get($key, $default);
+        return Container::get(EnvInterface::class)->get($key, $default);
     }
 }
 
 if (!function_exists('config_get')) {
     function config_get(string $name, mixed $default = null): mixed
     {
-        return container(ConfigInterface::class)->get($name, $default);
+        return Container::get(ConfigInterface::class)->get($name, $default);
     }
 }
 
 if (!function_exists('dd')) {
     function dd(mixed $message): void
     {
-        container(\ManaPHP\Debugging\DataDumpInterface::class)->output($message);
+        Container::get(DataDumpInterface::class)->output($message);
     }
 }
 
 if (!function_exists('path')) {
     function path(string $path): string
     {
-        return container(AliasInterface::class)->resolve($path);
+        return Container::get(AliasInterface::class)->resolve($path);
     }
 }
 
 if (!function_exists('jwt_encode')) {
     function jwt_encode(array $claims, int $ttl, string $scope): string
     {
-        return container(\ManaPHP\Token\ScopedJwtInterface::class)->encode($claims, $ttl, $scope);
+        return Container::get(ScopedJwtInterface::class)->encode($claims, $ttl, $scope);
     }
 }
 
 if (!function_exists('jwt_decode')) {
     function jwt_decode(string $token, string $scope, bool $verify = true): array
     {
-        return container(\ManaPHP\Token\ScopedJwtInterface::class)->decode($token, $scope, $verify);
+        return Container(ScopedJwtInterface::class)->decode($token, $scope, $verify);
     }
 }
 
 if (!function_exists('jwt_verify')) {
     function jwt_verify(string $token, string $scope): void
     {
-        container(\ManaPHP\Token\ScopedJwt::class)->verify($token, $scope);
+        Container::get(ScopedJwtInterface::class)->verify($token, $scope);
     }
 }
 
@@ -123,13 +127,13 @@ if (!function_exists('input')) {
     {
         static $request;
         if (!$request) {
-            $request = container(\ManaPHP\Http\RequestInterface::class);
+            $request = Container::get(RequestInterface::class);
         }
 
         if ($defaultOrRules && is_array($defaultOrRules)) {
             $value = $request->get($name, $defaultOrRules['default'] ?? null);
 
-            return container(\ManaPHP\Validating\ValidatorInterface::class)->validateValue(
+            return Container::get(ValidatorInterface::class)->validateValue(
                 $name, $value, $defaultOrRules
             );
         } else {
@@ -169,14 +173,14 @@ if (!function_exists('e')) {
 if (!function_exists('t')) {
     function t(string $id, array $bind = []): string
     {
-        return container(\ManaPHP\I18n\TranslatorInterface::class)->translate($id, $bind);
+        return Container::get(TranslatorInterface::class)->translate($id, $bind);
     }
 }
 
 if (!function_exists('base_url')) {
     function base_url(): string
     {
-        return container(\ManaPHP\AliasInterface::class)->get('@web');
+        return Container::get(AliasInterface::class)->get('@web');
     }
 }
 
