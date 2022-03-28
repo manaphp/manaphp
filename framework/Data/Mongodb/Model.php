@@ -233,9 +233,7 @@ class Model extends AbstractModel
             throw new MisuseException('missing primary key value');
         }
 
-        if (!isset($snapshot[$primaryKey])) {
-            $this->_snapshot[$primaryKey] = $this->$primaryKey;
-        }
+        $this->_snapshot[$primaryKey] ??= $this->$primaryKey;
 
         $snapshot = $this->_snapshot;
 

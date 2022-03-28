@@ -256,9 +256,7 @@ class Mongodb extends Component implements MongodbInterface
             if ($options) {
                 $command = array_merge($command, $options);
             }
-            if (!isset($command['cursor'])) {
-                $command['cursor'] = ['batchSize' => 1000];
-            }
+            $command['cursor'] ??= ['batchSize' => 1000];
             return $this->command($command, $db);
         } catch (RuntimeException $e) {
             throw new MongodbException(

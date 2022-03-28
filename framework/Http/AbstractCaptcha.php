@@ -29,13 +29,12 @@ abstract class AbstractCaptcha extends Component implements CaptchaInterface
             $this->charset = $options['charset'];
         }
 
-        if (!isset($options['fonts'])) {
-            $options['fonts'] = [
-                '@manaphp/Http/Captcha/Fonts/AirbusSpecial.ttf',
-                '@manaphp/Http/Captcha/Fonts/StencilFour.ttf',
-                '@manaphp/Http/Captcha/Fonts/SpicyRice.ttf'
-            ];
-        }
+        $options['fonts'] ??= [
+            '@manaphp/Http/Captcha/Fonts/AirbusSpecial.ttf',
+            '@manaphp/Http/Captcha/Fonts/StencilFour.ttf',
+            '@manaphp/Http/Captcha/Fonts/SpicyRice.ttf'
+        ];
+
         $this->fonts = $options['fonts'];
 
         if (isset($options['length'])) {

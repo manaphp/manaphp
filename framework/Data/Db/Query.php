@@ -799,14 +799,10 @@ class Query extends AbstractQuery
                     null;
                 } elseif ($agg === 'AVG') {
                     $sum = $k . '_sum';
-                    if (!isset($this->aggregate[$sum])) {
-                        $this->aggregate[$sum] = 'SUM(' . substr($v, 4);
-                    }
+                    $this->aggregate[$sum] ??= 'SUM(' . substr($v, 4);
 
                     $count = $k . '_count';
-                    if (!isset($this->aggregate[$count])) {
-                        $this->aggregate[$count] = 'COUNT(*)';
-                    }
+                    $this->aggregate[$count] ??= 'COUNT(*)';
                 } else {
                     throw new NotSupportedException($v);
                 }

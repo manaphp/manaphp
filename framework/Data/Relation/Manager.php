@@ -137,9 +137,7 @@ class Manager extends Component implements ManagerInterface
     {
         $modelName = get_class($model);
 
-        if (!isset($this->relations[$modelName])) {
-            $this->relations[$modelName] = $model->relations();
-        }
+        $this->relations[$modelName] ??= $model->relations();
 
         if (isset($this->relations[$modelName][$name])) {
             if (is_object($relation = $this->relations[$modelName][$name])) {

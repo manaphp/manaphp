@@ -21,13 +21,8 @@ class Fopen extends Component implements EngineInterface
 
         $http['method'] = $request->method;
 
-        if (!isset($request->headers['Accept-Encoding'])) {
-            $request->headers['Accept-Encoding'] = 'gzip, deflate';
-        }
-
-        if (!isset($request->headers['Connection'])) {
-            $request->headers['Connection'] = 'close';
-        }
+        $request->headers['Accept-Encoding'] ??= 'gzip, deflate';
+        $request->headers['Connection'] ??= 'close';
 
         if (($proxy = $request->options['proxy']) !== '') {
             //if not, you will suffer "Cannot connect to HTTPS server through proxy"

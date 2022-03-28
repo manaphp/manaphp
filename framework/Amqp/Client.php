@@ -105,9 +105,7 @@ class Client extends Component implements ClientInterface
     ): void {
         if (!is_string($body)) {
             $body = json_stringify($body);
-            if (!isset($properties['content_type'])) {
-                $properties['content_type'] = 'application/json';
-            }
+            $properties['content_type'] ??= 'application/json';
         }
 
         $this->fireEvent('amqpClient:publish', compact('exchange', 'routing_key', 'body', 'properties', 'mandatory'));

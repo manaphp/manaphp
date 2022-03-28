@@ -166,9 +166,7 @@ class View extends Component implements ViewInterface
                 $dir = "@views/$controller";
             }
 
-            if (!isset($this->dirs[$dir])) {
-                $this->dirs[$dir] = LocalFS::dirExists($dir);
-            }
+            $this->dirs[$dir] ??= LocalFS::dirExists($dir);
 
             if ($this->dirs[$dir]) {
                 $template = $dir . '/' . ucfirst($action);
@@ -239,9 +237,7 @@ class View extends Component implements ViewInterface
                 $dir = "@views/$controller";
             }
 
-            if (!isset($this->dirs[$dir])) {
-                $this->dirs[$dir] = LocalFS::dirExists($dir);
-            }
+            $this->dirs[$dir] ??= LocalFS::dirExists($dir);
 
             if ($this->dirs[$dir]) {
                 $template = $dir . '/' . ucfirst($action);

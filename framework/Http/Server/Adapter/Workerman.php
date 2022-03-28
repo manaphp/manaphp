@@ -80,9 +80,8 @@ class Workerman extends AbstractServer
         }
 
         global $argv;
-        if (!isset($argv[1])) {
-            $argv[1] = 'start';
-        }
+
+        $argv[1] ??= 'start';
 
         if (DIRECTORY_SEPARATOR === '\\') {
             shell_exec("explorer.exe http://127.0.0.1:$this->port/" . $this->router->getPrefix());

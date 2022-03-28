@@ -39,9 +39,7 @@ class Curl extends Component implements EngineInterface
         $content = '';
         $header_length = 0;
 
-        if (!isset($request->headers['Accept-Encoding'])) {
-            $request->headers['Accept-Encoding'] = 'gzip, deflate';
-        }
+        $request->headers['Accept-Encoding'] ??= 'gzip, deflate';
 
         if (($curl = $this->curl) === null) {
             $curl = curl_init();

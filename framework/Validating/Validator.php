@@ -41,9 +41,7 @@ class Validator extends Component implements ValidatorInterface
     {
         $locale = $this->locale->get();
 
-        if (!isset($this->templates[$locale])) {
-            $this->templates[$locale] = require $this->files[$locale];
-        }
+        $this->templates[$locale] ??= require $this->files[$locale];
 
         $templates = $this->templates[$locale];
         return $templates[$validate] ?? $templates['default'];

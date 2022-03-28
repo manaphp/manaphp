@@ -47,9 +47,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
             $this->params = $options['params'] + $this->params;
         }
 
-        if (!isset($this->params['path'])) {
-            $this->params['path'] = $this->alias->get('@web') ?: '/';
-        }
+        $this->params['path'] ??= $this->alias->get('@web') ?: '/';
 
         $this->attachEvent('request:responding', [$this, 'onRequestResponding']);
     }

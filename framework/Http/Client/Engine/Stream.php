@@ -239,13 +239,8 @@ class Stream extends Component implements EngineInterface
 
     public function request(Request $request, ?string $body): Response
     {
-        if (!isset($request->headers['Accept-Encoding'])) {
-            $request->headers['Accept-Encoding'] = 'gzip, deflate';
-        }
-
-        if (!isset($request->headers['Connection'])) {
-            $request->headers['Connection'] = 'keep-alive';
-        }
+        $request->headers['Accept-Encoding'] ??= 'gzip, deflate';
+        $request->headers['Connection'] ??= 'keep-alive';
 
         $start = strpos($request->url, '://') + 3;
         $end = strpos($request->url, '/', $start);

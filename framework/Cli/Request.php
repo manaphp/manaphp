@@ -184,9 +184,7 @@ class Request extends Component implements RequestInterface
             /** @noinspection NotOptimalIfConditionsInspection */
             if (is_string($k) && strlen($k) === 1 && isset($shorts[$k])) {
                 $verbose = $shorts[$k];
-                if (!isset($this->options[$verbose])) {
-                    $this->options[$verbose] = $v;
-                }
+                $this->options[$verbose] ??= $v;
             }
         }
     }

@@ -101,9 +101,7 @@ class Query extends AbstractQuery
             $this->fields = $projection;
         }
 
-        if (!isset($this->fields['_id'])) {
-            $this->fields['_id'] = false;
-        }
+        $this->fields['_id'] ??= false;
 
         return $this;
     }

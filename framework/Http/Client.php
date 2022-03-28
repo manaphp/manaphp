@@ -81,9 +81,7 @@ class Client extends Component implements ClientInterface
     public function request(string $method, string|array $url, null|string|array $body = null, array $headers = [],
         mixed $options = []
     ): Response {
-        if (!isset($headers['User-Agent'])) {
-            $headers['User-Agent'] = $this->user_agent;
-        }
+        $headers['User-Agent'] ??= $this->user_agent;
 
         if (isset($headers['X-Request-Id'])) {
             null;//code completion
@@ -99,21 +97,10 @@ class Client extends Component implements ClientInterface
             $options = ['timeout' => $options];
         }
 
-        if (!isset($options['timeout'])) {
-            $options['timeout'] = $this->timeout;
-        }
-
-        if (!isset($options['proxy'])) {
-            $options['proxy'] = $this->proxy;
-        }
-
-        if (!isset($options['cafile'])) {
-            $options['cafile'] = $this->cafile;
-        }
-
-        if (!isset($options['verify_peer'])) {
-            $options['verify_peer'] = $this->verify_peer;
-        }
+        $options['timeout'] ??= $this->timeout;
+        $options['proxy'] ??= $this->proxy;
+        $options['cafile'] ??= $this->cafile;
+        $options['verify_peer'] ??= $this->verify_peer;
 
         $request = new Request($method, $url, $body, $headers, $options);
 
@@ -239,24 +226,14 @@ class Client extends Component implements ClientInterface
             if (($headers['Content-Type'] ?? null) === 'application/x-www-form-urlencoded') {
                 $body = http_build_query($body);
             } else {
-                if (!isset($headers['Content-Type'])) {
-                    $headers['Content-Type'] = 'application/json';
-                }
+                $headers['Content-Type'] ??= 'application/json';
                 $body = json_stringify($body);
             }
         }
 
-        if (!isset($headers['X-Requested-With'])) {
-            $headers['X-Requested-With'] = 'XMLHttpRequest';
-        }
-
-        if (!isset($headers['Accept'])) {
-            $headers['Accept'] = 'application/json';
-        }
-
-        if (!isset($headers['Accept-Encoding'])) {
-            $headers['Accept-Encoding'] = 'gzip, deflate';
-        }
+        $headers['X-Requested-With'] ??= 'XMLHttpRequest';
+        $headers['Accept'] ??= 'application/json';
+        $headers['Accept-Encoding'] ??= 'gzip, deflate';
 
         if (isset($headers['Accept-Charset'], $headers['Authorization'], $headers['Cache-Control'], $headers['Host'], $headers['Cookie'])) {
             null;
