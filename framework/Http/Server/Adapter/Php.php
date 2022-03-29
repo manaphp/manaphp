@@ -7,16 +7,13 @@ use ManaPHP\Helper\Ip;
 use ManaPHP\Http\AbstractServer;
 
 /**
- * @property-read \ManaPHP\Http\Server\Adapter\Native\SenderInterface $sender
- * @property-read \ManaPHP\Http\RouterInterface                       $router
- * @property-read \ManaPHP\AliasInterface                             $alias
+ * @property-read \ManaPHP\Http\Server\Adapter\Native\SenderInterface     $sender
+ * @property-read \ManaPHP\Http\RouterInterface                           $router
+ * @property-read \ManaPHP\Http\Server\Adapter\Php\StaticHandlerInterface $staticHandler
+ * @property-read \ManaPHP\AliasInterface                                 $alias
  */
 class Php extends AbstractServer
 {
-    protected array $mime_types;
-    protected array $root_files;
-    protected string $doc_root;
-
     public function __construct(array $options = [])
     {
         parent::__construct($options);
@@ -50,11 +47,6 @@ class Php extends AbstractServer
             $_SERVER['SERVER_ADDR'] = $local_ip;
             $_SERVER['SERVER_PORT'] = $this->port;
             $_SERVER['REQUEST_SCHEME'] = 'http';
-
-            $this->doc_root = $this->alias->resolve('@public');
-
-            $this->root_files = $this->getRootFiles();
-            $this->mime_types = $this->getMimeTypes();
         }
     }
 
@@ -64,74 +56,13 @@ class Php extends AbstractServer
         $this->globals->prepare($_GET, $_POST, $_SERVER, $rawBody, $_COOKIE, $_FILES);
     }
 
-    protected function getRootFiles(): array
-    {
-        $files = [];
-        foreach (glob($this->doc_root . '/*') as $file) {
-            $file = basename($file);
-            if ($file[0] === '.' || pathinfo($file, PATHINFO_EXTENSION) === 'php') {
-                continue;
-            }
-
-            $files[] = basename($file);
-        }
-
-        return $files;
-    }
-
-    protected function getMimeTypes(): array
-    {
-        $mime_types = [];
-        foreach (file(__DIR__ . '/../mime.types', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-            if (!str_contains($line, ';')) {
-                continue;
-            }
-
-            $line = trim($line);
-            $line = trim($line, ';');
-
-            $parts = preg_split('#\s+#', $line, -1, PREG_SPLIT_NO_EMPTY);
-            if (count($parts) < 2) {
-                continue;
-            }
-
-            foreach ($parts as $k => $part) {
-                if ($k !== 0) {
-                    $mime_types[$part] = $parts[0];
-                }
-            }
-        }
-
-        return $mime_types;
-    }
-
-    protected function isStaticFile(): false|string
-    {
-        $uri = $this->request->getServer('REQUEST_URI');
-        $file = ($pos = strpos($uri, '?')) === false ? substr($uri, 1) : substr($uri, 1, $pos - 1);
-
-        if ($file === 'favicon.ico') {
-            return '/favicon.ico';
-        } elseif (in_array($file, $this->root_files, true)) {
-            return $file;
-        } elseif (($pos = strpos($file, '/')) === false) {
-            return false;
-        } else {
-            $level1 = substr($file, 0, $pos);
-            return in_array($level1, $this->root_files, true) ? $file : false;
-        }
-    }
-
     public function start(): void
     {
         $this->prepareGlobals();
 
-        if ($file = $this->isStaticFile()) {
-            $file = "$this->doc_root/$file";
+        if ($file = $this->staticHandler->getStaticFile()) {
             if ((DIRECTORY_SEPARATOR === '/' ? realpath($file) : str_replace('\\', '/', realpath($file))) === $file) {
-                $ext = pathinfo($file, PATHINFO_EXTENSION);
-                $mime_type = $this->mime_types[$ext] ?? 'application/octet-stream';
-                header('Content-Type: ' . $mime_type);
+                header('Content-Type: ' . $this->staticHandler->getMimeType($file));
                 readfile($file);
             } else {
                 header('HTTP/1.1 404 Not Found');
