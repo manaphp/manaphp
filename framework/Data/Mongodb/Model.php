@@ -6,7 +6,7 @@ namespace ManaPHP\Data\Mongodb;
 use ManaPHP\Data\AbstractModel;
 use ManaPHP\Data\Model\ExpressionInterface;
 use ManaPHP\Data\Model\ThoseInterface;
-use ManaPHP\Data\Mongodb\Model\InfererInterface;
+use ManaPHP\Data\Mongodb\Model\InferrerInterface;
 use ManaPHP\Data\MongodbInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Container;
@@ -27,7 +27,7 @@ class Model extends AbstractModel
      */
     public function primaryKey(): string
     {
-        return Container::get(InfererInterface::class)->primaryKey(static::class);
+        return Container::get(InferrerInterface::class)->primaryKey(static::class);
     }
 
     /**
@@ -35,7 +35,7 @@ class Model extends AbstractModel
      */
     public function fields(): array
     {
-        return Container::get(InfererInterface::class)->fields(static::class);
+        return Container::get(InferrerInterface::class)->fields(static::class);
     }
 
     /**
@@ -43,7 +43,7 @@ class Model extends AbstractModel
      */
     public function intFields(): array
     {
-        return Container::get(InfererInterface::class)->intFields(static::class);
+        return Container::get(InferrerInterface::class)->intFields(static::class);
     }
 
     /**
@@ -53,7 +53,7 @@ class Model extends AbstractModel
      */
     public function fieldTypes(): array
     {
-        return Container::get(InfererInterface::class)->fieldTypes(static::class);
+        return Container::get(InferrerInterface::class)->fieldTypes(static::class);
     }
 
     public function isAllowNullValue(): bool

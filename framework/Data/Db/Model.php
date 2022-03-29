@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Db;
 
 use ManaPHP\Data\AbstractModel;
-use ManaPHP\Data\Db\Model\InfererInterface;
+use ManaPHP\Data\Db\Model\InferrerInterface;
 use ManaPHP\Data\Model\ExpressionInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Container;
@@ -16,7 +16,7 @@ class Model extends AbstractModel implements ModelInterface
      */
     public function primaryKey(): string
     {
-        return Container::get(InfererInterface::class)->primaryKey(static::class);
+        return Container::get(InferrerInterface::class)->primaryKey(static::class);
     }
 
     /**
@@ -24,7 +24,7 @@ class Model extends AbstractModel implements ModelInterface
      */
     public function fields(): array
     {
-        return Container::get(InfererInterface::class)->fields(static::class);
+        return Container::get(InferrerInterface::class)->fields(static::class);
     }
 
     /**
@@ -32,7 +32,7 @@ class Model extends AbstractModel implements ModelInterface
      */
     public function intFields(): array
     {
-        return Container::get(InfererInterface::class)->intFields(static::class);
+        return Container::get(InferrerInterface::class)->intFields(static::class);
     }
 
     public function getNextAutoIncrementId(int $step = 1): ?int

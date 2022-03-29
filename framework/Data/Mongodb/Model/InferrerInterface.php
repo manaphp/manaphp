@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Mongodb\Model;
 
-interface InfererInterface
+interface InferrerInterface
 {
     public function primaryKey(string $model): string;
 

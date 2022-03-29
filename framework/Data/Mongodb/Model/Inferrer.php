@@ -12,7 +12,7 @@ use MongoDB\BSON\ObjectId;
  * @property-read \ManaPHP\Data\Model\ThoseInterface     $those
  * @property-read \ManaPHP\Data\Mongodb\FactoryInterface $mongodbFactory
  */
-class Inferer extends Component implements InfererInterface
+class Inferrer extends Component implements InferrerInterface
 {
     protected array $primaryKey = [];
     protected array $fields = [];

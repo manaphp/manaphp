@@ -10,7 +10,7 @@ use ManaPHP\Exception\NotSupportedException;
  * @property-read \ManaPHP\Data\Model\ThoseInterface       $those
  * @property-read \ManaPHP\Data\Db\Model\MetadataInterface $metadata
  */
-class Inferer extends Component implements InfererInterface
+class Inferrer extends Component implements InferrerInterface
 {
     protected array $primaryKey = [];
     protected array $fields = [];
