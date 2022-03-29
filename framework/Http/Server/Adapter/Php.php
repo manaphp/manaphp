@@ -4,11 +4,14 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Server\Adapter;
 
 use ManaPHP\Helper\Ip;
+use ManaPHP\Http\AbstractServer;
 
 /**
- * @property-read \ManaPHP\Http\RouterInterface $router
+ * @property-read \ManaPHP\Http\Server\Adapter\Native\SenderInterface $sender
+ * @property-read \ManaPHP\Http\RouterInterface                       $router
+ * @property-read \ManaPHP\AliasInterface                             $alias
  */
-class Php extends Fpm
+class Php extends AbstractServer
 {
     protected array $mime_types;
     protected array $root_files;
@@ -53,6 +56,12 @@ class Php extends Fpm
             $this->root_files = $this->getRootFiles();
             $this->mime_types = $this->getMimeTypes();
         }
+    }
+
+    protected function prepareGlobals(): void
+    {
+        $rawBody = file_get_contents('php://input');
+        $this->globals->prepare($_GET, $_POST, $_SERVER, $rawBody, $_COOKIE, $_FILES);
     }
 
     protected function getRootFiles(): array
@@ -132,5 +141,10 @@ class Php extends Fpm
 
             $this->httpHandler->handle();
         }
+    }
+
+    public function send(): void
+    {
+        $this->sender->send();
     }
 }
