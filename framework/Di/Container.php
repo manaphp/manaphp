@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Di;
 
 use Closure;
+use ManaPHP\Di\Property\InjectorInterface;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MisuseException;
 use ReflectionClass;
@@ -14,7 +15,6 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
 {
     protected array $definitions = [];
     protected array $instances = [];
-    protected array $types = [];
     protected array $dependencies = [];
 
     public function __construct(array $definitions = [])
@@ -191,40 +191,9 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
         }
     }
 
-    protected function getTypes(string $class): array
-    {
-        $rClass = new ReflectionClass($class);
-        $comment = $rClass->getDocComment();
-
-        $types = [];
-        if (is_string($comment)) {
-            if (preg_match_all('#@property-read\s+\\\\?([\w\\\\]+)\s+\\$(\w+)#m', $comment, $matches, PREG_SET_ORDER)
-                > 0
-            ) {
-                foreach ($matches as list(, $type, $name)) {
-                    if ($type === 'object') {
-                        continue;
-                    }
-                    $types[$name] = $type;
-                }
-            }
-        }
-
-        $parent = get_parent_class($class);
-        if ($parent !== false) {
-            $types += $this->types[$parent] ?? $this->getTypes($parent);
-        }
-        return $this->types[$class] = $types;
-    }
-
     public function inject(object $target, string $property): mixed
     {
-        $class = get_class($target);
-        $types = $this->types[$class] ?? $this->getTypes($class);
-
-        if (($type = $types[$property] ?? null) === null) {
-            throw new MisuseException(['can\'t type-hint for `%s`', $property]);
-        }
+        $type = $this->get(InjectorInterface::class)->inject(get_class($target), $property);
 
         return $this->get($this->dependencies[spl_object_id($target)][$type] ?? $type);
     }
