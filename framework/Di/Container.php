@@ -195,7 +195,7 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
     {
         $type = $this->get(InjectorInterface::class)->inject(get_class($target), $property);
 
-        return $this->get($this->dependencies[spl_object_id($target)][$type] ?? $type);
+        return $target->$property = $this->get($this->dependencies[spl_object_id($target)][$type] ?? $type);
     }
 
     public function getDefinitions(): array
