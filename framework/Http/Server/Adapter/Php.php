@@ -60,13 +60,8 @@ class Php extends AbstractServer
     {
         $this->prepareGlobals();
 
-        if ($file = $this->staticHandler->getStaticFile()) {
-            if ((DIRECTORY_SEPARATOR === '/' ? realpath($file) : str_replace('\\', '/', realpath($file))) === $file) {
-                header('Content-Type: ' . $this->staticHandler->getMimeType($file));
-                readfile($file);
-            } else {
-                header('HTTP/1.1 404 Not Found');
-            }
+        if ($this->staticHandler->isStaticFile()) {
+            $this->staticHandler->send();
         } else {
             $this->fireEvent('httpServer:start');
 

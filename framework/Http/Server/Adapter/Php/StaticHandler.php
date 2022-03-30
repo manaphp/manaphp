@@ -100,4 +100,16 @@ class StaticHandler extends Component implements StaticHandlerInterface
         $ext = pathinfo($file, PATHINFO_EXTENSION);
         return $this->mime_types[$ext] ?? 'application/octet-stream';
     }
+
+    public function send(): void
+    {
+        $file = $this->getStaticFile();
+
+        if ((DIRECTORY_SEPARATOR === '/' ? realpath($file) : str_replace('\\', '/', realpath($file))) === $file) {
+            header('Content-Type: ' . $this->getMimeType($file));
+            readfile($file);
+        } else {
+            header('HTTP/1.1 404 Not Found');
+        }
+    }
 }
