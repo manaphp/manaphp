@@ -261,7 +261,7 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
                     if (array_key_exists($type, $parameters)) {
                         $value = $parameters[$type];
                         if (is_string($value)) {
-                            $value = $this->get($value);
+                            $value = $this->get($value[0] === '#' ? "$type$value" : $value);
                         }
                     } elseif (is_array($callable)) {
                         $object = $callable[0];
