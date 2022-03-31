@@ -10,18 +10,21 @@ use ManaPHP\Exception\MisuseException;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
+use WeakMap;
 
 class Container implements ContainerInterface, \Psr\Container\ContainerInterface
 {
     protected array $definitions = [];
     protected array $instances = [];
-    protected array $dependencies = [];
+    protected WeakMap $dependencies;
 
     public function __construct(array $definitions = [])
     {
         $this->definitions = $definitions;
         $this->definitions['ManaPHP\Di\ContainerInterface'] = $this;
         $this->definitions['Psr\Container\ContainerInterface'] = $this;
+
+        $this->dependencies = new WeakMap();
     }
 
     public function set(string $id, mixed $definition): static
@@ -120,7 +123,7 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
         }
 
         if ($dependencies !== []) {
-            $this->dependencies[spl_object_id($instance)] = $dependencies;
+            $this->dependencies[$instance] = $dependencies;
         }
 
         return $instance;
@@ -195,7 +198,7 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
     {
         $type = $this->get(InjectorInterface::class)->inject(get_class($target), $property);
 
-        return $target->$property = $this->get($this->dependencies[spl_object_id($target)][$type] ?? $type);
+        return $target->$property = $this->get($this->dependencies[$target][$type] ?? $type);
     }
 
     public function getDefinitions(): array
@@ -262,7 +265,7 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
                         }
                     } elseif (is_array($callable)) {
                         $object = $callable[0];
-                        $value = $this->get($this->dependencies[spl_object_id($object)][$type] ?? $type);
+                        $value = $this->get($this->dependencies[$object][$type] ?? $type);
                     } else {
                         $value = $this->get($type);
                     }
