@@ -26,12 +26,14 @@ return [
                 'class' => 'ManaPHP\Http\Server\Adapter\Php',
                 'port'  => 9501,
             ],
+        ],
+        'ManaPHP\Data\DbInterface'     => [
+            'default' => ['class' => 'ManaPHP\Data\Db', env('DB_URL')],
         ]
     ],
     'dependencies'  => [
-        //'ManaPHP\Http\ServerInterface'          => '#swoole',
+      #  'ManaPHP\Http\ServerInterface'          => '#php',
         'ManaPHP\Http\HandlerInterface'         => 'ManaPHP\Mvc\Handler',
-        'db'                                    => ['class' => 'ManaPHP\Data\Db', env('DB_URL')],
         'ManaPHP\Data\RedisInterface'           => [env('REDIS_URL')],
         'ManaPHP\Logging\LoggerInterface'       => ['class' => 'ManaPHP\Logging\Logger\Adapter\File',
                                                     'level' => env('LOGGER_LEVEL', 'info')],
