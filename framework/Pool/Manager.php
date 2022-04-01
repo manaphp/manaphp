@@ -6,22 +6,26 @@ namespace ManaPHP\Pool;
 use ManaPHP\Component;
 use ManaPHP\Coroutine\Channel;
 use ManaPHP\Exception\MisuseException;
+use WeakMap;
 
 class Manager extends Component implements ManagerInterface
 {
     /**
      * @var \ManaPHP\Coroutine\Channel[][]
      */
-    protected array $pool = [];
+    protected WeakMap $pool;
+
+    public function __construct()
+    {
+        $this->pool = new WeakMap();
+    }
 
     public function remove(object $owner, ?string $type = null): static
     {
-        $owner_id = get_class($owner) . ':' . spl_object_id($owner);
-
         if ($type === null) {
-            unset($this->pool[$owner_id]);
+            unset($this->pool[$owner]);
         } else {
-            unset($this->pool[$owner_id][$type]);
+            unset($this->pool[$owner][$type]);
         }
 
         return $this;
@@ -29,23 +33,21 @@ class Manager extends Component implements ManagerInterface
 
     public function create(object $owner, int $capacity, string $type = 'default'): static
     {
-        $owner_id = get_class($owner) . ':' . spl_object_id($owner);
-
-        if (isset($this->pool[$owner_id][$type])) {
+        if (isset($this->pool[$owner][$type])) {
             throw new MisuseException(['`%s` pool of `%s` is exists', $type, get_class($owner)]);
         }
 
-        $this->pool[$owner_id][$type] = new Channel($capacity);
+        $this->pool[$owner] ??= [];
+        $this->pool[$owner][$type] = new Channel($capacity);
 
         return $this;
     }
 
     public function add(object $owner, object $sample, int $size = 1, string $type = 'default'): static
     {
-        $owner_id = get_class($owner) . ':' . spl_object_id($owner);
-
-        if (!$queue = $this->pool[$owner_id][$type] ?? null) {
-            $this->pool[$owner_id][$type] = $queue = new Channel($size);
+        if (!$queue = $this->pool[$owner][$type] ?? null) {
+            $this->pool[$owner] ??= [];
+            $this->pool[$owner][$type] = $queue = new Channel($size);
         } else {
             if ($queue->length() + $size > $queue->capacity()) {
                 throw new FullException(
@@ -65,9 +67,7 @@ class Manager extends Component implements ManagerInterface
 
     public function push(object $owner, object $instance, string $type = 'default'): static
     {
-        $owner_id = get_class($owner) . ':' . spl_object_id($owner);
-
-        if (!$queue = $this->pool[$owner_id][$type] ?? null) {
+        if (!$queue = $this->pool[$owner][$type] ?? null) {
             throw new MisuseException(['`%s` pool of `%s` is not exists', $type, get_class($owner)]);
         }
 
@@ -80,9 +80,7 @@ class Manager extends Component implements ManagerInterface
 
     public function pop(object $owner, ?float $timeout = null, string $type = 'default'): object
     {
-        $owner_id = get_class($owner) . ':' . spl_object_id($owner);
-
-        if (!$queue = $this->pool[$owner_id][$type] ?? null) {
+        if (!$queue = $this->pool[$owner][$type] ?? null) {
             throw new MisuseException(['`%s` pool of `%s` is not exists', $type, get_class($owner)]);
         }
 
@@ -115,9 +113,7 @@ class Manager extends Component implements ManagerInterface
 
     public function isEmpty(object $owner, string $type = 'default'): bool
     {
-        $owner_id = get_class($owner) . ':' . spl_object_id($owner);
-
-        if (!$queue = $this->pool[$owner_id][$type] ?? null) {
+        if (!$queue = $this->pool[$owner][$type] ?? null) {
             throw new MisuseException(['`%s` pool of `%s` is not exists', $type, get_class($owner)]);
         }
 
@@ -126,16 +122,12 @@ class Manager extends Component implements ManagerInterface
 
     public function exists(object $owner, string $type = 'default'): bool
     {
-        $owner_id = get_class($owner) . ':' . spl_object_id($owner);
-
-        return isset($this->pool[$owner_id][$type]);
+        return isset($this->pool[$owner][$type]);
     }
 
     public function size(object $owner, string $type = 'default'): int
     {
-        $owner_id = get_class($owner) . ':' . spl_object_id($owner);
-
-        if (!$queue = $this->pool[$owner_id][$type] ?? null) {
+        if (!$queue = $this->pool[$owner][$type] ?? null) {
             throw new MisuseException(['`%s` pool of `%s` is not exists', $type, get_class($owner)]);
         }
 
