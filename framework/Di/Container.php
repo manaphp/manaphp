@@ -10,6 +10,7 @@ use ManaPHP\Exception\MisuseException;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
+use ReflectionNamedType;
 use WeakMap;
 
 class Container implements ContainerInterface, \Psr\Container\ContainerInterface
@@ -243,36 +244,33 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
         foreach ($rFunction->getParameters() as $position => $rParameter) {
             $name = $rParameter->getName();
 
+            $rType = $rParameter->getType();
+            $type = ($rType instanceof ReflectionNamedType && !$rType->isBuiltin()) ? $rType->getName() : null;
+
             if (array_key_exists($position, $parameters)) {
                 $value = $parameters[$position];
             } elseif (array_key_exists($name, $parameters)) {
                 $value = $parameters[$name];
             } elseif ($rParameter->isDefaultValueAvailable()) {
                 $value = $rParameter->getDefaultValue();
-            } elseif ($rParameter->hasType()) {
-                $rType = $rParameter->getType();
-
-                if ($rType->isBuiltin()) {
-                    $missing[] = $name;
-                    continue;
-                } else {
-                    $type = $rType->getName();
-
-                    if (array_key_exists($type, $parameters)) {
-                        $value = $parameters[$type];
-                        if (is_string($value)) {
-                            $value = $this->get($value[0] === '#' ? "$type$value" : $value);
-                        }
-                    } elseif (is_array($callable)) {
-                        $object = $callable[0];
-                        $value = $this->get($this->dependencies[$object][$type] ?? $type);
-                    } else {
-                        $value = $this->get($type);
-                    }
-                }
+            } elseif ($type !== null) {
+                $value = $parameters[$type] ?? $type;
             } else {
                 $missing[] = $name;
                 continue;
+            }
+
+            if ($type !== null && is_string($value)) {
+                if ($value[0] === '#') {
+                    $value = $this->get("$type$value");
+                } elseif ($value[0] === '@') {
+                    $value = $this->get($value);
+                } elseif (is_array($callable)) {
+                    $object = $callable[0];
+                    $value = $this->get($this->dependencies[$object][$type] ?? $type);
+                } else {
+                    $value = $this->get($type);
+                }
             }
 
             $args[] = $value;
