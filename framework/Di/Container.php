@@ -269,7 +269,7 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
                     $object = $callable[0];
                     $value = $this->get($this->dependencies[$object][$type] ?? $type);
                 } else {
-                    $value = $this->get($type);
+                    $value = $this->get($value);
                 }
             }
 
