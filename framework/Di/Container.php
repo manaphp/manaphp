@@ -164,32 +164,13 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
         } elseif (is_object($definition)) {
             return $this->instances[$id] = $definition;
         } elseif (is_array($definition)) {
-            if (isset($definition['#class']) || isset($definition['#parameters'])) {
-                $class = $definition['#class'] ?? $id;
-                $parameters = $definition['#parameters'] ?? [];
+            if (($class = $definition['class'] ?? null) !== null) {
+                unset($definition['class']);
             } else {
-                if (($class = $definition['class'] ?? null) !== null) {
-                    unset($definition['class']);
-                } else {
-                    $class = $id;
-                }
-
-                $parameters = [];
-                $options = [];
-                foreach ($definition as $k => $v) {
-                    if (is_int($k) || str_contains($k, '\\')) {
-                        $parameters[$k] = $v;
-                    } else {
-                        $options[$k] = $v;
-                    }
-                }
-
-                if ($options !== []) {
-                    $parameters['options'] = $options;
-                }
+                $class = $id;
             }
 
-            return $this->instances[$id] = $this->make($class, $parameters, $id);
+            return $this->instances[$id] = $this->make($class, $definition, $id);
         } else {
             throw new NotSupportedException('not supported definition');
         }
