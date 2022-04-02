@@ -198,8 +198,10 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
     public function inject(object $target, string $property): mixed
     {
         $type = $this->get(InjectorInterface::class)->inject(get_class($target), $property);
+        $dependencies = $this->dependencies[$target] ?? null;
+        $id = $dependencies[$property] ?? $dependencies[$type] ?? $type;
 
-        return $target->$property = $this->get($this->dependencies[$target][$type] ?? $type);
+        return $target->$property = $this->get($id[0] === '#' ? "$type$id" : $id);
     }
 
     public function getDefinitions(): array
@@ -267,7 +269,10 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
                     $value = $this->get($value);
                 } elseif (is_array($callable)) {
                     $object = $callable[0];
-                    $value = $this->get($this->dependencies[$object][$type] ?? $type);
+                    $dependencies = $this->dependencies[$object] ?? null;
+                    $id = $dependencies[$name] ?? $dependencies[$type] ?? $type;
+
+                    $value = $this->get($id[0] === '#' ? "$type$id" : $id);
                 } else {
                     $value = $this->get($value);
                 }
