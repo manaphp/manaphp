@@ -77,37 +77,34 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
             return $factory->make($this, $id, $parameters);
         }
 
-        $dependencies = [];
-        foreach ($parameters as $key => $value) {
-            if (is_string($key) && str_contains($key, '\\')) {
-                if (!is_string($value)) {
-                    $dependencyId = "$class.dependencies.$key" . ($id === null || $id === $class ? '' : ".$id");
-                    $this->set($dependencyId, $value);
-                    $value = "@$dependencyId";
-                }
-                $dependencies[$key] = $value;
-            }
-        }
-
         if (method_exists($class, '__construct')) {
             $rClass = new ReflectionClass($class);
 
             $instance = $rClass->newInstanceWithoutConstructor();
 
-            if ($instance instanceof Injectable) {
-                $instance->setContainer($this);
-            }
-
-            if ($dependencies !== []) {
-                $rMethod = $rClass->getMethod('__construct');
-                foreach ($rMethod->getParameters() as $rParameter) {
-                    if ($rParameter->hasType() && !($rType = $rParameter->getType())->isBuiltin()) {
-                        $type = $rType->getName();
-                        if (array_key_exists($type, $parameters)) {
-                            unset($dependencies[$type]);
-                        }
+            if ($parameters !== []) {
+                $dependencies = [];
+                foreach ($parameters as $key => $value) {
+                    if (is_string($key)) {
+                        $dependencies[$key] = $value;
                     }
                 }
+
+                if ($dependencies !== []) {
+                    $rMethod = $rClass->getMethod('__construct');
+                    foreach ($rMethod->getParameters() as $rParameter) {
+                        $name = $rParameter->getName();
+                        unset($dependencies[$name]);
+                    }
+
+                    if ($dependencies !== []) {
+                        $this->dependencies[$instance] = $dependencies;
+                    }
+                }
+            }
+
+            if ($instance instanceof Injectable) {
+                $instance->setContainer($this);
             }
 
             if ($id !== null) {
@@ -118,13 +115,13 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
         } else {
             $instance = new $class();
 
+            if ($parameters !== []) {
+                $this->dependencies[$instance] = $parameters;
+            }
+
             if ($instance instanceof Injectable) {
                 $instance->setContainer($this);
             }
-        }
-
-        if ($dependencies !== []) {
-            $this->dependencies[$instance] = $dependencies;
         }
 
         return $instance;
