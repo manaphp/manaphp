@@ -44,8 +44,6 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
             return;
         }
 
-        $context->started = true;
-
         if (($session_id = $this->cookies->get($this->name)) && ($str = $this->do_read($session_id))) {
             $context->is_new = false;
 
@@ -62,6 +60,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         }
 
         $context->session_id = $session_id;
+        $context->started = true;
 
         $this->fireEvent('session:start', compact('context', 'session_id'));
     }
