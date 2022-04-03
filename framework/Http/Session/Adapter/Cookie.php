@@ -13,11 +13,12 @@ class Cookie extends AbstractSession
 {
     protected string $key;
 
-    public function __construct(array $options = [])
-    {
-        parent::__construct($options);
+    public function __construct(?string $key = null, int $ttl = 3600, int $lazy = 60, string $name = "PHPSESSID",
+        string $serializer = 'json', array $params = []
+    ) {
+        parent::__construct($ttl, $lazy, $name, $serializer, $params);
 
-        $this->key = $options['key'] ?? $this->crypt->getDerivedKey('cookieSession');
+        $this->key = $key ?? $this->crypt->getDerivedKey('cookieSession');
     }
 
     public function do_read(string $session_id): string

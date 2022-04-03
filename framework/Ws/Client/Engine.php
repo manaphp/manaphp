@@ -10,46 +10,27 @@ use ManaPHP\Ws\ClientInterface;
 class Engine extends Component implements EngineInterface
 {
     protected string $endpoint;
-    protected string $proxy;
-    protected float $timeout = 3.0;
-    protected string $protocol;
+    protected ?string $proxy;
+    protected float $timeout;
+    protected ?string $protocol;
     protected bool $masking = true;
-    protected string $origin;
-    protected string $user_agent = 'manaphp/client';
+    protected ?string $origin;
+    protected string $user_agent;
     protected mixed $socket;
-    protected ClientInterface $owner;
+    protected ?ClientInterface $owner;
 
-    public function __construct(array $options)
-    {
-        $this->endpoint = $options['endpoint'];
-
-        if (isset($options['proxy'])) {
-            $this->proxy = $options['proxy'];
-        }
-
-        if (isset($options['timeout'])) {
-            $this->timeout = $options['timeout'];
-        }
-
-        if (isset($options['protocol'])) {
-            $this->protocol = $options['protocol'];
-        }
-
-        if (isset($options['masking'])) {
-            $this->masking = (bool)$options['masking'];
-        }
-
-        if (isset($options['origin'])) {
-            $this->origin = $options['origin'];
-        }
-
-        if (isset($options['user_agent'])) {
-            $this->user_agent = $options['user_agent'];
-        }
-
-        if (isset($options['owner'])) {
-            $this->owner = $options['owner'];
-        }
+    public function __construct(string $endpoint, ?string $proxy = null, float $timeout = 3.0,
+        ?string $protocol = null, bool $masking = false, ?string $origin = null, string $user_agent = 'manaphp/client',
+        ?ClientInterface $owner = null
+    ) {
+        $this->endpoint = $endpoint;
+        $this->proxy = $proxy;
+        $this->timeout = $timeout;
+        $this->protocol = $protocol;
+        $this->masking = $masking;
+        $this->origin = $origin;
+        $this->user_agent = $user_agent;
+        $this->owner = $owner;
     }
 
     public function __clone()

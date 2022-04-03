@@ -16,22 +16,13 @@ use ManaPHP\Rest\Controller as RestController;
  */
 class CsrfFilter extends Filter implements ValidatingFilterInterface
 {
-    protected bool $strict = true;
-    protected array $domains = [];
+    protected bool $strict;
+    protected array $domains;
 
-    public function __construct(array $options = [])
+    public function __construct(bool $strict = true, array $domains = [])
     {
-        if (isset($options['strict'])) {
-            $this->strict = (bool)$options['strict'];
-        }
-
-        if ($domains = $options['domains'] ?? false) {
-            if (is_string($domains)) {
-                $this->domains = preg_split('#[\s,]+#', $domains, -1, PREG_SPLIT_NO_EMPTY);
-            } else {
-                $this->domains = $domains;
-            }
-        }
+        $this->strict = $strict;
+        $this->domains = $domains;
     }
 
     protected function isOriginSafe(): bool

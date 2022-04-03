@@ -14,13 +14,11 @@ use Throwable;
  */
 class DataDump extends Component implements DataDumpInterface
 {
-    protected string $format = '[:time][:location] :message';
+    protected string $format;
 
-    public function __construct(array $options = [])
+    public function __construct(string $format = '[:time][:location] :message')
     {
-        if (isset($options['format'])) {
-            $this->format = $options['format'];
-        }
+        $this->format = $format;
     }
 
     protected function getLocation(array $traces): array

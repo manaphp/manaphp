@@ -14,13 +14,9 @@ class DebuggerBootstrapper extends Component implements BootstrapperInterface
 {
     protected bool $enabled;
 
-    public function __construct(array $options = [])
+    public function __construct(?bool $enabled = null)
     {
-        if (isset($options['enabled'])) {
-            $this->enabled = (bool)$options['enabled'];
-        } else {
-            $this->enabled = in_array($this->config->get('env'), ['dev', 'test']);
-        }
+        $this->enabled = $enabled ?? in_array($this->config->get('env'), ['dev', 'test']);
     }
 
     public function bootstrap(): void

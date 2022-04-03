@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Logging\Logger\Adapter;
 
 use ManaPHP\Logging\AbstractLogger;
+use ManaPHP\Logging\Level;
 use ManaPHP\Logging\Logger\Log;
 
 /**
@@ -14,11 +15,11 @@ class Redis extends AbstractLogger
 {
     protected string $key;
 
-    public function __construct(array $options = [])
+    public function __construct(?string $key = null, string $level = Level::DEBUG, ?string $hostname = null)
     {
-        parent::__construct($options);
+        parent::__construct($level, $hostname);
 
-        $this->key = $options['key'] ?? sprintf("cache:%s:logger", $this->config->get("id"));
+        $this->key = $key ?? sprintf("cache:%s:logger", $this->config->get("id"));
     }
 
     public function append(Log $log): void

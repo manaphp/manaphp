@@ -4,19 +4,19 @@ declare(strict_types=1);
 namespace ManaPHP\Logging\Logger\Adapter;
 
 use ManaPHP\Logging\AbstractLogger;
+use ManaPHP\Logging\Level;
 use ManaPHP\Logging\Logger\Log;
 
 class Stdout extends AbstractLogger
 {
-    protected string $format = '[:date][:level][:category][:location] :message';
+    protected string $format;
 
-    public function __construct(array $options = [])
-    {
-        parent::__construct($options);
+    public function __construct(string $format = '[:date][:level][:category][:location] :message',
+        string $level = Level::DEBUG, ?string $hostname = null
+    ) {
+        parent::__construct($level, $hostname);
 
-        if (isset($options['format'])) {
-            $this->format = $options['format'];
-        }
+        $this->format = $format;
     }
 
     public function append(Log $log): void

@@ -23,8 +23,10 @@ class Swoole extends AbstractServer
     protected Server $swoole;
     protected array $_SERVER;
 
-    public function __construct(array $options = [])
+    public function __construct(array $settings = [], string $host = '0.0.0.0', int $port = 9501)
     {
+        parent::__construct($host, $port);
+
         $script_filename = get_included_files()[0];
         $this->_SERVER = [
             'DOCUMENT_ROOT'   => dirname($script_filename),
@@ -38,21 +40,17 @@ class Swoole extends AbstractServer
             'REQUEST_SCHEME'  => 'http',
         ];
 
-        $options['enable_coroutine'] = MANAPHP_COROUTINE_ENABLED;
+        $settings['enable_coroutine'] = MANAPHP_COROUTINE_ENABLED;
 
-        if (isset($options['max_request']) && $options['max_request'] < 1) {
-            $options['max_request'] = 1;
+        if (isset($settings['max_request']) && $settings['max_request'] < 1) {
+            $settings['max_request'] = 1;
         }
 
-        if (!empty($options['enable_static_handler'])) {
-            $options['document_root'] = $this->_SERVER['DOCUMENT_ROOT'];
+        if (!empty($settings['enable_static_handler'])) {
+            $settings['document_root'] = $this->_SERVER['DOCUMENT_ROOT'];
         }
 
-        parent::__construct($options);
-
-        unset($options['use_globals'], $options['host'], $options['port']);
-
-        $this->settings = $options;
+        $this->settings = $settings;
 
         $this->swoole = new Server($this->host, $this->port);
         $this->swoole->set($this->settings);

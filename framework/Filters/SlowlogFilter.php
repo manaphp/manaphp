@@ -15,25 +15,17 @@ use ManaPHP\Http\Filter\EndFilterInterface;
  */
 class SlowlogFilter extends Filter implements EndFilterInterface
 {
-    protected float $threshold = 1.0;
-    protected string $file = '@runtime/slowlogPlugin/{id}.log';
-    protected string $format = '[:date][:client_ip][:request_id][:elapsed] :message';
+    protected float $threshold;
+    protected string $file;
+    protected string $format;
 
-    public function __construct(array $options = [])
-    {
-        if (isset($options['threshold'])) {
-            $this->threshold = (float)$options['threshold'];
-        }
-
-        if (isset($options['file'])) {
-            $this->file = $options['file'];
-        }
-
-        $this->file = strtr($this->file, ['{id}' => $this->config->get('id')]);
-
-        if (isset($options['format'])) {
-            $this->format = $options['format'];
-        }
+    public function __construct(float $threshold = 1.0,
+        string $file = '@runtime/slowlogPlugin/{id}.log',
+        string $format = '[:date][:client_ip][:request_id][:elapsed] :message'
+    ) {
+        $this->threshold = $threshold;
+        $this->file = strtr($file, ['{id}' => $this->config->get('id')]);
+        $this->format = $format;
     }
 
     protected function write(float $elapsed, mixed $message): void

@@ -12,16 +12,13 @@ use ManaPHP\Messaging\AbstractQueue;
 class Redis extends AbstractQueue
 {
     protected string $prefix;
+
     protected array $priorities = [self::PRIORITY_HIGHEST, self::PRIORITY_NORMAL, self::PRIORITY_LOWEST];
     protected array $topicKeys = [];
 
-    public function __construct(array $options = [])
+    public function __construct(string $prefix = 'cache:msgQueue:')
     {
-        $this->prefix = $options['prefix'] ?? 'cache:msgQueue:';
-
-        if (isset($options['priorities'])) {
-            $this->priorities = (array)$options['priorities'];
-        }
+        $this->prefix = $prefix;
     }
 
     public function do_push(string $topic, string $body, int $priority = self::PRIORITY_NORMAL): void

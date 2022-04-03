@@ -12,23 +12,15 @@ use ManaPHP\Exception\WriteFileFailedException;
  */
 class File extends AbstractCache
 {
-    protected string $dir = '@runtime/cache';
-    protected int $level = 1;
-    protected string $ext = '.cache';
+    protected string $dir;
+    protected int $level;
+    protected string $ext;
 
-    public function __construct(array $options = [])
+    public function __construct(string $dir = '@runtime/cache', int $level = 1, string $ext = '.cache')
     {
-        if (isset($options['dir'])) {
-            $this->dir = rtrim($options['dir'], '\\/');
-        }
-
-        if (isset($options['level'])) {
-            $this->level = (int)$options['level'];
-        }
-
-        if (isset($options['ext'])) {
-            $this->ext = $options['ext'];
-        }
+        $this->dir = rtrim($dir, '\\/');
+        $this->level = $level;
+        $this->ext = $ext;
     }
 
     protected function getFileName(string $key): string

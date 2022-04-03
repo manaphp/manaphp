@@ -13,9 +13,9 @@ class Redis extends AbstractCache
 {
     protected string $prefix;
 
-    public function __construct(array $options = [])
+    public function __construct(?string $prefix = null)
     {
-        $this->prefix = $options['prefix'] ?? sprintf('cache:%s:', $this->config->get('id'));
+        $this->prefix = $prefix ?? sprintf('cache:%s:', $this->config->get('id'));
     }
 
     public function do_get(string $key): false|string

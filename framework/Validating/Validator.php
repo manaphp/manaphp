@@ -22,15 +22,14 @@ use ManaPHP\Validating\Validator\ValidateFailedException;
  */
 class Validator extends Component implements ValidatorInterface
 {
-    protected string $dir = '@manaphp/Validating/Validator/Templates';
+    protected string $dir;
+
     protected array $files;
     protected array $templates;
 
-    public function __construct(array $options = [])
+    public function __construct(string $dir = '@manaphp/Validating/Validator/Templates')
     {
-        if (isset($options['dir'])) {
-            $this->dir = $options['dir'];
-        }
+        $this->dir = $dir;
 
         foreach (LocalFS::glob($this->dir . '/*.php') as $file) {
             $this->files[strtolower(pathinfo($file, PATHINFO_FILENAME))] = $file;

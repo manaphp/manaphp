@@ -13,15 +13,13 @@ use ManaPHP\Logging\Logger\Log;
  */
 class Db extends AbstractLogger
 {
-    protected string $table = 'manaphp_log';
+    protected string $table;
 
-    public function __construct(array $options = [])
+    public function __construct(string $table = 'manaphp_log', string $level = Level::DEBUG, ?string $hostname = null)
     {
-        parent::__construct($options);
+        parent::__construct($level, $hostname);
 
-        if (isset($options['table'])) {
-            $this->table = $options['table'];
-        }
+        $this->table = $table;
     }
 
     /** @noinspection PhpUnusedLocalVariableInspection */

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Logging\Logger\Adapter;
 
 use ManaPHP\Logging\AbstractLogger;
+use ManaPHP\Logging\Level;
 use ManaPHP\Logging\Logger\Log;
 
 /**
@@ -12,22 +13,17 @@ use ManaPHP\Logging\Logger\Log;
  */
 class File extends AbstractLogger
 {
-    protected string $file = '@runtime/logger/{id}.log';
-    protected string $format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
+    protected string $file;
+    protected string $format;
 
-    public function __construct(array $options = [])
-    {
-        parent::__construct($options);
+    public function __construct(string $file = '@runtime/logger/{id}.log',
+        string $format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message',
+        string $level = Level::DEBUG, ?string $hostname = null
+    ) {
+        parent::__construct($level, $hostname);
 
-        if (isset($options['file'])) {
-            $this->file = $options['file'];
-        }
-
-        $this->file = strtr($this->file, ['{id}' => $this->config->get("id")]);
-
-        if (isset($options['format'])) {
-            $this->format = $options['format'];
-        }
+        $this->file = strtr($file, ['{id}' => $this->config->get("id")]);
+        $this->format = $format;
     }
 
     protected function format(Log $log): string

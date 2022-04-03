@@ -17,51 +17,34 @@ use Throwable;
 class Client extends Component implements ClientInterface
 {
     protected string $endpoint;
-    protected string $proxy;
+    protected ?string $proxy;
     protected float $timeout = 3.0;
-    protected string $protocol;
+    protected ?string $protocol;
     protected bool $masking = true;
-    protected string $origin;
+    protected ?string $origin;
     protected string $user_agent = 'manaphp/client';
     protected EngineInterface $engine;
     protected int $pool_size = 4;
     protected EmitterInterface $emitter;
 
-    public function __construct(array $options)
-    {
-        $this->endpoint = $options['endpoint'];
+    public function __construct(string $endpoint, ?string $proxy = null, float $timeout = 3.0, ?string $protocol = null,
+        bool $masking = true, ?string $origin = null, string $user_agent = 'manaphp/client', int $pool_size = 4
+    ) {
+        $this->endpoint = $endpoint;
+        $this->proxy = $proxy;
+        $this->timeout = $timeout;
+        $this->protocol = $protocol;
+        $this->masking = $masking;
+        $this->origin = $origin;
+        $this->user_agent = $user_agent;
+        $this->pool_size = $pool_size;
 
-        if (isset($options['proxy'])) {
-            $this->proxy = $options['proxy'];
-        }
+        $parameters = compact(
+            'endpoint', 'proxy', 'timeout', 'protocol', 'masking', 'origin', 'user_agent', 'pool_size'
+        );
+        $parameters['owner'] = $this;
 
-        if (isset($options['timeout'])) {
-            $this->timeout = $options['timeout'];
-        }
-
-        if (isset($options['protocol'])) {
-            $this->protocol = $options['protocol'];
-        }
-
-        if (isset($options['masking'])) {
-            $this->masking = (bool)$options['masking'];
-        }
-
-        if (isset($options['origin'])) {
-            $this->origin = $options['origin'];
-        }
-
-        if (isset($options['user_agent'])) {
-            $this->user_agent = $options['user_agent'];
-        }
-
-        if (isset($options['pool_size'])) {
-            $this->pool_size = (int)$options['pool_size'];
-        }
-
-        $options['owner'] = $this;
-
-        $sample = $this->container->make('ManaPHP\Ws\Client\Engine', [$options]);
+        $sample = $this->container->make('ManaPHP\Ws\Client\Engine', $parameters);
         $this->poolManager->add($this, $sample, $this->pool_size);
 
         $this->emitter = new Emitter();

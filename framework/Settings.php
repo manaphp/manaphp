@@ -10,18 +10,13 @@ use ManaPHP\Exception\InvalidArgumentException;
  */
 class Settings extends Component implements SettingsInterface
 {
-    protected string $key = 'settings';
-    protected int $ttl = 1;
+    protected string $key;
+    protected int $ttl;
 
-    public function __construct(array $options = [])
+    public function __construct(string $key = 'settings', int $ttl = 1)
     {
-        if (isset($options['key'])) {
-            $this->key = $options['key'];
-        }
-
-        if (isset($options['ttl'])) {
-            $this->ttl = (int)$options['ttl'];
-        }
+        $this->key = $key;
+        $this->ttl = $ttl;
     }
 
     public function getInternal(string $key, ?string $default = null): ?string

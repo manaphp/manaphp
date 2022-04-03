@@ -11,25 +11,20 @@ use ManaPHP\Http\AbstractSession;
  */
 class File extends AbstractSession
 {
-    protected string $dir = '@runtime/session';
-    protected string $extension = '.session';
-    protected int $level = 1;
+    protected string $dir;
+    protected string $extension;
+    protected int $level;
 
-    public function __construct(array $options = [])
-    {
-        parent::__construct($options);
+    public function __construct(
+        string $dir = '@runtime/session', string $extension = '.session', int $level = 1,
+        int $ttl = 3600, int $lazy = 60, string $name = "PHPSESSID",
+        string $serializer = 'json', array $params = []
+    ) {
+        parent::__construct($ttl, $lazy, $name, $serializer, $params);
 
-        if (isset($options['dir'])) {
-            $this->dir = ltrim($options['dir'], '\\/');
-        }
-
-        if (isset($options['extension'])) {
-            $this->extension = $options['extension'];
-        }
-
-        if (isset($options['level'])) {
-            $this->level = $options['level'];
-        }
+        $this->dir = ltrim($dir, '\\/');
+        $this->extension = $extension;
+        $this->level = $level;
     }
 
     protected function getFileName(string $sessionId): string

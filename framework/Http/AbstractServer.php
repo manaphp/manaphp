@@ -14,18 +14,13 @@ use ManaPHP\Component;
  */
 abstract class AbstractServer extends Component implements ServerInterface
 {
-    protected string $host = '0.0.0.0';
-    protected int $port = 9501;
+    protected string $host;
+    protected int $port;
 
-    public function __construct(array $options = [])
+    public function __construct(string $host = '0.0.0.0', int $port = 9501)
     {
-        if (isset($options['host'])) {
-            $this->host = $options['host'];
-        }
-
-        if (isset($options['port'])) {
-            $this->port = (int)$options['port'];
-        }
+        $this->host = $host;
+        $this->port = $port;
 
         $this->filterManager->register();
     }

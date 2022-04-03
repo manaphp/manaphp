@@ -16,21 +16,17 @@ use ManaPHP\Logging\Logger\LogCategorizable;
  */
 class Server extends Component implements ServerInterface, LogCategorizable
 {
-    protected string $prefix = 'ws_chatting:';
-    protected bool $dedicated = false;
+    protected string $prefix;
+    protected bool $dedicated;
+
     protected array $fds = [];
     protected array $ids;
     protected array $names;
 
-    public function __construct(array $options = [])
+    public function __construct(string $prefix = 'ws_chatting:', bool $dedicated = false)
     {
-        if (isset($options['prefix'])) {
-            $this->prefix = $options['prefix'];
-        }
-
-        if (isset($options['dedicated'])) {
-            $this->dedicated = (bool)$options['dedicated'];
-        }
+        $this->prefix = $prefix;
+        $this->dedicated = $dedicated;
     }
 
     public function categorizeLog(): string

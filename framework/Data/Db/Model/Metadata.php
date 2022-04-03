@@ -13,13 +13,11 @@ use ManaPHP\Data\Db\ModelInterface;
  */
 class Metadata extends Component implements MetadataInterface
 {
-    protected int $ttl = 3600;
+    protected int $ttl;
 
-    public function __construct(array $options = [])
+    public function __construct(int $ttl = 3600)
     {
-        if (isset($options['ttl'])) {
-            $this->ttl = (int)$options['ttl'];
-        }
+        $this->ttl = $ttl;
 
         /** @noinspection NotOptimalIfConditionsInspection */
         if ($this->config->get('debug') || !function_exists('apcu_fetch')) {

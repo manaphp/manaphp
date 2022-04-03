@@ -10,13 +10,11 @@ use ManaPHP\Event\Listener;
  */
 abstract class Tracer extends Listener
 {
-    protected bool $verbose = false;
+    protected bool $verbose;
 
-    public function __construct(array $options = [])
+    public function __construct(bool $verbose = false)
     {
-        if (isset($options['verbose'])) {
-            $this->verbose = (bool)$options['verbose'];
-        }
+        $this->verbose = $verbose;
     }
 
     public function debug(mixed $message, string $category): void

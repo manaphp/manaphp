@@ -12,13 +12,11 @@ use ManaPHP\Exception\MisuseException;
  */
 class ScopedJwt extends Component implements ScopedJwtInterface
 {
-    protected array $keys = [];
+    protected array $keys;
 
-    public function __construct(array $options = [])
+    public function __construct(array $keys = [])
     {
-        if (isset($options['keys'])) {
-            $this->keys = $options['keys'];
-        }
+        $this->keys = $keys;
     }
 
     public function getKey(string $scope): string

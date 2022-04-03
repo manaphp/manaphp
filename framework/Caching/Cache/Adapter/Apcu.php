@@ -8,13 +8,11 @@ use ManaPHP\Exception\RuntimeException;
 
 class Apcu extends AbstractCache
 {
-    protected string $prefix = 'cache:';
+    protected string $prefix;
 
-    public function __construct(array $options = [])
+    public function __construct(string $prefix = 'cache:')
     {
-        if (isset($options['prefix'])) {
-            $this->prefix = $options['prefix'];
-        }
+        $this->prefix = $prefix;
     }
 
     public function do_exists(string $key): bool

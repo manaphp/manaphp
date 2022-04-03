@@ -8,27 +8,21 @@ use ManaPHP\Component;
 
 class Purifier extends Component implements PurifierInterface
 {
-    protected string $allowedTags = ',a,b,br,code,div,i,img,s,strike,strong,samp,span,sub,sup,small,pre,p,q,div,em,h1,h2,h3,h4,h5,h6,table,u,ul,ol,tr,th,td,hr,li,';
-    protected string $allowedAttributes = ',title,src,href,width,height,alt,target,';
+    protected string $allowedTags;
+    protected string $allowedAttributes;
 
     /**
      * @var callable
      */
     protected mixed $filter;
 
-    public function __construct(array $options = [])
-    {
-        if (isset($options['allowedTags'])) {
-            $this->allowedTags = ',' . implode(',', $options['allowedTags']) . ',';
-        }
-
-        if (isset($options['allowedAttributes'])) {
-            $this->allowedAttributes = ',' . implode(',', $options['allowedAttributes']) . ',';
-        }
-
-        if (isset($options['filter'])) {
-            $this->filter = $options['filter'];
-        }
+    public function __construct(string $allowedTags = 'a,b,br,code,div,i,img,s,strike,strong,samp,span,sub,sup,small,pre,p,q,div,em,h1,h2,h3,h4,h5,h6,table,u,ul,ol,tr,th,td,hr,li',
+        string $allowedAttributes = 'title,src,href,width,height,alt,target',
+        ?callable $filter = null
+    ) {
+        $this->allowedTags = ",$allowedTags,";
+        $this->allowedAttributes = ",$allowedAttributes,";
+        $this->filter = $filter;
     }
 
     protected function purifyInternal(array $nodes, string $allowedTags, string $allowedAttributes): void

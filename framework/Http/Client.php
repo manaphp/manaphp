@@ -30,42 +30,25 @@ class Client extends Component implements ClientInterface
 {
     public const USER_AGENT_IE = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
     protected string|EngineInterface $engine;
-    protected string $proxy = '';
-    protected string $cafile = '';
-    protected int $timeout = 10;
-    protected bool $verify_peer = true;
+    protected ?string $proxy;
+    protected ?string $cafile;
+    protected int $timeout;
+    protected bool $verify_peer;
     protected string $user_agent;
-    protected int $pool_size = 4;
+    protected int $pool_size;
 
-    public function __construct(array $options = [])
-    {
-        if ($engine = $options['engine'] ?? null) {
-            $this->engine = str_contains($engine, '\\') ? $engine : "ManaPHP\Http\Client\Engine\\" . ucfirst($engine);
-        } else {
-            $this->engine = 'ManaPHP\Http\Client\Engine\Fopen';
-        }
-
-        if (isset($options['proxy'])) {
-            $this->proxy = $options['proxy'];
-        }
-
-        if (isset($options['cafile'])) {
-            $this->cafile = $options['cafile'];
-        }
-
-        if (isset($options['timeout'])) {
-            $this->timeout = (int)$options['timeout'];
-        }
-
-        if (isset($options['verify_peer'])) {
-            $this->verify_peer = (bool)$options['verify_peer'];
-        }
-
-        $this->user_agent = $options['user_agent'] ?? self::USER_AGENT_IE;
-
-        if (isset($options['pool_size'])) {
-            $this->pool_size = (int)$options['pool_size'];
-        }
+    public function __construct(string $engine = 'ManaPHP\Http\Client\Engine\Fopen',
+        ?string $proxy = null, ?string $cafile = null, int $timeout = 10, bool $verify_peer = true,
+        string $user_agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko',
+        int $pool_size = 4
+    ) {
+        $this->engine = str_contains($engine, '\\') ? $engine : "ManaPHP\Http\Client\Engine\\" . ucfirst($engine);
+        $this->proxy = $proxy;
+        $this->cafile = $cafile;
+        $this->timeout = $timeout;
+        $this->verify_peer = $verify_peer;
+        $this->user_agent = $user_agent;
+        $this->pool_size = $pool_size;
     }
 
     public function __destruct()

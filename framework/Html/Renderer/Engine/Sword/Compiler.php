@@ -39,13 +39,13 @@ class Compiler extends Component
             'base_url'
         ];
 
-    public function __construct(array $options = [])
+    public function __construct(?string $safe_functions = null)
     {
-        if (isset($options['safe_functions'])) {
-            if (is_string($options['safe_functions'])) {
-                $options['safe_functions'] = preg_split('#[\s,]+#', $options['safe_functions'], PREG_SPLIT_NO_EMPTY);
-            }
-            $this->safe_functions = array_merge($this->safe_functions, $options['safe_functions']);
+        if ($safe_functions !== null) {
+            $this->safe_functions = array_merge(
+                $this->safe_functions,
+                preg_split('#[\s,]+#', $safe_functions, PREG_SPLIT_NO_EMPTY)
+            );
         }
     }
 

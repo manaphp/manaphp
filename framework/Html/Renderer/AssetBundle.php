@@ -13,13 +13,11 @@ use ManaPHP\Helper\LocalFS;
  */
 class AssetBundle extends Component implements AssetBundleInterface
 {
-    protected int $length = 12;
+    protected int $length;
 
-    public function __construct(array $options = [])
+    public function __construct(int $length = 12)
     {
-        if (isset($options['length'])) {
-            $this->length = (int)$options['length'];
-        }
+        $this->length = $length;
     }
 
     protected function replaceCssUrl(string $file, string $content): string

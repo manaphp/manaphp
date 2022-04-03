@@ -23,9 +23,9 @@ class Workerman extends AbstractServer
     protected int $max_request;
     protected int $request_count;
 
-    public function __construct(array $options = [])
+    public function __construct(array $settings = [], string $host = '0.0.0.0', int $port = 9501)
     {
-        parent::__construct($options);
+        parent::__construct($host, $port);
 
         $script_filename = get_included_files()[0];
         $this->_SERVER = [
@@ -40,11 +40,11 @@ class Workerman extends AbstractServer
 
         unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
 
-        if (DIRECTORY_SEPARATOR === '/' && isset($options['max_request']) && $options['max_request'] > 0) {
-            $this->max_request = $options['max_request'];
+        if (DIRECTORY_SEPARATOR === '/' && isset($settings['max_request']) && $settings['max_request'] > 0) {
+            $this->max_request = $settings['max_request'];
         }
 
-        $this->settings = $options;
+        $this->settings = $settings;
     }
 
     protected function prepareGlobals(): void

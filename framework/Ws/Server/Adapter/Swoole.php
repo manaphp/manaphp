@@ -27,6 +27,7 @@ class Swoole extends Component implements ServerInterface
     protected string $host = '0.0.0.0';
     protected int $port = 9501;
     protected array $settings = [];
+
     protected Server $swoole;
 
     /**
@@ -37,8 +38,11 @@ class Swoole extends Component implements ServerInterface
     protected array $messageCoroutines = [];
     protected array $closeCoroutine = [];
 
-    public function __construct(array $options = [])
+    public function __construct(array $settings = [], $host = '0.0.0.0', $port = 9501)
     {
+        $this->host = $host;
+        $this->port = $port;
+
         $script_filename = get_included_files()[0];
         /** @noinspection PhpArrayWriteIsNotUsedInspection */
         $_SERVER = [
@@ -54,28 +58,19 @@ class Swoole extends Component implements ServerInterface
 
         unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
 
-        if (isset($options['host'])) {
-            $this->host = $options['host'];
+        if (isset($settings['max_request']) && $settings['max_request'] < 1) {
+            $settings['max_request'] = 1;
         }
 
-        if (isset($options['port'])) {
-            $this->port = (int)$options['port'];
-        }
-
-        if (isset($options['max_request']) && $options['max_request'] < 1) {
-            $options['max_request'] = 1;
-        }
-
-        if (isset($options['dispatch_mode'])) {
-            if (!in_array((int)$options['dispatch_mode'], [2, 4, 5], true)) {
+        if (isset($settings['dispatch_mode'])) {
+            if (!in_array((int)$settings['dispatch_mode'], [2, 4, 5], true)) {
                 throw new NotSupportedException('only support dispatch_mode=2,4,5');
             }
         } else {
-            $options['dispatch_mode'] = 2;
+            $settings['dispatch_mode'] = 2;
         }
 
-        unset($options['host'], $options['port']);
-        $this->settings = $options ?: [];
+        $this->settings = $settings;
 
         $this->swoole = new Server($this->host, $this->port);
         $this->swoole->set($this->settings);

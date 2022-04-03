@@ -20,13 +20,11 @@ use ManaPHP\Messaging\AbstractQueue;
  */
 class Db extends AbstractQueue
 {
-    protected string $table = 'manaphp_message_queue';
+    protected string $table;
 
-    public function __construct(array $options = [])
+    public function __construct(string $table = 'manaphp_message_queue')
     {
-        if (isset($options['table'])) {
-            $this->table = $options['table'];
-        }
+        $this->table = $table;
     }
 
     public function do_push(string $topic, string $body, int $priority = self::PRIORITY_NORMAL): void

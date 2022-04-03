@@ -14,9 +14,9 @@ use ManaPHP\Http\AbstractServer;
  */
 class Php extends AbstractServer
 {
-    public function __construct(array $options = [])
+    public function __construct(string $host = '0.0.0.0', int $port = 9501)
     {
-        parent::__construct($options);
+        parent::__construct($host, $port);
 
         $argv = $GLOBALS['argv'] ?? [];
         foreach ($argv as $k => $v) {

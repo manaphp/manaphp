@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Logging\Logger\Adapter;
 
-use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Logging\AbstractLogger;
+use ManaPHP\Logging\Level;
 use ManaPHP\Logging\Logger\Log;
 
 /** @noinspection SpellCheckingInspection */
@@ -22,37 +22,31 @@ use ManaPHP\Logging\Logger\Log;
 class Syslog extends AbstractLogger
 {
     protected string $uri;
-    protected int $facility = 1;
-    protected string $format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
-    protected string $scheme = 'udp';
+    protected int $facility;
+    protected string $format;
+    protected string $scheme;
     protected string $host;
-    protected int $port = 514;
+    protected int $port;
+
     protected mixed $socket;
 
-    public function __construct(array $options = [])
-    {
-        parent::__construct($options);
+    public function __construct(string $uri, int $facility = 1,
+        string $format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message',
+        string $level = Level::DEBUG, ?string $hostname = null
+    ) {
+        parent::__construct($level, $hostname);
 
-        if (!isset($options['uri'])) {
-            throw new MisuseException('`uri` is not assign');
-        }
+        $this->uri = $uri;
+        $this->facility = $facility;
+        $this->format = $format;
 
-        $this->uri = $options['uri'];
-        $parts = parse_url($options['uri']);
+        $parts = parse_url($uri);
         $this->host = $parts['host'];
-        if (isset($parts['scheme'])) {
-            $this->scheme = $parts['scheme'];
-        }
-        if (isset($parts['port'])) {
-            $this->port = (int)$parts['port'];
-        }
+        $this->scheme = $parts['scheme'] ?? 'udp';
+        $this->port = $parts['port'] ? (int)$parts['port'] : 514;
 
         if ($this->scheme !== 'udp') {
             throw new NotSupportedException('only support udp protocol');
-        }
-
-        if (isset($options['facility'])) {
-            $this->facility = $options['facility'];
         }
 
         $this->socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);

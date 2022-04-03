@@ -14,36 +14,29 @@ use ManaPHP\Http\Captcha\InvalidCaptchaException;
  */
 abstract class AbstractCaptcha extends Component implements CaptchaInterface
 {
-    protected string $charset = '23456789abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY';
-    protected array $fonts = [];
+    protected string $charset;
+    protected array $fonts;
     protected string $sessionVar = 'captcha';
     protected int $angleAmplitude = 30;
     protected int $noiseCharCount = 1;
-    protected string $bgRGB = '255,255,255';
+    protected string $bgRGB;
     protected int $length = 4;
     protected int $minInterval = 1;
 
-    public function __construct(array $options = [])
-    {
-        if (isset($options['charset'])) {
-            $this->charset = $options['charset'];
-        }
+    public function __construct(string $charset = '23456789abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY',
+        array $fonts = [], int $length = 4, string $bgRGB = '255,255,255'
+    ) {
+        $this->charset = $charset;
 
-        $options['fonts'] ??= [
-            '@manaphp/Http/Captcha/Fonts/AirbusSpecial.ttf',
-            '@manaphp/Http/Captcha/Fonts/StencilFour.ttf',
-            '@manaphp/Http/Captcha/Fonts/SpicyRice.ttf'
-        ];
+        $this->fonts = $fonts
+            ?: [
+                '@manaphp/Http/Captcha/Fonts/AirbusSpecial.ttf',
+                '@manaphp/Http/Captcha/Fonts/StencilFour.ttf',
+                '@manaphp/Http/Captcha/Fonts/SpicyRice.ttf'
+            ];
 
-        $this->fonts = $options['fonts'];
-
-        if (isset($options['length'])) {
-            $this->length = $options['length'];
-        }
-
-        if (isset($options['bgRGB'])) {
-            $this->bgRGB = $options['bgRGB'];
-        }
+        $this->length = $length;
+        $this->bgRGB = $bgRGB;
     }
 
     public function setNoiseCharCount(int $count): static

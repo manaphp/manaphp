@@ -16,20 +16,16 @@ use ManaPHP\Helper\LocalFS;
  */
 class View extends Component implements ViewInterface
 {
-    protected int $max_age = 0;
-    protected bool $autofix_url = true;
+    protected int $max_age;
+    protected bool $autofix_url;
+
     protected array $dirs = [];
     protected array $exists_cache;
 
-    public function __construct(array $options = [])
+    public function __construct(int $max_age = 0, bool $autofix_url = true)
     {
-        if (isset($options['max_age'])) {
-            $this->max_age = (int)$options['max_age'];
-        }
-
-        if (isset($options['autofix_url'])) {
-            $this->autofix_url = (bool)$options['autofix_url'];
-        }
+        $this->max_age = $max_age;
+        $this->autofix_url = $autofix_url;
     }
 
     public function setMaxAge(int $max_age): static

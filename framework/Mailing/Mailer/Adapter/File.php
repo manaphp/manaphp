@@ -9,29 +9,18 @@ use ManaPHP\Mailing\Mailer\Message;
 
 class File extends AbstractMailer
 {
-    protected ?string $file = null;
-    protected bool $pretty = false;
+    protected ?string $file;
+    protected bool $pretty;
 
-    public function __construct(array $options = [])
-    {
-        if (isset($options['file'])) {
-            $this->file = $options['file'];
-        }
-        if (isset($options['pretty'])) {
-            $this->pretty = (bool)$options['pretty'];
-        }
+    public function __construct(?string $file, bool $pretty = false,
+        ?string $log = null, ?string $from = null, ?string $to = null
+    ) {
+        $this->file = $file;
+        $this->pretty = $pretty;
 
-        if (isset($options['log'])) {
-            $this->log = $options['log'];
-        }
-
-        if (isset($options['from'])) {
-            $this->from = $options['from'];
-        }
-
-        if (isset($options['to'])) {
-            $this->to = $options['to'];
-        }
+        $this->log = $log;
+        $this->from = $from;
+        $this->to = $to;
     }
 
     protected function sendInternal(Message $message, ?array &$failedRecipients = null): int

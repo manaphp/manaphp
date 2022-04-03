@@ -9,10 +9,9 @@ use ManaPHP\Mailing\Mailer\Message;
 
 abstract class AbstractMailer extends Component implements MailerInterface
 {
-    protected string $log;
-
-    protected string $from;
-    protected string $to;
+    protected ?string $log;
+    protected ?string $from;
+    protected ?string $to;
 
     public function compose(): Message
     {

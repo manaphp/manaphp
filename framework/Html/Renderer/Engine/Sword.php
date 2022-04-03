@@ -14,11 +14,12 @@ use ManaPHP\Html\Renderer\EngineInterface;
 class Sword extends Component implements EngineInterface
 {
     protected string $doc_root;
+
     protected array $compiled = [];
 
-    public function __construct(array $options = [])
+    public function __construct(?string $doc_root = null)
     {
-        $this->doc_root = $options['doc_root'] ?? $_SERVER['DOCUMENT_ROOT'];
+        $this->doc_root = $doc_root ?? $_SERVER['DOCUMENT_ROOT'];
     }
 
     public function getCompiledFile(string $source): string

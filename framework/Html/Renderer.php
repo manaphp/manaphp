@@ -20,20 +20,15 @@ class Renderer extends Component implements RendererInterface
      */
     protected array $resolved = [];
 
-    protected array $engines
-        = [
-            '.phtml' => 'ManaPHP\Html\Renderer\Engine\Php',
-            '.sword' => 'ManaPHP\Html\Renderer\Engine\Sword'
-        ];
+    protected array $engines;
 
     protected array $files = [];
     protected Mutex $mutex;
 
-    public function __construct(array $options = [])
-    {
-        if (isset($options['engines'])) {
-            $this->engines = $options['engines'] ?: ['.phtml' => 'ManaPHP\Html\Renderer\Engine\Php'];
-        }
+    public function __construct(array $engines
+    = ['.phtml' => 'ManaPHP\Html\Renderer\Engine\Php', '.sword' => 'ManaPHP\Html\Renderer\Engine\Sword']
+    ) {
+        $this->engines = $engines;
 
         $this->mutex = new Mutex();
     }

@@ -21,18 +21,13 @@ use Throwable;
  */
 class Response extends Component implements ResponseInterface
 {
-    protected int|string $ok_code = 0;
-    protected int|string $error_code = 1;
+    protected int|string $ok_code;
+    protected int|string $error_code;
 
-    public function __construct(array $options = [])
+    public function __construct(int|string $ok_code = 0, int|string $error_code = 1)
     {
-        if (isset($options['ok_code'])) {
-            $this->ok_code = $options['ok_code'];
-        }
-
-        if (isset($options['error_code'])) {
-            $this->error_code = $options['error_code'];
-        }
+        $this->ok_code = $ok_code;
+        $this->error_code = $error_code;
     }
 
     public function setCookie(

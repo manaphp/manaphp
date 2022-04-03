@@ -10,19 +10,11 @@ class Memory extends AbstractMailer
 {
     protected Message $message;
 
-    public function __construct(array $options = [])
+    public function __construct(?string $log = null, ?string $from = null, ?string $to = null)
     {
-        if (isset($options['log'])) {
-            $this->log = $options['log'];
-        }
-
-        if (isset($options['from'])) {
-            $this->from = $options['from'];
-        }
-
-        if (isset($options['to'])) {
-            $this->to = $options['to'];
-        }
+        $this->log = $log;
+        $this->from = $from;
+        $this->to = $to;
     }
 
     public function getLastMessage(): Message

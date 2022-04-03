@@ -17,15 +17,12 @@ use ManaPHP\Http\Filter\ValidatingFilterInterface;
 class RateLimitFilter extends Filter implements ValidatingFilterInterface
 {
     protected string $prefix;
-    protected string $limits = '60/m';
+    protected string $limits;
 
-    public function __construct(array $options = [])
+    public function __construct(?string $prefix = null, string $limits = '60/m')
     {
-        $this->prefix = $options['prefix'] ?? sprintf("cache:%s:rateLimitPlugin:", $this->config->get('id'));
-
-        if (isset($options['limits'])) {
-            $this->limits = $options['limits'];
-        }
+        $this->prefix = $prefix ?? sprintf("cache:%s:rateLimitPlugin:", $this->config->get('id'));
+        $this->limits = $limits;
     }
 
     public function onValidating(EventArgs $eventArgs): void

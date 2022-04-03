@@ -17,11 +17,9 @@ class Client extends Component implements ClientInterface
 {
     protected string $endpoint;
 
-    public function __construct(array $options = [])
+    public function __construct(string $endpoint)
     {
-        if (isset($options['endpoint'])) {
-            $this->endpoint = rtrim($options['endpoint'], '/');
-        }
+        $this->endpoint = rtrim($endpoint, '/');
     }
 
     public function createBucket(string $bucket, ?string $base_url = null): array

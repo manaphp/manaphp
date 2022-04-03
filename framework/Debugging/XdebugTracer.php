@@ -10,36 +10,25 @@ use ManaPHP\Component;
  */
 class XdebugTracer extends Component implements XdebugTracerInterface
 {
-    protected int $params = 3;
-    protected int $return = 0;
-    protected int $max_depth = 2;
-    protected int $mem_delta = 1;
+    protected int $params;
+    protected int $return;
+    protected int $max_depth;
+    protected int $mem_delta;
 
-    public function __construct(array $options = [])
+    public function __construct(int $params = 3, int $return = 0, int $max_depth = 2, int $mem_delta = 1)
     {
-        if (isset($options['params'])) {
-            $this->params = $options['params'];
-        }
-
-        if (isset($options['return'])) {
-            $this->return = $options['return'];
-        }
-
-        if (isset($options['max_depth'])) {
-            $this->max_depth = $options['max_depth'];
-        }
-
-        if (isset($options['mem_delta'])) {
-            $this->mem_delta = $options['mem_delta'];
-        }
+        $this->params = $params;
+        $this->return = $return;
+        $this->max_depth = $max_depth;
+        $this->mem_delta = $mem_delta;
     }
 
     public function start(): void
     {
-        ini_set('xdebug.collect_return', $this->return);
-        ini_set('xdebug.collect_params', $this->params);
-        ini_set('xdebug.var_display_max_depth', $this->max_depth);
-        ini_set('xdebug.show_mem_delta', $this->mem_delta);
+        ini_set('xdebug.collect_return', (string)$this->return);
+        ini_set('xdebug.collect_params', (string)$this->params);
+        ini_set('xdebug.var_display_max_depth', (string)$this->max_depth);
+        ini_set('xdebug.show_mem_delta', (string)$this->mem_delta);
 
         $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
         $this->attachEvent('request:end', [$this, 'onRequestEnd']);

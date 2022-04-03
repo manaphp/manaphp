@@ -28,35 +28,21 @@ use ManaPHP\Version;
  */
 class Debugger extends Component implements DebuggerInterface
 {
-    protected int $ttl = 3600;
+    protected int $ttl;
     protected string $prefix;
-    protected string $template = '@manaphp/Debugging/Debugger/Template.html';
-    protected bool $broadcast = true;
-    protected bool $tail = true;
+    protected string $template;
+    protected bool $broadcast;
+    protected bool $tail;
 
-    public function __construct(array $options = [])
-    {
-        if (isset($options['ttl'])) {
-            $this->ttl = (int)$options['ttl'];
-        }
-
-        if (!class_exists('Redis')) {
-            $this->ttl = 0;
-        }
-
-        $this->prefix = $options['prefix'] ?? sprintf("cache:%s:debugger:", $this->config->get('id'));
-
-        if (isset($options['template'])) {
-            $this->template = $options['template'];
-        }
-
-        if (isset($options['broadcast'])) {
-            $this->broadcast = (bool)$options['broadcast'];
-        }
-
-        if (isset($options['tail'])) {
-            $this->tail = (bool)$options['tail'];
-        }
+    public function __construct(int $ttl = 3600, ?string $prefix = null,
+        string $template = '@manaphp/Debugging/Debugger/Template.html',
+        bool $broadcast = true, bool $tail = true
+    ) {
+        $this->ttl = class_exists('Redis') ? $ttl : 0;
+        $this->prefix = $prefix ?? sprintf("cache:%s:debugger:", $this->config->get('id'));
+        $this->template = $template;
+        $this->broadcast = $broadcast;
+        $this->tail = $tail;
     }
 
     public function start(): void

@@ -19,13 +19,11 @@ use ManaPHP\Caching\AbstractCache;
  */
 class Db extends AbstractCache
 {
-    protected string $table = 'manaphp_cache';
+    protected string $table;
 
-    public function __construct(array $options = [])
+    public function __construct(string $table = 'manaphp_cache')
     {
-        if (isset($options['table'])) {
-            $this->table = $options['table'];
-        }
+        $this->table = $table;
     }
 
     public function do_exists(string $key): bool

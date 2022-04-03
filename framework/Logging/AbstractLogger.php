@@ -19,25 +19,10 @@ abstract class AbstractLogger extends Component implements LoggerInterface
     protected string $level;
     protected string $hostname;
 
-    public function __construct(array $options = [])
+    public function __construct(string $level = Level::DEBUG, ?string $hostname = null)
     {
-        if (isset($options['level'])) {
-            $this->level = $options['level'];
-        } else {
-            $error_level = error_reporting();
-
-            if ($error_level & E_ERROR) {
-                $this->level = Level::ERROR;
-            } elseif ($error_level & E_WARNING) {
-                $this->level = Level::WARNING;
-            } elseif ($error_level & E_NOTICE) {
-                $this->level = Level::NOTICE;
-            } else {
-                $this->level = Level::DEBUG;
-            }
-        }
-
-        $this->hostname = $options['hostname'] ?? gethostname();
+        $this->level = $level;
+        $this->hostname = $hostname ?? gethostname();
     }
 
     protected function createContext(): AbstractLoggerContext

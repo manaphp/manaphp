@@ -13,13 +13,11 @@ use ManaPHP\Helper\Str;
  */
 class TracerBootstrapper extends Component implements BootstrapperInterface
 {
-    protected array $tracers = ['*'];
+    protected array $tracers;
 
-    public function __construct(array $options = [])
+    public function __construct(array $tracers = ['*'])
     {
-        if (isset($options['tracers'])) {
-            $this->tracers = $options['tracers'];
-        }
+        $this->tracers = $tracers;
     }
 
     public function bootstrap(): void

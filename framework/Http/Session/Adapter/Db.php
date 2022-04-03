@@ -22,15 +22,14 @@ use ManaPHP\Http\AbstractSession;
  */
 class Db extends AbstractSession
 {
-    protected string $table = 'manaphp_session';
+    protected string $table;
 
-    public function __construct(array $options = [])
-    {
-        parent::__construct($options);
+    public function __construct(string $table = 'manaphp_session',
+        int $ttl = 3600, int $lazy = 60, string $name = "PHPSESSID", string $serializer = 'json', array $params = []
+    ) {
+        parent::__construct($ttl, $lazy, $name, $serializer, $params);
 
-        if (isset($options['table'])) {
-            $this->table = $options['table'];
-        }
+        $this->table = $table;
     }
 
     public function do_read(string $session_id): string

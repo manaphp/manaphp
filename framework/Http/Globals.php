@@ -11,13 +11,11 @@ use ManaPHP\Http\Globals\Proxy;
  */
 class Globals extends Component implements GlobalsInterface
 {
-    protected bool $proxy = false;
+    protected bool $proxy;
 
-    public function __construct(array $options = [])
+    public function __construct(bool $proxy = false)
     {
-        if (isset($options['proxy'])) {
-            $this->proxy = $options['proxy'];
-        }
+        $this->proxy = $proxy;
 
         if ($this->proxy) {
             $_GET = new Proxy($this, '_GET');

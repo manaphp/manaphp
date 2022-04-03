@@ -5,10 +5,5 @@ namespace ManaPHP\Rest;
 
 class Client extends \ManaPHP\Http\Client implements ClientInterface
 {
-    public function __construct(array $options = [])
-    {
-        $options['engine'] ??= 'ManaPHP\Http\Client\Engine\Fopen';
 
-        parent::__construct($options);
-    }
 }

@@ -10,20 +10,13 @@ use ManaPHP\Component;
  */
 class Jwt extends Component implements JwtInterface
 {
-    protected string $alg = 'HS256';
+    protected string $alg;
     protected string $key;
 
-    public function __construct(array $options = [])
+    public function __construct(string $alg = 'HS256', ?string $key = null)
     {
-        if (isset($options['alg'])) {
-            $this->alg = $options['alg'];
-        }
-
-        if (isset($options['key'])) {
-            $this->key = $options['key'];
-        } else {
-            $this->key = $this->crypt->getDerivedKey('jwt');
-        }
+        $this->alg = $alg;
+        $this->key = $key ?? $this->crypt->getDerivedKey('jwt');
     }
 
     public function base64UrlEncode(string $str): string

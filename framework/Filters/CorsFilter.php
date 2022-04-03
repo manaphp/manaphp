@@ -14,23 +14,15 @@ use ManaPHP\Http\Filter\BeginFilterInterface;
  */
 class CorsFilter extends Filter implements BeginFilterInterface
 {
-    protected int $max_age = 86400;
-    protected ?string $origin = null;
-    protected bool $credentials = true;
+    protected int $max_age;
+    protected ?string $origin;
+    protected bool $credentials;
 
-    public function __construct(array $options = [])
+    public function __construct(int $max_age = 86400, ?string $origin = null, bool $credentials = true)
     {
-        if (isset($options['max_age'])) {
-            $this->max_age = $options['max_age'];
-        }
-
-        if (isset($options['origin'])) {
-            $this->origin = $options['origin'];
-        }
-
-        if (isset($options['credentials'])) {
-            $this->credentials = $options['credentials'];
-        }
+        $this->max_age = $max_age;
+        $this->origin = $origin;
+        $this->credentials = $credentials;
     }
 
     public function onBegin(): void
@@ -63,7 +55,7 @@ class CorsFilter extends Filter implements BeginFilterInterface
                 ->setHeader('Access-Control-Allow-Credentials', $this->credentials ? 'true' : 'false')
                 ->setHeader('Access-Control-Allow-Headers', $allow_headers)
                 ->setHeader('Access-Control-Allow-Methods', $allow_methods)
-                ->setHeader('Access-Control-Max-Age', $this->max_age);
+                ->setHeader('Access-Control-Max-Age', (string)$this->max_age);
         }
 
         if ($this->request->isOptions()) {

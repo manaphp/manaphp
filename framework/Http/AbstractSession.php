@@ -17,36 +17,20 @@ use ManaPHP\Helper\Str;
  */
 abstract class AbstractSession extends Component implements SessionInterface, ArrayAccess
 {
-    protected int $ttl = 3600;
+    protected int $ttl;
     protected int $lazy;
-    protected string $name = 'PHPSESSID';
-    protected string $serializer = 'json';
+    protected string $name;
+    protected string $serializer;
     protected array $params = ['expire' => 0, 'path' => null, 'domain' => null, 'secure' => false, 'httponly' => true];
 
-    public function __construct(array $options = [])
-    {
-        if (isset($options['ttl'])) {
-            $this->ttl = (int)$options['ttl'];
-        }
-
-        if (isset($options['lazy'])) {
-            $this->lazy = (int)$options['lazy'];
-        } else {
-            $this->lazy = (int)min($this->ttl / 10, 600);
-        }
-
-        if (isset($options['name'])) {
-            $this->name = $options['name'];
-        }
-
-        if (isset($options['serializer'])) {
-            $this->serializer = $options['serializer'];
-        }
-
-        if (isset($options['params'])) {
-            $this->params = $options['params'] + $this->params;
-        }
-
+    public function __construct(int $ttl = 3600, int $lazy = 60, string $name = "PHPSESSID",
+        string $serializer = 'json', array $params = []
+    ) {
+        $this->ttl = $ttl;
+        $this->lazy = $lazy;
+        $this->name = $name;
+        $this->serializer = $serializer;
+        $this->params = $params + $this->params;
         $this->params['path'] ??= $this->alias->get('@web') ?: '/';
 
         $this->attachEvent('request:responding', [$this, 'onRequestResponding']);

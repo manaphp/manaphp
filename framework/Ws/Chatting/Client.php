@@ -10,13 +10,11 @@ use ManaPHP\Component;
  */
 class Client extends Component implements ClientInterface
 {
-    protected string $prefix = 'ws_chatting:';
+    protected string $prefix;
 
-    public function __construct(array $options = [])
+    public function __construct(string $prefix = 'ws_chatting:')
     {
-        if (isset($options['prefix'])) {
-            $this->prefix = $options['prefix'];
-        }
+        $this->prefix = $prefix;
     }
 
     protected function push(string $type, string $room, string|array $receivers, string|array $message): void

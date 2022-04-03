@@ -22,9 +22,9 @@ class PageCacheFilter extends Filter implements ReadyFilterInterface
 {
     protected string $prefix;
 
-    public function __construct(array $options = [])
+    public function __construct(?string $prefix = null)
     {
-        $this->prefix = $options['prefix'] ?? sprintf("cache:%s:pageCachePlugin:", $this->config->get('id'));
+        $this->prefix = $prefix ?? sprintf("cache:%s:pageCachePlugin:", $this->config->get('id'));
     }
 
     public function onReady(EventArgs $eventArgs): void

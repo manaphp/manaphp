@@ -12,13 +12,11 @@ use ManaPHP\Http\Filter\RespondingFilterInterface;
  */
 class EtagFilter extends Filter implements RespondingFilterInterface
 {
-    protected string $algo = 'md5';
+    protected string $algo;
 
-    public function __construct(array $options = [])
+    public function __construct(string $algo = 'md5')
     {
-        if (isset($options['algo'])) {
-            $this->algo = $options['algo'];
-        }
+        $this->algo = $algo;
     }
 
     public function onResponding(): void

@@ -13,19 +13,12 @@ use ManaPHP\Identifying\Identity;
 class Jwt extends Identity
 {
     protected string $scope;
-    protected int $ttl = 86400;
+    protected int $ttl;
 
-    public function __construct(array $options = [])
+    public function __construct(?string $scope = null, int $ttl = 86400)
     {
-        if (isset($options['scope'])) {
-            $this->scope = $options['scope'];
-        } else {
-            $this->scope = $this->config->get('id');
-        }
-
-        if (isset($options['ttl'])) {
-            $this->ttl = (int)$options['ttl'];
-        }
+        $this->scope = $scope ?? $this->config->get('id');
+        $this->ttl = $ttl;
     }
 
     public function authenticate(): array

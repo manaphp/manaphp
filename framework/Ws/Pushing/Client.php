@@ -11,18 +11,13 @@ use ManaPHP\Exception\MissingFieldException;
  */
 class Client extends Component implements ClientInterface
 {
-    protected string $prefix = 'ws_pushing:';
     protected string $endpoint;
+    protected string $prefix;
 
-    public function __construct(array $options = [])
+    public function __construct(string $endpoint, string $prefix = 'ws_pushing:')
     {
-        if (isset($options['prefix'])) {
-            $this->prefix = $options['prefix'];
-        }
-
-        if (isset($options['endpoint'])) {
-            $this->endpoint = $options['endpoint'];
-        }
+        $this->endpoint = $endpoint;
+        $this->prefix = $prefix;
     }
 
     protected function push(string $type, int|string|array $receivers, string|array $message, ?string $endpoint): void

@@ -10,13 +10,11 @@ use ManaPHP\Component;
  */
 class Locale extends Component implements LocaleInterface
 {
-    protected string $default = 'en';
+    protected string $default;
 
-    public function __construct(array $options = [])
+    public function __construct(string $default = 'en')
     {
-        if (isset($options['default'])) {
-            $this->default = $options['default'];
-        }
+        $this->default = $default;
     }
 
     protected function createContext(): LocaleContext

@@ -4,24 +4,17 @@ declare(strict_types=1);
 namespace ManaPHP\Security;
 
 use ManaPHP\Component;
-use ManaPHP\Exception\MisuseException;
 use ManaPHP\Security\Crypt\Exception as CryptException;
 
 class Crypt extends Component implements CryptInterface
 {
     protected string $master_key;
-    protected string $method = 'AES-128-CBC';
+    protected string $method;
 
-    public function __construct(array $options = [])
+    public function __construct(string $master_key, $method = 'AES-128-CBC')
     {
-        if (!isset($options['master_key'])) {
-            throw new MisuseException('master_key is not provided');
-        }
-        $this->master_key = $options['master_key'];
-
-        if (isset($options['method'])) {
-            $this->method = $options['method'];
-        }
+        $this->master_key = $master_key;
+        $this->method = $method;
     }
 
     public function encrypt(string $text, string $key): string

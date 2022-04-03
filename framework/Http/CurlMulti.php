@@ -18,22 +18,18 @@ use ManaPHP\Http\CurlMulti\Response;
  */
 class CurlMulti extends Component implements CurlMultiInterface, Countable
 {
-    protected string $proxy;
-    protected int $timeout = 10;
+    protected ?string $proxy;
+    protected int $timeout;
+
     protected CurlHandle $template;
     protected CurlMultiHandle $mh;
     protected array $requests = [];
     protected array $files = [];
 
-    public function __construct(array $options = [])
+    public function __construct(?string $proxy = null, int $timeout = 10)
     {
-        if (isset($options['proxy'])) {
-            $this->proxy = $options['proxy'];
-        }
-
-        if (isset($options['timeout'])) {
-            $this->timeout = $options['timeout'];
-        }
+        $this->proxy = $proxy;
+        $this->timeout = $timeout;
 
         $this->template = $this->createCurlTemplate();
 

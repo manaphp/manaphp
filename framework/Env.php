@@ -12,13 +12,11 @@ use ManaPHP\Exception\InvalidValueException;
  */
 class Env extends Component implements EnvInterface
 {
-    protected string $file = '@config/.env';
+    protected string $file;
 
-    public function __construct(array $options = [])
+    public function __construct(string $file = '@config/.env')
     {
-        if (isset($options['file'])) {
-            $this->file = $options['file'];
-        }
+        $this->file = $file;
     }
 
     public function load(): static
