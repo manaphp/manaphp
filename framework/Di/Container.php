@@ -133,13 +133,20 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
             return $instance;
         }
 
-        $definition = $this->definitions[$id] ?? $id;
+        $definition = $this->definitions[$id] ?? null;
 
-        if (is_string($definition)) {
+        if ($definition === null) {
+            if (preg_match('#^[\w\\\\]+$#', $id) !== 1) {
+                throw new NotFoundException(["%s not found", $id]);
+            }
+            return $this->instances[$id] = $this->make($id, [], $id);
+        } elseif (is_string($definition)) {
             if ($definition[0] === '@') {
                 return $this->get(substr($definition, 1));
             } elseif ($definition[0] === '#') {
                 return $this->get("$id$definition");
+            } elseif (preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
+                return $this->get($definition);
             } else {
                 return $this->instances[$id] = $this->make($definition, [], $id);
             }
