@@ -139,7 +139,7 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
             if ($definition[0] === '@') {
                 return $this->get(substr($definition, 1));
             } elseif ($definition[0] === '#') {
-                return $this->get("@$id$definition");
+                return $this->get("$id$definition");
             } elseif (str_contains($definition, '.')) {
                 $glob = substr($definition, 0, strrpos($definition, '.')) . '.*';
                 if (($definition2 = $this->definitions[$glob] ?? null) !== null) {
