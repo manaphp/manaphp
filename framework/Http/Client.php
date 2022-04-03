@@ -51,11 +51,6 @@ class Client extends Component implements ClientInterface
         $this->pool_size = $pool_size;
     }
 
-    public function __destruct()
-    {
-        $this->poolManager->remove($this);
-    }
-
     public function __clone()
     {
         throw new NonCloneableException($this);

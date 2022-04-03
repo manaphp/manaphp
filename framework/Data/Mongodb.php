@@ -33,11 +33,6 @@ class Mongodb extends Component implements MongodbInterface
         $this->poolManager->add($this, $sample);
     }
 
-    public function __destruct()
-    {
-        $this->poolManager->remove($this);
-    }
-
     public function __clone()
     {
         throw new NonCloneableException($this);
