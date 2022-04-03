@@ -3,7 +3,7 @@
 namespace Tests;
 
 use ManaPHP\Di\FactoryDefault;
-use ManaPHP\Messaging\Queue\Adapter\Redis;
+use ManaPHP\Messaging\Queue;
 use PHPUnit\Framework\TestCase;
 
 class MessagingQueueEngineRedisTest extends TestCase
@@ -11,7 +11,7 @@ class MessagingQueueEngineRedisTest extends TestCase
     public function test_push()
     {
         $di = new FactoryDefault();
-        $messageQueue = $di->get(Redis::class);
+        $messageQueue = $di->get(Queue::class);
 
         $messageQueue->do_delete('test');
         $messageQueue->do_push('test', 'manaphp');
@@ -22,7 +22,7 @@ class MessagingQueueEngineRedisTest extends TestCase
     {
 
         $di = new FactoryDefault();
-        $messageQueue = $di->get(Redis::class);
+        $messageQueue = $di->get(Queue::class);
 
         $messageQueue->do_delete('test');
 
@@ -39,7 +39,7 @@ class MessagingQueueEngineRedisTest extends TestCase
     public function test_delete()
     {
         $di = new FactoryDefault();
-        $messageQueue = $di->get(Redis::class);
+        $messageQueue = $di->get(Queue::class);
 
         $this->assertEquals(0, $messageQueue->do_length('test'));
         $messageQueue->do_delete('test');
@@ -53,7 +53,7 @@ class MessagingQueueEngineRedisTest extends TestCase
     public function test_length()
     {
         $di = new FactoryDefault();
-        $messageQueue = $di->get(Redis::class);
+        $messageQueue = $di->get(Queue::class);
 
         $messageQueue->do_delete('test');
 

@@ -1,15 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Messaging\Queue\Adapter;
+namespace ManaPHP\Messaging;
 
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Messaging\AbstractQueue;
 
 /**
  * @property-read \ManaPHP\Data\RedisBrokerInterface $redisBroker
  */
-class Redis extends AbstractQueue
+class Queue extends AbstractQueue
 {
     protected string $prefix;
 

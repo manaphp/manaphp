@@ -1,15 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Messaging\PubSub\Adapter;
+namespace ManaPHP\Messaging;
 
 use ManaPHP\Component;
-use ManaPHP\Messaging\PubSubInterface;
 
 /**
  * @property-read \ManaPHP\Data\RedisBrokerInterface $redisBroker
  */
-class Redis extends Component implements PubSubInterface
+class PubSub extends Component implements PubSubInterface
 {
     public function subscribe(array $channels, callable $callback): void
     {
