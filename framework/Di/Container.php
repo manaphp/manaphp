@@ -140,19 +140,6 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
                 return $this->get(substr($definition, 1));
             } elseif ($definition[0] === '#') {
                 return $this->get("$id$definition");
-            } elseif (str_contains($definition, '.')) {
-                $glob = substr($definition, 0, strrpos($definition, '.')) . '.*';
-                if (($definition2 = $this->definitions[$glob] ?? null) !== null) {
-                    if (is_string($definition2) && is_subclass_of($definition2, FactoryInterface::class)) {
-                        /** @var \ManaPHP\Di\FactoryInterface $factory */
-                        $factory = new $definition2();
-                        return $this->instances[$id] = $factory->make($this, $id);
-                    } else {
-                        return $this->get($glob);
-                    }
-                } else {
-                    throw new NotFoundException("`$id` is not found");
-                }
             } else {
                 return $this->instances[$id] = $this->make($definition, [], $id);
             }
