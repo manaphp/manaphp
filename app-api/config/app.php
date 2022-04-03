@@ -10,11 +10,13 @@ return [
     'factories'     => [
         'ManaPHP\Http\ServerInterface' => [
             'swoole' => [
-                'class'                 => 'ManaPHP\Http\Server\Adapter\Swoole',
-                'port'                  => 9501,
-                'worker_num'            => 2,
-                'max_request'           => 1000000,
-                'enable_static_handler' => false
+                'class'    => 'ManaPHP\Http\Server\Adapter\Swoole',
+                'port'     => 9501,
+                'settings' => [
+                    'worker_num'            => 4,
+                    'max_request'           => 1000000,
+                    'enable_static_handler' => false
+                ],
             ],
             'fpm'    => [
                 'class' => 'ManaPHP\Http\Server\Adapter\Fpm',
@@ -30,6 +32,7 @@ return [
     ],
     'dependencies'  => [
         # 'ManaPHP\Http\ServerInterface'          => '#swoole',
+        'ManaPHP\Data\RedisInterface'           => [env('REDIS_URL')],
         'ManaPHP\Logging\LoggerInterface'       => ['level' => env('LOGGER_LEVEL', 'info')],
         'ManaPHP\Http\HandlerInterface'         => 'ManaPHP\Rest\Handler',
         'ManaPHP\Identifying\IdentityInterface' => 'ManaPHP\Identifying\Identity\Adapter\Jwt',
