@@ -250,7 +250,7 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
 
         $types = $this->types[$class] ?? $this->getTypes($class);
         if (($type = $types[$property] ?? null) === null) {
-            throw new MisuseException(['can\'t type-hint for `%s::%s`', $class, $property]);
+            throw new TypeHintException(['can\'t type-hint for `%s::%s`', $class, $property]);
         }
 
         $dependencies = $this->dependencies[$target] ?? null;
