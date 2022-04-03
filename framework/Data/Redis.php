@@ -19,30 +19,21 @@ class Redis extends Component implements RedisInterface, RedisDbInterface, Redis
     protected Redis $owner;
     protected ?Connection $connection = null;
 
-    public function __construct(string|array $options = 'redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0'
-    ) {
+    /**
+     * @param string $uri redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0
+     */
+    public function __construct(string $uri)
+    {
         $this->owner = $this;
 
-        if (is_string($options)) {
-            $this->uri = $options;
+        $this->uri = $uri;
 
-            if (preg_match('#timeout=([\d.]+)#', $options, $matches) === 1) {
-                $this->timeout = (float)$matches[1];
-            }
+        if (preg_match('#timeout=([\d.]+)#', $uri, $matches) === 1) {
+            $this->timeout = (float)$matches[1];
+        }
 
-            if (preg_match('#pool_size=([\d/]+)#', $options, $matches)) {
-                $this->pool_size = (int)$matches[1];
-            }
-        } else {
-            $this->uri = $options['uri'];
-
-            if (isset($options['timeout'])) {
-                $this->timeout = (float)$options['timeout'];
-            }
-
-            if (isset($options['pool_size'])) {
-                $this->pool_size = (int)$options['pool_size'];
-            }
+        if (preg_match('#pool_size=([\d/]+)#', $uri, $matches)) {
+            $this->pool_size = (int)$matches[1];
         }
 
         $sample = $this->container->make('ManaPHP\Data\Redis\Connection', [$this->uri]);
