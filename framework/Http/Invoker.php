@@ -10,6 +10,7 @@ use ReflectionMethod;
 /**
  * @property-read \ManaPHP\Http\RequestInterface         $request
  * @property-read \ManaPHP\Validating\ValidatorInterface $validator
+ * @property-read \ManaPHP\Di\InvokerInterface           $invoker
  */
 class Invoker extends Component implements InvokerInterface
 {
@@ -59,6 +60,6 @@ class Invoker extends Component implements InvokerInterface
             throw new ValidateFailedException($errors);
         }
 
-        return $this->container->call([$controller, $method], $args);
+        return $this->invoker->call([$controller, $method], $args);
     }
 }
