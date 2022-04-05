@@ -6,6 +6,7 @@ namespace ManaPHP\Data;
 use ManaPHP\Component;
 use ManaPHP\Data\Mongodb\Exception as MongodbException;
 use ManaPHP\Data\Mongodb\Query;
+use ManaPHP\Di\FactoryInterface;
 use ManaPHP\Exception\NonCloneableException;
 use MongoDB\Driver\Exception\RuntimeException;
 
@@ -14,12 +15,14 @@ use MongoDB\Driver\Exception\RuntimeException;
  */
 class Mongodb extends Component implements MongodbInterface
 {
+    protected FactoryInterface $factory;
     protected string $uri;
     protected string $prefix;
     protected string $db;
 
-    public function __construct(string $uri = 'mongodb://127.0.0.1:27017/')
+    public function __construct(FactoryInterface $factory, string $uri = 'mongodb://127.0.0.1:27017/')
     {
+        $this->factory = $factory;
         $this->uri = $uri;
 
         if (preg_match('#[?&]prefix=(\w+)#', $uri, $matches)) {
@@ -29,7 +32,7 @@ class Mongodb extends Component implements MongodbInterface
         $path = parse_url($uri, PHP_URL_PATH);
         $this->db = ($path !== '/' && $path !== null) ? substr($path, 1) : null;
 
-        $sample = $this->container->make('ManaPHP\Data\Mongodb\Connection', [$this->uri]);
+        $sample = $factory->make('ManaPHP\Data\Mongodb\Connection', [$this->uri]);
         $this->poolManager->add($this, $sample);
     }
 
@@ -322,6 +325,6 @@ class Mongodb extends Component implements MongodbInterface
 
     public function query(?string $collection = null): Query
     {
-        return $this->container->make('ManaPHP\Data\Mongodb\Query', [$this])->from($collection);
+        return $this->factory->make('ManaPHP\Data\Mongodb\Query', [$this])->from($collection);
     }
 }

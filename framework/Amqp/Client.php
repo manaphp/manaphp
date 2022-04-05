@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Amqp;
 
 use ManaPHP\Component;
+use ManaPHP\Di\FactoryInterface;
 use ManaPHP\Exception\MisuseException;
 
 /**
@@ -16,7 +17,7 @@ class Client extends Component implements ClientInterface
     protected int $timeout = 3;
     protected ?EngineInterface $engine = null;
 
-    public function __construct(string $uri)
+    public function __construct(string $uri, FactoryInterface $factory)
     {
         $this->uri = $uri;
 
@@ -24,7 +25,7 @@ class Client extends Component implements ClientInterface
             $this->pool_size = (int)$match[1];
         }
 
-        $sample = $this->container->make('ManaPHP\Amqp\Engine\Php', [$uri]);
+        $sample = $factory->make('ManaPHP\Amqp\Engine\Php', [$uri]);
         $this->poolManager->add($this, $sample, $this->pool_size);
     }
 

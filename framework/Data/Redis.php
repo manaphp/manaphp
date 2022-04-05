@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Data;
 
 use ManaPHP\Component;
+use ManaPHP\Di\FactoryInterface;
 use ManaPHP\Data\Redis\Connection;
 use ManaPHP\Exception\MisuseException;
 
@@ -22,7 +23,7 @@ class Redis extends Component implements RedisInterface, RedisDbInterface, Redis
     /**
      * @param string $uri redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0
      */
-    public function __construct(string $uri)
+    public function __construct(string $uri, FactoryInterface $factory)
     {
         $this->owner = $this;
 
@@ -36,7 +37,7 @@ class Redis extends Component implements RedisInterface, RedisDbInterface, Redis
             $this->pool_size = (int)$matches[1];
         }
 
-        $sample = $this->container->make('ManaPHP\Data\Redis\Connection', [$this->uri]);
+        $sample = $factory->make('ManaPHP\Data\Redis\Connection', [$this->uri]);
         $this->poolManager->add($this, $sample, $this->pool_size);
     }
 

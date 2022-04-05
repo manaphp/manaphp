@@ -7,6 +7,9 @@ use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Mailing\Mailer\Message;
 
+/**
+ * @property-read \ManaPHP\Di\FactoryInterface $factory
+ */
 abstract class AbstractMailer extends Component implements MailerInterface
 {
     protected ?string $log;
@@ -15,7 +18,7 @@ abstract class AbstractMailer extends Component implements MailerInterface
 
     public function compose(): Message
     {
-        $message = $this->container->make('ManaPHP\Mailing\Mailer\Message');
+        $message = $this->factory->make('ManaPHP\Mailing\Mailer\Message');
 
         $message->setMailer($this);
 

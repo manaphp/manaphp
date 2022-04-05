@@ -12,6 +12,7 @@ use ManaPHP\Helper\Arr;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface $request
+ * @property-read \ManaPHP\Di\FactoryInterface   $factory
  */
 class Query extends AbstractQuery
 {
@@ -38,7 +39,7 @@ class Query extends AbstractQuery
     {
         foreach ($queries as $id => $query) {
             if (is_string($query)) {
-                $query = $this->container->make($query);
+                $query = $this->factory->make($query);
             }
 
             if ($query instanceof QueryInterface) {

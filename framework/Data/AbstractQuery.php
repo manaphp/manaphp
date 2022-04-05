@@ -13,6 +13,7 @@ use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
 
 /**
+ * @property-read \ManaPHP\Di\FactoryInterface            $factory
  * @property-read \ManaPHP\Http\RequestInterface          $request
  * @property-read \ManaPHP\Data\Relation\ManagerInterface $relationManager
  * @property-read \ManaPHP\Data\Model\ThoseInterface      $those
@@ -434,7 +435,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
             $count = $this->offset + count($items);
         }
 
-        $paginator = $this->container->make(PaginatorInterface::class);
+        $paginator = $this->factory->make(PaginatorInterface::class);
         $paginator->items = $items;
         return $paginator->paginate($count, $this->limit, (int)($this->offset / $this->limit) + 1);
     }

@@ -6,6 +6,9 @@ namespace ManaPHP\Coroutine;
 use ManaPHP\Component;
 use Swoole\Coroutine;
 
+/**
+ * @property-read \ManaPHP\Di\FactoryInterface $factory
+ */
 class Manager extends Component implements ManagerInterface
 {
     protected array $option;
@@ -21,11 +24,11 @@ class Manager extends Component implements ManagerInterface
 
     public function createScheduler(): SchedulerInterface
     {
-        return $this->container->make('ManaPHP\Coroutine\Scheduler');
+        return $this->factory->make('ManaPHP\Coroutine\Scheduler');
     }
 
     public function createTask(callable $fn, int $count = 1): TaskInterface
     {
-        return $this->container->make('ManaPHP\Coroutine\Task', [$fn, $count]);
+        return $this->factory->make('ManaPHP\Coroutine\Task', [$fn, $count]);
     }
 }

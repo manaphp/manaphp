@@ -10,6 +10,7 @@ use ManaPHP\Helper\LocalFS;
 use ManaPHP\Html\Dom\Document\Exception as DocumentException;
 
 /**
+ * @property-read \ManaPHP\Di\FactoryInterface  $factory
  * @property-read \ManaPHP\Http\ClientInterface $httpClient
  */
 class Document extends Component
@@ -83,7 +84,7 @@ class Document extends Component
             throw new DocumentException('xx');
         }
 
-        $this->query = $this->container->make('ManaPHP\Html\Dom\Query', [$this->dom]);
+        $this->query = $this->factory->make('ManaPHP\Html\Dom\Query', [$this->dom]);
 
         $this->url = $url;
         $this->base = $this->getBase() ?: $this->url;

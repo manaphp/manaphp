@@ -12,6 +12,7 @@ use ReflectionMethod;
 /**
  * @property-read \ManaPHP\Di\ContainerInterface        $container
  * @property-read \ManaPHP\Cli\Command\ManagerInterface $commandManager
+ * @property-read \ManaPHP\Di\FactoryInterface          $factory
  */
 class BashCompletionCommand extends Command
 {
@@ -85,7 +86,7 @@ class BashCompletionCommand extends Command
         $action = Str::camelize($action) . 'Completion';
         if (method_exists($commandClassName, $action)) {
             try {
-                $argument_values = $this->container->make($commandClassName)->$action($argumentName, $current);
+                $argument_values = $this->factory->make($commandClassName)->$action($argumentName, $current);
             } catch (\Exception $e) {
             }
         }

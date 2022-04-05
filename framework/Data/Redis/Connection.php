@@ -9,6 +9,9 @@ use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\RuntimeException;
 use Redis;
 
+/**
+ * @property-read \ManaPHP\Di\FactoryInterface $factory
+ */
 class Connection extends Component
 {
     protected string $uri;
@@ -99,12 +102,12 @@ class Connection extends Component
                 foreach (explode(',', $this->host) as $host) {
                     $seeds[] = str_contains($host, ':') ? $host : "$host:6379";
                 }
-                $redis = $this->container->make(
+                $redis = $this->factory->make(
                     'RedisCluster',
                     [null, $seeds, $this->timeout, $this->read_timeout, $this->persistent, $this->auth]
                 );
             } else {
-                $redis = $this->container->make('Redis');
+                $redis = $this->factory->make('Redis');
 
                 if ($this->persistent) {
                     if (!@$redis->pconnect($this->host, $this->port, $this->timeout, $this->db)) {
