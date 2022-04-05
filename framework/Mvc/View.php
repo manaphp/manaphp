@@ -9,11 +9,12 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\LocalFS;
 
 /**
- * @property-read \Psr\Container\ContainerInterface $container
- * @property-read \ManaPHP\AliasInterface           $alias
- * @property-read \ManaPHP\Html\RendererInterface   $renderer
- * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
- * @property-read \ManaPHP\Mvc\ViewContext          $context
+ * @property-read \Psr\Container\ContainerInterface         $container
+ * @property-read \ManaPHP\AliasInterface                   $alias
+ * @property-read \ManaPHP\Html\RendererInterface           $renderer
+ * @property-read \ManaPHP\Http\DispatcherInterface         $dispatcher
+ * @property-read \ManaPHP\Mvc\View\Widget\FactoryInterface $widgetFactory
+ * @property-read \ManaPHP\Mvc\ViewContext                  $context
  */
 class View extends Component implements ViewInterface
 {
@@ -279,8 +280,7 @@ class View extends Component implements ViewInterface
             $view = "@views/Widgets/$widget";
         }
 
-        /** @var \ManaPHP\Mvc\View\WidgetInterface $widgetInstance */
-        $widgetInstance = $this->container->get($widgetClassName);
+        $widgetInstance = $this->widgetFactory->get($widgetClassName);
         $vars = $widgetInstance->run($options);
 
         if (is_string($vars)) {
