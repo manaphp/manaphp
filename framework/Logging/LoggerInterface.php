@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Logging;
 
+use ManaPHP\Di\Attribute\Primary;
+
+#[Primary('ManaPHP\Logging\Logger\Adapter\File')]
 interface LoggerInterface
 {
     public function setLevel(string $level): static;

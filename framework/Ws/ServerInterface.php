@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Ws;
 
+use ManaPHP\Di\Attribute\Primary;
+
+#[Primary('ManaPHP\Ws\Server\Adapter\Swoole')]
 interface ServerInterface
 {
     public function start(): void;

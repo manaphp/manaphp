@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
+use ManaPHP\Di\Attribute\Primary;
+
+#[Primary('ManaPHP\Http\Session\Adapter\Redis')]
 interface SessionInterface
 {
     public function get(?string $name = null, mixed $default = null): mixed;

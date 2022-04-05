@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Caching;
 
+use ManaPHP\Di\Attribute\Primary;
+
+#[Primary('ManaPHP\Caching\Cache\Adapter\Redis')]
 interface CacheInterface
 {
     public function exists(string $key): bool;

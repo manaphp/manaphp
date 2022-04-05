@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Di;
 
 use Closure;
+use ManaPHP\Di\Attribute\Primary;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MisuseException;
 use ReflectionClass;
@@ -59,22 +60,23 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
             if (class_exists($prefix)) {
                 $exists = true;
                 $class = $prefix;
-            } elseif (class_exists($factory = $prefix . 'Factory')) {
-                $exists = true;
-                $class = $factory;
+            } else {
+                $rClass = new ReflectionClass($class);
+                if (($attribute = $rClass->getAttributes(Primary::class)[0] ?? null) !== null) {
+                    /** @var Primary $primary */
+                    $primary = $attribute->newInstance();
+                    return $this->make($primary->definition, $parameters);
+                }
             }
+        } elseif (str_contains($class, '::')) {
+            list($factory, $method) = explode('::', $class);
+            return $this->call([$this->get($factory), $method], $parameters);
         } elseif (class_exists($class)) {
             $exists = true;
         }
 
         if (!$exists) {
             throw new NotFoundException(['`%s` is not exists', $class]);
-        }
-
-        if (is_subclass_of($class, FactoryInterface::class)) {
-            /** @var \ManaPHP\Di\FactoryInterface $factory */
-            $factory = new $class();
-            return $factory->make($this, '', $parameters);
         }
 
         if (method_exists($class, '__construct')) {
@@ -142,9 +144,7 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
             } elseif ($definition[0] === '#') {
                 return $this->get("$id$definition");
             } elseif (str_contains($definition, '::')) {
-                list($class, $method) = explode('::', $definition, 2);
-                $obj = $this->get($class);
-                return $this->instances[$id] = $this->call([$obj, $method], ['id' => $id]);
+                return $this->instances[$id] = $this->make($definition, ['id' => $id]);
             } elseif (preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
                 return $this->get($definition);
             } else {
