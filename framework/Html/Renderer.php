@@ -10,8 +10,9 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PreconditionException;
 
 /**
- * @property-read \ManaPHP\AliasInterface       $alias
- * @property-read \ManaPHP\Html\RendererContext $context
+ * @property-read \ManaPHP\AliasInterface                        $alias
+ * @property-read \ManaPHP\Html\Renderer\Engine\FactoryInterface $engineFactory
+ * @property-read \ManaPHP\Html\RendererContext                  $context
  */
 class Renderer extends Component implements RendererInterface
 {
@@ -89,7 +90,7 @@ class Renderer extends Component implements RendererInterface
         }
 
         $engine = $this->resolved[$extension] ??
-            ($this->resolved[$extension] = $this->container->get($this->engines[$extension]));
+            ($this->resolved[$extension] = $this->engineFactory->get($this->engines[$extension]));
 
         if (isset($vars['renderer'])) {
             throw new MisuseException('variable `renderer` is reserved for renderer');
