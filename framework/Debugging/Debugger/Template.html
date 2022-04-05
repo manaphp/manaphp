@@ -117,6 +117,7 @@
                 <thead>
                 <tr>
                     <td width="5%">#</td>
+                    <td width="5%">object_id</td>
                     <td width="10%">name</td>
                     <td width="20%">class</td>
                     <td>properties</td>
@@ -125,6 +126,7 @@
                 <tbody>
                 <tr v-for="(item, name, index) in dependencies">
                     <td>{{index}}</td>
+                    <td>#{{item.object_id}}</td>
                     <td :title="name">{{name}}</td>
                     <td>{{item.class}}</td>
                     <td :title="json_stringify(item.properties)">

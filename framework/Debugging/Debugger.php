@@ -358,7 +358,9 @@ class Debugger extends Component implements DebuggerInterface
                 continue;
             }
 
-            $data['dependencies'][$name] = ['class' => get_class($instance), 'properties' => $properties];
+            $data['dependencies'][$name] = ['class'      => get_class($instance),
+                                            'object_id'  => spl_object_id($instance),
+                                            'properties' => $properties];
         }
 
         $data['included_files'] = @get_included_files() ?: [];
