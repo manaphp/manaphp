@@ -11,6 +11,7 @@ use ManaPHP\Helper\Str;
  * @property-read \ManaPHP\Cli\ConsoleInterface                   $console
  * @property-read \ManaPHP\Cli\RequestInterface                   $request
  * @property-read \ManaPHP\Cli\Command\ManagerInterface           $commandManager
+ * @property-read \ManaPHP\Cli\Command\FactoryInterface           $commandFactory
  * @property-read \ManaPHP\Cli\Command\ArgumentsResolverInterface $argumentsResolver
  */
 class Handler extends Component implements HandlerInterface
@@ -98,8 +99,7 @@ class Handler extends Component implements HandlerInterface
             return $this->console->error("`$colored_action` action is not exists");
         }
 
-        /** @var \ManaPHP\Cli\Command $instance */
-        $instance = $this->container->get($definition);
+        $instance = $this->commandFactory->get($definition);
         if ($action === '') {
             $actions = $this->getActions($definition);
             if (count($actions) === 1) {

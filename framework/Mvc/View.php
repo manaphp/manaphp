@@ -9,6 +9,7 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\LocalFS;
 
 /**
+ * @property-read \Psr\Container\ContainerInterface $container
  * @property-read \ManaPHP\AliasInterface           $alias
  * @property-read \ManaPHP\Html\RendererInterface   $renderer
  * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
