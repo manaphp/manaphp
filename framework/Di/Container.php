@@ -48,46 +48,46 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
         return $this;
     }
 
-    public function make(string $class, array $parameters = []): mixed
+    public function make(string $name, array $parameters = []): mixed
     {
-        while (is_string($definition = $this->definitions[$class] ?? null)) {
-            $class = $definition;
+        while (is_string($definition = $this->definitions[$name] ?? null)) {
+            $name = $definition;
         }
 
-        if (str_contains($class, '::')) {
-            list($factory, $method) = explode('::', $class);
+        if (str_contains($name, '::')) {
+            list($factory, $method) = explode('::', $name);
             return $this->call([$this->get($factory), $method], $parameters);
         }
 
-        if (preg_match('#^[\w\\\\]+$#', $class) !== 1) {
-            throw new NotFoundException(["%s not found", $class]);
+        if (preg_match('#^[\w\\\\]+$#', $name) !== 1) {
+            throw new NotFoundException(["%s not found", $name]);
         }
 
         $exists = false;
         /** @noinspection NotOptimalIfConditionsInspection */
-        if (str_ends_with($class, 'Interface') && interface_exists($class)) {
-            $prefix = substr($class, 0, -9);
+        if (str_ends_with($name, 'Interface') && interface_exists($name)) {
+            $prefix = substr($name, 0, -9);
             if (class_exists($prefix)) {
                 $exists = true;
-                $class = $prefix;
+                $name = $prefix;
             } else {
-                $rClass = new ReflectionClass($class);
+                $rClass = new ReflectionClass($name);
                 if (($attribute = $rClass->getAttributes(Primary::class)[0] ?? null) !== null) {
                     /** @var Primary $primary */
                     $primary = $attribute->newInstance();
                     return $this->make($primary->definition, $parameters);
                 }
             }
-        } elseif (class_exists($class)) {
+        } elseif (class_exists($name)) {
             $exists = true;
         }
 
         if (!$exists) {
-            throw new NotFoundException(['`%s` is not exists', $class]);
+            throw new NotFoundException(['`%s` is not exists', $name]);
         }
 
-        if (method_exists($class, '__construct')) {
-            $rClass = new ReflectionClass($class);
+        if (method_exists($name, '__construct')) {
+            $rClass = new ReflectionClass($name);
 
             $instance = $rClass->newInstanceWithoutConstructor();
 
@@ -102,8 +102,7 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
                 if ($dependencies !== []) {
                     $rMethod = $rClass->getMethod('__construct');
                     foreach ($rMethod->getParameters() as $rParameter) {
-                        $name = $rParameter->getName();
-                        unset($dependencies[$name]);
+                        unset($dependencies[$rParameter->getName()]);
                     }
 
                     if ($dependencies !== []) {
@@ -118,7 +117,7 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
 
             $this->call([$instance, '__construct'], $parameters);
         } else {
-            $instance = new $class();
+            $instance = new $name();
 
             if ($parameters !== []) {
                 $this->dependencies[$instance] = $parameters;
