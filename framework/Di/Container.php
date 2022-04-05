@@ -49,8 +49,17 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
 
     public function make(string $class, array $parameters = []): mixed
     {
-        if (is_string(($alias = $this->definition[$class] ?? null))) {
-            return $this->make($alias, $parameters);
+        while (is_string($definition = $this->definitions[$class] ?? null)) {
+            $class = $definition;
+        }
+
+        if (str_contains($class, '::')) {
+            list($factory, $method) = explode('::', $class);
+            return $this->call([$this->get($factory), $method], $parameters);
+        }
+
+        if (preg_match('#^[\w\\\\]+$#', $class) !== 1) {
+            throw new NotFoundException(["%s not found", $class]);
         }
 
         $exists = false;
@@ -68,9 +77,6 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
                     return $this->make($primary->definition, $parameters);
                 }
             }
-        } elseif (str_contains($class, '::')) {
-            list($factory, $method) = explode('::', $class);
-            return $this->call([$this->get($factory), $method], $parameters);
         } elseif (class_exists($class)) {
             $exists = true;
         }
@@ -134,21 +140,14 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
         $definition = $this->definitions[$id] ?? null;
 
         if ($definition === null) {
-            if (preg_match('#^[\w\\\\]+$#', $id) !== 1) {
-                throw new NotFoundException(["%s not found", $id]);
-            }
             return $this->instances[$id] = $this->make($id);
         } elseif (is_string($definition)) {
-            if ($definition[0] === '@') {
-                return $this->get(substr($definition, 1));
-            } elseif ($definition[0] === '#') {
-                return $this->get("$id$definition");
+            if ($definition[0] === '#') {
+                return $this->instances[$id] = $this->get("$id$definition");
             } elseif (str_contains($definition, '::')) {
                 return $this->instances[$id] = $this->make($definition, ['id' => $id]);
-            } elseif (preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
-                return $this->get($definition);
             } else {
-                return $this->instances[$id] = $this->make($definition);
+                return $this->instances[$id] = $this->get($definition);
             }
         } elseif ($definition instanceof Closure) {
             return $this->instances[$id] = $this->call($definition);
@@ -314,8 +313,6 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
             if ($type !== null && is_string($value)) {
                 if ($value[0] === '#') {
                     $value = $this->get("$type$value");
-                } elseif ($value[0] === '@') {
-                    $value = $this->get($value);
                 } elseif (is_array($callable)) {
                     $object = $callable[0];
                     $dependencies = $this->dependencies[$object] ?? null;
