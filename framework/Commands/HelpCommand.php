@@ -11,8 +11,8 @@ use ReflectionClass;
 use ReflectionMethod;
 
 /**
- * @property-read \ManaPHP\Di\ContainerInterface        $container
  * @property-read \ManaPHP\ConfigInterface              $config
+ * @property-read \ManaPHP\Cli\Command\FactoryInterface $commandFactory
  * @property-read \ManaPHP\Cli\Command\ManagerInterface $commandManager
  */
 class HelpCommand extends Command
@@ -276,7 +276,7 @@ class HelpCommand extends Command
         if (($definition = $this->commandManager->getCommands()[$camelizedCommand] ?? null) === null) {
             return $this->console->error("$camelizedCommand Command not found");
         }
-        $instance = $this->container->get($definition);
+        $instance = $this->commandFactory->get($definition);
 
         foreach (get_class_methods($instance) as $method) {
             if (!preg_match('#^([a-z].*)Action$#', $method, $match)) {
