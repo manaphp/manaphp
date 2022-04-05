@@ -145,6 +145,10 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
                 return $this->get(substr($definition, 1));
             } elseif ($definition[0] === '#') {
                 return $this->get("$id$definition");
+            } elseif (str_contains($definition, '::')) {
+                list($class, $method) = explode('::', $definition, 2);
+                $obj = $this->get($class);
+                return $this->instances[$id] = $this->call([$obj, $method], ['id' => $id]);
             } elseif (preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
                 return $this->get($definition);
             } else {
