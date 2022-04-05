@@ -86,7 +86,7 @@ class Kernel extends Component
                 $bootstrapper = $this->container->get($key);
             }
 
-            $bootstrapper->bootstrap();
+            $bootstrapper->bootstrap($this->container);
         }
 
         $this->container->get($server)->start();

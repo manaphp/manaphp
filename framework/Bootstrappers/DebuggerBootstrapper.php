@@ -5,6 +5,7 @@ namespace ManaPHP\Bootstrappers;
 
 use ManaPHP\BootstrapperInterface;
 use ManaPHP\Component;
+use Psr\Container\ContainerInterface;
 
 /**
  * @property-read \ManaPHP\ConfigInterface             $config
@@ -19,7 +20,7 @@ class DebuggerBootstrapper extends Component implements BootstrapperInterface
         $this->enabled = $enabled ?? in_array($this->config->get('env'), ['dev', 'test']);
     }
 
-    public function bootstrap(): void
+    public function bootstrap(ContainerInterface $container): void
     {
         if ($this->enabled) {
             $this->attachEvent('httpServer:start', [$this, 'onHttpServerStart']);
