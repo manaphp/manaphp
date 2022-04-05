@@ -15,7 +15,7 @@ interface ContainerInterface
 
     public function remove(string $id): static;
 
-    public function make(string $class, array $parameters = [], ?string $id = null): mixed;
+    public function make(string $class, array $parameters = []): mixed;
 
     public function get(string $id): mixed;
 

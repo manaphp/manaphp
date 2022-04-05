@@ -46,10 +46,10 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
         return $this;
     }
 
-    public function make(string $class, array $parameters = [], ?string $id = null): mixed
+    public function make(string $class, array $parameters = []): mixed
     {
         if (is_string(($alias = $this->definition[$class] ?? null))) {
-            return $this->make($alias, $parameters, $id);
+            return $this->make($alias, $parameters);
         }
 
         $exists = false;
@@ -74,7 +74,7 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
         if (is_subclass_of($class, FactoryInterface::class)) {
             /** @var \ManaPHP\Di\FactoryInterface $factory */
             $factory = new $class();
-            return $factory->make($this, $id, $parameters);
+            return $factory->make($this, '', $parameters);
         }
 
         if (method_exists($class, '__construct')) {
@@ -107,10 +107,6 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
                 $instance->setContainer($this);
             }
 
-            if ($id !== null) {
-                $this->instances[$id] = $id;
-            }
-
             $this->call([$instance, '__construct'], $parameters);
         } else {
             $instance = new $class();
@@ -139,7 +135,7 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
             if (preg_match('#^[\w\\\\]+$#', $id) !== 1) {
                 throw new NotFoundException(["%s not found", $id]);
             }
-            return $this->instances[$id] = $this->make($id, [], $id);
+            return $this->instances[$id] = $this->make($id);
         } elseif (is_string($definition)) {
             if ($definition[0] === '@') {
                 return $this->get(substr($definition, 1));
@@ -152,7 +148,7 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
             } elseif (preg_match('#^[\w\\\\]+$#', $definition) !== 1) {
                 return $this->get($definition);
             } else {
-                return $this->instances[$id] = $this->make($definition, [], $id);
+                return $this->instances[$id] = $this->make($definition);
             }
         } elseif ($definition instanceof Closure) {
             return $this->instances[$id] = $this->call($definition);
@@ -165,7 +161,7 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
                 $class = $id;
             }
 
-            return $this->instances[$id] = $this->make($class, $definition, $id);
+            return $this->instances[$id] = $this->make($class, $definition);
         } else {
             throw new NotSupportedException('not supported definition');
         }
