@@ -9,8 +9,9 @@ use ManaPHP\Http\Dispatcher\NotFoundActionException;
 use ManaPHP\Http\Dispatcher\NotFoundControllerException;
 
 /**
- * @property-read \ManaPHP\Http\GlobalsInterface  $globals
- * @property-read \ManaPHP\Http\DispatcherContext $context
+ * @property-read \ManaPHP\Http\GlobalsInterface            $globals
+ * @property-read \ManaPHP\Http\Controller\FactoryInterface $controllerFactory
+ * @property-read \ManaPHP\Http\DispatcherContext           $context
  */
 class Dispatcher extends Component implements DispatcherInterface
 {
@@ -148,8 +149,7 @@ class Dispatcher extends Component implements DispatcherInterface
             throw new NotFoundControllerException(['`%s` class cannot be loaded', $controllerClassName]);
         }
 
-        /** @var \ManaPHP\Http\Controller $controllerInstance */
-        $controllerInstance = $this->container->get($controllerClassName);
+        $controllerInstance = $this->controllerFactory->get($controllerClassName);
         $context->controllerInstance = $controllerInstance;
 
         return $this->invokeAction($controllerInstance, $action);
