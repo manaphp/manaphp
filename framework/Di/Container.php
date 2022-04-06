@@ -14,7 +14,7 @@ use ReflectionNamedType;
 use WeakMap;
 
 class Container implements ContainerInterface, \Psr\Container\ContainerInterface, FactoryInterface, InvokerInterface,
-                           InspectorInterface
+                           InspectorInterface, InjectorInterface
 {
     protected array $definitions = [];
     protected array $instances = [];
@@ -29,6 +29,7 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
         $this->definitions['ManaPHP\Di\FactoryInterface'] = $this;
         $this->definitions['ManaPHP\Di\InvokerInterface'] = $this;
         $this->definitions['ManaPHP\Di\InspectorInterface'] = $this;
+        $this->definitions['ManaPHP\Di\InjectorInterface'] = $this;
 
         $this->dependencies = new WeakMap();
     }

@@ -8,6 +8,7 @@ use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Di\Injectable;
 use ManaPHP\Event\EventArgs;
+use ManaPHP\Helper\Container;
 use Swoole\Coroutine;
 
 /**
@@ -110,7 +111,7 @@ class Component implements Injectable, JsonSerializable
         if ($name === 'context') {
             return $this->getContext();
         } else {
-            return $this->container->inject($this, $name);
+            return Container::inject($this, $name);
         }
     }
 

@@ -38,4 +38,12 @@ class Container
 
         return $container->call($callable, $parameters);
     }
+
+    public static function inject(object $object, string $property): mixed
+    {
+        /** @var ContainerInterface $container */
+        $container = $GLOBALS['ManaPHP\Di\ContainerInterface'];
+
+        return $container->inject($object, $property);
+    }
 }
