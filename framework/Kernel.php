@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP;
 
 use ManaPHP\Di\Container;
-use ManaPHP\Di\ContainerInterface;
 
 /**
  * @property-read \ManaPHP\EnvInterface    $env
@@ -13,6 +12,7 @@ use ManaPHP\Di\ContainerInterface;
  */
 class Kernel extends Component
 {
+    protected Container $container;
     protected string $rootDir;
 
     public function __construct(string $rootDir)
@@ -20,8 +20,7 @@ class Kernel extends Component
         $this->rootDir = $rootDir;
 
         $container = new Container();
-        $this->setContainer($container);
-
+        $this->container = $container;
         $GLOBALS['ManaPHP\Di\ContainerInterface'] = $container;
 
         if (!defined('MANAPHP_COROUTINE_ENABLED')) {
@@ -39,11 +38,6 @@ class Kernel extends Component
         $this->alias->set('@runtime', "$rootDir/runtime");
         $this->alias->set('@resources', "$rootDir/Resources");
         $this->alias->set('@config', "$rootDir/config");
-    }
-
-    public function getContainer(): ContainerInterface
-    {
-        return $this->container;
     }
 
     public function start(string $server): void

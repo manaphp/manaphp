@@ -5,25 +5,17 @@ namespace ManaPHP;
 
 use JsonSerializable;
 use ManaPHP\Coroutine\Context\Inseparable;
-use ManaPHP\Di\ContainerInterface;
-use ManaPHP\Di\Injectable;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Helper\Container;
+use Psr\Container\ContainerInterface;
 use Swoole\Coroutine;
 
 /**
  * @property-read \ManaPHP\Event\ManagerInterface $eventManager
  * @property-read \object                         $context
  */
-class Component implements Injectable, JsonSerializable
+class Component implements JsonSerializable
 {
-    protected ContainerInterface $container;
-
-    public function setContainer(ContainerInterface $container): void
-    {
-        $this->container = $container;
-    }
-
     protected function findContext(): ?string
     {
         static $cached = [];
@@ -139,7 +131,7 @@ class Component implements Injectable, JsonSerializable
         $data = [];
 
         foreach (get_object_vars($this) as $k => $v) {
-            if ($k === 'container' || $v === null || $v instanceof Injectable) {
+            if ($v === null || $v instanceof ContainerInterface) {
                 continue;
             }
 

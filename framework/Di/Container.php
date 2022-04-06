@@ -115,20 +115,12 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
                 }
             }
 
-            if ($instance instanceof Injectable) {
-                $instance->setContainer($this);
-            }
-
             $this->call([$instance, '__construct'], $parameters);
         } else {
             $instance = new $name();
 
             if ($parameters !== []) {
                 $this->dependencies[$instance] = $parameters;
-            }
-
-            if ($instance instanceof Injectable) {
-                $instance->setContainer($this);
             }
         }
 
