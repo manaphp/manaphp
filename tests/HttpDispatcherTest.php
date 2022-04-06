@@ -34,9 +34,6 @@ class tDispatcher extends Dispatcher
 
 class MvcDispatcherTest extends TestCase
 {
-    /**
-     * @var \ManaPHP\Di\ContainerInterface
-     */
     protected $container;
 
     public function setUp()
