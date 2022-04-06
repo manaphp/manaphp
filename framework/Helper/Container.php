@@ -3,14 +3,17 @@ declare(strict_types=1);
 
 namespace ManaPHP\Helper;
 
-use ManaPHP\Di\ContainerInterface;
+use ManaPHP\Di\FactoryInterface;
+use ManaPHP\Di\InjectorInterface;
+use ManaPHP\Di\InvokerInterface;
+use Psr\Container\ContainerInterface;
 
 class Container
 {
     public static function get(string $id): mixed
     {
         /** @var ContainerInterface $container */
-        $container = $GLOBALS['ManaPHP\Di\ContainerInterface'];
+        $container = $GLOBALS['Psr\Container\ContainerInterface'];
 
         return $container->get($id);
     }
@@ -18,7 +21,7 @@ class Container
     public static function has(string $id): bool
     {
         /** @var ContainerInterface $container */
-        $container = $GLOBALS['ManaPHP\Di\ContainerInterface'];
+        $container = $GLOBALS['Psr\Container\ContainerInterface'];
 
         return $container->has($id);
     }
@@ -26,24 +29,24 @@ class Container
     public static function make(string $class, array $parameters = []): mixed
     {
         /** @var ContainerInterface $container */
-        $container = $GLOBALS['ManaPHP\Di\ContainerInterface'];
+        $container = $GLOBALS['Psr\Container\ContainerInterface'];
 
-        return $container->make($class, $parameters);
+        return $container->get(FactoryInterface::class)->make($class, $parameters);
     }
 
     public static function call(callable $callable, array $parameters = []): mixed
     {
         /** @var ContainerInterface $container */
-        $container = $GLOBALS['ManaPHP\Di\ContainerInterface'];
+        $container = $GLOBALS['Psr\Container\ContainerInterface'];
 
-        return $container->call($callable, $parameters);
+        return $container->get(InvokerInterface::class)->call($callable, $parameters);
     }
 
     public static function inject(object $object, string $property): mixed
     {
         /** @var ContainerInterface $container */
-        $container = $GLOBALS['ManaPHP\Di\ContainerInterface'];
+        $container = $GLOBALS['Psr\Container\ContainerInterface'];
 
-        return $container->inject($object, $property);
+        return $container->get(InjectorInterface::class)->inject($object, $property);
     }
 }

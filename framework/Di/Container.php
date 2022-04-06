@@ -7,14 +7,14 @@ use Closure;
 use ManaPHP\Di\Attribute\Primary;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MisuseException;
+use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionNamedType;
 use WeakMap;
 
-class Container implements ContainerInterface, \Psr\Container\ContainerInterface, FactoryInterface, InvokerInterface,
-                           InspectorInterface, InjectorInterface
+class Container implements ContainerInterface, FactoryInterface, InvokerInterface, InspectorInterface, InjectorInterface
 {
     protected array $definitions = [];
     protected array $instances = [];
@@ -24,7 +24,7 @@ class Container implements ContainerInterface, \Psr\Container\ContainerInterface
     public function __construct(array $definitions = [])
     {
         $this->definitions = $definitions;
-        $this->definitions['ManaPHP\Di\ContainerInterface'] = $this;
+
         $this->definitions['Psr\Container\ContainerInterface'] = $this;
         $this->definitions['ManaPHP\Di\FactoryInterface'] = $this;
         $this->definitions['ManaPHP\Di\InvokerInterface'] = $this;

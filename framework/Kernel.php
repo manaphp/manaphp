@@ -21,7 +21,7 @@ class Kernel extends Component
 
         $container = new Container();
         $this->container = $container;
-        $GLOBALS['ManaPHP\Di\ContainerInterface'] = $container;
+        $GLOBALS['Psr\Container\ContainerInterface'] = $container;
 
         if (!defined('MANAPHP_COROUTINE_ENABLED')) {
             define(
