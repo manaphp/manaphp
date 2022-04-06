@@ -10,7 +10,7 @@ use ReflectionClass;
 use ReflectionMethod;
 
 /**
- * @property-read \ManaPHP\Di\ContainerInterface        $container
+ * @property-read \ManaPHP\Di\InspectorInterface        $inspector
  * @property-read \ManaPHP\Cli\Command\ManagerInterface $commandManager
  * @property-read \ManaPHP\Di\FactoryInterface          $factory
  */
@@ -50,7 +50,7 @@ class BashCompletionCommand extends Command
      */
     protected function getArgumentNames(string $command, string $action): array
     {
-        if (!$commandClassName = $this->container->getDefinition(Str::camelize($command) . 'Command')) {
+        if (!$commandClassName = $this->inspector->getDefinition(Str::camelize($command) . 'Command')) {
             return [];
         }
 
@@ -78,7 +78,7 @@ class BashCompletionCommand extends Command
      */
     protected function getArgumentValues(string $command, string $action, string $argumentName, string $current): array
     {
-        if (!$commandClassName = $this->container->getDefinition(Str::camelize($command) . 'Command')) {
+        if (!$commandClassName = $this->inspector->getDefinition(Str::camelize($command) . 'Command')) {
             return [];
         }
 

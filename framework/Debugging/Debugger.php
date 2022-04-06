@@ -15,7 +15,7 @@ use ManaPHP\Tracer;
 use ManaPHP\Version;
 
 /**
- * @property-read \ManaPHP\Di\ContainerInterface             $container
+ * @property-read \ManaPHP\Di\InspectorInterface             $inspector
  * @property-read \ManaPHP\ConfigInterface                   $config
  * @property-read \ManaPHP\Logging\LoggerInterface           $logger
  * @property-read \ManaPHP\Http\RequestInterface             $request
@@ -346,7 +346,7 @@ class Debugger extends Component implements DebuggerInterface
         $data['tracers'] = [];
         $data['events'] = $context->events;
 
-        foreach ($this->container->getInstances() as $name => $instance) {
+        foreach ($this->inspector->getInstances() as $name => $instance) {
             $properties = $instance instanceof Component
                 ? $instance->dump()
                 : array_keys(get_object_vars($instance));

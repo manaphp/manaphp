@@ -10,6 +10,7 @@ use ManaPHP\Data\Db\ModelInterface;
 /**
  * @property-read \ManaPHP\ConfigInterface          $config
  * @property-read \ManaPHP\Data\Db\FactoryInterface $dbFactory
+ * @property-read \Psr\Container\ContainerInterface $container
  */
 class Metadata extends Component implements MetadataInterface
 {
