@@ -10,6 +10,7 @@ return [
     ],
     'factories'          => [
         'ManaPHP\Http\ServerInterface' => [
+            'auto'   => \ManaPHP\Http\Server\Detector::detect(),
             'swoole' => [
                 'class'    => 'ManaPHP\Http\Server\Adapter\Swoole',
                 'port'     => 9501,
@@ -32,14 +33,15 @@ return [
         ]
     ],
     'dependencies'       => [
-        #'ManaPHP\Http\ServerInterface'             => '#swoole',
-        'ManaPHP\Http\HandlerInterface'   => 'ManaPHP\Mvc\Handler',
-        'ManaPHP\Data\RedisInterface'     => [env('REDIS_URL')],
-        'ManaPHP\Security\CryptInterface' => ['master_key' => env('MASTER_KEY')],
-        'ManaPHP\Logging\LoggerInterface' => [
+        'ManaPHP\Http\ServerInterface'     => '#auto',
+        'ManaPHP\Http\HandlerInterface'    => 'ManaPHP\Mvc\Handler',
+        'ManaPHP\Data\RedisInterface'      => [env('REDIS_URL')],
+        'ManaPHP\Data\RedisCacheInterface' => 'ManaPHP\Data\RedisInterface',
+        'ManaPHP\Security\CryptInterface'  => ['master_key' => env('MASTER_KEY')],
+        'ManaPHP\Logging\LoggerInterface'  => [
             'class' => 'ManaPHP\Logging\Logger\Adapter\File',
             'level' => env('LOGGER_LEVEL', 'info')],
-        'ManaPHP\Http\RouterInterface'    => 'App\Router',
+        'ManaPHP\Http\RouterInterface'     => 'App\Router',
     ],
     'bootstrappers'      => [
         ManaPHP\Bootstrappers\TracerBootstrapper::class => ['tracers' => env('APP_TRACERS', ['*'])],

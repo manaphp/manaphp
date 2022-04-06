@@ -12,6 +12,7 @@ return [
     ],
     'factories'     => [
         'ManaPHP\Http\ServerInterface' => [
+            'auto'   => \ManaPHP\Http\Server\Detector::detect(),
             'swoole' => [
                 'class'    => 'ManaPHP\Http\Server\Adapter\Swoole',
                 'port'     => 9501,
@@ -34,9 +35,10 @@ return [
         ]
     ],
     'dependencies'  => [
-      #  'ManaPHP\Http\ServerInterface'          => '#php',
+        'ManaPHP\Http\ServerInterface'          => '#auto',
         'ManaPHP\Http\HandlerInterface'         => 'ManaPHP\Mvc\Handler',
         'ManaPHP\Data\RedisInterface'           => [env('REDIS_URL')],
+        'ManaPHP\Data\RedisCacheInterface'      => 'ManaPHP\Data\RedisInterface',
         'ManaPHP\Logging\LoggerInterface'       => ['class' => 'ManaPHP\Logging\Logger\Adapter\File',
                                                     'level' => env('LOGGER_LEVEL', 'info')],
         'ManaPHP\Http\SessionInterface'         => ['class' => 'ManaPHP\Http\Session\Adapter\Redis',
