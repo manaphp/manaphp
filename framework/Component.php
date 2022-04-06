@@ -131,7 +131,7 @@ class Component implements JsonSerializable
         $data = [];
 
         foreach (get_object_vars($this) as $k => $v) {
-            if ($v === null || $v instanceof ContainerInterface) {
+            if ($v === null || $v instanceof ContainerInterface || $v instanceof self) {
                 continue;
             }
 
