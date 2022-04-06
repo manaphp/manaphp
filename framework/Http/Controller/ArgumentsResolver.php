@@ -9,6 +9,7 @@ use ManaPHP\Validating\Validator\ValidateFailedException;
 use ReflectionMethod;
 
 /**
+ * @property-read \Psr\Container\ContainerInterface      $container
  * @property-read \ManaPHP\Validating\ValidatorInterface $validator
  * @property-read \ManaPHP\Http\RequestInterface         $request
  */

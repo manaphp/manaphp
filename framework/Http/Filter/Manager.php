@@ -6,7 +6,8 @@ namespace ManaPHP\Http\Filter;
 use ManaPHP\Component;
 
 /**
- * @property-read \ManaPHP\ConfigInterface $config
+ * @property-read \Psr\Container\ContainerInterface $container
+ * @property-read \ManaPHP\ConfigInterface          $config
  */
 class Manager extends Component implements ManagerInterface
 {

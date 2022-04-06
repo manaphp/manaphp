@@ -10,6 +10,7 @@ use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
 /**
+ * @property-read \Psr\Container\ContainerInterface      $container
  * @property-read \ManaPHP\ConfigInterface               $config
  * @property-read \ManaPHP\AliasInterface                $alias
  * @property-read \ManaPHP\Data\Mongodb\FactoryInterface $mongodbFactory
@@ -24,13 +25,11 @@ class MongodbCommand extends Command
     protected function getConnections(array $connections): array
     {
         if ($connections) {
-            $container = $this->container;
-
             foreach ($connections as $index => $connection) {
-                if (!$container->has($connection)) {
-                    if ($container->has($connection . 'Mongodb')) {
+                if (!$this->container->has($connection)) {
+                    if ($this->container->has($connection . 'Mongodb')) {
                         $connections[$index] = $connection . 'Mongodb';
-                    } elseif ($container->has($connection . '_mongodb')) {
+                    } elseif ($this->container->has($connection . '_mongodb')) {
                         $connections[$index] = $connection . '_mongodb';
                     } else {
                         $this->console->warning("`$connection` connection is not exists: ignoring");
@@ -439,7 +438,8 @@ class MongodbCommand extends Command
      *
      * @return void
      */
-    public function listAction(array $connections = [], string $collection_pattern = '', string $field = '', array $db = []
+    public function listAction(array $connections = [], string $collection_pattern = '', string $field = '',
+        array $db = []
     ): void {
         foreach ($this->getConnections($connections) as $connection) {
             $mongodb = $this->mongodbFactory->get($connection);
