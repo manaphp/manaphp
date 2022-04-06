@@ -56,7 +56,7 @@ class Kernel extends Component
         foreach ($this->config->get('factories', []) as $interface => $definitions) {
             foreach ($definitions as $name => $definition) {
                 if (is_string($definition) && $definition[0] === '#') {
-                    $definition = "@$interface$definition";
+                    $definition = "$interface$definition";
                 }
 
                 $this->container->set("$interface#$name", $definition);
