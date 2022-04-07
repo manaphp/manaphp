@@ -5,7 +5,6 @@ namespace ManaPHP\Di;
 
 use Closure;
 use ManaPHP\Di\Attribute\Primary;
-use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MisuseException;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
@@ -285,7 +284,6 @@ class Container implements ContainerInterface, FactoryInterface, InvokerInterfac
             $rFunction = new ReflectionFunction($callable);
         }
 
-        $missing = [];
         $args = [];
         foreach ($rFunction->getParameters() as $position => $rParameter) {
             $name = $rParameter->getName();
@@ -302,8 +300,15 @@ class Container implements ContainerInterface, FactoryInterface, InvokerInterfac
             } elseif ($type !== null) {
                 $value = $parameters[$type] ?? $type;
             } else {
-                $missing[] = $name;
-                continue;
+                $signature = is_array($callable)
+                    ? get_class($callable[0]) . '::' . $callable[1]
+                    : $rFunction->getName();
+                throw new AutowiringFailedException(
+                    sprintf(
+                        'Cannot autowire argument "$%s" of method "%s()", you should configure its value explicitly.',
+                        $name, $signature
+                    )
+                );
             }
 
             if ($type !== null && is_string($value)) {
@@ -321,10 +326,6 @@ class Container implements ContainerInterface, FactoryInterface, InvokerInterfac
             }
 
             $args[] = $value;
-        }
-
-        if ($missing) {
-            throw new MissingFieldException(implode(",", $missing));
         }
 
         return $callable(...$args);
