@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Data;
 
 use ManaPHP\Component;
-use ManaPHP\Di\FactoryInterface;
 use ManaPHP\Data\Redis\Connection;
+use ManaPHP\Di\FactoryInterface;
 use ManaPHP\Exception\MisuseException;
 
 /**
