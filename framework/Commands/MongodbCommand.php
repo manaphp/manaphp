@@ -18,32 +18,15 @@ use ManaPHP\Helper\Str;
 class MongodbCommand extends Command
 {
     /**
-     * @param array $connections
-     *
      * @return array
      */
-    protected function getConnections(array $connections): array
+    protected function getConnections(): array
     {
-        if ($connections) {
-            foreach ($connections as $index => $connection) {
-                if (!$this->container->has($connection)) {
-                    if ($this->container->has($connection . 'Mongodb')) {
-                        $connections[$index] = $connection . 'Mongodb';
-                    } elseif ($this->container->has($connection . '_mongodb')) {
-                        $connections[$index] = $connection . '_mongodb';
-                    } else {
-                        $this->console->warning("`$connection` connection is not exists: ignoring");
-                        unset($connections[$index]);
-                    }
-                }
-            }
-        } else {
-            $connections = [];
-            foreach ($this->config->get('factories', [])[MongodbInterface::class] ?? [] as $connection => $config) {
-                $config = json_stringify($config);
-                if (str_contains($config, 'mongodb://')) {
-                    $connections[] = $connection;
-                }
+        $connections = [];
+        foreach ($this->config->get('factories', [])[MongodbInterface::class] ?? [] as $connection => $config) {
+            $config = json_stringify($config);
+            if (str_contains($config, 'mongodb://')) {
+                $connections[] = $connection;
             }
         }
 
@@ -77,20 +60,18 @@ class MongodbCommand extends Command
     /**
      * generate models file from data files or online data
      *
-     * @param array $connections explicit the mongodb connections name
-     * @param bool  $optimized   output as more methods as possible
-     * @param int   $sample      sample size
-     * @param array $db          db name list
+     * @param bool  $optimized output as more methods as possible
+     * @param int   $sample    sample size
+     * @param array $db        db name list
      *
      * @return void
      */
     public function modelsAction(
-        array $connections = [],
         bool $optimized = false,
         int $sample = 1000,
         array $db = []
     ): void {
-        foreach ($this->getConnections($connections) as $connection) {
+        foreach ($this->getConnections() as $connection) {
             $mongodb = $this->mongodbFactory->get($connection);
 
             $defaultDb = $mongodb->getDb();
@@ -352,15 +333,14 @@ class MongodbCommand extends Command
     /**
      * export mongodb data to csv files
      *
-     * @param array  $connections        connections list
      * @param string $collection_pattern match collection against a pattern
      * @param bool   $bom                contains BOM or not
      *
      * @return void
      */
-    public function csvAction(array $connections = [], string $collection_pattern = '', bool $bom = false): void
+    public function csvAction(string $collection_pattern = '', bool $bom = false): void
     {
-        foreach ($this->getConnections($connections) as $connection) {
+        foreach ($this->getConnections() as $connection) {
             $mongodb = $this->mongodbFactory->get($connection);
 
             $dbs = $mongodb->getDb() ? [$mongodb->getDb()] : $mongodb->listDatabases();
@@ -431,17 +411,16 @@ class MongodbCommand extends Command
     /**
      * list databases and collections
      *
-     * @param array  $connections        connections list
      * @param string $collection_pattern match collection against a pattern
      * @param string $field              collection must contain one this field
      * @param array  $db
      *
      * @return void
      */
-    public function listAction(array $connections = [], string $collection_pattern = '', string $field = '',
+    public function listAction(string $collection_pattern = '', string $field = '',
         array $db = []
     ): void {
-        foreach ($this->getConnections($connections) as $connection) {
+        foreach ($this->getConnections() as $connection) {
             $mongodb = $this->mongodbFactory->get($connection);
 
             $dbs = $mongodb->getDb() ? [$mongodb->getDb()] : $mongodb->listDatabases();
