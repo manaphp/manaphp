@@ -8,9 +8,9 @@ use ManaPHP\Data\Db;
 use ManaPHP\Data\Db\ModelInterface;
 
 /**
- * @property-read \ManaPHP\ConfigInterface          $config
- * @property-read \ManaPHP\Data\Db\FactoryInterface $dbFactory
- * @property-read \Psr\Container\ContainerInterface $container
+ * @property-read \ManaPHP\Data\Model\ThoseInterface $those
+ * @property-read \ManaPHP\ConfigInterface           $config
+ * @property-read \ManaPHP\Data\Db\FactoryInterface  $dbFactory
  */
 class Metadata extends Component implements MetadataInterface
 {
@@ -39,7 +39,7 @@ class Metadata extends Component implements MetadataInterface
         }
 
         /** @noinspection OneTimeUseVariablesInspection */
-        $modelInstance = is_string($model) ? $this->container->get($model) : $model;
+        $modelInstance = is_string($model) ? $this->those->get($model) : $model;
 
         list($connection, $table) = $modelInstance->getAnyShard();
         $db = $this->dbFactory->get($connection);
