@@ -40,6 +40,45 @@ class Kernel extends Component
         $this->alias->set('@config', "$rootDir/config");
     }
 
+    public function loadFactories(array $factories = []): void
+    {
+        foreach ($factories as $interface => $definitions) {
+            foreach ($definitions as $name => $definition) {
+                if (is_string($definition) && $definition[0] === '#') {
+                    $definition = "$interface$definition";
+                }
+
+                $this->container->set("$interface#$name", $definition);
+
+                if ($name === 'default') {
+                    $this->container->set($interface, "#$name");
+                }
+            }
+        }
+    }
+
+    public function loadDependencies(array $dependencies): void
+    {
+        foreach ($dependencies as $id => $definition) {
+            $this->container->set($id, $definition);
+        }
+    }
+
+    public function loadBootstrappers(array $bootstrappers): void
+    {
+        foreach ($bootstrappers as $key => $value) {
+            /** @var \ManaPHP\BootstrapperInterface $bootstrapper */
+            if (is_int($key)) {
+                $bootstrapper = $this->container->get($value);
+            } else {
+                $this->container->set($key, $value);
+                $bootstrapper = $this->container->get($key);
+            }
+
+            $bootstrapper->bootstrap($this->container);
+        }
+    }
+
     public function start(string $server): void
     {
         $this->env->load();
@@ -53,35 +92,9 @@ class Kernel extends Component
             $this->alias->set($k, $v);
         }
 
-        foreach ($this->config->get('factories', []) as $interface => $definitions) {
-            foreach ($definitions as $name => $definition) {
-                if (is_string($definition) && $definition[0] === '#') {
-                    $definition = "$interface$definition";
-                }
-
-                $this->container->set("$interface#$name", $definition);
-
-                if ($name === 'default') {
-                    $this->container->set($interface, "#$name");
-                }
-            }
-        }
-
-        foreach ($this->config->get('dependencies') as $id => $definition) {
-            $this->container->set($id, $definition);
-        }
-
-        foreach ($this->config->get('bootstrappers') as $key => $value) {
-            /** @var \ManaPHP\BootstrapperInterface $bootstrapper */
-            if (is_int($key)) {
-                $bootstrapper = $this->container->get($value);
-            } else {
-                $this->container->set($key, $value);
-                $bootstrapper = $this->container->get($key);
-            }
-
-            $bootstrapper->bootstrap($this->container);
-        }
+        $this->loadFactories($this->config->get('factories', []));
+        $this->loadDependencies($this->config->get('dependencies', []));
+        $this->loadBootstrappers($this->config->get('bootstrappers', []));
 
         $this->container->get($server)->start();
     }
