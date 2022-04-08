@@ -67,6 +67,13 @@ if (!function_exists('container')) {
     }
 }
 
+if (!function_exists('make')) {
+    function make(string $name, array $parameters = []): mixed
+    {
+        return Container::make($name, $parameters);
+    }
+}
+
 if (!function_exists('env')) {
     function env(?string $key = null, mixed $default = null): mixed
     {
