@@ -106,8 +106,8 @@ class FrameworkCommand extends Command
         $this->console->writeLn('------------------------------------------------------');
 
         foreach ($fileLines as $file => $line) {
-            $cut_file = substr($file, strpos($file, 'ManaPHP'));
-            $this->console->writeLn(sprintf('%3d %3d %.3f %s', $i++, $line, $line / $totalLines * 100, $cut_file));
+            $cut_file = substr($file, strpos($file, 'framework'));
+            $this->console->writeLn(sprintf('%3d %3d %.2f%% %s', $i++, $line, $line / $totalLines * 100, $cut_file));
         }
 
         $this->console->writeLn('------------------------------------------------------');
