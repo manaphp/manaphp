@@ -5,12 +5,13 @@
 namespace PHPSTORM_META {
     exitPoint(\abort());
 
-    override(\Psr\Container\ContainerInterface::get(), map(['' => '@']));
-    override(\ManaPHP\Helper\Container::get(), map(['' => '@']));
-    override(\ManaPHP\Helper\Container::make(), map(['' => '@']));
-
     override(\container(), map(['' => '@']));
+    override(\ManaPHP\Helper\Container::get(), map(['' => '@']));
+    override(\Psr\Container\ContainerInterface::get(), map(['' => '@']));
+
     override(\make(), map(['' => '@']));
+    override(\ManaPHP\Helper\Container::make(), map(['' => '@']));
+    override(\ManaPHP\Di\FactoryInterface::make(), map(['' => '@']));
 
     registerArgumentsSet(
         'eventManager',
