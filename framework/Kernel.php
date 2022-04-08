@@ -23,6 +23,8 @@ class Kernel extends Component
         $this->container = $container;
         $GLOBALS['Psr\Container\ContainerInterface'] = $container;
 
+        $container->set('Psr\SimpleCache\CacheInterface', 'ManaPHP\Caching\SimpleCache');
+
         if (!defined('MANAPHP_COROUTINE_ENABLED')) {
             define(
                 'MANAPHP_COROUTINE_ENABLED', PHP_SAPI === 'cli'
