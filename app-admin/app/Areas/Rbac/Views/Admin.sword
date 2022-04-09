@@ -24,15 +24,12 @@
 </edit-form>
 <result-table>
     <result-index></result-index>
-    <result-id prop="admin_id"></result-id>
     <result-account prop="admin_name"></result-account>
     <result-email></result-email>
-    <result-column prop="white_ip" width="150" show-overflow-tooltip></result-column>
     <result-column prop="status" width="100" v-slot="{row}">@{{ statuses[row.status] }}</result-column>
     <result-tag prop="roles"></result-tag>
     <result-ip prop="login_ip"></result-ip>
     <result-timestamp prop="login_time"></result-timestamp>
-    <result-account prop="creator_name"></result-account>
     <result-timestamp prop="created_time"></result-timestamp>
     <result-op v-slot="{row}" width="125">
         <result-button v-if="row.status==1" @click="do_lock(row)" type="danger" icon="el-icon-lock" title="锁定"></result-button>

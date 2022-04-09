@@ -18,15 +18,13 @@
 </edit-form>
 <result-table>
     <result-index></result-index>
-    <result-id prop="item_id"></result-id>
+    <result-column prop="item_id" width="50"></result-column>
     <result-column prop="item_name" width="150"></result-column>
     <result-column prop="url" show-overflow-tooltip></result-column>
-    <result-column prop="display_order" width="100"></result-column>
+    <result-column prop="display_order" width="50"></result-column>
     <result-column prop="icon" width="200"></result-column>
     <result-account prop="updator_name"></result-account>
     <result-timestamp prop="updated_time"></result-timestamp>
-    <result-account prop="creator_name"></result-account>
-    <result-timestamp prop="created_time"></result-timestamp>
     <result-op show-delete width="125"></result-op>
 </result-table>
 @section('script')
@@ -58,7 +56,7 @@
                 permissions: {},
                 label: {
                     group_id: '组名',
-                    item_id: '菜单项ID',
+                    item_id: 'Id',
                     item_name: '菜单名',
                 }
             },

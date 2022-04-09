@@ -715,11 +715,11 @@ Vue.component('result-id', {
 
 Vue.component('result-account', {
     props: ['label', 'prop'],
-    template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" width="120"></el-table-column>`
+    template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" width="100"></el-table-column>`
 });
 
 Vue.component('result-email', {
-    template: `<el-table-column prop="email" label="邮箱" with="200" show-overflow-tooltip></el-table-column>`
+    template: `<el-table-column prop="email" label="邮箱" with="250" show-overflow-tooltip></el-table-column>`
 });
 
 Vue.component('result-ip', {
@@ -737,7 +737,7 @@ Vue.component('result-enabled', {
 
 Vue.component('result-timestamp', {
     props: ['label', 'prop'],
-    template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" :formatter="$root.fDate" width="150"></el-table-column>`
+    template: `<el-table-column :prop="prop" :label="label||$root.label[prop]||prop" :formatter="$root.fDate" width="123"></el-table-column>`
 });
 
 Vue.component('result-column', {
