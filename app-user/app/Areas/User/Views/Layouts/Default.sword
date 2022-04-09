@@ -6,7 +6,7 @@
     <title>{{config_get('name')}}</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="/static/css/manaphp.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.13.0/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.15.6/lib/theme-chalk/index.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/assets/css/app.css">
     @yield('css')
@@ -64,7 +64,7 @@
 </el-container>
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/element-ui@2.13.0/lib/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/element-ui@2.15.6/lib/index.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios@0.18.0/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/min/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qs@6.7.0/dist/qs.js"></script>
