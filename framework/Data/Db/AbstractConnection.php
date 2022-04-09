@@ -113,7 +113,9 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
 
         $tr = [];
         foreach ($bind as $parameter => $value) {
-            if (is_scalar($value) || $value === null) {
+            if (is_bool($value)) {
+                $value = (int)$value;
+            } elseif (is_scalar($value) || $value === null) {
                 null;
             } elseif (is_array($value)) {
                 $value = json_stringify($value);
