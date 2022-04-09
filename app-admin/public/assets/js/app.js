@@ -451,24 +451,24 @@ Vue.component('show-create', {
 
 Vue.component('show-edit', {
     props: ['row'],
-    template: `<el-button @click="$root.show_edit(row);$emit('click')" size="mini" type="primary"><slot>编辑</slot></el-button>`
+    template: `<el-button @click="$root.show_edit(row);$emit('click')" size="mini" type="primary" icon="el-icon-edit" title="编辑"></el-button>`
 });
 
 Vue.component('show-delete', {
     props: ['row'],
-    template: '<el-button @click="$root.do_delete(row)" size="mini" type="danger"><slot>删除</slot></el-button>'
+    template: '<el-button @click="$root.do_delete(row)" size="mini" type="danger" icon="el-icon-delete" title="删除"></el-button>'
 });
 
 Vue.component('show-detail', {
     props: ['row', 'link'],
-    template: '<el-button @click="$root.show_detail(row,link)" size="mini" type="info"><slot>详情</slot></el-button>'
+    template: '<el-button @click="$root.show_detail(row,link)" size="mini" type="info" icon="el-icon-more" title="详情"></el-button>'
 });
 
 Vue.component('show-enable', {
     props: ['row'],
     template: `
-<el-button v-if="row.enabled" @click.native.prevent="$root.do_disable(row)" size="mini" type="danger">禁用</el-button>
-<el-button v-else @click.native.prevent="$root.do_enable(row)" size="mini" type="warning">启用</el-button>`
+<el-button v-if="row.enabled" @click.native.prevent="$root.do_disable(row)" size="mini" type="danger" icon="el-icon-lock" title="禁用"></el-button>
+<el-button v-else @click.native.prevent="$root.do_enable(row)" size="mini" type="warning" icon="el-icon-unlock" title="启用"></el-button>`
 });
 
 Vue.component('create-dialog', {
