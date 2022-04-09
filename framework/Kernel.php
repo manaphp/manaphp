@@ -12,38 +12,45 @@ use ManaPHP\Di\Container;
  */
 class Kernel extends Component
 {
-    protected Container $container;
     protected string $rootDir;
+    protected Container $container;
 
     public function __construct(string $rootDir)
     {
         $this->rootDir = $rootDir;
-
-        $container = new Container();
-        $this->container = $container;
-        $GLOBALS['Psr\Container\ContainerInterface'] = $container;
-
-        $container->set('Psr\SimpleCache\CacheInterface', 'ManaPHP\Caching\SimpleCache');
-        $container->set('Psr\Log\LoggerInterface', 'ManaPHP\Logging\Psr3');
-
-        if (!defined('MANAPHP_COROUTINE_ENABLED')) {
-            define(
-                'MANAPHP_COROUTINE_ENABLED', PHP_SAPI === 'cli'
-                && extension_loaded('swoole')
-                && !extension_loaded('xdebug')
-            );
-        }
-
-        $this->alias->set('@public', "$rootDir/public");
-        $this->alias->set('@app', "$rootDir/app");
-        $this->alias->set('@views', "$rootDir/app/Views");
-        $this->alias->set('@root', $rootDir);
-        $this->alias->set('@runtime', "$rootDir/runtime");
-        $this->alias->set('@resources', "$rootDir/resources");
-        $this->alias->set('@config', "$rootDir/config");
     }
 
-    public function loadFactories(array $factories = []): void
+    public function registerDefaultDependencies(): void
+    {
+        $this->container->set('Psr\SimpleCache\CacheInterface', 'ManaPHP\Caching\SimpleCache');
+        $this->container->set('Psr\Log\LoggerInterface', 'ManaPHP\Logging\Psr3');
+
+        $this->container->set('ManaPHP\Data\RedisCacheInterface', 'ManaPHP\Data\RedisInterface');
+        $this->container->set('ManaPHP\Data\RedisDbInterface', 'ManaPHP\Data\RedisInterface');
+        $this->container->set('ManaPHP\Data\RedisBrokerInterface', 'ManaPHP\Data\RedisInterface');
+    }
+
+    public function registerDefaultAliases(): void
+    {
+        $root = $this->rootDir;
+
+        $this->alias->set('@public', "$root/public");
+        $this->alias->set('@app', "$root/app");
+        $this->alias->set('@views', "$root/app/Views");
+        $this->alias->set('@root', $root);
+        $this->alias->set('@runtime', "$root/runtime");
+        $this->alias->set('@resources', "$root/resources");
+        $this->alias->set('@config', "$root/config");
+    }
+
+    public function registerAppAliases(array $aliases): void
+    {
+        foreach ($aliases as $k => $v) {
+            $this->alias->set($k, $v);
+        }
+    }
+
+    public function registerAppFactories(array $factories): void
     {
         foreach ($factories as $interface => $definitions) {
             foreach ($definitions as $name => $definition) {
@@ -60,14 +67,14 @@ class Kernel extends Component
         }
     }
 
-    public function loadDependencies(array $dependencies): void
+    public function registerAppDependencies(array $dependencies): void
     {
         foreach ($dependencies as $id => $definition) {
             $this->container->set($id, $definition);
         }
     }
 
-    public function loadBootstrappers(array $bootstrappers): void
+    public function bootBootstrappers(array $bootstrappers): void
     {
         foreach ($bootstrappers as $key => $value) {
             /** @var \ManaPHP\BootstrapperInterface $bootstrapper */
@@ -82,8 +89,22 @@ class Kernel extends Component
         }
     }
 
+    public function detectCoroutineCanEnabled(): bool
+    {
+        return PHP_SAPI === 'cli' && extension_loaded('swoole') && !extension_loaded('xdebug');
+    }
+
     public function start(string $server): void
     {
+        $GLOBALS['Psr\Container\ContainerInterface'] = $this->container = new Container();
+
+        if (!defined('MANAPHP_COROUTINE_ENABLED')) {
+            define('MANAPHP_COROUTINE_ENABLED', $this->detectCoroutineCanEnabled());
+        }
+
+        $this->registerDefaultDependencies();
+        $this->registerDefaultAliases();
+
         $this->env->load();
         $this->config->load();
 
@@ -91,13 +112,10 @@ class Kernel extends Component
             date_default_timezone_set($timezone);
         }
 
-        foreach ($this->config->get('aliases', []) as $k => $v) {
-            $this->alias->set($k, $v);
-        }
-
-        $this->loadFactories($this->config->get('factories', []));
-        $this->loadDependencies($this->config->get('dependencies', []));
-        $this->loadBootstrappers($this->config->get('bootstrappers', []));
+        $this->registerAppAliases($this->config->get('aliases', []));
+        $this->registerAppFactories($this->config->get('factories', []));
+        $this->registerAppDependencies($this->config->get('dependencies', []));
+        $this->bootBootstrappers($this->config->get('bootstrappers', []));
 
         $this->container->get($server)->start();
     }

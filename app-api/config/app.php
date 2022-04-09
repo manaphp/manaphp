@@ -34,7 +34,6 @@ return [
     'dependencies'  => [
         'ManaPHP\Http\ServerInterface'          => '#auto',
         'ManaPHP\Data\RedisInterface'           => [env('REDIS_URL')],
-        'ManaPHP\Data\RedisCacheInterface'      => 'ManaPHP\Data\RedisInterface',
         'ManaPHP\Logging\LoggerInterface'       => ['level' => env('LOGGER_LEVEL', 'info')],
         'ManaPHP\Http\HandlerInterface'         => 'ManaPHP\Rest\Handler',
         'ManaPHP\Identifying\IdentityInterface' => 'ManaPHP\Identifying\Identity\Adapter\Jwt',

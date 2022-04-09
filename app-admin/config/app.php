@@ -38,7 +38,6 @@ return [
         'ManaPHP\Http\ServerInterface'          => '#auto',
         'ManaPHP\Http\HandlerInterface'         => 'ManaPHP\Mvc\Handler',
         'ManaPHP\Data\RedisInterface'           => [env('REDIS_URL')],
-        'ManaPHP\Data\RedisCacheInterface'      => 'ManaPHP\Data\RedisInterface',
         'ManaPHP\Logging\LoggerInterface'       => ['class' => 'ManaPHP\Logging\Logger\Adapter\File',
                                                     'level' => env('LOGGER_LEVEL', 'info')],
         'ManaPHP\Http\SessionInterface'         => ['class' => 'ManaPHP\Http\Session\Adapter\Redis',
