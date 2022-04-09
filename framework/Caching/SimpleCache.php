@@ -41,9 +41,13 @@ class SimpleCache extends Component implements CacheInterface
 
     public function clear(): bool
     {
-        $iterator = null;
-        while ([] !== ($keys = $this->redisCache->scan($iterator, $this->prefix . '*', 100))) {
-            $this->redisCache->del($keys);
+        if ($this->prefix === '') {
+            $this->redisCache->flushDB();
+        } else {
+            $iterator = null;
+            while ([] !== ($keys = $this->redisCache->scan($iterator, $this->prefix . '*', 100))) {
+                $this->redisCache->del($keys);
+            }
         }
 
         return true;
