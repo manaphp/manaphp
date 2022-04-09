@@ -16,16 +16,13 @@ class Psr3 extends Component implements LoggerInterface
     public function log($level, Stringable|string $message, array $context = []): void
     {
         if (($exception = $context['exception'] ?? null) !== null && $exception instanceof Throwable) {
-            unset($context['exception']);
+            $context['exception'] = '';
             $this->log($level, $message, $context);
             $this->logger->log($level, $exception, 'exception');
         } else {
             $replace = [];
             foreach ($context as $key => $val) {
-                // check that the value can be cast to string
-                if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString'))) {
-                    $replace['{' . $key . '}'] = $val;
-                }
+                $replace['{' . $key . '}'] = is_string($val) ? $val : json_stringify($val);
             }
 
             $this->logger->log($level, strtr($message, $replace));

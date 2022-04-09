@@ -24,6 +24,7 @@ class Kernel extends Component
         $GLOBALS['Psr\Container\ContainerInterface'] = $container;
 
         $container->set('Psr\SimpleCache\CacheInterface', 'ManaPHP\Caching\SimpleCache');
+        $container->set('Psr\Log\LoggerInterface', 'ManaPHP\Logging\Psr3');
 
         if (!defined('MANAPHP_COROUTINE_ENABLED')) {
             define(
