@@ -28,7 +28,7 @@
     <result-ip prop="client_ip"></result-ip>
     <result-column prop="client_udid" width="200"></result-column>
     <result-timestamp prop="created_time"></result-timestamp>
-    <result-op></result-op>
+    <result-op width="65"></result-op>
 </result-table>
 @section('script')
     <script>

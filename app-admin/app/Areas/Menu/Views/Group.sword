@@ -20,7 +20,7 @@
     <result-timestamp prop="updated_time"></result-timestamp>
     <result-account prop="creator_name"></result-account>
     <result-timestamp prop="created_time"></result-timestamp>
-    <result-op show-delete></result-op>
+    <result-op show-delete width="125"></result-op>
 </result-table>
 @section('script')
     <script>
