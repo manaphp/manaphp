@@ -31,13 +31,6 @@ class Component implements JsonSerializable
         return $this;
     }
 
-    protected function detachEvent(string $event, callable $handler): static
-    {
-        $this->eventManager->detachEvent($event, $handler);
-
-        return $this;
-    }
-
     protected function fireEvent(string $event, mixed $data = null): EventArgs
     {
         return $this->eventManager->fireEvent($event, $data, $this);
