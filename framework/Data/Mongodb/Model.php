@@ -358,8 +358,7 @@ class Model extends AbstractModel
 
         list($connection, $collection) = $that->getUniqueShard([]);
 
-        $mongodb = Container::get(FactoryInterface::class)->get($connection);
-        return $mongodb->aggregate($collection, $pipeline, $options);
+        return Container::get(FactoryInterface::class)->get($connection)->aggregate($collection, $pipeline, $options);
     }
 
     public function normalizeDocument(array $document): array

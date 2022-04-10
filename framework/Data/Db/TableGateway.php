@@ -18,9 +18,7 @@ class TableGateway extends Component implements TableGatewayInterface
 
         list($connection, $table) = $that->getUniqueShard($record);
 
-        $db = $this->dbFactory->get($connection);
-
-        return $db->insert($table, $record, $fetchInsertId);
+        return $this->dbFactory->get($connection)->insert($table, $record, $fetchInsertId);
     }
 
     public function insertBySql(string $model, string $sql, array $bind = []): int
@@ -30,9 +28,7 @@ class TableGateway extends Component implements TableGatewayInterface
 
         list($connection, $table) = $that->getUniqueShard($bind);
 
-        $db = $this->dbFactory->get($connection);
-
-        return $db->insertBySql($table, $sql, $bind);
+        return $this->dbFactory->get($connection)->insertBySql($table, $sql, $bind);
     }
 
     public function delete(string $model, string|array $conditions, array $bind = []): int

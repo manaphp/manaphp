@@ -32,8 +32,7 @@ class CollectionGateway extends Component implements CollectionGatewayInterface
 
         list($connection, $collection) = $that->getUniqueShard([]);
 
-        $mongodb = $this->mongodbFactory->get($connection);
-        return $mongodb->bulkInsert($collection, $documents);
+        return $this->mongodbFactory->get($connection)->bulkInsert($collection, $documents);
     }
 
     public function bulkUpdate(string $model, array $documents): int
@@ -79,8 +78,7 @@ class CollectionGateway extends Component implements CollectionGatewayInterface
 
         list($connection, $collection) = $that->getUniqueShard([]);
 
-        $mongodb = $this->mongodbFactory->get($connection);
-        return $mongodb->bulkUpsert($collection, $documents, $that->primaryKey());
+        return $this->mongodbFactory->get($connection)->bulkUpsert($collection, $documents, $that->primaryKey());
     }
 
     /**
