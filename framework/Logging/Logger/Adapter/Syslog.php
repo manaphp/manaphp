@@ -61,22 +61,17 @@ class Syslog extends AbstractLogger
 
     public function append(Log $log): void
     {
-        static $map;
-        if ($map === null) {
-            $map = [
-                'fatal' => LOG_CRIT,
-                'error' => LOG_ERR,
-                'warn'  => LOG_WARNING,
-                'info'  => LOG_INFO,
-                'debug' => LOG_DEBUG,
-            ];
-        }
+        $severity = ['fatal' => LOG_CRIT,
+                     'error' => LOG_ERR,
+                     'warn'  => LOG_WARNING,
+                     'info'  => LOG_INFO,
+                     'debug' => LOG_DEBUG,
+                    ][$log->level];
 
         $host = $this->host;
         $port = $this->port;
         $tag = $this->config->get('id');
 
-        $severity = $map[$log->level];
         $priority = $this->facility * 8 + $severity;
         $timestamp = date('M d H:i:s', (int)$log->timestamp);
 
