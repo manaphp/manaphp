@@ -83,7 +83,7 @@ abstract class AbstractLogger extends Component implements LoggerInterface, Cont
 
     public function exceptionToString(Throwable $exception): string
     {
-        $str = get_class($exception) . ': ' . $exception->getMessage() . PHP_EOL;
+        $str = $exception::class . ': ' . $exception->getMessage() . PHP_EOL;
         $str .= '    at ' . $exception->getFile() . ':' . $exception->getLine() . PHP_EOL;
         $traces = $exception->getTraceAsString();
         $str .= preg_replace('/#\d+\s/', '    at ', $traces);
@@ -91,7 +91,7 @@ abstract class AbstractLogger extends Component implements LoggerInterface, Cont
         $prev = $traces;
         $caused = $exception;
         while ($caused = $caused->getPrevious()) {
-            $str .= PHP_EOL . '  Caused by ' . get_class($caused) . ': ' . $caused->getMessage() . PHP_EOL;
+            $str .= PHP_EOL . '  Caused by ' . $caused::class . ': ' . $caused->getMessage() . PHP_EOL;
             $str .= '    at ' . $caused->getFile() . ':' . $caused->getLine() . PHP_EOL;
             $traces = $exception->getTraceAsString();
             if ($traces !== $prev) {

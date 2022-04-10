@@ -310,7 +310,7 @@ class Response extends Component implements ResponseInterface
         }
 
         if ($this->config->get('debug')) {
-            $json['message'] = get_class($throwable) . ": " . $throwable->getMessage();
+            $json['message'] = $throwable::class . ": " . $throwable->getMessage();
             $json['exception'] = explode("\n", (string)$throwable);
         }
 

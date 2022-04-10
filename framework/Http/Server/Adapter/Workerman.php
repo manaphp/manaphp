@@ -103,7 +103,7 @@ class Workerman extends AbstractServer
             $context->connection = $connection;
             $this->httpHandler->handle();
         } catch (Throwable $throwable) {
-            $str = date('c') . ' ' . get_class($throwable) . ': ' . $throwable->getMessage() . PHP_EOL;
+            $str = date('c') . ' ' . $throwable::class . ': ' . $throwable->getMessage() . PHP_EOL;
             $str .= '    at ' . $throwable->getFile() . ':' . $throwable->getLine() . PHP_EOL;
             $str .= preg_replace('/#\d+\s/', '    at ', $throwable->getTraceAsString());
             echo $str . PHP_EOL;

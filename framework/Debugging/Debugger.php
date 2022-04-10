@@ -164,7 +164,7 @@ class Debugger extends Component implements DebuggerInterface
         } elseif (is_array($data)) {
             $event['data'] = array_keys($data);
         } elseif (is_object($data)) {
-            $event['data'] = get_class($data);
+            $event['data'] = $data::class;
         } else {
             $event['data'] = '???';
         }
@@ -353,12 +353,12 @@ class Debugger extends Component implements DebuggerInterface
 
             if ($instance instanceof Tracer) {
                 $name = str_replace('\\', '//', $name);
-                $data['tracers'][lcfirst(basename($name, 'Tracer'))] = ['class'      => get_class($instance),
+                $data['tracers'][lcfirst(basename($name, 'Tracer'))] = ['class'      => $instance::class,
                                                                         'properties' => $properties];
                 continue;
             }
 
-            $data['dependencies'][$name] = ['class'      => get_class($instance),
+            $data['dependencies'][$name] = ['class'      => $instance::class,
                                             'object_id'  => spl_object_id($instance),
                                             'properties' => $properties];
         }

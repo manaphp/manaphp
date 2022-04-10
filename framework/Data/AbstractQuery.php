@@ -398,7 +398,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         $rows = $this->execute();
 
         if (($model = $this->model) !== null) {
-            $modelName = $model ? get_class($model) : null;
+            $modelName = $model ? ($model::class) : null;
             foreach ($rows as $k => $v) {
                 $rows[$k] = new $modelName($v);
             }

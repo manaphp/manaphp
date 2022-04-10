@@ -43,7 +43,7 @@ class Manager extends Component implements ManagerInterface
     {
         $plainName = Str::pascalize($plainName);
 
-        $modelName = get_class($model);
+        $modelName = $model::class;
 
         if (($pos = strrpos($modelName, '\\')) !== false) {
             $className = substr($modelName, 0, $pos + 1) . $plainName;
@@ -89,7 +89,7 @@ class Manager extends Component implements ManagerInterface
 
             $thatPlain = substr($thatModel, strrpos($thatModel, '\\') + 1);
 
-            $thisModel = get_class($thisInstance);
+            $thisModel = $thisInstance::class;
             $pos = strrpos($thisModel, '\\');
             $namespace = substr($thisModel, 0, $pos + 1);
             $thisPlain = substr($thisModel, $pos + 1);
@@ -135,7 +135,7 @@ class Manager extends Component implements ManagerInterface
 
     public function get(ModelInterface $model, string $name): false|RelationInterface
     {
-        $modelName = get_class($model);
+        $modelName = $model::class;
 
         $this->relations[$modelName] ??= $model->relations();
 

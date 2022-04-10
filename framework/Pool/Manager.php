@@ -31,7 +31,7 @@ class Manager extends Component implements ManagerInterface
     public function create(object $owner, int $capacity, string $type = 'default'): static
     {
         if (isset($this->pool[$owner][$type])) {
-            throw new MisuseException(['`%s` pool of `%s` is exists', $type, get_class($owner)]);
+            throw new MisuseException(['`%s` pool of `%s` is exists', $type, $owner::class]);
         }
 
         $this->pool[$owner] ??= [];
@@ -48,7 +48,7 @@ class Manager extends Component implements ManagerInterface
         } else {
             if ($queue->length() + $size > $queue->capacity()) {
                 throw new FullException(
-                    ['`%s` pool of `%s` capacity(%d) is not big enough', $type, get_class($owner), $queue->capacity()]
+                    ['`%s` pool of `%s` capacity(%d) is not big enough', $type, $owner::class, $queue->capacity()]
                 );
             }
         }
@@ -65,7 +65,7 @@ class Manager extends Component implements ManagerInterface
     public function push(object $owner, object $instance, string $type = 'default'): static
     {
         if (!$queue = $this->pool[$owner][$type] ?? null) {
-            throw new MisuseException(['`%s` pool of `%s` is not exists', $type, get_class($owner)]);
+            throw new MisuseException(['`%s` pool of `%s` is not exists', $type, $owner::class]);
         }
 
         $queue->push($instance);
@@ -78,7 +78,7 @@ class Manager extends Component implements ManagerInterface
     public function pop(object $owner, ?float $timeout = null, string $type = 'default'): object
     {
         if (!$queue = $this->pool[$owner][$type] ?? null) {
-            throw new MisuseException(['`%s` pool of `%s` is not exists', $type, get_class($owner)]);
+            throw new MisuseException(['`%s` pool of `%s` is not exists', $type, $owner::class]);
         }
 
         $this->fireEvent('poolManager:popping', compact('owner', 'type'));
@@ -86,7 +86,7 @@ class Manager extends Component implements ManagerInterface
         if (!$instance = $timeout ? $queue->pop($timeout) : $queue->pop()) {
             $this->fireEvent('poolManager:popped', compact('owner', 'type', 'instance'));
             $capacity = $queue->capacity();
-            throw new BusyException(['`%s` pool of `%s` is busy: capacity[%d]', $type, get_class($owner), $capacity]);
+            throw new BusyException(['`%s` pool of `%s` is busy: capacity[%d]', $type, $owner::class, $capacity]);
         }
 
         $this->fireEvent('poolManager:popped', compact('owner', 'type', 'instance'));
@@ -111,7 +111,7 @@ class Manager extends Component implements ManagerInterface
     public function isEmpty(object $owner, string $type = 'default'): bool
     {
         if (!$queue = $this->pool[$owner][$type] ?? null) {
-            throw new MisuseException(['`%s` pool of `%s` is not exists', $type, get_class($owner)]);
+            throw new MisuseException(['`%s` pool of `%s` is not exists', $type, $owner::class]);
         }
 
         return $queue->isEmpty();
@@ -125,7 +125,7 @@ class Manager extends Component implements ManagerInterface
     public function size(object $owner, string $type = 'default'): int
     {
         if (!$queue = $this->pool[$owner][$type] ?? null) {
-            throw new MisuseException(['`%s` pool of `%s` is not exists', $type, get_class($owner)]);
+            throw new MisuseException(['`%s` pool of `%s` is not exists', $type, $owner::class]);
         }
 
         return $queue->capacity();

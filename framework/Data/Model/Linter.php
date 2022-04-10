@@ -25,7 +25,7 @@ class Linter extends Component
 
     public function __construct(string|ModelInterface $model)
     {
-        $this->class = is_string($model) ? $model : get_class($model);
+        $this->class = is_string($model) ? $model : $model::class;
         $this->model = is_string($model) ? $this->those->get($model) : $model;
         $this->reflection = new ReflectionClass($model);
     }

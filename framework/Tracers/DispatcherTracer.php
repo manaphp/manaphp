@@ -22,7 +22,7 @@ class DispatcherTracer extends Tracer
         $action = $eventArgs->data['action'];
 
         $this->response->setHeader(
-            'X-Dispatcher-Tracer', get_class($controller) . '::' . $action . 'Action'
+            'X-Dispatcher-Tracer', $controller::class . '::' . $action . 'Action'
         );
     }
 }

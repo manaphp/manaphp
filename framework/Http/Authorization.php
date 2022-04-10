@@ -200,7 +200,7 @@ class Authorization extends Component implements AuthorizationInterface
                 return false;
             }
 
-            $controller = get_class($controllerInstance);
+            $controller = $controllerInstance::class;
             $action = str::camelize($permission);
             if (($authorize = $this->getAuthorize($controller, $action)) !== null) {
                 if (($allowed = $authorize->isAllowed($roles)) !== null) {

@@ -28,7 +28,7 @@ class Metadata extends Component implements MetadataInterface
 
     protected function getMetadata(string|Db\ModelInterface $model): array
     {
-        $modelName = is_string($model) ? $model : get_class($model);
+        $modelName = is_string($model) ? $model : $model::class;
         $key = __FILE__ . ':' . $modelName;
 
         if ($this->ttl > 0) {

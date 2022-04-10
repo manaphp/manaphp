@@ -235,7 +235,7 @@ class Container implements ContainerInterface, FactoryInterface, InvokerInterfac
 
     public function inject(object $object, string $property): mixed
     {
-        $class = get_class($object);
+        $class = $object::class;
 
         $types = $this->types[$class] ?? $this->getTypes($class);
         if (($type = $types[$property] ?? null) === null) {
@@ -302,7 +302,7 @@ class Container implements ContainerInterface, FactoryInterface, InvokerInterfac
                 $value = $parameters[$type] ?? $type;
             } else {
                 $signature = is_array($callable)
-                    ? get_class($callable[0]) . '::' . $callable[1]
+                    ? $callable[0]::class . '::' . $callable[1]
                     : $rFunction->getName();
                 throw new AutowiringFailedException(
                     sprintf(
