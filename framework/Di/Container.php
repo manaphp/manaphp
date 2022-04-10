@@ -232,19 +232,19 @@ class Container implements ContainerInterface, FactoryInterface, InvokerInterfac
         return $this->types[$class] = $types;
     }
 
-    public function inject(object $target, string $property): mixed
+    public function inject(object $object, string $property): mixed
     {
-        $class = get_class($target);
+        $class = get_class($object);
 
         $types = $this->types[$class] ?? $this->getTypes($class);
         if (($type = $types[$property] ?? null) === null) {
             throw new TypeHintException(['can\'t type-hint for `%s::%s`', $class, $property]);
         }
 
-        $dependencies = $this->dependencies[$target] ?? null;
+        $dependencies = $this->dependencies[$object] ?? null;
         $id = $dependencies[$property] ?? $dependencies[$type] ?? $type;
 
-        return $target->$property = $this->get($id[0] === '#' ? "$type$id" : $id);
+        return $object->$property = $this->get($id[0] === '#' ? "$type$id" : $id);
     }
 
     public function getDefinitions(): array
