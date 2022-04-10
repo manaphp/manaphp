@@ -4,11 +4,12 @@ declare(strict_types=1);
 namespace ManaPHP\I18n;
 
 use ManaPHP\Component;
+use ManaPHP\Contextor\ContextCreatorInterface;
 
 /**
  * @property-read \ManaPHP\I18n\LocaleContext $context
  */
-class Locale extends Component implements LocaleInterface
+class Locale extends Component implements LocaleInterface, ContextCreatorInterface
 {
     protected string $default;
 
@@ -17,10 +18,10 @@ class Locale extends Component implements LocaleInterface
         $this->default = $default;
     }
 
-    protected function createContext(): LocaleContext
+    public function createContext(): LocaleContext
     {
         /** @var \ManaPHP\I18n\LocaleContext $context */
-        $context = parent::createContext();
+        $context = $this->contextor->makeContext($this);
 
         $context->locale = $this->default;
 

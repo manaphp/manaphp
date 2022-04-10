@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Html;
 
-use ManaPHP\Coroutine\Context\Inseparable;
+use ManaPHP\Contextor\ContextInseparable;
 
-class RendererContext implements Inseparable
+class RendererContext implements ContextInseparable
 {
     public array $sections = [];
     public array $stack = [];

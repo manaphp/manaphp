@@ -109,11 +109,7 @@ class Workerman extends AbstractServer
             echo $str . PHP_EOL;
         }
 
-        global $__root_context;
-        foreach ($__root_context as $owner) {
-            unset($owner->context);
-        }
-        $__root_context = null;
+        $this->contextor->resetContexts();
 
         if ($this->max_request && ++$this->request_count >= $this->max_request) {
             Worker::stopAll();

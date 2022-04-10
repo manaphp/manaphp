@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Identifying;
 
 use ManaPHP\Component;
+use ManaPHP\Contextor\ContextCreatorInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnauthorizedException;
@@ -11,12 +12,12 @@ use ManaPHP\Exception\UnauthorizedException;
 /**
  * @property-read \ManaPHP\Identifying\IdentityContext $context
  */
-class Identity extends Component implements IdentityInterface
+class Identity extends Component implements IdentityInterface, ContextCreatorInterface
 {
-    protected function createContext(): IdentityContext
+    public function createContext(): IdentityContext
     {
         /** @var \ManaPHP\Identifying\IdentityContext $context */
-        $context = parent::createContext();
+        $context = $this->contextor->makeContext($this);
         $context->claims = $this->authenticate();
 
         return $context;

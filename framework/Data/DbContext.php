@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
-use ManaPHP\Coroutine\Context\Inseparable;
+use ManaPHP\Contextor\ContextInseparable;
 use ManaPHP\Data\Db\ConnectionInterface;
 use ManaPHP\Exception\MisuseException;
 
-class DbContext implements Inseparable
+class DbContext implements ContextInseparable
 {
     public ?ConnectionInterface $connection = null;
     public string $sql;

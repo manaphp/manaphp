@@ -4,104 +4,21 @@ declare(strict_types=1);
 namespace ManaPHP;
 
 use JsonSerializable;
-use ManaPHP\Coroutine\Context\Inseparable;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Helper\Container;
 use Psr\Container\ContainerInterface;
-use Swoole\Coroutine;
 
 /**
+ * @property-read \ManaPHP\ContextorInterface     $contextor
  * @property-read \ManaPHP\Event\ManagerInterface $eventManager
- * @property-read \object                         $context
  */
 class Component implements JsonSerializable
 {
-    protected function findContext(): ?string
-    {
-        static $cached = [];
-
-        $class = static::class;
-        if (($context = $cached[$class] ?? null) === null) {
-            $parent = $class;
-            do {
-                $try = $parent . 'Context';
-                if (class_exists($try)) {
-                    $context = $try;
-                    break;
-                }
-            } while ($parent = get_parent_class($parent));
-
-            if ($context === null) {
-                return null;
-            }
-
-            $cached[$class] = $context;
-        }
-
-        return $context;
-    }
-
-    protected function createContext(): object
-    {
-        if (($context = $this->findContext()) === null) {
-            throw new Exception(['`%s` context class is not exists', get_class($this) . 'Context']);
-        }
-
-        return new $context();
-    }
-
-    protected function getContext(): object
-    {
-        global $__root_context;
-
-        if (MANAPHP_COROUTINE_ENABLED) {
-            $object_id = spl_object_id($this);
-
-            if ($context = Coroutine::getContext()) {
-                if (!$object = $context[$object_id] ?? null) {
-                    if (($parent_cid = Coroutine::getPcid()) === -1) {
-                        return $context[$object_id] = $this->createContext();
-                    }
-
-                    $parent_context = Coroutine::getContext($parent_cid);
-                    if ($object = $parent_context[$object_id] ?? null) {
-                        if ($object instanceof Inseparable) {
-                            return $context[$object_id] = $this->createContext();
-                        } else {
-                            return $context[$object_id] = $object;
-                        }
-                    } else {
-                        $object = $context[$object_id] = $this->createContext();
-                        if (!$object instanceof Inseparable) {
-                            $parent_context[$object_id] = $object;
-                        }
-                    }
-                }
-                return $object;
-            } elseif (!$object = $__root_context[$object_id] ?? null) {
-                return $__root_context[$object_id] = $this->createContext();
-            } else {
-                return $object;
-            }
-        } elseif (isset($this->context)) {
-            return $this->context;
-        } else {
-            $__root_context[] = $this;
-
-            return $this->context = $this->createContext();
-        }
-    }
-
-    protected function hasContext(): bool
-    {
-        return $this->findContext() !== null;
-    }
-
     /** @noinspection MagicMethodsValidityInspection */
     public function __get(string $name): mixed
     {
         if ($name === 'context') {
-            return $this->getContext();
+            return $this->contextor->getContext($this);
         } else {
             return Container::inject($this, $name);
         }
@@ -138,8 +55,8 @@ class Component implements JsonSerializable
             $data[$k] = $v;
         }
 
-        if ($this->hasContext()) {
-            $data['context'] = $this->getContext();
+        if ($this->contextor->hasContext($this)) {
+            $data['context'] = $this->contextor->getContext($this);
         }
 
         return $data;
@@ -157,8 +74,8 @@ class Component implements JsonSerializable
             $data[$k] = $v;
         }
 
-        if ($this->hasContext()) {
-            $data['context'] = (array)$this->getContext();
+        if ($this->contextor->hasContext($this)) {
+            $data['context'] = (array)$this->contextor->getContext($this);
         }
 
         return $data;

@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mailing\Mailer\Adapter;
 
-use ManaPHP\Coroutine\Context\Inseparable;
+use ManaPHP\Contextor\ContextInseparable;
 
-class SmtpContext implements Inseparable
+class SmtpContext implements ContextInseparable
 {
     public mixed $socket;
     public string $file;

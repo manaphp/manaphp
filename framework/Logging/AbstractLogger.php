@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Logging;
 
 use ManaPHP\Component;
+use ManaPHP\Contextor\ContextCreatorInterface;
 use ManaPHP\Coroutine;
 use ManaPHP\Logging\Logger\Log;
 use ManaPHP\Logging\Logger\LogCategorizable;
@@ -14,7 +15,7 @@ use Throwable;
  * @property-read \ManaPHP\Http\RequestInterface         $request
  * @property-read \ManaPHP\Logging\AbstractLoggerContext $context
  */
-abstract class AbstractLogger extends Component implements LoggerInterface
+abstract class AbstractLogger extends Component implements LoggerInterface, ContextCreatorInterface
 {
     protected string $level;
     protected string $hostname;
@@ -25,10 +26,10 @@ abstract class AbstractLogger extends Component implements LoggerInterface
         $this->hostname = $hostname ?? gethostname();
     }
 
-    protected function createContext(): AbstractLoggerContext
+    public function createContext(): AbstractLoggerContext
     {
         /** @var \ManaPHP\Logging\AbstractLoggerContext $context */
-        $context = parent::createContext();
+        $context = $this->contextor->makeContext($this);
 
         $context->level = $this->level;
         $context->client_ip = defined('MANAPHP_CLI') ? '' : $this->request->getClientIp();

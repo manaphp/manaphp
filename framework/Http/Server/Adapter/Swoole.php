@@ -141,13 +141,7 @@ class Swoole extends AbstractServer
                 echo $str . PHP_EOL;
             }
 
-            if (!MANAPHP_COROUTINE_ENABLED) {
-                global $__root_context;
-                foreach ($__root_context as $owner) {
-                    unset($owner->context);
-                }
-                $__root_context = null;
-            }
+            $this->contextor->resetContexts();
         }
     }
 
