@@ -31,13 +31,12 @@ class Php extends AbstractServer
         $public_dir = $this->alias->resolve('@public');
         $local_ip = $this->host === '0.0.0.0' ? Ip::local() : $this->host;
 
+        $_SERVER['REQUEST_SCHEME'] = 'http';
+
         if (PHP_SAPI === 'cli') {
-            if (DIRECTORY_SEPARATOR === '\\') {
-                shell_exec("explorer.exe http://127.0.0.1:$this->port" . ($this->router->getPrefix() ?: '/'));
-            }
-            $_SERVER['REQUEST_SCHEME'] = 'http';
+            $e = extension_loaded('yasd') && ini_get('opcache.optimization_level') === '0' ? '-e' : '';
             $index = @get_included_files()[0];
-            $cmd = "php -S $this->host:$this->port -t $public_dir  $index";
+            $cmd = "php $e -S $this->host:$this->port -t $public_dir  $index";
             console_log('info', $cmd);
             $prefix = $this->router->getPrefix();
             console_log('info', "http://127.0.0.1:$this->port" . ($prefix ?: '/'));
@@ -46,7 +45,6 @@ class Php extends AbstractServer
         } else {
             $_SERVER['SERVER_ADDR'] = $local_ip;
             $_SERVER['SERVER_PORT'] = $this->port;
-            $_SERVER['REQUEST_SCHEME'] = 'http';
         }
     }
 
