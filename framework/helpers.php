@@ -112,7 +112,7 @@ if (!function_exists('jwt_encode')) {
 if (!function_exists('jwt_decode')) {
     function jwt_decode(string $token, string $scope, bool $verify = true): array
     {
-        return Container(ScopedJwtInterface::class)->decode($token, $scope, $verify);
+        return Container::get(ScopedJwtInterface::class)->decode($token, $scope, $verify);
     }
 }
 

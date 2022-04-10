@@ -6,6 +6,7 @@ namespace ManaPHP\Mailing\Mailer;
 use JsonSerializable;
 use ManaPHP\Html\RendererInterface;
 use ManaPHP\Mailing\MailerInterface;
+use ManaPHP\Helper\Container;
 
 class Message implements JsonSerializable
 {
@@ -171,7 +172,7 @@ class Message implements JsonSerializable
                 $template = "@views/Mail/$template";
             }
 
-            $body = container(RendererInterface::class)->renderFile($template, $vars);
+            $body = Container::get(RendererInterface::class)->renderFile($template, $vars);
         }
 
         $this->html_body = $body;

@@ -26,21 +26,21 @@ if (!function_exists('attr_inv')) {
 if (!function_exists('bundle')) {
     function bundle(array $files, string $name = 'app'): string
     {
-        return container(\ManaPHP\Html\Renderer\AssetBundleInterface::class)->bundle($files, $name);
+        return Container::get(\ManaPHP\Html\Renderer\AssetBundleInterface::class)->bundle($files, $name);
     }
 }
 
 if (!function_exists('action')) {
     function action(string|array $args = [], bool|string $scheme = false): string
     {
-        return container(\ManaPHP\Http\RouterInterface::class)->createUrl($args, $scheme);
+        return Container::get(\ManaPHP\Http\RouterInterface::class)->createUrl($args, $scheme);
     }
 }
 
 if (!function_exists('url')) {
     function url(string|array $args, bool|string $scheme = false): string
     {
-        return container(\ManaPHP\Http\UrlInterface::class)->get($args, $scheme);
+        return Container::get(\ManaPHP\Http\UrlInterface::class)->get($args, $scheme);
     }
 }
 

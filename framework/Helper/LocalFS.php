@@ -325,4 +325,4 @@ class LocalFS
     }
 }
 
-LocalFS::$alias = container(AliasInterface::class);
+LocalFS::$alias = Container::get(AliasInterface::class);

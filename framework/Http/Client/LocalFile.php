@@ -5,6 +5,7 @@ namespace ManaPHP\Http\Client;
 
 use JsonSerializable;
 use ManaPHP\AliasInterface;
+use ManaPHP\Helper\Container;
 
 class LocalFile implements FileInterface, JsonSerializable
 {
@@ -14,7 +15,7 @@ class LocalFile implements FileInterface, JsonSerializable
 
     public function __construct(string $fileName, ?string $mimeType = null, ?string $postName = null)
     {
-        $fileName = $fileName[0] === '@' ? container(AliasInterface::class)->resolve($fileName) : $fileName;
+        $fileName = $fileName[0] === '@' ? Container::get(AliasInterface::class)->resolve($fileName) : $fileName;
 
         if (!file_exists($fileName)) {
             throw new Exception(["`%s` is not exist", $fileName]);
