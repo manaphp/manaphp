@@ -60,13 +60,13 @@ class Contextor implements ContextorInterface
             $object_id = spl_object_id($object);
 
             if ($ao = Coroutine::getContext()) {
-                if (!$context = $ao[$object_id] ?? null) {
+                if (($context = $ao[$object_id] ?? null) === null) {
                     if (($parent_cid = Coroutine::getPcid()) === -1) {
                         return $ao[$object_id] = $this->createContext($object);
                     }
 
                     $parent_context = Coroutine::getContext($parent_cid);
-                    if ($context = $parent_context[$object_id] ?? null) {
+                    if (($context = $parent_context[$object_id] ?? null) !== null) {
                         if ($context instanceof ContextInseparable) {
                             return $ao[$object_id] = $this->createContext($object);
                         } else {
@@ -80,7 +80,7 @@ class Contextor implements ContextorInterface
                     }
                 }
                 return $context;
-            } elseif (!$context = $this->roots[$object_id] ?? null) {
+            } elseif (($context = $this->roots[$object_id] ?? null) !== null) {
                 return $this->roots[$object_id] = $this->createContext($object);
             } else {
                 return $context;
