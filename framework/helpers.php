@@ -132,10 +132,7 @@ if (!function_exists('input')) {
      */
     function input(?string $name = null, mixed $defaultOrRules = null): mixed
     {
-        static $request;
-        if (!$request) {
-            $request = Container::get(RequestInterface::class);
-        }
+        $request = Container::get(RequestInterface::class);
 
         if ($defaultOrRules && is_array($defaultOrRules)) {
             $value = $request->get($name, $defaultOrRules['default'] ?? null);
