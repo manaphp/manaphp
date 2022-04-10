@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+use ManaPHP\Helper\Container;
+
 if (!function_exists('attr_nv')) {
     function attr_nv(string $name, string $default = ''): string
     {
@@ -45,21 +47,6 @@ if (!function_exists('url')) {
 if (!function_exists('asset')) {
     function asset(string $path): string
     {
-        static $alias;
-        if (!$alias) {
-            $alias = container(\ManaPHP\AliasInterface::class);
-        }
-
-        static $paths = [];
-
-        if (isset($paths[$path])) {
-            return $paths[$path];
-        }
-
-        if (!str_contains($path, '?') && is_file($file = $alias->get('@public') . $path)) {
-            return $paths[$path] = $alias->get('@asset') . $path . '?' . substr(md5_file($file), 0, 12);
-        } else {
-            return $paths[$path] = $alias->get('@asset') . $path;
-        }
+        return Container::get(\ManaPHP\Mvc\View\AssetInterface::class)->get($path);
     }
 }
