@@ -54,6 +54,7 @@ class Container implements ContainerInterface, FactoryInterface, InvokerInterfac
     public function make(string $name, array $parameters = []): mixed
     {
         while (is_string($definition = $this->definitions[$name] ?? null)) {
+            /** @noinspection CallableParameterUseCaseInTypeContextInspection */
             $name = $definition;
         }
 
