@@ -124,38 +124,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         return Str::snakelize(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1));
     }
 
-    protected function inferPrimaryKey(string $class): ?string
-    {
-        $fields = $this->fields();
-
-        if (in_array('id', $fields, true)) {
-            return 'id';
-        }
-
-        $prefix = lcfirst(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1));
-        if (in_array($tryField = $prefix . '_id', $fields, true)) {
-            return $tryField;
-        } elseif (in_array($tryField = $prefix . 'Id', $fields, true)) {
-            return $tryField;
-        }
-
-        $table = $this->table();
-        if (($pos = strpos($table, ':')) !== false) {
-            $table = substr($table, 0, $pos);
-        } elseif (($pos = strpos($table, ',')) !== false) {
-            $table = substr($table, 0, $pos);
-        }
-
-        $prefix = (($pos = strpos($table, '.')) ? substr($table, $pos + 1) : $table);
-        if (in_array($tryField = $prefix . '_id', $fields, true)) {
-            return $tryField;
-        } elseif (in_array($tryField = $prefix . 'Id', $fields, true)) {
-            return $tryField;
-        }
-
-        return null;
-    }
-
     /**
      * @return string
      */
