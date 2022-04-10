@@ -73,6 +73,7 @@ abstract class AbstractModel extends \ManaPHP\Data\AbstractModel
         throw new NotSupportedException(__METHOD__);
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     public static function insert(array $record): int
     {
         throw new NotSupportedException(__METHOD__);
