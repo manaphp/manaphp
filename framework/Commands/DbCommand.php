@@ -17,6 +17,8 @@ use ManaPHP\Helper\Str;
  */
 class DbCommand extends Command
 {
+    protected array $tableConstants = [];
+
     /**
      * @return array
      */
@@ -79,28 +81,26 @@ class DbCommand extends Command
      */
     protected function getConstantsByDb(string $connection, string $table): string
     {
-        static $cached;
-
-        if (!isset($cached[$connection])) {
+        if (!isset($this->tableConstants[$connection])) {
             $db = $this->dbFactory->get($connection);
             $metadata_table = 'metadata_constant';
             if (!in_array($metadata_table, $db->getTables(), true)) {
-                $cached[$connection] = [];
+                $this->tableConstants[$connection] = [];
             } else {
                 $metadata_table = $db->getPrefix() . $metadata_table;
                 $rows = $db->fetchAll(/**@lang text */ "SELECT `id`, `constants` FROM $metadata_table");
                 foreach ($rows as $row) {
-                    $cached[$connection][$row['id']] = $row['constants'];
+                    $this->tableConstants[$connection][$row['id']] = $row['constants'];
                 }
             }
         }
 
-        if (!isset($cached[$connection][$table])) {
+        if (!isset($this->tableConstants[$connection][$table])) {
             return '';
         }
 
         $lines = [];
-        $constants = preg_split('#[\r\n]{1,2}#m', trim($cached[$connection][$table]));
+        $constants = preg_split('#[\r\n]{1,2}#m', trim($this->tableConstants[$connection][$table]));
         foreach ($constants as $constant) {
             $constant = trim($constant);
             if ($constant === '') {
