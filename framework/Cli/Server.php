@@ -44,7 +44,7 @@ class Server extends Component implements ServerInterface
     public function start(): void
     {
         if (MANAPHP_COROUTINE_ENABLED) {
-            Runtime::enableCoroutine(true);
+            Runtime::enableCoroutine();
             Coroutine::create([$this, 'handle']);
             Event::wait();
         } else {

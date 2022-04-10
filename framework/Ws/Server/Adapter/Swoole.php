@@ -227,7 +227,7 @@ class Swoole extends Component implements ServerInterface
     public function start(): void
     {
         if (MANAPHP_COROUTINE_ENABLED) {
-            Runtime::enableCoroutine(true);
+            Runtime::enableCoroutine();
         }
 
         echo PHP_EOL, str_repeat('+', 80), PHP_EOL;
