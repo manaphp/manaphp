@@ -50,6 +50,8 @@ class Linter extends Component
                     }
                 } elseif ($model instanceof MongodbModel) {
                     $all = array_keys($model->fieldTypes());
+                } else {
+                    $all = $some;
                 }
             } elseif ($methodName === 'intFields') {
                 $some = $model->intFields();
