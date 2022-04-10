@@ -1655,8 +1655,8 @@ class Markdown extends Component implements EngineInterface
 
     protected function sanitiseElement(array $Element)
     {
-        static $goodAttribute = '/^[a-zA-Z0-9][a-zA-Z0-9-_]*+$/';
-        static $safeUrlNameToAtt = [
+        $goodAttribute = '/^[a-zA-Z0-9][a-zA-Z0-9-_]*+$/';
+        $safeUrlNameToAtt = [
             'a'   => 'href',
             'img' => 'src',
         ];
