@@ -12,13 +12,19 @@ use ManaPHP\Exception\MisuseException;
  */
 class CollectionGateway extends Component implements CollectionGatewayInterface
 {
+    protected function getThat(string $model): Model
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->those->get($model);
+    }
+
     public function bulkInsert(string $model, array $documents): int
     {
         if (!$documents) {
             return 0;
         }
 
-        $that = $this->those->get($model);
+        $that = $this->getThat($model);
 
         foreach ($documents as $i => $document) {
             $documents[$i] = $that->normalizeDocument($document);
@@ -36,7 +42,7 @@ class CollectionGateway extends Component implements CollectionGatewayInterface
             return 0;
         }
 
-        $that = $this->those->get($model);
+        $that = $this->getThat($model);
 
         $primaryKey = $that->primaryKey();
         foreach ($documents as $i => $document) {
@@ -65,7 +71,7 @@ class CollectionGateway extends Component implements CollectionGatewayInterface
             return 0;
         }
 
-        $that = $this->those->get($model);
+        $that = $this->getThat($model);
 
         foreach ($documents as $i => $document) {
             $documents[$i] = $that->normalizeDocument($document);
@@ -85,7 +91,7 @@ class CollectionGateway extends Component implements CollectionGatewayInterface
      */
     public function insert(string $model, array $record): int
     {
-        $that = $this->those->get($model);
+        $that = $this->getThat($model);
 
         $record = $that->normalizeDocument($record);
 
@@ -99,7 +105,7 @@ class CollectionGateway extends Component implements CollectionGatewayInterface
 
     public function delete(string $model, array $conditions): int
     {
-        $shards = $this->those->get($model)->getMultipleShards($conditions);
+        $shards = $this->getThat($model)->getMultipleShards($conditions);
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
@@ -115,7 +121,7 @@ class CollectionGateway extends Component implements CollectionGatewayInterface
 
     public function update(string $model, array $fieldValues, array $conditions): int
     {
-        $shards = $this->those->get($model)->getMultipleShards($conditions);
+        $shards = $this->getThat($model)->getMultipleShards($conditions);
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {

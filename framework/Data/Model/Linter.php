@@ -6,6 +6,7 @@ namespace ManaPHP\Data\Model;
 use ManaPHP\Component;
 use ManaPHP\Data\Db\Model as DbModel;
 use ManaPHP\Data\ModelInterface;
+use ManaPHP\Data\Mongodb\Model as MongodbModel;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -47,7 +48,7 @@ class Linter extends Component
                     if (!$all) {
                         $all = $this->modelMetadata->getAttributes($model);
                     }
-                } else {
+                } elseif ($model instanceof MongodbModel) {
                     $all = array_keys($model->fieldTypes());
                 }
             } elseif ($methodName === 'intFields') {

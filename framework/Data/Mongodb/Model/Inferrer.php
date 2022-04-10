@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Mongodb\Model;
 
 use ManaPHP\Component;
+use ManaPHP\Data\Mongodb\Model;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\RuntimeException;
 use MongoDB\BSON\ObjectId;
@@ -18,6 +19,12 @@ class Inferrer extends Component implements InferrerInterface
     protected array $fields = [];
     protected array $intFields = [];
     protected array $fieldTypes = [];
+
+    protected function getThat(string $model): Model
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->those->get($model);
+    }
 
     protected function primaryKeyInternal(string $model): ?string
     {
@@ -68,7 +75,7 @@ class Inferrer extends Component implements InferrerInterface
     public function fields(string $model): array
     {
         if (($fields = $this->fields[$model] ?? null) === null) {
-            $that = $this->those->get($model);
+            $that = $this->getThat($model);
             $fieldTypes = $that->fieldTypes();
             if (isset($fieldTypes['_id']) && $fieldTypes['_id'] === 'objectid') {
                 unset($fieldTypes['_id']);
@@ -82,7 +89,7 @@ class Inferrer extends Component implements InferrerInterface
     public function intFields(string $model): array
     {
         if (($intFields = $this->intFields[$model] ?? null) === null) {
-            $that = $this->those->get($model);
+            $that = $this->getThat($model);
             $fields = [];
             foreach ($that->fieldTypes() as $field => $type) {
                 if ($type === 'int') {

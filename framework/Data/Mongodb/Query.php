@@ -32,7 +32,9 @@ class Query extends AbstractQuery
     {
         $this->model = $model;
 
-        $this->setTypes($model->fieldTypes());
+        if ($model instanceof Model) {
+            $this->setTypes($model->fieldTypes());
+        }
 
         return $this;
     }
