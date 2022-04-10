@@ -658,6 +658,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      * @param ?array $fields =model_fields(new static)
      *
      * @return void
+     * @noinspection PhpRedundantCatchClauseInspection
      */
     public function validate(?array $fields = null): void
     {
