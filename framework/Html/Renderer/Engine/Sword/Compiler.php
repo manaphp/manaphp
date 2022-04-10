@@ -105,9 +105,8 @@ class Compiler extends Component
     {
         return preg_replace_callback(
             '#\b((?:ajax|axios\.)\w*\\(["\'`])([^/][\w\-/:.]+)#',
-            function ($match) use ($file) {
-                return $match[1] . $this->completeRelativeLinks($file, $match[2]);
-            }, $str
+            fn($match) => $match[1] . $this->completeRelativeLinks($file, $match[2]),
+            $str
         );
     }
 

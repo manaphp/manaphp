@@ -519,11 +519,7 @@ class Query extends AbstractQuery
 
         $pattern = '#\[(' . implode('|', array_keys($mapFields)) . ')]#';
 
-        return preg_replace_callback(
-            $pattern, static function ($matches) use ($mapFields) {
-            return '[' . $mapFields[$matches[1]] . ']';
-        }, $sql
-        );
+        return preg_replace_callback($pattern, fn($matches) => '[' . $mapFields[$matches[1]] . ']', $sql);
     }
 
     protected function buildSql(DbInterface $db, string $table, array $joins): string

@@ -36,11 +36,7 @@ class Settings extends Component implements SettingsInterface
         if ($this->ttl <= 0) {
             return $this->getInternal($key, $default);
         } else {
-            return apcu_remember(
-                $this->key . ':' . $key, $this->ttl, function () use ($default, $key) {
-                return $this->getInternal($key, $default);
-            }
-            );
+            return apcu_remember($this->key . ':' . $key, $this->ttl, fn() => $this->getInternal($key, $default));
         }
     }
 
