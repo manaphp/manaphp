@@ -364,20 +364,18 @@ class Model extends AbstractModel
 
     public function normalizeDocument(array $document): array
     {
-        $that = Container::get(ThoseInterface::class)->get(static::class);
-
-        $allowNull = $that->isAllowNullValue();
-        $fieldTypes = $that->fieldTypes();
-        $autoIncrementField = $that->autoIncrementField();
+        $allowNull = $this->isAllowNullValue();
+        $fieldTypes = $this->fieldTypes();
+        $autoIncrementField = $this->autoIncrementField();
         if ($autoIncrementField && !isset($document[$autoIncrementField])) {
-            $document[$autoIncrementField] = $that->getNextAutoIncrementId();
+            $document[$autoIncrementField] = $this->getNextAutoIncrementId();
         }
 
         foreach ($fieldTypes as $field => $type) {
             if (isset($document[$field])) {
-                $document[$field] = $that->normalizeValue($type, $document[$field]);
+                $document[$field] = $this->normalizeValue($type, $document[$field]);
             } elseif ($field !== '_id') {
-                $document[$field] = $allowNull ? null : $that->normalizeValue($type, '');
+                $document[$field] = $allowNull ? null : $this->normalizeValue($type, '');
             }
         }
 
