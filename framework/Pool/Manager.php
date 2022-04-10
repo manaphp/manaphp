@@ -10,9 +10,6 @@ use WeakMap;
 
 class Manager extends Component implements ManagerInterface
 {
-    /**
-     * @var \ManaPHP\Coroutine\Channel[][]
-     */
     protected WeakMap $pool;
 
     public function __construct()
