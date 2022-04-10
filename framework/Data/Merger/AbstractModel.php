@@ -38,21 +38,7 @@ abstract class AbstractModel extends \ManaPHP\Data\AbstractModel
      */
     public function fields(): array
     {
-        static $cached = [];
-
-        $class = static::class;
-        if (!isset($cached[$class])) {
-            $fields = [];
-            foreach (get_class_vars($class) as $field => $value) {
-                if ($value === null && $field[0] !== '_') {
-                    $fields[] = $field;
-                }
-            }
-
-            $cached[$class] = $fields ?: $this->getModel()->fields();
-        }
-
-        return $cached[$class];
+        return Container::get(FieldsInfererInterface::class)->fields($this);
     }
 
     /**
