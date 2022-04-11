@@ -80,7 +80,7 @@ class Contextor implements ContextorInterface
                     }
                 }
                 return $context;
-            } elseif (($context = $this->roots[$object_id] ?? null) !== null) {
+            } elseif (($context = $this->roots[$object_id] ?? null) === null) {
                 return $this->roots[$object_id] = $this->createContext($object);
             } else {
                 return $context;
