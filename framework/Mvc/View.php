@@ -208,7 +208,7 @@ class View extends Component implements ViewInterface
 
         $context->content = preg_replace_callback(
             '#\b(href|src|action|data-src)=(["\'`]{1,2})/(?!/)#',
-            fn($match) => "$match[1]=$match[2]{$base_url}/",
+            static fn($match) => "$match[1]=$match[2]{$base_url}/",
             $context->content
         );
     }
