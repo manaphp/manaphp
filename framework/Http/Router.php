@@ -39,7 +39,7 @@ class Router extends Component implements RouterInterface
     {
         if ($useDefaultRoutes) {
             $this->defaults = [
-                new Route('/(?:{controller}(?:/{action:\d[-\w]*$|[a-zA-Z]\w*}(?:/{params})?)?)?')
+                new Route('/(?:{controller}(?:/{action:\w+}(?:/{params})?)?)?')
             ];
         }
     }
