@@ -63,7 +63,7 @@
     </el-container>
 </el-container>
 
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/element-ui@2.15.6/lib/index.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios@0.26.1/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/moment@2.29.2/min/moment.min.js"></script>
