@@ -15,14 +15,20 @@ use Psr\Container\ContainerInterface;
 class TracerBootstrapper extends Component implements BootstrapperInterface
 {
     protected array $tracers;
+    protected bool $enabled;
 
-    public function __construct(array $tracers = ['*'])
+    public function __construct(array $tracers = ['*'], ?bool $enabled = null)
     {
         $this->tracers = $tracers;
+        $this->enabled = $enabled ?? in_array($this->config->get('env'), ['dev', 'test'], true);
     }
 
     public function bootstrap(ContainerInterface $container): void
     {
+        if (!$this->enabled) {
+            return;
+        }
+
         /** @var \ManaPHP\Tracer $tracer */
 
         if (in_array('*', $this->tracers, true)) {
