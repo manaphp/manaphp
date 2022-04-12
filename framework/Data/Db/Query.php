@@ -791,7 +791,7 @@ class Query extends AbstractQuery
 
                 $agg = strtoupper($match[0]);
                 $aggs[$k] = $agg;
-                if (in_array($agg, ['COUNT', 'MAX', 'MIN', 'SUM'])) {
+                if (in_array($agg, ['COUNT', 'MAX', 'MIN', 'SUM'], true)) {
                     null;
                 } elseif ($agg === 'AVG') {
                     $sum = $k . '_sum';

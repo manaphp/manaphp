@@ -349,7 +349,7 @@ class DbCommand extends Command
         $areas = [];
         foreach (LocalFS::glob('@app/Areas/*', GLOB_ONLYDIR) as $item) {
             $area = basename($item);
-            if (!in_array($area, ['Api', 'Admin', 'User'])) {
+            if (!in_array($area, ['Api', 'Admin', 'User'], true)) {
                 $areas[] = $area;
             }
         }

@@ -29,7 +29,7 @@ class PageCacheFilter extends Filter implements ReadyFilterInterface
 
     public function onReady(EventArgs $eventArgs): void
     {
-        if (!in_array($this->request->getMethod(), ['GET', 'POST', 'HEAD'])) {
+        if (!in_array($this->request->getMethod(), ['GET', 'POST', 'HEAD'], true)) {
             return;
         }
 
