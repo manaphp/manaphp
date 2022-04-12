@@ -20,13 +20,9 @@ class MenuController extends Controller
         ];
 
         foreach ($menu as &$group) {
-            if (!isset($group['icon'])) {
-                $group['icon'] = 'el-icon-caret-right';
-            }
+            $group['icon'] ??= 'el-icon-caret-right';
             foreach ($group['items'] as &$item) {
-                if (!isset($item['icon'])) {
-                    $item['icon'] = 'el-icon-caret-right';
-                }
+                $item['icon'] ??= 'el-icon-caret-right';
             }
         }
 

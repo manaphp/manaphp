@@ -68,6 +68,13 @@
                     return paths.sort();
                 }
             },
+            watch: {
+                'filter.path': function (newValue) {
+                    if (newValue === '') {
+                        this.request.permission_id = '';
+                    }
+                }
+            },
             methods: {
                 do_rebuild() {
                     this.ajax_post("rebuild", {}, () => this.reload());
