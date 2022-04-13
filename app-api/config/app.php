@@ -4,7 +4,6 @@ return [
     'id'            => 'api',
     'env'           => env('APP_ENV', 'prod'),
     'debug'         => env('APP_DEBUG', false),
-    'version'       => '1.1.1',
     'aliases'       => [],
     'factories'     => [
         'ManaPHP\Http\ServerInterface' => [
