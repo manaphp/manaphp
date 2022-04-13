@@ -184,7 +184,7 @@ if (!function_exists('t')) {
 if (!function_exists('base_url')) {
     function base_url(): string
     {
-        return Container::get(AliasInterface::class)->get('@web');
+        return Container::get(AliasInterface::class)->get('@web') ?? '';
     }
 }
 
