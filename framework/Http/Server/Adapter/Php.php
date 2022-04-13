@@ -14,7 +14,7 @@ use ManaPHP\Http\AbstractServer;
  */
 class Php extends AbstractServer
 {
-    public function __construct(string $host = '0.0.0.0', int $port = 9501)
+    public function __construct(string $host = '0.0.0.0', int $port = 9501, array $settings = [])
     {
         parent::__construct($host, $port);
 
@@ -34,6 +34,10 @@ class Php extends AbstractServer
         $_SERVER['REQUEST_SCHEME'] = 'http';
 
         if (PHP_SAPI === 'cli') {
+            if (($worker_num = $settings['worker_num'] ?? 1) > 1) {
+                putenv("PHP_CLI_SERVER_WORKERS=$worker_num");
+            }
+
             $e = extension_loaded('yasd') && ini_get('opcache.optimization_level') === '0' ? '-e' : '';
             $index = @get_included_files()[0];
             $cmd = "php $e -S $this->host:$this->port -t $public_dir  $index";

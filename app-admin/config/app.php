@@ -24,8 +24,11 @@ return [
                 'class' => 'ManaPHP\Http\Server\Adapter\Fpm',
             ],
             'php'    => [
-                'class' => 'ManaPHP\Http\Server\Adapter\Php',
-                'port'  => 9501,
+                'class'    => 'ManaPHP\Http\Server\Adapter\Php',
+                'port'     => 9501,
+                'settings' => [
+                    'worker_num' => 1,
+                ]
             ],
         ],
         'ManaPHP\Data\DbInterface'     => [
