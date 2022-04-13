@@ -5,7 +5,6 @@ return [
     'env'                => env('APP_ENV', 'prod'),
     'debug'              => env('APP_DEBUG', false),
     'version'            => '1.1.1',
-    'timezone'           => 'PRC',
     'aliases'            => [
     ],
     'factories'          => [
