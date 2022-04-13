@@ -23,13 +23,6 @@ if (!function_exists('attr_inv')) {
     }
 }
 
-if (!function_exists('bundle')) {
-    function bundle(array $files, string $name = 'app'): string
-    {
-        return Container::get(\ManaPHP\Html\Renderer\AssetBundleInterface::class)->bundle($files, $name);
-    }
-}
-
 if (!function_exists('action')) {
     function action(string|array $args = [], bool|string $scheme = false): string
     {

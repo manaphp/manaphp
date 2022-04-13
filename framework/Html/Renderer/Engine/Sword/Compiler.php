@@ -31,7 +31,6 @@ class Compiler extends Component
             'csrf_field',
             'date',
             'html',
-            'bundle',
             'attr_nv',
             'attr_inv',
             'partial',
