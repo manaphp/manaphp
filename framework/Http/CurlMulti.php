@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use Countable;
-use CurlHandle;
-use CurlMultiHandle;
 use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\CurlMulti\Error;
@@ -22,8 +20,8 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
     protected ?string $proxy;
     protected int $timeout;
 
-    protected CurlHandle $template;
-    protected CurlMultiHandle $mh;
+    protected mixed $template;
+    protected mixed $mh;
     protected array $requests = [];
     protected array $files = [];
 
@@ -39,7 +37,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
         LocalFS::dirCreate('@runtime/curlMulti');
     }
 
-    protected function createCurlTemplate(): CurlHandle
+    protected function createCurlTemplate(): mix
     {
         $curl = curl_init();
 

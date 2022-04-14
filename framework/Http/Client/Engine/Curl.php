@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Client\Engine;
 
-use CurlHandle;
 use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\Client\ConnectionException;
@@ -16,7 +15,7 @@ use ManaPHP\Http\Client\Response;
  */
 class Curl extends Component implements EngineInterface
 {
-    protected ?CurlHandle $curl = null;
+    protected mixed $curl = null;
 
     public function __destruct()
     {
