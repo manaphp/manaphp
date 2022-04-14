@@ -24,7 +24,7 @@ class Fopen extends Component implements EngineInterface
         $request->headers['Accept-Encoding'] ??= 'gzip, deflate';
         $request->headers['Connection'] ??= 'close';
 
-        if (($proxy = $request->options['proxy']) !== '') {
+        if (($proxy = $request->options['proxy']) !== null) {
             //if not, you will suffer "Cannot connect to HTTPS server through proxy"
             $request->options['verify_peer'] = false;
 
@@ -58,7 +58,7 @@ class Fopen extends Component implements EngineInterface
         $ssl['verify_peer'] = $request->options['verify_peer'];
         $ssl['allow_self_signed'] = $request->options['allow_self_signed'] ?? !$request->options['verify_peer'];
 
-        if (($cafile = $request->options['cafile']) !== '') {
+        if (($cafile = $request->options['cafile']) !== null) {
             $ssl['cafile'] = $this->alias->resolve($cafile);
         }
 

@@ -90,7 +90,7 @@ class Curl extends Component implements EngineInterface
             curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $timeout);
             curl_setopt($curl, CURLOPT_HEADER, 1);
 
-            if (($proxy = $request->options['proxy']) !== '') {
+            if (($proxy = $request->options['proxy']) !== null) {
                 $parts = parse_url($proxy);
                 $scheme = $parts['scheme'];
                 if ($scheme === 'http') {
@@ -111,7 +111,7 @@ class Curl extends Component implements EngineInterface
                 }
             }
 
-            if (($cafile = $request->options['cafile']) !== '') {
+            if (($cafile = $request->options['cafile']) !== null) {
                 curl_setopt($curl, CURLOPT_CAINFO, $this->alias->resolve($cafile));
             } elseif (DIRECTORY_SEPARATOR === '\\') {
                 $request->options['verify_peer'] = false;

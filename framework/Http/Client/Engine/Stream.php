@@ -45,7 +45,7 @@ class Stream extends Component implements EngineInterface
 
         $timeout = $request->options['timeout'];
 
-        if (($proxy = $request->options['proxy']) !== '') {
+        if (($proxy = $request->options['proxy']) !== null) {
             $parts = parse_url($proxy);
             if ($parts['scheme'] !== 'http') {
                 throw new NotSupportedException('only support http proxy');
@@ -64,7 +64,7 @@ class Stream extends Component implements EngineInterface
                 $ssl['allow_self_signed'] = $request->options['allow_self_signed'] ??
                     !$request->options['verify_peer'];
 
-                if (($cafile = $request->options['cafile']) !== '') {
+                if (($cafile = $request->options['cafile']) !== null) {
                     $ssl['cafile'] = $this->alias->resolve($cafile);
                 }
 
