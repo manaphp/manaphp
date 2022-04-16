@@ -17,6 +17,7 @@ use ManaPHP\Validating\Validator\ValidateFailedException;
 /**
  * @property-read \ManaPHP\I18n\LocaleInterface        $locale
  * @property-read \ManaPHP\Http\RequestInterface       $request
+ * @property-read \ManaPHP\Data\Model\ThoseInterface   $those
  * @property-read \ManaPHP\Html\PurifierInterface      $htmlPurifier
  * @property-read \ManaPHP\Validating\ValidatorContext $context
  */
@@ -553,7 +554,8 @@ class Validator extends Component implements ValidatorInterface
         }
 
         /** @var \ManaPHP\Data\ModelInterface $className */
-        return $className::exists([$model->primaryKey() => $value]) ? $value : null;
+        $class = (string)$className;
+        return $className::exists([$this->those->get($class)->primaryKey() => $value]) ? $value : null;
     }
 
     protected function validate_model_level(string $field, ModelInterface $model, ?string $parameter = null): mixed
