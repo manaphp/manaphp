@@ -104,7 +104,7 @@ interface ModelInterface
 
     public function load(?array $fields = null): static;
 
-    public function assign(array|ModelInterface $data, array $fields): static;
+    public function assign(array|object $data, ?array $fields = null): static;
 
     public function validate(?array $fields = null): void;
 

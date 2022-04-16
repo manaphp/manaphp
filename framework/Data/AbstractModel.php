@@ -573,20 +573,36 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Assigns values to a model from an array
      *
-     * @param array|\ManaPHP\Data\ModelInterface $data   =model_var(new static)
-     * @param array                              $fields =model_fields(static::class)
+     * @param array|object $data   =model_var(new static)
+     * @param array        $fields =model_fields(static::class)
      *
      * @return static
      */
-    public function assign(array|ModelInterface $data, array $fields): static
+    public function assign(array|object $data, ?array $fields = null): static
     {
-        if ($data instanceof self) {
-            foreach ($fields as $field) {
-                $this->$field = $data->$field;
+        if (is_object($data)) {
+            if ($fields === null) {
+                foreach ($this->fields() as $field) {
+                    if (property_exists($data, $field) && ($value = $data->$field) !== null) {
+                        $this->$field = $value;
+                    }
+                }
+            } else {
+                foreach ($fields as $field) {
+                    $this->$field = $data->$field;
+                }
             }
         } else {
-            foreach ($fields as $field) {
-                $this->$field = $data[$field];
+            if ($fields === null) {
+                foreach ($this->fields() as $field) {
+                    if (($value = $data[$field] ?? null) !== null) {
+                        $this->$field = $value;
+                    }
+                }
+            } else {
+                foreach ($fields as $field) {
+                    $this->$field = $data[$field];
+                }
             }
         }
 
