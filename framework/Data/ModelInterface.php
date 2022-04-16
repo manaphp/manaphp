@@ -152,7 +152,7 @@ interface ModelInterface
 
     public static function select(?array $fields = null, ?string $alias = null): QueryInterface;
 
-    public static function where(array $filters): QueryInterface;
+    public static function where(?array $filters = null): QueryInterface;
 
     public static function search(array $filters): QueryInterface;
 

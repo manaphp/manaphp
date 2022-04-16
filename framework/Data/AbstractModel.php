@@ -278,7 +278,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         } else {
             $order = [$keyField => SORT_ASC];
         }
-        return static::select($fields)->where($filters)->orderBy($order)->execute();
+        return static::select($fields)->where($filters ?? [])->orderBy($order)->execute();
     }
 
     public static function get(int|string $id, ?int $ttl = null): static
@@ -374,7 +374,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $that = Container::get(ThoseInterface::class)->get(static::class);
 
         $primaryKey = $that->primaryKey();
-        $rs = static::select($fields)->where($filters)->orderBy([$primaryKey => SORT_DESC])->limit(1)->fetch();
+        $rs = static::select($fields)->where($filters ?? [])->orderBy([$primaryKey => SORT_DESC])->limit(1)->fetch();
         return $rs[0] ?? null;
     }
 
@@ -470,7 +470,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $valueField = $field;
 
         $kvalues = [];
-        foreach (static::select([$keyField, $valueField])->where($filters)->execute() as $v) {
+        foreach (static::select([$keyField, $valueField])->where($filters ?? [])->execute() as $v) {
             $kvalues[$v[$keyField]] = $v[$valueField];
         }
 
@@ -552,7 +552,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      *
      * @return int|float|null
      */
-    public static function min(string $field, array $filters = null): mixed
+    public static function min(string $field, ?array $filters = null): mixed
     {
         return static::where($filters)->min($field);
     }
@@ -1081,9 +1081,9 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      *
      * @return \ManaPHP\Data\QueryInterface <static>
      */
-    public static function where(array $filters): QueryInterface
+    public static function where(?array $filters = null): QueryInterface
     {
-        return static::select()->where($filters);
+        return static::select()->where($filters ?? []);
     }
 
     /**
