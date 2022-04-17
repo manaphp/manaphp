@@ -58,7 +58,7 @@ class Alias extends Component implements AliasInterface
         if (str_contains($path, '{') && preg_match_all('#{([^}]+)}#', $path, $matches)) {
             foreach ((array)$matches[1] as $k => $match) {
                 if (is_numeric($match)) {
-                    $replaced = substr(bin2hex(random_bytes($match / 2 + 1)), 0, $match);
+                    $replaced = substr(bin2hex(random_bytes($match / 2 + 1)), 0, (int)$match);
                 } else {
                     $ts = $ts ?? time();
                     $replaced = date($match, $ts);
