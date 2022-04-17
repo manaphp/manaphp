@@ -7,6 +7,6 @@ use ManaPHP\Contextor\ContextInseparable;
 
 class SmtpContext implements ContextInseparable
 {
-    public mixed $socket;
+    public mixed $socket = null;
     public string $file;
 }

@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace ManaPHP\Mailing\Mailer;
 
 use JsonSerializable;
+use ManaPHP\Helper\Container;
 use ManaPHP\Html\RendererInterface;
 use ManaPHP\Mailing\MailerInterface;
-use ManaPHP\Helper\Container;
 
 class Message implements JsonSerializable
 {
@@ -26,8 +26,8 @@ class Message implements JsonSerializable
     protected array $replay_to = [];
     protected array $cc = [];
     protected array $bcc = [];
-    protected string $html_body;
-    protected string $text_body;
+    protected string $html_body = '';
+    protected string $text_body = '';
     protected array $attachments = [];
     protected array $embedded_files = [];
 
