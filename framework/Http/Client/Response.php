@@ -105,6 +105,38 @@ class Response implements JsonSerializable
         return $headers;
     }
 
+    public function getCookies(): array
+    {
+        $cookies = [];
+        foreach ($this->headers as $header) {
+            if (stripos($header, 'Set-Cookie:') !== 0) {
+                continue;
+            }
+            $cookie = trim(substr($header, strlen('Set-Cookie:')));
+
+            $parts = explode('; ', $cookie);
+            $expired = false;
+            foreach ($parts as $part) {
+                if (str_starts_with($part, 'expires')) {
+                    list(, $time) = explode('=', $part);
+                    if (strtotime($time) < time()) {
+                        $expired = true;
+                        break;
+                    }
+                }
+            }
+
+            if ($expired) {
+                continue;
+            }
+
+            list($name, $value) = explode('=', $parts[0], 2);
+            $cookies[$name] = $value;
+        }
+
+        return $cookies;
+    }
+
     public function getJsonBody(): array
     {
         $data = json_parse($this->body);
