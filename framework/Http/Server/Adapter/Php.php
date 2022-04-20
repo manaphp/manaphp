@@ -40,7 +40,8 @@ class Php extends AbstractServer
 
             $e = extension_loaded('yasd') && ini_get('opcache.optimization_level') === '0' ? '-e' : '';
             $index = @get_included_files()[0];
-            $cmd = "php $e -S $this->host:$this->port -t $public_dir  $index";
+            $entrypoint = $settings['entrypoint'] ?? 'php';
+            $cmd = "$entrypoint $e -S $this->host:$this->port -t $public_dir  $index";
             console_log('info', $cmd);
             $prefix = $this->router->getPrefix();
             console_log('info', "http://127.0.0.1:$this->port" . ($prefix ?: '/'));
