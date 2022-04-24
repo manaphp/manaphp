@@ -16,17 +16,7 @@ class Str
     public static function pascalize(string $str): string
     {
         if (str_contains($str, '_')) {
-            if (PHP_VERSION_ID >= 50516) {
-                //http://php.net/manual/en/function.ucwords.php
-                return str_replace('_', '', ucwords($str, '_'));
-            } else {
-                $parts = explode('_', $str);
-                foreach ($parts as $k => $v) {
-                    $parts[$k] = ucfirst($v);
-                }
-
-                return implode('', $parts);
-            }
+            return str_replace('_', '', ucwords($str, '_'));
         } else {
             return ucfirst($str);
         }
