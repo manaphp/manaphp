@@ -17,6 +17,8 @@ class Str
     {
         if (str_contains($str, '_')) {
             return str_replace('_', '', ucwords($str, '_'));
+        } elseif (str_contains($str, '-')) {
+            return str_replace('-', '', ucwords($str, '-'));
         } else {
             return ucfirst($str);
         }
