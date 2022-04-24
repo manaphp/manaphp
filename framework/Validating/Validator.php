@@ -268,6 +268,17 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
+    protected function validate_decimal(string $field, mixed $value, mixed $parameter): mixed
+    {
+        if (($value = $this->validate_float($field, $value)) === null) {
+            return null;
+        }
+
+        list(, $d) = explode(',', $parameter);
+
+        return sprintf("%.${d}f", $value);
+    }
+
     protected function validate_double(string $field, mixed $value): ?float
     {
         return $this->validate_float($field, $value);
@@ -576,6 +587,7 @@ class Validator extends Component implements ValidatorInterface
         if (isset($constants[$value])) {
             return $value;
         } else {
+            z
             return ($r = array_search($value, $constants, true)) !== false ? $r : null;
         }
     }
