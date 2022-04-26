@@ -587,7 +587,6 @@ class Validator extends Component implements ValidatorInterface
         if (isset($constants[$value])) {
             return $value;
         } else {
-            z
             return ($r = array_search($value, $constants, true)) !== false ? $r : null;
         }
     }
