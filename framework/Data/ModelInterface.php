@@ -67,7 +67,7 @@ interface ModelInterface
     public static function lists(string|array $fields, ?array $filters = null): array;
 
     public static function dict(string|array $kv, ?array $filters = null): array;
-    
+
     public static function get(int|string $id, ?int $ttl = null): static;
 
     public static function first(array $filters, ?array $fields = null): ?static;
@@ -106,7 +106,7 @@ interface ModelInterface
 
     public function load(?array $fields = null): static;
 
-    public function assign(array|object $data, ?array $fields = null): static;
+    public function assign(array|object $data, array $fields): static;
 
     public function validate(?array $fields = null): void;
 

@@ -614,31 +614,15 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      *
      * @return static
      */
-    public function assign(array|object $data, ?array $fields = null): static
+    public function assign(array|object $data, array $fields): static
     {
         if (is_object($data)) {
-            if ($fields === null) {
-                foreach ($this->fields() as $field) {
-                    if (property_exists($data, $field) && ($value = $data->$field) !== null) {
-                        $this->$field = $value;
-                    }
-                }
-            } else {
-                foreach ($fields as $field) {
-                    $this->$field = $data->$field;
-                }
+            foreach ($fields as $field) {
+                $this->$field = $data->$field;
             }
         } else {
-            if ($fields === null) {
-                foreach ($this->fields() as $field) {
-                    if (($value = $data[$field] ?? null) !== null) {
-                        $this->$field = $value;
-                    }
-                }
-            } else {
-                foreach ($fields as $field) {
-                    $this->$field = $data[$field];
-                }
+            foreach ($fields as $field) {
+                $this->$field = $data[$field];
             }
         }
 
