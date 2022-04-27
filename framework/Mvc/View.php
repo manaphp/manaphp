@@ -179,11 +179,11 @@ class View extends Component implements ViewInterface
 
         $this->renderer->lock();
         try {
-            $context->content = $this->renderer->render($template, $context->vars, false);
+            $context->content = $this->renderer->render($template, $context->vars);
 
             if ($context->layout !== false) {
                 $layout = $this->findLayout();
-                $context->content = $this->renderer->render($layout, $context->vars, false);
+                $context->content = $this->renderer->render($layout, $context->vars);
             }
         } finally {
             $this->renderer->unlock();
