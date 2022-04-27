@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Db\Connection\Adapter;
 
+use JetBrains\PhpStorm\ArrayShape;
 use ManaPHP\Data\Db;
 use ManaPHP\Data\Db\AbstractConnection;
 use PDO;
@@ -20,6 +21,9 @@ class Sqlite extends AbstractConnection
         parent::__construct();
     }
 
+    #[ArrayShape([Db::METADATA_ATTRIBUTES         => "array",
+                  Db::METADATA_PRIMARY_KEY        => "array",
+                  Db::METADATA_AUTO_INCREMENT_KEY => "mixed|null"])]
     public function getMetadata(string $table): array
     {
         $fields = $this->query('PRAGMA table_info(' . $this->escapeIdentifier($table) . ')', null);

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
+use JetBrains\PhpStorm\ArrayShape;
 use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\PreconditionException;
@@ -40,6 +41,7 @@ class Paginator extends Component implements PaginatorInterface
         return $this;
     }
 
+    #[ArrayShape(['page' => "int", 'size' => "int", 'count' => "int", 'pages' => "int", 'items' => "array"])]
     public function renderAsArray(): array
     {
         return [
@@ -120,11 +122,13 @@ class Paginator extends Component implements PaginatorInterface
         }
     }
 
+    #[ArrayShape(['page' => "int", 'size' => "int", 'count' => "int", 'pages' => "int", 'items' => "array"])]
     public function jsonSerialize(): array
     {
         return $this->renderAsArray();
     }
 
+    #[ArrayShape(['page' => "int", 'size' => "int", 'count' => "int", 'pages' => "int", 'items' => "array"])]
     public function toArray(): array
     {
         return $this->renderAsArray();

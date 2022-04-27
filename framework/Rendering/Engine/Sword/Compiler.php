@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Rendering\Engine\Sword;
 
+use JetBrains\PhpStorm\ArrayShape;
 use ManaPHP\Component;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\InvalidArgumentException;
@@ -182,6 +183,7 @@ class Compiler extends Component
         return $value;
     }
 
+    #[ArrayShape(['compileRawEchos' => "int", 'compileEscapedEchos' => "int"])]
     protected function getEchoMethods(): array
     {
         $methods = [

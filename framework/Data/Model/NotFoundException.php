@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Model;
 
+use JetBrains\PhpStorm\ArrayShape;
+
 class NotFoundException extends Exception
 {
     public string $model;
@@ -21,6 +23,7 @@ class NotFoundException extends Exception
         return 404;
     }
 
+    #[ArrayShape(['code' => "int", 'message' => "string"])]
     public function getJson(): array
     {
         return ['code' => 404, 'message' => "Record of `$this->model` Model is not exists"];

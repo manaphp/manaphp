@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Client;
 
+use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
 
 class MemoryFile implements FileInterface, JsonSerializable
@@ -38,6 +39,7 @@ class MemoryFile implements FileInterface, JsonSerializable
         return $this->content;
     }
 
+    #[ArrayShape(['mimeType' => "string", 'postName' => "string"])]
     public function jsonSerialize(): array
     {
         return ['mimeType' => $this->mimeType, 'postName' => $this->postName];

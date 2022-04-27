@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Logging;
 
+use JetBrains\PhpStorm\ArrayShape;
+
 class Level
 {
     public const EMERGENCY = 'emergency';
@@ -14,6 +16,8 @@ class Level
     public const INFO = 'info';
     public const DEBUG = 'debug';
 
+    #[ArrayShape([self::EMERGENCY => "int", self::ALERT => "int", self::CRITICAL => "int", self::ERROR => "int",
+                  self::WARNING   => "int", self::NOTICE => "int", self::INFO => "int", self::DEBUG => "int"])]
     public static function map(): array
     {
         return [self::EMERGENCY => 0,

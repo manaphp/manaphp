@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Db\Connection\Adapter;
 
+use JetBrains\PhpStorm\ArrayShape;
 use ManaPHP\Data\Db;
 use ManaPHP\Data\Db\AbstractConnection;
 use ManaPHP\Data\Db\SqlFragmentable;
@@ -91,6 +92,10 @@ class Mysql extends AbstractConnection
         parent::__construct();
     }
 
+    #[ArrayShape([Db::METADATA_ATTRIBUTES          => "array",
+                  Db::METADATA_PRIMARY_KEY         => "array",
+                  Db::METADATA_AUTO_INCREMENT_KEY  => "mixed|null",
+                  Db::METADATA_INT_TYPE_ATTRIBUTES => "array"])]
     public function getMetadata(string $table): array
     {
         $fields = $this->query('DESCRIBE ' . $this->escapeIdentifier($table), [], PDO::FETCH_NUM);

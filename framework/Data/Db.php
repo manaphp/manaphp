@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
+use JetBrains\PhpStorm\ArrayShape;
 use ManaPHP\Component;
 use ManaPHP\Data\Db\Exception as DbException;
 use ManaPHP\Data\Db\Query;
@@ -572,6 +573,10 @@ class Db extends Component implements DbInterface
         }
     }
 
+    #[ArrayShape([self::METADATA_ATTRIBUTES          => "array",
+                  self::METADATA_PRIMARY_KEY         => "array",
+                  self::METADATA_AUTO_INCREMENT_KEY  => "\mixed|null",
+                  self::METADATA_INT_TYPE_ATTRIBUTES => "array"])]
     public function getMetadata(string $table): array
     {
         $context = $this->context;

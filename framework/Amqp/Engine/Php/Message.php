@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Amqp\Engine\Php;
 
+use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
 use ManaPHP\Amqp\MessageInterface;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -63,6 +64,13 @@ class Message implements MessageInterface, JsonSerializable
         return $this->envelope->get('reply_to');
     }
 
+    #[ArrayShape(['queue'         => "string",
+                  'exchange'      => "mixed",
+                  'routingKey'    => "mixed",
+                  'deliveryTag'   => "mixed",
+                  'isRedelivered' => "mixed",
+                  'body'          => "mixed",
+                  'properties'    => "mixed"])]
     public function jsonSerialize(): array
     {
         return [

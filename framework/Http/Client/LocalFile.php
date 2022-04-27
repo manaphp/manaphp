@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Client;
 
+use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
 use ManaPHP\AliasInterface;
 use ManaPHP\Helper\Container;
@@ -45,6 +46,7 @@ class LocalFile implements FileInterface, JsonSerializable
         return $this->postName ?? basename($this->fileName);
     }
 
+    #[ArrayShape(['fileName' => "mixed"])]
     public function jsonSerialize(): array
     {
         return ['fileName' => $this->fileName];

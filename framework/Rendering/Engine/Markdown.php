@@ -20,6 +20,7 @@ namespace ManaPHP\Rendering\Engine;
 #
 #
 
+use JetBrains\PhpStorm\ArrayShape;
 use ManaPHP\Component;
 use ManaPHP\Rendering\EngineInterface;
 
@@ -649,6 +650,7 @@ class Markdown extends Component implements EngineInterface
         return $Block;
     }
 
+    #[ArrayShape(['element' => "array"])]
     protected function blockQuote($Line)
     {
         if (preg_match('/^>[ ]?+(.*+)/', $Line['text'], $matches)) {
@@ -684,6 +686,7 @@ class Markdown extends Component implements EngineInterface
         }
     }
 
+    #[ArrayShape(['element' => "string[]"])]
     protected function blockRule($Line)
     {
         $marker = $Line['text'][0];
@@ -791,7 +794,7 @@ class Markdown extends Component implements EngineInterface
         return $Block;
     }
 
-    protected function blockReference($Line)
+    #[ArrayShape(['element' => "array"])] protected function blockReference($Line)
     {
         if (str_contains($Line['text'], ']')
             && preg_match(
@@ -974,6 +977,7 @@ class Markdown extends Component implements EngineInterface
         }
     }
 
+    #[ArrayShape(['type' => "string", 'element' => "array"])]
     protected function paragraph($Line)
     {
         return [
@@ -1111,6 +1115,7 @@ class Markdown extends Component implements EngineInterface
         return $Elements;
     }
 
+    #[ArrayShape(['extent' => "int", 'element' => "array"])]
     protected function inlineText($text)
     {
         $Inline = [
@@ -1130,6 +1135,7 @@ class Markdown extends Component implements EngineInterface
         return $Inline;
     }
 
+    #[ArrayShape(['extent' => "int", 'element' => "array"])]
     protected function inlineCode($Excerpt)
     {
         $marker = $Excerpt['text'][0];
@@ -1152,6 +1158,7 @@ class Markdown extends Component implements EngineInterface
         }
     }
 
+    #[ArrayShape(['extent' => "int", 'element' => "array"])]
     protected function inlineEmailTag($Excerpt)
     {
         $hostnameLabel = '[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?';
@@ -1220,6 +1227,7 @@ class Markdown extends Component implements EngineInterface
         ];
     }
 
+    #[ArrayShape(['element' => "array", 'extent' => "int"])]
     protected function inlineEscapeSequence($Excerpt)
     {
         if (isset($Excerpt['text'][1]) && str_contains('\\`*_{}[]()>#+-.!|~', $Excerpt['text'][1])) {
@@ -1366,6 +1374,7 @@ class Markdown extends Component implements EngineInterface
         }
     }
 
+    #[ArrayShape(['element' => "string[]", 'extent' => "int"])]
     protected function inlineSpecialCharacter($Excerpt)
     {
         if (substr($Excerpt['text'], 1, 1) !== ' ' && str_contains($Excerpt['text'], ';')
@@ -1424,6 +1433,7 @@ class Markdown extends Component implements EngineInterface
         }
     }
 
+    #[ArrayShape(['extent' => "int", 'element' => "array"])]
     protected function inlineUrlTag($Excerpt)
     {
         if (str_contains($Excerpt['text'], '>')
