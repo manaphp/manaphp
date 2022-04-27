@@ -5,6 +5,7 @@ namespace ManaPHP\Data;
 
 use JetBrains\PhpStorm\ArrayShape;
 use ManaPHP\Component;
+use ManaPHP\Data\Db\ConnectionInterface;
 use ManaPHP\Data\Db\Exception as DbException;
 use ManaPHP\Data\Db\Query;
 use ManaPHP\Data\Db\SqlFragmentable;
@@ -638,6 +639,10 @@ class Db extends Component implements DbInterface
         $context = $this->context;
 
         if ($context->connection !== null) {
+            throw new MisuseException('');
+        }
+
+        if (!$instance instanceof ConnectionInterface) {
             throw new MisuseException('');
         }
 
