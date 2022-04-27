@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
+use JetBrains\PhpStorm\NoReturn;
 use ManaPHP\Component;
 use ManaPHP\Exception\AbortException;
 use Swoole\Coroutine;
@@ -41,6 +42,7 @@ class Server extends Component implements ServerInterface
         }
     }
 
+    #[NoReturn]
     public function start(): void
     {
         if (MANAPHP_COROUTINE_ENABLED) {
