@@ -173,9 +173,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
             return json_stringify($data);
         } elseif ($serializer === 'igbinary') {
             return igbinary_serialize($data);
-        } elseif ($serializer === 'wddx') {
-            return wddx_serialize_value($data);
-        } else {
+        }else {
             throw new NotSupportedException(['`:serializer` serializer is not support', 'serializer' => $serializer]);
         }
     }
@@ -219,8 +217,6 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
             return json_parse($data);
         } elseif ($serializer === 'igbinary') {
             return igbinary_unserialize($data);
-        } elseif ($serializer === 'wddx') {
-            return wddx_deserialize($data);
         } else {
             throw new NotSupportedException(['`:serializer` serializer is not support', 'serializer' => $serializer]);
         }
