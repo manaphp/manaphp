@@ -85,7 +85,7 @@ class Gd extends AbstractImage
         $red = ($background >> 16) & 0xFF;
         $green = ($background >> 8) & 0xFF;
         $blue = $background & 0xFF;
-        $transparent = imagecolorallocatealpha($this->image, $red, $green, $blue, $alpha * 127);
+        $transparent = imagecolorallocatealpha($this->image, $red, $green, $blue, (int)($alpha * 127));
         $image = imagerotate($this->image, 360 - $degrees, $transparent, true);
         imagealphablending($image, false);
         imagesavealpha($image, true);
@@ -163,7 +163,7 @@ class Gd extends AbstractImage
         imagealphablending($image, false);
         imagesavealpha($image, true);
         if ($maskType !== IMAGETYPE_PNG) {
-            $filedColor = imagecolorallocatealpha($image, 127, 127, 127, (1 - $opacity) * 127);
+            $filedColor = imagecolorallocatealpha($image, 127, 127, 127, (int)((1 - $opacity) * 127));
         } else {
             $filedColor = imagecolorallocate($image, 127, 127, 127);
         }
