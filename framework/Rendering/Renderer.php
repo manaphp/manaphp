@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Html;
+namespace ManaPHP\Rendering;
 
 use ManaPHP\Component;
 use ManaPHP\Coroutine\Mutex;
@@ -10,14 +10,14 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PreconditionException;
 
 /**
- * @property-read \ManaPHP\AliasInterface                        $alias
- * @property-read \ManaPHP\Html\Renderer\Engine\FactoryInterface $engineFactory
- * @property-read \ManaPHP\Html\RendererContext                  $context
+ * @property-read \ManaPHP\AliasInterface                    $alias
+ * @property-read \ManaPHP\Rendering\Engine\FactoryInterface $engineFactory
+ * @property-read \ManaPHP\Rendering\RendererContext         $context
  */
 class Renderer extends Component implements RendererInterface
 {
     /**
-     * @var \ManaPHP\Html\Renderer\EngineInterface[]
+     * @var \ManaPHP\Rendering\EngineInterface[]
      */
     protected array $resolved = [];
 
@@ -27,7 +27,8 @@ class Renderer extends Component implements RendererInterface
     protected Mutex $mutex;
 
     public function __construct(array $engines
-    = ['.phtml' => 'ManaPHP\Html\Renderer\Engine\Php', '.sword' => 'ManaPHP\Html\Renderer\Engine\Sword']
+    = ['.phtml' => 'ManaPHP\Rendering\Engine\Php',
+       '.sword' => 'ManaPHP\Rendering\Engine\Sword']
     ) {
         $this->engines = $engines;
 

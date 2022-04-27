@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Html\Renderer;
+namespace ManaPHP\Rendering;
 
 interface EngineInterface
 {

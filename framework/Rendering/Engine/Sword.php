@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Html\Renderer\Engine;
+namespace ManaPHP\Rendering\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Html\Renderer\EngineInterface;
+use ManaPHP\Rendering\EngineInterface;
 
 /**
- * @property-read \ManaPHP\ConfigInterface                     $config
- * @property-read \ManaPHP\AliasInterface                      $alias
- * @property-read \ManaPHP\Html\Renderer\Engine\Sword\Compiler $swordCompiler
+ * @property-read \ManaPHP\ConfigInterface                 $config
+ * @property-read \ManaPHP\AliasInterface                  $alias
+ * @property-read \ManaPHP\Rendering\Engine\Sword\Compiler $swordCompiler
  */
 class Sword extends Component implements EngineInterface
 {

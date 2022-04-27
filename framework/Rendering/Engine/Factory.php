@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Html\Renderer\Engine;
+namespace ManaPHP\Rendering\Engine;
 
-use ManaPHP\Html\Renderer\EngineInterface;
+use ManaPHP\Rendering\EngineInterface;
 use Psr\Container\ContainerInterface;
 
 class Factory implements FactoryInterface

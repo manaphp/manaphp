@@ -8,11 +8,11 @@ use ManaPHP\Exception;
 use Throwable;
 
 /**
- * @property-read \ManaPHP\ConfigInterface         $config
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
- * @property-read \ManaPHP\Http\RequestInterface   $request
- * @property-read \ManaPHP\Http\ResponseInterface  $response
- * @property-read \ManaPHP\Html\RendererInterface  $renderer
+ * @property-read \ManaPHP\ConfigInterface             $config
+ * @property-read \ManaPHP\Logging\LoggerInterface     $logger
+ * @property-read \ManaPHP\Http\RequestInterface       $request
+ * @property-read \ManaPHP\Http\ResponseInterface      $response
+ * @property-read \ManaPHP\Rendering\RendererInterface $renderer
  */
 class ErrorHandler extends Component implements ErrorHandlerInterface
 {

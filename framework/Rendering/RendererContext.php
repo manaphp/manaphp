@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Html;
+namespace ManaPHP\Rendering;
 
 use ManaPHP\Contextor\ContextInseparable;
 

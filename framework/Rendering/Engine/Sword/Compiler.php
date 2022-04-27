@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Html\Renderer\Engine\Sword;
+namespace ManaPHP\Rendering\Engine\Sword;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\CreateDirectoryFailedException;

@@ -11,7 +11,7 @@ use ManaPHP\Helper\LocalFS;
 /**
  * @property-read \Psr\Container\ContainerInterface         $container
  * @property-read \ManaPHP\AliasInterface                   $alias
- * @property-read \ManaPHP\Html\RendererInterface           $renderer
+ * @property-read \ManaPHP\Rendering\RendererInterface      $renderer
  * @property-read \ManaPHP\Http\DispatcherInterface         $dispatcher
  * @property-read \ManaPHP\Mvc\View\Widget\FactoryInterface $widgetFactory
  * @property-read \ManaPHP\Mvc\ViewContext                  $context

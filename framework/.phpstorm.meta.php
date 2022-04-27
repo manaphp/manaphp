@@ -190,8 +190,8 @@ namespace PHPSTORM_META {
  * @xglobal $view ManaPHP\Mvc\ViewInterface
  */
 /**
- * @var \ManaPHP\Mvc\ViewInterface      $view
- * @var \ManaPHP\Html\RendererInterface $renderer
+ * @var \ManaPHP\Mvc\ViewInterface           $view
+ * @var \ManaPHP\Rendering\RendererInterface $renderer
  */
 $view = null;
 unset($view, $renderer);

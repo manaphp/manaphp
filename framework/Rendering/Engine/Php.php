@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Html\Renderer\Engine;
+namespace ManaPHP\Rendering\Engine;
 
 use ManaPHP\Component;
-use ManaPHP\Html\Renderer\EngineInterface;
+use ManaPHP\Rendering\EngineInterface;
 
 class Php extends Component implements EngineInterface
 {
