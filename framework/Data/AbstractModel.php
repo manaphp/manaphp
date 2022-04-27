@@ -1113,7 +1113,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
-     * @param array $filters =model_var(new static)
+     * @param ?array $filters =model_var(new static)
      *
      * @return \ManaPHP\Data\QueryInterface <static>
      */
