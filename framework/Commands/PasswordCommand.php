@@ -44,7 +44,7 @@ class PasswordCommand extends Command
      *
      * @return void
      */
-    public function costAction()
+    public function costAction(): void
     {
         for ($i = 7; $i < 14; $i++) {
             $start = microtime(true);

@@ -19,7 +19,7 @@ class BosCommand extends Command
      *
      * @return void
      */
-    public function listBucketsAction()
+    public function listBucketsAction(): void
     {
         foreach ($this->bosClient->listBuckets() as $bucket) {
             $this->console->writeLn($bucket);
