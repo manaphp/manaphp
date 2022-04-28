@@ -162,7 +162,7 @@ class MongodbCommand extends Command
 
         $constants = '';
         foreach (file($this->alias->resolve($file)) as $line) {
-            if (preg_match('#^\s+const\s+[A-Z0-9_]+\s*=#', $line) === 1) {
+            if (preg_match('#^\s+const\s+\w+\s*=#', $line) === 1) {
                 $constants .= $line;
             } elseif (trim($line) === '') {
                 $constants .= PHP_EOL;

@@ -273,7 +273,7 @@ class Compiler extends Component
                 return substr($matches[0], 1);
             }
 
-            if (preg_match('#^[\w.\[\]"\']+$#', $matches[2]) || preg_match('#^\\$[\w]+\(#', $matches[2])) {
+            if (preg_match('#^[\w.\[\]"\']+$#', $matches[2]) || preg_match('#^\\$\w+\(#', $matches[2])) {
                 return $matches[0];
             } elseif ($this->isSafeEchos($matches[2])) {
                 return "<?= $matches[2] ?>" . (empty($matches[3]) ? '' : $matches[3]);

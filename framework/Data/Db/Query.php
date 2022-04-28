@@ -749,7 +749,7 @@ class Query extends AbstractQuery
             if (is_int($k)) {
                 $fields .= '[' . $v . '], ';
             } else {
-                if (preg_match('#^(\w+)\(([\w]+)\)$#', $v, $matches) === 1) {
+                if (preg_match('#^(\w+)\((\w+)\)$#', $v, $matches) === 1) {
                     $fields .= strtoupper($matches[1]) . '([' . $matches[2] . '])';
                 } else {
                     $fields .= $v;

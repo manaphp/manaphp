@@ -1050,7 +1050,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         foreach ($rClass->getConstants() as $cName => $cValue) {
             if (str_starts_with($cName, $name)) {
                 if ($comment
-                    && preg_match('#\s+const\s+' . $cName . '\s*=[^/]+//(<([^>\r\n]+)>|[^\s]+)#', $file, $match)
+                    && preg_match('#\s+const\s+' . $cName . '\s*=[^/]+//(<([^>\r\n]+)>|\S+)#', $file, $match)
                 ) {
                     $constants[$cValue] = trim($match[2] ?? $match[1]);
                 } else {
