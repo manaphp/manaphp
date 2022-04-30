@@ -258,23 +258,6 @@ HTML;
             $content .= PHP_EOL . '                },';
         }
 
-        $labels = $model->labels();
-        if ($labels) {
-            $content .= PHP_EOL . <<<HTML
-                label: {
-HTML;
-            foreach ($labels as $k => $v) {
-                $content .= PHP_EOL . <<<HTML
-                    $k: '$v',
-HTML;
-            }
-            $content .= PHP_EOL . <<<HTML
-                }
-HTML;
-        } else {
-            $content .= PHP_EOL . '                label: {}';
-        }
-
         $content .= PHP_EOL . <<<HTML
             }
         });

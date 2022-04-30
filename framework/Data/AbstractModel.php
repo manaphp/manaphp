@@ -103,14 +103,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
-     * @return array =model_var(new static)
-     */
-    public function labels(): array
-    {
-        return [];
-    }
-
-    /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param array  $filters =model_var(new static)

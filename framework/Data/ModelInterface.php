@@ -23,8 +23,6 @@ interface ModelInterface
 
     public function rules(): array;
 
-    public function labels(): array;
-
     public static function query(?string $alias = null): QueryInterface;
 
     /**
