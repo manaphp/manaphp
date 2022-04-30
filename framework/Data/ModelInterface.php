@@ -120,8 +120,6 @@ interface ModelInterface
 
     public function refresh(float $interval, ?array $fields = null): static;
 
-    public static function constants(string $name, bool $comment = false): array;
-
     public function increment(string $field, int|float $step = 1): static;
 
     public function decrement(string $field, int|float $step = 1): static;

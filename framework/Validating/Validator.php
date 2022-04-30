@@ -9,10 +9,12 @@ use ManaPHP\Component;
 use ManaPHP\Data\ModelInterface;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use ManaPHP\Validating\Validator\ValidateFailedException;
+use ReflectionClass;
 
 /**
  * @property-read \ManaPHP\I18n\LocaleInterface        $locale
@@ -579,10 +581,29 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
+    protected function getModelConstants(string $model, string $name): array
+    {
+        $name = strtoupper($name) . '_';
+        $constants = [];
+
+        $rClass = new ReflectionClass($model);
+        foreach ($rClass->getConstants() as $cName => $cValue) {
+            if (str_starts_with($cName, $name)) {
+                $constants[$cValue] = strtolower(substr($cName, strlen($name)));
+            }
+        }
+
+        if (!$constants) {
+            throw new MisuseException(['starts with `:1` constants is not exists in `:2` model', $name, $model]);
+        }
+
+        return $constants;
+    }
+
     protected function validate_model_const(string $field, ModelInterface $model, ?string $parameter = null): mixed
     {
         $value = $model->$field;
-        $constants = $model::constants($parameter ?: $field);
+        $constants = $this->getModelConstants($model::class, $parameter ?: $field);
         if (isset($constants[$value])) {
             return $value;
         } else {

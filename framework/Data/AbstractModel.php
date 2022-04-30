@@ -911,32 +911,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         return [];
     }
 
-    public static function constants(string $name, ?bool $comment = false): array
-    {
-        $name = strtoupper($name) . '_';
-        $constants = [];
-
-        $rClass = new ReflectionClass(static::class);
-        $file = $comment ? file_get_contents($rClass->getFileName()) : '';
-        foreach ($rClass->getConstants() as $cName => $cValue) {
-            if (str_starts_with($cName, $name)) {
-                if ($comment
-                    && preg_match('#\s+const\s+' . $cName . '\s*=[^/]+//(<([^>\r\n]+)>|\S+)#', $file, $match)
-                ) {
-                    $constants[$cValue] = trim($match[2] ?? $match[1]);
-                } else {
-                    $constants[$cValue] = strtolower(substr($cName, strlen($name)));
-                }
-            }
-        }
-
-        if (!$constants) {
-            throw new MisuseException(['starts with `:1` constants is not exists in `:2` model', $name, static::class]);
-        }
-
-        return $constants;
-    }
-
     /**
      * @param string    $field =model_field(new static)
      * @param int|float $step
