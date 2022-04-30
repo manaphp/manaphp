@@ -233,14 +233,6 @@ class MongodbCommand extends Command
             $str .= '    }' . PHP_EOL;
         }
 
-        if ($connection !== 'mongodb') {
-            $str .= PHP_EOL;
-            $str .= '    public function connection()' . PHP_EOL;
-            $str .= '    {' . PHP_EOL;
-            $str .= "        return '$connection';" . PHP_EOL;
-            $str .= '    }' . PHP_EOL;
-        }
-
         if ($primaryKey = $this->inferPrimaryKey($fieldTypes, $modelName)) {
             $str .= PHP_EOL;
             $str .= '    public function primaryKey()' . PHP_EOL;

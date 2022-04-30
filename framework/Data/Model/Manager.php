@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Model;
 
 use ManaPHP\Component;
+use ManaPHP\Data\Model\Attribute\Connection;
 use ManaPHP\Data\Model\Attribute\Table;
 use ManaPHP\Helper\Str;
 use ReflectionClass;
@@ -63,7 +64,12 @@ class Manager extends Component implements ManagerInterface
     public function getConnection(string $model): string
     {
         if (($connection = $this->connections[$model] ?? null) === null) {
-            $connection = $this->those->get($model)->connection();
+            if (($attribute = $this->getClassAttribute($model, Connection::class)) !== null) {
+                /** @var Connection $connection */
+                $connection = $attribute->get();
+            } else {
+                $connection = 'default';
+            }
             $this->connections[$model] = $connection;
         }
 

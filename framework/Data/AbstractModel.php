@@ -26,7 +26,6 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;
 use ManaPHP\Helper\Container;
-use ManaPHP\Helper\Str;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
@@ -58,11 +57,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
                 $this->{$field} = $value;
             }
         }
-    }
-
-    public function connection(): string
-    {
-        return 'default';
     }
 
     /**

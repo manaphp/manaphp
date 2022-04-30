@@ -20,11 +20,6 @@ abstract class AbstractModel extends \ManaPHP\Data\AbstractModel
         return $queries->setModel($this->getModel())->select($this->_modelManager->getFields(static::class));
     }
 
-    public function connection(): string
-    {
-        throw new NotSupportedException(__METHOD__);
-    }
-
     /**
      * @return string =model_field(new static)
      */

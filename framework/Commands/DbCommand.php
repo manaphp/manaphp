@@ -7,6 +7,7 @@ use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
 use ManaPHP\Data\Db;
 use ManaPHP\Data\DbInterface;
+use ManaPHP\Data\Model\Attribute\Connection;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
@@ -149,9 +150,29 @@ class DbCommand extends Command
         $str .= "namespace $namespace;" . PHP_EOL;
         $str .= PHP_EOL;
 
+        $uses = [];
         if (strpos($class, '\\Areas\\')) {
-            $str .= 'use App\Models\Model;' . PHP_EOL;
+            $uses[] = 'App\Models\Model';
+        }
+
+        $attributes = [];
+        if ($connection !== 'default') {
+            $uses[] = Connection::class;
+            $attributes[] = "#[Connection('$connection')]";
+        }
+
+        sort($uses);
+
+        if ($uses !== []) {
+            foreach ($uses as $use) {
+                $str .= "use $use;" . PHP_EOL;
+            }
+
             $str .= PHP_EOL;
+        }
+
+        foreach ($attributes as $attribute) {
+            $str .= $attribute . PHP_EOL;
         }
 
         $str .= 'class ' . $plainClass . ' extends Model' . PHP_EOL;
