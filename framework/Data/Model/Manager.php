@@ -68,7 +68,7 @@ class Manager extends Component implements ManagerInterface
     {
         if (($connection = $this->connections[$model] ?? null) === null) {
             if (($attribute = $this->getClassAttribute($model, Connection::class)) !== null) {
-                /** @var Connection $connection */
+                /** @var Connection $attribute */
                 $connection = $attribute->get();
             } else {
                 $connection = 'default';
@@ -83,7 +83,7 @@ class Manager extends Component implements ManagerInterface
     {
         if (($primaryKey = $this->primaryKeys[$model] ?? null) === null) {
             if (($attribute = $this->getClassAttribute($model, PrimaryKey::class)) !== null) {
-                /** @var PrimaryKey $primaryKey */
+                /** @var PrimaryKey $attribute */
                 $primaryKey = $attribute->get();
             } else {
                 $primaryKey = $this->inferrer->primaryKey($model);
@@ -98,7 +98,7 @@ class Manager extends Component implements ManagerInterface
     {
         if (($foreignedKey = $this->foreignedKeys[$model] ?? null) === null) {
             if (($attribute = $this->getClassAttribute($model, ForeignedKey::class)) !== null) {
-                /** @var ForeignedKey $foreignedKey */
+                /** @var ForeignedKey $attribute */
                 $foreignedKey = $attribute->get();
             } else {
                 $primaryKey = $this->getPrimaryKey(static::class);
