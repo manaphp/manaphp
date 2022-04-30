@@ -8,18 +8,15 @@
 
 namespace Tests\Mongodb\Models;
 
+use ManaPHP\Data\Model\Attribute\Table;
 use ManaPHP\Data\Mongodb\Model;
 
+#[Table('_student')]
 class Student extends Model
 {
     public $id;
     public $age;
     public $name;
-
-    public function table($context = null)
-    {
-        return '_student';
-    }
 
     public function fieldTypes()
     {

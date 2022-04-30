@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace App\Areas\Menu\Models;
 
 use App\Models\Model;
+use ManaPHP\Data\Model\Attribute\Table;
 
+#[Table('menu_item')]
 class Item extends Model
 {
     public $item_id;
@@ -17,11 +19,6 @@ class Item extends Model
     public $updator_name;
     public $created_time;
     public $updated_time;
-
-    public function table(): string
-    {
-        return 'menu_item';
-    }
 
     public function rules(): array
     {

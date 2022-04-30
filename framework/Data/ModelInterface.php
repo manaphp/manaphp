@@ -11,8 +11,6 @@ use ManaPHP\Data\Relation\HasOne;
 
 interface ModelInterface
 {
-    public function table(): string;
-
     public function connection(): string;
 
     public function primaryKey(): string;

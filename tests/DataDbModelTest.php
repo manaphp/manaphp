@@ -13,6 +13,7 @@ use ManaPHP\Data\Db;
 use ManaPHP\Data\Db\Model;
 use ManaPHP\Data\Db\SqlFragment\Increment;
 use ManaPHP\Data\DbInterface;
+use ManaPHP\Data\Model\Attribute\Table;
 use ManaPHP\Exception;
 use ManaPHP\Identity\Adapter\Jwt;
 use ManaPHP\Mvc\Factory;
@@ -29,20 +30,14 @@ class TestCity1 extends Model
 
 }
 
+#[Table('city')]
 class TestCity2 extends Model
 {
-    public function table($context = null)
-    {
-        return 'city';
-    }
 }
 
+#[Table('the_city')]
 class TestCity3 extends Model
 {
-    public function table($context = null)
-    {
-        return 'the_city';
-    }
 }
 
 class DbModelTest extends TestCase

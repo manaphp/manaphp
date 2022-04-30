@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace App\Areas\System\Models;
 
 use App\Models\Model;
+use ManaPHP\Data\Model\Attribute\Table;
 
+#[Table('dotenv_log')]
 class DotenvLog extends Model
 {
     public $id;
@@ -12,11 +14,6 @@ class DotenvLog extends Model
     public $env;
     public $created_date;
     public $created_time;
-
-    public function table(): string
-    {
-        return 'dotenv_log';
-    }
 
     public function primaryKey(): string
     {

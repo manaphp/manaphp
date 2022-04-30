@@ -9,15 +9,12 @@
 namespace Tests\Models;
 
 use ManaPHP\Data\Db\Model;
+use ManaPHP\Data\Model\Attribute\Table;
 
+#[Table('_student')]
 class Student extends Model
 {
     public $id;
     public $age;
     public $name;
-
-    public function table($context = null): string
-    {
-        return '_student';
-    }
 }

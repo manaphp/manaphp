@@ -65,12 +65,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         return 'default';
     }
 
-    public function table(): string
-    {
-        $class = static::class;
-        return Str::snakelize(($pos = strrpos($class, '\\')) === false ? $class : substr($class, $pos + 1));
-    }
-
     /**
      * @return string
      */

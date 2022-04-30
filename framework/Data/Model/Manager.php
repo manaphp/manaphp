@@ -4,6 +4,10 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Model;
 
 use ManaPHP\Component;
+use ManaPHP\Data\Model\Attribute\Table;
+use ManaPHP\Helper\Str;
+use ReflectionClass;
+use ReflectionAttribute;
 
 /**
  * @property-read \ManaPHP\Data\Model\ThoseInterface       $those
@@ -11,6 +15,7 @@ use ManaPHP\Component;
  */
 class Manager extends Component implements ManagerInterface
 {
+    protected array $rClasses = [];
     protected array $tables = [];
     protected array $connections = [];
     protected array $primaryKeys = [];
@@ -19,10 +24,36 @@ class Manager extends Component implements ManagerInterface
     protected array $jsonFields = [];
     protected array $autoIncrementFields = [];
 
+    protected function getClassReflection(string $model): ReflectionClass
+    {
+        if (($rClass = $this->rClasses[$model] ?? null) === null) {
+            $rClass = new ReflectionClass($model);
+            $this->rClasses[$model] = $rClass;
+        }
+
+        return $rClass;
+    }
+
+    protected function getClassAttribute(string $model, string $name): ?object
+    {
+        $rClass = $this->getClassReflection($model);
+        $attributes = $rClass->getAttributes($name, ReflectionAttribute::IS_INSTANCEOF);
+        if (($attribute = $attributes[0] ?? null) !== null) {
+            return $attribute->newInstance();
+        } else {
+            return null;
+        }
+    }
+
     public function getTable(string $model): string
     {
         if (($table = $this->tables[$model] ?? null) === null) {
-            $table = $this->those->get($model)->table();
+            if (($attribute = $this->getClassAttribute($model, Table::class)) !== null) {
+                /** @var  Table $attribute */
+                $table = $attribute->get();
+            } else {
+                $table = Str::snakelize(($pos = strrpos($model, '\\')) === false ? $model : substr($model, $pos + 1));
+            }
             $this->tables[$model] = $table;
         }
 
@@ -81,7 +112,7 @@ class Manager extends Component implements ManagerInterface
 
     public function getAutoIncrementField(string $model): string
     {
-        if (($autoIncrementField = $this->autoIncrementField[$model] ?? null) === null) {
+        if (($autoIncrementField = $this->autoIncrementFields[$model] ?? null) === null) {
             $autoIncrementField = $this->those->get($model)->autoIncrementField();
             $this->autoIncrementFields[$model] = $autoIncrementField;
         }

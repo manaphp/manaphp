@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace App\Areas\Rbac\Models;
 
 use App\Models\Model;
+use ManaPHP\Data\Model\Attribute\Table;
 
+#[Table('rbac_permission')]
 class Permission extends Model
 {
     public $permission_id;
@@ -12,11 +14,6 @@ class Permission extends Model
     public $display_name;
     public $created_time;
     public $updated_time;
-
-    public function table(): string
-    {
-        return 'rbac_permission';
-    }
 
     public function rules(): array
     {

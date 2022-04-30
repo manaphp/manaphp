@@ -174,15 +174,6 @@ class DbCommand extends Command
             $str .= '    }' . PHP_EOL;
         }
 
-        $pos = strrpos($table, '_');
-        if ($optimized || ($pos !== false && strrpos($table, '_', $pos - 1) !== false)) {
-            $str .= PHP_EOL;
-            $str .= '    public function table(): string' . PHP_EOL;
-            $str .= '    {' . PHP_EOL;
-            $str .= "        return '$table';" . PHP_EOL;
-            $str .= '    }' . PHP_EOL;
-        }
-
         if ($optimized) {
             $str .= PHP_EOL;
             $str .= '    public function fields(): array' . PHP_EOL;
@@ -296,14 +287,6 @@ class DbCommand extends Command
             $str .= '    public function connection()' . PHP_EOL;
             $str .= '    {' . PHP_EOL;
             $str .= "        return '$connection';" . PHP_EOL;
-            $str .= '    }' . PHP_EOL;
-        }
-
-        if (true) {
-            $str .= PHP_EOL;
-            $str .= '    public function table()' . PHP_EOL;
-            $str .= '    {' . PHP_EOL;
-            $str .= "        return '$table';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
         }
 

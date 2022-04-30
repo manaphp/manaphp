@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace App\Areas\Rbac\Models;
 
 use App\Models\Model;
+use ManaPHP\Data\Model\Attribute\Table;
 
+#[Table('rbac_role')]
 class Role extends Model
 {
     public $role_id;
@@ -16,11 +18,6 @@ class Role extends Model
     public $updator_name;
     public $created_time;
     public $updated_time;
-
-    public function table(): string
-    {
-        return 'rbac_role';
-    }
 
     public function rules(): array
     {

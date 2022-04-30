@@ -241,15 +241,6 @@ class MongodbCommand extends Command
             $str .= '    }' . PHP_EOL;
         }
 
-        if ($namespace) {
-            $source = ($pos = strpos($namespace, '.')) ? substr($namespace, $pos + 1) : $namespace;
-            $str .= PHP_EOL;
-            $str .= '    public function table()' . PHP_EOL;
-            $str .= '    {' . PHP_EOL;
-            $str .= "        return '$source';" . PHP_EOL;
-            $str .= '    }' . PHP_EOL;
-        }
-
         if ($primaryKey = $this->inferPrimaryKey($fieldTypes, $modelName)) {
             $str .= PHP_EOL;
             $str .= '    public function primaryKey()' . PHP_EOL;

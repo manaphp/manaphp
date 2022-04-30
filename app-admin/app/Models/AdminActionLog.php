@@ -16,9 +16,4 @@ class AdminActionLog extends Model
     public $client_ip;
     public $client_udid;
     public $created_time;
-
-    public function table(): string
-    {
-        return 'admin_action_log';
-    }
 }

@@ -4,17 +4,14 @@ namespace Tests\Models;
 
 use ManaPHP\Data\Db\Model;
 use ManaPHP\Data\Db\Query;
+use ManaPHP\Data\Model\Attribute\Table;
 
+#[Table('_student')]
 class StudentShardDb extends Model
 {
     public $id;
     public $age;
     public $name;
-
-    public function table($context = null): string
-    {
-        return '_student';
-    }
 
     public function connection($context = null): string
     {
