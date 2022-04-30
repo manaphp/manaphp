@@ -43,7 +43,7 @@ class Model extends AbstractModel implements ModelInterface
 
     public function create(): static
     {
-        $autoIncrementField = $this->autoIncrementField();
+        $autoIncrementField = $this->_modelManager->getAutoIncrementField(static::class);
         if ($autoIncrementField && $this->$autoIncrementField === null) {
             $this->$autoIncrementField = $this->getNextAutoIncrementId();
         }

@@ -17,6 +17,7 @@ class Manager extends Component implements ManagerInterface
     protected array $foreignedKeys = [];
     protected array $fields = [];
     protected array $jsonFields = [];
+    protected array $autoIncrementFields = [];
 
     public function getTable(string $model): string
     {
@@ -76,5 +77,15 @@ class Manager extends Component implements ManagerInterface
         }
 
         return $jsonFields;
+    }
+
+    public function getAutoIncrementField(string $model): string
+    {
+        if (($autoIncrementField = $this->autoIncrementField[$model] ?? null) === null) {
+            $autoIncrementField = $this->those->get($model)->autoIncrementField();
+            $this->autoIncrementFields[$model] = $autoIncrementField;
+        }
+
+        return $autoIncrementField;
     }
 }

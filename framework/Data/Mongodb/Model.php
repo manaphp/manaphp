@@ -55,7 +55,7 @@ class Model extends AbstractModel
 
     protected function createAutoIncrementIndex(MongodbInterface $mongodb, string $source): bool
     {
-        $autoIncField = $this->autoIncrementField();
+        $autoIncField = $this->_modelManager->getAutoIncrementField(static::class);
 
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $pos);
@@ -151,7 +151,7 @@ class Model extends AbstractModel
 
     public function create(): static
     {
-        $autoIncrementField = $this->autoIncrementField();
+        $autoIncrementField = $this->_modelManager->getAutoIncrementField(static::class);
         if ($autoIncrementField && $this->$autoIncrementField === null) {
             $this->$autoIncrementField = $this->getNextAutoIncrementId();
         }
@@ -354,7 +354,7 @@ class Model extends AbstractModel
     {
         $allowNull = $this->isAllowNullValue();
         $fieldTypes = $this->fieldTypes();
-        $autoIncrementField = $this->autoIncrementField();
+        $autoIncrementField = $this->_modelManager->getAutoIncrementField(static::class);
         if ($autoIncrementField && !isset($document[$autoIncrementField])) {
             $document[$autoIncrementField] = $this->getNextAutoIncrementId();
         }
