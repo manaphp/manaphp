@@ -120,10 +120,6 @@ interface ModelInterface
 
     public function refresh(float $interval, ?array $fields = null): static;
 
-    public function increment(string $field, int|float $step = 1): static;
-
-    public function decrement(string $field, int|float $step = 1): static;
-
     public static function select(?array $fields = null, ?string $alias = null): QueryInterface;
 
     public static function where(?array $filters = null): QueryInterface;

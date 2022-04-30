@@ -912,40 +912,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
-     * @param string    $field =model_field(new static)
-     * @param int|float $step
-     *
-     * @return static
-     */
-    public function increment(string $field, int|float $step = 1): static
-    {
-        if (!property_exists($this, $field)) {
-            throw new InvalidArgumentException([':field field is invalid.', 'field' => $field]);
-        }
-
-        $this->$field = new Increment($step);
-
-        return $this;
-    }
-
-    /**
-     * @param string    $field =model_field(new static)
-     * @param int|float $step
-     *
-     * @return static
-     */
-    public function decrement(string $field, int|float $step = 1): static
-    {
-        if (!property_exists($this, $field)) {
-            throw new InvalidArgumentException([':field field is invalid.', 'field' => $field]);
-        }
-
-        $this->$field = new Decrement($step);
-
-        return $this;
-    }
-
-    /**
      * @param ?string $alias
      *
      * @return \ManaPHP\Data\QueryInterface <static>
