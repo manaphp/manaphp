@@ -14,4 +14,6 @@ interface ManagerInterface
     public function getForeignedKey(string $model): string;
 
     public function getFields(string $model): array;
+
+    public function getJsonFields(string $model): array;
 }

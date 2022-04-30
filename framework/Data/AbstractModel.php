@@ -45,7 +45,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $this->_modelManager = Container::get(ManagerInterface::class);
 
         if ($data) {
-            foreach ($this->jsonFields() as $field) {
+            foreach ($this->_modelManager->getJsonFields(static::class) as $field) {
                 if (isset($data[$field]) && is_string($data[$field])) {
                     $value = $data[$field];
                     $data[$field] = $value === '' ? [] : json_parse($value);
@@ -951,7 +951,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         }
 
         $data = (array)$r[0];
-        foreach ($this->jsonFields() as $field) {
+        foreach ($this->_modelManager->getJsonFields(static::class) as $field) {
             if (isset($data[$field]) && is_string($data[$field])) {
                 if ($data[$field] === '') {
                     $data[$field] = [];

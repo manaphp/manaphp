@@ -200,7 +200,7 @@ class Model extends AbstractModel
 
         $fieldValues['_id'] = $this->_id;
 
-        foreach ($this->jsonFields() as $field) {
+        foreach ($this->_modelManager->getJsonFields(static::class) as $field) {
             if (is_array($this->$field)) {
                 $fieldValues[$field] = json_stringify($this->$field);
             }
@@ -277,7 +277,7 @@ class Model extends AbstractModel
             }
         }
 
-        foreach ($this->jsonFields() as $field) {
+        foreach ($this->_modelManager->getJsonFields(static::class) as $field) {
             if (isset($fieldValues[$field]) && is_array($fieldValues[$field])) {
                 $fieldValues[$field] = json_stringify($fieldValues[$field]);
             }

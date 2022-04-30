@@ -16,6 +16,7 @@ class Manager extends Component implements ManagerInterface
     protected array $primaryKeys = [];
     protected array $foreignedKeys = [];
     protected array $fields = [];
+    protected array $jsonFields = [];
 
     public function getTable(string $model): string
     {
@@ -65,5 +66,15 @@ class Manager extends Component implements ManagerInterface
         }
 
         return $fields;
+    }
+
+    public function getJsonFields(string $model): array
+    {
+        if (($jsonFields = $this->jsonFields[$model] ?? null) === null) {
+            $jsonFields = $this->those->get($model)->jsonFields();
+            $this->jsonFields[$model] = $jsonFields;
+        }
+
+        return $jsonFields;
     }
 }
