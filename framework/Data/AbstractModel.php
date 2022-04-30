@@ -60,14 +60,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
-     * @return string|null =model_field(new static)
-     */
-    public function autoIncrementField(): ?string
-    {
-        return $this->_modelManager->getPrimaryKey(static::class);
-    }
-
-    /**
      * @param string $field =model_field(new static)
      *
      * @return string

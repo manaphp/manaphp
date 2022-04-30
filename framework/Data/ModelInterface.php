@@ -19,8 +19,6 @@ interface ModelInterface
 
     public function intFields(): ?array;
 
-    public function autoIncrementField(): ?string;
-
     public function getNextAutoIncrementId(int $step = 1): ?int;
 
     public function rules(): array;

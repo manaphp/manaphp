@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Model;
 
 use ManaPHP\Component;
+use ManaPHP\Data\Model\Attribute\AutoIncrementField;
 use ManaPHP\Data\Model\Attribute\Connection;
 use ManaPHP\Data\Model\Attribute\ForeignedKey;
 use ManaPHP\Data\Model\Attribute\JsonFields;
@@ -149,10 +150,17 @@ class Manager extends Component implements ManagerInterface
         return $jsonFields;
     }
 
-    public function getAutoIncrementField(string $model): string
+    public function getAutoIncrementField(string $model): ?string
     {
-        if (($autoIncrementField = $this->autoIncrementFields[$model] ?? null) === null) {
-            $autoIncrementField = $this->those->get($model)->autoIncrementField();
+        if (($autoIncrementField = $this->autoIncrementFields[$model] ?? null) === null
+            && !array_key_exists($model, $this->autoIncrementFields)
+        ) {
+            if (($attribute = $this->getClassAttribute($model, AutoIncrementField::class)) !== null) {
+                /** @var AutoIncrementField $attribute */
+                $autoIncrementField = $attribute->get();
+            } else {
+                $autoIncrementField = $this->getPrimaryKey($model);
+            }
             $this->autoIncrementFields[$model] = $autoIncrementField;
         }
 
