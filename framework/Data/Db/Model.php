@@ -23,14 +23,6 @@ class Model extends AbstractModel implements ModelInterface
     /**
      * @return array =model_fields(new static)
      */
-    public function fields(): array
-    {
-        return Container::get(InferrerInterface::class)->fields(static::class);
-    }
-
-    /**
-     * @return array =model_fields(new static)
-     */
     public function intFields(): array
     {
         return Container::get(InferrerInterface::class)->intFields(static::class);

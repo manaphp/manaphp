@@ -19,8 +19,6 @@ interface ModelInterface
 
     public function foreignedKey(): string;
 
-    public function fields(): array;
-
     public function mapFields(): array;
 
     public function hasField(string $field): bool;
