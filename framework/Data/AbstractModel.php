@@ -107,16 +107,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * @param string $field =model_field(new static)
      *
-     * @return bool
-     */
-    public function hasField(string $field): bool
-    {
-        return in_array($field, $this->_modelManager->getFields(static::class), true);
-    }
-
-    /**
-     * @param string $field =model_field(new static)
-     *
      * @return string
      */
     public function dateFormat(string $field): string
@@ -220,7 +210,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             array_unshift($fields, $keyField);
         }
 
-        if ($that->hasField('display_order')) {
+        if (property_exists(static::class, 'display_order')) {
             $order = ['display_order' => SORT_DESC, $keyField => SORT_ASC];
         } else {
             $order = [$keyField => SORT_ASC];
@@ -1021,7 +1011,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function increment(string $field, int|float $step = 1): static
     {
-        if (!$this->hasField($field)) {
+        if (!property_exists($this, $field)) {
             throw new InvalidArgumentException([':field field is invalid.', 'field' => $field]);
         }
 
@@ -1038,7 +1028,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function decrement(string $field, int|float $step = 1): static
     {
-        if (!$this->hasField($field)) {
+        if (!property_exists($this, $field)) {
             throw new InvalidArgumentException([':field field is invalid.', 'field' => $field]);
         }
 

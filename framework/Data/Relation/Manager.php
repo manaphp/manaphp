@@ -65,10 +65,10 @@ class Manager extends Component implements ManagerInterface
 
     protected function inferRelation(ModelInterface $thisInstance, string $name): false|RelationInterface
     {
-        if ($thisInstance->hasField($tryName = $name . '_id')) {
+        if (property_exists($thisInstance, $tryName = $name . '_id')) {
             $thatModel = $this->inferClassName($thisInstance, $name);
             return $thatModel ? $thisInstance->belongsTo($thatModel, $tryName) : false;
-        } elseif ($thisInstance->hasField($tryName = $name . 'Id')) {
+        } elseif (property_exists($thisInstance, $tryName = $name . 'Id')) {
             $thatModel = $this->inferClassName($thisInstance, $name);
             return $thatModel ? $thisInstance->belongsTo($thatModel, $tryName) : false;
         }
@@ -84,7 +84,7 @@ class Manager extends Component implements ManagerInterface
             $thatInstance = $this->those->get($thatModel);
 
             $thisForeignedKey = $this->modelManager->getForeignedKey($thisInstance::class);
-            if ($thatInstance->hasField($thisForeignedKey)) {
+            if (property_exists($thatInstance, $thisForeignedKey)) {
                 return $thisInstance->hasMany($thatModel, $thisForeignedKey);
             }
 
@@ -119,9 +119,9 @@ class Manager extends Component implements ManagerInterface
             $thatInstance = $this->those->get($thatModel);
             $thisForeignedKey = $this->modelManager->getForeignedKey($thisInstance::class);
             $thatForeignedKey = $this->modelManager->getForeignedKey($thatModel);
-            if ($thatInstance->hasField($thisForeignedKey)) {
+            if (property_exists($thatInstance, $thisForeignedKey)) {
                 return $thisInstance->hasOne($thatModel, $thisForeignedKey);
-            } elseif ($thisInstance->hasField($thatForeignedKey)) {
+            } elseif (property_exists($thisInstance, $thatForeignedKey)) {
                 return $thisInstance->belongsTo($thatModel, $thatForeignedKey);
             }
         }

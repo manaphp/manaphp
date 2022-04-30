@@ -21,8 +21,6 @@ interface ModelInterface
 
     public function mapFields(): array;
 
-    public function hasField(string $field): bool;
-
     public function dateFormat(string $field): string;
 
     public function safeFields(): array;
