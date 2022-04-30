@@ -6,6 +6,7 @@ namespace ManaPHP\Data\Model;
 use ManaPHP\Component;
 use ManaPHP\Data\Model\Attribute\Connection;
 use ManaPHP\Data\Model\Attribute\ForeignedKey;
+use ManaPHP\Data\Model\Attribute\JsonFields;
 use ManaPHP\Data\Model\Attribute\PrimaryKey;
 use ManaPHP\Data\Model\Attribute\Table;
 use ManaPHP\Helper\Str;
@@ -136,7 +137,12 @@ class Manager extends Component implements ManagerInterface
     public function getJsonFields(string $model): array
     {
         if (($jsonFields = $this->jsonFields[$model] ?? null) === null) {
-            $jsonFields = $this->those->get($model)->jsonFields();
+            if (($attribute = $this->getClassAttribute($model, JsonFields::class)) !== null) {
+                /** @var JsonFields $attribute */
+                $jsonFields = $attribute->get();
+            } else {
+                $jsonFields = [];
+            }
             $this->jsonFields[$model] = $jsonFields;
         }
 

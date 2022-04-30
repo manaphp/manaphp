@@ -93,14 +93,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
-     * @return array =model_fields(new static)
-     */
-    public function jsonFields(): array
-    {
-        return [];
-    }
-
-    /**
      * map model fields to table column
      *
      * @return array =model_var(new static)

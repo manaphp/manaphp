@@ -17,8 +17,6 @@ interface ModelInterface
 
     public function safeFields(): array;
 
-    public function jsonFields(): array;
-
     public function intFields(): ?array;
 
     public function autoIncrementField(): ?string;
