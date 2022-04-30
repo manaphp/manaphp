@@ -48,7 +48,7 @@ class Sharding extends Component implements ShardingInterface
 
     public function getAllShards(string $model): array
     {
-        $connection = $this->modelManager->getTable($model);
+        $connection = $this->modelManager->getConnection($model);
         $table = $this->modelManager->getTable($model);
 
         if (strcspn($connection, ':,') === strlen($connection) && strcspn($table, ':,') === strlen($table)) {
