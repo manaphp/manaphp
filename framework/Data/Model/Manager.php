@@ -6,7 +6,8 @@ namespace ManaPHP\Data\Model;
 use ManaPHP\Component;
 
 /**
- * @property-read \ManaPHP\Data\Model\ThoseInterface $those
+ * @property-read \ManaPHP\Data\Model\ThoseInterface       $those
+ * @property-read \ManaPHP\Data\Db\Model\InferrerInterface $inferrer
  */
 class Manager extends Component implements ManagerInterface
 {
@@ -14,6 +15,7 @@ class Manager extends Component implements ManagerInterface
     protected array $connections = [];
     protected array $primaryKeys = [];
     protected array $foreignedKeys = [];
+    protected array $fields = [];
 
     public function getTable(string $model): string
     {
@@ -53,5 +55,15 @@ class Manager extends Component implements ManagerInterface
         }
 
         return $foreignedKey;
+    }
+
+    public function getFields(string $model): array
+    {
+        if (($fields = $this->fields[$model] ?? null) === null) {
+            $fields = $this->inferrer->fields($model);
+            $this->fields[$model] = $fields;
+        }
+
+        return $fields;
     }
 }

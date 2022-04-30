@@ -508,7 +508,8 @@ class Query extends AbstractQuery
         } elseif ($joins) {
             return '*';
         } else {
-            return $this->model ? '[' . implode('], [', $this->model->fields()) . ']' : '*';
+            $model = $this->model;
+            return $model ? '[' . implode('], [', $this->modelManager->getFields($model::class)) . ']' : '*';
         }
     }
 

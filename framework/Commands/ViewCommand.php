@@ -7,6 +7,9 @@ use ManaPHP\Cli\Command;
 use ManaPHP\Data\ModelInterface;
 use ManaPHP\Helper\LocalFS;
 
+/**
+ * @property-read \ManaPHP\Data\Model\ManagerInterface $modelManager
+ */
 class ViewCommand extends Command
 {
     /**
@@ -34,7 +37,7 @@ HTML;
         $content = PHP_EOL . <<<HTML
 <detail-form>
 HTML;
-        foreach ($model->fields() as $field) {
+        foreach ($this->modelManager->getFields($model::class) as $field) {
             if ($this->isTimestampField($model, $field)) {
                 $content .= PHP_EOL . <<<HTML
     <detail-timestamp prop="$field"></detail-timestamp>
@@ -136,7 +139,7 @@ HTML;
 <result-table>
     <result-index></result-index>
 HTML;
-        foreach ($model->fields() as $field) {
+        foreach ($this->modelManager->getFields($model::class) as $field) {
             if ($this->isTimestampField($model, $field)) {
                 $content .= PHP_EOL . <<<HTML
     <result-timestamp prop="$field"></result-timestamp>

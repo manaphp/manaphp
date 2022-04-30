@@ -30,8 +30,7 @@ class Inferrer extends Component implements InferrerInterface
 
     protected function primaryKeyInternal(string $model): ?string
     {
-        $that = $this->those->get($model);
-        $fields = $that->fields();
+        $fields = $this->modelManager->getFields($model);
 
         if (in_array('id', $fields, true)) {
             return 'id';

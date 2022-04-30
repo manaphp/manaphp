@@ -14,6 +14,7 @@ use ReflectionProperty;
 /**
  * @property-read \ManaPHP\Data\Db\Model\MetadataInterface $modelMetadata
  * @property-read \ManaPHP\Data\Model\ThoseInterface       $those
+ * @property-read \ManaPHP\Data\Model\ManagerInterface     $modelManager
  */
 class Linter extends Component
 {
@@ -42,7 +43,7 @@ class Linter extends Component
 
             $methodName = $rMethod->getName();
             if ($methodName === 'fields') {
-                $some = $model->fields();
+                $some = $this->modelManager->getFields($model::class);
                 if ($model instanceof DbModel) {
                     $all = $this->getPropertyFields();
                     if (!$all) {
@@ -68,10 +69,10 @@ class Linter extends Component
                 }
             } elseif ($methodName === 'safeFields') {
                 $some = $model->safeFields();
-                $all = $model->fields();
+                $all = $this->modelManager->getFields($model::class);
             } elseif ($methodName === 'rules') {
                 $some = array_keys($model->rules());
-                $all = $model->fields();
+                $all = $this->modelManager->getFields($model::class);
             } else {
                 continue;
             }
@@ -110,7 +111,7 @@ class Linter extends Component
             $properties[] = $rProperty->getName();
         }
 
-        return array_diff($properties, $model->fields());
+        return array_diff($properties, $this->modelManager->getFields($model::class));
     }
 
     public function getMagicFields(): array
@@ -144,6 +145,7 @@ class Linter extends Component
             $fields[] = $field;
         }
 
-        return array_diff($fields, $this->model->fields());
+        $model = $this->model;
+        return array_diff($fields, $this->modelManager->getFields($model::class));
     }
 }

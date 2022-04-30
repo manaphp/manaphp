@@ -111,7 +111,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function hasField(string $field): bool
     {
-        return in_array($field, $this->fields(), true);
+        return in_array($field, $this->_modelManager->getFields(static::class), true);
     }
 
     /**
@@ -672,7 +672,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $user_name = $identity->getName('');
 
         $data = [];
-        foreach ($this->fields() as $field) {
+        foreach ($this->_modelManager->getFields(static::class) as $field) {
             if ($this->$field !== null) {
                 continue;
             }
@@ -709,7 +709,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $user_name = $identity->getName('');
 
         $data = [];
-        foreach ($this->fields() as $field) {
+        foreach ($this->_modelManager->getFields(static::class) as $field) {
             $needle = ",$field,";
             if (str_contains(',updated_time,updatedTime,updated_at,updatedAt,', $needle)) {
                 $data[$field] = date($this->dateFormat($field), $current_time);
@@ -898,7 +898,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $snapshot = $this->_snapshot;
 
         $changed = [];
-        foreach ($this->fields() as $field) {
+        foreach ($this->_modelManager->getFields(static::class) as $field) {
             if (isset($snapshot[$field])) {
                 if ($this->{$field} !== $snapshot[$field]) {
                     $changed[] = $field;
@@ -1146,7 +1146,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
         if ($thisFilter === null) {
             $keys = [];
-            foreach ($this->fields() as $field) {
+            foreach ($this->_modelManager->getFields(static::class) as $field) {
                 if ($field === $foreingedKey || $field === 'id' || $field === '_id') {
                     continue;
                 }
@@ -1249,7 +1249,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             $data['*changed_fields*'] = $changedFields;
         }
 
-        foreach ($this->fields() as $field) {
+        foreach ($this->_modelManager->getFields(static::class) as $field) {
             if (!isset($this->$field)) {
                 continue;
             }

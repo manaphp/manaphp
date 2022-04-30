@@ -17,7 +17,7 @@ abstract class AbstractModel extends \ManaPHP\Data\AbstractModel
     public function newQuery(): QueryInterface
     {
         $queries = Container::make('ManaPHP\Data\Merger\Query', [$this->getQueries()]);
-        return $queries->setModel($this->getModel())->select($this->fields());
+        return $queries->setModel($this->getModel())->select($this->_modelManager->getFields(static::class));
     }
 
     public function connection(): string

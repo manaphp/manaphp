@@ -5,6 +5,9 @@ namespace ManaPHP\Data\Merger;
 
 use ManaPHP\Component;
 
+/**
+ * @property-read \ManaPHP\Data\Model\ManagerInterface $modelManager
+ */
 class FieldsInferer extends Component implements FieldsInfererInterface
 {
     protected array $fields = [];
@@ -19,8 +22,8 @@ class FieldsInferer extends Component implements FieldsInfererInterface
                     $fields[] = $field;
                 }
             }
-
-            return $this->fields[$class] = $fields ?: $model->getModel()->fields();
+            $model2 = $model->getModel();
+            return $this->fields[$class] = $fields ?: $this->modelManager->getFields($model2::class);
         } else {
             return $fields;
         }

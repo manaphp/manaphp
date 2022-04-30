@@ -164,7 +164,7 @@ class Model extends AbstractModel
             $this->$autoIncrementField = $this->getNextAutoIncrementId();
         }
 
-        $fields = $this->fields();
+        $fields = $this->_modelManager->getFields(static::class);
         foreach ($this->getAutoCreatedData() as $field => $value) {
             if ($this->$field === null) {
                 $this->$field = $value;
@@ -243,7 +243,7 @@ class Model extends AbstractModel
         }
 
         $fieldTypes = $this->fieldTypes();
-        $fields = $this->fields();
+        $fields = $this->_modelManager->getFields(static::class);
 
         foreach ($fields as $field) {
             if ($this->$field === null) {

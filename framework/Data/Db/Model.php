@@ -56,7 +56,7 @@ class Model extends AbstractModel implements ModelInterface
             $this->$autoIncrementField = $this->getNextAutoIncrementId();
         }
 
-        $fields = $this->fields();
+        $fields = $this->_modelManager->getFields(static::class);
         foreach ($this->getAutoCreatedData() as $field => $value) {
             if ($this->$field === null) {
                 $this->$field = $value;
@@ -135,7 +135,7 @@ class Model extends AbstractModel implements ModelInterface
             throw new MisuseException('updating model primary key value is not support');
         }
 
-        $fields = $this->fields();
+        $fields = $this->_modelManager->getFields(static::class);
 
         foreach ($fields as $field) {
             if ($this->$field === null) {

@@ -648,7 +648,7 @@ class Query extends AbstractQuery
                     $options['projection'] = $this->fields;
                 }
             } elseif ($model !== null) {
-                $options['projection'] = array_fill_keys($model->fields(), 1);
+                $options['projection'] = array_fill_keys($this->modelManager->getFields($model::class), 1);
             }
 
             if (isset($options['projection']) && !isset($options['projection']['_id'])) {
