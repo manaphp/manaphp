@@ -5,6 +5,7 @@ namespace ManaPHP\Data\Model;
 
 use ManaPHP\Component;
 use ManaPHP\Data\Model\Attribute\Connection;
+use ManaPHP\Data\Model\Attribute\ForeignedKey;
 use ManaPHP\Data\Model\Attribute\PrimaryKey;
 use ManaPHP\Data\Model\Attribute\Table;
 use ManaPHP\Helper\Str;
@@ -95,7 +96,27 @@ class Manager extends Component implements ManagerInterface
     public function getForeignedKey(string $model): string
     {
         if (($foreignedKey = $this->foreignedKeys[$model] ?? null) === null) {
-            $foreignedKey = $this->those->get($model)->foreignedKey();
+            if (($attribute = $this->getClassAttribute($model, ForeignedKey::class)) !== null) {
+                /** @var ForeignedKey $foreignedKey */
+                $foreignedKey = $attribute->get();
+            } else {
+                $primaryKey = $this->getPrimaryKey(static::class);
+                if ($primaryKey !== 'id') {
+                    $foreignedKey = $primaryKey;
+                } else {
+                    $table = $this->getTable(static::class);
+
+                    if (($pos = strpos($table, '.')) !== false) {
+                        $table = substr($table, $pos + 1);
+                    }
+
+                    if (($pos = strpos($table, ':')) !== false) {
+                        $foreignedKey = substr($table, 0, $pos) . '_id';
+                    } else {
+                        $foreignedKey = $table . '_id';
+                    }
+                }
+            }
             $this->foreignedKeys[$foreignedKey] = $foreignedKey;
         }
 

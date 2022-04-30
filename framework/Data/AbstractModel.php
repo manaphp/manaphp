@@ -60,31 +60,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
-     * @return string
-     */
-    public function foreignedKey(): string
-    {
-        $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
-        if ($primaryKey !== 'id') {
-            return $primaryKey;
-        }
-
-        $table = $this->_modelManager->getTable(static::class);
-
-        if (($pos = strpos($table, '.')) !== false) {
-            $table = substr($table, $pos + 1);
-        }
-
-        if (($pos = strpos($table, ':')) !== false) {
-            $key = substr($table, 0, $pos) . '_id';
-        } else {
-            $key = $table . '_id';
-        }
-
-        return $key;
-    }
-
-    /**
      * @return string|null =model_field(new static)
      */
     public function autoIncrementField(): ?string
