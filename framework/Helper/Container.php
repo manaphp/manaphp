@@ -49,4 +49,12 @@ class Container
 
         return $container->get(InjectorInterface::class)->inject($object, $property);
     }
+
+    public static function canInject(object $object, string $property): bool
+    {
+        /** @var ContainerInterface $container */
+        $container = $GLOBALS['Psr\Container\ContainerInterface'];
+
+        return $container->get(InjectorInterface::class)->canInject($object, $property);
+    }
 }

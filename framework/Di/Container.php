@@ -248,6 +248,15 @@ class Container implements ContainerInterface, FactoryInterface, InvokerInterfac
         return $object->$property = $this->get($id[0] === '#' ? "$type$id" : $id);
     }
 
+    public function canInject(object $object, string $property): bool
+    {
+        $class = $object::class;
+
+        $types = $this->types[$class] ?? $this->getTypes($class);
+
+        return isset($types[$property]);
+    }
+
     public function getDefinitions(): array
     {
         return $this->definitions;
