@@ -12,6 +12,7 @@ use MongoDB\BSON\ObjectId;
 /**
  * @property-read \ManaPHP\Data\Model\ThoseInterface     $those
  * @property-read \ManaPHP\Data\Mongodb\FactoryInterface $mongodbFactory
+ * @property-read \ManaPHP\Data\Model\ShardingInterface  $sharding
  */
 class Inferrer extends Component implements InferrerInterface
 {
@@ -106,7 +107,7 @@ class Inferrer extends Component implements InferrerInterface
     public function fieldTypes(string $model): array
     {
         if (($types = $this->fieldTypes[$model] ?? null) === null) {
-            list($connection, $collection) = $this->those->get($model)->getAnyShard();
+            list($connection, $collection) = $this->sharding->getAnyShard($model);
 
             $mongodb = $this->mongodbFactory->get($connection);
             if (!$docs = $mongodb->fetchAll($collection, [], ['limit' => 1])) {

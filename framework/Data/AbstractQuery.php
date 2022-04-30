@@ -17,6 +17,7 @@ use ManaPHP\Helper\Sharding\ShardingTooManyException;
  * @property-read \ManaPHP\Http\RequestInterface          $request
  * @property-read \ManaPHP\Data\Relation\ManagerInterface $relationManager
  * @property-read \ManaPHP\Data\Model\ThoseInterface      $those
+ * @property-read \ManaPHP\Data\Model\ShardingInterface   $sharding
  */
 abstract class AbstractQuery extends Component implements QueryInterface, IteratorAggregate
 {
@@ -71,7 +72,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
     public function getShards(): array
     {
         if ($model = $this->model ?? null) {
-            return $model->getMultipleShards($this->shard_context);
+            return $this->sharding->getMultipleShards($model::class, $this->shard_context);
         } else {
             $connection = $this->connection;
             $table = $this->table;

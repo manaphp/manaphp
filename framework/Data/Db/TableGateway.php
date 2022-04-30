@@ -6,34 +6,28 @@ namespace ManaPHP\Data\Db;
 use ManaPHP\Component;
 
 /**
- * @property-read \ManaPHP\Data\Model\ThoseInterface $those
- * @property-read \ManaPHP\Data\Db\FactoryInterface  $dbFactory
+ * @property-read \ManaPHP\Data\Db\FactoryInterface     $dbFactory
+ * @property-read \ManaPHP\Data\Model\ShardingInterface $sharding
  */
 class TableGateway extends Component implements TableGatewayInterface
 {
     public function insert(string $model, array $record, bool $fetchInsertId = false): mixed
     {
-        /** @noinspection OneTimeUseVariablesInspection */
-        $that = $this->those->get($model);
-
-        list($connection, $table) = $that->getUniqueShard($record);
+        list($connection, $table) = $this->sharding->getUniqueShard($model, $record);
 
         return $this->dbFactory->get($connection)->insert($table, $record, $fetchInsertId);
     }
 
     public function insertBySql(string $model, string $sql, array $bind = []): int
     {
-        /** @noinspection OneTimeUseVariablesInspection */
-        $that = $this->those->get($model);
-
-        list($connection, $table) = $that->getUniqueShard($bind);
+        list($connection, $table) = $this->sharding->getUniqueShard($model, $bind);
 
         return $this->dbFactory->get($connection)->insertBySql($table, $sql, $bind);
     }
 
     public function delete(string $model, string|array $conditions, array $bind = []): int
     {
-        $shards = $this->those->get($model)->getMultipleShards($bind);
+        $shards = $this->sharding->getMultipleShards($model, $bind);
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
@@ -49,7 +43,7 @@ class TableGateway extends Component implements TableGatewayInterface
 
     public function deleteBySql(string $model, string $sql, array $bind = []): int
     {
-        $shards = $this->those->get($model)->getMultipleShards($bind);
+        $shards = $this->sharding->getMultipleShards($model, $bind);
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
@@ -65,7 +59,7 @@ class TableGateway extends Component implements TableGatewayInterface
 
     public function update(string $model, array $fieldValues, string|array $conditions, array $bind = []): int
     {
-        $shards = $this->those->get($model)->getMultipleShards($bind);
+        $shards = $this->sharding->getMultipleShards($model, $bind);
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
@@ -81,7 +75,7 @@ class TableGateway extends Component implements TableGatewayInterface
 
     public function updateBySql(string $model, string $sql, array $bind = []): int
     {
-        $shards = $this->those->get($model)->getMultipleShards($bind);
+        $shards = $this->sharding->getMultipleShards($model, $bind);
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {

@@ -13,8 +13,9 @@ use ManaPHP\Helper\Sharding\ShardingTooManyException;
 use PDO;
 
 /**
- * @property-read \ManaPHP\Logging\LoggerInterface  $logger
- * @property-read \ManaPHP\Data\Db\FactoryInterface $dbFactory
+ * @property-read \ManaPHP\Logging\LoggerInterface      $logger
+ * @property-read \ManaPHP\Data\Db\FactoryInterface     $dbFactory
+ * @property-read \ManaPHP\Data\Model\ShardingInterface $sharding
  */
 class Query extends AbstractQuery
 {
@@ -627,8 +628,7 @@ class Query extends AbstractQuery
             foreach ($this->joins as $join) {
                 $join_table = $join[0];
                 if (str_contains($join_table, '\\')) {
-                    $model = $this->those->get($join_table);
-                    $join_shards = $model->getMultipleShards($this->shard_context);
+                    $join_shards = $this->sharding->getMultipleShards($join_table, $this->shard_context);
                 } else {
                     $connection = $this->connection;
                     if ($shard_strategy = $this->shard_strategy) {

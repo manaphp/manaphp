@@ -15,14 +15,6 @@ interface ModelInterface
 
     public function connection(): string;
 
-    public function getAnyShard(): array;
-
-    public function getUniqueShard(array|ModelInterface $context): array;
-
-    public function getMultipleShards(array|ModelInterface $context): array;
-
-    public function getAllShards(): array;
-
     public function primaryKey(): string;
 
     public function foreignedKey(): string;

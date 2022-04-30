@@ -6,6 +6,7 @@ namespace ManaPHP\Data\Db;
 use ManaPHP\Data\AbstractModel;
 use ManaPHP\Data\Db\Model\InferrerInterface;
 use ManaPHP\Data\Model\ExpressionInterface;
+use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Container;
 
@@ -64,7 +65,7 @@ class Model extends AbstractModel implements ModelInterface
 
         $this->validate($fields);
 
-        list($connection, $table) = $this->getUniqueShard($this);
+        list($connection, $table) = Container::get(ShardingInterface::class)->getUniqueShard(static::class, $this);
 
         $this->fireEvent('model:saving');
         $this->fireEvent('model:creating');
@@ -160,7 +161,7 @@ class Model extends AbstractModel implements ModelInterface
             $this->$field = $value;
         }
 
-        list($connection, $table) = $this->getUniqueShard($this);
+        list($connection, $table) = Container::get(ShardingInterface::class)->getUniqueShard(static::class, $this);
 
         $this->fireEvent('model:saving');
         $this->fireEvent('model:updating');
@@ -236,7 +237,7 @@ class Model extends AbstractModel implements ModelInterface
             throw new MisuseException('missing primary key value');
         }
 
-        list($connection, $table) = $this->getUniqueShard($this);
+        list($connection, $table) = Container::get(ShardingInterface::class)->getUniqueShard(static::class, $this);
 
         $this->fireEvent('model:deleting');
 

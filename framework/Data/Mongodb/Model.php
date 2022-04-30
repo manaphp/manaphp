@@ -5,7 +5,7 @@ namespace ManaPHP\Data\Mongodb;
 
 use ManaPHP\Data\AbstractModel;
 use ManaPHP\Data\Model\ExpressionInterface;
-use ManaPHP\Data\Model\ThoseInterface;
+use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Data\Mongodb\Model\InferrerInterface;
 use ManaPHP\Data\MongodbInterface;
 use ManaPHP\Exception\MisuseException;
@@ -95,7 +95,7 @@ class Model extends AbstractModel
 
     public function getNextAutoIncrementId(int $step = 1): int
     {
-        list($connection, $source) = $this->getUniqueShard($this);
+        list($connection, $source) = Container::get(ShardingInterface::class)->getUniqueShard(static::class, $this);
 
         $mongodb = Container::get(FactoryInterface::class)->get($connection);
 
@@ -196,7 +196,7 @@ class Model extends AbstractModel
             }
         }
 
-        list($connection, $collection) = $this->getUniqueShard($this);
+        list($connection, $collection) = Container::get(ShardingInterface::class)->getUniqueShard(static::class, $this);
 
         $this->fireEvent('model:saving');
         $this->fireEvent('model:creating');
@@ -269,7 +269,7 @@ class Model extends AbstractModel
             $this->$field = $value;
         }
 
-        list($connection, $collection) = $this->getUniqueShard($this);
+        list($connection, $collection) = Container::get(ShardingInterface::class)->getUniqueShard(static::class, $this);
 
         $this->fireEvent('model:saving');
         $this->fireEvent('model:updating');
@@ -338,7 +338,7 @@ class Model extends AbstractModel
             throw new MisuseException('missing primary key value');
         }
 
-        list($connection, $table) = $this->getUniqueShard($this);
+        list($connection, $table) = Container::get(ShardingInterface::class)->getUniqueShard(static::class, $this);
 
         $this->fireEvent('model:deleting');
 
@@ -353,10 +353,7 @@ class Model extends AbstractModel
 
     public static function aggregateEx(array $pipeline, array $options = []): array
     {
-        /** @noinspection OneTimeUseVariablesInspection */
-        $that = Container::get(ThoseInterface::class)->get(static::class);
-
-        list($connection, $collection) = $that->getUniqueShard([]);
+        list($connection, $collection) = Container::get(ShardingInterface::class)->getUniqueShard(static::class, []);
 
         return Container::get(FactoryInterface::class)->get($connection)->aggregate($collection, $pipeline, $options);
     }

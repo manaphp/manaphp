@@ -9,6 +9,7 @@ use ManaPHP\Exception\MisuseException;
 /**
  * @property-read \ManaPHP\Data\Model\ThoseInterface     $those
  * @property-read \ManaPHP\Data\Mongodb\FactoryInterface $mongodbFactory
+ * @property-read \ManaPHP\Data\Model\ShardingInterface  $sharding
  */
 class CollectionGateway extends Component implements CollectionGatewayInterface
 {
@@ -30,7 +31,7 @@ class CollectionGateway extends Component implements CollectionGatewayInterface
             $documents[$i] = $that->normalizeDocument($document);
         }
 
-        list($connection, $collection) = $that->getUniqueShard([]);
+        list($connection, $collection) = $this->sharding->getUniqueShard($model, []);
 
         return $this->mongodbFactory->get($connection)->bulkInsert($collection, $documents);
     }
@@ -51,7 +52,7 @@ class CollectionGateway extends Component implements CollectionGatewayInterface
             $documents[$i] = $that->normalizeDocument($document);
         }
 
-        $shards = $that->getAllShards();
+        $shards = $this->sharding->getAllShards($model);
 
         $affected_count = 0;
         foreach ($shards as $connection => $collections) {
@@ -76,7 +77,7 @@ class CollectionGateway extends Component implements CollectionGatewayInterface
             $documents[$i] = $that->normalizeDocument($document);
         }
 
-        list($connection, $collection) = $that->getUniqueShard([]);
+        list($connection, $collection) = $this->sharding->getUniqueShard($model, []);
 
         return $this->mongodbFactory->get($connection)->bulkUpsert($collection, $documents, $that->primaryKey());
     }
@@ -93,7 +94,7 @@ class CollectionGateway extends Component implements CollectionGatewayInterface
 
         $record = $that->normalizeDocument($record);
 
-        list($connection, $collection) = $that->getUniqueShard($record);
+        list($connection, $collection) = $this->sharding->getUniqueShard($model, $record);
 
         $mongodb = $this->mongodbFactory->get($connection);
         $mongodb->insert($collection, $record);
@@ -103,7 +104,7 @@ class CollectionGateway extends Component implements CollectionGatewayInterface
 
     public function delete(string $model, array $conditions): int
     {
-        $shards = $this->getThat($model)->getMultipleShards($conditions);
+        $shards = $this->sharding->getMultipleShards($model, $conditions);
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
@@ -119,7 +120,7 @@ class CollectionGateway extends Component implements CollectionGatewayInterface
 
     public function update(string $model, array $fieldValues, array $conditions): int
     {
-        $shards = $this->getThat($model)->getMultipleShards($conditions);
+        $shards = $this->sharding->getMultipleShards($model, $conditions);
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {

@@ -8,9 +8,9 @@ use ManaPHP\Data\Db;
 use ManaPHP\Data\Db\ModelInterface;
 
 /**
- * @property-read \ManaPHP\Data\Model\ThoseInterface $those
- * @property-read \ManaPHP\ConfigInterface           $config
- * @property-read \ManaPHP\Data\Db\FactoryInterface  $dbFactory
+ * @property-read \ManaPHP\ConfigInterface              $config
+ * @property-read \ManaPHP\Data\Db\FactoryInterface     $dbFactory
+ * @property-read \ManaPHP\Data\Model\ShardingInterface $sharding
  */
 class Metadata extends Component implements MetadataInterface
 {
@@ -38,10 +38,7 @@ class Metadata extends Component implements MetadataInterface
             }
         }
 
-        /** @noinspection OneTimeUseVariablesInspection */
-        $modelInstance = is_string($model) ? $this->those->get($model) : $model;
-
-        list($connection, $table) = $modelInstance->getAnyShard();
+        list($connection, $table) = $this->sharding->getAllShards(is_string($model) ? $model : $model::class);
         $db = $this->dbFactory->get($connection);
         $data = $db->getMetadata($table);
 
