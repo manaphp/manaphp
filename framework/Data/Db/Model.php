@@ -13,14 +13,6 @@ use ManaPHP\Helper\Container;
 class Model extends AbstractModel implements ModelInterface
 {
     /**
-     * @return string =model_field(new static)
-     */
-    public function primaryKey(): string
-    {
-        return Container::get(InferrerInterface::class)->primaryKey(static::class);
-    }
-
-    /**
      * @return array =model_fields(new static)
      */
     public function intFields(): array
@@ -93,7 +85,7 @@ class Model extends AbstractModel implements ModelInterface
         }
 
         if ($defaultValueFields) {
-            $primaryKey = $this->primaryKey();
+            $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
             $query = $this->newQuery()->select($defaultValueFields)->whereEq($primaryKey, $this->$primaryKey);
             if ($r = $query->execute()) {
                 foreach ($r[0] as $field => $value) {
@@ -112,7 +104,7 @@ class Model extends AbstractModel implements ModelInterface
 
     public function update(): static
     {
-        $primaryKey = $this->primaryKey();
+        $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
 
         if ($this->$primaryKey === null) {
             throw new MisuseException('missing primary key value');
@@ -223,7 +215,7 @@ class Model extends AbstractModel implements ModelInterface
 
     public function delete(): static
     {
-        $primaryKey = $this->primaryKey();
+        $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
 
         if ($this->$primaryKey === null) {
             throw new MisuseException('missing primary key value');

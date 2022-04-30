@@ -5,6 +5,7 @@ namespace ManaPHP\Data\Model;
 
 use ManaPHP\Component;
 use ManaPHP\Data\Model\Attribute\Connection;
+use ManaPHP\Data\Model\Attribute\PrimaryKey;
 use ManaPHP\Data\Model\Attribute\Table;
 use ManaPHP\Helper\Str;
 use ReflectionClass;
@@ -79,7 +80,12 @@ class Manager extends Component implements ManagerInterface
     public function getPrimaryKey(string $model): string
     {
         if (($primaryKey = $this->primaryKeys[$model] ?? null) === null) {
-            $primaryKey = $this->those->get($model)->primaryKey();
+            if (($attribute = $this->getClassAttribute($model, PrimaryKey::class)) !== null) {
+                /** @var PrimaryKey $primaryKey */
+                $primaryKey = $attribute->get();
+            } else {
+                $primaryKey = $this->inferrer->primaryKey($model);
+            }
             $this->primaryKeys[$model] = $primaryKey;
         }
 

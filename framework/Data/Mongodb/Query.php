@@ -653,7 +653,7 @@ class Query extends AbstractQuery
 
             if (isset($options['projection']) && !isset($options['projection']['_id'])) {
                 if ($model !== null) {
-                    if ($model->primaryKey() !== '_id') {
+                    if ($this->modelManager->getPrimaryKey($model::class) !== '_id') {
                         $options['projection']['_id'] = false;
                     }
                 } else {

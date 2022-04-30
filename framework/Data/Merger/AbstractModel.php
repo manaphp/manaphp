@@ -21,14 +21,6 @@ abstract class AbstractModel extends \ManaPHP\Data\AbstractModel
     }
 
     /**
-     * @return string =model_field(new static)
-     */
-    public function primaryKey(): string
-    {
-        return $this->getModel()->primaryKey();
-    }
-
-    /**
      * @return array =model_fields(new static)
      */
     public function fields(): array

@@ -10,6 +10,7 @@ use ManaPHP\Exception\MisuseException;
  * @property-read \ManaPHP\Data\Model\ThoseInterface     $those
  * @property-read \ManaPHP\Data\Mongodb\FactoryInterface $mongodbFactory
  * @property-read \ManaPHP\Data\Model\ShardingInterface  $sharding
+ * @property-read \ManaPHP\Data\Model\ManagerInterface   $modelManager
  */
 class CollectionGateway extends Component implements CollectionGatewayInterface
 {
@@ -44,7 +45,7 @@ class CollectionGateway extends Component implements CollectionGatewayInterface
 
         $that = $this->getThat($model);
 
-        $primaryKey = $that->primaryKey();
+        $primaryKey = $this->modelManager->getPrimaryKey($model);
         foreach ($documents as $i => $document) {
             if (!isset($document[$primaryKey])) {
                 throw new MisuseException(['bulkUpdate `%s` model must set primary value', static::class]);
@@ -79,7 +80,8 @@ class CollectionGateway extends Component implements CollectionGatewayInterface
 
         list($connection, $collection) = $this->sharding->getUniqueShard($model, []);
 
-        return $this->mongodbFactory->get($connection)->bulkUpsert($collection, $documents, $that->primaryKey());
+        $primaryKey = $this->modelManager->getPrimaryKey($model);
+        return $this->mongodbFactory->get($connection)->bulkUpsert($collection, $documents, $primaryKey);
     }
 
     /**

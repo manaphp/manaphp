@@ -20,6 +20,7 @@ use ManaPHP\Validating\Validator\ValidateFailedException;
  * @property-read \ManaPHP\Data\Model\ThoseInterface   $those
  * @property-read \ManaPHP\Html\PurifierInterface      $htmlPurifier
  * @property-read \ManaPHP\Validating\ValidatorContext $context
+ * @property-read \ManaPHP\Data\Model\ManagerInterface $modelManager
  */
 class Validator extends Component implements ValidatorInterface
 {
@@ -564,9 +565,7 @@ class Validator extends Component implements ValidatorInterface
             throw new InvalidValueException(['validate `:1` failed: `:2` class is not exists.', $field, $className]);
         }
 
-        /** @var \ManaPHP\Data\ModelInterface $className */
-        $class = (string)$className;
-        return $className::exists([$this->those->get($class)->primaryKey() => $value]) ? $value : null;
+        return $className::exists([$this->modelManager->getPrimaryKey($className) => $value]) ? $value : null;
     }
 
     protected function validate_model_level(string $field, ModelInterface $model, ?string $parameter = null): mixed

@@ -23,14 +23,6 @@ class Model extends AbstractModel
     }
 
     /**
-     * @return string =model_field(new static)
-     */
-    public function primaryKey(): string
-    {
-        return Container::get(InferrerInterface::class)->primaryKey(static::class);
-    }
-
-    /**
      * @return array =model_fields(new static)
      */
     public function intFields(): array
@@ -219,7 +211,7 @@ class Model extends AbstractModel
 
     public function update(): static
     {
-        $primaryKey = $this->primaryKey();
+        $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
 
         if ($this->$primaryKey === null) {
             throw new MisuseException('missing primary key value');
@@ -324,7 +316,7 @@ class Model extends AbstractModel
 
     public function delete(): static
     {
-        $primaryKey = $this->primaryKey();
+        $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
 
         if ($this->$primaryKey === null) {
             throw new MisuseException('missing primary key value');

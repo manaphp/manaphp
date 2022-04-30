@@ -64,7 +64,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function foreignedKey(): string
     {
-        $primaryKey = $this->primaryKey();
+        $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
         if ($primaryKey !== 'id') {
             return $primaryKey;
         }
@@ -89,7 +89,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function autoIncrementField(): ?string
     {
-        return $this->primaryKey();
+        return $this->_modelManager->getPrimaryKey(static::class);
     }
 
     /**
@@ -191,9 +191,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             $fields = [$fields];
         }
 
-        $that = Container::get(ThoseInterface::class)->get(static::class);
-
-        $keyField = $that->primaryKey();
+        $keyField = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
         if (!in_array($keyField, $fields, true)) {
             array_unshift($fields, $keyField);
         }
@@ -217,7 +215,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $dict = [];
 
         if (is_string($kv)) {
-            $key = Container::get(ThoseInterface::class)->get(static::class)->primaryKey();
+            $key = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
             $value = $kv;
             foreach (static::select([$key, $value])->where($filters ?? [])->execute() as $row) {
                 $dict[$row[$key]] = $row[$value];
@@ -244,16 +242,16 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
     public static function get(int|string $id, ?int $ttl = null): static
     {
-        $that = Container::get(ThoseInterface::class)->get(static::class);
+        $primaryKey = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
         if ($ttl <= 0) {
-            return static::firstOrFail([$that->primaryKey() => $id]);
+            return static::firstOrFail([$primaryKey => $id]);
         }
 
         $key = __FILE__ . ':' . static::class . ":get:$id:$ttl";
 
         $r = apcu_fetch($key, $success);
         if (!$success) {
-            $r = static::firstOrFail([$that->primaryKey() => $id]);
+            $r = static::firstOrFail([$primaryKey => $id]);
             apcu_store($key, $r, $ttl);
         }
 
@@ -303,12 +301,12 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
     public static function rId(): int|string
     {
-        $that = Container::get(ThoseInterface::class)->get(static::class);
+        $primaryKey = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
 
         /** @noinspection OneTimeUseVariablesInspection */
         $request = Container::get(RequestInterface::class);
 
-        return $request->getId($that->primaryKey());
+        return $request->getId($primaryKey);
     }
 
     /**
@@ -318,8 +316,8 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public static function rGet(?array $fields = null): static
     {
-        $that = Container::get(ThoseInterface::class)->get(static::class);
-        return static::firstOrFail([$that->primaryKey() => static::rId()], $fields);
+        $primaryKey = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
+        return static::firstOrFail([$primaryKey => static::rId()], $fields);
     }
 
     /**
@@ -332,9 +330,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public static function last(?array $filters = null, ?array $fields = null): ?static
     {
-        $that = Container::get(ThoseInterface::class)->get(static::class);
-
-        $primaryKey = $that->primaryKey();
+        $primaryKey = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
         $rs = static::select($fields)->where($filters ?? [])->orderBy([$primaryKey => SORT_DESC])->limit(1)->fetch();
         return $rs[0] ?? null;
     }
@@ -352,8 +348,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             throw new MisuseException('ttl must be a integer');
         }
 
-        $that = Container::get(ThoseInterface::class)->get(static::class);
-        $pkName = $that->primaryKey();
+        $pkName = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
 
         $pkValue = null;
 
@@ -427,7 +422,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public static function kvalues(string $field, ?array $filters = null): array
     {
-        $keyField = Container::get(ThoseInterface::class)->get(static::class)->primaryKey();
+        $keyField = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
         $valueField = $field;
 
         $kvalues = [];
@@ -727,7 +722,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
     protected function existsInternal(): bool
     {
-        $primaryKey = $this->primaryKey();
+        $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
         if ($this->$primaryKey === null) {
             return false;
         } else {
@@ -748,7 +743,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             $this->load($fields);
         }
 
-        $primaryKey = $this->primaryKey();
+        $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
         if ($this->_snapshot || $this->$primaryKey) {
             return $this->update();
         } else {
@@ -932,7 +927,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             $this->_last_refresh = microtime(true);
         }
 
-        $primaryKey = $this->primaryKey();
+        $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
         $r = $this->newQuery()->select($fields ?? [])->where([$primaryKey => $this->$primaryKey])->execute();
         if (!$r) {
             throw new NotFoundException(static::class, [$primaryKey => $this->$primaryKey]);

@@ -8,6 +8,7 @@ use ManaPHP\Cli\Console;
 use ManaPHP\Data\Db;
 use ManaPHP\Data\DbInterface;
 use ManaPHP\Data\Model\Attribute\Connection;
+use ManaPHP\Data\Model\Attribute\PrimaryKey;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
@@ -161,6 +162,14 @@ class DbCommand extends Command
             $attributes[] = "#[Connection('$connection')]";
         }
 
+        $primaryKeys = $metadata[Db::METADATA_PRIMARY_KEY];
+        if ($primaryKey = count($primaryKeys) === 1 ? $primaryKeys[0] : null) {
+            if ($primaryKey !== 'id' && $primaryKey !== $table . '_id' && $primaryKey !== $table . 'Id') {
+                $uses[] = PrimaryKey::class;
+                $attributes[] = "#[PrimaryKey('$primaryKey')]";
+            }
+        }
+
         sort($uses);
 
         if ($uses !== []) {
@@ -220,26 +229,6 @@ class DbCommand extends Command
                 }
             }
             $str .= '        ];' . PHP_EOL;
-            $str .= '    }' . PHP_EOL;
-        }
-
-        $primaryKeys = $metadata[Db::METADATA_PRIMARY_KEY];
-        if ($primaryKey = count($primaryKeys) === 1 ? $primaryKeys[0] : null) {
-            if ($optimized
-                || ($primaryKey !== 'id' && $primaryKey !== $table . '_id' && $primaryKey !== $table . 'Id')
-            ) {
-                $str .= PHP_EOL;
-                $str .= '    public function primaryKey(): string' . PHP_EOL;
-                $str .= '    {' . PHP_EOL;
-                $str .= "        return '$primaryKey';" . PHP_EOL;
-                $str .= '    }' . PHP_EOL;
-            }
-
-        } else {
-            $str .= PHP_EOL;
-            $str .= '    public function primaryKey(): string' . PHP_EOL;
-            $str .= '    {' . PHP_EOL;
-            $str .= "        return '???';" . PHP_EOL;
             $str .= '    }' . PHP_EOL;
         }
 
