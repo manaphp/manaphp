@@ -8,11 +8,11 @@ use ManaPHP\Coroutine;
 use ManaPHP\Logging\Logger\LogCategorizable;
 
 /**
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
+ * @property-read \ManaPHP\Logging\LoggerInterface       $logger
  * @property-read \ManaPHP\Identifying\IdentityInterface $identity
- * @property-read \ManaPHP\Ws\ServerInterface $wsServer
- * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\Messaging\PubSubInterface $pubSub
+ * @property-read \ManaPHP\Ws\ServerInterface            $wsServer
+ * @property-read \ManaPHP\Http\RequestInterface         $request
+ * @property-read \ManaPHP\Messaging\PubSubInterface     $pubSub
  */
 class Server extends Component implements ServerInterface, LogCategorizable
 {
