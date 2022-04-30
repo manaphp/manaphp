@@ -18,6 +18,7 @@ use ManaPHP\Helper\Sharding\ShardingTooManyException;
  * @property-read \ManaPHP\Data\Relation\ManagerInterface $relationManager
  * @property-read \ManaPHP\Data\Model\ThoseInterface      $those
  * @property-read \ManaPHP\Data\Model\ShardingInterface   $sharding
+ * @property-read \ManaPHP\Data\Model\ManagerInterface    $modelManager
  */
 abstract class AbstractQuery extends Component implements QueryInterface, IteratorAggregate
 {
@@ -108,7 +109,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
                 $that = $this->those->get($table);
 
                 $this->setModel($that);
-                $table = $that->table();
+                $table = $this->modelManager->getTable($table);
             }
 
             $this->table = $table;

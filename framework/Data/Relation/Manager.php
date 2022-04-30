@@ -12,7 +12,8 @@ use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\Str;
 
 /**
- * @property-read \ManaPHP\Data\Model\ThoseInterface $those
+ * @property-read \ManaPHP\Data\Model\ThoseInterface   $those
+ * @property-read \ManaPHP\Data\Model\ManagerInterface $modelManager
  */
 class Manager extends Component implements ManagerInterface
 {
@@ -82,7 +83,7 @@ class Manager extends Component implements ManagerInterface
 
             $thatInstance = $this->those->get($thatModel);
 
-            $thisForeignedKey = $thisInstance->foreignedKey();
+            $thisForeignedKey = $this->modelManager->getForeignedKey($thisInstance::class);
             if ($thatInstance->hasField($thisForeignedKey)) {
                 return $thisInstance->hasMany($thatModel, $thisForeignedKey);
             }
@@ -116,8 +117,8 @@ class Manager extends Component implements ManagerInterface
             throw new RuntimeException(['infer `:relation` relation failed', 'relation' => $name]);
         } elseif ($thatModel = $this->inferClassName($thisInstance, $name)) {
             $thatInstance = $this->those->get($thatModel);
-            $thisForeignedKey = $thisInstance->foreignedKey();
-            $thatForeignedKey = $thatInstance->foreignedKey();
+            $thisForeignedKey = $this->modelManager->getForeignedKey($thisInstance::class);
+            $thatForeignedKey = $this->modelManager->getForeignedKey($thatModel);
             if ($thatInstance->hasField($thisForeignedKey)) {
                 return $thisInstance->hasOne($thatModel, $thisForeignedKey);
             } elseif ($thisInstance->hasField($thatForeignedKey)) {

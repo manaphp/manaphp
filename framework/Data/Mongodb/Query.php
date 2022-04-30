@@ -16,6 +16,7 @@ use MongoDB\BSON\Regex;
 
 /**
  * @property-read \ManaPHP\Data\Mongodb\FactoryInterface $mongodbFactory
+ * @property-read \ManaPHP\Data\Model\ManagerInterface   $modelManager
  */
 class Query extends AbstractQuery
 {
@@ -304,7 +305,8 @@ class Query extends AbstractQuery
             return $this->whereEq($field, $value);
         } elseif ($operator === '~=') {
             if ($this->types && !isset($this->types[$field])) {
-                $collection = $this->model ? $this->model->table() : $this->table;
+                $model = $this->model;
+                $collection = $model ? $this->modelManager->getTable($model::class) : $this->table;
                 throw new InvalidArgumentException(['`%s` field is not exist in `%s` collection', $field, $collection]);
             }
 

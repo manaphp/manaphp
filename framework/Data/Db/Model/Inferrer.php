@@ -9,6 +9,7 @@ use ManaPHP\Exception\NotSupportedException;
 /**
  * @property-read \ManaPHP\Data\Model\ThoseInterface       $those
  * @property-read \ManaPHP\Data\Db\Model\MetadataInterface $metadata
+ * @property-read \ManaPHP\Data\Model\ManagerInterface     $modelManager
  */
 class Inferrer extends Component implements InferrerInterface
 {
@@ -32,7 +33,7 @@ class Inferrer extends Component implements InferrerInterface
             return $tryField;
         }
 
-        $table = $that->table();
+        $table = $this->modelManager->getTable($model);
         if (($pos = strpos($table, ':')) !== false) {
             $table = substr($table, 0, $pos);
         } elseif (($pos = strpos($table, ',')) !== false) {

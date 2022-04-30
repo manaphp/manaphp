@@ -9,6 +9,7 @@ use ManaPHP\Component;
 use ManaPHP\Data\Db\SqlFragmentable;
 use ManaPHP\Data\Model\Expression\Decrement;
 use ManaPHP\Data\Model\Expression\Increment;
+use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\Model\NotFoundException;
 use ManaPHP\Data\Model\SerializeNormalizable;
 use ManaPHP\Data\Model\ThoseInterface;
@@ -34,11 +35,15 @@ use ReflectionClass;
 
 abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSerializable
 {
+    protected ManagerInterface $_modelManager;
+
     protected false|array $_snapshot = [];
     protected float $_last_refresh = 0;
 
     public function __construct(array $data = [])
     {
+        $this->_modelManager = Container::get(ManagerInterface::class);
+
         if ($data) {
             foreach ($this->jsonFields() as $field) {
                 if (isset($data[$field]) && is_string($data[$field])) {
@@ -76,7 +81,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             return $primaryKey;
         }
 
-        $table = $this->table();
+        $table = $this->_modelManager->getTable(static::class);
 
         if (($pos = strpos($table, '.')) !== false) {
             $table = substr($table, $pos + 1);
@@ -1082,9 +1087,11 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function belongsTo(string $thatModel, ?string $thisField = null): BelongsTo
     {
-        $that = Container::get(ThoseInterface::class)->get($thatModel);
-
-        return new BelongsTo(static::class, $thisField ?? $that->foreignedKey(), $thatModel, $that->primaryKey());
+        return new BelongsTo(
+            static::class,
+            $thisField ?? $this->_modelManager->getForeignedKey($thatModel),
+            $thatModel, $this->_modelManager->getPrimaryKey($thatModel)
+        );
     }
 
     /**
@@ -1095,7 +1102,11 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function hasOne(string $thatModel, ?string $thatField = null): HasOne
     {
-        return new HasOne(static::class, $this->primaryKey(), $thatModel, $thatField ?? $this->foreignedKey());
+        return new HasOne(
+            static::class,
+            $this->_modelManager->getPrimaryKey(static::class), $thatModel,
+            $thatField ?? $this->_modelManager->getForeignedKey(static::class)
+        );
     }
 
     /**
@@ -1106,16 +1117,20 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function hasMany(string $thatModel, ?string $thatField = null): HasMany
     {
-        return new HasMany(static::class, $this->primaryKey(), $thatModel, $thatField ?? $this->foreignedKey());
+        $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
+        $foreignedKey = $this->_modelManager->getforeignedKey(static::class);
+        return new HasMany(static::class, $primaryKey, $thatModel, $thatField ?? $foreignedKey);
     }
 
     public function hasManyToMany(string $thatModel, string $pivotModel): HasManyToMany
     {
-        $that = Container::get(ThoseInterface::class)->get($thatModel);
-
         return new HasManyToMany(
-            static::class, $this->primaryKey(), $thatModel, $that->primaryKey(),
-            $pivotModel, $this->foreignedKey(), $that->foreignedKey()
+            static::class,
+            $this->_modelManager->getPrimaryKey(static::class),
+            $thatModel,
+            $this->_modelManager->getPrimaryKey($thatModel),
+            $pivotModel, $this->_modelManager->getForeignedKey(static::class),
+            $this->_modelManager->getPrimaryKey($thatModel),
         );
     }
 
@@ -1127,9 +1142,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function hasManyOthers(string $thatModel, ?string $thisFilter = null): HasManyOthers
     {
-        $that = Container::get(ThoseInterface::class)->get($thatModel);
-
-        $foreingedKey = $that->foreignedKey();
+        $foreingedKey = $this->_modelManager->getForeignedKey($thatModel);
 
         if ($thisFilter === null) {
             $keys = [];
@@ -1157,7 +1170,9 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         }
 
         return new HasManyOthers(
-            static::class, $thisFilter, $that->foreignedKey(), $thatModel, $that->primaryKey()
+            static::class, $thisFilter,
+            $this->_modelManager->getForeignedKey($thatModel), $thatModel,
+            $this->_modelManager->getPrimaryKey($thatModel)
         );
     }
 
