@@ -38,7 +38,7 @@ class Metadata extends Component implements MetadataInterface
             }
         }
 
-        list($connection, $table) = $this->sharding->getAllShards(is_string($model) ? $model : $model::class);
+        list($connection, $table) = $this->sharding->getAnyShard(is_string($model) ? $model : $model::class);
         $db = $this->dbFactory->get($connection);
         $data = $db->getMetadata($table);
 
