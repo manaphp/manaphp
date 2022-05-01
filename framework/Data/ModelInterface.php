@@ -15,8 +15,6 @@ interface ModelInterface
 
     public function intFields(): ?array;
 
-    public function getNextAutoIncrementId(int $step = 1): ?int;
-
     public function rules(): array;
 
     public static function query(?string $alias = null): QueryInterface;
