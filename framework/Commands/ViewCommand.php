@@ -4,21 +4,21 @@ declare(strict_types=1);
 namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
-use ManaPHP\Data\ModelInterface;
 use ManaPHP\Helper\LocalFS;
 
 /**
+ * @property-read \ManaPHP\Data\Model\ThoseInterface   $those
  * @property-read \ManaPHP\Data\Model\ManagerInterface $modelManager
  */
 class ViewCommand extends Command
 {
     /**
-     * @param \ManaPHP\Data\ModelInterface $model
+     * @param string $model
      *
      * @return string
      * @noinspection PhpUnusedParameterInspection
      */
-    public function renderRequestForm(ModelInterface $model): string
+    public function renderRequestForm(string $model): string
     {
         $content = <<<HTML
 <request-form>
@@ -28,16 +28,16 @@ HTML;
     }
 
     /**
-     * @param \ManaPHP\Data\ModelInterface $model
+     * @param string $model
      *
      * @return string
      */
-    public function renderDetailForm(ModelInterface $model): string
+    public function renderDetailForm(string $model): string
     {
         $content = PHP_EOL . <<<HTML
 <detail-form>
 HTML;
-        foreach ($this->modelManager->getFields($model::class) as $field) {
+        foreach ($this->modelManager->getFields($model) as $field) {
             if ($this->isTimestampField($model, $field)) {
                 $content .= PHP_EOL . <<<HTML
     <detail-timestamp prop="$field"></detail-timestamp>
@@ -57,13 +57,13 @@ HTML;
     }
 
     /**
-     * @param \ManaPHP\Data\ModelInterface $model
+     * @param string $model
      *
      * @return string
      */
-    public function renderCreateForm(ModelInterface $model): string
+    public function renderCreateForm(string $model): string
     {
-        if (!$fields = $this->modelManager->getFillableFields($model::class)) {
+        if (!$fields = $this->modelManager->getFillableFields($model)) {
             return '';
         }
 
@@ -83,20 +83,20 @@ HTML;
     }
 
     /**
-     * @param \ManaPHP\Data\ModelInterface $model
+     * @param string $model
      *
      * @return string
      */
-    public function renderEditForm(ModelInterface $model): string
+    public function renderEditForm(string $model): string
     {
-        if (!$fields = $this->modelManager->getFillableFields($model::class)) {
+        if (!$fields = $this->modelManager->getFillableFields($model)) {
             return '';
         }
 
         $content = PHP_EOL . <<<HTML
 <edit-form>
 HTML;
-        $primaryKey = $this->modelManager->getPrimaryKey($model::class);
+        $primaryKey = $this->modelManager->getPrimaryKey($model);
         $content .= PHP_EOL . <<<HTML
     <edit-text prop="$primaryKey" disabled></edit-text>
 HTML;
@@ -114,14 +114,14 @@ HTML;
     }
 
     /**
-     * @param \ManaPHP\Data\ModelInterface $model
-     * @param string                       $field
+     * @param string $model
+     * @param string $field
      *
      * @return bool
      */
-    public function isTimestampField(ModelInterface $model, string $field): bool
+    public function isTimestampField(string $model, string $field): bool
     {
-        if (!in_array($field, $model->intFields(), true)) {
+        if (!in_array($field, $this->those->get($model)->intFields(), true)) {
             return false;
         }
 
@@ -129,17 +129,17 @@ HTML;
     }
 
     /**
-     * @param \ManaPHP\Data\ModelInterface $model
+     * @param string $model
      *
      * @return string
      */
-    public function renderResultTable(ModelInterface $model): string
+    public function renderResultTable(string $model): string
     {
         $content = PHP_EOL . <<<HTML
 <result-table>
     <result-index></result-index>
 HTML;
-        foreach ($this->modelManager->getFields($model::class) as $field) {
+        foreach ($this->modelManager->getFields($model) as $field) {
             if ($this->isTimestampField($model, $field)) {
                 $content .= PHP_EOL . <<<HTML
     <result-timestamp prop="$field"></result-timestamp>
@@ -181,12 +181,12 @@ HTML;
     }
 
     /**
-     * @param \ManaPHP\Data\ModelInterface $model
+     * @param string $model
      *
      * @return string
      * @noinspection PhpUnusedParameterInspection
      */
-    public function renderCss(ModelInterface $model): string
+    public function renderCss(string $model): string
     {
         $content = PHP_EOL . <<<HTML
 @section('css')
@@ -199,13 +199,13 @@ HTML;
     }
 
     /**
-     * @param \ManaPHP\Data\ModelInterface $model
+     * @param string $model
      *
      * @return string
      */
-    public function renderScript(ModelInterface $model): string
+    public function renderScript(string $model): string
     {
-        $fields = $this->modelManager->getFillableFields($model::class);
+        $fields = $this->modelManager->getFillableFields($model);
 
         $content = PHP_EOL . <<<HTML
 @section('script')
@@ -224,8 +224,8 @@ HTML;
             $content .= PHP_EOL . <<<HTML
                 create: {
 HTML;
-            $rules = $model->rules();
-            $iniFields = $model->intFields();
+            $rules = $this->those->get($model)->rules();
+            $iniFields = $this->those->get($model)->intFields();
             foreach ($fields as $field) {
                 $rule = $rules[$field] ?? [];
                 if (is_array($rule) && isset($rule['default'])) {
@@ -242,7 +242,7 @@ HTML;
                 },
                 edit: {
 HTML;
-            $content .= PHP_EOL . '                    ' . $this->modelManager->getPrimaryKey($model::class) . ': 0,';
+            $content .= PHP_EOL . '                    ' . $this->modelManager->getPrimaryKey($model) . ': 0,';
 
             foreach ($fields as $field) {
                 $rule = $rules[$field] ?? [];
@@ -268,11 +268,11 @@ HTML;
     }
 
     /**
-     * @param \ManaPHP\Data\ModelInterface $model
+     * @param string $model
      *
      * @return string
      */
-    public function render(ModelInterface $model): string
+    public function render(string $model): string
     {
         $content = $this->renderRequestForm($model);
         $content .= $this->renderDetailForm($model);
@@ -299,8 +299,7 @@ HTML;
             $plain = basename($model_file, '.php');
             $view_file = "@runtime/view/Views/{$plain}.sword";
             $model = "App\Models\\$plain";
-            $instance = new $model();
-            LocalFS::filePut($view_file, $this->render($instance));
+            LocalFS::filePut($view_file, $this->render($model));
             $this->console->writeLn("view of `$model` saved to `$view_file`");
         }
 
@@ -313,8 +312,7 @@ HTML;
 
             $view_file = "@runtime/view/Areas/$area/Views/{$plain}.sword";
             $model = "App\\Areas\\$area\\Models\\$plain";
-            $instance = new $model();
-            LocalFS::filePut($view_file, $this->render($instance));
+            LocalFS::filePut($view_file, $this->render($model));
             $this->console->writeLn("view of `$model` saved to `$view_file`");
         }
     }
