@@ -47,7 +47,7 @@ class Linter extends Component
                 if ($model instanceof DbModel) {
                     $all = $this->getPropertyFields();
                     if (!$all) {
-                        $all = $this->modelMetadata->getAttributes($model);
+                        $all = $this->modelMetadata->getAttributes($model::class);
                     }
                 } elseif ($model instanceof MongodbModel) {
                     $all = array_keys($model->fieldTypes());
@@ -57,7 +57,7 @@ class Linter extends Component
             } elseif ($methodName === 'intFields') {
                 $some = $model->intFields();
                 if ($model instanceof DbModel) {
-                    $all = $this->modelMetadata->getIntTypeAttributes($model);
+                    $all = $this->modelMetadata->getIntTypeAttributes($model::class);
                 } else {
                     $all = array_keys(
                         array_filter(

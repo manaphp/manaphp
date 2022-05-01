@@ -7,11 +7,11 @@ use ManaPHP\Data\Db\ModelInterface;
 
 interface MetadataInterface
 {
-    public function getAttributes(string|ModelInterface $model): array;
+    public function getAttributes(string $model): array;
 
-    public function getPrimaryKeyAttributes(string|ModelInterface $model): array;
+    public function getPrimaryKeyAttributes(string $model): array;
 
-    public function getAutoIncrementAttribute(string|ModelInterface $model): ?string;
+    public function getAutoIncrementAttribute(string $model): ?string;
 
-    public function getIntTypeAttributes(string|ModelInterface $model): array;
+    public function getIntTypeAttributes(string $model): array;
 }
