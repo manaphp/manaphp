@@ -7,7 +7,9 @@ use ManaPHP\Component;
 use ManaPHP\Data\Model\Attribute\AutoIncrementField;
 use ManaPHP\Data\Model\Attribute\ColumnMap;
 use ManaPHP\Data\Model\Attribute\Connection;
+use ManaPHP\Data\Model\Attribute\Fillable;
 use ManaPHP\Data\Model\Attribute\ForeignedKey;
+use ManaPHP\Data\Model\Attribute\Guarded;
 use ManaPHP\Data\Model\Attribute\JsonFields;
 use ManaPHP\Data\Model\Attribute\PrimaryKey;
 use ManaPHP\Data\Model\Attribute\Table;
@@ -30,6 +32,7 @@ class Manager extends Component implements ManagerInterface
     protected array $jsonFields = [];
     protected array $autoIncrementFields = [];
     protected array $columnMap = [];
+    protected array $fillableFields = [];
 
     protected function getClassReflection(string $model): ReflectionClass
     {
@@ -182,5 +185,28 @@ class Manager extends Component implements ManagerInterface
         }
 
         return $columnMap;
+    }
+
+    public function getFillableFields(string $model): array
+    {
+        if (($fillableFields = $this->fillableFields[$model] ?? null) === null) {
+            if (($attribute = $this->getClassAttribute($model, Fillable::class)) !== null) {
+                /** @var Fillable $attribute */
+                $fillableFields = $attribute->get();
+            } elseif (($attribute = $this->getClassAttribute($model, Guarded::class)) !== null) {
+                /** @var Guarded $attribute */
+                $guarded = $attribute->get();
+                foreach ($this->getFields($model) as $field) {
+                    if (!in_array($field, $guarded, true)) {
+                        $fillableFields[] = $field;
+                    }
+                }
+            } else {
+                $fillableFields[] = array_keys($this->those->get($model)->rules());
+            }
+            $this->fillableFields[$model] = $fillableFields;
+        }
+
+        return $fillableFields;
     }
 }

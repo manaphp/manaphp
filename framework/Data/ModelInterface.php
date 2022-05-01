@@ -13,8 +13,6 @@ interface ModelInterface
 {
     public function dateFormat(string $field): string;
 
-    public function safeFields(): array;
-
     public function intFields(): ?array;
 
     public function getNextAutoIncrementId(int $step = 1): ?int;

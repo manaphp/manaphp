@@ -20,4 +20,6 @@ interface ManagerInterface
     public function getAutoIncrementField(string $model): ?string;
 
     public function getColumnMap(string $model): array;
+
+    public function getFillableFields(string $model): array;
 }

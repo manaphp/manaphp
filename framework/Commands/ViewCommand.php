@@ -63,7 +63,7 @@ HTML;
      */
     public function renderCreateForm(ModelInterface $model): string
     {
-        if (!$fields = $model->safeFields()) {
+        if (!$fields = $this->modelManager->getFillableFields($model::class)) {
             return '';
         }
 
@@ -89,7 +89,7 @@ HTML;
      */
     public function renderEditForm(ModelInterface $model): string
     {
-        if (!$fields = $model->safeFields()) {
+        if (!$fields = $this->modelManager->getFillableFields($model::class)) {
             return '';
         }
 
@@ -205,7 +205,7 @@ HTML;
      */
     public function renderScript(ModelInterface $model): string
     {
-        $fields = $model->safeFields();
+        $fields = $this->modelManager->getFillableFields($model::class);
 
         $content = PHP_EOL . <<<HTML
 @section('script')

@@ -77,14 +77,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
-     * @return array =model_fields(new static)
-     */
-    public function safeFields(): array
-    {
-        return array_keys($this->rules());
-    }
-
-    /**
      * @return array =model_var(new static) ?: [$field => \PHPSTORM_META\validator_rule()]
      */
     public function rules(): array
@@ -497,7 +489,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function load(?array $fields = null): static
     {
-        $fields = $fields ?? $this->safeFields();
+        $fields = $fields ?? $this->_modelManager->getFillableFields(static::class);
 
         $request = Container::get(RequestInterface::class);
 
