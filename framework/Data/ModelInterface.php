@@ -11,8 +11,6 @@ use ManaPHP\Data\Relation\HasOne;
 
 interface ModelInterface
 {
-    public function mapFields(): array;
-
     public function dateFormat(string $field): string;
 
     public function safeFields(): array;

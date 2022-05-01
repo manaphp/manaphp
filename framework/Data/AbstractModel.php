@@ -85,16 +85,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
-     * map model fields to table column
-     *
-     * @return array =model_var(new static)
-     */
-    public function mapFields(): array
-    {
-        return [];
-    }
-
-    /**
      * @return array =model_var(new static) ?: [$field => \PHPSTORM_META\validator_rule()]
      */
     public function rules(): array

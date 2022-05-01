@@ -59,9 +59,9 @@ class Inferrer extends Component implements InferrerInterface
                 if (count($primaryKeys) !== 1) {
                     throw new NotSupportedException('only support one primary key');
                 }
-                $that = $this->those->get($model);
                 $primaryKey = $primaryKeys[0];
-                return $this->primaryKey[$model] = array_search($primaryKey, $that->mapFields(), true) ?: $primaryKey;
+                $columnMap = $this->modelManager->getColumnMap($model);
+                return $this->primaryKey[$model] = array_search($primaryKey, $columnMap, true) ?: $primaryKey;
             }
         } else {
             return $primaryKey;
@@ -85,12 +85,10 @@ class Inferrer extends Component implements InferrerInterface
 
     public function intFields(string $model): array
     {
-        $that = $this->those->get($model);
-
         if (($fields = $this->intFields[$model] ?? null) === null) {
-            if ($mapFields = $that->mapFields()) {
+            if (($columnMap = $this->modelManager->getColumnMap($model)) !== []) {
                 foreach ($this->metadata->getIntTypeAttributes($model) as $field) {
-                    $fields[] = array_search($field, $mapFields, true) ?: $field;
+                    $fields[] = array_search($field, $columnMap, true) ?: $field;
                 }
             } else {
                 $fields = $this->metadata->getIntTypeAttributes($model);

@@ -5,6 +5,7 @@ namespace ManaPHP\Data\Model;
 
 use ManaPHP\Component;
 use ManaPHP\Data\Model\Attribute\AutoIncrementField;
+use ManaPHP\Data\Model\Attribute\ColumnMap;
 use ManaPHP\Data\Model\Attribute\Connection;
 use ManaPHP\Data\Model\Attribute\ForeignedKey;
 use ManaPHP\Data\Model\Attribute\JsonFields;
@@ -28,6 +29,7 @@ class Manager extends Component implements ManagerInterface
     protected array $fields = [];
     protected array $jsonFields = [];
     protected array $autoIncrementFields = [];
+    protected array $columnMap = [];
 
     protected function getClassReflection(string $model): ReflectionClass
     {
@@ -165,5 +167,20 @@ class Manager extends Component implements ManagerInterface
         }
 
         return $autoIncrementField;
+    }
+
+    public function getColumnMap(string $model): array
+    {
+        if (($columnMap = $this->columnMap[$model] ?? null) === null) {
+            $columnMap = [];
+            if (($attribute = $this->getClassAttribute($model, ColumnMap::class)) !== null) {
+                /** @var ColumnMap $attribute */
+                $columnMap = $attribute->get($this->getFields($model));
+            }
+
+            $this->columnMap[$model] = $columnMap;
+        }
+
+        return $columnMap;
     }
 }

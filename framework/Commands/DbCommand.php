@@ -7,6 +7,7 @@ use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
 use ManaPHP\Data\Db;
 use ManaPHP\Data\DbInterface;
+use ManaPHP\Data\Model\Attribute\ColumnMap;
 use ManaPHP\Data\Model\Attribute\Connection;
 use ManaPHP\Data\Model\Attribute\PrimaryKey;
 use ManaPHP\Helper\LocalFS;
@@ -170,6 +171,11 @@ class DbCommand extends Command
             }
         }
 
+        if ($camelized) {
+            $uses[] = ColumnMap::class;
+            $attributes[] = "#[ColumnMap(ColumnMap::STRATEGY_SNAKE_CASE)]";
+        }
+
         sort($uses);
 
         if ($uses !== []) {
@@ -212,21 +218,6 @@ class DbCommand extends Command
             foreach ($fields as $field) {
                 $field = $camelized ? Str::camelize($field) : $field;
                 $str .= "            '$field'," . PHP_EOL;
-            }
-            $str .= '        ];' . PHP_EOL;
-            $str .= '    }' . PHP_EOL;
-        }
-
-        if ($camelized) {
-            $str .= PHP_EOL;
-            $str .= '    public function map(): array' . PHP_EOL;
-            $str .= '    {' . PHP_EOL;
-            $str .= '        return [' . PHP_EOL;
-            foreach ($fields as $field) {
-                $t = Str::camelize($field);
-                if ($t !== $field) {
-                    $str .= "            '$t' => '$field'," . PHP_EOL;
-                }
             }
             $str .= '        ];' . PHP_EOL;
             $str .= '    }' . PHP_EOL;

@@ -515,13 +515,17 @@ class Query extends AbstractQuery
 
     protected function translateField2Columns(string $sql): string
     {
-        if (!($model = $this->model) || !$mapFields = $model->mapFields()) {
+        if (($model = $this->model) === null) {
             return $sql;
         }
 
-        $pattern = '#\[(' . implode('|', array_keys($mapFields)) . ')]#';
+        if (($columnMap = $this->modelManager->getColumnMap($model::class)) === []) {
+            return $sql;
+        }
 
-        return preg_replace_callback($pattern, static fn($matches) => '[' . $mapFields[$matches[1]] . ']', $sql);
+        $pattern = '#\[(' . implode('|', array_keys($columnMap)) . ')]#';
+
+        return preg_replace_callback($pattern, static fn($matches) => '[' . $columnMap[$matches[1]] . ']', $sql);
     }
 
     protected function buildSql(DbInterface $db, string $table, array $joins): string
@@ -657,9 +661,10 @@ class Query extends AbstractQuery
 
         $rows = $db->fetchAll($this->sql, $this->bind, PDO::FETCH_ASSOC, $this->force_master);
 
-        if ($mapFields = $this->model ? $this->model->mapFields() : []) {
+        $model = $this->model;
+        if ($columnMap = $model ? $this->modelManager->getColumnMap($model::class) : []) {
             foreach ($rows as &$row) {
-                foreach ($mapFields as $propery => $column) {
+                foreach ($columnMap as $propery => $column) {
                     if (array_key_exists($column, $row)) {
                         $row[$propery] = $row[$column];
                         unset($row[$column]);

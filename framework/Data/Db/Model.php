@@ -70,7 +70,7 @@ class Model extends AbstractModel implements ModelInterface
             }
         }
 
-        foreach ($this->mapFields() as $propery => $column) {
+        foreach ($this->_modelManager->getColumnMap(static::class) as $propery => $column) {
             if (array_key_exists($propery, $fieldValues)) {
                 $fieldValues[$column] = $fieldValues[$propery];
                 unset($fieldValues[$propery]);
@@ -183,8 +183,8 @@ class Model extends AbstractModel implements ModelInterface
             }
         }
 
-        $mapFields = $this->mapFields();
-        foreach ($mapFields as $property => $column) {
+        $columnMap = $this->_modelManager->getColumnMap(static::class);
+        foreach ($columnMap as $property => $column) {
             if (array_key_exists($property, $fieldValues)) {
                 $fieldValues[$column] = $fieldValues[$property];
                 unset($fieldValues[$property]);
@@ -193,7 +193,7 @@ class Model extends AbstractModel implements ModelInterface
 
         $db = Container::get(FactoryInterface::class)->get($connection);
         $db->update(
-            $table, $fieldValues, [$mapFields[$primaryKey] ?? $primaryKey => $this->$primaryKey], $bind
+            $table, $fieldValues, [$columnMap[$primaryKey] ?? $primaryKey => $this->$primaryKey], $bind
         );
 
         if ($expressionFields) {

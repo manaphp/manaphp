@@ -18,4 +18,6 @@ interface ManagerInterface
     public function getJsonFields(string $model): array;
 
     public function getAutoIncrementField(string $model): ?string;
+
+    public function getColumnMap(string $model): array;
 }
