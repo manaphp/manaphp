@@ -51,9 +51,8 @@ class RoleController extends Controller
         return Role::rUpdate(['enabled' => 1]);
     }
 
-    public function deleteAction()
+    public function deleteAction(Role $role)
     {
-        $role = Role::rGet();
         if (AdminRole::exists(['role_id' => $role->role_id])) {
             return '删除失败: 有用户绑定到此角色';
         }

@@ -27,8 +27,8 @@ class ItemController extends Controller
         return Item::rUpdate();
     }
 
-    public function deleteAction()
+    public function deleteAction(Item $item)
     {
-        return Item::rDelete();
+        return $item->delete();
     }
 }

@@ -72,10 +72,8 @@ class AdminController extends Controller
         return $admin;
     }
 
-    public function editAction($role_ids = [])
+    public function editAction(Admin $admin, $role_ids = [])
     {
-        $admin = Admin::rGet();
-
         $admin->load(['email', 'white_ip']);
         if ($password = input('password', '')) {
             $admin->password = $password;

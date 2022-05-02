@@ -20,12 +20,10 @@ class ActionLogController extends Controller
     }
 
     #[Authorize('user')]
-    public function detailAction()
+    public function detailAction(AdminActionLog $adminActionLog)
     {
-        $log = AdminActionLog::rGet();
-
-        if ($log->admin_id == $this->identity->getId() || $this->authorization->isAllowed('detail')) {
-            return $log;
+        if ($adminActionLog->admin_id == $this->identity->getId() || $this->authorization->isAllowed('detail')) {
+            return $adminActionLog;
         } else {
             return '没有权限';
         }

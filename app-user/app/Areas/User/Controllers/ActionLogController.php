@@ -11,12 +11,10 @@ use ManaPHP\Http\Controller\Attribute\Authorize;
 class ActionLogController extends Controller
 {
     #[Authorize('user')]
-    public function detailAction()
+    public function detailAction(UserActionLog $userActionLog)
     {
-        $log = UserActionLog::rGet();
-
-        if ($log->user_id == $this->identity->getId() || $this->authorization->isAllowed('detail')) {
-            return $log;
+        if ($userActionLog->user_id == $this->identity->getId() || $this->authorization->isAllowed('detail')) {
+            return $userActionLog;
         } else {
             return '没有权限';
         }

@@ -96,8 +96,6 @@ interface ModelInterface
 
     public function delete(): static;
 
-    public static function rDelete(): ?static;
-
     public static function deleteAll(array $filters): int;
 
     public function with(string|array $withs): static;

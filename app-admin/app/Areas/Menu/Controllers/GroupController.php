@@ -32,8 +32,8 @@ class GroupController extends Controller
         return Group::rUpdate();
     }
 
-    public function deleteAction()
+    public function deleteAction(Group $group)
     {
-        return Group::rDelete();
+        return $group->delete();
     }
 }

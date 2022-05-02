@@ -686,11 +686,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         }
     }
 
-    public static function rDelete(): static
-    {
-        return static::rGet()->delete();
-    }
-
     /**
      * @param array $fieldValues =model_var(new static)
      * @param array $filters     =model_var(new static)

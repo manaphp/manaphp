@@ -28,9 +28,9 @@ class CustomerController extends Controller
         }
     }
 
-    public function detailAction()
+    public function detailAction(Customer $customer)
     {
-        return Customer::rGet();
+        return $customer;
     }
 
     public function updateAction()
@@ -38,8 +38,8 @@ class CustomerController extends Controller
         return Customer::rUpdate();
     }
 
-    public function deleteAction()
+    public function deleteAction(Customer $customer)
     {
-        return Customer::rDelete();
+        return $customer->delete();
     }
 }

@@ -78,10 +78,8 @@ class PermissionController extends Controller
         return Permission::rUpdate();
     }
 
-    public function deleteAction()
+    public function deleteAction(Permission $permission)
     {
-        $permission = Permission::rGet();
-
         RolePermission::deleteAll(['permission_id' => $permission->permission_id]);
 
         return $permission->delete();
