@@ -33,7 +33,7 @@ class RoleController extends Controller
             $permissions = '';
         }
 
-        return Role::rCreate(['role_name', 'display_name', 'enabled', 'permissions' => $permissions]);
+        return (new Role)->save(['role_name', 'display_name', 'enabled', 'permissions' => $permissions]);
     }
 
     public function editAction(Role $role)
@@ -41,14 +41,14 @@ class RoleController extends Controller
         return $role->update();
     }
 
-    public function disableAction()
+    public function disableAction(int $role_id)
     {
-        return Role::rUpdate(['enabled' => 0]);
+        return Role::get($role_id)->save(['enabled' => 0]);
     }
 
-    public function enableAction()
+    public function enableAction(int $role_id)
     {
-        return Role::rUpdate(['enabled' => 1]);
+        return Role::get($role_id)->save(['enabled' => 1]);
     }
 
     public function deleteAction(Role $role)

@@ -42,10 +42,6 @@ interface ModelInterface
 
     public static function firstOrFail(array $filters, ?array $fields = null): static;
 
-    public static function rId(): int|string;
-
-    public static function rGet(?array $fields = null): static;
-
     public static function last(?array $filters = null, ?array $fields = null): ?static;
 
     public static function value(array $filters, string $field, ?int $ttl = null): mixed;
@@ -86,11 +82,7 @@ interface ModelInterface
 
     public function create(): static;
 
-    public static function rCreate(?array $fields = null): static;
-
     public function update(): static;
-
-    public static function rUpdate(?array $fields = null): static;
 
     public static function updateAll(array $fieldValues, array $filters): int;
 

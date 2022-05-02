@@ -21,6 +21,9 @@ class AccountController extends Controller
     public function registerAction()
     {
         $this->captcha->verify();
-        return Admin::rCreate(['admin_name', 'email', 'password', 'white_ip' => '*', 'status' => Admin::STATUS_INIT]);
+
+        return (new Admin)->save(
+            ['admin_name', 'email', 'password', 'white_ip' => '*', 'status' => Admin::STATUS_INIT]
+        );
     }
 }

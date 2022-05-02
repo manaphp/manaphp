@@ -229,27 +229,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         return $r;
     }
 
-    public static function rId(): int|string
-    {
-        $primaryKey = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
-
-        /** @noinspection OneTimeUseVariablesInspection */
-        $request = Container::get(RequestInterface::class);
-
-        return $request->getId($primaryKey);
-    }
-
-    /**
-     * @param ?array $fields =model_fields(new static)
-     *
-     * @return static
-     */
-    public static function rGet(?array $fields = null): static
-    {
-        $primaryKey = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
-        return static::firstOrFail([$primaryKey => static::rId()], $fields);
-    }
-
     /**
      * Allows to query the last record that match the specified conditions
      *
@@ -633,26 +612,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         }
 
         return $data;
-    }
-
-    /**
-     * @param ?array $fields =model_fields(new static)
-     *
-     * @return static
-     */
-    public static function rCreate(?array $fields = null): static
-    {
-        return (new static())->load($fields)->create();
-    }
-
-    /**
-     * @param ?array $fields =model_fields(new static)
-     *
-     * @return static
-     */
-    public static function rUpdate(?array $fields = null): static
-    {
-        return static::rGet()->load($fields)->update();
     }
 
     protected function existsInternal(): bool
