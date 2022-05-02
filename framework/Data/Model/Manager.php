@@ -107,11 +107,11 @@ class Manager extends Component implements ManagerInterface
                 /** @var ForeignedKey $attribute */
                 $foreignedKey = $attribute->get();
             } else {
-                $primaryKey = $this->getPrimaryKey(static::class);
+                $primaryKey = $this->getPrimaryKey($model);
                 if ($primaryKey !== 'id') {
                     $foreignedKey = $primaryKey;
                 } else {
-                    $table = $this->getTable(static::class);
+                    $table = $this->getTable($model);
 
                     if (($pos = strpos($table, '.')) !== false) {
                         $table = substr($table, $pos + 1);
