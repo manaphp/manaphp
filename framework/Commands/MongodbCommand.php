@@ -233,14 +233,6 @@ class MongodbCommand extends Command
             $str .= '    }' . PHP_EOL;
         }
 
-        if ($optimized && $primaryKey && $fieldTypes[$primaryKey] === 'int') {
-            $str .= PHP_EOL;
-            $str .= '    public function autoIncrementField()' . PHP_EOL;
-            $str .= '    {' . PHP_EOL;
-            $str .= "        return '$primaryKey';" . PHP_EOL;
-            $str .= '    }' . PHP_EOL;
-        }
-
         if ($optimized) {
             $str .= PHP_EOL;
             $str .= '    public function fields()' . PHP_EOL;
