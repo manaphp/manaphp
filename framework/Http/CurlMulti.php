@@ -37,6 +37,7 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
         LocalFS::dirCreate('@runtime/curlMulti');
     }
 
+    /** @noinspection PhpMixedReturnTypeCanBeReducedInspection */
     protected function createCurlTemplate(): mixed
     {
         $curl = curl_init();
