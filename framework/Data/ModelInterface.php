@@ -76,6 +76,8 @@ interface ModelInterface
 
     public function assign(array|object $data, array $fields): static;
 
+    public function fill(array $kv): static;
+
     public function validate(?array $fields = null): void;
 
     public function validateField(string $field, ?array $rules = null): void;

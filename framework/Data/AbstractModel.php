@@ -7,8 +7,6 @@ use ArrayAccess;
 use JsonSerializable;
 use ManaPHP\Component;
 use ManaPHP\Data\Db\SqlFragmentable;
-use ManaPHP\Data\Model\Expression\Decrement;
-use ManaPHP\Data\Model\Expression\Increment;
 use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\Model\NotFoundException;
 use ManaPHP\Data\Model\SerializeNormalizable;
@@ -20,7 +18,6 @@ use ManaPHP\Data\Relation\HasManyToMany;
 use ManaPHP\Data\Relation\HasOne;
 use ManaPHP\Data\Relation\ManagerInterface as RelationManager;
 use ManaPHP\Event\ManagerInterface as EventManager;
-use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
@@ -509,6 +506,11 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         }
 
         return $this;
+    }
+
+    public function fill(array $kv): static
+    {
+        return $this->assign($kv, $this->_modelManager->getFillableFields(static::class));
     }
 
     /**
