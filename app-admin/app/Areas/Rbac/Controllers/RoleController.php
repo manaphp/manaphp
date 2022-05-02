@@ -36,9 +36,9 @@ class RoleController extends Controller
         return Role::rCreate(['role_name', 'display_name', 'enabled', 'permissions' => $permissions]);
     }
 
-    public function editAction()
+    public function editAction(Role $role)
     {
-        return Role::rUpdate();
+        return $role->update();
     }
 
     public function disableAction()

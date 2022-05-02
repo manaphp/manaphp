@@ -22,14 +22,14 @@ class GroupController extends Controller
         return Group::all([], null, ['group_id', 'group_name']);
     }
 
-    public function createAction()
+    public function createAction(Group $group)
     {
-        return Group::rCreate();
+        return $group->create();
     }
 
-    public function editAction()
+    public function editAction(Group $group)
     {
-        return Group::rUpdate();
+        return $group->update();
     }
 
     public function deleteAction(Group $group)

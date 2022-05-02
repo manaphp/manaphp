@@ -33,9 +33,9 @@ class CustomerController extends Controller
         return $customer;
     }
 
-    public function updateAction()
+    public function updateAction(Customer $customer)
     {
-        return Customer::rUpdate();
+        return $customer->update();
     }
 
     public function deleteAction(Customer $customer)

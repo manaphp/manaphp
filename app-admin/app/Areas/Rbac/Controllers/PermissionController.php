@@ -13,7 +13,7 @@ use ManaPHP\Http\Controller\Attribute\Authorize;
  * Class RbacPermissionController
  *
  * @package App\Controllers
- * @property-read \ManaPHP\Http\AuthorizationInterface $authorization
+ * @property-read \ManaPHP\Http\AuthorizationInterface      $authorization
  * @property-read \ManaPHP\Http\Controller\ManagerInterface $controllerManager
  *
  */
@@ -73,9 +73,9 @@ class PermissionController extends Controller
         return ['code' => 0, 'message' => "新增 $count 条"];
     }
 
-    public function editAction()
+    public function editAction(Permission $permission)
     {
-        return Permission::rUpdate();
+        return $permission->update();
     }
 
     public function deleteAction(Permission $permission)

@@ -53,10 +53,8 @@ class AdminController extends Controller
         return Admin::rUpdate(['status' => Admin::STATUS_ACTIVE]);
     }
 
-    public function createAction($role_id)
+    public function createAction(Admin $admin, $role_id)
     {
-        $admin = Admin::rCreate();
-
         if ($role_id) {
             $role = Role::get($role_id);
 
