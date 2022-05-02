@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Controller;
 
 use ManaPHP\Component;
+use ManaPHP\Data\ModelInterface;
+use ManaPHP\Exception\BadRequestException;
 use ManaPHP\Http\Controller;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ReflectionMethod;
@@ -12,9 +14,30 @@ use ReflectionMethod;
  * @property-read \Psr\Container\ContainerInterface      $container
  * @property-read \ManaPHP\Validating\ValidatorInterface $validator
  * @property-read \ManaPHP\Http\RequestInterface         $request
+ * @property-read \ManaPHP\Data\Model\ManagerInterface   $modelManager
  */
 class ArgumentsResolver extends Component implements ArgumentsResolverInterface
 {
+    protected function resolveModel(string $model): ModelInterface
+    {
+        /** @var ModelInterface $instance */
+
+        $primaryKey = $this->modelManager->getprimaryKey($model);
+        $data = $this->request->get();
+        if (isset($data[$primaryKey])) {
+            if (!is_scalar($data[$primaryKey])) {
+                throw new BadRequestException('');
+            }
+            /** @var ModelInterface $model */
+            $instance = $model::firstOrFail([$primaryKey => $data[$primaryKey]]);
+        } else {
+            $instance = new $model;
+            $instance->load();
+        }
+
+        return $instance;
+    }
+
     public function resolve(Controller $controller, string $method): array
     {
         $args = [];
@@ -36,7 +59,11 @@ class ArgumentsResolver extends Component implements ArgumentsResolverInterface
             }
 
             if ($type !== null && str_contains($type, '\\')) {
-                $value = $container->has($name) ? $container->get($name) : $container->get($type);
+                if (is_subclass_of($type, ModelInterface::class)) {
+                    $value = $this->resolveModel($type);
+                } else {
+                    $value = $container->has($name) ? $container->get($name) : $container->get($type);
+                }
             } elseif (str_ends_with($name, 'Service')) {
                 $value = $container->get($name);
             } elseif ($this->request->has($name)) {
