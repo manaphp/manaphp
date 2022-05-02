@@ -271,7 +271,7 @@ class Validator extends Component implements ValidatorInterface
         }
     }
 
-    protected function validate_decimal(string $field, mixed $value, mixed $parameter): mixed
+    protected function validate_decimal(string $field, mixed $value, mixed $parameter): ?string
     {
         if (($value = $this->validate_float($field, $value)) === null) {
             return null;
