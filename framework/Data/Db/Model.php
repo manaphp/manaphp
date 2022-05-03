@@ -11,11 +11,6 @@ use ManaPHP\Helper\Container;
 
 class Model extends AbstractModel implements ModelInterface
 {
-    public function getNextAutoIncrementId(int $step = 1): ?int
-    {
-        return null;
-    }
-
     /**
      * @return \ManaPHP\Data\Db\Query <static>
      */
@@ -26,11 +21,6 @@ class Model extends AbstractModel implements ModelInterface
 
     public function create(): static
     {
-        $autoIncrementField = $this->_modelManager->getAutoIncrementField(static::class);
-        if ($autoIncrementField && $this->$autoIncrementField === null) {
-            $this->$autoIncrementField = $this->getNextAutoIncrementId();
-        }
-
         $fields = $this->_modelManager->getFields(static::class);
         foreach ($this->getAutoCreatedData() as $field => $value) {
             if ($this->$field === null) {
@@ -39,6 +29,8 @@ class Model extends AbstractModel implements ModelInterface
         }
 
         $this->validate($fields);
+
+        $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
 
         list($connection, $table) = Container::get(ShardingInterface::class)->getUniqueShard(static::class, $this);
 
@@ -50,7 +42,7 @@ class Model extends AbstractModel implements ModelInterface
         foreach ($fields as $field) {
             if ($this->$field !== null) {
                 $fieldValues[$field] = $this->$field;
-            } elseif ($field !== $autoIncrementField) {
+            } elseif ($field !== $primaryKey) {
                 $defaultValueFields[] = $field;
             }
         }
@@ -69,14 +61,13 @@ class Model extends AbstractModel implements ModelInterface
         }
 
         $db = Container::get(FactoryInterface::class)->get($connection);
-        if ($autoIncrementField && $this->$autoIncrementField === null) {
-            $this->$autoIncrementField = (int)$db->insert($table, $fieldValues, true);
+        if ($this->$primaryKey === null) {
+            $this->$primaryKey = (int)$db->insert($table, $fieldValues, true);
         } else {
             $db->insert($table, $fieldValues);
         }
 
         if ($defaultValueFields) {
-            $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
             $query = $this->newQuery()->select($defaultValueFields)->whereEq($primaryKey, $this->$primaryKey);
             if ($r = $query->execute()) {
                 foreach ($r[0] as $field => $value) {
