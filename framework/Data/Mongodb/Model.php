@@ -23,14 +23,6 @@ class Model extends AbstractModel
     }
 
     /**
-     * @return array =model_fields(new static)
-     */
-    public function intFields(): array
-    {
-        return Container::get(InferrerInterface::class)->intFields(static::class);
-    }
-
-    /**
      * bool, int, float, string, array, objectid
      *
      * @return array =model_var(new static)

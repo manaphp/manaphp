@@ -233,34 +233,6 @@ class MongodbCommand extends Command
             $str .= '    }' . PHP_EOL;
         }
 
-        if ($optimized) {
-            $str .= PHP_EOL;
-            $str .= '    public function fields()' . PHP_EOL;
-            $str .= '    {' . PHP_EOL;
-            $str .= '        return [' . PHP_EOL;
-            foreach ($fields as $field) {
-                $str .= "            '$field'," . PHP_EOL;
-            }
-            $str .= '        ];' . PHP_EOL;
-            $str .= '    }' . PHP_EOL;
-        }
-
-        if ($optimized && !$hasPendingType) {
-            $str .= PHP_EOL;
-            $str .= '    public function intFields()' . PHP_EOL;
-            $str .= '    {' . PHP_EOL;
-            $str .= '        return [' . PHP_EOL;
-            foreach ($fieldTypes as $field => $type) {
-                if ($type !== 'int') {
-                    continue;
-                }
-
-                $str .= "            '$field'," . PHP_EOL;
-            }
-            $str .= '        ];' . PHP_EOL;
-            $str .= '    }' . PHP_EOL;
-        }
-
         $str .= '}';
 
         return $str;

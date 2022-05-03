@@ -12,14 +12,6 @@ use ManaPHP\Helper\Container;
 
 class Model extends AbstractModel implements ModelInterface
 {
-    /**
-     * @return array =model_fields(new static)
-     */
-    public function intFields(): array
-    {
-        return Container::get(InferrerInterface::class)->intFields(static::class);
-    }
-
     public function getNextAutoIncrementId(int $step = 1): ?int
     {
         return null;

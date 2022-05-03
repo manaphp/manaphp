@@ -210,19 +210,6 @@ class DbCommand extends Command
             $str .= '    }' . PHP_EOL;
         }
 
-        if ($optimized) {
-            $str .= PHP_EOL;
-            $str .= '    public function fields(): array' . PHP_EOL;
-            $str .= '    {' . PHP_EOL;
-            $str .= '        return [' . PHP_EOL;
-            foreach ($fields as $field) {
-                $field = $camelized ? Str::camelize($field) : $field;
-                $str .= "            '$field'," . PHP_EOL;
-            }
-            $str .= '        ];' . PHP_EOL;
-            $str .= '    }' . PHP_EOL;
-        }
-
         $autoIncField = $metadata[Db::METADATA_AUTO_INCREMENT_KEY];
         if ($optimized) {
             $str .= PHP_EOL;
@@ -233,20 +220,6 @@ class DbCommand extends Command
             } else {
                 $str .= '        return null;' . PHP_EOL;
             }
-            $str .= '    }' . PHP_EOL;
-        }
-
-        if ($optimized) {
-            $intFields = (array)$metadata[Db::METADATA_INT_TYPE_ATTRIBUTES];
-
-            $str .= PHP_EOL;
-            $str .= '    public function intFields(): array' . PHP_EOL;
-            $str .= '    {' . PHP_EOL;
-            $str .= '        return [' . PHP_EOL;
-            foreach ($intFields as $field) {
-                $str .= "            '$field'," . PHP_EOL;
-            }
-            $str .= '        ];' . PHP_EOL;
             $str .= '    }' . PHP_EOL;
         }
 
