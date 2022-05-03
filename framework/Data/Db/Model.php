@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Db;
 
 use ManaPHP\Data\AbstractModel;
-use ManaPHP\Data\Db\Model\InferrerInterface;
 use ManaPHP\Data\Model\ExpressionInterface;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Exception\MisuseException;

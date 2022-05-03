@@ -5,7 +5,6 @@ namespace ManaPHP\Data\Db\Model;
 
 use ManaPHP\Component;
 use ManaPHP\Data\Db;
-use ManaPHP\Data\Db\ModelInterface;
 
 /**
  * @property-read \ManaPHP\ConfigInterface              $config
