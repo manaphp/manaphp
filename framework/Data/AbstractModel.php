@@ -564,7 +564,8 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             } elseif (str_contains(',created_date,createdDate,updated_date,updatedDate,', $needle)) {
                 $data[$field] = (int)date('ymd', $current_time);
             } elseif (str_contains(',created_by,createdBy,updated_by,updatedBy', $needle)) {
-                $data[$field] = in_array($field, $this->intFields(), true) ? $user_id : $user_name;
+                $data[$field] = in_array($field, $this->_modelManager->getIntFields(static::class), true) ? $user_id
+                    : $user_name;
             }
         }
 
@@ -592,7 +593,8 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             } elseif (str_contains(',updated_date,updatedDate,', $needle)) {
                 $data[$field] = (int)date('ymd', $current_time);
             } elseif (str_contains(',updated_by,updatedBy', $needle)) {
-                $data[$field] = in_array($field, $this->intFields(), true) ? $user_id : $user_name;
+                $data[$field] = in_array($field, $this->_modelManager->getIntFields(static::class), true) ? $user_id
+                    : $user_name;
             }
         }
 

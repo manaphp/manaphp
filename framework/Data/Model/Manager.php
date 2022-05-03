@@ -35,6 +35,7 @@ class Manager extends Component implements ManagerInterface
     protected array $columnMap = [];
     protected array $fillable = [];
     protected array $dateFormat = [];
+    protected array $intFields = [];
 
     protected function getClassReflection(string $model): ReflectionClass
     {
@@ -268,5 +269,19 @@ class Manager extends Component implements ManagerInterface
         }
 
         return $dateFormat;
+    }
+
+    protected function getIntFieldsInternal(string $model): array
+    {
+        return $this->inferrer->intFields($model);
+    }
+
+    public function getIntFields(string $model): array
+    {
+        if (($intFields = $this->intFields[$model] ?? null) === null) {
+            $intFields = $this->intFields[$model] = $this->getIntFieldsInternal($model);
+        }
+
+        return $intFields;
     }
 }

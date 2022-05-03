@@ -91,6 +91,7 @@ class Validator extends Component implements ValidatorInterface
             throw new ValidateFailedException([$field => $this->createError('required', $field)]);
         }
 
+        $intFields = $this->modelManager->getIntFields($model::class);
         foreach ((array)$rules as $k => $v) {
             if (is_int($k)) {
                 if ($v instanceof Closure) {
@@ -104,7 +105,7 @@ class Validator extends Component implements ValidatorInterface
                     }
                     continue;
                 } elseif (str_contains($v, '-')) {
-                    $validate = in_array($field, $model->intFields(), true) ? 'range' : 'length';
+                    $validate = in_array($field, $intFields, true) ? 'range' : 'length';
                     $parameter = $v;
                 } else {
                     $validate = $v;

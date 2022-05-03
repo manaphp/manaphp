@@ -11,8 +11,6 @@ use ManaPHP\Data\Relation\HasOne;
 
 interface ModelInterface
 {
-    public function intFields(): ?array;
-
     public function rules(): array;
 
     public static function query(?string $alias = null): QueryInterface;

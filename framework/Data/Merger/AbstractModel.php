@@ -28,14 +28,6 @@ abstract class AbstractModel extends \ManaPHP\Data\AbstractModel
         return Container::get(FieldsInfererInterface::class)->fields($this);
     }
 
-    /**
-     * @return array =model_fields(new static)
-     */
-    public function intFields(): array
-    {
-        return $this->getModel()->intFields();
-    }
-
     public function getNextAutoIncrementId(int $step = 1): int
     {
         throw new NotSupportedException(__METHOD__);

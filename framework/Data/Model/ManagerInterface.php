@@ -24,4 +24,6 @@ interface ManagerInterface
     public function getFillable(string $model): array;
 
     public function getDateFormat(string $model): string;
+
+    public function getIntFields(string $model): array;
 }
