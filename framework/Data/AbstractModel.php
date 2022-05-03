@@ -448,7 +448,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function load(?array $fields = null): static
     {
-        $fields = $fields ?? $this->_modelManager->getFillableFields(static::class);
+        $fields = $fields ?? $this->_modelManager->getFillable(static::class);
 
         $request = Container::get(RequestInterface::class);
 
@@ -472,7 +472,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
     public function fill(array $kv): static
     {
-        return $this->assign($kv, $this->_modelManager->getFillableFields(static::class));
+        return $this->assign($kv, $this->_modelManager->getFillable(static::class));
     }
 
     /**

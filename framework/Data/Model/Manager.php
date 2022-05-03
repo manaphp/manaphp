@@ -24,23 +24,23 @@ use ReflectionAttribute;
  */
 class Manager extends Component implements ManagerInterface
 {
-    protected array $rClasses = [];
-    protected array $tables = [];
-    protected array $connections = [];
-    protected array $primaryKeys = [];
-    protected array $foreignedKeys = [];
+    protected array $rClass = [];
+    protected array $table = [];
+    protected array $connection = [];
+    protected array $primaryKey = [];
+    protected array $foreignedKey = [];
     protected array $fields = [];
     protected array $jsonFields = [];
-    protected array $autoIncrementFields = [];
+    protected array $autoIncrementField = [];
     protected array $columnMap = [];
-    protected array $fillableFields = [];
+    protected array $fillable = [];
     protected array $dateFormat = [];
 
     protected function getClassReflection(string $model): ReflectionClass
     {
-        if (($rClass = $this->rClasses[$model] ?? null) === null) {
+        if (($rClass = $this->rClass[$model] ?? null) === null) {
             $rClass = new ReflectionClass($model);
-            $this->rClasses[$model] = $rClass;
+            $this->rClass[$model] = $rClass;
         }
 
         return $rClass;
@@ -69,8 +69,8 @@ class Manager extends Component implements ManagerInterface
 
     public function getTable(string $model): string
     {
-        if (($table = $this->tables[$model] ?? null) === null) {
-            $table = $this->tables[$model] = $this->getTableInternal($model);
+        if (($table = $this->table[$model] ?? null) === null) {
+            $table = $this->table[$model] = $this->getTableInternal($model);
         }
 
         return $table;
@@ -88,8 +88,8 @@ class Manager extends Component implements ManagerInterface
 
     public function getConnection(string $model): string
     {
-        if (($connection = $this->connections[$model] ?? null) === null) {
-            $connection = $this->connections[$model] = $this->getConnectionInternal($model);
+        if (($connection = $this->connection[$model] ?? null) === null) {
+            $connection = $this->connection[$model] = $this->getConnectionInternal($model);
         }
 
         return $connection;
@@ -107,8 +107,8 @@ class Manager extends Component implements ManagerInterface
 
     public function getPrimaryKey(string $model): string
     {
-        if (($primaryKey = $this->primaryKeys[$model] ?? null) === null) {
-            $primaryKey = $this->primaryKeys[$model] = $this->getPrimaryKeyInternal($model);
+        if (($primaryKey = $this->primaryKey[$model] ?? null) === null) {
+            $primaryKey = $this->primaryKey[$model] = $this->getPrimaryKeyInternal($model);
         }
 
         return $primaryKey;
@@ -141,8 +141,8 @@ class Manager extends Component implements ManagerInterface
 
     public function getForeignedKey(string $model): string
     {
-        if (($foreignedKey = $this->foreignedKeys[$model] ?? null) === null) {
-            $foreignedKey = $this->foreignedKeys[$foreignedKey] = $this->getForeignedKeyInternal($model);
+        if (($foreignedKey = $this->foreignedKey[$model] ?? null) === null) {
+            $foreignedKey = $this->foreignedKey[$foreignedKey] = $this->getForeignedKeyInternal($model);
         }
 
         return $foreignedKey;
@@ -193,10 +193,10 @@ class Manager extends Component implements ManagerInterface
 
     public function getAutoIncrementField(string $model): ?string
     {
-        if (($autoIncrementField = $this->autoIncrementFields[$model] ?? null) === null
-            && !array_key_exists($model, $this->autoIncrementFields)
+        if (($autoIncrementField = $this->autoIncrementField[$model] ?? null) === null
+            && !array_key_exists($model, $this->autoIncrementField)
         ) {
-            $autoIncrementField = $this->autoIncrementFields[$model] = $this->getAutoIncrementFieldInternal($model);
+            $autoIncrementField = $this->autoIncrementField[$model] = $this->getAutoIncrementFieldInternal($model);
         }
 
         return $autoIncrementField;
@@ -222,33 +222,33 @@ class Manager extends Component implements ManagerInterface
         return $columnMap;
     }
 
-    protected function getFillableFieldsInternal(string $model): array
+    protected function getFillableInternal(string $model): array
     {
         if (($attribute = $this->getClassAttribute($model, Fillable::class)) !== null) {
             /** @var Fillable $attribute */
-            $fillableFields = $attribute->get();
+            $fillable = $attribute->get();
         } elseif (($attribute = $this->getClassAttribute($model, Guarded::class)) !== null) {
             /** @var Guarded $attribute */
             $guarded = $attribute->get();
             foreach ($this->getFields($model) as $field) {
                 if (!in_array($field, $guarded, true)) {
-                    $fillableFields[] = $field;
+                    $fillable[] = $field;
                 }
             }
         } else {
-            $fillableFields[] = array_keys($this->those->get($model)->rules());
+            $fillable[] = array_keys($this->those->get($model)->rules());
         }
 
-        return $fillableFields;
+        return $fillable;
     }
 
-    public function getFillableFields(string $model): array
+    public function getFillable(string $model): array
     {
-        if (($fillableFields = $this->fillableFields[$model] ?? null) === null) {
-            $fillableFields = $this->fillableFields[$model] = $this->getFillableFieldsInternal($model);
+        if (($fillable = $this->fillable[$model] ?? null) === null) {
+            $fillable = $this->fillable[$model] = $this->getFillableInternal($model);
         }
 
-        return $fillableFields;
+        return $fillable;
     }
 
     protected function getDateFormatInternal(string $model): string
