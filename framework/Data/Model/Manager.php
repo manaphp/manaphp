@@ -7,6 +7,7 @@ use ManaPHP\Component;
 use ManaPHP\Data\Model\Attribute\AutoIncrementField;
 use ManaPHP\Data\Model\Attribute\ColumnMap;
 use ManaPHP\Data\Model\Attribute\Connection;
+use ManaPHP\Data\Model\Attribute\DateFormat;
 use ManaPHP\Data\Model\Attribute\Fillable;
 use ManaPHP\Data\Model\Attribute\ForeignedKey;
 use ManaPHP\Data\Model\Attribute\Guarded;
@@ -33,6 +34,7 @@ class Manager extends Component implements ManagerInterface
     protected array $autoIncrementFields = [];
     protected array $columnMap = [];
     protected array $fillableFields = [];
+    protected array $dateFormat = [];
 
     protected function getClassReflection(string $model): ReflectionClass
     {
@@ -208,5 +210,21 @@ class Manager extends Component implements ManagerInterface
         }
 
         return $fillableFields;
+    }
+
+    public function getDateFormat(string $model): string
+    {
+        if (($dateFormat = $this->dateFormat[$model] ?? null) === null) {
+            if (($attribute = $this->getClassAttribute($model, DateFormat::class)) !== null) {
+                /**@var DateFormat $attribute */
+                $dateFormat = $attribute->get();
+            } else {
+                $dateFormat = 'U';
+            }
+
+            $this->dateFormat[$model] = $dateFormat;
+        }
+
+        return $dateFormat;
     }
 }

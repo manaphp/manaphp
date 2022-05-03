@@ -22,4 +22,6 @@ interface ManagerInterface
     public function getColumnMap(string $model): array;
 
     public function getFillableFields(string $model): array;
+
+    public function getDateFormat(string $model): string;
 }

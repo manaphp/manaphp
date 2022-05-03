@@ -247,7 +247,8 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
             $max = (int)(is_numeric($max) ? $max : strtotime($max . ' 23:59:59'));
         }
 
-        if ($format = $this->model->dateFormat(($pos = strpos($field, '.')) ? substr($field, $pos + 1) : $field)) {
+        $model = $this->model;
+        if ($format = $this->modelManager->getDateFormat($model::class)) {
             if (is_int($min)) {
                 $min = date($format, $min);
             }
@@ -540,7 +541,8 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
     public function whereDate(string $field, int|string $date): static
     {
         if ($this->model) {
-            $format = $this->model->dateFormat($field);
+            $model = $this->model;
+            $format = $this->modelManager->getDateFormat($model::class);
         } else {
             $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }
@@ -566,7 +568,8 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
     public function whereMonth(string $field, int|string $date): static
     {
         if ($this->model) {
-            $format = $this->model->dateFormat($field);
+            $model = $this->model;
+            $format = $this->modelManager->getDateFormat($model::class);
         } else {
             $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }
@@ -592,7 +595,8 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
     public function whereYear(string $field, int|string $date): static
     {
         if ($this->model) {
-            $format = $this->model->dateFormat($field);
+            $model = $this->model;
+            $format = $this->modelManager->getDateFormat($model::class);
         } else {
             $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }

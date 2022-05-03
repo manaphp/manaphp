@@ -468,7 +468,7 @@ class Validator extends Component implements ValidatorInterface
             return null;
         }
 
-        return date($parameter ?: $model->dateFormat($field), $ts);
+        return date($parameter ?: $this->modelManager->getDateFormat($model::class), $ts);
     }
 
     /** @noinspection PhpUnusedParameterInspection */

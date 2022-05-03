@@ -57,23 +57,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
-     * @param string $field =model_field(new static)
-     *
-     * @return string
-     */
-    public function dateFormat(string $field): string
-    {
-        if (isset($this->_snapshot[$field])) {
-            $ts = is_numeric($this->_snapshot[$field]);
-        } elseif (isset($this->$field)) {
-            $ts = is_numeric($this->$field);
-        } else {
-            $ts = in_array($field, $this->intFields(), true);
-        }
-        return $ts ? 'U' : 'Y-m-d H:i:s';
-    }
-
-    /**
      * @return array =model_var(new static) ?: [$field => \PHPSTORM_META\validator_rule()]
      */
     public function rules(): array
@@ -553,6 +536,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     public function getAutoCreatedData(): array
     {
         $current_time = time();
+        $dateFormat = $this->_modelManager->getDateFormat(static::class);
 
         $identity = Container::get(IdentityInterface::class);
         $user_id = $identity->getId(0);
@@ -566,9 +550,9 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
             $needle = ",$field,";
             if (str_contains(',created_time,createdTime,created_at,createdAt,', $needle)) {
-                $data[$field] = date($this->dateFormat($field), $current_time);
+                $data[$field] = date($dateFormat, $current_time);
             } elseif (str_contains(',updated_time,updatedTime,updated_at,updatedAt,', $needle)) {
-                $data[$field] = date($this->dateFormat($field), $current_time);
+                $data[$field] = date($dateFormat, $current_time);
             } elseif (str_contains(',creator_id,creatorId,created_id,createdId,', $needle)) {
                 $data[$field] = $user_id;
             } elseif (str_contains(',updator_id,updatorId,updated_id,updatedId,', $needle)) {
@@ -594,12 +578,13 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $identity = Container::get(IdentityInterface::class);
         $user_id = $identity->getId(0);
         $user_name = $identity->getName('');
+        $dateFormat = $this->_modelManager->getDateFormat(static::class);
 
         $data = [];
         foreach ($this->_modelManager->getFields(static::class) as $field) {
             $needle = ",$field,";
             if (str_contains(',updated_time,updatedTime,updated_at,updatedAt,', $needle)) {
-                $data[$field] = date($this->dateFormat($field), $current_time);
+                $data[$field] = date($dateFormat, $current_time);
             } elseif (str_contains(',updator_id,updatorId,updated_id,updatedId,', $needle)) {
                 $data[$field] = $user_id;
             } elseif (str_contains(',updator_name,updatorName,updated_name,updatedName,', $needle)) {
