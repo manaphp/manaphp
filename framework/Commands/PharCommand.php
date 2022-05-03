@@ -15,10 +15,8 @@ class PharCommand extends Command
 {
     /**
      * create manacli.phar file
-     *
-     * @return void
      */
-    public function manacliAction()
+    public function manacliAction(): void
     {
         $this->alias->set('@phar', '@runtime/manacli_phar');
         $pharFile = $this->alias->resolve('@root/manacli.phar');
