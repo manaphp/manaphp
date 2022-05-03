@@ -231,6 +231,7 @@ class Manager extends Component implements ManagerInterface
         } elseif (($attribute = $this->getClassAttribute($model, Guarded::class)) !== null) {
             /** @var Guarded $attribute */
             $guarded = $attribute->get();
+            $fillable = [];
             foreach ($this->getFields($model) as $field) {
                 if (!in_array($field, $guarded, true)) {
                     $fillable[] = $field;
