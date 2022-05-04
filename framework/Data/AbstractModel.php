@@ -573,16 +573,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         return $data;
     }
 
-    protected function existsInternal(): bool
-    {
-        $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
-        if ($this->$primaryKey === null) {
-            return false;
-        } else {
-            return $this->newQuery()->where([$primaryKey => $this->$primaryKey])->forceUseMaster()->exists();
-        }
-    }
-
     /**
      * Inserts or updates a model instance. Returning true on success or false otherwise.
      *
