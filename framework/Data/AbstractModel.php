@@ -30,14 +30,10 @@ use ReflectionClass;
 
 abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSerializable
 {
-    protected ManagerInterface $_modelManager;
-
     protected false|array $_snapshot = [];
 
     public function __construct(array $data = [])
     {
-        $this->_modelManager = Container::get(ManagerInterface::class);
-
         if ($data) {
             $this->_snapshot = $data;
 
@@ -420,7 +416,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function load(?array $fields = null): static
     {
-        $fields = $fields ?? $this->_modelManager->getFillable(static::class);
+        $fields = $fields ?? Container::get(ManagerInterface::class)->getFillable(static::class);
 
         $request = Container::get(RequestInterface::class);
 
@@ -444,7 +440,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
     public function fill(array $kv): static
     {
-        return $this->assign($kv, $this->_modelManager->getFillable(static::class));
+        return $this->assign($kv, Container::get(ManagerInterface::class)->getFillable(static::class));
     }
 
     /**
@@ -507,15 +503,16 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
     public function getAutoCreatedData(): array
     {
+        $modelManager = Container::get(ManagerInterface::class);
         $current_time = time();
-        $dateFormat = $this->_modelManager->getDateFormat(static::class);
+        $dateFormat = $modelManager->getDateFormat(static::class);
 
         $identity = Container::get(IdentityInterface::class);
         $user_id = $identity->getId(0);
         $user_name = $identity->getName('');
 
         $data = [];
-        foreach ($this->_modelManager->getFields(static::class) as $field) {
+        foreach ($modelManager->getFields(static::class) as $field) {
             if ($this->$field !== null) {
                 continue;
             }
@@ -536,7 +533,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             } elseif (str_contains(',created_date,createdDate,updated_date,updatedDate,', $needle)) {
                 $data[$field] = (int)date('ymd', $current_time);
             } elseif (str_contains(',created_by,createdBy,updated_by,updatedBy', $needle)) {
-                $data[$field] = in_array($field, $this->_modelManager->getIntFields(static::class), true) ? $user_id
+                $data[$field] = in_array($field, $modelManager->getIntFields(static::class), true) ? $user_id
                     : $user_name;
             }
         }
@@ -551,10 +548,12 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $identity = Container::get(IdentityInterface::class);
         $user_id = $identity->getId(0);
         $user_name = $identity->getName('');
-        $dateFormat = $this->_modelManager->getDateFormat(static::class);
+        $modelManager = Container::get(ManagerInterface::class);
+
+        $dateFormat = $modelManager->getDateFormat(static::class);
 
         $data = [];
-        foreach ($this->_modelManager->getFields(static::class) as $field) {
+        foreach ($modelManager->getFields(static::class) as $field) {
             $needle = ",$field,";
             if (str_contains(',updated_time,updatedTime,updated_at,updatedAt,', $needle)) {
                 $data[$field] = date($dateFormat, $current_time);
@@ -565,7 +564,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             } elseif (str_contains(',updated_date,updatedDate,', $needle)) {
                 $data[$field] = (int)date('ymd', $current_time);
             } elseif (str_contains(',updated_by,updatedBy', $needle)) {
-                $data[$field] = in_array($field, $this->_modelManager->getIntFields(static::class), true) ? $user_id
+                $data[$field] = in_array($field, $modelManager->getIntFields(static::class), true) ? $user_id
                     : $user_name;
             }
         }
@@ -586,7 +585,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             $this->load($fields);
         }
 
-        $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
+        $primaryKey = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
         if ($this->_snapshot || $this->$primaryKey) {
             return $this->update();
         } else {
@@ -709,7 +708,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $snapshot = $this->_snapshot;
 
         $changed = [];
-        foreach ($this->_modelManager->getFields(static::class) as $field) {
+        foreach (Container::get(ManagerInterface::class)->getFields(static::class) as $field) {
             if (isset($snapshot[$field])) {
                 if ($this->{$field} !== $snapshot[$field]) {
                     $changed[] = $field;
@@ -795,10 +794,11 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function belongsTo(string $thatModel, ?string $thisField = null): BelongsTo
     {
+        $modelManager = Container::get(ManagerInterface::class);
         return new BelongsTo(
             static::class,
-            $thisField ?? $this->_modelManager->getForeignedKey($thatModel),
-            $thatModel, $this->_modelManager->getPrimaryKey($thatModel)
+            $thisField ?? $modelManager->getForeignedKey($thatModel),
+            $thatModel, $modelManager->getPrimaryKey($thatModel)
         );
     }
 
@@ -810,10 +810,12 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function hasOne(string $thatModel, ?string $thatField = null): HasOne
     {
+        $modelManager = Container::get(ManagerInterface::class);
+
         return new HasOne(
             static::class,
-            $this->_modelManager->getPrimaryKey(static::class), $thatModel,
-            $thatField ?? $this->_modelManager->getForeignedKey(static::class)
+            $modelManager->getPrimaryKey(static::class), $thatModel,
+            $thatField ?? $modelManager->getForeignedKey(static::class)
         );
     }
 
@@ -825,20 +827,24 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function hasMany(string $thatModel, ?string $thatField = null): HasMany
     {
-        $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
-        $foreignedKey = $this->_modelManager->getforeignedKey(static::class);
+        $modelManager = Container::get(ManagerInterface::class);
+
+        $primaryKey = $modelManager->getPrimaryKey(static::class);
+        $foreignedKey = $modelManager->getforeignedKey(static::class);
         return new HasMany(static::class, $primaryKey, $thatModel, $thatField ?? $foreignedKey);
     }
 
     public function hasManyToMany(string $thatModel, string $pivotModel): HasManyToMany
     {
+        $modelManager = Container::get(ManagerInterface::class);
+
         return new HasManyToMany(
             static::class,
-            $this->_modelManager->getPrimaryKey(static::class),
+            $modelManager->getPrimaryKey(static::class),
             $thatModel,
-            $this->_modelManager->getPrimaryKey($thatModel),
-            $pivotModel, $this->_modelManager->getForeignedKey(static::class),
-            $this->_modelManager->getPrimaryKey($thatModel),
+            $modelManager->getPrimaryKey($thatModel),
+            $pivotModel, $modelManager->getForeignedKey(static::class),
+            $modelManager->getPrimaryKey($thatModel),
         );
     }
 
@@ -850,11 +856,12 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function hasManyOthers(string $thatModel, ?string $thisFilter = null): HasManyOthers
     {
-        $foreingedKey = $this->_modelManager->getForeignedKey($thatModel);
+        $modelManager = Container::get(ManagerInterface::class);
+        $foreingedKey = $modelManager->getForeignedKey($thatModel);
 
         if ($thisFilter === null) {
             $keys = [];
-            foreach ($this->_modelManager->getFields(static::class) as $field) {
+            foreach ($modelManager->getFields(static::class) as $field) {
                 if ($field === $foreingedKey || $field === 'id' || $field === '_id') {
                     continue;
                 }
@@ -879,8 +886,8 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
         return new HasManyOthers(
             static::class, $thisFilter,
-            $this->_modelManager->getForeignedKey($thatModel), $thatModel,
-            $this->_modelManager->getPrimaryKey($thatModel)
+            $modelManager->getForeignedKey($thatModel), $thatModel,
+            $modelManager->getPrimaryKey($thatModel)
         );
     }
 
@@ -957,7 +964,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             $data['*changed_fields*'] = $changedFields;
         }
 
-        foreach ($this->_modelManager->getFields(static::class) as $field) {
+        foreach (Container::get(ManagerInterface::class)->getFields(static::class) as $field) {
             if (!isset($this->$field)) {
                 continue;
             }

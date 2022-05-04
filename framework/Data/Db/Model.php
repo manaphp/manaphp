@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Db;
 
 use ManaPHP\Data\AbstractModel;
+use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Container;
@@ -20,7 +21,9 @@ class Model extends AbstractModel implements ModelInterface
 
     public function create(): static
     {
-        $fields = $this->_modelManager->getFields(static::class);
+        $modelManager = Container::get(ManagerInterface::class);
+
+        $fields = $modelManager->getFields(static::class);
         foreach ($this->getAutoCreatedData() as $field => $value) {
             if ($this->$field === null) {
                 $this->$field = $value;
@@ -29,7 +32,7 @@ class Model extends AbstractModel implements ModelInterface
 
         $this->validate($fields);
 
-        $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
+        $primaryKey = $modelManager->getPrimaryKey(static::class);
 
         list($connection, $table) = Container::get(ShardingInterface::class)->getUniqueShard(static::class, $this);
 
@@ -46,7 +49,7 @@ class Model extends AbstractModel implements ModelInterface
             }
         }
 
-        foreach ($this->_modelManager->getColumnMap(static::class) as $propery => $column) {
+        foreach ($modelManager->getColumnMap(static::class) as $propery => $column) {
             if (array_key_exists($propery, $fieldValues)) {
                 $fieldValues[$column] = $fieldValues[$propery];
                 unset($fieldValues[$propery]);
@@ -79,7 +82,9 @@ class Model extends AbstractModel implements ModelInterface
 
     public function update(): static
     {
-        $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
+        $modelManager = Container::get(ManagerInterface::class);
+
+        $primaryKey = $modelManager->getPrimaryKey(static::class);
 
         if ($this->$primaryKey === null) {
             throw new MisuseException('missing primary key value');
@@ -94,7 +99,7 @@ class Model extends AbstractModel implements ModelInterface
             throw new MisuseException('updating model primary key value is not support');
         }
 
-        $fields = $this->_modelManager->getFields(static::class);
+        $fields = $modelManager->getFields(static::class);
 
         foreach ($fields as $field) {
             if ($this->$field === null) {
@@ -136,7 +141,7 @@ class Model extends AbstractModel implements ModelInterface
             }
         }
 
-        $columnMap = $this->_modelManager->getColumnMap(static::class);
+        $columnMap = $modelManager->getColumnMap(static::class);
         foreach ($columnMap as $property => $column) {
             if (array_key_exists($property, $fieldValues)) {
                 $fieldValues[$column] = $fieldValues[$property];
@@ -157,7 +162,7 @@ class Model extends AbstractModel implements ModelInterface
 
     public function delete(): static
     {
-        $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
+        $primaryKey = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
 
         if ($this->$primaryKey === null) {
             throw new MisuseException('missing primary key value');
