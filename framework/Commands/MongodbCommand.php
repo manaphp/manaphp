@@ -36,7 +36,7 @@ class MongodbCommand extends Command
     /**
      * generate model file from base64 encoded string
      *
-     * @param string $input     the base64 encoded json string
+     * @param string $input the base64 encoded json string
      * @param string $modelName
      *
      * @return void
@@ -49,7 +49,7 @@ class MongodbCommand extends Command
 
         $fieldTypes = $this->inferFieldTypes([json_parse($input)]);
 
-        $model = $this->renderModel($fieldTypes, $modelName, 'mongodb', '');
+        $model = $this->renderModel($fieldTypes, $modelName);
         $file = '@runtime/mongodb_model/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
         LocalFS::filePut($file, $model);
 
@@ -59,8 +59,8 @@ class MongodbCommand extends Command
     /**
      * generate models file from data files or online data
      *
-     * @param int   $sample    sample size
-     * @param array $db        db name list
+     * @param int   $sample sample size
+     * @param array $db     db name list
      *
      * @return void
      */
@@ -92,8 +92,7 @@ class MongodbCommand extends Command
 
                     $fieldTypes = $this->inferFieldTypes($docs);
                     $modelClass = 'App\Models\\' . $plainClass;
-                    $ns = $defaultDb ? $collection : "$cdb.$collection";
-                    $model = $this->renderModel($fieldTypes, $modelClass, $connection, $ns);
+                    $model = $this->renderModel($fieldTypes, $modelClass);
                     LocalFS::filePut($fileName, $model);
 
                     $this->console->writeLn(sprintf(' `%s` collection saved to `%s`', "$cdb.$collection", $fileName));
@@ -172,13 +171,11 @@ class MongodbCommand extends Command
     /**
      * @param array  $fieldTypes
      * @param string $modelName
-     * @param string $connection
-     * @param string $namespace
      *
      * @return string
      */
-    protected function renderModel(array $fieldTypes, string $modelName, string $connection, string $namespace,
-    ): string {
+    protected function renderModel(array $fieldTypes, string $modelName): string
+    {
         $constants = $this->getConstants($modelName);
 
         $str = '<?php' . PHP_EOL;
