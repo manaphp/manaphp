@@ -618,7 +618,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     {
         $relationManager = Container::get(RelationManager::class);
 
-        $relationManager->earlyLoad($this, [$this], $withs);
+        $relationManager->earlyLoad(static::class, [$this], $withs);
         return $this;
     }
 
