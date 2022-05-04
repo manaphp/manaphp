@@ -5,17 +5,17 @@ namespace ManaPHP\Data\Mongodb\Model;
 
 use ManaPHP\Component;
 use ManaPHP\Data\MongodbInterface;
-use ManaPHP\Helper\Container;
 
 /**
- * @property-read \ManaPHP\Data\Model\ManagerInterface  $modelManager
- * @property-read \ManaPHP\Data\Model\ShardingInterface $sharding
+ * @property-read \ManaPHP\Data\Model\ManagerInterface   $modelManager
+ * @property-read \ManaPHP\Data\Model\ShardingInterface  $sharding
+ * @property-read \ManaPHP\Data\Mongodb\FactoryInterface $mongodbFactory
  */
 class AutoIncrementer extends Component implements AutoIncrementerInterface
 {
     protected function createAutoIncrementIndex(MongodbInterface $mongodb, string $source): bool
     {
-        $autoIncField = $this->modelManager->getAutoIncrementField(static::class);
+        $primaryKey = $this->modelManager->getPrimaryKey(static::class);
 
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $pos);
@@ -32,10 +32,10 @@ class AutoIncrementer extends Component implements AutoIncrementerInterface
             'indexes'       => [
                 [
                     'key'    => [
-                        $autoIncField => 1
+                        $primaryKey => 1
                     ],
                     'unique' => true,
-                    'name'   => $autoIncField
+                    'name'   => $primaryKey
                 ]
             ]
         ];
@@ -49,7 +49,7 @@ class AutoIncrementer extends Component implements AutoIncrementerInterface
     {
         list($connection, $source) = $this->sharding->getUniqueShard($model, []);
 
-        $mongodb = Container::get(FactoryInterface::class)->get($connection);
+        $mongodb = $this->mongodbFactory->get($connection);
 
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $pos);

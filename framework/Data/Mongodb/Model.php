@@ -268,10 +268,6 @@ class Model extends AbstractModel
     {
         $allowNull = $this->isAllowNullValue();
         $fieldTypes = $this->fieldTypes();
-        $autoIncrementField = $this->_modelManager->getAutoIncrementField(static::class);
-        if ($autoIncrementField && !isset($document[$autoIncrementField])) {
-            $document[$autoIncrementField] = $this->getNextAutoIncrementId();
-        }
 
         foreach ($fieldTypes as $field => $type) {
             if (isset($document[$field])) {

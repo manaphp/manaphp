@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Model;
 
 use ManaPHP\Component;
-use ManaPHP\Data\Model\Attribute\AutoIncrementField;
 use ManaPHP\Data\Model\Attribute\ColumnMap;
 use ManaPHP\Data\Model\Attribute\Connection;
 use ManaPHP\Data\Model\Attribute\DateFormat;
@@ -31,7 +30,6 @@ class Manager extends Component implements ManagerInterface
     protected array $foreignedKey = [];
     protected array $fields = [];
     protected array $jsonFields = [];
-    protected array $autoIncrementField = [];
     protected array $columnMap = [];
     protected array $fillable = [];
     protected array $dateFormat = [];
@@ -180,27 +178,6 @@ class Manager extends Component implements ManagerInterface
         }
 
         return $jsonFields;
-    }
-
-    protected function getAutoIncrementFieldInternal(string $model): ?string
-    {
-        if (($attribute = $this->getClassAttribute($model, AutoIncrementField::class)) !== null) {
-            /** @var AutoIncrementField $attribute */
-            return $attribute->get();
-        } else {
-            return $this->getPrimaryKey($model);
-        }
-    }
-
-    public function getAutoIncrementField(string $model): ?string
-    {
-        if (($autoIncrementField = $this->autoIncrementField[$model] ?? null) === null
-            && !array_key_exists($model, $this->autoIncrementField)
-        ) {
-            $autoIncrementField = $this->autoIncrementField[$model] = $this->getAutoIncrementFieldInternal($model);
-        }
-
-        return $autoIncrementField;
     }
 
     protected function getColumnMapInternal(string $model): array
