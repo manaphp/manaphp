@@ -32,6 +32,7 @@ class Manager extends Component implements ManagerInterface
     protected array $fillable = [];
     protected array $dateFormat = [];
     protected array $intFields = [];
+    protected array $rules = [];
 
     protected function getClassReflection(string $model): ReflectionClass
     {
@@ -194,7 +195,7 @@ class Manager extends Component implements ManagerInterface
                 }
             }
         } else {
-            $fillable[] = array_keys($this->those->get($model)->rules());
+            $fillable[] = array_keys($this->getRules($model));
         }
 
         return $fillable;
@@ -240,5 +241,19 @@ class Manager extends Component implements ManagerInterface
         }
 
         return $intFields;
+    }
+
+    protected function getRulesInternal(string $model): array
+    {
+        return $this->those->get($model)->rules();
+    }
+
+    public function getRules(string $model): array
+    {
+        if (($rules = $this->rules[$model] ?? null) === null) {
+            $rules = $this->rules[$model] = $this->getRulesInternal($model);
+        }
+
+        return $rules;
     }
 }

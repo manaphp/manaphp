@@ -7,7 +7,6 @@ use ManaPHP\Cli\Command;
 use ManaPHP\Helper\LocalFS;
 
 /**
- * @property-read \ManaPHP\Data\Model\ThoseInterface   $those
  * @property-read \ManaPHP\Data\Model\ManagerInterface $modelManager
  */
 class ViewCommand extends Command
@@ -224,7 +223,7 @@ HTML;
             $content .= PHP_EOL . <<<HTML
                 create: {
 HTML;
-            $rules = $this->those->get($model)->rules();
+            $rules = $this->modelManager->getRules($model);
             $iniFields = $this->modelManager->getIntFields($model);
             foreach ($fields as $field) {
                 $rule = $rules[$field] ?? [];

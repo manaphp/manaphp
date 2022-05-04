@@ -22,4 +22,6 @@ interface ManagerInterface
     public function getDateFormat(string $model): string;
 
     public function getIntFields(string $model): array;
+
+    public function getRules(string $model): array;
 }
