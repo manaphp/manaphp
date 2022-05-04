@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Db;
 
 use ManaPHP\Data\AbstractModel;
-use ManaPHP\Data\Model\ExpressionInterface;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Container;
@@ -137,22 +136,6 @@ class Model extends AbstractModel implements ModelInterface
             }
         }
 
-        $bind = [];
-        $expressionFields = [];
-        foreach ($fieldValues as $field => $value) {
-            if ($value instanceof ExpressionInterface) {
-                $expressionFields[] = $field;
-                $compiled = $value->compile($this, $field);
-
-                $fieldValues[] = $compiled[0];
-                if (count($compiled) !== 1) {
-                    unset($compiled[0]);
-                    $bind = $bind ? array_merge($bind, $compiled) : $compiled;
-                }
-                unset($fieldValues[$field]);
-            }
-        }
-
         $columnMap = $this->_modelManager->getColumnMap(static::class);
         foreach ($columnMap as $property => $column) {
             if (array_key_exists($property, $fieldValues)) {
@@ -162,18 +145,7 @@ class Model extends AbstractModel implements ModelInterface
         }
 
         $db = Container::get(FactoryInterface::class)->get($connection);
-        $db->update(
-            $table, $fieldValues, [$columnMap[$primaryKey] ?? $primaryKey => $this->$primaryKey], $bind
-        );
-
-        if ($expressionFields) {
-            $query = $this->newQuery()->select($expressionFields)->whereEq($primaryKey, $this->$primaryKey);
-            if ($rs = $query->execute()) {
-                foreach ((array)$rs[0] as $field => $value) {
-                    $this->$field = $value;
-                }
-            }
-        }
+        $db->update($table, $fieldValues, [$columnMap[$primaryKey] ?? $primaryKey => $this->$primaryKey]);
 
         $this->fireEvent('model:updated');
         $this->fireEvent('model:saved');

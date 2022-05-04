@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Mongodb;
 
 use ManaPHP\Data\AbstractModel;
-use ManaPHP\Data\Model\ExpressionInterface;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Data\Mongodb\Model\InferrerInterface;
 use ManaPHP\Exception\MisuseException;
@@ -184,36 +183,8 @@ class Model extends AbstractModel
             }
         }
 
-        $expressions = [];
-        $expressionFields = [];
-        foreach ($fieldValues as $field => $value) {
-            if ($value instanceof ExpressionInterface) {
-                $expressionFields[] = $field;
-                $expressions[$field] = $value;
-                unset($fieldValues[$field]);
-            }
-        }
-
-        if ($expressions) {
-            $fieldValues = ['$set' => $fieldValues];
-            foreach ($expressions as $field => $value) {
-                $compiled = $value->compile($this, $field);
-                $fieldValues = $fieldValues ? array_merge_recursive($fieldValues, $compiled) : $compiled;
-            }
-        }
-
         $mongodb = Container::get(FactoryInterface::class)->get($connection);
         $mongodb->update($collection, $fieldValues, [$primaryKey => $this->$primaryKey]);
-
-        if ($expressionFields) {
-            $expressionFields['_id'] = false;
-            $query = $this->newQuery()->where([$primaryKey => $this->$primaryKey])->select($expressionFields);
-            if ($rs = $query->execute()) {
-                foreach ((array)$rs[0] as $field => $value) {
-                    $this->$field = $value;
-                }
-            }
-        }
 
         $this->fireEvent('model:updated');
         $this->fireEvent('model:saved');
