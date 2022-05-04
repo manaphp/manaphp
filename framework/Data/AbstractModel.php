@@ -18,7 +18,6 @@ use ManaPHP\Data\Relation\HasManyToMany;
 use ManaPHP\Data\Relation\HasOne;
 use ManaPHP\Data\Relation\ManagerInterface as RelationManager;
 use ManaPHP\Event\ManagerInterface as EventManager;
-use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;
