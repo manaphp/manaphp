@@ -15,8 +15,6 @@ interface ManagerInterface
 
     public function getFields(string $model): array;
 
-    public function getJsonFields(string $model): array;
-
     public function getColumnMap(string $model): array;
 
     public function getFillable(string $model): array;

@@ -113,12 +113,6 @@ class Model extends AbstractModel
 
         $fieldValues['_id'] = $this->_id;
 
-        foreach ($this->_modelManager->getJsonFields(static::class) as $field) {
-            if (is_array($this->$field)) {
-                $fieldValues[$field] = json_stringify($this->$field);
-            }
-        }
-
         $mongodb = Container::get(FactoryInterface::class)->get($connection);
         $mongodb->insert($collection, $fieldValues);
 
@@ -187,12 +181,6 @@ class Model extends AbstractModel
                 }
             } elseif (!isset($snapshot[$field]) || $snapshot[$field] !== $this->$field) {
                 $fieldValues[$field] = $this->$field;
-            }
-        }
-
-        foreach ($this->_modelManager->getJsonFields(static::class) as $field) {
-            if (isset($fieldValues[$field]) && is_array($fieldValues[$field])) {
-                $fieldValues[$field] = json_stringify($fieldValues[$field]);
             }
         }
 

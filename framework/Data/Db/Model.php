@@ -47,12 +47,6 @@ class Model extends AbstractModel implements ModelInterface
             }
         }
 
-        foreach ($this->_modelManager->getJsonFields(static::class) as $field) {
-            if (is_array($this->$field)) {
-                $fieldValues[$field] = json_stringify($this->$field);
-            }
-        }
-
         foreach ($this->_modelManager->getColumnMap(static::class) as $propery => $column) {
             if (array_key_exists($propery, $fieldValues)) {
                 $fieldValues[$column] = $fieldValues[$propery];
@@ -140,12 +134,6 @@ class Model extends AbstractModel implements ModelInterface
                 }
             } elseif (!isset($snapshot[$field]) || $snapshot[$field] !== $this->$field) {
                 $fieldValues[$field] = $this->$field;
-            }
-        }
-
-        foreach ($this->_modelManager->getJsonFields(static::class) as $field) {
-            if (isset($fieldValues[$field]) && is_array($fieldValues[$field])) {
-                $fieldValues[$field] = json_stringify($fieldValues[$field]);
             }
         }
 

@@ -10,7 +10,6 @@ use ManaPHP\Data\Model\Attribute\DateFormat;
 use ManaPHP\Data\Model\Attribute\Fillable;
 use ManaPHP\Data\Model\Attribute\ForeignedKey;
 use ManaPHP\Data\Model\Attribute\Guarded;
-use ManaPHP\Data\Model\Attribute\JsonFields;
 use ManaPHP\Data\Model\Attribute\PrimaryKey;
 use ManaPHP\Data\Model\Attribute\Table;
 use ManaPHP\Helper\Str;
@@ -29,7 +28,6 @@ class Manager extends Component implements ManagerInterface
     protected array $primaryKey = [];
     protected array $foreignedKey = [];
     protected array $fields = [];
-    protected array $jsonFields = [];
     protected array $columnMap = [];
     protected array $fillable = [];
     protected array $dateFormat = [];
@@ -159,25 +157,6 @@ class Manager extends Component implements ManagerInterface
         }
 
         return $fields;
-    }
-
-    protected function getJsonFieldsInternal(string $model): array
-    {
-        if (($attribute = $this->getClassAttribute($model, JsonFields::class)) !== null) {
-            /** @var JsonFields $attribute */
-            return $attribute->get();
-        } else {
-            return [];
-        }
-    }
-
-    public function getJsonFields(string $model): array
-    {
-        if (($jsonFields = $this->jsonFields[$model] ?? null) === null) {
-            $jsonFields = $this->jsonFields[$model] = $this->getJsonFieldsInternal($model);
-        }
-
-        return $jsonFields;
     }
 
     protected function getColumnMapInternal(string $model): array
