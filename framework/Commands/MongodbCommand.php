@@ -38,11 +38,10 @@ class MongodbCommand extends Command
      *
      * @param string $input     the base64 encoded json string
      * @param string $modelName
-     * @param bool   $optimized output as more methods as possible
      *
      * @return void
      */
-    public function modelAction(string $input, string $modelName, bool $optimized = false): void
+    public function modelAction(string $input, string $modelName): void
     {
         if (!str_contains($modelName, '\\')) {
             $modelName = 'App\\Models\\' . ucfirst($modelName);
@@ -50,7 +49,7 @@ class MongodbCommand extends Command
 
         $fieldTypes = $this->inferFieldTypes([json_parse($input)]);
 
-        $model = $this->renderModel($fieldTypes, $modelName, 'mongodb', '', $optimized);
+        $model = $this->renderModel($fieldTypes, $modelName, 'mongodb', '');
         $file = '@runtime/mongodb_model/' . substr($modelName, strrpos($modelName, '\\') + 1) . '.php';
         LocalFS::filePut($file, $model);
 
@@ -60,14 +59,12 @@ class MongodbCommand extends Command
     /**
      * generate models file from data files or online data
      *
-     * @param bool  $optimized output as more methods as possible
      * @param int   $sample    sample size
      * @param array $db        db name list
      *
      * @return void
      */
     public function modelsAction(
-        bool $optimized = false,
         int $sample = 1000,
         array $db = []
     ): void {
@@ -96,7 +93,7 @@ class MongodbCommand extends Command
                     $fieldTypes = $this->inferFieldTypes($docs);
                     $modelClass = 'App\Models\\' . $plainClass;
                     $ns = $defaultDb ? $collection : "$cdb.$collection";
-                    $model = $this->renderModel($fieldTypes, $modelClass, $connection, $ns, $optimized);
+                    $model = $this->renderModel($fieldTypes, $modelClass, $connection, $ns);
                     LocalFS::filePut($fileName, $model);
 
                     $this->console->writeLn(sprintf(' `%s` collection saved to `%s`', "$cdb.$collection", $fileName));
@@ -177,23 +174,11 @@ class MongodbCommand extends Command
      * @param string $modelName
      * @param string $connection
      * @param string $namespace
-     * @param bool   $optimized
      *
      * @return string
      */
     protected function renderModel(array $fieldTypes, string $modelName, string $connection, string $namespace,
-        bool $optimized = false
     ): string {
-        $fields = array_keys($fieldTypes);
-
-        $hasPendingType = false;
-        foreach ($fieldTypes as $type) {
-            if (str_contains($type, '|')) {
-                $hasPendingType = true;
-                break;
-            }
-        }
-
         $constants = $this->getConstants($modelName);
 
         $str = '<?php' . PHP_EOL;
