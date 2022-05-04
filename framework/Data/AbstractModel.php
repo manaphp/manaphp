@@ -33,7 +33,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     protected ManagerInterface $_modelManager;
 
     protected false|array $_snapshot = [];
-    protected float $_last_refresh = 0;
 
     public function __construct(array $data = [])
     {
@@ -780,37 +779,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $eventManager->fireEvent($event, $data, $this);
     }
 
-    /**
-     * @param float  $interval
-     * @param ?array $fields =model_fields(new static)
-     *
-     * @return static
-     */
-    public function refresh(float $interval, ?array $fields = null): static
-    {
-        if ($interval > 0) {
-            if ($this->_last_refresh && microtime(true) - $this->_last_refresh < $interval) {
-                return $this;
-            }
-            $this->_last_refresh = microtime(true);
-        }
-
-        $primaryKey = $this->_modelManager->getPrimaryKey(static::class);
-        $r = $this->newQuery()->select($fields ?? [])->where([$primaryKey => $this->$primaryKey])->execute();
-        if (!$r) {
-            throw new NotFoundException(static::class, [$primaryKey => $this->$primaryKey]);
-        }
-
-        $data = (array)$r[0];
-        foreach ($data as $field => $value) {
-            $this->$field = $value;
-        }
-
-        $this->_snapshot = array_merge($this->_snapshot, $data);
-
-        return $this;
-    }
-
     public function relations(): array
     {
         return [];
@@ -1003,7 +971,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $data = [];
 
         foreach (get_object_vars($this) as $field => $value) {
-            if (in_array($field, ['_snapshot', '_last_refresh'], true)) {
+            if (in_array($field, ['_snapshot'], true)) {
                 continue;
             }
 

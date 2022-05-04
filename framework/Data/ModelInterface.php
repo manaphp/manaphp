@@ -100,8 +100,6 @@ interface ModelInterface
 
     public function hasChanged(array $fields): bool;
 
-    public function refresh(float $interval, ?array $fields = null): static;
-
     public static function select(?array $fields = null, ?string $alias = null): QueryInterface;
 
     public static function where(?array $filters = null): QueryInterface;
