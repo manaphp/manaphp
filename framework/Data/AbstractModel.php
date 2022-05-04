@@ -108,42 +108,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         return static::select($fields)->where($filters ?? [])->orderBy($order)->execute();
     }
 
-    /**
-     * @param string|array $kv      =model_fields(new static) ?? model_field(new static)
-     * @param array|null   $filters =model_var(new static)
-     *
-     * @return array
-     */
-    public static function dict(string|array $kv, ?array $filters = null): array
-    {
-        $dict = [];
-
-        if (is_string($kv)) {
-            $key = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
-            $value = $kv;
-            foreach (static::select([$key, $value])->where($filters ?? [])->execute() as $row) {
-                $dict[$row[$key]] = $row[$value];
-            }
-        } else {
-            $key = array_key_first($kv);
-            $fields = $kv[$key];
-
-            if (is_string($fields)) {
-                $value = $fields;
-                foreach (static::select([$key, $value])->where($filters ?? [])->execute() as $row) {
-                    $dict[$row[$key]] = $row[$value];
-                }
-            } else {
-                array_unshift($fields, $key);
-                foreach (static::select($fields)->where($filters ?? [])->execute() as $row) {
-                    $dict[$row[$key]] = $row;
-                }
-            }
-        }
-
-        return $dict;
-    }
-
     public static function get(int|string $id, ?int $ttl = null): static
     {
         $primaryKey = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
@@ -298,22 +262,39 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
-     * @param string $field   =model_field(new static)
-     * @param ?array $filters =model_var(new static)
+     * @param string|array $kv      =model_fields(new static) ?? model_field(new static)
+     * @param array|null   $filters =model_var(new static)
      *
      * @return array
      */
-    public static function kvalues(string $field, ?array $filters = null): array
+    public static function kvalues(string|array $kv, ?array $filters = null): array
     {
-        $keyField = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
-        $valueField = $field;
+        $dict = [];
 
-        $kvalues = [];
-        foreach (static::select([$keyField, $valueField])->where($filters ?? [])->execute() as $v) {
-            $kvalues[$v[$keyField]] = $v[$valueField];
+        if (is_string($kv)) {
+            $key = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
+            $value = $kv;
+            foreach (static::select([$key, $value])->where($filters ?? [])->execute() as $row) {
+                $dict[$row[$key]] = $row[$value];
+            }
+        } else {
+            $key = array_key_first($kv);
+            $fields = $kv[$key];
+
+            if (is_string($fields)) {
+                $value = $fields;
+                foreach (static::select([$key, $value])->where($filters ?? [])->execute() as $row) {
+                    $dict[$row[$key]] = $row[$value];
+                }
+            } else {
+                array_unshift($fields, $key);
+                foreach (static::select($fields)->where($filters ?? [])->execute() as $row) {
+                    $dict[$row[$key]] = $row;
+                }
+            }
         }
 
-        return $kvalues;
+        return $dict;
     }
 
     /**

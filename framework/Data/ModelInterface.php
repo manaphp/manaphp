@@ -21,8 +21,6 @@ interface ModelInterface
 
     public static function lists(string|array $fields, ?array $filters = null): array;
 
-    public static function dict(string|array $kv, ?array $filters = null): array;
-
     public static function get(int|string $id, ?int $ttl = null): static;
 
     public static function first(array $filters, ?array $fields = null): ?static;
@@ -39,7 +37,7 @@ interface ModelInterface
 
     public static function values(string $field, ?array $filters = null): array;
 
-    public static function kvalues(string $field, ?array $filters = null): array;
+    public static function kvalues(string|array $kv, ?array $filters = null): array;
 
     public static function exists(array $filters): bool;
 
