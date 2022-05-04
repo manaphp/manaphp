@@ -15,15 +15,6 @@ interface ModelInterface
 
     public static function query(?string $alias = null): QueryInterface;
 
-    /**
-     * Allows to query a set of records that match the specified conditions
-     *
-     * @param array  $filters
-     * @param ?array $options
-     * @param ?array $fields
-     *
-     * @return  static[]
-     */
     public static function all(array $filters = [], ?array $options = null, ?array $fields = null): array;
 
     public static function paginate(array $filters = [], ?array $options = null, ?array $fields = null): Paginator;
