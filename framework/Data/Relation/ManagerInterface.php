@@ -13,7 +13,7 @@ interface ManagerInterface
 
     public function get(string $model, string $name): false|RelationInterface;
 
-    public function earlyLoad(ModelInterface $model, array $r, array $withs): array;
+    public function earlyLoad(string $model, array $r, array $withs): array;
 
     public function lazyLoad(ModelInterface $instance, string $relation_name): QueryInterface;
 

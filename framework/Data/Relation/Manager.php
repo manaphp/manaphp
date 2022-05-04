@@ -182,7 +182,7 @@ class Manager extends Component implements ManagerInterface
         return $query;
     }
 
-    public function earlyLoad(ModelInterface $model, array $r, array $withs): array
+    public function earlyLoad(string $model, array $r, array $withs): array
     {
         foreach ($withs as $k => $v) {
             $name = is_string($k) ? $k : $v;
@@ -193,13 +193,13 @@ class Manager extends Component implements ManagerInterface
                 $child_name = null;
             }
 
-            if (($relation = $this->get($model::class, $name)) === false) {
+            if (($relation = $this->get($model, $name)) === false) {
                 throw new InvalidValueException(['unknown `:relation` relation', 'relation' => $name]);
             }
 
             $query = $v instanceof QueryInterface
                 ? $v
-                : $this->getQuery($model::class, $name, is_string($k) ? $v : null);
+                : $this->getQuery($model, $name, is_string($k) ? $v : null);
 
             if ($child_name) {
                 $query->with([$child_name]);
@@ -207,7 +207,7 @@ class Manager extends Component implements ManagerInterface
 
             $method = 'get' . ucfirst($name);
             if (method_exists($model, $method)) {
-                $query = $model->$method($query);
+                $query = $this->those->get($model)->$method($query);
             }
 
             $r = $relation->earlyLoad($r, $query, $name);
