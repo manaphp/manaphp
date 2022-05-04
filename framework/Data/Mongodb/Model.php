@@ -7,7 +7,6 @@ use ManaPHP\Data\AbstractModel;
 use ManaPHP\Data\Model\ExpressionInterface;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Data\Mongodb\Model\InferrerInterface;
-use ManaPHP\Data\MongodbInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Container;
 use MongoDB\BSON\ObjectId;
