@@ -902,7 +902,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             return $this->$name = $this->$method()->fetch();
         } elseif (Container::has($name)) {
             return $this->{$name} = Container::get($name);
-        } elseif (($relationManager = Container::get(RelationManager::class))->has($this, $name)) {
+        } elseif (($relationManager = Container::get(RelationManager::class))->has(static::class, $name)) {
             return $this->$name = $relationManager->lazyLoad($this, $name)->fetch();
         } else {
             throw new UnknownPropertyException(['`%s` does not contain `%s` field.`', static::class, $name]);
@@ -925,7 +925,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             $relationManager = Container::get(RelationManager::class);
 
             $relation = lcfirst(substr($name, 3));
-            if ($relationManager->has($this, $relation)) {
+            if ($relationManager->has(static::class, $relation)) {
                 return $relationManager->lazyLoad($this, $relation);
             } else {
                 throw new NotSupportedException(['`%s` model does not define `%s` relation', static::class, $relation]);

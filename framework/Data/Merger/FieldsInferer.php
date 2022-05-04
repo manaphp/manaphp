@@ -22,8 +22,7 @@ class FieldsInferer extends Component implements FieldsInfererInterface
                     $fields[] = $field;
                 }
             }
-            $model2 = $model->getModel();
-            return $this->fields[$class] = $fields ?: $this->modelManager->getFields($model2::class);
+            return $this->fields[$class] = $fields ?: $this->modelManager->getFields($model->getModel());
         } else {
             return $fields;
         }

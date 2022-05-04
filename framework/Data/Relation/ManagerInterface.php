@@ -9,13 +9,13 @@ use ManaPHP\Data\RelationInterface;
 
 interface ManagerInterface
 {
-    public function has(ModelInterface $model, string $name): bool;
+    public function has(string $model, string $name): bool;
 
-    public function get(ModelInterface $model, string $name): false|RelationInterface;
+    public function get(string $model, string $name): false|RelationInterface;
 
     public function earlyLoad(ModelInterface $model, array $r, array $withs): array;
 
     public function lazyLoad(ModelInterface $instance, string $relation_name): QueryInterface;
 
-    public function getQuery(ModelInterface $model, string $name, array $data): QueryInterface;
+    public function getQuery(string $model, string $name, array $data): QueryInterface;
 }

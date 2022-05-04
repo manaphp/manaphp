@@ -8,9 +8,9 @@ namespace ManaPHP\Data;
  */
 interface QueryInterface
 {
-    public function setModel(ModelInterface $model): static;
+    public function setModel(string $model): static;
 
-    public function getModel(): ?ModelInterface;
+    public function getModel(): ?string;
 
     public function shard(callable $strategy): static;
 

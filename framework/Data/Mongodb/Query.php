@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Mongodb;
 
 use ManaPHP\Data\AbstractQuery;
-use ManaPHP\Data\ModelInterface;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
@@ -29,13 +28,12 @@ class Query extends AbstractQuery
         $this->connection = $connection;
     }
 
-    public function setModel(ModelInterface $model): static
+    public function setModel(string $model): static
     {
         $this->model = $model;
-
-        if ($model instanceof Model) {
-            $this->setTypes($model->fieldTypes());
-        }
+        /** @var \ManaPHP\Data\Mongodb\Model $instance */
+        $instance = $this->those->get($model);
+        $this->setTypes($instance->fieldTypes());
 
         return $this;
     }
@@ -306,7 +304,7 @@ class Query extends AbstractQuery
         } elseif ($operator === '~=') {
             if ($this->types && !isset($this->types[$field])) {
                 $model = $this->model;
-                $collection = $model ? $this->modelManager->getTable($model::class) : $this->table;
+                $collection = $model ? $this->modelManager->getTable($model) : $this->table;
                 throw new InvalidArgumentException(['`%s` field is not exist in `%s` collection', $field, $collection]);
             }
 
@@ -648,12 +646,12 @@ class Query extends AbstractQuery
                     $options['projection'] = $this->fields;
                 }
             } elseif ($model !== null) {
-                $options['projection'] = array_fill_keys($this->modelManager->getFields($model::class), 1);
+                $options['projection'] = array_fill_keys($this->modelManager->getFields($model), 1);
             }
 
             if (isset($options['projection']) && !isset($options['projection']['_id'])) {
                 if ($model !== null) {
-                    if ($this->modelManager->getPrimaryKey($model::class) !== '_id') {
+                    if ($this->modelManager->getPrimaryKey($model) !== '_id') {
                         $options['projection']['_id'] = false;
                     }
                 } else {

@@ -29,7 +29,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
     protected ?int $limit = null;
     protected ?int $offset = null;
     protected bool $distinct = false;
-    protected ?ModelInterface $model = null;
+    protected ?string $model = null;
     protected ?bool $multiple = null;
     protected array $with = [];
     protected ?array $order = null;
@@ -51,14 +51,14 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         return $this->all();
     }
 
-    public function setModel(ModelInterface $model): static
+    public function setModel(string $model): static
     {
         $this->model = $model;
 
         return $this;
     }
 
-    public function getModel(): ?ModelInterface
+    public function getModel(): ?string
     {
         return $this->model;
     }
@@ -73,7 +73,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
     public function getShards(): array
     {
         if ($model = $this->model ?? null) {
-            return $this->sharding->getMultipleShards($model::class, $this->shard_context);
+            return $this->sharding->getMultipleShards($model, $this->shard_context);
         } else {
             $connection = $this->connection;
             $table = $this->table;
@@ -106,9 +106,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
     {
         if ($table) {
             if (str_contains($table, '\\')) {
-                $that = $this->those->get($table);
-
-                $this->setModel($that);
+                $this->setModel($table);
                 $table = $this->modelManager->getTable($table);
             }
 
@@ -248,7 +246,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         }
 
         $model = $this->model;
-        if ($format = $this->modelManager->getDateFormat($model::class)) {
+        if ($format = $this->modelManager->getDateFormat($model)) {
             if (is_int($min)) {
                 $min = date($format, $min);
             }
@@ -401,9 +399,8 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         $rows = $this->execute();
 
         if (($model = $this->model) !== null) {
-            $modelName = $model ? ($model::class) : null;
             foreach ($rows as $k => $v) {
-                $rows[$k] = new $modelName($v);
+                $rows[$k] = new $model($v);
             }
         }
 
@@ -542,7 +539,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
     {
         if ($this->model) {
             $model = $this->model;
-            $format = $this->modelManager->getDateFormat($model::class);
+            $format = $this->modelManager->getDateFormat($model);
         } else {
             $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }
@@ -569,7 +566,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
     {
         if ($this->model) {
             $model = $this->model;
-            $format = $this->modelManager->getDateFormat($model::class);
+            $format = $this->modelManager->getDateFormat($model);
         } else {
             $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }
@@ -596,7 +593,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
     {
         if ($this->model) {
             $model = $this->model;
-            $format = $this->modelManager->getDateFormat($model::class);
+            $format = $this->modelManager->getDateFormat($model);
         } else {
             $format = is_int($date) ? 'U' : 'Y-m-d H:i:s';
         }

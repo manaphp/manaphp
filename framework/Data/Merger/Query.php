@@ -82,7 +82,7 @@ class Query extends AbstractQuery
         throw new NotSupportedException(__METHOD__);
     }
 
-    public function setModel(ModelInterface $model): static
+    public function setModel(string $model): static
     {
         $this->model = $model;
 

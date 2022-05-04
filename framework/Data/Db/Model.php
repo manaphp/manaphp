@@ -15,7 +15,7 @@ class Model extends AbstractModel implements ModelInterface
      */
     public function newQuery(): Query
     {
-        return Container::make('ManaPHP\Data\Db\Query')->setModel($this);
+        return Container::make('ManaPHP\Data\Db\Query')->setModel(static::class);
     }
 
     public function create(): static

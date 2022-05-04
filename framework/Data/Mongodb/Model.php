@@ -63,7 +63,7 @@ class Model extends AbstractModel
      */
     public function newQuery(): Query
     {
-        return Container::make('ManaPHP\Data\Mongodb\Query')->setModel($this);
+        return Container::make('ManaPHP\Data\Mongodb\Query')->setModel(static::class);
     }
 
     public function create(): static

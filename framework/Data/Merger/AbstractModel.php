@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Merger;
 
-use ManaPHP\Data\ModelInterface;
 use ManaPHP\Data\QueryInterface;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Container;
 
 abstract class AbstractModel extends \ManaPHP\Data\AbstractModel
 {
-    abstract public function getModel(): ModelInterface;
+    abstract public function getModel(): string;
 
     abstract public function getQueries(): array;
 

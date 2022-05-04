@@ -12,13 +12,14 @@ use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\Str;
 
 /**
+ * @property-read \ManaPHP\Data\Model\ThoseInterface   $those
  * @property-read \ManaPHP\Data\Model\ManagerInterface $modelManager
  */
 class Manager extends Component implements ManagerInterface
 {
     protected array $relations;
 
-    public function has(ModelInterface $model, string $name): bool
+    public function has(string $model, string $name): bool
     {
         return $this->get($model, $name) !== false;
     }
@@ -39,23 +40,21 @@ class Manager extends Component implements ManagerInterface
         }
     }
 
-    protected function inferClassName(ModelInterface $model, string $plainName): false|string
+    protected function inferClassName(string $model, string $plainName): false|string
     {
         $plainName = Str::pascalize($plainName);
 
-        $modelName = $model::class;
-
-        if (($pos = strrpos($modelName, '\\')) !== false) {
-            $className = substr($modelName, 0, $pos + 1) . $plainName;
+        if (($pos = strrpos($model, '\\')) !== false) {
+            $className = substr($model, 0, $pos + 1) . $plainName;
             if (class_exists($className)) {
                 return $className;
-            } elseif (($pos = strpos($modelName, '\Areas\\')) !== false) {
-                $className = substr($modelName, 0, $pos) . '\Models\\' . $plainName;
+            } elseif (($pos = strpos($model, '\Areas\\')) !== false) {
+                $className = substr($model, 0, $pos) . '\Models\\' . $plainName;
                 if (class_exists($className)) {
                     return $className;
                 }
             }
-            $className = $modelName . $plainName;
+            $className = $model . $plainName;
         } else {
             $className = $plainName;
         }
@@ -65,10 +64,10 @@ class Manager extends Component implements ManagerInterface
     protected function inferRelation(ModelInterface $thisInstance, string $name): false|RelationInterface
     {
         if (property_exists($thisInstance, $tryName = $name . '_id')) {
-            $thatModel = $this->inferClassName($thisInstance, $name);
+            $thatModel = $this->inferClassName($thisInstance::class, $name);
             return $thatModel ? $thisInstance->belongsTo($thatModel, $tryName) : false;
         } elseif (property_exists($thisInstance, $tryName = $name . 'Id')) {
-            $thatModel = $this->inferClassName($thisInstance, $name);
+            $thatModel = $this->inferClassName($thisInstance::class, $name);
             return $thatModel ? $thisInstance->belongsTo($thatModel, $tryName) : false;
         }
 
@@ -76,7 +75,7 @@ class Manager extends Component implements ManagerInterface
         /** @var \ManaPHP\Data\ModelInterface $thatModel */
 
         if ($singular = $this->pluralToSingular($name)) {
-            if (!$thatModel = $this->inferClassName($thisInstance, $singular)) {
+            if (!$thatModel = $this->inferClassName($thisInstance::class, $singular)) {
                 return false;
             }
 
@@ -112,7 +111,7 @@ class Manager extends Component implements ManagerInterface
             }
 
             throw new RuntimeException(['infer `:relation` relation failed', 'relation' => $name]);
-        } elseif ($thatModel = $this->inferClassName($thisInstance, $name)) {
+        } elseif ($thatModel = $this->inferClassName($thisInstance::class, $name)) {
             $thisForeignedKey = $this->modelManager->getForeignedKey($thisInstance::class);
             $thatForeignedKey = $this->modelManager->getForeignedKey($thatModel);
             if (property_exists($thatModel, $thisForeignedKey)) {
@@ -130,31 +129,30 @@ class Manager extends Component implements ManagerInterface
         return $str[strlen($str) - 1] === 's';
     }
 
-    public function get(ModelInterface $model, string $name): false|RelationInterface
+    public function get(string $model, string $name): false|RelationInterface
     {
-        $modelName = $model::class;
+        $instance = $this->those->get($model);
+        $this->relations[$model] ??= $instance->relations();
 
-        $this->relations[$modelName] ??= $model->relations();
-
-        if (isset($this->relations[$modelName][$name])) {
-            if (is_object($relation = $this->relations[$modelName][$name])) {
+        if (isset($this->relations[$model][$name])) {
+            if (is_object($relation = $this->relations[$model][$name])) {
                 return $relation;
             } else {
                 if ($this->isPlural($name)) {
-                    $relation = $model->hasMany($relation);
+                    $relation = $instance->hasMany($relation);
                 } else {
-                    $relation = $model->hasOne($relation);
+                    $relation = $instance->hasOne($relation);
                 }
-                return $this->relations[$modelName][$name] = $relation;
+                return $this->relations[$model][$name] = $relation;
             }
-        } elseif ($relation = $this->inferRelation($model, $name)) {
-            return $this->relations[$modelName][$name] = $relation;
+        } elseif ($relation = $this->inferRelation($instance, $name)) {
+            return $this->relations[$model][$name] = $relation;
         } else {
             return false;
         }
     }
 
-    public function getQuery(ModelInterface $model, string $name, mixed $data): QueryInterface
+    public function getQuery(string $model, string $name, mixed $data): QueryInterface
     {
         $relation = $this->get($model, $name);
         $query = $relation->getThatQuery();
@@ -195,13 +193,13 @@ class Manager extends Component implements ManagerInterface
                 $child_name = null;
             }
 
-            if (($relation = $this->get($model, $name)) === false) {
+            if (($relation = $this->get($model::class, $name)) === false) {
                 throw new InvalidValueException(['unknown `:relation` relation', 'relation' => $name]);
             }
 
             $query = $v instanceof QueryInterface
                 ? $v
-                : $this->getQuery($model, $name, is_string($k) ? $v : null);
+                : $this->getQuery($model::class, $name, is_string($k) ? $v : null);
 
             if ($child_name) {
                 $query->with([$child_name]);
@@ -220,7 +218,7 @@ class Manager extends Component implements ManagerInterface
 
     public function lazyLoad(ModelInterface $instance, string $relation_name): QueryInterface
     {
-        if (($relation = $this->get($instance, $relation_name)) === false) {
+        if (($relation = $this->get($instance::class, $relation_name)) === false) {
             throw new InvalidValueException($relation);
         }
 
