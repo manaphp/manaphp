@@ -27,6 +27,10 @@ interface ModelInterface
 
     public static function firstOrFail(array $filters, ?array $fields = null): static;
 
+    public static function firstOrNew(array $filters, array $fields = []): static;
+
+    public static function firstOrCreate(array $filters, array $fields = []): static;
+    
     public static function last(?array $filters = null, ?array $fields = null): ?static;
 
     public static function value(array $filters, string $field, ?int $ttl = null): mixed;

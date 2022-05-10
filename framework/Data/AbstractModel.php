@@ -164,6 +164,35 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
+     * @param array $filters =model_var(new static)
+     * @param array $fields  =model_fields(new static)
+     *
+     * @return static
+     */
+    public static function firstOrNew(array $filters, array $fields = []): static
+    {
+        if (($instance = static::first($fields)) === null) {
+            $instance = new static();
+            foreach ($filters as $k => $v) {
+                $instance->$k = $v;
+            }
+        }
+        
+        return $instance->load($fields);
+    }
+
+    /**
+     * @param array $filters =model_var(new static)
+     * @param array $fields  =model_fields(new static)
+     *
+     * @return static
+     */
+    public static function firstOrCreate(array $filters, array $fields = []): static
+    {
+        return static::firstOrNew($filters, $fields)->save();
+    }
+
+    /**
      * Allows to query the last record that match the specified conditions
      *
      * @param ?array $filters =model_var(new static)
