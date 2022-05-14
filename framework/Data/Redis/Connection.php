@@ -165,6 +165,12 @@ class Connection extends Component
     {
         $redis = $this->getConnect();
 
+        $read_timeout = null;
+        if (in_array($name, ['subscribe', 'psubscribe'], true)) {
+            $read_timeout = $redis->getOption(Redis::OPT_READ_TIMEOUT);
+            $redis->setOption(Redis::OPT_READ_TIMEOUT, -1);
+        }
+
         try {
             $r = @$redis->$name(...$arguments);
         } catch (\Exception  $exception) {
@@ -184,6 +190,10 @@ class Connection extends Component
             if ($failed) {
                 $this->multi = false;
                 throw new RedisException($exception);
+            }
+        } finally {
+            if ($read_timeout !== null) {
+                $redis->setOption(Redis::OPT_READ_TIMEOUT, $read_timeout);
             }
         }
 
