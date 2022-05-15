@@ -45,8 +45,6 @@ interface ModelInterface
 
     public static function exists(array $filters): bool;
 
-    public static function aggregate(array $filters, array $aggregation, null|string|array $options = null): array;
-
     public static function count(?array $filters = null, string $field = '*'): int;
 
     public static function sum(string $field, ?array $filters = null): mixed;

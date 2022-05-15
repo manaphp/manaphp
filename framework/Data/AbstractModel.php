@@ -331,25 +331,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
-     * @param array        $filters =model_var(new static)
-     * @param array        $aggregation
-     * @param string|array $options
-     *
-     * @return array
-     */
-    public static function aggregate(array $filters, array $aggregation, mixed $options = null): array
-    {
-        if (is_string($options)) {
-            if (str_contains($options, ',')) {
-                $options = ['group' => $options];
-            } else {
-                $options = ['group' => $options, 'index' => $options];
-            }
-        }
-        return static::where($filters)->options($options)->aggregate($aggregation);
-    }
-
-    /**
      * @param ?array $filters =model_var(new static)
      * @param string $field   =model_field(new static)
      *
