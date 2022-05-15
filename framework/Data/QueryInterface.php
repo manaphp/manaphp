@@ -259,8 +259,6 @@ interface QueryInterface
      */
     public function groupBy(string|array $groupBy): static;
 
-    public function options(array $options): static;
-
     public function with(array $with): static;
 
     public function limit(int $limit, ?int $offset = null): static;

@@ -493,41 +493,6 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
         return (float)$this->aggregate(['r' => "AVG($field)"])[0]['r'];
     }
 
-    public function options(?array $options): static
-    {
-        if (!$options) {
-            return $this;
-        }
-
-        if (isset($options['limit'])) {
-            $this->limit($options['limit'], $options['offset'] ?? 0);
-        } elseif (isset($options['size'])) {
-            $this->page($options['size'], $options['page'] ?? null);
-        }
-
-        if (isset($options['distinct'])) {
-            $this->distinct($options['distinct']);
-        }
-
-        if (isset($options['order'])) {
-            $this->orderBy($options['order']);
-        }
-
-        if (isset($options['index'])) {
-            $this->indexBy($options['index']);
-        }
-
-        if (isset($options['with'])) {
-            $this->with($options['with']);
-        }
-
-        if (isset($options['group'])) {
-            $this->groupBy($options['group']);
-        }
-
-        return $this;
-    }
-
     public function when(callable $call): static
     {
         $call($this);
