@@ -22,15 +22,14 @@ class PermissionController extends Controller
 {
     public function indexAction()
     {
-        return Permission::all(
-            ['permission_id?' => input('permission_id', '')],
-            ['with' => ['roles' => 'role_id, display_name'], 'order' => 'permission_id DESC']
-        );
+        return Permission::search(['permission_id'])
+            ->with(['roles' => 'role_id, display_name'])
+            ->orderBy(['permission_id' => SORT_DESC]);
     }
 
     public function listAction()
     {
-        return Permission::all([], ['order' => 'path'], ['permission_id', 'path', 'display_name']);
+        return Permission::select(['permission_id', 'path', 'display_name'])->orderBy(['path' => SORT_ASC]);
     }
 
     public function rebuildAction()

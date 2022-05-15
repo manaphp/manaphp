@@ -19,7 +19,7 @@ class GroupController extends Controller
 
     public function listAction()
     {
-        return Group::all([], null, ['group_id', 'group_name']);
+        return Group::all([], ['group_id', 'group_name']);
     }
 
     public function createAction(Group $group)

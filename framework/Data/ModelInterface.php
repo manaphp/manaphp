@@ -15,9 +15,9 @@ interface ModelInterface
 
     public static function query(?string $alias = null): QueryInterface;
 
-    public static function all(array $filters = [], ?array $options = null, ?array $fields = null): array;
+    public static function all(array $filters = [], ?array $fields = null): array;
 
-    public static function paginate(array $filters = [], ?array $options = null, ?array $fields = null): Paginator;
+    public static function paginate(array $filters = [], ?array $fields = null): Paginator;
 
     public static function lists(string|array $fields, ?array $filters = null): array;
 
@@ -30,7 +30,7 @@ interface ModelInterface
     public static function firstOrNew(array $filters, array $fields = []): static;
 
     public static function firstOrCreate(array $filters, array $fields = []): static;
-    
+
     public static function last(?array $filters = null, ?array $fields = null): ?static;
 
     public static function value(array $filters, string $field, ?int $ttl = null): mixed;

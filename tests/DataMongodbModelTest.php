@@ -143,10 +143,6 @@ class DataMongodbModelTest extends TestCase
 
         $this->assertCount(0, Actor::all(['actor_id' => -1]));
         $this->assertEquals([], Actor::all(['actor_id' => -1]));
-
-        $cities = City::all(['country_id' => 2], ['order' => 'city desc']);
-        $this->assertCount(3, $cities);
-        $this->assertEquals(483, $cities[0]->city_id);
     }
 
     public function test_values()
@@ -158,9 +154,6 @@ class DataMongodbModelTest extends TestCase
     public function test_all_usage()
     {
         $this->assertCount(3, City::all(['country_id' => 2]));
-        $this->assertCount(3, City::all(['country_id' => 2], ['order' => 'city_id desc']));
-        $this->assertCount(2, City::all(['country_id' => 2], ['limit' => 2]));
-        $this->assertCount(1, City::all(['country_id' => 2], ['limit' => 1, 'offset' => 2]));
     }
 
     /**

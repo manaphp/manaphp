@@ -55,28 +55,26 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      * Allows to query a set of records that match the specified conditions
      *
      * @param array  $filters =model_var(new static)
-     * @param ?array $options =['order'=>model_var(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC], 'index'=>model_var(new static)]
      * @param ?array $fields  =model_fields(new static)
      *
      * @return  static[]
      */
-    public static function all(array $filters = [], ?array $options = null, ?array $fields = null): array
+    public static function all(array $filters = [], ?array $fields = null): array
     {
-        return static::select($fields)->where($filters)->options($options)->fetch();
+        return static::select($fields)->where($filters)->fetch();
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param array  $filters =model_var(new static)
-     * @param ?array $options =['order'=>model_var(new static) ?: [$k=>SORT_ASC, $k2=>SORT_DESC], 'index'=>model_var(new static)]
      * @param ?array $fields  =model_fields(new static)
      *
      * @return  \ManaPHP\Data\Paginator
      */
-    public static function paginate(array $filters = [], ?array $options = null, ?array $fields = null
-    ): Paginator {
-        return static::select($fields)->search($filters)->options($options)->paginate();
+    public static function paginate(array $filters = [], ?array $fields = null): Paginator
+    {
+        return static::select($fields)->search($filters)->paginate();
     }
 
     /**
@@ -177,7 +175,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
                 $instance->$k = $v;
             }
         }
-        
+
         return $instance->load($fields);
     }
 
