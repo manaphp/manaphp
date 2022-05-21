@@ -11,11 +11,6 @@ use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\Model\NotFoundException;
 use ManaPHP\Data\Model\SerializeNormalizable;
 use ManaPHP\Data\Model\ThoseInterface;
-use ManaPHP\Data\Relation\BelongsTo;
-use ManaPHP\Data\Relation\HasMany;
-use ManaPHP\Data\Relation\HasManyOthers;
-use ManaPHP\Data\Relation\HasManyToMany;
-use ManaPHP\Data\Relation\HasOne;
 use ManaPHP\Data\Relation\ManagerInterface as RelationManager;
 use ManaPHP\Event\ManagerInterface as EventManager;
 use ManaPHP\Exception\MisuseException;
@@ -792,116 +787,6 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     public static function search(array $filters): QueryInterface
     {
         return static::select()->search($filters);
-    }
-
-    /**
-     * @param string  $thatModel
-     * @param ?string $thisField =model_field(new static)
-     *
-     * @return \ManaPHP\Data\Relation\BelongsTo
-     */
-    public function belongsTo(string $thatModel, ?string $thisField = null): BelongsTo
-    {
-        $modelManager = Container::get(ManagerInterface::class);
-        return new BelongsTo(
-            static::class,
-            $thisField ?? $modelManager->getForeignedKey($thatModel),
-            $thatModel, $modelManager->getPrimaryKey($thatModel)
-        );
-    }
-
-    /**
-     * @param string  $thatModel
-     * @param ?string $thatField =model_field(new static)
-     *
-     * @return \ManaPHP\Data\Relation\HasOne
-     */
-    public function hasOne(string $thatModel, ?string $thatField = null): HasOne
-    {
-        $modelManager = Container::get(ManagerInterface::class);
-
-        return new HasOne(
-            static::class,
-            $modelManager->getPrimaryKey(static::class), $thatModel,
-            $thatField ?? $modelManager->getForeignedKey(static::class)
-        );
-    }
-
-    /**
-     * @param string  $thatModel
-     * @param ?string $thatField =model_field(new static)
-     *
-     * @return \ManaPHP\Data\Relation\HasMany
-     */
-    public function hasMany(string $thatModel, ?string $thatField = null): HasMany
-    {
-        $modelManager = Container::get(ManagerInterface::class);
-
-        $primaryKey = $modelManager->getPrimaryKey(static::class);
-        $foreignedKey = $modelManager->getforeignedKey(static::class);
-        return new HasMany(static::class, $primaryKey, $thatModel, $thatField ?? $foreignedKey);
-    }
-
-    public function hasManyToMany(string $thatModel, string $pivotModel): HasManyToMany
-    {
-        $modelManager = Container::get(ManagerInterface::class);
-
-        return new HasManyToMany(
-            static::class,
-            $modelManager->getPrimaryKey(static::class),
-            $thatModel,
-            $modelManager->getPrimaryKey($thatModel),
-            $pivotModel, $modelManager->getForeignedKey(static::class),
-            $modelManager->getPrimaryKey($thatModel),
-        );
-    }
-
-    /**
-     * @param string  $thatModel
-     * @param ?string $thisFilter =model_field(new static)
-     *
-     * @return \ManaPHP\Data\Relation\HasManyOthers
-     */
-    public function hasManyOthers(string $thatModel, ?string $thisFilter = null): HasManyOthers
-    {
-        $modelManager = Container::get(ManagerInterface::class);
-        $foreingedKey = $modelManager->getForeignedKey($thatModel);
-
-        if ($thisFilter === null) {
-            $keys = [];
-            foreach ($modelManager->getFields(static::class) as $field) {
-                if ($field === $foreingedKey || $field === 'id' || $field === '_id') {
-                    continue;
-                }
-
-                if (!str_ends_with($field, '_id') && !str_ends_with($field, 'Id')) {
-                    continue;
-                }
-
-                if (in_array($field, ['updator_id', 'creator_id'], true)) {
-                    continue;
-                }
-
-                $keys[] = $field;
-            }
-
-            if (count($keys) === 1) {
-                $thisFilter = $keys[0];
-            } else {
-                throw new MisuseException('$thisValue must be not null');
-            }
-        }
-
-        return new HasManyOthers(
-            static::class, $thisFilter,
-            $modelManager->getForeignedKey($thatModel), $thatModel,
-            $modelManager->getPrimaryKey($thatModel)
-        );
-    }
-
-    public function belongsToMany(string $thatModel, string $pivotModel): HasManyToMany
-    {
-        return $this->hasManyToMany($thatModel, $pivotModel);
     }
 
     /**

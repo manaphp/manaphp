@@ -4,20 +4,24 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Relation;
 
 use ManaPHP\Data\AbstractRelation;
+use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\ModelInterface;
 use ManaPHP\Data\QueryInterface;
+use ManaPHP\Helper\Container;
 
 class BelongsTo extends AbstractRelation
 {
     protected string $thisField;
     protected string $thatField;
 
-    public function __construct(string $thisModel, string $thisField, string $thatModel, string $thatField)
+    public function __construct(string $thisModel, string $thatModel)
     {
+        $modelManager = Container::get(ManagerInterface::class);
+
         $this->thisModel = $thisModel;
-        $this->thisField = $thisField;
+        $this->thisField = $modelManager->getForeignedKey($thatModel);
         $this->thatModel = $thatModel;
-        $this->thatField = $thatField;
+        $this->thatField = $modelManager->getPrimaryKey($thatModel);
     }
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array

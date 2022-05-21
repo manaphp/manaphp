@@ -4,9 +4,11 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Relation;
 
 use ManaPHP\Data\AbstractRelation;
+use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\ModelInterface;
 use ManaPHP\Data\QueryInterface;
 use ManaPHP\Helper\Arr;
+use ManaPHP\Helper\Container;
 
 class HasManyToMany extends AbstractRelation
 {
@@ -16,16 +18,17 @@ class HasManyToMany extends AbstractRelation
     protected string $thisPivot;
     protected string $thatPivot;
 
-    public function __construct(string $thisModel, string $thisField, string $thatModel, string $thatField,
-        string $pivotModel, string $thisPivot, string $thatPivot
-    ) {
+    public function __construct(string $thisModel, string $thatModel, string $pivotModel)
+    {
+        $modelManager = Container::get(ManagerInterface::class);
+
         $this->thisModel = $thisModel;
-        $this->thisField = $thisField;
+        $this->thisField = $modelManager->getPrimaryKey($thisModel);
         $this->thatModel = $thatModel;
-        $this->thatField = $thatField;
+        $this->thatField = $modelManager->getPrimaryKey($thatModel);
         $this->pivotModel = $pivotModel;
-        $this->thisPivot = $thisPivot;
-        $this->thatPivot = $thatPivot;
+        $this->thisPivot = $modelManager->getForeignedKey($thisModel);
+        $this->thatPivot = $modelManager->getPrimaryKey($thatModel);
     }
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array

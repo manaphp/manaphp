@@ -3,12 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
-use ManaPHP\Data\Relation\BelongsTo;
-use ManaPHP\Data\Relation\HasMany;
-use ManaPHP\Data\Relation\HasManyOthers;
-use ManaPHP\Data\Relation\HasManyToMany;
-use ManaPHP\Data\Relation\HasOne;
-
 interface ModelInterface
 {
     public function rules(): array;
@@ -98,22 +92,4 @@ interface ModelInterface
     public static function search(array $filters): QueryInterface;
 
     public function newQuery(): QueryInterface;
-
-    public function belongsTo(string $thatModel, ?string $thisField = null): BelongsTo;
-
-    public function hasOne(string $thatModel, ?string $thatField = null): HasOne;
-
-    public function hasMany(string $thatModel, ?string $thatField = null): HasMany;
-
-    public function hasManyToMany(string $thatModel, string $pivotModel): HasManyToMany;
-
-    /**
-     * @param string  $thatModel
-     * @param ?string $thisFilter =model_field(new static)
-     *
-     * @return \ManaPHP\Data\Relation\HasManyOthers
-     */
-    public function hasManyOthers(string $thatModel, ?string $thisFilter = null): HasManyOthers;
-
-    public function belongsToMany(string $thatModel, string $pivotModel): HasManyToMany;
 }

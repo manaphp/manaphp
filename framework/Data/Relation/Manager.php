@@ -63,12 +63,12 @@ class Manager extends Component implements ManagerInterface
 
     protected function inferRelation(ModelInterface $thisInstance, string $name): false|RelationInterface
     {
-        if (property_exists($thisInstance, $tryName = $name . '_id')) {
+        if (property_exists($thisInstance, $name . '_id')) {
             $thatModel = $this->inferClassName($thisInstance::class, $name);
-            return $thatModel ? $thisInstance->belongsTo($thatModel, $tryName) : false;
-        } elseif (property_exists($thisInstance, $tryName = $name . 'Id')) {
+            return $thatModel ? new BelongsTo($thisInstance::class, $thatModel) : false;
+        } elseif (property_exists($thisInstance, $name . 'Id')) {
             $thatModel = $this->inferClassName($thisInstance::class, $name);
-            return $thatModel ? $thisInstance->belongsTo($thatModel, $tryName) : false;
+            return $thatModel ? new BelongsTo($thisInstance::class, $thatModel) : false;
         }
 
         /** @var \ManaPHP\Data\ModelInterface $thatInstance */
@@ -81,7 +81,7 @@ class Manager extends Component implements ManagerInterface
 
             $thisForeignedKey = $this->modelManager->getForeignedKey($thisInstance::class);
             if (property_exists($thatModel, $thisForeignedKey)) {
-                return $thisInstance->hasMany($thatModel, $thisForeignedKey);
+                return new HasMany($thisInstance::class, $thatModel);
             }
 
             $thatPlain = substr($thatModel, strrpos($thatModel, '\\') + 1);
@@ -93,12 +93,12 @@ class Manager extends Component implements ManagerInterface
 
             $pivotModel = $namespace . $thatPlain . $thisPlain;
             if (class_exists($pivotModel)) {
-                return $thisInstance->hasManyToMany($thatModel, $pivotModel);
+                return new HasManyToMany($thisInstance::class, $thatModel, $pivotModel);
             }
 
             $pivotModel = $namespace . $thisPlain . $thatPlain;
             if (class_exists($pivotModel)) {
-                return $thisInstance->hasManyToMany($thatModel, $pivotModel);
+                return new HasManyToMany($thisInstance::class, $thatModel, $pivotModel);
             }
 
             $thisLen = strlen($thisPlain);
@@ -106,7 +106,7 @@ class Manager extends Component implements ManagerInterface
             if ($thisLen > $thatLen) {
                 $pos = strpos($thisPlain, $thatPlain);
                 if ($pos === 0 || $pos + $thatLen === $thisLen) {
-                    return $thisInstance->hasManyOthers($thatModel);
+                    return new HasManyOthers($thisInstance::class, $thatModel);
                 }
             }
 
@@ -115,9 +115,9 @@ class Manager extends Component implements ManagerInterface
             $thisForeignedKey = $this->modelManager->getForeignedKey($thisInstance::class);
             $thatForeignedKey = $this->modelManager->getForeignedKey($thatModel);
             if (property_exists($thatModel, $thisForeignedKey)) {
-                return $thisInstance->hasOne($thatModel, $thisForeignedKey);
+                return new HasOne($thisInstance::class, $thatModel);
             } elseif (property_exists($thisInstance, $thatForeignedKey)) {
-                return $thisInstance->belongsTo($thatModel, $thatForeignedKey);
+                return new BelongsTo($thisInstance::class, $thatModel);
             }
         }
 
@@ -134,17 +134,8 @@ class Manager extends Component implements ManagerInterface
         $instance = $this->those->get($model);
         $this->relations[$model] ??= $instance->relations();
 
-        if (isset($this->relations[$model][$name])) {
-            if (is_object($relation = $this->relations[$model][$name])) {
-                return $relation;
-            } else {
-                if ($this->isPlural($name)) {
-                    $relation = $instance->hasMany($relation);
-                } else {
-                    $relation = $instance->hasOne($relation);
-                }
-                return $this->relations[$model][$name] = $relation;
-            }
+        if (($relation = $this->relations[$model][$name] ?? null) !== null) {
+            return $relation;
         } elseif ($relation = $this->inferRelation($instance, $name)) {
             return $this->relations[$model][$name] = $relation;
         } else {

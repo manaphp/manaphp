@@ -4,9 +4,12 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Relation;
 
 use ManaPHP\Data\AbstractRelation;
+use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\ModelInterface;
 use ManaPHP\Data\QueryInterface;
+use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Arr;
+use ManaPHP\Helper\Container;
 
 class HasManyOthers extends AbstractRelation
 {
@@ -14,14 +17,39 @@ class HasManyOthers extends AbstractRelation
     protected string $thisValue;
     protected string $thatField;
 
-    public function __construct(string $thisModel, string $thisFilter, string $thisValue, string $thatModel,
-        string $thatField
-    ) {
+    public function __construct(string $thisModel, string $thatModel)
+    {
+        $modelManager = Container::get(ManagerInterface::class);
+        $foreingedKey = $modelManager->getForeignedKey($thatModel);
+
+        $keys = [];
+        foreach ($modelManager->getFields($thisModel) as $field) {
+            if ($field === $foreingedKey || $field === 'id' || $field === '_id') {
+                continue;
+            }
+
+            if (!str_ends_with($field, '_id') && !str_ends_with($field, 'Id')) {
+                continue;
+            }
+
+            if (in_array($field, ['updator_id', 'creator_id'], true)) {
+                continue;
+            }
+
+            $keys[] = $field;
+        }
+
+        if (count($keys) === 1) {
+            $thisFilter = $keys[0];
+        } else {
+            throw new MisuseException('$thisValue must be not null');
+        }
+
         $this->thisModel = $thisModel;
         $this->thisFilter = $thisFilter;
-        $this->thisValue = $thisValue;
+        $this->thisValue = $modelManager->getForeignedKey($thatModel);
         $this->thatModel = $thatModel;
-        $this->thatField = $thatField;
+        $this->thatField = $modelManager->getPrimaryKey($thatModel);
     }
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array

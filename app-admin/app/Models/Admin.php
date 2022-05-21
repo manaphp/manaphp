@@ -5,6 +5,7 @@ namespace App\Models;
 
 use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
+use ManaPHP\Data\Relation\HasManyToMany;
 
 class Admin extends Model
 {
@@ -41,7 +42,7 @@ class Admin extends Model
 
     public function relations(): array
     {
-        return ['roles' => $this->hasManyToMany(Role::class, AdminRole::class)];
+        return ['roles' => new HasManyToMany(static::class, Role::class, AdminRole::class)];
     }
 
     public function hashPassword(string $password): string
