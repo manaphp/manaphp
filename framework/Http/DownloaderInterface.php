@@ -5,5 +5,5 @@ namespace ManaPHP\Http;
 
 interface DownloaderInterface
 {
-    public function download(string|array $files, mixed $options = []): false|string|array;
+    public function download(array $files, mixed $options = []): array;
 }

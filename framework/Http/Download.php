@@ -13,33 +13,14 @@ class Download extends Component implements DownloaderInterface
 {
     public const USER_AGENT_IE = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
 
-    public function download(string|array $files, mixed $options = []): false|string|array
+    public function download(array $files, mixed $options = []): array
     {
-        if (is_string($files)) {
-            if (is_string($options) && !str_contains($options, '://')) {
-                $return_file = $options;
-            } else {
-                $path = parse_url($files, PHP_URL_PATH);
-                if ($pos = strrpos($path, '.')) {
-                    $ext = strtolower(substr($path, $pos));
-                    if ($ext === '.php' || preg_match('#^\.\w+$#', $ext) === 0) {
-                        $ext = '.tmp';
-                    }
-                } else {
-                    $ext = '.tmp';
-                }
-                $return_file = $this->alias->resolve('@runtime/download/' . md5($files . gethostname()) . $ext);
-            }
-            $files = [$files => $return_file];
-        } else {
-            if (is_int($options)) {
-                $options = ['concurrent' => $options];
-            } elseif (is_float($options)) {
-                $options = ['timeout' => $options];
-            } elseif (is_string($options)) {
-                $options = [preg_match('#^https?://#', $options) ? CURLOPT_REFERER : CURLOPT_USERAGENT => $options];
-            }
-            $return_file = null;
+        if (is_int($options)) {
+            $options = ['concurrent' => $options];
+        } elseif (is_float($options)) {
+            $options = ['timeout' => $options];
+        } elseif (is_string($options)) {
+            $options = [preg_match('#^https?://#', $options) ? CURLOPT_REFERER : CURLOPT_USERAGENT => $options];
         }
 
         $mh = curl_multi_init();
@@ -138,10 +119,6 @@ class Download extends Component implements DownloaderInterface
         curl_multi_close($mh);
         curl_close($template);
 
-        if ($return_file) {
-            return $failed ? false : $return_file;
-        } else {
-            return $failed;
-        }
+        return $failed;
     }
 }
