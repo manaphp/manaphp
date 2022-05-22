@@ -11,7 +11,7 @@ interface ManagerInterface
 {
     public function has(string $model, string $name): bool;
 
-    public function get(string $model, string $name): false|RelationInterface;
+    public function get(string $model, string $name): ?RelationInterface;
 
     public function earlyLoad(string $model, array $r, array $withs): array;
 

@@ -21,13 +21,13 @@ class Manager extends Component implements ManagerInterface
 
     public function has(string $model, string $name): bool
     {
-        return $this->get($model, $name) !== false;
+        return $this->get($model, $name) !== null;
     }
 
-    protected function pluralToSingular(string $str): false|string
+    protected function pluralToSingular(string $str): ?string
     {
         if ($str[strlen($str) - 1] !== 's') {
-            return false;
+            return null;
         }
 
         //https://github.com/UlvHare/PHPixie-demo/blob/d000d8f11e6ab7c522feeb4457da5a802ca3e0bc/vendor/phpixie/orm/src/PHPixie/ORM/Configs/Inflector.php
@@ -40,7 +40,7 @@ class Manager extends Component implements ManagerInterface
         }
     }
 
-    protected function inferClassName(string $model, string $plainName): false|string
+    protected function inferClassName(string $model, string $plainName): ?string
     {
         $plainName = Str::pascalize($plainName);
 
@@ -58,17 +58,17 @@ class Manager extends Component implements ManagerInterface
         } else {
             $className = $plainName;
         }
-        return class_exists($className) ? $className : false;
+        return class_exists($className) ? $className : null;
     }
 
-    protected function inferRelation(ModelInterface $thisInstance, string $name): false|RelationInterface
+    protected function inferRelation(ModelInterface $thisInstance, string $name): ?RelationInterface
     {
         if (property_exists($thisInstance, $name . '_id')) {
             $thatModel = $this->inferClassName($thisInstance::class, $name);
-            return $thatModel ? new BelongsTo($thisInstance::class, $thatModel) : false;
+            return $thatModel ? new BelongsTo($thisInstance::class, $thatModel) : null;
         } elseif (property_exists($thisInstance, $name . 'Id')) {
             $thatModel = $this->inferClassName($thisInstance::class, $name);
-            return $thatModel ? new BelongsTo($thisInstance::class, $thatModel) : false;
+            return $thatModel ? new BelongsTo($thisInstance::class, $thatModel) : null;
         }
 
         /** @var \ManaPHP\Data\ModelInterface $thatInstance */
@@ -76,7 +76,7 @@ class Manager extends Component implements ManagerInterface
 
         if ($singular = $this->pluralToSingular($name)) {
             if (!$thatModel = $this->inferClassName($thisInstance::class, $singular)) {
-                return false;
+                return null;
             }
 
             $thisForeignedKey = $this->modelManager->getForeignedKey($thisInstance::class);
@@ -121,7 +121,7 @@ class Manager extends Component implements ManagerInterface
             }
         }
 
-        return false;
+        return null;
     }
 
     protected function isPlural(string $str): bool
@@ -129,7 +129,7 @@ class Manager extends Component implements ManagerInterface
         return $str[strlen($str) - 1] === 's';
     }
 
-    public function get(string $model, string $name): false|RelationInterface
+    public function get(string $model, string $name): ?RelationInterface
     {
         $instance = $this->those->get($model);
         $this->relations[$model] ??= $instance->relations();
@@ -139,7 +139,7 @@ class Manager extends Component implements ManagerInterface
         } elseif ($relation = $this->inferRelation($instance, $name)) {
             return $this->relations[$model][$name] = $relation;
         } else {
-            return false;
+            return null;
         }
     }
 
@@ -184,7 +184,7 @@ class Manager extends Component implements ManagerInterface
                 $child_name = null;
             }
 
-            if (($relation = $this->get($model, $name)) === false) {
+            if (($relation = $this->get($model, $name)) === null) {
                 throw new InvalidValueException(['unknown `:relation` relation', 'relation' => $name]);
             }
 
@@ -209,8 +209,8 @@ class Manager extends Component implements ManagerInterface
 
     public function lazyLoad(ModelInterface $instance, string $relation_name): QueryInterface
     {
-        if (($relation = $this->get($instance::class, $relation_name)) === false) {
-            throw new InvalidValueException($relation);
+        if (($relation = $this->get($instance::class, $relation_name)) === null) {
+            throw new InvalidValueException($relation_name);
         }
 
         return $relation->lazyLoad($instance);
