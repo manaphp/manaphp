@@ -167,10 +167,6 @@ class Request extends Component implements RequestInterface
                 continue;
             }
 
-            if (str_ends_with($name, 'Service')) {
-                continue;
-            }
-
             $short = $name[0];
             if (isset($names[$short])) {
                 $shorts[$short] = false;

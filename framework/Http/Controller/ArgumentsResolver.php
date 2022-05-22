@@ -63,8 +63,6 @@ class ArgumentsResolver extends Component implements ArgumentsResolverInterface
                 } else {
                     $value = $container->has($name) ? $container->get($name) : $container->get($type);
                 }
-            } elseif (str_ends_with($name, 'Service')) {
-                $value = $container->get($name);
             } elseif ($this->request->has($name)) {
                 $value = $this->request->get($name, $type === 'array' ? [] : '');
             } elseif ($rParameter->isDefaultValueAvailable()) {
