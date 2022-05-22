@@ -221,37 +221,6 @@ class MongodbCommand extends Command
     }
 
     /**
-     * @param array  $fieldTypes
-     * @param string $modelName
-     *
-     * @return false|string
-     */
-    protected function inferPrimaryKey(array $fieldTypes, string $modelName): false|string
-    {
-        if (isset($fieldTypes['id'])) {
-            return 'id';
-        }
-
-        $plainClass = substr($modelName, strrpos($modelName, '\\'));
-
-        $underscoreClass = Str::snakelize($plainClass);
-        $tryField = $underscoreClass . '_id';
-        if (isset($fieldTypes[$tryField])) {
-            return $tryField;
-        }
-
-        if ($pos = strrpos($underscoreClass, '_')) {
-            $tryField = substr($underscoreClass, $pos + 1) . '_id';
-
-            if (isset($fieldTypes[$tryField])) {
-                return $tryField;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * export mongodb data to csv files
      *
      * @param string $collection_pattern match collection against a pattern
