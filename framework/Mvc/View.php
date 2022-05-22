@@ -96,7 +96,7 @@ class View extends Component implements ViewInterface
         return isset($context->_vars[$name]);
     }
 
-    protected function findLayout(): ?string
+    protected function getLayout(): ?string
     {
         $context = $this->context;
 
@@ -181,7 +181,7 @@ class View extends Component implements ViewInterface
         try {
             $context->content = $this->renderer->render($template, $context->vars);
 
-            if (($layout = $this->findLayout()) !== null) {
+            if (($layout = $this->getLayout()) !== null) {
                 $context->content = $this->renderer->render($layout, $context->vars);
             }
         } finally {
