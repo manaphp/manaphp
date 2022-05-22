@@ -22,12 +22,13 @@ class Config extends Component implements ConfigInterface
         return $this->config = require $this->alias->resolve($file);
     }
 
-    public function get(?string $key = null, mixed $default = null): mixed
+    public function all(): array
     {
-        if ($key === null) {
-            return $this->config;
-        }
+        return $this->config;
+    }
 
+    public function get(string $key, mixed $default = null): mixed
+    {
         $value = $this->config[$key] ?? $default;
 
         if ($value === null) {

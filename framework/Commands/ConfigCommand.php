@@ -18,7 +18,7 @@ class ConfigCommand extends Command
      */
     public function dumpAction(string $path = ''): void
     {
-        $config = $this->config->get();
+        $config = $this->config->all();
         $config = Arr::get($config, $path);
 
         $this->console->writeLn(json_stringify($config, JSON_PRETTY_PRINT));
