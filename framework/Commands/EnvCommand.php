@@ -17,7 +17,7 @@ class EnvCommand extends Command
      */
     public function dumpAction(): void
     {
-        foreach ($this->env->get(null) as $k => $v) {
+        foreach ($this->env->all() as $k => $v) {
             echo sprintf('%s=%s', $k, $v), PHP_EOL;
         }
     }

@@ -7,5 +7,7 @@ interface EnvInterface
 {
     public function load(): static;
 
-    public function get(?string $key, mixed $default = null): mixed;
+    public function all(): array;
+
+    public function get(string $key, mixed $default = null): mixed;
 }

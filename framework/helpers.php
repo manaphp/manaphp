@@ -75,7 +75,7 @@ if (!function_exists('make')) {
 }
 
 if (!function_exists('env')) {
-    function env(?string $key = null, mixed $default = null): mixed
+    function env(string $key, mixed $default = null): mixed
     {
         return Container::get(EnvInterface::class)->get($key, $default);
     }

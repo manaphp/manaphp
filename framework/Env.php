@@ -89,7 +89,12 @@ class Env extends Component implements EnvInterface
         return $this;
     }
 
-    public function get(?string $key, mixed $default = null): mixed
+    public function all(): array
+    {
+        return getenv() ?? [];
+    }
+
+    public function get(string $key, mixed $default = null): mixed
     {
         if (($value = getenv($key)) === false) {
             if ($default === null) {
