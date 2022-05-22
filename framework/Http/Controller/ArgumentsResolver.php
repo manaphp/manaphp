@@ -22,14 +22,12 @@ class ArgumentsResolver extends Component implements ArgumentsResolverInterface
     {
         /** @var ModelInterface $instance */
 
-        $primaryKey = $this->modelManager->getprimaryKey($model);
-        $data = $this->request->get();
-        if (isset($data[$primaryKey])) {
-            if (!is_scalar($data[$primaryKey])) {
-                throw new BadRequestException('');
+        if (($id = $this->request->get($this->modelManager->getprimaryKey($model), '')) !== '') {
+            if (!is_int($id) && !is_string($id)) {
+                throw new BadRequestException('id is invalid.');
             }
             /** @var ModelInterface $model */
-            $instance = $model::firstOrFail([$primaryKey => $data[$primaryKey]]);
+            $instance = $model::get($id);
         } else {
             $instance = new $model;
         }
