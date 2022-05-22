@@ -5,9 +5,7 @@ namespace App\Areas\System\Models;
 
 use App\Models\Model;
 use ManaPHP\Data\Model\Attribute\PrimaryKey;
-use ManaPHP\Data\Model\Attribute\Table;
 
-#[Table('dotenv_log')]
 #[PrimaryKey('id')]
 class DotenvLog extends Model
 {
