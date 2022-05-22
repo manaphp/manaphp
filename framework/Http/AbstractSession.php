@@ -36,6 +36,17 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         $this->attachEvent('request:responding', [$this, 'onRequestResponding']);
     }
 
+    public function all(): array
+    {
+        $context = $this->context;
+
+        if (!$context->started) {
+            $this->start();
+        }
+
+        return $context->_SESSION;
+    }
+
     protected function start(): void
     {
         $context = $this->context;
@@ -233,7 +244,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         return Str::random(32, 36);
     }
 
-    public function get(?string $name = null, mixed $default = null): mixed
+    public function get(string $name, mixed $default = null): mixed
     {
         $context = $this->context;
 
@@ -241,13 +252,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
             $this->start();
         }
 
-        if ($name === null) {
-            return $context->_SESSION;
-        } elseif (isset($context->_SESSION[$name])) {
-            return $context->_SESSION[$name];
-        } else {
-            return $default;
-        }
+        return $context->_SESSION[$name] ?? $default;
     }
 
     public function set(string $name, mixed $value): static
