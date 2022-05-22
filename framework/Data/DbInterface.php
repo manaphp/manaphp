@@ -20,7 +20,7 @@ interface DbInterface extends Transientable
     public function executeDelete(string $sql, array $bind = []): int;
 
     public function fetchOne(string $sql, array $bind = [], int $mode = PDO::FETCH_ASSOC, bool $useMaster = false
-    ): false|array;
+    ): ?array;
 
     public function fetchAll(string $sql, array $bind = [], int $mode = PDO::FETCH_ASSOC, bool $useMaster = false
     ): array;

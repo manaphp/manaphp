@@ -113,10 +113,10 @@ class DataDbTest extends TestCase
         $this->connection->truncate('_student');
         $this->db->insert('_student', ['id' => 1, 'age' => 21, 'name' => 'mana1']);
         $this->db->delete('_student', 'id=:id', ['id' => 1]);
-        $this->assertFalse($this->db->fetchOne('SELECT * FROM _student WHERE id=1'));
+        $this->assertNull($this->db->fetchOne('SELECT * FROM _student WHERE id=1'));
 
         $this->db->insert('_student', ['id' => 1, 'age' => 21, 'name' => 'mana1']);
         $this->db->delete('_student', 'id=1');
-        $this->assertFalse($this->db->fetchOne('SELECT * FROM _student WHERE id=1'));
+        $this->assertNull($this->db->fetchOne('SELECT * FROM _student WHERE id=1'));
     }
 }

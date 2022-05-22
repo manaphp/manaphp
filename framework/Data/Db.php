@@ -195,8 +195,8 @@ class Db extends Component implements DbInterface
     }
 
     public function fetchOne(string $sql, array $bind = [], int $mode = PDO::FETCH_ASSOC, bool $useMaster = false
-    ): false|array {
-        return ($rs = $this->fetchAll($sql, $bind, $mode, $useMaster)) ? $rs[0] : false;
+    ): ?array {
+        return $this->fetchAll($sql, $bind, $mode, $useMaster)[0] ?? null;
     }
 
     public function fetchAll(string $sql, array $bind = [], int $mode = PDO::FETCH_ASSOC, bool $useMaster = false
