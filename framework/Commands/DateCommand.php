@@ -17,10 +17,10 @@ class DateCommand extends Command
      * @param string $url
      * @param bool   $onlyOnce
      *
-     * @return int|false
+     * @return ?int
      * @noinspection PhpUnusedLocalVariableInspection
      */
-    protected function getRemoteTimestamp(string $url, bool $onlyOnce = false): int|false
+    protected function getRemoteTimestamp(string $url, bool $onlyOnce = false): ?int
     {
         if (!str_contains($url, '://')) {
             $url = 'https://' . $url;
@@ -31,7 +31,7 @@ class DateCommand extends Command
             try {
                 $timestamp = strtotime($this->httpClient->head($url)->getHeaders()['Date']);
             } catch (\Exception $exception) {
-                return false;
+                return null;
             }
 
             if ($prev_timestamp !== 0 && $prev_timestamp !== $timestamp) {
@@ -54,7 +54,7 @@ class DateCommand extends Command
     public function syncAction(string $url = 'https://www.baidu.com'): int
     {
         $timestamp = $this->getRemoteTimestamp($url);
-        if ($timestamp === false) {
+        if ($timestamp === null) {
             return $this->console->error(['fetch remote timestamp failed: `:url`', 'url' => $url]);
         } else {
             $this->updateDate($timestamp);
@@ -73,7 +73,7 @@ class DateCommand extends Command
     public function remoteAction(string $url = 'https://www.baidu.com'): int
     {
         $timestamp = $this->getRemoteTimestamp($url);
-        if ($timestamp === false) {
+        if ($timestamp === null) {
             return $this->console->error(sprintf('fetch remote timestamp failed: `%s`', $url));
         } else {
             $this->console->writeLn(date('Y-m-d H:i:s', $timestamp));
@@ -92,7 +92,7 @@ class DateCommand extends Command
     {
         $remote_ts = $this->getRemoteTimestamp($url);
         $local_ts = time();
-        if ($remote_ts === false) {
+        if ($remote_ts === null) {
             return $this->console->error(sprintf('fetch remote timestamp failed: `%s`', $url));
         } else {
             $this->console->writeLn(' local: ' . date('Y-m-d H:i:s', $local_ts));
