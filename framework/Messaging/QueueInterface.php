@@ -11,7 +11,7 @@ interface QueueInterface
 
     public function push(string $topic, string $body, int $priority = self::PRIORITY_NORMAL): void;
 
-    public function pop(string $topic, int $timeout = PHP_INT_MAX): false|string;
+    public function pop(string $topic, int $timeout = PHP_INT_MAX): ?string;
 
     public function delete(string $topic): void;
 

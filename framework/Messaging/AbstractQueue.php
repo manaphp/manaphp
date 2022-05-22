@@ -20,13 +20,13 @@ abstract class AbstractQueue extends Component implements QueueInterface
      * @param string $topic
      * @param int    $timeout
      *
-     * @return string|false
+     * @return ?string
      */
-    abstract public function do_pop(string $topic, int $timeout = PHP_INT_MAX): false|string;
+    abstract public function do_pop(string $topic, int $timeout = PHP_INT_MAX): ?string;
 
-    public function pop(string $topic, int $timeout = PHP_INT_MAX): false|string
+    public function pop(string $topic, int $timeout = PHP_INT_MAX): ?string
     {
-        if (($msg = $this->do_pop($topic, $timeout)) !== false) {
+        if (($msg = $this->do_pop($topic, $timeout)) !== null) {
             $this->fireEvent('msgQueue:pop', compact('topic', 'msg'));
         }
 

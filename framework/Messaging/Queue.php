@@ -29,7 +29,7 @@ class Queue extends AbstractQueue
         $this->redisBroker->lPush($this->prefix . $topic . ':' . $priority, $body);
     }
 
-    public function do_pop(string $topic, int $timeout = PHP_INT_MAX): false|string
+    public function do_pop(string $topic, int $timeout = PHP_INT_MAX): ?string
     {
         if (!isset($this->topicKeys[$topic])) {
             $keys = [];
@@ -49,10 +49,10 @@ class Queue extends AbstractQueue
                 }
             }
 
-            return false;
+            return null;
         } else {
             $r = $this->redisBroker->brPop($this->topicKeys[$topic], $timeout);
-            return $r[1] ?? false;
+            return $r[1] ?? null;
         }
     }
 
