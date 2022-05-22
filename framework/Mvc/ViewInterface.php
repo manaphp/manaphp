@@ -9,7 +9,9 @@ interface ViewInterface
 
     public function getMaxAge(): int;
 
-    public function setLayout(false|string $layout = 'Default'): static;
+    public function setLayout(string $layout = 'Default'): static;
+
+    public function disableLayout(): static;
 
     public function setVar(string $name, mixed $value): static;
 

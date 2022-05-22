@@ -440,7 +440,11 @@ class Compiler extends Component
 
     protected function compile_layout(string $expression): string
     {
-        return "<?php container('ManaPHP\Mvc\ViewInterface')->setLayout{$expression}; ?>";
+        if (str_contains($expression, '(false)')) {
+            return "<?php container('ManaPHP\Mvc\ViewInterface')->disableLayout(); ?>";
+        } else {
+            return "<?php container('ManaPHP\Mvc\ViewInterface')->setLayout{$expression}; ?>";
+        }
     }
 
     protected function compile_content(): string

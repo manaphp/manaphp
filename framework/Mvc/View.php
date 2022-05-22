@@ -51,11 +51,20 @@ class View extends Component implements ViewInterface
         }
     }
 
-    public function setLayout(false|string $layout = 'Default'): static
+    public function setLayout(string $layout = 'Default'): static
     {
         $context = $this->context;
 
         $context->layout = $layout;
+
+        return $this;
+    }
+
+    public function disableLayout(): static
+    {
+        $context = $this->context;
+
+        $context->layout = '';
 
         return $this;
     }
@@ -117,7 +126,7 @@ class View extends Component implements ViewInterface
                     $layout = '@views/Layouts/Default';
                 }
             }
-        } elseif (is_string($context->layout)) {
+        } elseif ($context->layout !== '') {
             $layout = $context->layout;
             if ($layout[0] !== '@') {
                 $layout = ucfirst($layout);

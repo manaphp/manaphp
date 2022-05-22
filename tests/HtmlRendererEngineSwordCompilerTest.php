@@ -363,7 +363,7 @@ EOT;
 @layout(false)
 EOT;
         $compiled = <<<'EOT'
-<?php $view->setLayout(false); ?>
+<?php $view->disableLayout(); ?>
 EOT;
         $this->assertEquals($compiled, $this->sword->compileString($source));
 
