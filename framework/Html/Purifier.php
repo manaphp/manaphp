@@ -58,6 +58,7 @@ class Purifier extends Component implements PurifierInterface
                     }
 
                     if ($attributeName === 'src' || $attributeName === 'href') {
+                        /** @noinspection HttpUrlsUsage */
                         if (!str_starts_with($attributeValue, 'http://')
                             && !str_starts_with($attributeValue, 'https://')
                             && str_contains($attributeValue, ':')
