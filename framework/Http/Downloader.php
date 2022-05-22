@@ -9,7 +9,7 @@ use ManaPHP\Helper\LocalFS;
 /**
  * @property-read \ManaPHP\AliasInterface $alias
  */
-class Download extends Component implements DownloaderInterface
+class Downloader extends Component implements DownloaderInterface
 {
     public const USER_AGENT_IE = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
 
