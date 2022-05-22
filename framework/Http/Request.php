@@ -7,7 +7,6 @@ use ManaPHP\Component;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Http\Request\File\Exception as FileException;
 use ManaPHP\Http\Request\FileInterface;
-use ManaPHP\Validating\Validator\ValidateFailedException;
 
 /**
  * @property-read \ManaPHP\Di\FactoryInterface           $factory
