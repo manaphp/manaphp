@@ -96,7 +96,7 @@ class View extends Component implements ViewInterface
         return isset($context->_vars[$name]);
     }
 
-    protected function findLayout(): false|string
+    protected function findLayout(): ?string
     {
         $context = $this->context;
 
@@ -130,7 +130,7 @@ class View extends Component implements ViewInterface
                 }
             }
         } else {
-            $layout = false;
+            $layout = null;
         }
 
         return $layout;
