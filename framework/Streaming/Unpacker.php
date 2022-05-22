@@ -165,8 +165,9 @@ class Unpacker
         return $this->format;
     }
 
-    public function unpack(string $str, int $offset = 0): false|array
+    public function unpack(string $str, int $offset = 0): ?array
     {
-        return unpack($this->format, $str, $offset);
+        $v = unpack($this->format, $str, $offset);
+        return $v === false ? null : $v;
     }
 }
