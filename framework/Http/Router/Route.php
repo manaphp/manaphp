@@ -152,7 +152,7 @@ class Route implements RouteInterface
         return $routePaths;
     }
 
-    public function match(string $uri, string $method = 'GET'): false|array
+    public function match(string $uri, string $method = 'GET'): ?array
     {
         $matches = [];
 
@@ -161,17 +161,17 @@ class Route implements RouteInterface
             null;
         } elseif (is_string($methods)) {
             if ($methods !== $method) {
-                return false;
+                return null;
             }
         } elseif (!in_array($method, $methods, true)) {
-            return false;
+            return null;
         }
 
         if ($this->compiled[0] !== '#') {
             if ($this->compiled === $uri) {
                 return $this->paths;
             } else {
-                return false;
+                return null;
             }
         } else {
             $r = preg_match($this->compiled, $uri, $matches);
@@ -186,7 +186,7 @@ class Route implements RouteInterface
                             && in_array($k, ['area', 'controller', 'action'], true)
                             && preg_match('#_$|_\w$|_\w_#', $v) === 1
                         ) {
-                            return false;
+                            return null;
                         }
 
                         $parts[$k] = $v;
@@ -207,11 +207,11 @@ class Route implements RouteInterface
                     if (isset($m2a[$method])) {
                         $parts['action'] = $m2a[$method];
                     } else {
-                        return false;
+                        return null;
                     }
                 }
             } else {
-                return false;
+                return null;
             }
         }
 
@@ -220,7 +220,7 @@ class Route implements RouteInterface
 
             $m2a = ['GET' => 'detail', 'POST' => 'edit', 'DELETE' => 'delete'];
             if (!isset($m2a[$method])) {
-                return false;
+                return null;
             }
             $parts['action'] = $m2a[$method];
         }

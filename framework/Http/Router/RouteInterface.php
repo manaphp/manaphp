@@ -5,5 +5,5 @@ namespace ManaPHP\Http\Router;
 
 interface RouteInterface
 {
-    public function match(string $uri, string $method = 'GET'): false|array;
+    public function match(string $uri, string $method = 'GET'): ?array;
 }

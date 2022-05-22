@@ -173,7 +173,7 @@ class Router extends Component implements RouterInterface
         }
     }
 
-    protected function matchDefaultRoutes(string $uri, string $method): false|array
+    protected function matchDefaultRoutes(string $uri, string $method): ?array
     {
         $handledUri = $uri;
 
@@ -200,7 +200,7 @@ class Router extends Component implements RouterInterface
 
         for ($i = count($this->defaults) - 1; $i >= 0; $i--) {
             $route = $this->defaults[$i];
-            if (($parts = $route->match($handledUri, $method)) !== false) {
+            if (($parts = $route->match($handledUri, $method)) !== null) {
                 if ($area !== null) {
                     $parts['area'] = $area;
                 }
@@ -208,7 +208,7 @@ class Router extends Component implements RouterInterface
             }
         }
 
-        return false;
+        return null;
     }
 
     public function match(?string $uri = null, ?string $method = null): bool
@@ -242,17 +242,17 @@ class Router extends Component implements RouterInterface
         $area = null;
         $routes = $this->simples;
         if ($handledUri === false) {
-            $parts = false;
+            $parts = null;
         } elseif (isset($routes[$method][$handledUri])) {
             $parts = $routes[$method][$handledUri]->match($handledUri, $method);
         } elseif (isset($routes[''][$handledUri])) {
             $parts = $routes[''][$handledUri]->match($handledUri, $method);
         } else {
-            $parts = false;
+            $parts = null;
             $routes = $this->regexes;
             for ($i = count($routes) - 1; $i >= 0; $i--) {
                 $route = $routes[$i];
-                if (($parts = $route->match($handledUri, $method)) !== false) {
+                if (($parts = $route->match($handledUri, $method)) !== null) {
                     if ($handledUri !== '/' && $this->areas) {
                         if (($pos = strpos($handledUri, '/', 1)) === false) {
                             $area = Str::pascalize(substr($handledUri, 1));
@@ -268,12 +268,12 @@ class Router extends Component implements RouterInterface
                 }
             }
 
-            if ($parts === false) {
+            if ($parts === null) {
                 $parts = $this->matchDefaultRoutes($handledUri, $method);
             }
         }
 
-        if ($parts === false) {
+        if ($parts === null) {
             $this->fireEvent('request:routed');
 
             return false;
