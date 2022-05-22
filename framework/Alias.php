@@ -10,6 +10,11 @@ class Alias extends Component implements AliasInterface
 {
     protected array $aliases = ['@manaphp' => __DIR__];
 
+    public function all(): array
+    {
+        return $this->aliases;
+    }
+
     public function set(string $name, string $path): string
     {
         if ($name[0] !== '@') {

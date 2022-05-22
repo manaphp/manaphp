@@ -5,6 +5,8 @@ namespace ManaPHP;
 
 interface AliasInterface
 {
+    public function all(): array;
+
     public function set(string $name, string $path): string;
 
     public function get(string $name): ?string;
