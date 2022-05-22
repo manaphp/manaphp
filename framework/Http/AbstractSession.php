@@ -189,7 +189,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         }
     }
 
-    public function unserialize(string $data): false|array
+    public function unserialize(string $data): ?array
     {
         $serializer = $this->serializer;
 
@@ -198,7 +198,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
             $offset = 0;
             while ($offset < strlen($data)) {
                 if (!str_contains(substr($data, $offset), '|')) {
-                    return false;
+                    return null;
                 }
                 $pos = strpos($data, '|', $offset);
                 $num = $pos - $offset;
