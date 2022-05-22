@@ -24,8 +24,7 @@ class Bag extends Component implements BagInterface
 
     public function set(string $property, mixed $value): static
     {
-        $defaultCurrentValue = [];
-        $data = $this->session->get($this->name, $defaultCurrentValue);
+        $data = $this->session->get($this->name, []);
         $data[$property] = $value;
 
         $this->session->set($this->name, $data);
@@ -40,24 +39,21 @@ class Bag extends Component implements BagInterface
 
     public function get(string $property, mixed $default = null): mixed
     {
-        $defaultCurrentValue = [];
-        $data = $this->session->get($this->name, $defaultCurrentValue);
+        $data = $this->session->get($this->name, []);
 
         return $data[$property] ?? $default;
     }
 
     public function has(string $property): bool
     {
-        $defaultCurrentValue = [];
-        $data = $this->session->get($this->name, $defaultCurrentValue);
+        $data = $this->session->get($this->name, []);
 
         return isset($data[$property]);
     }
 
     public function remove(string $property): void
     {
-        $defaultCurrentValue = [];
-        $data = $this->session->get($this->name, $defaultCurrentValue);
+        $data = $this->session->get($this->name, []);
         unset($data[$property]);
 
         $this->session->set($this->name, $data);
