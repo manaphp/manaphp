@@ -17,9 +17,11 @@ class LocalFS
         return is_file(self::$alias->resolve($file));
     }
 
-    public static function fileSize(string $file): false|int
+    public static function fileSize(string $file): ?int
     {
-        return @filesize(self::$alias->resolve($file));
+        $v = @filesize(self::$alias->resolve($file));
+
+        return $v === false ? null : $v;
     }
 
     public static function fileDelete(string $file): void
@@ -311,9 +313,11 @@ class LocalFS
         return self::glob($dir . (str_contains($dir, '*') ? '' : '/*'), GLOB_ONLYDIR);
     }
 
-    public static function getModifiedTime(string $path): false|int
+    public static function getModifiedTime(string $path): ?int
     {
-        return filemtime(self::$alias->resolve($path));
+        $v = filemtime(self::$alias->resolve($path));
+
+        return $v === false ? null : $v;
     }
 
     public static function chmod(string $file, int $mode): void
