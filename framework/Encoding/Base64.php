@@ -10,8 +10,10 @@ class Base64 implements Base64Interface
         return base64_encode($str);
     }
 
-    public function decode(string $str): false|string
+    public function decode(string $str): ?string
     {
-        return base64_decode($str);
+        $v = base64_decode($str);
+
+        return $v === false ? null : $v;
     }
 }

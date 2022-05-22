@@ -7,5 +7,5 @@ interface Base64Interface
 {
     public function encode(string $str): string;
 
-    public function decode(string $str): false|string;
+    public function decode(string $str): ?string;
 }
