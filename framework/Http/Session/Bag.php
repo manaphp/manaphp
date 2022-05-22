@@ -33,16 +33,17 @@ class Bag extends Component implements BagInterface
         return $this;
     }
 
-    public function get(?string $property = null, mixed $default = null): mixed
+    public function all(): array
+    {
+        return $this->session->get($this->name, []);
+    }
+
+    public function get(string $property, mixed $default = null): mixed
     {
         $defaultCurrentValue = [];
         $data = $this->session->get($this->name, $defaultCurrentValue);
 
-        if ($property === null) {
-            return $data;
-        } else {
-            return $data[$property] ?? $default;
-        }
+        return $data[$property] ?? $default;
     }
 
     public function has(string $property): bool

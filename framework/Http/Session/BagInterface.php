@@ -9,7 +9,9 @@ interface BagInterface
 
     public function set(string $property, mixed $value): static;
 
-    public function get(?string $property = null, mixed $default = null): mixed;
+    public function all(): array;
+
+    public function get(string $property, mixed $default = null): mixed;
 
     public function has(string $property): bool;
 
