@@ -67,8 +67,6 @@ class ArgumentsResolver extends Component implements ArgumentsResolverInterface
                 $value = $this->request->get($name, $type === 'array' ? [] : '');
             } elseif ($rParameter->isDefaultValueAvailable()) {
                 $value = $rParameter->getDefaultValue();
-            } elseif (count($rParameters) === 1 && ($name === 'id' || str_ends_with($name, '_id'))) {
-                $value = $this->request->getId($name);
             } elseif ($type === 'NULL') {
                 /** @noinspection PhpConditionAlreadyCheckedInspection */
                 $value = null;

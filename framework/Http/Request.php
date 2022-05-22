@@ -80,25 +80,6 @@ class Request extends Component implements RequestInterface
         return $this;
     }
 
-    public function getId(string $name = 'id'): int|string
-    {
-        $source = $this->globals->getRequest();
-
-        if (isset($source[$name])) {
-            $id = $source[$name];
-        } elseif (isset($source['id'])) {
-            $id = $source['id'];
-        } else {
-            throw new ValidateFailedException([$name => "$name field is required"]);
-        }
-
-        if (!is_scalar($id)) {
-            throw new InvalidValueException('primary key value is not scalar');
-        }
-
-        return $id;
-    }
-
     public function getServer(?string $name = null, mixed $default = ''): mixed
     {
         return $this->globals->getServer()[$name] ?? $default;

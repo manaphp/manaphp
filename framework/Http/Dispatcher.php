@@ -122,8 +122,8 @@ class Dispatcher extends Component implements DispatcherInterface
             }
         }
 
-        if (isset($params[0])) {
-            $globals->_REQUEST['id'] = $params[0];
+        if (($id = $params[0] ?? null) !== null && (is_int($id) || is_string($id))) {
+            $globals->_REQUEST['id'] = $id;
         }
 
         if ($area) {

@@ -15,8 +15,6 @@ interface RequestInterface
 
     public function delete(string $name): static;
 
-    public function getId(string $name = 'id'): int|string;
-
     public function getServer(string $name, mixed $default = ''): mixed;
 
     public function getMethod(): string;
