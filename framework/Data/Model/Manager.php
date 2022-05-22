@@ -195,7 +195,7 @@ class Manager extends Component implements ManagerInterface
                 }
             }
         } else {
-            $fillable[] = array_keys($this->getRules($model));
+            $fillable = array_keys($this->getRules($model));
         }
 
         return $fillable;
