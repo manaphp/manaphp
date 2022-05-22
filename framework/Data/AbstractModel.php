@@ -25,7 +25,7 @@ use ReflectionClass;
 
 abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSerializable
 {
-    protected false|array $_snapshot = [];
+    protected ?array $_snapshot = [];
 
     public function __construct(array $data = [])
     {
@@ -665,7 +665,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     public function only(array $fields): static
     {
         $model = new static();
-        $model->_snapshot = false;
+        $model->_snapshot = null;
 
         foreach ($fields as $field) {
             $model->$field = $this->$field;
@@ -682,7 +682,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     public function except(array $fields): static
     {
         $model = clone $this;
-        $model->_snapshot = false;
+        $model->_snapshot = null;
 
         foreach ($fields as $field) {
             unset($model->$field);
