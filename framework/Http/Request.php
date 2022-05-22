@@ -37,13 +37,14 @@ class Request extends Component implements RequestInterface
         }
     }
 
-    public function get(?string $name = null, mixed $default = null): mixed
+    public function all(): array
+    {
+        return $this->globals->getRequest();
+    }
+
+    public function get(string $name, mixed $default = null): mixed
     {
         $source = $this->globals->getRequest();
-
-        if ($name === null) {
-            return $source;
-        }
 
         if (isset($source[$name]) && $source[$name] !== '') {
             $value = $source[$name];

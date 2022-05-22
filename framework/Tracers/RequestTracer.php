@@ -17,6 +17,6 @@ class RequestTracer extends Tracer
 
     public function onBegin(): void
     {
-        $this->debug($this->request->get(), 'http.request');
+        $this->debug($this->request->all(), 'http.request');
     }
 }

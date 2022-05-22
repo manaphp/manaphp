@@ -423,7 +423,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
         $request = Container::get(RequestInterface::class);
 
-        $data = $request->get();
+        $data = $request->all();
 
         foreach ($fields as $k => $v) {
             if (is_string($k)) {

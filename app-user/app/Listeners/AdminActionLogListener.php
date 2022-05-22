@@ -32,7 +32,7 @@ class AdminActionLogListener extends Listener
 
     protected function getTag(): int
     {
-        foreach ($this->request->get() as $k => $v) {
+        foreach ($this->request->all() as $k => $v) {
             if (is_numeric($v)) {
                 if ($k === 'id') {
                     return (int)$v;
@@ -53,7 +53,7 @@ class AdminActionLogListener extends Listener
         }
         $context->logged = true;
 
-        $data = Arr::except($this->request->get(), ['_url']);
+        $data = Arr::except($this->request->all(), ['_url']);
         if (isset($data['password'])) {
             $data['password'] = '*';
         }

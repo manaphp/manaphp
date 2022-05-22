@@ -66,7 +66,7 @@ class SlowlogFilter extends Filter implements EndFilterInterface
             'method'   => $this->request->getMethod(),
             'route'    => $route,
             'url'      => $this->request->getUrl(),
-            '_REQUEST' => $this->request->get(),
+            '_REQUEST' => $this->request->all(),
             'elapsed'  => $elapsed,
         ];
 

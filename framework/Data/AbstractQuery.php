@@ -126,7 +126,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
 
     public function search(array $filters): static
     {
-        $data = $this->request->get();
+        $data = $this->request->all();
 
         foreach ($filters as $k => $v) {
             if (is_string($k)) {

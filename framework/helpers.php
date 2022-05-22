@@ -125,12 +125,12 @@ if (!function_exists('jwt_verify')) {
 
 if (!function_exists('input')) {
     /**
-     * @param ?string $name
-     * @param mixed   $defaultOrRules =\PHPSTORM_META\validator_rule()
+     * @param string $name
+     * @param mixed  $defaultOrRules =\PHPSTORM_META\validator_rule()
      *
      * @return mixed
      */
-    function input(?string $name = null, mixed $defaultOrRules = null): mixed
+    function input(string $name, mixed $defaultOrRules = null): mixed
     {
         $request = Container::get(RequestInterface::class);
 

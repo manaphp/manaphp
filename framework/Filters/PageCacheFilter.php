@@ -84,7 +84,7 @@ class PageCacheFilter extends Filter implements ReadyFilterInterface
 
         if ($key === null) {
             $params = [];
-            foreach ($this->request->get() as $name => $value) {
+            foreach ($this->request->all() as $name => $value) {
                 if ($name !== '_url' && $value !== '') {
                     $params[$name] = $value;
                 }

@@ -9,7 +9,9 @@ interface RequestInterface
 {
     public function getRawBody(): string;
 
-    public function get(?string $name = null, mixed $default = null): mixed;
+    public function all(): array;
+
+    public function get(string $name, mixed $default = null): mixed;
 
     public function set(string $name, mixed $value): static;
 
