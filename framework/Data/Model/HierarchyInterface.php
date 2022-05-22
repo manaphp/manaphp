@@ -19,19 +19,19 @@ interface HierarchyInterface
 
     public static function getHierarchyParentLength(string $node): int;
 
-    public static function getHierarchyParent(string $node): false|string;
+    public static function getHierarchyParent(string $node): ?string;
 
-    public static function getHierarchyParents(string $node): false|array;
+    public static function getHierarchyParents(string $node): ?array;
 
     public static function getHierarchyChildren(string $node): array;
 
     public static function getHierarchyChildLength(string $node): int;
 
-    public static function getHierarchySiblings(string $node): false|array;
+    public static function getHierarchySiblings(string $node): ?array;
 
     public static function hierarchyHasChild(string $node): bool;
 
     public static function getHierarchyMaxSibling(string $node): string;
 
-    public static function getHierarchyNextSibling(string $node): false|string;
+    public static function getHierarchyNextSibling(string $node): ?string;
 }

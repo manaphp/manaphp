@@ -105,17 +105,17 @@ trait Path
         return -1;
     }
 
-    public static function getHierarchyParent(string $code): false|string
+    public static function getHierarchyParent(string $code): ?string
     {
         $parent_length = static::getHierarchyParentLength($code);
         if ($parent_length < 0) {
-            return false;
+            return null;
         }
 
         return substr($code, 0, $parent_length);
     }
 
-    public static function getHierarchyParents(string $code): false|array
+    public static function getHierarchyParents(string $code): ?array
     {
         $parents = [''];
 
@@ -126,14 +126,14 @@ trait Path
             if ($current_length + $length === $node_length) {
                 return $parents;
             } elseif ($current_length + $length > $node_length) {
-                return false;
+                return null;
             } else {
                 $current_length += $length;
                 $parents[] = substr($code, 0, $current_length);
             }
         }
 
-        return false;
+        return null;
     }
 
     public static function getHierarchyChildren(string $code): array
@@ -186,11 +186,11 @@ trait Path
         return static::query()->whereEq(static::getHierarchyField(), $code)->exists();
     }
 
-    protected static function calcHierarchyNextChild(string $code): false|string
+    protected static function calcHierarchyNextChild(string $code): ?string
     {
         $parent_length = static::getHierarchyParentLength($code);
         if ($parent_length < 0) {
-            return false;
+            return null;
         }
 
         $base = static::getHierarchyBase();
@@ -200,7 +200,7 @@ trait Path
         $next_node_int = (int)base_convert($sub_node, $base, 10) + 1;
         /** @noinspection PowerOperatorCanBeUsedInspection */
         if ($next_node_int >= pow($base, $self_length)) {
-            return false;
+            return null;
         } else {
             $parent_code = substr($code, 0, $parent_length);
             $child_code = str_pad(base_convert((string)$next_node_int, 10, $base), $self_length, '0', STR_PAD_LEFT);
@@ -208,12 +208,12 @@ trait Path
         }
     }
 
-    public static function getHierarchyNextChild(string $code): false|string
+    public static function getHierarchyNextChild(string $code): ?string
     {
         $hierarchyField = static::getHierarchyField();
         $child_length = static::getHierarchyChildLength($code);
         if ($child_length < 0) {
-            return false;
+            return null;
         }
 
         $max = static::query()->whereStartsWith($hierarchyField, $code, $child_length)->max($hierarchyField);
