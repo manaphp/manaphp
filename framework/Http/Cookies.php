@@ -12,6 +12,11 @@ use ManaPHP\Component;
  */
 class Cookies extends Component implements CookiesInterface
 {
+    public function all(): array
+    {
+        return $this->globals->getCookie();
+    }
+
     public function set(string $name, string $value, int $expire = 0, ?string $path = null, ?string $domain = null,
         bool $secure = false, bool $httponly = true
     ): static {
