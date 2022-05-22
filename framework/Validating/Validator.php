@@ -388,13 +388,13 @@ class Validator extends Component implements ValidatorInterface
     /** @noinspection PhpUnusedParameterInspection */
     protected function validate_xdigit(string $field, string $value): ?string
     {
-        return preg_match('#^[0-9a-fA-F]+$#', $value) ? $value : null;
+        return preg_match('#^[\da-fA-F]+$#', $value) ? $value : null;
     }
 
     /** @noinspection PhpUnusedParameterInspection */
     protected function validate_alnum(string $field, string $value): ?string
     {
-        return preg_match('#^[a-zA-Z0-9]+$#', $value) ? $value : null;
+        return preg_match('#^[a-zA-Z\d]+$#', $value) ? $value : null;
     }
 
     /** @noinspection PhpUnusedParameterInspection */
@@ -491,7 +491,7 @@ class Validator extends Component implements ValidatorInterface
     /** @noinspection PhpUnusedParameterInspection */
     protected function validate_uuid(string $field, string $value): ?string
     {
-        return preg_match('#^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$#i', $value) === 1 ? $value : null;
+        return preg_match('#^[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}$#i', $value) === 1 ? $value : null;
     }
 
     /** @noinspection PhpUnusedParameterInspection */
@@ -617,7 +617,7 @@ class Validator extends Component implements ValidatorInterface
     {
         $value = strtolower($value);
 
-        if (!preg_match('#^[a-z][a-z0-9_]{2,}$#', $value)) {
+        if (!preg_match('#^[a-z][a-z\d_]{2,}$#', $value)) {
             return null;
         }
 
