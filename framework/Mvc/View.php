@@ -249,7 +249,7 @@ class View extends Component implements ViewInterface
             ($this->exists_cache[$template] = $this->renderer->exists($template));
     }
 
-    public function getWidgetClassName(string $widget): false|string
+    public function getWidgetClassName(string $widget): ?string
     {
         if (str_contains($widget, '/')) {
             throw new MisuseException(['it is not allowed to access other area `:widget` widget', 'widget' => $widget]);
@@ -260,7 +260,7 @@ class View extends Component implements ViewInterface
             return $widgetClassName;
         }
 
-        return class_exists($widgetClassName = "App\\Widgets\\{$widget}Widget") ? $widgetClassName : false;
+        return class_exists($widgetClassName = "App\\Widgets\\{$widget}Widget") ? $widgetClassName : null;
     }
 
     public function widget(string $widget, array $options = []): void
