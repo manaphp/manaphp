@@ -181,8 +181,7 @@ class View extends Component implements ViewInterface
         try {
             $context->content = $this->renderer->render($template, $context->vars);
 
-            if ($context->layout !== false) {
-                $layout = $this->findLayout();
+            if (($layout = $this->findLayout()) !== null) {
                 $context->content = $this->renderer->render($layout, $context->vars);
             }
         } finally {
