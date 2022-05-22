@@ -10,8 +10,9 @@ class Base64Url implements Base64UrlInterface
         return strtr(rtrim(base64_encode($str), '='), '+/', '-_');
     }
 
-    public function decode(string $str): false|string
+    public function decode(string $str): ?string
     {
-        return base64_decode(strtr($str, '-_', '+/'));
+        $v = base64_decode(strtr($str, '-_', '+/'));
+        return $v === false ? null : $v;
     }
 }
