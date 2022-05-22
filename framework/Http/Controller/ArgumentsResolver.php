@@ -32,8 +32,9 @@ class ArgumentsResolver extends Component implements ArgumentsResolverInterface
             $instance = $model::firstOrFail([$primaryKey => $data[$primaryKey]]);
         } else {
             $instance = new $model;
-            $instance->load();
         }
+
+        $instance->load();
 
         return $instance;
     }
