@@ -62,13 +62,15 @@ class Debugger extends Component implements DebuggerInterface
         }
     }
 
-    protected function readData(string $key): false|string
+    protected function readData(string $key): ?string
     {
         if ($this->ttl) {
-            $content = $this->redisCache->get($this->prefix . $key);
+            if (($content = $this->redisCache->get($this->prefix . $key)) === false) {
+                return null;
+            }
         } else {
             $file = "@runtime/debugger/{$key}.zip";
-            $content = LocalFS::fileExists($file) ? LocalFS::fileGet($file) : false;
+            $content = LocalFS::fileExists($file) ? LocalFS::fileGet($file) : null;
         }
 
         return is_string($content) ? gzdecode($content) : $content;
@@ -101,7 +103,7 @@ class Debugger extends Component implements DebuggerInterface
             && preg_match('#^([\w/]+)\.(html|json|txt|raw)$#', $debugger, $match)
         ) {
             $context->enabled = false;
-            if (($data = $this->readData($match[1])) !== false) {
+            if (($data = $this->readData($match[1])) !== null) {
                 $ext = $match[2];
                 if ($ext === 'html') {
                     $this->response->setContent(strtr(LocalFS::fileGet($this->template), ['DEBUGGER_DATA' => $data]));
