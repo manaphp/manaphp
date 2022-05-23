@@ -164,7 +164,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public static function firstOrNew(array $filters, array $fields = []): static
     {
-        if (($instance = static::first($fields)) === null) {
+        if (($instance = static::first($filters)) === null) {
             $instance = new static();
             foreach ($filters as $k => $v) {
                 $instance->$k = $v;
