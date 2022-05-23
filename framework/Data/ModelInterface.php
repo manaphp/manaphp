@@ -13,7 +13,7 @@ interface ModelInterface
 
     public static function paginate(array $filters = [], ?array $fields = null): Paginator;
 
-    public static function lists(string|array $fields, ?array $filters = null): array;
+    public static function lists(string|array $fields, array $filters = []): array;
 
     public static function get(int|string $id, ?int $ttl = null): static;
 
@@ -25,7 +25,7 @@ interface ModelInterface
 
     public static function firstOrCreate(array $filters, array $fields = []): static;
 
-    public static function last(?array $filters = null, ?array $fields = null): ?static;
+    public static function last(array $filters, ?array $fields = null): ?static;
 
     public static function value(array $filters, string $field, ?int $ttl = null): mixed;
 
@@ -33,21 +33,21 @@ interface ModelInterface
 
     public static function valueOrDefault(array $filters, string $field, mixed $default): mixed;
 
-    public static function values(string $field, ?array $filters = null): array;
+    public static function values(string $field, array $filters = []): array;
 
-    public static function kvalues(string|array $kv, ?array $filters = null): array;
+    public static function kvalues(string|array $kv, array $filters = []): array;
 
     public static function exists(array $filters): bool;
 
-    public static function count(?array $filters = null, string $field = '*'): int;
+    public static function count(array $filters = [], string $field = '*'): int;
 
-    public static function sum(string $field, ?array $filters = null): mixed;
+    public static function sum(string $field, array $filters = []): mixed;
 
-    public static function max(string $field, ?array $filters = null): mixed;
+    public static function max(string $field, array $filters = []): mixed;
 
-    public static function min(string $field, ?array $filters = null): mixed;
+    public static function min(string $field, array $filters = []): mixed;
 
-    public static function avg(string $field, ?array $filters = null): ?float;
+    public static function avg(string $field, array $filters = []): ?float;
 
     public function load(?array $fields = null): static;
 
@@ -87,7 +87,7 @@ interface ModelInterface
 
     public static function select(?array $fields = null, ?string $alias = null): QueryInterface;
 
-    public static function where(?array $filters = null): QueryInterface;
+    public static function where(array $filters): QueryInterface;
 
     public static function search(array $filters): QueryInterface;
 

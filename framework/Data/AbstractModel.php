@@ -74,11 +74,11 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
     /**
      * @param string|array $fields  =model_fields(new static) ?? model_field(new static)
-     * @param array|null   $filters =model_var(new static)
+     * @param array        $filters =model_var(new static)
      *
      * @return array
      */
-    public static function lists(string|array $fields, ?array $filters = null): array
+    public static function lists(string|array $fields, array $filters = []): array
     {
         if (is_string($fields)) {
             $fields = [$fields];
@@ -94,7 +94,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         } else {
             $order = [$keyField => SORT_ASC];
         }
-        return static::select($fields)->where($filters ?? [])->orderBy($order)->execute();
+        return static::select($fields)->where($filters)->orderBy($order)->execute();
     }
 
     public static function get(int|string $id, ?int $ttl = null): static
@@ -188,15 +188,15 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Allows to query the last record that match the specified conditions
      *
-     * @param ?array $filters =model_var(new static)
+     * @param array  $filters =model_var(new static)
      * @param ?array $fields  =model_fields(new static)
      *
      * @return static|null
      */
-    public static function last(?array $filters = null, ?array $fields = null): ?static
+    public static function last(array $filters = [], ?array $fields = null): ?static
     {
         $primaryKey = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
-        $rs = static::select($fields)->where($filters ?? [])->orderBy([$primaryKey => SORT_DESC])->limit(1)->fetch();
+        $rs = static::select($fields)->where($filters)->orderBy([$primaryKey => SORT_DESC])->limit(1)->fetch();
         return $rs[0] ?? null;
     }
 
@@ -270,29 +270,29 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
     /**
      * @param string $field   =model_field(new static)
-     * @param ?array $filters =model_var(new static)
+     * @param array  $filters =model_var(new static)
      *
      * @return array
      */
-    public static function values(string $field, ?array $filters = null): array
+    public static function values(string $field, array $filters = []): array
     {
         return static::where($filters)->orderBy([$field => SORT_ASC])->values($field);
     }
 
     /**
      * @param string|array $kv      =model_fields(new static) ?? model_field(new static)
-     * @param array|null   $filters =model_var(new static)
+     * @param array        $filters =model_var(new static)
      *
      * @return array
      */
-    public static function kvalues(string|array $kv, ?array $filters = null): array
+    public static function kvalues(string|array $kv, array $filters = []): array
     {
         $dict = [];
 
         if (is_string($kv)) {
             $key = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
             $value = $kv;
-            foreach (static::select([$key, $value])->where($filters ?? [])->execute() as $row) {
+            foreach (static::select([$key, $value])->where($filters)->execute() as $row) {
                 $dict[$row[$key]] = $row[$value];
             }
         } else {
@@ -301,12 +301,12 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
             if (is_string($fields)) {
                 $value = $fields;
-                foreach (static::select([$key, $value])->where($filters ?? [])->execute() as $row) {
+                foreach (static::select([$key, $value])->where($filters)->execute() as $row) {
                     $dict[$row[$key]] = $row[$value];
                 }
             } else {
                 array_unshift($fields, $key);
-                foreach (static::select($fields)->where($filters ?? [])->execute() as $row) {
+                foreach (static::select($fields)->where($filters)->execute() as $row) {
                     $dict[$row[$key]] = $row;
                 }
             }
@@ -326,12 +326,12 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
-     * @param ?array $filters =model_var(new static)
+     * @param array  $filters =model_var(new static)
      * @param string $field   =model_field(new static)
      *
      * @return int
      */
-    public static function count(?array $filters = null, string $field = '*'): int
+    public static function count(array $filters = [], string $field = '*'): int
     {
         return static::where($filters)->count($field);
     }
@@ -340,11 +340,11 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      * Allows to calculate a summary on a field that match the specified conditions
      *
      * @param string $field   =model_field(new static)
-     * @param ?array $filters =model_var(new static)
+     * @param array  $filters =model_var(new static)
      *
      * @return int|float|null
      */
-    public static function sum(string $field, array $filters = null): mixed
+    public static function sum(string $field, array $filters = []): mixed
     {
         return static::where($filters)->sum($field);
     }
@@ -353,11 +353,11 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      * Allows to get the max value of a column that match the specified conditions
      *
      * @param string $field   =model_field(new static)
-     * @param ?array $filters =model_var(new static)
+     * @param array  $filters =model_var(new static)
      *
      * @return int|float|null
      */
-    public static function max(string $field, ?array $filters = null): mixed
+    public static function max(string $field, array $filters = []): mixed
     {
         return static::where($filters)->max($field);
     }
@@ -367,11 +367,11 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      *
      *
      * @param string $field   =model_field(new static)
-     * @param ?array $filters =model_var(new static)
+     * @param array  $filters =model_var(new static)
      *
      * @return int|float|null
      */
-    public static function min(string $field, ?array $filters = null): mixed
+    public static function min(string $field, array $filters = []): mixed
     {
         return static::where($filters)->min($field);
     }
@@ -380,11 +380,11 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      * Allows to calculate the average value on a column matching the specified conditions
      *
      * @param string $field   =model_field(new static)
-     * @param ?array $filters =model_var(new static)
+     * @param array  $filters =model_var(new static)
      *
      * @return float|null
      */
-    public static function avg(string $field, ?array $filters = null): ?float
+    public static function avg(string $field, array $filters = []): ?float
     {
         return (float)static::where($filters)->avg($field);
     }
@@ -770,13 +770,13 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     }
 
     /**
-     * @param ?array $filters =model_var(new static)
+     * @param array $filters =model_var(new static)
      *
      * @return \ManaPHP\Data\QueryInterface <static>
      */
-    public static function where(?array $filters = null): QueryInterface
+    public static function where(array $filters): QueryInterface
     {
-        return static::select()->where($filters ?? []);
+        return static::select()->where($filters);
     }
 
     /**
