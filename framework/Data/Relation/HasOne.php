@@ -47,6 +47,6 @@ class HasOne extends AbstractRelation
         $thisField = $this->thisField;
         $thatField = $this->thatField;
 
-        return $thatModel::select()->whereEq($thatField, $instance->$thisField)->setFetchType(false);
+        return $thatModel::select()->where([$thatField => $instance->$thisField])->setFetchType(false);
     }
 }

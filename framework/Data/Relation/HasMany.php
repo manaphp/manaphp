@@ -60,6 +60,6 @@ class HasMany extends AbstractRelation
         $thatModel = $this->thatModel;
         $thisField = $this->thisField;
 
-        return $thatModel::select()->whereEq($this->thatField, $instance->$thisField)->setFetchType(true);
+        return $thatModel::select()->where([$this->thatField => $instance->$thisField])->setFetchType(true);
     }
 }

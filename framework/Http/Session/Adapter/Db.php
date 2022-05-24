@@ -34,7 +34,7 @@ class Db extends AbstractSession
 
     public function do_read(string $session_id): string
     {
-        return $this->db->query($this->table)->whereEq('session_id', $session_id)->value('data', '');
+        return $this->db->query($this->table)->where(['session_id'=> $session_id])->value('data', '');
     }
 
     public function do_write(string $session_id, string $data, int $ttl): bool

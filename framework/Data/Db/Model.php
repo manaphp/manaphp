@@ -64,7 +64,7 @@ class Model extends AbstractModel implements ModelInterface
         }
 
         if ($defaultValueFields) {
-            $query = $this->newQuery()->select($defaultValueFields)->whereEq($primaryKey, $this->$primaryKey);
+            $query = $this->newQuery()->select($defaultValueFields)->where([$primaryKey => $this->$primaryKey]);
             if ($r = $query->execute()) {
                 foreach ($r[0] as $field => $value) {
                     $this->$field = $value;

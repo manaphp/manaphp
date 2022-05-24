@@ -183,7 +183,7 @@ trait Path
 
     public static function hierarchyExists(string $code): bool
     {
-        return static::query()->whereEq(static::getHierarchyField(), $code)->exists();
+        return static::query()->where([static::getHierarchyField() => $code])->exists();
     }
 
     protected static function calcHierarchyNextChild(string $code): ?string

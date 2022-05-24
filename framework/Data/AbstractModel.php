@@ -230,7 +230,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
         $value = apcu_fetch($key, $success);
         if (!$success) {
-            $rs = static::select([$field])->whereEq($pkName, $pkValue)->limit(1)->execute();
+            $rs = static::select([$field])->where([$pkName => $pkValue])->limit(1)->execute();
             $value = $rs ? $rs[0][$field] : null;
 
             apcu_store($key, $value, $ttl);
