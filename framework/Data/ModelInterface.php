@@ -27,9 +27,9 @@ interface ModelInterface
 
     public static function last(array $filters, ?array $fields = null): ?static;
 
-    public static function value(array $filters, string $field, ?int $ttl = null): mixed;
+    public static function value(array $filters, string $field): mixed;
 
-    public static function valueOrFail(array $filters, string $field, ?int $ttl = null): mixed;
+    public static function valueOrFail(array $filters, string $field): mixed;
 
     public static function valueOrDefault(array $filters, string $field, mixed $default): mixed;
 

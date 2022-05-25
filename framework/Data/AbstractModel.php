@@ -198,52 +198,24 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * @param array  $filters =model_var(new static)
      * @param string $field   =model_field(new static)
-     * @param ?int   $ttl
      *
      * @return int|float|string|null
      */
-    public static function value(array $filters, string $field, ?int $ttl = null): mixed
+    public static function value(array $filters, string $field): mixed
     {
-        if ($ttl !== null && !is_int($ttl)) {
-            throw new MisuseException('ttl must be a integer');
-        }
-
-        $pkName = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
-
-        $pkValue = null;
-
-        if (count($filters) === 1 && isset($filters[$pkName])) {
-            $pkValue = $filters[$pkName];
-        }
-
-        if ($ttl === null || $pkValue === null) {
-            $rs = static::select([$field])->where($filters)->limit(1)->execute();
-            return $rs ? $rs[0][$field] : null;
-        }
-
-        $key = __FILE__ . ':' . static::class . ":value:$field:$pkValue:$ttl";
-
-        $value = apcu_fetch($key, $success);
-        if (!$success) {
-            $rs = static::select([$field])->where([$pkName => $pkValue])->limit(1)->execute();
-            $value = $rs ? $rs[0][$field] : null;
-
-            apcu_store($key, $value, $ttl);
-        }
-
-        return $value;
+        $rs = static::select([$field])->where($filters)->limit(1)->execute();
+        return $rs ? $rs[0][$field] : null;
     }
 
     /**
      * @param array  $filters =model_var(new static)
      * @param string $field   =model_field(new static)
-     * @param ?int   $ttl
      *
      * @return int|float|string
      */
-    public static function valueOrFail(array $filters, string $field, ?int $ttl = null): mixed
+    public static function valueOrFail(array $filters, string $field): mixed
     {
-        $value = static::value($filters, $field, $ttl);
+        $value = static::value($filters, $field);
         if ($value === null) {
             throw new NotFoundException(static::class, $filters);
         } else {
