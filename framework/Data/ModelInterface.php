@@ -57,8 +57,6 @@ interface ModelInterface
 
     public function validate(?array $fields = null): void;
 
-    public function validateField(string $field, ?array $rules = null): void;
-
     public function save(?array $fields = null): static;
 
     public function create(): static;
