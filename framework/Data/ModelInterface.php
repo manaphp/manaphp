@@ -15,7 +15,7 @@ interface ModelInterface
 
     public static function lists(string|array $fields, array $filters = []): array;
 
-    public static function get(int|string $id, ?int $ttl = null): static;
+    public static function get(int|string $id, ?array $fields = null): static;
 
     public static function first(array $filters, ?array $fields = null): ?static;
 

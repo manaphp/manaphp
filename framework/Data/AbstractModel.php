@@ -97,22 +97,17 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         return static::select($fields)->where($filters)->orderBy($order)->execute();
     }
 
-    public static function get(int|string $id, ?int $ttl = null): static
+    /**
+     * @param int|string $id
+     * @param ?array     $fields =model_fields(new static)
+     *
+     * @return static
+     */
+    public static function get(int|string $id, ?array $fields = null): static
     {
         $primaryKey = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
-        if ($ttl <= 0) {
-            return static::firstOrFail([$primaryKey => $id]);
-        }
 
-        $key = __FILE__ . ':' . static::class . ":get:$id:$ttl";
-
-        $r = apcu_fetch($key, $success);
-        if (!$success) {
-            $r = static::firstOrFail([$primaryKey => $id]);
-            apcu_store($key, $r, $ttl);
-        }
-
-        return $r;
+        return static::firstOrFail([$primaryKey => $id], $fields);
     }
 
     /**
