@@ -145,6 +145,7 @@ class Manager extends Component implements ManagerInterface
     public function getQuery(string $model, string $name, mixed $data): QueryInterface
     {
         $relation = $this->get($model, $name);
+        /** @noinspection NullPointerExceptionInspection */
         $query = $relation->getThatQuery();
 
         if ($data === null) {
