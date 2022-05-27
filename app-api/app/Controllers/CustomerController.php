@@ -12,20 +12,9 @@ class CustomerController extends Controller
         return Customer::paginate($this->request->get('filters', []));
     }
 
-    public function createAction()
+    public function createAction(Customer $customer)
     {
-        $first_name = $this->request->get('first_name');
-        $last_name = $this->request->get('last_name');
-
-        if (Customer::exists(['first_name' => $first_name, 'last_name' => $last_name])) {
-            return "CREATE FAILED: `$first_name-$last_name` customer is exists already.";
-        } else {
-            $customer = new Customer();
-            $customer->first_name = $first_name;
-            $customer->last_name = $last_name;
-
-            return $customer->create();
-        }
+        return $customer->create();
     }
 
     public function detailAction(Customer $customer)
