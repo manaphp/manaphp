@@ -61,7 +61,7 @@ class ArgumentsResolver extends Component implements ArgumentsResolverInterface
                 if (is_subclass_of($type, ModelInterface::class)) {
                     $value = $this->resolveModel($type);
                 } else {
-                    $value = $container->has($name) ? $container->get($name) : $container->get($type);
+                    $value = $container->get($type);
                 }
             } elseif ($this->request->has($name)) {
                 $value = $this->request->get($name, $type === 'array' ? [] : '');
