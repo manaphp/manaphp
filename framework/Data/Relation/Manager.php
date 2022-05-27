@@ -79,8 +79,8 @@ class Manager extends Component implements ManagerInterface
                 return null;
             }
 
-            $thisForeignedKey = $this->modelManager->getForeignedKey($thisModel);
-            if (property_exists($thatModel, $thisForeignedKey)) {
+            $thisReferencedKey = $this->modelManager->getReferencedKey($thisModel);
+            if (property_exists($thatModel, $thisReferencedKey)) {
                 return new HasMany($thisModel, $thatModel);
             }
 
@@ -111,11 +111,11 @@ class Manager extends Component implements ManagerInterface
 
             throw new RuntimeException(['infer `:relation` relation failed', 'relation' => $name]);
         } elseif ($thatModel = $this->inferClassName($thisModel, $name)) {
-            $thisForeignedKey = $this->modelManager->getForeignedKey($thisModel);
-            $thatForeignedKey = $this->modelManager->getForeignedKey($thatModel);
-            if (property_exists($thatModel, $thisForeignedKey)) {
+            $thisReferencedKey = $this->modelManager->getReferencedKey($thisModel);
+            $thatReferencedKey = $this->modelManager->getReferencedKey($thatModel);
+            if (property_exists($thatModel, $thisReferencedKey)) {
                 return new HasOne($thisModel, $thatModel);
-            } elseif (property_exists($thisModel, $thatForeignedKey)) {
+            } elseif (property_exists($thisModel, $thatReferencedKey)) {
                 return new BelongsTo($thisModel, $thatModel);
             }
         }

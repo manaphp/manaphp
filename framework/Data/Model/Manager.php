@@ -8,7 +8,7 @@ use ManaPHP\Data\Model\Attribute\ColumnMap;
 use ManaPHP\Data\Model\Attribute\Connection;
 use ManaPHP\Data\Model\Attribute\DateFormat;
 use ManaPHP\Data\Model\Attribute\Fillable;
-use ManaPHP\Data\Model\Attribute\ForeignedKey;
+use ManaPHP\Data\Model\Attribute\ReferencedKey;
 use ManaPHP\Data\Model\Attribute\Guarded;
 use ManaPHP\Data\Model\Attribute\PrimaryKey;
 use ManaPHP\Data\Model\Attribute\Table;
@@ -26,7 +26,7 @@ class Manager extends Component implements ManagerInterface
     protected array $table = [];
     protected array $connection = [];
     protected array $primaryKey = [];
-    protected array $foreignedKey = [];
+    protected array $referencedKey = [];
     protected array $fields = [];
     protected array $columnMap = [];
     protected array $fillable = [];
@@ -112,10 +112,10 @@ class Manager extends Component implements ManagerInterface
         return $primaryKey;
     }
 
-    protected function getForeignedKeyInternal(string $model): string
+    protected function getReferencedKeyInternal(string $model): string
     {
-        if (($attribute = $this->getClassAttribute($model, ForeignedKey::class)) !== null) {
-            /** @var ForeignedKey $attribute */
+        if (($attribute = $this->getClassAttribute($model, ReferencedKey::class)) !== null) {
+            /** @var ReferencedKey $attribute */
             return $attribute->get();
         } else {
             $primaryKey = $this->getPrimaryKey($model);
@@ -137,13 +137,13 @@ class Manager extends Component implements ManagerInterface
         }
     }
 
-    public function getForeignedKey(string $model): string
+    public function getReferencedKey(string $model): string
     {
-        if (($foreignedKey = $this->foreignedKey[$model] ?? null) === null) {
-            $foreignedKey = $this->foreignedKey[$foreignedKey] = $this->getForeignedKeyInternal($model);
+        if (($referencedKey = $this->referencedKey[$model] ?? null) === null) {
+            $referencedKey = $this->referencedKey[$referencedKey] = $this->getReferencedKeyInternal($model);
         }
 
-        return $foreignedKey;
+        return $referencedKey;
     }
 
     protected function getFieldsInternal(string $model): array

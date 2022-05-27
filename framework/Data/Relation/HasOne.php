@@ -21,7 +21,7 @@ class HasOne extends AbstractRelation
         $this->thisModel = $thisModel;
         $this->thisField = $modelManager->getPrimaryKey($thisModel);
         $this->thatModel = $thatModel;
-        $this->thatField = $modelManager->getForeignedKey($thisModel);
+        $this->thatField = $modelManager->getReferencedKey($thisModel);
     }
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array

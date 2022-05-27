@@ -27,7 +27,7 @@ class HasManyToMany extends AbstractRelation
         $this->thatModel = $thatModel;
         $this->thatField = $modelManager->getPrimaryKey($thatModel);
         $this->pivotModel = $pivotModel;
-        $this->thisPivot = $modelManager->getForeignedKey($thisModel);
+        $this->thisPivot = $modelManager->getReferencedKey($thisModel);
         $this->thatPivot = $modelManager->getPrimaryKey($thatModel);
     }
 

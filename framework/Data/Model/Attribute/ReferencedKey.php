@@ -6,7 +6,7 @@ namespace ManaPHP\Data\Model\Attribute;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class ForeignedKey
+class ReferencedKey
 {
     protected string $name;
 

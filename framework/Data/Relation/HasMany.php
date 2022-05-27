@@ -22,7 +22,7 @@ class HasMany extends AbstractRelation
         $this->thisModel = $thisModel;
         $this->thisField = $modelManager->getPrimaryKey($thisModel);
         $this->thatModel = $thatModel;
-        $this->thatField = $modelManager->getforeignedKey($thisModel);
+        $this->thatField = $modelManager->getReferencedKey($thisModel);
     }
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array

@@ -19,7 +19,7 @@ class BelongsTo extends AbstractRelation
         $modelManager = Container::get(ManagerInterface::class);
 
         $this->thisModel = $thisModel;
-        $this->thisField = $modelManager->getForeignedKey($thatModel);
+        $this->thisField = $modelManager->getReferencedKey($thatModel);
         $this->thatModel = $thatModel;
         $this->thatField = $modelManager->getPrimaryKey($thatModel);
     }

@@ -20,11 +20,11 @@ class HasManyOthers extends AbstractRelation
     public function __construct(string $thisModel, string $thatModel)
     {
         $modelManager = Container::get(ManagerInterface::class);
-        $foreingedKey = $modelManager->getForeignedKey($thatModel);
+        $referencedKey = $modelManager->getReferencedKey($thatModel);
 
         $keys = [];
         foreach ($modelManager->getFields($thisModel) as $field) {
-            if ($field === $foreingedKey || $field === 'id' || $field === '_id') {
+            if ($field === $referencedKey || $field === 'id' || $field === '_id') {
                 continue;
             }
 
@@ -47,7 +47,7 @@ class HasManyOthers extends AbstractRelation
 
         $this->thisModel = $thisModel;
         $this->thisFilter = $thisFilter;
-        $this->thisValue = $modelManager->getForeignedKey($thatModel);
+        $this->thisValue = $modelManager->getReferencedKey($thatModel);
         $this->thatModel = $thatModel;
         $this->thatField = $modelManager->getPrimaryKey($thatModel);
     }

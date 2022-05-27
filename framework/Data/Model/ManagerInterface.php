@@ -11,7 +11,7 @@ interface ManagerInterface
 
     public function getPrimaryKey(string $model): string;
 
-    public function getForeignedKey(string $model): string;
+    public function getReferencedKey(string $model): string;
 
     public function getFields(string $model): array;
 
