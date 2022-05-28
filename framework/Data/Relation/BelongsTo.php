@@ -14,12 +14,17 @@ class BelongsTo extends AbstractRelation
     protected string $selfField;
     protected string $thatField;
 
-    public function __construct(string $selfModel, string $thatModel)
+    public function __construct(string|array $self, string $thatModel)
     {
         $modelManager = Container::get(ManagerInterface::class);
 
-        $this->selfModel = $selfModel;
-        $this->selfField = $modelManager->getReferencedKey($thatModel);
+        if (is_string($self)) {
+            $this->selfModel = $self;
+            $this->selfField = $modelManager->getReferencedKey($thatModel);
+        } else {
+            list($this->selfModel, $this->selfField) = $self;
+        }
+
         $this->thatModel = $thatModel;
         $this->thatField = $modelManager->getPrimaryKey($thatModel);
     }
