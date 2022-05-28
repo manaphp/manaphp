@@ -12,22 +12,22 @@ use ManaPHP\Helper\Container;
 
 class HasManyToMany extends AbstractRelation
 {
-    protected string $thisField;
+    protected string $selfField;
     protected string $thatField;
     protected string $pivotModel;
-    protected string $thisPivot;
+    protected string $selfPivot;
     protected string $thatPivot;
 
-    public function __construct(string $thisModel, string $thatModel, string $pivotModel)
+    public function __construct(string $selfModel, string $thatModel, string $pivotModel)
     {
         $modelManager = Container::get(ManagerInterface::class);
 
-        $this->thisModel = $thisModel;
-        $this->thisField = $modelManager->getPrimaryKey($thisModel);
+        $this->selfModel = $selfModel;
+        $this->selfField = $modelManager->getPrimaryKey($selfModel);
         $this->thatModel = $thatModel;
         $this->thatField = $modelManager->getPrimaryKey($thatModel);
         $this->pivotModel = $pivotModel;
-        $this->thisPivot = $modelManager->getReferencedKey($thisModel);
+        $this->selfPivot = $modelManager->getReferencedKey($selfModel);
         $this->thatPivot = $modelManager->getPrimaryKey($thatModel);
     }
 
@@ -35,11 +35,11 @@ class HasManyToMany extends AbstractRelation
     {
         /** @var \ManaPHP\Data\ModelInterface $pivotModel */
         $pivotModel = $this->pivotModel;
-        $thisPivot = $this->thisPivot;
+        $selfPivot = $this->selfPivot;
         $thatPivot = $this->thatPivot;
 
-        $ids = Arr::unique_column($r, $this->thisField);
-        $pivotQuery = $pivotModel::select([$this->thisPivot, $this->thatPivot])->whereIn($this->thisPivot, $ids);
+        $ids = Arr::unique_column($r, $this->selfField);
+        $pivotQuery = $pivotModel::select([$this->selfPivot, $this->thatPivot])->whereIn($this->selfPivot, $ids);
         $pivot_data = $pivotQuery->execute();
         $ids = Arr::unique_column($pivot_data, $this->thatPivot);
         $data = $query->whereIn($this->thatField, $ids)->indexBy($this->thatField)->fetch();
@@ -49,12 +49,12 @@ class HasManyToMany extends AbstractRelation
             $key = $dv[$thatPivot];
 
             if (isset($data[$key])) {
-                $rd[$dv[$thisPivot]][] = $data[$key];
+                $rd[$dv[$selfPivot]][] = $data[$key];
             }
         }
 
         foreach ($r as $ri => $rv) {
-            $rvr = $rv[$thisPivot];
+            $rvr = $rv[$selfPivot];
             $r[$ri][$name] = $rd[$rvr] ?? [];
         }
 
@@ -66,10 +66,10 @@ class HasManyToMany extends AbstractRelation
         /** @var \ManaPHP\Data\ModelInterface $pivotModel */
         /** @var \ManaPHP\Data\ModelInterface $thatModel */
         $thatModel = $this->thatModel;
-        $thisField = $this->thisField;
+        $selfField = $this->selfField;
         $pivotModel = $this->pivotModel;
 
-        $ids = $pivotModel::values($this->thatPivot, [$this->thisPivot => $instance->$thisField]);
+        $ids = $pivotModel::values($this->thatPivot, [$this->selfPivot => $instance->$selfField]);
         return $thatModel::select()->whereIn($this->thatField, $ids)->setFetchType(true);
     }
 }

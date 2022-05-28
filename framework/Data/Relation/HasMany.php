@@ -12,30 +12,30 @@ use ManaPHP\Helper\Container;
 
 class HasMany extends AbstractRelation
 {
-    protected string $thisField;
+    protected string $selfField;
     protected string $thatField;
 
-    public function __construct(string $thisModel, string $thatModel)
+    public function __construct(string $selfModel, string $thatModel)
     {
         $modelManager = Container::get(ManagerInterface::class);
 
-        $this->thisModel = $thisModel;
-        $this->thisField = $modelManager->getPrimaryKey($thisModel);
+        $this->selfModel = $selfModel;
+        $this->selfField = $modelManager->getPrimaryKey($selfModel);
         $this->thatModel = $thatModel;
-        $this->thatField = $modelManager->getReferencedKey($thisModel);
+        $this->thatField = $modelManager->getReferencedKey($selfModel);
     }
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array
     {
-        $thisField = $this->thisField;
+        $selfField = $this->selfField;
         $thatField = $this->thatField;
 
         $r_index = [];
         foreach ($r as $ri => $rv) {
-            $r_index[$rv[$thisField]] = $ri;
+            $r_index[$rv[$selfField]] = $ri;
         }
 
-        $ids = array_column($r, $thisField);
+        $ids = array_column($r, $selfField);
         $data = $query->whereIn($thatField, $ids)->fetch();
 
         if (isset($data[0]) && !isset($data[0][$thatField])) {
@@ -58,8 +58,8 @@ class HasMany extends AbstractRelation
     {
         /** @var \ManaPHP\Data\ModelInterface $thatModel */
         $thatModel = $this->thatModel;
-        $thisField = $this->thisField;
+        $selfField = $this->selfField;
 
-        return $thatModel::select()->where([$this->thatField => $instance->$thisField])->setFetchType(true);
+        return $thatModel::select()->where([$this->thatField => $instance->$selfField])->setFetchType(true);
     }
 }

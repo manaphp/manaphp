@@ -61,43 +61,43 @@ class Manager extends Component implements ManagerInterface
         return class_exists($className) ? $className : null;
     }
 
-    protected function inferRelation(string $thisModel, string $name): ?RelationInterface
+    protected function inferRelation(string $selfModel, string $name): ?RelationInterface
     {
-        if (property_exists($thisModel, $name . '_id')) {
-            $thatModel = $this->inferClassName($thisModel, $name);
-            return $thatModel ? new BelongsTo($thisModel, $thatModel) : null;
-        } elseif (property_exists($thisModel, $name . 'Id')) {
-            $thatModel = $this->inferClassName($thisModel, $name);
-            return $thatModel ? new BelongsTo($thisModel, $thatModel) : null;
+        if (property_exists($selfModel, $name . '_id')) {
+            $thatModel = $this->inferClassName($selfModel, $name);
+            return $thatModel ? new BelongsTo($selfModel, $thatModel) : null;
+        } elseif (property_exists($selfModel, $name . 'Id')) {
+            $thatModel = $this->inferClassName($selfModel, $name);
+            return $thatModel ? new BelongsTo($selfModel, $thatModel) : null;
         }
 
         /** @var \ManaPHP\Data\ModelInterface $thatInstance */
         /** @var \ManaPHP\Data\ModelInterface $thatModel */
 
         if ($singular = $this->pluralToSingular($name)) {
-            if (!$thatModel = $this->inferClassName($thisModel, $singular)) {
+            if (!$thatModel = $this->inferClassName($selfModel, $singular)) {
                 return null;
             }
 
-            $thisReferencedKey = $this->modelManager->getReferencedKey($thisModel);
-            if (property_exists($thatModel, $thisReferencedKey)) {
-                return new HasMany($thisModel, $thatModel);
+            $selfReferencedKey = $this->modelManager->getReferencedKey($selfModel);
+            if (property_exists($thatModel, $selfReferencedKey)) {
+                return new HasMany($selfModel, $thatModel);
             }
 
             $thatPlain = substr($thatModel, strrpos($thatModel, '\\') + 1);
 
-            $pos = strrpos($thisModel, '\\');
-            $namespace = substr($thisModel, 0, $pos + 1);
-            $thisPlain = substr($thisModel, $pos + 1);
+            $pos = strrpos($selfModel, '\\');
+            $namespace = substr($selfModel, 0, $pos + 1);
+            $thisPlain = substr($selfModel, $pos + 1);
 
             $pivotModel = $namespace . $thatPlain . $thisPlain;
             if (class_exists($pivotModel)) {
-                return new HasManyToMany($thisModel, $thatModel, $pivotModel);
+                return new HasManyToMany($selfModel, $thatModel, $pivotModel);
             }
 
             $pivotModel = $namespace . $thisPlain . $thatPlain;
             if (class_exists($pivotModel)) {
-                return new HasManyToMany($thisModel, $thatModel, $pivotModel);
+                return new HasManyToMany($selfModel, $thatModel, $pivotModel);
             }
 
             $thisLen = strlen($thisPlain);
@@ -105,18 +105,18 @@ class Manager extends Component implements ManagerInterface
             if ($thisLen > $thatLen) {
                 $pos = strpos($thisPlain, $thatPlain);
                 if ($pos === 0 || $pos + $thatLen === $thisLen) {
-                    return new HasManyOthers($thisModel, $thatModel);
+                    return new HasManyOthers($selfModel, $thatModel);
                 }
             }
 
             throw new RuntimeException(['infer `:relation` relation failed', 'relation' => $name]);
-        } elseif ($thatModel = $this->inferClassName($thisModel, $name)) {
-            $thisReferencedKey = $this->modelManager->getReferencedKey($thisModel);
+        } elseif ($thatModel = $this->inferClassName($selfModel, $name)) {
+            $selfReferencedKey = $this->modelManager->getReferencedKey($selfModel);
             $thatReferencedKey = $this->modelManager->getReferencedKey($thatModel);
-            if (property_exists($thatModel, $thisReferencedKey)) {
-                return new HasOne($thisModel, $thatModel);
-            } elseif (property_exists($thisModel, $thatReferencedKey)) {
-                return new BelongsTo($thisModel, $thatModel);
+            if (property_exists($thatModel, $selfReferencedKey)) {
+                return new HasOne($selfModel, $thatModel);
+            } elseif (property_exists($selfModel, $thatReferencedKey)) {
+                return new BelongsTo($selfModel, $thatModel);
             }
         }
 

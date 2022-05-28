@@ -5,7 +5,7 @@ namespace ManaPHP\Data;
 
 abstract class AbstractRelation implements RelationInterface
 {
-    protected string $thisModel;
+    protected string $selfModel;
     protected string $thatModel;
 
     public function getThatQuery(): QueryInterface

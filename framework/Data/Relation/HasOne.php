@@ -11,19 +11,19 @@ use ManaPHP\Helper\Container;
 
 class HasOne extends AbstractRelation
 {
-    protected string $thisField;
+    protected string $selfField;
     protected string $thatField;
 
-    public function __construct(string $thisModel, string|array $that)
+    public function __construct(string $selfModel, string|array $that)
     {
         $modelManager = Container::get(ManagerInterface::class);
 
-        $this->thisModel = $thisModel;
-        $this->thisField = $modelManager->getPrimaryKey($thisModel);
+        $this->selfModel = $selfModel;
+        $this->selfField = $modelManager->getPrimaryKey($selfModel);
 
         if (is_string($that)) {
             $this->thatModel = $that;
-            $this->thatField = $modelManager->getReferencedKey($thisModel);
+            $this->thatField = $modelManager->getReferencedKey($selfModel);
         } else {
             list($this->thatModel, $this->thatField) = $that;
         }
@@ -31,14 +31,14 @@ class HasOne extends AbstractRelation
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array
     {
-        $thisField = $this->thisField;
+        $selfField = $this->selfField;
         $thatField = $this->thatField;
 
-        $ids = array_values(array_unique(array_column($r, $thisField)));
+        $ids = array_values(array_unique(array_column($r, $selfField)));
         $data = $query->whereIn($thatField, $ids)->indexBy($thatField)->fetch();
 
         foreach ($r as $ri => $rv) {
-            $key = $rv[$thisField];
+            $key = $rv[$selfField];
             $r[$ri][$name] = $data[$key] ?? null;
         }
 
@@ -49,9 +49,9 @@ class HasOne extends AbstractRelation
     {
         /** @var \ManaPHP\Data\ModelInterface $thatModel */
         $thatModel = $this->thatModel;
-        $thisField = $this->thisField;
+        $selfField = $this->selfField;
         $thatField = $this->thatField;
 
-        return $thatModel::select()->where([$thatField => $instance->$thisField])->setFetchType(false);
+        return $thatModel::select()->where([$thatField => $instance->$selfField])->setFetchType(false);
     }
 }

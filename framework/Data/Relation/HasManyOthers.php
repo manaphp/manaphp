@@ -13,17 +13,17 @@ use ManaPHP\Helper\Container;
 
 class HasManyOthers extends AbstractRelation
 {
-    protected string $thisFilter;
-    protected string $thisValue;
+    protected string $selfFilter;
+    protected string $selfValue;
     protected string $thatField;
 
-    public function __construct(string $thisModel, string $thatModel)
+    public function __construct(string $selfModel, string $thatModel)
     {
         $modelManager = Container::get(ManagerInterface::class);
         $referencedKey = $modelManager->getReferencedKey($thatModel);
 
         $keys = [];
-        foreach ($modelManager->getFields($thisModel) as $field) {
+        foreach ($modelManager->getFields($selfModel) as $field) {
             if ($field === $referencedKey || $field === 'id' || $field === '_id') {
                 continue;
             }
@@ -40,29 +40,29 @@ class HasManyOthers extends AbstractRelation
         }
 
         if (count($keys) === 1) {
-            $thisFilter = $keys[0];
+            $selfFilter = $keys[0];
         } else {
             throw new MisuseException('$thisValue must be not null');
         }
 
-        $this->thisModel = $thisModel;
-        $this->thisFilter = $thisFilter;
-        $this->thisValue = $modelManager->getReferencedKey($thatModel);
+        $this->selfModel = $selfModel;
+        $this->selfFilter = $selfFilter;
+        $this->selfValue = $modelManager->getReferencedKey($thatModel);
         $this->thatModel = $thatModel;
         $this->thatField = $modelManager->getPrimaryKey($thatModel);
     }
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array
     {
-        /** @var \ManaPHP\Data\ModelInterface $thisModel */
-        $thisModel = $this->thisModel;
-        $thisFilter = $this->thisFilter;
+        /** @var \ManaPHP\Data\ModelInterface $selfModel */
+        $selfModel = $this->selfModel;
+        $selfFilter = $this->selfFilter;
         $thatField = $this->thatField;
 
-        $ids = Arr::unique_column($r, $this->thisFilter);
-        $pivotQuery = $thisModel::select([$this->thisFilter, $this->thisValue])->whereIn($this->thisFilter, $ids);
+        $ids = Arr::unique_column($r, $this->selfFilter);
+        $pivotQuery = $selfModel::select([$this->selfFilter, $this->selfValue])->whereIn($this->selfFilter, $ids);
         $pivot_data = $pivotQuery->execute();
-        $ids = Arr::unique_column($pivot_data, $this->thisValue);
+        $ids = Arr::unique_column($pivot_data, $this->selfValue);
         $data = $query->whereIn($this->thatField, $ids)->indexBy($this->thatField)->fetch();
 
         $rd = [];
@@ -70,12 +70,12 @@ class HasManyOthers extends AbstractRelation
             $key = $dv[$thatField];
 
             if (isset($data[$key])) {
-                $rd[$dv[$thisFilter]][] = $data[$key];
+                $rd[$dv[$selfFilter]][] = $data[$key];
             }
         }
 
         foreach ($r as $ri => $rv) {
-            $rvr = $rv[$thisFilter];
+            $rvr = $rv[$selfFilter];
             $r[$ri][$name] = $rd[$rvr] ?? [];
         }
 
@@ -85,12 +85,12 @@ class HasManyOthers extends AbstractRelation
     public function lazyLoad(ModelInterface $instance): QueryInterface
     {
         /** @var \ManaPHP\Data\ModelInterface $thatModel */
-        /** @var \ManaPHP\Data\ModelInterface $thisModel */
+        /** @var \ManaPHP\Data\ModelInterface $selfModel */
         $thatModel = $this->thatModel;
-        $thisModel = $this->thisModel;
-        $thisFilter = $this->thisFilter;
+        $selfModel = $this->selfModel;
+        $selfFilter = $this->selfFilter;
 
-        $ids = $thisModel::values($this->thisValue, [$thisFilter => $instance->$thisFilter]);
+        $ids = $selfModel::values($this->selfValue, [$selfFilter => $instance->$selfFilter]);
 
         return $thatModel::select()->whereIn($this->thatField, $ids)->setFetchType(true);
     }
