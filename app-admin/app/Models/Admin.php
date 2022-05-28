@@ -5,7 +5,7 @@ namespace App\Models;
 
 use App\Areas\Rbac\Models\AdminRole;
 use App\Areas\Rbac\Models\Role;
-use ManaPHP\Data\Relation\HasManyToMany;
+use ManaPHP\Data\Model\Relation\HasManyToMany;
 
 class Admin extends Model
 {
