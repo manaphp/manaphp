@@ -7,6 +7,6 @@ class Version
 {
     public static function get(): string
     {
-        return '2.0.6';
+        return '3.0.0';
     }
 }

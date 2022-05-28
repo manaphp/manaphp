@@ -17,3 +17,4 @@
 /apps/admin/app/Cli/Commands/TestCommand.php
 /apps/api/app/Controllers/TimeController.php
 /apps/cli/app/Commands/TestCommand.php
+/build/.subsplit/
