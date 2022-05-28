@@ -8,10 +8,6 @@ use ManaPHP\Di\Attribute\Primary;
 #[Primary('ManaPHP\Logging\Logger\Adapter\File')]
 interface LoggerInterface
 {
-    public function setLevel(string $level): static;
-
-    public function getLevel(): string;
-
     public function debug(mixed $message, ?string $category = null): static;
 
     public function info(mixed $message, ?string $category = null): static;

@@ -31,23 +31,10 @@ abstract class AbstractLogger extends Component implements LoggerInterface, Cont
         /** @var \ManaPHP\Logging\AbstractLoggerContext $context */
         $context = $this->contextor->makeContext($this);
 
-        $context->level = $this->level;
         $context->client_ip = defined('MANAPHP_CLI') ? '' : $this->request->getClientIp();
         $context->request_id = $this->request->getRequestId();
 
         return $context;
-    }
-
-    public function setLevel(string $level): static
-    {
-        $this->context->level = $level;
-
-        return $this;
-    }
-
-    public function getLevel(): string
-    {
-        return $this->context->level;
     }
 
     abstract public function append(Log $log): void;
@@ -126,7 +113,7 @@ abstract class AbstractLogger extends Component implements LoggerInterface, Cont
     {
         $context = $this->context;
         $levels = Level::map();
-        if ($levels[$level] > $levels[$context->level]) {
+        if ($levels[$level] > $levels[$this->level]) {
             return $this;
         }
 
