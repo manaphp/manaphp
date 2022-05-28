@@ -8,13 +8,13 @@ use ManaPHP\Data\Model\Attribute\ColumnMap;
 use ManaPHP\Data\Model\Attribute\Connection;
 use ManaPHP\Data\Model\Attribute\DateFormat;
 use ManaPHP\Data\Model\Attribute\Fillable;
-use ManaPHP\Data\Model\Attribute\ReferencedKey;
 use ManaPHP\Data\Model\Attribute\Guarded;
 use ManaPHP\Data\Model\Attribute\PrimaryKey;
+use ManaPHP\Data\Model\Attribute\ReferencedKey;
 use ManaPHP\Data\Model\Attribute\Table;
 use ManaPHP\Helper\Str;
-use ReflectionClass;
 use ReflectionAttribute;
+use ReflectionClass;
 
 /**
  * @property-read \ManaPHP\Data\Model\ThoseInterface       $those

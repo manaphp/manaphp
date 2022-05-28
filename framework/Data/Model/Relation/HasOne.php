@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Data\Relation;
+namespace ManaPHP\Data\Model\Relation;
 
-use ManaPHP\Data\AbstractRelation;
+use ManaPHP\Data\Model\AbstractRelation;
 use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\ModelInterface;
 use ManaPHP\Data\QueryInterface;

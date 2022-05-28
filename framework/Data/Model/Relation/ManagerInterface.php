@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Data\Relation;
+namespace ManaPHP\Data\Model\Relation;
 
+use ManaPHP\Data\Model\RelationInterface;
 use ManaPHP\Data\ModelInterface;
 use ManaPHP\Data\QueryInterface;
-use ManaPHP\Data\RelationInterface;
 
 interface ManagerInterface
 {

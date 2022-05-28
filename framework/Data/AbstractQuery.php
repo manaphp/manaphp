@@ -13,12 +13,12 @@ use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
 
 /**
- * @property-read \ManaPHP\Di\FactoryInterface            $factory
- * @property-read \ManaPHP\Http\RequestInterface          $request
- * @property-read \ManaPHP\Data\Relation\ManagerInterface $relationManager
- * @property-read \ManaPHP\Data\Model\ThoseInterface      $those
- * @property-read \ManaPHP\Data\Model\ShardingInterface   $sharding
- * @property-read \ManaPHP\Data\Model\ManagerInterface    $modelManager
+ * @property-read \ManaPHP\Di\FactoryInterface                  $factory
+ * @property-read \ManaPHP\Http\RequestInterface                $request
+ * @property-read \ManaPHP\Data\Model\Relation\ManagerInterface $relationManager
+ * @property-read \ManaPHP\Data\Model\ThoseInterface            $those
+ * @property-read \ManaPHP\Data\Model\ShardingInterface         $sharding
+ * @property-read \ManaPHP\Data\Model\ManagerInterface          $modelManager
  */
 abstract class AbstractQuery extends Component implements QueryInterface, IteratorAggregate
 {

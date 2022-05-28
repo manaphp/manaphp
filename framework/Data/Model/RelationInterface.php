@@ -1,7 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Data;
+namespace ManaPHP\Data\Model;
+
+use ManaPHP\Data\ModelInterface;
+use ManaPHP\Data\QueryInterface;
 
 interface RelationInterface
 {

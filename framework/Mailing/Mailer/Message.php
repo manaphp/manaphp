@@ -5,8 +5,8 @@ namespace ManaPHP\Mailing\Mailer;
 
 use JsonSerializable;
 use ManaPHP\Helper\Container;
-use ManaPHP\Rendering\RendererInterface;
 use ManaPHP\Mailing\MailerInterface;
+use ManaPHP\Rendering\RendererInterface;
 
 class Message implements JsonSerializable
 {
