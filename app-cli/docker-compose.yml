@@ -1,7 +1,7 @@
 version : "3.8"
 services :
   cli :
-    image : manaphp/php80:220320
+    image : manaphp/php80:220528
     volumes :
       - ./:/var/www/html
       - ../framework:/var/www/framework
