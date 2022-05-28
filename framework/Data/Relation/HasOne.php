@@ -14,14 +14,19 @@ class HasOne extends AbstractRelation
     protected string $thisField;
     protected string $thatField;
 
-    public function __construct(string $thisModel, string $thatModel)
+    public function __construct(string $thisModel, string|array $that)
     {
         $modelManager = Container::get(ManagerInterface::class);
 
         $this->thisModel = $thisModel;
         $this->thisField = $modelManager->getPrimaryKey($thisModel);
-        $this->thatModel = $thatModel;
-        $this->thatField = $modelManager->getReferencedKey($thisModel);
+
+        if (is_string($that)) {
+            $this->thatModel = $that;
+            $this->thatField = $modelManager->getReferencedKey($thisModel);
+        } else {
+            list($this->thatModel, $this->thatField) = $that;
+        }
     }
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array
