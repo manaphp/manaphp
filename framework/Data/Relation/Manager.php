@@ -88,23 +88,23 @@ class Manager extends Component implements ManagerInterface
 
             $pos = strrpos($selfModel, '\\');
             $namespace = substr($selfModel, 0, $pos + 1);
-            $thisPlain = substr($selfModel, $pos + 1);
+            $selfPlain = substr($selfModel, $pos + 1);
 
-            $pivotModel = $namespace . $thatPlain . $thisPlain;
+            $pivotModel = $namespace . $thatPlain . $selfPlain;
             if (class_exists($pivotModel)) {
                 return new HasManyToMany($selfModel, $thatModel, $pivotModel);
             }
 
-            $pivotModel = $namespace . $thisPlain . $thatPlain;
+            $pivotModel = $namespace . $selfPlain . $thatPlain;
             if (class_exists($pivotModel)) {
                 return new HasManyToMany($selfModel, $thatModel, $pivotModel);
             }
 
-            $thisLen = strlen($thisPlain);
+            $selfLen = strlen($selfPlain);
             $thatLen = strlen($thatPlain);
-            if ($thisLen > $thatLen) {
-                $pos = strpos($thisPlain, $thatPlain);
-                if ($pos === 0 || $pos + $thatLen === $thisLen) {
+            if ($selfLen > $thatLen) {
+                $pos = strpos($selfPlain, $thatPlain);
+                if ($pos === 0 || $pos + $thatLen === $selfLen) {
                     return new HasManyOthers($selfModel, $thatModel);
                 }
             }
