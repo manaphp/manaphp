@@ -15,14 +15,19 @@ class HasMany extends AbstractRelation
     protected string $selfField;
     protected string $thatField;
 
-    public function __construct(string $selfModel, string $thatModel)
+    public function __construct(string $selfModel, string|array $that)
     {
         $modelManager = Container::get(ManagerInterface::class);
 
         $this->selfModel = $selfModel;
         $this->selfField = $modelManager->getPrimaryKey($selfModel);
-        $this->thatModel = $thatModel;
-        $this->thatField = $modelManager->getReferencedKey($selfModel);
+
+        if (is_string($that)) {
+            $this->thatModel = $that;
+            $this->thatField = $modelManager->getReferencedKey($selfModel);
+        } else {
+            list($this->thatModel, $this->thatField) = $that;
+        }
     }
 
     public function earlyLoad(array $r, QueryInterface $query, string $name): array
