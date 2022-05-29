@@ -23,6 +23,9 @@
     }
   ],
   "autoload": {
+    "files": [
+      "helpers.php"
+    ],
     "psr-4": {
       "ManaPHP\\": ""
     }
