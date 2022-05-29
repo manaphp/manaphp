@@ -252,7 +252,8 @@ subsplit_publish()
 
         for TAG in $TAGS
         do
-            if [ "${TAG}" \< "v3.0.0" ]
+            LAST_TAG=$(cd ../.. && git describe --tags $(git rev-list --tags --max-count=1))
+            if [ "${TAG}" \< $LAST_TAG ]
           			then
           				say " - skipping tag '${TAG}'"
           				continue
