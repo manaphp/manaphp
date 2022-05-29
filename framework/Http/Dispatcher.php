@@ -84,7 +84,7 @@ class Dispatcher extends Component implements DispatcherInterface
         $method = $action . 'Action';
 
         if (!method_exists($controller, $method)) {
-            throw new NotFoundActionException(['`%s::%s` method does not exist', static::class, $method]);
+            throw new NotFoundActionException(['`%s::%s` method does not exist', $controller::class, $method]);
         }
 
         $this->fireEvent('request:authorizing', compact('controller', 'action'));
