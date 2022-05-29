@@ -1,17 +1,21 @@
 {
   "name": "manaphp/app-api",
-  "description": "The ManaPHP Framework",
-  "keywords": [
-    "manaphp",
-    "framework",
-    "di"
-  ],
+  "description": "ManaPHP Api Application",
+  "type": "project",
+  "license": "MIT",
   "homepage": "https://github.com/manaphp/app-api",
   "authors": [
     {
       "name": "ManaPHP Mark",
       "email": "manaphp@qq.com"
     }
+  ],
+  "keywords": [
+    "manaphp",
+    "phalcon",
+    "laravel",
+    "yii2",
+    "api"
   ],
   "autoload": {
     "psr-4": {
