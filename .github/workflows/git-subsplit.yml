@@ -6,5 +6,5 @@ jobs :
   split :
     runs-on : ubuntu-latest
     steps :
-      - uses : action/checkout@v3
-      - run : ./build/split.sh
+      - uses : actions/checkout@v3
+      - run : bash ./build/split.sh
