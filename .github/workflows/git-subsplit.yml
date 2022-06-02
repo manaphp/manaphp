@@ -1,0 +1,10 @@
+on :
+  push :
+    branches :
+      - master
+jobs :
+  split :
+    runs-on : ubuntu-latest
+    steps :
+      - uses : action/checkout@v3
+      - run : ./build/split.sh
