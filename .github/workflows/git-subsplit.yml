@@ -8,6 +8,6 @@ jobs :
     steps :
       - uses : actions/checkout@v3
       - uses : webfactory/ssh-agent@v0.5.4
-          with :
-            ssh-private-key : ${{ secrets.ACTIONS_SSH_PRIVATE_KEY }}
+        with :
+          ssh-private-key : ${{ secrets.ACTIONS_SSH_PRIVATE_KEY }}
       - run : bash ./build/split.sh
