@@ -26,8 +26,5 @@
   "require": {
     "php": ">=8.0.2",
     "ext-json": "*",
-    "psr/container": "2.0.2",
-    "psr/log": "2.0.0",
-    "psr/simple-cache": "^3.0"
   }
 }
