@@ -521,7 +521,7 @@ Vue.component('selector', {
     props: ['value', 'data', 'disabled'],
     template: `
 <span>
-    <el-select v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)" :disabled="disabled">
+    <el-select v-model="val" size="small" clearable style="width: 150px" @change="$emit('input', $event)" :disabled="disabled" v-bind="$attrs">
         <el-option v-for="item in extract_ill(data)" :key="item.id" :label="item.label" :value="String(item.id)"></el-option>
     </el-select>
 </span>`,
@@ -619,7 +619,7 @@ Vue.component('create-select', {
     props: ['label', 'prop', 'data', 'disabled'],
     template: `
 <el-form-item :label="(label||$root.label[prop]||prop)+':'">
-    <selector v-model="$root.create[prop]" :data="data" :disabled="disabled"></selector>
+    <selector v-model="$root.create[prop]" :data="data" :disabled="disabled" v-bind="$attrs"></selector>
 </el-form-item>`
 });
 
