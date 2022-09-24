@@ -43,7 +43,7 @@ class DotenvController extends Controller
         $env = input('env');
 
         if ($this->redisDb->hExists(self::REDIS_KEY, $app_id)) {
-            return "${app_id}已存在";
+            return "{$app_id}已存在";
         }
 
         $dotenvLog = new DotenvLog();
@@ -62,7 +62,7 @@ class DotenvController extends Controller
         $env = input('env');
 
         if (!$this->redisDb->hExists(self::REDIS_KEY, $app_id)) {
-            return "${app_id}不存在";
+            return "{$app_id}不存在";
         }
 
         if ($this->redisDb->hGet(self::REDIS_KEY, $app_id) === $env) {

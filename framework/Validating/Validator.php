@@ -280,7 +280,7 @@ class Validator extends Component implements ValidatorInterface
 
         list(, $d) = explode(',', $parameter);
 
-        return sprintf("%.${d}f", $value);
+        return sprintf("%.{$d}f", $value);
     }
 
     protected function validate_double(string $field, mixed $value): ?float

@@ -409,13 +409,13 @@ class Query extends AbstractQuery
             $value_a = substr($value, 0, $pos);
             $value_b = substr($value, $pos + 1);
 
-            $condition = "($id_a=:${key_a}_a AND $id_b=:${key_b}_b) OR ($id_a=:${key_a}_b AND $id_b=:${key_b}_a)";
+            $condition = "($id_a=:{$key_a}_a AND $id_b=:{$key_b}_b) OR ($id_a=:{$key_a}_b AND $id_b=:{$key_b}_a)";
             $this->conditions[] = $condition;
 
-            $this->bind["${key_a}_a"] = $value_a;
-            $this->bind["${key_b}_b"] = $value_b;
-            $this->bind["${key_a}_b"] = $value_b;
-            $this->bind["${key_b}_a"] = $value_a;
+            $this->bind["{$key_a}_a"] = $value_a;
+            $this->bind["{$key_b}_b"] = $value_b;
+            $this->bind["{$key_a}_b"] = $value_b;
+            $this->bind["{$key_b}_a"] = $value_a;
         }
 
         return $this;
