@@ -31,7 +31,6 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         $this->name = $name;
         $this->serializer = $serializer;
         $this->params = $params + $this->params;
-        $this->params['path'] ??= $this->router->getPrefix() ?: '/';
 
         $this->attachEvent('request:responding', [$this, 'onRequestResponding']);
     }

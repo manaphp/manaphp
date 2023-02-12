@@ -19,7 +19,7 @@ return [
             'class'    => 'ManaPHP\Http\Server\Adapter\Php',
             'port'     => 9501,
             'settings' => [
-                'worker_num' => 1,
+                'worker_num' => 4,
             ]
         ],
     ],
