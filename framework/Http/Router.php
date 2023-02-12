@@ -162,14 +162,7 @@ class Router extends Component implements RouterInterface
             $url = parse_url($url, PHP_URL_PATH);
         }
 
-        if ($this->prefix === '') {
-            return $url;
-        } elseif (str_starts_with($url, $this->prefix)) {
-            $url = substr($url, strlen($this->prefix));
-            return $url === '' ? '/' : $url;
-        } else {
-            return $url;
-        }
+        return $url;
     }
 
     protected function matchDefaultRoutes(string $uri, string $method): ?array
