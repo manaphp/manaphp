@@ -221,7 +221,7 @@ class Router extends Component implements RouterInterface
 
         $context->matched = false;
 
-        if ($this->prefix) {
+        if ($this->prefix !== '') {
             if (str_starts_with($uri, $this->prefix)) {
                 $handledUri = substr($uri, strlen($this->prefix)) ?: '/';
             } else {
