@@ -9,10 +9,10 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Str;
 
 /**
- * @property-read \ManaPHP\AliasInterface              $alias
  * @property-read \ManaPHP\Logging\LoggerInterface     $logger
  * @property-read \ManaPHP\Http\CookiesInterface       $cookies
  * @property-read \ManaPHP\Http\RequestInterface       $request
+ * @property-read \ManaPHP\Http\RouterInterface        $router
  * @property-read \ManaPHP\Http\AbstractSessionContext $context
  */
 abstract class AbstractSession extends Component implements SessionInterface, ArrayAccess
@@ -31,7 +31,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
         $this->name = $name;
         $this->serializer = $serializer;
         $this->params = $params + $this->params;
-        $this->params['path'] ??= $this->alias->get('@web') ?: '/';
+        $this->params['path'] ??= $this->router->getPrefix() ?: '/';
 
         $this->attachEvent('request:responding', [$this, 'onRequestResponding']);
     }

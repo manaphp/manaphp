@@ -162,11 +162,10 @@ class Router extends Component implements RouterInterface
             $url = parse_url($url, PHP_URL_PATH);
         }
 
-        $web = $this->alias->get('@web') ?? '';
-        if ($web === '') {
+        if ($this->prefix === '') {
             return $url;
-        } elseif (str_starts_with($url, $web)) {
-            $url = substr($url, strlen($web));
+        } elseif (str_starts_with($url, $this->prefix)) {
+            $url = substr($url, strlen($this->prefix));
             return $url === '' ? '/' : $url;
         } else {
             return $url;
@@ -395,7 +394,7 @@ class Router extends Component implements RouterInterface
             $ca = substr($ca, 0, $pos);
         }
 
-        $url = $this->alias->get('@web') . $this->prefix . '/' . lcfirst($ca);
+        $url = $this->prefix . '/' . lcfirst($ca);
         if ($url !== '/') {
             $url = rtrim($url, '/');
         }

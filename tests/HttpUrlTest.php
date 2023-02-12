@@ -20,7 +20,6 @@ class HttpUrlTest extends TestCase
 
     public function test_get()
     {
-        $this->container->get('alias')->set('@web', '');
         $url = new Url();
 
         $this->assertEquals('/', $url->get('/'));

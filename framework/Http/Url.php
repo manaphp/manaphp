@@ -6,7 +6,6 @@ namespace ManaPHP\Http;
 use ManaPHP\Component;
 
 /**
- * @property-read \ManaPHP\AliasInterface        $alias
  * @property-read \ManaPHP\Http\RequestInterface $request
  * @property-read \ManaPHP\Http\RouterInterface  $router
  */
@@ -19,7 +18,7 @@ class Url extends Component implements UrlInterface
             if ($url === '') {
                 return $this->router->createUrl($url, $scheme);
             } elseif ($url[0] === '/') {
-                $url = $this->alias->get('@web') . $url;
+                $url = $this->router->getPrefix() . $url;
                 if (!$scheme) {
                     return $url;
                 }
@@ -35,7 +34,7 @@ class Url extends Component implements UrlInterface
             if ($url === '') {
                 return $this->router->createUrl($args, $scheme);
             } elseif ($url[0] === '/') {
-                $url = $this->alias->get('@web') . $url;
+                $url = $this->router->getPrefix() . $url;
             } elseif (parse_url($url, PHP_URL_SCHEME)) {
                 null;
             } else {

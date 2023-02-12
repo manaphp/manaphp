@@ -10,7 +10,7 @@ use ManaPHP\Helper\LocalFS;
 
 /**
  * @property-read \Psr\Container\ContainerInterface         $container
- * @property-read \ManaPHP\AliasInterface                   $alias
+ * @property-read \ManaPHP\Http\RouterInterface             $router
  * @property-read \ManaPHP\Rendering\RendererInterface      $renderer
  * @property-read \ManaPHP\Http\DispatcherInterface         $dispatcher
  * @property-read \ManaPHP\Mvc\View\Widget\FactoryInterface $widgetFactory
@@ -208,7 +208,7 @@ class View extends Component implements ViewInterface
 
     public function fixUrl(): void
     {
-        if (($base_url = $this->alias->get('@web') ?? '') === '') {
+        if (($prefix = $this->router->getPrefix()) === '') {
             return;
         }
 
@@ -216,7 +216,7 @@ class View extends Component implements ViewInterface
 
         $context->content = preg_replace_callback(
             '#\b(href|src|action|data-src)=(["\'`]{1,2})/(?!/)#',
-            static fn($match) => "$match[1]=$match[2]{$base_url}/",
+            static fn($match) => "$match[1]=$match[2]{$prefix}/",
             $context->content
         );
     }

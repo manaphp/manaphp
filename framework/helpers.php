@@ -13,6 +13,7 @@ use ManaPHP\Http\RequestInterface;
 use ManaPHP\I18n\TranslatorInterface;
 use ManaPHP\Token\ScopedJwtInterface;
 use ManaPHP\Validating\ValidatorInterface;
+use ManaPHP\Http\RouterInterface;
 
 if (!function_exists('json_parse')) {
     function json_parse(string $str): mixed
@@ -184,7 +185,7 @@ if (!function_exists('t')) {
 if (!function_exists('base_url')) {
     function base_url(): string
     {
-        return Container::get(AliasInterface::class)->get('@web') ?? '';
+        return Container::get(RouterInterface::class)->getPrefix();
     }
 }
 

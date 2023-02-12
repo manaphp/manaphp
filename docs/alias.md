@@ -68,7 +68,6 @@ ManaPHP预定义了一系列别名来简化常用路径和命名空间的使用:
  * `@root` ROOT目录
  * `@runtime` runtime目录
  * `@config` config所在目录
- * `@web` url前缀
 
 ## 助手函数
 
