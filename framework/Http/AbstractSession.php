@@ -21,7 +21,7 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
     protected int $lazy;
     protected string $name;
     protected string $serializer;
-    protected array $params = ['expire' => 0, 'path' => null, 'domain' => null, 'secure' => false, 'httponly' => true];
+    protected array $params = ['expire' => 0, 'path' => '', 'domain' => '', 'secure' => false, 'httponly' => true];
 
     public function __construct(int $ttl = 3600, int $lazy = 60, string $name = "PHPSESSID",
         string $serializer = 'json', array $params = []
