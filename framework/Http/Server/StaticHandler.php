@@ -1,12 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Server\Adapter\Php;
+namespace ManaPHP\Http\Server;
 
 use ManaPHP\Component;
 
 /**
- * @property-read \ManaPHP\AliasInterface        $alias
  * @property-read \ManaPHP\Http\RequestInterface $request
  */
 class StaticHandler extends Component implements StaticHandlerInterface
@@ -14,13 +13,18 @@ class StaticHandler extends Component implements StaticHandlerInterface
     protected array $mime_types;
     protected array $root_files;
     protected string $doc_root;
+    protected string $prefix;
 
     public function __construct()
     {
-        $this->doc_root = $this->alias->resolve('@public');
-
-        $this->root_files = $this->getRootFiles();
         $this->mime_types = $this->getMimeTypes();
+    }
+
+    public function start(string $doc_root, string $prefix): void
+    {
+        $this->doc_root = $doc_root;
+        $this->root_files = $this->getRootFiles();
+        $this->prefix = $prefix;
     }
 
     protected function getRootFiles(): array
@@ -41,7 +45,7 @@ class StaticHandler extends Component implements StaticHandlerInterface
     protected function getMimeTypes(): array
     {
         $mime_types = [];
-        foreach (file(__DIR__ . '/../../mime.types', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+        foreach (file(__DIR__ . '/mime.types', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
             if (!str_contains($line, ';')) {
                 continue;
             }

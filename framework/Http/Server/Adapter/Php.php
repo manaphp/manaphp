@@ -7,9 +7,9 @@ use ManaPHP\Helper\Ip;
 use ManaPHP\Http\AbstractServer;
 
 /**
- * @property-read \ManaPHP\Http\Server\Adapter\Native\SenderInterface     $sender
- * @property-read \ManaPHP\Http\Server\Adapter\Php\StaticHandlerInterface $staticHandler
- * @property-read \ManaPHP\AliasInterface                                 $alias
+ * @property-read \ManaPHP\Http\Server\Adapter\Native\SenderInterface $sender
+ * @property-read \ManaPHP\Http\Server\StaticHandlerInterface         $staticHandler
+ * @property-read \ManaPHP\AliasInterface                             $alias
  */
 class Php extends AbstractServer
 {
@@ -60,6 +60,8 @@ class Php extends AbstractServer
     public function start(): void
     {
         $this->prepareGlobals();
+
+        $this->staticHandler->start($_SERVER['DOCUMENT_ROOT'], $this->router->getPrefix());
 
         if ($this->staticHandler->isStaticFile()) {
             $this->staticHandler->send();
