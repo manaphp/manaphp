@@ -36,7 +36,7 @@ class StaticHandler extends Component implements StaticHandlerInterface
                 continue;
             }
 
-            $files[] = basename($file);
+            $files[] = '/' . basename($file);
         }
 
         return $files;
@@ -71,13 +71,18 @@ class StaticHandler extends Component implements StaticHandlerInterface
     protected function getStaticFileInternal(): ?string
     {
         $uri = $this->request->getServer('REQUEST_URI');
-        $file = ($pos = strpos($uri, '?')) === false ? substr($uri, 1) : substr($uri, 1, $pos - 1);
 
-        if ($file === 'favicon.ico') {
-            return '/favicon.ico';
-        } elseif (in_array($file, $this->root_files, true)) {
+        $file = ($pos = strpos($uri, '?')) === false ? $uri : substr($uri, 0, $pos);
+
+        if ($file === $this->prefix || !str_starts_with($file, $this->prefix)) {
+            return null;
+        }
+
+        $file = substr($file, strlen($this->prefix));
+
+        if (in_array($file, $this->root_files, true)) {
             return $file;
-        } elseif (($pos = strpos($file, '/')) === false) {
+        } elseif (($pos = strpos($file, '/', 1)) === false) {
             return null;
         } else {
             $level1 = substr($file, 0, $pos);
@@ -88,7 +93,7 @@ class StaticHandler extends Component implements StaticHandlerInterface
     public function getStaticFile(): ?string
     {
         if (($file = $this->getStaticFileInternal()) !== null) {
-            return $this->doc_root . '/' . $file;
+            return $this->doc_root . $file;
         } else {
             return null;
         }
