@@ -63,8 +63,15 @@ class Php extends AbstractServer
 
         $this->staticHandler->start($_SERVER['DOCUMENT_ROOT'], $this->router->getPrefix());
 
-        if ($this->staticHandler->isStaticFile()) {
-            $this->staticHandler->send();
+        $uri = $_SERVER['REQUEST_URI'];
+        if ($this->staticHandler->isFile($uri)) {
+            $file = $this->staticHandler->getFile($uri);
+            if ($file !== null) {
+                header('Content-Type: ' . $this->staticHandler->getMimeType($file));
+                readfile($file);
+            } else {
+                header('HTTP/1.1 404 Not Found');
+            }
         } else {
             $this->fireEvent('httpServer:start');
 

@@ -5,9 +5,6 @@ namespace ManaPHP\Http\Server;
 
 use ManaPHP\Component;
 
-/**
- * @property-read \ManaPHP\Http\RequestInterface $request
- */
 class StaticHandler extends Component implements StaticHandlerInterface
 {
     protected array $mime_types;
@@ -68,10 +65,8 @@ class StaticHandler extends Component implements StaticHandlerInterface
         return $mime_types;
     }
 
-    protected function getStaticFileInternal(): ?string
+    protected function getFileInternal(string $uri): ?string
     {
-        $uri = $this->request->getServer('REQUEST_URI');
-
         $file = ($pos = strpos($uri, '?')) === false ? $uri : substr($uri, 0, $pos);
 
         if ($file === $this->prefix || !str_starts_with($file, $this->prefix)) {
@@ -90,18 +85,9 @@ class StaticHandler extends Component implements StaticHandlerInterface
         }
     }
 
-    public function getStaticFile(): ?string
+    public function isFile(string $uri): bool
     {
-        if (($file = $this->getStaticFileInternal()) !== null) {
-            return $this->doc_root . $file;
-        } else {
-            return null;
-        }
-    }
-
-    public function isStaticFile(): bool
-    {
-        return $this->getStaticFileInternal() !== null;
+        return $this->getFileInternal($uri) !== null;
     }
 
     public function getMimeType(string $file): string
@@ -110,15 +96,14 @@ class StaticHandler extends Component implements StaticHandlerInterface
         return $this->mime_types[$ext] ?? 'application/octet-stream';
     }
 
-    public function send(): void
+    public function getFile(string $uri): ?string
     {
-        $file = $this->getStaticFile();
+        $file = $this->doc_root . $this->getFileInternal($uri);
 
         if ((DIRECTORY_SEPARATOR === '/' ? realpath($file) : str_replace('\\', '/', realpath($file))) === $file) {
-            header('Content-Type: ' . $this->getMimeType($file));
-            readfile($file);
+            return $file;
         } else {
-            header('HTTP/1.1 404 Not Found');
+            return null;
         }
     }
 }

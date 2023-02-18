@@ -7,7 +7,9 @@ interface StaticHandlerInterface
 {
     public function start(string $doc_root, string $prefix): void;
 
-    public function isStaticFile(): bool;
+    public function isFile(string $uri): bool;
 
-    public function send(): void;
+    public function getFile(string $uri): ?string;
+
+    public function getMimeType(string $file): string;
 }
