@@ -21,12 +21,7 @@ class Cookies extends Component implements CookiesInterface
         bool $secure = false, bool $httponly = true
     ): static {
         $this->globals->setCookie($name, $value);
-        $this->response->setCookie(
-            $name, $value, $expire,
-            $path ?? $this->request->getUri(),
-            $domain,
-            $secure, $httponly
-        );
+        $this->response->setCookie($name, $value, $expire, $path, $domain, $secure, $httponly);
 
         return $this;
     }
