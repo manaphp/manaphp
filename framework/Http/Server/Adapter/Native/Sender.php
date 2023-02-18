@@ -10,6 +10,7 @@ use ManaPHP\Exception\MisuseException;
  * @property-read \ManaPHP\Http\RequestInterface  $request
  * @property-read \ManaPHP\Http\ResponseInterface $response
  * @property-read \ManaPHP\AliasInterface         $alias
+ * @property-read \ManaPHP\Http\RouterInterface   $router
  */
 class Sender extends Component implements SenderInterface
 {
@@ -38,12 +39,13 @@ class Sender extends Component implements SenderInterface
             }
         }
 
+        $prefix = $this->router->getPrefix();
         foreach ($this->response->getCookies() as $cookie) {
             setcookie(
                 $cookie['name'],
                 $cookie['value'],
                 $cookie['expire'],
-                $cookie['path'],
+                $cookie['path'] ? ($prefix . $cookie['path']) : '',
                 $cookie['domain'] ?? '',
                 $cookie['secure'],
                 $cookie['httponly']
