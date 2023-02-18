@@ -17,7 +17,7 @@ class Cookies extends Component implements CookiesInterface
         return $this->globals->getCookie();
     }
 
-    public function set(string $name, string $value, int $expire = 0, ?string $path = null, ?string $domain = null,
+    public function set(string $name, string $value, int $expire = 0, string $path = '', string $domain = '',
         bool $secure = false, bool $httponly = true
     ): static {
         $this->globals->setCookie($name, $value);

@@ -45,8 +45,8 @@ class Sender extends Component implements SenderInterface
                 $cookie['name'],
                 $cookie['value'],
                 $cookie['expire'],
-                $cookie['path'] ? ($prefix . $cookie['path']) : '',
-                $cookie['domain'] ?? '',
+                $cookie['path'] === '' ? '' : ($prefix . $cookie['path']),
+                $cookie['domain'],
                 $cookie['secure'],
                 $cookie['httponly']
             );

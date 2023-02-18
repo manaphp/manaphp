@@ -138,12 +138,13 @@ class Workerman extends AbstractServer
         Http::header('X-Request-Id: ' . $this->request->getRequestId());
         Http::header('X-Response-Time: ' . $this->request->getElapsedTime());
 
+        $prefix = $this->router->getPrefix();
         foreach ($this->response->getCookies() as $cookie) {
             Http::setcookie(
                 $cookie['name'],
                 $cookie['value'],
                 $cookie['expire'],
-                $cookie['path'],
+                $cookie['path'] === '' ? '' : ($prefix . $cookie['path']),
                 $cookie['domain'],
                 $cookie['secure'],
                 $cookie['httponly']
