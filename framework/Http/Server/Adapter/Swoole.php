@@ -14,7 +14,6 @@ use Throwable;
 /**
  * @property-read \ManaPHP\ConfigInterface                   $config
  * @property-read \ManaPHP\AliasInterface                    $alias
- * @property-read \ManaPHP\Http\RouterInterface              $router
  * @property-read \ManaPHP\Http\Server\Adapter\SwooleContext $context
  */
 class Swoole extends AbstractServer

@@ -8,6 +8,7 @@ use ManaPHP\Component;
 /**
  * @property-read \ManaPHP\Http\RequestInterface        $request
  * @property-read \ManaPHP\Http\ResponseInterface       $response
+ * @property-read \ManaPHP\Http\RouterInterface         $router
  * @property-read \ManaPHP\Http\HandlerInterface        $httpHandler
  * @property-read \ManaPHP\Http\GlobalsInterface        $globals
  * @property-read \ManaPHP\Http\Filter\ManagerInterface $filterManager

@@ -8,7 +8,6 @@ use ManaPHP\Http\AbstractServer;
 
 /**
  * @property-read \ManaPHP\Http\Server\Adapter\Native\SenderInterface     $sender
- * @property-read \ManaPHP\Http\RouterInterface                           $router
  * @property-read \ManaPHP\Http\Server\Adapter\Php\StaticHandlerInterface $staticHandler
  * @property-read \ManaPHP\AliasInterface                                 $alias
  */
