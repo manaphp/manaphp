@@ -10,32 +10,32 @@ use ManaPHP\Component;
  */
 class StaticHandler extends Component implements StaticHandlerInterface
 {
-    protected array $mime_types;
-    protected array $root_files;
-    protected string $doc_root;
+    protected string $root;
+    protected array $locations;
     protected string $prefix;
+    protected array $mime_types;
 
     public function __construct(array $options = [])
     {
-        $this->doc_root = $options['doc_root'] ?? $_SERVER['DOCUMENT_ROOT'];
+        $this->root = $options['root'] ?? $_SERVER['DOCUMENT_ROOT'];
+        $this->locations = $options['location'] ?? $this->getLocations();
         $this->prefix = $options['prefix'] ?? $this->router->getPrefix();
-        $this->root_files = $this->getRootFiles();
         $this->mime_types = $this->getMimeTypes();
     }
 
-    protected function getRootFiles(): array
+    protected function getLocations(): array
     {
-        $files = [];
-        foreach (glob($this->doc_root . '/*') as $file) {
+        $locations = [];
+        foreach (glob($this->root . '/*') as $file) {
             $file = basename($file);
             if ($file[0] === '.' || pathinfo($file, PATHINFO_EXTENSION) === 'php') {
                 continue;
             }
 
-            $files[] = '/' . basename($file);
+            $locations[] = '/' . basename($file);
         }
 
-        return $files;
+        return $locations;
     }
 
     protected function getMimeTypes(): array
@@ -74,13 +74,13 @@ class StaticHandler extends Component implements StaticHandlerInterface
 
         $file = substr($file, strlen($this->prefix));
 
-        if (in_array($file, $this->root_files, true)) {
+        if (in_array($file, $this->locations, true)) {
             return $file;
         } elseif (($pos = strpos($file, '/', 1)) === false) {
             return null;
         } else {
             $level1 = substr($file, 0, $pos);
-            return in_array($level1, $this->root_files, true) ? $file : null;
+            return in_array($level1, $this->locations, true) ? $file : null;
         }
     }
 
@@ -97,7 +97,7 @@ class StaticHandler extends Component implements StaticHandlerInterface
 
     public function getFile(string $uri): ?string
     {
-        $file = $this->doc_root . $this->getFileInternal($uri);
+        $file = $this->root . $this->getFileInternal($uri);
 
         if ((DIRECTORY_SEPARATOR === '/' ? realpath($file) : str_replace('\\', '/', realpath($file))) === $file) {
             return $file;
