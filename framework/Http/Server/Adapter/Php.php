@@ -65,8 +65,7 @@ class Php extends AbstractServer
 
         $uri = $_SERVER['REQUEST_URI'];
         if ($this->staticHandler->isFile($uri)) {
-            $file = $this->staticHandler->getFile($uri);
-            if ($file !== null) {
+            if (($file = $this->staticHandler->getFile($uri)) !== null) {
                 header('Content-Type: ' . $this->staticHandler->getMimeType($file));
                 readfile($file);
             } else {

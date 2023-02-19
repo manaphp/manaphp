@@ -129,8 +129,7 @@ class Swoole extends AbstractServer
         } elseif (!empty($this->settings['enable_static_handler']) && $this->router->getPrefix() !== ''
             && $this->staticHandler->isFile($uri)
         ) {
-            $file = $this->staticHandler->getFile($uri);
-            if ($file !== null) {
+            if (($file = $this->staticHandler->getFile($uri)) !== null) {
                 $response->header('Content-Type', $this->staticHandler->getMimeType($file));
                 $response->sendfile($file);
             } else {
