@@ -12,9 +12,10 @@ use Swoole\Runtime;
 use Throwable;
 
 /**
- * @property-read \ManaPHP\ConfigInterface                   $config
- * @property-read \ManaPHP\AliasInterface                    $alias
- * @property-read \ManaPHP\Http\Server\Adapter\SwooleContext $context
+ * @property-read \ManaPHP\ConfigInterface                    $config
+ * @property-read \ManaPHP\AliasInterface                     $alias
+ * @property-read \ManaPHP\Http\Server\StaticHandlerInterface $staticHandler
+ * @property-read \ManaPHP\Http\Server\Adapter\SwooleContext  $context
  */
 class Swoole extends AbstractServer
 {
@@ -114,15 +115,28 @@ class Swoole extends AbstractServer
         $this->fireEvent('httpServer:start', ['server' => $this->swoole]);
         /** @noinspection HttpUrlsUsage */
         console_log('info', sprintf('http://%s:%s%s', $this->host, $this->port, $this->router->getPrefix()));
+        $this->staticHandler->start($this->settings['document_root'], $this->router->getPrefix());
         $this->swoole->start();
         console_log('info', 'shutdown');
     }
 
     public function onRequest(Request $request, Response $response): void
     {
-        if ($request->server['request_uri'] === '/favicon.ico') {
+        $uri = $request->server['request_uri'];
+        if ($uri === '/favicon.ico') {
             $response->status(404);
             $response->end();
+        } elseif (!empty($this->settings['enable_static_handler']) && $this->router->getPrefix() !== ''
+            && $this->staticHandler->isFile($uri)
+        ) {
+            $file = $this->staticHandler->getFile($uri);
+            if ($file !== null) {
+                $response->header('Content-Type', $this->staticHandler->getMimeType($file));
+                $response->sendfile($file);
+            } else {
+                $response->status(404, 'Not Found');
+                $response->end('');
+            }
         } else {
             $context = $this->context;
 
