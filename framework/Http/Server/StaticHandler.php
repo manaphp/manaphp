@@ -15,11 +15,11 @@ class StaticHandler extends Component implements StaticHandlerInterface
     protected string $prefix;
     protected array $mime_types;
 
-    public function __construct(array $options = [])
+    public function __construct(?string $root = null, ?array $locations = null, ?string $prefix = null)
     {
-        $this->root = $options['root'] ?? $_SERVER['DOCUMENT_ROOT'];
-        $this->locations = $options['location'] ?? $this->getLocations();
-        $this->prefix = $options['prefix'] ?? $this->router->getPrefix();
+        $this->root = $root ?? $_SERVER['DOCUMENT_ROOT'];
+        $this->locations = $locations ?? $this->getLocations();
+        $this->prefix = $prefix ?? $this->router->getPrefix();
         $this->mime_types = $this->getMimeTypes();
     }
 
