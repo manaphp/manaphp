@@ -25,11 +25,14 @@ class Swoole extends AbstractServer
 
     public function __construct(array $settings = [], string $host = '0.0.0.0', int $port = 9501)
     {
+        $script_filename = get_included_files()[0];
+        $document_root = dirname($script_filename);
+        $_SERVER['DOCUMENT_ROOT'] = $document_root;
+
         parent::__construct($host, $port);
 
-        $script_filename = get_included_files()[0];
         $this->_SERVER = [
-            'DOCUMENT_ROOT'   => dirname($script_filename),
+            'DOCUMENT_ROOT'   => $document_root,
             'SCRIPT_FILENAME' => $script_filename,
             'SCRIPT_NAME'     => '/' . basename($script_filename),
             'SERVER_ADDR'     => $this->host === '0.0.0.0' ? Ip::local() : $this->host,
@@ -47,7 +50,7 @@ class Swoole extends AbstractServer
         }
 
         if (!empty($settings['enable_static_handler'])) {
-            $settings['document_root'] = $this->_SERVER['DOCUMENT_ROOT'];
+            $settings['document_root'] = $document_root;
         }
 
         $this->settings = $settings;
@@ -115,7 +118,6 @@ class Swoole extends AbstractServer
         $this->fireEvent('httpServer:start', ['server' => $this->swoole]);
         /** @noinspection HttpUrlsUsage */
         console_log('info', sprintf('http://%s:%s%s', $this->host, $this->port, $this->router->getPrefix()));
-        $this->staticHandler->start($this->settings['document_root'], $this->router->getPrefix());
         $this->swoole->start();
         console_log('info', 'shutdown');
     }

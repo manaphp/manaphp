@@ -61,8 +61,6 @@ class Php extends AbstractServer
     {
         $this->prepareGlobals();
 
-        $this->staticHandler->start($_SERVER['DOCUMENT_ROOT'], $this->router->getPrefix());
-
         $uri = $_SERVER['REQUEST_URI'];
         if ($this->staticHandler->isFile($uri)) {
             if (($file = $this->staticHandler->getFile($uri)) !== null) {

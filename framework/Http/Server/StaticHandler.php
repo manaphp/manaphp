@@ -5,6 +5,9 @@ namespace ManaPHP\Http\Server;
 
 use ManaPHP\Component;
 
+/**
+ * @property-read \ManaPHP\Http\RouterInterface $router
+ */
 class StaticHandler extends Component implements StaticHandlerInterface
 {
     protected array $mime_types;
@@ -12,16 +15,12 @@ class StaticHandler extends Component implements StaticHandlerInterface
     protected string $doc_root;
     protected string $prefix;
 
-    public function __construct()
+    public function __construct(array $options = [])
     {
-        $this->mime_types = $this->getMimeTypes();
-    }
-
-    public function start(string $doc_root, string $prefix): void
-    {
-        $this->doc_root = $doc_root;
+        $this->doc_root = $options['doc_root'] ?? $_SERVER['DOCUMENT_ROOT'];
+        $this->prefix = $options['prefix'] ?? $this->router->getPrefix();
         $this->root_files = $this->getRootFiles();
-        $this->prefix = $prefix;
+        $this->mime_types = $this->getMimeTypes();
     }
 
     protected function getRootFiles(): array
