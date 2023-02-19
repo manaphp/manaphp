@@ -178,7 +178,7 @@ class Swoole extends AbstractServer
         }
 
         $response->header('X-Request-Id', $this->request->getRequestId(), false);
-        $response->header('X-Response-Time', $this->request->getElapsedTime(), false);
+        $response->header('X-Response-Time', (string)$this->request->getElapsedTime(), false);
 
         $prefix = $this->router->getPrefix();
         foreach ($this->response->getCookies() as $cookie) {
