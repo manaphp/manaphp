@@ -21,11 +21,11 @@ class Ip
         if ($cidr_only) {
             foreach ($haystack as $item) {
                 if (($pos = strpos($item, '/')) !== false) {
-                    $net = substr($item, 0, $pos);
-                    $mask = substr($item, $pos + 1);
-
-                    $mask = ~((1 << (32 - $mask)) - 1);
-                    if (($needle_int & $mask) === ip2long($net)) {
+                    $prefix = substr($item, 0, $pos);
+                    $suffix = substr($item, $pos + 1);
+                    $bits = str_pad(str_repeat('1', (int)$suffix), 32, '0');
+                    $mask = (int)base_convert($bits, 2, 10);
+                    if (($mask & $needle_int) === ($mask & ip2long($prefix))) {
                         return true;
                     }
                 } elseif ($item === $needle) {
@@ -47,15 +47,17 @@ class Ip
                         return true;
                     }
                 } elseif (($pos = strpos($item, '/')) !== false) {
-                    $net = substr($item, 0, $pos);
-                    $mask = substr($item, $pos + 1);
-                    if (str_contains($mask, '.')/** 126.1.0.0/255.255.0.0 */) {
-                        if (($needle_int & ip2long($mask)) === ip2long($net)) {
+                    $prefix = substr($item, 0, $pos);
+                    $suffix = substr($item, $pos + 1);
+                    if (str_contains($suffix, '.')/** 126.1.0.0/255.255.0.0 */) {
+                        $mask = ip2long($suffix);
+                        if (($mask & $needle_int) === ($mask & ip2long($prefix))) {
                             return true;
                         }
                     } else {
-                        $mask = ~((1 << (32 - $mask)) - 1);
-                        if (($needle_int & $mask) === ip2long($net)/** 126.1.0.0/32 */) {
+                        $bits = str_pad(str_repeat('1', (int)$suffix), 32, '0');
+                        $mask = (int)base_convert($bits, 2, 10);
+                        if (($mask & $needle_int) === ($mask & ip2long($prefix))/** 126.1.0.0/32 */) {
                             return true;
                         }
                     }
