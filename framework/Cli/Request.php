@@ -52,7 +52,16 @@ class Request extends Component implements RequestInterface
                     throw new RequestException(['long `:option` option is too short', 'option' => $o]);
                 }
 
-                $this->options[substr($o, 2)] = !$arguments || $arguments[0][0] === '-' ? 1 : array_shift($arguments);
+                if ($arguments === []) {
+                    $value = 1;
+                } elseif ($arguments[0] === '') {
+                    $value = array_shift($arguments);
+                } elseif ($arguments[0][0] === '-') {
+                    $value = 1;
+                } else {
+                    $value = array_shift($arguments);
+                }
+                $this->options[substr($o, 2)] = $value;
             } elseif (strlen($o) > 2) {
                 if (!$arguments || $arguments[0][0] === '-') {
                     foreach (str_split(substr($o, 1)) as $c) {
