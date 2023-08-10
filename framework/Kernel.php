@@ -18,6 +18,8 @@ class Kernel extends Component
     public function __construct(string $rootDir)
     {
         $this->rootDir = $rootDir;
+
+        $GLOBALS['Psr\Container\ContainerInterface'] = $this->container = new Container();
     }
 
     public function registerDefaultDependencies(): void
@@ -96,8 +98,6 @@ class Kernel extends Component
 
     public function start(string $server): void
     {
-        $GLOBALS['Psr\Container\ContainerInterface'] = $this->container = new Container();
-
         if (!defined('MANAPHP_COROUTINE_ENABLED')) {
             define('MANAPHP_COROUTINE_ENABLED', $this->detectCoroutineCanEnabled());
         }
