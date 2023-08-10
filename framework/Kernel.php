@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP;
 
 use ManaPHP\Di\Container;
+use Psr\Container\ContainerInterface;
 
 /**
  * @property-read \ManaPHP\EnvInterface    $env
@@ -13,13 +14,13 @@ use ManaPHP\Di\Container;
 class Kernel extends Component
 {
     protected string $rootDir;
-    protected Container $container;
+    protected ContainerInterface $container;
 
-    public function __construct(string $rootDir)
+    public function __construct(string $rootDir, ContainerInterface $container = null)
     {
         $this->rootDir = $rootDir;
 
-        $GLOBALS['Psr\Container\ContainerInterface'] = $this->container = new Container();
+        $GLOBALS['Psr\Container\ContainerInterface'] = $this->container = $container ?? new Container();
     }
 
     public function registerDefaultDependencies(): void
