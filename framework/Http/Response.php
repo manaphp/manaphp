@@ -7,6 +7,7 @@ use DateTime;
 use DateTimeZone;
 use JsonSerializable;
 use ManaPHP\Component;
+use ManaPHP\Context\ContextTrait;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Helper\LocalFS;
@@ -17,10 +18,11 @@ use Throwable;
  * @property-read \ManaPHP\Http\RequestInterface $request
  * @property-read \ManaPHP\Http\UrlInterface     $url
  * @property-read \ManaPHP\Http\RouterInterface  $router
- * @property-read \ManaPHP\Http\ResponseContext  $context
  */
 class Response extends Component implements ResponseInterface
 {
+    use ContextTrait;
+
     protected int|string $ok_code;
     protected int|string $error_code;
 
@@ -39,7 +41,8 @@ class Response extends Component implements ResponseInterface
         bool $secure = false,
         bool $httponly = true
     ): static {
-        $context = $this->context;
+        /** @var ResponseContext $context */
+        $context = $this->getContext();
 
         if ($expire > 0) {
             $current = time();
@@ -63,12 +66,16 @@ class Response extends Component implements ResponseInterface
 
     public function getCookies(): array
     {
-        return $this->context->cookies;
+        /** @var ResponseContext $context */
+        $context = $this->getContext();
+
+        return $context->cookies;
     }
 
     public function setStatus(int $code, ?string $text = null): static
     {
-        $context = $this->context;
+        /** @var ResponseContext $context */
+        $context = $this->getContext();
 
         $context->status_code = $code;
         $context->status_text = $text ?: $this->getStatusText($code);
@@ -78,20 +85,27 @@ class Response extends Component implements ResponseInterface
 
     public function getStatus(): string
     {
-        $context = $this->context;
+        /** @var ResponseContext $context */
+        $context = $this->getContext();
 
         return $context->status_code . ' ' . $context->status_text;
     }
 
     public function getStatusCode(): int
     {
-        return $this->context->status_code;
+        /** @var ResponseContext $context */
+        $context = $this->getContext();
+
+        return $context->status_code;
     }
 
     public function getStatusText(?int $code = null): string
     {
         if ($code === null) {
-            return $this->context->status_text;
+            /** @var ResponseContext $context */
+            $context = $this->getContext();
+
+            return $context->status_text;
         } else {
             $texts = [
                 200 => 'OK',
@@ -159,7 +173,8 @@ class Response extends Component implements ResponseInterface
 
     public function setHeader(string $name, string $value): static
     {
-        $context = $this->context;
+        /** @var ResponseContext $context */
+        $context = $this->getContext();
 
         $context->headers[$name] = $value;
 
@@ -168,21 +183,24 @@ class Response extends Component implements ResponseInterface
 
     public function getHeader(string $name, ?string $default = null): ?string
     {
-        $context = $this->context;
+        /** @var ResponseContext $context */
+        $context = $this->getContext();
 
         return $context->headers[$name] ?? $default;
     }
 
     public function hasHeader(string $name): bool
     {
-        $context = $this->context;
+        /** @var ResponseContext $context */
+        $context = $this->getContext();
 
         return isset($context->headers[$name]);
     }
 
     public function removeHeader(string $name): static
     {
-        $context = $this->context;
+        /** @var ResponseContext $context */
+        $context = $this->getContext();
 
         unset($context->headers[$name]);
 
@@ -207,7 +225,8 @@ class Response extends Component implements ResponseInterface
 
     public function setNotModified(): static
     {
-        $context = $this->context;
+        /** @var ResponseContext $context */
+        $context = $this->getContext();
 
         $context->status_code = 304;
         $context->status_text = 'Not Modified';
@@ -254,7 +273,8 @@ class Response extends Component implements ResponseInterface
 
     public function getContentType(): ?string
     {
-        $context = $this->context;
+        /** @var ResponseContext $context */
+        $context = $this->getContext();
 
         return $context->headers['Content-Type'] ?? null;
     }
@@ -277,7 +297,8 @@ class Response extends Component implements ResponseInterface
 
     public function setContent(mixed $content): static
     {
-        $context = $this->context;
+        /** @var ResponseContext $context */
+        $context = $this->getContext();
 
         $context->content = $content;
 
@@ -319,7 +340,8 @@ class Response extends Component implements ResponseInterface
 
     public function setJsonContent(mixed $content): static
     {
-        $context = $this->context;
+        /** @var ResponseContext $context */
+        $context = $this->getContext();
 
         $this->setHeader('Content-Type', 'application/json; charset=utf-8');
 
@@ -336,19 +358,26 @@ class Response extends Component implements ResponseInterface
 
     public function getContent(): mixed
     {
-        return $this->context->content;
+        /** @var ResponseContext $context */
+        $context = $this->getContext();
+
+        return $context->content;
     }
 
     public function hasContent(): bool
     {
-        $content = $this->context->content;
+        /** @var ResponseContext $context */
+        $context = $this->getContext();
+
+        $content = $context->content;
 
         return $content !== '' && $content !== null;
     }
 
     public function setFile(string $file, ?string $attachmentName = null): static
     {
-        $context = $this->context;
+        /** @var ResponseContext $context */
+        $context = $this->getContext();
 
         if ($attachmentName === null) {
             $attachmentName = basename($file);
@@ -368,12 +397,18 @@ class Response extends Component implements ResponseInterface
 
     public function getFile(): ?string
     {
-        return $this->context->file;
+        /** @var ResponseContext $context */
+        $context = $this->getContext();
+
+        return $context->file;
     }
 
     public function hasFile(): bool
     {
-        return (bool)$this->context->file;
+        /** @var ResponseContext $context */
+        $context = $this->getContext();
+
+        return (bool)$context->file;
     }
 
     public function setAttachment(string $attachmentName): static
@@ -426,7 +461,10 @@ class Response extends Component implements ResponseInterface
 
     public function getHeaders(): array
     {
-        return $this->context->headers;
+        /** @var ResponseContext $context */
+        $context = $this->getContext();
+
+        return $context->headers;
     }
 
     public function dump(): array

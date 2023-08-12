@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Filters;
 
 use Closure;
+use ManaPHP\Context\ContextTrait;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\MissingFieldException;
@@ -12,14 +13,15 @@ use ManaPHP\Http\Filter\ReadyFilterInterface;
 use ManaPHP\Mvc\Controller as MvcController;
 
 /**
- * @property-read \ManaPHP\ConfigInterface                $config
- * @property-read \ManaPHP\Http\RequestInterface          $request
- * @property-read \ManaPHP\Http\ResponseInterface         $response
- * @property-read \ManaPHP\Data\RedisCacheInterface       $redisCache
- * @property-read \ManaPHP\Filters\PageCacheFilterContext $context
+ * @property-read \ManaPHP\ConfigInterface          $config
+ * @property-read \ManaPHP\Http\RequestInterface    $request
+ * @property-read \ManaPHP\Http\ResponseInterface   $response
+ * @property-read \ManaPHP\Data\RedisCacheInterface $redisCache
  */
 class PageCacheFilter extends Filter implements ReadyFilterInterface
 {
+    use ContextTrait;
+
     protected string $prefix;
 
     public function __construct(?string $prefix = null)
@@ -44,7 +46,8 @@ class PageCacheFilter extends Filter implements ReadyFilterInterface
             return;
         }
 
-        $context = $this->context;
+        /** @var PageCacheFilterContext $context */
+        $context = $this->getContext();
 
         $key = null;
         if (is_int($pageCache)) {
@@ -139,7 +142,8 @@ class PageCacheFilter extends Filter implements ReadyFilterInterface
 
     public function onResponding(): void
     {
-        $context = $this->context;
+        /** @var PageCacheFilterContext $context */
+        $context = $this->getContext();
 
         if ($context->cache_used === true || $context->ttl === null || $context->ttl <= 0) {
             return;

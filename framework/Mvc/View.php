@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
+use ManaPHP\Context\ContextTrait;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
@@ -15,11 +16,11 @@ use ManaPHP\Helper\LocalFS;
  * @property-read \ManaPHP\Rendering\RendererInterface      $renderer
  * @property-read \ManaPHP\Http\DispatcherInterface         $dispatcher
  * @property-read \ManaPHP\Mvc\View\Widget\FactoryInterface $widgetFactory
- * @property-read \ManaPHP\Mvc\ViewContext                  $context
  */
 class View extends Component implements ViewInterface
 {
     use EventTrait;
+    use ContextTrait;
 
     protected int $max_age;
     protected bool $autofix_url;
@@ -35,7 +36,10 @@ class View extends Component implements ViewInterface
 
     public function setMaxAge(int $max_age): static
     {
-        $this->context->max_age = $max_age;
+        /** @var ViewContext $context */
+        $context = $this->getContext();
+
+        $context->max_age = $max_age;
 
         return $this;
     }
@@ -43,7 +47,9 @@ class View extends Component implements ViewInterface
     public function getMaxAge(): int
     {
         if ($this->max_age > 0) {
-            $context = $this->context;
+            /** @var ViewContext $context */
+            $context = $this->getContext();
+
             if ($context->max_age === null) {
                 return $this->max_age;
             } else {
@@ -56,7 +62,8 @@ class View extends Component implements ViewInterface
 
     public function setLayout(string $layout = 'Default'): static
     {
-        $context = $this->context;
+        /** @var ViewContext $context */
+        $context = $this->getContext();
 
         $context->layout = $layout;
 
@@ -65,7 +72,8 @@ class View extends Component implements ViewInterface
 
     public function disableLayout(): static
     {
-        $context = $this->context;
+        /** @var ViewContext $context */
+        $context = $this->getContext();
 
         $context->layout = '';
 
@@ -74,7 +82,8 @@ class View extends Component implements ViewInterface
 
     public function setVar(string $name, mixed $value): static
     {
-        $context = $this->context;
+        /** @var ViewContext $context */
+        $context = $this->getContext();
 
         $context->vars[$name] = $value;
 
@@ -83,7 +92,8 @@ class View extends Component implements ViewInterface
 
     public function setVars(array $vars): static
     {
-        $context = $this->context;
+        /** @var ViewContext $context */
+        $context = $this->getContext();
 
         $context->vars = array_merge($context->vars, $vars);
 
@@ -92,7 +102,8 @@ class View extends Component implements ViewInterface
 
     public function getVar(?string $name = null): mixed
     {
-        $context = $this->context;
+        /** @var ViewContext $context */
+        $context = $this->getContext();
 
         if ($name === null) {
             return $context->vars;
@@ -103,14 +114,16 @@ class View extends Component implements ViewInterface
 
     public function hasVar(string $name): bool
     {
-        $context = $this->context;
+        /** @var ViewContext $context */
+        $context = $this->getContext();
 
         return isset($context->_vars[$name]);
     }
 
     protected function getLayout(): ?string
     {
-        $context = $this->context;
+        /** @var ViewContext $context */
+        $context = $this->getContext();
 
         if ($context->layout === null) {
             $controller = $this->dispatcher->getController();
@@ -150,7 +163,8 @@ class View extends Component implements ViewInterface
 
     public function render(?string $template = null, array $vars = []): string
     {
-        $context = $this->context;
+        /** @var ViewContext $context */
+        $context = $this->getContext();
 
         if ($vars !== []) {
             $context->vars = $vars;
@@ -215,7 +229,8 @@ class View extends Component implements ViewInterface
             return;
         }
 
-        $context = $this->context;
+        /** @var ViewContext $context */
+        $context = $this->getContext();
 
         $context->content = preg_replace_callback(
             '#\b(href|src|action|data-src)=(["\'`]{1,2})/(?!/)#',
@@ -311,7 +326,8 @@ class View extends Component implements ViewInterface
 
     public function setContent(string $content): static
     {
-        $context = $this->context;
+        /** @var ViewContext $context */
+        $context = $this->getContext();
 
         $context->content = $content;
 
@@ -320,7 +336,10 @@ class View extends Component implements ViewInterface
 
     public function getContent(): string
     {
-        return $this->context->content;
+        /** @var ViewContext $context */
+        $context = $this->getContext();
+
+        return $context->content;
     }
 
     public function dump(): array

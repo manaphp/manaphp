@@ -5,12 +5,12 @@ namespace ManaPHP\I18n;
 
 use ManaPHP\Component;
 use ManaPHP\Context\ContextCreatorInterface;
+use ManaPHP\Context\ContextTrait;
 
-/**
- * @property-read \ManaPHP\I18n\LocaleContext $context
- */
 class Locale extends Component implements LocaleInterface, ContextCreatorInterface
 {
+    use ContextTrait;
+
     protected string $default;
 
     public function __construct(string $default = 'en')
@@ -30,12 +30,18 @@ class Locale extends Component implements LocaleInterface, ContextCreatorInterfa
 
     public function get(): string
     {
-        return $this->context->locale;
+        /** @var LocaleContext $context */
+        $context = $this->getContext();
+
+        return $context->locale;
     }
 
     public function set(string $locale): static
     {
-        $this->context->locale = $locale;
+        /** @var LocaleContext $context */
+        $context = $this->getContext();
+
+        $context->locale = $locale;
 
         return $this;
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Context\ContextTrait;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\Dispatcher\NotFoundActionException;
@@ -12,46 +13,65 @@ use ManaPHP\Http\Dispatcher\NotFoundControllerException;
 /**
  * @property-read \ManaPHP\Http\GlobalsInterface            $globals
  * @property-read \ManaPHP\Http\Controller\FactoryInterface $controllerFactory
- * @property-read \ManaPHP\Http\DispatcherContext           $context
  */
 class Dispatcher extends Component implements DispatcherInterface
 {
     use EventTrait;
+    use ContextTrait;
 
     public function getArea(): ?string
     {
-        return $this->context->area;
+        /** @var DispatcherContext $context */
+        $context = $this->getContext();
+
+        return $context->area;
     }
 
     public function getController(): ?string
     {
-        return $this->context->controller;
+        /** @var DispatcherContext $context */
+        $context = $this->getContext();
+
+        return $context->controller;
     }
 
     public function getAction(): ?string
     {
-        return $this->context->action;
+        /** @var DispatcherContext $context */
+        $context = $this->getContext();
+
+        return $context->action;
     }
 
     public function getParams(): array
     {
-        return $this->context->params;
+        /** @var DispatcherContext $context */
+        $context = $this->getContext();
+
+        return $context->params;
     }
 
     public function getParam(int|string $name, mixed $default = null): mixed
     {
-        $params = $this->context->params;
+        /** @var DispatcherContext $context */
+        $context = $this->getContext();
+
+        $params = $context->params;
         return $params[$name] ?? $default;
     }
 
     public function hasParam(string $name): bool
     {
-        return isset($this->context->params[$name]);
+        /** @var DispatcherContext $context */
+        $context = $this->getContext();
+
+        return isset($context->params[$name]);
     }
 
     public function getPath(): ?string
     {
-        $context = $this->context;
+        /** @var DispatcherContext $context */
+        $context = $this->getContext();
 
         if ($context->path === null) {
             $area = $context->area;
@@ -101,7 +121,9 @@ class Dispatcher extends Component implements DispatcherInterface
         $this->fireEvent('request:invoking', compact('controller', 'action'));
 
         try {
-            $context = $this->context;
+            /** @var DispatcherContext $context */
+            $context = $this->getContext();
+
             $context->isInvoking = true;
             $return = $controller->invoke($action);
         } finally {
@@ -115,7 +137,8 @@ class Dispatcher extends Component implements DispatcherInterface
 
     public function dispatch(?string $area, string $controller, string $action, array $params): mixed
     {
-        $context = $this->context;
+        /** @var DispatcherContext $context */
+        $context = $this->getContext();
 
         $globals = $this->globals->get();
 
@@ -160,11 +183,17 @@ class Dispatcher extends Component implements DispatcherInterface
 
     public function getControllerInstance(): ?Controller
     {
-        return $this->context->controllerInstance;
+        /** @var DispatcherContext $context */
+        $context = $this->getContext();
+
+        return $context->controllerInstance;
     }
 
     public function isInvoking(): bool
     {
-        return $this->context->isInvoking;
+        /** @var DispatcherContext $context */
+        $context = $this->getContext();
+
+        return $context->isInvoking;
     }
 }

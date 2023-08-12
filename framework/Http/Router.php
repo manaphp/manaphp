@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Context\ContextTrait;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
@@ -13,11 +14,11 @@ use ManaPHP\Http\Router\RouteInterface;
 /**
  * @property-read \ManaPHP\AliasInterface        $alias
  * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\Http\RouterContext    $context
  */
 class Router extends Component implements RouterInterface
 {
     use EventTrait;
+    use ContextTrait;
 
     protected bool $case_sensitive = true;
     protected string $prefix = '';
@@ -208,7 +209,8 @@ class Router extends Component implements RouterInterface
 
     public function match(?string $uri = null, ?string $method = null): bool
     {
-        $context = $this->context;
+        /** @var RouterContext $context */
+        $context = $this->getContext();
 
         $this->fireEvent('request:routing');
 
@@ -293,67 +295,98 @@ class Router extends Component implements RouterInterface
 
     public function getArea(): ?string
     {
-        return $this->context->area;
+        /** @var RouterContext $context */
+        $context = $this->getContext();
+
+        return $context->area;
     }
 
     public function setArea(string $area): static
     {
-        $this->context->area = $area;
+        /** @var RouterContext $context */
+        $context = $this->getContext();
+
+        $context->area = $area;
 
         return $this;
     }
 
     public function getController(): ?string
     {
-        return $this->context->controller;
+        /** @var RouterContext $context */
+        $context = $this->getContext();
+
+        return $context->controller;
     }
 
     public function setController(string $controller): static
     {
-        $this->context->controller = $controller;
+        /** @var RouterContext $context */
+        $context = $this->getContext();
+
+        $context->controller = $controller;
 
         return $this;
     }
 
     public function getAction(): ?string
     {
-        return $this->context->action;
+        /** @var RouterContext $context */
+        $context = $this->getContext();
+
+        return $context->action;
     }
 
     public function setAction(string $action): static
     {
-        $this->context->action = $action;
+        /** @var RouterContext $context */
+        $context = $this->getContext();
+
+        $context->action = $action;
 
         return $this;
     }
 
     public function getParams(): array
     {
-        return $this->context->params;
+        /** @var RouterContext $context */
+        $context = $this->getContext();
+
+        return $context->params;
     }
 
     public function setParams(array $params): static
     {
-        $this->context->params = $params;
+        /** @var RouterContext $context */
+        $context = $this->getContext();
+
+        $context->params = $params;
 
         return $this;
     }
 
     public function wasMatched(): bool
     {
-        return $this->context->matched;
+        /** @var RouterContext $context */
+        $context = $this->getContext();
+
+        return $context->matched;
     }
 
     public function setMatched(bool $matched): static
     {
-        $this->context->matched = $matched;
+        /** @var RouterContext $context */
+        $context = $this->getContext();
+
+        $context->matched = $matched;
 
         return $this;
     }
 
     public function createUrl(string|array $args, bool|string $scheme = false): string
     {
-        $context = $this->context;
+        /** @var RouterContext $context */
+        $context = $this->getContext();
 
         if (is_string($args)) {
             if (($pos = strpos($args, '?')) !== false) {

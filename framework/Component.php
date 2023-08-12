@@ -4,27 +4,21 @@ declare(strict_types=1);
 namespace ManaPHP;
 
 use JsonSerializable;
-use ManaPHP\Context\ContextTrait;
+use ManaPHP\Context\ContextorInterface;
 use ManaPHP\Helper\Container;
 use Psr\Container\ContainerInterface;
 
 class Component implements JsonSerializable
 {
-    use ContextTrait;
-
     protected array $__dynamicProperties = [];
 
     public function __get(string $name): mixed
     {
-        if ($name === 'context') {
-            return $this->contextor->getContext($this);
-        } else {
-            if (($value = $this->__dynamicProperties[$name] ?? null) === null) {
-                $value = $this->__dynamicProperties[$name] = Container::inject($this, $name);
-            }
-
-            return $value;
+        if (($value = $this->__dynamicProperties[$name] ?? null) === null) {
+            $value = $this->__dynamicProperties[$name] = Container::inject($this, $name);
         }
+
+        return $value;
     }
 
     public function __set(string $name, $value): void
@@ -49,8 +43,9 @@ class Component implements JsonSerializable
             $data[$k] = $v;
         }
 
-        if ($this->contextor->hasContext($this)) {
-            $data['context'] = $this->contextor->getContext($this);
+        $contextor = Container::get(ContextorInterface::class);
+        if ($contextor->hasContext($this)) {
+            $data['context'] = $contextor->getContext($this);
         }
 
         return $data;
@@ -72,8 +67,9 @@ class Component implements JsonSerializable
             $data[$k] = $v;
         }
 
-        if ($this->contextor->hasContext($this)) {
-            $data['context'] = (array)$this->contextor->getContext($this);
+        $contextor = Container::get(ContextorInterface::class);
+        if ($contextor->hasContext($this)) {
+            $data['context'] = (array)$contextor->getContext($this);
         }
 
         return $data;

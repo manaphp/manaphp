@@ -5,20 +5,21 @@ namespace ManaPHP\Http;
 
 use ArrayAccess;
 use ManaPHP\Component;
+use ManaPHP\Context\ContextTrait;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Str;
 
 /**
- * @property-read \ManaPHP\Logging\LoggerInterface     $logger
- * @property-read \ManaPHP\Http\CookiesInterface       $cookies
- * @property-read \ManaPHP\Http\RequestInterface       $request
- * @property-read \ManaPHP\Http\RouterInterface        $router
- * @property-read \ManaPHP\Http\AbstractSessionContext $context
+ * @property-read \ManaPHP\Logging\LoggerInterface $logger
+ * @property-read \ManaPHP\Http\CookiesInterface   $cookies
+ * @property-read \ManaPHP\Http\RequestInterface   $request
+ * @property-read \ManaPHP\Http\RouterInterface    $router
  */
 abstract class AbstractSession extends Component implements SessionInterface, ArrayAccess
 {
     use EventTrait;
+    use ContextTrait;
 
     protected int $ttl;
     protected int $lazy;
@@ -40,7 +41,8 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
 
     public function all(): array
     {
-        $context = $this->context;
+        /** @var AbstractSessionContext $context */
+        $context = $this->getContext();
 
         if (!$context->started) {
             $this->start();
@@ -51,7 +53,8 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
 
     protected function start(): void
     {
-        $context = $this->context;
+        /** @var AbstractSessionContext $context */
+        $context = $this->getContext();
 
         if ($context->started) {
             return;
@@ -80,7 +83,8 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
 
     public function onRequestResponding(): void
     {
-        $context = $this->context;
+        /** @var AbstractSessionContext $context */
+        $context = $this->getContext();
 
         if (!$context->started) {
             return;
@@ -137,7 +141,8 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
             $this->fireEvent('session:destroy', compact('session_id'));
             $this->do_destroy($session_id);
         } else {
-            $context = $this->context;
+            /** @var AbstractSessionContext $context */
+            $context = $this->getContext();
 
             if (!$context->started) {
                 $this->start();
@@ -248,7 +253,8 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
 
     public function get(string $name, mixed $default = null): mixed
     {
-        $context = $this->context;
+        /** @var AbstractSessionContext $context */
+        $context = $this->getContext();
 
         if (!$context->started) {
             $this->start();
@@ -259,7 +265,8 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
 
     public function set(string $name, mixed $value): static
     {
-        $context = $this->context;
+        /** @var AbstractSessionContext $context */
+        $context = $this->getContext();
 
         if (!$context->started) {
             $this->start();
@@ -273,7 +280,8 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
 
     public function has(string $name): bool
     {
-        $context = $this->context;
+        /** @var AbstractSessionContext $context */
+        $context = $this->getContext();
 
         if (!$context->started) {
             $this->start();
@@ -284,7 +292,8 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
 
     public function remove(string $name): static
     {
-        $context = $this->context;
+        /** @var AbstractSessionContext $context */
+        $context = $this->getContext();
 
         if (!$context->started) {
             $this->start();
@@ -298,7 +307,8 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
 
     public function getId(): string
     {
-        $context = $this->context;
+        /** @var AbstractSessionContext $context */
+        $context = $this->getContext();
 
         if (!$context->started) {
             $this->start();
@@ -309,7 +319,8 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
 
     public function setId(string $id): static
     {
-        $context = $this->context;
+        /** @var AbstractSessionContext $context */
+        $context = $this->getContext();
 
         if (!$context->started) {
             $this->start();
@@ -322,12 +333,18 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
 
     public function getTtl(): int
     {
-        return $this->context->ttl ?? $this->ttl;
+        /** @var AbstractSessionContext $context */
+        $context = $this->getContext();
+
+        return $context->ttl ?? $this->ttl;
     }
 
     public function setTtl(int $ttl): static
     {
-        $this->context->ttl = $ttl;
+        /** @var AbstractSessionContext $context */
+        $context = $this->getContext();
+
+        $context->ttl = $ttl;
 
         return $this;
     }
@@ -371,9 +388,12 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
 
     public function write(string $session_id, array $data): static
     {
+        /** @var AbstractSessionContext $context */
+        $context = $this->getContext();
+
         $session = $this->serialize($data);
 
-        $this->do_write($session_id, $session, $this->context->ttl ?? $this->ttl);
+        $this->do_write($session_id, $session, $context->ttl ?? $this->ttl);
 
         return $this;
     }

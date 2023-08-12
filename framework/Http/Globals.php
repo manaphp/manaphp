@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Context\ContextTrait;
 use ManaPHP\Http\Globals\Proxy;
 
-/**
- * @property-read \ManaPHP\Http\GlobalsContext $context
- */
 class Globals extends Component implements GlobalsInterface
 {
+    use ContextTrait;
+
     protected bool $proxy;
 
     public function __construct(bool $proxy = false)
@@ -30,7 +30,8 @@ class Globals extends Component implements GlobalsInterface
     public function prepare(array $GET, array $POST, array $SERVER, ?string $RAW_BODY = null, array $COOKIE = [],
         array $FILES = []
     ): void {
-        $context = $this->context;
+        /** @var GlobalsContext $context */
+        $context = $this->getContext();
 
         if (!$POST
             && (isset($SERVER['REQUEST_METHOD']) && !in_array($SERVER['REQUEST_METHOD'], ['GET', 'OPTIONS'], true))
@@ -59,51 +60,78 @@ class Globals extends Component implements GlobalsInterface
 
     public function get(): GlobalsContext
     {
-        return $this->context;
+        /** @var GlobalsContext $context */
+        $context = $this->getContext();
+
+        return $context;
     }
 
     public function getServer(): array
     {
-        return $this->context->_SERVER;
+        /** @var GlobalsContext $context */
+        $context = $this->getContext();
+
+        return $context->_SERVER;
     }
 
     public function setServer(string $name, mixed $value): static
     {
-        $this->context->_SERVER[$name] = $value;
+        /** @var GlobalsContext $context */
+        $context = $this->getContext();
+
+        $context->_SERVER[$name] = $value;
 
         return $this;
     }
 
     public function getFiles(): array
     {
-        return $this->context->_FILES;
+        /** @var GlobalsContext $context */
+        $context = $this->getContext();
+
+        return $context->_FILES;
     }
 
     public function getRequest(): array
     {
-        return $this->context->_REQUEST;
+        /** @var GlobalsContext $context */
+        $context = $this->getContext();
+
+        return $context->_REQUEST;
     }
 
     public function getRawBody(): ?string
     {
-        return $this->context->rawBody;
+        /** @var GlobalsContext $context */
+        $context = $this->getContext();
+
+        return $context->rawBody;
     }
 
     public function getCookie(): array
     {
-        return $this->context->_COOKIE;
+        /** @var GlobalsContext $context */
+        $context = $this->getContext();
+
+        return $context->_COOKIE;
     }
 
     public function setCookie(string $name, string $value): static
     {
-        $this->context->_COOKIE[$name] = $value;
+        /** @var GlobalsContext $context */
+        $context = $this->getContext();
+
+        $context->_COOKIE[$name] = $value;
 
         return $this;
     }
 
     public function unsetCookie(string $name): static
     {
-        unset($this->context->_COOKIE[$name]);
+        /** @var GlobalsContext $context */
+        $context = $this->getContext();
+
+        unset($context->_COOKIE[$name]);
 
         return $this;
     }

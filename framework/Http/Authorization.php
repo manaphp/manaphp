@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Context\ContextTrait;
 use ManaPHP\Exception\ForbiddenException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
@@ -19,10 +20,11 @@ use ReflectionMethod;
  * @property-read \ManaPHP\Http\RequestInterface            $request
  * @property-read \ManaPHP\Http\ResponseInterface           $response
  * @property-read \ManaPHP\Http\Controller\ManagerInterface $controllerManager
- * @property-read \ManaPHP\Http\AuthorizationContext        $context
  */
 class Authorization extends Component implements AuthorizationInterface
 {
+    use ContextTrait;
+
     public function getPermissions(string $controller): array
     {
         $permissions = [];
@@ -117,7 +119,8 @@ class Authorization extends Component implements AuthorizationInterface
 
     public function getAllowed(string $role): string
     {
-        $context = $this->context;
+        /** @var AuthorizationContext $context */
+        $context = $this->getContext();
 
         if (!isset($context->role_permissions[$role])) {
             /** @var \ManaPHP\Data\ModelInterface $roleModel */

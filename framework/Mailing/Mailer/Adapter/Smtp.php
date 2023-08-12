@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mailing\Mailer\Adapter;
 
+use ManaPHP\Context\ContextTrait;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Mailing\AbstractMailer;
 use ManaPHP\Mailing\Mailer\Adapter\Exception\AuthenticationException;
@@ -12,12 +13,13 @@ use ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException;
 use ManaPHP\Mailing\Mailer\Message;
 
 /**
- * @property-read \ManaPHP\AliasInterface                     $alias
- * @property-read \ManaPHP\Logging\LoggerInterface            $logger
- * @property-read \ManaPHP\Mailing\Mailer\Adapter\SmtpContext $context
+ * @property-read \ManaPHP\AliasInterface          $alias
+ * @property-read \ManaPHP\Logging\LoggerInterface $logger
  */
 class Smtp extends AbstractMailer
 {
+    use ContextTrait;
+
     protected string $uri;
     protected string $scheme;
     protected string $host;
@@ -84,7 +86,8 @@ class Smtp extends AbstractMailer
 
     protected function connect(): mixed
     {
-        $context = $this->context;
+        /** @var SmtpContext $context */
+        $context = $this->getContext();
 
         if ($context->socket) {
             return $context->socket;
@@ -136,7 +139,8 @@ class Smtp extends AbstractMailer
 
     protected function writeLine(?string $data = null): static
     {
-        $context = $this->context;
+        /** @var SmtpContext $context */
+        $context = $this->getContext();
 
         if ($data !== null) {
             if (fwrite($context->socket, $data) === false) {
@@ -156,7 +160,8 @@ class Smtp extends AbstractMailer
 
     protected function readLine(): string
     {
-        $context = $this->context;
+        /** @var SmtpContext $context */
+        $context = $this->getContext();
 
         if (($str = fgets($context->socket)) === false) {
             throw new TransmitException(['receive data failed: :uri', 'uri' => $this->uri]);

@@ -5,6 +5,7 @@ namespace ManaPHP\Logging;
 
 use ManaPHP\Component;
 use ManaPHP\Context\ContextCreatorInterface;
+use ManaPHP\Context\ContextTrait;
 use ManaPHP\Coroutine;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Logging\Logger\Log;
@@ -14,11 +15,11 @@ use Throwable;
 /**
  * @property-read \ManaPHP\AliasInterface                $alias
  * @property-read \ManaPHP\Http\RequestInterface         $request
- * @property-read \ManaPHP\Logging\AbstractLoggerContext $context
  */
 abstract class AbstractLogger extends Component implements LoggerInterface, ContextCreatorInterface
 {
     use EventTrait;
+    use ContextTrait;
 
     protected string $level;
     protected string $hostname;
@@ -31,7 +32,7 @@ abstract class AbstractLogger extends Component implements LoggerInterface, Cont
 
     public function createContext(): AbstractLoggerContext
     {
-        /** @var \ManaPHP\Logging\AbstractLoggerContext $context */
+        /** @var AbstractLoggerContext $context */
         $context = $this->contextor->makeContext($this);
 
         $context->client_ip = defined('MANAPHP_CLI') ? '' : $this->request->getClientIp();
@@ -114,7 +115,8 @@ abstract class AbstractLogger extends Component implements LoggerInterface, Cont
 
     public function log(string $level, mixed $message, ?string $category = null): static
     {
-        $context = $this->context;
+        /** @var AbstractLoggerContext $context */
+        $context = $this->getContext();
         $levels = Level::map();
         if ($levels[$level] > $levels[$this->level]) {
             return $this;

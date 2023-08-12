@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Server\Adapter;
 
+use ManaPHP\Context\ContextTrait;
 use ManaPHP\Helper\Ip;
 use ManaPHP\Http\AbstractServer;
 use Swoole\Http\Request;
@@ -15,10 +16,11 @@ use Throwable;
  * @property-read \ManaPHP\ConfigInterface                    $config
  * @property-read \ManaPHP\AliasInterface                     $alias
  * @property-read \ManaPHP\Http\Server\StaticHandlerInterface $staticHandler
- * @property-read \ManaPHP\Http\Server\Adapter\SwooleContext  $context
  */
 class Swoole extends AbstractServer
 {
+    use ContextTrait;
+
     protected array $settings = [];
     protected Server $swoole;
     protected array $_SERVER;
@@ -139,7 +141,8 @@ class Swoole extends AbstractServer
                 $response->end('');
             }
         } else {
-            $context = $this->context;
+            /** @var SwooleContext $context */
+            $context = $this->getContext();
 
             $context->response = $response;
 
@@ -169,7 +172,10 @@ class Swoole extends AbstractServer
 
         $this->fireEvent('request:responding');
 
-        $response = $this->context->response;
+        /** @var SwooleContext $context */
+        $context = $this->getContext();
+
+        $response = $context->response;
 
         $response->status($this->response->getStatusCode());
 

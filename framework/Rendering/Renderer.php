@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Rendering;
 
 use ManaPHP\Component;
+use ManaPHP\Context\ContextTrait;
 use ManaPHP\Coroutine\Mutex;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\FileNotFoundException;
@@ -13,11 +14,11 @@ use ManaPHP\Exception\PreconditionException;
 /**
  * @property-read \ManaPHP\AliasInterface                    $alias
  * @property-read \ManaPHP\Rendering\Engine\FactoryInterface $engineFactory
- * @property-read \ManaPHP\Rendering\RendererContext         $context
  */
 class Renderer extends Component implements RendererInterface
 {
     use EventTrait;
+    use ContextTrait;
 
     /**
      * @var \ManaPHP\Rendering\EngineInterface[]
@@ -50,7 +51,8 @@ class Renderer extends Component implements RendererInterface
 
     public function render(string $template, array $vars = [], bool $directOutput = false): ?string
     {
-        $context = $this->context;
+        /** @var RendererContext $context */
+        $context = $this->getContext();
 
         if (!$this->mutex->isLocked()) {
             throw new MisuseException('renderer is not locked');
@@ -143,12 +145,15 @@ class Renderer extends Component implements RendererInterface
 
     public function exists(string $template): bool
     {
+        /** @var RendererContext $context */
+        $context = $this->getContext();
+
         if (DIRECTORY_SEPARATOR === '\\' && str_contains($template, '\\')) {
             $template = str_replace('\\', '/', $template);
         }
 
         if (!str_contains($template, '/')) {
-            $template = dirname(end($this->context->templates)) . '/' . $template;
+            $template = dirname(end($context->templates)) . '/' . $template;
         }
 
         $template = $this->alias->resolve($template);
@@ -183,14 +188,16 @@ class Renderer extends Component implements RendererInterface
      */
     public function getSection(string $section, string $default = ''): string
     {
-        $context = $this->context;
+        /** @var RendererContext $context */
+        $context = $this->getContext();
 
         return $context->sections[$section] ?? $default;
     }
 
     public function startSection(string $section, ?string $default = null): void
     {
-        $context = $this->context;
+        /** @var RendererContext $context */
+        $context = $this->getContext();
 
         if ($default === null) {
             ob_start();
@@ -203,7 +210,8 @@ class Renderer extends Component implements RendererInterface
 
     public function stopSection(bool $overwrite = false): void
     {
-        $context = $this->context;
+        /** @var RendererContext $context */
+        $context = $this->getContext();
 
         if (!$context->stack) {
             throw new PreconditionException('cannot stop a section without first starting session');
@@ -219,7 +227,8 @@ class Renderer extends Component implements RendererInterface
 
     public function appendSection(): void
     {
-        $context = $this->context;
+        /** @var RendererContext $context */
+        $context = $this->getContext();
 
         if (!$context->stack) {
             throw new PreconditionException('Cannot append a section without first starting one:');

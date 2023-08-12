@@ -5,17 +5,17 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Server\Adapter;
 
+use ManaPHP\Context\ContextTrait;
 use ManaPHP\Http\AbstractServer;
 use Throwable;
 use Workerman\Connection\ConnectionInterface;
 use Workerman\Protocols\Http;
 use Workerman\Worker;
 
-/**
- * @property-read \ManaPHP\Http\Server\Adapter\WorkermanContext $context
- */
 class Workerman extends AbstractServer
 {
+    use ContextTrait;
+
     protected array $settings = [];
     protected Worker $worker;
     protected array $_SERVER = [];
@@ -99,7 +99,8 @@ class Workerman extends AbstractServer
         $this->prepareGlobals();
 
         try {
-            $context = $this->context;
+            /** @var WorkermanContext $context */
+            $context = $this->getContext();
             $context->connection = $connection;
             $this->httpHandler->handle();
         } catch (Throwable $throwable) {
@@ -150,14 +151,16 @@ class Workerman extends AbstractServer
             );
         }
 
+        /** @var WorkermanContext $context */
+        $context = $this->getContext();
         $content = $this->response->getContent();
         if ($this->response->getStatusCode() === 304) {
-            $this->context->connection->close('');
+            $context->connection->close('');
         } elseif ($this->request->isHead()) {
             Http::header('Content-Length: ' . strlen($content));
-            $this->context->connection->close('');
+            $context->connection->close('');
         } else {
-            $this->context->connection->close($content);
+            $context->connection->close($content);
         }
 
         $this->fireEvent('request:responded');

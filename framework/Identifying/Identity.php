@@ -5,15 +5,15 @@ namespace ManaPHP\Identifying;
 
 use ManaPHP\Component;
 use ManaPHP\Context\ContextCreatorInterface;
+use ManaPHP\Context\ContextTrait;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnauthorizedException;
 
-/**
- * @property-read \ManaPHP\Identifying\IdentityContext $context
- */
 class Identity extends Component implements IdentityInterface, ContextCreatorInterface
 {
+    use ContextTrait;
+
     public function createContext(): IdentityContext
     {
         /** @var \ManaPHP\Identifying\IdentityContext $context */
@@ -25,12 +25,18 @@ class Identity extends Component implements IdentityInterface, ContextCreatorInt
 
     public function isGuest(): bool
     {
-        return !$this->context->claims;
+        /** @var IdentityContext $context */
+        $context = $this->getContext();
+
+        return !$context->claims;
     }
 
     public function getId(?int $default = null): ?int
     {
-        $claims = $this->context->claims;
+        /** @var IdentityContext $context */
+        $context = $this->getContext();
+
+        $claims = $context->claims;
 
         if (!$claims) {
             if ($default === null) {
@@ -58,7 +64,10 @@ class Identity extends Component implements IdentityInterface, ContextCreatorInt
 
     public function getName(string $default = null): string
     {
-        $claims = $this->context->claims;
+        /** @var IdentityContext $context */
+        $context = $this->getContext();
+
+        $claims = $context->claims;
 
         if (!$claims) {
             if ($default === null) {
@@ -86,7 +95,10 @@ class Identity extends Component implements IdentityInterface, ContextCreatorInt
 
     public function getRole(string $default = 'guest'): string
     {
-        $claims = $this->context->claims;
+        /** @var IdentityContext $context */
+        $context = $this->getContext();
+
+        $claims = $context->claims;
 
         if (!$claims) {
             return $default;
@@ -115,14 +127,18 @@ class Identity extends Component implements IdentityInterface, ContextCreatorInt
 
     public function setRole(string $role): static
     {
-        $this->context->claims['role'] = $role;
+        /** @var IdentityContext $context */
+        $context = $this->getContext();
+
+        $context->claims['role'] = $role;
 
         return $this;
     }
 
     public function setClaim(string $name, mixed $value): static
     {
-        $context = $this->context;
+        /** @var IdentityContext $context */
+        $context = $this->getContext();
 
         $context->claims[$name] = $value;
 
@@ -131,14 +147,20 @@ class Identity extends Component implements IdentityInterface, ContextCreatorInt
 
     public function setClaims(array $claims): static
     {
-        $this->context->claims = $claims;
+        /** @var IdentityContext $context */
+        $context = $this->getContext();
+
+        $context->claims = $claims;
 
         return $this;
     }
 
     public function getClaim(string $name, mixed $default = null): mixed
     {
-        $claims = $this->context->claims;
+        /** @var IdentityContext $context */
+        $context = $this->getContext();
+
+        $claims = $context->claims;
 
         if (!$claims) {
             if ($default === null) {
@@ -156,12 +178,18 @@ class Identity extends Component implements IdentityInterface, ContextCreatorInt
 
     public function getClaims(): array
     {
-        return $this->context->claims;
+        /** @var IdentityContext $context */
+        $context = $this->getContext();
+
+        return $context->claims;
     }
 
     public function hasClaim(string $name): bool
     {
-        return isset($this->context->claims[$name]);
+        /** @var IdentityContext $context */
+        $context = $this->getContext();
+
+        return isset($context->claims[$name]);
     }
 
     public function authenticate(): array

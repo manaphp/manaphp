@@ -5,6 +5,7 @@ namespace ManaPHP\Debugging;
 
 use ArrayObject;
 use ManaPHP\Component;
+use ManaPHP\Context\ContextTrait;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\AbortException;
@@ -25,11 +26,11 @@ use ManaPHP\Version;
  * @property-read \ManaPHP\Http\RouterInterface              $router
  * @property-read \ManaPHP\Data\RedisCacheInterface          $redisCache
  * @property-read \ManaPHP\Data\Db\PreparedEmulatorInterface $preparedEmulator
- * @property-read \ManaPHP\Debugging\DebuggerContext         $context
  */
 class Debugger extends Component implements DebuggerInterface
 {
     use EventTrait;
+    use ContextTrait;
 
     protected int $ttl;
     protected string $prefix;
@@ -100,7 +101,8 @@ class Debugger extends Component implements DebuggerInterface
 
     public function onRequestBegin(): void
     {
-        $context = $this->context;
+        /** @var DebuggerContext $context */
+        $context = $this->getContext();
 
         if (($debugger = $this->request->get('__debugger', ''))
             && preg_match('#^([\w/]+)\.(html|json|txt|raw)$#', $debugger, $match)
@@ -139,7 +141,8 @@ class Debugger extends Component implements DebuggerInterface
 
     public function onRequestEnd(): void
     {
-        $context = $this->context;
+        /** @var DebuggerContext $context */
+        $context = $this->getContext();
 
         if ($context->enabled) {
             $this->writeData($context->key, $this->getData());
@@ -174,12 +177,16 @@ class Debugger extends Component implements DebuggerInterface
             $event['data'] = '???';
         }
 
-        $this->context->events[] = $event;
+        /** @var DebuggerContext $context */
+        $context = $this->getContext();
+
+        $context->events[] = $event;
     }
 
     public function onLoggerLog(EventArgs $eventArgs): void
     {
-        $context = $this->context;
+        /** @var DebuggerContext $context */
+        $context = $this->getContext();
 
         /** @var \ManaPHP\Logging\Logger\Log $log */
         $log = $eventArgs->data['log'];
@@ -196,7 +203,8 @@ class Debugger extends Component implements DebuggerInterface
 
     public function onDb(EventArgs $eventArgs): void
     {
-        $context = $this->context;
+        /** @var DebuggerContext $context */
+        $context = $this->getContext();
 
         $event = $eventArgs->event;
         /** @var \ManaPHP\Data\DbInterface $db */
@@ -247,7 +255,8 @@ class Debugger extends Component implements DebuggerInterface
 
     public function onRendererRendering(EventArgs $eventArgs): void
     {
-        $context = $this->context;
+        /** @var DebuggerContext $context */
+        $context = $this->getContext();
 
         $vars = $eventArgs->data['vars'];
         foreach ((array)$vars as $k => $v) {
@@ -263,7 +272,8 @@ class Debugger extends Component implements DebuggerInterface
 
     public function onMongodb(EventArgs $eventArgs): void
     {
-        $context = $this->context;
+        /** @var DebuggerContext $context */
+        $context = $this->getContext();
 
         $event = $eventArgs->event;
         $data = $eventArgs->data;
@@ -304,7 +314,8 @@ class Debugger extends Component implements DebuggerInterface
 
     protected function getBasic(): array
     {
-        $context = $this->context;
+        /** @var DebuggerContext $context */
+        $context = $this->getContext();
 
         $loaded_extensions = get_loaded_extensions();
         sort($loaded_extensions, SORT_STRING | SORT_FLAG_CASE);
@@ -333,7 +344,8 @@ class Debugger extends Component implements DebuggerInterface
 
     protected function getData(): array
     {
-        $context = $this->context;
+        /** @var DebuggerContext $context */
+        $context = $this->getContext();
 
         $data = [];
         $data['basic'] = $this->getBasic();

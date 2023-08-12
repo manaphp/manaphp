@@ -21,7 +21,6 @@ use ReflectionClass;
  * @property-read \ManaPHP\Http\RequestInterface       $request
  * @property-read \ManaPHP\Data\Model\ThoseInterface   $those
  * @property-read \ManaPHP\Html\PurifierInterface      $htmlPurifier
- * @property-read \ManaPHP\Validating\ValidatorContext $context
  * @property-read \ManaPHP\Data\Model\ManagerInterface $modelManager
  */
 class Validator extends Component implements ValidatorInterface

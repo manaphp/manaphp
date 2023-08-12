@@ -4,12 +4,12 @@ declare(strict_types=1);
 namespace ManaPHP\Mvc\View;
 
 use ManaPHP\Component;
+use ManaPHP\Context\ContextTrait;
 
-/**
- * @property-read \ManaPHP\Mvc\View\FlashContext $context
- */
 class Flash extends Component implements FlashInterface
 {
+    use ContextTrait;
+
     protected array $css;
 
     public function __construct(array $css = [])
@@ -45,7 +45,8 @@ class Flash extends Component implements FlashInterface
 
     public function output(bool $remove = true): void
     {
-        $context = $this->context;
+        /** @var FlashContext $context */
+        $context = $this->getContext();
 
         foreach ($context->messages as $message) {
             echo $message;
@@ -58,7 +59,8 @@ class Flash extends Component implements FlashInterface
 
     protected function message(string $type, string $message): void
     {
-        $context = $this->context;
+        /** @var FlashContext $context */
+        $context = $this->getContext();
 
         $css = $this->css[$type] ?? '';
 

@@ -5,6 +5,7 @@ namespace ManaPHP\Data;
 
 use JetBrains\PhpStorm\ArrayShape;
 use ManaPHP\Component;
+use ManaPHP\Context\ContextTrait;
 use ManaPHP\Data\Db\ConnectionInterface;
 use ManaPHP\Data\Db\Exception as DbException;
 use ManaPHP\Data\Db\Query;
@@ -21,11 +22,11 @@ use PDOException;
 
 /**
  * @property-read \ManaPHP\Pool\ManagerInterface $poolManager
- * @property-read \ManaPHP\Data\DbContext        $context
  */
 class Db extends Component implements DbInterface
 {
     use EventTrait;
+    use ContextTrait;
 
     public const METADATA_ATTRIBUTES = 0;
     public const METADATA_PRIMARY_KEY = 1;
@@ -143,7 +144,8 @@ class Db extends Component implements DbInterface
                      'insert' => ['inserting', 'inserted']
                  ][$type] ?? null;
 
-        $context = $this->context;
+        /** @var DbContext $context */
+        $context = $this->getContext();
 
         $context->sql = $sql;
         $context->bind = $bind;
@@ -194,7 +196,10 @@ class Db extends Component implements DbInterface
 
     public function affectedRows(): int
     {
-        return $this->context->affected_rows;
+        /** @var DbContext $context */
+        $context = $this->getContext();
+
+        return $context->affected_rows;
     }
 
     public function fetchOne(string $sql, array $bind = [], int $mode = PDO::FETCH_ASSOC, bool $useMaster = false
@@ -204,7 +209,8 @@ class Db extends Component implements DbInterface
 
     public function fetchAll(string $sql, array $bind = [], int $mode = PDO::FETCH_ASSOC, bool $useMaster = false
     ): array {
-        $context = $this->context;
+        /** @var DbContext $context */
+        $context = $this->getContext();
 
         $context->sql = $sql;
         $context->bind = $bind;
@@ -254,7 +260,8 @@ class Db extends Component implements DbInterface
 
     public function insert(string $table, array $record, bool $fetchInsertId = false): mixed
     {
-        $context = $this->context;
+        /** @var DbContext $context */
+        $context = $this->getContext();
 
         $table = $this->completeTable($table);
 
@@ -430,17 +437,24 @@ class Db extends Component implements DbInterface
 
     public function getSQL(): string
     {
-        return $this->context->sql;
+        /** @var DbContext $context */
+        $context = $this->getContext();
+
+        return $context->sql;
     }
 
     public function getBind(): array
     {
-        return $this->context->bind;
+        /** @var DbContext $context */
+        $context = $this->getContext();
+
+        return $context->bind;
     }
 
     public function begin(): void
     {
-        $context = $this->context;
+        /** @var DbContext $context */
+        $context = $this->getContext();
 
         if ($context->transaction_level === 0) {
             $this->fireEvent('db:begin');
@@ -467,14 +481,16 @@ class Db extends Component implements DbInterface
 
     public function isUnderTransaction(): bool
     {
-        $context = $this->context;
+        /** @var DbContext $context */
+        $context = $this->getContext();
 
         return $context->transaction_level !== 0;
     }
 
     public function rollback(): void
     {
-        $context = $this->context;
+        /** @var DbContext $context */
+        $context = $this->getContext();
 
         if ($context->transaction_level > 0) {
             $context->transaction_level--;
@@ -497,7 +513,8 @@ class Db extends Component implements DbInterface
 
     public function commit(): void
     {
-        $context = $this->context;
+        /** @var DbContext $context */
+        $context = $this->getContext();
 
         if ($context->transaction_level === 0) {
             throw new MisuseException('There is no active transaction');
@@ -520,12 +537,16 @@ class Db extends Component implements DbInterface
 
     public function getLastSql(): string
     {
-        return $this->context->sql;
+        /** @var DbContext $context */
+        $context = $this->getContext();
+
+        return $context->sql;
     }
 
     public function getTables(?string $schema = null): array
     {
-        $context = $this->context;
+        /** @var DbContext $context */
+        $context = $this->getContext();
 
         if ($context->connection) {
             $type = null;
@@ -558,7 +579,8 @@ class Db extends Component implements DbInterface
 
     public function buildSql(array $params): string
     {
-        $context = $this->context;
+        /** @var DbContext $context */
+        $context = $this->getContext();
 
         if ($context->connection) {
             $type = null;
@@ -583,7 +605,8 @@ class Db extends Component implements DbInterface
                   self::METADATA_INT_TYPE_ATTRIBUTES => "array"])]
     public function getMetadata(string $table): array
     {
-        $context = $this->context;
+        /** @var DbContext $context */
+        $context = $this->getContext();
 
         if ($context->connection) {
             $type = null;
@@ -611,7 +634,8 @@ class Db extends Component implements DbInterface
 
     public function close(): void
     {
-        $context = $this->context;
+        /** @var DbContext $context */
+        $context = $this->getContext();
 
         if ($context->connection) {
             if ($context->transaction_level !== 0) {
@@ -639,7 +663,8 @@ class Db extends Component implements DbInterface
 
     public function transientCall(object $instance, string $method, array $arguments): mixed
     {
-        $context = $this->context;
+        /** @var DbContext $context */
+        $context = $this->getContext();
 
         if ($context->connection !== null) {
             throw new MisuseException('');

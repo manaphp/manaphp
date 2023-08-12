@@ -9,4 +9,9 @@ trait ContextTrait
 {
     #[Inject]
     protected ContextorInterface $contextor;
+
+    protected function getContext(): object
+    {
+        return $this->contextor->getContext($this);
+    }
 }
