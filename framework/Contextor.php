@@ -10,7 +10,7 @@ use Swoole\Coroutine;
 class Contextor implements ContextorInterface
 {
     protected array $classes = [];
-    protected array $objects = [];
+    protected array $contexts = [];
     protected array $roots = [];
 
     public function findContext(object $object): ?string
@@ -85,11 +85,12 @@ class Contextor implements ContextorInterface
             } else {
                 return $context;
             }
-        } elseif (isset($object->context)) {
-            return $object->context;
         } else {
-            $this->objects[] = $object;
-            return $object->context = $this->createContext($object);
+            $object_id = spl_object_id($object);
+            if (($context = $this->contexts[$object_id] ?? null) === null) {
+                $context = $this->contexts[$object_id] = $this->createContext($object);
+            }
+            return $context;
         }
     }
 
@@ -100,11 +101,6 @@ class Contextor implements ContextorInterface
 
     public function resetContexts(): void
     {
-        if (!MANAPHP_COROUTINE_ENABLED) {
-            foreach ($this->objects as $object) {
-                unset($object->context);
-            }
-            $this->objects = [];
-        }
+        $this->contexts = [];
     }
 }

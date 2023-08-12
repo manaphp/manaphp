@@ -14,14 +14,29 @@ use Psr\Container\ContainerInterface;
  */
 class Component implements JsonSerializable
 {
-    /** @noinspection MagicMethodsValidityInspection */
+    protected array $__dynamicProperties = [];
+
     public function __get(string $name): mixed
     {
         if ($name === 'context') {
             return $this->contextor->getContext($this);
         } else {
-            return Container::inject($this, $name);
+            if (($value = $this->__dynamicProperties[$name] ?? null) === null) {
+                $value = $this->__dynamicProperties[$name] = Container::inject($this, $name);
+            }
+
+            return $value;
         }
+    }
+
+    public function __set(string $name, $value): void
+    {
+        $this->__dynamicProperties[$name] = $value;
+    }
+
+    public function __isset(string $name): bool
+    {
+        return isset($this->__dynamicProperties[$name]);
     }
 
     protected function attachEvent(string $event, callable $handler, int $priority = 0): static
@@ -60,6 +75,10 @@ class Component implements JsonSerializable
         $data = [];
 
         foreach (get_object_vars($this) as $k => $v) {
+            if ($k === '__dynamicProperties') {
+                continue;
+            }
+
             if (is_object($v)) {
                 continue;
             }
