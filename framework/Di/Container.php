@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Di;
 
 use Closure;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Primary;
 use ManaPHP\Exception\MisuseException;
 use Psr\Container\ContainerInterface;
@@ -51,6 +52,27 @@ class Container implements ContainerInterface, FactoryInterface, InvokerInterfac
         return $this;
     }
 
+    protected function processInject(object $object, ReflectionClass $reflectionClass): void
+    {
+        foreach ($reflectionClass->getProperties() as $property) {
+            if ($property->isStatic()) {
+                continue;
+            }
+
+            if ($property->getAttributes(Inject::class) !== []) {
+                $type = $property->getType()->getName();
+                $dependencies = $this->dependencies[$object] ?? null;
+                $id = $dependencies[$property] ?? $dependencies[$type] ?? $type;
+
+                $value = $this->get($id[0] === '#' ? "$type$id" : $id);
+                if (!$property->isPublic()) {
+                    $property->setAccessible(true);
+                }
+                $property->setValue($object, $value);
+            }
+        }
+    }
+
     public function make(string $name, array $parameters = []): mixed
     {
         while (is_string($definition = $this->definitions[$name] ?? null)) {
@@ -90,9 +112,8 @@ class Container implements ContainerInterface, FactoryInterface, InvokerInterfac
             throw new NotFoundException(['`%s` is not exists', $name]);
         }
 
+        $rClass = new ReflectionClass($name);
         if (method_exists($name, '__construct')) {
-            $rClass = new ReflectionClass($name);
-
             $instance = $rClass->newInstanceWithoutConstructor();
 
             if ($parameters !== []) {
@@ -115,6 +136,8 @@ class Container implements ContainerInterface, FactoryInterface, InvokerInterfac
                 }
             }
 
+            $this->processInject($instance, $rClass);
+
             $this->call([$instance, '__construct'], $parameters);
         } else {
             $instance = new $name();
@@ -122,6 +145,8 @@ class Container implements ContainerInterface, FactoryInterface, InvokerInterfac
             if ($parameters !== []) {
                 $this->dependencies[$instance] = $parameters;
             }
+
+            $this->processInject($instance, $rClass);
         }
 
         return $instance;
