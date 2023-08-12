@@ -94,7 +94,7 @@ class Kernel extends Component
 
     public function detectCoroutineCanEnabled(): bool
     {
-        return PHP_SAPI === 'cli' && extension_loaded('swoole') && !extension_loaded('xdebug');
+        return PHP_SAPI === 'cli' && extension_loaded('swoole');
     }
 
     public function start(string $server): void
