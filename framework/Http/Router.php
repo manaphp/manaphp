@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\Router\Route;
@@ -16,6 +17,8 @@ use ManaPHP\Http\Router\RouteInterface;
  */
 class Router extends Component implements RouterInterface
 {
+    use EventTrait;
+
     protected bool $case_sensitive = true;
     protected string $prefix = '';
     protected array $areas = [];

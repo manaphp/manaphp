@@ -5,6 +5,7 @@ namespace ManaPHP\Data\Redis;
 
 use ManaPHP\Component;
 use ManaPHP\Data\Redis\Exception as RedisException;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\RuntimeException;
 use Redis;
@@ -14,6 +15,8 @@ use Redis;
  */
 class Connection extends Component
 {
+    use EventTrait;
+
     protected string $uri;
     protected bool $cluster = false;
     protected string $host;

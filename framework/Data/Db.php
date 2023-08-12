@@ -10,6 +10,7 @@ use ManaPHP\Data\Db\Exception as DbException;
 use ManaPHP\Data\Db\Query;
 use ManaPHP\Data\Db\SqlFragmentable;
 use ManaPHP\Di\FactoryInterface;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NonCloneableException;
@@ -24,6 +25,8 @@ use PDOException;
  */
 class Db extends Component implements DbInterface
 {
+    use EventTrait;
+
     public const METADATA_ATTRIBUTES = 0;
     public const METADATA_PRIMARY_KEY = 1;
     public const METADATA_AUTO_INCREMENT_KEY = 3;

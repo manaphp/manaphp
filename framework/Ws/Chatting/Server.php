@@ -5,6 +5,7 @@ namespace ManaPHP\Ws\Chatting;
 
 use ManaPHP\Component;
 use ManaPHP\Coroutine;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Logging\Logger\LogCategorizable;
 
 /**
@@ -16,6 +17,8 @@ use ManaPHP\Logging\Logger\LogCategorizable;
  */
 class Server extends Component implements ServerInterface, LogCategorizable
 {
+    use EventTrait;
+
     protected string $prefix;
     protected bool $dedicated;
 

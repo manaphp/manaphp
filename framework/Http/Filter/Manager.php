@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Filter;
 
 use ManaPHP\Component;
+use ManaPHP\Event\EventTrait;
 
 /**
  * @property-read \ManaPHP\Http\Filter\FactoryInterface $factory
@@ -11,6 +12,8 @@ use ManaPHP\Component;
  */
 class Manager extends Component implements ManagerInterface
 {
+    use EventTrait;
+
     public function register(): void
     {
         $filters = $this->config->get('filters', []);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Server\Adapter\Native;
 
 use ManaPHP\Component;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MisuseException;
 
 /**
@@ -14,6 +15,8 @@ use ManaPHP\Exception\MisuseException;
  */
 class Sender extends Component implements SenderInterface
 {
+    use EventTrait;
+
     public function send(): void
     {
         if (headers_sent($file, $line)) {

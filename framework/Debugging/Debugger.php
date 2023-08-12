@@ -6,6 +6,7 @@ namespace ManaPHP\Debugging;
 use ArrayObject;
 use ManaPHP\Component;
 use ManaPHP\Event\EventArgs;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
@@ -28,6 +29,8 @@ use ManaPHP\Version;
  */
 class Debugger extends Component implements DebuggerInterface
 {
+    use EventTrait;
+
     protected int $ttl;
     protected string $prefix;
     protected string $template;

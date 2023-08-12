@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Mailing;
 
 use ManaPHP\Component;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Mailing\Mailer\Message;
 
@@ -12,6 +13,8 @@ use ManaPHP\Mailing\Mailer\Message;
  */
 abstract class AbstractMailer extends Component implements MailerInterface
 {
+    use EventTrait;
+
     protected ?string $log = null;
     protected ?string $from = null;
     protected ?string $to = null;

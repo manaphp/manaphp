@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\LocalFS;
@@ -18,6 +19,8 @@ use ManaPHP\Helper\LocalFS;
  */
 class View extends Component implements ViewInterface
 {
+    use EventTrait;
+
     protected int $max_age;
     protected bool $autofix_url;
 

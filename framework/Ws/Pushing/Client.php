@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Ws\Pushing;
 
 use ManaPHP\Component;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MissingFieldException;
 
 /**
@@ -11,6 +12,8 @@ use ManaPHP\Exception\MissingFieldException;
  */
 class Client extends Component implements ClientInterface
 {
+    use EventTrait;
+
     protected string $endpoint;
     protected string $prefix;
 

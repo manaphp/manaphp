@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Http\Client\BadGatewayException;
 use ManaPHP\Http\Client\BadRequestException;
@@ -29,6 +30,8 @@ use ManaPHP\Http\Client\UnauthorizedException;
  */
 class Client extends Component implements ClientInterface
 {
+    use EventTrait;
+
     public const USER_AGENT_IE = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
     protected string|EngineInterface $engine;
     protected ?string $proxy;

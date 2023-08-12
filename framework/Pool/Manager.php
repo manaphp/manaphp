@@ -5,11 +5,14 @@ namespace ManaPHP\Pool;
 
 use ManaPHP\Component;
 use ManaPHP\Coroutine\Channel;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MisuseException;
 use WeakMap;
 
 class Manager extends Component implements ManagerInterface
 {
+    use EventTrait;
+
     protected WeakMap $pool;
 
     public function __construct()

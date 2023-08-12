@@ -4,12 +4,15 @@ declare(strict_types=1);
 namespace ManaPHP\Ws\Chatting;
 
 use ManaPHP\Component;
+use ManaPHP\Event\EventTrait;
 
 /**
  * @property-read \ManaPHP\Messaging\PubSubInterface $pubSub
  */
 class Client extends Component implements ClientInterface
 {
+    use EventTrait;
+
     protected string $prefix;
 
     public function __construct(string $prefix = 'ws_chatting:')

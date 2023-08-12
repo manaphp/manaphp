@@ -5,6 +5,7 @@ namespace ManaPHP\Rendering;
 
 use ManaPHP\Component;
 use ManaPHP\Coroutine\Mutex;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PreconditionException;
@@ -16,6 +17,8 @@ use ManaPHP\Exception\PreconditionException;
  */
 class Renderer extends Component implements RendererInterface
 {
+    use EventTrait;
+
     /**
      * @var \ManaPHP\Rendering\EngineInterface[]
      */

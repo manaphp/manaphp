@@ -7,6 +7,7 @@ use ManaPHP\Component;
 use ManaPHP\Data\Mongodb\Exception as MongodbException;
 use ManaPHP\Data\Mongodb\Query;
 use ManaPHP\Di\FactoryInterface;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\NonCloneableException;
 use MongoDB\Driver\Exception\RuntimeException;
 
@@ -15,6 +16,8 @@ use MongoDB\Driver\Exception\RuntimeException;
  */
 class Mongodb extends Component implements MongodbInterface
 {
+    use EventTrait;
+
     protected FactoryInterface $factory;
     protected string $uri;
     protected string $prefix;

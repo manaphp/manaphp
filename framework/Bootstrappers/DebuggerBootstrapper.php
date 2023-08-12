@@ -5,6 +5,7 @@ namespace ManaPHP\Bootstrappers;
 
 use ManaPHP\BootstrapperInterface;
 use ManaPHP\Component;
+use ManaPHP\Event\EventTrait;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -13,6 +14,8 @@ use Psr\Container\ContainerInterface;
  */
 class DebuggerBootstrapper extends Component implements BootstrapperInterface
 {
+    use EventTrait;
+
     protected bool $enabled;
 
     public function __construct(?bool $enabled = null)

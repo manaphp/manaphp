@@ -5,6 +5,7 @@ namespace ManaPHP\Amqp;
 
 use ManaPHP\Component;
 use ManaPHP\Di\FactoryInterface;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MisuseException;
 
 /**
@@ -12,6 +13,8 @@ use ManaPHP\Exception\MisuseException;
  */
 class Client extends Component implements ClientInterface
 {
+    use EventTrait;
+
     protected string $uri;
     protected int $pool_size = 4;
     protected int $timeout = 3;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Cli;
 
 use ManaPHP\Component;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Helper\Str;
 
 /**
@@ -15,6 +16,8 @@ use ManaPHP\Helper\Str;
  */
 class Handler extends Component implements HandlerInterface
 {
+    use EventTrait;
+
     protected array $args;
     protected string $command;
     protected ?string $action = null;

@@ -6,6 +6,7 @@ namespace ManaPHP\Data;
 use ManaPHP\Component;
 use ManaPHP\Data\Redis\Connection;
 use ManaPHP\Di\FactoryInterface;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MisuseException;
 
 /**
@@ -13,6 +14,8 @@ use ManaPHP\Exception\MisuseException;
  */
 class Redis extends Component implements RedisInterface, RedisDbInterface, RedisCacheInterface, RedisBrokerInterface
 {
+    use EventTrait;
+
     protected string $uri;
     protected float $timeout = 1.0;
     protected int $pool_size = 4;

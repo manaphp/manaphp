@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Logging\Logger\LogCategorizable;
 
 /**
@@ -17,6 +18,8 @@ use ManaPHP\Logging\Logger\LogCategorizable;
  */
 class Controller extends Component implements LogCategorizable
 {
+    use EventTrait;
+
     public function categorizeLog(): string
     {
         return basename(str_replace('\\', '.', static::class), 'Controller');

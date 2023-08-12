@@ -4,9 +4,12 @@ declare(strict_types=1);
 namespace ManaPHP\Messaging;
 
 use ManaPHP\Component;
+use ManaPHP\Event\EventTrait;
 
 abstract class AbstractQueue extends Component implements QueueInterface
 {
+    use EventTrait;
+
     abstract public function do_push(string $topic, string $body, int $priority = self::PRIORITY_NORMAL): void;
 
     public function push(string $topic, string $body, int $priority = self::PRIORITY_NORMAL): void

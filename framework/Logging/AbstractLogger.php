@@ -6,6 +6,7 @@ namespace ManaPHP\Logging;
 use ManaPHP\Component;
 use ManaPHP\Contextor\ContextCreatorInterface;
 use ManaPHP\Coroutine;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Logging\Logger\Log;
 use ManaPHP\Logging\Logger\LogCategorizable;
 use Throwable;
@@ -17,6 +18,8 @@ use Throwable;
  */
 abstract class AbstractLogger extends Component implements LoggerInterface, ContextCreatorInterface
 {
+    use EventTrait;
+
     protected string $level;
     protected string $hostname;
 

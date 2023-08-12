@@ -4,13 +4,11 @@ declare(strict_types=1);
 namespace ManaPHP;
 
 use JsonSerializable;
-use ManaPHP\Event\EventArgs;
 use ManaPHP\Helper\Container;
 use Psr\Container\ContainerInterface;
 
 /**
- * @property-read \ManaPHP\ContextorInterface     $contextor
- * @property-read \ManaPHP\Event\ManagerInterface $eventManager
+ * @property-read \ManaPHP\ContextorInterface $contextor
  */
 class Component implements JsonSerializable
 {
@@ -37,18 +35,6 @@ class Component implements JsonSerializable
     public function __isset(string $name): bool
     {
         return isset($this->__dynamicProperties[$name]);
-    }
-
-    protected function attachEvent(string $event, callable $handler, int $priority = 0): static
-    {
-        $this->eventManager->attachEvent($event, $handler, $priority);
-
-        return $this;
-    }
-
-    protected function fireEvent(string $event, mixed $data = null): EventArgs
-    {
-        return $this->eventManager->fireEvent($event, $data, $this);
     }
 
     public function __debugInfo(): array

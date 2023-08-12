@@ -6,6 +6,7 @@ namespace ManaPHP\Data\Db;
 use JsonSerializable;
 use ManaPHP\Component;
 use ManaPHP\Data\Db\Exception as DbException;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\NotSupportedException;
 use PDO;
 use PDOException;
@@ -16,6 +17,8 @@ use PDOStatement;
  */
 abstract class AbstractConnection extends Component implements ConnectionInterface
 {
+    use EventTrait;
+
     protected string $uri;
     protected string $dsn;
     protected string $username;

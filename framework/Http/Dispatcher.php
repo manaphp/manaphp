@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\Dispatcher\NotFoundActionException;
 use ManaPHP\Http\Dispatcher\NotFoundControllerException;
@@ -15,6 +16,8 @@ use ManaPHP\Http\Dispatcher\NotFoundControllerException;
  */
 class Dispatcher extends Component implements DispatcherInterface
 {
+    use EventTrait;
+
     public function getArea(): ?string
     {
         return $this->context->area;

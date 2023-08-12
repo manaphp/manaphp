@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Ws;
 
 use ManaPHP\Component;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\Response;
 use ManaPHP\Http\Router\NotFoundRouteException;
@@ -20,6 +21,8 @@ use Throwable;
  */
 class Handler extends Component implements HandlerInterface
 {
+    use EventTrait;
+
     /**
      * @noinspection PhpRedundantCatchClauseInspection
      * @noinspection PhpUnusedLocalVariableInspection

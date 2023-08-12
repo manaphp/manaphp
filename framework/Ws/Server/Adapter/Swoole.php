@@ -6,6 +6,7 @@ namespace ManaPHP\Ws\Server\Adapter;
 use ArrayObject;
 use ManaPHP\Component;
 use ManaPHP\Coroutine\Context\Stickyable;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Ws\ServerInterface;
 use Swoole\Coroutine;
@@ -24,6 +25,8 @@ use Throwable;
  */
 class Swoole extends Component implements ServerInterface
 {
+    use EventTrait;
+
     protected string $host = '0.0.0.0';
     protected int $port = 9501;
     protected array $settings = [];

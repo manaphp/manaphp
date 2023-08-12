@@ -5,6 +5,7 @@ namespace ManaPHP\Http;
 
 use ArrayAccess;
 use ManaPHP\Component;
+use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Str;
 
@@ -17,6 +18,8 @@ use ManaPHP\Helper\Str;
  */
 abstract class AbstractSession extends Component implements SessionInterface, ArrayAccess
 {
+    use EventTrait;
+
     protected int $ttl;
     protected int $lazy;
     protected string $name;

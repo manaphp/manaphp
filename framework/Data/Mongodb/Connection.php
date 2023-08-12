@@ -5,6 +5,7 @@ namespace ManaPHP\Data\Mongodb;
 
 use ManaPHP\Component;
 use ManaPHP\Data\Mongodb\Exception as MongodbException;
+use ManaPHP\Event\EventTrait;
 use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Command;
 use MongoDB\Driver\Manager;
@@ -15,6 +16,8 @@ use MongoDB\Driver\WriteResult;
 
 class Connection extends Component implements ConnectionInterface
 {
+    use EventTrait;
+
     protected string $uri;
     protected ?Manager $manager = null;
     protected ?WriteConcern $writeConcern = null;

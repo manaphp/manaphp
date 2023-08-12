@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Event\EventTrait;
 
 /**
  * @property-read \ManaPHP\Http\RequestInterface        $request
@@ -15,6 +16,8 @@ use ManaPHP\Component;
  */
 abstract class AbstractServer extends Component implements ServerInterface
 {
+    use EventTrait;
+
     protected string $host;
     protected int $port;
 
