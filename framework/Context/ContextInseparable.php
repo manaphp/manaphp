@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Contextor;
+namespace ManaPHP\Context;
 
 interface ContextInseparable
 {

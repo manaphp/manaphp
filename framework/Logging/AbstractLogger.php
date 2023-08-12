@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Logging;
 
 use ManaPHP\Component;
-use ManaPHP\Contextor\ContextCreatorInterface;
+use ManaPHP\Context\ContextCreatorInterface;
 use ManaPHP\Coroutine;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Logging\Logger\Log;

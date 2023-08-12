@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Identifying;
 
 use ManaPHP\Component;
-use ManaPHP\Contextor\ContextCreatorInterface;
+use ManaPHP\Context\ContextCreatorInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnauthorizedException;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\I18n;
 
 use ManaPHP\Component;
-use ManaPHP\Contextor\ContextCreatorInterface;
+use ManaPHP\Context\ContextCreatorInterface;
 
 /**
  * @property-read \ManaPHP\I18n\LocaleContext $context

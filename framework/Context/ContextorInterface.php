@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP;
+namespace ManaPHP\Context;
 
 interface ContextorInterface
 {

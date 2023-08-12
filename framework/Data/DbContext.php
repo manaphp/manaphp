@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
-use ManaPHP\Contextor\ContextInseparable;
+use ManaPHP\Context\ContextInseparable;
 use ManaPHP\Data\Db\ConnectionInterface;
 use ManaPHP\Exception\MisuseException;
 

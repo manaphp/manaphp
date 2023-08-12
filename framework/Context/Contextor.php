@@ -1,10 +1,8 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP;
+namespace ManaPHP\Context;
 
-use ManaPHP\Contextor\ContextCreatorInterface;
-use ManaPHP\Contextor\ContextInseparable;
 use Swoole\Coroutine;
 
 class Contextor implements ContextorInterface

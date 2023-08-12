@@ -4,14 +4,14 @@ declare(strict_types=1);
 namespace ManaPHP;
 
 use JsonSerializable;
+use ManaPHP\Context\ContextTrait;
 use ManaPHP\Helper\Container;
 use Psr\Container\ContainerInterface;
 
-/**
- * @property-read \ManaPHP\ContextorInterface $contextor
- */
 class Component implements JsonSerializable
 {
+    use ContextTrait;
+
     protected array $__dynamicProperties = [];
 
     public function __get(string $name): mixed
