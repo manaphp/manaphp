@@ -4,15 +4,17 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Db\Connection\Adapter;
 
 use JetBrains\PhpStorm\ArrayShape;
+use ManaPHP\AliasInterface;
 use ManaPHP\Data\Db;
 use ManaPHP\Data\Db\AbstractConnection;
+use ManaPHP\Di\Attribute\Inject;
 use PDO;
 
-/**
- * @property-read \ManaPHP\AliasInterface $alias
- */
 class Sqlite extends AbstractConnection
 {
+    #[Inject]
+    protected AliasInterface $alias;
+
     public function __construct(string $file)
     {
         $this->uri = $file;

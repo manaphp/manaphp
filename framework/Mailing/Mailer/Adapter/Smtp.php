@@ -3,8 +3,11 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mailing\Mailer\Adapter;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Context\ContextTrait;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Logging\LoggerInterface;
 use ManaPHP\Mailing\AbstractMailer;
 use ManaPHP\Mailing\Mailer\Adapter\Exception\AuthenticationException;
 use ManaPHP\Mailing\Mailer\Adapter\Exception\BadResponseException;
@@ -12,13 +15,14 @@ use ManaPHP\Mailing\Mailer\Adapter\Exception\ConnectionException;
 use ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException;
 use ManaPHP\Mailing\Mailer\Message;
 
-/**
- * @property-read \ManaPHP\AliasInterface          $alias
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
- */
 class Smtp extends AbstractMailer
 {
     use ContextTrait;
+
+    #[Inject]
+    protected AliasInterface $alias;
+    #[Inject]
+    protected LoggerInterface $logger;
 
     protected string $uri;
     protected string $scheme;

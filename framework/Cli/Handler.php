@@ -3,20 +3,28 @@ declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
+use ManaPHP\Cli\Command\ArgumentsResolverInterface;
+use ManaPHP\Cli\Command\FactoryInterface;
+use ManaPHP\Cli\Command\ManagerInterface;
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Helper\Str;
 
-/**
- * @property-read \ManaPHP\Cli\ConsoleInterface                   $console
- * @property-read \ManaPHP\Cli\RequestInterface                   $request
- * @property-read \ManaPHP\Cli\Command\ManagerInterface           $commandManager
- * @property-read \ManaPHP\Cli\Command\FactoryInterface           $commandFactory
- * @property-read \ManaPHP\Cli\Command\ArgumentsResolverInterface $argumentsResolver
- */
 class Handler extends Component implements HandlerInterface
 {
     use EventTrait;
+
+    #[Inject]
+    protected ConsoleInterface $console;
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ManagerInterface $commandManager;
+    #[Inject]
+    protected FactoryInterface $commandFactory;
+    #[Inject]
+    protected ArgumentsResolverInterface $argumentsResolver;
 
     protected array $args;
     protected string $command;

@@ -3,15 +3,16 @@ declare(strict_types=1);
 
 namespace ManaPHP;
 
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 
-/**
- * @property-read \ManaPHP\AliasInterface $alias
- */
 class Env extends Component implements EnvInterface
 {
+    #[Inject]
+    protected AliasInterface $alias;
+
     protected string $file;
 
     public function __construct(string $file = '@config/.env')

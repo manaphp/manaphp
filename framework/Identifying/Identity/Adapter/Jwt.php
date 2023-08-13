@@ -3,15 +3,21 @@ declare(strict_types=1);
 
 namespace ManaPHP\Identifying\Identity\Adapter;
 
+use ManaPHP\ConfigInterface;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\Identity;
+use ManaPHP\Token\ScopedJwtInterface;
 
-/**
- * @property-read \ManaPHP\ConfigInterface          $config
- * @property-read \ManaPHP\Http\RequestInterface    $request
- * @property-read \ManaPHP\Token\ScopedJwtInterface $scopedJwt
- */
 class Jwt extends Identity
 {
+    #[Inject]
+    protected ConfigInterface $config;
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ScopedJwtInterface $scopedJwt;
+
     protected string $scope;
     protected int $ttl;
 

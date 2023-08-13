@@ -3,22 +3,25 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\Router\Route;
 use ManaPHP\Http\Router\RouteInterface;
 
-/**
- * @property-read \ManaPHP\AliasInterface        $alias
- * @property-read \ManaPHP\Http\RequestInterface $request
- */
 class Router extends Component implements RouterInterface
 {
     use EventTrait;
     use ContextTrait;
+
+    #[Inject]
+    protected AliasInterface $alias;
+    #[Inject]
+    protected RequestInterface $request;
 
     protected bool $case_sensitive = true;
     protected string $prefix = '';

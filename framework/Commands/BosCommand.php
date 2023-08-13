@@ -3,17 +3,20 @@ declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
+use ManaPHP\Bos\ClientInterface;
 use ManaPHP\Cli\Command;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Http\DownloaderInterface;
 
-/**
- * @property-read \ManaPHP\Bos\ClientInterface      $bosClient
- * @property-read \ManaPHP\Http\DownloaderInterface $downloader
- *
- */
 class BosCommand extends Command
 {
+    #[Inject]
+    protected ClientInterface $bosClient;
+    #[Inject]
+    protected DownloaderInterface $downloader;
+
     /**
      * list buckets
      *

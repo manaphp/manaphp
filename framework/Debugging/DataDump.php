@@ -5,15 +5,17 @@ namespace ManaPHP\Debugging;
 
 use ArrayObject;
 use JsonSerializable;
+use ManaPHP\AliasInterface;
 use ManaPHP\Component;
 use ManaPHP\Coroutine;
+use ManaPHP\Di\Attribute\Inject;
 use Throwable;
 
-/**
- * @property-read \ManaPHP\AliasInterface $alias
- */
 class DataDump extends Component implements DataDumpInterface
 {
+    #[Inject]
+    protected AliasInterface $alias;
+
     protected string $format;
 
     public function __construct(string $format = '[:time][:location] :message')

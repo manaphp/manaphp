@@ -4,13 +4,17 @@ declare(strict_types=1);
 namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
+use ManaPHP\ConfigInterface;
+use ManaPHP\Data\RedisCacheInterface;
+use ManaPHP\Di\Attribute\Inject;
 
-/**
- * @property-read \ManaPHP\ConfigInterface          $config
- * @property-read \ManaPHP\Data\RedisCacheInterface $redisCache
- */
 class DebuggerCommand extends Command
 {
+    #[Inject]
+    protected ConfigInterface $config;
+    #[Inject]
+    protected RedisCacheInterface $redisCache;
+
     /**
      * monitor generated urls
      *

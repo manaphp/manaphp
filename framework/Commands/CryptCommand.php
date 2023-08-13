@@ -4,12 +4,14 @@ declare(strict_types=1);
 namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Security\CryptInterface;
 
-/**
- * @property-read \ManaPHP\Security\CryptInterface $crypt
- */
 class CryptCommand extends Command
 {
+    #[Inject]
+    protected CryptInterface $crypt;
+
     /**
      * get the derived key
      *

@@ -3,13 +3,15 @@ declare(strict_types=1);
 
 namespace ManaPHP;
 
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\Listener;
+use ManaPHP\Logging\LoggerInterface;
 
-/**
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
- */
 abstract class Tracer extends Listener
 {
+    #[Inject]
+    protected LoggerInterface $logger;
+
     protected bool $verbose;
 
     public function __construct(bool $verbose = false)

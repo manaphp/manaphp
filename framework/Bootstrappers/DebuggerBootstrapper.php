@@ -5,16 +5,20 @@ namespace ManaPHP\Bootstrappers;
 
 use ManaPHP\BootstrapperInterface;
 use ManaPHP\Component;
+use ManaPHP\ConfigInterface;
+use ManaPHP\Debugging\DebuggerInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use Psr\Container\ContainerInterface;
 
-/**
- * @property-read \ManaPHP\ConfigInterface             $config
- * @property-read \ManaPHP\Debugging\DebuggerInterface $debugger
- */
 class DebuggerBootstrapper extends Component implements BootstrapperInterface
 {
     use EventTrait;
+
+    #[Inject]
+    protected ConfigInterface $config;
+    #[Inject]
+    protected DebuggerInterface $debugger;
 
     protected bool $enabled;
 

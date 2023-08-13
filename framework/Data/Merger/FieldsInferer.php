@@ -4,12 +4,14 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Merger;
 
 use ManaPHP\Component;
+use ManaPHP\Data\Model\ManagerInterface;
+use ManaPHP\Di\Attribute\Inject;
 
-/**
- * @property-read \ManaPHP\Data\Model\ManagerInterface $modelManager
- */
 class FieldsInferer extends Component implements FieldsInfererInterface
 {
+    #[Inject]
+    protected ManagerInterface $modelManager;
+
     protected array $fields = [];
 
     public function fields(AbstractModel $model): array

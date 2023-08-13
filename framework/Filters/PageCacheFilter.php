@@ -4,23 +4,31 @@ declare(strict_types=1);
 namespace ManaPHP\Filters;
 
 use Closure;
+use ManaPHP\ConfigInterface;
 use ManaPHP\Context\ContextTrait;
+use ManaPHP\Data\RedisCacheInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Http\Filter;
 use ManaPHP\Http\Filter\ReadyFilterInterface;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Mvc\Controller as MvcController;
 
-/**
- * @property-read \ManaPHP\ConfigInterface          $config
- * @property-read \ManaPHP\Http\RequestInterface    $request
- * @property-read \ManaPHP\Http\ResponseInterface   $response
- * @property-read \ManaPHP\Data\RedisCacheInterface $redisCache
- */
 class PageCacheFilter extends Filter implements ReadyFilterInterface
 {
     use ContextTrait;
+
+    #[Inject]
+    protected ConfigInterface $config;
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ResponseInterface $response;
+    #[Inject]
+    protected RedisCacheInterface $redisCache;
 
     protected string $prefix;
 

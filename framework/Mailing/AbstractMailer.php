@@ -4,16 +4,18 @@ declare(strict_types=1);
 namespace ManaPHP\Mailing;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\FactoryInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Mailing\Mailer\Message;
 
-/**
- * @property-read \ManaPHP\Di\FactoryInterface $factory
- */
 abstract class AbstractMailer extends Component implements MailerInterface
 {
     use EventTrait;
+
+    #[Inject]
+    protected FactoryInterface $factory;
 
     protected ?string $log = null;
     protected ?string $from = null;

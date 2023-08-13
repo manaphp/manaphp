@@ -5,6 +5,8 @@ namespace ManaPHP\Imaging\Image\Adapter;
 
 use ImagickDraw;
 use ImagickPixel;
+use ManaPHP\AliasInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Exception\InvalidFormatException;
@@ -13,11 +15,11 @@ use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Imaging\AbstractImage;
 
-/**
- * @property-read \ManaPHP\AliasInterface $alias
- */
 class Imagick extends AbstractImage
 {
+    #[Inject]
+    protected AliasInterface $alias;
+
     protected string $file;
     protected \Imagick $image;
     protected int $width;

@@ -4,13 +4,15 @@ declare(strict_types=1);
 namespace ManaPHP\Coroutine;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\FactoryInterface;
 use Swoole\Coroutine;
 
-/**
- * @property-read \ManaPHP\Di\FactoryInterface $factory
- */
 class Manager extends Component implements ManagerInterface
 {
+    #[Inject]
+    protected FactoryInterface $factory;
+
     protected array $option;
 
     public function __construct(array $options = [])

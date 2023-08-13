@@ -3,13 +3,14 @@ declare(strict_types=1);
 
 namespace ManaPHP;
 
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\InvalidKeyException;
 
-/**
- * @property-read \ManaPHP\AliasInterface $alias
- */
 class Config extends Component implements ConfigInterface
 {
+    #[Inject]
+    protected AliasInterface $alias;
+
     protected array $config = [];
 
     public function __construct(array $config = [])

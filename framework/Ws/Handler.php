@@ -4,24 +4,35 @@ declare(strict_types=1);
 namespace ManaPHP\Ws;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\AbortException;
+use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Response;
+use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Router\NotFoundRouteException;
+use ManaPHP\Http\RouterInterface;
+use ManaPHP\Identifying\IdentityInterface;
 use Throwable;
 
-/**
- * @property-read \ManaPHP\Ws\ServerInterface            $wsServer
- * @property-read \ManaPHP\Identifying\IdentityInterface $identity
- * @property-read \ManaPHP\Http\RouterInterface          $router
- * @property-read \ManaPHP\Http\RequestInterface         $request
- * @property-read \ManaPHP\Http\ResponseInterface        $response
- * @property-read \ManaPHP\Ws\DispatcherInterface        $dispatcher
- * @property-read \ManaPHP\Ws\ErrorHandlerInterface      $errorHandler
- */
 class Handler extends Component implements HandlerInterface
 {
     use EventTrait;
+
+    #[Inject]
+    protected ServerInterface $wsServer;
+    #[Inject]
+    protected IdentityInterface $identity;
+    #[Inject]
+    protected RouterInterface $router;
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ResponseInterface $response;
+    #[Inject]
+    protected DispatcherInterface $dispatcher;
+    #[Inject]
+    protected ErrorHandlerInterface $errorHandler;
 
     /**
      * @noinspection PhpRedundantCatchClauseInspection

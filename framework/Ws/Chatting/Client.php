@@ -4,14 +4,16 @@ declare(strict_types=1);
 namespace ManaPHP\Ws\Chatting;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
+use ManaPHP\Messaging\PubSubInterface;
 
-/**
- * @property-read \ManaPHP\Messaging\PubSubInterface $pubSub
- */
 class Client extends Component implements ClientInterface
 {
     use EventTrait;
+
+    #[Inject]
+    protected PubSubInterface $pubSub;
 
     protected string $prefix;
 

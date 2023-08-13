@@ -4,15 +4,17 @@ declare(strict_types=1);
 namespace ManaPHP\Commands;
 
 use FilesystemIterator;
+use ManaPHP\AliasInterface;
 use ManaPHP\Cli\Command;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\LocalFS;
 use Phar;
 
-/**
- * @property-read \ManaPHP\AliasInterface $alias
- */
 class PharCommand extends Command
 {
+    #[Inject]
+    protected AliasInterface $alias;
+
     /**
      * create manacli.phar file
      */

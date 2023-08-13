@@ -6,15 +6,19 @@ namespace ManaPHP\Html\Dom;
 use DOMDocument;
 use DOMElement;
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\FactoryInterface;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Html\Dom\Document\Exception as DocumentException;
+use ManaPHP\Http\ClientInterface;
 
-/**
- * @property-read \ManaPHP\Di\FactoryInterface  $factory
- * @property-read \ManaPHP\Http\ClientInterface $httpClient
- */
 class Document extends Component
 {
+    #[Inject]
+    protected FactoryInterface $factory;
+    #[Inject]
+    protected ClientInterface $httpClient;
+
     protected string $url;
     protected string $base;
     protected string $str;

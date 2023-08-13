@@ -4,13 +4,17 @@ declare(strict_types=1);
 namespace ManaPHP\Token;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Encoding\Base64UrlInterface;
+use ManaPHP\Security\CryptInterface;
 
-/**
- * @property-read \ManaPHP\Security\CryptInterface     $crypt
- * @property-read \ManaPHP\Encoding\Base64UrlInterface $base64Url
- */
 class Jwt extends Component implements JwtInterface
 {
+    #[Inject]
+    protected CryptInterface $crypt;
+    #[Inject]
+    protected Base64UrlInterface $base64Url;
+
     protected string $alg;
     protected string $key;
 

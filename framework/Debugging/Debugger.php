@@ -5,32 +5,51 @@ namespace ManaPHP\Debugging;
 
 use ArrayObject;
 use ManaPHP\Component;
+use ManaPHP\ConfigInterface;
 use ManaPHP\Context\ContextTrait;
+use ManaPHP\Data\Db\PreparedEmulatorInterface;
+use ManaPHP\Data\RedisCacheInterface;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\InspectorInterface;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
+use ManaPHP\Http\DispatcherInterface;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\Http\ResponseInterface;
+use ManaPHP\Http\RouterInterface;
 use ManaPHP\Logging\Level;
+use ManaPHP\Logging\LoggerInterface;
 use ManaPHP\Tracer;
 use ManaPHP\Version;
+use Psr\Container\ContainerInterface;
 
-/**
- * @property-read \ManaPHP\Di\InspectorInterface             $inspector
- * @property-read \ManaPHP\ConfigInterface                   $config
- * @property-read \ManaPHP\Logging\LoggerInterface           $logger
- * @property-read \ManaPHP\Http\RequestInterface             $request
- * @property-read \ManaPHP\Http\ResponseInterface            $response
- * @property-read \ManaPHP\Http\DispatcherInterface          $dispatcher
- * @property-read \ManaPHP\Http\RouterInterface              $router
- * @property-read \ManaPHP\Data\RedisCacheInterface          $redisCache
- * @property-read \ManaPHP\Data\Db\PreparedEmulatorInterface $preparedEmulator
- */
 class Debugger extends Component implements DebuggerInterface
 {
     use EventTrait;
     use ContextTrait;
+
+    #[Inject]
+    protected InspectorInterface $inspector;
+    #[Inject]
+    protected ConfigInterface $config;
+    #[Inject]
+    protected LoggerInterface $logger;
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ResponseInterface $response;
+    #[Inject]
+    protected DispatcherInterface $dispatcher;
+    #[Inject]
+    protected RouterInterface $router;
+    #[Inject]
+    protected ContainerInterface $container;
+    #[Inject]
+    protected PreparedEmulatorInterface $preparedEmulator;
 
     protected int $ttl;
     protected string $prefix;
@@ -68,8 +87,10 @@ class Debugger extends Component implements DebuggerInterface
 
     protected function readData(string $key): ?string
     {
+        $redisCache = $this->container->get(RedisCacheInterface::class);
+
         if ($this->ttl) {
-            if (($content = $this->redisCache->get($this->prefix . $key)) === false) {
+            if (($content = $redisCache->get($this->prefix . $key)) === false) {
                 return null;
             }
         } else {
@@ -82,9 +103,11 @@ class Debugger extends Component implements DebuggerInterface
 
     protected function writeData(string $key, array $data): void
     {
+        $redisCache = $this->container->get(RedisCacheInterface::class);
+
         $content = gzencode(json_stringify($data, JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_PRETTY_PRINT));
         if ($this->ttl) {
-            $this->redisCache->set($this->prefix . $key, $content, $this->ttl);
+            $redisCache->set($this->prefix . $key, $content, $this->ttl);
 
             if ($this->broadcast) {
                 $key = implode(
@@ -92,7 +115,7 @@ class Debugger extends Component implements DebuggerInterface
                     ['__debugger', $this->config->get('id'), $this->request->getClientIp(),
                      $this->dispatcher->getPath()]
                 );
-                $this->redisCache->publish($key, $this->response->getHeader('X-Debugger-Link'));
+                $redisCache->publish($key, $this->response->getHeader('X-Debugger-Link'));
             }
         } else {
             LocalFS::filePut("@runtime/debugger/{$key}.zip", $content);

@@ -4,19 +4,27 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Mongodb\Model;
 
 use ManaPHP\Component;
+use ManaPHP\Data\Model\ManagerInterface;
+use ManaPHP\Data\Model\ShardingInterface;
+use ManaPHP\Data\Model\ThoseInterface;
+use ManaPHP\Data\Mongodb\FactoryInterface;
 use ManaPHP\Data\Mongodb\Model;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\RuntimeException;
 use MongoDB\BSON\ObjectId;
 
-/**
- * @property-read \ManaPHP\Data\Model\ThoseInterface     $those
- * @property-read \ManaPHP\Data\Mongodb\FactoryInterface $mongodbFactory
- * @property-read \ManaPHP\Data\Model\ShardingInterface  $sharding
- * @property-read \ManaPHP\Data\Model\ManagerInterface   $modelManager
- */
 class Inferrer extends Component implements InferrerInterface
 {
+    #[Inject]
+    protected ThoseInterface $those;
+    #[Inject]
+    protected FactoryInterface $mongodbFactory;
+    #[Inject]
+    protected ShardingInterface $sharding;
+    #[Inject]
+    protected ManagerInterface $modelManager;
+
     protected array $primaryKey = [];
     protected array $fields = [];
     protected array $intFields = [];

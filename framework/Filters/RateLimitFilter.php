@@ -3,19 +3,27 @@ declare(strict_types=1);
 
 namespace ManaPHP\Filters;
 
+use ManaPHP\ConfigInterface;
+use ManaPHP\Data\RedisCacheInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\TooManyRequestsException;
 use ManaPHP\Http\Filter;
 use ManaPHP\Http\Filter\ValidatingFilterInterface;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\Identifying\IdentityInterface;
 
-/**
- * @property-read \ManaPHP\ConfigInterface               $config
- * @property-read \ManaPHP\Identifying\IdentityInterface $identity
- * @property-read \ManaPHP\Http\RequestInterface         $request
- * @property-read \ManaPHP\Data\RedisCacheInterface      $redisCache
- */
 class RateLimitFilter extends Filter implements ValidatingFilterInterface
 {
+    #[Inject]
+    protected ConfigInterface $config;
+    #[Inject]
+    protected IdentityInterface $identity;
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected RedisCacheInterface $redisCache;
+
     protected string $prefix;
     protected string $limits;
 

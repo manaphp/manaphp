@@ -3,20 +3,28 @@ declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
+use ManaPHP\ConfigInterface;
+use ManaPHP\Data\Mongodb\FactoryInterface;
 use ManaPHP\Data\MongodbInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
+use Psr\Container\ContainerInterface;
 
-/**
- * @property-read \Psr\Container\ContainerInterface      $container
- * @property-read \ManaPHP\ConfigInterface               $config
- * @property-read \ManaPHP\AliasInterface                $alias
- * @property-read \ManaPHP\Data\Mongodb\FactoryInterface $mongodbFactory
- */
 class MongodbCommand extends Command
 {
+    #[Inject]
+    protected ContainerInterface $container;
+    #[Inject]
+    protected ConfigInterface $config;
+    #[Inject]
+    protected AliasInterface $alias;
+    #[Inject]
+    protected FactoryInterface $mongodbFactory;
+
     /**
      * @return array
      */

@@ -3,16 +3,20 @@ declare(strict_types=1);
 
 namespace ManaPHP\Logging\Logger\Adapter;
 
+use ManaPHP\AliasInterface;
+use ManaPHP\ConfigInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Logging\AbstractLogger;
 use ManaPHP\Logging\Level;
 use ManaPHP\Logging\Logger\Log;
 
-/**
- * @property-read \ManaPHP\ConfigInterface $config
- * @property-read \ManaPHP\AliasInterface  $alias
- */
 class File extends AbstractLogger
 {
+    #[Inject]
+    protected ConfigInterface $config;
+    #[Inject]
+    protected AliasInterface $alias;
+
     protected string $file;
     protected string $format;
 

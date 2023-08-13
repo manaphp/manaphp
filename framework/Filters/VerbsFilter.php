@@ -3,19 +3,23 @@ declare(strict_types=1);
 
 namespace ManaPHP\Filters;
 
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\MethodNotAllowedHttpException;
 use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
 use ManaPHP\Http\Filter;
 use ManaPHP\Http\Filter\ValidatingFilterInterface;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\Mvc\ViewInterface;
 use ReflectionMethod;
 
-/**
- * @property-read \ManaPHP\Mvc\ViewInterface     $view
- * @property-read \ManaPHP\Http\RequestInterface $request
- */
 class VerbsFilter extends Filter implements ValidatingFilterInterface
 {
+    #[Inject]
+    protected ViewInterface $view;
+    #[Inject]
+    protected RequestInterface $request;
+
     public function onValidating(EventArgs $eventArgs): void
     {
         /** @var \ManaPHP\Http\Controller $controller */

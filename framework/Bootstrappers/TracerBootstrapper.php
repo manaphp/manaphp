@@ -5,15 +5,17 @@ namespace ManaPHP\Bootstrappers;
 
 use ManaPHP\BootstrapperInterface;
 use ManaPHP\Component;
+use ManaPHP\ConfigInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use Psr\Container\ContainerInterface;
 
-/**
- * @property-read \ManaPHP\ConfigInterface $config
- */
 class TracerBootstrapper extends Component implements BootstrapperInterface
 {
+    #[Inject]
+    protected ConfigInterface $config;
+
     protected array $tracers;
     protected bool $enabled;
 

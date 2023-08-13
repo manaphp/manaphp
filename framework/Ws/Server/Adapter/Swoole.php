@@ -5,9 +5,15 @@ namespace ManaPHP\Ws\Server\Adapter;
 
 use ArrayObject;
 use ManaPHP\Component;
+use ManaPHP\ConfigInterface;
 use ManaPHP\Coroutine\Context\Stickyable;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\NotSupportedException;
+use ManaPHP\Http\GlobalsInterface;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\Logging\LoggerInterface;
+use ManaPHP\Ws\HandlerInterface;
 use ManaPHP\Ws\ServerInterface;
 use Swoole\Coroutine;
 use Swoole\Http\Request;
@@ -16,16 +22,20 @@ use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
 use Throwable;
 
-/**
- * @property-read \ManaPHP\ConfigInterface         $config
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
- * @property-read \ManaPHP\Http\RequestInterface   $request
- * @property-read \ManaPHP\Http\GlobalsInterface   $globals
- * @property-read \ManaPHP\Ws\HandlerInterface     $wsHandler
- */
 class Swoole extends Component implements ServerInterface
 {
     use EventTrait;
+
+    #[Inject]
+    protected ConfigInterface $config;
+    #[Inject]
+    protected LoggerInterface $logger;
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected GlobalsInterface $globals;
+    #[Inject]
+    protected HandlerInterface $wsHandler;
 
     protected string $host = '0.0.0.0';
     protected int $port = 9501;

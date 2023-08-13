@@ -3,7 +3,11 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Session\Adapter;
 
+use ManaPHP\Data\DbInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Http\AbstractSession;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\Identifying\IdentityInterface;
 
 /**
  * CREATE TABLE `manaphp_session` (
@@ -15,13 +19,16 @@ use ManaPHP\Http\AbstractSession;
  * `expired_time` int(11) NOT NULL,
  * PRIMARY KEY (`session_id`)
  * ) ENGINE=InnoDB DEFAULT CHARSET=utf8
- *
- * @property-read \ManaPHP\Http\RequestInterface         $request
- * @property-read \ManaPHP\Data\DbInterface              $db
- * @property-read \ManaPHP\Identifying\IdentityInterface $identity
  */
 class Db extends AbstractSession
 {
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected DbInterface $db;
+    #[Inject]
+    protected IdentityInterface $identity;
+
     protected string $table;
 
     public function __construct(string $table = 'manaphp_session',
@@ -34,7 +41,7 @@ class Db extends AbstractSession
 
     public function do_read(string $session_id): string
     {
-        return $this->db->query($this->table)->where(['session_id'=> $session_id])->value('data', '');
+        return $this->db->query($this->table)->where(['session_id' => $session_id])->value('data', '');
     }
 
     public function do_write(string $session_id, string $data, int $ttl): bool

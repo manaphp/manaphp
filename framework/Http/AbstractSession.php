@@ -6,20 +6,25 @@ namespace ManaPHP\Http;
 use ArrayAccess;
 use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Str;
+use ManaPHP\Logging\LoggerInterface;
 
-/**
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
- * @property-read \ManaPHP\Http\CookiesInterface   $cookies
- * @property-read \ManaPHP\Http\RequestInterface   $request
- * @property-read \ManaPHP\Http\RouterInterface    $router
- */
 abstract class AbstractSession extends Component implements SessionInterface, ArrayAccess
 {
     use EventTrait;
     use ContextTrait;
+
+    #[Inject]
+    protected LoggerInterface $logger;
+    #[Inject]
+    protected CookiesInterface $cookies;
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected RouterInterface $router;
 
     protected int $ttl;
     protected int $lazy;

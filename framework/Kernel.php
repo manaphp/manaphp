@@ -6,21 +6,20 @@ namespace ManaPHP;
 use ManaPHP\Di\Container;
 use Psr\Container\ContainerInterface;
 
-/**
- * @property-read \ManaPHP\EnvInterface    $env
- * @property-read \ManaPHP\ConfigInterface $config
- * @property-read \ManaPHP\AliasInterface  $alias
- */
 class Kernel extends Component
 {
     protected string $rootDir;
     protected ContainerInterface $container;
+    protected AliasInterface $alias;
 
     public function __construct(string $rootDir, ContainerInterface $container = null)
     {
         $this->rootDir = $rootDir;
 
-        $GLOBALS['Psr\Container\ContainerInterface'] = $this->container = $container ?? new Container();
+        $this->container = $container = $container ?? new Container();
+        $this->alias = $container->get(AliasInterface::class);
+
+        $GLOBALS['Psr\Container\ContainerInterface'] = $container;
     }
 
     public function registerDefaultDependencies(): void
@@ -106,14 +105,18 @@ class Kernel extends Component
         $this->registerDefaultDependencies();
         $this->registerDefaultAliases();
 
-        $this->env->load();
-        $this->config->load();
+        $this->container->get(EnvInterface::class)->load();
 
-        $this->registerAppAliases($this->config->get('aliases', []));
-        $this->registerAppFactories($this->config->get('factories', []));
-        $this->registerAppDependencies($this->config->get('dependencies', []));
-        $this->bootBootstrappers($this->config->get('bootstrappers', []));
+        $config = $this->container->get(ConfigInterface::class);
+        $config->load();
 
-        $this->container->get($server)->start();
+        $this->registerAppAliases($config->get('aliases', []));
+        $this->registerAppFactories($config->get('factories', []));
+        $this->registerAppDependencies($config->get('dependencies', []));
+        $this->bootBootstrappers($config->get('bootstrappers', []));
+
+        /** @var string|ServerInterface $server */
+        $server = $this->container->get($server);
+        $server->start();
     }
 }

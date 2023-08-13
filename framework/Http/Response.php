@@ -7,21 +7,26 @@ use DateTime;
 use DateTimeZone;
 use JsonSerializable;
 use ManaPHP\Component;
+use ManaPHP\ConfigInterface;
 use ManaPHP\Context\ContextTrait;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Helper\LocalFS;
 use Throwable;
 
-/**
- * @property-read \ManaPHP\ConfigInterface       $config
- * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\Http\UrlInterface     $url
- * @property-read \ManaPHP\Http\RouterInterface  $router
- */
 class Response extends Component implements ResponseInterface
 {
     use ContextTrait;
+
+    #[Inject]
+    protected ConfigInterface $config;
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected UrlInterface $url;
+    #[Inject]
+    protected RouterInterface $router;
 
     protected int|string $ok_code;
     protected int|string $error_code;

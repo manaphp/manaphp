@@ -5,16 +5,18 @@ namespace ManaPHP\Data;
 
 use ManaPHP\Component;
 use ManaPHP\Data\Redis\Connection;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\FactoryInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Pool\ManagerInterface as PoolManager;
 
-/**
- * @property-read \ManaPHP\Pool\ManagerInterface $poolManager
- */
 class Redis extends Component implements RedisInterface, RedisDbInterface, RedisCacheInterface, RedisBrokerInterface
 {
     use EventTrait;
+
+    #[Inject]
+    protected PoolManager $poolManager;
 
     protected string $uri;
     protected float $timeout = 1.0;

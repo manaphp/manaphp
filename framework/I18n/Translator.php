@@ -4,15 +4,18 @@ declare(strict_types=1);
 namespace ManaPHP\I18n;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Http\RequestInterface;
 
-/**
- * @property-read \ManaPHP\I18n\LocaleInterface  $locale
- * @property-read \ManaPHP\Http\RequestInterface $request
- */
 class Translator extends Component implements TranslatorInterface
 {
+    #[Inject]
+    protected LocaleInterface $locale;
+    #[Inject]
+    protected RequestInterface $request;
+
     protected string $dir;
 
     protected array $files = [];

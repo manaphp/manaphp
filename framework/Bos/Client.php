@@ -3,18 +3,24 @@ declare(strict_types=1);
 
 namespace ManaPHP\Bos;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Arr;
+use ManaPHP\Http\ClientInterface as HttpClientInterface;
+use ManaPHP\Rest\ClientInterface as RestClientInterface;
 
-/**
- * @property-read \ManaPHP\AliasInterface       $alias
- * @property-read \ManaPHP\Http\ClientInterface $httpClient
- * @property-read \ManaPHP\Rest\ClientInterface $restClient
- */
 class Client extends Component implements ClientInterface
 {
+    #[Inject]
+    protected AliasInterface $alias;
+    #[Inject]
+    protected HttpClientInterface $httpClient;
+    #[Inject]
+    protected RestClientInterface $restClient;
+
     protected string $endpoint;
 
     public function __construct(string $endpoint)

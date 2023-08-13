@@ -3,19 +3,23 @@ declare(strict_types=1);
 
 namespace ManaPHP\Filters;
 
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Filters\CsrfFilter\AttackDetectedException;
 use ManaPHP\Http\Filter;
 use ManaPHP\Http\Filter\ValidatingFilterInterface;
+use ManaPHP\Http\RequestInterface;
 use ManaPHP\Mvc\Controller as MvcController;
+use ManaPHP\Mvc\ViewInterface;
 use ManaPHP\Rest\Controller as RestController;
 
-/**
- * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\Mvc\ViewInterface     $view
- */
 class CsrfFilter extends Filter implements ValidatingFilterInterface
 {
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ViewInterface $view;
+
     protected bool $strict;
     protected array $domains;
 

@@ -3,17 +3,23 @@ declare(strict_types=1);
 
 namespace ManaPHP\Filters;
 
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\Filter;
 use ManaPHP\Http\Filter\RespondingFilterInterface;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\Http\ResponseInterface;
 
-/**
- * @property-read \ManaPHP\Http\RequestInterface    $request
- * @property-read \ManaPHP\Http\ResponseInterface   $response
- * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
- */
 class HttpCacheFilter extends Filter implements RespondingFilterInterface
 {
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ResponseInterface $response;
+    #[Inject]
+    protected DispatcherInterface $dispatcher;
+
     public function onResponding(): void
     {
         if ($this->response->getStatusCode() !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {

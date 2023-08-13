@@ -5,19 +5,22 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Helper\Str;
+use ManaPHP\Http\Controller\FactoryInterface;
 use ManaPHP\Http\Dispatcher\NotFoundActionException;
 use ManaPHP\Http\Dispatcher\NotFoundControllerException;
 
-/**
- * @property-read \ManaPHP\Http\GlobalsInterface            $globals
- * @property-read \ManaPHP\Http\Controller\FactoryInterface $controllerFactory
- */
 class Dispatcher extends Component implements DispatcherInterface
 {
     use EventTrait;
     use ContextTrait;
+
+    #[Inject]
+    protected GlobalsInterface $globals;
+    #[Inject]
+    protected FactoryInterface $controllerFactory;
 
     public function getArea(): ?string
     {

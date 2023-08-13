@@ -4,12 +4,14 @@ declare(strict_types=1);
 namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\EnvInterface;
 
-/**
- * @property-read \ManaPHP\EnvInterface $env
- */
 class EnvCommand extends Command
 {
+    #[Inject]
+    protected EnvInterface $env;
+
     /**
      * dump parsed .env values
      *

@@ -4,18 +4,25 @@ declare(strict_types=1);
 namespace ManaPHP\Invoking;
 
 use ManaPHP\Component;
+use ManaPHP\Data\Model\ManagerInterface;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Http\RequestInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
+use ManaPHP\Validating\ValidatorInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionMethod;
 
-/**
- * @property-read \Psr\Container\ContainerInterface      $container
- * @property-read \ManaPHP\Validating\ValidatorInterface $validator
- * @property-read \ManaPHP\Http\RequestInterface         $request
- * @property-read \ManaPHP\Data\Model\ManagerInterface   $modelManager
- */
 class ArgumentsResolver extends Component implements ArgumentsResolverInterface
 {
+    #[Inject]
+    protected ContainerInterface $container;
+    #[Inject]
+    protected ValidatorInterface $validator;
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ManagerInterface $modelManager;
+
     /**
      * @var ScalarValueResolverInterface[]
      */

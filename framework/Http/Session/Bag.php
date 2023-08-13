@@ -4,12 +4,14 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Session;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Http\SessionInterface;
 
-/**
- * @property-read \ManaPHP\Http\SessionInterface $session
- */
 class Bag extends Component implements BagInterface
 {
+    #[Inject]
+    protected SessionInterface $session;
+
     protected string $name;
 
     public function __construct(string $name)

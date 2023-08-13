@@ -3,14 +3,16 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Session\Adapter;
 
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Http\AbstractSession;
 use ManaPHP\Http\Session\Adapter\Cookie\Exception as CookieException;
+use ManaPHP\Security\CryptInterface;
 
-/**
- * @property-read \ManaPHP\Security\CryptInterface $crypt
- */
 class Cookie extends AbstractSession
 {
+    #[Inject]
+    protected CryptInterface $crypt;
+
     protected string $key;
 
     public function __construct(?string $key = null, int $ttl = 3600, int $lazy = 60, string $name = "PHPSESSID",

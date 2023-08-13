@@ -5,22 +5,32 @@ namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Http\DispatcherInterface;
+use ManaPHP\Http\RouterInterface;
+use ManaPHP\Mvc\View\Widget\FactoryInterface;
+use ManaPHP\Rendering\RendererInterface;
+use Psr\Container\ContainerInterface;
 
-/**
- * @property-read \Psr\Container\ContainerInterface         $container
- * @property-read \ManaPHP\Http\RouterInterface             $router
- * @property-read \ManaPHP\Rendering\RendererInterface      $renderer
- * @property-read \ManaPHP\Http\DispatcherInterface         $dispatcher
- * @property-read \ManaPHP\Mvc\View\Widget\FactoryInterface $widgetFactory
- */
 class View extends Component implements ViewInterface
 {
     use EventTrait;
     use ContextTrait;
+
+    #[Inject]
+    protected ContainerInterface $container;
+    #[Inject]
+    protected RouterInterface $router;
+    #[Inject]
+    protected RendererInterface $renderer;
+    #[Inject]
+    protected DispatcherInterface $dispatcher;
+    #[Inject]
+    protected FactoryInterface $widgetFactory;
 
     protected int $max_age;
     protected bool $autofix_url;

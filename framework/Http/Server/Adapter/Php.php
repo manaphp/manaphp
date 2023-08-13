@@ -3,16 +3,22 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Server\Adapter;
 
+use ManaPHP\AliasInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\Ip;
 use ManaPHP\Http\AbstractServer;
+use ManaPHP\Http\Server\Adapter\Native\SenderInterface;
+use ManaPHP\Http\Server\StaticHandlerInterface;
 
-/**
- * @property-read \ManaPHP\Http\Server\Adapter\Native\SenderInterface $sender
- * @property-read \ManaPHP\Http\Server\StaticHandlerInterface         $staticHandler
- * @property-read \ManaPHP\AliasInterface                             $alias
- */
 class Php extends AbstractServer
 {
+    #[Inject]
+    protected SenderInterface $sender;
+    #[Inject]
+    protected StaticHandlerInterface $staticHandler;
+    #[Inject]
+    protected AliasInterface $alias;
+
     public function __construct(string $host = '0.0.0.0', int $port = 9501, array $settings = [])
     {
         parent::__construct($host, $port);

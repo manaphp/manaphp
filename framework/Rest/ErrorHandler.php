@@ -4,15 +4,19 @@ declare(strict_types=1);
 namespace ManaPHP\Rest;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception;
+use ManaPHP\Http\ResponseInterface;
+use ManaPHP\Logging\LoggerInterface;
 use Throwable;
 
-/**
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
- * @property-read \ManaPHP\Http\ResponseInterface  $response
- */
 class ErrorHandler extends Component implements ErrorHandlerInterface
 {
+    #[Inject]
+    protected LoggerInterface $logger;
+    #[Inject]
+    protected ResponseInterface $response;
+
     public function handle(Throwable $throwable): void
     {
         $code = $throwable instanceof Exception ? $throwable->getCode() : 500;

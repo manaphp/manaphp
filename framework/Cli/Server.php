@@ -5,19 +5,23 @@ namespace ManaPHP\Cli;
 
 use JetBrains\PhpStorm\NoReturn;
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\AbortException;
+use ManaPHP\Logging\LoggerInterface;
 use Swoole\Coroutine;
 use Swoole\Event;
 use Swoole\Runtime;
 use Throwable;
 
-/**
- * @property-read \ManaPHP\Logging\LoggerInterface   $logger
- * @property-read \ManaPHP\Cli\ErrorHandlerInterface $errorHandler
- * @property-read \ManaPHP\Cli\HandlerInterface      $cliHandler
- */
 class Server extends Component implements ServerInterface
 {
+    #[Inject]
+    protected LoggerInterface $logger;
+    #[Inject]
+    protected ErrorHandlerInterface $errorHandler;
+    #[Inject]
+    protected HandlerInterface $cliHandler;
+
     protected int $exit_code;
 
     /**

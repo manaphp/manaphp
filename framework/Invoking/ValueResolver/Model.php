@@ -4,16 +4,20 @@ declare(strict_types=1);
 namespace ManaPHP\Invoking\ValueResolver;
 
 use ManaPHP\Component;
+use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\ModelInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\BadRequestException;
+use ManaPHP\Http\RequestInterface;
 use ManaPHP\Invoking\ObjectValueResolverInterface;
 
-/**
- * @property-read \ManaPHP\Http\RequestInterface       $request
- * @property-read \ManaPHP\Data\Model\ManagerInterface $modelManager
- */
 class Model extends Component implements ObjectValueResolverInterface
 {
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ManagerInterface $modelManager;
+
     public function resolve(?string $type, string $name): mixed
     {
         if (!is_subclass_of($type, ModelInterface::class)) {

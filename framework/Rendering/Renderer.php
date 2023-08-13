@@ -3,22 +3,26 @@ declare(strict_types=1);
 
 namespace ManaPHP\Rendering;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Coroutine\Mutex;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PreconditionException;
+use ManaPHP\Rendering\Engine\FactoryInterface;
 
-/**
- * @property-read \ManaPHP\AliasInterface                    $alias
- * @property-read \ManaPHP\Rendering\Engine\FactoryInterface $engineFactory
- */
 class Renderer extends Component implements RendererInterface
 {
     use EventTrait;
     use ContextTrait;
+
+    #[Inject]
+    protected AliasInterface $alias;
+    #[Inject]
+    protected FactoryInterface $engineFactory;
 
     /**
      * @var \ManaPHP\Rendering\EngineInterface[]
@@ -35,18 +39,21 @@ class Renderer extends Component implements RendererInterface
        '.sword' => 'ManaPHP\Rendering\Engine\Sword']
     ) {
         $this->engines = $engines;
+    }
 
-        $this->mutex = new Mutex();
+    protected function getMutex(): Mutex
+    {
+        return $this->mutex ??= new Mutex();
     }
 
     public function lock(): void
     {
-        $this->mutex->lock();
+        $this->getMutex()->lock();
     }
 
     public function unlock(): void
     {
-        $this->mutex->unlock();
+        $this->getMutex()->unlock();
     }
 
     public function render(string $template, array $vars = [], bool $directOutput = false): ?string
@@ -54,7 +61,7 @@ class Renderer extends Component implements RendererInterface
         /** @var RendererContext $context */
         $context = $this->getContext();
 
-        if (!$this->mutex->isLocked()) {
+        if (!$this->getMutex()->isLocked()) {
             throw new MisuseException('renderer is not locked');
         }
 

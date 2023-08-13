@@ -4,16 +4,18 @@ declare(strict_types=1);
 namespace ManaPHP\Amqp;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\FactoryInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Pool\ManagerInterface;
 
-/**
- * @property-read \ManaPHP\Pool\ManagerInterface $poolManager
- */
 class Client extends Component implements ClientInterface
 {
     use EventTrait;
+
+    #[Inject]
+    protected ManagerInterface $poolManager;
 
     protected string $uri;
     protected int $pool_size = 4;

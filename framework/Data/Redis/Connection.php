@@ -5,17 +5,19 @@ namespace ManaPHP\Data\Redis;
 
 use ManaPHP\Component;
 use ManaPHP\Data\Redis\Exception as RedisException;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\FactoryInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\RuntimeException;
 use Redis;
 
-/**
- * @property-read \ManaPHP\Di\FactoryInterface $factory
- */
 class Connection extends Component
 {
     use EventTrait;
+
+    #[Inject]
+    protected FactoryInterface $factory;
 
     protected string $uri;
     protected bool $cluster = false;

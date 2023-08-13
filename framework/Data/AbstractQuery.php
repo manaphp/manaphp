@@ -6,22 +6,34 @@ namespace ManaPHP\Data;
 use ArrayIterator;
 use IteratorAggregate;
 use ManaPHP\Component;
+use ManaPHP\Data\Model\ManagerInterface as ModelManagerInterface;
+use ManaPHP\Data\Model\Relation\ManagerInterface as RelationManagerInterface;
+use ManaPHP\Data\Model\ShardingInterface;
+use ManaPHP\Data\Model\ThoseInterface;
 use ManaPHP\Data\Query\NotFoundException;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\FactoryInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
+use ManaPHP\Http\RequestInterface;
 
-/**
- * @property-read \ManaPHP\Di\FactoryInterface                  $factory
- * @property-read \ManaPHP\Http\RequestInterface                $request
- * @property-read \ManaPHP\Data\Model\Relation\ManagerInterface $relationManager
- * @property-read \ManaPHP\Data\Model\ThoseInterface            $those
- * @property-read \ManaPHP\Data\Model\ShardingInterface         $sharding
- * @property-read \ManaPHP\Data\Model\ManagerInterface          $modelManager
- */
 abstract class AbstractQuery extends Component implements QueryInterface, IteratorAggregate
 {
+    #[Inject]
+    protected FactoryInterface $factory;
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected RelationManagerInterface $relationManager;
+    #[Inject]
+    protected ThoseInterface $those;
+    #[Inject]
+    protected ShardingInterface $sharding;
+    #[Inject]
+    protected ModelManagerInterface $modelManager;
+
     protected string $connection;
     protected string $table;
     protected ?string $alias = null;

@@ -5,13 +5,14 @@ namespace ManaPHP\Data\Model;
 
 use ManaPHP\Component;
 use ManaPHP\Data\ModelInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
 
-/**
- * @property-read \ManaPHP\Data\Model\ManagerInterface $modelManager
- */
 class Sharding extends Component implements ShardingInterface
 {
+    #[Inject]
+    protected ManagerInterface $modelManager;
+
     public function getAnyShard(string $model): array
     {
         $shards = $this->getAllShards($model);

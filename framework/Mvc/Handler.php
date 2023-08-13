@@ -4,23 +4,32 @@ declare(strict_types=1);
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\AbortException;
+use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\HandlerInterface;
 use ManaPHP\Http\Response;
+use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Router\NotFoundRouteException;
+use ManaPHP\Http\RouterInterface;
+use ManaPHP\Http\ServerInterface;
 use Throwable;
 
-/**
- * @property-read \ManaPHP\Http\ResponseInterface    $response
- * @property-read \ManaPHP\Http\RouterInterface      $router
- * @property-read \ManaPHP\Http\DispatcherInterface  $dispatcher
- * @property-read \ManaPHP\Mvc\ErrorHandlerInterface $errorHandler
- * @property-read \ManaPHP\Http\ServerInterface      $httpServer
- */
 class Handler extends Component implements HandlerInterface
 {
     use EventTrait;
+
+    #[Inject]
+    protected ResponseInterface $response;
+    #[Inject]
+    protected RouterInterface $router;
+    #[Inject]
+    protected DispatcherInterface $dispatcher;
+    #[Inject]
+    protected ErrorHandlerInterface $errorHandler;
+    #[Inject]
+    protected ServerInterface $httpServer;
 
     /**
      * @noinspection PhpRedundantCatchClauseInspection

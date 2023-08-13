@@ -3,17 +3,22 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Http\Captcha\InvalidCaptchaException;
 
-/**
- * @property-read \ManaPHP\AliasInterface         $alias
- * @property-read \ManaPHP\Http\ResponseInterface $response
- * @property-read \ManaPHP\Http\RequestInterface  $request
- * @property-read \ManaPHP\Http\SessionInterface  $session
- */
 abstract class AbstractCaptcha extends Component implements CaptchaInterface
 {
+    #[Inject]
+    protected AliasInterface $alias;
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ResponseInterface $response;
+    #[Inject]
+    protected SessionInterface $session;
+
     protected string $charset;
     protected array $fonts;
     protected string $sessionVar = 'captcha';

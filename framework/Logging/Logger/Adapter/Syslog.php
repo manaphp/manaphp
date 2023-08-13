@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Logging\Logger\Adapter;
 
+use ManaPHP\ConfigInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Logging\AbstractLogger;
 use ManaPHP\Logging\Level;
@@ -16,11 +18,11 @@ use ManaPHP\Logging\Logger\Log;
 //$template myTemplate,"/var/log/test/%PROGRAMNAME%.log"
 //user.*  ?myTemplate
 
-/**
- * @property-read \ManaPHP\ConfigInterface $config
- */
 class Syslog extends AbstractLogger
 {
+    #[Inject]
+    protected ConfigInterface $config;
+
     protected string $uri;
     protected int $facility;
     protected string $format;

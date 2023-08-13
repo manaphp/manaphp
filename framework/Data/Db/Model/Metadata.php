@@ -4,15 +4,22 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Db\Model;
 
 use ManaPHP\Component;
+use ManaPHP\ConfigInterface;
 use ManaPHP\Data\Db;
+use ManaPHP\Data\Model\ShardingInterface;
+use ManaPHP\Di\Attribute\Inject;
 
-/**
- * @property-read \ManaPHP\ConfigInterface              $config
- * @property-read \ManaPHP\Data\Db\FactoryInterface     $dbFactory
- * @property-read \ManaPHP\Data\Model\ShardingInterface $sharding
- */
 class Metadata extends Component implements MetadataInterface
 {
+    #[Inject]
+    protected ConfigInterface $config;
+
+    #[Inject]
+    protected Db\FactoryInterface $dbFactory;
+
+    #[Inject]
+    protected ShardingInterface $sharding;
+
     protected int $ttl;
 
     public function __construct(int $ttl = 3600)

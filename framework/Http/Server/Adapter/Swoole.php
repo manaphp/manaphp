@@ -3,23 +3,29 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Server\Adapter;
 
+use ManaPHP\AliasInterface;
+use ManaPHP\ConfigInterface;
 use ManaPHP\Context\ContextTrait;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\Ip;
 use ManaPHP\Http\AbstractServer;
+use ManaPHP\Http\Server\StaticHandlerInterface;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Swoole\Http\Server;
 use Swoole\Runtime;
 use Throwable;
 
-/**
- * @property-read \ManaPHP\ConfigInterface                    $config
- * @property-read \ManaPHP\AliasInterface                     $alias
- * @property-read \ManaPHP\Http\Server\StaticHandlerInterface $staticHandler
- */
 class Swoole extends AbstractServer
 {
     use ContextTrait;
+
+    #[Inject]
+    protected ConfigInterface $config;
+    #[Inject]
+    protected AliasInterface $alias;
+    #[Inject]
+    protected StaticHandlerInterface $staticHandler;
 
     protected array $settings = [];
     protected Server $swoole;

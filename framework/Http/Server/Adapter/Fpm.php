@@ -3,13 +3,15 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Server\Adapter;
 
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Http\AbstractServer;
+use ManaPHP\Http\Server\Adapter\Native\SenderInterface;
 
-/**
- * @property-read \ManaPHP\Http\Server\Adapter\Native\SenderInterface $sender
- */
 class Fpm extends AbstractServer
 {
+    #[Inject]
+    protected SenderInterface $sender;
+
     protected function prepareGlobals(): void
     {
         $rawBody = file_get_contents('php://input');

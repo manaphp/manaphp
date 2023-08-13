@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Model;
 
 use ManaPHP\Component;
+use ManaPHP\Data\Db\Model\InferrerInterface;
 use ManaPHP\Data\Model\Attribute\ColumnMap;
 use ManaPHP\Data\Model\Attribute\Connection;
 use ManaPHP\Data\Model\Attribute\DateFormat;
@@ -12,16 +13,18 @@ use ManaPHP\Data\Model\Attribute\Guarded;
 use ManaPHP\Data\Model\Attribute\PrimaryKey;
 use ManaPHP\Data\Model\Attribute\ReferencedKey;
 use ManaPHP\Data\Model\Attribute\Table;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\Str;
 use ReflectionAttribute;
 use ReflectionClass;
 
-/**
- * @property-read \ManaPHP\Data\Model\ThoseInterface       $those
- * @property-read \ManaPHP\Data\Db\Model\InferrerInterface $inferrer
- */
 class Manager extends Component implements ManagerInterface
 {
+    #[Inject]
+    protected ThoseInterface $those;
+    #[Inject]
+    protected InferrerInterface $inferrer;
+
     protected array $rClass = [];
     protected array $table = [];
     protected array $connection = [];

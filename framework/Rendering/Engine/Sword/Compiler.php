@@ -4,19 +4,25 @@ declare(strict_types=1);
 namespace ManaPHP\Rendering\Engine\Sword;
 
 use JetBrains\PhpStorm\ArrayShape;
+use ManaPHP\AliasInterface;
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\Str;
+use ManaPHP\Http\RouterInterface;
+use ManaPHP\Http\UrlInterface;
 
-/**
- * @property-read \ManaPHP\AliasInterface       $alias
- * @property-read \ManaPHP\Http\UrlInterface    $url
- * @property-read \ManaPHP\Http\RouterInterface $router
- */
 class Compiler extends Component
 {
+    #[Inject]
+    protected AliasInterface $alias;
+    #[Inject]
+    protected UrlInterface $url;
+    #[Inject]
+    protected RouterInterface $router;
+
     protected int $hash_length = 12;
     protected array $directives = [];
     protected array $rawTags = ['{!!', '!!}'];

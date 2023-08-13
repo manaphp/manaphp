@@ -6,13 +6,17 @@ namespace ManaPHP\Commands;
 use DateTime;
 use DateTimeZone;
 use ManaPHP\Cli\Command;
+use ManaPHP\Cli\RequestInterface;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Http\ClientInterface;
 
-/**
- * @property-read \ManaPHP\Http\ClientInterface $httpClient
- * @property-read \ManaPHP\Cli\RequestInterface $request
- */
 class DateCommand extends Command
 {
+    #[Inject]
+    protected ClientInterface $httpClient;
+    #[Inject]
+    protected RequestInterface $request;
+
     /**
      * @param string $url
      * @param bool   $onlyOnce

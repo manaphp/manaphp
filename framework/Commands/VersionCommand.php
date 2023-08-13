@@ -4,13 +4,15 @@ declare(strict_types=1);
 namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
+use ManaPHP\ConfigInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Version;
 
-/**
- * @property-read \ManaPHP\ConfigInterface $config
- */
 class VersionCommand extends Command
 {
+    #[Inject]
+    protected ConfigInterface $config;
+
     public function showAction()
     {
         $this->console->writeLn('      php: ' . PHP_VERSION);

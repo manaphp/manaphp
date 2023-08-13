@@ -5,18 +5,22 @@ namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
+use ManaPHP\ConfigInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\Str;
 use ManaPHP\Version;
 use ReflectionClass;
 use ReflectionMethod;
 
-/**
- * @property-read \ManaPHP\ConfigInterface              $config
- * @property-read \ManaPHP\Cli\Command\FactoryInterface $commandFactory
- * @property-read \ManaPHP\Cli\Command\ManagerInterface $commandManager
- */
 class HelpCommand extends Command
 {
+    #[Inject]
+    protected ConfigInterface $config;
+    #[Inject]
+    protected Command\FactoryInterface $commandFactory;
+    #[Inject]
+    protected Command\ManagerInterface $commandManager;
+
     /**
      * list all commands
      *

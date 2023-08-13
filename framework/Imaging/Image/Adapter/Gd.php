@@ -4,17 +4,19 @@ declare(strict_types=1);
 namespace ManaPHP\Imaging\Image\Adapter;
 
 use GdImage;
+use ManaPHP\AliasInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\ExtensionNotInstalledException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Imaging\AbstractImage;
 
-/**
- * @property-read \ManaPHP\AliasInterface $alias
- */
 class Gd extends AbstractImage
 {
+    #[Inject]
+    protected AliasInterface $alias;
+
     protected string $file;
     protected GdImage $image;
     protected int $width;

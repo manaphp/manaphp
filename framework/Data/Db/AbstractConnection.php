@@ -6,18 +6,20 @@ namespace ManaPHP\Data\Db;
 use JsonSerializable;
 use ManaPHP\Component;
 use ManaPHP\Data\Db\Exception as DbException;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\FactoryInterface as DiFactory;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\NotSupportedException;
 use PDO;
 use PDOException;
 use PDOStatement;
 
-/**
- * @property-read \ManaPHP\Di\FactoryInterface $factory
- */
 abstract class AbstractConnection extends Component implements ConnectionInterface
 {
     use EventTrait;
+
+    #[Inject]
+    protected DiFactory $factory;
 
     protected string $uri;
     protected string $dsn;

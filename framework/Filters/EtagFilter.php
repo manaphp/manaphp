@@ -3,15 +3,19 @@ declare(strict_types=1);
 
 namespace ManaPHP\Filters;
 
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Http\Filter;
 use ManaPHP\Http\Filter\RespondingFilterInterface;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\Http\ResponseInterface;
 
-/**
- * @property-read \ManaPHP\Http\RequestInterface  $request
- * @property-read \ManaPHP\Http\ResponseInterface $response
- */
 class EtagFilter extends Filter implements RespondingFilterInterface
 {
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ResponseInterface $response;
+
     protected string $algo;
 
     public function __construct(string $algo = 'md5')

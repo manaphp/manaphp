@@ -3,13 +3,15 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mvc\View;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 
-/**
- * @property-read \ManaPHP\AliasInterface $alias
- */
 class Asset extends Component implements AssetInterface
 {
+    #[Inject]
+    protected AliasInterface $alias;
+
     protected array $urls = [];
 
     public function get(string $path): string

@@ -3,13 +3,15 @@ declare(strict_types=1);
 
 namespace ManaPHP;
 
+use ManaPHP\Data\RedisDbInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\InvalidArgumentException;
 
-/**
- * @property-read \ManaPHP\Data\RedisDbInterface $redisDb
- */
 class Settings extends Component implements SettingsInterface
 {
+    #[Inject]
+    protected RedisDbInterface $redisDb;
+
     protected string $key;
     protected int $ttl;
 

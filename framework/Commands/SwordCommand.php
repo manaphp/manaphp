@@ -3,15 +3,19 @@ declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Cli\Command;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Rendering\Engine\Sword\Compiler;
 
-/**
- * @property-read \ManaPHP\AliasInterface                  $alias
- * @property-read \ManaPHP\Rendering\Engine\Sword\Compiler $swordCompiler
- */
 class SwordCommand extends Command
 {
+    #[Inject]
+    protected AliasInterface $alias;
+    #[Inject]
+    protected Compiler $swordCompiler;
+
     /**
      * precompile sword template
      *

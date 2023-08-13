@@ -3,16 +3,22 @@ declare(strict_types=1);
 
 namespace ManaPHP\Rendering\Engine;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Component;
+use ManaPHP\ConfigInterface;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Rendering\Engine\Sword\Compiler;
 use ManaPHP\Rendering\EngineInterface;
 
-/**
- * @property-read \ManaPHP\ConfigInterface                 $config
- * @property-read \ManaPHP\AliasInterface                  $alias
- * @property-read \ManaPHP\Rendering\Engine\Sword\Compiler $swordCompiler
- */
 class Sword extends Component implements EngineInterface
 {
+    #[Inject]
+    protected ConfigInterface $config;
+    #[Inject]
+    protected AliasInterface $alias;
+    #[Inject]
+    protected Compiler $swordCompiler;
+
     protected string $doc_root;
 
     protected array $compiled = [];

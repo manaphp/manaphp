@@ -10,6 +10,7 @@ use ManaPHP\Data\Db\ConnectionInterface;
 use ManaPHP\Data\Db\Exception as DbException;
 use ManaPHP\Data\Db\Query;
 use ManaPHP\Data\Db\SqlFragmentable;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\FactoryInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\InvalidArgumentException;
@@ -17,16 +18,17 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Pool\Transient;
+use ManaPHP\Pool\ManagerInterface as PoolManagerInterface;
 use PDO;
 use PDOException;
 
-/**
- * @property-read \ManaPHP\Pool\ManagerInterface $poolManager
- */
 class Db extends Component implements DbInterface
 {
     use EventTrait;
     use ContextTrait;
+
+    #[Inject]
+    protected PoolManagerInterface $poolManager;
 
     public const METADATA_ATTRIBUTES = 0;
     public const METADATA_PRIMARY_KEY = 1;

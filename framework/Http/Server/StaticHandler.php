@@ -4,12 +4,14 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Server;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Http\RouterInterface;
 
-/**
- * @property-read \ManaPHP\Http\RouterInterface $router
- */
 class StaticHandler extends Component implements StaticHandlerInterface
 {
+    #[Inject]
+    protected RouterInterface $router;
+
     protected string $root;
     protected array $locations;
     protected string $prefix;

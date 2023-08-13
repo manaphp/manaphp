@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Mongodb;
 
 use ManaPHP\Data\AbstractQuery;
+use ManaPHP\Data\Model\ManagerInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidFormatException;
 use ManaPHP\Exception\InvalidValueException;
@@ -13,12 +15,13 @@ use ManaPHP\Helper\Arr;
 use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\Regex;
 
-/**
- * @property-read \ManaPHP\Data\Mongodb\FactoryInterface $mongodbFactory
- * @property-read \ManaPHP\Data\Model\ManagerInterface   $modelManager
- */
 class Query extends AbstractQuery
 {
+    #[Inject]
+    protected FactoryInterface $mongodbFactory;
+    #[Inject]
+    protected ManagerInterface $modelManager;
+
     protected array $types;
     protected array $aliases;
     protected array $filters = [];

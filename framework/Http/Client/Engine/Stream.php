@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Client\Engine;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\Client\ConnectionException;
 use ManaPHP\Http\Client\EngineInterface;
@@ -11,11 +13,11 @@ use ManaPHP\Http\Client\Request;
 use ManaPHP\Http\Client\Response;
 use ManaPHP\Http\Client\TimeoutException;
 
-/**
- * @property-read \ManaPHP\AliasInterface $alias
- */
 class Stream extends Component implements EngineInterface
 {
+    #[Inject]
+    protected AliasInterface $alias;
+
     protected mixed $stream = null;
 
     public function __destruct()

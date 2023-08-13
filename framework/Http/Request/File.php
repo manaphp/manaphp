@@ -3,15 +3,17 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Request;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Request\File\Exception as FileException;
 
-/**
- * @property-read \ManaPHP\AliasInterface $alias
- */
 class File extends Component implements FileInterface
 {
+    #[Inject]
+    protected AliasInterface $alias;
+
     protected array $file;
 
     public function __construct(array $file)

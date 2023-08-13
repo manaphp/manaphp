@@ -4,15 +4,20 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Db\Model;
 
 use ManaPHP\Component;
+use ManaPHP\Data\Model\ManagerInterface;
+use ManaPHP\Data\Model\ThoseInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\NotSupportedException;
 
-/**
- * @property-read \ManaPHP\Data\Model\ThoseInterface       $those
- * @property-read \ManaPHP\Data\Db\Model\MetadataInterface $metadata
- * @property-read \ManaPHP\Data\Model\ManagerInterface     $modelManager
- */
 class Inferrer extends Component implements InferrerInterface
 {
+    #[Inject]
+    protected ThoseInterface $those;
+    #[Inject]
+    protected MetadataInterface $metadata;
+    #[Inject]
+    protected ManagerInterface $modelManager;
+
     protected array $primaryKey = [];
     protected array $fields = [];
     protected array $intFields = [];

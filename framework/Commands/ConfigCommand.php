@@ -4,13 +4,15 @@ declare(strict_types=1);
 namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
+use ManaPHP\ConfigInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\Arr;
 
-/**
- * @property-read \ManaPHP\ConfigInterface $config
- */
 class ConfigCommand extends Command
 {
+    #[Inject]
+    protected ConfigInterface $config;
+
     /**
      * dump of the app.php
      *

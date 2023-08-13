@@ -4,15 +4,17 @@ declare(strict_types=1);
 namespace ManaPHP\Coroutine;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Logging\LoggerInterface;
 use Swoole\Coroutine;
 use Swoole\Coroutine\Channel;
 use Throwable;
 
-/**
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
- */
 class Scheduler extends Component implements SchedulerInterface
 {
+    #[Inject]
+    protected LoggerInterface $logger;
+
     protected array $tasks = [];
 
     public function add(callable $fn, ...$args): static

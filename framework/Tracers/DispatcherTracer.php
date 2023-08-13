@@ -3,14 +3,16 @@ declare(strict_types=1);
 
 namespace ManaPHP\Tracers;
 
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventArgs;
+use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Tracer;
 
-/**
- * @property-read \ManaPHP\Http\ResponseInterface $response
- */
 class DispatcherTracer extends Tracer
 {
+    #[Inject]
+    protected ResponseInterface $response;
+
     public function listen(): void
     {
         $this->attachEvent('request:authorized', [$this, 'onRequestAuthorized']);

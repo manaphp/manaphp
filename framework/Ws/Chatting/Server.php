@@ -5,19 +5,29 @@ namespace ManaPHP\Ws\Chatting;
 
 use ManaPHP\Component;
 use ManaPHP\Coroutine;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Logging\Logger\LogCategorizable;
+use ManaPHP\Logging\LoggerInterface;
+use ManaPHP\Messaging\PubSubInterface;
+use ManaPHP\Ws\ServerInterface as WsServerInterface;
 
-/**
- * @property-read \ManaPHP\Logging\LoggerInterface       $logger
- * @property-read \ManaPHP\Http\RequestInterface         $request
- * @property-read \ManaPHP\Identifying\IdentityInterface $identity
- * @property-read \ManaPHP\Ws\ServerInterface            $wsServer
- * @property-read \ManaPHP\Messaging\PubSubInterface     $pubSub
- */
 class Server extends Component implements ServerInterface, LogCategorizable
 {
     use EventTrait;
+
+    #[Inject]
+    protected LoggerInterface $logger;
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected IdentityInterface $identity;
+    #[Inject]
+    protected WsServerInterface $wsServer;
+    #[Inject]
+    protected PubSubInterface $pubSub;
 
     protected string $prefix;
     protected bool $dedicated;

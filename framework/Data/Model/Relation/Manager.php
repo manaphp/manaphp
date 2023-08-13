@@ -5,18 +5,22 @@ namespace ManaPHP\Data\Model\Relation;
 
 use ManaPHP\Component;
 use ManaPHP\Data\Model\RelationInterface;
+use ManaPHP\Data\Model\ThoseInterface;
 use ManaPHP\Data\ModelInterface;
+use ManaPHP\Data\Model\ManagerInterface as ModelManagerInterface;
 use ManaPHP\Data\QueryInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\Str;
 
-/**
- * @property-read \ManaPHP\Data\Model\ThoseInterface   $those
- * @property-read \ManaPHP\Data\Model\ManagerInterface $modelManager
- */
 class Manager extends Component implements ManagerInterface
 {
+    #[Inject]
+    protected ThoseInterface $those;
+    #[Inject]
+    protected ModelManagerInterface $modelManager;
+
     protected array $relations;
 
     public function has(string $model, string $name): bool

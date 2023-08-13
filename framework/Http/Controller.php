@@ -4,21 +4,30 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
+use ManaPHP\Http\Controller\ArgumentsResolverInterface;
+use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Logging\Logger\LogCategorizable;
 
-/**
- * @property-read \ManaPHP\Http\RequestInterface                      $request
- * @property-read \ManaPHP\Http\ResponseInterface                     $response
- * @property-read \ManaPHP\Http\CookiesInterface                      $cookies
- * @property-read \ManaPHP\Http\RouterInterface                       $router
- * @property-read \ManaPHP\Http\DispatcherInterface                   $dispatcher
- * @property-read \ManaPHP\Http\Controller\ArgumentsResolverInterface $argumentsResolver
- * @property-read \ManaPHP\Identifying\IdentityInterface              $identity
- */
 class Controller extends Component implements LogCategorizable
 {
     use EventTrait;
+
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ResponseInterface $response;
+    #[Inject]
+    protected CookiesInterface $cookies;
+    #[Inject]
+    protected RouterInterface $router;
+    #[Inject]
+    protected DispatcherInterface $dispatcher;
+    #[Inject]
+    protected ArgumentsResolverInterface $argumentsResolver;
+    #[Inject]
+    protected IdentityInterface $identity;
 
     public function categorizeLog(): string
     {

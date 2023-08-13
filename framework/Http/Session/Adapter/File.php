@@ -3,14 +3,16 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Session\Adapter;
 
+use ManaPHP\AliasInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Http\AbstractSession;
 
-/**
- * @property-read \ManaPHP\AliasInterface $alias
- */
 class File extends AbstractSession
 {
+    #[Inject]
+    protected AliasInterface $alias;
+
     protected string $dir;
     protected string $extension;
     protected int $level;

@@ -4,16 +4,21 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\InvokerInterface as DiInvokerInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
+use ManaPHP\Validating\ValidatorInterface;
 use ReflectionMethod;
 
-/**
- * @property-read \ManaPHP\Http\RequestInterface         $request
- * @property-read \ManaPHP\Validating\ValidatorInterface $validator
- * @property-read \ManaPHP\Di\InvokerInterface           $invoker
- */
 class Invoker extends Component implements InvokerInterface
 {
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ValidatorInterface $validator;
+    #[Inject]
+    protected DiInvokerInterface $invoker;
+
     public function invoke(Controller $controller, string $method): mixed
     {
         $args = [];

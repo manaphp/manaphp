@@ -4,16 +4,23 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Mongodb;
 
 use ManaPHP\Component;
+use ManaPHP\Data\Model\ManagerInterface;
+use ManaPHP\Data\Model\ShardingInterface;
+use ManaPHP\Data\Model\ThoseInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\MisuseException;
 
-/**
- * @property-read \ManaPHP\Data\Model\ThoseInterface     $those
- * @property-read \ManaPHP\Data\Mongodb\FactoryInterface $mongodbFactory
- * @property-read \ManaPHP\Data\Model\ShardingInterface  $sharding
- * @property-read \ManaPHP\Data\Model\ManagerInterface   $modelManager
- */
 class CollectionGateway extends Component implements CollectionGatewayInterface
 {
+    #[Inject]
+    protected ThoseInterface $those;
+    #[Inject]
+    protected FactoryInterface $mongodbFactory;
+    #[Inject]
+    protected ShardingInterface $sharding;
+    #[Inject]
+    protected ManagerInterface $modelManager;
+
     protected function getThat(string $model): Model
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */

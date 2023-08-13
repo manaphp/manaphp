@@ -3,14 +3,16 @@ declare(strict_types=1);
 
 namespace ManaPHP\Tracers;
 
+use ManaPHP\ConfigInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Tracer;
 
-/**
- * @property-read \ManaPHP\ConfigInterface $config
- */
 class RedisTracer extends Tracer
 {
+    #[Inject]
+    protected ConfigInterface $config;
+
     public function listen(): void
     {
         $this->verbose && $this->attachEvent('redis:connecting', [$this, 'onConnecting']);

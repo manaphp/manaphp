@@ -6,25 +6,35 @@ namespace ManaPHP\Validating;
 
 use Closure;
 use ManaPHP\Component;
+use ManaPHP\Data\Model\ThoseInterface;
 use ManaPHP\Data\ModelInterface;
+use ManaPHP\Data\Model\ManagerInterface as ModelManagerInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
+use ManaPHP\Html\PurifierInterface;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\I18n\LocaleInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ReflectionClass;
 
-/**
- * @property-read \ManaPHP\I18n\LocaleInterface        $locale
- * @property-read \ManaPHP\Http\RequestInterface       $request
- * @property-read \ManaPHP\Data\Model\ThoseInterface   $those
- * @property-read \ManaPHP\Html\PurifierInterface      $htmlPurifier
- * @property-read \ManaPHP\Data\Model\ManagerInterface $modelManager
- */
 class Validator extends Component implements ValidatorInterface
 {
+    #[Inject]
+    protected LocaleInterface $locale;
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ThoseInterface $those;
+    #[Inject]
+    protected PurifierInterface $htmlPurifier;
+    #[Inject]
+    protected ModelManagerInterface $modelManager;
+
     protected string $dir;
 
     protected array $files;

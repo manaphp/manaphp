@@ -3,17 +3,23 @@ declare(strict_types=1);
 
 namespace ManaPHP\Filters;
 
+use ManaPHP\ConfigInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\Filter;
 use ManaPHP\Http\Filter\BeginFilterInterface;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\Http\ResponseInterface;
 
-/**
- * @property-read \ManaPHP\ConfigInterface        $config
- * @property-read \ManaPHP\Http\RequestInterface  $request
- * @property-read \ManaPHP\Http\ResponseInterface $response
- */
 class CorsFilter extends Filter implements BeginFilterInterface
 {
+    #[Inject]
+    protected ConfigInterface $config;
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ResponseInterface $response;
+
     protected int $max_age;
     protected ?string $origin;
     protected bool $credentials;

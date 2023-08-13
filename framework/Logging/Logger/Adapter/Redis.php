@@ -3,16 +3,20 @@ declare(strict_types=1);
 
 namespace ManaPHP\Logging\Logger\Adapter;
 
+use ManaPHP\ConfigInterface;
+use ManaPHP\Data\RedisBrokerInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Logging\AbstractLogger;
 use ManaPHP\Logging\Level;
 use ManaPHP\Logging\Logger\Log;
 
-/**
- * @property-read \ManaPHP\ConfigInterface           $config
- * @property-read \ManaPHP\Data\RedisBrokerInterface $redisBroker
- */
 class Redis extends AbstractLogger
 {
+    #[Inject]
+    protected ConfigInterface $config;
+    #[Inject]
+    protected RedisBrokerInterface $redisBroker;
+
     protected string $key;
 
     public function __construct(?string $key = null, string $level = Level::DEBUG, ?string $hostname = null)

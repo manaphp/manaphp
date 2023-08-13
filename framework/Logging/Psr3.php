@@ -4,15 +4,15 @@ declare(strict_types=1);
 namespace ManaPHP\Logging;
 
 use ManaPHP\Component;
-use Psr\Log\LoggerInterface;
+use ManaPHP\Di\Attribute\Inject;
 use Stringable;
 use Throwable;
 
-/**
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
- */
-class Psr3 extends Component implements LoggerInterface
+class Psr3 extends Component implements \Psr\Log\LoggerInterface
 {
+    #[Inject]
+    protected LoggerInterface $logger;
+
     public function log($level, Stringable|string $message, array $context = []): void
     {
         if (($exception = $context['exception'] ?? null) !== null && $exception instanceof Throwable) {

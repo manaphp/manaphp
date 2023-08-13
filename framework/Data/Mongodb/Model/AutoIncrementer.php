@@ -4,15 +4,21 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Mongodb\Model;
 
 use ManaPHP\Component;
+use ManaPHP\Data\Model\ManagerInterface;
+use ManaPHP\Data\Model\ShardingInterface;
+use ManaPHP\Data\Mongodb\FactoryInterface;
 use ManaPHP\Data\MongodbInterface;
+use ManaPHP\Di\Attribute\Inject;
 
-/**
- * @property-read \ManaPHP\Data\Model\ManagerInterface   $modelManager
- * @property-read \ManaPHP\Data\Model\ShardingInterface  $sharding
- * @property-read \ManaPHP\Data\Mongodb\FactoryInterface $mongodbFactory
- */
 class AutoIncrementer extends Component implements AutoIncrementerInterface
 {
+    #[Inject]
+    protected ManagerInterface $modelManager;
+    #[Inject]
+    protected ShardingInterface $sharding;
+    #[Inject]
+    protected FactoryInterface $mongodbFactory;
+
     protected function createAutoIncrementIndex(MongodbInterface $mongodb, string $source): bool
     {
         $primaryKey = $this->modelManager->getPrimaryKey(static::class);

@@ -3,18 +3,26 @@ declare(strict_types=1);
 
 namespace ManaPHP\Filters;
 
+use ManaPHP\ConfigInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\Filter;
 use ManaPHP\Http\Filter\EndFilterInterface;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\Http\ResponseInterface;
 
-/**
- * @property-read \ManaPHP\ConfigInterface          $config
- * @property-read \ManaPHP\Http\RequestInterface    $request
- * @property-read \ManaPHP\Http\ResponseInterface   $response
- * @property-read \ManaPHP\Http\DispatcherInterface $dispatcher
- */
 class SlowlogFilter extends Filter implements EndFilterInterface
 {
+    #[Inject]
+    protected ConfigInterface $config;
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ResponseInterface $response;
+    #[Inject]
+    protected DispatcherInterface $dispatcher;
+
     protected float $threshold;
     protected string $file;
     protected string $format;

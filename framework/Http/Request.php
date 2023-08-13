@@ -4,17 +4,22 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\FactoryInterface as DiFactoryInterface;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Http\Request\File\Exception as FileException;
 use ManaPHP\Http\Request\FileInterface;
+use ManaPHP\Validating\ValidatorInterface;
 
-/**
- * @property-read \ManaPHP\Di\FactoryInterface           $factory
- * @property-read \ManaPHP\Http\GlobalsInterface         $globals
- * @property-read \ManaPHP\Validating\ValidatorInterface $validator
- */
 class Request extends Component implements RequestInterface
 {
+    #[Inject]
+    protected DiFactoryInterface $factory;
+    #[Inject]
+    protected GlobalsInterface $globals;
+    #[Inject]
+    protected ValidatorInterface $validator;
+
     public function getRawBody(): string
     {
         return $this->globals->getRawBody();

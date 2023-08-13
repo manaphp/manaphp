@@ -3,14 +3,18 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Session\Adapter;
 
+use ManaPHP\ConfigInterface;
+use ManaPHP\Data\RedisCacheInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Http\AbstractSession;
 
-/**
- * @property-read \ManaPHP\ConfigInterface          $config
- * @property-read \ManaPHP\Data\RedisCacheInterface $redisCache
- */
 class Redis extends AbstractSession
 {
+    #[Inject]
+    protected ConfigInterface $config;
+    #[Inject]
+    protected RedisCacheInterface $redisCache;
+
     protected string $prefix;
 
     public function __construct(?string $prefix = null,

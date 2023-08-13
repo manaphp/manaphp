@@ -3,14 +3,16 @@ declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Cli\Command;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\LocalFS;
 
-/**
- * @property-read \ManaPHP\AliasInterface $alias
- */
 class FrameworkCommand extends Command
 {
+    #[Inject]
+    protected AliasInterface $alias;
+
     /**
      * @param string $str
      *

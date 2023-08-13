@@ -3,7 +3,10 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\FactoryInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Http\Client\BadGatewayException;
@@ -22,15 +25,18 @@ use ManaPHP\Http\Client\ServerErrorException;
 use ManaPHP\Http\Client\ServiceUnavailableException;
 use ManaPHP\Http\Client\TooManyRequestsException;
 use ManaPHP\Http\Client\UnauthorizedException;
+use ManaPHP\Pool\ManagerInterface;
 
-/**
- * @property-read \ManaPHP\AliasInterface        $alias
- * @property-read \ManaPHP\Pool\ManagerInterface $poolManager
- * @property-read \ManaPHP\Di\FactoryInterface   $factory
- */
 class Client extends Component implements ClientInterface
 {
     use EventTrait;
+
+    #[Inject]
+    protected AliasInterface $alias;
+    #[Inject]
+    protected ManagerInterface $poolManager;
+    #[Inject]
+    protected FactoryInterface $factory;
 
     public const USER_AGENT_IE = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
     protected string|EngineInterface $engine;

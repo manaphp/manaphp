@@ -5,20 +5,25 @@ namespace ManaPHP\Data\Db;
 
 use ManaPHP\Data\AbstractQuery;
 use ManaPHP\Data\DbInterface;
+use ManaPHP\Data\Model\ShardingInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
+use ManaPHP\Logging\LoggerInterface;
 use PDO;
 
-/**
- * @property-read \ManaPHP\Logging\LoggerInterface      $logger
- * @property-read \ManaPHP\Data\Db\FactoryInterface     $dbFactory
- * @property-read \ManaPHP\Data\Model\ShardingInterface $sharding
- */
 class Query extends AbstractQuery
 {
+    #[Inject]
+    protected LoggerInterface $logger;
+    #[Inject]
+    protected FactoryInterface $dbFactory;
+    #[Inject]
+    protected ShardingInterface $sharding;
+
     protected array $joins = [];
     protected array $conditions = [];
     protected ?string $having = null;

@@ -4,15 +4,17 @@ declare(strict_types=1);
 namespace ManaPHP\Cli;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Logging\LoggerInterface;
 use ReflectionClass;
 use Throwable;
 use function getenv;
 
-/**
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
- */
 class Console extends Component implements ConsoleInterface
 {
+    #[Inject]
+    protected LoggerInterface $logger;
+
     protected int $width = 80;
 
     public const FC_BLACK = 0x01;

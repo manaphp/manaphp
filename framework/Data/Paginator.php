@@ -5,14 +5,16 @@ namespace ManaPHP\Data;
 
 use JetBrains\PhpStorm\ArrayShape;
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\PreconditionException;
+use ManaPHP\Http\RequestInterface;
 
-/**
- * @property-read \ManaPHP\Http\RequestInterface $request
- */
 class Paginator extends Component implements PaginatorInterface
 {
+    #[Inject]
+    protected RequestInterface $request;
+
     public int $count;
     public int $size;
     public int $page;

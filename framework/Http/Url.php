@@ -4,13 +4,15 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 
-/**
- * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\Http\RouterInterface  $router
- */
 class Url extends Component implements UrlInterface
 {
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected RouterInterface $router;
+
     public function get(string|array $args = [], bool|string $scheme = false): string
     {
         if (is_string($args)) {

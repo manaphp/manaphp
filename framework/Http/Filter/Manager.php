@@ -4,15 +4,18 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Filter;
 
 use ManaPHP\Component;
+use ManaPHP\ConfigInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 
-/**
- * @property-read \ManaPHP\Http\Filter\FactoryInterface $factory
- * @property-read \ManaPHP\ConfigInterface              $config
- */
 class Manager extends Component implements ManagerInterface
 {
     use EventTrait;
+
+    #[Inject]
+    protected FactoryInterface $factory;
+    #[Inject]
+    protected ConfigInterface $config;
 
     public function register(): void
     {

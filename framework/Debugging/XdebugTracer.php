@@ -3,15 +3,17 @@ declare(strict_types=1);
 
 namespace ManaPHP\Debugging;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 
-/**
- * @property-read \ManaPHP\AliasInterface $alias
- */
 class XdebugTracer extends Component implements XdebugTracerInterface
 {
     use EventTrait;
+
+    #[Inject]
+    protected AliasInterface $alias;
 
     protected int $params;
     protected int $return;

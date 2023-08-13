@@ -73,7 +73,7 @@ class Container implements ContainerInterface, FactoryInterface, InvokerInterfac
         }
     }
 
-    public function make(string $name, array $parameters = []): mixed
+    public function make(string $name, array $parameters = [], string $id = null): mixed
     {
         while (is_string($definition = $this->definitions[$name] ?? null)) {
             /** @noinspection CallableParameterUseCaseInTypeContextInspection */
@@ -116,6 +116,10 @@ class Container implements ContainerInterface, FactoryInterface, InvokerInterfac
         if (method_exists($name, '__construct')) {
             $instance = $rClass->newInstanceWithoutConstructor();
 
+            if ($id !== null) {
+                $this->instances[$id] = $instance;
+            }
+
             if ($parameters !== []) {
                 $dependencies = [];
                 foreach ($parameters as $key => $value) {
@@ -142,6 +146,10 @@ class Container implements ContainerInterface, FactoryInterface, InvokerInterfac
         } else {
             $instance = new $name();
 
+            if ($id !== null) {
+                $this->instances[$id] = $instance;
+            }
+
             if ($parameters !== []) {
                 $this->dependencies[$instance] = $parameters;
             }
@@ -161,12 +169,12 @@ class Container implements ContainerInterface, FactoryInterface, InvokerInterfac
         $definition = $this->definitions[$id] ?? null;
 
         if ($definition === null) {
-            return $this->instances[$id] = $this->make($id);
+            return $this->instances[$id] = $this->make($id, [], $id);
         } elseif (is_string($definition)) {
             if ($definition[0] === '#') {
                 return $this->instances[$id] = $this->get("$id$definition");
             } elseif (str_contains($definition, '::')) {
-                return $this->instances[$id] = $this->make($definition, ['id' => $id]);
+                return $this->instances[$id] = $this->make($definition, ['id' => $id], $id);
             } else {
                 return $this->instances[$id] = $this->get($definition);
             }
@@ -181,7 +189,7 @@ class Container implements ContainerInterface, FactoryInterface, InvokerInterfac
                 $class = $id;
             }
 
-            return $this->instances[$id] = $this->make($class, $definition);
+            return $this->instances[$id] = $this->make($class, $definition, $id);
         } else {
             throw new NotSupportedException('not supported definition');
         }

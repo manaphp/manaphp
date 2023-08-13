@@ -4,18 +4,23 @@ declare(strict_types=1);
 namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\FactoryInterface;
+use ManaPHP\Di\InspectorInterface;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use ReflectionClass;
 use ReflectionMethod;
 
-/**
- * @property-read \ManaPHP\Di\InspectorInterface        $inspector
- * @property-read \ManaPHP\Cli\Command\ManagerInterface $commandManager
- * @property-read \ManaPHP\Di\FactoryInterface          $factory
- */
 class BashCompletionCommand extends Command
 {
+    #[Inject]
+    protected InspectorInterface $inspector;
+    #[Inject]
+    protected Command\ManagerInterface $commandManager;
+    #[Inject]
+    protected FactoryInterface $factory;
+
     /**
      * @param string $command
      *

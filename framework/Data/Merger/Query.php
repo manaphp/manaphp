@@ -6,16 +6,20 @@ namespace ManaPHP\Data\Merger;
 use ManaPHP\Data\AbstractQuery;
 use ManaPHP\Data\ModelInterface;
 use ManaPHP\Data\QueryInterface;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\FactoryInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
+use ManaPHP\Http\RequestInterface;
 
-/**
- * @property-read \ManaPHP\Http\RequestInterface $request
- * @property-read \ManaPHP\Di\FactoryInterface   $factory
- */
 class Query extends AbstractQuery
 {
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected FactoryInterface $factory;
+
     protected array $queries;
 
     public function __construct(array $queries, null|string|array $fields = null)

@@ -4,19 +4,21 @@ declare(strict_types=1);
 namespace ManaPHP\Ws;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\FactoryInterface;
 use ManaPHP\Event\Emitter;
 use ManaPHP\Event\EmitterInterface;
 use ManaPHP\Exception\NonCloneableException;
+use ManaPHP\Pool\ManagerInterface;
 use ManaPHP\Ws\Client\EngineInterface;
 use ManaPHP\Ws\Client\Message;
 use Throwable;
 
-/**
- * @property-read \ManaPHP\Pool\ManagerInterface $poolManager
- */
 class Client extends Component implements ClientInterface
 {
+    #[Inject]
+    protected ManagerInterface $poolManager;
+
     protected string $endpoint;
     protected ?string $proxy;
     protected float $timeout = 3.0;

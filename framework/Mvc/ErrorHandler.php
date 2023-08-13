@@ -4,18 +4,28 @@ declare(strict_types=1);
 namespace ManaPHP\Mvc;
 
 use ManaPHP\Component;
+use ManaPHP\ConfigInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\Http\ResponseInterface;
+use ManaPHP\Logging\LoggerInterface;
+use ManaPHP\Rendering\RendererInterface;
 use Throwable;
 
-/**
- * @property-read \ManaPHP\ConfigInterface             $config
- * @property-read \ManaPHP\Logging\LoggerInterface     $logger
- * @property-read \ManaPHP\Http\RequestInterface       $request
- * @property-read \ManaPHP\Http\ResponseInterface      $response
- * @property-read \ManaPHP\Rendering\RendererInterface $renderer
- */
 class ErrorHandler extends Component implements ErrorHandlerInterface
 {
+    #[Inject]
+    protected ConfigInterface $config;
+    #[Inject]
+    protected LoggerInterface $logger;
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ResponseInterface $response;
+    #[Inject]
+    protected RendererInterface $renderer;
+
     public function handle(Throwable $throwable): void
     {
         $code = $throwable instanceof Exception ? $throwable->getStatusCode() : 500;

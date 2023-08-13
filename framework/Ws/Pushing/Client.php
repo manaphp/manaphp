@@ -4,15 +4,17 @@ declare(strict_types=1);
 namespace ManaPHP\Ws\Pushing;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MissingFieldException;
+use ManaPHP\Messaging\PubSubInterface;
 
-/**
- * @property-read \ManaPHP\Messaging\PubSubInterface $pubSub
- */
 class Client extends Component implements ClientInterface
 {
     use EventTrait;
+
+    #[Inject]
+    protected PubSubInterface $pubSub;
 
     protected string $endpoint;
     protected string $prefix;

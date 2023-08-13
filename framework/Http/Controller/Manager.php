@@ -3,16 +3,18 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Controller;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
-/**
- * @property-read \ManaPHP\AliasInterface $alias
- */
 class Manager extends Component implements ManagerInterface
 {
+    #[Inject]
+    protected AliasInterface $alias;
+
     protected ?array $controllers = null;
 
     public function getControllers(): array

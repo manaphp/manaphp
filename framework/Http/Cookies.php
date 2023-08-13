@@ -4,14 +4,17 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 
-/**
- * @property-read \ManaPHP\Http\GlobalsInterface  $globals
- * @property-read \ManaPHP\Http\RequestInterface  $request
- * @property-read \ManaPHP\Http\ResponseInterface $response
- */
 class Cookies extends Component implements CookiesInterface
 {
+    #[Inject]
+    protected GlobalsInterface $globals;
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ResponseInterface $response;
+
     public function all(): array
     {
         return $this->globals->getCookie();

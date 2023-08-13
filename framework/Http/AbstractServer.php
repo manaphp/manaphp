@@ -4,19 +4,26 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
+use ManaPHP\Http\Filter\ManagerInterface;
 
-/**
- * @property-read \ManaPHP\Http\RequestInterface        $request
- * @property-read \ManaPHP\Http\ResponseInterface       $response
- * @property-read \ManaPHP\Http\RouterInterface         $router
- * @property-read \ManaPHP\Http\HandlerInterface        $httpHandler
- * @property-read \ManaPHP\Http\GlobalsInterface        $globals
- * @property-read \ManaPHP\Http\Filter\ManagerInterface $filterManager
- */
 abstract class AbstractServer extends Component implements ServerInterface
 {
     use EventTrait;
+
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ResponseInterface $response;
+    #[Inject]
+    protected RouterInterface $router;
+    #[Inject]
+    protected HandlerInterface $httpHandler;
+    #[Inject]
+    protected GlobalsInterface $globals;
+    #[Inject]
+    protected ManagerInterface $filterManager;
 
     protected string $host;
     protected int $port;

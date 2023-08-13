@@ -3,18 +3,20 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Client\Engine;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\Client\ConnectionException;
 use ManaPHP\Http\Client\EngineInterface;
 use ManaPHP\Http\Client\Request;
 use ManaPHP\Http\Client\Response;
 
-/**
- * @property-read \ManaPHP\AliasInterface $alias
- */
 class Curl extends Component implements EngineInterface
 {
+    #[Inject]
+    protected AliasInterface $alias;
+
     protected mixed $curl = null;
 
     public function __destruct()

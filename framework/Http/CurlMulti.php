@@ -4,19 +4,25 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use Countable;
+use ManaPHP\AliasInterface;
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\FactoryInterface;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\CurlMulti\Error;
 use ManaPHP\Http\CurlMulti\Request;
 use ManaPHP\Http\CurlMulti\Response;
+use ManaPHP\Logging\LoggerInterface;
 
-/**
- * @property-read \ManaPHP\AliasInterface          $alias
- * @property-read \ManaPHP\Logging\LoggerInterface $logger
- * @property-read \ManaPHP\Di\FactoryInterface     $factory
- */
 class CurlMulti extends Component implements CurlMultiInterface, Countable
 {
+    #[Inject]
+    protected AliasInterface $alias;
+    #[Inject]
+    protected LoggerInterface $logger;
+    #[Inject]
+    protected FactoryInterface $factory;
+
     protected ?string $proxy;
     protected int $timeout;
 

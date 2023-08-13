@@ -4,13 +4,16 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Db;
 
 use ManaPHP\Component;
+use ManaPHP\Data\Model\ShardingInterface;
+use ManaPHP\Di\Attribute\Inject;
 
-/**
- * @property-read \ManaPHP\Data\Db\FactoryInterface     $dbFactory
- * @property-read \ManaPHP\Data\Model\ShardingInterface $sharding
- */
 class TableGateway extends Component implements TableGatewayInterface
 {
+    #[Inject]
+    protected FactoryInterface $dbFactory;
+    #[Inject]
+    protected ShardingInterface $sharding;
+
     public function insert(string $model, array $record, bool $fetchInsertId = false): mixed
     {
         list($connection, $table) = $this->sharding->getUniqueShard($model, $record);

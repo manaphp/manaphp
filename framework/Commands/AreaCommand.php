@@ -3,16 +3,20 @@ declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Cli\Command;
+use ManaPHP\Cli\RequestInterface;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
-/**
- * @property-read \ManaPHP\AliasInterface       $alias
- * @property-read \ManaPHP\Cli\RequestInterface $request
- */
 class AreaCommand extends Command
 {
+    #[Inject]
+    protected AliasInterface $alias;
+    #[Inject]
+    protected RequestInterface $request;
+
     /**
      * create area directory tree
      *

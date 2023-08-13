@@ -5,25 +5,33 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\ForbiddenException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\Controller\Attribute\Authorize;
+use ManaPHP\Http\Controller\ManagerInterface;
 use ManaPHP\Identifying\Identity\NoCredentialException;
+use ManaPHP\Identifying\IdentityInterface;
 use ReflectionClass;
 use ReflectionMethod;
 
-/**
- * @property-read \ManaPHP\Identifying\IdentityInterface    $identity
- * @property-read \ManaPHP\Http\DispatcherInterface         $dispatcher
- * @property-read \ManaPHP\Http\RouterInterface             $router
- * @property-read \ManaPHP\Http\RequestInterface            $request
- * @property-read \ManaPHP\Http\ResponseInterface           $response
- * @property-read \ManaPHP\Http\Controller\ManagerInterface $controllerManager
- */
 class Authorization extends Component implements AuthorizationInterface
 {
     use ContextTrait;
+
+    #[Inject]
+    protected IdentityInterface $identity;
+    #[Inject]
+    protected DispatcherInterface $dispatcher;
+    #[Inject]
+    protected RouterInterface $router;
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ResponseInterface $response;
+    #[Inject]
+    protected ManagerInterface $controllerManager;
 
     public function getPermissions(string $controller): array
     {

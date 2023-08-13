@@ -3,19 +3,27 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Server\Adapter\Native;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Http\RequestInterface;
+use ManaPHP\Http\ResponseInterface;
+use ManaPHP\Http\RouterInterface;
 
-/**
- * @property-read \ManaPHP\Http\RequestInterface  $request
- * @property-read \ManaPHP\Http\ResponseInterface $response
- * @property-read \ManaPHP\AliasInterface         $alias
- * @property-read \ManaPHP\Http\RouterInterface   $router
- */
 class Sender extends Component implements SenderInterface
 {
     use EventTrait;
+
+    #[Inject]
+    protected RequestInterface $request;
+    #[Inject]
+    protected ResponseInterface $response;
+    #[Inject]
+    protected AliasInterface $alias;
+    #[Inject]
+    protected RouterInterface $router;
 
     public function send(): void
     {

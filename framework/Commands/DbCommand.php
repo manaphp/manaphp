@@ -3,23 +3,28 @@ declare(strict_types=1);
 
 namespace ManaPHP\Commands;
 
+use ManaPHP\AliasInterface;
 use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
+use ManaPHP\ConfigInterface;
 use ManaPHP\Data\Db;
 use ManaPHP\Data\DbInterface;
 use ManaPHP\Data\Model\Attribute\ColumnMap;
 use ManaPHP\Data\Model\Attribute\Connection;
 use ManaPHP\Data\Model\Attribute\PrimaryKey;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
-/**
- * @property-read \ManaPHP\ConfigInterface          $config
- * @property-read \ManaPHP\AliasInterface           $alias
- * @property-read \ManaPHP\Data\Db\FactoryInterface $dbFactory
- */
 class DbCommand extends Command
 {
+    #[Inject]
+    protected ConfigInterface $config;
+    #[Inject]
+    protected AliasInterface $alias;
+    #[Inject]
+    protected Db\FactoryInterface $dbFactory;
+
     protected array $tableConstants = [];
 
     /**
