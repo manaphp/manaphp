@@ -10,10 +10,10 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\JsonException;
 use ManaPHP\Helper\Container;
 use ManaPHP\Http\RequestInterface;
+use ManaPHP\Http\RouterInterface;
 use ManaPHP\I18n\TranslatorInterface;
 use ManaPHP\Token\ScopedJwtInterface;
 use ManaPHP\Validating\ValidatorInterface;
-use ManaPHP\Http\RouterInterface;
 
 if (!function_exists('json_parse')) {
     function json_parse(string $str): mixed

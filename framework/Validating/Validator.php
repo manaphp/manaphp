@@ -6,9 +6,9 @@ namespace ManaPHP\Validating;
 
 use Closure;
 use ManaPHP\Component;
+use ManaPHP\Data\Model\ManagerInterface as ModelManagerInterface;
 use ManaPHP\Data\Model\ThoseInterface;
 use ManaPHP\Data\ModelInterface;
-use ManaPHP\Data\Model\ManagerInterface as ModelManagerInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Tracers;
 
-use ManaPHP\Http\RequestInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Http\RequestInterface;
 use ManaPHP\Tracer;
 
 class RequestTracer extends Tracer
