@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Helper;
 
 use ManaPHP\Di\FactoryInterface;
-use ManaPHP\Di\InjectorInterface;
 use ManaPHP\Di\InvokerInterface;
 use Psr\Container\ContainerInterface;
 
@@ -40,21 +39,5 @@ class Container
         $container = $GLOBALS['Psr\Container\ContainerInterface'];
 
         return $container->get(InvokerInterface::class)->call($callable, $parameters);
-    }
-
-    public static function inject(object $object, string $property): mixed
-    {
-        /** @var ContainerInterface $container */
-        $container = $GLOBALS['Psr\Container\ContainerInterface'];
-
-        return $container->get(InjectorInterface::class)->inject($object, $property);
-    }
-
-    public static function canInject(object $object, string $property): bool
-    {
-        /** @var ContainerInterface $container */
-        $container = $GLOBALS['Psr\Container\ContainerInterface'];
-
-        return $container->get(InjectorInterface::class)->canInject($object, $property);
     }
 }
