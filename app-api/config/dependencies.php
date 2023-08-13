@@ -7,4 +7,5 @@ return [
     'ManaPHP\Http\HandlerInterface'         => 'ManaPHP\Rest\Handler',
     'ManaPHP\Identifying\IdentityInterface' => 'ManaPHP\Identifying\Identity\Adapter\Jwt',
     'ManaPHP\Http\RouterInterface'          => 'App\Router',
+    'ManaPHP\Security\CryptInterface'       => ['master_key' => 'dev']
 ];

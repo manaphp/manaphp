@@ -3,23 +3,27 @@ declare(strict_types=1);
 
 namespace ManaPHP;
 
-use ManaPHP\Di\Container;
+use ManaPHP\Di\Attribute\Inject;
 use Psr\Container\ContainerInterface;
 
 class Kernel extends Component
 {
-    protected string $rootDir;
+    #[Inject]
     protected ContainerInterface $container;
+    #[Inject]
     protected AliasInterface $alias;
+    #[Inject]
+    protected EnvInterface $env;
+    #[Inject]
+    protected ConfigInterface $config;
 
-    public function __construct(string $rootDir, ContainerInterface $container = null)
+    protected string $rootDir;
+
+    public function __construct(string $rootDir)
     {
         $this->rootDir = $rootDir;
 
-        $this->container = $container = $container ?? new Container();
-        $this->alias = $container->get(AliasInterface::class);
-
-        $GLOBALS['Psr\Container\ContainerInterface'] = $container;
+        $GLOBALS['Psr\Container\ContainerInterface'] = $this->container;
     }
 
     public function registerDefaultDependencies(): void
@@ -105,15 +109,14 @@ class Kernel extends Component
         $this->registerDefaultDependencies();
         $this->registerDefaultAliases();
 
-        $this->container->get(EnvInterface::class)->load();
+        $this->env->load();
 
-        $config = $this->container->get(ConfigInterface::class);
-        $config->load();
+        $this->config->load();
 
-        $this->registerAppAliases($config->get('aliases', []));
-        $this->registerAppFactories($config->get('factories', []));
-        $this->registerAppDependencies($config->get('dependencies', []));
-        $this->bootBootstrappers($config->get('bootstrappers', []));
+        $this->registerAppAliases($this->config->get('aliases', []));
+        $this->registerAppFactories($this->config->get('factories', []));
+        $this->registerAppDependencies($this->config->get('dependencies', []));
+        $this->bootBootstrappers($this->config->get('bootstrappers', []));
 
         /** @var string|ServerInterface $server */
         $server = $this->container->get($server);
