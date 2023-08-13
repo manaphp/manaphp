@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Helper;
 
-use ManaPHP\Di\FactoryInterface;
 use ManaPHP\Di\InvokerInterface;
+use ManaPHP\Di\MakerInterface;
 use Psr\Container\ContainerInterface;
 
 class Container
@@ -30,7 +30,7 @@ class Container
         /** @var ContainerInterface $container */
         $container = $GLOBALS['Psr\Container\ContainerInterface'];
 
-        return $container->get(FactoryInterface::class)->make($class, $parameters);
+        return $container->get(MakerInterface::class)->make($class, $parameters);
     }
 
     public static function call(callable $callable, array $parameters = []): mixed

@@ -7,14 +7,14 @@ use DOMDocument;
 use DOMElement;
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\FactoryInterface;
+use ManaPHP\Di\MakerInterface;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Html\Dom\Document\Exception as DocumentException;
 use ManaPHP\Http\ClientInterface;
 
 class Document extends Component
 {
-    #[Inject] protected FactoryInterface $factory;
+    #[Inject] protected MakerInterface $maker;
     #[Inject] protected ClientInterface $httpClient;
 
     protected string $url;
@@ -86,7 +86,7 @@ class Document extends Component
             throw new DocumentException('xx');
         }
 
-        $this->query = $this->factory->make('ManaPHP\Html\Dom\Query', [$this->dom]);
+        $this->query = $this->maker->make('ManaPHP\Html\Dom\Query', [$this->dom]);
 
         $this->url = $url;
         $this->base = $this->getBase() ?: $this->url;

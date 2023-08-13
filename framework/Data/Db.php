@@ -11,14 +11,14 @@ use ManaPHP\Data\Db\Exception as DbException;
 use ManaPHP\Data\Db\Query;
 use ManaPHP\Data\Db\SqlFragmentable;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\FactoryInterface;
+use ManaPHP\Di\MakerInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Pool\Transient;
 use ManaPHP\Pool\ManagerInterface as PoolManagerInterface;
+use ManaPHP\Pool\Transient;
 use PDO;
 use PDOException;
 
@@ -28,23 +28,21 @@ class Db extends Component implements DbInterface
     use ContextTrait;
 
     #[Inject] protected PoolManagerInterface $poolManager;
-
+    #[Inject] protected MakerInterface $maker;
     public const METADATA_ATTRIBUTES = 0;
     public const METADATA_PRIMARY_KEY = 1;
     public const METADATA_AUTO_INCREMENT_KEY = 3;
     public const METADATA_INT_TYPE_ATTRIBUTES = 5;
 
     protected string $uri;
-    protected FactoryInterface $factory;
     protected string $prefix = '';
     protected bool $has_slave = false;
     protected float $timeout = 3.0;
     protected string $pool_size = '4';
 
-    public function __construct(string $uri, FactoryInterface $factory)
+    public function __construct(string $uri)
     {
         $this->uri = $uri;
-        $this->factory = $factory;
 
         if (str_contains($uri, 'timeout=') && preg_match('#timeout=([\d.]+)#', $uri, $matches) === 1) {
             $this->timeout = (float)$matches[1];
@@ -92,7 +90,7 @@ class Db extends Component implements DbInterface
         if ($uris[0] !== '') {
             $uri = (string)$uris[0];
             $adapter = 'ManaPHP\Data\Db\Connection\Adapter\\' . ucfirst(parse_url($uri, PHP_URL_SCHEME));
-            $sample = $factory->make($adapter, [$uri]);
+            $sample = $this->maker->make($adapter, [$uri]);
             $this->poolManager->add($this, $sample, $master_pool_size);
         }
 
@@ -112,14 +110,14 @@ class Db extends Component implements DbInterface
                 for ($i = 0; $i < $slave_pool_size; $i++) {
                     foreach ($uris as $v) {
                         $adapter = 'ManaPHP\Data\Db\Connection\Adapter\\' . ucfirst(parse_url($v, PHP_URL_SCHEME));
-                        $sample = $factory->make($adapter, [$v]);
+                        $sample = $this->maker->make($adapter, [$v]);
                         $this->poolManager->add($this, $sample, 1, 'slave');
                     }
                 }
             } else {
                 $uri = (string)$uris[random_int(0, count($uris) - 1)];
                 $adapter = 'ManaPHP\Data\Db\Connection\Adapter\\' . ucfirst(parse_url($uri, PHP_URL_SCHEME));
-                $sample = $factory->make($adapter, [$uri]);
+                $sample = $this->maker->make($adapter, [$uri]);
                 $this->poolManager->add($this, $sample, 1, 'slave');
             }
 
@@ -654,7 +652,7 @@ class Db extends Component implements DbInterface
 
     public function query(?string $table = null, ?string $alias = null): Query
     {
-        return $this->factory->make('ManaPHP\Data\Db\Query', [$this])->from($table, $alias);
+        return $this->maker->make('ManaPHP\Data\Db\Query', [$this])->from($table, $alias);
     }
 
     public function getTransientWrapper(string $type = 'default'): Transient

@@ -6,7 +6,7 @@ namespace ManaPHP\Data;
 use ManaPHP\Component;
 use ManaPHP\Data\Redis\Connection;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\FactoryInterface;
+use ManaPHP\Di\MakerInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Pool\ManagerInterface as PoolManager;
@@ -16,6 +16,7 @@ class Redis extends Component implements RedisInterface, RedisDbInterface, Redis
     use EventTrait;
 
     #[Inject] protected PoolManager $poolManager;
+    #[Inject] protected MakerInterface $maker;
 
     protected string $uri;
     protected float $timeout = 1.0;
@@ -27,7 +28,7 @@ class Redis extends Component implements RedisInterface, RedisDbInterface, Redis
     /**
      * @param string $uri redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0
      */
-    public function __construct(string $uri, FactoryInterface $factory)
+    public function __construct(string $uri)
     {
         $this->owner = $this;
 
@@ -41,7 +42,7 @@ class Redis extends Component implements RedisInterface, RedisDbInterface, Redis
             $this->pool_size = (int)$matches[1];
         }
 
-        $sample = $factory->make('ManaPHP\Data\Redis\Connection', [$this->uri]);
+        $sample = $this->maker->make('ManaPHP\Data\Redis\Connection', [$this->uri]);
         $this->poolManager->add($this, $sample, $this->pool_size);
     }
 

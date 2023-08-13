@@ -14,7 +14,7 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use WeakMap;
 
-class Container implements ContainerInterface, FactoryInterface, InvokerInterface, InspectorInterface
+class Container implements ContainerInterface, MakerInterface, InvokerInterface, InspectorInterface
 {
     protected array $definitions = [];
     protected array $instances = [];
@@ -25,7 +25,7 @@ class Container implements ContainerInterface, FactoryInterface, InvokerInterfac
         $this->definitions = $definitions;
 
         $this->definitions['Psr\Container\ContainerInterface'] = $this;
-        $this->definitions['ManaPHP\Di\FactoryInterface'] = $this;
+        $this->definitions['ManaPHP\Di\MakerInterface'] = $this;
         $this->definitions['ManaPHP\Di\InvokerInterface'] = $this;
         $this->definitions['ManaPHP\Di\InspectorInterface'] = $this;
 

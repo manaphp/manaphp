@@ -5,7 +5,7 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\FactoryInterface as DiFactoryInterface;
+use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Http\Request\File\Exception as FileException;
 use ManaPHP\Http\Request\FileInterface;
@@ -13,7 +13,7 @@ use ManaPHP\Validating\ValidatorInterface;
 
 class Request extends Component implements RequestInterface
 {
-    #[Inject] protected DiFactoryInterface $factory;
+    #[Inject] protected MakerInterface $maker;
     #[Inject] protected GlobalsInterface $globals;
     #[Inject] protected ValidatorInterface $validator;
 
@@ -199,7 +199,7 @@ class Request extends Component implements RequestInterface
                     if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {
                         $file['key'] = $key;
 
-                        $r[] = $this->factory->make('ManaPHP\Http\Request\File', $file);
+                        $r[] = $this->maker->make('ManaPHP\Http\Request\File', $file);
                     }
                 }
             } elseif (is_int($files['error'])) {
@@ -207,7 +207,7 @@ class Request extends Component implements RequestInterface
                 if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {
                     $file['key'] = $key;
 
-                    $r[] = $this->factory->make('ManaPHP\Http\Request\File', $file);
+                    $r[] = $this->maker->make('ManaPHP\Http\Request\File', $file);
                 }
             } else {
                 $countFiles = count($files['error']);
@@ -221,7 +221,7 @@ class Request extends Component implements RequestInterface
                             'error'    => $files['error'][$i],
                             'size'     => $files['size'][$i],
                         ];
-                        $r[] = $this->factory->make('ManaPHP\Http\Request\File', $file);
+                        $r[] = $this->maker->make('ManaPHP\Http\Request\File', $file);
                     }
                 }
             }

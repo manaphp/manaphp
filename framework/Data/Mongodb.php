@@ -7,7 +7,7 @@ use ManaPHP\Component;
 use ManaPHP\Data\Mongodb\Exception as MongodbException;
 use ManaPHP\Data\Mongodb\Query;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\FactoryInterface;
+use ManaPHP\Di\MakerInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Pool\ManagerInterface;
@@ -18,15 +18,13 @@ class Mongodb extends Component implements MongodbInterface
     use EventTrait;
 
     #[Inject] protected ManagerInterface $poolManager;
-
-    protected FactoryInterface $factory;
+    #[Inject] protected MakerInterface $maker;
     protected string $uri;
     protected string $prefix;
     protected string $db;
 
-    public function __construct(FactoryInterface $factory, string $uri = 'mongodb://127.0.0.1:27017/')
+    public function __construct(string $uri = 'mongodb://127.0.0.1:27017/')
     {
-        $this->factory = $factory;
         $this->uri = $uri;
 
         if (preg_match('#[?&]prefix=(\w+)#', $uri, $matches)) {
@@ -36,7 +34,7 @@ class Mongodb extends Component implements MongodbInterface
         $path = parse_url($uri, PHP_URL_PATH);
         $this->db = ($path !== '/' && $path !== null) ? substr($path, 1) : null;
 
-        $sample = $factory->make('ManaPHP\Data\Mongodb\Connection', [$this->uri]);
+        $sample = $this->maker->make('ManaPHP\Data\Mongodb\Connection', [$this->uri]);
         $this->poolManager->add($this, $sample);
     }
 
@@ -329,6 +327,6 @@ class Mongodb extends Component implements MongodbInterface
 
     public function query(?string $collection = null): Query
     {
-        return $this->factory->make('ManaPHP\Data\Mongodb\Query', [$this])->from($collection);
+        return $this->maker->make('ManaPHP\Data\Mongodb\Query', [$this])->from($collection);
     }
 }

@@ -7,7 +7,7 @@ use ManaPHP\Data\AbstractQuery;
 use ManaPHP\Data\ModelInterface;
 use ManaPHP\Data\QueryInterface;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\FactoryInterface;
+use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
@@ -16,7 +16,7 @@ use ManaPHP\Http\RequestInterface;
 class Query extends AbstractQuery
 {
     #[Inject] protected RequestInterface $request;
-    #[Inject] protected FactoryInterface $factory;
+    #[Inject] protected MakerInterface $maker;
 
     protected array $queries;
 
@@ -41,7 +41,7 @@ class Query extends AbstractQuery
     {
         foreach ($queries as $id => $query) {
             if (is_string($query)) {
-                $query = $this->factory->make($query);
+                $query = $this->maker->make($query);
             }
 
             if ($query instanceof QueryInterface) {

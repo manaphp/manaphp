@@ -5,8 +5,8 @@ namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\FactoryInterface;
 use ManaPHP\Di\InspectorInterface;
+use ManaPHP\Di\MakerInterface;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use ReflectionClass;
@@ -16,7 +16,7 @@ class BashCompletionCommand extends Command
 {
     #[Inject] protected InspectorInterface $inspector;
     #[Inject] protected Command\ManagerInterface $commandManager;
-    #[Inject] protected FactoryInterface $factory;
+    #[Inject] protected MakerInterface $maker;
 
     /**
      * @param string $command
@@ -88,7 +88,7 @@ class BashCompletionCommand extends Command
         $action = Str::camelize($action) . 'Completion';
         if (method_exists($commandClassName, $action)) {
             try {
-                $argument_values = $this->factory->make($commandClassName)->$action($argumentName, $current);
+                $argument_values = $this->maker->make($commandClassName)->$action($argumentName, $current);
             } catch (\Exception $e) {
             }
         }
