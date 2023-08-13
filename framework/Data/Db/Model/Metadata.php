@@ -11,14 +11,9 @@ use ManaPHP\Di\Attribute\Inject;
 
 class Metadata extends Component implements MetadataInterface
 {
-    #[Inject]
-    protected ConfigInterface $config;
-
-    #[Inject]
-    protected Db\FactoryInterface $dbFactory;
-
-    #[Inject]
-    protected ShardingInterface $sharding;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected Db\FactoryInterface $dbFactory;
+    #[Inject] protected ShardingInterface $sharding;
 
     protected int $ttl;
 

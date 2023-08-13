@@ -11,10 +11,8 @@ use ManaPHP\Http\RequestInterface;
 
 class Translator extends Component implements TranslatorInterface
 {
-    #[Inject]
-    protected LocaleInterface $locale;
-    #[Inject]
-    protected RequestInterface $request;
+    #[Inject] protected LocaleInterface $locale;
+    #[Inject] protected RequestInterface $request;
 
     protected string $dir;
 

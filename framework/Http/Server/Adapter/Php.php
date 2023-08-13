@@ -12,12 +12,9 @@ use ManaPHP\Http\Server\StaticHandlerInterface;
 
 class Php extends AbstractServer
 {
-    #[Inject]
-    protected SenderInterface $sender;
-    #[Inject]
-    protected StaticHandlerInterface $staticHandler;
-    #[Inject]
-    protected AliasInterface $alias;
+    #[Inject] protected SenderInterface $sender;
+    #[Inject] protected StaticHandlerInterface $staticHandler;
+    #[Inject] protected AliasInterface $alias;
 
     public function __construct(string $host = '0.0.0.0', int $port = 9501, array $settings = [])
     {

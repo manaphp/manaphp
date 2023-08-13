@@ -16,8 +16,7 @@ use Throwable;
 
 class Client extends Component implements ClientInterface
 {
-    #[Inject]
-    protected ManagerInterface $poolManager;
+    #[Inject] protected ManagerInterface $poolManager;
 
     protected string $endpoint;
     protected ?string $proxy;

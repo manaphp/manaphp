@@ -12,8 +12,7 @@ use Throwable;
 
 class Scheduler extends Component implements SchedulerInterface
 {
-    #[Inject]
-    protected LoggerInterface $logger;
+    #[Inject] protected LoggerInterface $logger;
 
     protected array $tasks = [];
 

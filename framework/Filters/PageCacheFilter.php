@@ -21,14 +21,10 @@ class PageCacheFilter extends Filter implements ReadyFilterInterface
 {
     use ContextTrait;
 
-    #[Inject]
-    protected ConfigInterface $config;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ResponseInterface $response;
-    #[Inject]
-    protected RedisCacheInterface $redisCache;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ResponseInterface $response;
+    #[Inject] protected RedisCacheInterface $redisCache;
 
     protected string $prefix;
 

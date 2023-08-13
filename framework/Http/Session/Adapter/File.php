@@ -10,8 +10,7 @@ use ManaPHP\Http\AbstractSession;
 
 class File extends AbstractSession
 {
-    #[Inject]
-    protected AliasInterface $alias;
+    #[Inject] protected AliasInterface $alias;
 
     protected string $dir;
     protected string $extension;

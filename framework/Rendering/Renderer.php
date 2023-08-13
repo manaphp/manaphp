@@ -19,10 +19,8 @@ class Renderer extends Component implements RendererInterface
     use EventTrait;
     use ContextTrait;
 
-    #[Inject]
-    protected AliasInterface $alias;
-    #[Inject]
-    protected FactoryInterface $engineFactory;
+    #[Inject] protected AliasInterface $alias;
+    #[Inject] protected FactoryInterface $engineFactory;
 
     /**
      * @var \ManaPHP\Rendering\EngineInterface[]

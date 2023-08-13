@@ -9,8 +9,7 @@ use ManaPHP\Identifying\Identity;
 
 class Session extends Identity
 {
-    #[Inject]
-    protected SessionInterface $session;
+    #[Inject] protected SessionInterface $session;
 
     protected string $name = 'auth';
 

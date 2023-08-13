@@ -9,8 +9,7 @@ use ManaPHP\Http\RouterInterface;
 
 class StaticHandler extends Component implements StaticHandlerInterface
 {
-    #[Inject]
-    protected RouterInterface $router;
+    #[Inject] protected RouterInterface $router;
 
     protected string $root;
     protected array $locations;

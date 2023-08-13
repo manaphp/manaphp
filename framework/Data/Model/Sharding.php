@@ -10,8 +10,7 @@ use ManaPHP\Helper\Sharding\ShardingTooManyException;
 
 class Sharding extends Component implements ShardingInterface
 {
-    #[Inject]
-    protected ManagerInterface $modelManager;
+    #[Inject] protected ManagerInterface $modelManager;
 
     public function getAnyShard(string $model): array
     {

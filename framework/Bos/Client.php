@@ -14,12 +14,9 @@ use ManaPHP\Rest\ClientInterface as RestClientInterface;
 
 class Client extends Component implements ClientInterface
 {
-    #[Inject]
-    protected AliasInterface $alias;
-    #[Inject]
-    protected HttpClientInterface $httpClient;
-    #[Inject]
-    protected RestClientInterface $restClient;
+    #[Inject] protected AliasInterface $alias;
+    #[Inject] protected HttpClientInterface $httpClient;
+    #[Inject] protected RestClientInterface $restClient;
 
     protected string $endpoint;
 

@@ -15,10 +15,8 @@ use ReflectionMethod;
 
 class VerbsFilter extends Filter implements ValidatingFilterInterface
 {
-    #[Inject]
-    protected ViewInterface $view;
-    #[Inject]
-    protected RequestInterface $request;
+    #[Inject] protected ViewInterface $view;
+    #[Inject] protected RequestInterface $request;
 
     public function onValidating(EventArgs $eventArgs): void
     {

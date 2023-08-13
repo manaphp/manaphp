@@ -10,8 +10,7 @@ use ManaPHP\Tracer;
 
 class DispatcherTracer extends Tracer
 {
-    #[Inject]
-    protected ResponseInterface $response;
+    #[Inject] protected ResponseInterface $response;
 
     public function listen(): void
     {

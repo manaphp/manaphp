@@ -10,8 +10,7 @@ use ManaPHP\Exception\InvalidValueException;
 
 class Env extends Component implements EnvInterface
 {
-    #[Inject]
-    protected AliasInterface $alias;
+    #[Inject] protected AliasInterface $alias;
 
     protected string $file;
 

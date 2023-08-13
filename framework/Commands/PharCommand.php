@@ -12,8 +12,7 @@ use Phar;
 
 class PharCommand extends Command
 {
-    #[Inject]
-    protected AliasInterface $alias;
+    #[Inject] protected AliasInterface $alias;
 
     /**
      * create manacli.phar file

@@ -19,10 +19,8 @@ class Smtp extends AbstractMailer
 {
     use ContextTrait;
 
-    #[Inject]
-    protected AliasInterface $alias;
-    #[Inject]
-    protected LoggerInterface $logger;
+    #[Inject] protected AliasInterface $alias;
+    #[Inject] protected LoggerInterface $logger;
 
     protected string $uri;
     protected string $scheme;

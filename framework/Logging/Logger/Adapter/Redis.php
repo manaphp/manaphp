@@ -12,10 +12,8 @@ use ManaPHP\Logging\Logger\Log;
 
 class Redis extends AbstractLogger
 {
-    #[Inject]
-    protected ConfigInterface $config;
-    #[Inject]
-    protected RedisBrokerInterface $redisBroker;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected RedisBrokerInterface $redisBroker;
 
     protected string $key;
 

@@ -26,16 +26,11 @@ class Swoole extends Component implements ServerInterface
 {
     use EventTrait;
 
-    #[Inject]
-    protected ConfigInterface $config;
-    #[Inject]
-    protected LoggerInterface $logger;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected GlobalsInterface $globals;
-    #[Inject]
-    protected HandlerInterface $wsHandler;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected LoggerInterface $logger;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected GlobalsInterface $globals;
+    #[Inject] protected HandlerInterface $wsHandler;
 
     protected string $host = '0.0.0.0';
     protected int $port = 9501;

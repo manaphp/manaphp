@@ -12,18 +12,12 @@ abstract class AbstractServer extends Component implements ServerInterface
 {
     use EventTrait;
 
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ResponseInterface $response;
-    #[Inject]
-    protected RouterInterface $router;
-    #[Inject]
-    protected HandlerInterface $httpHandler;
-    #[Inject]
-    protected GlobalsInterface $globals;
-    #[Inject]
-    protected ManagerInterface $filterManager;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ResponseInterface $response;
+    #[Inject] protected RouterInterface $router;
+    #[Inject] protected HandlerInterface $httpHandler;
+    #[Inject] protected GlobalsInterface $globals;
+    #[Inject] protected ManagerInterface $filterManager;
 
     protected string $host;
     protected int $port;

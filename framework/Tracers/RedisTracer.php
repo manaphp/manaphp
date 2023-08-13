@@ -10,8 +10,7 @@ use ManaPHP\Tracer;
 
 class RedisTracer extends Tracer
 {
-    #[Inject]
-    protected ConfigInterface $config;
+    #[Inject] protected ConfigInterface $config;
 
     public function listen(): void
     {

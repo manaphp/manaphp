@@ -17,10 +17,8 @@ class Dispatcher extends Component implements DispatcherInterface
     use EventTrait;
     use ContextTrait;
 
-    #[Inject]
-    protected GlobalsInterface $globals;
-    #[Inject]
-    protected FactoryInterface $controllerFactory;
+    #[Inject] protected GlobalsInterface $globals;
+    #[Inject] protected FactoryInterface $controllerFactory;
 
     public function getArea(): ?string
     {

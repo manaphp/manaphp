@@ -9,8 +9,7 @@ use ManaPHP\Http\SessionInterface;
 
 class Bag extends Component implements BagInterface
 {
-    #[Inject]
-    protected SessionInterface $session;
+    #[Inject] protected SessionInterface $session;
 
     protected string $name;
 

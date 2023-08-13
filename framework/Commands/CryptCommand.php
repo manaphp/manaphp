@@ -9,8 +9,7 @@ use ManaPHP\Security\CryptInterface;
 
 class CryptCommand extends Command
 {
-    #[Inject]
-    protected CryptInterface $crypt;
+    #[Inject] protected CryptInterface $crypt;
 
     /**
      * get the derived key

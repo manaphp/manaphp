@@ -15,16 +15,11 @@ class Handler extends Component implements HandlerInterface
 {
     use EventTrait;
 
-    #[Inject]
-    protected ConsoleInterface $console;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ManagerInterface $commandManager;
-    #[Inject]
-    protected FactoryInterface $commandFactory;
-    #[Inject]
-    protected ArgumentsResolverInterface $argumentsResolver;
+    #[Inject] protected ConsoleInterface $console;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ManagerInterface $commandManager;
+    #[Inject] protected FactoryInterface $commandFactory;
+    #[Inject] protected ArgumentsResolverInterface $argumentsResolver;
 
     protected array $args;
     protected string $command;

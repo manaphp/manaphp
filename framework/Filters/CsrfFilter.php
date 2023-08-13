@@ -15,10 +15,8 @@ use ManaPHP\Rest\Controller as RestController;
 
 class CsrfFilter extends Filter implements ValidatingFilterInterface
 {
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ViewInterface $view;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ViewInterface $view;
 
     protected bool $strict;
     protected array $domains;

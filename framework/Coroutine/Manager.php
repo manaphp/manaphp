@@ -10,8 +10,7 @@ use Swoole\Coroutine;
 
 class Manager extends Component implements ManagerInterface
 {
-    #[Inject]
-    protected FactoryInterface $factory;
+    #[Inject] protected FactoryInterface $factory;
 
     protected array $option;
 

@@ -15,8 +15,7 @@ use ManaPHP\Http\Client\TimeoutException;
 
 class Stream extends Component implements EngineInterface
 {
-    #[Inject]
-    protected AliasInterface $alias;
+    #[Inject] protected AliasInterface $alias;
 
     protected mixed $stream = null;
 

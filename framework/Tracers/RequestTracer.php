@@ -9,8 +9,7 @@ use ManaPHP\Tracer;
 
 class RequestTracer extends Tracer
 {
-    #[Inject]
-    protected RequestInterface $request;
+    #[Inject] protected RequestInterface $request;
 
     public function listen(): void
     {

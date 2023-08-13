@@ -9,8 +9,7 @@ use ManaPHP\Exception\MisuseException;
 
 class Queue extends AbstractQueue
 {
-    #[Inject]
-    protected RedisBrokerInterface $redisBroker;
+    #[Inject] protected RedisBrokerInterface $redisBroker;
 
     protected string $prefix;
 

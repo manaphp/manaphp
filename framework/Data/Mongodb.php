@@ -17,8 +17,7 @@ class Mongodb extends Component implements MongodbInterface
 {
     use EventTrait;
 
-    #[Inject]
-    protected ManagerInterface $poolManager;
+    #[Inject] protected ManagerInterface $poolManager;
 
     protected FactoryInterface $factory;
     protected string $uri;

@@ -18,10 +18,8 @@ class Router extends Component implements RouterInterface
     use EventTrait;
     use ContextTrait;
 
-    #[Inject]
-    protected AliasInterface $alias;
-    #[Inject]
-    protected RequestInterface $request;
+    #[Inject] protected AliasInterface $alias;
+    #[Inject] protected RequestInterface $request;
 
     protected bool $case_sensitive = true;
     protected string $prefix = '';

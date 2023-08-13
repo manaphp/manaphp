@@ -13,10 +13,8 @@ use ManaPHP\Invoking\ObjectValueResolverInterface;
 
 class Model extends Component implements ObjectValueResolverInterface
 {
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ManagerInterface $modelManager;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ManagerInterface $modelManager;
 
     public function resolve(?string $type, string $name): mixed
     {

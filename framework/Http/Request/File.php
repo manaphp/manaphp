@@ -11,8 +11,7 @@ use ManaPHP\Http\Request\File\Exception as FileException;
 
 class File extends Component implements FileInterface
 {
-    #[Inject]
-    protected AliasInterface $alias;
+    #[Inject] protected AliasInterface $alias;
 
     protected array $file;
 

@@ -18,12 +18,9 @@ use ManaPHP\Helper\Str;
 
 class DbCommand extends Command
 {
-    #[Inject]
-    protected ConfigInterface $config;
-    #[Inject]
-    protected AliasInterface $alias;
-    #[Inject]
-    protected Db\FactoryInterface $dbFactory;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected AliasInterface $alias;
+    #[Inject] protected Db\FactoryInterface $dbFactory;
 
     protected array $tableConstants = [];
 

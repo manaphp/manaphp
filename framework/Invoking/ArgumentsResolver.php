@@ -14,14 +14,10 @@ use ReflectionMethod;
 
 class ArgumentsResolver extends Component implements ArgumentsResolverInterface
 {
-    #[Inject]
-    protected ContainerInterface $container;
-    #[Inject]
-    protected ValidatorInterface $validator;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ManagerInterface $modelManager;
+    #[Inject] protected ContainerInterface $container;
+    #[Inject] protected ValidatorInterface $validator;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ManagerInterface $modelManager;
 
     /**
      * @var ScalarValueResolverInterface[]

@@ -19,20 +19,13 @@ class Handler extends Component implements HandlerInterface
 {
     use EventTrait;
 
-    #[Inject]
-    protected ServerInterface $wsServer;
-    #[Inject]
-    protected IdentityInterface $identity;
-    #[Inject]
-    protected RouterInterface $router;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ResponseInterface $response;
-    #[Inject]
-    protected DispatcherInterface $dispatcher;
-    #[Inject]
-    protected ErrorHandlerInterface $errorHandler;
+    #[Inject] protected ServerInterface $wsServer;
+    #[Inject] protected IdentityInterface $identity;
+    #[Inject] protected RouterInterface $router;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ResponseInterface $response;
+    #[Inject] protected DispatcherInterface $dispatcher;
+    #[Inject] protected ErrorHandlerInterface $errorHandler;
 
     /**
      * @noinspection PhpRedundantCatchClauseInspection

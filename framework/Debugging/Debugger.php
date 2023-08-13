@@ -32,24 +32,15 @@ class Debugger extends Component implements DebuggerInterface
     use EventTrait;
     use ContextTrait;
 
-    #[Inject]
-    protected InspectorInterface $inspector;
-    #[Inject]
-    protected ConfigInterface $config;
-    #[Inject]
-    protected LoggerInterface $logger;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ResponseInterface $response;
-    #[Inject]
-    protected DispatcherInterface $dispatcher;
-    #[Inject]
-    protected RouterInterface $router;
-    #[Inject]
-    protected ContainerInterface $container;
-    #[Inject]
-    protected PreparedEmulatorInterface $preparedEmulator;
+    #[Inject] protected InspectorInterface $inspector;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected LoggerInterface $logger;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ResponseInterface $response;
+    #[Inject] protected DispatcherInterface $dispatcher;
+    #[Inject] protected RouterInterface $router;
+    #[Inject] protected ContainerInterface $container;
+    #[Inject] protected PreparedEmulatorInterface $preparedEmulator;
 
     protected int $ttl;
     protected string $prefix;

@@ -14,8 +14,7 @@ use ManaPHP\Http\Client\Response;
 
 class Fopen extends Component implements EngineInterface
 {
-    #[Inject]
-    protected AliasInterface $alias;
+    #[Inject] protected AliasInterface $alias;
 
     public function request(Request $request, ?string $body): Response
     {

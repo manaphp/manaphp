@@ -13,12 +13,9 @@ use ManaPHP\Validating\ValidatorInterface;
 
 class Request extends Component implements RequestInterface
 {
-    #[Inject]
-    protected DiFactoryInterface $factory;
-    #[Inject]
-    protected GlobalsInterface $globals;
-    #[Inject]
-    protected ValidatorInterface $validator;
+    #[Inject] protected DiFactoryInterface $factory;
+    #[Inject] protected GlobalsInterface $globals;
+    #[Inject] protected ValidatorInterface $validator;
 
     public function getRawBody(): string
     {

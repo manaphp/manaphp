@@ -9,8 +9,7 @@ use ManaPHP\Http\Server\Adapter\Native\SenderInterface;
 
 class Fpm extends AbstractServer
 {
-    #[Inject]
-    protected SenderInterface $sender;
+    #[Inject] protected SenderInterface $sender;
 
     protected function prepareGlobals(): void
     {

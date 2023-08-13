@@ -10,8 +10,7 @@ use Throwable;
 
 class Psr3 extends Component implements \Psr\Log\LoggerInterface
 {
-    #[Inject]
-    protected LoggerInterface $logger;
+    #[Inject] protected LoggerInterface $logger;
 
     public function log($level, Stringable|string $message, array $context = []): void
     {

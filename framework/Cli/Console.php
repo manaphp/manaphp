@@ -12,8 +12,7 @@ use function getenv;
 
 class Console extends Component implements ConsoleInterface
 {
-    #[Inject]
-    protected LoggerInterface $logger;
+    #[Inject] protected LoggerInterface $logger;
 
     protected int $width = 80;
 

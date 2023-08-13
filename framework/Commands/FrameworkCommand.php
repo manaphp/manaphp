@@ -10,8 +10,7 @@ use ManaPHP\Helper\LocalFS;
 
 class FrameworkCommand extends Command
 {
-    #[Inject]
-    protected AliasInterface $alias;
+    #[Inject] protected AliasInterface $alias;
 
     /**
      * @param string $str

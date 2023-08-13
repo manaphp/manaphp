@@ -16,10 +16,8 @@ use ManaPHP\Helper\Str;
 
 class Manager extends Component implements ManagerInterface
 {
-    #[Inject]
-    protected ThoseInterface $those;
-    #[Inject]
-    protected ModelManagerInterface $modelManager;
+    #[Inject] protected ThoseInterface $those;
+    #[Inject] protected ModelManagerInterface $modelManager;
 
     protected array $relations;
 

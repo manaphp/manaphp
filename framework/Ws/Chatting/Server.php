@@ -18,16 +18,11 @@ class Server extends Component implements ServerInterface, LogCategorizable
 {
     use EventTrait;
 
-    #[Inject]
-    protected LoggerInterface $logger;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected IdentityInterface $identity;
-    #[Inject]
-    protected WsServerInterface $wsServer;
-    #[Inject]
-    protected PubSubInterface $pubSub;
+    #[Inject] protected LoggerInterface $logger;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected IdentityInterface $identity;
+    #[Inject] protected WsServerInterface $wsServer;
+    #[Inject] protected PubSubInterface $pubSub;
 
     protected string $prefix;
     protected bool $dedicated;

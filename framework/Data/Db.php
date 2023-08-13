@@ -27,8 +27,7 @@ class Db extends Component implements DbInterface
     use EventTrait;
     use ContextTrait;
 
-    #[Inject]
-    protected PoolManagerInterface $poolManager;
+    #[Inject] protected PoolManagerInterface $poolManager;
 
     public const METADATA_ATTRIBUTES = 0;
     public const METADATA_PRIMARY_KEY = 1;

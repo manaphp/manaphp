@@ -15,10 +15,8 @@ use ManaPHP\Http\RequestInterface;
 
 class Query extends AbstractQuery
 {
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected FactoryInterface $factory;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected FactoryInterface $factory;
 
     protected array $queries;
 

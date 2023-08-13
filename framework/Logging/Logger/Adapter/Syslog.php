@@ -20,8 +20,7 @@ use ManaPHP\Logging\Logger\Log;
 
 class Syslog extends AbstractLogger
 {
-    #[Inject]
-    protected ConfigInterface $config;
+    #[Inject] protected ConfigInterface $config;
 
     protected string $uri;
     protected int $facility;

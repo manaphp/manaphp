@@ -15,16 +15,11 @@ use Throwable;
 
 class ErrorHandler extends Component implements ErrorHandlerInterface
 {
-    #[Inject]
-    protected ConfigInterface $config;
-    #[Inject]
-    protected LoggerInterface $logger;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ResponseInterface $response;
-    #[Inject]
-    protected RendererInterface $renderer;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected LoggerInterface $logger;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ResponseInterface $response;
+    #[Inject] protected RendererInterface $renderer;
 
     public function handle(Throwable $throwable): void
     {

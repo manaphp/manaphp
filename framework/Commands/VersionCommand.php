@@ -10,8 +10,7 @@ use ManaPHP\Version;
 
 class VersionCommand extends Command
 {
-    #[Inject]
-    protected ConfigInterface $config;
+    #[Inject] protected ConfigInterface $config;
 
     public function showAction()
     {

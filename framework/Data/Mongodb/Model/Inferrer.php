@@ -16,14 +16,10 @@ use MongoDB\BSON\ObjectId;
 
 class Inferrer extends Component implements InferrerInterface
 {
-    #[Inject]
-    protected ThoseInterface $those;
-    #[Inject]
-    protected FactoryInterface $mongodbFactory;
-    #[Inject]
-    protected ShardingInterface $sharding;
-    #[Inject]
-    protected ManagerInterface $modelManager;
+    #[Inject] protected ThoseInterface $those;
+    #[Inject] protected FactoryInterface $mongodbFactory;
+    #[Inject] protected ShardingInterface $sharding;
+    #[Inject] protected ManagerInterface $modelManager;
 
     protected array $primaryKey = [];
     protected array $fields = [];

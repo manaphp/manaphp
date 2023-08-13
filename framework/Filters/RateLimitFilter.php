@@ -15,14 +15,10 @@ use ManaPHP\Identifying\IdentityInterface;
 
 class RateLimitFilter extends Filter implements ValidatingFilterInterface
 {
-    #[Inject]
-    protected ConfigInterface $config;
-    #[Inject]
-    protected IdentityInterface $identity;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected RedisCacheInterface $redisCache;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected IdentityInterface $identity;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected RedisCacheInterface $redisCache;
 
     protected string $prefix;
     protected string $limits;

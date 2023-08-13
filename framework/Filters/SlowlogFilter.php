@@ -14,14 +14,10 @@ use ManaPHP\Http\ResponseInterface;
 
 class SlowlogFilter extends Filter implements EndFilterInterface
 {
-    #[Inject]
-    protected ConfigInterface $config;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ResponseInterface $response;
-    #[Inject]
-    protected DispatcherInterface $dispatcher;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ResponseInterface $response;
+    #[Inject] protected DispatcherInterface $dispatcher;
 
     protected float $threshold;
     protected string $file;

@@ -21,18 +21,12 @@ use ManaPHP\Http\RequestInterface;
 
 abstract class AbstractQuery extends Component implements QueryInterface, IteratorAggregate
 {
-    #[Inject]
-    protected FactoryInterface $factory;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected RelationManagerInterface $relationManager;
-    #[Inject]
-    protected ThoseInterface $those;
-    #[Inject]
-    protected ShardingInterface $sharding;
-    #[Inject]
-    protected ModelManagerInterface $modelManager;
+    #[Inject] protected FactoryInterface $factory;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected RelationManagerInterface $relationManager;
+    #[Inject] protected ThoseInterface $those;
+    #[Inject] protected ShardingInterface $sharding;
+    #[Inject] protected ModelManagerInterface $modelManager;
 
     protected string $connection;
     protected string $table;

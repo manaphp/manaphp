@@ -13,8 +13,7 @@ use Psr\Container\ContainerInterface;
 
 class TracerBootstrapper extends Component implements BootstrapperInterface
 {
-    #[Inject]
-    protected ConfigInterface $config;
+    #[Inject] protected ConfigInterface $config;
 
     protected array $tracers;
     protected bool $enabled;

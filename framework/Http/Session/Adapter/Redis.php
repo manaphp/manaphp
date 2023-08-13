@@ -10,10 +10,8 @@ use ManaPHP\Http\AbstractSession;
 
 class Redis extends AbstractSession
 {
-    #[Inject]
-    protected ConfigInterface $config;
-    #[Inject]
-    protected RedisCacheInterface $redisCache;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected RedisCacheInterface $redisCache;
 
     protected string $prefix;
 

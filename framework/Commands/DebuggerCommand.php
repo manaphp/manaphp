@@ -10,10 +10,8 @@ use ManaPHP\Di\Attribute\Inject;
 
 class DebuggerCommand extends Command
 {
-    #[Inject]
-    protected ConfigInterface $config;
-    #[Inject]
-    protected RedisCacheInterface $redisCache;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected RedisCacheInterface $redisCache;
 
     /**
      * monitor generated urls

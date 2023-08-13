@@ -14,12 +14,9 @@ use ReflectionMethod;
 
 class HelpCommand extends Command
 {
-    #[Inject]
-    protected ConfigInterface $config;
-    #[Inject]
-    protected Command\FactoryInterface $commandFactory;
-    #[Inject]
-    protected Command\ManagerInterface $commandManager;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected Command\FactoryInterface $commandFactory;
+    #[Inject] protected Command\ManagerInterface $commandManager;
 
     /**
      * list all commands

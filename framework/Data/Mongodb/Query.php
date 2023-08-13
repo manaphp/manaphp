@@ -17,10 +17,8 @@ use MongoDB\BSON\Regex;
 
 class Query extends AbstractQuery
 {
-    #[Inject]
-    protected FactoryInterface $mongodbFactory;
-    #[Inject]
-    protected ManagerInterface $modelManager;
+    #[Inject] protected FactoryInterface $mongodbFactory;
+    #[Inject] protected ManagerInterface $modelManager;
 
     protected array $types;
     protected array $aliases;

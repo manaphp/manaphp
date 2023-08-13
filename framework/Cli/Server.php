@@ -15,12 +15,9 @@ use Throwable;
 
 class Server extends Component implements ServerInterface
 {
-    #[Inject]
-    protected LoggerInterface $logger;
-    #[Inject]
-    protected ErrorHandlerInterface $errorHandler;
-    #[Inject]
-    protected HandlerInterface $cliHandler;
+    #[Inject] protected LoggerInterface $logger;
+    #[Inject] protected ErrorHandlerInterface $errorHandler;
+    #[Inject] protected HandlerInterface $cliHandler;
 
     protected int $exit_code;
 

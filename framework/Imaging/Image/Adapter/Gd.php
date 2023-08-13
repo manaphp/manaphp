@@ -14,8 +14,7 @@ use ManaPHP\Imaging\AbstractImage;
 
 class Gd extends AbstractImage
 {
-    #[Inject]
-    protected AliasInterface $alias;
+    #[Inject] protected AliasInterface $alias;
 
     protected string $file;
     protected GdImage $image;

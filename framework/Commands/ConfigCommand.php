@@ -10,8 +10,7 @@ use ManaPHP\Helper\Arr;
 
 class ConfigCommand extends Command
 {
-    #[Inject]
-    protected ConfigInterface $config;
+    #[Inject] protected ConfigInterface $config;
 
     /**
      * dump of the app.php

@@ -20,10 +20,8 @@ abstract class AbstractLogger extends Component implements LoggerInterface, Cont
     use EventTrait;
     use ContextTrait;
 
-    #[Inject]
-    protected AliasInterface $alias;
-    #[Inject]
-    protected RequestInterface $request;
+    #[Inject] protected AliasInterface $alias;
+    #[Inject] protected RequestInterface $request;
 
     protected string $level;
     protected string $hostname;

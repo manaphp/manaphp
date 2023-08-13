@@ -16,8 +16,7 @@ class Connection extends Component
 {
     use EventTrait;
 
-    #[Inject]
-    protected FactoryInterface $factory;
+    #[Inject] protected FactoryInterface $factory;
 
     protected string $uri;
     protected bool $cluster = false;

@@ -12,8 +12,7 @@ class Client extends Component implements ClientInterface
 {
     use EventTrait;
 
-    #[Inject]
-    protected PubSubInterface $pubSub;
+    #[Inject] protected PubSubInterface $pubSub;
 
     protected string $prefix;
 

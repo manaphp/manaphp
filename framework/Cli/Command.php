@@ -9,8 +9,7 @@ use ManaPHP\Logging\Logger\LogCategorizable;
 
 class Command extends Component implements LogCategorizable
 {
-    #[Inject]
-    protected ConsoleInterface $console;
+    #[Inject] protected ConsoleInterface $console;
 
     public function categorizeLog(): string
     {

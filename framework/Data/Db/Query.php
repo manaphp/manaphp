@@ -17,12 +17,9 @@ use PDO;
 
 class Query extends AbstractQuery
 {
-    #[Inject]
-    protected LoggerInterface $logger;
-    #[Inject]
-    protected FactoryInterface $dbFactory;
-    #[Inject]
-    protected ShardingInterface $sharding;
+    #[Inject] protected LoggerInterface $logger;
+    #[Inject] protected FactoryInterface $dbFactory;
+    #[Inject] protected ShardingInterface $sharding;
 
     protected array $joins = [];
     protected array $conditions = [];

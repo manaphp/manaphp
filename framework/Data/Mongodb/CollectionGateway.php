@@ -12,14 +12,10 @@ use ManaPHP\Exception\MisuseException;
 
 class CollectionGateway extends Component implements CollectionGatewayInterface
 {
-    #[Inject]
-    protected ThoseInterface $those;
-    #[Inject]
-    protected FactoryInterface $mongodbFactory;
-    #[Inject]
-    protected ShardingInterface $sharding;
-    #[Inject]
-    protected ManagerInterface $modelManager;
+    #[Inject] protected ThoseInterface $those;
+    #[Inject] protected FactoryInterface $mongodbFactory;
+    #[Inject] protected ShardingInterface $sharding;
+    #[Inject] protected ManagerInterface $modelManager;
 
     protected function getThat(string $model): Model
     {

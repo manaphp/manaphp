@@ -9,8 +9,7 @@ use ManaPHP\Di\Attribute\Inject;
 
 class FieldsInferer extends Component implements FieldsInfererInterface
 {
-    #[Inject]
-    protected ManagerInterface $modelManager;
+    #[Inject] protected ManagerInterface $modelManager;
 
     protected array $fields = [];
 

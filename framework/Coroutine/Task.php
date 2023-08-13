@@ -12,8 +12,7 @@ use Throwable;
 
 class Task extends Component implements TaskInterface
 {
-    #[Inject]
-    protected LoggerInterface $logger;
+    #[Inject] protected LoggerInterface $logger;
 
     /**
      * @var callable

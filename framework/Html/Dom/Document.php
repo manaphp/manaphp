@@ -14,10 +14,8 @@ use ManaPHP\Http\ClientInterface;
 
 class Document extends Component
 {
-    #[Inject]
-    protected FactoryInterface $factory;
-    #[Inject]
-    protected ClientInterface $httpClient;
+    #[Inject] protected FactoryInterface $factory;
+    #[Inject] protected ClientInterface $httpClient;
 
     protected string $url;
     protected string $base;

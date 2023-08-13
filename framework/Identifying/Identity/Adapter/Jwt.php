@@ -11,12 +11,9 @@ use ManaPHP\Token\ScopedJwtInterface;
 
 class Jwt extends Identity
 {
-    #[Inject]
-    protected ConfigInterface $config;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ScopedJwtInterface $scopedJwt;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ScopedJwtInterface $scopedJwt;
 
     protected string $scope;
     protected int $ttl;

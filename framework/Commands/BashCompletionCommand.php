@@ -14,12 +14,9 @@ use ReflectionMethod;
 
 class BashCompletionCommand extends Command
 {
-    #[Inject]
-    protected InspectorInterface $inspector;
-    #[Inject]
-    protected Command\ManagerInterface $commandManager;
-    #[Inject]
-    protected FactoryInterface $factory;
+    #[Inject] protected InspectorInterface $inspector;
+    #[Inject] protected Command\ManagerInterface $commandManager;
+    #[Inject] protected FactoryInterface $factory;
 
     /**
      * @param string $command

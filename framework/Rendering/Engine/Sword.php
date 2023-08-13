@@ -12,12 +12,9 @@ use ManaPHP\Rendering\EngineInterface;
 
 class Sword extends Component implements EngineInterface
 {
-    #[Inject]
-    protected ConfigInterface $config;
-    #[Inject]
-    protected AliasInterface $alias;
-    #[Inject]
-    protected Compiler $swordCompiler;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected AliasInterface $alias;
+    #[Inject] protected Compiler $swordCompiler;
 
     protected string $doc_root;
 

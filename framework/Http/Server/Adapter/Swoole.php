@@ -20,12 +20,9 @@ class Swoole extends AbstractServer
 {
     use ContextTrait;
 
-    #[Inject]
-    protected ConfigInterface $config;
-    #[Inject]
-    protected AliasInterface $alias;
-    #[Inject]
-    protected StaticHandlerInterface $staticHandler;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected AliasInterface $alias;
+    #[Inject] protected StaticHandlerInterface $staticHandler;
 
     protected array $settings = [];
     protected Server $swoole;

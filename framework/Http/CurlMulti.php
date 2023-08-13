@@ -16,12 +16,9 @@ use ManaPHP\Logging\LoggerInterface;
 
 class CurlMulti extends Component implements CurlMultiInterface, Countable
 {
-    #[Inject]
-    protected AliasInterface $alias;
-    #[Inject]
-    protected LoggerInterface $logger;
-    #[Inject]
-    protected FactoryInterface $factory;
+    #[Inject] protected AliasInterface $alias;
+    #[Inject] protected LoggerInterface $logger;
+    #[Inject] protected FactoryInterface $factory;
 
     protected ?string $proxy;
     protected int $timeout;

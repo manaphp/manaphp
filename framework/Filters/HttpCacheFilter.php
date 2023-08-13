@@ -13,12 +13,9 @@ use ManaPHP\Http\ResponseInterface;
 
 class HttpCacheFilter extends Filter implements RespondingFilterInterface
 {
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ResponseInterface $response;
-    #[Inject]
-    protected DispatcherInterface $dispatcher;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ResponseInterface $response;
+    #[Inject] protected DispatcherInterface $dispatcher;
 
     public function onResponding(): void
     {

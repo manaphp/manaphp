@@ -22,12 +22,9 @@ use ManaPHP\Identifying\IdentityInterface;
  */
 class Db extends AbstractSession
 {
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected DbInterface $db;
-    #[Inject]
-    protected IdentityInterface $identity;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected DbInterface $db;
+    #[Inject] protected IdentityInterface $identity;
 
     protected string $table;
 

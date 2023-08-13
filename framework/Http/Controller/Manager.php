@@ -12,8 +12,7 @@ use ManaPHP\Helper\Str;
 
 class Manager extends Component implements ManagerInterface
 {
-    #[Inject]
-    protected AliasInterface $alias;
+    #[Inject] protected AliasInterface $alias;
 
     protected ?array $controllers = null;
 

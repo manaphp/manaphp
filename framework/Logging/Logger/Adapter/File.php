@@ -12,10 +12,8 @@ use ManaPHP\Logging\Logger\Log;
 
 class File extends AbstractLogger
 {
-    #[Inject]
-    protected ConfigInterface $config;
-    #[Inject]
-    protected AliasInterface $alias;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected AliasInterface $alias;
 
     protected string $file;
     protected string $format;

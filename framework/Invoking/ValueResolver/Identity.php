@@ -10,8 +10,7 @@ use ManaPHP\Invoking\ScalarValueResolverInterface;
 
 class Identity extends Component implements ScalarValueResolverInterface
 {
-    #[Inject]
-    protected IdentityInterface $identity;
+    #[Inject] protected IdentityInterface $identity;
 
     public function resolve(?string $type, string $name): mixed
     {

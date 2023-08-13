@@ -8,14 +8,10 @@ use Psr\Container\ContainerInterface;
 
 class Kernel extends Component
 {
-    #[Inject]
-    protected ContainerInterface $container;
-    #[Inject]
-    protected AliasInterface $alias;
-    #[Inject]
-    protected EnvInterface $env;
-    #[Inject]
-    protected ConfigInterface $config;
+    #[Inject] protected ContainerInterface $container;
+    #[Inject] protected AliasInterface $alias;
+    #[Inject] protected EnvInterface $env;
+    #[Inject] protected ConfigInterface $config;
 
     protected string $rootDir;
 

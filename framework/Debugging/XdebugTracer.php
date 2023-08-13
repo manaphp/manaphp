@@ -12,8 +12,7 @@ class XdebugTracer extends Component implements XdebugTracerInterface
 {
     use EventTrait;
 
-    #[Inject]
-    protected AliasInterface $alias;
+    #[Inject] protected AliasInterface $alias;
 
     protected int $params;
     protected int $return;

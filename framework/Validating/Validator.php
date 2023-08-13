@@ -24,16 +24,11 @@ use ReflectionClass;
 
 class Validator extends Component implements ValidatorInterface
 {
-    #[Inject]
-    protected LocaleInterface $locale;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ThoseInterface $those;
-    #[Inject]
-    protected PurifierInterface $htmlPurifier;
-    #[Inject]
-    protected ModelManagerInterface $modelManager;
+    #[Inject] protected LocaleInterface $locale;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ThoseInterface $those;
+    #[Inject] protected PurifierInterface $htmlPurifier;
+    #[Inject] protected ModelManagerInterface $modelManager;
 
     protected string $dir;
 

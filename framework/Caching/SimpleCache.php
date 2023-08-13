@@ -10,8 +10,7 @@ use Psr\SimpleCache\CacheInterface;
 
 class SimpleCache extends Component implements CacheInterface
 {
-    #[Inject]
-    protected RedisCacheInterface $redisCache;
+    #[Inject] protected RedisCacheInterface $redisCache;
 
     protected string $prefix;
 

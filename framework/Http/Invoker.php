@@ -12,12 +12,9 @@ use ReflectionMethod;
 
 class Invoker extends Component implements InvokerInterface
 {
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ValidatorInterface $validator;
-    #[Inject]
-    protected DiInvokerInterface $invoker;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ValidatorInterface $validator;
+    #[Inject] protected DiInvokerInterface $invoker;
 
     public function invoke(Controller $controller, string $method): mixed
     {

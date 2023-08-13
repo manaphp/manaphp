@@ -11,10 +11,8 @@ use ManaPHP\Http\ResponseInterface;
 
 class EtagFilter extends Filter implements RespondingFilterInterface
 {
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ResponseInterface $response;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ResponseInterface $response;
 
     protected string $algo;
 

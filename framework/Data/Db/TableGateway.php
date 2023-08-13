@@ -9,10 +9,8 @@ use ManaPHP\Di\Attribute\Inject;
 
 class TableGateway extends Component implements TableGatewayInterface
 {
-    #[Inject]
-    protected FactoryInterface $dbFactory;
-    #[Inject]
-    protected ShardingInterface $sharding;
+    #[Inject] protected FactoryInterface $dbFactory;
+    #[Inject] protected ShardingInterface $sharding;
 
     public function insert(string $model, array $record, bool $fetchInsertId = false): mixed
     {

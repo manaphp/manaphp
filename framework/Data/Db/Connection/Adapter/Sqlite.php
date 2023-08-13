@@ -12,8 +12,7 @@ use PDO;
 
 class Sqlite extends AbstractConnection
 {
-    #[Inject]
-    protected AliasInterface $alias;
+    #[Inject] protected AliasInterface $alias;
 
     public function __construct(string $file)
     {

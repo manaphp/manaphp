@@ -12,10 +12,8 @@ use ManaPHP\Helper\Str;
 
 class AreaCommand extends Command
 {
-    #[Inject]
-    protected AliasInterface $alias;
-    #[Inject]
-    protected RequestInterface $request;
+    #[Inject] protected AliasInterface $alias;
+    #[Inject] protected RequestInterface $request;
 
     /**
      * create area directory tree

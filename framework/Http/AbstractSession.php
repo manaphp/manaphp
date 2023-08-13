@@ -17,14 +17,10 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
     use EventTrait;
     use ContextTrait;
 
-    #[Inject]
-    protected LoggerInterface $logger;
-    #[Inject]
-    protected CookiesInterface $cookies;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected RouterInterface $router;
+    #[Inject] protected LoggerInterface $logger;
+    #[Inject] protected CookiesInterface $cookies;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected RouterInterface $router;
 
     protected int $ttl;
     protected int $lazy;

@@ -8,10 +8,8 @@ use ManaPHP\Di\Attribute\Inject;
 
 class Url extends Component implements UrlInterface
 {
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected RouterInterface $router;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected RouterInterface $router;
 
     public function get(string|array $args = [], bool|string $scheme = false): string
     {

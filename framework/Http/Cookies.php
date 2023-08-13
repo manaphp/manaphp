@@ -8,12 +8,9 @@ use ManaPHP\Di\Attribute\Inject;
 
 class Cookies extends Component implements CookiesInterface
 {
-    #[Inject]
-    protected GlobalsInterface $globals;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ResponseInterface $response;
+    #[Inject] protected GlobalsInterface $globals;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ResponseInterface $response;
 
     public function all(): array
     {

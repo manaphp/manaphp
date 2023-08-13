@@ -17,8 +17,7 @@ use ManaPHP\Imaging\AbstractImage;
 
 class Imagick extends AbstractImage
 {
-    #[Inject]
-    protected AliasInterface $alias;
+    #[Inject] protected AliasInterface $alias;
 
     protected string $file;
     protected \Imagick $image;

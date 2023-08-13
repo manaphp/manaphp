@@ -16,14 +16,10 @@ use Psr\Container\ContainerInterface;
 
 class MongodbCommand extends Command
 {
-    #[Inject]
-    protected ContainerInterface $container;
-    #[Inject]
-    protected ConfigInterface $config;
-    #[Inject]
-    protected AliasInterface $alias;
-    #[Inject]
-    protected FactoryInterface $mongodbFactory;
+    #[Inject] protected ContainerInterface $container;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected AliasInterface $alias;
+    #[Inject] protected FactoryInterface $mongodbFactory;
 
     /**
      * @return array

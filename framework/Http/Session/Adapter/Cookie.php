@@ -10,8 +10,7 @@ use ManaPHP\Security\CryptInterface;
 
 class Cookie extends AbstractSession
 {
-    #[Inject]
-    protected CryptInterface $crypt;
+    #[Inject] protected CryptInterface $crypt;
 
     protected string $key;
 

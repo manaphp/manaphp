@@ -8,8 +8,7 @@ use ManaPHP\Exception\InvalidKeyException;
 
 class Config extends Component implements ConfigInterface
 {
-    #[Inject]
-    protected AliasInterface $alias;
+    #[Inject] protected AliasInterface $alias;
 
     protected array $config = [];
 

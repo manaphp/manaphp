@@ -15,10 +15,8 @@ class DebuggerBootstrapper extends Component implements BootstrapperInterface
 {
     use EventTrait;
 
-    #[Inject]
-    protected ConfigInterface $config;
-    #[Inject]
-    protected DebuggerInterface $debugger;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected DebuggerInterface $debugger;
 
     protected bool $enabled;
 

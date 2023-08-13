@@ -11,10 +11,8 @@ use ManaPHP\Rendering\Engine\Sword\Compiler;
 
 class SwordCommand extends Command
 {
-    #[Inject]
-    protected AliasInterface $alias;
-    #[Inject]
-    protected Compiler $swordCompiler;
+    #[Inject] protected AliasInterface $alias;
+    #[Inject] protected Compiler $swordCompiler;
 
     /**
      * precompile sword template

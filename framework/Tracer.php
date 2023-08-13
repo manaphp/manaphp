@@ -9,8 +9,7 @@ use ManaPHP\Logging\LoggerInterface;
 
 abstract class Tracer extends Listener
 {
-    #[Inject]
-    protected LoggerInterface $logger;
+    #[Inject] protected LoggerInterface $logger;
 
     protected bool $verbose;
 

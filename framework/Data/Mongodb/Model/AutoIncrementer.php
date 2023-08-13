@@ -12,12 +12,9 @@ use ManaPHP\Di\Attribute\Inject;
 
 class AutoIncrementer extends Component implements AutoIncrementerInterface
 {
-    #[Inject]
-    protected ManagerInterface $modelManager;
-    #[Inject]
-    protected ShardingInterface $sharding;
-    #[Inject]
-    protected FactoryInterface $mongodbFactory;
+    #[Inject] protected ManagerInterface $modelManager;
+    #[Inject] protected ShardingInterface $sharding;
+    #[Inject] protected FactoryInterface $mongodbFactory;
 
     protected function createAutoIncrementIndex(MongodbInterface $mongodb, string $source): bool
     {

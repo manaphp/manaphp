@@ -19,14 +19,10 @@ class Response extends Component implements ResponseInterface
 {
     use ContextTrait;
 
-    #[Inject]
-    protected ConfigInterface $config;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected UrlInterface $url;
-    #[Inject]
-    protected RouterInterface $router;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected UrlInterface $url;
+    #[Inject] protected RouterInterface $router;
 
     protected int|string $ok_code;
     protected int|string $error_code;

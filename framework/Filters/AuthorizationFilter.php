@@ -10,8 +10,7 @@ use ManaPHP\Http\Filter\AuthorizingFilterInterface;
 
 class AuthorizationFilter extends Filter implements AuthorizingFilterInterface
 {
-    #[Inject]
-    protected AuthorizationInterface $authorization;
+    #[Inject] protected AuthorizationInterface $authorization;
 
     public function onAuthorizing(): void
     {

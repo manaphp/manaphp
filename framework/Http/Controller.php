@@ -14,20 +14,13 @@ class Controller extends Component implements LogCategorizable
 {
     use EventTrait;
 
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ResponseInterface $response;
-    #[Inject]
-    protected CookiesInterface $cookies;
-    #[Inject]
-    protected RouterInterface $router;
-    #[Inject]
-    protected DispatcherInterface $dispatcher;
-    #[Inject]
-    protected ArgumentsResolverInterface $argumentsResolver;
-    #[Inject]
-    protected IdentityInterface $identity;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ResponseInterface $response;
+    #[Inject] protected CookiesInterface $cookies;
+    #[Inject] protected RouterInterface $router;
+    #[Inject] protected DispatcherInterface $dispatcher;
+    #[Inject] protected ArgumentsResolverInterface $argumentsResolver;
+    #[Inject] protected IdentityInterface $identity;
 
     public function categorizeLog(): string
     {

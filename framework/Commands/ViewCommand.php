@@ -10,8 +10,7 @@ use ManaPHP\Helper\LocalFS;
 
 class ViewCommand extends Command
 {
-    #[Inject]
-    protected ManagerInterface $modelManager;
+    #[Inject] protected ManagerInterface $modelManager;
 
     /**
      * @param string $model

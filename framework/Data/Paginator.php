@@ -12,8 +12,7 @@ use ManaPHP\Http\RequestInterface;
 
 class Paginator extends Component implements PaginatorInterface
 {
-    #[Inject]
-    protected RequestInterface $request;
+    #[Inject] protected RequestInterface $request;
 
     public int $count;
     public int $size;

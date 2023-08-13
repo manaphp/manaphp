@@ -12,10 +12,8 @@ use ManaPHP\Http\ClientInterface;
 
 class DateCommand extends Command
 {
-    #[Inject]
-    protected ClientInterface $httpClient;
-    #[Inject]
-    protected RequestInterface $request;
+    #[Inject] protected ClientInterface $httpClient;
+    #[Inject] protected RequestInterface $request;
 
     /**
      * @param string $url

@@ -14,8 +14,7 @@ use ManaPHP\Http\Client\Response;
 
 class Curl extends Component implements EngineInterface
 {
-    #[Inject]
-    protected AliasInterface $alias;
+    #[Inject] protected AliasInterface $alias;
 
     protected mixed $curl = null;
 

@@ -12,10 +12,8 @@ use ManaPHP\Http\DownloaderInterface;
 
 class BosCommand extends Command
 {
-    #[Inject]
-    protected ClientInterface $bosClient;
-    #[Inject]
-    protected DownloaderInterface $downloader;
+    #[Inject] protected ClientInterface $bosClient;
+    #[Inject] protected DownloaderInterface $downloader;
 
     /**
      * list buckets

@@ -14,8 +14,7 @@ class Client extends Component implements ClientInterface
 {
     use EventTrait;
 
-    #[Inject]
-    protected ManagerInterface $poolManager;
+    #[Inject] protected ManagerInterface $poolManager;
 
     protected string $uri;
     protected int $pool_size = 4;

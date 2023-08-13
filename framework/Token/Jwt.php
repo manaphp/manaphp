@@ -10,10 +10,8 @@ use ManaPHP\Security\CryptInterface;
 
 class Jwt extends Component implements JwtInterface
 {
-    #[Inject]
-    protected CryptInterface $crypt;
-    #[Inject]
-    protected Base64UrlInterface $base64Url;
+    #[Inject] protected CryptInterface $crypt;
+    #[Inject] protected Base64UrlInterface $base64Url;
 
     protected string $alg;
     protected string $key;

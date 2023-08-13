@@ -20,10 +20,8 @@ use ReflectionClass;
 
 class Manager extends Component implements ManagerInterface
 {
-    #[Inject]
-    protected ThoseInterface $those;
-    #[Inject]
-    protected InferrerInterface $inferrer;
+    #[Inject] protected ThoseInterface $those;
+    #[Inject] protected InferrerInterface $inferrer;
 
     protected array $rClass = [];
     protected array $table = [];

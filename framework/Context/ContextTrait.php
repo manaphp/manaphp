@@ -7,8 +7,7 @@ use ManaPHP\Di\Attribute\Inject;
 
 trait ContextTrait
 {
-    #[Inject]
-    protected ContextorInterface $contextor;
+    #[Inject] protected ContextorInterface $contextor;
 
     protected function getContext(): object
     {

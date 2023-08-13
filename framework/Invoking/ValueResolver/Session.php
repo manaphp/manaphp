@@ -10,8 +10,7 @@ use ManaPHP\Invoking\ScalarValueResolverInterface;
 
 class Session extends Component implements ScalarValueResolverInterface
 {
-    #[Inject]
-    protected SessionInterface $session;
+    #[Inject] protected SessionInterface $session;
 
     public function resolve(?string $type, string $name): mixed
     {

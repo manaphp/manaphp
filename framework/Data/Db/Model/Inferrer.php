@@ -11,12 +11,9 @@ use ManaPHP\Exception\NotSupportedException;
 
 class Inferrer extends Component implements InferrerInterface
 {
-    #[Inject]
-    protected ThoseInterface $those;
-    #[Inject]
-    protected MetadataInterface $metadata;
-    #[Inject]
-    protected ManagerInterface $modelManager;
+    #[Inject] protected ThoseInterface $those;
+    #[Inject] protected MetadataInterface $metadata;
+    #[Inject] protected ManagerInterface $modelManager;
 
     protected array $primaryKey = [];
     protected array $fields = [];

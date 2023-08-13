@@ -13,8 +13,7 @@ use Throwable;
 
 class DataDump extends Component implements DataDumpInterface
 {
-    #[Inject]
-    protected AliasInterface $alias;
+    #[Inject] protected AliasInterface $alias;
 
     protected string $format;
 

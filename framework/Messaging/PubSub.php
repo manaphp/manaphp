@@ -9,8 +9,7 @@ use ManaPHP\Di\Attribute\Inject;
 
 class PubSub extends Component implements PubSubInterface
 {
-    #[Inject]
-    protected RedisBrokerInterface $redisBroker;
+    #[Inject] protected RedisBrokerInterface $redisBroker;
 
     public function subscribe(array $channels, callable $callback): void
     {

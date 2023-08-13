@@ -15,8 +15,7 @@ class Redis extends Component implements RedisInterface, RedisDbInterface, Redis
 {
     use EventTrait;
 
-    #[Inject]
-    protected PoolManager $poolManager;
+    #[Inject] protected PoolManager $poolManager;
 
     protected string $uri;
     protected float $timeout = 1.0;

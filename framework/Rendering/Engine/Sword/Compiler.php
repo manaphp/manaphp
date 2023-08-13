@@ -16,12 +16,9 @@ use ManaPHP\Http\UrlInterface;
 
 class Compiler extends Component
 {
-    #[Inject]
-    protected AliasInterface $alias;
-    #[Inject]
-    protected UrlInterface $url;
-    #[Inject]
-    protected RouterInterface $router;
+    #[Inject] protected AliasInterface $alias;
+    #[Inject] protected UrlInterface $url;
+    #[Inject] protected RouterInterface $router;
 
     protected int $hash_length = 12;
     protected array $directives = [];

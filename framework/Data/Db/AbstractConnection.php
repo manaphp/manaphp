@@ -18,8 +18,7 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
 {
     use EventTrait;
 
-    #[Inject]
-    protected DiFactory $factory;
+    #[Inject] protected DiFactory $factory;
 
     protected string $uri;
     protected string $dsn;

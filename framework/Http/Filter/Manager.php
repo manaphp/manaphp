@@ -12,10 +12,8 @@ class Manager extends Component implements ManagerInterface
 {
     use EventTrait;
 
-    #[Inject]
-    protected FactoryInterface $factory;
-    #[Inject]
-    protected ConfigInterface $config;
+    #[Inject] protected FactoryInterface $factory;
+    #[Inject] protected ConfigInterface $config;
 
     public function register(): void
     {

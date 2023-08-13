@@ -10,8 +10,7 @@ use ManaPHP\Invoking\ScalarValueResolverInterface;
 
 class Option extends Component implements ScalarValueResolverInterface
 {
-    #[Inject]
-    protected RequestInterface $request;
+    #[Inject] protected RequestInterface $request;
 
     public function resolve(?string $type, string $name): mixed
     {

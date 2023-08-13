@@ -14,8 +14,7 @@ abstract class AbstractMailer extends Component implements MailerInterface
 {
     use EventTrait;
 
-    #[Inject]
-    protected FactoryInterface $factory;
+    #[Inject] protected FactoryInterface $factory;
 
     protected ?string $log = null;
     protected ?string $from = null;

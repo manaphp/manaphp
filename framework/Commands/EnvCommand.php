@@ -9,8 +9,7 @@ use ManaPHP\EnvInterface;
 
 class EnvCommand extends Command
 {
-    #[Inject]
-    protected EnvInterface $env;
+    #[Inject] protected EnvInterface $env;
 
     /**
      * dump parsed .env values

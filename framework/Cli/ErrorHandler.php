@@ -10,8 +10,7 @@ use Throwable;
 
 class ErrorHandler extends Component implements ErrorHandlerInterface
 {
-    #[Inject]
-    protected LoggerInterface $logger;
+    #[Inject] protected LoggerInterface $logger;
 
     public function handle(Throwable $throwable): void
     {

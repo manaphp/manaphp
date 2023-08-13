@@ -7,8 +7,7 @@ use ManaPHP\Di\Attribute\Inject;
 
 trait EventTrait
 {
-    #[Inject]
-    protected ManagerInterface $eventManager;
+    #[Inject] protected ManagerInterface $eventManager;
 
     protected function attachEvent(string $event, callable $handler, int $priority = 0): static
     {

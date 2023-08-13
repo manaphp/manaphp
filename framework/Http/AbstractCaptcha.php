@@ -10,14 +10,10 @@ use ManaPHP\Http\Captcha\InvalidCaptchaException;
 
 abstract class AbstractCaptcha extends Component implements CaptchaInterface
 {
-    #[Inject]
-    protected AliasInterface $alias;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ResponseInterface $response;
-    #[Inject]
-    protected SessionInterface $session;
+    #[Inject] protected AliasInterface $alias;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ResponseInterface $response;
+    #[Inject] protected SessionInterface $session;
 
     protected string $charset;
     protected array $fonts;

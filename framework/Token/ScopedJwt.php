@@ -10,10 +10,8 @@ use ManaPHP\Security\CryptInterface;
 
 class ScopedJwt extends Component implements ScopedJwtInterface
 {
-    #[Inject]
-    protected JwtInterface $jwt;
-    #[Inject]
-    protected CryptInterface $crypt;
+    #[Inject] protected JwtInterface $jwt;
+    #[Inject] protected CryptInterface $crypt;
 
     protected array $keys;
 

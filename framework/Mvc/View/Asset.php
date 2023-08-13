@@ -9,8 +9,7 @@ use ManaPHP\Di\Attribute\Inject;
 
 class Asset extends Component implements AssetInterface
 {
-    #[Inject]
-    protected AliasInterface $alias;
+    #[Inject] protected AliasInterface $alias;
 
     protected array $urls = [];
 

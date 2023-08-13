@@ -18,14 +18,9 @@ use ManaPHP\Ws\Pushing\ServerInterface as PushingServerInterface;
  */
 class Controller extends \ManaPHP\Http\Controller
 {
-    #[Inject]
-    protected ServerInterface $wsServer;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ResponseInterface $response;
-    #[Inject]
-    protected RouterInterface $router;
-    #[Inject]
-    protected PushingServerInterface $wspServer;
+    #[Inject] protected ServerInterface $wsServer;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ResponseInterface $response;
+    #[Inject] protected RouterInterface $router;
+    #[Inject] protected PushingServerInterface $wspServer;
 }

@@ -13,12 +13,9 @@ use ManaPHP\Http\ResponseInterface;
 
 class CorsFilter extends Filter implements BeginFilterInterface
 {
-    #[Inject]
-    protected ConfigInterface $config;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ResponseInterface $response;
+    #[Inject] protected ConfigInterface $config;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ResponseInterface $response;
 
     protected int $max_age;
     protected ?string $origin;

@@ -16,14 +16,10 @@ class Sender extends Component implements SenderInterface
 {
     use EventTrait;
 
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ResponseInterface $response;
-    #[Inject]
-    protected AliasInterface $alias;
-    #[Inject]
-    protected RouterInterface $router;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ResponseInterface $response;
+    #[Inject] protected AliasInterface $alias;
+    #[Inject] protected RouterInterface $router;
 
     public function send(): void
     {

@@ -12,10 +12,8 @@ use Throwable;
 
 class ErrorHandler extends Component implements ErrorHandlerInterface
 {
-    #[Inject]
-    protected LoggerInterface $logger;
-    #[Inject]
-    protected ResponseInterface $response;
+    #[Inject] protected LoggerInterface $logger;
+    #[Inject] protected ResponseInterface $response;
 
     public function handle(Throwable $throwable): void
     {

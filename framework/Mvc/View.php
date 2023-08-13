@@ -21,16 +21,11 @@ class View extends Component implements ViewInterface
     use EventTrait;
     use ContextTrait;
 
-    #[Inject]
-    protected ContainerInterface $container;
-    #[Inject]
-    protected RouterInterface $router;
-    #[Inject]
-    protected RendererInterface $renderer;
-    #[Inject]
-    protected DispatcherInterface $dispatcher;
-    #[Inject]
-    protected FactoryInterface $widgetFactory;
+    #[Inject] protected ContainerInterface $container;
+    #[Inject] protected RouterInterface $router;
+    #[Inject] protected RendererInterface $renderer;
+    #[Inject] protected DispatcherInterface $dispatcher;
+    #[Inject] protected FactoryInterface $widgetFactory;
 
     protected int $max_age;
     protected bool $autofix_url;

@@ -20,18 +20,12 @@ class Authorization extends Component implements AuthorizationInterface
 {
     use ContextTrait;
 
-    #[Inject]
-    protected IdentityInterface $identity;
-    #[Inject]
-    protected DispatcherInterface $dispatcher;
-    #[Inject]
-    protected RouterInterface $router;
-    #[Inject]
-    protected RequestInterface $request;
-    #[Inject]
-    protected ResponseInterface $response;
-    #[Inject]
-    protected ManagerInterface $controllerManager;
+    #[Inject] protected IdentityInterface $identity;
+    #[Inject] protected DispatcherInterface $dispatcher;
+    #[Inject] protected RouterInterface $router;
+    #[Inject] protected RequestInterface $request;
+    #[Inject] protected ResponseInterface $response;
+    #[Inject] protected ManagerInterface $controllerManager;
 
     public function getPermissions(string $controller): array
     {
