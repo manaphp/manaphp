@@ -99,7 +99,7 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
                 if (($attribute = $rClass->getAttributes(Primary::class)[0] ?? null) !== null) {
                     /** @var Primary $primary */
                     $primary = $attribute->newInstance();
-                    return $this->make($primary->definition, $parameters);
+                    return $this->make($primary->definition, $parameters, $id);
                 }
             }
         } elseif (class_exists($name)) {
