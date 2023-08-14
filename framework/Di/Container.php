@@ -158,28 +158,18 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
         return $instance;
     }
 
-    public function get(string $id): mixed
+    public function getInternal(string $id, mixed $definition): mixed
     {
-        if (($instance = $this->instances[$id] ?? null) !== null) {
-            return $instance;
-        }
-
-        $definition = $this->definitions[$id] ?? null;
-
-        if ($definition === null) {
-            return $this->instances[$id] = $this->make($id, [], $id);
-        } elseif (is_string($definition)) {
-            if ($definition[0] === '#') {
-                return $this->instances[$id] = $this->get("$id$definition");
-            } elseif (str_contains($definition, '::')) {
-                return $this->instances[$id] = $this->make($definition, ['id' => $id], $id);
+        if (is_string($definition)) {
+            if (str_contains($definition, '::')) {
+                return $this->make($definition, ['id' => $id], $id);
             } else {
-                return $this->instances[$id] = $this->get($definition);
+                return $this->make($id, [], $definition);
             }
         } elseif ($definition instanceof Closure) {
-            return $this->instances[$id] = $this->call($definition);
+            return $this->call($definition);
         } elseif (is_object($definition)) {
-            return $this->instances[$id] = $definition;
+            return $definition;
         } elseif (is_array($definition)) {
             if (($class = $definition['class'] ?? null) !== null) {
                 unset($definition['class']);
@@ -187,10 +177,45 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
                 $class = $id;
             }
 
-            return $this->instances[$id] = $this->make($class, $definition, $id);
+            return $this->make($class, $definition, $id);
         } else {
             throw new NotSupportedException('not supported definition');
         }
+    }
+
+    public function get(string $id): mixed
+    {
+        if (($instance = $this->instances[$id] ?? null) !== null) {
+            return $instance;
+        }
+
+        if (($definition = $this->definitions[$id] ?? null) !== null) {
+            for (; ;) {
+                if (is_string($definition)) {
+                    if ($definition[0] === '#') {
+                        $definition = "$id$definition";
+                    }
+
+                    if (str_contains($definition, '#')) {
+                        if (($definition = $this->definitions[$definition] ?? null) === null) {
+                            throw new DefinitionException(sprintf('The definition of `%s` is not found.', $id));
+                        }
+                    } else {
+                        if (($v = $this->definitions[$definition] ?? null) !== null) {
+                            $definition = $v;
+                        } else {
+                            break;
+                        }
+                    }
+                } else {
+                    break;
+                }
+            }
+        } else {
+            $definition = $id;
+        }
+
+        return $this->instances[$id] = $this->getInternal($id, $definition);
     }
 
     public function getDefinitions(): array
