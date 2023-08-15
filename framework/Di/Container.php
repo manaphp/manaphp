@@ -5,6 +5,7 @@ namespace ManaPHP\Di;
 
 use Closure;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\MisuseException;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
@@ -59,13 +60,31 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
             if ($property->getAttributes(Inject::class) !== []) {
                 $type = $property->getType()->getName();
                 $dependencies = $this->dependencies[$object] ?? null;
-                $id = $dependencies[$property] ?? $dependencies[$type] ?? $type;
+                $id = $dependencies[$type] ?? $type;
 
                 $value = $this->get($id[0] === '#' ? "$type$id" : $id);
                 if (!$property->isPublic()) {
                     $property->setAccessible(true);
                 }
                 $property->setValue($object, $value);
+            }
+        }
+    }
+
+    protected function processValue(object $object, ReflectionClass $reflectionClass, array $parameters): void
+    {
+        foreach ($parameters as $name => $value) {
+            if (is_string($name) && !str_contains($name, '\\')) {
+                if (!$reflectionClass->hasProperty($name)) {
+                    continue;
+                }
+                $property = $reflectionClass->getProperty($name);
+                if ($property->getAttributes(Value::class) !== []) {
+                    if (!$property->isPublic()) {
+                        $property->setAccessible(true);
+                    }
+                    $property->setValue($object, $value);
+                }
             }
         }
     }
@@ -136,6 +155,7 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
             }
 
             $this->processInject($instance, $rClass);
+            $this->processValue($instance, $rClass, $parameters);
 
             $this->call([$instance, '__construct'], $parameters);
         } else {
@@ -150,6 +170,7 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
             }
 
             $this->processInject($instance, $rClass);
+            $this->processValue($instance, $rClass, $parameters);
         }
 
         return $instance;
