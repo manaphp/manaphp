@@ -7,7 +7,6 @@ use JsonSerializable;
 use ManaPHP\Component;
 use ManaPHP\Data\Db\Exception as DbException;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\MakerInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\NotSupportedException;
 use PDO;
@@ -18,7 +17,7 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
 {
     use EventTrait;
 
-    #[Inject] protected MakerInterface $maker;
+    #[Inject] protected PdoMakerInterface $pdoMaker;
 
     protected string $uri;
     protected string $dsn;
@@ -72,7 +71,7 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
 
             try {
                 $params = [$dsn, $this->username, $this->password, $this->options];
-                $this->pdo = $pdo = $this->maker->make('PDO', $params);
+                $this->pdo = $pdo = $this->pdoMaker->make($params);
             } catch (PDOException $e) {
                 $this->fireEvent('db:connected', compact('dsn', 'uri'));
 

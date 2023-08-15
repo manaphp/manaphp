@@ -5,19 +5,19 @@ namespace ManaPHP\Ws;
 
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\MakerInterface;
 use ManaPHP\Event\Emitter;
 use ManaPHP\Event\EmitterInterface;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Pool\ManagerInterface;
 use ManaPHP\Ws\Client\EngineInterface;
+use ManaPHP\Ws\Client\EngineMakerInterface;
 use ManaPHP\Ws\Client\Message;
 use Throwable;
 
 class Client extends Component implements ClientInterface
 {
     #[Inject] protected ManagerInterface $poolManager;
-    #[Inject] protected MakerInterface $maker;
+    #[Inject] protected EngineMakerInterface $engineMaker;
 
     protected string $endpoint;
     protected ?string $proxy;
@@ -48,7 +48,7 @@ class Client extends Component implements ClientInterface
         );
         $parameters['owner'] = $this;
 
-        $sample = $this->maker->make('ManaPHP\Ws\Client\Engine', $parameters);
+        $sample = $this->engineMaker->make($parameters);
         $this->poolManager->add($this, $sample, $this->pool_size);
 
         $this->emitter = new Emitter();

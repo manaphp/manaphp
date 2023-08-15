@@ -7,11 +7,11 @@ use JetBrains\PhpStorm\ArrayShape;
 use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Data\Db\ConnectionInterface;
+use ManaPHP\Data\Db\ConnectionMakerInterface;
 use ManaPHP\Data\Db\Exception as DbException;
 use ManaPHP\Data\Db\Query;
 use ManaPHP\Data\Db\SqlFragmentable;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\MakerInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
@@ -28,7 +28,9 @@ class Db extends Component implements DbInterface
     use ContextTrait;
 
     #[Inject] protected PoolManagerInterface $poolManager;
-    #[Inject] protected MakerInterface $maker;
+    #[Inject] protected ConnectionMakerInterface $connectionMaker;
+    #[Inject] protected QueryMakerInterface $queryMaker;
+
     public const METADATA_ATTRIBUTES = 0;
     public const METADATA_PRIMARY_KEY = 1;
     public const METADATA_AUTO_INCREMENT_KEY = 3;
@@ -89,8 +91,7 @@ class Db extends Component implements DbInterface
 
         if ($uris[0] !== '') {
             $uri = (string)$uris[0];
-            $adapter = 'ManaPHP\Data\Db\Connection\Adapter\\' . ucfirst(parse_url($uri, PHP_URL_SCHEME));
-            $sample = $this->maker->make($adapter, [$uri]);
+            $sample = $this->connectionMaker->make([$uri]);
             $this->poolManager->add($this, $sample, $master_pool_size);
         }
 
@@ -109,15 +110,13 @@ class Db extends Component implements DbInterface
                 $this->poolManager->create($this, count($uris) * $slave_pool_size, 'slave');
                 for ($i = 0; $i < $slave_pool_size; $i++) {
                     foreach ($uris as $v) {
-                        $adapter = 'ManaPHP\Data\Db\Connection\Adapter\\' . ucfirst(parse_url($v, PHP_URL_SCHEME));
-                        $sample = $this->maker->make($adapter, [$v]);
+                        $sample = $this->connectionMaker->make([$v]);
                         $this->poolManager->add($this, $sample, 1, 'slave');
                     }
                 }
             } else {
                 $uri = (string)$uris[random_int(0, count($uris) - 1)];
-                $adapter = 'ManaPHP\Data\Db\Connection\Adapter\\' . ucfirst(parse_url($uri, PHP_URL_SCHEME));
-                $sample = $this->maker->make($adapter, [$uri]);
+                $sample = $this->connectionMaker->make([$uri]);
                 $this->poolManager->add($this, $sample, 1, 'slave');
             }
 
@@ -652,7 +651,7 @@ class Db extends Component implements DbInterface
 
     public function query(?string $table = null, ?string $alias = null): Query
     {
-        return $this->maker->make('ManaPHP\Data\Db\Query', [$this])->from($table, $alias);
+        return $this->queryMaker->make([$this])->from($table, $alias);
     }
 
     public function getTransientWrapper(string $type = 'default'): Transient

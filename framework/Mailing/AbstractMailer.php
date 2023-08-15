@@ -5,7 +5,6 @@ namespace ManaPHP\Mailing;
 
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\MakerInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Mailing\Mailer\Message;
@@ -14,7 +13,7 @@ abstract class AbstractMailer extends Component implements MailerInterface
 {
     use EventTrait;
 
-    #[Inject] protected MakerInterface $maker;
+    #[Inject] protected MessageMakerInterface $messageMaker;
 
     protected ?string $log = null;
     protected ?string $from = null;
@@ -22,7 +21,7 @@ abstract class AbstractMailer extends Component implements MailerInterface
 
     public function compose(): Message
     {
-        $message = $this->maker->make('ManaPHP\Mailing\Mailer\Message');
+        $message = $this->messageMaker->make();
 
         $message->setMailer($this);
 

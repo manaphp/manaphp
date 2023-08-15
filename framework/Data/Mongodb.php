@@ -4,8 +4,10 @@ declare(strict_types=1);
 namespace ManaPHP\Data;
 
 use ManaPHP\Component;
+use ManaPHP\Data\Mongodb\ConnectionMakerInterface;
 use ManaPHP\Data\Mongodb\Exception as MongodbException;
 use ManaPHP\Data\Mongodb\Query;
+use ManaPHP\Data\Mongodb\QueryMakerInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Event\EventTrait;
@@ -19,6 +21,9 @@ class Mongodb extends Component implements MongodbInterface
 
     #[Inject] protected ManagerInterface $poolManager;
     #[Inject] protected MakerInterface $maker;
+    #[Inject] protected ConnectionMakerInterface $connectionMaker;
+    #[Inject] protected QueryMakerInterface $queryMaker;
+
     protected string $uri;
     protected string $prefix;
     protected string $db;
@@ -34,7 +39,7 @@ class Mongodb extends Component implements MongodbInterface
         $path = parse_url($uri, PHP_URL_PATH);
         $this->db = ($path !== '/' && $path !== null) ? substr($path, 1) : null;
 
-        $sample = $this->maker->make('ManaPHP\Data\Mongodb\Connection', [$this->uri]);
+        $sample = $this->connectionMaker->make([$this->uri]);
         $this->poolManager->add($this, $sample);
     }
 
@@ -327,6 +332,6 @@ class Mongodb extends Component implements MongodbInterface
 
     public function query(?string $collection = null): Query
     {
-        return $this->maker->make('ManaPHP\Data\Mongodb\Query', [$this])->from($collection);
+        return $this->queryMaker->make([$this])->from($collection);
     }
 }

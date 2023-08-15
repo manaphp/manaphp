@@ -6,7 +6,6 @@ namespace ManaPHP\Http;
 use ManaPHP\AliasInterface;
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\MakerInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Http\Client\BadGatewayException;
@@ -14,6 +13,7 @@ use ManaPHP\Http\Client\BadRequestException;
 use ManaPHP\Http\Client\ClientErrorException;
 use ManaPHP\Http\Client\ContentTypeException;
 use ManaPHP\Http\Client\EngineInterface;
+use ManaPHP\Http\Client\EngineMakerInterface;
 use ManaPHP\Http\Client\ForbiddenException;
 use ManaPHP\Http\Client\GatewayTimeoutException;
 use ManaPHP\Http\Client\InternalServerErrorException;
@@ -33,7 +33,7 @@ class Client extends Component implements ClientInterface
 
     #[Inject] protected AliasInterface $alias;
     #[Inject] protected ManagerInterface $poolManager;
-    #[Inject] protected MakerInterface $maker;
+    #[Inject] protected EngineMakerInterface $engineMaker;
 
     public const USER_AGENT_IE = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
     protected string|EngineInterface $engine;
@@ -98,7 +98,7 @@ class Client extends Component implements ClientInterface
             $engine_id = substr($request->url, 0, strpos($request->url, '/', 8) ?: 0);
 
             if (!$this->poolManager->exists($this, $engine_id)) {
-                $sample = is_string($this->engine) ? $this->maker->make($this->engine) : $this->engine;
+                $sample = is_string($this->engine) ? $this->engineMaker->make($this->engine) : $this->engine;
                 $this->poolManager->add($this, $sample, $this->pool_size, $engine_id);
             }
 

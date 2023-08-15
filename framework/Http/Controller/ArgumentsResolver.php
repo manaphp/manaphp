@@ -5,21 +5,20 @@ namespace ManaPHP\Http\Controller;
 
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\MakerInterface;
 use ManaPHP\Http\Controller;
-use ManaPHP\Invoking\ArgumentsResolverInterface as Resolver;
+use ManaPHP\Invoking\ArgumentsResolverInterface as ResolverInterface;
 
 class ArgumentsResolver extends Component implements ArgumentsResolverInterface
 {
-    #[Inject] protected MakerInterface $maker;
+    #[Inject] protected ResolverMakerInterface $resolverMaker;
 
     protected array $resolvers;
-    protected Resolver $resolver;
+    protected ResolverInterface $resolver;
 
     public function __construct(array $resolvers = ['model', 'identity', 'session', 'request']
     ) {
         $this->resolvers = $resolvers;
-        $this->resolver = $this->maker->make(Resolver::class, ['resolvers' => $resolvers]);
+        $this->resolver = $this->resolverMaker->make(['resolvers' => $resolvers]);
     }
 
     public function resolve(Controller $controller, string $method): array
