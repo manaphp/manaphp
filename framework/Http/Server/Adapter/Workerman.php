@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Server\Adapter;
 
 use ManaPHP\Context\ContextTrait;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Http\AbstractServer;
 use Throwable;
 use Workerman\Connection\ConnectionInterface;
@@ -16,15 +17,15 @@ class Workerman extends AbstractServer
 {
     use ContextTrait;
 
-    protected array $settings = [];
+    #[Value] protected array $settings = [];
     protected Worker $worker;
     protected array $_SERVER = [];
     protected int $max_request;
     protected int $request_count;
 
-    public function __construct(array $settings = [], string $host = '0.0.0.0', int $port = 9501)
+    public function __construct()
     {
-        parent::__construct($host, $port);
+        parent::__construct();
 
         $script_filename = get_included_files()[0];
         $this->_SERVER = [
@@ -38,12 +39,6 @@ class Workerman extends AbstractServer
         ];
 
         unset($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE);
-
-        if (DIRECTORY_SEPARATOR === '/' && isset($settings['max_request']) && $settings['max_request'] > 0) {
-            $this->max_request = $settings['max_request'];
-        }
-
-        $this->settings = $settings;
     }
 
     protected function prepareGlobals(): void

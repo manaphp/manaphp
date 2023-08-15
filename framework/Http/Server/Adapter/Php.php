@@ -5,6 +5,7 @@ namespace ManaPHP\Http\Server\Adapter;
 
 use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Helper\Ip;
 use ManaPHP\Http\AbstractServer;
 use ManaPHP\Http\Server\Adapter\Native\SenderInterface;
@@ -16,9 +17,11 @@ class Php extends AbstractServer
     #[Inject] protected StaticHandlerInterface $staticHandler;
     #[Inject] protected AliasInterface $alias;
 
-    public function __construct(string $host = '0.0.0.0', int $port = 9501, array $settings = [])
+    #[Value] protected array $settings = [];
+
+    public function __construct()
     {
-        parent::__construct($host, $port);
+        parent::__construct();
 
         $argv = $GLOBALS['argv'] ?? [];
         foreach ($argv as $k => $v) {
@@ -36,7 +39,7 @@ class Php extends AbstractServer
         $_SERVER['REQUEST_SCHEME'] = 'http';
 
         if (PHP_SAPI === 'cli') {
-            if (($worker_num = $settings['worker_num'] ?? 1) > 1) {
+            if (($worker_num = $this->settings['worker_num'] ?? 1) > 1) {
                 putenv("PHP_CLI_SERVER_WORKERS=$worker_num");
             }
 

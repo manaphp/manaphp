@@ -5,6 +5,7 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Http\Filter\ManagerInterface;
 
@@ -19,14 +20,11 @@ abstract class AbstractServer extends Component implements ServerInterface
     #[Inject] protected GlobalsInterface $globals;
     #[Inject] protected ManagerInterface $filterManager;
 
-    protected string $host;
-    protected int $port;
+    #[Value] protected string $host = '0.0.0.0';
+    #[Value] protected int $port = 9501;
 
-    public function __construct(string $host = '0.0.0.0', int $port = 9501)
+    public function __construct()
     {
-        $this->host = $host;
-        $this->port = $port;
-
         $this->filterManager->register();
     }
 }

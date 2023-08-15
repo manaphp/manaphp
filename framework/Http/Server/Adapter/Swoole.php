@@ -7,6 +7,7 @@ use ManaPHP\AliasInterface;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Helper\Ip;
 use ManaPHP\Http\AbstractServer;
 use ManaPHP\Http\Server\StaticHandlerInterface;
@@ -24,17 +25,17 @@ class Swoole extends AbstractServer
     #[Inject] protected AliasInterface $alias;
     #[Inject] protected StaticHandlerInterface $staticHandler;
 
-    protected array $settings = [];
+    #[Value] protected array $settings = [];
     protected Server $swoole;
     protected array $_SERVER;
 
-    public function __construct(array $settings = [], string $host = '0.0.0.0', int $port = 9501)
+    public function __construct()
     {
         $script_filename = get_included_files()[0];
         $document_root = dirname($script_filename);
         $_SERVER['DOCUMENT_ROOT'] = $document_root;
 
-        parent::__construct($host, $port);
+        parent::__construct();
 
         $this->_SERVER = [
             'DOCUMENT_ROOT'   => $document_root,
@@ -48,17 +49,15 @@ class Swoole extends AbstractServer
             'REQUEST_SCHEME'  => 'http',
         ];
 
-        $settings['enable_coroutine'] = MANAPHP_COROUTINE_ENABLED;
+        $this->settings['enable_coroutine'] = MANAPHP_COROUTINE_ENABLED;
 
-        if (isset($settings['max_request']) && $settings['max_request'] < 1) {
-            $settings['max_request'] = 1;
+        if (isset($this->settings['max_request']) && $this->settings['max_request'] < 1) {
+            $this->settings['max_request'] = 1;
         }
 
-        if (!empty($settings['enable_static_handler'])) {
-            $settings['document_root'] = $document_root;
+        if (!empty($this->settings['enable_static_handler'])) {
+            $this->settings['document_root'] = $document_root;
         }
-
-        $this->settings = $settings;
 
         $this->swoole = new Server($this->host, $this->port);
         $this->swoole->set($this->settings);
