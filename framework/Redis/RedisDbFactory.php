@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Data;
+namespace ManaPHP\Redis;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\MakerInterface;
 use Psr\Container\ContainerInterface;
 
-class RedisBrokerFactory
+class RedisDbFactory
 {
     #[Inject] protected ContainerInterface $container;
     #[Inject] protected MakerInterface $maker;
@@ -18,8 +18,8 @@ class RedisBrokerFactory
             if (str_contains($id, '#')) {
                 list(, $anchor) = explode($id, '#', 2);
                 return $this->container->get(RedisInterface::class . '#' . $anchor);
-            } elseif ($this->container->has(RedisInterface::class . '#broker')) {
-                return $this->container->get(RedisInterface::class . '#broker');
+            } elseif ($this->container->has(RedisInterface::class . '#db')) {
+                return $this->container->get(RedisInterface::class . '#db');
             } else {
                 return $this->container->get(RedisInterface::class);
             }

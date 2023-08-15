@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Session\Adapter;
 
 use ManaPHP\ConfigInterface;
-use ManaPHP\Data\RedisCacheInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Http\AbstractSession;
+use ManaPHP\Redis\RedisCacheInterface;
 
 class Redis extends AbstractSession
 {

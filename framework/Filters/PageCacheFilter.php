@@ -6,7 +6,6 @@ namespace ManaPHP\Filters;
 use Closure;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Context\ContextTrait;
-use ManaPHP\Data\RedisCacheInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\AbortException;
@@ -16,6 +15,7 @@ use ManaPHP\Http\Filter\ReadyFilterInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Mvc\Controller as MvcController;
+use ManaPHP\Redis\RedisCacheInterface;
 
 class PageCacheFilter extends Filter implements ReadyFilterInterface
 {

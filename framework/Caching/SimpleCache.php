@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Caching;
 
 use ManaPHP\Component;
-use ManaPHP\Data\RedisCacheInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Redis\RedisCacheInterface;
 use Psr\SimpleCache\CacheInterface;
 
 class SimpleCache extends Component implements CacheInterface

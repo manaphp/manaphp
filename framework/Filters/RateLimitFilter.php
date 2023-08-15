@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Filters;
 
 use ManaPHP\ConfigInterface;
-use ManaPHP\Data\RedisCacheInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\TooManyRequestsException;
@@ -12,6 +11,7 @@ use ManaPHP\Http\Filter;
 use ManaPHP\Http\Filter\ValidatingFilterInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
+use ManaPHP\Redis\RedisCacheInterface;
 
 class RateLimitFilter extends Filter implements ValidatingFilterInterface
 {

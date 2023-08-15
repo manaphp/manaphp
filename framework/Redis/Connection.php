@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Data\Redis;
+namespace ManaPHP\Redis;
 
 use ManaPHP\Component;
-use ManaPHP\Data\Redis\Connection\RedisMakerInterface;
-use ManaPHP\Data\Redis\Exception as RedisException;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\RuntimeException;
+use ManaPHP\Redis\Connection\RedisMakerInterface;
+use ManaPHP\Redis\Exception as RedisException;
 use Redis;
 
 class Connection extends Component

@@ -5,8 +5,8 @@ namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
 use ManaPHP\ConfigInterface;
-use ManaPHP\Data\RedisCacheInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Redis\RedisCacheInterface;
 
 class DebuggerCommand extends Command
 {

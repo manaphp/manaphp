@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Messaging;
 
-use ManaPHP\Data\RedisBrokerInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Redis\RedisBrokerInterface;
 
 class Queue extends AbstractQueue
 {

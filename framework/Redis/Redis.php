@@ -1,11 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Data;
+namespace ManaPHP\Redis;
 
 use ManaPHP\Component;
-use ManaPHP\Data\Redis\Connection;
-use ManaPHP\Data\Redis\ConnectionMakerInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;

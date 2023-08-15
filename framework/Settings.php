@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP;
 
-use ManaPHP\Data\RedisDbInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\InvalidArgumentException;
+use ManaPHP\Redis\RedisDbInterface;
 
 class Settings extends Component implements SettingsInterface
 {

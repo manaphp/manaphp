@@ -8,7 +8,7 @@ use App\Controllers\Controller;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 
 /**
- * @property-read \ManaPHP\Data\RedisDbInterface $redisDb
+ * @property-read \ManaPHP\Redis\RedisDbInterface $redisDb
  */
 #[Authorize('@index')]
 class DotenvController extends Controller

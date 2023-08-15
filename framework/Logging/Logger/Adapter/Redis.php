@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace ManaPHP\Logging\Logger\Adapter;
 
 use ManaPHP\ConfigInterface;
-use ManaPHP\Data\RedisBrokerInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Logging\AbstractLogger;
 use ManaPHP\Logging\Logger\Log;
+use ManaPHP\Redis\RedisBrokerInterface;
 
 class Redis extends AbstractLogger
 {

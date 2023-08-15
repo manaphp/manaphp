@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Data\Redis;
+namespace ManaPHP\Redis;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\MakerInterface;
