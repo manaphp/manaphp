@@ -6,8 +6,8 @@ namespace ManaPHP\Logging\Logger\Adapter;
 use ManaPHP\AliasInterface;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Logging\AbstractLogger;
-use ManaPHP\Logging\Level;
 use ManaPHP\Logging\Logger\Log;
 
 class File extends AbstractLogger
@@ -15,18 +15,8 @@ class File extends AbstractLogger
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected AliasInterface $alias;
 
-    protected string $file;
-    protected string $format;
-
-    public function __construct(string $file = '@runtime/logger/{id}.log',
-        string $format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message',
-        string $level = Level::DEBUG, ?string $hostname = null
-    ) {
-        parent::__construct($level, $hostname);
-
-        $this->file = strtr($file, ['{id}' => $this->config->get("id")]);
-        $this->format = $format;
-    }
+    #[Value] protected string $file = '@runtime/logger/{id}.log';
+    #[Value] protected string $format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
 
     protected function format(Log $log): string
     {
@@ -58,7 +48,7 @@ class File extends AbstractLogger
      */
     protected function write(string $str): void
     {
-        $file = $this->alias->resolve($this->file);
+        $file = $this->alias->resolve(strtr($this->file, ['{id}' => $this->config->get("id")]));
         if (!is_file($file)) {
             $dir = dirname($file);
             if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {

@@ -9,6 +9,7 @@ use ManaPHP\Context\ContextCreatorInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Coroutine;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Logging\Logger\Log;
@@ -23,14 +24,8 @@ abstract class AbstractLogger extends Component implements LoggerInterface, Cont
     #[Inject] protected AliasInterface $alias;
     #[Inject] protected RequestInterface $request;
 
-    protected string $level;
-    protected string $hostname;
-
-    public function __construct(string $level = Level::DEBUG, ?string $hostname = null)
-    {
-        $this->level = $level;
-        $this->hostname = $hostname ?? gethostname();
-    }
+    #[Value] protected string $level = Level::DEBUG;
+    #[Value] protected ?string $hostname;
 
     public function createContext(): AbstractLoggerContext
     {
@@ -135,7 +130,7 @@ abstract class AbstractLogger extends Component implements LoggerInterface, Cont
 
         $log = new Log();
 
-        $log->hostname = $this->hostname;
+        $log->hostname = $this->hostname ?? gethostname();
         $log->client_ip = $context->client_ip;
         $log->level = $level;
         $log->request_id = $context->request_id ?: $this->request->getRequestId();

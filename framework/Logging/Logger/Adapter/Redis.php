@@ -6,8 +6,8 @@ namespace ManaPHP\Logging\Logger\Adapter;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Data\RedisBrokerInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Logging\AbstractLogger;
-use ManaPHP\Logging\Level;
 use ManaPHP\Logging\Logger\Log;
 
 class Redis extends AbstractLogger
@@ -15,14 +15,7 @@ class Redis extends AbstractLogger
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected RedisBrokerInterface $redisBroker;
 
-    protected string $key;
-
-    public function __construct(?string $key = null, string $level = Level::DEBUG, ?string $hostname = null)
-    {
-        parent::__construct($level, $hostname);
-
-        $this->key = $key ?? sprintf("cache:%s:logger", $this->config->get("id"));
-    }
+    #[Value] protected ?string $key;
 
     public function append(Log $log): void
     {
@@ -36,6 +29,9 @@ class Redis extends AbstractLogger
             'location'   => "$log->file:$log->line",
             'message'    => $log->message
         ];
-        $this->redisBroker->rPush($this->key, json_stringify($data));
+        $this->redisBroker->rPush(
+            $this->key ?? sprintf("cache:%s:logger", $this->config->get("id")),
+            json_stringify($data)
+        );
     }
 }

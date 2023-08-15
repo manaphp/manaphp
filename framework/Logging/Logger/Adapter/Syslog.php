@@ -5,9 +5,9 @@ namespace ManaPHP\Logging\Logger\Adapter;
 
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Logging\AbstractLogger;
-use ManaPHP\Logging\Level;
 use ManaPHP\Logging\Logger\Log;
 
 /** @noinspection SpellCheckingInspection */
@@ -22,26 +22,19 @@ class Syslog extends AbstractLogger
 {
     #[Inject] protected ConfigInterface $config;
 
-    protected string $uri;
-    protected int $facility;
-    protected string $format;
+    #[Value] protected string $uri;
+    #[Value] protected int $facility = 1;
+    #[Value] protected string $format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
+
     protected string $scheme;
     protected string $host;
     protected int $port;
 
     protected mixed $socket;
 
-    public function __construct(string $uri, int $facility = 1,
-        string $format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message',
-        string $level = Level::DEBUG, ?string $hostname = null
-    ) {
-        parent::__construct($level, $hostname);
-
-        $this->uri = $uri;
-        $this->facility = $facility;
-        $this->format = $format;
-
-        $parts = parse_url($uri);
+    public function __construct()
+    {
+        $parts = parse_url($this->uri);
         $this->host = $parts['host'];
         $this->scheme = $parts['scheme'] ?? 'udp';
         $this->port = $parts['port'] ? (int)$parts['port'] : 514;

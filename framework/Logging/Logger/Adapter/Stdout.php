@@ -3,21 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Logging\Logger\Adapter;
 
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Logging\AbstractLogger;
-use ManaPHP\Logging\Level;
 use ManaPHP\Logging\Logger\Log;
 
 class Stdout extends AbstractLogger
 {
-    protected string $format;
-
-    public function __construct(string $format = '[:date][:level][:category][:location] :message',
-        string $level = Level::DEBUG, ?string $hostname = null
-    ) {
-        parent::__construct($level, $hostname);
-
-        $this->format = $format;
-    }
+    #[Value] protected string $format = '[:date][:level][:category][:location] :message';
 
     public function append(Log $log): void
     {
