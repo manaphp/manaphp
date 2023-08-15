@@ -5,25 +5,16 @@ namespace ManaPHP\Html;
 
 use DOMDocument;
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Value;
 
 class Purifier extends Component implements PurifierInterface
 {
-    protected string $allowedTags;
-    protected string $allowedAttributes;
-
+    #[Value] protected string $allowedTags = ',a,b,br,code,div,i,img,s,strike,strong,samp,span,sub,sup,small,pre,p,q,div,em,h1,h2,h3,h4,h5,h6,table,u,ul,ol,tr,th,td,hr,li,';
+    #[Value] protected string $allowedAttributes = ',title,src,href,width,height,alt,target,';
     /**
      * @var callable
      */
-    protected mixed $filter;
-
-    public function __construct(string $allowedTags = 'a,b,br,code,div,i,img,s,strike,strong,samp,span,sub,sup,small,pre,p,q,div,em,h1,h2,h3,h4,h5,h6,table,u,ul,ol,tr,th,td,hr,li',
-        string $allowedAttributes = 'title,src,href,width,height,alt,target',
-        ?callable $filter = null
-    ) {
-        $this->allowedTags = ",$allowedTags,";
-        $this->allowedAttributes = ",$allowedAttributes,";
-        $this->filter = $filter;
-    }
+    #[Value] protected mixed $filter = null;
 
     protected function purifyInternal(array $nodes, string $allowedTags, string $allowedAttributes): void
     {

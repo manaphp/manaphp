@@ -5,6 +5,7 @@ namespace ManaPHP\Identifying\Identity\Adapter;
 
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\Identity;
 use ManaPHP\Token\ScopedJwtInterface;
@@ -15,19 +16,13 @@ class Jwt extends Identity
     #[Inject] protected RequestInterface $request;
     #[Inject] protected ScopedJwtInterface $scopedJwt;
 
-    protected string $scope;
-    protected int $ttl;
-
-    public function __construct(?string $scope = null, int $ttl = 86400)
-    {
-        $this->scope = $scope ?? $this->config->get('id');
-        $this->ttl = $ttl;
-    }
+    #[Value] protected ?string $scope;
+    #[Value] protected int $ttl = 86400;
 
     public function authenticate(): array
     {
         if ($token = $this->request->getToken()) {
-            return $this->scopedJwt->decode($token, $this->scope);
+            return $this->scopedJwt->decode($token, $this->scope ?? $this->config->get('id'));
         } else {
             return [];
         }
@@ -35,6 +30,6 @@ class Jwt extends Identity
 
     public function encode(array $claims): string
     {
-        return $this->scopedJwt->encode($claims, $this->ttl, $this->scope);
+        return $this->scopedJwt->encode($claims, $this->ttl, $this->scope ?? $this->config->get('id'));
     }
 }

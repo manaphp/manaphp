@@ -10,6 +10,7 @@ use ManaPHP\Context\ContextTrait;
 use ManaPHP\Data\Db\PreparedEmulatorInterface;
 use ManaPHP\Data\RedisCacheInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\InspectorInterface;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Event\EventTrait;
@@ -44,19 +45,14 @@ class Debugger extends Component implements DebuggerInterface
 
     protected int $ttl;
     protected string $prefix;
-    protected string $template;
-    protected bool $broadcast;
-    protected bool $tail;
+    #[Value] protected string $template = '@manaphp/Debugging/Debugger/Template.html';
+    #[Value] protected bool $broadcast = true;
+    #[Value] protected bool $tail = true;
 
-    public function __construct(int $ttl = 3600, ?string $prefix = null,
-        string $template = '@manaphp/Debugging/Debugger/Template.html',
-        bool $broadcast = true, bool $tail = true
-    ) {
+    public function __construct(int $ttl = 3600, ?string $prefix = null)
+    {
         $this->ttl = class_exists('Redis') ? $ttl : 0;
         $this->prefix = $prefix ?? sprintf("cache:%s:debugger:", $this->config->get('id'));
-        $this->template = $template;
-        $this->broadcast = $broadcast;
-        $this->tail = $tail;
     }
 
     public function start(): void

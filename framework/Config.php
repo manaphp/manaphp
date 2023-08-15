@@ -4,18 +4,14 @@ declare(strict_types=1);
 namespace ManaPHP;
 
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\InvalidKeyException;
 
 class Config extends Component implements ConfigInterface
 {
     #[Inject] protected AliasInterface $alias;
 
-    protected array $config = [];
-
-    public function __construct(array $config = [])
-    {
-        $this->config = $config;
-    }
+    #[Value] protected array $config = [];
 
     public function load(string $file = '@config/app.php'): array
     {

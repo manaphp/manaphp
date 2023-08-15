@@ -5,6 +5,7 @@ namespace ManaPHP\Token;
 
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Encoding\Base64UrlInterface;
 use ManaPHP\Security\CryptInterface;
 
@@ -13,23 +14,19 @@ class Jwt extends Component implements JwtInterface
     #[Inject] protected CryptInterface $crypt;
     #[Inject] protected Base64UrlInterface $base64Url;
 
-    protected string $alg;
-    protected string $key;
-
-    public function __construct(string $alg = 'HS256', ?string $key = null)
-    {
-        $this->alg = $alg;
-        $this->key = $key ?? $this->crypt->getDerivedKey('jwt');
-    }
+    #[Value] protected string $alg = 'HS256';
+    #[Value] protected ?string $key;
 
     public function encode(array $claims, int $ttl, ?string $key = null): string
     {
+        $key = $key ?? $this->key ?? $this->crypt->getDerivedKey('jwt');
+
         $claims['iat'] = time();
         $claims['exp'] = time() + $ttl;
 
         $header = $this->base64Url->encode(json_stringify(['alg' => $this->alg, 'typ' => 'JWT']));
         $payload = $this->base64Url->encode(json_stringify($claims));
-        $hmac = hash_hmac(strtr($this->alg, ['HS' => 'sha']), "$header.$payload", $key ?? $this->key, true);
+        $hmac = hash_hmac(strtr($this->alg, ['HS' => 'sha']), "$header.$payload", $key, true);
         $signature = $this->base64Url->encode($hmac);
 
         return "$header.$payload.$signature";
@@ -98,6 +95,8 @@ class Jwt extends Component implements JwtInterface
         if (($pos = strrpos($token, '.')) === false) {
             throw new MalformedException('The JWT must have three dots');
         }
+
+        $key = $key ?? $this->key ?? $this->crypt->getDerivedKey('jwt');
 
         $data = substr($token, 0, $pos);
         $signature = substr($token, $pos + 1);

@@ -10,6 +10,7 @@ use ManaPHP\Data\Model\ManagerInterface as ModelManagerInterface;
 use ManaPHP\Data\Model\ThoseInterface;
 use ManaPHP\Data\ModelInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
@@ -30,15 +31,13 @@ class Validator extends Component implements ValidatorInterface
     #[Inject] protected PurifierInterface $htmlPurifier;
     #[Inject] protected ModelManagerInterface $modelManager;
 
-    protected string $dir;
+    #[Value] protected string $dir = '@manaphp/Validating/Validator/Templates';
 
     protected array $files;
     protected array $templates;
 
-    public function __construct(string $dir = '@manaphp/Validating/Validator/Templates')
+    public function __construct()
     {
-        $this->dir = $dir;
-
         foreach (LocalFS::glob($this->dir . '/*.php') as $file) {
             $this->files[strtolower(pathinfo($file, PATHINFO_FILENAME))] = $file;
         }

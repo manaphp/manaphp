@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP;
 
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use Psr\Container\ContainerInterface;
 
 class Kernel extends Component
@@ -13,12 +14,10 @@ class Kernel extends Component
     #[Inject] protected EnvInterface $env;
     #[Inject] protected ConfigInterface $config;
 
-    protected string $rootDir;
+    #[Value] protected string $rootDir;
 
-    public function __construct(string $rootDir)
+    public function __construct()
     {
-        $this->rootDir = $rootDir;
-
         $GLOBALS['Psr\Container\ContainerInterface'] = $this->container;
     }
 

@@ -7,6 +7,7 @@ use ManaPHP\Component;
 use ManaPHP\Data\Redis\Connection;
 use ManaPHP\Data\Redis\ConnectionMakerInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Pool\ManagerInterface as PoolManager;
@@ -18,27 +19,23 @@ class Redis extends Component implements RedisInterface, RedisDbInterface, Redis
     #[Inject] protected PoolManager $poolManager;
     #[Inject] protected ConnectionMakerInterface $connectionMaker;
 
-    protected string $uri;
+    #[Value] protected string $uri; #redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0
+
     protected float $timeout = 1.0;
     protected int $pool_size = 4;
 
     protected Redis $owner;
     protected ?Connection $connection = null;
 
-    /**
-     * @param string $uri redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0
-     */
-    public function __construct(string $uri)
+    public function __construct()
     {
         $this->owner = $this;
 
-        $this->uri = $uri;
-
-        if (preg_match('#timeout=([\d.]+)#', $uri, $matches) === 1) {
+        if (preg_match('#timeout=([\d.]+)#', $this->uri, $matches) === 1) {
             $this->timeout = (float)$matches[1];
         }
 
-        if (preg_match('#pool_size=([\d/]+)#', $uri, $matches)) {
+        if (preg_match('#pool_size=([\d/]+)#', $this->uri, $matches)) {
             $this->pool_size = (int)$matches[1];
         }
 

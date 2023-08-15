@@ -10,6 +10,7 @@ use ManaPHP\Component;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Helper\LocalFS;
@@ -24,14 +25,8 @@ class Response extends Component implements ResponseInterface
     #[Inject] protected UrlInterface $url;
     #[Inject] protected RouterInterface $router;
 
-    protected int|string $ok_code;
-    protected int|string $error_code;
-
-    public function __construct(int|string $ok_code = 0, int|string $error_code = 1)
-    {
-        $this->ok_code = $ok_code;
-        $this->error_code = $error_code;
-    }
+    #[Value] protected int|string $ok_code = 0;
+    #[Value] protected int|string $error_code = 1;
 
     public function setCookie(
         string $name,

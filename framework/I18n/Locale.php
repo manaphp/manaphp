@@ -6,17 +6,13 @@ namespace ManaPHP\I18n;
 use ManaPHP\Component;
 use ManaPHP\Context\ContextCreatorInterface;
 use ManaPHP\Context\ContextTrait;
+use ManaPHP\Di\Attribute\Value;
 
 class Locale extends Component implements LocaleInterface, ContextCreatorInterface
 {
     use ContextTrait;
 
-    protected string $default;
-
-    public function __construct(string $default = 'en')
-    {
-        $this->default = $default;
-    }
+    #[Value] protected string $default = 'en';
 
     public function createContext(): LocaleContext
     {
