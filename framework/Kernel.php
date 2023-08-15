@@ -26,10 +26,6 @@ class Kernel extends Component
     {
         $this->container->set('Psr\SimpleCache\CacheInterface', 'ManaPHP\Caching\SimpleCache');
         $this->container->set('Psr\Log\LoggerInterface', 'ManaPHP\Logging\Psr3');
-
-        $this->container->set('ManaPHP\Data\RedisCacheInterface', 'ManaPHP\Data\RedisInterface');
-        $this->container->set('ManaPHP\Data\RedisDbInterface', 'ManaPHP\Data\RedisInterface');
-        $this->container->set('ManaPHP\Data\RedisBrokerInterface', 'ManaPHP\Data\RedisInterface');
     }
 
     public function registerDefaultAliases(): void

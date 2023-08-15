@@ -3,9 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-use ManaPHP\Di\Attribute\Primary;
-
-#[Primary('ManaPHP\Http\Captcha\Adapter\Imagick')]
 interface CaptchaInterface
 {
     public function draw(string $code, int $width, int $height): string;

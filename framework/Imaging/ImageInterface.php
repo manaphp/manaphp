@@ -3,9 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Imaging;
 
-use ManaPHP\Di\Attribute\Primary;
-
-#[Primary('ManaPHP\Imaging\Image\Adapter\Imagick')]
 interface ImageInterface
 {
     public function __construct(string $file);

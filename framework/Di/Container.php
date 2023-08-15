@@ -5,7 +5,6 @@ namespace ManaPHP\Di;
 
 use Closure;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Di\Attribute\Primary;
 use ManaPHP\Exception\MisuseException;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
@@ -95,11 +94,9 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
                 $exists = true;
                 $name = $prefix;
             } else {
-                $rClass = new ReflectionClass($name);
-                if (($attribute = $rClass->getAttributes(Primary::class)[0] ?? null) !== null) {
-                    /** @var Primary $primary */
-                    $primary = $attribute->newInstance();
-                    return $this->make($primary->definition, $parameters, $id);
+                $factory = $prefix . 'Factory';
+                if (class_exists($factory)) {
+                    return $this->call([$this->get($factory), '__invoke'], compact('parameters', 'id'));
                 }
             }
         } elseif (class_exists($name)) {
