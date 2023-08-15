@@ -176,7 +176,7 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
 
             return $this->make($class, $definition, $id);
         } else {
-            throw new NotSupportedException('not supported definition');
+            throw new Exception(sprintf('The definition of `%s` is not supported.', $id));
         }
     }
 
@@ -195,7 +195,7 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
 
                     if (str_contains($definition, '#')) {
                         if (($definition = $this->definitions[$definition] ?? null) === null) {
-                            throw new DefinitionException(sprintf('The definition of `%s` is not found.', $id));
+                            throw new Exception(sprintf('The definition of `%s` is not found.', $id));
                         }
                     } else {
                         if (($v = $this->definitions[$definition] ?? null) !== null) {
@@ -271,12 +271,7 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
                 $signature = is_array($callable)
                     ? $callable[0]::class . '::' . $callable[1]
                     : $rFunction->getName();
-                throw new AutowiringFailedException(
-                    sprintf(
-                        'Cannot autowire argument "$%s" of method "%s()", you should configure its value explicitly.',
-                        $name, $signature
-                    )
-                );
+                throw new Exception(sprintf('Cannot autowire argument `$%s` of method %s().', $name, $signature));
             }
 
             if ($type !== null && is_string($value)) {
