@@ -3,7 +3,6 @@
 namespace Tests;
 
 use ManaPHP\Di\Container;
-use ManaPHP\Http\Request;
 use PHPUnit\Framework\TestCase;
 
 class SimpleComponent

@@ -4,8 +4,8 @@ namespace App\Areas\User\Controllers;
 
 use App\Controllers\Controller;
 use App\Models\User;
-use ManaPHP\Helper\Str;
 use App\Models\UserLoginLog;
+use ManaPHP\Helper\Str;
 use ManaPHP\Http\Controller\Attribute\Authorize;
 
 /**

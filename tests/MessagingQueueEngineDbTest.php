@@ -3,7 +3,6 @@
 namespace Tests;
 
 use ManaPHP\Data\Db\Adapter\Mysql;
-use ManaPHP\Di\Container;
 use ManaPHP\Di\FactoryDefault;
 use ManaPHP\Messaging\Queue\Adapter\Db;
 use PHPUnit\Framework\TestCase;

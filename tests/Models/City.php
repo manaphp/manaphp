@@ -8,8 +8,8 @@
 
 namespace Tests\Models;
 
-use ManaPHP\Data\Db\Model;
 use ManaPHP\Data\AbstractRelation;
+use ManaPHP\Data\Db\Model;
 
 /**
  * Class City

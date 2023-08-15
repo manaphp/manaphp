@@ -2,10 +2,9 @@
 
 namespace Tests;
 
-use ManaPHP\Di\Container;
-use ManaPHP\Mvc\Factory;
 use ManaPHP\Http\Router;
 use ManaPHP\Http\Router\Route;
+use ManaPHP\Mvc\Factory;
 use PHPUnit\Framework\TestCase;
 
 class MyRouter extends Router
