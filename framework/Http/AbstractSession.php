@@ -7,6 +7,7 @@ use ArrayAccess;
 use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Str;
@@ -22,19 +23,15 @@ abstract class AbstractSession extends Component implements SessionInterface, Ar
     #[Inject] protected RequestInterface $request;
     #[Inject] protected RouterInterface $router;
 
-    protected int $ttl;
-    protected int $lazy;
-    protected string $name;
-    protected string $serializer;
+    #[Value] protected int $ttl = 3600;
+    #[Value] protected int $lazy = 60;
+    #[Value] protected string $name = 'PHPSESSID';
+    #[Value] protected string $serializer = 'json';
+
     protected array $params = ['expire' => 0, 'path' => '', 'domain' => '', 'secure' => false, 'httponly' => true];
 
-    public function __construct(int $ttl = 3600, int $lazy = 60, string $name = "PHPSESSID",
-        string $serializer = 'json', array $params = []
-    ) {
-        $this->ttl = $ttl;
-        $this->lazy = $lazy;
-        $this->name = $name;
-        $this->serializer = $serializer;
+    public function __construct(array $params = [])
+    {
         $this->params = $params + $this->params;
 
         $this->attachEvent('request:responding', [$this, 'onRequestResponding']);

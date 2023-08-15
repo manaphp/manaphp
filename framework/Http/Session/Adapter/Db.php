@@ -5,6 +5,7 @@ namespace ManaPHP\Http\Session\Adapter;
 
 use ManaPHP\Data\DbInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Http\AbstractSession;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
@@ -26,15 +27,7 @@ class Db extends AbstractSession
     #[Inject] protected DbInterface $db;
     #[Inject] protected IdentityInterface $identity;
 
-    protected string $table;
-
-    public function __construct(string $table = 'manaphp_session',
-        int $ttl = 3600, int $lazy = 60, string $name = "PHPSESSID", string $serializer = 'json', array $params = []
-    ) {
-        parent::__construct($ttl, $lazy, $name, $serializer, $params);
-
-        $this->table = $table;
-    }
+    #[Value] protected string $table = 'manaphp_session';
 
     public function do_read(string $session_id): string
     {

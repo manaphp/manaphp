@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Session\Adapter;
 
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Http\AbstractSession;
 use ManaPHP\Http\Session\Adapter\Cookie\Exception as CookieException;
 use ManaPHP\Security\CryptInterface;
@@ -12,15 +13,8 @@ class Cookie extends AbstractSession
 {
     #[Inject] protected CryptInterface $crypt;
 
-    protected string $key;
-
-    public function __construct(?string $key = null, int $ttl = 3600, int $lazy = 60, string $name = "PHPSESSID",
-        string $serializer = 'json', array $params = []
-    ) {
-        parent::__construct($ttl, $lazy, $name, $serializer, $params);
-
-        $this->key = $key ?? $this->crypt->getDerivedKey('cookieSession');
-    }
+    #[Value] protected ?string $key;
+    #[Value] protected string $salt = 'cookie.session';
 
     public function do_read(string $session_id): string
     {
@@ -35,7 +29,9 @@ class Cookie extends AbstractSession
             throw new CookieException(['format invalid: `:cookie`', 'cookie' => $data]);
         }
 
-        if (md5($parts[0] . $this->key) !== $parts[1]) {
+        $key = $this->key ?? $this->crypt->getDerivedKey($this->salt);
+
+        if (md5($parts[0] . $key) !== $parts[1]) {
             throw new CookieException(['hash invalid: `:cookie`', 'cookie' => $data]);
         }
 
@@ -56,9 +52,10 @@ class Cookie extends AbstractSession
         $params = session_get_cookie_params();
 
         $payload = base64_encode(json_stringify(['exp' => time() + $ttl, 'data' => $data]));
+        $key = $this->key ?? $this->crypt->getDerivedKey($this->salt);
         $this->cookies->set(
             $session_id,
-            $payload . '.' . md5($payload . $this->key),
+            $payload . '.' . md5($payload . $key),
             $params['lifetime'],
             $params['path'],
             $params['domain'],

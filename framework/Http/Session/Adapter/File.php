@@ -5,6 +5,7 @@ namespace ManaPHP\Http\Session\Adapter;
 
 use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Http\AbstractSession;
 
@@ -12,21 +13,9 @@ class File extends AbstractSession
 {
     #[Inject] protected AliasInterface $alias;
 
-    protected string $dir;
-    protected string $extension;
-    protected int $level;
-
-    public function __construct(
-        string $dir = '@runtime/session', string $extension = '.session', int $level = 1,
-        int $ttl = 3600, int $lazy = 60, string $name = "PHPSESSID",
-        string $serializer = 'json', array $params = []
-    ) {
-        parent::__construct($ttl, $lazy, $name, $serializer, $params);
-
-        $this->dir = ltrim($dir, '\\/');
-        $this->extension = $extension;
-        $this->level = $level;
-    }
+    #[Value] protected string $dir = '@runtime/session';
+    #[Value] protected string $extension = '.session';
+    #[Value] protected int $level = 1;
 
     protected function getFileName(string $sessionId): string
     {

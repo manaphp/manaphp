@@ -6,6 +6,7 @@ namespace ManaPHP\Http\Session\Adapter;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Data\RedisCacheInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Http\AbstractSession;
 
 class Redis extends AbstractSession
@@ -13,38 +14,34 @@ class Redis extends AbstractSession
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected RedisCacheInterface $redisCache;
 
-    protected string $prefix;
+    #[Value] protected ?string $prefix;
 
-    public function __construct(?string $prefix = null,
-        int $ttl = 3600, int $lazy = 60, string $name = "PHPSESSID",
-        string $serializer = 'json', array $params = []
-    ) {
-        parent::__construct($ttl, $lazy, $name, $serializer, $params);
-
-        $this->prefix = $prefix ?? sprintf("cache:%s:session:", $this->config->get("id"));
+    protected function getKey(string $session_id): string
+    {
+        return ($this->prefix ?? sprintf("cache:%s:session:", $this->config->get("id"))) . $session_id;
     }
 
     public function do_read(string $session_id): string
     {
-        $data = $this->redisCache->get($this->prefix . $session_id);
+        $data = $this->redisCache->get($this->getKey($session_id));
         return is_string($data) ? $data : '';
     }
 
     public function do_write(string $session_id, string $data, int $ttl): bool
     {
-        return $this->redisCache->set($this->prefix . $session_id, $data, $ttl);
+        return $this->redisCache->set($this->getKey($session_id), $data, $ttl);
     }
 
     public function do_touch(string $session_id, int $ttl): bool
     {
-        $this->redisCache->expire($this->prefix . $session_id, $ttl);
+        $this->redisCache->expire($this->getKey($session_id), $ttl);
 
         return true;
     }
 
     public function do_destroy(string $session_id): void
     {
-        $this->redisCache->del($this->prefix . $session_id);
+        $this->redisCache->del($this->getKey($session_id));
     }
 
     public function do_gc(int $ttl): void
