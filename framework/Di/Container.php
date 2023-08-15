@@ -12,13 +12,11 @@ use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionNamedType;
-use WeakMap;
 
 class Container implements ContainerInterface, MakerInterface, InvokerInterface, InspectorInterface
 {
     protected array $definitions = [];
     protected array $instances = [];
-    protected WeakMap $dependencies;
 
     public function __construct(array $definitions = [])
     {
@@ -28,8 +26,6 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
         $this->definitions['ManaPHP\Di\MakerInterface'] = $this;
         $this->definitions['ManaPHP\Di\InvokerInterface'] = $this;
         $this->definitions['ManaPHP\Di\InspectorInterface'] = $this;
-
-        $this->dependencies = new WeakMap();
     }
 
     public function set(string $id, mixed $definition): static
@@ -50,7 +46,7 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
         return $this;
     }
 
-    protected function processInject(object $object, ReflectionClass $reflectionClass): void
+    protected function processInject(object $object, ReflectionClass $reflectionClass, array $parameters): void
     {
         foreach ($reflectionClass->getProperties() as $property) {
             if ($property->isStatic()) {
@@ -59,8 +55,7 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
 
             if ($property->getAttributes(Inject::class) !== []) {
                 $type = $property->getType()->getName();
-                $dependencies = $this->dependencies[$object] ?? null;
-                $id = $dependencies[$type] ?? $type;
+                $id = $parameters[$type] ?? $type;
 
                 $value = $this->get($id[0] === '#' ? "$type$id" : $id);
                 if (!$property->isPublic()) {
@@ -134,27 +129,7 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
                 $this->instances[$id] = $instance;
             }
 
-            if ($parameters !== []) {
-                $dependencies = [];
-                foreach ($parameters as $key => $value) {
-                    if (is_string($key)) {
-                        $dependencies[$key] = $value;
-                    }
-                }
-
-                if ($dependencies !== []) {
-                    $rMethod = $rClass->getMethod('__construct');
-                    foreach ($rMethod->getParameters() as $rParameter) {
-                        unset($dependencies[$rParameter->getName()]);
-                    }
-
-                    if ($dependencies !== []) {
-                        $this->dependencies[$instance] = $dependencies;
-                    }
-                }
-            }
-
-            $this->processInject($instance, $rClass);
+            $this->processInject($instance, $rClass, $parameters);
             $this->processValue($instance, $rClass, $parameters);
 
             $this->call([$instance, '__construct'], $parameters);
@@ -165,11 +140,7 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
                 $this->instances[$id] = $instance;
             }
 
-            if ($parameters !== []) {
-                $this->dependencies[$instance] = $parameters;
-            }
-
-            $this->processInject($instance, $rClass);
+            $this->processInject($instance, $rClass, $parameters);
             $this->processValue($instance, $rClass, $parameters);
         }
 
@@ -296,17 +267,7 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
             }
 
             if ($type !== null && is_string($value)) {
-                if ($value[0] === '#') {
-                    $value = $this->get("$type$value");
-                } elseif (is_array($callable)) {
-                    $object = $callable[0];
-                    $dependencies = $this->dependencies[$object] ?? null;
-                    $id = $dependencies[$name] ?? $dependencies[$type] ?? $type;
-
-                    $value = $this->get($id[0] === '#' ? "$type$id" : $id);
-                } else {
-                    $value = $this->get($value);
-                }
+                $value = $this->get($value[0] === '#' ? "$type$value" : $value);
             }
 
             $args[] = $value;
