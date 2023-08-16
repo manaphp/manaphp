@@ -5,6 +5,7 @@ namespace ManaPHP\Filters;
 
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Exception\TooManyRequestsException;
 use ManaPHP\Http\Filter;
@@ -20,14 +21,8 @@ class RateLimitFilter extends Filter implements ValidatingFilterInterface
     #[Inject] protected RequestInterface $request;
     #[Inject] protected RedisCacheInterface $redisCache;
 
-    protected string $prefix;
-    protected string $limits;
-
-    public function __construct(?string $prefix = null, string $limits = '60/m')
-    {
-        $this->prefix = $prefix ?? sprintf("cache:%s:rateLimitPlugin:", $this->config->get('id'));
-        $this->limits = $limits;
-    }
+    #[Value] protected ?string $prefix;
+    #[Value] protected string $limits = '60/m';
 
     public function onValidating(EventArgs $eventArgs): void
     {
@@ -45,7 +40,8 @@ class RateLimitFilter extends Filter implements ValidatingFilterInterface
         }
 
         $uid = $this->identity->getName('') ?: $this->request->getClientIp();
-        $prefix = $this->prefix . $dispatcher->getPath() . ':' . $uid . ':';
+        $prefix = ($this->prefix ?? sprintf("cache:%s:rateLimitPlugin:", $this->config->get('id')))
+            . $dispatcher->getPath() . ':' . $uid . ':';
 
         foreach ($limits as $k => $v) {
             if ($pos = strpos($v, '/')) {

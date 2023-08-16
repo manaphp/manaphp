@@ -5,6 +5,7 @@ namespace ManaPHP\Filters;
 
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\Filter;
 use ManaPHP\Http\Filter\BeginFilterInterface;
@@ -17,16 +18,9 @@ class CorsFilter extends Filter implements BeginFilterInterface
     #[Inject] protected RequestInterface $request;
     #[Inject] protected ResponseInterface $response;
 
-    protected int $max_age;
-    protected ?string $origin;
-    protected bool $credentials;
-
-    public function __construct(int $max_age = 86400, ?string $origin = null, bool $credentials = true)
-    {
-        $this->max_age = $max_age;
-        $this->origin = $origin;
-        $this->credentials = $credentials;
-    }
+    #[Value] protected int $max_age = 86400;
+    #[Value] protected ?string $origin = null;
+    #[Value] protected bool $credentials = true;
 
     public function onBegin(): void
     {

@@ -5,6 +5,7 @@ namespace ManaPHP\Filters;
 
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\Filter;
@@ -19,18 +20,9 @@ class SlowlogFilter extends Filter implements EndFilterInterface
     #[Inject] protected ResponseInterface $response;
     #[Inject] protected DispatcherInterface $dispatcher;
 
-    protected float $threshold;
-    protected string $file;
-    protected string $format;
-
-    public function __construct(float $threshold = 1.0,
-        string $file = '@runtime/slowlogPlugin/{id}.log',
-        string $format = '[:date][:client_ip][:request_id][:elapsed] :message'
-    ) {
-        $this->threshold = $threshold;
-        $this->file = strtr($file, ['{id}' => $this->config->get('id')]);
-        $this->format = $format;
-    }
+    #[Value] protected float $threshold = 1.0;
+    #[Value] protected string $file = '@runtime/slowlogPlugin/{id}.log';
+    #[Value] protected string $format = '[:date][:client_ip][:request_id][:elapsed] :message';
 
     protected function write(float $elapsed, mixed $message): void
     {
@@ -48,7 +40,7 @@ class SlowlogFilter extends Filter implements EndFilterInterface
         $replaced[':elapsed'] = sprintf('%.03f', $elapsed);
         $replaced[':message'] = $message . PHP_EOL;
 
-        LocalFS::fileAppend($this->file, strtr($this->format, $replaced));
+        LocalFS::fileAppend(strtr($this->file, ['{id}' => $this->config->get('id')]), strtr($this->format, $replaced));
     }
 
     public function onEnd(): void

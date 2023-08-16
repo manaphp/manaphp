@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Filters;
 
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Filters\CsrfFilter\AttackDetectedException;
 use ManaPHP\Http\Filter;
@@ -18,14 +19,8 @@ class CsrfFilter extends Filter implements ValidatingFilterInterface
     #[Inject] protected RequestInterface $request;
     #[Inject] protected ViewInterface $view;
 
-    protected bool $strict;
-    protected array $domains;
-
-    public function __construct(bool $strict = true, array $domains = [])
-    {
-        $this->strict = $strict;
-        $this->domains = $domains;
-    }
+    #[Value] protected bool $strict = true;
+    #[Value] protected array $domains = [];
 
     protected function isOriginSafe(): bool
     {
