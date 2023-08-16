@@ -8,6 +8,7 @@ use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Coroutine\Mutex;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
@@ -27,17 +28,13 @@ class Renderer extends Component implements RendererInterface
      */
     protected array $resolved = [];
 
-    protected array $engines;
+    #[Value] protected array $engines
+        = ['.phtml' => 'ManaPHP\Rendering\Engine\Php',
+           '.sword' => 'ManaPHP\Rendering\Engine\Sword'];
 
     protected array $files = [];
     protected Mutex $mutex;
 
-    public function __construct(array $engines
-    = ['.phtml' => 'ManaPHP\Rendering\Engine\Php',
-       '.sword' => 'ManaPHP\Rendering\Engine\Sword']
-    ) {
-        $this->engines = $engines;
-    }
 
     protected function getMutex(): Mutex
     {

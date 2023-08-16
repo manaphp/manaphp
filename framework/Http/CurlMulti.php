@@ -7,6 +7,7 @@ use Countable;
 use ManaPHP\AliasInterface;
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\CurlMulti\Error;
@@ -20,19 +21,16 @@ class CurlMulti extends Component implements CurlMultiInterface, Countable
     #[Inject] protected LoggerInterface $logger;
     #[Inject] protected MakerInterface $maker;
 
-    protected ?string $proxy;
-    protected int $timeout;
+    #[Value] protected ?string $proxy = null;
+    #[Value] protected int $timeout = 10;
 
     protected mixed $template;
     protected mixed $mh;
     protected array $requests = [];
     protected array $files = [];
 
-    public function __construct(?string $proxy = null, int $timeout = 10)
+    public function __construct()
     {
-        $this->proxy = $proxy;
-        $this->timeout = $timeout;
-
         $this->template = $this->createCurlTemplate();
 
         $this->mh = curl_multi_init();

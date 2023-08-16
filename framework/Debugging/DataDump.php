@@ -9,18 +9,14 @@ use ManaPHP\AliasInterface;
 use ManaPHP\Component;
 use ManaPHP\Coroutine;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use Throwable;
 
 class DataDump extends Component implements DataDumpInterface
 {
     #[Inject] protected AliasInterface $alias;
 
-    protected string $format;
-
-    public function __construct(string $format = '[:time][:location] :message')
-    {
-        $this->format = $format;
-    }
+    #[Value] protected string $format = '[:time][:location] :message';
 
     protected function getLocation(array $traces): array
     {

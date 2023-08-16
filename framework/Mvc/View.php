@@ -6,6 +6,7 @@ namespace ManaPHP\Mvc;
 use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
@@ -27,17 +28,11 @@ class View extends Component implements ViewInterface
     #[Inject] protected DispatcherInterface $dispatcher;
     #[Inject] protected FactoryInterface $widgetFactory;
 
-    protected int $max_age;
-    protected bool $autofix_url;
+    #[Value] protected int $max_age = 0;
+    #[Value] protected bool $autofix_url = true;
 
     protected array $dirs = [];
     protected array $exists_cache;
-
-    public function __construct(int $max_age = 0, bool $autofix_url = true)
-    {
-        $this->max_age = $max_age;
-        $this->autofix_url = $autofix_url;
-    }
 
     public function setMaxAge(int $max_age): static
     {

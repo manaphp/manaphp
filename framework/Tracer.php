@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP;
 
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\Listener;
 use ManaPHP\Logging\LoggerInterface;
 
@@ -11,12 +12,7 @@ abstract class Tracer extends Listener
 {
     #[Inject] protected LoggerInterface $logger;
 
-    protected bool $verbose;
-
-    public function __construct(bool $verbose = false)
-    {
-        $this->verbose = $verbose;
-    }
+    #[Value] protected bool $verbose = false;
 
     public function debug(mixed $message, string $category): void
     {

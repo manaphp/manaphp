@@ -7,6 +7,7 @@ use JetBrains\PhpStorm\ArrayShape;
 use ManaPHP\AliasInterface;
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\CreateDirectoryFailedException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\RuntimeException;
@@ -20,10 +21,11 @@ class Compiler extends Component
     #[Inject] protected UrlInterface $url;
     #[Inject] protected RouterInterface $router;
 
-    protected int $hash_length = 12;
-    protected array $directives = [];
-    protected array $rawTags = ['{!!', '!!}'];
-    protected array $escapedTags = ['{{', '}}'];
+    #[Value] protected int $hash_length = 12;
+    #[Value] protected array $directives = [];
+    #[Value] protected array $rawTags = ['{!!', '!!}'];
+    #[Value] protected array $escapedTags = ['{{', '}}'];
+
     protected bool $foreachelse_used = false;
     protected array $safe_functions
         = [

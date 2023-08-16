@@ -6,6 +6,7 @@ namespace ManaPHP\Http;
 use ManaPHP\AliasInterface;
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Http\Captcha\InvalidCaptchaException;
 
 abstract class AbstractCaptcha extends Component implements CaptchaInterface
@@ -15,37 +16,19 @@ abstract class AbstractCaptcha extends Component implements CaptchaInterface
     #[Inject] protected ResponseInterface $response;
     #[Inject] protected SessionInterface $session;
 
-    protected string $charset;
-    protected array $fonts;
-    protected string $sessionVar = 'captcha';
+    #[Value] protected string $charset = '23456789abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY';
+    #[Value] protected array $fonts
+        = [
+            '@manaphp/Http/Captcha/Fonts/AirbusSpecial.ttf',
+            '@manaphp/Http/Captcha/Fonts/StencilFour.ttf',
+            '@manaphp/Http/Captcha/Fonts/SpicyRice.ttf'
+        ];
+    #[Value] protected string $sessionVar = 'captcha';
     protected int $angleAmplitude = 30;
-    protected int $noiseCharCount = 1;
-    protected string $bgRGB;
-    protected int $length = 4;
+    #[Value] protected int $noiseCharCount = 1;
+    #[Value] protected string $bgRGB = '255,255,255';
+    #[Value] protected int $length = 4;
     protected int $minInterval = 1;
-
-    public function __construct(string $charset = '23456789abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY',
-        array $fonts = [], int $length = 4, string $bgRGB = '255,255,255'
-    ) {
-        $this->charset = $charset;
-
-        $this->fonts = $fonts
-            ?: [
-                '@manaphp/Http/Captcha/Fonts/AirbusSpecial.ttf',
-                '@manaphp/Http/Captcha/Fonts/StencilFour.ttf',
-                '@manaphp/Http/Captcha/Fonts/SpicyRice.ttf'
-            ];
-
-        $this->length = $length;
-        $this->bgRGB = $bgRGB;
-    }
-
-    public function setNoiseCharCount(int $count): static
-    {
-        $this->noiseCharCount = $count;
-
-        return $this;
-    }
 
     protected function rand_amplitude(float $a): float
     {

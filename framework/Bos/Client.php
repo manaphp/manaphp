@@ -6,6 +6,7 @@ namespace ManaPHP\Bos;
 use ManaPHP\AliasInterface;
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Arr;
@@ -18,12 +19,7 @@ class Client extends Component implements ClientInterface
     #[Inject] protected HttpClientInterface $httpClient;
     #[Inject] protected RestClientInterface $restClient;
 
-    protected string $endpoint;
-
-    public function __construct(string $endpoint)
-    {
-        $this->endpoint = rtrim($endpoint, '/');
-    }
+    #[Value] protected string $endpoint;
 
     public function createBucket(string $bucket, ?string $base_url = null): array
     {

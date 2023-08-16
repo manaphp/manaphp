@@ -5,23 +5,19 @@ namespace ManaPHP\Mvc\View;
 
 use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
+use ManaPHP\Di\Attribute\Value;
 
 class Flash extends Component implements FlashInterface
 {
     use ContextTrait;
 
-    protected array $css;
-
-    public function __construct(array $css = [])
-    {
-        $this->css = $css
-            ?: [
-                'error'   => 'flash-error',
-                'notice'  => 'flash-notice',
-                'success' => 'flash-success',
-                'warning' => 'flash-warning'
-            ];
-    }
+    #[Value] protected array $css
+        = [
+            'error'   => 'flash-error',
+            'notice'  => 'flash-notice',
+            'success' => 'flash-success',
+            'warning' => 'flash-warning'
+        ];
 
     public function error(string $message): void
     {

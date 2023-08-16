@@ -5,6 +5,7 @@ namespace ManaPHP\I18n;
 
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\RequestInterface;
@@ -14,15 +15,13 @@ class Translator extends Component implements TranslatorInterface
     #[Inject] protected LocaleInterface $locale;
     #[Inject] protected RequestInterface $request;
 
-    protected string $dir;
+    #[Value] protected string $dir = '@resources/Translator';
 
     protected array $files = [];
     protected array $templates = [];
 
-    public function __construct(string $dir = '@resources/Translator')
+    public function __construct()
     {
-        $this->dir = $dir;
-
         foreach (LocalFS::glob($this->dir . '/*.php') as $file) {
             $this->files[strtolower(pathinfo($file, PATHINFO_FILENAME))] = $file;
         }

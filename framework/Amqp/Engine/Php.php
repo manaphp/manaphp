@@ -11,6 +11,7 @@ use ManaPHP\Amqp\Exchange;
 use ManaPHP\Amqp\MessageInterface;
 use ManaPHP\Amqp\Queue;
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\MisuseException;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
@@ -19,16 +20,12 @@ use PhpAmqpLib\Message\AMQPMessage;
 
 class Php extends Component implements EngineInterface
 {
-    protected string $uri;
+    #[Value] protected string $uri;
+
     protected AMQPStreamConnection $connection;
     protected ?AMQPChannel $channel = null;
     protected array $exchanges;
     protected array $queues;
-
-    public function __construct(string $uri)
-    {
-        $this->uri = $uri;
-    }
 
     protected function getChannel(): AMQPChannel
     {

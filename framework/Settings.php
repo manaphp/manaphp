@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP;
 
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Redis\RedisDbInterface;
 
@@ -11,14 +12,8 @@ class Settings extends Component implements SettingsInterface
 {
     #[Inject] protected RedisDbInterface $redisDb;
 
-    protected string $key;
-    protected int $ttl;
-
-    public function __construct(string $key = 'settings', int $ttl = 1)
-    {
-        $this->key = $key;
-        $this->ttl = $ttl;
-    }
+    #[Value] protected string $key = 'settings';
+    #[Value] protected int $ttl = 1;
 
     public function getInternal(string $key, ?string $default = null): ?string
     {

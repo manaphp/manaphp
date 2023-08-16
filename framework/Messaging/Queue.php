@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Messaging;
 
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Redis\RedisBrokerInterface;
 
@@ -11,15 +12,10 @@ class Queue extends AbstractQueue
 {
     #[Inject] protected RedisBrokerInterface $redisBroker;
 
-    protected string $prefix;
+    #[Value] protected string $prefix = 'cache:msgQueue:';
 
     protected array $priorities = [self::PRIORITY_HIGHEST, self::PRIORITY_NORMAL, self::PRIORITY_LOWEST];
     protected array $topicKeys = [];
-
-    public function __construct(string $prefix = 'cache:msgQueue:')
-    {
-        $this->prefix = $prefix;
-    }
 
     public function do_push(string $topic, string $body, int $priority = self::PRIORITY_NORMAL): void
     {

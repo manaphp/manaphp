@@ -5,18 +5,14 @@ namespace ManaPHP\Http\Session;
 
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Http\SessionInterface;
 
 class Bag extends Component implements BagInterface
 {
     #[Inject] protected SessionInterface $session;
 
-    protected string $name;
-
-    public function __construct(string $name)
-    {
-        $this->name = $name;
-    }
+    #[Value] protected string $name;
 
     public function destroy(): void
     {

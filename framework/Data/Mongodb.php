@@ -9,6 +9,7 @@ use ManaPHP\Data\Mongodb\Exception as MongodbException;
 use ManaPHP\Data\Mongodb\Query;
 use ManaPHP\Data\Mongodb\QueryMakerInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\NonCloneableException;
@@ -24,22 +25,20 @@ class Mongodb extends Component implements MongodbInterface
     #[Inject] protected ConnectionMakerInterface $connectionMaker;
     #[Inject] protected QueryMakerInterface $queryMaker;
 
-    protected string $uri;
+    #[Value] protected string $uri = 'mongodb://127.0.0.1:27017/';
     protected string $prefix;
     protected string $db;
 
-    public function __construct(string $uri = 'mongodb://127.0.0.1:27017/')
+    public function __construct()
     {
-        $this->uri = $uri;
-
-        if (preg_match('#[?&]prefix=(\w+)#', $uri, $matches)) {
+        if (preg_match('#[?&]prefix=(\w+)#', $this->uri, $matches)) {
             $this->prefix = $matches[1];
         }
 
-        $path = parse_url($uri, PHP_URL_PATH);
+        $path = parse_url($this->uri, PHP_URL_PATH);
         $this->db = ($path !== '/' && $path !== null) ? substr($path, 1) : null;
 
-        $sample = $this->connectionMaker->make([$this->uri]);
+        $sample = $this->connectionMaker->make(['uri' => $this->uri]);
         $this->poolManager->add($this, $sample);
     }
 

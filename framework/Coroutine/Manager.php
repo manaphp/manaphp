@@ -5,6 +5,7 @@ namespace ManaPHP\Coroutine;
 
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use Swoole\Coroutine;
 
 class Manager extends Component implements ManagerInterface
@@ -12,14 +13,12 @@ class Manager extends Component implements ManagerInterface
     #[Inject] protected SchedulerMakerInterface $schedulerMaker;
     #[Inject] protected TaskMakerInterface $taskMaker;
 
-    protected array $option;
+    #[Value] protected array $option = [];
 
-    public function __construct(array $options = [])
+    public function __construct()
     {
-        $this->option = $options;
-
         if (MANAPHP_COROUTINE_ENABLED) {
-            Coroutine::set($options);
+            Coroutine::set($this->option);
         }
     }
 

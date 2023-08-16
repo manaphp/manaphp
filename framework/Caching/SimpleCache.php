@@ -5,6 +5,7 @@ namespace ManaPHP\Caching;
 
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Redis\RedisCacheInterface;
 use Psr\SimpleCache\CacheInterface;
 
@@ -12,12 +13,7 @@ class SimpleCache extends Component implements CacheInterface
 {
     #[Inject] protected RedisCacheInterface $redisCache;
 
-    protected string $prefix;
-
-    public function __construct(string $prefix = 'cache:')
-    {
-        $this->prefix = $prefix;
-    }
+    #[Value] protected string $prefix = 'cache:';
 
     public function get(string $key, mixed $default = null): mixed
     {

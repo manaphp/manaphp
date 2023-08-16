@@ -6,6 +6,7 @@ namespace ManaPHP\Debugging;
 use ManaPHP\AliasInterface;
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 
 class XdebugTracer extends Component implements XdebugTracerInterface
@@ -14,18 +15,10 @@ class XdebugTracer extends Component implements XdebugTracerInterface
 
     #[Inject] protected AliasInterface $alias;
 
-    protected int $params;
-    protected int $return;
-    protected int $max_depth;
-    protected int $mem_delta;
-
-    public function __construct(int $params = 3, int $return = 0, int $max_depth = 2, int $mem_delta = 1)
-    {
-        $this->params = $params;
-        $this->return = $return;
-        $this->max_depth = $max_depth;
-        $this->mem_delta = $mem_delta;
-    }
+    #[Value] protected int $params = 3;
+    #[Value] protected int $return = 0;
+    #[Value] protected int $max_depth = 2;
+    #[Value] protected int $mem_delta = 1;
 
     public function start(): void
     {

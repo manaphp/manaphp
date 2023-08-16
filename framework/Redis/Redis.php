@@ -37,7 +37,7 @@ class Redis extends Component implements RedisInterface, RedisDbInterface, Redis
             $this->pool_size = (int)$matches[1];
         }
 
-        $sample = $this->connectionMaker->make([$this->uri]);
+        $sample = $this->connectionMaker->make(['uri' => $this->uri]);
         $this->poolManager->add($this, $sample, $this->pool_size);
     }
 

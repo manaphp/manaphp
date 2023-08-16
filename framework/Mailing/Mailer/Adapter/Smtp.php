@@ -6,6 +6,7 @@ namespace ManaPHP\Mailing\Mailer\Adapter;
 use ManaPHP\AliasInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Logging\LoggerInterface;
 use ManaPHP\Mailing\AbstractMailer;
@@ -22,7 +23,7 @@ class Smtp extends AbstractMailer
     #[Inject] protected AliasInterface $alias;
     #[Inject] protected LoggerInterface $logger;
 
-    protected string $uri;
+    #[Value] protected string $uri;
     protected string $scheme;
     protected string $host;
     protected int $port;
@@ -30,10 +31,8 @@ class Smtp extends AbstractMailer
     protected string $password;
     protected int $timeout = 3;
 
-    public function __construct(string $uri)
+    public function __construct()
     {
-        $this->uri = $uri;
-
         $parts = parse_url($this->uri);
 
         $this->scheme = $parts['scheme'];

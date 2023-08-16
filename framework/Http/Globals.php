@@ -5,18 +5,17 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Http\Globals\Proxy;
 
 class Globals extends Component implements GlobalsInterface
 {
     use ContextTrait;
 
-    protected bool $proxy;
+    #[Value] protected bool $proxy = false;
 
-    public function __construct(bool $proxy = false)
+    public function __construct()
     {
-        $this->proxy = $proxy;
-
         if ($this->proxy) {
             $_GET = new Proxy($this, '_GET');
             $_POST = new Proxy($this, '_POST');

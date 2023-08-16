@@ -8,6 +8,7 @@ use ManaPHP\Component;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Debugging\DebuggerInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use Psr\Container\ContainerInterface;
 
@@ -18,16 +19,11 @@ class DebuggerBootstrapper extends Component implements BootstrapperInterface
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected DebuggerInterface $debugger;
 
-    protected bool $enabled;
-
-    public function __construct(?bool $enabled = null)
-    {
-        $this->enabled = $enabled ?? in_array($this->config->get('env'), ['dev', 'test'], true);
-    }
+    #[Value] protected ?bool $enabled;
 
     public function bootstrap(ContainerInterface $container): void
     {
-        if ($this->enabled) {
+        if ($this->enabled ?? in_array($this->config->get('env'), ['dev', 'test'], true)) {
             $this->attachEvent('httpServer:start', [$this, 'onHttpServerStart']);
         }
     }

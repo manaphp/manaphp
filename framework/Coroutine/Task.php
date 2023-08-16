@@ -5,6 +5,7 @@ namespace ManaPHP\Coroutine;
 
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Logging\LoggerInterface;
 use Swoole\Coroutine;
 use Swoole\Coroutine\Channel;
@@ -17,19 +18,17 @@ class Task extends Component implements TaskInterface
     /**
      * @var callable
      */
-    protected $fn;
-    protected int $count;
+    #[Value] protected $fn;
+    #[Value] protected int $count = 1;
+
     protected Channel $channel;
 
-    public function __construct(callable $fn, int $count = 1)
+    public function __construct()
     {
-        $this->fn = $fn;
-        $this->count = $count;
-
         if (MANAPHP_COROUTINE_ENABLED) {
-            $this->channel = new Channel($count);
+            $this->channel = new Channel($this->count);
 
-            for ($i = 0; $i < $count; $i++) {
+            for ($i = 0; $i < $this->count; $i++) {
                 Coroutine::create([$this, 'routine']);
             }
         }

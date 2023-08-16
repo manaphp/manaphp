@@ -4,25 +4,21 @@ declare(strict_types=1);
 namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
+use ManaPHP\Di\Attribute\Value;
 use Swoole\Process;
 
 class DaemonCommand extends Command
 {
-    protected array $commands = [];
-    protected string $entrypoint;
-
-    public function __construct(array $commands, ?string $entrypoint = null)
-    {
-        $this->commands = $commands;
-        $this->entrypoint = $entrypoint ?? 'php ' . get_included_files()[0];
-    }
+    #[Value] protected array $commands = [];
+    #[Value] protected ?string $entrypoint;
 
     public function startAction()
     {
+        $entrypoint = $this->entrypoint ?? 'php ' . get_included_files()[0];
         foreach ($this->commands as $command) {
-            $process = new Process(function () use ($command) {
+            $process = new Process(function () use ($command, $entrypoint) {
                 for (; ;) {
-                    exec(sprintf('%s %s', $this->entrypoint, $command), $output, $result_code);
+                    exec(sprintf('%s %s', $entrypoint, $command), $output, $result_code);
                     foreach ($output as $line) {
                         $this->console->writeLn(str_replace(' [0m', '', $line));
                     }

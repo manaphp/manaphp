@@ -6,6 +6,7 @@ namespace ManaPHP\Http\Request;
 use ManaPHP\AliasInterface;
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Request\File\Exception as FileException;
 
@@ -13,12 +14,7 @@ class File extends Component implements FileInterface
 {
     #[Inject] protected AliasInterface $alias;
 
-    protected array $file;
-
-    public function __construct(array $file)
-    {
-        $this->file = $file;
-    }
+    #[Value] protected array $file;
 
     public function getSize(): int
     {

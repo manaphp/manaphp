@@ -5,6 +5,7 @@ namespace ManaPHP\Data\Mongodb;
 
 use ManaPHP\Component;
 use ManaPHP\Data\Mongodb\Exception as MongodbException;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Command;
@@ -18,16 +19,11 @@ class Connection extends Component implements ConnectionInterface
 {
     use EventTrait;
 
-    protected string $uri;
+    #[Value] protected string $uri;
     protected ?Manager $manager = null;
     protected ?WriteConcern $writeConcern = null;
     protected int $heartbeat = 60;
     protected ?float $last_heartbeat = null;
-
-    public function __construct(string $uri)
-    {
-        $this->uri = $uri;
-    }
 
     /** @noinspection PhpUnusedLocalVariableInspection */
     protected function ping(): bool

@@ -10,13 +10,6 @@ class Memory extends AbstractMailer
 {
     protected Message $message;
 
-    public function __construct(?string $log = null, ?string $from = null, ?string $to = null)
-    {
-        $this->log = $log;
-        $this->from = $from;
-        $this->to = $to;
-    }
-
     public function getLastMessage(): Message
     {
         return $this->message;

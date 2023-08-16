@@ -8,6 +8,7 @@ use ManaPHP\ConfigInterface;
 use ManaPHP\Data\Db;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 
 class Metadata extends Component implements MetadataInterface
 {
@@ -15,12 +16,10 @@ class Metadata extends Component implements MetadataInterface
     #[Inject] protected Db\FactoryInterface $dbFactory;
     #[Inject] protected ShardingInterface $sharding;
 
-    protected int $ttl;
+    #[Value] protected int $ttl = 3600;
 
-    public function __construct(int $ttl = 3600)
+    public function __construct()
     {
-        $this->ttl = $ttl;
-
         /** @noinspection NotOptimalIfConditionsInspection */
         if ($this->config->get('debug') || !function_exists('apcu_fetch')) {
             $this->ttl = 0;

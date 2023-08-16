@@ -6,6 +6,7 @@ namespace ManaPHP\Http;
 use ManaPHP\AliasInterface;
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Http\Client\BadGatewayException;
@@ -35,28 +36,13 @@ class Client extends Component implements ClientInterface
     #[Inject] protected ManagerInterface $poolManager;
     #[Inject] protected EngineMakerInterface $engineMaker;
 
-    public const USER_AGENT_IE = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
-    protected string|EngineInterface $engine;
-    protected ?string $proxy;
-    protected ?string $cafile;
-    protected int $timeout;
-    protected bool $verify_peer;
-    protected string $user_agent;
-    protected int $pool_size;
-
-    public function __construct(string $engine = 'ManaPHP\Http\Client\Engine\Fopen',
-        ?string $proxy = null, ?string $cafile = null, int $timeout = 10, bool $verify_peer = true,
-        string $user_agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko',
-        int $pool_size = 4
-    ) {
-        $this->engine = str_contains($engine, '\\') ? $engine : "ManaPHP\Http\Client\Engine\\" . ucfirst($engine);
-        $this->proxy = $proxy;
-        $this->cafile = $cafile;
-        $this->timeout = $timeout;
-        $this->verify_peer = $verify_peer;
-        $this->user_agent = $user_agent;
-        $this->pool_size = $pool_size;
-    }
+    #[Value] protected string|EngineInterface $engine = 'ManaPHP\Http\Client\Engine\Fopen';
+    #[Value] protected ?string $proxy = null;
+    #[Value] protected ?string $cafile = null;
+    #[Value] protected int $timeout = 10;
+    #[Value] protected bool $verify_peer = true;
+    #[Value] protected string $user_agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
+    #[Value] protected int $pool_size = 4;
 
     public function __clone()
     {

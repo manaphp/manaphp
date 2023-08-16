@@ -5,6 +5,7 @@ namespace ManaPHP\Redis;
 
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\RuntimeException;
@@ -18,7 +19,8 @@ class Connection extends Component
 
     #[Inject] protected RedisMakerInterface $redisMaker;
 
-    protected string $uri;
+    #[Value] protected string $uri;
+
     protected bool $cluster = false;
     protected string $host;
     protected int $port;
@@ -32,14 +34,14 @@ class Connection extends Component
     protected ?float $last_heartbeat = null;
     protected bool $multi = false;
 
-    public function __construct(string $uri)
+    public function __construct()
     {
-        $this->uri = $uri;
-
-        $parts = parse_url($uri);
+        $parts = parse_url($this->uri);
 
         if (!in_array($parts['scheme'], ['redis', 'cluster'], true)) {
-            throw new DsnFormatException(['`%s` is invalid, `%s` scheme is not recognized', $uri, $parts['scheme']]);
+            throw new DsnFormatException(
+                ['`%s` is invalid, `%s` scheme is not recognized', $this->uri, $parts['scheme']]
+            );
         }
 
         $this->host = $parts['host'] ?? '127.0.0.1';
@@ -48,7 +50,7 @@ class Connection extends Component
         if (isset($parts['path'])) {
             $path = trim($parts['path'], '/');
             if ($path !== '' && !is_numeric($path)) {
-                throw new DsnFormatException(['`%s` is invalid, `%s` db is not integer', $uri, $path]);
+                throw new DsnFormatException(['`%s` is invalid, `%s` db is not integer', $this->uri, $path]);
             }
             $this->db = (int)$path;
         }
