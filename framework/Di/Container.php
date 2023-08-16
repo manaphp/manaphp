@@ -119,11 +119,6 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
             $name = $definition;
         }
 
-        if (str_contains($name, '::')) {
-            list($factory, $method) = explode('::', $name);
-            return $this->call([$this->get($factory), $method], $parameters);
-        }
-
         if (preg_match('#^[\w\\\\]+$#', $name) !== 1) {
             throw new NotFoundException(["%s not found", $name]);
         }
@@ -135,11 +130,6 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
             if (class_exists($prefix)) {
                 $exists = true;
                 $name = $prefix;
-            } else {
-                $factory = $prefix . 'Factory';
-                if (class_exists($factory)) {
-                    return $this->call([$this->get($factory), '__invoke'], compact('parameters', 'id'));
-                }
             }
         } elseif (class_exists($name)) {
             $exists = true;
@@ -149,17 +139,20 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
             throw new NotFoundException(['`%s` is not exists', $name]);
         }
 
-        return $this->makeInternal($name, $parameters, $id);
+        if (method_exists($name, '__invoke')) {
+            if (($object = $this->instances[$name] ?? null) === null) {
+                $object = $this->makeInternal($name, [], $name);
+            }
+            return $this->call([$object, '__invoke'], compact('parameters', 'id'));
+        } else {
+            return $this->makeInternal($name, $parameters, $id);
+        }
     }
 
     public function getInternal(string $id, mixed $definition): mixed
     {
         if (is_string($definition)) {
-            if (str_contains($definition, '::')) {
-                return $this->make($definition, ['id' => $id], $id);
-            } else {
-                return $this->make($id, [], $definition);
-            }
+            return $this->make($definition, [], $id);
         } elseif ($definition instanceof Closure) {
             return $this->call($definition);
         } elseif (is_object($definition)) {

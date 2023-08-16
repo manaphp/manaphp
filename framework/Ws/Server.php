@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Logging;
+namespace ManaPHP\Ws;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\MakerInterface;
-use ManaPHP\Logging\Logger\Adapter\File;
+use ManaPHP\Ws\Server\Adapter\Swoole;
 
-class LoggerFactory
+class Server
 {
     #[Inject] protected MakerInterface $maker;
 
     public function __invoke(array $parameters, ?string $id)
     {
-        return $this->maker->make(File::class, $parameters, $id);
+        return $this->maker->make(Swoole::class, $parameters, $id);
     }
 }

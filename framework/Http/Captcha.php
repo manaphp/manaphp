@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Imaging;
+namespace ManaPHP\Http;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\MakerInterface;
-use ManaPHP\Imaging\Image\Adapter\Gd;
-use ManaPHP\Imaging\Image\Adapter\Imagick;
+use ManaPHP\Http\Captcha\Adapter\Gd;
+use ManaPHP\Http\Captcha\Adapter\Imagick;
 
-class ImageFactory
+class Captcha
 {
     #[Inject] protected MakerInterface $maker;
 

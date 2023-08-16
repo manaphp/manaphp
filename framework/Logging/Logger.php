@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http;
+namespace ManaPHP\Logging;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\MakerInterface;
-use ManaPHP\Http\Session\Adapter\Redis;
+use ManaPHP\Logging\Logger\Adapter\File;
 
-class SessionFactory
+class Logger
 {
     #[Inject] protected MakerInterface $maker;
 
     public function __invoke(array $parameters, ?string $id)
     {
-        return $this->maker->make(Redis::class, $parameters, $id);
+        return $this->maker->make(File::class, $parameters, $id);
     }
 }

@@ -7,7 +7,7 @@ use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\MakerInterface;
 use Psr\Container\ContainerInterface;
 
-class RedisCacheFactory
+class RedisCache
 {
     #[Inject] protected ContainerInterface $container;
     #[Inject] protected MakerInterface $maker;
