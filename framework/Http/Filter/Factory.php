@@ -3,16 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Filter;
 
+use ManaPHP\Di\Attribute\Inject;
 use Psr\Container\ContainerInterface;
 
 class Factory implements FactoryInterface
 {
-    protected ContainerInterface $container;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
+    #[Inject] protected ContainerInterface $container;
 
     public function get(string $filter): mixed
     {

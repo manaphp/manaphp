@@ -3,17 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Controller;
 
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Http\Controller;
 use Psr\Container\ContainerInterface;
 
 class Factory implements FactoryInterface
 {
-    protected ContainerInterface $container;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
+    #[Inject] protected ContainerInterface $container;
 
     public function get(string $controller): Controller
     {
