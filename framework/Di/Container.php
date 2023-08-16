@@ -12,7 +12,7 @@ use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionNamedType;
 
-class Container implements ContainerInterface, MakerInterface, InvokerInterface, InspectorInterface
+class Container implements ContainerInterface, MakerInterface, InvokerInterface
 {
     protected array $definitions = [];
     protected array $instances = [];
@@ -22,9 +22,9 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
         $this->definitions = $definitions;
 
         $this->definitions['Psr\Container\ContainerInterface'] = $this;
+        $this->definitions['ManaPHP\Di\Container'] = $this;
         $this->definitions['ManaPHP\Di\MakerInterface'] = $this;
         $this->definitions['ManaPHP\Di\InvokerInterface'] = $this;
-        $this->definitions['ManaPHP\Di\InspectorInterface'] = $this;
     }
 
     public function set(string $id, mixed $definition): static

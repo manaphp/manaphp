@@ -6,7 +6,6 @@ namespace ManaPHP\Commands;
 use ManaPHP\Cli\Command;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Container;
-use ManaPHP\Di\InspectorInterface;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use ReflectionClass;
@@ -14,7 +13,6 @@ use ReflectionMethod;
 
 class BashCompletionCommand extends Command
 {
-    #[Inject] protected InspectorInterface $inspector;
     #[Inject] protected Command\ManagerInterface $commandManager;
     #[Inject] protected Container $container;
 
@@ -52,7 +50,7 @@ class BashCompletionCommand extends Command
      */
     protected function getArgumentNames(string $command, string $action): array
     {
-        if (!$commandClassName = $this->inspector->getDefinition(Str::camelize($command) . 'Command')) {
+        if (!$commandClassName = $this->container->getDefinition(Str::camelize($command) . 'Command')) {
             return [];
         }
 
@@ -80,7 +78,7 @@ class BashCompletionCommand extends Command
      */
     protected function getArgumentValues(string $command, string $action, string $argumentName, string $current): array
     {
-        if (!$commandClassName = $this->inspector->getDefinition(Str::camelize($command) . 'Command')) {
+        if (!$commandClassName = $this->container->getDefinition(Str::camelize($command) . 'Command')) {
             return [];
         }
 

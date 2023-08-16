@@ -10,7 +10,7 @@ use ManaPHP\Context\ContextTrait;
 use ManaPHP\Data\Db\PreparedEmulatorInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Di\InspectorInterface;
+use ManaPHP\Di\Container;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\AbortException;
@@ -26,21 +26,19 @@ use ManaPHP\Logging\LoggerInterface;
 use ManaPHP\Redis\RedisCacheInterface;
 use ManaPHP\Tracer;
 use ManaPHP\Version;
-use Psr\Container\ContainerInterface;
 
 class Debugger extends Component implements DebuggerInterface
 {
     use EventTrait;
     use ContextTrait;
 
-    #[Inject] protected InspectorInterface $inspector;
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected LoggerInterface $logger;
     #[Inject] protected RequestInterface $request;
     #[Inject] protected ResponseInterface $response;
     #[Inject] protected DispatcherInterface $dispatcher;
     #[Inject] protected RouterInterface $router;
-    #[Inject] protected ContainerInterface $container;
+    #[Inject] protected Container $container;
     #[Inject] protected PreparedEmulatorInterface $preparedEmulator;
 
     protected int $ttl;
@@ -373,7 +371,7 @@ class Debugger extends Component implements DebuggerInterface
         $data['tracers'] = [];
         $data['events'] = $context->events;
 
-        foreach ($this->inspector->getInstances() as $name => $instance) {
+        foreach ($this->container->getInstances() as $name => $instance) {
             $properties = $instance instanceof Component
                 ? $instance->dump()
                 : array_keys(get_object_vars($instance));
