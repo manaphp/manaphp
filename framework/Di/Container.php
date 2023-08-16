@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Di;
 
-use Closure;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\MisuseException;
@@ -149,12 +148,10 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
         }
     }
 
-    public function getInternal(string $id, mixed $definition): mixed
+    protected function getInternal(string $id, mixed $definition): mixed
     {
         if (is_string($definition)) {
             return $this->make($definition, [], $id);
-        } elseif ($definition instanceof Closure) {
-            return $this->call($definition);
         } elseif (is_object($definition)) {
             return $definition;
         } elseif (is_array($definition)) {
