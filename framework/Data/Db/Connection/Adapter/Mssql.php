@@ -13,14 +13,14 @@ use PDO;
 
 class Mssql extends AbstractConnection
 {
-    public function __construct(string $uri)
+    public function __construct()
     {
-        $this->uri = $uri;
-
-        $parts = parse_url($uri);
+        $parts = parse_url($this->uri);
 
         if ($parts['scheme'] !== 'mssql') {
-            throw new DsnFormatException(['`%s` is invalid, `%s` scheme is not recognized', $uri, $parts['scheme']]);
+            throw new DsnFormatException(
+                ['`%s` is invalid, `%s` scheme is not recognized', $this->uri, $parts['scheme']]
+            );
         }
 
         $this->username = $parts['user'] ?? null;

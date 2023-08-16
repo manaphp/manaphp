@@ -7,6 +7,7 @@ use ManaPHP\BootstrapperInterface;
 use ManaPHP\Component;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use Psr\Container\ContainerInterface;
@@ -15,18 +16,12 @@ class TracerBootstrapper extends Component implements BootstrapperInterface
 {
     #[Inject] protected ConfigInterface $config;
 
-    protected array $tracers;
-    protected bool $enabled;
-
-    public function __construct(array $tracers = ['*'], ?bool $enabled = null)
-    {
-        $this->tracers = $tracers;
-        $this->enabled = $enabled ?? in_array($this->config->get('env'), ['dev', 'test'], true);
-    }
+    #[Value] protected array $tracers = ['*'];
+    #[Value] protected ?bool $enabled = null;
 
     public function bootstrap(ContainerInterface $container): void
     {
-        if (!$this->enabled) {
+        if (!($this->enabled && in_array($this->config->get('env'), ['dev', 'test'], true))) {
             return;
         }
 

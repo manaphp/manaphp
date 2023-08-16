@@ -4,34 +4,22 @@ declare(strict_types=1);
 namespace ManaPHP\Ws\Client;
 
 use ManaPHP\Component;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Ws\ClientInterface;
 
 class Engine extends Component implements EngineInterface
 {
-    protected string $endpoint;
-    protected ?string $proxy;
-    protected float $timeout;
-    protected ?string $protocol;
-    protected bool $masking = true;
-    protected ?string $origin;
-    protected string $user_agent;
-    protected mixed $socket;
-    protected ?ClientInterface $owner;
+    #[Value] protected string $endpoint;
+    #[Value] protected ?string $proxy = null;
+    #[Value] protected float $timeout = 3.0;
+    #[Value] protected ?string $protocol = null;
+    #[Value] protected bool $masking = false;
+    #[Value] protected ?string $origin = null;
+    #[Value] protected string $user_agent = 'manaphp/client';
+    #[Value] protected ?ClientInterface $owner = null;
 
-    public function __construct(string $endpoint, ?string $proxy = null, float $timeout = 3.0,
-        ?string $protocol = null, bool $masking = false, ?string $origin = null, string $user_agent = 'manaphp/client',
-        ?ClientInterface $owner = null
-    ) {
-        $this->endpoint = $endpoint;
-        $this->proxy = $proxy;
-        $this->timeout = $timeout;
-        $this->protocol = $protocol;
-        $this->masking = $masking;
-        $this->origin = $origin;
-        $this->user_agent = $user_agent;
-        $this->owner = $owner;
-    }
+    protected mixed $socket;
 
     public function __clone()
     {

@@ -7,6 +7,7 @@ use JsonSerializable;
 use ManaPHP\Component;
 use ManaPHP\Data\Db\Exception as DbException;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\NotSupportedException;
 use PDO;
@@ -19,7 +20,7 @@ abstract class AbstractConnection extends Component implements ConnectionInterfa
 
     #[Inject] protected PdoMakerInterface $pdoMaker;
 
-    protected string $uri;
+    #[Value] protected string $uri;
     protected string $dsn;
     protected string $username;
     protected string $password;

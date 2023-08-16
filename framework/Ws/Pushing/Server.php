@@ -6,6 +6,7 @@ namespace ManaPHP\Ws\Pushing;
 use ManaPHP\Component;
 use ManaPHP\Coroutine;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
@@ -24,22 +25,15 @@ class Server extends Component implements ServerInterface, LogCategorizable
     #[Inject] protected RequestInterface $request;
     #[Inject] protected PubSubInterface $pubSub;
 
-    protected string $endpoint;
-    protected string $prefix;
-    protected bool $dedicated;
+    #[Value] protected string $endpoint;
+    #[Value] protected string $prefix = 'ws_pushing:';
+    #[Value] protected bool $dedicated = false;
 
     protected array $ids;
     protected array $names;
     protected array $rooms;
     protected array $roles;
     protected array $fds = [];
-
-    public function __construct(string $endpoint, string $prefix = 'ws_pushing:', bool $dedicated = false)
-    {
-        $this->endpoint = $endpoint;
-        $this->prefix = $prefix;
-        $this->dedicated = $dedicated;
-    }
 
     public function categorizeLog(): string
     {

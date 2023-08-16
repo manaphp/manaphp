@@ -5,6 +5,7 @@ namespace ManaPHP\Amqp;
 
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Pool\ManagerInterface;
@@ -16,20 +17,19 @@ class Client extends Component implements ClientInterface
     #[Inject] protected ManagerInterface $poolManager;
     #[Inject] protected EngineMakerInterface $engineMaker;
 
-    protected string $uri;
+    #[Value] protected string $uri;
+
     protected int $pool_size = 4;
     protected int $timeout = 3;
     protected ?EngineInterface $engine = null;
 
-    public function __construct(string $uri)
+    public function __construct()
     {
-        $this->uri = $uri;
-
-        if (preg_match('#pool_size=(\d+)#', $uri, $match)) {
+        if (preg_match('#pool_size=(\d+)#', $this->uri, $match)) {
             $this->pool_size = (int)$match[1];
         }
 
-        $sample = $this->engineMaker->make([$uri]);
+        $sample = $this->engineMaker->make(['uri' => $this->uri]);
         $this->poolManager->add($this, $sample, $this->pool_size);
     }
 

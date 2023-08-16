@@ -15,14 +15,14 @@ class Mysql extends AbstractConnection
 {
     protected string $charset = 'UTF8';
 
-    public function __construct(string $uri = 'mysql://root@localhost/test?charset=utf8')
+    public function __construct()
     {
-        $this->uri = $uri;
-
-        $parts = parse_url($uri);
+        $parts = parse_url($this->uri);
 
         if ($parts['scheme'] !== 'mysql') {
-            throw new DsnFormatException(['`%s` is invalid, `%s` scheme is not recognized', $uri, $parts['scheme']]);
+            throw new DsnFormatException(
+                ['`%s` is invalid, `%s` scheme is not recognized', $this->uri, $parts['scheme']]
+            );
         }
 
         $this->username = $parts['user'] ?? 'root';

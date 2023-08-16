@@ -5,6 +5,7 @@ namespace ManaPHP\Ws\Pushing;
 
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Messaging\PubSubInterface;
@@ -15,14 +16,8 @@ class Client extends Component implements ClientInterface
 
     #[Inject] protected PubSubInterface $pubSub;
 
-    protected string $endpoint;
-    protected string $prefix;
-
-    public function __construct(string $endpoint, string $prefix = 'ws_pushing:')
-    {
-        $this->endpoint = $endpoint;
-        $this->prefix = $prefix;
-    }
+    #[Value] protected string $endpoint;
+    #[Value] protected string $prefix = 'ws_pushing:';
 
     protected function push(string $type, int|string|array $receivers, string|array $message, ?string $endpoint): void
     {

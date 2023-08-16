@@ -12,6 +12,7 @@ use ManaPHP\Data\Db\Exception as DbException;
 use ManaPHP\Data\Db\Query;
 use ManaPHP\Data\Db\SqlFragmentable;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
@@ -36,49 +37,48 @@ class Db extends Component implements DbInterface
     public const METADATA_AUTO_INCREMENT_KEY = 3;
     public const METADATA_INT_TYPE_ATTRIBUTES = 5;
 
-    protected string $uri;
+    #[Value] protected string $uri;
+
     protected string $prefix = '';
     protected bool $has_slave = false;
     protected float $timeout = 3.0;
     protected string $pool_size = '4';
 
-    public function __construct(string $uri)
+    public function __construct()
     {
-        $this->uri = $uri;
-
-        if (str_contains($uri, 'timeout=') && preg_match('#timeout=([\d.]+)#', $uri, $matches) === 1) {
+        if (str_contains($this->uri, 'timeout=') && preg_match('#timeout=([\d.]+)#', $this->uri, $matches) === 1) {
             $this->timeout = (float)$matches[1];
         }
 
-        if (preg_match('#pool_size=([\d/]+)#', $uri, $matches)) {
+        if (preg_match('#pool_size=([\d/]+)#', $this->uri, $matches)) {
             $this->pool_size = $matches[1];
         }
 
-        if (preg_match('#[?&]prefix=(\w+)#', $uri, $matches)) {
+        if (preg_match('#[?&]prefix=(\w+)#', $this->uri, $matches)) {
             $this->prefix = $matches[1];
         }
 
         $uris = [];
-        if (str_contains($uri, '{') && preg_match('#{[^}]+}#', $uri, $matches)) {
+        if (str_contains($this->uri, '{') && preg_match('#{[^}]+}#', $this->uri, $matches)) {
             $hosts = $matches[0];
             foreach (explode(',', substr($hosts, 1, -1)) as $value) {
                 $value = trim($value);
-                $uris[] = $value === '' ? $value : str_replace($hosts, $value, $uri);
+                $uris[] = $value === '' ? $value : str_replace($hosts, $value, $this->uri);
             }
-        } elseif (str_contains($uri, ',')) {
-            $hosts = parse_url($uri, PHP_URL_HOST);
+        } elseif (str_contains($this->uri, ',')) {
+            $hosts = parse_url($this->uri, PHP_URL_HOST);
             if (str_contains($hosts, ',')) {
                 foreach (explode(',', $hosts) as $value) {
                     $value = trim($value);
-                    $uris[] = $value === '' ? $value : str_replace($hosts, $value, $uri);
+                    $uris[] = $value === '' ? $value : str_replace($hosts, $value, $this->uri);
                 }
             } else {
-                foreach (explode(',', $uri) as $value) {
+                foreach (explode(',', $this->uri) as $value) {
                     $uris[] = trim($value);
                 }
             }
         } else {
-            $uris[] = $uri;
+            $uris[] = $this->uri;
         }
 
         if (($pos = strpos($this->pool_size, '/')) === false) {
@@ -91,7 +91,7 @@ class Db extends Component implements DbInterface
 
         if ($uris[0] !== '') {
             $uri = (string)$uris[0];
-            $sample = $this->connectionMaker->make([$uri]);
+            $sample = $this->connectionMaker->make(['uri' => $uri]);
             $this->poolManager->add($this, $sample, $master_pool_size);
         }
 
@@ -110,13 +110,13 @@ class Db extends Component implements DbInterface
                 $this->poolManager->create($this, count($uris) * $slave_pool_size, 'slave');
                 for ($i = 0; $i < $slave_pool_size; $i++) {
                     foreach ($uris as $v) {
-                        $sample = $this->connectionMaker->make([$v]);
+                        $sample = $this->connectionMaker->make(['uri' => $v]);
                         $this->poolManager->add($this, $sample, 1, 'slave');
                     }
                 }
             } else {
                 $uri = (string)$uris[random_int(0, count($uris) - 1)];
-                $sample = $this->connectionMaker->make([$uri]);
+                $sample = $this->connectionMaker->make(['uri' => $uri]);
                 $this->poolManager->add($this, $sample, 1, 'slave');
             }
 

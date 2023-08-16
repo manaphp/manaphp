@@ -6,6 +6,7 @@ namespace ManaPHP\Ws\Chatting;
 use ManaPHP\Component;
 use ManaPHP\Coroutine;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
@@ -24,18 +25,12 @@ class Server extends Component implements ServerInterface, LogCategorizable
     #[Inject] protected WsServerInterface $wsServer;
     #[Inject] protected PubSubInterface $pubSub;
 
-    protected string $prefix;
-    protected bool $dedicated;
+    #[Value] protected string $prefix = 'ws_chatting:';
+    #[Value] protected bool $dedicated = false;
 
     protected array $fds = [];
     protected array $ids;
     protected array $names;
-
-    public function __construct(string $prefix = 'ws_chatting:', bool $dedicated = false)
-    {
-        $this->prefix = $prefix;
-        $this->dedicated = $dedicated;
-    }
 
     public function categorizeLog(): string
     {

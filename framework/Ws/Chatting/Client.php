@@ -5,6 +5,7 @@ namespace ManaPHP\Ws\Chatting;
 
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Messaging\PubSubInterface;
 
@@ -14,12 +15,7 @@ class Client extends Component implements ClientInterface
 
     #[Inject] protected PubSubInterface $pubSub;
 
-    protected string $prefix;
-
-    public function __construct(string $prefix = 'ws_chatting:')
-    {
-        $this->prefix = $prefix;
-    }
+    #[Value] protected string $prefix = 'ws_chatting:';
 
     protected function push(string $type, string $room, string|array $receivers, string|array $message): void
     {
