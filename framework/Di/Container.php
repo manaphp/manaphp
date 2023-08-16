@@ -84,6 +84,34 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
         }
     }
 
+    protected function makeInternal(string $name, array $parameters = [], string $id = null): object
+    {
+        $rClass = new ReflectionClass($name);
+        if (method_exists($name, '__construct')) {
+            $instance = $rClass->newInstanceWithoutConstructor();
+
+            if ($id !== null) {
+                $this->instances[$id] = $instance;
+            }
+
+            $this->processInject($instance, $rClass, $parameters);
+            $this->processValue($instance, $rClass, $parameters);
+
+            $this->call([$instance, '__construct'], $parameters);
+        } else {
+            $instance = new $name();
+
+            if ($id !== null) {
+                $this->instances[$id] = $instance;
+            }
+
+            $this->processInject($instance, $rClass, $parameters);
+            $this->processValue($instance, $rClass, $parameters);
+        }
+
+        return $instance;
+    }
+
     public function make(string $name, array $parameters = [], string $id = null): mixed
     {
         while (is_string($definition = $this->definitions[$name] ?? null) && !str_contains($definition, '#')) {
@@ -121,30 +149,7 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface,
             throw new NotFoundException(['`%s` is not exists', $name]);
         }
 
-        $rClass = new ReflectionClass($name);
-        if (method_exists($name, '__construct')) {
-            $instance = $rClass->newInstanceWithoutConstructor();
-
-            if ($id !== null) {
-                $this->instances[$id] = $instance;
-            }
-
-            $this->processInject($instance, $rClass, $parameters);
-            $this->processValue($instance, $rClass, $parameters);
-
-            $this->call([$instance, '__construct'], $parameters);
-        } else {
-            $instance = new $name();
-
-            if ($id !== null) {
-                $this->instances[$id] = $instance;
-            }
-
-            $this->processInject($instance, $rClass, $parameters);
-            $this->processValue($instance, $rClass, $parameters);
-        }
-
-        return $instance;
+        return $this->makeInternal($name, $parameters, $id);
     }
 
     public function getInternal(string $id, mixed $definition): mixed
