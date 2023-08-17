@@ -4,12 +4,13 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Model;
 
 use ManaPHP\Data\ModelInterface;
+use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
 
 class Sharding implements ShardingInterface
 {
-    #[Inject] protected ManagerInterface $modelManager;
+    #[Inject] protected ModelManagerInterface $modelManager;
 
     public function getAnyShard(string $model): array
     {

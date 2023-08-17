@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Cli\Command;
+namespace ManaPHP\Cli;
 
 use ManaPHP\Helper\LocalFS;
 
-class Manager implements ManagerInterface
+class CommandManager implements CommandManagerInterface
 {
     protected array $commands = [];
 

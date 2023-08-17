@@ -8,14 +8,14 @@ use ManaPHP\Di\MakerInterface;
 use ManaPHP\Event\Emitter;
 use ManaPHP\Event\EmitterInterface;
 use ManaPHP\Exception\NonCloneableException;
-use ManaPHP\Pool\ManagerInterface;
+use ManaPHP\Pool\PoolManagerInterface;
 use ManaPHP\Ws\Client\EngineInterface;
 use ManaPHP\Ws\Client\Message;
 use Throwable;
 
 class Client implements ClientInterface
 {
-    #[Inject] protected ManagerInterface $poolManager;
+    #[Inject] protected PoolManagerInterface $poolManager;
     #[Inject] protected MakerInterface $maker;
 
     protected string $endpoint;

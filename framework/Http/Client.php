@@ -24,14 +24,14 @@ use ManaPHP\Http\Client\ServerErrorException;
 use ManaPHP\Http\Client\ServiceUnavailableException;
 use ManaPHP\Http\Client\TooManyRequestsException;
 use ManaPHP\Http\Client\UnauthorizedException;
-use ManaPHP\Pool\ManagerInterface;
+use ManaPHP\Pool\PoolManagerInterface;
 
 class Client implements ClientInterface
 {
     use EventTrait;
 
     #[Inject] protected AliasInterface $alias;
-    #[Inject] protected ManagerInterface $poolManager;
+    #[Inject] protected PoolManagerInterface $poolManager;
     #[Inject] protected MakerInterface $maker;
 
     #[Value] protected string $engine = 'ManaPHP\Http\Client\Engine';

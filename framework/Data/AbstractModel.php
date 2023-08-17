@@ -6,12 +6,11 @@ namespace ManaPHP\Data;
 use ArrayAccess;
 use JsonSerializable;
 use ManaPHP\Data\Db\SqlFragmentable;
-use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\Model\NotFoundException;
-use ManaPHP\Data\Model\Relation\ManagerInterface as RelationManager;
+use ManaPHP\Data\Model\RelationManagerInterface;
 use ManaPHP\Data\Model\SerializeNormalizable;
 use ManaPHP\Data\Model\ThoseInterface;
-use ManaPHP\Event\ManagerInterface as EventManager;
+use ManaPHP\Event\EventManagerInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;
@@ -83,7 +82,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             $fields = [$fields];
         }
 
-        $keyField = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
+        $keyField = Container::get(ModelManagerInterface::class)->getPrimaryKey(static::class);
         if (!in_array($keyField, $fields, true)) {
             array_unshift($fields, $keyField);
         }
@@ -104,7 +103,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public static function get(int|string $id, ?array $fields = null): static
     {
-        $primaryKey = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
+        $primaryKey = Container::get(ModelManagerInterface::class)->getPrimaryKey(static::class);
 
         return static::firstOrFail([$primaryKey => $id], $fields);
     }
@@ -189,7 +188,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public static function last(array $filters = [], ?array $fields = null): ?static
     {
-        $primaryKey = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
+        $primaryKey = Container::get(ModelManagerInterface::class)->getPrimaryKey(static::class);
         $rs = static::select($fields)->where($filters)->orderBy([$primaryKey => SORT_DESC])->limit(1)->fetch();
         return $rs[0] ?? null;
     }
@@ -256,7 +255,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $dict = [];
 
         if (is_string($kv)) {
-            $key = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
+            $key = Container::get(ModelManagerInterface::class)->getPrimaryKey(static::class);
             $value = $kv;
             foreach (static::select([$key, $value])->where($filters)->execute() as $row) {
                 $dict[$row[$key]] = $row[$value];
@@ -385,7 +384,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function load(?array $fields = null): static
     {
-        $fields = $fields ?? Container::get(ManagerInterface::class)->getFillable(static::class);
+        $fields = $fields ?? Container::get(ModelManagerInterface::class)->getFillable(static::class);
 
         $request = Container::get(RequestInterface::class);
 
@@ -409,7 +408,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
     public function fill(array $kv): static
     {
-        return $this->assign($kv, Container::get(ManagerInterface::class)->getFillable(static::class));
+        return $this->assign($kv, Container::get(ModelManagerInterface::class)->getFillable(static::class));
     }
 
     /**
@@ -472,7 +471,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
     public function getAutoCreatedData(): array
     {
-        $modelManager = Container::get(ManagerInterface::class);
+        $modelManager = Container::get(ModelManagerInterface::class);
         $current_time = time();
         $dateFormat = $modelManager->getDateFormat(static::class);
 
@@ -517,7 +516,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $identity = Container::get(IdentityInterface::class);
         $user_id = $identity->getId(0);
         $user_name = $identity->getName('');
-        $modelManager = Container::get(ManagerInterface::class);
+        $modelManager = Container::get(ModelManagerInterface::class);
 
         $dateFormat = $modelManager->getDateFormat(static::class);
 
@@ -554,7 +553,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             $this->load($fields);
         }
 
-        $primaryKey = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
+        $primaryKey = Container::get(ModelManagerInterface::class)->getPrimaryKey(static::class);
         if ($this->_snapshot || $this->$primaryKey) {
             return $this->update();
         } else {
@@ -585,7 +584,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
     public function with(string|array $withs): static
     {
-        $relationManager = Container::get(RelationManager::class);
+        $relationManager = Container::get(RelationManagerInterface::class);
 
         $relationManager->earlyLoad(static::class, [$this], $withs);
         return $this;
@@ -677,7 +676,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         $snapshot = $this->_snapshot;
 
         $changed = [];
-        foreach (Container::get(ManagerInterface::class)->getFields(static::class) as $field) {
+        foreach (Container::get(ModelManagerInterface::class)->getFields(static::class) as $field) {
             if (isset($snapshot[$field])) {
                 if ($this->{$field} !== $snapshot[$field]) {
                     $changed[] = $field;
@@ -713,7 +712,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
 
     public function fireEvent(string $event, mixed $data = null): void
     {
-        $eventManager = Container::get(EventManager::class);
+        $eventManager = Container::get(EventManagerInterface::class);
 
         $eventManager->fireEvent($event, $data, $this);
     }
@@ -768,7 +767,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             return $this->$name = $this->$method()->fetch();
         } elseif (Container::has($name)) {
             return $this->{$name} = Container::get($name);
-        } elseif (($relationManager = Container::get(RelationManager::class))->has(static::class, $name)) {
+        } elseif (($relationManager = Container::get(RelationManagerInterface::class))->has(static::class, $name)) {
             return $this->$name = $relationManager->lazyLoad($this, $name)->fetch();
         } else {
             throw new UnknownPropertyException(['`%s` does not contain `%s` field.`', static::class, $name]);
@@ -788,7 +787,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
     public function __call(string $name, array $arguments): mixed
     {
         if (str_starts_with($name, 'get')) {
-            $relationManager = Container::get(RelationManager::class);
+            $relationManager = Container::get(RelationManagerInterface::class);
 
             $relation = lcfirst(substr($name, 3));
             if ($relationManager->has(static::class, $relation)) {
@@ -823,7 +822,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
             $data['*changed_fields*'] = $changedFields;
         }
 
-        foreach (Container::get(ManagerInterface::class)->getFields(static::class) as $field) {
+        foreach (Container::get(ModelManagerInterface::class)->getFields(static::class) as $field) {
             if (!isset($this->$field)) {
                 continue;
             }

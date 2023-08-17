@@ -11,7 +11,7 @@ use ManaPHP\Data\ModelInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\ContainerInterface;
-use ManaPHP\Dumping\ManagerInterface as DumpingManagerInterface;
+use ManaPHP\Dumping\DumperManagerInterface;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\AbortException;
@@ -41,7 +41,7 @@ class Debugger implements DebuggerInterface
     #[Inject] protected RouterInterface $router;
     #[Inject] protected ContainerInterface $container;
     #[Inject] protected PreparedEmulatorInterface $preparedEmulator;
-    #[Inject] protected DumpingManagerInterface $dumpManager;
+    #[Inject] protected DumperManagerInterface $dumpManager;
 
     protected int $ttl;
     protected string $prefix;

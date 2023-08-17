@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Data\Model;
+namespace ManaPHP\Data;
 
-interface ManagerInterface
+interface ModelManagerInterface
 {
     public function getTable(string $model): string;
 

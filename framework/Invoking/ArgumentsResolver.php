@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Invoking;
 
-use ManaPHP\Data\Model\ManagerInterface;
+use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
@@ -16,7 +16,7 @@ class ArgumentsResolver implements ArgumentsResolverInterface
     #[Inject] protected ContainerInterface $container;
     #[Inject] protected ValidatorInterface $validator;
     #[Inject] protected RequestInterface $request;
-    #[Inject] protected ManagerInterface $modelManager;
+    #[Inject] protected ModelManagerInterface $modelManager;
 
     /**
      * @var ScalarValueResolverInterface[]

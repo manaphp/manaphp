@@ -5,12 +5,12 @@ namespace ManaPHP\Pool;
 
 class Transient
 {
-    protected ManagerInterface $manager;
+    protected PoolManagerInterface $manager;
     protected Transientable $owner;
     protected object $instance;
     protected string $type;
 
-    public function __construct(ManagerInterface $manager, Transientable $owner, object $instance, string $type)
+    public function __construct(PoolManagerInterface $manager, Transientable $owner, object $instance, string $type)
     {
         $this->manager = $manager;
         $this->owner = $owner;

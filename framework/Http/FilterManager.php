@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Filter;
+namespace ManaPHP\Http;
 
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use Psr\Container\ContainerInterface;
 
-class Manager implements ManagerInterface
+class FilterManager implements FilterManagerInterface
 {
     use EventTrait;
 

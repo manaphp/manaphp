@@ -45,7 +45,7 @@ namespace PHPSTORM_META {
         'chatClient:push',
         'cli:invoking', 'cli:invoked',
     );
-    expectedArguments(\ManaPHP\Event\ManagerInterface::attachEvent(), 0, argumentsSet('eventManager'));
+    expectedArguments(\ManaPHP\Event\EventManagerInterface::attachEvent(), 0, argumentsSet('eventManager'));
     expectedArguments(\ManaPHP\Event\EventTrait::attachEvent(), 0, argumentsSet('eventManager'));
 
     expectedArguments(\ManaPHP\Http\RequestInterface::getServer(), 0, array_keys($_SERVER)[$i]);

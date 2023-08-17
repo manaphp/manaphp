@@ -7,7 +7,7 @@ use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use Psr\Container\ContainerInterface;
 
-class Manager implements ManagerInterface
+class DumperManager implements DumperManagerInterface
 {
     #[Inject] protected ContainerInterface $container;
 

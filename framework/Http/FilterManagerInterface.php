@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Filter;
+namespace ManaPHP\Http;
 
-interface ManagerInterface
+interface FilterManagerInterface
 {
     public function register(): void;
 }

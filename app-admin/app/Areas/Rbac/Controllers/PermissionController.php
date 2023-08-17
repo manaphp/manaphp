@@ -13,8 +13,8 @@ use ManaPHP\Http\Controller\Attribute\Authorize;
  * Class RbacPermissionController
  *
  * @package App\Controllers
- * @property-read \ManaPHP\Http\AuthorizationInterface      $authorization
- * @property-read \ManaPHP\Http\Controller\ManagerInterface $controllerManager
+ * @property-read \ManaPHP\Http\AuthorizationInterface     $authorization
+ * @property-read \ManaPHP\Http\ControllerManagerInterface $controllerManager
  *
  */
 #[Authorize('@index')]

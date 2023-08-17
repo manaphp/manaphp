@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Event;
 
-interface ManagerInterface
+interface EventManagerInterface
 {
     public function attachEvent(string $event, callable $handler, int $priority = 0): void;
 

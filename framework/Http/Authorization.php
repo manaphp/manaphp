@@ -9,7 +9,6 @@ use ManaPHP\Exception\ForbiddenException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\Controller\Attribute\Authorize;
-use ManaPHP\Http\Controller\ManagerInterface;
 use ManaPHP\Identifying\Identity\NoCredentialException;
 use ManaPHP\Identifying\IdentityInterface;
 use ReflectionClass;
@@ -24,7 +23,7 @@ class Authorization implements AuthorizationInterface
     #[Inject] protected RouterInterface $router;
     #[Inject] protected RequestInterface $request;
     #[Inject] protected ResponseInterface $response;
-    #[Inject] protected ManagerInterface $controllerManager;
+    #[Inject] protected ControllerManagerInterface $controllerManager;
 
     public function getPermissions(string $controller): array
     {

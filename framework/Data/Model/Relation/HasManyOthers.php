@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Model\Relation;
 
 use ManaPHP\Data\Model\AbstractRelation;
-use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\ModelInterface;
+use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Data\QueryInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Arr;
@@ -19,7 +19,7 @@ class HasManyOthers extends AbstractRelation
 
     public function __construct(string $selfModel, string $thatModel)
     {
-        $modelManager = Container::get(ManagerInterface::class);
+        $modelManager = Container::get(ModelManagerInterface::class);
         $referencedKey = $modelManager->getReferencedKey($thatModel);
 
         $keys = [];

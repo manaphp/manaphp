@@ -8,13 +8,13 @@ use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Pool\ManagerInterface;
+use ManaPHP\Pool\PoolManagerInterface;
 
 class Client implements ClientInterface
 {
     use EventTrait;
 
-    #[Inject] protected ManagerInterface $poolManager;
+    #[Inject] protected PoolManagerInterface $poolManager;
     #[Inject] protected MakerInterface $maker;
 
     #[Value] protected string $uri;

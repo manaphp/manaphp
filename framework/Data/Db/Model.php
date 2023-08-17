@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Db;
 
 use ManaPHP\Data\AbstractModel;
-use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\Model\ShardingInterface;
+use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Container;
 
@@ -21,7 +21,7 @@ class Model extends AbstractModel implements ModelInterface
 
     public function create(): static
     {
-        $modelManager = Container::get(ManagerInterface::class);
+        $modelManager = Container::get(ModelManagerInterface::class);
 
         $fields = $modelManager->getFields(static::class);
         foreach ($this->getAutoCreatedData() as $field => $value) {
@@ -82,7 +82,7 @@ class Model extends AbstractModel implements ModelInterface
 
     public function update(): static
     {
-        $modelManager = Container::get(ManagerInterface::class);
+        $modelManager = Container::get(ModelManagerInterface::class);
 
         $primaryKey = $modelManager->getPrimaryKey(static::class);
 
@@ -162,7 +162,7 @@ class Model extends AbstractModel implements ModelInterface
 
     public function delete(): static
     {
-        $primaryKey = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
+        $primaryKey = Container::get(ModelManagerInterface::class)->getPrimaryKey(static::class);
 
         if ($this->$primaryKey === null) {
             throw new MisuseException('missing primary key value');

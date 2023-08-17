@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
+use ManaPHP\Cli\CommandManagerInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Helper\LocalFS;
@@ -13,7 +14,7 @@ use ReflectionMethod;
 
 class BashCompletionCommand extends Command
 {
-    #[Inject] protected Command\ManagerInterface $commandManager;
+    #[Inject] protected CommandManagerInterface $commandManager;
     #[Inject] protected ContainerInterface $container;
 
     /**

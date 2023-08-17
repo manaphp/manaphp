@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Mongodb;
 
 use ManaPHP\Data\AbstractQuery;
-use ManaPHP\Data\Model\ManagerInterface;
+use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidFormatException;
@@ -18,7 +18,7 @@ use MongoDB\BSON\Regex;
 class Query extends AbstractQuery
 {
     #[Inject] protected ConnectorInterface $connector;
-    #[Inject] protected ManagerInterface $modelManager;
+    #[Inject] protected ModelManagerInterface $modelManager;
 
     protected array $types;
     protected array $aliases;

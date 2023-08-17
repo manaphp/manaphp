@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Cli;
 
 use ManaPHP\Cli\Command\ArgumentsResolverInterface;
-use ManaPHP\Cli\Command\ManagerInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Helper\Str;
@@ -16,7 +15,7 @@ class Handler implements HandlerInterface
 
     #[Inject] protected ConsoleInterface $console;
     #[Inject] protected RequestInterface $request;
-    #[Inject] protected ManagerInterface $commandManager;
+    #[Inject] protected CommandManagerInterface $commandManager;
     #[Inject] protected ContainerInterface $container;
     #[Inject] protected ArgumentsResolverInterface $argumentsResolver;
 

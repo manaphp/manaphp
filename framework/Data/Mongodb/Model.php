@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Mongodb;
 
 use ManaPHP\Data\AbstractModel;
-use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\Model\ShardingInterface;
+use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Data\Mongodb\Model\InferrerInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Container;
@@ -69,7 +69,7 @@ class Model extends AbstractModel
 
     public function create(): static
     {
-        $fields = Container::get(ManagerInterface::class)->getFields(static::class);
+        $fields = Container::get(ModelManagerInterface::class)->getFields(static::class);
         foreach ($this->getAutoCreatedData() as $field => $value) {
             if ($this->$field === null) {
                 $this->$field = $value;
@@ -126,7 +126,7 @@ class Model extends AbstractModel
 
     public function update(): static
     {
-        $modelManager = Container::get(ManagerInterface::class);
+        $modelManager = Container::get(ModelManagerInterface::class);
 
         $primaryKey = $modelManager->getPrimaryKey(static::class);
 
@@ -199,7 +199,7 @@ class Model extends AbstractModel
 
     public function delete(): static
     {
-        $primaryKey = Container::get(ManagerInterface::class)->getPrimaryKey(static::class);
+        $primaryKey = Container::get(ModelManagerInterface::class)->getPrimaryKey(static::class);
 
         if ($this->$primaryKey === null) {
             throw new MisuseException('missing primary key value');

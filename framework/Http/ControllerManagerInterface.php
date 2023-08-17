@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Controller;
+namespace ManaPHP\Http;
 
-interface ManagerInterface
+interface ControllerManagerInterface
 {
     public function getControllers(): array;
 

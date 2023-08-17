@@ -8,13 +8,13 @@ use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Pool\ManagerInterface as PoolManager;
+use ManaPHP\Pool\PoolManagerInterface;
 
 class Redis implements RedisInterface, RedisDbInterface, RedisCacheInterface, RedisBrokerInterface
 {
     use EventTrait;
 
-    #[Inject] protected PoolManager $poolManager;
+    #[Inject] protected PoolManagerInterface $poolManager;
     #[Inject] protected MakerInterface $maker;
 
     #[Value] protected string $uri; #redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0

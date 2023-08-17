@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
+use ManaPHP\Cli\CommandManagerInterface;
 use ManaPHP\Cli\Console;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
@@ -17,7 +18,7 @@ class HelpCommand extends Command
 {
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected ContainerInterface $container;
-    #[Inject] protected Command\ManagerInterface $commandManager;
+    #[Inject] protected CommandManagerInterface $commandManager;
 
     /**
      * list all commands

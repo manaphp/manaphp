@@ -11,14 +11,14 @@ use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\NonCloneableException;
-use ManaPHP\Pool\ManagerInterface;
+use ManaPHP\Pool\PoolManagerInterface;
 use MongoDB\Driver\Exception\RuntimeException;
 
 class Mongodb implements MongodbInterface
 {
     use EventTrait;
 
-    #[Inject] protected ManagerInterface $poolManager;
+    #[Inject] protected PoolManagerInterface $poolManager;
     #[Inject] protected MakerInterface $maker;
 
     #[Value] protected string $uri = 'mongodb://127.0.0.1:27017/';

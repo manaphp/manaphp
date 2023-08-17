@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Db\Model;
 
-use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\Model\ThoseInterface;
+use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\NotSupportedException;
 
@@ -12,7 +12,7 @@ class Inferrer implements InferrerInterface
 {
     #[Inject] protected ThoseInterface $those;
     #[Inject] protected MetadataInterface $metadata;
-    #[Inject] protected ManagerInterface $modelManager;
+    #[Inject] protected ModelManagerInterface $modelManager;
 
     protected array $primaryKey = [];
     protected array $fields = [];

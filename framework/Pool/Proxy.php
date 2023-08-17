@@ -5,12 +5,12 @@ namespace ManaPHP\Pool;
 
 class Proxy
 {
-    protected ManagerInterface $manager;
+    protected PoolManagerInterface $manager;
     protected object $owner;
     protected object $instance;
     protected string $type;
 
-    public function __construct(ManagerInterface $manager, object $owner, object $instance, string $type)
+    public function __construct(PoolManagerInterface $manager, object $owner, object $instance, string $type)
     {
         $this->manager = $manager;
         $this->owner = $owner;

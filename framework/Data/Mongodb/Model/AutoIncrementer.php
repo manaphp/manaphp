@@ -3,15 +3,15 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Mongodb\Model;
 
-use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\Model\ShardingInterface;
+use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Data\Mongodb\ConnectorInterface;
 use ManaPHP\Data\MongodbInterface;
 use ManaPHP\Di\Attribute\Inject;
 
 class AutoIncrementer implements AutoIncrementerInterface
 {
-    #[Inject] protected ManagerInterface $modelManager;
+    #[Inject] protected ModelManagerInterface $modelManager;
     #[Inject] protected ShardingInterface $sharding;
     #[Inject] protected ConnectorInterface $connector;
 

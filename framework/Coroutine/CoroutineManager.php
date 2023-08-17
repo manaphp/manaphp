@@ -8,7 +8,7 @@ use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
 use Swoole\Coroutine;
 
-class Manager implements ManagerInterface
+class CoroutineManager implements CoroutineManagerInterface
 {
     #[Inject] protected MakerInterface $maker;
 

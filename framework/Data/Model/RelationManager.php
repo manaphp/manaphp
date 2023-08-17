@@ -1,19 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Data\Model\Relation;
+namespace ManaPHP\Data\Model;
 
-use ManaPHP\Data\Model\ManagerInterface as ModelManagerInterface;
-use ManaPHP\Data\Model\RelationInterface;
-use ManaPHP\Data\Model\ThoseInterface;
+use ManaPHP\Data\Model\Relation\BelongsTo;
+use ManaPHP\Data\Model\Relation\HasMany;
+use ManaPHP\Data\Model\Relation\HasManyOthers;
+use ManaPHP\Data\Model\Relation\HasManyToMany;
+use ManaPHP\Data\Model\Relation\HasOne;
 use ManaPHP\Data\ModelInterface;
+use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Data\QueryInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\Str;
 
-class Manager implements ManagerInterface
+class RelationManager implements RelationManagerInterface
 {
     #[Inject] protected ThoseInterface $those;
     #[Inject] protected ModelManagerInterface $modelManager;

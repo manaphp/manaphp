@@ -8,7 +8,7 @@ use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MisuseException;
 use WeakMap;
 
-class Manager implements ManagerInterface
+class PoolManager implements PoolManagerInterface
 {
     use EventTrait;
 

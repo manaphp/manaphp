@@ -1,13 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Data\Model\Relation;
+namespace ManaPHP\Data\Model;
 
-use ManaPHP\Data\Model\RelationInterface;
 use ManaPHP\Data\ModelInterface;
 use ManaPHP\Data\QueryInterface;
 
-interface ManagerInterface
+interface RelationManagerInterface
 {
     public function has(string $model, string $name): bool;
 

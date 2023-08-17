@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Invoking\ValueResolver;
 
-use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\ModelInterface;
+use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\BadRequestException;
 use ManaPHP\Http\RequestInterface;
@@ -13,7 +13,7 @@ use ManaPHP\Invoking\ObjectValueResolverInterface;
 class Model implements ObjectValueResolverInterface
 {
     #[Inject] protected RequestInterface $request;
-    #[Inject] protected ManagerInterface $modelManager;
+    #[Inject] protected ModelManagerInterface $modelManager;
 
     public function resolve(?string $type, string $name): mixed
     {

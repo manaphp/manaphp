@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Mongodb\Model;
 
-use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Data\Model\ThoseInterface;
+use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Data\Mongodb\ConnectorInterface;
 use ManaPHP\Data\Mongodb\Model;
 use ManaPHP\Di\Attribute\Inject;
@@ -18,7 +18,7 @@ class Inferrer implements InferrerInterface
     #[Inject] protected ThoseInterface $those;
     #[Inject] protected ConnectorInterface $connector;
     #[Inject] protected ShardingInterface $sharding;
-    #[Inject] protected ManagerInterface $modelManager;
+    #[Inject] protected ModelManagerInterface $modelManager;
 
     protected array $primaryKey = [];
     protected array $fields = [];

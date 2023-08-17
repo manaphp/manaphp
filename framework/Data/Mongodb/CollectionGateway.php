@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Mongodb;
 
-use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Data\Model\ThoseInterface;
+use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\MisuseException;
 
@@ -14,7 +14,7 @@ class CollectionGateway implements CollectionGatewayInterface
     #[Inject] protected ThoseInterface $those;
     #[Inject] protected ConnectorInterface $connector;
     #[Inject] protected ShardingInterface $sharding;
-    #[Inject] protected ManagerInterface $modelManager;
+    #[Inject] protected ModelManagerInterface $modelManager;
 
     protected function getThat(string $model): Model
     {

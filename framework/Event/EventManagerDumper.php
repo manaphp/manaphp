@@ -5,7 +5,7 @@ namespace ManaPHP\Event;
 
 use ManaPHP\Dumping\Dumper;
 
-class ManagerDumper extends Dumper
+class EventManagerDumper extends Dumper
 {
     public function dump(object $object): array
     {

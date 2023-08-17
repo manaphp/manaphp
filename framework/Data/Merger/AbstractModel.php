@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Merger;
 
-use ManaPHP\Data\Model\ManagerInterface;
+use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Data\QueryInterface;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Container;
@@ -16,7 +16,7 @@ abstract class AbstractModel extends \ManaPHP\Data\AbstractModel
 
     public function newQuery(): QueryInterface
     {
-        $modelManager = Container::get(ManagerInterface::class);
+        $modelManager = Container::get(ModelManagerInterface::class);
 
         $queries = Container::make('ManaPHP\Data\Merger\Query', [$this->getQueries()]);
         return $queries->setModel($this->getModel())->select($modelManager->getFields(static::class));

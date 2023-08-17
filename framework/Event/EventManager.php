@@ -5,7 +5,7 @@ namespace ManaPHP\Event;
 
 use SplDoublyLinkedList;
 
-class Manager implements ManagerInterface
+class EventManager implements EventManagerInterface
 {
     /**
      * @var SplDoublyLinkedList[][]

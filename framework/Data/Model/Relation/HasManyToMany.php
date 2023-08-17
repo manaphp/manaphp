@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Model\Relation;
 
 use ManaPHP\Data\Model\AbstractRelation;
-use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\ModelInterface;
+use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Data\QueryInterface;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\Container;
@@ -20,7 +20,7 @@ class HasManyToMany extends AbstractRelation
 
     public function __construct(string $selfModel, string $thatModel, string $pivotModel)
     {
-        $modelManager = Container::get(ManagerInterface::class);
+        $modelManager = Container::get(ModelManagerInterface::class);
 
         $this->selfModel = $selfModel;
         $this->selfField = $modelManager->getPrimaryKey($selfModel);

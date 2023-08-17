@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Data\Model;
+namespace ManaPHP\Data;
 
 use ManaPHP\Data\Db\Model\InferrerInterface;
 use ManaPHP\Data\Model\Attribute\ColumnMap;
@@ -12,12 +12,13 @@ use ManaPHP\Data\Model\Attribute\Guarded;
 use ManaPHP\Data\Model\Attribute\PrimaryKey;
 use ManaPHP\Data\Model\Attribute\ReferencedKey;
 use ManaPHP\Data\Model\Attribute\Table;
+use ManaPHP\Data\Model\ThoseInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\Str;
 use ReflectionAttribute;
 use ReflectionClass;
 
-class Manager implements ManagerInterface
+class ModelManager implements ModelManagerInterface
 {
     #[Inject] protected ThoseInterface $those;
     #[Inject] protected InferrerInterface $inferrer;

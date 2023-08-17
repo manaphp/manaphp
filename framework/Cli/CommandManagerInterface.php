@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Cli\Command;
+namespace ManaPHP\Cli;
 
-interface ManagerInterface
+interface CommandManagerInterface
 {
     public function getCommands(): array;
 }

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http\Controller;
+namespace ManaPHP\Http;
 
 use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Inject;
@@ -9,7 +9,7 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
-class Manager implements ManagerInterface
+class ControllerManager implements ControllerManagerInterface
 {
     #[Inject] protected AliasInterface $alias;
 
