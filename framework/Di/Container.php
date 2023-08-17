@@ -44,18 +44,30 @@ class Container implements ContainerInterface
         return $this;
     }
 
-    protected function processInject(object $object, ReflectionClass $reflectionClass, array $parameters): void
+    protected function processAttributeInject(object $object, ReflectionClass $rClass, array $parameters): void
     {
-        foreach ($reflectionClass->getProperties() as $property) {
+        foreach ($rClass->getProperties() as $property) {
             if ($property->isStatic()) {
                 continue;
             }
 
             if ($property->getAttributes(Inject::class) !== []) {
-                $type = $property->getType()->getName();
-                $id = $parameters[$type] ?? $type;
+                $name = $property->getName();
 
-                $value = $this->get($id[0] === '#' ? "$type$id" : $id);
+                if (($rType = $property->getType()) === null) {
+                    throw new Exception(sprintf('The type of `%s::%s` is missing.', $object::class, $name));
+                }
+
+                $type = $rType->getName();
+
+                if (($value = $parameters[$type] ?? null) !== null) {
+                    if (is_string($value)) {
+                        $value = $this->get($value[0] === '#' ? "$type$value" : $value);
+                    }
+                } else {
+                    $value = $this->get($type);
+                }
+
                 if (!$property->isPublic()) {
                     $property->setAccessible(true);
                 }
@@ -64,14 +76,15 @@ class Container implements ContainerInterface
         }
     }
 
-    protected function processValue(object $object, ReflectionClass $reflectionClass, array $parameters): void
+    protected function processAttributeValue(object $object, ReflectionClass $rClass, array $parameters): void
     {
         foreach ($parameters as $name => $value) {
             if (is_string($name) && !str_contains($name, '\\')) {
-                if (!$reflectionClass->hasProperty($name)) {
+                if (!$rClass->hasProperty($name)) {
                     continue;
                 }
-                $property = $reflectionClass->getProperty($name);
+
+                $property = $rClass->getProperty($name);
                 if ($property->getAttributes(Value::class) !== []) {
                     if (!$property->isPublic()) {
                         $property->setAccessible(true);
@@ -80,6 +93,12 @@ class Container implements ContainerInterface
                 }
             }
         }
+    }
+
+    protected function processAttributes(object $object, ReflectionClass $rClass, array $parameters): void
+    {
+        $this->processAttributeInject($object, $rClass, $parameters);
+        $this->processAttributeValue($object, $rClass, $parameters);
     }
 
     protected function makeInternal(string $name, array $parameters = [], string $id = null): object
@@ -92,8 +111,7 @@ class Container implements ContainerInterface
                 $this->instances[$id] = $instance;
             }
 
-            $this->processInject($instance, $rClass, $parameters);
-            $this->processValue($instance, $rClass, $parameters);
+            $this->processAttributes($instance, $rClass, $parameters);
 
             $this->call([$instance, '__construct'], $parameters);
         } else {
@@ -103,8 +121,7 @@ class Container implements ContainerInterface
                 $this->instances[$id] = $instance;
             }
 
-            $this->processInject($instance, $rClass, $parameters);
-            $this->processValue($instance, $rClass, $parameters);
+            $this->processAttributes($instance, $rClass, $parameters);
         }
 
         return $instance;
