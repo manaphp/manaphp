@@ -46,6 +46,7 @@ namespace PHPSTORM_META {
         'cli:invoking', 'cli:invoked',
     );
     expectedArguments(\ManaPHP\Event\ManagerInterface::attachEvent(), 0, argumentsSet('eventManager'));
+    expectedArguments(\ManaPHP\Event\EventTrait::attachEvent(), 0, argumentsSet('eventManager'));
 
     expectedArguments(\ManaPHP\Http\RequestInterface::getServer(), 0, array_keys($_SERVER)[$i]);
     expectedArguments(\ManaPHP\Http\RequestInterface::hasServer(), 0, array_keys($_SERVER)[$i]);
