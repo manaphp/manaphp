@@ -6,13 +6,12 @@ namespace ManaPHP\Di;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\MisuseException;
-use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionNamedType;
 
-class Container implements ContainerInterface, MakerInterface, InvokerInterface
+class Container implements ContainerInterface
 {
     protected array $definitions = [];
     protected array $instances = [];
@@ -22,7 +21,7 @@ class Container implements ContainerInterface, MakerInterface, InvokerInterface
         $this->definitions = $definitions;
 
         $this->definitions['Psr\Container\ContainerInterface'] = $this;
-        $this->definitions['ManaPHP\Di\Container'] = $this;
+        $this->definitions['ManaPHP\Di\ContainerInterface'] = $this;
         $this->definitions['ManaPHP\Di\MakerInterface'] = $this;
         $this->definitions['ManaPHP\Di\InvokerInterface'] = $this;
     }

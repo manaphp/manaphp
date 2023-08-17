@@ -10,7 +10,7 @@ use ManaPHP\Context\ContextTrait;
 use ManaPHP\Data\Db\PreparedEmulatorInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Di\Container;
+use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\AbortException;
@@ -38,7 +38,7 @@ class Debugger extends Component implements DebuggerInterface
     #[Inject] protected ResponseInterface $response;
     #[Inject] protected DispatcherInterface $dispatcher;
     #[Inject] protected RouterInterface $router;
-    #[Inject] protected Container $container;
+    #[Inject] protected ContainerInterface $container;
     #[Inject] protected PreparedEmulatorInterface $preparedEmulator;
 
     protected int $ttl;
