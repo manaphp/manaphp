@@ -29,7 +29,6 @@ class Db extends Component implements DbInterface
     use ContextTrait;
 
     #[Inject] protected PoolManagerInterface $poolManager;
-    #[Inject] protected ConnectionMakerInterface $connectionMaker;
     #[Inject] protected MakerInterface $maker;
 
     public const METADATA_ATTRIBUTES = 0;
