@@ -6,7 +6,7 @@ namespace ManaPHP\Ws\Pushing;
 use ManaPHP\Coroutine;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Event\EventTrait;
+use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Logging\Logger\LogCategorizable;

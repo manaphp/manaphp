@@ -8,7 +8,7 @@ use ManaPHP\Context\ContextTrait;
 use ManaPHP\Coroutine\Mutex;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Event\EventTrait;
+use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PreconditionException;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Event\EventTrait;
+use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Http\Controller\ArgumentsResolverInterface;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Logging\Logger\LogCategorizable;

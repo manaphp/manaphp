@@ -10,7 +10,7 @@ use ManaPHP\Data\Model\NotFoundException;
 use ManaPHP\Data\Model\RelationManagerInterface;
 use ManaPHP\Data\Model\SerializeNormalizable;
 use ManaPHP\Data\Model\ThoseInterface;
-use ManaPHP\Event\EventManagerInterface;
+use ManaPHP\Eventing\EventManagerInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;

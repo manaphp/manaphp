@@ -8,7 +8,7 @@ use ManaPHP\ConfigInterface;
 use ManaPHP\Debugging\DebuggerInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Event\EventTrait;
+use ManaPHP\Eventing\EventTrait;
 use Psr\Container\ContainerInterface;
 
 class DebuggerBootstrapper implements BootstrapperInterface

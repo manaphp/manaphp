@@ -5,7 +5,7 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Event\EventTrait;
+use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\Dispatcher\NotFoundActionException;
 use ManaPHP\Http\Dispatcher\NotFoundControllerException;

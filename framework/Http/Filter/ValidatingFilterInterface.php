@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Filter;
 
-use ManaPHP\Event\EventArgs;
+use ManaPHP\Eventing\EventArgs;
 
 interface ValidatingFilterInterface
 {

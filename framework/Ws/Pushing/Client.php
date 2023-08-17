@@ -5,7 +5,7 @@ namespace ManaPHP\Ws\Pushing;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Event\EventTrait;
+use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Messaging\PubSubInterface;
 

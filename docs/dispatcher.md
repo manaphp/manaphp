@@ -73,7 +73,7 @@ An instantiated controller automatically acts as a listener for dispatch events,
 ```php
     <?php
 
-    use ManaPHP\Event\Event;
+    use ManaPHP\Eventing\Event;
     use ManaPHP\Mvc\Controller;
     use ManaPHP\Dispatcher;
 

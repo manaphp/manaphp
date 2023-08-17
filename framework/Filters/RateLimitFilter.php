@@ -6,7 +6,7 @@ namespace ManaPHP\Filters;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Event\EventArgs;
+use ManaPHP\Eventing\EventArgs;
 use ManaPHP\Exception\TooManyRequestsException;
 use ManaPHP\Http\Filter;
 use ManaPHP\Http\Filter\ValidatingFilterInterface;

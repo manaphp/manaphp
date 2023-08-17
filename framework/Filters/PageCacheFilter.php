@@ -7,7 +7,7 @@ use Closure;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Event\EventArgs;
+use ManaPHP\Eventing\EventArgs;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Http\Filter;

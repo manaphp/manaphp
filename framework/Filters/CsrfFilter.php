@@ -5,7 +5,7 @@ namespace ManaPHP\Filters;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Event\EventArgs;
+use ManaPHP\Eventing\EventArgs;
 use ManaPHP\Filters\CsrfFilter\AttackDetectedException;
 use ManaPHP\Http\Filter;
 use ManaPHP\Http\Filter\ValidatingFilterInterface;

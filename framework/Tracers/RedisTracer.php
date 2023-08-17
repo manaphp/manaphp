@@ -5,7 +5,7 @@ namespace ManaPHP\Tracers;
 
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Event\EventArgs;
+use ManaPHP\Eventing\EventArgs;
 use ManaPHP\Tracer;
 
 class RedisTracer extends Tracer

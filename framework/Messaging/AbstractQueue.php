@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Messaging;
 
-use ManaPHP\Event\EventTrait;
+use ManaPHP\Eventing\EventTrait;
 
 abstract class AbstractQueue implements QueueInterface
 {

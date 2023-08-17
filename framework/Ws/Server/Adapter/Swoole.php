@@ -8,7 +8,7 @@ use ManaPHP\ConfigInterface;
 use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Event\EventTrait;
+use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\GlobalsInterface;
 use ManaPHP\Http\RequestInterface;

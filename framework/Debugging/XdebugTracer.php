@@ -6,7 +6,7 @@ namespace ManaPHP\Debugging;
 use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Event\EventTrait;
+use ManaPHP\Eventing\EventTrait;
 
 class XdebugTracer implements XdebugTracerInterface
 {

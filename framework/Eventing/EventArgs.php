@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Event;
+namespace ManaPHP\Eventing;
 
 class EventArgs
 {

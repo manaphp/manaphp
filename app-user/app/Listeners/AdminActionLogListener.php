@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Models\AdminActionLog;
-use ManaPHP\Event\Listener;
+use ManaPHP\Eventing\Listener;
 use ManaPHP\Helper\Arr;
 
 /**

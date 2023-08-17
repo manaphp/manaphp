@@ -11,7 +11,7 @@ class ListenerBootstrapper implements BootstrapperInterface
 {
     public function bootstrap(ContainerInterface $container): void
     {
-        /** @var \ManaPHP\Event\ListenInterface $listener */
+        /** @var \ManaPHP\Eventing\ListenInterface $listener */
 
         foreach (LocalFS::glob('@app/Listeners/?*Listener.php') as $file) {
             $listener = $container->get('App\Listeners\\' . basename($file, '.php'));

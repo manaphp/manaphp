@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Ws;
 
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Event\EventTrait;
+use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Response;

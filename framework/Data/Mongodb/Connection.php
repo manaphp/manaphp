@@ -5,7 +5,7 @@ namespace ManaPHP\Data\Mongodb;
 
 use ManaPHP\Data\Mongodb\Exception as MongodbException;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Event\EventTrait;
+use ManaPHP\Eventing\EventTrait;
 use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Command;
 use MongoDB\Driver\Manager;

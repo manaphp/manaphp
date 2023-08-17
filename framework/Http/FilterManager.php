@@ -5,7 +5,7 @@ namespace ManaPHP\Http;
 
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Event\EventTrait;
+use ManaPHP\Eventing\EventTrait;
 use Psr\Container\ContainerInterface;
 
 class FilterManager implements FilterManagerInterface

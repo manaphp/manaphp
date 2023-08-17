@@ -5,7 +5,7 @@ namespace ManaPHP\Cli;
 
 use ManaPHP\Cli\Command\ArgumentsResolverInterface;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Event\EventTrait;
+use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Helper\Str;
 use Psr\Container\ContainerInterface;
 

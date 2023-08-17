@@ -8,7 +8,7 @@ use JsonSerializable;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Event\EventTrait;
+use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Logging\LoggerInterface;
@@ -398,6 +398,6 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
 
     public function jsonSerialize(): mixed
     {
-       return $this->all();
+        return $this->all();
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Tracers;
 
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Event\EventArgs;
+use ManaPHP\Eventing\EventArgs;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Tracer;
 

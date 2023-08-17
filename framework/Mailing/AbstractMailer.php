@@ -6,7 +6,7 @@ namespace ManaPHP\Mailing;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
-use ManaPHP\Event\EventTrait;
+use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Mailing\Mailer\Message;
 

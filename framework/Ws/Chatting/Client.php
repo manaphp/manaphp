@@ -5,7 +5,7 @@ namespace ManaPHP\Ws\Chatting;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Event\EventTrait;
+use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Messaging\PubSubInterface;
 
 class Client implements ClientInterface

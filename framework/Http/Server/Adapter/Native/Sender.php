@@ -5,7 +5,7 @@ namespace ManaPHP\Http\Server\Adapter\Native;
 
 use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Event\EventTrait;
+use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;

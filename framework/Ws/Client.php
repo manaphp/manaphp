@@ -5,8 +5,8 @@ namespace ManaPHP\Ws;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\MakerInterface;
-use ManaPHP\Event\Emitter;
-use ManaPHP\Event\EmitterInterface;
+use ManaPHP\Eventing\Emitter;
+use ManaPHP\Eventing\EmitterInterface;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Pool\PoolManagerInterface;
 use ManaPHP\Ws\Client\EngineInterface;

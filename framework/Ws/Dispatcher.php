@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Ws;
 
-use ManaPHP\Event\EventTrait;
+use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Http\Controller;
 
 class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
