@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Data;
 
 use ManaPHP\Data\Db\Query;
-use ManaPHP\Pool\Transientable;
+use ManaPHP\Pooling\Transientable;
 use PDO;
 
 interface DbInterface extends Transientable

@@ -11,7 +11,7 @@ use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\NonCloneableException;
-use ManaPHP\Pool\PoolManagerInterface;
+use ManaPHP\Pooling\PoolManagerInterface;
 use MongoDB\Driver\Exception\RuntimeException;
 
 class Mongodb implements MongodbInterface

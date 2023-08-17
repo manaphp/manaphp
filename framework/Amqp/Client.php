@@ -8,7 +8,7 @@ use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\MisuseException;
-use ManaPHP\Pool\PoolManagerInterface;
+use ManaPHP\Pooling\PoolManagerInterface;
 
 class Client implements ClientInterface
 {

@@ -17,8 +17,8 @@ use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Pool\PoolManagerInterface;
-use ManaPHP\Pool\Transient;
+use ManaPHP\Pooling\PoolManagerInterface;
+use ManaPHP\Pooling\Transient;
 use PDO;
 use PDOException;
 

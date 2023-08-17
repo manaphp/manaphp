@@ -24,7 +24,7 @@ use ManaPHP\Http\Client\ServerErrorException;
 use ManaPHP\Http\Client\ServiceUnavailableException;
 use ManaPHP\Http\Client\TooManyRequestsException;
 use ManaPHP\Http\Client\UnauthorizedException;
-use ManaPHP\Pool\PoolManagerInterface;
+use ManaPHP\Pooling\PoolManagerInterface;
 
 class Client implements ClientInterface
 {

@@ -8,7 +8,7 @@ use ManaPHP\Di\MakerInterface;
 use ManaPHP\Eventing\Emitter;
 use ManaPHP\Eventing\EmitterInterface;
 use ManaPHP\Exception\NonCloneableException;
-use ManaPHP\Pool\PoolManagerInterface;
+use ManaPHP\Pooling\PoolManagerInterface;
 use ManaPHP\Ws\Client\EngineInterface;
 use ManaPHP\Ws\Client\Message;
 use Throwable;

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Pool;
+namespace ManaPHP\Pooling;
 
 class Transient
 {
