@@ -5,15 +5,16 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\InvalidValueException;
+use ManaPHP\Http\Request\File;
 use ManaPHP\Http\Request\File\Exception as FileException;
 use ManaPHP\Http\Request\FileInterface;
-use ManaPHP\Http\Request\FileMakerInterface;
 use ManaPHP\Validating\ValidatorInterface;
 
 class Request extends Component implements RequestInterface
 {
-    #[Inject] protected FileMakerInterface $fileMaker;
+    #[Inject] protected MakerInterface $maker;
     #[Inject] protected GlobalsInterface $globals;
     #[Inject] protected ValidatorInterface $validator;
 
@@ -199,7 +200,7 @@ class Request extends Component implements RequestInterface
                     if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {
                         $file['key'] = $key;
 
-                        $r[] = $this->fileMaker->make([$file]);
+                        $r[] = $this->maker->make(File::class, [$file]);
                     }
                 }
             } elseif (is_int($files['error'])) {
@@ -207,7 +208,7 @@ class Request extends Component implements RequestInterface
                 if (!$onlySuccessful || $file['error'] === UPLOAD_ERR_OK) {
                     $file['key'] = $key;
 
-                    $r[] = $this->fileMaker->make([$file]);
+                    $r[] = $this->maker->make(File::class, [$file]);
                 }
             } else {
                 $countFiles = count($files['error']);
@@ -221,7 +222,7 @@ class Request extends Component implements RequestInterface
                             'error'    => $files['error'][$i],
                             'size'     => $files['size'][$i],
                         ];
-                        $r[] = $this->fileMaker->make([$file]);
+                        $r[] = $this->maker->make(File::class, [$file]);
                     }
                 }
             }

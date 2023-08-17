@@ -7,12 +7,12 @@ use JetBrains\PhpStorm\ArrayShape;
 use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Data\Db\ConnectionInterface;
-use ManaPHP\Data\Db\ConnectionMakerInterface;
 use ManaPHP\Data\Db\Exception as DbException;
 use ManaPHP\Data\Db\Query;
 use ManaPHP\Data\Db\SqlFragmentable;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\MakerInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
@@ -30,7 +30,7 @@ class Db extends Component implements DbInterface
 
     #[Inject] protected PoolManagerInterface $poolManager;
     #[Inject] protected ConnectionMakerInterface $connectionMaker;
-    #[Inject] protected QueryMakerInterface $queryMaker;
+    #[Inject] protected MakerInterface $maker;
 
     public const METADATA_ATTRIBUTES = 0;
     public const METADATA_PRIMARY_KEY = 1;
@@ -91,7 +91,7 @@ class Db extends Component implements DbInterface
 
         if ($uris[0] !== '') {
             $uri = (string)$uris[0];
-            $sample = $this->connectionMaker->make(['uri' => $uri]);
+            $sample = $this->maker->make(ConnectionInterface::class, ['uri' => $uri]);
             $this->poolManager->add($this, $sample, $master_pool_size);
         }
 
@@ -110,13 +110,13 @@ class Db extends Component implements DbInterface
                 $this->poolManager->create($this, count($uris) * $slave_pool_size, 'slave');
                 for ($i = 0; $i < $slave_pool_size; $i++) {
                     foreach ($uris as $v) {
-                        $sample = $this->connectionMaker->make(['uri' => $v]);
+                        $sample = $this->maker->make(ConnectionInterface::class, ['uri' => $v]);
                         $this->poolManager->add($this, $sample, 1, 'slave');
                     }
                 }
             } else {
                 $uri = (string)$uris[random_int(0, count($uris) - 1)];
-                $sample = $this->connectionMaker->make(['uri' => $uri]);
+                $sample = $this->maker->make(ConnectionInterface::class, ['uri' => $uri]);
                 $this->poolManager->add($this, $sample, 1, 'slave');
             }
 
@@ -651,7 +651,7 @@ class Db extends Component implements DbInterface
 
     public function query(?string $table = null, ?string $alias = null): Query
     {
-        return $this->queryMaker->make([$this])->from($table, $alias);
+        return $this->maker->make(Query::class, [$this])->from($table, $alias);
     }
 
     public function getTransientWrapper(string $type = 'default'): Transient

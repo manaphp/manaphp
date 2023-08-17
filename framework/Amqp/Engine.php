@@ -7,11 +7,11 @@ use ManaPHP\Amqp\Engine\Php;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\MakerInterface;
 
-class EngineMaker implements EngineMakerInterface
+class Engine
 {
     #[Inject] protected MakerInterface $maker;
 
-    public function make(array $parameters): mixed
+    public function __invoke(array $parameters): mixed
     {
         return $this->maker->make(Php::class, $parameters);
     }

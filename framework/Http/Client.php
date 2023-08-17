@@ -7,14 +7,13 @@ use ManaPHP\AliasInterface;
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\MakerInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Http\Client\BadGatewayException;
 use ManaPHP\Http\Client\BadRequestException;
 use ManaPHP\Http\Client\ClientErrorException;
 use ManaPHP\Http\Client\ContentTypeException;
-use ManaPHP\Http\Client\EngineInterface;
-use ManaPHP\Http\Client\EngineMakerInterface;
 use ManaPHP\Http\Client\ForbiddenException;
 use ManaPHP\Http\Client\GatewayTimeoutException;
 use ManaPHP\Http\Client\InternalServerErrorException;
@@ -34,9 +33,9 @@ class Client extends Component implements ClientInterface
 
     #[Inject] protected AliasInterface $alias;
     #[Inject] protected ManagerInterface $poolManager;
-    #[Inject] protected EngineMakerInterface $engineMaker;
+    #[Inject] protected MakerInterface $maker;
 
-    #[Value] protected string|EngineInterface $engine = 'ManaPHP\Http\Client\Engine\Fopen';
+    #[Value] protected string $engine = 'ManaPHP\Http\Client\Engine';
     #[Value] protected ?string $proxy = null;
     #[Value] protected ?string $cafile = null;
     #[Value] protected int $timeout = 10;
@@ -84,8 +83,8 @@ class Client extends Component implements ClientInterface
             $engine_id = substr($request->url, 0, strpos($request->url, '/', 8) ?: 0);
 
             if (!$this->poolManager->exists($this, $engine_id)) {
-                $sample = is_string($this->engine) ? $this->engineMaker->make($this->engine) : $this->engine;
-                $this->poolManager->add($this, $sample, $this->pool_size, $engine_id);
+                $engine = $this->maker->make($this->engine);
+                $this->poolManager->add($this, $engine, $this->pool_size, $engine_id);
             }
 
             /** @var \ManaPHP\Http\Client\EngineInterface $engine */

@@ -11,8 +11,8 @@ use ManaPHP\Data\Model\Relation\ManagerInterface as RelationManagerInterface;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Data\Model\ThoseInterface;
 use ManaPHP\Data\Query\NotFoundException;
-use ManaPHP\Data\Query\PaginatorMakerInterface;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Sharding;
@@ -21,7 +21,7 @@ use ManaPHP\Http\RequestInterface;
 
 abstract class AbstractQuery extends Component implements QueryInterface, IteratorAggregate
 {
-    #[Inject] protected PaginatorMakerInterface $paginatorMaker;
+    #[Inject] protected MakerInterface $maker;
     #[Inject] protected RequestInterface $request;
     #[Inject] protected RelationManagerInterface $relationManager;
     #[Inject] protected ThoseInterface $those;
@@ -441,7 +441,7 @@ abstract class AbstractQuery extends Component implements QueryInterface, Iterat
             $count = $this->offset + count($items);
         }
 
-        $paginator = $this->paginatorMaker->make();
+        $paginator = $this->maker->make(PaginatorInterface::class);
         $paginator->items = $items;
         return $paginator->paginate($count, $this->limit, (int)($this->offset / $this->limit) + 1);
     }

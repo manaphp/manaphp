@@ -6,10 +6,10 @@ namespace ManaPHP\Redis;
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Di\MakerInterface;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\RuntimeException;
-use ManaPHP\Redis\Connection\RedisMakerInterface;
 use ManaPHP\Redis\Exception as RedisException;
 use Redis;
 
@@ -17,7 +17,7 @@ class Connection extends Component
 {
     use EventTrait;
 
-    #[Inject] protected RedisMakerInterface $redisMaker;
+    #[Inject] protected MakerInterface $maker;
 
     #[Value] protected string $uri;
 
@@ -108,12 +108,12 @@ class Connection extends Component
                 foreach (explode(',', $this->host) as $host) {
                     $seeds[] = str_contains($host, ':') ? $host : "$host:6379";
                 }
-                $redis = $this->redisMaker->make(
+                $redis = $this->maker->make(
                     'RedisCluster',
                     [null, $seeds, $this->timeout, $this->read_timeout, $this->persistent, $this->auth]
                 );
             } else {
-                $redis = $this->redisMaker->make('Redis');
+                $redis = $this->maker->make('Redis');
 
                 if ($this->persistent) {
                     if (!@$redis->pconnect($this->host, $this->port, $this->timeout, $this->db)) {
