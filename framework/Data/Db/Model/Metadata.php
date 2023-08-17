@@ -6,6 +6,7 @@ namespace ManaPHP\Data\Db\Model;
 use ManaPHP\Component;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Data\Db;
+use ManaPHP\Data\Db\ConnectorInterface;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
@@ -13,7 +14,7 @@ use ManaPHP\Di\Attribute\Value;
 class Metadata extends Component implements MetadataInterface
 {
     #[Inject] protected ConfigInterface $config;
-    #[Inject] protected Db\FactoryInterface $dbFactory;
+    #[Inject] protected ConnectorInterface $connector;
     #[Inject] protected ShardingInterface $sharding;
 
     #[Value] protected int $ttl = 3600;
@@ -38,7 +39,7 @@ class Metadata extends Component implements MetadataInterface
         }
 
         list($connection, $table) = $this->sharding->getAnyShard($model);
-        $db = $this->dbFactory->get($connection);
+        $db = $this->connector->get($connection);
         $data = $db->getMetadata($table);
 
         if ($this->ttl > 0) {

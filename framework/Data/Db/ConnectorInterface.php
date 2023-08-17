@@ -5,7 +5,7 @@ namespace ManaPHP\Data\Db;
 
 use ManaPHP\Data\DbInterface;
 
-interface FactoryInterface
+interface ConnectorInterface
 {
     public function get(string $connection): DbInterface;
 }

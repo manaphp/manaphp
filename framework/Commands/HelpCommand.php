@@ -9,13 +9,14 @@ use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\Str;
 use ManaPHP\Version;
+use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionMethod;
 
 class HelpCommand extends Command
 {
     #[Inject] protected ConfigInterface $config;
-    #[Inject] protected Command\FactoryInterface $commandFactory;
+    #[Inject] protected ContainerInterface $container;
     #[Inject] protected Command\ManagerInterface $commandManager;
 
     /**
@@ -277,7 +278,7 @@ class HelpCommand extends Command
         if (($definition = $this->commandManager->getCommands()[$camelizedCommand] ?? null) === null) {
             return $this->console->error("$camelizedCommand Command not found");
         }
-        $instance = $this->commandFactory->get($definition);
+        $instance = $this->container->get($definition);
 
         foreach (get_class_methods($instance) as $method) {
             if (!preg_match('#^([a-z].*)Action$#', $method, $match)) {

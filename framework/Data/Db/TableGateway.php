@@ -9,21 +9,21 @@ use ManaPHP\Di\Attribute\Inject;
 
 class TableGateway extends Component implements TableGatewayInterface
 {
-    #[Inject] protected FactoryInterface $dbFactory;
+    #[Inject] protected ConnectorInterface $connector;
     #[Inject] protected ShardingInterface $sharding;
 
     public function insert(string $model, array $record, bool $fetchInsertId = false): mixed
     {
         list($connection, $table) = $this->sharding->getUniqueShard($model, $record);
 
-        return $this->dbFactory->get($connection)->insert($table, $record, $fetchInsertId);
+        return $this->connector->get($connection)->insert($table, $record, $fetchInsertId);
     }
 
     public function insertBySql(string $model, string $sql, array $bind = []): int
     {
         list($connection, $table) = $this->sharding->getUniqueShard($model, $bind);
 
-        return $this->dbFactory->get($connection)->insertBySql($table, $sql, $bind);
+        return $this->connector->get($connection)->insertBySql($table, $sql, $bind);
     }
 
     public function delete(string $model, string|array $conditions, array $bind = []): int
@@ -32,7 +32,7 @@ class TableGateway extends Component implements TableGatewayInterface
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
-            $db = $this->dbFactory->get($connection);
+            $db = $this->connector->get($connection);
 
             foreach ($tables as $table) {
                 $affected_count += $db->delete($table, $conditions, $bind);
@@ -48,7 +48,7 @@ class TableGateway extends Component implements TableGatewayInterface
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
-            $db = $this->dbFactory->get($connection);
+            $db = $this->connector->get($connection);
 
             foreach ($tables as $table) {
                 $affected_count += $db->deleteBySql($table, $sql, $bind);
@@ -64,7 +64,7 @@ class TableGateway extends Component implements TableGatewayInterface
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
-            $db = $this->dbFactory->get($connection);
+            $db = $this->connector->get($connection);
 
             foreach ($tables as $table) {
                 $affected_count += $db->update($table, $fieldValues, $conditions, $bind);
@@ -80,7 +80,7 @@ class TableGateway extends Component implements TableGatewayInterface
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
-            $db = $this->dbFactory->get($connection);
+            $db = $this->connector->get($connection);
 
             foreach ($tables as $table) {
                 $affected_count += $db->updateBySql($table, $sql, $bind);

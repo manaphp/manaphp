@@ -8,9 +8,9 @@ use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Helper\Str;
-use ManaPHP\Http\Controller\FactoryInterface;
 use ManaPHP\Http\Dispatcher\NotFoundActionException;
 use ManaPHP\Http\Dispatcher\NotFoundControllerException;
+use Psr\Container\ContainerInterface;
 
 class Dispatcher extends Component implements DispatcherInterface
 {
@@ -18,7 +18,7 @@ class Dispatcher extends Component implements DispatcherInterface
     use ContextTrait;
 
     #[Inject] protected GlobalsInterface $globals;
-    #[Inject] protected FactoryInterface $controllerFactory;
+    #[Inject] protected ContainerInterface $container;
 
     public function getArea(): ?string
     {
@@ -176,7 +176,7 @@ class Dispatcher extends Component implements DispatcherInterface
             throw new NotFoundControllerException(['`%s` class cannot be loaded', $controllerClassName]);
         }
 
-        $controllerInstance = $this->controllerFactory->get($controllerClassName);
+        $controllerInstance = $this->container->get($controllerClassName);
         $context->controllerInstance = $controllerInstance;
 
         return $this->invokeAction($controllerInstance, $action);

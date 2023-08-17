@@ -113,7 +113,7 @@ class Model extends AbstractModel
 
         $fieldValues['_id'] = $this->_id;
 
-        $mongodb = Container::get(FactoryInterface::class)->get($connection);
+        $mongodb = Container::get(ConnectorInterface::class)->get($connection);
         $mongodb->insert($collection, $fieldValues);
 
         $this->fireEvent('model:created');
@@ -186,7 +186,7 @@ class Model extends AbstractModel
             }
         }
 
-        $mongodb = Container::get(FactoryInterface::class)->get($connection);
+        $mongodb = Container::get(ConnectorInterface::class)->get($connection);
         $mongodb->update($collection, $fieldValues, [$primaryKey => $this->$primaryKey]);
 
         $this->fireEvent('model:updated');
@@ -209,7 +209,7 @@ class Model extends AbstractModel
 
         $this->fireEvent('model:deleting');
 
-        $mongodb = Container::get(FactoryInterface::class)->get($connection);
+        $mongodb = Container::get(ConnectorInterface::class)->get($connection);
 
         $mongodb->delete($table, [$primaryKey => $this->$primaryKey]);
 
@@ -222,7 +222,7 @@ class Model extends AbstractModel
     {
         list($connection, $collection) = Container::get(ShardingInterface::class)->getUniqueShard(static::class, []);
 
-        return Container::get(FactoryInterface::class)->get($connection)->aggregate($collection, $pipeline, $options);
+        return Container::get(ConnectorInterface::class)->get($connection)->aggregate($collection, $pipeline, $options);
     }
 
     public function normalizeDocument(array $document): array

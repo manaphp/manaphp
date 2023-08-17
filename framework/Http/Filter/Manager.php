@@ -7,12 +7,13 @@ use ManaPHP\Component;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
+use Psr\Container\ContainerInterface;
 
 class Manager extends Component implements ManagerInterface
 {
     use EventTrait;
 
-    #[Inject] protected FactoryInterface $factory;
+    #[Inject] protected ContainerInterface $container;
     #[Inject] protected ConfigInterface $config;
 
     public function register(): void
@@ -20,7 +21,7 @@ class Manager extends Component implements ManagerInterface
         $filters = $this->config->get('filters', []);
 
         foreach ($filters as $filter) {
-            $instance = $this->factory->get($filter);
+            $instance = $this->container->get($filter);
             foreach (class_implements($instance) as $interface) {
                 if (str_ends_with($interface, 'FilterInterface')) {
                     foreach (get_class_methods($interface) as $method) {

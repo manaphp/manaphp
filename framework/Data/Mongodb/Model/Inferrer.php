@@ -7,7 +7,7 @@ use ManaPHP\Component;
 use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Data\Model\ThoseInterface;
-use ManaPHP\Data\Mongodb\FactoryInterface;
+use ManaPHP\Data\Mongodb\ConnectorInterface;
 use ManaPHP\Data\Mongodb\Model;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\NotImplementedException;
@@ -17,7 +17,7 @@ use MongoDB\BSON\ObjectId;
 class Inferrer extends Component implements InferrerInterface
 {
     #[Inject] protected ThoseInterface $those;
-    #[Inject] protected FactoryInterface $mongodbFactory;
+    #[Inject] protected ConnectorInterface $connector;
     #[Inject] protected ShardingInterface $sharding;
     #[Inject] protected ManagerInterface $modelManager;
 
@@ -113,7 +113,7 @@ class Inferrer extends Component implements InferrerInterface
         if (($types = $this->fieldTypes[$model] ?? null) === null) {
             list($connection, $collection) = $this->sharding->getAnyShard($model);
 
-            $mongodb = $this->mongodbFactory->get($connection);
+            $mongodb = $this->connector->get($connection);
             if (!$docs = $mongodb->fetchAll($collection, [], ['limit' => 1])) {
                 throw new RuntimeException(['`:collection` collection has none record', 'collection' => $collection]);
             }

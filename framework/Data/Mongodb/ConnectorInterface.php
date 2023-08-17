@@ -5,7 +5,7 @@ namespace ManaPHP\Data\Mongodb;
 
 use ManaPHP\Data\MongodbInterface;
 
-interface FactoryInterface
+interface ConnectorInterface
 {
     public function get(string $connection): MongodbInterface;
 }

@@ -4,12 +4,12 @@ declare(strict_types=1);
 namespace ManaPHP\Cli;
 
 use ManaPHP\Cli\Command\ArgumentsResolverInterface;
-use ManaPHP\Cli\Command\FactoryInterface;
 use ManaPHP\Cli\Command\ManagerInterface;
 use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Helper\Str;
+use Psr\Container\ContainerInterface;
 
 class Handler extends Component implements HandlerInterface
 {
@@ -18,7 +18,7 @@ class Handler extends Component implements HandlerInterface
     #[Inject] protected ConsoleInterface $console;
     #[Inject] protected RequestInterface $request;
     #[Inject] protected ManagerInterface $commandManager;
-    #[Inject] protected FactoryInterface $commandFactory;
+    #[Inject] protected ContainerInterface $container;
     #[Inject] protected ArgumentsResolverInterface $argumentsResolver;
 
     protected array $args;
@@ -104,7 +104,7 @@ class Handler extends Component implements HandlerInterface
             return $this->console->error("`$colored_action` action is not exists");
         }
 
-        $instance = $this->commandFactory->get($definition);
+        $instance = $this->container->get($definition);
         if ($action === '') {
             $actions = $this->getActions($definition);
             if (count($actions) === 1) {

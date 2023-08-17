@@ -17,7 +17,7 @@ use MongoDB\BSON\Regex;
 
 class Query extends AbstractQuery
 {
-    #[Inject] protected FactoryInterface $mongodbFactory;
+    #[Inject] protected ConnectorInterface $connector;
     #[Inject] protected ManagerInterface $modelManager;
 
     protected array $types;
@@ -50,7 +50,7 @@ class Query extends AbstractQuery
     {
         list($connection, $source) = $this->getUniqueShard();
 
-        $mongodb = $this->mongodbFactory->get($connection);
+        $mongodb = $this->connector->get($connection);
 
         if ($pos = strpos($source, '.')) {
             $db = substr($source, 0, $source);
@@ -633,7 +633,7 @@ class Query extends AbstractQuery
     {
         list($connection, $collection) = $this->getUniqueShard();
 
-        $mongodb = $this->mongodbFactory->get($connection);
+        $mongodb = $this->connector->get($connection);
 
         if (!$this->aggregate) {
             $model = $this->model;
@@ -744,7 +744,7 @@ class Query extends AbstractQuery
 
         $affected_count = 0;
         foreach ($shards as $connection => $collections) {
-            $mongodb = $this->mongodbFactory->get($connection);
+            $mongodb = $this->connector->get($connection);
 
             foreach ($collections as $collection) {
                 $affected_count += $mongodb->delete($collection, $this->buildConditions());
@@ -760,7 +760,7 @@ class Query extends AbstractQuery
 
         $affected_count = 0;
         foreach ($shards as $connection => $collections) {
-            $mongodb = $this->mongodbFactory->get($connection);
+            $mongodb = $this->connector->get($connection);
 
             foreach ($collections as $collection) {
                 $affected_count += $mongodb->update($collection, $fieldValues, $this->buildConditions());

@@ -7,7 +7,7 @@ use ManaPHP\Data\MongodbInterface;
 use ManaPHP\Di\Attribute\Inject;
 use Psr\Container\ContainerInterface;
 
-class Factory implements FactoryInterface
+class Connector implements ConnectorInterface
 {
     #[Inject] protected ContainerInterface $container;
 

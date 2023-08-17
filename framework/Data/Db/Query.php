@@ -18,7 +18,7 @@ use PDO;
 class Query extends AbstractQuery
 {
     #[Inject] protected LoggerInterface $logger;
-    #[Inject] protected FactoryInterface $dbFactory;
+    #[Inject] protected ConnectorInterface $connector;
     #[Inject] protected ShardingInterface $sharding;
 
     protected array $joins = [];
@@ -478,7 +478,7 @@ class Query extends AbstractQuery
             }
 
             $connection = key($shards);
-            $db = $this->dbFactory->get($connection);
+            $db = $this->connector->get($connection);
 
             $this->sql = $this->buildSql($db, $tables[0], $this->joins);
         }
@@ -627,7 +627,7 @@ class Query extends AbstractQuery
 
     protected function query(string $connection, string $table): array
     {
-        $db = $this->dbFactory->get($connection);
+        $db = $this->connector->get($connection);
 
         $joins = [];
         if ($this->joins) {
@@ -921,7 +921,7 @@ class Query extends AbstractQuery
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
-            $db = $this->dbFactory->get($connection);
+            $db = $this->connector->get($connection);
 
             foreach ($tables as $table) {
                 $affected_count += $db->update($table, $fieldValues, $this->conditions, $this->bind);
@@ -937,7 +937,7 @@ class Query extends AbstractQuery
 
         $affected_count = 0;
         foreach ($shards as $connection => $tables) {
-            $db = $this->dbFactory->get($connection);
+            $db = $this->connector->get($connection);
 
             foreach ($tables as $table) {
                 $affected_count += $db->delete($table, $this->conditions, $this->bind);

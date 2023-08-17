@@ -13,7 +13,6 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\RouterInterface;
-use ManaPHP\Mvc\View\Widget\FactoryInterface;
 use ManaPHP\Rendering\RendererInterface;
 use Psr\Container\ContainerInterface;
 
@@ -26,7 +25,6 @@ class View extends Component implements ViewInterface
     #[Inject] protected RouterInterface $router;
     #[Inject] protected RendererInterface $renderer;
     #[Inject] protected DispatcherInterface $dispatcher;
-    #[Inject] protected FactoryInterface $widgetFactory;
 
     #[Value] protected int $max_age = 0;
     #[Value] protected bool $autofix_url = true;
@@ -305,7 +303,7 @@ class View extends Component implements ViewInterface
             $view = "@views/Widgets/$widget";
         }
 
-        $widgetInstance = $this->widgetFactory->get($widgetClassName);
+        $widgetInstance = $this->container->get($widgetClassName);
         $vars = $widgetInstance->run($options);
 
         if (is_string($vars)) {

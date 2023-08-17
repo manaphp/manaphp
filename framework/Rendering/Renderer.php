@@ -13,7 +13,7 @@ use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PreconditionException;
-use ManaPHP\Rendering\Engine\FactoryInterface;
+use Psr\Container\ContainerInterface;
 
 class Renderer extends Component implements RendererInterface
 {
@@ -21,7 +21,7 @@ class Renderer extends Component implements RendererInterface
     use ContextTrait;
 
     #[Inject] protected AliasInterface $alias;
-    #[Inject] protected FactoryInterface $engineFactory;
+    #[Inject] protected ContainerInterface $container;
 
     /**
      * @var \ManaPHP\Rendering\EngineInterface[]
@@ -98,7 +98,7 @@ class Renderer extends Component implements RendererInterface
         }
 
         $engine = $this->resolved[$extension] ??
-            ($this->resolved[$extension] = $this->engineFactory->get($this->engines[$extension]));
+            ($this->resolved[$extension] = $this->container->get($this->engines[$extension]));
 
         if (isset($vars['renderer'])) {
             throw new MisuseException('variable `renderer` is reserved for renderer');
