@@ -59,12 +59,4 @@ class ScopedJwt extends Component implements ScopedJwtInterface
     {
         $this->jwt->verify($token, $this->getKey($scope));
     }
-
-    public function dump(): array
-    {
-        $data = parent::dump();
-        $data['keys'] = '***';
-
-        return $data;
-    }
 }

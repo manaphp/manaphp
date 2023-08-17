@@ -134,17 +134,4 @@ class Globals extends Component implements GlobalsInterface
 
         return $this;
     }
-
-    public function dump(): array
-    {
-        $data = parent::dump();
-
-        if (DIRECTORY_SEPARATOR === '\\') {
-            foreach (['PATH', 'SystemRoot', 'COMSPEC', 'PATHEXT', 'WINDIR'] as $name) {
-                unset($data['context']['_SERVER'][$name]);
-            }
-        }
-
-        return $data;
-    }
 }

@@ -11,6 +11,7 @@ use ManaPHP\Data\Db\PreparedEmulatorInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\ContainerInterface;
+use ManaPHP\Dumping\ManagerInterface as DumpingManagerInterface;
 use ManaPHP\Event\EventArgs;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\AbortException;
@@ -40,6 +41,7 @@ class Debugger extends Component implements DebuggerInterface
     #[Inject] protected RouterInterface $router;
     #[Inject] protected ContainerInterface $container;
     #[Inject] protected PreparedEmulatorInterface $preparedEmulator;
+    #[Inject] protected DumpingManagerInterface $dumpManager;
 
     protected int $ttl;
     protected string $prefix;
@@ -372,9 +374,7 @@ class Debugger extends Component implements DebuggerInterface
         $data['events'] = $context->events;
 
         foreach ($this->container->getInstances() as $name => $instance) {
-            $properties = $instance instanceof Component
-                ? $instance->dump()
-                : array_keys(get_object_vars($instance));
+            $properties = $this->dumpManager->dump($instance);
 
             if ($instance instanceof Tracer) {
                 $name = str_replace('\\', '//', $name);
@@ -390,15 +390,6 @@ class Debugger extends Component implements DebuggerInterface
 
         $data['included_files'] = @get_included_files() ?: [];
         unset($data['server']['PATH']);
-
-        return $data;
-    }
-
-    public function dump(): array
-    {
-        $data = parent::dump();
-
-        $data['context'] = array_keys($data['context']);
 
         return $data;
     }

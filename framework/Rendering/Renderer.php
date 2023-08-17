@@ -243,20 +243,4 @@ class Renderer extends Component implements RendererInterface
             $context->sections[$last] = ob_get_clean();
         }
     }
-
-    public function dump(): array
-    {
-        $data = parent::dump();
-
-        if (isset($data['context'])) {
-            foreach ($data['context']['sections'] as $k => $v) {
-                $data['context']['sections'][$k] = '***';
-            }
-        }
-
-        $data['files'] = ['***'];
-        unset($data['mutex']);
-
-        return $data;
-    }
 }

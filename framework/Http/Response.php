@@ -462,16 +462,4 @@ class Response extends Component implements ResponseInterface
 
         return $context->headers;
     }
-
-    public function dump(): array
-    {
-        $data = parent::dump();
-
-        $data['context']['content'] = '***';
-        if (isset($data['context']['headers']['X-Logger'])) {
-            $data['context']['headers']['X-Logger'] = '***';
-        }
-
-        return $data;
-    }
 }

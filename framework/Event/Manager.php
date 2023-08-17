@@ -70,14 +70,4 @@ class Manager implements ManagerInterface
     {
         $this->peekers[$group][] = $handler;
     }
-
-    public function dump(): array
-    {
-        $data = [];
-
-        $data['*events'] = array_keys($this->events);
-        $data['*peekers'] = array_keys($this->peekers);
-
-        return $data;
-    }
 }

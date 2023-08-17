@@ -106,12 +106,4 @@ class Jwt extends Component implements JwtInterface
             throw new SignatureException('signature is not corrected');
         }
     }
-
-    public function dump(): array
-    {
-        $data = parent::dump();
-        $data['key'] = '***';
-
-        return $data;
-    }
 }

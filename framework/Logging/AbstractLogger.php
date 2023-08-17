@@ -206,13 +206,4 @@ abstract class AbstractLogger extends Component implements LoggerInterface, Cont
     {
         return $this->log(Level::EMERGENCY, $message, $category);
     }
-
-    public function dump(): array
-    {
-        $data = parent::dump();
-
-        unset($data['logs'], $data['last_write']);
-
-        return $data;
-    }
 }

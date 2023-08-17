@@ -339,14 +339,4 @@ class View extends Component implements ViewInterface
 
         return $context->content;
     }
-
-    public function dump(): array
-    {
-        $data = parent::dump();
-
-        $data['context']['content'] = '***';
-        unset($data['exists_cache']);
-
-        return $data;
-    }
 }

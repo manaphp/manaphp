@@ -215,11 +215,4 @@ class Swoole extends AbstractServer
 
         $this->fireEvent('request:responded');
     }
-
-    public function dump(): array
-    {
-        $data = parent::dump();
-        unset($data['swoole']);
-        return $data;
-    }
 }
