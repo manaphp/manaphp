@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Cli\Command;
 
-use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
 
-class Manager extends Component implements ManagerInterface
+class Manager implements ManagerInterface
 {
     protected array $commands = [];
 

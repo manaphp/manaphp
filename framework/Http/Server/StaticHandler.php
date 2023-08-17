@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Server;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Http\RouterInterface;
 
-class StaticHandler extends Component implements StaticHandlerInterface
+class StaticHandler implements StaticHandlerInterface
 {
     #[Inject] protected RouterInterface $router;
 

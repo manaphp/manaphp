@@ -5,14 +5,13 @@ namespace ManaPHP\Html\Dom;
 
 use DOMDocument;
 use DOMElement;
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Html\Dom\Document\Exception as DocumentException;
 use ManaPHP\Http\ClientInterface;
 
-class Document extends Component
+class Document
 {
     #[Inject] protected MakerInterface $maker;
     #[Inject] protected ClientInterface $httpClient;

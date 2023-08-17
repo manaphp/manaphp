@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\ForbiddenException;
@@ -16,7 +15,7 @@ use ManaPHP\Identifying\IdentityInterface;
 use ReflectionClass;
 use ReflectionMethod;
 
-class Authorization extends Component implements AuthorizationInterface
+class Authorization implements AuthorizationInterface
 {
     use ContextTrait;
 

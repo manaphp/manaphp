@@ -4,10 +4,9 @@ declare(strict_types=1);
 namespace ManaPHP\Mvc\View;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 
-class Asset extends Component implements AssetInterface
+class Asset implements AssetInterface
 {
     #[Inject] protected AliasInterface $alias;
 

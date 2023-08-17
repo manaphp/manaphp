@@ -4,13 +4,12 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Request;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Request\File\Exception as FileException;
 
-class File extends Component implements FileInterface
+class File implements FileInterface
 {
     #[Inject] protected AliasInterface $alias;
 

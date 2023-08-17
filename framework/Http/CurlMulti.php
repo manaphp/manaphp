@@ -5,7 +5,6 @@ namespace ManaPHP\Http;
 
 use Countable;
 use ManaPHP\AliasInterface;
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
@@ -15,7 +14,7 @@ use ManaPHP\Http\CurlMulti\Request;
 use ManaPHP\Http\CurlMulti\Response;
 use ManaPHP\Logging\LoggerInterface;
 
-class CurlMulti extends Component implements CurlMultiInterface, Countable
+class CurlMulti implements CurlMultiInterface, Countable
 {
     #[Inject] protected AliasInterface $alias;
     #[Inject] protected LoggerInterface $logger;

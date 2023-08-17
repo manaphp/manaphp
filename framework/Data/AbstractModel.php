@@ -5,7 +5,6 @@ namespace ManaPHP\Data;
 
 use ArrayAccess;
 use JsonSerializable;
-use ManaPHP\Component;
 use ManaPHP\Data\Db\SqlFragmentable;
 use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\Model\NotFoundException;
@@ -813,7 +812,7 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
                 continue;
             }
 
-            if ($value instanceof Component) {
+            if (is_object($value) && !$value instanceof ModelInterface) {
                 continue;
             }
 

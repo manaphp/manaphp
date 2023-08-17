@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\InvalidValueException;
@@ -12,7 +11,7 @@ use ManaPHP\Http\Request\File\Exception as FileException;
 use ManaPHP\Http\Request\FileInterface;
 use ManaPHP\Validating\ValidatorInterface;
 
-class Request extends Component implements RequestInterface
+class Request implements RequestInterface
 {
     #[Inject] protected MakerInterface $maker;
     #[Inject] protected GlobalsInterface $globals;

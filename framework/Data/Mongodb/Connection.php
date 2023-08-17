@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Mongodb;
 
-use ManaPHP\Component;
 use ManaPHP\Data\Mongodb\Exception as MongodbException;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
@@ -15,7 +14,7 @@ use MongoDB\Driver\ReadPreference;
 use MongoDB\Driver\WriteConcern;
 use MongoDB\Driver\WriteResult;
 
-class Connection extends Component implements ConnectionInterface
+class Connection implements ConnectionInterface
 {
     use EventTrait;
 

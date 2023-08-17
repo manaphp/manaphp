@@ -3,13 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Pool;
 
-use ManaPHP\Component;
 use ManaPHP\Coroutine\Channel;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MisuseException;
 use WeakMap;
 
-class Manager extends Component implements ManagerInterface
+class Manager implements ManagerInterface
 {
     use EventTrait;
 

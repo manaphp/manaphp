@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 
-class Cookies extends Component implements CookiesInterface
+class Cookies implements CookiesInterface
 {
     #[Inject] protected GlobalsInterface $globals;
     #[Inject] protected RequestInterface $request;

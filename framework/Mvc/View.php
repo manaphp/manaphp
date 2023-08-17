@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mvc;
 
-use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
@@ -16,7 +15,7 @@ use ManaPHP\Http\RouterInterface;
 use ManaPHP\Rendering\RendererInterface;
 use Psr\Container\ContainerInterface;
 
-class View extends Component implements ViewInterface
+class View implements ViewInterface
 {
     use EventTrait;
     use ContextTrait;

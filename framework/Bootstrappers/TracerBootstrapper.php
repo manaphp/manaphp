@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Bootstrappers;
 
 use ManaPHP\BootstrapperInterface;
-use ManaPHP\Component;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
@@ -12,7 +11,7 @@ use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use Psr\Container\ContainerInterface;
 
-class TracerBootstrapper extends Component implements BootstrapperInterface
+class TracerBootstrapper implements BootstrapperInterface
 {
     #[Inject] protected ConfigInterface $config;
 

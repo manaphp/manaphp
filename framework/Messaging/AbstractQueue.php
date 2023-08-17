@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Messaging;
 
-use ManaPHP\Component;
 use ManaPHP\Event\EventTrait;
 
-abstract class AbstractQueue extends Component implements QueueInterface
+abstract class AbstractQueue implements QueueInterface
 {
     use EventTrait;
 

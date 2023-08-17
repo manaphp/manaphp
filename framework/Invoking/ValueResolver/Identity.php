@@ -3,12 +3,11 @@ declare(strict_types=1);
 
 namespace ManaPHP\Invoking\ValueResolver;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Invoking\ScalarValueResolverInterface;
 
-class Identity extends Component implements ScalarValueResolverInterface
+class Identity implements ScalarValueResolverInterface
 {
     #[Inject] protected IdentityInterface $identity;
 

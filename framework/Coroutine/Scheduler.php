@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Coroutine;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Logging\LoggerInterface;
 use Swoole\Coroutine;
 use Swoole\Coroutine\Channel;
 use Throwable;
 
-class Scheduler extends Component implements SchedulerInterface
+class Scheduler implements SchedulerInterface
 {
     #[Inject] protected LoggerInterface $logger;
 

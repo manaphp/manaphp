@@ -4,11 +4,10 @@ declare(strict_types=1);
 namespace ManaPHP\Invoking\ValueResolver;
 
 use ManaPHP\Cli\RequestInterface;
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Invoking\ScalarValueResolverInterface;
 
-class Option extends Component implements ScalarValueResolverInterface
+class Option implements ScalarValueResolverInterface
 {
     #[Inject] protected RequestInterface $request;
 

@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 
-class Url extends Component implements UrlInterface
+class Url implements UrlInterface
 {
     #[Inject] protected RequestInterface $request;
     #[Inject] protected RouterInterface $router;

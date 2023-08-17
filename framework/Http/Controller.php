@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Http\Controller\ArgumentsResolverInterface;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Logging\Logger\LogCategorizable;
 
-class Controller extends Component implements LogCategorizable
+class Controller implements LogCategorizable
 {
     use EventTrait;
 

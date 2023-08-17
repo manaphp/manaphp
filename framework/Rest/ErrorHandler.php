@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Rest;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Logging\LoggerInterface;
 use Throwable;
 
-class ErrorHandler extends Component implements ErrorHandlerInterface
+class ErrorHandler implements ErrorHandlerInterface
 {
     #[Inject] protected LoggerInterface $logger;
     #[Inject] protected ResponseInterface $response;

@@ -4,12 +4,11 @@ declare(strict_types=1);
 namespace ManaPHP\Debugging;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 
-class XdebugTracer extends Component implements XdebugTracerInterface
+class XdebugTracer implements XdebugTracerInterface
 {
     use EventTrait;
 

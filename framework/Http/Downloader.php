@@ -4,11 +4,10 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\LocalFS;
 
-class Downloader extends Component implements DownloaderInterface
+class Downloader implements DownloaderInterface
 {
     #[Inject] protected AliasInterface $alias;
 

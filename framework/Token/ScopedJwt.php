@@ -3,13 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Token;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Security\CryptInterface;
 
-class ScopedJwt extends Component implements ScopedJwtInterface
+class ScopedJwt implements ScopedJwtInterface
 {
     #[Inject] protected JwtInterface $jwt;
     #[Inject] protected CryptInterface $crypt;

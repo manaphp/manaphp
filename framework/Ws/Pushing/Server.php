@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Ws\Pushing;
 
-use ManaPHP\Component;
 use ManaPHP\Coroutine;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
@@ -15,7 +14,7 @@ use ManaPHP\Logging\LoggerInterface;
 use ManaPHP\Messaging\PubSubInterface;
 use ManaPHP\Ws\ServerInterface as WsServerInterface;
 
-class Server extends Component implements ServerInterface, LogCategorizable
+class Server implements ServerInterface, LogCategorizable
 {
     use EventTrait;
 

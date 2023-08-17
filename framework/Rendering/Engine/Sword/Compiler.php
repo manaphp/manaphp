@@ -5,7 +5,6 @@ namespace ManaPHP\Rendering\Engine\Sword;
 
 use JetBrains\PhpStorm\ArrayShape;
 use ManaPHP\AliasInterface;
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\CreateDirectoryFailedException;
@@ -15,7 +14,7 @@ use ManaPHP\Helper\Str;
 use ManaPHP\Http\RouterInterface;
 use ManaPHP\Http\UrlInterface;
 
-class Compiler extends Component
+class Compiler
 {
     #[Inject] protected AliasInterface $alias;
     #[Inject] protected UrlInterface $url;

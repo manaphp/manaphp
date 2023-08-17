@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Ws\Server\Adapter;
 
 use ArrayObject;
-use ManaPHP\Component;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Di\Attribute\Inject;
@@ -23,7 +22,7 @@ use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
 use Throwable;
 
-class Swoole extends Component implements ServerInterface
+class Swoole implements ServerInterface
 {
     use EventTrait;
 

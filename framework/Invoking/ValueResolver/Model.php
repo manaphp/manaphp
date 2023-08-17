@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Invoking\ValueResolver;
 
-use ManaPHP\Component;
 use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\ModelInterface;
 use ManaPHP\Di\Attribute\Inject;
@@ -11,7 +10,7 @@ use ManaPHP\Exception\BadRequestException;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Invoking\ObjectValueResolverInterface;
 
-class Model extends Component implements ObjectValueResolverInterface
+class Model implements ObjectValueResolverInterface
 {
     #[Inject] protected RequestInterface $request;
     #[Inject] protected ManagerInterface $modelManager;

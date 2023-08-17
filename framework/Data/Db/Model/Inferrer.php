@@ -3,13 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Db\Model;
 
-use ManaPHP\Component;
 use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\Model\ThoseInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\NotSupportedException;
 
-class Inferrer extends Component implements InferrerInterface
+class Inferrer implements InferrerInterface
 {
     #[Inject] protected ThoseInterface $those;
     #[Inject] protected MetadataInterface $metadata;

@@ -3,13 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Caching;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Redis\RedisCacheInterface;
 use Psr\SimpleCache\CacheInterface;
 
-class SimpleCache extends Component implements CacheInterface
+class SimpleCache implements CacheInterface
 {
     #[Inject] protected RedisCacheInterface $redisCache;
 

@@ -4,10 +4,9 @@ declare(strict_types=1);
 namespace ManaPHP\Cli;
 
 use ManaPHP\Cli\Request\Exception as RequestException;
-use ManaPHP\Component;
 use ReflectionMethod;
 
-class Request extends Component implements RequestInterface
+class Request implements RequestInterface
 {
     protected array $options = [];
     protected array $values = [];

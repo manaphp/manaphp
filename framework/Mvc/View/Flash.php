@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mvc\View;
 
-use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Value;
 
-class Flash extends Component implements FlashInterface
+class Flash implements FlashInterface
 {
     use ContextTrait;
 

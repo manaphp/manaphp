@@ -10,7 +10,6 @@ use ManaPHP\Amqp\EngineInterface;
 use ManaPHP\Amqp\Exchange;
 use ManaPHP\Amqp\MessageInterface;
 use ManaPHP\Amqp\Queue;
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\MisuseException;
 use PhpAmqpLib\Channel\AMQPChannel;
@@ -18,7 +17,7 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Exception\AMQPProtocolChannelException;
 use PhpAmqpLib\Message\AMQPMessage;
 
-class Php extends Component implements EngineInterface
+class Php implements EngineInterface
 {
     #[Value] protected string $uri;
 

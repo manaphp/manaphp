@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace ManaPHP\Security;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Security\Crypt\Exception as CryptException;
 
-class Crypt extends Component implements CryptInterface
+class Crypt implements CryptInterface
 {
     #[Value] protected string $master_key;
     #[Value] protected string $method = 'AES-128-CBC';

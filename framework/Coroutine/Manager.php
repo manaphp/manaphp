@@ -3,13 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Coroutine;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
 use Swoole\Coroutine;
 
-class Manager extends Component implements ManagerInterface
+class Manager implements ManagerInterface
 {
     #[Inject] protected MakerInterface $maker;
 

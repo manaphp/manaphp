@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Db;
 
 use JsonSerializable;
-use ManaPHP\Component;
 use ManaPHP\Data\Db\Exception as DbException;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
@@ -15,7 +14,7 @@ use PDO;
 use PDOException;
 use PDOStatement;
 
-abstract class AbstractConnection extends Component implements ConnectionInterface
+abstract class AbstractConnection implements ConnectionInterface
 {
     use EventTrait;
 

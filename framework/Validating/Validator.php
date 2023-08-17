@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ManaPHP\Validating;
 
 use Closure;
-use ManaPHP\Component;
 use ManaPHP\Data\Model\ManagerInterface as ModelManagerInterface;
 use ManaPHP\Data\Model\ThoseInterface;
 use ManaPHP\Data\ModelInterface;
@@ -23,7 +22,7 @@ use ManaPHP\I18n\LocaleInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ReflectionClass;
 
-class Validator extends Component implements ValidatorInterface
+class Validator implements ValidatorInterface
 {
     #[Inject] protected LocaleInterface $locale;
     #[Inject] protected RequestInterface $request;

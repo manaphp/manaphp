@@ -3,13 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Http\Filter\ManagerInterface;
 
-abstract class AbstractServer extends Component implements ServerInterface
+abstract class AbstractServer implements ServerInterface
 {
     use EventTrait;
 

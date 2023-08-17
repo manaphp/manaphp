@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Invoking;
 
-use ManaPHP\Component;
 use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Http\RequestInterface;
@@ -12,7 +11,7 @@ use ManaPHP\Validating\ValidatorInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionMethod;
 
-class ArgumentsResolver extends Component implements ArgumentsResolverInterface
+class ArgumentsResolver implements ArgumentsResolverInterface
 {
     #[Inject] protected ContainerInterface $container;
     #[Inject] protected ValidatorInterface $validator;

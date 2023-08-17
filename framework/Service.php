@@ -5,7 +5,7 @@ namespace ManaPHP;
 
 use ManaPHP\Logging\Logger\LogCategorizable;
 
-class Service extends Component implements LogCategorizable
+class Service implements LogCategorizable
 {
     public function categorizeLog(): string
     {

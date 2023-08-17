@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Data;
 
 use JetBrains\PhpStorm\ArrayShape;
-use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Data\Db\ConnectionInterface;
 use ManaPHP\Data\Db\Exception as DbException;
@@ -23,7 +22,7 @@ use ManaPHP\Pool\Transient;
 use PDO;
 use PDOException;
 
-class Db extends Component implements DbInterface
+class Db implements DbInterface
 {
     use EventTrait;
     use ContextTrait;

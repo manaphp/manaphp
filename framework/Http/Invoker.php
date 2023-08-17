@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\InvokerInterface as DiInvokerInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ManaPHP\Validating\ValidatorInterface;
 use ReflectionMethod;
 
-class Invoker extends Component implements InvokerInterface
+class Invoker implements InvokerInterface
 {
     #[Inject] protected RequestInterface $request;
     #[Inject] protected ValidatorInterface $validator;

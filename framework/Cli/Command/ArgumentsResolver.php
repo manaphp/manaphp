@@ -4,13 +4,12 @@ declare(strict_types=1);
 namespace ManaPHP\Cli\Command;
 
 use ManaPHP\Cli\Command;
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Invoking\ArgumentsResolverInterface as ResolverInterface;
 
-class ArgumentsResolver extends Component implements ArgumentsResolverInterface
+class ArgumentsResolver implements ArgumentsResolverInterface
 {
     #[Inject] protected MakerInterface $maker;
 

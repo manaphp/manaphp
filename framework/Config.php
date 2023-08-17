@@ -7,7 +7,7 @@ use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\InvalidKeyException;
 
-class Config extends Component implements ConfigInterface
+class Config implements ConfigInterface
 {
     #[Inject] protected AliasInterface $alias;
 

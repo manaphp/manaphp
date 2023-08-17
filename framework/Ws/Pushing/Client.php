@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Ws\Pushing;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Messaging\PubSubInterface;
 
-class Client extends Component implements ClientInterface
+class Client implements ClientInterface
 {
     use EventTrait;
 

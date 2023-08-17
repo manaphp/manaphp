@@ -3,12 +3,11 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Http\Globals\Proxy;
 
-class Globals extends Component implements GlobalsInterface
+class Globals implements GlobalsInterface
 {
     use ContextTrait;
 

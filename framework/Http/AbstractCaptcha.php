@@ -4,12 +4,11 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Http\Captcha\InvalidCaptchaException;
 
-abstract class AbstractCaptcha extends Component implements CaptchaInterface
+abstract class AbstractCaptcha implements CaptchaInterface
 {
     #[Inject] protected AliasInterface $alias;
     #[Inject] protected RequestInterface $request;

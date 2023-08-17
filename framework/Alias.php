@@ -6,7 +6,7 @@ namespace ManaPHP;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
 
-class Alias extends Component implements AliasInterface
+class Alias implements AliasInterface
 {
     protected array $aliases = ['@manaphp' => __DIR__];
 

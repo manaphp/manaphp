@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Logging\LoggerInterface;
 use ReflectionClass;
 use Throwable;
 use function getenv;
 
-class Console extends Component implements ConsoleInterface
+class Console implements ConsoleInterface
 {
     #[Inject] protected LoggerInterface $logger;
 

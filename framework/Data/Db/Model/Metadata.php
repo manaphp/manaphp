@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Db\Model;
 
-use ManaPHP\Component;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Data\Db;
 use ManaPHP\Data\Db\ConnectorInterface;
@@ -11,7 +10,7 @@ use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 
-class Metadata extends Component implements MetadataInterface
+class Metadata implements MetadataInterface
 {
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected ConnectorInterface $connector;

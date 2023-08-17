@@ -7,7 +7,7 @@ use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use Psr\Container\ContainerInterface;
 
-class Kernel extends Component
+class Kernel
 {
     #[Inject] protected ContainerInterface $container;
     #[Inject] protected AliasInterface $alias;

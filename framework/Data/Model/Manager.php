@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Model;
 
-use ManaPHP\Component;
 use ManaPHP\Data\Db\Model\InferrerInterface;
 use ManaPHP\Data\Model\Attribute\ColumnMap;
 use ManaPHP\Data\Model\Attribute\Connection;
@@ -18,7 +17,7 @@ use ManaPHP\Helper\Str;
 use ReflectionAttribute;
 use ReflectionClass;
 
-class Manager extends Component implements ManagerInterface
+class Manager implements ManagerInterface
 {
     #[Inject] protected ThoseInterface $those;
     #[Inject] protected InferrerInterface $inferrer;

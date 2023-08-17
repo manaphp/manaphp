@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Mongodb;
 
-use ManaPHP\Component;
 use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Data\Model\ThoseInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\MisuseException;
 
-class CollectionGateway extends Component implements CollectionGatewayInterface
+class CollectionGateway implements CollectionGatewayInterface
 {
     #[Inject] protected ThoseInterface $those;
     #[Inject] protected ConnectorInterface $connector;

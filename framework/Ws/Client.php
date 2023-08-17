@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Ws;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Event\Emitter;
@@ -14,7 +13,7 @@ use ManaPHP\Ws\Client\EngineInterface;
 use ManaPHP\Ws\Client\Message;
 use Throwable;
 
-class Client extends Component implements ClientInterface
+class Client implements ClientInterface
 {
     #[Inject] protected ManagerInterface $poolManager;
     #[Inject] protected MakerInterface $maker;

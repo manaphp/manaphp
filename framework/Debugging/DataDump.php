@@ -6,13 +6,12 @@ namespace ManaPHP\Debugging;
 use ArrayObject;
 use JsonSerializable;
 use ManaPHP\AliasInterface;
-use ManaPHP\Component;
 use ManaPHP\Coroutine;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use Throwable;
 
-class DataDump extends Component implements DataDumpInterface
+class DataDump implements DataDumpInterface
 {
     #[Inject] protected AliasInterface $alias;
 

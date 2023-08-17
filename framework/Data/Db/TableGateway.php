@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Db;
 
-use ManaPHP\Component;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Di\Attribute\Inject;
 
-class TableGateway extends Component implements TableGatewayInterface
+class TableGateway implements TableGatewayInterface
 {
     #[Inject] protected ConnectorInterface $connector;
     #[Inject] protected ShardingInterface $sharding;

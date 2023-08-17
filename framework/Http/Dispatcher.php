@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
-use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
@@ -12,7 +11,7 @@ use ManaPHP\Http\Dispatcher\NotFoundActionException;
 use ManaPHP\Http\Dispatcher\NotFoundControllerException;
 use Psr\Container\ContainerInterface;
 
-class Dispatcher extends Component implements DispatcherInterface
+class Dispatcher implements DispatcherInterface
 {
     use EventTrait;
     use ContextTrait;

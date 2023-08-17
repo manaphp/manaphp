@@ -4,11 +4,10 @@ declare(strict_types=1);
 namespace ManaPHP\Bootstrappers;
 
 use ManaPHP\BootstrapperInterface;
-use ManaPHP\Component;
 use ManaPHP\Helper\LocalFS;
 use Psr\Container\ContainerInterface;
 
-class ListenerBootstrapper extends Component implements BootstrapperInterface
+class ListenerBootstrapper implements BootstrapperInterface
 {
     public function bootstrap(ContainerInterface $container): void
     {

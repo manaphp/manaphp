@@ -3,12 +3,11 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Model;
 
-use ManaPHP\Component;
 use ManaPHP\Data\ModelInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
 
-class Sharding extends Component implements ShardingInterface
+class Sharding implements ShardingInterface
 {
     #[Inject] protected ManagerInterface $modelManager;
 

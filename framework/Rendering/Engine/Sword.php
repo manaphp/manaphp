@@ -4,13 +4,12 @@ declare(strict_types=1);
 namespace ManaPHP\Rendering\Engine;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Component;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Rendering\Engine\Sword\Compiler;
 use ManaPHP\Rendering\EngineInterface;
 
-class Sword extends Component implements EngineInterface
+class Sword implements EngineInterface
 {
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected AliasInterface $alias;

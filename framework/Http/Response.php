@@ -6,7 +6,6 @@ namespace ManaPHP\Http;
 use DateTime;
 use DateTimeZone;
 use JsonSerializable;
-use ManaPHP\Component;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
@@ -16,7 +15,7 @@ use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Helper\LocalFS;
 use Throwable;
 
-class Response extends Component implements ResponseInterface
+class Response implements ResponseInterface
 {
     use ContextTrait;
 

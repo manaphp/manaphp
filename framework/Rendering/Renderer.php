@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Rendering;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Coroutine\Mutex;
 use ManaPHP\Di\Attribute\Inject;
@@ -15,7 +14,7 @@ use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PreconditionException;
 use Psr\Container\ContainerInterface;
 
-class Renderer extends Component implements RendererInterface
+class Renderer implements RendererInterface
 {
     use EventTrait;
     use ContextTrait;

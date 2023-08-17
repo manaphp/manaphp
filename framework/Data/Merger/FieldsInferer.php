@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Merger;
 
-use ManaPHP\Component;
 use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Di\Attribute\Inject;
 
-class FieldsInferer extends Component implements FieldsInfererInterface
+class FieldsInferer implements FieldsInfererInterface
 {
     #[Inject] protected ManagerInterface $modelManager;
 

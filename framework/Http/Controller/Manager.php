@@ -4,13 +4,12 @@ declare(strict_types=1);
 namespace ManaPHP\Http\Controller;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 
-class Manager extends Component implements ManagerInterface
+class Manager implements ManagerInterface
 {
     #[Inject] protected AliasInterface $alias;
 

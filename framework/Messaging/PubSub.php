@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace ManaPHP\Messaging;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Redis\RedisBrokerInterface;
 
-class PubSub extends Component implements PubSubInterface
+class PubSub implements PubSubInterface
 {
     #[Inject] protected RedisBrokerInterface $redisBroker;
 

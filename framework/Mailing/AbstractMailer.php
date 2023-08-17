@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mailing;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
@@ -11,7 +10,7 @@ use ManaPHP\Event\EventTrait;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Mailing\Mailer\Message;
 
-abstract class AbstractMailer extends Component implements MailerInterface
+abstract class AbstractMailer implements MailerInterface
 {
     use EventTrait;
 

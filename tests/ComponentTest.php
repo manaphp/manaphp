@@ -2,10 +2,9 @@
 
 namespace Tests;
 
-use ManaPHP\Component;
 use PHPUnit\Framework\TestCase;
 
-class TClass1 extends Component
+class TClass1
 {
     public $publicP;
     protected $protectedP;

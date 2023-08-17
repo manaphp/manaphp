@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ArrayAccess;
-use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
@@ -13,7 +12,7 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Logging\LoggerInterface;
 
-abstract class AbstractSession extends Component implements SessionInterface, ArrayAccess
+abstract class AbstractSession implements SessionInterface, ArrayAccess
 {
     use EventTrait;
     use ContextTrait;

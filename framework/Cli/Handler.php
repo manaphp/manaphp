@@ -5,13 +5,12 @@ namespace ManaPHP\Cli;
 
 use ManaPHP\Cli\Command\ArgumentsResolverInterface;
 use ManaPHP\Cli\Command\ManagerInterface;
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Helper\Str;
 use Psr\Container\ContainerInterface;
 
-class Handler extends Component implements HandlerInterface
+class Handler implements HandlerInterface
 {
     use EventTrait;
 

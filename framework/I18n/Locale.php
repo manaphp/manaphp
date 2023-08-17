@@ -3,12 +3,11 @@ declare(strict_types=1);
 
 namespace ManaPHP\I18n;
 
-use ManaPHP\Component;
 use ManaPHP\Context\ContextCreatorInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Value;
 
-class Locale extends Component implements LocaleInterface, ContextCreatorInterface
+class Locale implements LocaleInterface, ContextCreatorInterface
 {
     use ContextTrait;
 

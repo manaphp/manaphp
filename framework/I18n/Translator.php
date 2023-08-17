@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\I18n;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\RequestInterface;
 
-class Translator extends Component implements TranslatorInterface
+class Translator implements TranslatorInterface
 {
     #[Inject] protected LocaleInterface $locale;
     #[Inject] protected RequestInterface $request;

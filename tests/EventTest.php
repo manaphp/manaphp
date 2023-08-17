@@ -2,11 +2,10 @@
 
 namespace Tests;
 
-use ManaPHP\Component;
 use ManaPHP\Di\FactoryDefault;
 use PHPUnit\Framework\TestCase;
 
-class DummyComponent extends Component
+class DummyComponent
 {
     public function doAction()
     {

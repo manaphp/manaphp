@@ -3,12 +3,11 @@ declare(strict_types=1);
 
 namespace ManaPHP\Logging;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use Stringable;
 use Throwable;
 
-class Psr3 extends Component implements \Psr\Log\LoggerInterface
+class Psr3 implements \Psr\Log\LoggerInterface
 {
     #[Inject] protected LoggerInterface $logger;
 

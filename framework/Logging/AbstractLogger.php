@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Logging;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Component;
 use ManaPHP\Context\ContextCreatorInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Coroutine;
@@ -16,7 +15,7 @@ use ManaPHP\Logging\Logger\Log;
 use ManaPHP\Logging\Logger\LogCategorizable;
 use Throwable;
 
-abstract class AbstractLogger extends Component implements LoggerInterface, ContextCreatorInterface
+abstract class AbstractLogger implements LoggerInterface, ContextCreatorInterface
 {
     use EventTrait;
     use ContextTrait;

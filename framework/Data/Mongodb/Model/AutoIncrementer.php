@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Mongodb\Model;
 
-use ManaPHP\Component;
 use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Data\Mongodb\ConnectorInterface;
 use ManaPHP\Data\MongodbInterface;
 use ManaPHP\Di\Attribute\Inject;
 
-class AutoIncrementer extends Component implements AutoIncrementerInterface
+class AutoIncrementer implements AutoIncrementerInterface
 {
     #[Inject] protected ManagerInterface $modelManager;
     #[Inject] protected ShardingInterface $sharding;

@@ -3,12 +3,11 @@ declare(strict_types=1);
 
 namespace ManaPHP\Invoking\ValueResolver;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Http\SessionInterface;
 use ManaPHP\Invoking\ScalarValueResolverInterface;
 
-class Session extends Component implements ScalarValueResolverInterface
+class Session implements ScalarValueResolverInterface
 {
     #[Inject] protected SessionInterface $session;
 

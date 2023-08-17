@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Rendering\Engine;
 
-use ManaPHP\Component;
 use ManaPHP\Rendering\EngineInterface;
 
-class Php extends Component implements EngineInterface
+class Php implements EngineInterface
 {
     public function render(string $file, array $vars = []): void
     {

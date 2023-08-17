@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mvc;
 
-use ManaPHP\Component;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception;
@@ -13,7 +12,7 @@ use ManaPHP\Logging\LoggerInterface;
 use ManaPHP\Rendering\RendererInterface;
 use Throwable;
 
-class ErrorHandler extends Component implements ErrorHandlerInterface
+class ErrorHandler implements ErrorHandlerInterface
 {
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected LoggerInterface $logger;

@@ -8,7 +8,7 @@ use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Redis\RedisDbInterface;
 
-class Settings extends Component implements SettingsInterface
+class Settings implements SettingsInterface
 {
     #[Inject] protected RedisDbInterface $redisDb;
 

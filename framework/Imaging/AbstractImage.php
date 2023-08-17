@@ -3,9 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Imaging;
 
-use ManaPHP\Component;
-
-abstract class AbstractImage extends Component implements ImageInterface
+abstract class AbstractImage implements ImageInterface
 {
     abstract public function do_getWidth(): int;
 

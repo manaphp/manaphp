@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data;
 
-use ManaPHP\Component;
 use ManaPHP\Data\Mongodb\Connection;
 use ManaPHP\Data\Mongodb\Exception as MongodbException;
 use ManaPHP\Data\Mongodb\Query;
@@ -15,7 +14,7 @@ use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Pool\ManagerInterface;
 use MongoDB\Driver\Exception\RuntimeException;
 
-class Mongodb extends Component implements MongodbInterface
+class Mongodb implements MongodbInterface
 {
     use EventTrait;
 

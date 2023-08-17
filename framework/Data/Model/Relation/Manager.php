@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Model\Relation;
 
-use ManaPHP\Component;
 use ManaPHP\Data\Model\ManagerInterface as ModelManagerInterface;
 use ManaPHP\Data\Model\RelationInterface;
 use ManaPHP\Data\Model\ThoseInterface;
@@ -14,7 +13,7 @@ use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Helper\Str;
 
-class Manager extends Component implements ManagerInterface
+class Manager implements ManagerInterface
 {
     #[Inject] protected ThoseInterface $those;
     #[Inject] protected ModelManagerInterface $modelManager;

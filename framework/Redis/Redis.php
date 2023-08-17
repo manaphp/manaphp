@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Redis;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
@@ -11,7 +10,7 @@ use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Pool\ManagerInterface as PoolManager;
 
-class Redis extends Component implements RedisInterface, RedisDbInterface, RedisCacheInterface, RedisBrokerInterface
+class Redis implements RedisInterface, RedisDbInterface, RedisCacheInterface, RedisBrokerInterface
 {
     use EventTrait;
 

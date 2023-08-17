@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Coroutine;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Logging\LoggerInterface;
@@ -11,7 +10,7 @@ use Swoole\Coroutine;
 use Swoole\Coroutine\Channel;
 use Throwable;
 
-class Task extends Component implements TaskInterface
+class Task implements TaskInterface
 {
     #[Inject] protected LoggerInterface $logger;
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Bootstrappers;
 
 use ManaPHP\BootstrapperInterface;
-use ManaPHP\Component;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Debugging\DebuggerInterface;
 use ManaPHP\Di\Attribute\Inject;
@@ -12,7 +11,7 @@ use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use Psr\Container\ContainerInterface;
 
-class DebuggerBootstrapper extends Component implements BootstrapperInterface
+class DebuggerBootstrapper implements BootstrapperInterface
 {
     use EventTrait;
 

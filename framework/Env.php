@@ -9,7 +9,7 @@ use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 
-class Env extends Component implements EnvInterface
+class Env implements EnvInterface
 {
     #[Inject] protected AliasInterface $alias;
 

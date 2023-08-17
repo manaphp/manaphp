@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mvc;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Exception\AbortException;
@@ -16,7 +15,7 @@ use ManaPHP\Http\RouterInterface;
 use ManaPHP\Http\ServerInterface;
 use Throwable;
 
-class Handler extends Component implements HandlerInterface
+class Handler implements HandlerInterface
 {
     use EventTrait;
 

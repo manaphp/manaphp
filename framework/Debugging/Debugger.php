@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace ManaPHP\Debugging;
 
 use ArrayObject;
-use ManaPHP\Component;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Data\Db\PreparedEmulatorInterface;
+use ManaPHP\Data\ModelInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\ContainerInterface;
@@ -28,7 +28,7 @@ use ManaPHP\Redis\RedisCacheInterface;
 use ManaPHP\Tracer;
 use ManaPHP\Version;
 
-class Debugger extends Component implements DebuggerInterface
+class Debugger implements DebuggerInterface
 {
     use EventTrait;
     use ContextTrait;
@@ -270,7 +270,7 @@ class Debugger extends Component implements DebuggerInterface
 
         $vars = $eventArgs->data['vars'];
         foreach ((array)$vars as $k => $v) {
-            if ($v instanceof Component) {
+            if (is_object($v) && !$v instanceof ModelInterface && class_implements($v) !== []) {
                 unset($vars[$k]);
             }
         }

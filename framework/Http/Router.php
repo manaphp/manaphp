@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Component;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
@@ -13,7 +12,7 @@ use ManaPHP\Helper\Str;
 use ManaPHP\Http\Router\Route;
 use ManaPHP\Http\Router\RouteInterface;
 
-class Router extends Component implements RouterInterface
+class Router implements RouterInterface
 {
     use EventTrait;
     use ContextTrait;

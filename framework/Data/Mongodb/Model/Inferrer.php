@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Mongodb\Model;
 
-use ManaPHP\Component;
 use ManaPHP\Data\Model\ManagerInterface;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Data\Model\ThoseInterface;
@@ -14,7 +13,7 @@ use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\RuntimeException;
 use MongoDB\BSON\ObjectId;
 
-class Inferrer extends Component implements InferrerInterface
+class Inferrer implements InferrerInterface
 {
     #[Inject] protected ThoseInterface $those;
     #[Inject] protected ConnectorInterface $connector;

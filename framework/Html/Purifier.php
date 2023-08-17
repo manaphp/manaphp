@@ -4,10 +4,9 @@ declare(strict_types=1);
 namespace ManaPHP\Html;
 
 use DOMDocument;
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Value;
 
-class Purifier extends Component implements PurifierInterface
+class Purifier implements PurifierInterface
 {
     #[Value] protected string $allowedTags = ',a,b,br,code,div,i,img,s,strike,strong,samp,span,sub,sup,small,pre,p,q,div,em,h1,h2,h3,h4,h5,h6,table,u,ul,ol,tr,th,td,hr,li,';
     #[Value] protected string $allowedAttributes = ',title,src,href,width,height,alt,target,';

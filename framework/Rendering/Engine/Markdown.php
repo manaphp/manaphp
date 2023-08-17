@@ -24,10 +24,9 @@ namespace ManaPHP\Rendering\Engine;
 #
 
 use JetBrains\PhpStorm\ArrayShape;
-use ManaPHP\Component;
 use ManaPHP\Rendering\EngineInterface;
 
-class Markdown extends Component implements EngineInterface
+class Markdown implements EngineInterface
 {
     public const version = '1.8.0-beta-7'; //bfaa76d370ecfae6fac85b30c15b90cc23cce895
 

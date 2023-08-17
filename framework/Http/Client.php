@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
@@ -27,7 +26,7 @@ use ManaPHP\Http\Client\TooManyRequestsException;
 use ManaPHP\Http\Client\UnauthorizedException;
 use ManaPHP\Pool\ManagerInterface;
 
-class Client extends Component implements ClientInterface
+class Client implements ClientInterface
 {
     use EventTrait;
 

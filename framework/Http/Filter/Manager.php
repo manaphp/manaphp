@@ -3,13 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Filter;
 
-use ManaPHP\Component;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Event\EventTrait;
 use Psr\Container\ContainerInterface;
 
-class Manager extends Component implements ManagerInterface
+class Manager implements ManagerInterface
 {
     use EventTrait;
 

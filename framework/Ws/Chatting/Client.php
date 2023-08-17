@@ -3,13 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Ws\Chatting;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Event\EventTrait;
 use ManaPHP\Messaging\PubSubInterface;
 
-class Client extends Component implements ClientInterface
+class Client implements ClientInterface
 {
     use EventTrait;
 

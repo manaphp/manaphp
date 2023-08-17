@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Bos;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\MissingFieldException;
@@ -13,7 +12,7 @@ use ManaPHP\Helper\Arr;
 use ManaPHP\Http\ClientInterface as HttpClientInterface;
 use ManaPHP\Rest\ClientInterface as RestClientInterface;
 
-class Client extends Component implements ClientInterface
+class Client implements ClientInterface
 {
     #[Inject] protected AliasInterface $alias;
     #[Inject] protected HttpClientInterface $httpClient;

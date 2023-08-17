@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace ManaPHP\Redis;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
@@ -13,7 +12,7 @@ use ManaPHP\Exception\RuntimeException;
 use ManaPHP\Redis\Exception as RedisException;
 use Redis;
 
-class Connection extends Component
+class Connection
 {
     use EventTrait;
 

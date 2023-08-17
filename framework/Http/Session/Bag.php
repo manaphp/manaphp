@@ -3,12 +3,11 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Session;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Http\SessionInterface;
 
-class Bag extends Component implements BagInterface
+class Bag implements BagInterface
 {
     #[Inject] protected SessionInterface $session;
 

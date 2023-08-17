@@ -3,12 +3,11 @@ declare(strict_types=1);
 
 namespace ManaPHP\Ws\Client;
 
-use ManaPHP\Component;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Ws\ClientInterface;
 
-class Engine extends Component implements EngineInterface
+class Engine implements EngineInterface
 {
     #[Value] protected string $endpoint;
     #[Value] protected ?string $proxy = null;
