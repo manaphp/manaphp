@@ -3,11 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
+use JsonSerializable;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Http\Globals\Proxy;
 
-class Globals implements GlobalsInterface
+class Globals implements GlobalsInterface, JsonSerializable
 {
     use ContextTrait;
 
@@ -132,5 +133,10 @@ class Globals implements GlobalsInterface
         unset($context->_COOKIE[$name]);
 
         return $this;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return $this->get();
     }
 }

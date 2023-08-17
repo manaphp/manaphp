@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ArrayAccess;
+use JsonSerializable;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
@@ -12,7 +13,7 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Logging\LoggerInterface;
 
-abstract class AbstractSession implements SessionInterface, ArrayAccess
+abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSerializable
 {
     use EventTrait;
     use ContextTrait;
@@ -393,5 +394,10 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess
         $this->do_write($session_id, $session, $context->ttl ?? $this->ttl);
 
         return $this;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+       return $this->all();
     }
 }

@@ -4,12 +4,13 @@ declare(strict_types=1);
 namespace ManaPHP\Data;
 
 use JetBrains\PhpStorm\ArrayShape;
+use JsonSerializable;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\PreconditionException;
 use ManaPHP\Http\RequestInterface;
 
-class Paginator implements PaginatorInterface
+class Paginator implements PaginatorInterface, JsonSerializable
 {
     #[Inject] protected RequestInterface $request;
 

@@ -5,6 +5,7 @@ namespace ManaPHP\Data;
 
 use ArrayIterator;
 use IteratorAggregate;
+use JsonSerializable;
 use ManaPHP\Data\Model\ManagerInterface as ModelManagerInterface;
 use ManaPHP\Data\Model\Relation\ManagerInterface as RelationManagerInterface;
 use ManaPHP\Data\Model\ShardingInterface;
@@ -18,7 +19,7 @@ use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
 use ManaPHP\Http\RequestInterface;
 
-abstract class AbstractQuery implements QueryInterface, IteratorAggregate
+abstract class AbstractQuery implements QueryInterface, IteratorAggregate, JsonSerializable
 {
     #[Inject] protected MakerInterface $maker;
     #[Inject] protected RequestInterface $request;

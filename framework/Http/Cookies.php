@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
+use JsonSerializable;
 use ManaPHP\Di\Attribute\Inject;
 
-class Cookies implements CookiesInterface
+class Cookies implements CookiesInterface, JsonSerializable
 {
     #[Inject] protected GlobalsInterface $globals;
     #[Inject] protected RequestInterface $request;
@@ -44,5 +45,10 @@ class Cookies implements CookiesInterface
         );
 
         return $this;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return $this->all();
     }
 }

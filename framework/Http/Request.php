@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http;
 
+use JsonSerializable;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\InvalidValueException;
@@ -11,7 +12,7 @@ use ManaPHP\Http\Request\File\Exception as FileException;
 use ManaPHP\Http\Request\FileInterface;
 use ManaPHP\Validating\ValidatorInterface;
 
-class Request implements RequestInterface
+class Request implements RequestInterface, JsonSerializable
 {
     #[Inject] protected MakerInterface $maker;
     #[Inject] protected GlobalsInterface $globals;

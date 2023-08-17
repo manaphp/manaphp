@@ -3,13 +3,14 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Request;
 
+use JsonSerializable;
 use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Request\File\Exception as FileException;
 
-class File implements FileInterface
+class File implements FileInterface, JsonSerializable
 {
     #[Inject] protected AliasInterface $alias;
 
