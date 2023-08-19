@@ -3,13 +3,14 @@ declare(strict_types=1);
 
 namespace ManaPHP;
 
+use JsonSerializable;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\InvalidValueException;
 
-class Env implements EnvInterface
+class Env implements EnvInterface, JsonSerializable
 {
     #[Inject] protected AliasInterface $alias;
 
@@ -128,5 +129,10 @@ class Env implements EnvInterface
         } else {
             return $value;
         }
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return $this->all();
     }
 }

@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace ManaPHP;
 
+use JsonSerializable;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
 
-class Alias implements AliasInterface
+class Alias implements AliasInterface, JsonSerializable
 {
     protected array $aliases = ['@manaphp' => __DIR__];
 
@@ -91,5 +92,10 @@ class Alias implements AliasInterface
         }
 
         return $this->aliases[$alias] . substr($path, $pos);
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return $this->all();
     }
 }

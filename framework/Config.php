@@ -3,11 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP;
 
+use JsonSerializable;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\InvalidKeyException;
 
-class Config implements ConfigInterface
+class Config implements ConfigInterface, JsonSerializable
 {
     #[Inject] protected AliasInterface $alias;
 
@@ -44,5 +45,10 @@ class Config implements ConfigInterface
     public function has(string $key): bool
     {
         return isset($this->config[$key]);
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return $this->all();
     }
 }
