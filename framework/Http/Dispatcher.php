@@ -7,6 +7,7 @@ use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Helper\Str;
+use ManaPHP\Http\Action\InvokerInterface;
 use ManaPHP\Http\Dispatcher\NotFoundActionException;
 use ManaPHP\Http\Dispatcher\NotFoundControllerException;
 use Psr\Container\ContainerInterface;
@@ -18,6 +19,7 @@ class Dispatcher implements DispatcherInterface
 
     #[Inject] protected GlobalsInterface $globals;
     #[Inject] protected ContainerInterface $container;
+    #[Inject] protected InvokerInterface $invoker;
 
     public function getArea(): ?string
     {
@@ -125,7 +127,7 @@ class Dispatcher implements DispatcherInterface
             $context = $this->getContext();
 
             $context->isInvoking = true;
-            $return = $controller->invoke($action);
+            $return = $this->invoker->invoke($controller, $action);
         } finally {
             $context->isInvoking = false;
         }

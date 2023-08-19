@@ -5,7 +5,6 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Eventing\EventTrait;
-use ManaPHP\Http\Controller\ArgumentsResolverInterface;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Logging\Logger\LogCategorizable;
 
@@ -18,20 +17,11 @@ class Controller implements LogCategorizable
     #[Inject] protected CookiesInterface $cookies;
     #[Inject] protected RouterInterface $router;
     #[Inject] protected DispatcherInterface $dispatcher;
-    #[Inject] protected ArgumentsResolverInterface $argumentsResolver;
     #[Inject] protected IdentityInterface $identity;
 
     public function categorizeLog(): string
     {
         return basename(str_replace('\\', '.', static::class), 'Controller');
-    }
-
-    public function invoke(string $action): mixed
-    {
-        $method = $action . 'Action';
-        $arguments = $this->argumentsResolver->resolve($this, $method);
-
-        return $this->$method(...$arguments);
     }
 
     /**
