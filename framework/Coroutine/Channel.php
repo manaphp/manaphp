@@ -11,14 +11,13 @@ class Channel
 {
     protected int $capacity;
     protected int $length;
-
-    protected SwooleChannel|SplQueue $queue;
+    protected ?array $items = [];
+    protected null|SwooleChannel|SplQueue $queue = null;
 
     public function __construct(int $capacity)
     {
         $this->capacity = $capacity;
         $this->length = 0;
-        $this->queue = MANAPHP_COROUTINE_ENABLED ? new SwooleChannel($capacity) : new SplQueue();
     }
 
     public function push(mixed $data): void
@@ -28,11 +27,24 @@ class Channel
         }
 
         $this->length++;
-        $this->queue->push($data);
+
+        if ($this->items === null) {
+            $this->queue->push($data);
+        } else {
+            $this->items[] = $data;
+        }
     }
 
     public function pop(?float $timeout = null): mixed
     {
+        if ($this->queue === null) {
+            $this->queue = MANAPHP_COROUTINE_ENABLED ? new SwooleChannel($this->capacity) : new SplQueue();
+            foreach ($this->items as $item) {
+                $this->queue->push($item);
+            }
+            $this->items = null;
+        }
+
         if (MANAPHP_COROUTINE_ENABLED) {
             $data = $timeout === null ? $this->queue->pop() : $this->queue->pop($timeout);
         } else {
