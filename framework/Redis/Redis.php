@@ -10,7 +10,7 @@ use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Pooling\PoolManagerInterface;
 
-class Redis implements RedisInterface, RedisDbInterface, RedisCacheInterface, RedisBrokerInterface
+class Redis implements RedisInterface
 {
     use EventTrait;
 

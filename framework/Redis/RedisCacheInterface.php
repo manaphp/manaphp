@@ -6,7 +6,7 @@ namespace ManaPHP\Redis;
 /**
  * @mixin \Redis
  */
-interface RedisCacheInterface extends RedisInterface
+interface RedisCacheInterface
 {
 
 }
