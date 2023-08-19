@@ -5,7 +5,7 @@ namespace ManaPHP\Data\Mongodb\Model;
 
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Data\ModelManagerInterface;
-use ManaPHP\Data\Mongodb\ConnectorInterface;
+use ManaPHP\Data\MongodbConnectorInterface;
 use ManaPHP\Data\MongodbInterface;
 use ManaPHP\Di\Attribute\Inject;
 
@@ -13,7 +13,7 @@ class AutoIncrementer implements AutoIncrementerInterface
 {
     #[Inject] protected ModelManagerInterface $modelManager;
     #[Inject] protected ShardingInterface $sharding;
-    #[Inject] protected ConnectorInterface $connector;
+    #[Inject] protected MongodbConnectorInterface $connector;
 
     protected function createAutoIncrementIndex(MongodbInterface $mongodb, string $source): bool
     {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Db;
 
 use ManaPHP\Data\AbstractQuery;
+use ManaPHP\Data\DbConnectorInterface;
 use ManaPHP\Data\DbInterface;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Di\Attribute\Inject;
@@ -18,7 +19,7 @@ use PDO;
 class Query extends AbstractQuery
 {
     #[Inject] protected LoggerInterface $logger;
-    #[Inject] protected ConnectorInterface $connector;
+    #[Inject] protected DbConnectorInterface $connector;
     #[Inject] protected ShardingInterface $sharding;
 
     protected array $joins = [];

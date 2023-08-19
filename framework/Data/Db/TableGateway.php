@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 namespace ManaPHP\Data\Db;
 
+use ManaPHP\Data\DbConnectorInterface;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Di\Attribute\Inject;
 
 class TableGateway implements TableGatewayInterface
 {
-    #[Inject] protected ConnectorInterface $connector;
+    #[Inject] protected DbConnectorInterface $connector;
     #[Inject] protected ShardingInterface $sharding;
 
     public function insert(string $model, array $record, bool $fetchInsertId = false): mixed

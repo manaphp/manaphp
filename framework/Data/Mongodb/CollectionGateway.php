@@ -6,13 +6,14 @@ namespace ManaPHP\Data\Mongodb;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Data\Model\ThoseInterface;
 use ManaPHP\Data\ModelManagerInterface;
+use ManaPHP\Data\MongodbConnectorInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\MisuseException;
 
 class CollectionGateway implements CollectionGatewayInterface
 {
     #[Inject] protected ThoseInterface $those;
-    #[Inject] protected ConnectorInterface $connector;
+    #[Inject] protected MongodbConnectorInterface $connector;
     #[Inject] protected ShardingInterface $sharding;
     #[Inject] protected ModelManagerInterface $modelManager;
 

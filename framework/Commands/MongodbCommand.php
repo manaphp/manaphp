@@ -7,7 +7,7 @@ use ManaPHP\AliasInterface;
 use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
 use ManaPHP\ConfigInterface;
-use ManaPHP\Data\Mongodb\ConnectorInterface;
+use ManaPHP\Data\MongodbConnectorInterface;
 use ManaPHP\Data\MongodbInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\LocalFS;
@@ -19,7 +19,7 @@ class MongodbCommand extends Command
     #[Inject] protected ContainerInterface $container;
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected AliasInterface $alias;
-    #[Inject] protected ConnectorInterface $connector;
+    #[Inject] protected MongodbConnectorInterface $connector;
 
     /**
      * @return array

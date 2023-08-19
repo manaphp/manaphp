@@ -5,7 +5,7 @@ namespace ManaPHP\Data\Db\Model;
 
 use ManaPHP\ConfigInterface;
 use ManaPHP\Data\Db;
-use ManaPHP\Data\Db\ConnectorInterface;
+use ManaPHP\Data\DbConnectorInterface;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
@@ -13,7 +13,7 @@ use ManaPHP\Di\Attribute\Value;
 class Metadata implements MetadataInterface
 {
     #[Inject] protected ConfigInterface $config;
-    #[Inject] protected ConnectorInterface $connector;
+    #[Inject] protected DbConnectorInterface $connector;
     #[Inject] protected ShardingInterface $sharding;
 
     #[Value] protected int $ttl = 3600;

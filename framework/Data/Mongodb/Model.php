@@ -7,6 +7,7 @@ use ManaPHP\Data\AbstractModel;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Data\Mongodb\Model\InferrerInterface;
+use ManaPHP\Data\MongodbConnectorInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Container;
 use MongoDB\BSON\ObjectId;
@@ -113,7 +114,7 @@ class Model extends AbstractModel
 
         $fieldValues['_id'] = $this->_id;
 
-        $mongodb = Container::get(ConnectorInterface::class)->get($connection);
+        $mongodb = Container::get(MongodbConnectorInterface::class)->get($connection);
         $mongodb->insert($collection, $fieldValues);
 
         $this->fireEvent('model:created');
@@ -186,7 +187,7 @@ class Model extends AbstractModel
             }
         }
 
-        $mongodb = Container::get(ConnectorInterface::class)->get($connection);
+        $mongodb = Container::get(MongodbConnectorInterface::class)->get($connection);
         $mongodb->update($collection, $fieldValues, [$primaryKey => $this->$primaryKey]);
 
         $this->fireEvent('model:updated');
@@ -209,7 +210,7 @@ class Model extends AbstractModel
 
         $this->fireEvent('model:deleting');
 
-        $mongodb = Container::get(ConnectorInterface::class)->get($connection);
+        $mongodb = Container::get(MongodbConnectorInterface::class)->get($connection);
 
         $mongodb->delete($table, [$primaryKey => $this->$primaryKey]);
 
@@ -222,7 +223,7 @@ class Model extends AbstractModel
     {
         list($connection, $collection) = Container::get(ShardingInterface::class)->getUniqueShard(static::class, []);
 
-        return Container::get(ConnectorInterface::class)->get($connection)->aggregate($collection, $pipeline, $options);
+        return Container::get(MongodbConnectorInterface::class)->get($connection)->aggregate($collection, $pipeline, $options);
     }
 
     public function normalizeDocument(array $document): array

@@ -8,7 +8,7 @@ use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Data\Db;
-use ManaPHP\Data\Db\ConnectorInterface;
+use ManaPHP\Data\DbConnectorInterface;
 use ManaPHP\Data\DbInterface;
 use ManaPHP\Data\Model\Attribute\ColumnMap;
 use ManaPHP\Data\Model\Attribute\Connection;
@@ -21,7 +21,7 @@ class DbCommand extends Command
 {
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected AliasInterface $alias;
-    #[Inject] protected ConnectorInterface $connector;
+    #[Inject] protected DbConnectorInterface $connector;
 
     protected array $tableConstants = [];
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Data\Db;
 
 use ManaPHP\Data\AbstractModel;
+use ManaPHP\Data\DbConnectorInterface;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Exception\MisuseException;
@@ -56,7 +57,7 @@ class Model extends AbstractModel implements ModelInterface
             }
         }
 
-        $db = Container::get(ConnectorInterface::class)->get($connection);
+        $db = Container::get(DbConnectorInterface::class)->get($connection);
         if ($this->$primaryKey === null) {
             $this->$primaryKey = (int)$db->insert($table, $fieldValues, true);
         } else {
@@ -149,7 +150,7 @@ class Model extends AbstractModel implements ModelInterface
             }
         }
 
-        $db = Container::get(ConnectorInterface::class)->get($connection);
+        $db = Container::get(DbConnectorInterface::class)->get($connection);
         $db->update($table, $fieldValues, [$columnMap[$primaryKey] ?? $primaryKey => $this->$primaryKey]);
 
         $this->fireEvent('model:updated');
@@ -172,7 +173,7 @@ class Model extends AbstractModel implements ModelInterface
 
         $this->fireEvent('model:deleting');
 
-        $db = Container::get(ConnectorInterface::class)->get($connection);
+        $db = Container::get(DbConnectorInterface::class)->get($connection);
 
         $db->delete($table, [$primaryKey => $this->$primaryKey]);
 

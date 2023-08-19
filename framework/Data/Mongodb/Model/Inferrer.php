@@ -6,8 +6,8 @@ namespace ManaPHP\Data\Mongodb\Model;
 use ManaPHP\Data\Model\ShardingInterface;
 use ManaPHP\Data\Model\ThoseInterface;
 use ManaPHP\Data\ModelManagerInterface;
-use ManaPHP\Data\Mongodb\ConnectorInterface;
 use ManaPHP\Data\Mongodb\Model;
+use ManaPHP\Data\MongodbConnectorInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\NotImplementedException;
 use ManaPHP\Exception\RuntimeException;
@@ -16,7 +16,7 @@ use MongoDB\BSON\ObjectId;
 class Inferrer implements InferrerInterface
 {
     #[Inject] protected ThoseInterface $those;
-    #[Inject] protected ConnectorInterface $connector;
+    #[Inject] protected MongodbConnectorInterface $connector;
     #[Inject] protected ShardingInterface $sharding;
     #[Inject] protected ModelManagerInterface $modelManager;
 
