@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Validating;
 
-use ManaPHP\Data\ModelInterface;
+use ManaPHP\Model\ModelInterface;
 
 interface ValidatorInterface
 {

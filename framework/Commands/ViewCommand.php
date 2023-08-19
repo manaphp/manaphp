@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace ManaPHP\Commands;
 
 use ManaPHP\Cli\Command;
-use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Model\ModelManagerInterface;
 
 class ViewCommand extends Command
 {

@@ -7,15 +7,15 @@ use ManaPHP\AliasInterface;
 use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
 use ManaPHP\ConfigInterface;
-use ManaPHP\Data\Db;
-use ManaPHP\Data\DbConnectorInterface;
-use ManaPHP\Data\DbInterface;
-use ManaPHP\Data\Model\Attribute\ColumnMap;
-use ManaPHP\Data\Model\Attribute\Connection;
-use ManaPHP\Data\Model\Attribute\PrimaryKey;
+use ManaPHP\Db\Db;
+use ManaPHP\Db\DbConnectorInterface;
+use ManaPHP\Db\DbInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
+use ManaPHP\Model\Attribute\ColumnMap;
+use ManaPHP\Model\Attribute\Connection;
+use ManaPHP\Model\Attribute\PrimaryKey;
 
 class DbCommand extends Command
 {

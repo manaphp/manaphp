@@ -6,8 +6,7 @@ namespace ManaPHP\Debugging;
 use ArrayObject;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Context\ContextTrait;
-use ManaPHP\Data\Db\PreparedEmulatorInterface;
-use ManaPHP\Data\ModelInterface;
+use ManaPHP\Db\PreparedEmulatorInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\ContainerInterface;
@@ -24,6 +23,7 @@ use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\RouterInterface;
 use ManaPHP\Logging\Level;
 use ManaPHP\Logging\LoggerInterface;
+use ManaPHP\Model\ModelInterface;
 use ManaPHP\Redis\RedisCacheInterface;
 use ManaPHP\Tracer;
 use ManaPHP\Version;
@@ -217,7 +217,7 @@ class Debugger implements DebuggerInterface
         $context = $this->getContext();
 
         $event = $eventArgs->event;
-        /** @var \ManaPHP\Data\DbInterface $db */
+        /** @var \ManaPHP\Db\DbInterface $db */
         $db = $eventArgs->source;
 
         if ($event === 'db:querying' || $event === 'db:executing') {

@@ -123,7 +123,7 @@ class Authorization implements AuthorizationInterface
         $context = $this->getContext();
 
         if (!isset($context->role_permissions[$role])) {
-            /** @var \ManaPHP\Data\ModelInterface $roleModel */
+            /** @var \ManaPHP\Model\ModelInterface $roleModel */
             $roleModel = null;
             if (class_exists('App\Areas\Rbac\Models\Role')) {
                 $roleModel = 'App\Areas\Rbac\Models\Role';

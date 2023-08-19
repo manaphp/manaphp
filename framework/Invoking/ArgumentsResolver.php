@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Invoking;
 
-use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Http\RequestInterface;
+use ManaPHP\Model\ModelManagerInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ManaPHP\Validating\ValidatorInterface;
 use Psr\Container\ContainerInterface;

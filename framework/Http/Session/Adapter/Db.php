@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Session\Adapter;
 
-use ManaPHP\Data\DbInterface;
+use ManaPHP\Db\DbInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Http\AbstractSession;

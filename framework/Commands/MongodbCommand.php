@@ -7,11 +7,11 @@ use ManaPHP\AliasInterface;
 use ManaPHP\Cli\Command;
 use ManaPHP\Cli\Console;
 use ManaPHP\ConfigInterface;
-use ManaPHP\Data\MongodbConnectorInterface;
-use ManaPHP\Data\MongodbInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
+use ManaPHP\Mongodb\MongodbConnectorInterface;
+use ManaPHP\Mongodb\MongodbInterface;
 use Psr\Container\ContainerInterface;
 
 class MongodbCommand extends Command

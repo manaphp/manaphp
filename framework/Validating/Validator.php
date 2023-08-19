@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace ManaPHP\Validating;
 
 use Closure;
-use ManaPHP\Data\Model\ThoseInterface;
-use ManaPHP\Data\ModelInterface;
-use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\InvalidArgumentException;
@@ -19,6 +16,9 @@ use ManaPHP\Helper\Str;
 use ManaPHP\Html\PurifierInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\I18n\LocaleInterface;
+use ManaPHP\Model\ModelInterface;
+use ManaPHP\Model\ModelManagerInterface;
+use ManaPHP\Model\ThoseInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ReflectionClass;
 

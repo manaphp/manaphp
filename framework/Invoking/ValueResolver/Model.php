@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Invoking\ValueResolver;
 
-use ManaPHP\Data\ModelInterface;
-use ManaPHP\Data\ModelManagerInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\BadRequestException;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Invoking\ObjectValueResolverInterface;
+use ManaPHP\Model\ModelInterface;
+use ManaPHP\Model\ModelManagerInterface;
 
 class Model implements ObjectValueResolverInterface
 {
