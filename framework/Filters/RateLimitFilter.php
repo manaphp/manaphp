@@ -8,11 +8,14 @@ use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Eventing\EventArgs;
 use ManaPHP\Exception\TooManyRequestsException;
+use ManaPHP\Http\Controller\Attribute\RateLimit;
 use ManaPHP\Http\Filter;
 use ManaPHP\Http\Filter\ValidatingFilterInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Redis\RedisCacheInterface;
+use ReflectionClass;
+use ReflectionMethod;
 
 class RateLimitFilter extends Filter implements ValidatingFilterInterface
 {
@@ -22,28 +25,46 @@ class RateLimitFilter extends Filter implements ValidatingFilterInterface
     #[Inject] protected RedisCacheInterface $redisCache;
 
     #[Value] protected ?string $prefix;
-    #[Value] protected string $limits = '60/m';
+
+    protected array $rateLimits = [];
+
+    protected function getRateLimit($controller, $action): RateLimit|false
+    {
+        $rMethod = new ReflectionMethod($controller, $action . 'Action');
+        if (($attributes = $rMethod->getAttributes(RateLimit::class)) !== []) {
+            return $attributes[0]->newInstance();
+        }
+
+        $rClass = new ReflectionClass($controller);
+        if (($attributes = $rClass->getAttributes(RateLimit::class)) !== []) {
+            return $attributes[0]->newInstance();
+        }
+
+        return false;
+    }
 
     public function onValidating(EventArgs $eventArgs): void
     {
         /** @var \ManaPHP\Http\DispatcherInterface $dispatcher */
         $dispatcher = $eventArgs->source;
         /** @var \ManaPHP\Rest\Controller $controller */
-        $controller = $eventArgs->data['controller'];
+        $controller = $eventArgs->data['controller']::class;
         $action = $eventArgs->data['action'];
-        $rateLimit = $controller->getRateLimit();
+        $key = "$controller::$action";
+        if (($rateLimit = $this->rateLimits[$key] ?? null) === null) {
+            $rateLimit = $this->rateLimits[$key] = $this->getRateLimit($controller, $action);
+        }
 
-        $limits = (array)($rateLimit[$action] ?? $rateLimit['*'] ?? $this->limits);
-
-        if (($burst = $limits['burst'] ?? null) !== null) {
-            unset($burst['burst']);
+        if ($rateLimit === false) {
+            return;
         }
 
         $uid = $this->identity->getName('') ?: $this->request->getClientIp();
         $prefix = ($this->prefix ?? sprintf("cache:%s:rateLimitPlugin:", $this->config->get('id')))
             . $dispatcher->getPath() . ':' . $uid . ':';
 
-        foreach ($limits as $k => $v) {
+        foreach ($rateLimit->limits as $k => $v) {
+            $v = trim($v);
             if ($pos = strpos($v, '/')) {
                 $limit = (int)substr($v, 0, $pos);
                 $right = substr($v, $pos + 1);
@@ -55,7 +76,7 @@ class RateLimitFilter extends Filter implements ValidatingFilterInterface
 
             $key = $prefix . $period;
 
-            if ($k === 0 && $burst !== null) {
+            if ($k === 0 && $rateLimit->burst !== null) {
                 if (($used = $this->redisCache->get($key)) === false) {
                     $this->redisCache->setex($key, $period, '1');
                 } elseif ($used >= $limit) {
@@ -70,7 +91,7 @@ class RateLimitFilter extends Filter implements ValidatingFilterInterface
                             if ($this->redisCache->incrBy($key, $diff) === $diff) {
                                 $this->redisCache->setex($key, $period, '1');
                             }
-                        } elseif ($used > $ideal + $burst) {
+                        } elseif ($used > $ideal + $rateLimit->burst) {
                             throw new TooManyRequestsException();
                         } else {
                             if ($this->redisCache->incr($key) === 1) {

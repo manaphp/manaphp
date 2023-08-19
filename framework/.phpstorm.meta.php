@@ -184,6 +184,17 @@ namespace PHPSTORM_META {
     expectedArguments(\ManaPHP\ConfigInterface::get(), 0, argumentsSet('manaphp_config'));
     expectedArguments(\ManaPHP\ConfigInterface::has(), 0, argumentsSet('manaphp_config'));
     expectedArguments(\ManaPHP\ConfigInterface::set(), 0, argumentsSet('manaphp_config'));
+
+    registerArgumentsSet(
+        'filter_http_cache',
+        ["etag",
+         "max-age"       => 1,
+         "Cache-Control" => "private, max-age=0, no-store, no-cache,must-revalidate"]
+    );
+    expectedArguments(
+        \ManaPHP\Http\Controller\Attribute\HttpCache::__construct(), 0,
+        argumentsSet('filter_http_cache')
+    );
 }
 
 /**

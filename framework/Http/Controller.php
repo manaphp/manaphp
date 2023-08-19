@@ -23,31 +23,4 @@ class Controller implements LogCategorizable
     {
         return basename(str_replace('\\', '.', static::class), 'Controller');
     }
-
-    /**
-     * @return array =[$field=>[60,'burst'=>3],'*'=>'','index'=>'','list'=>'','detail'=>'','captcha'=>'',
-     *               'create'=>'','update'=>'','edit'=>'', 'save'=>'','delete'=>'']
-     */
-    public function getRateLimit(): array
-    {
-        return [];
-    }
-
-    /**
-     * @return array =[$field => ["etag", "max-age"=>1, "Cache-Control"=>"private, max-age=0, no-store, no-cache,
-     *               must-revalidate"]]
-     */
-    public function getHttpCache(): array
-    {
-        return [];
-    }
-
-    /**
-     * @return array =['*'=>'', 'index'=>'','list'=>'','detail'=>'','captcha'=>'',
-     *               'create'=>'','update'=>'','edit'=>'', 'save'=>'','delete'=>'']
-     */
-    public function getPageCache(): array
-    {
-        return [];
-    }
 }

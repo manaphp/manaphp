@@ -5,17 +5,32 @@ namespace ManaPHP\Filters;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Http\Controller\Attribute\HttpCache;
 use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\Filter;
 use ManaPHP\Http\Filter\RespondingFilterInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
+use ReflectionMethod;
 
 class HttpCacheFilter extends Filter implements RespondingFilterInterface
 {
     #[Inject] protected RequestInterface $request;
     #[Inject] protected ResponseInterface $response;
     #[Inject] protected DispatcherInterface $dispatcher;
+
+    protected array $httpCaches = [];
+
+    protected function getHttpCache(object $controller, string $action): HttpCache|false
+    {
+        $rMethod = new ReflectionMethod($controller, $action . 'Action');
+
+        if (($attributes = $rMethod->getAttributes(HttpCache::class)) !== []) {
+            return $attributes[0]->newInstance();
+        } else {
+            return false;
+        }
+    }
 
     public function onResponding(): void
     {
@@ -30,12 +45,16 @@ class HttpCacheFilter extends Filter implements RespondingFilterInterface
             return;
         }
 
-        $httpCache = $controller->getHttpCache();
-        if ($httpCache === [] || ($httpCache = $httpCache[$action] ?? $httpCache['*'] ?? false) === false) {
+        $key = $controller::class . '::' . $action;
+        if (($httpCache = $this->httpCaches[$key] ?? null) === null) {
+            $httpCache = $this->httpCaches[$key] = $this->getHttpCache($controller, $action);
+        }
+
+        if ($httpCache === false) {
             return;
         }
 
-        foreach ((array)$httpCache as $k => $v) {
+        foreach ($httpCache->headers as $k => $v) {
             if (is_int($k)) {
                 if ($v === 'etag' || $v === 'ETag') {
                     if (($etag = $this->response->getHeader('ETag', '')) === '') {

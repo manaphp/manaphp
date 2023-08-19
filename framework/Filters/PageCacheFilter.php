@@ -3,19 +3,19 @@ declare(strict_types=1);
 
 namespace ManaPHP\Filters;
 
-use Closure;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Eventing\EventArgs;
 use ManaPHP\Exception\AbortException;
-use ManaPHP\Exception\MissingFieldException;
+use ManaPHP\Http\Controller\Attribute\PageCache;
 use ManaPHP\Http\Filter;
 use ManaPHP\Http\Filter\ReadyFilterInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Mvc\Controller as MvcController;
 use ManaPHP\Redis\RedisCacheInterface;
+use ReflectionMethod;
 
 class PageCacheFilter extends Filter implements ReadyFilterInterface
 {
@@ -28,9 +28,22 @@ class PageCacheFilter extends Filter implements ReadyFilterInterface
 
     protected string $prefix;
 
+    protected array $pageCaches = [];
+
     public function __construct(?string $prefix = null)
     {
         $this->prefix = $prefix ?? sprintf("cache:%s:pageCachePlugin:", $this->config->get('id'));
+    }
+
+    protected function getPageCache(object $controller, string $action): PageCache|false
+    {
+        $rMethod = new ReflectionMethod($controller, $action . 'Action');
+
+        if (($attributes = $rMethod->getAttributes(PageCache::class)) !== []) {
+            return $attributes[0]->newInstance();
+        } else {
+            return false;
+        }
     }
 
     public function onReady(EventArgs $eventArgs): void
@@ -45,47 +58,41 @@ class PageCacheFilter extends Filter implements ReadyFilterInterface
         $controller = $eventArgs->data['controller'];
         $action = $eventArgs->data['action'];
 
-        $pageCache = $controller->getPageCache();
-        if ($pageCache === [] || ($pageCache = $pageCache[$action] ?? false) === false) {
+        $key = $controller::class . "::" . $action;
+        if (($pageCache = $this->pageCaches[$key] ?? null) === null) {
+            $pageCache = $this->pageCaches[$key] = $this->getPageCache($controller, $action);
+        }
+
+        if ($pageCache === false) {
             return;
         }
 
         /** @var PageCacheFilterContext $context */
         $context = $this->getContext();
 
+        $context->ttl = $pageCache->ttl;
+
         $key = null;
-        if (is_int($pageCache)) {
-            $context->ttl = $pageCache;
-        } elseif (is_array($pageCache)) {
-            if (!isset($pageCache['ttl'])) {
-                throw new MissingFieldException('ttl');
-            }
-            $context->ttl = $pageCache['ttl'];
-
-            if (isset($pageCache['key'])) {
-                $key = $pageCache['key'];
-
-                if ($key instanceof Closure) {
-                    $key = $key();
-                } elseif (is_array($key)) {
-                    $params = [];
-                    foreach ((array)$pageCache['key'] as $k => $v) {
-                        if (is_int($k)) {
-                            $param_name = $v;
-                            $param_value = input($param_name, '');
-                        } else {
-                            $param_name = $k;
-                            $param_value = $v;
-                        }
-
-                        if ($param_value !== '') {
-                            $params[$param_name] = $param_value;
-                        }
+        if ($pageCache->key !== null) {
+            $key = $pageCache->key;
+            if (is_array($key)) {
+                $params = [];
+                foreach ((array)$pageCache['key'] as $k => $v) {
+                    if (is_int($k)) {
+                        $param_name = $v;
+                        $param_value = input($param_name, '');
+                    } else {
+                        $param_name = $k;
+                        $param_value = $v;
                     }
 
-                    ksort($params);
-                    $key = http_build_query($params);
+                    if ($param_value !== '') {
+                        $params[$param_name] = $param_value;
+                    }
                 }
+
+                ksort($params);
+                $key = http_build_query($params);
             }
         }
 
