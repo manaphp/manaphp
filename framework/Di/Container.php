@@ -54,18 +54,20 @@ class Container implements ContainerInterface
             if ($property->getAttributes(Inject::class) !== []) {
                 $name = $property->getName();
 
-                if (($rType = $property->getType()) === null) {
-                    throw new Exception(sprintf('The type of `%s::%s` is missing.', $object::class, $name));
-                }
-
-                $type = $rType->getName();
-
-                if (($value = $parameters[$type] ?? null) !== null) {
-                    if (is_string($value)) {
-                        $value = $this->get($value[0] === '#' ? "$type$value" : $value);
+                if (($value = $parameters[$name] ?? null) === null || is_string($value)) {
+                    if (($rType = $property->getType()) === null) {
+                        throw new Exception(sprintf('The type of `%s::%s` is missing.', $object::class, $name));
                     }
-                } else {
-                    $value = $this->get($type);
+
+                    $type = $rType->getName();
+
+                    if ($value !== null) {
+                        if (is_string($value)) {
+                            $value = $this->get($value[0] === '#' ? "$type$value" : $value);
+                        }
+                    } else {
+                        $value = $this->get($type);
+                    }
                 }
 
                 if (!$property->isPublic()) {
