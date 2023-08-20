@@ -10,6 +10,7 @@ use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionNamedType;
+use ReflectionProperty;
 use ReflectionUnionType;
 
 class Container implements ContainerInterface
@@ -45,67 +46,70 @@ class Container implements ContainerInterface
         return $this;
     }
 
-    protected function processAttributeInject(object $object, ReflectionClass $rClass, array $parameters): void
+    protected function processAttributeInject(ReflectionProperty $property, object $object, array $parameters): void
+    {
+        $name = $property->getName();
+
+        if (($value = $parameters[$name] ?? null) === null || is_string($value)) {
+            if (($rType = $property->getType()) === null) {
+                throw new Exception(sprintf('The type of `%s::%s` is missing.', $object::class, $name));
+            }
+
+            if ($rType instanceof ReflectionUnionType) {
+                $value = new Proxy($this, $property, $object, $parameters[$name] ?? null);
+            } else {
+                $type = $rType->getName();
+
+                if ($value !== null) {
+                    if (is_string($value)) {
+                        $value = $this->get($value[0] === '#' ? "$type$value" : $value);
+                    }
+                } else {
+                    $value = $this->get($type);
+                }
+            }
+        }
+
+        if (!$property->isPublic()) {
+            $property->setAccessible(true);
+        }
+        $property->setValue($object, $value);
+    }
+
+    protected function processAttributeValue(ReflectionProperty $property, object $object, array $parameters): void
+    {
+        $name = $property->getName();
+
+        if (array_key_exists($name, $parameters)) {
+            if (!$property->isPublic()) {
+                $property->setAccessible(true);
+            }
+            $property->setValue($object, $parameters[$name]);
+        }
+    }
+
+    protected function processAttributes(object $object, ReflectionClass $rClass, array $parameters): void
     {
         foreach ($rClass->getProperties() as $property) {
             if ($property->isStatic()) {
                 continue;
             }
 
-            if ($property->getAttributes(Inject::class) !== []) {
-                $name = $property->getName();
+            $attributes = [];
+            foreach ($property->getAttributes() as $attribute) {
+                $attributes[$attribute->getName()] = $attribute;
+            }
 
-                if (($value = $parameters[$name] ?? null) === null || is_string($value)) {
-                    if (($rType = $property->getType()) === null) {
-                        throw new Exception(sprintf('The type of `%s::%s` is missing.', $object::class, $name));
-                    }
+            if ($attributes === []) {
+                continue;
+            }
 
-                    if ($rType instanceof ReflectionUnionType) {
-                        $value = new Proxy($this, $property, $object, $parameters[$name] ?? null);
-                    } else {
-                        $type = $rType->getName();
-
-                        if ($value !== null) {
-                            if (is_string($value)) {
-                                $value = $this->get($value[0] === '#' ? "$type$value" : $value);
-                            }
-                        } else {
-                            $value = $this->get($type);
-                        }
-                    }
-                }
-
-                if (!$property->isPublic()) {
-                    $property->setAccessible(true);
-                }
-                $property->setValue($object, $value);
+            if (isset($attributes[Inject::class])) {
+                $this->processAttributeInject($property, $object, $parameters);
+            } elseif (isset($attributes[Value::class])) {
+                $this->processAttributeValue($property, $object, $parameters);
             }
         }
-    }
-
-    protected function processAttributeValue(object $object, ReflectionClass $rClass, array $parameters): void
-    {
-        foreach ($parameters as $name => $value) {
-            if (is_string($name) && !str_contains($name, '\\')) {
-                if (!$rClass->hasProperty($name)) {
-                    continue;
-                }
-
-                $property = $rClass->getProperty($name);
-                if ($property->getAttributes(Value::class) !== []) {
-                    if (!$property->isPublic()) {
-                        $property->setAccessible(true);
-                    }
-                    $property->setValue($object, $value);
-                }
-            }
-        }
-    }
-
-    protected function processAttributes(object $object, ReflectionClass $rClass, array $parameters): void
-    {
-        $this->processAttributeInject($object, $rClass, $parameters);
-        $this->processAttributeValue($object, $rClass, $parameters);
     }
 
     protected function makeInternal(string $name, array $parameters = [], string $id = null): object
