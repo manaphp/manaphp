@@ -85,6 +85,19 @@ class Container implements ContainerInterface
                 $property->setAccessible(true);
             }
             $property->setValue($object, $parameters[$name]);
+        } elseif (!$property->hasDefaultValue() && $property->hasType()) {
+            $rType = $property->getType();
+            
+            if ($rType->allowsNull()) {
+                if (!$property->isPublic()) {
+                    $property->setAccessible(true);
+                }
+                $property->setValue($object, null);
+            } else {
+                throw new Exception(
+                    sprintf('The property value of `%s::$%s` is not provided.', $property->class, $name)
+                );
+            }
         }
     }
 

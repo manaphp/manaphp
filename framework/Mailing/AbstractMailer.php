@@ -16,9 +16,9 @@ abstract class AbstractMailer implements MailerInterface
 
     #[Inject] protected MakerInterface $maker;
 
-    #[Value] protected ?string $log = null;
-    #[Value] protected ?string $from = null;
-    #[Value] protected ?string $to = null;
+    #[Value] protected ?string $log;
+    #[Value] protected ?string $from;
+    #[Value] protected ?string $to;
 
     public function compose(): Message
     {

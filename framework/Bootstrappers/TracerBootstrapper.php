@@ -16,7 +16,7 @@ class TracerBootstrapper implements BootstrapperInterface
     #[Inject] protected ConfigInterface $config;
 
     #[Value] protected array $tracers = ['*'];
-    #[Value] protected ?bool $enabled = null;
+    #[Value] protected ?bool $enabled;
 
     public function bootstrap(ContainerInterface $container): void
     {

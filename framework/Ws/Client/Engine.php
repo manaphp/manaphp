@@ -10,13 +10,13 @@ use ManaPHP\Ws\ClientInterface;
 class Engine implements EngineInterface
 {
     #[Value] protected string $endpoint;
-    #[Value] protected ?string $proxy = null;
+    #[Value] protected ?string $proxy;
     #[Value] protected float $timeout = 3.0;
-    #[Value] protected ?string $protocol = null;
+    #[Value] protected ?string $protocol;
     #[Value] protected bool $masking = false;
-    #[Value] protected ?string $origin = null;
+    #[Value] protected ?string $origin;
     #[Value] protected string $user_agent = 'manaphp/client';
-    #[Value] protected ?ClientInterface $owner = null;
+    #[Value] protected ?ClientInterface $owner;
 
     protected mixed $socket;
 

@@ -20,7 +20,7 @@ class CurlMulti implements CurlMultiInterface, Countable
     #[Inject] protected LoggerInterface $logger;
     #[Inject] protected MakerInterface $maker;
 
-    #[Value] protected ?string $proxy = null;
+    #[Value] protected ?string $proxy;
     #[Value] protected int $timeout = 10;
 
     protected mixed $template;

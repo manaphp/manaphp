@@ -35,8 +35,8 @@ class Client implements ClientInterface
     #[Inject] protected MakerInterface $maker;
 
     #[Value] protected string $engine = 'ManaPHP\Http\Client\Engine';
-    #[Value] protected ?string $proxy = null;
-    #[Value] protected ?string $cafile = null;
+    #[Value] protected ?string $proxy;
+    #[Value] protected ?string $cafile;
     #[Value] protected int $timeout = 10;
     #[Value] protected bool $verify_peer = true;
     #[Value] protected string $user_agent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';

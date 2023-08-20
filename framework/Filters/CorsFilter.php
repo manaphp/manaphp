@@ -19,7 +19,7 @@ class CorsFilter extends Filter implements BeginFilterInterface
     #[Inject] protected ResponseInterface $response;
 
     #[Value] protected int $max_age = 86400;
-    #[Value] protected ?string $origin = null;
+    #[Value] protected ?string $origin;
     #[Value] protected bool $credentials = true;
 
     public function onBegin(): void

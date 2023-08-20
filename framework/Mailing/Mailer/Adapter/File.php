@@ -10,7 +10,7 @@ use ManaPHP\Mailing\Mailer\Message;
 
 class File extends AbstractMailer
 {
-    #[Value] protected ?string $file = null;
+    #[Value] protected ?string $file;
     #[Value] protected bool $pretty = false;
 
     protected function sendInternal(Message $message, ?array &$failedRecipients = null): int
