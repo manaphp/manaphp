@@ -10,6 +10,7 @@ use ReflectionClass;
 use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionNamedType;
+use ReflectionUnionType;
 
 class Container implements ContainerInterface
 {
@@ -59,14 +60,18 @@ class Container implements ContainerInterface
                         throw new Exception(sprintf('The type of `%s::%s` is missing.', $object::class, $name));
                     }
 
-                    $type = $rType->getName();
-
-                    if ($value !== null) {
-                        if (is_string($value)) {
-                            $value = $this->get($value[0] === '#' ? "$type$value" : $value);
-                        }
+                    if ($rType instanceof ReflectionUnionType) {
+                        $value = new Proxy($this, $property, $object, $parameters[$name] ?? null);
                     } else {
-                        $value = $this->get($type);
+                        $type = $rType->getName();
+
+                        if ($value !== null) {
+                            if (is_string($value)) {
+                                $value = $this->get($value[0] === '#' ? "$type$value" : $value);
+                            }
+                        } else {
+                            $value = $this->get($type);
+                        }
                     }
                 }
 
