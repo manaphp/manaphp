@@ -87,7 +87,7 @@ class Container implements ContainerInterface
             $property->setValue($object, $parameters[$name]);
         } elseif (!$property->hasDefaultValue() && $property->hasType()) {
             $rType = $property->getType();
-            
+
             if ($rType->allowsNull()) {
                 if (!$property->isPublic()) {
                     $property->setAccessible(true);
@@ -237,6 +237,10 @@ class Container implements ContainerInterface
             }
         } else {
             $definition = $id;
+        }
+
+        if (is_string($definition) && $definition[0] === '@') {
+            return $this->get(substr($definition, 1));
         }
 
         return $this->instances[$id] = $this->getInternal($id, $definition);
