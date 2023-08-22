@@ -3,20 +3,15 @@ declare(strict_types=1);
 
 namespace ManaPHP\Tracers;
 
-use ManaPHP\Eventing\EventArgs;
+use ManaPHP\Eventing\Attribute\Event;
+use ManaPHP\Mailing\Mailer\Event\MailerSending;
 use ManaPHP\Tracer;
 
 class MailerTracer extends Tracer
 {
-    public function listen(): void
+    public function onSending(#[Event] MailerSending $event): void
     {
-        $this->attachEvent('mailer:sending', [$this, 'onSending']);
-    }
-
-    public function onSending(EventArgs $eventArgs): void
-    {
-        /** @var \ManaPHP\Mailing\Mailer\Message $message */
-        $message = $eventArgs->data['message'];
+        $message = $event->message;
 
         if ($this->verbose) {
             $this->debug(['From: ', $message->getFrom()], 'mailer.sending');

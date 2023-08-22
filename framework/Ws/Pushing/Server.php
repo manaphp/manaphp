@@ -6,18 +6,18 @@ namespace ManaPHP\Ws\Pushing;
 use ManaPHP\Coroutine;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Logging\Logger\LogCategorizable;
 use ManaPHP\Logging\LoggerInterface;
 use ManaPHP\Messaging\PubSubInterface;
+use ManaPHP\Ws\Pushing\Server\Event\ServerPushing;
 use ManaPHP\Ws\ServerInterface as WsServerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Server implements ServerInterface, LogCategorizable
 {
-    use EventTrait;
-
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected LoggerInterface $logger;
     #[Inject] protected IdentityInterface $identity;
     #[Inject] protected WsServerInterface $wsServer;
@@ -196,9 +196,9 @@ class Server implements ServerInterface, LogCategorizable
                     if ($type !== null && $receivers !== null) {
                         $receivers = explode(',', $receivers);
 
-                        $this->fireEvent('wspServer:pushing', compact('type', 'receivers', 'message'));
+                        $this->eventDispatcher->dispatch(new ServerPushing($this, $type, $receivers, $message));
                         $this->dispatch($type, $receivers, $message);
-                        $this->fireEvent('wspServer:pushed', compact('type', 'receivers', 'message'));
+                        $this->eventDispatcher->dispatch(new ServerPushing($this, $type, $receivers, $message));
                     } else {
                         $this->logger->warning($channel, 'wspServer.bad_channel');
                     }

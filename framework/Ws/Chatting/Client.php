@@ -5,13 +5,14 @@ namespace ManaPHP\Ws\Chatting;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Messaging\PubSubInterface;
+use ManaPHP\Ws\Chatting\Client\Event\ChatClientPush;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Client implements ClientInterface
 {
-    use EventTrait;
 
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected PubSubInterface $pubSub;
 
     #[Value] protected string $prefix = 'ws_chatting:';
@@ -26,7 +27,7 @@ class Client implements ClientInterface
             $receivers = implode(',', $receivers);
         }
 
-        $this->fireEvent('chatClient:push', compact('type', 'room', 'receivers', 'message'));
+        $this->eventDispatcher->dispatch(new ChatClientPush($this, $type, $room, $receivers, $message));
 
         $this->pubSub->publish($this->prefix . "$type:$room:" . $receivers, $message);
     }

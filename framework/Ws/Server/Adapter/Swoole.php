@@ -8,13 +8,15 @@ use ManaPHP\ConfigInterface;
 use ManaPHP\Coroutine\Context\Stickyable;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\GlobalsInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Logging\LoggerInterface;
 use ManaPHP\Ws\HandlerInterface;
+use ManaPHP\Ws\Server\Event\ServerStart;
+use ManaPHP\Ws\Server\Event\ServerStop;
 use ManaPHP\Ws\ServerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Swoole\Coroutine;
 use Swoole\Http\Request;
 use Swoole\Runtime;
@@ -24,8 +26,7 @@ use Throwable;
 
 class Swoole implements ServerInterface
 {
-    use EventTrait;
-
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected LoggerInterface $logger;
     #[Inject] protected RequestInterface $request;
@@ -124,7 +125,7 @@ class Swoole implements ServerInterface
         @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->config->get("id"), $worker_id));
 
         try {
-            $this->fireEvent('wsServer:start', compact('server', 'worker_id'));
+            $this->eventDispatcher->dispatch(new ServerStart($this, $server, $worker_id));
         } catch (Throwable $throwable) {
             $this->logger->error($throwable);
         }
@@ -133,7 +134,7 @@ class Swoole implements ServerInterface
     public function onWorkerStop(Server $server, int $worker_id): void
     {
         try {
-            $this->fireEvent('wsServer:stop', compact('server', 'worker_id'));
+            $this->eventDispatcher->dispatch(new ServerStop($this, $server, $worker_id));
         } catch (Throwable $throwable) {
             $this->logger->error($throwable);
         }

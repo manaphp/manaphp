@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Mongodb;
 
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Eventing\EventTrait;
+use ManaPHP\Mongodb\Event\MongodbConnect;
 use ManaPHP\Mongodb\Exception as MongodbException;
 use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Command;
@@ -13,10 +14,11 @@ use MongoDB\Driver\Query as MongodbQuery;
 use MongoDB\Driver\ReadPreference;
 use MongoDB\Driver\WriteConcern;
 use MongoDB\Driver\WriteResult;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Connection implements ConnectionInterface
 {
-    use EventTrait;
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
 
     #[Value] protected string $uri;
     protected ?Manager $manager = null;
@@ -41,13 +43,13 @@ class Connection implements ConnectionInterface
         $uri = $this->uri;
 
         if ($this->manager === null) {
-            $this->fireEvent('mongodb:connect', compact('uri'));
+            $this->eventDispatcher->dispatch(new MongodbConnect($this, $uri));
             $this->manager = new Manager($uri);
         }
 
         if (microtime(true) - $this->last_heartbeat > $this->heartbeat && !$this->ping()) {
             $this->close();
-            $this->fireEvent('mongodb:connect', compact('uri'));
+            $this->eventDispatcher->dispatch(new MongodbConnect($this, $uri));
 
             $this->manager = new Manager($this->uri);
         }

@@ -5,11 +5,24 @@ namespace ManaPHP\Db;
 
 use JetBrains\PhpStorm\ArrayShape;
 use ManaPHP\Context\ContextTrait;
+use ManaPHP\Db\Event\DbBegin;
+use ManaPHP\Db\Event\DbCommit;
+use ManaPHP\Db\Event\DbDeleted;
+use ManaPHP\Db\Event\DbDeleting;
+use ManaPHP\Db\Event\DbExecuted;
+use ManaPHP\Db\Event\DbExecuting;
+use ManaPHP\Db\Event\DbInserted;
+use ManaPHP\Db\Event\DbInserting;
+use ManaPHP\Db\Event\DbMetadata;
+use ManaPHP\Db\Event\DbQueried;
+use ManaPHP\Db\Event\DbQuerying;
+use ManaPHP\Db\Event\DbRollback;
+use ManaPHP\Db\Event\DbUpdated;
+use ManaPHP\Db\Event\DbUpdating;
 use ManaPHP\Db\Exception as DbException;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\InvalidArgumentException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NonCloneableException;
@@ -18,12 +31,13 @@ use ManaPHP\Pooling\PoolManagerInterface;
 use ManaPHP\Pooling\Transient;
 use PDO;
 use PDOException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Db implements DbInterface
 {
-    use EventTrait;
     use ContextTrait;
 
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected PoolManagerInterface $poolManager;
     #[Inject] protected MakerInterface $maker;
 
@@ -132,9 +146,9 @@ class Db implements DbInterface
     public function execute(string $type, string $sql, array $bind = []): int
     {
         $event = [
-                     'delete' => ['deleting', 'deleted'],
-                     'update' => ['updating', 'updated'],
-                     'insert' => ['inserting', 'inserted']
+                     'delete' => [DbDeleting::class, DbDeleted::class],
+                     'update' => [DbUpdating::class, DbUpdated::class],
+                     'insert' => [DbInserting::class, DbInserted::class]
                  ][$type] ?? null;
 
         /** @var DbContext $context */
@@ -145,8 +159,8 @@ class Db implements DbInterface
 
         $context->affected_rows = 0;
 
-        $this->fireEvent('db:executing', compact('type', 'sql', 'bind'));
-        $event && $this->fireEvent('db:' . $event[0], compact('type', 'sql', 'bind'));
+        $this->eventDispatcher->dispatch(new DbExecuting($this, $type, $sql, $bind));
+        $event && $this->eventDispatcher->dispatch(new $event[0]($type, $sql, $bind));
 
         if ($context->connection) {
             $connection = $context->connection;
@@ -166,8 +180,8 @@ class Db implements DbInterface
 
         $count = $context->affected_rows;
 
-        $event && $this->fireEvent('db:' . $event[1], compact('type', 'count', 'sql', 'bind', 'elapsed'));
-        $this->fireEvent('db:executed', compact('type', 'count', 'sql', 'bind', 'elapsed'));
+        $event && $this->eventDispatcher->dispatch(new $event[1]($this, $type, $sql, $bind, $count, $elapsed));
+        $this->eventDispatcher->dispatch(new DbExecuted($this, $type, $sql, $bind, $count, $elapsed));
 
         return $count;
     }
@@ -209,7 +223,7 @@ class Db implements DbInterface
         $context->bind = $bind;
         $context->affected_rows = 0;
 
-        $this->fireEvent('db:querying');
+        $this->eventDispatcher->dispatch(new DbQuerying($this, $sql, $bind));
 
         if ($context->connection) {
             $type = null;
@@ -236,8 +250,7 @@ class Db implements DbInterface
         }
 
         $count = $context->affected_rows = count($result);
-
-        $this->fireEvent('db:queried', compact('elapsed', 'count', 'sql', 'bind', 'result'));
+        $this->eventDispatcher->dispatch(new DbQueried($this, $sql, $bind, $count, $result, $elapsed));
 
         return $result;
     }
@@ -275,7 +288,7 @@ class Db implements DbInterface
 
         $connection = $context->connection ?: $this->poolManager->pop($this, $this->timeout);
 
-        $this->fireEvent('db:inserting');
+        $this->eventDispatcher->dispatch(new DbInserting($this, 'insert', $context->sql, $context->bind));
 
         try {
             $start_time = microtime(true);
@@ -293,7 +306,9 @@ class Db implements DbInterface
             }
         }
 
-        $this->fireEvent('db:inserted', compact('sql', 'record', 'elapsed', 'insert_id', 'bind'));
+        $this->eventDispatcher->dispatch(
+            new DbInserted($this, 'insert', $sql, $bind, $context->affected_rows, $elapsed)
+        );
 
         return $insert_id;
     }
@@ -450,7 +465,7 @@ class Db implements DbInterface
         $context = $this->getContext();
 
         if ($context->transaction_level === 0) {
-            $this->fireEvent('db:begin');
+            $this->eventDispatcher->dispatch(new DbBegin($this));
 
             /** @var \ManaPHP\Db\ConnectionInterface $connection */
             $connection = $this->poolManager->pop($this, $this->timeout);
@@ -497,8 +512,7 @@ class Db implements DbInterface
                 } finally {
                     $this->poolManager->push($this, $context->connection);
                     $context->connection = null;
-
-                    $this->fireEvent('db:rollback');
+                    $this->eventDispatcher->dispatch(new DbRollback($this));
                 }
             }
         }
@@ -523,7 +537,7 @@ class Db implements DbInterface
             } finally {
                 $this->poolManager->push($this, $context->connection);
                 $context->connection = null;
-                $this->fireEvent('db:commit');
+                $this->eventDispatcher->dispatch(new DbCommit($this));
             }
         }
     }
@@ -620,7 +634,7 @@ class Db implements DbInterface
             }
         }
 
-        $this->fireEvent('db:metadata', compact('elapsed', 'table', 'meta'));
+        $this->eventDispatcher->dispatch(new DbMetadata($this, $table, $meta, $elapsed));
 
         return $meta;
     }
@@ -638,7 +652,6 @@ class Db implements DbInterface
                 } finally {
                     $this->poolManager->push($this, $context->connection);
                 }
-                $this->fireEvent('db:abnormal');
             }
             $context->connection = null;
         }

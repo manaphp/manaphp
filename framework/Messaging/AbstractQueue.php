@@ -3,17 +3,21 @@ declare(strict_types=1);
 
 namespace ManaPHP\Messaging;
 
-use ManaPHP\Eventing\EventTrait;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Messaging\Queue\Event\QueueDelete;
+use ManaPHP\Messaging\Queue\Event\QueuePop;
+use ManaPHP\Messaging\Queue\Event\QueuePush;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractQueue implements QueueInterface
 {
-    use EventTrait;
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
 
     abstract public function do_push(string $topic, string $body, int $priority = self::PRIORITY_NORMAL): void;
 
     public function push(string $topic, string $body, int $priority = self::PRIORITY_NORMAL): void
     {
-        $this->fireEvent('msgQueue:push', compact('topic', 'body', 'priority'));
+        $this->eventDispatcher->dispatch(new QueuePush($this, $topic, $body, $priority));
 
         $this->do_push($topic, $body, $priority);
     }
@@ -29,7 +33,7 @@ abstract class AbstractQueue implements QueueInterface
     public function pop(string $topic, int $timeout = PHP_INT_MAX): ?string
     {
         if (($msg = $this->do_pop($topic, $timeout)) !== null) {
-            $this->fireEvent('msgQueue:pop', compact('topic', 'msg'));
+            $this->eventDispatcher->dispatch(new QueuePop($this, $topic, $msg));
         }
 
         return $msg;
@@ -39,7 +43,7 @@ abstract class AbstractQueue implements QueueInterface
 
     public function delete(string $topic): void
     {
-        $this->fireEvent('msgQueue:delete', compact('topic'));
+        $this->eventDispatcher->dispatch(new QueueDelete($this, $topic));
         $this->do_delete($topic);
     }
 

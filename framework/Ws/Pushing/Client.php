@@ -5,14 +5,14 @@ namespace ManaPHP\Ws\Pushing;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\MissingFieldException;
 use ManaPHP\Messaging\PubSubInterface;
+use ManaPHP\Ws\Pushing\Client\Event\PushClientPush;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Client implements ClientInterface
 {
-    use EventTrait;
-
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected PubSubInterface $pubSub;
 
     #[Value] protected string $endpoint;
@@ -32,7 +32,7 @@ class Client implements ClientInterface
             throw new MissingFieldException($endpoint);
         }
 
-        $this->fireEvent('wspClient:push', compact('type', 'receivers', 'message', 'endpoint'));
+        $this->eventDispatcher->dispatch(new PushClientPush($this, $type, $receivers, $message, $endpoint));
 
         $this->pubSub->publish($this->prefix . "$endpoint:$type:$receivers", $message);
     }

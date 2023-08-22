@@ -8,15 +8,25 @@ use JsonSerializable;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Eventing\EventTrait;
+use ManaPHP\Eventing\Attribute\Event;
+use ManaPHP\Eventing\EventSubscriberInterface;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Str;
+use ManaPHP\Http\Server\Event\RequestResponsing;
+use ManaPHP\Http\Session\Event\SessionCreate;
+use ManaPHP\Http\Session\Event\SessionDestory;
+use ManaPHP\Http\Session\Event\SessionEnd;
+use ManaPHP\Http\Session\Event\SessionStart;
+use ManaPHP\Http\Session\Event\SessionUpdate;
 use ManaPHP\Logging\LoggerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSerializable
 {
-    use EventTrait;
     use ContextTrait;
+
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
+    #[Inject] protected EventSubscriberInterface $eventSubscriber;
 
     #[Inject] protected LoggerInterface $logger;
     #[Inject] protected CookiesInterface $cookies;
@@ -34,7 +44,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
     {
         $this->params = $params + $this->params;
 
-        $this->attachEvent('request:responding', [$this, 'onRequestResponding']);
+        $this->eventSubscriber->addListener($this);
     }
 
     public function all(): array
@@ -76,10 +86,10 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
         $context->session_id = $session_id;
         $context->started = true;
 
-        $this->fireEvent('session:start', compact('context', 'session_id'));
+        $this->eventDispatcher->dispatch(new SessionStart($this, $context, $session_id));
     }
 
-    public function onRequestResponding(): void
+    public function onRequestResponding(#[Event] RequestResponsing $event): void
     {
         /** @var AbstractSessionContext $context */
         $context = $this->getContext();
@@ -90,7 +100,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
 
         $session_id = $context->session_id;
 
-        $this->fireEvent('session:end', compact('context', 'session_id'));
+        $this->eventDispatcher->dispatch(new SessionEnd($this, $context, $session_id));
 
         if ($context->is_new) {
             if (!$context->_SESSION) {
@@ -110,7 +120,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
                 $params['httponly']
             );
 
-            $this->fireEvent('session:create', compact('context', 'session_id'));
+            $this->eventDispatcher->dispatch(new SessionCreate($this, $context, $session_id));
         } elseif ($context->is_dirty) {
             null;
         } elseif ($this->lazy) {
@@ -123,7 +133,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
             }
         }
 
-        $this->fireEvent('session:update', compact('context', 'session_id'));
+        $this->eventDispatcher->dispatch(new SessionUpdate($this, $context, $session_id));
 
         if ($this->lazy) {
             $context->_SESSION['__T'] = time();
@@ -136,7 +146,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
     public function destroy(?string $session_id = null): static
     {
         if ($session_id) {
-            $this->fireEvent('session:destroy', compact('session_id'));
+            $this->eventDispatcher->dispatch(new SessionDestory($this, null, $session_id));
             $this->do_destroy($session_id);
         } else {
             /** @var AbstractSessionContext $context */
@@ -147,7 +157,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
             }
 
             $session_id = $context->session_id;
-            $this->fireEvent('session:destroy', compact('context', 'session_id'));
+            $this->eventDispatcher->dispatch(new SessionDestory($this, $context, $session_id));
 
             $context->started = false;
             $context->is_dirty = false;

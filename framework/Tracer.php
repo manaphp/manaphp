@@ -5,10 +5,9 @@ namespace ManaPHP;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Eventing\Listener;
 use ManaPHP\Logging\LoggerInterface;
 
-abstract class Tracer extends Listener
+abstract class Tracer
 {
     #[Inject] protected LoggerInterface $logger;
 

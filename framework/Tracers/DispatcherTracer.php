@@ -4,23 +4,19 @@ declare(strict_types=1);
 namespace ManaPHP\Tracers;
 
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Eventing\EventArgs;
+use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\ResponseInterface;
+use ManaPHP\Http\Server\Event\RequestAuthorized;
 use ManaPHP\Tracer;
 
 class DispatcherTracer extends Tracer
 {
     #[Inject] protected ResponseInterface $response;
 
-    public function listen(): void
+    public function onRequestAuthorized(#[Event] RequestAuthorized $event): void
     {
-        $this->attachEvent('request:authorized', [$this, 'onRequestAuthorized']);
-    }
-
-    public function onRequestAuthorized(EventArgs $eventArgs): void
-    {
-        $controller = $eventArgs->data['controller'];
-        $action = $eventArgs->data['action'];
+        $controller = $event->controller;
+        $action = $event->action;
 
         $this->response->setHeader(
             'X-Dispatcher-Tracer', $controller::class . '::' . $action . 'Action'

@@ -10,6 +10,13 @@ use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Helper\Ip;
 use ManaPHP\Http\AbstractServer;
+use ManaPHP\Http\Server\Event\RequestResponded;
+use ManaPHP\Http\Server\Event\RequestResponsing;
+use ManaPHP\Http\Server\Event\ResponseStringify;
+use ManaPHP\Http\Server\Event\ServerManagerStart;
+use ManaPHP\Http\Server\Event\ServerMasterStart;
+use ManaPHP\Http\Server\Event\ServerStart;
+use ManaPHP\Http\Server\Event\ServerWorkerStart;
 use ManaPHP\Http\Server\StaticHandlerInterface;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
@@ -92,21 +99,21 @@ class Swoole extends AbstractServer
     {
         @cli_set_process_title(sprintf('manaphp %s: master', $this->config->get('id')));
 
-        $this->fireEvent('httpServer:masterStart', compact('server'));
+        $this->eventDispatcher->dispatch(new ServerMasterStart($this, $server));
     }
 
     public function onManagerStart(): void
     {
         @cli_set_process_title(sprintf('manaphp %s: manager', $this->config->get("id")));
 
-        $this->fireEvent('httpServer:managerStart', ['server' => $this->swoole]);
+        $this->eventDispatcher->dispatch(new ServerManagerStart($this, $this->swoole));
     }
 
     public function onWorkerStart(Server $server, int $worker_id): void
     {
         @cli_set_process_title(sprintf('manaphp %s: worker/%d', $this->config->get("id"), $worker_id));
 
-        $this->fireEvent('httpServer::workerStart', compact('server', 'worker_id'));
+        $this->eventDispatcher->dispatch(new ServerWorkerStart($this, $server, $worker_id));
     }
 
     public function start(): void
@@ -119,7 +126,7 @@ class Swoole extends AbstractServer
 
         $settings = json_stringify($this->settings);
         console_log('info', ['listen on: %s:%d with setting: %s', $this->host, $this->port, $settings]);
-        $this->fireEvent('httpServer:start', ['server' => $this->swoole]);
+        $this->eventDispatcher->dispatch(new ServerStart($this, $this->swoole));
         /** @noinspection HttpUrlsUsage */
         console_log('info', sprintf('http://%s:%s%s', $this->host, $this->port, $this->router->getPrefix()));
         $this->swoole->start();
@@ -166,13 +173,13 @@ class Swoole extends AbstractServer
     public function send(): void
     {
         if (!is_string($this->response->getContent()) && !$this->response->hasFile()) {
-            $this->fireEvent('response:stringify');
+            $this->eventDispatcher->dispatch(new ResponseStringify($this->response));
             if (!is_string($content = $this->response->getContent())) {
                 $this->response->setContent(json_stringify($content));
             }
         }
 
-        $this->fireEvent('request:responding');
+        $this->eventDispatcher->dispatch(new RequestResponsing($this->request, $this->response));
 
         /** @var SwooleContext $context */
         $context = $this->getContext();
@@ -213,6 +220,6 @@ class Swoole extends AbstractServer
             $response->end($content);
         }
 
-        $this->fireEvent('request:responded');
+        $this->eventDispatcher->dispatch(new RequestResponded($this->request, $this->response));
     }
 }

@@ -4,14 +4,11 @@ declare(strict_types=1);
 namespace ManaPHP\Http;
 
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Logging\Logger\LogCategorizable;
 
 class Controller implements LogCategorizable
 {
-    use EventTrait;
-
     #[Inject] protected RequestInterface $request;
     #[Inject] protected ResponseInterface $response;
     #[Inject] protected CookiesInterface $cookies;

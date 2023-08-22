@@ -4,20 +4,23 @@ declare(strict_types=1);
 namespace ManaPHP\Db;
 
 use JsonSerializable;
+use ManaPHP\Db\Event\DbAbnormal;
+use ManaPHP\Db\Event\DbClose;
+use ManaPHP\Db\Event\DbConnected;
+use ManaPHP\Db\Event\DbConnecting;
 use ManaPHP\Db\Exception as DbException;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\NotSupportedException;
 use PDO;
 use PDOException;
 use PDOStatement;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractConnection implements ConnectionInterface
 {
-    use EventTrait;
-
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected MakerInterface $maker;
 
     #[Value] protected string $uri;
@@ -68,19 +71,19 @@ abstract class AbstractConnection implements ConnectionInterface
             $dsn = $this->dsn;
             $uri = $this->uri;
 
-            $this->fireEvent('db:connecting', compact('dsn', 'uri'));
+            $this->eventDispatcher->dispatch(new DbConnecting($this, $dsn, $uri));
 
             try {
                 $params = [$dsn, $this->username, $this->password, $this->options];
                 $this->pdo = $pdo = $this->maker->make(PDO::class, $params);
             } catch (PDOException $e) {
-                $this->fireEvent('db:connected', compact('dsn', 'uri'));
+                $this->eventDispatcher->dispatch(new DbConnected($this, $dsn, $uri));
 
                 $code = $e->getCode();
                 throw new ConnectionException(['connect `%s` failed: %s', $dsn, $e->getMessage()], $code, $e);
             }
 
-            $this->fireEvent('db:connected', compact('dsn', 'uri', 'pdo'));
+            $this->eventDispatcher->dispatch(new DbConnected($this, $dsn, $uri, $pdo));
         }
 
         return $this->pdo;
@@ -220,11 +223,11 @@ abstract class AbstractConnection implements ConnectionInterface
             $dsn = $this->dsn;
             $uri = $this->uri;
             $pdo = $this->pdo;
-            $this->fireEvent('db:close', compact('dsn', 'uri', 'pdo'));
+            $this->eventDispatcher->dispatch(new DbClose($this, $dsn, $uri, $pdo));
 
             if ($this->in_transaction) {
                 $this->in_transaction = false;
-                $this->fireEvent('db:abnormal', compact('dsn', 'uri', 'pdo'));
+                $this->eventDispatcher->dispatch(new DbAbnormal($this, $dsn, $uri, $pdo));
             }
 
             $this->pdo = null;

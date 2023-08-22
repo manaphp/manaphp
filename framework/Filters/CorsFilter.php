@@ -6,13 +6,14 @@ namespace ManaPHP\Filters;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\Filter;
-use ManaPHP\Http\Filter\BeginFilterInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
+use ManaPHP\Http\Server\Event\RequestBegin;
 
-class CorsFilter extends Filter implements BeginFilterInterface
+class CorsFilter extends Filter
 {
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected RequestInterface $request;
@@ -22,7 +23,7 @@ class CorsFilter extends Filter implements BeginFilterInterface
     #[Value] protected ?string $origin;
     #[Value] protected bool $credentials = true;
 
-    public function onBegin(): void
+    public function onBegin(#[Event] RequestBegin $event): void
     {
         $origin = $this->request->getServer('HTTP_ORIGIN');
         $host = $this->request->getServer('HTTP_HOST');

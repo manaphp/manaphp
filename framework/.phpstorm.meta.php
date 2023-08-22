@@ -13,41 +13,6 @@ namespace PHPSTORM_META {
     override(\ManaPHP\Helper\Container::make(), map(['' => '@']));
     override(\ManaPHP\Di\MakerInterface::make(), map(['' => '@']));
 
-    registerArgumentsSet(
-        'eventManager',
-        'httpServer:start',
-        'httpServer:masterStart', 'httpServer:managerStart', 'httpServer:workerStart',
-        'request:begin', 'request:end',
-        'request:authenticating', 'request:authenticated',
-        'request:authorizing', 'request:authorized',
-        'request:validating', 'request:validated',
-        'request:ready',
-        'request:invoking', 'request:invoked',
-        'response:stringify',
-        'request:responding', 'request:responded',
-        'model:creating', 'model:created', 'model:saving', 'model:saved',
-        'model:updating', 'model:updated', 'model:deleting', 'model:deleted',
-        'db:connecting', 'db:connected', 'db:executing', 'db:executed', 'db:querying', 'db:queried', 'db:close',
-        'db:begin', 'db:rollback', 'db:commit',
-        'mailer:sending', 'mailer:sent',
-        'redis:connecting', 'redis:connected', 'redis:calling', 'redis:called', 'redis:close',
-        'httpClient:requesting', 'httpClient:requested',
-        'httpClient:start', 'httpClient:complete', 'httpClient:error', 'httpClient:success',
-        'wsClient:open', 'wsClient:close', 'wsClient:send', 'wsClient:recv', 'wsClient:message',
-        'wsServer:open', 'wsServer:close', 'wsServer:start', 'wsServer:stop',
-        'view:rendering', 'view:rendered',
-        'renderer:rendering', 'renderer:rendered',
-        'poolManager:push', 'poolManager:popping', 'poolManager:popped',
-        'cache:miss', 'cache:hit',
-        'wspServer:pushing', 'wspServer:pushed',
-        'wspClient:push',
-        'chatServer:come', 'chatServer:leave', 'chatServer:pushing', 'chatServer:pushed',
-        'chatClient:push',
-        'cli:invoking', 'cli:invoked',
-    );
-    expectedArguments(\ManaPHP\Eventing\EventManagerInterface::attachEvent(), 0, argumentsSet('eventManager'));
-    expectedArguments(\ManaPHP\Eventing\EventTrait::attachEvent(), 0, argumentsSet('eventManager'));
-
     expectedArguments(\ManaPHP\Http\RequestInterface::getServer(), 0, array_keys($_SERVER)[$i]);
     expectedArguments(\ManaPHP\Http\RequestInterface::hasServer(), 0, array_keys($_SERVER)[$i]);
 

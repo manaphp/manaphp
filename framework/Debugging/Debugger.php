@@ -3,16 +3,22 @@ declare(strict_types=1);
 
 namespace ManaPHP\Debugging;
 
-use ArrayObject;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Context\ContextTrait;
+use ManaPHP\Db\Event\DbBegin;
+use ManaPHP\Db\Event\DbCommit;
+use ManaPHP\Db\Event\DbExecuted;
+use ManaPHP\Db\Event\DbExecuting;
+use ManaPHP\Db\Event\DbQueried;
+use ManaPHP\Db\Event\DbQuerying;
+use ManaPHP\Db\Event\DbRollback;
 use ManaPHP\Db\PreparedEmulatorInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Dumping\DumperManagerInterface;
-use ManaPHP\Eventing\EventArgs;
-use ManaPHP\Eventing\EventTrait;
+use ManaPHP\Eventing\Attribute\Event;
+use ManaPHP\Eventing\EventSubscriberInterface;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
@@ -21,18 +27,26 @@ use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\RouterInterface;
+use ManaPHP\Http\Server\Event\RequestBegin;
+use ManaPHP\Http\Server\Event\RequestEnd;
+use ManaPHP\Http\Server\Event\ResponseStringify;
 use ManaPHP\Logging\Level;
+use ManaPHP\Logging\Logger\Event\LoggerLog;
 use ManaPHP\Logging\LoggerInterface;
 use ManaPHP\Model\ModelInterface;
+use ManaPHP\Mongodb\Event\MongodbBulkWritten;
+use ManaPHP\Mongodb\Event\MongodbCommanded;
+use ManaPHP\Mongodb\Event\MongodbQueried;
 use ManaPHP\Redis\RedisCacheInterface;
+use ManaPHP\Rendering\Renderer\Event\RendererRendering;
 use ManaPHP\Tracer;
 use ManaPHP\Version;
 
 class Debugger implements DebuggerInterface
 {
-    use EventTrait;
     use ContextTrait;
 
+    #[Inject] protected EventSubscriberInterface $eventSubscriber;
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected LoggerInterface $logger;
     #[Inject] protected RequestInterface $request;
@@ -57,19 +71,7 @@ class Debugger implements DebuggerInterface
 
     public function start(): void
     {
-        $this->eventManager->peekEvent('*', [$this, 'onEvent']);
-
-        $this->eventManager->peekEvent('db', [$this, 'onDb']);
-        $this->eventManager->peekEvent('mongodb', [$this, 'onMongodb']);
-
-        $this->attachEvent('renderer:rendering', [$this, 'onRendererRendering']);
-        $this->attachEvent('logger:log', [$this, 'onLoggerLog']);
-        $this->attachEvent('request:begin', [$this, 'onRequestBegin']);
-        $this->attachEvent('request:end', [$this, 'onRequestEnd']);
-
-        if ($this->tail) {
-            $this->attachEvent('response:stringify', [$this, 'onResponseStringify']);
-        }
+        $this->eventSubscriber->addListener($this);
     }
 
     protected function readData(string $key): ?string
@@ -109,7 +111,7 @@ class Debugger implements DebuggerInterface
         }
     }
 
-    public function onRequestBegin(): void
+    public function onRequestBegin(#[Event] RequestBegin $event): void
     {
         /** @var DebuggerContext $context */
         $context = $this->getContext();
@@ -149,7 +151,7 @@ class Debugger implements DebuggerInterface
         }
     }
 
-    public function onRequestEnd(): void
+    public function onRequestEnd(#[Event] RequestEnd $event): void
     {
         /** @var DebuggerContext $context */
         $context = $this->getContext();
@@ -159,47 +161,33 @@ class Debugger implements DebuggerInterface
         }
     }
 
-    public function onResponseStringify(): void
+    public function onResponseStringify(#[Event] ResponseStringify $event): void
     {
-        if (is_array($content = $this->response->getContent())) {
-            $content['debugger'] = $this->response->getHeader('X-Debugger-Link');
-            $this->response->setContent($content);
+        if ($this->tail) {
+            if (is_array($content = $this->response->getContent())) {
+                $content['debugger'] = $this->response->getHeader('X-Debugger-Link');
+                $this->response->setContent($content);
+            }
         }
     }
 
-    public function onEvent(EventArgs $eventArgs): void
+    public function onEvent(#[Event] object $event): void
     {
-        $event['event'] = $eventArgs->event;
-        $event['source'] = $eventArgs->source ? get_class($eventArgs->source) : null;
-
-        $data = $eventArgs->data;
-        if ($data === null) {
-            $event['data'] = null;
-        } elseif (is_scalar($data)) {
-            $event['data'] = gettype($data);
-        } elseif ($data instanceof ArrayObject) {
-            $event['data'] = array_keys($data->getArrayCopy());
-        } elseif (is_array($data)) {
-            $event['data'] = array_keys($data);
-        } elseif (is_object($data)) {
-            $event['data'] = $data::class;
-        } else {
-            $event['data'] = '???';
-        }
+        $data['event'] = $event::class;
+        $data['source'] = array_keys(get_object_vars($event));
 
         /** @var DebuggerContext $context */
         $context = $this->getContext();
 
-        $context->events[] = $event;
+        $context->events[] = $data;
     }
 
-    public function onLoggerLog(EventArgs $eventArgs): void
+    public function onLoggerLog(#[Event] LoggerLog $event): void
     {
         /** @var DebuggerContext $context */
         $context = $this->getContext();
 
-        /** @var \ManaPHP\Logging\Logger\Log $log */
-        $log = $eventArgs->data['log'];
+        $log = $event->log;
         $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
         $context->log[] = [
             'time'     => date('H:i:s', (int)$log->timestamp) . $ms,
@@ -211,17 +199,13 @@ class Debugger implements DebuggerInterface
         ];
     }
 
-    public function onDb(EventArgs $eventArgs): void
+    public function onDb(#[Event] object $event): void
     {
         /** @var DebuggerContext $context */
         $context = $this->getContext();
 
-        $event = $eventArgs->event;
-        /** @var \ManaPHP\Db\DbInterface $db */
-        $db = $eventArgs->source;
-
-        if ($event === 'db:querying' || $event === 'db:executing') {
-            $preparedSQL = $db->getSQL();
+        if ($event instanceof DbQuerying || $event instanceof DbExecuting) {
+            $preparedSQL = $event->db->getSQL();
             if (!isset($context->sql_prepared[$preparedSQL])) {
                 $context->sql_prepared[$preparedSQL] = 1;
             } else {
@@ -230,21 +214,20 @@ class Debugger implements DebuggerInterface
 
             $context->sql_count++;
 
-            $sql = $db->getSQL();
-            $bind = $db->getBind();
+            $sql = $event->db->getSQL();
+            $bind = $event->db->getBind();
             $context->sql_executed[] = [
                 'prepared' => $sql,
                 'bind'     => $bind,
                 'emulated' => $this->preparedEmulator->emulate($sql, $bind, 128)
             ];
-        } elseif ($event === 'db:queried' || $event === 'db:executed') {
-            $context->sql_executed[$context->sql_count - 1]['elapsed'] = $eventArgs->data['elapsed'];
-            $context->sql_executed[$context->sql_count - 1]['row_count'] = $db->affectedRows();
-        } elseif ($event === 'db:begin' || $event === 'db:rollback' || $event === 'db:commit') {
+        } elseif ($event instanceof DbQueried || $event instanceof DbExecuted) {
+            $context->sql_executed[$context->sql_count - 1]['elapsed'] = $event->elapsed;
+            $context->sql_executed[$context->sql_count - 1]['row_count'] = $event->db->affectedRows();
+        } elseif ($event instanceof DbBegin || $event instanceof DbCommit || $event instanceof DbRollback) {
             $context->sql_count++;
 
-            $parts = explode(':', $event);
-            $name = $parts[1];
+            $name = $event::class;
 
             $context->sql_executed[] = [
                 'prepared'  => $name,
@@ -263,39 +246,36 @@ class Debugger implements DebuggerInterface
         }
     }
 
-    public function onRendererRendering(EventArgs $eventArgs): void
+    public function onRendererRendering(#[Event] RendererRendering $event): void
     {
         /** @var DebuggerContext $context */
         $context = $this->getContext();
 
-        $vars = $eventArgs->data['vars'];
-        foreach ((array)$vars as $k => $v) {
+        $vars = $event->vars;
+        foreach ($vars as $k => $v) {
             if (is_object($v) && !$v instanceof ModelInterface && class_implements($v) !== []) {
                 unset($vars[$k]);
             }
         }
 
-        $file = $eventArgs->data['file'];
+        $file = $event->file;
         $base_name = basename(dirname($file)) . '/' . basename($file);
         $context->view[] = ['file' => $file, 'vars' => $vars, 'base_name' => $base_name];
     }
 
-    public function onMongodb(EventArgs $eventArgs): void
+    public function onMongodb(#[Event] object $event): void
     {
         /** @var DebuggerContext $context */
         $context = $this->getContext();
 
-        $event = $eventArgs->event;
-        $data = $eventArgs->data;
-
-        if ($event === 'mongodb:queried') {
+        if ($event instanceof MongodbQueried) {
             $item = [];
             $item['type'] = 'query';
-            $item['raw'] = Arr::only($data, ['namespace', 'filter', 'options']);
-            $options = $data['options'];
-            list(, $collection) = explode('.', $data['namespace'], 2);
+            $item['raw'] = Arr::only((array)$event, ['namespace', 'filter', 'options']);
+            $options = $event->options;
+            list(, $collection) = explode('.', $event->namespace, 2);
             $shell = "db.$collection.";
-            $shell .= (isset($options['limit']) ? 'findOne(' : 'find(') . json_stringify($data['filter']);
+            $shell .= (isset($options['limit']) ? 'findOne(' : 'find(') . json_stringify($event->filter);
             if (isset($options['projection'])) {
                 $shell .= ', ' . json_stringify($options['projection']) . ');';
             } else {
@@ -303,21 +283,19 @@ class Debugger implements DebuggerInterface
             }
 
             $item['shell'] = $shell;
-            $item['elapsed'] = $data['elapsed'];
+            $item['elapsed'] = $event->elapsed;
             $context->mongodb[] = $item;
-        } elseif ($event === 'mongodb:commanded') {
+        } elseif ($event instanceof MongodbCommanded) {
             $item = [];
             $item['type'] = 'command';
-            $item['raw'] = ['db' => $data['db'], 'command' => $data['command'], 'options' => $data['options']];
+            $item['raw'] = ['db' => $event->db, 'command' => $event->command];
             $item['shell'] = [];
-            $item['elapsed'] = $data['elapsed'];
+            $item['elapsed'] = $event->elapsed;
             $context->mongodb[] = $item;
-        } elseif ($event === 'mongodb:bulkWritten') {
+        } elseif ($event instanceof MongodbBulkWritten) {
             $item = [];
             $item['type'] = 'bulkWrite';
-            $item['raw'] = ['db' => $data['db'], 'command' => $data['command'], 'options' => $data['options']];
             $item['shell'] = [];
-            $item['elapsed'] = $data['elapsed'];
             $context->mongodb = $item;
         }
     }

@@ -4,15 +4,16 @@ declare(strict_types=1);
 namespace ManaPHP\Filters;
 
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\AuthorizationInterface;
 use ManaPHP\Http\Filter;
-use ManaPHP\Http\Filter\AuthorizingFilterInterface;
+use ManaPHP\Http\Server\Event\RequestAuthorizing;
 
-class AuthorizationFilter extends Filter implements AuthorizingFilterInterface
+class AuthorizationFilter extends Filter
 {
     #[Inject] protected AuthorizationInterface $authorization;
 
-    public function onAuthorizing(): void
+    public function onAuthorizing(#[Event] RequestAuthorizing $event): void
     {
         $this->authorization->authorize();
     }

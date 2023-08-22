@@ -6,7 +6,6 @@ namespace ManaPHP\Model;
 use ArrayAccess;
 use JsonSerializable;
 use ManaPHP\Db\SqlFragmentable;
-use ManaPHP\Eventing\EventManagerInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\UnknownPropertyException;
@@ -17,6 +16,7 @@ use ManaPHP\Query\Paginator;
 use ManaPHP\Query\QueryInterface;
 use ManaPHP\Validating\Validator\ValidateFailedException;
 use ManaPHP\Validating\ValidatorInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionClass;
 
 abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSerializable
@@ -708,11 +708,9 @@ abstract class AbstractModel implements ModelInterface, ArrayAccess, JsonSeriali
         return false;
     }
 
-    public function fireEvent(string $event, mixed $data = null): void
+    public function fireEvent(object $event): void
     {
-        $eventManager = Container::get(EventManagerInterface::class);
-
-        $eventManager->fireEvent($event, $data, $this);
+        Container::get(EventDispatcherInterface::class)->dispatch($event);
     }
 
     public function relations(): array

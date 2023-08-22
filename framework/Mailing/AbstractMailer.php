@@ -6,14 +6,16 @@ namespace ManaPHP\Mailing;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Helper\LocalFS;
+use ManaPHP\Mailing\Mailer\Event\MailerSending;
+use ManaPHP\Mailing\Mailer\Event\MailerSent;
 use ManaPHP\Mailing\Mailer\Message;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractMailer implements MailerInterface
 {
-    use EventTrait;
 
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected MakerInterface $maker;
 
     #[Value] protected ?string $log;
@@ -47,9 +49,10 @@ abstract class AbstractMailer implements MailerInterface
         $failedRecipients = [];
 
         $message->setMailer($this);
-        $this->fireEvent('mailer:sending', compact('message'));
+        $this->eventDispatcher->dispatch(new MailerSending($this, $message));
         $r = $this->sendInternal($message, $failedRecipients);
-        $this->fireEvent('mailer:sent', compact('message', 'failedRecipients'));
+
+        $this->eventDispatcher->dispatch(new MailerSent($this, $message, $failedRecipients));
 
         return $r;
     }

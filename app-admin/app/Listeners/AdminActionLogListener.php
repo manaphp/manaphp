@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Models\AdminActionLog;
+use ManaPHP\Db\Event\DbExecuting;
+use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Eventing\Listener;
 use ManaPHP\Helper\Arr;
 
@@ -16,16 +18,10 @@ use ManaPHP\Helper\Arr;
  */
 class AdminActionLogListener extends Listener
 {
-    public function listen(): void
-    {
-        $this->attachEvent('app:logAction', [$this, 'onAppLogAction']);
-        $this->attachEvent('db:executing', [$this, 'onDbExecuting']);
-    }
-
-    public function onDbExecuting(): void
+    public function onDbExecuting(#[Event] DbExecuting $event): void
     {
         if (!$this->context->logged && $this->dispatcher->isInvoking()) {
-            $this->onAppLogAction();
+            $this->onAppLogAction(new AdminActionLog());
         }
     }
 
@@ -44,7 +40,7 @@ class AdminActionLogListener extends Listener
         return 0;
     }
 
-    public function onAppLogAction(): void
+    public function onAppLogAction(#[Event] AdminActionLog $event): void
     {
         $context = $this->context;
         if ($context->logged) {

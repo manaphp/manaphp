@@ -5,5 +5,5 @@ namespace ManaPHP\Eventing;
 
 interface ListenInterface
 {
-    public function listen(): void;
+
 }

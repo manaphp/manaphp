@@ -3,17 +3,19 @@ declare(strict_types=1);
 
 namespace ManaPHP\Amqp;
 
+use ManaPHP\Amqp\Client\Event\AmqpClientConsumed;
+use ManaPHP\Amqp\Client\Event\AmqpClientConsuming;
+use ManaPHP\Amqp\Client\Event\AmqpClientPublish;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Pooling\PoolManagerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Client implements ClientInterface
 {
-    use EventTrait;
-
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected PoolManagerInterface $poolManager;
     #[Inject] protected MakerInterface $maker;
 
@@ -113,7 +115,9 @@ class Client implements ClientInterface
             $properties['content_type'] ??= 'application/json';
         }
 
-        $this->fireEvent('amqpClient:publish', compact('exchange', 'routing_key', 'body', 'properties', 'mandatory'));
+        $this->eventDispatcher->dispatch(
+            new AmqpClientPublish($this, $exchange, $routing_key, $body, $properties, $mandatory)
+        );
 
         /** @var EngineInterface $engine */
         $engine = $this->poolManager->pop($this, $this->timeout);
@@ -133,9 +137,9 @@ class Client implements ClientInterface
 
         $wrapper = function ($rawMessage) use ($callback, $queue) {
             $message = $this->engine->wrapMessage($rawMessage, $queue);
-            $this->fireEvent('amqpClient:consuming', $message);
+            $this->eventDispatcher->dispatch(new AmqpClientConsuming($this, $queue, $message));
             $return = $callback($message);
-            $this->fireEvent('amqpClient:consumed', compact('message', 'return'));
+            $this->eventDispatcher->dispatch(new AmqpClientConsumed($this, $queue, $message, $return));
         };
 
         return $this->engine->basicConsume($queue, $wrapper, $no_ack, $exclusive, $tag);

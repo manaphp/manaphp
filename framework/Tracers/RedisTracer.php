@@ -5,29 +5,27 @@ namespace ManaPHP\Tracers;
 
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Eventing\EventArgs;
+use ManaPHP\Eventing\Attribute\Event;
+use ManaPHP\Redis\Event\RedisCalled;
+use ManaPHP\Redis\Event\RedisCalling;
+use ManaPHP\Redis\Event\RedisConnecting;
 use ManaPHP\Tracer;
 
 class RedisTracer extends Tracer
 {
     #[Inject] protected ConfigInterface $config;
 
-    public function listen(): void
+    public function onConnecting(#[Event] RedisConnecting $event): void
     {
-        $this->verbose && $this->attachEvent('redis:connecting', [$this, 'onConnecting']);
-        $this->attachEvent('redis:calling', [$this, 'onCalling']);
-        $this->attachEvent('redis:called', [$this, 'onCalled']);
+        if ($this->verbose) {
+            $this->debug(['connecting to `:uri`', 'uri' => $event->uri], 'redis.connect');
+        }
     }
 
-    public function onConnecting(EventArgs $eventArgs): void
+    public function onCalling(#[Event] RedisCalling $event): void
     {
-        $this->debug(['connecting to `:uri`', 'uri' => $eventArgs->data['uri']], 'redis.connect');
-    }
-
-    public function onCalling(EventArgs $eventArgs): void
-    {
-        $method = $eventArgs->data['method'];
-        $arguments = $eventArgs->data['arguments'];
+        $method = $event->method;
+        $arguments = $event->arguments;
 
         if (stripos(',blPop,brPop,brpoplpush,subscribe,psubscribe,', ",$method,") !== false) {
             $this->debug(
@@ -40,10 +38,10 @@ class RedisTracer extends Tracer
         }
     }
 
-    public function onCalled(EventArgs $eventArgs): void
+    public function onCalled(#[Event] RedisCalled $event): void
     {
-        $method = $eventArgs->data['method'];
-        $arguments = $eventArgs->data['arguments'];
+        $method = $event->method;
+        $arguments = $event->arguments;
         foreach ($arguments as $k => $v) {
             if (is_string($v) && strlen($v) > 128) {
                 $arguments[$k] = substr($v, 0, 128) . '...';
@@ -52,7 +50,7 @@ class RedisTracer extends Tracer
 
         if ($this->verbose) {
             $arguments = json_stringify($arguments, JSON_PARTIAL_OUTPUT_ON_ERROR);
-            $return = json_stringify($eventArgs->data['return'], JSON_PARTIAL_OUTPUT_ON_ERROR);
+            $return = json_stringify($event->return, JSON_PARTIAL_OUTPUT_ON_ERROR);
             $this->debug(
                 sprintf(
                     "\$redis->$method(%s) => %s",

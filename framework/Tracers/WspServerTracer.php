@@ -3,18 +3,14 @@ declare(strict_types=1);
 
 namespace ManaPHP\Tracers;
 
-use ManaPHP\Eventing\EventArgs;
+use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Tracer;
+use ManaPHP\Ws\Pushing\Server\Event\ServerPushing;
 
 class WspServerTracer extends Tracer
 {
-    public function listen(): void
+    public function onPushing(#[Event] ServerPushing $event): void
     {
-        $this->attachEvent('wspServer:pushing', [$this, 'onPushing']);
-    }
-
-    public function onPushing(EventArgs $eventArgs): void
-    {
-        $this->debug($eventArgs->data, 'wspServer.pushing');
+        $this->debug($event, 'wspServer.pushing');
     }
 }

@@ -6,18 +6,18 @@ namespace ManaPHP\Filters;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Eventing\EventArgs;
+use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\TooManyRequestsException;
 use ManaPHP\Http\Controller\Attribute\RateLimit;
 use ManaPHP\Http\Filter;
-use ManaPHP\Http\Filter\ValidatingFilterInterface;
 use ManaPHP\Http\RequestInterface;
+use ManaPHP\Http\Server\Event\RequestValidating;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Redis\RedisCacheInterface;
 use ReflectionClass;
 use ReflectionMethod;
 
-class RateLimitFilter extends Filter implements ValidatingFilterInterface
+class RateLimitFilter extends Filter
 {
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected IdentityInterface $identity;
@@ -43,13 +43,11 @@ class RateLimitFilter extends Filter implements ValidatingFilterInterface
         return false;
     }
 
-    public function onValidating(EventArgs $eventArgs): void
+    public function onValidating(#[Event] RequestValidating $event): void
     {
-        /** @var \ManaPHP\Http\DispatcherInterface $dispatcher */
-        $dispatcher = $eventArgs->source;
-        /** @var \ManaPHP\Rest\Controller $controller */
-        $controller = $eventArgs->data['controller']::class;
-        $action = $eventArgs->data['action'];
+        $dispatcher = $event->dispatcher;
+        $controller = $event->controller::class;
+        $action = $event->action;
         $key = "$controller::$action";
         if (($rateLimit = $this->rateLimits[$key] ?? null) === null) {
             $rateLimit = $this->rateLimits[$key] = $this->getRateLimit($controller, $action);

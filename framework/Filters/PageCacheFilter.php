@@ -6,18 +6,19 @@ namespace ManaPHP\Filters;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Eventing\EventArgs;
+use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\Controller\Attribute\PageCache;
 use ManaPHP\Http\Filter;
-use ManaPHP\Http\Filter\ReadyFilterInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
+use ManaPHP\Http\Server\Event\RequestReady;
+use ManaPHP\Http\Server\Event\RequestResponsing;
 use ManaPHP\Mvc\Controller as MvcController;
 use ManaPHP\Redis\RedisCacheInterface;
 use ReflectionMethod;
 
-class PageCacheFilter extends Filter implements ReadyFilterInterface
+class PageCacheFilter extends Filter
 {
     use ContextTrait;
 
@@ -46,17 +47,15 @@ class PageCacheFilter extends Filter implements ReadyFilterInterface
         }
     }
 
-    public function onReady(EventArgs $eventArgs): void
+    public function onReady(#[Event] RequestReady $event): void
     {
         if (!in_array($this->request->getMethod(), ['GET', 'POST', 'HEAD'], true)) {
             return;
         }
 
-        /** @var \ManaPHP\Http\DispatcherInterface $dispatcher */
-        /** @var \ManaPHP\Http\Controller $controller */
-        $dispatcher = $eventArgs->source;
-        $controller = $eventArgs->data['controller'];
-        $action = $eventArgs->data['action'];
+        $dispatcher = $event->dispatcher;
+        $controller = $event->controller;
+        $action = $event->action;
 
         $key = $controller::class . "::" . $action;
         if (($pageCache = $this->pageCaches[$key] ?? null) === null) {
@@ -151,7 +150,7 @@ class PageCacheFilter extends Filter implements ReadyFilterInterface
         throw new AbortException();
     }
 
-    public function onResponding(): void
+    public function onResponding(#[Event] RequestResponsing $event): void
     {
         /** @var PageCacheFilterContext $context */
         $context = $this->getContext();

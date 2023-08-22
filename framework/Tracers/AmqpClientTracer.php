@@ -3,24 +3,20 @@ declare(strict_types=1);
 
 namespace ManaPHP\Tracers;
 
-use ManaPHP\Eventing\EventArgs;
+use ManaPHP\Amqp\Client\Event\AmqpClientConsuming;
+use ManaPHP\Amqp\Client\Event\AmqpClientPublish;
+use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Tracer;
 
 class AmqpClientTracer extends Tracer
 {
-    public function listen(): void
+    public function onPublish(#[Event] AmqpClientPublish $event): void
     {
-        $this->attachEvent('amqpClient:publish', [$this, 'onPublish']);
-        $this->attachEvent('amqpClient:consuming', [$this, 'onConsuming']);
+        $this->debug($event, 'amqpClient.publish');
     }
 
-    public function onPublish(EventArgs $eventArgs): void
+    public function onConsuming(#[Event] AmqpClientConsuming $event): void
     {
-        $this->debug($eventArgs->data, 'amqpClient.publish');
-    }
-
-    public function onConsuming(EventArgs $eventArgs): void
-    {
-        $this->debug($eventArgs->data, 'amqpClient.consuming');
+        $this->debug($event, 'amqpClient.consuming');
     }
 }

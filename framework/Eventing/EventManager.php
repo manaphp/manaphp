@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace ManaPHP\Eventing;
 
+use ManaPHP\Eventing\Attribute\Event;
+use ReflectionClass;
+use ReflectionMethod;
 use SplDoublyLinkedList;
 
 class EventManager implements EventManagerInterface
@@ -11,9 +14,8 @@ class EventManager implements EventManagerInterface
      * @var SplDoublyLinkedList[][]
      */
     protected array $events = [];
-    protected array $peekers = [];
 
-    public function attachEvent(string $event, callable $handler, int $priority = 0): void
+    public function subscribe(string $event, callable $handler, int $priority = 0): void
     {
         if (($handlers = $this->events[$event][$priority] ?? null) === null) {
             $handlers = $this->events[$event][$priority] = new SplDoublyLinkedList();
@@ -23,51 +25,35 @@ class EventManager implements EventManagerInterface
         $handlers->push($handler);
     }
 
-    public function detachEvent(string $event, callable $handler): void
+    public function addListener(object $listener)
     {
-        if (str_contains($event, ':')) {
-            foreach ($this->events[$event] ?? [] as $handlers) {
-                foreach ($handlers as $kk => $vv) {
-                    if ($vv === $handler) {
-                        unset($handlers[$kk]);
-                    }
-                }
+        $rClass = new ReflectionClass($listener);
+
+        foreach ($rClass->getMethods(ReflectionMethod::IS_PUBLIC) as $rMethod) {
+            if (count($rParameters = $rMethod->getParameters()) !== 1) {
+                continue;
             }
-        } else {
-            foreach ($this->peekers[$event] ?? [] as $k => $v) {
-                if ($v === $handler) {
-                    unset($this->peekers[$event][$k]);
-                    break;
-                }
+            $rParameter = $rParameters[0];
+            if ($rParameter->getAttributes(Event::class) !== []) {
+                $rType = $rParameter->getType();
+                $type = $rType->getName();
+                $this->subscribe($type === 'object' ? '*' : $type, [$listener, $rMethod->getName()]);
             }
         }
     }
 
-    public function fireEvent(string $event, mixed $data = null, ?object $source = null): EventArgs
+    public function dispatch(object $event)
     {
-        $eventArgs = new EventArgs($event, $source, $data);
-
-        list($group) = explode(':', $event, 2);
-
-        foreach ($this->peekers['*'] ?? [] as $handler) {
-            $handler($eventArgs);
-        }
-
-        foreach ($this->peekers[$group] ?? [] as $handler) {
-            $handler($eventArgs);
-        }
-
-        foreach ($this->events[$event] ?? [] as $handlers) {
+        foreach ($this->events['*'] ?? [] as $handlers) {
             foreach ($handlers as $handler) {
-                $handler($eventArgs);
+                $handler($event);
             }
         }
 
-        return $eventArgs;
-    }
-
-    public function peekEvent(string $group, callable $handler): void
-    {
-        $this->peekers[$group][] = $handler;
+        foreach ($this->events[$event::class] ?? [] as $handlers) {
+            foreach ($handlers as $handler) {
+                $handler($event);
+            }
+        }
     }
 }

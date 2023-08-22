@@ -5,19 +5,20 @@ namespace ManaPHP\Filters;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\Filter;
-use ManaPHP\Http\Filter\RespondingFilterInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
+use ManaPHP\Http\Server\Event\RequestResponsing;
 
-class EtagFilter extends Filter implements RespondingFilterInterface
+class EtagFilter extends Filter
 {
     #[Inject] protected RequestInterface $request;
     #[Inject] protected ResponseInterface $response;
 
     #[Value] protected string $algo = 'md5';
 
-    public function onResponding(): void
+    public function onResponding(#[Event] RequestResponsing $event): void
     {
         if ($this->response->getStatusCode() !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
             return;

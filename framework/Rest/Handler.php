@@ -4,21 +4,27 @@ declare(strict_types=1);
 namespace ManaPHP\Rest;
 
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\HandlerInterface;
+use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Response;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Router\NotFoundRouteException;
 use ManaPHP\Http\RouterInterface;
+use ManaPHP\Http\Server\Event\RequestAuthenticated;
+use ManaPHP\Http\Server\Event\RequestAuthenticating;
+use ManaPHP\Http\Server\Event\RequestBegin;
+use ManaPHP\Http\Server\Event\RequestEnd;
+use ManaPHP\Http\Server\Event\RequestException;
 use ManaPHP\Http\ServerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Throwable;
 
 class Handler implements HandlerInterface
 {
-    use EventTrait;
-
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
+    #[Inject] protected RequestInterface $request;
     #[Inject] protected ResponseInterface $response;
     #[Inject] protected RouterInterface $router;
     #[Inject] protected DispatcherInterface $dispatcher;
@@ -32,10 +38,10 @@ class Handler implements HandlerInterface
     public function handle(): void
     {
         try {
-            $this->fireEvent('request:begin');
+            $this->eventDispatcher->dispatch(new RequestBegin());
 
-            $this->fireEvent('request:authenticating');
-            $this->fireEvent('request:authenticated');
+            $this->eventDispatcher->dispatch(new RequestAuthenticating());
+            $this->eventDispatcher->dispatch(new RequestAuthenticated());
 
             if (!$this->router->match()) {
                 throw new NotFoundRouteException(
@@ -66,13 +72,13 @@ class Handler implements HandlerInterface
         } catch (AbortException $exception) {
             null;
         } catch (Throwable $exception) {
-            $this->fireEvent('request:exception', compact('exception'));
+            $this->eventDispatcher->dispatch(new RequestException($exception));
 
             $this->errorHandler->handle($exception);
         }
 
         $this->httpServer->send();
 
-        $this->fireEvent('request:end');
+        $this->eventDispatcher->dispatch(new RequestEnd($this->request, $this->response));
     }
 }

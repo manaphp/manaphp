@@ -3,71 +3,64 @@ declare(strict_types=1);
 
 namespace ManaPHP\Tracers;
 
-use ArrayObject;
-use ManaPHP\Eventing\EventArgs;
+use ManaPHP\Db\Event\DbAbnormal;
+use ManaPHP\Db\Event\DbBegin;
+use ManaPHP\Db\Event\DbCommit;
+use ManaPHP\Db\Event\DbConnecting;
+use ManaPHP\Db\Event\DbExecuted;
+use ManaPHP\Db\Event\DbMetadata;
+use ManaPHP\Db\Event\DbQueried;
+use ManaPHP\Db\Event\DbRollback;
+use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Tracer;
 
 class DbTracer extends Tracer
 {
-    public function listen(): void
+    public function onConnecting(#[Event] DbConnecting $event): void
     {
-        $this->verbose && $this->attachEvent('db:connecting', [$this, 'onConnecting']);
-        $this->attachEvent('db:queried', [$this, 'onQueried']);
-        $this->attachEvent('db:executed', [$this, 'onExecuted']);
-        $this->attachEvent('db:inserted', [$this, 'onInserted']);
-        $this->attachEvent('db:begin', [$this, 'onBegin']);
-        $this->attachEvent('db:rollback', [$this, 'onRollback']);
-        $this->attachEvent('db:commit', [$this, 'onCommit']);
-        $this->verbose && $this->attachEvent('db:metadata', [$this, 'onMetadata']);
-        $this->attachEvent('db:abnormal', [$this, 'onAbnormal']);
-    }
-
-    public function onConnecting(EventArgs $eventArgs): void
-    {
-        $this->debug(['connecting to `:dsn`', 'dsn' => $eventArgs->data['dsn']], 'db.connect');
-    }
-
-    public function onExecuted(EventArgs $eventArgs): void
-    {
-        $this->info($eventArgs->data, 'db.' . $eventArgs->data['type']);
-    }
-
-    public function onQueried(EventArgs $eventArgs): void
-    {
-        $data = $eventArgs->data instanceof ArrayObject ? $eventArgs->data->getArrayCopy() : $eventArgs->data;
-
-        if (!$this->verbose) {
-            unset($data['result']);
+        if ($this->verbose) {
+            $this->debug(['connecting to `:dsn`', 'dsn' => $event->dsn], 'db.connect');
         }
-        $this->debug($data, 'db.query');
     }
 
-    public function onInserted(EventArgs $eventArgs): void
+    public function onExecuted(#[Event] DbExecuted $event): void
     {
-        $this->info($eventArgs->data, 'db.insert');
+        $this->info($event->sql, 'db.' . $event->type);
     }
 
-    public function onBegin(): void
+    public function onQueried(#[Event] DbQueried $event): void
+    {
+        $this->debug($event->sql, 'db.query');
+    }
+
+    public function onInserted(#[Event] DbQueried $event): void
+    {
+        $this->info($event, 'db.insert');
+    }
+
+    public function onBegin(#[Event] DbBegin $event): void
     {
         $this->info('transaction begin', 'db.begin');
     }
 
-    public function onRollback(): void
+    public function onRollback(#[Event] DbRollback $eent): void
     {
         $this->info('transaction rollback', 'db.rollback');
     }
 
-    public function onCommit(): void
+    public function onCommit(#[Event] DbCommit $event): void
     {
         $this->info('transaction commit', 'db.commit');
     }
 
-    public function onMetadata(EventArgs $eventArgs): void
+    public function onMetadata(#[Event] DbMetadata $event): void
     {
-        $this->debug($eventArgs->data, 'db.metadata');
+        if ($this->verbose) {
+            $this->debug($event, 'db.metadata');
+        }
     }
 
-    public function onAbnormal(): void
+    public function onAbnormal(#[Event] DbAbnormal $event): void
     {
         $this->error('transaction is not close correctly', 'db.abnormal');
     }

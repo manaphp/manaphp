@@ -7,7 +7,6 @@ use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Http\Client\BadGatewayException;
 use ManaPHP\Http\Client\BadRequestException;
@@ -15,6 +14,12 @@ use ManaPHP\Http\Client\ClientErrorException;
 use ManaPHP\Http\Client\ContentTypeException;
 use ManaPHP\Http\Client\ForbiddenException;
 use ManaPHP\Http\Client\GatewayTimeoutException;
+use ManaPHP\Http\Client\HttpClientComplete;
+use ManaPHP\Http\Client\HttpClientError;
+use ManaPHP\Http\Client\HttpClientRequested;
+use ManaPHP\Http\Client\HttpClientRequesting;
+use ManaPHP\Http\Client\HttpClientStart;
+use ManaPHP\Http\Client\HttpClientSuccess;
 use ManaPHP\Http\Client\InternalServerErrorException;
 use ManaPHP\Http\Client\NotFoundException;
 use ManaPHP\Http\Client\RedirectionException;
@@ -25,11 +30,11 @@ use ManaPHP\Http\Client\ServiceUnavailableException;
 use ManaPHP\Http\Client\TooManyRequestsException;
 use ManaPHP\Http\Client\UnauthorizedException;
 use ManaPHP\Pooling\PoolManagerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Client implements ClientInterface
 {
-    use EventTrait;
-
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected AliasInterface $alias;
     #[Inject] protected PoolManagerInterface $poolManager;
     #[Inject] protected MakerInterface $maker;
@@ -73,7 +78,7 @@ class Client implements ClientInterface
 
         $request = new Request($method, $url, $body, $headers, $options);
 
-        $this->fireEvent('httpClient:start', compact('method', 'url', 'request'));
+        $this->eventDispatcher->dispatch(new HttpClientStart($this, $method, $url, $request));
 
         try {
             $success = false;
@@ -90,7 +95,7 @@ class Client implements ClientInterface
             $engine = $this->poolManager->pop($this, $options['timeout'], $engine_id);
 
             try {
-                $this->fireEvent('httpClient:requesting', compact('method', 'url', 'request'));
+                $this->eventDispatcher->dispatch(new HttpClientRequesting($this, $method, $url, $request));
 
                 if ($request->hasFile()) {
                     $boundary = '------------------------' . bin2hex(random_bytes(8));
@@ -131,15 +136,15 @@ class Client implements ClientInterface
                 $response->body = $response->body === '' ? [] : json_parse($response->body);
             }
 
-            $this->fireEvent('httpClient:requested', compact('method', 'url', 'request', 'response'));
+            $this->eventDispatcher->dispatch(new HttpClientRequested($this, $method, $url, $request, $response));
         } finally {
             if ($success) {
-                $this->fireEvent('httpClient:success', compact('method', 'url', 'request', 'response'));
+                $this->eventDispatcher->dispatch(new HttpClientSuccess($this, $method, $url, $request, $response));
             } else {
-                $this->fireEvent('httpClient:error', compact('method', 'url', 'request'));
+                $this->eventDispatcher->dispatch(new HttpClientError($this, $method, $url, $request, $response));
             }
 
-            $this->fireEvent('httpClient:complete', compact('method', 'url', 'request', 'response'));
+            $this->eventDispatcher->dispatch(new HttpClientComplete($this, $method, $url, $request, $response));
         }
 
         $http_code = $response->http_code;

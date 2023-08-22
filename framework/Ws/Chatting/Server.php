@@ -6,18 +6,21 @@ namespace ManaPHP\Ws\Chatting;
 use ManaPHP\Coroutine;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
 use ManaPHP\Logging\Logger\LogCategorizable;
 use ManaPHP\Logging\LoggerInterface;
 use ManaPHP\Messaging\PubSubInterface;
+use ManaPHP\Ws\Chatting\Server\Event\UserCome;
+use ManaPHP\Ws\Chatting\Server\Event\UserLeave;
+use ManaPHP\Ws\Chatting\Server\ServerPushed;
+use ManaPHP\Ws\Chatting\Server\ServerPushing;
 use ManaPHP\Ws\ServerInterface as WsServerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Server implements ServerInterface, LogCategorizable
 {
-    use EventTrait;
-
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected LoggerInterface $logger;
     #[Inject] protected RequestInterface $request;
     #[Inject] protected IdentityInterface $identity;
@@ -52,7 +55,7 @@ class Server implements ServerInterface, LogCategorizable
             $this->names[$room][$name][$fd] = true;
         }
 
-        $this->fireEvent('chatServer:come', compact('fd', 'id', 'name', 'room'));
+        $this->eventDispatcher->dispatch(new UserCome($this, $fd, $id, $name, $room));
     }
 
     public function close(int $fd, ?string $room = null): void
@@ -77,7 +80,7 @@ class Server implements ServerInterface, LogCategorizable
             }
         }
 
-        $this->fireEvent('chatServer:leave', compact('fd', 'id', 'name', 'room'));
+        $this->eventDispatcher->dispatch(new UserLeave($this, $id, $id, $name, $room));
     }
 
     public function push(int $fd, string $message): void
@@ -236,10 +239,9 @@ class Server implements ServerInterface, LogCategorizable
                     list($type, $room, $receivers) = explode(':', substr($channel, strlen($this->prefix)), 4);
                     if ($type !== null && $room !== null && $receivers !== null) {
                         $receivers = explode(',', $receivers);
-
-                        $this->fireEvent('chatServer:pushing', compact('type', 'receivers', 'message'));
+                        $this->eventDispatcher->dispatch(new ServerPushing($this, $type, $receivers, $message));
                         $this->dispatch($type, $room, $receivers, $message);
-                        $this->fireEvent('chatServer:pushed', compact('type', 'receivers', 'message'));
+                        $this->eventDispatcher->dispatch(new ServerPushed($this, $type, $receivers, $message));
                     } else {
                         $this->logger->warning($channel, 'chatServer.bad_channel');
                     }

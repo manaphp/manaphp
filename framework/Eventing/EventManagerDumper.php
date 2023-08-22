@@ -11,7 +11,6 @@ class EventManagerDumper extends Dumper
     {
         $data = parent::dump($object);
 
-        return ['*events'  => array_keys($data['events']),
-                '*peekers' => array_keys($data['peekers'])];
+        return ['*events' => array_keys($data['events'])];
     }
 }

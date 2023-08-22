@@ -6,6 +6,7 @@ namespace ManaPHP\Http\Server\Adapter;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Http\AbstractServer;
 use ManaPHP\Http\Server\Adapter\Native\SenderInterface;
+use ManaPHP\Http\Server\Event\ServerStart;
 
 class Fpm extends AbstractServer
 {
@@ -21,7 +22,7 @@ class Fpm extends AbstractServer
     {
         $this->prepareGlobals();
 
-        $this->fireEvent('httpServer:start');
+        $this->eventDispatcher->dispatch(new ServerStart($this));
 
         $this->httpHandler->handle();
     }

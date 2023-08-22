@@ -5,18 +5,25 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\Action\InvokerInterface;
 use ManaPHP\Http\Dispatcher\NotFoundActionException;
 use ManaPHP\Http\Dispatcher\NotFoundControllerException;
+use ManaPHP\Http\Server\Event\RequestAuthorized;
+use ManaPHP\Http\Server\Event\RequestAuthorizing;
+use ManaPHP\Http\Server\Event\RequestInvoked;
+use ManaPHP\Http\Server\Event\RequestInvoking;
+use ManaPHP\Http\Server\Event\RequestReady;
+use ManaPHP\Http\Server\Event\RequestValidated;
+use ManaPHP\Http\Server\Event\RequestValidating;
 use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Dispatcher implements DispatcherInterface
 {
-    use EventTrait;
     use ContextTrait;
 
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected GlobalsInterface $globals;
     #[Inject] protected ContainerInterface $container;
     #[Inject] protected InvokerInterface $invoker;
@@ -112,15 +119,15 @@ class Dispatcher implements DispatcherInterface
             throw new NotFoundActionException(['`%s::%s` method does not exist', $controller::class, $method]);
         }
 
-        $this->fireEvent('request:authorizing', compact('controller', 'action'));
-        $this->fireEvent('request:authorized', compact('controller', 'action'));
+        $this->eventDispatcher->dispatch(new RequestAuthorizing($this, $controller, $action));
+        $this->eventDispatcher->dispatch(new RequestAuthorized($this, $controller, $action));
 
-        $this->fireEvent('request:validating', compact('controller', 'action'));
-        $this->fireEvent('request:validated', compact('controller', 'action'));
+        $this->eventDispatcher->dispatch(new RequestValidating($this, $controller, $action));
+        $this->eventDispatcher->dispatch(new RequestValidated($this, $controller, $action));
 
-        $this->fireEvent('request:ready', compact('controller', 'action'));
+        $this->eventDispatcher->dispatch(new RequestReady($this, $controller, $action));
 
-        $this->fireEvent('request:invoking', compact('controller', 'action'));
+        $this->eventDispatcher->dispatch(new RequestInvoking($this, $controller, $action));
 
         try {
             /** @var DispatcherContext $context */
@@ -132,7 +139,7 @@ class Dispatcher implements DispatcherInterface
             $context->isInvoking = false;
         }
 
-        $this->fireEvent('request:invoked', compact('controller', 'action', 'return'));
+        $this->eventDispatcher->dispatch(new RequestInvoked($this, $controller, $action, $return));
 
         return $return;
     }

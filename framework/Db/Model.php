@@ -6,6 +6,14 @@ namespace ManaPHP\Db;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Container;
 use ManaPHP\Model\AbstractModel;
+use ManaPHP\Model\Event\ModelCreated;
+use ManaPHP\Model\Event\ModelCreating;
+use ManaPHP\Model\Event\ModelDeleted;
+use ManaPHP\Model\Event\ModelDeleting;
+use ManaPHP\Model\Event\ModelSaved;
+use ManaPHP\Model\Event\ModelSaving;
+use ManaPHP\Model\Event\ModelUpdated;
+use ManaPHP\Model\Event\ModelUpdating;
 use ManaPHP\Model\ModelManagerInterface;
 use ManaPHP\Model\ShardingInterface;
 
@@ -36,8 +44,8 @@ class Model extends AbstractModel implements ModelInterface
 
         list($connection, $table) = Container::get(ShardingInterface::class)->getUniqueShard(static::class, $this);
 
-        $this->fireEvent('model:saving');
-        $this->fireEvent('model:creating');
+        $this->fireEvent(new ModelSaving($this));
+        $this->fireEvent(new ModelCreating($this));
 
         $fieldValues = [];
         $defaultValueFields = [];
@@ -72,8 +80,8 @@ class Model extends AbstractModel implements ModelInterface
             }
         }
 
-        $this->fireEvent('model:created');
-        $this->fireEvent('model:saved');
+        $this->fireEvent(new ModelCreated($this));
+        $this->fireEvent(new ModelSaved($this));
 
         $this->_snapshot = $this->toArray();
 
@@ -127,8 +135,8 @@ class Model extends AbstractModel implements ModelInterface
 
         list($connection, $table) = Container::get(ShardingInterface::class)->getUniqueShard(static::class, $this);
 
-        $this->fireEvent('model:saving');
-        $this->fireEvent('model:updating');
+        $this->fireEvent(new ModelSaving($this));
+        $this->fireEvent(new ModelUpdating($this));
 
         $fieldValues = [];
         foreach ($fields as $field) {
@@ -152,8 +160,8 @@ class Model extends AbstractModel implements ModelInterface
         $db = Container::get(DbConnectorInterface::class)->get($connection);
         $db->update($table, $fieldValues, [$columnMap[$primaryKey] ?? $primaryKey => $this->$primaryKey]);
 
-        $this->fireEvent('model:updated');
-        $this->fireEvent('model:saved');
+        $this->fireEvent(new ModelUpdated($this));
+        $this->fireEvent(new ModelSaved($this));
 
         $this->_snapshot = $this->toArray();
 
@@ -170,13 +178,13 @@ class Model extends AbstractModel implements ModelInterface
 
         list($connection, $table) = Container::get(ShardingInterface::class)->getUniqueShard(static::class, $this);
 
-        $this->fireEvent('model:deleting');
+        $this->fireEvent(new ModelDeleting($this));
 
         $db = Container::get(DbConnectorInterface::class)->get($connection);
 
         $db->delete($table, [$primaryKey => $this->$primaryKey]);
 
-        $this->fireEvent('model:deleted');
+        $this->fireEvent(new ModelDeleted($this));
 
         return $this;
     }

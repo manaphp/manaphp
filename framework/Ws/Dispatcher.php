@@ -3,12 +3,14 @@ declare(strict_types=1);
 
 namespace ManaPHP\Ws;
 
-use ManaPHP\Eventing\EventTrait;
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Eventing\EventSubscriberInterface;
 use ManaPHP\Http\Controller;
+use ManaPHP\Ws\Server\Event\ServerStop;
 
 class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
 {
-    use EventTrait;
+    #[Inject] protected EventSubscriberInterface $eventSubscriber;
 
     protected array $controllers;
 
@@ -23,7 +25,7 @@ class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
             }
 
             if (method_exists($controller, 'stopAction')) {
-                $controller->attachEvent('wsServer:stop', [$controller, 'stopAction']);
+                $this->eventSubscriber->subscribe(ServerStop::class, [$controller, 'stopAction']);
             }
         }
 

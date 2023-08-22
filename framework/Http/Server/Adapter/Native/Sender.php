@@ -5,16 +5,19 @@ namespace ManaPHP\Http\Server\Adapter\Native;
 
 use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\RouterInterface;
+use ManaPHP\Http\Server\Event\RequestResponded;
+use ManaPHP\Http\Server\Event\RequestResponsing;
+use ManaPHP\Http\Server\Event\ResponseStringify;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Sender implements SenderInterface
 {
-    use EventTrait;
 
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected RequestInterface $request;
     #[Inject] protected ResponseInterface $response;
     #[Inject] protected AliasInterface $alias;
@@ -27,13 +30,13 @@ class Sender implements SenderInterface
         }
 
         if (!is_string($this->response->getContent()) && !$this->response->hasFile()) {
-            $this->fireEvent('response:stringify');
+            $this->eventDispatcher->dispatch(new ResponseStringify($this->response));
             if (!is_string($content = $this->response->getContent())) {
                 $this->response->setContent(json_stringify($content));
             }
         }
 
-        $this->fireEvent('request:responding');
+        $this->eventDispatcher->dispatch(new RequestResponsing($this->request, $this->response));
 
         header('HTTP/1.1 ' . $this->response->getStatus());
 
@@ -72,6 +75,6 @@ class Sender implements SenderInterface
             echo $content;
         }
 
-        $this->fireEvent('request:responded');
+        $this->eventDispatcher->dispatch(new RequestResponded($this->request, $this->response));
     }
 }

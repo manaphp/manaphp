@@ -8,6 +8,10 @@ namespace ManaPHP\Http\Server\Adapter;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Http\AbstractServer;
+use ManaPHP\Http\Server\Event\RequestResponded;
+use ManaPHP\Http\Server\Event\RequestResponsing;
+use ManaPHP\Http\Server\Event\ResponseStringify;
+use ManaPHP\Http\Server\Event\ServerStart;
 use Throwable;
 use Workerman\Connection\ConnectionInterface;
 use Workerman\Protocols\Http;
@@ -82,7 +86,7 @@ class Workerman extends AbstractServer
             shell_exec("explorer.exe http://127.0.0.1:$this->port/" . $this->router->getPrefix());
         }
 
-        $this->fireEvent('httpServer:start');
+        $this->eventDispatcher->dispatch(new ServerStart($this));
 
         Worker::runAll();
 
@@ -115,14 +119,14 @@ class Workerman extends AbstractServer
     public function send(): void
     {
         if (!is_string($this->response->getContent()) && !$this->response->hasFile()) {
-            $this->fireEvent('response:stringify');
+            $this->eventDispatcher->dispatch(new ResponseStringify($this->response));
 
             if (!is_string($content = $this->response->getContent())) {
                 $this->response->setContent(json_stringify($content));
             }
         }
 
-        $this->fireEvent('request:responding');
+        $this->eventDispatcher->dispatch(new RequestResponsing($this->request, $this->response));
 
         Http::header('HTTP', true, $this->response->getStatusCode());
 
@@ -158,6 +162,6 @@ class Workerman extends AbstractServer
             $context->connection->close($content);
         }
 
-        $this->fireEvent('request:responded');
+        $this->eventDispatcher->dispatch(new RequestResponded($this->request, $this->response));
     }
 }

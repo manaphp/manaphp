@@ -6,14 +6,15 @@ namespace ManaPHP\Filters;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\Filter;
-use ManaPHP\Http\Filter\EndFilterInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
+use ManaPHP\Http\Server\Event\RequestEnd;
 
-class SlowlogFilter extends Filter implements EndFilterInterface
+class SlowlogFilter extends Filter
 {
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected RequestInterface $request;
@@ -43,12 +44,12 @@ class SlowlogFilter extends Filter implements EndFilterInterface
         LocalFS::fileAppend(strtr($this->file, ['{id}' => $this->config->get('id')]), strtr($this->format, $replaced));
     }
 
-    public function onEnd(): void
+    public function onEnd(#[Event] RequestEnd $event): void
     {
-        if ($this->response->hasHeader('X-Response-Time')) {
-            $elapsed = $this->response->getHeader('X-Response-Time');
+        if ($event->response->hasHeader('X-Response-Time')) {
+            $elapsed = $event->response->getHeader('X-Response-Time');
         } else {
-            $elapsed = $this->request->getElapsedTime();
+            $elapsed = $event->request->getElapsedTime();
         }
 
         if ($this->threshold > $elapsed) {

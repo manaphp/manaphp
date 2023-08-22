@@ -6,16 +6,18 @@ namespace ManaPHP\Redis;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\DsnFormatException;
 use ManaPHP\Exception\RuntimeException;
+use ManaPHP\Redis\Event\RedisClose;
+use ManaPHP\Redis\Event\RedisConnected;
+use ManaPHP\Redis\Event\RedisConnecting;
 use ManaPHP\Redis\Exception as RedisException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Redis;
 
 class Connection
 {
-    use EventTrait;
-
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected MakerInterface $maker;
 
     #[Value] protected string $uri;
@@ -100,7 +102,7 @@ class Connection
         if ($this->redis === null) {
             $uri = $this->uri;
 
-            $this->fireEvent('redis:connecting', compact('uri'));
+            $this->eventDispatcher->dispatch(new RedisConnecting($this, $uri));
 
             if ($this->cluster) {
                 $seeds = [];
@@ -133,7 +135,7 @@ class Connection
                 $redis->setOption(Redis::OPT_READ_TIMEOUT, $this->read_timeout);
             }
 
-            $this->fireEvent('redis:connected', compact('uri', 'redis'));
+            $this->eventDispatcher->dispatch(new RedisConnected($this, $uri, $redis));
 
             $this->redis = $redis;
         }
@@ -155,9 +157,7 @@ class Connection
     public function close(): void
     {
         if ($this->redis) {
-            $uri = $this->uri;
-            $redis = $this->redis;
-            $this->fireEvent('redis:close', compact('uri', 'redis'));
+            $this->eventDispatcher->dispatch(new RedisClose($this, $this->uri, $this->redis));
 
             $this->redis->close();
             $this->redis = null;

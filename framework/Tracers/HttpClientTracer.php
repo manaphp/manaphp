@@ -3,31 +3,25 @@ declare(strict_types=1);
 
 namespace ManaPHP\Tracers;
 
-use ManaPHP\Eventing\EventArgs;
+use ManaPHP\Eventing\Attribute\Event;
+use ManaPHP\Http\Client\HttpClientRequested;
+use ManaPHP\Http\Client\HttpClientRequesting;
 use ManaPHP\Tracer;
 
 class HttpClientTracer extends Tracer
 {
-    public function listen(): void
+    public function onRequesting(#[Event] HttpClientRequesting $event): void
     {
-        $this->attachEvent('httpClient:requesting', [$this, 'onRequesting']);
-        $this->attachEvent('httpClient:requested', [$this, 'onRequested']);
-    }
-
-    public function onRequesting(EventArgs $eventArgs): void
-    {
-        /** @var \ManaPHP\Http\Client\Request $request */
-        $request = $eventArgs->data['request'];
+        $request = $event->request;
 
         if ($request->method === 'POST' && $request->body) {
-            $this->info($eventArgs->data, 'httpClient.request');
+            $this->info($request->url, 'httpClient.request');
         }
     }
 
-    public function onRequested(EventArgs $eventArgs): void
+    public function onRequested(#[Event] HttpClientRequested $event): void
     {
-        /** @var \ManaPHP\Http\Client\Response $response */
-        $response = clone $eventArgs->data['response'];
+        $response = clone $event->response;
 
         if (!$this->verbose) {
             unset($response->stats, $response->headers);

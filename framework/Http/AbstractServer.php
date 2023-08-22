@@ -5,12 +5,11 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Eventing\EventTrait;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractServer implements ServerInterface
 {
-    use EventTrait;
-
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected RequestInterface $request;
     #[Inject] protected ResponseInterface $response;
     #[Inject] protected RouterInterface $router;

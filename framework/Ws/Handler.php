@@ -4,20 +4,25 @@ declare(strict_types=1);
 namespace ManaPHP\Ws;
 
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Response;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Router\NotFoundRouteException;
 use ManaPHP\Http\RouterInterface;
+use ManaPHP\Http\Server\Event\RequestAuthenticated;
+use ManaPHP\Http\Server\Event\RequestAuthenticating;
+use ManaPHP\Http\Server\Event\RequestBegin;
+use ManaPHP\Http\Server\Event\RequestEnd;
 use ManaPHP\Identifying\IdentityInterface;
+use ManaPHP\Ws\Server\Event\Close;
+use ManaPHP\Ws\Server\Event\Open;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Throwable;
 
 class Handler implements HandlerInterface
 {
-    use EventTrait;
-
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected ServerInterface $wsServer;
     #[Inject] protected IdentityInterface $identity;
     #[Inject] protected RouterInterface $router;
@@ -35,11 +40,11 @@ class Handler implements HandlerInterface
         try {
             $throwable = null;
 
-            $this->fireEvent('request:begin');
+            $this->eventDispatcher->dispatch(new RequestBegin());
 
             if ($event === 'open') {
-                $this->fireEvent('request:authenticating');
-                $this->fireEvent('request:authenticated');
+                $this->eventDispatcher->dispatch(new RequestAuthenticating());
+                $this->eventDispatcher->dispatch(new RequestAuthenticated());
             }
 
             if (!$this->router->match()) {
@@ -66,9 +71,9 @@ class Handler implements HandlerInterface
             }
 
             if ($event === 'open') {
-                $this->fireEvent('wsServer:open', compact('fd'));
+                $this->eventDispatcher->dispatch(new Open($fd));
             } elseif ($event === 'close') {
-                $this->fireEvent('wsServer:close', compact('fd'));
+                $this->eventDispatcher->dispatch(new Close($fd));
             }
         } catch (AbortException $exception) {
             null;
@@ -80,7 +85,7 @@ class Handler implements HandlerInterface
             $this->wsServer->push($fd, $content);
         }
 
-        $this->fireEvent('request:end');
+        $this->eventDispatcher->dispatch(new RequestEnd($this->request, $this->response));
 
         if ($throwable) {
             $this->wsServer->disconnect($fd);

@@ -4,16 +4,17 @@ declare(strict_types=1);
 namespace ManaPHP\Filters;
 
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Http\Controller\Attribute\HttpCache;
 use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\Filter;
-use ManaPHP\Http\Filter\RespondingFilterInterface;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
+use ManaPHP\Http\Server\Event\RequestResponsing;
 use ReflectionMethod;
 
-class HttpCacheFilter extends Filter implements RespondingFilterInterface
+class HttpCacheFilter extends Filter
 {
     #[Inject] protected RequestInterface $request;
     #[Inject] protected ResponseInterface $response;
@@ -32,7 +33,7 @@ class HttpCacheFilter extends Filter implements RespondingFilterInterface
         }
     }
 
-    public function onResponding(): void
+    public function onResponding(#[Event] RequestResponsing $event): void
     {
         if ($this->response->getStatusCode() !== 200 || !in_array($this->request->getMethod(), ['GET', 'HEAD'], true)) {
             return;

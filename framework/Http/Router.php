@@ -6,17 +6,19 @@ namespace ManaPHP\Http;
 use ManaPHP\AliasInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\Str;
+use ManaPHP\Http\Router\Event\RouterRouted;
+use ManaPHP\Http\Router\Event\RouterRouting;
 use ManaPHP\Http\Router\Route;
 use ManaPHP\Http\Router\RouteInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Router implements RouterInterface
 {
-    use EventTrait;
     use ContextTrait;
 
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected AliasInterface $alias;
     #[Inject] protected RequestInterface $request;
 
@@ -212,7 +214,7 @@ class Router implements RouterInterface
         /** @var RouterContext $context */
         $context = $this->getContext();
 
-        $this->fireEvent('request:routing');
+        $this->eventDispatcher->dispatch(new RouterRouting($this));
 
         $uri = $uri ?: $this->getRewriteUri();
 
@@ -271,7 +273,7 @@ class Router implements RouterInterface
         }
 
         if ($parts === null) {
-            $this->fireEvent('request:routed');
+            $this->eventDispatcher->dispatch(new RouterRouted($this));
 
             return false;
         }
@@ -288,7 +290,7 @@ class Router implements RouterInterface
         $context->action = $parts['action'];
         $context->params = $parts['params'] ?? [];
 
-        $this->fireEvent('request:routed');
+        $this->eventDispatcher->dispatch(new RouterRouted($this));
 
         return $context->matched;
     }

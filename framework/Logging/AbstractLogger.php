@@ -9,17 +9,18 @@ use ManaPHP\Context\ContextTrait;
 use ManaPHP\Coroutine;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Http\RequestInterface;
+use ManaPHP\Logging\Logger\Event\LoggerLog;
 use ManaPHP\Logging\Logger\Log;
 use ManaPHP\Logging\Logger\LogCategorizable;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Throwable;
 
 abstract class AbstractLogger implements LoggerInterface, ContextCreatorInterface
 {
-    use EventTrait;
     use ContextTrait;
 
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected AliasInterface $alias;
     #[Inject] protected RequestInterface $request;
 
@@ -159,7 +160,7 @@ abstract class AbstractLogger implements LoggerInterface, ContextCreatorInterfac
         $log->message = is_string($message) ? $message : $this->formatMessage($message);
         $log->timestamp = microtime(true);
 
-        $this->fireEvent('logger:log', compact('level', 'message', 'category', 'log'));
+        $this->eventDispatcher->dispatch(new LoggerLog($this, $level, $message, $category, $log));
 
         $this->append($log);
 

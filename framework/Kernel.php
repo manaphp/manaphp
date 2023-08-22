@@ -25,6 +25,10 @@ class Kernel
     {
         $this->container->set('Psr\SimpleCache\CacheInterface', 'ManaPHP\Caching\SimpleCache');
         $this->container->set('Psr\Log\LoggerInterface', 'ManaPHP\Logging\Psr3');
+        $this->container->set(
+            'Psr\EventDispatcher\EventDispatcherInterface', '@ManaPHP\Eventing\EventManagerInterface'
+        );
+        $this->container->set('ManaPHP\Eventing\EventSubscriberInterface', '@ManaPHP\Eventing\EventManagerInterface');
     }
 
     public function registerDefaultAliases(): void

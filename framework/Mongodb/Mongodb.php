@@ -6,16 +6,32 @@ namespace ManaPHP\Mongodb;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\NonCloneableException;
+use ManaPHP\Mongodb\Event\MongodbBulkInserted;
+use ManaPHP\Mongodb\Event\MongodbBulkInserting;
+use ManaPHP\Mongodb\Event\MongodbBulkUpdating;
+use ManaPHP\Mongodb\Event\MongodbBulkUpserted;
+use ManaPHP\Mongodb\Event\MongodbBulkUpserting;
+use ManaPHP\Mongodb\Event\MongodbBulkWriting;
+use ManaPHP\Mongodb\Event\MongodbBulkWritten;
+use ManaPHP\Mongodb\Event\MongodbCommanded;
+use ManaPHP\Mongodb\Event\MongodbCommanding;
+use ManaPHP\Mongodb\Event\MongodbDeleted;
+use ManaPHP\Mongodb\Event\MongodbDeleting;
+use ManaPHP\Mongodb\Event\MongodbInserted;
+use ManaPHP\Mongodb\Event\MongodbInserting;
+use ManaPHP\Mongodb\Event\MongodbQueried;
+use ManaPHP\Mongodb\Event\MongodbQuerying;
+use ManaPHP\Mongodb\Event\MongodbUpdated;
+use ManaPHP\Mongodb\Event\MongodbUpdating;
 use ManaPHP\Mongodb\Exception as MongodbException;
 use ManaPHP\Pooling\PoolManagerInterface;
 use MongoDB\Driver\Exception\RuntimeException;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Mongodb implements MongodbInterface
 {
-    use EventTrait;
-
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected PoolManagerInterface $poolManager;
     #[Inject] protected MakerInterface $maker;
 
@@ -64,7 +80,7 @@ class Mongodb implements MongodbInterface
     {
         $namespace = $this->completeNamespace($source);
 
-        $this->fireEvent('mongodb:inserting', compact('namespace'));
+        $this->eventDispatcher->dispatch(new MongodbInserting($this, $namespace));
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
@@ -73,7 +89,7 @@ class Mongodb implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->fireEvent('mongodb:inserted', compact('count', 'namespace', 'document'));
+        $this->eventDispatcher->dispatch(new MongodbInserted($this, $count, $namespace, $document));
 
         return $count;
     }
@@ -82,8 +98,8 @@ class Mongodb implements MongodbInterface
     {
         $namespace = $this->completeNamespace($source);
 
-        $this->fireEvent('mongodb:bulkWriting', compact('namespace', 'documents'));
-        $this->fireEvent('mongodb:bulkInserting', compact('namespace', 'documents'));
+        $this->eventDispatcher->dispatch(new MongodbBulkWriting($this, $namespace, $documents));
+        $this->eventDispatcher->dispatch(new MongodbBulkInserting($this, $namespace, $documents));
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
@@ -93,8 +109,8 @@ class Mongodb implements MongodbInterface
             $this->poolManager->push($this, $connection);
         }
 
-        $this->fireEvent('mongodb:bulkInserted', compact('namespace', 'documents', 'count'));
-        $this->fireEvent('mongodb:bulkWritten', compact('namespace', 'documents', 'count'));
+        $this->eventDispatcher->dispatch(new MongodbBulkInserted($this, $namespace, $documents, $count));
+        $this->eventDispatcher->dispatch(new MongodbBulkWritten($this, $namespace, $documents, $count));
 
         return $count;
     }
@@ -103,7 +119,7 @@ class Mongodb implements MongodbInterface
     {
         $namespace = $this->completeNamespace($source);
 
-        $this->fireEvent('mongodb:updating', compact('namespace', 'document', 'filter'));
+        $this->eventDispatcher->dispatch(new MongodbUpdating($this, $namespace, $document, $filter));
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
@@ -112,7 +128,8 @@ class Mongodb implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->fireEvent('mongodb:updated', compact('namespace', 'document', 'filter', 'count'));
+        $this->eventDispatcher->dispatch(new MongodbUpdated($this, $namespace, $document, $filter, $count));
+
         return $count;
     }
 
@@ -120,8 +137,8 @@ class Mongodb implements MongodbInterface
     {
         $namespace = $this->completeNamespace($source);
 
-        $this->fireEvent('mongodb:bulkWriting', compact('namespace', 'documents'));
-        $this->fireEvent('mongodb:bulkUpdating', compact('namespace', 'documents'));
+        $this->eventDispatcher->dispatch(new MongodbBulkWriting($this, $namespace, $documents));
+        $this->eventDispatcher->dispatch(new MongodbBulkUpdating($this, $namespace, $documents));
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
@@ -131,8 +148,8 @@ class Mongodb implements MongodbInterface
             $this->poolManager->push($this, $connection);
         }
 
-        $this->fireEvent('mongodb:bulkUpdated', compact('namespace', 'documents', 'primaryKey', 'count'));
-        $this->fireEvent('mongodb:bulkWritten', compact('namespace', 'documents', 'primaryKey', 'count'));
+        $this->eventDispatcher->dispatch(new MongodbBulkInserted($this, $namespace, $documents, $count));
+        $this->eventDispatcher->dispatch(new MongodbBulkWritten($this, $namespace, $documents, $count));
 
         return $count;
     }
@@ -141,7 +158,7 @@ class Mongodb implements MongodbInterface
     {
         $namespace = $this->completeNamespace($source);
 
-        $this->fireEvent('mongodb:upserting', compact('namespace', 'document'));
+        $this->eventDispatcher->dispatch(new MongodbBulkUpserting($this, $namespace, [$document]));
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
@@ -150,7 +167,8 @@ class Mongodb implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->fireEvent('mongodb:upserted', compact('count', 'namespace', 'document'));
+
+        $this->eventDispatcher->dispatch(new MongodbBulkUpserted($this, $namespace, [$document], $count));
 
         return $count;
     }
@@ -159,8 +177,8 @@ class Mongodb implements MongodbInterface
     {
         $namespace = $this->completeNamespace($source);
 
-        $this->fireEvent('mongodb:bulkWriting', compact('namespace', 'documents'));
-        $this->fireEvent('mongodb:bulkUpserting', compact('namespace', 'documents'));
+        $this->eventDispatcher->dispatch(new MongodbBulkWriting($this, $namespace, $documents));
+        $this->eventDispatcher->dispatch(new MongodbBulkUpserting($this, $namespace, $documents));
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
@@ -169,8 +187,8 @@ class Mongodb implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->fireEvent('mongodb:bulkUpserted', compact('namespace', 'documents', 'count'));
-        $this->fireEvent('mongodb:bulkWritten', compact('namespace', 'documents', 'count'));
+        $this->eventDispatcher->dispatch(new MongodbBulkUpserted($this, $namespace, $documents, $count));
+        $this->eventDispatcher->dispatch(new MongodbBulkWritten($this, $namespace, $documents, $count));
 
         return $count;
     }
@@ -179,7 +197,7 @@ class Mongodb implements MongodbInterface
     {
         $namespace = $this->completeNamespace($source);
 
-        $this->fireEvent('mongodb:deleting', compact('namespace', 'filter'));
+        $this->eventDispatcher->dispatch(new MongodbDeleting($this, $namespace, $filter));
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
@@ -188,7 +206,7 @@ class Mongodb implements MongodbInterface
         } finally {
             $this->poolManager->push($this, $connection);
         }
-        $this->fireEvent('mongodb:deleted', compact('namespace', 'filter', 'count'));
+        $this->eventDispatcher->dispatch(new MongodbDeleted($this, $namespace, $filter, $count));
 
         return $count;
     }
@@ -197,7 +215,7 @@ class Mongodb implements MongodbInterface
     ): array {
         $namespace = $this->completeNamespace($source);
 
-        $this->fireEvent('mongodb:querying', compact('namespace', 'filter', 'options'));
+        $this->eventDispatcher->dispatch(new MongodbQuerying($this, $namespace, $filter, $options));
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
@@ -209,7 +227,7 @@ class Mongodb implements MongodbInterface
             $this->poolManager->push($this, $connection);
         }
 
-        $this->fireEvent('mongodb:queried', compact('namespace', 'filter', 'options', 'result', 'elapsed'));
+        $this->eventDispatcher->dispatch(new MongodbQueried($this, $namespace, $filter, $options, $result, $elapsed));
 
         return $result;
     }
@@ -220,7 +238,7 @@ class Mongodb implements MongodbInterface
             $db = $this->db;
         }
 
-        $this->fireEvent('mongodb:commanding', compact('db', 'command'));
+        $this->eventDispatcher->dispatch(new MongodbCommanding($this, $db, $command));
 
         /** @var \ManaPHP\Mongodb\ConnectionInterface $connection */
         $connection = $this->poolManager->pop($this);
@@ -233,7 +251,7 @@ class Mongodb implements MongodbInterface
         }
 
         $count = count($result);
-        $this->fireEvent('mongodb:commanded', compact('db', 'command', 'result', 'count', 'elapsed'));
+        $this->eventDispatcher->dispatch(new MongodbCommanded($this, $db, $command, $result, $count, $elapsed));
 
         return $result;
     }

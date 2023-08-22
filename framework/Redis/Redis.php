@@ -6,14 +6,15 @@ namespace ManaPHP\Redis;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Pooling\PoolManagerInterface;
+use ManaPHP\Redis\Event\RedisCalled;
+use ManaPHP\Redis\Event\RedisCalling;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Redis implements RedisInterface
 {
-    use EventTrait;
-
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected PoolManagerInterface $poolManager;
     #[Inject] protected MakerInterface $maker;
 
@@ -84,11 +85,11 @@ class Redis implements RedisInterface
 
     public function __call(string $method, array $arguments): mixed
     {
-        $this->fireEvent('redis:calling', compact('method', 'arguments'));
+        $this->eventDispatcher->dispatch(new RedisCalling($this, $method, $arguments));
 
         $return = $this->call($method, $arguments);
 
-        $this->fireEvent('redis:called', compact('method', 'arguments', 'return'));
+        $this->eventDispatcher->dispatch(new RedisCalled($this, $method, $arguments, $return));
 
         return $return;
     }

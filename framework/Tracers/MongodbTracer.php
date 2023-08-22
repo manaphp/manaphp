@@ -3,82 +3,79 @@ declare(strict_types=1);
 
 namespace ManaPHP\Tracers;
 
-use ManaPHP\Eventing\EventArgs;
+use ManaPHP\Eventing\Attribute\Event;
+use ManaPHP\Mongodb\Event\MongodbBulkInserted;
+use ManaPHP\Mongodb\Event\MongodbBulkUpdated;
+use ManaPHP\Mongodb\Event\MongodbBulkUpserted;
+use ManaPHP\Mongodb\Event\MongodbCommanded;
+use ManaPHP\Mongodb\Event\MongodbConnect;
+use ManaPHP\Mongodb\Event\MongodbDeleted;
+use ManaPHP\Mongodb\Event\MongodbInserted;
+use ManaPHP\Mongodb\Event\MongodbQueried;
+use ManaPHP\Mongodb\Event\MongodbUpdated;
 use ManaPHP\Tracer;
 
 class MongodbTracer extends Tracer
 {
-    public function listen(): void
+    public function onConnect(#[Event] MongodbConnect $event): void
     {
-        $this->verbose && $this->attachEvent('mongodb:connect', [$this, 'onConnect']);
-        $this->attachEvent('mongodb:queried', [$this, 'onQueried']);
-        $this->attachEvent('mongodb:inserted', [$this, 'onInserted']);
-        $this->attachEvent('mongodb:updated', [$this, 'onUpdated']);
-        $this->attachEvent('mongodb:deleted', [$this, 'onDeleted']);
-        $this->attachEvent('mongodb:commanded', [$this, 'onCommanded']);
-        $this->attachEvent('mongodb:bulkInserted', [$this, 'onBulkInserted']);
-        $this->attachEvent('mongodb:bulkUpdated', [$this, 'onBulkUpdated']);
-        $this->attachEvent('mongodb:upserted', [$this, 'onUpserted']);
-        $this->attachEvent('mongodb:bulkUpserted', [$this, 'onBulkUpserted']);
+        if ($this->verbose) {
+            $this->debug(['connect to `:dsn`', 'dsn' => $event->uri], 'mongodb.connect');
+        }
     }
 
-    public function onConnect(EventArgs $eventArgs): void
+    public function onInserted(#[Event] MongodbInserted $event): void
     {
-        $this->debug(['connect to `:dsn`', 'dsn' => $eventArgs->data], 'mongodb.connect');
+        $this->info($event->document, 'mongodb.insert');
     }
 
-    public function onInserted(EventArgs $eventArgs): void
+    public function onBulkInserted(#[Event] MongodbBulkInserted $event): void
     {
-        $this->info($eventArgs->data, 'mongodb.insert');
+        $this->info($event->documents, 'mongodb.bulk.insert');
     }
 
-    public function onBulkInserted(EventArgs $eventArgs): void
+    public function onUpdated(#[Event] MongodbUpdated $event): void
     {
-        $this->info($eventArgs->data, 'mongodb.bulk.insert');
+        $this->info($event->document, 'mongodb.update');
     }
 
-    public function onUpdated(EventArgs $eventArgs): void
+    public function onUpserted(#[Event] MongodbBulkUpserted $event): void
     {
-        $this->info($eventArgs->data, 'mongodb.update');
+        $this->info($event->documents, 'mongodb.upsert');
     }
 
-    public function onUpserted(EventArgs $eventArgs): void
+    public function onBulkUpserted(#[Event] MongodbBulkUpserted $event): void
     {
-        $this->info($eventArgs->data, 'mongodb.upsert');
+        $this->info($event, 'mongodb.bulk.upsert');
     }
 
-    public function onBulkUpserted(EventArgs $eventArgs): void
+    public function onDeleted(#[Event] MongodbDeleted $event): void
     {
-        $this->info($eventArgs->data, 'mongodb.bulk.upsert');
+        $this->info($event, 'mongodb.delete');
     }
 
-    public function onDeleted(EventArgs $eventArgs): void
+    public function onQueried(#[Event] MongodbQueried $event): void
     {
-        $this->info($eventArgs->data, 'mongodb.delete');
+        $this->debug($event, 'mongodb.query');
     }
 
-    public function onQueried(EventArgs $eventArgs): void
+    public function onCommanded(#[Event] MongodbCommanded $event): void
     {
-        $this->debug($eventArgs->data, 'mongodb.query');
-    }
-
-    public function onCommanded(EventArgs $eventArgs): void
-    {
-        $command_name = key($eventArgs->data['command']);
+        $command_name = key($event->command);
 
         if (str_contains(
             'ping,aggregate,count,distinct,group,mapReduce,geoNear,geoSearch,find,' .
             'authenticate,listDatabases,listCollections,listIndexes', $command_name
         )
         ) {
-            $this->debug($eventArgs->data, 'mongodb.command.' . $command_name);
+            $this->debug($event, 'mongodb.command.' . $command_name);
         } else {
-            $this->info($eventArgs->data, 'mongodb.command.' . $command_name);
+            $this->info($event, 'mongodb.command.' . $command_name);
         }
     }
 
-    public function onBulkUpdated(EventArgs $eventArgs): void
+    public function onBulkUpdated(#[Event] MongodbBulkUpdated $event): void
     {
-        $this->info($eventArgs->data, 'mongodb.bulk.update');
+        $this->info($event, 'mongodb.bulk.update');
     }
 }

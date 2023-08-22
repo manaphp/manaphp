@@ -4,25 +4,24 @@ declare(strict_types=1);
 namespace ManaPHP\Filters;
 
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Eventing\EventArgs;
+use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\MethodNotAllowedHttpException;
 use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
 use ManaPHP\Http\Filter;
-use ManaPHP\Http\Filter\ValidatingFilterInterface;
 use ManaPHP\Http\RequestInterface;
+use ManaPHP\Http\Server\Event\RequestValidating;
 use ManaPHP\Mvc\ViewInterface;
 use ReflectionMethod;
 
-class VerbsFilter extends Filter implements ValidatingFilterInterface
+class VerbsFilter extends Filter
 {
     #[Inject] protected ViewInterface $view;
     #[Inject] protected RequestInterface $request;
 
-    public function onValidating(EventArgs $eventArgs): void
+    public function onValidating(#[Event] RequestValidating $event): void
     {
-        /** @var \ManaPHP\Http\Controller $controller */
-        $controller = $eventArgs->data['controller'];
-        $action = $eventArgs->data['action'];
+        $controller = $event->controller;
+        $action = $event->action;
 
         $rm = new ReflectionMethod($controller, $action . 'Action');
         if (($attribute = $rm->getAttributes(AcceptVerbs::class)[0] ?? null) !== null) {

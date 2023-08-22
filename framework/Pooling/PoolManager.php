@@ -4,13 +4,17 @@ declare(strict_types=1);
 namespace ManaPHP\Pooling;
 
 use ManaPHP\Coroutine\Channel;
-use ManaPHP\Eventing\EventTrait;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\MisuseException;
+use ManaPHP\Pooling\Pool\Event\PoolPopped;
+use ManaPHP\Pooling\Pool\Event\PoolPopping;
+use ManaPHP\Pooling\Pool\Event\PoolPush;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use WeakMap;
 
 class PoolManager implements PoolManagerInterface
 {
-    use EventTrait;
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
 
     protected WeakMap $pool;
 
@@ -72,7 +76,7 @@ class PoolManager implements PoolManagerInterface
 
         $queue->push($instance);
 
-        $this->fireEvent('poolManager:push', compact('owner', 'instance', 'type'));
+        $this->eventDispatcher->dispatch(new PoolPush($this, $owner, $instance, $type));
 
         return $this;
     }
@@ -83,15 +87,15 @@ class PoolManager implements PoolManagerInterface
             throw new MisuseException(['`%s` pool of `%s` is not exists', $type, $owner::class]);
         }
 
-        $this->fireEvent('poolManager:popping', compact('owner', 'type'));
+        $this->eventDispatcher->dispatch(new PoolPopping($this, $owner, $type));
 
         if (!$instance = $timeout ? $queue->pop($timeout) : $queue->pop()) {
-            $this->fireEvent('poolManager:popped', compact('owner', 'type', 'instance'));
+            $this->eventDispatcher->dispatch(new PoolPopped($this, $owner, $instance, $type));
             $capacity = $queue->capacity();
             throw new BusyException(['`%s` pool of `%s` is busy: capacity[%d]', $type, $owner::class, $capacity]);
         }
 
-        $this->fireEvent('poolManager:popped', compact('owner', 'type', 'instance'));
+        $this->eventDispatcher->dispatch(new PoolPopped($this, $owner, $instance, $type));
 
         return $instance;
     }

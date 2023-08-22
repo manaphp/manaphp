@@ -4,15 +4,16 @@ declare(strict_types=1);
 namespace ManaPHP\Cli;
 
 use ManaPHP\Cli\Command\ArgumentsResolverInterface;
+use ManaPHP\Cli\Event\CliInvoked;
+use ManaPHP\Cli\Event\CliInvoking;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Helper\Str;
 use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Handler implements HandlerInterface
 {
-    use EventTrait;
-
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected ConsoleInterface $console;
     #[Inject] protected RequestInterface $request;
     #[Inject] protected CommandManagerInterface $commandManager;
@@ -129,10 +130,10 @@ class Handler implements HandlerInterface
 
         $method = $action . 'Action';
         $this->request->completeShortNames($instance, $method);
-        $this->fireEvent('cli:invoking', compact('instance', 'method', 'action'));
+        $this->eventDispatcher->dispatch(new CliInvoking($this, $instance, $method, $action));
         $arguments = $this->argumentsResolver->resolve($instance, $method);
         $return = $instance->$method(...$arguments);
-        $this->fireEvent('cli:invoked', compact('instance', 'method', 'action', 'return'));
+        $this->eventDispatcher->dispatch(new CliInvoked($this, $instance, $method, $action, $return));
         if ($return === null) {
             return 0;
         } elseif (is_int($return)) {

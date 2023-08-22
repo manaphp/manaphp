@@ -6,21 +6,23 @@ namespace ManaPHP\Mvc;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\InvalidValueException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\DispatcherInterface;
 use ManaPHP\Http\RouterInterface;
+use ManaPHP\Mvc\View\Event\ViewRendered;
+use ManaPHP\Mvc\View\Event\ViewRendering;
 use ManaPHP\Rendering\RendererInterface;
 use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class View implements ViewInterface
 {
-    use EventTrait;
     use ContextTrait;
 
     #[Inject] protected ContainerInterface $container;
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected RouterInterface $router;
     #[Inject] protected RendererInterface $renderer;
     #[Inject] protected DispatcherInterface $dispatcher;
@@ -198,7 +200,7 @@ class View implements ViewInterface
             }
         }
 
-        $this->fireEvent('view:rendering');
+        $this->eventDispatcher->dispatch(new ViewRendering($this));
 
         $this->renderer->lock();
         try {
@@ -211,7 +213,7 @@ class View implements ViewInterface
             $this->renderer->unlock();
         }
 
-        $this->fireEvent('view:rendered');
+        $this->eventDispatcher->dispatch(new ViewRendered($this));
 
         if ($this->autofix_url) {
             $this->fixUrl();

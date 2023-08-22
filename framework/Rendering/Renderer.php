@@ -8,17 +8,18 @@ use ManaPHP\Context\ContextTrait;
 use ManaPHP\Coroutine\Mutex;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Eventing\EventTrait;
 use ManaPHP\Exception\FileNotFoundException;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\PreconditionException;
+use ManaPHP\Rendering\Renderer\Event\RendererRendering;
 use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Renderer implements RendererInterface
 {
-    use EventTrait;
     use ContextTrait;
 
+    #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected AliasInterface $alias;
     #[Inject] protected ContainerInterface $container;
 
@@ -105,7 +106,7 @@ class Renderer implements RendererInterface
 
         $context->templates[] = $template;
 
-        $this->fireEvent('renderer:rendering', compact('template', 'file', 'vars'));
+        $this->eventDispatcher->dispatch(new RendererRendering($this, $template, $file, $vars));
 
         $vars['renderer'] = $this;
 
@@ -122,7 +123,7 @@ class Renderer implements RendererInterface
             }
         }
 
-        $this->fireEvent('renderer:rendered', compact('template', 'file', 'vars'));
+        $this->eventDispatcher->dispatch(new RendererRendering($this, $template, $file, $vars));
 
         array_pop($context->templates);
 
