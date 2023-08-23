@@ -48,8 +48,7 @@ class Mongodb implements MongodbInterface
         $path = parse_url($this->uri, PHP_URL_PATH);
         $this->db = ($path !== '/' && $path !== null) ? substr($path, 1) : null;
 
-        $sample = $this->maker->make(Connection::class, ['uri' => $this->uri]);
-        $this->poolManager->add($this, $sample);
+        $this->poolManager->add($this, [Connection::class, ['uri' => $this->uri]]);
     }
 
     public function __clone()

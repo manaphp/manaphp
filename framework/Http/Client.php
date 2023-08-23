@@ -6,7 +6,6 @@ namespace ManaPHP\Http;
 use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\NonCloneableException;
 use ManaPHP\Http\Client\BadGatewayException;
 use ManaPHP\Http\Client\BadRequestException;
@@ -37,7 +36,6 @@ class Client implements ClientInterface
     #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected AliasInterface $alias;
     #[Inject] protected PoolManagerInterface $poolManager;
-    #[Inject] protected MakerInterface $maker;
 
     #[Value] protected string $engine = 'ManaPHP\Http\Client\Engine';
     #[Value] protected ?string $proxy;
@@ -87,8 +85,7 @@ class Client implements ClientInterface
             $engine_id = substr($request->url, 0, strpos($request->url, '/', 8) ?: 0);
 
             if (!$this->poolManager->exists($this, $engine_id)) {
-                $engine = $this->maker->make($this->engine);
-                $this->poolManager->add($this, $engine, $this->pool_size, $engine_id);
+                $this->poolManager->add($this, [$this->engine], $this->pool_size, $engine_id);
             }
 
             /** @var \ManaPHP\Http\Client\EngineInterface $engine */

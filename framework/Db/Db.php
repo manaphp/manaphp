@@ -100,8 +100,7 @@ class Db implements DbInterface
 
         if ($uris[0] !== '') {
             $uri = (string)$uris[0];
-            $sample = $this->maker->make(ConnectionInterface::class, ['uri' => $uri]);
-            $this->poolManager->add($this, $sample, $master_pool_size);
+            $this->poolManager->add($this, [ConnectionInterface::class, ['uri' => $uri]], $master_pool_size);
         }
 
         if (count($uris) > 1) {
@@ -119,14 +118,12 @@ class Db implements DbInterface
                 $this->poolManager->create($this, count($uris) * $slave_pool_size, 'slave');
                 for ($i = 0; $i < $slave_pool_size; $i++) {
                     foreach ($uris as $v) {
-                        $sample = $this->maker->make(ConnectionInterface::class, ['uri' => $v]);
-                        $this->poolManager->add($this, $sample, 1, 'slave');
+                        $this->poolManager->add($this, [ConnectionInterface::class, ['uri' => $v]], 1, 'slave');
                     }
                 }
             } else {
                 $uri = (string)$uris[random_int(0, count($uris) - 1)];
-                $sample = $this->maker->make(ConnectionInterface::class, ['uri' => $uri]);
-                $this->poolManager->add($this, $sample, 1, 'slave');
+                $this->poolManager->add($this, [ConnectionInterface::class, ['uri' => $uri]], 1, 'slave');
             }
 
             $this->has_slave = true;

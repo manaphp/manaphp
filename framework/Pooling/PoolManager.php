@@ -5,6 +5,7 @@ namespace ManaPHP\Pooling;
 
 use ManaPHP\Coroutine\Channel;
 use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Pooling\Pool\Event\PoolPopped;
 use ManaPHP\Pooling\Pool\Event\PoolPopping;
@@ -15,6 +16,7 @@ use WeakMap;
 class PoolManager implements PoolManagerInterface
 {
     #[Inject] protected EventDispatcherInterface $eventDispatcher;
+    #[Inject] protected MakerInterface $maker;
 
     protected WeakMap $pool;
 
@@ -46,7 +48,7 @@ class PoolManager implements PoolManagerInterface
         return $this;
     }
 
-    public function add(object $owner, object $sample, int $size = 1, string $type = 'default'): static
+    public function add(object $owner, object|array $sample, int $size = 1, string $type = 'default'): static
     {
         if (!$queue = $this->pool[$owner][$type] ?? null) {
             $this->pool[$owner] ??= [];
@@ -57,6 +59,10 @@ class PoolManager implements PoolManagerInterface
                     ['`%s` pool of `%s` capacity(%d) is not big enough', $type, $owner::class, $queue->capacity()]
                 );
             }
+        }
+
+        if (is_array($sample)) {
+            $sample = $this->maker->make($sample[0], $sample[1] ?? []);
         }
 
         $queue->push($sample);

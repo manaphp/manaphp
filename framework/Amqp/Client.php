@@ -8,7 +8,6 @@ use ManaPHP\Amqp\Client\Event\AmqpClientConsuming;
 use ManaPHP\Amqp\Client\Event\AmqpClientPublish;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Pooling\PoolManagerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -17,7 +16,6 @@ class Client implements ClientInterface
 {
     #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected PoolManagerInterface $poolManager;
-    #[Inject] protected MakerInterface $maker;
 
     #[Value] protected string $uri;
 
@@ -31,8 +29,7 @@ class Client implements ClientInterface
             $this->pool_size = (int)$match[1];
         }
 
-        $sample = $this->maker->make(EngineInterface::class, ['uri' => $this->uri]);
-        $this->poolManager->add($this, $sample, $this->pool_size);
+        $this->poolManager->add($this, [EngineInterface::class, ['uri' => $this->uri]], $this->pool_size);
     }
 
     public function exchangeDeclare(Exchange $exchange): void

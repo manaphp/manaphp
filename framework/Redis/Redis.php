@@ -5,7 +5,6 @@ namespace ManaPHP\Redis;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Di\MakerInterface;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Pooling\PoolManagerInterface;
 use ManaPHP\Redis\Event\RedisCalled;
@@ -16,7 +15,6 @@ class Redis implements RedisInterface
 {
     #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected PoolManagerInterface $poolManager;
-    #[Inject] protected MakerInterface $maker;
 
     #[Value] protected string $uri; #redis://127.0.0.1/1?timeout=3&retry_interval=0&auth=&persistent=0
 
@@ -38,8 +36,7 @@ class Redis implements RedisInterface
             $this->pool_size = (int)$matches[1];
         }
 
-        $sample = $this->maker->make(Connection::class, ['uri' => $this->uri]);
-        $this->poolManager->add($this, $sample, $this->pool_size);
+        $this->poolManager->add($this, [Connection::class, ['uri' => $this->uri]], $this->pool_size);
     }
 
     public function __clone()
