@@ -14,5 +14,4 @@ interface ListenerProviderInterface extends PsrListenerProviderInterface
     public function getListenersForEvent(object $event): iterable;
 
     public function getListenersForPeeker(): iterable;
-
 }
