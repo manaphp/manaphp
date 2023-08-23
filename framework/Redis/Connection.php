@@ -6,14 +6,17 @@ namespace ManaPHP\Redis;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\MakerInterface;
-use ManaPHP\Exception\DsnFormatException;
+use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Exception\RuntimeException;
+use ManaPHP\Redis\Event\RedisCalled;
+use ManaPHP\Redis\Event\RedisCalling;
 use ManaPHP\Redis\Event\RedisClose;
 use ManaPHP\Redis\Event\RedisConnected;
 use ManaPHP\Redis\Event\RedisConnecting;
-use ManaPHP\Redis\Exception as RedisException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Redis;
+use RedisCluster;
+use RedisException;
 
 class Connection
 {
@@ -22,66 +25,17 @@ class Connection
 
     #[Value] protected string $uri;
 
-    protected bool $cluster = false;
-    protected string $host;
-    protected int $port;
-    protected float $timeout = 0.0;
-    protected int $read_timeout = 60;
-    protected string $auth = '';
-    protected int $db = 0;
-    protected bool $persistent = false;
-    protected int $heartbeat = 60;
     protected ?Redis $redis = null;
     protected ?float $last_heartbeat = null;
-    protected bool $multi = false;
+
+    protected int $heartbeat;
 
     public function __construct()
     {
-        $parts = parse_url($this->uri);
-
-        if (!in_array($parts['scheme'], ['redis', 'cluster'], true)) {
-            throw new DsnFormatException(
-                ['`%s` is invalid, `%s` scheme is not recognized', $this->uri, $parts['scheme']]
-            );
-        }
-
-        $this->host = $parts['host'] ?? '127.0.0.1';
-        $this->port = isset($parts['port']) ? (int)$parts['port'] : 6379;
-
-        if (isset($parts['path'])) {
-            $path = trim($parts['path'], '/');
-            if ($path !== '' && !is_numeric($path)) {
-                throw new DsnFormatException(['`%s` is invalid, `%s` db is not integer', $this->uri, $path]);
-            }
-            $this->db = (int)$path;
-        }
-
-        if (isset($parts['query'])) {
-            parse_str($parts['query'], $query);
-
-            if (isset($query['db'])) {
-                $this->db = (int)$query['db'];
-            }
-
-            if (isset($query['auth'])) {
-                $this->auth = $query['auth'];
-            }
-
-            if (isset($query['timeout'])) {
-                $this->timeout = (float)$query['timeout'];
-            }
-
-            if (isset($query['read_timeout'])) {
-                $this->read_timeout = $query['read_timeout'];
-            }
-
-            if (isset($query['persistent'])) {
-                $this->persistent = !MANAPHP_COROUTINE_ENABLED && $query['persistent'] === '1';
-            }
-
-            if (isset($query['heartbeat'])) {
-                $this->heartbeat = $query['heartbeat'];
-            }
+        if (preg_match('#heartbeat=(\d+)#', $this->uri, $match) === 1) {
+            $this->heartbeat = (int)$match[1];
+        } else {
+            $this->heartbeat = 60;
         }
     }
 
@@ -89,50 +43,91 @@ class Connection
     {
         $this->redis = null;
         $this->last_heartbeat = null;
-        $this->multi = false;
     }
 
-    public function getUri(): string
+    protected function getRedisCluster(string $uri): RedisCluster
     {
-        return $this->uri;
+        $seeds = [];
+        foreach (explode(',', parse_url($uri, PHP_URL_HOST)) as $host) {
+            $seeds[] = str_contains($host, ':') ? $host : "$host:6379";
+        }
+
+        parse_str(parse_url($uri, PHP_URL_QUERY) ?? '', $query);
+        $timeout = isset($query['timeout']) ? (int)$query['timeout'] : 1;
+        $persistent = MANAPHP_COROUTINE_ENABLED && isset($query['persistent']) && $query['persistent'] !== '0';
+        $auth = $query['auth'] ?? null;
+
+        return $this->maker->make(RedisCluster::class, [null, $seeds, $timeout, null, $persistent, $auth]);
     }
 
-    public function getConnect(): Redis
+    protected function getRedis(string $uri): Redis
     {
+        $host = parse_url($uri, PHP_URL_HOST) ?? '127.0.0.1';
+        $port = parse_url($uri, PHP_URL_PORT) ?? 6379;
+
+        parse_str(parse_url($uri, PHP_URL_QUERY) ?? '', $query);
+        $timeout = isset($query['timeout']) ? (int)$query['timeout'] : 1;
+        $persistent = MANAPHP_COROUTINE_ENABLED && isset($query['persistent']) && $query['persistent'] !== '0';
+
+        $redis = $this->maker->make(Redis::class);
+        $persistent_id = md5($uri);
+        if ($persistent) {
+            if (!@$redis->pconnect($host, (int)$port, $timeout, $persistent_id)) {
+                throw new ConnectionException(['connect to `:uri` failed', 'uri' => $uri]);
+            }
+        } else {
+            if (!@$redis->connect($host, (int)$port, $timeout)) {
+                throw new ConnectionException(['connect to `:uri` failed', 'uri' => $uri]);
+            }
+        }
+
+        if (($auth = $query['auth'] ?? '') !== '' && !$redis->auth($auth)) {
+            throw new AuthException(['`:auth` auth is wrong.', 'auth' => $auth]);
+        }
+
+        return $redis;
+    }
+
+    public function getConnect(): Redis|RedisCluster
+    {
+        if ($this->redis !== null && microtime(true) - $this->last_heartbeat > $this->heartbeat) {
+            try {
+                $this->redis->echo('heartbeat');
+            } catch (RedisException) {
+                $this->close();
+            }
+        }
+
         if ($this->redis === null) {
             $uri = $this->uri;
 
             $this->eventDispatcher->dispatch(new RedisConnecting($this, $uri));
 
-            if ($this->cluster) {
-                $seeds = [];
-                foreach (explode(',', $this->host) as $host) {
-                    $seeds[] = str_contains($host, ':') ? $host : "$host:6379";
-                }
-                $redis = $this->maker->make(
-                    'RedisCluster',
-                    [null, $seeds, $this->timeout, $this->read_timeout, $this->persistent, $this->auth]
-                );
+            $scheme = parse_url($uri, PHP_URL_SCHEME);
+            if ($scheme === 'cluster') {
+                $redis = $this->getRedisCluster($uri);
+            } elseif ($scheme === 'redis') {
+                $redis = $this->getRedis($uri);
             } else {
-                $redis = $this->maker->make('Redis');
+                throw new NotSupportedException(sprintf('%s is not recognized', $uri));
+            }
 
-                if ($this->persistent) {
-                    if (!@$redis->pconnect($this->host, $this->port, $this->timeout, $this->db)) {
-                        throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->uri]);
-                    }
-                } elseif (!@$redis->connect($this->host, $this->port, $this->timeout)) {
-                    throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->uri]);
-                }
+            parse_str(parse_url($uri, PHP_URL_QUERY) ?? '', $query);
 
-                if ($this->auth && !$redis->auth($this->auth)) {
-                    throw new AuthException(['`:auth` auth is wrong.', 'auth' => $this->auth]);
-                }
+            if (isset($query['db'])) {
+                $db = (int)$query['db'];
+            } elseif (preg_match('#/(\d+)#', parse_url($uri, PHP_URL_PATH) ?? '', $match) === 1) {
+                $db = (int)$match[1];
+            } else {
+                $db = 0;
+            }
 
-                if ($this->db !== 0 && !$redis->select($this->db)) {
-                    throw new RuntimeException(['select `:db` db failed', 'db' => $this->db]);
-                }
+            if ($db !== 0 && !$redis->select($db)) {
+                throw new RuntimeException(['select `:db` db failed', 'db' => $db]);
+            }
 
-                $redis->setOption(Redis::OPT_READ_TIMEOUT, $this->read_timeout);
+            if (($read_timeout = $query['read_timeout'] ?? null) !== null) {
+                $redis->setOption(Redis::OPT_READ_TIMEOUT, $read_timeout);
             }
 
             $this->eventDispatcher->dispatch(new RedisConnected($this, $uri, $redis));
@@ -140,18 +135,9 @@ class Connection
             $this->redis = $redis;
         }
 
-        return $this->redis;
-    }
+        $this->last_heartbeat = microtime(true);
 
-    /** @noinspection PhpUnusedLocalVariableInspection */
-    protected function ping(): bool
-    {
-        try {
-            $this->redis->echo('OK');
-            return true;
-        } catch (\Exception  $exception) {
-            return false;
-        }
+        return $this->redis;
     }
 
     public function close(): void
@@ -162,7 +148,6 @@ class Connection
             $this->redis->close();
             $this->redis = null;
             $this->last_heartbeat = null;
-            $this->multi = false;
         }
     }
 
@@ -177,44 +162,24 @@ class Connection
         }
 
         try {
-            $r = @$redis->$name(...$arguments);
-        } catch (\Exception  $exception) {
-            $r = null;
-            $failed = true;
-            if (!$this->multi && !$this->ping()) {
-                $this->close();
-                $this->getConnect();
-
-                try {
-                    $r = @$redis->$name(...$arguments);
-                    $failed = false;
-                } catch (\RedisException $exception) {
-                }
-            }
-
-            if ($failed) {
-                $this->multi = false;
-                throw new RedisException($exception);
-            }
+            $return = @$redis->$name(...$arguments);
         } finally {
             if ($read_timeout !== null) {
                 $redis->setOption(Redis::OPT_READ_TIMEOUT, $read_timeout);
             }
         }
 
-        if ($name === 'multi') {
-            $this->multi = true;
-        } elseif ($name === 'exec' || $name === 'discard') {
-            $this->multi = false;
-        }
-
-        $this->last_heartbeat = microtime(true);
-
-        return $r;
+        return $return;
     }
 
-    public function getLastHeartbeat(): ?float
+    public function __call(string $method, array $arguments): mixed
     {
-        return $this->last_heartbeat;
+        $this->eventDispatcher->dispatch(new RedisCalling($this, $method, $arguments));
+
+        $return = $this->call($method, $arguments);
+
+        $this->eventDispatcher->dispatch(new RedisCalled($this, $method, $arguments, $return));
+
+        return $return;
     }
 }

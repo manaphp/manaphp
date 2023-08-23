@@ -8,5 +8,4 @@ namespace ManaPHP\Redis;
  */
 interface RedisInterface extends RedisDbInterface, RedisCacheInterface, RedisBrokerInterface
 {
-    public function call(string $method, array $arguments): mixed;
 }
