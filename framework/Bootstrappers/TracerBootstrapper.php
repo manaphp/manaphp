@@ -7,14 +7,14 @@ use ManaPHP\BootstrapperInterface;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Eventing\EventSubscriberInterface;
+use ManaPHP\Eventing\ListenerProviderInterface;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Helper\Str;
 use Psr\Container\ContainerInterface;
 
 class TracerBootstrapper implements BootstrapperInterface
 {
-    #[Inject] protected EventSubscriberInterface $eventSubscriber;
+    #[Inject] protected ListenerProviderInterface $listenerProvider;
     #[Inject] protected ConfigInterface $config;
 
     #[Value] protected array $tracers = ['*'];
@@ -32,27 +32,27 @@ class TracerBootstrapper implements BootstrapperInterface
             foreach (LocalFS::glob('@manaphp/Tracers/?*Tracer.php') as $file) {
                 $name = basename($file, 'Tracer.php');
                 $tracer = $container->get("ManaPHP\Tracers\\{$name}Tracer");
-                $this->eventSubscriber->addListener($tracer);
+                $this->listenerProvider->add($tracer);
 
             }
         } else {
             foreach ($this->tracers as $name) {
                 $name = Str::camelize($name);
                 $tracer = $container->get("ManaPHP\Tracers\\{$name}Tracer");
-                $this->eventSubscriber->addListener($tracer);
+                $this->listenerProvider->add($tracer);
             }
         }
 
         foreach (LocalFS::glob('@app/Tracers/?*Tracer.php') as $file) {
             $tracer = $container->get('App\Tracers\\' . basename($file, '.php'));
-            $this->eventSubscriber->addListener($tracer);
+            $this->listenerProvider->add($tracer);
         }
 
         foreach (LocalFS::glob('@app/Areas/*', GLOB_ONLYDIR) as $item) {
             $area = basename($item);
             foreach (LocalFS::glob("$item/Tracers/?*Tracer.php") as $file) {
                 $tracer = $container->get("App\\Areas\\$area\\Tracers\\" . basename($file, '.php'));
-                $this->eventSubscriber->addListener($tracer);
+                $this->listenerProvider->add($tracer);
             }
         }
     }

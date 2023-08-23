@@ -18,7 +18,7 @@ use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Di\ContainerInterface;
 use ManaPHP\Dumping\DumperManagerInterface;
 use ManaPHP\Eventing\Attribute\Event;
-use ManaPHP\Eventing\EventSubscriberInterface;
+use ManaPHP\Eventing\ListenerProviderInterface;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\LocalFS;
@@ -46,7 +46,7 @@ class Debugger implements DebuggerInterface
 {
     use ContextTrait;
 
-    #[Inject] protected EventSubscriberInterface $eventSubscriber;
+    #[Inject] protected ListenerProviderInterface $listenerProvider;
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected LoggerInterface $logger;
     #[Inject] protected RequestInterface $request;
@@ -71,7 +71,7 @@ class Debugger implements DebuggerInterface
 
     public function start(): void
     {
-        $this->eventSubscriber->addListener($this);
+        $this->listenerProvider->add($this);
     }
 
     protected function readData(string $key): ?string

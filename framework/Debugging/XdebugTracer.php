@@ -7,13 +7,13 @@ use ManaPHP\AliasInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Eventing\Attribute\Event;
-use ManaPHP\Eventing\EventSubscriberInterface;
+use ManaPHP\Eventing\ListenerProviderInterface;
 use ManaPHP\Http\Server\Event\RequestBegin;
 use ManaPHP\Http\Server\Event\RequestEnd;
 
 class XdebugTracer implements XdebugTracerInterface
 {
-    #[Inject] protected EventSubscriberInterface $eventSubscriber;
+    #[Inject] protected ListenerProviderInterface $listenerProvider;
     #[Inject] protected AliasInterface $alias;
 
     #[Value] protected int $params = 3;
@@ -28,7 +28,7 @@ class XdebugTracer implements XdebugTracerInterface
         ini_set('xdebug.var_display_max_depth', (string)$this->max_depth);
         ini_set('xdebug.show_mem_delta', (string)$this->mem_delta);
 
-        $this->eventSubscriber->addListener($this);
+        $this->listenerProvider->add($this);
     }
 
     public function onRequestBegin(#[Event] RequestBegin $event): void

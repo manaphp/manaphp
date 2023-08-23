@@ -5,12 +5,12 @@ namespace ManaPHP\Http;
 
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Eventing\EventSubscriberInterface;
+use ManaPHP\Eventing\ListenerProviderInterface;
 use Psr\Container\ContainerInterface;
 
 class FilterManager implements FilterManagerInterface
 {
-    #[Inject] protected EventSubscriberInterface $eventSubscriber;
+    #[Inject] protected ListenerProviderInterface $listenerProvider;
     #[Inject] protected ContainerInterface $container;
     #[Inject] protected ConfigInterface $config;
 
@@ -19,7 +19,7 @@ class FilterManager implements FilterManagerInterface
         $filters = $this->config->get('filters', []);
 
         foreach ($filters as $filter) {
-            $this->eventSubscriber->addListener($this->container->get($filter));
+            $this->listenerProvider->add($this->container->get($filter));
         }
     }
 }

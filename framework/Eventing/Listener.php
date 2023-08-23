@@ -5,7 +5,7 @@ namespace ManaPHP\Eventing;
 
 use ManaPHP\Logging\Logger\LogCategorizable;
 
-abstract class Listener implements LogCategorizable, ListenInterface
+abstract class Listener implements LogCategorizable
 {
     public function categorizeLog(): string
     {

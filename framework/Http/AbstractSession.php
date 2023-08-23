@@ -9,7 +9,7 @@ use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Eventing\Attribute\Event;
-use ManaPHP\Eventing\EventSubscriberInterface;
+use ManaPHP\Eventing\ListenerProviderInterface;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Str;
 use ManaPHP\Http\Server\Event\RequestResponsing;
@@ -26,7 +26,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
     use ContextTrait;
 
     #[Inject] protected EventDispatcherInterface $eventDispatcher;
-    #[Inject] protected EventSubscriberInterface $eventSubscriber;
+    #[Inject] protected ListenerProviderInterface $listenerProvider;
 
     #[Inject] protected LoggerInterface $logger;
     #[Inject] protected CookiesInterface $cookies;
@@ -44,7 +44,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
     {
         $this->params = $params + $this->params;
 
-        $this->eventSubscriber->addListener($this);
+        $this->listenerProvider->add($this);
     }
 
     public function all(): array
