@@ -5,20 +5,14 @@ namespace ManaPHP\Pooling;
 
 class Proxy
 {
-    protected PoolManagerInterface $manager;
-    protected object $owner;
-    protected object $instance;
-    protected string $type;
-
-    public function __construct(PoolManagerInterface $manager, object $owner, object $instance, string $type)
-    {
-        $this->manager = $manager;
-        $this->owner = $owner;
-        $this->instance = $instance;
-        $this->type = $type;
+    public function __construct(
+        protected PoolManagerInterface $manager,
+        protected object $owner,
+        protected object $instance,
+        protected string $type = 'default'
+    ) {
     }
 
-    /** @noinspection PhpMissingReturnTypeInspection */
     public function __destruct()
     {
         $this->manager->push($this->owner, $this->instance, $this->type);

@@ -49,4 +49,11 @@ class Redis implements RedisInterface
 
         return $return;
     }
+
+    public function getProxy(): RedisInterface
+    {
+        $connection = $this->poolManager->pop($this, $this->pool_timeout);
+
+        return new Proxy($this->poolManager, $this, $connection);
+    }
 }

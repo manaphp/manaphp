@@ -8,4 +8,5 @@ namespace ManaPHP\Redis;
  */
 interface RedisInterface extends RedisDbInterface, RedisCacheInterface, RedisBrokerInterface
 {
+    public function getProxy(): RedisInterface;
 }
