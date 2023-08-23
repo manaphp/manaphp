@@ -9,10 +9,7 @@ use ManaPHP\Exception\MisuseException;
 class DbContext implements ContextInseparable
 {
     public ?ConnectionInterface $connection = null;
-    public string $sql;
-    public array $bind = [];
     public int $transaction_level = 0;
-    public int $affected_rows;
 
     public function __destruct()
     {

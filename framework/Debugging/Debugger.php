@@ -205,7 +205,7 @@ class Debugger implements DebuggerInterface
         $context = $this->getContext();
 
         if ($event instanceof DbQuerying || $event instanceof DbExecuting) {
-            $preparedSQL = $event->db->getSQL();
+            $preparedSQL = $event->sql;
             if (!isset($context->sql_prepared[$preparedSQL])) {
                 $context->sql_prepared[$preparedSQL] = 1;
             } else {
@@ -214,8 +214,8 @@ class Debugger implements DebuggerInterface
 
             $context->sql_count++;
 
-            $sql = $event->db->getSQL();
-            $bind = $event->db->getBind();
+            $sql = $event->sql;
+            $bind = $event->bind;
             $context->sql_executed[] = [
                 'prepared' => $sql,
                 'bind'     => $bind,
@@ -223,7 +223,7 @@ class Debugger implements DebuggerInterface
             ];
         } elseif ($event instanceof DbQueried || $event instanceof DbExecuted) {
             $context->sql_executed[$context->sql_count - 1]['elapsed'] = $event->elapsed;
-            $context->sql_executed[$context->sql_count - 1]['row_count'] = $event->db->affectedRows();
+            $context->sql_executed[$context->sql_count - 1]['row_count'] = $event->count;
         } elseif ($event instanceof DbBegin || $event instanceof DbCommit || $event instanceof DbRollback) {
             $context->sql_count++;
 

@@ -151,11 +151,6 @@ class Db implements DbInterface
         /** @var DbContext $context */
         $context = $this->getContext();
 
-        $context->sql = $sql;
-        $context->bind = $bind;
-
-        $context->affected_rows = 0;
-
         $this->eventDispatcher->dispatch(new DbExecuting($this, $type, $sql, $bind));
         $event && $this->eventDispatcher->dispatch(new $event[0]($type, $sql, $bind));
 
@@ -167,15 +162,13 @@ class Db implements DbInterface
 
         try {
             $start_time = microtime(true);
-            $context->affected_rows = $connection->execute($sql, $bind);
+            $count = $connection->execute($sql, $bind);
             $elapsed = round(microtime(true) - $start_time, 3);
         } finally {
             if (!$context->connection) {
                 $this->poolManager->push($this, $connection);
             }
         }
-
-        $count = $context->affected_rows;
 
         $event && $this->eventDispatcher->dispatch(new $event[1]($this, $type, $sql, $bind, $count, $elapsed));
         $this->eventDispatcher->dispatch(new DbExecuted($this, $type, $sql, $bind, $count, $elapsed));
@@ -198,14 +191,6 @@ class Db implements DbInterface
         return $this->execute('delete', $sql, $bind);
     }
 
-    public function affectedRows(): int
-    {
-        /** @var DbContext $context */
-        $context = $this->getContext();
-
-        return $context->affected_rows;
-    }
-
     public function fetchOne(string $sql, array $bind = [], int $mode = PDO::FETCH_ASSOC, bool $useMaster = false
     ): ?array {
         return $this->fetchAll($sql, $bind, $mode, $useMaster)[0] ?? null;
@@ -215,10 +200,6 @@ class Db implements DbInterface
     ): array {
         /** @var DbContext $context */
         $context = $this->getContext();
-
-        $context->sql = $sql;
-        $context->bind = $bind;
-        $context->affected_rows = 0;
 
         $this->eventDispatcher->dispatch(new DbQuerying($this, $sql, $bind));
 
@@ -246,7 +227,7 @@ class Db implements DbInterface
             }
         }
 
-        $count = $context->affected_rows = count($result);
+        $count = count($result);
         $this->eventDispatcher->dispatch(new DbQueried($this, $sql, $bind, $count, $result, $elapsed));
 
         return $result;
@@ -275,23 +256,22 @@ class Db implements DbInterface
         $insertedValues = ':' . implode(',:', $fields);
         $insertedFields = '[' . implode('],[', $fields) . ']';
 
-        $context->sql = $sql
+        $sql
             = /** @lang text */
             "INSERT INTO $table ($insertedFields) VALUES ($insertedValues)";
+        $bind = $record;
 
-        $context->bind = $bind = $record;
-
-        $context->affected_rows = 0;
+        $affected_rows = 0;
 
         $connection = $context->connection ?: $this->poolManager->pop($this, $this->timeout);
 
-        $this->eventDispatcher->dispatch(new DbInserting($this, 'insert', $context->sql, $context->bind));
+        $this->eventDispatcher->dispatch(new DbInserting($this, 'insert', $sql, $bind));
 
         try {
             $start_time = microtime(true);
             if ($fetchInsertId) {
                 $insert_id = $connection->execute($sql, $record, true);
-                $context->affected_rows = 1;
+                $affected_rows = 1;
             } else {
                 $connection->execute($sql, $record);
                 $insert_id = null;
@@ -304,7 +284,7 @@ class Db implements DbInterface
         }
 
         $this->eventDispatcher->dispatch(
-            new DbInserted($this, 'insert', $sql, $bind, $context->affected_rows, $elapsed)
+            new DbInserted($this, 'insert', $sql, $bind, $affected_rows, $elapsed)
         );
 
         return $insert_id;
@@ -440,22 +420,6 @@ class Db implements DbInterface
         return $this->execute('delete', /**@lang text */ "DELETE FROM $table WHERE $sql", $bind);
     }
 
-    public function getSQL(): string
-    {
-        /** @var DbContext $context */
-        $context = $this->getContext();
-
-        return $context->sql;
-    }
-
-    public function getBind(): array
-    {
-        /** @var DbContext $context */
-        $context = $this->getContext();
-
-        return $context->bind;
-    }
-
     public function begin(): void
     {
         /** @var DbContext $context */
@@ -537,14 +501,6 @@ class Db implements DbInterface
                 $this->eventDispatcher->dispatch(new DbCommit($this));
             }
         }
-    }
-
-    public function getLastSql(): string
-    {
-        /** @var DbContext $context */
-        $context = $this->getContext();
-
-        return $context->sql;
     }
 
     public function getTables(?string $schema = null): array

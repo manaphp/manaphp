@@ -40,12 +40,6 @@ interface DbInterface extends Transientable
 
     public function deleteBySql(string $table, string $sql, array $bind = []): int;
 
-    public function getSQL(): string;
-
-    public function getBind(): array;
-
-    public function affectedRows(): int;
-
     public function begin(): void;
 
     public function isUnderTransaction(): bool;
@@ -59,8 +53,6 @@ interface DbInterface extends Transientable
     public function getTables(?string $schema = null): array;
 
     public function buildSql(array $params): string;
-
-    public function getLastSql(): string;
 
     public function query(?string $table = null, ?string $alias = null): Query;
 }
