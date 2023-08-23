@@ -8,6 +8,7 @@ use ManaPHP\Eventing\Attribute\Event;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionUnionType;
 use SplDoublyLinkedList;
 
 class ListenerProvider implements ListenerProviderInterface
@@ -48,9 +49,17 @@ class ListenerProvider implements ListenerProviderInterface
             }
             $rParameter = $rParameters[0];
             if ($rParameter->getAttributes(Event::class) !== []) {
+                $method = $rMethod->getName();
+
                 $rType = $rParameter->getType();
-                $type = $rType->getName();
-                $this->on($type === 'object' ? self::PEEKER : $type, [$listener, $rMethod->getName()]);
+                if ($rType instanceof ReflectionUnionType) {
+                    foreach ($rType->getTypes() as $rType) {
+                        $this->on($rType->getName(), [$listener, $method]);
+                    }
+                } else {
+                    $type = $rType->getName();
+                    $this->on($type === 'object' ? self::PEEKER : $type, [$listener, $method]);
+                }
             }
         }
     }
