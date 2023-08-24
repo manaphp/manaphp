@@ -15,13 +15,7 @@ abstract class AbstractServer implements ServerInterface
     #[Inject] protected RouterInterface $router;
     #[Inject] protected HandlerInterface $httpHandler;
     #[Inject] protected GlobalsInterface $globals;
-    #[Inject] protected FilterManagerInterface $filterManager;
 
     #[Value] protected string $host = '0.0.0.0';
     #[Value] protected int $port = 9501;
-
-    public function __construct()
-    {
-        $this->filterManager->register();
-    }
 }

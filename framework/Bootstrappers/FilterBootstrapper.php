@@ -1,25 +1,25 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Http;
+namespace ManaPHP\Bootstrappers;
 
+use ManaPHP\BootstrapperInterface;
 use ManaPHP\ConfigInterface;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Eventing\ListenerProviderInterface;
 use Psr\Container\ContainerInterface;
 
-class FilterManager implements FilterManagerInterface
+class FilterBootstrapper implements BootstrapperInterface
 {
     #[Inject] protected ListenerProviderInterface $listenerProvider;
-    #[Inject] protected ContainerInterface $container;
     #[Inject] protected ConfigInterface $config;
 
-    public function register(): void
+    public function bootstrap(ContainerInterface $container): void
     {
         $filters = $this->config->get('filters', []);
 
         foreach ($filters as $filter) {
-            $this->listenerProvider->add($this->container->get($filter));
+            $this->listenerProvider->add($container->get($filter));
         }
     }
 }

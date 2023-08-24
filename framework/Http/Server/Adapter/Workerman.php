@@ -29,8 +29,6 @@ class Workerman extends AbstractServer
 
     public function __construct()
     {
-        parent::__construct();
-
         $script_filename = get_included_files()[0];
         $this->_SERVER = [
             'DOCUMENT_ROOT'   => dirname($script_filename),

@@ -42,8 +42,6 @@ class Swoole extends AbstractServer
         $document_root = dirname($script_filename);
         $_SERVER['DOCUMENT_ROOT'] = $document_root;
 
-        parent::__construct();
-
         $this->_SERVER = [
             'DOCUMENT_ROOT'   => $document_root,
             'SCRIPT_FILENAME' => $script_filename,

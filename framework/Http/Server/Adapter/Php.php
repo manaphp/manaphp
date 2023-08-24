@@ -22,8 +22,6 @@ class Php extends AbstractServer
 
     public function __construct()
     {
-        parent::__construct();
-
         $argv = $GLOBALS['argv'] ?? [];
         foreach ($argv as $k => $v) {
             if ($v === '--port' || $v === '-p') {
