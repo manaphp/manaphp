@@ -9,7 +9,6 @@ use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\TooManyRequestsException;
 use ManaPHP\Http\Controller\Attribute\RateLimit;
-use ManaPHP\Http\Filter;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Server\Event\RequestValidating;
 use ManaPHP\Identifying\IdentityInterface;
@@ -17,7 +16,7 @@ use ManaPHP\Redis\RedisCacheInterface;
 use ReflectionClass;
 use ReflectionMethod;
 
-class RateLimitFilter extends Filter
+class RateLimitFilter
 {
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected IdentityInterface $identity;

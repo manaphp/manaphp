@@ -6,10 +6,9 @@ namespace ManaPHP\Filters;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\AuthorizationInterface;
-use ManaPHP\Http\Filter;
 use ManaPHP\Http\Server\Event\RequestAuthorizing;
 
-class AuthorizationFilter extends Filter
+class AuthorizationFilter
 {
     #[Inject] protected AuthorizationInterface $authorization;
 

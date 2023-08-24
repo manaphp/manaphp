@@ -6,12 +6,11 @@ namespace ManaPHP\Filters;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Eventing\Attribute\Event;
-use ManaPHP\Http\Filter;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestResponsing;
 
-class EtagFilter extends Filter
+class EtagFilter
 {
     #[Inject] protected RequestInterface $request;
     #[Inject] protected ResponseInterface $response;

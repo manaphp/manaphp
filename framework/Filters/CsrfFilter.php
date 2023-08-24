@@ -7,14 +7,13 @@ use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Filters\CsrfFilter\AttackDetectedException;
-use ManaPHP\Http\Filter;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Server\Event\RequestValidating;
 use ManaPHP\Mvc\Controller as MvcController;
 use ManaPHP\Mvc\ViewInterface;
 use ManaPHP\Rest\Controller as RestController;
 
-class CsrfFilter extends Filter
+class CsrfFilter
 {
     #[Inject] protected RequestInterface $request;
     #[Inject] protected ViewInterface $view;

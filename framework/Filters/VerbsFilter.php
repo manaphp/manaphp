@@ -7,13 +7,12 @@ use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\MethodNotAllowedHttpException;
 use ManaPHP\Http\Controller\Attribute\AcceptVerbs;
-use ManaPHP\Http\Filter;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Server\Event\RequestValidating;
 use ManaPHP\Mvc\ViewInterface;
 use ReflectionMethod;
 
-class VerbsFilter extends Filter
+class VerbsFilter
 {
     #[Inject] protected ViewInterface $view;
     #[Inject] protected RequestInterface $request;

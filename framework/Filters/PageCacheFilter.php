@@ -9,7 +9,6 @@ use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\AbortException;
 use ManaPHP\Http\Controller\Attribute\PageCache;
-use ManaPHP\Http\Filter;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestReady;
@@ -18,7 +17,7 @@ use ManaPHP\Mvc\Controller as MvcController;
 use ManaPHP\Redis\RedisCacheInterface;
 use ReflectionMethod;
 
-class PageCacheFilter extends Filter
+class PageCacheFilter
 {
     use ContextTrait;
 

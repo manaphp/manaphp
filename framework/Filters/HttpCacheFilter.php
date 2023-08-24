@@ -8,13 +8,12 @@ use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Http\Controller\Attribute\HttpCache;
 use ManaPHP\Http\DispatcherInterface;
-use ManaPHP\Http\Filter;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestResponsing;
 use ReflectionMethod;
 
-class HttpCacheFilter extends Filter
+class HttpCacheFilter
 {
     #[Inject] protected RequestInterface $request;
     #[Inject] protected ResponseInterface $response;

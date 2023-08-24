@@ -9,12 +9,11 @@ use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\DispatcherInterface;
-use ManaPHP\Http\Filter;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestEnd;
 
-class SlowlogFilter extends Filter
+class SlowlogFilter
 {
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected RequestInterface $request;

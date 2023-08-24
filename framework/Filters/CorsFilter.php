@@ -8,12 +8,11 @@ use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\AbortException;
-use ManaPHP\Http\Filter;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestBegin;
 
-class CorsFilter extends Filter
+class CorsFilter
 {
     #[Inject] protected ConfigInterface $config;
     #[Inject] protected RequestInterface $request;
