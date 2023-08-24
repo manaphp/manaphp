@@ -214,6 +214,10 @@ class Container implements ContainerInterface
         }
 
         if (($definition = $this->definitions[$id] ?? null) !== null) {
+            if (is_string($definition) && str_ends_with($id, 'Interface') && str_ends_with($definition, "Interface")) {
+                return $this->instances[$id] = $this->get($definition);
+            }
+
             for (; ;) {
                 if (is_string($definition)) {
                     if ($definition[0] === '#') {
@@ -237,10 +241,6 @@ class Container implements ContainerInterface
             }
         } else {
             $definition = $id;
-        }
-
-        if (is_string($definition) && $definition[0] === '@') {
-            return $this->get(substr($definition, 1));
         }
 
         return $this->instances[$id] = $this->getInternal($id, $definition);
