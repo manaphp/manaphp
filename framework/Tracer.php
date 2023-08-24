@@ -16,26 +16,26 @@ abstract class Tracer
 
     public function debug(mixed $message, string $category): void
     {
-        $this->logger->log(LogLevel::DEBUG, $message, $category);
+        $this->logger->log(LogLevel::DEBUG, $message, ['category' => $category]);
     }
 
     public function info(mixed $message, string $category): void
     {
-        $this->logger->log(LogLevel::INFO, $message, $category);
+        $this->logger->log(LogLevel::INFO, $message, ['category' => $category]);
     }
 
     public function warning(mixed $message, string $category): void
     {
-        $this->logger->log(LogLevel::WARNING, $message, $category);
+        $this->logger->log(LogLevel::WARNING, $message, ['category' => $category]);
     }
 
     public function error(mixed $message, string $category): void
     {
-        $this->logger->log(LogLevel::ERROR, $message, $category);
+        $this->logger->log(LogLevel::ERROR, $message, ['category' => $category]);
     }
 
     public function critical(mixed $message, string $category): void
     {
-        $this->logger->log(LogLevel::CRITICAL, $message, $category);
+        $this->logger->log(LogLevel::CRITICAL, $message, ['category' => $category]);
     }
 }

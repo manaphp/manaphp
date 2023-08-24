@@ -3,23 +3,25 @@ declare(strict_types=1);
 
 namespace ManaPHP\Logging;
 
-interface LoggerInterface
+use Psr\Log\LoggerInterface as PsrLoggerInterface;
+
+interface LoggerInterface extends PsrLoggerInterface
 {
-    public function log(string $level, mixed $message, ?string $category = null): static;
+    public function log($level, mixed $message, array $context = []): void;
 
-    public function debug(mixed $message, ?string $category = null): static;
+    public function debug(mixed $message, array $context = []): void;
 
-    public function info(mixed $message, ?string $category = null): static;
+    public function info(mixed $message, array $context = []): void;
 
-    public function notice(mixed $message, ?string $category = null): static;
+    public function notice(mixed $message, array $context = []): void;
 
-    public function warning(mixed $message, ?string $category = null): static;
+    public function warning(mixed $message, array $context = []): void;
 
-    public function error(mixed $message, ?string $category = null): static;
+    public function error(mixed $message, array $context = []): void;
 
-    public function critical(mixed $message, ?string $category = null): static;
+    public function critical(mixed $message, array $context = []): void;
 
-    public function alert(mixed $message, ?string $category = null): static;
+    public function alert(mixed $message, array $context = []): void;
 
-    public function emergency(mixed $message, ?string $category = null): static;
+    public function emergency(mixed $message, array $context = []): void;
 }

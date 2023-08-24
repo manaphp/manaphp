@@ -296,7 +296,7 @@ class CurlMulti implements CurlMultiInterface, Countable
 
     public function onError(Error $error): void
     {
-        $this->logger->error($error->message, 'curl_multi');
+        $this->logger->error($error->message, ['category' => 'curl_multi']);
     }
 
     public function count(): int

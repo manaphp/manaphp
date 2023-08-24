@@ -679,7 +679,7 @@ class Query extends AbstractQuery
     public function execute(): array
     {
         if (in_array('FALSE', $this->conditions, true)) {
-            $this->logger->debug($this->sql, 'db.query.skip');
+            $this->logger->debug($this->sql, ['category' => 'db.query.skip']);
             return [];
         }
 

@@ -172,8 +172,8 @@ class Server implements ServerInterface
             $this->pushToRoom($receivers, $message);
         } else {
             $this->logger->warning(
-                ['unknown `:type` type message: :message', 'type' => $type, 'message' => $message],
-                'wspServer.bad_type'
+                'unknown `{type}` type message: {:message}',
+                ['type' => $type, 'message' => $message, 'category' => 'wspServer.bad_type']
             );
         }
     }
@@ -194,7 +194,7 @@ class Server implements ServerInterface
                         $this->dispatch($type, $receivers, $message);
                         $this->eventDispatcher->dispatch(new ServerPushing($this, $type, $receivers, $message));
                     } else {
-                        $this->logger->warning($channel, 'wspServer.bad_channel');
+                        $this->logger->warning($channel, ['category' => 'wspServer.bad_channel']);
                     }
                 }
                 );

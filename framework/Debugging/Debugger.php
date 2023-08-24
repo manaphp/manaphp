@@ -148,7 +148,7 @@ class Debugger implements DebuggerInterface
         if ($context->enabled) {
             $url = $this->router->createUrl("/?__debugger={$context->key}.html", true);
             $this->response->setHeader('X-Debugger-Link', $url);
-            $this->logger->info($url, 'debugger.link');
+            $this->logger->info($url, ['category' => 'debugger.link']);
         }
     }
 

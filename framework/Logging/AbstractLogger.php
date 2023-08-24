@@ -12,11 +12,10 @@ use ManaPHP\Http\RequestInterface;
 use ManaPHP\Logging\Logger\Event\LoggerLog;
 use ManaPHP\Logging\Logger\Log;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Log\LoggerInterface as PsrLoggerInterface;
 use Psr\Log\LogLevel;
 use Throwable;
 
-abstract class AbstractLogger implements LoggerInterface
+abstract class AbstractLogger extends \Psr\Log\AbstractLogger implements LoggerInterface
 {
     use ContextTrait;
 
@@ -35,23 +34,14 @@ abstract class AbstractLogger implements LoggerInterface
 
     protected function getLocation(array $traces): array
     {
-        if (($object = $traces[0]['object'] ?? null) !== null && $object instanceof PsrLoggerInterface) {
-            return $traces[1];
-        } else {
-            return $traces[0];
-        }
+        return $traces[0];
     }
 
     protected function inferCategory(array $traces): string
     {
-        if (($object = $traces[1]['object'] ?? null) !== null && $object instanceof PsrLoggerInterface) {
-            $index = 2;
-        } else {
-            $index = 1;
-        }
-        $trace = $traces[$index];
+        $trace = $traces[1];
         if (str_ends_with($trace['function'], '{closure}')) {
-            $trace = $traces[$index + 1];
+            $trace = $traces[2];
         }
 
         if (isset($trace['class'])) {
@@ -102,26 +92,19 @@ abstract class AbstractLogger implements LoggerInterface
         }
     }
 
-    public function log(string $level, mixed $message, ?string $category = null): static
+    public function log($level, mixed $message, array $context = []): void
     {
         $levels = Level::map();
         if ($levels[$level] > $levels[$this->level]) {
-            return $this;
-        }
-
-        if ($category !== null && !is_string($category)) {
-            $message = [$message . ': :param', 'param' => $category];
-            $category = null;
-        }
-
-        if (is_array($message) && count($message) === 1 && isset($message[0])) {
-            $message = $message[0];
+            return;
         }
 
         $log = new Log();
 
         $log->hostname = $this->hostname ?? gethostname();
         $log->level = strtoupper($level);
+
+        $category = null;
 
         if ($message instanceof Throwable) {
             $log->category = $category ?: 'exception';
@@ -130,8 +113,12 @@ abstract class AbstractLogger implements LoggerInterface
         } else {
             $traces = Coroutine::getBacktrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
             array_shift($traces);
-            if ($category !== null && $category[0] === '.') {
-                $log->category = $this->inferCategory($traces) . $category;
+            if (($v = $context['category'] ?? null) !== null
+                && is_string($v)
+                && (!is_string($message) || !str_contains($message, '{category}'))
+                && preg_match('#^[\w.]+$#', $v) === 1
+            ) {
+                $log->category = $v;
             } else {
                 $log->category = $category ?: $this->inferCategory($traces);
             }
@@ -164,47 +151,45 @@ abstract class AbstractLogger implements LoggerInterface
         $this->eventDispatcher->dispatch(new LoggerLog($this, $level, $message, $category, $log));
 
         $this->append($log);
-
-        return $this;
     }
 
-    public function debug(mixed $message, ?string $category = null): static
+    public function debug(mixed $message, array $context = []): void
     {
-        return $this->log(LogLevel::DEBUG, $message, $category);
+        $this->log(LogLevel::DEBUG, $message, $context);
     }
 
-    public function info(mixed $message, ?string $category = null): static
+    public function info(mixed $message, array $context = []): void
     {
-        return $this->log(LogLevel::INFO, $message, $category);
+        $this->log(LogLevel::INFO, $message, $context);
     }
 
-    public function notice(mixed $message, ?string $category = null): static
+    public function notice(mixed $message, array $context = []): void
     {
-        return $this->log(LogLevel::NOTICE, $message, $category);
+        $this->log(LogLevel::NOTICE, $message, $context);
     }
 
-    public function warning(mixed $message, ?string $category = null): static
+    public function warning(mixed $message, array $context = []): void
     {
-        return $this->log(LogLevel::WARNING, $message, $category);
+        $this->log(LogLevel::WARNING, $message, $context);
     }
 
-    public function error(mixed $message, ?string $category = null): static
+    public function error(mixed $message, array $context = []): void
     {
-        return $this->log(LogLevel::ERROR, $message, $category);
+        $this->log(LogLevel::ERROR, $message, $context);
     }
 
-    public function critical(mixed $message, ?string $category = null): static
+    public function critical(mixed $message, array $context = []): void
     {
-        return $this->log(LogLevel::CRITICAL, $message, $category);
+        $this->log(LogLevel::CRITICAL, $message, $context);
     }
 
-    public function alert(mixed $message, ?string $category = null): static
+    public function alert(mixed $message, array $context = []): void
     {
-        return $this->log(LogLevel::ALERT, $message, $category);
+        $this->log(LogLevel::ALERT, $message, $context);
     }
 
-    public function emergency(mixed $message, ?string $category = null): static
+    public function emergency(mixed $message, array $context = []): void
     {
-        return $this->log(LogLevel::EMERGENCY, $message, $category);
+        $this->log(LogLevel::EMERGENCY, $message, $context);
     }
 }

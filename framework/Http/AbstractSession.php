@@ -75,7 +75,7 @@ abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSer
                 $context->_SESSION = $data;
             } else {
                 $context->_SESSION = [];
-                $this->logger->error('unserialize failed', 'session.unserialize');
+                $this->logger->error('unserialize failed', ['category' => 'session.unserialize']);
             }
         } else {
             $session_id = $this->generateSessionId();

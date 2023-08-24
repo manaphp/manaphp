@@ -218,8 +218,8 @@ class Server implements ServerInterface
             $this->kickoutName($room, $receivers, $message);
         } else {
             $this->logger->warning(
-                ['unknown `:type` type message: :message', 'type' => $type, 'message' => $message],
-                'chatServer.bad_type'
+                'unknown `{type}` type message: {message}',
+                ['type' => $type, 'message' => $message, 'category' => 'chatServer.bad_type']
             );
         }
     }
@@ -237,7 +237,7 @@ class Server implements ServerInterface
                         $this->dispatch($type, $room, $receivers, $message);
                         $this->eventDispatcher->dispatch(new ServerPushed($this, $type, $receivers, $message));
                     } else {
-                        $this->logger->warning($channel, 'chatServer.bad_channel');
+                        $this->logger->warning($channel, ['category' => 'chatServer.bad_channel']);
                     }
                 }
                 );
