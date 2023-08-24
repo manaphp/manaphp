@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Logging;
 
 use ManaPHP\Di\Attribute\Inject;
+use Psr\Log\LogLevel;
 use Stringable;
 use Throwable;
 
@@ -29,41 +30,41 @@ class Psr3 implements \Psr\Log\LoggerInterface
 
     public function debug(Stringable|string $message, array $context = []): void
     {
-        $this->log(Level::DEBUG, $message, $context);
+        $this->log(LogLevel::DEBUG, $message, $context);
     }
 
     public function info(Stringable|string $message, array $context = []): void
     {
-        $this->log(Level::INFO, $message, $context);
+        $this->log(LogLevel::INFO, $message, $context);
     }
 
     public function notice(Stringable|string $message, array $context = []): void
     {
-        $this->log(Level::NOTICE, $message, $context);
+        $this->log(LogLevel::NOTICE, $message, $context);
     }
 
     public function warning(Stringable|string $message, array $context = []): void
     {
-        $this->log(Level::WARNING, $message, $context);
+        $this->log(LogLevel::WARNING, $message, $context);
     }
 
     public function error(Stringable|string $message, array $context = []): void
     {
-        $this->log(Level::ERROR, $message, $context);
+        $this->log(LogLevel::ERROR, $message, $context);
     }
 
     public function critical(Stringable|string $message, array $context = []): void
     {
-        $this->log(Level::CRITICAL, $message, $context);
+        $this->log(LogLevel::CRITICAL, $message, $context);
     }
 
     public function alert(Stringable|string $message, array $context = []): void
     {
-        $this->log(Level::ALERT, $message, $context);
+        $this->log(LogLevel::ALERT, $message, $context);
     }
 
     public function emergency(Stringable|string $message, array $context = []): void
     {
-        $this->log(Level::EMERGENCY, $message, $context);
+        $this->log(LogLevel::EMERGENCY, $message, $context);
     }
 }

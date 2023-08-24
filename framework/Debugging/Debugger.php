@@ -41,6 +41,7 @@ use ManaPHP\Redis\RedisCacheInterface;
 use ManaPHP\Rendering\Renderer\Event\RendererRendering;
 use ManaPHP\Tracer;
 use ManaPHP\Version;
+use Psr\Log\LogLevel;
 
 class Debugger implements DebuggerInterface
 {
@@ -338,7 +339,7 @@ class Debugger implements DebuggerInterface
         $data = [];
         $data['basic'] = $this->getBasic();
         $levels = Level::map();
-        $data['logger'] = ['log' => $context->log, 'levels' => $levels, 'level' => $levels[Level::DEBUG]];
+        $data['logger'] = ['log' => $context->log, 'levels' => $levels, 'level' => $levels[LogLevel::DEBUG]];
         $data['sql'] = [
             'prepared' => $context->sql_prepared,
             'executed' => $context->sql_executed,

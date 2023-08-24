@@ -5,6 +5,8 @@ namespace ManaPHP\Logging;
 
 interface LoggerInterface
 {
+    public function log(string $level, mixed $message, ?string $category = null): static;
+
     public function debug(mixed $message, ?string $category = null): static;
 
     public function info(mixed $message, ?string $category = null): static;

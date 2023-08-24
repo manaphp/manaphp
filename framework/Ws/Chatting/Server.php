@@ -8,7 +8,6 @@ use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
-use ManaPHP\Logging\Logger\LogCategorizable;
 use ManaPHP\Logging\LoggerInterface;
 use ManaPHP\Messaging\PubSubInterface;
 use ManaPHP\Ws\Chatting\Server\Event\UserCome;
@@ -18,7 +17,7 @@ use ManaPHP\Ws\Chatting\Server\ServerPushing;
 use ManaPHP\Ws\ServerInterface as WsServerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
-class Server implements ServerInterface, LogCategorizable
+class Server implements ServerInterface
 {
     #[Inject] protected EventDispatcherInterface $eventDispatcher;
     #[Inject] protected LoggerInterface $logger;
@@ -33,11 +32,6 @@ class Server implements ServerInterface, LogCategorizable
     protected array $fds = [];
     protected array $ids;
     protected array $names;
-
-    public function categorizeLog(): string
-    {
-        return str_replace('\\', '.', static::class);
-    }
 
     public function open(int $fd, ?string $room = null): void
     {
