@@ -110,6 +110,10 @@ class Kernel
 
         $this->config->load();
 
+        if (($timezone = $this->config->get('timezone')) !== null) {
+            date_default_timezone_set($timezone);
+        }
+
         $this->registerAppAliases($this->config->get('aliases', []));
         $this->registerAppFactories($this->config->get('factories', []));
         $this->registerAppDependencies($this->config->get('dependencies', []));
