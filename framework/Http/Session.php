@@ -11,7 +11,7 @@ class Session
 {
     #[Inject] protected MakerInterface $maker;
 
-    public function __invoke(array $parameters, ?string $id)
+    public function __invoke(array $parameters, ?string $id): mixed
     {
         return $this->maker->make(Redis::class, $parameters, $id);
     }

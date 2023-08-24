@@ -11,8 +11,8 @@ class Engine
 {
     #[Inject] protected MakerInterface $maker;
 
-    public function __invoke(array $parameters): mixed
+    public function __invoke(array $parameters, ?string $id): mixed
     {
-        return $this->maker->make(Php::class, $parameters);
+        return $this->maker->make(Php::class, $parameters, $id);
     }
 }

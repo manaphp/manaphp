@@ -11,7 +11,7 @@ class Mailer
 {
     #[Inject] protected MakerInterface $maker;
 
-    public function __invoke(array $parameters, ?string $id)
+    public function __invoke(array $parameters, ?string $id): mixed
     {
         return $this->maker->make(Smtp::class, $parameters, $id);
     }

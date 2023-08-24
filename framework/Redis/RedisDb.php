@@ -12,7 +12,7 @@ class RedisDb
     #[Inject] protected ContainerInterface $container;
     #[Inject] protected MakerInterface $maker;
 
-    public function __invoke(array $parameters, ?string $id)
+    public function __invoke(array $parameters, ?string $id): mixed
     {
         if ($parameters === []) {
             if (str_contains($id, '#')) {

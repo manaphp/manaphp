@@ -12,7 +12,7 @@ class Captcha
 {
     #[Inject] protected MakerInterface $maker;
 
-    public function __invoke(array $parameters, ?string $id)
+    public function __invoke(array $parameters, ?string $id): mixed
     {
         if (extension_loaded('imagick')) {
             return $this->maker->make(Imagick::class, $parameters, $id);
