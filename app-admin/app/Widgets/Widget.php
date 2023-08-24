@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Widgets;
 
+use ManaPHP\Mvc\View\WidgetInterface;
+
 /**
  * @property-read \ManaPHP\Logging\LoggerInterface       $logger
  * @property-read \ManaPHP\Identifying\IdentityInterface $identity
@@ -10,7 +12,7 @@ namespace App\Widgets;
  * @property-read \ManaPHP\Redis\RedisCacheInterface     $redisCache
  * @property-read \ManaPHP\Redis\RedisBrokerInterface    $redisBroker
  */
-abstract class Widget extends \ManaPHP\Mvc\View\Widget
+abstract class Widget implements WidgetInterface
 {
 
 }
