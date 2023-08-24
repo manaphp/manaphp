@@ -9,19 +9,17 @@ use ManaPHP\Logging\Logger\Log;
 
 class Stdout extends AbstractLogger
 {
-    #[Value] protected string $format = '[:date][:level][:category][:location] :message';
+    #[Value] protected string $line_format = '[:time][:level][:category][:location] :message';
 
     public function append(Log $log): void
     {
         $replaced = [];
 
-        $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
-        $replaced[':date'] = date('Y-m-d\TH:i:s', (int)$log->timestamp) . $ms;
-        $replaced[':level'] = $log->level;
-        $replaced[':category'] = $log->category;
-        $replaced[':location'] = "$log->file:$log->line";
-        $replaced[':message'] = $log->message;
+        preg_match_all('#:(\w+)#', $this->line_format, $matches);
+        foreach ($matches[1] as $key) {
+            $replaced[":$key"] = $log->$key ?? '-';
+        }
 
-        echo strtr($this->format, $replaced), PHP_EOL;
+        echo strtr($this->line_format, $replaced), PHP_EOL;
     }
 }

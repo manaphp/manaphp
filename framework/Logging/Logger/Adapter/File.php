@@ -16,29 +16,28 @@ class File extends AbstractLogger
     #[Inject] protected AliasInterface $alias;
 
     #[Value] protected string $file = '@runtime/logger/{id}.log';
-    #[Value] protected string $format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
+    #[Value] protected string $line_format = '[:time][:level][:category][:location] :message';
 
     protected function format(Log $log): string
     {
         $replaced = [];
 
-        $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
-        $replaced[':date'] = date('Y-m-d\TH:i:s', (int)$log->timestamp) . $ms;
-        $replaced[':client_ip'] = $log->client_ip ?: '-';
-        $replaced[':request_id'] = $log->request_id ?: '-';
-        $replaced[':request_id16'] = $log->request_id ? substr($log->request_id, 0, 16) : '-';
-        $replaced[':category'] = $log->category;
-        $replaced[':location'] = "$log->file:$log->line";
-        $replaced[':level'] = strtoupper($log->level);
-        if ($log->category === 'exception') {
-            $replaced[':message'] = '';
-            $message = preg_replace('#[\\r\\n]+#', '\0' . strtr($this->format, $replaced), $log->message);
-            $replaced[':message'] = $message . PHP_EOL;
-        } else {
-            $replaced[':message'] = $log->message . PHP_EOL;
+        preg_match_all('#:(\w+)#', $this->line_format, $matches);
+        foreach ($matches[1] as $key) {
+            if ($key === 'message') {
+                if ($log->category === 'exception') {
+                    $replaced[':message'] = '';
+                    $message = preg_replace('#[\\r\\n]+#', '\0' . strtr($this->line_format, $replaced), $log->message);
+                    $replaced[':message'] = $message . PHP_EOL;
+                } else {
+                    $replaced[':message'] = $log->message . PHP_EOL;
+                }
+            } else {
+                $replaced[":$key"] = $log->$key ?? '-';
+            }
         }
 
-        return strtr($this->format, $replaced);
+        return strtr($this->line_format, $replaced);
     }
 
     /**

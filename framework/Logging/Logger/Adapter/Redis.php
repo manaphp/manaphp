@@ -26,7 +26,7 @@ class Redis extends AbstractLogger
             'hostname'   => $log->hostname,
             'category'   => $log->category,
             'level'      => $log->level,
-            'location'   => "$log->file:$log->line",
+            'location'   => $log->location,
             'message'    => $log->message
         ];
         $this->redisBroker->rPush(

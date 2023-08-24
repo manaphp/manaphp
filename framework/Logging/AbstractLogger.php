@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ManaPHP\Logging;
 
 use ManaPHP\AliasInterface;
-use ManaPHP\Context\ContextCreatorInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Coroutine;
 use ManaPHP\Di\Attribute\Inject;
@@ -17,7 +16,7 @@ use Psr\Log\LoggerInterface as PsrLoggerInterface;
 use Psr\Log\LogLevel;
 use Throwable;
 
-abstract class AbstractLogger implements LoggerInterface, ContextCreatorInterface
+abstract class AbstractLogger implements LoggerInterface
 {
     use ContextTrait;
 
@@ -27,17 +26,10 @@ abstract class AbstractLogger implements LoggerInterface, ContextCreatorInterfac
 
     #[Value] protected string $level = LogLevel::DEBUG;
     #[Value] protected ?string $hostname;
+    #[Value] protected string $time_format = 'Y-m-d\TH:i:s.uP';
 
-    public function createContext(): AbstractLoggerContext
-    {
-        /** @var AbstractLoggerContext $context */
-        $context = $this->contextor->makeContext($this);
-
-        $context->client_ip = defined('MANAPHP_CLI') ? '' : $this->request->getClientIp();
-        $context->request_id = $this->request->getRequestId();
-
-        return $context;
-    }
+    protected const  MILLISECONDS = 'v';
+    protected const MICROSECONDS = 'u';
 
     abstract public function append(Log $log): void;
 
@@ -112,8 +104,6 @@ abstract class AbstractLogger implements LoggerInterface, ContextCreatorInterfac
 
     public function log(string $level, mixed $message, ?string $category = null): static
     {
-        /** @var AbstractLoggerContext $context */
-        $context = $this->getContext();
         $levels = Level::map();
         if ($levels[$level] > $levels[$this->level]) {
             return $this;
@@ -131,9 +121,7 @@ abstract class AbstractLogger implements LoggerInterface, ContextCreatorInterfac
         $log = new Log();
 
         $log->hostname = $this->hostname ?? gethostname();
-        $log->client_ip = $context->client_ip;
-        $log->level = $level;
-        $log->request_id = $context->request_id ?: $this->request->getRequestId();
+        $log->level = strtoupper($level);
 
         if ($message instanceof Throwable) {
             $log->category = $category ?: 'exception';
@@ -158,8 +146,20 @@ abstract class AbstractLogger implements LoggerInterface, ContextCreatorInterfac
             }
         }
 
+        $log->location = $log->file . ':' . $log->line;
+
         $log->message = is_string($message) ? $message : $this->formatMessage($message);
         $log->timestamp = microtime(true);
+        $time_format = $this->time_format;
+        if (str_contains($time_format, self::MILLISECONDS)) {
+            $ms = sprintf('%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
+            $time_format = str_replace(self::MILLISECONDS, $ms, $time_format);
+        } elseif (str_contains($time_format, self::MICROSECONDS)) {
+            $ms = sprintf('%06d', ($log->timestamp - (int)$log->timestamp) * 1000000);
+            $time_format = str_replace(self::MICROSECONDS, $ms, $time_format);
+        }
+
+        $log->time = date($time_format, (int)$log->timestamp);
 
         $this->eventDispatcher->dispatch(new LoggerLog($this, $level, $message, $category, $log));
 

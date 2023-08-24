@@ -24,7 +24,7 @@ class Syslog extends AbstractLogger
 
     #[Value] protected string $uri;
     #[Value] protected int $facility = 1;
-    #[Value] protected string $format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
+    #[Value] protected string $line_format = '[:date][:client_ip][:request_id16][:level][:category][:location] :message';
 
     protected string $scheme;
     protected string $host;
@@ -71,19 +71,17 @@ class Syslog extends AbstractLogger
 
         $replaced = [];
 
-        $ms = sprintf('.%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
-        $replaced[':date'] = date('Y-m-d\TH:i:s', (int)$log->timestamp) . $ms;
-        $replaced[':client_ip'] = $log->client_ip ?: '-';
-        $replaced[':request_id'] = $log->request_id ?: '-';
-        $replaced[':request_id16'] = $log->request_id ? substr($log->request_id, 0, 16) : '-';
-        $replaced[':category'] = $log->category;
-        $replaced[':location'] = "$log->file:$log->line";
-        $replaced[':level'] = strtoupper($log->level);
+        preg_match_all('#:(\w+)#', $this->line_format, $matches);
+        foreach ($matches[1] as $key) {
+            if ($key !== 'message') {
+                $replaced[":$key"][] = $log->$key ?? '-';
+            }
+        }
 
         if ($log->category === 'exception') {
             foreach (preg_split('#[\\r\\n]+#', $log->message) as $line) {
                 $replaced[':message'] = $line;
-                $content = strtr($this->format, $replaced);
+                $content = strtr($this->line_format, $replaced);
 
                 // <PRI>TIMESTAMP HOST TAG:CONTENT
                 $packet = "<$priority>$timestamp $log->hostname $tag:$content";
@@ -91,7 +89,7 @@ class Syslog extends AbstractLogger
             }
         } else {
             $replaced[':message'] = $log->message;
-            $content = strtr($this->format, $replaced);
+            $content = strtr($this->line_format, $replaced);
 
             // <PRI>TIMESTAMP HOST TAG:CONTENT
             $packet = "<$priority>$timestamp $log->hostname $tag:$content";
