@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Models\UserActionLog;
-use ManaPHP\Eventing\Listener;
+use ManaPHP\Context\ContextTrait;
+use ManaPHP\Db\Event\DbExecuting;
+use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Helper\Arr;
 
 /**
@@ -14,20 +16,9 @@ use ManaPHP\Helper\Arr;
  * @property-read \ManaPHP\Http\DispatcherInterface           $dispatcher
  * @property-read \App\Listeners\UserActionLogListenerContext $context
  */
-class UserActionLogListener extends Listener
+class UserActionLogListener
 {
-    public function listen(): void
-    {
-        $this->attachEvent('app:userActionLogAction', [$this, 'onUserActionLogAction']);
-        $this->attachEvent('db:executing', [$this, 'onDbExecuting']);
-    }
-
-    public function onDbExecuting(): void
-    {
-        if (!$this->context->logged && $this->dispatcher->isInvoking() && $this->dispatcher->getArea() === 'User') {
-            $this->onUserActionLogAction();
-        }
-    }
+    use ContextTrait;
 
     protected function getTag(): int
     {
@@ -44,12 +35,20 @@ class UserActionLogListener extends Listener
         return 0;
     }
 
-    public function onUserActionLogAction(): void
+    public function onUserActionLogAction(#[Event] DbExecuting|UserActionLog $event): void
     {
-        $context = $this->context;
+        /** @var UserActionLogListenerContext $context */
+        $context = $this->getContext();
         if ($context->logged) {
             return;
         }
+
+        if ($event instanceof DbExecuting) {
+            if (!$this->dispatcher->isInvoking() || $this->dispatcher->getArea() !== 'User') {
+                return;
+            }
+        }
+
         $context->logged = true;
 
         $data = Arr::except($this->request->all(), ['_url']);

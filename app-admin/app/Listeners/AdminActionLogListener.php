@@ -4,20 +4,21 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Models\AdminActionLog;
+use ManaPHP\Context\ContextTrait;
 use ManaPHP\Db\Event\DbExecuting;
 use ManaPHP\Eventing\Attribute\Event;
-use ManaPHP\Eventing\Listener;
 use ManaPHP\Helper\Arr;
 
 /**
- * @property-read \ManaPHP\Identifying\IdentityInterface       $identity
- * @property-read \ManaPHP\Http\RequestInterface               $request
- * @property-read \ManaPHP\Http\CookiesInterface               $cookies
- * @property-read \ManaPHP\Http\DispatcherInterface            $dispatcher
- * @property-read \App\Listeners\AdminActionLogListenerContext $context
+ * @property-read \ManaPHP\Identifying\IdentityInterface $identity
+ * @property-read \ManaPHP\Http\RequestInterface         $request
+ * @property-read \ManaPHP\Http\CookiesInterface         $cookies
+ * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher
  */
-class AdminActionLogListener extends Listener
+class AdminActionLogListener
 {
+    use ContextTrait;
+
     public function onDbExecuting(#[Event] DbExecuting $event): void
     {
         if (!$this->context->logged && $this->dispatcher->isInvoking()) {
@@ -40,12 +41,20 @@ class AdminActionLogListener extends Listener
         return 0;
     }
 
-    public function onAppLogAction(#[Event] AdminActionLog $event): void
+    public function onAppLogAction(#[Event] DbExecuting|AdminActionLog $event): void
     {
-        $context = $this->context;
+        /** @var AdminActionLogListenerContext $context */
+        $context = $this->getContext();
         if ($context->logged) {
             return;
         }
+
+        if ($event instanceof DbExecuting) {
+            if (!$this->dispatcher->isInvoking()) {
+                return;
+            }
+        }
+
         $context->logged = true;
 
         $data = Arr::except($this->request->all(), ['_url']);

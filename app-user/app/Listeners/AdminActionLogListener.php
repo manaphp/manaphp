@@ -3,31 +3,22 @@ declare(strict_types=1);
 
 namespace App\Listeners;
 
+use App\Events\UserActionLog;
 use App\Models\AdminActionLog;
-use ManaPHP\Eventing\Listener;
+use ManaPHP\Context\ContextTrait;
+use ManaPHP\Db\Event\DbExecuting;
+use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Helper\Arr;
 
 /**
- * @property-read \ManaPHP\Identifying\IdentityInterface       $identity
- * @property-read \ManaPHP\Http\RequestInterface               $request
- * @property-read \ManaPHP\Http\CookiesInterface               $cookies
- * @property-read \ManaPHP\Http\DispatcherInterface            $dispatcher
- * @property-read \App\Listeners\AdminActionLogListenerContext $context
+ * @property-read \ManaPHP\Identifying\IdentityInterface $identity
+ * @property-read \ManaPHP\Http\RequestInterface         $request
+ * @property-read \ManaPHP\Http\CookiesInterface         $cookies
+ * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher
  */
-class AdminActionLogListener extends Listener
+class AdminActionLogListener
 {
-    public function listen(): void
-    {
-        $this->attachEvent('app:adminActionLogAction', [$this, 'onAdminActionLogAction']);
-        $this->attachEvent('db:executing', [$this, 'onDbExecuting']);
-    }
-
-    public function onDbExecuting(): void
-    {
-        if (!$this->context->logged && $this->dispatcher->isInvoking() && $this->dispatcher->getArea() === 'Admin') {
-            $this->onAdminActionLogAction();
-        }
-    }
+    use ContextTrait;
 
     protected function getTag(): int
     {
@@ -44,12 +35,21 @@ class AdminActionLogListener extends Listener
         return 0;
     }
 
-    public function onAdminActionLogAction(): void
+    public function onAdminActionLogAction(#[Event] DbExecuting|UserActionLog $event): void
     {
-        $context = $this->context;
+        /** @var AdminActionLogListenerContext $context */
+        $context = $this->getContext();
+
         if ($context->logged) {
             return;
         }
+
+        if ($event instanceof UserActionLog) {
+            if ($this->dispatcher->isInvoking() || $this->dispatcher->getArea() === 'Admin') {
+                return;
+            }
+        }
+
         $context->logged = true;
 
         $data = Arr::except($this->request->all(), ['_url']);

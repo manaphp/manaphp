@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Filters;
 
+use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Exception\ForbiddenException;
-use ManaPHP\Http\Filter;
-use ManaPHP\Http\Filter\AuthorizingFilterInterface;
+use ManaPHP\Http\Server\Event\RequestAuthorizing;
 use ManaPHP\Identifying\Identity\NoCredentialException;
 
 /**
@@ -15,9 +15,9 @@ use ManaPHP\Identifying\Identity\NoCredentialException;
  * @property-read \ManaPHP\Http\ResponseInterface        $response
  * @property-read \ManaPHP\Http\DispatcherInterface      $dispatcher
  */
-class AuthorizationFilter extends Filter implements AuthorizingFilterInterface
+class AuthorizationFilter
 {
-    public function onAuthorizing(): void
+    public function onAuthorizing(#[Event] RequestAuthorizing $event): void
     {
         if ($this->authorization->isAllowed($this->dispatcher->getAction())) {
             return;
