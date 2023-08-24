@@ -10,7 +10,7 @@ namespace App\Services;
  * @property-read \ManaPHP\Redis\RedisCacheInterface     $redisCache
  * @property-read \ManaPHP\Redis\RedisBrokerInterface    $redisBroker
  */
-class Service extends \ManaPHP\Service
+class Service
 {
 
 }
