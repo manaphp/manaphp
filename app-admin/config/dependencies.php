@@ -4,7 +4,7 @@ return [
     'ManaPHP\Http\ServerInterface'          => '#auto',
     'ManaPHP\Http\HandlerInterface'         => 'ManaPHP\Mvc\Handler',
     'ManaPHP\Redis\RedisInterface'          => [env('REDIS_URL')],
-    'ManaPHP\Logging\LoggerInterface'       => ['class' => 'ManaPHP\Logging\Logger\Adapter\File',
+    'Psr\Log\LoggerInterface'               => ['class' => 'ManaPHP\Logging\Logger\Adapter\File',
                                                 'level' => env('LOGGER_LEVEL', 'info')],
     'ManaPHP\Http\SessionInterface'         => ['class'  => 'ManaPHP\Http\Session\Adapter\Redis',
                                                 'ttl'    => seconds('1d'),

@@ -8,8 +8,8 @@ use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\ResponseInterface;
-use ManaPHP\Logging\LoggerInterface;
 use ManaPHP\Rendering\RendererInterface;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 class ErrorHandler implements ErrorHandlerInterface
@@ -24,7 +24,7 @@ class ErrorHandler implements ErrorHandlerInterface
     {
         $code = $throwable instanceof Exception ? $throwable->getStatusCode() : 500;
         if ($code >= 500) {
-            $this->logger->error($throwable);
+            $this->logger->error('', ['exception' => $throwable]);
         }
 
         if ($this->request->isAjax()) {

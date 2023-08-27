@@ -6,7 +6,7 @@ namespace ManaPHP\Cli;
 use JetBrains\PhpStorm\NoReturn;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Exception\AbortException;
-use ManaPHP\Logging\LoggerInterface;
+use Psr\Log\LoggerInterface;
 use Swoole\Coroutine;
 use Swoole\Event;
 use Swoole\Runtime;
@@ -27,7 +27,7 @@ class Server implements ServerInterface
     public function handle(): void
     {
         $args = implode(' ', array_slice($GLOBALS['argv'], 1));
-        $this->logger->info(sprintf('command line: %s', basename($GLOBALS['argv'][0])) . ' ' . $args);
+        $this->logger->info('command line: {0}', [basename($GLOBALS['argv'][0]) . ' ' . $args]);
 
         try {
             $this->exit_code = $this->cliHandler->handle();

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Coroutine;
 
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Logging\LoggerInterface;
+use Psr\Log\LoggerInterface;
 use Swoole\Coroutine;
 use Swoole\Coroutine\Channel;
 use Throwable;
@@ -29,7 +29,7 @@ class Scheduler implements SchedulerInterface
             $return = $fn(...$args);
         } catch (Throwable $throwable) {
             $return = null;
-            $this->logger->error($throwable);
+            $this->logger->error('', ['exception' => $throwable]);
         }
         $channel->push([$id, $return]);
     }
@@ -58,7 +58,7 @@ class Scheduler implements SchedulerInterface
                     $return = $fn(...$args);
                 } catch (Throwable $throwable) {
                     $return = null;
-                    $this->logger->error($throwable);
+                    $this->logger->error('', ['exception' => $throwable]);
                 }
 
                 $returns[$id] = $return;

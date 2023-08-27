@@ -7,9 +7,8 @@ use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestAuthorized;
-use ManaPHP\Tracer;
 
-class DispatcherTracer extends Tracer
+class DispatcherTracer
 {
     #[Inject] protected ResponseInterface $response;
 

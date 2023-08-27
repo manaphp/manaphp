@@ -5,18 +5,21 @@ namespace ManaPHP\Tracers;
 
 use ManaPHP\Amqp\Client\Event\AmqpClientConsuming;
 use ManaPHP\Amqp\Client\Event\AmqpClientPublish;
+use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Eventing\Attribute\Event;
-use ManaPHP\Tracer;
+use Psr\Log\LoggerInterface;
 
-class AmqpClientTracer extends Tracer
+class AmqpClientTracer
 {
+    #[Inject] protected LoggerInterface $logger;
+
     public function onPublish(#[Event] AmqpClientPublish $event): void
     {
-        $this->debug($event, 'amqpClient.publish');
+        $this->logger->debug($event, ['category' => 'amqpClient.publish']);
     }
 
     public function onConsuming(#[Event] AmqpClientConsuming $event): void
     {
-        $this->debug($event, 'amqpClient.consuming');
+        $this->logger->debug($event, ['category' => 'amqpClient.consuming']);
     }
 }

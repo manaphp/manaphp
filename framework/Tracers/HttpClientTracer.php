@@ -3,19 +3,25 @@ declare(strict_types=1);
 
 namespace ManaPHP\Tracers;
 
+use ManaPHP\Di\Attribute\Inject;
+use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\Client\HttpClientRequested;
 use ManaPHP\Http\Client\HttpClientRequesting;
-use ManaPHP\Tracer;
+use Psr\Log\LoggerInterface;
 
-class HttpClientTracer extends Tracer
+class HttpClientTracer
 {
+    #[Inject] protected LoggerInterface $logger;
+
+    #[Value] protected bool $verbose = true;
+
     public function onRequesting(#[Event] HttpClientRequesting $event): void
     {
         $request = $event->request;
 
         if ($request->method === 'POST' && $request->body) {
-            $this->info($request->url, 'httpClient.request');
+            $this->logger->info($request->url, ['category' => 'httpClient.request']);
         }
     }
 
@@ -27,6 +33,6 @@ class HttpClientTracer extends Tracer
             unset($response->stats, $response->headers);
         }
 
-        $this->debug($response, 'httpClient.response');
+        $this->logger->debug($response, ['category' => 'httpClient.response']);
     }
 }

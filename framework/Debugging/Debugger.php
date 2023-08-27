@@ -32,15 +32,14 @@ use ManaPHP\Http\Server\Event\RequestEnd;
 use ManaPHP\Http\Server\Event\ResponseStringify;
 use ManaPHP\Logging\Level;
 use ManaPHP\Logging\Logger\Event\LoggerLog;
-use ManaPHP\Logging\LoggerInterface;
 use ManaPHP\Model\ModelInterface;
 use ManaPHP\Mongodb\Event\MongodbBulkWritten;
 use ManaPHP\Mongodb\Event\MongodbCommanded;
 use ManaPHP\Mongodb\Event\MongodbQueried;
 use ManaPHP\Redis\RedisCacheInterface;
 use ManaPHP\Rendering\Renderer\Event\RendererRendering;
-use ManaPHP\Tracer;
 use ManaPHP\Version;
+use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
 class Debugger implements DebuggerInterface
@@ -355,7 +354,7 @@ class Debugger implements DebuggerInterface
         foreach ($this->container->getInstances() as $name => $instance) {
             $properties = $this->dumpManager->dump($instance);
 
-            if ($instance instanceof Tracer) {
+            if (preg_match('#\\\\Tracers\\\\\w+Tracer$#', $instance::class)) {
                 $name = str_replace('\\', '//', $name);
                 $data['tracers'][lcfirst(basename($name, 'Tracer'))] = ['class'      => $instance::class,
                                                                         'properties' => $properties];

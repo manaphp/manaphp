@@ -5,7 +5,7 @@ namespace ManaPHP\Mongodb\Event;
 
 use ManaPHP\Mongodb\Connection;
 
-class MongodbConnect
+class MongodbConnect extends AbstractEvent
 {
     public function __construct(
         public Connection $connection,

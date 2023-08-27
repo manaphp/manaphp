@@ -24,7 +24,6 @@ class Kernel
     public function registerDefaultDependencies(): void
     {
         $this->container->set('Psr\SimpleCache\CacheInterface', 'ManaPHP\Caching\SimpleCache');
-        $this->container->set('Psr\Log\LoggerInterface', 'ManaPHP\Logging\LoggerInterface');
         $this->container->set(
             'Psr\EventDispatcher\EventDispatcherInterface', 'ManaPHP\Eventing\EventDispatcherInterface'
         );

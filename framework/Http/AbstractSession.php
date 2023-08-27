@@ -18,8 +18,8 @@ use ManaPHP\Http\Session\Event\SessionDestory;
 use ManaPHP\Http\Session\Event\SessionEnd;
 use ManaPHP\Http\Session\Event\SessionStart;
 use ManaPHP\Http\Session\Event\SessionUpdate;
-use ManaPHP\Logging\LoggerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
 
 abstract class AbstractSession implements SessionInterface, ArrayAccess, JsonSerializable
 {

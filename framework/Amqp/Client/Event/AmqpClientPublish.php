@@ -7,7 +7,7 @@ use ManaPHP\Amqp\ClientInterface;
 use ManaPHP\Amqp\Exchange;
 use ManaPHP\Amqp\Queue;
 
-class AmqpClientPublish
+class AmqpClientPublish extends AbstractEvent
 {
     public function __construct(
         public ClientInterface $client,

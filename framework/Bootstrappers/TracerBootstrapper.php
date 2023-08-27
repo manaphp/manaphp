@@ -26,8 +26,6 @@ class TracerBootstrapper implements BootstrapperInterface
             return;
         }
 
-        /** @var \ManaPHP\Tracer $tracer */
-
         if (in_array('*', $this->tracers, true)) {
             foreach (LocalFS::glob('@manaphp/Tracers/?*Tracer.php') as $file) {
                 $name = basename($file, 'Tracer.php');

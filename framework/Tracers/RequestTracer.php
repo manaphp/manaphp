@@ -7,14 +7,15 @@ use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Http\Server\Event\RequestBegin;
-use ManaPHP\Tracer;
+use Psr\Log\LoggerInterface;
 
-class RequestTracer extends Tracer
+class RequestTracer
 {
+    #[Inject] protected LoggerInterface $logger;
     #[Inject] protected RequestInterface $request;
 
     public function onBegin(#[Event] RequestBegin $event): void
     {
-        $this->debug($this->request->all(), 'http.request');
+        $this->logger->debug('{0}', [json_stringify($this->request->all()), 'category' => 'http.request']);
     }
 }

@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
+use Stringable;
+
 interface ConsoleInterface
 {
     public function isSupportColor(): bool;
@@ -11,21 +13,21 @@ interface ConsoleInterface
 
     public function sampleColorizer(): void;
 
-    public function write(mixed $message, int $options = 0): static;
+    public function write(string|Stringable $message, array $context = [], int $options = 0): void;
 
-    public function writeLn(mixed $message = '', int $options = 0): static;
+    public function writeLn(string|Stringable $message = '', array $context = [], int $options = 0): void;
 
-    public function debug(mixed $message = '', int $options = 0): static;
+    public function debug(string|Stringable $message = '', array $context = [], int $options = 0): void;
 
-    public function info(mixed $message): void;
+    public function info(string|Stringable $message, array $context = []): void;
 
-    public function warning(mixed $message): void;
+    public function warning(string|Stringable $message, array $context = []): void;
 
-    public function success(mixed $message): void;
+    public function success(string|Stringable $message, array $context = []): void;
 
-    public function error(mixed $message, int $code = 1): int;
+    public function error(string|Stringable $message, array $context = [], int $code = 1): int;
 
-    public function progress(mixed $message, mixed $value = null): void;
+    public function progress(string|Stringable $message, mixed $value = null): void;
 
     public function read(): string;
 

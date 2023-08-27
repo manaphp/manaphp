@@ -7,7 +7,7 @@ use ManaPHP\Amqp\ClientInterface;
 use ManaPHP\Amqp\MessageInterface;
 use ManaPHP\Amqp\Queue;
 
-class AmqpClientConsuming
+class AmqpClientConsuming extends AbstractEvent
 {
     public function __construct(
         public ClientInterface $client,

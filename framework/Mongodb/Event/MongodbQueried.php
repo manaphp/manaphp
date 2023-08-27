@@ -5,7 +5,7 @@ namespace ManaPHP\Mongodb\Event;
 
 use ManaPHP\Mongodb\MongodbInterface;
 
-class MongodbQueried
+class MongodbQueried extends AbstractEvent
 {
     public function __construct(
         public MongodbInterface $mongodb,

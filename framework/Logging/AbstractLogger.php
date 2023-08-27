@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP\Logging;
 
+use JsonSerializable;
 use ManaPHP\AliasInterface;
 use ManaPHP\Context\ContextTrait;
 use ManaPHP\Coroutine;
@@ -15,7 +16,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LogLevel;
 use Throwable;
 
-abstract class AbstractLogger extends \Psr\Log\AbstractLogger implements LoggerInterface
+abstract class AbstractLogger extends \Psr\Log\AbstractLogger
 {
     use ContextTrait;
 
@@ -27,29 +28,10 @@ abstract class AbstractLogger extends \Psr\Log\AbstractLogger implements LoggerI
     #[Value] protected ?string $hostname;
     #[Value] protected string $time_format = 'Y-m-d\TH:i:s.uP';
 
-    protected const  MILLISECONDS = 'v';
-    protected const MICROSECONDS = 'u';
+    public const  MILLISECONDS = 'v';
+    public const MICROSECONDS = 'u';
 
     abstract public function append(Log $log): void;
-
-    protected function getLocation(array $traces): array
-    {
-        return $traces[0];
-    }
-
-    protected function inferCategory(array $traces): string
-    {
-        $trace = $traces[1];
-        if (str_ends_with($trace['function'], '{closure}')) {
-            $trace = $traces[2];
-        }
-
-        if (isset($trace['class'])) {
-            return str_replace('\\', '.', $trace['class']) . '.' . $trace['function'];
-        } else {
-            return $trace['function'];
-        }
-    }
 
     public function exceptionToString(Throwable $exception): string
     {
@@ -81,14 +63,74 @@ abstract class AbstractLogger extends \Psr\Log\AbstractLogger implements LoggerI
         return strtr($str, $replaces);
     }
 
-    public function formatMessage(mixed $message): string
+    protected function interpolateMessage(string $message, array $context): string
+    {
+        $replaces = [];
+        preg_match_all('#{([\w.]+)}#', $message, $matches);
+        foreach ($matches[1] as $key) {
+            if (($val = $context[$key] ?? null) === null) {
+                continue;
+            }
+
+            if (is_array($val) || is_scalar($val)) {
+                $val = json_stringify($val);
+            } elseif (is_object($val)) {
+                if (method_exists($val, '__toString')) {
+                    $val = (string)$val;
+                } elseif ($val instanceof JsonSerializable) {
+                    $val = json_stringify($val,);
+                } else {
+                    $val = json_stringify((array)$val);
+                }
+            } else {
+                continue;
+            }
+
+            $replaces['{' . $key . '}'] = $val;
+        }
+        return strtr($message, $replaces);
+    }
+
+    protected function formatMessage(mixed $message, array $context): string
     {
         if (is_string($message)) {
+            if ($context !== [] && str_contains($message, '{')) {
+                $message = $this->interpolateMessage($message, $context);
+            }
+
+            if (($exception = $context['exception'] ?? null) !== null && $exception instanceof Throwable) {
+                $message .= ': ' . $this->exceptionToString($exception);
+            }
             return $message;
         } elseif ($message instanceof Throwable) {
             return $this->exceptionToString($message);
         } else {
             return json_stringify($message, JSON_PARTIAL_OUTPUT_ON_ERROR);
+        }
+    }
+
+    protected function getCategory(mixed $message, array $context, array $traces): string
+    {
+        if (($v = $context['category'] ?? null) !== null
+            && is_string($v)
+            && (!is_string($message) || !str_contains($message, '{category}'))
+            && preg_match('#^[\w.]+$#', $v) === 1
+        ) {
+            return $v;
+        } else {
+            if (($v = $context['exception'] ?? null) !== null && $v instanceof Throwable) {
+                $trace = $v->getTrace()[0];
+            } else {
+                $trace = $traces[1];
+                if (str_ends_with($trace['function'], '{closure}')) {
+                    $trace = $traces[2];
+                }
+            }
+            if (isset($trace['class'])) {
+                return str_replace('\\', '.', $trace['class']) . '.' . $trace['function'];
+            } else {
+                return $trace['function'];
+            }
         }
     }
 
@@ -99,97 +141,19 @@ abstract class AbstractLogger extends \Psr\Log\AbstractLogger implements LoggerI
             return;
         }
 
-        $log = new Log();
+        $log = new Log($level, $this->hostname ?? gethostname(), $this->time_format);
 
-        $log->hostname = $this->hostname ?? gethostname();
-        $log->level = strtoupper($level);
+        $traces = Coroutine::getBacktrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
+        array_shift($traces);
 
-        $category = null;
+        $log->category = $this->getCategory($message, $context, $traces);
 
-        if ($message instanceof Throwable) {
-            $log->category = $category ?: 'exception';
-            $log->file = basename($message->getFile());
-            $log->line = $message->getLine();
-        } else {
-            $traces = Coroutine::getBacktrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS, 7);
-            array_shift($traces);
-            if (($v = $context['category'] ?? null) !== null
-                && is_string($v)
-                && (!is_string($message) || !str_contains($message, '{category}'))
-                && preg_match('#^[\w.]+$#', $v) === 1
-            ) {
-                $log->category = $v;
-            } else {
-                $log->category = $category ?: $this->inferCategory($traces);
-            }
+        $log->setLocation($traces[0]);
 
-            $location = $this->getLocation($traces);
-            if (isset($location['file'])) {
-                $log->file = basename($location['file']);
-                $log->line = $location['line'];
-            } else {
-                $log->file = '';
-                $log->line = 0;
-            }
-        }
+        $log->message = $this->formatMessage($message, $context);
 
-        $log->location = $log->file . ':' . $log->line;
-
-        $log->message = is_string($message) ? $message : $this->formatMessage($message);
-        $log->timestamp = microtime(true);
-        $time_format = $this->time_format;
-        if (str_contains($time_format, self::MILLISECONDS)) {
-            $ms = sprintf('%03d', ($log->timestamp - (int)$log->timestamp) * 1000);
-            $time_format = str_replace(self::MILLISECONDS, $ms, $time_format);
-        } elseif (str_contains($time_format, self::MICROSECONDS)) {
-            $ms = sprintf('%06d', ($log->timestamp - (int)$log->timestamp) * 1000000);
-            $time_format = str_replace(self::MICROSECONDS, $ms, $time_format);
-        }
-
-        $log->time = date($time_format, (int)$log->timestamp);
-
-        $this->eventDispatcher->dispatch(new LoggerLog($this, $level, $message, $category, $log));
+        $this->eventDispatcher->dispatch(new LoggerLog($this, $level, $message, $context, $log));
 
         $this->append($log);
-    }
-
-    public function debug(mixed $message, array $context = []): void
-    {
-        $this->log(LogLevel::DEBUG, $message, $context);
-    }
-
-    public function info(mixed $message, array $context = []): void
-    {
-        $this->log(LogLevel::INFO, $message, $context);
-    }
-
-    public function notice(mixed $message, array $context = []): void
-    {
-        $this->log(LogLevel::NOTICE, $message, $context);
-    }
-
-    public function warning(mixed $message, array $context = []): void
-    {
-        $this->log(LogLevel::WARNING, $message, $context);
-    }
-
-    public function error(mixed $message, array $context = []): void
-    {
-        $this->log(LogLevel::ERROR, $message, $context);
-    }
-
-    public function critical(mixed $message, array $context = []): void
-    {
-        $this->log(LogLevel::CRITICAL, $message, $context);
-    }
-
-    public function alert(mixed $message, array $context = []): void
-    {
-        $this->log(LogLevel::ALERT, $message, $context);
-    }
-
-    public function emergency(mixed $message, array $context = []): void
-    {
-        $this->log(LogLevel::EMERGENCY, $message, $context);
     }
 }

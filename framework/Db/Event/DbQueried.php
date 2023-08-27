@@ -5,7 +5,7 @@ namespace ManaPHP\Db\Event;
 
 use ManaPHP\Db\DbInterface;
 
-class DbQueried
+class DbQueried extends AbstractEvent
 {
     public function __construct(
         public DbInterface $db,

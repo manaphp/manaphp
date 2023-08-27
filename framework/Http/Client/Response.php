@@ -6,8 +6,9 @@ namespace ManaPHP\Http\Client;
 use JsonSerializable;
 use ManaPHP\Exception\InvalidJsonException;
 use ManaPHP\Http\Client\Response\Cookie;
+use Stringable;
 
-class Response implements JsonSerializable
+class Response implements JsonSerializable, Stringable
 {
     public string $url;
     public float $process_time;
@@ -152,5 +153,10 @@ class Response implements JsonSerializable
     public function jsonSerialize(): array
     {
         return get_object_vars($this);
+    }
+
+    public function __toString(): string
+    {
+        return json_stringify($this->jsonSerialize());
     }
 }

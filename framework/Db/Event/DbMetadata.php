@@ -5,7 +5,7 @@ namespace ManaPHP\Db\Event;
 
 use ManaPHP\Db\DbInterface;
 
-class DbMetadata
+class DbMetadata extends AbstractEvent
 {
     public function __construct(
         public DbInterface $db,

@@ -12,7 +12,7 @@ use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\CurlMulti\Error;
 use ManaPHP\Http\CurlMulti\Request;
 use ManaPHP\Http\CurlMulti\Response;
-use ManaPHP\Logging\LoggerInterface;
+use Psr\Log\LoggerInterface;
 
 class CurlMulti implements CurlMultiInterface, Countable
 {

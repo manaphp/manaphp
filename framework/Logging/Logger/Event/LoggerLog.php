@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Logging\Logger\Event;
 
 use ManaPHP\Logging\Logger\Log;
-use ManaPHP\Logging\LoggerInterface;
+use Psr\Log\LoggerInterface;
 
 class LoggerLog
 {
@@ -12,7 +12,7 @@ class LoggerLog
         public LoggerInterface $logger,
         public string $level,
         public mixed $message,
-        public ?string $category,
+        public array $context,
         public Log $log,
     ) {
 

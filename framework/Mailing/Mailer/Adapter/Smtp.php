@@ -8,13 +8,13 @@ use ManaPHP\Context\ContextTrait;
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\InvalidValueException;
-use ManaPHP\Logging\LoggerInterface;
 use ManaPHP\Mailing\AbstractMailer;
 use ManaPHP\Mailing\Mailer\Adapter\Exception\AuthenticationException;
 use ManaPHP\Mailing\Mailer\Adapter\Exception\BadResponseException;
 use ManaPHP\Mailing\Mailer\Adapter\Exception\ConnectionException;
 use ManaPHP\Mailing\Mailer\Adapter\Exception\TransmitException;
 use ManaPHP\Mailing\Mailer\Message;
+use Psr\Log\LoggerInterface;
 
 class Smtp extends AbstractMailer
 {
@@ -301,7 +301,7 @@ class Smtp extends AbstractMailer
                 if ($failedRecipients !== null) {
                     $failedRecipients[] = $address;
                 }
-                $this->logger->info(sprintf('Failed Recipient To <%s>: %s', $address, $msg), 'mailer.send');
+                $this->logger->info('Failed Recipient To <{0}>: {1}', [$address, $msg, 'category' => 'mailer.send']);
             } else {
                 $success++;
             }
@@ -309,7 +309,7 @@ class Smtp extends AbstractMailer
 
         if (!$success) {
             $addresses = array_merge($message->getTo(), $message->getCc(), $message->getBcc());
-            $this->logger->info(sprintf('Send Failed: %s', json_stringify($addresses)), 'mailer.send');
+            $this->logger->info('Send Failed: {0}', [json_stringify($addresses), 'category' => 'mailer.send']);
             return $success;
         }
 

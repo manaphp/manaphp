@@ -11,12 +11,12 @@ use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Http\GlobalsInterface;
 use ManaPHP\Http\RequestInterface;
-use ManaPHP\Logging\LoggerInterface;
 use ManaPHP\Ws\HandlerInterface;
 use ManaPHP\Ws\Server\Event\ServerStart;
 use ManaPHP\Ws\Server\Event\ServerStop;
 use ManaPHP\Ws\ServerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
 use Swoole\Coroutine;
 use Swoole\Http\Request;
 use Swoole\Runtime;
@@ -127,7 +127,7 @@ class Swoole implements ServerInterface
         try {
             $this->eventDispatcher->dispatch(new ServerStart($this, $server, $worker_id));
         } catch (Throwable $throwable) {
-            $this->logger->error($throwable);
+            $this->logger->error('', ['exception' => $throwable]);
         }
     }
 
@@ -136,7 +136,7 @@ class Swoole implements ServerInterface
         try {
             $this->eventDispatcher->dispatch(new ServerStop($this, $server, $worker_id));
         } catch (Throwable $throwable) {
-            $this->logger->error($throwable);
+            $this->logger->error('', ['exception' => $throwable]);
         }
     }
 
@@ -218,7 +218,7 @@ class Swoole implements ServerInterface
         try {
             $this->wsHandler->onMessage($frame->fd, $frame->data);
         } catch (Throwable $throwable) {
-            $this->logger->warning($throwable);
+            $this->logger->warning('', ['exception' => $throwable]);
         }
 
         foreach ($current_context as $k => $v) {

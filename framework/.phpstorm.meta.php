@@ -160,6 +160,16 @@ namespace PHPSTORM_META {
         \ManaPHP\Http\Controller\Attribute\HttpCache::__construct(), 0,
         argumentsSet('filter_http_cache')
     );
+    registerArgumentsSet('logger_category', ['category' => '']);
+    expectedArguments(\Psr\Log\LoggerInterface::log(), 2, argumentsSet('logger_category'));
+    expectedArguments(\Psr\Log\LoggerInterface::debug(), 1, argumentsSet('logger_category'));
+    expectedArguments(\Psr\Log\LoggerInterface::info(), 1, argumentsSet('logger_category'));
+    expectedArguments(\Psr\Log\LoggerInterface::notice(), 1, argumentsSet('logger_category'));
+    expectedArguments(\Psr\Log\LoggerInterface::warning(), 1, argumentsSet('logger_category'));
+    expectedArguments(\Psr\Log\LoggerInterface::error(), 1, argumentsSet('logger_category'));
+    expectedArguments(\Psr\Log\LoggerInterface::critical(), 1, argumentsSet('logger_category'));
+    expectedArguments(\Psr\Log\LoggerInterface::alert(), 1, argumentsSet('logger_category'));
+    expectedArguments(\Psr\Log\LoggerInterface::emergency(), 1, argumentsSet('logger_category'));
 }
 
 /**

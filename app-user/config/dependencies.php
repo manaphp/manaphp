@@ -5,7 +5,7 @@ return [
     'ManaPHP\Http\HandlerInterface'   => 'ManaPHP\Mvc\Handler',
     'ManaPHP\Redis\RedisInterface'    => [env('REDIS_URL')],
     'ManaPHP\Security\CryptInterface' => ['master_key' => env('MASTER_KEY')],
-    'ManaPHP\Logging\LoggerInterface' => [
+    'Psr\Log\LoggerInterface'         => [
         'class' => 'ManaPHP\Logging\Logger\Adapter\File',
         'level' => env('LOGGER_LEVEL', 'info')],
     'ManaPHP\Http\RouterInterface'    => 'App\Router',

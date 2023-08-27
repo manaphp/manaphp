@@ -8,11 +8,11 @@ use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
 use ManaPHP\Http\RequestInterface;
 use ManaPHP\Identifying\IdentityInterface;
-use ManaPHP\Logging\LoggerInterface;
 use ManaPHP\Messaging\PubSubInterface;
 use ManaPHP\Ws\Pushing\Server\Event\ServerPushing;
 use ManaPHP\Ws\ServerInterface as WsServerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
 
 class Server implements ServerInterface
 {
@@ -172,8 +172,7 @@ class Server implements ServerInterface
             $this->pushToRoom($receivers, $message);
         } else {
             $this->logger->warning(
-                'unknown `{type}` type message: {:message}',
-                ['type' => $type, 'message' => $message, 'category' => 'wspServer.bad_type']
+                'unknown `{0}` type message: {1}', [$type, $message, 'category' => 'wspServer.bad_type']
             );
         }
     }

@@ -5,7 +5,7 @@ namespace ManaPHP\Coroutine;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
-use ManaPHP\Logging\LoggerInterface;
+use Psr\Log\LoggerInterface;
 use Swoole\Coroutine;
 use Swoole\Coroutine\Channel;
 use Throwable;
@@ -40,7 +40,7 @@ class Task implements TaskInterface
             try {
                 $fn($data);
             } catch (Throwable $throwable) {
-                $this->logger->error($throwable);
+                $this->logger->error('', ['exception' => $throwable]);
             }
         }
     }
@@ -55,7 +55,7 @@ class Task implements TaskInterface
             try {
                 $fn($data);
             } catch (Throwable $throwable) {
-                $this->logger->error($throwable);
+                $this->logger->error('', ['exception' => $throwable]);
             }
             return true;
         }

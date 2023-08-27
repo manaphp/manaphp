@@ -9,10 +9,10 @@ use ManaPHP\Exception\NotSupportedException;
 use ManaPHP\Helper\Arr;
 use ManaPHP\Helper\Sharding;
 use ManaPHP\Helper\Sharding\ShardingTooManyException;
-use ManaPHP\Logging\LoggerInterface;
 use ManaPHP\Model\ShardingInterface;
 use ManaPHP\Query\AbstractQuery;
 use PDO;
+use Psr\Log\LoggerInterface;
 
 class Query extends AbstractQuery
 {
@@ -679,7 +679,7 @@ class Query extends AbstractQuery
     public function execute(): array
     {
         if (in_array('FALSE', $this->conditions, true)) {
-            $this->logger->debug($this->sql, ['category' => 'db.query.skip']);
+            $this->logger->debug('SQL: {0}', [$this->sql, 'category' => 'db.query.skip']);
             return [];
         }
 

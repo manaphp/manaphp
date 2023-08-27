@@ -3,9 +3,12 @@ declare(strict_types=1);
 
 namespace ManaPHP\Cli;
 
+use JsonSerializable;
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Logging\LoggerInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use ReflectionClass;
+use Stringable;
 use Throwable;
 use function getenv;
 
@@ -90,20 +93,51 @@ class Console implements ConsoleInterface
         return $c . $text . "\033[0m" . str_repeat(' ', max($width - strlen($text), 0));
     }
 
-    public function write(mixed $message, int $options = 0): static
+    protected function interpolateMessage(string $message, array $context): string
+    {
+        $replaces = [];
+        preg_match_all('#{([\w.]+)}#', $message, $matches);
+        foreach ($matches[1] as $key) {
+            if (($val = $context[$key] ?? null) === null) {
+                continue;
+            }
+
+            if (is_array($val) || is_scalar($val)) {
+                $val = json_stringify($val);
+            } elseif (is_object($val)) {
+                if (method_exists($val, '__toString')) {
+                    $val = (string)$val;
+                } elseif ($val instanceof JsonSerializable) {
+                    $val = json_stringify($val,);
+                } else {
+                    $val = json_stringify((array)$val);
+                }
+            } else {
+                continue;
+            }
+
+            $replaces['{' . $key . '}'] = $val;
+        }
+        return strtr($message, $replaces);
+    }
+
+    public function write(string|Stringable $message, array $context = [], int $options = 0): void
     {
         if (is_string($message)) {
-            $message = preg_replace_callback('#`([^`]+)`#', function ($match) {
-                return '`' . $this->colorize($match[1], self::FC_BLUE) . '`';
-            }, $message);
-            echo $this->colorize($message, $options);
-        } elseif ($message instanceof Throwable) {
-            echo $message;
-        } else {
-            echo $this->colorize(json_stringify($message), $options);
+            if ($context !== [] && str_contains($message, '{')) {
+                $message = $this->interpolateMessage($message, $context);
+            }
         }
 
-        return $this;
+        if ($options === 0) {
+            echo $message;
+        } else {
+            echo $this->colorize($message, $options);
+        }
+
+        if (($v = $context['exception'] ?? null) !== null && $v instanceof Throwable) {
+            echo $message;
+        }
     }
 
     public function sampleColorizer(): void
@@ -146,64 +180,50 @@ class Console implements ConsoleInterface
         $progress = 0;
         while ($progress < 100) {
             $progress += random_int(1, $progress > 10 ? 20 : 3);
-            $this->progress('current process is :value', $progress);
+            $this->progress('current process is {0}', $progress);
             sleep(1);
         }
     }
 
-    public function writeLn(mixed $message = '', int $options = 0): static
+    public function writeLn(string|Stringable $message = '', array $context = [], int $options = 0): void
     {
-        $this->write($message, $options);
-        $this->write(PHP_EOL);
-
-        return $this;
-    }
-
-    public function debug(mixed $message = '', int $options = 0): static
-    {
-        $this->logger->debug($message);
-
-        $this->write($message, $options);
-        $this->write(PHP_EOL);
-
-        return $this;
-    }
-
-    public function info(mixed $message): void
-    {
-        $this->logger->info($message);
-
-        $this->write($message, self::FC_YELLOW);
+        $this->write($message, $context, $options);
         $this->write(PHP_EOL);
     }
 
-    public function warning(mixed $message): void
+    public function debug(string|Stringable $message = '', array $context = [], int $options = 0): void
     {
-        $this->logger->warning($message);
-
-        $this->write($message, self::FC_MAGENTA);
-        $this->write(PHP_EOL);
+        $this->logger->log(LogLevel::DEBUG, $message);
+        $this->writeLn($message, $context, $options);
     }
 
-    public function success(mixed $message): void
+    public function info(string|Stringable $message, array $context = []): void
     {
-        $this->logger->info($message);
-
-        $this->write($message, self::FC_BLUE);
-        $this->write(PHP_EOL);
+        $this->logger->log(LogLevel::INFO, $message, $context);
+        $this->writeLn($message, $context, self::FC_YELLOW);
     }
 
-    public function error(mixed $message, int $code = 1): int
+    public function warning(string|Stringable $message, array $context = []): void
     {
-        $this->logger->error($message);
+        $this->logger->log(LogLevel::WARNING, $message, $context);
+        $this->writeLn($message, $context, self::FC_MAGENTA);
+    }
 
-        $this->write($message, self::FC_RED);
-        $this->write(PHP_EOL);
+    public function success(string|Stringable $message, array $context = []): void
+    {
+        $this->logger->log(LogLevel::INFO, $message, $context);
+        $this->writeLn($message, $context, self::FC_BLUE);
+    }
+
+    public function error(string|Stringable $message, array $context = [], int $code = 1): int
+    {
+        $this->logger->log(LogLevel::ERROR, $message, $context);
+        $this->writeLn($message, $context, self::FC_RED);
 
         return $code;
     }
 
-    public function progress(mixed $message, mixed $value = null): void
+    public function progress(string|Stringable $message, mixed $value = null): void
     {
         if ($value !== null) {
             if (is_int($value) || is_float($value)) {
@@ -212,16 +232,14 @@ class Console implements ConsoleInterface
                 $percent = $value;
             }
 
-            if (is_array($message)) {
-                $message['value'] = $this->colorize($percent, self::FC_GREEN);
-            } else {
-                $message = [$message, 'value' => $this->colorize($percent, self::FC_GREEN)];
-            }
+            $context = [$this->colorize($percent, self::FC_GREEN)];
+        } else {
+            $context = [0];
         }
 
         $this->write(str_pad("\r", $this->width));
         $this->write("\r");
-        $this->write($message);
+        $this->write($message, $context);
 
         if ($value === null) {
             $this->write(PHP_EOL);

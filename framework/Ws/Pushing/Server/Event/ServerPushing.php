@@ -5,7 +5,7 @@ namespace ManaPHP\Ws\Pushing\Server\Event;
 
 use ManaPHP\Ws\Pushing\ServerInterface;
 
-class ServerPushing
+class ServerPushing extends AbstractEvent
 {
     public function __construct(
         public ServerInterface $server,

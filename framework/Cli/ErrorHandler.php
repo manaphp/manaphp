@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ManaPHP\Cli;
 
 use ManaPHP\Di\Attribute\Inject;
-use ManaPHP\Logging\LoggerInterface;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 class ErrorHandler implements ErrorHandlerInterface
@@ -13,7 +13,7 @@ class ErrorHandler implements ErrorHandlerInterface
 
     public function handle(Throwable $throwable): void
     {
-        $this->logger->error($throwable);
+        $this->logger->error('', ['exception' => $throwable]);
         echo($throwable);
     }
 }

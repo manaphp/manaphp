@@ -5,7 +5,7 @@ namespace ManaPHP\Mongodb\Event;
 
 use ManaPHP\Mongodb\MongodbInterface;
 
-class MongodbCommanding
+class MongodbCommanding extends AbstractEvent
 {
     public function __construct(
         public MongodbInterface $mongodb,
