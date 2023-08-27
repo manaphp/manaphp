@@ -14,4 +14,14 @@ class PoolPopping
     ) {
 
     }
+
+    public function __toString()
+    {
+        return json_stringify(
+            ['owner' => $this->owner::class,
+             'type'  => $this->type
+            ]
+        );
+
+    }
 }
