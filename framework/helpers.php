@@ -34,7 +34,7 @@ if (!function_exists('json_stringify')) {
 
         /** @noinspection JsonEncodingApiUsageInspection */
         if (($str = json_encode($json, $options, 16)) === false) {
-            throw new JsonException('json_stringify failed');
+            throw new JsonException('json_stringify failed: ' . json_last_error_msg());
         }
 
         return $str;
