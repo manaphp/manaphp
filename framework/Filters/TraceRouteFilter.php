@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace ManaPHP\Tracers;
+namespace ManaPHP\Http\Filters;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Eventing\Attribute\Event;
 use ManaPHP\Http\ResponseInterface;
 use ManaPHP\Http\Server\Event\RequestAuthorized;
 
-class DispatcherTracer
+class TraceRouteFilter
 {
     #[Inject] protected ResponseInterface $response;
 
@@ -18,7 +18,7 @@ class DispatcherTracer
         $action = $event->action;
 
         $this->response->setHeader(
-            'X-Dispatcher-Tracer', $controller::class . '::' . $action . 'Action'
+            'X-Router-Route', $controller::class . '::' . $action . 'Action'
         );
     }
 }

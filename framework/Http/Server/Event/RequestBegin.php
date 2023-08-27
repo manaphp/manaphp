@@ -5,4 +5,5 @@ namespace ManaPHP\Http\Server\Event;
 
 class RequestBegin
 {
+
 }

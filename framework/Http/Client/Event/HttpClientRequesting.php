@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace ManaPHP\Http\Client;
 
+use JsonSerializable;
 use ManaPHP\Http\ClientInterface;
+use Stringable;
 
-class HttpClientRequesting
+class HttpClientRequesting implements JsonSerializable, Stringable
 {
     public function __construct(
         public ClientInterface $client,
@@ -14,5 +16,18 @@ class HttpClientRequesting
         public Request $request
     ) {
 
+    }
+
+    public function jsonSerialize(): array
+    {
+        return ['url'     => $this->url,
+                'method'  => $this->method,
+                'body'    => $this->request->body,
+                'headers' => $this->request->headers];
+    }
+
+    public function __toString(): string
+    {
+        return json_stringify($this->jsonSerialize());
     }
 }

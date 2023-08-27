@@ -13,6 +13,5 @@ class SessionStart
         public AbstractSessionContext $context,
         public string $session_id,
     ) {
-
     }
 }

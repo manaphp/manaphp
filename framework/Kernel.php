@@ -5,6 +5,7 @@ namespace ManaPHP;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Di\Attribute\Value;
+use ManaPHP\Eventing\TracerInterface;
 use Psr\Container\ContainerInterface;
 
 class Kernel
@@ -117,6 +118,8 @@ class Kernel
         $this->registerAppFactories($this->config->get('factories', []));
         $this->registerAppDependencies($this->config->get('dependencies', []));
         $this->bootBootstrappers($this->config->get('bootstrappers', []));
+
+        $this->container->get(TracerInterface::class)->start();
 
         /** @var string|ServerInterface $server */
         $server = $this->container->get($server);

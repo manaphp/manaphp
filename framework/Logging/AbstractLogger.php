@@ -14,6 +14,7 @@ use ManaPHP\Logging\Logger\Event\LoggerLog;
 use ManaPHP\Logging\Logger\Log;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LogLevel;
+use Stringable;
 use Throwable;
 
 abstract class AbstractLogger extends \Psr\Log\AbstractLogger
@@ -104,6 +105,8 @@ abstract class AbstractLogger extends \Psr\Log\AbstractLogger
             return $message;
         } elseif ($message instanceof Throwable) {
             return $this->exceptionToString($message);
+        } elseif ($message instanceof Stringable) {
+            return (string)$message;
         } else {
             return json_stringify($message, JSON_PARTIAL_OUTPUT_ON_ERROR);
         }
@@ -114,7 +117,6 @@ abstract class AbstractLogger extends \Psr\Log\AbstractLogger
         if (($v = $context['category'] ?? null) !== null
             && is_string($v)
             && (!is_string($message) || !str_contains($message, '{category}'))
-            && preg_match('#^[\w.]+$#', $v) === 1
         ) {
             return $v;
         } else {
