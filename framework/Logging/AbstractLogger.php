@@ -81,7 +81,7 @@ abstract class AbstractLogger extends \Psr\Log\AbstractLogger
                 if (method_exists($val, '__toString')) {
                     $val = (string)$val;
                 } elseif ($val instanceof JsonSerializable) {
-                    $val = json_stringify($val,);
+                    $val = json_stringify($val);
                 } else {
                     $val = json_stringify((array)$val);
                 }
