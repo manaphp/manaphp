@@ -21,6 +21,8 @@ class Exception extends \Exception
                         $val = $val ? 'true' : 'false';
                     } elseif (is_object($val)) {
                         $val = $val instanceof Stringable ? (string)$val : json_stringify($val);
+                    } elseif (is_array($val)) {
+                        $val = json_stringify($val);
                     }
 
                     $replaces['{' . $key . '}'] = $val;
