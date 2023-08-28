@@ -73,7 +73,9 @@ abstract class AbstractLogger extends \Psr\Log\AbstractLogger
                 continue;
             }
 
-            if (is_array($val) || is_scalar($val)) {
+            if (is_string($val)) {
+                null;
+            } elseif (is_array($val) || is_scalar($val)) {
                 $val = json_stringify($val);
             } elseif (is_object($val)) {
                 if (method_exists($val, '__toString')) {
