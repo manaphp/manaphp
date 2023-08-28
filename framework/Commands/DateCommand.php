@@ -57,7 +57,7 @@ class DateCommand extends Command
     {
         $timestamp = $this->getRemoteTimestamp($url);
         if ($timestamp === null) {
-            return $this->console->error(['fetch remote timestamp failed: `:url`', 'url' => $url]);
+            return $this->console->error('fetch remote timestamp failed: `{url}`', ['url' => $url]);
         } else {
             $this->updateDate($timestamp);
             $this->console->writeLn(date('Y-m-d H:i:s'));

@@ -323,7 +323,7 @@ class MongodbCommand extends Command
                     continue;
                 }
 
-                $this->console->writeLn("---`$cdb` db of `$connection` connection---", Console::BC_CYAN);
+                $this->console->writeLn("---`$cdb` db of `$connection` connection---", [], Console::BC_CYAN);
                 foreach ($mongodb->listCollections($cdb) as $row => $collection) {
                     if ($collection_pattern && !fnmatch($collection_pattern, $collection)) {
                         continue;

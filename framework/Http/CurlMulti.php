@@ -212,7 +212,7 @@ class CurlMulti implements CurlMultiInterface, Countable
     public function start(): static
     {
         while ($this->requests) {
-            $running = null;
+            $running = 0;
             while (curl_multi_exec($this->mh, $running) === CURLM_CALL_MULTI_PERFORM) {
                 null;
             }

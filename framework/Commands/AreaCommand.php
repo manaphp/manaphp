@@ -70,6 +70,6 @@ EOT;
             $areas[] = basename($item);
         }
 
-        $this->console->writeLn($areas);
+        $this->console->writeLn(json_stringify($areas));
     }
 }

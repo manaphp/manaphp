@@ -27,7 +27,7 @@ class Sqlite extends AbstractConnection
                   Db::METADATA_AUTO_INCREMENT_KEY => "mixed|null"])]
     public function getMetadata(string $table): array
     {
-        $fields = $this->query('PRAGMA table_info(' . $this->escapeIdentifier($table) . ')', null);
+        $fields = $this->query('PRAGMA table_info(' . $this->escapeIdentifier($table) . ')');
 
         $attributes = [];
         $primaryKeys = [];

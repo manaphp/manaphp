@@ -37,7 +37,7 @@ class BosCommand extends Command
      */
     public function createBucketAction(string $bucket, string $base_url = ''): void
     {
-        $this->console->writeLn($this->bosClient->createBucket($bucket, $base_url));
+        $this->console->writeLn(json_stringify($this->bosClient->createBucket($bucket, $base_url)));
     }
 
     /**
@@ -64,7 +64,7 @@ class BosCommand extends Command
         $filters = Arr::trim($filters);
 
         $response = $this->bosClient->listObjects($bucket, $filters);
-        $this->console->writeLn($response);
+        $this->console->writeLn(json_stringify($response));
     }
 
     /**
@@ -103,7 +103,7 @@ class BosCommand extends Command
             $file = "$dir/$item";
             if (LocalFS::fileExists($file)) {
                 $response = $this->bosClient->putObject($file, $bucket, "$prefix/$item");
-                $this->console->writeLn($response);
+                $this->console->writeLn(json_stringify($response));
             } else {
                 $this->recursiveImport($file, $bucket, "$prefix/$item");
             }

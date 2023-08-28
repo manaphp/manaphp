@@ -86,7 +86,7 @@ class Downloader implements DownloaderInterface
                 unset($files[$url]);
             }
 
-            $running = null;
+            $running = 0;
             while (curl_multi_exec($mh, $running) === CURLM_CALL_MULTI_PERFORM) {
                 null;
             }

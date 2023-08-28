@@ -52,7 +52,7 @@ class HelpCommand extends Command
         );
         $this->console->writeLn();
 
-        $this->console->writeLn('manaphp commands:', Console::FC_GREEN | Console::AT_BOLD);
+        $this->console->writeLn('manaphp commands:', [], Console::FC_GREEN | Console::AT_BOLD);
         ksort($builtin_commands);
         foreach ($builtin_commands as $name => $definition) {
             if ($name === 'helpCommand') {
@@ -74,7 +74,7 @@ class HelpCommand extends Command
         }
 
         ksort($app_commands);
-        $this->console->writeLn('application commands:', Console::FC_GREEN | Console::AT_BOLD);
+        $this->console->writeLn('application commands:', [], Console::FC_GREEN | Console::AT_BOLD);
         foreach ($app_commands as $name => $definition) {
             $description = $this->getCommandDescription($definition);
             $plainName = ucfirst($name);
