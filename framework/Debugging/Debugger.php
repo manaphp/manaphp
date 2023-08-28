@@ -348,18 +348,10 @@ class Debugger implements DebuggerInterface
 
         $data['view'] = $context->view;
         $data['dependencies'] = [];
-        $data['tracers'] = [];
         $data['events'] = $context->events;
 
         foreach ($this->container->getInstances() as $name => $instance) {
             $properties = $this->dumpManager->dump($instance);
-
-            if (preg_match('#\\\\Tracers\\\\\w+Tracer$#', $instance::class)) {
-                $name = str_replace('\\', '//', $name);
-                $data['tracers'][lcfirst(basename($name, 'Tracer'))] = ['class'      => $instance::class,
-                                                                        'properties' => $properties];
-                continue;
-            }
 
             $data['dependencies'][$name] = ['class'      => $instance::class,
                                             'object_id'  => spl_object_id($instance),
