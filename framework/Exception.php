@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ManaPHP;
 
+use JsonSerializable;
 use Stringable;
 
 class Exception extends \Exception
@@ -17,12 +18,20 @@ class Exception extends \Exception
             preg_match_all('#{(\w+)}#', $message[0], $matches);
             foreach ($matches[1] as $key) {
                 if (($val = $message[$key] ?? null) !== null) {
-                    if (is_bool($val)) {
-                        $val = $val ? 'true' : 'false';
-                    } elseif (is_object($val)) {
-                        $val = $val instanceof Stringable ? (string)$val : json_stringify($val);
+                    if (is_string($val)) {
+                        null;
+                    } elseif ($val instanceof Stringable) {
+                        $val = (string)$val;
+                    } elseif (is_scalar($val)) {
+                        $val = json_stringify($val);
+                    } elseif ($val instanceof JsonSerializable) {
+                        $val = json_stringify($val);
                     } elseif (is_array($val)) {
                         $val = json_stringify($val);
+                    } elseif (is_object($val)) {
+                        $val = json_stringify((array)$val);
+                    } else {
+                        continue;
                     }
 
                     $replaces['{' . $key . '}'] = $val;
