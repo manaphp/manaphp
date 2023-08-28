@@ -19,7 +19,7 @@ interface DispatcherInterface
 
     public function getPath(): ?string;
 
-    public function getControllerInstance(): ?Controller;
+    public function getControllerInstance(): ?object;
 
     public function dispatch(?string $area, string $controller, string $action, array $params): mixed;
 

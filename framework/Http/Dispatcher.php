@@ -111,7 +111,7 @@ class Dispatcher implements DispatcherInterface
         return $context->path;
     }
 
-    public function invokeAction(Controller $controller, string $action): mixed
+    public function invokeAction(object $controller, string $action): mixed
     {
         $method = $action . 'Action';
 
@@ -190,7 +190,7 @@ class Dispatcher implements DispatcherInterface
         return $this->invokeAction($controllerInstance, $action);
     }
 
-    public function getControllerInstance(): ?Controller
+    public function getControllerInstance(): ?object
     {
         /** @var DispatcherContext $context */
         $context = $this->getContext();

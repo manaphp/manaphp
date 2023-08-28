@@ -5,7 +5,6 @@ namespace ManaPHP\Ws;
 
 use ManaPHP\Di\Attribute\Inject;
 use ManaPHP\Eventing\ListenerProviderInterface;
-use ManaPHP\Http\Controller;
 use ManaPHP\Ws\Server\Event\ServerStop;
 
 class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
@@ -14,7 +13,7 @@ class Dispatcher extends \ManaPHP\Http\Dispatcher implements DispatcherInterface
 
     protected array $controllers;
 
-    public function invokeAction(Controller $controller, string $action): mixed
+    public function invokeAction(object $controller, string $action): mixed
     {
         $controller_oid = spl_object_id($controller);
         if (!isset($this->controllers[$controller_oid])) {
